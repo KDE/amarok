@@ -62,6 +62,12 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         virtual QList<PopupDropperAction *> channelActions( Meta::PodcastChannelList )
             { return QList<PopupDropperAction *>(); }
 
+        virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistPtr playlist )
+                { return QList<PopupDropperAction *>(); }
+        virtual QList<PopupDropperAction *> trackActions( Meta::PlaylistPtr playlist,
+                                                  int trackIndex )
+                { return QList<PopupDropperAction *>(); }
+
     public slots:
         virtual void updateAll() = 0;
         virtual void update( Meta::PodcastChannelPtr channel ) = 0;

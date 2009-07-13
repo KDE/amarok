@@ -23,6 +23,8 @@
 
 #include <QString>
 
+class PopupDropperAction;
+
 class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
 {
     Q_OBJECT
@@ -42,6 +44,10 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
         virtual int category() const = 0;
 
         virtual Meta::PlaylistList playlists() = 0;
+
+        virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistPtr playlist ) = 0;
+        virtual QList<PopupDropperAction *> trackActions( Meta::PlaylistPtr playlist,
+                                                  int trackIndex ) = 0;
 
     signals:
         virtual void updated();

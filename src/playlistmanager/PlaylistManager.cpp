@@ -399,15 +399,28 @@ PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
 }
 
 QList<PopupDropperAction *>
-PlaylistManager::playlistActions( const Meta::PlaylistList lists )
+PlaylistManager::playlistActions( const Meta::PlaylistList playlists )
 {
-    return QList<PopupDropperAction *>();
+    QList<PopupDropperAction *> actions;
+    foreach( const Meta::PlaylistPtr playlist, playlists )
+    {
+        PlaylistProvider *provider = getProviderForPlaylist( playlist );
+        if( provider )
+            actions << provider->playlistActions( playlist );
+    }
+
+    return actions;
 }
 
 QList<PopupDropperAction *>
 PlaylistManager::trackActions( const Meta::PlaylistPtr playlist, int trackIndex )
 {
-    return QList<PopupDropperAction *>();
+    QList<PopupDropperAction *> actions;
+    PlaylistProvider *provider = getProviderForPlaylist( playlist );
+    if( provider )
+        actions << provider->trackActions( playlist, trackIndex );
+
+    return actions;
 }
 
 namespace Amarok

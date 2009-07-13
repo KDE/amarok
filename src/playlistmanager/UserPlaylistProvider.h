@@ -51,7 +51,10 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 
         virtual bool supportsEmptyGroups();
 
-        virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list ) = 0;
+        QList<PopupDropperAction *> playlistActions( Meta::PlaylistPtr playlist );
+        QList<PopupDropperAction *> trackActions( Meta::PlaylistPtr playlist,
+                                                  int trackIndex );
+
 };
 
 #endif

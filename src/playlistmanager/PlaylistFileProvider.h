@@ -17,14 +17,14 @@
 #ifndef PLAYLISTFILEPROVIDER_H
 #define PLAYLISTFILEPROVIDER_H
 
-#include <PlaylistManager.h>
+#include <UserPlaylistProvider.h>
 
 class KUrl;
 
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PlaylistFileProvider : public PlaylistProvider
+class PlaylistFileProvider : public UserPlaylistProvider
 {
     public:
         PlaylistFileProvider();
@@ -35,6 +35,12 @@ class PlaylistFileProvider : public PlaylistProvider
         int category() const { return PlaylistManager::UserPlaylist; };
 
         virtual Meta::PlaylistList playlists();
+
+        virtual bool canSavePlaylists() { return true; }
+
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks );
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks,
+                                        const QString &name );
 
     private:
         Meta::PlaylistList m_playlists;

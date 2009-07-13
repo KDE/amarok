@@ -26,7 +26,7 @@
 #include <KUrl>
 
 PlaylistFileProvider::PlaylistFileProvider()
- : PlaylistProvider()
+ : UserPlaylistProvider()
 {
     DEBUG_BLOCK
     //load the playlists defined in the config
@@ -84,5 +84,17 @@ PlaylistFileProvider::playlists()
 {
     DEBUG_BLOCK
     return m_playlists;
+}
+
+Meta::PlaylistPtr
+PlaylistFileProvider::save( const Meta::TrackList &tracks )
+{
+    return Meta::PlaylistPtr();
+}
+
+Meta::PlaylistPtr
+PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
+{
+    return Meta::PlaylistPtr();
 }
 

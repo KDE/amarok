@@ -44,9 +44,9 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 
         virtual bool supportsEmptyGroups() { return true; }
 
-        QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list );
+        QList<PopupDropperAction *> playlistActions( Meta::PlaylistPtr playlist );
         QList<PopupDropperAction *> trackActions( Meta::PlaylistPtr playlist,
-                                                  Meta::TrackList list );
+                                                  int trackIndex );
 
         Meta::SqlPlaylistGroupPtr group( const QString &name );
         bool import( const QString& fromLocation );
@@ -59,6 +59,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
     private slots:
         void slotDelete();
         void slotRename();
+        void slotRemove();
 
     private:
         void reloadFromDb();

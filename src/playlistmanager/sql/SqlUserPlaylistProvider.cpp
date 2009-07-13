@@ -38,6 +38,9 @@
 static const int USERPLAYLIST_DB_VERSION = 2;
 static const QString key("AMAROK_USERPLAYLIST");
 
+typedef QMultiMap<Meta::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
+Q_DECLARE_METATYPE( PlaylistTrackMap );
+
 SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     : UserPlaylistProvider()
     , m_renameAction( 0 )
@@ -103,13 +106,30 @@ SqlUserPlaylistProvider::slotRename()
     }
 }
 
-QList<PopupDropperAction *>
-SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
+void
+SqlUserPlaylistProvider::slotRemove()
 {
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
+    foreach( Meta::PlaylistPtr playlist, playlistMap.keys() )
+        foreach( Meta::TrackPtr track, playlistMap.values( playlist ) )
+            playlist->removeTrack( playlist->tracks().indexOf( track ) );
+
+    //clear the data
+    action->setData( QVariant() );
+}
+
+QList<PopupDropperAction *>
+SqlUserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
+{
+    Q_UNUSED( playlist );
     QList<PopupDropperAction *> actions;
 
     m_selectedPlaylists.clear();
-    m_selectedPlaylists << toSqlPlaylists( list );
+    m_selectedPlaylists << Meta::SqlPlaylistPtr::dynamicCast( playlist );
 
     if ( m_renameAction == 0 )
     {
@@ -129,8 +149,9 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
 }
 
 QList<PopupDropperAction *>
-SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, Meta::TrackList list )
+SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
 {
+    Q_UNUSED( trackIndex );
     QList<PopupDropperAction *> actions;
 
     if( m_removeTrackAction == 0 )
@@ -142,8 +163,14 @@ SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, Meta::TrackLi
                     i18n( "Remove From Playlist" ),
                     this
                 );
-        connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
+        connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
     }
+    //Add the playlist/track combination to a QMultiMap that is stored in the action.
+    //In the slot we use this data and use it to remove that track.
+    PlaylistTrackMap playlistMap = m_removeTrackAction->data();
+    playlistMap.insert( playlist, playlist->tracks()[trackIndex] );
+    m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
+
     actions << m_removeTrackAction;
 
     return actions;
