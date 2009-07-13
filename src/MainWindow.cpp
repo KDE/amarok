@@ -220,7 +220,7 @@ MainWindow::init()
     m_newToolbar->setMovable ( true );
 
     addToolBar( Qt::TopToolBarArea, m_newToolbar );
-    
+
 
     PERF_LOG( "Create sidebar" )
     m_browsers = new BrowserWidget( this );
@@ -292,14 +292,11 @@ MainWindow::init()
     {
         Debug::Block block( "Creating browsers. Please report long start times!" );
 
-
-
-
         PERF_LOG( "Creating CollectionWidget" )
         m_collectionBrowser = new CollectionWidget( "collections", 0 );
-        m_collectionBrowser->setPrettyName( i18n( "Collections" ) );
+        m_collectionBrowser->setPrettyName( i18n( "Local Music" ) );
         m_collectionBrowser->setIcon( KIcon( "collection-amarok" ) );
-        m_collectionBrowser->setShortDescription( i18n( "The list of available collections" ) );
+        m_collectionBrowser->setShortDescription( i18n( "Local sources of content" ) );
         m_browsers->list()->addCategory( m_collectionBrowser );
         PERF_LOG( "Created CollectionWidget" )
 
@@ -309,7 +306,7 @@ MainWindow::init()
         internetContentServiceBrowser->setParent( 0 );
         internetContentServiceBrowser->setPrettyName( i18n( "Internet" ) );
         internetContentServiceBrowser->setIcon( KIcon( "applications-internet" ) );
-        internetContentServiceBrowser->setShortDescription( i18n( "Sources of online content" ) );
+        internetContentServiceBrowser->setShortDescription( i18n( "Online sources of content" ) );
         m_browsers->list()->addCategory( internetContentServiceBrowser );
         PERF_LOG( "Created ServiceBrowser" )
 
@@ -320,7 +317,7 @@ MainWindow::init()
         m_playlistBrowser = new PlaylistBrowserNS::PlaylistBrowser( "playlists", 0 );
         m_playlistBrowser->setPrettyName( i18n("Playlists") );
         m_playlistBrowser->setIcon( KIcon( "view-media-playlist-amarok" ) );
-        m_playlistBrowser->setShortDescription( i18n( "Different kinds of playlists" ) );
+        m_playlistBrowser->setShortDescription( i18n( "Various types of playlists" ) );
         m_browsers->list()->addCategory( m_playlistBrowser );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
@@ -329,7 +326,7 @@ MainWindow::init()
         FileBrowser::Widget * fileBrowser = new FileBrowser::Widget( "files", 0 );
         fileBrowser->setPrettyName( i18n("Files") );
         fileBrowser->setIcon( KIcon( "folder-amarok" ) );
-        fileBrowser->setShortDescription( i18n( "Browse local files" ) );
+        fileBrowser->setShortDescription( i18n( "Browse local hard drive for content" ) );
         m_browsers->list()->addCategory( fileBrowser );
         PERF_LOG( "Created FileBrowser" )
 
@@ -340,7 +337,6 @@ MainWindow::init()
         internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
 
-        #undef addBrowserMacro
         PERF_LOG( "finished MainWindow::init" )
     }
 

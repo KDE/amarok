@@ -38,10 +38,11 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
 {
     setObjectName( name );
     setParent( parent );
-    
+
     debug() << "BrowserCategoryList named " << name << " starting...";
 
     m_searchWidget = new SearchWidget( this, this, false );
+    m_searchWidget->setClickMessage( i18n( "Filter Music Sources" ) );
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
@@ -54,7 +55,7 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
     m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
     m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 #endif
-    
+
     m_categoryListView->setFrameShape( QFrame::NoFrame );
 
     m_proxyModel = new BrowserCategoryListSortFilterProxyModel( this );
@@ -69,7 +70,7 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
     m_categoryListView->setAlternatingRowColors( true );
     m_categoryListView->setModel( m_proxyModel );
     m_categoryListView->setMouseTracking ( true );
-    
+
     connect( m_categoryListView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( categoryActivated( const QModelIndex & ) ) );
 
     connect( m_categoryListView, SIGNAL( entered( const QModelIndex & ) ), this, SLOT( categoryEntered( const QModelIndex & ) ) );
@@ -166,7 +167,7 @@ BrowserCategoryList::home()
         BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
         if ( childList )
             childList->home();
-        
+
         m_currentCategory->setParent( 0 );
         m_categoryListView->setParent( this );
         m_currentCategory = 0; // remove any context stuff we might have added
@@ -274,7 +275,7 @@ QString BrowserCategoryList::navigate( const QString & target )
             return leftover;
         }
         return QString();
-        
+
     }
 
     //check if there are more arguments in the navigate string.
