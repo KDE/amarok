@@ -167,7 +167,7 @@ SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackInde
     }
     //Add the playlist/track combination to a QMultiMap that is stored in the action.
     //In the slot we use this data and use it to remove that track.
-    PlaylistTrackMap playlistMap = m_removeTrackAction->data();
+    PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();
     playlistMap.insert( playlist, playlist->tracks()[trackIndex] );
     m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
 
