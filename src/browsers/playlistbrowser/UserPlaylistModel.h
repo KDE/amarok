@@ -103,7 +103,6 @@ class UserModel : public MetaPlaylistModel
         QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
         PopupDropperAction *m_appendAction;
         PopupDropperAction *m_loadAction;
-        PopupDropperAction *m_deleteAction;
 
         Meta::PlaylistList m_selectedPlaylists;
         Meta::PlaylistList selectedPlaylists( const QModelIndexList &list );

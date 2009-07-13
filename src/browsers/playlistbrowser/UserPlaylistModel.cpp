@@ -68,7 +68,6 @@ PlaylistBrowserNS::UserModel::UserModel()
     : MetaPlaylistModel()
     , m_appendAction( 0 )
     , m_loadAction( 0 )
-    , m_deleteAction( 0 )
 {
     s_instance = this;
     loadPlaylists();
@@ -400,31 +399,33 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
 QList<PopupDropperAction *>
 PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
 {
-    DEBUG_BLOCK
-    QList<PopupDropperAction *> actions;
+    QSet<PopupDropperAction *> actions;
+    QList<PopupDropperAction *> actionList;
     m_selectedPlaylists.clear();
     m_selectedPlaylists << selectedPlaylists( indices );
     m_selectedTracks.clear();
     m_selectedTracks << selectedTracks( indices );
 
-    actions << createCommonActions( indices );
-
-    //only if only one playlist is selected
-    if( m_selectedPlaylists.count() == 1 )
+    if( !m_selectedPlaylists.isEmpty() )
     {
-        //HACK: since we only have one UserPlaylistProvider implementation
-//        UserPlaylistProvider *provider = The::playlistManager()->defaultUserPlaylists();
-        UserPlaylistProvider *provider = qobject_cast<UserPlaylistProvider *> ( The::playlistManager()->getProviderForPlaylist( m_selectedPlaylists.front() ) );
-//        UserPlaylistProvider *provider = qobject_cast<UserPlaylistProvider *> ( prov );
+        UserPlaylistProvider *provider =
+                qobject_cast<UserPlaylistProvider *>(
+                        The::playlistManager()->getProviderForPlaylist(
+                                    m_selectedPlaylists.front()
+                                )
+                        );
 
-        if( provider )
-        {
-            if( !selectedPlaylists().isEmpty() )
-                actions << provider->playlistActions( m_selectedPlaylists );
-        }
+        if( provider && !selectedPlaylists().isEmpty() )
+            actions +=
+                    QSet<PopupDropperAction *>::fromList(
+                                provider->playlistActions( m_selectedPlaylists )
+                            );
     }
 
-    return actions;
+    actionList = actions.toList();
+    actionList << createCommonActions( indices );
+
+    return actionList;
 }
 
 void
@@ -461,19 +462,10 @@ PlaylistBrowserNS::UserModel::createCommonActions( QModelIndexList indices )
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
     }
 
-    if ( m_deleteAction == 0 )
-    {
-        m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
-        connect( m_deleteAction, SIGNAL( triggered() ), The::playlistManager()->defaultUserPlaylists(), SLOT( slotDelete() ) );
-    }
-    actions << m_deleteAction;
-
-
     if ( indices.count() > 0 )
     {
         actions << m_appendAction;
         actions << m_loadAction;
-        actions << m_deleteAction;
     }
 
     return actions;

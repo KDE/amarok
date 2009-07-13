@@ -71,6 +71,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
             { return m_selectedPlaylists; };
         Meta::SqlPlaylistList m_selectedPlaylists;
         PopupDropperAction *m_renameAction;
+        PopupDropperAction *m_deleteAction;
 };
 
 #endif
