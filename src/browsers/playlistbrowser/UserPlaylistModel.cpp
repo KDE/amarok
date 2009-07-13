@@ -32,7 +32,7 @@
 
 //Playlist & Track index differentiator macros
 //QModelIndex::intenalId() is a qint64 to support 64-bit pointers in a union with the ID
-#define TRACK_MASK (0x1<<63)
+#define TRACK_MASK (0x1<<31)
 #define IS_TRACK(x) ((x.internalId()) & (TRACK_MASK))?true:false
 #define SET_TRACK_MASK(x) ((x) | (TRACK_MASK))
 #define REMOVE_TRACK_MASK(x) ((x) & ~(TRACK_MASK))
