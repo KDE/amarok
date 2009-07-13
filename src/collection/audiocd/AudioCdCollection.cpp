@@ -26,6 +26,7 @@
 #include "MediaDeviceMonitor.h"
 #include "MemoryQueryMaker.h"
 #include "SvgHandler.h"
+#include "handler/AudioCdHandler.h"
 #include "support/AudioCdConnectionAssistant.h"
 #include "support/AudioCdDeviceInfo.h"
 
@@ -49,60 +50,6 @@ AudioCdCollectionFactory::AudioCdCollectionFactory()
     DEBUG_BLOCK
 }
 
-/*void
-AudioCdCollectionFactory::init()
-{
-    DEBUG_BLOCK
-    connect( MediaDeviceMonitor::instance(), SIGNAL( audioCdDetected( const QString & ) ), this, SLOT( audioCdAdded( const QString & ) ) );
-    connect( MediaDeviceMonitor::instance(), SIGNAL( deviceRemoved( const QString & ) ), this, SLOT( deviceRemoved( const QString & ) ) );
-
-    //check if there is a cd in the drive already:
-
-    QString uid = MediaDeviceMonitor::instance()->isCdPresent();
-
-    if ( !uid.isEmpty() )
-    {
-        m_currentUid = uid;
-        m_collection = new AudioCdCollection( uid );
-        CollectionManager::instance()->addTrackProvider( m_collection );
-        emit newCollection( m_collection );
-    }
-
-}
-
-void
-AudioCdCollectionFactory::audioCdAdded( const QString &uid )
-{
-    DEBUG_BLOCK
-    if ( m_collection )
-    {
-        delete m_collection;
-        m_collection = 0;
-    }
-
-    m_currentUid = uid;
-    m_collection = new AudioCdCollection( uid );
-    CollectionManager::instance()->addTrackProvider( m_collection );
-    emit newCollection( m_collection );
-}
-
-void
-AudioCdCollectionFactory::deviceRemoved( const QString &uid )
-{
-    DEBUG_BLOCK
-    debug() << "uid: " << uid;
-    debug() << "m_currentUid: " << m_currentUid;
-    if ( m_currentUid == uid )
-    {
-        CollectionManager::instance()->removeTrackProvider( m_collection );
-        m_collection->cdRemoved(); //deleted by col. manager
-        m_collection = 0;
-        m_currentUid = QString();
-    }
-}*/
-
-
-////////////////////////////
 
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
    : MediaDeviceCollection()
@@ -121,7 +68,7 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
 
     connect( m_ejectAction, SIGNAL( triggered() ), this, SLOT( eject() ) );
 
-    readCd();
+    m_handler = new AudioCdHandler( this );
 }
 
 
@@ -579,6 +526,13 @@ AudioCdCollection::updateProxyTracks()
     }
 
     m_proxyMap.clear();
+}
+
+void AudioCdCollection::startFullScan()
+{
+    DEBUG_BLOCK
+    readCd();
+    emit collectionReady( this );
 }
 
 

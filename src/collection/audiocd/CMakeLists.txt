@@ -19,6 +19,7 @@ include_directories( ../..
         AudioCdCollectionLocation.cpp
         FormatSelectionDialog.cpp
         AudioCdCollectionCapability.cpp
+        handler/AudioCdHandler.cpp
         support/AudioCdDeviceInfo.cpp
         support/AudioCdConnectionAssistant.cpp)
 

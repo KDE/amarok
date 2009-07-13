@@ -89,6 +89,8 @@ public:
     virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
     virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
+    virtual void startFullScan(); //Override this one as I really dont want to do move partsing to the handler atm.
+
 public slots:
     void infoFetchComplete( KJob *job );
     void eject();
