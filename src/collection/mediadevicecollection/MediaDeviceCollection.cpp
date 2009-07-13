@@ -219,7 +219,10 @@ MediaDeviceCollection::slotAttemptConnectionDone( bool success )
         startFullScan();
     }
     else
+    {
         debug() << "connection failed, not scanning";
+        emit collectionDisconnected( m_udi );
+    }
 }
 
 /// CollectionCapability for Disconnect Action
@@ -251,7 +254,7 @@ MediaDeviceCollection::createCapabilityInterface( Meta::Capability::Type type )
     }
 }
 
-bool 
+bool
 MediaDeviceCollection::hasCapacity() const
 {
     return totalCapacity() > 0;

@@ -114,6 +114,14 @@ IpodHandler::~IpodHandler()
 void
 IpodHandler::init()
 {
+    if( m_mountPoint.isEmpty() )
+    {
+        debug() << "Error: empty mountpoint, probably an unmounted iPod, aborting";
+        m_memColl->slotAttemptConnectionDone( false );
+        return;
+    }
+
+
     GError *err = 0;
     QString initError = "iPod was not initialized: ";
     QString initErrorCaption = "iPod Initialization Failed";

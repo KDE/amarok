@@ -50,9 +50,11 @@ IpodCollection::IpodCollection(MediaDeviceInfo* info)
     IpodDeviceInfo *ipodinfo = qobject_cast<IpodDeviceInfo *>( info );
 
     m_mountPoint = ipodinfo->mountpoint();
+    debug() << "Mounted at: " << m_mountPoint;
     m_udi = ipodinfo->udi();
 
     m_handler = new Meta::IpodHandler( this, m_mountPoint );
+
 }
 
 
