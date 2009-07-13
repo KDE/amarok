@@ -94,3 +94,5 @@ include_directories(
 
         install( FILES amarok_service_lastfm.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
         install( FILES amarok_service_lastfm_config.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
+	install(FILES amaroklastfm.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+
