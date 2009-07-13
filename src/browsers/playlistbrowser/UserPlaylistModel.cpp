@@ -400,11 +400,12 @@ QList<PopupDropperAction *>
 PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
 {
     QSet<PopupDropperAction *> actions;
-    QList<PopupDropperAction *> actionList;
     m_selectedPlaylists.clear();
     m_selectedPlaylists << selectedPlaylists( indices );
     m_selectedTracks.clear();
     m_selectedTracks << selectedTracks( indices );
+
+    actions = QSet<PopupDropperAction *>::fromList( createCommonActions( indices ) );
 
     if( !m_selectedPlaylists.isEmpty() )
     {
@@ -425,10 +426,7 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
         }
     }
 
-    actionList = actions.toList();
-    actionList << createCommonActions( indices );
-
-    return actionList;
+    return actions.toList();
 }
 
 void
