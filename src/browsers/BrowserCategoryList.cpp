@@ -257,10 +257,27 @@ QString BrowserCategoryList::navigate( const QString & target )
     if ( categories.size() == 0 )
         return QString();
 
+    //remove our own name if present, before passing on...
+    if ( categories.at( 0 ) == name() )
+    {
+        debug() << "removing own name (" << categories.at( 0 ) << ") from path";
+        categories.removeFirst();
+
+        if ( categories.size() == 0 )
+        {
+            //nothing else left, make sure this category is visible
+            home();
+            return QString();
+        }
+    }
+
     QString childName = categories.at( 0 );
+    debug() << "looking for child category " << childName;
     if ( !m_categories.contains( childName ) )
         return target;
 
+
+    debug() << "got it!";
     showCategory( childName );
 
     //check if this category is also BrowserCategoryList.target
@@ -268,6 +285,7 @@ QString BrowserCategoryList::navigate( const QString & target )
 
     if ( childList == 0 )
     {
+        debug() << "child is not a list...";
         if ( categories.size() > 1 )
         {
             categories.removeFirst();
@@ -281,17 +299,16 @@ QString BrowserCategoryList::navigate( const QString & target )
     //check if there are more arguments in the navigate string.
     if ( categories.size() == 1 )
     {
+        debug() << "Child is a list but path ends here...";
         //only one name, but since the category we switched to is also
-        //a category lsit, make sure that it is reset to home
+        //a category list, make sure that it is reset to home
         childList->home();
         return QString();
     }
 
-    int firstArgLength = childName.length() + 1;
-    QString subTarget = target;
-    subTarget.remove( 0 , firstArgLength );
-
-    return childList->navigate( subTarget );
+    categories.removeFirst();
+    debug() << "passing remaining path to child: " << categories.join( "/" );
+    return childList->navigate( categories.join( "/" ) );
 
 }
 

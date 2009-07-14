@@ -151,6 +151,12 @@ MainWindow::MainWindow()
     setPlainCaption( i18n( AMAROK_CAPTION ) );
 
     init();  // We could as well move the code from init() here, but meh.. getting a tad long
+
+    //restore active category ( as well as filters and levels and whatnot.. )
+    const QString path = config.readEntry( "Browser Path", QString() );
+    if ( !path.isEmpty() )
+        browserWidget()->list()->navigate( path );
+    
 }
 
 MainWindow::~MainWindow()
@@ -160,6 +166,11 @@ MainWindow::~MainWindow()
     KConfigGroup config = Amarok::config();
     config.writeEntry( "MainWindow Size", size() );
     config.writeEntry( "MainWindow Position", pos() );
+
+    //save currently active category
+    
+    config.writeEntry( "Browser Path", browserWidget()->list()->path() );
+    
 
     QList<int> sPanels;
 
