@@ -71,6 +71,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Peter Zhou Lei"), ki18n(( "Scripting interface" )), "peterzhoulei@gmail.com" );
     aboutData.addCredit( ki18n("Scott Wheeler"), ki18n(( "TagLib & ktrm code" )), "wheeler@kde.org" );
     aboutData.addCredit( ki18n("Shane King"), ki18n(( "Patches & Windows porting (shakes)" )), "kde@dontletsstart.com" );
+    aboutData.addCredit( ki18n("Simon Esneault"), ki18n(( "Photos & Videos applets, Context View" )), "simon.esneault@gmail.com" );
     aboutData.addCredit( ki18n("Soren Harward"), ki18n(( "Developer" )), "stharward@gmail.com" );
     aboutData.addCredit( ki18n("Sven Krohlas"), ki18n(( "Rokymoter (sven423)" )), "sven@asbest-online.de" );
     aboutData.addCredit( ki18n("Teo Mrnjavac"), ki18n(( "Mass tagging support" )), "teo.mrnjavac@gmail.com" );
