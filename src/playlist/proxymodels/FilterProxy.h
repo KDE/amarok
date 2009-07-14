@@ -67,6 +67,16 @@ public:
     Item::State stateOfId( quint64 id ) const;
 
     /**
+     * Find the first track in the playlist that matches the search term in one of the
+     * specified search fields. This function emits found() or notFound() depending on
+     * whether a match is found.
+     * @param searchTerm The term to search for.
+     * @param searchFields A bitmask specifying the fields to look in.
+     * @return The row of the first found match, -1 if no match is found.
+     */
+    int find( const QString & searchTerm, int searchFields = MatchTrack );
+
+    /**
      * Get the first row below the currently active track that matches the
      * current search term.
      * @return The first matching row.
@@ -93,7 +103,7 @@ public:
      * ignores any calls to filterUpdated() while in pass through mode,.
      * @param passThrough Determines whether pass through mode is enabled.
      */
-    void setPassThrough( bool passThrough );
+    void showOnlyMatches( bool onlyMatches );
 
     void clearSearchTerm();
 
@@ -107,11 +117,19 @@ protected:
      * Reimplemented from QSortFilterProxyModel. Used internally by the proxy to
      * determine if a given row in the source model should be included in this
      * proxy. When in pass through mode, this always returns true.
-     * @param row The row in the source model to check.
+     * @param source_row The row in the source model to check.
      * @param source_parent Ignored.
      * @return True if the row should be included, false otherwise.
      */
-    virtual bool filterAcceptsRow ( int row, const QModelIndex & source_parent ) const;
+    virtual bool filterAcceptsRow ( int source_row, const QModelIndex & source_parent ) const;
+
+    /**
+     * Check if a given row matches the current search term with the current
+     * search fields.
+     * @param source_row The row to check.
+     * @return True if the row matches, false otherwise.
+     */
+    bool matchesCurrentSearchTerm( int source_row ) const;
 
 protected slots:
     /**
@@ -153,6 +171,9 @@ private:
      * Destructor.
      */
     ~FilterProxy();
+
+    QString m_currentSearchTerm;
+    int m_currentSearchFields;
 
     bool m_passThrough;
 

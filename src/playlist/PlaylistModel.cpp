@@ -70,7 +70,6 @@ Playlist::Model::Model()
         : QAbstractListModel( 0 )
         , m_activeRow( -1 )
         , m_totalLength( 0 )
-        , m_currentSearchFields( 0 )
 {
     DEBUG_BLOCK
     s_instance = this;
@@ -720,7 +719,7 @@ Playlist::Model::prettyColumnName( Column index ) //static
 
 ////////////
 //Private Methods
-///////////
+////////////
 
 void
 Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
@@ -959,150 +958,5 @@ namespace The
     {
         return Playlist::Model::instance();
     }
-}
-
-
-int Playlist::Model::find( const QString & searchTerm, int searchFields )
-{
-    DEBUG_BLOCK
-
-    m_currentSearchTerm = searchTerm;
-    m_currentSearchFields = searchFields;
-    int matchRow = -1;
-    int row = 0;
-    foreach( Item* item, m_items )
-    {
-        Meta::TrackPtr track = item->track();
-
-        if ( trackMatch( track, searchTerm, searchFields ) )
-        {
-            matchRow = row;
-            break;
-        }
-
-        row++;
-    }
-
-    return matchRow;
-}
-
-int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int searchFields )
-{
-    DEBUG_BLOCK
-
-    m_currentSearchTerm = searchTerm;
-    m_currentSearchFields = searchFields;
-    int row = 0;
-    int firstMatch = -1;
-    foreach( Item* item, m_items )
-    {
-        Meta::TrackPtr track = item->track();
-
-        if ( trackMatch( track, searchTerm, searchFields ) )
-        {
-            if ( firstMatch == -1 )
-                firstMatch = row;
-
-            if ( row > selectedRow )
-                return row;
-        }
-
-        row++;
-    }
-
-    //we have searche through everything and not found anything that matched _below_
-    //the selected index. So return the first one found above it ( wrap around )
-    return firstMatch;
-}
-
-int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
-{
-    DEBUG_BLOCK
-
-    m_currentSearchTerm = searchTerm;
-    m_currentSearchFields = searchFields;
-    int row = m_items.count() -1;
-    int lastMatch = -1;
-
-    QList<Item*> tempItems = m_items;
-    while( tempItems.size() > 0 )
-    {
-        Item* item = tempItems.takeLast();
-
-        Meta::TrackPtr track = item->track();
-
-        if ( trackMatch( track, searchTerm, searchFields ) )
-        {
-            if ( lastMatch == -1 )
-                lastMatch = row;
-
-            if ( row < selectedRow )
-                return row;
-        }
-
-        row--;
-    }
-
-    //we have searched through everything and not found anything that matched _below_
-    //the selected index. So return the first one found above it ( wrap around )
-    return lastMatch;
-}
-
-bool Playlist::Model::trackMatch( Meta::TrackPtr track, const QString &searchTerm, int searchFields ) const
-{
-    if ( searchFields & MatchTrack &&
-        track->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    if ( searchFields & MatchArtist &&
-         track->artist() &&
-         track->artist()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-         return true;
-
-    if ( searchFields & MatchAlbum &&
-         track->album() &&
-         track->album()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-         return true;
-
-    if ( searchFields & MatchGenre &&
-         track->genre() &&
-         track->genre()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    if ( searchFields & MatchComposer &&
-         track->composer() &&
-         track->composer()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    if ( searchFields & MatchYear &&
-         track->year() &&
-         track->year()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    return false;
-}
-
-void Playlist::Model::clearSearchTerm()
-{
-    DEBUG_BLOCK
-    m_currentSearchTerm.clear();
-    m_currentSearchFields = 0;
-}
-
-bool Playlist::Model::matchesCurrentSearchTerm( int row ) const
-{
-    if ( rowExists( row ) )
-    {
-        if ( m_currentSearchTerm.isEmpty() )
-            return true;
-        return trackMatch( m_items.at( row )->track(), m_currentSearchTerm, m_currentSearchFields );
-    }
-    return false;
 }
 

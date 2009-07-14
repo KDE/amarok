@@ -188,6 +188,12 @@ public:
     virtual void setActiveRow( int row );
 
     /**
+     * Decides if FilterProxy or SearchProxy should be used.
+     * @param onlyMatches true if one wants to use SearchProxy, false otherwise.
+     */
+    virtual void showOnlyMatches( bool onlyMatches );
+
+    /**
      * Returns the drop actions supported by this proxy.
      * The default implementation returns the drop actions supported by the proxy or model
      * below the current proxy.
@@ -255,6 +261,16 @@ signals:
     void removedIds( const QList<quint64>& );
 
 protected:
+    /**
+     * Check if a certain row matches a search term when looking at the fields specified by
+     * the searchFields bitmask.
+     * @param row The row of the track to match against.
+     * @param searchTerm The search term.
+     * @param searchFields A bitmask containing the fields that should be matched against.
+     * @return True if a match is found in any field, false otherwise.
+     */
+    bool rowMatch( int row, const QString &searchTerm, int searchFields ) const;
+
     AbstractModel *m_belowModel;
 };
 

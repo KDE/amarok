@@ -25,7 +25,7 @@
 
 #include "ProxyBase.h"
 #include "meta/Meta.h"
-#include "SortProxy.h"
+#include "SearchProxy.h"
 
 #include <QHash>
 #include <QModelIndex>

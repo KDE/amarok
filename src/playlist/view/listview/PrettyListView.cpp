@@ -709,7 +709,7 @@ void Playlist::PrettyListView::updateProxyTimeout()
 
 void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
 {
-    FilterProxy::instance()->setPassThrough( !onlyMatches );    //FIXME
+    m_topmostProxy->showOnlyMatches( onlyMatches );
 }
 
 void Playlist::PrettyListView::itemsAdded( const QModelIndex& parent, int firstRow, int lastRow )

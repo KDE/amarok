@@ -16,6 +16,7 @@
  ****************************************************************************************/
 
 #include "FilterProxy.h"
+#include "SearchProxy.h"
 
 #include "Debug.h"
 
@@ -49,14 +50,14 @@ FilterProxy::~FilterProxy()
 {
 }
 
-bool FilterProxy::filterAcceptsRow( int row, const QModelIndex & source_parent ) const
+bool FilterProxy::filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const
 {
     Q_UNUSED( source_parent );
 
     if ( m_passThrough )
         return true;
 
-    const bool match = Model::instance()->matchesCurrentSearchTerm( row );
+    const bool match = matchesCurrentSearchTerm( source_row );
     return match;
 }
 
@@ -82,6 +83,19 @@ void FilterProxy::filterUpdated()
     }
 }
 
+int
+FilterProxy::find( const QString &searchTerm, int searchFields )
+{
+    DEBUG_BLOCK
+    m_currentSearchTerm = searchTerm;
+    m_currentSearchFields = searchFields;
+    if( !m_passThrough )
+    {
+        filterUpdated();
+    }
+    return -1;
+}
+
 int FilterProxy::firstMatchAfterActive()
 {
     int activeSourceRow = m_belowModel->activeRow();
@@ -93,7 +107,7 @@ int FilterProxy::firstMatchAfterActive()
     int nextRow = activeSourceRow + 1;
     while ( m_belowModel->rowExists( nextRow ) )
     {
-        if ( Model::instance()->matchesCurrentSearchTerm( nextRow ) ) {
+        if ( matchesCurrentSearchTerm( nextRow ) ) {
             matchRow = nextRow;
             break;
         }
@@ -118,7 +132,7 @@ int FilterProxy::firstMatchBeforeActive()
     int previousRow = activeSourceRow - 1;
     while ( m_belowModel->rowExists( previousRow ) )
     {
-        if ( Model::instance()->matchesCurrentSearchTerm( previousRow ) ) {
+        if ( matchesCurrentSearchTerm( previousRow ) ) {
             matchRow = previousRow;
             break;
         }
@@ -137,7 +151,7 @@ void FilterProxy::slotInsertedIds( const QList< quint64 > &ids )
     QList< quint64 > proxyIds;
     foreach( quint64 id, ids )
     {
-        if ( Model::instance()->matchesCurrentSearchTerm( Model::instance()->rowForId( id ) ) )
+        if ( matchesCurrentSearchTerm( Model::instance()->rowForId( id ) ) )
             proxyIds << id;
     }
 
@@ -150,7 +164,7 @@ void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
     QList<quint64> proxyIds;
     foreach( quint64 id, ids ) {
         const int row = Model::instance()->rowForId( id );
-        if ( row == -1 || Model::instance()->matchesCurrentSearchTerm( row ) ) {
+        if ( row == -1 || matchesCurrentSearchTerm( row ) ) {
             proxyIds << id;
         }
     }
@@ -169,9 +183,10 @@ Item::State FilterProxy::stateOfId( quint64 id ) const
     return Model::instance()->stateOfId( id );
 }
 
-void FilterProxy::setPassThrough( bool passThrough )
+void
+FilterProxy::showOnlyMatches( bool onlyMatches )
 {
-    m_passThrough = passThrough;
+    m_passThrough = !onlyMatches;
 
     //make sure to update model when mode changes ( as we might have ignored and
     //number of changes to the search term )
@@ -201,13 +216,26 @@ int FilterProxy::rowFromSource( int row ) const
 
 void FilterProxy::clearSearchTerm()
 {
+    m_currentSearchTerm.clear();
+    m_currentSearchFields = 0;
     m_belowModel->clearSearchTerm();
-
     if ( !m_passThrough )
     {
         invalidateFilter();
         emit( layoutChanged() );
     }
+}
+
+bool
+FilterProxy::matchesCurrentSearchTerm( int source_row ) const
+{
+    if ( m_belowModel->rowExists( source_row ) )
+    {
+        if ( m_currentSearchTerm.isEmpty() )
+            return true;
+        return rowMatch( source_row, m_currentSearchTerm, m_currentSearchFields );
+    }
+    return false;
 }
 
 }

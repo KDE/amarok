@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,6 +17,7 @@
 #include "ProxyBase.h"
 
 #include "Debug.h"
+#include "meta/Meta.h"
 
 namespace Playlist
 {
@@ -85,13 +86,13 @@ ProxyBase::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, i
 void
 ProxyBase::filterUpdated()
 {
-    ( ( ProxyBase *)m_belowModel )->filterUpdated();
+    ( dynamic_cast< ProxyBase * >( m_belowModel ) )->filterUpdated();
 }
 
 int
 ProxyBase::find( const QString &searchTerm, int searchFields )
 {
-    return rowFromSource( m_belowModel->find( searchTerm, searchFields ) );
+    return rowFromSource( ( dynamic_cast< ProxyBase * >( m_belowModel ) )->find( searchTerm, searchFields ) );
 }
 
 int
@@ -99,14 +100,14 @@ ProxyBase::findNext( const QString &searchTerm, int selectedRow, int searchField
 {
     //FIXME: selectedRow might need to be adjusted through rowToSource now that SortProxy
     //       changes the order of rows.     -- Téo 28/6/2009
-    return rowFromSource( m_belowModel->findNext( searchTerm, selectedRow, searchFields ) );
+    return rowFromSource( ( dynamic_cast< ProxyBase * >( m_belowModel ) )->findNext( searchTerm, selectedRow, searchFields ) );
 }
 
 int
 ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchFields )
 {
     //FIXME: see findNext().
-    return rowFromSource( m_belowModel->findPrevious( searchTerm, selectedRow, searchFields ) );
+    return rowFromSource( ( dynamic_cast< ProxyBase * >( m_belowModel ) )->findPrevious( searchTerm, selectedRow, searchFields ) );
 }
 
 Qt::ItemFlags
@@ -148,6 +149,12 @@ ProxyBase::setActiveRow( int row )
     m_belowModel->setActiveRow( rowToSource( row ) );
 }
 
+void
+ProxyBase::showOnlyMatches( bool onlyMatches )
+{
+    ( dynamic_cast< ProxyBase * >( m_belowModel) )->showOnlyMatches( onlyMatches );
+}
+
 Qt::DropActions
 ProxyBase::supportedDropActions() const
 {
@@ -165,6 +172,52 @@ ProxyBase::trackAt(int row) const
 {
     return m_belowModel->trackAt( rowToSource( row ) );
 }
+
+//protected:
+
+bool
+ProxyBase::rowMatch( int row, const QString &searchTerm, int searchFields ) const
+{
+    QModelIndex index = ( dynamic_cast< QAbstractItemModel * >( m_belowModel ) )->index( row, 0 );
+    Meta::TrackPtr track = m_belowModel->data( index, TrackRole ).value< Meta::TrackPtr >();
+    if ( searchFields & MatchTrack &&
+        track->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+        return true;
+
+    if ( searchFields & MatchArtist &&
+         track->artist() &&
+         track->artist()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+         return true;
+
+    if ( searchFields & MatchAlbum &&
+         track->album() &&
+         track->album()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+         return true;
+
+    if ( searchFields & MatchGenre &&
+         track->genre() &&
+         track->genre()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+        return true;
+
+    if ( searchFields & MatchComposer &&
+         track->composer() &&
+         track->composer()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+        return true;
+
+    if ( searchFields & MatchYear &&
+         track->year() &&
+         track->year()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
+       )
+        return true;
+
+    return false;
+}
+
 
 }   //namespace Playlist
 

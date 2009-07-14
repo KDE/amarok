@@ -14,15 +14,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_ABSTRACTMODEL_H
-#define AMAROK_ABSTRACTMODEL_H
+#ifndef AMAROK_PLAYLISTABSTRACTMODEL_H
+#define AMAROK_PLAYLISTABSTRACTMODEL_H
 
 #include "meta/Meta.h"
+#include "playlist/PlaylistDefines.h"
 
 #include <QAbstractItemModel>
 
 namespace Playlist
 {
+
+enum DataRoles
+{
+    TrackRole = Qt::UserRole,
+    StateRole,
+    UniqueIdRole,
+    ActiveTrackRole,
+    QueuePositionRole,
+    InCollectionRole,
+    MultiSourceRole,
+    StopAfterTrackRole
+};
 
 /**
  * An abstract base class that defines a common interface of any playlist model.
@@ -38,8 +51,6 @@ public:
      * @return The currently active (playing) row in proxy terms.
      */
     virtual int activeRow() const = 0;
-
-    virtual int columnCount( const QModelIndex& ) const = 0;
 
     /**
      * Clears the current search term.
@@ -57,6 +68,13 @@ public:
      * @return The curent search term.
      */
     virtual QString currentSearchTerm() = 0;
+
+   /**
+     * Returns the number of columns exposed by the current model.
+     * @param parent the parent of the columns to count.
+     * @return the number of columns.
+     */
+    virtual int columnCount( const QModelIndex& ) const = 0;
 
     /**
      * Forwards the request down the proxy stack and gets the data at an index.
@@ -76,43 +94,6 @@ public:
      * @return true if the data and action can be handled by the model; otherwise false.
      */
     virtual bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) = 0;
-
-    /**
-     * Forwards a search down through the stack of ProxyModels.
-     * Find the first track in the playlist that matches the search term in one of the
-     * specified search fields. Playlist::Model::find() emits found() or notFound() depending on
-     * whether a match is found.
-     * @param searchTerm The term to search for.
-     * @param searchFields A bitmask specifying the fields to look in.
-     * @return The row of the first found match, -1 if no match is found.
-     */
-    virtual int find( const QString &searchTerm, int searchFields ) = 0;
-
-    /**
-     * Forwards through the stack of ProxyModels a top to bottom search for the next item.
-     * Find the first track below a given row that matches the search term in one of the
-     * specified search fields. Playlist::Model::findNext() emits found() or notFound() depending on
-     * whether a match is found. If no row is found below the current row, the function wraps
-     * around and returns the first match. If no match is found at all, -1 is returned.
-     * @param searchTerm The term to search for.
-     * @param selectedRow The offset row.
-     * @param searchFields A bitmask specifying the fields to look in.
-     * @return The row of the first found match below the offset, -1 if no match is found.
-     */
-    virtual int findNext( const QString &searchTerm, int selectedRow, int searchFields ) = 0;
-
-    /**
-     * Forwards through the stack of ProxyModels a bottom to top search for the next item.
-     * Find the first track above a given row that matches the search term in one of the
-     * specified search fields. Playlist::Model::findPrevious() emits found() or notFound() depending on
-     * whether a match is found. If no row is found above the current row, the function wraps
-     * around and returns the last match. If no match is found at all, -1 is returned.
-     * @param searchTerm The term to search for.
-     * @param selectedRow The offset row.
-     * @param searchFields A bitmask specifying the fields to look in.
-     * @return The row of the first found match above the offset, -1 if no match is found.
-     */
-    virtual int findPrevious( const QString &searchTerm, int selectedRow, int searchFields ) = 0;
 
     /**
      * Returns the item flags for the given index.
@@ -182,4 +163,4 @@ public:
 
 }   //namespace Playlist
 
-#endif  //AMAROK_ABSTRACTMODEL_H
+#endif  //AMAROK_PLAYLISTABSTRACTMODEL_H

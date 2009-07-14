@@ -47,10 +47,10 @@ Playlist::GroupingProxy::destroy()
 }
 
 Playlist::GroupingProxy::GroupingProxy()
-    : ProxyBase( Playlist::SortProxy::instance() )
+    : ProxyBase( Playlist::SearchProxy::instance() )
 {
-    m_belowModel = SortProxy::instance();
-    setSourceModel( dynamic_cast< Playlist::SortProxy * >( m_belowModel ) );
+    m_belowModel = SearchProxy::instance();
+    setSourceModel( dynamic_cast< Playlist::SearchProxy * >( m_belowModel ) );
     // signal proxies
     connect( sourceModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
     connect( sourceModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
