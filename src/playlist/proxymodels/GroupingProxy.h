@@ -3,7 +3,7 @@
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 To Mrnjavac <teo.mrnjavac@gmail.com>                              *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

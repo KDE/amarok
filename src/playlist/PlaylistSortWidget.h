@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -28,7 +28,7 @@ namespace Playlist
 {
 /**
  * A ribbon interface that allows the user to define multiple sorting levels for the playlist.
- * @author To Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
 class SortWidget : public QWidget
 {

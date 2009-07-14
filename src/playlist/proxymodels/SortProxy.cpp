@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
- * Copyright (c) 2009 To Mrnjavac <teo.mrnjavac@gmail.com>                              *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,7 +22,7 @@
 
 namespace Playlist
 {
-//To 7/5/2009: Attention coding style police guys: this is very WiP and if you see notes
+//Téo 7/5/2009: Attention coding style police guys: this is very WiP and if you see notes
 //to self and debug spam here pretty please let it be until I remove it.
 
 SortProxy* SortProxy::s_instance = 0;
@@ -78,7 +78,7 @@ SortProxy::updateSortMap( SortScheme scheme)
 
 // Pass-through public methods, basically identical to those in Playlist::FilterProxy, that
 // pretty much just forward stuff through the stack of proxies start here.
-// Please keep them sorted alphabetically.  -- To
+// Please keep them sorted alphabetically.  -- Téo
 
 int
 SortProxy::rowFromSource( int row ) const

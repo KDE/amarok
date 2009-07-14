@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -29,7 +29,7 @@ namespace Playlist
  * The comparison is operated on multiple levels of a Playlist::SortScheme.
  * @warning This functor is specific for this particular problem and wouldn't probably do
  * any good for sorting anything else than tracks.
- * @author To Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
 struct multilevelLessThan
 {

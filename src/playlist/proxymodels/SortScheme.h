@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -28,7 +28,7 @@ namespace Playlist
 /**
  * A sorting level for multilevel playlist sorting. Instances of this class are aggregated
  * by Playlist::SortScheme to describe a way to sort the playlist.
- * @author To Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
 class SortLevel     //data structure for each sorting level, ends up in a qstack or vector or list or map or w/e
 {
@@ -48,7 +48,7 @@ class SortLevel     //data structure for each sorting level, ends up in a qstack
 /**
  * A sorting scheme for multilevel playlist sorting. This class wraps around a QStack to
  * define a way to sort the playlist and is used by Playlist::SortProxy.
- * @author To Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
 class SortScheme
 {

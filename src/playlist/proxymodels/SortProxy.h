@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -28,7 +28,7 @@ namespace Playlist
 /**
  * A ProxyModel that implements multilevel sorting for the Playlist.
  * This proxy should sit above the FilterProxy and below the GroupingProxy.
- * @author To Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
 class SortProxy : public ProxyBase
 {
