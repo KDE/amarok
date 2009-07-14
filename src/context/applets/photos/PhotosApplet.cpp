@@ -117,7 +117,6 @@ PhotosApplet::engineNewTrackPlaying( )
 {
  //   DEBUG_BLOCK
     m_stoppedstate = false;
-    setCollapseOff();
     dataEngine( "amarok-photos" )->query( QString( "photos" ) );
 }
 
