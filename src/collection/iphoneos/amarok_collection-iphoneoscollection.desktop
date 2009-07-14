@@ -1,7 +1,15 @@
 [Desktop Entry]
 Type=Service
 Name=iPhone OS 3.0 Read-only Collection
+Name[pt]=Colecção Apenas para Leitura do iPhone OS 3.0
+Name[pt_BR]=Colecção Apenas para Leitura do iPhone OS 3.0
+Name[sv]=iPhone OS 3.0 skrivskyddad samling
+Name[x-test]=xxiPhone OS 3.0 Read-only Collectionxx
 Comment=iPhone OS 3.0 Read-only collection plugin for Amarok
+Comment[pt]=Um 'plugin' da colecção, apenas para leitura, do iPhone OS 3.0 para o Amarok
+Comment[pt_BR]=Um 'plugin' da colecção, apenas para leitura, do iPhone OS 3.0 para o Amarok
+Comment[sv]=Insticksprogram med iPhone OS 3.0 skrivskyddad samling för Amarok
+Comment[x-test]=xxiPhone OS 3.0 Read-only collection plugin for Amarokxx
 
 ServiceTypes=Amarok/Plugin
 
