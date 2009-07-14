@@ -24,7 +24,6 @@
 
 #include "proxymodels/AbstractModel.h"
 #include "Amarok.h"
-#include "PlaylistItem.h"
 #include "UndoCommands.h"
 #include "meta/Meta.h"
 

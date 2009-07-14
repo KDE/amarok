@@ -153,6 +153,13 @@ public:
     virtual Qt::ItemFlags flags( const QModelIndex& index ) const;
 
     /**
+     * Returns the unique 64-bit id for the given row in the current model.
+     * @param row the row.
+     * @return the unique id, or 0 if the row does not exist.
+     */
+    virtual quint64 idAt( const int row ) const;
+
+    /**
      * Returns an object that contains serialized items of data corresponding to the list
      * of indexes specified.
      * @param indexes a list of indexes.
@@ -182,6 +189,13 @@ public:
     virtual bool rowExists( int row ) const;
 
     /**
+     * Returns the row in the current model for a given unique 64-bit id.
+     * @param id the id.
+     * @return the row, -1 if the id is invalid.
+     */
+    virtual int rowForId( const quint64 id ) const;
+
+    /**
      * Sets the currently active (playing) row, translated for the current proxy.
      * @param row the row to be set as active.
      */
@@ -192,6 +206,20 @@ public:
      * @param onlyMatches true if one wants to use SearchProxy, false otherwise.
      */
     virtual void showOnlyMatches( bool onlyMatches );
+
+    /**
+     * Get the state of a track by its id.
+     * @param id The id of the track.
+     * @return The state of the track.
+     */
+    virtual Item::State stateOfId( quint64 id ) const;
+
+    /**
+     * Get the sate of the track at given row in the proxy model.
+     * @param row The row in proxy terms.
+     * @return The state of the track at the row.
+     */
+    virtual Item::State stateOfRow( int row ) const;
 
     /**
      * Returns the drop actions supported by this proxy.

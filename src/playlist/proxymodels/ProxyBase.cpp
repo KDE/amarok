@@ -118,6 +118,14 @@ ProxyBase::flags( const QModelIndex &index ) const
     return m_belowModel->flags( index );
 }
 
+quint64
+ProxyBase::idAt( const int row ) const
+{
+    if( rowExists( row ) )
+        return m_belowModel->idAt( rowToSource( row ) );
+    return 0;
+}
+
 QMimeData *
 ProxyBase::mimeData( const QModelIndexList &indexes ) const
 {
@@ -143,6 +151,12 @@ ProxyBase::rowExists( int row ) const
     return index.isValid();
 }
 
+int
+ProxyBase::rowForId( const quint64 id ) const
+{
+    return rowFromSource( m_belowModel->rowForId( id ) );
+}
+
 void
 ProxyBase::setActiveRow( int row )
 {
@@ -153,6 +167,18 @@ void
 ProxyBase::showOnlyMatches( bool onlyMatches )
 {
     ( dynamic_cast< ProxyBase * >( m_belowModel) )->showOnlyMatches( onlyMatches );
+}
+
+Item::State
+ProxyBase::stateOfId( quint64 id ) const
+{
+    return m_belowModel->stateOfId( id );
+}
+
+Item::State
+ProxyBase::stateOfRow( int row ) const
+{
+    return m_belowModel->stateOfRow( rowToSource( row ) );
 }
 
 Qt::DropActions

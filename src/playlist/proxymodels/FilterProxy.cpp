@@ -61,13 +61,6 @@ bool FilterProxy::filterAcceptsRow( int source_row, const QModelIndex & source_p
     return match;
 }
 
-quint64 FilterProxy::idAt( const int row ) const
-{
-    QModelIndex index = this->index( row, 0 );
-    QModelIndex sourceIndex = mapToSource( index );
-    return Model::instance()->idAt( sourceIndex.row() );
-}
-
 int
 FilterProxy::rowCount(const QModelIndex& parent) const
 {
@@ -151,7 +144,7 @@ void FilterProxy::slotInsertedIds( const QList< quint64 > &ids )
     QList< quint64 > proxyIds;
     foreach( quint64 id, ids )
     {
-        if ( matchesCurrentSearchTerm( Model::instance()->rowForId( id ) ) )
+        if ( matchesCurrentSearchTerm( m_belowModel->rowForId( id ) ) )
             proxyIds << id;
     }
 
@@ -163,7 +156,7 @@ void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 {
     QList<quint64> proxyIds;
     foreach( quint64 id, ids ) {
-        const int row = Model::instance()->rowForId( id );
+        const int row = m_belowModel->rowForId( id );
         if ( row == -1 || matchesCurrentSearchTerm( row ) ) {
             proxyIds << id;
         }
@@ -171,16 +164,6 @@ void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 
     if ( proxyIds.size() > 0 )
         emit removedIds( proxyIds );
-}
-
-Item::State FilterProxy::stateOfRow( int row ) const
-{
-    return Model::instance()->stateOfRow( rowToSource( row ) );
-}
-
-Item::State FilterProxy::stateOfId( quint64 id ) const
-{
-    return Model::instance()->stateOfId( id );
 }
 
 void

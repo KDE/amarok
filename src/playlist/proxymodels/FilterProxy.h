@@ -43,28 +43,7 @@ public:
      */
     static FilterProxy* instance();
 
-    /**
-     * Find the id  of the track at a given row in the proxy model.
-     * @param row The row in proxy terms.
-     * @return The id of the row.
-     */
-    quint64 idAt( const int row ) const;
-
     int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-
-    /**
-     * Get the sate of the track at given row in the proxy model.
-     * @param row The row in proxy terms.
-     * @return The state of the track at the row.
-     */
-    Item::State stateOfRow( int row ) const;
-
-    /**
-     * Get the state of a track by its id.
-     * @param id The id of the track.
-     * @return The state of the track.
-     */
-    Item::State stateOfId( quint64 id ) const;
 
     /**
      * Find the first track in the playlist that matches the search term in one of the
