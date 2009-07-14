@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007-2009 Leo Franchi <lfranchi@gmail.com>                             *
  * Copyright (c) 2008 William Viana Soares <vianasw@gmail.com>                          *
+ * Copyright (c) 2009 simon.esneault <simon.esneault@gmail.com>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
