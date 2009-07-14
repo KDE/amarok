@@ -74,7 +74,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Simon Esneault"), ki18n(( "Photos & Videos applets, Context View" )), "simon.esneault@gmail.com" );
     aboutData.addCredit( ki18n("Soren Harward"), ki18n(( "Developer" )), "stharward@gmail.com" );
     aboutData.addCredit( ki18n("Sven Krohlas"), ki18n(( "Rokymoter (sven423)" )), "sven@asbest-online.de" );
-    aboutData.addCredit( ki18n("Teo Mrnjavac"), ki18n(( "Mass tagging support" )), "teo.mrnjavac@gmail.com" );
+    aboutData.addCredit( ki18n("Téo Mrnjavac"), ki18n(( "Developer" )), "teo.mrnjavac@gmail.com" );
     aboutData.addCredit( ki18n("William Viana Soares"), ki18n(( "Context view" )), "vianasw@gmail.com" );
     aboutData.addCredit( ki18n("Former contributors"), ki18n(( "People listed below have contributed to Amarok in the past. Thank you!" )), "" );
     aboutData.addCredit( ki18n("Adam Pigg"), ki18n(( "Analyzers, patches, shoutcast" )), "adam@piggz.co.uk" );
