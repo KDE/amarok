@@ -19,8 +19,9 @@ VERSION 2.2-beta1
       tracks directly to the local (or any other writable) collection. 
     * Sortable playlist.
     * Improved media device support.
-    * Video applet to show videos from YouTube and other video sites.
-    * Photo applet to show images from Flickr.
+    * Video applet to show videos from YouTube, Dailymotion and Vimeo.
+      The video can be appended to the playlist, and rendered within the applet.
+    * Photo applet to show images from Flickr, with customizable animations.
     * Customizable user interface using dock widgets.
     * Support for external MySQL database.
     * GHNS integration for downloading and installing Context applets.
@@ -34,7 +35,9 @@ VERSION 2.2-beta1
     * The OSD registers itself as a notification window type on relevant
       platforms. Patch thanks to Danny Baumann <dannybaumann@web.de>.
       (BR 194517)
-    * Improvements to the Wikipedia applet.
+    * Improvements to the Wikipedia applet. History, language settings
+      and more.
+    * Improvements to the Current applet. Text slides on mouse hover.
     * New navigation style in the browser sidebar.
     * Improvements to the Albums applet. Show individual track times and
       highlight currently playing artist within compilation albums
