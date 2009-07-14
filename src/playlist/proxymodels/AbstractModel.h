@@ -26,18 +26,6 @@
 namespace Playlist
 {
 
-enum DataRoles
-{
-    TrackRole = Qt::UserRole,
-    StateRole,
-    UniqueIdRole,
-    ActiveTrackRole,
-    QueuePositionRole,
-    InCollectionRole,
-    MultiSourceRole,
-    StopAfterTrackRole
-};
-
 /**
  * An abstract base class that defines a common interface of any playlist model.
  * Members declared here must be implemented by Playlist::Model and all proxies.

@@ -175,6 +175,17 @@ enum SearchFields
     MatchYear = 32
 };
 
+enum DataRoles
+{
+    TrackRole = Qt::UserRole,
+    StateRole,
+    UniqueIdRole,
+    ActiveTrackRole,
+    QueuePositionRole,
+    InCollectionRole,
+    MultiSourceRole,
+    StopAfterTrackRole
+};
 
 }
 
