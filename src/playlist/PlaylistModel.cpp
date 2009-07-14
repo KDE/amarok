@@ -37,7 +37,6 @@
 #include "UndoCommands.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h" // used in constructor
-#include "proxymodels/GroupingProxy.h"
 
 #include <KGlobal>
 #include <KUrl>
@@ -272,11 +271,11 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case GroupLength:
             {
-                return Meta::secToPrettyTime( GroupingProxy::instance()->lengthOfGroup( row ) );
+                return Meta::secToPrettyTime( 0 );
             }
             case GroupTracks:
             {
-                return i18np ( "1 track", "%1 tracks", GroupingProxy::instance()->tracksInGroup( row ) );
+                return QString();
             }
             case LastPlayed:
             {

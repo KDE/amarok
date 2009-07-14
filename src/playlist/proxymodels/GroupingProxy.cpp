@@ -25,7 +25,7 @@
 #include "GroupingProxy.h"
 
 #include "Debug.h"
-#include "meta/Meta.h"
+#include "meta/MetaUtility.h"
 
 #include <QVariant>
 
@@ -101,21 +101,37 @@ Playlist::GroupingProxy::mapFromSource( const QModelIndex& i ) const
 QVariant
 Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
 {
-    if ( !index.isValid() )
+    if( !index.isValid() )
         return QVariant();
 
     int row = index.row();
 
-    if ( role == Playlist::GroupRole )
+    if( role == Playlist::GroupRole )
         return m_rowGroupMode.at( row );
 
-    else if ( role == Playlist::GroupedTracksRole )
+    else if( role == Playlist::GroupedTracksRole )
         return groupRowCount( row );
 
-    else if ( role == Playlist::GroupedAlternateRole )
+    else if( role == Playlist::GroupedAlternateRole )
         return ( row % 2 == 1 );
-
-    return m_belowModel->data( index, role );
+    else if( role == Qt::DisplayRole || role == Qt::ToolTipRole )
+    {
+        switch( index.column() )
+        {
+            case GroupLength:
+            {
+                return Meta::secToPrettyTime( lengthOfGroup( row ) );
+            }
+            case GroupTracks:
+            {
+                return i18np ( "1 track", "%1 tracks", tracksInGroup( row ) );
+            }
+            default:
+                return m_belowModel->data( index, role );
+        }
+    }
+    else
+        return m_belowModel->data( index, role );
 }
 
 void
@@ -262,24 +278,11 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
 
 int Playlist::GroupingProxy::tracksInGroup( int row ) const
 {
-    //unfortunately we need to map this to row from source as it will
-    //otherwise mess up ( and crash ) when a filter is applied
-    //FIXME: this needs to talk to SortProxy only as currently is fails
-    //    with a sorted playlist.   --Téo 17/6/2009
-
-    row = SortProxy::instance()->rowFromSource( FilterProxy::instance()->rowFromSource( row ) );
-
     return ( lastInGroup( row ) - firstInGroup( row ) ) + 1;
 }
 
 int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 {
-    //unfortunately we need to map this to row from source as it will
-    //otherwise mess up ( and crash ) when a filter is applied
-    //FIXME: this needs to talk to SortProxy only as currently is fails
-    //    with a sorted playlist.   --Téo 17/6/2009
-    row = SortProxy::instance()->rowFromSource( FilterProxy::instance()->rowFromSource( row ) );
-
     int totalLenght = 0;
     for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ )
     {
