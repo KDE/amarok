@@ -97,7 +97,7 @@ void
 PhotosEngine::message( const ContextState& state )
 {
     if ( state == Current && m_requested )
-        update();
+        update();        
 }
 
 void 
@@ -163,7 +163,7 @@ void PhotosEngine::resultFlickr( KJob* job )
     DEBUG_BLOCK
     if ( job->error() != KJob::NoError && job == m_jobFlickr ) // It's the correct job but it errored out
     {
-        setData( "photos", "message", i18n( "Unable to retrieve Flickr : %1", job->errorString() ) );
+        setData( "photos", "message", i18n( "Unable to retrieve from Flickr.com ") );
         debug() << "Unable to retrieve Flickr information: " << job->errorString();
         m_jobFlickr = 0; // clear job
         m_nbFlickr = 0; //say that we didn't fetch any youtube songs (which is true !)
@@ -246,7 +246,7 @@ void PhotosEngine::resultFinalize()
     {
         DEBUG_BLOCK
         debug() << "No Photos found";
-        setData( "photos", "message", i18n( "No photos found for this artist ..." ) );
+        setData( "photos", "message", i18n( "No information found ..." ) );
         return;
     }
 

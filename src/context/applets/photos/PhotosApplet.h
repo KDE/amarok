@@ -21,11 +21,13 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
+#include "EngineObserver.h"
 
 #include "../../engines/photos/PhotosInfo.h"
 
 #include <ui_photosSettings.h>
 
+class TextScrollingWidget;
 class KConfigDialog;
 class PhotosScrollWidget;
 class QGraphicsSimpleTextItem;
@@ -36,7 +38,7 @@ namespace Plasma
 
  /** PhotosApplet will display photos from internet, relatively to the current playing song
    */
-class PhotosApplet : public Context::Applet
+class PhotosApplet : public Context::Applet, public EngineObserver
 {
         Q_OBJECT
 
@@ -49,6 +51,10 @@ class PhotosApplet : public Context::Applet
 
         void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
+        // inherited from EngineObserver
+        virtual void engineNewTrackPlaying();
+        virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
+        
     public slots:
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );
@@ -59,13 +65,13 @@ class PhotosApplet : public Context::Applet
         
     private:
         Plasma::IconWidget * addAction( QAction *action );
-        // The two big container, only one who need a resize
-        QGraphicsSimpleTextItem *m_headerText;
+        TextScrollingWidget     *m_headerText;
         PhotosScrollWidget      *m_widget;
 
-        int m_height;
-
-        int m_nbPhotos;
+        int   m_height;
+        int   m_nbPhotos;
+        bool  m_stoppedstate;
+        
         QString m_Animation;
         QString m_KeyWords;
 

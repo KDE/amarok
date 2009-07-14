@@ -21,6 +21,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "context/ContextView.h"
+#include "context/widgets/TextScrollingWidget.h"
 
 // KDE
 #include <KAction>
@@ -42,6 +43,7 @@
 
 PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
+    , m_stoppedstate( false )
     , m_settingsIcon( 0 )
 {
     DEBUG_BLOCK
@@ -60,11 +62,14 @@ PhotosApplet::init()
     // Create label
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerText = new QGraphicsSimpleTextItem( this );
+    m_headerText = new TextScrollingWidget( this );
     m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Photos" ) );
 
+    // Set the collapse size
+    setCollapseHeight( m_headerText->boundingRect().height() + 3 * standardPadding() );
+    
     // Icon
     QAction* settingsAction = new QAction( i18n( "Settings" ), this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
@@ -89,8 +94,8 @@ PhotosApplet::init()
     if ( m_Animation == i18n( "Interactive" ) )
         m_widget->setMode( 1 );
     
-//    if ( m_Animation == i18n( "Fading" ) )
-  //      m_widget->setMode( 2 );
+    if ( m_Animation == i18n( "Fading" ) )
+        m_widget->setMode( 2 );
   
     constraintsEvent();
 
@@ -98,7 +103,6 @@ PhotosApplet::init()
     connect( dataEngine( "amarok-photos" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
 
-             
     dataEngine( "amarok-photos" )->query( QString( "photos:nbphotos:" ) + QString().setNum( m_nbPhotos ) );
     dataEngine( "amarok-photos" )->query( QString( "photos:keywords:" ) + m_KeyWords );
 }
@@ -108,13 +112,39 @@ PhotosApplet::~PhotosApplet()
     DEBUG_BLOCK
 }
 
+void
+PhotosApplet::engineNewTrackPlaying( )
+{
+ //   DEBUG_BLOCK
+    m_stoppedstate = false;
+    setCollapseOff();
+    dataEngine( "amarok-photos" )->query( QString( "photos" ) );
+}
+
+void
+PhotosApplet::enginePlaybackEnded( int, int, PlaybackEndedReason )
+{
+//    DEBUG_BLOCK
+    m_stoppedstate = true;;
+    m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + i18n( "No track playing" ) );
+    m_widget->clear();
+    m_widget->hide();
+    setBusy( false );
+    setCollapseOn();
+}
+
 void 
 PhotosApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
     prepareGeometryChange();
 
-    m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, standardPadding() + 3 );
+    qreal widmax = boundingRect().width() - 2 * m_settingsIcon->size().width() - 6 * standardPadding();
+    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
+    
+    m_headerText->setScrollingText( m_headerText->text(), rect );
+    m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );
+
     m_widget->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
     m_widget->resize( size().width() - 2 * standardPadding(), size().height() - m_headerText->boundingRect().height() - 2*standardPadding() );
 
@@ -130,8 +160,10 @@ PhotosApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     p->setRenderHint( QPainter::Antialiasing );
     // tint the whole applet
     addGradientToAppletBackground( p );
-    // draw rounded rect around title
-    drawRoundedRectAroundText( p, m_headerText );
+    
+    // draw rounded rect around title (only if not animating )
+    if ( !m_headerText->isAnimating() )
+        drawRoundedRectAroundText( p, m_headerText );
 }
 
 void 
@@ -150,21 +182,43 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     if ( data.empty() )
         return;
 
+    if ( m_stoppedstate )
+    {
+        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + i18n( "No track playing" ) );
+        updateConstraints();
+        update();
+        m_widget->clear();
+        m_widget->hide();
+        setBusy( false );
+        setCollapseOn();
+        return;
+    }
     // if we get a message, show it
     if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
     {
-        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );
+        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + i18n( "Fetching ..." ) );
+        updateConstraints();
+        update();
+        setCollapseOff();
         m_widget->clear();
         m_widget->hide();
         setBusy( true );
     }
     else if ( data.contains( "message" ) )
     {
+        m_headerText->setText( i18n( "Photos" ) + " : " + data[ "message" ].toString() );
+        updateConstraints();
+        update();
         m_widget->hide();
+        setCollapseOn();
         setBusy( false );
     }
     else if ( data.contains( "data" ) )
     {
+        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );
+        updateConstraints();
+        update();
+        setCollapseOff();
         // Send the data to the scrolling widget
         m_widget->setPixmapList( data[ "data" ].value< QList < PhotosInfo * > >() );
         m_widget->show();

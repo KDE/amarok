@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>373</width>
-    <height>133</height>
+    <width>465</width>
+    <height>185</height>
    </rect>
   </property>
   <widget class="QWidget" name="formLayoutWidget">
@@ -15,8 +15,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>389</width>
-     <height>137</height>
+     <width>461</width>
+     <height>181</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -43,6 +43,11 @@
       <item>
        <property name="text">
         <string>Interactive</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Fading</string>
        </property>
       </item>
      </widget>
@@ -98,11 +103,6 @@ For example: band live 1977 </string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KComboBox</class>
-   <extends>QComboBox</extends>
-   <header>kcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>KIntSpinBox</class>
    <extends>QSpinBox</extends>
    <header>knuminput.h</header>
@@ -111,6 +111,11 @@ For example: band live 1977 </string>
    <class>KLineEdit</class>
    <extends>QLineEdit</extends>
    <header>klineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

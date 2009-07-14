@@ -82,12 +82,14 @@ class PhotosScrollWidget : public QGraphicsWidget
         int     m_scrollmax;    // lenght of the whole stack
         int     m_actualpos;    //
         int     m_currentPix;   // index of the current pix
-        int     m_timer;        // time in ms beetween to change
+        int     m_interval;        // time in ms beetween to change
         int     m_mode;         //
         int     m_delta;
         int     m_deltastart;
+        QList < int >               m_timerlist;
         QList < PhotosInfo * >      m_currentlist; // contain the list of the current PhotosItem in the widget
         QList < DragPixmapItem * >  m_pixmaplist;  // contain the list of dragpixmap item
+        QTimer                      *m_timer;       // our magnificiant timer
 };
 
 #endif // PHOTOSSCROLLWIDGET_H
