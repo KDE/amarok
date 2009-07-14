@@ -255,6 +255,28 @@ void PhotosScrollWidget::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
     }
 }
 
+void PhotosScrollWidget::resize(qreal wid, qreal hei)
+{
+
+    switch( m_mode )
+    {
+        case PHOTOS_MODE_FADING:
+        {
+            foreach (DragPixmapItem *item, m_pixmaplist)
+            {
+                if ( size().height() != hei )
+                    item->setPixmap( item->pixmap().scaledToHeight( (int) hei - 4 * m_margin,  Qt::SmoothTransformation ) );
+                if ( size().width() != wid )
+                    item->setPos( ( wid - item->boundingRect().width() ) / 2, 0 );
+            }
+            break;
+        }
+    }
+
+    QGraphicsWidget::resize( wid, hei );
+}
+
+
 void
 PhotosScrollWidget::automaticAnimBegin()
 {

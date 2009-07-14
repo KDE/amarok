@@ -37,7 +37,7 @@ namespace Plasma
 /**
 * \brief A widget to present the photos
 * 3 possible animation :
-*  - Interactive : the scorll is done on mouse hover
+*  - Interactive : the sliding is done on mouse hover
 *  - Automatic : the photos are presented in an infinite loop, always scrolling
 *  - Fading, the photos are presented one by one, fading ...
 * \sa QGraphicsWidget
@@ -63,6 +63,11 @@ class PhotosScrollWidget : public QGraphicsWidget
         void animate( qreal anim );
         void automaticAnimBegin();
         void automaticAnimEnd( int );
+
+       /**
+        * Reimplement resize in order to correctly repositionned the stack of pixmap
+        */
+        virtual void resize( qreal, qreal );
         
     protected:
 
@@ -72,6 +77,9 @@ class PhotosScrollWidget : public QGraphicsWidget
         virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
         virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
         virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
+        
+
+        
  //       virtual void keyPressEvent(QKeyEvent* event);
  //       virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
         
