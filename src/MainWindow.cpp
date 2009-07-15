@@ -48,6 +48,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
+#include "playlist/layouts/LayoutConfigAction.h"
 #include "playlistmanager/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h"
@@ -865,7 +866,12 @@ MainWindow::createMenus()
     // or with it in the pipeline. track playback stops every ~3-4 tracks, and on tracks >5min it
     // stops at about 5:40. while we get this resolved upstream, don't make playing amarok such on osx.
     // so we disable replaygain on osx
+
+
 #ifndef Q_WS_MAC
+
+    Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
+    m_settingsMenu->addAction( layoutConfigAction );
     m_settingsMenu->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
     m_settingsMenu->addSeparator();
 #endif

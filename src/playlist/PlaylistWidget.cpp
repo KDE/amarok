@@ -146,15 +146,6 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_save" ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
-        plBar->addSeparator();
-
-        Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
-        plBar->addAction( layoutConfigAction );
-        QToolButton *tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( layoutConfigAction ) );
-        if( tbutton )
-            tbutton->setPopupMode( QToolButton::InstantPopup );
-
-        plBar->addAction( new KToolBarSpacerAction( this ) );
 
     } //END Playlist Toolbar
 
