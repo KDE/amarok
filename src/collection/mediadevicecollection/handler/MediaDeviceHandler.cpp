@@ -53,10 +53,10 @@ MetaHandlerCapability::createCapabilityInterface( Handler::Capability::Type type
 MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 : QObject( parent )
 , m_memColl( qobject_cast<MediaDeviceCollection*>(parent) )
+, m_provider( 0 )
 , m_pc( 0 )
 , m_rc( 0 )
 , m_wc( 0 )
-, m_provider( 0 )
 {
     DEBUG_BLOCK
 
