@@ -340,7 +340,7 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
     debug() << "URL: " << url.url();
     /// TODO: commented out since audiocd needs porting to new devicelib framework, should not affect other urls
-/*
+
     if ( url.url().startsWith( "audiocd:/" ) )
     {
         //disconnect this signal for now or it will cause a loop that will cause a mutex lockup
@@ -361,8 +361,10 @@ EngineController::playUrl( const KUrl &url, uint offset )
         //In the case of cds for which we dont have any id, any "unknown" cds will
         //be considdered equal.
 
-        if ( MediaDeviceMonitor::instance()->currentCdId() != discId )
-            return;
+
+        //FIXME:
+        //if ( MediaDeviceMonitor::instance()->currentCdId() != discId )
+        //    return;
 
 
         int trackNumber = parts.at( 1 ).toInt();
@@ -378,11 +380,10 @@ EngineController::playUrl( const KUrl &url, uint offset )
         connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
     }
-*/
-//    else
-//    {
+    else
+    {
         m_media->setCurrentSource( url );
-//    }
+    }
 
     m_nextTrack.clear();
     m_nextUrl.clear();
