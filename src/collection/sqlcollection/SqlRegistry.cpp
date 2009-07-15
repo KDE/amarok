@@ -150,7 +150,6 @@ bool
 SqlRegistry::checkUidExists( const QString &uid )
 { 
     QMutexLocker locker( &m_uidMutex );
-    debug() << "m_uidMap contents: " << m_uidMap.keys();
     if( m_uidMap.contains( uid ) )
         return true;
     return false;
