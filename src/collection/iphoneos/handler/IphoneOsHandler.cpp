@@ -149,14 +149,16 @@ MediaDeviceTrackPtr &
 IphoneOsHandler::metaForTrack( const MediaDeviceTrackPtr &track)
 {
     QString pid = m_trackhash[track];
-    return m_currentMeta;
+    return metaForPid(pid);
 }
 
 MediaDeviceTrackPtr &
 IphoneOsHandler::metaForPid(const QString &pid)
 {
-    if(pid != m_currentPid)
+    if(pid == m_currentPid)
         return m_currentMeta;
+
+    m_currentPid = pid;
 
     MediaDeviceTrackPtr &meta = m_currentMeta;
 
