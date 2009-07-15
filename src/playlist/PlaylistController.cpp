@@ -54,10 +54,10 @@ Playlist::Controller::destroy()
 
 Playlist::Controller::Controller( QObject* parent )
         : QObject( parent )
-        , m_model( Model::instance() )
         , m_undoStack( new QUndoStack( this ) )
 {
     s_instance = this;
+    m_topmostModel = Playlist::GroupingProxy::instance();
 
     m_undoStack->setUndoLimit( 20 );
     connect( m_undoStack, SIGNAL( canRedoChanged( bool ) ), this, SIGNAL( canRedoChanged( bool ) ) );
@@ -91,7 +91,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         while ( i.hasNext() )
         {
             i.next();
-            if ( m_model->containsTrack( i.value() ) )
+            if ( m_topmostModel->containsTrack( i.value() ) )
                 i.remove();
         }
     }
@@ -107,9 +107,9 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     }
     else if ( options & Queue )
     {
-        firstItemAdded = m_model->activeRow() + 1;
+        firstItemAdded = m_topmostModel->activeRow() + 1;
         // We want to add the newly queued items after any items which are already queued
-        while( m_model->stateOfRow( firstItemAdded ) & Item::Queued )
+        while( m_topmostModel->stateOfRow( firstItemAdded ) & Item::Queued )
             firstItemAdded++;
 
         insertionHelper( firstItemAdded, list );
@@ -122,7 +122,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     }
     else
     {
-        firstItemAdded = m_model->rowCount();
+        firstItemAdded = m_topmostModel->rowCount();
         insertionHelper( firstItemAdded, list );
     }
 
@@ -274,8 +274,8 @@ Playlist::Controller::removeRows( QList<int>& rows )
     foreach( int r, rows )
     {
         debug() << "Removing row " << r;
-        if (( r >= 0 ) && ( r < m_model->rowCount() ) )
-            cmds.append( RemoveCmd( m_model->trackAt( r ), r ) );
+        if (( r >= 0 ) && ( r < m_topmostModel->rowCount() ) )
+            cmds.append( RemoveCmd( m_topmostModel->trackAt( r ), r ) );
         else
             warning() << "received command to remove non-existent row" << r;
     }
@@ -346,7 +346,7 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     if ( from.size() <= 0 )
         return to;
 
-    to = ( to == qBound( 0, to, m_model->rowCount() ) ) ? to : m_model->rowCount();
+    to = ( to == qBound( 0, to, m_topmostModel->rowCount() ) ) ? to : m_topmostModel->rowCount();
 
     qSort( from.begin(), from.end() );
     from.erase( std::unique( from.begin(), from.end() ), from.end() );
@@ -357,7 +357,7 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     QList<int> target;
     for ( int i = min; i <= max; i++ )
     {
-        if ( i >=  m_model->rowCount() )
+        if ( i >=  m_topmostModel->rowCount() )
             break; // we are likely moving below the last element, to an index that really does not exist, and thus should not be moved up.
         source.append( i );
         target.append( i );
@@ -410,7 +410,7 @@ Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
     for ( int i = 0; i < from.size(); i++ )
     {
         debug() << "moving rows:" << from.at( i ) << to.at( i );
-        if ( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_model->rowCount() ) )
+        if ( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_topmostModel->rowCount() ) )
             if ( from.at( i ) != to.at( i ) )
                 cmds.append( MoveCmd( from.at( i ), to.at( i ) ) );
     }

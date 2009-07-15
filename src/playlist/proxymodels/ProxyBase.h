@@ -69,6 +69,13 @@ public:
     virtual void clearSearchTerm();
 
     /**
+     * Reports if the current model exposes a given track.
+     * @param track the track to check for.
+     * @return true if the track is present, otherwise false.
+     */
+    virtual bool containsTrack( const Meta::TrackPtr track ) const;
+
+    /**
      * Get the current search fields bitmask.
      * @return The current search fields.
      */

@@ -24,6 +24,8 @@
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 #include "UndoCommands.h"
+#include "playlist/proxymodels/GroupingProxy.h" //FIXME: this needs to go away
+                                                // in favor of a The:: call.
 
 #include <QObject>
 
@@ -32,7 +34,7 @@ class QUndoStack;
 namespace Playlist
 {
 class Controller;
-class Model;
+class AbstractModel;
 }
 
 namespace The
@@ -106,7 +108,7 @@ private:
 
     void insertionHelper( int row, Meta::TrackList& );
 
-    Model* m_model;
+    AbstractModel* m_topmostModel;
 
     QUndoStack* m_undoStack;
 

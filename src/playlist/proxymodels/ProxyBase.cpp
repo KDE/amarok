@@ -54,6 +54,19 @@ ProxyBase::clearSearchTerm()
     m_belowModel->clearSearchTerm();
 }
 
+bool
+ProxyBase::containsTrack( const Meta::TrackPtr track ) const
+{
+    DEBUG_BLOCK
+    // The complexity of this isn't optimal
+    for( int i = 0; i < rowCount(); i++ )   //O(n^2) at worst
+    {
+        if( trackAt( i ) == track )     //O( n ) - uses .at()
+            return true;
+    }
+    return false;
+}
+
 int
 ProxyBase::currentSearchFields()
 {
