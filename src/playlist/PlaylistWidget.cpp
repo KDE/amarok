@@ -146,6 +146,7 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_save" ) );
 
+        plBar->addAction( new KToolBarSpacerAction( this ) );
     } //END Playlist Toolbar
 
     setFrameShape( QFrame::NoFrame );
