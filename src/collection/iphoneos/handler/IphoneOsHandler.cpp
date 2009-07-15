@@ -36,6 +36,7 @@
 
 #include "IphoneOsCollection.h"
 #include "capabilities/IphoneOsReadCapability.h"
+#include "capabilities/IphoneOsPlaylistCapability.h"
 #include "Debug.h"
 
 #include <KCodecs> // KMD5
@@ -96,6 +97,8 @@ IphoneOsHandler::hasCapabilityInterface( Handler::Capability::Type type ) const
     {
         case Handler::Capability::Readable:
             return true;
+        case Handler::Capability::Playlist:
+            return true;
 
         default:
             return false;
@@ -109,6 +112,8 @@ IphoneOsHandler::createCapabilityInterface( Handler::Capability::Type type )
     {
         case Handler::Capability::Readable:
             return new Handler::IphoneOsReadCapability( this );
+        case Handler::Capability::Playlist:
+            return new Handler::IphoneOsPlaylistCapability( this );
 
         default:
             return 0;
@@ -155,10 +160,10 @@ IphoneOsHandler::metaForTrack( const MediaDeviceTrackPtr &track)
 MediaDeviceTrackPtr &
 IphoneOsHandler::metaForPid(const QString &pid)
 {
-    if(pid == m_currentPid)
+    if(pid == m_cachedPid)
         return m_currentMeta;
 
-    m_currentPid = pid;
+    m_cachedPid = pid;
 
     MediaDeviceTrackPtr &meta = m_currentMeta;
 
@@ -175,7 +180,7 @@ IphoneOsHandler::metaForPid(const QString &pid)
     QStringList libResult = query(m_libraryDb, sql);
     if(libResult.size() < 14)
     {
-        debug() << "track lib" << m_currentPidIndex << m_currentPid << libResult;
+        debug() << "track lib" << pid << libResult;
         while(libResult.size() < 20)
             libResult.push_back(QString("ERROR!!!"));
     }
@@ -216,7 +221,7 @@ IphoneOsHandler::metaForPid(const QString &pid)
     QStringList dynResult = query(m_dynamicDb, sql);
     if(dynResult.size() < 3)
     {
-        debug() << "track dyn" << m_currentPidIndex << dynResult;
+        debug() << "track dyn" << pid << dynResult;
         while(dynResult.size() < 10)
             dynResult.push_back(QString("ERROR!!!"));
     }
@@ -234,7 +239,7 @@ IphoneOsHandler::metaForPid(const QString &pid)
     QStringList locResult = query(m_locationsDb, sql);
     if(locResult.size() < 5)
     {
-        debug() << "track loc" << m_currentPidIndex << locResult;
+        debug() << "track loc" << pid << locResult;
         while(locResult.size() < 10)
             locResult.push_back(QString("ERROR!!!"));
     }
@@ -354,7 +359,8 @@ IphoneOsHandler::query(sqlite3 *db, const QString &statement)
 void
 IphoneOsHandler::prepareToParseTracks()
 {
-    QString statement = "SELECT pid FROM item WHERE is_song='1';";
+    //QString statement = "SELECT pid FROM item WHERE is_song='1';";
+    QString statement = "SELECT pid FROM item;";
     m_pids = query(m_libraryDb, statement);
     m_currentPidIndex = 0;
 
@@ -370,8 +376,7 @@ IphoneOsHandler::isEndOfParseTracksList()
 void
 IphoneOsHandler::prepareToParseNextTrack()
 {
-    m_currentPid = m_pids[m_currentPidIndex];
-    metaForPid(m_currentPid);
+    metaForPid(m_pids[m_currentPidIndex]);
 }
 
 void

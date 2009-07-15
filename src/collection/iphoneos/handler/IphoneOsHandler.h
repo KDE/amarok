@@ -44,6 +44,7 @@ class IphoneOsCollection;
 namespace Handler
 {
     class IphoneOsReadCapability;
+    class IphoneOsPlaylistCapability;
 };
 
 struct sqlite3;
@@ -72,6 +73,7 @@ public:
     virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
 
     friend class Handler::IphoneOsReadCapability;
+    friend class Handler::IphoneOsPlaylistCapability;
 
 public:
     bool isWritable() const { return false; }
@@ -96,7 +98,7 @@ private:
     QStringList       m_pids; // list of all persistent ids
 
     int               m_currentPidIndex;
-    QString           m_currentPid;
+    QString           m_cachedPid;
     MediaDeviceTrackPtr  m_currentMeta;
     QHash<Meta::MediaDeviceTrackPtr, QString> m_trackhash;
 

@@ -27,6 +27,7 @@ set(amarok_collection-iphoneoscollection_PART_SRCS
    support/IphoneOsDeviceInfo.cpp
    handler/IphoneOsHandler.cpp
    handler/capabilities/IphoneOsReadCapability.cpp
+   handler/capabilities/IphoneOsPlaylistCapability.cpp
    )
 
 kde4_add_plugin(amarok_collection-iphoneoscollection WITH_PREFIX

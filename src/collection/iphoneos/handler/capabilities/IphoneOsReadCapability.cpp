@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "IphoneOs::ReadCapability"
+
 #include "IphoneOsReadCapability.h"
 #include "../IphoneOsHandler.h"
 
@@ -23,6 +25,7 @@ namespace Handler
 IphoneOsReadCapability::IphoneOsReadCapability( Meta::IphoneOsHandler *handler )
 : m_handler(handler)
 {
+    DEBUG_BLOCK
 }
 
 bool
