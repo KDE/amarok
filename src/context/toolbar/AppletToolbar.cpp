@@ -79,27 +79,14 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     QPalette p;
     painter->fillRect( boundingRect(), p.brush( QPalette::Window ) ); // remove white edges behind the toolbar
     QColor col = PaletteHandler::highlightColor();
-    qreal radius = 6;
     
-    QPainterPath outline;
-    outline.moveTo( radius, 0);
-    outline.lineTo( boundingRect().width() - radius, 0 );
-    outline.quadTo( boundingRect().width(), 0,
-                    boundingRect().width(), radius );
-    outline.lineTo( boundingRect().width(), boundingRect().height() - radius );
-    outline.quadTo( boundingRect().width(), boundingRect().height(),
-                    boundingRect().width() - radius, boundingRect().height() );
-    outline.lineTo( radius, boundingRect().height() );
-    outline.quadTo( 0, boundingRect().height() ,
-                    0, boundingRect().height() - radius );
-    outline.lineTo( 0, radius );
-    outline.quadTo( 0, 0,
-                    radius, 0 );
+    qreal radius = 6;
 
-    painter->fillPath( outline, col );
+    QPainterPath outline;
+    outline.addRoundedRect( boundingRect(), 6, 6 );
+    painter->fillPath( outline, QBrush( col ) );
 
     painter->restore();
-    
 
 }
 
