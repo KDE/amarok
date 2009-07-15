@@ -492,7 +492,7 @@ ScanResultProcessor::yearInsert( const QString &year )
 void
 ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year )
 {
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
     int a = 0;
     int g = 0;
     int c = 0;
@@ -502,7 +502,7 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     query += QString( "UNION ALL SELECT id, name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
     query += QString( "UNION ALL SELECT id, name FROM years_temp WHERE name = '%1';" ).arg( m_collection->escape( year ) );
     QStringList res = m_collection->query( query );
-    debug() << "Result size = " << res.size();
+//    debug() << "Result size = " << res.size();
     int index = 0;
     QString first;
     QString second;
@@ -510,8 +510,8 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     {
         first = res.at( index++ );
         second = res.at( index++ );
-        debug() << "first = " << first;
-        debug() << "second = " << second;
+//        debug() << "first = " << first;
+//        debug() << "second = " << second;
         if( second == artist )
             a = first.toInt();
         if( second == genre )
@@ -521,33 +521,33 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
         if( second == year )
             y = first.toInt();
     }
-    debug() << "artist = " << a;
-    debug() << "genre = " << g;
-    debug() << "composer = " << c;
-    debug() << "year = " << y;
+//    debug() << "artist = " << a;
+//    debug() << "genre = " << g;
+//    debug() << "composer = " << c;
+//    debug() << "year = " << y;
     if( !a )
     {
-        debug() << "m_artist = before " << m_artists;
+//        debug() << "m_artist = before " << m_artists;
         m_artists.insert( artist, artistInsert( artist ) );
-        debug() << "m_artist after = " << m_artists;
+//        debug() << "m_artist after = " << m_artists;
     }
     if( !g )
     {
-        debug() << "m_genre = before " << m_genre;
+//        debug() << "m_genre = before " << m_genre;
         m_genre.insert( genre, genreInsert( genre ) );
-        debug() << "m_genre after = " << m_genre;
+//        debug() << "m_genre after = " << m_genre;
     }
     if( !c )
     {
-        debug() << "m_composer = before " << m_composer;
+//        debug() << "m_composer = before " << m_composer;
         m_composer.insert( composer, composerInsert( composer ) );
-        debug() << "m_composer after = " << m_composer;
+//        debug() << "m_composer after = " << m_composer;
     }
     if( !y )
     {
-        debug() << "m_year = before " << m_year;
+//        debug() << "m_year = before " << m_year;
         m_year.insert( year, yearInsert( year ) );
-        debug() << "m_year after = " << m_year;
+//        debug() << "m_year after = " << m_year;
     }
 }
 
