@@ -144,6 +144,9 @@ ScanResultProcessor::commit()
     debug() << "Sending changed signal";
     m_collection->sendChangedSignal();
 
+    updateAftPermanentTablesUrlString();
+    updateAftPermanentTablesUidString();
+    
     connect( this, SIGNAL( changedTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ),
              CollectionManager::instance()->primaryCollection(), SLOT( updateTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ) );
 
@@ -672,7 +675,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
             .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ),
                             m_collection->escape( uid ) );
         m_collection->query( query );
-        updateAftPermanentTablesUrlString( url, uid );
+        m_permanentTablesUrlUpdates.insert( uid, url );
         m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( uidres[1].toInt(), uidres[2] ), url ) );
         return uidres[0].toInt();
     }
@@ -682,7 +685,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         QString query = QString( "UPDATE urls_temp SET uniqueid='%1' WHERE deviceid=%2 AND rpath='%3';" )
             .arg( uid, QString::number( deviceId ), m_collection->escape( rpath ) );
         m_collection->query( query );
-        updateAftPermanentTablesUidString( url, uid );
+        m_permanentTablesUidUpdates.insert( url, uid );
         m_changedUids.insert( pathres[3], uid ); 
         return pathres[0].toInt();
     }
@@ -692,58 +695,57 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
 }
 
 void
-ScanResultProcessor::updateAftPermanentTablesUrlString( const QString &url, const QString &uid )
+ScanResultProcessor::updateAftPermanentTablesUrlString()
 {
     DEBUG_BLOCK
-    bool first = true;
-    QString query = QString( "UPDATE" );
-    QString query2;
+    if( m_permanentTablesUrlUpdates.isEmpty() )
+        return;
     foreach( const QString &table, m_aftPermanentTablesUrlString )
     {
-        debug() << "Constructing for table " << table;
-        if( first )
+        QString query = QString( "UPDATE %1 SET url = CASE uniqueid" ).arg( table );
+        QString query2;
+        bool first = true;
+        foreach( const QString key, m_permanentTablesUrlUpdates.keys() )
         {
-            query += QString( " %1" ).arg( table );
-            query2 += QString( "%1.url = '%2'" ).arg( table, m_collection->escape( url ) );
+            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_collection->escape( key ),
+                                                       m_collection->escape( m_permanentTablesUrlUpdates[key] ) );
+            if( first )
+                query2 += QString( "'%1'" ).arg( m_collection->escape( key ) );
+            else
+                query2 += QString( ", '%1'" ).arg( m_collection->escape( key ) );
+            first = false;
         }
-        else
-        {
-            query += QString( " INNER JOIN %1 USING( uniqueid )" ).arg( table );
-            query2 += QString( ", %1.url = '%2'" ).arg( table, m_collection->escape( url ) );
-        }
+        query += QString( " END WHERE uniqueid IN(%1);" ).arg( query2 );
+        
+        m_collection->query( query );
     }
-    query += QString( " SET " );
-    query += query2;
-    query += QString( " WHERE %1.uniqueid = '%2';" ).arg( m_aftPermanentTablesUrlString.first(), m_collection->escape( uid ) );
-    debug() << "query = " << query;
-    m_collection->query( query );
 }
 
 void
-ScanResultProcessor::updateAftPermanentTablesUidString( const QString &url, const QString &uid )
+ScanResultProcessor::updateAftPermanentTablesUidString()
 {
-    bool first = true;
-    QString query = QString( "UPDATE" );
-    QString query2;
+    DEBUG_BLOCK
+    if( m_permanentTablesUidUpdates.isEmpty() )
+        return;
     foreach( const QString &table, m_aftPermanentTablesUrlString )
     {
-        debug() << "Constructing for table " << table;
-        if( first )
+        QString query = QString( "UPDATE %1 SET uniqueid = CASE url" ).arg( table );
+        QString query2;
+        bool first = true;
+        foreach( const QString key, m_permanentTablesUidUpdates.keys() )
         {
-            query += QString( " %1" ).arg( table );
-            query2 += QString( "%1.uniqueid = '%2'" ).arg( table, m_collection->escape( uid ) );
+            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_collection->escape( key ),
+                                                       m_collection->escape( m_permanentTablesUidUpdates[key] ) );
+            if( first )
+                query2 += QString( "'%1'" ).arg( m_collection->escape( key ) );
+            else
+                query2 += QString( ", '%1'" ).arg( m_collection->escape( key ) );
+            first = false;
         }
-        else
-        {
-            query += QString( " INNER JOIN %1 USING( url )" ).arg( table );
-            query2 += QString( ", %1.uniqueid = '%2'" ).arg( table, m_collection->escape( uid ) );
-        }
+        query += QString( " END WHERE url IN(%1);" ).arg( query2 );
+
+        m_collection->query( query );
     }
-    query += QString( " SET " );
-    query += query2;
-    query += QString( " WHERE %1.url = '%2';" ).arg( m_aftPermanentTablesUrlString.first(), m_collection->escape( url ) );
-    debug() << "query = " << query;
-    m_collection->query( query );
 }
 
 int

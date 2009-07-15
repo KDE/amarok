@@ -71,10 +71,10 @@ class ScanResultProcessor : public QObject
         int urlId( const QString &url, const QString &uid );
         int directoryId( const QString &dir );
 
-        void updateAftPermanentTablesUrlId( int urlId, const QString &uid );
-        void updateAftPermanentTablesUidId( int urlId, const QString &uid );
-        void updateAftPermanentTablesUrlString( const QString &url, const QString &uid );
-        void updateAftPermanentTablesUidString( const QString &url, const QString &uid );
+        //void updateAftPermanentTablesUrlId( int urlId, const QString &uid );
+        //void updateAftPermanentTablesUidId( int urlId, const QString &uid );
+        void updateAftPermanentTablesUrlString();
+        void updateAftPermanentTablesUidString();
 
         int checkExistingAlbums( const QString &album );
 
@@ -101,6 +101,8 @@ class ScanResultProcessor : public QObject
         ScanType m_type;
 
         QStringList m_aftPermanentTablesUrlString;
+        QMap<QString, QString> m_permanentTablesUrlUpdates;
+        QMap<QString, QString> m_permanentTablesUidUpdates;
 };
 
 #endif
