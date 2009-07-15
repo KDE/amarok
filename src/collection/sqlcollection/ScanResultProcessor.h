@@ -58,9 +58,14 @@ class ScanResultProcessor : public QObject
         void addTrack( const QVariantMap &trackData, int albumArtistId );
 
         int artistId( const QString &artist );
+        int artistInsert( const QString &artist );
         int genreId( const QString &genre );
+        int genreInsert( const QString &genre );
         int composerId( const QString &composer );
+        int composerInsert( const QString &composer );
         int yearId( const QString &year );
+        int yearInsert( const QString &year );
+        void databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year );
         int imageId( const QString &image, int albumId );
         int albumId( const QString &album, int artistId );
         int urlId( const QString &url, const QString &uid );
