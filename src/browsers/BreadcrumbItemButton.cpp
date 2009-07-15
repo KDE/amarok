@@ -105,7 +105,6 @@ void BreadcrumbItemButton::paintEvent(QPaintEvent* event)
         buttonWidth = preferredWidth;
     }
 
-    const QColor fgColor = foregroundColor();
     drawHoverBackground(&painter);
 
     int left, top, right, bottom;
@@ -118,7 +117,6 @@ void BreadcrumbItemButton::paintEvent(QPaintEvent* event)
     const QRect iconRect( left + padding, iconTop, iconWidth, iconHeight );
     painter.drawPixmap( iconRect, icon().pixmap( iconSize() ) );
 
-    painter.setPen(fgColor);
     const QRect textRect( left + (padding * 2) + iconWidth, top, buttonWidth, buttonHeight);
     painter.drawText(textRect, Qt::AlignVCenter, text());
 }
