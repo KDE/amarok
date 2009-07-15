@@ -81,6 +81,13 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
        connect( m_toolbar, SIGNAL( addAppletToContainment( const QString&, int ) ), cont, SLOT( addApplet( const QString&, int ) ) );
    }
 
+   //make background transparent
+   QPalette p = palette();
+   QColor c = p.color( QPalette::Base );
+   c.setAlpha( 0 );
+   p.setColor( QPalette::Base, c );
+   setPalette( p );
+
 }
 
 Context::ToolbarView::~ToolbarView()

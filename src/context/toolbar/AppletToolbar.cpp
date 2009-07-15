@@ -61,6 +61,7 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     m_appletLayout->setAlignment( m_addItem, Qt::AlignRight );
     m_appletLayout->setContentsMargins( 3, 3, 3, 3 );
     m_appletLayout->setSpacing( 4 );
+
 }
 
 Context::AppletToolbar::~AppletToolbar()
@@ -74,12 +75,9 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     Q_UNUSED( widget )
 
     painter->setRenderHint( QPainter::Antialiasing );
-
     painter->save();
-    QPalette p;
-    painter->fillRect( boundingRect(), p.brush( QPalette::Window ) ); // remove white edges behind the toolbar
+
     QColor col = PaletteHandler::highlightColor();
-    
     qreal radius = 6;
 
     QPainterPath outline;
@@ -87,7 +85,6 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     painter->fillPath( outline, QBrush( col ) );
 
     painter->restore();
-
 }
 
 void
