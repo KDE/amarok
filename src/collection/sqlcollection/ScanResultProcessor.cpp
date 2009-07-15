@@ -694,23 +694,56 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
 void
 ScanResultProcessor::updateAftPermanentTablesUrlString( const QString &url, const QString &uid )
 {
+    DEBUG_BLOCK
+    bool first = true;
+    QString query = QString( "UPDATE" );
+    QString query2;
     foreach( const QString &table, m_aftPermanentTablesUrlString )
     {
-        QString query = QString( "UPDATE %1 SET url='%2' WHERE uniqueid='%3';" )
-            .arg( table, m_collection->escape( url ), m_collection->escape( uid ) );
-        m_collection->query( query );
+        debug() << "Constructing for table " << table;
+        if( first )
+        {
+            query += QString( " %1" ).arg( table );
+            query2 += QString( "%1.url = '%2'" ).arg( table, m_collection->escape( url ) );
+        }
+        else
+        {
+            query += QString( " INNER JOIN %1 USING( uniqueid )" ).arg( table );
+            query2 += QString( ", %1.url = '%2'" ).arg( table, m_collection->escape( url ) );
+        }
     }
+    query += QString( " SET " );
+    query += query2;
+    query += QString( " WHERE %1.uniqueid = '%2';" ).arg( m_aftPermanentTablesUrlString.first(), m_collection->escape( uid ) );
+    debug() << "query = " << query;
+    m_collection->query( query );
 }
 
 void
 ScanResultProcessor::updateAftPermanentTablesUidString( const QString &url, const QString &uid )
 {
+    bool first = true;
+    QString query = QString( "UPDATE" );
+    QString query2;
     foreach( const QString &table, m_aftPermanentTablesUrlString )
     {
-        QString query = QString( "UPDATE %1 SET uniqueid='%2' WHERE url='%3';" )
-            .arg( table, m_collection->escape( uid ), m_collection->escape( url ) );
-        m_collection->query( query );
+        debug() << "Constructing for table " << table;
+        if( first )
+        {
+            query += QString( " %1" ).arg( table );
+            query2 += QString( "%1.uniqueid = '%2'" ).arg( table, m_collection->escape( uid ) );
+        }
+        else
+        {
+            query += QString( " INNER JOIN %1 USING( url )" ).arg( table );
+            query2 += QString( ", %1.uniqueid = '%2'" ).arg( table, m_collection->escape( uid ) );
+        }
     }
+    query += QString( " SET " );
+    query += query2;
+    query += QString( " WHERE %1.url = '%2';" ).arg( m_aftPermanentTablesUrlString.first(), m_collection->escape( url ) );
+    debug() << "query = " << query;
+    m_collection->query( query );
 }
 
 int
