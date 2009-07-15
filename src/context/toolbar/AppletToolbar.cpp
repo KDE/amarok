@@ -82,15 +82,19 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     qreal radius = 6;
     
     QPainterPath outline;
-    outline.moveTo( 0, 0);
-    outline.lineTo( boundingRect().width(), 0 );
+    outline.moveTo( radius, 0);
+    outline.lineTo( boundingRect().width() - radius, 0 );
+    outline.quadTo( boundingRect().width(), 0,
+                    boundingRect().width(), radius );
     outline.lineTo( boundingRect().width(), boundingRect().height() - radius );
     outline.quadTo( boundingRect().width(), boundingRect().height(),
                     boundingRect().width() - radius, boundingRect().height() );
     outline.lineTo( radius, boundingRect().height() );
     outline.quadTo( 0, boundingRect().height() ,
                     0, boundingRect().height() - radius );
-    outline.lineTo( 0, 0 );
+    outline.lineTo( 0, radius );
+    outline.quadTo( 0, 0,
+                    radius, 0 );
 
     painter->fillPath( outline, col );
 
