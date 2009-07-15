@@ -32,6 +32,7 @@
 #include "PlaylistModel.h"
 #include "layouts/LayoutManager.h"
 #include "widgets/ProgressiveSearchWidget.h"
+#include "widgets/HorizontalDivider.h"
 #include "layouts/LayoutConfigAction.h"
 
 
@@ -44,7 +45,7 @@ Playlist::Widget::Widget( QWidget* parent )
         : KVBox( parent )
 {
     DEBUG_BLOCK
-    setContentsMargins( 1, 1, 1, 1 );
+    setContentsMargins( 0, 0, 0, 0 );
 
     m_sortWidget = new Playlist::SortWidget( this );
     new HorizontalDivider( this );
@@ -116,8 +117,11 @@ Playlist::Widget::Widget( QWidget* parent )
 
     KHBox *barBox = new KHBox( this );
     barBox->setMargin( 0 );
+    barBox->setContentsMargins( 0, 0, 0, 0 );
 
-    KToolBar *plBar = new Amarok::ToolBar( barBox );
+    
+    Amarok::ColoredToolBar *plBar = new Amarok::ColoredToolBar( barBox );
+    plBar->setFixedHeight( 30 );
     plBar->setObjectName( "PlaylistToolBar" );
 
     Model::instance();

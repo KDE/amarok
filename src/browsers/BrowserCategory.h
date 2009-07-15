@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 
-#include "widgets/ExpandingControlsWidget.h"
+#include "ToolBar.h"
 
 #include <KVBox>
 
@@ -109,6 +109,8 @@ public:
     virtual void setFilter( const QString &filter ) { Q_UNUSED( filter ) };
     virtual void setLevels( const QList<int> &levels ) { Q_UNUSED( levels ) };
 
+    KToolBar * bottomToolbar();
+
 public slots:
     void activate();
 
@@ -122,7 +124,7 @@ private:
     BrowserCategoryList * m_parentList;
 
     BreadcrumbItem * m_breadcrumb;
-    ExpandingControlsWidget * m_expandingControls;
+    KToolBar * m_bottomToolbar;
     
 
 };
