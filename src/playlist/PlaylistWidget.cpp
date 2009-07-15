@@ -145,7 +145,6 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_save" ) );
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
 
     } //END Playlist Toolbar
 

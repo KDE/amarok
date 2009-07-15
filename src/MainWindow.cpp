@@ -829,6 +829,7 @@ MainWindow::createMenus()
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_add") );
     playlistMenu->addAction( Amarok::actionCollection()->action("stream_add") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_save") );
+    playlistMenu->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
     playlistMenu->addSeparator();
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_undo") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_redo") );
