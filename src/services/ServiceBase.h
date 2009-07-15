@@ -292,7 +292,7 @@ public slots:
      */
     void sortByGenreArtistAlbum();
 
-    void setLevels( QList<int> levels );
+    void setLevels( const QList<int> &levels );
 
 signals:
     /**

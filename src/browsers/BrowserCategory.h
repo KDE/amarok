@@ -107,7 +107,7 @@ public:
     virtual QList<int> levels() const { return QList<int>(); }
 
     virtual void setFilter( const QString &filter ) { Q_UNUSED( filter ) };
-    virtual void setLevels( const QList<int> levels ) { Q_UNUSED( levels ) };
+    virtual void setLevels( const QList<int> &levels ) { Q_UNUSED( levels ) };
 
 public slots:
     void activate();

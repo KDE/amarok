@@ -330,7 +330,7 @@ ServiceBase::levels() const
     return QList<int>();
 }
 
-void ServiceBase::setLevels( QList< int > levels )
+void ServiceBase::setLevels( const QList<int> &levels )
 {
     if( m_useCollectionTreeView ) {
         if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )

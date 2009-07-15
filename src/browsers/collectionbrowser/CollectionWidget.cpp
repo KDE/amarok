@@ -362,7 +362,7 @@ CollectionWidget::levels() const
     return m_treeView->levels();
 }
 
-void CollectionWidget::setLevels( QList<int> levels )
+void CollectionWidget::setLevels( const QList<int> &levels )
 {
     m_levels.clear();
     m_levels = levels;
