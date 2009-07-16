@@ -63,7 +63,7 @@ public:
 
     virtual void init(); // collection
     virtual bool isWritable() const;
-    virtual void writeDatabase() {}
+    virtual void writeDatabase();
 
     virtual void getCopyableUrls( const Meta::TrackList &tracks );
 
@@ -109,7 +109,7 @@ protected:
     virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack );
     virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
     {
-        Q_UNUSED( track ) return true;
+        slotFinalizeTrackRemove( Meta::TrackPtr::staticCast( track ) ); return true;
     }
     virtual void libCreateTrack( const Meta::MediaDeviceTrackPtr &track );
     virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track );
@@ -250,6 +250,10 @@ private:
     // Maps id's to tracks
 
     QHash<uint32_t, LIBMTP_track_t*> m_idtrackhash;
+
+    // parentid calculated for new track copied to device
+
+    uint32_t m_copyparentid;
 
     // Used as temporary location for copying files from mtp
 

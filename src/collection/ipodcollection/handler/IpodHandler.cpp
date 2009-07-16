@@ -1793,7 +1793,7 @@ IpodHandler::slotDBWriteFailed( ThreadWeaver::Job* job )
 {
     Q_UNUSED( job );
     debug() << "Writing to DB failed!";
-    emit databaseWritten( false );
+    slotDatabaseWritten( false );
 }
 
 void
@@ -1803,7 +1803,7 @@ IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
     if( job->success() )
     {
         debug() << "Writing to DB succeeded!";
-        emit databaseWritten( true );
+        slotDatabaseWritten( true );
     }
     else
         debug() << "Writing to DB did not happen or failed";

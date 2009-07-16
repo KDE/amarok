@@ -681,6 +681,7 @@ MtpHandler::prettyName() const
 void
 MtpHandler::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack )
 {
+    Q_UNUSED( destTrack );
     uint32_t parent_id = 0;
     if ( !m_folderStructure.isEmpty() )
     {
@@ -702,10 +703,8 @@ MtpHandler::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDev
     }
     debug() << "Parent id : " << parent_id;
 
-    m_mtptrackhash[ destTrack ]->parent_id = parent_id; // api change, set id here
-    m_mtptrackhash[ destTrack ]->storage_id = 0; // default storage id
+    m_copyparentid = parent_id;
 
-    debug() << "set id's";
 }
 
 bool
@@ -735,14 +734,13 @@ MtpHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrack
 
 
 // TODO: nyi
-/*
+
 void
 MtpHandler::writeDatabase()
 {
-    return;
-    //ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
+    slotDatabaseWritten( true );
 }
-*/
+
 
 void
 MtpHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
@@ -1230,6 +1228,8 @@ MtpHandler::libCreateTrack( const Meta::MediaDeviceTrackPtr& track )
 {
     m_mtptrackhash[ track ] = LIBMTP_new_track_t();
     m_mtptrackhash[ track ]->item_id = 0;
+    m_mtptrackhash[ track ]->parent_id = m_copyparentid;
+    m_mtptrackhash[ track ]->storage_id = 0; // default storage id
 }
 
 void
