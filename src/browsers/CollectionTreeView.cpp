@@ -905,8 +905,11 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
 
                         foreach( PopupDropperAction *action, cActions )
                         {
-                            actions.append( action );
-                            debug() << "Got custom action: " << action->text();
+                            if( action )
+                            {
+                                actions.append( action );
+                                debug() << "Got custom action: " << action->text();
+                            }
                         }
                         delete cac;
                     }
@@ -922,10 +925,6 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
                         }
                         delete btc;
                     }
-
-
-
-
                 }
             }
         }
