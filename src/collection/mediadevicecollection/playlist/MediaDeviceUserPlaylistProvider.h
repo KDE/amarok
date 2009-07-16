@@ -41,16 +41,16 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvide
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks );
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
 
-	//      virtual bool supportsEmptyGroups() { return true; }
+        //      virtual bool supportsEmptyGroups() { return true; }
 
-        QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list );
+        //virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list );
 
-	/// MediaDevice-specific Functions
+        /// MediaDevice-specific Functions
 
-	void addPlaylist( Meta::MediaDevicePlaylistPtr &playlist );
+        void addPlaylist( Meta::MediaDevicePlaylistPtr &playlist );
 
-	public slots:
-	    void sendUpdated() { emit updated(); }
+        public slots:
+            void sendUpdated() { emit updated(); }
 
  private:
 

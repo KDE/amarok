@@ -1024,6 +1024,39 @@ MtpHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
         return KUrl( QString::number(  m_mtptrackhash[ track ]->item_id,  10 ) );
 }
 
+float
+MtpHandler::usedCapacity() const
+{
+    DEBUG_BLOCK
+    if( LIBMTP_Get_Storage( m_device, LIBMTP_STORAGE_SORTBY_NOTSORTED ) != 0 )
+    {
+        debug() << "Failed to get storage properties, cannot get capacity";
+        return 0.0;
+    }
+
+    else
+    {
+        return m_device->storage->FreeSpaceInBytes;
+    }
+}
+
+float
+MtpHandler::totalCapacity() const
+{
+    DEBUG_BLOCK
+    if( LIBMTP_Get_Storage( m_device, LIBMTP_STORAGE_SORTBY_NOTSORTED ) != 0 )
+    {
+        debug() << "Failed to get storage properties, cannot get capacity";
+        return 0.0;
+    }
+
+    else
+    {
+        return m_device->storage->MaxCapacity;
+    }
+
+}
+
 /// Sets
 
 void

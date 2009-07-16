@@ -100,24 +100,24 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QStr
 
     return Meta::PlaylistPtr::dynamicCast( mediadevicePlaylist ); //assumes insertion in db was successful!
 }
-
+#if 0
 QList<PopupDropperAction *>
 MediaDeviceUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
 {
     Q_UNUSED( list )
     QList<PopupDropperAction *> actions;
-#if 0
+
     if ( m_renameAction == 0 )
     {
         m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
     actions << m_renameAction;
-#endif
+
 
     return actions;
 }
-
+#endif
 void
 MediaDeviceUserPlaylistProvider::addPlaylist( Meta::MediaDevicePlaylistPtr &playlist )
 {

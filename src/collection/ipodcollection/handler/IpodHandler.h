@@ -235,6 +235,9 @@ private:
     virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
     virtual KUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
 
+    virtual float usedCapacity() const;
+    virtual float totalCapacity() const;
+
     /// Ipod Methods
 
     bool removeDBTrack( Itdb_Track *track );

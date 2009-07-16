@@ -95,6 +95,13 @@ namespace Handler
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual KUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
+        /**
+          Methods related to device space usage, in bytes
+          */
+
+        virtual float usedCapacity() const { return 0.0; }
+        virtual float totalCapacity() const { return 0.0; }
+
         static Type capabilityInterfaceType() { return Handler::Capability::Readable; }
 
     };

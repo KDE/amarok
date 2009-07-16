@@ -27,6 +27,7 @@
 
 #include "playlist/MediaDevicePlaylist.h"
 
+#include <KMessageBox>
 #include <threadweaver/ThreadWeaver.h>
 #include <threadweaver/JobCollection.h>
 
@@ -287,6 +288,8 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     bool isDupe;
     bool hasDupe;
     QString format;
+    QString copyError = i18n( "Tracks not copied: " );
+    QString copyErrorCaption = i18n( "Copying Tracks Failed" );
     TrackMap trackMap = m_memColl->trackMap();
 
     Meta::TrackList tempTrackList;
@@ -382,7 +385,28 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     if( m_tracksToCopy.size() == 0 )
     {
-        The::statusBar()->shortMessage( i18n( "The tracks to copy are already on the device!" ) );
+        KMessageBox::error( 0, i18n( "%1the device already has these tracks", copyError ), copyErrorCaption );
+        emit copyTracksDone( false );
+        return;
+    }
+
+    // Check for available space, in bytes, after the copy
+
+    int transfersize = 0;
+
+    foreach( Meta::TrackPtr track, m_tracksToCopy )
+    {
+        transfersize += track->filesize();
+    }
+
+    debug() << "Total transfer size: " << transfersize;
+
+    // NOTE: if the device will not have more than 5 MB to spare, abort the copy
+    if( !( (freeSpace() - transfersize) > 1024*1024*5 ) )
+    {
+        debug() << "Free space: " << freeSpace();
+        debug() << "Space would've been after copy: " << (freeSpace() - transfersize);
+        KMessageBox::error( 0, i18n( "%1the device has insufficient space", copyError ), copyErrorCaption );
         emit copyTracksDone( false );
         return;
     }
@@ -1009,6 +1033,12 @@ MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
     // Inform CollectionLocation that copying is done
 
     emit copyTracksDone( true );
+}
+
+float
+MediaDeviceHandler::freeSpace() const
+{
+    return ( m_rc->totalCapacity() - m_rc->usedCapacity() );
 }
 
 /** Observer Methods **/

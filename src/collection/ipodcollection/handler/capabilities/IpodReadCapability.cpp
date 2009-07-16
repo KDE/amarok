@@ -169,4 +169,16 @@ IpodReadCapability::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libGetPlayableUrl( track );
 }
 
+float
+IpodReadCapability::usedCapacity() const
+{
+    return m_handler->usedCapacity();
+}
+
+float
+IpodReadCapability::totalCapacity() const
+{
+    return m_handler->totalCapacity();
+}
+
 #include "IpodReadCapability.moc"

@@ -148,6 +148,9 @@ protected:
     virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
     virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
 
+    virtual float usedCapacity() const;
+    virtual float totalCapacity() const;
+
     virtual void    libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
     virtual void    libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
     virtual void    libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );

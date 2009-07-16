@@ -37,6 +37,7 @@ extern "C" {
 #include "File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5
+#include <kdiskfreespaceinfo.h>
 #include <KIO/Job>
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
@@ -50,6 +51,7 @@ extern "C" {
 #include <threadweaver/ThreadWeaver.h>
 
 #include <solid/device.h>
+#include <solid/storageaccess.h>
 
 #include <QDir>
 #include <QFile>
@@ -123,8 +125,8 @@ IpodHandler::init()
 
 
     GError *err = 0;
-    QString initError = "iPod was not initialized: ";
-    QString initErrorCaption = "iPod Initialization Failed";
+    QString initError = i18n( "iPod was not initialized: " );
+    QString initErrorCaption = i18n( "iPod Initialization Failed" );
     bool wasInitialized = false;
 
     // First attempt to parse the database
@@ -1336,6 +1338,42 @@ KUrl
 IpodHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
     return KUrl(m_mountPoint + (QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" )));
+}
+
+float
+IpodHandler::usedCapacity() const
+{
+    Solid::Device device = Solid::Device( m_memColl->udi() );
+    if( device.isValid() )
+    {
+        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+        KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo( storage->filePath() );
+        return info.used();
+
+    }
+
+    else
+    {
+        return 0.0;
+    }
+}
+
+float
+IpodHandler::totalCapacity() const
+{
+    Solid::Device device = Solid::Device( m_memColl->udi() );
+    if( device.isValid() )
+    {
+        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+        KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo( storage->filePath() );
+        return info.size();
+    }
+
+    else
+    {
+        return 0.0;
+    }
+
 }
 
 /// Sets

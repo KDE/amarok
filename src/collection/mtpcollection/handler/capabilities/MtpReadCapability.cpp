@@ -169,4 +169,16 @@ MtpReadCapability::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libGetPlayableUrl( track );
 }
 
+float
+MtpReadCapability::usedCapacity() const
+{
+    return m_handler->usedCapacity();
+}
+
+float
+MtpReadCapability::totalCapacity() const
+{
+    return m_handler->totalCapacity();
+}
+
 #include "MtpReadCapability.moc"
