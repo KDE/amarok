@@ -47,6 +47,9 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Fixed pressing play after reaching the end of the playlist not starting
+      the playlist from the top (or whereever the navigator thinks it should 
+      start. (BR 176445)
     * Fixed local playlists being renamed to blank when user hits cancel
     * Fixed giant Edit Filter dialog with some translations. (BR 197566)
     * Files browser remembers its view mode. (BR 197122)
