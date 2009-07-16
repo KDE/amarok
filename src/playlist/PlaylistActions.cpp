@@ -83,10 +83,13 @@ Playlist::Actions::~Actions()
 void
 Playlist::Actions::requestNextTrack()
 {
+    DEBUG_BLOCK
     if ( m_nextTrackCandidate != 0 )
         return;
     if( m_trackError )
         return;
+
+    debug() << "so far so good!";
     m_trackError = false;
     m_currentTrack = Model::instance()->activeId();
     if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
@@ -96,6 +99,19 @@ Playlist::Actions::requestNextTrack()
     }
     
     m_nextTrackCandidate = m_navigator->requestNextTrack();
+
+    if( m_nextTrackCandidate == 0 )
+    {
+
+        debug() << "nothing more to play...";
+        //no more stuff to play. make sure to reset the active track so that
+        //pressing play will start at the top of the playlist ( or whereever the navigator wants to start )
+        //instead of just replaying the last track.
+
+        Model::instance()->setActiveRow( -1 );
+        return;
+    }
+
     m_currentTrack = m_nextTrackCandidate;
     
     if ( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
