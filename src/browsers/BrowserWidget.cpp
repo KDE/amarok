@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,17 +19,30 @@
 
 #include "Debug.h"
 #include "widgets/HorizontalDivider.h"
+#include "PaletteHandler.h"
 
 #include "KIcon"
+#include "KPushButton"
+#include "KVBox"
+
 
 BrowserWidget::BrowserWidget( QWidget * parent )
- : KVBox( parent )
+    : KHBox( parent )
 {
+    KPushButton *backButton = new KPushButton( this );
+    backButton->setIcon( KIcon( "go-previous" ) );
+    backButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+    backButton->setFixedWidth( 25 );
+    backButton->setToolTip( i18n( "Back" ) );
+    backButton->setFocusPolicy( Qt::NoFocus );
+    //backButton->setStyleSheet( QString( "QPushButton { background-color: %1; } " ).arg( PaletteHandler::highlightColor().name() ) );
 
-    m_breadcrumbWidget = new BreadcrumbWidget( this );
-    new HorizontalDivider( this );
+    KVBox *verticalBox = new KVBox( this );
+
+    m_breadcrumbWidget = new BreadcrumbWidget( verticalBox );
+    new HorizontalDivider( verticalBox );
     
-    m_categoryList = new BrowserCategoryList( this, "root list" );
+    m_categoryList = new BrowserCategoryList( verticalBox, "root list" );
     m_categoryList->setPrettyName( i18n( "Home" ) );
     m_categoryList->setIcon( KIcon( "user-home" ) );
 
@@ -38,9 +52,9 @@ BrowserWidget::BrowserWidget( QWidget * parent )
 
     connect( m_categoryList, SIGNAL( viewChanged() ), this, SLOT( categoryChanged() ) );
     connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
+    connect( backButton, SIGNAL( clicked() ), m_categoryList, SLOT( back() ) );
 
     setFrameShape( QFrame::NoFrame );
-
 }
 
 
