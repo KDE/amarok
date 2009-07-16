@@ -16,6 +16,8 @@
 
 #define DEBUG_PREFIX "IphoneOs::ReadCapability"
 
+#include <kdiskfreespaceinfo.h>
+
 #include "IphoneOsReadCapability.h"
 #include "../IphoneOsHandler.h"
 
@@ -172,6 +174,20 @@ KUrl
 IphoneOsReadCapability::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->metaForTrack(track)->playableUrl();
+}
+
+float
+IphoneOsReadCapability::usedCapacity() const
+{
+    KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo( m_handler->mountPoint() );
+    return info.used();
+}
+
+float
+IphoneOsReadCapability::totalCapacity() const
+{
+    KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo( m_handler->mountPoint() );
+    return info.size();
 }
 
 };

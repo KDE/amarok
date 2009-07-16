@@ -63,6 +63,9 @@ class IphoneOsReadCapability : public ReadCapability
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
         virtual KUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
 
+        virtual float usedCapacity() const;
+        virtual float totalCapacity() const;
+
         private:
             Meta::IphoneOsHandler *m_handler;
 };

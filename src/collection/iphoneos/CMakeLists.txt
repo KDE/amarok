@@ -37,6 +37,7 @@ target_link_libraries(amarok_collection-iphoneoscollection
     amaroklib
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}
+    ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_SOLID_LIBRARY}
     ${QT_QTNETWORK_LIBRARY}
