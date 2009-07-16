@@ -134,12 +134,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         // static member functions
         static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
-        //dummies: AbstractModel requires that a Playlist model supports searching, which
-        // is implemented in a higher proxy.
-        void clearSearchTerm(){}
-        QString currentSearchTerm() { return QString(); }
-        int currentSearchFields() { return -1; }
-
     public slots:
         bool savePlaylist() const;
 

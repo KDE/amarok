@@ -44,7 +44,7 @@ public:
     /**
      * Clears the current search term.
      */
-    virtual void clearSearchTerm() = 0;
+    virtual void clearSearchTerm() {}    //dummy, needed by Playlist::Model
 
     /**
      * Reports if the current model exposes a given track.
@@ -57,13 +57,13 @@ public:
      * Get the current search fields bitmask.
      * @return The current search fields.
      */
-    virtual int currentSearchFields() = 0;
+    virtual int currentSearchFields() { return -1; } //dummy, needed by Playlist::Model
 
     /**
      * Get the current search term.
      * @return The curent search term.
      */
-    virtual QString currentSearchTerm() = 0;
+    virtual QString currentSearchTerm() { return QString(); }   //dummy, needed by Playlist::Model
 
    /**
      * Returns the number of columns exposed by the current model.
