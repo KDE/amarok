@@ -56,20 +56,6 @@ public:
     int find( const QString & searchTerm, int searchFields = MatchTrack );
 
     /**
-     * Get the first row below the currently active track that matches the
-     * current search term.
-     * @return The first matching row.
-     */
-    int firstMatchAfterActive();
-
-    /**
-     * Get the first row above the currently active track that matches the
-     * current search term.
-     * @return The first matching row.
-     */
-    int firstMatchBeforeActive();
-
-    /**
      * Notify proxy that the search term of searched fields has changed. Since
      * this calls does not use the parents filter values, this method needs to be
      * called when the values change.

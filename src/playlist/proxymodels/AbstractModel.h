@@ -34,6 +34,14 @@ namespace Playlist
 class AbstractModel
 {
 public:
+
+    /**
+     * Returns the unique playlist item id of the active track
+     * (or 0 if no track is active).
+     * @return The playlist item's id.
+     */
+    virtual quint64 activeId() const = 0;
+
     /**
      * Returns the currently active row, translated to proxy rows
      * (or -1 if the current row is not represented by this proxy).
@@ -42,9 +50,30 @@ public:
     virtual int activeRow() const = 0;
 
     /**
+     * Returns a pointer to the currently active track (or a default constructed value if
+     * no track is active).
+     * @return A pointer to the track.
+     */
+    virtual Meta::TrackPtr activeTrack() const = 0;
+
+    /**
      * Clears the current search term.
      */
     virtual void clearSearchTerm() {}    //dummy, needed by Playlist::Model
+
+   /**
+     * Returns the number of columns exposed by the current model.
+     * @param parent the parent of the columns to count.
+     * @return the number of columns.
+     */
+    virtual int columnCount( const QModelIndex& ) const = 0;
+
+    /**
+     * Reports if the current model exposes a given id.
+     * @param id the id to check for.
+     * @return true if the id is present, otherwise false.
+     */
+    virtual bool containsId( const quint64 id ) const = 0;
 
     /**
      * Reports if the current model exposes a given track.
@@ -64,13 +93,6 @@ public:
      * @return The curent search term.
      */
     virtual QString currentSearchTerm() { return QString(); }   //dummy, needed by Playlist::Model
-
-   /**
-     * Returns the number of columns exposed by the current model.
-     * @param parent the parent of the columns to count.
-     * @return the number of columns.
-     */
-    virtual int columnCount( const QModelIndex& ) const = 0;
 
     /**
      * Forwards the request down the proxy stack and gets the data at an index.
@@ -178,6 +200,13 @@ public:
      * @return a pointer to the track at the given row.
      */
     virtual Meta::TrackPtr trackAt( int row ) const = 0;
+
+    /**
+     * Returns a pointer to the track with the given unique id.
+     * @param id the id to return the track pointer for.
+     * @return a pointer to the track with the given id.
+     */
+    virtual Meta::TrackPtr trackForId( const quint64 id ) const = 0;
 
     /**
      * Destructor.

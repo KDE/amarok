@@ -23,9 +23,7 @@
 #include "RandomTrackNavigator.h"
 
 #include "Debug.h"
-#include "playlist/PlaylistItem.h"
-#include "playlist/PlaylistModel.h"
-#include "playlist/proxymodels/FilterProxy.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 
 #include <KRandom>
 
@@ -33,10 +31,12 @@
 
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
-    FilterProxy* model = FilterProxy::instance();
-    connect( model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
+    AbstractModel* model = GroupingProxy::instance();
+    connect( GroupingProxy::instance(), SIGNAL( insertedIds( const QList<quint64>& ) ),
+             this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
+    connect( GroupingProxy::instance(), SIGNAL( removedIds( const QList<quint64>& ) ),
+             this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
+    connect( GroupingProxy::instance(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 
     reset();
 }
@@ -44,7 +44,7 @@ Playlist::RandomTrackNavigator::RandomTrackNavigator()
 void
 Playlist::RandomTrackNavigator::recvInsertedIds( const QList<quint64>& list )
 {
-    FilterProxy* model = FilterProxy::instance();
+    AbstractModel* model = GroupingProxy::instance();
     foreach( quint64 t, list )
     {
         if ( ( model->stateOfId( t ) == Item::Unplayed ) || ( model->stateOfId( t ) == Item::NewlyAdded ) )
@@ -107,7 +107,7 @@ Playlist::RandomTrackNavigator::requestNextTrack()
         else if ( !m_unplayedRows.isEmpty() )
             requestedTrack = m_unplayedRows.takeFirst();
 
-        if ( requestedTrack == Model::instance()->activeId())
+        if ( requestedTrack == GroupingProxy::instance()->activeId())
         {
             m_playedRows.prepend( requestedTrack );
             if ( !m_unplayedRows.isEmpty() )
@@ -136,7 +136,7 @@ Playlist::RandomTrackNavigator::requestLastTrack()
 
         quint64 requestedTrack =  !m_playedRows.isEmpty() ? m_playedRows.takeFirst() : 0;
 
-        if ( requestedTrack == Model::instance()->activeId())
+        if ( requestedTrack == GroupingProxy::instance()->activeId())
         {
             m_unplayedRows.prepend( requestedTrack );
             if ( !m_playedRows.isEmpty() )
@@ -151,7 +151,7 @@ Playlist::RandomTrackNavigator::requestLastTrack()
 void Playlist::RandomTrackNavigator::reset()
 {
     DEBUG_BLOCK
-    FilterProxy* model = FilterProxy::instance();
+    AbstractModel* model = GroupingProxy::instance();
 
     m_unplayedRows.clear();
     m_playedRows.clear();

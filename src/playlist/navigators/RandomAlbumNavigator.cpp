@@ -23,16 +23,19 @@
 
 #include "Debug.h"
 #include "Meta.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 
 #include <algorithm> // STL
 
 Playlist::RandomAlbumNavigator::RandomAlbumNavigator()
 {
-    Model* model = Model::instance();
-    connect( model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
+    AbstractModel* model = GroupingProxy::instance();
+    connect( GroupingProxy::instance(), SIGNAL( insertedIds( const QList<quint64>& ) ),
+             this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
+    connect( GroupingProxy::instance(), SIGNAL( removedIds( const QList<quint64>& ) ),
+             this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
+    connect( GroupingProxy::instance(), SIGNAL( activeTrackChanged( const quint64 ) ),
+             this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 
     for ( int i = 0; i < model->rowCount(); i++ )
     {
@@ -55,7 +58,7 @@ Playlist::RandomAlbumNavigator::RandomAlbumNavigator()
 void
 Playlist::RandomAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
 {
-    Model* model = Model::instance();
+    AbstractModel* model = GroupingProxy::instance();
     Meta::AlbumList modifiedAlbums;
     foreach( quint64 id, list )
     {
@@ -247,7 +250,7 @@ Playlist::RandomAlbumNavigator::requestLastTrack()
 bool
 Playlist::RandomAlbumNavigator::idLessThan( const quint64 l, const quint64 r )
 {
-    Model* model = Model::instance();
+    AbstractModel* model = GroupingProxy::instance();
     Meta::TrackPtr left = model->trackForId( l );
     Meta::TrackPtr right = model->trackForId( r );
 
@@ -266,7 +269,7 @@ Playlist::RandomAlbumNavigator::sortTheseAlbums( const Meta::AlbumList al )
 void
 Playlist::RandomAlbumNavigator::dump()
 {
-    Model* model = Model::instance();
+    AbstractModel* model = GroupingProxy::instance();
     debug() << "album groups are as follows:";
     debug() << "unplayed:";
     foreach( Meta::AlbumPtr album, m_unplayedAlbums )

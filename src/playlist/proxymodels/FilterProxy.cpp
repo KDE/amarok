@@ -39,6 +39,7 @@ FilterProxy::FilterProxy()
 
     connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
+    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
 
     KConfigGroup config = Amarok::config("Playlist Search");
     m_passThrough = !config.readEntry( "ShowOnlyMatches", true );
@@ -87,56 +88,6 @@ FilterProxy::find( const QString &searchTerm, int searchFields )
         filterUpdated();
     }
     return -1;
-}
-
-int FilterProxy::firstMatchAfterActive()
-{
-    int activeSourceRow = m_belowModel->activeRow();
-
-    if ( m_passThrough )
-        return activeSourceRow + 1;
-
-    int matchRow = -1;
-    int nextRow = activeSourceRow + 1;
-    while ( m_belowModel->rowExists( nextRow ) )
-    {
-        if ( matchesCurrentSearchTerm( nextRow ) ) {
-            matchRow = nextRow;
-            break;
-        }
-
-        nextRow++;
-    }
-
-    if ( matchRow == -1 )
-        return -1;
-
-    return rowFromSource( matchRow );
-}
-
-int FilterProxy::firstMatchBeforeActive()
-{
-    int activeSourceRow = m_belowModel->activeRow();
-
-    if ( m_passThrough )
-        return activeSourceRow - 1;
-
-    int matchRow = -1;
-    int previousRow = activeSourceRow - 1;
-    while ( m_belowModel->rowExists( previousRow ) )
-    {
-        if ( matchesCurrentSearchTerm( previousRow ) ) {
-            matchRow = previousRow;
-            break;
-        }
-
-        previousRow--;
-    }
-
-    if ( matchRow == -1 )
-        return -1;
-
-    return rowFromSource( matchRow );
 }
 
 void FilterProxy::slotInsertedIds( const QList< quint64 > &ids )

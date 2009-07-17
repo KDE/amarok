@@ -22,7 +22,7 @@
 #include "DynamicModel.h"
 #include "DynamicPlaylist.h"
 #include "Meta.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistController.h"
 
 #include <QMutexLocker>
@@ -32,8 +32,8 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylist
     : m_playlist( p )
 {
     connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
-    connect( Model::instance(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
-    connect( Model::instance(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
+    connect( GroupingProxy::instance(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
+    connect( GroupingProxy::instance(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( activeChanged() ), SLOT( activePlaylistChanged() ) );
 }
 
@@ -55,8 +55,8 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
 {
     DEBUG_BLOCK
 
-    int updateRow = Model::instance()->activeRow() + 1;
-    int rowCount = Model::instance()->rowCount();
+    int updateRow = GroupingProxy::instance()->activeRow() + 1;
+    int rowCount = GroupingProxy::instance()->rowCount();
     int upcomingCountLag = m_playlist->upcomingCount() - ( rowCount - updateRow );
 
     if ( upcomingCountLag > 0 )
@@ -66,7 +66,7 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
 void
 Playlist::DynamicTrackNavigator::removePlayed()
 {
-    int activeRow = Model::instance()->activeRow();
+    int activeRow = GroupingProxy::instance()->activeRow();
     if ( activeRow > m_playlist->previousCount() )
     {
         Controller::instance()->removeRows( 0, activeRow - m_playlist->previousCount() );
@@ -106,7 +106,7 @@ Playlist::DynamicTrackNavigator::repopulate()
     if ( !m_mutex.tryLock() )
         return;
 
-    int row = Model::instance()->activeRow() + 1;
+    int row = GroupingProxy::instance()->activeRow() + 1;
     if ( row < 0 )
         row = 0;
 
@@ -114,11 +114,11 @@ Playlist::DynamicTrackNavigator::repopulate()
     QList<int> rows;
 
     do {
-        if( !(Model::instance()->stateOfRow( row ) & Item::Queued) )
+        if( !(GroupingProxy::instance()->stateOfRow( row ) & Item::Queued) )
             rows << row;
         row++;
     }
-    while( row < Model::instance()->rowCount() );
+    while( row < GroupingProxy::instance()->rowCount() );
 
     if( !rows.isEmpty() )
         Controller::instance()->removeRows( rows );

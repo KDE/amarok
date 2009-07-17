@@ -108,9 +108,10 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
         /**
          * Returns the unique playlist item id of the active track
-         * @return the playlist item's id, or 0 if no active track
+         * (or 0 if no track is active).
+         * @return The playlist item's id.
          */
-        quint64 activeId() const; // returns 0 for "no active row"
+        quint64 activeId() const;
 
         /**
          * Set the active track based on the playlist id given.

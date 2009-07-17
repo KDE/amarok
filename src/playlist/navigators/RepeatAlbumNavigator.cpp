@@ -23,15 +23,18 @@
 
 #include "Debug.h"
 #include "Meta.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 
 Playlist::RepeatAlbumNavigator::RepeatAlbumNavigator()
 {
     DEBUG_BLOCK
-    Model* model = Model::instance();
-    connect( model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
+    AbstractModel* model = GroupingProxy::instance();
+    connect( GroupingProxy::instance(), SIGNAL( insertedIds( const QList<quint64>& ) ),
+             this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
+    connect( GroupingProxy::instance(), SIGNAL( removedIds( const QList<quint64>& ) ),
+             this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
+    connect( GroupingProxy::instance(), SIGNAL( activeTrackChanged( const quint64 ) ),
+             this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 
     for ( int i = 0; i < model->rowCount(); i++ )
     {
@@ -50,7 +53,7 @@ void
 Playlist::RepeatAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
 {
     DEBUG_BLOCK
-    Model* model = Model::instance();
+    AbstractModel* model = GroupingProxy::instance();
     Meta::AlbumList modifiedAlbums;
     foreach( quint64 id, list )
     {
@@ -115,9 +118,9 @@ Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
     if ( id == m_currentTrack )
         return;
 
-    if ( Model::instance()->containsId( id ) )
+    if ( GroupingProxy::instance()->containsId( id ) )
     {
-        m_currentAlbum = Model::instance()->trackForId( id )->album();
+        m_currentAlbum = GroupingProxy::instance()->trackForId( id )->album();
     }
     else
     {
@@ -159,7 +162,7 @@ Playlist::RepeatAlbumNavigator::requestLastTrack()
 bool
 Playlist::RepeatAlbumNavigator::idLessThan( const quint64 l, const quint64 r )
 {
-    Model* model = Model::instance();
+    AbstractModel* model = GroupingProxy::instance();
     Meta::TrackPtr left = model->trackForId( l );
     Meta::TrackPtr right = model->trackForId( r );
     return Meta::Track::lessThan( left, right );
@@ -177,7 +180,7 @@ Playlist::RepeatAlbumNavigator::sortTheseAlbums( const Meta::AlbumList al )
 void
 Playlist::RepeatAlbumNavigator::dump()
 {
-    Model* model = Model::instance();
+    AbstractModel* model = GroupingProxy::instance();
     debug() << "album groups are as follows:";
     foreach( Meta::AlbumPtr album, m_albumGroups.keys() )
     {

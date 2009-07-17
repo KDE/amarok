@@ -49,11 +49,30 @@ public:
 // Please keep them sorted alphabetically.  -- Téo
 
     /**
+     * Returns the unique playlist item id of the active track
+     * (or 0 if no track is active).
+     * @return The playlist item's id.
+     */
+    virtual quint64 activeId() const;
+
+    /**
      * Returns the currently active row, translated to proxy rows
      * (or -1 if the current row is not represented by this proxy).
      * @return The currently active (playing) row in proxy terms.
      */
     virtual int activeRow() const;
+
+    /**
+     * Returns a pointer to the currently active track (or a default constructed value if
+     * no track is active).
+     * @return A pointer to the track.
+     */
+    virtual Meta::TrackPtr activeTrack() const;
+
+    /**
+     * Clears the current search term.
+     */
+    virtual void clearSearchTerm();
 
    /**
      * Returns the number of columns exposed by the current proxy.
@@ -64,9 +83,11 @@ public:
     virtual int columnCount( const QModelIndex& i ) const;
 
     /**
-     * Clears the current search term.
+     * Reports if the current model exposes a given id.
+     * @param id the id to check for.
+     * @return true if the id is present, otherwise false.
      */
-    virtual void clearSearchTerm();
+    virtual bool containsId( const quint64 id ) const;
 
     /**
      * Reports if the current model exposes a given track.
@@ -251,6 +272,13 @@ public:
      */
     virtual Meta::TrackPtr trackAt( int row ) const;
 
+    /**
+     * Returns a pointer to the track with the given unique id.
+     * @param id the id to return the track pointer for.
+     * @return a pointer to the track with the given id.
+     */
+    virtual Meta::TrackPtr trackForId( const quint64 id ) const;
+
 
 //FIXME: When every proxy talks only to the proxy below it, these should be made protected
 //       here and and in subclasses that reimplement them. For now, they have to be public
@@ -294,6 +322,13 @@ signals:
      * @param the list of id's removed that are also represented by this proxy.
      */
     void removedIds( const QList<quint64>& );
+
+    /**
+     * Signal forwarded from the source model. IDs are unique so they shouldn't be modified
+     * by the proxies.
+     * @param the id of the new active track.
+     */
+    void activeTrackChanged( const quint64 );
 
 protected:
     /**

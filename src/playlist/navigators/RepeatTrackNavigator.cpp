@@ -17,11 +17,12 @@
 
 #include "RepeatTrackNavigator.h"
 
-#include "playlist/PlaylistModel.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 
 Playlist::RepeatTrackNavigator::RepeatTrackNavigator()
 {
-    m_trackid = Model::instance()->activeId();
+    m_trackid = GroupingProxy::instance()->activeId();
 
-    connect( Model::instance(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
+    connect( GroupingProxy::instance(), SIGNAL( activeTrackChanged( const quint64 ) ),
+             this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 }

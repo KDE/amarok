@@ -19,7 +19,7 @@
  ****************************************************************************************/
 
 #include "StandardTrackNavigator.h"
-#include "playlist/proxymodels/FilterProxy.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 
 #include "playlist/PlaylistModel.h"
 #include <QDebug>
@@ -27,46 +27,25 @@
 quint64
 Playlist::StandardTrackNavigator::requestNextTrack()
 {
-    FilterProxy* model = FilterProxy::instance();
+    AbstractModel* model = GroupingProxy::instance();
 
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
 
-    int activeRow = model->activeRow();
-    int updateRow;
-
-    //if the currently playing track is not in the proxy model (does not match the
-    //current search term ), we just jump to the first matching track
-    if ( activeRow == -1 )
-        updateRow = model->firstMatchAfterActive();
-    else
-        updateRow = activeRow + 1;
-
+    int updateRow = model->activeRow() + 1;
     if ( m_repeatPlaylist )
         updateRow = ( updateRow >= model->rowCount() ) ? 0 : updateRow;
-
     return model->idAt( updateRow );
 }
 
 quint64
 Playlist::StandardTrackNavigator::requestLastTrack()
 {
-    FilterProxy* model = FilterProxy::instance();
+    AbstractModel* model = GroupingProxy::instance();
 
-
-    int activeRow = model->activeRow();
-    int updateRow;
-
-    //if the currently playing track is not in the proxy model (does not match the
-    //current search term ), we just jump to the first matching track
-    if ( activeRow == -1 )
-        updateRow = model->firstMatchBeforeActive();
-    else
-        updateRow = activeRow -1;
-
+    int updateRow = model->activeRow() - 1;
     if ( m_repeatPlaylist )
         updateRow = ( updateRow < 0 ) ? model->rowCount() - 1 : updateRow;
-
     return model->idAt( updateRow );
 }
 

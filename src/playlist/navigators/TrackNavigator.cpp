@@ -19,14 +19,14 @@
 
 #include "TrackNavigator.h"
 #include "Amarok.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 
 #include <QQueue>
 
 Playlist::TrackNavigator::TrackNavigator()
 {
     m_repeatPlaylist = Amarok::repeatPlaylist();
-    connect( Model::instance(), SIGNAL( removedIds( const QList<quint64>& ) ),
+    connect( GroupingProxy::instance(), SIGNAL( removedIds( const QList<quint64>& ) ),
              this, SLOT( dequeueIds( const QList<quint64>& ) ) );
 }
 

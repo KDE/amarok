@@ -24,9 +24,7 @@ namespace Playlist
 
 ProxyBase::ProxyBase( QObject *parent )
     : QSortFilterProxyModel( parent )
-{
-
-}
+{}
 
 ProxyBase::~ProxyBase()
 {}
@@ -35,11 +33,23 @@ ProxyBase::~ProxyBase()
 // of proxies, start here.
 // Please keep them sorted alphabetically.  -- Téo
 
+quint64
+ProxyBase::activeId() const
+{
+    return m_belowModel->activeId();
+}
+
 int
 ProxyBase::activeRow() const
 {
     // We map the active row form the source to this ProxyModel.
     return rowFromSource( m_belowModel->activeRow() );
+}
+
+Meta::TrackPtr
+ProxyBase::activeTrack() const
+{
+    return m_belowModel->activeTrack();
 }
 
 int
@@ -52,6 +62,19 @@ void
 ProxyBase::clearSearchTerm()
 {
     m_belowModel->clearSearchTerm();
+}
+
+bool
+ProxyBase::containsId( const quint64 id ) const
+{
+    DEBUG_BLOCK
+    // The complexity of this isn't optimal
+    for( int i = 0; i < rowCount(); i++ )   //O(n^2) at worst
+    {
+        if( idAt( i ) == id )     //O( n ) - uses .at()
+            return true;
+    }
+    return false;
 }
 
 bool
@@ -210,6 +233,12 @@ Meta::TrackPtr
 ProxyBase::trackAt(int row) const
 {
     return m_belowModel->trackAt( rowToSource( row ) );
+}
+
+Meta::TrackPtr
+ProxyBase::trackForId( const quint64 id ) const
+{
+    return m_belowModel->trackForId( id );
 }
 
 //protected:
