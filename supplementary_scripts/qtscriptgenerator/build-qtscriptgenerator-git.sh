@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This will pull the latest version of qtscriptgenerator
 # and build it against the first version of QT found
