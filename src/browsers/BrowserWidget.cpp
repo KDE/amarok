@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,15 +17,15 @@
  
 #include "BrowserWidget.h"
 
+#include "Amarok.h"
 #include "Debug.h"
 #include "widgets/HorizontalDivider.h"
 
 #include "KIcon"
 
 BrowserWidget::BrowserWidget( QWidget * parent )
- : KVBox( parent )
+    : KVBox( parent )
 {
-
     m_breadcrumbWidget = new BreadcrumbWidget( this );
     new HorizontalDivider( this );
     
@@ -41,12 +42,16 @@ BrowserWidget::BrowserWidget( QWidget * parent )
 
     setFrameShape( QFrame::NoFrame );
 
+    // Keyboard shortcut for going back one level
+    KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ), this );
+    Amarok::actionCollection()->addAction( "browser_back", action );
+    connect( action, SIGNAL( triggered( bool ) ), m_categoryList, SLOT( back() ) );
+    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_Left ) );
 }
 
 
 BrowserWidget::~BrowserWidget()
-{
-}
+{}
 
 BrowserCategoryList * BrowserWidget::list() const
 {

@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,12 +27,11 @@
 
 /**
 The base widget that contains all other browsers, organized in a dig down interface
-
-	@author 
 */
 class BrowserWidget : public KVBox
 {
     Q_OBJECT
+
 public:
     BrowserWidget( QWidget * parent );
 
@@ -44,7 +44,6 @@ private slots:
     void home();
 
 private:
-
     BreadcrumbWidget * m_breadcrumbWidget;
     QPointer<BrowserCategoryList> m_categoryList;
 };
