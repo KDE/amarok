@@ -88,7 +88,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         BrowserWidget *browserWidget() const { return m_browsers; }
         QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
         QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
-		QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
+        QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
         void deleteBrowsers();
 
         QString activeBrowserName();
