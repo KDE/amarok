@@ -293,9 +293,30 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
     int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
     debug() << "playlist at row: " << playlistRow;
+
+    //don't try to get a playlist beyond the last item in the list
+    if( playlistRow >=  m_playlists.count() )
+    {
+        debug() << "ERROR: tried to remove from non existing playlist:";
+        debug() << playlistRow << " while there are only " << m_playlists.count();
+        return false;
+    }
+
     Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
+
+    //if we are trying to delete more tracks then what the playlist has, return.
+    //count will be at least 1 to delete one track
+    if( row + count - 1 >= playlist->tracks().count() )
+    {
+        debug() << "ERROR: tried to remove a track using an index that is not there:";
+        debug() << "row: " << row << " count: " << count << " numbr. of tracks: "
+                << playlist->tracks().count();
+        return false;
+    }
+
     for( int i = row; i < row + count; i++ )
-        playlist->removeTrack( i );
+        //deleting a track moves the next track up, so use the same row number each time
+        playlist->removeTrack( row );
     return true;
 }
 
