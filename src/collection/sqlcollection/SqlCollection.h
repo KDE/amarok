@@ -82,7 +82,10 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
 
         virtual QString idType() const;
         virtual QString textColumnType( int length = 255 ) const;
-        virtual QString exactTextColumnType( int length = 1024 ) const;
+        virtual QString exactTextColumnType( int length = 1000 ) const;
+        //the below value may have to be decreased even more for other indexes; only time will tell
+        //in that case bump the db version and alter the affected columns
+        virtual QString exactIndexableTextColumnType( int length = 324 ) const;
         virtual QString longTextColumnType() const;
         virtual QString randomFunc() const;
 

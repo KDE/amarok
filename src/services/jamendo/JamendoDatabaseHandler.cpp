@@ -47,7 +47,7 @@ JamendoDatabaseHandler::createDatabase( )
                           "length INTEGER,"
                           "preview_url " + db->exactTextColumnType() + ',' +
                           "album_id INTEGER,"
-                          "artist_id INTEGER );";
+                          "artist_id INTEGER ) ENGINE = MyISAM;";
 
     debug() << "Creating jamendo_tracks: " << queryString;
 
@@ -67,7 +67,7 @@ JamendoDatabaseHandler::createDatabase( )
                   "genre " + db->exactTextColumnType() + ',' +
                   "artist_id INTEGER, "
                   "mp3_torrent_url " + db->exactTextColumnType() + ',' +
-                  "ogg_torrent_url " + db->exactTextColumnType() + " );";
+                  "ogg_torrent_url " + db->exactTextColumnType() + " ) ENGINE = MyISAM;";
 
     debug() << "Creating jamendo_albums: " << queryString;
 
@@ -85,7 +85,7 @@ JamendoDatabaseHandler::createDatabase( )
                   "country " + db->textColumnType() + ',' +
                   "photo_url " + db->textColumnType() + ',' +
                   "jamendo_url " + db->textColumnType() + ',' +
-                  "home_url " + db->textColumnType() + ");";
+                  "home_url " + db->textColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating jamendo_artists: " << queryString;
 
@@ -98,7 +98,7 @@ JamendoDatabaseHandler::createDatabase( )
     queryString = "CREATE TABLE jamendo_genre ("
                   "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "name " + db->textColumnType() + ',' +
-                  "album_id INTEGER" + ");";
+                  "album_id INTEGER" + ") ENGINE = MyISAM;";
 
     debug() << "Creating jamendo_genres: " << queryString;
 

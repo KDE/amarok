@@ -46,7 +46,9 @@ public:
     virtual QString idType() const = 0;
 
     virtual QString textColumnType( int length = 255 ) const = 0;
-    virtual QString exactTextColumnType( int length = 1024 ) const = 0;
+    virtual QString exactTextColumnType( int length = 1000 ) const = 0;
+    //the below value may have to be decreased even more for different indexes; only time will tell
+    virtual QString exactIndexableTextColumnType( int length = 324 ) const = 0;
     virtual QString longTextColumnType() const = 0;
     virtual QString randomFunc() const = 0;
 

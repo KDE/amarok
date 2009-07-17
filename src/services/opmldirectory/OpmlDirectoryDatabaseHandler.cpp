@@ -44,7 +44,7 @@ OpmlDirectoryDatabaseHandler::createDatabase()
                           "length INTEGER,"
                           "preview_url " + db->exactTextColumnType() + ',' +
                           "album_id INTEGER,"
-                          "artist_id INTEGER );";
+                          "artist_id INTEGER ) ENGINE = MyISAM;";
 
     debug() << "Creating opmldirectory_tracks: " << queryString;
 
@@ -58,7 +58,7 @@ OpmlDirectoryDatabaseHandler::createDatabase()
                   "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
                   "name " + db->textColumnType() + ',' +
                   "description " + db->exactTextColumnType() + ',' +
-                  "artist_id INTEGER );";
+                  "artist_id INTEGER ) ENGINE = MyISAM;";
 
     result = db->query( queryString );
     db->query( "CREATE INDEX opmldirectory_albums_name ON opmldirectory_albums(name);" );
@@ -70,7 +70,7 @@ OpmlDirectoryDatabaseHandler::createDatabase()
     queryString = "CREATE TABLE opmldirectory_artists ("
             "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
             "name " + db->textColumnType() + ',' +
-            "description " + db->exactTextColumnType() + ");";
+            "description " + db->exactTextColumnType() + ") ENGINE = MyISAM;";
 
     result = db->query( queryString );
 
@@ -85,7 +85,7 @@ OpmlDirectoryDatabaseHandler::createDatabase()
     queryString = "CREATE TABLE opmldirectory_genre ("
             "id INTEGER PRIMARY KEY AUTO_INCREMENT, "
             "name " + db->textColumnType() + ',' +
-            "album_id INTEGER );";
+            "album_id INTEGER ) ENGINE = MyISAM;";
 
     result = db->query( queryString );
 }

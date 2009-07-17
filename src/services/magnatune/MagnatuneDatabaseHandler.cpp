@@ -47,7 +47,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                           "artist_id INTEGER,"
                           "preview_lofi " + sqlDb->exactTextColumnType() + ',' +
                           "preview_ogg " + sqlDb->exactTextColumnType() + ',' +
-                          "preview_url " + sqlDb->exactTextColumnType() + ");";
+                          "preview_url " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating mangnatune_tracks: " << queryString;
 
@@ -65,7 +65,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "artist_id INTEGER,"
                   "album_code " + sqlDb->textColumnType() + ',' +
                   "cover_url " + sqlDb->exactTextColumnType() + ',' +
-                  "description " + sqlDb->exactTextColumnType() + ");";
+                  "description " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating Mangnatune_albums: " << queryString;
 
@@ -81,7 +81,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "name " + sqlDb->textColumnType() + ',' +
                   "artist_page " + sqlDb->exactTextColumnType() + ',' +
                   "description " + sqlDb->textColumnType() + ',' +
-                  "photo_url " + sqlDb->exactTextColumnType() + ");";
+                  "photo_url " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating mangnatune_artist: " << queryString;
 
@@ -93,7 +93,7 @@ MagnatuneDatabaseHandler::createDatabase( )
     queryString = "CREATE TABLE magnatune_genre ("
                   "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "name " + sqlDb->textColumnType() + ',' +
-                  "album_id INTEGER" + ");";
+                  "album_id INTEGER" + ") ENGINE = MyISAM;";
 
     result = sqlDb->query( queryString );
 
@@ -105,7 +105,7 @@ MagnatuneDatabaseHandler::createDatabase( )
      queryString = "CREATE TABLE magnatune_moods ("
                   "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "track_id INTEGER," +
-                  "mood " + sqlDb->textColumnType() + ");";
+                  "mood " + sqlDb->textColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating mangnatune_moods: " << queryString;
 

@@ -718,7 +718,7 @@ SqlPodcastProvider::createTables() const
                     ",labels " + sqlStorage->textColumnType() +
                     ",subscribedate " + sqlStorage->textColumnType() +
                     ",autoscan BOOL, fetchtype INTEGER"
-                    ",haspurge BOOL, purgecount INTEGER );" ) );
+                    ",haspurge BOOL, purgecount INTEGER ) ENGINE = MyISAM;" ) );
 
     sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
                     "id " + sqlStorage->idType() +
@@ -734,7 +734,7 @@ SqlPodcastProvider::createTables() const
                     ",pubdate "  + sqlStorage->textColumnType() +
                     ",duration INTEGER"
                     ",filesize INTEGER"
-                    ",isnew BOOL );" ));
+                    ",isnew BOOL ) ENGINE = MyISAM;" ));
 
     sqlStorage->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url );" );
     sqlStorage->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url );" );
@@ -773,7 +773,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
                     ",labels " + sqlStorage->textColumnType() +
                     ",subscribedate " + sqlStorage->textColumnType() +
                     ",autoscan BOOL, fetchtype INTEGER"
-                    ",haspurge BOOL, purgecount INTEGER );" ) );
+                    ",haspurge BOOL, purgecount INTEGER ) ENGINE = MyISAM;" ) );
 
         sqlStorage->query( QString( "CREATE TABLE podcastepisodes_temp ("
                     "id " + sqlStorage->idType() +
@@ -789,7 +789,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
                     ",pubdate "  + sqlStorage->textColumnType() +
                     ",duration INTEGER"
                     ",filesize INTEGER"
-                    ",isnew BOOL );" ));
+                    ",isnew BOOL ) ENGINE = MyISAM;" ));
 
         sqlStorage->query( "INSERT INTO podcastchannels_temp SELECT * FROM podcastchannels;" );
         sqlStorage->query( "INSERT INTO podcastepisodes_temp SELECT * FROM podcastepisodes;" );

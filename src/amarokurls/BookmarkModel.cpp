@@ -360,7 +360,7 @@ void BookmarkModel::createTables()
             ", parent_id INTEGER"
             ", name " + sqlStorage->textColumnType() +
             ", description " + sqlStorage->textColumnType() +
-            ", custom " + sqlStorage->textColumnType() + " );" ) );
+            ", custom " + sqlStorage->textColumnType() + " ) ENGINE = MyISAM;" ) );
 
     sqlStorage->query( QString( "CREATE TABLE bookmarks ("
             " id " + sqlStorage->idType() +
@@ -368,7 +368,7 @@ void BookmarkModel::createTables()
             ", name " + sqlStorage->textColumnType() +
             ", url " + sqlStorage->exactTextColumnType() +
             ", description " + sqlStorage->exactTextColumnType() +
-            ", custom " + sqlStorage->textColumnType() + " );" ) );
+            ", custom " + sqlStorage->textColumnType() + " ) ENGINE = MyISAM;" ) );
 
 }
 

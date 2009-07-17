@@ -198,7 +198,7 @@ MySqlCollection::escape( QString text ) const
 
     const QByteArray utfText = text.toUtf8();
     const int length = utfText.length() * 2 + 1;
-    QVarLengthArray<char, 1024> outputBuffer( length );
+    QVarLengthArray<char, 1000> outputBuffer( length );
 
     mysql_real_escape_string( m_db, outputBuffer.data(), utfText.constData(), utfText.length() );
 

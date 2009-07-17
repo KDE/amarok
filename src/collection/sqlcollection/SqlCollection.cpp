@@ -255,6 +255,12 @@ SqlCollection::exactTextColumnType( int length ) const
 }
 
 QString
+SqlCollection::exactIndexableTextColumnType( int length ) const
+{
+    return textColumnType( length );
+}
+
+QString
 SqlCollection::longTextColumnType() const
 {
     return "TEXT";
