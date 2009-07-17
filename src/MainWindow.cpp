@@ -643,14 +643,6 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-
-//     KAction *update_podcasts = new KAction( this );
-//     update_podcasts->setText( i18n( "Update Podcasts" ) );
-//     //update_podcasts->setIcon( KIcon("view-refresh-amarok") );
-//     ac->addAction( "podcasts_update", update_podcasts );
-//     connect(update_podcasts, SIGNAL(triggered(bool)),
-//             The::podcastCollection(), SLOT(slotUpdateAll()));
-
     action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
     ac->addAction( "playlist_playmedia", action );
