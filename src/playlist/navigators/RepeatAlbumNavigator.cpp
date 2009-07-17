@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -28,23 +29,23 @@
 Playlist::RepeatAlbumNavigator::RepeatAlbumNavigator()
 {
     DEBUG_BLOCK
-    AbstractModel* model = GroupingProxy::instance();
-    connect( GroupingProxy::instance(), SIGNAL( insertedIds( const QList<quint64>& ) ),
+    m_model = GroupingProxy::instance();
+    connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ),
              this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
-    connect( GroupingProxy::instance(), SIGNAL( removedIds( const QList<quint64>& ) ),
+    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
              this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( GroupingProxy::instance(), SIGNAL( activeTrackChanged( const quint64 ) ),
+    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
              this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 
-    for ( int i = 0; i < model->rowCount(); i++ )
+    for ( int i = 0; i < m_model->rowCount(); i++ )
     {
-        Meta::AlbumPtr album = model->trackAt( i )->album();
-        m_albumGroups[album].append( model->idAt( i ) ); // conveniently creates an empty list if none exists
+        Meta::AlbumPtr album = m_model->trackAt( i )->album();
+        m_albumGroups[album].append( m_model->idAt( i ) ); // conveniently creates an empty list if none exists
     }
 
-    Meta::TrackPtr activeTrack = model->activeTrack();
+    Meta::TrackPtr activeTrack = m_model->activeTrack();
     m_currentAlbum = activeTrack ? activeTrack->album() : Meta::AlbumPtr();
-    m_currentTrack = model->activeId();
+    m_currentTrack = m_model->activeId();
 
     dump();
 }
@@ -53,11 +54,10 @@ void
 Playlist::RepeatAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
 {
     DEBUG_BLOCK
-    AbstractModel* model = GroupingProxy::instance();
     Meta::AlbumList modifiedAlbums;
     foreach( quint64 id, list )
     {
-        Meta::AlbumPtr album = model->trackForId( id )->album();
+        Meta::AlbumPtr album = m_model->trackForId( id )->album();
         m_albumGroups[album].append( id ); // conveniently creates an empty list if none exists
     }
 
@@ -162,9 +162,8 @@ Playlist::RepeatAlbumNavigator::requestLastTrack()
 bool
 Playlist::RepeatAlbumNavigator::idLessThan( const quint64 l, const quint64 r )
 {
-    AbstractModel* model = GroupingProxy::instance();
-    Meta::TrackPtr left = model->trackForId( l );
-    Meta::TrackPtr right = model->trackForId( r );
+    Meta::TrackPtr left = GroupingProxy::instance()->trackForId( l );
+    Meta::TrackPtr right = GroupingProxy::instance()->trackForId( r );
     return Meta::Track::lessThan( left, right );
 }
 
@@ -180,7 +179,6 @@ Playlist::RepeatAlbumNavigator::sortTheseAlbums( const Meta::AlbumList al )
 void
 Playlist::RepeatAlbumNavigator::dump()
 {
-    AbstractModel* model = GroupingProxy::instance();
     debug() << "album groups are as follows:";
     foreach( Meta::AlbumPtr album, m_albumGroups.keys() )
     {
@@ -190,7 +188,7 @@ Playlist::RepeatAlbumNavigator::dump()
             ItemList atl = m_albumGroups.value( album );
             foreach( quint64 id, atl )
             {
-                Meta::TrackPtr track = model->trackForId( id );
+                Meta::TrackPtr track = m_model->trackForId( id );
                 debug() << "      " << track->trackNumber() << track->prettyName() << id;
             }
         }

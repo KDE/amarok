@@ -2,6 +2,7 @@
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -31,12 +32,12 @@
 
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
-    AbstractModel* model = GroupingProxy::instance();
-    connect( GroupingProxy::instance(), SIGNAL( insertedIds( const QList<quint64>& ) ),
+    m_model = GroupingProxy::instance();
+    connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ),
              this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
-    connect( GroupingProxy::instance(), SIGNAL( removedIds( const QList<quint64>& ) ),
+    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
              this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( GroupingProxy::instance(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
+    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 
     reset();
 }
@@ -44,10 +45,9 @@ Playlist::RandomTrackNavigator::RandomTrackNavigator()
 void
 Playlist::RandomTrackNavigator::recvInsertedIds( const QList<quint64>& list )
 {
-    AbstractModel* model = GroupingProxy::instance();
     foreach( quint64 t, list )
     {
-        if ( ( model->stateOfId( t ) == Item::Unplayed ) || ( model->stateOfId( t ) == Item::NewlyAdded ) )
+        if ( ( m_model->stateOfId( t ) == Item::Unplayed ) || ( m_model->stateOfId( t ) == Item::NewlyAdded ) )
         {
             m_unplayedRows.append( t );
         }
@@ -151,21 +151,20 @@ Playlist::RandomTrackNavigator::requestLastTrack()
 void Playlist::RandomTrackNavigator::reset()
 {
     DEBUG_BLOCK
-    AbstractModel* model = GroupingProxy::instance();
 
     m_unplayedRows.clear();
     m_playedRows.clear();
 
-    const int max = model->rowCount();
+    const int max = m_model->rowCount();
     for ( int i = 0; i < max; i++ )
     {
-        if (( model->stateOfRow( i ) == Item::Unplayed ) || ( model->stateOfRow( i ) == Item::NewlyAdded ) )
+        if (( m_model->stateOfRow( i ) == Item::Unplayed ) || ( m_model->stateOfRow( i ) == Item::NewlyAdded ) )
         {
-            m_unplayedRows.append( model->idAt( i ) );
+            m_unplayedRows.append( m_model->idAt( i ) );
         }
         else
         {
-            m_playedRows.append( model->idAt( i ) );
+            m_playedRows.append( m_model->idAt( i ) );
         }
     }
 

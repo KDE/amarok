@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,33 +20,27 @@
  ****************************************************************************************/
 
 #include "StandardTrackNavigator.h"
-#include "playlist/proxymodels/GroupingProxy.h"
 
-#include "playlist/PlaylistModel.h"
-#include <QDebug>
+#include "playlist/proxymodels/GroupingProxy.h"
 
 quint64
 Playlist::StandardTrackNavigator::requestNextTrack()
 {
-    AbstractModel* model = GroupingProxy::instance();
-
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
 
-    int updateRow = model->activeRow() + 1;
+    int updateRow = m_model->activeRow() + 1;
     if ( m_repeatPlaylist )
-        updateRow = ( updateRow >= model->rowCount() ) ? 0 : updateRow;
-    return model->idAt( updateRow );
+        updateRow = ( updateRow >= m_model->rowCount() ) ? 0 : updateRow;
+    return m_model->idAt( updateRow );
 }
 
 quint64
 Playlist::StandardTrackNavigator::requestLastTrack()
 {
-    AbstractModel* model = GroupingProxy::instance();
-
-    int updateRow = model->activeRow() - 1;
+    int updateRow = m_model->activeRow() - 1;
     if ( m_repeatPlaylist )
-        updateRow = ( updateRow < 0 ) ? model->rowCount() - 1 : updateRow;
-    return model->idAt( updateRow );
+        updateRow = ( updateRow < 0 ) ? m_model->rowCount() - 1 : updateRow;
+    return m_model->idAt( updateRow );
 }
 

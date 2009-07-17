@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,8 +22,9 @@
 
 Playlist::RepeatTrackNavigator::RepeatTrackNavigator()
 {
-    m_trackid = GroupingProxy::instance()->activeId();
+    m_model = GroupingProxy::instance();
+    m_trackid = m_model->activeId();
 
-    connect( GroupingProxy::instance(), SIGNAL( activeTrackChanged( const quint64 ) ),
+    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
              this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 }

@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,6 +20,8 @@
  
 #ifndef TRACKNAVIGATOR_H
 #define TRACKNAVIGATOR_H
+
+#include "playlist/proxymodels/AbstractModel.h"
 
 #include <QObject>
 #include <QQueue>
@@ -92,6 +95,11 @@ namespace Playlist
             // properly?
             // Static queue so that all navigators share the same queue
             QQueue<quint64> m_queue;
+
+            AbstractModel *m_model;
+
+            // Needed for QObject::connect()
+            virtual QAbstractItemModel * model(){ return dynamic_cast<QAbstractItemModel *>( m_model ); }
     };
 }
 

@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -29,18 +30,18 @@
 
 Playlist::RandomAlbumNavigator::RandomAlbumNavigator()
 {
-    AbstractModel* model = GroupingProxy::instance();
-    connect( GroupingProxy::instance(), SIGNAL( insertedIds( const QList<quint64>& ) ),
+    m_model = GroupingProxy::instance();
+    connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ),
              this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
-    connect( GroupingProxy::instance(), SIGNAL( removedIds( const QList<quint64>& ) ),
+    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
              this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( GroupingProxy::instance(), SIGNAL( activeTrackChanged( const quint64 ) ),
+    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
              this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 
-    for ( int i = 0; i < model->rowCount(); i++ )
+    for ( int i = 0; i < m_model->rowCount(); i++ )
     {
-        Meta::AlbumPtr album = model->trackAt( i )->album();
-        m_albumGroups[album].append( model->idAt( i ) ); // conveniently creates an empty list if none exists
+        Meta::AlbumPtr album = m_model->trackAt( i )->album();
+        m_albumGroups[album].append( m_model->idAt( i ) ); // conveniently creates an empty list if none exists
     }
 
     m_unplayedAlbums = m_albumGroups.uniqueKeys();
@@ -58,11 +59,10 @@ Playlist::RandomAlbumNavigator::RandomAlbumNavigator()
 void
 Playlist::RandomAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
 {
-    AbstractModel* model = GroupingProxy::instance();
     Meta::AlbumList modifiedAlbums;
     foreach( quint64 id, list )
     {
-        Meta::AlbumPtr album = model->trackForId( id )->album();
+        Meta::AlbumPtr album = m_model->trackForId( id )->album();
         if ( !m_albumGroups.contains( album ) )
         {
             // TODO: handle already played albums
@@ -250,9 +250,8 @@ Playlist::RandomAlbumNavigator::requestLastTrack()
 bool
 Playlist::RandomAlbumNavigator::idLessThan( const quint64 l, const quint64 r )
 {
-    AbstractModel* model = GroupingProxy::instance();
-    Meta::TrackPtr left = model->trackForId( l );
-    Meta::TrackPtr right = model->trackForId( r );
+    Meta::TrackPtr left = GroupingProxy::instance()->trackForId( l );
+    Meta::TrackPtr right = GroupingProxy::instance()->trackForId( r );
 
     return Meta::Track::lessThan( left, right );
 }
@@ -269,7 +268,6 @@ Playlist::RandomAlbumNavigator::sortTheseAlbums( const Meta::AlbumList al )
 void
 Playlist::RandomAlbumNavigator::dump()
 {
-    AbstractModel* model = GroupingProxy::instance();
     debug() << "album groups are as follows:";
     debug() << "unplayed:";
     foreach( Meta::AlbumPtr album, m_unplayedAlbums )
@@ -278,7 +276,7 @@ Playlist::RandomAlbumNavigator::dump()
         ItemList atl = m_albumGroups.value( album );
         foreach( quint64 id, atl )
         {
-            Meta::TrackPtr track = model->trackForId( id );
+            Meta::TrackPtr track = m_model->trackForId( id );
             debug() << "      " << track->trackNumber() << track->prettyName() << id;
         }
     }
@@ -289,7 +287,7 @@ Playlist::RandomAlbumNavigator::dump()
         ItemList atl = m_albumGroups.value( m_currentAlbum );
         foreach( quint64 id, atl )
         {
-            Meta::TrackPtr track = model->trackForId( id );
+            Meta::TrackPtr track = m_model->trackForId( id );
             debug() << "      " << track->trackNumber() << track->prettyName() << id << (( id == m_currentTrack ) ? "***" : "" );
         }
     }
@@ -300,7 +298,7 @@ Playlist::RandomAlbumNavigator::dump()
         ItemList atl = m_albumGroups.value( album );
         foreach( quint64 id, atl )
         {
-            Meta::TrackPtr track = model->trackForId( id );
+            Meta::TrackPtr track = m_model->trackForId( id );
             debug() << "      " << track->trackNumber() << track->prettyName() << id;
         }
     }
