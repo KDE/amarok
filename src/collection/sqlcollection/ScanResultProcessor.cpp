@@ -645,52 +645,60 @@ ScanResultProcessor::albumId( const QString &album, int artistId )
 int
 ScanResultProcessor::urlId( const QString &url, const QString &uid )
 {
+    QFileInfo fileInfo( url );
+    const QString dir = fileInfo.absoluteDir().absolutePath();
+    int dirId = directoryId( dir );
     int deviceId = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
+    int pathres = 0;
+    int uidres = 0;
     //don't bother caching the data, we only call this method for each url once
-    QString query = QString( "SELECT id, deviceid, rpath, uniqueid FROM urls_temp WHERE deviceid = %1 AND rpath = '%2';" )
-                        .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
-    QStringList pathres = m_collection->query( query ); //tells us if the path existed
-    query = QString( "SELECT id, deviceid, rpath, uniqueid FROM urls_temp WHERE uniqueid='%1';" )
-                        .arg( m_collection->escape( uid ) );
-    QStringList uidres = m_collection->query( query ); //tells us if the uid existed
-    if( pathres.isEmpty() && uidres.isEmpty() ) //fresh -- insert
+    QString query = QString( "SELECT id, directory, deviceid, rpath, uniqueid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3';" )
+                        .arg( QString::number( deviceId ), m_collection->escape( rpath ), m_collection->escape( uid ) );
+    QStringList result = m_collection->query( query ); //tells us if the uid existed
+    if( result[1] == QString::number( dirId ) &&
+        result[2] == QString::number( deviceId ) &&
+        result[3] == rpath &&
+        result[4] == uid
+      )
     {
-        QFileInfo fileInfo( url );
-        const QString dir = fileInfo.absoluteDir().absolutePath();
-        int dirId = directoryId( dir );
+        //everything matches, don't need to do anything, just return the ID
+        return result[0].toInt();
+    }
+    
+    if( result.isEmpty() )  //fresh -- insert
+    {
         QString insert = QString( "INSERT INTO urls_temp(directory,deviceid,rpath,uniqueid) VALUES ( %1, %2, '%3', '%4' );" )
                     .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ),
                               m_collection->escape( uid ) );
         return m_collection->insert( insert, "urls_temp" );
     }
-    else if( !uidres.isEmpty() )
+
+    if( result[4] == uid )
     {
         //we found an existing entry with this uniqueid, update the deviceid and path
         //Note that we ignore the situation where both a UID and path was found; UID takes precedence
-        QFileInfo fileInfo( url );
-        const QString dir = fileInfo.absoluteDir().absolutePath();
-        int dirId = directoryId( dir );
         QString query = QString( "UPDATE urls_temp SET directory=%1,deviceid=%2,rpath='%3' WHERE uniqueid='%4';" )
             .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ),
                             m_collection->escape( uid ) );
         m_collection->query( query );
         m_permanentTablesUrlUpdates.insert( uid, url );
-        m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( uidres[1].toInt(), uidres[2] ), url ) );
-        return uidres[0].toInt();
+        m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( result[2].toInt(), result[3] ), url ) );
+        return result[0].toInt();
     }
-    else if( !pathres.isEmpty() )
+
+    if( result[2] == QString::number( deviceId ) && result[3] == rpath )
     {
         //We found an existing path; give it the most recent UID value
         QString query = QString( "UPDATE urls_temp SET uniqueid='%1' WHERE deviceid=%2 AND rpath='%3';" )
             .arg( uid, QString::number( deviceId ), m_collection->escape( rpath ) );
         m_collection->query( query );
         m_permanentTablesUidUpdates.insert( url, uid );
-        m_changedUids.insert( pathres[3], uid ); 
-        return pathres[0].toInt();
+        m_changedUids.insert( result[4], uid ); 
+        return result[0].toInt();
     }
-    else
-        debug() << "AFT algorithm died...you should not be here!  Returning something negative and bad.";
+
+    debug() << "AFT algorithm died...you should not be here!  Returning something negative and bad.";
     return -666;
 }
 
