@@ -39,6 +39,7 @@ extern "C"
 
 #include "mediadevicecollection_export.h"
 
+#include <KDiskFreeSpaceInfo>
 #include <KIO/Job>
 #include "kjob.h"
 #include <ctime> // for kjob.h
@@ -49,6 +50,10 @@ extern "C"
 #include <QMap>
 #include <QMultiMap>
 #include <QMutex>
+
+namespace Solid {
+    class StorageAccess;
+}
 
 class QString;
 class QMutex;
@@ -280,6 +285,11 @@ private:
     Itdb_Playlist    *m_masterPlaylist;
     GList            *m_currtracklist;
     Itdb_Track       *m_currtrack;
+
+    // For space checks
+
+    QString               m_filepath;
+    float                 m_capacity;
 
     // for playlist parsing
 

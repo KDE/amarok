@@ -72,6 +72,7 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
     //, m_memColl( mc )
     , m_masterPlaylist( 0 )
+    , m_capacity( 0.0 )
     , m_jobcounter( 0 )
     , m_autoConnect( false )
     , m_mountPoint( mountPoint )
@@ -311,6 +312,21 @@ IpodHandler::init()
     detectModel(); // get relevant info about device
 
     qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
+
+    // Get storage access for getting device space capacity/usage
+
+    Solid::Device device = Solid::Device(  m_memColl->udi() );
+        if (  device.isValid() )
+        {
+            Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+            m_filepath = storage->filePath();
+            m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
+        }
+        else
+        {
+            m_filepath = "";
+            m_capacity = 0.0;
+        }
 
     debug() << "Succeeded: " << m_success;
 
@@ -1343,37 +1359,16 @@ IpodHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 float
 IpodHandler::usedCapacity() const
 {
-    Solid::Device device = Solid::Device( m_memColl->udi() );
-    if( device.isValid() )
-    {
-        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-        KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo( storage->filePath() );
-        return info.used();
-
-    }
-
+    if ( !m_filepath.isEmpty() )
+        return KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).used();
     else
-    {
         return 0.0;
-    }
 }
 
 float
 IpodHandler::totalCapacity() const
 {
-    Solid::Device device = Solid::Device( m_memColl->udi() );
-    if( device.isValid() )
-    {
-        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-        KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo( storage->filePath() );
-        return info.size();
-    }
-
-    else
-    {
-        return 0.0;
-    }
-
+    return m_capacity;
 }
 
 /// Sets
