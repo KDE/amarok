@@ -305,6 +305,7 @@ AudioCdCollection::encodingFormat() const
         case MP3:
             return "mp3";
     }
+    return QString();
 }
 
 QString
@@ -320,6 +321,7 @@ AudioCdCollection::copyableBasePath() const
         case MP3:
             return "audiocd:/MP3/";
     }
+    return QString();
 }
 
 void
