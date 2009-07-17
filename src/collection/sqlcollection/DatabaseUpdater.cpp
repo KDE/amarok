@@ -292,6 +292,7 @@ DatabaseUpdater::upgradeVersion4to5()
 void
 DatabaseUpdater::upgradeVersion5to6()
 {
+    DEBUG_BLOCK
     //first, drop tables that can easily be recreated by doing an update
     QStringList dropTables;
     dropTables << "jamendo_albums" << "jamendo_artists" << "jamendo_genre" << "jamendo_tracks";
