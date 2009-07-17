@@ -314,9 +314,12 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
         return false;
     }
 
+    beginRemoveRows( parent, row, row + count - 1 );
     for( int i = row; i < row + count; i++ )
         //deleting a track moves the next track up, so use the same row number each time
         playlist->removeTrack( row );
+    endRemoveRows();
+
     return true;
 }
 
