@@ -1759,7 +1759,7 @@ IpodHandler::supportedFormats()
 {
     QStringList formats;
 
-    formats << "mp3" << "aac" << "mp4";
+    formats << "mp3" << "aac" << "mp4" << "m4a";
 
     return formats;
 }
