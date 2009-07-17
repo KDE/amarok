@@ -212,6 +212,8 @@ private:
 
     LIBMTP_mtpdevice_t      *m_device;
 
+    float                    m_capacity;
+
     QMap<int, QString>       mtpFileTypes;
 
     uint32_t                m_default_parent_folder;

@@ -290,6 +290,18 @@ MtpHandler::getDeviceInfo()
     else
         debug() << "Unknown battery level";
 
+    if( LIBMTP_Get_Storage( m_device, LIBMTP_STORAGE_SORTBY_NOTSORTED ) != 0 )
+    {
+        debug() << "Failed to get storage properties, cannot get capacity";
+        m_capacity = 0.0;
+    }
+
+    else
+    {
+        m_capacity =  m_device->storage->FreeSpaceInBytes;
+        m_capacity = m_device->storage->MaxCapacity;
+    }
+
 
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
@@ -1026,16 +1038,7 @@ float
 MtpHandler::usedCapacity() const
 {
     DEBUG_BLOCK
-    if( LIBMTP_Get_Storage( m_device, LIBMTP_STORAGE_SORTBY_NOTSORTED ) != 0 )
-    {
-        debug() << "Failed to get storage properties, cannot get capacity";
-        return 0.0;
-    }
-
-    else
-    {
-        return m_device->storage->FreeSpaceInBytes;
-    }
+    return m_capacity;
 }
 
 float
@@ -1050,7 +1053,7 @@ MtpHandler::totalCapacity() const
 
     else
     {
-        return m_device->storage->MaxCapacity;
+        return m_device->storage->FreeSpaceInBytes;
     }
 
 }
