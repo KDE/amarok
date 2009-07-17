@@ -656,6 +656,15 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     QString query = QString( "SELECT id, directory, deviceid, rpath, uniqueid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3';" )
                         .arg( QString::number( deviceId ), m_collection->escape( rpath ), m_collection->escape( uid ) );
     QStringList result = m_collection->query( query ); //tells us if the uid existed
+
+    if( result.isEmpty() )  //fresh -- insert
+    {
+        QString insert = QString( "INSERT INTO urls_temp(directory,deviceid,rpath,uniqueid) VALUES ( %1, %2, '%3', '%4' );" )
+                    .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ),
+                              m_collection->escape( uid ) );
+        return m_collection->insert( insert, "urls_temp" );
+    }
+
     if( result[1] == QString::number( dirId ) &&
         result[2] == QString::number( deviceId ) &&
         result[3] == rpath &&
@@ -665,15 +674,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         //everything matches, don't need to do anything, just return the ID
         return result[0].toInt();
     }
-    
-    if( result.isEmpty() )  //fresh -- insert
-    {
-        QString insert = QString( "INSERT INTO urls_temp(directory,deviceid,rpath,uniqueid) VALUES ( %1, %2, '%3', '%4' );" )
-                    .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ),
-                              m_collection->escape( uid ) );
-        return m_collection->insert( insert, "urls_temp" );
-    }
-
+     
     if( result[4] == uid )
     {
         //we found an existing entry with this uniqueid, update the deviceid and path
