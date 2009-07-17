@@ -44,7 +44,7 @@ BrowserWidget::BrowserWidget( QWidget * parent )
 
     // Keyboard shortcut for going back one level
     KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ), this );
-    Amarok::actionCollection()->addAction( "browser_back", action );
+    Amarok::actionCollection()->addAction( "browser_previous", action );
     connect( action, SIGNAL( triggered( bool ) ), m_categoryList, SLOT( back() ) );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_Left ) );
 }
