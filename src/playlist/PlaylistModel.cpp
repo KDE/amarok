@@ -624,13 +624,11 @@ Playlist::Model::stateOfId( quint64 id ) const
 void
 Playlist::Model::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
     const int size = m_items.size();
     for ( int i = 0; i < size; i++ )
     {
         if ( m_items.at( i )->track() == track )
         {
-            debug() << "emitting dataChanged";
             emit dataChanged( createIndex( i, 0 ), createIndex( i, columnCount() - 1 ) );
             break;
         }
