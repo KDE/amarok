@@ -298,11 +298,8 @@ MtpHandler::getDeviceInfo()
 
     else
     {
-        m_capacity =  m_device->storage->FreeSpaceInBytes;
         m_capacity = m_device->storage->MaxCapacity;
     }
-
-
 
     QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
 
@@ -1035,14 +1032,14 @@ MtpHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 }
 
 float
-MtpHandler::usedCapacity() const
+MtpHandler::totalCapacity() const
 {
     DEBUG_BLOCK
     return m_capacity;
 }
 
 float
-MtpHandler::totalCapacity() const
+MtpHandler::usedCapacity() const
 {
     DEBUG_BLOCK
     if( LIBMTP_Get_Storage( m_device, LIBMTP_STORAGE_SORTBY_NOTSORTED ) != 0 )
