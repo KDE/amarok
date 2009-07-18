@@ -226,7 +226,7 @@ function onPopulate( level, callback, filter )
 
     if ( filter != "" )
     {
-        name = filter.replace( "%20", " " );
+        name = filter.replace( /%20/g, " " );
     }
     else
     {
