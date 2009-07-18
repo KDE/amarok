@@ -47,6 +47,8 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Do not show "%20" at the end of each filter value in the LibriVox 
+      service. (BR 190704)
     * Cached lyrics will now be shown when offline. (BR 197589)
     * Fixed pressing play after reaching the end of the playlist not starting
       the playlist from the top (or whereever the navigator thinks it should 
