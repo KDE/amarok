@@ -106,6 +106,7 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
 void
 CollectionLocation::prepareCopy( QueryMaker *qm, CollectionLocation *destination )
 {
+    DEBUG_BLOCK
     if( !destination->isWritable() )
     {
         destination->deleteLater();
@@ -115,6 +116,7 @@ CollectionLocation::prepareCopy( QueryMaker *qm, CollectionLocation *destination
     }
     m_destination = destination;
     m_removeSources = false;
+    m_isRemoveAction = false;
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
     qm->setQueryType( QueryMaker::Track );
@@ -154,6 +156,7 @@ CollectionLocation::prepareMove( QueryMaker *qm, CollectionLocation *destination
         return;
     }
     m_destination = destination;
+    m_isRemoveAction = false;
     m_removeSources = true;
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
@@ -185,6 +188,7 @@ CollectionLocation::prepareRemove( QueryMaker *qm )
     }
 
     m_isRemoveAction = true;
+    m_removeSources = false;
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
@@ -386,6 +390,7 @@ CollectionLocation::slotAborted()
 void
 CollectionLocation::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
+    DEBUG_BLOCK
     Q_UNUSED( collectionId )
     m_sourceTracks << tracks;
 }
@@ -393,6 +398,7 @@ CollectionLocation::resultReady( const QString &collectionId, const Meta::TrackL
 void
 CollectionLocation::queryDone()
 {
+    DEBUG_BLOCK
     QObject *obj = sender();
     if( obj )
     {
@@ -400,14 +406,17 @@ CollectionLocation::queryDone()
     }
     if( m_isRemoveAction )
     {
+        debug() << "we were about to remove something, lets proceed";
         prepareRemove( m_sourceTracks );
     }
     else if( m_removeSources )
     {
+        debug() << "we were about to move something, lets proceed";
         prepareMove( m_sourceTracks, m_destination );
     }
     else
     {
+        debug() << "we were about to copy something, lets proceed";
         prepareCopy( m_sourceTracks, m_destination );
     }
 }
@@ -438,6 +447,7 @@ CollectionLocation::setupRemoveConnections()
 void
 CollectionLocation::startWorkflow( const Meta::TrackList &tracks, bool removeSources )
 {
+    DEBUG_BLOCK
     m_removeSources = removeSources;
     m_sourceTracks = tracks;
     setupConnections();

@@ -689,18 +689,23 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::
     DEBUG_BLOCK
     if( !destination->isWritable() )
     {
+        warning() << "collection " << destination->prettyName() << " is not writable! Aborting";
         return;
     }
     //copied from organizeTracks. create a method for this somewhere
     if( !items.count() )
     {
+        warning() << "No items to copy! Aborting";
         return;
     }
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
     QueryMaker *qm = createMetaQueryFromItems( items, true );
     if( !qm )
+    {
+        warning() << "could not get qm!";
         return;
+    }
 
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
@@ -720,10 +725,13 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::
             delete qm;
             return;
         }
+
+        debug() << "starting source->prepareMove";
         source->prepareMove( qm, dest );
     }
     else
     {
+        debug() << "starting source->prepareCopy";
         source->prepareCopy( qm, dest );
     }
 }
