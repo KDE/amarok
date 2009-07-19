@@ -49,6 +49,7 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QAbstractItemMode
     DEBUG_BLOCK
     setModel( model );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setSelectionBehavior( QAbstractItemView::SelectRows );
     setDragDropMode( QAbstractItemView::DragDrop );
     setAcceptDrops( true );
 
