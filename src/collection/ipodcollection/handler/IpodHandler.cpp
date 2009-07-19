@@ -202,7 +202,7 @@ IpodHandler::init()
 
             if( !ok )
             {
-                KMessageBox::error( 0, i18n( "%1the iPod Model is necessary to initialize the iPod", initError ), initErrorCaption );
+                KMessageBox::error( 0, i18n( "%1 the iPod Model is necessary to initialize the iPod", initError ), initErrorCaption );
                 m_success = false;
                 m_memColl->slotAttemptConnectionDone( m_success );
                 return;
@@ -228,7 +228,7 @@ IpodHandler::init()
                 // If it doesn't exist, make it and the path to it
                 if ( !root.mkpath( dir.absolutePath() ) )
                 {
-                    KMessageBox::error( 0, i18n( "%1failed to write to iPod, make sure you have write permissions on the iPod", initError ), initErrorCaption );
+                    KMessageBox::error( 0, i18n( "%1 failed to write to iPod, make sure you have write permissions on the iPod", initError ), initErrorCaption );
                     debug() << "Creating directory failed";
                     m_success = false;
                     m_memColl->slotAttemptConnectionDone( m_success );
@@ -244,7 +244,7 @@ IpodHandler::init()
 
             if( !wrote )
             {
-                KMessageBox::error( 0, i18n( "%1failed to write SysInfo file to iPod, make sure you have write permissions on the iPod", initError ), initErrorCaption );
+                KMessageBox::error( 0, i18n( "%1 failed to write SysInfo file to iPod, make sure you have write permissions on the iPod", initError ), initErrorCaption );
                 debug() << "Failed to write modelnum to sysinfo file";
                 m_success = false;
                 m_memColl->slotAttemptConnectionDone( m_success );
@@ -268,7 +268,7 @@ IpodHandler::init()
                     m_itdb = 0;
                 }
 
-                KMessageBox::error( 0, i18n( "%1failed to initialize the iPod", initError ), initErrorCaption );
+                KMessageBox::error( 0, i18n( "%1 failed to initialize the iPod", initError ), initErrorCaption );
 
                 m_success = false;
                 m_memColl->slotAttemptConnectionDone( m_success );
@@ -284,7 +284,7 @@ IpodHandler::init()
         }
         else
         {
-            KMessageBox::information( 0, i18n( "%1you chose not to initialize the iPod. It will not be usable until it is initialized.", initError), initErrorCaption );
+            KMessageBox::information( 0, i18n( "%1 you chose not to initialize the iPod. It will not be usable until it is initialized.", initError), initErrorCaption );
             m_success = false;
         }
 
