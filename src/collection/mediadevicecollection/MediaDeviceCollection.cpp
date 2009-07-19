@@ -140,19 +140,8 @@ MediaDeviceCollection::~MediaDeviceCollection()
 void
 MediaDeviceCollection::initCapacities()
 {
-    Solid::Device device = Solid::Device( m_udi );
-    if( device.isValid() )
-    {
-        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-        KDiskFreeSpaceInfo info = KDiskFreeSpaceInfo::freeSpaceInfo( storage->filePath() );
-        m_usedCapacity = info.used();
-        m_totalCapacity = info.size();
-    }
-    else
-    {
-        m_usedCapacity = 0;
-        m_totalCapacity = 0;
-    }
+    m_usedCapacity = m_handler->usedcapacity();
+    m_totalCapacity = m_handler->totalcapacity();
 }
 
 QueryMaker*
@@ -263,9 +252,8 @@ MediaDeviceCollection::hasCapacity() const
 float
 MediaDeviceCollection::usedCapacity() const
 {
-    if( m_totalCapacity < 0 )
-        const_cast<MediaDeviceCollection*>(this)->initCapacities();
-    return m_usedCapacity;
+    if( m_totalCapacity >= 0 )
+        return m_usedCapacity;
 }
 
 float

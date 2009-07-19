@@ -1041,6 +1041,18 @@ MediaDeviceHandler::freeSpace() const
     return ( m_rc->totalCapacity() - m_rc->usedCapacity() );
 }
 
+float
+MediaDeviceHandler::usedcapacity() const
+{
+    return m_rc->usedCapacity();
+}
+
+float
+MediaDeviceHandler::totalcapacity() const
+{
+    return m_rc->totalCapacity();
+}
+
 /** Observer Methods **/
 void
 MediaDeviceHandler::metadataChanged( TrackPtr track )

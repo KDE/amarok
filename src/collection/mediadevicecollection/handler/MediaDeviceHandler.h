@@ -188,6 +188,9 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
 
     virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) } // called by @param track
 
+    virtual float usedcapacity() const;
+    virtual float totalcapacity() const;
+
     // HACK: Used for device-specific actions, such as initialize for iPod
 
     virtual QList<PopupDropperAction *> collectionActions() { return QList<PopupDropperAction*> (); }
