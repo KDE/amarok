@@ -36,7 +36,6 @@ class QTextStream;
 
 namespace Meta
 {
-
     class Playlist;
 
     typedef KSharedPtr<Playlist> PlaylistPtr;
@@ -45,10 +44,20 @@ namespace Meta
     class AMAROK_EXPORT PlaylistObserver
     {
         public:
-            /** This method is called when  a playlist has changed.
+            void subscribeTo( PlaylistPtr );
+            void unsubscribeFrom( PlaylistPtr );
+
+            /** This method is called when a track has been added to the playlist.
              */
-            virtual void trackListChanged( Playlist* playlist ) = 0;
+            virtual void trackAdded( PlaylistPtr playlist, TrackPtr track, int position ) = 0;
+            /** This method is called when a track is removed from to the playlist.
+             */
+            virtual void trackRemoved( PlaylistPtr playlist, int position ) = 0;
+
             virtual ~PlaylistObserver() {}
+
+        private:
+            QSet<PlaylistPtr> m_playlistSubscriptions;
     };
 
     class AMAROK_EXPORT Playlist : public virtual QSharedData
@@ -91,24 +100,19 @@ namespace Meta
 
             virtual Capability* createCapabilityInterface( Capability::Type type ) = 0;
 
-            virtual KUrl retrievableUrl() { return KUrl(); }
-
-            virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
-            virtual bool save( const QString &location, bool relative ) { Q_UNUSED( location); Q_UNUSED( relative); return false; }
-
             /**
              * Retrieves a specialized interface which represents a capability of this
-             * MetaBase object.
-             *
-             * @returns a pointer to the capability interface if it exists, 0 otherwise
-             */
-            template <class CapIface> CapIface *create()
-            {
-                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
-                Meta::Capability *iface = createCapabilityInterface(type);
-                return qobject_cast<CapIface *>(iface);
+             * MetaBase object.                                                                                                    
+             *                                                                                                                     
+             * @returns a pointer to the capability interface if it exists, 0 otherwise                                            
+             */                                                                                                                    
+            template <class CapIface> CapIface *create()                                                                           
+            {                                                                                                                      
+                Meta::Capability::Type type = CapIface::capabilityInterfaceType();                                                 
+                Meta::Capability *iface = createCapabilityInterface(type);                                                         
+                return qobject_cast<CapIface *>(iface);                                                                            
             }
-
+            
             /**
              * Tests if a MetaBase object provides a given capability interface.
              *
@@ -119,13 +123,30 @@ namespace Meta
                 return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
             }
 
-        protected:
-            virtual void notifyObservers() const {
-                foreach( PlaylistObserver *observer, m_observers )
-                    observer->trackListChanged( const_cast<Meta::Playlist*>( this ) );
-            }
+            virtual KUrl retrievableUrl() { return KUrl(); }
+
+            virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
+            virtual bool save( const QString &location, bool relative ) { Q_UNUSED( location); Q_UNUSED( relative); return false; }
 
         protected:
+            inline void notifyObserversTrackAdded( Meta::TrackPtr track, int position )
+            {
+                foreach( Meta::PlaylistObserver *observer, m_observers )
+                {
+                    if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+                        observer->trackAdded( Meta::PlaylistPtr( this ), track, position );
+                }
+            }
+
+            inline void notifyObserversTrackRemoved( int position )
+            {
+                foreach( Meta::PlaylistObserver *observer, m_observers )
+                {
+                    if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+                        observer->trackRemoved( Meta::PlaylistPtr( this ), position );
+                }
+            }
+
             QSet<Meta::PlaylistObserver*> m_observers;
             QString m_name;
     };

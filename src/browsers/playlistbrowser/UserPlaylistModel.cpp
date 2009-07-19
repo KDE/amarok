@@ -123,6 +123,7 @@ PlaylistBrowserNS::UserModel::loadPlaylists()
     {
         Meta::PlaylistPtr playlist = Meta::PlaylistPtr::staticCast( i.next() );
         m_playlists << playlist;
+        playlist->subscribe( this );
     }
 }
 
@@ -315,9 +316,12 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
     }
 
     beginRemoveRows( parent, row, row + count - 1 );
+    //ignore notifications while removing tracks
+    playlist->unsubscribe( this );
     for( int i = row; i < row + count; i++ )
         //deleting a track moves the next track up, so use the same row number each time
         playlist->removeTrack( row );
+    playlist->subscribe( this );
     endRemoveRows();
 
     return true;
@@ -553,6 +557,39 @@ PlaylistBrowserNS::UserModel::trackFromIndex( const QModelIndex &index ) const
     Meta::PlaylistPtr playlist = m_playlists.value(
             REMOVE_TRACK_MASK(index.internalId()) );
     return playlist->tracks()[index.row()];
+}
+
+void
+PlaylistBrowserNS::UserModel::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track, int position )
+{
+    DEBUG_BLOCK
+    debug() << "From playlist: " << playlist->prettyName();
+    debug() << "Track: " << track->prettyName() << "position: " << position;
+    int indexNumber = m_playlists.indexOf( playlist );
+    if( indexNumber == -1 )
+    {
+        debug() << "Error: this playlist is not in the list of this model.";
+        return;
+    }
+    QModelIndex playlistIdx = index( indexNumber, 0, QModelIndex() );
+    rowsInserted( playlistIdx, position, position );
+}
+
+void
+PlaylistBrowserNS::UserModel::trackRemoved( Meta::PlaylistPtr playlist, int position )
+{
+    DEBUG_BLOCK
+    debug() << "From playlist: " << playlist->prettyName();
+    debug() << "position: " << position;
+    int indexNumber = m_playlists.indexOf( playlist );
+    if( indexNumber == -1 )
+    {
+        debug() << "Error: this playlist is not in the list of this model.";
+        return;
+    }
+    QModelIndex playlistIdx = index( indexNumber, 0, QModelIndex() );
+    beginRemoveRows( playlistIdx, position, position );
+    endRemoveRows();
 }
 
 #include "UserPlaylistModel.moc"

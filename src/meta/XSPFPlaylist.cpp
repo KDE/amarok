@@ -148,8 +148,6 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
         return false;
     }
 
-    notifyObservers();
-
     return true;
 }
 

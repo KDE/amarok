@@ -214,13 +214,18 @@ Meta::SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
     DEBUG_BLOCK
     int insertAt = (position == -1) ? m_tracks.count() : position;
     m_tracks.insert( insertAt, track );
+    notifyObserversTrackAdded( track, position );
 }
 
 void
 Meta::SqlPlaylist::removeTrack( int position )
 {
     DEBUG_BLOCK
+    debug() << "position: " << position;
+    if( position < 0 || position >= m_tracks.size() )
+        return;
     m_tracks.removeAt( position );
+    notifyObserversTrackRemoved( position );
 }
 
 void
@@ -261,7 +266,6 @@ Meta::SqlPlaylist::loadTracks()
             //debug() << "added track: " << trackPtr->name();
 
         }
-
     }
 
     m_tracksLoaded = true;
@@ -292,11 +296,3 @@ Meta::SqlPlaylist::id()
 {
     return m_dbId;
 }
-
-/*
-void
-Meta::SqlPlaylist::reparent( SqlPlaylistGroupPtr parent )
-{
-    m_parent = parent;
-    saveToDb( false );
-}*/

@@ -39,7 +39,7 @@ class QHBoxLayout;
 class QSpinBox;
 class QCheckBox;
 
-class ServiceInfo : public Context::Applet, public Meta::PlaylistObserver
+class ServiceInfo : public Context::Applet
 {
     Q_OBJECT
 public:
@@ -48,8 +48,6 @@ public:
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-
-    virtual void trackListChanged( Meta::Playlist* playlist );
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );

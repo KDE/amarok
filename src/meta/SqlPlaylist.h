@@ -73,8 +73,6 @@ class SqlPlaylist : public Playlist
 
         void removeFromDb();
 
-        //bool load();
-
     private:
         void loadTracks();
         void saveTracks();

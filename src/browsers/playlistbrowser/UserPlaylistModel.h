@@ -34,7 +34,8 @@ namespace PlaylistBrowserNS {
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class UserModel : public QAbstractItemModel, public MetaPlaylistModel
+class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
+                  public Meta::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -80,6 +81,11 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel
         /* UserPlaylistModel specific methods */
         Meta::PlaylistList selectedPlaylists() { return m_selectedPlaylists; }
         Meta::TrackList selectedTracks() { return m_selectedTracks; }
+
+        /* Meta::PlaylistObserver methods */
+        virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+                                 int position );
+        virtual void trackRemoved( Meta::PlaylistPtr playlist, int position );
 
     public slots:
         void slotLoad();

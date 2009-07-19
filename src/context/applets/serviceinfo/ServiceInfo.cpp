@@ -154,24 +154,16 @@ void ServiceInfo::linkClicked( const QUrl & url )
 {
     debug() << "Link clicked: " << url.toString();
 
-    if ( url.toString().startsWith( "amarok://", Qt::CaseInsensitive ) ) {
+    if ( url.toString().startsWith( "amarok://", Qt::CaseInsensitive ) )
+    {
         AmarokUrl aUrl( url.toString() );
         aUrl.run();
-    } else if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) ) {
-
+    }
+    else if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) )
+    {
         Meta::XSPFPlaylist * playlist = new Meta::XSPFPlaylist( url );
-        playlist->subscribe( this );
-
     }
 }
-
-void ServiceInfo::trackListChanged( Meta::Playlist * playlist )
-{
-    playlist->unsubscribe( this );
-    Meta::PlaylistPtr playlistPtr( playlist );
-    The::playlistController()->insertOptioned( playlistPtr, Playlist::Append );
-}
-
 
 #include "ServiceInfo.moc"
 
