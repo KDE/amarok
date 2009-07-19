@@ -32,6 +32,7 @@ PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistM
     , m_renameAction( 0 )
     , m_deleteAction( 0 )
 {
+//    setSourceModel( model );
     // signal proxies
     connect( m_model,
         SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
@@ -40,8 +41,10 @@ PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistM
     connect( m_model,
         SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this,
         SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
-        this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
+//    connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
+//        this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
+//    connect( m_model, SIGNAL( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ),
+//             SLOT( modelRowsAboutToBeRemoved( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
     connect( m_model, SIGNAL( layoutChanged() ), SLOT( buildTree() ) );
 
@@ -211,8 +214,13 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
         deleteGroup( parent );
         return true;
     }
+
+    beginRemoveRows( parent, row, row + count - 1 );
     QModelIndex originalIdx = mapToSource( parent );
-    return m_model->removeRows( row, count, originalIdx );
+    bool success = m_model->removeRows( row, count, originalIdx );
+    endRemoveRows();
+
+    return success;
 }
 
 QStringList
@@ -450,11 +458,30 @@ PlaylistsInGroupsProxy::modelRowsInserted( const QModelIndex& index, int start, 
 }
 
 void
-PlaylistsInGroupsProxy::modelRowsRemoved( const QModelIndex& index, int start, int end )
+PlaylistsInGroupsProxy::modelRowsRemoved( const QModelIndex& idx, int start, int end )
 {
-    Q_UNUSED( index )
-    Q_UNUSED( start )
-    Q_UNUSED( end )
+    DEBUG_BLOCK
+    debug() << "source index: " << idx;
+    debug() << "start: " << start;
+    debug() << "end: " << end;
+    QModelIndex proxyIdx = mapToSource( idx );
+    debug() << "proxy index: " << proxyIdx;
+
+    //call endRemoveRows when we are deleting
+    endRemoveRows();
+}
+
+void
+PlaylistsInGroupsProxy::modelRowsAboutToBeRemoved( const QModelIndex &parent, int start,
+                                                   int end ) //SLOT
+{
+    DEBUG_BLOCK
+    debug() << "parent: " << parent;
+    debug() << "start: " << start;
+    debug() << "end: " << end;
+    QModelIndex proxyParent = mapToSource( parent );
+    debug() << "proxyParent: " << proxyParent;
+    beginRemoveRows( proxyParent, start, end );
 }
 
 void
