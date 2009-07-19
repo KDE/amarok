@@ -60,7 +60,6 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int iconWidth = 32;
     const int iconHeight = 32;
     const int iconPadX = 4;
-    const int iconPadY = 4;
     const bool hasCapacity = index.data( CustomRoles::HasCapacity ).toBool();
 
     painter->save();
@@ -82,39 +81,47 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->drawPixmap( iconPos,
                          index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
-    const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
-    QRectF titleRect;
-    titleRect.setLeft( isRTL ? 0 : iconRight );
-    titleRect.setTop( option.rect.top() + iconYPadding );
-    titleRect.setWidth( width - iconRight );
-    titleRect.setHeight( height );
-
     const QString collectionName = index.data( Qt::DisplayRole ).toString();
+    const QString bylineText = index.data( CustomRoles::ByLineRole ).toString();
+    QFontMetrics bigFm( m_bigFont );
+    QFontMetrics smallFm( m_smallFont );
+
+    const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
+    const int infoRectLeft = isRTL ? 0 : iconRight;
+    const int infoRectWidth = width - iconRight;
+    
+    QRectF titleRect;
+    titleRect.setLeft( infoRectLeft );
+    titleRect.setTop( option.rect.top() + iconYPadding );
+    titleRect.setWidth( infoRectWidth );
+    titleRect.setHeight( bigFm.boundingRect( collectionName ).height() );
 
     painter->setFont( m_bigFont );
     painter->drawText( titleRect, Qt::AlignLeft, collectionName );
 
-    QFontMetrics bigFm( m_bigFont );
-
     QRectF textRect;
-    textRect.setLeft( isRTL ? 0 : iconRight );
-    textRect.setTop( option.rect.top() + iconYPadding + bigFm.boundingRect( collectionName ).height() );
-    textRect.setWidth( width - iconPadX * 2 );
-    textRect.setHeight( height - ( iconHeight + iconPadY ) );
+    textRect.setLeft( infoRectLeft );
+    textRect.setTop( titleRect.bottom() );
+    textRect.setWidth( infoRectWidth );
+    textRect.setHeight( smallFm.boundingRect( bylineText ).height() );
 
     painter->setFont( m_smallFont );
-    painter->drawText( textRect, Qt::TextWordWrap, index.data( CustomRoles::ByLineRole ).toString() );
+    painter->drawText( textRect, Qt::TextWordWrap, bylineText ); 
 
     if( hasCapacity )
     {
         QRect capacityRect;
-        capacityRect.setLeft( textRect.left() );
-        capacityRect.setTop( textRect.top() + textRect.height() );
-        capacityRect.setWidth( textRect.width() - 20 );
+        capacityRect.setLeft( infoRectLeft );
+        capacityRect.setTop( textRect.bottom() );
+        capacityRect.setWidth( infoRectWidth );
         capacityRect.setHeight( CAPACITYRECT_HEIGHT );
 
+        const int used = index.data( CustomRoles::UsedCapacity ).toInt();
+
         KCapacityBar capacityBar( KCapacityBar::DrawTextInline );
-        capacityBar.setValue( index.data( CustomRoles::UsedCapacity ).toInt() );
+        capacityBar.setValue( used );
+        // TODO: set text in a tooltip where we can show extra info (eg bytes available, not just percentage)
+        //capacityBar.setText( i18n("%1% used").arg( QString::number(used) ) );
         capacityBar.drawCapacityBar( painter, capacityRect );
     }
 
