@@ -29,9 +29,11 @@ namespace PlaylistBrowserNS {
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class MetaPlaylistModel : public QAbstractItemModel
+class MetaPlaylistModel
 {
     public:
+        virtual ~MetaPlaylistModel() {};
+        
         enum {
             DescriptionRole = Qt::UserRole + 1,
             //Where is this Playlist from i.e. which PlaylistProvider
@@ -43,10 +45,6 @@ class MetaPlaylistModel : public QAbstractItemModel
         virtual QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes ) = 0;
 
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode ) = 0;
-        virtual QModelIndex createNewGroup( const QString &groupName ) { Q_UNUSED(groupName) return QModelIndex(); }
-
-    signals:
-        void rename( QModelIndex idx );
 };
 
 }

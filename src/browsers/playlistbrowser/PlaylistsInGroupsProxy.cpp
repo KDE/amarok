@@ -26,27 +26,27 @@
 #include <KIcon>
 #include <KInputDialog>
 
-PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistModel *model )
-    : MetaPlaylistModel()
+PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
+    : QAbstractProxyModel( The::playlistModel() )
     , m_model( model )
     , m_renameAction( 0 )
     , m_deleteAction( 0 )
 {
-//    setSourceModel( model );
+    setSourceModel( model );
     // signal proxies
-    connect( m_model,
-        SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
-        this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) )
-    );
-    connect( m_model,
-        SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this,
-        SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
-//    connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
-//        this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
-//    connect( m_model, SIGNAL( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ),
-//             SLOT( modelRowsAboutToBeRemoved( const QModelIndex &, int, int ) ) );
+//    connect( m_model,
+//        SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
+//        this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) )
+//    );
+//    connect( m_model,
+//        SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this,
+//        SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
+        this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( m_model, SIGNAL( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ),
+             SLOT( modelRowsAboutToBeRemoved( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
-    connect( m_model, SIGNAL( layoutChanged() ), SLOT( buildTree() ) );
+//    connect( m_model, SIGNAL( layoutChanged() ), SLOT( buildTree() ) );
 
     buildTree();
 }
@@ -215,10 +215,8 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
         return true;
     }
 
-    beginRemoveRows( parent, row, row + count - 1 );
     QModelIndex originalIdx = mapToSource( parent );
     bool success = m_model->removeRows( row, count, originalIdx );
-    endRemoveRows();
 
     return success;
 }
@@ -484,6 +482,7 @@ PlaylistsInGroupsProxy::modelRowsAboutToBeRemoved( const QModelIndex &parent, in
     beginRemoveRows( proxyParent, start, end );
 }
 
+
 void
 PlaylistsInGroupsProxy::slotRename( QModelIndex sourceIdx )
 {
@@ -642,15 +641,21 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
         }
         QModelIndexList originalList = mapToSource( list );
         debug() << originalList.count() << "original indices";
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+        if( mpm == 0 )
+            return actions;
         if( !originalList.isEmpty() )
-            actions << m_model->actionsFor( originalList );
+            actions << mpm->actionsFor( originalList );
     }
     else if( groupSelected )
     {
         QModelIndexList originalList;
         originalList << m_model->index( 0, 0, QModelIndex() );
         originalList << m_model->index( 1, 0, QModelIndex() );
-        actions << m_model->actionsFor( originalList );
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+        if( mpm == 0 )
+            return actions;
+        actions << mpm->actionsFor( originalList );
         actions << createGroupActions();
         foreach( const QModelIndex &index, list )
         {
@@ -668,8 +673,10 @@ void
 PlaylistsInGroupsProxy::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
 {
     QModelIndexList originalList = mapToSource( list );
-
-    m_model->loadItems( originalList, insertMode );
+    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+    if( mpm == 0 )
+        return;
+    mpm->loadItems( originalList, insertMode );
 }
 
 QModelIndex

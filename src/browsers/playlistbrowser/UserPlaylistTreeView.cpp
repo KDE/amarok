@@ -29,6 +29,7 @@
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
+#include "PlaylistsInGroupsProxy.h"
 
 #include <KAction>
 #include <KMenu>
@@ -39,7 +40,7 @@
 
 #include <typeinfo>
 
-PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( MetaPlaylistModel *model, QWidget *parent )
+PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QAbstractItemModel *model, QWidget *parent )
     : Amarok::PrettyTreeView( parent )
     , m_model( model )
     , m_pd( 0 )
@@ -60,8 +61,6 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( MetaPlaylistModel
     setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
-    connect( m_model, SIGNAL( rowsRemoved( const QModelIndex &, int, int ) ),
-             SLOT( rowsRemoved( const QModelIndex &, int, int ) ) );
 }
 
 
@@ -97,7 +96,10 @@ void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent
     {
         QModelIndexList list;
         list << index;
-        m_model->loadItems( list, Playlist::LoadAndPlay );
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+        if( mpm == 0 )
+            return;
+        mpm->loadItems( list, Playlist::LoadAndPlay );
     }
 }
 
@@ -119,7 +121,10 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 
         QModelIndexList indices = selectedIndexes();
 
-        QList<PopupDropperAction*> actions = m_model->actionsFor( indices );
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+        if( mpm == 0 )
+            return;
+        QList<PopupDropperAction*> actions = mpm->actionsFor( indices );
 
         foreach( PopupDropperAction * action, actions ) {
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
@@ -173,7 +178,10 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
 
     KMenu menu;
 
-    QList<PopupDropperAction *> actions = m_model->actionsFor( indices );
+    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+    if( mpm == 0 )
+        return;
+    QList<PopupDropperAction *> actions = mpm->actionsFor( indices );
 
     if( actions.isEmpty() )
         return;
@@ -196,7 +204,10 @@ PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
 void
 PlaylistBrowserNS::UserPlaylistTreeView::createNewGroup()
 {
-    QModelIndex idx = m_model->createNewGroup( QString("New Folder") );
+    PlaylistsInGroupsProxy *pigp = dynamic_cast<PlaylistsInGroupsProxy *>(m_model);
+    if( pigp == 0 )
+        return;
+    QModelIndex idx = pigp->createNewGroup( QString("New Folder") );
     edit( idx );
 }
 

@@ -34,7 +34,7 @@ class UserPlaylistTreeView : public Amarok::PrettyTreeView
     Q_OBJECT
 
 public:
-    explicit UserPlaylistTreeView( MetaPlaylistModel *model, QWidget *parent = 0 );
+    explicit UserPlaylistTreeView( QAbstractItemModel *model, QWidget *parent = 0 );
     ~UserPlaylistTreeView();
 
     void setNewGroupAction( KAction * action );
@@ -52,7 +52,7 @@ protected:
     void contextMenuEvent( QContextMenuEvent* event );
 
 private:
-    MetaPlaylistModel *m_model;
+    QAbstractItemModel *m_model;
     PopupDropper* m_pd;
 
     KAction *m_addGroupAction;

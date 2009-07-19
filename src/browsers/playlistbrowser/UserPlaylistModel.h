@@ -34,7 +34,7 @@ namespace PlaylistBrowserNS {
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class UserModel : public MetaPlaylistModel
+class UserModel : public QAbstractItemModel, public MetaPlaylistModel
 {
     Q_OBJECT
     public:

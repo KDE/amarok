@@ -28,11 +28,12 @@
 
 class PopupDropperAction;
 
-class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
+class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
+                                public PlaylistBrowserNS::MetaPlaylistModel
 {
     Q_OBJECT
     public:
-        PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistModel *model );
+        PlaylistsInGroupsProxy( QAbstractItemModel *model );
         ~PlaylistsInGroupsProxy();
 
         // functions from QAbstractProxyModel
@@ -71,6 +72,7 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         void modelDataChanged( const QModelIndex&, const QModelIndex& );
         void modelRowsInserted( const QModelIndex&, int, int );
         void modelRowsRemoved( const QModelIndex&, int, int );
+        void modelRowsAboutToBeRemoved( const QModelIndex&, int, int );
         void slotRename( QModelIndex idx );
         void buildTree();
 
@@ -88,7 +90,7 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
 
         void deleteGroup( const QModelIndex &groupIdx );
 
-        MetaPlaylistModel *m_model;
+        QAbstractItemModel *m_model;
         PopupDropperAction *m_renameAction;
         PopupDropperAction *m_deleteAction;
 
