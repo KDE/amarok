@@ -289,7 +289,7 @@ MainWindow::init()
 
     connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
 
-    setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks );
+    setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browsersDock );
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock );
