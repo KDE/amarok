@@ -63,7 +63,7 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
         virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
         virtual Qt::DropActions supportedDropActions() const {
-            return Qt::CopyAction;
+            return Qt::CopyAction | Qt::MoveAction;
         }
 
         virtual Qt::DropActions supportedDragActions() const {
