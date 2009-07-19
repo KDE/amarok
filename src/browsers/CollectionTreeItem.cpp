@@ -187,7 +187,7 @@ CollectionTreeItem::data( int role ) const
         }
         else if( role == CustomRoles::HasCapacity )
         {
-            return m_parentCollection->hasCapacity();
+            return false;//m_parentCollection->hasCapacity();
         }
         else if( role == CustomRoles::UsedCapacity )
         {
