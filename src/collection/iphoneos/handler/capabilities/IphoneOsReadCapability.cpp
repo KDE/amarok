@@ -190,6 +190,6 @@ IphoneOsReadCapability::totalCapacity() const
     return info.size();
 }
 
-};
+}
 
 #include "IphoneOsReadCapability.moc"

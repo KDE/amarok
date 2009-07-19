@@ -45,7 +45,7 @@ namespace Handler
 {
     class IphoneOsReadCapability;
     class IphoneOsPlaylistCapability;
-};
+}
 
 struct sqlite3;
 

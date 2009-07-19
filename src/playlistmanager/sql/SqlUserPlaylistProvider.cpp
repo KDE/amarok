@@ -39,7 +39,7 @@ static const int USERPLAYLIST_DB_VERSION = 2;
 static const QString key("AMAROK_USERPLAYLIST");
 
 typedef QMultiMap<Meta::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
-Q_DECLARE_METATYPE( PlaylistTrackMap );
+Q_DECLARE_METATYPE( PlaylistTrackMap )
 
 SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     : UserPlaylistProvider()
