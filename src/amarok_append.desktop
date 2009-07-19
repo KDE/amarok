@@ -62,7 +62,7 @@ Name[x-test]=xxAppend to Playlistxx
 Name[zh_CN]=追加到播放列表
 Name[zh_TW]=添加到清單中
 Icon=amarok
-Exec=amarok -e %U
+Exec=amarok -a %U
 
 [Desktop Action appendAndPlay]
 Name=Append & Play
