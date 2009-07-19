@@ -49,7 +49,7 @@ CollectionCapabilityMediaDevice::collectionActions( QueryMaker *qm )
 
     // Pull in other device actions defined by subclasses
 
-    actions.append( m_coll->handler()->collectionActions() );
+    actions += m_coll->handler()->collectionActions();  // This can be .append( QList<T> ) when we start depending on Qt>=4.5
 
     return actions;
 }

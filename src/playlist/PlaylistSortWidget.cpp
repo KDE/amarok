@@ -38,7 +38,7 @@ SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
 
     m_comboLayout = new QHBoxLayout( this );
     mainLayout->addLayout( m_comboLayout );
-    m_sortableCategories.append( internalColumnNames );
+    m_sortableCategories += internalColumnNames;
     for( QStringList::iterator i = m_sortableCategories.begin(); i!=m_sortableCategories.end(); )
     {
         if( *i == QString( "Placeholder" ) || *i == QString( "Bpm" )
