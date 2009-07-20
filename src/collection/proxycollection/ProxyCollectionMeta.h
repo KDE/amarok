@@ -53,6 +53,7 @@ namespace ProxyCollection
             void setScore( double newScore );
             int rating() const;
             void setRating( int newRating );
+            uint firstPlayed() const;
             uint lastPlayed() const;
             int playCount() const;
 
