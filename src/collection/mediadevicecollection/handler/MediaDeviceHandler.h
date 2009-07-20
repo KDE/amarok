@@ -323,6 +323,7 @@ private:
 
     bool m_copyFailed; /// Indicates whether a copy failed or not
     bool m_isCopying;
+    bool m_isDeleting;
 
     Meta::TrackList   m_tracksToCopy; /// List of tracks left to copy
     Meta::TrackList   m_tracksCopying; /// List of tracks currrently copying

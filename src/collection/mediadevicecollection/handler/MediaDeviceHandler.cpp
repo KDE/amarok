@@ -56,6 +56,7 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 , m_memColl( qobject_cast<MediaDeviceCollection*>(parent) )
 , m_provider( 0 )
 , m_isCopying( false )
+, m_isDeleting( false )
 , m_pc( 0 )
 , m_rc( 0 )
 , m_wc( 0 )
@@ -587,6 +588,15 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
 
+    QString removeError = i18n( "Tracks not deleted:" );
+    QString removeErrorCaption = i18n( "Deleting Tracks Failed" );
+
+    if ( m_isDeleting )
+    {
+        KMessageBox::error( 0, i18n( "%1 Tracks are already being deleted from the device", removeError ), removeErrorCaption );
+        return;
+    }
+
     if( !m_wc )
     {
         if( this->hasCapabilityInterface( Handler::Capability::Writable ) )
@@ -599,6 +609,8 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
             }
         }
     }
+
+    m_isDeleting = true;
 
     // Init the list of tracks to be deleted
 
@@ -694,6 +706,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
             The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         */
+        m_isDeleting = false;
         emit removeTracksDone();
     }
 }
