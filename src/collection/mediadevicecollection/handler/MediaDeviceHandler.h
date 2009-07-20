@@ -298,6 +298,10 @@ private:
     void setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap &composerMap );
     void setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap &yearMap );
 
+    // Misc. Helper Methods
+
+    void setupReadCapability();
+
     /**
      *  @return free space on the device
      */
