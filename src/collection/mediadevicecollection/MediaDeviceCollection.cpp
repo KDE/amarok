@@ -254,6 +254,8 @@ MediaDeviceCollection::usedCapacity() const
 {
     if( m_totalCapacity >= 0 )
         return m_usedCapacity;
+    else
+        return 0.0;
 }
 
 float
