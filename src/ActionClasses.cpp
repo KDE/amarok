@@ -481,5 +481,45 @@ StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// StopPlayingAfterCurrentTrackAction
+//////////////////////////////////////////////////////////////////////////////////////////
+
+StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionCollection *ac, QObject *parent )
+: KAction( parent )
+, EngineObserver( The::engineController() )
+{
+    ac->addAction( "stop_after_current", this );
+    setText( i18n( "Stop after current Track" ) );
+    setIcon( KIcon("media-playback-stop-amarok") );
+    setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_V ) );
+    connect( this, SIGNAL( triggered() ), SLOT( stopPlayingAfterCurrentTrack() ) );
+    setEnabled( false );  // Disable action at startup
+}
+
+void
+StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
+{
+    The::playlistActions()->setStopAfterMode(Playlist::StopAfterCurrent);
+}
+
+void
+StopPlayingAfterCurrentTrackAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/ )
+{
+    switch( state ) {
+        case Phonon::PlayingState:
+        case Phonon::PausedState:
+            setEnabled( true );
+            break;
+        case Phonon::StoppedState:
+        case Phonon::LoadingState:
+            setDisabled( true );
+            break;
+        case Phonon::ErrorState:
+        case Phonon::BufferingState:
+            break;
+    }
+}
+
 #include "ActionClasses.moc"
 

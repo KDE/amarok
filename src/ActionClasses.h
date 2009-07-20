@@ -151,6 +151,15 @@ namespace Amarok
             virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
     };
 
+    class StopPlayingAfterCurrentTrackAction : public KAction, public EngineObserver
+    {
+        Q_OBJECT
+        public:
+            StopPlayingAfterCurrentTrackAction( KActionCollection*, QObject* );
+            virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
+        private Q_SLOTS:
+            void stopPlayingAfterCurrentTrack();
+    };
 } /* namespace Amarok */
 
 
