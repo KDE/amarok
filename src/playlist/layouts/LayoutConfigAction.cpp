@@ -37,7 +37,7 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     setIcon( actionIcon );
     m_layoutMenu = new KMenu( parent );
     setMenu( m_layoutMenu );
-    setText( i18n( "Playlist layouts" ) );
+    setText( i18n( "Playlist Layouts" ) );
     m_configAction = new KAction( m_layoutMenu );
     
     m_layoutMenu->addAction( m_configAction );
