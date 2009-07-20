@@ -47,6 +47,24 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
     Q_UNUSED( name )
 
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
+    if( name.contains( "previous lyrics" ) )
+    {
+        removeAllData( "lyrics" );
+        setData( "lyrics", "label", "previous Track Information" );
+        
+        if( m_prevLyricsList.size() == 0 || m_prevSuggestionsList.size() == 0 || m_prevLyrics.contains( "Unavailable" ) )
+            setData( "lyrics", "Unavailable" , "Unavailable" );
+            
+        if( m_prevLyricsList.size() > 0 )
+            setData( "lyrics", "lyrics", m_prevLyricsList );
+
+        else if( m_prevLyrics != "" )
+            setData( "lyrics", "html", m_prevLyrics );
+        
+        if( m_prevSuggestionsList.size() > 0 )
+              setData( "lyrics", "suggested", m_prevSuggestionsList );
+        return true;
+    }
     removeAllData( name );
     setData( name, QVariant());
     update();
@@ -57,9 +75,20 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
 void LyricsEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    if( currentTrack && m_currentTrack && currentTrack != m_currentTrack )
+    {
+        m_prevLyrics = m_currentLyrics;
+        m_prevLyricsList = m_currentLyricsList;
+        m_prevSuggestionsList = m_currentSuggestionsList;
 
+        m_currentLyrics.clear();
+        m_currentLyricsList.clear();
+        m_currentSuggestionsList.clear();
+    }
     if( state == Current && m_requested )
         update();
+    
 }
 
 void LyricsEngine::metadataChanged( Meta::TrackPtr track )
@@ -71,6 +100,8 @@ void LyricsEngine::metadataChanged( Meta::TrackPtr track )
 
     if( hasChanged )
         update();
+    
+        
 }
 
 void LyricsEngine::update()
@@ -132,6 +163,7 @@ void LyricsEngine::update()
     {
         removeAllData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
+        m_currentLyrics = "Lyrics  Unavailable";
         return;
     }
     else
@@ -139,6 +171,7 @@ void LyricsEngine::update()
         // fetch by lyrics script
         removeAllData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
+        m_currentLyrics = "Lyrics Unavailable";
         ScriptManager::instance()->notifyFetchLyrics( m_artist, m_title );
     }
 }
@@ -149,12 +182,14 @@ void LyricsEngine::newLyrics( QStringList& lyrics )
 
     removeAllData( "lyrics" );
     setData( "lyrics", "lyrics", lyrics );
+    m_currentLyricsList = lyrics;
 }
 
 void LyricsEngine::newLyricsHtml( QString& lyrics )
 {
     removeAllData( "lyrics" );
     setData( "lyrics", "html", lyrics );
+    m_currentLyrics = lyrics;
 }
 
 void LyricsEngine::newSuggestions( QStringList& suggested )
@@ -163,6 +198,7 @@ void LyricsEngine::newSuggestions( QStringList& suggested )
     // each string is in "title - artist <url>" form
     removeAllData( "lyrics" );
     setData( "lyrics", "suggested", suggested );
+    m_currentSuggestionsList = suggested;
 }
 
 void LyricsEngine::lyricsMessage( QString& key, QString &val )

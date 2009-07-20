@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>wikiSettings</class>
+ <widget class="QWidget" name="wikiSettings">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>110</width>
+    <height>39</height>
+   </rect>
+  </property>
+  <widget class="QComboBox" name="comboBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>0</y>
+     <width>91</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Automatic</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>English</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>French</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>German</string>
+    </property>
+   </item>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

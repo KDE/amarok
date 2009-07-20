@@ -1,15 +1,21 @@
-/***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>                         *
+ * Copyright (c) 2009 Vignesh Chandramouli <vig.chan@gmail.com>                                                                                     *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "WikiApplet.h"
 
@@ -24,10 +30,12 @@
 #include <KGlobalSettings>
 #include <plasma/theme.h>
 #include <plasma/widgets/iconwidget.h>
-
+#include <plasma/widgets/busywidget.h>
 
 #include <KIcon>
 #include <KStandardDirs>
+#include <KConfigDialog>
+#include <KPushButton>
 
 #include <QAction>
 #include <QMenu>
@@ -44,14 +52,23 @@ WikiApplet::WikiApplet( QObject* parent, const QVariantList& args )
     , m_size( QSizeF() )
     , m_wikipediaLabel( 0 )
     , m_webView( 0 )
+    , m_current( "" )
     , m_reloadIcon( 0 )
+    , m_albumIcon( 0 )
+    , m_artistIcon( 0 )
+    , m_lyricsIcon( 0 )
+    , m_forwardIcon ( 0 )
+    , m_backwardIcon ( 0 )
     , m_css( 0 )
     , m_albumState( false )
     , m_artistState( false )
     , m_lyricsState( false )
+    , m_prevTrackInfoAvailable( false )
+    , m_pageState( 0 )
+    , m_wikiPreferredLang( QString() )
     , m_contextMenu( 0 )
 {
-    setHasConfigurationInterface( false );
+    setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
@@ -67,6 +84,9 @@ void WikiApplet::init()
 
     m_webView = new MyWebView( this );
     m_webView->setAttribute( Qt::WA_NoSystemBackground );
+    
+    // ask for all the CV height
+    resize( 500, -1 );
 
     paletteChanged( App::instance()->palette() );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
@@ -74,7 +94,7 @@ void WikiApplet::init()
     m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
     connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
-    // make transparent so we can use qpainter translucency to draw the  background
+   // make transparent so we can use qpainter translucency to draw the  background
     QPalette palette = m_webView->palette();
     palette.setBrush(QPalette::Base, Qt::transparent);
     m_webView->page()->setPalette(palette);
@@ -87,19 +107,86 @@ void WikiApplet::init()
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wiki-Info" ) );
 
+    QAction* currentTrackAction = new QAction( i18n( "Current Track Info" ), this );
+    currentTrackAction -> setIcon( KIcon( "go-home" ) );
+    currentTrackAction -> setVisible( false );
+    currentTrackAction -> setEnabled( false );
+    m_currentTrackIcon = addAction( currentTrackAction );
+    connect(currentTrackAction, SIGNAL( activated() ), this, SLOT( viewCurrentTrackInfo() ) );
+
+    QAction* previousTrackAction = new QAction( i18n( "Previous Track Info" ), this );
+    previousTrackAction -> setIcon( KIcon( "go-previous-page" ) );
+    previousTrackAction -> setVisible( false );
+    previousTrackAction -> setEnabled( false );
+    m_previousTrackIcon = addAction( previousTrackAction );
+    connect(m_previousTrackIcon,SIGNAL( activated() ), this, SLOT( viewPreviousTrackInfo() ) );
+
+    QAction* backwardAction = new QAction( i18n( "Previous" ), this );
+    backwardAction->setIcon( KIcon( "go-previous" ) );
+    backwardAction->setVisible( true );
+    backwardAction->setEnabled( false );
+    m_backwardIcon = addAction( backwardAction );
+    connect( backwardAction, SIGNAL( activated() ), this, SLOT( goBackward() ) );
+
+    QAction* forwardAction = new QAction( i18n( "Next" ), this );
+    forwardAction->setIcon( KIcon( "go-next" ) );
+    forwardAction->setVisible( true );
+    forwardAction->setEnabled( false );
+    m_forwardIcon = addAction( forwardAction );
+    connect( m_forwardIcon, SIGNAL( activated() ), this, SLOT( goForward() ) );
+    
     QAction* reloadAction = new QAction( i18n( "Reload" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( false );
     m_reloadIcon = addAction( reloadAction );
-
     connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( reloadWikipedia() ) );
+    
+    QAction* artistAction = new QAction( i18n( "Artist" ), this );
+    artistAction->setIcon( KIcon( "filename-artist-amarok" ) );
+    artistAction->setVisible( true );
+    artistAction->setEnabled( false );
+    m_artistIcon = addAction( artistAction );
+    connect( m_artistIcon, SIGNAL( activated() ), this, SLOT( navigateToArtist() ) );
 
+    QAction* albumAction = new QAction( i18n( "Album" ), this );
+    albumAction->setIcon( KIcon( "filename-album-amarok" ) );
+    albumAction->setVisible( true );
+    albumAction->setEnabled( false );
+    m_albumIcon = addAction( albumAction );
+    connect( m_albumIcon, SIGNAL( activated() ), this, SLOT( navigateToAlbum() ) );
+
+    QAction* lyricsAction = new QAction( i18n( "Lyrics" ), this );
+    lyricsAction->setIcon( KIcon( "amarok_lyrics" ) );
+    lyricsAction->setVisible( true );
+    lyricsAction->setEnabled( false );
+    m_lyricsIcon = addAction( lyricsAction );
+    connect( m_lyricsIcon, SIGNAL( activated() ), this, SLOT( navigateToLyrics() ) );
+
+    QAction* titleAction = new QAction( i18n( "Track" ), this );
+    titleAction->setIcon( KIcon( "filename-title-amarok" ) );
+    titleAction->setVisible( true );
+    titleAction->setEnabled( false );
+    m_titleIcon = addAction( titleAction );
+    connect( m_titleIcon, SIGNAL( activated() ), this, SLOT( navigateToTitle() ) );
+
+    
+    QAction* langAction = new QAction( i18n( "Settings" ), this );
+    langAction->setIcon( KIcon( "preferences-system" ) );
+    langAction->setVisible( true );
+    langAction->setEnabled( true );
+    m_settingsIcon = addAction( langAction );
+    connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( switchLang() ) );
+    
     connectSource( "wikipedia-artist" );
     connectSource( "wikipedia-album" );
     connectSource( "wikipedia-lyrics" );
+    connectSource( "wikipedia-web" );
+    connectSource( "wikipedia-title" );
+    
     connect( dataEngine( "amarok-wiki" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
+             
     connect( dataEngine( "amarok-lyrics" ),SIGNAL( sourceAdded(const QString & ) ),this, SLOT( connectSource( const QString & ) ) );
 
     constraintsEvent();
@@ -114,12 +201,26 @@ void WikiApplet :: createContextMenu()
      }
      m_contextMenu = new QMenu;
 
-     QAction *reloadArtistAction = m_contextMenu -> addAction(i18n("Reload Artist Info"));
-     reloadArtistAction -> setIcon( KIcon( "view-refresh" ) );
-     reloadArtistAction -> setVisible( true );
-     reloadArtistAction -> setEnabled( false );
-     reloadArtistAction -> setText( "Reload Artist Info" );
-     connect(reloadArtistAction,SIGNAL(triggered()),this,SLOT( reloadArtistInfo() ) );
+     QAction *previousTrackAction = m_contextMenu -> addAction( i18n( "View Previous Track Info" ) );
+     previousTrackAction -> setIcon( KIcon( "go-previous-page" ) );
+     previousTrackAction -> setVisible( false );
+     previousTrackAction -> setEnabled( false );
+     previousTrackAction -> setText( "View Previous Track Info" );
+     connect(previousTrackAction,SIGNAL(triggered()),this,SLOT( viewPreviousTrackInfo() ) );
+     
+     QAction *currentTrackAction = m_contextMenu -> addAction( i18n( "View Current Track Info" ) );
+     currentTrackAction -> setIcon( KIcon( "go-home" ) );
+     currentTrackAction -> setVisible( false );
+     currentTrackAction -> setEnabled( false );
+     currentTrackAction -> setText( "View Current Track Info" );
+     connect(currentTrackAction,SIGNAL(triggered()),this,SLOT( viewCurrentTrackInfo() ) );
+
+     QAction* refreshAction = m_contextMenu-> addAction( i18n( "Refresh Previous Track Info" ) );
+     refreshAction->setIcon( KIcon( "view-refresh" ) );
+     refreshAction->setVisible( false );
+     refreshAction->setEnabled( false );
+     refreshAction -> setText( "Refresh Previous Track Info" );
+     connect( refreshAction , SIGNAL( triggered() ), this, SLOT( viewPreviousTrackInfo() ) );
 
      QAction *reloadLyricsAction = m_contextMenu -> addAction(i18n("Reload Lyrics Info"));
      reloadLyricsAction -> setIcon( KIcon( "view-refresh" ) );
@@ -128,6 +229,13 @@ void WikiApplet :: createContextMenu()
      reloadLyricsAction -> setText( "Reload Lyrics" );
      connect(reloadLyricsAction,SIGNAL(triggered()),this,SLOT( reloadLyricsInfo() ) );
      
+     QAction *reloadArtistAction = m_contextMenu -> addAction(i18n("Reload Artist Info"));
+     reloadArtistAction -> setIcon( KIcon( "view-refresh" ) );
+     reloadArtistAction -> setVisible( true );
+     reloadArtistAction -> setEnabled( false );
+     reloadArtistAction -> setText( "Reload Artist Info" );
+     connect(reloadArtistAction,SIGNAL(triggered()),this,SLOT( reloadArtistInfo() ) );
+     
      QAction *reloadAlbumAction = m_contextMenu -> addAction(i18n("Reload Album Info"));
      reloadAlbumAction -> setIcon( KIcon( "view-refresh" ) );
      reloadAlbumAction -> setVisible( true );
@@ -135,6 +243,17 @@ void WikiApplet :: createContextMenu()
      reloadAlbumAction -> setText( "Reload Album Info" );
      connect(reloadAlbumAction,SIGNAL(triggered()),this,SLOT( reloadAlbumInfo() ) );
 
+     QAction *reloadTitleAction = m_contextMenu -> addAction(i18n("Reload Title Info"));
+     reloadTitleAction -> setIcon( KIcon( "view-refresh" ) );
+     reloadTitleAction -> setVisible( true );
+     reloadTitleAction -> setEnabled( false );
+     reloadTitleAction -> setText( "Reload Title Info" );
+     connect(reloadTitleAction,SIGNAL(triggered()),this,SLOT( reloadTitleInfo() ) );
+
+     QAction *navigateLyricsAction = m_contextMenu -> addAction(i18n("See Lyrics Info") );
+     navigateLyricsAction -> setVisible(false);
+     navigateLyricsAction -> setText( "See Lyrics Info" );
+     connect(navigateLyricsAction,SIGNAL(triggered()),this,SLOT( navigateToLyrics() ) );
      
      QAction *navigateArtistAction = m_contextMenu -> addAction(i18n("See Artist Info") );
      navigateArtistAction -> setVisible(false);
@@ -146,25 +265,35 @@ void WikiApplet :: createContextMenu()
      navigateAlbumAction -> setText( "See Album Info" );
      connect(navigateAlbumAction,SIGNAL(triggered()),this,SLOT( navigateToAlbum() ) );
 
-     QAction *navigateLyricsAction = m_contextMenu -> addAction(i18n("See Lyrics Info") );
-     navigateLyricsAction -> setVisible(false);
-     navigateLyricsAction -> setText( "See Lyrics Info" );
-     connect(navigateLyricsAction,SIGNAL(triggered()),this,SLOT( navigateToLyrics() ) );
-     
+     QAction *navigateTitleAction = m_contextMenu -> addAction(i18n("See Title Info") );
+     navigateTitleAction -> setVisible(false);
+     navigateTitleAction -> setText( "See Title Info" );
+     connect(navigateTitleAction,SIGNAL(triggered()),this,SLOT( navigateToTitle() ) );
+
      QAction *compressArtistAction = m_contextMenu -> addAction(i18n("Compress Artist Info") );
      compressArtistAction -> setVisible(false);
      compressArtistAction -> setText( "Compress Artist Info" );
      connect(compressArtistAction,SIGNAL(triggered()),this,SLOT(compressArtistInfo() ) );
+
+     QAction *compressLyricsAction = m_contextMenu -> addAction(i18n("Compress Lyrics Info"));
+     compressLyricsAction -> setVisible(false);
+     compressLyricsAction -> setText( "Compress Lyrics Info" );
+     connect(compressLyricsAction,SIGNAL(triggered()),this,SLOT( compressLyricsInfo()));
      
      QAction *compressAlbumAction = m_contextMenu -> addAction(i18n("Compress Album Info"));
      compressAlbumAction -> setVisible(false);
      compressAlbumAction -> setText( "Compress Album Info" );
      connect(compressAlbumAction,SIGNAL(triggered()),this,SLOT( compressAlbumInfo()));
 
-     QAction *compressLyricsAction = m_contextMenu -> addAction(i18n("Compress Lyrics Info"));
-     compressLyricsAction -> setVisible(false);
-     compressLyricsAction -> setText( "Compress Lyrics Info" );
-     connect(compressLyricsAction,SIGNAL(triggered()),this,SLOT( compressLyricsInfo()));
+     QAction *compressTitleAction = m_contextMenu -> addAction(i18n("Compress Title Info"));
+     compressTitleAction -> setVisible(false);
+     compressTitleAction -> setText( "Compress Title Info" );
+     connect(compressTitleAction,SIGNAL(triggered()),this,SLOT( compressTitleInfo()));
+
+     QAction *expandLyricsAction = m_contextMenu -> addAction(i18n("View More Lyrics Info" ) );
+     expandLyricsAction -> setVisible(false);
+     expandLyricsAction -> setText( "View More Lyrics Info" );
+     connect(expandLyricsAction,SIGNAL(triggered()),this,SLOT( expandLyricsInfo() ) );
      
      QAction *expandArtistAction = m_contextMenu -> addAction(i18n("View More Artist Info"));
      expandArtistAction -> setVisible(false);
@@ -176,10 +305,10 @@ void WikiApplet :: createContextMenu()
      expandAlbumAction -> setText( "View More Album Info" );
      connect(expandAlbumAction,SIGNAL(triggered()),this,SLOT( expandAlbumInfo() ) );
 
-     QAction *expandLyricsAction = m_contextMenu -> addAction(i18n("View More Lyrics Info" ) );
-     expandLyricsAction -> setVisible(false);
-     expandLyricsAction -> setText( "View More Lyrics Info" );
-     connect(expandLyricsAction,SIGNAL(triggered()),this,SLOT( expandLyricsInfo() ) );
+     QAction *expandTitleAction = m_contextMenu -> addAction(i18n("View More Title Info" ) );
+     expandTitleAction -> setVisible(false);
+     expandTitleAction -> setText( "View More Title Info" );
+     connect(expandTitleAction,SIGNAL(triggered()),this,SLOT( expandTitleInfo() ) );
 
      m_webView -> loadMenu(m_contextMenu);
 }
@@ -203,7 +332,6 @@ WikiApplet::addAction( QAction *action )
     tool->setMinimumSize( iconSize );
     tool->setMaximumSize( iconSize );
     tool->resize( iconSize );
-
     tool->setZValue( zValue() + 1 );
 
     return tool;
@@ -224,8 +352,44 @@ WikiApplet::connectSource( const QString &source )
     
     if( source == "wikipedia-lyrics" )
         dataEngine( "amarok-lyrics" ) -> connectSource( "lyrics",this );
+    if( source == "wikipedia-web")
+        dataEngine( "amarok-wiki" ) -> connectSource( "wikipedia-web",this );
       
 }
+
+void WikiApplet::constraintsEvent( Plasma::Constraints constraints )
+{
+
+    prepareGeometryChange();
+
+    float textWidth = m_wikipediaLabel->boundingRect().width();
+    float offsetX =  ( boundingRect().width() - textWidth ) / 2;
+    
+    m_wikipediaLabel->setPos( offsetX,  standardPadding() + 2 );
+
+    m_webView->setPos( standardPadding(), m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + standardPadding() );
+    m_webView->resize( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - m_webView->pos().y() - standardPadding() );
+
+    float iconWidth = m_reloadIcon->size().width();
+
+    m_backwardIcon->setPos( size().width() - 8 * iconWidth - 6 * standardPadding(), standardPadding() );
+    m_forwardIcon->setPos( size().width() - 7 * iconWidth - 6 * standardPadding(), standardPadding() );
+
+    m_lyricsIcon->setPos( size().width() - 6 * iconWidth - 4 * standardPadding(), standardPadding() );
+    
+    m_artistIcon->setPos( size().width() - 5 * iconWidth - 4 * standardPadding(), standardPadding() );
+
+    m_albumIcon->setPos( size().width() - 4 * iconWidth - 4 * standardPadding(), standardPadding() );
+    m_previousTrackIcon->setPos( size().width() - 4 * iconWidth - 4 * standardPadding(), standardPadding() );
+
+    m_titleIcon->setPos( size().width() - 3 * iconWidth - 4 * standardPadding(), standardPadding() );
+     m_currentTrackIcon->setPos( size().width() - 3 * iconWidth - 4 * standardPadding(), standardPadding() );
+
+    m_settingsIcon->setPos( size().width() - 2 * iconWidth - 2 * standardPadding(), standardPadding() );
+
+    m_reloadIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
+}
+
 
 void
 WikiApplet::linkClicked( const QUrl &pageurl )
@@ -233,11 +397,21 @@ WikiApplet::linkClicked( const QUrl &pageurl )
     DEBUG_BLOCK
     debug() << "URL: " << pageurl;
     QString m = pageurl.toString();
+
+    if ( pageurl.toString().contains( "wikipedia.org/" ) )
+    {
+        dataEngine( "amarok-wiki" )->query( QString( "wikipedia:get:" ) + pageurl.toString() );
+        m_histoFor.clear();
+        if( m_forwardIcon->action() && m_forwardIcon->action()->isEnabled() )
+            m_forwardIcon->action()->setEnabled( false );
+        return;
+    }
+    
     if(m.contains("artist") )
     {
      
        m_artistState = m_artistState ?false : true;
-       updateHappening();
+       updateWebView();
        navigateToArtist();
        m_webView -> toggleAction("Artist",m_artistState);
        return;
@@ -245,21 +419,176 @@ WikiApplet::linkClicked( const QUrl &pageurl )
     else if( m.contains("album") )
     {
         m_albumState = m_albumState ? false : true;
-        updateHappening();
+        updateWebView();
         navigateToAlbum();
         m_webView -> toggleAction("Album",m_albumState);
+        return;
+    }
+    else if( m.contains("title") )
+    {
+        m_titleState = m_titleState ? false : true;
+        updateWebView();
+        navigateToTitle();
+        m_webView -> toggleAction("Title",m_titleState);
         return;
     }
    
     else if( m.contains("lyrics") )
     {
         m_lyricsState = m_lyricsState ? false : true;
-        updateHappening();
+        updateWebView();
         navigateToLyrics();
         m_webView -> toggleAction("Lyrics",m_lyricsState);
         return;
     }   
     QDesktopServices::openUrl( pageurl.toString() );
+}
+
+void WikiApplet :: updateWebPageIcons()
+{
+    DEBUG_BLOCK
+    if( m_lyricsIcon -> action() )
+    {
+        m_lyricsIcon -> action() -> setVisible( false );
+        m_lyricsIcon -> action() -> setEnabled( false );
+    }
+    if( m_artistIcon -> action() )
+    {
+        m_artistIcon -> action() -> setVisible( false );
+        m_artistIcon -> action() -> setEnabled( false );
+    }
+    if( m_albumIcon -> action() )
+    {
+        m_albumIcon -> action() -> setVisible( false );
+        m_albumIcon -> action() -> setEnabled( false );
+    }
+    if( m_titleIcon -> action() )
+    {
+        m_titleIcon -> action() -> setVisible( false );
+        m_titleIcon -> action() -> setVisible( false );
+    }
+    if( m_currentTrackIcon -> action() )
+    {
+        m_currentTrackIcon -> action() -> setVisible( true );
+        m_currentTrackIcon -> action() -> setEnabled( true );
+    }
+    if( m_previousTrackIcon -> action() )
+    {
+        m_previousTrackIcon -> action() -> setVisible( true );
+        m_previousTrackIcon -> action() -> setEnabled( false );
+    }
+
+    if( m_prevTrackInfoAvailable &&  m_previousTrackIcon -> action() && !m_previousTrackIcon -> isEnabled() )
+        m_previousTrackIcon -> action() -> setEnabled( true );
+
+    m_webView-> disableAllActions();
+    
+    m_pageState = 1;
+}
+
+void
+WikiApplet :: viewCurrentTrackInfo()
+{
+    DEBUG_BLOCK
+    if( m_lyricsIcon -> action() )
+    {
+        m_lyricsIcon -> action() -> setVisible( true );
+        m_lyricsIcon -> action() -> setEnabled( true );
+    }
+    if( m_artistIcon -> action() )
+    {
+        m_artistIcon -> action() -> setVisible( true );
+        m_artistIcon -> action() -> setEnabled( true );
+    }
+    if( m_albumIcon -> action() )
+    {
+        m_albumIcon -> action() -> setVisible( true );
+        m_albumIcon -> action() -> setEnabled( true );
+    }
+    if( m_titleIcon -> action() )
+    {
+        m_titleIcon -> action() -> setVisible( true );
+        m_titleIcon -> action() -> setVisible( true );
+    }
+    if( m_currentTrackIcon -> action() )
+    {
+        m_currentTrackIcon -> action() -> setVisible( false );
+        m_currentTrackIcon -> action() -> setEnabled( false );
+    }
+    if( m_previousTrackIcon -> action() )
+    {
+        m_previousTrackIcon -> action() -> setVisible( false );
+        m_previousTrackIcon -> action() -> setEnabled( false );
+    }
+
+    if( m_prevTrackInfoAvailable )
+    {    m_webView -> enablePreviousTrackAction(true);
+         m_webView -> enableCurrentTrackAction( false) ;
+    }
+
+     if( m_pageState == 1 && m_current != "" )
+     {
+         m_histoBack.push_front(m_current);
+        if ( !m_histoBack.empty() && m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
+                    m_backwardIcon->action()->setEnabled( true );
+     }
+    m_pageState = 0;
+    
+    resetStates();
+    reloadLyricsInfo();
+    reloadArtistInfo();
+    reloadAlbumInfo();
+    reloadTitleInfo();
+}
+
+void
+WikiApplet :: viewPreviousTrackInfo()
+{
+    DEBUG_BLOCK
+    if( m_lyricsIcon -> action() )
+    {
+        m_lyricsIcon -> action() -> setVisible( true );
+        m_lyricsIcon -> action() -> setEnabled( true );
+    }
+    if( m_artistIcon -> action() )
+    {
+        m_artistIcon -> action() -> setVisible( true );
+        m_artistIcon -> action() -> setEnabled( true );
+    }
+    if( m_albumIcon -> action() )
+    {
+        m_albumIcon -> action() -> setVisible( true );
+        m_albumIcon -> action() -> setEnabled( true );
+    }
+    if( m_titleIcon -> action() )
+    {
+        m_titleIcon -> action() -> setVisible( true );
+        m_titleIcon -> action() -> setVisible( true );
+    }
+    if( m_currentTrackIcon -> action() )
+    {
+        m_currentTrackIcon -> action() -> setVisible( false );
+        m_currentTrackIcon -> action() -> setEnabled( false );
+    }
+    if( m_previousTrackIcon -> action() )
+    {
+        m_previousTrackIcon -> action() -> setVisible( false );
+        m_previousTrackIcon -> action() -> setEnabled( false );
+    }
+    if( m_pageState == 1 && m_current != "" )
+    {
+         m_histoBack.push_front(m_current);
+        if ( !m_histoBack.empty() && m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
+                    m_backwardIcon->action()->setEnabled( true );
+    }
+
+    m_webView -> enableCurrentTrackAction(true );
+    m_webView -> enablePreviousTrackAction( false );
+    
+    m_pageState = -1;
+    resetStates();
+    dataEngine( "amarok-wiki" )-> query( "wikipedia:previous track info" );
+    dataEngine( "amarok-lyrics" )-> query( "previous lyrics" );
 }
 
 void
@@ -286,6 +615,12 @@ WikiApplet :: reloadLyricsInfo()
 }
 
 void
+WikiApplet :: reloadTitleInfo()
+{
+    dataEngine( "amarok-wiki" )->query( "wikipedia:reload:title" );
+}
+
+void
 WikiApplet :: navigateToArtist()
 {
      QString command = "window.location.href=\"#artist\"";
@@ -307,6 +642,13 @@ WikiApplet :: navigateToLyrics()
 }
 
 void
+WikiApplet :: navigateToTitle()
+{
+    QString command = "window.location.href=\"#title\"";
+    m_webView -> mainFrame() -> evaluateJavaScript(command);
+}
+
+void
 WikiApplet :: compressArtistInfo()
 {
     m_artistState = true;
@@ -318,6 +660,13 @@ WikiApplet :: compressAlbumInfo()
 {
     m_albumState = true;
     linkClicked( QUrl("#album") ) ;
+}
+
+void
+WikiApplet :: compressTitleInfo()
+{
+    m_titleState = true;
+    linkClicked( QUrl("#title") ) ;
 }
 
 void
@@ -348,24 +697,136 @@ WikiApplet :: expandLyricsInfo()
     m_lyricsState = false;
     linkClicked( QUrl("#lyrics") );
 }
-      
 
-void WikiApplet::constraintsEvent( Plasma::Constraints constraints )
+void
+WikiApplet :: expandTitleInfo()
 {
-
-    prepareGeometryChange();
-    
-    float textWidth = m_wikipediaLabel->boundingRect().width();
-    float offsetX =  ( boundingRect().width() - textWidth ) / 2;
-
-    m_wikipediaLabel->setPos( offsetX, standardPadding() + 2 );
-
-    m_webView->setPos( standardPadding(), m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + standardPadding() );
-    m_webView->resize( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - m_webView->pos().y() - standardPadding() );
-
-    m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - standardPadding(), standardPadding() );
+    m_titleState = false;
+    linkClicked( QUrl("#title") );
 }
 
+void
+WikiApplet :: goForward()
+{
+    DEBUG_BLOCK
+
+    if( !m_histoFor.empty() )
+    {
+
+        if( m_pageState == 1 )
+            m_histoBack.push_front( m_current );
+        m_current = m_histoFor.front();
+        m_histoFor.pop_front();
+        m_webView->setHtml( m_current , KUrl( QString() ) );
+        
+        if(m_pageState == 1 &&  m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
+            m_backwardIcon->action()->setEnabled( true );
+
+        if ( m_histoFor.empty() && m_forwardIcon->action()->isEnabled() )
+            m_forwardIcon->action()->setEnabled( false );
+
+        if(!m_pageState || m_pageState == -1)
+            updateWebPageIcons();
+
+    }
+}
+
+void
+WikiApplet :: goBackward()
+{
+     DEBUG_BLOCK
+    if( !m_histoBack.empty() )
+    {
+        
+        if( m_pageState == 1)
+            m_histoFor.push_front( m_current );
+        m_current =  m_histoBack.front();
+        m_histoBack.pop_front();
+        m_webView->setHtml( m_current , KUrl( QString() ) );
+        if( m_pageState == 1 && m_forwardIcon->action() && !m_forwardIcon->action()->isEnabled() )
+            m_forwardIcon->action()->setEnabled( true );
+
+        if ( m_histoBack.empty() && m_backwardIcon->action()->isEnabled() )
+            m_backwardIcon->action()->setEnabled( false );
+
+        if(!m_pageState || m_pageState == -1)
+            updateWebPageIcons();
+
+    }
+}
+
+void
+WikiApplet :: enablePrevTrackIcon()
+{
+    DEBUG_BLOCK
+    
+    if( !m_previousTrackIcon -> action() -> isEnabled() && ( m_pageState == 1 || m_pageState == -1 ))
+    {
+        m_previousTrackIcon -> action() -> setVisible( true );
+        m_previousTrackIcon -> action() -> setEnabled( true );
+    }
+    else if( m_pageState == -1 )
+    {
+        resetStates();
+        dataEngine( "amarok-wiki" )-> query( "wikipedia:previous track info" );
+        dataEngine( "amarok-lyrics" )-> query( "previous lyrics" );
+    }
+     
+}
+
+void
+WikiApplet :: switchLang()
+{
+    DEBUG_BLOCK
+    showConfigurationInterface();
+}
+
+void
+WikiApplet :: switchToLang(QString lang)
+{
+    DEBUG_BLOCK
+    // TODO change this b/c it's BAAADDD !!!
+    if (lang == i18n("Automatic") )
+        m_wikiPreferredLang = "aut";
+
+    else if (lang == i18n("English") )
+        m_wikiPreferredLang = "en";
+
+    else if (lang == i18n("French") )
+        m_wikiPreferredLang = "fr";
+
+    else if (lang == i18n("German") )
+        m_wikiPreferredLang = "de";
+
+    dataEngine( "amarok-wiki" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+
+    KConfigGroup config = Amarok::config("Wiki Applet");
+    config.writeEntry( "PreferredLang", m_wikiPreferredLang );
+    dataEngine( "amarok-wiki" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+}
+
+void
+WikiApplet::createConfigurationInterface( KConfigDialog *parent )
+{
+    DEBUG_BLOCK
+    KConfigGroup configuration = config();
+    QWidget *settings = new QWidget;
+    ui_Settings.setupUi( settings );
+
+    // TODO bad, it's done manually ...
+    if ( m_wikiPreferredLang == "aut" )
+        ui_Settings.comboBox->setCurrentIndex( 0 );
+    else if ( m_wikiPreferredLang == "en" )
+        ui_Settings.comboBox->setCurrentIndex( 1 );
+    else if ( m_wikiPreferredLang == "fr" )
+        ui_Settings.comboBox->setCurrentIndex( 2 );
+    else if ( m_wikiPreferredLang == "de" )
+        ui_Settings.comboBox->setCurrentIndex( 3 );
+
+    parent->addPage( settings, i18n( "Wiki Settings" ), "preferences-system");
+    connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
+}
+      
 bool WikiApplet::hasHeightForWidth() const
 {
     return true;
@@ -381,6 +842,7 @@ void WikiApplet :: resetStates()
     m_albumState = false;
     m_lyricsState = false;
     m_artistState = false;
+    m_titleState = false;
 }
 
 void WikiApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
@@ -388,111 +850,108 @@ void WikiApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         DEBUG_BLOCK
         debug() << "The Name of the Source is : "<< name;
         if( data.size() == 0 ) return;
+
+        //inform the applet about the track change
+        if( data.contains( "meta" ) )
+        {
+                m_prevTrackInfoAvailable = true;
+                if( m_pageState == 1)
+                    enablePrevTrackIcon();
+                return;
+        }
+
+         //if the previous track page is being viewed and update about current
+        //page is received then we ignore it to avoid overwriting of web view
+        if( m_pageState == -1 )
+        {
+            if( !( name == "wikipedia-web" || ( data.contains( "label" ) && data["label"].toString().contains( "previous" ) ) ) )
+                    return;
+        }
+        if( name == "wikipedia-web" )
+        {
+      
+            if( data.contains( "page" ) )
+            {
+                if(m_pageState == 1)
+                {
+                    m_histoBack.push_front( m_current );
+                    while ( m_histoBack.size() > 20 )
+                        m_histoBack.pop_back();
+                     if ( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
+                    m_backwardIcon->action()->setEnabled( true );
+                }
+               
+                m_webView -> setHtml( data[ "page"].toString());
+                //since ur moving outta ur home page displaying track Details
+                //set pageState to true
+                if(!m_pageState || m_pageState == -1)
+                    updateWebPageIcons();
+                m_current = data["page"].toString();
+                m_histoFor.clear();
+                if ( m_forwardIcon->action() && m_forwardIcon->action()->isEnabled() )
+                    m_forwardIcon->action()->setEnabled( false );
+                
+            }
+            else if( data.contains( "message" ) )
+                m_webView -> setHtml( data["message"].toString());
+            return;
+        }
+
+
+        if(!m_pageState || m_pageState == -1)
+        {
+            if( name.contains( "artist" ) )
+                updateArtistInfo(data);
+            if(name .contains( "album" ) )
+                updateAlbumInfo(data);
+            if(name.contains( "lyrics" ) )
+                updateLyricsInfo(data);
+            if(name.contains( "title" ) )
+                updateTitleInfo( data );
+            
+            if( m_pageState == -1)
+            {
+                m_webView -> disableReloadActions( "Album" );
+                m_webView -> disableReloadActions( "Artist" );
+                m_webView -> disableReloadActions( "Lyrics" );
+                m_webView -> disableReloadActions( "Title" );
+            }
+
+            //update only when the current page is the home page or previous track's page
         
-        if( name.contains( "artist" ) )
-            updateArtistInfo(data);
-        if(name .contains( "album" ) )
-            updateAlbumInfo(data);
-        if(name.contains( "lyrics" ) )
-            updateLyricsInfo(data);
-          
-      updateHappening();
-      if( m_reloadIcon->action() && !m_reloadIcon->action()->isEnabled() )
+            updateWebView();
+        }
+
+        if( m_prevTrackInfoAvailable  && !m_pageState )
+            m_webView -> enablePreviousTrackAction( true );
+        
+        if( m_reloadIcon->action() && !m_reloadIcon->action()->isEnabled() )
         {
             m_reloadIcon->action()->setEnabled( true );
             //for some reason when we enable the action suddenly the icon has the text "..."
             m_reloadIcon->action()->setText( "" );
         }
+         if( m_artistIcon->action() && !m_artistIcon->action()->isEnabled() )
+            m_artistIcon->action()->setEnabled( true );
 
-}
+        if( m_albumIcon->action() && !m_albumIcon->action()->isEnabled() )
+            m_albumIcon->action()->setEnabled( true );
 
-void WikiApplet::updateArtistInfo( const Plasma :: DataEngine :: Data& data )
-{
-    DEBUG_BLOCK
-    
-    if( data.contains( "title" ) )
-    {
-        m_artistHtml = "<h3 id=\"artist\">";
-        m_artistHtml += data["title"].toString();
-        m_artistHtml += "</h3>";
-        m_compressedArtistHtml = m_artistHtml;
-        m_artistTitle = data[ "title" ].toString();
-    }
-    else
-        m_artistTitle.clear();
-       
-    if( data.contains( "page" ) )
-    {   
-            m_artistHtml += data[ "page" ].toString();
-            m_artistHtml += "<p><a href=\"http:\\\\www.wikiartist.amarok\">View Less...</a></p>";
-            int startIndex = m_artistHtml.indexOf("<p>");
-            int endIndex = m_artistHtml.indexOf("</p>")+3;
-            m_compressedArtistHtml += "<html><body>";
-            m_compressedArtistHtml += m_artistHtml.mid(startIndex,endIndex-startIndex+1);
-            m_compressedArtistHtml += "<p><a href= \"http:\\\\www.wikiartist.amarok\">View More...</a></p>";
-            m_compressedArtistHtml += "</body></html>";
-            m_webView -> enableViewActions(QString("Artist"));
-    }
-    else if(data.contains( "message" ) )
-    {     m_artistHtml = m_compressedArtistHtml += data[ "message" ] .toString();
-          m_webView -> setDefaultActions("Artist");
-          m_artistState = false;
-	  
-    }  
+        if( m_lyricsIcon->action() && !m_lyricsIcon->action()->isEnabled() )
+            m_lyricsIcon->action()->setEnabled( true );
+        
+        if( m_titleIcon->action() && !m_titleIcon->action()->isEnabled() )
+            m_titleIcon->action()->setEnabled( true );
 
-    if( data.contains( "label" ) )
-        m_label = data[ "label" ].toString() + ':';
-    
-    else
-        m_label.clear();  
-
-}
-
-void WikiApplet :: updateAlbumInfo(const Plasma :: DataEngine :: Data& data )
-{
-    DEBUG_BLOCK
-     
-    if( data.contains( "title" ) )
-    {
-        m_albumHtml = "<h3 id = \"album\">";
-        m_albumHtml += data["title"].toString();
-        m_albumHtml += "</h3>";
-        m_compressedAlbumHtml = m_albumHtml;
-        m_albumTitle = data[ "title" ].toString();
-    }
-     else
-        m_albumTitle.clear();
-     
-    if( data.contains( "page" ) )
-    {    
-            m_albumHtml += data[ "page" ].toString();
-            m_albumHtml += "<p><a href = \"http:\\\\www.wikialbum.amarok\">View Less...</a></p>";
-            int startIndex = m_albumHtml.indexOf("<p>");
-            int endIndex = m_albumHtml.indexOf("</p>")+3;
-            m_compressedAlbumHtml += m_albumHtml.mid(startIndex,endIndex-startIndex+1);
-            m_compressedAlbumHtml += "<p><a href= \"http:\\\\www.wikialbum.amarok\">View More...</a></p>";
-            m_webView -> enableViewActions(QString("Album"));
-    }
-    else if( data.contains( "message" ))
-    {    m_albumHtml = m_compressedAlbumHtml += data["message"].toString();
-          m_webView -> setDefaultActions("Album");
-          m_albumState = false;
-    }
-    if( data.contains( "label" ) )
-    {    m_label = data[ "label" ].toString() + ':';
-    }
-    else
-        m_label.clear();
 }
 
 
 void WikiApplet :: updateLyricsInfo( const Plasma :: DataEngine :: Data& data )
 {
-         
+
         QTextDocument w;
         int flag = 0;
-        m_lyricsHtml.clear();
-        m_compressedLyricsHtml.clear();
+
         m_lyricsHtml = m_compressedLyricsHtml =  "<h3 id=\"lyrics\"> Lyrics</h3>";
         if( data.contains( "noscriptrunning" ) )
         {
@@ -518,7 +977,7 @@ void WikiApplet :: updateLyricsInfo( const Plasma :: DataEngine :: Data& data )
             foreach( const QVariant &suggestion, suggested )
             {
                     QString sug = suggestion.toString();
-                    //debug() << "parsing suggestion:" << sug;
+                    //parsing Suggestion
                     QStringList pieces = sug.split( " - " );
                     QString link = QString( "<a href=\"%1|%2|%3\">%4 - %5</a><br>" ).arg( pieces[ 0 ] ).arg( pieces[ 1 ] ).arg( pieces[ 2 ] ).arg( pieces[ 1 ] ).arg( pieces[ 0 ] );
                     html += link;
@@ -527,41 +986,43 @@ void WikiApplet :: updateLyricsInfo( const Plasma :: DataEngine :: Data& data )
             debug() << "setting html: " << html;
             m_webView -> enableNavigateAction("Lyrics");
             flag = 1;
-            
+
         }
-         else if( data.contains( "html" ) )
+        else if( data.contains( "html" ) )
         {
             // show pure html in the text area
             w.setPlainText( data[ "html" ].toString() );
             debug() <<" PLAIN TEXT " << w.toPlainText();
-            
         }
-         else if( data.contains( "lyrics" ) )
+        else if( data.contains( "lyrics" ) )
         {
             QVariantList lyrics  = data[ "lyrics" ].toList();
             m_lyricsTitle = QString( " %1 : %2 - %3" ).arg( i18n( "Lyrics" ) ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() );
             //  need padding for title
             w.setPlainText( lyrics[ 3 ].toString().trimmed() );
         }
-        else if( data.contains( "notfound" ) )
+        else if( data.contains( "notfound" ) || data.contains( "Unavailable" ) )
         {
-         
-            w.setPlainText( i18n( "There were no lyrics found for this track" ) );
+            w.setPlainText( i18n( "Lyrics Unavailable for this track" ) );
             flag = 1;
         }
         m_lyricsHtml += w.toHtml();
-         if(flag)
-         {
+
+        if(flag)
+        {    if( !m_pageState )
+                m_webView -> setDefaultActions("Lyrics");
+
+             m_webView -> disableViewActions( "Lyrics" );
              m_compressedLyricsHtml = m_lyricsHtml;
-             m_webView -> setDefaultActions("Lyrics");
-         }
-         else
-         {
-            
+             m_lyricsState = false;
+        }
+        else
+        {
+
              int count = m_lyricsHtml.count("<p");
              debug() <<"COUNT" << count <<"STRING CHECK : " << m_lyricsHtml;
              if(count >= 6)
-            {
+             {
                 int start = m_lyricsHtml.indexOf("<p",0);
                 int i = 0,pos = start+3,end;
                 while(i < 6)
@@ -574,21 +1035,141 @@ void WikiApplet :: updateLyricsInfo( const Plasma :: DataEngine :: Data& data )
                 m_lyricsHtml += "<p><a href= \"http:\\\\www.wikilyrics.amarok\">View Less...</a></p>";
                 m_compressedLyricsHtml += "<p><a href= \"http:\\\\www.wikilyrics.amarok\">View More...</a></p>";
                 m_lyricsState = false;
-                m_webView -> enableViewActions(QString("Lyrics") ); 
-            }
+                m_webView -> enableViewActions(QString("Lyrics") );
+                m_webView -> enableNavigateAction(QString("Lyrics"));
+              }
             else
-            {    m_webView -> setDefaultActions("Lyrics");
+            {    if( !m_pageState )
+                    m_webView -> setDefaultActions( "Lyrics" );
+                 m_webView -> disableViewActions( "Lyrics" );
                  m_compressedLyricsHtml = m_lyricsHtml;
-               
+                 m_lyricsState = false;
             }
-         }
-	        
-         
-                 
+        }
+
         setPreferredSize( (int)size().width(), (int)size().height() );
         updateConstraints();
         update();
-            
+
+}
+
+void WikiApplet::updateArtistInfo( const Plasma :: DataEngine :: Data& data )
+{
+    DEBUG_BLOCK
+    
+    if( data.contains( "title" ) )
+        m_artistTitle = data[ "title" ].toString();
+
+    m_artistHtml = "<h3 id=\"artist\">";
+    m_artistHtml += m_artistTitle;
+    m_artistHtml += "</h3>";
+    m_compressedArtistHtml = m_artistHtml;
+        
+    if( data.contains( "page" ) )
+    {
+            m_artistHtml += data[ "page" ].toString();
+            m_artistHtml += "<p><a href=\"http:\\\\www.wikiartist.amarok\">View Less...</a></p>";
+            int startIndex = m_artistHtml.indexOf("<p>");
+            int endIndex = m_artistHtml.indexOf("</p>")+3;
+            m_compressedArtistHtml += "<html><body>";
+            m_compressedArtistHtml += m_artistHtml.mid(startIndex,endIndex-startIndex+1);
+            m_compressedArtistHtml += "<p><a href= \"http:\\\\www.wikiartist.amarok\">View More...</a></p>";
+            m_compressedArtistHtml += "</body></html>";
+            m_webView -> enableViewActions(QString("Artist"));
+            m_webView -> enableNavigateAction( QString( "Artist" ) );
+            m_artistState = false;
+    }
+    else if(data.contains( "message" ) )
+    {
+          m_artistHtml = m_compressedArtistHtml += data[ "message" ] .toString();
+          if(!m_pageState)
+                m_webView -> setDefaultActions("Artist");
+          m_webView -> disableViewActions( "Artist" );
+          m_artistState = false;
+	}
+
+    if( data.contains( "label" ) )
+        m_label = data[ "label" ].toString() + ':';
+    
+    else
+        m_label.clear();  
+
+}
+
+void WikiApplet :: updateAlbumInfo(const Plasma :: DataEngine :: Data& data )
+{
+    DEBUG_BLOCK
+
+    if( data.contains( "title" ) )
+        m_albumTitle = data[ "title" ].toString();
+   
+     m_albumHtml = "<h3 id = \"album\">";
+     m_albumHtml += m_albumTitle;
+     m_albumHtml += "</h3>";
+     m_compressedAlbumHtml = m_albumHtml;
+     
+     if( data.contains( "page" ) )
+     {
+            m_albumHtml += data[ "page" ].toString();
+            m_albumHtml += "<p><a href = \"http:\\\\www.wikialbum.amarok\">View Less...</a></p>";
+            int startIndex = m_albumHtml.indexOf("<p>");
+            int endIndex = m_albumHtml.indexOf("</p>")+3;
+            m_compressedAlbumHtml += m_albumHtml.mid(startIndex,endIndex-startIndex+1);
+            m_compressedAlbumHtml += "<p><a href= \"http:\\\\www.wikialbum.amarok\">View More...</a></p>";
+            m_webView -> enableViewActions( QString( "Album" ) );
+            m_webView -> enableNavigateAction( QString( "Album") );
+            m_albumState = false;
+    }
+    else if( data.contains( "message" ))
+    {     m_compressedAlbumHtml += data["message"].toString();
+          m_albumState = false;
+          if(!m_pageState)
+                m_webView -> setDefaultActions("Album");
+          m_webView -> disableViewActions( "Album" );
+    }
+    if( data.contains( "label" ) )
+    {    m_label = data[ "label" ].toString() + ':';
+    }
+    else
+        m_label.clear();
+}
+
+void WikiApplet :: updateTitleInfo(const Plasma :: DataEngine :: Data& data )
+{
+    DEBUG_BLOCK
+
+    if( data.contains( "title" ) )
+        m_trackTitle = data[ "title" ].toString();
+
+     m_titleHtml = "<h3 id = \"title\">";
+     m_titleHtml += m_trackTitle;
+     m_titleHtml += "</h3>";
+     m_compressedTitleHtml = m_titleHtml;
+     
+     if( data.contains( "page" ) )
+     {
+            m_titleHtml += data[ "page" ].toString();
+            m_titleHtml += "<p><a href = \"http:\\\\www.wikititle.amarok\">View Less...</a></p>";
+            int startIndex = m_titleHtml.indexOf("<p>");
+            int endIndex = m_titleHtml.indexOf("</p>")+3;
+            m_compressedTitleHtml += m_titleHtml.mid(startIndex,endIndex-startIndex+1);
+            m_compressedTitleHtml += "<p><a href= \"http:\\\\www.wikititle.amarok\">View More...</a></p>";
+            m_webView -> enableViewActions( QString( "Title" ) );
+            m_webView -> enableNavigateAction( QString( "Title") );
+            m_titleState = false;
+    }
+    else if( data.contains( "message" ))
+    {     m_compressedTitleHtml += data["message"].toString();
+          m_titleState = false;
+          if(!m_pageState)
+                m_webView -> setDefaultActions("Title");
+          m_webView -> disableViewActions( "Title" );
+    }
+    if( data.contains( "label" ) )
+    {    m_label = data[ "label" ].toString() + ':';
+    }
+    else
+        m_label.clear();
 }
 
 
@@ -617,12 +1198,6 @@ void WikiApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     
 }
 
-QSizeF WikiApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
-{
-        // ask for rest of CV height
-    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), -1 );
-}
-
 void
 WikiApplet::reloadWikipedia()
 {
@@ -630,6 +1205,7 @@ WikiApplet::reloadWikipedia()
    reloadArtistInfo();
    reloadAlbumInfo();
    reloadLyricsInfo();
+   reloadTitleInfo();
    
 }
 
@@ -659,6 +1235,10 @@ WikiApplet::paletteChanged( const QPalette & palette )
         contents.replace( "{shaded_text_background_color}", highlight.name() );
         contents.replace( "{table_background_color}", highlight.name() );
         contents.replace( "{headings_background_color}", highlight.name() );
+        
+        QColor t = PaletteHandler::highlightColor( 0.4, 1.05 );
+        t.setAlpha( 120 );
+        contents.replace( "{seperator_color}",t.name() );
 
         delete m_css;
         m_css = new KTemporaryFile();
@@ -676,25 +1256,26 @@ WikiApplet::paletteChanged( const QPalette & palette )
 }
 
 void
-WikiApplet :: updateHappening()
+WikiApplet :: updateWebView()
 {
-      DEBUG_BLOCK
-      QString display;
+        DEBUG_BLOCK
+        QString display;
 
-      if(m_lyricsState == false)
-        display+= m_compressedLyricsHtml;
-      else
-          display+= m_lyricsHtml;
-      if(m_artistState == false)
-           display += m_compressedArtistHtml;
-      else
-          display += m_artistHtml;
-      if(m_albumState == false)
-          display += m_compressedAlbumHtml;
-      else
-          display += m_albumHtml;
+       display = m_lyricsState ? m_lyricsHtml : m_compressedLyricsHtml;
 
-      m_webView -> setHtml(display);
+       display += "<hr/>";
+
+       display += m_artistState ? m_artistHtml : m_compressedArtistHtml;
+
+       display += "<hr/>";
+
+       display += m_albumState ? m_albumHtml : m_compressedAlbumHtml;
+
+       display += "<hr/>";
+
+       display += m_titleState ? m_titleHtml : m_compressedTitleHtml;
+       
+       m_webView -> setHtml(display);
 }
 
 // My Web View class Definition begins here
@@ -702,6 +1283,7 @@ WikiApplet :: updateHappening()
 MyWebView :: MyWebView ( QGraphicsItem *parent ) : Plasma :: WebView(parent)
 {
     m_contextMenu = 0;
+    m_hideMenu = false;
 }
 
 MyWebView :: ~MyWebView ()
@@ -726,24 +1308,76 @@ void MyWebView :: contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
          QGraphicsWidget::contextMenuEvent(event);
          return;
      }
+     if( m_hideMenu )
+     {    WebView ::contextMenuEvent( event );
+          return;
+     }
 
       m_contextMenu -> exec(event -> screenPos());
 }
 
+void MyWebView :: disableAllActions()
+{
+        QList<QAction*> actionList = m_contextMenu -> actions();
+        foreach( QAction *action , actionList )
+        {
+            action -> setEnabled( false );
+            action -> setVisible( false );
+            
+        }
+        m_hideMenu = true;
+}
+
+void MyWebView :: enableCurrentTrackAction(bool state)
+{
+        if( state )
+            m_hideMenu = false;
+        
+        QList<QAction*> actionList = m_contextMenu -> actions();
+        foreach( QAction *action , actionList )
+            if( action->text().contains( "Current" ) || action -> text().contains( "Refresh" ) )
+            {
+                action -> setEnabled( state );
+                action -> setVisible( state );
+            }
+
+}
+
+void MyWebView :: enablePreviousTrackAction(bool state )
+{
+        m_hideMenu = false;
+        QList<QAction*> actionList = m_contextMenu -> actions();
+        foreach( QAction *action , actionList )
+        {
+            if( action->text().contains( "Previous" ) && !action->text().contains("Refresh") )
+            {
+                action -> setEnabled( state );
+                action -> setVisible( state );
+            }
+        }
+}
+
+
+
 void MyWebView :: toggleAction(const QString s,bool status )
 {
     QList<QAction*> actionList = m_contextMenu -> actions();
-    if( !(s == "Artist" || s == "Album" || s == "Lyrics") )
+    if( !(s == "Artist" || s == "Album" || s == "Lyrics" || s == "Title" ) )
       return;
-    
+
+    m_hideMenu = false;
     if(status)
     {
         foreach(QAction *action,actionList)
         {
             if( action -> text().contains(s)&& action->text().contains("Compress") )
-                action -> setVisible(true);
+            {    action -> setVisible(true);
+                 action -> setEnabled( true );
+            }
             if( action -> text().contains(s) && action -> text().contains("More" ) )
-                action -> setVisible(false);
+            {    action -> setVisible(false);
+                 action -> setEnabled( false );
+            }
         }
     }
     else
@@ -751,9 +1385,13 @@ void MyWebView :: toggleAction(const QString s,bool status )
         foreach(QAction *action,actionList)
         {
             if( action -> text().contains(s)&& action->text().contains("Compress") )
-                action -> setVisible(false);
+            {    action -> setVisible(false);
+                 action -> setEnabled( false );
+            }
             if( action -> text().contains(s) && action -> text().contains("More" ) )
-                action -> setVisible(true);
+            {    action -> setVisible(true);
+                 action -> setEnabled( true );
+            }
         }
     }
         
@@ -764,24 +1402,47 @@ void MyWebView :: toggleAction(const QString s,bool status )
 void MyWebView :: enableViewActions(const QString s)
 {
     QList<QAction*> actionList = m_contextMenu -> actions();
-     if( !(s == "Artist" || s == "Album" || s == "Lyrics") )
+     if( !(s == "Artist" || s == "Album" || s == "Lyrics" || s == "Title" ) )
       return;
-   
+
+     m_hideMenu = false;
+     
         foreach(QAction *action,actionList)
         {
             if( action -> text().contains(s)&& action->text().contains("Compress") )
-                action -> setVisible(false);
+            {    action -> setVisible(false);
+                 action -> setEnabled( false );
+            }
             else if(action -> text().contains(s))
-                action -> setVisible(true);
+            {    action -> setVisible(true);
+                 action -> setEnabled( true );
+            }
         }
    
+}
+
+void MyWebView :: disableViewActions( const QString s )
+{
+    QList<QAction*> actionList = m_contextMenu -> actions();
+     if( !(s == "Artist" || s == "Album" || s == "Lyrics"|| s == "Title" ) )
+      return;
+     m_hideMenu = false;
+
+        foreach(QAction *action,actionList)
+        {
+            if( action -> text().contains(s)&& ( action->text().contains("Compress") || action -> text().contains("More" )  || action -> text().contains( "See" ) ) )
+            {    action -> setVisible(false);
+                 action -> setEnabled( false );
+            }
+        }
 }
 
 void MyWebView :: setDefaultActions(const QString s)
 {
       QList<QAction*> actionList = m_contextMenu -> actions();
-      if( !(s == "Artist" || s == "Album" || s == "Lyrics") )
+      if( !(s == "Artist" || s == "Album" || s == "Lyrics" || s == "Title") )
       return;
+      m_hideMenu = false;
 
         foreach(QAction *action,actionList)
         {
@@ -796,17 +1457,35 @@ void MyWebView :: setDefaultActions(const QString s)
 
 }
 
+void MyWebView :: disableReloadActions( const QString s )
+{
+    QList<QAction*> actionList = m_contextMenu -> actions();
+      if( !(s == "Artist" || s == "Album" || s == "Lyrics" || s == "Title") )
+      return;
+
+        foreach(QAction *action,actionList)
+            if( action -> text().contains(s) && action->text().contains("Reload") )
+            {
+                 action -> setVisible(false);
+                 action->setEnabled( false );
+            }
+}
+    
+
 void MyWebView :: enableNavigateAction(const QString s)
 {
      QList<QAction*> actionList = m_contextMenu -> actions();
-     if( !(s == "Artist" || s == "Album" || s == "Lyrics") )
+     if( !(s == "Artist" || s == "Album" || s == "Lyrics" || s == "Title" ) )
       return;
-
+    m_hideMenu = false;
      foreach(QAction *action,actionList)
      {
           if( action -> text().contains(s)&& action->text().contains("See") )
-                action -> setVisible(true);         
+          {      action -> setVisible(true);
+                 action -> setEnabled( true );
+          }
      }
 }
+
 #include "WikiApplet.moc"
 

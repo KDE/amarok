@@ -5,7 +5,9 @@ set( wiki_SRCS WikiApplet.cpp )
 include_directories( ../..
                     ../../.. )
 
+kde4_add_ui_files( wiki_SRCS wikiSettings.ui )
 kde4_add_plugin(amarok_context_applet_wiki ${wiki_SRCS})
+
 if(APPLE)
    SET_TARGET_PROPERTIES(amarok_context_applet_wiki PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)

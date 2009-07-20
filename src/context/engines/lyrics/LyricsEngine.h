@@ -71,6 +71,9 @@ private:
     // metadata updates. We only want to update the lyrics if either the
     // title or the artist change (but not other attributes like rating, score,
     // composer etc).
+    QStringList m_currentLyricsList,m_prevLyricsList;
+    QStringList m_currentSuggestionsList,m_prevSuggestionsList;
+    QString m_currentLyrics,m_prevLyrics;
     QString        m_title;
     QString        m_artist;
 };
