@@ -372,7 +372,7 @@ ProxyCollection::Album::hasAlbumArtist() const
 void
 ProxyCollection::Album::add( Meta::AlbumPtr album )
 {
-    if( !album || !m_albums.contains( album ) )
+    if( !album || m_albums.contains( album ) )
         return;
 
     m_albums.append( album );
@@ -486,7 +486,7 @@ ProxyCollection::Artist::albums()
 void
 ProxyCollection::Artist::add( Meta::ArtistPtr artist )
 {
-    if( !artist || !m_artists.contains( artist ) )
+    if( !artist || m_artists.contains( artist ) )
         return;
 
     m_artists.append( artist );
@@ -575,7 +575,7 @@ ProxyCollection::Genre::tracks()
 void
 ProxyCollection::Genre::add( Meta::GenrePtr genre )
 {
-    if( !genre || !m_genres.contains( genre ) )
+    if( !genre || m_genres.contains( genre ) )
         return;
 
     m_genres.append( genre );
@@ -659,7 +659,7 @@ ProxyCollection::Composer::tracks()
 void
 ProxyCollection::Composer::add( Meta::ComposerPtr composer )
 {
-    if( !composer || !m_composers.contains( composer ) )
+    if( !composer || m_composers.contains( composer ) )
         return;
 
     m_composers.append( composer );
@@ -744,7 +744,7 @@ ProxyCollection::Year::tracks()
 void
 ProxyCollection::Year::add( Meta::YearPtr year )
 {
-    if( !year || !m_years.contains( year ) )
+    if( !year || m_years.contains( year ) )
         return;
 
     m_years.append( year );
