@@ -1050,7 +1050,7 @@ MtpHandler::usedCapacity() const
 
     else
     {
-        return m_device->storage->FreeSpaceInBytes;
+        return ( totalCapacity() - m_device->storage->FreeSpaceInBytes );
     }
 
 }
