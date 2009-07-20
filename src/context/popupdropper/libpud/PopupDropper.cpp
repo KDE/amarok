@@ -1,28 +1,31 @@
-/****************************************************************************************
- * Copyright (c) 2008 Jeff Mitchell <mitchell@kde.org>                                  *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 2 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/***************************************************************************
+ *   Copyright (c) 2008  Jeff Mitchell <mitchell@kde.org>                  *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
+ ***************************************************************************/
 
 #include "PopupDropper.h"
 #include "PopupDropper_p.h"
-#include "PopupDropperAction.h"
 #include "PopupDropperItem.h"
 
 #include <QtDebug>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QtSvg/QSvgRenderer>
+#include <QAction>
 #include <QPalette>
 #include <QTimeLine>
 #include <QWidget>
@@ -348,11 +351,6 @@ bool PopupDropper::subtractOverlay()
 
 PopupDropperItem* PopupDropper::addSubmenu( PopupDropper** pd, const QString &text )
 {
-    return addSubmenu( pd, 0, QString(), text );
-}
-
-PopupDropperItem* PopupDropper::addSubmenu( PopupDropper** pd, QSvgRenderer *renderer, const QString &elementId, const QString &text )
-{
     //qDebug() << "addSubmenu, this is " << this << " and passed-in PopupDropper is " << (*pd);
     if( !(*pd) )
     {
@@ -369,18 +367,13 @@ PopupDropperItem* PopupDropper::addSubmenu( PopupDropper** pd, QSvgRenderer *ren
     initOverlay( d->widget, newD );
     PopupDropperItem* pdi = new PopupDropperItem();
 
-    PopupDropperAction* pda = 0;
+    QAction* action = new QAction( text, this );
 
-    if( renderer )
-        pda = new PopupDropperAction( renderer, elementId, text, this );
-    else
-        pda = new PopupDropperAction( text, this );
-
-    connect( pda, SIGNAL( hovered() ), this, SLOT( activateSubmenu() ) );
-    pdi->setAction( pda );
+    connect( action, SIGNAL( hovered() ), this, SLOT( activateSubmenu() ) );
+    pdi->setAction( action );
     pdi->setSubmenuTrigger( true );
     pdi->setHoverIndicatorShowStyle( PopupDropperItem::OnHover );
-    d->submenuMap[pda] = newD;
+    d->submenuMap[action] = newD;
     delete (*pd);
     (*pd) = 0;
     //qDebug() << "d->submenuMap[pda] = " << d->submenuMap[pda];
@@ -394,7 +387,7 @@ void PopupDropper::activateSubmenu()
     if( isHidden() || d->fadeHideTimer.state() == QTimeLine::Running )
         return;
     PopupDropperPrivate* oldd = d;
-    addOverlay( d->submenuMap[static_cast<PopupDropperAction*>(QObject::sender())] );
+    addOverlay( d->submenuMap[static_cast<QAction*>(QObject::sender())] );
     //qDebug() << "d->pdiItems.size() = " << d->pdiItems.size() << " for " << d;
     foreach( PopupDropperItem* item, d->pdiItems )
         addItem( item, false, false );
@@ -821,9 +814,9 @@ void PopupDropper::addItem( PopupDropperItem *item, bool useSharedRenderer )
 void PopupDropper::addItem( PopupDropperItem *item, bool useSharedRenderer, bool appendToList )
 {
     //qDebug() << "adding item";
-    //FIXME: Make separators use something graphical instead of just ignoring them
+    //FIXME: Make separators do something graphical instead of just ignoring them
     PopupDropperItem *pItem = static_cast<PopupDropperItem*>( item );
-    if( pItem->action()->isSeparator() )
+    if( pItem->isSeparator() )
         return;
     if( useSharedRenderer )
         pItem->setSharedRenderer( d->sharedRenderer );
@@ -867,20 +860,21 @@ void PopupDropper::addItem( PopupDropperItem *item, bool useSharedRenderer, bool
     d->scene->addItem( pItem );
 }
 
-void PopupDropper::addSeparator( PopupDropperAction* separator )
+void PopupDropper::addSeparator( PopupDropperItem* separator )
 {
-    if( separator && !separator->isSeparator() )
+
+    if( !separator )
     {
         //qDebug() << "Action is not a separator!";
         return;
     }
 
-    if( separator && separator->separatorStyle() == PopupDropperAction::TextSeparator )
+    separator->setSeparator( true );
+
+    if( separator->separatorStyle() == PopupDropperItem::TextSeparator )
     {
         //qDebug() << "Separator style is text";
-        PopupDropperItem* pdi = new PopupDropperItem();
-        pdi->setAction( separator );
-        addItem( pdi );
+        addItem( separator );
     }
 
     //qDebug() << "Separator style is line";
