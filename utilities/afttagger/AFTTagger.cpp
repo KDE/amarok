@@ -220,6 +220,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
     
     QString uid;
     bool newUid = false;
+    bool nothingfound = true;
     if( m_verbose )
         m_textStream << qPrintable( tr( "INFO: File is a MPEG file, opening..." ) ) << endl;
     if ( file->ID3v2Tag( true ) )
@@ -250,6 +251,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                     QString owner = TStringToQString( currFrame->owner() ).toUpper();
                     if( owner.startsWith( "AMAROK - REDISCOVER YOUR MUSIC" ) )
                     {
+                        nothingfound = false;
                         if( m_verbose )
                             m_textStream << qPrintable( tr( "INFO: Removing old-style ATF identifier" ) ) << endl;
 
@@ -263,6 +265,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                     }
                     if( owner.startsWith( "AMAROK 2 AFT" ) )
                     {
+                        nothingfound = false;
                         if( m_verbose )
                             m_textStream << qPrintable( tr( "INFO: Found an existing AFT identifier: %1" ).arg( TStringToQString( TagLib::String( currFrame->identifier() ) ) ) ) << endl;
 
@@ -305,7 +308,7 @@ AFTTagger::handleMPEG( TagLib::MPEG::File *file )
                 }
             }
         }
-        if( newUid )
+        if( newUid || ( nothingfound && !m_delete ) )
         {
             QString ourId = QString( "Amarok 2 AFTv" + QString::number( s_currentVersion ) + " - amarok.kde.org" );
             if( uid.isEmpty() )
