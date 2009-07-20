@@ -101,7 +101,7 @@ CollectionTreeItem::albumYear() const
     if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
     {
         if( !album->tracks().isEmpty() )
-        {   
+        {
             Meta::TrackPtr track = album->tracks()[0];
             if( track && track->year() )
                 year = track->year()->prettyName();
@@ -133,11 +133,11 @@ CollectionTreeItem::data( int role ) const
                     }
                 }
             }
-            
+
             // Check empty after track logic and before album logic
             if( name.isEmpty() )
                 name = i18nc( "The Name is not known", "Unknown" );
-            
+
             if( AmarokConfig::showYears() )
             {
                 QString year = albumYear();
@@ -187,7 +187,7 @@ CollectionTreeItem::data( int role ) const
         }
         else if( role == CustomRoles::HasCapacity )
         {
-            return false;//m_parentCollection->hasCapacity();
+            return m_parentCollection->hasCapacity();
         }
         else if( role == CustomRoles::UsedCapacity )
         {
@@ -259,7 +259,7 @@ CollectionTreeItem::queryMaker() const
 {
     if ( m_parentCollection )
         return m_parentCollection->queryMaker();
-        
+
     CollectionTreeItem *tmp = m_parent;
     while( tmp->isDataItem() )
         tmp = tmp->parent();
@@ -316,7 +316,7 @@ CollectionTreeItem::allDescendentTracksLoaded() const
     Meta::TrackPtr track;
     if( isDataItem() && !( track = Meta::TrackPtr::dynamicCast( m_data ) ).isNull() )
         return true;
-    
+
     if( childrenLoaded() )
     {
         foreach( CollectionTreeItem *item, m_childItems )
