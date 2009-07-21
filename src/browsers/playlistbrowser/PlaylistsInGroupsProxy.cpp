@@ -29,8 +29,8 @@
 PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
     : QAbstractProxyModel( The::playlistModel() )
     , m_model( model )
-    , m_renameAction( 0 )
-    , m_deleteAction( 0 )
+    , m_renameFolderAction( 0 )
+    , m_deleteFolderAction( 0 )
 {
     setSourceModel( model );
     // signal proxies
@@ -211,7 +211,7 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
     if( isGroup( parent ) )
     {
-        deleteGroup( parent );
+        deleteFolder( parent );
         return true;
     }
 
@@ -520,26 +520,34 @@ PlaylistsInGroupsProxy::slotRename( QModelIndex sourceIdx )
 }
 
 void
-PlaylistsInGroupsProxy::slotDeleteGroup()
+PlaylistsInGroupsProxy::slotDeleteFolder()
 {
     DEBUG_BLOCK
     if( m_selectedGroups.count() == 0 )
         return;
 
     QModelIndex groupIdx = m_selectedGroups.first();
-    deleteGroup( groupIdx );
+    deleteFolder( groupIdx );
 }
 
 void
-PlaylistsInGroupsProxy::slotRenameGroup()
+PlaylistsInGroupsProxy::slotRenameFolder()
 {
     DEBUG_BLOCK
     //get the name for this new group
     //TODO: do inline rename
+    QModelIndex folder = m_selectedGroups.first();
+    QString folderName = folder.data( Qt::DisplayRole ).toString();
+    bool ok;
     const QString newName = KInputDialog::getText( i18n("New name"),
-                i18nc("Enter a new name for a group that already exists", "Enter new group name:") );
+                i18nc("Enter a new name for a folder that already exists",
+                      "Enter new folder name:"),
+                folderName,
+                &ok );
+    if( !ok || newName == folderName )
+        return;
 
-    foreach( int originalRow, m_groupHash.values( m_selectedGroups.first().row() ) )
+    foreach( int originalRow, m_groupHash.values( folder.row() ) )
     {
         QModelIndex index = m_model->index( originalRow, 0, QModelIndex() );
         Meta::PlaylistPtr playlist = index.data( 0xf00d ).value<Meta::PlaylistPtr>();
@@ -553,7 +561,7 @@ PlaylistsInGroupsProxy::slotRenameGroup()
 }
 
 void
-PlaylistsInGroupsProxy::slotAddToGroup()
+PlaylistsInGroupsProxy::slotAddToFolder()
 {
     DEBUG_BLOCK
     const QString name = KInputDialog::getText( i18n("New name"),
@@ -574,19 +582,19 @@ PlaylistsInGroupsProxy::createGroupActions()
 {
     QList<PopupDropperAction *> actions;
 
-    if ( m_deleteAction == 0 )
+    if ( m_deleteFolderAction == 0 )
     {
-        m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete_group", KIcon( "media-track-remove-amarok" ), i18n( "&Delete group" ), this );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteGroup() ) );
+        m_deleteFolderAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete_folder", KIcon( "media-track-remove-amarok" ), i18n( "&Delete Folder" ), this );
+        connect( m_deleteFolderAction, SIGNAL( triggered() ), this, SLOT( slotDeleteFolder() ) );
     }
-    actions << m_deleteAction;
+    actions << m_deleteFolderAction;
 
-    if ( m_renameAction == 0 )
+    if ( m_renameFolderAction == 0 )
     {
-        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit_group", KIcon( "media-track-edit-amarok" ), i18n( "&Rename group" ), this );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRenameGroup() ) );
+        m_renameFolderAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit_folder", KIcon( "media-track-edit-amarok" ), i18n( "&Rename Folder..." ), this );
+        connect( m_renameFolderAction, SIGNAL( triggered() ), this, SLOT( slotRenameFolder() ) );
     }
-    actions << m_renameAction;
+    actions << m_renameFolderAction;
 
     return actions;
 }
@@ -631,7 +639,7 @@ PlaylistsInGroupsProxy::changeGroupName( const QString &from, const QString &to 
 }
 
 void
-PlaylistsInGroupsProxy::deleteGroup( const QModelIndex &groupIdx )
+PlaylistsInGroupsProxy::deleteFolder( const QModelIndex &groupIdx )
 {
     DEBUG_BLOCK
     //TODO: ask the user for configmation to delete children

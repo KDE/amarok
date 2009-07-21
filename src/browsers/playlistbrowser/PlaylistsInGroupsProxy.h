@@ -76,9 +76,9 @@ class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
         void slotRename( QModelIndex idx );
         void buildTree();
 
-        void slotDeleteGroup();
-        void slotRenameGroup();
-        void slotAddToGroup();
+        void slotDeleteFolder();
+        void slotRenameFolder();
+        void slotAddToFolder();
 
     private:
         bool isGroup( const QModelIndex &index ) const;
@@ -88,11 +88,11 @@ class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
         bool isAPlaylistSelected( const QModelIndexList& list ) const;
         bool changeGroupName( const QString &from, const QString &to );
 
-        void deleteGroup( const QModelIndex &groupIdx );
+        void deleteFolder( const QModelIndex &groupIdx );
 
         QAbstractItemModel *m_model;
-        PopupDropperAction *m_renameAction;
-        PopupDropperAction *m_deleteAction;
+        PopupDropperAction *m_renameFolderAction;
+        PopupDropperAction *m_deleteFolderAction;
 
         QMultiHash<quint32, int> m_groupHash;
         QStringList m_groupNames;
