@@ -242,7 +242,7 @@ Commenting Out Code
 -------------------
 Don't keep commented out code. It just causes confusion and makes the source
 harder to read. Remember, the last revision before your change is always
-availabe in SVN. Hence no need for leaving cruft in the source.
+availabe in Git. Hence no need for leaving cruft in the source.
 
 Wrong:
  | myWidget->show();
