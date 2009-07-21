@@ -550,7 +550,8 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
     {
         if( m_tracksFailed.size() > 0 )
         {
-            The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+            The::statusBar()->shortMessage( i18np( "%1 track failed to copy to the device",
+                                                   "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         // clear maps/hashes used
 
@@ -592,7 +593,8 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
 
     if ( m_isDeleting )
     {
-        KMessageBox::error( 0, i18n( "%1 Tracks are already being deleted from the device", removeError ), removeErrorCaption );
+        KMessageBox::error( 0, i18np( "%1 Track is already being deleted from the device",
+                                      "%1 Tracks are already being deleted from the device", removeError ), removeErrorCaption );
         return;
     }
 
