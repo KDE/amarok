@@ -127,7 +127,7 @@ homepage (as long as you don't object).
  CONTRIBUTING
 ==============
 
-If you wish to contribute to Amarok, you should build it from SVN and subscribe
+If you wish to contribute to Amarok, you should build it from Git and subscribe
 to the amarok AT kde.org mailing list. The IRC channel is also a place where
 it's  nice  to  be, since you can talk to other developers much easier, and
 get instant notification of commits to the SVN. For instant email notification
