@@ -822,21 +822,9 @@ MediaDeviceHandler::parseTracks()
 {
     DEBUG_BLOCK
 
-    if( !m_rc )
-    {
-        debug() << "RC does not exist";
-        if( this->hasCapabilityInterface( Handler::Capability::Readable ) )
-        {
-            debug() << "Has read capability interface";
-            m_rc = this->create<Handler::ReadCapability>();
-            debug() << "Created rc";
-            if( !m_rc )
-            {
-                debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting parse.";
-                return;
-            }
-        }
-    }
+    setupReadCapability();
+    if ( !m_rc )
+        return;
 
     TrackMap trackMap;
     ArtistMap artistMap;
@@ -1063,19 +1051,48 @@ MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
 float
 MediaDeviceHandler::freeSpace() const
 {
-    return ( m_rc->totalCapacity() - m_rc->usedCapacity() );
+    if ( m_rc )
+        return ( m_rc->totalCapacity() - m_rc->usedCapacity() );
+    else
+        return 0.0;
 }
 
 float
 MediaDeviceHandler::usedcapacity() const
 {
-    return m_rc->usedCapacity();
+    if ( m_rc )
+        return m_rc->usedCapacity();
+    else
+        return 0.0;
 }
 
 float
 MediaDeviceHandler::totalcapacity() const
 {
-    return m_rc->totalCapacity();
+    if ( m_rc )
+        return m_rc->totalCapacity();
+    else
+        return 0.0;
+}
+
+void
+MediaDeviceHandler::setupReadCapability()
+{
+    MediaDeviceHandler *handler = const_cast<MediaDeviceHandler*> ( this );
+    if( !m_rc )
+    {
+        debug() << "RC does not exist";
+        if( handler->hasCapabilityInterface( Handler::Capability::Readable ) )
+        {
+            debug() << "Has read capability interface";
+            m_rc = handler->create<Handler::ReadCapability>();
+            debug() << "Created rc";
+            if( !m_rc )
+            {
+                debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting.";
+            }
+        }
+    }
 }
 
 /** Observer Methods **/

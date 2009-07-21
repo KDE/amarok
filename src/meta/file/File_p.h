@@ -267,10 +267,10 @@ void Track::Private::readMetaData()
         TagLib::MP4::Tag *mp4tag = dynamic_cast< TagLib::MP4::Tag *>( file->tag() );
         if( mp4tag )
         {
-            if ( !mp4tag->itemListMap()["\xA9wrt"].toStringList().isEmpty() )
+            if ( mp4tag->itemListMap().contains( "\xA9wrt" ) )
                 m_data.composer = strip( mp4tag->itemListMap()["\xA9wrt"].toStringList().front() );
 
-            if ( !mp4tag->itemListMap()["disk"].toStringList().isEmpty() )
+            if ( mp4tag->itemListMap().contains( "disk" ) )
                 disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
         }
     }

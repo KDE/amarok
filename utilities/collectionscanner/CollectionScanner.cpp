@@ -647,16 +647,16 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
             {
-                if ( !mp4tag->itemListMap()["\xA9wrt"].toStringList().isEmpty() )
+                if ( mp4tag->itemListMap().contains( "\xA9wrt" ) )
                     attributes["composer"] = TStringToQString( mp4tag->itemListMap()["\xa9wrt"].toStringList().front() );
 
-                if ( !mp4tag->itemListMap()["tmpo"].toStringList().isEmpty() )
+                if ( mp4tag->itemListMap().contains( "tmpo" ) )
                     attributes["bpm"] = QString::number( mp4tag->itemListMap()["tmpo"].toInt() );
 
-                if ( !mp4tag->itemListMap()["disk"].toStringList().isEmpty() )
+                if ( mp4tag->itemListMap().contains( "disk" ) )
                     disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
 
-                if ( !mp4tag->itemListMap()["cpil"].toStringList().isEmpty() )
+                if ( mp4tag->itemListMap().contains( "cpil" ) )
                     compilation = QString::number( mp4tag->itemListMap()["cpil"].toBool() ? '1' : '0' );
 
 //                 if ( images && mp4tag->cover().size() )
