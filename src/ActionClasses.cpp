@@ -501,6 +501,7 @@ void
 StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
 {
     The::playlistActions()->setStopAfterMode(Playlist::StopAfterCurrent);
+    The::playlistActions()->setTrackToBeLast(The::playlistModel()->activeId());
 }
 
 void
