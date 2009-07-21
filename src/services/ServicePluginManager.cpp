@@ -225,7 +225,7 @@ ServicePluginManager::serviceDescription( const QString & serviceName )
     //get named service
     if ( !m_serviceBrowser->categories().contains( serviceName ) )
     {
-        return i18n( "No service named %1 is curretly loaded", serviceName );
+        return i18n( "No service named %1 is currently loaded", serviceName );
     }
 
     ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
@@ -258,7 +258,7 @@ QString ServicePluginManager::sendMessage( const QString & serviceName, const QS
     //get named service
     if ( !m_serviceBrowser->categories().contains( serviceName ) )
     {
-        return i18n( "No service named %1 is curretly loaded", serviceName );
+        return i18n( "No service named %1 is currently loaded", serviceName );
     }
 
     ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
