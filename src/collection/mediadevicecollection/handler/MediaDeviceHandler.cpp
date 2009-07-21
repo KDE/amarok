@@ -271,12 +271,11 @@ MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
 void
 MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 {
-    QString copyError = i18n( "Tracks not copied: " );
     QString copyErrorCaption = i18n( "Copying Tracks Failed" );
 
     if ( m_isCopying )
     {
-        KMessageBox::error( 0, i18n( "%1 The device is already being copied to", copyError ), copyErrorCaption );
+        KMessageBox::error( 0, i18n( "Tracks not copied: the device is already being copied to" ), copyErrorCaption );
         return;
     }
 
@@ -395,7 +394,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     if( m_tracksToCopy.size() == 0 )
     {
-        KMessageBox::error( 0, i18n( "%1the device already has these tracks", copyError ), copyErrorCaption );
+        KMessageBox::error( 0, i18n( "Tracks not copied: the device already has these tracks" ), copyErrorCaption );
         m_isCopying = false;
         emit copyTracksDone( false );
         return;
@@ -417,7 +416,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     {
         debug() << "Free space: " << freeSpace();
         debug() << "Space would've been after copy: " << (freeSpace() - transfersize);
-        KMessageBox::error( 0, i18n( "%1the device has insufficient space", copyError ), copyErrorCaption );
+        KMessageBox::error( 0, i18n( "Tracks not copied: the device has insufficient space" ), copyErrorCaption );
         m_isCopying = false;
         emit copyTracksDone( false );
         return;
