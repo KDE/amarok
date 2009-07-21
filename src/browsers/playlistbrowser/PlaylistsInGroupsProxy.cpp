@@ -34,19 +34,19 @@ PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
 {
     setSourceModel( model );
     // signal proxies
-//    connect( m_model,
-//        SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
-//        this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) )
-//    );
-//    connect( m_model,
-//        SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this,
-//        SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( m_model,
+        SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
+        this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) )
+    );
+    connect( m_model,
+        SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this,
+        SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
         this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
     connect( m_model, SIGNAL( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ),
              SLOT( modelRowsAboutToBeRemoved( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
-//    connect( m_model, SIGNAL( layoutChanged() ), SLOT( buildTree() ) );
+    connect( m_model, SIGNAL( layoutChanged() ), SLOT( buildTree() ) );
 
     buildTree();
 }
@@ -81,7 +81,7 @@ PlaylistsInGroupsProxy::buildTree()
 
     int max = m_model->rowCount();
     debug() << QString("building tree with %1 leafs.").arg( max );
-    for ( int row = 0; row < max; row++ )
+    for( int row = 0; row < max; row++ )
     {
         QModelIndex idx = m_model->index( row, 0, QModelIndex() );
         //Playlists can be in multiple groups but we only use the first TODO: multigroup
@@ -376,10 +376,10 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
     QModelIndex originalParent = mapToSource( proxyParent );
 //    debug() << "originalParent: " << originalParent;
     int originalRow = index.row();
-    if( !originalParent.isValid() )
+    if( !originalParent.isValid() ) //it is a child of the parent's rootnode (1st level)
     {
         int indexInGroup = index.row();
-        if( !proxyParent.isValid() )
+        if( !proxyParent.isValid() ) //it is not in a group so it's after the group items
             indexInGroup -= m_groupNames.count();
 //        debug() << "indexInGroup" << indexInGroup;
         QList<int> childRows = m_groupHash.values( proxyParent.row() );
@@ -406,24 +406,49 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndexList& list ) const
 }
 
 QModelIndex
-PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& index ) const
+PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& idx ) const
 {
-    if( !index.isValid() )
+    DEBUG_BLOCK
+    debug() << "index: " << idx;
+    if( !idx.isValid() )
         return QModelIndex();
 
-    //TODO: this needs to be extended to work for tree models as well
-    int sourceRow = index.row();
-    int parentRow = m_groupHash.key( sourceRow, -1 );
+    QModelIndex proxyParent;
+    QModelIndex sourceParent = idx.parent();
+    debug() << "sourceParent: " << sourceParent;
+    int proxyRow = idx.row();
+    int sourceRow = idx.row();
 
-    QModelIndex parent = QModelIndex();
-    int proxyRow = m_groupNames.count() + m_groupHash.values( -1 ).indexOf( sourceRow );
-    if( parentRow != -1 )
+    if( sourceParent.isValid() )
     {
-        parent = this->index( parentRow, 0, QModelIndex() );
-        proxyRow = m_groupHash.values( parentRow ).indexOf( sourceRow );
+        //idx is a child of one of the items in the source model
+        proxyParent = mapFromSource( sourceParent );
+    }
+    else
+    {
+        //idx is an item of the top level of the source model (child of the rootnode)
+        int groupRow = m_groupHash.key( sourceRow, -1 );
+
+        if( groupRow != -1 ) //it's in a group, let's find the correct row.
+        {
+            proxyParent = this->index( groupRow, 0, QModelIndex() );
+            proxyRow = m_groupHash.values( groupRow ).indexOf( sourceRow );
+        }
+        else
+        {
+            proxyParent = QModelIndex();
+            // if the proxy item is not in a group it will be below the groups.
+            int groupLength = m_groupNames.count();
+            debug() << "groupNames length: " << groupLength;
+            int i = m_groupHash.values( -1 ).indexOf( sourceRow );
+            debug() << "index in hash: " << i;
+            proxyRow = groupLength + i;
+        }
     }
 
-    return this->index( proxyRow, 0, parent );
+    debug() << "proxyParent: " << proxyParent;
+    debug() << "proxyRow: " << proxyRow;
+    return this->index( proxyRow, 0, proxyParent );
 }
 
 Qt::ItemFlags
@@ -443,8 +468,9 @@ PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
 void
 PlaylistsInGroupsProxy::modelDataChanged( const QModelIndex& start, const QModelIndex& end )
 {
-    Q_UNUSED( start )
-    Q_UNUSED( end )
+    DEBUG_BLOCK
+    //TODO: see if new groups have to be created, deleted or adjusted. Try to avoid buildTree()
+    emit dataChanged( mapFromSource( start ), mapFromSource( end ) );
 }
 
 void
@@ -453,35 +479,38 @@ PlaylistsInGroupsProxy::modelRowsInserted( const QModelIndex& index, int start, 
     Q_UNUSED( index )
     Q_UNUSED( start )
     Q_UNUSED( end )
+    DEBUG_BLOCK
+    //TODO: see if new groups have to be created, deleted or adjusted. Try to avoid buildTree()
+    buildTree();
 }
 
 void
-PlaylistsInGroupsProxy::modelRowsRemoved( const QModelIndex& idx, int start, int end )
+PlaylistsInGroupsProxy::modelRowsAboutToBeRemoved( const QModelIndex &sourceParent,
+                                                   int start, int end ) //SLOT
 {
     DEBUG_BLOCK
-    debug() << "source index: " << idx;
+    debug() << "sourceParent: " << sourceParent;
     debug() << "start: " << start;
     debug() << "end: " << end;
-    QModelIndex proxyIdx = mapToSource( idx );
-    debug() << "proxy index: " << proxyIdx;
-
-    //call endRemoveRows when we are deleting
-    endRemoveRows();
-}
-
-void
-PlaylistsInGroupsProxy::modelRowsAboutToBeRemoved( const QModelIndex &parent, int start,
-                                                   int end ) //SLOT
-{
-    DEBUG_BLOCK
-    debug() << "parent: " << parent;
-    debug() << "start: " << start;
-    debug() << "end: " << end;
-    QModelIndex proxyParent = mapToSource( parent );
+    QModelIndex proxyParent = mapFromSource( sourceParent );
     debug() << "proxyParent: " << proxyParent;
-    beginRemoveRows( proxyParent, start, end );
+//HACK: we need to use beginRemoveRows( proxyParent, start, end ); but it's not working
 }
 
+void
+PlaylistsInGroupsProxy::modelRowsRemoved( const QModelIndex &sourceParent, int start,
+                                          int end )
+{
+    DEBUG_BLOCK
+    //TODO: see if groups have to be created or adjusted.
+    debug() << "sourceParent: " << sourceParent;
+    debug() << "start: " << start;
+    debug() << "end: " << end;
+    QModelIndex proxyParent = mapFromSource( sourceParent );
+    debug() << "proxyParent: " << proxyParent;
+//HACK: we need to use endRemoveRows() here, but it's not working. So reset the entire proxy
+    buildTree();
+}
 
 void
 PlaylistsInGroupsProxy::slotRename( QModelIndex sourceIdx )

@@ -71,8 +71,8 @@ class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
     private slots:
         void modelDataChanged( const QModelIndex&, const QModelIndex& );
         void modelRowsInserted( const QModelIndex&, int, int );
-        void modelRowsRemoved( const QModelIndex&, int, int );
         void modelRowsAboutToBeRemoved( const QModelIndex&, int, int );
+        void modelRowsRemoved( const QModelIndex&, int, int );
         void slotRename( QModelIndex idx );
         void buildTree();
 
