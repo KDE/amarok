@@ -65,6 +65,11 @@ namespace Playlist
             virtual quint64 requestLastTrack() = 0;
 
             /**
+             * Reset this navigator. Called when the end of a playlist is reached.
+             */
+            virtual void reset() = 0;
+
+            /**
              * Find the position of the id in the queue
              * @return the position, or -1 if non in queue
              */

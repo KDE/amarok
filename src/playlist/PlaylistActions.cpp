@@ -104,11 +104,18 @@ Playlist::Actions::requestNextTrack()
     {
 
         debug() << "nothing more to play...";
-        //no more stuff to play. make sure to reset the active track so that
-        //pressing play will start at the top of the playlist ( or whereever the navigator wants to start )
+        //No more stuff to play. make sure to reset the active track so that
+        //pressing play will start at the top of the playlist (or whereever the navigator wants to start)
         //instead of just replaying the last track.
-
         Model::instance()->setActiveRow( -1 );
+
+        //We also need to mark all tracks as unplayed or some navigators might be unhappy.
+        Model::instance()->setAllUnplayed();
+        
+        //Make sure that the navigator is reset, otherwise complex navigators might have all tracks marked as
+        //played and will thus be stuck at the last track (or refuse to play any at all) if the playlist is restarted
+        m_navigator->reset();
+        
         return;
     }
 

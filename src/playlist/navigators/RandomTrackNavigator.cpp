@@ -37,7 +37,7 @@ Playlist::RandomTrackNavigator::RandomTrackNavigator()
              this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
              this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
+    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( modelLayoutChanged() ) );
 
     reset();
 }
@@ -170,4 +170,9 @@ void Playlist::RandomTrackNavigator::reset()
 
     std::random_shuffle( m_unplayedRows.begin(), m_unplayedRows.end() );
     std::random_shuffle( m_playedRows.begin(), m_playedRows.end() );
+}
+
+void Playlist::RandomTrackNavigator::modelLayoutChanged()
+{
+    reset();
 }
