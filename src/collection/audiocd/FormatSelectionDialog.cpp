@@ -71,7 +71,7 @@ void FormatSelectionDialog::selectionChanged( bool checked )
     }
     else if( sender() == wavButton )
     {
-        descriptionLabel->setText( i18n( "Wav is a basic, uncompressed audio file format. It takes up a lot of space but maintains perfect quality. It is generally not reccomended unless you know what you are doing. If you want perfect quailty, use Flac instead." ) );
+        descriptionLabel->setText( i18n( "Wav is a basic, uncompressed audio file format. It takes up a lot of space but maintains perfect quality. It is generally not recommended unless you know what you are doing. If you want perfect quality, use Flac instead." ) );
 
         m_selectedFormat = AudioCdCollection::WAV;
     }
