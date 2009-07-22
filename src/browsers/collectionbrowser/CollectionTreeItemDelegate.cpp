@@ -136,7 +136,7 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
 
     int width = m_view->viewport()->size().width() - 4;
     int height;
-    const bool hasCapacity = index.data( CustomRoles::HasCapacity ).toBool();
+    const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
 
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
