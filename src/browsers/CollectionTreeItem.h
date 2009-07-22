@@ -31,7 +31,8 @@ namespace CustomRoles
         FilterRole = Qt::UserRole + 2,
         ByLineRole = Qt::UserRole + 3,
         HasCapacityRole = Qt::UserRole + 4,
-        UsedCapacityRole = Qt::UserRole + 5
+        UsedCapacityRole = Qt::UserRole + 5,
+        DecoratorsRole = Qt::UserRole + 6
     };
 }
 

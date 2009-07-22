@@ -194,6 +194,11 @@ CollectionTreeItem::data( int role ) const
             if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
                 return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();
         }
+        else if( role == CustomRoles::DecoratorsRole )
+        {
+            QList<QAction*> actions;
+            return actions;
+        }
     }
 
     return QVariant();
