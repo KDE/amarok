@@ -25,24 +25,18 @@ class MediaDeviceCollection;
 
 namespace Meta
 {
-
     class CollectionCapabilityMediaDevice : public CollectionCapability
-	{
+    {
+        Q_OBJECT
 
-    Q_OBJECT
+        public:
+            CollectionCapabilityMediaDevice( MediaDeviceCollection *coll );
 
-	public:
-    CollectionCapabilityMediaDevice( MediaDeviceCollection *coll );
+            virtual QList<PopupDropperAction*> collectionActions( QueryMaker *qm );
+            virtual QList<PopupDropperAction*> collectionActions( const TrackList tracklist );
 
-    virtual QList<PopupDropperAction *>  collectionActions( QueryMaker *qm );
-
-    // NOTE: NYI
-    virtual QList<PopupDropperAction *>  collectionActions( const TrackList tracklist );
-
-	private:
-    MediaDeviceCollection *m_coll;
-
-
-	};
+        private:
+            MediaDeviceCollection *m_coll;
+    };
 }
 #endif
