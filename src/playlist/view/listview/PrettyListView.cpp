@@ -68,7 +68,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_pd( 0 )
         , m_topmostProxy( GroupingProxy::instance() )
 {
-    setModel( m_topmostProxy );
+    setModel( GroupingProxy::instance() );
     setItemDelegate( new PrettyItemDelegate( this ) );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setDragDropMode( QAbstractItemView::DragDrop );
@@ -93,9 +93,9 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
 
-    connect( m_topmostProxy, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
+    connect( model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
 
-    connect( m_topmostProxy, SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
+    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -134,33 +134,24 @@ Playlist::PrettyListView::playFirstSelected()
 void
 Playlist::PrettyListView::removeSelection()
 {
-    QList<int> sr = selectedRows(); //these are in the source model
+    QList<int> sr = selectedRows();
     if( !sr.isEmpty() )
     {
-        // To select the right track after the removal, we need to get the first row in the
-        // order defined by the topmost proxy.
-        QList<int> selectedRowsInTopmostProxy;
-        foreach( const QModelIndex &idx, selectedIndexes() )
-        {
-            int proxyRow = idx.row();
-            selectedRowsInTopmostProxy.append( proxyRow );
-        }
-
         // Now that we have the list of selected rows in the topmost proxy, we can perform the
         // removal.
         Controller::instance()->removeRows( sr );
 
         // Next, we look for the first row.
-        int firstRow = selectedRowsInTopmostProxy.first();
-        foreach( int i, selectedRowsInTopmostProxy )
+        int firstRow = sr.first();
+        foreach( int i, sr )
         {
             if( i < firstRow )
                 firstRow = i;
         }
 
-        // Select the track immediately above the cleared are as this is the one that has internal focus.
+        // Select the track immediately above the cleared ones as this is the one that has internal focus.
         firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
-        selectionModel()->select( m_topmostProxy->index(  firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
+        selectionModel()->select( model()->index(  firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
     }
 }
 
@@ -188,7 +179,7 @@ void Playlist::PrettyListView::selectSource()
         return;
 
     //get the track...
-    QModelIndex index = m_topmostProxy->index( rows.at( 0 ) );
+    QModelIndex index = model()->index( rows.at( 0 ), 0 );
     Meta::TrackPtr track = index.data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
     //get multiSource capability:
@@ -543,10 +534,7 @@ Playlist::PrettyListView::selectedRows() const
 {
     QList<int> rows;
     foreach( const QModelIndex &idx, selectedIndexes() )
-    {
-        int sourceRow = FilterProxy::instance()->rowToSource( SortProxy::instance()->rowToSource( idx.row() ) );   //FIXME: this should use only m_topmostProxy
-        rows.append( sourceRow );
-    }
+        rows.append( idx.row() );
     return rows;
 }
 
@@ -613,11 +601,11 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
     {
         //select this track
 
-        QModelIndex index = m_topmostProxy->index( row, 0 );
+        QModelIndex index = model()->index( row, 0 );
         QItemSelection selItems( index, index );
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
-        QModelIndex foundIndex = m_topmostProxy->index( row, 0, QModelIndex() );
+        QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
         setCurrentIndex( foundIndex );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
@@ -649,11 +637,11 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
     {
         //select this track
 
-        QModelIndex index = m_topmostProxy->index( row, 0 );
+        QModelIndex index = model()->index( row, 0 );
         QItemSelection selItems( index, index );
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
-        QModelIndex foundIndex = m_topmostProxy->index( row, 0, QModelIndex() );
+        QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
         setCurrentIndex( foundIndex );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
@@ -675,20 +663,21 @@ void Playlist::PrettyListView::clearSearchTerm()
     //we store the first shown row and scroll to that once the term is removed.
     QModelIndex index = indexAt( QPoint( 0, 0 ) );
 
-     //ah... but we want the source row and not the one reported by the filter model(s)
-    int row = FilterProxy::instance()->rowToSource( SortProxy::instance()->rowToSource( index.row() ) );    //FIXME
+    //We don't want to mess around with source rows because this would break our wonderful
+    //lasagna code, but we do want to grab something unique that represents the row, like
+    //its unique 64-bit id.
+    quint64 id = m_topmostProxy->idAt( index.row() );
 
     debug() << "first row in filtered list: " << index.row();
-    debug() << "source row: " << row;
 
     m_topmostProxy->filterUpdated();
     m_topmostProxy->clearSearchTerm();
 
-    //now scroll to the selected row again
-
-    QModelIndex sourceIndex = m_topmostProxy->index( row, 0, QModelIndex() );
-    if ( sourceIndex.isValid() )
-        scrollTo( sourceIndex, QAbstractItemView::PositionAtTop );
+    //Now we scroll to the previously stored row again. Note that it's not the same row in
+    //the topmost model any more, so we need to grab it again using its id.
+    QModelIndex newIndex = model()->index( m_topmostProxy->rowForId( id ), 0, QModelIndex() );
+    if ( newIndex.isValid() )
+        scrollTo( newIndex, QAbstractItemView::PositionAtTop );
 }
 
 void Playlist::PrettyListView::startProxyUpdateTimeout()
@@ -718,7 +707,7 @@ void Playlist::PrettyListView::itemsAdded( const QModelIndex& parent, int firstR
     Q_UNUSED( parent )
     Q_UNUSED( lastRow )
 
-    QModelIndex index = m_topmostProxy->index( firstRow, 0);
+    QModelIndex index = model()->index( firstRow, 0);
     if( !index.isValid() )
         return;
 

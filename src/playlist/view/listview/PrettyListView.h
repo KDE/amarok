@@ -108,7 +108,7 @@ private:
     QTimer       *m_proxyUpdateTimer;
     PopupDropper *m_pd;
 
-    GroupingProxy *m_topmostProxy;
+    AbstractModel *m_topmostProxy;
 
 public:
     QList<int> selectedRows() const;

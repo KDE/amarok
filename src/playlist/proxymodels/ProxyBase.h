@@ -224,10 +224,47 @@ public:
     virtual int rowForId( const quint64 id ) const;
 
     /**
+     * Returns the row in the current model for a given track pointer.
+     * @param track the track.
+     * @return the row, -1 if the track pointer is invalid.
+     */
+    virtual int rowForTrack( const Meta::TrackPtr track ) const;
+
+    /**
+     * Returns the row number of a track in terms of the bottom model.
+     * @param row the row in a proxy model
+     * @return the row in the bottom model.
+     */
+    virtual int rowToBottomModel( const int row );
+
+    /**
+     * Set the currently active track based on the playlist id given.
+     * @param id the unique playlist id.
+     */
+    virtual void setActiveId( const quint64 id );
+
+    /**
      * Sets the currently active (playing) row, translated for the current proxy.
      * @param row the row to be set as active.
      */
     virtual void setActiveRow( int row );
+
+    /**
+     * Sets to uplayed the state of all the tracks exposed by this proxy.
+     */
+    virtual void setAllUnplayed();
+
+    /**
+     * Adds a row to the playlist queue.
+     * @param row the row to add.
+     */
+    virtual void setRowQueued( int row );
+
+    /**
+     * Removes a row from the playlist queue.
+     * @param row the row to remove.
+     */
+    virtual void setRowDequeued( int row );
 
     /**
      * Decides if FilterProxy or SearchProxy should be used.

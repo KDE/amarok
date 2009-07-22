@@ -3,6 +3,7 @@
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -35,7 +36,7 @@
 #include "navigators/RepeatAlbumNavigator.h"
 #include "navigators/RepeatTrackNavigator.h"
 #include "navigators/StandardTrackNavigator.h"
-#include "PlaylistModel.h"
+#include "proxymodels/GroupingProxy.h"
 #include "statusbar/StatusBar.h"
 
 
@@ -91,13 +92,13 @@ Playlist::Actions::requestNextTrack()
 
     debug() << "so far so good!";
     m_trackError = false;
-    m_currentTrack = Model::instance()->activeId();
+    m_currentTrack = GroupingProxy::instance()->activeId();
     if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
     {
         setStopAfterMode( StopAfterCurrent );
         m_trackToBeLast = 0;
     }
-    
+
     m_nextTrackCandidate = m_navigator->requestNextTrack();
 
     if( m_nextTrackCandidate == 0 )
@@ -107,20 +108,20 @@ Playlist::Actions::requestNextTrack()
         //No more stuff to play. make sure to reset the active track so that
         //pressing play will start at the top of the playlist (or whereever the navigator wants to start)
         //instead of just replaying the last track.
-        Model::instance()->setActiveRow( -1 );
+        GroupingProxy::instance()->setActiveRow( -1 );
 
         //We also need to mark all tracks as unplayed or some navigators might be unhappy.
-        Model::instance()->setAllUnplayed();
+        GroupingProxy::instance()->setAllUnplayed();
         
         //Make sure that the navigator is reset, otherwise complex navigators might have all tracks marked as
         //played and will thus be stuck at the last track (or refuse to play any at all) if the playlist is restarted
         m_navigator->reset();
-        
+
         return;
     }
 
     m_currentTrack = m_nextTrackCandidate;
-    
+
     if ( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
         setStopAfterMode( StopNever );
     else
@@ -156,7 +157,7 @@ Playlist::Actions::play()
 {
     if( 0 == m_nextTrackCandidate )
     {
-        m_nextTrackCandidate = Model::instance()->activeId();
+        m_nextTrackCandidate = GroupingProxy::instance()->activeId();
         if( 0 == m_nextTrackCandidate )
             m_nextTrackCandidate = m_navigator->requestNextTrack();
     }
@@ -177,7 +178,7 @@ Playlist::Actions::play( const QModelIndex& index )
 void
 Playlist::Actions::play( const int row )
 {
-    m_nextTrackCandidate = Model::instance()->idAt( row );
+    m_nextTrackCandidate = GroupingProxy::instance()->idAt( row );
     play( m_nextTrackCandidate );
 }
 
@@ -186,7 +187,7 @@ Playlist::Actions::play( const quint64 trackid, bool now )
 {
     DEBUG_BLOCK
 
-    Model* model = Model::instance();
+    AbstractModel* model = GroupingProxy::instance();
 
     if ( model->containsId( trackid ) )
     {
@@ -297,9 +298,9 @@ Playlist::Actions::queue( QList<int> rows )
 {
     foreach( int row, rows )
     {
-        quint64 id = The::playlistModel()->idAt( row );
+        quint64 id = GroupingProxy::instance()->idAt( row );
         m_navigator->queueId( id );
-        The::playlistModel()->setRowQueued( row );
+        GroupingProxy::instance()->setRowQueued( row );
     }
 }
 
@@ -308,9 +309,9 @@ Playlist::Actions::dequeue( QList<int> rows )
 {
     foreach( int row, rows )
     {
-        quint64 id = The::playlistModel()->idAt( row );
+        quint64 id = GroupingProxy::instance()->idAt( row );
         m_navigator->dequeueId( id );
-        The::playlistModel()->setRowDequeued( row );
+        GroupingProxy::instance()->setRowDequeued( row );
     }
 }
 
@@ -348,7 +349,7 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
 void
 Playlist::Actions::engineNewTrackPlaying()
 {
-    Model* model = Model::instance();
+    AbstractModel* model = GroupingProxy::instance();
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if ( track )
     {
