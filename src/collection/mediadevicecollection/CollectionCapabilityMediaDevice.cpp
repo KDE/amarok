@@ -33,34 +33,20 @@ CollectionCapabilityMediaDevice::CollectionCapabilityMediaDevice( MediaDeviceCol
 }
 
 QList<PopupDropperAction*>
-CollectionCapabilityMediaDevice::collectionActions( QueryMaker *qm )
+CollectionCapabilityMediaDevice::collectionActions()
 {
-    qm->deleteLater();
-    QList<PopupDropperAction*> actions;
-
     // Create Standard Device Actions
-
     PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
                                                                 "delete", KIcon( "remove-amarok" ), i18n( "&Disconnect Device" ), 0 );
-
     connect( disconnectAction, SIGNAL( triggered() ), m_coll, SLOT( disconnectDevice() ) );
 
+    QList<PopupDropperAction*> actions;
     actions.append( disconnectAction );
 
     // Pull in other device actions defined by subclasses
 
     actions += m_coll->handler()->collectionActions();  // This can be .append( QList<T> ) when we start depending on Qt>=4.5
 
-    return actions;
-}
-
-// NOTE: NYI
-QList<PopupDropperAction*>
-CollectionCapabilityMediaDevice::collectionActions( const TrackList tracklist )
-{
-    Q_UNUSED( tracklist );
-
-    QList<PopupDropperAction*> actions;
     return actions;
 }
 

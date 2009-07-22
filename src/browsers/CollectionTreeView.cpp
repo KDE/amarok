@@ -950,23 +950,12 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
     DEBUG_BLOCK
     PopupDropperActionList actions;
 
-    // Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
-    // This will fetch TrackList, pass TrackList to appropriate function with done signal
-
-    QueryMaker *qm = createMetaQueryFromItems( m_currentItems, true );
-    if( !qm )
-        return QList<PopupDropperAction*>();
-
-    qm->setQueryType( QueryMaker::Track );
-
-
     // Extract collection whose constituent was selected
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
     while( item->isDataItem() )
-    {
         item = item->parent();
-    }
+
     Amarok::Collection *collection = item->parentCollection();
 
     // Generate CollectionCapability, test for existence
@@ -975,13 +964,8 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 
     if( cc )
     {
-        debug() << "Has Collection Capability!";
-        actions = cc->collectionActions( qm );
-    }
-    else
-    {
-        debug() << "Does not have collection capability!";
-        qm->deleteLater();
+        actions = cc->collectionActions();
+        delete cc;
     }
 
     return actions;

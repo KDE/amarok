@@ -49,6 +49,7 @@ namespace Meta
                         , LoadTimecode = 16
                         , MultiSource = 17
                         , BoundedPlayback = 18
+                        , CollectionDecorator
                       };
 
             virtual ~Capability();

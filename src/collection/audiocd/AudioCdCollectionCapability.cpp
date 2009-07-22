@@ -28,19 +28,10 @@ AudioCdCollectionCapability::AudioCdCollectionCapability( AudioCdCollection *col
 {
 }
 
-
-QList< PopupDropperAction * > Meta::AudioCdCollectionCapability::collectionActions(QueryMaker * qm)
+QList<PopupDropperAction*> Meta::AudioCdCollectionCapability::collectionActions()
 {
-    QList< PopupDropperAction* > actions;
+    QList<PopupDropperAction*> actions;
     actions.append( m_collection->ejectAction() );
     return actions;
 }
-
-QList< PopupDropperAction * > Meta::AudioCdCollectionCapability::collectionActions(const TrackList tracklist)
-{
-    QList< PopupDropperAction* > actions;
-    actions.append( m_collection->ejectAction() );
-    return actions;
-}
-
 

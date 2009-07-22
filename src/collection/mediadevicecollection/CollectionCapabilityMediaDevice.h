@@ -32,8 +32,7 @@ namespace Meta
         public:
             CollectionCapabilityMediaDevice( MediaDeviceCollection *coll );
 
-            virtual QList<PopupDropperAction*> collectionActions( QueryMaker *qm );
-            virtual QList<PopupDropperAction*> collectionActions( const TrackList tracklist );
+            virtual QList<PopupDropperAction*> collectionActions();
 
         private:
             MediaDeviceCollection *m_coll;

@@ -25,25 +25,18 @@ class AudioCdCollection;
 
 namespace Meta
 {
+    class AudioCdCollectionCapability : public CollectionCapability
+    {
+        Q_OBJECT
 
-/**
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
-class AudioCdCollectionCapability : public CollectionCapability {
-    Q_OBJECT
+        public:
+            AudioCdCollectionCapability( AudioCdCollection *coll );
 
-public:
-    AudioCdCollectionCapability( AudioCdCollection *coll );
+            virtual QList<PopupDropperAction*> collectionActions();
 
-    virtual QList<PopupDropperAction *>  collectionActions( QueryMaker *qm );
-    virtual QList<PopupDropperAction *>  collectionActions( const TrackList tracklist );
-
-private:
-    AudioCdCollection *m_collection;
-
-
-};
-
+        private:
+            AudioCdCollection *m_collection;
+    };
 }
 
 #endif

@@ -20,8 +20,12 @@
 #include "Debug.h"
 #include "amarokconfig.h"
 
+#include "meta/capabilities/CollectionCapability.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+
 #include <KLocale>
 
+Q_DECLARE_METATYPE( QList<PopupDropperAction*> )
 
 CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent )
     : m_data( data )
@@ -196,8 +200,19 @@ CollectionTreeItem::data( int role ) const
         }
         else if( role == CustomRoles::DecoratorsRole )
         {
-            QList<QAction*> actions;
-            return actions;
+            QList<PopupDropperAction*> actions;
+
+            Meta::CollectionCapability *cc = m_parentCollection->create<Meta::CollectionCapability>();
+            if( cc )
+            {
+                actions = cc->collectionActions();
+                delete cc;
+            }
+
+            QVariant v;
+            v.setValue( actions );
+
+            return v;
         }
     }
 
