@@ -185,11 +185,11 @@ CollectionTreeItem::data( int role ) const
 
             return i18np( "1 track", "%1 tracks", m_trackCount );
         }
-        else if( role == CustomRoles::HasCapacity )
+        else if( role == CustomRoles::HasCapacityRole )
         {
             return m_parentCollection->hasCapacity();
         }
-        else if( role == CustomRoles::UsedCapacity )
+        else if( role == CustomRoles::UsedCapacityRole )
         {
             if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
                 return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();

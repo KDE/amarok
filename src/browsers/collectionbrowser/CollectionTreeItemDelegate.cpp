@@ -60,7 +60,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int iconWidth = 32;
     const int iconHeight = 32;
     const int iconPadX = 4;
-    const bool hasCapacity = index.data( CustomRoles::HasCapacity ).toBool();
+    const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
 
     painter->save();
 
@@ -116,7 +116,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         capacityRect.setWidth( infoRectWidth );
         capacityRect.setHeight( CAPACITYRECT_HEIGHT );
 
-        const int used = index.data( CustomRoles::UsedCapacity ).toInt();
+        const int used = index.data( CustomRoles::UsedCapacityRole ).toInt();
 
         KCapacityBar capacityBar( KCapacityBar::DrawTextInline );
         capacityBar.setValue( used );

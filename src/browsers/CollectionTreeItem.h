@@ -30,8 +30,8 @@ namespace CustomRoles
         SortRole = Qt::UserRole + 1,
         FilterRole = Qt::UserRole + 2,
         ByLineRole = Qt::UserRole + 3,
-        HasCapacity = Qt::UserRole + 4,
-        UsedCapacity = Qt::UserRole + 5
+        HasCapacityRole = Qt::UserRole + 4,
+        UsedCapacityRole = Qt::UserRole + 5
     };
 }
 
