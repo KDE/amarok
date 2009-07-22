@@ -316,35 +316,6 @@ public:
      */
     virtual Meta::TrackPtr trackForId( const quint64 id ) const;
 
-
-//FIXME: When every proxy talks only to the proxy below it, these should be made protected
-//       here and and in subclasses that reimplement them. For now, they have to be public
-//       otherwise it won't compile.    -- Téo 21/6/2009
-//protected:
-    /**
-     * Converts a row index that's valid in the proxy below this one to a row index valid
-     * in this proxy.
-     * The default implementation returns the same row, and results in a perfectly pass-
-     * -through proxy. Reimplement this method with mapFromSource and sanity checks if your
-     * proxy adds, removes or sorts rows.
-     * @param row the row index to be converted.
-     * @return the index of the row that's valid in this proxy.
-     */
-    virtual inline int rowFromSource( int row ) const
-    { return row; }
-
-    /**
-     * Converts a row index that's valid in this proxy to a row index valid in the proxy
-     * below this one.
-     * The default implementation returns the same row, and results in a perfectly pass-
-     * -through proxy. Reimplement this method with mapToSource and sanity checks if your
-     * proxy adds, removes or sorts rows.
-     * @param row the row index to be converted.
-     * @return the index of the row that's valid in the proxy below this one.
-     */
-    virtual inline int rowToSource( int row ) const
-    { return row; }
-
 signals:
     /**
      * Signal forwarded from the source model. IDs are unique so they shouldn't be modified
@@ -377,6 +348,30 @@ protected:
      * @return True if a match is found in any field, false otherwise.
      */
     bool rowMatch( int row, const QString &searchTerm, int searchFields ) const;
+
+    /**
+     * Converts a row index that's valid in the proxy below this one to a row index valid
+     * in this proxy.
+     * The default implementation returns the same row, and results in a perfectly pass-
+     * -through proxy. Reimplement this method with mapFromSource and sanity checks if your
+     * proxy adds, removes or sorts rows.
+     * @param row the row index to be converted.
+     * @return the index of the row that's valid in this proxy.
+     */
+    virtual inline int rowFromSource( int row ) const
+    { return row; }
+
+    /**
+     * Converts a row index that's valid in this proxy to a row index valid in the proxy
+     * below this one.
+     * The default implementation returns the same row, and results in a perfectly pass-
+     * -through proxy. Reimplement this method with mapToSource and sanity checks if your
+     * proxy adds, removes or sorts rows.
+     * @param row the row index to be converted.
+     * @return the index of the row that's valid in the proxy below this one.
+     */
+    virtual inline int rowToSource( int row ) const
+    { return row; }
 
     AbstractModel *m_belowModel;
 };

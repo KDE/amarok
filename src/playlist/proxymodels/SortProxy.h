@@ -50,8 +50,14 @@ public:
      */
     bool lessThan( const QModelIndex & left, const QModelIndex & right ) const;
 
-//FIXME: when the proxies are despaghettified, the following two methods need to be protected:
-//protected:
+public slots:
+    /**
+     * Applies a sorting scheme to the playlist.
+     * @param scheme the sorting scheme that will be applied.
+     */
+    void updateSortMap( SortScheme scheme );
+
+protected:
     /**
      * Converts a row index that's valid in the proxy below this one to a row index valid
      * in this proxy, with sanity checks.
@@ -67,13 +73,6 @@ public:
      * @return the index of the row that's valid in the proxy below this one.
      */
     int rowToSource( int row ) const;
-
-public slots:
-    /**
-     * Applies a sorting scheme to the playlist.
-     * @param scheme the sorting scheme that will be applied.
-     */
-    void updateSortMap( SortScheme scheme );
 
 private:
     /**
