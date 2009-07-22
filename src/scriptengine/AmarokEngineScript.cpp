@@ -22,6 +22,7 @@
 #include "MainWindow.h"
 //#include "mediabrowser.h"
 #include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistModel.h"
 
 
 #include <KSelectAction>

@@ -70,6 +70,7 @@ Playlist::Actions::Actions()
         , m_waitingForNextTrack( false )
 {
     DEBUG_BLOCK
+    m_topmostModel = Playlist::GroupingProxy::instance();
     playlistModeChanged(); // sets m_navigator.
     m_nextTrackCandidate = m_navigator->requestNextTrack();
 }
@@ -92,7 +93,7 @@ Playlist::Actions::requestNextTrack()
 
     debug() << "so far so good!";
     m_trackError = false;
-    m_currentTrack = GroupingProxy::instance()->activeId();
+    m_currentTrack = m_topmostModel->activeId();
     if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
     {
         setStopAfterMode( StopAfterCurrent );
@@ -108,11 +109,11 @@ Playlist::Actions::requestNextTrack()
         //No more stuff to play. make sure to reset the active track so that
         //pressing play will start at the top of the playlist (or whereever the navigator wants to start)
         //instead of just replaying the last track.
-        GroupingProxy::instance()->setActiveRow( -1 );
+        m_topmostModel->setActiveRow( -1 );
 
         //We also need to mark all tracks as unplayed or some navigators might be unhappy.
-        GroupingProxy::instance()->setAllUnplayed();
-        
+        m_topmostModel->setAllUnplayed();
+
         //Make sure that the navigator is reset, otherwise complex navigators might have all tracks marked as
         //played and will thus be stuck at the last track (or refuse to play any at all) if the playlist is restarted
         m_navigator->reset();
@@ -157,7 +158,7 @@ Playlist::Actions::play()
 {
     if( 0 == m_nextTrackCandidate )
     {
-        m_nextTrackCandidate = GroupingProxy::instance()->activeId();
+        m_nextTrackCandidate = m_topmostModel->activeId();
         if( 0 == m_nextTrackCandidate )
             m_nextTrackCandidate = m_navigator->requestNextTrack();
     }
@@ -178,7 +179,7 @@ Playlist::Actions::play( const QModelIndex& index )
 void
 Playlist::Actions::play( const int row )
 {
-    m_nextTrackCandidate = GroupingProxy::instance()->idAt( row );
+    m_nextTrackCandidate = m_topmostModel->idAt( row );
     play( m_nextTrackCandidate );
 }
 
@@ -187,9 +188,7 @@ Playlist::Actions::play( const quint64 trackid, bool now )
 {
     DEBUG_BLOCK
 
-    AbstractModel* model = GroupingProxy::instance();
-
-    if ( model->containsId( trackid ) )
+    if ( m_topmostModel->containsId( trackid ) )
     {
         if ( now )
         {
@@ -204,10 +203,10 @@ Playlist::Actions::play( const quint64 trackid, bool now )
                 debug() << "Manually advancing to the next track, calculating previous statistics for track here.  Finished % is: "  << finishedPercent;
                 currentTrack->finishedPlaying( finishedPercent );
             }
-            The::engineController()->play( model->trackForId( trackid ) );
+            The::engineController()->play( m_topmostModel->trackForId( trackid ) );
         }
         else
-            The::engineController()->setNextTrack( model->trackForId( trackid ) );
+            The::engineController()->setNextTrack( m_topmostModel->trackForId( trackid ) );
     }
     else
     {
@@ -298,9 +297,9 @@ Playlist::Actions::queue( QList<int> rows )
 {
     foreach( int row, rows )
     {
-        quint64 id = GroupingProxy::instance()->idAt( row );
+        quint64 id = m_topmostModel->idAt( row );
         m_navigator->queueId( id );
-        GroupingProxy::instance()->setRowQueued( row );
+        m_topmostModel->setRowQueued( row );
     }
 }
 
@@ -309,9 +308,9 @@ Playlist::Actions::dequeue( QList<int> rows )
 {
     foreach( int row, rows )
     {
-        quint64 id = GroupingProxy::instance()->idAt( row );
+        quint64 id = m_topmostModel->idAt( row );
         m_navigator->dequeueId( id );
-        GroupingProxy::instance()->setRowDequeued( row );
+        m_topmostModel->setRowDequeued( row );
     }
 }
 
@@ -349,20 +348,20 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
 void
 Playlist::Actions::engineNewTrackPlaying()
 {
-    AbstractModel* model = GroupingProxy::instance();
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if ( track )
     {
-        if ( model->containsId( m_nextTrackCandidate ) && track == model->trackForId( m_nextTrackCandidate ) )
-            model->setActiveId( m_nextTrackCandidate );
+        if ( m_topmostModel->containsId( m_nextTrackCandidate )
+             && track == m_topmostModel->trackForId( m_nextTrackCandidate ) )
+            m_topmostModel->setActiveId( m_nextTrackCandidate );
         else {
             warning() << "engineNewTrackPlaying:" << track->prettyName() << "does not match what the playlist controller thought it should be";
-            if ( model->activeTrack() != track )
+            if ( m_topmostModel->activeTrack() != track )
             {
                 if ( AmarokConfig::lastPlaying() > -1 )
-                    model->setActiveRow( AmarokConfig::lastPlaying() );
+                    m_topmostModel->setActiveRow( AmarokConfig::lastPlaying() );
                 else
-                    model->setActiveRow( model->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
+                    m_topmostModel->setActiveRow( m_topmostModel->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
             }
         }
     }
