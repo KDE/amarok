@@ -29,6 +29,13 @@ class TestSmartPointerList : public QObject
 {
     Q_OBJECT
     
+public:
+    TestSmartPointerList( int argc, char ** argv, char *fileNamePtr )
+    {
+        strcpy ( fileNamePtr, "SmartPointerList.log\0" ); // HACK: max 100 chars!
+        QTest::qExec ( this, argc, argv );
+    }
+
 private slots:
     void testCount()
     {
@@ -130,6 +137,4 @@ private slots:
     }
 };
 
-
-QTEST_MAIN( TestSmartPointerList )
-#include "TestSmartPointerList.moc"
+#include "../tests/TestSmartPointerList.moc"

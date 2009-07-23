@@ -1,16 +1,15 @@
 ENABLE_TESTING()
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
+########### PlaylistManager ###############
+set( PlaylistManagerTest_SRCS TestPlaylistManager.cpp ../src/playlistmanager/PlaylistManager.cpp )
+
+qt4_automoc( ${PlaylistManagerTest_SRCS} )
+
+
+########### SmartPointerList ###############
 set( SmartPointerListTest_SRCS TestSmartPointerList.cpp ../src/SmartPointerList.cpp )
 
-qt4_automoc( SmartPointerListTest_SRCS )
+qt4_automoc( ${SmartPointerListTest_SRCS} )
 
-kde4_add_unit_test( SmartPointerListTest
-  TESTNAME General-SmartPointerListTest
-  ${SmartPointerListTest_SRCS}
-)
- 
-target_link_libraries( SmartPointerListTest
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTTEST_LIBRARY}
-)
+add_subdirectory( data )

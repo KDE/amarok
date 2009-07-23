@@ -605,6 +605,7 @@ target_link_libraries(amaroklib
     ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
+    ${QT_QTTEST_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}

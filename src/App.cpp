@@ -87,6 +87,10 @@ int App::mainThreadId = 0;
 extern void setupEventHandler_mac(long);
 #endif
 
+#ifdef DEBUG
+#include "../tests/TestPlaylistManager.cpp"
+#include "../tests/TestSmartPointerList.cpp"
+#endif // DEBUG
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "Amarok" ), APP_VERSION,
@@ -395,6 +399,13 @@ App::handleCliArgs() //static
         pApp->mainWindow()->activate();
     firstTime = false;
 
+#ifdef DEBUG
+    if( args->isSet( "test" ) )
+    {
+        runUnitTests();
+    }
+#endif // DEBUG
+
     args->clear();    //free up memory
 }
 
@@ -439,6 +450,7 @@ App::initCliArgs() //static
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
+    options.add("test", ki18n( "Run integrated unit tests, if your build supports it" ));
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
@@ -553,6 +565,52 @@ void App::applySettings( bool firstTime )
         // some people! FIXME
         //AmarokConfig::self()->writeConfig();
 }
+
+#ifdef DEBUG
+//SLOT
+void
+App::runUnitTests()
+{
+    DEBUG_BLOCK
+    // prepare argc and argv for testlib. this is the ugly part.
+    #define TEST_ARGC 4
+    char *fileNamePtr;
+    char *testArgv[TEST_ARGC];
+    char arg0[] = "amarok";
+    char arg1[] = "-o";
+    QByteArray tempArg2 = QFile::encodeName ( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + "/" ) );
+    char *arg2 = (char*)malloc( tempArg2.size() + 100 ); // eeeevil HACK to allow tests to set the log filename
+    char arg3[] = "-xml";
+
+    int i = 0;
+    while( i < tempArg2.size() )
+    {
+        arg2[i] = tempArg2.at( i );
+        i++;
+    }
+    arg2[i] = '\0';
+    fileNamePtr = &arg2[i];
+
+    testArgv[0] = arg0;
+    testArgv[1] = arg1;
+    testArgv[2] = arg2;
+    testArgv[3] = arg3;
+
+    // create log folder for this run:
+    QDir logDir( tempArg2 );
+    logDir.mkpath( tempArg2 );
+
+    PERF_LOG( "Running Unit Tests" )
+    TestPlaylistManager  testPlaylistManager ( TEST_ARGC, (char**)&testArgv, fileNamePtr );
+    TestSmartPointerList testSmartPointerList( TEST_ARGC, (char**)&testArgv, fileNamePtr );
+
+    /* add more test classes here ^^ */
+
+    PERF_LOG( "Done Running Unit Tests" )
+    delete( arg2 );
+    #undef TEST_ARGC
+}
+#endif // DEBUG
 
 //SLOT
 void
