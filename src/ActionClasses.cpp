@@ -231,8 +231,6 @@ void ToggleAction::setEnabled( bool b )
 {
     const bool announce = b != isEnabled();
 
-    if( !b )
-        setChecked( false );
     KToggleAction::setEnabled( b );
     AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit QAction::triggered( b );
@@ -274,8 +272,6 @@ void SelectAction::setEnabled( bool b )
 {
     const bool announce = b != isEnabled();
 
-    if( !b )
-        setCurrentItem( 0 );
     KSelectAction::setEnabled( b );
     AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit QAction::triggered( b );
