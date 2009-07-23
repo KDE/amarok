@@ -22,6 +22,7 @@
 #include "meta/Capability.h"
 #include "plugin/plugin.h"
 #include "QueryMaker.h"
+#include "playlistmanager/UserPlaylistProvider.h"
 
 #include <QObject>
 #include <QSharedData>
@@ -119,10 +120,16 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
         virtual ~Collection();
 
         /**
-            The collections querymaker
+            The collection's querymaker
             @return A querymaker that belongs to this collection.
         */
         virtual QueryMaker * queryMaker() = 0;
+	/**
+	   The collection's UserPlaylistProvider
+	   @return The UserPlaylistProvider that belongs to this collection.
+
+	*/
+	virtual UserPlaylistProvider* userPlaylistProvider() { return 0; }
         /**
             Begin a full scan on the collection.  This is not valid for all collections
         */

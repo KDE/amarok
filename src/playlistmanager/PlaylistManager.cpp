@@ -35,6 +35,7 @@
 #include <kdirlister.h>
 #include <kio/jobclasses.h>
 #include <kio/job.h>
+#include <KInputDialog>
 #include <KLocale>
 #include <KUrl>
 
@@ -265,21 +266,68 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
 {
     Q_UNUSED( name )
     Q_UNUSED( fromLocation )
-    SqlUserPlaylistProvider *sqlProvider =
-            dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
-    if( !sqlProvider )
+
+    QSet<Amarok::Collection*> collections;
+
+    // Get the collections that the tracks belong to
+    foreach( Meta::TrackPtr track, tracks )
+    {
+        collections << track->collection();
+    }
+
+    UserPlaylistProvider *prov = 0;
+
+    // If they don't all belong to one and the same collection,
+    // ask the user which provider to save to
+    if ( collections.size() > 1 )
+    {
+        QList<Amarok::Collection*> colls = QList<Amarok::Collection*>::fromSet( collections );
+
+        // TODO: sort the collections by prettyName
+
+        QStringList collList;
+
+        foreach( Amarok::Collection* coll, colls )
+            collList << coll->prettyName();
+
+        bool ok = false;
+
+        // Present the dialog to the user
+
+        QString item = KInputDialog::getItem(  i18n(  "Select Collection to Save Playlist" ),  i18n(  "Collections" ),  collList,  0,  false,  &ok,  0 );
+
+        if ( !ok )
+            return false;
+
+        prov = colls[ collList.indexOf( item ) ]->userPlaylistProvider();
+
+    }
+    // If they all belong to the same collection, save to that
+    // collection's provider
+    else
+    {
+        prov = tracks.front()->collection()->userPlaylistProvider();
+    }
+
+//    SqlUserPlaylistProvider *sqlProvider =
+//            dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
+//    if( !sqlProvider )
+//        return false;
+
+    // If no provider available, this is impossible, so do nothing
+    if ( !prov )
         return false;
 
     Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
     if( name.isEmpty() || editNow )
     {
-        playlist = sqlProvider->save( tracks );
+        playlist = prov->save( tracks );
         AmarokUrl("amarok://navigate/playlists/My Playlists").run();
-        emit( renamePlaylist( playlist ) );
+//        emit( renamePlaylist( playlist ) );
     }
     else
     {
-        playlist = sqlProvider->save( tracks, name );
+        playlist = prov->save( tracks, name );
     }
 
     return !playlist.isNull();
