@@ -23,7 +23,7 @@
 #include "LongMessageWidget.h"
 #include "meta/MetaUtility.h"
 #include "meta/capabilities/SourceInfoCapability.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 
 #include "KJobProgressBar.h"
 
@@ -329,8 +329,8 @@ void StatusBar::hideLongMessage()
 void
 StatusBar::updateTotalPlaylistLength() //SLOT
 {
-    const int totalLength = The::playlistModel()->totalLength();
-    const int trackCount = The::playlistModel()->rowCount();
+    const int totalLength = Playlist::GroupingProxy::instance()->totalLength();
+    const int trackCount = Playlist::GroupingProxy::instance()->rowCount();
     const QString totalTime = Meta::secToPrettyTime( totalLength );
 
     if( totalLength > 0 && trackCount > 0 )
