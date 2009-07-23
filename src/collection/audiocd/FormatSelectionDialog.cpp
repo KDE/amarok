@@ -34,7 +34,7 @@ FormatSelectionDialog::FormatSelectionDialog( QWidget *parent )
 
 
     //restore format from last time, if any.
-    KConfigGroup config = Amarok::config("Audio Cd Collection");
+    KConfigGroup config = Amarok::config("Audio CD Collection");
     QString format = config.readEntry( "Import Format", "ogg" );
 
     if ( format.compare( "ogg", Qt::CaseInsensitive ) == 0 )
@@ -71,7 +71,7 @@ void FormatSelectionDialog::selectionChanged( bool checked )
     }
     else if( sender() == wavButton )
     {
-        descriptionLabel->setText( i18n( "Wav is a basic, uncompressed audio file format. It takes up a lot of space but maintains perfect quality. It is generally not reccomended unless you know what you are doing. If you want perfect quailty, use Flac instead." ) );
+        descriptionLabel->setText( i18n( "Wav is a basic, uncompressed audio file format. It takes up a lot of space but maintains perfect quality. It is generally not recommended unless you know what you are doing. If you want perfect quality, use Flac instead." ) );
 
         m_selectedFormat = AudioCdCollection::WAV;
     }
@@ -100,7 +100,7 @@ void FormatSelectionDialog::accept()
     else if( m_selectedFormat == AudioCdCollection::MP3 )
         format = "mp3";
 
-    KConfigGroup config = Amarok::config("Audio Cd Collection");
+    KConfigGroup config = Amarok::config("Audio CD Collection");
     config.writeEntry( "Import Format", format );
     
     emit formatSelected( m_selectedFormat );

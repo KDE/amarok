@@ -152,7 +152,7 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
 
     if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
     {
-        debug() << "device is an Audio Cd";
+        debug() << "device is an Audio CD";
         m_type[udi] = MediaDeviceCache::SolidAudioCdType;
         m_name[udi] = device.vendor() + " - " + device.product();
     }

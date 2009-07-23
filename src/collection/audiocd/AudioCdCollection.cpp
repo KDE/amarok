@@ -57,7 +57,7 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
 {
     DEBUG_BLOCK
 
-    debug() << "Getting AudioCd info";
+    debug() << "Getting Audio CD info";
     AudioCdDeviceInfo *cdInfo = qobject_cast<AudioCdDeviceInfo *>( info );
     m_udi = cdInfo->udi();
 
@@ -215,7 +215,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
                 baseFileName.replace( "%{year}", year, Qt::CaseInsensitive );
                 baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
 
-                //we hack the url so the engine controller knows what track on the cd to play..
+                //we hack the url so the engine controller knows what track on the CD to play..
                 QString baseUrl = "audiocd:/" + m_discCddbId + "/" + QString::number( i + 1 );
 
                 debug() << "Track Base File Name (after): " << baseFileName;
@@ -277,7 +277,7 @@ AudioCdCollection::collectionId() const
 QString
 AudioCdCollection::prettyName() const
 {
-    return "Audio Cd";
+    return "Audio CD";
 }
 
 KIcon

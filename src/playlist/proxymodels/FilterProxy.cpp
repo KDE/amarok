@@ -128,26 +128,6 @@ FilterProxy::showOnlyMatches( bool onlyMatches )
     emit( layoutChanged() );
 }
 
-int FilterProxy::rowToSource( int row ) const
-{
-    QModelIndex index = this->index( row, 0 );
-    QModelIndex sourceIndex = mapToSource( index );
-
-    if ( !sourceIndex.isValid() )
-        return -1;
-    return sourceIndex.row();
-}
-
-int FilterProxy::rowFromSource( int row ) const
-{
-    QModelIndex sourceIndex = sourceModel()->index( row, 0 );
-    QModelIndex index = mapFromSource( sourceIndex );
-
-    if ( !index.isValid() )
-        return -1;
-    return index.row();
-}
-
 void FilterProxy::clearSearchTerm()
 {
     m_currentSearchTerm.clear();
@@ -170,6 +150,28 @@ FilterProxy::matchesCurrentSearchTerm( int source_row ) const
         return rowMatch( source_row, m_currentSearchTerm, m_currentSearchFields );
     }
     return false;
+}
+
+int
+FilterProxy::rowToSource( int row ) const
+{
+    QModelIndex index = this->index( row, 0 );
+    QModelIndex sourceIndex = mapToSource( index );
+
+    if ( !sourceIndex.isValid() )
+        return -1;
+    return sourceIndex.row();
+}
+
+int
+FilterProxy::rowFromSource( int row ) const
+{
+    QModelIndex sourceIndex = sourceModel()->index( row, 0 );
+    QModelIndex index = mapFromSource( sourceIndex );
+
+    if ( !index.isValid() )
+        return -1;
+    return index.row();
 }
 
 }

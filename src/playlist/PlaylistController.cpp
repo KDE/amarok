@@ -28,7 +28,7 @@
 #include "EngineController.h"
 #include "collection/QueryMaker.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "meta/multi/MultiTrack.h"
 
@@ -275,7 +275,7 @@ Playlist::Controller::removeRows( QList<int>& rows )
     {
         debug() << "Removing row " << r;
         if (( r >= 0 ) && ( r < m_topmostModel->rowCount() ) )
-            cmds.append( RemoveCmd( m_topmostModel->trackAt( r ), r ) );
+            cmds.append( RemoveCmd( m_topmostModel->trackAt( r ), m_topmostModel->rowToBottomModel( r ) ) );
         else
             warning() << "received command to remove non-existent row" << r;
     }
@@ -412,7 +412,7 @@ Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
         debug() << "moving rows:" << from.at( i ) << to.at( i );
         if ( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_topmostModel->rowCount() ) )
             if ( from.at( i ) != to.at( i ) )
-                cmds.append( MoveCmd( from.at( i ), to.at( i ) ) );
+                cmds.append( MoveCmd( m_topmostModel->rowToBottomModel( from.at( i ) ), m_topmostModel->rowToBottomModel( to.at( i ) ) ) );
     }
 
     if ( cmds.size() > 0 )
@@ -511,7 +511,7 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
     }
 
     InsertCmdList cmds;
-    row = qBound( 0, Model::instance()->rowCount(), row );
+    row = qBound( 0, Model::instance()->rowCount(), m_topmostModel->rowToBottomModel( row ) );
 
     foreach( Meta::TrackPtr t, tl )
         cmds.append( InsertCmd( t, row++ ) );

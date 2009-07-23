@@ -34,6 +34,8 @@ namespace Playlist
             quint64 requestNextTrack();
             quint64 requestUserNextTrack() { return requestNextTrack(); }
             quint64 requestLastTrack();
+
+            void reset() {};
     };
 
 }

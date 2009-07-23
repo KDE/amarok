@@ -99,12 +99,6 @@ signals:
      */
     void rowsRemoved( const QModelIndex& parent, int start, int end );
 
-    /**
-     * Sets the currently active (playing) row, translated for this proxy.
-     * @param row the row to be set as active.
-     */
-    void setActiveRow( int row );
-
 private slots:
     void modelDataChanged( const QModelIndex&, const QModelIndex& );
     void modelRowsInserted( const QModelIndex&, int, int );

@@ -298,6 +298,10 @@ private:
     void setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap &composerMap );
     void setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap &yearMap );
 
+    // Misc. Helper Methods
+
+    void setupReadCapability();
+
     /**
      *  @return free space on the device
      */
@@ -322,6 +326,8 @@ private:
     TitleMap          m_titlemap; /// Map of track titles to tracks, used to detect duplicates
 
     bool m_copyFailed; /// Indicates whether a copy failed or not
+    bool m_isCopying;
+    bool m_isDeleting;
 
     Meta::TrackList   m_tracksToCopy; /// List of tracks left to copy
     Meta::TrackList   m_tracksCopying; /// List of tracks currrently copying

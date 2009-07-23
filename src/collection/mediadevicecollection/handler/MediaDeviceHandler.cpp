@@ -55,6 +55,8 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 : QObject( parent )
 , m_memColl( qobject_cast<MediaDeviceCollection*>(parent) )
 , m_provider( 0 )
+, m_isCopying( false )
+, m_isDeleting( false )
 , m_pc( 0 )
 , m_rc( 0 )
 , m_wc( 0 )
@@ -269,6 +271,13 @@ MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
 void
 MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 {
+    QString copyErrorCaption = i18n( "Copying Tracks Failed" );
+
+    if ( m_isCopying )
+    {
+        KMessageBox::error( 0, i18n( "Tracks not copied: the device is already being copied to" ), copyErrorCaption );
+        return;
+    }
 
     DEBUG_BLOCK
 
@@ -285,11 +294,11 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         }
     }
 
+    m_isCopying = true;
+
     bool isDupe;
     bool hasDupe;
     QString format;
-    QString copyError = i18n( "Tracks not copied: " );
-    QString copyErrorCaption = i18n( "Copying Tracks Failed" );
     TrackMap trackMap = m_memColl->trackMap();
 
     Meta::TrackList tempTrackList;
@@ -385,7 +394,8 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     if( m_tracksToCopy.size() == 0 )
     {
-        KMessageBox::error( 0, i18n( "%1the device already has these tracks", copyError ), copyErrorCaption );
+        KMessageBox::error( 0, i18n( "Tracks not copied: the device already has these tracks" ), copyErrorCaption );
+        m_isCopying = false;
         emit copyTracksDone( false );
         return;
     }
@@ -406,7 +416,8 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     {
         debug() << "Free space: " << freeSpace();
         debug() << "Space would've been after copy: " << (freeSpace() - transfersize);
-        KMessageBox::error( 0, i18n( "%1the device has insufficient space", copyError ), copyErrorCaption );
+        KMessageBox::error( 0, i18n( "Tracks not copied: the device has insufficient space" ), copyErrorCaption );
+        m_isCopying = false;
         emit copyTracksDone( false );
         return;
     }
@@ -539,7 +550,8 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
     {
         if( m_tracksFailed.size() > 0 )
         {
-            The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+            The::statusBar()->shortMessage( i18np( "%1 track failed to copy to the device",
+                                                   "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         // clear maps/hashes used
 
@@ -550,6 +562,7 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
 
         // copying done
 
+        m_isCopying = false;
         emit copyTracksDone( true );
     }
 }
@@ -575,6 +588,16 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
 
+    QString removeError = i18n( "Tracks not deleted:" );
+    QString removeErrorCaption = i18n( "Deleting Tracks Failed" );
+
+    if ( m_isDeleting )
+    {
+        KMessageBox::error( 0, i18np( "%1 Track is already being deleted from the device",
+                                      "%1 Tracks are already being deleted from the device", removeError ), removeErrorCaption );
+        return;
+    }
+
     if( !m_wc )
     {
         if( this->hasCapabilityInterface( Handler::Capability::Writable ) )
@@ -587,6 +610,8 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
             }
         }
     }
+
+    m_isDeleting = true;
 
     // Init the list of tracks to be deleted
 
@@ -682,6 +707,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
             The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         */
+        m_isDeleting = false;
         emit removeTracksDone();
     }
 }
@@ -797,21 +823,9 @@ MediaDeviceHandler::parseTracks()
 {
     DEBUG_BLOCK
 
-    if( !m_rc )
-    {
-        debug() << "RC does not exist";
-        if( this->hasCapabilityInterface( Handler::Capability::Readable ) )
-        {
-            debug() << "Has read capability interface";
-            m_rc = this->create<Handler::ReadCapability>();
-            debug() << "Created rc";
-            if( !m_rc )
-            {
-                debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting parse.";
-                return;
-            }
-        }
-    }
+    setupReadCapability();
+    if ( !m_rc )
+        return;
 
     TrackMap trackMap;
     ArtistMap artistMap;
@@ -1031,26 +1045,55 @@ MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
     emit endProgressOperation( this );
 
     // Inform CollectionLocation that copying is done
-
+    m_isCopying = false;
     emit copyTracksDone( true );
 }
 
 float
 MediaDeviceHandler::freeSpace() const
 {
-    return ( m_rc->totalCapacity() - m_rc->usedCapacity() );
+    if ( m_rc )
+        return ( m_rc->totalCapacity() - m_rc->usedCapacity() );
+    else
+        return 0.0;
 }
 
 float
 MediaDeviceHandler::usedcapacity() const
 {
-    return m_rc->usedCapacity();
+    if ( m_rc )
+        return m_rc->usedCapacity();
+    else
+        return 0.0;
 }
 
 float
 MediaDeviceHandler::totalcapacity() const
 {
-    return m_rc->totalCapacity();
+    if ( m_rc )
+        return m_rc->totalCapacity();
+    else
+        return 0.0;
+}
+
+void
+MediaDeviceHandler::setupReadCapability()
+{
+    MediaDeviceHandler *handler = const_cast<MediaDeviceHandler*> ( this );
+    if( !m_rc )
+    {
+        debug() << "RC does not exist";
+        if( handler->hasCapabilityInterface( Handler::Capability::Readable ) )
+        {
+            debug() << "Has read capability interface";
+            m_rc = handler->create<Handler::ReadCapability>();
+            debug() << "Created rc";
+            if( !m_rc )
+            {
+                debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting.";
+            }
+        }
+    }
 }
 
 /** Observer Methods **/

@@ -35,6 +35,19 @@ class AbstractModel
 {
 public:
 
+//NOTE: While AbstractModel is ideally and logically an abstract base class with all pure
+//      virtual methods, there are a few exceptions.
+//      Some of the public methods are virtual but not pure. The implementations of those
+//      are inline, and are dummies (if they return anything, they return default values).
+//      Almost all of them are reimplemented in Playlist::ProxyBase anyway, so the only
+//      reason why they are not pure virtual is that this would require the dummies to
+//      exist in Playlist::Model, which just looks wrong.
+//      These methods are needed because even though they don't do anything in Playlist::
+//      Model, they are important parts of the interface that a complete playlist model
+//      must implement. Non trivial implementations are handled by the proxies, and they
+//      are used in the view(s), Playlist::Controller, Playlist::Actions and probably in
+//      many other places.  --Téo 19/7/2009
+
     /**
      * Returns the unique playlist item id of the active track
      * (or 0 if no track is active).
@@ -114,6 +127,52 @@ public:
     virtual bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) = 0;
 
     /**
+     * Notify FilterProxy that the search term of searched fields has changed. Since this
+     * call does not use the parent's filter values, this method needs to be called when the
+     * values change.
+     */
+    virtual void filterUpdated() {}
+
+    /**
+     * Forwards a search down through the stack of ProxyModels.
+     * Find the first track in the playlist that matches the search term in one of the
+     * specified search fields. Playlist::Model::find() emits found() or notFound() depending
+     * on whether a match is found.
+     * @param searchTerm The term to search for.
+     * @param searchFields A bitmask specifying the fields to look in.
+     * @return The row of the first found match, -1 if no match is found.
+     */
+    virtual int find( const QString &, int ) { return -1; }
+
+    /**
+     * Forwards through the stack of ProxyModels a top to bottom search for the next item.
+     * Find the first track below a given row that matches the search term in one of the
+     * specified search fields. Playlist::Model::findNext() emits found() or notFound()
+     * depending on whether a match is found. If no row is found below the current row, the
+     * function wraps around and returns the first match. If no match is found at all, -1
+     * is returned.
+     * @param searchTerm The term to search for.
+     * @param selectedRow The offset row.
+     * @param searchFields A bitmask specifying the fields to look in.
+     * @return The row of the first found match below the offset, -1 if no match is found.
+     */
+    virtual int findNext( const QString &, int, int ) { return -1; }
+
+    /**
+     * Forwards through the stack of ProxyModels a bottom to top search for the next item.
+     * Find the first track above a given row that matches the search term in one of the
+     * specified search fields. Playlist::Model::findPrevious() emits found() or notFound()
+     * depending on whether a match is found. If no row is found above the current row, the
+     * function wraps around and returns the last match. If no match is found at all, -1
+     * is returned.
+     * @param searchTerm The term to search for.
+     * @param selectedRow The offset row.
+     * @param searchFields A bitmask specifying the fields to look in.
+     * @return The row of the first found match above the offset, -1 if no match is found.
+     */
+    virtual int findPrevious( const QString &, int, int ) {return -1; }
+
+    /**
      * Returns the item flags for the given index.
      * @param index the index to retrieve the flags for.
      * @return the item flags.
@@ -163,10 +222,53 @@ public:
     virtual int rowForId( const quint64 id ) const = 0;
 
     /**
+     * Returns the row in the current model for a given track pointer.
+     * @param track the track.
+     * @return the row, -1 if the track pointer is invalid.
+     */
+    virtual int rowForTrack( const Meta::TrackPtr track ) const = 0;
+
+    /**
+     * Returns the row number of a track in terms of the bottom model.
+     * @param row the row in a proxy model
+     * @return the row in the bottom model.
+     */
+    virtual int rowToBottomModel( const int row ) = 0;
+
+    /**
+     * Set the currently active track based on the playlist id given.
+     * @param id the unique playlist id.
+     */
+    virtual void setActiveId( const quint64 id ) = 0;
+
+    /**
      * Sets the currently active (playing) row, translated for this proxy.
      * @param row the row to be set as active.
      */
     virtual void setActiveRow( int row ) = 0;
+
+    /**
+     * Sets to uplayed the state of all the tracks exposed by this proxy.
+     */
+    virtual void setAllUnplayed() = 0;
+
+    /**
+     * Adds a row to the playlist queue.
+     * @param row the row to add.
+     */
+    virtual void setRowQueued( int row ) = 0;
+
+    /**
+     * Removes a row from the playlist queue.
+     * @param row the row to remove.
+     */
+    virtual void setRowDequeued( int row ) = 0;
+
+    /**
+     * Decides if FilterProxy or SearchProxy should be used.
+     * @param onlyMatches true if one wants to use SearchProxy, false otherwise.
+     */
+    virtual void showOnlyMatches( bool ) {}
 
     /**
      * Get the state of a track by its id.

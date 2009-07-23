@@ -38,20 +38,7 @@ Playlist::RandomAlbumNavigator::RandomAlbumNavigator()
     connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
              this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 
-    for ( int i = 0; i < m_model->rowCount(); i++ )
-    {
-        Meta::AlbumPtr album = m_model->trackAt( i )->album();
-        m_albumGroups[album].append( m_model->idAt( i ) ); // conveniently creates an empty list if none exists
-    }
-
-    m_unplayedAlbums = m_albumGroups.uniqueKeys();
-    std::random_shuffle( m_unplayedAlbums.begin(), m_unplayedAlbums.end() );
-
-    if ( m_unplayedAlbums.size() )
-        sortTheseAlbums( m_unplayedAlbums );
-
-    m_currentAlbum = Meta::AlbumPtr();
-    m_currentTrack = 0;
+    reset();
 
     //dump();
 }
@@ -302,4 +289,24 @@ Playlist::RandomAlbumNavigator::dump()
             debug() << "      " << track->trackNumber() << track->prettyName() << id;
         }
     }
+}
+
+void Playlist::RandomAlbumNavigator::reset()
+{
+    m_albumGroups.clear();
+
+    for ( int i = 0; i < m_model->rowCount(); i++ )
+    {
+        Meta::AlbumPtr album = m_model->trackAt( i )->album();
+        m_albumGroups[album].append( m_model->idAt( i ) ); // conveniently creates an empty list if none exists
+    }
+
+    m_unplayedAlbums = m_albumGroups.uniqueKeys();
+    std::random_shuffle( m_unplayedAlbums.begin(), m_unplayedAlbums.end() );
+
+    if ( m_unplayedAlbums.size() )
+        sortTheseAlbums( m_unplayedAlbums );
+
+    m_currentAlbum = Meta::AlbumPtr();
+    m_currentTrack = 0;
 }

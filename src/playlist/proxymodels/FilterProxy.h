@@ -72,11 +72,6 @@ public:
 
     void clearSearchTerm();
 
-//FIXME: when the proxies are despaghettified, the following two methods need to be protected:
-//protected:
-    int rowToSource( int row ) const;
-    int rowFromSource( int row ) const;
-
 protected:
     /**
      * Reimplemented from QSortFilterProxyModel. Used internally by the proxy to
@@ -95,6 +90,22 @@ protected:
      * @return True if the row matches, false otherwise.
      */
     bool matchesCurrentSearchTerm( int source_row ) const;
+
+    /**
+     * Converts a row index that's valid in the proxy below this one to a row index valid
+     * in this proxy.
+     * @param row the row index to be converted.
+     * @return the index of the row that's valid in this proxy.
+     */
+    int rowFromSource( int row ) const;
+
+    /**
+     * Converts a row index that's valid in this proxy to a row index valid in the proxy
+     * below this one.
+     * @param row the row index to be converted.
+     * @return the index of the row that's valid in the proxy below this one.
+     */
+    int rowToSource( int row ) const;
 
 protected slots:
     /**

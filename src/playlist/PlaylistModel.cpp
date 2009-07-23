@@ -950,6 +950,12 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     //update the active row
 }
 
+void Playlist::Model::setAllUnplayed()
+{
+    foreach( Item * item, m_items )
+        item->setState( Item::Unplayed );
+}
+
 namespace The
 {
     AMAROK_EXPORT Playlist::Model* playlistModel()

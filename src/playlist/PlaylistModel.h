@@ -124,6 +124,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
          */
         Item::State stateOfId( quint64 id ) const;
 
+        void setAllUnplayed();
+
         // methods to save playlist to file
         bool exportPlaylist( const QString &path ) const;
         void setPlaylistName( const QString &name, bool proposeOverwriting = false );
@@ -134,6 +136,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
         // static member functions
         static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
+
+        int rowToBottomModel( const int row ) { return row; }
 
     public slots:
         bool savePlaylist() const;

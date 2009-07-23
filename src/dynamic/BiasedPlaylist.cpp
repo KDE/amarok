@@ -26,7 +26,7 @@
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "MetaQueryMaker.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 #include "statusbar/StatusBar.h"
 
 #include <threadweaver/ThreadWeaver.h>
@@ -73,7 +73,7 @@ Dynamic::BiasedPlaylist::nameFromXml( QDomElement e )
 
 Dynamic::BiasedPlaylist::BiasedPlaylist(
         QString title,
-        QList<Bias*> biases, 
+        QList<Bias*> biases,
         Amarok::Collection* collection )
     : DynamicPlaylist(collection)
     , m_numRequested(0)
@@ -121,7 +121,7 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
     if( !m_solver )
     {
         BiasSolver::setUniverseCollection( m_collection );
-        m_solver = new BiasSolver( 
+        m_solver = new BiasSolver(
                 BUFFER_SIZE, m_biases, m_context );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
                  SLOT(solverFinished(ThreadWeaver::Job*)) );
@@ -273,11 +273,11 @@ Dynamic::BiasedPlaylist::getContext()
 {
     m_context.clear();
 
-    int i = qMax( 0, The::playlistModel()->activeRow() );
+    int i = qMax( 0, Playlist::GroupingProxy::instance()->activeRow() );
 
-    for( ; i < The::playlistModel()->rowCount(); ++i )
+    for( ; i < Playlist::GroupingProxy::instance()->rowCount(); ++i )
     {
-        m_context.append( The::playlistModel()->trackAt(i) );
+        m_context.append( Playlist::GroupingProxy::instance()->trackAt(i) );
     }
 }
 

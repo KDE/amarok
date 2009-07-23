@@ -122,7 +122,7 @@ ProxyBase::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, i
 void
 ProxyBase::filterUpdated()
 {
-    ( dynamic_cast< ProxyBase * >( m_belowModel ) )->filterUpdated();
+    m_belowModel->filterUpdated();
 }
 
 int
@@ -193,10 +193,46 @@ ProxyBase::rowForId( const quint64 id ) const
     return rowFromSource( m_belowModel->rowForId( id ) );
 }
 
+int
+ProxyBase::rowForTrack( const Meta::TrackPtr track ) const
+{
+    return rowFromSource( m_belowModel->rowForTrack( track ) );
+}
+
+int
+ProxyBase::rowToBottomModel( const int row )
+{
+    return m_belowModel->rowToBottomModel( rowToSource( row )  );
+}
+
+void
+ProxyBase::setActiveId( const quint64 id )
+{
+    m_belowModel->setActiveId( id );
+}
+
 void
 ProxyBase::setActiveRow( int row )
 {
     m_belowModel->setActiveRow( rowToSource( row ) );
+}
+
+void
+ProxyBase::setAllUnplayed()
+{
+    m_belowModel->setAllUnplayed();
+}
+
+void
+ProxyBase::setRowQueued( int row )
+{
+    m_belowModel->setRowQueued( rowToSource( row ) );
+}
+
+void
+ProxyBase::setRowDequeued( int row )
+{
+    m_belowModel->setRowDequeued( rowToSource( row ) );
 }
 
 void

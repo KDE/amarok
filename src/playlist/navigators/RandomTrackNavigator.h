@@ -37,12 +37,14 @@ namespace Playlist
         quint64 requestUserNextTrack() { return requestNextTrack(); }
         quint64 requestLastTrack();
 
+        void reset();
+
     private slots:
         void recvInsertedIds( const QList<quint64>& );
         void recvRemovedIds( const QList<quint64>& );
         void recvActiveTrackChanged( const quint64 );
 
-        void reset();
+        void modelLayoutChanged();
 
     private:
         QList<quint64> m_playedRows;

@@ -23,7 +23,7 @@
 #include "LongMessageWidget.h"
 #include "meta/MetaUtility.h"
 #include "meta/capabilities/SourceInfoCapability.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 
 #include "KJobProgressBar.h"
 
@@ -87,10 +87,11 @@ StatusBar::StatusBar( QWidget * parent )
     qRegisterMetaType<MessageType>( "MessageType" );
     connect( this, SIGNAL( signalLongMessage( const QString &, MessageType ) ), SLOT( slotLongMessage( const QString &, MessageType ) ), Qt::QueuedConnection );
 
-    connect( The::playlistModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlistModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::GroupingProxy::instance(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::GroupingProxy::instance(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::GroupingProxy::instance(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::GroupingProxy::instance(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::GroupingProxy::instance(), SIGNAL( layoutChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();
 }
@@ -329,8 +330,8 @@ void StatusBar::hideLongMessage()
 void
 StatusBar::updateTotalPlaylistLength() //SLOT
 {
-    const int totalLength = The::playlistModel()->totalLength();
-    const int trackCount = The::playlistModel()->rowCount();
+    const int totalLength = Playlist::GroupingProxy::instance()->totalLength();
+    const int trackCount = Playlist::GroupingProxy::instance()->rowCount();
     const QString totalTime = Meta::secToPrettyTime( totalLength );
 
     if( totalLength > 0 && trackCount > 0 )

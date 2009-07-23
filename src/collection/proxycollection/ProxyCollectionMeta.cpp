@@ -52,19 +52,20 @@ KUrl
 ProxyCollection::Track::playableUrl() const
 {
     Meta::TrackPtr bestPlayableTrack;
-    bool bestPlayableTrackIsLocalFile = false;
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
         if( track->isPlayable() )
         {
             bool local = track->playableUrl().isLocalFile();
-            if( local && !bestPlayableTrackIsLocalFile )
+            if( local )
             {
                 bestPlayableTrack = track;
-                bestPlayableTrackIsLocalFile = true;
+                break;
             }
-            else if( !local && !bestPlayableTrack )
+            else
             {
+                //we might want to add some more sophisticated logic to figure out
+                //the best remote track to play, but this works for now
                 bestPlayableTrack = track;
             }
         }
@@ -100,6 +101,206 @@ ProxyCollection::Track::isPlayable() const
             return true;
     }
     return false;
+}
+
+Meta::AlbumPtr
+ProxyCollection::Track::album() const
+{
+}
+
+Meta::ArtistPtr
+ProxyCollection::Track::artist() const
+{
+}
+
+Meta::ComposerPtr
+ProxyCollection::Track::composer() const
+{
+}
+
+Meta::GenrePtr
+ProxyCollection::Track::genre() const
+{
+}
+
+Meta::YearPtr
+ProxyCollection::Track::year() const
+{
+}
+
+QString
+ProxyCollection::Track::comment() const
+{
+    //try to return something sensible here...
+    //do not show a comment if the internal tracks disagree about the comment
+    QString comment;
+    if( !m_tracks.isEmpty() )
+        comment = m_tracks.first()->comment();
+
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( track->comment() != comment )
+        {
+            comment = QString();
+            break;
+        }
+    }
+    return comment;
+}
+
+double
+ProxyCollection::Track::score() const
+{
+    //again, multiple ways to implement this method:
+    //return the maximum score, the minimum score, the average
+    //the score of the track with the maximum play count,
+    //or an average weighted by play count. And probably a couple of ways that
+    //I cannot think of right now...
+
+    //implementing the weighted average here...
+    double weightedSum = 0.0;
+    int totalCount = 0;
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        totalCount += track->playCount();
+        weightedSum += track->playCount() * track->score();
+    }
+    if( totalCount )
+        return weightedSum / totalCount;
+
+    return 0.0;
+}
+
+void
+ProxyCollection::Track::setScore( double newScore )
+{
+}
+
+int
+ProxyCollection::Track::rating() const
+{
+    //yay, multiple options again. As this has to be defined by the user, let's take
+    //the maximum here.
+    int result = 0;
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( track->rating() > result )
+            result = track->rating();
+    }
+    return result;
+}
+
+void
+ProxyCollection::Track::setRating( int newRating )
+{
+}
+
+uint
+ProxyCollection::Track::firstPlayed() const
+{
+    uint result = 0;
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        //use the track's firstPlayed value if it represents an earlier timestamp than
+        //the current result, or use it directly if result has not been set yet
+        //this should result in the earliest timestamp for first play of all internal
+        //tracks being returned
+        if( ( track->firstPlayed() && result && track->firstPlayed() < result ) || ( track->firstPlayed() && !result ) )
+        {
+            result = track->firstPlayed();
+        }
+    }
+    return result;
+}
+
+uint
+ProxyCollection::Track::lastPlayed() const
+{
+    uint result = 0;
+    //return the latest timestamp. Easier than firstPlayed because we do not have to
+    //care about 0.
+    //when are we going to perform the refactoring as discussed in Berlin?
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( track->lastPlayed() > result )
+        {
+            result = track->lastPlayed();
+        }
+    }
+    return result;
+}
+
+int
+ProxyCollection::Track::playCount() const
+{
+    //hm, there are two ways to implement this:
+    //show the sum of all play counts, or show the maximum of all play counts.
+    int result = 0;
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( track->playCount() > result )
+        {
+            result = track->playCount();
+        }
+    }
+    return result;
+}
+
+int
+ProxyCollection::Track::length() const
+{
+}
+
+int
+ProxyCollection::Track::filesize() const
+{
+}
+
+int
+ProxyCollection::Track::sampleRate() const
+{
+}
+
+int
+ProxyCollection::Track::bitrate() const
+{
+}
+
+int
+ProxyCollection::Track::trackNumber() const
+{
+}
+
+int
+ProxyCollection::Track::discNumber() const
+{
+}
+
+QString
+ProxyCollection::Track::type() const
+{
+    if( m_tracks.size() == 1 )
+    {
+        return m_tracks.first()->type();
+    }
+    else
+    {
+        //TODO: figure something out
+        return QString();
+    }
+}
+
+
+void
+ProxyCollection::Track::add( const Meta::TrackPtr &track )
+{
+    if( !track || m_tracks.contains( track ) )
+        return;
+
+    m_tracks.append( track );
+    subscribeTo( track );
+
+    notifyObservers();
 }
 
 ProxyCollection::Album::Album( ProxyCollection::Collection *coll, Meta::AlbumPtr album )
@@ -171,7 +372,7 @@ ProxyCollection::Album::hasAlbumArtist() const
 void
 ProxyCollection::Album::add( Meta::AlbumPtr album )
 {
-    if( !album || !m_albums.contains( album ) )
+    if( !album || m_albums.contains( album ) )
         return;
 
     m_albums.append( album );
@@ -285,7 +486,7 @@ ProxyCollection::Artist::albums()
 void
 ProxyCollection::Artist::add( Meta::ArtistPtr artist )
 {
-    if( !artist || !m_artists.contains( artist ) )
+    if( !artist || m_artists.contains( artist ) )
         return;
 
     m_artists.append( artist );
@@ -374,7 +575,7 @@ ProxyCollection::Genre::tracks()
 void
 ProxyCollection::Genre::add( Meta::GenrePtr genre )
 {
-    if( !genre || !m_genres.contains( genre ) )
+    if( !genre || m_genres.contains( genre ) )
         return;
 
     m_genres.append( genre );
@@ -458,7 +659,7 @@ ProxyCollection::Composer::tracks()
 void
 ProxyCollection::Composer::add( Meta::ComposerPtr composer )
 {
-    if( !composer || !m_composers.contains( composer ) )
+    if( !composer || m_composers.contains( composer ) )
         return;
 
     m_composers.append( composer );
@@ -543,7 +744,7 @@ ProxyCollection::Year::tracks()
 void
 ProxyCollection::Year::add( Meta::YearPtr year )
 {
-    if( !year || !m_years.contains( year ) )
+    if( !year || m_years.contains( year ) )
         return;
 
     m_years.append( year );
