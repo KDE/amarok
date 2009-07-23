@@ -56,6 +56,7 @@ namespace ProxyCollection
             uint firstPlayed() const;
             uint lastPlayed() const;
             int playCount() const;
+            void finishedPlaying( double playedFraction );
 
             int length() const;
             int filesize() const;
@@ -76,6 +77,11 @@ namespace ProxyCollection
             Collection *m_collection;
             Meta::TrackList m_tracks;
             QString m_name;
+            Meta::AlbumPtr m_album;
+            Meta::ArtistPtr m_artist;
+            Meta::GenrePtr m_genre;
+            Meta::ComposerPtr m_composer;
+            Meta::YearPtr m_year;
     };
 
     class Album : public Meta::Album, private Meta::Observer

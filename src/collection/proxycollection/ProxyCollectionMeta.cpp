@@ -27,9 +27,25 @@ ProxyCollection::Track::Track( ProxyCollection::Collection *coll, const Meta::Tr
         , Meta::Observer()
         , m_collection( coll )
         , m_name( track->name() )
+        , m_album( 0 )
+        , m_artist( 0 )
+        , m_genre( 0 )
+        , m_composer( 0 )
+        , m_year( 0 )
 {
     subscribeTo( track );
     m_tracks.append( track );
+
+    if( track->album() )
+        m_album = Meta::AlbumPtr( m_collection->getAlbum( track->album() ) );
+    if( track->artist() )
+        m_artist = Meta::ArtistPtr( m_collection->getArtist( track->artist() ) );
+    if( track->genre() )
+        m_genre = Meta::GenrePtr( m_collection->getGenre( track->genre() ) );
+    if( track->composer() )
+        m_composer = Meta::ComposerPtr( m_collection->getComposer( track->composer() ) );
+    if( track->year() )
+        m_year = Meta::YearPtr( m_collection->getYear( track->year() ) );
 }
 
 ProxyCollection::Track::~Track()
@@ -106,26 +122,31 @@ ProxyCollection::Track::isPlayable() const
 Meta::AlbumPtr
 ProxyCollection::Track::album() const
 {
+    return m_album;
 }
 
 Meta::ArtistPtr
 ProxyCollection::Track::artist() const
 {
+    return m_artist;
 }
 
 Meta::ComposerPtr
 ProxyCollection::Track::composer() const
 {
+    return m_composer;
 }
 
 Meta::GenrePtr
 ProxyCollection::Track::genre() const
 {
+    return m_genre;
 }
 
 Meta::YearPtr
 ProxyCollection::Track::year() const
 {
+    return m_year;
 }
 
 QString
@@ -174,6 +195,10 @@ ProxyCollection::Track::score() const
 void
 ProxyCollection::Track::setScore( double newScore )
 {
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        track->setScore( newScore );
+    }
 }
 
 int
@@ -193,6 +218,10 @@ ProxyCollection::Track::rating() const
 void
 ProxyCollection::Track::setRating( int newRating )
 {
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        track->setRating( newRating );
+    }
 }
 
 uint
@@ -246,34 +275,97 @@ ProxyCollection::Track::playCount() const
     return result;
 }
 
+void
+ProxyCollection::Track::finishedPlaying( double playedFraction )
+{
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        track->finishedPlaying( playedFraction );
+    }
+}
+
 int
 ProxyCollection::Track::length() const
 {
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( track->length() )
+            return track->length();
+    }
+    return 0;
 }
 
 int
 ProxyCollection::Track::filesize() const
 {
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( track->filesize() )
+        {
+            return track->filesize();
+        }
+    }
+    return 0;
 }
 
 int
 ProxyCollection::Track::sampleRate() const
 {
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( track->sampleRate() )
+            return track->sampleRate();
+    }
+    return 0;
 }
 
 int
 ProxyCollection::Track::bitrate() const
 {
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( track->bitrate() )
+            return track->bitrate();
+    }
+    return 0;
 }
 
 int
 ProxyCollection::Track::trackNumber() const
 {
+    int result = 0;
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( ( !result && track->trackNumber() ) || ( result && result == track->trackNumber() ) )
+        {
+            result = track->trackNumber();
+        }
+        else if( result && result != track->trackNumber() )
+        {
+            //tracks disagree about the tracknumber
+            return 0;
+        }
+    }
+    return result;
 }
 
 int
 ProxyCollection::Track::discNumber() const
 {
+    int result = 0;
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( ( !result && track->discNumber() ) || ( result && result == track->discNumber() ) )
+        {
+            result = track->discNumber();
+        }
+        else if( result && result != track->discNumber() )
+        {
+            //tracks disagree about the disc number
+            return 0;
+        }
+    }
+    return result;
 }
 
 QString
