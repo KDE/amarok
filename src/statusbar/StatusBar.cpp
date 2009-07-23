@@ -87,10 +87,11 @@ StatusBar::StatusBar( QWidget * parent )
     qRegisterMetaType<MessageType>( "MessageType" );
     connect( this, SIGNAL( signalLongMessage( const QString &, MessageType ) ), SLOT( slotLongMessage( const QString &, MessageType ) ), Qt::QueuedConnection );
 
-    connect( The::playlistModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlistModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::GroupingProxy::instance(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::GroupingProxy::instance(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::GroupingProxy::instance(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::GroupingProxy::instance(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::GroupingProxy::instance(), SIGNAL( layoutChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();
 }
