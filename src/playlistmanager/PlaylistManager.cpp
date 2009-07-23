@@ -311,11 +311,10 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
         prov = tracks.front()->collection()->userPlaylistProvider();
     }
 
-    // If no provider available, this is impossible, so do nothing
+    // NOTE: If no provider available, assume we're using the default sql user playlist provider
     if ( !prov )
     {
-        debug() << "Error!  No provider for collection(s) found!";
-        return false;
+        prov = m_defaultUserPlaylistProvider;
     }
 
     // NOTE: For now, we tell the provider to only save the tracks
