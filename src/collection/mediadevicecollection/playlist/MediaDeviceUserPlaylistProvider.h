@@ -52,6 +52,9 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvide
         public slots:
             void sendUpdated() { emit updated(); }
 
+        signals:
+            void playlistSaved( const Meta::TrackList &tracks, const QString& name );
+
  private:
 
     Meta::MediaDevicePlaylistList m_playlists;

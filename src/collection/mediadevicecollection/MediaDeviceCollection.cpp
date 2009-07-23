@@ -150,6 +150,12 @@ MediaDeviceCollection::queryMaker()
     return new MemoryQueryMaker( this, collectionId() );
 }
 
+UserPlaylistProvider*
+MediaDeviceCollection::userPlaylistProvider()
+{
+    return m_handler->provider();
+}
+
 QString MediaDeviceCollection::collectionId() const
 {
     return m_udi;

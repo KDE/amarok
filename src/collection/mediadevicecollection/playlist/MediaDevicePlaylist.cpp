@@ -31,6 +31,7 @@ Meta::MediaDevicePlaylist::MediaDevicePlaylist( const QString & name, const Meta
     , m_description( QString() )
 {
     m_name = name;
+    // Tell the handler to save it
 }
 
 Meta::MediaDevicePlaylist::~MediaDevicePlaylist()

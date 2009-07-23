@@ -179,7 +179,6 @@ class PlaylistManager : public QObject
 
         QMultiMap<int, PlaylistProvider*> m_map; //Map PlaylistCategories to providers
         QMap<int, QString> m_customCategories;
-	QMap<Meta::TrackPtr, PlaylistProvider*> m_trackToProviderMap; // Map Tracks to providers, for easy reference
 
         QMap<KJob *, Meta::PlaylistPtr> m_downloadJobMap;
 };

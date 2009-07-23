@@ -91,4 +91,10 @@ IpodPlaylistCapability::libGetPlaylistName()
     return m_handler->libGetPlaylistName();
 }
 
+void
+IpodPlaylistCapability::savePlaylist( const Meta::TrackList &tracks, const QString& name )
+{
+    m_handler->libSavePlaylist( tracks, name );
+}
+
 #include "IpodPlaylistCapability.moc"

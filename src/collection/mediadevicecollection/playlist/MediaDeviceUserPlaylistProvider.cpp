@@ -89,16 +89,17 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
 Meta::PlaylistPtr
 MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& name )
 {
-    Q_UNUSED( tracks )
-    Q_UNUSED( name )
     DEBUG_BLOCK
-//    debug() << "saving " << tracks.count() << " tracks to db with name" << name;
-        Meta::MediaDevicePlaylistPtr mediadevicePlaylist;
-    mediadevicePlaylist = 0;
-//    reloadFromDb();
-//    emit updated();
+    debug() << "saving " << tracks.count() << " tracks to device with name" << name;
+    // NOTE: the playlist constructor tells the handler to make the playlist, save to db etc.
+    Meta::MediaDevicePlaylistPtr pl = Meta::MediaDevicePlaylistPtr( new Meta::MediaDevicePlaylist( name, tracks ) );
+    //pl = 0;
 
-    return Meta::PlaylistPtr::dynamicCast( mediadevicePlaylist ); //assumes insertion in db was successful!
+    emit playlistSaved( tracks, name ); // inform handler of new playlist
+
+    addPlaylist( pl );
+
+    return Meta::PlaylistPtr::dynamicCast( pl );
 }
 #if 0
 QList<PopupDropperAction *>

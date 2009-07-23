@@ -139,6 +139,7 @@ public:
     virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
 
     virtual QString libGetPlaylistName();
+    void libSavePlaylist( const Meta::TrackList &tracks, const QString& name );
 
     virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
     virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );

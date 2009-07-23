@@ -98,18 +98,24 @@ namespace Handler
     virtual void nextPlaylistTrackToParse() = 0;
 
     /** Returns a MediaDeviceTrackPtr that is associated with the currently parsed track struct.
-    *  This is mainly used in playlist parsing, and can be ignored otherwise.
     *  @return A MediaDeviceTrackPtr to currently parsed track struct
     */
 
     virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct() = 0;
 
     /** Returns a string containing the playlist name of the currently parsed playlist struct, if available.
-    *  Only override if your library uses names.
     *  @return A string with the name of the currently parsed playlist
     */
 
     virtual QString libGetPlaylistName() = 0;
+
+    /** Saves a playlist of tracks, with a name.
+    *  @param tracks the tracks that make up the playlist to be made
+    *  @param name the name of the playlist
+    */
+
+    // TODO: make pure virtual, reimplement in every plcapability
+    virtual void savePlaylist( const Meta::TrackList &tracks, const QString& name ) { Q_UNUSED(tracks) Q_UNUSED( name) }
 
     static Type capabilityInterfaceType() { return Handler::Capability::Playlist; }
 

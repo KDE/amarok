@@ -954,6 +954,9 @@ MediaDeviceHandler::parseTracks()
 
             m_provider->addPlaylist( playlist );
         }
+        // When the provider saves a playlist, the handler should save it internally
+        connect( m_provider, SIGNAL( playlistSaved( const Meta::TrackList &, const QString& ) ),
+                 SLOT( savePlaylist( const Meta::TrackList &, const QString& ) ) );
 
         The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
         m_provider->sendUpdated();
@@ -1074,6 +1077,43 @@ MediaDeviceHandler::totalcapacity() const
         return m_rc->totalCapacity();
     else
         return 0.0;
+}
+
+UserPlaylistProvider*
+MediaDeviceHandler::provider()
+{
+    return (qobject_cast<UserPlaylistProvider *>( m_provider ) );
+}
+
+void
+MediaDeviceHandler::savePlaylist( const Meta::TrackList &tracks, const QString& name )
+{
+    DEBUG_BLOCK
+    if( !m_pc )
+    {
+        if( this->hasCapabilityInterface( Handler::Capability::Playlist ) )
+        {
+            m_pc = this->create<Handler::PlaylistCapability>();
+            if( !m_pc )
+            {
+                debug() << "Handler does not have MediaDeviceHandler::PlaylistCapability.";
+            }
+        }
+    }
+
+
+    if( m_pc )
+    {
+        // m_pc is gotten, and we call its save method etc.
+
+
+        debug() << "Saving playlist with " << tracks.count() << "tracks";
+
+        m_pc->savePlaylist( tracks, name );
+
+        writeDatabase();
+    }
+
 }
 
 void

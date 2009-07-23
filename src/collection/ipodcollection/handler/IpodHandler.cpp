@@ -1744,6 +1744,23 @@ IpodHandler::libGetPlaylistName()
 }
 
 void
+IpodHandler::libSavePlaylist( const Meta::TrackList &tracks, const QString& name )
+{
+    DEBUG_BLOCK
+    // Make new playlist
+
+    Itdb_Playlist *pl = itdb_playlist_new( name.toUtf8(), 0 );
+    itdb_playlist_add( m_itdb, pl, -1 );
+
+    foreach( const Meta::TrackPtr track, tracks )
+    {
+        itdb_playlist_add_track( pl, m_itdbtrackhash[ Meta::MediaDeviceTrackPtr::staticCast( track ) ], -1 );
+    }
+
+    databaseChanged();
+}
+
+void
 IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
     m_itdbtrackhash[ track ] = m_currtrack;

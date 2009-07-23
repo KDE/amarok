@@ -31,6 +31,7 @@
 
 #include "mediadevicecollection_export.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "playlistmanager/UserPlaylistProvider.h"
 
 #include <threadweaver/Job.h>
 
@@ -191,6 +192,9 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     virtual float usedcapacity() const;
     virtual float totalcapacity() const;
 
+    UserPlaylistProvider* provider();
+
+
     // HACK: Used for device-specific actions, such as initialize for iPod
 
     virtual QList<PopupDropperAction *> collectionActions() { return QList<PopupDropperAction*> (); }
@@ -210,6 +214,8 @@ signals:
     /* File I/O Methods */
 
 public slots:
+
+    void savePlaylist( const Meta::TrackList &tracks, const QString& name );
 
     void copyNextTrackToDevice();
     bool privateCopyTrackToDevice( const Meta::TrackPtr& track );

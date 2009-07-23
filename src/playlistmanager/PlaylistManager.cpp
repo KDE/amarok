@@ -264,6 +264,7 @@ PlaylistManager::typeName( int playlistCategory )
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow, const QString &fromLocation )
 {
+    DEBUG_BLOCK
     Q_UNUSED( name )
     Q_UNUSED( fromLocation )
 
@@ -306,29 +307,59 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
     // collection's provider
     else
     {
+        debug() << "All tracks belong to the same collection";
         prov = tracks.front()->collection()->userPlaylistProvider();
     }
 
-//    SqlUserPlaylistProvider *sqlProvider =
-//            dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
-//    if( !sqlProvider )
-//        return false;
-
     // If no provider available, this is impossible, so do nothing
     if ( !prov )
+    {
+        debug() << "Error!  No provider for collection(s) found!";
         return false;
+    }
+
+    // NOTE: For now, we tell the provider to only save the tracks
+    // that correspond to its collection, since that's all the provider
+    // should have the ability to save.  Later on, we will give the option
+    // of copying tracks belonging to other collections, to this one, in which
+    // case we will put ALL the tracks into the playlist
+
+    // find collection associated with the provider we are saving to
+    Amarok::Collection *coll;
+    foreach( Amarok::Collection *co, collections )
+    {
+        if( co->userPlaylistProvider() == prov )
+        {
+            coll = co;
+            break;
+        }
+    }
+    Meta::TrackList playlistTracks;
+
+    // Filter the tracklist for tracks that belong to the collection
+    // whose provider we are saving to
+    foreach( const Meta::TrackPtr track, tracks )
+    {
+        if( track->collection() == coll )
+            playlistTracks << track;
+
+    }
 
     Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
     if( name.isEmpty() || editNow )
     {
-        playlist = prov->save( tracks );
+        debug() << "Empty name of playlist, or editing now";
+        playlist = prov->save( playlistTracks );
         AmarokUrl("amarok://navigate/playlists/My Playlists").run();
 //        emit( renamePlaylist( playlist ) );
     }
     else
     {
-        playlist = prov->save( tracks, name );
+        debug() << "Playlist is being saved with name: " << name;
+        playlist = prov->save( playlistTracks, name );
     }
+
+    debug() << "Playlist was saved: " << ( playlist.isNull() ? "false" : "true" );
 
     return !playlist.isNull();
 }
