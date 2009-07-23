@@ -265,8 +265,9 @@ bool
 PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow, const QString &fromLocation )
 {
     DEBUG_BLOCK
-    Q_UNUSED( name )
     Q_UNUSED( fromLocation )
+
+    debug() << "Tracks received for saving: " << tracks.count();
 
     QSet<Amarok::Collection*> collections;
 
@@ -308,13 +309,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
     else
     {
         debug() << "All tracks belong to the same collection";
-        prov = tracks.front()->collection()->userPlaylistProvider();
-    }
-
-    // NOTE: If no provider available, assume we're using the default sql user playlist provider
-    if ( !prov )
-    {
-        prov = m_defaultUserPlaylistProvider;
+        prov = QList<Amarok::Collection*>::fromSet( collections ).front()->userPlaylistProvider();
     }
 
     // NOTE: For now, we tell the provider to only save the tracks
@@ -325,6 +320,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
 
     // find collection associated with the provider we are saving to
     Amarok::Collection *coll;
+
     foreach( Amarok::Collection *co, collections )
     {
         if( co->userPlaylistProvider() == prov )
@@ -333,6 +329,14 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
             break;
         }
     }
+
+    // HACK: If no provider available, assume we're using the default sql user playlist provider
+    if( !prov )
+    {
+        debug() << "Provider is null, assuming default playlist provider";
+        prov = m_defaultUserPlaylistProvider;
+    }
+
     Meta::TrackList playlistTracks;
 
     // Filter the tracklist for tracks that belong to the collection
@@ -343,6 +347,8 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
             playlistTracks << track;
 
     }
+
+    debug() << "Tracks to put in playlist: " << playlistTracks.count();
 
     Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
     if( name.isEmpty() || editNow )

@@ -1082,6 +1082,7 @@ MediaDeviceHandler::totalcapacity() const
 UserPlaylistProvider*
 MediaDeviceHandler::provider()
 {
+    DEBUG_BLOCK
     return (qobject_cast<UserPlaylistProvider *>( m_provider ) );
 }
 
