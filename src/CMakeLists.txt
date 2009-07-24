@@ -51,6 +51,7 @@ include_directories(
     timecode
     widgets
     ../tests/
+    ../tests/playlistmanager/
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB_INCLUDES}
@@ -567,7 +568,7 @@ set(amaroklib_LIB_SRCS
     widgets/BookmarkPopup.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
-    ../tests/TestPlaylistManager.cpp
+    ../tests/playlistmanager/TestPlaylistManager.cpp
     ../tests/TestSmartPointerList.cpp
 )
 
