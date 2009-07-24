@@ -18,8 +18,21 @@
 #define AMAROK_PHOTOS_INFO
 
 #include "context/DataEngine.h"
+#include "Debug.h"
+
 //!  Struct PhotosInfo, contain all the info vor a photos
-struct PhotosInfo {
+class PhotosInfo {
+
+public:
+
+    PhotosInfo()
+    : photo( 0 )
+    {}
+
+    ~PhotosInfo()
+    {
+        delete photo;
+    }
     
     QString title;      // Name of the phtos
     QString urlphoto;   // url of the photos, for the download

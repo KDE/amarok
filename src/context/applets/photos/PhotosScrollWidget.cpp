@@ -78,12 +78,9 @@ void PhotosScrollWidget::clear()
     if ( m_timer->isActive() )
         m_timer->stop();
     
-    foreach( QGraphicsItem *it, this->childItems() )
-    {
-        it->hide();
-        delete it;
-    }
-
+    //delete!!!
+    debug() << "Going to delete " << m_pixmaplist.count() << " items";
+    qDeleteAll( m_pixmaplist );
     m_pixmaplist.clear();
     m_currentlist.clear();
     m_scrollmax = 0;
@@ -104,20 +101,22 @@ void PhotosScrollWidget::setMode( int mode )
 
 void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
 {
-//    DEBUG_BLOCK
+    DEBUG_BLOCK
     // if the list is the same, nothing happen.
     if ( list == m_currentlist )
         return;
 
+    debug() << "adding " << list.count() << "new pics";
     // If a new one arrived, we change.
     foreach( PhotosInfo *item, list )
     {
-        switch ( m_mode )
+        if ( !m_currentlist.contains( item ) )
         {
-            case PHOTOS_MODE_INTERACTIVE :
+            switch ( m_mode )
             {
-                if ( !m_currentlist.contains( item ) )
+                case PHOTOS_MODE_INTERACTIVE :
                 {
+
                     if ( !m_id ) // carefull we're animating
                     {
                         Plasma::Animator::self()->stopCustomAnimation( m_id );
@@ -129,20 +128,18 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
                     dragpix->setPos( m_actualpos, 0 );
                     dragpix->SetClickableUrl( item->urlpage );
                     dragpix->show();
-                    
+
                     m_pixmaplist << dragpix;
-                    
+
                     int delta = dragpix->boundingRect().width() + m_margin;
                     m_scrollmax += delta;
                     m_actualpos += delta;
 
+                    break;
                 }
-                break;
-            }
-            case PHOTOS_MODE_AUTOMATIC :
-            {
-                if ( !m_currentlist.contains( item ) )
+                case PHOTOS_MODE_AUTOMATIC :
                 {
+
                     DragPixmapItem *dragpix = new DragPixmapItem( this );
                     dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
                         item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
@@ -153,29 +150,26 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
                         if ( ! m_pixmaplist.empty() )
                         {
                             dragpix->setPos( m_pixmaplist.last()->boundingRect().width() + m_pixmaplist.last()->pos().x() + m_margin , 0 ) ;
-                            m_pixmaplist << dragpix;
                             dragpix->show();
                         }
                         else
                         {
                             m_actualpos = 0;
                             dragpix->setPos( m_actualpos, 0 ) ;
-                            m_pixmaplist << dragpix;
                             dragpix->show();
                         }
                     }
-                    else
-                        m_pixmaplist << dragpix;
-                    
+
+                    m_pixmaplist << dragpix;
+
                     // set a timer after and launch
                     QTimer::singleShot( m_interval, this, SLOT( automaticAnimBegin() ) );
+
+                    break;
                 }
-                break;
-            }
-            case PHOTOS_MODE_FADING :
-            {
-                if ( !m_currentlist.contains( item ) )
+                case PHOTOS_MODE_FADING :
                 {
+
                     DragPixmapItem *dragpix = new DragPixmapItem( this );
                     dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
                     item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
@@ -188,12 +182,14 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
                         dragpix->show();
                         m_timer->start( m_interval );
                     }
+
+                    break;
                 }
-                break;
             }
         }
     }
     m_currentlist = list;
+    debug() << "total count: " << m_pixmaplist.count();
 }
 
 void PhotosScrollWidget::hoverEnterEvent(QGraphicsSceneHoverEvent*)
@@ -330,7 +326,7 @@ PhotosScrollWidget::automaticAnimEnd( int id )
                 m_id = 0;
 
                 if ( !m_pixmaplist.empty() && m_currentPix != 0 )
-                    m_pixmaplist << m_pixmaplist.at( m_currentPix - 1 );
+                    m_pixmaplist << m_pixmaplist.takeAt( m_currentPix - 1 );
 
                 QTimer::singleShot( m_interval, this, SLOT( automaticAnimBegin() ) );
             }
@@ -347,7 +343,7 @@ PhotosScrollWidget::automaticAnimEnd( int id )
                 if ( !m_pixmaplist.empty() && m_currentPix != 0 )
                 {
                     m_pixmaplist.at( m_currentPix - 1 )->hide();
-                    m_pixmaplist << m_pixmaplist.at( m_currentPix - 1 );
+                    m_pixmaplist << m_pixmaplist.takeAt( m_currentPix - 1 );
                 }
 
                 m_timer->start( m_interval );

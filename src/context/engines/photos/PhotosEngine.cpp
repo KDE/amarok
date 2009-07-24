@@ -134,6 +134,9 @@ void PhotosEngine::update()
         m_nbFlickr=-1;
             
         removeAllData( "photos" );
+
+        qDeleteAll( m_photos );
+        qDeleteAll( m_photosInit );
         m_photos.clear();
         m_photosInit.clear();
         m_listJob.clear();
@@ -229,6 +232,9 @@ void PhotosEngine::resultImageFetcher( KJob *job )
             {
                 item->photo = pix ;
                 m_photos << item;
+                //remove from list of unfinished downlaods or we will get in big trouble
+                //when deleting items
+                m_photosInit.removeAll( item );
             }
         }
 
