@@ -25,6 +25,7 @@
 #include <KIO/NetAccess>
 #include <KUrl> // recursiveUrlExpand
 
+#include <QDir>
 #include <QPointer>
 
 class QColor;
@@ -169,7 +170,7 @@ namespace Amarok
      */
     inline QString directory( const QString &fileName )
     {
-        return fileName.section( '/', 0, -2 );
+        return fileName.section( QDir::separator(), 0, -2 );
     }
 
     /**
