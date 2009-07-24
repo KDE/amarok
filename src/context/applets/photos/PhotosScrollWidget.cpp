@@ -80,7 +80,10 @@ void PhotosScrollWidget::clear()
     
     //delete!!!
     debug() << "Going to delete " << m_pixmaplist.count() << " items";
+
+    
     qDeleteAll( m_pixmaplist );
+    
     m_pixmaplist.clear();
     m_currentlist.clear();
     m_scrollmax = 0;
@@ -343,7 +346,6 @@ PhotosScrollWidget::automaticAnimEnd( int id )
                 if ( !m_pixmaplist.empty() && m_currentPix != 0 )
                 {
                     m_pixmaplist.at( m_currentPix - 1 )->hide();
-                    m_pixmaplist << m_pixmaplist.takeAt( m_currentPix - 1 );
                 }
 
                 m_timer->start( m_interval );
