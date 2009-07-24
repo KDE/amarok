@@ -6,6 +6,7 @@ include_directories( .
                      ../src/playlistmanager/
 )
 
+QT4_AUTOMOC( TestAmarok.cpp )
 QT4_AUTOMOC( TestSmartPointerList.cpp )
 
 add_subdirectory( data )
