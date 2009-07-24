@@ -50,6 +50,7 @@ include_directories(
     statusbar
     timecode
     widgets
+    ../tests/
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB_INCLUDES}

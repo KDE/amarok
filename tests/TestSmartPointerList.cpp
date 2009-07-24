@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "../src/SmartPointerList.h"
+#include "SmartPointerList.h"
 #include "TestSmartPointerList.h"
 
 // use a macro, as we don't want to test copy ctor early
@@ -128,4 +128,4 @@ void TestSmartPointerList::testOperatorPlusEquals()
     QCOMPARE( os.count(), 8 );
 }
 
-#include "../tests/TestSmartPointerList.moc"
+#include "TestSmartPointerList.moc"

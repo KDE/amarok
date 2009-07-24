@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "../src/playlistmanager/PlaylistManager.h"
+#include "PlaylistManager.h"
 #include "TestPlaylistManager.h"
 
 #include <KStandardDirs>
@@ -60,4 +60,4 @@ void TestPlaylistManager::testIsPlaylist()
     QCOMPARE( PlaylistManager::instance()->isPlaylist( m_testPlaylistPath + "no-playlist.png" ), false );
 }
 
-#include "../tests/TestPlaylistManager.moc"
+#include "TestPlaylistManager.moc"
