@@ -566,6 +566,8 @@ set(amaroklib_LIB_SRCS
     widgets/BookmarkPopup.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
+    ../tests/TestPlaylistManager.cpp
+    ../tests/TestSmartPointerList.cpp
 )
 
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)

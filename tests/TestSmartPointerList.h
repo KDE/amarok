@@ -20,10 +20,15 @@
 #ifndef TESTSMARTPOINTERLIST_H
 #define TESTSMARTPOINTERLIST_H
 
-class TestSmartPointerList : public QString
+#include <QStringList>
+#include <QtTest>
+
+class TestSmartPointerList : public QObject
 {
+Q_OBJECT
+
 public:
-    TestSmartPointerList( int argc, char ** argv, char *fileNamePtr );
+    TestSmartPointerList( QStringList testArgumentList );
 
 private slots:
     void testCount();

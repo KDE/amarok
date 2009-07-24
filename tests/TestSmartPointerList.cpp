@@ -19,123 +19,113 @@
 
 #include "../src/SmartPointerList.h"
 #include "TestSmartPointerList.h"
-#include <QtTest>
 
 // use a macro, as we don't want to test copy ctor early
 #define THREE_TIMERS( x ) SmartPointerList<QTimer> x; x << new QTimer << new QTimer << new QTimer
 
-
-
-class TestSmartPointerList : public QObject
+TestSmartPointerList::TestSmartPointerList( QStringList testArgumentList )
 {
-    Q_OBJECT
-    
-public:
-    TestSmartPointerList( int argc, char ** argv, char *fileNamePtr )
-    {
-        strcpy ( fileNamePtr, "SmartPointerList.log\0" ); // HACK: max 100 chars!
-        QTest::qExec ( this, argc, argv );
-    }
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SmartPointerList.log" );
+    QTest::qExec( this, testArgumentList );
+}
 
-private slots:
-    void testCount()
-    {
-        THREE_TIMERS( objects );
-        QCOMPARE( objects.count(), 3 );
-    }
+void TestSmartPointerList::testCount()
+{
+    THREE_TIMERS( objects );
+    QCOMPARE( objects.count(), 3 );
+}
     
-    void testCopy()
-    {
-        THREE_TIMERS( objects1 );
-        SmartPointerList<QTimer> objects2 = objects1;
-        
-        for (int x = 0; x < 3; ++x)
-            QVERIFY( objects1[x] == objects2[x] );
+void TestSmartPointerList::testCopy()
+{
+    THREE_TIMERS( objects1 );
+    SmartPointerList<QTimer> objects2 = objects1;
 
-        QCOMPARE( objects1.count(), 3 );
-        QCOMPARE( objects2.count(), 3 );
-        delete objects1.last();
-        QCOMPARE( objects1.count(), 2 );
-        QCOMPARE( objects2.count(), 2 );
-    }
-    
-    void testCopyAndThenDelete()
-    {
-        THREE_TIMERS( os1 );
-        SmartPointerList<QTimer>* os2 = new SmartPointerList<QTimer>( os1 );
-        SmartPointerList<QTimer> os3( *os2 );
-        
-        delete os2;
-        
-        QCOMPARE( os1.count(), 3 );        
-        QCOMPARE( os3.count(), 3 );
-        
-        delete os1[1];
+    for (int x = 0; x < 3; ++x)
+        QVERIFY( objects1[x] == objects2[x] );
 
-        QCOMPARE( os1.count(), 2 );        
-        QCOMPARE( os3.count(), 2 );
-    }
+    QCOMPARE( objects1.count(), 3 );
+    QCOMPARE( objects2.count(), 3 );
+    delete objects1.last();
+    QCOMPARE( objects1.count(), 2 );
+    QCOMPARE( objects2.count(), 2 );
+}
     
-    void testRemove()
-    {
-        THREE_TIMERS( objects );
-        delete objects.last();
-        QCOMPARE( objects.count(), 2 );
-    }
-    
-    void testRemoveAt()
-    {
-        THREE_TIMERS( os );
-        QTimer* t = os[1];
-        os.removeAt( 1 );
-        os << t;
-        QCOMPARE( os.count(), 3 );
-        delete t;
-        QCOMPARE( os.count(), 2 );
-    }
+void TestSmartPointerList::testCopyAndThenDelete()
+{
+    THREE_TIMERS( os1 );
+    SmartPointerList<QTimer>* os2 = new SmartPointerList<QTimer>( os1 );
+    SmartPointerList<QTimer> os3( *os2 );
 
-    void testMultipleOrgasms()
-    {
-        THREE_TIMERS( os );
-        for (int x = 0; x < 10; ++x)
-            os << os.last();
-        QCOMPARE( os.count(), 13 );
-        delete os.last();
-        QCOMPARE( os.count(), 2 );
-    }
+    delete os2;
+
+    QCOMPARE( os1.count(), 3 );
+    QCOMPARE( os3.count(), 3 );
+
+    delete os1[1];
+
+    QCOMPARE( os1.count(), 2 );
+    QCOMPARE( os3.count(), 2 );
+}
+
+void TestSmartPointerList::testRemove()
+{
+    THREE_TIMERS( objects );
+    delete objects.last();
+    QCOMPARE( objects.count(), 2 );
+}
+
+void TestSmartPointerList::testRemoveAt()
+{
+    THREE_TIMERS( os );
+    QTimer* t = os[1];
+    os.removeAt( 1 );
+    os << t;
+    QCOMPARE( os.count(), 3 );
+    delete t;
+    QCOMPARE( os.count(), 2 );
+}
+
+void TestSmartPointerList::testMultipleOrgasms()
+{
+    THREE_TIMERS( os );
+    for (int x = 0; x < 10; ++x)
+        os << os.last();
+    QCOMPARE( os.count(), 13 );
+    delete os.last();
+    QCOMPARE( os.count(), 2 );
+}
     
-    void testForeach()
-    {
-        THREE_TIMERS( objects );
-        int x = 0;
-        foreach (QTimer* o, objects) {
-            (void) o;
-            x++;
-        }
-        QCOMPARE( x, 3 );
+void TestSmartPointerList::testForeach()
+{
+    THREE_TIMERS( objects );
+    int x = 0;
+    foreach (QTimer* o, objects) {
+        (void) o;
+        x++;
     }
-    
-    void testOperatorPlus()
-    {
-        THREE_TIMERS( os1 );
-        SmartPointerList<QTimer> os2 = os1;
-        
-        QCOMPARE( (os1 + os2).count(), 6 );
-        delete os1.last();
-        QCOMPARE( (os1 + os2).count(), 4 );
-    }
-    
-    void testOperatorPlusEquals()
-    {
-        THREE_TIMERS( os );
-        os += os;
-        os += os;
-        QCOMPARE( os.count(), 12 );
-        QTimer* t = os.takeLast();
-        QCOMPARE( os.count(), 11 );
-        delete t;
-        QCOMPARE( os.count(), 8 );
-    }
-};
+    QCOMPARE( x, 3 );
+}
+
+void TestSmartPointerList::testOperatorPlus()
+{
+    THREE_TIMERS( os1 );
+    SmartPointerList<QTimer> os2 = os1;
+
+    QCOMPARE( (os1 + os2).count(), 6 );
+    delete os1.last();
+    QCOMPARE( (os1 + os2).count(), 4 );
+}
+
+void TestSmartPointerList::testOperatorPlusEquals()
+{
+    THREE_TIMERS( os );
+    os += os;
+    os += os;
+    QCOMPARE( os.count(), 12 );
+    QTimer* t = os.takeLast();
+    QCOMPARE( os.count(), 11 );
+    delete t;
+    QCOMPARE( os.count(), 8 );
+}
 
 #include "../tests/TestSmartPointerList.moc"

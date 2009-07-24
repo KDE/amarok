@@ -21,11 +21,15 @@
 #define TESTPLAYLISTMANAGER_H
 
 #include <QString>
+#include <QStringList>
+#include <QtTest>
 
-class TestPlaylistManager : public QString
+class TestPlaylistManager : public QObject
 {
+Q_OBJECT
+
 public:
-    TestPlaylistManager( int argc, char ** argv, char *fileNamePtr );
+    TestPlaylistManager( QStringList testArgumentList );
 
 private slots:
     void initTestCase();

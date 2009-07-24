@@ -572,43 +572,21 @@ void
 App::runUnitTests()
 {
     DEBUG_BLOCK
-    // prepare argc and argv for testlib. this is the ugly part.
-    #define TEST_ARGC 4
-    char *fileNamePtr;
-    char *testArgv[TEST_ARGC];
-    char arg0[] = "amarok";
-    char arg1[] = "-o";
-    QByteArray tempArg2 = QFile::encodeName ( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + "/" ) );
-    char *arg2 = (char*)malloc( tempArg2.size() + 100 ); // eeeevil HACK to allow tests to set the log filename
-    char arg3[] = "-xml";
-
-    int i = 0;
-    while( i < tempArg2.size() )
-    {
-        arg2[i] = tempArg2.at( i );
-        i++;
-    }
-    arg2[i] = '\0';
-    fileNamePtr = &arg2[i];
-
-    testArgv[0] = arg0;
-    testArgv[1] = arg1;
-    testArgv[2] = arg2;
-    testArgv[3] = arg3;
+    QStringList testArgumentList;
+    QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + "/" );
+    testArgumentList << "amarok" << "-o" << logPath << "-xml";
 
     // create log folder for this run:
-    QDir logDir( tempArg2 );
-    logDir.mkpath( tempArg2 );
+    QDir logDir( logPath );
+    logDir.mkpath( logPath );
 
     PERF_LOG( "Running Unit Tests" )
-    TestPlaylistManager  testPlaylistManager ( TEST_ARGC, (char**)&testArgv, fileNamePtr );
-    TestSmartPointerList testSmartPointerList( TEST_ARGC, (char**)&testArgv, fileNamePtr );
+    TestPlaylistManager  testPlaylistManager ( testArgumentList );
+    TestSmartPointerList testSmartPointerList( testArgumentList );
 
     /* add more test classes here ^^ */
 
     PERF_LOG( "Done Running Unit Tests" )
-    delete( arg2 );
-    #undef TEST_ARGC
 }
 #endif // DEBUG
 
