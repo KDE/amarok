@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "../src/SmartPointerList.h"
+#include "TestSmartPointerList.h"
 #include <QtTest>
 
 // use a macro, as we don't want to test copy ctor early

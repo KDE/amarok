@@ -88,8 +88,8 @@ extern void setupEventHandler_mac(long);
 #endif
 
 #ifdef DEBUG
-#include "../tests/TestPlaylistManager.cpp"
-#include "../tests/TestSmartPointerList.cpp"
+#include "../tests/TestPlaylistManager.h"
+#include "../tests/TestSmartPointerList.h"
 #endif // DEBUG
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
