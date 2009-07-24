@@ -285,7 +285,8 @@ PhotosScrollWidget::automaticAnimBegin()
     if ( m_pixmaplist.size() > 1 && m_id == 0 )  // only start if m_pixmaplist >= 2
     {
         m_lastPix = m_currentPix;
-        m_currentPix = ( m_currentPix + 1 ) % ( m_pixmaplist.count() - 1 );
+        m_currentPix = ( m_currentPix + 1 ) % ( m_pixmaplist.count() );
+        
         switch( m_mode )
         {
             case PHOTOS_MODE_AUTOMATIC:
@@ -320,7 +321,7 @@ PhotosScrollWidget::automaticAnimEnd( int id )
                 Plasma::Animator::self()->stopCustomAnimation( m_id );
                 m_id = 0;
 
-                if ( !m_pixmaplist.empty() && m_currentPix != 0 )
+                /*if ( !m_pixmaplist.empty() && m_currentPix != 0 )
                 {
 
                     DragPixmapItem * orgCurrentPix = m_pixmaplist.at( m_currentPix );
@@ -330,7 +331,7 @@ PhotosScrollWidget::automaticAnimEnd( int id )
                     //update index of current pic
                     m_currentPix = m_pixmaplist.indexOf( orgCurrentPix );
                     m_lastPix = m_pixmaplist.count() - 1; //update to point at same pic at new position at the end of the list
-                }
+                }*/
 
                 QTimer::singleShot( m_interval, this, SLOT( automaticAnimBegin() ) );
             }
@@ -398,7 +399,8 @@ void PhotosScrollWidget::animate( qreal anim )
         {
             if ( !m_pixmaplist.empty() ) // just for prevention, this should never appears
             {
-                if ( ( m_pixmaplist.at( m_currentPix )->pos().x() )  <= ( m_margin / 2 - 1) )
+
+                if ( ( m_pixmaplist.at( m_currentPix )->pos().x() ) <= ( m_margin / 2 - 1) )
                 {
                     m_actualpos = m_margin / 2 - 1;
                     automaticAnimEnd ( m_id );
@@ -406,23 +408,39 @@ void PhotosScrollWidget::animate( qreal anim )
                 }
                 
                 m_actualpos--;
-                for( int a = 0 ; a < m_pixmaplist.size(); a++ )
+                
+                //this is not totally obvious, but we alrady made number two visual image the current one,
+                //so if we draw this as the first one, there will be no animation...
+                int a = m_lastPix;
+                
+                int last = a - 1;
+                if( last < 0 ) last = m_pixmaplist.count() - 1;
+                bool first = true;
+                int previousIndex = -1;
+  
+                while( true )
                 {
-                    
                     int offset = m_margin;
-                    if( a > 0 )
+                    if( first )
                     {
-                        int beforeA = a - 1;
-                        offset += m_pixmaplist.at( beforeA )->pos().x() + m_pixmaplist.at( beforeA )->boundingRect().width();
+                        //we just need to move the very first image and the rest will fall in line!
+                        offset += m_actualpos;
+                        first = false;
                     }
                     else
                     {
-                        //we just need to move the very first image and the rest will fall in line! 
-                        offset += m_actualpos;
+                        offset += m_pixmaplist.at( previousIndex )->pos().x() + m_pixmaplist.at( previousIndex )->boundingRect().width();
                     }
 
                     m_pixmaplist.at( a )->setPos( offset,  m_pixmaplist.at( a )->pos().y() );
                     m_pixmaplist.at( a )->show();
+
+                    if( a == last )
+                        break;
+
+                    previousIndex = a;
+                    a = ( a + 1 ) % ( m_pixmaplist.size() );
+
                 }
             }
             
