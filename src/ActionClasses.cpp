@@ -281,12 +281,6 @@ void SelectAction::setEnabled( bool b )
     if( announce ) emit QAction::triggered( b );
 }
 
-void
-SelectAction::setEnabled( int enabled )
-{
-    setEnabled( (bool)enabled );
-}
-
 void SelectAction::setIcons( QStringList icons )
 {
     m_icons = icons;
@@ -354,7 +348,7 @@ FavorAction::FavorAction( KActionCollection *ac, QObject *parent ) :
                             << i18n( "Not Recently &Played" ) );
 
     setCurrentItem( AmarokConfig::favorTracks() );
-    connect( Amarok::actionCollection()->action("random_mode"), SIGNAL( triggered( int ) ), this, SLOT( setEnabled( int ) ) );
+    connect( Amarok::actionCollection()->action("random_mode"), SIGNAL( triggered( bool ) ), this, SLOT( setEnabled( bool ) ) );
     setEnabled( AmarokConfig::randomMode() );
 }
 

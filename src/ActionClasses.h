@@ -89,7 +89,6 @@ namespace Amarok
 
         protected slots:
             virtual void actionTriggered( QAction *a );
-            virtual void setEnabled( int enabled );
 
         private:
             void ( *m_function ) ( int );
