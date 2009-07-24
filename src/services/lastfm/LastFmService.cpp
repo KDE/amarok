@@ -364,7 +364,7 @@ LastFmService::onGetUserInfo()
         {
             try
             {
-                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getUserInfo" ] );
+                lastfm::XmlQuery lfm( m_jobs[ "getUserInfo" ]->readAll() );
 
                 m_country = lfm["user"]["country"].text();
                 m_age = lfm["user"]["age"].text();

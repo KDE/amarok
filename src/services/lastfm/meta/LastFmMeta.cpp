@@ -487,7 +487,7 @@ void Track::slotResultReady()
     {
         try
         {
-            lastfm::XmlQuery lfm = lastfm::ws::parse( d->trackFetch );
+            lastfm::XmlQuery lfm( d->trackFetch->readAll() );
             QString id = lfm[ "track" ][ "id" ].text();
             QString streamable = lfm[ "track" ][ "streamable" ].text();
             if( streamable.toInt() == 1 )

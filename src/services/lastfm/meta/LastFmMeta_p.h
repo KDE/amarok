@@ -146,7 +146,7 @@ class Track::Private : public QObject
             {
                 try
                 {
-                    lastfm::XmlQuery lfm = lastfm::ws::parse( m_userFetch );
+                    lastfm::XmlQuery lfm( m_userFetch->readAll() );
                     albumUrl = lfm[ "track" ][ "album" ][ "url" ].text();
                     trackUrl = lfm[ "track" ][ "url" ].text();
                     artistUrl = lfm[ "track" ][ "artist" ][ "url" ].text();

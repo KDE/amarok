@@ -68,7 +68,7 @@ LastFmTreeModel::slotAddNeighbors ()
     
     try
     {
-        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getNeighbours" ] );
+        lastfm::XmlQuery lfm( m_jobs[ "getNeighbours" ]->readAll() );
         foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children ( "user" ) )
         {
             QString name = e[ "name" ].text();
@@ -82,7 +82,7 @@ LastFmTreeModel::slotAddNeighbors ()
             }
         }
 
-    } catch( lastfm::ws::ParseError& e )
+    } catch( lastfm::ws::ParseError e )
     {
         debug() << "Got exception in parsing from last.fm:" << e.what();
     }
@@ -99,7 +99,7 @@ LastFmTreeModel::slotAddFriends ()
     QMap<QString, QString> avatarlist;
     try
     {
-        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getFriends" ] );
+        lastfm::XmlQuery lfm( m_jobs[ "getFriends" ]->readAll() );
         foreach( lastfm::XmlQuery e, lfm[ "friends" ].children ( "user" ) )
         {
             QString name = e[ "name" ].text();
@@ -113,7 +113,7 @@ LastFmTreeModel::slotAddFriends ()
             }
         }
 
-    } catch( lastfm::ws::ParseError& e )
+    } catch( lastfm::ws::ParseError e )
     {
         debug() << "Got exception in parsing from last.fm:" << e.what();
     }
@@ -131,7 +131,7 @@ LastFmTreeModel::slotAddTopArtists ()
     WeightedStringList list;
     try
     {
-        lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "getTopArtists" ] );
+        lastfm::XmlQuery lfm( m_jobs[ "getTopArtists" ]->readAll() );
 
         foreach( lastfm::XmlQuery e, lfm[ "topartists" ].children ( "artist" ) )
         {
@@ -150,7 +150,7 @@ LastFmTreeModel::slotAddTopArtists ()
             mMyTopArtists->appendChild ( artist );
         }
 
-    } catch( lastfm::ws::ParseError& e )
+    } catch( lastfm::ws::ParseError e )
     {
         debug() << "Got exception in parsing from last.fm:" << e.what();
     }

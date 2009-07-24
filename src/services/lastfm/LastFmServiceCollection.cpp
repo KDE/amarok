@@ -154,7 +154,7 @@ void LastFmServiceCollection::slotAddNeighboursLoved()
             // iterate through each neighbour
             try
             {
-                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
+                lastfm::XmlQuery lfm( m_jobs[ "user.getNeighbours" ]->readAll() );
 
                 foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
                 {
@@ -200,7 +200,7 @@ void LastFmServiceCollection::slotAddNeighboursPersonal()
                     debug() << "BAD! got no result object";
                     return;
                 }
-                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getNeighbours" ] );
+                lastfm::XmlQuery lfm( m_jobs[ "user.getNeighbours" ]->readAll() );
 
                 // iterate through each neighbour
                 foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
@@ -248,7 +248,7 @@ void LastFmServiceCollection::slotAddFriendsLoved()
         {
             try
             {
-                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
+                lastfm::XmlQuery lfm( m_jobs[ "user.getFriends" ]->readAll() );
 
                 foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
                 {
@@ -293,7 +293,7 @@ void LastFmServiceCollection::slotAddFriendsPersonal()
         {
             try
             {
-                lastfm::XmlQuery lfm = lastfm::ws::parse( m_jobs[ "user.getFriends" ] );
+                lastfm::XmlQuery lfm( m_jobs[ "user.getFriends" ]->readAll() );
 
                 foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
                 {
