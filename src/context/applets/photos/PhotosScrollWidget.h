@@ -90,6 +90,7 @@ class PhotosScrollWidget : public QGraphicsWidget
         int     m_scrollmax;    // lenght of the whole stack
         int     m_actualpos;    //
         int     m_currentPix;   // index of the current pix
+        int     m_lastPix;   // index of the lat pix
         int     m_interval;        // time in ms beetween to change
         int     m_mode;         //
         int     m_delta;

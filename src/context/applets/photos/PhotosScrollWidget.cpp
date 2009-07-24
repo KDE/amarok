@@ -41,6 +41,7 @@ PhotosScrollWidget::PhotosScrollWidget( QGraphicsItem* parent )
     , m_scrollmax( 0 )
     , m_actualpos( 0 )
     , m_currentPix( 0 )
+    , m_lastPix( 0 )
     , m_interval( 3500 )
     , m_mode( PHOTOS_MODE_INTERACTIVE )
     , m_delta( 0 )
@@ -89,6 +90,7 @@ void PhotosScrollWidget::clear()
     m_scrollmax = 0;
     m_actualpos = 0;
     m_currentPix = 0;
+    m_lastPix = 0;
 }
 
 
@@ -279,38 +281,27 @@ void PhotosScrollWidget::resize(qreal wid, qreal hei)
 void
 PhotosScrollWidget::automaticAnimBegin()
 {
-    switch( m_mode )
+    if ( m_pixmaplist.size() > 1 && m_id == 0 )  // only start if m_pixmaplist >= 2
     {
-        case PHOTOS_MODE_AUTOMATIC:
+        m_lastPix = m_currentPix;
+        m_currentPix = ( m_currentPix + 1 ) % ( m_pixmaplist.count() - 1 );
+        switch( m_mode )
         {
-            if ( m_id == 0 )
+            case PHOTOS_MODE_AUTOMATIC:
             {
-            //   DEBUG_BLOCK
-                if ( m_pixmaplist.size() > 1  )  // only start if m_pixmaplist >= 2
-                {
-                    m_delta = m_pixmaplist.at( m_currentPix )->boundingRect().width() + m_margin;
-                    m_currentPix++;
-                    m_id = Plasma::Animator::self()->customAnimation( m_delta * 10, m_delta*20, Plasma::Animator::LinearCurve, this, "animate" );
-                }
+                m_delta = m_pixmaplist.at( m_currentPix )->boundingRect().width() + m_margin;
+                m_id = Plasma::Animator::self()->customAnimation( m_delta * 10, m_delta*20, Plasma::Animator::LinearCurve, this, "animate" );
+                break;
             }
-            break;
-        }
-        
-        case PHOTOS_MODE_FADING:
-        {
-            if ( m_id == 0 )
+
+            case PHOTOS_MODE_FADING:
             {
-            //    DEBUG_BLOCK
-                if ( m_pixmaplist.size() > 1 )  // only start if m_pixmaplist >= 2
-                {
-                    m_currentPix++;
-                    m_id = Plasma::Animator::self()->customAnimation( 30, 1200, Plasma::Animator::LinearCurve, this, "animate" );
-                }
+                m_id = Plasma::Animator::self()->customAnimation( 30, 1200, Plasma::Animator::LinearCurve, this, "animate" );
+                break;
             }
-            break;
+            default:
+                break;
         }
-        default:
-            break;
     }
 }
 
@@ -329,7 +320,16 @@ PhotosScrollWidget::automaticAnimEnd( int id )
                 m_id = 0;
 
                 if ( !m_pixmaplist.empty() && m_currentPix != 0 )
-                    m_pixmaplist << m_pixmaplist.takeAt( m_currentPix - 1 );
+                {
+
+                    DragPixmapItem * orgCurrentPix = m_pixmaplist.at( m_currentPix );
+                    
+                    m_pixmaplist << m_pixmaplist.takeAt( m_lastPix );
+
+                    //update index of current pic
+                    m_currentPix = m_pixmaplist.indexOf( orgCurrentPix );
+                    m_lastPix = m_pixmaplist.count() - 1; //update to point at same pic at new position at the end of the list
+                }
 
                 QTimer::singleShot( m_interval, this, SLOT( automaticAnimBegin() ) );
             }
@@ -345,7 +345,7 @@ PhotosScrollWidget::automaticAnimEnd( int id )
 
                 if ( !m_pixmaplist.empty() && m_currentPix != 0 )
                 {
-                    m_pixmaplist.at( m_currentPix - 1 )->hide();
+                    m_pixmaplist.at( m_lastPix )->hide();
                 }
 
                 m_timer->start( m_interval );
@@ -404,17 +404,23 @@ void PhotosScrollWidget::animate( qreal anim )
                     return;
                 }
                 
-                m_actualpos -= 1;
-                for( int a = m_currentPix - 1 ; a < m_pixmaplist.size(); a++ )
+                m_actualpos--;
+                for( int a = 0 ; a < m_pixmaplist.size(); a++ )
                 {
-                    if ( a == m_currentPix - 1 )
+                    
+                    int offset = m_margin;
+                    if( a > 0 )
                     {
-                        m_pixmaplist.at( a )->setPos( m_actualpos, m_pixmaplist.at( a )->pos().y() );
+                        int beforeA = a - 1;
+                        offset += m_pixmaplist.at( beforeA )->pos().x() + m_pixmaplist.at( beforeA )->boundingRect().width();
                     }
                     else
                     {
-                        m_pixmaplist.at( a )->setPos( m_pixmaplist.at( a - 1 )->pos().x() + m_pixmaplist.at( a - 1 )->boundingRect().width() + m_margin - 1, m_pixmaplist.at( a )->pos().y() );
+                        //we just need to move the very first image and the rest will fall in line! 
+                        offset += m_actualpos;
                     }
+
+                    m_pixmaplist.at( a )->setPos( offset,  m_pixmaplist.at( a )->pos().y() );
                     m_pixmaplist.at( a )->show();
                 }
             }
@@ -426,7 +432,7 @@ void PhotosScrollWidget::animate( qreal anim )
         {
             if ( !m_pixmaplist.empty() ) // just for prevention, this should never appears
             {
-                m_pixmaplist.at( m_currentPix - 1 )->setOpacity( 1 - anim );
+                m_pixmaplist.at( m_lastPix )->setOpacity( 1 - anim );
                 m_pixmaplist.at( m_currentPix )->setOpacity( anim );
                 m_pixmaplist.at( m_currentPix )->show();
             }
