@@ -67,6 +67,8 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int iconHeight = 32;
     const int iconPadX = 4;
     const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
+    const bool hasActions = index.data( CustomRoles::HasDecoratorsRole ).toBool();
+    const QList<PopupDropperAction*> actions = index.data( CustomRoles::DecoratorsRole ).value< QList<PopupDropperAction*> >();
 
     painter->save();
 
@@ -95,11 +97,15 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
     const int infoRectLeft = isRTL ? 0 : iconRight;
     const int infoRectWidth = width - iconRight;
+
+    const int actionsRectWidth = hasActions ? actions.size() * ACTIONICON_SIZE : 0;
+
+    const int titleRectWidth = infoRectWidth - actionsRectWidth;
     
     QRectF titleRect;
     titleRect.setLeft( infoRectLeft );
     titleRect.setTop( option.rect.top() + iconYPadding );
-    titleRect.setWidth( infoRectWidth );
+    titleRect.setWidth( titleRectWidth );
     titleRect.setHeight( bigFm.boundingRect( collectionName ).height() );
 
     painter->setFont( m_bigFont );
@@ -108,7 +114,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     QRectF textRect;
     textRect.setLeft( infoRectLeft );
     textRect.setTop( titleRect.bottom() );
-    textRect.setWidth( infoRectWidth );
+    textRect.setWidth( titleRectWidth );
     textRect.setHeight( smallFm.boundingRect( bylineText ).height() );
 
     painter->setFont( m_smallFont );
@@ -131,14 +137,12 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         capacityBar.drawCapacityBar( painter, capacityRect );
     }
 
-    QList<PopupDropperAction*> actions = index.data( CustomRoles::DecoratorsRole ).value< QList<PopupDropperAction*> >();
-    const bool hasActions = index.data( CustomRoles::HasDecoratorsRole ).toBool();
     if( hasActions )
     {
         QRect actionsRect;
-        actionsRect.setLeft( infoRectLeft );
-        actionsRect.setTop( hasCapacity ? capacityRect.bottom() : textRect.bottom() );
-        actionsRect.setWidth( infoRectWidth );
+        actionsRect.setLeft( titleRect.right() );
+        actionsRect.setTop( titleRect.top() );
+        actionsRect.setWidth( actionsRectWidth );
         actionsRect.setHeight( ACTIONICON_SIZE );
 
         QPointF actionTopLeft = actionsRect.topLeft();
@@ -161,7 +165,6 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
     int width = m_view->viewport()->size().width() - 4;
     int height;
     const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
-    const bool hasActions = index.data( CustomRoles::HasDecoratorsRole ).toBool();
 
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
@@ -169,7 +172,6 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
     height = bigFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( Qt::DisplayRole ).toString() ).height()
            + smallFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( CustomRoles::ByLineRole ).toString() ).height()
            + (hasCapacity ? CAPACITYRECT_HEIGHT : 0)
-           + (hasActions ? ACTIONICON_SIZE : 0)
            + 20;
 
     return QSize( width, height );
