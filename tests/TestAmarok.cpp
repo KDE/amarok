@@ -20,6 +20,7 @@
 #include "Amarok.h"
 #include "TestAmarok.h"
 
+#include <QDir>
 #include <QString>
 
 TestAmarok::TestAmarok( QStringList testArgumentList )
@@ -98,3 +99,15 @@ void TestAmarok::testManipulateThe()
     Amarok::manipulateThe( teststring = "Äöü, The", false );
     QCOMPARE( teststring, QString( "The Äöü" ) );
 }
+
+void TestAmarok::testSaveLocation()
+{
+    QString saveLocation = Amarok::saveLocation();
+    QDir saveLocationDir( saveLocation );
+
+    QCOMPARE( saveLocationDir.exists(), true );
+    QCOMPARE( QDir::isAbsolutePath( saveLocation ), true );
+    QCOMPARE( saveLocationDir.isReadable(), true );
+    /* any other good ideas what to test here? */
+}
+

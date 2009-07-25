@@ -31,7 +31,7 @@ public:
 
 private slots:
     void testComputeScore();
-    /*QString testSaveLocation();
+    void testSaveLocation(); /*
     KUrl::List testRecursiveUrlExpand( const KUrl &url ); //defined in PlaylistHandler.cpp
     KUrl::List testRecursiveUrlExpand( const KUrl::List &urls ); //defined in PlaylistHandler.cpp
     QString testVerboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
@@ -41,7 +41,7 @@ private slots:
     */
     void testExtension();
     //KUrl testMostLocalURL( const KUrl &url );
- /*   QStringList splitPath( QString path );
+ /*
     QString cleanPath( const QString &path );
     QString asciiPath( const QString &path );
     QString vfatPath( const QString &path );
