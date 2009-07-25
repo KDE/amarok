@@ -40,9 +40,9 @@ namespace KIO { class Job; }
 namespace Amarok
 {
     const int VOLUME_MAX = 100;
-    const int SCOPE_SIZE = 9; //= 2**9 = 512
+    const int SCOPE_SIZE = 9; // = 2**9 = 512
     const int blue       = 0x202050;
-    const int VOLUME_SENSITIVITY = 30; //for mouse wheels
+    const int VOLUME_SENSITIVITY = 30; // for mouse wheels
     const int GUI_THREAD_ID = 0;
 
     extern QMutex globalDirsMutex; // defined in App.cpp
@@ -78,7 +78,7 @@ namespace Amarok
     /**
      * @return the KActionCollection used by Amarok
      */
-    KActionCollection *actionCollection(); //defined in App.cpp
+    KActionCollection *actionCollection(); // defined in App.cpp
 
     /**
      * Compute score for a track that has finished playing.
@@ -99,13 +99,13 @@ namespace Amarok
     /**
      * The mainWindow is the playlistWindow
      */
-    AMAROK_EXPORT QWidget *mainWindow(); //defined in App.cpp
+    AMAROK_EXPORT QWidget *mainWindow(); // defined in App.cpp
 
     /**
      * Allocate one on the stack, and it'll set the busy cursor for you until it
      * is destroyed
      */
-    class OverrideCursor { //defined in App.cpp
+    class OverrideCursor { // defined in App.cpp
     public:
         OverrideCursor( Qt::CursorShape cursor = Qt::WaitCursor );
        ~OverrideCursor();
@@ -116,19 +116,19 @@ namespace Amarok
      * @param directory will be created if not existing, you MUST end the string
      *                  with '/'
      */
-    AMAROK_EXPORT QString saveLocation( const QString &directory = QString() ); //defined in collectionreader.cpp
+    AMAROK_EXPORT QString saveLocation( const QString &directory = QString() ); // defined in App.cpp
 
-    KIO::Job *trashFiles( const KUrl::List &files ); //defined in App.cpp
+    KIO::Job *trashFiles( const KUrl::List &files ); // defined in App.cpp
 
     /**
      * For recursively expanding the contents of a directory into a KUrl::List
      * (playlists are ignored)
      */
 
-    //New in Amarok2 -> recursiveUrlExpand has been replaced
-    //existing code depending on this port need to be changed (max urls is removed)
-    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url ); //defined in PlaylistHandler.cpp
-    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls ); //defined in PlaylistHandler.cpp
+    // New in Amarok2 -> recursiveUrlExpand has been replaced
+    // existing code depending on this port need to be changed (max urls is removed)
+    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url ); // defined in PlaylistHandler.cpp
+    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls ); // defined in PlaylistHandler.cpp
 
     AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
 
@@ -165,16 +165,10 @@ namespace Amarok
         return KIO::NetAccess::mostLocalUrl( url, mainWindow() );
     }
 
-    /**
-    * Returns internal code for database type, DbConnection::sqlite or DbConnection::mysql
-    * @param type either "SQLite", or "MySQL".
-    */
-    int databaseTypeCode( const QString type ); //defined in configdialog.cpp
-
-    void setUseScores( bool use ); //defined in App.cpp
+    void setUseScores( bool use ); // defined in App.cpp
     void setUseRatings( bool use );
 
-    bool repeatNone(); //defined in actionclasses.cpp
+    bool repeatNone(); // defined in ActionClasses.cpp
     bool repeatTrack();
     bool repeatAlbum();
     bool repeatPlaylist();
@@ -188,32 +182,29 @@ namespace Amarok
     bool favorRatings();
     bool favorLastPlay();
 
-    void setDynamicPlaylist( const QString& title );  // defined in dynamicmodel.cpp
+    void setDynamicPlaylist( const QString& title );  // defined in browsers/playlistbrowser/DynamicModel.cpp
     void enableDynamicMode( bool enable );
-
-
-    QStringList splitPath( QString path ); //defined in playlistbrowser.cpp
 
     /**
      * Removes accents from the string
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_EXPORT QString cleanPath( const QString &path ); //defined in App.cpp
+    AMAROK_EXPORT QString cleanPath( const QString &path ); // defined in App.cpp
 
     /**
      * Replaces all non-ASCII characters with '_'.
      * @param path The original path.
      * @return The ASCIIfied path.
      */
-    AMAROK_EXPORT QString asciiPath( const QString &path ); //defined in App.cpp
+    AMAROK_EXPORT QString asciiPath( const QString &path ); // defined in App.cpp
 
     /**
      * Transform path into one valid on VFAT file systems
      * @param path The original path.
      * @return The cleaned up path.
      */
-    AMAROK_EXPORT QString vfatPath( const QString &path ); //defined in App.cpp
+    AMAROK_EXPORT QString vfatPath( const QString &path ); // defined in App.cpp
 
     /**
      * Compare both strings from left to right and remove the common part from input
@@ -227,9 +218,9 @@ namespace Amarok
      * Transform to be usable within HTML/HTML attributes
      */
     AMAROK_EXPORT QString escapeHTMLAttr( const QString &s ); // defined in App.cpp
-    AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s ); //defined in App.cpp
+    AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s ); // defined in App.cpp
 
-    /* defined in scriptmanager.cpp */
+    /* defined in dialogs/ScriptManager.cpp */
     /**
      * Returns the proxy that should be used for a given URL.
      * @param url the url.
@@ -244,7 +235,7 @@ namespace Amarok
      */
     QString proxyForProtocol( const QString& protocol );
 
-    /*defined in browsers/CollectionTreeItemModel.cpp */
+    /* defined in browsers/CollectionTreeItemModel.cpp */
     /**
      * Small function aimed to convert Eagles, The -> The Eagles (and back again).
      * @param str the string to manipulate
