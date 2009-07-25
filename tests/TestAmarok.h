@@ -41,7 +41,6 @@ private slots:
     */
     void testExtension();
     //KUrl testMostLocalURL( const KUrl &url );
-    void testDirectory();
     /* more to come */
 };
 

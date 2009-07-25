@@ -55,19 +55,3 @@ void TestAmarok::testExtension()
     QCOMPARE( Amarok::extension( "..te st.m p3" ), QString( "m p3" ) );
 }
 
-void TestAmarok::testDirectory()
-{
-#ifdef Q_WS_WIN
-    QCOMPARE( Amarok::directory( "" ), QString( "" ) );
-    QCOMPARE( Amarok::directory( "c:\home\sven\test.mp3" ), QString( "c:\home\sven" ) );
-    QCOMPARE( Amarok::directory( "c:\home\sven\bar\..\test.mp3" ),QString( "c:\home\sven\bar\.." ) );
-    QCOMPARE( Amarok::directory( "c:\home\sven\bar\...\test.mp3" ),QString( "c:\home\sven\bar\..." ) );
-
-#else // some kind of *nix
-    QCOMPARE( Amarok::directory( "" ), QString( "" ) );
-    QCOMPARE( Amarok::directory( "/home/sven/test.mp3" ), QString( "/home/sven" ) );
-    QCOMPARE( Amarok::directory( "/home/Sven/test.mp3" ),QString( "/home/Sven" ) );
-    QCOMPARE( Amarok::directory( "/home/sven/bar/../test.mp3" ), QString( "/home/sven/bar/.." ) );
-    QCOMPARE( Amarok::directory( "/home/sven/bar/.../test.mp3" ), QString( "/home/sven/bar/..." ) );
-#endif // Q_WS_WIN
-}

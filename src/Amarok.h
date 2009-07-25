@@ -166,14 +166,6 @@ namespace Amarok
     }
 
     /**
-     * @return the last directory in @param fileName
-     */
-    inline QString directory( const QString &fileName )
-    {
-        return fileName.section( QDir::separator(), 0, -2 );
-    }
-
-    /**
     * Returns internal code for database type, DbConnection::sqlite or DbConnection::mysql
     * @param type either "SQLite", or "MySQL".
     */
