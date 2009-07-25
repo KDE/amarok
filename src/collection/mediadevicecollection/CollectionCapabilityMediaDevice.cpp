@@ -37,7 +37,7 @@ CollectionCapabilityMediaDevice::collectionActions()
 {
     // Create Standard Device Actions
     PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                                                                "delete", KIcon( "remove-amarok" ), i18n( "&Disconnect Device" ), 0 );
+                                                                "delete", KIcon( "media-eject" ), i18n( "&Disconnect Device" ), 0 );
     connect( disconnectAction, SIGNAL( triggered() ), m_coll, SLOT( disconnectDevice() ) );
 
     QList<PopupDropperAction*> actions;
