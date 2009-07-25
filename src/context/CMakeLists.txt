@@ -20,14 +20,12 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}
 
 set(amarokpud_LIB_SRCS
     popupdropper/libpud/PopupDropper.cpp
-    popupdropper/libpud/PopupDropperAction.cpp
     popupdropper/libpud/PopupDropperItem.cpp
     popupdropper/libpud/PopupDropperView.cpp
 )
 
 QT4_AUTOMOC(
     popupdropper/libpud/PopupDropper.cpp
-    popupdropper/libpud/PopupDropperAction.cpp
     popupdropper/libpud/PopupDropperItem.cpp
     popupdropper/libpud/PopupDropperView.cpp
 )
