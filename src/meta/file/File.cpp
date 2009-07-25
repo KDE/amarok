@@ -29,8 +29,8 @@
 #include "meta/support/PermanentUrlStatisticsProvider.h"
 #include "MetaUtility.h"
 #include "amarokurls/PlayUrlRunner.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
+#include <QAction>
 #include <QList>
 #include <QPointer>
 #include <QString>
@@ -584,8 +584,8 @@ Track::createCapabilityInterface( Meta::Capability::Type type )
             return new StatisticsCapabilityImpl( this );
         case Meta::Capability::CurrentTrackActions:
             {
-            QList< PopupDropperAction * > actions;
-            PopupDropperAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
+            QList< QAction * > actions;
+            QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
             actions << flag;
             debug() << "returning bookmarkcurrenttrack action";
             return new Meta::CurrentTrackActionsCapability( actions );

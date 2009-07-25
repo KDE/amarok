@@ -63,8 +63,8 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
 
     readAudioCdSettings();
 
-    m_ejectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-    "eject", KIcon( "media-eject" ), i18n( "&Eject" ), 0 );
+    m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Eject" ), 0 );
+    m_ejectAction->setProperty( "amarok_svg_id", "eject" );
 
     connect( m_ejectAction, SIGNAL( triggered() ), this, SLOT( eject() ) );
 
@@ -343,7 +343,7 @@ AudioCdCollection::eject()
     //MediaDeviceMonitor::instance()->ejectCd( m_udi );
 }
 
-PopupDropperAction *
+QAction *
 AudioCdCollection::ejectAction()
 {
     return m_ejectAction;

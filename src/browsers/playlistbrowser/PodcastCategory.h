@@ -29,7 +29,7 @@
 #include <QWebPage>
 
 class PopupDropper;
-class PopupDropperAction;
+class QAction;
 
 // class Meta::PodcastMetaCommon;
 

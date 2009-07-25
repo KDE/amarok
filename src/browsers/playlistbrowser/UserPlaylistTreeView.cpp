@@ -20,7 +20,6 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistController.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "MetaPlaylistModel.h"
@@ -125,9 +124,9 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
         MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
         if( mpm == 0 )
             return;
-        QList<PopupDropperAction*> actions = mpm->actionsFor( indices );
+        QList<QAction*> actions = mpm->actionsFor( indices );
 
-        foreach( PopupDropperAction * action, actions ) {
+        foreach( QAction * action, actions ) {
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
 
@@ -182,12 +181,12 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
     MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
     if( mpm == 0 )
         return;
-    QList<PopupDropperAction *> actions = mpm->actionsFor( indices );
+    QList<QAction *> actions = mpm->actionsFor( indices );
 
     if( actions.isEmpty() )
         return;
 
-    foreach( PopupDropperAction * action, actions )
+    foreach( QAction * action, actions )
         menu.addAction( action );
 
     if( indices.count() == 0 )

@@ -21,7 +21,7 @@ Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability()
 {
 }
 
-Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability( const QList< PopupDropperAction * > & actions )
+Meta::CurrentTrackActionsCapability::CurrentTrackActionsCapability( const QList< QAction * > & actions )
     : CustomActionsCapability( actions )
 {
 }

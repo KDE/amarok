@@ -29,7 +29,7 @@ ServiceCurrentTrackActionsCapability::~ServiceCurrentTrackActionsCapability()
 {
 }
 
-QList< PopupDropperAction * >
+QList< QAction * >
 ServiceCurrentTrackActionsCapability::customActions() const
 {
     return m_currentTrackActionsProvider->currentTrackActions();

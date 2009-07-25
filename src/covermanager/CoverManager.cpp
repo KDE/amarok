@@ -31,7 +31,6 @@
 #include <config-amarok.h>
 #include "PixmapViewer.h"
 #include "playlist/PlaylistController.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "widgets/LineEdit.h"
 
 #include <KIO/NetAccess>
@@ -43,6 +42,7 @@
 #include <KToolBar>
 #include <KVBox>
 
+#include <QAction>
 #include <QDesktopWidget>
 #include <QProgressBar>
 #include <QProgressDialog>
@@ -822,10 +822,10 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
             Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
             if( cac )
             {
-                QList<PopupDropperAction *> actions = cac->customActions();
+                QList<QAction *> actions = cac->customActions();
 
                 menu.addSeparator();
-                foreach( PopupDropperAction *action, actions )
+                foreach( QAction *action, actions )
                     menu.addAction( action );
             }
         }

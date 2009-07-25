@@ -18,14 +18,15 @@
 #define MAGNATUNEPURCHASEACTION_H
 
 #include "MagnatuneMeta.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
+
+#include <QAction>
 
 /**
-A simple PopupDropperAction subclass for purchasing or downloading content from Magnatune
+A simple QAction subclass for purchasing or downloading content from Magnatune
 
 	Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MagnatunePurchaseAction : public PopupDropperAction
+class MagnatunePurchaseAction : public QAction
 {
     Q_OBJECT
 public:

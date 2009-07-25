@@ -23,7 +23,7 @@
 
 #include <klocale.h>
 
-class PopupDropperAction;
+class QAction;
 
 class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 {
@@ -44,8 +44,8 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
 
         virtual bool supportsEmptyGroups() { return true; }
 
-        QList<PopupDropperAction *> playlistActions( Meta::PlaylistPtr playlist );
-        QList<PopupDropperAction *> trackActions( Meta::PlaylistPtr playlist,
+        QList<QAction *> playlistActions( Meta::PlaylistPtr playlist );
+        QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
                                                   int trackIndex );
 
         Meta::SqlPlaylistGroupPtr group( const QString &name );
@@ -73,9 +73,9 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         Meta::SqlPlaylistList selectedPlaylists() const
             { return m_selectedPlaylists; };
         Meta::SqlPlaylistList m_selectedPlaylists;
-        PopupDropperAction *m_renameAction;
-        PopupDropperAction *m_deleteAction;
-        PopupDropperAction *m_removeTrackAction;
+        QAction *m_renameAction;
+        QAction *m_deleteAction;
+        QAction *m_removeTrackAction;
 };
 
 #endif

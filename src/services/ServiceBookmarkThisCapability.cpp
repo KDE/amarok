@@ -49,7 +49,7 @@ bool ServiceBookmarkThisCapability::simpleFiltering()
     return m_provider->simpleFiltering();
 }
 
-PopupDropperAction * ServiceBookmarkThisCapability::bookmarkAction()
+QAction * ServiceBookmarkThisCapability::bookmarkAction()
 {
     return m_provider->bookmarkAction();
 }

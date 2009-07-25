@@ -19,7 +19,6 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Debug.h"
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
@@ -34,6 +33,7 @@
 #include <KInputDialog>
 #include <KUrl>
 
+#include <QAction>
 #include <QMap>
 
 static const int USERPLAYLIST_DB_VERSION = 2;

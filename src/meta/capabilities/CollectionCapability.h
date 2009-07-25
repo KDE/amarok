@@ -21,13 +21,14 @@
 #include "meta/Capability.h"
 #include "Meta.h"
 
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
+#include <QAction>
 #include <QList>
 #include <QObject>
 
 namespace Meta
 {
+
     class AMAROK_EXPORT CollectionCapability : public Meta::Capability
     {
         Q_OBJECT
@@ -36,7 +37,7 @@ namespace Meta
             virtual ~CollectionCapability();
 
             static Type capabilityInterfaceType() { return Meta::Capability::Collection; }
-            virtual QList<PopupDropperAction*> collectionActions() = 0;
+            virtual QList<QAction*> collectionActions() = 0;
     };
 }
 

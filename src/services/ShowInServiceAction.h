@@ -20,14 +20,14 @@
 #include "ServiceBase.h"
 #include "ServiceMetaBase.h"
 
-#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include <QAction>
 
 /**
 An action to let the user locate and show the artist or album of a track in the correct service
 
     @author
 */
-class AMAROK_EXPORT ShowInServiceAction : public PopupDropperAction
+class AMAROK_EXPORT ShowInServiceAction : public QAction
 {
     Q_OBJECT
 public:

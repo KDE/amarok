@@ -21,7 +21,6 @@
 #include "Debug.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "dialogs/TagDialog.h"
 #include "meta/capabilities/CustomActionsCapability.h"
 #include "playlist/PlaylistController.h"
@@ -136,10 +135,10 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
             Meta::CustomActionsCapability *cac = albumPtr->create<Meta::CustomActionsCapability>();
             if( cac )
             {
-                QList<PopupDropperAction *> actions = cac->customActions();
+                QList<QAction *> actions = cac->customActions();
 
                 menu.addSeparator();
-                foreach( PopupDropperAction *action, actions )
+                foreach( QAction *action, actions )
                     menu.addAction( action );
             }
         }

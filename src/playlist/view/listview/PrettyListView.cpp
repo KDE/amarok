@@ -23,7 +23,6 @@
 
 #include "amarokconfig.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
@@ -475,9 +474,9 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
         QModelIndexList indices = selectedIndexes();
 
-        QList<PopupDropperAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
+        QList<QAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
 
-        foreach( PopupDropperAction * action, actions )
+        foreach( QAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
 
         m_pd->show();

@@ -27,7 +27,6 @@
 #include "SvgHandler.h"
 #include "VolumeWidget.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "ToolBar.h"
 
 #include <KApplication>
@@ -134,8 +133,8 @@ void MainToolbar::handleAddActions()
         Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-            QList<PopupDropperAction *> currentTrackActions = cac->customActions();
-            foreach( PopupDropperAction *action, currentTrackActions )
+            QList<QAction *> currentTrackActions = cac->customActions();
+            foreach( QAction *action, currentTrackActions )
                 m_additionalActions.append( action );
 
             m_addControlsToolbar->adjustSize();

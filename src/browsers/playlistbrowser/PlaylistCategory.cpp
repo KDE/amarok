@@ -20,7 +20,6 @@
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "PlaylistsInGroupsProxy.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"

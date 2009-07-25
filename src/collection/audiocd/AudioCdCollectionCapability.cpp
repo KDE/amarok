@@ -18,7 +18,7 @@
 
 #include "AudioCdCollection.h"
 
-#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include <QAction>
 
 using namespace Meta;
 
@@ -28,9 +28,10 @@ AudioCdCollectionCapability::AudioCdCollectionCapability( AudioCdCollection *col
 {
 }
 
-QList<PopupDropperAction*> Meta::AudioCdCollectionCapability::collectionActions()
+
+QList< QAction * > Meta::AudioCdCollectionCapability::collectionActions()
 {
-    QList<PopupDropperAction*> actions;
+    QList< QAction* > actions;
     actions.append( m_collection->ejectAction() );
     return actions;
 }

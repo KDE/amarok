@@ -59,8 +59,8 @@ class SqlPodcastProvider : public PodcastProvider
         void configureProvider();
         void configureChannel( Meta::PodcastChannelPtr channel );
 
-        QList<PopupDropperAction *> episodeActions( Meta::PodcastEpisodeList );
-        QList<PopupDropperAction *> channelActions( Meta::PodcastChannelList );
+        QList<QAction *> episodeActions( Meta::PodcastEpisodeList );
+        QList<QAction *> channelActions( Meta::PodcastChannelList );
 
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
@@ -103,12 +103,12 @@ class SqlPodcastProvider : public PodcastProvider
         QTimer *m_updateTimer;
         int m_updatingChannels;
 
-        PopupDropperAction * m_configureAction; //Configure a Channel
-        PopupDropperAction * m_deleteAction; //delete a downloaded Episode
-        PopupDropperAction * m_downloadAction;
-        PopupDropperAction * m_removeAction; //remove a subscription
-        PopupDropperAction * m_renameAction; //rename a Channel or Episode
-        PopupDropperAction * m_updateAction;
+        QAction * m_configureAction; //Configure a Channel
+        QAction * m_deleteAction; //delete a downloaded Episode
+        QAction * m_downloadAction;
+        QAction * m_removeAction; //remove a subscription
+        QAction * m_renameAction; //rename a Channel or Episode
+        QAction * m_updateAction;
 };
 
 #endif

@@ -31,8 +31,7 @@ namespace Meta
 
         public:
             AudioCdCollectionCapability( AudioCdCollection *coll );
-
-            virtual QList<PopupDropperAction*> collectionActions();
+            virtual QList<QAction*> collectionActions();
 
         private:
             AudioCdCollection *m_collection;

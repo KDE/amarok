@@ -22,7 +22,7 @@
 
 #include <QAbstractItemModel>
 
-class PopupDropperAction;
+class QAction;
 
 namespace PlaylistBrowserNS {
 
@@ -42,7 +42,7 @@ class MetaPlaylistModel
             GroupRole = Qt::UserRole + 3
         };
 
-        virtual QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes ) = 0;
+        virtual QList<QAction *> actionsFor( const QModelIndexList &indexes ) = 0;
 
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode ) = 0;
 };

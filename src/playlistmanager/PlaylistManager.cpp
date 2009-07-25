@@ -554,6 +554,7 @@ PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
     return 0;
 }
 
+
 bool
 PlaylistManager::isWritable( const Meta::PlaylistPtr &playlist )
 {
@@ -566,10 +567,10 @@ PlaylistManager::isWritable( const Meta::PlaylistPtr &playlist )
         return false;
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 PlaylistManager::playlistActions( const Meta::PlaylistList playlists )
 {
-    QList<PopupDropperAction *> actions;
+    QList<QAction *> actions;
     foreach( const Meta::PlaylistPtr playlist, playlists )
     {
         PlaylistProvider *provider = getProviderForPlaylist( playlist );
@@ -580,10 +581,10 @@ PlaylistManager::playlistActions( const Meta::PlaylistList playlists )
     return actions;
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 PlaylistManager::trackActions( const Meta::PlaylistPtr playlist, int trackIndex )
 {
-    QList<PopupDropperAction *> actions;
+    QList<QAction *> actions;
     PlaylistProvider *provider = getProviderForPlaylist( playlist );
     if( provider )
         actions << provider->trackActions( playlist, trackIndex );
