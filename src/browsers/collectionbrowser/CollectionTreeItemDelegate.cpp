@@ -58,7 +58,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         QStyledItemDelegate::paint( painter, option, index );
         return;
     }
-   
+
     const bool isRTL = QApplication::isRightToLeft();
     const QPoint topLeft = option.rect.topLeft();
     const int width = m_view->viewport()->size().width() - 4;
@@ -120,9 +120,9 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->setFont( m_smallFont );
     painter->drawText( textRect, Qt::TextWordWrap, bylineText ); 
 
-    QRect capacityRect;
     if( hasCapacity )
     {
+        QRect capacityRect;
         capacityRect.setLeft( infoRectLeft );
         capacityRect.setTop( textRect.bottom() );
         capacityRect.setWidth( infoRectWidth );
@@ -145,10 +145,22 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         actionsRect.setWidth( actionsRectWidth );
         actionsRect.setHeight( ACTIONICON_SIZE );
 
-        QPointF actionTopLeft = actionsRect.topLeft();
+        QPoint actionTopLeft = actionsRect.topLeft();
+        const QSize iconSize = QSize( ACTIONICON_SIZE, ACTIONICON_SIZE );
+
+        const bool isHover = option.state & QStyle::State_MouseOver;
+
+        const QPoint cursorPos = m_view->mapFromGlobal( QCursor::pos() );
+
         foreach( PopupDropperAction *action, actions )
         {
-            painter->drawPixmap( actionTopLeft, action->icon().pixmap( ACTIONICON_SIZE, ACTIONICON_SIZE ) );
+            QIcon icon = action->icon();
+            QRect iconRect( actionTopLeft, iconSize );
+            debug() << "iconRect:" << iconRect << "cursor:" << cursorPos << "in?" << iconRect.contains( cursorPos );
+
+            const bool isOver = isHover && iconRect.contains( cursorPos );
+
+            icon.paint( painter, iconRect, Qt::AlignCenter, isOver ? QIcon::Active : QIcon::Normal, isOver ? QIcon::On : QIcon::Off );
             actionTopLeft.rx() += ACTIONICON_SIZE;
         }
     }
