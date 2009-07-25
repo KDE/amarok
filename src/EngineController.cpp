@@ -91,6 +91,9 @@ EngineController::~EngineController()
 {
     DEBUG_BLOCK //we like to know when singletons are destroyed
 
+    // don't do any of the after-processing that normally happens when
+    // the media is stopped - that's what endSession() is for
+    m_media->blockSignals(true);
     m_media->stop();
 
     delete m_media;
