@@ -19,7 +19,7 @@
 #include "amarokurls/AmarokUrl.h"
 
 ShowInServiceAction::ShowInServiceAction( ServiceBase * service, Meta::ServiceTrack *track )
-    : PopupDropperAction( service )
+    : QAction( service )
     , m_track( track )
     , m_service( service )
 {

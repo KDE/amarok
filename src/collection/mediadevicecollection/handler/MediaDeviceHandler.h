@@ -30,11 +30,10 @@
 #include "../../../statusbar/StatusBar.h"
 
 #include "mediadevicecollection_export.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
-#include "playlistmanager/UserPlaylistProvider.h"
 
 #include <threadweaver/Job.h>
 
+#include <QAction>
 #include <QObject>
 #include <QMap>
 #include <QMultiMap>
@@ -197,7 +196,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
 
     // HACK: Used for device-specific actions, such as initialize for iPod
 
-    virtual QList<PopupDropperAction *> collectionActions() { return QList<PopupDropperAction*> (); }
+    virtual QList<QAction *> collectionActions() { return QList<QAction*> (); }
 
 
 signals:

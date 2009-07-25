@@ -16,13 +16,12 @@
 
 #include "CollectionCapabilityMediaDevice.h"
 #include "MediaDeviceCollection.h"
-
 #include "SvgHandler.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
-
 #include "MetaQueryMaker.h"
 
 #include <KIcon>
+
+#include <QAction>
 
 using namespace Meta;
 
@@ -32,12 +31,16 @@ CollectionCapabilityMediaDevice::CollectionCapabilityMediaDevice( MediaDeviceCol
 {
 }
 
-QList<PopupDropperAction*>
-CollectionCapabilityMediaDevice::collectionActions()
+QList<QAction *>
+CollectionCapabilityMediaDevice::collectionActions( QueryMaker *qm )
 {
+    qm->deleteLater();
+    QList< QAction* > actions;
+
     // Create Standard Device Actions
-    PopupDropperAction *disconnectAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                                                                "delete", KIcon( "media-eject" ), i18n( "&Disconnect Device" ), 0 );
+
+    QAction *disconnectAction = new QAction( KIcon( "remove-amarok" ),  i18n(  "&Disconnect Device" ),  0 );
+    disconnectAction->setProperty( "amarok_svg_id", "delete" );
     connect( disconnectAction, SIGNAL( triggered() ), m_coll, SLOT( disconnectDevice() ) );
 
     QList<PopupDropperAction*> actions;
@@ -47,6 +50,16 @@ CollectionCapabilityMediaDevice::collectionActions()
 
     actions += m_coll->handler()->collectionActions();  // This can be .append( QList<T> ) when we start depending on Qt>=4.5
 
+    return actions;
+}
+
+// NOTE: NYI
+QList<QAction *>
+CollectionCapabilityMediaDevice::collectionActions(  const TrackList tracklist )
+{
+    Q_UNUSED(  tracklist );
+
+    QList< QAction* > actions;
     return actions;
 }
 

@@ -22,7 +22,6 @@
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/MetaUtility.h"
 #include "PaletteHandler.h"
@@ -184,9 +183,9 @@ CurrentTrack::contextualActions()
         Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
         if( cac )
         {
-            QList<PopupDropperAction *> pudActions = cac->customActions();
-
-            foreach( PopupDropperAction *action, pudActions )
+            QList<QAction *> pudActions = cac->customActions();
+             
+            foreach( QAction *action, pudActions )
                 actions.append( action );
         }
     }

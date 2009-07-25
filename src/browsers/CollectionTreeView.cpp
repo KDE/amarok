@@ -36,7 +36,6 @@
 #include "playlist/PlaylistController.h"
 #include "PopupDropperFactory.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "QueryMaker.h"
 #include "SvgHandler.h"
@@ -175,7 +174,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     if( !m_treeModel )
         return;
 
-    PopupDropperAction separator( this );
+    QAction separator( this );
     separator.setSeparator( true );
 
     QModelIndexList indices = selectedIndexes();
@@ -200,7 +199,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
             m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
     }
 
-    PopupDropperActionList actions = createBasicActions( indices );
+    QActionList actions = createBasicActions( indices );
     actions += &separator;
     actions += createExtendedActions( indices );
     actions += createCollectionActions( indices );
@@ -214,7 +213,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     // Destroy menu after hiding it
     connect( menu, SIGNAL( aboutToHide() ), menu, SLOT( deleteLater() ) );
 
-    foreach( PopupDropperAction * action, actions )
+    foreach( QAction * action, actions )
         menu->addAction( action );
 
     m_currentCopyDestination =   getCopyActions(   indices );
@@ -225,7 +224,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     {
         if ( m_cmSeperator == 0 )
         {
-            m_cmSeperator = new PopupDropperAction( this );
+            m_cmSeperator = new QAction( this );
             m_cmSeperator->setSeparator ( true );
         }
         menu->addAction( m_cmSeperator );
@@ -234,7 +233,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     if ( !m_currentCopyDestination.empty() )
     {
         KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), menu );
-        foreach( PopupDropperAction *action, m_currentCopyDestination.keys() )
+        foreach( QAction *action, m_currentCopyDestination.keys() )
         {
             action->setParent( copyMenu );
             copyMenu->addAction( action );
@@ -245,7 +244,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     if ( !m_currentMoveDestination.empty() )
     {
         KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), menu );
-        foreach( PopupDropperAction * action, m_currentCopyDestination.keys() )
+        foreach( QAction * action, m_currentCopyDestination.keys() )
         {
             action->setParent( moveMenu );
             moveMenu->addAction( action );
@@ -255,7 +254,7 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 
     if( ( !m_currentRemoveDestination.empty() ) )
     {
-        foreach( PopupDropperAction * action, m_currentRemoveDestination.keys() )
+        foreach( QAction * action, m_currentRemoveDestination.keys() )
         {
             menu->addAction( action );
         }
@@ -461,13 +460,13 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             indices = tmp;
         }
 
-        PopupDropperActionList actions = createBasicActions( indices );
+        QActionList actions = createBasicActions( indices );
 
         QFont font;
         font.setPointSize( 16 );
         font.setBold( true );
 
-        foreach( PopupDropperAction * action, actions )
+        foreach( QAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
 
         m_currentCopyDestination = getCopyActions( indices );
@@ -489,7 +488,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         {
             morePud = The::popupDropperFactory()->createPopupDropper( 0 );
 
-            foreach( PopupDropperAction * action, actions )
+            foreach( QAction * action, actions )
                 morePud->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
         else
@@ -498,7 +497,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         //TODO: Keep bugging i18n team about problems with 3 dots
         if ( actions.count() > 1 )
         {
-            subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More..." )  );
+            subItem = m_pd->addSubmenu( &morePud, i18n( "More..." )  );
             The::popupDropperFactory()->adjustSubmenuItem( subItem );
         }
 
@@ -796,15 +795,16 @@ void CollectionTreeView::slotFilterNow()
     setFocus( Qt::OtherFocusReason );
 }
 
-PopupDropperActionList CollectionTreeView::createBasicActions( const QModelIndexList & indices )
+QActionList CollectionTreeView::createBasicActions( const QModelIndexList & indices )
 {
-    PopupDropperActionList actions;
+    QActionList actions;
 
     if( !indices.isEmpty() )
     {
         if( m_appendAction == 0 )
         {
-            m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+            m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+            m_appendAction->setProperty( "amarok_svg_id", "append" );
             connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
         }
 
@@ -812,7 +812,8 @@ PopupDropperActionList CollectionTreeView::createBasicActions( const QModelIndex
 
         if( m_loadAction == 0 )
         {
-            m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
+            m_loadAction = new QAction( i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
+            m_loadAction->setProperty( "amarok_svg_id", "load" );
             connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotPlayChildTracks() ) );
         }
 
@@ -822,15 +823,16 @@ PopupDropperActionList CollectionTreeView::createBasicActions( const QModelIndex
     return actions;
 }
 
-PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIndexList & indices )
+QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & indices )
 {
-    PopupDropperActionList actions;
+    QActionList actions;
 
     if( !indices.isEmpty() )
     {
         if ( m_editAction == 0 )
         {
-            m_editAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
+            m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
+            setProperty( "amarok_svg_id", "edit" );
             connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
         }
         actions.append( m_editAction );
@@ -865,7 +867,8 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
                 {
                     if ( m_organizeAction == 0 )
                     {
-                        m_organizeAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "organize", KIcon("folder-open" ), i18nc( "Organize Files", "Organize Files" ), this );
+                        m_organizeAction = new QAction( KIcon("folder-open" ), i18nc( "Organize Files", "Organize Files" ), this );
+                        m_organizeAction->setProperty( "amarok_svg_id", "organize" );
                         connect( m_organizeAction, SIGNAL( triggered() ), this, SLOT( slotOrganize() ) );
                     }
                     actions.append( m_organizeAction );
@@ -882,8 +885,8 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
             debug() << "checking for global actions";
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
 
-            PopupDropperActionList gActions = The::globalCollectionActions()->actionsFor( item->data() );
-            foreach( PopupDropperAction *action, gActions )
+            QActionList gActions = The::globalCollectionActions()->actionsFor( item->data() );
+            foreach( QAction *action, gActions )
             {
                 if( action ) // Can become 0-pointer, see http://bugs.kde.org/show_bug.cgi?id=183250
                 {
@@ -904,14 +907,14 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
                     if( cac )
                     {
                         if ( m_caSeperator == 0 ) {
-                            m_caSeperator = new PopupDropperAction( this );
+                            m_caSeperator = new QAction( this );
                             m_caSeperator->setSeparator ( true );
                         }
                         //actions.append( m_caSeperator );
 
-                        PopupDropperActionList cActions = cac->customActions();
+                        QActionList cActions = cac->customActions();
 
-                        foreach( PopupDropperAction *action, cActions )
+                        foreach( QAction *action, cActions )
                         {
                             if( action )
                             {
@@ -927,7 +930,7 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
                     {
                         if( btc->isBookmarkable() ) {
 
-                            PopupDropperAction *bookmarAction = btc->bookmarkAction();
+                            QAction *bookmarAction = btc->bookmarkAction();
                             if ( bookmarAction )
                                 actions.append( bookmarAction );
                         }
@@ -944,11 +947,20 @@ PopupDropperActionList CollectionTreeView::createExtendedActions( const QModelIn
     return actions;
 }
 
-PopupDropperActionList
+QActionList
 CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 {
     DEBUG_BLOCK
-    PopupDropperActionList actions;
+    QActionList actions;
+
+    // Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
+    // This will fetch TrackList, pass TrackList to appropriate function with done signal
+
+    QueryMaker *qm = createMetaQueryFromItems( m_currentItems, true );
+    if( !qm )
+        return QList<QAction*>();
+
+    qm->setQueryType( QueryMaker::Track );
 
     // Extract collection whose constituent was selected
 
@@ -972,9 +984,9 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 }
 
 
-QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
+QHash<QAction*, Amarok::Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
 {
-    QHash<PopupDropperAction*, Amarok::Collection*> m_currentCopyDestination;
+    QHash<QAction*, Amarok::Collection*> m_currentCopyDestination;
 
     if( onlyOneCollection( indices) )
     {
@@ -991,8 +1003,8 @@ QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getCopyActio
         {
             foreach( Amarok::Collection *coll, writableCollections )
             {
-                PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
-
+                QAction *action = new QAction( QIcon(), coll->prettyName(), 0 );
+                action->setProperty( "amarok_svg_id", "collection" );
                 connect( action, SIGNAL( triggered() ), this, SLOT( slotCopyTracks() ) );
 
                 m_currentCopyDestination.insert( action, coll );
@@ -1002,9 +1014,9 @@ QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getCopyActio
     return m_currentCopyDestination;
 }
 
-QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const QModelIndexList & indices )
+QHash<QAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const QModelIndexList & indices )
 {
-    QHash<PopupDropperAction*, Amarok::Collection*> m_currentMoveDestination;
+    QHash<QAction*, Amarok::Collection*> m_currentMoveDestination;
 
     if( onlyOneCollection( indices) )
     {
@@ -1027,8 +1039,8 @@ QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getMoveActio
             {
                 foreach( Amarok::Collection *coll, writableCollections )
                 {
-                    PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "collection", QIcon(), coll->prettyName(), 0 );
-
+                    QAction *action = new QAction( QIcon(), coll->prettyName(), 0 );
+                    action->setProperty( "amarok_svg_id", "collection" );
                     connect( action, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
                     m_currentMoveDestination.insert( action, coll );
                 }
@@ -1038,9 +1050,9 @@ QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getMoveActio
     return m_currentMoveDestination;
 }
 
-QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getRemoveActions( const QModelIndexList & indices )
+QHash<QAction*, Amarok::Collection*> CollectionTreeView::getRemoveActions( const QModelIndexList & indices )
 {
-    QHash<PopupDropperAction*, Amarok::Collection*> m_currentRemoveDestination;
+    QHash<QAction*, Amarok::Collection*> m_currentRemoveDestination;
 
     if( onlyOneCollection( indices) )
     {
@@ -1048,7 +1060,8 @@ QHash<PopupDropperAction*, Amarok::Collection*> CollectionTreeView::getRemoveAct
         if( collection && collection->isWritable() )
         {
             //writableCollections.append( collection );
-            PopupDropperAction *action = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
+            QAction *action = new QAction( KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
+            action->setProperty( "amarok_svg_id", "delete" );
 
             connect( action, SIGNAL( triggered() ), this, SLOT( slotRemoveTracks() ) );
 
@@ -1117,7 +1130,7 @@ void CollectionTreeView::slotEditTracks()
 void CollectionTreeView::slotCopyTracks()
 {
     if( sender() ) {
-        if ( PopupDropperAction * action = dynamic_cast<PopupDropperAction *>( sender() ) )
+        if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
             copyTracks( m_currentItems, m_currentCopyDestination[ action ], false );
     }
 }
@@ -1125,7 +1138,7 @@ void CollectionTreeView::slotCopyTracks()
 void CollectionTreeView::slotMoveTracks()
 {
     if( sender() ) {
-        if ( PopupDropperAction * action = dynamic_cast<PopupDropperAction *>( sender() ) )
+        if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
             copyTracks( m_currentItems, m_currentCopyDestination[ action ], true );
     }
 }
@@ -1134,7 +1147,7 @@ void CollectionTreeView::slotRemoveTracks()
 {
 
     if( sender() ) {
-        if ( PopupDropperAction * action = dynamic_cast<PopupDropperAction *>( sender() ) )
+        if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
         {
             Q_UNUSED( action );
             removeTracks( m_currentItems );
@@ -1145,7 +1158,7 @@ void CollectionTreeView::slotRemoveTracks()
 void CollectionTreeView::slotOrganize()
 {
     if( sender() ) {
-        if( PopupDropperAction * action = dynamic_cast<PopupDropperAction *>( sender() ) )
+        if( QAction * action = dynamic_cast<QAction *>( sender() ) )
         {
             Q_UNUSED( action )
             organizeTracks( m_currentItems );

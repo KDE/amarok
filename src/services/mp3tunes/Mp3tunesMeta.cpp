@@ -16,12 +16,13 @@
  ****************************************************************************************/
 
 #include "Mp3tunesMeta.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include "Amarok.h"
 
 #include <KIcon>
 #include <KLocale>
+
+#include <QAction>
 using namespace Meta;
 
 Mp3TunesTrack::Mp3TunesTrack( const QString& title )
@@ -70,11 +71,11 @@ QString Mp3TunesAlbum::coverUrl( ) const
     return m_coverURL;
 }
 
-QList< PopupDropperAction * > Meta::Mp3TunesAlbum::customActions()
+QList< QAction * > Meta::Mp3TunesAlbum::customActions()
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
-    //PopupDropperAction * action = new PopupDropperAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
+    QList< QAction * > actions;
+    //QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
 
     //TODO connect some slot to the action, also, give the damn action a parent please
     //actions.append( action );

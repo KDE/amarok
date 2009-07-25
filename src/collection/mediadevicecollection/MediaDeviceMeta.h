@@ -24,7 +24,7 @@
 #include <QMultiMap>
 
 class MediaDeviceCollection;
-class PopupDropperAction;
+class QAction;
 
 namespace Meta
 {

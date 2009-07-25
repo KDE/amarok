@@ -21,13 +21,12 @@
 #include "Meta.h"
 #include "meta/Playlist.h"
 
+#include <QAction>
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
 
 #define PLAYLIST_DB_VERSION 1
-
-class PopupDropperAction;
 
 namespace PlaylistBrowserNS {
 
@@ -74,7 +73,7 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
         QMimeData* mimeData( const QModelIndexList &indexes ) const;
         bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
 
-        QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
+        QList<QAction *> actionsFor( const QModelIndexList &indexes );
 
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
@@ -108,12 +107,9 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
         static UserModel * s_instance;
 
         Meta::PlaylistList m_playlists;
-        QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
-        QList<PopupDropperAction *> createWriteActions( QModelIndexList indices );
-        PopupDropperAction *m_appendAction;
-        PopupDropperAction *m_loadAction;
-        PopupDropperAction *m_renameAction;
-        PopupDropperAction *m_deleteAction;
+        QList<QAction *> createCommonActions( QModelIndexList indices );
+        QAction *m_appendAction;
+        QAction *m_loadAction;
 
         Meta::PlaylistList m_selectedPlaylists;
         Meta::PlaylistList selectedPlaylists( const QModelIndexList &list );

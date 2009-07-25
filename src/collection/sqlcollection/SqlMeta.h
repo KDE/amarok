@@ -29,7 +29,7 @@
 #include <QVariant>
 
 class SqlCollection;
-class PopupDropperAction;
+class QAction;
 
 namespace Meta
 {
@@ -240,7 +240,7 @@ class SqlArtist : public Meta::Artist
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
-        PopupDropperAction * m_bookmarkAction;
+        QAction * m_bookmarkAction;
 
 };
 
@@ -313,7 +313,7 @@ class SqlAlbum : public Meta::Album
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 
-        PopupDropperAction * m_bookmarkAction;
+        QAction * m_bookmarkAction;
 
         //TODO: add album artist
 };

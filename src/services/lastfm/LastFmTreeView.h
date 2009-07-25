@@ -31,9 +31,9 @@ class QContextMenuEvent;
 class QMouseEvent;
 
 class PopupDropper;
-class PopupDropperAction;
+class QAction;
 
-typedef QList<PopupDropperAction *> PopupDropperActionList;
+typedef QList<QAction *> QActionList;
 
 class LastFmTreeView : public Amarok::PrettyTreeView
 {
@@ -61,13 +61,13 @@ private:
     enum ContextMenuActionType { ExecQMenu, DoQMenuDefaultAction };
     void playChildTracks ( const QModelIndex &item, Playlist::AddOptions insertMode );
     void playChildTracks ( const QModelIndexList &items, Playlist::AddOptions insertMode );
-    PopupDropperActionList createBasicActions( const QModelIndexList &indcies );
+    QActionList createBasicActions( const QModelIndexList &indcies );
 
     QTimer* m_timer;
     LastFmTreeModel* m_model;
     PopupDropper* m_pd;
-    PopupDropperAction* m_appendAction;
-    PopupDropperAction* m_loadAction;
+    QAction* m_appendAction;
+    QAction* m_loadAction;
     QModelIndexList m_currentItems;
     QMutex m_dragMutex;
     bool m_ongoingDrag;

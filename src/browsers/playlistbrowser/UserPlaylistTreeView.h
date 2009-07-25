@@ -21,7 +21,7 @@
 #include "widgets/PrettyTreeView.h"
 
 class PopupDropper;
-class PopupDropperAction;
+class QAction;
 
 class KAction;
 

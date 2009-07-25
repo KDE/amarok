@@ -22,7 +22,7 @@
 
 #include <klocale.h>
 
-class PopupDropperAction;
+class QAction;
 
 class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvider
 {
@@ -43,7 +43,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvide
 
         //      virtual bool supportsEmptyGroups() { return true; }
 
-        //virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list );
+        //virtual QList<QAction *> playlistActions( Meta::PlaylistList list );
 
         virtual bool isWritable() { return true; }
 

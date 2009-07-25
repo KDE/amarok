@@ -29,7 +29,6 @@
 
 class QEvent;
 class App;
-class PopupDropperAction;
 
 
 namespace Amarok {

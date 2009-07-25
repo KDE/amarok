@@ -19,7 +19,6 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Debug.h"
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
@@ -34,6 +33,7 @@
 #include <KInputDialog>
 #include <KUrl>
 
+#include <QAction>
 #include <QMap>
 
 static const int USERPLAYLIST_DB_VERSION = 2;
@@ -159,6 +159,12 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QStr
 
     return Meta::PlaylistPtr::dynamicCast( pl );
 }
+#if 0
+QList<QAction *>
+MediaDeviceUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
+{
+    Q_UNUSED( list )
+    QList<QAction *> actions;
 
 void
 MediaDeviceUserPlaylistProvider::rename( Meta::PlaylistPtr playlist, const QString &newName )
@@ -167,10 +173,8 @@ MediaDeviceUserPlaylistProvider::rename( Meta::PlaylistPtr playlist, const QStri
     Meta::MediaDevicePlaylistPtr pl = Meta::MediaDevicePlaylistPtr::staticCast( playlist );
     if( pl )
     {
-        debug() << "Setting name of playlist";
-        pl->setName( newName );
-
-        emit playlistRenamed( pl );
+        m_renameAction =  new QAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
 }
 

@@ -28,10 +28,10 @@
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/UpdateCapability.h"
 
-#include "context/popupdropper/libpud/PopupDropperAction.h"
-
 #include <KIcon>
 #include <KUrl>
+
+#include <QAction>
 
 using namespace Meta;
 // Currently complaining about some vtable issue
@@ -898,11 +898,11 @@ MediaDeviceAlbum::asCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::CustomActions:
         {
-            QList<PopupDropperAction*> actions;
+            QList<QAction*> actions;
 
-            PopupDropperAction *separator          = new PopupDropperAction( m_collection );
-            PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
-            PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
+            QAction *separator          = new QAction( m_collection );
+            QAction *displayCoverAction = new DisplayCoverAction( m_collection, AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
+            QAction *unsetCoverAction   = new UnsetCoverAction( m_collection, AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
 
             separator->setSeparator( true );
 

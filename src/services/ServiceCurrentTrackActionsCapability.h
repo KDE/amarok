@@ -30,7 +30,7 @@ class AMAROK_EXPORT ServiceCurrentTrackActionsCapability : public Meta::CurrentT
     public:
         ServiceCurrentTrackActionsCapability( CurrentTrackActionsProvider * currentTrackActionsProvider  );
         virtual ~ServiceCurrentTrackActionsCapability();
-        virtual QList< PopupDropperAction * > customActions() const;
+        virtual QList< QAction * > customActions() const;
 
     private:
         CurrentTrackActionsProvider * m_currentTrackActionsProvider;

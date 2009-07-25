@@ -18,11 +18,12 @@
 #define BOOKMARKMETAACTIONS_H
 
 #include "amarok_export.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Meta.h"
 
+#include <QAction>
 
-class AMAROK_EXPORT BookmarkAlbumAction : public PopupDropperAction
+
+class AMAROK_EXPORT BookmarkAlbumAction : public QAction
 {
     Q_OBJECT
 
@@ -37,7 +38,7 @@ public:
 };
 
 
-class AMAROK_EXPORT BookmarkArtistAction : public PopupDropperAction
+class AMAROK_EXPORT BookmarkArtistAction : public QAction
 {
     Q_OBJECT
 
@@ -52,7 +53,7 @@ class AMAROK_EXPORT BookmarkArtistAction : public PopupDropperAction
 };
 
 
-class AMAROK_EXPORT BookmarkCurrentTrackPositionAction : public PopupDropperAction
+class AMAROK_EXPORT BookmarkCurrentTrackPositionAction : public QAction
 {
     Q_OBJECT
 

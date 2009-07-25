@@ -32,7 +32,17 @@ namespace Meta
         public:
             AudioCdCollectionCapability( AudioCdCollection *coll );
 
-            virtual QList<PopupDropperAction*> collectionActions();
+public:
+    AudioCdCollectionCapability( AudioCdCollection *coll );
+
+    virtual QList<QAction *>  collectionActions( QueryMaker *qm );
+    virtual QList<QAction *>  collectionActions( const TrackList tracklist );
+
+private:
+    AudioCdCollection *m_collection;
+
+
+};
 
         private:
             AudioCdCollection *m_collection;

@@ -24,11 +24,11 @@
 #include "amarokurls/PlayUrlRunner.h"
 #include "amarokurls/PlayUrlGenerator.h"
 #include "amarokurls/BookmarkMetaActions.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <KEncodingProber>
 #include <KSharedPtr>
 
+#include <QAction>
 #include <QDir>
 #include <QFile>
 #include <QMapIterator>

@@ -20,7 +20,6 @@
 
 #include "Amarok.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
@@ -374,9 +373,9 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
     if( m_pd && m_pd->isHidden() )
     {
 
-        QList<PopupDropperAction*> actions = m_podcastModel->actionsFor( selectedIndexes() );
+        QList<QAction*> actions = m_podcastModel->actionsFor( selectedIndexes() );
 
-        foreach( PopupDropperAction * action, actions )
+        foreach( QAction * action, actions )
         {
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
@@ -403,13 +402,13 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
 
     KMenu menu;
     QModelIndexList indices = selectedIndexes();
-    QList<PopupDropperAction *> actions =
+    QList<QAction *> actions =
             m_podcastModel->actionsFor( indices );
 
     if( actions.isEmpty() )
         return;
 
-    foreach( PopupDropperAction * action, actions )
+    foreach( QAction * action, actions )
     {
         if( action )
             menu.addAction( action );

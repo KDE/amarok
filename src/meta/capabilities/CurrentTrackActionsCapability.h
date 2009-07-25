@@ -43,7 +43,7 @@ namespace Meta {
              * Constructor
              * @param actions A list of actions that to use.
              */
-            CurrentTrackActionsCapability( const QList< PopupDropperAction * > &actions );
+            CurrentTrackActionsCapability( const QList< QAction * > &actions );
             
             /**
              * Get the capabilityInterfaceType of this capability

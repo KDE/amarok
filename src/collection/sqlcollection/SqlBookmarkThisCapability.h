@@ -30,7 +30,7 @@ class SqlBookmarkThisCapability : public BookmarkThisCapability
 {
     Q_OBJECT
 public:
-    SqlBookmarkThisCapability( PopupDropperAction * action );
+    SqlBookmarkThisCapability( QAction * action );
 
     virtual ~SqlBookmarkThisCapability();
 
@@ -38,11 +38,11 @@ public:
     virtual QString browserName() { return "collections"; }
     virtual QString collectionName() { return QString(); }
     virtual bool simpleFiltering() { return false; }
-    virtual PopupDropperAction * bookmarkAction();
+    virtual QAction * bookmarkAction();
 
 private:
 
-    PopupDropperAction * m_action;
+    QAction * m_action;
 };
 
 }

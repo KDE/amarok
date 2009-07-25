@@ -214,10 +214,10 @@ void Meta::MagnatuneTrack::setDownloadMembership()
 }
 
 
-QList< PopupDropperAction * > Meta::MagnatuneTrack::customActions()
+QList< QAction * > Meta::MagnatuneTrack::customActions()
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if ( !m_purchaseAction ) {
 
@@ -238,11 +238,11 @@ QList< PopupDropperAction * > Meta::MagnatuneTrack::customActions()
 
 }
 
-QList< PopupDropperAction * > Meta::MagnatuneTrack::currentTrackActions()
+QList< QAction * > Meta::MagnatuneTrack::currentTrackActions()
 {
 
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if ( !m_purchaseAction ) {
 
@@ -438,10 +438,10 @@ void Meta::MagnatuneAlbum::setDownloadMembership()
     m_downloadMembership = true;
 }
 
-QList< PopupDropperAction * > MagnatuneAlbum::customActions()
+QList< QAction * > MagnatuneAlbum::customActions()
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if ( !m_purchaseAction ) {
 

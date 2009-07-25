@@ -20,13 +20,15 @@
 
 #include "amarok_export.h"
 #include "Meta.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
+
+
+#include <QAction>
 
 
 
 
 
-class AMAROK_EXPORT GlobalCollectionAction : public PopupDropperAction
+class AMAROK_EXPORT GlobalCollectionAction : public QAction
 {
 public:
     GlobalCollectionAction( const QString &text, QObject * parent );
@@ -148,7 +150,7 @@ public:
 
 
 
-    QList<PopupDropperAction *> actionsFor( Meta::DataPtr item );
+    QList<QAction *> actionsFor( Meta::DataPtr item );
 
     void addGenreAction( GlobalCollectionGenreAction * action );
     void addArtistAction( GlobalCollectionArtistAction * action );
@@ -163,12 +165,12 @@ private:
     GlobalCollectionActions();
     ~GlobalCollectionActions();
 
-    QList<PopupDropperAction *> actionsFor( Meta::GenrePtr genre );
-    QList<PopupDropperAction *> actionsFor( Meta::ArtistPtr artist );
-    QList<PopupDropperAction *> actionsFor( Meta::AlbumPtr album );
-    QList<PopupDropperAction *> actionsFor( Meta::TrackPtr track );
-    QList<PopupDropperAction *> actionsFor( Meta::YearPtr year );
-    QList<PopupDropperAction *> actionsFor( Meta::ComposerPtr composer );
+    QList<QAction *> actionsFor( Meta::GenrePtr genre );
+    QList<QAction *> actionsFor( Meta::ArtistPtr artist );
+    QList<QAction *> actionsFor( Meta::AlbumPtr album );
+    QList<QAction *> actionsFor( Meta::TrackPtr track );
+    QList<QAction *> actionsFor( Meta::YearPtr year );
+    QList<QAction *> actionsFor( Meta::ComposerPtr composer );
 
     QList<GlobalCollectionGenreAction *> m_genreActions;
     QList<GlobalCollectionArtistAction *> m_artistActions;

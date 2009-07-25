@@ -17,7 +17,6 @@
 #include "PlaylistsInGroupsProxy.h"
 
 #include "AmarokMimeData.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Debug.h"
 #include "meta/Playlist.h"
 #include "SvgHandler.h"
@@ -577,22 +576,24 @@ PlaylistsInGroupsProxy::slotAddToFolder()
     buildTree();
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 PlaylistsInGroupsProxy::createGroupActions()
 {
-    QList<PopupDropperAction *> actions;
+    QList<QAction *> actions;
 
     if ( m_deleteFolderAction == 0 )
     {
-        m_deleteFolderAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete_folder", KIcon( "media-track-remove-amarok" ), i18n( "&Delete Folder" ), this );
-        connect( m_deleteFolderAction, SIGNAL( triggered() ), this, SLOT( slotDeleteFolder() ) );
+        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete group" ), this );
+        m_deleteAction->setProperty( "amarok_svg_id", "delete_group" );
+        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteGroup() ) );
     }
     actions << m_deleteFolderAction;
 
     if ( m_renameFolderAction == 0 )
     {
-        m_renameFolderAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit_folder", KIcon( "media-track-edit-amarok" ), i18n( "&Rename Folder..." ), this );
-        connect( m_renameFolderAction, SIGNAL( triggered() ), this, SLOT( slotRenameFolder() ) );
+        m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename group" ), this );
+        m_renameAction->setProperty( "amarok_svg_id", "edit_group" );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRenameGroup() ) );
     }
     actions << m_renameFolderAction;
 
@@ -655,14 +656,14 @@ PlaylistsInGroupsProxy::deleteFolder( const QModelIndex &groupIdx )
     buildTree();
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
 {
     DEBUG_BLOCK
     bool playlistSelected = isAPlaylistSelected( list );
     bool groupSelected = isAGroupSelected( list );
 
-    QList<PopupDropperAction *> actions;
+    QList<QAction *> actions;
     m_selectedGroups.clear();
     m_selectedPlaylists.clear();
 

@@ -33,19 +33,19 @@ UserPlaylistProvider::supportsEmptyGroups()
     return false;
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 UserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
 {
     Q_UNUSED( playlist );
-    return QList<PopupDropperAction *>();
+    return QList<QAction *>();
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 UserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
 {
     Q_UNUSED( playlist );
     Q_UNUSED( trackIndex );
-    return QList<PopupDropperAction *>();
+    return QList<QAction *>();
 }
 
 #include "UserPlaylistProvider.moc"

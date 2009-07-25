@@ -213,8 +213,8 @@ Meta::SqlPodcastEpisode::createCapabilityInterface( Meta::Capability::Type type 
     {
         case Meta::Capability::CurrentTrackActions:
         {
-            QList< PopupDropperAction * > actions;
-            PopupDropperAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
+            QList< QAction * > actions;
+            QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
             actions << flag;
             return new Meta::CurrentTrackActionsCapability( actions );
         }

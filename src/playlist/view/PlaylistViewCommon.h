@@ -19,8 +19,7 @@
 #ifndef AMAROK_PLAYLISTVIEWCOMMON_H
 #define AMAROK_PLAYLISTVIEWCOMMON_H
 
-#include "context/popupdropper/libpud/PopupDropperAction.h"
-
+#include <QAction>
 #include <QModelIndex>
 #include <QPoint>
 
@@ -30,7 +29,7 @@ namespace Playlist
     {
         void editTrackInformation();
         void trackMenu( QWidget *, const QModelIndex *, const QPoint &pos, bool coverActions = false );
-        QList<PopupDropperAction*> actionsFor( QWidget *parent, const QModelIndex *index, bool coverActions );
+        QList<QAction*> actionsFor( QWidget *parent, const QModelIndex *index, bool coverActions );
     }
 }
 

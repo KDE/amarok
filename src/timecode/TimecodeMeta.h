@@ -22,7 +22,7 @@
 #include "meta/capabilities/EditCapability.h"
 
 
-class PopupDropperAction;
+class QAction;
 
 namespace Meta {
 
@@ -256,11 +256,11 @@ private:
     QPixmap m_cover;
     QMap<int, QPixmap> m_coverSizeMap;
 
-    PopupDropperAction *m_separator;
-    PopupDropperAction *m_displayCoverAction;
-    PopupDropperAction *m_fetchCoverAction;
-    PopupDropperAction *m_setCustomCoverAction;
-    PopupDropperAction *m_unsetCoverAction;
+    QAction *m_separator;
+    QAction *m_displayCoverAction;
+    QAction *m_fetchCoverAction;
+    QAction *m_setCustomCoverAction;
+    QAction *m_unsetCoverAction;
 };
 
 class TimecodeGenre : public Meta::Genre

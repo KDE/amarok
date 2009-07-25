@@ -33,7 +33,7 @@ class CurrentTrackActionsCapabilityImpl : public Meta::CurrentTrackActionsCapabi
 
         virtual ~CurrentTrackActionsCapabilityImpl() {};
 
-        virtual QList< PopupDropperAction * > customActions() const {
+        virtual QList< QAction * > customActions() const {
             return m_track->nowPlayingActions();
         }
 

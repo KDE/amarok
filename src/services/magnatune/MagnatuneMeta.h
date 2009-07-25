@@ -48,8 +48,8 @@ public:
 
     void setDownloadMembership();
 
-    virtual QList< PopupDropperAction *> customActions();
-    virtual QList< PopupDropperAction *> currentTrackActions();
+    virtual QList< QAction *> customActions();
+    virtual QList< QAction *> currentTrackActions();
 
     virtual QString sourceName();
     virtual QString sourceDescription();
@@ -72,7 +72,7 @@ private:
     QString m_oggUrl;
     bool m_downloadMembership;
     QList<QString> m_moods;
-    PopupDropperAction * m_purchaseAction;
+    QAction * m_purchaseAction;
     ShowInServiceAction * m_showInServiceAction;
 
 };
@@ -128,7 +128,7 @@ public:
     void setAlbumCode(  const QString &albumCode );
     QString albumCode();
 
-    virtual QList< PopupDropperAction *> customActions();
+    virtual QList< QAction *> customActions();
 
     void setStore( MagnatuneStore * store );
     MagnatuneStore * store();
@@ -142,7 +142,7 @@ public:
 public slots:
     void purchase();
 private:
-    PopupDropperAction * m_purchaseAction;
+    QAction * m_purchaseAction;
 };
 
 class MagnatuneGenre  : public ServiceGenre

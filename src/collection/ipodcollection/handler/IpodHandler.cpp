@@ -32,7 +32,6 @@ extern "C" {
 #endif
 
 #include "SvgHandler.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include "File.h" // for KIO file handling
 
@@ -53,6 +52,7 @@ extern "C" {
 #include <solid/device.h>
 #include <solid/storageaccess.h>
 
+#include <QAction>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -346,16 +346,16 @@ IpodHandler::prettyName() const
     return QString::fromUtf8( itdb_playlist_mpl( m_itdb )->name );
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 IpodHandler::collectionActions()
 {
 
-    QList< PopupDropperAction* > actions;
+    QList< QAction* > actions;
 // NOTE: disabled, since users likely don't want to initialize unless
 // their iPod is hosed.
 
 #if 0
-    PopupDropperAction *initializeAction = new PopupDropperAction(  The::svgHandler()->getRenderer(  "amarok/images/pud_items.svg" ),
+    QAction *initializeAction = new QAction(  The::svgHandler()->getRenderer(  "amarok/images/pud_items.svg" ),
                                                                     "edit",  KIcon(  "media-track-edit-amarok" ),  i18n(  "&Initialize Device" ),  0 );
 
     connect( initializeAction, SIGNAL( triggered() ), this, SLOT( slotInitializeIpod() ) );
