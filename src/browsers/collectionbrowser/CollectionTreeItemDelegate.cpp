@@ -38,7 +38,7 @@ Q_DECLARE_METATYPE( QList<PopupDropperAction*> )
 #define ACTIONICON_SIZE 24
 
 CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
-    : QStyledItemDelegate()
+    : QStyledItemDelegate( view )
     , m_view( view )
 {
     DEBUG_BLOCK
