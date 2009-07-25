@@ -18,8 +18,10 @@
 #ifndef COLLECTIONTREEITEM_H
 #define COLLECTIONTREEITEM_H
 
-#include "meta/Meta.h"
 #include "Collection.h"
+
+#include "meta/Meta.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <QList>
 
@@ -32,7 +34,8 @@ namespace CustomRoles
         ByLineRole = Qt::UserRole + 3,
         HasCapacityRole = Qt::UserRole + 4,
         UsedCapacityRole = Qt::UserRole + 5,
-        DecoratorsRole = Qt::UserRole + 6
+        HasDecoratorsRole = Qt::UserRole + 6,
+        DecoratorsRole = Qt::UserRole + 7
     };
 }
 
@@ -91,6 +94,7 @@ class CollectionTreeItem : public QObject
 
     private:
         QString albumYear() const;
+        QList<PopupDropperAction*> collectionActions() const;
 
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
@@ -101,6 +105,9 @@ class CollectionTreeItem : public QObject
         bool m_isVariousArtistsNode;
         int  m_trackCount;
         mutable bool m_isCounting;
+
+        mutable QList<PopupDropperAction*> m_collectionActions;
+        mutable bool m_collectionActionsLoaded;
 };
 
 #endif

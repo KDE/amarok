@@ -21,7 +21,6 @@
 #include "amarokconfig.h"
 
 #include "meta/capabilities/CollectionCapability.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <KLocale>
 
@@ -35,6 +34,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
     , m_isVariousArtistsNode( false )
     , m_trackCount( -1 )
     , m_isCounting( false )
+    , m_collectionActionsLoaded( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -48,6 +48,7 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
     , m_isVariousArtistsNode( false )
     , m_trackCount( -1 )
     , m_isCounting( false )
+    , m_collectionActionsLoaded( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -63,6 +64,7 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
     , m_isVariousArtistsNode( true )
     , m_trackCount( -1 )
     , m_isCounting( false )
+    , m_collectionActionsLoaded( false )
 {
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
@@ -198,25 +200,36 @@ CollectionTreeItem::data( int role ) const
             if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
                 return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();
         }
+        else if( role == CustomRoles::HasDecoratorsRole )
+        {
+            return !collectionActions().isEmpty();
+        }
         else if( role == CustomRoles::DecoratorsRole )
         {
-            QList<PopupDropperAction*> actions;
-
-            Meta::CollectionCapability *cc = m_parentCollection->create<Meta::CollectionCapability>();
-            if( cc )
-            {
-                actions = cc->collectionActions();
-                delete cc;
-            }
-
             QVariant v;
-            v.setValue( actions );
-
+            v.setValue( collectionActions() );
             return v;
         }
     }
 
     return QVariant();
+}
+
+QList<PopupDropperAction*>
+CollectionTreeItem::collectionActions() const
+{
+    if( m_collectionActionsLoaded )
+        return m_collectionActions;
+
+    Meta::CollectionCapability *cc = m_parentCollection->create<Meta::CollectionCapability>();
+    if( cc )
+    {
+        m_collectionActions = cc->collectionActions();
+        delete cc;
+    }
+
+    m_collectionActionsLoaded = true;
+    return m_collectionActions;
 }
 
 void

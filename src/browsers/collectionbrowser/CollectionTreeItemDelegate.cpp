@@ -22,6 +22,9 @@
 #include "App.h"
 #include "Debug.h"
 
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+
+#include <QAction>
 #include <QApplication>
 #include <QFontMetrics>
 #include <QIcon>
@@ -29,7 +32,10 @@
 
 #include <kcapacitybar.h>
 
+Q_DECLARE_METATYPE( QList<PopupDropperAction*> )
+
 #define CAPACITYRECT_HEIGHT 6
+#define ACTIONICON_SIZE 24
 
 CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
     : QStyledItemDelegate()
@@ -108,9 +114,9 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->setFont( m_smallFont );
     painter->drawText( textRect, Qt::TextWordWrap, bylineText ); 
 
+    QRect capacityRect;
     if( hasCapacity )
     {
-        QRect capacityRect;
         capacityRect.setLeft( infoRectLeft );
         capacityRect.setTop( textRect.bottom() );
         capacityRect.setWidth( infoRectWidth );
@@ -125,6 +131,24 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         capacityBar.drawCapacityBar( painter, capacityRect );
     }
 
+    QList<PopupDropperAction*> actions = index.data( CustomRoles::DecoratorsRole ).value< QList<PopupDropperAction*> >();
+    const bool hasActions = index.data( CustomRoles::HasDecoratorsRole ).toBool();
+    if( hasActions )
+    {
+        QRect actionsRect;
+        actionsRect.setLeft( infoRectLeft );
+        actionsRect.setTop( hasCapacity ? capacityRect.bottom() : textRect.bottom() );
+        actionsRect.setWidth( infoRectWidth );
+        actionsRect.setHeight( ACTIONICON_SIZE );
+
+        QPointF actionTopLeft = actionsRect.topLeft();
+        foreach( PopupDropperAction *action, actions )
+        {
+            painter->drawPixmap( actionTopLeft, action->icon().pixmap( ACTIONICON_SIZE, ACTIONICON_SIZE ) );
+            actionTopLeft.rx() += ACTIONICON_SIZE;
+        }
+    }
+
     painter->restore();
 }
 
@@ -137,6 +161,7 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
     int width = m_view->viewport()->size().width() - 4;
     int height;
     const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
+    const bool hasActions = index.data( CustomRoles::HasDecoratorsRole ).toBool();
 
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
@@ -144,6 +169,7 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
     height = bigFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( Qt::DisplayRole ).toString() ).height()
            + smallFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( CustomRoles::ByLineRole ).toString() ).height()
            + (hasCapacity ? CAPACITYRECT_HEIGHT : 0)
+           + (hasActions ? ACTIONICON_SIZE : 0)
            + 20;
 
     return QSize( width, height );
