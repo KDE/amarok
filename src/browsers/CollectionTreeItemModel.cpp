@@ -212,6 +212,9 @@ namespace Amarok {
     {
         if( reverse )
         {
+            if( !str.startsWith( "the ", Qt::CaseInsensitive ) )
+                return;
+
             QString begin = str.left( 3 );
             str = str.append( ", %1" ).arg( begin );
             str = str.mid( 4 );

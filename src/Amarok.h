@@ -235,16 +235,16 @@ namespace Amarok
      * @param url the url.
      * @return The url of the proxy, or a empty string if no proxy should be used.
      */
-    QString proxyForUrl(const QString& url);
+    QString proxyForUrl( const QString& url );
 
     /**
      * Returns the proxy that should be used for a given protocol.
      * @param protocol the protocol.
      * @return The url of the proxy, or a empty string if no proxy should be used.
      */
-    QString proxyForProtocol(const QString& protocol);
+    QString proxyForProtocol( const QString& protocol );
 
-    /*defined in collectionbrowser/collectiontreeitemmodel.cpp */
+    /*defined in browsers/CollectionTreeItemModel.cpp */
     /**
      * Small function aimed to convert Eagles, The -> The Eagles (and back again).
      * @param str the string to manipulate

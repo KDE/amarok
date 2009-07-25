@@ -41,7 +41,16 @@ private slots:
     */
     void testExtension();
     //KUrl testMostLocalURL( const KUrl &url );
-    /* more to come */
+ /*   QStringList splitPath( QString path );
+    QString cleanPath( const QString &path );
+    QString asciiPath( const QString &path );
+    QString vfatPath( const QString &path );
+    QString decapitateString( const QString &input, const QString &ref );
+    QString escapeHTMLAttr( const QString &s );
+    QString unescapeHTMLAttr( const QString &s );
+    QString proxyForUrl( const QString& url ); // how to test?
+    QString proxyForProtocol( const QString& protocol ); // how to test?     */
+    void testManipulateThe();
 };
 
 #endif // TESTAMAROK_H

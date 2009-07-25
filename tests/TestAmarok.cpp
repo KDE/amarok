@@ -55,3 +55,46 @@ void TestAmarok::testExtension()
     QCOMPARE( Amarok::extension( "..te st.m p3" ), QString( "m p3" ) );
 }
 
+void TestAmarok::testManipulateThe()
+{
+    QString teststring;
+
+    Amarok::manipulateThe( teststring = "", true );
+    QCOMPARE( teststring, QString( "" ) );
+
+    Amarok::manipulateThe( teststring = "", false );
+    QCOMPARE( teststring, QString( "" ) );
+
+    Amarok::manipulateThe( teststring = "A", true );
+    QCOMPARE( teststring, QString( "A" ) );
+
+    Amarok::manipulateThe( teststring = "A", false );
+    QCOMPARE( teststring, QString( "A" ) );
+
+    Amarok::manipulateThe( teststring = "ABC", true );
+    QCOMPARE( teststring, QString( "ABC" ) );
+
+    Amarok::manipulateThe( teststring = "ABC", false );
+    QCOMPARE( teststring, QString( "ABC" ) );
+
+    Amarok::manipulateThe( teststring = "The Eagles", true );
+    QCOMPARE( teststring, QString( "Eagles, The" ) );
+
+    Amarok::manipulateThe( teststring = "Eagles, The", false );
+    QCOMPARE( teststring, QString( "The Eagles" ) );
+
+    Amarok::manipulateThe( teststring = "The The", true );
+    QCOMPARE( teststring, QString( "The, The" ) );
+
+    Amarok::manipulateThe( teststring = "The, The", false );
+    QCOMPARE( teststring, QString( "The The" ) );
+
+    Amarok::manipulateThe( teststring = "Something else", true );
+    QCOMPARE( teststring, QString( "Something else" ) );
+
+    Amarok::manipulateThe( teststring = "The Äöü", true );
+    QCOMPARE( teststring, QString( "Äöü, The" ) );
+
+    Amarok::manipulateThe( teststring = "Äöü, The", false );
+    QCOMPARE( teststring, QString( "The Äöü" ) );
+}
