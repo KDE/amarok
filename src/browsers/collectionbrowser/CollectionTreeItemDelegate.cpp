@@ -120,6 +120,9 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     painter->setFont( m_smallFont );
     painter->drawText( textRect, Qt::TextWordWrap, bylineText ); 
 
+    const bool isHover = option.state & QStyle::State_MouseOver;
+    const QPoint cursorPos = m_view->mapFromGlobal( QCursor::pos() );
+
     if( hasCapacity )
     {
         QRect capacityRect;
@@ -132,8 +135,10 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
         KCapacityBar capacityBar( KCapacityBar::DrawTextInline );
         capacityBar.setValue( used );
+
         // TODO: set text in a tooltip where we can show extra info (eg bytes available, not just percentage)
-        //capacityBar.setText( i18n("%1% used").arg( QString::number(used) ) );
+        if( isHover && capacityRect.contains( cursorPos ) )
+            capacityBar.setText( i18n("%1% used").arg( QString::number(used) ) );
         capacityBar.drawCapacityBar( painter, capacityRect );
     }
 
@@ -147,10 +152,6 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
         QPoint actionTopLeft = actionsRect.topLeft();
         const QSize iconSize = QSize( ACTIONICON_SIZE, ACTIONICON_SIZE );
-
-        const bool isHover = option.state & QStyle::State_MouseOver;
-
-        const QPoint cursorPos = m_view->mapFromGlobal( QCursor::pos() );
 
         foreach( PopupDropperAction *action, actions )
         {
