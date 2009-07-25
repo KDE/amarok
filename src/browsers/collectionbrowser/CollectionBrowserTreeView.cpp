@@ -19,6 +19,8 @@
 
 #include "Debug.h"
 
+#include <QMouseEvent>
+
 CollectionBrowserTreeView::CollectionBrowserTreeView( QWidget *parent )
     : CollectionTreeView( parent )
 {
@@ -28,3 +30,16 @@ CollectionBrowserTreeView::~CollectionBrowserTreeView()
 {
 }
 
+void
+CollectionBrowserTreeView::mouseMoveEvent( QMouseEvent *event )
+{
+    CollectionTreeView::mouseMoveEvent( event );
+
+    const QModelIndex index = indexAt( event->pos() );
+
+    if( index.parent().isValid() ) // not a root element
+        return;
+
+    // Make sure we repaint the item for the collection action buttons
+    update( index );
+}

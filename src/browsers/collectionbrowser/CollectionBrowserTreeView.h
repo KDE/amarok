@@ -29,6 +29,8 @@ class CollectionBrowserTreeView : public CollectionTreeView
         CollectionBrowserTreeView( QWidget *parent = 0 );
         ~CollectionBrowserTreeView();
 
+    protected:
+        virtual void mouseMoveEvent( QMouseEvent *event );
 };
 
 #endif
