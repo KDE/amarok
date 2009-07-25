@@ -156,7 +156,6 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         {
             QIcon icon = action->icon();
             QRect iconRect( actionTopLeft, iconSize );
-            debug() << "iconRect:" << iconRect << "cursor:" << cursorPos << "in?" << iconRect.contains( cursorPos );
 
             const bool isOver = isHover && iconRect.contains( cursorPos );
 
