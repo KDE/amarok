@@ -43,12 +43,11 @@ namespace PlaylistBrowserNS {
 
 
 DynamicCategory::DynamicCategory( QWidget* parent )
-    : BrowserCategory( "dynamic category" )
+    : BrowserCategory( "dynamic category", parent )
     , m_biasListView( 0 )
     , m_biasModel( 0 )
     , m_biasDelegate( 0 )
 {
-
     setPrettyName( i18n( "Dynamic Playlists" ) );
     setShortDescription( i18n( "Dynamically updating parameter based playlists" ) );
     setIcon( KIcon( "dynamic-amarok" ) );

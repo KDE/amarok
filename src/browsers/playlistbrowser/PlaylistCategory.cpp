@@ -39,7 +39,7 @@
 #include <typeinfo>
 
 PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
-    : BrowserCategory( "user playlists" )
+    : BrowserCategory( "user playlists", parent )
 {
     setPrettyName( i18n( "User Playlists" ) );
     setShortDescription( i18n( "User generated and imported playlists" ) );

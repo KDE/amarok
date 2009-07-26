@@ -37,8 +37,7 @@ class AMAROK_EXPORT BrowserCategory : public KVBox
 {
     Q_OBJECT
 public:
-    BrowserCategory( const QString &name );
-
+    BrowserCategory( const QString &name, QWidget *parent );
     ~BrowserCategory();
 
     QString name() const;

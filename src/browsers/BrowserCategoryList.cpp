@@ -32,7 +32,7 @@
 
 
 BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name )
-    : BrowserCategory( name )
+    : BrowserCategory( name, parent )
     , m_currentCategory( 0 )
     , m_categoryListModel( new BrowserCategoryListModel() )
 {

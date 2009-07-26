@@ -79,10 +79,9 @@ PodcastCategory::destroy()
 }
 
 PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
-    : BrowserCategory( "podcast category" )
+    : BrowserCategory( "podcast category", 0 )
     , m_podcastModel( podcastModel )
 {
-
     setPrettyName( i18n( "Podcasts" ) );
     setShortDescription( i18n( "List of subscribed podcasts and episodes" ) );
     setIcon( KIcon( "podcast-amarok" ) );
@@ -90,8 +89,6 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     setLongDescription( i18n( "Manage your podcast subscriptions and browse individual episodes. Downloading episodes to the disk is also done here, or you can tell Amarok to do so automatically." ) );
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
-
-    
 
     resize(339, 574);
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

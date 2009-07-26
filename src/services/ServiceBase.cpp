@@ -96,7 +96,7 @@ void ServiceFactory::slotServiceReady()
 ServiceBase *ServiceBase::s_instance = 0;
 
 ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &prettyName )
-    : BrowserCategory( name )
+    : BrowserCategory( name, 0 )
     , m_contentView ( 0 )
     , m_parentFactory( parent )
     , m_polished( false )
@@ -114,9 +114,8 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
 
     m_topPanel = new KVBox( this );
 
-    KHBox * commonPanel = new KHBox ( m_topPanel );
-
-    if( useCollectionTreeView ) {
+    if( useCollectionTreeView )
+    {
         m_contentView = new ServiceCollectionTreeView( this );
         m_contentView->setFrameShape( QFrame::NoFrame );
         m_contentView->setSortingEnabled( true );

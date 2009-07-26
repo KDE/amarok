@@ -26,8 +26,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-BrowserCategory::BrowserCategory( const QString &name )
-    : KVBox( 0 )
+BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
+    : KVBox( parent )
     , m_name( name )
     , m_prettyName( QString() )
     , m_shortDescription( QString() )

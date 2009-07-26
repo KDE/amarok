@@ -17,8 +17,6 @@
 #ifndef BROWSERCATEGORYLISTMODEL_H
 #define BROWSERCATEGORYLISTMODEL_H
 
-
-
 #include <QAbstractListModel>
 
 #include <QList>
@@ -45,18 +43,17 @@ A very simple model to hold the available categories
 class BrowserCategoryListModel : public QAbstractListModel
 {
 public:
-
-    BrowserCategoryListModel ();
+    BrowserCategoryListModel();
     ~BrowserCategoryListModel();
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const;
-    QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
     void addCategory( BrowserCategory * category );
     void removeCategory( BrowserCategory * category );
 
 private:
-    QList<BrowserCategory * > m_categories;
+    QList<BrowserCategory*> m_categories;
 };
 
 #endif
