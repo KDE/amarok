@@ -27,11 +27,11 @@
 ///////////////////////////////////////////////////////////////
 
 LyricsObserver::LyricsObserver()
-: m_subject( 0 )
+    : m_subject( 0 )
 {}
 
 LyricsObserver::LyricsObserver( LyricsSubject *s )
-: m_subject( s )
+    : m_subject( s )
 {
     m_subject->attach( this );
 }
@@ -129,7 +129,8 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
         else
         {
             QStringList suggested;
-            for( uint i = 0; i < l.length(); ++i ) {
+            for( uint i = 0; i < l.length(); ++i )
+            {
                 const QString url    = l.item( i ).toElement().attribute( "url" );
                 const QString artist = l.item( i ).toElement().attribute( "artist" );
                 const QString title  = l.item( i ).toElement().attribute( "title" );
@@ -158,8 +159,9 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
             //TODO: what is the sane thing to do if we get a valid lyrics result but there is cached lyrics set already?
             //this entire system needs to be thought through a little better I think -nhn
 
-        } else if ( !The::engineController()->currentTrack()->cachedLyrics().isEmpty() &&
-                     The::engineController()->currentTrack()->cachedLyrics() != "Not found" )
+        }
+        else if( !The::engineController()->currentTrack()->cachedLyrics().isEmpty() &&
+                  The::engineController()->currentTrack()->cachedLyrics() != "Not found" )
         {
             //we found nothing, so if we have cached lyrics, use it!
             lyrics = The::engineController()->currentTrack()->cachedLyrics();
@@ -209,7 +211,6 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 void
 LyricsManager::lyricsError( const QString &error )
 {
-
     //if we have cached lyris there is absolutely no point in not showing these..
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( !currentTrack->cachedLyrics().isEmpty() )
@@ -222,7 +223,9 @@ LyricsManager::lyricsError( const QString &error )
             //we have stored html lyrics, so use that directly
             sendNewLyricsHtml( currentTrack->cachedLyrics() );
             return;
-        } else {
+        }
+        else
+        {
             const QString title = currentTrack->prettyName();
 
             QStringList lyricsData;
