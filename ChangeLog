@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Inline editing of lyrics from the context applet. (BR 201342)
     * Ipod initialization support when failed to read an iPod database.
     * Improvements to the "Show Cover" dialog. Resizes to match the image, auto
       centers on screen, correctly handles images too large for the screen and
@@ -31,6 +32,7 @@ VERSION 2.2-beta1
     * Drag and Drop support for album cover image. (BR 91261)
 
   CHANGES:
+    * Track lyrics are exposed through the DBUS interface.
     * The database connection and tables now enforce UTF-8 for the character
       set and collation.
     * The OSD registers itself as a notification window type on relevant
