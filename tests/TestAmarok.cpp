@@ -29,6 +29,40 @@ TestAmarok::TestAmarok( QStringList testArgumentList )
     QTest::qExec( this, testArgumentList );
 }
 
+void TestAmarok::testCleanPath()
+{
+    /* no changes expected here */
+    QCOMPARE( Amarok::cleanPath( QString( "" ) ), QString( "" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "abcdefghijklmnopqrstuvwxyz" ) ), QString( "abcdefghijklmnopqrstuvwxyz" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) ), QString( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "/\\.,-+" ) ), QString( "/\\.,-+" ) );
+
+    /* German */
+    QCOMPARE( Amarok::cleanPath( QString( "äöüß" ) ), QString( "aeoeuess" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "ÄÖÜß" ) ), QString( "AeOeUess" ) ); // capital ß only exists in theory in the German language, but had been defined some time ago, iirc
+
+    /* French */
+    QCOMPARE( Amarok::cleanPath( QString( "áàéèêô" ) ), QString( "aaeeeo" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "ÁÀÉÈÊÔ" ) ), QString( "AAEEEO" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "æ" ) ), QString( "ae" ) );
+
+    /* Czech and other east European langauges */
+    QCOMPARE( Amarok::cleanPath( QString( "çńǹýỳź" ) ), QString( "cnnyyz" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "ÇŃǸÝỲŹ" ) ), QString( "CNNYYZ" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "ěĺľôŕřůž" ) ), QString( "ellorruz" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "ÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ" ) ), QString( "ACDEEINORSTUUYZ" ) );
+
+    /* Skandinavian languages */
+    QCOMPARE( Amarok::cleanPath( QString( "åø" ) ), QString( "ao" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "ÅØ" ) ), QString( "AO" ) );
+
+    /* Spanish */
+    QCOMPARE( Amarok::cleanPath( QString( "ñóÿ" ) ), QString( "noy" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "ÑÓŸ" ) ), QString( "NOY" ) );
+
+    /* if they exist: add missing ones here */
+}
+
 void TestAmarok::testComputeScore()
 {
      QVERIFY( 50 < Amarok::computeScore( 50, 1,  1 ) ); // greater score if played completely
@@ -36,6 +70,15 @@ void TestAmarok::testComputeScore()
      QVERIFY( 50 > Amarok::computeScore( 50, 1,  0.1 ) ); // lower score if aborted early
      QVERIFY( 50 > Amarok::computeScore( 50, 1,  0 ) ); // handle 0% played fraction
      QVERIFY( 50 > Amarok::computeScore( 50, 0,  0 ) ); // handle 0 playcount
+}
+
+void TestAmarok::testConciseTimeSince()
+{
+    QCOMPARE( Amarok::conciseTimeSince( 0 ).isEmpty(), false );
+    QCOMPARE( Amarok::conciseTimeSince( 10 ).isEmpty(), false );
+    QCOMPARE( Amarok::conciseTimeSince( 100 ).isEmpty(), false );
+    QCOMPARE( Amarok::conciseTimeSince( 1000 ).isEmpty(), false );
+    /* any other good ideas what to test here? */
 }
 
 void TestAmarok::testExtension()
@@ -108,6 +151,23 @@ void TestAmarok::testSaveLocation()
     QCOMPARE( saveLocationDir.exists(), true );
     QCOMPARE( QDir::isAbsolutePath( saveLocation ), true );
     QCOMPARE( saveLocationDir.isReadable(), true );
+    /* any other good ideas what to test here? */
+}
+
+void TestAmarok::testVerboseTimeSince()
+{
+    /* There are two overloaded variants of this function */
+    QCOMPARE( Amarok::verboseTimeSince( 0 ).isEmpty(), false );
+    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromTime_t( 0 ) ).isEmpty(), false );
+
+    QCOMPARE( Amarok::verboseTimeSince( 10 ).isEmpty(), false );
+    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromTime_t( 10 ) ).isEmpty(), false );
+
+    QCOMPARE( Amarok::verboseTimeSince( 100 ).isEmpty(), false );
+    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromTime_t( 100 ) ).isEmpty(), false );
+
+    QCOMPARE( Amarok::verboseTimeSince( 1000 ).isEmpty(), false );
+    QCOMPARE( Amarok::verboseTimeSince( QDateTime::fromTime_t( 1000 ) ).isEmpty(), false );
     /* any other good ideas what to test here? */
 }
 

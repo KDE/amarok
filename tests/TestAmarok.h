@@ -30,27 +30,26 @@ public:
     TestAmarok( QStringList testArgumentList );
 
 private slots:
+    void testCleanPath();
     void testComputeScore();
-    void testSaveLocation(); /*
-    KUrl::List testRecursiveUrlExpand( const KUrl &url ); //defined in PlaylistHandler.cpp
-    KUrl::List testRecursiveUrlExpand( const KUrl::List &urls ); //defined in PlaylistHandler.cpp
-    QString testVerboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
-    QString testVerboseTimeSince( uint time_t ); // defined in App.cpp
-    QString testConciseTimeSince( uint time_t ); // defined in App.cpp
-    void testAlbumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail ); // TODO: needs testdata
-    */
+    void testConciseTimeSince();
     void testExtension();
+    void testManipulateThe();
+    void testSaveLocation();
+    void testVerboseTimeSince();
+     /*KUrl::List testRecursiveUrlExpand( const KUrl &url ); //defined in PlaylistHandler.cpp
+    KUrl::List testRecursiveUrlExpand( const KUrl::List &urls ); //defined in PlaylistHandler.cpp */
+    /*    void testAlbumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail ); // TODO: needs testdata
+    */
     //KUrl testMostLocalURL( const KUrl &url );
- /*
-    QString cleanPath( const QString &path );
-    QString asciiPath( const QString &path );
+
+ /*    QString asciiPath( const QString &path );
     QString vfatPath( const QString &path );
     QString decapitateString( const QString &input, const QString &ref );
     QString escapeHTMLAttr( const QString &s );
     QString unescapeHTMLAttr( const QString &s );
     QString proxyForUrl( const QString& url ); // how to test?
     QString proxyForProtocol( const QString& protocol ); // how to test?     */
-    void testManipulateThe();
 };
 
 #endif // TESTAMAROK_H
