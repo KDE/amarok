@@ -73,6 +73,9 @@ private:
     QGraphicsProxyWidget *m_lyricsProxy;
     QTextBrowser* m_lyrics;
     QGraphicsTextItem* m_suggested;
+
+    QString m_lyricsTmpContent;
+    bool m_hasLyrics;
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )

@@ -27,7 +27,6 @@
 #include "PaletteHandler.h"
 #include "Theme.h"
 
-
 #include <KGlobalSettings>
 #include <KStandardDirs>
 
@@ -43,11 +42,12 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_titleText( i18n( "Lyrics" ) )
     , m_titleLabel( 0 )
-    , m_editIcon( 0 )
     , m_saveIcon( 0 )
+    , m_editIcon( 0 )
     , m_reloadIcon( 0 )
     , m_lyrics( 0 )
     , m_suggested( 0 )
+    , m_hasLyrics( false )
 {
     setHasConfigurationInterface( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
@@ -105,6 +105,10 @@ void LyricsApplet::init()
     m_lyrics->setWordWrapMode( QTextOption::WordWrap );
     m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     setEditing( false );
+
+    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
+        .arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
+        .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
 
     m_lyricsProxy->setWidget( m_lyrics );
 
@@ -212,9 +216,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 {
     Q_UNUSED( name )
 
-    if( data.size() == 0 ) return;
+    m_hasLyrics = false;
 
-    //debug() << "lyrics applet got name:" << name << "and lyrics: " << data;
+    if( data.size() == 0 ) return;
 
     m_titleLabel->show();
     if( data.contains( "noscriptrunning" ) )
@@ -253,6 +257,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
     else if( data.contains( "html" ) )
     {
+        m_hasLyrics = true;
         // show pure html in the text area
         m_suggested->hide();
         m_lyrics->setHtml( data[ "html" ].toString() );
@@ -260,6 +265,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
     else if( data.contains( "lyrics" ) )
     {
+        m_hasLyrics = true;
         m_suggested->hide();
         m_lyrics->show();
         QVariantList lyrics  = data[ "lyrics" ].toList();
@@ -275,7 +281,8 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
     }
 
-    //setPreferredSize( (int)size().width(), (int)size().height() );
+    setEditing( false );
+
     updateConstraints();
     update();
 }
@@ -306,8 +313,15 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     //draw background of lyrics text
     p->save();
-    QColor highlight( App::instance()->palette().highlight().color() );
-    highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
+
+    QColor background = Qt::white; // TODO: Looks crap on dark colour schemes?
+    if( m_lyrics->isReadOnly() )
+    {
+        QColor highlight( App::instance()->palette().highlight().color() );
+        highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
+
+        background = highlight;
+    }
 
     // HACK
     // sometimes paint is done before the updateconstraints call
@@ -319,7 +333,7 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     lyricsRect.moveTopLeft( m_lyricsProxy->pos() );
     QPainterPath path;
     path.addRoundedRect( lyricsRect, 5, 5 );
-    p->fillPath( path , highlight );
+    p->fillPath( path, background );
     p->restore();
 }
 
@@ -354,12 +368,27 @@ LyricsApplet::refreshLyrics()
 void
 LyricsApplet::editLyrics()
 {
+    if( !m_hasLyrics )
+    {
+        m_lyricsTmpContent = m_lyrics->toPlainText();
+        m_lyrics->clear();
+    }
+
     setEditing( true );
 }
 
 void
 LyricsApplet::saveLyrics()
 {
+    if( m_lyrics->toPlainText().isEmpty() )
+        m_lyrics->setPlainText( m_lyricsTmpContent );
+    else
+    {
+        Meta::TrackPtr curtrack = The::engineController()->currentTrack();
+        if( curtrack )
+            curtrack->setCachedLyrics( m_lyrics->toPlainText() );
+    }
+    
     setEditing( false );
 }
 
@@ -368,14 +397,6 @@ LyricsApplet::setEditing( const bool isEditing )
 {
     m_lyrics->setReadOnly( !isEditing );
 
-    const QString backgroundColor = isEditing ? 
-                                        PaletteHandler::highlightColor().lighter( 150 ).name() :
-                                        "white";
-
-    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
-        .arg( backgroundColor )
-        .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
-
     // If we're editing, hide and disable the edit icon
     m_editIcon->action()->setEnabled( !isEditing );
     m_editIcon->action()->setVisible( !isEditing );
@@ -383,6 +404,8 @@ LyricsApplet::setEditing( const bool isEditing )
     // If we're editing, show and enable the save icon
     m_saveIcon->action()->setEnabled( isEditing );
     m_saveIcon->action()->setVisible( isEditing );
+
+    update();
 }
 
 #include "LyricsApplet.moc"
