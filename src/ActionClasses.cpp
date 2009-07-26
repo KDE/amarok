@@ -28,6 +28,7 @@
 #include "amarokconfig.h"
 #include "covermanager/CoverManager.h"
 #include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistModel.h"
 
 #include <KAuthorized>
 #include <KHelpMenu>
