@@ -142,6 +142,7 @@ FastForwardWorker::run()
         error() << "Error executing import query:" << errorMsg;
         emit importError( errorMsg );
         m_failed = true;
+        return;
     }
 
     QMap<Meta::TrackPtr,QString> tracksForInsert;
