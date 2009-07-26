@@ -201,6 +201,8 @@ namespace Amarok
 
     /**
      * Transform path into one valid on VFAT file systems
+     * Replacement rules: illegal characters are being replaced by '_'
+     *                    reserved device names are being prefixed with '_'
      * @param path The original path.
      * @return The cleaned up path.
      */
