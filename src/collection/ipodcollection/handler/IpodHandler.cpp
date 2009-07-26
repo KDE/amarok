@@ -1744,6 +1744,12 @@ IpodHandler::libGetPlaylistName()
 }
 
 void
+IpodHandler::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    m_itdbplaylisthash[ playlist ] = m_currplaylist;
+}
+
+void
 IpodHandler::libSavePlaylist( const Meta::TrackList &tracks, const QString& name )
 {
     DEBUG_BLOCK
@@ -1758,6 +1764,20 @@ IpodHandler::libSavePlaylist( const Meta::TrackList &tracks, const QString& name
     }
 
     databaseChanged();
+}
+
+void
+IpodHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    DEBUG_BLOCK
+    Itdb_Playlist *pl = m_itdbplaylisthash[ playlist ];
+
+    if( pl )
+    {
+        debug() << "Playlist renamed";
+        pl->name = g_strdup( playlist->name().toUtf8() );
+        databaseChanged();
+    }
 }
 
 void

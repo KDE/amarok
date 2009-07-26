@@ -76,7 +76,65 @@ MediaDeviceUserPlaylistProvider::playlists()
 
     return playlists;
 }
+#if 0
+void
+SqlUserPlaylistProvider::slotDelete()
+{
+    DEBUG_BLOCK
 
+    //TODO FIXME Confirmation of delete
+    foreach( Meta::PlaylistPtr playlist, The::userPlaylistModel()->selectedPlaylists() )
+    {
+        Meta::SqlPlaylistPtr sqlPlaylist =
+                Meta::SqlPlaylistPtr::dynamicCast( playlist );
+        if( sqlPlaylist )
+        {
+            debug() << "deleting " << sqlPlaylist->name();
+            sqlPlaylist->removeFromDb();
+        }
+    }
+    reloadFromDb();
+}
+#endif
+
+#if 0
+void
+MediaDeviceUserPlaylistProvider::slotRename()
+{
+    DEBUG_BLOCK
+    //only one playlist can be selected at this point
+    Meta::MediaDevicePlaylistPtr playlist = selectedPlaylists().first();
+    if( playlist.isNull() )
+        return;
+
+    bool ok;
+    const QString newName = KInputDialog::getText( i18n("Change playlist"),
+                i18n("Enter new name for playlist:"), playlist->name(),
+                                                   &ok );
+    if ( ok )
+    {
+        playlist->setName( newName.trimmed() );
+        emit( updated() );
+    }
+}
+#endif
+#if 0
+void
+SqlUserPlaylistProvider::slotRemove()
+{
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
+    foreach( Meta::PlaylistPtr playlist, playlistMap.keys() )
+        foreach( Meta::TrackPtr track, playlistMap.values( playlist ) )
+            playlist->removeTrack( playlist->tracks().indexOf( track ) );
+
+    //clear the data
+    action->setData( QVariant() );
+}
+#endif
 Meta::PlaylistPtr
 MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
@@ -101,24 +159,21 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QStr
 
     return Meta::PlaylistPtr::dynamicCast( pl );
 }
-#if 0
-QList<PopupDropperAction *>
-MediaDeviceUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
+
+void
+MediaDeviceUserPlaylistProvider::rename( Meta::PlaylistPtr playlist, const QString &newName )
 {
-    Q_UNUSED( list )
-    QList<PopupDropperAction *> actions;
-
-    if ( m_renameAction == 0 )
+    DEBUG_BLOCK
+    Meta::MediaDevicePlaylistPtr pl = Meta::MediaDevicePlaylistPtr::staticCast( playlist );
+    if( pl )
     {
-        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
+        debug() << "Setting name of playlist";
+        pl->setName( newName );
+
+        emit playlistRenamed( pl );
     }
-    actions << m_renameAction;
-
-
-    return actions;
 }
-#endif
+
 void
 MediaDeviceUserPlaylistProvider::addPlaylist( Meta::MediaDevicePlaylistPtr &playlist )
 {

@@ -428,6 +428,31 @@ PlaylistManager::exportPlaylist( Meta::TrackList tracks,
     return true;
 }
 
+void
+PlaylistManager::rename( Meta::PlaylistPtr playlist )
+{
+    DEBUG_BLOCK
+
+    if( playlist.isNull() )
+        return;
+
+    UserPlaylistProvider *prov;
+    prov = qobject_cast<UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+
+    if( !prov )
+        return;
+
+    bool ok;
+    const QString newName = KInputDialog::getText( i18n("Change playlist"),
+                i18n("Enter new name for playlist:"), playlist->name(),
+                                                   &ok );
+    if ( ok )
+    {
+        prov->rename( playlist, newName.trimmed() );
+        emit( updated() );
+    }
+}
+
 bool
 PlaylistManager::canExpand( Meta::TrackPtr track )
 {
@@ -480,6 +505,18 @@ PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
     debug() << "Returning 0, no matching providers found";
 
     return 0;
+}
+
+bool
+PlaylistManager::isWritable( const Meta::PlaylistPtr &playlist )
+{
+    UserPlaylistProvider *prov;
+    prov = qobject_cast<UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+
+    if( prov )
+        return prov->isWritable();
+    else
+        return false;
 }
 
 QList<PopupDropperAction *>

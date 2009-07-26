@@ -32,7 +32,7 @@ class PopupDropperAction;
 namespace PlaylistBrowserNS {
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+        @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
                   public Meta::PlaylistObserver
@@ -91,6 +91,8 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
         void slotLoad();
         void slotAppend();
 
+        void slotRename();
+
         void slotUpdate();
         void slotRenamePlaylist( Meta::PlaylistPtr playlist );
 
@@ -106,8 +108,11 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
 
         Meta::PlaylistList m_playlists;
         QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
+        QList<PopupDropperAction *> createWriteActions( QModelIndexList indices );
         PopupDropperAction *m_appendAction;
         PopupDropperAction *m_loadAction;
+        PopupDropperAction *m_renameAction;
+        PopupDropperAction *m_deleteAction;
 
         Meta::PlaylistList m_selectedPlaylists;
         Meta::PlaylistList selectedPlaylists( const QModelIndexList &list );

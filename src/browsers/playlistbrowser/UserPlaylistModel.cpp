@@ -96,6 +96,8 @@ PlaylistBrowserNS::UserModel::slotRenamePlaylist( Meta::PlaylistPtr playlist )
 {
     DEBUG_BLOCK
     //search index of this Playlist
+    // HACK: matches first to match same name, but there could be
+    // several playlists with the same name
     int row = -1;
     foreach( const Meta::PlaylistPtr p, m_playlists )
     {
@@ -435,12 +437,36 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
 
     actions = QSet<PopupDropperAction *>::fromList( createCommonActions( indices ) );
 
+    // If a playlist is selected, we bring up playlist actions
     if( !m_selectedPlaylists.isEmpty() )
     {
+        // Only check for write actions if no tracks selected
+        if( m_selectedTracks.isEmpty() )
+        {
+            // Check if the playlists are writable, and if _any_ of them
+            // are not writable, do not bring up the write actions
+
+            bool writable = true;
+
+            foreach( Meta::PlaylistPtr playlist, m_selectedPlaylists )
+            {
+                if( !The::playlistManager()->isWritable( playlist ) )
+                {
+                    writable = false;
+                    break;
+                }
+            }
+
+            if( writable )
+                actions += QSet<PopupDropperAction *>::fromList(
+                        createWriteActions( indices ) );
+
+        }
         actions += QSet<PopupDropperAction *>::fromList(
                             The::playlistManager()->playlistActions( m_selectedPlaylists )
                         );
     }
+    // Otherwise, tracks are selected, so we bring up track actions
     else
     {
         foreach( const QModelIndex &idx, indices )
@@ -500,6 +526,35 @@ PlaylistBrowserNS::UserModel::createCommonActions( QModelIndexList indices )
     return actions;
 }
 
+QList<PopupDropperAction *>
+PlaylistBrowserNS::UserModel::createWriteActions( QModelIndexList indices )
+{
+    DEBUG_BLOCK
+    QList< PopupDropperAction * > actions;
+
+    if ( m_renameAction == 0 )
+    {
+        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
+    }
+
+    if ( m_deleteAction == 0 )
+    {
+        m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
+    }
+
+    if ( indices.count() > 0 )
+    {
+        // NOTE: rename only 1 playlist at a time
+        if( m_selectedPlaylists.count() == 1 )
+            actions << m_renameAction;
+        actions << m_deleteAction;
+    }
+
+    return actions;
+}
+
 void
 PlaylistBrowserNS::UserModel::slotLoad()
 {
@@ -525,6 +580,13 @@ PlaylistBrowserNS::UserModel::slotAppend()
         tracks << track;
     if( !tracks.isEmpty() )
         The::playlistController()->insertOptioned( tracks, Playlist::AppendAndPlay );
+}
+
+void
+PlaylistBrowserNS::UserModel::slotRename()
+{
+    DEBUG_BLOCK
+    The::playlistManager()->rename( m_selectedPlaylists.first() );
 }
 
 Meta::PlaylistList

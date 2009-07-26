@@ -946,6 +946,8 @@ MediaDeviceHandler::parseTracks()
 
             Meta::MediaDevicePlaylistPtr playlist( new Meta::MediaDevicePlaylist( m_pc->libGetPlaylistName(), tracklist ) );
 
+            m_pc->setAssociatePlaylist( playlist );
+
             // Insert the new playlist into the list of playlists
 
             //playlists << playlist;
@@ -957,6 +959,8 @@ MediaDeviceHandler::parseTracks()
         // When the provider saves a playlist, the handler should save it internally
         connect( m_provider, SIGNAL( playlistSaved( const Meta::TrackList &, const QString& ) ),
                  SLOT( savePlaylist( const Meta::TrackList &, const QString& ) ) );
+        connect( m_provider, SIGNAL( playlistRenamed( const Meta::MediaDevicePlaylistPtr &) ),
+                 SLOT( renamePlaylist( const Meta::MediaDevicePlaylistPtr & ) ) );
 
         The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
         m_provider->sendUpdated();
@@ -1115,6 +1119,37 @@ MediaDeviceHandler::savePlaylist( const Meta::TrackList &tracks, const QString& 
         writeDatabase();
     }
 
+}
+
+void
+MediaDeviceHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    DEBUG_BLOCK
+    if( !m_pc )
+    {
+        if( this->hasCapabilityInterface( Handler::Capability::Playlist ) )
+        {
+            m_pc = this->create<Handler::PlaylistCapability>();
+            if( !m_pc )
+            {
+                debug() << "Handler does not have MediaDeviceHandler::PlaylistCapability.";
+            }
+        }
+    }
+
+
+    if( m_pc )
+    {
+        debug() << "Renaming playlist";
+
+        //Meta::MediaDevicePlaylistPtr pl = Meta::MediaDevicePlaylistPtr::staticCast( playlist );
+
+        //if( pl )
+        //{
+            m_pc->renamePlaylist( playlist );
+            writeDatabase();
+        //}
+    }
 }
 
 void

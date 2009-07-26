@@ -45,6 +45,10 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvide
 
         //virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list );
 
+        virtual bool isWritable() { return true; }
+
+        virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );
+
         /// MediaDevice-specific Functions
 
         void addPlaylist( Meta::MediaDevicePlaylistPtr &playlist );
@@ -54,10 +58,18 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvide
 
         signals:
             void playlistSaved( const Meta::TrackList &tracks, const QString& name );
+            void playlistRenamed( const Meta::MediaDevicePlaylistPtr &playlist );
+
+        private slots:
+        //void slotDelete();
+        //void slotRename();
+        //void slotRemove();
 
  private:
 
     Meta::MediaDevicePlaylistList m_playlists;
+
+    PopupDropperAction *m_renameAction;
 };
 
 #endif

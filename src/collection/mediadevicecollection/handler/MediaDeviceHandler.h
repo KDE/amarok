@@ -43,7 +43,7 @@ class QString;
 class QMutex;
 
 class MediaDeviceCollection;
-
+class MediaDevicePlaylistPtr;
 class MediaDeviceUserPlaylistProvider;
 
 namespace Meta
@@ -216,6 +216,7 @@ signals:
 public slots:
 
     void savePlaylist( const Meta::TrackList &tracks, const QString& name );
+    void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
 
     void copyNextTrackToDevice();
     bool privateCopyTrackToDevice( const Meta::TrackPtr& track );

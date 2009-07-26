@@ -108,11 +108,11 @@ class PlaylistManager : public QObject
         void addProvider( PlaylistProvider * provider, int category );
 
         /**
-	 * Remove a PlaylistProvider.
-	 * @arg provider a PlaylistProvider
-	 */
+         * Remove a PlaylistProvider.
+         * @arg provider a PlaylistProvider
+         */
 
-	void removeProvider( PlaylistProvider * provider );
+        void removeProvider( PlaylistProvider * provider );
 
         /**
          * Makes sure custom categories don't conflict with the default PlaylistCategory enum or
@@ -140,6 +140,8 @@ class PlaylistManager : public QObject
 
         bool exportPlaylist( Meta::TrackList tracks, const QString &location );
 
+        void rename( Meta::PlaylistPtr playlist );
+
         //the next two functions are needed to support some services that have no other way of presenting data to the user
         //than wrapping the url to a playlist in a track.
         bool canExpand( Meta::TrackPtr track );
@@ -148,11 +150,19 @@ class PlaylistManager : public QObject
         PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; };
         UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; };
 
-	/**
-	 *  Retrieves the provider owning the given playlist
-	 *  @arg playlist the playlist whose provider we want
-	 */
-	PlaylistProvider* getProviderForPlaylist( const Meta::PlaylistPtr &playlist );
+        /**
+         *  Retrieves the provider owning the given playlist
+         *  @arg playlist the playlist whose provider we want
+         */
+        PlaylistProvider* getProviderForPlaylist( const Meta::PlaylistPtr &playlist );
+
+        /**
+         *  Checks if the provider to whom this playlist belongs supports writing
+         *  @arg playlist the playlist we are testing for writability
+         *  @return whether or not the playlist is writable
+         */
+
+        bool isWritable( const Meta::PlaylistPtr &playlist );
 
         QList<PopupDropperAction *> playlistActions( const Meta::PlaylistList lists );
         QList<PopupDropperAction *> trackActions( const Meta::PlaylistPtr playlist,

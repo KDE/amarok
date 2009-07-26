@@ -20,6 +20,7 @@
 #include "mediadevicecollection_export.h"
 #include "../MediaDeviceHandlerCapability.h"
 #include "../../MediaDeviceMeta.h"
+#include "../../playlist/MediaDevicePlaylist.h"
 
 namespace Handler
 {
@@ -116,6 +117,18 @@ namespace Handler
 
     // TODO: make pure virtual, reimplement in every plcapability
     virtual void savePlaylist( const Meta::TrackList &tracks, const QString& name ) { Q_UNUSED(tracks) Q_UNUSED( name) }
+
+    virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
+
+    /** This method must create a two-way association of the current Meta::Playlist
+    *  to the special struct provided by the library to read/write information.
+    *  For example, for libgpod one would associate Itdb_Playlist*.  It makes
+    *  the most sense to use a QHash since it is fastest lookup and order
+    *  does not matter.
+    *  @param playlist The list to two-way associate with a library list struct
+    */
+
+    virtual void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
 
     static Type capabilityInterfaceType() { return Handler::Capability::Playlist; }
 

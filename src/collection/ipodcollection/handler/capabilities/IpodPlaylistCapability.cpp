@@ -97,4 +97,18 @@ IpodPlaylistCapability::savePlaylist( const Meta::TrackList &tracks, const QStri
     m_handler->libSavePlaylist( tracks, name );
 }
 
+void
+IpodPlaylistCapability::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    m_handler->renamePlaylist( playlist );
+}
+
+void
+IpodPlaylistCapability::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    m_handler->setAssociatePlaylist( playlist );
+}
+
+
+
 #include "IpodPlaylistCapability.moc"

@@ -139,7 +139,10 @@ public:
     virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
 
     virtual QString libGetPlaylistName();
+    void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
     void libSavePlaylist( const Meta::TrackList &tracks, const QString& name );
+    void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+
 
     virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
     virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
@@ -343,6 +346,10 @@ private:
     // Hash that associates an Itdb_Track* to every Track*
 
     QHash<Meta::MediaDeviceTrackPtr, Itdb_Track*> m_itdbtrackhash;
+
+    // Hash that associates an Itdb_Playlist* to every PlaylistPtr
+
+    QHash<Meta::MediaDevicePlaylistPtr, Itdb_Playlist*> m_itdbplaylisthash;
 
     // tracks that failed to copy
 

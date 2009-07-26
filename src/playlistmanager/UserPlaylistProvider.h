@@ -51,9 +51,14 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 
         virtual bool supportsEmptyGroups();
 
-        QList<PopupDropperAction *> playlistActions( Meta::PlaylistPtr playlist );
-        QList<PopupDropperAction *> trackActions( Meta::PlaylistPtr playlist,
+        virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistPtr playlist );
+        virtual QList<PopupDropperAction *> trackActions( Meta::PlaylistPtr playlist,
                                                   int trackIndex );
+
+        // UserPlaylistProvider-specific
+
+        virtual bool isWritable() { return false; }
+        virtual void rename( Meta::PlaylistPtr playlist, const QString &newName ) {Q_UNUSED( playlist ) Q_UNUSED(newName)}
 
 };
 
