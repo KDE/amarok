@@ -22,8 +22,6 @@
 #include "App.h"
 #include "Debug.h"
 
-#include "context/popupdropper/libpud/PopupDropperAction.h"
-
 #include <QAction>
 #include <QApplication>
 #include <QFontMetrics>
@@ -36,6 +34,26 @@ Q_DECLARE_METATYPE( QList<PopupDropperAction*> )
 
 #define CAPACITYRECT_HEIGHT 6
 #define ACTIONICON_SIZE 24
+
+/**
+ * An extension of the QRect class to overload the < operator.
+ * QMap requires a total sort order for keys, and in order to store a QRect as a map index, we
+ * need to overload the < operator.
+ */
+class ComparableRect : public QRect
+{
+    public:
+        ComparableRect( QRect r ) : QRect( r ) { }
+
+        /**
+         * Calculate less than based on the top left hand corner point.
+         */
+        bool operator<( const ComparableRect &that ) const {
+            return topLeft().x() < that.topLeft().x() && topLeft().y() < that.topLeft().y();
+        }
+};
+
+QMap<ComparableRect, PopupDropperAction*> CollectionTreeItemDelegate::s_hitTargets;
 
 CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
     : QStyledItemDelegate( view )
@@ -159,6 +177,10 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
             QIcon icon = action->icon();
             QRect iconRect( actionTopLeft, iconSize );
 
+            // Cache the position of the icon QRect and it's action.
+            // TODO: This could be ineffcient, as we are caching every time we draw
+            s_hitTargets.insert( ComparableRect( iconRect ), action );
+
             const bool isOver = isHover && iconRect.contains( cursorPos );
 
             icon.paint( painter, iconRect, Qt::AlignCenter, isOver ? QIcon::Active : QIcon::Normal, isOver ? QIcon::On : QIcon::Off );
@@ -190,4 +212,18 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
     return QSize( width, height );
 }
 
+// EPIC HACK. So we can calculate hit targets for mouse clicks on CollectionActions
+PopupDropperAction*
+CollectionTreeItemDelegate::actionUnderPoint( const QPoint pos )
+{
+    QList<ComparableRect> keys = s_hitTargets.keys();
+
+    foreach( ComparableRect key, keys )
+    {
+        if( key.contains( pos ) )
+            return s_hitTargets.value( key );
+    }
+
+    return 0;
+}
 

@@ -32,7 +32,7 @@ class CollectionWidget : public BrowserCategory
 {
     Q_OBJECT
     public:
-        CollectionWidget( const char* name , QWidget *parent );
+        CollectionWidget( const QString &name , QWidget *parent );
         static CollectionWidget *instance() { return s_instance; }
         CollectionBrowserTreeView *view() const { return m_treeView; }
 
