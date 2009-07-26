@@ -754,6 +754,7 @@ MainWindow::createActions()
     PERF_LOG( "MainWindow::createActions 8" )
     new Amarok::MenuAction( ac, this );
     new Amarok::StopAction( ac, this );
+    new Amarok::StopPlayingAfterCurrentTrackAction( ac, this );
     new Amarok::PlayPauseAction( ac, this );
     new Amarok::RepeatAction( ac, this );
     new Amarok::RandomAction( ac, this );
@@ -806,6 +807,7 @@ MainWindow::createMenus()
     actionsMenu->addAction( Amarok::actionCollection()->action("prev") );
     actionsMenu->addAction( Amarok::actionCollection()->action("play_pause") );
     actionsMenu->addAction( Amarok::actionCollection()->action("stop") );
+    actionsMenu->addAction( Amarok::actionCollection()->action("stop_after_current") );
     actionsMenu->addAction( Amarok::actionCollection()->action("next") );
 
 
