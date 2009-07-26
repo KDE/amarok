@@ -124,15 +124,15 @@ FastForwardWorker::run()
         "  ON T.deviceid = S.deviceid "
         "  AND T.url = S.url "
         "LEFT OUTER JOIN album A "
-        "  ON T.album == A.id "
+        "  ON T.album = A.id "
         "LEFT OUTER JOIN artist R "
-        "  ON T.artist == R.id "
+        "  ON T.artist = R.id "
         "LEFT OUTER JOIN composer C "
-        "  ON T.composer == C.id "
+        "  ON T.composer = C.id "
         "LEFT OUTER JOIN genre G "
-        "  ON T.genre == G.id "
+        "  ON T.genre = G.id "
         "LEFT OUTER JOIN year Y "
-        "  ON T.year == Y.id "
+        "  ON T.year = Y.id "
         "ORDER BY lastmountpoint, S.url" );
     QSqlQuery query = db.exec( sql );
 
