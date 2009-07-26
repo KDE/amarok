@@ -102,7 +102,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int iconYPadding = ( height - iconHeight ) / 2;
     QPoint iconPos( topLeft + QPoint( iconPadX, iconYPadding ) );
     if( isRTL )
-        iconPos = QPoint( width - iconWidth - iconPadX, iconYPadding );
+        iconPos.setX( width - iconWidth - iconPadX );
 
     painter->drawPixmap( iconPos,
                          index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
@@ -112,11 +112,11 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
 
-    const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
-    const int infoRectLeft = isRTL ? 0 : iconRight;
-    const int infoRectWidth = width - iconRight;
-
     const int actionsRectWidth = hasActions ? actions.size() * ACTIONICON_SIZE : 0;
+
+    const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
+    const int infoRectLeft = isRTL ? actionsRectWidth : iconRight;
+    const int infoRectWidth = width - iconRight;
 
     const int titleRectWidth = infoRectWidth - actionsRectWidth;
     
@@ -145,7 +145,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     if( hasCapacity )
     {
         QRect capacityRect;
-        capacityRect.setLeft( infoRectLeft );
+        capacityRect.setLeft( isRTL ? 0 : infoRectLeft );
         capacityRect.setTop( textRect.bottom() );
         capacityRect.setWidth( infoRectWidth );
         capacityRect.setHeight( CAPACITYRECT_HEIGHT );
@@ -164,7 +164,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     if( hasActions )
     {
         QRect actionsRect;
-        actionsRect.setLeft( titleRect.right() );
+        actionsRect.setLeft( isRTL ? 0 : titleRect.right() );
         actionsRect.setTop( titleRect.top() );
         actionsRect.setWidth( actionsRectWidth );
         actionsRect.setHeight( ACTIONICON_SIZE );
@@ -184,7 +184,10 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
             const bool isOver = isHover && iconRect.contains( cursorPos );
 
             icon.paint( painter, iconRect, Qt::AlignCenter, isOver ? QIcon::Active : QIcon::Normal, isOver ? QIcon::On : QIcon::Off );
-            actionTopLeft.rx() += ACTIONICON_SIZE;
+            if( isRTL )
+                actionTopLeft.rx() -= ACTIONICON_SIZE;
+            else
+                actionTopLeft.rx() += ACTIONICON_SIZE;
         }
     }
 
