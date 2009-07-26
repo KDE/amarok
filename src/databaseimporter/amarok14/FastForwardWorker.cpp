@@ -134,9 +134,13 @@ FastForwardWorker::run()
         "LEFT OUTER JOIN year Y "
         "  ON T.year = Y.id "
         "ORDER BY lastmountpoint, S.url" );
-    QSqlQuery query = db.exec( sql );
+    QSqlQuery query( sql, db );
 
-    if( query.lastError().isValid() )
+    const bool queried = query.exec();
+
+    debug() << "exec()" << queried << "active?" << query.isActive() << "size:" << query.size();
+
+    if( !queried || query.lastError().isValid() )
     {
         QString errorMsg = i18n( "Could not execute import query: %1", db.lastError().text() );
         error() << "Error executing import query:" << errorMsg;
