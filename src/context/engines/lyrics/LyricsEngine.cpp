@@ -54,15 +54,16 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
         
         if( m_prevLyricsList.size() == 0 || m_prevSuggestionsList.size() == 0 || m_prevLyrics.contains( "Unavailable" ) )
             setData( "lyrics", "Unavailable" , "Unavailable" );
-            
+
         if( m_prevLyricsList.size() > 0 )
             setData( "lyrics", "lyrics", m_prevLyricsList );
 
         else if( m_prevLyrics != "" )
             setData( "lyrics", "html", m_prevLyrics );
-        
+
         if( m_prevSuggestionsList.size() > 0 )
-              setData( "lyrics", "suggested", m_prevSuggestionsList );
+            setData( "lyrics", "suggested", m_prevSuggestionsList );
+
         return true;
     }
     removeAllData( name );
@@ -153,12 +154,12 @@ void LyricsEngine::update()
             info << m_title << m_artist << QString() <<  lyrics;
             newLyrics( info );
         }
-    } else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
+    }
+    else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
     {
         removeAllData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
         m_currentLyrics = "Lyrics  Unavailable";
-        return;
     }
     else
     {

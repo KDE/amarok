@@ -71,7 +71,7 @@ AmarokLyricsScript::showLyricsError( const QString& error ) const
 
 
 QString
-AmarokLyricsScript::escape ( const QString& str )
+AmarokLyricsScript::escape( const QString& str )
 {
     return Qt::escape( str );
 }
@@ -80,16 +80,16 @@ void
 AmarokLyricsScript::setLyricsForTrack( const QString& trackUrl, const QString& lyrics ) const
 {
     DEBUG_BLOCK
-   Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( trackUrl ) );
-   if( track )
-       track->setCachedLyrics( lyrics );
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( trackUrl ) );
+    if( track )
+        track->setCachedLyrics( lyrics );
 }
 
 QString
 AmarokLyricsScript::toUtf8( const QByteArray& lyrics, const QString& encoding )
 {
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
-    if ( !codec )
+    if( !codec )
         return QString();
 
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
@@ -101,7 +101,7 @@ QString
 AmarokLyricsScript::QStringtoUtf8( const QString& lyrics, const QString& encoding )
 {
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
-    if ( !codec )
+    if( !codec )
         return QString();
 
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
@@ -113,11 +113,10 @@ QByteArray
 AmarokLyricsScript::fromUtf8( const QString& str, const QString& encoding )
 {
     QTextCodec* codec = QTextCodec::codecForName( encoding.toUtf8() );
-    if ( !codec )
+    if( !codec )
         return QByteArray();
 
     return codec->fromUnicode( str );
-
 }
 
 }
