@@ -44,6 +44,9 @@ class DatabaseImporterDialog : public KAssistantDialog
         void importSucceeded();
         void importError( QString error );
         void importedTrack( Meta::TrackPtr track );
+        void discardedTrack( QString url );
+        void matchedTrack( Meta::TrackPtr track, QString oldUrl );
+        void ambigousTrack( Meta::TrackList tracks, QString oldUrl );
         void pageChanged( KPageWidgetItem *current, KPageWidgetItem *before );
         void showMessage( QString message );
     

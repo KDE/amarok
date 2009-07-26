@@ -40,6 +40,7 @@ class FastForwardImporterConfig : public DatabaseImporterConfig
         QString databaseHost() const { return m_hostnameInput->text(); }
         QString databaseUser() const { return m_usernameInput->text(); }
         QString databasePass() const { return m_passwordInput->text(); }
+        bool smartMatch() const { return m_smartMatchCheck->checkState() == Qt::Checked; }
         bool importArtwork() const { return m_importArtworkCheck->checkState() == Qt::Checked; }
         QString importArtworkDir() const { return m_importArtworkDirInput->text(); }
 
@@ -62,6 +63,8 @@ class FastForwardImporterConfig : public DatabaseImporterConfig
         QLineEdit *m_usernameInput;
         QLineEdit *m_passwordInput;
         
+        QCheckBox *m_smartMatchCheck;
+
         QCheckBox *m_importArtworkCheck;
         QLineEdit *m_importArtworkDirInput;
 };

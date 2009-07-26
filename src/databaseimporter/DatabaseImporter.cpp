@@ -39,6 +39,7 @@ DatabaseImporter::DatabaseImporter( QObject *parent )
     connect( this, SIGNAL( importSucceeded() ), SLOT( importingFinished() ) );
     connect( this, SIGNAL( importFailed() ), SLOT( importingFinished() ) );
     connect( this, SIGNAL( trackAdded( Meta::TrackPtr ) ), SLOT( trackImported( Meta::TrackPtr ) ) );
+    connect( this, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ), SLOT( trackMatched( Meta::TrackPtr, QString ) ) );
 }
 
 DatabaseImporter::~DatabaseImporter()
@@ -73,6 +74,13 @@ void
 DatabaseImporter::trackImported( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
+    ++m_count;
+}
+
+void DatabaseImporter::trackMatched( Meta::TrackPtr track, QString oldUrl )
+{
+    Q_UNUSED( track )
+    Q_UNUSED( oldUrl )
     ++m_count;
 }
 

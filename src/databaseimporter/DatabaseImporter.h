@@ -82,10 +82,14 @@ class DatabaseImporter : public QObject
         void importError( QString );
         void showMessage( QString );
         void trackAdded( Meta::TrackPtr );
+        void trackDiscarded( QString );
+        void trackMatchFound( Meta::TrackPtr, QString );
+        void trackMatchMultiple( Meta::TrackList, QString );
 
     protected slots:
         void importingFinished();
         void trackImported( Meta::TrackPtr track );
+        void trackMatched( Meta::TrackPtr track, QString oldUrl );
 
     protected:
         /**

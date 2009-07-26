@@ -86,6 +86,9 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
     connect( m_connectionCombo, SIGNAL( currentIndexChanged(int) ), SLOT( connectionChanged(int) ) );
     connectionChanged( m_connectionCombo->currentIndex() ); // Make sure we sync the UI as appropriate
 
+    m_smartMatchCheck = new QCheckBox( i18n("Match tracks by meta tags"), this );
+    m_smartMatchCheck->setChecked( true );
+
     m_importArtworkCheck = new QCheckBox( i18n("Import downloaded artwork"), this );
     m_importArtworkCheck->setChecked( true );
     

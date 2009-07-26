@@ -135,6 +135,11 @@ DatabaseImporterDialog::selectImporter()
     connect( m_importer, SIGNAL( importSucceeded() ), this, SLOT( importSucceeded() ) );
     connect( m_importer, SIGNAL( importFailed() ), this, SLOT( importFailed() ) );
     connect( m_importer, SIGNAL( trackAdded( Meta::TrackPtr ) ), this, SLOT( importedTrack( Meta::TrackPtr ) ) );
+    connect( m_importer, SIGNAL( trackDiscarded( QString ) ), this, SLOT( discardedTrack( QString ) ) );
+    connect( m_importer, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ),
+             this, SLOT( matchedTrack( Meta::TrackPtr, QString ) ) );
+    connect( m_importer, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ),
+             this, SLOT( ambigousTrack( Meta::TrackList, QString ) ) );
     connect( m_importer, SIGNAL( importError( QString ) ), this, SLOT( importError( QString ) ) );
     connect( m_importer, SIGNAL( showMessage( QString ) ), this, SLOT( showMessage( QString ) ) );
 
@@ -192,6 +197,41 @@ DatabaseImporterDialog::importedTrack( Meta::TrackPtr track )
     else
         text = i18nc( "Track has been imported, format: Artist - Track (Album)", 
                       "Imported <b>%1 - %2 (%3)</b>", track->artist()->name(), track->name(), track->album()->name() );
+    m_results->appendHtml( text );
+}
+
+void DatabaseImporterDialog::discardedTrack( QString url )
+{
+    QString text;
+    text = i18nc( "Track has been discarded, format: Url",
+                  "Discarded <b><font color='gray'>%1</font></b>", url );
+    m_results->appendHtml( text );
+}
+
+void DatabaseImporterDialog::matchedTrack( Meta::TrackPtr track, QString oldUrl )
+{
+    if( !track ) return;
+
+    QString text;
+    //TODO: help text; also check wording with imported; unify?
+    if( !track->album() || track->album()->name().isEmpty() )
+        text = i18nc( "Track has been imported by tags, format: Artist - Track, from Url, to Url",
+                      "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from %3<br/>&nbsp;&nbsp;to %4", track->artist()->name(), track->name(), oldUrl, track->prettyUrl() );
+    else
+        text = i18nc( "Track has been imported by tags, format: Artist - Track (Album), from Url, to Url",
+                      "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from %4<br/>&nbsp;&nbsp;to %5", track->artist()->name(), track->name(), track->album()->name(), oldUrl, track->prettyUrl() );
+
+    m_results->appendHtml( text );
+}
+
+void DatabaseImporterDialog::ambigousTrack( Meta::TrackList tracks, QString oldUrl )
+{
+    Q_UNUSED( tracks );
+
+    QString text;
+    // TODO: wording; etc.
+    text = i18nc( "Track has been matched ambigously, format: Url",
+                  "Ambigous Discarded <b><font color='red'>%1</font></b>", oldUrl );
     m_results->appendHtml( text );
 }
 
