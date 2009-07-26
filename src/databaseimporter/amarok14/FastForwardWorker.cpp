@@ -136,6 +136,14 @@ FastForwardWorker::run()
     sql += "ORDER BY lastmountpoint, S.url";
     QSqlQuery query = db.exec( sql );
 
+    if( query.lastError().isValid() )
+    {
+        QString errorMsg = i18n( "Could not execute import query: %1", db.lastError().text() );
+        error() << "Error executing import query:" << errorMsg;
+        emit importError( errorMsg );
+        m_failed = true;
+    }
+
     QMap<Meta::TrackPtr,QString> tracksForInsert;
 
     for( int c = 0; query.next(); c++ )
