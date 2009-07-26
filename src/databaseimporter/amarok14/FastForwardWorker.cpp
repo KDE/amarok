@@ -112,28 +112,28 @@ FastForwardWorker::run()
     }
 
 
-    QString sql;
-    sql += "SELECT lastmountpoint, S.url, S.createdate, accessdate, percentage, rating, playcounter, lyrics, title, A.name, R.name, C.name, G.name, Y.name, track, discnumber, filesize ";
-    sql += "FROM statistics S ";
-    sql += "LEFT OUTER JOIN devices D ";
-    sql += "  ON S.deviceid = D.id ";
-    sql += "LEFT OUTER JOIN lyrics L ";
-    sql += "  ON L.deviceid = S.deviceid ";
-    sql += "  AND L.url = S.url ";
-    sql += "LEFT OUTER JOIN tags T ";
-    sql += "  ON T.deviceid = S.deviceid ";
-    sql += "  AND T.url = S.url ";
-    sql += "LEFT OUTER JOIN album A ";
-    sql += "  ON T.album == A.id ";
-    sql += "LEFT OUTER JOIN artist R ";
-    sql += "  ON T.artist == R.id ";
-    sql += "LEFT OUTER JOIN composer C ";
-    sql += "  ON T.composer == C.id ";
-    sql += "LEFT OUTER JOIN genre G ";
-    sql += "  ON T.genre == G.id ";
-    sql += "LEFT OUTER JOIN year Y ";
-    sql += "  ON T.year == Y.id ";
-    sql += "ORDER BY lastmountpoint, S.url";
+    QString sql =
+      QString( "SELECT lastmountpoint, S.url, S.createdate, accessdate, percentage, rating, playcounter, lyrics, title, A.name, R.name, C.name, G.name, Y.name, track, discnumber, filesize "
+        "FROM statistics S "
+        "LEFT OUTER JOIN devices D "
+        "  ON S.deviceid = D.id "
+        "LEFT OUTER JOIN lyrics L "
+        "  ON L.deviceid = S.deviceid "
+        "  AND L.url = S.url "
+        "LEFT OUTER JOIN tags T "
+        "  ON T.deviceid = S.deviceid "
+        "  AND T.url = S.url "
+        "LEFT OUTER JOIN album A "
+        "  ON T.album == A.id "
+        "LEFT OUTER JOIN artist R "
+        "  ON T.artist == R.id "
+        "LEFT OUTER JOIN composer C "
+        "  ON T.composer == C.id "
+        "LEFT OUTER JOIN genre G "
+        "  ON T.genre == G.id "
+        "LEFT OUTER JOIN year Y "
+        "  ON T.year == Y.id "
+        "ORDER BY lastmountpoint, S.url" );
     QSqlQuery query = db.exec( sql );
 
     if( query.lastError().isValid() )
