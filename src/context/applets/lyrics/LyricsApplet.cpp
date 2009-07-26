@@ -43,6 +43,8 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_titleText( i18n( "Lyrics" ) )
     , m_titleLabel( 0 )
+    , m_editIcon( 0 )
+    , m_saveIcon( 0 )
     , m_reloadIcon( 0 )
     , m_lyrics( 0 )
     , m_suggested( 0 )
@@ -65,13 +67,28 @@ void LyricsApplet::init()
     // properly set the size, asking for the whole cv size.
     resize( 500, -1 );
     
-  //  m_titleLabel = new QGraphicsSimpleTextItem( i18n( "Lyrics" ), this );
     m_titleLabel = new TextScrollingWidget( this );
     QFont bigger = m_titleLabel->font();
     bigger.setPointSize( bigger.pointSize() + 2 );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
     m_titleLabel->setText( i18n( "Lyrics" ) );
+
+    QAction* editAction = new QAction( i18n( "Edit Lyrics" ), this );
+    editAction->setIcon( KIcon( "document-edit" ) );
+    editAction->setVisible( true );
+    editAction->setEnabled( false );
+    m_editIcon = addAction( editAction );
+
+    connect( m_editIcon, SIGNAL( activated() ), this, SLOT( editLyrics() ) );
+
+    QAction* saveAction = new QAction( i18n( "Save Lyrics" ), this );
+    saveAction->setIcon( KIcon( "document-save" ) );
+    saveAction->setVisible( false );
+    saveAction->setEnabled( false );
+    m_saveIcon = addAction( saveAction );
+
+    connect( m_saveIcon, SIGNAL( activated() ), this, SLOT( saveLyrics() ) );
     
     QAction* reloadAction = new QAction( i18n( "Reload Lyrics" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
@@ -80,17 +97,19 @@ void LyricsApplet::init()
     m_reloadIcon = addAction( reloadAction );
 
     connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( refreshLyrics() ) );
-    
+
     m_lyricsProxy = new QGraphicsProxyWidget( this );
     m_lyrics = new QTextBrowser;
     m_lyrics->setAttribute( Qt::WA_NoSystemBackground );
-    m_lyrics->setReadOnly( true );
     m_lyrics->setOpenExternalLinks( true );
     m_lyrics->setWordWrapMode( QTextOption::WordWrap );
     m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
+    setEditing( false );
+
     m_lyricsProxy->setWidget( m_lyrics );
+
     QPalette pal;
-    QBrush brush(  PaletteHandler::highlightColor().lighter( 170 ) );
+    QBrush brush( PaletteHandler::highlightColor().lighter( 170 ) );
     brush.setStyle( Qt::SolidPattern );
     pal.setBrush( QPalette::Active, QPalette::Base, brush );
     pal.setBrush( QPalette::Inactive, QPalette::Base, brush );
@@ -98,12 +117,7 @@ void LyricsApplet::init()
     pal.setBrush( QPalette::Window, brush );
     m_lyrics->setPalette( pal );
     m_lyricsProxy->setPalette( pal );
-    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
-        .arg( PaletteHandler::highlightColor().lighter( 150 ).name() ).arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
 
-
-
-                                                                                                
     // only show when we need to let the user
     // choose between suggestions
     m_suggested = new QGraphicsTextItem( this );
@@ -140,7 +154,6 @@ LyricsApplet::addAction( QAction *action )
     tool->setMaximumSize( iconSize );
     tool->resize( iconSize );
 
-
     tool->hide();
     tool->setZValue( zValue() + 1 );
 
@@ -149,10 +162,12 @@ LyricsApplet::addAction( QAction *action )
 
 void LyricsApplet::connectSource( const QString& source )
 {
-    if( source == "lyrics" ) {
+    if( source == "lyrics" )
+    {
         dataEngine( "amarok-lyrics" )->connectSource( source, this );
         refreshLyrics(); // get data initally
-    } else if( source == "suggested" )
+    }
+    else if( source == "suggested" )
     {
         dataEngine( "amarok-lyrics" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-lyrics" )->query( "suggested" ) ); 
@@ -167,19 +182,26 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     m_suggested->setTextWidth( size().width() );
 
-    qreal widmax = boundingRect().width() - 2 * m_reloadIcon->size().width() - 6 * standardPadding();
+    // Assumes all icons are of equal width
+    const int iconWidth = m_reloadIcon->size().width();
+
+    qreal widmax = boundingRect().width() - 2 * iconWidth * 3 - 6 * standardPadding();
     QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
     
     m_titleLabel->setScrollingText( m_titleText, rect );
     m_titleLabel->setPos( ( size().width() - m_titleLabel->boundingRect().width() ) / 2 , standardPadding() + 3 );
-    
-
-    m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - standardPadding(), standardPadding() );
+   
+    m_reloadIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
     m_reloadIcon->show();
+
+    QPoint editIconPos( m_reloadIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
+    m_editIcon->setPos( editIconPos );
+    m_saveIcon->setPos( editIconPos );
     
-    //m_lyricsProxy->setPos( 0, m_reloadIcon->size().height() );
     m_lyricsProxy->setPos( standardPadding(), m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding() );
+    
     QSize lyricsSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_lyricsProxy->pos().y() - standardPadding() );
+    
     m_lyricsProxy->setMinimumSize( lyricsSize );
     m_lyricsProxy->setMaximumSize( lyricsSize );
 
@@ -221,13 +243,11 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         QString html = QString( "<br><br>" );
         foreach( const QVariant &suggestion, suggested )
         {
-                QString sug = suggestion.toString();
-                //debug() << "parsing suggestion:" << sug;
-                QStringList pieces = sug.split( " - " );
-                QString link = QString( "<a href=\"%1|%2|%3\">%4 - %5</a><br>" ).arg( pieces[ 0 ] ).arg( pieces[ 1 ] ).arg( pieces[ 2 ] ).arg( pieces[ 1 ] ).arg( pieces[ 0 ] );
-                html += link;
+            const QString sug = suggestion.toString();
+            const QStringList pieces = sug.split( " - " );
+            const QString link = QString( "<a href=\"%1|%2|%3\">%4 - %5</a><br>" ).arg( pieces[ 0 ] ).arg( pieces[ 1 ] ).arg( pieces[ 2 ] ).arg( pieces[ 1 ] ).arg( pieces[ 0 ] );
+            html += link;
         }
-        //debug() << "setting html: " << html;
         m_suggested->setHtml( html );
         m_suggested->show();
     }
@@ -254,6 +274,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->show();
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
     }
+
     //setPreferredSize( (int)size().width(), (int)size().height() );
     updateConstraints();
     update();
@@ -286,7 +307,6 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     //draw background of lyrics text
     p->save();
     QColor highlight( App::instance()->palette().highlight().color() );
-   // QColor highlight( App::instance()->palette().background().color() );
     highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
 
     // HACK
@@ -301,7 +321,6 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     path.addRoundedRect( lyricsRect, 5, 5 );
     p->fillPath( path , highlight );
     p->restore();
-    
 }
 
 void
@@ -312,7 +331,6 @@ LyricsApplet::paletteChanged( const QPalette & palette )
     if( m_lyrics )
        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
             .arg( PaletteHandler::highlightColor().lighter( 150 ).name() ).arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
-    
 }
 
 void
@@ -326,12 +344,45 @@ void
 LyricsApplet::refreshLyrics()
 {
     Meta::TrackPtr curtrack = The::engineController()->currentTrack();
-    debug() << "checking for current track:";
 
     if( !curtrack || !curtrack->artist() )
         return;
 
     ScriptManager::instance()->notifyFetchLyrics( curtrack->artist()->name(), curtrack->name() );
+}
+
+void
+LyricsApplet::editLyrics()
+{
+    setEditing( true );
+}
+
+void
+LyricsApplet::saveLyrics()
+{
+    setEditing( false );
+}
+
+void
+LyricsApplet::setEditing( const bool isEditing )
+{
+    m_lyrics->setReadOnly( !isEditing );
+
+    const QString backgroundColor = isEditing ? 
+                                        PaletteHandler::highlightColor().lighter( 150 ).name() :
+                                        "white";
+
+    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
+        .arg( backgroundColor )
+        .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
+
+    // If we're editing, hide and disable the edit icon
+    m_editIcon->action()->setEnabled( !isEditing );
+    m_editIcon->action()->setVisible( !isEditing );
+
+    // If we're editing, show and enable the save icon
+    m_saveIcon->action()->setEnabled( isEditing );
+    m_saveIcon->action()->setVisible( isEditing );
 }
 
 #include "LyricsApplet.moc"

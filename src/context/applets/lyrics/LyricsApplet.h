@@ -53,13 +53,20 @@ public slots:
     
 private slots:
     void paletteChanged( const QPalette & palette );
+    void editLyrics();
+    void saveLyrics();
 
 private:
     void calculateHeight();
+    void setEditing( const bool isEditing );
+
     Plasma::IconWidget* addAction( QAction *action );
 
     QString m_titleText;
     TextScrollingWidget* m_titleLabel;
+
+    Plasma::IconWidget*  m_saveIcon;
+    Plasma::IconWidget*  m_editIcon;
     Plasma::IconWidget*  m_reloadIcon;
     
     // holds main body
