@@ -253,6 +253,11 @@ namespace Amarok
             map["audio-bitrate"] = track->bitrate();
             map["audio-samplerate"] = track->sampleRate();
             //amarok has no video-bitrate
+
+            // EXTRA Amarok specific
+            const QString lyrics = track->cachedLyrics();
+            if( !lyrics.isEmpty() )
+                map["lyrics"] = lyrics;
         }
         return map;
     }
