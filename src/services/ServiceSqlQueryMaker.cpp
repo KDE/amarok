@@ -764,7 +764,7 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
     }
     else
     {
-        return QString( " = '%1' " ).arg( text );
+        return QString( " = '%1' " ).arg( escape( text ) );
     }
 }
 
