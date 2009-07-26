@@ -39,8 +39,8 @@
 
 CollectionWidget *CollectionWidget::s_instance = 0;
 
-CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
-    : BrowserCategory( name )
+CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
+    : BrowserCategory( name, parent )
 {
     s_instance = this;
     setObjectName( name );
