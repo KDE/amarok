@@ -510,9 +510,9 @@ StopPlayingAfterCurrentTrackAction::engineStateChanged( Phonon::State state,  Ph
     switch( state ) {
         case Phonon::PlayingState:
         case Phonon::PausedState:
+        case Phonon::StoppedState:
             setEnabled( true );
             break;
-        case Phonon::StoppedState:
         case Phonon::LoadingState:
             setDisabled( true );
             break;
