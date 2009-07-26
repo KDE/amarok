@@ -93,21 +93,15 @@ void LyricsEngine::message( const ContextState& state )
 
 void LyricsEngine::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     const bool hasChanged = track->name() != m_title || 
                             track->artist()->name() != m_artist;
 
     if( hasChanged )
         update();
-    
-        
 }
 
 void LyricsEngine::update()
 {
-    DEBUG_BLOCK
-
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( !currentTrack || !currentTrack->artist() )
         return;
