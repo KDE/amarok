@@ -33,7 +33,7 @@
 Q_DECLARE_METATYPE( QList<PopupDropperAction*> )
 
 #define CAPACITYRECT_HEIGHT 6
-#define ACTIONICON_SIZE 24
+#define ACTIONICON_SIZE 16
 
 /**
  * An extension of the QRect class to overload the < operator.
