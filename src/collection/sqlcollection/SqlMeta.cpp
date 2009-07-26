@@ -1001,8 +1001,6 @@ SqlTrack::cachedLyrics() const
 void
 SqlTrack::setCachedLyrics( const QString &lyrics )
 {
-//     QString query = QString( "SELECT count(*) FROM lyrics WHERE deviceid = %1 AND url = '%2';" )
-//                         .arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
     QString query = QString( "SELECT count(*) FROM lyrics WHERE url = '%1'")
                         .arg( m_collection->escape(m_rpath) );
 
@@ -1020,9 +1018,9 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
     }
     else
     {
-        QString update = QString( "UPDATE lyrics SET lyrics = '%3' WHERE url = '%1';" )
-                            .arg( m_collection->escape( m_rpath ),
-                                  m_collection->escape( lyrics ) );
+        QString update = QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" )
+                            .arg( m_collection->escape( lyrics ),
+                                  m_collection->escape( m_rpath ) );
         m_collection->query( update );
     }
 }
