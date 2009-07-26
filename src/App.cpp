@@ -1014,7 +1014,7 @@ namespace Amarok
         for( int i = 0; i < s.length(); i++ )
         {
             QChar c = s[ i ];
-            if( c < QChar(0x20)
+            if( c < QChar(0x20) || c == QChar(0x7F) // 0x7F = 127 = DEL control character
                     || c=='*' || c=='?' || c=='<' || c=='>'
                     || c=='|' || c=='"' || c==':' || c=='/'
                     || c=='\\' )

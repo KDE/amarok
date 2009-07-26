@@ -41,6 +41,15 @@ void TestAmarok::testAsciiPath()
     QCOMPARE( Amarok::asciiPath( "/.hidden" ), QString( "/.hidden" ) );
     QCOMPARE( Amarok::asciiPath( "/here be dragons" ), QString( "/here be dragons" ) );
     QCOMPARE( Amarok::asciiPath( "/!important/some%20stuff/what's this?" ), QString( "/!important/some%20stuff/what's this?" ) );
+
+    /* 0x7F = 127 = DEL control character, explicitly ok on *nix file systems */
+    QCOMPARE( Amarok::asciiPath( QString( "/abc" ) + QChar( 0x7F ) + ".1" ), QString( QString( "/abc" ) + QChar( 0x7F ) + ".1" ) );
+
+    /* random control character: ok */
+    QCOMPARE( Amarok::asciiPath( QString( "/abc" ) + QChar( 0x07 ) + ".1" ), QString( QString( "/abc" ) + QChar( 0x07 ) + ".1" ) );
+
+    /* null byte is not ok */
+    QCOMPARE( Amarok::asciiPath( QString( "/abc" ) + QChar( 0x00 ) + ".1" ), QString( "/abc_.1" ) );
 }
 
 void TestAmarok::testCleanPath()
@@ -214,7 +223,7 @@ void TestAmarok::testVfatPath()
     QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x15 ) + QChar( 0x16 ) + QChar( 0x17 ) + ".1" ), QString( "abc___.1" ) );
     QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x18 ) + QChar( 0x19 ) + QChar( 0x1A ) + ".1" ), QString( "abc___.1" ) );
     QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x1B ) + QChar( 0x1C ) + QChar( 0x1D ) + ".1" ), QString( "abc___.1" ) );
-    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x1E ) + QChar( 0x7F ) + ".1" ), QString( "abc__.1" ) );
+    QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x1E ) + QChar( 0x7F ) + ".1" ), QString( "abc__.1" ) ); // 0x7F = 127 = DEL control character
 
     /* trailing spaces in extension and file itself name are being ignored (!) */
     QCOMPARE( Amarok::vfatPath( "test  " ), QString( "test" ) );
