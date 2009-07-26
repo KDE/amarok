@@ -988,8 +988,6 @@ SqlTrack::collection() const
 QString
 SqlTrack::cachedLyrics() const
 {
-//     QString query = QString( "SELECT lyrics FROM lyrics WHERE deviceid = %1 AND url = '%2';" )
-//                         .arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
     QString query = QString( "SELECT lyrics FROM lyrics WHERE url = '%1'" )
                         .arg( m_collection->escape( m_rpath ) );
     QStringList result = m_collection->query( query );
