@@ -92,6 +92,7 @@ void
 Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem* t )
 {
    p->save();
+   p->translate(0.5, 0.5);
    p->setRenderHint( QPainter::Antialiasing );
    QColor col = PaletteHandler::highlightColor().lighter( 150 );
    QRectF rect = t->boundingRect();
