@@ -595,6 +595,8 @@ PlaylistBrowserNS::UserModel::slotDelete()
 {
     DEBUG_BLOCK
 
+    debug() << "Deleting this many playlists: " << m_selectedPlaylists.count();
+
     The::playlistManager()->deletePlaylists( m_selectedPlaylists );
 }
 

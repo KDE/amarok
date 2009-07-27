@@ -469,10 +469,15 @@ PlaylistManager::deletePlaylists( Meta::PlaylistList playlistlist )
         {
             Meta::PlaylistList pllist;
             pllist << playlist;
+            // If the provider already has at least one playlist to delete, add another to its list
             if( provLists.contains( prov ) )
-                provLists.insert(  prov, pllist );
-            else
+            {
                 provLists[ prov ] << pllist;
+
+            }
+            // If we are adding a new provider, put it in the hash, initialize its list
+            else
+                provLists.insert( prov, pllist );
         }
     }
 
