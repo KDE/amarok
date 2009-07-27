@@ -21,7 +21,6 @@
 #include "Collection.h"
 
 #include "meta/Meta.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <QList>
 
@@ -94,7 +93,7 @@ class CollectionTreeItem : public QObject
 
     private:
         QString albumYear() const;
-        QList<PopupDropperAction*> collectionActions() const;
+        QList<QAction*> collectionActions() const;
 
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
@@ -106,7 +105,7 @@ class CollectionTreeItem : public QObject
         int  m_trackCount;
         mutable bool m_isCounting;
 
-        mutable QList<PopupDropperAction*> m_collectionActions;
+        mutable QList<QAction*> m_collectionActions;
         mutable bool m_collectionActionsLoaded;
 };
 

@@ -506,21 +506,23 @@ PlaylistBrowserNS::UserModel::createCommonActions( QModelIndexList indices )
     return actions;
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 PlaylistBrowserNS::UserModel::createWriteActions( QModelIndexList indices )
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if ( m_renameAction == 0 )
     {
-        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        m_renameAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        m_renameAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
 
     if ( m_deleteAction == 0 )
     {
-        m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }
 
