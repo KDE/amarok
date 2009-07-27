@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
+ * Copyright (c) 2009 Riccardo Iaconelli <riccardo@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -92,25 +93,30 @@ void
 Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem* t )
 {
    p->save();
-   p->translate(0.5, 0.5);
    p->setRenderHint( QPainter::Antialiasing );
    QColor col = PaletteHandler::highlightColor().lighter( 150 );
+
+   // Paint in integer coordinates, align to grid
    QRectF rect = t->boundingRect();
+   QPointF pos = t->pos();
+   rect.setX( qRound( rect.x() ) );
+   rect.setY( qRound( rect.y() ) );
+   rect.setHeight( qRound( rect.height() ) );
+   rect.setWidth( qRound( rect.width() ) );
    rect.moveTopLeft( t->pos() );
+   pos.setX( qRound( pos.x() ) );
+   pos.setY( qRound( pos.y() ) );
+   rect.moveTopLeft( pos );
+   
+   p->translate( 0.5, 0.5 );
+   
    QPainterPath path;
    path.addRoundedRect( rect.adjusted( -5, -2, 5, 2 ), 3, 3 );
-
    p->fillPath( path, col );
-   p->restore();
-   // draw outline around textbox
-   p->save();
    col = PaletteHandler::highlightColor( 0.3, .5 );
    p->setPen( col );
-   rect = t->boundingRect();
-   rect.moveTopLeft( t->pos() );
    p->drawRoundedRect( rect.adjusted( -5, -2, 5, 2 ), 3, 3 );
-   p->restore(); 
-   show();
+   p->restore();
 }
 
 void
