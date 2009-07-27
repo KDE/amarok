@@ -50,6 +50,8 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Fix DBUS xml parsing. Patch thanks to Ryan Bitanga
+      <ryan.bitanga@gmail.com>.
     * Fix data caching issues causing incorrect values to be stored in the
       database and in some cases to be written to tags. Fixes multiple bugs.
     * Correctly enable/disable "Prefer Tracks" menu entry. Patch thanks to
