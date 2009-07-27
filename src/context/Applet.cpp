@@ -107,15 +107,16 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
    pos.setX( qRound( pos.x() ) );
    pos.setY( qRound( pos.y() ) );
    rect.moveTopLeft( pos );
+   rect.adjust( -5, -2, 5, 2 );
    
    p->translate( 0.5, 0.5 );
    
    QPainterPath path;
-   path.addRoundedRect( rect.adjusted( -5, -2, 5, 2 ), 3, 3 );
+   path.addRoundedRect( rect, 3, 3 );
    p->fillPath( path, col );
    col = PaletteHandler::highlightColor( 0.3, .5 );
    p->setPen( col );
-   p->drawRoundedRect( rect.adjusted( -5, -2, 5, 2 ), 3, 3 );
+   p->drawRoundedRect( rect, 3, 3 );
    p->restore();
 }
 
