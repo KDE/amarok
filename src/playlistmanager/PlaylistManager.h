@@ -144,6 +144,12 @@ class PlaylistManager : public QObject
 
         void deletePlaylists( Meta::PlaylistList playlistlist );
 
+        /**
+         *  Moves a track within the playlist to a new position
+         *  @returns true when the move was performed sucessfully
+         */
+        bool moveTrack( Meta::PlaylistPtr playlist, int from, int to );
+
         //the next two functions are needed to support some services that have no other way of presenting data to the user
         //than wrapping the url to a playlist in a track.
         bool canExpand( Meta::TrackPtr track );

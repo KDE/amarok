@@ -390,6 +390,7 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
         if( !dragList )
             return false;
 
+        //TODO: use PlaylistManager::moveTrack()
         emit layoutAboutToBeChanged();
         int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
         debug() << "playlist at row: " << playlistRow;
