@@ -53,8 +53,10 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , customHoveredTextColor( false )
     , customHoveredBorderPen( false )
     , customHoveredFillBrush( false )
+    , subitemOpacity( 0.0 )
     , file( QString() )
     , svgElementRect( 0, 0, 50, 50 )
+    , sharedRenderer( 0 )
     , horizontalOffset( 30 )
     , textOffset( 30 )
     , separator( false )
@@ -132,6 +134,22 @@ void PopupDropperItem::setAction( QAction *action )
                 d->svgItem = new QGraphicsSvgItem( this );
         }
 
+        if( d->sharedRenderer )
+            d->svgItem->setSharedRenderer( d->sharedRenderer );
+
+        if( d->elementId.isEmpty() )
+            d->elementId = action->property( "popupdropper_svg_id" ).toString();
+        if( !d->elementId.isEmpty() )
+        {
+            if( d->svgItem->renderer() && d->svgItem->renderer()->elementExists( d->elementId ) )
+                d->svgItem->setElementId( d->elementId );
+        }
+
+        if( !d->svgItem->elementId().isEmpty() && d->svgItem->renderer()->elementExists( d->svgItem->elementId() ) )
+            d->svgItem->show();
+        else
+            d->svgItem->hide();
+ 
         if( action->isSeparator() )
             d->separator = true;
         
@@ -343,6 +361,27 @@ bool PopupDropperItem::customHoveredFillBrush() const
     return d->customHoveredFillBrush;
 }
 
+qreal PopupDropperItem::subitemOpacity() const
+{
+    return d->subitemOpacity;
+}
+
+void PopupDropperItem::setSubitemOpacity( qreal opacity )
+{
+#if QT_VERSION >= 0x040500
+    if( d->svgItem )
+        d->svgItem->setOpacity( opacity );
+    if( d->textItem )
+        d->textItem->setOpacity( opacity );
+    if( d->borderRectItem )
+        d->borderRectItem->setOpacity( opacity );
+    if( d->hoverIndicatorRectItem )
+        d->hoverIndicatorRectItem->setOpacity( opacity );
+    if( d->hoverIndicatorRectFillItem )
+        d->hoverIndicatorRectFillItem->setOpacity( opacity );
+#endif
+}
+
 QGraphicsTextItem* PopupDropperItem::textItem() const
 {
     return d->textItem;
@@ -541,14 +580,12 @@ void PopupDropperItem::reposHoverFillRects()
 
 QSvgRenderer* PopupDropperItem::sharedRenderer() const
 {
-    if( d->svgItem )
-        return d->svgItem->renderer();
-    else
-        return 0;
+    return d->sharedRenderer;
 }
 
 void PopupDropperItem::setSharedRenderer( QSvgRenderer *renderer )
 {
+    d->sharedRenderer = renderer;
     if( renderer && d->svgItem )
     {
         d->svgItem->setSharedRenderer( renderer );
@@ -562,21 +599,23 @@ void PopupDropperItem::setSharedRenderer( QSvgRenderer *renderer )
 
 QString PopupDropperItem::elementId() const
 {
-    if( d->svgItem )
-        return d->svgItem->elementId();
-    else
-        return QString();
+    return d->elementId;
 }
 
 void PopupDropperItem::setElementId( const QString &id )
 {
     //qDebug() << "Element ID being set: " << id;
-    if( d->svgItem && d->svgItem->renderer() && d->svgItem->renderer()->elementExists( id ))
+    d->elementId = id;
+    if( id.isEmpty() )
+    {
+        d->svgItem->hide();
+        fullUpdate();
+    }
+    else if( d->svgItem && d->svgItem->renderer() && d->svgItem->renderer()->elementExists( id ))
     {
         d->svgItem->setElementId( id );
         d->svgItem->show();
-        if( d->pd )
-            d->pd->updateAllOverlays();
+        fullUpdate();
     }
 }
 

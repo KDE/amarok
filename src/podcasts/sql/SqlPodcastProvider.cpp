@@ -350,7 +350,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
             i18n( "&Delete Downloaded Episode" ),
             this
         );
-        m_deleteAction->setProperty( "amarok_svg_id", "delete" );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteEpisodes() ) );
     }
     bool hasDownloaded = false;
@@ -380,7 +380,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
                 i18n( "&Download Episode" ),
                 this
             );
-            m_deleteAction->setProperty( "amarok_svg_id", "download" );
+            m_deleteAction->setProperty( "popupdropper_svg_id", "download" );
             connect( m_downloadAction, SIGNAL( triggered() ), this, SLOT( slotDownloadEpisodes() ) );
         }
         actions << m_downloadAction;
@@ -402,7 +402,7 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
             i18n( "&Configure" ),
             this
         );
-        m_deleteAction->setProperty( "amarok_svg_id", "configure" );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "configure" );
         connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ));
     }
     actions << m_configureAction;
@@ -414,7 +414,7 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
             i18n( "&Remove Subscription" ),
             this
         );
-        m_deleteAction->setProperty( "amarok_svg_id", "remove" );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "remove" );
         connect( m_removeAction, SIGNAL( triggered() ), this, SLOT( slotRemoveChannels() ) );
     }
     actions << m_removeAction;
@@ -426,7 +426,7 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
             i18n( "&Update Channel" ),
             this
         );
-        m_deleteAction->setProperty( "amarok_svg_id", "update" );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "update" );
         connect( m_updateAction, SIGNAL( triggered() ), this, SLOT( slotUpdateChannels() ) );
     }
     actions << m_updateAction;

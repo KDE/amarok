@@ -64,7 +64,7 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
     readAudioCdSettings();
 
     m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Eject" ), 0 );
-    m_ejectAction->setProperty( "amarok_svg_id", "eject" );
+    m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
 
     connect( m_ejectAction, SIGNAL( triggered() ), this, SLOT( eject() ) );
 

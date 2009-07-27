@@ -23,7 +23,7 @@ MagnatunePurchaseAction::MagnatunePurchaseAction( const QString &text, Meta::Mag
     : QAction( KIcon("download-amarok" ), text, album )
     , m_album( album )
 {
-    setProperty( "amarok_svg_id", "append" );
+    setProperty( "popupdropper_svg_id", "append" );
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 }
 
