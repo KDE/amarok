@@ -3,7 +3,8 @@ project(context-currenttrack)
 set(currenttrack_SRCS CurrentTrack.cpp )
 
 include_directories( ../..
-                    ../../.. )
+                    ../../..
+		    ../../../meta/capabilities)
 
 kde4_add_plugin(amarok_context_applet_currenttrack ${currenttrack_SRCS})
 if(APPLE)

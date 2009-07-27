@@ -30,6 +30,7 @@
 #include <context/widgets/RatingWidget.h>
 #include "context/widgets/TextScrollingWidget.h"
 #include "context/widgets/DropPixmapItem.h"
+#include "UpdateCapability.h"
 
 #include <plasma/theme.h>
 #include <plasma/widgets/tabbar.h>
@@ -85,7 +86,7 @@ CurrentTrack::init()
     connect( m_albumCover, SIGNAL( imageDropped( QPixmap) ), this, SLOT( coverDropped( QPixmap ) ) );
 
     QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
-    
+
     m_title->setBrush( brush );
     m_artist->setBrush( brush );
     m_album->setBrush( brush );;
@@ -93,7 +94,7 @@ CurrentTrack::init()
 
     QFont bigFont;
     bigFont.setPointSize( bigFont.pointSize() +  3 );
-    
+
     QFont tinyFont;
     //tinyFont.setPointSize( tinyFont.pointSize() - 2 );
 
@@ -103,11 +104,11 @@ CurrentTrack::init()
     m_album->setFont( bigFont );
     m_byText->setFont( tinyFont );
     m_onText->setFont( tinyFont );
-    
+
     m_noTrackText = i18n( "No track playing" );
     m_noTrack->hide();
     m_noTrack->setText( m_noTrackText );
-    
+
     m_tabBar = new Plasma::TabBar( this );
 
     m_playCountLabel = i18n( "Play count" );
@@ -116,7 +117,7 @@ CurrentTrack::init()
 
     for( int i = 0; i < MAX_PLAYED_TRACKS; i++ )
         m_tracks[i] = new TrackWidget( this );
- 
+
     m_tabBar->addTab( i18n( "Last played" ) );
     m_tabBar->addTab( i18n( "Favorite tracks" ) );
 
@@ -153,6 +154,16 @@ CurrentTrack::changeTrackRating( int rating )
     Meta::TrackPtr track = The::engineController()->currentTrack();
     track->setRating( rating );
     debug() << "change rating to: " << rating;
+
+    // Inform collections of end of a metadata update
+    Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+    if( !uc )
+    {
+        return;
+    }
+
+    uc->collectionUpdated();
+
 }
 
 QList<QAction*>
@@ -162,10 +173,10 @@ CurrentTrack::contextualActions()
     QList<QAction*> actions;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    
+
     if( !track )
         return actions;
-    
+
     Meta::AlbumPtr album = track->album();
 
     if( album )
@@ -174,7 +185,7 @@ CurrentTrack::contextualActions()
         if( cac )
         {
             QList<PopupDropperAction *> pudActions = cac->customActions();
-             
+
             foreach( PopupDropperAction *action, pudActions )
                 actions.append( action );
         }
@@ -205,7 +216,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     const qreal x = standardPadding();
     const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - standardPadding();
     m_ratingWidget->setPos( x, y );
-    
+
     /* this is the pos of the albumcover */
     const qreal textX =  albumCoverPos.x() +  albumWidth + standardPadding();
     const qreal textWidth = size().toSize().width() - ( textX + standardPadding() * 2 + 23 );
@@ -236,7 +247,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         m_byText->setPos( m_artist->pos().x() - m_byText->boundingRect().width() - 5, textY + lineSpacing + 3 );
         alignBottomToFirst( m_byText, m_artist );
     }
-    
+
     m_title->setPos( m_artist->pos().x(), textY );
 
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
@@ -250,7 +261,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
 
     if( !m_lastTracks.isEmpty() )
-    {                
+    {
         m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() ) / ( textHeight ) ) );
 
         // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
@@ -262,7 +273,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
         m_tabBar->show();
 #endif
-        
+
         for( int i = 0; i < m_tracksToShow; i++ )
         {
             m_tracks[i]->resize( contentsRect().width() - standardPadding() * 2, textHeight * .8 );
@@ -271,14 +282,14 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
             //m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + 43 );
             m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, ( textHeight * .8 + standardPadding() / 2 ) * i + 25 );
         }
-    }        
+    }
     else if( !m_noTrackText.isEmpty() )
     {
         m_noTrack->setText( truncateTextToFit( m_noTrackText, m_noTrack->font(), QRectF( 0, 0, textWidth, 30 ) ) );
         m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2,
                        size().toSize().height() / 2  - 30 );
     }
-    
+
     dataEngine( "amarok-current" )->setProperty( "coverWidth", albumWidth );
 }
 
@@ -288,7 +299,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     DEBUG_BLOCK
     Q_UNUSED( name );
 
-    if( data.size() == 0 ) 
+    if( data.size() == 0 )
         return;
 
     QRect textRect( 0, 0, m_maxTextWidth, 30 );
@@ -296,7 +307,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     m_noTrackText = data[ "notrack" ].toString();
     m_lastTracks = data[ "lastTracks" ].value<Meta::TrackList>();
     m_favoriteTracks = data[ "favoriteTracks" ].value<Meta::TrackList>();
-    
+
     if( !m_lastTracks.isEmpty() )
     {
         Meta::TrackList tracks;
@@ -310,7 +321,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
             m_tracks[i]->setTrack( track );
             i++;
         }
-        
+
         updateConstraints();
         update();
         return;
@@ -364,7 +375,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     // tint the whole applet
     addGradientToAppletBackground( p );
-    
+
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
     if( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
@@ -376,8 +387,8 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     else
     {
         foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
-            childItem->show();        
-    }    
+            childItem->show();
+    }
 
     if( !m_lastTracks.isEmpty() )
     {
@@ -388,7 +399,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
 #if 0
         m_tabBar->show();
-#endif 
+#endif
         for( int i = 0; i < m_tracksToShow; i++)
             m_tracks[i]->show();
         return;
@@ -408,10 +419,10 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         for( int i = 0; i < MAX_PLAYED_TRACKS; i++)
             m_tracks[i]->hide();
     }
-    
+
     p->save();
-    
-    
+
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
     // Only show the ratings widget if the current track is in the collection
@@ -425,9 +436,9 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         m_ratingWidget->hide();
         m_showStatistics = false;
     }
-    
+
     p->restore();
-    
+
     // draw border around ratingwidget
     p->save();
     p->setRenderHint( QPainter::Antialiasing );
@@ -485,7 +496,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         headerPath.lineTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 ); // curve back through start
         headerPath.quadTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
                         leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 );
-        
+
         p->fillPath( headerPath, topColor );
 
         // draw label text
@@ -494,7 +505,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         QString playCountText = i18n( "Play count" );
         QString scoreText = i18n( "Score" );
         QString lastPlayedText = i18n( "Last Played" );
-        
+
         //Align labels taking into account the string widths for each label
         QFontMetrics fm( this->font() );
         qreal totalWidth = fm.width( playCountText ) + fm.width( scoreText ) + fm.width( lastPlayedText );
@@ -507,7 +518,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
                             localMaxTextWidth * factor,
                             m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
 
-        
+
         m_playCountLabel = truncateTextToFit( playCountText, this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playCountLabel );
 
@@ -522,7 +533,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         factor = fm.width( lastPlayedText ) / totalWidth;
         rect.setWidth( localMaxTextWidth * factor );
         rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
-        
+
         m_lastPlayedLabel = truncateTextToFit( lastPlayedText, this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_lastPlayedLabel );
 
@@ -533,7 +544,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
                     localMaxTextWidth * factor,
                     m_ratingWidget->boundingRect().height() - 4 );
         p->drawText( rect,  Qt::AlignCenter | Qt::TextSingleLine, m_numPlayed );
-        
+
         factor = fm.width( scoreText ) / totalWidth;
         rect.setWidth( localMaxTextWidth * factor );
         rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
@@ -550,7 +561,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         p->restore();
     }
     p->restore();
-    
+
     // draw source emblem
     if( !m_sourceEmblemPath.isEmpty() )
     {
@@ -564,7 +575,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         QRectF rect( boundingRect().width() - standardPadding() - height, standardPadding(),
                      height, height );
         svg.render( p, rect );
-        
+
         p->restore();
     }
 }
@@ -573,7 +584,7 @@ bool
 CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
 {
     const int borderWidth = 5;
-    
+
     if( !cover.isNull() )
     {
         width -= borderWidth * 2;
@@ -592,7 +603,7 @@ CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
         // center
         moveByX += ( width / 2 ) - cover.rect().width() / 2;
         moveByY += ( width / 2 ) - cover.rect().height() / 2;
-        
+
 //        debug() << "placing album at X:" << moveByX << " and Y:"  << moveByY;
         m_albumCover->setPos( moveByX, moveByY );
 
@@ -616,7 +627,7 @@ CurrentTrack::coverDropped( QPixmap cover )
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
-    
+
     Meta::AlbumPtr album = track->album();
     if( !album )
         return;
@@ -644,8 +655,8 @@ CurrentTrack::tabChanged( int index )
         tracks = m_lastTracks;
     else
         tracks = m_favoriteTracks;
-    
-    int i = 0;    
+
+    int i = 0;
     foreach( Meta::TrackPtr track, tracks )
     {
         m_tracks[i]->hide();
