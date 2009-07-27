@@ -304,12 +304,7 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     // draw rounded rect around title (only if not animating )
     if ( !m_titleLabel->isAnimating() )
-    {
-        p->save();
-        p->translate(0.5, 0.5);
         drawRoundedRectAroundText( p, m_titleLabel );
-        p->restore();
-    }
 
     //draw background of lyrics text
     p->save();
