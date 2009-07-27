@@ -66,7 +66,6 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
     m_categoryListView->setSelectionMode( QAbstractItemView::NoSelection );
     m_categoryListView->setHeaderHidden( true );
     m_categoryListView->setRootIsDecorated( false );
-    m_categoryListView->setSortingEnabled( true );
     m_categoryListView->setAlternatingRowColors( true );
     m_categoryListView->setModel( m_proxyModel );
     m_categoryListView->setMouseTracking ( true );
@@ -80,9 +79,7 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
     The::paletteHandler()->updateItemView( m_categoryListView );
 
     setFrameShape( QFrame::NoFrame );
-
 }
-
 
 BrowserCategoryList::~BrowserCategoryList()
 {
@@ -183,7 +180,7 @@ BrowserCategoryList::home()
 }
 
 
-QMap< QString, BrowserCategory * >
+QMap<QString, BrowserCategory*>
 BrowserCategoryList::categories()
 {
     return m_categories;
@@ -192,10 +189,8 @@ BrowserCategoryList::categories()
 void
 BrowserCategoryList::removeCategory( const QString &name )
 {
-    DEBUG_BLOCK
-    debug() << "removing category: " << name;
     BrowserCategory * category = m_categories.take( name );
-    if ( m_currentCategory == category )
+    if( m_currentCategory == category )
         home();
 
     if( category )
@@ -455,6 +450,5 @@ void BrowserCategoryList::setFilter( const QString &filter )
     m_currentFilter = filter;
     m_searchWidget->setSearchString( filter );
 }
-
 
 #include "BrowserCategoryList.moc"

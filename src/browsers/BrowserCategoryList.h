@@ -31,17 +31,16 @@ class BrowserCategoryListDelegate;
 class SearchWidget;
 
 /**
- *  A list for selecting and displaying a category. When a category is selected, this list
+ * A list for selecting and displaying a category. When a category is selected, this list
  * is replaces by the category widget. A back button allows the user to go back to this list.
  *
- *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
 class BrowserCategoryList : public BrowserCategory
 {
     Q_OBJECT
 
     public:
-
        /**
         * Constructor
         * @param parent The parent widget.
@@ -97,10 +96,9 @@ class BrowserCategoryList : public BrowserCategory
         virtual QString filter() const;
         virtual void setFilter( const QString &filter );
 
-        BrowserCategory * activeCategoryRecursive();
+        BrowserCategory *activeCategoryRecursive();
 
     signals:
-
         void viewChanged();
 
     public slots:
@@ -123,17 +121,15 @@ class BrowserCategoryList : public BrowserCategory
         void childViewChanged();
 
     private:
-
-        SearchWidget             *m_searchWidget;
-
-        QTreeView                *m_categoryListView;
+        SearchWidget *m_searchWidget;
+        QTreeView    *m_categoryListView;
 
         QMap<QString, BrowserCategory *> m_categories;
-        BrowserCategory          *m_currentCategory;
+        BrowserCategory *m_currentCategory;
 
-        BrowserCategoryListModel         *m_categoryListModel;
+        BrowserCategoryListModel *m_categoryListModel;
         BrowserCategoryListSortFilterProxyModel* m_proxyModel;
-        BrowserCategoryListDelegate      *m_delegate;
+        BrowserCategoryListDelegate *m_delegate;
 
         QTimer m_filterTimer;
 

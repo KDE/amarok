@@ -21,16 +21,11 @@
 
 #include "meta/Meta.h"
 
-
 class BrowserCategoryListSortFilterProxyModel : public QSortFilterProxyModel
 {
     public:
         BrowserCategoryListSortFilterProxyModel( QObject * parent = 0 );
-
         virtual ~BrowserCategoryListSortFilterProxyModel();
-
-    protected:
-        virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 };
 
 #endif

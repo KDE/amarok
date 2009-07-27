@@ -21,7 +21,7 @@
 
 #include <QVariant>
 
-BrowserCategoryListSortFilterProxyModel::BrowserCategoryListSortFilterProxyModel(  QObject * parent )
+BrowserCategoryListSortFilterProxyModel::BrowserCategoryListSortFilterProxyModel( QObject *parent )
     : QSortFilterProxyModel( parent )
 {
     setSortLocaleAware( true );
@@ -35,19 +35,4 @@ BrowserCategoryListSortFilterProxyModel::BrowserCategoryListSortFilterProxyModel
 
 BrowserCategoryListSortFilterProxyModel::~BrowserCategoryListSortFilterProxyModel()
 {}
-
-bool
-BrowserCategoryListSortFilterProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
-{
-    const QVariant leftData = sourceModel()->data( left, Qt::DisplayRole );
-    const QVariant rightData = sourceModel()->data( right, Qt::DisplayRole );
-
-    const QString leftString = leftData.toString();
-    const QString rightString = rightData.toString();
-
-    //debug() << "left : " << leftString;
-    //debug() << "right: " << rightString;
-
-    return leftString.compare( rightString, Qt::CaseInsensitive ) > 0;
-}
 
