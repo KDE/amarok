@@ -116,6 +116,7 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
        // draw border
        painter->save();
+       painter->translate(0.5, 0.5);
        painter->setPen( PaletteHandler::highlightColor().darker( 150 ) );
        painter->drawRoundedRect( boundingRect(), 3, 3 );
        painter->restore();
