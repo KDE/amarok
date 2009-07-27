@@ -1198,6 +1198,19 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
     Meta::MediaDeviceTrackPtr trackPtr = Meta::MediaDeviceTrackPtr::staticCast( track );
     KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
 
+    if( !m_wc )
+    {
+        if( this->hasCapabilityInterface( Handler::Capability::Writable ) )
+        {
+            m_wc = this->create<Handler::WriteCapability>();
+            if( !m_wc )
+            {
+                debug() << "Handler does not have MediaDeviceHandler::WriteCapability. Aborting metadata change.";
+                return;
+            }
+        }
+    }
+
     setBasicMediaDeviceTrackInfo( track, trackPtr );
 
     m_wc->updateTrack( trackPtr );
