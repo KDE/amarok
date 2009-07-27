@@ -69,6 +69,14 @@ Context::VerticalToolbarContainment::constraintsEvent( Plasma::Constraints const
 
     debug() << "setting applets geom to" << contentsRect();
     m_applets->setGeometry( contentsRect() );
+
+    if (constraints & Plasma::FormFactorConstraint ||
+        constraints & Plasma::StartupCompletedConstraint) {
+
+        foreach (Applet *applet, applets()) {
+            applet->setBackgroundHints(NoBackground);
+        }
+    }
 }
 
 QList<QAction*> 
