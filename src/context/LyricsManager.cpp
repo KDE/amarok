@@ -213,12 +213,12 @@ LyricsManager::lyricsError( const QString &error )
 {
     //if we have cached lyris there is absolutely no point in not showing these..
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( !currentTrack->cachedLyrics().isEmpty() )
-    {    
+    if( currentTrack && !currentTrack->cachedLyrics().isEmpty() )
+    {
         debug() << "showing cached lyrics!";
         //TODO: add some sort of feedback that we could not fetch new ones
         //so we are showing a cached result
-        if( currentTrack->cachedLyrics().contains( "<html>" , Qt::CaseInsensitive) )
+        if( currentTrack->cachedLyrics().contains( "<html>" , Qt::CaseInsensitive ) )
         {
             //we have stored html lyrics, so use that directly
             sendNewLyricsHtml( currentTrack->cachedLyrics() );
