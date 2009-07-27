@@ -94,7 +94,6 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
 {
    p->save();
    p->setRenderHint( QPainter::Antialiasing );
-   QColor col = PaletteHandler::highlightColor().lighter( 150 );
 
    // Paint in integer coordinates, align to grid
    QRectF rect = t->boundingRect();
@@ -113,8 +112,12 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
    
    QPainterPath path;
    path.addRoundedRect( rect, 3, 3 );
+   QColor col = PaletteHandler::highlightColor().lighter( 150 );
+   col.setAlphaF( col.alphaF() * 0.7 );
    p->fillPath( path, col );
-   col = PaletteHandler::highlightColor( 0.3, .5 );
+
+   col = PaletteHandler::highlightColor( 0.3, 0.5 );
+   col.setAlphaF( col.alphaF() * 0.7 );
    p->setPen( col );
    p->drawRoundedRect( rect, 3, 3 );
    p->restore();
