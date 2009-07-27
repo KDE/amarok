@@ -200,9 +200,11 @@ namespace Amarok
     AMAROK_EXPORT QString asciiPath( const QString &path ); // defined in App.cpp
 
     /**
-     * Transform path into one valid on VFAT file systems
+     * Transforms path into one valid on VFAT file systems, leaves QDir::separator()s untouched.
+     * Beware: Truncates path to 255 characters!
      * Replacement rules: illegal characters are being replaced by '_'
      *                    reserved device names are being prefixed with '_'
+     *                    for file/folder names or extensions that end with a space it will be replaced by '_'
      * @param path The original path.
      * @return The cleaned up path.
      */

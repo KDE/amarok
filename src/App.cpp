@@ -1011,17 +1011,22 @@ namespace Amarok
     {
         QString s = path;
 
+        if( QDir::separator() == '/' ) // we are on *nix, \ is a valid character in file or directory names, NOT the dir separator
+            s.replace( '\\', '_' );
+        else
+            s.replace( '/', '_' ); // on windows we have to replace / instead
+
         for( int i = 0; i < s.length(); i++ )
         {
             QChar c = s[ i ];
             if( c < QChar(0x20) || c == QChar(0x7F) // 0x7F = 127 = DEL control character
                     || c=='*' || c=='?' || c=='<' || c=='>'
-                    || c=='|' || c=='"' || c==':' || c=='/'
-                    || c=='\\' )
+                    || c=='|' || c=='"' || c==':' )
                 c = '_';
             s[ i ] = c;
         }
 
+        /* beware of reserved device names */
         uint len = s.length();
         if( len == 3 || (len > 3 && s[3] == '.') )
         {
@@ -1039,16 +1044,29 @@ namespace Amarok
                 s = '_' + s;
         }
 
-        while( s.startsWith( '.' ) )
-            s = s.mid(1);
+        // "clock$" is only allowed WITH extension, according to:
+        // http://en.wikipedia.org/w/index.php?title=Filename&oldid=303934888#Comparison_of_file_name_limitations
+        if( QString::compare( s, "clock$", Qt::CaseInsensitive ) == 0 )
+            s = '_' + s;
 
-        while( s.endsWith( '.' ) )
-            s = s.left( s.length()-1 );
-
+        /* max path length of Windows API */
         s = s.left(255);
+
+        /* whitespaces at the end of folder/file names or extensions are bad */
         len = s.length();
         if( s[len-1] == ' ' )
             s[len-1] = '_';
+
+        int extensionIndex = s.lastIndexOf( '.' ); // correct trailing spaces in file name itself
+        if( ( extensionIndex != -1 ) && ( s.length() > 1 ) )
+            if( s.at( extensionIndex - 1 ) == ' ' )
+                s[extensionIndex - 1] = '_';
+
+        for( int i = 1; i < s.length(); i++ ) // correct trailing whitespaces in folder names
+        {
+            if( ( s.at( i ) == QDir::separator() ) && ( s.at( i - 1 ) == ' ' ) )
+                s[i - 1] = '_';
+        }
 
         return s;
     }

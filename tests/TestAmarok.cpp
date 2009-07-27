@@ -206,10 +206,10 @@ void TestAmarok::testVfatPath()
     QCOMPARE( Amarok::vfatPath( "! # $ % & ' ( ) - @ ^ _ ` { } ~" ), QString( "! # $ % & ' ( ) - @ ^ _ ` { } ~" ) );
 
     /* only allowed in long file names */
-    QCOMPARE( Amarok::vfatPath( "+ , . ; = [ ]" ), QString( "+ , . ; = [ ]" ) );
+    QCOMPARE( Amarok::vfatPath( "+,.;=[]" ), QString( "+,.;=[]" ) );
 
-    /* illegal characters */
-    QCOMPARE( Amarok::vfatPath( "\"_*_/_:_<_>_?_\\_|" ), QString( "_________________" ) );
+    /* illegal characters, without / and \ (see later tests) */
+    QCOMPARE( Amarok::vfatPath( "\"_*_:_<_>_?_|" ), QString( "_____________" ) );
 
     /* illegal control characters: 0-31, 127 */
     QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x00 ) + QChar( 0x01 ) + QChar( 0x02 ) + ".1" ), QString( "abc___.1" ) );
@@ -225,13 +225,32 @@ void TestAmarok::testVfatPath()
     QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x1B ) + QChar( 0x1C ) + QChar( 0x1D ) + ".1" ), QString( "abc___.1" ) );
     QCOMPARE( Amarok::vfatPath( QString( "abc" ) + QChar( 0x1E ) + QChar( 0x7F ) + ".1" ), QString( "abc__.1" ) ); // 0x7F = 127 = DEL control character
 
-    /* trailing spaces in extension and file itself name are being ignored (!) */
-    QCOMPARE( Amarok::vfatPath( "test  " ), QString( "test" ) );
-    QCOMPARE( Amarok::vfatPath( "test.ext   " ), QString( "test.ext" ) );
-    QCOMPARE( Amarok::vfatPath( "test  .ext  " ), QString( "test.ext" ) ); // yes, really!
+    /* trailing spaces in extension, directory and file names are being ignored (!) */
+    QCOMPARE( Amarok::vfatPath( "test   " ), QString( "test  _" ) );
+    QCOMPARE( Amarok::vfatPath( "   test   " ), QString( "   test  _" ) );
+    QCOMPARE( Amarok::vfatPath( "test.ext   " ), QString( "test.ext  _" ) );
+    QCOMPARE( Amarok::vfatPath( "test   .ext   " ), QString( "test  _.ext  _" ) );
+    QCOMPARE( Amarok::vfatPath( "   test   .ext   " ), QString( "   test  _.ext  _" ) ); // yes, really!
 
-    /* Stepping deeper into M$ hell: reserved device names...           */
-    /* See http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx */
+#ifdef Q_WS_WIN // interpret / as part of the name, not directory separator
+    QCOMPARE( Amarok::vfatPath( "\\some\\folder   \\" ), QString( "\\some\\folder  _\\" ) );
+    QCOMPARE( Amarok::vfatPath( "\\some   \\folder   \\" ), QString( "\\some  _\\folder  _\\" ) );
+    QCOMPARE( Amarok::vfatPath( "\\...some   \\ev  il   \\folders...\\" ), QString( "\\...some  _\\ev  il  _\\folders...\\" ) );
+    QCOMPARE( Amarok::vfatPath( "\\some\\fol/der   \\" ), QString( "\\some\\fol_der  _\\" ) );
+#else // interpret \ as part of the name, not directory separator
+    QCOMPARE( Amarok::vfatPath( "/some/folder   /" ), QString( "/some/folder  _/" ) );
+    QCOMPARE( Amarok::vfatPath( "/some   /folder   /" ), QString( "/some  _/folder  _/" ) );
+    QCOMPARE( Amarok::vfatPath( "/...some   /ev  il   /folders.../" ), QString( "/...some  _/ev  il  _/folders.../" ) );
+    QCOMPARE( Amarok::vfatPath( "/some/fol\\der   /" ), QString( "/some/fol_der  _/" ) );
+#endif
+
+    /* Stepping deeper into M$ hell: reserved device names
+     * See http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx */
+    QCOMPARE( Amarok::vfatPath( "CLOCK$" ), QString( "_CLOCK$" ) );
+    /* this one IS allowed according to
+     * http://en.wikipedia.org/w/index.php?title=Filename&oldid=303934888#Comparison_of_file_name_limitations */
+    QCOMPARE( Amarok::vfatPath( "CLOCK$.ext" ), QString( "CLOCK$.ext" ) );
+
     QCOMPARE( Amarok::vfatPath( "CON" ), QString( "_CON" ) );
     QCOMPARE( Amarok::vfatPath( "CON.ext" ), QString( "_CON.ext" ) );
 
