@@ -115,6 +115,8 @@ void PopupDropperPrivate::fadeHideTimerFrameChanged( int frame ) //SLOT
         int alpha = (int)( color.alpha() * val );
         color.setAlpha( alpha );
         q->setPalette( color );
+        foreach( PopupDropperItem* pdi, pdiItems )
+            pdi->setSubitemOpacity( val );
     }
 }
 
@@ -127,6 +129,8 @@ void PopupDropperPrivate::fadeShowTimerFrameChanged( int frame ) //SLOT
         int alpha = (int)( color.alpha() * val );
         color.setAlpha( alpha );
         q->setPalette( color );
+        foreach( PopupDropperItem* pdi, pdiItems )
+            pdi->setSubitemOpacity( val );
     }
 }
 
@@ -141,6 +145,8 @@ void PopupDropperPrivate::fadeShowTimerFinished() //SLOT
 {
     q->setPalette( windowColor ); 
     queuedHide = false;
+    foreach( PopupDropperItem* pdi, pdiItems )
+        pdi->setSubitemOpacity( 1.0 );
 }
 
 void PopupDropperPrivate::dragEntered()
@@ -425,6 +431,8 @@ void PopupDropper::show()
         QColor color = d->windowColor;
         color.setAlpha( 0 );
         setPalette( color );
+        foreach( PopupDropperItem* pdi, d->pdiItems )
+            pdi->setSubitemOpacity( 0.0 );
         d->fadeShowTimer.start();
         //qDebug() << "Timer started";
     }

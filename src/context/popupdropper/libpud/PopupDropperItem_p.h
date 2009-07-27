@@ -59,8 +59,10 @@ public:
     bool customHoveredTextColor;
     bool customHoveredBorderPen;
     bool customHoveredFillBrush;
+    qreal subitemOpacity;
     QString file;
     QRect svgElementRect;
+    QSvgRenderer* sharedRenderer;
     int horizontalOffset;
     int textOffset;
     bool separator;

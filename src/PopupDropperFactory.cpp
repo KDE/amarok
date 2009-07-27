@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "PopupDropperFactory.h"
 
 #include "Debug.h"
@@ -94,11 +94,10 @@ PopupDropperItem * PopupDropperFactory::createItem( QAction * action )
     font.setBold( true );
 
     PopupDropperItem* pdi = new PopupDropperItem();
+    pdi->setSharedRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+
     pdi->setAction( action );
 
-    QString elementId = action->property( "amarok_svg_id" ).toString();
-    if ( !elementId.isEmpty() )
-        pdi->setElementId( elementId );
     QString text = pdi->text();
     text.remove( QChar('&') );
     pdi->setText( text );

@@ -33,7 +33,7 @@ BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album 
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
     setIcon( KIcon("bookmark-new") );
-    setProperty( "amarok_svg_id", "lastfm" );
+    setProperty( "popupdropper_svg_id", "lastfm" );
 }
 
 void
@@ -49,7 +49,7 @@ BookmarkArtistAction::BookmarkArtistAction( QObject *parent, Meta::ArtistPtr art
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
     setIcon( KIcon("bookmark-new") );
-    setProperty( "amarok_svg_id", "lastfm" );
+    setProperty( "popupdropper_svg_id", "lastfm" );
 }
 
 void
