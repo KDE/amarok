@@ -312,10 +312,7 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     addGradientToAppletBackground( p );
 
     // draw rounded rect around title
-    p->save();
-    p->translate(0.5, 0.5);
     drawRoundedRectAroundText( p, m_wikipediaLabel );
-    p->restore();
 
     //draw background of wiki text
     p->save();
