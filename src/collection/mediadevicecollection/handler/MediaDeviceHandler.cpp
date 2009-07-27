@@ -64,7 +64,7 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     DEBUG_BLOCK
 
     connect( m_memColl, SIGNAL( deletingCollection() ),
-                 this, SLOT( slotDeletingHandler() ) );
+                 this, SLOT( slotDeletingHandler() ), Qt::QueuedConnection );
 
 }
 
@@ -77,6 +77,7 @@ MediaDeviceHandler::~MediaDeviceHandler()
 void
 MediaDeviceHandler::slotDeletingHandler()
 {
+    DEBUG_BLOCK
     The::playlistManager()->removeProvider( m_provider );
 }
 
