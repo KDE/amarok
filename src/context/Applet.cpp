@@ -91,10 +91,9 @@ Context::Applet::truncateTextToFit( QString text, const QFont& font, const QRect
 void
 Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem* t )
 {
-
+   p->save();
    p->setRenderHint( QPainter::Antialiasing );
    QColor col = PaletteHandler::highlightColor().lighter( 150 );
-   p->save();
    QRectF rect = t->boundingRect();
    rect.moveTopLeft( t->pos() );
    QPainterPath path;
