@@ -1767,6 +1767,20 @@ IpodHandler::libSavePlaylist( const Meta::TrackList &tracks, const QString& name
 }
 
 void
+IpodHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    DEBUG_BLOCK
+    Itdb_Playlist *pl = m_itdbplaylisthash[ playlist ];
+
+    if( pl )
+    {
+        debug() << "Playlist removed";
+        itdb_playlist_remove( pl );
+        databaseChanged();
+    }
+}
+
+void
 IpodHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK

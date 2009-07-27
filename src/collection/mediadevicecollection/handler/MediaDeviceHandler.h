@@ -217,6 +217,8 @@ public slots:
 
     void savePlaylist( const Meta::TrackList &tracks, const QString& name );
     void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+    void deletePlaylists( const Meta::MediaDevicePlaylistList &playlistlist );
+
 
     void copyNextTrackToDevice();
     bool privateCopyTrackToDevice( const Meta::TrackPtr& track );

@@ -117,6 +117,7 @@ namespace Handler
 
     // TODO: make pure virtual, reimplement in every plcapability
     virtual void savePlaylist( const Meta::TrackList &tracks, const QString& name ) { Q_UNUSED(tracks) Q_UNUSED( name) }
+    virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
 
     virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
 

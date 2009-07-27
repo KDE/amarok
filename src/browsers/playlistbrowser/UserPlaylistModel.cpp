@@ -452,6 +452,7 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
             {
                 if( !The::playlistManager()->isWritable( playlist ) )
                 {
+                    debug() << "There exists an unwritable playlist, not adding write actions";
                     writable = false;
                     break;
                 }
@@ -588,6 +589,15 @@ PlaylistBrowserNS::UserModel::slotRename()
     DEBUG_BLOCK
     The::playlistManager()->rename( m_selectedPlaylists.first() );
 }
+
+void
+PlaylistBrowserNS::UserModel::slotDelete()
+{
+    DEBUG_BLOCK
+
+    The::playlistManager()->deletePlaylists( m_selectedPlaylists );
+}
+
 
 Meta::PlaylistList
 PlaylistBrowserNS::UserModel::selectedPlaylists( const QModelIndexList &list )

@@ -98,6 +98,12 @@ IpodPlaylistCapability::savePlaylist( const Meta::TrackList &tracks, const QStri
 }
 
 void
+IpodPlaylistCapability::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    m_handler->deletePlaylist( playlist );
+}
+
+void
 IpodPlaylistCapability::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     m_handler->renamePlaylist( playlist );

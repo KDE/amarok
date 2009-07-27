@@ -142,6 +142,8 @@ class PlaylistManager : public QObject
 
         void rename( Meta::PlaylistPtr playlist );
 
+        void deletePlaylists( Meta::PlaylistList playlistlist );
+
         //the next two functions are needed to support some services that have no other way of presenting data to the user
         //than wrapping the url to a playlist in a track.
         bool canExpand( Meta::TrackPtr track );

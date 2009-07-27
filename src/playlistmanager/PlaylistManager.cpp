@@ -453,6 +453,37 @@ PlaylistManager::rename( Meta::PlaylistPtr playlist )
     }
 }
 
+void
+PlaylistManager::deletePlaylists( Meta::PlaylistList playlistlist )
+{
+    // Map the playlists to their respective providers
+
+    QHash<UserPlaylistProvider*, Meta::PlaylistList> provLists;
+    foreach( Meta::PlaylistPtr playlist, playlistlist )
+    {
+        // Get the providers of the respective playlists
+
+        UserPlaylistProvider *prov = qobject_cast<UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+
+        if( prov )
+        {
+            Meta::PlaylistList pllist;
+            pllist << playlist;
+            if( provLists.contains( prov ) )
+                provLists.insert(  prov, pllist );
+            else
+                provLists[ prov ] << pllist;
+        }
+    }
+
+    // Pass each list of playlists to the respective provider for deletion
+
+    foreach( UserPlaylistProvider* prov, provLists.keys() )
+    {
+        prov->deletePlaylists( provLists[ prov ] );
+    }
+}
+
 bool
 PlaylistManager::canExpand( Meta::TrackPtr track )
 {

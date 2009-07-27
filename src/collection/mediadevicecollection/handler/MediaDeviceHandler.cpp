@@ -961,6 +961,8 @@ MediaDeviceHandler::parseTracks()
                  SLOT( savePlaylist( const Meta::TrackList &, const QString& ) ) );
         connect( m_provider, SIGNAL( playlistRenamed( const Meta::MediaDevicePlaylistPtr &) ),
                  SLOT( renamePlaylist( const Meta::MediaDevicePlaylistPtr & ) ) );
+        connect( m_provider, SIGNAL( playlistsDeleted( const Meta::MediaDevicePlaylistList & ) ),
+                 SLOT( deletePlaylists( const Meta::MediaDevicePlaylistList &  ) ) );
 
         The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
         m_provider->sendUpdated();
@@ -1106,16 +1108,11 @@ MediaDeviceHandler::savePlaylist( const Meta::TrackList &tracks, const QString& 
         }
     }
 
-
     if( m_pc )
     {
-        // m_pc is gotten, and we call its save method etc.
-
-
         debug() << "Saving playlist with " << tracks.count() << "tracks";
 
         m_pc->savePlaylist( tracks, name );
-
         writeDatabase();
     }
 
@@ -1137,18 +1134,39 @@ MediaDeviceHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist
         }
     }
 
-
     if( m_pc )
     {
         debug() << "Renaming playlist";
+        m_pc->renamePlaylist( playlist );
+        writeDatabase();
+    }
+}
 
-        //Meta::MediaDevicePlaylistPtr pl = Meta::MediaDevicePlaylistPtr::staticCast( playlist );
+void
+MediaDeviceHandler::deletePlaylists( const Meta::MediaDevicePlaylistList &playlistlist )
+{
+    DEBUG_BLOCK
+    if( !m_pc )
+    {
+        if( this->hasCapabilityInterface( Handler::Capability::Playlist ) )
+        {
+            m_pc = this->create<Handler::PlaylistCapability>();
+            if( !m_pc )
+            {
+                debug() << "Handler does not have MediaDeviceHandler::PlaylistCapability.";
+            }
+        }
+    }
 
-        //if( pl )
-        //{
-            m_pc->renamePlaylist( playlist );
-            writeDatabase();
-        //}
+    if( m_pc )
+    {
+        debug() << "Deleting playlists";
+        foreach( Meta::MediaDevicePlaylistPtr playlist, playlistlist )
+        {
+            m_pc->deletePlaylist( playlist );
+        }
+
+        writeDatabase();
     }
 }
 

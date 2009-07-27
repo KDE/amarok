@@ -92,6 +92,7 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
         void slotAppend();
 
         void slotRename();
+        void slotDelete(); // Deletes playlists
 
         void slotUpdate();
         void slotRenamePlaylist( Meta::PlaylistPtr playlist );

@@ -59,6 +59,7 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 
         virtual bool isWritable() { return false; }
         virtual void rename( Meta::PlaylistPtr playlist, const QString &newName ) {Q_UNUSED( playlist ) Q_UNUSED(newName)}
+        virtual void deletePlaylists( Meta::PlaylistList playlistlist ) { Q_UNUSED( playlistlist ) }
 
 };
 

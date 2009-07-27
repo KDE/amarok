@@ -175,9 +175,35 @@ MediaDeviceUserPlaylistProvider::rename( Meta::PlaylistPtr playlist, const QStri
 }
 
 void
+MediaDeviceUserPlaylistProvider::deletePlaylists( Meta::PlaylistList playlistlist )
+{
+    Meta::MediaDevicePlaylistList pllist;
+    foreach( Meta::PlaylistPtr playlist, playlistlist )
+    {
+        Meta::MediaDevicePlaylistPtr pl = Meta::MediaDevicePlaylistPtr::staticCast( playlist );
+
+        if( pl )
+        {
+            debug() << "Deleting playlist: " << pl->name();
+            removePlaylist( pl );
+            pllist << pl;
+        }
+    }
+
+    emit playlistsDeleted( pllist );
+}
+
+void
 MediaDeviceUserPlaylistProvider::addPlaylist( Meta::MediaDevicePlaylistPtr &playlist )
 {
     m_playlists << playlist;
+    emit updated();
+}
+
+void
+MediaDeviceUserPlaylistProvider::removePlaylist( Meta::MediaDevicePlaylistPtr &playlist )
+{
+    m_playlists.removeOne( playlist );
     emit updated();
 }
 
