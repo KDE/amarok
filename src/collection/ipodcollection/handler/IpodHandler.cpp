@@ -1700,7 +1700,7 @@ bool
 IpodHandler::shouldNotParseNextPlaylist()
 {
     // NOTE: skip the master playlist
-    return ( itdb_playlist_is_mpl( m_currplaylist ) );
+    return ( itdb_playlist_is_mpl( m_currplaylist ) || itdb_playlist_is_podcasts( m_currplaylist ) );
 }
 
 
