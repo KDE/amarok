@@ -102,17 +102,17 @@ namespace Meta
 
             /**
              * Retrieves a specialized interface which represents a capability of this
-             * MetaBase object.                                                                                                    
-             *                                                                                                                     
-             * @returns a pointer to the capability interface if it exists, 0 otherwise                                            
-             */                                                                                                                    
-            template <class CapIface> CapIface *create()                                                                           
-            {                                                                                                                      
-                Meta::Capability::Type type = CapIface::capabilityInterfaceType();                                                 
-                Meta::Capability *iface = createCapabilityInterface(type);                                                         
-                return qobject_cast<CapIface *>(iface);                                                                            
+             * MetaBase object.
+             *
+             * @returns a pointer to the capability interface if it exists, 0 otherwise
+             */
+            template <class CapIface> CapIface *create()
+            {
+                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
+                Meta::Capability *iface = createCapabilityInterface(type);
+                return qobject_cast<CapIface *>(iface);
             }
-            
+
             /**
              * Tests if a MetaBase object provides a given capability interface.
              *

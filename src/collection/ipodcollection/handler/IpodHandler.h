@@ -140,10 +140,9 @@ public:
 
     virtual QString libGetPlaylistName();
     void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-    void libSavePlaylist( const Meta::TrackList &tracks, const QString& name );
+    void libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
     void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
     void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-
 
     virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
     virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );

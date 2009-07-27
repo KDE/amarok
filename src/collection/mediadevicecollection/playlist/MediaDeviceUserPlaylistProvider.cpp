@@ -153,7 +153,7 @@ MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks, const QStr
     Meta::MediaDevicePlaylistPtr pl = Meta::MediaDevicePlaylistPtr( new Meta::MediaDevicePlaylist( name, tracks ) );
     //pl = 0;
 
-    emit playlistSaved( tracks, name ); // inform handler of new playlist
+    emit playlistSaved( pl, name ); // inform handler of new playlist
 
     addPlaylist( pl );
 

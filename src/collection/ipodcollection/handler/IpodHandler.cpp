@@ -1750,7 +1750,7 @@ IpodHandler::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist 
 }
 
 void
-IpodHandler::libSavePlaylist( const Meta::TrackList &tracks, const QString& name )
+IpodHandler::libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
 {
     DEBUG_BLOCK
     // Make new playlist
@@ -1758,10 +1758,14 @@ IpodHandler::libSavePlaylist( const Meta::TrackList &tracks, const QString& name
     Itdb_Playlist *pl = itdb_playlist_new( name.toUtf8(), 0 );
     itdb_playlist_add( m_itdb, pl, -1 );
 
+    Meta::TrackList tracks = const_cast<Meta::MediaDevicePlaylistPtr&> ( playlist )->tracks();
+
     foreach( const Meta::TrackPtr track, tracks )
     {
         itdb_playlist_add_track( pl, m_itdbtrackhash[ Meta::MediaDeviceTrackPtr::staticCast( track ) ], -1 );
     }
+
+    m_itdbplaylisthash[ playlist ] = pl;
 
     databaseChanged();
 }

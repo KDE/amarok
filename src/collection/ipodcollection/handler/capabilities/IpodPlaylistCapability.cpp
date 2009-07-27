@@ -92,9 +92,9 @@ IpodPlaylistCapability::libGetPlaylistName()
 }
 
 void
-IpodPlaylistCapability::savePlaylist( const Meta::TrackList &tracks, const QString& name )
+IpodPlaylistCapability::savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
 {
-    m_handler->libSavePlaylist( tracks, name );
+    m_handler->libSavePlaylist( playlist, name );
 }
 
 void

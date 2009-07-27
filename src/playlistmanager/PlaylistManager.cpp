@@ -448,6 +448,7 @@ PlaylistManager::rename( Meta::PlaylistPtr playlist )
                                                    &ok );
     if ( ok )
     {
+        debug() << "Changing name from " << playlist->name() << " to " << newName.trimmed();
         prov->rename( playlist, newName.trimmed() );
         emit( updated() );
     }

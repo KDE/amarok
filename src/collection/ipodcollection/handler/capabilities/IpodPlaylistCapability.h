@@ -46,7 +46,7 @@ class IpodPlaylistCapability : public PlaylistCapability
     virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
     virtual QString libGetPlaylistName();
 
-    virtual void savePlaylist( const Meta::TrackList &tracks, const QString& name );
+    virtual void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
     virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
     virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
 

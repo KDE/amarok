@@ -957,8 +957,8 @@ MediaDeviceHandler::parseTracks()
             m_provider->addPlaylist( playlist );
         }
         // When the provider saves a playlist, the handler should save it internally
-        connect( m_provider, SIGNAL( playlistSaved( const Meta::TrackList &, const QString& ) ),
-                 SLOT( savePlaylist( const Meta::TrackList &, const QString& ) ) );
+        connect( m_provider, SIGNAL( playlistSaved( const Meta::MediaDevicePlaylistPtr &, const QString& ) ),
+                 SLOT( savePlaylist( const Meta::MediaDevicePlaylistPtr &, const QString& ) ) );
         connect( m_provider, SIGNAL( playlistRenamed( const Meta::MediaDevicePlaylistPtr &) ),
                  SLOT( renamePlaylist( const Meta::MediaDevicePlaylistPtr & ) ) );
         connect( m_provider, SIGNAL( playlistsDeleted( const Meta::MediaDevicePlaylistList & ) ),
@@ -1093,7 +1093,7 @@ MediaDeviceHandler::provider()
 }
 
 void
-MediaDeviceHandler::savePlaylist( const Meta::TrackList &tracks, const QString& name )
+MediaDeviceHandler::savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
 {
     DEBUG_BLOCK
     if( !m_pc )
@@ -1110,9 +1110,7 @@ MediaDeviceHandler::savePlaylist( const Meta::TrackList &tracks, const QString& 
 
     if( m_pc )
     {
-        debug() << "Saving playlist with " << tracks.count() << "tracks";
-
-        m_pc->savePlaylist( tracks, name );
+        m_pc->savePlaylist( playlist, name );
         writeDatabase();
     }
 
