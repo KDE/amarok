@@ -491,6 +491,16 @@ PlaylistManager::deletePlaylists( Meta::PlaylistList playlistlist )
 }
 
 bool
+PlaylistManager::moveTrack( Meta::PlaylistPtr playlist, int from, int to )
+{
+    DEBUG_BLOCK
+    debug() << "in playlist: " << playlist->prettyName();
+    debug() << QString("move track %1 to position %2").arg( from ).arg( to );
+    //TODO: implement
+    return false;
+}
+
+bool
 PlaylistManager::canExpand( Meta::TrackPtr track )
 {
     if( !track )
