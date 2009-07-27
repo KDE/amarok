@@ -213,11 +213,11 @@ void TokenWithLayout::fillMenu( QMenu * menu )
                 }
             }
 
-            int max = qMax( spareWidth, 0.0 );
+            int max = qMax<qreal>( spareWidth, 0.0 );
             debug() << "slider max value: " << max;
 
             if ( max >= m_width * 100.0 )
-                slider->setMaximum( qMax( spareWidth, 0.0 ) );
+                slider->setMaximum( qMax<qreal>( spareWidth, 0.0 ) );
             else
                 slider->setMaximum( m_width * 100.0 );
         }
