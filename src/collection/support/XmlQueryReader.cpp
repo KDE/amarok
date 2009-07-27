@@ -92,8 +92,6 @@ XmlQueryReader::readQuery()
     while( !atEnd() )
     {
         readNext();
-        if( isEndElement() )
-            break;
 
         if( isStartElement() )
         {
@@ -119,7 +117,7 @@ XmlQueryReader::readQuery()
             else if( name() == "includeCollection" )
             {
                 QStringRef id =  attributes().value( "id" );
-                if( !name().isEmpty() )
+                if( !id.isEmpty() )
                 {
                     d->qm->includeCollection( id.toString() );
                 }
@@ -247,9 +245,21 @@ XmlQueryReader::readFilters()
     while( !atEnd() )
     {
         readNext();
-        if( isEndElement() ) 
-            break;
-        
+        if( isEndElement() )
+        {
+            if( name() == "and" || name() == "or" )
+            {
+                d->qm->endAndOr();
+                break;
+            }
+            else if( name() == "filters" )
+            {
+                break;
+            }
+            else
+                continue;
+        }
+
         if( name() == "include" || name() == "exclude" )
         {
             Filter filter;
@@ -284,12 +294,12 @@ XmlQueryReader::readFilters()
             {
                 if( name() == "include" )
                 {
-                    debug() << "QXR: include filter";
+                    debug() << "XQR: include filter";
                     d->qm->addFilter( filter.field, filter.value );
                 }
                 else
                 {
-                    debug() << "QXR: exclude filter";
+                    debug() << "XQR: exclude filter";
                     d->qm->excludeFilter( filter.field, filter.value );
                 }
             }
@@ -299,12 +309,12 @@ XmlQueryReader::readFilters()
         else if( name() == "and" )
         {
             d->qm->beginAnd();
-            readAndOr();
+            readFilters();
         }
         else if( name() == "or" )
         {
             d->qm->beginOr();
-            readAndOr();
+            readFilters();
         }
     }
 }
