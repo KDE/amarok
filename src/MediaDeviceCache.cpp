@@ -79,7 +79,7 @@ MediaDeviceCache::refreshCache()
     {
         debug() << "Found Solid::DeviceInterface::StorageAccess with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
-        
+
         Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
         Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
 
@@ -87,7 +87,7 @@ MediaDeviceCache::refreshCache()
         {
             m_type[ device.udi() ] = MediaDeviceCache::SolidAudioCdType;
             m_name[ device.udi() ] = device.vendor() + " - " + device.product();
-        } 
+        }
         else if( ssa )
         {
             if( !m_volumes.contains( device.udi() ) )
@@ -143,7 +143,7 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
 
     Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
 
-            
+
     if( m_type.contains( udi ) )
     {
         debug() << "Duplicate UDI trying to be added: " << udi;
@@ -272,6 +272,7 @@ MediaDeviceCache::deviceName( const QString &udi ) const
 bool
 MediaDeviceCache::isGenericEnabled( const QString &udi ) const
 {
+    DEBUG_BLOCK
     if( m_type[udi] != MediaDeviceCache::SolidVolumeType )
     {
         debug() << "Not SolidVolumeType, returning false";
@@ -299,6 +300,7 @@ MediaDeviceCache::isGenericEnabled( const QString &udi ) const
 const QString
 MediaDeviceCache::volumeMountPoint( const QString &udi ) const
 {
+    DEBUG_BLOCK
     Solid::Device device( udi );
     Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
     if( !ssa || !ssa->isAccessible() )
