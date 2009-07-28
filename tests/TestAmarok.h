@@ -34,6 +34,7 @@ private slots:
     void testCleanPath();
     void testComputeScore();
     void testConciseTimeSince();
+    void testDecapitateString();
     void testEscapeHTMLAttr();
     void testExtension();
     void testManipulateThe();
@@ -48,7 +49,6 @@ private slots:
     //KUrl testMostLocalURL( const KUrl &url );
 
  /*
-    QString decapitateString( const QString &input, const QString &ref );
     QString proxyForUrl( const QString& url ); // how to test?
     QString proxyForProtocol( const QString& protocol ); // how to test?     */
 };

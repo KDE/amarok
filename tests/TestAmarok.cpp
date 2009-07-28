@@ -105,8 +105,20 @@ void TestAmarok::testConciseTimeSince()
     /* any other good ideas what to test here? */
 }
 
+void TestAmarok::testDecapitateString()
+{
+    QCOMPARE( Amarok::decapitateString( "", "" ), QString( "" ) );
+
+    QCOMPARE( Amarok::decapitateString( "abc123", "abc456" ), QString( "123" ) );
+    QCOMPARE( Amarok::decapitateString( "abc", "123" ), QString( "abc" ) );
+    QCOMPARE( Amarok::decapitateString( "abc", "" ), QString( "abc" ) );
+    QCOMPARE( Amarok::decapitateString( "", "abc" ), QString( "" ) );
+}
+
 void TestAmarok::testEscapeHTMLAttr()
 {
+    QCOMPARE( Amarok::escapeHTMLAttr( "" ), QString( "" ) );
+
     QCOMPARE( Amarok::escapeHTMLAttr( "test\"fu=bar" ), QString( "test%22fu=bar" ) );
     QCOMPARE( Amarok::escapeHTMLAttr( "test#fu=bar" ), QString( "test%23fu=bar" ) );
     QCOMPARE( Amarok::escapeHTMLAttr( "test%fu=bar" ), QString( "test%25fu=bar" ) );
@@ -189,6 +201,8 @@ void TestAmarok::testSaveLocation()
 
 void TestAmarok::testUnescapeHTMLAttr()
 {
+    QCOMPARE( Amarok::unescapeHTMLAttr( "" ), QString( "" ) );
+
     QCOMPARE( Amarok::unescapeHTMLAttr( "test%22fu=bar" ), QString( "test\"fu=bar" ) );
     QCOMPARE( Amarok::unescapeHTMLAttr( "test%23fu=bar" ), QString( "test#fu=bar" ) );
     QCOMPARE( Amarok::unescapeHTMLAttr( "test%25fu=bar" ), QString( "test%fu=bar" ) );
