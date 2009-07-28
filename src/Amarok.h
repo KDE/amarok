@@ -219,7 +219,7 @@ namespace Amarok
     AMAROK_EXPORT QString decapitateString( const QString &input, const QString &ref );
 
     /*
-     * Transform to be usable within HTML/HTML attributes
+     * Transform to be usable within HTML/XHTML attributes
      */
     AMAROK_EXPORT QString escapeHTMLAttr( const QString &s ); // defined in App.cpp
     AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s ); // defined in App.cpp

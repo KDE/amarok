@@ -105,6 +105,15 @@ void TestAmarok::testConciseTimeSince()
     /* any other good ideas what to test here? */
 }
 
+void TestAmarok::testEscapeHTMLAttr()
+{
+    QCOMPARE( Amarok::escapeHTMLAttr( "test\"fu=bar" ), QString( "test%22fu=bar" ) );
+    QCOMPARE( Amarok::escapeHTMLAttr( "test#fu=bar" ), QString( "test%23fu=bar" ) );
+    QCOMPARE( Amarok::escapeHTMLAttr( "test%fu=bar" ), QString( "test%25fu=bar" ) );
+    QCOMPARE( Amarok::escapeHTMLAttr( "test\'fu=bar" ), QString( "test%27fu=bar" ) );
+    QCOMPARE( Amarok::escapeHTMLAttr( "test?fu=bar" ), QString( "test%3Ffu=bar" ) );
+}
+
 void TestAmarok::testExtension()
 {
     QCOMPARE( Amarok::extension( "" ), QString( "" ) );
@@ -176,6 +185,15 @@ void TestAmarok::testSaveLocation()
     QCOMPARE( QDir::isAbsolutePath( saveLocation ), true );
     QCOMPARE( saveLocationDir.isReadable(), true );
     /* any other good ideas what to test here? */
+}
+
+void TestAmarok::testUnescapeHTMLAttr()
+{
+    QCOMPARE( Amarok::unescapeHTMLAttr( "test%22fu=bar" ), QString( "test\"fu=bar" ) );
+    QCOMPARE( Amarok::unescapeHTMLAttr( "test%23fu=bar" ), QString( "test#fu=bar" ) );
+    QCOMPARE( Amarok::unescapeHTMLAttr( "test%25fu=bar" ), QString( "test%fu=bar" ) );
+    QCOMPARE( Amarok::unescapeHTMLAttr( "test%27fu=bar" ), QString( "test\'fu=bar" ) );
+    QCOMPARE( Amarok::unescapeHTMLAttr( "test%3Ffu=bar" ), QString( "test?fu=bar" ) );
 }
 
 void TestAmarok::testVerboseTimeSince()

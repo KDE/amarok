@@ -756,10 +756,10 @@ bool App::event( QEvent *event )
 
 namespace Amarok
 {
-    /// @see amarok.h
+    /// @see Amarok.h
 
     /*
-    * Transform to be usable within HTML/HTML attributes
+    * Transform to be usable within HTML/XHTML attributes
     */
     QString escapeHTMLAttr( const QString &s )
     {

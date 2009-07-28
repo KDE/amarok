@@ -34,9 +34,11 @@ private slots:
     void testCleanPath();
     void testComputeScore();
     void testConciseTimeSince();
+    void testEscapeHTMLAttr();
     void testExtension();
     void testManipulateThe();
     void testSaveLocation();
+    void testUnescapeHTMLAttr();
     void testVerboseTimeSince();
     void testVfatPath();
      /*KUrl::List testRecursiveUrlExpand( const KUrl &url ); //defined in PlaylistHandler.cpp
@@ -47,8 +49,6 @@ private slots:
 
  /*
     QString decapitateString( const QString &input, const QString &ref );
-    QString escapeHTMLAttr( const QString &s );
-    QString unescapeHTMLAttr( const QString &s );
     QString proxyForUrl( const QString& url ); // how to test?
     QString proxyForProtocol( const QString& protocol ); // how to test?     */
 };
