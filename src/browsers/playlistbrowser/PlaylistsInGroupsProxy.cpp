@@ -165,11 +165,9 @@ PlaylistsInGroupsProxy::rowCount( const QModelIndex& index ) const
         qint64 groupIndex = index.row();
         return m_groupHash.count( groupIndex );
     }
-    else
-    {
-        QModelIndex originalIndex = mapToSource( index );
-        return m_model->rowCount( originalIndex );
-    }
+
+    QModelIndex originalIndex = mapToSource( index );
+    return m_model->rowCount( originalIndex );
 }
 
 QVariant
