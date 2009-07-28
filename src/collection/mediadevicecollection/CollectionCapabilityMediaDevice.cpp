@@ -35,15 +35,12 @@ CollectionCapabilityMediaDevice::CollectionCapabilityMediaDevice( MediaDeviceCol
 QList<QAction *>
 CollectionCapabilityMediaDevice::collectionActions()
 {
-    qm->deleteLater();
-    QList< QAction* > actions;
-
     // Create Standard Device Actions
     QAction *disconnectAction = new QAction( KIcon( "media-eject" ),  i18n(  "&Disconnect Device" ),  0 );
     disconnectAction->setProperty( "amarok_svg_id", "delete" );
     connect( disconnectAction, SIGNAL( triggered() ), m_coll, SLOT( disconnectDevice() ) );
 
-    QList<PopupDropperAction*> actions;
+    QList<QAction*> actions;
     actions.append( disconnectAction );
 
     // Pull in other device actions defined by subclasses

@@ -73,7 +73,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvide
 
     Meta::MediaDevicePlaylistList m_playlists;
 
-    PopupDropperAction *m_renameAction;
+    QAction *m_renameAction;
 };
 
 #endif
