@@ -64,7 +64,6 @@ class POPUPDROPPER_EXPORT PopupDropperItem : public QObject, public QAbstractGra
     Q_PROPERTY( bool customHoveredTextColor READ customHoveredTextColor )
     Q_PROPERTY( bool customHoveredBorderPen READ customHoveredBorderPen )
     Q_PROPERTY( bool customHoveredFillBrush READ customHoveredFillBrush )
-    Q_PROPERTY( qreal subitemOpacity READ subitemOpacity WRITE setSubitemOpacity )
     Q_PROPERTY( bool separator READ isSeparator WRITE setSeparator )
     Q_PROPERTY( PopupDropperItem::SeparatorStyle separatorStyle READ separatorStyle WRITE setSeparatorStyle )
     Q_PROPERTY( bool hasLineSeparatorPen READ hasLineSeparatorPen )
@@ -114,8 +113,6 @@ public:
     bool customHoveredTextColor() const;
     bool customHoveredBorderPen() const;
     bool customHoveredFillBrush() const;
-    void setSubitemOpacity( qreal opacity );
-    qreal subitemOpacity() const;
 
     QGraphicsTextItem* textItem() const;
     void setTextItem( QGraphicsTextItem *textItem );

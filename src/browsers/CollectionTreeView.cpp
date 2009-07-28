@@ -804,7 +804,7 @@ QActionList CollectionTreeView::createBasicActions( const QModelIndexList & indi
         if( m_appendAction == 0 )
         {
             m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
-            m_appendAction->setProperty( "popupdropper_svg_id", "append" );
+            m_appendAction->setProperty( "amarok_svg_id", "append" );
             connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendChildTracks() ) );
         }
 
@@ -813,7 +813,7 @@ QActionList CollectionTreeView::createBasicActions( const QModelIndexList & indi
         if( m_loadAction == 0 )
         {
             m_loadAction = new QAction( i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
-            m_loadAction->setProperty( "popupdropper_svg_id", "load" );
+            m_loadAction->setProperty( "amarok_svg_id", "load" );
             connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotPlayChildTracks() ) );
         }
 
@@ -832,7 +832,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
         if ( m_editAction == 0 )
         {
             m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
-            setProperty( "popupdropper_svg_id", "edit" );
+            setProperty( "amarok_svg_id", "edit" );
             connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
         }
         actions.append( m_editAction );
@@ -868,7 +868,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                     if ( m_organizeAction == 0 )
                     {
                         m_organizeAction = new QAction( KIcon("folder-open" ), i18nc( "Organize Files", "Organize Files" ), this );
-                        m_organizeAction->setProperty( "popupdropper_svg_id", "organize" );
+                        m_organizeAction->setProperty( "amarok_svg_id", "organize" );
                         connect( m_organizeAction, SIGNAL( triggered() ), this, SLOT( slotOrganize() ) );
                     }
                     actions.append( m_organizeAction );
@@ -1004,7 +1004,7 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getCopyActions(const QM
             foreach( Amarok::Collection *coll, writableCollections )
             {
                 QAction *action = new QAction( QIcon(), coll->prettyName(), 0 );
-                action->setProperty( "popupdropper_svg_id", "collection" );
+                action->setProperty( "amarok_svg_id", "collection" );
                 connect( action, SIGNAL( triggered() ), this, SLOT( slotCopyTracks() ) );
 
                 m_currentCopyDestination.insert( action, coll );
@@ -1040,7 +1040,7 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const Q
                 foreach( Amarok::Collection *coll, writableCollections )
                 {
                     QAction *action = new QAction( QIcon(), coll->prettyName(), 0 );
-                    action->setProperty( "popupdropper_svg_id", "collection" );
+                    action->setProperty( "amarok_svg_id", "collection" );
                     connect( action, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
                     m_currentMoveDestination.insert( action, coll );
                 }
@@ -1061,7 +1061,7 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getRemoveActions( const
         {
             //writableCollections.append( collection );
             QAction *action = new QAction( KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
-            action->setProperty( "popupdropper_svg_id", "delete" );
+            action->setProperty( "amarok_svg_id", "delete" );
 
             connect( action, SIGNAL( triggered() ), this, SLOT( slotRemoveTracks() ) );
 

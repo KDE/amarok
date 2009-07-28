@@ -28,7 +28,7 @@ SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 
     setIcon( KIcon("view-services-lastfm-amarok") );
-    setProperty( "popupdropper_svg_id", "lastfm" );
+    setProperty( "amarok_svg_id", "lastfm" );
 }
 
 void SimilarArtistsAction::slotTriggered()

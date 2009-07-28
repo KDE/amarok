@@ -688,7 +688,7 @@ PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
             i18n( "&Append to Playlist" ),
             this
         );
-        m_appendAction->setProperty( "popupdropper_svg_id", "append" );
+        m_appendAction->setProperty( "amarok_svg_id", "append" );
         connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
     }
 
@@ -700,7 +700,7 @@ PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
             "&Load" ),
             this
         );
-        m_loadAction->setProperty( "popupdropper_svg_id", "load" );
+        m_loadAction->setProperty( "amarok_svg_id", "load" );
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
     }
 

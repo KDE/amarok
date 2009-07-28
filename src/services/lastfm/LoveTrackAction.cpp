@@ -26,7 +26,7 @@ LoveTrackAction::LoveTrackAction( LastFmService * service )
     , m_service( service )
 {
     setIcon( KIcon( "love-amarok") );
-    setProperty( "popupdropper_svg_id", "lastfm" );
+    setProperty( "amarok_svg_id", "lastfm" );
 
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 }

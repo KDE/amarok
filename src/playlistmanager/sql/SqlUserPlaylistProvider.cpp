@@ -134,7 +134,7 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
     if ( m_renameAction == 0 )
     {
         m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
-        m_renameAction->setProperty( "popupdropper_svg_id", "edit" );
+        m_renameAction->setProperty( "amarok_svg_id", "edit" );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
     actions << m_renameAction;
@@ -142,7 +142,7 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
     if ( m_deleteAction == 0 )
     {
         m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
-        m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+        m_deleteAction->setProperty( "amarok_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }
     actions << m_deleteAction;
@@ -163,7 +163,7 @@ SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackInde
                     i18n( "Remove From Playlist" ),
                     this
                 );
-        m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
+        m_removeTrackAction->setProperty( "amarok_svg_id", "delete" );
         connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
     }
     //Add the playlist/track combination to a QMultiMap that is stored in the action.

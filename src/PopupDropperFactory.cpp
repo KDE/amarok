@@ -94,10 +94,16 @@ PopupDropperItem * PopupDropperFactory::createItem( QAction * action )
     font.setBold( true );
 
     PopupDropperItem* pdi = new PopupDropperItem();
-    pdi->setSharedRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
-    
     pdi->setAction( action );
 
+    QString elementId = action->property( "amarok_svg_id" ).toString();
+    if ( !elementId.isEmpty() )
+    {
+        debug() << "action " << action->text() << " has svg id: " << elementId;
+        pdi->setSharedRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+        pdi->setElementId( elementId );
+
+    }
     QString text = pdi->text();
     text.remove( QChar('&') );
     pdi->setText( text );
