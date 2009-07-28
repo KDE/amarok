@@ -1,18 +1,21 @@
-/****************************************************************************************
- * Copyright (c) 2008 Jeff Mitchell <mitchell@kde.org>                                  *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 2 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/***************************************************************************
+ *   Copyright (c) 2008  Jeff Mitchell <mitchell@kde.org>                  *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
+ ***************************************************************************/
 
 #ifndef POPUPDROPPERITEM_H
 #define POPUPDROPPERITEM_H
@@ -37,7 +40,7 @@ class POPUPDROPPER_EXPORT PopupDropperItem : public QObject, public QAbstractGra
     Q_PROPERTY( HoverIndicatorShowStyle hoverIndicatorShowStyle READ hoverIndicatorShowStyle WRITE setHoverIndicatorShowStyle )
     Q_PROPERTY( Orientation orientation READ orientation WRITE setOrientation )
     Q_PROPERTY( TextProtection textProtection READ textProtection WRITE setTextProtection )
-    Q_PROPERTY( PopupDropperAction* action READ action WRITE setAction )
+    Q_PROPERTY( QAction* action READ action WRITE setAction )
     Q_PROPERTY( QString text READ text WRITE setText )
     Q_PROPERTY( QFont font READ font WRITE setFont )
     Q_PROPERTY( QGraphicsTextItem* textItem READ textItem WRITE setTextItem )
@@ -61,6 +64,10 @@ class POPUPDROPPER_EXPORT PopupDropperItem : public QObject, public QAbstractGra
     Q_PROPERTY( bool customHoveredTextColor READ customHoveredTextColor )
     Q_PROPERTY( bool customHoveredBorderPen READ customHoveredBorderPen )
     Q_PROPERTY( bool customHoveredFillBrush READ customHoveredFillBrush )
+    Q_PROPERTY( bool separator READ isSeparator WRITE setSeparator )
+    Q_PROPERTY( PopupDropperItem::SeparatorStyle separatorStyle READ separatorStyle WRITE setSeparatorStyle )
+    Q_PROPERTY( bool hasLineSeparatorPen READ hasLineSeparatorPen )
+    Q_PROPERTY( QPen lineSeparatorPen READ lineSeparatorPen WRITE setLineSeparatorPen )
 
 public:
     enum HoverIndicatorShowStyle { Never, OnHover, AlwaysShow };
@@ -69,6 +76,8 @@ public:
     Q_ENUMS( Orientation )
     enum TextProtection { NoProtection, MultiLine, ScaleFont };
     Q_ENUMS( TextProtection )
+    enum SeparatorStyle{TextSeparator, LineSeparator};
+    Q_ENUMS( separatorStyle )
 
     PopupDropperItem( QGraphicsItem *parent = 0 );
     explicit PopupDropperItem( const QString &file, QGraphicsItem *parent = 0 );
@@ -76,8 +85,8 @@ public:
 
     void show();
 
-    PopupDropperAction* action() const;
-    void setAction( PopupDropperAction *action );
+    QAction* action() const;
+    void setAction( QAction *action );
 
     HoverIndicatorShowStyle hoverIndicatorShowStyle() const;
     void setHoverIndicatorShowStyle( HoverIndicatorShowStyle hover );
@@ -124,6 +133,15 @@ public:
     void setHorizontalOffset( int offset );
     int textOffset() const;
     void setTextOffset( int offset );
+
+    bool isSeparator() const;
+    void setSeparator( bool separator );
+    PopupDropperItem::SeparatorStyle separatorStyle() const;
+    void setSeparatorStyle( PopupDropperItem::SeparatorStyle style );
+    bool hasLineSeparatorPen() const;
+    QPen lineSeparatorPen() const;
+    void setLineSeparatorPen( const QPen &pen );
+    void clearLineSeparatorPen();
 
     int hoverMsecs() const;
     void setHoverMsecs( const int msecs );
