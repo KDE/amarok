@@ -21,7 +21,6 @@
 #include "Collection.h"
 
 #include "meta/Meta.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include <QList>
 
