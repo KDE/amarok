@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Magnatune.com store: Allow redownloads of any previous Magnatune.com 
+      purchases by a given email, not just purchases made from a specific 
+      instalation of Amarok.
     * Inline editing of lyrics from the context applet. (BR 201342)
     * Ipod initialization support when failed to read an iPod database.
     * Improvements to the "Show Cover" dialog. Resizes to match the image, auto
