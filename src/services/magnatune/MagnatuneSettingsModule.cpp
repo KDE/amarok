@@ -45,6 +45,7 @@ MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVarian
     m_configDialog->passwordEdit->setEchoMode( QLineEdit::Password );
     connect ( m_configDialog->usernameEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->passwordEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
+    connect ( m_configDialog->emailEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->typeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->isMemberCheckbox, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->streamTypeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
@@ -65,6 +66,7 @@ void MagnatuneSettingsModule::save()
     m_config.setMembershipType( m_configDialog->typeComboBox->currentText() );
     m_config.setUsername( m_configDialog->usernameEdit->text() );
     m_config.setPassword( m_configDialog->passwordEdit->text() );
+    m_config.setEmail( m_configDialog->emailEdit->text() );
 
 
     QString streamTypeString = m_configDialog->streamTypeComboBox->currentText();
@@ -89,6 +91,7 @@ void MagnatuneSettingsModule::load()
     m_configDialog->typeComboBox->setCurrentIndex( index );
     m_configDialog->usernameEdit->setText( m_config.username() );
     m_configDialog->passwordEdit->setText( m_config.password() );
+    m_configDialog->emailEdit->setText( m_config.email() );
 
     m_configDialog->streamTypeComboBox->setCurrentIndex( m_config.streamType() );
 
