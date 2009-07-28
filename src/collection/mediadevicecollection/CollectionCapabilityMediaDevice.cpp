@@ -43,7 +43,7 @@ CollectionCapabilityMediaDevice::collectionActions( QueryMaker *qm )
     disconnectAction->setProperty( "popupdropper_svg_id", "delete" );
     connect( disconnectAction, SIGNAL( triggered() ), m_coll, SLOT( disconnectDevice() ) );
 
-    QList<QAction*> actions;
+    QList<PopupDropperAction*> actions;
     actions.append( disconnectAction );
 
     // Pull in other device actions defined by subclasses

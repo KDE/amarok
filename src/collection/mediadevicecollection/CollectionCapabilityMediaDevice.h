@@ -41,7 +41,7 @@ namespace Meta
         public:
             CollectionCapabilityMediaDevice( MediaDeviceCollection *coll );
 
-            virtual QList<QAction*> collectionActions();
+            virtual QList<PopupDropperAction*> collectionActions();
 
         private:
             MediaDeviceCollection *m_coll;

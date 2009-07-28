@@ -18,6 +18,8 @@
 #include "CollectionBrowserTreeView.h"
 #include "CollectionTreeItemDelegate.h"
 
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+
 #include "Debug.h"
 
 #include <QMouseEvent>
@@ -57,7 +59,7 @@ CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
     }
 
     // Only forward the press event if we aren't on an action (which gets triggered on a release)
-    QAction *action = CollectionTreeItemDelegate::actionUnderPoint( event->pos() );
+    PopupDropperAction *action = CollectionTreeItemDelegate::actionUnderPoint( event->pos() );
     if( !action )
         CollectionTreeView::mousePressEvent( event );
 }
@@ -73,7 +75,7 @@ CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
-    QAction *action = CollectionTreeItemDelegate::actionUnderPoint( event->pos() );
+    PopupDropperAction *action = CollectionTreeItemDelegate::actionUnderPoint( event->pos() );
     if( action )
         action->trigger();
     else

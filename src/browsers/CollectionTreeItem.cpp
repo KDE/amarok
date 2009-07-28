@@ -24,7 +24,7 @@
 
 #include <KLocale>
 
-Q_DECLARE_METATYPE( QList<QAction*> )
+Q_DECLARE_METATYPE( QList<PopupDropperAction*> )
 
 CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent )
     : m_data( data )
@@ -215,7 +215,7 @@ CollectionTreeItem::data( int role ) const
     return QVariant();
 }
 
-QList<QAction*>
+QList<PopupDropperAction*>
 CollectionTreeItem::collectionActions() const
 {
     if( m_collectionActionsLoaded )
