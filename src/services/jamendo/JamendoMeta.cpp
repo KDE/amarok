@@ -17,12 +17,11 @@
 #include "JamendoMeta.h"
 
 #include "JamendoService.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "SvgHandler.h"
 
 #include "Debug.h"
 #include <KStandardDirs>
-
-#include <QAction>
 
 using namespace Meta;
 
@@ -126,16 +125,15 @@ JamendoTrack::JamendoTrack( const QStringList & resultRow )
 {
 }
 
-QList< QAction * >
+QList< PopupDropperAction * >
 Meta::JamendoTrack::customActions()
 {
     DEBUG_BLOCK
-    QList< QAction * > actions;
+    QList< PopupDropperAction * > actions;
 
     if ( !m_downloadCustomAction )
     {
-        m_downloadCustomAction = new QAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
-        m_downloadCustomAction->setProperty( "amarok_svg_id", "download" );
+        m_downloadCustomAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download",KIcon("download-amarok" ), i18n( "&Download" ), 0 );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
         QObject::connect( m_downloadCustomAction, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
     }
@@ -144,16 +142,15 @@ Meta::JamendoTrack::customActions()
     return actions;
 }
 
-QList< QAction * >
+QList< PopupDropperAction * >
 Meta::JamendoTrack::currentTrackActions()
 {
     DEBUG_BLOCK
-    QList< QAction * > actions;
+    QList< PopupDropperAction * > actions;
 
     if ( !m_downloadCurrentTrackAction )
     {
-        m_downloadCurrentTrackAction = new QAction( KIcon("download-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
-        m_downloadCurrentTrackAction->setProperty( "amarok_svg_id", "download" );
+        m_downloadCurrentTrackAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download", KIcon("download-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
         QObject::connect( m_downloadCurrentTrackAction, SIGNAL( activated() ), jAlbum->service(), SLOT( downloadCurrentTrackAlbum() ) );
     }
@@ -364,13 +361,12 @@ Meta::JamendoAlbum::service()
     return m_service;
 }
 
-QList< QAction * >
+QList< PopupDropperAction * >
 Meta::JamendoAlbum::customActions()
 {
     DEBUG_BLOCK
-    QList< QAction * > actions;
-    QAction * action = new QAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
-    action->setProperty( "amarok_svg_id", "download" );
+    QList< PopupDropperAction * > actions;
+    PopupDropperAction * action = new PopupDropperAction(  The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download",  KIcon("download-amarok" ), i18n( "&Download" ), 0 );
 
     QObject::connect( action, SIGNAL( activated() ) , m_service, SLOT( download() ) );
 

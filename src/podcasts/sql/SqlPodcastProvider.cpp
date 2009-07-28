@@ -18,6 +18,7 @@
 
 #include "Amarok.h"
 #include "CollectionManager.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "statusbar/StatusBar.h"
@@ -35,7 +36,6 @@
 #include <KIO/Job>
 #include <KUrl>
 
-#include <QAction>
 #include <QFile>
 #include <QDir>
 #include <QTimer>
@@ -337,20 +337,21 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
     }
 }
 
-QList<QAction *>
+QList<PopupDropperAction *>
 SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
 {
     DEBUG_BLOCK
-    QList< QAction * > actions;
+    QList< PopupDropperAction * > actions;
 
     if( m_deleteAction == 0 )
     {
-        m_deleteAction = new QAction(
+        m_deleteAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "delete",
             KIcon( "edit-delete" ),
             i18n( "&Delete Downloaded Episode" ),
             this
         );
-        m_deleteAction->setProperty( "amarok_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteEpisodes() ) );
     }
     bool hasDownloaded = false;
@@ -375,12 +376,13 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
     {
         if ( m_downloadAction == 0 )
         {
-            m_downloadAction = new QAction(
+            m_downloadAction = new PopupDropperAction(
+                The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+                "download",
                 KIcon( "go-down" ),
                 i18n( "&Download Episode" ),
                 this
             );
-            m_deleteAction->setProperty( "amarok_svg_id", "download" );
             connect( m_downloadAction, SIGNAL( triggered() ), this, SLOT( slotDownloadEpisodes() ) );
         }
         actions << m_downloadAction;
@@ -389,44 +391,47 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
     return actions;
 }
 
-QList<QAction *>
+QList<PopupDropperAction *>
 SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
 {
     DEBUG_BLOCK
-    QList< QAction * > actions;
+    QList< PopupDropperAction * > actions;
 
     if( m_configureAction == 0 )
     {
-        m_configureAction = new QAction(
+        m_configureAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer("amarok/images/pud_items.svg"),
+            "configure",
             KIcon( "configure" ),
             i18n( "&Configure" ),
             this
         );
-        m_deleteAction->setProperty( "amarok_svg_id", "configure" );
         connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ));
     }
     actions << m_configureAction;
 
     if( m_removeAction == 0 )
     {
-        m_removeAction = new QAction(
+        m_removeAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "remove",
             KIcon( "news-unsubscribe" ),
             i18n( "&Remove Subscription" ),
             this
         );
-        m_deleteAction->setProperty( "amarok_svg_id", "remove" );
         connect( m_removeAction, SIGNAL( triggered() ), this, SLOT( slotRemoveChannels() ) );
     }
     actions << m_removeAction;
 
     if( m_updateAction == 0 )
     {
-        m_updateAction = new QAction(
+        m_updateAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "update",
             KIcon( "view-refresh-amarok" ),
             i18n( "&Update Channel" ),
             this
         );
-        m_deleteAction->setProperty( "amarok_svg_id", "update" );
         connect( m_updateAction, SIGNAL( triggered() ), this, SLOT( slotUpdateChannels() ) );
     }
     actions << m_updateAction;

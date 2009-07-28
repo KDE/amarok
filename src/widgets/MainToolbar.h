@@ -26,7 +26,7 @@
 
 class KToolBar;
 class MainControlsWidget;
-class QAction;
+class PopupDropperAction;
 class VolumeWidget;
 
 /**

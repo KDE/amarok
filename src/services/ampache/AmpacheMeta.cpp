@@ -46,9 +46,9 @@ QString AmpacheAlbum::coverUrl( ) const
     return m_coverURL;
 }
 
-QList< QAction * > Meta::AmpacheTrack::currentTrackActions()
+QList< PopupDropperAction * > Meta::AmpacheTrack::currentTrackActions()
 {
-    QList< QAction * > actions;
+    QList< PopupDropperAction * > actions;
 
     if ( !m_showInServiceAction )
     {

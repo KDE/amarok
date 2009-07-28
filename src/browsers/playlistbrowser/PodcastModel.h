@@ -26,7 +26,7 @@
 #include <QPersistentModelIndex>
 #include <QVariant>
 
-class QAction;
+class PopupDropperAction;
 
 namespace PlaylistBrowserNS {
 
@@ -62,7 +62,7 @@ class PodcastModel : public QAbstractItemModel
         QMimeData* mimeData( const QModelIndexList &indexes ) const;
         bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
 
-        QList<QAction *> actionsFor( const QModelIndexList &indexes );
+        QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
 
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
         void downloadItems(  QModelIndexList list );
@@ -100,9 +100,9 @@ class PodcastModel : public QAbstractItemModel
 
         Meta::PodcastChannelList selectedChannels( const QModelIndexList &indices );
         Meta::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
-        QList<QAction *> createCommonActions( QModelIndexList indices );
-        QAction * m_appendAction;
-        QAction * m_loadAction;
+        QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
+        PopupDropperAction * m_appendAction;
+        PopupDropperAction * m_loadAction;
         Meta::PodcastEpisodeList m_selectedEpisodes;
         Meta::PodcastChannelList m_selectedChannels;
 

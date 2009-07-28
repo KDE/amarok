@@ -32,7 +32,7 @@ class AMAROK_EXPORT ServiceCustomActionsCapability : public Meta::CustomActionsC
     public:
         ServiceCustomActionsCapability( CustomActionsProvider * customActionsProvider  );
         virtual ~ServiceCustomActionsCapability();
-        virtual QList< QAction * > customActions() const;
+        virtual QList< PopupDropperAction * > customActions() const;
 
     private:
         CustomActionsProvider * m_customActionsProvider;

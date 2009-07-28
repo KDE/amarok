@@ -30,7 +30,7 @@ class PlaylistManager;
 class PlaylistProvider;
 typedef QList<PlaylistProvider *> PlaylistProviderList;
 class PodcastProvider;
-class QAction;
+class PopupDropperAction;
 class UserPlaylistProvider;
 
 namespace The {
@@ -172,8 +172,8 @@ class PlaylistManager : public QObject
 
         bool isWritable( const Meta::PlaylistPtr &playlist );
 
-        QList<QAction *> playlistActions( const Meta::PlaylistList lists );
-        QList<QAction *> trackActions( const Meta::PlaylistPtr playlist,
+        QList<PopupDropperAction *> playlistActions( const Meta::PlaylistList lists );
+        QList<PopupDropperAction *> trackActions( const Meta::PlaylistPtr playlist,
                                                   int trackIndex );
 
     signals:

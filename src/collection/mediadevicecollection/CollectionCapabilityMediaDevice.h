@@ -26,17 +26,8 @@ class MediaDeviceCollection;
 namespace Meta
 {
     class CollectionCapabilityMediaDevice : public CollectionCapability
-	{
-
-    Q_OBJECT
-
-	public:
-    CollectionCapabilityMediaDevice( MediaDeviceCollection *coll );
-
-    virtual QList<QAction *>  collectionActions( QueryMaker *qm );
-
-    // NOTE: NYI
-    virtual QList<QAction *>  collectionActions( const TrackList tracklist );
+    {
+        Q_OBJECT
 
         public:
             CollectionCapabilityMediaDevice( MediaDeviceCollection *coll );

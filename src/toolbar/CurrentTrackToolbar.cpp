@@ -58,8 +58,8 @@ void CurrentTrackToolbar::handleAddActions()
         Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-            QList<QAction *> currentTrackActions = cac->customActions();
-            foreach( QAction *action, currentTrackActions )
+            QList<PopupDropperAction *> currentTrackActions = cac->customActions();
+            foreach( PopupDropperAction *action, currentTrackActions )
                 addAction( action );
 
         }

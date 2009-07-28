@@ -20,7 +20,7 @@
 #include "amarok_export.h"
 #include "meta/Capability.h"
 
-#include <QAction>
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include <QList>
 
 namespace Meta
@@ -47,7 +47,7 @@ namespace Meta
              * Constructor
              * @param actions A list of actions to use.
              */
-            CustomActionsCapability( const QList< QAction* > &actions );
+            CustomActionsCapability( const QList< PopupDropperAction* > &actions );
             /**
              * Destructor
              */
@@ -57,7 +57,7 @@ namespace Meta
              * Get the custom actions for this capablility
              * @return The list of custom actions
              */
-            virtual QList<QAction *> customActions() const;
+            virtual QList<PopupDropperAction *> customActions() const;
 
             /**
              * Get the capabilityInterfaceType of this capability
@@ -66,7 +66,7 @@ namespace Meta
             static Type capabilityInterfaceType() { return Meta::Capability::CustomActions; }
 
         protected:
-            QList< QAction* > m_actions;
+            QList< PopupDropperAction* > m_actions;
     };
 }
 

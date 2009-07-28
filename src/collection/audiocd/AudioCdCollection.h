@@ -18,6 +18,7 @@
 #define AUDIOCDCOLLECTION_H
 
 #include "Collection.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "MediaDeviceCollection.h"
 #include "MemoryCollection.h"
 #include "meta/proxy/MetaProxy.h"
@@ -25,7 +26,6 @@
 #include <kio/jobclasses.h>
 #include <KUrl>
 
-#include <QAction>
 #include <QObject>
 
 class AudioCdCollection;
@@ -82,7 +82,7 @@ public:
     bool possiblyContainsTrack( const KUrl &url ) const;
     Meta::TrackPtr trackForUrl( const KUrl &url );
 
-    QAction * ejectAction();
+    PopupDropperAction * ejectAction();
 
     void cdRemoved();
 
@@ -116,7 +116,7 @@ private:
     QString m_udi;
     mutable int m_encodingFormat;
 
-    QAction * m_ejectAction;
+    PopupDropperAction * m_ejectAction;
 
     QString m_fileNamePattern;
     QString m_albumNamePattern;

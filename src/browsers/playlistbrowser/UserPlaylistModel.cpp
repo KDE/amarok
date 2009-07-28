@@ -21,6 +21,7 @@
 #include "AmarokMimeData.h"
 #include "Debug.h"
 #include "CollectionManager.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "SvgHandler.h"
 
 #include <KIcon>
@@ -426,21 +427,44 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
     return false;
 }
 
-QList<QAction *>
+QList<PopupDropperAction *>
 PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
 {
-    QSet<QAction *> actions;
+    QSet<PopupDropperAction *> actions;
     m_selectedPlaylists.clear();
     m_selectedPlaylists << selectedPlaylists( indices );
     m_selectedTracks.clear();
     m_selectedTracks << selectedTracks( indices );
 
-    actions = QSet<QAction *>::fromList( createCommonActions( indices ) );
+    actions = QSet<PopupDropperAction *>::fromList( createCommonActions( indices ) );
 
     // If a playlist is selected, we bring up playlist actions
     if( !m_selectedPlaylists.isEmpty() )
     {
-        actions += QSet<QAction *>::fromList(
+        // Only check for write actions if no tracks selected
+        if( m_selectedTracks.isEmpty() )
+        {
+            // Check if the playlists are writable, and if _any_ of them
+            // are not writable, do not bring up the write actions
+
+            bool writable = true;
+
+            foreach( Meta::PlaylistPtr playlist, m_selectedPlaylists )
+            {
+                if( !The::playlistManager()->isWritable( playlist ) )
+                {
+                    debug() << "There exists an unwritable playlist, not adding write actions";
+                    writable = false;
+                    break;
+                }
+            }
+
+            if( writable )
+                actions += QSet<PopupDropperAction *>::fromList(
+                        createWriteActions( indices ) );
+
+        }
+        actions += QSet<PopupDropperAction *>::fromList(
                             The::playlistManager()->playlistActions( m_selectedPlaylists )
                         );
     }
@@ -449,7 +473,7 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
     {
         foreach( const QModelIndex &idx, indices )
         {
-            actions += QSet<QAction *>::fromList(
+            actions += QSet<PopupDropperAction *>::fromList(
                             The::playlistManager()->trackActions(
                                         m_playlists.value( idx.parent().internalId() ),
                                         idx.row()
@@ -477,23 +501,21 @@ PlaylistBrowserNS::UserModel::loadItems( QModelIndexList list, Playlist::AddOpti
         The::playlistController()->insertOptioned( playlists, insertMode );
 }
 
-QList<QAction *>
+QList<PopupDropperAction *>
 PlaylistBrowserNS::UserModel::createCommonActions( QModelIndexList indices )
 {
     DEBUG_BLOCK
-    QList< QAction * > actions;
+    QList< PopupDropperAction * > actions;
 
     if ( m_appendAction == 0 )
     {
-        m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
-        m_appendAction->setProperty( "amarok_svg_id", "append" );
+        m_appendAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "append", KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
         connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
     }
 
     if ( m_loadAction == 0 )
     {
-        m_loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
-        m_loadAction->setProperty( "amarok_svg_id", "load" );
+        m_loadAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "load", KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
     }
 

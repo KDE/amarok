@@ -35,10 +35,10 @@ class QSortFilterProxyModel;
 class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
 class PopupDropper;
-class QAction;
+class PopupDropperAction;
 class AmarokMimeData;
 
-typedef QList<QAction *> QActionList;
+typedef QList<PopupDropperAction *> PopupDropperActionList;
 
 class CollectionTreeView: public Amarok::PrettyTreeView
 {
@@ -107,15 +107,15 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
         void copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::Collection *destination, bool removeSources ) const;
         void removeTracks( const QSet<CollectionTreeItem*> &items ) const;
-        QActionList createBasicActions( const QModelIndexList &indcies );
-        QActionList createExtendedActions( const QModelIndexList &indcies );
-        QActionList createCollectionActions( const QModelIndexList & indices );
+        PopupDropperActionList createBasicActions( const QModelIndexList &indcies );
+        PopupDropperActionList createExtendedActions( const QModelIndexList &indcies );
+        PopupDropperActionList createCollectionActions( const QModelIndexList & indices );
 
         bool onlyOneCollection( const QModelIndexList &indices );
         Amarok::Collection *getCollection( const QModelIndex &index );
-        QHash<QAction*, Amarok::Collection*> getCopyActions( const QModelIndexList &indcies );
-        QHash<QAction*, Amarok::Collection*> getMoveActions( const QModelIndexList &indcies );
-        QHash<QAction*, Amarok::Collection*> getRemoveActions( const QModelIndexList & indices );
+        QHash<PopupDropperAction*, Amarok::Collection*> getCopyActions( const QModelIndexList &indcies );
+        QHash<PopupDropperAction*, Amarok::Collection*> getMoveActions( const QModelIndexList &indcies );
+        QHash<PopupDropperAction*, Amarok::Collection*> getRemoveActions( const QModelIndexList & indices );
 
         QueryMaker* createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems=true ) const;
 
@@ -123,17 +123,17 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         CollectionTreeItemModelBase *m_treeModel;
         QTimer m_filterTimer;
         PopupDropper* m_pd;
-        QAction* m_appendAction;
-        QAction* m_loadAction;
-        QAction* m_editAction;
-        QAction* m_organizeAction;
+        PopupDropperAction* m_appendAction;
+        PopupDropperAction* m_loadAction;
+        PopupDropperAction* m_editAction;
+        PopupDropperAction* m_organizeAction;
 
-        QAction * m_caSeperator;
-        QAction * m_cmSeperator;
+        PopupDropperAction * m_caSeperator;
+        PopupDropperAction * m_cmSeperator;
 
-        QHash<QAction*, Amarok::Collection*> m_currentCopyDestination;
-        QHash<QAction*, Amarok::Collection*> m_currentMoveDestination;
-        QHash<QAction*, Amarok::Collection*> m_currentRemoveDestination;
+        QHash<PopupDropperAction*, Amarok::Collection*> m_currentCopyDestination;
+        QHash<PopupDropperAction*, Amarok::Collection*> m_currentMoveDestination;
+        QHash<PopupDropperAction*, Amarok::Collection*> m_currentRemoveDestination;
 
         QMap<AmarokMimeData*, Playlist::AddOptions> m_playChildTracksMode;
 

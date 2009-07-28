@@ -28,9 +28,8 @@
 #include <QPersistentModelIndex>
 #include <QRect>
 
-#include <QAction>
-
 class PopupDropper;
+class PopupDropperAction;
 class QContextMenuEvent;
 class QDragLeaveEvent;
 class QDragMoveEvent;

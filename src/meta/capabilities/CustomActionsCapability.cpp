@@ -22,7 +22,7 @@ Meta::CustomActionsCapability::CustomActionsCapability()
     //nothing to do
 }
 
-Meta::CustomActionsCapability::CustomActionsCapability( const QList<QAction*> &actions )
+Meta::CustomActionsCapability::CustomActionsCapability( const QList<PopupDropperAction*> &actions )
     : Meta::Capability()
     , m_actions( actions )
 {
@@ -35,7 +35,7 @@ Meta::CustomActionsCapability::~CustomActionsCapability()
     //TODO are we responsible for deleting the actions?
 }
 
-QList<QAction *>
+QList<PopupDropperAction *>
 Meta::CustomActionsCapability::customActions() const
 {
     return m_actions;

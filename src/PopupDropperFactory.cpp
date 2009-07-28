@@ -19,13 +19,12 @@
 #include "Debug.h"
 #include "ContextView.h"
 #include "PaletteHandler.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "MainWindow.h"
 #include "SvgHandler.h"
 
 #include <kglobal.h>
-
-#include <QAction>
 
 
 namespace The
@@ -87,7 +86,7 @@ PopupDropper * PopupDropperFactory::createPopupDropper()
     return createPopupDropper( Context::ContextView::self() );
 }
 
-PopupDropperItem * PopupDropperFactory::createItem( QAction * action )
+PopupDropperItem * PopupDropperFactory::createItem( PopupDropperAction * action )
 {
     QFont font;
     font.setPointSize( 16 );
@@ -95,10 +94,6 @@ PopupDropperItem * PopupDropperFactory::createItem( QAction * action )
 
     PopupDropperItem* pdi = new PopupDropperItem();
     pdi->setAction( action );
-
-    QString elementId = action->property( "amarok_svg_id" ).toString();
-    if ( !elementId.isEmpty() )
-        pdi->setElementId( elementId );
     QString text = pdi->text();
     text.remove( QChar('&') );
     pdi->setText( text );

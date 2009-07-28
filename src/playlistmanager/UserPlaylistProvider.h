@@ -21,7 +21,7 @@
 #include "meta/Playlist.h"
 #include "playlistmanager/PlaylistManager.h"
 
-class QAction;
+class PopupDropperAction;
 
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
@@ -51,8 +51,8 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
 
         virtual bool supportsEmptyGroups();
 
-        QList<QAction *> playlistActions( Meta::PlaylistPtr playlist );
-        QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
+        virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistPtr playlist );
+        virtual QList<PopupDropperAction *> trackActions( Meta::PlaylistPtr playlist,
                                                   int trackIndex );
 
         // UserPlaylistProvider-specific

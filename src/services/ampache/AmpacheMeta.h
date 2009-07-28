@@ -51,7 +51,7 @@ public:
     virtual QPixmap emblem()  { return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-ampache.png" ) );  }
     virtual QString scalableEmblem()  { return  KStandardDirs::locate( "data", "amarok/images/emblem-ampache-scalable.svgz" );  }
 
-    virtual QList< QAction *> currentTrackActions();
+    virtual QList< PopupDropperAction *> currentTrackActions();
 
 private:
     ServiceBase * m_service;

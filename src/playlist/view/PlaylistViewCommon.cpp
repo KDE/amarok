@@ -38,26 +38,26 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
     DEBUG_BLOCK
 
     KMenu *menu = new KMenu( parent );
-    QList<QAction*> actions = actionsFor( parent, index, coverActions );
-    foreach( QAction *action, actions )
+    QList<PopupDropperAction*> actions = actionsFor( parent, index, coverActions );
+    foreach( PopupDropperAction *action, actions )
         menu->addAction( action );
 
     menu->exec( pos );
 }
 
-QList<QAction*>
+QList<PopupDropperAction*>
 Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, bool coverActions )
 {
-    QList<QAction*> actions;
+    QList<PopupDropperAction*> actions;
 
     Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
-    QAction *separator = new QAction( parent );
+    PopupDropperAction *separator = new PopupDropperAction( parent );
     separator->setSeparator( true );
     
     const bool isCurrentTrack = index->data( Playlist::ActiveTrackRole ).toBool();
 
-    QAction *stopAction = new QAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), parent );
+    PopupDropperAction *stopAction = new PopupDropperAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), parent );
     QObject::connect( stopAction, SIGNAL( triggered() ), parent, SLOT( stopAfterTrack() ) );
     actions << stopAction;
     
@@ -65,7 +65,7 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
     
     const bool isQueued = index->data( Playlist::StateRole ).toInt() & Item::Queued;
     const QString queueText = !isQueued ? i18n( "Queue Track" ) : i18n( "Dequeue Track" );
-    QAction *queueAction = new QAction( KIcon( "media-track-queue-amarok" ), queueText, parent );
+    PopupDropperAction *queueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), queueText, parent );
     if( isQueued )
         QObject::connect( queueAction, SIGNAL( triggered() ), parent, SLOT( dequeueSelection() ) );
     else
@@ -75,7 +75,7 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
 
     actions << separator;
 
-    QAction *removeAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), parent );
+    PopupDropperAction *removeAction = new PopupDropperAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), parent );
     QObject::connect( removeAction, SIGNAL( triggered() ), parent, SLOT( removeSelection() ) );
     actions << removeAction;
 
@@ -86,16 +86,16 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
     {
         QList<QAction*> globalCurrentTrackActions = The::globalCurrentTrackActions()->actions();
         foreach( QAction *action, globalCurrentTrackActions )
-            actions << action;
+            actions << PopupDropperAction::from( action );
         
         if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
         {
             Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
             if ( cac )
             {
-                QList<QAction *> actions = cac->customActions();
+                QList<PopupDropperAction *> actions = cac->customActions();
 
-                foreach( QAction *action, actions )
+                foreach( PopupDropperAction *action, actions )
                     actions << action;
             }
             delete cac;
@@ -112,9 +112,9 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
             Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
             if ( cac )
             {
-                QList<QAction *> customActions = cac->customActions();
+                QList<PopupDropperAction *> customActions = cac->customActions();
 
-                foreach( QAction *customAction, customActions )
+                foreach( PopupDropperAction *customAction, customActions )
                     actions << customAction;
             }
             delete cac;
@@ -126,13 +126,13 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
     const bool isMultiSource = index->data( Playlist::MultiSourceRole ).toBool();
     if( isMultiSource )
     {
-        QAction *selectSourceAction = new QAction( KIcon( "media-playlist-repeat" ), i18n( "Select Source" ), parent );
+        PopupDropperAction *selectSourceAction = new PopupDropperAction( KIcon( "media-playlist-repeat" ), i18n( "Select Source" ), parent );
         QObject::connect( selectSourceAction, SIGNAL( triggered() ), parent, SLOT( selectSource() ) );
 
         actions << selectSourceAction;
     }
     
-    QAction *editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), parent );
+    PopupDropperAction *editAction = new PopupDropperAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), parent );
     QObject::connect( editAction, SIGNAL( triggered() ), parent, SLOT( editTrackInformation() ) );
     actions << editAction;
 

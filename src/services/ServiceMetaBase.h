@@ -82,7 +82,7 @@ class AMAROK_EXPORT CustomActionsProvider
         CustomActionsProvider() {}
         virtual ~CustomActionsProvider() {}
 
-        virtual QList< QAction *> customActions() { DEBUG_BLOCK return QList< QAction *>(); }
+        virtual QList< PopupDropperAction *> customActions() { DEBUG_BLOCK return QList< PopupDropperAction *>(); }
 };
 
 class AMAROK_EXPORT CurrentTrackActionsProvider
@@ -91,7 +91,7 @@ class AMAROK_EXPORT CurrentTrackActionsProvider
         CurrentTrackActionsProvider() {}
         virtual ~CurrentTrackActionsProvider() {}
 
-        virtual QList< QAction *> currentTrackActions() { DEBUG_BLOCK return QList< QAction *>(); }
+        virtual QList< PopupDropperAction *> currentTrackActions() { DEBUG_BLOCK return QList< PopupDropperAction *>(); }
 };
 
 class AMAROK_EXPORT SourceInfoProvider
@@ -119,10 +119,10 @@ class AMAROK_EXPORT BookmarkThisProvider : public QObject
         virtual QString browserName() { return "internet"; }
         virtual QString collectionName() { return ""; }
         virtual bool simpleFiltering() { return true; }
-        virtual QAction * bookmarkAction() { return 0; };
+        virtual PopupDropperAction * bookmarkAction() { return 0; };
 
     protected:
-        QAction * m_bookmarkAction;
+        PopupDropperAction * m_bookmarkAction;
 };
 
 
@@ -335,7 +335,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
             return 0;
         }
 
-        virtual QAction * bookmarkAction() {
+        virtual PopupDropperAction * bookmarkAction() {
 
             if ( isBookmarkable() ) {
                 if ( m_bookmarkAction ==  0)
@@ -406,7 +406,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
             return 0;
         }
 
-        virtual QAction * bookmarkAction() {
+        virtual PopupDropperAction * bookmarkAction() {
 
             if ( isBookmarkable() ) {
                 if ( m_bookmarkAction ==  0)

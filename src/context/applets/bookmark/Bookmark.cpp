@@ -24,6 +24,7 @@
 #include "NavigationUrlGenerator.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "meta/MetaUtility.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"

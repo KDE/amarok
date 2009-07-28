@@ -17,9 +17,9 @@
 #ifndef COVERFETCHINGACTIONS_H
 #define COVERFETCHINGACTIONS_H
 
-#include "Meta.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
-#include <QAction>
+#include "Meta.h"
 
 /**
  * This collection of actions handles fetching, displaying and removing of album art
@@ -27,18 +27,18 @@
  * @author Seb Ruiz
  */
 
-class AMAROK_EXPORT BaseCoverAction : public QAction
+class AMAROK_EXPORT BaseCoverAction : public PopupDropperAction
 {
     Q_OBJECT
     public:
         BaseCoverAction( QObject *parent, Meta::AlbumPtr album )
-            : QAction( parent )
+            : PopupDropperAction( parent )
         {
             m_albums.append( album );
             connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
         }
         BaseCoverAction( QObject *parent, Meta::AlbumList albums )
-            : QAction( parent )
+            : PopupDropperAction( parent )
         {
             m_albums = albums;
             connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );

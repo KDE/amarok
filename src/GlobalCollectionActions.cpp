@@ -75,7 +75,7 @@ GlobalCollectionActions::addComposerAction( GlobalCollectionComposerAction * act
     m_composerActions.append( action );
 }
 
-QList< QAction * > GlobalCollectionActions::actionsFor( Meta::DataPtr item )
+QList< PopupDropperAction * > GlobalCollectionActions::actionsFor( Meta::DataPtr item )
 {
 
     Meta::GenrePtr genrePtr = Meta::GenrePtr::dynamicCast( item );
@@ -102,15 +102,15 @@ QList< QAction * > GlobalCollectionActions::actionsFor( Meta::DataPtr item )
     if ( composerPtr )
         return actionsFor( composerPtr );
 
-    QList< QAction * > emptyList;
+    QList< PopupDropperAction * > emptyList;
     return emptyList;
 }
 
 
-QList< QAction * >
+QList< PopupDropperAction * >
 GlobalCollectionActions::actionsFor( Meta::GenrePtr genre )
 {
-    QList< QAction * > returnList;
+    QList< PopupDropperAction * > returnList;
     foreach( GlobalCollectionGenreAction * genreAction, m_genreActions )
     {
         genreAction->setGenre( genre );
@@ -120,10 +120,10 @@ GlobalCollectionActions::actionsFor( Meta::GenrePtr genre )
     return returnList;
 }
 
-QList< QAction * >
+QList< PopupDropperAction * >
 GlobalCollectionActions::actionsFor( Meta::ArtistPtr artist )
 {
-    QList< QAction * > returnList;
+    QList< PopupDropperAction * > returnList;
     foreach( GlobalCollectionArtistAction * artistAction, m_artistActions )
     {
         artistAction->setArtist( artist );
@@ -133,10 +133,10 @@ GlobalCollectionActions::actionsFor( Meta::ArtistPtr artist )
     return returnList;
 }
 
-QList< QAction * >
+QList< PopupDropperAction * >
 GlobalCollectionActions::actionsFor( Meta::AlbumPtr album )
 {
-    QList< QAction * > returnList;
+    QList< PopupDropperAction * > returnList;
     foreach( GlobalCollectionAlbumAction * albumAction, m_albumActions )
     {
         albumAction->setAlbum( album );
@@ -146,10 +146,10 @@ GlobalCollectionActions::actionsFor( Meta::AlbumPtr album )
     return returnList;
 }
 
-QList< QAction * >
+QList< PopupDropperAction * >
 GlobalCollectionActions::actionsFor( Meta::TrackPtr track )
 {
-    QList< QAction * > returnList;
+    QList< PopupDropperAction * > returnList;
     foreach( GlobalCollectionTrackAction * trackAction, m_trackActions )
     {
         trackAction->setTrack( track );
@@ -159,10 +159,10 @@ GlobalCollectionActions::actionsFor( Meta::TrackPtr track )
     return returnList;
 }
 
-QList< QAction * >
+QList< PopupDropperAction * >
 GlobalCollectionActions::actionsFor( Meta::YearPtr year )
 {
-    QList< QAction * > returnList;
+    QList< PopupDropperAction * > returnList;
     foreach( GlobalCollectionYearAction * yearAction, m_yearActions )
     {
         yearAction->setYear( year );
@@ -172,10 +172,10 @@ GlobalCollectionActions::actionsFor( Meta::YearPtr year )
     return returnList;
 }
 
-QList< QAction * >
+QList< PopupDropperAction * >
 GlobalCollectionActions::actionsFor( Meta::ComposerPtr composer )
 {
-    QList< QAction * > returnList;
+    QList< PopupDropperAction * > returnList;
     foreach( GlobalCollectionComposerAction * composerAction, m_composerActions )
     {
         composerAction->setComposer( composer );
@@ -186,7 +186,7 @@ GlobalCollectionActions::actionsFor( Meta::ComposerPtr composer )
 }
 
 GlobalCollectionAction::GlobalCollectionAction( const QString &text, QObject * parent )
-    : QAction( text, parent )
+    : PopupDropperAction( text, parent )
 {
 }
 

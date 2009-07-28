@@ -56,7 +56,7 @@ public:
     OpmlDirectoryFeed( const QString &name );
     OpmlDirectoryFeed( const QStringList &resultRow );
 
-        virtual QList< QAction *> customActions();
+        virtual QList< PopupDropperAction *> customActions();
 };
 
 class OpmlDirectoryCategory : public ServiceAlbum

@@ -28,12 +28,13 @@
 
 
 BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album )
-    : QAction( i18n( "Bookmark this Album" ), parent )
+    : PopupDropperAction( i18n( "Bookmark this Album" ), parent )
     , m_album( album )
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
     setIcon( KIcon("bookmark-new") );
-    setProperty( "amarok_svg_id", "lastfm" );
+    setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+    setElementId( "lastfm" );
 }
 
 void
@@ -44,12 +45,13 @@ BookmarkAlbumAction::slotTriggered()
 
 
 BookmarkArtistAction::BookmarkArtistAction( QObject *parent, Meta::ArtistPtr artist )
-    : QAction( i18n( "Bookmark this Artist" ), parent )
+    : PopupDropperAction( i18n( "Bookmark this Artist" ), parent )
     , m_artist( artist )
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
     setIcon( KIcon("bookmark-new") );
-    setProperty( "amarok_svg_id", "lastfm" );
+    setRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
+    setElementId( "lastfm" );
 }
 
 void
@@ -59,7 +61,7 @@ BookmarkArtistAction::slotTriggered()
 }
 
 BookmarkCurrentTrackPositionAction::BookmarkCurrentTrackPositionAction( QObject * parent )
-    : QAction( i18n( "Add Position Marker" ), parent )
+    : PopupDropperAction( i18n( "Add Position Marker" ), parent )
 {
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
     setIcon( KIcon("flag-amarok") );

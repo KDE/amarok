@@ -27,6 +27,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "context/Svg.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"

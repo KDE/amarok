@@ -26,6 +26,7 @@
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/capabilities/CustomActionsCapability.h"
@@ -42,7 +43,6 @@
 
 #include "AFTUtility.h"
 
-#include <QAction>
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
@@ -1058,7 +1058,7 @@ SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
 
         case Meta::Capability::CustomActions:
         {
-            QList<QAction*> actions;
+            QList<PopupDropperAction*> actions;
             //TODO These actions will hang around until m_collection is destructed.
             // Find a better parent to avoid this memory leak.
             //actions.append( new CopyToDeviceAction( m_collection, this ) );
@@ -1074,8 +1074,8 @@ SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
 
         case Meta::Capability::CurrentTrackActions:
         {
-            QList< QAction * > actions;
-            QAction* flag = new BookmarkCurrentTrackPositionAction( m_collection );
+            QList< PopupDropperAction * > actions;
+            PopupDropperAction* flag = new BookmarkCurrentTrackPositionAction( m_collection );
             actions << flag;
             debug() << "returning bookmarkcurrenttrack action";
             return new Meta::CurrentTrackActionsCapability( actions );
@@ -1219,12 +1219,12 @@ SqlArtist::createCapabilityInterface( Meta::Capability::Type type )
 
 //---------------Album compilation management actions-----
 
-class CompilationAction : public QAction
+class CompilationAction : public PopupDropperAction
 {
     Q_OBJECT
     public:
         CompilationAction( QObject* parent, SqlAlbum *album )
-            : QAction( parent )
+            : PopupDropperAction( parent )
                 , m_album( album )
                 , m_isCompilation( album->isCompilation() )
             {
@@ -1784,12 +1784,12 @@ SqlAlbum::createCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::CustomActions:
         {
-            QList<QAction*> actions;
+            QList<PopupDropperAction*> actions;
             actions.append( new CompilationAction( m_collection, this ) );
 
-            QAction *separator          = new QAction( m_collection );
-            QAction *displayCoverAction = new DisplayCoverAction( m_collection, Meta::AlbumPtr(this) );
-            QAction *unsetCoverAction   = new UnsetCoverAction( m_collection, Meta::AlbumPtr(this) );
+            PopupDropperAction *separator          = new PopupDropperAction( m_collection );
+            PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, Meta::AlbumPtr(this) );
+            PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, Meta::AlbumPtr(this) );
 
             separator->setSeparator( true );
             actions.append( separator );

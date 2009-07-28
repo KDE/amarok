@@ -24,6 +24,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "amarokconfig.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "GlobalCurrentTrackActions.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
@@ -40,7 +41,6 @@
 #include <KMenu>
 #include <KStandardDirs>
 
-#include <QAction>
 #include <QEvent>
 #include <QFontMetrics>
 #include <QMouseEvent>
@@ -452,8 +452,8 @@ Amarok::TrayIcon::setupMenu()
         Meta::CurrentTrackActionsCapability *cac = m_track->create<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-            QList<QAction *> currentTrackActions = cac->customActions();
-            foreach( QAction *action, currentTrackActions )
+            QList<PopupDropperAction *> currentTrackActions = cac->customActions();
+            foreach( PopupDropperAction *action, currentTrackActions )
                 m_extraActions.append( action );
         }
         delete cac;

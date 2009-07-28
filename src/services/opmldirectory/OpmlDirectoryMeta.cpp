@@ -52,9 +52,9 @@ OpmlDirectoryFeed::OpmlDirectoryFeed( const QStringList & resultRow )
 {
 }
 
-QList< QAction * > Meta::OpmlDirectoryFeed::customActions()
+QList< PopupDropperAction * > Meta::OpmlDirectoryFeed::customActions()
 {
-    QList< QAction * > actions;
+    QList< PopupDropperAction * > actions;
     return actions;
 }
 

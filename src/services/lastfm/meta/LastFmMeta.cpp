@@ -96,13 +96,13 @@ void Track::init( int id /* = -1*/ )
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( QPointer<Track::Private>( d ) ) );
 
-    QAction * banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
+    PopupDropperAction * banAction = new PopupDropperAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
     connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
     m_currentTrackActions.append( banAction );
 
-    QAction * skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
+    PopupDropperAction * skipAction = new PopupDropperAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
     skipAction->setShortcut( i18n( "Ctrl+S" ) );
     skipAction->setStatusTip( i18n( "Skip this track" ) );
     connect( skipAction, SIGNAL( triggered() ), this, SLOT( skip() ) );
@@ -577,7 +577,7 @@ QString LastFm::Track::scalableEmblem()
         return QString();
 }
 
-QList< QAction * > LastFm::Track::nowPlayingActions() const
+QList< PopupDropperAction * > LastFm::Track::nowPlayingActions() const
 {
     return m_currentTrackActions;
 }

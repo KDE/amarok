@@ -25,7 +25,7 @@
 class KMenu;
  
 class PopupDropper;
-class QAction;
+class PopupDropperAction;
 
 class KAction;
 

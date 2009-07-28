@@ -81,15 +81,15 @@ public:
     virtual QString collectionName() { return "Jamendo.com"; }
     virtual bool simpleFiltering() { return false; }
 
-    virtual QList< QAction *> customActions();
-    virtual QList< QAction * > currentTrackActions();
+    virtual QList< PopupDropperAction *> customActions();
+    virtual QList< PopupDropperAction * > currentTrackActions();
 
 private:
     
     JamendoService * m_service;
     
-    QAction * m_downloadCustomAction;
-    QAction * m_downloadCurrentTrackAction;
+    PopupDropperAction * m_downloadCustomAction;
+    PopupDropperAction * m_downloadCurrentTrackAction;
     ShowInServiceAction * m_showInServiceAction;
 
 };
@@ -163,7 +163,7 @@ public:
     void setOggTorrentUrl( const QString &url );
     QString oggTorrentUrl();
 
-    virtual QList< QAction *> customActions();
+    virtual QList< PopupDropperAction *> customActions();
 
     void setService( JamendoService * store );
     JamendoService * service();

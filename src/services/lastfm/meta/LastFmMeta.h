@@ -100,7 +100,7 @@ namespace LastFm
             virtual QPixmap emblem();
             virtual QString scalableEmblem();
 
-            QList< QAction * > nowPlayingActions() const;
+            QList< PopupDropperAction * > nowPlayingActions() const;
 
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
@@ -122,7 +122,7 @@ namespace LastFm
             void init( int id = -1 );
             //use a d-pointer because some code is going to work directly with LastFm::Track
             Private * const d;
-            QList< QAction * > m_currentTrackActions;
+            QList< PopupDropperAction * > m_currentTrackActions;
     };
 
     class LastFmProviderCapability : public Meta::Capability

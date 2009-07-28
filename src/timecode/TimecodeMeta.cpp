@@ -17,6 +17,7 @@
 #include "TimecodeMeta.h"
 
 #include "Debug.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "covermanager/CoverFetcher.h"
 #include "meta/capabilities/CustomActionsCapability.h"
@@ -663,11 +664,11 @@ Meta::Capability* TimecodeAlbum::asCapabilityInterface( Meta::Capability::Type t
 {
     if( type == Meta::Capability::CustomActions )
     {
-        QList<QAction*> actions;
+        QList<PopupDropperAction*> actions;
 
         if ( m_separator == 0 )
         {
-            m_separator          = new QAction( this );
+            m_separator          = new PopupDropperAction( this );
             m_displayCoverAction = new DisplayCoverAction( this, AlbumPtr( this ) );
             m_fetchCoverAction   = new FetchCoverAction( this, AlbumPtr( this ) );
             m_setCustomCoverAction = new SetCustomCoverAction( this, AlbumPtr( this ) );

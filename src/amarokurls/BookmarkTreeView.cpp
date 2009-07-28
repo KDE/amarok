@@ -17,6 +17,7 @@
 #include "BookmarkTreeView.h"
 
 #include "BookmarkModel.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "dialogs/TagDialog.h"
 #include "PaletteHandler.h"
 #include "AmarokUrl.h"

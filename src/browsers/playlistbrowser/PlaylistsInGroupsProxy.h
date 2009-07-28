@@ -19,13 +19,14 @@
 
 #include "MetaPlaylistModel.h"
 
-#include <QAction>
+#include "context/popupdropper/libpud/PopupDropperAction.h"
+
 #include <QAbstractProxyModel>
 #include <QModelIndex>
 #include <QMultiHash>
 #include <QStringList>
 
-class QAction;
+class PopupDropperAction;
 
 class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
                                 public PlaylistBrowserNS::MetaPlaylistModel
@@ -54,7 +55,7 @@ class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
         virtual Qt::DropActions supportedDropActions() const;
         virtual Qt::DropActions supportedDragActions() const;
 
-        QList<QAction *> actionsFor( const QModelIndexList &indexes );
+        QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
 
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
@@ -82,7 +83,7 @@ class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
     private:
         bool isGroup( const QModelIndex &index ) const;
         QModelIndexList mapToSource( const QModelIndexList& list ) const;
-        QList<QAction *> createGroupActions();
+        QList<PopupDropperAction *> createGroupActions();
         bool isAGroupSelected( const QModelIndexList& list ) const;
         bool isAPlaylistSelected( const QModelIndexList& list ) const;
         bool changeGroupName( const QString &from, const QString &to );
@@ -90,8 +91,8 @@ class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
         void deleteFolder( const QModelIndex &groupIdx );
 
         QAbstractItemModel *m_model;
-        QAction *m_renameAction;
-        QAction *m_deleteAction;
+        PopupDropperAction *m_renameFolderAction;
+        PopupDropperAction *m_deleteFolderAction;
 
         QMultiHash<quint32, int> m_groupHash;
         QStringList m_groupNames;

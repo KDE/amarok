@@ -25,7 +25,7 @@
 #include <klocale.h>
 
 class KUrl;
-class QAction;
+class PopupDropperAction;
 
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
@@ -57,16 +57,16 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
 
         virtual Meta::PlaylistList playlists() = 0;
 
-        virtual QList<QAction *> episodeActions( Meta::PodcastEpisodeList )
-            { return QList<QAction *>(); }
-        virtual QList<QAction *> channelActions( Meta::PodcastChannelList )
-            { return QList<QAction *>(); }
+        virtual QList<PopupDropperAction *> episodeActions( Meta::PodcastEpisodeList )
+            { return QList<PopupDropperAction *>(); }
+        virtual QList<PopupDropperAction *> channelActions( Meta::PodcastChannelList )
+            { return QList<PopupDropperAction *>(); }
 
-        virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist )
-                { return QList<QAction *>(); }
-        virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
+        virtual QList<PopupDropperAction *> playlistActions( Meta::PlaylistPtr playlist )
+                { return QList<PopupDropperAction *>(); }
+        virtual QList<PopupDropperAction *> trackActions( Meta::PlaylistPtr playlist,
                                                   int trackIndex )
-                { return QList<QAction *>(); }
+                { return QList<PopupDropperAction *>(); }
 
     public slots:
         virtual void updateAll() = 0;

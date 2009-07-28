@@ -17,14 +17,13 @@
 #include "SqlBookmarkThisCapability.h"
 
 #include "amarokurls/BookmarkMetaActions.h"
-
-#include <QAction>
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 namespace Meta
 {
 
 
-Meta::SqlBookmarkThisCapability::SqlBookmarkThisCapability( QAction * action )
+Meta::SqlBookmarkThisCapability::SqlBookmarkThisCapability( PopupDropperAction * action )
     : BookmarkThisCapability()
     , m_action( action )
 {
@@ -34,7 +33,7 @@ Meta::SqlBookmarkThisCapability::~ SqlBookmarkThisCapability()
 {
 }
 
-QAction * Meta::SqlBookmarkThisCapability::bookmarkAction()
+PopupDropperAction * Meta::SqlBookmarkThisCapability::bookmarkAction()
 {
     return m_action;
 }

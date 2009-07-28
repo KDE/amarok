@@ -20,10 +20,9 @@
 #include <KIcon>
 
 MagnatunePurchaseAction::MagnatunePurchaseAction( const QString &text, Meta::MagnatuneAlbum * album )
-    : QAction( KIcon("download-amarok" ), text, album )
+    : PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download", KIcon("download-amarok" ), text, album )
     , m_album( album )
 {
-    setProperty( "amarok_svg_id", "append" );
     connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
 }
 

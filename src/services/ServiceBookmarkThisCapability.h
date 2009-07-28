@@ -37,7 +37,7 @@ public:
     virtual QString browserName();
     virtual QString collectionName();
     virtual bool simpleFiltering();
-    virtual QAction * bookmarkAction();
+    virtual PopupDropperAction * bookmarkAction();
 
 private:
 

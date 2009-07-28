@@ -19,8 +19,7 @@
 
 #include "amarok_export.h"
 #include "meta/Capability.h"
-
-#include <QAction>
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 namespace Meta {
 
@@ -38,7 +37,7 @@ public:
     virtual QString browserName() = 0;
     virtual QString collectionName() = 0;
     virtual bool simpleFiltering() { return false; }
-    virtual QAction * bookmarkAction() = 0;
+    virtual PopupDropperAction * bookmarkAction() = 0;
 
     /**
      * Get the capabilityInterfaceType of this capability

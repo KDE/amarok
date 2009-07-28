@@ -98,7 +98,7 @@ public:
 
     virtual QString prettyName() const;
 
-    virtual QList<QAction *> collectionActions();
+    virtual QList<PopupDropperAction *> collectionActions();
 
     /// Capability-related methods
 

@@ -25,12 +25,12 @@
 #include "SvgHandler.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
+#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 
 #include <KIcon>
 #include <KMenu>
 
-#include <QAction>
 #include <QContextMenuEvent>
 #include <QDesktopServices>
 #include <QDropEvent>
@@ -74,23 +74,23 @@ LastFmTreeView::contextMenuEvent ( QContextMenuEvent* event )
     }
     if ( m_currentItems.isEmpty() )
         return;
-    QAction separator ( this );
+    PopupDropperAction separator ( this );
     separator.setSeparator ( true );
 
-    QActionList actions = createBasicActions( m_currentItems );
+    PopupDropperActionList actions = createBasicActions( m_currentItems );
 
     actions += &separator;
     KMenu menu;
-    foreach ( QAction * action, actions )
+    foreach ( PopupDropperAction * action, actions )
         menu.addAction ( action );
 
     menu.exec ( event->globalPos() );
 }
 
-QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices )
+PopupDropperActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices )
 {
     Q_UNUSED( indices )
-    QActionList actions;
+    PopupDropperActionList actions;
     QModelIndex index = currentIndex();
     QVariant type = model()->data(index, LastFm::TypeRole);
     switch ( type.toInt() )
@@ -109,8 +109,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
         {
             if ( m_appendAction == 0 )
             {
-                m_appendAction = new QAction ( KIcon ( "media-track-add-amarok" ), i18n ( "&Append to Playlist" ), this );
-                m_appendAction->setProperty( "amarok_svg_id", "append" );
+                m_appendAction = new PopupDropperAction ( The::svgHandler()->getRenderer ( "amarok/images/pud_items.svg" ), "append", KIcon ( "media-track-add-amarok" ), i18n ( "&Append to Playlist" ), this );
                 connect ( m_appendAction, SIGNAL ( triggered() ), this, SLOT ( slotAppendChildTracks() ) );
             }
 
@@ -118,8 +117,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
 
             if ( m_loadAction == 0 )
             {
-                m_loadAction = new QAction ( KIcon ( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
-                m_appendAction->setProperty( "amarok_svg_id", "load" );
+                m_loadAction = new PopupDropperAction ( The::svgHandler()->getRenderer ( "amarok/images/pud_items.svg" ), "load", KIcon ( "folder-open" ), i18nc ( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
                 connect ( m_loadAction, SIGNAL ( triggered() ), this, SLOT ( slotPlayChildTracks() ) );
             }
             actions.append ( m_loadAction );
@@ -166,13 +164,13 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
 
         QModelIndexList indices = selectedIndexes();
 
-        QActionList actions = createBasicActions( indices );
+        PopupDropperActionList actions = createBasicActions( indices );
 
         QFont font;
         font.setPointSize( 16 );
         font.setBold( true );
 
-        foreach( QAction * action, actions )
+        foreach( PopupDropperAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
 
 
@@ -190,7 +188,7 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
         {
             morePud = The::popupDropperFactory()->createPopupDropper( 0 );
 
-            foreach( QAction * action, actions )
+            foreach( PopupDropperAction * action, actions )
                 morePud->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
         else
@@ -199,7 +197,7 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
         //TODO: Keep bugging i18n team about problems with 3 dots
         if ( actions.count() > 1 )
         {
-            subItem = m_pd->addSubmenu( &morePud, i18n( "More..." )  );
+            subItem = m_pd->addSubmenu( &morePud, The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "more",  i18n( "More..." )  );
             The::popupDropperFactory()->adjustSubmenuItem( subItem );
         }
 
