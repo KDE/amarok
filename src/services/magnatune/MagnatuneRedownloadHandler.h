@@ -48,17 +48,29 @@ signals:
 
 protected:
 
-    QWidget * m_parent;
     QStringList GetPurchaseList( );
+
+   /**
+    * Attempt to get a list of previous purchases for an email.
+    * If set, use the email from the magnatune settings, otherwise, QueryMaker
+    * the user (and then save it to settings)
+    */
+    void fetchServerSideRedownloadList();
+
+    QWidget * m_parent;
     MagnatuneRedownloadDialog * m_redownloadDialog;
     MagnatuneDownloadDialog * m_downloadDialog;
     MagnatuneAlbumDownloader * m_albumDownloader;
 
+    KIO::TransferJob * m_redownloadApiJob;
+
 protected slots:
 
-    void redownload(const QString &storedInfoFileName);
+    void redownload( const QString &storedInfoFileName );
+    void redownload( MagnatuneDownloadInfo info );
     void selectionDialogCancelled();
     void albumDownloadComplete( bool success );
+    void redownloadApiResult( KJob* job );
 
 
 

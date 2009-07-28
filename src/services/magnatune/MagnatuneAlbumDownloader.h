@@ -51,7 +51,7 @@ public slots:
      * Initiates the download of an album
      * @param url A MagnatuneDownloadInfo object containing all needed information
      */
-    void downloadAlbum( MagnatuneDownloadInfo * info );
+    void downloadAlbum( MagnatuneDownloadInfo info );
 
 protected:
 

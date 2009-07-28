@@ -29,20 +29,18 @@ MagnatuneDownloadDialog::MagnatuneDownloadDialog( QWidget *parent, Qt::WFlags fl
 {
     setupUi(this);
     downloadTargetURLRequester->fileDialog()->setMode( KFile::Directory );
-    m_currentDownloadInfo = 0;
 
 }
 
 MagnatuneDownloadDialog::~MagnatuneDownloadDialog()
 {
-    delete m_currentDownloadInfo;
 }
 
 
 void MagnatuneDownloadDialog::downloadButtonClicked( )
 {
 
-    if (m_currentDownloadInfo == 0) return;
+    if ( m_currentDownloadInfo.password().isEmpty() ) return;
 
     QString format = formatComboBox->currentText();
     QString path = downloadTargetURLRequester->url().url();;
@@ -52,11 +50,11 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
     config.writeEntry( "Download Format", format );
     config.writeEntry( "Download Path", path );
     
-    m_currentDownloadInfo->setFormatSelection( format );
+    m_currentDownloadInfo.setFormatSelection( format );
 
     KUrl unpackLocation = downloadTargetURLRequester->url();
     unpackLocation.adjustPath( KUrl::AddTrailingSlash );
-    m_currentDownloadInfo->setUnpackUrl( unpackLocation.directory( KUrl::ObeyTrailingSlash ) );
+    m_currentDownloadInfo.setUnpackUrl( unpackLocation.directory( KUrl::ObeyTrailingSlash ) );
 
     emit( downloadAlbum( m_currentDownloadInfo ) );
 
@@ -64,13 +62,12 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
 
 }
 
-void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo * info )
+void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo info )
 {
-    delete m_currentDownloadInfo;
 
     m_currentDownloadInfo = info;
 
-    DownloadFormatMap formatMap = info->getFormatMap();
+    DownloadFormatMap formatMap = info.formatMap();
 
     DownloadFormatMap::Iterator it;
 
@@ -79,7 +76,7 @@ void MagnatuneDownloadDialog::setDownloadInfo( MagnatuneDownloadInfo * info )
         formatComboBox->addItem( it.key() );
     }
 
-    infoEdit->setText( info->getDownloadMessage() );
+    infoEdit->setText( info.downloadMessage() );
 
     //restore format and path from last time, if any.
     KConfigGroup config = Amarok::config("Service_Magnatune");

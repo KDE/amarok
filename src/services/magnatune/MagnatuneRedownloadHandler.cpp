@@ -15,7 +15,11 @@
  ****************************************************************************************/
 
 #include "MagnatuneRedownloadHandler.h"
-#include "MagnatuneRedownloadHandler.moc"
+
+#include "MagnatuneConfig.h"
+#include "statusbar/StatusBar.h"
+
+
 
 #include "Amarok.h"
 #include "Debug.h"
@@ -24,10 +28,6 @@
 #include "KMessageBox"
 
 #include "QDir"
-
-
-
-
 
 
 MagnatuneRedownloadHandler::MagnatuneRedownloadHandler(QWidget * parent)
@@ -43,9 +43,12 @@ MagnatuneRedownloadHandler::~MagnatuneRedownloadHandler()
 {
 }
 
-void MagnatuneRedownloadHandler::showRedownloadDialog( )
+void
+MagnatuneRedownloadHandler::showRedownloadDialog( )
 {
 
+    fetchServerSideRedownloadList();
+    return;
      debug() << "Show redownload dialog";
 
     QStringList previousDownloads = GetPurchaseList();
@@ -71,7 +74,8 @@ void MagnatuneRedownloadHandler::showRedownloadDialog( )
 
 }
 
-QStringList MagnatuneRedownloadHandler::GetPurchaseList( )
+QStringList
+MagnatuneRedownloadHandler::GetPurchaseList( )
 {
    
     debug() << "MagnatuneRedownloadHandler::GetPurchaseList( )";
@@ -100,7 +104,8 @@ QStringList MagnatuneRedownloadHandler::GetPurchaseList( )
 
 }
 
-void MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
+void
+MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
 {
 
     QDir purchaseInfoDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
@@ -117,12 +122,12 @@ void MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
 
     if (m_downloadDialog == 0) {
         m_downloadDialog = new MagnatuneDownloadDialog(m_parent);
-         connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo *  ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
+         connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo ) ) );
     }
 
 
-    MagnatuneDownloadInfo * downloadInfo = new MagnatuneDownloadInfo();
-    if ( downloadInfo->initFromFile( absFileName, false ) )
+    MagnatuneDownloadInfo downloadInfo;
+    if ( downloadInfo.initFromFile( absFileName, false ) )
     {
 
         debug() << "Showing download dialog";
@@ -139,7 +144,28 @@ void MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
 
 }
 
-void MagnatuneRedownloadHandler::selectionDialogCancelled( )
+void MagnatuneRedownloadHandler::redownload( MagnatuneDownloadInfo info )
+{
+
+    if ( m_albumDownloader == 0 )
+    {
+        m_albumDownloader = new MagnatuneAlbumDownloader();
+        connect( m_albumDownloader, SIGNAL( downloadComplete( bool ) ), this, SLOT( albumDownloadComplete( bool ) ) );
+    }
+
+
+    if (m_downloadDialog == 0) {
+        m_downloadDialog = new MagnatuneDownloadDialog(m_parent);
+         connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo ) ) );
+    }
+
+    debug() << "Showing download dialog";
+    m_downloadDialog->setDownloadInfo( info );
+    m_downloadDialog->show();
+}
+
+void
+MagnatuneRedownloadHandler::selectionDialogCancelled( )
 {
     if (m_redownloadDialog != 0) {
         m_redownloadDialog->hide();
@@ -148,7 +174,8 @@ void MagnatuneRedownloadHandler::selectionDialogCancelled( )
     }
 }
 
-void MagnatuneRedownloadHandler::albumDownloadComplete( bool success )
+void
+MagnatuneRedownloadHandler::albumDownloadComplete( bool success )
 {
     Q_UNUSED( success );
     //cleanup time!
@@ -164,6 +191,80 @@ void MagnatuneRedownloadHandler::albumDownloadComplete( bool success )
 
 }
 
+void
+MagnatuneRedownloadHandler::fetchServerSideRedownloadList()
+{
+
+    DEBUG_BLOCK
+
+    //do we have an email set, if not, ask the user for one.
+    MagnatuneConfig config;
+
+    QString email = config.email();
+
+    if ( email.isEmpty() )
+    {
+        //TODO ask for the email
+        return;
+    }
+
+    QString redownloadApiUrl = "http://magnatune.com/buy/redownload_xml?email=" + email;
+
+    m_redownloadApiJob = KIO::storedGet( KUrl( redownloadApiUrl ), KIO::NoReload, KIO::HideProgressInfo );
+    The::statusBar()->newProgressOperation( m_redownloadApiJob, i18n( "Getting list of previous Magnatune.com purchases" ) );
+    connect( m_redownloadApiJob, SIGNAL( result( KJob* ) ), SLOT( redownloadApiResult( KJob* ) ) );
+
+}
+
+void MagnatuneRedownloadHandler::redownloadApiResult( KJob* job )
+{
+
+DEBUG_BLOCK
+
+ if ( !job->error() == 0 )
+    {
+        //TODO: error handling here
+        debug() << "Job error... " << job->error();
+        return ;
+    }
+    if ( job != m_redownloadApiJob ) {
+        debug() << "Wrong job...";
+        return ; //not the right job, so let's ignore it
+    }
+
+    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    QString resultXml = QString( storedJob->data() );
+
+    debug() << endl << endl << "result: " << resultXml;
 
 
+    QList<MagnatuneDownloadInfo> previousPurchasesInfoList;
 
+    QDomDocument doc;
+    doc.setContent( resultXml );
+
+    QDomNodeList downloads = doc.elementsByTagName( "download" );
+    for( int i = 0; i < downloads.size(); i++ )
+    {
+        QDomElement downloadElement = downloads.item( i ).toElement();
+        MagnatuneDownloadInfo info;
+        if ( info.initFromRedownloadXml( downloadElement ) )
+            previousPurchasesInfoList << info;
+    }
+
+
+    if (m_redownloadDialog == 0) {
+        m_redownloadDialog = new MagnatuneRedownloadDialog( m_parent );
+        //connect( m_redownloadDialog, SIGNAL( redownload( const QString &) ), this, SLOT( redownload( const QString &) ) );
+        connect( m_redownloadDialog, SIGNAL( redownload( MagnatuneDownloadInfo ) ), this, SLOT( redownload( MagnatuneDownloadInfo ) ) );
+        connect( m_redownloadDialog, SIGNAL(cancelled() ), this, SLOT( selectionDialogCancelled() ) );
+    }
+
+    m_redownloadDialog->setRedownloadItems( previousPurchasesInfoList );
+
+    m_redownloadDialog->show();
+
+}
+
+
+#include "MagnatuneRedownloadHandler.moc"

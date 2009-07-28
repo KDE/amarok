@@ -42,14 +42,14 @@ MagnatuneAlbumDownloader::~MagnatuneAlbumDownloader()
     m_tempDir = 0;
 }
 
-void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo * info )
+void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 {
     DEBUG_BLOCK
 
-    m_currentAlbum = info->album();
+    m_currentAlbum = info.album();
 
-    KUrl downloadUrl = info->getCompleteDownloadUrl();
-    m_currentAlbumUnpackLocation = info->getUnpackLocation();
+    KUrl downloadUrl = info.completeDownloadUrl();
+    m_currentAlbumUnpackLocation = info.unpackLocation();
     debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation;
 
 

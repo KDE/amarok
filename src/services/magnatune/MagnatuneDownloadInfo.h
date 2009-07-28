@@ -21,6 +21,7 @@
 
 #include <kurl.h>
 
+#include <QDomElement>
 #include <qmap.h>
 #include <QString>
 
@@ -39,23 +40,27 @@ public:
 
     bool initFromString( const QString &downloadInfoString, bool membershipDownload );
     bool initFromFile( const QString &downloadInfoFileName, bool membershipDownload );
+    bool initFromRedownloadXml( const QDomElement &element );
 
     void setMembershipInfo( const QString &username, const QString &password );
     bool isMembershipDownload();
 
-    DownloadFormatMap getFormatMap();
-    QString getUserName();
-    QString getPassword();
-    QString getDownloadMessage();
+    DownloadFormatMap formatMap();
+    QString userName();
+    QString password();
+    QString downloadMessage();
     Meta::MagnatuneAlbum * album();
 
+    QString albumName();
+    QString artistName();
 
-    void setFormatSelection(const QString &selectedFormat);
-    void setUnpackUrl(const QString &unpackUrl);
+
+    void setFormatSelection( const QString &selectedFormat );
+    void setUnpackUrl( const QString &unpackUrl );
     void setAlbum( Meta::MagnatuneAlbum * album );
     bool isReadyForDownload();
-    KUrl getCompleteDownloadUrl();
-    QString getUnpackLocation();
+    KUrl completeDownloadUrl();
+    QString unpackLocation();
 
 
 
@@ -65,6 +70,9 @@ protected:
     QString m_userName;
     QString m_password;
     QString m_downloadMessage;
+
+    QString m_artistName;
+    QString m_albumName;
 
     Meta::MagnatuneAlbum * m_album;
     bool m_membershipDownload;

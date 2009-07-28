@@ -52,9 +52,31 @@ void MagnatuneRedownloadDialog::setRedownloadItems( const QStringList &items )
 
 }
 
+void MagnatuneRedownloadDialog::setRedownloadItems( QList<MagnatuneDownloadInfo> previousPurchases )
+{
+    m_infoMap.clear();
+    
+    foreach( MagnatuneDownloadInfo prevPurchase, previousPurchases )
+    {
+        QString albumText = prevPurchase.artistName() + " - " +  prevPurchase.albumName();
+        QTreeWidgetItem * item = new QTreeWidgetItem( QStringList( albumText ) );
+        m_infoMap.insert( item, prevPurchase );
+        redownloadListView->addTopLevelItem( item );
+    }
+
+    
+}
+
 void MagnatuneRedownloadDialog::redownload( )
 {
-    emit ( redownload( redownloadListView->currentItem()->text( 0 ) ) );
+
+    QTreeWidgetItem * current = redownloadListView->currentItem();
+    if ( m_infoMap.keys().contains( current ) )
+    {
+        emit( redownload( m_infoMap.value( current ) ) );
+    }
+    
+    //emit ( redownload( redownloadListView->currentItem()->text( 0 ) ) );
 
     hide();
 }

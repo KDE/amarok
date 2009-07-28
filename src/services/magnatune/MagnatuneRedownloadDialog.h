@@ -19,6 +19,8 @@
 
 #include "ui_MagnatuneRedownloadDialogBase.h"
 
+#include "MagnatuneDownloadInfo.h"
+
 #include <QStringList>
 
 class MagnatuneRedownloadDialog : public QDialog, public Ui::magnatuneReDownloadDialogBase
@@ -30,18 +32,20 @@ public:
     ~MagnatuneRedownloadDialog();
     /*$PUBLIC_FUNCTIONS$*/
 
-    void setRedownloadItems(const QStringList &items);
+    void setRedownloadItems( const QStringList &items );
+    void setRedownloadItems( QList<MagnatuneDownloadInfo> previousPurchases );
 
 signals:
 
-    void redownload(const QString &downloadInfoFileName);
+    void redownload( const QString &downloadInfoFileName );
+    void redownload( MagnatuneDownloadInfo info );
     void cancelled();
 
 public slots:
     /*$PUBLIC_SLOTS$*/
 
 protected:
-    /*$PROTECTED_FUNCTIONS$*/
+    QMap <QTreeWidgetItem*, MagnatuneDownloadInfo> m_infoMap;
 
 protected slots:
     /*$PROTECTED_SLOTS$*/

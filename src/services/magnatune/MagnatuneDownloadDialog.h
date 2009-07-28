@@ -53,7 +53,7 @@ public:
      * @param  the MagnatuneDownloadInfo class containing the information abut the 
      * download to display
      */
-    void setDownloadInfo( MagnatuneDownloadInfo * info );
+    void setDownloadInfo( MagnatuneDownloadInfo info );
 
 signals:
 
@@ -62,14 +62,14 @@ signals:
      * should start album download.
      * @param completedInfo A DownloadInfo object containing all needed information
      */
-    void downloadAlbum(MagnatuneDownloadInfo * completedInfo);
+    void downloadAlbum( MagnatuneDownloadInfo completedInfo );
 
 public slots:
     /*$PUBLIC_SLOTS$*/
 
 protected:
     /*$PROTECTED_FUNCTIONS$*/
-    MagnatuneDownloadInfo * m_currentDownloadInfo;
+    MagnatuneDownloadInfo m_currentDownloadInfo;
 
 protected slots:
     /*$PROTECTED_SLOTS$*/

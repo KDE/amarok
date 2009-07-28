@@ -189,21 +189,21 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
     {
         m_downloadDialog = new MagnatuneDownloadDialog( m_parent );
         m_downloadDialog->setModal( true );
-        connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo * ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo * ) ) );
+        connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo ) ) );
         //connect( m_downloadDialog, SIGNAL( rejected () ), this, SLOT( albumPurchaseCancelled() ) );
 
     }
 
 
-    MagnatuneDownloadInfo * downloadInfo = new MagnatuneDownloadInfo();
-    if ( downloadInfo->initFromString( resultXml, m_membershipDownload ) )
+    MagnatuneDownloadInfo downloadInfo;
+    if ( downloadInfo.initFromString( resultXml, m_membershipDownload ) )
     {
 
-        downloadInfo->setAlbum( m_currentAlbum );
+        downloadInfo.setAlbum( m_currentAlbum );
         
         if ( m_membershipDownload ) {
             MagnatuneConfig config;
-            downloadInfo->setMembershipInfo( config.username(), config.password() );
+            downloadInfo.setMembershipInfo( config.username(), config.password() );
         } else {
             saveDownloadInfo( resultXml );
         }

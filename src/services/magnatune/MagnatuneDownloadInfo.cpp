@@ -203,22 +203,52 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, b
     return true;
 }
 
-QString MagnatuneDownloadInfo::getUserName( )
+bool MagnatuneDownloadInfo::initFromRedownloadXml( const QDomElement &element )
+{
+
+
+    m_artistName = element.firstChildElement( "artist" ).text();
+    m_albumName = element.firstChildElement( "album" ).text();
+    m_userName = element.firstChildElement( "username" ).text();
+    m_password = element.firstChildElement( "password" ).text();
+
+    //get formats
+    QDomNode formats = element.firstChildElement( "formats" );
+
+    QString wav_url = formats.firstChildElement( "wav_zip" ).text();
+    m_downloadFormats[ "Wav" ] = wav_url;
+    QString mp3_url = formats.firstChildElement( "mp3_zip" ).text();
+    m_downloadFormats[ "128 kbit/s MP3" ] = mp3_url;
+    QString vbr_url = formats.firstChildElement( "vbr_zip" ).text();
+    m_downloadFormats[ "VBR MP3" ] = vbr_url;
+    QString ogg_url = formats.firstChildElement( "ogg_zip" ).text();
+    m_downloadFormats[ "Ogg-Vorbis" ] = ogg_url;
+    QString flac_url = formats.firstChildElement( "flac_zip" ).text();
+    m_downloadFormats[ "FLAC" ] = flac_url;
+    
+
+    m_downloadMessage = i18n( "Redownload of a previously purchased album \"%1\" by \"%2\" from Magnatune.com.\n\nUsername: %3\nPassword: %4\n", m_albumName, m_artistName, m_userName, m_password );
+
+    return true;
+
+}
+
+QString MagnatuneDownloadInfo::userName( )
 {
     return m_userName;
 }
 
-QString MagnatuneDownloadInfo::getPassword( )
+QString MagnatuneDownloadInfo::password( )
 {
     return m_password;
 }
 
-QString MagnatuneDownloadInfo::getDownloadMessage( )
+QString MagnatuneDownloadInfo::downloadMessage( )
 {
     return m_downloadMessage;
 }
 
-DownloadFormatMap MagnatuneDownloadInfo::getFormatMap()
+DownloadFormatMap MagnatuneDownloadInfo::formatMap()
 {
     return m_downloadFormats;
 }
@@ -233,7 +263,7 @@ bool MagnatuneDownloadInfo::isReadyForDownload( )
     return !m_selectedDownloadFormat.isEmpty();
 }
 
-KUrl MagnatuneDownloadInfo::getCompleteDownloadUrl( )
+KUrl MagnatuneDownloadInfo::completeDownloadUrl( )
 {
    QString url =  m_downloadFormats[ m_selectedDownloadFormat ];
    KUrl downloadUrl(url);
@@ -248,7 +278,7 @@ void MagnatuneDownloadInfo::setUnpackUrl( const QString &unpackUrl )
     m_unpackUrl = unpackUrl;
 }
 
-QString MagnatuneDownloadInfo::getUnpackLocation( )
+QString MagnatuneDownloadInfo::unpackLocation( )
 {
     return m_unpackUrl;
 }
@@ -278,4 +308,13 @@ void MagnatuneDownloadInfo::setMembershipInfo( const QString &username, const QS
     m_password = password;
 }
 
+QString MagnatuneDownloadInfo::albumName()
+{
+    return m_albumName; 
+}
+
+QString MagnatuneDownloadInfo::artistName()
+{
+    return m_artistName;
+}
 
