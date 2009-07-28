@@ -30,7 +30,7 @@
 
 #include <kcapacitybar.h>
 
-Q_DECLARE_METATYPE( QList<PopupDropperAction*> )
+Q_DECLARE_METATYPE( QList<QAction*> )
 
 #define CAPACITYRECT_HEIGHT 6
 #define ACTIONICON_SIZE 16
@@ -53,7 +53,7 @@ class ComparableRect : public QRect
         }
 };
 
-QMap<ComparableRect, PopupDropperAction*> CollectionTreeItemDelegate::s_hitTargets;
+QMap<ComparableRect, QAction*> CollectionTreeItemDelegate::s_hitTargets;
 
 CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
     : QStyledItemDelegate( view )
@@ -86,7 +86,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int iconPadX = 4;
     const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
     const bool hasActions = index.data( CustomRoles::HasDecoratorsRole ).toBool();
-    const QList<PopupDropperAction*> actions = index.data( CustomRoles::DecoratorsRole ).value< QList<PopupDropperAction*> >();
+    const QList<QAction*> actions = index.data( CustomRoles::DecoratorsRole ).value< QList<QAction*> >();
 
     painter->save();
 
@@ -172,7 +172,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         QPoint actionTopLeft = actionsRect.topLeft();
         const QSize iconSize = QSize( ACTIONICON_SIZE, ACTIONICON_SIZE );
 
-        foreach( PopupDropperAction *action, actions )
+        foreach( QAction *action, actions )
         {
             QIcon icon = action->icon();
             QRect iconRect( actionTopLeft, iconSize );
@@ -216,7 +216,7 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
 }
 
 // EPIC HACK. So we can calculate hit targets for mouse clicks on CollectionActions
-PopupDropperAction*
+QAction*
 CollectionTreeItemDelegate::actionUnderPoint( const QPoint pos )
 {
     QList<ComparableRect> keys = s_hitTargets.keys();
