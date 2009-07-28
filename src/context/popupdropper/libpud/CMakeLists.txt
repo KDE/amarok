@@ -10,12 +10,14 @@ INCLUDE_DIRECTORIES(
 
 SET(pud_LIB_SRCS
     PopupDropper.cpp
+    PopupDropperAction.cpp
     PopupDropperItem.cpp
     PopupDropperView.cpp
 )
 
 QT4_AUTOMOC(
     PopupDropper.cpp 
+    PopupDropperAction.cpp 
     PopupDropperItem.cpp
     PopupDropperView.cpp
 )
@@ -37,6 +39,6 @@ INSTALL(TARGETS pud
 	ARCHIVE DESTINATION  ${LIB_INSTALL_DIR}
 )
 
-INSTALL( FILES  PopupDropper.h PopupDropperItem.h
+INSTALL( FILES  PopupDropper.h PopupDropperAction.h PopupDropperItem.h
     PopupDropperView.h PopupDropper_Export.h DESTINATION
     ${INCLUDE_INSTALL_DIR}/popupdropper COMPONENT Devel)

@@ -1,30 +1,27 @@
-/***************************************************************************
- *   Copyright (c) 2008  Jeff Mitchell <mitchell@kde.org>                  *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Jeff Mitchell <mitchell@kde.org>                                  *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PopupDropper.h"
 #include "PopupDropperItem.h"
 #include "PopupDropperItem_p.h"
+#include "PopupDropperAction.h"
 
 #include <QtDebug>
 #include <QtSvg/QSvgRenderer>
 #include <QtSvg/QGraphicsSvgItem>
-#include <QAction>
 #include <QFont>
 
 ///////////////////////////////////////////////////////////
@@ -53,13 +50,11 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , customHoveredTextColor( false )
     , customHoveredBorderPen( false )
     , customHoveredFillBrush( false )
+    , separator( false )
     , file( QString() )
     , svgElementRect( 0, 0, 50, 50 )
     , horizontalOffset( 30 )
     , textOffset( 30 )
-    , separator( false )
-    , hasLineSeparatorPen( false )
-    , lineSeparatorPen()
     , hoverIndicatorShowStyle( PopupDropperItem::Never )
     , orientation( PopupDropperItem::Left )
     , textProtection( PopupDropperItem::ScaleFont )
@@ -110,19 +105,22 @@ void PopupDropperItem::show()
 {
 }
 
-QAction* PopupDropperItem::action() const
+PopupDropperAction* PopupDropperItem::action() const
 {
     return d->action;
 }
 
-void PopupDropperItem::setAction( QAction *action )
+//warning: setting a PopupDropperAction will override any currently defined shared renderer
+//and element id, if they exist in the action!
+void PopupDropperItem::setAction( PopupDropperAction *action )
 {
     if( !action )
         return;
     //note that this also sets the text
     d->action = action;
     d->text = action->text();
-    if( action )
+    PopupDropperAction* pudaction = dynamic_cast<PopupDropperAction*>(action);
+    if( pudaction )
     {
         if( !d->svgItem )
         {
@@ -131,8 +129,18 @@ void PopupDropperItem::setAction( QAction *action )
             else
                 d->svgItem = new QGraphicsSvgItem( this );
         }
+        if( pudaction->renderer() && pudaction->renderer()->isValid() )
+            d->svgItem->setSharedRenderer( pudaction->renderer() );
 
-        if( action->isSeparator() )
+        if( !pudaction->elementId().isEmpty() )
+            d->svgItem->setElementId( pudaction->elementId() );
+
+        if( d->svgItem->renderer() && d->svgItem->renderer()->elementExists( pudaction->elementId() ) )
+            d->svgItem->show();
+        else if( d->svgItem )
+            d->svgItem->hide();
+
+        if( pudaction->isSeparator() )
             d->separator = true;
         
         scaleAndReposSvgItem();
@@ -469,7 +477,7 @@ void PopupDropperItem::reposTextItem()
         qreal desiredWidth = d->borderRectItem->sceneBoundingRect().width() - offsetPos;
         while( d->textItem->font().pointSize() > 1 &&
                 ( fm.width( d->textItem->toPlainText() ) > desiredWidth ||
-                  fm.height() > d->textItem->boundingRect().height() ) ) 
+                  fm.height() > d->textItem->boundingRect().height() ) )
         {
             QFont font = d->textItem->font();
             font.setPointSize( font.pointSize() - 1 );
@@ -608,47 +616,6 @@ int PopupDropperItem::textOffset() const
 void PopupDropperItem::setTextOffset( int offset )
 {
     d->textOffset = offset;
-}
-
-bool PopupDropperItem::isSeparator() const
-{
-    return d->separator;
-}
-
-void PopupDropperItem::setSeparator( bool separator )
-{
-    d->separator = separator;
-}
-
-PopupDropperItem::SeparatorStyle PopupDropperItem::separatorStyle() const
-{
-    return d->separatorStyle;
-}
-
-void PopupDropperItem::setSeparatorStyle( SeparatorStyle style )
-{
-    d->separatorStyle = style;
-}
-
-bool PopupDropperItem::hasLineSeparatorPen() const
-{
-    return d->hasLineSeparatorPen;
-}
-
-QPen PopupDropperItem::lineSeparatorPen() const
-{
-    return d->lineSeparatorPen;
-}
-
-void PopupDropperItem::setLineSeparatorPen( const QPen &pen )
-{
-    d->lineSeparatorPen = pen;
-}
-
-void PopupDropperItem::clearLineSeparatorPen()
-{
-    d->lineSeparatorPen = QPen();
-    d->hasLineSeparatorPen = false;
 }
 
 int PopupDropperItem::hoverMsecs() const
