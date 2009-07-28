@@ -41,6 +41,9 @@ public:
     QString membershipType();
     void setMembershipType( const QString &membershipType );
 
+    QString email();
+    void setEmail( const QString &email );
+
     QString username();
     QString password();
 
@@ -62,6 +65,7 @@ private:
     QString m_membershipType;
     bool m_isMember;
     int m_streamType;
+    QString m_email;
     qulonglong m_lastUpdateTimestamp;
 
 };

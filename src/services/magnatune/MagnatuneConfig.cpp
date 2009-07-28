@@ -34,7 +34,8 @@ MagnatuneConfig::~MagnatuneConfig()
 {
 }
 
-void MagnatuneConfig::load()
+void
+MagnatuneConfig::load()
 {
     m_hasChanged = false;
 
@@ -45,6 +46,7 @@ void MagnatuneConfig::load()
     m_membershipType = config.readEntry( "membershipType", QString() );
     m_username = config.readEntry( "username", QString() );
     m_password = config.readEntry( "password", QString() );
+    m_email = config.readEntry( "email", QString() );
 
 
     qulonglong defaultLong = 0;
@@ -63,7 +65,8 @@ void MagnatuneConfig::load()
     
 }
 
-void MagnatuneConfig::save()
+void
+MagnatuneConfig::save()
 {
     kDebug() << "save";
     if ( m_hasChanged ) {
@@ -74,9 +77,8 @@ void MagnatuneConfig::save()
         config.writeEntry( "username", m_username );
         config.writeEntry( "password", m_password );
         config.writeEntry( "lastUpdate", QVariant( m_lastUpdateTimestamp ) );
+        config.writeEntry( "email", m_email );
         
-
-
         QString streamTypeString;
         if ( m_streamType == MagnatuneMetaFactory::MP3 )
             streamTypeString = "mp3";
@@ -90,71 +92,96 @@ void MagnatuneConfig::save()
     }
 }
 
-bool MagnatuneConfig::isMember()
+bool
+MagnatuneConfig::isMember()
 {
     return m_isMember;
 }
 
-void MagnatuneConfig::setIsMember( bool isMember )
+void
+MagnatuneConfig::setIsMember( bool isMember )
 {
     m_hasChanged = true;
     m_isMember = isMember;
 }
 
-QString MagnatuneConfig::membershipType()
+QString
+MagnatuneConfig::membershipType()
 {
     return m_membershipType;
 }
 
-void MagnatuneConfig::setMembershipType( const QString &membershipType )
+void
+MagnatuneConfig::setMembershipType( const QString &membershipType )
 {
     m_hasChanged = true;
     m_membershipType = membershipType;
 }
 
-QString MagnatuneConfig::username()
+QString
+MagnatuneConfig::username()
 {
     return m_username;
 }
 
-QString MagnatuneConfig::password()
+QString
+MagnatuneConfig::password()
 {
     return m_password;
 }
 
-void MagnatuneConfig::setUsername( const QString &username )
+void
+MagnatuneConfig::setUsername( const QString &username )
 {
     m_hasChanged = true;
     m_username = username;
 }
 
-void MagnatuneConfig::setPassword( const QString &password )
+void
+MagnatuneConfig::setPassword( const QString &password )
 {
     m_hasChanged = true;
     m_password = password;
 }
 
 
-int MagnatuneConfig::streamType() const
+int
+MagnatuneConfig::streamType() const
 {
     return m_streamType;
 }
 
 
-void MagnatuneConfig::setStreamType( int theValue )
+void
+MagnatuneConfig::setStreamType( int theValue )
 {
     m_streamType = theValue;
 }
 
 
-qulonglong MagnatuneConfig::lastUpdateTimestamp()
+qulonglong
+MagnatuneConfig::lastUpdateTimestamp()
 {
     return m_lastUpdateTimestamp;
 }
 
-void MagnatuneConfig::setLastUpdateTimestamp( qulonglong timestamp )
+void
+MagnatuneConfig::setLastUpdateTimestamp( qulonglong timestamp )
 {
     m_hasChanged = true;
     m_lastUpdateTimestamp = timestamp;
+}
+
+QString
+MagnatuneConfig::email()
+{
+    return m_email;
+}
+
+void
+MagnatuneConfig::setEmail( const QString &email )
+{
+    m_email = email;
+    m_hasChanged = true;
 }
 
