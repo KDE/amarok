@@ -63,10 +63,10 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
             { return QList<QAction *>(); }
 
         virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist )
-                { return QList<QAction *>(); }
+                { Q_UNUSED( playlist ) return QList<QAction *>(); }
         virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
                                                   int trackIndex )
-                { return QList<QAction *>(); }
+                { Q_UNUSED( playlist) Q_UNUSED( trackIndex ) return QList<QAction *>(); }
 
     public slots:
         virtual void updateAll() = 0;
