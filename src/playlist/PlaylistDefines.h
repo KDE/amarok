@@ -97,7 +97,7 @@ static const QList<const char *> columnNames = ( QList<const char *>()
 
 
 //this list is used internally and for reading writing config files and sths shoudl not be translated!
-//must be kept in sunch with the above list though!
+//must be kept in sync with the above list though!
 static const QStringList internalColumnNames = ( QStringList()
         << "Placeholder"
         << "Album"
