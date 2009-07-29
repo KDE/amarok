@@ -99,7 +99,7 @@ SortProxy::rowToSource( int row ) const
     QModelIndex sourceIndex = mapToSource( index );
 
     if ( !sourceIndex.isValid() )
-        return -1;
+        return ( row == rowCount() ) ? m_belowModel->rowCount() : -1;
     return sourceIndex.row();
 }
 
