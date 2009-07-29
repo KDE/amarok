@@ -36,6 +36,7 @@ class MediaDeviceInfo;
 class IpodCollectionFactory : public MediaDeviceCollectionFactory<IpodCollection>
 {
     Q_OBJECT
+
     public:
         IpodCollectionFactory();
         virtual ~IpodCollectionFactory();
@@ -44,6 +45,7 @@ class IpodCollectionFactory : public MediaDeviceCollectionFactory<IpodCollection
 class IpodCollection : public MediaDeviceCollection
 {
     Q_OBJECT
+
     public:
         // inherited methods
 
@@ -61,7 +63,7 @@ class IpodCollection : public MediaDeviceCollection
         void writeDatabase() { m_handler->writeDatabase(); }
 
     private:
-        QString            m_mountPoint;
+        QString m_mountPoint;
 };
 
 #endif

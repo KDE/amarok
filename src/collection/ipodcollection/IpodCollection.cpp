@@ -31,13 +31,10 @@ AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
 IpodCollectionFactory::IpodCollectionFactory()
     : MediaDeviceCollectionFactory<IpodCollection> ( new IpodConnectionAssistant() )
 {
-    DEBUG_BLOCK
-    //nothing to do
 }
 
 IpodCollectionFactory::~IpodCollectionFactory()
 {
-    DEBUG_BLOCK
 }
 
 //IpodCollection
@@ -54,7 +51,6 @@ IpodCollection::IpodCollection(MediaDeviceInfo* info)
     m_udi = ipodinfo->udi();
 
     m_handler = new Meta::IpodHandler( this, m_mountPoint );
-
 }
 
 
@@ -89,7 +85,6 @@ IpodCollection::collectionId() const
 QString
 IpodCollection::prettyName() const
 {
-//    return "Ipod at " + m_mountPoint;
     return m_handler->prettyName();
 }
 
