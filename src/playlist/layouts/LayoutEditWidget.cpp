@@ -21,6 +21,7 @@
 #include "Debug.h"
 
 #include <KHBox>
+#include <KMessageBox>
 
 #include <QCheckBox>
 #include <QSpinBox>
@@ -47,6 +48,7 @@ LayoutEditWidget::~LayoutEditWidget()
 
 void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 {
+    DEBUG_BLOCK
     int rowCount = config.rows();
 
     delete m_showCoverCheckBox;
@@ -69,6 +71,20 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
         for( int j = 0; j < elementCount; j++ )
         {
             Playlist::LayoutItemConfigRowElement element = rowConfig.element( j );
+            //check if the element has a valid value, will crash if trying to use it otherwise
+            debug() << "value: " << element.value();
+            if ( element.value()  == -1 )
+            {
+  
+                error() << "Invalid element value '" << element.value() << "' in playlist layout.";
+                KMessageBox::detailedError( this,
+                                            i18n( "Invalid playlist layout." ),
+                                            i18n( "Encountered an unknown element name while reading layout." ) );
+                m_dragstack->clear();
+                return;
+                
+            }
+            
             TokenWithLayout *token =  new TokenWithLayout( columnNames[element.value()], iconNames[element.value()], element.value() );
             token->setBold( element.bold() );
             token->setItalic( element.italic() );
