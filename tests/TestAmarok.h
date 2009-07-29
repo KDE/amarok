@@ -38,14 +38,11 @@ private slots:
     void testEscapeHTMLAttr();
     void testExtension();
     void testManipulateThe();
+    void testRecursiveUrlExpand();
     void testSaveLocation();
     void testUnescapeHTMLAttr();
     void testVerboseTimeSince();
     void testVfatPath();
-     /*KUrl::List testRecursiveUrlExpand( const KUrl &url ); //defined in PlaylistHandler.cpp
-    KUrl::List testRecursiveUrlExpand( const KUrl::List &urls ); //defined in PlaylistHandler.cpp */
-    /*    void testAlbumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail ); // TODO: needs testdata
-    */
     //KUrl testMostLocalURL( const KUrl &url );
 
  /*

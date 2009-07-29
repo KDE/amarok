@@ -127,20 +127,14 @@ namespace Amarok
 
     // New in Amarok2 -> recursiveUrlExpand has been replaced
     // existing code depending on this port need to be changed (max urls is removed)
-    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url ); // defined in PlaylistHandler.cpp
-    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls ); // defined in PlaylistHandler.cpp
+    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url ); // defined in PlaylistManager.cpp
+    AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls ); // defined in PlaylistManager.cpp
 
     AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
 
     AMAROK_EXPORT QString verboseTimeSince( uint time_t ); // defined in App.cpp
 
     AMAROK_EXPORT QString conciseTimeSince( uint time_t ); // defined in App.cpp
-
-    /**
-     * Function that must be used when separating contextBrowser escaped urls
-     */
-    // defined in App.cpp
-    void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail );
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none

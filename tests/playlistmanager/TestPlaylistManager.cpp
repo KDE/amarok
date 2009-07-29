@@ -32,7 +32,7 @@ TestPlaylistManager::TestPlaylistManager( QStringList testArgumentList )
 
 void TestPlaylistManager::initTestCase()
 {
-    m_testPlaylistPath = KStandardDirs::installPath( "data" ) + "/amarok/testdata/playlists/";
+    m_testPlaylistPath = KStandardDirs::installPath( "data" ) + "amarok/testdata/playlists/";
 }
 
 void TestPlaylistManager::testGetFormat()

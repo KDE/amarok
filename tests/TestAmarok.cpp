@@ -23,6 +23,8 @@
 #include <QDir>
 #include <QString>
 
+#include <KStandardDirs>
+
 TestAmarok::TestAmarok( QStringList testArgumentList )
 {
     testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Amarok.log" );
@@ -186,6 +188,33 @@ void TestAmarok::testManipulateThe()
 
     Amarok::manipulateThe( teststring = "Äöü, The", false );
     QCOMPARE( teststring, QString( "The Äöü" ) );
+}
+
+void TestAmarok::testRecursiveUrlExpand()
+{
+    /* There are two overloaded variants of this function */
+    KUrl url( "" );
+    KUrl::List urlList, resultList;
+
+    resultList = Amarok::recursiveUrlExpand( url );
+    QCOMPARE( resultList.isEmpty(), true );
+
+    resultList = Amarok::recursiveUrlExpand( urlList );
+    QCOMPARE( resultList.isEmpty(), true );
+
+    urlList.append( url );
+    resultList = Amarok::recursiveUrlExpand( urlList );
+    QCOMPARE( resultList.isEmpty(), true );
+
+    url = KStandardDirs::installPath( "data" ) + "amarok/testdata/playlists/";
+    resultList = Amarok::recursiveUrlExpand( url );
+    QCOMPARE( resultList.size(), 1 );
+    QCOMPARE( resultList.at( 0 ).pathOrUrl(), url.pathOrUrl() + QString( "no-playlist.png" ) ); // only non-playlist file in that dir
+
+    url = KStandardDirs::installPath( "data" ) + "amarok/testdata/";
+    resultList = Amarok::recursiveUrlExpand( url );
+    QCOMPARE( resultList.size(), 1 );
+    QCOMPARE( resultList.at( 0 ).pathOrUrl(), url.pathOrUrl() + QString( "playlists/no-playlist.png" ) );
 }
 
 void TestAmarok::testSaveLocation()
