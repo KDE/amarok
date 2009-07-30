@@ -153,12 +153,6 @@ namespace Amarok
         return QString();
     }
 
-    /** Transform url into a file url if possible */
-    inline KUrl mostLocalURL( const KUrl &url )
-    {
-        return KIO::NetAccess::mostLocalUrl( url, mainWindow() );
-    }
-
     void setUseScores( bool use ); // defined in App.cpp
     void setUseRatings( bool use );
 

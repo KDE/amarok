@@ -43,7 +43,6 @@ private slots:
     void testUnescapeHTMLAttr();
     void testVerboseTimeSince();
     void testVfatPath();
-    //KUrl testMostLocalURL( const KUrl &url );
 };
 
 #endif // TESTAMAROK_H
