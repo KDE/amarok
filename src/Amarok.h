@@ -83,7 +83,7 @@ namespace Amarok
     /**
      * Compute score for a track that has finished playing.
      */
-    inline double computeScore( double oldScore, int playCount, double playedFraction )
+    inline double computeScore( double oldScore, unsigned int playCount, double playedFraction )
     {
         const int percentage = static_cast<int>(playedFraction * 100); 
         double newScore;
