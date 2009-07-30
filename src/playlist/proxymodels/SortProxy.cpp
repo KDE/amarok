@@ -22,8 +22,6 @@
 
 namespace Playlist
 {
-//Téo 7/5/2009: Attention coding style police guys: this is very WiP and if you see notes
-//to self and debug spam here pretty please let it be until I remove it.
 
 SortProxy* SortProxy::s_instance = 0;
 

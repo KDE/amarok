@@ -41,10 +41,14 @@ SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
     m_sortableCategories += internalColumnNames;
     for( QStringList::iterator i = m_sortableCategories.begin(); i!=m_sortableCategories.end(); )
     {
+        //FIXME: disabled sorting by File size, Group length, Group tracks, Length because
+        //       it doesn't work.
         if( *i == QString( "Placeholder" )    || *i == QString( "Bpm" )
             || *i == QString( "Cover image" ) || *i == QString( "Divider" )
             || *i == QString( "Mood" )        || *i == QString( "SourceEmblem" )
-            || *i == QString( "Title (with track number)" ) )
+            || *i == QString( "File size" )   || *i == QString( "Title (with track number)" )
+            || *i == QString( "Group length" )|| *i == QString( "Group tracks" )
+            || *i == QString( "Length" ) )
             i = m_sortableCategories.erase( i );
         else
             ++i;
