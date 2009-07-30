@@ -153,5 +153,7 @@ if( WITH_UTILITIES )
 endif( WITH_UTILITIES )
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--as-needed -fmessage-length=0")
+if (CMAKE_COMPILER_IS_GNUCXX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--as-needed -fmessage-length=0")
+endif (CMAKE_COMPILER_IS_GNUCXX)
 
