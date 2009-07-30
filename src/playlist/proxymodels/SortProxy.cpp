@@ -75,6 +75,7 @@ SortProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
 void
 SortProxy::updateSortMap( SortScheme scheme )
 {
+    invalidateSorting();
     m_scheme = scheme;
     sort( 0 );  //0 is a dummy column
     //HACK: sort() inverts the sortOrder on each call, this keeps the order ascending.

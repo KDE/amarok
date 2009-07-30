@@ -67,13 +67,9 @@ SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
     btnPopLevel->resize( btnPopLevel->height(), btnPopLevel->height() );
 
     mainLayout->addStretch();
-    m_btnSort = new KPushButton( "Just sort it!", this );
-    mainLayout->addWidget( m_btnSort );
-    m_btnSort->setEnabled( false );
 
-    connect(btnPushLevel, SIGNAL( clicked() ), this, SLOT( pushLevel() ) );
-    connect(btnPopLevel, SIGNAL( clicked() ), this, SLOT( popLevel() ) );
-    connect(m_btnSort, SIGNAL( clicked() ), this, SLOT( applySortingScheme() ) );
+    connect( btnPushLevel, SIGNAL( clicked() ), this, SLOT( pushLevel() ) );
+    connect( btnPopLevel, SIGNAL( clicked() ), this, SLOT( popLevel() ) );
 }
 
 void
@@ -92,9 +88,10 @@ void
 SortWidget::pushLevel()
 {
     m_comboList.append( new KComboBox( this ) );
+    connect( m_comboList.back(), SIGNAL( currentIndexChanged( QString ) ), this, SLOT( applySortingScheme() ) );
     m_comboLayout->addWidget( m_comboList.back() );
     m_comboList.back()->addItems( m_sortableCategories );
-    m_btnSort->setEnabled( true );
+    applySortingScheme();
 }
 
 void
@@ -105,10 +102,9 @@ SortWidget::popLevel()
         m_comboLayout->removeWidget( m_comboList.back() );
         delete m_comboList.takeLast();
         if( m_comboList.isEmpty() )
-        {
-            m_btnSort->setEnabled( false );
             SortProxy::instance()->invalidateSorting();
-        }
+        else
+            applySortingScheme();
     }
 }
 
