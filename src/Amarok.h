@@ -218,21 +218,6 @@ namespace Amarok
     AMAROK_EXPORT QString escapeHTMLAttr( const QString &s ); // defined in App.cpp
     AMAROK_EXPORT QString unescapeHTMLAttr( const QString &s ); // defined in App.cpp
 
-    /* defined in dialogs/ScriptManager.cpp */
-    /**
-     * Returns the proxy that should be used for a given URL.
-     * @param url the url.
-     * @return The url of the proxy, or a empty string if no proxy should be used.
-     */
-    QString proxyForUrl( const QString& url );
-
-    /**
-     * Returns the proxy that should be used for a given protocol.
-     * @param protocol the protocol.
-     * @return The url of the proxy, or a empty string if no proxy should be used.
-     */
-    QString proxyForProtocol( const QString& protocol );
-
     /* defined in browsers/CollectionTreeItemModel.cpp */
     /**
      * Small function aimed to convert Eagles, The -> The Eagles (and back again).

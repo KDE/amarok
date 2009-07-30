@@ -44,10 +44,6 @@ private slots:
     void testVerboseTimeSince();
     void testVfatPath();
     //KUrl testMostLocalURL( const KUrl &url );
-
- /*
-    QString proxyForUrl( const QString& url ); // how to test?
-    QString proxyForProtocol( const QString& protocol ); // how to test?     */
 };
 
 #endif // TESTAMAROK_H
