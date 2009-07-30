@@ -79,14 +79,14 @@ void TestAmarok::testCleanPath()
     QCOMPARE( Amarok::cleanPath( QString( "ÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ" ) ), QString( "ACDEEINORSTUUYZ" ) );
 
     /* Skandinavian languages */
-    QCOMPARE( Amarok::cleanPath( QString( "åø" ) ), QString( "ao" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "ÅØ" ) ), QString( "AO" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "åø" ) ), QString( "aoe" ) );
+    QCOMPARE( Amarok::cleanPath( QString( "ÅØ" ) ), QString( "AOE" ) );
 
     /* Spanish */
     QCOMPARE( Amarok::cleanPath( QString( "ñóÿ" ) ), QString( "noy" ) );
     QCOMPARE( Amarok::cleanPath( QString( "ÑÓŸ" ) ), QString( "NOY" ) );
 
-    /* if they exist: add missing ones here */
+    /* add missing ones here */
 }
 
 void TestAmarok::testComputeScore()

@@ -916,56 +916,35 @@ namespace Amarok
 
     QString cleanPath( const QString &path )
     {
+        /* Unicode uses combining characters to form accented versions of other characters.
+         * (Exception: Latin-1 table for compatibility with ASCII.)
+         * Those can be found in the Unicode tables listed at:
+         * http://en.wikipedia.org/w/index.php?title=Combining_character&oldid=255990982
+         * Removing those characters removes accents. :)                                   */
         QString result = path;
-        // german umlauts
+
+        // German umlauts
         result.replace( QChar(0x00e4), "ae" ).replace( QChar(0x00c4), "Ae" );
         result.replace( QChar(0x00f6), "oe" ).replace( QChar(0x00d6), "Oe" );
         result.replace( QChar(0x00fc), "ue" ).replace( QChar(0x00dc), "Ue" );
         result.replace( QChar(0x00df), "ss" );
 
-        // some strange accents
-        result.replace( QChar(0x00e7), "c" ).replace( QChar(0x00c7), "C" );
-        result.replace( QChar(0x00fd), "y" ).replace( QChar(0x00dd), "Y" );
-        result.replace( QChar(0x00f1), "n" ).replace( QChar(0x00d1), "N" );
+        // other special cases
+        result.replace( QChar(0x00C6), "AE" );
+        result.replace( QChar(0x00E6), "ae" );
 
-        // czech letters with carons
-        result.replace( QChar(0x0161), "s" ).replace( QChar(0x0160), "S" );
-        result.replace( QChar(0x010d), "c" ).replace( QChar(0x010c), "C" );
-        result.replace( QChar(0x0159), "r" ).replace( QChar(0x0158), "R" );
-        result.replace( QChar(0x017e), "z" ).replace( QChar(0x017d), "Z" );
-        result.replace( QChar(0x0165), "t" ).replace( QChar(0x0164), "T" );
-        result.replace( QChar(0x0148), "n" ).replace( QChar(0x0147), "N" );
-        result.replace( QChar(0x010f), "d" ).replace( QChar(0x010e), "D" );
+        result.replace( QChar(0x00D8), "OE" );
+        result.replace( QChar(0x00F8), "oe" );
 
-        // accented vowels
-        QChar a[] = { 'a', 0xe0,0xe1,0xe2,0xe3,0xe5, 0 };
-        QChar A[] = { 'A', 0xc0,0xc1,0xc2,0xc3,0xc5, 0 };
-        QChar E[] = { 'e', 0xe8,0xe9,0xea,0xeb,0x11a, 0 };
-        QChar e[] = { 'E', 0xc8,0xc9,0xca,0xcb,0x11b, 0 };
-        QChar i[] = { 'i', 0xec,0xed,0xee,0xef, 0 };
-        QChar I[] = { 'I', 0xcc,0xcd,0xce,0xcf, 0 };
-        QChar o[] = { 'o', 0xf2,0xf3,0xf4,0xf5,0xf8, 0 };
-        QChar O[] = { 'O', 0xd2,0xd3,0xd4,0xd5,0xd8, 0 };
-        QChar u[] = { 'u', 0xf9,0xfa,0xfb,0x16e, 0 };
-        QChar U[] = { 'U', 0xd9,0xda,0xdb,0x16f, 0 };
-        QChar nul[] = { 0 };
-        QChar *replacements[] = { a, A, e, E, i, I, o, O, u, U, nul };
+        // normalize in a form where accents are seperate characters
+        result = result.normalized( QString::NormalizationForm_D );
 
-        for( int i = 0; i < result.length(); i++ )
+        // remove accents from table "Combining Diacritical Marks"
+        for( int i = 0x0300; i <= 0x036F; i++ )
         {
-            QChar c = result[ i ];
-            for( uint n = 0; replacements[n][0] != QChar(0); n++ )
-            {
-                for( uint k=0; replacements[n][k] != QChar(0); k++ )
-                {
-                    if( replacements[n][k] == c )
-                    {
-                        c = replacements[n][0];
-                    }
-                }
-            }
-            result[ i ] = c;
+            result.remove( QChar( i ) );
         }
+
         return result;
     }
 
