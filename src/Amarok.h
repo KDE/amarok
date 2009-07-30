@@ -297,6 +297,6 @@ namespace Amarok
 
 
 /// Update this when necessary
-#define APP_VERSION "2.2-SVN"
+#define APP_VERSION "2.2-GIT"
 
 #endif
