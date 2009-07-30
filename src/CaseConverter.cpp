@@ -28,7 +28,7 @@
 namespace Amarok
 {
 const QString CaseConverter::s_MATCH_A_WORD( "\\b([\\w']+)\\b" );
-const QString CaseConverter::s_LITTLE_WORDS( "\\b(a|an|as|at|by|for|if|and|of|or|to|the|in)\\b" );
+const QString CaseConverter::s_LITTLE_WORDS( "\\b(a|an|and|as|at|by|for|if|in|of|on|or|to|the)\\b" );
 
 QString
 CaseConverter::toTitleCase( const QString &s )

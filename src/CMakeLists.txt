@@ -570,6 +570,7 @@ set(amaroklib_LIB_SRCS
     GlobalCurrentTrackActions.cpp
     ../tests/playlistmanager/TestPlaylistManager.cpp
     ../tests/TestAmarok.cpp
+    ../tests/TestCaseConverter.cpp
     ../tests/TestSmartPointerList.cpp
 )
 

@@ -7,6 +7,7 @@ include_directories( .
 )
 
 QT4_AUTOMOC( TestAmarok.cpp )
+QT4_AUTOMOC( TestCaseConverter.cpp )
 QT4_AUTOMOC( TestSmartPointerList.cpp )
 
 add_subdirectory( data )
