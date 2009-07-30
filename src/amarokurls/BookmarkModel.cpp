@@ -106,7 +106,7 @@ BookmarkModel::createIndex( int row, int column, BookmarkViewItemPtr item ) cons
 }
 
 QModelIndex
-BookmarkModel::index(int row, int column, const QModelIndex & parent) const
+BookmarkModel::index( int row, int column, const QModelIndex & parent ) const
 {
     //DEBUG_BLOCK
 
