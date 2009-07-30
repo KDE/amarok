@@ -41,11 +41,10 @@ SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
     m_sortableCategories += internalColumnNames;
     for( QStringList::iterator i = m_sortableCategories.begin(); i!=m_sortableCategories.end(); )
     {
-        if( *i == QString( "Placeholder" ) || *i == QString( "Bpm" )
+        if( *i == QString( "Placeholder" )    || *i == QString( "Bpm" )
             || *i == QString( "Cover image" ) || *i == QString( "Divider" )
-            || *i == QString( "Last played" ) || *i == QString( "Mood" )
-            || *i == QString( "Source" ) || *i == QString( "SourceEmblem" )
-            || *i == QString( "Title (with track number)" ) || *i == QString( "Type" ) )
+            || *i == QString( "Mood" )        || *i == QString( "SourceEmblem" )
+            || *i == QString( "Title (with track number)" ) )
             i = m_sortableCategories.erase( i );
         else
             ++i;
