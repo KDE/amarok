@@ -235,7 +235,7 @@ Playlist::RandomAlbumNavigator::requestLastTrack()
 }
 
 bool
-Playlist::RandomAlbumNavigator::idLessThan( const quint64 l, const quint64 r )
+Playlist::RandomAlbumNavigator::idLessThan( const quint64& l, const quint64& r )
 {
     Meta::TrackPtr left = GroupingProxy::instance()->trackForId( l );
     Meta::TrackPtr right = GroupingProxy::instance()->trackForId( r );
