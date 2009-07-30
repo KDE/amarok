@@ -68,12 +68,19 @@ SortProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
 }
 
 void
-SortProxy::updateSortMap( SortScheme scheme)
+SortProxy::updateSortMap( SortScheme scheme )
 {
-    emit layoutAboutToBeChanged();  //NOTE to self: do I need this or sort() takes care of it?
     m_scheme = scheme;
     sort( 0 );  //0 is a dummy column
-    emit layoutChanged();
+    //HACK: sort() inverts the sortOrder on each call, this keeps the order ascending.
+    //      This should be fixed properly. Right now, this whole operation takes rougly
+    //      2 * O( n log n ) and it could be O( n log n ) if we eliminate the second sort().
+    //      This is needed because QSFPM is used improperly on a dummy column, and every
+    //      time the column is "clicked" the sort order is inverted. This is done by
+    //      QSortFilterProxyModelPrivate::sort_source_rows(), hidden behind the d-pointer
+    //      in QSFPM.
+    sort( 0 );
+    //NOTE: sort() also emits QSFPM::layoutChanged()
 }
 
 
