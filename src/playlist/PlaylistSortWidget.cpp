@@ -105,7 +105,10 @@ SortWidget::popLevel()
         m_comboLayout->removeWidget( m_comboList.back() );
         delete m_comboList.takeLast();
         if( m_comboList.isEmpty() )
+        {
             m_btnSort->setEnabled( false );
+            SortProxy::instance()->invalidateSorting();
+        }
     }
 }
 

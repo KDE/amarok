@@ -57,6 +57,11 @@ public slots:
      */
     void updateSortMap( SortScheme scheme );
 
+    /**
+     * Resets the proxy to its original pass-through state.
+     */
+    void invalidateSorting();
+
 protected:
     /**
      * Converts a row index that's valid in the proxy below this one to a row index valid

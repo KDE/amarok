@@ -56,6 +56,13 @@ SortProxy::SortProxy()
 SortProxy::~SortProxy()
 {}
 
+void
+SortProxy::invalidateSorting()
+{
+    m_scheme = SortScheme();
+    reset();
+}
+
 bool
 SortProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
 {
