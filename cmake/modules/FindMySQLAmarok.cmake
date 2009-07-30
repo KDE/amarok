@@ -31,7 +31,7 @@ else(WIN32)
     set(MYSQL_CLIENT_LIBRARY_NAME mysqlclient)
 endif(WIN32)
 
-find_library(MYSQL_LIBRARIES NAMES mysqlclient 
+find_library(MYSQL_LIBRARIES NAMES ${MYSQL_CLIENT_LIBRARY_NAME}
    PATHS
    ~/usr/lib/mysql
    /opt/mysql/mysql/lib 
