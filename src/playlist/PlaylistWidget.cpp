@@ -154,6 +154,11 @@ Playlist::Widget::Widget( QWidget* parent )
     } //END Playlist Toolbar
 
     setFrameShape( QFrame::NoFrame );
+
+
+    // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
+    connect( The::playlistController(), SIGNAL( replacingPlaylist() ), this, SLOT( clearFilterIfActive() ) );
+
 }
 
 QSize
@@ -183,3 +188,14 @@ Playlist::Widget::showDynamicHint( bool enabled )
 
 }
 
+void
+Playlist::Widget::clearFilterIfActive()
+{
+    DEBUG_BLOCK
+    KConfigGroup config = Amarok::config( "Playlist Search" );
+    bool filterActive = config.readEntry( "ShowOnlyMatches", true );
+
+    if( filterActive )
+        m_searchWidget->slotFilterClear();
+
+}

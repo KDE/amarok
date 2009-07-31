@@ -99,6 +99,8 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     int firstItemAdded = -1;
     if ( options & Replace )
     {
+        emit replacingPlaylist();
+
         m_undoStack->beginMacro( "Replace playlist" ); // TODO: does this need to be internationalized?
         clear();
         insertionHelper( -1, list );
