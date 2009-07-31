@@ -118,13 +118,19 @@ namespace Handler
              * @param tracks the tracks that make up the playlist to be made
              * @param name the name of the playlist
              */
+            virtual void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name ) = 0;
+            
+            /**
+             * Deletes a particular playlist from the device
+             * @param playlist the playlist to remove
+             */
+            virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) = 0;
 
-            // TODO: make pure virtual, reimplement in every plcapability
-            virtual void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
-            { Q_UNUSED(playlist) Q_UNUSED( name) }
-            virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
-
-            virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
+            /**
+             * Renames a particular playlist on the device
+             * @param playlist the playlist to rename
+             */
+            virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) = 0;
 
             /** 
              * This method must create a two-way association of the current Meta::Playlist

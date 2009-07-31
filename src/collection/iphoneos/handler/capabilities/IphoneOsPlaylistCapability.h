@@ -30,21 +30,26 @@ namespace Handler
 class IphoneOsPlaylistCapability : public PlaylistCapability
 {
     Q_OBJECT
+
     public:
-    IphoneOsPlaylistCapability( Meta::IphoneOsHandler *handler );
+        IphoneOsPlaylistCapability( Meta::IphoneOsHandler *handler );
 
-    virtual void prepareToParsePlaylists();
-    virtual bool isEndOfParsePlaylistsList();
-    virtual void prepareToParseNextPlaylist();
-    virtual void nextPlaylistToParse();
-    virtual bool shouldNotParseNextPlaylist();
-    virtual void prepareToParsePlaylistTracks();
-    virtual bool isEndOfParsePlaylist();
-    virtual void prepareToParseNextPlaylistTrack();
-    virtual void nextPlaylistTrackToParse();
+        virtual void prepareToParsePlaylists();
+        virtual bool isEndOfParsePlaylistsList();
+        virtual void prepareToParseNextPlaylist();
+        virtual void nextPlaylistToParse();
+        virtual bool shouldNotParseNextPlaylist();
+        virtual void prepareToParsePlaylistTracks();
+        virtual bool isEndOfParsePlaylist();
+        virtual void prepareToParseNextPlaylistTrack();
+        virtual void nextPlaylistTrackToParse();
 
-    virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
-    virtual QString libGetPlaylistName();
+        virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
+        virtual QString libGetPlaylistName();
+        
+        virtual void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
+        virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+        virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
 
     private:
         Meta::IphoneOsHandler *m_handler;
