@@ -64,8 +64,9 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
         menu->setContentsMargins( offset, 1, 1, 2 );
     }
 
-    m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
-
+    //m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
+    m_mainButton = new BreadcrumbUrlMenuButton( category->icon(), category->prettyName(), "navigate",  this );
+    
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 
     //if this is a list, make cliking on this item cause us

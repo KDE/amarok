@@ -84,4 +84,19 @@ class BreadcrumbItemMenuButton : public BreadcrumbItemButton
         virtual void paintEvent(QPaintEvent* event);
 };
 
+class BreadcrumbUrlMenuButton : public BreadcrumbItemButton
+{
+    Q_OBJECT
+     public:
+        BreadcrumbUrlMenuButton( const QIcon &icon, const QString &text, const QString &urlsCommand, QWidget *parent );
+        virtual ~BreadcrumbUrlMenuButton();
+
+    protected slots:
+        void generateMenu();
+
+    private:
+        QString m_urlsCommand;
+       
+};
+
 #endif

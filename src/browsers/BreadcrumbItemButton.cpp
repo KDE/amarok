@@ -18,6 +18,8 @@
 
 #include "BreadcrumbItemButton.h"
 
+#include "amarokurls/AmarokUrlHandler.h"
+
 #include <KColorScheme>
 #include <KIcon>
 #include <KLocale>
@@ -187,6 +189,36 @@ void BreadcrumbItemMenuButton::paintEvent(QPaintEvent* event)
     } else {
         style()->drawPrimitive(QStyle::PE_IndicatorArrowLeft, &option, &painter, this);
     }
+}
+
+
+
+BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QIcon &icon, const QString &text, const QString &urlsCommand, QWidget *parent )
+    : BreadcrumbItemButton( icon, text, parent )
+    , m_urlsCommand( urlsCommand )
+{
+    generateMenu();
+}
+
+BreadcrumbUrlMenuButton::~BreadcrumbUrlMenuButton()
+{
+}
+
+void BreadcrumbUrlMenuButton::generateMenu()
+{
+   BookmarkList list = The::amarokUrlHandler()->urlsByCommand( m_urlsCommand );
+
+   QMenu * menu = new QMenu();
+   menu->setTitle( i18n("Browser Bookmarks" ) );
+   menu->addSeparator();
+
+   foreach( AmarokUrlPtr url, list )
+   {
+       menu->addAction( url->name() );
+   }
+
+   setMenu( menu );
+   
 }
 
 
