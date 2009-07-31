@@ -124,6 +124,7 @@ set(libservicebrowser_SRCS
 #####################################################################
 set(libamarokurl_SRCS
     amarokurls/AmarokUrl.cpp
+    amarokurls/AmarokUrlAction.cpp
     amarokurls/AmarokUrlHandler.cpp
     amarokurls/NavigationUrlRunner.cpp
     amarokurls/NavigationUrlGenerator.cpp
