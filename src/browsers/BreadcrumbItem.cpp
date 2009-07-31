@@ -64,10 +64,7 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
         menu->setContentsMargins( offset, 1, 1, 2 );
     }
 
-    if ( m_category->parentList() == 0 )
-        m_mainButton = new BreadcrumbUrlMenuButton( category->icon(), category->prettyName(), "navigate",  this );
-    else
-        m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
+    m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
     
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 

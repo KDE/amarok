@@ -88,7 +88,7 @@ class BreadcrumbUrlMenuButton : public BreadcrumbItemButton
 {
     Q_OBJECT
      public:
-        BreadcrumbUrlMenuButton( const QIcon &icon, const QString &text, const QString &urlsCommand, QWidget *parent );
+        BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent );
         virtual ~BreadcrumbUrlMenuButton();
 
     protected slots:

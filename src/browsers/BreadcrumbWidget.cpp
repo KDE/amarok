@@ -16,6 +16,8 @@
 
 #include "BreadcrumbWidget.h"
 
+#include "BreadcrumbItemButton.h"
+
 #include "Debug.h"
 
 #include <KLocale>
@@ -27,6 +29,13 @@ BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
     setFixedHeight( 28 );
     setContentsMargins( 3, 0, 3, 0 );
     setSpacing( 0 );
+
+    m_breadcrumbArea = new KHBox( this );
+    m_breadcrumbArea->setContentsMargins( 0, 0, 0, 0 );
+    m_breadcrumbArea->setSpacing( 0 );
+    setStretchFactor( m_breadcrumbArea, 10 );
+
+    new BreadcrumbUrlMenuButton( "navigate", this );
 
     m_spacer = new QWidget( 0 );
 }
@@ -71,7 +80,7 @@ BreadcrumbWidget::updateBreadcrumbs()
     clearCrumbs();
     m_spacer->setParent( 0 );
     addLevel( m_rootList );
-    m_spacer->setParent( this );
+    m_spacer->setParent( m_breadcrumbArea );
 }
 
 void
@@ -79,7 +88,7 @@ BreadcrumbWidget::addLevel( BrowserCategoryList * list )
 {
     DEBUG_BLOCK
     BreadcrumbItem *item = list->breadcrumb();
-    item->setParent( this );
+    item->setParent( m_breadcrumbArea );
     item->show();
     m_items.append( item );
 
@@ -98,7 +107,7 @@ BreadcrumbWidget::addLevel( BrowserCategoryList * list )
         else
         {
             BreadcrumbItem * leaf = childCategory->breadcrumb();
-            leaf->setParent( this );
+            leaf->setParent( m_breadcrumbArea );
             leaf->show();
             leaf->setActive( true );
             
