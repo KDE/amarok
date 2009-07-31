@@ -18,6 +18,7 @@
 
 #include "BreadcrumbItemButton.h"
 
+#include "amarokurls/AmarokUrlAction.h"
 #include "amarokurls/AmarokUrlHandler.h"
 
 #include <KColorScheme>
@@ -214,7 +215,7 @@ void BreadcrumbUrlMenuButton::generateMenu()
 
    foreach( AmarokUrlPtr url, list )
    {
-       menu->addAction( url->name() );
+       menu->addAction( new AmarokUrlAction( url, menu ) );
    }
 
    setMenu( menu );
