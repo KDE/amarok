@@ -148,25 +148,25 @@ public:
     virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
     virtual void databaseChanged();
 
-    virtual void    libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
-    virtual void    libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
-    virtual void    libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
-    virtual void    libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
-    virtual void    libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
-    virtual void    libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
-    virtual void    libSetLength( Meta::MediaDeviceTrackPtr &track, int length );
-    virtual void    libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum );
-    virtual void    libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment );
-    virtual void    libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
-    virtual void    libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
-    virtual void    libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
-    virtual void    libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
-    virtual void    libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
-    virtual void    libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
-    virtual void    libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
-    virtual void    libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
-    virtual void    libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
-    virtual void    libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
+    virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
+    virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
+    virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
+    virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
+    virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
+    virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
+    virtual void libSetLength( Meta::MediaDeviceTrackPtr &track, int length );
+    virtual void libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum );
+    virtual void libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment );
+    virtual void libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
+    virtual void libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
+    virtual void libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
+    virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
+    virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
+    virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
+    virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
+    virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
+    virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
+    virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
 
     virtual void prepareToCopy();
     virtual void prepareToDelete();
@@ -242,7 +242,7 @@ private:
     virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
     virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
     virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
-    virtual KUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+    virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
 
     virtual float usedCapacity() const;
     virtual float totalCapacity() const;
@@ -273,13 +273,11 @@ private:
     bool kioCopyTrack( const KUrl &src, const KUrl &dst );
     void deleteFile( const KUrl &url );
 
-
-
     /**
      * Handler Variables
      */
 
-    /* Collection Variables */
+     /* Collection Variables */
 
     // Associated collection
     // Map of titles, used to check for duplicate tracks
@@ -291,12 +289,10 @@ private:
     Itdb_Track       *m_currtrack;
 
     // For space checks
-
     QString               m_filepath;
     float                 m_capacity;
 
     // for playlist parsing
-
     GList            *m_currplaylistlist;
     Itdb_Playlist    *m_currplaylist;
 
@@ -316,43 +312,39 @@ private:
     Itdb_Track       *m_libtrack;
 
     /* Ipod Connection */
-    bool              m_autoConnect;
-    QString           m_mountPoint;
-    QString           m_name;
+    bool    m_autoConnect;
+    QString m_mountPoint;
+    QString m_name;
 
     /* Ipod Model */
-    bool              m_isShuffle;
-    bool              m_isMobile;
-    bool              m_isIPhone;
+    bool m_isShuffle;
+    bool m_isMobile;
+    bool m_isIPhone;
 
     /* Properties of Ipod */
-    bool              m_supportsArtwork;
-    bool              m_supportsVideo;
-    bool              m_rockboxFirmware;
-    bool              m_needsFirewireGuid;
+    bool m_supportsArtwork;
+    bool m_supportsVideo;
+    bool m_rockboxFirmware;
+    bool m_needsFirewireGuid;
 
     /* Success/Failure */
     bool m_dbChanged;
     bool m_copyFailed;
     bool m_isCanceled;
     bool m_wait;
+
     // whether Itdb_Track is created correctly
     bool m_trackCreated;
-    // whether read Ipod DB or not
-    //bool m_success;
 
     /* Miscellaneous Variables */
 
     // Hash that associates an Itdb_Track* to every Track*
-
     QHash<Meta::MediaDeviceTrackPtr, Itdb_Track*> m_itdbtrackhash;
-
+    
     // Hash that associates an Itdb_Playlist* to every PlaylistPtr
-
     QHash<Meta::MediaDevicePlaylistPtr, Itdb_Playlist*> m_itdbplaylisthash;
 
     // tracks that failed to copy
-
     QMap<Meta::TrackPtr, QString> m_tracksFailed;
 
     // tempdir for covers
