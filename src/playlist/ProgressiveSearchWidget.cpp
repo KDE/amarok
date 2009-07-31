@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "ProgressiveSearchWidget.h"
 
 #include "Debug.h"
@@ -29,6 +29,9 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
+
+namespace Playlist
+{
 
 ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     : KVBox( parent )
@@ -57,7 +60,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     m_nextAction = new KAction( KIcon( "go-down" ), i18n( "&Next" ), this );
     connect( m_nextAction, SIGNAL( triggered() ), this, SLOT( slotNext() ) );
-    
+
     m_previousAction = new KAction( KIcon( "go-up" ), i18n( "&Previous" ), this );
     connect( m_previousAction, SIGNAL( triggered() ), this, SLOT( slotPrevious() ) );
 
@@ -82,7 +85,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     if( m_searchFieldsMask & Playlist::MatchAlbum )
         searchAlbumsAction->setChecked( true );
     m_menu->addAction( searchAlbumsAction );
-    
+
     KAction * searchArtistsAction = new KAction( i18n( "Artists" ), this );
     searchArtistsAction->setCheckable( true );
     connect( searchArtistsAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchArtists( bool ) ) );
@@ -126,11 +129,11 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
     KAction *searchMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Search Preferences" ), this );
     searchMenuAction->setMenu( m_menu );
     toolbar->addAction( searchMenuAction );
-    
+
     QToolButton *tbutton = qobject_cast<QToolButton*>(toolbar->widgetForAction( searchMenuAction ) );
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
-    
+
     toolbar->setFixedHeight( m_searchEdit->sizeHint().height() );
 
     //make sure that this edit is cleared when the playlist is cleared:
@@ -149,7 +152,7 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
     //resetting the view:
     if ( filter == m_lastFilter )
         return;
-    
+
     debug() << "New filter: " << filter;
 
     m_lastFilter = filter;
@@ -258,7 +261,7 @@ void ProgressiveSearchWidget::slotSearchAlbums( bool search )
         m_searchFieldsMask ^= Playlist::MatchAlbum;
 
     Amarok::config( "Playlist Search" ).writeEntry( "MatchAlbum", search );
-    
+
     if( !m_searchEdit->text().isEmpty() )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
@@ -305,7 +308,7 @@ void ProgressiveSearchWidget::slotSearchYears( bool search )
 void ProgressiveSearchWidget::readConfig()
 {
     m_searchFieldsMask = 0;
-    
+
     KConfigGroup config = Amarok::config("Playlist Search");
 
     if( config.readEntry( "MatchTrack", true ) )
@@ -333,7 +336,7 @@ void ProgressiveSearchWidget::slotShowOnlyMatches( bool onlyMatches )
 
     m_nextAction->setVisible( !onlyMatches );
     m_previousAction->setVisible( !onlyMatches );
-    
+
     emit( showOnlyMatches( onlyMatches ) );
 }
 
@@ -361,5 +364,7 @@ void ProgressiveSearchWidget::slotFilterClear()
 {
     m_searchEdit->setText( QString() );
 }
+
+}   //namespace Playlist
 
 #include "ProgressiveSearchWidget.moc"

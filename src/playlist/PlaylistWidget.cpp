@@ -31,7 +31,7 @@
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
 #include "layouts/LayoutManager.h"
-#include "widgets/ProgressiveSearchWidget.h"
+#include "ProgressiveSearchWidget.h"
 #include "widgets/HorizontalDivider.h"
 #include "layouts/LayoutConfigAction.h"
 
@@ -50,7 +50,7 @@ Playlist::Widget::Widget( QWidget* parent )
     m_sortTestWidget = new Playlist::SortTestWidget( this );
     new HorizontalDivider( this );
 
-    m_searchWidget = new ProgressiveSearchWidget( this );
+    m_searchWidget = new Playlist::ProgressiveSearchWidget( this );
 
     // show visual indication of dynamic playlists  being enabled
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ), SLOT( showDynamicHint( bool ) ) );

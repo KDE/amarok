@@ -387,6 +387,7 @@ set(libplaylist_SRCS
     playlist/PlaylistModel.cpp
     playlist/PlaylistSortTestWidget.cpp
     playlist/PlaylistWidget.cpp
+    playlist/ProgressiveSearchWidget.cpp
     playlist/UndoCommands.cpp
     playlist/layouts/LayoutEditWidget.cpp
     playlist/layouts/LayoutConfigAction.cpp
@@ -568,7 +569,6 @@ set(amaroklib_LIB_SRCS
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
     widgets/PrettyTreeView.cpp
-    widgets/ProgressiveSearchWidget.cpp
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
     widgets/SliderWidget.cpp
