@@ -612,7 +612,9 @@ IpodHandler::detectModel()
                 break;
 
             case ITDB_IPOD_MODEL_IPHONE_1:
-            case ITDB_IPOD_MODEL_TOUCH_BLACK:
+            //TODO newer libgpod thinks that an iPod touch is silver, older that it's black
+            //case ITDB_IPOD_MODEL_TOUCH_BLACK:
+            //case ITDB_IPOD_MODEL_TOUCH_SILVER:
                 m_isIPhone = true;
                 debug() << "detected iPhone/iPod Touch" << endl;
                 break;
