@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_PLAYLISTSORTWIDGET_H
-#define AMAROK_PLAYLISTSORTWIDGET_H
+#ifndef AMAROK_PLAYLISTSORTTESTWIDGET_H
+#define AMAROK_PLAYLISTSORTTESTWIDGET_H
 
 #include "playlist/proxymodels/SortProxy.h"
 
@@ -30,11 +30,11 @@ namespace Playlist
  * A ribbon interface that allows the user to define multiple sorting levels for the playlist.
  * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
-class SortWidget : public QWidget
+class SortTestWidget : public QWidget
 {
     Q_OBJECT
     public:
-        SortWidget( QWidget* parent = 0 );
+        SortTestWidget( QWidget* parent = 0 );
     public slots:
         void pushLevel();
         void popLevel();
@@ -49,4 +49,4 @@ class SortWidget : public QWidget
 
 }   //namespace Playlist
 
-#endif  //AMAROK_PLAYLISTSORTWIDGET_H
+#endif  //AMAROK_PLAYLISTSORTTESTWIDGET_H

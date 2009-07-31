@@ -47,7 +47,7 @@ Playlist::Widget::Widget( QWidget* parent )
     DEBUG_BLOCK
     setContentsMargins( 0, 0, 0, 0 );
 
-    m_sortWidget = new Playlist::SortWidget( this );
+    m_sortTestWidget = new Playlist::SortTestWidget( this );
     new HorizontalDivider( this );
 
     m_searchWidget = new ProgressiveSearchWidget( this );
@@ -90,7 +90,6 @@ Playlist::Widget::Widget( QWidget* parent )
     barBox->setMargin( 0 );
     barBox->setContentsMargins( 0, 0, 0, 0 );
 
-    
     Amarok::ColoredToolBar *plBar = new Amarok::ColoredToolBar( barBox );
     plBar->setFixedHeight( 30 );
     plBar->setObjectName( "PlaylistToolBar" );

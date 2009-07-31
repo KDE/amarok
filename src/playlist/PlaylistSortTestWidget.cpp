@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PlaylistSortWidget.h"
+#include "PlaylistSortTestWidget.h"
 
 #include "Debug.h"
 
@@ -23,7 +23,7 @@
 namespace Playlist
 {
 
-SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
+SortTestWidget::SortTestWidget( QWidget *parent ) : QWidget( parent )
 {
     DEBUG_BLOCK
 
@@ -73,7 +73,7 @@ SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
 }
 
 void
-SortWidget::applySortingScheme()
+SortTestWidget::applySortingScheme()
 {
     DEBUG_BLOCK
     SortScheme scheme = SortScheme();
@@ -85,7 +85,7 @@ SortWidget::applySortingScheme()
 }
 
 void
-SortWidget::pushLevel()
+SortTestWidget::pushLevel()
 {
     m_comboList.append( new KComboBox( this ) );
     connect( m_comboList.back(), SIGNAL( currentIndexChanged( QString ) ), this, SLOT( applySortingScheme() ) );
@@ -95,7 +95,7 @@ SortWidget::pushLevel()
 }
 
 void
-SortWidget::popLevel()
+SortTestWidget::popLevel()
 {
     if( !m_comboList.isEmpty() )
     {

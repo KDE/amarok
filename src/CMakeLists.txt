@@ -385,7 +385,7 @@ set(libplaylist_SRCS
     playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
-    playlist/PlaylistSortWidget.cpp
+    playlist/PlaylistSortTestWidget.cpp
     playlist/PlaylistWidget.cpp
     playlist/UndoCommands.cpp
     playlist/layouts/LayoutEditWidget.cpp
