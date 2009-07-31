@@ -46,6 +46,7 @@ extern "C" {
 #include "kjob.h"
 #include <KMessageBox>
 #include <KPasswordDialog>
+#include <KStandardDirs>
 #include <KUrl>
 #include <threadweaver/ThreadWeaver.h>
 
@@ -116,9 +117,32 @@ IpodHandler::init()
 {
     if( m_mountPoint.isEmpty() )
     {
-        debug() << "Error: empty mountpoint, probably an unmounted iPod, aborting";
-        m_memColl->slotAttemptConnectionDone( false );
-        return;
+        debug() << "Error: empty mountpoint, probably an unmounted iPod/iPhone, trying to mount";
+        m_mountPoint = KStandardDirs::locateLocal( "tmp", "amarok/" );
+        QString udi = m_memColl->udi().replace(QChar('/'), QChar('-'));
+        while( udi.startsWith('-') )
+            udi = udi.mid(1);
+        m_mountPoint += udi;
+
+        QDir mp(m_mountPoint);
+        if(!mp.exists())
+        {
+            mp.mkpath(m_mountPoint);
+            debug() << "created " << m_mountPoint;
+        }
+
+        QString command = QString("mount.fuse.ifuse %1 %2").arg(udi, m_mountPoint);
+        debug() << "mountpoint: " << m_mountPoint;
+        debug() << "command: " << command;
+        int result = QProcess::execute(command);
+
+        debug() << "mounting" << (result ? "failed" : "worked");
+
+        if( result )
+        {
+            m_memColl->slotAttemptConnectionDone( false );
+            return;
+        }
     }
 
 
@@ -313,8 +337,15 @@ IpodHandler::init()
     if (  device.isValid() )
     {
         Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-        m_filepath = storage->filePath();
-        m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
+        if ( storage )
+            m_filepath = storage->filePath();
+        else if ( !m_mountPoint.isEmpty() )
+            m_filepath = m_mountPoint;
+
+        if ( !m_filepath.isEmpty() )
+            m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
+        else
+            m_capacity = 0.0;
     }
     else
     {
