@@ -161,7 +161,7 @@ void ServiceInfo::linkClicked( const QUrl & url )
     }
     else if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) )
     {
-        Meta::XSPFPlaylist * playlist = new Meta::XSPFPlaylist( url );
+        Meta::XSPFPlaylist * playlist = new Meta::XSPFPlaylist( url, true );
     }
 }
 

@@ -41,6 +41,7 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     , m_standardPadding( 6.0 )
 {
     connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animateEnd( int ) ) );
+    setBackgroundHints(NoBackground);
 }
 
 Context::Applet::~Applet( )
@@ -92,35 +93,35 @@ Context::Applet::truncateTextToFit( QString text, const QFont& font, const QRect
 void
 Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem* t )
 {
-   p->save();
-   p->setRenderHint( QPainter::Antialiasing );
+    p->save();
+    p->setRenderHint( QPainter::Antialiasing );
 
-   // Paint in integer coordinates, align to grid
-   QRectF rect = t->boundingRect();
-   QPointF pos = t->pos();
-   rect.setX( qRound( rect.x() ) );
-   rect.setY( qRound( rect.y() ) );
-   rect.setHeight( qRound( rect.height() ) );
-   rect.setWidth( qRound( rect.width() ) );
-   rect.moveTopLeft( t->pos() );
-   pos.setX( qRound( pos.x() ) );
-   pos.setY( qRound( pos.y() ) );
-   rect.moveTopLeft( pos );
-   rect.adjust( -5, -2, 5, 2 );
-   
-   p->translate( 0.5, 0.5 );
-   
-   QPainterPath path;
-   path.addRoundedRect( rect, 3, 3 );
-   QColor col = PaletteHandler::highlightColor().lighter( 150 );
-   col.setAlphaF( col.alphaF() * 0.7 );
-   p->fillPath( path, col );
+    // Paint in integer coordinates, align to grid
+    QRectF rect = t->boundingRect();
+    QPointF pos = t->pos();
+    rect.setX( qRound( rect.x() ) );
+    rect.setY( qRound( rect.y() ) );
+    rect.setHeight( qRound( rect.height() ) );
+    rect.setWidth( qRound( rect.width() ) );
+    rect.moveTopLeft( t->pos() );
+    pos.setX( qRound( pos.x() ) );
+    pos.setY( qRound( pos.y() ) );
+    rect.moveTopLeft( pos );
+    rect.adjust( -5, -2, 5, 2 );
 
-   col = PaletteHandler::highlightColor( 0.3, 0.5 );
-   col.setAlphaF( col.alphaF() * 0.7 );
-   p->setPen( col );
-   p->drawRoundedRect( rect, 3, 3 );
-   p->restore();
+    p->translate( 0.5, 0.5 );
+
+    QPainterPath path;
+    path.addRoundedRect( rect, 3, 3 );
+    QColor col = PaletteHandler::highlightColor().lighter( 150 );
+    col.setAlphaF( col.alphaF() * 0.7 );
+    p->fillPath( path, col );
+
+    col = PaletteHandler::highlightColor( 0.3, 0.5 );
+    col.setAlphaF( col.alphaF() * 0.7 );
+    p->setPen( col );
+    p->drawRoundedRect( rect, 3, 3 );
+    p->restore();
 }
 
 void
@@ -130,17 +131,19 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     // draw non-gradient backround. going for elegance and style
     p->save();
     QPainterPath path;
-    path.addRoundedRect( boundingRect().adjusted( 0, 1, -1, -1 ), 3, 3 );
+    path.addRoundedRect( boundingRect().adjusted( 1, 1, -2, -2 ), 6, 6 );
     //p->fillPath( path, gradient );
     QColor highlight = PaletteHandler::highlightColor( 0.4, 1.05 );
-    highlight.setAlpha( 120 );
+    highlight.setAlphaF( highlight.alphaF() * 0.5 );
     p->fillPath( path, highlight );
     p->restore();
 
     p->save();
-    QColor col = PaletteHandler::highlightColor( 0.3, .7 );
+    p->translate( 0.5, 0.5 );
+    QColor col = PaletteHandler::highlightColor( 0.3, 0.5 );
+    col.setAlphaF( col.alphaF() * 0.7 );
     p->setPen( col );
-    p->drawRoundedRect( boundingRect().adjusted( 2, 2, -2, -2 ), 3, 3 );
+    p->drawRoundedRect( boundingRect().adjusted( 1, 1, -2, -2 ), 6, 6 );
     p->restore();
 }
 

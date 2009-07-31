@@ -62,7 +62,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Ama
 };
 
 template <class CollType>
-class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactory : public MediaDeviceCollectionFactoryBase
+class MediaDeviceCollectionFactory : public MediaDeviceCollectionFactoryBase
 {
     protected:
         MediaDeviceCollectionFactory( ConnectionAssistant *assistant )

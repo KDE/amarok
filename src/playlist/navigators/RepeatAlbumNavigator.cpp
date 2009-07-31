@@ -160,7 +160,7 @@ Playlist::RepeatAlbumNavigator::requestLastTrack()
 }
 
 bool
-Playlist::RepeatAlbumNavigator::idLessThan( const quint64 l, const quint64 r )
+Playlist::RepeatAlbumNavigator::idLessThan( const quint64& l, const quint64& r )
 {
     Meta::TrackPtr left = GroupingProxy::instance()->trackForId( l );
     Meta::TrackPtr right = GroupingProxy::instance()->trackForId( r );

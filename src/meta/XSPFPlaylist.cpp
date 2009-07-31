@@ -26,7 +26,10 @@
 #include "meta/capabilities/StreamInfoCapability.h"
 #include "meta/stream/Stream.h"
 #include "meta/file/File.h"
+#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModel.h"
 #include "PlaylistManager.h"
+
 #include "timecode/TimecodeMeta.h"
 
 #include <kurl.h>
@@ -58,10 +61,11 @@ XSPFPlaylist::XSPFPlaylist()
     appendChild( root );
 }
 
-XSPFPlaylist::XSPFPlaylist( const KUrl &url )
+XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
     : Playlist()
     , QDomDocument()
     , m_url( url )
+    , m_autoAppendAfterLoad( autoAppend )
 {
     DEBUG_BLOCK
     debug() << "url: " << m_url;
@@ -136,6 +140,7 @@ XSPFPlaylist::save( const QString &location, bool relative )
 bool
 XSPFPlaylist::loadXSPF( QTextStream &stream )
 {
+    DEBUG_BLOCK
     QString errorMsg;
     int errorLine, errorColumn;
 
@@ -147,6 +152,9 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
                 << " at line " << errorLine << ", column " << errorColumn;
         return false;
     }
+
+    if( m_autoAppendAfterLoad )
+        The::playlistController()->insertPlaylist( The::playlistModel()->rowCount(), Meta::PlaylistPtr( this ) );
 
     return true;
 }

@@ -45,7 +45,6 @@ class SortWidget : public QWidget
         QHBoxLayout *m_comboLayout;
         QList< KComboBox * > m_comboList;
         QStringList m_sortableCategories;
-        KPushButton *m_btnSort;
 };
 
 }   //namespace Playlist

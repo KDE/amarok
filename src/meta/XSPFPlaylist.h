@@ -58,7 +58,14 @@ class AMAROK_EXPORT XSPFPlaylist : public Playlist, public QDomDocument, public 
 {
 public:
     XSPFPlaylist();
-    XSPFPlaylist( const KUrl &url );
+
+    /**
+    * Creates a new XSPFPlaylist and starts loading the xspf file of the url.
+    * @param url The Ulrf of the xspf file to load.
+    * @param autoAppend Should this playlist automatically append itself to the playlist when loaded (useful when loading a remote url as it
+    * allows the caller to do it in a "one shot" way and not have to worry about waiting untill download and parsing is completed.
+    */
+    XSPFPlaylist( const KUrl &url, bool autoAppend = false );
     XSPFPlaylist( Meta::TrackList list );
 
     ~XSPFPlaylist();
@@ -118,6 +125,7 @@ private:
     bool loadXSPF( QTextStream& );
 
     KUrl m_url;
+    bool m_autoAppendAfterLoad;
 };
 
 }

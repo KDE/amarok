@@ -21,7 +21,7 @@
 #include <kdemacros.h>
 
 #ifndef MEDIADEVICECOLLECTION_EXPORT
-# if defined(MAKE_MEDIADEVICELIB_LIB)
+# if defined(MAKE_MEDIADEVICELIB_LIB) || defined(MAKE_AMAROKLIB_LIB)
    /* We are building this library */ 
 #  define MEDIADEVICECOLLECTION_EXPORT KDE_EXPORT
 # else
