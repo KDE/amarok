@@ -15,7 +15,7 @@
  ****************************************************************************************/
  
 #include "BreadcrumbItem.h"
-#include "BreadcrumbItemButton.h"
+#include "widgets/BreadcrumbItemButton.h"
 
 #include "BrowserCategoryList.h"
 #include "Debug.h"
