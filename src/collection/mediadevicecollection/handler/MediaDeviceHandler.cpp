@@ -784,19 +784,17 @@ MediaDeviceHandler::parseTracks()
     YearMap yearMap;
 
     /* iterate through tracklist and add to appropriate map */
-    for( m_rc->prepareToParseTracks(); !(m_rc->isEndOfParseTracksList()); m_rc->prepareToParseNextTrack() )
+    for( m_rc->prepareToParseTracks(); !m_rc->isEndOfParseTracksList(); m_rc->prepareToParseNextTrack() )
     {
         /// Fetch next track to parse
 
         m_rc->nextTrackToParse();
 
-        // TODO: coverart
-
         MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
         m_rc->setAssociateTrack( track );
 
-        getBasicMediaDeviceTrackInfo(track, track);
+        getBasicMediaDeviceTrackInfo( track, track );
 
         /* map-related info retrieval */
         setupArtistMap( track, artistMap );
