@@ -19,7 +19,7 @@
 
 #include "BookmarkManagerWidget.h"
 
-#include <qt4/QtGui/QDialog>
+#include <QDialog>
 
 class BookmarkManager;
 
