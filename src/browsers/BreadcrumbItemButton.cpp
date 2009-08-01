@@ -20,6 +20,7 @@
 
 #include "amarokurls/AmarokUrlAction.h"
 #include "amarokurls/AmarokUrlHandler.h"
+#include "Amarok.h"
 
 #include <KColorScheme>
 #include <KIcon>
@@ -214,6 +215,8 @@ void BreadcrumbUrlMenuButton::generateMenu()
    menu->setTitle( i18n("Browser Bookmarks" ) );
 
    menu->addAction( i18n( "Bookmark current" ) );
+   menu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
+   
    menu->addSeparator();
 
    foreach( AmarokUrlPtr url, list )
