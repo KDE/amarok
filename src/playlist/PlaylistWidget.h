@@ -42,6 +42,7 @@ namespace Playlist
 
         public slots:
             void showDynamicHint( bool enabled );
+            void clearFilterIfActive();
 
         protected:
             QSize sizeHint() const;

@@ -97,6 +97,8 @@ signals:
     void canRedoChanged( bool );
     void canUndoChanged( bool );
 
+    void replacingPlaylist();
+
 private slots:
     void newResultReady( const QString&, const Meta::TrackList& );
     void queryDone();
