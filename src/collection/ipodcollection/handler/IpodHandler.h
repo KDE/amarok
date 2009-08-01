@@ -168,42 +168,19 @@ public:
     virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
     virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
 
+    // TODO: MediaDeviceTrackPtr
+    virtual void libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
+    virtual void setCoverArt( Itdb_Track *ipodtrack, const QString &path );
+
     virtual void prepareToCopy();
     virtual void prepareToDelete();
 
     /// Ipod-Specific Methods
 
 public:
-
-    /* Set Methods */
-
-    QMap<Meta::TrackPtr, QString> tracksFailed() const
-    {
-        return m_tracksFailed;
-    }
-
-    QString mountPoint() const
-    {
-        return m_mountPoint;
-    }
-
-    void setMountPoint( const QString &mp )
-    {
-        m_mountPoint = mp;
-    }
-
-    /* Methods Provided for Collection */
-
-#if 0
-    virtual void copyTrackListToDevice( const Meta::TrackList tracklist );
-    void deleteTrackListFromDevice( const Meta::TrackList &tracks );
-    /**
-     * Parses Ipod DB and creates a Meta::IpodTrack
-     * for each track in the DB
-     */
-    //virtual void parseTracks();
-    void updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack );
-#endif
+    QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
+    QString mountPoint() const { return m_mountPoint; }
+    void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
 
     // NOTE: do not use writeITunesDB,
     // use the threaded writeDatabase
@@ -212,11 +189,8 @@ public:
 public slots:
     bool initializeIpod();
 
-
 private:
-
     /// Functions for ReadCapability
-
     virtual void prepareToParseTracks();
     virtual bool isEndOfParseTracksList();
     virtual void prepareToParseNextTrack();
@@ -243,12 +217,12 @@ private:
     virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
     virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
     virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+    virtual QPixmap libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
 
     virtual float usedCapacity() const;
     virtual float totalCapacity() const;
 
     /// Ipod Methods
-
     bool removeDBTrack( Itdb_Track *track );
 
     /* libgpod Information Extraction Methods */
@@ -264,10 +238,9 @@ private:
     QString realPath( const char *ipodPath );
 
     /* Cover Art functions */
-    /*
     QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
     void getCoverArt( const Itdb_Track *ipodtrack );
-    */
+
     /* File I/O Methods */
     // TODO: abstract copy/delete methods (not too bad)
     bool kioCopyTrack( const KUrl &src, const KUrl &dst );

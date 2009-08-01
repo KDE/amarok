@@ -17,7 +17,6 @@
 #ifndef IPODHANDLER_WRITECAPABILITY_H
 #define IPODHANDLER_WRITECAPABILITY_H
 
-#include "mediadevicecollection_export.h"
 #include "WriteCapability.h"
 
 namespace Meta {

@@ -37,13 +37,11 @@ IpodWriteCapability::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta:
     m_handler->findPathToCopy( srcTrack, destTrack );
 }
 
-
 bool
 IpodWriteCapability::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack )
 {
     return m_handler->libCopyTrack( srcTrack, destTrack );
 }
-
 
 bool
 IpodWriteCapability::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
@@ -51,13 +49,11 @@ IpodWriteCapability::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track 
     return m_handler->libDeleteTrackFile( track );
 }
 
-
 void
 IpodWriteCapability::libCreateTrack( const Meta::MediaDeviceTrackPtr &track )
 {
     m_handler->libCreateTrack( track );
 }
-
 
 void
 IpodWriteCapability::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
@@ -65,13 +61,11 @@ IpodWriteCapability::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
     m_handler->libDeleteTrack( track );
 }
 
-
 void
 IpodWriteCapability::addTrackInDB( const Meta::MediaDeviceTrackPtr &track )
 {
     m_handler->addTrackInDB( track );
 }
-
 
 void
 IpodWriteCapability::removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track )
@@ -79,13 +73,11 @@ IpodWriteCapability::removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track )
     m_handler->removeTrackFromDB( track );
 }
 
-
 void
 IpodWriteCapability::databaseChanged()
 {
     m_handler->databaseChanged();
 }
-
 
 void
 IpodWriteCapability::libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title )
@@ -93,13 +85,11 @@ IpodWriteCapability::libSetTitle( Meta::MediaDeviceTrackPtr &track, const QStrin
     m_handler->libSetTitle( track, title );
 }
 
-
 void
 IpodWriteCapability::libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album )
 {
     m_handler->libSetAlbum( track, album );
 }
-
 
 void
 IpodWriteCapability::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist )
@@ -107,13 +97,11 @@ IpodWriteCapability::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QStri
     m_handler->libSetArtist( track, artist );
 }
 
-
 void
 IpodWriteCapability::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
 {
     m_handler->libSetComposer( track, composer );
 }
-
 
 void
 IpodWriteCapability::libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre )
@@ -121,13 +109,11 @@ IpodWriteCapability::libSetGenre( Meta::MediaDeviceTrackPtr &track, const QStrin
     m_handler->libSetGenre( track, genre );
 }
 
-
 void
 IpodWriteCapability::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )
 {
     m_handler->libSetYear( track, year );
 }
-
 
 void
 IpodWriteCapability::libSetLength( Meta::MediaDeviceTrackPtr &track, int length )
@@ -135,13 +121,11 @@ IpodWriteCapability::libSetLength( Meta::MediaDeviceTrackPtr &track, int length 
     m_handler->libSetLength( track, length );
 }
 
-
 void
 IpodWriteCapability::libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum )
 {
     m_handler->libSetTrackNumber( track, tracknum );
 }
-
 
 void
 IpodWriteCapability::libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment )
@@ -149,13 +133,11 @@ IpodWriteCapability::libSetComment( Meta::MediaDeviceTrackPtr &track, const QStr
     m_handler->libSetComment( track, comment );
 }
 
-
 void
 IpodWriteCapability::libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum )
 {
     m_handler->libSetDiscNumber( track, discnum );
 }
-
 
 void
 IpodWriteCapability::libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate )
@@ -163,13 +145,11 @@ IpodWriteCapability::libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrat
     m_handler->libSetBitrate( track, bitrate );
 }
 
-
 void
 IpodWriteCapability::libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate )
 {
     m_handler->libSetSamplerate( track, samplerate );
 }
-
 
 void
 IpodWriteCapability::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
@@ -177,13 +157,11 @@ IpodWriteCapability::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
     m_handler->libSetBpm( track, bpm );
 }
 
-
 void
 IpodWriteCapability::libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize )
 {
     m_handler->libSetFileSize( track, filesize );
 }
-
 
 void
 IpodWriteCapability::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
@@ -220,7 +198,6 @@ IpodWriteCapability::prepareToCopy()
 {
     m_handler->prepareToCopy();
 }
-
 
 void
 IpodWriteCapability::prepareToDelete()

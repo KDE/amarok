@@ -1506,7 +1506,6 @@ IpodHandler::libCreateTrack( const Meta::MediaDeviceTrackPtr& track )
     m_itdbtrackhash[ track ] = itdb_track_new();
 }
 
-#if 0
 QString
 IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
 {
@@ -1546,20 +1545,17 @@ IpodHandler::getCoverArt( const Itdb_Track *ipodtrack )
 #endif
 }
 
-
 QPixmap
-IpodHandler::libGetCoverArt( Meta::MediaDeviceTrackPtr track ) const
+IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 {
 #ifdef GDK_FOUND
-
-    getCoverArt( m_itdbtrackhash[ track ];
+    getCoverArt( m_itdbtrackhash[ track ] );
     return QPixmap( filename );
 #else
     Q_UNUSED( track );
     return QPixmap();
 #endif
 }
-
 
 void
 IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path )
@@ -1599,7 +1595,6 @@ IpodHandler::libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
     Q_UNUSED( image );
 #endif
 }
-#endif
 
 void
 IpodHandler::prepareToParseTracks()

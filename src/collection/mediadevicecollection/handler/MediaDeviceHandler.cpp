@@ -33,8 +33,6 @@
 
 using namespace Meta;
 
-//Meta::MetaHandlerCapability
-
 bool
 MetaHandlerCapability::hasCapabilityInterface( Handler::Capability::Type type ) const
 {
@@ -300,7 +298,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
         if( !m_wc->supportedFormats().contains( format ) )
         {
-             QString error = i18n("Unsupported format: " + format);
+             const QString error = i18n("Unsupported format: %1", format);
              m_tracksFailed.insert( track, error );
              continue;
         }
