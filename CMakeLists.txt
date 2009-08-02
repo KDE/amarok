@@ -31,6 +31,11 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
    add_definitions(-DDEBUG)
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)
 
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+if (CMAKE_COMPILER_IS_GNUCXX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--as-needed -fmessage-length=0")
+endif (CMAKE_COMPILER_IS_GNUCXX)
+
 if( WITH_PLAYER )
 #We depend on kde4.2 now.. I believe this is the easiest way to do it.
     set(KDE_MIN_VERSION "4.2.0")
@@ -152,8 +157,4 @@ if( WITH_UTILITIES )
     add_subdirectory( utilities )
 endif( WITH_UTILITIES )
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
-if (CMAKE_COMPILER_IS_GNUCXX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--as-needed -fmessage-length=0")
-endif (CMAKE_COMPILER_IS_GNUCXX)
 
