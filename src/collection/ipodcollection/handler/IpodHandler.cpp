@@ -77,6 +77,7 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     , m_jobcounter( 0 )
     , m_autoConnect( false )
     , m_mountPoint( mountPoint )
+    , m_wasMounted( !mountPoint.isEmpty() )
     , m_name()
     , m_isShuffle( false )
     , m_isMobile( false )
@@ -110,14 +111,32 @@ IpodHandler::~IpodHandler()
     debug() << "Cleaning up Ipod Database";
     if ( m_itdb )
         itdb_free( m_itdb );
+
+    if ( !m_wasMounted && !m_mountPoint.isEmpty() )
+    {
+        int error = QProcess::execute("fusermount -u " + m_mountPoint);
+        debug() << "unmounting" << (error ? "failed" : "worked");
+    }
 }
 
 void
 IpodHandler::init()
 {
+    m_wasMounted = true;
+
     if( m_mountPoint.isEmpty() )
     {
         debug() << "Error: empty mountpoint, probably an unmounted iPod/iPhone, trying to mount";
+        m_wasMounted = false;
+
+        Solid::Device device = Solid::Device(m_memColl->udi());
+        /* going until we reach a vendor, e.g. Apple */
+        while ( device.isValid() && device.vendor().isEmpty() )
+        {
+            device = Solid::Device( device.parentUdi() );
+        }
+        m_isIPhone = device.product().startsWith("iPhone");
+
         m_mountPoint = KStandardDirs::locateLocal( "tmp", "amarok/" );
         QString udi = m_memColl->udi().replace(QChar('/'), QChar('-'));
         while( udi.startsWith('-') )
@@ -134,17 +153,16 @@ IpodHandler::init()
         QString command = QString("mount.fuse.ifuse %1 %2").arg(udi, m_mountPoint);
         debug() << "mountpoint: " << m_mountPoint;
         debug() << "command: " << command;
-        int result = QProcess::execute(command);
+        int error = QProcess::execute(command);
 
-        debug() << "mounting" << (result ? "failed" : "worked");
+        debug() << "mounting" << (error ? "failed" : "worked");
 
-        if( result )
+        if( error )
         {
             m_memColl->slotAttemptConnectionDone( false );
             return;
         }
     }
-
 
     GError *err = 0;
     QString initError = i18n( "iPod was not initialized:" );
@@ -362,7 +380,7 @@ bool
 IpodHandler::isWritable() const
 {
     // TODO: check if read-only
-    return true;
+    return !m_isIPhone;
 }
 
 QString
