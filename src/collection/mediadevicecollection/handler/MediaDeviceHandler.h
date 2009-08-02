@@ -153,13 +153,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     virtual void getCopyableUrls( const Meta::TrackList &tracks );
 
     /**
-    * Writes to the device's database if it has one, otherwise
-    * simply calls slotDatabaseWritten to continue the workflow.
-    */
-
-    virtual void writeDatabase() {}
-
-    /**
     * Fetches the human-readable name of the device.
     * This is often called from the Collection since
     * a library call is needed to get this name.
@@ -215,6 +208,13 @@ signals:
     /* File I/O Methods */
 
 public slots:
+
+   /**
+    * Writes to the device's database if it has one, otherwise
+    * simply calls slotDatabaseWritten to continue the workflow.
+    */
+
+    virtual void writeDatabase() {}
 
     void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
     void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );

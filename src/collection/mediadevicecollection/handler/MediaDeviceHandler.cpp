@@ -708,6 +708,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
             The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         */
+        debug() << "Done removing tracks";
         m_isDeleting = false;
         emit removeTracksDone();
     }

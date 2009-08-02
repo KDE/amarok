@@ -364,6 +364,13 @@ IpodHandler::collectionActions()
 
 #endif
 
+    QAction *staleOrphanedAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n(  "&Stale" ), this );
+    staleOrphanedAction->setProperty( "popupdropper_svg_id", "edit" );
+
+    connect( staleOrphanedAction, SIGNAL( triggered() ), this, SLOT( slotStaleOrphaned() ) );
+
+    actions.append( staleOrphanedAction );
+
     return actions;
 }
 
@@ -386,6 +393,59 @@ IpodHandler::slotInitializeIpod()
         }
         else
             The::statusBar()->shortMessage( i18n( "The iPod has failed to initialize!" ) );
+    }
+
+
+}
+
+void
+IpodHandler::slotStaleOrphaned()
+{
+    DEBUG_BLOCK
+
+    const QString text( i18n( "Amarok is about to search for stale tracks. This may take a while, do you want to continue?" ) );
+
+    const bool init = KMessageBox::warningContinueCancel(0,
+                                                         text,
+                                                         i18n("Find Stale Tracks") ) == KMessageBox::Continue;
+
+    if( init )
+    {
+        Meta::TrackList staletracks = staleTracks();
+        QStringList staleList;
+
+        foreach( Meta::TrackPtr track, staletracks )
+        {
+            QString ent;
+            QTextStream entry( &ent );
+            entry << track->artist()->name()
+                    << " - "
+                    << track->album()->name()
+                    << " - "
+                    << track->name();
+
+            staleList << ent;
+        }
+
+        bool ok = false;
+
+        QStringList itemList = KInputDialog::getItemList( i18n( "Select Stale Tracks To Delete" ), i18n( "Stale Tracks" ), staleList, staleList, true /*multiple*/, &ok, 0 );
+
+        if( ok )
+        {
+            Meta::TrackList staleToDelete;
+            foreach( QString item, itemList )
+            {
+                staleToDelete << staletracks[ itemList.indexOf( item ) ];
+            }
+            // HACK: do through signals/slots, which is how CollectionLocation
+            // does deletion of tracks.  Should create protected method to
+            // allow Handlers to delete without hackery.
+            connect( this, SIGNAL( removeTracksDone() ), SLOT( writeDatabase() ) );
+            removeTrackListFromDevice( staleToDelete );
+        }
+
+        //QStringList orphanedPaths = orphanedTracks();
     }
 
 
@@ -746,14 +806,24 @@ IpodHandler::writeFirewireGuid()
 bool
 IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 {
+    DEBUG_BLOCK
+    debug() << "ipodPath: " << ipodPath;
     QDir curDir( mountPoint() );
     QString curPath = mountPoint();
-    QStringList components = ipodPath.split( ':' );
+    QStringList components;
+    // HACK: remove a trailing ':' if present. For some inexplicable
+    // reason, splitting when starting with a : fails in Amarok,
+    // even though it works in a small isolated Qt test case.
+    if( ipodPath.at( 0 ) == ':' )
+        components = QString( ipodPath ).remove(0, 1).split(':');
+    else
+        components = ipodPath.split( ':' );
 
     bool found = false;
     QStringList::iterator it = components.begin();
     for( ; it != components.end(); ++it )
     {
+        debug() << "(*it): " << (*it);
         found = false;
         for( uint i = 0;i < curDir.count(); i++ )
         {
@@ -852,7 +922,8 @@ IpodHandler::writeITunesDB( bool threaded )
 QString
 IpodHandler::itunesDir(const QString &p) const
 {
-    QString base( ":iPod_Control" );
+    // NOTE: a colon was removed from the front since 1.4
+    QString base( "iPod_Control" );
     if( m_isMobile )
         base = ":iTunes:iTunes_Control";
 
@@ -909,6 +980,7 @@ IpodHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrac
 void
 IpodHandler::writeDatabase()
 {
+    disconnect( this, SIGNAL( removeTracksDone() ), 0, 0 );
     ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
 }
 
@@ -995,6 +1067,72 @@ IpodHandler::databaseChanged()
     m_dbChanged = true;
 }
 
+Meta::TrackList
+IpodHandler::staleTracks()
+{
+    DEBUG_BLOCK
+    Meta::TrackList tracklist;
+
+    Meta::TrackMap trackMap = m_memColl->trackMap();
+
+    foreach( Meta::TrackPtr trk, trackMap.values() )
+    {
+        Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::staticCast( trk );
+        Itdb_Track *ipodtrack =  m_itdbtrackhash.value( track );
+
+        if( !pathExists(QString::fromUtf8( ipodtrack->ipod_path ) ) )
+        {
+            debug() << "track: " << ipodtrack->artist << " - " << ipodtrack->album << " - " << ipodtrack->title << " is stale: " << ipodtrack->ipod_path << " does not exist" << endl;
+            tracklist << trk;
+        }
+    }
+
+    return tracklist;
+}
+
+QStringList
+IpodHandler::orphanedTracks()
+{
+    DEBUG_BLOCK
+    int orph = 0;
+    QStringList orphanedTracks;
+    QString musicpath;
+    if (!pathExists( itunesDir( "Music" ), &musicpath ))
+    {
+        debug() << "Music path not found";
+        return QStringList();
+    }
+
+    debug() << "Found path for Music";
+
+    QDir dir( musicpath, QString::null, QDir::Unsorted, QDir::Dirs );
+    for(unsigned i=0; i<dir.count(); i++)
+    {
+        if(dir[i] == "." || dir[i] == "..")
+            continue;
+
+        QString hashpath = musicpath + '/' + dir[i];
+        QDir hashdir( hashpath, QString::null, QDir::Unsorted, QDir::Files );
+        for(unsigned j=0; j<hashdir.count(); j++)
+        {
+            QString filename = hashpath + '/' + hashdir[j];
+            QString ipodPath = itunesDir( "Music:" ) + dir[i] + ':' + hashdir[j];
+            Itdb_Track *track = m_files.value( ipodPath.toLower() );
+            if(!track)
+            {
+                debug() << "file: " << filename << " is orphaned" << endl;
+                orphanedTracks << ipodPath;
+                orph++;
+
+            }
+
+            if( orph > 10 )
+                return QStringList();
+        }
+    }
+
+    return orphanedTracks;
+}
 
 bool
 IpodHandler::removeDBTrack( Itdb_Track *track )
@@ -1802,6 +1940,7 @@ void
 IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
     m_itdbtrackhash[ track ] = m_currtrack;
+    m_files.insert( QString(m_currtrack->ipod_path).toLower(), m_currtrack );
 }
 
 QStringList

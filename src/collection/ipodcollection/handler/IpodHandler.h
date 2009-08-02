@@ -83,6 +83,8 @@ struct PodcastInfo
 namespace Meta
 {
 
+    typedef QMap<QString, Meta::TrackPtr> TrackMap;
+
 /* The libgpod backend for all Ipod calls */
 class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 {
@@ -94,7 +96,6 @@ public:
 
     virtual void init(); // collection
     virtual bool isWritable() const;
-    virtual void writeDatabase();
 
     virtual QString prettyName() const;
 
@@ -110,11 +111,18 @@ public:
     friend class Handler::IpodWriteCapability;
 
     public slots:
+        virtual void writeDatabase();
+
         void slotInitializeIpod();
+        void slotStaleOrphaned();
 
     protected:
 
     /// Functions for PlaylistCapability
+    /**
+    * Writes to the device's database if it has one, otherwise
+    * simply calls slotDatabaseWritten to continue the workflow.
+    */
 
     virtual void prepareToParsePlaylists();
     virtual bool isEndOfParsePlaylistsList();
@@ -212,6 +220,9 @@ public:
 public slots:
     bool initializeIpod();
 
+private slots:
+
+
 
 private:
 
@@ -248,6 +259,20 @@ private:
     virtual float totalCapacity() const;
 
     /// Ipod Methods
+
+    /**
+     * Finds tracks that are in the database, but whose file
+     * no longer exists or cannot be found
+     * @return the list of stale tracks found
+     */
+    Meta::TrackList staleTracks();
+
+    /**
+     * Finds tracks that are in the Music folders, but that
+     * do not have an entry in the database tied to it
+     * @return list of filepaths of orphaned tracks
+     */
+    QStringList orphanedTracks();
 
     bool removeDBTrack( Itdb_Track *track );
 
@@ -289,6 +314,7 @@ private:
     Itdb_Playlist    *m_masterPlaylist;
     GList            *m_currtracklist;
     Itdb_Track       *m_currtrack;
+    QHash<QString,Itdb_Track*> m_files;
 
     // For space checks
 
