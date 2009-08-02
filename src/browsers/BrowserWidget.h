@@ -18,7 +18,7 @@
 #ifndef BROWSERWIDGET_H
 #define BROWSERWIDGET_H
 
-#include "BreadcrumbWidget.h"
+#include "BrowserBreadcrumbWidget.h"
 #include "BrowserCategoryList.h"
 
 #include <KVBox>
@@ -44,7 +44,7 @@ private slots:
     void home();
 
 private:
-    BreadcrumbWidget * m_breadcrumbWidget;
+    BrowserBreadcrumbWidget * m_breadcrumbWidget;
     QPointer<BrowserCategoryList> m_categoryList;
 };
 

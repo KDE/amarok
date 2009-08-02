@@ -26,7 +26,7 @@
 BrowserWidget::BrowserWidget( QWidget * parent )
     : KVBox( parent )
 {
-    m_breadcrumbWidget = new BreadcrumbWidget( this );
+    m_breadcrumbWidget = new BrowserBreadcrumbWidget( this );
     new HorizontalDivider( this );
     
     m_categoryList = new BrowserCategoryList( this, "root list" );

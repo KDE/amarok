@@ -17,7 +17,7 @@
 #ifndef BREADCRUMBWIDGET_H
 #define BREADCRUMBWIDGET_H
 
-#include "BreadcrumbItem.h"
+#include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 
 #include <KHBox>
@@ -31,13 +31,13 @@ A widget for displaying th ecurrent state of, and navigating, the browser dig do
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class BreadcrumbWidget : public KHBox
+class BrowserBreadcrumbWidget : public KHBox
 {
     Q_OBJECT
 public:
-    BreadcrumbWidget( QWidget * parent );
+    BrowserBreadcrumbWidget( QWidget * parent );
 
-    ~BreadcrumbWidget();
+    ~BrowserBreadcrumbWidget();
 
     void setRootList( BrowserCategoryList * rootList );
 
@@ -60,7 +60,7 @@ private:
     //QStringList m_currentPath;
     BrowserCategoryList * m_rootList;
 
-    QList<BreadcrumbItem *> m_items;
+    QList<BrowserBreadcrumbItem *> m_items;
     QWidget * m_spacer;
 
     KHBox * m_breadcrumbArea;

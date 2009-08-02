@@ -25,7 +25,7 @@
 
 #include <QIcon>
 
-class BreadcrumbItem;
+class BrowserBreadcrumbItem;
 class BrowserCategoryList;
 
 /**
@@ -96,7 +96,7 @@ public:
     BrowserCategoryList * parentList();
     void setParentList( BrowserCategoryList * parent );
 
-    BreadcrumbItem * breadcrumb();
+    BrowserBreadcrumbItem * breadcrumb();
 
     virtual void polish() {};
 
@@ -122,7 +122,7 @@ private:
     QString m_imagePath;
     BrowserCategoryList * m_parentList;
 
-    BreadcrumbItem * m_breadcrumb;
+    BrowserBreadcrumbItem * m_breadcrumb;
     KToolBar * m_bottomToolbar;
     
 

@@ -16,7 +16,7 @@
  
 #include "BrowserCategory.h"
 
-#include "BreadcrumbItem.h"
+#include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 
 #include "Debug.h"
@@ -118,10 +118,10 @@ void BrowserCategory::activate()
         parentList()->activate( this );
 }
 
-BreadcrumbItem * BrowserCategory::breadcrumb()
+BrowserBreadcrumbItem * BrowserCategory::breadcrumb()
 {
     if ( m_breadcrumb == 0 )
-        m_breadcrumb = new BreadcrumbItem( this );
+        m_breadcrumb = new BrowserBreadcrumbItem( this );
     return m_breadcrumb;
 }
 

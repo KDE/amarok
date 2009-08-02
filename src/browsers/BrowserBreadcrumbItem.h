@@ -30,12 +30,12 @@ class BreadcrumbItemMenuButton;
  *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
 
-class BreadcrumbItem : public KHBox
+class BrowserBreadcrumbItem : public KHBox
 {
     Q_OBJECT
 public:
-    BreadcrumbItem( BrowserCategory * category );
-    ~BreadcrumbItem();
+    BrowserBreadcrumbItem( BrowserCategory * category );
+    ~BrowserBreadcrumbItem();
 
     void setActive( bool active );
 

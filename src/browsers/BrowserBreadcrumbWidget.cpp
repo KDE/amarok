@@ -14,15 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "BreadcrumbWidget.h"
+#include "BrowserBreadcrumbWidget.h"
 
-#include "BreadcrumbItemButton.h"
+#include "widgets/BreadcrumbItemButton.h"
 
 #include "Debug.h"
 
 #include <KLocale>
 
-BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
+BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
     : KHBox( parent)
     , m_rootList( 0 )
 {
@@ -40,17 +40,17 @@ BreadcrumbWidget::BreadcrumbWidget( QWidget * parent )
     m_spacer = new QWidget( 0 );
 }
 
-BreadcrumbWidget::~BreadcrumbWidget()
+BrowserBreadcrumbWidget::~BrowserBreadcrumbWidget()
 {
     clearCrumbs();
 }
 
 void
-BreadcrumbWidget::clearCrumbs()
+BrowserBreadcrumbWidget::clearCrumbs()
 {
     //these items will get deleted by their BrowserCategory, so set parent to 0
     //or they will get double deleted, causing a crash
-    foreach( BreadcrumbItem *item, m_items )
+    foreach( BrowserBreadcrumbItem *item, m_items )
     {
         item->hide();
         item->setParent( 0 );
@@ -59,7 +59,7 @@ BreadcrumbWidget::clearCrumbs()
 }
 
 void
-BreadcrumbWidget::setRootList( BrowserCategoryList * rootList )
+BrowserBreadcrumbWidget::setRootList( BrowserCategoryList * rootList )
 {
     m_rootList = rootList;
 
@@ -70,7 +70,7 @@ BreadcrumbWidget::setRootList( BrowserCategoryList * rootList )
 }
 
 void
-BreadcrumbWidget::updateBreadcrumbs()
+BrowserBreadcrumbWidget::updateBreadcrumbs()
 {
     DEBUG_BLOCK
 
@@ -84,10 +84,10 @@ BreadcrumbWidget::updateBreadcrumbs()
 }
 
 void
-BreadcrumbWidget::addLevel( BrowserCategoryList * list )
+BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
 {
     DEBUG_BLOCK
-    BreadcrumbItem *item = list->breadcrumb();
+    BrowserBreadcrumbItem *item = list->breadcrumb();
     item->setParent( m_breadcrumbArea );
     item->show();
     m_items.append( item );
@@ -106,7 +106,7 @@ BreadcrumbWidget::addLevel( BrowserCategoryList * list )
         }
         else
         {
-            BreadcrumbItem * leaf = childCategory->breadcrumb();
+            BrowserBreadcrumbItem * leaf = childCategory->breadcrumb();
             leaf->setParent( m_breadcrumbArea );
             leaf->show();
             leaf->setActive( true );
@@ -120,4 +120,4 @@ BreadcrumbWidget::addLevel( BrowserCategoryList * list )
     }
 }
 
-#include "BreadcrumbWidget.moc"
+#include "BrowserBreadcrumbWidget.moc"
