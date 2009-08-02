@@ -386,7 +386,14 @@ EngineController::playUrl( const KUrl &url, uint offset )
     }
     else
     {
-        m_media->setCurrentSource( url );
+        if ( url.toLocalFile().isEmpty() )
+        {
+            m_media->setCurrentSource( url );
+        }
+        else
+        {
+            m_media->setCurrentSource( url.toLocalFile() );
+        }
     }
 
     m_nextTrack.clear();
