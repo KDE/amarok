@@ -27,7 +27,15 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
    ${KDE4_INCLUDE_DIR}
-   ${QT_INCLUDES} )
+   ${QT_INCLUDES}
+   ${TAGLIB_INCLUDES}
+)
+
+if ( TAGLIB-EXTRAS_FOUND )
+    include_directories( ${include_directories} ${TAGLIB-EXTRAS_INCLUDE_DIR} )
+endif ( TAGLIB-EXTRAS_FOUND )
+
+add_definitions(${TAGLIB_CFLAGS})
 
 ########### set GDK var ################
      # Generate config-gdk.h.cmake
@@ -56,6 +64,8 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
         ${KDE4_SOLID_LIBRARY}
         ${KDE4_THREADWEAVER_LIBRARIES}
         ${QT_QTGUI_LIBRARY}
+	${TAGLIB_LIBRARIES}
+	${TAGLIB-EXTRAS_LIBRARIES}
         ${GLIB2_LIBRARIES}
         ${GDK_LIBRARIES}
         ${IPOD_LIBRARIES} 

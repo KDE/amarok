@@ -22,6 +22,10 @@
 #ifndef IPODHANDLER_H
 #define IPODHANDLER_H
 
+// Taglib includes
+#include <audioproperties.h>
+#include <fileref.h>
+
 /* CMake check for GDK */
 #include <config-gdk.h>
 
@@ -60,7 +64,7 @@ class QMutex;
 
 class IpodCollection;
 
-
+typedef QHash<QString, QString> AttributeHash;
 typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
 // NOTE: podcasts NYI
@@ -226,6 +230,14 @@ private slots:
 
 private:
 
+    enum FileType
+    {
+        mp3,
+        ogg,
+        flac,
+        mp4
+    };
+
     /// Functions for ReadCapability
 
     virtual void prepareToParseTracks();
@@ -274,6 +286,18 @@ private:
      */
     QStringList orphanedTracks();
 
+    // NOTE: readTags taken from CollectionScanner.cpp, not used directly since
+    // CollectionScanner is now a separate utility from Amarok, and we should
+    // not depend on it.
+
+    /**
+     * Read metadata tags of a given file.
+     * @track Track for the file.
+     * @return QMap containing tags, or empty QMap on failure.
+     */
+
+    AttributeHash readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast );
+
     bool removeDBTrack( Itdb_Track *track );
 
     /* libgpod Information Extraction Methods */
@@ -315,6 +339,7 @@ private:
     GList            *m_currtracklist;
     Itdb_Track       *m_currtrack;
     QHash<QString,Itdb_Track*> m_files;
+    int m_staletracksremoved;
 
     // For space checks
 
@@ -400,6 +425,8 @@ private slots:
     void slotDBWriteSucceeded( ThreadWeaver::Job* job );
 
     void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed );
+
+    void slotOrphaned();
 };
 
 class DBWorkerThread : public ThreadWeaver::Job
