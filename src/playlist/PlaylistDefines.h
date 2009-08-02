@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -127,6 +128,30 @@ static const QStringList internalColumnNames = ( QStringList()
         << "SourceEmblem"
         << "Title"
         << "Title (with track number)"
+        << "Track number"
+        << "Type"
+        << "Year" );
+
+//FIXME: disabled sorting by File size, Group length, Group tracks, Length because
+//       it doesn't work.
+static const QStringList sortableCategories = ( QStringList()
+        << "Album"
+        << "Album artist"
+        << "Artist"
+        << "Bitrate"
+        << "Comment"
+        << "Composer"
+        << "Directory"
+        << "Disc number"
+        << "File name"
+        << "Genre"
+        << "Last played"
+        << "Play count"
+        << "Rating"
+        << "Sample rate"
+        << "Score"
+        << "Source"
+        << "Title"
         << "Track number"
         << "Type"
         << "Year" );
