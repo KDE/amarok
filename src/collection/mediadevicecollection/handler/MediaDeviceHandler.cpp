@@ -66,6 +66,12 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     connect( m_memColl, SIGNAL( deletingCollection() ),
                  this, SLOT( slotDeletingHandler() ), Qt::QueuedConnection );
 
+    connect( this, SIGNAL( incrementProgress() ),
+             The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
+
+    connect( this, SIGNAL( databaseWritten(bool)),
+             this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
+
 }
 
 MediaDeviceHandler::~MediaDeviceHandler()
@@ -429,12 +435,6 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Transferring Tracks to Device" ) );
 
     m_statusbar->setMaximum( m_tracksToCopy.size() );
-
-    connect( this, SIGNAL( incrementProgress() ),
-            The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
-
-     connect( this, SIGNAL( databaseWritten(bool)),
-              this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
 
     // prepare to copy
 

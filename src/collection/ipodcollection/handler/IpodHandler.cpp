@@ -436,54 +436,98 @@ IpodHandler::slotStaleOrphaned()
 
     if( init )
     {
-        Meta::TrackList staletracks = staleTracks();
-        QStringList staleList;
-        m_staletracksremoved = 0;
-
-        if( staletracks.count() > 0 )
-        {
-
-            foreach( Meta::TrackPtr track, staletracks )
-            {
-                QString ent;
-                QTextStream entry( &ent );
-                entry << track->artist()->name()
-                        << " - "
-                        << track->album()->name()
-                        << " - "
-                        << track->name();
-
-                staleList << ent;
-            }
-
-            bool ok = false;
-
-            QStringList itemList = KInputDialog::getItemList( i18n( "Select Stale Tracks To Delete" ), i18n( "Stale Tracks" ), staleList, staleList, true /*multiple*/, &ok, 0 );
-
-            if( ok )
-            {
-                Meta::TrackList staleToDelete;
-                foreach( QString item, itemList )
-                {
-                    staleToDelete << staletracks[ itemList.indexOf( item ) ];
-                }
-
-                m_staletracksremoved = staleToDelete.count();
-                // HACK: do through signals/slots, which is how CollectionLocation
-                // does deletion of tracks.  Should create protected method to
-                // allow Handlers to delete without hackery.
-                connect( this, SIGNAL( removeTracksDone() ), SLOT( slotOrphaned() ) );
-                removeTrackListFromDevice( staleToDelete );
-            }
-
-        } // endif staletracks
-        else
-        {
-            slotOrphaned();
-        }
+        ThreadWeaver::Weaver::instance()->enqueue( new StaleWorkerThread( this ) );
     }
 
 
+}
+
+bool
+IpodHandler::findStale()
+{
+    m_staletracks.clear();
+    m_staletracks = staleTracks();
+
+    return true;
+}
+
+bool
+IpodHandler::findOrphaned()
+{
+    m_orphanedPaths = orphanedTracks();
+    return true;
+}
+
+bool
+IpodHandler::addNextOrphaned()
+{
+    QString realPath;
+    QString path = m_orphanedPaths.takeFirst();
+    pathExists( path, &realPath );
+    const AttributeHash attributes = readTags( realPath );
+
+    if( attributes.empty() )
+        return false;
+
+    debug() << "Found: " << attributes["artist"] << " - " << attributes["title"];
+
+    // Create new track
+
+    Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
+
+    // Create a track struct, associate it to track
+
+    libCreateTrack( destTrack );
+
+    // Fill the track struct of the destTrack with info from the track parameter as source
+
+    libSetTitle( destTrack, attributes["title"] );
+    libSetArtist( destTrack, attributes["artist"] );
+    libSetAlbum( destTrack, attributes["album"] );
+    libSetComment( destTrack, attributes["comment"] );
+    libSetGenre( destTrack, attributes["genre"] );
+    libSetYear( destTrack, attributes["year"] );
+    libSetTrackNumber( destTrack, attributes["track"].toInt() );
+
+    if( attributes.contains("composer" ) )
+        libSetComposer( destTrack, attributes["composer"] );
+    if( attributes.contains("discnumber" ) )
+        libSetDiscNumber( destTrack, attributes["discnumber"].toInt() );
+
+    //libSetBpm( destTrack, attributes["bpm"] );
+    if( attributes.contains("filesize" ) )
+        libSetFileSize( destTrack, attributes["filesize"].toInt() );
+
+    libSetType( destTrack, attributes["filetype"] );
+    //libSetPlayableUrl( destTrack, srcTrack );
+
+    if( attributes["audioproperties"] == "true" )
+    {
+        libSetBitrate( destTrack, attributes["bitrate"].toInt() );
+        libSetLength( destTrack, attributes["length"].toInt() );
+        libSetSamplerate( destTrack, attributes["samplerate"].toInt() );
+    }
+
+    // set up the play url
+
+    m_itdbtrackhash[ destTrack ]->ipod_path = g_strdup( path.toLatin1() );
+
+    // Add the track struct into the database
+
+    addTrackInDB( destTrack );
+
+    // Inform subclass that a track has been added to the db
+
+    databaseChanged();
+
+    // Add the new Meta::MediaDeviceTrackPtr into the device collection
+
+    // add track to collection
+    addMediaDeviceTrackToCollection( destTrack );
+
+    m_orphanedadded++;
+
+    return true;
 }
 
 void
@@ -500,100 +544,7 @@ IpodHandler::slotOrphaned()
 
     if( init )
     {
-        QStringList orphanedPaths = orphanedTracks();
-        int orphanedadded = 0;
-
-        if( !orphanedPaths.empty() )
-        {
-            m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Adding Orphaned Tracks to iPod Database" ) );
-
-            m_statusbar->setMaximum( orphanedPaths.count() );
-
-            connect( this, SIGNAL( incrementProgress() ),
-                     The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
-
-            connect( this, SIGNAL( databaseWritten(bool)),
-                     this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
-
-            foreach( const QString path, orphanedPaths )
-            {
-                QString realPath;
-                pathExists( path, &realPath );
-                const AttributeHash attributes = readTags( realPath );
-
-                if( attributes.empty() )
-                    continue;
-
-                debug() << "Found: " << attributes["artist"] << " - " << attributes["title"];
-
-                // Create new track
-
-                Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
-
-                // Create a track struct, associate it to track
-
-                libCreateTrack( destTrack );
-
-                // Fill the track struct of the destTrack with info from the track parameter as source
-
-                libSetTitle( destTrack, attributes["title"] );
-                libSetArtist( destTrack, attributes["artist"] );
-                libSetAlbum( destTrack, attributes["album"] );
-                libSetComment( destTrack, attributes["comment"] );
-                libSetGenre( destTrack, attributes["genre"] );
-                libSetYear( destTrack, attributes["year"] );
-                libSetTrackNumber( destTrack, attributes["track"].toInt() );
-
-                if( attributes.contains("composer" ) )
-                    libSetComposer( destTrack, attributes["composer"] );
-                if( attributes.contains("discnumber" ) )
-                    libSetDiscNumber( destTrack, attributes["discnumber"].toInt() );
-
-                //libSetBpm( destTrack, attributes["bpm"] );
-                if( attributes.contains("filesize" ) )
-                    libSetFileSize( destTrack, attributes["filesize"].toInt() );
-
-                libSetType( destTrack, attributes["filetype"] );
-                //libSetPlayableUrl( destTrack, srcTrack );
-
-                if( attributes["audioproperties"] == "true" )
-                {
-                    libSetBitrate( destTrack, attributes["bitrate"].toInt() );
-                    libSetLength( destTrack, attributes["length"].toInt() );
-                    libSetSamplerate( destTrack, attributes["samplerate"].toInt() );
-                }
-
-                // set up the play url
-
-                m_itdbtrackhash[ destTrack ]->ipod_path = g_strdup( path.toLatin1() );
-
-                // Add the track struct into the database
-
-                addTrackInDB( destTrack );
-
-                // Inform subclass that a track has been added to the db
-
-                databaseChanged();
-
-                // Add the new Meta::MediaDeviceTrackPtr into the device collection
-
-                // add track to collection
-                addMediaDeviceTrackToCollection( destTrack );
-
-                orphanedadded++;
-
-            }
-
-            writeDatabase();
-
-        } // foreach
-
-        const QString orphmsg( i18ncp( "@info", "One orphaned track added to the database.",
-                                   "%1 tracks added to the database.", orphanedadded ) );
-
-        KMessageBox::information(0,
-                                 orphmsg,
-                                 i18n("Orphaned Tracks Added") );
+        ThreadWeaver::Weaver::instance()->enqueue( new OrphanedWorkerThread( this ) );
     } // init
 
 
@@ -1196,6 +1147,7 @@ IpodHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
     Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
 
     m_itdbtrackhash.remove( track );
+    m_files.remove( QString(ipodtrack->ipod_path).toLower() );
 
     itdb_track_remove( ipodtrack );
 }
@@ -2361,6 +2313,149 @@ IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
         debug() << "Writing to DB did not happen or failed";
 }
 
+/// Stale
+
+void
+IpodHandler::slotStaleFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Finding stale thread failed";
+    slotOrphaned();
+}
+
+void
+IpodHandler::slotStaleSucceeded( ThreadWeaver::Job* job )
+{
+    if( job->success() )
+    {
+        debug() << "Stale thread succeeded!";
+
+        QStringList staleList;
+        m_staletracksremoved = 0;
+
+        if( m_staletracks.count() > 0 )
+        {
+
+            foreach( Meta::TrackPtr track, m_staletracks )
+            {
+                QString ent;
+                QTextStream entry( &ent );
+                entry << track->artist()->name()
+                        << " - "
+                        << track->album()->name()
+                        << " - "
+                        << track->name();
+
+                staleList << ent;
+            }
+
+            bool ok = false;
+
+            QStringList itemList = KInputDialog::getItemList( i18n( "Select Stale Tracks To Delete" ), i18n( "Stale Tracks" ), staleList, staleList, true /*multiple*/, &ok, 0 );
+
+            if( ok )
+            {
+                Meta::TrackList staleToDelete;
+                foreach( QString item, itemList )
+                {
+                    staleToDelete << m_staletracks[ itemList.indexOf( item ) ];
+                }
+
+                m_staletracksremoved = staleToDelete.count();
+                // HACK: do through signals/slots, which is how CollectionLocation
+                // does deletion of tracks.  Should create protected method to
+                // allow Handlers to delete without hackery.
+                connect( this, SIGNAL( removeTracksDone() ), SLOT( slotOrphaned() ) );
+                removeTrackListFromDevice( staleToDelete );
+            }
+
+        } // endif staletracks
+        else
+        {
+            slotOrphaned();
+        }
+
+    }
+    else
+    {
+        debug() << "Stale thread failed";
+        slotOrphaned();
+    }
+}
+
+/// Orphaned
+
+void
+IpodHandler::slotOrphanedFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Finding orphaned thread failed";
+}
+
+void
+IpodHandler::slotOrphanedSucceeded( ThreadWeaver::Job* job )
+{
+    DEBUG_BLOCK
+    if( job->success() )
+    {
+        m_orphanedadded = 0;
+
+        debug() << "Number of paths: " << m_orphanedPaths.count();
+
+        if( !m_orphanedPaths.empty() )
+        {
+            m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Adding Orphaned Tracks to iPod Database" ) );
+            m_statusbar->setMaximum( m_orphanedPaths.count() );
+
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+
+        }
+
+    }
+    else
+    {
+        debug() << "failed to find orphaned tracks";
+    }
+}
+
+/// Add Orphaned
+
+void
+IpodHandler::slotAddOrphanedFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Adding orphaned thread failed";
+    if( m_orphanedPaths.count() )
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+}
+
+void
+IpodHandler::slotAddOrphanedSucceeded( ThreadWeaver::Job* job )
+{
+    if( job->success() )
+    {
+        emit incrementProgress();
+
+        if( m_orphanedPaths.count() )
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+        else
+        {
+            writeDatabase();
+
+            const QString orphmsg( i18ncp( "@info", "One orphaned track added to the database.",
+                                           "%1 tracks added to the database.", m_orphanedadded ) );
+
+            KMessageBox::information(0,
+                                     orphmsg,
+                                     i18n("Orphaned Tracks Added") );
+        }
+    }
+    else
+    {
+        debug() << "failed to add orphaned tracks";
+    }
+}
+
 /// Capability-related functions
 
 bool
@@ -2424,6 +2519,92 @@ DBWorkerThread::run()
     m_success = m_handler->writeITunesDB( false );
 }
 
+// stale
+
+StaleWorkerThread::StaleWorkerThread( IpodHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
+}
+
+StaleWorkerThread::~StaleWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+StaleWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+StaleWorkerThread::run()
+{
+    m_success = m_handler->findStale();
+}
+
+// Orphaned
+
+OrphanedWorkerThread::OrphanedWorkerThread( IpodHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
+}
+
+OrphanedWorkerThread::~OrphanedWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+OrphanedWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+OrphanedWorkerThread::run()
+{
+    m_success = m_handler->findOrphaned();
+}
+
+// Add Orphaned
+
+AddOrphanedWorkerThread::AddOrphanedWorkerThread( IpodHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
+}
+
+AddOrphanedWorkerThread::~AddOrphanedWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+AddOrphanedWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+AddOrphanedWorkerThread::run()
+{
+    m_success = m_handler->addNextOrphaned();
+}
 
 #include "IpodHandler.moc"
 

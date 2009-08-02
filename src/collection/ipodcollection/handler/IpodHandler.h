@@ -113,6 +113,9 @@ public:
     friend class Handler::IpodPlaylistCapability;
     friend class Handler::IpodReadCapability;
     friend class Handler::IpodWriteCapability;
+    friend class StaleWorkerThread;
+    friend class OrphanedWorkerThread;
+    friend class AddOrphanedWorkerThread;
 
     public slots:
         virtual void writeDatabase();
@@ -298,6 +301,10 @@ private:
 
     AttributeHash readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast );
 
+    bool findStale();
+    bool findOrphaned();
+    bool addNextOrphaned();
+
     bool removeDBTrack( Itdb_Track *track );
 
     /* libgpod Information Extraction Methods */
@@ -339,7 +346,10 @@ private:
     GList            *m_currtracklist;
     Itdb_Track       *m_currtrack;
     QHash<QString,Itdb_Track*> m_files;
+    Meta::TrackList m_staletracks;
     int m_staletracksremoved;
+    int m_orphanedadded;
+    QStringList m_orphanedPaths;
 
     // For space checks
 
@@ -424,6 +434,15 @@ private slots:
     void slotDBWriteFailed( ThreadWeaver::Job* job );
     void slotDBWriteSucceeded( ThreadWeaver::Job* job );
 
+    void slotStaleFailed( ThreadWeaver::Job* job );
+    void slotStaleSucceeded( ThreadWeaver::Job* job );
+
+    void slotOrphanedFailed( ThreadWeaver::Job* job );
+    void slotOrphanedSucceeded( ThreadWeaver::Job* job );
+
+    void slotAddOrphanedFailed( ThreadWeaver::Job* job );
+    void slotAddOrphanedSucceeded( ThreadWeaver::Job* job );
+
     void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed );
 
     void slotOrphaned();
@@ -445,5 +464,59 @@ private:
     bool m_success;
     IpodHandler *m_handler;
 };
+
+class StaleWorkerThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    StaleWorkerThread( IpodHandler* handler );
+    virtual ~StaleWorkerThread();
+
+    virtual bool success() const;
+
+protected:
+    virtual void run();
+
+private:
+    bool m_success;
+    IpodHandler *m_handler;
+};
+
+class OrphanedWorkerThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    OrphanedWorkerThread( IpodHandler* handler );
+    virtual ~OrphanedWorkerThread();
+
+    virtual bool success() const;
+
+protected:
+    virtual void run();
+
+private:
+    bool m_success;
+    IpodHandler *m_handler;
+};
+
+class AddOrphanedWorkerThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    AddOrphanedWorkerThread( IpodHandler* handler );
+    virtual ~AddOrphanedWorkerThread();
+
+    virtual bool success() const;
+
+protected:
+    virtual void run();
+
+private:
+    bool m_success;
+    IpodHandler *m_handler;
+};
+
+
+
 }
 #endif
