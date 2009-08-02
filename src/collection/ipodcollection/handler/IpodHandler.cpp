@@ -71,6 +71,7 @@ using namespace Meta;
 
 IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
+    , m_itdb( 0 )
     //, m_memColl( mc )
     , m_masterPlaylist( 0 )
     , m_capacity( 0.0 )
