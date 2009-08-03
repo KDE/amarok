@@ -429,7 +429,7 @@ IpodHandler::slotStaleOrphaned()
 
     if( init )
     {
-        ThreadWeaver::Weaver::instance()->enqueue( new StaleWorkerThread( this ) );
+        ThreadWeaver::Weaver::instance()->enqueue( new OrphanedWorkerThread( this ) );
     }
 
 
@@ -454,15 +454,15 @@ IpodHandler::findOrphaned()
 bool
 IpodHandler::addNextOrphaned()
 {
+    DEBUG_BLOCK
     QString realPath;
     QString path = m_orphanedPaths.takeFirst();
-    pathExists( path, &realPath );
-    const AttributeHash attributes = readTags( realPath );
-
-    if( attributes.empty() )
+    if( !pathExists( path, &realPath ) )
         return false;
 
-    debug() << "Found: " << attributes["artist"] << " - " << attributes["title"];
+    // Create track based on URL
+
+    Meta::TrackPtr filetrack( new MetaFile::Track( realPath ) );
 
     // Create new track
 
@@ -472,34 +472,9 @@ IpodHandler::addNextOrphaned()
 
     libCreateTrack( destTrack );
 
-    // Fill the track struct of the destTrack with info from the track parameter as source
+    // Fill the track struct of the destTrack with info from the filetrack as source
 
-    libSetTitle( destTrack, attributes["title"] );
-    libSetArtist( destTrack, attributes["artist"] );
-    libSetAlbum( destTrack, attributes["album"] );
-    libSetComment( destTrack, attributes["comment"] );
-    libSetGenre( destTrack, attributes["genre"] );
-    libSetYear( destTrack, attributes["year"] );
-    libSetTrackNumber( destTrack, attributes["track"].toInt() );
-
-    if( attributes.contains("composer" ) )
-        libSetComposer( destTrack, attributes["composer"] );
-    if( attributes.contains("discnumber" ) )
-        libSetDiscNumber( destTrack, attributes["discnumber"].toInt() );
-
-    //libSetBpm( destTrack, attributes["bpm"] );
-    if( attributes.contains("filesize" ) )
-        libSetFileSize( destTrack, attributes["filesize"].toInt() );
-
-    libSetType( destTrack, attributes["filetype"] );
-    //libSetPlayableUrl( destTrack, srcTrack );
-
-    if( attributes["audioproperties"] == "true" )
-    {
-        libSetBitrate( destTrack, attributes["bitrate"].toInt() );
-        libSetLength( destTrack, attributes["length"].toInt() );
-        libSetSamplerate( destTrack, attributes["samplerate"].toInt() );
-    }
+    setBasicMediaDeviceTrackInfo( filetrack, destTrack );
 
     // set up the play url
 
@@ -509,7 +484,7 @@ IpodHandler::addNextOrphaned()
 
     addTrackInDB( destTrack );
 
-    // Inform subclass that a track has been added to the db
+    // A track has been added to the db
 
     databaseChanged();
 

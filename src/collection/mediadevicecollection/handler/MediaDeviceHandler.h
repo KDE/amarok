@@ -245,6 +245,14 @@ protected:
 
     void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
 
+    /** Uses wrapped libSet methods to fill a track struct of the particular library
+    *  with information from a Meta::Track
+    *  @param srcTrack The track that has the source information
+    *  @param destTrack The track whose associated struct we want to fill with information
+    */
+
+    void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
+
     MediaDeviceCollection   *m_memColl; /// Associated collection
     ProgressBar      *m_statusbar; /// A progressbar to show progress of an operation
 
@@ -283,14 +291,6 @@ private:
     */
     void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
 
-    /** Uses wrapped libSet methods to fill a track struct of the particular library
-    *  with information from a Meta::Track
-    *  @param srcTrack The track that has the source information
-    *  @param destTrack The track whose associated struct we want to fill with information
-    */
-
-    void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
-
     /**
     * Pulls out meta information (e.g. artist string)
     * from track struct, inserts into appropriate map
@@ -312,6 +312,7 @@ private:
     // Misc. Helper Methods
 
     void setupReadCapability();
+    void setupWriteCapability();
 
     /**
      *  @return free space on the device

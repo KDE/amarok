@@ -107,7 +107,11 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPt
 void
 MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack, MediaDeviceTrackPtr destTrack )
 {
-    DEBUG_BLOCK
+    setupWriteCapability();
+
+    if( !m_wc )
+        return;
+
     m_wc->libSetTitle( destTrack, srcTrack->name() );
     m_wc->libSetAlbum( destTrack, srcTrack->album()->name() );
     m_wc->libSetArtist( destTrack, srcTrack->artist()->name() );
@@ -127,6 +131,7 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetRating( destTrack, srcTrack->rating() );
     m_wc->libSetType( destTrack, srcTrack->type() );
     //libSetPlayableUrl( destTrack, srcTrack );
+
     //if( srcTrack->album()->hasImage() )
     //    libSetCoverArt( destTrack, srcTrack->album()->image() );
 }
@@ -264,18 +269,10 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     DEBUG_BLOCK
 
+    setupWriteCapability();
+
     if( !m_wc )
-    {
-        if( this->hasCapabilityInterface( Handler::Capability::Writable ) )
-        {
-            m_wc = this->create<Handler::WriteCapability>();
-            if( !m_wc )
-            {
-                debug() << "Handler does not have MediaDeviceHandler::WriteCapability. Aborting copy.";
-                return;
-            }
-        }
-    }
+        return;
 
     m_isCopying = true;
 
@@ -1073,6 +1070,23 @@ MediaDeviceHandler::setupReadCapability()
     }
 }
 
+void
+MediaDeviceHandler::setupWriteCapability()
+{
+    if( !m_wc )
+    {
+        if( this->hasCapabilityInterface( Handler::Capability::Writable ) )
+        {
+            m_wc = this->create<Handler::WriteCapability>();
+            if( !m_wc )
+            {
+                debug() << "Handler does not have MediaDeviceHandler::WriteCapability. Aborting.";
+                return;
+            }
+        }
+    }
+}
+
 /** Observer Methods **/
 void
 MediaDeviceHandler::metadataChanged( TrackPtr track )
@@ -1082,18 +1096,10 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
     Meta::MediaDeviceTrackPtr trackPtr = Meta::MediaDeviceTrackPtr::staticCast( track );
     KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
 
+    setupWriteCapability();
+
     if( !m_wc )
-    {
-        if( this->hasCapabilityInterface( Handler::Capability::Writable ) )
-        {
-            m_wc = this->create<Handler::WriteCapability>();
-            if( !m_wc )
-            {
-                debug() << "Handler does not have MediaDeviceHandler::WriteCapability. Aborting metadata change.";
-                return;
-            }
-        }
-    }
+        return;
 
     setBasicMediaDeviceTrackInfo( track, trackPtr );
 
