@@ -91,6 +91,11 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
     if ( !sortMode.isEmpty() )
         url.appendArg( "levels", sortMode );
 
+
+    //come up with a default name for this url...
+    QString name = i18n( "New bookmark" );
+    url.setName( name );
+    
     return url;
 
 }
