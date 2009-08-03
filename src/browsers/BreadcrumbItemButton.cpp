@@ -200,6 +200,7 @@ BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QW
     , m_urlsCommand( urlsCommand )
 {
     generateMenu();
+    connect( The::amarokUrlHandler(), SIGNAL( urlsChanged( const QString &) ), this, SLOT(  urlsChanged( const QString & ) ) );
     setFixedWidth( 20 );
 }
 
@@ -209,12 +210,17 @@ BreadcrumbUrlMenuButton::~BreadcrumbUrlMenuButton()
 
 void BreadcrumbUrlMenuButton::generateMenu()
 {
+
+   QMenu * oldMenu = menu();
+   setMenu( 0 );
+   delete oldMenu;
+    
    BookmarkList list = The::amarokUrlHandler()->urlsByCommand( m_urlsCommand );
 
    QMenu * menu = new QMenu();
    menu->setTitle( i18n("Browser Bookmarks" ) );
 
-   menu->addAction( i18n( "Bookmark current" ) );
+   menu->addAction( Amarok::actionCollection()->action("bookmark_browser") );
    menu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
    
    menu->addSeparator();
@@ -226,6 +232,12 @@ void BreadcrumbUrlMenuButton::generateMenu()
 
    setMenu( menu );
    
+}
+
+void BreadcrumbUrlMenuButton::urlsChanged( const QString & command )
+{
+    if ( command == "navigate" )
+        generateMenu();
 }
 
 

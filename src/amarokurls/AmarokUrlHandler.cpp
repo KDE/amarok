@@ -130,6 +130,14 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
     return resultList;
 }
 
+void AmarokUrlHandler::BookmarkCurrentBrowserView()
+{
+    NavigationUrlGenerator generator;
+    AmarokUrl url = generator.CreateAmarokUrl();
+    url.saveToDb();
+    emit urlsChanged( "navigate" );
+}
+
 
 
 

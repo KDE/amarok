@@ -51,9 +51,17 @@ public:
 
     BookmarkList urlsByCommand( const QString &command );
 
+
+
 public slots:
     void bookmarkAlbum( Meta::AlbumPtr album );
     void bookmarkArtist( Meta::ArtistPtr artist );
+
+    void BookmarkCurrentBrowserView();
+
+signals:
+
+    void urlsChanged( const QString &command );
 
 private:
 

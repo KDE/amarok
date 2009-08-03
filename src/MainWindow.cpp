@@ -749,6 +749,10 @@ MainWindow::createActions()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
     connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
 
+    action = new KAction( i18n( "Bookmark Browser View" ), this );
+    ac->addAction( "bookmark_browser", action );
+    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( BookmarkCurrentBrowserView() ) );
+
     action = KStandardAction::redo(pc, SLOT(redo()), this);
     ac->addAction( "playlist_redo", action );
     action->setEnabled(false);
