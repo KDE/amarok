@@ -55,6 +55,8 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Remove the video stream from the context view when removing the video 
+      applet during stream playback. (BR 201281)
     * Fixed locales for Amazon cover fetching. (BR 188446)
     * Fix crash on trying to edit a playlist layout with an invalid element
       value in the xml file. (BR 197128)
