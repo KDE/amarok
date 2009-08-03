@@ -571,6 +571,7 @@ set(amaroklib_LIB_SRCS
     ../tests/playlistmanager/TestPlaylistManager.cpp
     ../tests/TestAmarok.cpp
     ../tests/TestCaseConverter.cpp
+    ../tests/TestDirectoryLoader.cpp
     ../tests/TestSmartPointerList.cpp
 )
 
