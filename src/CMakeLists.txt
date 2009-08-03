@@ -242,7 +242,6 @@ set(meta_SRCS
     meta/MetaUtility.cpp
     meta/MetaReplayGain.cpp
     meta/PLSPlaylist.cpp
-    meta/SqlPlaylist.cpp
     meta/StatisticsProvider.cpp
     meta/PlaylistFileSupport.cpp
     meta/PrivateMetaRegistry.cpp
@@ -361,6 +360,7 @@ set(libplaylistmanager_SRCS
     playlistmanager/UserPlaylistProvider.cpp
     playlistmanager/PlaylistFileProvider.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
+    playlistmanager/sql/SqlPlaylist.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp
 )
 
