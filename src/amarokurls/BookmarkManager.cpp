@@ -14,57 +14,56 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef BREADCRUMBWIDGET_H
-#define BREADCRUMBWIDGET_H
+#include "BookmarkManager.h"
 
-#include "BreadcrumbItem.h"
-#include "BrowserCategoryList.h"
+#include "Debug.h"
 
-#include <KHBox>
+#include <KApplication>
+#include <KDialog>
 
-#include <QList>
-#include <QStringList>
+#include <QHBoxLayout>
+
+BookmarkManager * BookmarkManager::s_instance = 0;
 
 
-/**
-A widget for displaying th ecurrent state of, and navigating, the browser dig down interface.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class BreadcrumbWidget : public KHBox
+BookmarkManager * BookmarkManager::instance()
 {
-    Q_OBJECT
-public:
-    BreadcrumbWidget( QWidget * parent );
+    if( s_instance == 0 )
+        s_instance = new BookmarkManager();
 
-    ~BreadcrumbWidget();
+    return s_instance;
+}
 
-    void setRootList( BrowserCategoryList * rootList );
+BookmarkManager::BookmarkManager()
+    : QDialog()
+{
+    // Sets caption and icon correctly (needed e.g. for GNOME)
+    kapp->setTopWidget( this );
+    setWindowTitle( KDialog::makeStandardCaption( i18n("Bookmark Manager") ) );
 
-signals:
-    void toHome();
-    
-public slots:
-    void updateBreadcrumbs();
+    QHBoxLayout *layout = new QHBoxLayout();
+    m_widget = new BookmarkManagerWidget( 0 );
+    layout->addWidget( m_widget );
+    setLayout( layout );
 
-private:
-    void clearCrumbs();
-    
-    /**
-     * Recursive function that traverses the tree of BrowserCategoryList's
-     * and adds each one as a level in the breadcrumb.
-     * @param level the root level BrowserCategoryList.
-     */
-    void addLevel( BrowserCategoryList * list );
+}
 
-    //QStringList m_currentPath;
-    BrowserCategoryList * m_rootList;
+BookmarkManager::~BookmarkManager()
+{
+}
 
-    QList<BreadcrumbItem *> m_items;
-    QWidget * m_spacer;
+void BookmarkManager::showOnce()
+{
+    DEBUG_BLOCK
+    instance()->activateWindow();
+    instance()->show();
+    instance()->raise();
+}
 
-    KHBox * m_breadcrumbArea;
+namespace The {
 
-};
-
-#endif
+    BookmarkManager* bookmarkManager()
+    {
+        return BookmarkManager::instance();
+    }
+}

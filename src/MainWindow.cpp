@@ -34,6 +34,7 @@
 #include "SearchWidget.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrlHandler.h"
+#include "amarokurls/BookmarkManager.h"
 
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
@@ -512,6 +513,11 @@ MainWindow::slotShowCoverManager() const //SLOT
     CoverManager::showOnce();
 }
 
+void MainWindow::slotShowBookmarkManager() const
+{
+    The::bookmarkManager()->showOnce();
+}
+
 void
 MainWindow::slotPlayMedia() //SLOT
 {
@@ -638,6 +644,10 @@ MainWindow::createActions()
     action = new KAction( KIcon( "document-save-amarok" ), i18n("&Save Playlist"), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
     ac->addAction( "playlist_save", action );
+
+    action = new KAction( KIcon( "flag-amarok" ), i18n( "Bookmark Manager" ), this );
+    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
+    ac->addAction( "bookmark_manager", action );
 
     action = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
@@ -844,6 +854,8 @@ MainWindow::createMenus()
     //BEGIN Tools menu
     m_toolsMenu = new KMenu( m_menubar );
     m_toolsMenu->setTitle( i18n("&Tools") );
+
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("cover_manager") );
 //FIXME: Reenable when ported//working
 //     m_toolsMenu->addAction( Amarok::actionCollection()->action("queue_manager") );

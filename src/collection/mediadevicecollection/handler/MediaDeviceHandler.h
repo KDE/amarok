@@ -153,13 +153,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     virtual void getCopyableUrls( const Meta::TrackList &tracks );
 
     /**
-    * Writes to the device's database if it has one, otherwise
-    * simply calls slotDatabaseWritten to continue the workflow.
-    */
-
-    virtual void writeDatabase() {}
-
-    /**
     * Fetches the human-readable name of the device.
     * This is often called from the Collection since
     * a library call is needed to get this name.
@@ -216,6 +209,13 @@ signals:
 
 public slots:
 
+   /**
+    * Writes to the device's database if it has one, otherwise
+    * simply calls slotDatabaseWritten to continue the workflow.
+    */
+
+    virtual void writeDatabase() {}
+
     void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
     void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
     void deletePlaylists( const Meta::MediaDevicePlaylistList &playlistlist );
@@ -237,7 +237,16 @@ protected:
 
     MediaDeviceHandler( QObject *parent );
 
+    /** Creates a MediaDeviceTrack based on the latest track struct created as a
+    *  result of a copy to the device, and adds it into the collection to reflect
+    *  that it has been copied.
+    *  @param track The track to add to the collection
+    */
+
+    void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
+
     MediaDeviceCollection   *m_memColl; /// Associated collection
+    ProgressBar      *m_statusbar; /// A progressbar to show progress of an operation
 
     bool m_success;
     bool m_copyingthreadsafe; // whether or not the handler's method of copying is threadsafe
@@ -260,14 +269,6 @@ protected slots:
     void slotDeletingHandler();
 
 private:
-
-    /** Creates a MediaDeviceTrack based on the latest track struct created as a
-    *  result of a copy to the device, and adds it into the collection to reflect
-    *  that it has been copied.
-    *  @param track The track to add to the collection
-    */
-
-    void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
 
     /**  Removes the @param track from all the collection's maps to reflect that
     *  it has been removed from the collection
@@ -349,7 +350,6 @@ private:
     QMap<Meta::TrackPtr, QString> m_tracksFailed; /// tracks that failed to copy
     QHash<Meta::TrackPtr, Meta::MediaDeviceTrackPtr> m_trackSrcDst; /// points source to destTracks, for completion of addition to collection
 
-    ProgressBar      *m_statusbar; /// A progressbar to show progress of an operation
     QMutex m_mutex; /// A make certain operations atomic when threads are at play
 
     /// Capability-related variables

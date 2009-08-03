@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,32 +14,36 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "BookmarkManagerWidgetProxy.h"
+#ifndef BOOKMARKMANAGER_H
+#define BOOKMARKMANAGER_H
 
 #include "BookmarkManagerWidget.h"
-#include "Debug.h"
 
-#include <KMenu>
+#include <QDialog>
 
-#include <QGraphicsSceneContextMenuEvent>
+class BookmarkManager;
 
-BookmarkManagerWidgetProxy::BookmarkManagerWidgetProxy( QGraphicsWidget *parent )
-    : QGraphicsProxyWidget( parent )
-    , m_manager( 0 )
+namespace The {
+    AMAROK_EXPORT BookmarkManager* bookmarkManager();
+}
+
+class BookmarkManager : public QDialog
 {
-    m_manager = new BookmarkManagerWidget( );
-    m_manager->setAttribute( Qt::WA_NoSystemBackground );
-    setWidget( m_manager );
-    setAttribute( Qt::WA_NoSystemBackground );
+    friend BookmarkManager* The::bookmarkManager();
+        
+public:
+
+    static BookmarkManager * instance();
+    ~BookmarkManager();
+
+     static void showOnce();
     
-    connect( m_manager, SIGNAL( showMenu( KMenu*, const QPointF& ) ), this, SLOT( showMenu( KMenu*, const QPointF& ) ) );
-}
+private:
 
-void 
-BookmarkManagerWidgetProxy::showMenu(KMenu* menu, const QPointF& point) // slot
-{
-    DEBUG_BLOCK
-    menu->exec( point.toPoint() );
-}
+    BookmarkManager();
 
-#include "BookmarkManagerWidgetProxy.h"
+    static BookmarkManager *s_instance;
+    BookmarkManagerWidget * m_widget;
+};
+
+#endif // BOOKMARKMANAGER_H

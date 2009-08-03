@@ -65,7 +65,7 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
     }
 
     m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
-
+    
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 
     //if this is a list, make cliking on this item cause us

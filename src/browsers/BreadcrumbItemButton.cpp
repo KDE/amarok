@@ -18,6 +18,10 @@
 
 #include "BreadcrumbItemButton.h"
 
+#include "amarokurls/AmarokUrlAction.h"
+#include "amarokurls/AmarokUrlHandler.h"
+#include "Amarok.h"
+
 #include <KColorScheme>
 #include <KIcon>
 #include <KLocale>
@@ -60,7 +64,7 @@ void BreadcrumbItemButton::setActive( const bool active )
     setFont( f );
 }
 
-void BreadcrumbItemButton::setDisplayHintEnabled(DisplayHint hint, bool enable)
+void BreadcrumbItemButton::setDisplayHintEnabled( DisplayHint hint, bool enable )
 {
     if( enable )
         m_displayHint = m_displayHint | hint;
@@ -70,26 +74,26 @@ void BreadcrumbItemButton::setDisplayHintEnabled(DisplayHint hint, bool enable)
     update();
 }
 
-bool BreadcrumbItemButton::isDisplayHintEnabled(DisplayHint hint) const
+bool BreadcrumbItemButton::isDisplayHintEnabled( DisplayHint hint ) const
 {
     return (m_displayHint & hint) > 0;
 }
 
-void BreadcrumbItemButton::enterEvent(QEvent* event)
+void BreadcrumbItemButton::enterEvent( QEvent* event )
 {
     QPushButton::enterEvent( event );
     setDisplayHintEnabled( HoverHint, true );
     update();
 }
 
-void BreadcrumbItemButton::leaveEvent(QEvent* event)
+void BreadcrumbItemButton::leaveEvent( QEvent* event )
 {
     QPushButton::leaveEvent( event );
     setDisplayHintEnabled( HoverHint, false );
     update();
 }
 
-void BreadcrumbItemButton::paintEvent(QPaintEvent* event)
+void BreadcrumbItemButton::paintEvent( QPaintEvent* event )
 {
     Q_UNUSED(event);
 
@@ -134,7 +138,7 @@ void BreadcrumbItemButton::drawHoverBackground(QPainter* painter)
         option.initFrom(this);
         option.state = QStyle::State_Enabled | QStyle::State_MouseOver;
         option.viewItemPosition = QStyleOptionViewItemV4::OnlyOne;
-        style()->drawPrimitive(QStyle::PE_PanelItemViewItem, &option, painter, this);
+        style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, this );
     }
 }
 
@@ -165,7 +169,7 @@ QSize BreadcrumbItemMenuButton::sizeHint() const
     return size;
 }
 
-void BreadcrumbItemMenuButton::paintEvent(QPaintEvent* event)
+void BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
 {
     Q_UNUSED(event);
 
@@ -187,6 +191,41 @@ void BreadcrumbItemMenuButton::paintEvent(QPaintEvent* event)
     } else {
         style()->drawPrimitive(QStyle::PE_IndicatorArrowLeft, &option, &painter, this);
     }
+}
+
+
+
+BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent )
+    : BreadcrumbItemButton( KIcon( "flag-amarok" ), QString(), parent )
+    , m_urlsCommand( urlsCommand )
+{
+    generateMenu();
+    setFixedWidth( 20 );
+}
+
+BreadcrumbUrlMenuButton::~BreadcrumbUrlMenuButton()
+{
+}
+
+void BreadcrumbUrlMenuButton::generateMenu()
+{
+   BookmarkList list = The::amarokUrlHandler()->urlsByCommand( m_urlsCommand );
+
+   QMenu * menu = new QMenu();
+   menu->setTitle( i18n("Browser Bookmarks" ) );
+
+   menu->addAction( i18n( "Bookmark current" ) );
+   menu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
+   
+   menu->addSeparator();
+
+   foreach( AmarokUrlPtr url, list )
+   {
+       menu->addAction( new AmarokUrlAction( url, menu ) );
+   }
+
+   setMenu( menu );
+   
 }
 
 

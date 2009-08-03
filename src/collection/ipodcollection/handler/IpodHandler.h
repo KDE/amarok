@@ -22,6 +22,10 @@
 #ifndef IPODHANDLER_H
 #define IPODHANDLER_H
 
+// Taglib includes
+#include <audioproperties.h>
+#include <fileref.h>
+
 /* CMake check for GDK */
 #include <config-gdk.h>
 
@@ -60,7 +64,7 @@ class QMutex;
 
 class IpodCollection;
 
-
+typedef QHash<QString, QString> AttributeHash;
 typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
 // NOTE: podcasts NYI
@@ -83,6 +87,8 @@ struct PodcastInfo
 namespace Meta
 {
 
+    typedef QMap<QString, Meta::TrackPtr> TrackMap;
+
 /* The libgpod backend for all Ipod calls */
 class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 {
@@ -94,7 +100,6 @@ public:
 
     virtual void init(); // collection
     virtual bool isWritable() const;
-    virtual void writeDatabase();
 
     virtual QString prettyName() const;
 
@@ -108,13 +113,23 @@ public:
     friend class Handler::IpodPlaylistCapability;
     friend class Handler::IpodReadCapability;
     friend class Handler::IpodWriteCapability;
+    friend class StaleWorkerThread;
+    friend class OrphanedWorkerThread;
+    friend class AddOrphanedWorkerThread;
 
     public slots:
+        virtual void writeDatabase();
+
         void slotInitializeIpod();
+        void slotStaleOrphaned();
 
     protected:
 
     /// Functions for PlaylistCapability
+    /**
+    * Writes to the device's database if it has one, otherwise
+    * simply calls slotDatabaseWritten to continue the workflow.
+    */
 
     virtual void prepareToParsePlaylists();
     virtual bool isEndOfParsePlaylistsList();
@@ -190,6 +205,14 @@ public slots:
     bool initializeIpod();
 
 private:
+    enum FileType
+    {
+        mp3,
+        ogg,
+        flac,
+        mp4
+    };
+
     /// Functions for ReadCapability
     virtual void prepareToParseTracks();
     virtual bool isEndOfParseTracksList();
@@ -223,6 +246,37 @@ private:
     virtual float totalCapacity() const;
 
     /// Ipod Methods
+
+    /**
+     * Finds tracks that are in the database, but whose file
+     * no longer exists or cannot be found
+     * @return the list of stale tracks found
+     */
+    Meta::TrackList staleTracks();
+
+    /**
+     * Finds tracks that are in the Music folders, but that
+     * do not have an entry in the database tied to it
+     * @return list of filepaths of orphaned tracks
+     */
+    QStringList orphanedTracks();
+
+    // NOTE: readTags taken from CollectionScanner.cpp, not used directly since
+    // CollectionScanner is now a separate utility from Amarok, and we should
+    // not depend on it.
+
+    /**
+     * Read metadata tags of a given file.
+     * @track Track for the file.
+     * @return QMap containing tags, or empty QMap on failure.
+     */
+
+    AttributeHash readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast );
+
+    bool findStale();
+    bool findOrphaned();
+    bool addNextOrphaned();
+
     bool removeDBTrack( Itdb_Track *track );
 
     /* libgpod Information Extraction Methods */
@@ -260,6 +314,11 @@ private:
     Itdb_Playlist    *m_masterPlaylist;
     GList            *m_currtracklist;
     Itdb_Track       *m_currtrack;
+    QHash<QString,Itdb_Track*> m_files;
+    Meta::TrackList m_staletracks;
+    int m_staletracksremoved;
+    int m_orphanedadded;
+    QStringList m_orphanedPaths;
 
     // For space checks
     QString               m_filepath;
@@ -338,7 +397,18 @@ private slots:
     void slotDBWriteFailed( ThreadWeaver::Job* job );
     void slotDBWriteSucceeded( ThreadWeaver::Job* job );
 
+    void slotStaleFailed( ThreadWeaver::Job* job );
+    void slotStaleSucceeded( ThreadWeaver::Job* job );
+
+    void slotOrphanedFailed( ThreadWeaver::Job* job );
+    void slotOrphanedSucceeded( ThreadWeaver::Job* job );
+
+    void slotAddOrphanedFailed( ThreadWeaver::Job* job );
+    void slotAddOrphanedSucceeded( ThreadWeaver::Job* job );
+
     void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed );
+
+    void slotOrphaned();
 };
 
 class DBWorkerThread : public ThreadWeaver::Job
@@ -357,5 +427,59 @@ private:
     bool m_success;
     IpodHandler *m_handler;
 };
+
+class StaleWorkerThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    StaleWorkerThread( IpodHandler* handler );
+    virtual ~StaleWorkerThread();
+
+    virtual bool success() const;
+
+protected:
+    virtual void run();
+
+private:
+    bool m_success;
+    IpodHandler *m_handler;
+};
+
+class OrphanedWorkerThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    OrphanedWorkerThread( IpodHandler* handler );
+    virtual ~OrphanedWorkerThread();
+
+    virtual bool success() const;
+
+protected:
+    virtual void run();
+
+private:
+    bool m_success;
+    IpodHandler *m_handler;
+};
+
+class AddOrphanedWorkerThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    AddOrphanedWorkerThread( IpodHandler* handler );
+    virtual ~AddOrphanedWorkerThread();
+
+    virtual bool success() const;
+
+protected:
+    virtual void run();
+
+private:
+    bool m_success;
+    IpodHandler *m_handler;
+};
+
+
+
 }
 #endif
