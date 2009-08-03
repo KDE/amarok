@@ -357,8 +357,8 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
             debug() << "Layout " << i.key() << " has been modified and will be saved.";
             if ( LayoutManager::instance()->isDefaultLayout( i.key() ) )
             {
-                const QString msg = i18n( "The layout '%1' you modified is one of the default layouts and cannot be overwritten. \
-                Please select a different name to save a copy.", i.key() );
+                const QString msg = i18n( "The layout '%1' you modified is one of the default layouts and cannot be overwritten. "
+                                          "Please select a different name to save a copy.", i.key() );
                 KMessageBox::sorry( this, msg, i18n( "Reserved Layout Name" ) );
                 //TODO: handle this on layout switch maybe? this is not the right time to tell users they needed to make a copy in the first place
                 i.value().setHead( LayoutManager::instance()->layout( i.key() ).head() );
