@@ -117,6 +117,10 @@ protected:
     virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
 
     virtual QString libGetPlaylistName();
+    void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+    void libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
+    void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+    void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
 
     virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track )
     {
@@ -238,6 +242,7 @@ private:
 
     LIBMTP_playlist_t *m_currplaylistlist;
     LIBMTP_playlist_t *m_currplaylist;
+    QHash<Meta::MediaDevicePlaylistPtr, LIBMTP_playlist_t*> m_mtpplaylisthash;
 
     uint32_t m_trackcounter;
 
