@@ -961,17 +961,20 @@ MtpHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 void
 MtpHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
-    /*
     DEBUG_BLOCK
-    Itdb_Playlist *pl = m_itdbplaylisthash[ playlist ];
+    LIBMTP_playlist_t *pl = m_mtpplaylisthash[ playlist ];
 
     if( pl )
     {
-        debug() << "Playlist renamed";
-        pl->name = g_strdup( playlist->name().toUtf8() );
-        databaseChanged();
+        debug() << "updating playlist : " << pl->name << endl;
+        int ret = LIBMTP_Update_Playlist( m_device, pl );
+        if( ret != 0 )
+        {
+            debug() << "Could not rename playlist";
+        }
+        else
+            debug() << "Playlist renamed";
     }
-    */
 }
 
 void
