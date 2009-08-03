@@ -2002,8 +2002,9 @@ QPixmap
 IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 {
 #ifdef GDK_FOUND
-    getCoverArt( m_itdbtrackhash[ track ] );
-    return QPixmap( filename );
+    AMAROK_NOTIMPLEMENTED
+    //getCoverArt( m_itdbtrackhash[ track ] );
+    return QPixmap( /*filename*/ );
 #else
     Q_UNUSED( track );
     return QPixmap();
