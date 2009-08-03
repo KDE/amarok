@@ -946,16 +946,29 @@ void
 MtpHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK
-            /*
-    Itdb_Playlist *pl = m_itdbplaylisthash[ playlist ];
+
+    LIBMTP_playlist_t *pl = m_mtpplaylisthash[ playlist ];
 
     if( pl )
     {
-        debug() << "Playlist removed";
-        itdb_playlist_remove( pl );
-        databaseChanged();
+
+        m_mtpplaylisthash.remove( playlist );
+
+        u_int32_t object_id = pl->playlist_id;
+
+        QString genericError = i18n( "Could not delete item" );
+
+        debug() << "delete this id : " << object_id;
+
+        int status = LIBMTP_Delete_Object( m_device, object_id );
+
+        if ( status != 0 )
+        {
+            debug() << "delete object failed";
+        }
+        else
+            debug() << "object deleted";
     }
-    */
 }
 
 void

@@ -2156,12 +2156,13 @@ void
 IpodHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK
-    Itdb_Playlist *pl = m_itdbplaylisthash[ playlist ];
+    Itdb_Playlist *pl = m_itdbplaylisthash.value( playlist );
 
     if( pl )
     {
         debug() << "Playlist removed";
         itdb_playlist_remove( pl );
+        m_itdbplaylisthash.remove( playlist );
         databaseChanged();
     }
 }
