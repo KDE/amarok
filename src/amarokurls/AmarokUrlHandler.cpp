@@ -17,12 +17,14 @@
 #include "AmarokUrlHandler.h"
 
 #include "BookmarkMetaActions.h"
+#include "CollectionManager.h"
 #include "Debug.h"
 #include "GlobalCurrentTrackActions.h"
 #include "NavigationUrlGenerator.h"
 #include "NavigationUrlRunner.h"
 #include "PlayUrlRunner.h"
 #include "BookmarkModel.h"
+#include "SqlStorage.h"
 #include "timecode/TimecodeObserver.h"
 
 #include <KIcon>
@@ -106,5 +108,29 @@ void AmarokUrlHandler::bookmarkArtist( Meta::ArtistPtr artist ) //slot
     generator.urlFromArtist( artist ).saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
+
+BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
+{
+    DEBUG_BLOCK
+
+    QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks where url like 'amarok://%1/%' ORDER BY name;";
+    query = query.arg( command );
+    QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
+
+    debug() << "Result: " << result;
+    int resultRows = result.count() / 6;
+
+    BookmarkList resultList;
+    for( int i = 0; i < resultRows; i++ )
+    {
+        QStringList row = result.mid( i*6, 6 );
+        resultList << AmarokUrlPtr( new AmarokUrl( row ) );
+    }
+
+    return resultList;
+}
+
+
+
 
 #include "AmarokUrlHandler.moc"

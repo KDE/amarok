@@ -41,11 +41,14 @@ SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
     m_sortableCategories += internalColumnNames;
     for( QStringList::iterator i = m_sortableCategories.begin(); i!=m_sortableCategories.end(); )
     {
-        if( *i == QString( "Placeholder" ) || *i == QString( "Bpm" )
+        //FIXME: disabled sorting by File size, Group length, Group tracks, Length because
+        //       it doesn't work.
+        if( *i == QString( "Placeholder" )    || *i == QString( "Bpm" )
             || *i == QString( "Cover image" ) || *i == QString( "Divider" )
-            || *i == QString( "Last played" ) || *i == QString( "Mood" )
-            || *i == QString( "Source" ) || *i == QString( "SourceEmblem" )
-            || *i == QString( "Title (with track number)" ) || *i == QString( "Type" ) )
+            || *i == QString( "Mood" )        || *i == QString( "SourceEmblem" )
+            || *i == QString( "File size" )   || *i == QString( "Title (with track number)" )
+            || *i == QString( "Group length" )|| *i == QString( "Group tracks" )
+            || *i == QString( "Length" ) )
             i = m_sortableCategories.erase( i );
         else
             ++i;
@@ -64,13 +67,9 @@ SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
     btnPopLevel->resize( btnPopLevel->height(), btnPopLevel->height() );
 
     mainLayout->addStretch();
-    m_btnSort = new KPushButton( "Just sort it!", this );
-    mainLayout->addWidget( m_btnSort );
-    m_btnSort->setEnabled( false );
 
-    connect(btnPushLevel, SIGNAL( clicked() ), this, SLOT( pushLevel() ) );
-    connect(btnPopLevel, SIGNAL( clicked() ), this, SLOT( popLevel() ) );
-    connect(m_btnSort, SIGNAL( clicked() ), this, SLOT( applySortingScheme() ) );
+    connect( btnPushLevel, SIGNAL( clicked() ), this, SLOT( pushLevel() ) );
+    connect( btnPopLevel, SIGNAL( clicked() ), this, SLOT( popLevel() ) );
 }
 
 void
@@ -89,9 +88,10 @@ void
 SortWidget::pushLevel()
 {
     m_comboList.append( new KComboBox( this ) );
+    connect( m_comboList.back(), SIGNAL( currentIndexChanged( QString ) ), this, SLOT( applySortingScheme() ) );
     m_comboLayout->addWidget( m_comboList.back() );
     m_comboList.back()->addItems( m_sortableCategories );
-    m_btnSort->setEnabled( true );
+    applySortingScheme();
 }
 
 void
@@ -102,7 +102,9 @@ SortWidget::popLevel()
         m_comboLayout->removeWidget( m_comboList.back() );
         delete m_comboList.takeLast();
         if( m_comboList.isEmpty() )
-            m_btnSort->setEnabled( false );
+            SortProxy::instance()->invalidateSorting();
+        else
+            applySortingScheme();
     }
 }
 

@@ -81,7 +81,7 @@ public:
     bool wasError() const { return !m_success; }
     QStringList errors() const { return m_errors; }
 
-    enum Locale { International=0, France, Germany, Japan, UK, Canada };
+    enum Locale { International = 0, Canada, France, Germany, Japan, UK };
     static QString localeIDToString( int id );
     static int localeStringToID( const QString &locale );
 

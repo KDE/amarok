@@ -99,6 +99,8 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     int firstItemAdded = -1;
     if ( options & Replace )
     {
+        emit replacingPlaylist();
+
         m_undoStack->beginMacro( "Replace playlist" ); // TODO: does this need to be internationalized?
         clear();
         insertionHelper( -1, list );
@@ -487,9 +489,6 @@ Playlist::Controller::slotFinishDirectoryLoader( const Meta::TrackList& tracks )
 void
 Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 {
-    DEBUG_BLOCK
-    debug() << "org row " << row;
-
     // expand any tracks that are actually playlists
     QMutableListIterator<Meta::TrackPtr> i( tl );
     while ( i.hasNext() )
@@ -513,19 +512,7 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 
     InsertCmdList cmds;
 
-    //This is a horribly evil bandaid HACK meant to keep people from exploding untill a prooper fix can be made.
-    //This woks in most cases, but inserting tracks into a fitlered list will yield somewhat unpredictible results.
-    if( row >= Model::instance()->rowCount() )
-        row = Model::instance()->rowCount();
-    else
-    {
-        //I am not sure this is a good idea. Even if we are filtering a list, we might want to insert it
-        //at the very bottom of the root list, otherwise the inserted tracks wills how up in a seeminly
-        //random place when the filter is removed.
-        row = qBound( 0, m_topmostModel->rowToBottomModel( row ), Model::instance()->rowCount() );
-    }
-    
-    debug() << "inserting tracks starting at row: " << row;
+    row = qBound( 0, m_topmostModel->rowToBottomModel( row ), Model::instance()->rowCount() );
 
     foreach( Meta::TrackPtr t, tl )
         cmds.append( InsertCmd( t, row++ ) );

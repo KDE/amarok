@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Patrick Spendrin <ps_ml@gmx.de>                                   *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,20 +14,56 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MEDIADEVICECOLLECTION_EXPORT_H
-#define MEDIADEVICECOLLECTION_EXPORT_H
+#include "BookmarkManager.h"
 
-/* needed for KDE_EXPORT and KDE_IMPORT macros */
-#include <kdemacros.h>
+#include "Debug.h"
 
-#ifndef MEDIADEVICECOLLECTION_EXPORT
-# if defined(MAKE_MEDIADEVICELIB_LIB) || defined(MAKE_AMAROKLIB_LIB)
-   /* We are building this library */ 
-#  define MEDIADEVICECOLLECTION_EXPORT KDE_EXPORT
-# else
-   /* We are using this library */ 
-#  define MEDIADEVICECOLLECTION_EXPORT KDE_IMPORT
-# endif
-#endif
+#include <KApplication>
+#include <KDialog>
 
-#endif // MEDIADEVICECOLLECTION_EXPORT_H
+#include <QHBoxLayout>
+
+BookmarkManager * BookmarkManager::s_instance = 0;
+
+
+BookmarkManager * BookmarkManager::instance()
+{
+    if( s_instance == 0 )
+        s_instance = new BookmarkManager();
+
+    return s_instance;
+}
+
+BookmarkManager::BookmarkManager()
+    : QDialog()
+{
+    // Sets caption and icon correctly (needed e.g. for GNOME)
+    kapp->setTopWidget( this );
+    setWindowTitle( KDialog::makeStandardCaption( i18n("Bookmark Manager") ) );
+
+    QHBoxLayout *layout = new QHBoxLayout();
+    m_widget = new BookmarkManagerWidget( 0 );
+    layout->addWidget( m_widget );
+    setLayout( layout );
+
+}
+
+BookmarkManager::~BookmarkManager()
+{
+}
+
+void BookmarkManager::showOnce()
+{
+    DEBUG_BLOCK
+    instance()->activateWindow();
+    instance()->show();
+    instance()->raise();
+}
+
+namespace The {
+
+    BookmarkManager* bookmarkManager()
+    {
+        return BookmarkManager::instance();
+    }
+}

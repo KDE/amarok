@@ -21,6 +21,7 @@
 #include "Meta.h"
 #include "mediadevicecollection_export.h"
 
+#include <QList>
 #include <QMultiMap>
 
 class MediaDeviceCollection;
@@ -42,6 +43,8 @@ typedef KSharedPtr<MediaDeviceAlbum> MediaDeviceAlbumPtr;
 typedef KSharedPtr<MediaDeviceGenre> MediaDeviceGenrePtr;
 typedef KSharedPtr<MediaDeviceComposer> MediaDeviceComposerPtr;
 typedef KSharedPtr<MediaDeviceYear> MediaDeviceYearPtr;
+
+typedef QList<MediaDeviceTrackPtr> MediaDeviceTrackList;
 
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
 {
@@ -123,10 +126,10 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual bool inCollection() const;
         virtual Amarok::Collection* collection() const;
 
-	virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 //    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
-	virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
-    
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+
 
         //MediaDeviceTrack specific methods
 

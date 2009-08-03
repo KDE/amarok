@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,28 +14,24 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_BOOKMARK_MANAGER_WIDGET_PROXY_H
-#define AMAROK_BOOKMARK_MANAGER_WIDGET_PROXY_H
+#include "AmarokUrlAction.h"
 
-#include <QGraphicsProxyWidget>
-
-class KMenu;
-class BookmarkManagerWidget;
-class QGraphicsSceneContextMenuEvent;
-
-class BookmarkManagerWidgetProxy : public QGraphicsProxyWidget
+AmarokUrlAction::AmarokUrlAction( const QIcon & icon, AmarokUrlPtr url, QObject * parent )
+    : QAction( icon, url->name(), parent )
+    , m_url( url )
 {
-    Q_OBJECT
+    connect( this, SIGNAL( triggered( bool ) ), this, SLOT( run() ) );
+}
 
-public:
-    explicit BookmarkManagerWidgetProxy( QGraphicsWidget *parent = 0 );
-    ~BookmarkManagerWidgetProxy() { }
-    
-protected slots:
-    void showMenu( KMenu* menu, const QPointF& localPos );
-    
-private:
-    BookmarkManagerWidget* m_manager;
-};
+AmarokUrlAction::AmarokUrlAction( AmarokUrlPtr url, QObject * parent )
+    : QAction(url->name(), parent )
+    , m_url( url )
+{
+    connect( this, SIGNAL( triggered( bool ) ), this, SLOT( run() ) );
+}
 
-#endif
+
+void AmarokUrlAction::run()
+{
+    m_url->run();
+}

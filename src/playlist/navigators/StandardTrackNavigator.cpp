@@ -26,9 +26,9 @@
 quint64
 Playlist::StandardTrackNavigator::requestNextTrack()
 {
+    m_model = GroupingProxy::instance();
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
-
     int updateRow = m_model->activeRow() + 1;
     if ( m_repeatPlaylist )
         updateRow = ( updateRow >= m_model->rowCount() ) ? 0 : updateRow;
@@ -38,6 +38,7 @@ Playlist::StandardTrackNavigator::requestNextTrack()
 quint64
 Playlist::StandardTrackNavigator::requestLastTrack()
 {
+    m_model = GroupingProxy::instance();
     int updateRow = m_model->activeRow() - 1;
     if ( m_repeatPlaylist )
         updateRow = ( updateRow < 0 ) ? m_model->rowCount() - 1 : updateRow;

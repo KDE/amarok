@@ -62,7 +62,7 @@ bool SortLevel::isComparable()
     intCategories << Bitrate << DiscNumber << Filesize << GroupLength << GroupTracks << Length
         << PlayCount << Rating << SampleRate << TrackNumber << Type;
     strCategories << Album << AlbumArtist << Artist << Comment << Composer << Directory << Filename
-        << Genre << Title << Year;
+        << Genre << LastPlayed << Source << Title << Year;
     if( intCategories.contains( category() ) || strCategories.contains( category() ) )
         return true;
     return false;
@@ -73,9 +73,9 @@ bool SortLevel::isString()
     QList< int > intCategories;
     QList< int > strCategories;
     intCategories << Bitrate << DiscNumber << Filesize << GroupLength << GroupTracks << Length
-    << PlayCount << Rating << SampleRate << TrackNumber << Type;
+        << PlayCount << Rating << SampleRate << TrackNumber << Type;
     strCategories << Album << AlbumArtist << Artist << Comment << Composer << Directory << Filename
-    << Genre << Title << Year;
+        << Genre << LastPlayed << Source << Title << Year;
     if( isComparable() && strCategories.contains( category() ) )
         return true;
     return false;

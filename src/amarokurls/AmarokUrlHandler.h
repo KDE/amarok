@@ -49,6 +49,8 @@ public:
 
     bool run( AmarokUrl url );
 
+    BookmarkList urlsByCommand( const QString &command );
+
 public slots:
     void bookmarkAlbum( Meta::AlbumPtr album );
     void bookmarkArtist( Meta::ArtistPtr artist );

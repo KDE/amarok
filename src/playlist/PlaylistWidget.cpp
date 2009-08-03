@@ -52,35 +52,6 @@ Playlist::Widget::Widget( QWidget* parent )
 
     m_searchWidget = new ProgressiveSearchWidget( this );
 
-    //this is really only useful for debugging at the moment, so dont show it to users and testers
-    /*m_sortBox = new QComboBox( this );
-    m_sortBox->insertItem( 0, "Album", Album);
-    m_sortBox->insertItem( 1, "AlbumArtist", Album);
-    m_sortBox->insertItem( 2, "Artist", Artist );
-    m_sortBox->insertItem( 3, "Bitrate", Bitrate );
-    m_sortBox->insertItem( 4, "Bpm", Bpm );
-    m_sortBox->insertItem( 5, "Comment", Comment );
-    m_sortBox->insertItem( 6, "Composer", Composer );
-    m_sortBox->insertItem( 7, "Directory", Directory );
-    m_sortBox->insertItem( 8, "DiscNumber", DiscNumber );
-    m_sortBox->insertItem( 9, "Filename", Filename );
-    m_sortBox->insertItem( 10, "Filesize", Filesize );
-    m_sortBox->insertItem( 11, "Genre", Genre );
-    m_sortBox->insertItem( 12, "LastPlayed", LastPlayed );
-    m_sortBox->insertItem( 13, "Length", Length );
-    m_sortBox->insertItem( 14, "Mood", Mood );
-    m_sortBox->insertItem( 15, "PlayCount", PlayCount );
-    m_sortBox->insertItem( 16, "Rating", Rating );
-    m_sortBox->insertItem( 17, "SampleRate", SampleRate );
-    m_sortBox->insertItem( 18, "Score", Score );
-    m_sortBox->insertItem( 29, "Source", Source );
-    m_sortBox->insertItem( 30, "Title", Title );
-    m_sortBox->insertItem( 31, "TrackNumber", TrackNumber );
-    m_sortBox->insertItem( 32, "Type", Type );
-    m_sortBox->insertItem( 33, "Year", Year );
-
-    connect( m_sortBox, SIGNAL( activated( int ) ), this, SLOT( sort( int ) ) );*/
-
     // show visual indication of dynamic playlists  being enabled
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ), SLOT( showDynamicHint( bool ) ) );
     m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), this );
@@ -154,6 +125,10 @@ Playlist::Widget::Widget( QWidget* parent )
     } //END Playlist Toolbar
 
     setFrameShape( QFrame::NoFrame );
+
+    // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
+    connect( The::playlistController(), SIGNAL( replacingPlaylist() ), this, SLOT( clearFilterIfActive() ) );
+
 }
 
 QSize
@@ -161,16 +136,6 @@ Playlist::Widget::sizeHint() const
 {
     return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
 }
-
-/*void
-Playlist::Widget::sort( int index )
-{
-    DEBUG_BLOCK
-    int field = m_sortBox->itemData( index ).toInt();
-    debug() << "Field: " << field;
-    //The::playlistModel()->sort( field );
-    FilterProxy::instance()->sort( field );
-}*/
 
 void
 Playlist::Widget::showDynamicHint( bool enabled )
@@ -183,3 +148,14 @@ Playlist::Widget::showDynamicHint( bool enabled )
 
 }
 
+void
+Playlist::Widget::clearFilterIfActive()
+{
+    DEBUG_BLOCK
+    KConfigGroup config = Amarok::config( "Playlist Search" );
+    bool filterActive = config.readEntry( "ShowOnlyMatches", true );
+
+    if( filterActive )
+        m_searchWidget->slotFilterClear();
+
+}

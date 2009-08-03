@@ -33,7 +33,7 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
  : KVBox( parent )
 {
 
-    setContentsMargins(0,0,0,0);
+    setContentsMargins( 0,0,0,0 );
 
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );

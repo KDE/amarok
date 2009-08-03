@@ -319,7 +319,7 @@ Meta::Track::operator==( const Meta::Track &track ) const
 }
 
 bool
-Meta::Track::lessThan( const Meta::TrackPtr left, const Meta::TrackPtr right )
+Meta::Track::lessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right )
 {
     if( !left || !right ) // These should never be 0, but it can apparently happen (http://bugs.kde.org/show_bug.cgi?id=181187)
         return false;

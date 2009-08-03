@@ -34,7 +34,7 @@ class QGraphicsSceneMouseEvent;
 * \author Simon Esneault <simon.esneault@gmail.com>
 */
 
-class AMAROK_EXPORT DragPixmapItem : public QObject, public QGraphicsPixmapItem
+class DragPixmapItem : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
     public:

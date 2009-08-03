@@ -64,6 +64,32 @@ extern "C" {
 #include <QStringList>
 #include <QTime>
 
+//Taglib:
+#include <apetag.h>
+#include <fileref.h>
+#include <flacfile.h>
+#include <id3v1tag.h>
+#include <id3v2tag.h>
+#include <mpcfile.h>
+#include <mpegfile.h>
+#include <oggfile.h>
+#include <oggflacfile.h>
+#include <speexfile.h>
+#include <tlist.h>
+#include <tstring.h>
+#include <vorbisfile.h>
+
+#ifdef TAGLIB_EXTRAS_FOUND
+#include <mp4file.h>
+#include <mp4tag.h>
+#include <mp4item.h>
+#include <audiblefiletyperesolver.h>
+#include <asffiletyperesolver.h>
+#include <wavfiletyperesolver.h>
+#include <realmediafiletyperesolver.h>
+#include <mp4filetyperesolver.h>
+#endif
+
 using namespace Meta;
 
 /// IpodHandler
@@ -153,7 +179,6 @@ IpodHandler::init()
 
         QString msg = i18n(  "Media Device: could not find iTunesDB on device mounted at %1. "
                              "Should I try to initialize your iPod?" ).arg(  mountPoint() );
-
         if( KMessageBox::warningContinueCancel( 0, msg, i18n( "Initialize iPod?" ),
                                                                       KGuiItem( i18n( "&Initialize" ), "new" ) ) == KMessageBox::Continue )
         {
@@ -364,6 +389,13 @@ IpodHandler::collectionActions()
 
 #endif
 
+    QAction *staleOrphanedAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n(  "&Stale and Orphaned" ), this );
+    staleOrphanedAction->setProperty( "popupdropper_svg_id", "edit" );
+
+    connect( staleOrphanedAction, SIGNAL( triggered() ), this, SLOT( slotStaleOrphaned() ) );
+
+    actions.append( staleOrphanedAction );
+
     return actions;
 }
 
@@ -387,6 +419,134 @@ IpodHandler::slotInitializeIpod()
         else
             The::statusBar()->shortMessage( i18n( "The iPod has failed to initialize!" ) );
     }
+
+
+}
+
+void
+IpodHandler::slotStaleOrphaned()
+{
+    DEBUG_BLOCK
+
+    const QString text( i18n( "Amarok is about to search for stale tracks. This may take a while, do you want to continue?" ) );
+
+    const bool init = KMessageBox::warningContinueCancel(0,
+                                                         text,
+                                                         i18n("Find Stale Tracks") ) == KMessageBox::Continue;
+
+    if( init )
+    {
+        ThreadWeaver::Weaver::instance()->enqueue( new StaleWorkerThread( this ) );
+    }
+
+
+}
+
+bool
+IpodHandler::findStale()
+{
+    m_staletracks.clear();
+    m_staletracks = staleTracks();
+
+    return true;
+}
+
+bool
+IpodHandler::findOrphaned()
+{
+    m_orphanedPaths = orphanedTracks();
+    return true;
+}
+
+bool
+IpodHandler::addNextOrphaned()
+{
+    QString realPath;
+    QString path = m_orphanedPaths.takeFirst();
+    pathExists( path, &realPath );
+    const AttributeHash attributes = readTags( realPath );
+
+    if( attributes.empty() )
+        return false;
+
+    debug() << "Found: " << attributes["artist"] << " - " << attributes["title"];
+
+    // Create new track
+
+    Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
+
+    // Create a track struct, associate it to track
+
+    libCreateTrack( destTrack );
+
+    // Fill the track struct of the destTrack with info from the track parameter as source
+
+    libSetTitle( destTrack, attributes["title"] );
+    libSetArtist( destTrack, attributes["artist"] );
+    libSetAlbum( destTrack, attributes["album"] );
+    libSetComment( destTrack, attributes["comment"] );
+    libSetGenre( destTrack, attributes["genre"] );
+    libSetYear( destTrack, attributes["year"] );
+    libSetTrackNumber( destTrack, attributes["track"].toInt() );
+
+    if( attributes.contains("composer" ) )
+        libSetComposer( destTrack, attributes["composer"] );
+    if( attributes.contains("discnumber" ) )
+        libSetDiscNumber( destTrack, attributes["discnumber"].toInt() );
+
+    //libSetBpm( destTrack, attributes["bpm"] );
+    if( attributes.contains("filesize" ) )
+        libSetFileSize( destTrack, attributes["filesize"].toInt() );
+
+    libSetType( destTrack, attributes["filetype"] );
+    //libSetPlayableUrl( destTrack, srcTrack );
+
+    if( attributes["audioproperties"] == "true" )
+    {
+        libSetBitrate( destTrack, attributes["bitrate"].toInt() );
+        libSetLength( destTrack, attributes["length"].toInt() );
+        libSetSamplerate( destTrack, attributes["samplerate"].toInt() );
+    }
+
+    // set up the play url
+
+    m_itdbtrackhash[ destTrack ]->ipod_path = g_strdup( path.toLatin1() );
+
+    // Add the track struct into the database
+
+    addTrackInDB( destTrack );
+
+    // Inform subclass that a track has been added to the db
+
+    databaseChanged();
+
+    // Add the new Meta::MediaDeviceTrackPtr into the device collection
+
+    // add track to collection
+    addMediaDeviceTrackToCollection( destTrack );
+
+    m_orphanedadded++;
+
+    return true;
+}
+
+void
+IpodHandler::slotOrphaned()
+{
+    writeDatabase();
+
+    const QString msg( i18ncp( "@info", "One stale track removed from the database. Scan for orphaned tracks?",
+                                "%1 tracks removed from the database. Scan for orphaned tracks?", m_staletracksremoved ) );
+
+    const bool init = KMessageBox::warningContinueCancel(0,
+                                                         msg,
+                                                         i18n("Find Orphaned Tracks") ) == KMessageBox::Continue;
+
+    if( init )
+    {
+        ThreadWeaver::Weaver::instance()->enqueue( new OrphanedWorkerThread( this ) );
+    } // init
+
 
 
 }
@@ -746,14 +906,24 @@ IpodHandler::writeFirewireGuid()
 bool
 IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 {
+    //DEBUG_BLOCK
+    //debug() << "ipodPath: " << ipodPath;
     QDir curDir( mountPoint() );
     QString curPath = mountPoint();
-    QStringList components = ipodPath.split( ':' );
+    QStringList components;
+    // HACK: remove a trailing ':' if present. For some inexplicable
+    // reason, splitting when starting with a : fails in Amarok,
+    // even though it works in a small isolated Qt test case.
+    if( ipodPath.at( 0 ) == ':' )
+        components = QString( ipodPath ).remove(0, 1).split(':');
+    else
+        components = ipodPath.split( ':' );
 
     bool found = false;
     QStringList::iterator it = components.begin();
     for( ; it != components.end(); ++it )
     {
+        //debug() << "(*it): " << (*it);
         found = false;
         for( uint i = 0;i < curDir.count(); i++ )
         {
@@ -909,6 +1079,7 @@ IpodHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrac
 void
 IpodHandler::writeDatabase()
 {
+    disconnect( this, SIGNAL( removeTracksDone() ), 0, 0 );
     ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
 }
 
@@ -976,6 +1147,7 @@ IpodHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
     Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
 
     m_itdbtrackhash.remove( track );
+    m_files.remove( QString(ipodtrack->ipod_path).toLower() );
 
     itdb_track_remove( ipodtrack );
 }
@@ -995,6 +1167,287 @@ IpodHandler::databaseChanged()
     m_dbChanged = true;
 }
 
+Meta::TrackList
+IpodHandler::staleTracks()
+{
+    DEBUG_BLOCK
+    Meta::TrackList tracklist;
+
+    Meta::TrackMap trackMap = m_memColl->trackMap();
+
+    foreach( Meta::TrackPtr trk, trackMap.values() )
+    {
+        Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::staticCast( trk );
+        Itdb_Track *ipodtrack =  m_itdbtrackhash.value( track );
+
+        if( !pathExists(QString::fromUtf8( ipodtrack->ipod_path ) ) )
+        {
+            debug() << "track: " << ipodtrack->artist << " - " << ipodtrack->album << " - " << ipodtrack->title << " is stale: " << ipodtrack->ipod_path << " does not exist" << endl;
+            tracklist << trk;
+        }
+    }
+
+    return tracklist;
+}
+
+QStringList
+IpodHandler::orphanedTracks()
+{
+    DEBUG_BLOCK
+
+    QStringList orphanedTracks;
+    QString musicpath;
+    if (!pathExists( itunesDir( "Music" ), &musicpath ))
+    {
+        debug() << "Music path not found";
+        return QStringList();
+    }
+
+    debug() << "Found path for Music";
+
+    QDir dir( musicpath, QString::null, QDir::Unsorted, QDir::Dirs );
+    for(unsigned i=0; i<dir.count(); i++)
+    {
+        if(dir[i] == "." || dir[i] == "..")
+            continue;
+
+        QString hashpath = musicpath + '/' + dir[i];
+        QDir hashdir( hashpath, QString::null, QDir::Unsorted, QDir::Files );
+        for(unsigned j=0; j<hashdir.count(); j++)
+        {
+            QString filename = hashpath + '/' + hashdir[j];
+            QString ipodPath = itunesDir( "Music:" ) + dir[i] + ':' + hashdir[j];
+            Itdb_Track *track = m_files.value( ipodPath.toLower() );
+            if(!track)
+            {
+                debug() << "file: " << filename << " is orphaned" << endl;
+                orphanedTracks << ipodPath;
+            }
+        }
+    }
+
+    return orphanedTracks;
+}
+
+AttributeHash
+IpodHandler::readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle )
+{
+    // Tests reveal the following:
+    //
+    // TagLib::AudioProperties   Relative Time Taken
+    //
+    //  No AudioProp Reading        1
+    //  Fast                        1.18
+    //  Average                     Untested
+    //  Accurate                    Untested
+
+
+#ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
+#else
+    QByteArray fileName = QFile::encodeName( path );
+    const char * encodedName = fileName.constData(); // valid as long as fileName exists
+#endif
+
+    TagLib::FileRef fileref;
+    TagLib::Tag *tag = 0;
+    fileref = TagLib::FileRef( encodedName, true, readStyle );
+
+    AttributeHash attributes;
+    bool isValid = false;
+    FileType fileType = ogg;
+    if( !fileref.isNull() )
+    {
+        tag = fileref.tag();
+        if ( tag )
+        {
+            #define strip( x ) TStringToQString( x ).trimmed()
+
+            attributes["title"] = strip( tag->title() );
+            attributes["artist"] = strip( tag->artist() );
+            attributes["album"] = strip( tag->album() );
+            attributes["comment"] = strip( tag->comment() );
+            attributes["genre"] = strip( tag->genre() );
+            attributes["year"] = QString::number( tag->year() );
+            attributes["track"]  = QString::number( tag->track() );
+            isValid = true;
+        }
+/*
+        Meta::ReplayGainTagMap replayGainTags = Meta::readReplayGainTags( fileref );
+        if ( replayGainTags.contains( Meta::ReplayGain_Track_Gain ) )
+        {
+            attributes["trackgain"] = QString::number( replayGainTags[Meta::ReplayGain_Track_Gain] );
+            if ( replayGainTags.contains( Meta::ReplayGain_Track_Peak ) )
+                attributes["trackpeakgain"] = QString::number( replayGainTags[Meta::ReplayGain_Track_Peak] );
+        }
+        if ( replayGainTags.contains( Meta::ReplayGain_Album_Gain ) )
+        {
+            attributes["albumgain"] = QString::number( replayGainTags[Meta::ReplayGain_Album_Gain] );
+            if ( replayGainTags.contains( Meta::ReplayGain_Album_Peak ) )
+                attributes["albumpeakgain"] = QString::number( replayGainTags[Meta::ReplayGain_Album_Peak] );
+        }
+*/
+        QString disc;
+        QString compilation;
+
+        /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
+           we have to cast the files, not the tags! */
+        if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+        {
+            fileType = mp3;
+            if ( file->ID3v2Tag() )
+            {
+                if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
+                    disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).trimmed();
+
+                if ( !file->ID3v2Tag()->frameListMap()["TBPM"].isEmpty() )
+                    attributes["bpm"] = TStringToQString( file->ID3v2Tag()->frameListMap()["TBPM"].front()->toString() ).trimmed().toFloat();
+
+                if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
+                    attributes["composer"] = TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).trimmed();
+
+                if ( !file->ID3v2Tag()->frameListMap()["TPE2"].isEmpty() ) // non-standard: Apple, Microsoft
+                    attributes["albumArtist"] = TStringToQString( file->ID3v2Tag()->frameListMap()["TPE2"].front()->toString() ).trimmed();
+
+                if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
+                    compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
+
+                //FIXME: Port 2.0
+//                 if( images )
+//                     loadImagesFromTag( *file->ID3v2Tag(), *images );
+            }
+
+            #undef strip
+        }
+
+        if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+        {
+            fileType = ogg;
+            if ( file->tag() )
+            {
+                if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() )
+                    attributes["composer"] = TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).trimmed();
+
+                if ( !file->tag()->fieldListMap()[ "BPM" ].isEmpty() )
+                    attributes["bpm"] = TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).trimmed().toFloat();
+
+                if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
+                    disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).trimmed();
+
+                if ( !file->tag()->fieldListMap()[ "COMPILATION" ].isEmpty() )
+                    compilation = TStringToQString( file->tag()->fieldListMap()["COMPILATION"].front() ).trimmed();
+            }
+        }
+        else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+        {
+            fileType = flac;
+            if ( file->xiphComment() )
+            {
+                if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
+                    attributes["composer"] = TStringToQString( file->xiphComment()->fieldListMap()["COMPOSER"].front() ).trimmed();
+
+                if ( !file->xiphComment()->fieldListMap()[ "BPM" ].isEmpty() )
+                    attributes["bpm"] = TStringToQString( file->xiphComment()->fieldListMap()["BPM"].front() ).trimmed().toFloat();
+
+                if ( !file->xiphComment()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
+                    disc = TStringToQString( file->xiphComment()->fieldListMap()["DISCNUMBER"].front() ).trimmed();
+
+                if ( !file->xiphComment()->fieldListMap()[ "COMPILATION" ].isEmpty() )
+                    compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).trimmed();
+            }
+//             if ( images && file->ID3v2Tag() )
+//                 loadImagesFromTag( *file->ID3v2Tag(), *images );
+        }
+#ifdef TAGLIB_EXTRAS_FOUND
+        else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
+        {
+            fileType = mp4;
+            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+            if( mp4tag )
+            {
+                if ( mp4tag->itemListMap().contains( "\xA9wrt" ) )
+                    attributes["composer"] = TStringToQString( mp4tag->itemListMap()["\xa9wrt"].toStringList().front() );
+
+                if ( mp4tag->itemListMap().contains( "tmpo" ) )
+                    attributes["bpm"] = QString::number( mp4tag->itemListMap()["tmpo"].toInt() );
+
+                if ( mp4tag->itemListMap().contains( "disk" ) )
+                    disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
+
+                if ( mp4tag->itemListMap().contains( "cpil" ) )
+                    compilation = QString::number( mp4tag->itemListMap()["cpil"].toBool() ? '1' : '0' );
+
+//                 if ( images && mp4tag->cover().size() )
+//                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
+            }
+        }
+#endif
+
+        if ( !disc.isEmpty() )
+        {
+            int i = disc.indexOf('/');
+            // guard against b0rked tags
+            int discnumber;
+            if ( i != -1 )
+                // disc.right( i ).toInt() is total number of discs, we don't use this at the moment
+                discnumber = disc.left( i ).toInt();
+            else
+                discnumber = disc.toInt();
+            attributes["discnumber"] = QString::number( discnumber );
+        }
+
+        // Sometimes the file is explicitly tagged with compilation details. When it is not,
+        // then we need to delegate checking whether this files is in a compilation to Amarok.
+        if ( compilation.isEmpty() )
+        {
+            // well, it wasn't set, but if the artist is VA assume it's a compilation
+            //TODO: If we get pure-Qt translation support, put this back in; else functionality moved to the processor
+            //if ( attributes["artist"] == QObject::tr( "Various Artists" ) )
+            //    attributes["compilation"] = QString::number( 1 );
+            attributes["compilation"] = "checkforvarious";
+        }
+        else
+        {
+            int i = compilation.toInt();
+            attributes["compilation"] = QString::number( i );
+        }
+    }
+
+    if ( !isValid )
+    {
+        std::cout << "<dud/>";
+        return attributes;
+    }
+
+    attributes["filetype"]  = QString::number( fileType );
+
+    static const int Undetermined = -2;
+
+    int bitrate = Undetermined;
+    int length = Undetermined;
+    int samplerate = Undetermined;
+    if( fileref.audioProperties() )
+    {
+        bitrate = fileref.audioProperties()->bitrate();
+        length = fileref.audioProperties()->length();
+        samplerate = fileref.audioProperties()->sampleRate();
+    }
+    if ( bitrate == Undetermined || length == Undetermined || samplerate == Undetermined )
+        attributes["audioproperties"] = "false";
+    else
+    {
+        attributes["audioproperties"] = "true";
+        attributes["bitrate"]         = QString::number( bitrate );
+        attributes["length"]          = QString::number( length );
+        attributes["samplerate"]      = QString::number( samplerate );
+    }
+
+    const int size = QFile( path ).size();
+    if( size >= 0 )
+        attributes["filesize"] =  QString::number( size );
+
+    return attributes;
+}
 
 bool
 IpodHandler::removeDBTrack( Itdb_Track *track )
@@ -1802,6 +2255,7 @@ void
 IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
     m_itdbtrackhash[ track ] = m_currtrack;
+    m_files.insert( QString(m_currtrack->ipod_path).toLower(), m_currtrack );
 }
 
 QStringList
@@ -1857,6 +2311,149 @@ IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
     }
     else
         debug() << "Writing to DB did not happen or failed";
+}
+
+/// Stale
+
+void
+IpodHandler::slotStaleFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Finding stale thread failed";
+    slotOrphaned();
+}
+
+void
+IpodHandler::slotStaleSucceeded( ThreadWeaver::Job* job )
+{
+    if( job->success() )
+    {
+        debug() << "Stale thread succeeded!";
+
+        QStringList staleList;
+        m_staletracksremoved = 0;
+
+        if( m_staletracks.count() > 0 )
+        {
+
+            foreach( Meta::TrackPtr track, m_staletracks )
+            {
+                QString ent;
+                QTextStream entry( &ent );
+                entry << track->artist()->name()
+                        << " - "
+                        << track->album()->name()
+                        << " - "
+                        << track->name();
+
+                staleList << ent;
+            }
+
+            bool ok = false;
+
+            QStringList itemList = KInputDialog::getItemList( i18n( "Select Stale Tracks To Delete" ), i18n( "Stale Tracks" ), staleList, staleList, true /*multiple*/, &ok, 0 );
+
+            if( ok )
+            {
+                Meta::TrackList staleToDelete;
+                foreach( QString item, itemList )
+                {
+                    staleToDelete << m_staletracks[ itemList.indexOf( item ) ];
+                }
+
+                m_staletracksremoved = staleToDelete.count();
+                // HACK: do through signals/slots, which is how CollectionLocation
+                // does deletion of tracks.  Should create protected method to
+                // allow Handlers to delete without hackery.
+                connect( this, SIGNAL( removeTracksDone() ), SLOT( slotOrphaned() ) );
+                removeTrackListFromDevice( staleToDelete );
+            }
+
+        } // endif staletracks
+        else
+        {
+            slotOrphaned();
+        }
+
+    }
+    else
+    {
+        debug() << "Stale thread failed";
+        slotOrphaned();
+    }
+}
+
+/// Orphaned
+
+void
+IpodHandler::slotOrphanedFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Finding orphaned thread failed";
+}
+
+void
+IpodHandler::slotOrphanedSucceeded( ThreadWeaver::Job* job )
+{
+    DEBUG_BLOCK
+    if( job->success() )
+    {
+        m_orphanedadded = 0;
+
+        debug() << "Number of paths: " << m_orphanedPaths.count();
+
+        if( !m_orphanedPaths.empty() )
+        {
+            m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Adding Orphaned Tracks to iPod Database" ) );
+            m_statusbar->setMaximum( m_orphanedPaths.count() );
+
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+
+        }
+
+    }
+    else
+    {
+        debug() << "failed to find orphaned tracks";
+    }
+}
+
+/// Add Orphaned
+
+void
+IpodHandler::slotAddOrphanedFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Adding orphaned thread failed";
+    if( m_orphanedPaths.count() )
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+}
+
+void
+IpodHandler::slotAddOrphanedSucceeded( ThreadWeaver::Job* job )
+{
+    if( job->success() )
+    {
+        emit incrementProgress();
+
+        if( m_orphanedPaths.count() )
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+        else
+        {
+            writeDatabase();
+
+            const QString orphmsg( i18ncp( "@info", "One orphaned track added to the database.",
+                                           "%1 tracks added to the database.", m_orphanedadded ) );
+
+            KMessageBox::information(0,
+                                     orphmsg,
+                                     i18n("Orphaned Tracks Added") );
+        }
+    }
+    else
+    {
+        debug() << "failed to add orphaned tracks";
+    }
 }
 
 /// Capability-related functions
@@ -1922,6 +2519,92 @@ DBWorkerThread::run()
     m_success = m_handler->writeITunesDB( false );
 }
 
+// stale
+
+StaleWorkerThread::StaleWorkerThread( IpodHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
+}
+
+StaleWorkerThread::~StaleWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+StaleWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+StaleWorkerThread::run()
+{
+    m_success = m_handler->findStale();
+}
+
+// Orphaned
+
+OrphanedWorkerThread::OrphanedWorkerThread( IpodHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
+}
+
+OrphanedWorkerThread::~OrphanedWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+OrphanedWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+OrphanedWorkerThread::run()
+{
+    m_success = m_handler->findOrphaned();
+}
+
+// Add Orphaned
+
+AddOrphanedWorkerThread::AddOrphanedWorkerThread( IpodHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
+}
+
+AddOrphanedWorkerThread::~AddOrphanedWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+AddOrphanedWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+AddOrphanedWorkerThread::run()
+{
+    m_success = m_handler->addNextOrphaned();
+}
 
 #include "IpodHandler.moc"
 

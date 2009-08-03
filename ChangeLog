@@ -35,6 +35,8 @@ VERSION 2.2-beta1
     * Drag and Drop support for album cover image. (BR 91261)
 
   CHANGES:
+    * Reset playlist filter when using the "replace playlist" action. Patch 
+      by John Atkinson <john@fauxnetic.co.uk> (BR 200709)
     * Track lyrics are exposed through the DBUS interface.
     * The database connection and tables now enforce UTF-8 for the character
       set and collation.
@@ -53,6 +55,7 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Fixed locales for Amazon cover fetching. (BR 188446)
     * Fix crash on trying to edit a playlist layout with an invalid element
       value in the xml file. (BR 197128)
     * Fix DBUS xml parsing. Patch thanks to Ryan Bitanga

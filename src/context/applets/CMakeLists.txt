@@ -1,5 +1,4 @@
 add_subdirectory( albums )
-add_subdirectory( bookmark )
 add_subdirectory( currenttrack )
 add_subdirectory( lyrics )
 add_subdirectory( serviceinfo )

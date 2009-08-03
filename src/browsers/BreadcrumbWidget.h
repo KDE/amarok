@@ -63,6 +63,8 @@ private:
     QList<BreadcrumbItem *> m_items;
     QWidget * m_spacer;
 
+    KHBox * m_breadcrumbArea;
+
 };
 
 #endif
