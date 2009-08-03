@@ -94,29 +94,38 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 {
     Q_OBJECT
 
-public:
-    IpodHandler( IpodCollection *mc, const QString& mountPoint );
-    virtual ~IpodHandler();
+    public:
+        IpodHandler( IpodCollection *mc, const QString& mountPoint );
+        virtual ~IpodHandler();
 
-    virtual void init(); // collection
-    virtual bool isWritable() const;
+        virtual void init(); // collection
+        virtual bool isWritable() const;
 
-    virtual QString prettyName() const;
+        virtual QString prettyName() const;
 
-    virtual QList<QAction *> collectionActions();
+        virtual QList<QAction *> collectionActions();
 
-    /// Capability-related methods
+        /// Capability-related methods
 
-    virtual bool hasCapabilityInterface( Handler::Capability::Type type ) const;
-    virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
+        virtual bool hasCapabilityInterface( Handler::Capability::Type type ) const;
+        virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
 
-    friend class Handler::IpodPlaylistCapability;
-    friend class Handler::IpodReadCapability;
-    friend class Handler::IpodWriteCapability;
-    friend class StaleWorkerThread;
-    friend class OrphanedWorkerThread;
-    friend class AddOrphanedWorkerThread;
+        friend class Handler::IpodPlaylistCapability;
+        friend class Handler::IpodReadCapability;
+        friend class Handler::IpodWriteCapability;
+        friend class StaleWorkerThread;
+        friend class OrphanedWorkerThread;
+        friend class AddOrphanedWorkerThread;
 
+        /// Ipod-Specific Methods
+        QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
+        QString mountPoint() const { return m_mountPoint; }
+        void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
+
+        // NOTE: do not use writeITunesDB,
+        // use the threaded writeDatabase
+        bool writeITunesDB( bool threaded = false );
+        
     public slots:
         virtual void writeDatabase();
 
@@ -124,359 +133,344 @@ public:
         void slotStaleOrphaned();
 
     protected:
+        /// Functions for PlaylistCapability
+        /**
+         * Writes to the device's database if it has one, otherwise
+         * simply calls slotDatabaseWritten to continue the workflow.
+         */
+        virtual void prepareToParsePlaylists();
+        virtual bool isEndOfParsePlaylistsList();
+        virtual void prepareToParseNextPlaylist();
+        virtual void nextPlaylistToParse();
 
-    /// Functions for PlaylistCapability
-    /**
-    * Writes to the device's database if it has one, otherwise
-    * simply calls slotDatabaseWritten to continue the workflow.
-    */
+        virtual bool shouldNotParseNextPlaylist();
 
-    virtual void prepareToParsePlaylists();
-    virtual bool isEndOfParsePlaylistsList();
-    virtual void prepareToParseNextPlaylist();
-    virtual void nextPlaylistToParse();
+        virtual void prepareToParsePlaylistTracks();
+        virtual bool isEndOfParsePlaylist();
+        virtual void prepareToParseNextPlaylistTrack();
+        virtual void nextPlaylistTrackToParse();
 
-    virtual bool shouldNotParseNextPlaylist();
+        virtual QStringList supportedFormats();
 
-    virtual void prepareToParsePlaylistTracks();
-    virtual bool isEndOfParsePlaylist();
-    virtual void prepareToParseNextPlaylistTrack();
-    virtual void nextPlaylistTrackToParse();
+        virtual void findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack );
+        virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack );
+        virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track );
+        virtual void libCreateTrack( const Meta::MediaDeviceTrackPtr &track );
+        virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track );
 
-    virtual QStringList supportedFormats();
+        virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
 
-    virtual void findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack );
-    virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack );
-    virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track );
-    virtual void libCreateTrack( const Meta::MediaDeviceTrackPtr &track );
-    virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track );
+        virtual QString libGetPlaylistName();
+        void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+        void libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
+        void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+        void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
 
-    virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
+        virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
+        virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
+        virtual void databaseChanged();
 
-    virtual QString libGetPlaylistName();
-    void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-    void libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
-    void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-    void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
+        virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
+        virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
+        virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
+        virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
+        virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
+        virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
+        virtual void libSetLength( Meta::MediaDeviceTrackPtr &track, int length );
+        virtual void libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum );
+        virtual void libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment );
+        virtual void libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
+        virtual void libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
+        virtual void libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
+        virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
+        virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
+        virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
+        virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
+        virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
+        virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
+        virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
 
-    virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
-    virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
-    virtual void databaseChanged();
+        // TODO: MediaDeviceTrackPtr
+        virtual void libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
+        virtual void setCoverArt( Itdb_Track *ipodtrack, const QString &path );
 
-    virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
-    virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
-    virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
-    virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
-    virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
-    virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
-    virtual void libSetLength( Meta::MediaDeviceTrackPtr &track, int length );
-    virtual void libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum );
-    virtual void libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment );
-    virtual void libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
-    virtual void libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
-    virtual void libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
-    virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
-    virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
-    virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
-    virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
-    virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
-    virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
-    virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
+        virtual void prepareToCopy();
+        virtual void prepareToDelete();
 
-    // TODO: MediaDeviceTrackPtr
-    virtual void libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
-    virtual void setCoverArt( Itdb_Track *ipodtrack, const QString &path );
+    private:
+        enum FileType
+        {
+            mp3,
+            ogg,
+            flac,
+            mp4
+        };
 
-    virtual void prepareToCopy();
-    virtual void prepareToDelete();
+        /// Functions for ReadCapability
+        virtual void prepareToParseTracks();
+        virtual bool isEndOfParseTracksList();
+        virtual void prepareToParseNextTrack();
+        virtual void nextTrackToParse();
 
-    /// Ipod-Specific Methods
+        virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
 
-public:
-    QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
-    QString mountPoint() const { return m_mountPoint; }
-    void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
+        virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
+        virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
+        virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
+        virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
+        virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
+        virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
+        virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track );
+        virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track );
+        virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track );
+        virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track );
+        virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track );
+        virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track );
+        virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
+        virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
+        virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
+        virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
+        virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
+        virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
+        virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+        virtual QPixmap libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
 
-    // NOTE: do not use writeITunesDB,
-    // use the threaded writeDatabase
-    bool writeITunesDB( bool threaded = false );
+        virtual float usedCapacity() const;
+        virtual float totalCapacity() const;
 
-public slots:
-    bool initializeIpod();
+        /// Ipod Methods
 
-private:
-    enum FileType
-    {
-        mp3,
-        ogg,
-        flac,
-        mp4
-    };
+        /**
+        * Finds tracks that are in the database, but whose file
+        * no longer exists or cannot be found
+        * @return the list of stale tracks found
+        */
+        Meta::TrackList staleTracks();
 
-    /// Functions for ReadCapability
-    virtual void prepareToParseTracks();
-    virtual bool isEndOfParseTracksList();
-    virtual void prepareToParseNextTrack();
-    virtual void nextTrackToParse();
+        /**
+        * Finds tracks that are in the Music folders, but that
+        * do not have an entry in the database tied to it
+        * @return list of filepaths of orphaned tracks
+        */
+        QStringList orphanedTracks();
 
-    virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
+        // NOTE: readTags taken from CollectionScanner.cpp, not used directly since
+        // CollectionScanner is now a separate utility from Amarok, and we should
+        // not depend on it.
 
-    virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track );
-    virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track );
-    virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
-    virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
-    virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
-    virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
-    virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
-    virtual QPixmap libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
+        /**
+        * Read metadata tags of a given file.
+        * @track Track for the file.
+        * @return QMap containing tags, or empty QMap on failure.
+        */
 
-    virtual float usedCapacity() const;
-    virtual float totalCapacity() const;
+        AttributeHash readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast );
 
-    /// Ipod Methods
+        bool findStale();
+        bool findOrphaned();
+        bool addNextOrphaned();
 
-    /**
-     * Finds tracks that are in the database, but whose file
-     * no longer exists or cannot be found
-     * @return the list of stale tracks found
-     */
-    Meta::TrackList staleTracks();
+        bool initializeIpod();
 
-    /**
-     * Finds tracks that are in the Music folders, but that
-     * do not have an entry in the database tied to it
-     * @return list of filepaths of orphaned tracks
-     */
-    QStringList orphanedTracks();
+        bool removeDBTrack( Itdb_Track *track );
 
-    // NOTE: readTags taken from CollectionScanner.cpp, not used directly since
-    // CollectionScanner is now a separate utility from Amarok, and we should
-    // not depend on it.
+        /* libgpod Information Extraction Methods */
 
-    /**
-     * Read metadata tags of a given file.
-     * @track Track for the file.
-     * @return QMap containing tags, or empty QMap on failure.
-     */
+        void detectModel();
+        bool writeToSysInfoFile( const QString &text );
+        bool appendToSysInfoFile( const QString &text );
+        bool writeFirewireGuid();
+        KUrl determineURLOnDevice( const Meta::TrackPtr &track );
+        QString itunesDir( const QString &path = QString() ) const;
+        QString ipodPath( const QString &realPath );
+        bool pathExists( const QString &ipodPath, QString *realPath = 0 );
+        QString realPath( const char *ipodPath );
 
-    AttributeHash readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast );
+        /* Cover Art functions */
+        QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
+        void getCoverArt( const Itdb_Track *ipodtrack );
 
-    bool findStale();
-    bool findOrphaned();
-    bool addNextOrphaned();
+        /* File I/O Methods */
+        // TODO: abstract copy/delete methods (not too bad)
+        bool kioCopyTrack( const KUrl &src, const KUrl &dst );
+        void deleteFile( const KUrl &url );
 
-    bool removeDBTrack( Itdb_Track *track );
+        /**
+        * Handler Variables
+        */
+        /* Collection Variables */
 
-    /* libgpod Information Extraction Methods */
+        // Associated collection
+        // Map of titles, used to check for duplicate tracks
 
-    void detectModel();
-    bool writeToSysInfoFile( const QString &text );
-    bool appendToSysInfoFile( const QString &text );
-    bool writeFirewireGuid();
-    KUrl determineURLOnDevice( const Meta::TrackPtr &track );
-    QString itunesDir( const QString &path = QString() ) const;
-    QString ipodPath( const QString &realPath );
-    bool pathExists( const QString &ipodPath, QString *realPath = 0 );
-    QString realPath( const char *ipodPath );
+        /* libgpod variables */
+        Itdb_iTunesDB    *m_itdb;
+        Itdb_Playlist    *m_masterPlaylist;
+        GList            *m_currtracklist;
+        Itdb_Track       *m_currtrack;
+        QHash<QString,Itdb_Track*> m_files;
+        Meta::TrackList m_staletracks;
+        int m_staletracksremoved;
+        int m_orphanedadded;
+        QStringList m_orphanedPaths;
 
-    /* Cover Art functions */
-    QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
-    void getCoverArt( const Itdb_Track *ipodtrack );
+        // For space checks
+        QString               m_filepath;
+        float                 m_capacity;
 
-    /* File I/O Methods */
-    // TODO: abstract copy/delete methods (not too bad)
-    bool kioCopyTrack( const KUrl &src, const KUrl &dst );
-    void deleteFile( const KUrl &url );
+        // for playlist parsing
+        GList            *m_currplaylistlist;
+        Itdb_Playlist    *m_currplaylist;
 
-    /**
-     * Handler Variables
-     */
+        /* Lockers */
+        QMutex            m_dbLocker; // DB only written by 1 thread at a time
+        QMutex            m_joblocker; // lets only 1 job finish at a time
+        int               m_jobcounter; // keeps track of copy jobs present
 
-     /* Collection Variables */
+        /* Copy/Delete Variables */
+        Meta::TrackList   m_tracksToDelete;
 
-    // Associated collection
-    // Map of titles, used to check for duplicate tracks
+        QMap<KUrl, Meta::TrackPtr> m_trackscopying; // associates source url to track of source url
+        QMap<Meta::TrackPtr, KUrl> m_trackdesturl; // keeps track of destination url for new tracks, mapped from source track
 
-    /* libgpod variables */
-    Itdb_iTunesDB    *m_itdb;
-    Itdb_Playlist    *m_masterPlaylist;
-    GList            *m_currtracklist;
-    Itdb_Track       *m_currtrack;
-    QHash<QString,Itdb_Track*> m_files;
-    Meta::TrackList m_staletracks;
-    int m_staletracksremoved;
-    int m_orphanedadded;
-    QStringList m_orphanedPaths;
+        QMap<KUrl, Meta::TrackPtr> m_tracksdeleting; // associates source url to track of source url being deleted
 
-    // For space checks
-    QString               m_filepath;
-    float                 m_capacity;
+        Itdb_Track       *m_libtrack;
 
-    // for playlist parsing
-    GList            *m_currplaylistlist;
-    Itdb_Playlist    *m_currplaylist;
+        /* Ipod Connection */
+        bool    m_autoConnect;
+        QString m_mountPoint;
+        QString m_name;
 
-    /* Lockers */
-    QMutex            m_dbLocker; // DB only written by 1 thread at a time
-    QMutex            m_joblocker; // lets only 1 job finish at a time
-    int               m_jobcounter; // keeps track of copy jobs present
+        /* Ipod Model */
+        bool m_isShuffle;
+        bool m_isMobile;
+        bool m_isIPhone;
 
-    /* Copy/Delete Variables */
-    Meta::TrackList   m_tracksToDelete;
+        /* Properties of Ipod */
+        bool m_supportsArtwork;
+        bool m_supportsVideo;
+        bool m_rockboxFirmware;
+        bool m_needsFirewireGuid;
 
-    QMap<KUrl, Meta::TrackPtr> m_trackscopying; // associates source url to track of source url
-    QMap<Meta::TrackPtr, KUrl> m_trackdesturl; // keeps track of destination url for new tracks, mapped from source track
+        /* Success/Failure */
+        bool m_dbChanged;
+        bool m_copyFailed;
+        bool m_isCanceled;
+        bool m_wait;
 
-    QMap<KUrl, Meta::TrackPtr> m_tracksdeleting; // associates source url to track of source url being deleted
+        // whether Itdb_Track is created correctly
+        bool m_trackCreated;
 
-    Itdb_Track       *m_libtrack;
+        /* Miscellaneous Variables */
 
-    /* Ipod Connection */
-    bool    m_autoConnect;
-    QString m_mountPoint;
-    QString m_name;
+        // Hash that associates an Itdb_Track* to every Track*
+        QHash<Meta::MediaDeviceTrackPtr, Itdb_Track*> m_itdbtrackhash;
 
-    /* Ipod Model */
-    bool m_isShuffle;
-    bool m_isMobile;
-    bool m_isIPhone;
+        // Hash that associates an Itdb_Playlist* to every PlaylistPtr
+        QHash<Meta::MediaDevicePlaylistPtr, Itdb_Playlist*> m_itdbplaylisthash;
 
-    /* Properties of Ipod */
-    bool m_supportsArtwork;
-    bool m_supportsVideo;
-    bool m_rockboxFirmware;
-    bool m_needsFirewireGuid;
+        // tracks that failed to copy
+        QMap<Meta::TrackPtr, QString> m_tracksFailed;
 
-    /* Success/Failure */
-    bool m_dbChanged;
-    bool m_copyFailed;
-    bool m_isCanceled;
-    bool m_wait;
+        // tempdir for covers
+        KTempDir *m_tempdir;
+        QSet<QString> m_coverArt;
 
-    // whether Itdb_Track is created correctly
-    bool m_trackCreated;
+        // TODO: Implement lockfile
+        // QFile *m_lockFile;
 
-    /* Miscellaneous Variables */
+        // TODO: Implement podcasts
+        // podcasts
+        // Itdb_Playlist* m_podcastPlaylist;
 
-    // Hash that associates an Itdb_Track* to every Track*
-    QHash<Meta::MediaDeviceTrackPtr, Itdb_Track*> m_itdbtrackhash;
-    
-    // Hash that associates an Itdb_Playlist* to every PlaylistPtr
-    QHash<Meta::MediaDevicePlaylistPtr, Itdb_Playlist*> m_itdbplaylisthash;
+    private slots:
+        void fileTransferred( KJob *job );
+        void fileDeleted( KJob *job );
 
-    // tracks that failed to copy
-    QMap<Meta::TrackPtr, QString> m_tracksFailed;
+        void slotDBWriteFailed( ThreadWeaver::Job* job );
+        void slotDBWriteSucceeded( ThreadWeaver::Job* job );
 
-    // tempdir for covers
-    KTempDir *m_tempdir;
-    QSet<QString> m_coverArt;
+        void slotStaleFailed( ThreadWeaver::Job* job );
+        void slotStaleSucceeded( ThreadWeaver::Job* job );
 
-    // TODO: Implement lockfile
-    // QFile *m_lockFile;
+        void slotOrphanedFailed( ThreadWeaver::Job* job );
+        void slotOrphanedSucceeded( ThreadWeaver::Job* job );
 
-    // TODO: Implement podcasts
-    // podcasts
-    // Itdb_Playlist* m_podcastPlaylist;
+        void slotAddOrphanedFailed( ThreadWeaver::Job* job );
+        void slotAddOrphanedSucceeded( ThreadWeaver::Job* job );
 
-private slots:
-    void fileTransferred( KJob *job );
-    void fileDeleted( KJob *job );
+        void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed );
 
-    void slotDBWriteFailed( ThreadWeaver::Job* job );
-    void slotDBWriteSucceeded( ThreadWeaver::Job* job );
-
-    void slotStaleFailed( ThreadWeaver::Job* job );
-    void slotStaleSucceeded( ThreadWeaver::Job* job );
-
-    void slotOrphanedFailed( ThreadWeaver::Job* job );
-    void slotOrphanedSucceeded( ThreadWeaver::Job* job );
-
-    void slotAddOrphanedFailed( ThreadWeaver::Job* job );
-    void slotAddOrphanedSucceeded( ThreadWeaver::Job* job );
-
-    void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed );
-
-    void slotOrphaned();
+        void slotOrphaned();
 };
 
 class DBWorkerThread : public ThreadWeaver::Job
 {
-    Q_OBJECT
-public:
-    DBWorkerThread( IpodHandler* handler );
-    virtual ~DBWorkerThread();
+        Q_OBJECT
+    public:
+        DBWorkerThread( IpodHandler* handler );
+        virtual ~DBWorkerThread();
 
-    virtual bool success() const;
+        virtual bool success() const;
 
-protected:
-    virtual void run();
+    protected:
+        virtual void run();
 
-private:
-    bool m_success;
-    IpodHandler *m_handler;
+    private:
+        bool m_success;
+        IpodHandler *m_handler;
 };
 
 class StaleWorkerThread : public ThreadWeaver::Job
 {
-    Q_OBJECT
-public:
-    StaleWorkerThread( IpodHandler* handler );
-    virtual ~StaleWorkerThread();
+        Q_OBJECT
+    public:
+        StaleWorkerThread( IpodHandler* handler );
+        virtual ~StaleWorkerThread();
 
-    virtual bool success() const;
+        virtual bool success() const;
 
-protected:
-    virtual void run();
+    protected:
+        virtual void run();
 
-private:
-    bool m_success;
-    IpodHandler *m_handler;
+    private:
+        bool m_success;
+        IpodHandler *m_handler;
 };
 
 class OrphanedWorkerThread : public ThreadWeaver::Job
 {
-    Q_OBJECT
-public:
-    OrphanedWorkerThread( IpodHandler* handler );
-    virtual ~OrphanedWorkerThread();
+        Q_OBJECT
+    public:
+        OrphanedWorkerThread( IpodHandler* handler );
+        virtual ~OrphanedWorkerThread();
 
-    virtual bool success() const;
+        virtual bool success() const;
 
-protected:
-    virtual void run();
+    protected:
+        virtual void run();
 
-private:
-    bool m_success;
-    IpodHandler *m_handler;
+    private:
+        bool m_success;
+        IpodHandler *m_handler;
 };
 
 class AddOrphanedWorkerThread : public ThreadWeaver::Job
 {
-    Q_OBJECT
-public:
-    AddOrphanedWorkerThread( IpodHandler* handler );
-    virtual ~AddOrphanedWorkerThread();
+        Q_OBJECT
+    public:
+        AddOrphanedWorkerThread( IpodHandler* handler );
+        virtual ~AddOrphanedWorkerThread();
 
-    virtual bool success() const;
+        virtual bool success() const;
 
-protected:
-    virtual void run();
+    protected:
+        virtual void run();
 
-private:
-    bool m_success;
-    IpodHandler *m_handler;
+    private:
+        bool m_success;
+        IpodHandler *m_handler;
 };
 
 
