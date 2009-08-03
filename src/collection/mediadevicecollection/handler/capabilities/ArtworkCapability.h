@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,47 +14,24 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MTPHANDLER_PLAYLISTCAPABILITY_H
-#define MTPHANDLER_PLAYLISTCAPABILITY_H
+#ifndef MEDIADEVICEHANDLER_ARTWORK_CAPABILITY_H
+#define MEDIADEVICEHANDLER_ARTWORK_CAPABILITY_H
 
 #include "mediadevicecollection_export.h"
-#include "PlaylistCapability.h"
-
-namespace Meta {
-    class MtpHandler;
-}
+#include "../MediaDeviceHandlerCapability.h"
+#include "../../MediaDeviceMeta.h"
 
 namespace Handler
 {
+    class MEDIADEVICECOLLECTION_EXPORT ArtworkCapability : public Handler::Capability
+    {
+        Q_OBJECT
 
-class MtpPlaylistCapability : public PlaylistCapability
-{
-    Q_OBJECT
+        public:
+            virtual ~ArtworkCapability();
 
-    public:
-        MtpPlaylistCapability( Meta::MtpHandler *handler );
-
-        virtual void prepareToParsePlaylists();
-        virtual bool isEndOfParsePlaylistsList();
-        virtual void prepareToParseNextPlaylist();
-        virtual void nextPlaylistToParse();
-        virtual bool shouldNotParseNextPlaylist();
-        virtual void prepareToParsePlaylistTracks();
-        virtual bool isEndOfParsePlaylist();
-        virtual void prepareToParseNextPlaylistTrack();
-        virtual void nextPlaylistTrackToParse();
-        
-        virtual void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
-        virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-        virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-
-        virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
-        virtual QString libGetPlaylistName();
-
-    private:
-        Meta::MtpHandler *m_handler;
-};
-
+            static Type capabilityInterfaceType() { return Handler::Capability::Artwork; }
+    };
 }
 
 #endif

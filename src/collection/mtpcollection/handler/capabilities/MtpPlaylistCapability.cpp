@@ -91,4 +91,26 @@ MtpPlaylistCapability::libGetPlaylistName()
     return m_handler->libGetPlaylistName();
 }
 
+void
+MtpPlaylistCapability::savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( playlist )
+    Q_UNUSED( name )
+}
+
+void
+MtpPlaylistCapability::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( playlist )
+}
+
+void
+MtpPlaylistCapability::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( playlist )
+}
+
 #include "MtpPlaylistCapability.moc"

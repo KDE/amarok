@@ -180,9 +180,8 @@ IpodHandler::init()
         QString msg = i18n(  "Media Device: could not find iTunesDB on device mounted at %1. "
                              "Should I try to initialize your iPod?" ).arg(  mountPoint() );
         if( KMessageBox::warningContinueCancel( 0, msg, i18n( "Initialize iPod?" ),
-                                                                      KGuiItem( i18n( "&Initialize" ), "new" ) ) == KMessageBox::Continue )
+                                                KGuiItem( i18n( "&Initialize" ), "new" ) ) == KMessageBox::Continue )
         {
-
             QStringList modelList;
 
             // Pull model information
@@ -216,7 +215,6 @@ IpodHandler::init()
                 modelList << mod;
 
                 info++;
-
             }
 
             bool ok = false;
@@ -341,17 +339,17 @@ IpodHandler::init()
     // Get storage access for getting device space capacity/usage
 
     Solid::Device device = Solid::Device(  m_memColl->udi() );
-        if (  device.isValid() )
-        {
-            Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-            m_filepath = storage->filePath();
-            m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
-        }
-        else
-        {
-            m_filepath = "";
-            m_capacity = 0.0;
-        }
+    if (  device.isValid() )
+    {
+        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+        m_filepath = storage->filePath();
+        m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
+    }
+    else
+    {
+        m_filepath = "";
+        m_capacity = 0.0;
+    }
 
     debug() << "Succeeded: " << m_success;
 
@@ -407,20 +405,15 @@ IpodHandler::slotInitializeIpod()
     const bool init = KMessageBox::warningContinueCancel(0,
                                                          text,
                                                          i18n("Initialize iPod") ) == KMessageBox::Continue;
-    if ( init )
+    if( init )
     {
-        bool success = initializeIpod();
+        const bool success = initializeIpod();
 
         if ( success )
-        {
-
-            The::statusBar()->shortMessage( i18n( "The iPod has been initialized!" ) );
-        }
+            The::statusBar()->shortMessage( i18n( "The iPod has been initialized" ) );
         else
-            The::statusBar()->shortMessage( i18n( "The iPod has failed to initialize!" ) );
+            The::statusBar()->shortMessage( i18n( "The iPod was unable to be initialized" ) );
     }
-
-
 }
 
 void
@@ -614,8 +607,6 @@ IpodHandler::initializeIpod()
     // TODO: database methods abstraction needed
     if( !writeITunesDB( false ) )
        return false;
-
-
 
     return true;
 }
@@ -890,17 +881,13 @@ IpodHandler::writeFirewireGuid()
 
     }
 
-    qDebug() << "Firewire is: " << firewireguid;
-
-
-
+    debug() << "Firewire is: " << firewireguid;
 
     // If found, write it out to the SysInfo file
     if( firewireguid.isEmpty() )
         return false;
 
     return appendToSysInfoFile( firewireguid );
-
 }
 
 bool
@@ -1520,33 +1507,14 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         return;
     }
 
-
-
-
     // Limit max number of jobs to 150, make sure more tracks left
     // to copy
-
-
-        debug() << "Tracks to copy still remain";
-        if( m_jobcounter < 150 )
-        {
-            debug() << "Jobs: " << m_jobcounter;
-            copyNextTrackToDevice();
-        }
-
-
-    /*
-    else
+    debug() << "Tracks to copy still remain";
+    if( m_jobcounter < 150 )
     {
-        debug() << "Tracklist empty";
-        // Empty copy queue, this is last job
-        if( m_jobcounter == 0 )
-        {
-            emit incrementProgress();
-            emit copyTracksDone( !m_copyFailed );
-        }
+        debug() << "Jobs: " << m_jobcounter;
+        copyNextTrackToDevice();
     }
-    */
 }
 
 void
@@ -1561,14 +1529,8 @@ IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, b
     DEBUG_BLOCK
     Meta::TrackPtr track = m_trackscopying[from];
 
-    if( job->error() )
-    {
-    }
-    else
-    {
+    if( !job->error() )
         slotFinalizeTrackCopy( track );
-    }
-
 }
 
 void
@@ -1594,23 +1556,19 @@ void
 IpodHandler::fileDeleted( KJob *job )  //SLOT
 {
     DEBUG_BLOCK
-    if(job->error())
-    {
+    if( job->error() )
         debug() << "file deletion failed: " << job->errorText();
-    }
 
     m_jobcounter--;
 
     // Limit max number of jobs to 150, make sure more tracks left
     // to delete
-
-
     debug() << "Tracks to delete still remain";
-        if( m_jobcounter < 150 )
-        {
-            debug() << "Jobs: " << m_jobcounter;
-            removeNextTrackFromDevice();
-        }
+    if( m_jobcounter < 150 )
+    {
+        debug() << "Jobs: " << m_jobcounter;
+        removeNextTrackFromDevice();
+    }
 
     KIO::DeleteJob *djob = reinterpret_cast<KIO::DeleteJob*> (job);
 
@@ -2001,7 +1959,6 @@ IpodHandler::libCreateTrack( const Meta::MediaDeviceTrackPtr& track )
     m_itdbtrackhash[ track ] = itdb_track_new();
 }
 
-#if 0
 QString
 IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
 {
@@ -2041,20 +1998,18 @@ IpodHandler::getCoverArt( const Itdb_Track *ipodtrack )
 #endif
 }
 
-
 QPixmap
-IpodHandler::libGetCoverArt( Meta::MediaDeviceTrackPtr track ) const
+IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 {
 #ifdef GDK_FOUND
-
-    getCoverArt( m_itdbtrackhash[ track ];
-    return QPixmap( filename );
+    AMAROK_NOTIMPLEMENTED
+    //getCoverArt( m_itdbtrackhash[ track ] );
+    return QPixmap( /*filename*/ );
 #else
     Q_UNUSED( track );
     return QPixmap();
 #endif
 }
-
 
 void
 IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path )
@@ -2094,7 +2049,6 @@ IpodHandler::libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
     Q_UNUSED( image );
 #endif
 }
-#endif
 
 void
 IpodHandler::prepareToParseTracks()

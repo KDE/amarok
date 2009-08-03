@@ -115,4 +115,27 @@ IphoneOsPlaylistCapability::libGetPlaylistName()
     return m_playlistName;
 }
 
+void
+IphoneOsPlaylistCapability::savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( playlist )
+    Q_UNUSED( name )
+}
+
+void
+IphoneOsPlaylistCapability::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( playlist )
+}
+
+void
+IphoneOsPlaylistCapability::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( playlist )
+}
+
+
 #include "IphoneOsPlaylistCapability.moc"
