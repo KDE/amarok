@@ -144,7 +144,9 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
     {
         debug() << "Found existing UUID config for ID " << ids[0] << " , uuid " << volume->uuid();
         s->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
-                            "id = %1;" ).arg( ids[0], volumeAccess->filePath() ) );
+                           "id = %1;" )
+                           .arg( ids[0] )
+                           .arg( s->escape( volumeAccess->filePath() ) ) );
         return new MassStorageDeviceHandler( ids[0].toInt(), volumeAccess->filePath(), volume->uuid() );
     }
     else
@@ -152,7 +154,8 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
         const int id = s->insert( QString( "INSERT INTO devices( type, uuid, lastmountpoint ) "
                                            "VALUES ( 'uuid', '%1', '%2' );" )
                                            .arg( volume->uuid() )
-                                           .arg( volumeAccess->filePath() ), "devices" );
+                                           .arg( s->escape( volumeAccess->filePath() ) ),
+                                           "devices" );
         if ( id == 0 )
         {
             warning() << "Inserting into devices failed for type=uuid, uuid=" << volume->uuid();

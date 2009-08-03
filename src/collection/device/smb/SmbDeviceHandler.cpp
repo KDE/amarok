@@ -129,28 +129,32 @@ SmbDeviceHandlerFactory::createHandler( KSharedConfigPtr ) const
 DeviceHandler *
 SmbDeviceHandlerFactory::createHandler( const Medium * m ) const
 {
+    SqlStorage *s = CollectionManager::instance()->sqlStorage();
     QString server = m->deviceNode().section( '/', 2, 2 );
     QString share = m->deviceNode().section( '/', 3, 3 );
-    QStringList ids = CollectionManager::instance()->sqlStorage()->query( QString( "SELECT id, label, lastmountpoint "
-                                                                          "FROM devices WHERE type = 'smb' "
-                                                                          "AND servername = '%1' AND sharename = '%2';" )
-                                                                          .arg( server )
-                                                                          .arg( share ) );
+    QStringList ids = s->query( QString( "SELECT id, label, lastmountpoint "
+                                         "FROM devices WHERE type = 'smb' "
+                                         "AND servername = '%1' AND sharename = '%2';" )
+                                         .arg( s->escape( server ) )
+                                         .arg( s->escape( share ) ) );
     if ( ids.size() == 3 )
     {
         debug() << "Found existing SMB config for ID " << ids[0] << " , server " << server << " ,share " << share;
-        CollectionManager::instance()->sqlStorage()->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
-                                                  "id = %1;" ).arg( ids[0] ).arg( m->mountPoint() ) );
+        s->query( QString( "UPDATE devices SET lastmountpoint = '%2' WHERE "
+                           "id = %1;" )
+                           .arg( ids[0] )
+                           .arg( s->escape( m->mountPoint() ) ) );
         return new SmbDeviceHandler( ids[0].toInt(), server, share, m->mountPoint() );
     }
     else
     {
-        int id = CollectionManager::instance()->sqlStorage()->insert( QString( "INSERT INTO devices"
-                                                            "( type, servername, sharename, lastmountpoint ) "
-                                                            "VALUES ( 'smb', '%1', '%2', '%3' );" )
-                                                            .arg( server )
-                                                            .arg( share )
-                                                            .arg( m->mountPoint() ), "devices" );
+        int id = s->insert( QString( "INSERT INTO devices"
+                                     "( type, servername, sharename, lastmountpoint ) "
+                                     "VALUES ( 'smb', '%1', '%2', '%3' );" )
+                                     .arg( s->escape( server ) )
+                                     .arg( s->escape( share ) )
+                                     .arg( s->escape( m->mountPoint() ) ),
+                                     "devices" );
         if ( id == 0 )
         {
             warning() << "Inserting into devices failed for type=smb, server=" << server << ", share=" << share;
