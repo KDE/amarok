@@ -133,7 +133,10 @@ if( WITH_PLAYER )
 
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 
+if(CMAKE_BUILD_TYPE MATCHES debugfull)
     add_subdirectory( tests )
+endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+
     add_subdirectory( src )
 
     macro_display_feature_log()

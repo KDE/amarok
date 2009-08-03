@@ -568,12 +568,18 @@ set(amaroklib_LIB_SRCS
     widgets/BookmarkPopup.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
-    ../tests/playlistmanager/TestPlaylistManager.cpp
-    ../tests/TestAmarok.cpp
-    ../tests/TestCaseConverter.cpp
-    ../tests/TestDirectoryLoader.cpp
-    ../tests/TestSmartPointerList.cpp
 )
+
+if(CMAKE_BUILD_TYPE MATCHES debugfull)
+    set(amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        ../tests/playlistmanager/TestPlaylistManager.cpp
+        ../tests/TestAmarok.cpp
+        ../tests/TestCaseConverter.cpp
+        ../tests/TestDirectoryLoader.cpp
+        ../tests/TestSmartPointerList.cpp
+    )
+endif(CMAKE_BUILD_TYPE MATCHES debugfull)
 
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.player.xml PlayerDBusHandler.h Amarok::PlayerDBusHandler PlayerAdaptor PlayerAdaptor)
@@ -612,12 +618,15 @@ target_link_libraries(amaroklib
     ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
-    ${QT_QTTEST_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
 )
+
+if(CMAKE_BUILD_TYPE MATCHES debugfull)
+    target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
+endif(CMAKE_BUILD_TYPE MATCHES debugfull)
 
 if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
