@@ -50,7 +50,7 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
 #include "playlist/layouts/LayoutConfigAction.h"
-#include "playlistmanager/PlaylistFileProvider.h"
+#include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
