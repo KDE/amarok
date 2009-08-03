@@ -254,18 +254,6 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         */
         QStringList orphanedTracks();
 
-        // NOTE: readTags taken from CollectionScanner.cpp, not used directly since
-        // CollectionScanner is now a separate utility from Amarok, and we should
-        // not depend on it.
-
-        /**
-        * Read metadata tags of a given file.
-        * @track Track for the file.
-        * @return QMap containing tags, or empty QMap on failure.
-        */
-
-        AttributeHash readTags( const QString &path, TagLib::AudioProperties::ReadStyle readStyle = TagLib::AudioProperties::Fast );
-
         bool findStale();
         bool findOrphaned();
         bool addNextOrphaned();
