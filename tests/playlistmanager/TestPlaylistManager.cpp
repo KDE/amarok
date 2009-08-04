@@ -17,7 +17,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "PlaylistManager.h"
+#include "meta/PlaylistFileSupport.h"
 #include "TestPlaylistManager.h"
 
 #include <KStandardDirs>
@@ -37,27 +37,27 @@ void TestPlaylistManager::initTestCase()
 
 void TestPlaylistManager::testGetFormat()
 {
-    QCOMPARE( PlaylistManager::instance()->getFormat( m_testPlaylistPath + "test.asx" ), PlaylistManager::ASX );
-    QCOMPARE( PlaylistManager::instance()->getFormat( m_testPlaylistPath + "test.m3u" ), PlaylistManager::M3U );
-    QCOMPARE( PlaylistManager::instance()->getFormat( m_testPlaylistPath + "test.pls" ), PlaylistManager::PLS );
-    QCOMPARE( PlaylistManager::instance()->getFormat( m_testPlaylistPath + "test.ram" ), PlaylistManager::RAM );
-    QCOMPARE( PlaylistManager::instance()->getFormat( m_testPlaylistPath + "test.smil" ), PlaylistManager::SMIL );
-    // TODO: PlaylistManager::XML <- what kind of playlist format is that? example?
-    QCOMPARE( PlaylistManager::instance()->getFormat( m_testPlaylistPath + "test.xspf" ), PlaylistManager::XSPF );
-    QCOMPARE( PlaylistManager::instance()->getFormat( m_testPlaylistPath + "no-playlist.png" ), PlaylistManager::Unknown );
-    QCOMPARE( PlaylistManager::instance()->getFormat( m_testPlaylistPath + "no-playlist.png" ), PlaylistManager::NotPlaylist );
+    QCOMPARE( Meta::getFormat( m_testPlaylistPath + "test.asx" ), Meta::ASX );
+    QCOMPARE( Meta::getFormat( m_testPlaylistPath + "test.m3u" ), Meta::M3U );
+    QCOMPARE( Meta::getFormat( m_testPlaylistPath + "test.pls" ), Meta::PLS );
+    QCOMPARE( Meta::getFormat( m_testPlaylistPath + "test.ram" ), Meta::RAM );
+    QCOMPARE( Meta::getFormat( m_testPlaylistPath + "test.smil" ), Meta::SMIL );
+    // TODO: Meta::XML <- what kind of playlist format is that? example?
+    QCOMPARE( Meta::getFormat( m_testPlaylistPath + "test.xspf" ), Meta::XSPF );
+    QCOMPARE( Meta::getFormat( m_testPlaylistPath + "no-playlist.png" ), Meta::Unknown );
+    QCOMPARE( Meta::getFormat( m_testPlaylistPath + "no-playlist.png" ), Meta::NotPlaylist );
 }
 
 void TestPlaylistManager::testIsPlaylist()
 {
-    QCOMPARE( PlaylistManager::instance()->isPlaylist( m_testPlaylistPath + "test.asx" ), true );
-    QCOMPARE( PlaylistManager::instance()->isPlaylist( m_testPlaylistPath + "test.m3u" ), true );
-    QCOMPARE( PlaylistManager::instance()->isPlaylist( m_testPlaylistPath + "test.pls" ), true );
-    QCOMPARE( PlaylistManager::instance()->isPlaylist( m_testPlaylistPath + "test.ram" ), true );
-    QCOMPARE( PlaylistManager::instance()->isPlaylist( m_testPlaylistPath + "test.smil" ), true );
-    // TODO: PlaylistManager::XML <- what kind of playlist format is that? example?
-    QCOMPARE( PlaylistManager::instance()->isPlaylist( m_testPlaylistPath + "test.xspf" ), true );
-    QCOMPARE( PlaylistManager::instance()->isPlaylist( m_testPlaylistPath + "no-playlist.png" ), false );
+    QCOMPARE( Meta::isPlaylist( m_testPlaylistPath + "test.asx" ), true );
+    QCOMPARE( Meta::isPlaylist( m_testPlaylistPath + "test.m3u" ), true );
+    QCOMPARE( Meta::isPlaylist( m_testPlaylistPath + "test.pls" ), true );
+    QCOMPARE( Meta::isPlaylist( m_testPlaylistPath + "test.ram" ), true );
+    QCOMPARE( Meta::isPlaylist( m_testPlaylistPath + "test.smil" ), true );
+    // TODO: Meta::XML <- what kind of playlist format is that? example?
+    QCOMPARE( Meta::isPlaylist( m_testPlaylistPath + "test.xspf" ), true );
+    QCOMPARE( Meta::isPlaylist( m_testPlaylistPath + "no-playlist.png" ), false );
 }
 
 #include "TestPlaylistManager.moc"
