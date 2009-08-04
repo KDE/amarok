@@ -55,6 +55,9 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Fix destination filenames when using "copy to collection" in the 
+      Jamendo service. (BR 171839)
+    * Make Jamendo torrent downloads work again. (BR 198200)
     * Remove the video stream from the context view when removing the video 
       applet during stream playback. (BR 201281)
     * Fixed locales for Amazon cover fetching. (BR 188446)

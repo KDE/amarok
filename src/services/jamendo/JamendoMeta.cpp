@@ -196,6 +196,11 @@ Meta::JamendoTrack::setService(JamendoService * service)
     m_service = service;
 }
 
+QString JamendoTrack::type() const
+{
+    return "ogg";
+}
+
 //// JamendoArtist ////
 
 JamendoArtist::JamendoArtist( const QString &name )
