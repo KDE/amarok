@@ -239,11 +239,18 @@ BookmarkModel::flags( const QModelIndex & index ) const
 
     if ( typeid( * item ) == typeid( BookmarkGroup ) )
     {
-        debug() <<  "got a group with ItemIsDropEnabled";
-        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
+        if ( index.column() != Command )
+            return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
+        else
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
     }
     else
-        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    {
+        if ( index.column() != Command )
+            return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+        else
+             return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    }
 }
 
 QVariant
@@ -262,17 +269,32 @@ BookmarkModel::headerData(int section, Qt::Orientation orientation, int role) co
     return QVariant();
 }
 
-bool BookmarkModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool BookmarkModel::setData( const QModelIndex & index, const QVariant & value, int role )
 {
     if (role != Qt::EditRole)
         return false;
-    if ( index.column() != 0 )
+    if ( index.column() == Command )
         return false;
 
     BookmarkViewItemPtr item = m_viewItems.value( index.internalId() );
 
-    item->rename( value.toString() );
-
+    switch( index.column() )
+    {
+        case Name:
+            item->rename( value.toString() );
+            break;
+        case Url:
+        {
+            AmarokUrl * url = dynamic_cast<AmarokUrl *>( item.data() );
+            if ( url )
+            {
+                debug() << "writing " << value.toString() << " as new url!";
+                url->initFromString( value.toString() );
+                url->saveToDb();
+            }
+            break;
+        }
+    }
     return true;
 
 }

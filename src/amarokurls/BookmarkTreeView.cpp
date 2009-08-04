@@ -47,7 +47,7 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     , m_addGroupAction( 0 )
 {
 
-    setEditTriggers( QAbstractItemView::NoEditTriggers );
+    setEditTriggers( QAbstractItemView::SelectedClicked );
 
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     The::paletteHandler()->updateItemView( this );
