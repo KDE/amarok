@@ -32,6 +32,7 @@ typedef QList<PlaylistProvider *> PlaylistProviderList;
 class PodcastProvider;
 class QAction;
 class UserPlaylistProvider;
+class PlaylistFileProvider;
 
 namespace The {
     AMAROK_EXPORT PlaylistManager* playlistManager();
@@ -171,6 +172,7 @@ class PlaylistManager : public QObject
 
         PodcastProvider *m_defaultPodcastProvider;
         UserPlaylistProvider *m_defaultUserPlaylistProvider;
+        PlaylistFileProvider *m_playlistFileProvider;
 
         QMultiMap<int, PlaylistProvider*> m_map; //Map PlaylistCategories to providers
         QMap<int, QString> m_customCategories;

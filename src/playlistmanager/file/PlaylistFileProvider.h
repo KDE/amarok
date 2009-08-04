@@ -42,6 +42,8 @@ class PlaylistFileProvider : public UserPlaylistProvider
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks,
                                         const QString &name );
 
+        bool import( const KUrl &path );
+
     private:
         Meta::PlaylistList m_playlists;
         Meta::PlaylistFormat m_defaultFormat;

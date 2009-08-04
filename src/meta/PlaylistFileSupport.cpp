@@ -144,7 +144,20 @@ loadPlaylist( const KUrl &url )
 bool
 exportPlaylistFile( const Meta::TrackList &list, const KUrl &path )
 {
-    return false;
+    PlaylistFormat format = getFormat( path );
+    bool result = false;
+    switch( format )
+    {
+        case PLS:
+            result = PLSPlaylist( list ).save( path.path(), true );
+        case M3U:
+            result = M3UPlaylist( list ).save( path.path(), true );
+        case XSPF:
+            result = XSPFPlaylist( list ).save( path.path(), true );
+        default:
+            debug() << "Could not export playlist file " << path;
+    }
+    return result;
 }
 
 bool

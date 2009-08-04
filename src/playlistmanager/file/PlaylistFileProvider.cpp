@@ -124,3 +124,13 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     return Meta::PlaylistPtr();
 }
+
+bool
+PlaylistFileProvider::import( const KUrl &path )
+{
+    Meta::PlaylistPtr playlist = Meta::loadPlaylist( path );
+    if( !playlist )
+        return false;
+    m_playlists << playlist;
+    return true;
+}

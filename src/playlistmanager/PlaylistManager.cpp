@@ -71,12 +71,16 @@ PlaylistManager::PlaylistManager()
 
     m_defaultUserPlaylistProvider = new SqlUserPlaylistProvider();
     addProvider( m_defaultUserPlaylistProvider, UserPlaylist );
+
+    m_playlistFileProvider = new PlaylistFileProvider();
+    addProvider( m_playlistFileProvider, UserPlaylist );
 }
 
 PlaylistManager::~PlaylistManager()
 {
     delete m_defaultPodcastProvider;
     delete m_defaultUserPlaylistProvider;
+    delete m_playlistFileProvider;
 }
 
 void
@@ -341,14 +345,12 @@ bool
 PlaylistManager::import( const QString& fromLocation )
 {
     DEBUG_BLOCK
-    SqlUserPlaylistProvider *sqlProvider =
-            dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
-    if( !sqlProvider )
+    if( !m_playlistFileProvider )
     {
         debug() << "ERROR: sqlUserPlaylistProvider was null";
         return false;
     }
-    return sqlProvider->import( fromLocation );
+    return m_playlistFileProvider->import( KUrl::fromPath(fromLocation) );
 }
 
 bool
