@@ -498,8 +498,14 @@ StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionC
 void
 StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
 {
-    The::playlistActions()->setStopAfterMode(Playlist::StopAfterCurrent);
-    The::playlistActions()->setTrackToBeLast(The::playlistModel()->activeId());
+    if ( !The::playlistActions()->willStopAfterTrack( The::playlistModel()->activeId() ) )
+    {
+        The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
+        The::playlistActions()->setTrackToBeLast( The::playlistModel()->activeId() );
+    } else {
+        The::playlistActions()->setStopAfterMode( Playlist::StopNever );
+        The::playlistActions()->setTrackToBeLast( 0 );
+    }
 }
 
 void
