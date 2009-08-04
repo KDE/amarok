@@ -252,7 +252,9 @@ BookmarkModel::headerData(int section, Qt::Orientation orientation, int role) co
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
         {
-            case 0: return i18n("Name");
+            case Name: return i18n("Name");
+            case Command: return i18n("Type");
+            case Url: return i18n("Url");
             default: return QVariant();
         }
     }
