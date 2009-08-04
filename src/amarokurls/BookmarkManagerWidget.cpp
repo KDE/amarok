@@ -53,9 +53,6 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_bookmarkView->setModel( m_proxyModel );
     m_bookmarkView->setProxy( m_proxyModel );
     m_bookmarkView->setSortingEnabled( true );
-    
-    connect( m_bookmarkView, SIGNAL( bookmarkSelected( AmarokUrl ) ), this, SLOT( slotBookmarkSelected( AmarokUrl ) ) );
-    connect( m_bookmarkView, SIGNAL( showMenu( KMenu*, const QPointF& ) ), this, SIGNAL( showMenu( KMenu*, const QPointF& ) ) );
 
     m_currentBookmarkId = -1;
 

@@ -200,7 +200,8 @@ BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QW
     , m_urlsCommand( urlsCommand )
 {
     generateMenu();
-    connect( The::amarokUrlHandler(), SIGNAL( urlsChanged( const QString &) ), this, SLOT(  urlsChanged( const QString & ) ) );
+    connect( The::amarokUrlHandler(), SIGNAL( urlsChanged() ), this, SLOT(  urlsChanged() ) );
+    
     setFixedWidth( 20 );
     setToolTip( i18n( "List and run browser bookmarks, or create new ones" ) );
 }
@@ -236,10 +237,10 @@ void BreadcrumbUrlMenuButton::generateMenu()
    
 }
 
-void BreadcrumbUrlMenuButton::urlsChanged( const QString & command )
+void BreadcrumbUrlMenuButton::urlsChanged()
 {
-    if ( command == "navigate" )
-        generateMenu();
+    DEBUG_BLOCK;
+    generateMenu();
 }
 
 

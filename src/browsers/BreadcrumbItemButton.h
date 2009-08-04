@@ -93,7 +93,7 @@ class BreadcrumbUrlMenuButton : public BreadcrumbItemButton
 
     protected slots:
         void generateMenu();
-        void urlsChanged( const QString & );
+        void urlsChanged();
 
     private:
         QString m_urlsCommand;

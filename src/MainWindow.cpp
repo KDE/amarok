@@ -647,7 +647,7 @@ MainWindow::createActions()
 
     action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Browser View" ), this );
     ac->addAction( "bookmark_browser", action );
-    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( BookmarkCurrentBrowserView() ) );
+    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentBrowserView() ) );
 
     action = new KAction( KIcon( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );

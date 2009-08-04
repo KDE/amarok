@@ -54,8 +54,11 @@ AmarokUrlHandler::AmarokUrlHandler()
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
     registerRunner( m_playRunner, m_playRunner->command() );
 
-    //The::globalCollectionActions()->addAlbumAction( new BookmarkAlbumAction( this ) );
-    //The::globalCollectionActions()->addArtistAction( new BookmarkArtistAction( this ) );
+    connect( BookmarkModel::instance(), SIGNAL( modelReset() ), this,  SLOT( modelChanged() ) );
+    connect( BookmarkModel::instance(), SIGNAL( rowsInserted ( const QModelIndex &, int, int ) ), this,  SLOT( modelChanged() ) );
+    connect( BookmarkModel::instance(), SIGNAL( rowsRemoved ( const QModelIndex &, int, int ) ), this,  SLOT( modelChanged() ) );
+    connect( BookmarkModel::instance(), SIGNAL( dataChanged ( const QModelIndex &, const QModelIndex & ) ), this,  SLOT( modelChanged() ) );
+    
 }
 
 
@@ -130,12 +133,18 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
     return resultList;
 }
 
-void AmarokUrlHandler::BookmarkCurrentBrowserView()
+void AmarokUrlHandler::bookmarkCurrentBrowserView()
 {
     NavigationUrlGenerator generator;
     AmarokUrl url = generator.CreateAmarokUrl();
     url.saveToDb();
-    emit urlsChanged( "navigate" );
+    BookmarkModel::instance()->reloadFromDb();
+}
+
+void AmarokUrlHandler::modelChanged()
+{
+    DEBUG_BLOCK
+    emit urlsChanged();
 }
 
 KIcon AmarokUrlHandler::iconForCommand( const QString &command )

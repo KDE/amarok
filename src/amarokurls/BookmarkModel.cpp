@@ -286,6 +286,7 @@ bool BookmarkModel::setData( const QModelIndex & index, const QVariant & value, 
     {
         case Name:
             item->rename( value.toString() );
+            emit dataChanged( index, index );
             break;
         case Url:
         {
@@ -295,6 +296,8 @@ bool BookmarkModel::setData( const QModelIndex & index, const QVariant & value, 
                 debug() << "writing " << value.toString() << " as new url!";
                 url->initFromString( value.toString() );
                 url->saveToDb();
+
+                emit dataChanged( index, index );
             }
             break;
         }
@@ -306,6 +309,7 @@ bool BookmarkModel::setData( const QModelIndex & index, const QVariant & value, 
             if ( url )
             {
                 url->saveToDb();
+                emit dataChanged( index, index );
             }
 
             break;
@@ -481,6 +485,7 @@ BookmarkModel::reloadFromDb()
     DEBUG_BLOCK;
     m_root->clear();
     reset();
+
 }
 
 void

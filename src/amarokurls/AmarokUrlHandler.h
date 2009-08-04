@@ -60,11 +60,12 @@ public slots:
     void bookmarkAlbum( Meta::AlbumPtr album );
     void bookmarkArtist( Meta::ArtistPtr artist );
 
-    void BookmarkCurrentBrowserView();
+    void bookmarkCurrentBrowserView();
+    void modelChanged();
 
 signals:
 
-    void urlsChanged( const QString &command );
+    void urlsChanged();
 
 private:
 
