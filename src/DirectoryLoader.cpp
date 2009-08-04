@@ -83,7 +83,7 @@ DirectoryLoader::init( const QList<KUrl>& urls )
         }
         else
         {
-            if( PlaylistManager::isPlaylist( kurl ) )
+            if( Meta::isPlaylist( kurl ) )
             {
                 Meta::PlaylistPtr playlist = Meta::loadPlaylist( kurl );
                 if( playlist )

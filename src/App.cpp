@@ -743,7 +743,7 @@ bool App::event( QEvent *event )
             QString file = static_cast<QFileOpenEvent*>( event )->file();
             //we are only going to receive local files here
             KUrl url( file );
-            if( PlaylistManager::instance()->isPlaylist( url ) )
+            if( Meta::isPlaylist( url ) )
             {
                 Meta::PlaylistPtr playlist = Meta::loadPlaylist( url );
                 The::playlistController()->insertOptioned( playlist, Playlist::AppendAndPlay );

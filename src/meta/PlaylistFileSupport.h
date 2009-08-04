@@ -32,11 +32,32 @@ class QFile;
 
 namespace Meta
 {
-    enum Format { M3U, PLS, XML, RAM, SMIL, ASX, XSPF, Unknown, NotPlaylist = Unknown };
-
-    Format getFormat( const QString &filename );
+    enum PlaylistFormat
+    {
+        M3U,
+        PLS,
+        XML,
+        RAM,
+        SMIL,
+        ASX,
+        XSPF,
+        Unknown,
+        NotPlaylist = Unknown
+    };
+    PlaylistFormat getFormat( const KUrl &path );
+    bool isPlaylist( const KUrl &path );
 
     AMAROK_EXPORT PlaylistPtr loadPlaylist( const KUrl &url );
+    bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path );
+
+    /* HACK:
+     * the next two functions are needed to support some services that have no other way
+     * of presenting data to the user than wrapping the url to a playlist in a track.
+     */
+    bool canExpand( Meta::TrackPtr track );
+    PlaylistPtr expand( Meta::TrackPtr track );
+
+    AMAROK_EXPORT KUrl newPlaylistFilePath( const QString& fileExtension );
 
 }
 

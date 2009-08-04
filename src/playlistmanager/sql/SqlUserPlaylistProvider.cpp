@@ -217,7 +217,7 @@ SqlUserPlaylistProvider::import( const QString& fromLocation )
 
     KUrl url( fromLocation );
     Meta::Playlist* playlist = 0;
-    Meta::Format format = Meta::getFormat( fromLocation );
+    Meta::PlaylistFormat format = Meta::getFormat( fromLocation );
 
     switch( format )
     {

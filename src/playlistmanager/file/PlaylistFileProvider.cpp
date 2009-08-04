@@ -14,19 +14,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "App.h"
+#include "amarokconfig.h"
 #include "PlaylistFileProvider.h"
 #include "PlaylistFileSupport.h"
 #include "EditablePlaylistCapability.h"
 #include "Amarok.h"
 #include "Debug.h"
+#include "meta/M3UPlaylist.h"
+#include "meta/PLSPlaylist.h"
+#include "meta/XSPFPlaylist.h"
+#include "StatusBar.h"
 
 #include <QString>
 
+#include <kdirlister.h>
+#include <kio/jobclasses.h>
+#include <kio/job.h>
+#include <KInputDialog>
 #include <KLocale>
 #include <KUrl>
+#include <KTemporaryFile>
 
 PlaylistFileProvider::PlaylistFileProvider()
  : UserPlaylistProvider()
+ , m_defaultFormat( Meta::XSPF )
 {
     DEBUG_BLOCK
     //load the playlists defined in the config
@@ -36,7 +48,8 @@ PlaylistFileProvider::PlaylistFileProvider()
     //ConfigEntry: name, file
     foreach( const QString &key, keys )
     {
-        QStringList configEntry = Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
+        QStringList configEntry =
+                Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
         Meta::PlaylistPtr playlist = Meta::loadPlaylist( KUrl( configEntry[1] ).path() );
         //TODO: make this work
         if( playlist->is<Meta::EditablePlaylistCapability>() )
@@ -89,7 +102,25 @@ PlaylistFileProvider::playlists()
 Meta::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks )
 {
-    return Meta::PlaylistPtr();
+    Meta::PlaylistFormat format = m_defaultFormat;
+    Meta::Playlist *playlist = 0;
+    switch( format )
+    {
+        case Meta::PLS:
+            playlist = new Meta::PLSPlaylist( tracks );
+            break;
+        case Meta::M3U:
+            playlist = new Meta::M3UPlaylist( tracks );
+            break;
+        case Meta::XSPF:
+            playlist = new Meta::XSPFPlaylist( tracks );
+            break;
+        default:
+            debug() << "unknown type!";
+            break;
+    }
+
+    return Meta::PlaylistPtr( playlist );
 }
 
 Meta::PlaylistPtr
@@ -98,3 +129,63 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     return Meta::PlaylistPtr();
 }
 
+namespace Amarok
+{
+    //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
+    KUrl::List
+    recursiveUrlExpand ( const KUrl &url )
+    {
+        typedef QMap<QString, KUrl> FileMap;
+
+        KDirLister lister ( false );
+        lister.setAutoUpdate ( false );
+        lister.setAutoErrorHandlingEnabled ( false, 0 );
+        lister.openUrl ( url );
+
+        while ( !lister.isFinished() )
+            kapp->processEvents ( QEventLoop::ExcludeUserInputEvents );
+
+        KFileItemList items = lister.items();
+        KUrl::List urls;
+        FileMap files;
+        foreach ( const KFileItem& it, items )
+        {
+            if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
+            if ( it.isDir() ) urls += recursiveUrlExpand( it.url() );
+        }
+
+        oldForeachType ( FileMap, files )
+        // users often have playlist files that reflect directories
+        // higher up, or stuff in this directory. Don't add them as
+        // it produces double entries
+        if ( !Meta::isPlaylist( ( *it ).fileName() ) )
+            urls += *it;
+        return urls;
+    }
+
+    KUrl::List
+    recursiveUrlExpand ( const KUrl::List &list )
+    {
+        KUrl::List urls;
+        oldForeachType ( KUrl::List, list )
+        {
+            urls += recursiveUrlExpand ( *it );
+        }
+
+        return urls;
+    }
+
+    KUrl
+    newPlaylistFilePath( const QString & fileExtension )
+    {
+        int trailingNumber = 1;
+        KLocalizedString fileName = ki18n("Playlist_%1");
+        KUrl url( Amarok::saveLocation( "playlists" ) );
+        url.addPath( fileName.subs( trailingNumber ).toString() );
+
+        while( QFileInfo( url.path() ).exists() )
+            url.setFileName( fileName.subs( ++trailingNumber ).toString() );
+
+        return KUrl( url.path() + fileExtension );
+    }
+}

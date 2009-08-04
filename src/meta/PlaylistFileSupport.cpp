@@ -32,11 +32,10 @@
 
 namespace Meta {
 
-Meta::Format
-getFormat( const QString &filename )
+PlaylistFormat
+getFormat( const KUrl &path )
 {
-    //debug() << "filename: " << filename;
-    const QString ext = Amarok::extension( filename );
+    const QString ext = Amarok::extension( path.fileName() );
 
     if( ext == "m3u" ) return M3U;
     if( ext == "pls" ) return PLS;
@@ -49,13 +48,19 @@ getFormat( const QString &filename )
     return Unknown;
 }
 
+bool
+isPlaylist( const KUrl &path )
+{
+    return ( getFormat( path ) != Unknown );
+}
+
 PlaylistPtr
 loadPlaylist( const KUrl &url )
 {
     DEBUG_BLOCK
 
     QFile file;
-    PlaylistPtr playlist;
+    KUrl fileToLoad;
 
     if ( url.isLocalFile() )
     {
@@ -67,8 +72,9 @@ loadPlaylist( const KUrl &url )
         {
             debug() << "could not read file " << url.path();
             The::statusBar()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
-            return playlist;
+            return Meta::PlaylistPtr( 0 );
         }
+        fileToLoad = url;
     }
     else
     {
@@ -80,64 +86,95 @@ loadPlaylist( const KUrl &url )
         tempFile.setSuffix(  '.' + Amarok::extension( url.url() ) );
         tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
         if( !tempFile.open() )
-            return playlist; //error
+        {
+            The::statusBar()->longMessage(
+                    i18n( "Could not create a temporary file to download playlist.") );
+            return Meta::PlaylistPtr( 0 ); //error
+        }
 
 
         QString tempFileName = tempFile.fileName();
-#ifdef Q_WS_WIN
-        // KIO::file_copy faild to overwrite an open file 
+        #ifdef Q_WS_WIN
+        // KIO::file_copy faild to overwrite an open file
         // using KTemporary.close() is not enough here
         tempFile.remove();
-#endif
+        #endif
         KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
 
-        //FIXME!! Re-enable after end of string freeze
-        //The::statusBar()->newProgressOperation( job, i18n( "Fetching remote playlist" ) );
+        The::statusBar()->newProgressOperation( job, i18n( "Downloading remote playlist" ) );
 
-        if ( !job->exec() ) //Job deletes itself after execution
+        if( !job->exec() ) //Job deletes itself after execution
         {
             error() << "error";
-            return playlist;
+            return Meta::PlaylistPtr( 0 );
         }
         else
         {
             file.setFileName( tempFileName );
-            if ( !file.open( QFile::ReadOnly ) )
+            if( !file.open( QFile::ReadOnly ) )
             {
                 debug() << "error opening file: " << tempFileName;
-                return playlist;
+                return Meta::PlaylistPtr( 0 );
             }
+            fileToLoad = KUrl::fromPath( file.fileName() );
         }
     }
 
-    Format format = getFormat( file.fileName() );
-    switch( format ) {
+    PlaylistFormat format = getFormat( fileToLoad );
+    Playlist *playlist = 0;
+    switch( format )
+    {
         case PLS:
-            playlist = new PLSPlaylist( KUrl( QFileInfo(file).filePath()) );
+            playlist = new PLSPlaylist( fileToLoad );
             break;
         case M3U:
-            playlist = new M3UPlaylist( KUrl( QFileInfo(file).filePath()) );
+            playlist = new M3UPlaylist( fileToLoad );
             break;
-//         case RAM:
-//             playlist = loadRealAudioRam( stream );
-//             break;
-//         case ASX:
-//             playlist = loadASX( stream );
-//             break;
-//         case SMIL:
-//             playlist = loadSMIL( stream );
-//             break;
         case XSPF:
-            playlist = new XSPFPlaylist( KUrl( QFileInfo(file).filePath()) );
+            playlist = new XSPFPlaylist( fileToLoad );
             break;
-
         default:
-            debug() << "unknown type!";
+            debug() << "Could not load playlist file " << fileToLoad;
             break;
     }
 
-    return playlist;
+    return PlaylistPtr( playlist );
+}
+
+bool
+exportPlaylistFile( const Meta::TrackList &list, const KUrl &path )
+{
+    return false;
+}
+
+bool
+canExpand( TrackPtr track )
+{
+    if( !track )
+        return false;
+
+    return Meta::getFormat( track->uidUrl() ) != Meta::NotPlaylist;
+}
+
+PlaylistPtr
+expand( TrackPtr track )
+{
+   //this should really be made asyncrhonous
+   return loadPlaylist( track->uidUrl() );
+}
+
+KUrl
+newPlaylistFilePath( const QString & fileExtension )
+{
+    int trailingNumber = 1;
+    KLocalizedString fileName = ki18n("Playlist_%1");
+    KUrl url( Amarok::saveLocation( "playlists" ) );
+    url.addPath( fileName.subs( trailingNumber ).toString() );
+
+    while( QFileInfo( url.path() ).exists() )
+        url.setFileName( fileName.subs( ++trailingNumber ).toString() );
+
+    return KUrl( url.path() + fileExtension );
 }
 
 }
-

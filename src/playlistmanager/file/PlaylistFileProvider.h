@@ -18,6 +18,7 @@
 #define PLAYLISTFILEPROVIDER_H
 
 #include <UserPlaylistProvider.h>
+#include <PlaylistFileSupport.h>
 
 class KUrl;
 
@@ -28,7 +29,6 @@ class PlaylistFileProvider : public UserPlaylistProvider
 {
     public:
         PlaylistFileProvider();
-
         ~PlaylistFileProvider();
 
         QString prettyName() const;
@@ -44,6 +44,7 @@ class PlaylistFileProvider : public UserPlaylistProvider
 
     private:
         Meta::PlaylistList m_playlists;
+        Meta::PlaylistFormat m_defaultFormat;
 };
 
 #endif
