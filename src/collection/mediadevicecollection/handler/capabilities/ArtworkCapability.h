@@ -30,6 +30,10 @@ namespace Handler
         public:
             virtual ~ArtworkCapability();
 
+            virtual QPixmap getCover( const Meta::MediaDeviceTrackPtr &track ) = 0;
+
+            virtual bool canUpdateCover() const = 0;
+
             static Type capabilityInterfaceType() { return Handler::Capability::Artwork; }
     };
 }

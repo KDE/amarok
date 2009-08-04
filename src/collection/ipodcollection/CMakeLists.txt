@@ -41,6 +41,7 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
     set(amarok_collection-ipodcollection_PART_SRCS
 	IpodCollection.cpp
 	handler/IpodHandler.cpp
+	handler/capabilities/IpodArtworkCapability.cpp
 	handler/capabilities/IpodPlaylistCapability.cpp
 	handler/capabilities/IpodReadCapability.cpp
 	handler/capabilities/IpodWriteCapability.cpp	

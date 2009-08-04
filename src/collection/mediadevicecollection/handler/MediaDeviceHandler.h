@@ -49,8 +49,7 @@ class MediaDeviceUserPlaylistProvider;
 
 namespace Meta
 {
-
-typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
+    typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
     class MEDIADEVICECOLLECTION_EXPORT MetaHandlerCapability
     {
@@ -95,19 +94,16 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
 {
     Q_OBJECT
 
-    public:
-
+public:
     /**
     * Destructor
     */
-
     virtual ~MediaDeviceHandler();
 
     /**
     * Begins an attempt to connect to the device, and emits
     * attemptConnectionDone when it finishes.
     */
-
     virtual void init() = 0; // collection
 
     /**
@@ -117,7 +113,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     *   TRUE if the device was successfully connected to
     *   FALSE if the device was not successfully connected to
     */
-
     bool succeeded() const // collection
     {
         return m_success;
@@ -127,7 +122,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     * Parses the media device's database and creates a Meta::MediaDeviceTrack
     * for each track in the database.
     */
-
     void parseTracks(); // collection
 
     /// Methods provided for CollectionLocation
@@ -138,7 +132,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     *   TRUE if the device can be written to
     *   FALSE if the device can not be written to
     */
-
     virtual bool isWritable() const = 0;
 
     /** Given a list of tracks, get URLs for device tracks
@@ -149,7 +142,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     *  gotCopyableUrls when finished.
     *  @param tracks The list of tracks for which to fetch urls
     */
-
     virtual void getCopyableUrls( const Meta::TrackList &tracks );
 
     /**
@@ -158,21 +150,18 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     * a library call is needed to get this name.
     * @return A QString with the name
     */
-
     virtual QString prettyName() const = 0;
 
     /**
     * Copies a list of tracks to the device.
     * @param tracklist The list of tracks to copy.
     */
-
     void copyTrackListToDevice( const Meta::TrackList tracklist );
 
     /**
     * Removes a list of tracks from the device.
     * @param tracklist The list of tracks to remove.
     */
-
     void removeTrackListFromDevice( const Meta::TrackList &tracks );
 
     /** This function is called just before a track in the playlist is to be played, and gives
@@ -180,7 +169,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     *  to emulate the track actually being played off the device
     *  @param track The track that needs to prepare to be played
     */
-
     virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) } // called by @param track
 
     virtual float usedcapacity() const;
@@ -188,11 +176,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
 
     UserPlaylistProvider* provider();
 
-
     // HACK: Used for device-specific actions, such as initialize for iPod
-
     virtual QList<QAction *> collectionActions() { return QList<QAction*> (); }
-
 
 signals:
     void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );

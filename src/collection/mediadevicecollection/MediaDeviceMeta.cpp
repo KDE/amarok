@@ -18,6 +18,8 @@
 #include "MediaDeviceCollection.h"
 #include "MediaDeviceHandler.h"
 
+#include "handler/capabilities/ArtworkCapability.h"
+
 // HACK: used to test disconnect
 #include "MediaDeviceMonitor.h"
 
@@ -820,7 +822,6 @@ MediaDeviceAlbum::image( int size )
 {
     // NOTE: commented out while porting to
     // new infrastructure
-    #if 0
     if( m_name.isEmpty() )
         return Meta::Album::image( size );
     else
@@ -831,26 +832,39 @@ MediaDeviceAlbum::image( int size )
                 return m_image;
             return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
         }
-
-        MediaDeviceTrackPtr track = MediaDeviceTrackPtr::dynamicCast( m_tracks.first() );
-        MediaDevice::MediaDeviceHandler *handler = m_collection->handler();
-        QPixmap cover = handler->getCover( track );
-        if( !cover.isNull() )
+        MediaDeviceHandler *handler = m_collection->handler();
+        if( handler && handler->hasCapabilityInterface( Handler::Capability::Artwork ) )
         {
-            m_image = cover;
-            if( !size )
-                return m_image;
-            return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );;
+            Handler::ArtworkCapability *ac = handler->create<Handler::ArtworkCapability>();
+            if( ac )
+            {
+                MediaDeviceTrackPtr track = MediaDeviceTrackPtr::dynamicCast( m_tracks.first() );
+                QPixmap cover = ac->getCover( track );
+
+                if( !cover.isNull() )
+                {
+                    m_image = cover;
+                    if( !size )
+                        return m_image;
+                    return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
+                }
+            }
         }
     }
-#endif
     return Meta::Album::image( size );
 }
 
 bool
 MediaDeviceAlbum::canUpdateImage() const
 {
-    return true;
+    MediaDeviceHandler *handler = m_collection->handler();
+    if( handler && handler->hasCapabilityInterface( Handler::Capability::Artwork ) )
+    {
+        Handler::ArtworkCapability *ac = handler->create<Handler::ArtworkCapability>();
+        if( ac )
+            return ac->canUpdateCover();
+    }
+    return false;
 }
 
 // TODO: forward setImage calls to handler
@@ -899,24 +913,26 @@ MediaDeviceAlbum::asCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::CustomActions:
         {
             QList<QAction*> actions;
-
-            QAction *separator          = new QAction( m_collection );
-            QAction *displayCoverAction = new DisplayCoverAction( m_collection, AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
-            QAction *unsetCoverAction   = new UnsetCoverAction( m_collection, AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
-
-            separator->setSeparator( true );
-
-            actions.append( separator );
-            actions.append( displayCoverAction );
-            actions.append( new FetchCoverAction( m_collection, AlbumPtr::staticCast( MediaDeviceAlbumPtr(this) ) ) );
-            actions.append( new SetCustomCoverAction( m_collection, AlbumPtr::staticCast( MediaDeviceAlbumPtr(this) ) ) );
-            if( !hasImage() )
+            if( canUpdateImage() )
             {
-                displayCoverAction->setEnabled( false );
-                unsetCoverAction->setEnabled( false );
-            }
-            actions.append( unsetCoverAction );
+                QAction *separator          = new QAction( m_collection );
+                QAction *displayCoverAction = new DisplayCoverAction( m_collection, AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
+                QAction *unsetCoverAction   = new UnsetCoverAction( m_collection, AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
 
+                separator->setSeparator( true );
+
+                actions.append( separator );
+                actions.append( displayCoverAction );
+                actions.append( new FetchCoverAction( m_collection, AlbumPtr::staticCast( MediaDeviceAlbumPtr(this) ) ) );
+                actions.append( new SetCustomCoverAction( m_collection, AlbumPtr::staticCast( MediaDeviceAlbumPtr(this) ) ) );
+                if( !hasImage() )
+                {
+                    displayCoverAction->setEnabled( false );
+                    unsetCoverAction->setEnabled( false );
+                }
+                actions.append( unsetCoverAction );
+
+            }
             return new CustomActionsCapability( actions );
         }
 

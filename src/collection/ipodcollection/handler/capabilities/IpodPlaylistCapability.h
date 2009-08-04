@@ -17,7 +17,6 @@
 #ifndef IPODHANDLER_PLAYLISTCAPABILITY_H
 #define IPODHANDLER_PLAYLISTCAPABILITY_H
 
-#include "mediadevicecollection_export.h"
 #include "PlaylistCapability.h"
 
 namespace Meta {

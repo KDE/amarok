@@ -661,13 +661,9 @@ void
 MediaDeviceHandler::slotDatabaseWritten( bool success )
 {
     DEBUG_BLOCK
-
-    debug() << "Database write: " << (success? "succeeded" : "failed" );
-    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
-             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ), Qt::QueuedConnection );
+    Q_UNUSED( success )
 
     emit endProgressOperation( this );
-    The::statusBar()->shortMessage( i18n( "Operation complete!" ) );
 
     m_memColl->collectionUpdated();
 }
