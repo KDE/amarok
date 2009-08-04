@@ -9,6 +9,7 @@ Name[pl]=Moduł danych zdjęć
 Name[pt]=Motor de Dados de Fotografias
 Name[pt_BR]=Mecanismo de Dados de Fotos
 Name[sv]=Datagränssnitt för foton
+Name[tr]=Fotoğraflar Veri Motoru
 Name[uk]=Рушій даних фотографій
 Name[x-test]=xxPhotos Data Enginexx
 X-KDE-ServiceTypes=Plasma/DataEngine
