@@ -17,7 +17,6 @@
 #ifndef IPODHANDLER_READCAPABILITY_H
 #define IPODHANDLER_READCAPABILITY_H
 
-#include "mediadevicecollection_export.h"
 #include "ReadCapability.h"
 
 namespace Meta {
@@ -29,7 +28,8 @@ namespace Handler
 
 class IpodReadCapability : public ReadCapability
 {
-    Q_OBJECT
+        Q_OBJECT
+
     public:
         IpodReadCapability( Meta::IpodHandler *handler );
 
@@ -66,8 +66,8 @@ class IpodReadCapability : public ReadCapability
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;
 
-        private:
-            Meta::IpodHandler *m_handler;
+    private:
+        Meta::IpodHandler *m_handler;
 };
 
 }
