@@ -329,6 +329,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         /* Ipod Connection */
         bool    m_autoConnect;
         QString m_mountPoint;
+        bool    m_wasMounted;
         QString m_name;
 
         /* Ipod Model */
