@@ -202,6 +202,7 @@ BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QW
     generateMenu();
     connect( The::amarokUrlHandler(), SIGNAL( urlsChanged( const QString &) ), this, SLOT(  urlsChanged( const QString & ) ) );
     setFixedWidth( 20 );
+    setToolTip( i18n( "List and run browser bookmarks, or create new ones" ) );
 }
 
 BreadcrumbUrlMenuButton::~BreadcrumbUrlMenuButton()
