@@ -28,13 +28,9 @@
 
 #include <QString>
 
-#include <kdirlister.h>
-#include <kio/jobclasses.h>
-#include <kio/job.h>
 #include <KInputDialog>
 #include <KLocale>
 #include <KUrl>
-#include <KTemporaryFile>
 
 PlaylistFileProvider::PlaylistFileProvider()
  : UserPlaylistProvider()
@@ -127,65 +123,4 @@ Meta::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     return Meta::PlaylistPtr();
-}
-
-namespace Amarok
-{
-    //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
-    KUrl::List
-    recursiveUrlExpand ( const KUrl &url )
-    {
-        typedef QMap<QString, KUrl> FileMap;
-
-        KDirLister lister ( false );
-        lister.setAutoUpdate ( false );
-        lister.setAutoErrorHandlingEnabled ( false, 0 );
-        lister.openUrl ( url );
-
-        while ( !lister.isFinished() )
-            kapp->processEvents ( QEventLoop::ExcludeUserInputEvents );
-
-        KFileItemList items = lister.items();
-        KUrl::List urls;
-        FileMap files;
-        foreach ( const KFileItem& it, items )
-        {
-            if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
-            if ( it.isDir() ) urls += recursiveUrlExpand( it.url() );
-        }
-
-        oldForeachType ( FileMap, files )
-        // users often have playlist files that reflect directories
-        // higher up, or stuff in this directory. Don't add them as
-        // it produces double entries
-        if ( !Meta::isPlaylist( ( *it ).fileName() ) )
-            urls += *it;
-        return urls;
-    }
-
-    KUrl::List
-    recursiveUrlExpand ( const KUrl::List &list )
-    {
-        KUrl::List urls;
-        oldForeachType ( KUrl::List, list )
-        {
-            urls += recursiveUrlExpand ( *it );
-        }
-
-        return urls;
-    }
-
-    KUrl
-    newPlaylistFilePath( const QString & fileExtension )
-    {
-        int trailingNumber = 1;
-        KLocalizedString fileName = ki18n("Playlist_%1");
-        KUrl url( Amarok::saveLocation( "playlists" ) );
-        url.addPath( fileName.subs( trailingNumber ).toString() );
-
-        while( QFileInfo( url.path() ).exists() )
-            url.setFileName( fileName.subs( ++trailingNumber ).toString() );
-
-        return KUrl( url.path() + fileExtension );
-    }
 }
