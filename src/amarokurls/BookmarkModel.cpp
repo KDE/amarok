@@ -59,7 +59,7 @@ BookmarkModel::~BookmarkModel()
 }
 
 QVariant
-BookmarkModel::data(const QModelIndex & index, int role) const
+BookmarkModel::data( const QModelIndex & index, int role ) const
 {
     
     if ( !index.isValid() )
@@ -67,22 +67,51 @@ BookmarkModel::data(const QModelIndex & index, int role) const
 
     BookmarkViewItemPtr item =  m_viewItems.value( index.internalId() );
 
-    if ( role == 0xf00d )
+    if( role == 0xf00d )
         return QVariant::fromValue( item );
-    else if ( role == Qt::DisplayRole || role == Qt::EditRole )
-        return item->name();
-    else if (role == Qt::DecorationRole ) {
-
-        if ( typeid( * item ) == typeid( BookmarkGroup ) )
-            return QVariant( KIcon( "folder-amarok" ) );
-        else if ( typeid( * item ) == typeid( AmarokUrl ) ) {
-            AmarokUrl * url = static_cast<AmarokUrl *>( item.data() );
-            if ( url->command() == "navigate" )
-                return QVariant( KIcon( "flag-amarok" ) );
-            else if ( url->command() == "play" )
-                return QVariant( KIcon( "x-media-podcast-amarok" ) );
-            else
-                return QVariant( KIcon() );
+    else if( role == Qt::DisplayRole || role == Qt::EditRole )
+    {
+        switch( index.column() )
+        {
+            case Name:
+                return item->name();
+                break;
+            case Command:
+            {
+                AmarokUrl * url = dynamic_cast<AmarokUrl *>( item.data() );
+                if ( url )
+                    return url->command();
+                else
+                    return QString();
+                break;
+            }
+            case Url:
+            {
+                AmarokUrl * url = dynamic_cast<AmarokUrl *>( item.data() );
+                if ( url )
+                    return url->url();
+                else
+                    return QString();
+                break;
+            }
+            default:
+                break;
+        }
+    }
+    else if( role == Qt::DecorationRole )
+    {
+        if( index.column() == Name )
+        {
+            if ( typeid( * item ) == typeid( BookmarkGroup ) )
+                return QVariant( KIcon( "folder-amarok" ) );
+            else if ( typeid( * item ) == typeid( AmarokUrl ) )
+            {
+                AmarokUrl * url = static_cast<AmarokUrl *>( item.data() );
+                if ( url->command() == "navigate" )
+                    return QVariant( KIcon( "flag-amarok" ) );
+                else if ( url->command() == "play" )
+                    return QVariant( KIcon( "x-media-podcast-amarok" ) );      
+            }
         }
     }
 
@@ -195,7 +224,8 @@ BookmarkModel::rowCount( const QModelIndex & parent ) const
 int
 BookmarkModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    return 1;
+    //name, command, url
+    return 3;
 }
 
 
