@@ -52,7 +52,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Ama
         virtual void slotDeviceDetected( MediaDeviceInfo* info ); // detected type of device, connect it
 
     private slots:
-	void slotDeviceDisconnected( const QString &udi );
+        void slotDeviceDisconnected( const QString &udi );
 
     private:
         virtual MediaDeviceCollection* createCollection( MediaDeviceInfo* info ) = 0;
@@ -96,7 +96,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         virtual Meta::TrackPtr trackForUrl( const KUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
 
         virtual QueryMaker* queryMaker();
-	virtual UserPlaylistProvider* userPlaylistProvider();
+        virtual UserPlaylistProvider* userPlaylistProvider();
         virtual void startFullScan(); // TODO: this will replace connectDevice() call to parsetracks in handler
 
         // NOTE: incrementalscan and stopscan not implemented, might be used by UMS later though
@@ -143,7 +143,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
     signals:
         void collectionReady( Amarok::Collection* );
         void collectionDisconnected( const QString &udi );
-	void deletingCollection();
+        void deletingCollection();
 
         void attemptConnectionDone( bool success );
 
@@ -152,7 +152,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
     public slots:
         void slotAttemptConnectionDone( bool success );
         void disconnectDevice();
-	void deleteCollection();
+        void deleteCollection();
 
     protected:
         MediaDeviceCollection();

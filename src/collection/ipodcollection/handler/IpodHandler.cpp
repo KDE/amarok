@@ -1969,42 +1969,32 @@ IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
     return m_tempdir->name() + imageKey + ".png";
 }
 
-// TODO: This is sloooow. Need to implement on-demand fetching.
-void
-IpodHandler::getCoverArt( const Itdb_Track *ipodtrack )
-{
-#ifdef GDK_FOUND
-    if( !ipodtrack )
-        return;
-
-    const QString filename = ipodArtFilename( ipodtrack );
-
-    if( m_coverArt.contains(filename) )
-        return;
-
-    if( ipodtrack->has_artwork == 0x02 )
-        return;
-
-    GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( ipodtrack->itdb->device, ipodtrack->artwork, -1, -1 );
-    if( !pixbuf )
-        return;
-
-    gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, (const char*)(NULL));
-    gdk_pixbuf_unref( pixbuf );
-
-    m_coverArt.insert( filename );
-#else
-    Q_UNUSED(ipodtrack);
-#endif
-}
-
 QPixmap
 IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 {
 #ifdef GDK_FOUND
     AMAROK_NOTIMPLEMENTED
-    //getCoverArt( m_itdbtrackhash[ track ] );
-    return QPixmap( /*filename*/ );
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
+    if( !ipodtrack )
+        return QPixmap();
+
+    const QString filename = ipodArtFilename( ipodtrack );
+
+    if( m_coverArt.contains(filename) )
+        return QPixmap(filename);
+
+    if( ipodtrack->has_artwork == 0x02 )
+        return QPixmap();
+
+    GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( ipodtrack->itdb->device, ipodtrack->artwork, -1, -1 );
+    if( !pixbuf )
+        return QPixmap();
+
+    gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, (const char*)(NULL));
+    gdk_pixbuf_unref( pixbuf );
+
+    m_coverArt.insert( filename );
+    return QPixmap( filename );
 #else
     Q_UNUSED( track );
     return QPixmap();

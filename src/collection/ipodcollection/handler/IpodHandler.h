@@ -34,6 +34,7 @@ extern "C"
 #include <gpod/itdb.h>
 }
 
+#include "IpodArtworkCapability.h"
 #include "IpodPlaylistCapability.h"
 #include "IpodReadCapability.h"
 #include "IpodWriteCapability.h"
@@ -110,6 +111,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         virtual bool hasCapabilityInterface( Handler::Capability::Type type ) const;
         virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
 
+        friend class Handler::IpodArtworkCapability;
         friend class Handler::IpodPlaylistCapability;
         friend class Handler::IpodReadCapability;
         friend class Handler::IpodWriteCapability;
@@ -288,7 +290,6 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 
         /* Cover Art functions */
         QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
-        void getCoverArt( const Itdb_Track *ipodtrack );
 
         /* File I/O Methods */
         // TODO: abstract copy/delete methods (not too bad)

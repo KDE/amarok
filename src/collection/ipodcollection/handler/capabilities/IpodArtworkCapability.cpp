@@ -20,7 +20,7 @@
 using namespace Handler;
 
 IpodArtworkCapability::IpodArtworkCapability( Meta::IpodHandler *handler )
-    : Handler::ArtworkCapability()
+    : ArtworkCapability()
     , m_handler( handler )
 {
 }
@@ -30,4 +30,13 @@ IpodArtworkCapability::~IpodArtworkCapability()
     // nothing to do here
 }
 
-#include "ArtworkCapability.moc"
+QPixmap IpodArtworkCapability::getCover( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_handler->libGetCoverArt( track );
+}
+
+bool IpodArtworkCapability::canUpdateCover() const
+{
+    return m_handler->isWritable();
+}
+

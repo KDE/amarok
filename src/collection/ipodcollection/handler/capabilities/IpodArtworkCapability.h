@@ -18,6 +18,7 @@
 #define IPODHANDLER_ARTWORK_CAPABILITY_H
 
 #include "ArtworkCapability.h"
+#include "../../MediaDeviceMeta.h"
 
 namespace Meta {
     class IpodHandler;
@@ -25,7 +26,7 @@ namespace Meta {
 
 namespace Handler
 {
-    class IpodArtworkCapability : public Handler::Capability
+    class IpodArtworkCapability : public ArtworkCapability
     {
         Q_OBJECT
 
@@ -33,7 +34,14 @@ namespace Handler
             IpodArtworkCapability( Meta::IpodHandler *handler );
             virtual ~IpodArtworkCapability();
 
+            virtual QPixmap getCover( const Meta::MediaDeviceTrackPtr &track );
+
+            virtual bool canUpdateCover() const;
+
             static Type capabilityInterfaceType() { return Handler::Capability::Artwork; }
+
+        private:
+            Meta::IpodHandler *m_handler;
     };
 }
 
