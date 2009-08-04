@@ -270,6 +270,7 @@ JamendoService::download()
 
 void JamendoService::download( JamendoAlbum * album )
 {
+    DEBUG_BLOCK
     if ( !m_polished )
         polish();
 
@@ -282,6 +283,7 @@ void JamendoService::download( JamendoAlbum * album )
         return;
 
     m_torrentFileName = tempFile.fileName();
+    debug() << "downloading " << album->oggTorrentUrl() << " to " << m_torrentFileName;
     m_torrentDownloadJob = KIO::file_copy( KUrl( album->oggTorrentUrl() ), KUrl( m_torrentFileName ), 0774 , KIO::Overwrite );
     connect( m_torrentDownloadJob, SIGNAL( result( KJob * ) ),
              this, SLOT( torrentDownloadComplete( KJob * ) ) );
@@ -301,7 +303,16 @@ JamendoService::torrentDownloadComplete(KJob * downloadJob)
 
     debug() << "Torrent downloaded";
 
-    KRun::runUrl( KShell::quoteArg( m_torrentFileName ), "application/x-bittorrent", 0, true );
+    //HACK: since all we get is actually the url of the really real torrent, pass the contents of the file to the system
+    //and not just the filename...
+
+    QFile torrentFile( m_torrentFileName );
+    if ( torrentFile.open( QFile::ReadOnly ) )
+    {
+        QString torrentLink = torrentFile.readAll();
+        KRun::runUrl( KShell::quoteArg( torrentLink ), "application/x-bittorrent", 0, false );
+        torrentFile.close();
+    }
     downloadJob->deleteLater();
     m_torrentDownloadJob = 0;
 }
