@@ -664,6 +664,7 @@ void
 MediaDeviceHandler::slotDatabaseWritten( bool success )
 {
     DEBUG_BLOCK
+    Q_UNUSED( success )
 
     emit endProgressOperation( this );
 
