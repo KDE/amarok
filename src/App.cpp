@@ -93,7 +93,7 @@ extern void setupEventHandler_mac(long);
 #include "TestCaseConverter.h"
 #include "TestDirectoryLoader.h"
 #include "TestExpression.h"
-#include "TestPlaylistManager.h"
+#include "TestPlaylistFileSupport.h"
 #include "TestQStringx.h"
 #include "TestSmartPointerList.h"
 #endif // DEBUG
@@ -587,13 +587,13 @@ App::runUnitTests()
     logDir.mkpath( logPath );
 
     PERF_LOG( "Running Unit Tests" )
-    TestAmarok           testAmarok ( testArgumentList );
-    TestCaseConverter    testCaseConverter ( testArgumentList );
-    TestDirectoryLoader  testDirectoryLoader ( testArgumentList );
-    TestExpression       testExpression ( testArgumentList );
-    TestPlaylistManager  testPlaylistManager ( testArgumentList );
-    TestQStringx         testQStringx( testArgumentList );
-    TestSmartPointerList testSmartPointerList( testArgumentList );
+    TestAmarok               testAmarok ( testArgumentList );
+    TestCaseConverter        testCaseConverter ( testArgumentList );
+    TestDirectoryLoader      testDirectoryLoader ( testArgumentList );
+    TestExpression           testExpression ( testArgumentList );
+    TestPlaylistFileSupport  testPlaylistFileSupport ( testArgumentList );
+    TestQStringx             testQStringx( testArgumentList );
+    TestSmartPointerList     testSmartPointerList( testArgumentList );
 
     /* add more test classes here ^^ */
 

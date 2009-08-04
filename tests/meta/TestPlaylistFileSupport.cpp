@@ -18,24 +18,24 @@
  ***************************************************************************/
 
 #include "meta/PlaylistFileSupport.h"
-#include "TestPlaylistManager.h"
+#include "TestPlaylistFileSupport.h"
 
 #include <KStandardDirs>
 
 
-TestPlaylistManager::TestPlaylistManager( QStringList testArgumentList )
+TestPlaylistFileSupport::TestPlaylistFileSupport( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PlaylistManager.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PlaylistFileSupport.log" );
     QTest::qExec( this, testArgumentList );
 }
 
 
-void TestPlaylistManager::initTestCase()
+void TestPlaylistFileSupport::initTestCase()
 {
     m_testPlaylistPath = KStandardDirs::installPath( "data" ) + "amarok/testdata/playlists/";
 }
 
-void TestPlaylistManager::testGetFormat()
+void TestPlaylistFileSupport::testGetFormat()
 {
     QCOMPARE( Meta::getFormat( m_testPlaylistPath + "test.asx" ), Meta::ASX );
     QCOMPARE( Meta::getFormat( m_testPlaylistPath + "test.m3u" ), Meta::M3U );
@@ -48,7 +48,7 @@ void TestPlaylistManager::testGetFormat()
     QCOMPARE( Meta::getFormat( m_testPlaylistPath + "no-playlist.png" ), Meta::NotPlaylist );
 }
 
-void TestPlaylistManager::testIsPlaylist()
+void TestPlaylistFileSupport::testIsPlaylist()
 {
     QCOMPARE( Meta::isPlaylist( m_testPlaylistPath + "test.asx" ), true );
     QCOMPARE( Meta::isPlaylist( m_testPlaylistPath + "test.m3u" ), true );
@@ -60,4 +60,4 @@ void TestPlaylistManager::testIsPlaylist()
     QCOMPARE( Meta::isPlaylist( m_testPlaylistPath + "no-playlist.png" ), false );
 }
 
-#include "TestPlaylistManager.moc"
+#include "TestPlaylistFileSupport.moc"

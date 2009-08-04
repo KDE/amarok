@@ -51,6 +51,7 @@ include_directories(
     timecode
     widgets
     ../tests/
+    ../tests/meta/
     ../tests/playlistmanager/
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
@@ -573,7 +574,7 @@ set(amaroklib_LIB_SRCS
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
-        ../tests/playlistmanager/TestPlaylistManager.cpp
+        ../tests/meta/TestPlaylistFileSupport.cpp
         ../tests/TestAmarok.cpp
         ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp

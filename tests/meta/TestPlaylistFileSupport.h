@@ -17,19 +17,19 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef TESTPLAYLISTMANAGER_H
-#define TESTPLAYLISTMANAGER_H
+#ifndef TESTPLAYLISTFILESUPPORT_H
+#define TESTPLAYLISTFILESUPPORT_H
 
 #include <QString>
 #include <QStringList>
 #include <QtTest>
 
-class TestPlaylistManager : public QObject
+class TestPlaylistFileSupport : public QObject
 {
 Q_OBJECT
 
 public:
-    TestPlaylistManager( QStringList testArgumentList );
+    TestPlaylistFileSupport( QStringList testArgumentList );
 
 private slots:
     void initTestCase();
@@ -41,4 +41,4 @@ private:
 };
 
 
-#endif // TESTPLAYLISTMANAGER_H
+#endif // TESTPLAYLISTFILESUPPORT_H
