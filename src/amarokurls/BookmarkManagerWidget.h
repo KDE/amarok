@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008, 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -42,33 +42,10 @@ public:
     BookmarkTreeView * treeView();
 private:
 
-    QString getBookmarkUrl();
-    AmarokUrl getPositionBookmark();
-    void updateAddButton();
-
-    QPushButton * m_getCurrentBookmarkButton;
-    QPushButton * m_addBookmarkButton;
-    QPushButton * m_gotoBookmarkButton;
-    QLineEdit * m_currentBookmarkNameEdit;
-    QLineEdit * m_currentBookmarkUrlEdit;
-
     QToolBar * m_toolBar;
     BookmarkTreeView * m_bookmarkView;
 
     int m_currentBookmarkId;
-
-signals:
-    // needed so the proxy widget can place it in the right place
-    void showMenu( KMenu*, const QPointF& );
-
-private slots:
-
-    void showCurrentUrl();
-    void addBookmark();
-    void gotoBookmark();
-    void bookmarkCurrent();
-
-    void slotBookmarkSelected( AmarokUrl bookmark );
 
 };
 
