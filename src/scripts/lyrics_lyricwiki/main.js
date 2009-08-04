@@ -27,6 +27,31 @@ Importer.loadQtBinding( "qt.core" );
 Importer.loadQtBinding( "qt.xml" );
 
 xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>";
+newxml = "";
+
+function onFinished2( response )
+{
+    try
+    {
+        if( response.length == 0 )
+            Amarok.Lyrics.showLyricsError( "Unable to contact server - no website returned" ); // TODO: this should be i18n able
+        else
+        {
+            doc2 = new QDomDocument();
+            doc2.setContent( response );
+            textboxtext = doc2.elementsByTagName( "textarea" ).at( 0 ).toElement().text();
+            lyr = /<lyrics>(.*)<\/lyrics>/.exec(textboxtext)[1];
+            //Amarok.debug( "matched: " + lyr );
+            newxml = newxml.replace( "{lyrics}", Amarok.Lyrics.escape( lyr ) );
+            Amarok.Lyrics.showLyrics( newxml );
+        }
+    }
+    catch( err )
+    {
+        Amarok.Lyrics.showLyricsError( "Could not retrieve lyrics: " + err );
+        Amarok.debug( "error: " + err );
+    }
+}
 
 function onFinished( dat )
 {
@@ -38,13 +63,14 @@ function onFinished( dat )
         {
             doc = new QDomDocument();
             doc.setContent( dat );
-            parsedContent = doc.elementsByTagName( "lyrics" ).at( 0 ).toElement().text();
-            parsedContent = parsedContent.replace( "<lyrics>", "" ).replace( "</lyrics>", "" ); // some lyrics have 2 lyrics in them...wtf?
             newxml = xml.replace( "{artist}", Amarok.Lyrics.escape( doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ) );
             newxml = newxml.replace( "{title}", Amarok.Lyrics.escape( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() ) );
-            newxml = newxml.replace( "{lyrics}", Amarok.Lyrics.escape( parsedContent ) );
-            //Amarok.debug( "showing lyrics:" + newxml );
-            Amarok.Lyrics.showLyrics( newxml );
+            Amarok.debug( "returned real lyricwiki URL: " + doc.elementsByTagName( "url" ).at( 0 ).toElement().text());
+            var url = decodeURI(doc.elementsByTagName( "url" ).at( 0 ).toElement().text());
+            url = url.replace( /lyricwiki\.org\//, "lyricwiki.org/index.php?action=edit&title=" );
+            var url2 = new QUrl(url);
+            Amarok.debug( "request-2 URL: " + url2.toString() );
+            new Downloader( url2, onFinished2 );
         }
     }
     catch( err )
