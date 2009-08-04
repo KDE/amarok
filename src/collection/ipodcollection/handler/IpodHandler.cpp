@@ -131,13 +131,10 @@ IpodHandler::~IpodHandler()
     DEBUG_BLOCK
     delete m_tempdir;
     // Write to DB before closing, for ratings updates etc.
-    //debug() << "Writing to Ipod DB";
     //writeDatabase();
     debug() << "Cleaning up Ipod Database";
     if ( m_itdb )
         itdb_free( m_itdb );
-
-    debug() << "End of destructor reached";
 }
 
 void
@@ -1978,13 +1975,13 @@ IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
     if( !ipodtrack )
         return QPixmap();
 
+    if( ipodtrack->has_artwork == 0x02 ) // has_artwork: True if set to 0x01, false if set to 0x02.
+        return QPixmap();
+
     const QString filename = ipodArtFilename( ipodtrack );
 
     if( m_coverArt.contains(filename) )
         return QPixmap(filename);
-
-    if( ipodtrack->has_artwork == 0x02 )
-        return QPixmap();
 
     GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( ipodtrack->itdb->device, ipodtrack->artwork, -1, -1 );
     if( !pixbuf )
@@ -2407,10 +2404,9 @@ IpodHandler::hasCapabilityInterface( Handler::Capability::Type type ) const
 {
     switch( type )
     {
+        case Handler::Capability::Artwork:
         case Handler::Capability::Readable:
-            return true;
         case Handler::Capability::Playlist:
-            return true;
         case Handler::Capability::Writable:
             return true;
 
@@ -2424,6 +2420,8 @@ IpodHandler::createCapabilityInterface( Handler::Capability::Type type )
 {
     switch( type )
     {
+        case Handler::Capability::Artwork:
+            return new Handler::IpodArtworkCapability( this );
         case Handler::Capability::Readable:
             return new Handler::IpodReadCapability( this );
         case Handler::Capability::Playlist:
