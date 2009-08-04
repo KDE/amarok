@@ -109,7 +109,7 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
         if( index.column() == Name )
         {
             if ( typeid( * item ) == typeid( BookmarkGroup ) )
-                return QVariant( KIcon( "folder-amarok" ) );
+                return QVariant( KIcon( "folder-bookmark" ) );
             else if ( typeid( * item ) == typeid( AmarokUrl ) )
             {
                 AmarokUrl * url = static_cast<AmarokUrl *>( item.data() );
