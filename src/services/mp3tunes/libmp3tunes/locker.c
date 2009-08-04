@@ -366,7 +366,7 @@ static xml_xpath_t* mp3tunes_locker_api_post_fetch(mp3tunes_locker_object_t *obj
 
     chunk_init(&chunk);
 
-    request = mp3tunes_locker_api_generate_request_valist(obj, server, path, NULL, NULL);
+    request = mp3tunes_locker_api_generate_request(obj, server, path, NULL);
 
     curl_easy_setopt( request->curl, CURLOPT_URL, request->url );
     curl_easy_setopt( request->curl, CURLOPT_WRITEFUNCTION, write_chunk_callback );
@@ -465,7 +465,7 @@ int mp3tunes_locker_session_valid(mp3tunes_locker_object_t *obj) {
 
     chunk_init(&chunk);
 
-    request = mp3tunes_locker_api_generate_request_valist(obj, MP3TUNES_SERVER_API, "api/v1/accountData", NULL, NULL);
+    request = mp3tunes_locker_api_generate_request(obj, MP3TUNES_SERVER_API, "api/v1/accountData", NULL);
 
     curl_easy_setopt( request->curl, CURLOPT_URL, request->url );
     curl_easy_setopt( request->curl, CURLOPT_WRITEFUNCTION, write_chunk_callback );
