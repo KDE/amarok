@@ -196,7 +196,7 @@ void BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
 
 
 BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent )
-    : BreadcrumbItemButton( KIcon( "flag-amarok" ), QString(), parent )
+    : BreadcrumbItemButton( KIcon( "bookmarks-organize" ), QString(), parent )
     , m_urlsCommand( urlsCommand )
 {
     generateMenu();
