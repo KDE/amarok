@@ -51,8 +51,7 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
 
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     The::paletteHandler()->updateItemView( this );
-
-    header()->hide();
+    
     setFrameShape( QFrame::NoFrame );
 
     //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
