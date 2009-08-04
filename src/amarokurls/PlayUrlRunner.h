@@ -34,6 +34,7 @@ public:
 
     virtual QString command () const;
     virtual bool run ( AmarokUrl url );
+    virtual KIcon icon () const;
 
     /**
      * This function takes a url for a track, and returns a list

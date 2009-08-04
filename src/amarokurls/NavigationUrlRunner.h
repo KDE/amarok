@@ -20,6 +20,8 @@
 #include "AmarokUrl.h"
 #include "AmarokUrlRunnerBase.h"
 
+#include <KIcon>
+
 
 class NavigationUrlRunner : public AmarokUrlRunnerBase
 {
@@ -29,6 +31,7 @@ public:
     virtual ~NavigationUrlRunner();
 
     virtual QString command() const;
+    virtual KIcon icon() const;
     virtual bool run( AmarokUrl url );
 };
 

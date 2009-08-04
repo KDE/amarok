@@ -20,6 +20,7 @@
 #include "AmarokMimeData.h"
 #include "AmarokUrl.h"
 #include "BookmarkGroup.h"
+#include "AmarokUrlHandler.h"
 #include "Debug.h"
 #include "CollectionManager.h"
 #include "SqlStorage.h"
@@ -112,10 +113,7 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
             else if ( typeid( * item ) == typeid( AmarokUrl ) )
             {
                 AmarokUrl * url = static_cast<AmarokUrl *>( item.data() );
-                if ( url->command() == "navigate" )
-                    return QVariant( KIcon( "flag-amarok" ) );
-                else if ( url->command() == "play" )
-                    return QVariant( KIcon( "x-media-podcast-amarok" ) );      
+                return The::amarokUrlHandler()->iconForCommand( url->command() );
             }
         }
     }
