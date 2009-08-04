@@ -24,6 +24,7 @@
 
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSortFilterProxyModel>
 #include <QToolBar>
 
 
@@ -46,6 +47,8 @@ private:
     BookmarkTreeView * m_bookmarkView;
 
     int m_currentBookmarkId;
+
+    QSortFilterProxyModel * m_proxyModel;
 
 };
 

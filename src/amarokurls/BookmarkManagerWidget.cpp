@@ -43,7 +43,13 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     connect( addGroupAction, SIGNAL( triggered( bool ) ), BookmarkModel::instance(), SLOT( createNewGroup() ) );
 
     m_bookmarkView = new BookmarkTreeView( this );
-    m_bookmarkView->setModel( BookmarkModel::instance() );
+
+    m_proxyModel = new QSortFilterProxyModel( this );
+    m_proxyModel->setSourceModel( BookmarkModel::instance() );
+    m_bookmarkView->setModel( m_proxyModel );
+    m_bookmarkView->setProxy( m_proxyModel );
+    m_bookmarkView->setSortingEnabled( true );
+    
     connect( m_bookmarkView, SIGNAL( bookmarkSelected( AmarokUrl ) ), this, SLOT( slotBookmarkSelected( AmarokUrl ) ) );
     connect( m_bookmarkView, SIGNAL( showMenu( KMenu*, const QPointF& ) ), this, SIGNAL( showMenu( KMenu*, const QPointF& ) ) );
 

@@ -22,6 +22,8 @@
 #include "BookmarkViewItem.h"
 #include "widgets/PrettyTreeView.h"
 
+#include <QSortFilterProxyModel>
+
 class KMenu;
  
 class PopupDropper;
@@ -39,6 +41,8 @@ public:
 
     void setNewGroupAction( KAction * action );
     KMenu* contextMenu( const QPoint& point );
+
+    void setProxy( QSortFilterProxyModel *proxy );
 
 protected:
     void keyPressEvent( QKeyEvent *event );
@@ -71,6 +75,8 @@ private:
     KAction *m_createTimecodeTrackAction;
 
     KAction *m_addGroupAction;
+
+    QSortFilterProxyModel * m_proxyModel;
 };
 
 #endif

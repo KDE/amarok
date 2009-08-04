@@ -72,7 +72,7 @@ BookmarkTreeView::~BookmarkTreeView()
 
 void BookmarkTreeView::mouseDoubleClickEvent( QMouseEvent * event )
 {
-    QModelIndex index = indexAt( event->pos() );
+    QModelIndex index = m_proxyModel->mapToSource( indexAt( event->pos() ) );
 
     if( index.isValid() )
     {
@@ -212,11 +212,16 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
 QSet<BookmarkViewItemPtr>
 BookmarkTreeView::selectedItems() const
 {
+    DEBUG_BLOCK
     QSet<BookmarkViewItemPtr> selected;
     foreach( const QModelIndex &index, selectionModel()->selectedIndexes() )
     {
-        if( index.isValid() && index.internalPointer() )
-            selected.insert( BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>() );
+        QModelIndex sourceIndex = m_proxyModel->mapToSource( index );
+        if( sourceIndex.isValid() && sourceIndex.internalPointer() && sourceIndex.column() == 0 )
+        {
+            debug() << "inserting item " << sourceIndex.data( Qt::DisplayRole ).toString();
+            selected.insert( BookmarkModel::instance()->data( sourceIndex, 0xf00d ).value<BookmarkViewItemPtr>() );
+        }
     } 
     return selected;
 }
@@ -231,14 +236,19 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     DEBUG_BLOCK
     Q_UNUSED( deselected )
     QModelIndexList indexes = selected.indexes();
-    if ( indexes.size() == 1 ) {
-        QModelIndex index = indexes.at( 0 );
-        BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
+    debug() << indexes.size() << " items selected";
+    foreach( QModelIndex index, indexes )
+    {
+        index = m_proxyModel->mapToSource( index );
+        if( index.column() == 0 )
+        {
+            BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
 
-        if ( typeid( * item ) == typeid( AmarokUrl ) ) {
-            debug() << "a url was selected...";
-            AmarokUrl bookmark = *static_cast< AmarokUrl* >( item.data() );
-            emit( bookmarkSelected( bookmark ) );
+            if ( typeid( * item ) == typeid( AmarokUrl ) ) {
+                debug() << "a url was selected...";
+                AmarokUrl bookmark = *static_cast< AmarokUrl* >( item.data() );
+                emit( bookmarkSelected( bookmark ) );
+            }
         }
     }
     
@@ -250,7 +260,7 @@ KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
     KMenu* menu = new KMenu( 0 );
 
     debug() << "getting menu for point:" << point;
-    QModelIndex index = indexAt( point );
+    QModelIndex index = m_proxyModel->mapToSource( indexAt( point ) );
     if( index.isValid() )
     {
 
@@ -354,6 +364,11 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     The::playlistController()->insertOptioned( Meta::TrackPtr::staticCast( track ), Playlist::AppendAndPlay );
 
     
+}
+
+void BookmarkTreeView::setProxy( QSortFilterProxyModel *proxy )
+{
+    m_proxyModel = proxy;
 }
 
 #include "BookmarkTreeView.moc"
