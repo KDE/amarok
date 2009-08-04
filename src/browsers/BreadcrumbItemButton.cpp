@@ -230,6 +230,7 @@ void BreadcrumbUrlMenuButton::generateMenu()
        menu->addAction( new AmarokUrlAction( url, menu ) );
    }
 
+   menu->setAttribute( Qt::WA_AlwaysShowToolTips );
    setMenu( menu );
    
 }

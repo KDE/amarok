@@ -20,6 +20,8 @@ AmarokUrlAction::AmarokUrlAction( const QIcon & icon, AmarokUrlPtr url, QObject 
     : QAction( icon, url->name(), parent )
     , m_url( url )
 {
+    if ( !url->description().isEmpty() )
+        setToolTip( url->description() );
     connect( this, SIGNAL( triggered( bool ) ), this, SLOT( run() ) );
 }
 
@@ -27,6 +29,8 @@ AmarokUrlAction::AmarokUrlAction( AmarokUrlPtr url, QObject * parent )
     : QAction(url->name(), parent )
     , m_url( url )
 {
+    if ( !url->description().isEmpty() )
+        setToolTip( url->description() );
     connect( this, SIGNAL( triggered( bool ) ), this, SLOT( run() ) );
 }
 
