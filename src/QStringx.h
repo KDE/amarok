@@ -49,14 +49,14 @@ public:
         QList<QString>::ConstIterator endArgs = args.constEnd();
         QString merged = (*itrText);
         ++itrText;
-        while ( itrText != endText && itrArgs != endArgs )
+        while( itrText != endText && itrArgs != endArgs )
         {
             merged += (*itrArgs) + (*itrText);
             ++itrText;
             ++itrArgs;
         }
 
-        Q_ASSERT( itrText == text.end() && itrArgs == args.end() );
+        Q_ASSERT( itrText == text.end() || itrArgs == args.end() );
 
         return merged;
     }

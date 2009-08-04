@@ -94,6 +94,7 @@ extern void setupEventHandler_mac(long);
 #include "TestDirectoryLoader.h"
 #include "TestExpression.h"
 #include "TestPlaylistManager.h"
+#include "TestQStringx.h"
 #include "TestSmartPointerList.h"
 #endif // DEBUG
 
@@ -591,6 +592,7 @@ App::runUnitTests()
     TestDirectoryLoader  testDirectoryLoader ( testArgumentList );
     TestExpression       testExpression ( testArgumentList );
     TestPlaylistManager  testPlaylistManager ( testArgumentList );
+    TestQStringx         testQStringx( testArgumentList );
     TestSmartPointerList testSmartPointerList( testArgumentList );
 
     /* add more test classes here ^^ */
