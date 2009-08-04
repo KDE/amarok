@@ -645,7 +645,11 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
     ac->addAction( "playlist_save", action );
 
-    action = new KAction( KIcon( "flag-amarok" ), i18n( "Bookmark Manager" ), this );
+    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Browser View" ), this );
+    ac->addAction( "bookmark_browser", action );
+    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( BookmarkCurrentBrowserView() ) );
+
+    action = new KAction( KIcon( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
     ac->addAction( "bookmark_manager", action );
 
@@ -748,10 +752,6 @@ MainWindow::createActions()
     ac->addAction( "rate5", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
     connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
-
-    action = new KAction( i18n( "Bookmark Browser View" ), this );
-    ac->addAction( "bookmark_browser", action );
-    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( BookmarkCurrentBrowserView() ) );
 
     action = KStandardAction::redo(pc, SLOT(redo()), this);
     ac->addAction( "playlist_redo", action );
