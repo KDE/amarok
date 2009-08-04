@@ -206,8 +206,7 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
     if( indices.count() == 0 )
         menu->addAction( m_addGroupAction );
 
-    debug() << "showing menu at pos:" << event->pos() << "and globalpos:" << event->globalPos();
-    emit showMenu( menu, event->globalPos() );
+    menu->exec( event->globalPos() );
 }
 
 QSet<BookmarkViewItemPtr>
