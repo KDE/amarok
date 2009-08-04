@@ -94,6 +94,11 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
                     return QString();
                 break;
             }
+            case Description:
+            {
+                return item->description();
+                break;
+            }
             default:
                 break;
         }
@@ -224,8 +229,8 @@ BookmarkModel::rowCount( const QModelIndex & parent ) const
 int
 BookmarkModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    //name, command, url
-    return 3;
+    //name, command, url, description
+    return 4;
 }
 
 
@@ -262,6 +267,7 @@ BookmarkModel::headerData(int section, Qt::Orientation orientation, int role) co
             case Name: return i18n("Name");
             case Command: return i18n("Type");
             case Url: return i18n("Url");
+            case Description: return i18n("Description");
             default: return QVariant();
         }
     }
@@ -292,6 +298,18 @@ bool BookmarkModel::setData( const QModelIndex & index, const QVariant & value, 
                 url->initFromString( value.toString() );
                 url->saveToDb();
             }
+            break;
+        }
+        case Description:
+        {
+            item->setDescription( value.toString() );
+            
+            AmarokUrl * url = dynamic_cast<AmarokUrl *>( item.data() );
+            if ( url )
+            {
+                url->saveToDb();
+            }
+
             break;
         }
     }

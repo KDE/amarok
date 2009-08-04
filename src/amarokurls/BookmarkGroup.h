@@ -56,6 +56,7 @@ class BookmarkGroup : public BookmarkViewItem
         virtual BookmarkGroupPtr parent() const { return m_parent; }
 
         virtual void rename( const QString &name );
+        virtual void setDescription( const QString &description );
 
         void save();
         BookmarkGroupList childGroups() const;

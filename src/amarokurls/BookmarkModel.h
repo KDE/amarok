@@ -50,7 +50,8 @@ public:
     {
         Name = 0,
         Command,
-        Url
+        Url,
+        Description
     };
 
     static BookmarkModel * instance();
