@@ -32,7 +32,7 @@ ParsedExpression ExpressionParser::parse()
         parseChar( m_expression.at( pos ) );
     finishedToken();
     finishedOrGroup();
-    
+
     return m_parsed;
 }
 

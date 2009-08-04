@@ -91,6 +91,7 @@ extern void setupEventHandler_mac(long);
 #include "TestAmarok.h"
 #include "TestCaseConverter.h"
 #include "TestDirectoryLoader.h"
+#include "TestExpression.h"
 #include "TestPlaylistManager.h"
 #include "TestSmartPointerList.h"
 #endif // DEBUG
@@ -587,6 +588,7 @@ App::runUnitTests()
     TestAmarok           testAmarok ( testArgumentList );
     TestCaseConverter    testCaseConverter ( testArgumentList );
     TestDirectoryLoader  testDirectoryLoader ( testArgumentList );
+    TestExpression       testExpression ( testArgumentList );
     TestPlaylistManager  testPlaylistManager ( testArgumentList );
     TestSmartPointerList testSmartPointerList( testArgumentList );
 
