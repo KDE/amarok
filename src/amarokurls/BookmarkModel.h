@@ -86,6 +86,7 @@ public:
     QModelIndex createIndex( int, int, quint32 ) const { Q_ASSERT( 0 ); return QModelIndex(); }
 public slots:
     void createNewGroup();
+    void createNewBookmark();
 
 signals:
     void editIndex( const QModelIndex & index );

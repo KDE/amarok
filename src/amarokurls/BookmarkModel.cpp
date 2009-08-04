@@ -479,8 +479,8 @@ void
 BookmarkModel::reloadFromDb()
 {
     DEBUG_BLOCK;
-    reset();
     m_root->clear();
+    reset();
 }
 
 void
@@ -519,6 +519,32 @@ BookmarkModel::createNewGroup()
         row++;
     }
 
+}
+
+void
+BookmarkModel::createNewBookmark()
+{
+    DEBUG_BLOCK
+    AmarokUrl * url = new AmarokUrl();
+    url->reparent( m_root );
+    url->setName( i18n( "New Bookmark" ) );
+    url->setCommand( i18n( "none" ) );
+    url->saveToDb();
+    int id = url->id();
+    delete url;
+
+    reloadFromDb();
+
+    int row = 0;
+    foreach ( AmarokUrlPtr childBookmark, m_root->childBookmarks() ) {
+        if ( childBookmark->id() == id )
+        {
+            debug() << "emmiting edit for " << childBookmark->name() << " id " << childBookmark->id() << " in row " << row;
+            emit editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( childBookmark ) ) );
+        }
+        row++;
+    }
+   
 }
 
 void BookmarkModel::upgradeTables( int from )

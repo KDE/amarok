@@ -42,6 +42,10 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_toolBar->addAction( addGroupAction );
     connect( addGroupAction, SIGNAL( triggered( bool ) ), BookmarkModel::instance(), SLOT( createNewGroup() ) );
 
+    KAction * addBookmarkAction = new KAction( KIcon("bookmark-new" ), i18n( "New Bookmark" ), this  );
+    m_toolBar->addAction( addBookmarkAction );
+    connect( addBookmarkAction, SIGNAL( triggered( bool ) ), BookmarkModel::instance(), SLOT( createNewBookmark() ) );
+
     m_bookmarkView = new BookmarkTreeView( this );
 
     m_proxyModel = new QSortFilterProxyModel( this );
