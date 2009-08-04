@@ -53,12 +53,6 @@ AmarokUrlHandler::AmarokUrlHandler()
     m_timecodeObserver = new TimecodeObserver();
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
     registerRunner( m_playRunner, m_playRunner->command() );
-
-    connect( BookmarkModel::instance(), SIGNAL( modelReset() ), this,  SLOT( modelChanged() ) );
-    connect( BookmarkModel::instance(), SIGNAL( rowsInserted ( const QModelIndex &, int, int ) ), this,  SLOT( modelChanged() ) );
-    connect( BookmarkModel::instance(), SIGNAL( rowsRemoved ( const QModelIndex &, int, int ) ), this,  SLOT( modelChanged() ) );
-    connect( BookmarkModel::instance(), SIGNAL( dataChanged ( const QModelIndex &, const QModelIndex & ) ), this,  SLOT( modelChanged() ) );
-    
 }
 
 
@@ -139,12 +133,6 @@ void AmarokUrlHandler::bookmarkCurrentBrowserView()
     AmarokUrl url = generator.CreateAmarokUrl();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
-}
-
-void AmarokUrlHandler::modelChanged()
-{
-    DEBUG_BLOCK
-    emit urlsChanged();
 }
 
 KIcon AmarokUrlHandler::iconForCommand( const QString &command )

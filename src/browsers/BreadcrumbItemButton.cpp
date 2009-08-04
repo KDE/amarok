@@ -199,23 +199,20 @@ BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QW
     : BreadcrumbItemButton( KIcon( "bookmarks-organize" ), QString(), parent )
     , m_urlsCommand( urlsCommand )
 {
-    generateMenu();
-    connect( The::amarokUrlHandler(), SIGNAL( urlsChanged() ), this, SLOT(  urlsChanged() ) );
-    
     setFixedWidth( 20 );
     setToolTip( i18n( "List and run browser bookmarks, or create new ones" ) );
+
+    connect( this, SIGNAL( clicked ( bool ) ), this, SLOT( showMenu() ) );
 }
 
 BreadcrumbUrlMenuButton::~BreadcrumbUrlMenuButton()
 {
 }
 
-void BreadcrumbUrlMenuButton::generateMenu()
+void BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
 {
 
-   QMenu * oldMenu = menu();
-   setMenu( 0 );
-   delete oldMenu;
+   DEBUG_BLOCK
     
    BookmarkList list = The::amarokUrlHandler()->urlsByCommand( m_urlsCommand );
 
@@ -232,16 +229,18 @@ void BreadcrumbUrlMenuButton::generateMenu()
        menu->addAction( new AmarokUrlAction( url, menu ) );
    }
 
-   menu->setAttribute( Qt::WA_AlwaysShowToolTips );
-   setMenu( menu );
+   debug() << "showing menu at " << pos;
+   menu->exec( pos );
+   delete menu;
    
 }
 
-void BreadcrumbUrlMenuButton::urlsChanged()
+void BreadcrumbUrlMenuButton::showMenu()
 {
-    DEBUG_BLOCK;
-    generateMenu();
+    QPoint pos( 0, height() );
+    generateMenu( mapToGlobal( pos ) );
 }
+
 
 
 #include "BreadcrumbItemButton.moc"

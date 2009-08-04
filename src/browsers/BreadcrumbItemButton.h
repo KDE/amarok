@@ -92,8 +92,8 @@ class BreadcrumbUrlMenuButton : public BreadcrumbItemButton
         virtual ~BreadcrumbUrlMenuButton();
 
     protected slots:
-        void generateMenu();
-        void urlsChanged();
+        void showMenu();
+        void generateMenu(  const QPoint &pos  );
 
     private:
         QString m_urlsCommand;

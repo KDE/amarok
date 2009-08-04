@@ -61,11 +61,6 @@ public slots:
     void bookmarkArtist( Meta::ArtistPtr artist );
 
     void bookmarkCurrentBrowserView();
-    void modelChanged();
-
-signals:
-
-    void urlsChanged();
 
 private:
 
