@@ -64,6 +64,7 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_proxyModel = new QSortFilterProxyModel( this );
     m_proxyModel->setSourceModel( BookmarkModel::instance() );
     m_proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    m_proxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     m_proxyModel->setDynamicSortFilter( true );
     m_proxyModel->setFilterKeyColumn ( -1 ); //filter on all columns
 
