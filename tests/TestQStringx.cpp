@@ -125,4 +125,12 @@ void TestQStringx::testNamedOptArgs()
 
     m_testString = "{%test {%artist}}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "" ) );
+
+    testArgs[ "track" ] = "Some track";
+    m_testString = "{%test {%artist}}%track";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "Some track" ) );
+
+    m_testString = "{%artist {%track}} %test";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults Some track " ) );
+
 }
