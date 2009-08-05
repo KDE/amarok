@@ -54,6 +54,8 @@ protected slots:
     void slotDelete();
     void slotRename();
 
+    void slotEdit( const QModelIndex &index );
+
     //for testing...
     void slotCreateTimecodeTrack() const;
 

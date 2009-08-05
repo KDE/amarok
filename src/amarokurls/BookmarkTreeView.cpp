@@ -361,6 +361,13 @@ void BookmarkTreeView::setProxy( QSortFilterProxyModel *proxy )
     m_proxyModel = proxy;
 }
 
+void BookmarkTreeView::slotEdit( const QModelIndex &index )
+{
+
+    //translate to proxy terms
+    edit( m_proxyModel->mapFromSource( index ) );
+}
+
 #include "BookmarkTreeView.moc"
 
 

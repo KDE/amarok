@@ -540,8 +540,10 @@ BookmarkModel::createNewBookmark()
 
     reloadFromDb();
 
-    int row = 0;
+    debug() << "id of new bookmark: " << id;
+    int row = m_root->childGroups().count();
     foreach ( AmarokUrlPtr childBookmark, m_root->childBookmarks() ) {
+        debug() << id << " == " << childBookmark->id() << " ? ";
         if ( childBookmark->id() == id )
         {
             debug() << "emmiting edit for " << childBookmark->name() << " id " << childBookmark->id() << " in row " << row;

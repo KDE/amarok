@@ -71,6 +71,8 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_bookmarkView->setProxy( m_proxyModel );
     m_bookmarkView->setSortingEnabled( true );
 
+    connect( BookmarkModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_bookmarkView, SLOT( slotEdit( const QModelIndex & ) ) );
+
     m_currentBookmarkId = -1;
 
 }
