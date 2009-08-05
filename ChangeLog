@@ -5,6 +5,13 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Allow sorting in the bookmark manager.
+    * Allow filtering in the bookmark manager.
+    * Add colums to the bookmark manger and make it possible to edit items 
+      inline.
+    * Add a small bookmark menu to the browser breadcrumb bar allowing for
+      navigation to a bookmark, as well as creating a new bookmark based on
+      the current "view" or calling up the bookmark manager.
     * Magnatune.com store: Allow redownloads of any previous Magnatune.com 
       purchases by a given email, not just purchases made from a specific 
       instalation of Amarok.
@@ -35,6 +42,10 @@ VERSION 2.2-beta1
     * Drag and Drop support for album cover image. (BR 91261)
 
   CHANGES:
+    * Remove the bookmark manager context applet and add a bookmark manager
+      dialog instead.
+    * Magnatune.com store: Add a link to purchase gift cards to the purhcase 
+      dialog.
     * Reset playlist filter when using the "replace playlist" action. Patch 
       by John Atkinson <john@fauxnetic.co.uk> (BR 200709)
     * Track lyrics are exposed through the DBUS interface.
@@ -55,9 +66,9 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
-    * Fix destination filenames when using "copy to collection" in the 
-      Jamendo service. (BR 171839)
-    * Make Jamendo torrent downloads work again. (BR 198200)
+    * Jamendo service: Fix destination filenames when using "copy to 
+      collection". (BR 171839)
+    * Jamendo service: Make torrent downloads work again. (BR 198200)
     * Remove the video stream from the context view when removing the video 
       applet during stream playback. (BR 201281)
     * Fixed locales for Amazon cover fetching. (BR 188446)
