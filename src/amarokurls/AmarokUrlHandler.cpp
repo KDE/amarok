@@ -140,7 +140,7 @@ KIcon AmarokUrlHandler::iconForCommand( const QString &command )
     if( m_registeredRunners.keys().contains( command ) )
         return m_registeredRunners.value( command )->icon();
 
-    return KIcon();
+    return KIcon( "unknown" );
 }
 
 
