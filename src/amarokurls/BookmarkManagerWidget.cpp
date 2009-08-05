@@ -35,7 +35,9 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
 
     setContentsMargins( 0,0,0,0 );
 
-    m_toolBar = new QToolBar( this );
+    KHBox * topLayout = new KHBox( this );
+    
+    m_toolBar = new QToolBar( topLayout );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     KAction * addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
@@ -46,10 +48,25 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_toolBar->addAction( addBookmarkAction );
     connect( addBookmarkAction, SIGNAL( triggered( bool ) ), BookmarkModel::instance(), SLOT( createNewBookmark() ) );
 
+
+    m_searchEdit = new Amarok::LineEdit( topLayout );
+    m_searchEdit->setClickMessage( i18n( "Filter bookmarks" ) );
+    m_searchEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_searchEdit->setClearButtonShown( true );
+    m_searchEdit->setFrame( true );
+    m_searchEdit->setToolTip( i18n( "Start typing to progressively filter the bookmarks" ) );
+    m_searchEdit->setFocusPolicy( Qt::ClickFocus ); // Without this, the widget goes into text input mode directly on startup
+
+    connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( slotFilterChanged(  const QString &  ) ) );
+    
     m_bookmarkView = new BookmarkTreeView( this );
 
     m_proxyModel = new QSortFilterProxyModel( this );
     m_proxyModel->setSourceModel( BookmarkModel::instance() );
+    m_proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    m_proxyModel->setDynamicSortFilter( true );
+    m_proxyModel->setFilterKeyColumn ( -1 ); //filter on all columns
+
     m_bookmarkView->setModel( m_proxyModel );
     m_bookmarkView->setProxy( m_proxyModel );
     m_bookmarkView->setSortingEnabled( true );
@@ -66,6 +83,18 @@ BookmarkManagerWidget::~BookmarkManagerWidget()
 BookmarkTreeView * BookmarkManagerWidget::treeView()
 {
     return m_bookmarkView;
+}
+
+void BookmarkManagerWidget::slotFilterChanged( const QString &filter )
+{
+
+    //when the clear button is pressed, we get 2 calls to this slot... filter this out  as it messes with
+    //resetting the view:
+    if ( filter == m_lastFilter )
+        return;
+
+    m_proxyModel->setFilterFixedString( filter );
+    
 }
 
 

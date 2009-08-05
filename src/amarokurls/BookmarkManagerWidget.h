@@ -19,6 +19,7 @@
 
 #include "amarok_export.h"
 #include "BookmarkTreeView.h"
+#include "LineEdit.h"
 
 #include <KVBox>
 
@@ -41,12 +42,22 @@ public:
     ~BookmarkManagerWidget();
 
     BookmarkTreeView * treeView();
+protected slots:
+    
+     /**
+     * Notify widget that the text in the search edit has changed.
+     * @param filter The new text in the search widget.
+     */
+    void slotFilterChanged( const QString &filter );
+    
 private:
 
     QToolBar * m_toolBar;
+    Amarok::LineEdit * m_searchEdit; 
     BookmarkTreeView * m_bookmarkView;
 
     int m_currentBookmarkId;
+    QString m_lastFilter;
 
     QSortFilterProxyModel * m_proxyModel;
 
