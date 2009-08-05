@@ -31,7 +31,7 @@ class QAction;
 
 class KAction;
 
-class AMAROK_EXPORT BookmarkTreeView : public Amarok::PrettyTreeView
+class AMAROK_EXPORT BookmarkTreeView : public QTreeView
 {
     Q_OBJECT
 

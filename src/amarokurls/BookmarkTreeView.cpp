@@ -39,7 +39,7 @@
 #include <typeinfo>
 
 BookmarkTreeView::BookmarkTreeView( QWidget *parent )
-    : Amarok::PrettyTreeView( parent )
+    : QTreeView( parent )
     , m_loadAction( 0 )
     , m_deleteAction( 0 )
     , m_renameAction( 0 )
@@ -50,15 +50,15 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     setEditTriggers( QAbstractItemView::SelectedClicked );
 
     setSelectionMode( QAbstractItemView::ExtendedSelection );
-    The::paletteHandler()->updateItemView( this );
+    //The::paletteHandler()->updateItemView( this );
     
-    setFrameShape( QFrame::NoFrame );
+    //setFrameShape( QFrame::NoFrame );
 
     //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
     //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
-    QPalette p = The::paletteHandler()->palette();
-    QColor c = p.color( QPalette::Base );
-    setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
+    //QPalette p = The::paletteHandler()->palette();
+    //QColor c = p.color( QPalette::Base );
+    //setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 
     setDragEnabled( true );
     setAcceptDrops( true );
