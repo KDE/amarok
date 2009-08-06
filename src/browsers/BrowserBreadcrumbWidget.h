@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef BREADCRUMBWIDGET_H
-#define BREADCRUMBWIDGET_H
+#ifndef BROWSERBREADCRUMBWIDGET_H
+#define BROWSERBREADCRUMBWIDGET_H
 
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"

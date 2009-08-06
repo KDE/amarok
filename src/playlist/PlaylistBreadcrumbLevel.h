@@ -14,56 +14,50 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_PLAYLISTSORTSCHEME_H
-#define AMAROK_PLAYLISTSORTSCHEME_H
+#ifndef PLAYLISTBREADCRUMBLEVEL_H
+#define PLAYLISTBREADCRUMBLEVEL_H
 
-#include "playlist/PlaylistDefines.h"
+#include <KIcon>
 
-#include <QSortFilterProxyModel>
-#include <QStack>
+#include <QMap>
+#include <QPair>
+#include <QString>
 
 namespace Playlist
 {
 
 /**
- * A sorting level for multilevel playlist sorting. Instances of this class are aggregated
- * by Playlist::SortScheme to describe a way to sort the playlist.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ *  A level of a hierarchical structure which can be used in a breadcrumb interface.
+ *  @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
-class SortLevel
+class BreadcrumbLevel
 {
-    public:
-        SortLevel( int sortCategory = PlaceHolder, Qt::SortOrder sortOrder = Qt::AscendingOrder );
-        int category();
-        Qt::SortOrder order();
-        void setCategory( int sortCategory );
-        void setOrder( Qt::SortOrder sortOrder );
-        bool isComparable();
-        bool isString();
-        QString prettyName();
-    private:
-        int m_category;     //Column from PlaylistDefines.h
-        Qt::SortOrder m_order;
-};
+public:
+    /**
+     * Constructor.
+     */
+    BreadcrumbLevel( QString internalColumnName );
 
-/**
- * A sorting scheme for multilevel playlist sorting. This class wraps around a QStack to
- * define a way to sort the playlist and is used by Playlist::SortProxy.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
- */
-class SortScheme
-{
-    public:
-        SortScheme();
-        SortLevel & level( int i );
-        void addLevel( const SortLevel & level );
-        void trimToLevel( int lastLevel );        //deletes all the levels up to level # length
-        int length();
+    /**
+     * Destructor.
+     */
+    ~BreadcrumbLevel();
 
-    private:
-        QStack< SortLevel > *m_scheme;
+    const QString & name();
+
+    const QString & prettyName();
+
+    const KIcon& icon();
+
+    const QMap< QString, QPair< KIcon, QString > > siblings();
+
+protected:
+    QString m_name;         //! the name of this item.
+    QString m_prettyName;
+    KIcon m_icon;
+    QMap< QString, QPair< KIcon, QString > > m_siblings;    //! internalColumnName, icon, prettyName
 };
 
 }   //namespace Playlist
 
-#endif  //AMAROK_PLAYLISTSORTSCHEME_H
+#endif  //PLAYLISTBREADCRUMBLEVEL_H

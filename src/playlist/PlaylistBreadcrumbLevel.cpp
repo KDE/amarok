@@ -14,28 +14,56 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PlaylistSortWidget.h"
+#include "PlaylistBreadcrumbLevel.h"
 
-#include "PlaylistBreadcrumbWidget.h"
-#include "Debug.h"
+#include "PlaylistDefines.h"
 
 namespace Playlist
 {
 
-SortWidget::SortWidget( QWidget * parent )
-    : KHBox( parent)
+BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
+    : m_name( internalColumnName )
 {
-    setFixedHeight( 28 );
-    setContentsMargins( 0, 0, 0, 0 );
-    setSpacing( 0 );
-    new BreadcrumbWidget( this );
+    m_icon = KIcon( iconNames.at( internalColumnNames.indexOf( internalColumnName ) ) );
+    m_prettyName = columnNames.at( internalColumnNames.indexOf( internalColumnName ) );
+
+
+    for( int i = 0; i < NUM_COLUMNS; ++i )  //might be faster if it used a const_iterator
+    {
+        QString currentInternalColumnName = internalColumnNames.at( i );
+        if( !sortableCategories.contains( currentInternalColumnName ) ||
+            m_name == currentInternalColumnName )
+            continue;
+        m_siblings.insert( currentInternalColumnName,
+                           QPair< KIcon, QString>( KIcon( iconNames.at( i ) ), columnNames.at( i ) ) );
+    }
 }
 
-SortWidget::~SortWidget()
+BreadcrumbLevel::~BreadcrumbLevel()
+{}
+
+const QString &
+BreadcrumbLevel::name()
 {
-
+    return m_name;
 }
 
+const QString &
+BreadcrumbLevel::prettyName()
+{
+    return m_prettyName;
 }
 
-#include "PlaylistSortWidget.moc"
+const KIcon &
+BreadcrumbLevel::icon()
+{
+    return m_icon;
+}
+
+const QMap< QString, QPair< KIcon, QString > >
+BreadcrumbLevel::siblings()
+{
+    return m_siblings;
+}
+
+}   //namespace Playlist

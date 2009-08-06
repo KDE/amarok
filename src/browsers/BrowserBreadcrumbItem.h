@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#ifndef BREADCRUMBITEM_H
-#define BREADCRUMBITEM_H
+#ifndef BROWSERBREADCRUMBITEM_H
+#define BROWSERBREADCRUMBITEM_H
 
 #include "widgets/ElidingButton.h"
 

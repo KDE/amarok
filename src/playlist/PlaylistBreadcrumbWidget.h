@@ -14,56 +14,40 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_PLAYLISTSORTSCHEME_H
-#define AMAROK_PLAYLISTSORTSCHEME_H
+#ifndef PLAYLISTBREADCRUMBWIDGET_H
+#define PLAYLISTBREADCRUMBWIDGET_H
 
-#include "playlist/PlaylistDefines.h"
+#include "PlaylistBreadcrumbItem.h"
 
-#include <QSortFilterProxyModel>
-#include <QStack>
+#include <QHBoxLayout>
 
 namespace Playlist
 {
 
 /**
- * A sorting level for multilevel playlist sorting. Instances of this class are aggregated
- * by Playlist::SortScheme to describe a way to sort the playlist.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * A widget that implements a general purpost breadcrumb ribbon.
+ * @author Téo Mrnjavac
  */
-class SortLevel
+class BreadcrumbWidget : public QWidget
 {
-    public:
-        SortLevel( int sortCategory = PlaceHolder, Qt::SortOrder sortOrder = Qt::AscendingOrder );
-        int category();
-        Qt::SortOrder order();
-        void setCategory( int sortCategory );
-        void setOrder( Qt::SortOrder sortOrder );
-        bool isComparable();
-        bool isString();
-        QString prettyName();
-    private:
-        int m_category;     //Column from PlaylistDefines.h
-        Qt::SortOrder m_order;
-};
+    Q_OBJECT
+public:
+    BreadcrumbWidget( QWidget *parent );
 
-/**
- * A sorting scheme for multilevel playlist sorting. This class wraps around a QStack to
- * define a way to sort the playlist and is used by Playlist::SortProxy.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
- */
-class SortScheme
-{
-    public:
-        SortScheme();
-        SortLevel & level( int i );
-        void addLevel( const SortLevel & level );
-        void trimToLevel( int lastLevel );        //deletes all the levels up to level # length
-        int length();
+    ~BreadcrumbWidget();
 
-    private:
-        QStack< SortLevel > *m_scheme;
+private:
+    QHBoxLayout * m_ribbon;
+    QList< BreadcrumbItem * > m_items;
+    BreadcrumbAddMenuButton * m_addButton;
+    QHBoxLayout * m_layout;
+
+private slots:
+    void addLevel( QString internalColumnName, const int level = -1 );
+    void trimToLevel( const int level = -1 );
+    void onItemClicked();
 };
 
 }   //namespace Playlist
 
-#endif  //AMAROK_PLAYLISTSORTSCHEME_H
+#endif  //PLAYLISTBREADCRUMBWIDGET_H

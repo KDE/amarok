@@ -55,7 +55,8 @@ SortLevel::setOrder( Qt::SortOrder sortOrder )
     m_order = sortOrder;
 }
 
-bool SortLevel::isComparable()
+bool
+SortLevel::isComparable()
 {
     QList< int > intCategories;
     QList< int > strCategories;
@@ -68,7 +69,8 @@ bool SortLevel::isComparable()
     return false;
 }
 
-bool SortLevel::isString()
+bool
+SortLevel::isString()
 {
     QList< int > intCategories;
     QList< int > strCategories;
@@ -81,6 +83,11 @@ bool SortLevel::isString()
     return false;
 }
 
+QString
+SortLevel::prettyName()
+{
+    return columnNames.at( m_category );
+}
 
 // BEGIN SortScheme
 

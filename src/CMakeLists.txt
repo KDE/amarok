@@ -380,6 +380,9 @@ set(libplaylistmanager_SRCS
 #####################################################################
 set(libplaylist_SRCS
     playlist/PlaylistActions.cpp
+    playlist/PlaylistBreadcrumbItem.cpp
+    playlist/PlaylistBreadcrumbLevel.cpp
+    playlist/PlaylistBreadcrumbWidget.cpp
     playlist/PlaylistController.cpp
     playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp
