@@ -196,7 +196,7 @@ void BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
 
 
 BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent )
-    : BreadcrumbItemButton( KIcon( "bookmarks-organize" ), QString(), parent )
+    : BreadcrumbItemButton( KIcon( "bookmark-new-list" ), QString(), parent )
     , m_urlsCommand( urlsCommand )
 {
     setFixedWidth( 20 );
