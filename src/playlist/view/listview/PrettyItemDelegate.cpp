@@ -24,6 +24,7 @@
 
 #include "App.h"
 #include "Debug.h"
+#include "EngineController.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"
@@ -465,6 +466,44 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
                          buttonSize, buttonSize,
                          "next_button" ) );
 
+    offset += ( buttonSize + MARGINH );
+
+    int trackLength = EngineController::instance()->trackLength() * 1000;
+    int trackPos = EngineController::instance()->trackPositionMs();
+    qreal trackPercentage = ( (qreal) trackPos / (qreal) trackLength );
+
+    int sliderWidth = width - ( offset + MARGINH );
+    int knobSize = buttonSize - 2;
+    int sliderRange = sliderWidth - buttonSize;
+    int knobRelPos = sliderRange * trackPercentage;
+
+    int sliderY = y + ( height / 2 );
+
+    if( sliderWidth > 30 )
+    {
+        
+
+        painter->drawPixmap( offset, sliderY,
+                            The::svgHandler()->renderSvg(
+                            "divider_bottom",
+                            sliderWidth, 1,
+                            "divider_bottom" ) );
+
+        painter->drawPixmap( offset, sliderY + 1,
+                            The::svgHandler()->renderSvg(
+                            "divider_top",
+                            sliderWidth, 1,
+                            "divider_top" ) );
+
+        painter->drawPixmap( offset + knobRelPos, y + 3,
+                             The::svgHandler()->renderSvg(
+                             "new_slider_knob",
+                             knobSize, knobSize,
+                             "new_slider_knob" ) );
+
+        
+    }
+    
 }
 
 

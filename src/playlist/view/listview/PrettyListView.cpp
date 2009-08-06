@@ -95,6 +95,10 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     connect( model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
 
     connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
+
+     QTimer *timer = new QTimer(this);
+     connect( timer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
+     timer->start( 100 );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -713,6 +717,13 @@ void Playlist::PrettyListView::itemsAdded( const QModelIndex& parent, int firstR
     debug() << "index has row: " << index.row();
     scrollTo( index, QAbstractItemView::PositionAtCenter );
 
+}
+
+void Playlist::PrettyListView::redrawActive()
+{
+    int activeRow = m_topmostProxy->activeRow();
+    QModelIndex index = model()->index( activeRow, 0, QModelIndex() );
+    update( index );
 }
 
 

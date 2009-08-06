@@ -82,6 +82,7 @@ private slots:
     void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
+    void redrawActive();
 
 private:
     void showEvent( QShowEvent* );
@@ -94,6 +95,7 @@ private:
     void mouseReleaseEvent( QMouseEvent* );
     void paintEvent( QPaintEvent* );
     void startDrag( Qt::DropActions supportedActions );
+
 
     bool mouseEventInHeader( const QMouseEvent* ) const;
     QItemSelectionModel::SelectionFlags headerPressSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
