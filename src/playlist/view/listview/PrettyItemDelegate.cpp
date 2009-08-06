@@ -445,12 +445,27 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
                          buttonSize, buttonSize,
                          "back_button" ) );
 
-    offset += ( buttonSize + MARGINH );
-    painter->drawPixmap( offset, y + 2,
-                         The::svgHandler()->renderSvg(
-                         "play_button",
-                         buttonSize, buttonSize,
-                         "play_button" ) );
+    if ( EngineController::instance()->state() == Phonon::PlayingState ||
+         EngineController::instance()->state() == Phonon::PlayingState )
+    {
+        offset += ( buttonSize + MARGINH );
+        painter->drawPixmap( offset, y + 2,
+                            The::svgHandler()->renderSvg(
+                            "pause_button",
+                            buttonSize, buttonSize,
+                            "pause_button" ) );
+
+    }
+    else
+    {
+                              
+        offset += ( buttonSize + MARGINH );
+        painter->drawPixmap( offset, y + 2,
+                            The::svgHandler()->renderSvg(
+                            "play_button",
+                            buttonSize, buttonSize,
+                            "play_button" ) );
+    }
 
     offset += ( buttonSize + MARGINH );
     painter->drawPixmap( offset, y + 2,
