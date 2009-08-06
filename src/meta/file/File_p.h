@@ -312,9 +312,7 @@ public:
     QString name() const
     {
         const QString artist = d->m_data.artist;
-        if( !artist.isEmpty() )
-            return artist;
-        return i18nc( "The value is not known", "Unknown" );
+        return artist;
     }
 
     QString prettyName() const
@@ -358,13 +356,10 @@ public:
         if( d )
         {
             const QString albumName = d->m_data.album;
-            if( !albumName.isEmpty() )
-                return albumName;
-            else
-                return i18nc( "The value is not known", "Unknown" );
+            return albumName;
         }
         else
-            return i18nc( "The value is not known", "Unknown" );
+            return QString();
     }
 
     QString prettyName() const
@@ -400,9 +395,7 @@ public:
     QString name() const
     {
         const QString genreName = d->m_data.genre;
-        if( !genreName.isEmpty() )
-            return genreName;
-        return i18nc( "The value is not known", "Unknown" );
+        return genreName;
     }
 
     QString prettyName() const
@@ -429,10 +422,8 @@ public:
     QString name() const
     {
         const QString composer = d->m_data.composer;
-        if( !composer.isEmpty() )
-            return composer;
-        return i18nc( "The value is not known", "Unknown" );
-    }
+        return composer;
+     }
 
     QString prettyName() const
     {
@@ -458,9 +449,7 @@ public:
     QString name() const
     {
         const QString year = QString::number( d->m_data.year );
-        if( !year.isEmpty()  )
-            return year;
-        return i18nc( "The value is not known", "Unknown" );
+        return year;
     }
 
     QString prettyName() const

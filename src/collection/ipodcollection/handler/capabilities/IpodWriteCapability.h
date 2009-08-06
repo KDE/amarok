@@ -17,7 +17,6 @@
 #ifndef IPODHANDLER_WRITECAPABILITY_H
 #define IPODHANDLER_WRITECAPABILITY_H
 
-#include "mediadevicecollection_export.h"
 #include "WriteCapability.h"
 
 namespace Meta {
@@ -51,25 +50,25 @@ class IpodWriteCapability : public WriteCapability
 
     virtual void databaseChanged();
 
-    virtual void    libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
-    virtual void    libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
-    virtual void    libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
-    virtual void    libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
-    virtual void    libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
-    virtual void    libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
-    virtual void    libSetLength( Meta::MediaDeviceTrackPtr &track, int length );
-    virtual void    libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum );
-    virtual void    libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment );
-    virtual void    libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
-    virtual void    libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
-    virtual void    libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
-    virtual void    libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
-    virtual void    libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
-    virtual void    libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
-    virtual void    libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
-    virtual void    libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
-    virtual void    libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
-    virtual void    libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
+    virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
+    virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
+    virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
+    virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
+    virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
+    virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
+    virtual void libSetLength( Meta::MediaDeviceTrackPtr &track, int length );
+    virtual void libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum );
+    virtual void libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment );
+    virtual void libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
+    virtual void libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
+    virtual void libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
+    virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
+    virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
+    virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
+    virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
+    virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
+    virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
+    virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
 
     virtual void prepareToCopy();
     virtual void prepareToDelete();

@@ -49,8 +49,7 @@ class MediaDeviceUserPlaylistProvider;
 
 namespace Meta
 {
-
-typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
+    typedef QMultiMap<QString, Meta::TrackPtr> TitleMap;
 
     class MEDIADEVICECOLLECTION_EXPORT MetaHandlerCapability
     {
@@ -95,19 +94,16 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
 {
     Q_OBJECT
 
-    public:
-
+public:
     /**
     * Destructor
     */
-
     virtual ~MediaDeviceHandler();
 
     /**
     * Begins an attempt to connect to the device, and emits
     * attemptConnectionDone when it finishes.
     */
-
     virtual void init() = 0; // collection
 
     /**
@@ -117,7 +113,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     *   TRUE if the device was successfully connected to
     *   FALSE if the device was not successfully connected to
     */
-
     bool succeeded() const // collection
     {
         return m_success;
@@ -127,7 +122,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     * Parses the media device's database and creates a Meta::MediaDeviceTrack
     * for each track in the database.
     */
-
     void parseTracks(); // collection
 
     /// Methods provided for CollectionLocation
@@ -138,7 +132,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     *   TRUE if the device can be written to
     *   FALSE if the device can not be written to
     */
-
     virtual bool isWritable() const = 0;
 
     /** Given a list of tracks, get URLs for device tracks
@@ -149,7 +142,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     *  gotCopyableUrls when finished.
     *  @param tracks The list of tracks for which to fetch urls
     */
-
     virtual void getCopyableUrls( const Meta::TrackList &tracks );
 
     /**
@@ -158,21 +150,18 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     * a library call is needed to get this name.
     * @return A QString with the name
     */
-
     virtual QString prettyName() const = 0;
 
     /**
     * Copies a list of tracks to the device.
     * @param tracklist The list of tracks to copy.
     */
-
     void copyTrackListToDevice( const Meta::TrackList tracklist );
 
     /**
     * Removes a list of tracks from the device.
     * @param tracklist The list of tracks to remove.
     */
-
     void removeTrackListFromDevice( const Meta::TrackList &tracks );
 
     /** This function is called just before a track in the playlist is to be played, and gives
@@ -180,7 +169,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
     *  to emulate the track actually being played off the device
     *  @param track The track that needs to prepare to be played
     */
-
     virtual void prepareToPlay( Meta::MediaDeviceTrackPtr &track ) { Q_UNUSED( track ) } // called by @param track
 
     virtual float usedcapacity() const;
@@ -188,11 +176,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceHandler : public QObject, public M
 
     UserPlaylistProvider* provider();
 
-
     // HACK: Used for device-specific actions, such as initialize for iPod
-
     virtual QList<QAction *> collectionActions() { return QList<QAction*> (); }
-
 
 signals:
     void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );
@@ -237,7 +222,24 @@ protected:
 
     MediaDeviceHandler( QObject *parent );
 
+    /** Creates a MediaDeviceTrack based on the latest track struct created as a
+    *  result of a copy to the device, and adds it into the collection to reflect
+    *  that it has been copied.
+    *  @param track The track to add to the collection
+    */
+
+    void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
+
+    /** Uses wrapped libSet methods to fill a track struct of the particular library
+    *  with information from a Meta::Track
+    *  @param srcTrack The track that has the source information
+    *  @param destTrack The track whose associated struct we want to fill with information
+    */
+
+    void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
+
     MediaDeviceCollection   *m_memColl; /// Associated collection
+    ProgressBar      *m_statusbar; /// A progressbar to show progress of an operation
 
     bool m_success;
     bool m_copyingthreadsafe; // whether or not the handler's method of copying is threadsafe
@@ -261,14 +263,6 @@ protected slots:
 
 private:
 
-    /** Creates a MediaDeviceTrack based on the latest track struct created as a
-    *  result of a copy to the device, and adds it into the collection to reflect
-    *  that it has been copied.
-    *  @param track The track to add to the collection
-    */
-
-    void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
-
     /**  Removes the @param track from all the collection's maps to reflect that
     *  it has been removed from the collection
     *  @param track The track to remove from the collection
@@ -281,14 +275,6 @@ private:
     *  @param destTrack The track that we want to fill with information
     */
     void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
-
-    /** Uses wrapped libSet methods to fill a track struct of the particular library
-    *  with information from a Meta::Track
-    *  @param srcTrack The track that has the source information
-    *  @param destTrack The track whose associated struct we want to fill with information
-    */
-
-    void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
 
     /**
     * Pulls out meta information (e.g. artist string)
@@ -311,6 +297,7 @@ private:
     // Misc. Helper Methods
 
     void setupReadCapability();
+    void setupWriteCapability();
 
     /**
      *  @return free space on the device
@@ -349,7 +336,6 @@ private:
     QMap<Meta::TrackPtr, QString> m_tracksFailed; /// tracks that failed to copy
     QHash<Meta::TrackPtr, Meta::MediaDeviceTrackPtr> m_trackSrcDst; /// points source to destTracks, for completion of addition to collection
 
-    ProgressBar      *m_statusbar; /// A progressbar to show progress of an operation
     QMutex m_mutex; /// A make certain operations atomic when threads are at play
 
     /// Capability-related variables

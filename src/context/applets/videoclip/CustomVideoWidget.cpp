@@ -15,44 +15,29 @@
  ****************************************************************************************/
 
 #include "CustomVideoWidget.h"
-
-// Amarok
 #include "Debug.h"
-
-
-// QT
-
 
 #define DEBUG_PREFIX "CustomVideoWidget"
 
 using namespace Phonon;
 
-
 void CustomVideoWidget::mouseDoubleClickEvent( QMouseEvent* )
 {
     DEBUG_BLOCK;
     // If we already are in full screen
-    if ( !this->isFullScreen() )
+    if ( !isFullScreen() )
     {
-        m_parent = this->parentWidget();
-        m_rect = this->geometry();
-        this->setWindowFlags( Qt::Window );
-        this->setFullScreen( true );
-   //     this->setToolTip("");
+        m_parent = parentWidget();
+        m_rect = geometry();
+        setWindowFlags( Qt::Window );
+        setFullScreen( true );
     }
     else
     {
-        this->setFullScreen( false );
-        this->setParent( m_parent, Qt::SubWindow | Qt::FramelessWindowHint );
-        this->setGeometry( m_rect );
-   //     this->setToolTip("Double-click = full screen !");
-        this->show();
-        
+        setFullScreen( false );
+        setParent( m_parent, Qt::SubWindow | Qt::FramelessWindowHint );
+        setGeometry( m_rect );
+        show();
     }
-}
-
-void CustomVideoWidget::keyPressEvent(QKeyEvent* )
-{
-    ;//QWidget::keyPressEvent();
 }
 

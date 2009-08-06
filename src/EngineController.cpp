@@ -35,7 +35,7 @@
 #include "meta/capabilities/MultiPlayableCapability.h"
 #include "meta/capabilities/MultiSourceCapability.h"
 #include "playlist/PlaylistActions.h"
-#include "playlistmanager/PlaylistManager.h"
+#include "PlaylistFileSupport.h"
 #include "PluginManager.h"
 
 #include <KFileItem>
@@ -169,7 +169,7 @@ EngineController::canDecode( const KUrl &url ) //static
    //NOTE this function must be thread-safe
 
     // We can't use playlists in the engine
-    if( PlaylistManager::isPlaylist( url ) )
+    if( Meta::isPlaylist( url ) )
         return false;
 
     KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );
@@ -386,7 +386,14 @@ EngineController::playUrl( const KUrl &url, uint offset )
     }
     else
     {
-        m_media->setCurrentSource( url );
+        if ( url.toLocalFile().isEmpty() )
+        {
+            m_media->setCurrentSource( url );
+        }
+        else
+        {
+            m_media->setCurrentSource( url.toLocalFile() );
+        }
     }
 
     m_nextTrack.clear();

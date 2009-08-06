@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008, 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,11 +19,13 @@
 
 #include "amarok_export.h"
 #include "BookmarkTreeView.h"
+#include "LineEdit.h"
 
 #include <KVBox>
 
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSortFilterProxyModel>
 #include <QToolBar>
 
 
@@ -40,35 +42,24 @@ public:
     ~BookmarkManagerWidget();
 
     BookmarkTreeView * treeView();
+protected slots:
+    
+     /**
+     * Notify widget that the text in the search edit has changed.
+     * @param filter The new text in the search widget.
+     */
+    void slotFilterChanged( const QString &filter );
+    
 private:
 
-    QString getBookmarkUrl();
-    AmarokUrl getPositionBookmark();
-    void updateAddButton();
-
-    QPushButton * m_getCurrentBookmarkButton;
-    QPushButton * m_addBookmarkButton;
-    QPushButton * m_gotoBookmarkButton;
-    QLineEdit * m_currentBookmarkNameEdit;
-    QLineEdit * m_currentBookmarkUrlEdit;
-
     QToolBar * m_toolBar;
+    Amarok::LineEdit * m_searchEdit; 
     BookmarkTreeView * m_bookmarkView;
 
     int m_currentBookmarkId;
+    QString m_lastFilter;
 
-signals:
-    // needed so the proxy widget can place it in the right place
-    void showMenu( KMenu*, const QPointF& );
-
-private slots:
-
-    void showCurrentUrl();
-    void addBookmark();
-    void gotoBookmark();
-    void bookmarkCurrent();
-
-    void slotBookmarkSelected( AmarokUrl bookmark );
+    QSortFilterProxyModel * m_proxyModel;
 
 };
 

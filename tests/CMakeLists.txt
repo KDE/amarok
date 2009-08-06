@@ -1,16 +1,18 @@
 ENABLE_TESTING()
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
-set( SmartPointerListTest_SRCS TestSmartPointerList.cpp ../src/SmartPointerList.cpp )
-
-qt4_automoc( SmartPointerListTest_SRCS )
-
-kde4_add_unit_test( SmartPointerListTest
-  TESTNAME General-SmartPointerListTest
-  ${SmartPointerListTest_SRCS}
+include_directories( .
+                     ../src/
 )
- 
-target_link_libraries( SmartPointerListTest
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTTEST_LIBRARY}
+
+QT4_AUTOMOC( TestAmarok.cpp
+             TestCaseConverter.cpp
+             TestDirectoryLoader.cpp
+             TestExpression.cpp
+             TestQStringx.cpp
+             TestSmartPointerList.cpp
 )
+
+add_subdirectory( data )
+add_subdirectory( meta )
+#add_subdirectory( playlistmanager )

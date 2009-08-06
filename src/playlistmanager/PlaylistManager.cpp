@@ -23,13 +23,11 @@
 #include "CollectionManager.h"
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"
+#include "file/PlaylistFileProvider.h"
 #include "sql/SqlPodcastProvider.h"
 #include "sql/SqlUserPlaylistProvider.h"
 #include "Debug.h"
 #include "MainWindow.h"
-#include "meta/M3UPlaylist.h"
-#include "meta/PLSPlaylist.h"
-#include "meta/XSPFPlaylist.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
 
 #include <kdirlister.h>
@@ -79,36 +77,6 @@ PlaylistManager::~PlaylistManager()
 {
     delete m_defaultPodcastProvider;
     delete m_defaultUserPlaylistProvider;
-}
-
-bool
-PlaylistManager::isPlaylist( const KUrl & path )
-{
-    const QString ext = Amarok::extension( path.fileName() );
-
-    if( ext == "m3u" ) return true;
-    if( ext == "pls" ) return true;
-    if( ext == "ram" ) return true;
-    if( ext == "smil") return true;
-    if( ext == "asx" || ext == "wax" ) return true;
-    if( ext == "xml" ) return true;
-    if( ext == "xspf" ) return true;
-
-    return false;
-}
-
-KUrl
-PlaylistManager::newPlaylistFilePath( const QString & fileExtension )
-{
-    int trailingNumber = 1;
-    KLocalizedString fileName = ki18n("Playlist_%1");
-    KUrl url( Amarok::saveLocation( "playlists" ) );
-    url.addPath( fileName.subs( trailingNumber ).toString() );
-
-    while( QFileInfo( url.path() ).exists() )
-        url.setFileName( fileName.subs( ++trailingNumber ).toString() );
-
-    return KUrl( url.path() + fileExtension );
 }
 
 void
@@ -390,42 +358,8 @@ PlaylistManager::exportPlaylist( Meta::TrackList tracks,
     DEBUG_BLOCK
 
     KUrl url( location );
-    Meta::Playlist *playlist = 0;
 
-    Meta::Format format = Meta::getFormat( location );
-    switch( format )
-    {
-        case Meta::PLS:
-            playlist = new Meta::PLSPlaylist( tracks );
-            break;
-        case Meta::M3U:
-            playlist = new Meta::M3UPlaylist( tracks );
-            break;
-//         case RAM:
-//             playlist = loadRealAudioRam( stream );
-//             break;
-//         case ASX:
-//             playlist = loadASX( stream );
-//             break;
-//         case SMIL:
-//             playlist = loadSMIL( stream );
-//             break;
-        case Meta::XSPF:
-            playlist = new Meta::XSPFPlaylist( tracks );
-            break;
-
-        default:
-            debug() << "unknown type!";
-            break;
-    }
-
-    if( !playlist )
-        return false;
-
-    playlist->save( location, AmarokConfig::relativePlaylist() );
-    delete playlist;
-
-    return true;
+    return Meta::exportPlaylistFile( tracks, url );
 }
 
 void
@@ -500,38 +434,6 @@ PlaylistManager::moveTrack( Meta::PlaylistPtr playlist, int from, int to )
     return false;
 }
 
-bool
-PlaylistManager::canExpand( Meta::TrackPtr track )
-{
-    if( !track )
-        return false;
-
-    return Meta::getFormat( track->uidUrl() ) != Meta::NotPlaylist;
-}
-
-Meta::PlaylistPtr
-PlaylistManager::expand( Meta::TrackPtr track )
-{
-   //this should really be made asyncrhonous
-   return Meta::loadPlaylist( track->uidUrl() );
-}
-
-PlaylistManager::PlaylistFormat
-PlaylistManager::getFormat( const KUrl &path )
-{
-    const QString ext = Amarok::extension( path.fileName() );
-
-    if( ext == "m3u" ) return M3U;
-    if( ext == "pls" ) return PLS;
-    if( ext == "ram" ) return RAM;
-    if( ext == "smil") return SMIL;
-    if( ext == "asx" || ext == "wax" ) return ASX;
-    if( ext == "xml" ) return XML;
-    if( ext == "xspf" ) return XSPF;
-
-    return Unknown;
-}
-
 PlaylistProvider*
 PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
 {
@@ -590,53 +492,6 @@ PlaylistManager::trackActions( const Meta::PlaylistPtr playlist, int trackIndex 
         actions << provider->trackActions( playlist, trackIndex );
 
     return actions;
-}
-
-namespace Amarok
-{
-    //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
-    KUrl::List
-    recursiveUrlExpand ( const KUrl &url )
-    {
-        typedef QMap<QString, KUrl> FileMap;
-
-        KDirLister lister ( false );
-        lister.setAutoUpdate ( false );
-        lister.setAutoErrorHandlingEnabled ( false, 0 );
-        lister.openUrl ( url );
-
-        while ( !lister.isFinished() )
-            kapp->processEvents ( QEventLoop::ExcludeUserInputEvents );
-
-        KFileItemList items = lister.items();
-        KUrl::List urls;
-        FileMap files;
-        foreach ( const KFileItem& it, items )
-        {
-            if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
-            if ( it.isDir() ) urls += recursiveUrlExpand( it.url() );
-        }
-
-        oldForeachType ( FileMap, files )
-        // users often have playlist files that reflect directories
-        // higher up, or stuff in this directory. Don't add them as
-        // it produces double entries
-        if ( !PlaylistManager::isPlaylist( ( *it ).fileName() ) )
-            urls += *it;
-        return urls;
-    }
-
-    KUrl::List
-    recursiveUrlExpand ( const KUrl::List &list )
-    {
-        KUrl::List urls;
-        oldForeachType ( KUrl::List, list )
-        {
-            urls += recursiveUrlExpand ( *it );
-        }
-
-        return urls;
-    }
 }
 
 #include "PlaylistManager.moc"

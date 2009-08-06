@@ -21,6 +21,7 @@
 #include "EditCapability.h"
 #include "Meta.h"
 #include "PlaylistManager.h"
+#include "PlaylistFileSupport.h"
 
 #include <KLocale>
 
@@ -33,7 +34,7 @@ namespace Meta {
 
 PLSPlaylist::PLSPlaylist()
     : Playlist()
-    , m_url( PlaylistManager::newPlaylistFilePath( "pls" ) )
+    , m_url( Meta::newPlaylistFilePath( "pls" ) )
 {
     m_name = m_url.fileName();
 }
@@ -41,7 +42,7 @@ PLSPlaylist::PLSPlaylist()
 PLSPlaylist::PLSPlaylist( TrackList tracks )
     : Playlist()
     , m_tracks( tracks )
-    , m_url( PlaylistManager::newPlaylistFilePath( "pls" ) )
+    , m_url( Meta::newPlaylistFilePath( "pls" ) )
 {
     m_name = m_url.fileName();
 }

@@ -1,0 +1,74 @@
+<smil xmlns:rn="http://features.real.com/2001/SMIL20/Extensions">
+	<head>
+	<meta name="title" content="PlayList" />
+	<layout>
+  		<root-layout width="400" height="300"/>
+  		<region id="html_region"/>
+	</layout>
+	</head>
+	<body>	
+	<seq>
+	<par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/07/The-Leftovers-Me_and_you.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/07/The-Leftovers-Me_and_you.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/07/Das-frivole-Burgfr%C3%A4ulein-Sportbeutel-Killer.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/07/Das-frivole-Burgfr%C3%A4ulein-Sportbeutel-Killer.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/03/bilk-raus.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/03/bilk-raus.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.archive.org/download/afm044_rebentisch_herzzerrissen/06_-_rebentisch_-_mein_blick_ins_leere_vbr.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.archive.org/download/afm044_rebentisch_herzzerrissen/06_-_rebentisch_-_mein_blick_ins_leere_vbr.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/07/Chronique-Lay-Down.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/07/Chronique-Lay-Down.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.joshwoodward.com/mp3/JoshWoodward-IllBeRightBehindYouJosephine.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.joshwoodward.com/mp3/JoshWoodward-IllBeRightBehindYouJosephine.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/05/01-out-of-my-mind.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/05/01-out-of-my-mind.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.archive.org/download/afm042_diskoteket/05_-_diskoteket_-_kaerlek_och_skoenhet_vbr.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.archive.org/download/afm042_diskoteket/05_-_diskoteket_-_kaerlek_och_skoenhet_vbr.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/06/Trick-Seventeen-Get-up.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/06/Trick-Seventeen-Get-up.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/06/Libidomeccanica-G.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/06/Libidomeccanica-G.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://freedownloads.last.fm/download/181901721/We%2BOwe%2BLove.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://freedownloads.last.fm/download/181901721/We%2BOwe%2BLove.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/06/Soul-in-Sadness-Tote-Seelen-lieben-nicht.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/06/Soul-in-Sadness-Tote-Seelen-lieben-nicht.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.archive.org/download/afm036_allmyfaults_firstaid/01-all-my-faults-tastetheseforbiddenfruits_vbr.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.archive.org/download/afm036_allmyfaults_firstaid/01-all-my-faults-tastetheseforbiddenfruits_vbr.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/07/Smoke-Fish-Insane_inside.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/07/Smoke-Fish-Insane_inside.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/07/Die-Schatten-Winter.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/07/Die-Schatten-Winter.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/07/Mach-FoX-Dr._Night.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/07/Mach-FoX-Dr._Night.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.darkerradio.com/wp-content/uploads/2009/04/the_maximilians-waiting_for.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.darkerradio.com/wp-content/uploads/2009/04/the_maximilians-waiting_for.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.archive.org/download/10SongVol7/10_Sleepmakeswaves_-_One_Day_You_Will_Teach_Me_To_Let_Go_Of_My_Fears.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.archive.org/download/10SongVol7/10_Sleepmakeswaves_-_One_Day_You_Will_Teach_Me_To_Let_Go_Of_My_Fears.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://www.archive.org/download/RevengeOfTheLost_787/02-Sleepwalk-Blindness.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://www.archive.org/download/RevengeOfTheLost_787/02-Sleepwalk-Blindness.mp3/.rt" region="html_region" fill="freeze" />
+	</par><par>
+		<audio src="http://rec72.net/media/releases/professorkliq/Professor_Kliq_The_Scientific_Method_11_-_Plastic_and_Flashing_Lights_.mp3?title=" />
+		<text src="http://playr.hubmed.org/smiltext.cgi/http://www.darkerradio.com/pollsarchive/*****http://rec72.net/media/releases/professorkliq/Professor_Kliq_The_Scientific_Method_11_-_Plastic_and_Flashing_Lights_.mp3/.rt" region="html_region" fill="freeze" />
+	</par>
+	</seq>
+	</body>
+	</smil>

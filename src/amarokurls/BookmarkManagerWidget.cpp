@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008, 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -35,40 +35,46 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
 
     setContentsMargins( 0,0,0,0 );
 
-    m_toolBar = new QToolBar( this );
+    KHBox * topLayout = new KHBox( this );
+    
+    m_toolBar = new QToolBar( topLayout );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     KAction * addGroupAction = new KAction( KIcon("media-track-add-amarok" ), i18n( "Add Folder" ), this  );
     m_toolBar->addAction( addGroupAction );
     connect( addGroupAction, SIGNAL( triggered( bool ) ), BookmarkModel::instance(), SLOT( createNewGroup() ) );
 
+    KAction * addBookmarkAction = new KAction( KIcon("bookmark-new" ), i18n( "New Bookmark" ), this  );
+    m_toolBar->addAction( addBookmarkAction );
+    connect( addBookmarkAction, SIGNAL( triggered( bool ) ), BookmarkModel::instance(), SLOT( createNewBookmark() ) );
+
+
+    m_searchEdit = new Amarok::LineEdit( topLayout );
+    m_searchEdit->setClickMessage( i18n( "Filter bookmarks" ) );
+    m_searchEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_searchEdit->setClearButtonShown( true );
+    m_searchEdit->setFrame( true );
+    m_searchEdit->setToolTip( i18n( "Start typing to progressively filter the bookmarks" ) );
+    m_searchEdit->setFocusPolicy( Qt::ClickFocus ); // Without this, the widget goes into text input mode directly on startup
+
+    connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( slotFilterChanged(  const QString &  ) ) );
+    
     m_bookmarkView = new BookmarkTreeView( this );
-    m_bookmarkView->setModel( BookmarkModel::instance() );
-    connect( m_bookmarkView, SIGNAL( bookmarkSelected( AmarokUrl ) ), this, SLOT( slotBookmarkSelected( AmarokUrl ) ) );
-    connect( m_bookmarkView, SIGNAL( showMenu( KMenu*, const QPointF& ) ), this, SIGNAL( showMenu( KMenu*, const QPointF& ) ) );
 
-    KHBox * editBox1 = new KHBox( this );
-    new QLabel( i18n( "Name:" ), editBox1 );
-    m_currentBookmarkNameEdit = new QLineEdit( editBox1 );
+    m_proxyModel = new QSortFilterProxyModel( this );
+    m_proxyModel->setSourceModel( BookmarkModel::instance() );
+    m_proxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
+    m_proxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
+    m_proxyModel->setDynamicSortFilter( true );
+    m_proxyModel->setFilterKeyColumn ( -1 ); //filter on all columns
 
-    KHBox * editBox2 = new KHBox( this );
-    new QLabel( i18n( "Url:" ), editBox2 );
-    m_currentBookmarkUrlEdit = new QLineEdit( editBox2 );
+    m_bookmarkView->setModel( m_proxyModel );
+    m_bookmarkView->setProxy( m_proxyModel );
+    m_bookmarkView->setSortingEnabled( true );
 
-    KHBox * buttonBox = new KHBox( this );
-
-    m_getCurrentBookmarkButton = new QPushButton( i18n( "Get Current" ), buttonBox );
-    connect( m_getCurrentBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( showCurrentUrl() ) );
-
-    m_addBookmarkButton = new QPushButton( i18n( "Add" ), buttonBox );
-    connect( m_addBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( bookmarkCurrent() ) );
-
-    m_gotoBookmarkButton = new QPushButton( i18n( "Goto" ), buttonBox );
-    connect( m_gotoBookmarkButton, SIGNAL( clicked( bool ) ), this, SLOT( gotoBookmark() ) );
+    connect( BookmarkModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_bookmarkView, SLOT( slotEdit( const QModelIndex & ) ) );
 
     m_currentBookmarkId = -1;
-
-
 
 }
 
@@ -76,70 +82,22 @@ BookmarkManagerWidget::~BookmarkManagerWidget()
 {
 }
 
-void BookmarkManagerWidget::showCurrentUrl()
-{
-    m_currentBookmarkUrlEdit->setText( getBookmarkUrl() );
-    m_currentBookmarkNameEdit->setText( i18n( "New Bookmark" ) );
-
-    m_currentBookmarkId = -1;
-    updateAddButton();
-}
-
-void BookmarkManagerWidget::addBookmark()
-{
-}
-
-QString BookmarkManagerWidget::getBookmarkUrl()
-{
-    NavigationUrlGenerator urlGenerator;
-    return urlGenerator.CreateAmarokUrl().url();
-}
-
-void BookmarkManagerWidget::gotoBookmark()
-{
-    AmarokUrl url( m_currentBookmarkUrlEdit->text() );
-    url.run();
-}
-
-void BookmarkManagerWidget::bookmarkCurrent()
-{
-    DEBUG_BLOCK
-
-    AmarokUrl url( m_currentBookmarkUrlEdit->text() );
-    url.setName( m_currentBookmarkNameEdit->text() );
-
-    if ( m_currentBookmarkId != -1)
-        url.setId( m_currentBookmarkId );
-
-    url.saveToDb();
-    BookmarkModel::instance()->reloadFromDb();
-
-    m_currentBookmarkId = -1;
-    updateAddButton();
-}
-
-
-void BookmarkManagerWidget::slotBookmarkSelected( AmarokUrl bookmark )
-{
-    m_currentBookmarkId = bookmark.id();
-
-    m_currentBookmarkUrlEdit->setText( bookmark.url() );
-    m_currentBookmarkNameEdit->setText( bookmark.name() );
-
-    updateAddButton();
-}
-
-void BookmarkManagerWidget::updateAddButton()
-{
-    if ( m_currentBookmarkId == -1 )
-        m_addBookmarkButton->setText( i18n( "Add" ) );
-    else
-        m_addBookmarkButton->setText( i18n( "Save" ) );
-}
 
 BookmarkTreeView * BookmarkManagerWidget::treeView()
 {
     return m_bookmarkView;
+}
+
+void BookmarkManagerWidget::slotFilterChanged( const QString &filter )
+{
+
+    //when the clear button is pressed, we get 2 calls to this slot... filter this out  as it messes with
+    //resetting the view:
+    if ( filter == m_lastFilter )
+        return;
+
+    m_proxyModel->setFilterFixedString( filter );
+    
 }
 
 

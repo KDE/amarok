@@ -93,3 +93,9 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl ( KUrl url )
     }
     return list;
 }
+
+KIcon PlayUrlRunner::icon() const
+{
+    return KIcon( "x-media-podcast-amarok" );
+}
+

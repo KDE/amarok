@@ -46,38 +46,20 @@ class PlaylistManager : public QObject
     Q_OBJECT
 
     public:
-    //Don't forget to add a new default Category to PlaylistManager::typeName(int playlistCategory)
-    enum PlaylistCategory
-    {
-        CurrentPlaylist = 1,
-        UserPlaylist,
-        PodcastChannel,
-        Dynamic,
-        SmartPlaylist,
-        Custom
-    };
-
-    enum PlaylistFormat
-    {
-        M3U,
-        PLS,
-        XML,
-        RAM,
-        SMIL,
-        ASX,
-        XSPF,
-        Unknown,
-        NotPlaylist = Unknown
-    };
+        //Don't forget to add a new default Category to PlaylistManager::typeName(int playlistCategory)
+        enum PlaylistCategory
+        {
+            CurrentPlaylist = 1,
+            UserPlaylist,
+            PodcastChannel,
+            Dynamic,
+            SmartPlaylist,
+            Custom
+        };
 
         static PlaylistManager *instance();
         static void destroy();
         //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamically.
-
-        static PlaylistFormat getFormat( const KUrl &path );
-
-        static bool isPlaylist( const KUrl &path );
-        static KUrl newPlaylistFilePath( const QString& fileExtension );
 
         /**
          * @returns all available categories registered at that moment
@@ -149,11 +131,6 @@ class PlaylistManager : public QObject
          *  @returns true when the move was performed sucessfully
          */
         bool moveTrack( Meta::PlaylistPtr playlist, int from, int to );
-
-        //the next two functions are needed to support some services that have no other way of presenting data to the user
-        //than wrapping the url to a playlist in a track.
-        bool canExpand( Meta::TrackPtr track );
-        Meta::PlaylistPtr expand( Meta::TrackPtr track );
 
         PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; };
         UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; };

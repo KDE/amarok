@@ -85,4 +85,9 @@ QString NavigationUrlRunner::command() const
     return "navigate";
 }
 
+KIcon NavigationUrlRunner::icon() const
+{
+    return KIcon( "flag-amarok" );
+}
+
 

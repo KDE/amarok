@@ -42,8 +42,7 @@ class DirectoryLoader : public QObject
         DirectoryLoader();
         ~DirectoryLoader();
 
-        void insertAtRow( int row ); //!call before init. Will insert the completed
-                                    //
+        void insertAtRow( int row ); // call before init to tell the loader the row to start inserting tracks
         void init( const QList<KUrl>& urls ); //!list all 
         void init( const QList<QUrl>& urls ); //!convience 
 
@@ -52,12 +51,12 @@ class DirectoryLoader : public QObject
 
     private slots:
         void directoryListResults( KIO::Job *job, const KIO::UDSEntryList &list );
-        void listJobFinished(KJob*);
+        void listJobFinished( KJob* );
         void doInsertAtRow();
 
     private:
         void finishUrlList();
-        static bool directorySensitiveLessThan( const KFileItem& item1, const KFileItem& item2);
+        static bool directorySensitiveLessThan( const KFileItem& item1, const KFileItem& item2 );
         /**
          * the number of directory list operations. this is used so that
          * the last directory operations knows its the last */

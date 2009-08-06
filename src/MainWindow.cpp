@@ -50,7 +50,7 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
 #include "playlist/layouts/LayoutConfigAction.h"
-#include "playlistmanager/PlaylistFileProvider.h"
+#include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
@@ -645,7 +645,11 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
     ac->addAction( "playlist_save", action );
 
-    action = new KAction( KIcon( "flag-amarok" ), i18n( "Bookmark Manager" ), this );
+    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark This Location" ), this );
+    ac->addAction( "bookmark_browser", action );
+    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentBrowserView() ) );
+
+    action = new KAction( KIcon( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
     ac->addAction( "bookmark_manager", action );
 

@@ -31,13 +31,10 @@ AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
 IpodCollectionFactory::IpodCollectionFactory()
     : MediaDeviceCollectionFactory<IpodCollection> ( new IpodConnectionAssistant() )
 {
-    DEBUG_BLOCK
-    //nothing to do
 }
 
 IpodCollectionFactory::~IpodCollectionFactory()
 {
-    DEBUG_BLOCK
 }
 
 //IpodCollection
@@ -54,21 +51,21 @@ IpodCollection::IpodCollection(MediaDeviceInfo* info)
     m_udi = ipodinfo->udi();
 
     m_handler = new Meta::IpodHandler( this, m_mountPoint );
-
 }
 
 
 bool
 IpodCollection::possiblyContainsTrack( const KUrl &url ) const
 {
+    QString u = QUrl::fromPercentEncoding( url.url().toUtf8() );
     // We could simply check for iPod_Control except that we could actually have multiple ipods connected
-    return url.url().startsWith( m_mountPoint ) || url.url().startsWith( "file://" + m_mountPoint );
+    return u.startsWith( m_mountPoint ) || u.startsWith( "file://" + m_mountPoint );
 }
 
 Meta::TrackPtr
 IpodCollection::trackForUrl( const KUrl &url )
 {
-    QString uid = url.url();
+    QString uid = QUrl::fromPercentEncoding( url.url().toUtf8() );
     if( uid.startsWith("file://") )
         uid = uid.remove( 0, 7 );
     Meta::TrackPtr ipodTrack = m_trackMap.value( uid );
@@ -89,7 +86,6 @@ IpodCollection::collectionId() const
 QString
 IpodCollection::prettyName() const
 {
-//    return "Ipod at " + m_mountPoint;
     return m_handler->prettyName();
 }
 

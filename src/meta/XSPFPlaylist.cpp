@@ -29,6 +29,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 #include "PlaylistManager.h"
+#include "PlaylistFileSupport.h"
 
 #include "timecode/TimecodeMeta.h"
 
@@ -48,7 +49,7 @@ namespace Meta
 XSPFPlaylist::XSPFPlaylist()
     : Meta::Playlist()
     , QDomDocument()
-    , m_url( PlaylistManager::newPlaylistFilePath( "xspf" ) )
+    , m_url( Meta::newPlaylistFilePath( "xspf" ) )
 {
     m_name = m_url.fileName();
     QDomElement root = createElement( "playlist" );

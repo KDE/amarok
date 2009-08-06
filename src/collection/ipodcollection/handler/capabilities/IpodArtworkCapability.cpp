@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,36 +14,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYLISTFILEPROVIDER_H
-#define PLAYLISTFILEPROVIDER_H
+#include "IpodArtworkCapability.h"
+#include "IpodHandler.h"
 
-#include <UserPlaylistProvider.h>
+using namespace Handler;
 
-class KUrl;
-
-/**
-    @author Bart Cerneels <bart.cerneels@kde.org>
-*/
-class PlaylistFileProvider : public UserPlaylistProvider
+IpodArtworkCapability::IpodArtworkCapability( Meta::IpodHandler *handler )
+    : ArtworkCapability()
+    , m_handler( handler )
 {
-    public:
-        PlaylistFileProvider();
+}
 
-        ~PlaylistFileProvider();
+IpodArtworkCapability::~IpodArtworkCapability()
+{
+    // nothing to do here
+}
 
-        QString prettyName() const;
-        int category() const { return PlaylistManager::UserPlaylist; };
+QPixmap IpodArtworkCapability::getCover( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_handler->libGetCoverArt( track );
+}
 
-        virtual Meta::PlaylistList playlists();
+bool IpodArtworkCapability::canUpdateCover() const
+{
+    return m_handler->isWritable();
+}
 
-        virtual bool canSavePlaylists() { return true; }
-
-        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks );
-        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks,
-                                        const QString &name );
-
-    private:
-        Meta::PlaylistList m_playlists;
-};
-
-#endif

@@ -24,8 +24,6 @@
 * \brief A custom interactive Phonon VideoWidget 
 * Interactivity :
 *  - Double click toggle full screen
-*  - 
-*  - 
 * \sa Phonon::VideoWidget
 *
 * \author Simon Esneault <simon.esneault@gmail.com>
@@ -34,15 +32,12 @@
 class CustomVideoWidget : public Phonon::VideoWidget
 {
     Q_OBJECT
-    public:
-
 
     protected:
         virtual void mouseDoubleClickEvent(QMouseEvent* );
-        virtual void keyPressEvent(QKeyEvent* );
 
         QWidget *m_parent;
-        QRect   m_rect;
+        QRect    m_rect;
 };
 
 #endif // CUSTOMVIDEOWIDGET_H

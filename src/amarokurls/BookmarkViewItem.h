@@ -45,6 +45,7 @@ class BookmarkViewItem : public virtual QSharedData
         virtual QString name() const = 0;
         virtual QString description() const = 0;
         virtual void rename( const QString &name ) = 0;
+        virtual void setDescription( const QString &description ) = 0;
         virtual void removeFromDb() = 0;
 
 };

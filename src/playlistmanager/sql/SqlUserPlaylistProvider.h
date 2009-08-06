@@ -18,7 +18,7 @@
 #define AMAROK_COLLECTION_SQLUSERPLAYLISTPROVIDER_H
 
 #include "playlistmanager/UserPlaylistProvider.h"
-#include "meta/SqlPlaylist.h"
+#include "SqlPlaylist.h"
 #include "SqlPlaylistGroup.h"
 
 #include <klocale.h>

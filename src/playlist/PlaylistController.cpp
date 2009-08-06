@@ -30,6 +30,7 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "PlaylistFileSupport.h"
 #include "meta/multi/MultiTrack.h"
 
 
@@ -497,9 +498,9 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
         Meta::TrackPtr track = i.value();
         if ( track == Meta::TrackPtr() )
             i.remove();
-        else if ( The::playlistManager()->canExpand( track ) )
+        else if( Meta::canExpand( track ) )
         {
-            Meta::PlaylistPtr playlist = The::playlistManager()->expand( track ); //expand() can return 0 if the KIO job times out
+            Meta::PlaylistPtr playlist = Meta::expand( track ); //expand() can return 0 if the KIO job times out
             if ( playlist )
             {
                 //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:

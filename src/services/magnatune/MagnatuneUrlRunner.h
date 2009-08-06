@@ -17,9 +17,11 @@
 #ifndef MAGNATUNEURLRUNNER_H
 #define MAGNATUNEURLRUNNER_H
 
-#include <QObject>
-
 #include "amarokurls/AmarokUrlRunnerBase.h"
+
+#include <KIcon>
+
+#include <QObject>
 
 /**
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
@@ -33,6 +35,7 @@ public:
     virtual ~MagnatuneUrlRunner();
 
     virtual QString command() const;
+    virtual KIcon icon() const;
     virtual bool run( AmarokUrl url );
 
 signals:

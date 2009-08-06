@@ -18,6 +18,7 @@
 #include "meta/PlaylistFileSupport.h"
 
 #include "Debug.h"
+#include "Amarok.h"
 
 ShoutcastTrack::ShoutcastTrack( const QString &name, const KUrl & playlistUrl )
     : MetaStream::Track( KUrl() )

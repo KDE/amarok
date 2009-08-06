@@ -27,113 +27,122 @@ namespace Handler
     class MEDIADEVICECOLLECTION_EXPORT PlaylistCapability : public Handler::Capability
     {
         Q_OBJECT
-    public:
-        virtual ~PlaylistCapability();
+    
+        public:
+            virtual ~PlaylistCapability();
 
-    /// Parsing of Tracks in Playlists on Device
-    /// NOTE: not required by devices with no playlists, just reimplement empty functions
+            /// Parsing of Tracks in Playlists on Device
+            /// NOTE: not required by devices with no playlists, just reimplement empty functions
 
-    /** This method initializes iteration over some list of playlist structs
-    *  e.g. with libgpod, this initializes a GList to the beginning of
-    *  the list of playlists
-    */
+            /**
+             * This method initializes iteration over some list of playlist structs
+             * e.g. with libgpod, this initializes a GList to the beginning of
+             * the list of playlists
+             */
+            virtual void prepareToParsePlaylists() = 0;
 
-    virtual void prepareToParsePlaylists() = 0;
+            /**
+             * This method runs a test to see if we have reached the end of
+             * the list of playlists to be parsed on the device, e.g. in libgpod
+             * this tests if cur != NULL, i.e. if(cur)
+             */
+            virtual bool isEndOfParsePlaylistsList() = 0;
 
-    /** This method runs a test to see if we have reached the end of
-    *  the list of playlists to be parsed on the device, e.g. in libgpod
-    *  this tests if cur != NULL, i.e. if(cur)
-    */
+            /**
+             * This method moves the iterator to the next playlist on the list of
+             * playlist structs, e.g. with libgpod, cur = cur->next where cur
+             * is a GList*
+             */
+            virtual void prepareToParseNextPlaylist() = 0;
 
-    virtual bool isEndOfParsePlaylistsList() = 0;
+            /**
+             * This method attempts to access the special struct of the
+             * next playlist, so that information can then be parsed from it.
+             * For libgpod, this is m_currplaylist = ( Itdb_Playlist * ) cur->data
+             */
+            virtual void nextPlaylistToParse() = 0;
 
-    /** This method moves the iterator to the next playlist on the list of
-    *  playlist structs, e.g. with libgpod, cur = cur->next where cur
-    *  is a GList*
-    */
+            /**
+             * This method checks if the playlist should be parsed, or skipped.
+             * Certain playlists, like the master playlist on the iPod, do not
+             * need to be or should not be parsed.
+             * @return true if should not parse, false otherwise.
+             */
+            virtual bool shouldNotParseNextPlaylist() = 0;
 
-    virtual void prepareToParseNextPlaylist() = 0;
+            /**
+             * This method initializes iteration over some list of track structs
+             * that correspond to a playlist struct
+             * e.g. with libgpod, this initializes a GList to the beginning of
+             * the list of tracks
+             */
+            virtual void prepareToParsePlaylistTracks() = 0;
 
-    /** This method attempts to access the special struct of the
-    *  next playlist, so that information can then be parsed from it.
-    *  For libgpod, this is m_currplaylist = ( Itdb_Playlist * ) cur->data
-    */
+            /**
+             * This method runs a test to see if we have reached the end of
+             * the list of tracks in the playlist to be parsed on the device, e.g. in libgpod
+             * this tests if cur != NULL, i.e. if(cur)
+             */
 
-    virtual void nextPlaylistToParse() = 0;
+            virtual bool isEndOfParsePlaylist() = 0;
 
-    /** This method checks if the playlist should be parsed, or skipped.
-    *  Certain playlists, like the master playlist on the iPod, do not
-    *  need to be or should not be parsed.
-    *  @return true if should not parse, false otherwise.
-    */
+            /**
+             * This method moves the iterator to the next track on the playlist of
+             * track structs, e.g. with libgpod, cur = cur->next where cur
+             * is a GList*
+             */
 
-    virtual bool shouldNotParseNextPlaylist() = 0;
+            virtual void prepareToParseNextPlaylistTrack() = 0;
 
-    /** This method initializes iteration over some list of track structs
-    *  that correspond to a playlist struct
-    *  e.g. with libgpod, this initializes a GList to the beginning of
-    *  the list of tracks
-    */
+            /**
+             * This method attempts to access the special struct of the
+             * next track on the playlist, so that information can then be parsed from it.
+             * For libgpod, this is m_currtrack = (Itdb_Track*) cur->data
+             */
+            virtual void nextPlaylistTrackToParse() = 0;
 
-    virtual void prepareToParsePlaylistTracks() = 0;
+            /**
+             * Returns a MediaDeviceTrackPtr that is associated with the currently parsed track struct.
+             * @return A MediaDeviceTrackPtr to currently parsed track struct
+             */
+            virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct() = 0;
 
-    /** This method runs a test to see if we have reached the end of
-    *  the list of tracks in the playlist to be parsed on the device, e.g. in libgpod
-    *  this tests if cur != NULL, i.e. if(cur)
-    */
+            /**
+             * Returns a string containing the playlist name of the currently parsed playlist struct, if available.
+             * @return A string with the name of the currently parsed playlist
+             */
+            virtual QString libGetPlaylistName() = 0;
 
-    virtual bool isEndOfParsePlaylist() = 0;
+            /**
+             * Saves a playlist of tracks, with a name.
+             * @param tracks the tracks that make up the playlist to be made
+             * @param name the name of the playlist
+             */
+            virtual void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name ) = 0;
+            
+            /**
+             * Deletes a particular playlist from the device
+             * @param playlist the playlist to remove
+             */
+            virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) = 0;
 
-    /** This method moves the iterator to the next track on the playlist of
-    *  track structs, e.g. with libgpod, cur = cur->next where cur
-    *  is a GList*
-    */
+            /**
+             * Renames a particular playlist on the device
+             * @param playlist the playlist to rename
+             */
+            virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) = 0;
 
-    virtual void prepareToParseNextPlaylistTrack() = 0;
+            /** 
+             * This method must create a two-way association of the current Meta::Playlist
+             * to the special struct provided by the library to read/write information.
+             * For example, for libgpod one would associate Itdb_Playlist*.  It makes
+             * the most sense to use a QHash since it is fastest lookup and order
+             * does not matter.
+             * @param playlist The list to two-way associate with a library list struct
+             */
+            virtual void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
 
-    /** This method attempts to access the special struct of the
-    *  next track on the playlist, so that information can then be parsed from it.
-    *  For libgpod, this is m_currtrack = (Itdb_Track*) cur->data
-    */
-
-    virtual void nextPlaylistTrackToParse() = 0;
-
-    /** Returns a MediaDeviceTrackPtr that is associated with the currently parsed track struct.
-    *  @return A MediaDeviceTrackPtr to currently parsed track struct
-    */
-
-    virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct() = 0;
-
-    /** Returns a string containing the playlist name of the currently parsed playlist struct, if available.
-    *  @return A string with the name of the currently parsed playlist
-    */
-
-    virtual QString libGetPlaylistName() = 0;
-
-    /** Saves a playlist of tracks, with a name.
-    *  @param tracks the tracks that make up the playlist to be made
-    *  @param name the name of the playlist
-    */
-
-    // TODO: make pure virtual, reimplement in every plcapability
-    virtual void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
-    { Q_UNUSED(playlist) Q_UNUSED( name) }
-    virtual void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
-
-    virtual void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
-
-    /** This method must create a two-way association of the current Meta::Playlist
-    *  to the special struct provided by the library to read/write information.
-    *  For example, for libgpod one would associate Itdb_Playlist*.  It makes
-    *  the most sense to use a QHash since it is fastest lookup and order
-    *  does not matter.
-    *  @param playlist The list to two-way associate with a library list struct
-    */
-
-    virtual void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist ) { Q_UNUSED( playlist ) }
-
-    static Type capabilityInterfaceType() { return Handler::Capability::Playlist; }
-
+            static Type capabilityInterfaceType() { return Handler::Capability::Playlist; }
     };
 }
 

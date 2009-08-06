@@ -46,6 +46,8 @@ BookmarkManager::BookmarkManager()
     layout->addWidget( m_widget );
     setLayout( layout );
 
+    resize( 600, 400 );
+
 }
 
 BookmarkManager::~BookmarkManager()

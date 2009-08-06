@@ -77,12 +77,20 @@ public:
     virtual QPixmap emblem();
     virtual QString scalableEmblem();
 
+   /**
+    * Get the file type.
+    * Since jamendo uses interesting redirects, we cannot use the base implementation
+    * which relies on getting the file type from the url.
+    */
+    virtual QString type() const;
+
     virtual bool isBookmarkable() { return true; }
     virtual QString collectionName() { return "Jamendo.com"; }
     virtual bool simpleFiltering() { return false; }
 
     virtual QList< QAction *> customActions();
     virtual QList< QAction * > currentTrackActions();
+
 
 private:
     

@@ -19,11 +19,12 @@
 #include "amarokurls/AmarokUrl.h"
 #include "CollectionManager.h"
 #include "Debug.h"
+#include "DirectoryLoader.h"
 #include "Meta.h"
 #include "Playlist.h"
 #include "PlaylistFileSupport.h"
 #include "playlist/PlaylistController.h"
-#include "playlistmanager/PlaylistManager.h"
+
 
 
 #include <QByteArray>
@@ -74,16 +75,12 @@ macCallbackUrlHandler( const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*
             {
                 AmarokUrl aUrl( url.url() );
                 aUrl.run();
-            }
-            else if( PlaylistManager::instance()->isPlaylist( url ) )
+            } else
             {
-                Meta::PlaylistPtr playlist = Meta::loadPlaylist( url );
-                The::playlistController()->insertOptioned( playlist, Playlist::AppendAndPlay );
-            }
-            else
-            {
-                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-                The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
+                DirectoryLoader* loader = new DirectoryLoader();
+                QList<KUrl> urls;
+                urls << url;
+                loader->init(urls);
             }
         }
     }

@@ -34,6 +34,8 @@
 #include <KHelpMenu>
 #include <KLocale>
 #include <KToolBar>
+#include <Osd.h>
+#include <Osd.h>
 
 
 extern KAboutData aboutData;
@@ -498,8 +500,18 @@ StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionC
 void
 StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
 {
-    The::playlistActions()->setStopAfterMode(Playlist::StopAfterCurrent);
-    The::playlistActions()->setTrackToBeLast(The::playlistModel()->activeId());
+    if ( !The::playlistActions()->willStopAfterTrack( The::playlistModel()->activeId() ) )
+    {
+        The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
+        The::playlistActions()->setTrackToBeLast( The::playlistModel()->activeId() );
+        Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: On" ) );       
+    } else {
+        The::playlistActions()->setStopAfterMode( Playlist::StopNever );
+        The::playlistActions()->setTrackToBeLast( 0 );
+        Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: Off" ) );
+    }
 }
 
 void

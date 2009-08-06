@@ -69,30 +69,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-namespace Amarok
-{
-    QString
-    proxyForUrl(const QString& url)
-    {
-        KUrl kurl( url );
-
-        QString proxy;
-
-        if ( KProtocolManager::proxyForUrl( kurl ) !=
-                QString::fromLatin1( "DIRECT" ) ) {
-            KProtocolManager::slaveProtocol ( kurl, proxy );
-        }
-
-        return proxy;
-    }
-
-    QString
-    proxyForProtocol(const QString& protocol)
-    {
-        return KProtocolManager::proxyFor( protocol );
-    }
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // class ScriptManager
 ////////////////////////////////////////////////////////////////////////////////

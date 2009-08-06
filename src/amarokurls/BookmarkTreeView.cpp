@@ -39,7 +39,7 @@
 #include <typeinfo>
 
 BookmarkTreeView::BookmarkTreeView( QWidget *parent )
-    : Amarok::PrettyTreeView( parent )
+    : QTreeView( parent )
     , m_loadAction( 0 )
     , m_deleteAction( 0 )
     , m_renameAction( 0 )
@@ -47,19 +47,8 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     , m_addGroupAction( 0 )
 {
 
-    setEditTriggers( QAbstractItemView::NoEditTriggers );
-
+    setEditTriggers( QAbstractItemView::SelectedClicked );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
-    The::paletteHandler()->updateItemView( this );
-
-    header()->hide();
-    setFrameShape( QFrame::NoFrame );
-
-    //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
-    //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
-    QPalette p = The::paletteHandler()->palette();
-    QColor c = p.color( QPalette::Base );
-    setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 
     setDragEnabled( true );
     setAcceptDrops( true );
@@ -73,7 +62,7 @@ BookmarkTreeView::~BookmarkTreeView()
 
 void BookmarkTreeView::mouseDoubleClickEvent( QMouseEvent * event )
 {
-    QModelIndex index = indexAt( event->pos() );
+    QModelIndex index = m_proxyModel->mapToSource( indexAt( event->pos() ) );
 
     if( index.isValid() )
     {
@@ -207,18 +196,22 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
     if( indices.count() == 0 )
         menu->addAction( m_addGroupAction );
 
-    debug() << "showing menu at pos:" << event->pos() << "and globalpos:" << event->globalPos();
-    emit showMenu( menu, event->globalPos() );
+    menu->exec( event->globalPos() );
 }
 
 QSet<BookmarkViewItemPtr>
 BookmarkTreeView::selectedItems() const
 {
+    DEBUG_BLOCK
     QSet<BookmarkViewItemPtr> selected;
     foreach( const QModelIndex &index, selectionModel()->selectedIndexes() )
     {
-        if( index.isValid() && index.internalPointer() )
-            selected.insert( BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>() );
+        QModelIndex sourceIndex = m_proxyModel->mapToSource( index );
+        if( sourceIndex.isValid() && sourceIndex.internalPointer() && sourceIndex.column() == 0 )
+        {
+            debug() << "inserting item " << sourceIndex.data( Qt::DisplayRole ).toString();
+            selected.insert( BookmarkModel::instance()->data( sourceIndex, 0xf00d ).value<BookmarkViewItemPtr>() );
+        }
     } 
     return selected;
 }
@@ -233,14 +226,19 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     DEBUG_BLOCK
     Q_UNUSED( deselected )
     QModelIndexList indexes = selected.indexes();
-    if ( indexes.size() == 1 ) {
-        QModelIndex index = indexes.at( 0 );
-        BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
+    debug() << indexes.size() << " items selected";
+    foreach( QModelIndex index, indexes )
+    {
+        index = m_proxyModel->mapToSource( index );
+        if( index.column() == 0 )
+        {
+            BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
 
-        if ( typeid( * item ) == typeid( AmarokUrl ) ) {
-            debug() << "a url was selected...";
-            AmarokUrl bookmark = *static_cast< AmarokUrl* >( item.data() );
-            emit( bookmarkSelected( bookmark ) );
+            if ( typeid( * item ) == typeid( AmarokUrl ) ) {
+                debug() << "a url was selected...";
+                AmarokUrl bookmark = *static_cast< AmarokUrl* >( item.data() );
+                emit( bookmarkSelected( bookmark ) );
+            }
         }
     }
     
@@ -252,7 +250,7 @@ KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
     KMenu* menu = new KMenu( 0 );
 
     debug() << "getting menu for point:" << point;
-    QModelIndex index = indexAt( point );
+    QModelIndex index = m_proxyModel->mapToSource( indexAt( point ) );
     if( index.isValid() )
     {
 
@@ -356,6 +354,18 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     The::playlistController()->insertOptioned( Meta::TrackPtr::staticCast( track ), Playlist::AppendAndPlay );
 
     
+}
+
+void BookmarkTreeView::setProxy( QSortFilterProxyModel *proxy )
+{
+    m_proxyModel = proxy;
+}
+
+void BookmarkTreeView::slotEdit( const QModelIndex &index )
+{
+
+    //translate to proxy terms
+    edit( m_proxyModel->mapFromSource( index ) );
 }
 
 #include "BookmarkTreeView.moc"

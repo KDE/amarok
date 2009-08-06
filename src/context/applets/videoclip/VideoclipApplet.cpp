@@ -84,7 +84,6 @@ VideoclipApplet::init()
 
     // CustomWidget is a special VideoWidget for interaction
     m_videoWidget = new CustomVideoWidget();
-  //  m_videoWidget = new Phonon::VideoWidget();
     m_videoWidget->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
     m_videoWidget->hide();
     
@@ -162,7 +161,8 @@ VideoclipApplet::init()
 VideoclipApplet::~VideoclipApplet()
 {
     DEBUG_BLOCK
-    
+   
+    delete m_videoWidget;
 }
 
 void 

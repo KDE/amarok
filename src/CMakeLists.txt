@@ -50,6 +50,11 @@ include_directories(
     statusbar
     timecode
     widgets
+    ../tests/
+    ../tests/meta/
+    ../tests/meta/cue/
+    ../tests/meta/file/
+    ../tests/playlistmanager/
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB_INCLUDES}
@@ -89,6 +94,7 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/CollectionCapabilityMediaDevice.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
+  collection/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
   collection/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
   collection/mediadevicecollection/handler/capabilities/ReadCapability.cpp
   collection/mediadevicecollection/handler/capabilities/WriteCapability.cpp
@@ -248,7 +254,6 @@ set(meta_SRCS
     meta/MetaUtility.cpp
     meta/MetaReplayGain.cpp
     meta/PLSPlaylist.cpp
-    meta/SqlPlaylist.cpp
     meta/StatisticsProvider.cpp
     meta/PlaylistFileSupport.cpp
     meta/PrivateMetaRegistry.cpp
@@ -365,8 +370,9 @@ set(libplaylistmanager_SRCS
     playlistmanager/PlaylistManager.cpp
     playlistmanager/PlaylistProvider.cpp
     playlistmanager/UserPlaylistProvider.cpp
-    playlistmanager/PlaylistFileProvider.cpp
+    playlistmanager/file/PlaylistFileProvider.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
+    playlistmanager/sql/SqlPlaylist.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp
 )
 
@@ -577,6 +583,21 @@ set(amaroklib_LIB_SRCS
     GlobalCurrentTrackActions.cpp
 )
 
+if(CMAKE_BUILD_TYPE MATCHES debugfull)
+    set(amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        ../tests/meta/TestPlaylistFileSupport.cpp
+        ../tests/meta/cue/TestMetaCueCueFileItem.cpp
+        ../tests/meta/file/TestMetaFileTrack.cpp
+        ../tests/TestAmarok.cpp
+        ../tests/TestCaseConverter.cpp
+        ../tests/TestDirectoryLoader.cpp
+        ../tests/TestExpression.cpp
+        ../tests/TestQStringx.cpp
+        ../tests/TestSmartPointerList.cpp
+    )
+endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.player.xml PlayerDBusHandler.h Amarok::PlayerDBusHandler PlayerAdaptor PlayerAdaptor)
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.tracklist.xml TracklistDBusHandler.h Amarok::TracklistDBusHandler TracklistAdaptor TracklistAdaptor)
@@ -619,6 +640,10 @@ target_link_libraries(amaroklib
     ${EXTRA_LIBS}
     amarokpud
 )
+
+if(CMAKE_BUILD_TYPE MATCHES debugfull)
+    target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
+endif(CMAKE_BUILD_TYPE MATCHES debugfull)
 
 if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})

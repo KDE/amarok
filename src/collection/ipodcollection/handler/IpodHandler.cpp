@@ -46,6 +46,7 @@ extern "C" {
 #include "kjob.h"
 #include <KMessageBox>
 #include <KPasswordDialog>
+#include <KStandardDirs>
 #include <KUrl>
 #include <threadweaver/ThreadWeaver.h>
 
@@ -70,12 +71,14 @@ using namespace Meta;
 
 IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
+    , m_itdb( 0 )
     //, m_memColl( mc )
     , m_masterPlaylist( 0 )
     , m_capacity( 0.0 )
     , m_jobcounter( 0 )
     , m_autoConnect( false )
     , m_mountPoint( mountPoint )
+    , m_wasMounted( !mountPoint.isEmpty() )
     , m_name()
     , m_isShuffle( false )
     , m_isMobile( false )
@@ -105,25 +108,62 @@ IpodHandler::~IpodHandler()
     DEBUG_BLOCK
     delete m_tempdir;
     // Write to DB before closing, for ratings updates etc.
-    //debug() << "Writing to Ipod DB";
     //writeDatabase();
     debug() << "Cleaning up Ipod Database";
     if ( m_itdb )
         itdb_free( m_itdb );
 
-    debug() << "End of destructor reached";
+    if ( !m_wasMounted && !m_mountPoint.isEmpty() )
+    {
+        int error = QProcess::execute("fusermount -u " + m_mountPoint);
+        debug() << "unmounting" << (error ? "failed" : "worked");
+    }
 }
 
 void
 IpodHandler::init()
 {
+    m_wasMounted = true;
+
     if( m_mountPoint.isEmpty() )
     {
-        debug() << "Error: empty mountpoint, probably an unmounted iPod, aborting";
-        m_memColl->slotAttemptConnectionDone( false );
-        return;
-    }
+        debug() << "Error: empty mountpoint, probably an unmounted iPod/iPhone, trying to mount";
+        m_wasMounted = false;
 
+        Solid::Device device = Solid::Device(m_memColl->udi());
+        /* going until we reach a vendor, e.g. Apple */
+        while ( device.isValid() && device.vendor().isEmpty() )
+        {
+            device = Solid::Device( device.parentUdi() );
+        }
+        m_isIPhone = device.product().startsWith("iPhone");
+
+        m_mountPoint = KStandardDirs::locateLocal( "tmp", "amarok/" );
+        QString udi = m_memColl->udi().replace(QChar('/'), QChar('-'));
+        while( udi.startsWith('-') )
+            udi = udi.mid(1);
+        m_mountPoint += udi;
+
+        QDir mp(m_mountPoint);
+        if(!mp.exists())
+        {
+            mp.mkpath(m_mountPoint);
+            debug() << "created " << m_mountPoint;
+        }
+
+        QString command = QString("mount.fuse.ifuse %1 %2").arg(udi, m_mountPoint);
+        debug() << "mountpoint: " << m_mountPoint;
+        debug() << "command: " << command;
+        int error = QProcess::execute(command);
+
+        debug() << "mounting" << (error ? "failed" : "worked");
+
+        if( error )
+        {
+            m_memColl->slotAttemptConnectionDone( false );
+            return;
+        }
+    }
 
     GError *err = 0;
     QString initError = i18n( "iPod was not initialized:" );
@@ -153,11 +193,9 @@ IpodHandler::init()
 
         QString msg = i18n(  "Media Device: could not find iTunesDB on device mounted at %1. "
                              "Should I try to initialize your iPod?" ).arg(  mountPoint() );
-
         if( KMessageBox::warningContinueCancel( 0, msg, i18n( "Initialize iPod?" ),
-                                                                      KGuiItem( i18n( "&Initialize" ), "new" ) ) == KMessageBox::Continue )
+                                                KGuiItem( i18n( "&Initialize" ), "new" ) ) == KMessageBox::Continue )
         {
-
             QStringList modelList;
 
             // Pull model information
@@ -191,7 +229,6 @@ IpodHandler::init()
                 modelList << mod;
 
                 info++;
-
             }
 
             bool ok = false;
@@ -316,17 +353,24 @@ IpodHandler::init()
     // Get storage access for getting device space capacity/usage
 
     Solid::Device device = Solid::Device(  m_memColl->udi() );
-        if (  device.isValid() )
-        {
-            Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+    if (  device.isValid() )
+    {
+        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+        if ( storage )
             m_filepath = storage->filePath();
+        else if ( !m_mountPoint.isEmpty() )
+            m_filepath = m_mountPoint;
+
+        if ( !m_filepath.isEmpty() )
             m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
-        }
         else
-        {
-            m_filepath = "";
             m_capacity = 0.0;
-        }
+    }
+    else
+    {
+        m_filepath = "";
+        m_capacity = 0.0;
+    }
 
     debug() << "Succeeded: " << m_success;
 
@@ -337,7 +381,7 @@ bool
 IpodHandler::isWritable() const
 {
     // TODO: check if read-only
-    return true;
+    return !m_isIPhone;
 }
 
 QString
@@ -364,7 +408,7 @@ IpodHandler::collectionActions()
 
 #endif
 
-    QAction *staleOrphanedAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n(  "&Stale" ), this );
+    QAction *staleOrphanedAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n(  "&Stale and Orphaned" ), this );
     staleOrphanedAction->setProperty( "popupdropper_svg_id", "edit" );
 
     connect( staleOrphanedAction, SIGNAL( triggered() ), this, SLOT( slotStaleOrphaned() ) );
@@ -382,20 +426,15 @@ IpodHandler::slotInitializeIpod()
     const bool init = KMessageBox::warningContinueCancel(0,
                                                          text,
                                                          i18n("Initialize iPod") ) == KMessageBox::Continue;
-    if ( init )
+    if( init )
     {
-        bool success = initializeIpod();
+        const bool success = initializeIpod();
 
         if ( success )
-        {
-
-            The::statusBar()->shortMessage( i18n( "The iPod has been initialized!" ) );
-        }
+            The::statusBar()->shortMessage( i18n( "The iPod has been initialized" ) );
         else
-            The::statusBar()->shortMessage( i18n( "The iPod has failed to initialize!" ) );
+            The::statusBar()->shortMessage( i18n( "The iPod was unable to be initialized" ) );
     }
-
-
 }
 
 void
@@ -411,42 +450,92 @@ IpodHandler::slotStaleOrphaned()
 
     if( init )
     {
-        Meta::TrackList staletracks = staleTracks();
-        QStringList staleList;
-
-        foreach( Meta::TrackPtr track, staletracks )
-        {
-            QString ent;
-            QTextStream entry( &ent );
-            entry << track->artist()->name()
-                    << " - "
-                    << track->album()->name()
-                    << " - "
-                    << track->name();
-
-            staleList << ent;
-        }
-
-        bool ok = false;
-
-        QStringList itemList = KInputDialog::getItemList( i18n( "Select Stale Tracks To Delete" ), i18n( "Stale Tracks" ), staleList, staleList, true /*multiple*/, &ok, 0 );
-
-        if( ok )
-        {
-            Meta::TrackList staleToDelete;
-            foreach( QString item, itemList )
-            {
-                staleToDelete << staletracks[ itemList.indexOf( item ) ];
-            }
-            // HACK: do through signals/slots, which is how CollectionLocation
-            // does deletion of tracks.  Should create protected method to
-            // allow Handlers to delete without hackery.
-            connect( this, SIGNAL( removeTracksDone() ), SLOT( writeDatabase() ) );
-            removeTrackListFromDevice( staleToDelete );
-        }
-
-        //QStringList orphanedPaths = orphanedTracks();
+        ThreadWeaver::Weaver::instance()->enqueue( new OrphanedWorkerThread( this ) );
     }
+
+
+}
+
+bool
+IpodHandler::findStale()
+{
+    m_staletracks.clear();
+    m_staletracks = staleTracks();
+
+    return true;
+}
+
+bool
+IpodHandler::findOrphaned()
+{
+    m_orphanedPaths = orphanedTracks();
+    return true;
+}
+
+bool
+IpodHandler::addNextOrphaned()
+{
+    DEBUG_BLOCK
+    QString realPath;
+    QString path = m_orphanedPaths.takeFirst();
+    if( !pathExists( path, &realPath ) )
+        return false;
+
+    // Create track based on URL
+
+    Meta::TrackPtr filetrack( new MetaFile::Track( realPath ) );
+
+    // Create new track
+
+    Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
+
+    // Create a track struct, associate it to track
+
+    libCreateTrack( destTrack );
+
+    // Fill the track struct of the destTrack with info from the filetrack as source
+
+    setBasicMediaDeviceTrackInfo( filetrack, destTrack );
+
+    // set up the play url
+
+    m_itdbtrackhash[ destTrack ]->ipod_path = g_strdup( path.toLatin1() );
+
+    // Add the track struct into the database
+
+    addTrackInDB( destTrack );
+
+    // A track has been added to the db
+
+    databaseChanged();
+
+    // Add the new Meta::MediaDeviceTrackPtr into the device collection
+
+    // add track to collection
+    addMediaDeviceTrackToCollection( destTrack );
+
+    m_orphanedadded++;
+
+    return true;
+}
+
+void
+IpodHandler::slotOrphaned()
+{
+    writeDatabase();
+
+    const QString msg( i18ncp( "@info", "One stale track removed from the database. Scan for orphaned tracks?",
+                                "%1 tracks removed from the database. Scan for orphaned tracks?", m_staletracksremoved ) );
+
+    const bool init = KMessageBox::warningContinueCancel(0,
+                                                         msg,
+                                                         i18n("Find Orphaned Tracks") ) == KMessageBox::Continue;
+
+    if( init )
+    {
+        ThreadWeaver::Weaver::instance()->enqueue( new OrphanedWorkerThread( this ) );
+    } // init
+
 
 
 }
@@ -515,8 +604,6 @@ IpodHandler::initializeIpod()
     if( !writeITunesDB( false ) )
        return false;
 
-
-
     return true;
 }
 
@@ -575,7 +662,9 @@ IpodHandler::detectModel()
                 break;
 
             case ITDB_IPOD_MODEL_IPHONE_1:
-            case ITDB_IPOD_MODEL_TOUCH_BLACK:
+            //TODO newer libgpod thinks that an iPod touch is silver, older that it's black
+            //case ITDB_IPOD_MODEL_TOUCH_BLACK:
+            //case ITDB_IPOD_MODEL_TOUCH_SILVER:
                 m_isIPhone = true;
                 debug() << "detected iPhone/iPod Touch" << endl;
                 break;
@@ -790,24 +879,20 @@ IpodHandler::writeFirewireGuid()
 
     }
 
-    qDebug() << "Firewire is: " << firewireguid;
-
-
-
+    debug() << "Firewire is: " << firewireguid;
 
     // If found, write it out to the SysInfo file
     if( firewireguid.isEmpty() )
         return false;
 
     return appendToSysInfoFile( firewireguid );
-
 }
 
 bool
 IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 {
-    DEBUG_BLOCK
-    debug() << "ipodPath: " << ipodPath;
+    //DEBUG_BLOCK
+    //debug() << "ipodPath: " << ipodPath;
     QDir curDir( mountPoint() );
     QString curPath = mountPoint();
     QStringList components;
@@ -823,7 +908,7 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
     QStringList::iterator it = components.begin();
     for( ; it != components.end(); ++it )
     {
-        debug() << "(*it): " << (*it);
+        //debug() << "(*it): " << (*it);
         found = false;
         for( uint i = 0;i < curDir.count(); i++ )
         {
@@ -922,8 +1007,7 @@ IpodHandler::writeITunesDB( bool threaded )
 QString
 IpodHandler::itunesDir(const QString &p) const
 {
-    // NOTE: a colon was removed from the front since 1.4
-    QString base( "iPod_Control" );
+    QString base( ":iPod_Control" );
     if( m_isMobile )
         base = ":iTunes:iTunes_Control";
 
@@ -1048,6 +1132,7 @@ IpodHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
     Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
 
     m_itdbtrackhash.remove( track );
+    m_files.remove( QString(ipodtrack->ipod_path).toLower() );
 
     itdb_track_remove( ipodtrack );
 }
@@ -1094,7 +1179,7 @@ QStringList
 IpodHandler::orphanedTracks()
 {
     DEBUG_BLOCK
-    int orph = 0;
+
     QStringList orphanedTracks;
     QString musicpath;
     if (!pathExists( itunesDir( "Music" ), &musicpath ))
@@ -1122,12 +1207,7 @@ IpodHandler::orphanedTracks()
             {
                 debug() << "file: " << filename << " is orphaned" << endl;
                 orphanedTracks << ipodPath;
-                orph++;
-
             }
-
-            if( orph > 10 )
-                return QStringList();
         }
     }
 
@@ -1205,33 +1285,14 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
         return;
     }
 
-
-
-
     // Limit max number of jobs to 150, make sure more tracks left
     // to copy
-
-
-        debug() << "Tracks to copy still remain";
-        if( m_jobcounter < 150 )
-        {
-            debug() << "Jobs: " << m_jobcounter;
-            copyNextTrackToDevice();
-        }
-
-
-    /*
-    else
+    debug() << "Tracks to copy still remain";
+    if( m_jobcounter < 150 )
     {
-        debug() << "Tracklist empty";
-        // Empty copy queue, this is last job
-        if( m_jobcounter == 0 )
-        {
-            emit incrementProgress();
-            emit copyTracksDone( !m_copyFailed );
-        }
+        debug() << "Jobs: " << m_jobcounter;
+        copyNextTrackToDevice();
     }
-    */
 }
 
 void
@@ -1246,14 +1307,8 @@ IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, b
     DEBUG_BLOCK
     Meta::TrackPtr track = m_trackscopying[from];
 
-    if( job->error() )
-    {
-    }
-    else
-    {
+    if( !job->error() )
         slotFinalizeTrackCopy( track );
-    }
-
 }
 
 void
@@ -1279,23 +1334,19 @@ void
 IpodHandler::fileDeleted( KJob *job )  //SLOT
 {
     DEBUG_BLOCK
-    if(job->error())
-    {
+    if( job->error() )
         debug() << "file deletion failed: " << job->errorText();
-    }
 
     m_jobcounter--;
 
     // Limit max number of jobs to 150, make sure more tracks left
     // to delete
-
-
     debug() << "Tracks to delete still remain";
-        if( m_jobcounter < 150 )
-        {
-            debug() << "Jobs: " << m_jobcounter;
-            removeNextTrackFromDevice();
-        }
+    if( m_jobcounter < 150 )
+    {
+        debug() << "Jobs: " << m_jobcounter;
+        removeNextTrackFromDevice();
+    }
 
     KIO::DeleteJob *djob = reinterpret_cast<KIO::DeleteJob*> (job);
 
@@ -1686,7 +1737,6 @@ IpodHandler::libCreateTrack( const Meta::MediaDeviceTrackPtr& track )
     m_itdbtrackhash[ track ] = itdb_track_new();
 }
 
-#if 0
 QString
 IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
 {
@@ -1697,49 +1747,37 @@ IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
     return m_tempdir->name() + imageKey + ".png";
 }
 
-// TODO: This is sloooow. Need to implement on-demand fetching.
-void
-IpodHandler::getCoverArt( const Itdb_Track *ipodtrack )
+QPixmap
+IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 {
 #ifdef GDK_FOUND
+    AMAROK_NOTIMPLEMENTED
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
     if( !ipodtrack )
-        return;
+        return QPixmap();
+
+    if( ipodtrack->has_artwork == 0x02 ) // has_artwork: True if set to 0x01, false if set to 0x02.
+        return QPixmap();
 
     const QString filename = ipodArtFilename( ipodtrack );
 
     if( m_coverArt.contains(filename) )
-        return;
-
-    if( ipodtrack->has_artwork == 0x02 )
-        return;
+        return QPixmap(filename);
 
     GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( ipodtrack->itdb->device, ipodtrack->artwork, -1, -1 );
     if( !pixbuf )
-        return;
+        return QPixmap();
 
     gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, (const char*)(NULL));
     gdk_pixbuf_unref( pixbuf );
 
     m_coverArt.insert( filename );
-#else
-    Q_UNUSED(ipodtrack);
-#endif
-}
-
-
-QPixmap
-IpodHandler::libGetCoverArt( Meta::MediaDeviceTrackPtr track ) const
-{
-#ifdef GDK_FOUND
-
-    getCoverArt( m_itdbtrackhash[ track ];
     return QPixmap( filename );
 #else
     Q_UNUSED( track );
     return QPixmap();
 #endif
 }
-
 
 void
 IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path )
@@ -1779,7 +1817,6 @@ IpodHandler::libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
     Q_UNUSED( image );
 #endif
 }
-#endif
 
 void
 IpodHandler::prepareToParseTracks()
@@ -1912,12 +1949,13 @@ void
 IpodHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
     DEBUG_BLOCK
-    Itdb_Playlist *pl = m_itdbplaylisthash[ playlist ];
+    Itdb_Playlist *pl = m_itdbplaylisthash.value( playlist );
 
     if( pl )
     {
         debug() << "Playlist removed";
         itdb_playlist_remove( pl );
+        m_itdbplaylisthash.remove( playlist );
         databaseChanged();
     }
 }
@@ -1998,6 +2036,149 @@ IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
         debug() << "Writing to DB did not happen or failed";
 }
 
+/// Stale
+
+void
+IpodHandler::slotStaleFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Finding stale thread failed";
+    slotOrphaned();
+}
+
+void
+IpodHandler::slotStaleSucceeded( ThreadWeaver::Job* job )
+{
+    if( job->success() )
+    {
+        debug() << "Stale thread succeeded!";
+
+        QStringList staleList;
+        m_staletracksremoved = 0;
+
+        if( m_staletracks.count() > 0 )
+        {
+
+            foreach( Meta::TrackPtr track, m_staletracks )
+            {
+                QString ent;
+                QTextStream entry( &ent );
+                entry << track->artist()->name()
+                        << " - "
+                        << track->album()->name()
+                        << " - "
+                        << track->name();
+
+                staleList << ent;
+            }
+
+            bool ok = false;
+
+            QStringList itemList = KInputDialog::getItemList( i18n( "Select Stale Tracks To Delete" ), i18n( "Stale Tracks" ), staleList, staleList, true /*multiple*/, &ok, 0 );
+
+            if( ok )
+            {
+                Meta::TrackList staleToDelete;
+                foreach( QString item, itemList )
+                {
+                    staleToDelete << m_staletracks[ itemList.indexOf( item ) ];
+                }
+
+                m_staletracksremoved = staleToDelete.count();
+                // HACK: do through signals/slots, which is how CollectionLocation
+                // does deletion of tracks.  Should create protected method to
+                // allow Handlers to delete without hackery.
+                connect( this, SIGNAL( removeTracksDone() ), SLOT( slotOrphaned() ) );
+                removeTrackListFromDevice( staleToDelete );
+            }
+
+        } // endif staletracks
+        else
+        {
+            slotOrphaned();
+        }
+
+    }
+    else
+    {
+        debug() << "Stale thread failed";
+        slotOrphaned();
+    }
+}
+
+/// Orphaned
+
+void
+IpodHandler::slotOrphanedFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Finding orphaned thread failed";
+}
+
+void
+IpodHandler::slotOrphanedSucceeded( ThreadWeaver::Job* job )
+{
+    DEBUG_BLOCK
+    if( job->success() )
+    {
+        m_orphanedadded = 0;
+
+        debug() << "Number of paths: " << m_orphanedPaths.count();
+
+        if( !m_orphanedPaths.empty() )
+        {
+            m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Adding Orphaned Tracks to iPod Database" ) );
+            m_statusbar->setMaximum( m_orphanedPaths.count() );
+
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+
+        }
+
+    }
+    else
+    {
+        debug() << "failed to find orphaned tracks";
+    }
+}
+
+/// Add Orphaned
+
+void
+IpodHandler::slotAddOrphanedFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Adding orphaned thread failed";
+    if( m_orphanedPaths.count() )
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+}
+
+void
+IpodHandler::slotAddOrphanedSucceeded( ThreadWeaver::Job* job )
+{
+    if( job->success() )
+    {
+        emit incrementProgress();
+
+        if( m_orphanedPaths.count() )
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+        else
+        {
+            writeDatabase();
+
+            const QString orphmsg( i18ncp( "@info", "One orphaned track added to the database.",
+                                           "%1 tracks added to the database.", m_orphanedadded ) );
+
+            KMessageBox::information(0,
+                                     orphmsg,
+                                     i18n("Orphaned Tracks Added") );
+        }
+    }
+    else
+    {
+        debug() << "failed to add orphaned tracks";
+    }
+}
+
 /// Capability-related functions
 
 bool
@@ -2005,10 +2186,9 @@ IpodHandler::hasCapabilityInterface( Handler::Capability::Type type ) const
 {
     switch( type )
     {
+        case Handler::Capability::Artwork:
         case Handler::Capability::Readable:
-            return true;
         case Handler::Capability::Playlist:
-            return true;
         case Handler::Capability::Writable:
             return true;
 
@@ -2022,6 +2202,8 @@ IpodHandler::createCapabilityInterface( Handler::Capability::Type type )
 {
     switch( type )
     {
+        case Handler::Capability::Artwork:
+            return new Handler::IpodArtworkCapability( this );
         case Handler::Capability::Readable:
             return new Handler::IpodReadCapability( this );
         case Handler::Capability::Playlist:
@@ -2061,6 +2243,92 @@ DBWorkerThread::run()
     m_success = m_handler->writeITunesDB( false );
 }
 
+// stale
+
+StaleWorkerThread::StaleWorkerThread( IpodHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
+}
+
+StaleWorkerThread::~StaleWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+StaleWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+StaleWorkerThread::run()
+{
+    m_success = m_handler->findStale();
+}
+
+// Orphaned
+
+OrphanedWorkerThread::OrphanedWorkerThread( IpodHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
+}
+
+OrphanedWorkerThread::~OrphanedWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+OrphanedWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+OrphanedWorkerThread::run()
+{
+    m_success = m_handler->findOrphaned();
+}
+
+// Add Orphaned
+
+AddOrphanedWorkerThread::AddOrphanedWorkerThread( IpodHandler* handler )
+    : ThreadWeaver::Job()
+    , m_success( false )
+    , m_handler( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
+}
+
+AddOrphanedWorkerThread::~AddOrphanedWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+AddOrphanedWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+AddOrphanedWorkerThread::run()
+{
+    m_success = m_handler->addNextOrphaned();
+}
 
 #include "IpodHandler.moc"
 

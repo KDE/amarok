@@ -196,25 +196,30 @@ void BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
 
 
 BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QWidget *parent )
-    : BreadcrumbItemButton( KIcon( "flag-amarok" ), QString(), parent )
+    : BreadcrumbItemButton( KIcon( "bookmark-new-list" ), QString(), parent )
     , m_urlsCommand( urlsCommand )
 {
-    generateMenu();
     setFixedWidth( 20 );
+    setToolTip( i18n( "List and run browser bookmarks, or create new ones" ) );
+
+    connect( this, SIGNAL( clicked ( bool ) ), this, SLOT( showMenu() ) );
 }
 
 BreadcrumbUrlMenuButton::~BreadcrumbUrlMenuButton()
 {
 }
 
-void BreadcrumbUrlMenuButton::generateMenu()
+void BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
 {
+
+   DEBUG_BLOCK
+    
    BookmarkList list = The::amarokUrlHandler()->urlsByCommand( m_urlsCommand );
 
    QMenu * menu = new QMenu();
    menu->setTitle( i18n("Browser Bookmarks" ) );
 
-   menu->addAction( i18n( "Bookmark current" ) );
+   menu->addAction( Amarok::actionCollection()->action("bookmark_browser") );
    menu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
    
    menu->addSeparator();
@@ -224,9 +229,18 @@ void BreadcrumbUrlMenuButton::generateMenu()
        menu->addAction( new AmarokUrlAction( url, menu ) );
    }
 
-   setMenu( menu );
+   debug() << "showing menu at " << pos;
+   menu->exec( pos );
+   delete menu;
    
 }
+
+void BreadcrumbUrlMenuButton::showMenu()
+{
+    QPoint pos( 0, height() );
+    generateMenu( mapToGlobal( pos ) );
+}
+
 
 
 #include "BreadcrumbItemButton.moc"

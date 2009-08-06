@@ -95,15 +95,21 @@ Playlist::Model::Model()
         while ( i.hasNext() ) {
             i.next();
             Meta::TrackPtr track = i.value();
-            if ( track == Meta::TrackPtr() ) {
+            if ( track == Meta::TrackPtr() )
+            {
                 i.remove();
-            } else if ( The::playlistManager()->canExpand( track ) ) {
-                Meta::PlaylistPtr playlist = The::playlistManager()->expand( track ); //expand() can return 0 if the KIO job errors out
-                if ( playlist ) {
+            }
+            else if( Meta::canExpand( track ) )
+            {
+                Meta::PlaylistPtr playlist = Meta::expand( track );
+                //expand() can return 0 if the KIO job errors out
+                if( playlist )
+                {
                     i.remove();
                     Meta::TrackList newtracks = playlist->tracks();
-                    foreach( Meta::TrackPtr t, newtracks ) {
-                        if ( t != Meta::TrackPtr() )
+                    foreach( Meta::TrackPtr t, newtracks )
+                    {
+                        if( t != Meta::TrackPtr() )
                             i.insert( t );
                     }
                 }

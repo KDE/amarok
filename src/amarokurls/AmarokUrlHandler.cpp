@@ -53,9 +53,6 @@ AmarokUrlHandler::AmarokUrlHandler()
     m_timecodeObserver = new TimecodeObserver();
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
     registerRunner( m_playRunner, m_playRunner->command() );
-
-    //The::globalCollectionActions()->addAlbumAction( new BookmarkAlbumAction( this ) );
-    //The::globalCollectionActions()->addArtistAction( new BookmarkArtistAction( this ) );
 }
 
 
@@ -130,6 +127,21 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
     return resultList;
 }
 
+void AmarokUrlHandler::bookmarkCurrentBrowserView()
+{
+    NavigationUrlGenerator generator;
+    AmarokUrl url = generator.CreateAmarokUrl();
+    url.saveToDb();
+    BookmarkModel::instance()->reloadFromDb();
+}
+
+KIcon AmarokUrlHandler::iconForCommand( const QString &command )
+{
+    if( m_registeredRunners.keys().contains( command ) )
+        return m_registeredRunners.value( command )->icon();
+
+    return KIcon( "unknown" );
+}
 
 
 

@@ -492,7 +492,7 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
         contents.replace( "{background_color}", PaletteHandler::highlightColor( 0.12, 1 ).name() );
         contents.replace( "{text_background_color}", highlight.name() );
         contents.replace( "{border_color}", highlight.name() );
-        contents.replace( "{text_color}", palette.brush( QPalette::Text ).color().name() );
+        contents.replace( "{text_color}", PaletteHandler::highlightColor().darker( 400 ).name()  );
         contents.replace( "{link_color}", palette.link().color().name() );
         contents.replace( "{link_hover_color}", palette.link().color().darker( 200 ).name() );
         highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );

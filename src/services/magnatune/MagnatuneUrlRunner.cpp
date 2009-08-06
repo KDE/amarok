@@ -31,6 +31,11 @@ QString MagnatuneUrlRunner::command() const
     return "service_magnatune";
 }
 
+KIcon MagnatuneUrlRunner::icon() const
+{
+    return KIcon( "view-services-magnatune-amarok" );
+}
+
 bool MagnatuneUrlRunner::run( AmarokUrl url )
 {
     DEBUG_BLOCK

@@ -20,6 +20,7 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "PlaylistManager.h"
+#include "PlaylistFileSupport.h"
 
 #include <KUrl>
 
@@ -31,14 +32,14 @@ namespace Meta {
 
 M3UPlaylist::M3UPlaylist()
     : Playlist()
-    , m_url( PlaylistManager::newPlaylistFilePath( "m3u" ) )
+    , m_url( Meta::newPlaylistFilePath( "m3u" ) )
 {
     m_name = m_url.fileName();
 }
 
 M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
     : Playlist()
-    , m_url( PlaylistManager::newPlaylistFilePath( "m3u" ) )
+    , m_url( Meta::newPlaylistFilePath( "m3u" ) )
     , m_tracks( tracks )
 {
     m_name = m_url.fileName();

@@ -160,10 +160,7 @@ Track::name() const
     if( d )
     {
         const QString trackName = d->m_data.title;
-        if( !trackName.isEmpty() )
-            return trackName;
-        //lets use the filename, or it will look really dull in the playlist
-        return d->url.fileName();
+        return trackName;
     }
     return "This is a bug!";
 }
@@ -222,7 +219,7 @@ Track::isEditable() const
     const bool editable = ( p & QFile::WriteUser ) || ( p & QFile::WriteGroup ) || ( p & QFile::WriteOther );
 
     debug() << d->url.path() << " editable: " << editable;
-    return editable; 
+    return editable;
 }
 
 Meta::AlbumPtr
@@ -566,10 +563,10 @@ Track::collection() const
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::Editable || 
-           type == Meta::Capability::Importable || 
-           type == Meta::Capability::CurrentTrackActions || 
-           type == Meta::Capability::WriteTimecode || 
+    return type == Meta::Capability::Editable ||
+           type == Meta::Capability::Importable ||
+           type == Meta::Capability::CurrentTrackActions ||
+           type == Meta::Capability::WriteTimecode ||
            type == Meta::Capability::LoadTimecode;
 }
 

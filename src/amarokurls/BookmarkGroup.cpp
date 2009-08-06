@@ -203,6 +203,12 @@ void BookmarkGroup::rename(const QString & name)
     save();
 }
 
+void BookmarkGroup::setDescription( const QString &description )
+{
+    m_description = description;
+    save();
+}
+
 void BookmarkGroup::deleteChild( BookmarkViewItemPtr item )
 {
     if ( typeid( * item ) == typeid( BookmarkGroup ) )

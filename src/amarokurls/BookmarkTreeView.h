@@ -22,6 +22,8 @@
 #include "BookmarkViewItem.h"
 #include "widgets/PrettyTreeView.h"
 
+#include <QSortFilterProxyModel>
+
 class KMenu;
  
 class PopupDropper;
@@ -29,7 +31,7 @@ class QAction;
 
 class KAction;
 
-class AMAROK_EXPORT BookmarkTreeView : public Amarok::PrettyTreeView
+class AMAROK_EXPORT BookmarkTreeView : public QTreeView
 {
     Q_OBJECT
 
@@ -40,6 +42,8 @@ public:
     void setNewGroupAction( KAction * action );
     KMenu* contextMenu( const QPoint& point );
 
+    void setProxy( QSortFilterProxyModel *proxy );
+
 protected:
     void keyPressEvent( QKeyEvent *event );
     void mouseDoubleClickEvent( QMouseEvent *event );
@@ -49,6 +53,8 @@ protected slots:
     void slotLoad();
     void slotDelete();
     void slotRename();
+
+    void slotEdit( const QModelIndex &index );
 
     //for testing...
     void slotCreateTimecodeTrack() const;
@@ -71,6 +77,8 @@ private:
     KAction *m_createTimecodeTrackAction;
 
     KAction *m_addGroupAction;
+
+    QSortFilterProxyModel * m_proxyModel;
 };
 
 #endif

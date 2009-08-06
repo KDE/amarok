@@ -21,7 +21,10 @@
 #include "AmarokUrlRunnerBase.h"
 #include "Meta.h"
 
+#include <KIcon>
+
 #include <QMap>
+
 
 class TimecodeObserver;
 class AmarokUrlHandler;
@@ -50,10 +53,14 @@ public:
     bool run( AmarokUrl url );
 
     BookmarkList urlsByCommand( const QString &command );
+    KIcon iconForCommand( const QString &command );
+
 
 public slots:
     void bookmarkAlbum( Meta::AlbumPtr album );
     void bookmarkArtist( Meta::ArtistPtr artist );
+
+    void bookmarkCurrentBrowserView();
 
 private:
 

@@ -894,6 +894,103 @@ MtpHandler::libGetPlaylistName()
 }
 
 void
+MtpHandler::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    m_mtpplaylisthash[ playlist ] = m_currplaylist;
+}
+
+void
+MtpHandler::libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
+{
+    DEBUG_BLOCK
+    Meta::TrackList tracklist = const_cast<Meta::MediaDevicePlaylistPtr&> ( playlist )->tracks();
+    // Make new playlist
+
+    LIBMTP_playlist_t *metadata = LIBMTP_new_playlist_t();
+    metadata->name = qstrdup( name.toUtf8() );
+    const int trackCount = tracklist.count();
+    if (trackCount > 0) {
+        uint32_t *tracks = ( uint32_t* )malloc( sizeof( uint32_t ) * trackCount );
+        uint32_t i = 0;
+        foreach( Meta::TrackPtr trk, tracklist )
+        {
+            Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::staticCast( trk );
+            tracks[i] = m_mtptrackhash[ track ]->item_id;
+        }
+        metadata->tracks = tracks;
+        metadata->no_tracks = trackCount;
+    } else {
+        debug() << "no tracks available for playlist " << metadata->name
+            << endl;
+        metadata->no_tracks = 0;
+    }
+
+    QString genericError = i18n( "Could not save playlist." );
+
+    debug() << "creating new playlist : " << metadata->name << endl;
+    int ret = LIBMTP_Create_New_Playlist( m_device, metadata );
+    if( ret == 0 )
+    {
+        m_mtpplaylisthash[ playlist ] = metadata;
+        debug() << "playlist saved : " << metadata->playlist_id << endl;
+    }
+    else
+    {
+        debug () << "Could not create new playlist on device.";
+    }
+
+
+}
+
+void
+MtpHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    DEBUG_BLOCK
+
+    LIBMTP_playlist_t *pl = m_mtpplaylisthash[ playlist ];
+
+    if( pl )
+    {
+
+        m_mtpplaylisthash.remove( playlist );
+
+        u_int32_t object_id = pl->playlist_id;
+
+        QString genericError = i18n( "Could not delete item" );
+
+        debug() << "delete this id : " << object_id;
+
+        int status = LIBMTP_Delete_Object( m_device, object_id );
+
+        if ( status != 0 )
+        {
+            debug() << "delete object failed";
+        }
+        else
+            debug() << "object deleted";
+    }
+}
+
+void
+MtpHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    DEBUG_BLOCK
+    LIBMTP_playlist_t *pl = m_mtpplaylisthash[ playlist ];
+
+    if( pl )
+    {
+        debug() << "updating playlist : " << pl->name << endl;
+        int ret = LIBMTP_Update_Playlist( m_device, pl );
+        if( ret != 0 )
+        {
+            debug() << "Could not rename playlist";
+        }
+        else
+            debug() << "Playlist renamed";
+    }
+}
+
+void
 MtpHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
     m_mtptrackhash[ track ] = m_currtrack;
