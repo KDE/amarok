@@ -43,6 +43,7 @@ public:
 
 private:
     void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
+    void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const;
 
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
 

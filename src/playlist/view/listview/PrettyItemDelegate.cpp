@@ -96,6 +96,9 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
             break;
     }
 
+    if( index.data( ActiveTrackRole ).toBool() )
+        rowCount++; //add room for extras
+
     height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
     return QSize( 120, height );
 }
@@ -199,8 +202,14 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
     if ( rowCount == 0 )
         return;
+
+    int rowHeightDivider = rowCount;
+
+    //if we are showing the active track extras, we need to use one line of space for this ( has already been reserved in sizeHint)
+    if ( index.data( ActiveTrackRole ).toBool() )
+        rowHeightDivider++;
     
-    int rowHeight = option.rect.height() / rowCount;
+    int rowHeight = option.rect.height() / rowHeightDivider;
 
     int rowOffsetX = MARGINH;
     int rowOffsetY = 0;
@@ -407,6 +416,55 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
         }
         rowOffsetY += rowHeight;
     }
+
+    if ( index.data( ActiveTrackRole ).toBool() )
+    {
+        //we should have reserved space to paint the active track extras.
+        QRect extrasRect( 0, rowOffsetY, option.rect.width(), rowHeight );
+        
+        paintActiveTrackExtras( extrasRect, painter, option, index );
+        
+    }
+}
+
+void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+    int x = rect.x();
+    int y = rect.y();
+    int width = rect.width();
+    int height = rect.height();
+    int buttonSize = height - 4;
+
+    //just paint some "buttons for now
+
+    int offset = x + MARGINH;
+    painter->drawPixmap( offset, y + 2,
+                         The::svgHandler()->renderSvg(
+                         "back_button",
+                         buttonSize, buttonSize,
+                         "back_button" ) );
+
+    offset += ( buttonSize + MARGINH );
+    painter->drawPixmap( offset, y + 2,
+                         The::svgHandler()->renderSvg(
+                         "play_button",
+                         buttonSize, buttonSize,
+                         "play_button" ) );
+
+    offset += ( buttonSize + MARGINH );
+    painter->drawPixmap( offset, y + 2,
+                         The::svgHandler()->renderSvg(
+                         "stop_button",
+                         buttonSize, buttonSize,
+                         "stop_button" ) );
+                         
+    offset += ( buttonSize + MARGINH );                        
+    painter->drawPixmap( offset, y + 2,
+                         The::svgHandler()->renderSvg(
+                         "next_button",
+                         buttonSize, buttonSize,
+                         "next_button" ) );
+
 }
 
 
