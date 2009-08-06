@@ -67,7 +67,7 @@ namespace ProxyCollection
             QString type() const;
 
 
-            void add( Meta::TrackPtr track );
+            void add( const Meta::TrackPtr &track );
 
         protected:
             using Observer::metadataChanged;

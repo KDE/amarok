@@ -195,7 +195,7 @@ ProxyCollection::Track::score() const
 void
 ProxyCollection::Track::setScore( double newScore )
 {
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    foreach( Meta::TrackPtr track, m_tracks )
     {
         track->setScore( newScore );
     }
@@ -218,7 +218,7 @@ ProxyCollection::Track::rating() const
 void
 ProxyCollection::Track::setRating( int newRating )
 {
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    foreach( Meta::TrackPtr track, m_tracks )
     {
         track->setRating( newRating );
     }
@@ -278,7 +278,7 @@ ProxyCollection::Track::playCount() const
 void
 ProxyCollection::Track::finishedPlaying( double playedFraction )
 {
-    foreach( const Meta::TrackPtr &track, m_tracks )
+    foreach( Meta::TrackPtr track, m_tracks )
     {
         track->finishedPlaying( playedFraction );
     }
@@ -395,6 +395,66 @@ ProxyCollection::Track::add( const Meta::TrackPtr &track )
     notifyObservers();
 }
 
+void
+ProxyCollection::Track::metadataChanged( Meta::TrackPtr track )
+{
+    if( !track )
+        return;
+
+    if( !m_tracks.contains( track ) )
+    {
+        //why are we subscribed?
+        unsubscribeFrom( track );
+        return;
+    }
+
+    const TrackKey myKey = ProxyCollection::keyFromTrack( Meta::TrackPtr( this ) );
+    const TrackKey otherKey = ProxyCollection::keyFromTrack( track );
+    if( myKey == otherKey )
+    {
+        //no key relevant metadata did change
+        notifyObservers();
+        return;
+    }
+    else
+    {
+        if( m_tracks.size() == 1 )
+        {
+            if( m_collection->hasTrack( otherKey ) )
+            {
+                unsubscribeFrom( track );
+                m_collection->getTrack( track );
+                m_tracks.removeAll( track );
+                m_collection->removeTrack( myKey );
+                return; //do not notify observers, this track is not valid anymore!
+            }
+            else
+            {
+                if( track->album() )
+                     m_album = Meta::AlbumPtr( m_collection->getAlbum( track->album() ) );
+                if( track->artist() )
+                    m_artist = Meta::ArtistPtr( m_collection->getArtist( track->artist() ) );
+                if( track->genre() )
+                    m_genre = Meta::GenrePtr( m_collection->getGenre( track->genre() ) );
+                if( track->composer() )
+                    m_composer = Meta::ComposerPtr( m_collection->getComposer( track->composer() ) );
+                if( track->year() )
+                    m_year = Meta::YearPtr( m_collection->getYear( track->year() ) );
+
+                m_collection->setTrack( this );
+                m_collection->removeTrack( myKey );
+            }
+        }
+        else
+        {
+            unsubscribeFrom( track );
+            m_collection->getTrack( track );
+            m_tracks.removeAll( track );
+        }
+        notifyObservers();
+    }
+}
+
 ProxyCollection::Album::Album( ProxyCollection::Collection *coll, Meta::AlbumPtr album )
         : Meta::Album()
         , Meta::Observer()
@@ -500,7 +560,6 @@ ProxyCollection::Album::metadataChanged( Meta::AlbumPtr album )
             m_name = album->name();
             m_albumArtist = albumartist;
             m_collection->setAlbum( this );
-
         }
     }
 
@@ -611,6 +670,7 @@ ProxyCollection::Artist::metadataChanged( Meta::ArtistPtr artist )
             m_collection->removeArtist( m_name );
             m_name = artist->name();
             m_collection->setArtist( this );
+
         }
     }
 
@@ -867,6 +927,7 @@ ProxyCollection::Year::metadataChanged( Meta::YearPtr year )
                 m_collection->getYear( year );
                 m_years.removeAll( year );
                 m_collection->removeYear( m_name );
+                return; //do NOT notify observers, the instance is not valid anymore!
             }
             else
             {

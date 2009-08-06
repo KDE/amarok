@@ -26,6 +26,26 @@
 #include <QHash>
 #include <QReadWriteLock>
 
+struct AlbumKey
+{
+    QString albumName;
+    QString artistName;
+
+    AlbumKey &operator=( const AlbumKey &o )
+    { albumName = o.albumName; artistName = o.artistName; return *this; }
+};
+
+struct TrackKey
+{
+    QString trackName;
+    QString albumName;
+    QString artistName;
+    //more?
+
+    TrackKey &operator=( const TrackKey &o )
+    { trackName = o.trackName; albumName = o.albumName; artistName = o.artistName; return *this; }
+};
+
 namespace ProxyCollection
 {
     class Year;
@@ -35,19 +55,9 @@ namespace ProxyCollection
     class Genre;
     class Composer;
 
-    struct AlbumKey
-    {
-        QString albumName;
-        QString artistName;
-    };
 
-    struct TrackKey
-    {
-        QString trackName;
-        QString albumName;
-        QString artistName;
-        //more?
-    };
+
+
 
     class Collection : public Amarok::Collection
     {
@@ -73,22 +83,27 @@ namespace ProxyCollection
         void removeTrack( const TrackKey &key );
         Track* getTrack( Meta::TrackPtr track );
         void setTrack( ProxyCollection::Track *track );
+        bool hasTrack( const TrackKey &key );
 
         void removeAlbum( const QString &album, const QString &albumArtist );
         Album* getAlbum( Meta::AlbumPtr album );
         void setAlbum( ProxyCollection::Album *album );
+        bool hasAlbum( const QString &album, const QString &albumArtist );
 
         void removeArtist( const QString &artist );
         Artist* getArtist( Meta::ArtistPtr artist );
         void setArtist( ProxyCollection::Artist *artist );
+        bool hasArtist( const QString &artist );
 
         void removeGenre( const QString &genre );
         Genre* getGenre( Meta::GenrePtr genre );
         void setGenre( ProxyCollection::Genre *genre );
+        bool hasGenre( const QString &genre );
 
         void removeComposer( const QString &name );
         Composer* getComposer( Meta::ComposerPtr composer );
         void setComposer( ProxyCollection::Composer *composer );
+        bool hasComposer( const QString &name );
 
         bool hasYear( const QString &name );
         void removeYear( const QString &name );
@@ -121,7 +136,7 @@ namespace ProxyCollection
 }
 
 inline bool
-operator==( const ProxyCollection::TrackKey &k1, const ProxyCollection::TrackKey &k2 )
+operator==( const TrackKey &k1, const TrackKey &k2 )
 {
     return k1.trackName == k2.trackName &&
                           k1.albumName == k2.albumName &&
@@ -129,19 +144,19 @@ operator==( const ProxyCollection::TrackKey &k1, const ProxyCollection::TrackKey
 }
 
 inline uint
-qHash( const ProxyCollection::TrackKey &key )
+qHash( const TrackKey &key )
 {
     return qHash( key.trackName ) + 17 * qHash( key.albumName ) + 31 * qHash( key.artistName );
 }
 
 inline bool
-operator==( const ProxyCollection::AlbumKey &k1, const ProxyCollection::AlbumKey &k2 )
+operator==( const AlbumKey &k1, const AlbumKey &k2 )
 {
     return k1.albumName == k2.albumName && k1.artistName == k2.artistName;
 }
 
 inline uint
-qHash( const ProxyCollection::AlbumKey &key )
+qHash( const AlbumKey &key )
 {
     return qHash( key.albumName ) + 17 * qHash( key.artistName );
 }
