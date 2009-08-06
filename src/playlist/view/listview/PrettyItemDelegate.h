@@ -51,9 +51,11 @@ public:
 
 private:
     void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
-    void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const;
+    void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const;
 
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
+
+    int rowsForItem( const QModelIndex &index ) const;
 
     static const qreal ALBUM_WIDTH;
     static const qreal SINGLE_TRACK_ALBUM_WIDTH;

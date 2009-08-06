@@ -61,17 +61,9 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
 
-QSize
-PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+
+int PrettyItemDelegate::rowsForItem( const QModelIndex &index ) const
 {
-    int height = 0;
-
-    QFontMetricsF nfm( option.font );
-    QFont boldfont( option.font );
-    boldfont.setBold( true );
-    QFontMetricsF bfm( boldfont );
-
-    s_fontHeight = bfm.height();
 
     PlaylistLayout layout = LayoutManager::instance()->activeLayout();
 
@@ -97,6 +89,24 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
             rowCount = layout.single().rows();
             break;
     }
+
+    return rowCount;
+}
+
+QSize
+PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+    int height = 0;
+
+    QFontMetricsF nfm( option.font );
+    QFont boldfont( option.font );
+    boldfont.setBold( true );
+    QFontMetricsF bfm( boldfont );
+
+    s_fontHeight = bfm.height();
+
+    int rowCount = rowsForItem( index );
+
 
     if( index.data( ActiveTrackRole ).toBool() )
         rowCount++; //add room for extras
@@ -124,8 +134,36 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
     // call paint method based on type
     const int groupMode = index.data( GroupRole ).toInt();
 
-    if ( groupMode == None )
-        paintItem( layout.single(), painter, option, index );
+    int rowCount = rowsForItem( index );
+
+    if ( groupMode == None ||  groupMode == Body || groupMode == Tail )
+    {
+
+        int trackHeight;
+        int extraHeight;
+        QStyleOptionViewItem trackOption( option );
+        if ( index.data( ActiveTrackRole ).toBool() )
+        {
+            int adjustedRowCount = rowCount + 1;
+            trackHeight = ( option.rect.height() * rowCount ) / adjustedRowCount;
+            extraHeight = option.rect.height() - trackHeight;
+            trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
+        }
+
+        if ( groupMode == None )
+            paintItem( layout.single(), painter, trackOption, index );
+        else if ( groupMode == Body )
+            paintItem( layout.body(), painter, trackOption, index );
+        else
+            paintItem( layout.body(), painter, trackOption, index );
+        
+        if ( index.data( ActiveTrackRole ).toBool() )
+        {
+            QRect extrasRect( 0, trackHeight, option.rect.width(), extraHeight );
+            paintActiveTrackExtras( extrasRect, painter, index );
+
+        }
+    }
     else if ( groupMode == Head )
     {
         //we need to split up the options for the actual header and the included first track
@@ -138,25 +176,35 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         QStyleOptionViewItem trackOption( option );
 
         int headRows = layout.head().rows();
-        int headHeight ;
+        int trackRows = layout.body().rows();
+        int totalRows = headRows + trackRows;
+
+        if ( index.data( ActiveTrackRole ).toBool() )
+        {
+            totalRows = totalRows + 1;
+        }
+
+        int headHeight = ( headRows * option.rect.height() ) / totalRows - 1;
+        int trackHeight = ( trackRows * option.rect.height() ) / totalRows;
 
         if ( headRows > 0 )
         {
-            headHeight = MARGIN * 2 + headRows * s_fontHeight + ( headRows - 1 ) * PADDING;
             headOption.rect = QRect( 0, 0, option.rect.width(), headHeight );
             paintItem( layout.head(), painter, headOption, index, true );
-            painter->translate( 0, headHeight - 3 );
+            painter->translate( 0, headHeight );
         } 
 
-        int trackRows = layout.body().rows();
-        int trackHeight = MARGIN * 2 + trackRows * s_fontHeight + ( trackRows - 1 ) * PADDING;
         trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
         paintItem( layout.body(), painter, trackOption, index );
-        
-    } else if ( groupMode == Body )
-        paintItem( layout.body(), painter, option, index );
-    else if ( groupMode == Tail )
-        paintItem( layout.body(), painter, option, index );
+
+        if ( index.data( ActiveTrackRole ).toBool() )
+        {
+            int extraHeight = option.rect.height() - ( headHeight + trackHeight );
+            QRect extrasRect( 0, trackHeight, option.rect.width(), extraHeight );
+            paintActiveTrackExtras( extrasRect, painter, index );
+
+        }
+    } 
     else
         QStyledItemDelegate::paint( painter, option, index );
 
@@ -204,14 +252,8 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
     if ( rowCount == 0 )
         return;
-
-    int rowHeightDivider = rowCount;
-
-    //if we are showing the active track extras, we need to use one line of space for this ( has already been reserved in sizeHint)
-    if ( index.data( ActiveTrackRole ).toBool() )
-        rowHeightDivider++;
     
-    int rowHeight = option.rect.height() / rowHeightDivider;
+    int rowHeight = option.rect.height() / rowCount;
 
     int rowOffsetX = MARGINH;
     int rowOffsetY = 0;
@@ -419,17 +461,9 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
         rowOffsetY += rowHeight;
     }
 
-    if ( index.data( ActiveTrackRole ).toBool() )
-    {
-        //we have reserved space to paint the active track extras.
-        QRect extrasRect( 0, rowOffsetY, option.rect.width(), rowHeight );
-        
-        paintActiveTrackExtras( extrasRect, painter, option, index );
-        
-    }
 }
 
-void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
+void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const
 {
     int x = rect.x();
     int y = rect.y();
@@ -533,43 +567,23 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     debug() << "is active";
     debug() << "click at" << pos;
     
-    PlaylistLayout layout = LayoutManager::instance()->activeLayout();
-
-    const int groupMode = index.data( GroupRole ).toInt();
-    int rowCount = 1;
-
-    switch ( groupMode )
-    {
-        case Head:
-            rowCount = layout.head().rows() + layout.body().rows();
-            break;
-
-        case Body:
-            rowCount = layout.body().rows();
-            break;
-
-        case Tail:
-            rowCount = layout.body().rows();
-            break;
-
-        case None:
-        default:
-            rowCount = layout.single().rows();
-            break;
-    }
+    int rowCount = rowsForItem( index );
+    int modifiedRowCount = rowCount;
 
     if( index.data( ActiveTrackRole ).toBool() )
-        rowCount++; //add room for extras
+        modifiedRowCount++; //add room for extras
 
-    int height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
+    int height = itemRect.height();;
     debug() << "height: " << height;
 
-    int rowHeight = height / rowCount;
-    debug() << "rowHeight: " << rowHeight;
-    int extrasOffsetY = rowHeight * ( rowCount - 1 );
+    int baseHeight = ( height * rowCount ) / modifiedRowCount;
+    int extrasHeight = height - baseHeight;
+    debug() << "baseHeight: " << baseHeight;
+    debug() << "extrasHeight: " << extrasHeight;
+    int extrasOffsetY = height - baseHeight;
     debug() << "extrasOffsetY: " << extrasOffsetY;
 
-    int buttonSize = rowHeight - 4;
+    int buttonSize = extrasHeight - 4;
     debug() << "button size " << buttonSize;
 
     int offset = MARGINH;
