@@ -51,14 +51,13 @@ BreadcrumbWidget::~BreadcrumbWidget()
 {}
 
 void
-BreadcrumbWidget::addLevel( QString internalColumnName, const int level )
+BreadcrumbWidget::addLevel( QString internalColumnName )
 {
-    if( level > -1 )
-        trimToLevel( level );
     BreadcrumbLevel *bLevel = new BreadcrumbLevel( internalColumnName );
     BreadcrumbItem *item = new BreadcrumbItem( bLevel, this );
     m_ribbon->addWidget( item );
     connect( item, SIGNAL( clicked() ), this, SLOT( onItemClicked() ) );
+    connect( item, SIGNAL( siblingClicked( QAction* ) ), this, SLOT( onItemSiblingClicked( QAction * ) ) );
 }
 
 void
@@ -68,7 +67,7 @@ BreadcrumbWidget::trimToLevel( const int level )
     {
         BreadcrumbItem *item = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() );
         m_ribbon->removeWidget( item );
-        delete item;
+        item->deleteLater();
     }
 }
 
@@ -77,6 +76,14 @@ BreadcrumbWidget::onItemClicked()
 {
     const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender() ) );
     trimToLevel( level );
+}
+
+void
+BreadcrumbWidget::onItemSiblingClicked( QAction *action )
+{
+    const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender() ) );
+    trimToLevel( level -1 );
+    addLevel( action->data().toString() );
 }
 
 }

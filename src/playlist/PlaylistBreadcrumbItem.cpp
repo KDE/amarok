@@ -37,6 +37,7 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     for( QMap< QString, QPair< KIcon, QString > >::const_iterator i = siblings.begin(); i != siblings.end(); ++i )
     {
         QAction *action = menu->addAction( i.value().first, i.value().second );
+        action->setData( i.key() );
     }
     m_menuButton->setMenu( menu );
     const int offset = 6;

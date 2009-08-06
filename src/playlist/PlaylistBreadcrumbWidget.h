@@ -19,6 +19,7 @@
 
 #include "PlaylistBreadcrumbItem.h"
 
+#include <QAction>
 #include <QHBoxLayout>
 
 namespace Playlist
@@ -43,9 +44,10 @@ private:
     QHBoxLayout * m_layout;
 
 private slots:
-    void addLevel( QString internalColumnName, const int level = -1 );
+    void addLevel( QString internalColumnName );
     void trimToLevel( const int level = -1 );
     void onItemClicked();
+    void onItemSiblingClicked( QAction *action );
 };
 
 }   //namespace Playlist
