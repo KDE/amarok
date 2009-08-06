@@ -21,6 +21,7 @@
 #define PRETTYLISTVIEW_H
 
 #include "EngineObserver.h"
+#include "PrettyItemDelegate.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 
 #include <QListView>
@@ -112,6 +113,8 @@ private:
     PopupDropper *m_pd;
 
     AbstractModel *m_topmostProxy;
+
+    PrettyItemDelegate * m_prettyDelegate;
 
 public:
     QList<int> selectedRows() const;

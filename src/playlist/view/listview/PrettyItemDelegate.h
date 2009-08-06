@@ -41,6 +41,14 @@ public:
     // helper function for view which lets us determine if a click is within an album group's header
     static bool insideItemHeader( const QPoint&, const QRect& );
 
+   /**
+    * Handle clicks witin a delegate.
+    * @param pos The position of the click, in delegate coordinates.
+    * @param pos The index of the clicked item.
+    * @return True if delegate acts on this click, false otherwise.
+    */
+    bool clicked( const QPoint &pos, const QModelIndex& index );
+
 private:
     void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
     void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const;

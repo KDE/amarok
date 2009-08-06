@@ -27,7 +27,6 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "PrettyItemDelegate.h"
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
@@ -68,7 +67,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_topmostProxy( GroupingProxy::instance() )
 {
     setModel( GroupingProxy::instance() );
-    setItemDelegate( new PrettyItemDelegate( this ) );
+    m_prettyDelegate = new PrettyItemDelegate( this );
+    setItemDelegate( m_prettyDelegate );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setDragDropMode( QAbstractItemView::DragDrop );
     setDropIndicatorShown( false ); // we draw our own drop indicator
@@ -372,6 +372,25 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
 {
+
+
+    //first of all, if a left click, check if the delegate wants to do something about this click
+    if( event->button() == Qt::LeftButton )
+    {
+
+        //get the item that was clicked
+        QModelIndex index = indexAt( event->pos() );
+
+        //we need to translate the position of the click into something relative to the item that was clicked.
+        QRect itemRect = visualRect( index );
+        QPoint relPos =  event->pos() - itemRect.topLeft();
+        
+        if ( m_prettyDelegate->clicked( relPos, index ) )
+            return;  //click already handled...
+
+    }
+
+    
     if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) )
     {
         m_mousePressInHeader = true;

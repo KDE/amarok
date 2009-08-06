@@ -37,6 +37,7 @@
 
 #include <QFontMetricsF>
 #include <QPainter>
+#include <QAction>
 
 using namespace Playlist;
 
@@ -420,7 +421,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
     if ( index.data( ActiveTrackRole ).toBool() )
     {
-        //we should have reserved space to paint the active track extras.
+        //we have reserved space to paint the active track extras.
         QRect extrasRect( 0, rowOffsetY, option.rect.width(), rowHeight );
         
         paintActiveTrackExtras( extrasRect, painter, option, index );
@@ -459,8 +460,8 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
     else
     {
                               
-        offset += ( buttonSize + MARGINH );
-        painter->drawPixmap( offset, y + 2,
+    offset += ( buttonSize + MARGINH );
+    painter->drawPixmap( offset, y + 2,
                             The::svgHandler()->renderSvg(
                             "play_button",
                             buttonSize, buttonSize,
@@ -519,6 +520,100 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
         
     }
     
+}
+
+bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QModelIndex& index )
+{
+    DEBUG_BLOCK
+    
+    //for now, only handle clicks in the currently playing item.
+    if ( !index.data( ActiveTrackRole ).toBool() )
+        return false;
+
+    debug() << "is active";
+    debug() << "click at" << pos;
+    
+    PlaylistLayout layout = LayoutManager::instance()->activeLayout();
+
+    const int groupMode = index.data( GroupRole ).toInt();
+    int rowCount = 1;
+
+    switch ( groupMode )
+    {
+        case Head:
+            rowCount = layout.head().rows() + layout.body().rows();
+            break;
+
+        case Body:
+            rowCount = layout.body().rows();
+            break;
+
+        case Tail:
+            rowCount = layout.body().rows();
+            break;
+
+        case None:
+        default:
+            rowCount = layout.single().rows();
+            break;
+    }
+
+    if( index.data( ActiveTrackRole ).toBool() )
+        rowCount++; //add room for extras
+
+    int height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
+    debug() << "height: " << height;
+
+    int rowHeight = height / rowCount;
+    debug() << "rowHeight: " << rowHeight;
+    int extrasOffsetY = rowHeight * ( rowCount - 1 );
+    debug() << "extrasOffsetY: " << extrasOffsetY;
+
+    int buttonSize = rowHeight - 4;
+    debug() << "button size " << buttonSize;
+
+    int offset = MARGINH;
+    QRect backRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    debug() << "back rect " <<  backRect;
+    if( backRect.contains( pos ) )
+    {
+         debug() << "here!";
+         Amarok::actionCollection()->action( "prev" )->trigger();
+         return true;
+    }
+
+    offset += ( buttonSize + MARGINH ); 
+    QRect playRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    debug() << "play rect " <<  playRect;
+    if( playRect.contains( pos ) )
+    {
+         debug() << "here!";
+         Amarok::actionCollection()->action( "play_pause" )->trigger();
+         return true;
+    }
+
+    offset += ( buttonSize + MARGINH ); 
+    QRect stopRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    debug() << "stop rect " <<  stopRect;
+    if( stopRect.contains( pos ) )
+    {
+         debug() << "here!";
+         Amarok::actionCollection()->action( "stop" )->trigger();
+         return true;
+    }
+
+
+    offset += ( buttonSize + MARGINH ); 
+    QRect nextRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    debug() << "next rect " <<  nextRect;
+    if( nextRect.contains( pos ) )
+    {
+         debug() << "here!";
+         Amarok::actionCollection()->action( "next" )->trigger();
+         return true;
+    }
+
+    return false;
 }
 
 
