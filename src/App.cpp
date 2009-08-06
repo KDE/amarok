@@ -93,6 +93,7 @@ extern void setupEventHandler_mac(long);
 #include "TestCaseConverter.h"
 #include "TestDirectoryLoader.h"
 #include "TestExpression.h"
+#include "TestMetaFileTrack.h"
 #include "TestPlaylistFileSupport.h"
 #include "TestQStringx.h"
 #include "TestSmartPointerList.h"
@@ -591,6 +592,7 @@ App::runUnitTests()
     TestCaseConverter        testCaseConverter ( testArgumentList );
     TestDirectoryLoader      testDirectoryLoader ( testArgumentList );
     TestExpression           testExpression ( testArgumentList );
+    TestMetaFileTrack        testMetaFileTrack ( testArgumentList );
     TestPlaylistFileSupport  testPlaylistFileSupport ( testArgumentList );
     TestQStringx             testQStringx( testArgumentList );
     TestSmartPointerList     testSmartPointerList( testArgumentList );

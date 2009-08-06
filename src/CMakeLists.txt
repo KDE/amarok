@@ -52,6 +52,7 @@ include_directories(
     widgets
     ../tests/
     ../tests/meta/
+    ../tests/meta/file/
     ../tests/playlistmanager/
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
@@ -575,6 +576,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
         ../tests/meta/TestPlaylistFileSupport.cpp
+        ../tests/meta/file/TestMetaFileTrack.cpp
         ../tests/TestAmarok.cpp
         ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp
