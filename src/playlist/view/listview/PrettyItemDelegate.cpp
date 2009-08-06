@@ -484,8 +484,8 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
 
     offset += ( buttonSize + MARGINH );
 
-    int trackLength = EngineController::instance()->trackLength() * 1000;
-    int trackPos = EngineController::instance()->trackPositionMs();
+    long trackLength = EngineController::instance()->trackLength() * 1000;
+    long trackPos = EngineController::instance()->trackPositionMs();
     qreal trackPercentage = ( (qreal) trackPos / (qreal) trackLength );
 
     int sliderWidth = width - ( offset + MARGINH );
@@ -522,7 +522,7 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
     
 }
 
-bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QModelIndex& index )
+bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index )
 {
     DEBUG_BLOCK
     
@@ -612,6 +612,26 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QModelIndex
          Amarok::actionCollection()->action( "next" )->trigger();
          return true;
     }
+    
+    offset += ( buttonSize + MARGINH );
+
+    //handle clicks on the slider
+
+    int sliderWidth = itemRect.width() - ( offset + MARGINH );
+    int knobSize = buttonSize - 2;
+    
+    QRect sliderActiveRect( offset, extrasOffsetY + 3, sliderWidth, knobSize );
+    if( sliderActiveRect.contains( pos ) )
+    {
+        int xSliderPos = pos.x() - offset;
+        long trackLength = EngineController::instance()->trackLength() * 1000;
+
+        qreal percentage = (qreal) xSliderPos / (qreal) sliderWidth;
+        EngineController::instance()->seek( trackLength * percentage );
+        return true;
+
+    }
+    
 
     return false;
 }

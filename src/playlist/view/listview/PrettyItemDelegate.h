@@ -47,7 +47,7 @@ public:
     * @param pos The index of the clicked item.
     * @return True if delegate acts on this click, false otherwise.
     */
-    bool clicked( const QPoint &pos, const QModelIndex& index );
+    bool clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index );
 
 private:
     void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;

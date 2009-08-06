@@ -385,7 +385,7 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         QRect itemRect = visualRect( index );
         QPoint relPos =  event->pos() - itemRect.topLeft();
         
-        if ( m_prettyDelegate->clicked( relPos, index ) )
+        if ( m_prettyDelegate->clicked( relPos, itemRect, index ) )
             return;  //click already handled...
 
     }
