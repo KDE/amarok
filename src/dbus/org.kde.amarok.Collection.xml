@@ -2,7 +2,7 @@
 <node>
   <interface name="org.kde.amarok.Collection">
     <method name="Query">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QList&lt;QMap&lt;QString,QVariant> >"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QList&lt;QVariantMap >"/>
       <arg name="result" type="aa{sv}" direction="out"/>
       <arg name="queryXml" type="s" direction="in"/>
     </method>
