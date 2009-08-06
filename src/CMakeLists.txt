@@ -71,6 +71,15 @@ set(libplugin_SRCS
 )
 
 #####################################################################
+# PROXYCOLLECTION
+#####################################################################
+set(libproxycollection_SRCS
+    collection/proxycollection/ProxyCollection.cpp
+    collection/proxycollection/ProxyCollectionMeta.cpp
+    collection/proxycollection/ProxyCollectionQueryMaker.cpp
+)
+
+#####################################################################
 # MEDIADEVICEFRAMEWORK
 #####################################################################
 set(libmediadeviceframework_SRCS
@@ -471,6 +480,7 @@ set(amaroklib_LIB_SRCS
     ${libconfigdialog_SRCS}
     ${libplaylist_SRCS}
     ${libplugin_SRCS}
+    ${libproxycollection_SRCS}
     ${libpodcasts_SRCS}
     ${libmediadeviceframework_SRCS}
     ${libserviceframework_SRCS}
