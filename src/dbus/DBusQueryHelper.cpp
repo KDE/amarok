@@ -47,7 +47,6 @@ DBusQueryHelper::slotResultReady( const QString &collectionId, const Meta::Track
 void
 DBusQueryHelper::slotQueryDone()
 {
-    DEBUG_BLOCK
     deleteLater();
 
     QDBusMessage reply = m_message.createReply( QVariant::fromValue( m_result ) );
