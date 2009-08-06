@@ -98,7 +98,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
      QTimer *timer = new QTimer(this);
      connect( timer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
-     timer->start( 100 );
+     timer->start( 250 );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
