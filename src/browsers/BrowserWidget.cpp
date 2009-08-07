@@ -30,7 +30,7 @@ BrowserWidget::BrowserWidget( QWidget * parent )
     new HorizontalDivider( this );
     
     m_categoryList = new BrowserCategoryList( this, "root list" );
-    m_categoryList->setPrettyName( i18n( "Home" ) );
+    //m_categoryList->setPrettyName( i18n( "Home" ) );
     m_categoryList->setIcon( KIcon( "user-home" ) );
 
     m_breadcrumbWidget->setRootList( m_categoryList );

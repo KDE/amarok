@@ -62,7 +62,7 @@ BrowserCategory::setPrettyName( const QString & prettyName )
 QString
 BrowserCategory::prettyName() const
 {
-    return !m_prettyName.isEmpty() ? m_prettyName : name();
+    return m_prettyName;
 }
 
 void

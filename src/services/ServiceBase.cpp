@@ -108,7 +108,11 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     DEBUG_BLOCK
 
     if ( !prettyName.isEmpty() )
+    {
         setPrettyName( prettyName );
+    }
+    else
+        setPrettyName( name );
 
     setSpacing( 1 );
 
