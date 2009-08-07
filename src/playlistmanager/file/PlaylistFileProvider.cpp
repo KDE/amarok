@@ -98,7 +98,25 @@ PlaylistFileProvider::playlists()
 Meta::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks )
 {
+    DEBUG_BLOCK
+    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
+}
+
+Meta::PlaylistPtr
+PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
+{
+    KUrl path( Amarok::saveLocation( "playlists" ) );
+    path.addPath( name );
+    if( QFileInfo( path.path() ).exists() )
+    {
+        //TODO:request overwrite
+        return Meta::PlaylistPtr();
+    }
+    QString ext = Amarok::extension( path.fileName() );
     Meta::PlaylistFormat format = m_defaultFormat;
+    if( !ext.isEmpty() )
+        format = Meta::getFormat( path );
+
     Meta::Playlist *playlist = 0;
     switch( format )
     {
@@ -115,14 +133,11 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks )
             debug() << "unknown type!";
             break;
     }
+    Meta::PlaylistPtr playlistPtr( playlist );
+    m_playlists << playlistPtr;
+    emit updated();
 
-    return Meta::PlaylistPtr( playlist );
-}
-
-Meta::PlaylistPtr
-PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
-{
-    return Meta::PlaylistPtr();
+    return playlistPtr;
 }
 
 bool
@@ -132,5 +147,6 @@ PlaylistFileProvider::import( const KUrl &path )
     if( !playlist )
         return false;
     m_playlists << playlist;
+    emit updated();
     return true;
 }
