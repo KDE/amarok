@@ -47,7 +47,7 @@ namespace Meta
 {
 
 XSPFPlaylist::XSPFPlaylist()
-    : Meta::Playlist()
+    : PlaylistFile()
     , QDomDocument()
     , m_url( Meta::newPlaylistFilePath( "xspf" ) )
 {
@@ -63,7 +63,7 @@ XSPFPlaylist::XSPFPlaylist()
 }
 
 XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
-    : Playlist()
+    : PlaylistFile( url )
     , QDomDocument()
     , m_url( url )
     , m_autoAppendAfterLoad( autoAppend )
@@ -93,7 +93,7 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
 }
 
 XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
-    : Playlist()
+    : PlaylistFile()
     , QDomDocument()
 {
     DEBUG_BLOCK
@@ -660,6 +660,19 @@ XSPFPlaylist::createCapabilityInterface( Capability::Type type )
         case Capability::EditablePlaylist: return static_cast<EditablePlaylistCapability *>(this);
         default: return 0;
     }
+}
+
+bool
+XSPFPlaylist::isWritable()
+{
+    return QFile( m_url.path() ).isWritable();
+}
+
+void
+XSPFPlaylist::setName( const QString &name )
+{
+    setTitle( name );
+    //TODO: notify observers
 }
 
 } //namespace Meta

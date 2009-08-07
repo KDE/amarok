@@ -754,7 +754,8 @@ bool App::event( QEvent *event )
             KUrl url( file );
             if( Meta::isPlaylist( url ) )
             {
-                Meta::PlaylistPtr playlist = Meta::loadPlaylist( url );
+                Meta::PlaylistPtr playlist =
+                        Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( url ) );
                 The::playlistController()->insertOptioned( playlist, Playlist::AppendAndPlay );
             }
             else

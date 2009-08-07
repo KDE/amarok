@@ -46,14 +46,15 @@ PlaylistFileProvider::PlaylistFileProvider()
     {
         QStringList configEntry =
                 Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
-        Meta::PlaylistPtr playlist = Meta::loadPlaylist( KUrl( configEntry[1] ).path() );
+        Meta::PlaylistFilePtr playlist =
+                Meta::loadPlaylistFile( KUrl( configEntry[1] ).path() );
         //TODO: make this work
-        if( playlist->is<Meta::EditablePlaylistCapability>() )
-        {
-            QString title = configEntry[0];
-            playlist->create<Meta::EditablePlaylistCapability>()->setTitle( title );
-        }
-        m_playlists << playlist;
+//        if( playlist->isWritable() )
+//        {
+            QString name = configEntry[0];
+            playlist->setName( name );
+//        }
+        m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
 }
 
@@ -139,10 +140,10 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 bool
 PlaylistFileProvider::import( const KUrl &path )
 {
-    Meta::PlaylistPtr playlist = Meta::loadPlaylist( path );
+    Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( path );
     if( !playlist )
         return false;
-    m_playlists << playlist;
+    m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     emit updated();
     return true;
 }

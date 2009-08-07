@@ -31,14 +31,14 @@
 namespace Meta {
 
 M3UPlaylist::M3UPlaylist()
-    : Playlist()
+    : PlaylistFile()
     , m_url( Meta::newPlaylistFilePath( "m3u" ) )
 {
     m_name = m_url.fileName();
 }
 
 M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
-    : Playlist()
+    : PlaylistFile()
     , m_url( Meta::newPlaylistFilePath( "m3u" ) )
     , m_tracks( tracks )
 {
@@ -46,7 +46,7 @@ M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
 }
 
 M3UPlaylist::M3UPlaylist( const KUrl &url )
-    : Playlist()
+    : PlaylistFile( url )
     , m_url( url )
 {
     DEBUG_BLOCK
@@ -189,6 +189,19 @@ M3UPlaylist::save( const QString &location, bool relative )
     }
 
     return true;
+}
+
+bool
+M3UPlaylist::isWritable()
+{
+    return QFile( m_url.path() ).isWritable();
+}
+
+void
+M3UPlaylist::setName( const QString &name )
+{
+    m_name = name;
+    //TODO: notify observers
 }
 
 } //namespace Meta

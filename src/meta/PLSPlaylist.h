@@ -17,7 +17,7 @@
 #ifndef METAPLSPLAYLIST_H
 #define METAPLSPLAYLIST_H
 
-#include <Playlist.h>
+#include <PlaylistFile.h>
 
 class QTextStream;
 class QFile;
@@ -32,7 +32,7 @@ typedef QList<PLSPlaylistPtr> PLSPlaylistList;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PLSPlaylist : public Playlist
+class PLSPlaylist : public PlaylistFile
 {
     public:
         PLSPlaylist();
@@ -57,6 +57,10 @@ class PLSPlaylist : public Playlist
         KUrl retrievableUrl() { return m_url; };
 
         bool load( QTextStream &stream ) { return loadPls( stream ); };
+
+        /* PlaylistFile methods */
+        bool isWritable();
+        void setName( const QString &name );
 
     private:
         bool loadPls( QTextStream &stream );

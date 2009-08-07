@@ -33,14 +33,14 @@
 namespace Meta {
 
 PLSPlaylist::PLSPlaylist()
-    : Playlist()
+    : PlaylistFile()
     , m_url( Meta::newPlaylistFilePath( "pls" ) )
 {
     m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( TrackList tracks )
-    : Playlist()
+    : PlaylistFile()
     , m_tracks( tracks )
     , m_url( Meta::newPlaylistFilePath( "pls" ) )
 {
@@ -48,7 +48,7 @@ PLSPlaylist::PLSPlaylist( TrackList tracks )
 }
 
 PLSPlaylist::PLSPlaylist( const KUrl &url )
-    : Playlist()
+    : PlaylistFile( url )
     , m_url( url )
 {
     DEBUG_BLOCK
@@ -262,6 +262,19 @@ PLSPlaylist::loadPls_extractIndex( const QString &str ) const
     ret = tmp.trimmed().toUInt(&ok);
     Q_ASSERT(ok);
     return ret;
+}
+
+bool
+PLSPlaylist::isWritable()
+{
+    return QFile( m_url.path() ).isWritable();
+}
+
+void
+PLSPlaylist::setName( const QString &name )
+{
+    Q_UNUSED( name );
+    //TODO: notify observers
 }
 
 }
