@@ -570,7 +570,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     int rowCount = rowsForItem( index );
     int modifiedRowCount = rowCount;
 
-    if( index.data( ActiveTrackRole ).toBool() )
+    if( LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool() )
         modifiedRowCount++; //add room for extras
 
     int height = itemRect.height();;
@@ -580,7 +580,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     int extrasHeight = height - baseHeight;
     debug() << "baseHeight: " << baseHeight;
     debug() << "extrasHeight: " << extrasHeight;
-    int extrasOffsetY = height - baseHeight;
+    int extrasOffsetY = height - extrasHeight;
     debug() << "extrasOffsetY: " << extrasOffsetY;
 
     int buttonSize = extrasHeight - 4;
