@@ -214,18 +214,20 @@ void TestAmarok::testRecursiveUrlExpand()
     url = KStandardDirs::installPath( "data" ) + "amarok/testdata/";
     resultList = Amarok::recursiveUrlExpand( url );
     QCOMPARE( resultList.size(), 14 );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "cue/test_silence.ogg" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "playlists/no-playlist.png" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 01.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 02.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 03.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 04.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 05.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 06.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 07.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 08.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 09.mp3" ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 10.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "cue/test_silence.ogg" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "cue/testsheet01-iso8859-1.cue" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "cue/testsheet01-utf8.cue" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "playlists/no-playlist.png" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 01.mp3" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 02.mp3" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 03.mp3" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 04.mp3" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 05.mp3" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 06.mp3" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 07.mp3" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 08.mp3" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 09.mp3" ) ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 10.mp3" ) ) ) );
 }
 
 void TestAmarok::testSaveLocation()

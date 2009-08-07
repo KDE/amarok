@@ -42,7 +42,7 @@ void TestDirectoryLoader::initTestCase()
     QList<QUrl> testList;
     QUrl testUrl;
 
-    testUrl = QUrl::fromLocalFile( KStandardDirs::installPath( "data" ) + "amarok/testdata/audio/" );
+    testUrl = QUrl::fromLocalFile( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/" ) );
     testList.append( testUrl );
 
     m_loader1->insertAtRow( 1 ); // TODO: negative values always seem to append at the beginning. is that correct?
