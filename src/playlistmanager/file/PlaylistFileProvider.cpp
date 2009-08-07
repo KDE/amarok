@@ -48,12 +48,11 @@ PlaylistFileProvider::PlaylistFileProvider()
                 Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
         Meta::PlaylistFilePtr playlist =
                 Meta::loadPlaylistFile( KUrl( configEntry[1] ).path() );
-        //TODO: make this work
-//        if( playlist->isWritable() )
-//        {
+        if( playlist->isWritable() )
+        {
             QString name = configEntry[0];
             playlist->setName( name );
-//        }
+        }
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
 }

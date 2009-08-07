@@ -194,7 +194,10 @@ M3UPlaylist::save( const QString &location, bool relative )
 bool
 M3UPlaylist::isWritable()
 {
-    return QFile( m_url.path() ).isWritable();
+    if( m_url.isEmpty() )
+        return false;
+
+    return QFileInfo( m_url.path() ).isWritable();
 }
 
 void
