@@ -189,9 +189,8 @@ kde4_add_ui_files(libconfigdialog_SRCS
 )
 
 set(libbrowserframework_SRCS
-    browsers/BreadcrumbItem.cpp
-    browsers/BreadcrumbItemButton.cpp
-    browsers/BreadcrumbWidget.cpp
+    browsers/BrowserBreadcrumbItem.cpp
+    browsers/BrowserBreadcrumbWidget.cpp
     browsers/BrowserCategory.cpp
     browsers/BrowserCategoryList.cpp
     browsers/BrowserCategoryListDelegate.cpp
@@ -381,12 +380,15 @@ set(libplaylistmanager_SRCS
 #####################################################################
 set(libplaylist_SRCS
     playlist/PlaylistActions.cpp
+    playlist/PlaylistBreadcrumbItem.cpp
+    playlist/PlaylistBreadcrumbLevel.cpp
     playlist/PlaylistController.cpp
     playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistSortWidget.cpp
     playlist/PlaylistWidget.cpp
+    playlist/ProgressiveSearchWidget.cpp
     playlist/UndoCommands.cpp
     playlist/layouts/LayoutEditWidget.cpp
     playlist/layouts/LayoutConfigAction.cpp
@@ -550,6 +552,7 @@ set(amaroklib_LIB_SRCS
     Systray.cpp
     toolbar/CurrentTrackToolbar.cpp
     toolbar/MainToolbarNG.cpp
+    widgets/BreadcrumbItemButton.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp
@@ -568,7 +571,6 @@ set(amaroklib_LIB_SRCS
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
     widgets/PrettyTreeView.cpp
-    widgets/ProgressiveSearchWidget.cpp
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
     widgets/SliderWidget.cpp
@@ -588,6 +590,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ${amaroklib_LIB_SRCS}
         ../tests/meta/TestPlaylistFileSupport.cpp
         ../tests/meta/cue/TestMetaCueCueFileItem.cpp
+        ../tests/meta/cue/TestMetaCueTrack.cpp
         ../tests/meta/file/TestMetaFileTrack.cpp
         ../tests/TestAmarok.cpp
         ../tests/TestCaseConverter.cpp

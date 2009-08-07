@@ -94,6 +94,7 @@ extern void setupEventHandler_mac(long);
 #include "TestDirectoryLoader.h"
 #include "TestExpression.h"
 #include "TestMetaCueCueFileItem.h"
+#include "TestMetaCueTrack.h"
 #include "TestMetaFileTrack.h"
 #include "TestPlaylistFileSupport.h"
 #include "TestQStringx.h"
@@ -589,13 +590,14 @@ App::runUnitTests()
     logDir.mkpath( logPath );
 
     PERF_LOG( "Running Unit Tests" )
-    TestAmarok               testAmarok ( testArgumentList );
-    TestCaseConverter        testCaseConverter ( testArgumentList );
-    TestDirectoryLoader      testDirectoryLoader ( testArgumentList );
-    TestExpression           testExpression ( testArgumentList );
-    TestMetaCueCueFileItem   testMetaCueCueFileItem ( testArgumentList );
-    TestMetaFileTrack        testMetaFileTrack ( testArgumentList );
-    TestPlaylistFileSupport  testPlaylistFileSupport ( testArgumentList );
+    TestAmarok               testAmarok( testArgumentList );
+    TestCaseConverter        testCaseConverter( testArgumentList );
+    TestDirectoryLoader      testDirectoryLoader( testArgumentList );
+    TestExpression           testExpression( testArgumentList );
+    TestMetaCueCueFileItem   testMetaCueCueFileItem( testArgumentList );
+    TestMetaCueTrack         testMetaCueTrack( testArgumentList );
+    TestMetaFileTrack        testMetaFileTrack( testArgumentList );
+    TestPlaylistFileSupport  testPlaylistFileSupport( testArgumentList );
     TestQStringx             testQStringx( testArgumentList );
     TestSmartPointerList     testSmartPointerList( testArgumentList );
 

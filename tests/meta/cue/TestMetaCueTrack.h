@@ -17,27 +17,44 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef TESTDIRECTORYLOADER_H
-#define TESTDIRECTORYLOADER_H
+#ifndef TESTMETACUETRACK_H
+#define TESTMETACUETRACK_H
 
-#include "DirectoryLoader.h"
+#include "meta/cue/Cue.h"
 
 #include <QtTest>
 
-class TestDirectoryLoader : public QObject
+class TestMetaCueTrack : public QObject
 {
 Q_OBJECT
 
 public:
-    TestDirectoryLoader( QStringList testArgumentList );
+    TestMetaCueTrack( QStringList testArgumentList );
 
 private slots:
     void initTestCase();
     void cleanupTestCase();
-    void testInitAndInsertAtRow();
+
+    void testCueItems();
+    void testLocateCueSheet();
+    void testValidateCueSheet();
+    //methods inherited from Meta::MetaBase
+    void testName();
+    void testPrettyName();
+    void testFullPrettyName();
+    void testSortableName();
+
+    void testTrackNumber();
+    void testLength();
+
+    void testAlbum();
+    void testArtist();
+
+    void testHasCapabilityInterface();
 
 private:
-    DirectoryLoader *m_loader1, *m_loader2;
+    QString *m_isoCuePath, *m_utfCuePath, *m_testSongPath;
+    MetaCue::Track *m_testTrack1, *m_testTrack2;
 };
 
-#endif // TESTDIRECTORYLOADER_H
+#endif // TESTMETACUETRACK_H

@@ -28,32 +28,34 @@
 #include <QLabel>
 
 class QWidget;
-class ProgressiveSearchWidget;
 
 namespace Playlist
 {
-    class Widget : public KVBox
-    {
-        Q_OBJECT
 
-        public:
-            Widget( QWidget* parent );
-            PrettyListView* currentView() { return m_playlistView; }
+class ProgressiveSearchWidget;
 
-        public slots:
-            void showDynamicHint( bool enabled );
-            void clearFilterIfActive();
+class Widget : public KVBox
+{
+    Q_OBJECT
 
-        protected:
-            QSize sizeHint() const;
+public:
+    Widget( QWidget* parent );
+    PrettyListView* currentView() { return m_playlistView; }
 
-        private:
-            PrettyListView* m_playlistView;
-            ProgressiveSearchWidget * m_searchWidget;
-            SortWidget * m_sortWidget;
-            QLabel* m_dynamicHintWidget;
+public slots:
+    void showDynamicHint( bool enabled );
+    void clearFilterIfActive();
 
-    };
+protected:
+    QSize sizeHint() const;
+
+private:
+    PrettyListView* m_playlistView;
+    ProgressiveSearchWidget * m_searchWidget;
+    SortWidget * m_sortWidget;
+    QLabel* m_dynamicHintWidget;
+
+};
 }
 
 #endif

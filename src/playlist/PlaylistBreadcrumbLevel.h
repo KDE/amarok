@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,57 +14,50 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef BREADCRUMBWIDGET_H
-#define BREADCRUMBWIDGET_H
+#ifndef PLAYLISTBREADCRUMBLEVEL_H
+#define PLAYLISTBREADCRUMBLEVEL_H
 
-#include "BreadcrumbItem.h"
-#include "BrowserCategoryList.h"
+#include <KIcon>
 
-#include <KHBox>
+#include <QMap>
+#include <QPair>
+#include <QString>
 
-#include <QList>
-#include <QStringList>
-
+namespace Playlist
+{
 
 /**
-A widget for displaying th ecurrent state of, and navigating, the browser dig down interface.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
-class BreadcrumbWidget : public KHBox
+ *  A level of a hierarchical structure which can be used in a breadcrumb interface.
+ *  @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ */
+class BreadcrumbLevel
 {
-    Q_OBJECT
 public:
-    BreadcrumbWidget( QWidget * parent );
-
-    ~BreadcrumbWidget();
-
-    void setRootList( BrowserCategoryList * rootList );
-
-signals:
-    void toHome();
-    
-public slots:
-    void updateBreadcrumbs();
-
-private:
-    void clearCrumbs();
-    
     /**
-     * Recursive function that traverses the tree of BrowserCategoryList's
-     * and adds each one as a level in the breadcrumb.
-     * @param level the root level BrowserCategoryList.
+     * Constructor.
      */
-    void addLevel( BrowserCategoryList * list );
+    BreadcrumbLevel( QString internalColumnName );
 
-    //QStringList m_currentPath;
-    BrowserCategoryList * m_rootList;
+    /**
+     * Destructor.
+     */
+    ~BreadcrumbLevel();
 
-    QList<BreadcrumbItem *> m_items;
-    QWidget * m_spacer;
+    const QString & name();
 
-    KHBox * m_breadcrumbArea;
+    const QString & prettyName();
 
+    const KIcon& icon();
+
+    const QMap< QString, QPair< KIcon, QString > > siblings();
+
+protected:
+    QString m_name;         //! the name of this item.
+    QString m_prettyName;
+    KIcon m_icon;
+    QMap< QString, QPair< KIcon, QString > > m_siblings;    //! internalColumnName, icon, prettyName
 };
 
-#endif
+}   //namespace Playlist
+
+#endif  //PLAYLISTBREADCRUMBLEVEL_H

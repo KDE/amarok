@@ -16,96 +16,105 @@
 
 #include "PlaylistSortWidget.h"
 
-#include "Debug.h"
-
-#include <QToolButton>
+#include "proxymodels/SortProxy.h"
+#include "proxymodels/SortScheme.h"
 
 namespace Playlist
 {
 
-SortWidget::SortWidget( QWidget *parent ) : QWidget( parent )
+SortWidget::SortWidget( QWidget *parent )
+    : QWidget( parent )
 {
-    DEBUG_BLOCK
-
-    //like BreadcrumbWidget for symmetry:
     setFixedHeight( 28 );
     setContentsMargins( 3, 0, 3, 0 );
 
-    QHBoxLayout *mainLayout = new QHBoxLayout( this );
-    setLayout( mainLayout );
-    mainLayout->setSpacing( 0 );
-    mainLayout->setContentsMargins( 0, 0, 0, 0 );
+    m_layout = new QHBoxLayout( this );
+    setLayout( m_layout );
+    m_layout->setSpacing( 0 );
+    m_layout->setContentsMargins( 0, 0, 0, 0 );
 
-    m_comboLayout = new QHBoxLayout( this );
-    mainLayout->addLayout( m_comboLayout );
-    m_sortableCategories += internalColumnNames;
-    for( QStringList::iterator i = m_sortableCategories.begin(); i!=m_sortableCategories.end(); )
-    {
-        //FIXME: disabled sorting by File size, Group length, Group tracks, Length because
-        //       it doesn't work.
-        if( *i == QString( "Placeholder" )    || *i == QString( "Bpm" )
-            || *i == QString( "Cover image" ) || *i == QString( "Divider" )
-            || *i == QString( "Mood" )        || *i == QString( "SourceEmblem" )
-            || *i == QString( "File size" )   || *i == QString( "Title (with track number)" )
-            || *i == QString( "Group length" )|| *i == QString( "Group tracks" )
-            || *i == QString( "Length" ) )
-            i = m_sortableCategories.erase( i );
-        else
-            ++i;
-    }
+    BreadcrumbItemButton *rootItem = new BreadcrumbItemButton( KIcon( "format-list-ordered" ), QString(), this );
+    rootItem->setFixedWidth( 20 );
+    rootItem->setToolTip( i18n( "Clear the playlist sorting configuration." ) );
+    m_layout->addWidget( rootItem );
+    connect( rootItem, SIGNAL( clicked() ), this, SLOT( trimToLevel() ) );
 
-    QToolButton *btnPushLevel = new QToolButton( this );
-    btnPushLevel->setIcon( KIcon( "list-add" ) );
-    mainLayout->addWidget( btnPushLevel );
-    btnPushLevel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
-    btnPushLevel->resize( btnPushLevel->height(), btnPushLevel->height() );
+    m_ribbon = new QHBoxLayout( this );
+    m_layout->addLayout( m_ribbon );
+    m_ribbon->setContentsMargins( 0, 0, 0, 0 );
+    m_ribbon->setSpacing( 0 );
 
-    QToolButton *btnPopLevel = new QToolButton( this );
-    btnPopLevel->setIcon( KIcon( "edit-delete" ) );
-    mainLayout->addWidget( btnPopLevel );
-    btnPopLevel->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Preferred );
-    btnPopLevel->resize( btnPopLevel->height(), btnPopLevel->height() );
+    m_addButton = new BreadcrumbAddMenuButton( this );
+    m_addButton->setToolTip( i18n( "Add a playlist sorting level." ) );
+    m_layout->addWidget( m_addButton );
+    m_layout->addStretch( 10 );
 
-    mainLayout->addStretch();
+    connect( m_addButton, SIGNAL( siblingClicked( QString ) ), this, SLOT( addLevel( QString ) ) );
+}
 
-    connect( btnPushLevel, SIGNAL( clicked() ), this, SLOT( pushLevel() ) );
-    connect( btnPopLevel, SIGNAL( clicked() ), this, SLOT( popLevel() ) );
+SortWidget::~SortWidget()
+{}
+
+void
+SortWidget::addLevel( QString internalColumnName )
+{
+    BreadcrumbLevel *bLevel = new BreadcrumbLevel( internalColumnName );
+    BreadcrumbItem *item = new BreadcrumbItem( bLevel, this );
+    m_ribbon->addWidget( item );
+    connect( item, SIGNAL( clicked() ), this, SLOT( onItemClicked() ) );
+    connect( item, SIGNAL( siblingClicked( QAction* ) ), this, SLOT( onItemSiblingClicked( QAction * ) ) );
+    m_addButton->updateMenu( levels() );
+    updateSortScheme();
 }
 
 void
-SortWidget::applySortingScheme()
+SortWidget::trimToLevel( const int level )
 {
-    DEBUG_BLOCK
-    SortScheme scheme = SortScheme();
-    for( QList< KComboBox * >::const_iterator i = m_comboList.begin(); i!=m_comboList.end(); ++i )
+    for( int i = m_ribbon->count() - 1 ; i > level; i-- )
     {
-        scheme.addLevel( SortLevel( internalColumnNames.indexOf( (*i)->currentText() ), Qt::DescendingOrder ) );
+        BreadcrumbItem *item = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() );
+        m_ribbon->removeWidget( item );
+        item->deleteLater();
+    }
+    updateSortScheme();
+    m_addButton->updateMenu( levels() );
+}
+
+QStringList
+SortWidget::levels()
+{
+    QStringList levels = QStringList();
+    for( int i = 0; i < m_ribbon->count(); ++i )
+        levels << qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name();
+    return levels;
+}
+
+void
+SortWidget::onItemClicked()
+{
+    const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender() ) );
+    trimToLevel( level );
+}
+
+void
+SortWidget::onItemSiblingClicked( QAction *action )
+{
+    const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender() ) );
+    trimToLevel( level -1 );
+    addLevel( action->data().toString() );
+}
+
+void
+SortWidget::updateSortScheme()
+{
+    SortScheme scheme = SortScheme();
+    for( int i = 0; i < m_ribbon->count(); ++i )    //could be faster if done with iterator
+    {
+        scheme.addLevel( SortLevel( internalColumnNames.indexOf(
+                qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() ),
+                Qt::DescendingOrder ) );
     }
     SortProxy::instance()->updateSortMap( scheme );
 }
 
-void
-SortWidget::pushLevel()
-{
-    m_comboList.append( new KComboBox( this ) );
-    connect( m_comboList.back(), SIGNAL( currentIndexChanged( QString ) ), this, SLOT( applySortingScheme() ) );
-    m_comboLayout->addWidget( m_comboList.back() );
-    m_comboList.back()->addItems( m_sortableCategories );
-    applySortingScheme();
 }
-
-void
-SortWidget::popLevel()
-{
-    if( !m_comboList.isEmpty() )
-    {
-        m_comboLayout->removeWidget( m_comboList.back() );
-        delete m_comboList.takeLast();
-        if( m_comboList.isEmpty() )
-            SortProxy::instance()->invalidateSorting();
-        else
-            applySortingScheme();
-    }
-}
-
-}   //namespace Playlist

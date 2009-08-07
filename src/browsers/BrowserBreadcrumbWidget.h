@@ -1,6 +1,5 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
- * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,38 +13,58 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef BROWSERWIDGET_H
-#define BROWSERWIDGET_H
 
-#include "BrowserBreadcrumbWidget.h"
+#ifndef BROWSERBREADCRUMBWIDGET_H
+#define BROWSERBREADCRUMBWIDGET_H
+
+#include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 
-#include <KVBox>
+#include <KHBox>
 
-#include <QPointer>
+#include <QList>
+#include <QStringList>
+
 
 /**
-The base widget that contains all other browsers, organized in a dig down interface
+A widget for displaying th ecurrent state of, and navigating, the browser dig down interface.
+
+	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class BrowserWidget : public KVBox
+class BrowserBreadcrumbWidget : public KHBox
 {
     Q_OBJECT
-
 public:
-    BrowserWidget( QWidget * parent );
+    BrowserBreadcrumbWidget( QWidget * parent );
 
-    ~BrowserWidget();
+    ~BrowserBreadcrumbWidget();
 
-    BrowserCategoryList *list() const;
-    void navigate( const QString &target );
+    void setRootList( BrowserCategoryList * rootList );
 
-private slots:
-    void home();
+signals:
+    void toHome();
+    
+public slots:
+    void updateBreadcrumbs();
 
 private:
-    BrowserBreadcrumbWidget * m_breadcrumbWidget;
-    QPointer<BrowserCategoryList> m_categoryList;
+    void clearCrumbs();
+    
+    /**
+     * Recursive function that traverses the tree of BrowserCategoryList's
+     * and adds each one as a level in the breadcrumb.
+     * @param level the root level BrowserCategoryList.
+     */
+    void addLevel( BrowserCategoryList * list );
+
+    //QStringList m_currentPath;
+    BrowserCategoryList * m_rootList;
+
+    QList<BrowserBreadcrumbItem *> m_items;
+    QWidget * m_spacer;
+
+    KHBox * m_breadcrumbArea;
+
 };
 
 #endif

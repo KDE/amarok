@@ -1,6 +1,5 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
- * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,37 +14,40 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#ifndef BROWSERWIDGET_H
-#define BROWSERWIDGET_H
+#ifndef BROWSERBREADCRUMBITEM_H
+#define BROWSERBREADCRUMBITEM_H
 
-#include "BrowserBreadcrumbWidget.h"
-#include "BrowserCategoryList.h"
+#include "widgets/ElidingButton.h"
 
-#include <KVBox>
+#include <KHBox>
 
-#include <QPointer>
+class BrowserCategory;
+class BreadcrumbItemButton;
+class BreadcrumbItemMenuButton;
 
 /**
-The base widget that contains all other browsers, organized in a dig down interface
-*/
-class BrowserWidget : public KVBox
+ *  A widget representing a single "breadcrumb" item
+ *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ */
+
+class BrowserBreadcrumbItem : public KHBox
 {
     Q_OBJECT
-
 public:
-    BrowserWidget( QWidget * parent );
+    BrowserBreadcrumbItem( BrowserCategory * category );
+    ~BrowserBreadcrumbItem();
 
-    ~BrowserWidget();
+    void setActive( bool active );
 
-    BrowserCategoryList *list() const;
-    void navigate( const QString &target );
+    QSizePolicy sizePolicy () const;
 
-private slots:
-    void home();
+protected slots:
+    void updateSizePolicy();
 
 private:
-    BrowserBreadcrumbWidget * m_breadcrumbWidget;
-    QPointer<BrowserCategoryList> m_categoryList;
+    BrowserCategory          *m_category;
+    BreadcrumbItemMenuButton *m_menuButton;
+    BreadcrumbItemButton     *m_mainButton;
 };
 
 #endif

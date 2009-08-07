@@ -26,11 +26,11 @@
 BrowserWidget::BrowserWidget( QWidget * parent )
     : KVBox( parent )
 {
-    m_breadcrumbWidget = new BreadcrumbWidget( this );
+    m_breadcrumbWidget = new BrowserBreadcrumbWidget( this );
     new HorizontalDivider( this );
     
     m_categoryList = new BrowserCategoryList( this, "root list" );
-    m_categoryList->setPrettyName( i18n( "Home" ) );
+    //m_categoryList->setPrettyName( i18n( "Home" ) );
     m_categoryList->setIcon( KIcon( "user-home" ) );
 
     m_breadcrumbWidget->setRootList( m_categoryList );

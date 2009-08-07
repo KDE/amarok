@@ -14,15 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#include "BreadcrumbItem.h"
-#include "BreadcrumbItemButton.h"
+#include "BrowserBreadcrumbItem.h"
+#include "widgets/BreadcrumbItemButton.h"
 
 #include "BrowserCategoryList.h"
 #include "Debug.h"
 
 #include <QMenu>
 
-BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
+BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     : KHBox( 0 )
     , m_category( category )
     , m_menuButton( 0 )
@@ -65,6 +65,8 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
     }
 
     m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
+    if( category->prettyName() == QString() )   //if it's a root item
+        m_mainButton->setFixedWidth( 20 );
     
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 
@@ -81,23 +83,23 @@ BreadcrumbItem::BreadcrumbItem( BrowserCategory * category )
     updateSizePolicy();
 }
 
-BreadcrumbItem::~BreadcrumbItem()
+BrowserBreadcrumbItem::~BrowserBreadcrumbItem()
 {
     DEBUG_BLOCK
 }
 
 void
-BreadcrumbItem::setActive( bool active )
+BrowserBreadcrumbItem::setActive( bool active )
 {
     m_mainButton->setActive( active );
 }
 
-QSizePolicy BreadcrumbItem::sizePolicy() const
+QSizePolicy BrowserBreadcrumbItem::sizePolicy() const
 {
     return m_mainButton->sizePolicy();
 }
 
-void BreadcrumbItem::updateSizePolicy()
+void BrowserBreadcrumbItem::updateSizePolicy()
 {
     setSizePolicy( m_mainButton->sizePolicy() );
 }

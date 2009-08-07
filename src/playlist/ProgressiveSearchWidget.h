@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef PROGRESSIVESEARCHWIDGET_H
 #define PROGRESSIVESEARCHWIDGET_H
 
@@ -26,16 +26,19 @@ class QKeyEvent;
 class QLabel;
 class QMenu;
 
+namespace Playlist
+{
+
 /**
-    A composite widget for progressive (Firefox style search as you type) 
-    searching, with buttons for next and previous result. Also includes 
-    a drop down menu to configure which fields in the track ( track name, 
-    album name, genre, ...) should be used for matching, as well as a config 
-    option for whether the current search and search fields should be taken 
-    into account when doing track progression (i.e. should navigators only 
+    A composite widget for progressive (Firefox style search as you type)
+    searching, with buttons for next and previous result. Also includes
+    a drop down menu to configure which fields in the track ( track name,
+    album name, genre, ...) should be used for matching, as well as a config
+    option for whether the current search and search fields should be taken
+    into account when doing track progression (i.e. should navigators only
     jump between tracks that match the current search term)
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class ProgressiveSearchWidget : public KVBox
 {
@@ -60,19 +63,19 @@ signals:
      * @param filelds The mask containing the fields to match against.
      */
     void filterChanged( const QString &filter, int fields, bool showOnlyMatches );
-    
+
     /**
      * Signal emitted when the search term is cleared.
      */
     void filterCleared();
-    
+
     /**
      * Signal emitted when the "next" button is pressed.
      * @param filter The current search term.
      * @param filelds The mask containing the fields to match against.
      */
     void next( const QString &filter, int fields  );
-    
+
     /**
      * Signal emitted when the "previous" button is pressed.
      * @param filter The current search term.
@@ -122,7 +125,7 @@ protected slots:
      * @param filter The new text in the search widget.
      */
     void slotFilterChanged( const QString &filter );
-    
+
     /**
      * Notify widget that the "next" button has been pressed.
      */
@@ -138,31 +141,31 @@ protected slots:
      * @param search On/off.
      */
     void slotSearchTracks( bool search );
-    
+
     /**
      * Toggle artist name matching when searching.
      * @param search On/off.
      */
     void slotSearchArtists( bool search );
-    
+
     /**
      * Toggle album name matching when searching.
      * @param search On/off.
      */
     void slotSearchAlbums( bool search );
-    
+
     /**
      * Toggle genre name matching when searching.
      * @param search On/off.
      */
     void slotSearchGenre( bool search );
-    
+
     /**
      * Toggle composer name matching when searching.
      * @param search On/off.
      */
     void slotSearchComposers( bool search );
-    
+
     /**
      * Toggle year matching when searching.
      * @param search On/off.
@@ -176,7 +179,7 @@ protected slots:
      * @param showOnlyMatches On/off.
      */
     void slotShowOnlyMatches( bool onlyMatches );
-    
+
 protected:
     void keyPressEvent( QKeyEvent *event );
 
@@ -200,5 +203,7 @@ private:
 
     QString    m_lastFilter;
 };
+
+}   //namespace Playlist
 
 #endif

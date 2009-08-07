@@ -30,7 +30,7 @@ namespace Playlist
  * by Playlist::SortScheme to describe a way to sort the playlist.
  * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
-class SortLevel     //data structure for each sorting level, ends up in a qstack or vector or list or map or w/e
+class SortLevel
 {
     public:
         SortLevel( int sortCategory = PlaceHolder, Qt::SortOrder sortOrder = Qt::AscendingOrder );
@@ -40,6 +40,7 @@ class SortLevel     //data structure for each sorting level, ends up in a qstack
         void setOrder( Qt::SortOrder sortOrder );
         bool isComparable();
         bool isString();
+        QString prettyName();
     private:
         int m_category;     //Column from PlaylistDefines.h
         Qt::SortOrder m_order;

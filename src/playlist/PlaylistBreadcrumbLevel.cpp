@@ -14,46 +14,56 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYLISTSORTWIDGET_H
-#define PLAYLISTSORTWIDGET_H
+#include "PlaylistBreadcrumbLevel.h"
 
-#include "PlaylistBreadcrumbItem.h"
-
-#include <QAction>
-#include <QHBoxLayout>
+#include "PlaylistDefines.h"
 
 namespace Playlist
 {
 
-/**
- * A breadcrumb-based widget that allows the user to build a multilevel sorting scheme for
- * the playlist.
- * @author Téo Mrnjavac
- */
-class SortWidget : public QWidget
+BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
+    : m_name( internalColumnName )
 {
-    Q_OBJECT
-public:
-    SortWidget( QWidget *parent );
+    m_icon = KIcon( iconNames.at( internalColumnNames.indexOf( internalColumnName ) ) );
+    m_prettyName = columnNames.at( internalColumnNames.indexOf( internalColumnName ) );
 
-    ~SortWidget();
 
-    QStringList levels();
+    for( int i = 0; i < NUM_COLUMNS; ++i )  //might be faster if it used a const_iterator
+    {
+        QString currentInternalColumnName = internalColumnNames.at( i );
+        if( !sortableCategories.contains( currentInternalColumnName ) ||
+            m_name == currentInternalColumnName )
+            continue;
+        m_siblings.insert( currentInternalColumnName,
+                           QPair< KIcon, QString>( KIcon( iconNames.at( i ) ), columnNames.at( i ) ) );
+    }
+}
 
-private:
-    QHBoxLayout * m_ribbon;
-    QList< BreadcrumbItem * > m_items;
-    BreadcrumbAddMenuButton * m_addButton;
-    QHBoxLayout * m_layout;
-    void updateSortScheme();
+BreadcrumbLevel::~BreadcrumbLevel()
+{}
 
-private slots:
-    void addLevel( QString internalColumnName );
-    void trimToLevel( const int level = -1 );
-    void onItemClicked();
-    void onItemSiblingClicked( QAction *action );
-};
+const QString &
+BreadcrumbLevel::name()
+{
+    return m_name;
+}
+
+const QString &
+BreadcrumbLevel::prettyName()
+{
+    return m_prettyName;
+}
+
+const KIcon &
+BreadcrumbLevel::icon()
+{
+    return m_icon;
+}
+
+const QMap< QString, QPair< KIcon, QString > >
+BreadcrumbLevel::siblings()
+{
+    return m_siblings;
+}
 
 }   //namespace Playlist
-
-#endif  //PLAYLISTSORTWIDGET_H
