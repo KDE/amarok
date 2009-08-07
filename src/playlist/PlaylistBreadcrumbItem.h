@@ -71,7 +71,7 @@ private slots:
  * A button with a tiny "+" icon in it which spawns a menu to add a sort level.
  * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
-class BreadcrumbAddMenuButton : public BreadcrumbItemButton
+class BreadcrumbAddMenuButton : public BreadcrumbItemMenuButton
 {
     Q_OBJECT
 public:
