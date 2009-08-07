@@ -81,7 +81,6 @@ BreadcrumbItem::siblingTriggered( QAction * action )
 BreadcrumbAddMenuButton::BreadcrumbAddMenuButton( QWidget *parent )
     : BreadcrumbItemMenuButton( parent )
 {
-    setFixedWidth( 20 );
     setToolTip( i18n( "Add a sorting level to the playlist." ) );
 
     QMenu *menu = new QMenu( this );
