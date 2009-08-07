@@ -24,7 +24,6 @@
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "MainWindow.h"
-#include "ToolBar.h"
 #include "PaletteHandler.h"
 #include "PlaylistController.h"
 #include "PlaylistDefines.h"
@@ -90,7 +89,7 @@ Playlist::Widget::Widget( QWidget* parent )
     barBox->setMargin( 0 );
     barBox->setContentsMargins( 0, 0, 0, 0 );
 
-    Amarok::ColoredToolBar *plBar = new Amarok::ColoredToolBar( barBox );
+    KToolBar *plBar = new KToolBar( barBox, false, false );
     plBar->setFixedHeight( 30 );
     plBar->setObjectName( "PlaylistToolBar" );
 
