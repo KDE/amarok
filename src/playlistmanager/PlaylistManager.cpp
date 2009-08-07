@@ -347,7 +347,7 @@ PlaylistManager::import( const QString& fromLocation )
     DEBUG_BLOCK
     if( !m_playlistFileProvider )
     {
-        debug() << "ERROR: sqlUserPlaylistProvider was null";
+        debug() << "ERROR: m_playlistFileProvider was null";
         return false;
     }
     return m_playlistFileProvider->import( KUrl::fromPath(fromLocation) );
