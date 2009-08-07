@@ -55,10 +55,6 @@ PlaylistFileProvider::PlaylistFileProvider()
         }
         m_playlists << playlist;
     }
-    if( m_playlists.isEmpty() )
-    {
-        //TODO: find playlist files in the configured collection directories and home folder
-    }
 }
 
 PlaylistFileProvider::~PlaylistFileProvider()
