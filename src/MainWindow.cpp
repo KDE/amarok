@@ -194,7 +194,6 @@ MainWindow::~MainWindow()
     delete m_contextDummyTitleBarWidget;
     delete m_playlistDummyTitleBarWidget;
 
-    delete m_playlistFiles;
     delete m_contextView;
     delete m_corona;
     //delete m_splitter;
@@ -322,9 +321,6 @@ MainWindow::init()
         internetContentServiceBrowser->setShortDescription( i18n( "Online sources of content" ) );
         m_browsers->list()->addCategory( internetContentServiceBrowser );
         PERF_LOG( "Created ServiceBrowser" )
-
-        m_playlistFiles = new PlaylistFileProvider();
-        The::playlistManager()->addProvider( m_playlistFiles, PlaylistManager::UserPlaylist );
 
         PERF_LOG( "Creating PlaylistBrowser" )
         m_playlistBrowser = new PlaylistBrowserNS::PlaylistBrowser( "playlists", 0 );
