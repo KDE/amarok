@@ -38,8 +38,6 @@ BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setFrameShape( QFrame::NoFrame );
 
-    m_bottomToolbar = new Amarok::ColoredToolBar( 0 );
-    m_bottomToolbar->setFixedHeight( 28 );
 }
 
 BrowserCategory::~BrowserCategory()
@@ -135,9 +133,5 @@ QString BrowserCategory::imagePath()
     return m_imagePath;
 }
 
-KToolBar * BrowserCategory::bottomToolbar()
-{
-    return m_bottomToolbar;
-}
 
 #include "BrowserCategory.moc"
