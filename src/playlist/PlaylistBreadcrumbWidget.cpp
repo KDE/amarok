@@ -16,6 +16,9 @@
 
 #include "PlaylistBreadcrumbWidget.h"
 
+#include "proxymodels/SortProxy.h"
+#include "proxymodels/SortScheme.h"
+
 namespace Playlist
 {
 
@@ -58,6 +61,7 @@ BreadcrumbWidget::addLevel( QString internalColumnName )
     m_ribbon->addWidget( item );
     connect( item, SIGNAL( clicked() ), this, SLOT( onItemClicked() ) );
     connect( item, SIGNAL( siblingClicked( QAction* ) ), this, SLOT( onItemSiblingClicked( QAction * ) ) );
+    updateSortScheme();
 }
 
 void
@@ -69,6 +73,7 @@ BreadcrumbWidget::trimToLevel( const int level )
         m_ribbon->removeWidget( item );
         item->deleteLater();
     }
+    updateSortScheme();
 }
 
 void
@@ -84,6 +89,19 @@ BreadcrumbWidget::onItemSiblingClicked( QAction *action )
     const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender() ) );
     trimToLevel( level -1 );
     addLevel( action->data().toString() );
+}
+
+void
+BreadcrumbWidget::updateSortScheme()
+{
+    SortScheme scheme = SortScheme();
+    for( int i = 0; i < m_ribbon->count(); ++i )    //could be faster if done with iterator
+    {
+        scheme.addLevel( SortLevel( internalColumnNames.indexOf(
+                qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() ),
+                Qt::DescendingOrder ) );
+    }
+    SortProxy::instance()->updateSortMap( scheme );
 }
 
 }

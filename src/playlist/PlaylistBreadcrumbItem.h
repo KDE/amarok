@@ -48,6 +48,9 @@ public:
      * Destructor.
      */
     ~BreadcrumbItem();
+
+    QString name();
+
 signals:
     void siblingClicked( QAction *action );
     void clicked();
@@ -58,6 +61,7 @@ protected slots:
 private:
     BreadcrumbItemMenuButton *m_menuButton;
     BreadcrumbItemButton     *m_mainButton;
+    QString m_name;
 
 private slots:
     void siblingTriggered( QAction *action );

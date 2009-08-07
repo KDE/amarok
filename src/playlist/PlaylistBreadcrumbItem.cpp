@@ -53,10 +53,18 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     menu->hide();
 
     updateSizePolicy();
+
+    m_name = level->name();
 }
 
 BreadcrumbItem::~BreadcrumbItem()
 {}
+
+QString
+BreadcrumbItem::name()
+{
+    return m_name;
+}
 
 void
 BreadcrumbItem::updateSizePolicy()

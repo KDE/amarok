@@ -42,6 +42,7 @@ private:
     QList< BreadcrumbItem * > m_items;
     BreadcrumbAddMenuButton * m_addButton;
     QHBoxLayout * m_layout;
+    void updateSortScheme();
 
 private slots:
     void addLevel( QString internalColumnName );
