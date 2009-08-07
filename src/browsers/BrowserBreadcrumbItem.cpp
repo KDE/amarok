@@ -65,6 +65,8 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     }
 
     m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
+    if( category->prettyName() == QString() )   //if it's a root item
+        m_mainButton->setFixedWidth( 20 );
     
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 
