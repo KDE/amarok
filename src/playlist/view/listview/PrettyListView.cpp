@@ -33,6 +33,7 @@
 #include "meta/capabilities/MultiSourceCapability.h"
 #include "meta/Meta.h"
 #include "PaletteHandler.h"
+#include "playlist/layouts/LayoutManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
@@ -96,9 +97,16 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 
-     QTimer *timer = new QTimer(this);
-     connect( timer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
-     timer->start( 250 );
+     m_animationTimer = new QTimer(this);
+     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
+     m_animationTimer->setInterval( 250 );
+
+     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
+     
+     if ( LayoutManager::instance()->activeLayout().inlineControls() )
+         m_animationTimer->start();
+
+     
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -743,6 +751,14 @@ void Playlist::PrettyListView::redrawActive()
     int activeRow = m_topmostProxy->activeRow();
     QModelIndex index = model()->index( activeRow, 0, QModelIndex() );
     update( index );
+}
+
+void Playlist::PrettyListView::playlistLayoutChanged()
+{
+    if ( LayoutManager::instance()->activeLayout().inlineControls() )
+        m_animationTimer->start();
+    else
+        m_animationTimer->stop();
 }
 
 

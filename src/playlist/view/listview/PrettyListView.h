@@ -30,6 +30,7 @@
 #include <QRect>
 
 #include <QAction>
+#include <QTimer>
 
 class PopupDropper;
 class QContextMenuEvent;
@@ -84,6 +85,7 @@ private slots:
     void updateProxyTimeout();
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
     void redrawActive();
+    void playlistLayoutChanged();
 
 private:
     void showEvent( QShowEvent* );
@@ -115,6 +117,8 @@ private:
     AbstractModel *m_topmostProxy;
 
     PrettyItemDelegate * m_prettyDelegate;
+
+    QTimer *m_animationTimer;
 
 public:
     QList<int> selectedRows() const;
