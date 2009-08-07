@@ -19,7 +19,6 @@
 #ifndef AMAROK_PLAYLISTWIDGET_H
 #define AMAROK_PLAYLISTWIDGET_H
 
-#include "PlaylistSortTestWidget.h"
 #include "PlaylistSortWidget.h"
 #include "view/listview/PrettyListView.h"
 
@@ -54,7 +53,6 @@ private:
     PrettyListView* m_playlistView;
     ProgressiveSearchWidget * m_searchWidget;
     SortWidget * m_sortWidget;
-    SortTestWidget * m_sortTestWidget;
     QLabel* m_dynamicHintWidget;
 
 };

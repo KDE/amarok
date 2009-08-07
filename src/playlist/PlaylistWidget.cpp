@@ -47,8 +47,6 @@ Playlist::Widget::Widget( QWidget* parent )
     DEBUG_BLOCK
     setContentsMargins( 0, 0, 0, 0 );
 
-    m_sortTestWidget = new Playlist::SortTestWidget( this );
-    m_sortTestWidget->hide();
     m_sortWidget = new Playlist::SortWidget( this );
     new HorizontalDivider( this );
 
