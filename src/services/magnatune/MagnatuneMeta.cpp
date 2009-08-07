@@ -59,7 +59,6 @@ int MagnatuneMetaFactory::getTrackSqlRowCount()
 
 QString MagnatuneMetaFactory::getTrackSqlRows()
 {
-    DEBUG_BLOCK
     QString sqlRows = ServiceMetaFactory::getTrackSqlRows();
 
     sqlRows += ", ";
@@ -139,7 +138,6 @@ int MagnatuneMetaFactory::getArtistSqlRowCount()
 
 QString MagnatuneMetaFactory::getArtistSqlRows()
 {
-    DEBUG_BLOCK
     QString sqlRows = ServiceMetaFactory::getArtistSqlRows();
 
     sqlRows += ", ";
@@ -183,7 +181,6 @@ MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
     , m_purchaseAction( 0 )
     , m_showInServiceAction( 0 )
 {
-    DEBUG_BLOCK
     m_lofiUrl = resultRow[7];
     m_oggUrl = resultRow[8];
 }
@@ -308,14 +305,12 @@ void Meta::MagnatuneTrack::purchase()
 
 void Meta::MagnatuneTrack::setAlbumPtr( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
     ServiceTrack::setAlbumPtr( album );
 
     //get year from magnatue album:
     MagnatuneAlbum * ma = dynamic_cast<MagnatuneAlbum *>( album.data() );
     if ( ma )
     {
-        debug() << "release year: " << ma->launchYear();
         YearPtr year = YearPtr( new ServiceYear( QString::number( ma->launchYear() ) ) );
         setYear( year );
     }
