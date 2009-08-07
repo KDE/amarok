@@ -590,6 +590,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ${amaroklib_LIB_SRCS}
         ../tests/meta/TestPlaylistFileSupport.cpp
         ../tests/meta/cue/TestMetaCueCueFileItem.cpp
+        ../tests/meta/cue/TestMetaCueTrack.cpp
         ../tests/meta/file/TestMetaFileTrack.cpp
         ../tests/TestAmarok.cpp
         ../tests/TestCaseConverter.cpp

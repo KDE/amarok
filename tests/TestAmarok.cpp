@@ -213,7 +213,7 @@ void TestAmarok::testRecursiveUrlExpand()
 
     url = KStandardDirs::installPath( "data" ) + "amarok/testdata/";
     resultList = Amarok::recursiveUrlExpand( url );
-    QCOMPARE( resultList.size(), 12 );
+    QCOMPARE( resultList.size(), 14 );
     QVERIFY( resultList.contains( url.pathOrUrl() + QString( "cue/test_silence.ogg" ) ) );
     QVERIFY( resultList.contains( url.pathOrUrl() + QString( "playlists/no-playlist.png" ) ) );
     QVERIFY( resultList.contains( url.pathOrUrl() + QString( "audio/Platz 01.mp3" ) ) );
