@@ -18,6 +18,7 @@
 #include "PlaylistBreadcrumbItem.h"
 
 #include "PlaylistDefines.h"
+#include "PlaylistSortWidget.h"
 
 #include <KIcon>
 #include <KLocale>
@@ -33,11 +34,15 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     //Let's set up the "siblings" button first...
     m_menuButton = new BreadcrumbItemMenuButton( this );
     QMenu *menu = new QMenu( this );
+    QStringList usedBreadcrumbLevels = qobject_cast< SortWidget * >( parent )->levels();
+
     QMap< QString, QPair< KIcon, QString > > siblings = level->siblings();
     for( QMap< QString, QPair< KIcon, QString > >::const_iterator i = siblings.begin(); i != siblings.end(); ++i )
     {
         QAction *action = menu->addAction( i.value().first, i.value().second );
         action->setData( i.key() );
+        if( usedBreadcrumbLevels.contains( i.key() ) )
+            action->setEnabled( false );
     }
     m_menuButton->setMenu( menu );
     const int offset = 6;
@@ -83,19 +88,19 @@ BreadcrumbAddMenuButton::BreadcrumbAddMenuButton( QWidget *parent )
 {
     setToolTip( i18n( "Add a sorting level to the playlist." ) );
 
-    QMenu *menu = new QMenu( this );
-
+    m_menu = new QMenu( this );
     for( int i = 0; i < NUM_COLUMNS; ++i )  //might be faster if it used a const_iterator
     {
         if( !sortableCategories.contains( internalColumnNames.at( i ) ) )
             continue;
-        QAction *action = menu->addAction( KIcon( iconNames.at( i ) ), QString( columnNames.at( i ) ) );
+        QAction *action = m_menu->addAction( KIcon( iconNames.at( i ) ), QString( columnNames.at( i ) ) );
         action->setData( internalColumnNames.at( i ) );
         //FIXME: this menu should have the same margins as other Playlist::Breadcrumb and
         //       BrowserBreadcrumb menus.
     }
-    setMenu( menu );
-    connect( menu, SIGNAL( triggered( QAction* ) ), this, SLOT( siblingTriggered( QAction* ) ) );
+    connect( m_menu, SIGNAL( triggered( QAction* ) ), this, SLOT( siblingTriggered( QAction* ) ) );
+
+    setMenu( m_menu );
 }
 
 BreadcrumbAddMenuButton::~BreadcrumbAddMenuButton()
@@ -105,6 +110,19 @@ void
 BreadcrumbAddMenuButton::siblingTriggered( QAction *action )
 {
     emit siblingClicked( action->data().toString() );
+}
+
+void
+BreadcrumbAddMenuButton::updateMenu( const QStringList &usedBreadcrumbLevels )
+{
+    foreach( QAction *action, m_menu->actions() )
+    {
+        if( usedBreadcrumbLevels.contains( action->data().toString() ) )
+            action->setEnabled( false );
+        else
+            action->setEnabled( true );
+    }
+
 }
 
 }   //namespace Playlist

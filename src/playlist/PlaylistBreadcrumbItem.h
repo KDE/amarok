@@ -77,10 +77,16 @@ class BreadcrumbAddMenuButton : public BreadcrumbItemMenuButton
 public:
     BreadcrumbAddMenuButton( QWidget *parent );
     virtual ~BreadcrumbAddMenuButton();
+    void updateMenu( const QStringList &usedBreadcrumbLevels );
+
 signals:
     void siblingClicked( QString sibling );
+
 private slots:
     void siblingTriggered( QAction *action );
+
+private:
+    QMenu *m_menu;
 };
 
 }   //namespace Playlist

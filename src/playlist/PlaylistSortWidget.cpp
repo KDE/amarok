@@ -63,6 +63,7 @@ SortWidget::addLevel( QString internalColumnName )
     m_ribbon->addWidget( item );
     connect( item, SIGNAL( clicked() ), this, SLOT( onItemClicked() ) );
     connect( item, SIGNAL( siblingClicked( QAction* ) ), this, SLOT( onItemSiblingClicked( QAction * ) ) );
+    m_addButton->updateMenu( levels() );
     updateSortScheme();
 }
 
@@ -76,6 +77,16 @@ SortWidget::trimToLevel( const int level )
         item->deleteLater();
     }
     updateSortScheme();
+    m_addButton->updateMenu( levels() );
+}
+
+QStringList
+SortWidget::levels()
+{
+    QStringList levels = QStringList();
+    for( int i = 0; i < m_ribbon->count(); ++i )
+        levels << qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name();
+    return levels;
 }
 
 void

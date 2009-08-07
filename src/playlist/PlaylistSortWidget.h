@@ -38,6 +38,8 @@ public:
 
     ~SortWidget();
 
+    QStringList levels();
+
 private:
     QHBoxLayout * m_ribbon;
     QList< BreadcrumbItem * > m_items;
