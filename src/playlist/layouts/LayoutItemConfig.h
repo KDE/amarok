@@ -271,12 +271,16 @@ class PlaylistLayout
          */
         void setDirty( bool dirty );
 
+        bool inlineControls();
+        void setInlineControls( bool inlineControls );
+
     private:
         LayoutItemConfig m_head;
         LayoutItemConfig m_body;
         LayoutItemConfig m_single;
         bool m_isEditable;
         bool m_isDirty;
+        bool m_inlineControls;
 };
 
 }

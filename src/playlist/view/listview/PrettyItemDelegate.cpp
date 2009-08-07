@@ -107,8 +107,7 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
 
     int rowCount = rowsForItem( index );
 
-
-    if( index.data( ActiveTrackRole ).toBool() )
+    if( LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool() )
         rowCount++; //add room for extras
 
     height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
@@ -135,6 +134,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
     const int groupMode = index.data( GroupRole ).toInt();
 
     int rowCount = rowsForItem( index );
+    bool paintInlineControls = LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool();
 
     if ( groupMode == None ||  groupMode == Body || groupMode == Tail )
     {
@@ -142,7 +142,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         int trackHeight;
         int extraHeight;
         QStyleOptionViewItem trackOption( option );
-        if ( index.data( ActiveTrackRole ).toBool() )
+        if ( paintInlineControls )
         {
             int adjustedRowCount = rowCount + 1;
             trackHeight = ( option.rect.height() * rowCount ) / adjustedRowCount;
@@ -157,7 +157,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         else
             paintItem( layout.body(), painter, trackOption, index );
         
-        if ( index.data( ActiveTrackRole ).toBool() )
+        if (paintInlineControls )
         {
             QRect extrasRect( 0, trackHeight, option.rect.width(), extraHeight );
             paintActiveTrackExtras( extrasRect, painter, index );
@@ -179,7 +179,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         int trackRows = layout.body().rows();
         int totalRows = headRows + trackRows;
 
-        if ( index.data( ActiveTrackRole ).toBool() )
+        if ( paintInlineControls )
         {
             totalRows = totalRows + 1;
         }
@@ -197,7 +197,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
         paintItem( layout.body(), painter, trackOption, index );
 
-        if ( index.data( ActiveTrackRole ).toBool() )
+        if ( paintInlineControls )
         {
             int extraHeight = option.rect.height() - ( headHeight + trackHeight );
             QRect extrasRect( 0, trackHeight, option.rect.width(), extraHeight );
