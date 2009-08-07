@@ -27,13 +27,13 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "PrettyItemDelegate.h"
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/MultiSourceCapability.h"
 #include "meta/Meta.h"
 #include "PaletteHandler.h"
+#include "playlist/layouts/LayoutManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
@@ -68,7 +68,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_topmostProxy( GroupingProxy::instance() )
 {
     setModel( GroupingProxy::instance() );
-    setItemDelegate( new PrettyItemDelegate( this ) );
+    m_prettyDelegate = new PrettyItemDelegate( this );
+    setItemDelegate( m_prettyDelegate );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setDragDropMode( QAbstractItemView::DragDrop );
     setDropIndicatorShown( false ); // we draw our own drop indicator
@@ -95,6 +96,17 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     connect( model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
 
     connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
+
+     m_animationTimer = new QTimer(this);
+     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
+     m_animationTimer->setInterval( 250 );
+
+     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
+     
+     if ( LayoutManager::instance()->activeLayout().inlineControls() )
+         m_animationTimer->start();
+
+     
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -368,6 +380,25 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
 {
+
+
+    //first of all, if a left click, check if the delegate wants to do something about this click
+    if( event->button() == Qt::LeftButton )
+    {
+
+        //get the item that was clicked
+        QModelIndex index = indexAt( event->pos() );
+
+        //we need to translate the position of the click into something relative to the item that was clicked.
+        QRect itemRect = visualRect( index );
+        QPoint relPos =  event->pos() - itemRect.topLeft();
+        
+        if ( m_prettyDelegate->clicked( relPos, itemRect, index ) )
+            return;  //click already handled...
+
+    }
+
+    
     if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) )
     {
         m_mousePressInHeader = true;
@@ -713,6 +744,21 @@ void Playlist::PrettyListView::itemsAdded( const QModelIndex& parent, int firstR
     debug() << "index has row: " << index.row();
     scrollTo( index, QAbstractItemView::PositionAtCenter );
 
+}
+
+void Playlist::PrettyListView::redrawActive()
+{
+    int activeRow = m_topmostProxy->activeRow();
+    QModelIndex index = model()->index( activeRow, 0, QModelIndex() );
+    update( index );
+}
+
+void Playlist::PrettyListView::playlistLayoutChanged()
+{
+    if ( LayoutManager::instance()->activeLayout().inlineControls() )
+        m_animationTimer->start();
+    else
+        m_animationTimer->stop();
 }
 
 

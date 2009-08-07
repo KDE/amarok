@@ -24,6 +24,7 @@
 
 #include "App.h"
 #include "Debug.h"
+#include "EngineController.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"
@@ -36,6 +37,7 @@
 
 #include <QFontMetricsF>
 #include <QPainter>
+#include <QAction>
 
 using namespace Playlist;
 
@@ -59,17 +61,9 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
 
-QSize
-PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+
+int PrettyItemDelegate::rowsForItem( const QModelIndex &index ) const
 {
-    int height = 0;
-
-    QFontMetricsF nfm( option.font );
-    QFont boldfont( option.font );
-    boldfont.setBold( true );
-    QFontMetricsF bfm( boldfont );
-
-    s_fontHeight = bfm.height();
 
     PlaylistLayout layout = LayoutManager::instance()->activeLayout();
 
@@ -96,6 +90,26 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
             break;
     }
 
+    return rowCount;
+}
+
+QSize
+PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+    int height = 0;
+
+    QFontMetricsF nfm( option.font );
+    QFont boldfont( option.font );
+    boldfont.setBold( true );
+    QFontMetricsF bfm( boldfont );
+
+    s_fontHeight = bfm.height();
+
+    int rowCount = rowsForItem( index );
+
+    if( LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool() )
+        rowCount++; //add room for extras
+
     height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
     return QSize( 120, height );
 }
@@ -119,8 +133,37 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
     // call paint method based on type
     const int groupMode = index.data( GroupRole ).toInt();
 
-    if ( groupMode == None )
-        paintItem( layout.single(), painter, option, index );
+    int rowCount = rowsForItem( index );
+    bool paintInlineControls = LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool();
+
+    if ( groupMode == None ||  groupMode == Body || groupMode == Tail )
+    {
+
+        int trackHeight;
+        int extraHeight;
+        QStyleOptionViewItem trackOption( option );
+        if ( paintInlineControls )
+        {
+            int adjustedRowCount = rowCount + 1;
+            trackHeight = ( option.rect.height() * rowCount ) / adjustedRowCount;
+            extraHeight = option.rect.height() - trackHeight;
+            trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
+        }
+
+        if ( groupMode == None )
+            paintItem( layout.single(), painter, trackOption, index );
+        else if ( groupMode == Body )
+            paintItem( layout.body(), painter, trackOption, index );
+        else
+            paintItem( layout.body(), painter, trackOption, index );
+        
+        if (paintInlineControls )
+        {
+            QRect extrasRect( 0, trackHeight, option.rect.width(), extraHeight );
+            paintActiveTrackExtras( extrasRect, painter, index );
+
+        }
+    }
     else if ( groupMode == Head )
     {
         //we need to split up the options for the actual header and the included first track
@@ -133,25 +176,35 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         QStyleOptionViewItem trackOption( option );
 
         int headRows = layout.head().rows();
-        int headHeight ;
+        int trackRows = layout.body().rows();
+        int totalRows = headRows + trackRows;
+
+        if ( paintInlineControls )
+        {
+            totalRows = totalRows + 1;
+        }
+
+        int headHeight = ( headRows * option.rect.height() ) / totalRows - 1;
+        int trackHeight = ( trackRows * option.rect.height() ) / totalRows;
 
         if ( headRows > 0 )
         {
-            headHeight = MARGIN * 2 + headRows * s_fontHeight + ( headRows - 1 ) * PADDING;
             headOption.rect = QRect( 0, 0, option.rect.width(), headHeight );
             paintItem( layout.head(), painter, headOption, index, true );
-            painter->translate( 0, headHeight - 3 );
+            painter->translate( 0, headHeight );
         } 
 
-        int trackRows = layout.body().rows();
-        int trackHeight = MARGIN * 2 + trackRows * s_fontHeight + ( trackRows - 1 ) * PADDING;
         trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
         paintItem( layout.body(), painter, trackOption, index );
-        
-    } else if ( groupMode == Body )
-        paintItem( layout.body(), painter, option, index );
-    else if ( groupMode == Tail )
-        paintItem( layout.body(), painter, option, index );
+
+        if ( paintInlineControls )
+        {
+            int extraHeight = option.rect.height() - ( headHeight + trackHeight );
+            QRect extrasRect( 0, trackHeight, option.rect.width(), extraHeight );
+            paintActiveTrackExtras( extrasRect, painter, index );
+
+        }
+    } 
     else
         QStyledItemDelegate::paint( painter, option, index );
 
@@ -407,6 +460,194 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
         }
         rowOffsetY += rowHeight;
     }
+
+}
+
+void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const
+{
+    int x = rect.x();
+    int y = rect.y();
+    int width = rect.width();
+    int height = rect.height();
+    int buttonSize = height - 4;
+
+    //just paint some "buttons for now
+
+    int offset = x + MARGINH;
+    painter->drawPixmap( offset, y + 2,
+                         The::svgHandler()->renderSvg(
+                         "back_button",
+                         buttonSize, buttonSize,
+                         "back_button" ) );
+
+    if ( EngineController::instance()->state() == Phonon::PlayingState ||
+         EngineController::instance()->state() == Phonon::PlayingState )
+    {
+        offset += ( buttonSize + MARGINH );
+        painter->drawPixmap( offset, y + 2,
+                            The::svgHandler()->renderSvg(
+                            "pause_button",
+                            buttonSize, buttonSize,
+                            "pause_button" ) );
+
+    }
+    else
+    {
+                              
+    offset += ( buttonSize + MARGINH );
+    painter->drawPixmap( offset, y + 2,
+                            The::svgHandler()->renderSvg(
+                            "play_button",
+                            buttonSize, buttonSize,
+                            "play_button" ) );
+    }
+
+    offset += ( buttonSize + MARGINH );
+    painter->drawPixmap( offset, y + 2,
+                         The::svgHandler()->renderSvg(
+                         "stop_button",
+                         buttonSize, buttonSize,
+                         "stop_button" ) );
+                         
+    offset += ( buttonSize + MARGINH );                        
+    painter->drawPixmap( offset, y + 2,
+                         The::svgHandler()->renderSvg(
+                         "next_button",
+                         buttonSize, buttonSize,
+                         "next_button" ) );
+
+    offset += ( buttonSize + MARGINH );
+
+    long trackLength = EngineController::instance()->trackLength() * 1000;
+    long trackPos = EngineController::instance()->trackPositionMs();
+    qreal trackPercentage = ( (qreal) trackPos / (qreal) trackLength );
+
+    int sliderWidth = width - ( offset + MARGINH );
+    int knobSize = buttonSize - 2;
+    int sliderRange = sliderWidth - buttonSize;
+    int knobRelPos = sliderRange * trackPercentage;
+
+    int sliderY = y + ( height / 2 );
+
+    if( sliderWidth > 30 )
+    {
+        
+
+        painter->drawPixmap( offset, sliderY,
+                            The::svgHandler()->renderSvg(
+                            "divider_bottom",
+                            sliderWidth, 1,
+                            "divider_bottom" ) );
+
+        painter->drawPixmap( offset, sliderY + 1,
+                            The::svgHandler()->renderSvg(
+                            "divider_top",
+                            sliderWidth, 1,
+                            "divider_top" ) );
+
+        painter->drawPixmap( offset + knobRelPos, y + 3,
+                             The::svgHandler()->renderSvg(
+                             "new_slider_knob",
+                             knobSize, knobSize,
+                             "new_slider_knob" ) );
+
+        
+    }
+    
+}
+
+bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index )
+{
+    DEBUG_BLOCK
+    
+    //for now, only handle clicks in the currently playing item.
+    if ( !index.data( ActiveTrackRole ).toBool() )
+        return false;
+
+    debug() << "is active";
+    debug() << "click at" << pos;
+    
+    int rowCount = rowsForItem( index );
+    int modifiedRowCount = rowCount;
+
+    if( LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool() )
+        modifiedRowCount++; //add room for extras
+
+    int height = itemRect.height();;
+    debug() << "height: " << height;
+
+    int baseHeight = ( height * rowCount ) / modifiedRowCount;
+    int extrasHeight = height - baseHeight;
+    debug() << "baseHeight: " << baseHeight;
+    debug() << "extrasHeight: " << extrasHeight;
+    int extrasOffsetY = height - extrasHeight;
+    debug() << "extrasOffsetY: " << extrasOffsetY;
+
+    int buttonSize = extrasHeight - 4;
+    debug() << "button size " << buttonSize;
+
+    int offset = MARGINH;
+    QRect backRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    debug() << "back rect " <<  backRect;
+    if( backRect.contains( pos ) )
+    {
+         debug() << "here!";
+         Amarok::actionCollection()->action( "prev" )->trigger();
+         return true;
+    }
+
+    offset += ( buttonSize + MARGINH ); 
+    QRect playRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    debug() << "play rect " <<  playRect;
+    if( playRect.contains( pos ) )
+    {
+         debug() << "here!";
+         Amarok::actionCollection()->action( "play_pause" )->trigger();
+         return true;
+    }
+
+    offset += ( buttonSize + MARGINH ); 
+    QRect stopRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    debug() << "stop rect " <<  stopRect;
+    if( stopRect.contains( pos ) )
+    {
+         debug() << "here!";
+         Amarok::actionCollection()->action( "stop" )->trigger();
+         return true;
+    }
+
+
+    offset += ( buttonSize + MARGINH ); 
+    QRect nextRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    debug() << "next rect " <<  nextRect;
+    if( nextRect.contains( pos ) )
+    {
+         debug() << "here!";
+         Amarok::actionCollection()->action( "next" )->trigger();
+         return true;
+    }
+    
+    offset += ( buttonSize + MARGINH );
+
+    //handle clicks on the slider
+
+    int sliderWidth = itemRect.width() - ( offset + MARGINH );
+    int knobSize = buttonSize - 2;
+    
+    QRect sliderActiveRect( offset, extrasOffsetY + 3, sliderWidth, knobSize );
+    if( sliderActiveRect.contains( pos ) )
+    {
+        int xSliderPos = pos.x() - offset;
+        long trackLength = EngineController::instance()->trackLength() * 1000;
+
+        qreal percentage = (qreal) xSliderPos / (qreal) sliderWidth;
+        EngineController::instance()->seek( trackLength * percentage );
+        return true;
+
+    }
+    
+
+    return false;
 }
 
 

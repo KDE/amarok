@@ -186,6 +186,15 @@ void Playlist::PlaylistLayout::setDirty( bool dirty )
     m_isDirty = dirty;
 }
 
+bool Playlist::PlaylistLayout::inlineControls()
+{
+    return m_inlineControls;
+}
+void Playlist::PlaylistLayout::setInlineControls( bool inlineControls )
+{
+    m_inlineControls = inlineControls;
+}
+
 }
 
 

@@ -21,6 +21,7 @@
 #define PRETTYLISTVIEW_H
 
 #include "EngineObserver.h"
+#include "PrettyItemDelegate.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 
 #include <QListView>
@@ -29,6 +30,7 @@
 #include <QRect>
 
 #include <QAction>
+#include <QTimer>
 
 class PopupDropper;
 class QContextMenuEvent;
@@ -82,6 +84,8 @@ private slots:
     void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
+    void redrawActive();
+    void playlistLayoutChanged();
 
 private:
     void showEvent( QShowEvent* );
@@ -94,6 +98,7 @@ private:
     void mouseReleaseEvent( QMouseEvent* );
     void paintEvent( QPaintEvent* );
     void startDrag( Qt::DropActions supportedActions );
+
 
     bool mouseEventInHeader( const QMouseEvent* ) const;
     QItemSelectionModel::SelectionFlags headerPressSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
@@ -110,6 +115,10 @@ private:
     PopupDropper *m_pd;
 
     AbstractModel *m_topmostProxy;
+
+    PrettyItemDelegate * m_prettyDelegate;
+
+    QTimer *m_animationTimer;
 
 public:
     QList<int> selectedRows() const;

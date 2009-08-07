@@ -145,8 +145,10 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         index++;
 
         QString layoutName = layout.toElement().attribute( "name", "" );
+        
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
+        currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
         currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
