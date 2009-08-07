@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+	* Amarok File Tracking can now use MusicBrainz track identifiers as
+      embedded IDs.
     * Allow sorting in the bookmark manager.
     * Allow filtering in the bookmark manager.
     * Add colums to the bookmark manger and make it possible to edit items 

@@ -62,6 +62,8 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
 {
     int currentVersion = 1; //TODO: Make this more global?
     QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
+    QString mbId = QString( "http://musicbrainz.org" );
+    QString storedMBId;
     if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
         if( !file->ID3v2Tag( false ) )
@@ -81,8 +83,15 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
                     qDebug() << "Found MP3 identifier: " << TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
                     return TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
                 }
+                else if( owner.compare( mbId, Qt::CaseInsensitive ) == 0 )
+                {
+                    qDebug() << "Found MB identifier: " << QString( "MB_") << TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
+                    storedMBId = QString( "MB_" ) + TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
+                }
             }
         }
+        if( !storedMBId.isEmpty() )
+            return storedMBId;
     }
     //from here below assumes a file with a XiphComment; put non-conforming formats up above...
     TagLib::Ogg::XiphComment *comment = 0;
@@ -101,9 +110,17 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     if( !comment )
         return QString();
 
+    mbId = QString( "musicbrainz_trackid" );
+
     if( comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
     {
         QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(ourId.toUpper())].front()).toLower();
+        qDebug() << "Found Ogg or FLAC identifier: " << identifier;
+        return identifier;
+    }
+    else if( comment->contains( Qt4QStringToTString( mbId.toUpper() ) ) )
+    {
+        QString identifier = QString( "MB_" ) + TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
         qDebug() << "Found Ogg or FLAC identifier: " << identifier;
         return identifier;
     }
