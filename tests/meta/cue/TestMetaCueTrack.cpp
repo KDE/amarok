@@ -59,7 +59,7 @@ void TestMetaCueTrack::testCueItems()
 
     QCOMPARE( cueContentMap[ 727920 ].getArtist(), QString( "Die Toten Hosen" ) );
     QCOMPARE( cueContentMap[ 727920 ].getAlbum(), QString( "In aller Stille (2008)" ) );
-    QCOMPARE( cueContentMap[ 727920 ].getTitle(), QString( "Auflösen" ) );
+    QCOMPARE( cueContentMap[ 727920 ].getTitle(), QString::fromUtf8( "Auflösen" ) );
     QCOMPARE( cueContentMap[ 727920 ].getTrackNumber(), 5 );
 
 
@@ -71,7 +71,7 @@ void TestMetaCueTrack::testCueItems()
 
     QCOMPARE( cueContentMap[ 727920 ].getArtist(), QString( "Die Toten Hosen" ) );
     QCOMPARE( cueContentMap[ 727920 ].getAlbum(), QString( "In aller Stille (2008)" ) );
-    QCOMPARE( cueContentMap[ 727920 ].getTitle(), QString( "Auflösen" ) );
+    QCOMPARE( cueContentMap[ 727920 ].getTitle(), QString::fromUtf8( "Auflösen" ) );
     QCOMPARE( cueContentMap[ 727920 ].getTrackNumber(), 5 );
 }
 
@@ -136,4 +136,5 @@ void TestMetaCueTrack::testArtist()
 
 void TestMetaCueTrack::testHasCapabilityInterface()
 {
+    QVERIFY( m_testTrack1->hasCapabilityInterface( Meta::Capability::LoadTimecode ) );
 }
