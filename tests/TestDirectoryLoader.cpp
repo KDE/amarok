@@ -17,7 +17,6 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "DirectoryLoader.h"
 #include "TestDirectoryLoader.h"
 
 #include "playlist/PlaylistController.h"
@@ -38,21 +37,27 @@ void TestDirectoryLoader::initTestCase()
 {
     The::playlistController()->clear(); // we need a clear playlist for those tests
 
-    DirectoryLoader *loader1 = new DirectoryLoader;
-    DirectoryLoader *loader2 = new DirectoryLoader;
+    m_loader1 = new DirectoryLoader;
+    m_loader2 = new DirectoryLoader;
     QList<QUrl> testList;
     QUrl testUrl;
 
     testUrl = QUrl::fromLocalFile( KStandardDirs::installPath( "data" ) + "amarok/testdata/audio/" );
     testList.append( testUrl );
 
-    loader1->insertAtRow( 1 ); // TODO: negative values always seem to append at the beginning. is that correct?
-    loader1->init( testList );
+    m_loader1->insertAtRow( 1 ); // TODO: negative values always seem to append at the beginning. is that correct?
+    m_loader1->init( testList );
     // wait until finished... HOW? might only work with --nofork?
-    loader2->insertAtRow( 4 );
-    loader2->init( testList );
+    m_loader2->insertAtRow( 4 );
+    m_loader2->init( testList );
     // here we should wait again
 }
+
+void TestDirectoryLoader::cleanupTestCase()
+{
+    // DirecoryLoaders delete themselves when the job is done
+}
+
 
 void TestDirectoryLoader::testInitAndInsertAtRow()
 {

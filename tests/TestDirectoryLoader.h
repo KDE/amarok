@@ -20,6 +20,8 @@
 #ifndef TESTDIRECTORYLOADER_H
 #define TESTDIRECTORYLOADER_H
 
+#include "DirectoryLoader.h"
+
 #include <QtTest>
 
 class TestDirectoryLoader : public QObject
@@ -31,7 +33,11 @@ public:
 
 private slots:
     void initTestCase();
+    void cleanupTestCase();
     void testInitAndInsertAtRow();
+
+private:
+    DirectoryLoader *m_loader1, *m_loader2;
 };
 
 #endif // TESTDIRECTORYLOADER_H
