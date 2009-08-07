@@ -35,6 +35,7 @@ SortWidget::SortWidget( QWidget *parent )
 
     BreadcrumbItemButton *rootItem = new BreadcrumbItemButton( KIcon( "format-list-ordered" ), QString(), this );
     rootItem->setFixedWidth( 20 );
+    rootItem->setToolTip( i18n( "Clear the playlist sorting configuration." ) );
     m_layout->addWidget( rootItem );
     connect( rootItem, SIGNAL( clicked() ), this, SLOT( trimToLevel() ) );
 
@@ -44,6 +45,7 @@ SortWidget::SortWidget( QWidget *parent )
     m_ribbon->setSpacing( 0 );
 
     m_addButton = new BreadcrumbAddMenuButton( this );
+    m_addButton->setToolTip( i18n( "Add a playlist sorting level." ) );
     m_layout->addWidget( m_addButton );
     m_layout->addStretch( 10 );
 
