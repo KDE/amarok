@@ -17,25 +17,41 @@
 #ifndef PLAYLISTSORTWIDGET_H
 #define PLAYLISTSORTWIDGET_H
 
-#include <KHBox>
+#include "PlaylistBreadcrumbItem.h"
+
+#include <QAction>
+#include <QHBoxLayout>
 
 namespace Playlist
 {
 
 /**
- * A breadcrumb-based widget that allows the user to build a multilevel sorting scheme.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * A breadcrumb-based widget that allows the user to build a multilevel sorting scheme for
+ * the playlist.
+ * @author Téo Mrnjavac
  */
-class SortWidget : public KHBox
+class SortWidget : public QWidget
 {
     Q_OBJECT
 public:
-    SortWidget( QWidget * parent );
+    SortWidget( QWidget *parent );
 
     ~SortWidget();
 
+private:
+    QHBoxLayout * m_ribbon;
+    QList< BreadcrumbItem * > m_items;
+    BreadcrumbAddMenuButton * m_addButton;
+    QHBoxLayout * m_layout;
+    void updateSortScheme();
+
+private slots:
+    void addLevel( QString internalColumnName );
+    void trimToLevel( const int level = -1 );
+    void onItemClicked();
+    void onItemSiblingClicked( QAction *action );
 };
 
-}
+}   //namespace Playlist
 
 #endif  //PLAYLISTSORTWIDGET_H

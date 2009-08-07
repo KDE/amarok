@@ -16,26 +16,92 @@
 
 #include "PlaylistSortWidget.h"
 
-#include "PlaylistBreadcrumbWidget.h"
-#include "Debug.h"
+#include "proxymodels/SortProxy.h"
+#include "proxymodels/SortScheme.h"
 
 namespace Playlist
 {
 
-SortWidget::SortWidget( QWidget * parent )
-    : KHBox( parent)
+SortWidget::SortWidget( QWidget *parent )
+    : QWidget( parent )
 {
     setFixedHeight( 28 );
-    setContentsMargins( 0, 0, 0, 0 );
-    setSpacing( 0 );
-    new BreadcrumbWidget( this );
+    setContentsMargins( 3, 0, 3, 0 );
+
+    m_layout = new QHBoxLayout( this );
+    setLayout( m_layout );
+    m_layout->setSpacing( 0 );
+    m_layout->setContentsMargins( 0, 0, 0, 0 );
+
+    BreadcrumbItemButton *rootItem = new BreadcrumbItemButton( KIcon( "format-list-ordered" ), QString(), this );
+    rootItem->setFixedWidth( 20 );
+    m_layout->addWidget( rootItem );
+    connect( rootItem, SIGNAL( clicked() ), this, SLOT( trimToLevel() ) );
+
+    m_ribbon = new QHBoxLayout( this );
+    m_layout->addLayout( m_ribbon );
+    m_ribbon->setContentsMargins( 0, 0, 0, 0 );
+    m_ribbon->setSpacing( 0 );
+
+    m_addButton = new BreadcrumbAddMenuButton( this );
+    m_layout->addWidget( m_addButton );
+    m_layout->addStretch( 10 );
+
+    connect( m_addButton, SIGNAL( siblingClicked( QString ) ), this, SLOT( addLevel( QString ) ) );
 }
 
 SortWidget::~SortWidget()
+{}
+
+void
+SortWidget::addLevel( QString internalColumnName )
 {
+    BreadcrumbLevel *bLevel = new BreadcrumbLevel( internalColumnName );
+    BreadcrumbItem *item = new BreadcrumbItem( bLevel, this );
+    m_ribbon->addWidget( item );
+    connect( item, SIGNAL( clicked() ), this, SLOT( onItemClicked() ) );
+    connect( item, SIGNAL( siblingClicked( QAction* ) ), this, SLOT( onItemSiblingClicked( QAction * ) ) );
+    updateSortScheme();
+}
 
+void
+SortWidget::trimToLevel( const int level )
+{
+    for( int i = m_ribbon->count() - 1 ; i > level; i-- )
+    {
+        BreadcrumbItem *item = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() );
+        m_ribbon->removeWidget( item );
+        item->deleteLater();
+    }
+    updateSortScheme();
+}
+
+void
+SortWidget::onItemClicked()
+{
+    const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender() ) );
+    trimToLevel( level );
+}
+
+void
+SortWidget::onItemSiblingClicked( QAction *action )
+{
+    const int level = m_ribbon->indexOf( qobject_cast< QWidget * >( sender() ) );
+    trimToLevel( level -1 );
+    addLevel( action->data().toString() );
+}
+
+void
+SortWidget::updateSortScheme()
+{
+    SortScheme scheme = SortScheme();
+    for( int i = 0; i < m_ribbon->count(); ++i )    //could be faster if done with iterator
+    {
+        scheme.addLevel( SortLevel( internalColumnNames.indexOf(
+                qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() ),
+                Qt::DescendingOrder ) );
+    }
+    SortProxy::instance()->updateSortMap( scheme );
 }
 
 }
-
-#include "PlaylistSortWidget.moc"
