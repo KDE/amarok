@@ -89,7 +89,8 @@ Playlist::Model::Model()
 
     if ( QFile::exists( defaultPlaylistPath() ) )
     {
-        Meta::TrackList tracks = Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) )->tracks();
+        Meta::TrackList tracks =
+                Meta::loadPlaylistFile( KUrl( defaultPlaylistPath() ) )->tracks();
 
         QMutableListIterator<Meta::TrackPtr> i( tracks );
         while ( i.hasNext() ) {

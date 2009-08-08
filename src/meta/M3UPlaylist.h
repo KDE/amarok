@@ -17,7 +17,7 @@
 #ifndef METAM3UPLAYLIST_H
 #define METAM3UPLAYLIST_H
 
-#include <Playlist.h>
+#include <PlaylistFile.h>
 
 class QTextStream;
 class QString;
@@ -33,7 +33,7 @@ typedef QList<M3UPlaylistPtr> M3UPlaylistList;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class M3UPlaylist : public Playlist
+class M3UPlaylist : public PlaylistFile
 {
     public:
         M3UPlaylist();
@@ -46,7 +46,7 @@ class M3UPlaylist : public Playlist
 
         /* Playlist virtual functions */
         virtual QString name() const { return prettyName(); };
-        virtual QString prettyName() const { return m_url.fileName(); };
+        virtual QString prettyName() const { return m_name; };
 
         /** returns all tracks in this playlist */
         virtual TrackList tracks() { return m_tracks; };
@@ -63,6 +63,10 @@ class M3UPlaylist : public Playlist
         KUrl retrievableUrl() { return m_url; };
 
         bool load( QTextStream &stream ) { return loadM3u( stream ); };
+
+        /* PlaylistFile methods */
+        bool isWritable();
+        void setName( const QString &name );
 
     private:
         bool loadM3u( QTextStream &stream );

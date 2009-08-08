@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 #include "Meta.h"
-#include "Playlist.h"
+#include "PlaylistFile.h"
 
 #include <QString>
 #include <QTextStream>
@@ -47,7 +47,7 @@ namespace Meta
     PlaylistFormat getFormat( const KUrl &path );
     bool isPlaylist( const KUrl &path );
 
-    AMAROK_EXPORT PlaylistPtr loadPlaylist( const KUrl &url );
+    AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const KUrl &url );
     bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path );
 
     /* HACK:

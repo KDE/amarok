@@ -70,8 +70,6 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
     m_categoryListView->setModel( m_proxyModel );
     m_categoryListView->setMouseTracking ( true );
 
-    bottomToolbar()->setParent( this );
-
     connect( m_categoryListView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( categoryActivated( const QModelIndex & ) ) );
 
     connect( m_categoryListView, SIGNAL( entered( const QModelIndex & ) ), this, SLOT( categoryEntered( const QModelIndex & ) ) );
@@ -153,7 +151,6 @@ BrowserCategoryList::showCategory( const QString &name )
     }
 
     m_searchWidget->hide();
-    bottomToolbar()->setParent( 0 );
 
     emit( viewChanged() );
 }
@@ -172,7 +169,6 @@ BrowserCategoryList::home()
         m_categoryListView->setParent( this );
         m_currentCategory = 0; // remove any context stuff we might have added
         m_searchWidget->show();
-        bottomToolbar()->setParent( this );
 
         emit( viewChanged() );
 

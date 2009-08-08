@@ -183,7 +183,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QPointer<Context::ContextView>  m_contextView;
         QPointer<Context::ToolbarView>  m_contextToolbarView;
 
-        PlaylistFileProvider *m_playlistFiles;
         Meta::TrackPtr m_currentTrack;
 
         QDockWidget * m_browsersDock;

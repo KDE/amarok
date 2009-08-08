@@ -37,7 +37,8 @@ KUrl ShoutcastTrack::playableUrl() const
         return MetaStream::Track::playableUrl();
 
     if( !m_playlist )
-        m_playlist = Meta::loadPlaylist( m_playlistUrl );
+        m_playlist =
+                Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( m_playlistUrl ) );
 
     //did it go well?
     if ( !m_playlist )

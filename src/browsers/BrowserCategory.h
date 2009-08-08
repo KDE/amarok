@@ -108,8 +108,6 @@ public:
     virtual void setFilter( const QString &filter ) { Q_UNUSED( filter ) };
     virtual void setLevels( const QList<int> &levels ) { Q_UNUSED( levels ) };
 
-    KToolBar * bottomToolbar();
-
 public slots:
     void activate();
 
@@ -123,8 +121,6 @@ private:
     BrowserCategoryList * m_parentList;
 
     BrowserBreadcrumbItem * m_breadcrumb;
-    KToolBar * m_bottomToolbar;
-    
 
 };
 

@@ -54,8 +54,8 @@ isPlaylist( const KUrl &path )
     return ( getFormat( path ) != Unknown );
 }
 
-PlaylistPtr
-loadPlaylist( const KUrl &url )
+PlaylistFilePtr
+loadPlaylistFile( const KUrl &url )
 {
     DEBUG_BLOCK
 
@@ -72,7 +72,7 @@ loadPlaylist( const KUrl &url )
         {
             debug() << "could not read file " << url.path();
             The::statusBar()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
-            return Meta::PlaylistPtr( 0 );
+            return Meta::PlaylistFilePtr( 0 );
         }
         fileToLoad = url;
     }
@@ -89,7 +89,7 @@ loadPlaylist( const KUrl &url )
         {
             The::statusBar()->longMessage(
                     i18n( "Could not create a temporary file to download playlist.") );
-            return Meta::PlaylistPtr( 0 ); //error
+            return Meta::PlaylistFilePtr( 0 ); //error
         }
 
 
@@ -106,7 +106,7 @@ loadPlaylist( const KUrl &url )
         if( !job->exec() ) //Job deletes itself after execution
         {
             error() << "error";
-            return Meta::PlaylistPtr( 0 );
+            return Meta::PlaylistFilePtr( 0 );
         }
         else
         {
@@ -114,14 +114,14 @@ loadPlaylist( const KUrl &url )
             if( !file.open( QFile::ReadOnly ) )
             {
                 debug() << "error opening file: " << tempFileName;
-                return Meta::PlaylistPtr( 0 );
+                return Meta::PlaylistFilePtr( 0 );
             }
             fileToLoad = KUrl::fromPath( file.fileName() );
         }
     }
 
     PlaylistFormat format = getFormat( fileToLoad );
-    Playlist *playlist = 0;
+    PlaylistFile *playlist = 0;
     switch( format )
     {
         case PLS:
@@ -138,13 +138,26 @@ loadPlaylist( const KUrl &url )
             break;
     }
 
-    return PlaylistPtr( playlist );
+    return PlaylistFilePtr( playlist );
 }
 
 bool
 exportPlaylistFile( const Meta::TrackList &list, const KUrl &path )
 {
-    return false;
+    PlaylistFormat format = getFormat( path );
+    bool result = false;
+    switch( format )
+    {
+        case PLS:
+            result = PLSPlaylist( list ).save( path.path(), true );
+        case M3U:
+            result = M3UPlaylist( list ).save( path.path(), true );
+        case XSPF:
+            result = XSPFPlaylist( list ).save( path.path(), true );
+        default:
+            debug() << "Could not export playlist file " << path;
+    }
+    return result;
 }
 
 bool
@@ -160,7 +173,7 @@ PlaylistPtr
 expand( TrackPtr track )
 {
    //this should really be made asyncrhonous
-   return loadPlaylist( track->uidUrl() );
+   return Meta::PlaylistPtr::dynamicCast( loadPlaylistFile( track->uidUrl() ) );
 }
 
 KUrl

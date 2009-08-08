@@ -46,18 +46,14 @@ PlaylistFileProvider::PlaylistFileProvider()
     {
         QStringList configEntry =
                 Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
-        Meta::PlaylistPtr playlist = Meta::loadPlaylist( KUrl( configEntry[1] ).path() );
-        //TODO: make this work
-        if( playlist->is<Meta::EditablePlaylistCapability>() )
+        Meta::PlaylistFilePtr playlist =
+                Meta::loadPlaylistFile( KUrl( configEntry[1] ).path() );
+        if( playlist->isWritable() )
         {
-            QString title = configEntry[0];
-            playlist->create<Meta::EditablePlaylistCapability>()->setTitle( title );
+            QString name = configEntry[0];
+            playlist->setName( name );
         }
-        m_playlists << playlist;
-    }
-    if( m_playlists.isEmpty() )
-    {
-        //TODO: find playlist files in the configured collection directories and home folder
+        m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
 }
 
@@ -98,7 +94,25 @@ PlaylistFileProvider::playlists()
 Meta::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks )
 {
+    DEBUG_BLOCK
+    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
+}
+
+Meta::PlaylistPtr
+PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
+{
+    KUrl path( Amarok::saveLocation( "playlists" ) );
+    path.addPath( name );
+    if( QFileInfo( path.path() ).exists() )
+    {
+        //TODO:request overwrite
+        return Meta::PlaylistPtr();
+    }
+    QString ext = Amarok::extension( path.fileName() );
     Meta::PlaylistFormat format = m_defaultFormat;
+    if( !ext.isEmpty() )
+        format = Meta::getFormat( path );
+
     Meta::Playlist *playlist = 0;
     switch( format )
     {
@@ -115,12 +129,20 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks )
             debug() << "unknown type!";
             break;
     }
+    Meta::PlaylistPtr playlistPtr( playlist );
+    m_playlists << playlistPtr;
+    emit updated();
 
-    return Meta::PlaylistPtr( playlist );
+    return playlistPtr;
 }
 
-Meta::PlaylistPtr
-PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
+bool
+PlaylistFileProvider::import( const KUrl &path )
 {
-    return Meta::PlaylistPtr();
+    Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( path );
+    if( !playlist )
+        return false;
+    m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
+    emit updated();
+    return true;
 }

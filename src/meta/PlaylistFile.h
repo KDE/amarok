@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,39 +14,41 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYLISTFILEPROVIDER_H
-#define PLAYLISTFILEPROVIDER_H
+#ifndef METAPLAYLISTFILE_H
+#define METAPLAYLISTFILE_H
 
-#include <UserPlaylistProvider.h>
-#include <PlaylistFileSupport.h>
+#include "Playlist.h"
 
-class KUrl;
-
-/**
-    @author Bart Cerneels <bart.cerneels@kde.org>
-*/
-class PlaylistFileProvider : public UserPlaylistProvider
+namespace Meta
 {
-    public:
-        PlaylistFileProvider();
-        ~PlaylistFileProvider();
 
-        QString prettyName() const;
-        int category() const { return PlaylistManager::UserPlaylist; };
+    class PlaylistFile;
 
-        virtual Meta::PlaylistList playlists();
+    typedef KSharedPtr<PlaylistFile> PlaylistFilePtr;
+    typedef QList<PlaylistFilePtr> PlaylistFileList;
 
-        virtual bool canSavePlaylists() { return true; }
+    /**
+     * Base class for all playlist files
+     *
+     **/
+    class PlaylistFile : public Playlist
+    {
+        public:
+            PlaylistFile() {};
+            PlaylistFile( const KUrl &url ) { Q_UNUSED( url ); }
+            virtual ~PlaylistFile() {};
 
-        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks );
-        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks,
-                                        const QString &name );
+            virtual bool isWritable() { return false; }
 
-        bool import( const KUrl &path );
+            virtual bool save( const KUrl &url, bool relative )
+                { Q_UNUSED( url ); Q_UNUSED( relative ); return false; }
 
-    private:
-        Meta::PlaylistList m_playlists;
-        Meta::PlaylistFormat m_defaultFormat;
-};
+            virtual void setName( const QString &name ) = 0;
+    };
+
+}
+
+Q_DECLARE_METATYPE( Meta::PlaylistFilePtr )
+Q_DECLARE_METATYPE( Meta::PlaylistFileList )
 
 #endif
