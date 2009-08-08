@@ -535,15 +535,15 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
 
         painter->drawPixmap( offset, sliderY,
                             The::svgHandler()->renderSvg(
-                            "divider_bottom",
+                            "new_slider_top",
                             sliderWidth, 1,
-                            "divider_bottom" ) );
+                            "new_slider_top" ) );
 
         painter->drawPixmap( offset, sliderY + 1,
                             The::svgHandler()->renderSvg(
-                            "divider_top",
+                            "new_slider_bottom",
                             sliderWidth, 1,
-                            "divider_top" ) );
+                            "new_slider_bottom" ) );
 
         painter->drawPixmap( offset + knobRelPos, y + 3,
                              The::svgHandler()->renderSvg(
