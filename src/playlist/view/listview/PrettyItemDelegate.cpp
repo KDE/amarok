@@ -558,14 +558,10 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
 
 bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index )
 {
-    DEBUG_BLOCK
     
     //for now, only handle clicks in the currently playing item.
     if ( !index.data( ActiveTrackRole ).toBool() )
         return false;
-
-    debug() << "is active";
-    debug() << "click at" << pos;
     
     int rowCount = rowsForItem( index );
     int modifiedRowCount = rowCount;
@@ -574,44 +570,33 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
         modifiedRowCount++; //add room for extras
 
     int height = itemRect.height();;
-    debug() << "height: " << height;
 
     int baseHeight = ( height * rowCount ) / modifiedRowCount;
     int extrasHeight = height - baseHeight;
-    debug() << "baseHeight: " << baseHeight;
-    debug() << "extrasHeight: " << extrasHeight;
     int extrasOffsetY = height - extrasHeight;
-    debug() << "extrasOffsetY: " << extrasOffsetY;
 
     int buttonSize = extrasHeight - 4;
-    debug() << "button size " << buttonSize;
 
     int offset = MARGINH;
     QRect backRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
-    debug() << "back rect " <<  backRect;
     if( backRect.contains( pos ) )
     {
-         debug() << "here!";
          Amarok::actionCollection()->action( "prev" )->trigger();
          return true;
     }
 
     offset += ( buttonSize + MARGINH ); 
     QRect playRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
-    debug() << "play rect " <<  playRect;
     if( playRect.contains( pos ) )
     {
-         debug() << "here!";
          Amarok::actionCollection()->action( "play_pause" )->trigger();
          return true;
     }
 
     offset += ( buttonSize + MARGINH ); 
     QRect stopRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
-    debug() << "stop rect " <<  stopRect;
     if( stopRect.contains( pos ) )
     {
-         debug() << "here!";
          Amarok::actionCollection()->action( "stop" )->trigger();
          return true;
     }
@@ -619,10 +604,8 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
 
     offset += ( buttonSize + MARGINH ); 
     QRect nextRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
-    debug() << "next rect " <<  nextRect;
     if( nextRect.contains( pos ) )
     {
-         debug() << "here!";
          Amarok::actionCollection()->action( "next" )->trigger();
          return true;
     }
