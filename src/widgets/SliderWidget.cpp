@@ -204,7 +204,7 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         const int sliderLeftWidth = sliderHeight / 3;
         const int sliderRightWidth = sliderLeftWidth;
 
-        int knobX = ( ((double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2) );
+        int knobX = ( ( (double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2) );
 
         const QString barLeft = "slider_bar_left";
         const QString barCenter = "slider_bar_center";
@@ -214,6 +214,46 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         p->drawPixmap( x + m_sliderInsertX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( barCenter, knobX, sliderHeight, barCenter ) );
         p->drawPixmap( x + m_sliderInsertX + knobX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( barRight, sliderRightWidth, sliderHeight, barRight ) );
     }
+}
+
+void Amarok::Slider::paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
+{
+    qreal percentage =  ( ( (double) value() - (double) minimum()) / (maximum() - minimum() ) );
+    int knobSize = height - 4;
+    int sliderRange = width - knobSize;
+    int knobRelPos = sliderRange * percentage;
+    int knobY = ( height - knobSize ) / 2 + 1;
+
+    int sliderY = y + ( height / 2 );
+
+
+    p->drawPixmap( 0, sliderY,
+                   The::svgHandler()->renderSvg(
+                   "new_slider_top",
+                   width, 1,
+                   "new_slider_top" ) );
+
+    p->drawPixmap( 0, sliderY + 1,
+                   The::svgHandler()->renderSvg(
+                   "new_slider_bottom",
+                   width, 1,
+                   "new_slider_bottom" ) );
+
+    if ( underMouse() )
+        p->drawPixmap( knobRelPos, y + knobY,
+                       The::svgHandler()->renderSvg(
+                       "new_slider_knob_active",
+                       knobSize, knobSize,
+                       "new_slider_knob_active" ) );
+    else
+        p->drawPixmap( knobRelPos, y + knobY,
+                       The::svgHandler()->renderSvg(
+                       "new_slider_knob",
+                       knobSize, knobSize,
+                       "new_slider_knob" ) );
+
+
+
 }
 
 
@@ -313,7 +353,7 @@ void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
+    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX );
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
