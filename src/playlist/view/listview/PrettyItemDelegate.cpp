@@ -526,7 +526,8 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
     int knobSize = buttonSize - 2;
     int sliderRange = sliderWidth - buttonSize;
     int knobRelPos = sliderRange * trackPercentage;
-
+    
+    int knobY = y + ( height - knobSize ) / 2 + 1;
     int sliderY = y + ( height / 2 );
 
     if( sliderWidth > 30 )
@@ -545,7 +546,7 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
                             sliderWidth, 1,
                             "new_slider_bottom" ) );
 
-        painter->drawPixmap( offset + knobRelPos, y + 3,
+        painter->drawPixmap( offset + knobRelPos, knobY,
                              The::svgHandler()->renderSvg(
                              "new_slider_knob",
                              knobSize, knobSize,
