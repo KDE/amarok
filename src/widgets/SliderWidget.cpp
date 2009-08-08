@@ -219,56 +219,7 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
 void Amarok::Slider::paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
 {
     qreal percentage =  ( ( (double) value() - (double) minimum()) / (maximum() - minimum() ) );
-    int knobSize = height - 4;
-    int sliderRange = width - ( knobSize + 4 );
-    int knobRelPos = sliderRange * percentage + 2;
-    int knobY = ( height - knobSize ) / 2 + 1;
-
-    int sliderY = y + ( height / 2 );
-
-
-    p->drawPixmap( 0, sliderY,
-                   The::svgHandler()->renderSvg(
-                   "new_slider_top",
-                   width, 1,
-                   "new_slider_top" ) );
-
-    p->drawPixmap( 0, sliderY + 1,
-                   The::svgHandler()->renderSvg(
-                   "new_slider_bottom",
-                   width, 1,
-                   "new_slider_bottom" ) );
-
-
-    //draw end markers
-
-    p->drawPixmap( 0, 0,
-                   The::svgHandler()->renderSvg(
-                   "new_slider_end",
-                   2, height,
-                   "new_slider_end" ) );
-                   
-    p->drawPixmap( width - 2, 0,
-                   The::svgHandler()->renderSvg(
-                   "new_slider_end",
-                   2, height,
-                   "new_slider_endr" ) );
-                   
-
-    if ( underMouse() )
-        p->drawPixmap( knobRelPos, y + knobY,
-                       The::svgHandler()->renderSvg(
-                       "new_slider_knob_active",
-                       knobSize, knobSize,
-                       "new_slider_knob_active" ) );
-    else
-        p->drawPixmap( knobRelPos, y + knobY,
-                       The::svgHandler()->renderSvg(
-                       "new_slider_knob",
-                       knobSize, knobSize,
-                       "new_slider_knob" ) );
-
-
+    The::svgHandler()->paintCustomSlider( p,x, y, width, height, percentage, underMouse() );
 
 }
 

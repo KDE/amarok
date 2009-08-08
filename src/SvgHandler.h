@@ -75,6 +75,8 @@ class AMAROK_EXPORT SvgHandler : public QObject
 
         QPixmap addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache =false );
 
+        void paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active );
+
         QString themeFile();
         void setThemeFile( const QString  & themeFile );
 
