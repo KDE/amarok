@@ -279,6 +279,8 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
             LayoutItemConfigRowElement element = row.element( j );
             QDomElement elementElement = doc.createElement( "element" );
 
+            elementElement.setAttribute ( "prefix", element.prefix() );
+            elementElement.setAttribute ( "suffix", element.suffix() );
             elementElement.setAttribute ( "value", internalColumnNames[element.value()] );
             elementElement.setAttribute ( "size", QString::number( element.size() ) );
             elementElement.setAttribute ( "bold", element.bold() ? "true" : "false" );

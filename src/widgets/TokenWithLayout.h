@@ -17,9 +17,10 @@
 #ifndef TOKENWITHLAYOUT_H
 #define TOKENWITHLAYOUT_H
 
+#include <QPointer>
 #include <Token.h>
 
-class QMenu;
+class LayoutEditDialog;
 
 class Wrench : public QLabel
 {
@@ -29,6 +30,7 @@ public:
 protected:
     void enterEvent(QEvent *);
     void leaveEvent(QEvent *);
+    void mousePressEvent( QMouseEvent *e );
     void mouseReleaseEvent( QMouseEvent *e );
     void paintEvent( QPaintEvent *pe );
 signals:
@@ -78,9 +80,7 @@ public slots:
 protected:
     virtual void enterEvent(QEvent *);
     virtual bool eventFilter( QObject*, QEvent* );
-    virtual void fillMenu( QMenu * menu );
     virtual void leaveEvent(QEvent *);
-    virtual void menuExecuted( const QAction* action );
     virtual void timerEvent( QTimerEvent* );
 
 private slots:
@@ -96,6 +96,7 @@ private:
     QString m_prefix, m_suffix;
     Wrench *m_wrench;
     int m_wrenchTimer;
+    static QPointer<LayoutEditDialog> m_dialog;
 
 };
 
