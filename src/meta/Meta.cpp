@@ -34,7 +34,6 @@
 
 Meta::Observer::~Observer()
 {
-    DEBUG_BLOCK
     // Unsubscribe all stray Meta subscriptions:
 
     foreach( TrackPtr ptr, m_trackSubscriptions )
