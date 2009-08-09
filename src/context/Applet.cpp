@@ -141,7 +141,7 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     // draw non-gradient backround. going for elegance and style
     p->save();
     QPainterPath path;
-    path.addRoundedRect( boundingRect().adjusted( 1, 1, -2, -2 ), 6, 6 );
+    path.addRoundedRect( boundingRect().adjusted( 1, 3, -2, -3 ), 4, 4 );
     //p->fillPath( path, gradient );
     QColor highlight = PaletteHandler::highlightColor( 0.4, 1.05 );
     highlight.setAlphaF( highlight.alphaF() * 0.5 );
@@ -153,7 +153,7 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     QColor col = PaletteHandler::highlightColor( 0.3, 0.5 );
     col.setAlphaF( col.alphaF() * 0.7 );
     p->setPen( col );
-    p->drawRoundedRect( boundingRect().adjusted( 1, 1, -2, -2 ), 6, 6 );
+    p->drawRoundedRect( boundingRect().adjusted( 1, 3, -2, -3 ), 4, 4 );
     p->restore();
 }
 
