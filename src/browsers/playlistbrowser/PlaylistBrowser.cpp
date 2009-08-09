@@ -79,11 +79,10 @@ void
 PlaylistBrowser::addCategory( int category )
 {
     DEBUG_BLOCK
-    QString typeName = The::playlistManager()->typeName( category );
+    QString categoryName = The::playlistManager()->categoryName( category );
     BrowserCategory *bCategory = 0;
 
-    //TODO: PlaylistBrowser::iconForCategory( int playlistCategory )
-    KIcon icon = KIcon( "view-media-playlist-amarok" );
+    KIcon icon = The::playlistManager()->categoryIcon( category );
 
     switch( category )
     {
@@ -94,14 +93,12 @@ PlaylistBrowser::addCategory( int category )
         case PlaylistManager::PodcastChannel: bCategory = loadPodcastCategory(); break;
         case PlaylistManager::Dynamic: bCategory = loadDynamicCategory(); break;
         //TODO: add the SmartPlaylistCategory widget
-        //case PlaylistManager::SmartPlaylist: widget = new QTreeView( m_toolBox ); break;
+        //case PlaylistManager::SmartPlaylist: bCategory = loadSmartPlaylistCategory(); break;
         //This must be a custom category
         default: break;//TODO: widget = loadCustomCategory( int category );
     }
 
     BrowserCategoryList::addCategory( bCategory );
-
-    //m_categoryIndexMap.insert( m_toolBox->count() - 1, category );
 
 }
 

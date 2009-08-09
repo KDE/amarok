@@ -75,7 +75,25 @@ class PlaylistManager : public QObject
         /**
          * @returns A translated string to identify the category of the Playlist. Always a plural form.
          */
-        QString typeName( int playlistCategory );
+        QString categoryName( int playlistCategory );
+
+        /**
+         * @returns A short (one sentance) translated description for this category of
+         * playlists.
+         */
+        QString categoryShortDescription( int playlistCategory );
+
+        /**
+         * @returns A translated description for this category of playlists.
+         *
+         */
+        QString categoryLongDescription( int playlistCategory );
+
+        /**
+         * @returns An icon for this category of playlists.
+         *
+         */
+        KIcon categoryIcon( int playlistCategory );
 
         /**
          * returns playlists of a certain category from all registered PlaylistProviders
