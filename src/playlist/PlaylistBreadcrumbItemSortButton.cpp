@@ -74,7 +74,7 @@ BreadcrumbItemSortButton::paintEvent( QPaintEvent *event )
 
     const int arrowWidth = 10;
     const int arrowHeight = 10;
-    const int arrowTop = ( (buttonHeight - top - bottom) - arrowHeight ) / 2;
+    const int arrowTop = ( buttonHeight - top - bottom) /2;
     const QRect arrowRect( buttonWidth - arrowWidth - padding, arrowTop, arrowWidth, arrowHeight );
     QStyleOption option;
     option.initFrom(this);
