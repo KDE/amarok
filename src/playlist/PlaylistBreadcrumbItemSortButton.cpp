@@ -46,7 +46,8 @@ BreadcrumbItemSortButton::~BreadcrumbItemSortButton()
 void
 BreadcrumbItemSortButton::init()
 {
-
+    emit arrowToggled( m_order );
+    repaint();
 }
 
 void

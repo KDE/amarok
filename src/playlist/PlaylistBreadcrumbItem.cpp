@@ -53,7 +53,7 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->name(), this );
 
     connect( m_mainButton, SIGNAL( clicked() ), this, SIGNAL( clicked() ) );
-    connect( m_mainButton, SIGNAL( arrowToggled( Qt::SortOrder ) ), this, SLOT( setSortOrder( Qt::SortOrder ) ) );
+    connect( m_mainButton, SIGNAL( arrowToggled( Qt::SortOrder ) ), this, SIGNAL( orderInverted() ) );
 
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
     menu->hide();
@@ -75,7 +75,7 @@ BreadcrumbItem::name() const
 Qt::SortOrder
 BreadcrumbItem::sortOrder() const
 {
-    return m_sortOrder;
+    return m_mainButton->orderState();
 }
 
 void
@@ -90,12 +90,6 @@ BreadcrumbItem::siblingTriggered( QAction * action )
     emit siblingClicked( action );
 }
 
-void
-BreadcrumbItem::setSortOrder( Qt::SortOrder order )
-{
-    m_sortOrder = order;
-    emit orderInverted();
-}
 
 /////// BreadcrumbAddMenuButton methods begin here
 
