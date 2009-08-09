@@ -74,9 +74,6 @@ public:
     virtual QString name() const { return title(); }
     virtual QString prettyName() const { return name(); }
 
-    bool load( QTextStream &stream ) { return loadXSPF( stream ); }
-    bool save( const QString &location, bool relative );
-
     /** returns all tracks in this playlist */
     TrackList tracks();
 
@@ -124,6 +121,8 @@ public:
     /* PlaylistFile methods */
     bool isWritable();
     void setName( const QString &name );
+    bool load( QTextStream &stream ) { return loadXSPF( stream ); }
+    bool save( const KUrl &location, bool relative );
 
 private:
     XSPFTrackList trackList();

@@ -34,6 +34,11 @@ class QAction;
 class UserPlaylistProvider;
 class PlaylistFileProvider;
 
+namespace Meta {
+    class PlaylistFile;
+    typedef KSharedPtr<PlaylistFile> PlaylistFilePtr;
+}
+
 namespace The {
     AMAROK_EXPORT PlaylistManager* playlistManager();
 }
@@ -106,7 +111,7 @@ class PlaylistManager : public QObject
 
         AMAROK_EXPORT PlaylistProvider * playlistProvider( int category, QString name );
 
-        void downloadPlaylist( const KUrl & path, const Meta::PlaylistPtr playlist );
+        void downloadPlaylist( const KUrl & path, const Meta::PlaylistFilePtr playlist );
 
         /**
         *   Saves a list of tracks to a new SQL playlist. Used in the Playlist save button.
@@ -177,7 +182,7 @@ class PlaylistManager : public QObject
         QMultiMap<int, PlaylistProvider*> m_map; //Map PlaylistCategories to providers
         QMap<int, QString> m_customCategories;
 
-        QMap<KJob *, Meta::PlaylistPtr> m_downloadJobMap;
+        QMap<KJob *, Meta::PlaylistFilePtr> m_downloadJobMap;
 };
 
 #endif

@@ -21,6 +21,7 @@
 #include "App.h"
 #include "statusbar/StatusBar.h"
 #include "CollectionManager.h"
+#include "PlaylistFile.h"
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"
 #include "file/PlaylistFileProvider.h"
@@ -180,7 +181,7 @@ PlaylistManager::playlistProvider(int category, QString name)
 }
 
 void
-PlaylistManager::downloadPlaylist( const KUrl & path, const Meta::PlaylistPtr playlist )
+PlaylistManager::downloadPlaylist( const KUrl &path, const Meta::PlaylistFilePtr playlist )
 {
     DEBUG_BLOCK
 
@@ -205,7 +206,7 @@ PlaylistManager::downloadComplete( KJob * job )
         return ;
     }
 
-    Meta::PlaylistPtr playlist = m_downloadJobMap.take( job );
+    Meta::PlaylistFilePtr playlist = m_downloadJobMap.take( job );
 
     QString contents = static_cast<KIO::StoredTransferJob *>(job)->data();
     QTextStream stream;

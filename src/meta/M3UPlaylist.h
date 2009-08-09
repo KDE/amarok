@@ -42,8 +42,6 @@ class M3UPlaylist : public PlaylistFile
 
         ~M3UPlaylist();
 
-        bool save( const QString &location, bool relative );
-
         /* Playlist virtual functions */
         virtual QString name() const { return prettyName(); };
         virtual QString prettyName() const { return m_name; };
@@ -62,14 +60,15 @@ class M3UPlaylist : public PlaylistFile
 
         KUrl retrievableUrl() { return m_url; };
 
-        bool load( QTextStream &stream ) { return loadM3u( stream ); };
-
         virtual QStringList groups() { return m_groups; }
 
         /* PlaylistFile methods */
         bool isWritable();
         void setName( const QString &name );
         void setGroups( const QStringList &groups ) { m_groups = groups; };
+
+        bool save( const KUrl &location, bool relative );
+        bool load( QTextStream &stream ) { return loadM3u( stream ); };
 
     private:
         bool loadM3u( QTextStream &stream );
