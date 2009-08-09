@@ -440,22 +440,16 @@ PlaylistManager::moveTrack( Meta::PlaylistPtr playlist, int from, int to )
 PlaylistProvider*
 PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
 {
-    DEBUG_BLOCK
     // Iteratively check all providers' playlists for ownership
     foreach( PlaylistProvider* provider, m_map.values() )
+    {
+        Meta::PlaylistList plistlist = provider->playlists();
+        foreach( const Meta::PlaylistPtr plist, plistlist )
         {
-            debug() << "Checking provider";
-            Meta::PlaylistList plistlist = provider->playlists();
-            foreach( const Meta::PlaylistPtr plist, plistlist )
-                {
-                    debug() << "Checking playlist";
-                    if ( plist == playlist )
-                        return provider;
-                }
+            if( plist == playlist )
+                return provider;
         }
-
-    debug() << "Returning 0, no matching providers found";
-
+    }
     return 0;
 }
 
