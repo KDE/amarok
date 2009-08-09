@@ -45,12 +45,8 @@ class DynamicPlaylist : public QObject, public QSharedData
         virtual void requestTracks(int) = 0;
 
         QString title() const;
-        int upcomingCount() const;
-        int previousCount() const;
 
         void setTitle( QString );
-        void setUpcomingCount( int );
-        void setPreviousCount( int );
 
         virtual void requestAbort() {}
 
@@ -63,8 +59,6 @@ class DynamicPlaylist : public QObject, public QSharedData
     protected:
         Amarok::Collection* m_collection;
         QString m_title;
-        int     m_upcoming;
-        int     m_previous;
 };
 
 
