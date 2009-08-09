@@ -130,6 +130,7 @@ namespace Amarok
             virtual void paintEvent( QPaintEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void resizeEvent(QResizeEvent * event);
+            virtual bool event ( QEvent * event );
 
         private:
             Q_DISABLE_COPY( TimeSlider )

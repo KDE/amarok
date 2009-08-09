@@ -17,6 +17,7 @@
 
 #include "UserPlaylistModel.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "playlistmanager/PlaylistProvider.h"
 
 #include "AmarokMimeData.h"
 #include "Debug.h"
@@ -176,9 +177,10 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
                 break;
             case 2: //source
                 {
-                    //TODO:get stuff from PlaylistManager
-                    name = QString("Source 1");
-                    icon = KIcon( "drive-harddisk" );
+                    PlaylistProvider *provider =
+                            The::playlistManager()->getProviderForPlaylist( playlist );
+                    name = provider->prettyName();
+                    icon = provider->icon();
                 }
                 break;
             default: return QVariant();

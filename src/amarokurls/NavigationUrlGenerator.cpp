@@ -92,8 +92,8 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         url.appendArg( "levels", sortMode );
 
 
-    //come up with a default name for this url...
-    QString name = i18n( "New bookmark" );
+    //come up with a default name for this url..
+    QString name = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->prettyName();
     url.setName( name );
     
     return url;

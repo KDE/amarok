@@ -40,13 +40,17 @@
 PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     : BrowserCategory( "user playlists", parent )
 {
-    setPrettyName( i18n( "User Playlists" ) );
+    setPrettyName( i18n( "Saved Playlists" ) );
     setShortDescription( i18n( "User generated and imported playlists" ) );
     setIcon( KIcon( "amarok_playlist" ) );
 
-    setLongDescription( i18n( "Create, edit, organize and load playlists. Amarok automatically adds any playlists found when scanning your collection, and any playlists that you save are also shown here." ) );
+    setLongDescription( i18n( "Create, edit, organize and load playlists. "
+        "Amarok automatically adds any playlists found when scanning your collection, "
+        " and any playlists that you save are also shown here." ) );
 
-    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_user_playlists.png" ) );
+    setImagePath( KStandardDirs::locate(
+                        "data", "amarok/images/hover_info_user_playlists.png" )
+                  );
 
     setContentsMargins( 0, 0, 0, 0 );
     m_toolBar = new QToolBar( this );

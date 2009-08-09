@@ -88,7 +88,7 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
     }
     else
     {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistPtr( this ) );
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
     }
 }
 
@@ -113,13 +113,13 @@ XSPFPlaylist::~XSPFPlaylist()
 {}
 
 bool
-XSPFPlaylist::save( const QString &location, bool relative )
+XSPFPlaylist::save( const KUrl &location, bool relative )
 {
     DEBUG_BLOCK
     Q_UNUSED( relative );
 
-    QFile::remove( location );
-    QFile file( location );
+    QFile::remove( location.path() );
+    QFile file( location.path() );
 
     if( !file.open( QIODevice::WriteOnly ) )
     {

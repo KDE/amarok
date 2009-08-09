@@ -96,6 +96,7 @@ extern void setupEventHandler_mac(long);
 #include "TestMetaCueCueFileItem.h"
 #include "TestMetaCueTrack.h"
 #include "TestMetaFileTrack.h"
+#include "TestMetaMultiTrack.h"
 #include "TestPlaylistFileSupport.h"
 #include "TestQStringx.h"
 #include "TestSmartPointerList.h"
@@ -597,6 +598,7 @@ App::runUnitTests()
     TestMetaCueCueFileItem   testMetaCueCueFileItem( testArgumentList );
     TestMetaCueTrack         testMetaCueTrack( testArgumentList );
     TestMetaFileTrack        testMetaFileTrack( testArgumentList );
+    TestMetaMultiTrack       testMetaMultiTrack( testArgumentList );
     TestPlaylistFileSupport  testPlaylistFileSupport( testArgumentList );
     TestQStringx             testQStringx( testArgumentList );
     TestSmartPointerList     testSmartPointerList( testArgumentList );

@@ -74,7 +74,7 @@ PLSPlaylist::PLSPlaylist( const KUrl &url )
     }
     else
     {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistPtr( this ) );
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
     }
 }
 
@@ -215,11 +215,11 @@ PLSPlaylist::loadPls( QTextStream &stream )
 }
 
 bool
-PLSPlaylist::save( const QString &location, bool relative )
+PLSPlaylist::save( const KUrl &location, bool relative )
 {
     Q_UNUSED( relative );
 
-    QFile file( location );
+    QFile file( location.path() );
 
     if( !file.open( QIODevice::WriteOnly ) )
     {

@@ -41,8 +41,6 @@ class PLSPlaylist : public PlaylistFile
 
         ~PLSPlaylist();
 
-        bool save( const QString &location, bool relative );
-
         /* Playlist virtual functions */
         virtual QString name() const { return prettyName(); };
         virtual QString prettyName() const { return m_url.fileName(); };
@@ -56,11 +54,11 @@ class PLSPlaylist : public PlaylistFile
 
         KUrl retrievableUrl() { return m_url; };
 
-        bool load( QTextStream &stream ) { return loadPls( stream ); };
-
         /* PlaylistFile methods */
         bool isWritable();
         void setName( const QString &name );
+        bool save( const KUrl &location, bool relative );
+        bool load( QTextStream &stream ) { return loadPls( stream ); };
 
     private:
         bool loadPls( QTextStream &stream );

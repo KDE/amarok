@@ -24,6 +24,7 @@
 #include <QString>
 
 class QAction;
+class KIcon;
 
 class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
 {
@@ -36,6 +37,8 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
         * @returns A translated string to identify this Provider.
         */
         virtual QString prettyName() const = 0;
+
+        virtual KIcon icon() const = 0;
 
         /**
          * @returns An unique integer that identifies the category of the offered playlists.

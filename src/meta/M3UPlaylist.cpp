@@ -71,7 +71,7 @@ M3UPlaylist::M3UPlaylist( const KUrl &url )
     }
     else
     {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistPtr( this ) );
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
     }
 }
 
@@ -140,9 +140,9 @@ M3UPlaylist::loadM3u( QTextStream &stream )
 }
 
 bool
-M3UPlaylist::save( const QString &location, bool relative )
+M3UPlaylist::save( const KUrl &location, bool relative )
 {
-    QFile file( location );
+    QFile file( location.path() );
 
     if( !file.open( QIODevice::WriteOnly ) )
     {

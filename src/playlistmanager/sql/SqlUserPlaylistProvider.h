@@ -22,6 +22,7 @@
 #include "SqlPlaylistGroup.h"
 
 #include <klocale.h>
+#include <kicon.h>
 
 class QAction;
 
@@ -33,7 +34,9 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         ~SqlUserPlaylistProvider();
 
         /* PlaylistProvider functions */
-        virtual QString prettyName() const { return i18n("Local Playlists stored in the database"); };
+        virtual QString prettyName() const { return i18n("Internal Database"); }
+        virtual QString description() const { return i18n("Local playlists stored in the database"); };
+        virtual KIcon icon() const { return KIcon( "server-database" ); }
 
         /* UserPlaylistProvider functions */
         virtual Meta::PlaylistList playlists();

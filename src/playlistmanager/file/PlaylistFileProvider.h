@@ -20,6 +20,9 @@
 #include <UserPlaylistProvider.h>
 #include <PlaylistFileSupport.h>
 
+#include <kicon.h>
+
+class KConfigGroup;
 class KUrl;
 
 /**
@@ -32,6 +35,8 @@ class PlaylistFileProvider : public UserPlaylistProvider
         ~PlaylistFileProvider();
 
         QString prettyName() const;
+        virtual KIcon icon() const { return KIcon( "folder-documents" ); }
+
         int category() const { return PlaylistManager::UserPlaylist; };
 
         virtual Meta::PlaylistList playlists();
@@ -45,8 +50,11 @@ class PlaylistFileProvider : public UserPlaylistProvider
         bool import( const KUrl &path );
 
     private:
+        KConfigGroup loadedPlaylistsConfig();
+
         Meta::PlaylistList m_playlists;
         Meta::PlaylistFormat m_defaultFormat;
+        QMultiMap<QString, Meta::PlaylistPtr> m_groupMap;
 };
 
 #endif

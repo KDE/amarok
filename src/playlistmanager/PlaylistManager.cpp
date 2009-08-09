@@ -21,6 +21,7 @@
 #include "App.h"
 #include "statusbar/StatusBar.h"
 #include "CollectionManager.h"
+#include "PlaylistFile.h"
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"
 #include "file/PlaylistFileProvider.h"
@@ -180,7 +181,7 @@ PlaylistManager::playlistProvider(int category, QString name)
 }
 
 void
-PlaylistManager::downloadPlaylist( const KUrl & path, const Meta::PlaylistPtr playlist )
+PlaylistManager::downloadPlaylist( const KUrl &path, const Meta::PlaylistFilePtr playlist )
 {
     DEBUG_BLOCK
 
@@ -205,7 +206,7 @@ PlaylistManager::downloadComplete( KJob * job )
         return ;
     }
 
-    Meta::PlaylistPtr playlist = m_downloadJobMap.take( job );
+    Meta::PlaylistFilePtr playlist = m_downloadJobMap.take( job );
 
     QString contents = static_cast<KIO::StoredTransferJob *>(job)->data();
     QTextStream stream;
@@ -215,12 +216,12 @@ PlaylistManager::downloadComplete( KJob * job )
 }
 
 QString
-PlaylistManager::typeName( int playlistCategory )
+PlaylistManager::categoryName( int playlistCategory )
 {
     switch( playlistCategory )
     {
         case CurrentPlaylist: return i18n("Current Playlist");
-        case UserPlaylist: return i18n("My Playlists");
+        case UserPlaylist: return i18n("Saved Playlists");
         case PodcastChannel: return i18n("Podcasts");
         case Dynamic: return i18n("Dynamic Playlists");
         case SmartPlaylist: return i18n("Smart Playlist");
@@ -231,6 +232,67 @@ PlaylistManager::typeName( int playlistCategory )
     else
         //note: this shouldn't happen so I'm not translating it to facilitate bug reports
         return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
+}
+
+QString
+PlaylistManager::categoryShortDescription( int playlistCategory )
+{
+    switch( playlistCategory )
+    {
+        case CurrentPlaylist: return i18n("Current Playlist");
+        case UserPlaylist: return i18n( "User generated and imported playlists" );
+        case PodcastChannel: return i18n("Podcasts");
+        case Dynamic: return i18n("Dynamic Playlists");
+        case SmartPlaylist: return i18n("Smart Playlist");
+    }
+    //if control reaches here playlistCategory is either invalid or a custom category
+    if( m_customCategories.contains( playlistCategory ) )
+        return m_customCategories[playlistCategory];
+    else
+        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
+        return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
+}
+
+QString
+PlaylistManager::categoryLongDescription( int playlistCategory )
+{
+    switch( playlistCategory )
+    {
+        case CurrentPlaylist: return i18n("Current Playlist");
+        case UserPlaylist:
+            return i18n( "Create, edit, organize and load playlists. "
+        "Amarok automatically adds any playlists found when scanning your collection, "
+        " and any playlists that you save are also shown here." );
+        case PodcastChannel: return i18n("Podcasts");
+        case Dynamic: return i18n("Dynamic Playlists");
+        case SmartPlaylist: return i18n("Smart Playlist");
+    }
+    //if control reaches here playlistCategory is either invalid or a custom category
+    if( m_customCategories.contains( playlistCategory ) )
+        return m_customCategories[playlistCategory];
+    else
+        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
+        return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
+}
+
+KIcon
+PlaylistManager::categoryIcon( int playlistCategory )
+{
+switch( playlistCategory )
+    {
+        case CurrentPlaylist: return KIcon( "amarok_playlist" );
+        case UserPlaylist: return KIcon( "amarok_playlist" );
+        case PodcastChannel: KIcon( "podcast-amarok" );
+        case Dynamic: return KIcon( "dynamic-amarok" );
+       case SmartPlaylist: return KIcon( "dynamic-amarok" );
+    }
+    //if control reaches here playlistCategory is either invalid or a custom category
+//TODO: custom categories
+//    if( m_customCategories.contains( playlistCategory ) )
+//        return m_customCategories[playlistCategory];
+//    else
+        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
+        return KIcon( "amarok_playlist" );
 }
 
 bool
@@ -439,22 +501,16 @@ PlaylistManager::moveTrack( Meta::PlaylistPtr playlist, int from, int to )
 PlaylistProvider*
 PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
 {
-    DEBUG_BLOCK
     // Iteratively check all providers' playlists for ownership
     foreach( PlaylistProvider* provider, m_map.values() )
+    {
+        Meta::PlaylistList plistlist = provider->playlists();
+        foreach( const Meta::PlaylistPtr plist, plistlist )
         {
-            debug() << "Checking provider";
-            Meta::PlaylistList plistlist = provider->playlists();
-            foreach( const Meta::PlaylistPtr plist, plistlist )
-                {
-                    debug() << "Checking playlist";
-                    if ( plist == playlist )
-                        return provider;
-                }
+            if( plist == playlist )
+                return provider;
         }
-
-    debug() << "Returning 0, no matching providers found";
-
+    }
     return 0;
 }
 

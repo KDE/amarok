@@ -42,8 +42,10 @@ namespace Meta
 
             virtual bool save( const KUrl &url, bool relative )
                 { Q_UNUSED( url ); Q_UNUSED( relative ); return false; }
+            virtual bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 
             virtual void setName( const QString &name ) = 0;
+            virtual void setGroups( const QStringList &groups ) { Q_UNUSED( groups ); }
     };
 
 }
