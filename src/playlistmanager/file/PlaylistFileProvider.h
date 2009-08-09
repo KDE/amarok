@@ -20,6 +20,8 @@
 #include <UserPlaylistProvider.h>
 #include <PlaylistFileSupport.h>
 
+#include <kicon.h>
+
 class KConfigGroup;
 class KUrl;
 
@@ -33,6 +35,8 @@ class PlaylistFileProvider : public UserPlaylistProvider
         ~PlaylistFileProvider();
 
         QString prettyName() const;
+        virtual KIcon icon() const { return KIcon( "drive-harddisk" ); }
+
         int category() const { return PlaylistManager::UserPlaylist; };
 
         virtual Meta::PlaylistList playlists();

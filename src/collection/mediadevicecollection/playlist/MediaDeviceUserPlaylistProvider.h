@@ -21,6 +21,7 @@
 #include "MediaDevicePlaylist.h"
 
 #include <klocale.h>
+#include <kicon.h>
 
 class QAction;
 
@@ -33,6 +34,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvide
 
         /* PlaylistProvider functions */
         virtual QString prettyName() const { return i18n("Media Device playlists"); };
+        virtual KIcon icon() const { return KIcon( "multimedia-player" ); }
 
         /* UserPlaylistProvider functions */
         virtual Meta::PlaylistList playlists();
