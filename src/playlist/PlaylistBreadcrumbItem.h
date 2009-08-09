@@ -49,11 +49,14 @@ public:
      */
     ~BreadcrumbItem();
 
-    QString name();
+    QString name() const;
+
+    Qt::SortOrder sortOrder() const;
 
 signals:
     void siblingClicked( QAction *action );
     void clicked();
+    void orderInverted();
 
 protected slots:
     void updateSizePolicy();
@@ -62,9 +65,11 @@ private:
     BreadcrumbItemMenuButton *m_menuButton;
     BreadcrumbItemSortButton *m_mainButton;
     QString m_name;
+    Qt::SortOrder m_sortOrder;
 
 private slots:
     void siblingTriggered( QAction *action );
+    void setSortOrder( Qt::SortOrder order );
 };
 
 /**

@@ -40,12 +40,14 @@ public:
 
     QStringList levels();
 
+public slots:
+    void updateSortScheme();
+
 private:
     QHBoxLayout * m_ribbon;
     QList< BreadcrumbItem * > m_items;
     BreadcrumbAddMenuButton * m_addButton;
     QHBoxLayout * m_layout;
-    void updateSortScheme();
 
 private slots:
     void addLevel( QString internalColumnName );
