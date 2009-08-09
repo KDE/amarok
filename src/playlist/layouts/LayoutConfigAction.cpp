@@ -19,7 +19,7 @@
 
 #include "Debug.h"
 #include "LayoutManager.h"
-#include "dialogs/PlaylistLayoutEditDialog.h"
+#include "PlaylistLayoutEditDialog.h"
 #include "widgets/EditDeleteDelegate.h"
 #include "widgets/EditDeleteComboBoxView.h"
 #include "MainWindow.h"

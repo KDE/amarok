@@ -129,6 +129,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     connect( m_headEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( m_bodyEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( m_singleEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
+    connect( inlineControlsChekbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
 }
 
 
@@ -212,6 +213,8 @@ void PlaylistLayoutEditDialog::copyLayout()
     layout.setBody( bodyConfig );
     layout.setSingle( singleConfig );
 
+    layout.setInlineControls( inlineControlsChekbox->isChecked() );
+
     LayoutManager::instance()->addUserLayout( layoutName, layout );
 
     //reload from manager:
@@ -283,6 +286,7 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
         m_headEdit->readLayout( layout.head() );
         m_bodyEdit->readLayout( layout.body() );
         m_singleEdit->readLayout( layout.single() );
+        inlineControlsChekbox->setChecked( layout.inlineControls() );
     }
     else
     {
@@ -303,6 +307,7 @@ void PlaylistLayoutEditDialog::preview()
     layout.setHead( headConfig );
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
+    layout.setInlineControls( inlineControlsChekbox->isChecked() );
 
     LayoutManager::instance()->setPreviewLayout( layout );
 }
@@ -364,11 +369,13 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
                 i.value().setHead( LayoutManager::instance()->layout( i.key() ).head() );
                 i.value().setBody( LayoutManager::instance()->layout( i.key() ).body() );
                 i.value().setSingle( LayoutManager::instance()->layout( i.key() ).single() );
+                i.value().setInlineControls( LayoutManager::instance()->layout( i.key() ).inlineControls() );
                 i.value().setDirty( false );
                 if ( m_layoutName == i.key() )
                     setLayout( i.key() );
                 return;
             }
+            i.value().setInlineControls( inlineControlsChekbox->isChecked() );
             i.value().setDirty( false );
             LayoutManager::instance()->addUserLayout( i.key(), i.value() );
             debug() << "Layout " << i.key() << " saved to LayoutManager";
@@ -419,7 +426,8 @@ void PlaylistLayoutEditDialog::setLayoutChanged()
     (*m_layoutsMap)[m_layoutName].setHead( m_headEdit->config() );
     (*m_layoutsMap)[m_layoutName].setBody( m_bodyEdit->config() );
     (*m_layoutsMap)[m_layoutName].setSingle( m_singleEdit->config() );
-    (*m_layoutsMap)[m_layoutName].setDirty( true );
+    (*m_layoutsMap)[m_layoutName].setInlineControls( inlineControlsChekbox->isChecked() );
+    (*m_layoutsMap)[m_layoutName].setDirty( true );  
 }
 
 

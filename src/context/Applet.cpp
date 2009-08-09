@@ -21,6 +21,8 @@
 
 #include "PaletteHandler.h"
 #include <Plasma/Animator>
+#include <Plasma/FrameSvg>
+#include <Plasma/Theme>
 
 #include <QGraphicsLayout>
 #include <QGraphicsScene>
@@ -38,6 +40,7 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     , m_collapsed( false )
     , m_animationId( 0 )
     , m_transient( 0 )
+    , m_textBackground( 0 )
     , m_standardPadding( 6.0 )
 {
     connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animateEnd( int ) ) );
@@ -96,6 +99,12 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
     p->save();
     p->setRenderHint( QPainter::Antialiasing );
 
+    if ( !m_textBackground ) {
+        m_textBackground = new Plasma::FrameSvg();
+        m_textBackground->setImagePath( "widgets/text-background" );
+        m_textBackground->setEnabledBorders( Plasma::FrameSvg::AllBorders );
+    }
+    
     // Paint in integer coordinates, align to grid
     QRectF rect = t->boundingRect();
     QPointF pos = t->pos();
@@ -107,20 +116,9 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
     pos.setX( qRound( pos.x() ) );
     pos.setY( qRound( pos.y() ) );
     rect.moveTopLeft( pos );
-    rect.adjust( -5, -2, 5, 2 );
-
-    p->translate( 0.5, 0.5 );
-
-    QPainterPath path;
-    path.addRoundedRect( rect, 3, 3 );
-    QColor col = PaletteHandler::highlightColor().lighter( 150 );
-    col.setAlphaF( col.alphaF() * 0.7 );
-    p->fillPath( path, col );
-
-    col = PaletteHandler::highlightColor( 0.3, 0.5 );
-    col.setAlphaF( col.alphaF() * 0.7 );
-    p->setPen( col );
-    p->drawRoundedRect( rect, 3, 3 );
+    rect.adjust( -5, -5, 5, 5 );
+    m_textBackground->resize( rect.size() );
+    m_textBackground->paintFrame( p, rect.topLeft() );
     p->restore();
 }
 
@@ -131,7 +129,7 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     // draw non-gradient backround. going for elegance and style
     p->save();
     QPainterPath path;
-    path.addRoundedRect( boundingRect().adjusted( 1, 1, -2, -2 ), 6, 6 );
+    path.addRoundedRect( boundingRect().adjusted( 1, 4, -2, -3 ), 4, 4 );
     //p->fillPath( path, gradient );
     QColor highlight = PaletteHandler::highlightColor( 0.4, 1.05 );
     highlight.setAlphaF( highlight.alphaF() * 0.5 );
@@ -143,7 +141,7 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     QColor col = PaletteHandler::highlightColor( 0.3, 0.5 );
     col.setAlphaF( col.alphaF() * 0.7 );
     p->setPen( col );
-    p->drawRoundedRect( boundingRect().adjusted( 1, 1, -2, -2 ), 6, 6 );
+    p->drawRoundedRect( boundingRect().adjusted( 1, 4, -2, -3 ), 4, 4 );
     p->restore();
 }
 

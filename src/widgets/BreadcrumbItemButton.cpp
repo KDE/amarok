@@ -108,13 +108,11 @@ void BreadcrumbItemButton::paintEvent( QPaintEvent* event )
     if (buttonWidth > preferredWidth) {
         buttonWidth = preferredWidth;
     }
-
     drawHoverBackground(&painter);
 
     int left, top, right, bottom;
     getContentsMargins ( &left, &top, &right, &bottom );
     const int padding = 2;
-
     const int iconWidth = iconSize().width();
     const int iconHeight = iconSize().height();
     const int iconTop = ( (buttonHeight - top - bottom) - iconHeight ) / 2;

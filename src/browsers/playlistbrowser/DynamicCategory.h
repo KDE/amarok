@@ -25,6 +25,7 @@
 #include <QPushButton>
 #include <QToolButton>
 #include <QVBoxLayout>
+#include <QSpinBox>
 
 #include <KComboBox>
 
@@ -51,6 +52,8 @@ namespace PlaylistBrowserNS {
             void playlistSelectionChanged( int index );
             void save();
             void playlistCleared();
+            void setUpcomingTracks( int );
+            void setPreviousTracks( int );
             
         private:
             void On();
@@ -68,6 +71,8 @@ namespace PlaylistBrowserNS {
             QListView   *m_biasListView;
             DynamicBiasModel *m_biasModel;
             DynamicBiasDelegate *m_biasDelegate;
+
+            QSpinBox *m_previous, *m_upcoming;
 
     };
 

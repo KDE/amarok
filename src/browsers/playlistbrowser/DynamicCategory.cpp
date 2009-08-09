@@ -60,7 +60,25 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     setContentsMargins(0,0,0,0);
 
-    m_onOffCheckbox = new QCheckBox( this );
+    KHBox* controlsLayout = new KHBox( this );
+
+    new QLabel( i18n( "Previous:" ), controlsLayout );
+
+    m_previous = new QSpinBox( controlsLayout );
+    m_previous->setMinimum( 0 );
+    m_previous->setToolTip( i18n( "Number of previous tracks to remain in the playlist." ) );
+    m_previous->setValue( AmarokConfig::previousTracks() );
+    QObject::connect( m_previous, SIGNAL( valueChanged( int ) ), this, SLOT( setPreviousTracks( int ) ) );
+
+    new QLabel( i18n( "Upcoming:" ), controlsLayout );
+
+    m_upcoming = new QSpinBox( controlsLayout );
+    m_upcoming->setMinimum( 1 );
+    m_upcoming->setToolTip( i18n( "Number of upcoming tracks to add to the playlist." ) );
+    m_upcoming->setValue( AmarokConfig::upcomingTracks() );
+    QObject::connect( m_upcoming, SIGNAL( valueChanged( int ) ), this, SLOT( setUpcomingTracks( int ) ) );
+
+    m_onOffCheckbox = new QCheckBox( controlsLayout );
     m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
     m_onOffCheckbox->setText( i18n( "On" ) );
     m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
@@ -237,6 +255,20 @@ DynamicCategory::playlistCleared() // SLOT
         m_onOffCheckbox->setChecked( false );
         The::playlistActions()->playlistModeChanged();
     }
+}
+
+void
+DynamicCategory::setUpcomingTracks( int n ) // SLOT
+{
+    if( n >= 1 )
+        AmarokConfig::setUpcomingTracks( n );
+}
+
+void
+DynamicCategory::setPreviousTracks( int n ) // SLOT
+{
+    if( n >= 0 )
+        AmarokConfig::setPreviousTracks( n );
 }
 
 void

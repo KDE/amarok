@@ -64,6 +64,16 @@
         <whatsthis>If set, dynamic mode will be on, and tracks will be added according to the dynamic playlist specified.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Previous Tracks" type="Int">
+        <label>Previous tracks count.</label>
+        <whatsthis>Number of tracks to leave in the playlist before the active track.</whatsthis>
+        <default>5</default>
+    </entry>
+    <entry key="Upcoming Tracks" type="Int">
+        <label>Upcoming tracks count.</label>
+        <whatsthis>Number of tracks to load into the playlist after the active track.</whatsthis>
+        <default>10</default>
+    </entry>
     <entry key="Last Dynamic Mode" type="String">
         <label>The most recently used Dynamic Mode</label>
         <whatsthis>The title of the Dynamic Mode that was most recently loaded in the playlist</whatsthis>

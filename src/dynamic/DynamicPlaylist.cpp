@@ -22,7 +22,7 @@
 
 
 Dynamic::DynamicPlaylist::DynamicPlaylist( Amarok::Collection* coll )
-     : m_collection(coll), m_upcoming(10), m_previous(5)
+     : m_collection(coll)
 {
     if( !m_collection )
     {
@@ -52,11 +52,6 @@ Dynamic::DynamicPlaylist::recalculate()
 
 QString Dynamic::DynamicPlaylist::title() const     { return m_title; }
 
-int Dynamic::DynamicPlaylist::upcomingCount() const { return m_upcoming; }
-int Dynamic::DynamicPlaylist::previousCount() const { return m_previous; }
-
 void Dynamic::DynamicPlaylist::setTitle( QString title )        { m_title = title; }
-void Dynamic::DynamicPlaylist::setUpcomingCount( int upcoming ) { m_upcoming = upcoming; }
-void Dynamic::DynamicPlaylist::setPreviousCount( int previous ) { m_previous = previous; }
 
 

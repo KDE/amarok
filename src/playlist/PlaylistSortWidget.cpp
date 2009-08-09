@@ -63,6 +63,7 @@ SortWidget::addLevel( QString internalColumnName )
     m_ribbon->addWidget( item );
     connect( item, SIGNAL( clicked() ), this, SLOT( onItemClicked() ) );
     connect( item, SIGNAL( siblingClicked( QAction* ) ), this, SLOT( onItemSiblingClicked( QAction * ) ) );
+    connect( item, SIGNAL( orderInverted() ), this, SLOT( updateSortScheme() ) );
     m_addButton->updateMenu( levels() );
     updateSortScheme();
 }
@@ -112,7 +113,7 @@ SortWidget::updateSortScheme()
     {
         scheme.addLevel( SortLevel( internalColumnNames.indexOf(
                 qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() ),
-                Qt::DescendingOrder ) );
+                qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder() ) );
     }
     SortProxy::instance()->updateSortMap( scheme );
 }

@@ -18,7 +18,7 @@
 #ifndef PLAYLISTBREADCRUMBITEM_H
 #define PLAYLISTBREADCRUMBITEM_H
 
-#include "BreadcrumbItemButton.h"
+#include "PlaylistBreadcrumbItemSortButton.h"
 #include "PlaylistBreadcrumbLevel.h"
 
 #include <KHBox>
@@ -49,18 +49,21 @@ public:
      */
     ~BreadcrumbItem();
 
-    QString name();
+    QString name() const;
+
+    Qt::SortOrder sortOrder() const;
 
 signals:
     void siblingClicked( QAction *action );
     void clicked();
+    void orderInverted();
 
 protected slots:
     void updateSizePolicy();
 
 private:
     BreadcrumbItemMenuButton *m_menuButton;
-    BreadcrumbItemButton     *m_mainButton;
+    BreadcrumbItemSortButton *m_mainButton;
     QString m_name;
 
 private slots:

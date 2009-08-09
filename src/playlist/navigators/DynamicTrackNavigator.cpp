@@ -23,6 +23,7 @@
 #include "DynamicModel.h"
 #include "DynamicPlaylist.h"
 #include "Meta.h"
+#include "amarokconfig.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistController.h"
 
@@ -59,7 +60,7 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
 
     int updateRow = GroupingProxy::instance()->activeRow() + 1;
     int rowCount = GroupingProxy::instance()->rowCount();
-    int upcomingCountLag = m_playlist->upcomingCount() - ( rowCount - updateRow );
+    int upcomingCountLag = AmarokConfig::upcomingTracks() - ( rowCount - updateRow );
 
     if ( upcomingCountLag > 0 )
         m_playlist->requestTracks( upcomingCountLag );
@@ -69,9 +70,9 @@ void
 Playlist::DynamicTrackNavigator::removePlayed()
 {
     int activeRow = GroupingProxy::instance()->activeRow();
-    if ( activeRow > m_playlist->previousCount() )
+    if ( activeRow > AmarokConfig::previousTracks() )
     {
-        Controller::instance()->removeRows( 0, activeRow - m_playlist->previousCount() );
+        Controller::instance()->removeRows( 0, activeRow - AmarokConfig::previousTracks() );
     }
 }
 

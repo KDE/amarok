@@ -14,48 +14,43 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYLISTSORTWIDGET_H
-#define PLAYLISTSORTWIDGET_H
+#ifndef PLAYLISTBREADCRUMBITEMBUTTON_H
+#define PLAYLISTBREADCRUMBITEMBUTTON_H
 
-#include "PlaylistBreadcrumbItem.h"
+#include "widgets/BreadcrumbItemButton.h"
 
-#include <QAction>
-#include <QHBoxLayout>
+#include <QRect>
 
 namespace Playlist
 {
 
-/**
- * A breadcrumb-based widget that allows the user to build a multilevel sorting scheme for
- * the playlist.
- * @author Téo Mrnjavac
- */
-class SortWidget : public QWidget
+class BreadcrumbItemSortButton : public BreadcrumbItemButton
 {
     Q_OBJECT
+
 public:
-    SortWidget( QWidget *parent );
+    BreadcrumbItemSortButton( QWidget *parent );
+    BreadcrumbItemSortButton( const QIcon &icon, const QString &text, QWidget *parent );
+    virtual ~BreadcrumbItemSortButton();
+    virtual QSize sizeHint() const;
+    Qt::SortOrder orderState() const;
 
-    ~SortWidget();
+signals:
+    void arrowToggled( Qt::SortOrder );
 
-    QStringList levels();
-
-public slots:
-    void updateSortScheme();
+protected:
+    virtual void paintEvent( QPaintEvent *event );
+    virtual void mousePressEvent( QMouseEvent *e );
+    virtual void mouseReleaseEvent( QMouseEvent *e );
 
 private:
-    QHBoxLayout * m_ribbon;
-    QList< BreadcrumbItem * > m_items;
-    BreadcrumbAddMenuButton * m_addButton;
-    QHBoxLayout * m_layout;
-
-private slots:
-    void addLevel( QString internalColumnName );
-    void trimToLevel( const int level = -1 );
-    void onItemClicked();
-    void onItemSiblingClicked( QAction *action );
+    void init();
+    Qt::SortOrder m_order;
+    QRect m_arrowRect;
+    QPoint m_pressedPos;
+    bool m_arrowPressed;
 };
 
 }   //namespace Playlist
 
-#endif  //PLAYLISTSORTWIDGET_H
+#endif //PLAYLISTBREADCRUMBITEMBUTTON_H

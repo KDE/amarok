@@ -26,6 +26,10 @@
 #include <QString>
 
 class QPainter;
+namespace Plasma
+{
+    class FrameSvg;
+}
 
 namespace Context
 {
@@ -84,6 +88,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
         bool m_transient;
         qreal m_standardPadding;
+        Plasma::FrameSvg *m_textBackground;
 };
 
 } // Context namespace

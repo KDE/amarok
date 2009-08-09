@@ -50,9 +50,10 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     connect( menu, SIGNAL( triggered( QAction* ) ), this, SLOT( siblingTriggered( QAction* ) ) );
 
     //And then the main breadcrumb button...
-    m_mainButton = new BreadcrumbItemButton( level->icon(), level->name(), this );
+    m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->name(), this );
 
     connect( m_mainButton, SIGNAL( clicked() ), this, SIGNAL( clicked() ) );
+    connect( m_mainButton, SIGNAL( arrowToggled( Qt::SortOrder ) ), this, SIGNAL( orderInverted() ) );
 
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
     menu->hide();
@@ -66,9 +67,15 @@ BreadcrumbItem::~BreadcrumbItem()
 {}
 
 QString
-BreadcrumbItem::name()
+BreadcrumbItem::name() const
 {
     return m_name;
+}
+
+Qt::SortOrder
+BreadcrumbItem::sortOrder() const
+{
+    return m_mainButton->orderState();
 }
 
 void
@@ -82,6 +89,9 @@ BreadcrumbItem::siblingTriggered( QAction * action )
 {
     emit siblingClicked( action );
 }
+
+
+/////// BreadcrumbAddMenuButton methods begin here
 
 BreadcrumbAddMenuButton::BreadcrumbAddMenuButton( QWidget *parent )
     : BreadcrumbItemMenuButton( parent )

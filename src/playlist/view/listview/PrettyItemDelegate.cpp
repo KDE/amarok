@@ -520,11 +520,14 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
 
     long trackLength = EngineController::instance()->trackLength() * 1000;
     long trackPos = EngineController::instance()->trackPositionMs();
-    qreal trackPercentage = ( (qreal) trackPos / (qreal) trackLength );
+    qreal trackPercentage = 0.0;
+
+    if ( trackLength > 0 )
+        trackPercentage = ( (qreal) trackPos / (qreal) trackLength );
 
     int sliderWidth = width - ( offset + MARGINH );
-    The::svgHandler()->paintCustomSlider( painter, offset, y, sliderWidth, height, trackPercentage, false );
-    
+
+    The::svgHandler()->paintCustomSlider( painter, offset, y, sliderWidth, height, trackPercentage, false );  
 }
 
 bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index )
