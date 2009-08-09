@@ -58,7 +58,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 //    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins( 0, 0, 0, 0 );
-    m_playlistView->header()->hide();
+//    m_playlistView->header()->hide();
 
     m_playlistView->setDragEnabled( true );
     m_playlistView->setAcceptDrops( true );
