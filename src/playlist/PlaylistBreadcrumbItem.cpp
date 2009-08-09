@@ -50,7 +50,7 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     connect( menu, SIGNAL( triggered( QAction* ) ), this, SLOT( siblingTriggered( QAction* ) ) );
 
     //And then the main breadcrumb button...
-    m_mainButton = new BreadcrumbItemButton( level->icon(), level->name(), this );
+    m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->name(), this );
 
     connect( m_mainButton, SIGNAL( clicked() ), this, SIGNAL( clicked() ) );
 

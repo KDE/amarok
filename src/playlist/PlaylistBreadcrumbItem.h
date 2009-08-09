@@ -18,7 +18,7 @@
 #ifndef PLAYLISTBREADCRUMBITEM_H
 #define PLAYLISTBREADCRUMBITEM_H
 
-#include "BreadcrumbItemButton.h"
+#include "PlaylistBreadcrumbItemSortButton.h"
 #include "PlaylistBreadcrumbLevel.h"
 
 #include <KHBox>
@@ -60,7 +60,7 @@ protected slots:
 
 private:
     BreadcrumbItemMenuButton *m_menuButton;
-    BreadcrumbItemButton     *m_mainButton;
+    BreadcrumbItemSortButton *m_mainButton;
     QString m_name;
 
 private slots:
