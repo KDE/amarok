@@ -235,14 +235,11 @@ void OpmlDirectoryService::itemSelected( CollectionTreeItem * selectedItem ){
 
 void OpmlDirectoryService::subscribe()
 {
-    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
-            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
-    if( provider )
+    PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
+    if( podcastProvider )
     {
-        if ( m_currentFeed != 0 ) {
-            PodcastProvider * podcastProvider = The::playlistManager()->defaultPodcasts();
+        if( m_currentFeed != 0 )
             podcastProvider->addPodcast( m_currentFeed->uidUrl() );
-        }
     }
     else
     {
