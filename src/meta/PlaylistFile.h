@@ -44,6 +44,7 @@ namespace Meta
                 { Q_UNUSED( url ); Q_UNUSED( relative ); return false; }
 
             virtual void setName( const QString &name ) = 0;
+            virtual void setGroups( const QStringList &groups ) { Q_UNUSED( groups ); }
     };
 
 }

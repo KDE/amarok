@@ -20,6 +20,7 @@
 #include <UserPlaylistProvider.h>
 #include <PlaylistFileSupport.h>
 
+class KConfigGroup;
 class KUrl;
 
 /**
@@ -45,8 +46,11 @@ class PlaylistFileProvider : public UserPlaylistProvider
         bool import( const KUrl &path );
 
     private:
+        KConfigGroup loadedPlaylistsConfig();
+
         Meta::PlaylistList m_playlists;
         Meta::PlaylistFormat m_defaultFormat;
+        QMultiMap<QString, Meta::PlaylistPtr> m_groupMap;
 };
 
 #endif

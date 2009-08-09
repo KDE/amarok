@@ -38,20 +38,21 @@ PlaylistFileProvider::PlaylistFileProvider()
 {
     DEBUG_BLOCK
     //load the playlists defined in the config
-    QStringList keys = Amarok::config( "Loaded Playlist Files" ).keyList();
+    QStringList keys = loadedPlaylistsConfig().keyList();
     debug() << "keys " << keys;
 
     //ConfigEntry: name, file
     foreach( const QString &key, keys )
     {
-        QStringList configEntry =
-                Amarok::config( "Loaded Playlist Files" ).readXdgListEntry( key );
+        QStringList configEntry = loadedPlaylistsConfig().readXdgListEntry( key );
         Meta::PlaylistFilePtr playlist =
                 Meta::loadPlaylistFile( KUrl( configEntry[1] ).path() );
         if( playlist->isWritable() )
         {
             QString name = configEntry[0];
             playlist->setName( name );
+            if( configEntry.length() >= 3 )
+                playlist->setGroups( configEntry[2].split( ",",  QString::SkipEmptyParts ) );
         }
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
@@ -71,8 +72,9 @@ PlaylistFileProvider::~PlaylistFileProvider()
 
         configEntry << playlist->name();
         configEntry << url.url();
+        configEntry << playlist->groups();
 
-        Amarok::config( "Loaded Playlist Files" ).writeXdgListEntry(
+        loadedPlaylistsConfig().writeXdgListEntry(
                         QString("Playlist %1").arg( ++i ), configEntry );
     }
     Amarok::config( "Loaded Playlist Files" ).sync();
@@ -145,4 +147,10 @@ PlaylistFileProvider::import( const KUrl &path )
     m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     emit updated();
     return true;
+}
+
+KConfigGroup
+PlaylistFileProvider::loadedPlaylistsConfig()
+{
+    return Amarok::config( "Loaded Playlist Files" );
 }

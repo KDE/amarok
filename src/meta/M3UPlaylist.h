@@ -64,9 +64,12 @@ class M3UPlaylist : public PlaylistFile
 
         bool load( QTextStream &stream ) { return loadM3u( stream ); };
 
+        virtual QStringList groups() { return m_groups; }
+
         /* PlaylistFile methods */
         bool isWritable();
         void setName( const QString &name );
+        void setGroups( const QStringList &groups ) { m_groups = groups; };
 
     private:
         bool loadM3u( QTextStream &stream );
@@ -74,6 +77,7 @@ class M3UPlaylist : public PlaylistFile
         KUrl m_url;
 
         TrackList m_tracks;
+        QStringList m_groups;
 
 };
 
