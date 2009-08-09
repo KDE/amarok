@@ -59,6 +59,7 @@ namespace Amarok
             virtual void resizeEvent( QResizeEvent * ) { m_needsResize = true; }
 
             void paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos = -1.0 );
+            void paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double pos = -1.0 );
 
             bool m_sliding;
 

@@ -390,6 +390,7 @@ set(libplaylist_SRCS
     playlist/PlaylistWidget.cpp
     playlist/ProgressiveSearchWidget.cpp
     playlist/UndoCommands.cpp
+    playlist/layouts/LayoutEditDialog.cpp
     playlist/layouts/LayoutEditWidget.cpp
     playlist/layouts/LayoutConfigAction.cpp
     playlist/layouts/LayoutItemConfig.cpp

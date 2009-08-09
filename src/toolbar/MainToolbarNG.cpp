@@ -28,6 +28,7 @@
 
 #include <QAction>
 #include <QLabel>
+#include <QLayout>
 #include <QMenu>
 #include <QSlider>
 #include <QToolButton>
@@ -46,7 +47,9 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     setObjectName( "Main Toolbar NG" );
 
     setFixedHeight( 32 );
-    setIconSize( QSize( 32, 32 ) );
+    setIconSize( QSize( 28, 28 ) );
+    layout()->setSpacing( 0 );
+    setContentsMargins( 0, 0, 0,0 );
 
     addAction( Amarok::actionCollection()->action( "prev" ) );
     addAction( Amarok::actionCollection()->action( "play_pause" ) );

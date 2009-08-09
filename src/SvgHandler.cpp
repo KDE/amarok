@@ -279,4 +279,57 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     return pixmap;
 }
 
+
+void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active )
+{
+    int knobSize = height - 4;
+    int sliderRange = width - ( knobSize + 4 );
+    int knobRelPos = x + sliderRange * percentage + 2;
+    int knobY = y + ( height - knobSize ) / 2 + 1;
+
+    int sliderY = y + ( height / 2 );
+
+
+    p->drawPixmap( x, sliderY,
+                   renderSvg(
+                   "new_slider_top",
+                   width, 1,
+                   "new_slider_top" ) );
+
+    p->drawPixmap( x, sliderY + 1,
+                   renderSvg(
+                   "new_slider_bottom",
+                   width, 1,
+                   "new_slider_bottom" ) );
+
+
+    //draw end markers
+    p->drawPixmap( x, y,
+                   renderSvg(
+                   "new_slider_end",
+                   2, height,
+                   "new_slider_end" ) );
+
+    p->drawPixmap( x + width - 2, y,
+                   renderSvg(
+                   "new_slider_end",
+                   2, height,
+                   "new_slider_endr" ) );
+
+
+    if ( active )
+        p->drawPixmap( knobRelPos, knobY,
+                       renderSvg(
+                       "new_slider_knob_active",
+                       knobSize, knobSize,
+                       "new_slider_knob_active" ) );
+    else
+        p->drawPixmap( knobRelPos, knobY,
+                       renderSvg(
+                       "new_slider_knob",
+                       knobSize, knobSize,
+                       "new_slider_knob" ) );
+
+}
+
 #include "SvgHandler.moc"

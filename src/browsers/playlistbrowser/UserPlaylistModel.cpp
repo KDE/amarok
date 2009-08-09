@@ -139,7 +139,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 //    debug() << "playlist at row: " << row;
     Meta::PlaylistPtr playlist = m_playlists.value( row );
 
-    QVariant food;
+    QVariant food = QVariant();
     QString name;
     QString description;
     KIcon icon;
@@ -154,11 +154,35 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
     }
     else
     {
-        food = QVariant::fromValue( playlist );
-        name = playlist->name();
-        description = playlist->description();
-        icon = KIcon( "amarok_playlist" );
-        groups = playlist->groups();
+        switch( index.column() )
+        {
+            case 0: //playlist
+                {
+                    food = QVariant::fromValue( playlist );
+                    name = playlist->name();
+                    description = playlist->description();
+                    icon = KIcon( "amarok_playlist" );
+                    groups = playlist->groups();
+                }
+                break;
+            case 1: //group
+                {
+                    if( !playlist->groups().isEmpty() )
+                    {
+                        name= playlist->groups().first();
+                        icon = KIcon( "folder" );
+                    }
+                }
+                break;
+            case 2: //source
+                {
+                    //TODO:get stuff from PlaylistManager
+                    name = QString("Source 1");
+                    icon = KIcon( "drive-harddisk" );
+                }
+                break;
+            default: return QVariant();
+        }
     }
 
     switch( role )
@@ -229,7 +253,8 @@ PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
 int
 PlaylistBrowserNS::UserModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    return 1;
+    //name, group and source
+    return 3;
 }
 
 Qt::ItemFlags
@@ -252,6 +277,8 @@ PlaylistBrowserNS::UserModel::headerData(int section, Qt::Orientation orientatio
         switch( section )
         {
             case 0: return i18n("Name");
+            case 1: return i18n("Group");
+            case 2: return i18n("Source");
             default: return QVariant();
         }
     }

@@ -523,49 +523,16 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
     qreal trackPercentage = ( (qreal) trackPos / (qreal) trackLength );
 
     int sliderWidth = width - ( offset + MARGINH );
-    int knobSize = buttonSize - 2;
-    int sliderRange = sliderWidth - buttonSize;
-    int knobRelPos = sliderRange * trackPercentage;
-
-    int sliderY = y + ( height / 2 );
-
-    if( sliderWidth > 30 )
-    {
-        
-
-        painter->drawPixmap( offset, sliderY,
-                            The::svgHandler()->renderSvg(
-                            "divider_bottom",
-                            sliderWidth, 1,
-                            "divider_bottom" ) );
-
-        painter->drawPixmap( offset, sliderY + 1,
-                            The::svgHandler()->renderSvg(
-                            "divider_top",
-                            sliderWidth, 1,
-                            "divider_top" ) );
-
-        painter->drawPixmap( offset + knobRelPos, y + 3,
-                             The::svgHandler()->renderSvg(
-                             "new_slider_knob",
-                             knobSize, knobSize,
-                             "new_slider_knob" ) );
-
-        
-    }
+    The::svgHandler()->paintCustomSlider( painter, offset, y, sliderWidth, height, trackPercentage, false );
     
 }
 
 bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index )
 {
-    DEBUG_BLOCK
     
     //for now, only handle clicks in the currently playing item.
     if ( !index.data( ActiveTrackRole ).toBool() )
         return false;
-
-    debug() << "is active";
-    debug() << "click at" << pos;
     
     int rowCount = rowsForItem( index );
     int modifiedRowCount = rowCount;
@@ -574,44 +541,33 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
         modifiedRowCount++; //add room for extras
 
     int height = itemRect.height();;
-    debug() << "height: " << height;
 
     int baseHeight = ( height * rowCount ) / modifiedRowCount;
     int extrasHeight = height - baseHeight;
-    debug() << "baseHeight: " << baseHeight;
-    debug() << "extrasHeight: " << extrasHeight;
     int extrasOffsetY = height - extrasHeight;
-    debug() << "extrasOffsetY: " << extrasOffsetY;
 
     int buttonSize = extrasHeight - 4;
-    debug() << "button size " << buttonSize;
 
     int offset = MARGINH;
     QRect backRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
-    debug() << "back rect " <<  backRect;
     if( backRect.contains( pos ) )
     {
-         debug() << "here!";
          Amarok::actionCollection()->action( "prev" )->trigger();
          return true;
     }
 
     offset += ( buttonSize + MARGINH ); 
     QRect playRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
-    debug() << "play rect " <<  playRect;
     if( playRect.contains( pos ) )
     {
-         debug() << "here!";
          Amarok::actionCollection()->action( "play_pause" )->trigger();
          return true;
     }
 
     offset += ( buttonSize + MARGINH ); 
     QRect stopRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
-    debug() << "stop rect " <<  stopRect;
     if( stopRect.contains( pos ) )
     {
-         debug() << "here!";
          Amarok::actionCollection()->action( "stop" )->trigger();
          return true;
     }
@@ -619,10 +575,8 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
 
     offset += ( buttonSize + MARGINH ); 
     QRect nextRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
-    debug() << "next rect " <<  nextRect;
     if( nextRect.contains( pos ) )
     {
-         debug() << "here!";
          Amarok::actionCollection()->action( "next" )->trigger();
          return true;
     }

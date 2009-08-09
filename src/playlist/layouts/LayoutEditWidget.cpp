@@ -90,6 +90,8 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
             token->setItalic( element.italic() );
             token->setAlignment( element.alignment() );
             token->setWidth( element.size() * 100.0 );
+            token->setPrefix( element.prefix() );
+            token->setSuffix( element.suffix() );
             m_dragstack->insertToken( token, i, j );
             // Do all modifications on the token above that line, otherwise the dialog will think it's been modified by the user
             connect ( token, SIGNAL( changed() ), this, SIGNAL( changed() ) );
