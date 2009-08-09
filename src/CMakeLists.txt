@@ -397,6 +397,7 @@ set(libplaylist_SRCS
     playlist/layouts/LayoutConfigAction.cpp
     playlist/layouts/LayoutItemConfig.cpp
     playlist/layouts/LayoutManager.cpp
+    playlist/layouts/PlaylistLayoutEditDialog.cpp
     playlist/navigators/DynamicTrackNavigator.cpp
     playlist/navigators/RandomAlbumNavigator.cpp
     playlist/navigators/RandomTrackNavigator.cpp
@@ -538,7 +539,6 @@ set(amaroklib_LIB_SRCS
     dialogs/DatabaseImporterDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
-    dialogs/PlaylistLayoutEditDialog.cpp
     dialogs/PodcastSettingsDialog.cpp
     dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
@@ -620,7 +620,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/ScriptManagerBase.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
-    dialogs/PlaylistLayoutEditDialog.ui
+    playlist/layouts/PlaylistLayoutEditDialog.ui
     dialogs/PodcastSettingsBase.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
