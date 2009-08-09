@@ -385,7 +385,7 @@ bool Amarok::TimeSlider::event ( QEvent * event )
         }
             
     }
-    QWidget::event ( event );
+    return QWidget::event( event );
 }
 
 
