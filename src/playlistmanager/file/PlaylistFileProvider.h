@@ -35,7 +35,7 @@ class PlaylistFileProvider : public UserPlaylistProvider
         ~PlaylistFileProvider();
 
         QString prettyName() const;
-        virtual KIcon icon() const { return KIcon( "drive-harddisk" ); }
+        virtual KIcon icon() const { return KIcon( "folder-documents" ); }
 
         int category() const { return PlaylistManager::UserPlaylist; };
 

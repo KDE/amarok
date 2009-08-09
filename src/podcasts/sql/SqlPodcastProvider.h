@@ -42,7 +42,7 @@ class SqlPodcastProvider : public PodcastProvider
         Meta::TrackPtr trackForUrl( const KUrl &url );
 
         QString prettyName() const { return i18n("Local Podcasts"); };
-        KIcon icon() const { return KIcon( "drive-harddisk" ); }
+        KIcon icon() const { return KIcon( "server-database" ); }
 
         int category() const { return (int)PlaylistManager::PodcastChannel; };
 
