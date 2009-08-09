@@ -21,6 +21,8 @@
 
 #include "PaletteHandler.h"
 #include <Plasma/Animator>
+#include <Plasma/FrameSvg>
+#include <Plasma/Theme>
 
 #include <QGraphicsLayout>
 #include <QGraphicsScene>
@@ -96,6 +98,12 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
     p->save();
     p->setRenderHint( QPainter::Antialiasing );
 
+    Plasma::FrameSvg *f = new Plasma::FrameSvg();
+    f->setImagePath("widgets/label");
+    f->setEnabledBorders(Plasma::FrameSvg::AllBorders);
+
+    debug() << "SVG VALID? " << f->isValid();
+    
     // Paint in integer coordinates, align to grid
     QRectF rect = t->boundingRect();
     QPointF pos = t->pos();
@@ -107,20 +115,22 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
     pos.setX( qRound( pos.x() ) );
     pos.setY( qRound( pos.y() ) );
     rect.moveTopLeft( pos );
-    rect.adjust( -5, -2, 5, 2 );
-
+    rect.adjust( -5, -5, 5, 5 );
+/*
     p->translate( 0.5, 0.5 );
 
-    QPainterPath path;
-    path.addRoundedRect( rect, 3, 3 );
-    QColor col = PaletteHandler::highlightColor().lighter( 150 );
-    col.setAlphaF( col.alphaF() * 0.7 );
-    p->fillPath( path, col );
+    QPainterPath path;*/
+//     path.addRoundedRect( rect, 3, 3 );
+//     QColor col = PaletteHandler::highlightColor().lighter( 150 );
+//     col.setAlphaF( col.alphaF() * 0.7 );
+//     p->fillPath( path, col );
 
-    col = PaletteHandler::highlightColor( 0.3, 0.5 );
-    col.setAlphaF( col.alphaF() * 0.7 );
-    p->setPen( col );
-    p->drawRoundedRect( rect, 3, 3 );
+//     col = PaletteHandler::highlightColor( 0.3, 0.5 );
+//     col.setAlphaF( col.alphaF() * 0.7 );
+//     p->setPen( col );
+//     p->drawRoundedRect( rect, 3, 3 );
+    f->resize(rect.size());
+    f->paintFrame(p, rect.topLeft());
     p->restore();
 }
 
