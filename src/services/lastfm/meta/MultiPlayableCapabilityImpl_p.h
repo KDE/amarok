@@ -18,13 +18,15 @@
 #define AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 
 #include "Debug.h"
-#include "LastFmServiceConfig.h"
+#include "LastFmMeta.h"
 #include "Meta.h"
 #include "meta/capabilities/MultiPlayableCapability.h"
 #include "StatusBar.h"
 
 #include <lastfm/Track>
 #include <lastfm/RadioTuner>
+#include <lastfm/ws.h>
+
 
 class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public Meta::Observer
 {
@@ -70,7 +72,7 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
             
             if( ltrack.isNull() )
                 return;
-                
+
             KUrl url = ltrack->internalUrl();
             if( url.isEmpty() || url != m_url ) // always should let empty url through, since otherwise we swallow an error getting first track
             {
@@ -100,12 +102,11 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         
         void error( lastfm::ws::Error e )
         {
-            if( lastfm::ws::SubscribersOnly )
-            {
-                The::statusBar()->longMessage( i18n( "Unfortunately, Last.Fm radio streams are only functional for Last.Fm subscribers. All the other Last.Fm features are unaffected." ) );
-            } else
-            {
-                The::statusBar()->longMessage( i18n( "Error starting track from Last.Fm radio" )   );
+            if( e == lastfm::ws::SubscribersOnly || e == lastfm::ws::AuthenticationFailed )
+            {   // last.fm is returning an AuthenticationFailed message when the user is not a subscriber, even if the credentials are OK
+                The::statusBar()->shortMessage( i18n( "Unfortunately, Last.Fm radio streams are only functional for Last.Fm subscribers. All the other Last.Fm features are unaffected." ) );
+            } else {
+                The::statusBar()->shortMessage( i18n( "Error starting track from Last.Fm radio" )   );
             }
         }
 
