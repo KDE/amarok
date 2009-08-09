@@ -54,6 +54,7 @@ include_directories(
     ../tests/meta/
     ../tests/meta/cue/
     ../tests/meta/file/
+    ../tests/meta/multi/
     ../tests/playlistmanager/
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
@@ -593,6 +594,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/meta/cue/TestMetaCueCueFileItem.cpp
         ../tests/meta/cue/TestMetaCueTrack.cpp
         ../tests/meta/file/TestMetaFileTrack.cpp
+        ../tests/meta/multi/TestMetaMultiTrack.cpp
         ../tests/TestAmarok.cpp
         ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp

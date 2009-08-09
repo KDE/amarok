@@ -39,13 +39,16 @@ MultiTrack::~MultiTrack()
 
 void Meta::MultiTrack::setSource( int source )
 {
+    if( source >= m_playlist->tracks().count() ) // avaid crash by doing nothing
+        return;
+
     if( m_currentTrack )
         unsubscribeFrom( m_currentTrack );
-    
+
     m_index = source;
     m_currentTrack = m_playlist->tracks()[ m_index ];
     subscribeTo( m_currentTrack );
-    
+
     notifyObservers();
     emit urlChanged( playableUrl() );
 }
