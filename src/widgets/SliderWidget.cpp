@@ -26,6 +26,7 @@
 #include "BookmarkTriangle.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "meta/MetaUtility.h"
 #include "SvgHandler.h"
 #include "ProgressWidget.h"
 
@@ -362,6 +363,29 @@ void Amarok::TimeSlider::mousePressEvent(QMouseEvent *event )
     if( !The::engineController()->phononMediaObject()->isSeekable() )
         return; // Eat the event,, it's not possible to seek
     Amarok::Slider::mousePressEvent( event );
+}
+
+bool Amarok::TimeSlider::event ( QEvent * event )
+{
+    if ( event->type() == QEvent::ToolTip )
+    {
+
+        //make a QHelpEvent out of this
+        QHelpEvent * helpEvent = dynamic_cast<QHelpEvent *>( event );
+        if ( helpEvent )
+        {
+            //update tooltip to show track position of mouse.
+
+            //figure out "percentage" of mouse position
+            qreal percentage = (qreal) helpEvent->x() / (qreal) width();
+            long trackLength = The::engineController()->trackLength();
+            int positionTime = trackLength * percentage;
+
+            setToolTip( Meta::secToPrettyTime( positionTime ) );
+        }
+            
+    }
+    QWidget::event ( event );
 }
 
 
