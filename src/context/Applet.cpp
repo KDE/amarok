@@ -101,8 +101,6 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
     Plasma::FrameSvg *f = new Plasma::FrameSvg();
     f->setImagePath("widgets/label");
     f->setEnabledBorders(Plasma::FrameSvg::AllBorders);
-
-    debug() << "SVG VALID? " << f->isValid();
     
     // Paint in integer coordinates, align to grid
     QRectF rect = t->boundingRect();
@@ -116,19 +114,6 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
     pos.setY( qRound( pos.y() ) );
     rect.moveTopLeft( pos );
     rect.adjust( -5, -5, 5, 5 );
-/*
-    p->translate( 0.5, 0.5 );
-
-    QPainterPath path;*/
-//     path.addRoundedRect( rect, 3, 3 );
-//     QColor col = PaletteHandler::highlightColor().lighter( 150 );
-//     col.setAlphaF( col.alphaF() * 0.7 );
-//     p->fillPath( path, col );
-
-//     col = PaletteHandler::highlightColor( 0.3, 0.5 );
-//     col.setAlphaF( col.alphaF() * 0.7 );
-//     p->setPen( col );
-//     p->drawRoundedRect( rect, 3, 3 );
     f->resize(rect.size());
     f->paintFrame(p, rect.topLeft());
     p->restore();
@@ -141,7 +126,7 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     // draw non-gradient backround. going for elegance and style
     p->save();
     QPainterPath path;
-    path.addRoundedRect( boundingRect().adjusted( 1, 3, -2, -3 ), 4, 4 );
+    path.addRoundedRect( boundingRect().adjusted( 1, 4, -2, -3 ), 4, 4 );
     //p->fillPath( path, gradient );
     QColor highlight = PaletteHandler::highlightColor( 0.4, 1.05 );
     highlight.setAlphaF( highlight.alphaF() * 0.5 );
@@ -153,7 +138,7 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     QColor col = PaletteHandler::highlightColor( 0.3, 0.5 );
     col.setAlphaF( col.alphaF() * 0.7 );
     p->setPen( col );
-    p->drawRoundedRect( boundingRect().adjusted( 1, 3, -2, -3 ), 4, 4 );
+    p->drawRoundedRect( boundingRect().adjusted( 1, 4, -2, -3 ), 4, 4 );
     p->restore();
 }
 
