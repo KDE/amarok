@@ -5,7 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
-	* Amarok File Tracking can now use MusicBrainz track identifiers as
+    * Show position in track of the mouse (the position in the track that
+      playback will jump to if pressing the mouse) when hovering over the
+      progress bar.
+    * Amarok File Tracking can now use MusicBrainz track identifiers as
       embedded IDs.
     * Allow sorting in the bookmark manager.
     * Allow filtering in the bookmark manager.
