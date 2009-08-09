@@ -40,6 +40,7 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     , m_collapsed( false )
     , m_animationId( 0 )
     , m_transient( 0 )
+    , m_textBackground( 0 )
     , m_standardPadding( 6.0 )
 {
     connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animateEnd( int ) ) );
@@ -98,9 +99,11 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
     p->save();
     p->setRenderHint( QPainter::Antialiasing );
 
-    Plasma::FrameSvg *f = new Plasma::FrameSvg();
-    f->setImagePath("widgets/label");
-    f->setEnabledBorders(Plasma::FrameSvg::AllBorders);
+    if ( !m_textBackground ) {
+        m_textBackground = new Plasma::FrameSvg();
+        m_textBackground->setImagePath( "widgets/text-background" );
+        m_textBackground->setEnabledBorders( Plasma::FrameSvg::AllBorders );
+    }
     
     // Paint in integer coordinates, align to grid
     QRectF rect = t->boundingRect();
@@ -114,8 +117,8 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
     pos.setY( qRound( pos.y() ) );
     rect.moveTopLeft( pos );
     rect.adjust( -5, -5, 5, 5 );
-    f->resize(rect.size());
-    f->paintFrame(p, rect.topLeft());
+    m_textBackground->resize( rect.size() );
+    m_textBackground->paintFrame( p, rect.topLeft() );
     p->restore();
 }
 
