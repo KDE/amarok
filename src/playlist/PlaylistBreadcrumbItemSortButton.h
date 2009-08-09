@@ -19,6 +19,8 @@
 
 #include "widgets/BreadcrumbItemButton.h"
 
+#include <QRect>
+
 namespace Playlist
 {
 
@@ -33,12 +35,20 @@ public:
     virtual QSize sizeHint() const;
     Qt::SortOrder orderState() const;
 
+signals:
+    void arrowToggled( Qt::SortOrder );
+
 protected:
     virtual void paintEvent( QPaintEvent *event );
+    virtual void mousePressEvent( QMouseEvent *e );
+    virtual void mouseReleaseEvent( QMouseEvent *e );
 
 private:
     void init();
     Qt::SortOrder m_order;
+    QRect m_arrowRect;
+    QPoint m_pressedPos;
+    bool m_arrowPressed;
 };
 
 }   //namespace Playlist
