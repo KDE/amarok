@@ -546,7 +546,7 @@ TagDialog::guessFromFilename() //SLOT
         if( !guesser.track().isNull() )
             ui->qSpinBox_track->setValue( guesser.track().toInt() );
         if( !guesser.comment().isNull() )
-            ui->kTextEdit_comment->setText( guesser.comment() );
+            ui->qPlainTextEdit_comment->setPlainText( guesser.comment() );
         if( !guesser.year().isNull() )
             ui->qSpinBox_year->setValue( guesser.year().toInt() );
 
@@ -664,7 +664,7 @@ void TagDialog::init()
     connect( ui->qSpinBox_track,      SIGNAL( valueChanged( int ) ),               SLOT(checkModified()) );
     connect( ui->qSpinBox_year,       SIGNAL( valueChanged( int ) ),               SLOT(yearModified()) );
     connect( ui->qSpinBox_score,      SIGNAL( valueChanged( int ) ),               SLOT(scoreModified()) );
-    connect( ui->kTextEdit_comment,   SIGNAL( textChanged() ),                     SLOT(commentModified()) );
+    connect( ui->qPlainTextEdit_comment,   SIGNAL( textChanged() ),                     SLOT(commentModified()) );
     connect( ui->kTextEdit_lyrics,    SIGNAL( textChanged() ),                     SLOT(checkModified()) );
     connect( ui->kTextEdit_selectedLabels, SIGNAL( textChanged() ),                SLOT(checkModified()) );
     connect( ui->qSpinBox_discNumber, SIGNAL( valueChanged( int ) ),               SLOT(discNumberModified()) );
@@ -887,7 +887,7 @@ void TagDialog::readTags()
         ui->qSpinBox_year->setValue( m_currentTrack->year()->name().toInt() );
     ui->qSpinBox_score->setValue( static_cast<int>(m_currentTrack->score()) );
     ui->qSpinBox_discNumber->setValue( m_currentTrack->discNumber() );
-    ui->kTextEdit_comment->setText( Qt::escape( m_currentTrack->comment() ) );
+    ui->qPlainTextEdit_comment->setPlainText( Qt::escape( m_currentTrack->comment() ) );
 
     QString summaryText, statisticsText;
     const QString body2cols = "<tr><td><nobr>%1</nobr></td><td><b>%2</b></td></tr>";
@@ -958,7 +958,7 @@ void TagDialog::readTags()
     ui->qSpinBox_track->setEnabled( editable );
     ui->qSpinBox_discNumber->setEnabled( editable );
     ui->qSpinBox_year->setEnabled( editable );
-    ui->kTextEdit_comment->setEnabled( editable );
+    ui->qPlainTextEdit_comment->setEnabled( editable );
     ui->kTextEdit_selectedLabels->setEnabled( editable );
     m_labelCloud->view()->setEnabled( editable );
     ui->ratingWidget->setEnabled( true );
@@ -999,7 +999,7 @@ TagDialog::setMultipleTracksMode()
     ui->kComboBox_genre->setItemText( ui->kComboBox_genre->currentIndex(), "" );
     ui->kComboBox_composer->setItemText( ui->kComboBox_composer->currentIndex(), "" );
     ui->kLineEdit_title->setText( "" );
-    ui->kTextEdit_comment->setText( "" );
+    ui->qPlainTextEdit_comment->setPlainText( "" );
     ui->qSpinBox_track->setValue( ui->qSpinBox_track->minimum() );
     ui->qSpinBox_discNumber->setValue( ui->qSpinBox_discNumber->minimum() );
     ui->qSpinBox_year->setValue( ui->qSpinBox_year->minimum() );
@@ -1120,7 +1120,7 @@ TagDialog::readMultipleTracks()
     if( comment )
     {
         m_currentData.insert( Meta::Field::COMMENT, first.value( Meta::Field::COMMENT ) );
-        ui->kTextEdit_comment->setText( first.value( Meta::Field::COMMENT ).toString() );
+        ui->qPlainTextEdit_comment->setPlainText( first.value( Meta::Field::COMMENT ).toString() );
     }
     if( composer )
     {
@@ -1218,7 +1218,7 @@ TagDialog::changes()
     modified |= ui->qSpinBox_discNumber->value()  != m_currentData.value( Meta::Field::DISCNUMBER ).toInt();
     modified |= !equalString( ui->kComboBox_composer->lineEdit()->text(), m_currentData.value( Meta::Field::COMPOSER ).toString() );
 
-    modified |= !equalString( ui->kTextEdit_comment->toPlainText(), m_currentData.value( Meta::Field::COMMENT ).toString() );
+    modified |= !equalString( ui->qPlainTextEdit_comment->toPlainText(), m_currentData.value( Meta::Field::COMMENT ).toString() );
 
     if( !m_tracks.count() || m_perTrack )
     { //ignore these on MultipleTracksMode
@@ -1276,8 +1276,8 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
             map.insert( Meta::Field::ARTIST, ui->kComboBox_artist->currentText() );
         if ( !track->album() || ui->kComboBox_album->currentText() != track->album()->name() )
             map.insert( Meta::Field::ALBUM, ui->kComboBox_album->currentText() );
-        if ( ui->kTextEdit_comment->toPlainText() != track->comment() )
-            map.insert( Meta::Field::COMMENT, ui->kTextEdit_comment->toPlainText() );
+        if ( ui->qPlainTextEdit_comment->toPlainText() != track->comment() )
+            map.insert( Meta::Field::COMMENT, ui->qPlainTextEdit_comment->toPlainText() );
         if ( !track->genre() || ui->kComboBox_genre->currentText() != track->genre()->name() )
             map.insert( Meta::Field::GENRE, ui->kComboBox_genre->currentText() );
         if ( ui->qSpinBox_track->value() != track->trackNumber() )
@@ -1568,7 +1568,7 @@ TagDialog::applyToAllTracks()
 
         if( m_fieldEdited.contains( "comment" ) && m_fieldEdited[ "comment" ] )
         {
-            data.insert( Meta::Field::COMMENT, ui->kTextEdit_comment->toPlainText() );
+            data.insert( Meta::Field::COMMENT, ui->qPlainTextEdit_comment->toPlainText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 
