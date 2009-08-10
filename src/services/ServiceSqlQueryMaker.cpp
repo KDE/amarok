@@ -50,7 +50,6 @@ class ServiceSqlWorkerThread : public ThreadWeaver::Job
     protected:
         virtual void run()
         {
-            DEBUG_BLOCK
             QString query = m_queryMaker->query();
             QStringList result = m_queryMaker->runQuery( query );
             if( !m_aborted )
@@ -169,7 +168,6 @@ ServiceSqlQueryMaker::done( ThreadWeaver::Job *job )
 QueryMaker*
 ServiceSqlQueryMaker::setQueryType( QueryType type)
 {
-    DEBUG_BLOCK
     switch( type ) {
     case QueryMaker::Track:
         //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
@@ -312,7 +310,6 @@ ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
-    DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
@@ -328,7 +325,6 @@ ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 {
-    DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
@@ -347,7 +343,6 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
 {
-    DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
@@ -390,7 +385,6 @@ ServiceSqlQueryMaker::addMatch( const YearPtr &year )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const DataPtr &data )
 {
-    //DEBUG_BLOCK
     ( const_cast<DataPtr&>(data) )->addMatchTo( this );
     //TODO needed at all?
     return this;
@@ -545,8 +539,6 @@ ServiceSqlQueryMaker::query()
 QStringList
 ServiceSqlQueryMaker::runQuery( const QString &query )
 {
-    DEBUG_BLOCK
-
    if( d->albumMode == OnlyCompilations )
        return QStringList();
 
@@ -556,7 +548,6 @@ ServiceSqlQueryMaker::runQuery( const QString &query )
 void
 ServiceSqlQueryMaker::handleResult( const QStringList &result )
 {
-    DEBUG_BLOCK
     if( !result.isEmpty() )
     {
         switch( d->queryType ) {
@@ -633,7 +624,6 @@ void ServiceSqlQueryMaker::emitProperResult( const ListType& list )
 void
 ServiceSqlQueryMaker::handleTracks( const QStringList &result )
 {
-    DEBUG_BLOCK
     TrackList tracks;
     //SqlRegistry* reg = m_collection->registry();
     int rowCount = ( m_metaFactory->getTrackSqlRowCount() +
@@ -657,7 +647,6 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
 void
 ServiceSqlQueryMaker::handleArtists( const QStringList &result )
 {
-    DEBUG_BLOCK
     ArtistList artists;
    // SqlRegistry* reg = m_collection->registry();
     int rowCount = m_metaFactory->getArtistSqlRowCount();
@@ -673,7 +662,6 @@ ServiceSqlQueryMaker::handleArtists( const QStringList &result )
 void
 ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
 {
-    DEBUG_BLOCK
     AlbumList albums;
     int rowCount = m_metaFactory->getAlbumSqlRowCount() +  m_metaFactory->getArtistSqlRowCount();
     int resultRows = result.size() / rowCount;
@@ -689,7 +677,6 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
 void
 ServiceSqlQueryMaker::handleGenres( const QStringList &result )
 {
-    DEBUG_BLOCK
     GenreList genres;
 
     int rowCount = m_metaFactory->getGenreSqlRowCount();
@@ -769,7 +756,6 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
 QueryMaker*
 ServiceSqlQueryMaker::beginAnd()
 {
-    DEBUG_BLOCK
     d->queryFilter += andOr();
     d->queryFilter += " ( 1 ";
     d->andStack.push( true );
@@ -779,7 +765,6 @@ ServiceSqlQueryMaker::beginAnd()
 QueryMaker*
 ServiceSqlQueryMaker::beginOr()
 {
-    DEBUG_BLOCK
     d->queryFilter += andOr();
     d->queryFilter += " ( 0 ";
     d->andStack.push( false );
@@ -789,7 +774,6 @@ ServiceSqlQueryMaker::beginOr()
 QueryMaker*
 ServiceSqlQueryMaker::endAndOr()
 {
-    DEBUG_BLOCK
     d->queryFilter += ')';
     d->andStack.pop();
     return this;
@@ -798,7 +782,6 @@ ServiceSqlQueryMaker::endAndOr()
 QString
 ServiceSqlQueryMaker::andOr() const
 {
-    DEBUG_BLOCK
     return d->andStack.top() ? " AND " : " OR ";
 }
 

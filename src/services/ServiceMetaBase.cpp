@@ -111,7 +111,6 @@ ServiceMetaFactory::getGenreSqlRowCount()
 QString
 ServiceMetaFactory::getGenreSqlRows()
 {
-    DEBUG_BLOCK
     //subclasses must not change the order of these items, but only append new ones
     return m_dbTablePrefix + "_genre.id, " +
            m_dbTablePrefix + "_genre.name " ;

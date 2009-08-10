@@ -78,8 +78,6 @@ ServiceSqlCollection::escape( QString text ) const
 Meta::TrackPtr
 ServiceSqlCollection::trackForUrl(const KUrl & url)
 {
-    DEBUG_BLOCK
-
     if ( !possiblyContainsTrack( url ) ) //do we even bother trying?
         return Meta::TrackPtr();
 
@@ -104,7 +102,7 @@ ServiceSqlCollection::trackForUrl(const KUrl & url)
             .arg( sqlDb->escape( pristineUrl ) )
             .arg( prefix );
 
-    debug() << "Querying for track: " << queryString;
+    //debug() << "Querying for track: " << queryString;
     QStringList result = sqlDb->query( queryString );
     //debug() << "result: " << result;
 
@@ -114,7 +112,6 @@ ServiceSqlCollection::trackForUrl(const KUrl & url)
 bool
 ServiceSqlCollection::possiblyContainsTrack(const KUrl & url) const
 {
-    DEBUG_BLOCK
     return url.url().contains( m_metaFactory->tablePrefix(), Qt::CaseInsensitive );
 }
 
