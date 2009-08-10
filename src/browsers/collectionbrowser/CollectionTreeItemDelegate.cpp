@@ -174,17 +174,18 @@ CollectionTreeItemDelegate::updateItemWidgets( const QList<QWidget*> widgets, co
     }
 
     QToolButton *toolButton = static_cast<QToolButton*>( widgets[0] );
-    if( !toolButton->menu() )
+    toolButton->setDefaultAction( actions.first() );
+
+    if( !toolButton->menu() && actions.size() > 1 )
     {
         QMenu *menu = new QMenu( toolButton );
-        toolButton->setDefaultAction( actions.first() );
         foreach( QAction *action, actions )
             menu->addAction( action );
         
         toolButton->setMenu( menu );
+        toolButton->setPopupMode( QToolButton::MenuButtonPopup );
     }
 
-    toolButton->setPopupMode( QToolButton::MenuButtonPopup );
     toolButton->setAutoFillBackground( false );
     toolButton->setAutoRaise( true );
     toolButton->move( option.rect.width() - toolButton->size().width() - 10,
