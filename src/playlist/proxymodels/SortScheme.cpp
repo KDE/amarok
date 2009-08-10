@@ -77,6 +77,8 @@ SortLevel::isString()
 QString
 SortLevel::prettyName()
 {
+    if( m_category == -1 )
+        return i18n( "Random" );
     return columnNames.at( m_category );
 }
 

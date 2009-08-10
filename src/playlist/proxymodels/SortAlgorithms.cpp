@@ -28,6 +28,8 @@ multilevelLessThan::operator()( int rowA, int rowB)
     for( int i = 0; i < m_scheme.length(); i++ )
     {
         int currentCategory = m_scheme.level( i ).category();  //see enum Column in PlaylistDefines.h
+        if( currentCategory == -1 ) //random
+            return static_cast<bool>( qrand() % 2 );
         QVariant dataA = m_sourceProxy->index( rowA, currentCategory ).data();  //FIXME: are you sure you need to do comparisons on sourceProxy indexes?
         QVariant dataB = m_sourceProxy->index( rowB, currentCategory ).data();  //or better, are you sure those rowA and rowB don't need a rowToSource around them?
         if( m_scheme.level( i ).isString() )

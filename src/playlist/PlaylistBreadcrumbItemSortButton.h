@@ -24,18 +24,53 @@
 namespace Playlist
 {
 
+/**
+ * A button that implements the non-menu part of the playlist breadcrumb item.
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ */
 class BreadcrumbItemSortButton : public BreadcrumbItemButton
 {
     Q_OBJECT
 
 public:
+    /**
+     * Constructor.
+     * @param parent the parent QWidget.
+     */
     BreadcrumbItemSortButton( QWidget *parent );
-    BreadcrumbItemSortButton( const QIcon &icon, const QString &text, QWidget *parent );
+
+    /**
+     * Constructor, nontrivial.
+     * @param icon the icon to paint on the button.
+     * @param text the text to show on the button.
+     * @param noArrows true if the button should be shown without order inversion arrows,
+     * otherwise false.
+     * @param parent the parent QWidget.
+     */
+    BreadcrumbItemSortButton( const QIcon &icon, const QString &text, bool noArrows, QWidget *parent );
+
+    /**
+     * Destructor.
+     */
     virtual ~BreadcrumbItemSortButton();
+
+    /**
+     * Returns the recommended size for the button depending on the contents.
+     * @return the recommended size.
+     */
     virtual QSize sizeHint() const;
+
+    /**
+     * Returns the state of the sort order defined by the order inversion arrow.
+     * @return the sort order.
+     */
     Qt::SortOrder orderState() const;
 
 signals:
+    /**
+     * Emitted when the order inversion arrow has been toggled.
+     * @sortOrder the new sort order based on the position of the arrow.
+     */
     void arrowToggled( Qt::SortOrder );
 
 protected:
@@ -44,8 +79,12 @@ protected:
     virtual void mouseReleaseEvent( QMouseEvent *e );
 
 private:
+    /**
+     * Common initialization method, called by every constructor.
+     */
     void init();
     Qt::SortOrder m_order;
+    bool m_noArrows;
     QRect m_arrowRect;
     QPoint m_pressedPos;
     bool m_arrowPressed;

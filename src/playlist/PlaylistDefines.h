@@ -61,6 +61,7 @@ enum Column
     Year,
     NUM_COLUMNS
 };
+//when sorting, Random is -1
 
 //this is the list of user visible token nemes and hence needs to be translated
 static const QList<const char *> columnNames = ( QList<const char *>()
