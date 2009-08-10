@@ -177,6 +177,10 @@ VideoclipApplet::engineNewTrackPlaying()
 void
 VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State oldState)
 {
+    DEBUG_BLOCK
+
+    debug() << "video old state: " << oldState << " new state: " << currentState;
+
     if ( currentState == oldState )
         return;
 
@@ -185,9 +189,14 @@ VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State ol
         // when switching from buffering to to playing, we launch the vid widget
         case Phonon::PlayingState :
         {
-            // We need this has when song switching the ste will do
+            // We need this has when song switching the state will do
             // playing > stopped > playing > loading > buffering > playing
-            if ( oldState == Phonon::BufferingState )
+
+            // --well, not on OS X. there it will go oldState == stopped,
+            // newState == playing, after which the track actually starts playing
+            // adding StoppedState below makes the videoapplet work for video podcasts.
+            // I suggest adding a special case for OS X if this breaks on other platforms - max
+            if ( oldState == Phonon::BufferingState || oldState == Phonon::StoppedState )
             {
                 debug() <<" video state : playing";
 
