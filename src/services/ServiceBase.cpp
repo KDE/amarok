@@ -46,7 +46,6 @@ ServiceFactory::~ServiceFactory()
 Meta::TrackPtr
 ServiceFactory::trackForUrl(const KUrl & url)
 {
-    DEBUG_BLOCK
     if ( m_activeServices.size() == 0 ) {
         debug() << "our service (" << name() << ") is needed for a url, so init it!";
         init();
@@ -83,8 +82,6 @@ void ServiceFactory::clearActiveServices()
 
 void ServiceFactory::slotServiceReady()
 {
-    DEBUG_BLOCK
-    debug() << "Found " << m_tracksToLocate.size() << " tracks to locate!";
     while( !m_tracksToLocate.isEmpty() )
     {
         MetaProxy::TrackPtr track = m_tracksToLocate.dequeue();
@@ -203,14 +200,12 @@ ServiceBase::setView( QTreeView * view )
 bool
 ServiceBase::serviceReady() const
 {
-    DEBUG_BLOCK
     return m_serviceready;
 }
 
 void
 ServiceBase::infoChanged( const QString &infoHtml )
 {
-    DEBUG_BLOCK
     QVariantMap map;
     map["service_name"] = prettyName();
     map["main_info"] = infoHtml;
@@ -220,7 +215,6 @@ ServiceBase::infoChanged( const QString &infoHtml )
 void
 ServiceBase::itemSelected( CollectionTreeItem * item )
 {
-    DEBUG_BLOCK
 
     Meta::DataPtr ptr = item->data();
     if ( ( ptr.data() == 0 ) || ( m_infoParser == 0 )) return; 
