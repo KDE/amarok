@@ -68,6 +68,8 @@ PlaylistBrowserNS::UserModel::UserModel()
     : MetaPlaylistModel()
     , m_appendAction( 0 )
     , m_loadAction( 0 )
+    , m_renameAction( 0 )
+    , m_deleteAction( 0 )
 {
     s_instance = this;
     loadPlaylists();
@@ -458,13 +460,13 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
 QList<QAction *>
 PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
 {
-    QSet<QAction *> actions;
+    QList<QAction *> actions;
     m_selectedPlaylists.clear();
     m_selectedPlaylists << selectedPlaylists( indices );
     m_selectedTracks.clear();
     m_selectedTracks << selectedTracks( indices );
 
-    actions = QSet<QAction *>::fromList( createCommonActions( indices ) );
+    actions = createCommonActions( indices );
 
     // If a playlist is selected, we bring up playlist actions
     if( !m_selectedPlaylists.isEmpty() )
@@ -488,29 +490,23 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
             }
 
             if( writable )
-                actions += QSet<QAction *>::fromList(
-                        createWriteActions( indices ) );
+                actions << createWriteActions( indices );
 
         }
-        actions += QSet<QAction *>::fromList(
-                            The::playlistManager()->playlistActions( m_selectedPlaylists )
-                        );
+        actions << The::playlistManager()->playlistActions( m_selectedPlaylists );
     }
     // Otherwise, tracks are selected, so we bring up track actions
     else
     {
         foreach( const QModelIndex &idx, indices )
         {
-            actions += QSet<QAction *>::fromList(
-                            The::playlistManager()->trackActions(
+            actions << The::playlistManager()->trackActions(
                                         m_playlists.value( idx.parent().internalId() ),
-                                        idx.row()
-                                    )
-                        );
+                                        idx.row() );
         }
     }
 
-    return actions.toList();
+    return actions;
 }
 
 void

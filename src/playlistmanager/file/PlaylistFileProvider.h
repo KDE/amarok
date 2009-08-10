@@ -30,6 +30,8 @@ class KUrl;
 */
 class PlaylistFileProvider : public UserPlaylistProvider
 {
+    Q_OBJECT
+
     public:
         PlaylistFileProvider();
         ~PlaylistFileProvider();
@@ -41,6 +43,10 @@ class PlaylistFileProvider : public UserPlaylistProvider
 
         virtual Meta::PlaylistList playlists();
 
+        virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist );
+        virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
+                                                  int trackIndex );
+
         virtual bool canSavePlaylists() { return true; }
 
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks );
@@ -48,6 +54,10 @@ class PlaylistFileProvider : public UserPlaylistProvider
                                         const QString &name );
 
         bool import( const KUrl &path );
+
+        virtual bool isWritable() { return true; }
+        virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );
+        virtual void deletePlaylists( Meta::PlaylistList playlistList );
 
     private:
         KConfigGroup loadedPlaylistsConfig();

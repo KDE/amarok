@@ -186,8 +186,11 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
     if( actions.isEmpty() )
         return;
 
-    foreach( QAction * action, actions )
-        menu.addAction( action );
+    foreach( QAction *action, actions )
+    {
+        if( action )
+            menu.addAction( action );
+    }
 
     if( indices.count() == 0 )
         menu.addAction( m_addGroupAction );

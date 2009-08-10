@@ -99,6 +99,26 @@ PlaylistFileProvider::playlists()
     return m_playlists;
 }
 
+QList<QAction *>
+PlaylistFileProvider::playlistActions( Meta::PlaylistPtr playlist )
+{
+    Q_UNUSED( playlist );
+    QList<QAction *> actions;
+
+    return actions;
+}
+
+QList<QAction *>
+PlaylistFileProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
+{
+    Q_UNUSED( playlist );
+    Q_UNUSED( trackIndex );
+    QList<QAction *> actions;
+
+    return actions;
+}
+
+
 Meta::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks )
 {
@@ -161,6 +181,30 @@ PlaylistFileProvider::import( const KUrl &path )
     m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     emit updated();
     return true;
+}
+
+void
+PlaylistFileProvider::rename( Meta::PlaylistPtr playlist, const QString &newName )
+{
+    DEBUG_BLOCK
+    Q_UNUSED(playlist);
+    Q_UNUSED(newName);
+}
+
+void
+PlaylistFileProvider::deletePlaylists( Meta::PlaylistList playlistList )
+{
+    DEBUG_BLOCK
+    foreach( Meta::PlaylistPtr playlist, playlistList )
+    {
+        Meta::PlaylistFilePtr playlistFile = Meta::PlaylistFilePtr::dynamicCast( playlist );
+        if( playlistFile.isNull() )
+        {
+            error() << "Could not cast to playlistFilePtr at " << __FILE__ << ":" << __LINE__;
+            continue;
+        }
+        QFile::remove( playlistFile->retrievableUrl().path() );
+    }
 }
 
 KConfigGroup
