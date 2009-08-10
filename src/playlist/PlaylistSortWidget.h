@@ -34,13 +34,27 @@ class SortWidget : public QWidget
 {
     Q_OBJECT
 public:
+    /**
+     * Constructor.
+     */
     SortWidget( QWidget *parent );
 
+    /**
+     * Destructor.
+     */
     ~SortWidget();
 
+    /**
+     * Returns the list of levels that are currently defined in the breadcrumb path.
+     * @return the list of names of levels.
+     */
     QStringList levels();
 
 public slots:
+    /**
+     * Generates a new sort scheme and forwards it to Playlist::SortProxy to apply it to
+     * the playlist.
+     */
     void updateSortScheme();
 
 private:
@@ -50,9 +64,27 @@ private:
     QHBoxLayout * m_layout;
 
 private slots:
+    /**
+     * Adds a level to the breadcrumb path.
+     * @param internalColumnName the name of the level.
+     */
     void addLevel( QString internalColumnName );
+
+    /**
+     * Removes items from the breadcrumb path up to a certain level.
+     * @param level the cutoff level of the breadcrumb path.
+     */
     void trimToLevel( const int level = -1 );
+
+    /**
+     * Handles the (possible) deletion of further levels when an item is clicked.
+     */
     void onItemClicked();
+
+    /**
+     * Handles the rearrangement of the breadcrumb path when a sibling of an item is clicked.
+     * @param action the action in the menu.
+     */
     void onItemSiblingClicked( QAction *action );
 };
 
