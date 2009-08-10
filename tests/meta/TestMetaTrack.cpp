@@ -227,4 +227,5 @@ void TestMetaTrack::testOperatorEquals()
 
 void TestMetaTrack::testLessThan()
 {
+    QVERIFY( !Meta::Track::lessThan( m_testTrack1, m_testTrack1 ) );
 }
