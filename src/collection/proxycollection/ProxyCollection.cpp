@@ -16,6 +16,8 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#define DEBUG_PREFIX "ProxyCollection"
+
 #include "ProxyCollection.h"
 
 #include "Debug.h"
@@ -23,16 +25,36 @@
 #include "ProxyCollectionQueryMaker.h"
 
 #include <QReadLocker>
+#include <QTimer>
+
+#include <KIcon>
 
 
 ProxyCollection::Collection::Collection()
         : Amarok::Collection()
 {
+    QTimer *timer = new QTimer( this );
+    timer->setSingleShot( false );
+    timer->setInterval( 60000 ); //clean up every 60 seconds
+    connect( timer, SIGNAL( timeout() ), this, SLOT( emptyCache() ) );
+    timer->start();
 }
 
 ProxyCollection::Collection::~Collection()
 {
     //TODO
+}
+
+QString
+ProxyCollection::Collection::prettyName() const
+{
+    return i18n( "Proxy Collection" );
+}
+
+KIcon
+ProxyCollection::Collection::icon() const
+{
+    return KIcon("drive-harddisk");
 }
 
 bool
@@ -94,6 +116,12 @@ void
 ProxyCollection::Collection::removeCollection( const QString &collectionId )
 {
     m_idCollectionMap.remove( collectionId );
+}
+
+void
+ProxyCollection::Collection::removeCollection( Amarok::Collection *collection )
+{
+    m_idCollectionMap.remove( collection->collectionId() );
 }
 
 void
@@ -367,6 +395,7 @@ ProxyCollection::Collection::getTrack( Meta::TrackPtr track )
     m_trackLock.lockForRead();
     if( m_trackMap.contains( key ) )
     {
+        debug() << "track already exists, " << m_trackMap.count() << " unique tracks. track was: name [" << key.trackName << "], artist[" << key.artistName << "], album [" << key.albumName << "]";
         KSharedPtr<ProxyCollection::Track> proxy = m_trackMap.value( key );
         proxy->add( track );
         m_trackLock.unlock();
@@ -380,6 +409,7 @@ ProxyCollection::Collection::getTrack( Meta::TrackPtr track )
         //which would show some weird behaviour in other places
         ProxyCollection::Track *proxy = new ProxyCollection::Track( this, track );
         m_trackMap.insert( key, KSharedPtr<ProxyCollection::Track>( proxy ) );
+        debug() << "track new, " << m_trackMap.count() << " unique tracks";
         m_trackLock.unlock();
         return proxy;
     }
@@ -414,4 +444,77 @@ ProxyCollection::keyFromTrack( const Meta::TrackPtr &track )
         k.albumName = track->album()->name();
 
     return k;
+}
+
+void
+ProxyCollection::Collection::emptyCache()
+{
+    DEBUG_BLOCK
+    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasUid;
+    hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = false;
+
+    //try to avoid possible deadlocks by aborting when we can't get all locks
+    if ( ( hasTrack = m_trackLock.tryLockForWrite() )
+         && ( hasAlbum = m_albumLock.tryLockForWrite() )
+         && ( hasArtist = m_artistLock.tryLockForWrite() )
+         && ( hasYear = m_yearLock.tryLockForWrite() )
+         && ( hasGenre = m_genreLock.tryLockForWrite() )
+         && ( hasComposer = m_composerLock.tryLockForWrite() ) )
+    {
+        //this very simple garbage collector doesn't handle cyclic object graphs
+        //so care has to be taken to make sure that we are not dealing with a cyclic graph
+        //by invalidating the tracks cache on all objects
+        #define foreachInvalidateCache( Type, RealType, x ) \
+        for( QMutableHashIterator<int,Type > iter(x); iter.hasNext(); ) \
+            RealType::staticCast( iter.next().value() )->invalidateCache()
+
+        //foreachInvalidateCache( AlbumPtr, KSharedPtr<SqlAlbum>, m_albumMap );
+        //foreachInvalidateCache( ArtistPtr, KSharedPtr<SqlArtist>, m_artistMap );
+        //foreachInvalidateCache( GenrePtr, KSharedPtr<SqlGenre>, m_genreMap );
+        //foreachInvalidateCache( ComposerPtr, KSharedPtr<SqlComposer>, m_composerMap );
+        //foreachInvalidateCache( YearPtr, KSharedPtr<SqlYear>, m_yearMap );
+
+        debug() << "tracks before GC: " << m_trackMap.count();
+        debug() << "artists before GC: " << m_artistMap.count();
+        debug() << "albums before GC: " << m_albumMap.count();
+        debug() << "genres before GC: " << m_genreMap.count();
+        debug() << "composers before GC: " << m_composerMap.count();
+        debug() << "years before GC: " << m_yearMap.count();
+
+        //elem.count() == 2 is correct because elem is one pointer to the object
+        //and the other is stored in the hash map (except for m_trackMap, where
+        //another refence is stored in m_uidMap
+        #define foreachCollectGarbage( Key, Type, RefCount, x ) \
+        for( QMutableHashIterator<Key,Type > iter(x); iter.hasNext(); ) \
+        { \
+            Type elem = iter.next().value(); \
+            if( elem.count() == RefCount ) \
+                iter.remove(); \
+        }
+
+        foreachCollectGarbage( TrackKey, KSharedPtr<ProxyCollection::Track>, 2, m_trackMap )
+        //run before artist so that album artist pointers can be garbage collected
+        foreachCollectGarbage( AlbumKey, KSharedPtr<ProxyCollection::Album>, 2, m_albumMap )
+        foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Artist>, 2, m_artistMap )
+        foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Genre>, 2, m_genreMap )
+        foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Composer>, 2, m_composerMap )
+        foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Year>, 2, m_yearMap )
+
+        debug() << "tracks after GC: " << m_trackMap.count();
+        debug() << "artists after GC: " << m_artistMap.count();
+        debug() << "albums after GC: " << m_albumMap.count();
+        debug() << "genres after GC: " << m_genreMap.count();
+        debug() << "composers after GC: " << m_composerMap.count();
+        debug() << "years after GC: " << m_yearMap.count();
+    }
+
+    //make sure to unlock all necessary locks
+    //important: calling unlock() on an unlocked mutex gives an undefined result
+    //unlocking a mutex locked by another thread results in an error, so be careful
+    if( hasTrack ) m_trackLock.unlock();
+    if( hasAlbum ) m_albumLock.unlock();
+    if( hasArtist ) m_artistLock.unlock();
+    if( hasYear ) m_yearLock.unlock();
+    if( hasGenre ) m_genreLock.unlock();
+    if( hasComposer ) m_composerLock.unlock();
 }

@@ -61,11 +61,15 @@ namespace ProxyCollection
 
     class Collection : public Amarok::Collection
     {
+        Q_OBJECT
         public:
         Collection();
         ~Collection();
 
         //Amarok::Collection methods
+
+        virtual QString prettyName() const;
+        virtual KIcon icon() const;
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
@@ -112,6 +116,7 @@ namespace ProxyCollection
 
         private slots:
         void slotUpdated();
+        void emptyCache();
 
         private:
         QHash<QString, Amarok::Collection*> m_idCollectionMap;
