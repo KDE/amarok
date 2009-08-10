@@ -132,11 +132,13 @@ BreadcrumbAddMenuButton::siblingTriggered( QAction *action )
 void
 BreadcrumbAddMenuButton::updateMenu( const QStringList &usedBreadcrumbLevels )
 {
+    if( usedBreadcrumbLevels.contains( "random" ) )
+        hide();
+    else
+        show();
     foreach( QAction *action, m_menu->actions() )
     {
-        if( usedBreadcrumbLevels.contains( "random" ) )
-            action->setEnabled( false );
-        else if( usedBreadcrumbLevels.contains( action->data().toString() ) )
+        if( usedBreadcrumbLevels.contains( action->data().toString() ) )
             action->setEnabled( false );
         else
             action->setEnabled( true );
