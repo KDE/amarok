@@ -24,6 +24,7 @@
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"
+#include "playlist/PlaylistModel.h"
 #include "StatusBar.h"
 
 #include <QString>
@@ -150,6 +151,14 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 bool
 PlaylistFileProvider::import( const KUrl &path )
 {
+    DEBUG_BLOCK
+    debug() << "Importing playlist file " << path;
+    if( path == The::playlistModel()->defaultPlaylistPath() )
+    {
+        error() << "trying to load saved session playlist at %s" << path.path();
+        return false;
+    }
+
     Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( path );
     if( !playlist )
         return false;
