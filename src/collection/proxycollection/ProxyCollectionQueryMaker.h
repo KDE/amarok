@@ -81,6 +81,8 @@ class ProxyQueryMaker : public QueryMaker
         virtual QueryMaker* beginOr();
         virtual QueryMaker* endAndOr();
 
+        virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+
     private:
         template <class PointerType>
         void emitProperResult( const QList<PointerType > &list );
