@@ -45,11 +45,20 @@ PlaylistFileProvider::PlaylistFileProvider()
     foreach( const QString &key, keys )
     {
         QStringList configEntry = loadedPlaylistsConfig().readXdgListEntry( key );
-        Meta::PlaylistFilePtr playlist =
-                Meta::loadPlaylistFile( KUrl( configEntry[1] ).path() );
+        QString name = configEntry[0];
+        KUrl url( configEntry[1] );
+        Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( url.path() );
+        if( playlist.isNull() )
+        {
+            The::statusBar()->longMessage(
+                    i18n("The playlist file \"%1\" could not be loaded!").arg( name ),
+                    StatusBar::Error
+                );
+            continue;
+        }
+
         if( playlist->isWritable() )
         {
-            QString name = configEntry[0];
             playlist->setName( name );
             if( configEntry.length() >= 3 )
                 playlist->setGroups( configEntry[2].split( ",",  QString::SkipEmptyParts ) );
