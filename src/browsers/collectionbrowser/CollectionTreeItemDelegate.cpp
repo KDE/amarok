@@ -27,36 +27,17 @@
 #include <QFontMetrics>
 #include <QIcon>
 #include <QPainter>
+#include <QMenu>
+#include <QToolButton>
 
 #include <kcapacitybar.h>
 
 Q_DECLARE_METATYPE( QList<QAction*> )
 
 #define CAPACITYRECT_HEIGHT 6
-#define ACTIONICON_SIZE 16
-
-/**
- * An extension of the QRect class to overload the < operator.
- * QMap requires a total sort order for keys, and in order to store a QRect as a map index, we
- * need to overload the < operator.
- */
-class ComparableRect : public QRect
-{
-    public:
-        ComparableRect( QRect r ) : QRect( r ) { }
-
-        /**
-         * Calculate less than based on the top left hand corner point.
-         */
-        bool operator<( const ComparableRect &that ) const {
-            return topLeft().x() < that.topLeft().x() && topLeft().y() < that.topLeft().y();
-        }
-};
-
-QMap<ComparableRect, QAction*> CollectionTreeItemDelegate::s_hitTargets;
 
 CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
-    : QStyledItemDelegate( view )
+    : KWidgetItemDelegate( view )
     , m_view( view )
 {
     DEBUG_BLOCK
@@ -73,7 +54,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 {
     if( index.parent().isValid() ) // not a root item
     {
-        QStyledItemDelegate::paint( painter, option, index );
+        m_styledDelegate.paint( painter, option, index );
         return;
     }
 
@@ -86,7 +67,6 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int iconPadX = 4;
     const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
     const bool hasActions = index.data( CustomRoles::HasDecoratorsRole ).toBool();
-    const QList<QAction*> actions = index.data( CustomRoles::DecoratorsRole ).value< QList<QAction*> >();
 
     painter->save();
 
@@ -112,7 +92,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
 
-    const int actionsRectWidth = hasActions ? actions.size() * ACTIONICON_SIZE : 0;
+    const int actionsRectWidth = hasActions ? 30 : 0;
 
     const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
     const int infoRectLeft = isRTL ? actionsRectWidth : iconRight;
@@ -161,44 +141,61 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         capacityBar.drawCapacityBar( painter, capacityRect );
     }
 
-    if( hasActions )
+    painter->restore();
+}
+
+QList<QWidget*>
+CollectionTreeItemDelegate::createItemWidgets() const
+{
+    QList<QEvent::Type> blockedEvents;
+    blockedEvents << QEvent::MouseButtonPress
+                  << QEvent::MouseButtonRelease
+                  << QEvent::MouseButtonDblClick;
+
+    QToolButton *button = new QToolButton();
+    setBlockedEventTypes( button, blockedEvents );
+
+    return QList<QWidget*>() << button;
+}
+
+void
+CollectionTreeItemDelegate::updateItemWidgets( const QList<QWidget*> widgets, const QStyleOptionViewItem &option, const QPersistentModelIndex &index ) const
+{
+    const QList<QAction*> actions = index.data( CustomRoles::DecoratorsRole ).value< QList<QAction*> >();
+
+    if( index.parent().isValid() || actions.isEmpty() )
     {
-        QRect actionsRect;
-        actionsRect.setLeft( isRTL ? 0 : titleRect.right() );
-        actionsRect.setTop( titleRect.top() );
-        actionsRect.setWidth( actionsRectWidth );
-        actionsRect.setHeight( ACTIONICON_SIZE );
-
-        QPoint actionTopLeft = actionsRect.topLeft();
-        const QSize iconSize = QSize( ACTIONICON_SIZE, ACTIONICON_SIZE );
-
-        foreach( QAction *action, actions )
+        foreach( QWidget *w, widgets )
         {
-            QIcon icon = action->icon();
-            QRect iconRect( actionTopLeft, iconSize );
-
-            // Cache the position of the icon QRect and it's action.
-            // TODO: This could be ineffcient, as we are caching every time we draw
-            s_hitTargets.insert( ComparableRect( iconRect ), action );
-
-            const bool isOver = isHover && iconRect.contains( cursorPos );
-
-            icon.paint( painter, iconRect, Qt::AlignCenter, isOver ? QIcon::Active : QIcon::Normal, isOver ? QIcon::On : QIcon::Off );
-            if( isRTL )
-                actionTopLeft.rx() -= ACTIONICON_SIZE;
-            else
-                actionTopLeft.rx() += ACTIONICON_SIZE;
+            if( w )
+                w->hide();
         }
+        return;
     }
 
-    painter->restore();
+    QToolButton *toolButton = static_cast<QToolButton*>( widgets[0] );
+    if( !toolButton->menu() )
+    {
+        QMenu *menu = new QMenu( toolButton );
+        toolButton->setDefaultAction( actions.first() );
+        foreach( QAction *action, actions )
+            menu->addAction( action );
+        
+        toolButton->setMenu( menu );
+    }
+
+    toolButton->setPopupMode( QToolButton::MenuButtonPopup );
+    toolButton->setAutoFillBackground( false );
+    toolButton->setAutoRaise( true );
+    toolButton->move( option.rect.width() - toolButton->size().width() - 10,
+                      sizeHint( option, index ).height() / 2 - toolButton->size().height() / 2 );
 }
 
 QSize
 CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     if( index.parent().isValid() )
-        return QStyledItemDelegate::sizeHint( option, index );
+        return m_styledDelegate.sizeHint( option, index );
 
     int width = m_view->viewport()->size().width() - 4;
     int height;
@@ -213,20 +210,5 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
            + 20;
 
     return QSize( width, height );
-}
-
-// EPIC HACK. So we can calculate hit targets for mouse clicks on CollectionActions
-QAction*
-CollectionTreeItemDelegate::actionUnderPoint( const QPoint pos )
-{
-    QList<ComparableRect> keys = s_hitTargets.keys();
-
-    foreach( ComparableRect key, keys )
-    {
-        if( key.contains( pos ) )
-            return s_hitTargets.value( key );
-    }
-
-    return 0;
 }
 
