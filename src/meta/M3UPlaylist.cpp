@@ -142,11 +142,20 @@ M3UPlaylist::loadM3u( QTextStream &stream )
 bool
 M3UPlaylist::save( const KUrl &location, bool relative )
 {
-    QFile file( location.path() );
+    KUrl savePath = location;
+    //if the location is a directory append the name of this playlist.
+    if( savePath.fileName().isNull() )
+        savePath.setFileName( name() );
+
+    QFile file( savePath.path() );
+
+    if( file.exists() )
+        //TODO: prompt for overwrite.
+        return false;
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        debug() << "Unable to write to playlist!";
+        debug() << "Unable to write to playlist " << savePath.path();
         return false;
     }
 
@@ -203,8 +212,7 @@ M3UPlaylist::isWritable()
 void
 M3UPlaylist::setName( const QString &name )
 {
-    m_name = name;
-    //TODO: notify observers
+    m_url.setFileName( name );
 }
 
 } //namespace Meta

@@ -219,11 +219,16 @@ PLSPlaylist::save( const KUrl &location, bool relative )
 {
     Q_UNUSED( relative );
 
-    QFile file( location.path() );
+    KUrl savePath = location;
+    //if the location is a directory append the name of this playlist.
+    if( savePath.fileName().isNull() )
+        savePath.setFileName( name() );
+
+    QFile file( savePath.path() );
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        debug() << "Unable to open location!";
+        debug() << "Unable to write to playlist " << savePath.path();
         return false;
     }
 
@@ -273,8 +278,7 @@ PLSPlaylist::isWritable()
 void
 PLSPlaylist::setName( const QString &name )
 {
-    Q_UNUSED( name );
-    //TODO: notify observers
+    m_url.setFileName( name );
 }
 
 }
