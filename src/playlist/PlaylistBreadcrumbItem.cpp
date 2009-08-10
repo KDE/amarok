@@ -31,7 +31,9 @@ namespace Playlist
 BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     : KHBox( parent )
 {
-    //Let's set up the "siblings" button first...
+     m_name = level->name();
+
+     //Let's set up the "siblings" button first...
     m_menuButton = new BreadcrumbItemMenuButton( this );
     QMenu *menu = new QMenu( this );
     QStringList usedBreadcrumbLevels = qobject_cast< SortWidget * >( parent )->levels();
@@ -50,7 +52,10 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     connect( menu, SIGNAL( triggered( QAction* ) ), this, SLOT( siblingTriggered( QAction* ) ) );
 
     //And then the main breadcrumb button...
-    m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->name(), this );
+    bool noArrow = false;
+    if( m_name == "random" )
+        noArrow = true;
+    m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->prettyName(), noArrow, this );
 
     connect( m_mainButton, SIGNAL( clicked() ), this, SIGNAL( clicked() ) );
     connect( m_mainButton, SIGNAL( arrowToggled( Qt::SortOrder ) ), this, SIGNAL( orderInverted() ) );
@@ -60,7 +65,6 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
 
     updateSizePolicy();
 
-    m_name = level->name();
 }
 
 BreadcrumbItem::~BreadcrumbItem()
@@ -108,6 +112,9 @@ BreadcrumbAddMenuButton::BreadcrumbAddMenuButton( QWidget *parent )
         //FIXME: this menu should have the same margins as other Playlist::Breadcrumb and
         //       BrowserBreadcrumb menus.
     }
+    QAction *action = m_menu->addAction( KIcon( "media-playlist-shuffle" ), QString( i18n( "Random" ) ) );
+    action->setData( "random" );
+
     connect( m_menu, SIGNAL( triggered( QAction* ) ), this, SLOT( siblingTriggered( QAction* ) ) );
 
     setMenu( m_menu );
@@ -127,7 +134,9 @@ BreadcrumbAddMenuButton::updateMenu( const QStringList &usedBreadcrumbLevels )
 {
     foreach( QAction *action, m_menu->actions() )
     {
-        if( usedBreadcrumbLevels.contains( action->data().toString() ) )
+        if( usedBreadcrumbLevels.contains( "random" ) )
+            action->setEnabled( false );
+        else if( usedBreadcrumbLevels.contains( action->data().toString() ) )
             action->setEnabled( false );
         else
             action->setEnabled( true );

@@ -111,9 +111,10 @@ SortWidget::updateSortScheme()
     SortScheme scheme = SortScheme();
     for( int i = 0; i < m_ribbon->count(); ++i )    //could be faster if done with iterator
     {
-        scheme.addLevel( SortLevel( internalColumnNames.indexOf(
-                qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() ),
-                qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder() ) );
+        QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
+        int category = ( name == "random" ) ? -1 : internalColumnNames.indexOf( name );
+        Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
+        scheme.addLevel( SortLevel( category, sortOrder ) );
     }
     SortProxy::instance()->updateSortMap( scheme );
 }

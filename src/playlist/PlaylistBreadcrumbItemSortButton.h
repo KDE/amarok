@@ -30,7 +30,7 @@ class BreadcrumbItemSortButton : public BreadcrumbItemButton
 
 public:
     BreadcrumbItemSortButton( QWidget *parent );
-    BreadcrumbItemSortButton( const QIcon &icon, const QString &text, QWidget *parent );
+    BreadcrumbItemSortButton( const QIcon &icon, const QString &text, bool noArrows, QWidget *parent );
     virtual ~BreadcrumbItemSortButton();
     virtual QSize sizeHint() const;
     Qt::SortOrder orderState() const;
@@ -46,6 +46,7 @@ protected:
 private:
     void init();
     Qt::SortOrder m_order;
+    bool m_noArrows;
     QRect m_arrowRect;
     QPoint m_pressedPos;
     bool m_arrowPressed;
