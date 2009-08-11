@@ -595,7 +595,10 @@ PlaylistBrowserNS::UserModel::slotLoad()
     foreach( Meta::TrackPtr track, selectedTracks() )
             tracks << track;
     foreach( Meta::PlaylistPtr playlist, selectedPlaylists() )
+    {
+      if( !playlist.isNull() )
         tracks << playlist->tracks();
+    }
     if( !tracks.isEmpty() )
         The::playlistController()->insertOptioned( tracks, Playlist::LoadAndPlay );
 }

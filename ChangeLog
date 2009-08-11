@@ -76,6 +76,7 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Don't crash when trying to load an empty playlist folder. (BR 202643)
     * Make using the mouse wheel over the progress slider correctly navigate
       in the currently playing track. (BR 195913)
     * Correctly strip all formatting from text pasted or dragged to the 
