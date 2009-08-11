@@ -14,54 +14,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ConnectionAssistant.h"
+#ifndef UMS_DEVICE_INFO_H
+#define UMS_DEVICE_INFO_H
 
-#include "MediaDeviceMonitor.h"
+#include "MediaDeviceInfo.h"
 
-ConnectionAssistant::ConnectionAssistant( bool wait )
-    : QObject()
-    , m_wait( wait )
+class UmsDeviceInfo : public MediaDeviceInfo
 {
-}
+    Q_OBJECT
+    public:
+        UmsDeviceInfo( QString mountpoint, QString udi );
+        ~UmsDeviceInfo();
 
-ConnectionAssistant::~ConnectionAssistant()
-{
-}
+        QString mountpoint();
 
-bool
-ConnectionAssistant::identify(const QString& udi)
-{
-    Q_UNUSED( udi );
-    return false;
-}
+    private:
+        QString m_mountpoint;
+};
 
-MediaDeviceInfo*
-ConnectionAssistant::deviceInfo( const QString& udi )
-{
-    Q_UNUSED( udi );
-    MediaDeviceInfo *info = 0;
-    return info;
-}
-
-void
-ConnectionAssistant::tellIdentified( const QString &udi )
-{
-    DEBUG_BLOCK
-    emit identified( deviceInfo( udi ) );
-}
-
-void
-ConnectionAssistant::tellDisconnected( const QString& udi )
-{
-    DEBUG_BLOCK
-    emit disconnected( udi );
-}
-
-bool
-ConnectionAssistant::wait()
-{
-    return m_wait;
-}
-
-
-#include "ConnectionAssistant.moc"
+#endif

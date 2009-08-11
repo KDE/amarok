@@ -34,10 +34,15 @@
 #include <solid/portablemediaplayer.h>
 #include <solid/opticaldrive.h>
 
+#include <QTimer>
+
 MediaDeviceMonitor* MediaDeviceMonitor::s_instance = 0;
 
 MediaDeviceMonitor::MediaDeviceMonitor() : QObject()
+ , m_udiAssistants()
  , m_assistants()
+ , m_waitingassistants()
+ , m_nextassistant( 0 )
  // NOTE: commented out, needs porting to new device framework
  //, m_currentCdId( QString() )
 {
@@ -79,26 +84,40 @@ void MediaDeviceMonitor::checkDevice(const QString& udi)
 {
     DEBUG_BLOCK
 
+    // First let the higher priority devices check
+
     foreach( ConnectionAssistant* assistant, m_assistants )
     {
-        // Ignore already identified devices
-        if( m_udiAssistants.keys().contains( udi ) )
-        {
-            debug() << "Device already identified with udi: " << udi;
-            return;
-        }
-
-        if( assistant->identify( udi ) )
-        {
-            debug() << "Device identified with udi: " << udi;
-            // keep track of which assistant deals with which device
-            m_udiAssistants.insert( udi, assistant );
-            // inform factory of new device identified
-            assistant->tellIdentified( udi );
-            return;
-        }
+        checkOneDevice( assistant, udi );
     }
 
+    // Then let the assistants that can wait check
+
+    foreach( ConnectionAssistant* assistant, m_waitingassistants )
+    {
+        checkOneDevice( assistant, udi );
+    }
+
+}
+
+void MediaDeviceMonitor::checkOneDevice( ConnectionAssistant* assistant, const QString& udi )
+{
+    // Ignore already identified devices
+    if( m_udiAssistants.keys().contains( udi ) )
+    {
+        debug() << "Device already identified with udi: " << udi;
+        return;
+    }
+
+    if( assistant->identify( udi ) )
+    {
+        debug() << "Device identified with udi: " << udi;
+        // keep track of which assistant deals with which device
+        m_udiAssistants.insert( udi, assistant );
+        // inform factory of new device identified
+        assistant->tellIdentified( udi );
+        return;
+    }
 }
 
 void MediaDeviceMonitor::checkDevicesFor( ConnectionAssistant* assistant )
@@ -109,17 +128,7 @@ void MediaDeviceMonitor::checkDevicesFor( ConnectionAssistant* assistant )
 
     foreach( const QString &udi, udiList )
     {
-        // Ignore already identified devices
-        if( m_udiAssistants.keys().contains( udi ) )
-            continue;
-
-        if( assistant->identify( udi ) )
-        {
-            // keep track of which assistant deals with which device
-            m_udiAssistants.insert( udi, assistant );
-            // inform factory of new device identified
-            assistant->tellIdentified( udi );
-        }
+        checkOneDevice( assistant, udi );
     }
 
 }
@@ -129,16 +138,30 @@ MediaDeviceMonitor::registerDeviceType( ConnectionAssistant* assistant )
 {
     DEBUG_BLOCK
 
-    // keep track of this type of device from now on
-    m_assistants << assistant;
+    // If the device wants to wait and give other device types
+    // a chance to recognize devices, put it in a queue for
+    // later device checking
 
-    // start initial check for devices of this type
-    checkDevicesFor( assistant );
+    if ( assistant->wait() )
+    {
+        // keep track of this type of device from now on
+        m_waitingassistants << assistant;
+
+        QTimer::singleShot( 1000, this, SLOT( slotDequeueWaitingAssistant() ) );
+    }
+    else
+    {
+        // keep track of this type of device from now on
+        m_assistants << assistant;
+
+        // start initial check for devices of this type
+        checkDevicesFor( assistant );
+    }
 
 }
 
 void
-MediaDeviceMonitor::deviceAdded(  const QString &udi )
+MediaDeviceMonitor::deviceAdded( const QString &udi )
 {
     DEBUG_BLOCK
 
@@ -151,10 +174,10 @@ MediaDeviceMonitor::slotDeviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
 
-    if ( m_udiAssistants[ udi ] )
+    if ( m_udiAssistants.contains( udi ) )
     {
 
-        m_udiAssistants[ udi ]->tellDisconnected( udi );
+        m_udiAssistants.value( udi )->tellDisconnected( udi );
 
         m_udiAssistants.remove( udi );
     }
@@ -175,6 +198,12 @@ MediaDeviceMonitor::slotAccessibilityChanged( bool accessible, const QString & u
         deviceRemoved( udi );
     else
         deviceAdded( udi );
+}
+
+void
+MediaDeviceMonitor::slotDequeueWaitingAssistant()
+{
+    checkDevicesFor( m_waitingassistants.at( m_nextassistant++ ) );
 }
 
 /// TODO: all stuff below here is cd-related, needs porting to new framework

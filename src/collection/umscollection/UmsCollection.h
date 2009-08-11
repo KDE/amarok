@@ -14,54 +14,52 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ConnectionAssistant.h"
+#ifndef UMSCOLLECTION_H
+#define UMSCOLLECTION_H
 
-#include "MediaDeviceMonitor.h"
+#include "UmsHandler.h"
 
-ConnectionAssistant::ConnectionAssistant( bool wait )
-    : QObject()
-    , m_wait( wait )
+#include "MediaDeviceCollection.h"
+#include "Debug.h"
+
+#include <KIcon>
+
+#include <QtGlobal>
+
+class UmsCollection;
+class MediaDeviceInfo;
+
+class UmsCollectionFactory : public MediaDeviceCollectionFactory<UmsCollection>
 {
-}
+    Q_OBJECT
 
-ConnectionAssistant::~ConnectionAssistant()
+    public:
+        UmsCollectionFactory();
+        virtual ~UmsCollectionFactory();
+};
+
+class UmsCollection : public MediaDeviceCollection
 {
-}
+    Q_OBJECT
 
-bool
-ConnectionAssistant::identify(const QString& udi)
-{
-    Q_UNUSED( udi );
-    return false;
-}
+    public:
+        // inherited methods
 
-MediaDeviceInfo*
-ConnectionAssistant::deviceInfo( const QString& udi )
-{
-    Q_UNUSED( udi );
-    MediaDeviceInfo *info = 0;
-    return info;
-}
+        UmsCollection( MediaDeviceInfo* info );
+        virtual ~UmsCollection();
 
-void
-ConnectionAssistant::tellIdentified( const QString &udi )
-{
-    DEBUG_BLOCK
-    emit identified( deviceInfo( udi ) );
-}
+        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-void
-ConnectionAssistant::tellDisconnected( const QString& udi )
-{
-    DEBUG_BLOCK
-    emit disconnected( udi );
-}
+        virtual QString collectionId() const;
+        virtual QString prettyName() const;
+        virtual KIcon icon() const { return KIcon("drive-removable-media-usb-pendrive"); };
 
-bool
-ConnectionAssistant::wait()
-{
-    return m_wait;
-}
+        // HACK: this function will be deleted later
+        //void writeDatabase() { m_handler->writeDatabase(); }
 
+    private:
+        QString m_mountPoint;
+};
 
-#include "ConnectionAssistant.moc"
+#endif

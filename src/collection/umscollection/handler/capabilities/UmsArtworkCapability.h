@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,54 +14,35 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ConnectionAssistant.h"
+#ifndef IPODHANDLER_ARTWORK_CAPABILITY_H
+#define IPODHANDLER_ARTWORK_CAPABILITY_H
 
-#include "MediaDeviceMonitor.h"
+#include "ArtworkCapability.h"
+#include "../../MediaDeviceMeta.h"
 
-ConnectionAssistant::ConnectionAssistant( bool wait )
-    : QObject()
-    , m_wait( wait )
-{
+namespace Meta {
+    class IpodHandler;
 }
 
-ConnectionAssistant::~ConnectionAssistant()
+namespace Handler
 {
+    class IpodArtworkCapability : public ArtworkCapability
+    {
+        Q_OBJECT
+
+        public:
+            IpodArtworkCapability( Meta::IpodHandler *handler );
+            virtual ~IpodArtworkCapability();
+
+            virtual QPixmap getCover( const Meta::MediaDeviceTrackPtr &track );
+
+            virtual bool canUpdateCover() const;
+
+            static Type capabilityInterfaceType() { return Handler::Capability::Artwork; }
+
+        private:
+            Meta::IpodHandler *m_handler;
+    };
 }
 
-bool
-ConnectionAssistant::identify(const QString& udi)
-{
-    Q_UNUSED( udi );
-    return false;
-}
-
-MediaDeviceInfo*
-ConnectionAssistant::deviceInfo( const QString& udi )
-{
-    Q_UNUSED( udi );
-    MediaDeviceInfo *info = 0;
-    return info;
-}
-
-void
-ConnectionAssistant::tellIdentified( const QString &udi )
-{
-    DEBUG_BLOCK
-    emit identified( deviceInfo( udi ) );
-}
-
-void
-ConnectionAssistant::tellDisconnected( const QString& udi )
-{
-    DEBUG_BLOCK
-    emit disconnected( udi );
-}
-
-bool
-ConnectionAssistant::wait()
-{
-    return m_wait;
-}
-
-
-#include "ConnectionAssistant.moc"
+#endif

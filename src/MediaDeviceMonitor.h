@@ -104,6 +104,9 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     checkDevice checks if @param udi is a known device
     and if so attempts to connect it
 
+    checkOneDevice runs an identify check using the given
+    assistant and udi
+
     checkDevicesFor checks if the device type described
     by @param assistant matches any of the udi's in the
     MediaDeviceCache, and if so, attempts to connect to
@@ -112,6 +115,7 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
     */
 
     void checkDevice( const QString &udi );
+    void checkOneDevice( ConnectionAssistant* assistant, const QString& udi );
     void checkDevicesFor( ConnectionAssistant* assistant );
 
 
@@ -125,6 +129,8 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
         void deviceAdded( const QString &udi );
         void slotDeviceRemoved( const QString &udi );
         void slotAccessibilityChanged( bool accessible, const QString & udi );
+	
+	void slotDequeueWaitingAssistant();
 
 
     private:
@@ -135,6 +141,12 @@ class AMAROK_EXPORT MediaDeviceMonitor : public QObject
         QHash<QString,ConnectionAssistant*> m_udiAssistants;
         // holds all registered assistants
         QList<ConnectionAssistant*> m_assistants;
+	// holds all waiting assistants
+        QList<ConnectionAssistant*> m_waitingassistants;
+	// holds index of next waiting assistant to check
+	// devices with, during initialization of device
+	// factories
+	int m_nextassistant;
 
 
 };

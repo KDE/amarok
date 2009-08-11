@@ -40,6 +40,7 @@ class MEDIADEVICECOLLECTION_EXPORT ConnectionAssistant : public QObject
     Q_OBJECT
     
 public:
+
     virtual ~ConnectionAssistant();
 
     /**
@@ -59,9 +60,21 @@ public:
 
     virtual MediaDeviceInfo* deviceInfo( const QString& udi );
 
+    bool wait();
+
     // Simply emit identified( info )
     virtual void tellIdentified( const QString &udi );
     virtual void tellDisconnected( const QString &udi );
+
+protected:
+
+    /*
+     * Constructor
+     * @param wait whether or not to wait to identify this device,
+     * to give other types of devices a chance to claim this device
+     * type during autodetection
+     */
+    ConnectionAssistant( bool wait = false );
 
 signals:
 
@@ -82,6 +95,9 @@ signals:
      */
 
      void disconnected( const QString &udi );
+
+private:
+     bool m_wait;
 
 };
 
