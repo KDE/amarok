@@ -200,7 +200,9 @@ void MagnatuneInfoParser::frontPageDownloadComplete(KJob * downLoadJob)
     QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
 
     //insert menu
-    infoString.replace( "<!--MENU_TOKEN-->", generateMemberMenu() );
+    MagnatuneConfig config;
+    if( config.isMember() )
+        infoString.replace( "<!--MENU_TOKEN-->", generateMemberMenu() );
     
     emit ( info( infoString ) );
 }
