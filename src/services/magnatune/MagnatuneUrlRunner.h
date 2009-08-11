@@ -42,6 +42,7 @@ signals:
     void showFavorites();
     void showHome();
     void buyOrDownload( const QString &sku );
+    void removeFromFavorites( const QString &sku );
 };
 
 #endif

@@ -95,8 +95,6 @@ public:
     virtual QString messages();
     virtual QString sendMessage( const QString &message );
 
-    void addToFavorites( Meta::MagnatuneAlbum * album );
-
 public slots:
     /**
     * Slot for catching cancelled list downloads
@@ -109,6 +107,9 @@ public slots:
 
     void showFavoritesPage();
     void showHomePage();
+
+    void addToFavorites( const QString &sku );
+    void removeFromFavorites( const QString &sku );
     
 private slots:
     /**
@@ -171,7 +172,7 @@ private slots:
     void moodyTracksReady( Meta::TrackList tracks );
 
     void timestampDownloadComplete( KJob * job );
-    void addToFavoritesResult( KJob* addToFavoritesJob );
+    void favoritesResult( KJob* addToFavoritesJob );
 
 private:
     /**

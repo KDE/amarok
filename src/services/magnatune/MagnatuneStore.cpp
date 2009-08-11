@@ -454,6 +454,7 @@ void MagnatuneStore::polish()
         connect( runner, SIGNAL( showFavorites() ), this, SLOT( showFavoritesPage() ) );
         connect( runner, SIGNAL( showHome() ), this, SLOT( showHomePage() ) );
         connect( runner, SIGNAL( buyOrDownload( const QString & ) ), this, SLOT( purchase( const QString & ) ) );
+        connect( runner, SIGNAL( removeFromFavorites( const QString & ) ), this, SLOT( removeFromFavorites( const QString & ) ) );
         
         The::amarokUrlHandler()->registerRunner( runner, "service_magnatune" );
     }
@@ -675,7 +676,7 @@ void MagnatuneStore::purchase( const QString &sku )
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 }
 
-void MagnatuneStore::addToFavorites( Meta::MagnatuneAlbum * album )
+void MagnatuneStore::addToFavorites( const QString &sku )
 {
     DEBUG_BLOCK
     MagnatuneConfig config;
@@ -684,15 +685,32 @@ void MagnatuneStore::addToFavorites( Meta::MagnatuneAlbum * album )
         return;
 
     QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=add_simple&sku=%4";
-    url = url.arg( config.username(), config.password(), config.membershipType(), album->albumCode() );
+    url = url.arg( config.username(), config.password(), config.membershipType(), sku );
 
     debug() << "favorites url: " << url;
 
     m_favoritesJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
-    connect( m_favoritesJob, SIGNAL( result( KJob * ) ), SLOT( addToFavoritesResult( KJob *  ) ) );
+    connect( m_favoritesJob, SIGNAL( result( KJob * ) ), SLOT( favoritesResult( KJob *  ) ) );
 }
 
-void MagnatuneStore::addToFavoritesResult( KJob* addToFavoritesJob )
+void MagnatuneStore::removeFromFavorites( const QString &sku )
+{
+    DEBUG_BLOCK
+    MagnatuneConfig config;
+
+    if( !config.isMember() )
+        return;
+
+    QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=remove_simple&sku=%4";
+    url = url.arg( config.username(), config.password(), config.membershipType(), sku );
+
+    debug() << "favorites url: " << url;
+
+    m_favoritesJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    connect( m_favoritesJob, SIGNAL( result( KJob * ) ), SLOT( favoritesResult( KJob *  ) ) );
+}
+
+void MagnatuneStore::favoritesResult( KJob* addToFavoritesJob )
 {
     if( addToFavoritesJob != m_favoritesJob )
         return;

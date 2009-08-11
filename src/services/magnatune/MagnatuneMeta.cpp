@@ -471,7 +471,7 @@ void Meta::MagnatuneAlbum::addToFavorites()
 {
     DEBUG_BLOCK
     if ( store() )
-        store()->addToFavorites( this );
+        store()->addToFavorites( albumCode() );
 }
 
 

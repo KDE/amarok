@@ -207,8 +207,8 @@ void MagnatuneInfoParser::frontPageDownloadComplete(KJob * downLoadJob)
 
 QString MagnatuneInfoParser::generateMemberMenu()
 {
-    QString homeUrl = "amarok://service_magnatune/show_home";
-    QString favoritesUrl = "amarok://service_magnatune/show_favorites";
+    QString homeUrl = "amarok://service_magnatune?command=show_home";
+    QString favoritesUrl = "amarok://service_magnatune?command=show_favorites";
 
     QString menu = "<div align='right'>"
                        "[<a href='" + homeUrl + "' >Home</a>]&nbsp;"

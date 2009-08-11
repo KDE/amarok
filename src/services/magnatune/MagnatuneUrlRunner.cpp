@@ -41,7 +41,7 @@ bool MagnatuneUrlRunner::run( AmarokUrl url )
     DEBUG_BLOCK
     if ( !url.isNull() )
     {
-        QString command = url.path();
+        QString command = url.args().value( "command" );
 
         if( command == "show_favorites" )
         {
@@ -62,6 +62,15 @@ bool MagnatuneUrlRunner::run( AmarokUrl url )
             {
                 QString sku = url.args().value( "sku" );
                 emit( buyOrDownload( sku ) );
+            }
+        }
+        else if ( command == "remove_favorite" )
+        {
+            if ( url.args().keys().contains( "sku" ) )
+            {
+                QString sku = url.args().value( "sku" );
+                debug() << "remove from favorites sku: " << sku;
+                emit( removeFromFavorites( sku ) );
             }
         }
 
