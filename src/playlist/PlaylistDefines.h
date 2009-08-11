@@ -157,6 +157,17 @@ static const QStringList sortableCategories = ( QStringList()
         << "Type"
         << "Year" );
 
+static const QStringList groupableCategories = ( QStringList()
+        << "Album"
+        << "Album artist"
+        << "Artist"
+        << "Composer"
+        << "Genre"
+        << "Rating"
+        << "Source"
+        << "Title"
+        << "Year" );
+
 static const QStringList iconNames = ( QStringList()
         << "filename-space-amarok"
         << "filename-album-amarok"
