@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (r) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -73,7 +74,8 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     m_playlistView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ),
+             SLOT( newPalette( const QPalette & ) ) );
 
     m_playlistView->setAlternatingRowColors( true );
 
@@ -107,7 +109,8 @@ PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
     connect( this, SIGNAL( closeClicked() ), this, SLOT( delayedDestruct() ) );
     connect( this, SIGNAL( hidden() ), this, SLOT( delayedDestruct() ) );
     connect( this, SIGNAL( cancelClicked() ), this, SLOT( delayedDestruct() ) );
-    connect( m_streamUrl, SIGNAL( textChanged(const QString &) ), this, SLOT( slotTextChanged( const QString& ) ) );
+    connect( m_streamUrl, SIGNAL( textChanged(const QString &) ), this,
+             SLOT( slotTextChanged( const QString& ) ) );
     enableButtonOk( false );
     show();
 }
@@ -136,11 +139,4 @@ void PlaylistBrowserNS::StreamEditor::slotTextChanged( const QString & text )
     enableButtonOk( !text.isEmpty() );
 }
 
-
-
-
-
-
 #include "PlaylistCategory.moc"
-
-
