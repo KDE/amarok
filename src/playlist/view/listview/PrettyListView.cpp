@@ -160,9 +160,12 @@ Playlist::PrettyListView::removeSelection()
                 firstRow = i;
         }
 
-        // Select the track immediately above the cleared ones as this is the one that has internal focus.
+        //Select the track occupied by the first deleted track. Also move the current item to here as
+        //button presses up or down wil otherwise not behave as expected.
         firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
-        selectionModel()->select( model()->index(  firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
+        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() ); 
+        setCurrentIndex( newSelectionIndex );
+        selectionModel()->select( newSelectionIndex, QItemSelectionModel::Select );
     }
 }
 

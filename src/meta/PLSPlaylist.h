@@ -42,23 +42,23 @@ class PLSPlaylist : public PlaylistFile
         ~PLSPlaylist();
 
         /* Playlist virtual functions */
-        virtual QString name() const { return prettyName(); };
-        virtual QString prettyName() const { return m_url.fileName(); };
+        virtual QString name() const { return prettyName(); }
+        virtual QString prettyName() const { return m_url.fileName(); }
 
         /** returns all tracks in this playlist */
-        TrackList tracks() { return m_tracks; };
+        TrackList tracks() { return m_tracks; }
 
-        bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; };
+        bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
-        Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; };
+        Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
-        KUrl retrievableUrl() { return m_url; };
+        KUrl retrievableUrl() { return m_url; }
 
         /* PlaylistFile methods */
         bool isWritable();
         void setName( const QString &name );
         bool save( const KUrl &location, bool relative );
-        bool load( QTextStream &stream ) { return loadPls( stream ); };
+        bool load( QTextStream &stream ) { return loadPls( stream ); }
 
     private:
         bool loadPls( QTextStream &stream );
@@ -66,7 +66,6 @@ class PLSPlaylist : public PlaylistFile
 
         Meta::TrackList m_tracks;
         KUrl m_url;
-
 };
 
 }

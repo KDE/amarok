@@ -118,8 +118,16 @@ XSPFPlaylist::save( const KUrl &location, bool relative )
     DEBUG_BLOCK
     Q_UNUSED( relative );
 
-    QFile::remove( location.path() );
-    QFile file( location.path() );
+    KUrl savePath = location;
+    //if the location is a directory append the name of this playlist.
+    if( savePath.fileName().isNull() )
+        savePath.setFileName( name() );
+
+    QFile file( savePath.path() );
+
+    if( file.exists() )
+        //TODO: prompt for overwrite.
+        return false;
 
     if( !file.open( QIODevice::WriteOnly ) )
     {

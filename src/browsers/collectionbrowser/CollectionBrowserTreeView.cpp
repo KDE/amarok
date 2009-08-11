@@ -39,45 +39,9 @@ CollectionBrowserTreeView::mouseMoveEvent( QMouseEvent *event )
     CollectionTreeView::mouseMoveEvent( event );
 
     const QModelIndex index = indexAt( event->pos() );
-
     if( index.parent().isValid() ) // not a root element
         return;
 
     // Make sure we repaint the item for the collection action buttons
     update( index );
-}
-
-void
-CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-
-    if( index.parent().isValid() ) // not a root element, don't bother checking actions
-    {
-        CollectionTreeView::mousePressEvent( event );
-        return;
-    }
-
-    // Only forward the press event if we aren't on an action (which gets triggered on a release)
-    QAction *action = CollectionTreeItemDelegate::actionUnderPoint( event->pos() );
-    if( !action )
-        CollectionTreeView::mousePressEvent( event );
-}
-
-void
-CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-
-    if( index.parent().isValid() ) // not a root element, don't bother checking actions
-    {
-        CollectionTreeView::mouseReleaseEvent( event );
-        return;
-    }
-
-    QAction *action = CollectionTreeItemDelegate::actionUnderPoint( event->pos() );
-    if( action )
-        action->trigger();
-    else
-        CollectionTreeView::mouseReleaseEvent( event );
 }

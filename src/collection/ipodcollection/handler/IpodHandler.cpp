@@ -46,7 +46,6 @@ extern "C" {
 #include "kjob.h"
 #include <KMessageBox>
 #include <KPasswordDialog>
-#include <KStandardDirs>
 #include <KUrl>
 #include <threadweaver/ThreadWeaver.h>
 
@@ -78,7 +77,6 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     , m_jobcounter( 0 )
     , m_autoConnect( false )
     , m_mountPoint( mountPoint )
-    , m_wasMounted( !mountPoint.isEmpty() )
     , m_name()
     , m_isShuffle( false )
     , m_isMobile( false )
@@ -112,58 +110,18 @@ IpodHandler::~IpodHandler()
     debug() << "Cleaning up Ipod Database";
     if ( m_itdb )
         itdb_free( m_itdb );
-
-    if ( !m_wasMounted && !m_mountPoint.isEmpty() )
-    {
-        int error = QProcess::execute("fusermount -u " + m_mountPoint);
-        debug() << "unmounting" << (error ? "failed" : "worked");
-    }
 }
 
 void
 IpodHandler::init()
 {
-    m_wasMounted = true;
-
     if( m_mountPoint.isEmpty() )
     {
-        debug() << "Error: empty mountpoint, probably an unmounted iPod/iPhone, trying to mount";
-        m_wasMounted = false;
-
-        Solid::Device device = Solid::Device(m_memColl->udi());
-        /* going until we reach a vendor, e.g. Apple */
-        while ( device.isValid() && device.vendor().isEmpty() )
-        {
-            device = Solid::Device( device.parentUdi() );
-        }
-        m_isIPhone = device.product().startsWith("iPhone");
-
-        m_mountPoint = KStandardDirs::locateLocal( "tmp", "amarok/" );
-        QString udi = m_memColl->udi().replace(QChar('/'), QChar('-'));
-        while( udi.startsWith('-') )
-            udi = udi.mid(1);
-        m_mountPoint += udi;
-
-        QDir mp(m_mountPoint);
-        if(!mp.exists())
-        {
-            mp.mkpath(m_mountPoint);
-            debug() << "created " << m_mountPoint;
-        }
-
-        QString command = QString("mount.fuse.ifuse %1 %2").arg(udi, m_mountPoint);
-        debug() << "mountpoint: " << m_mountPoint;
-        debug() << "command: " << command;
-        int error = QProcess::execute(command);
-
-        debug() << "mounting" << (error ? "failed" : "worked");
-
-        if( error )
-        {
-            m_memColl->slotAttemptConnectionDone( false );
-            return;
-        }
+        debug() << "Error: empty mountpoint, probably an unmounted iPod, aborting";
+        m_memColl->slotAttemptConnectionDone( false );
+        return;
     }
+
 
     GError *err = 0;
     QString initError = i18n( "iPod was not initialized:" );
@@ -356,15 +314,8 @@ IpodHandler::init()
     if (  device.isValid() )
     {
         Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-        if ( storage )
-            m_filepath = storage->filePath();
-        else if ( !m_mountPoint.isEmpty() )
-            m_filepath = m_mountPoint;
-
-        if ( !m_filepath.isEmpty() )
-            m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
-        else
-            m_capacity = 0.0;
+        m_filepath = storage->filePath();
+        m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
     }
     else
     {
@@ -381,7 +332,7 @@ bool
 IpodHandler::isWritable() const
 {
     // TODO: check if read-only
-    return !m_isIPhone;
+    return true;
 }
 
 QString

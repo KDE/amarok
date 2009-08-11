@@ -107,29 +107,35 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPt
 void
 MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack, MediaDeviceTrackPtr destTrack )
 {
+    DEBUG_BLOCK
     setupWriteCapability();
 
     if( !m_wc )
         return;
 
     m_wc->libSetTitle( destTrack, srcTrack->name() );
-    m_wc->libSetAlbum( destTrack, srcTrack->album()->name() );
-    m_wc->libSetArtist( destTrack, srcTrack->artist()->name() );
-    m_wc->libSetComposer( destTrack, srcTrack->composer()->name() );
-    m_wc->libSetGenre( destTrack, srcTrack->genre()->name() );
-    m_wc->libSetYear( destTrack, srcTrack->year()->name() );
-    m_wc->libSetLength( destTrack, srcTrack->length() );
-    m_wc->libSetTrackNumber( destTrack, srcTrack->trackNumber() );
-    m_wc->libSetComment( destTrack, srcTrack->comment() );
-    m_wc->libSetDiscNumber( destTrack, srcTrack->discNumber() );
-    m_wc->libSetBitrate( destTrack, srcTrack->bitrate() );
-    m_wc->libSetSamplerate( destTrack, srcTrack->sampleRate() );
+    if ( srcTrack->album() )
+        m_wc->libSetAlbum( destTrack, srcTrack->album()->name() ); Debug::stamp();
+    if ( srcTrack->artist() )
+        m_wc->libSetArtist( destTrack, srcTrack->artist()->name() ); Debug::stamp();
+    if ( srcTrack->composer() )
+        m_wc->libSetComposer( destTrack, srcTrack->composer()->name() ); Debug::stamp();
+    if ( srcTrack->genre() )
+        m_wc->libSetGenre( destTrack, srcTrack->genre()->name() ); Debug::stamp();
+    if ( srcTrack->year() )
+        m_wc->libSetYear( destTrack, srcTrack->year()->name() ); Debug::stamp();
+    m_wc->libSetLength( destTrack, srcTrack->length() ); Debug::stamp();
+    m_wc->libSetTrackNumber( destTrack, srcTrack->trackNumber() ); Debug::stamp();
+    m_wc->libSetComment( destTrack, srcTrack->comment() ); Debug::stamp();
+    m_wc->libSetDiscNumber( destTrack, srcTrack->discNumber() ); Debug::stamp();
+    m_wc->libSetBitrate( destTrack, srcTrack->bitrate() ); Debug::stamp();
+    m_wc->libSetSamplerate( destTrack, srcTrack->sampleRate() ); Debug::stamp();
     //libSetBpm( destTrack, srcTrack->bpm() );
-    m_wc->libSetFileSize( destTrack, srcTrack->filesize() );
-    m_wc->libSetPlayCount( destTrack, srcTrack->playCount() );
-    m_wc->libSetLastPlayed( destTrack, srcTrack->lastPlayed() );
-    m_wc->libSetRating( destTrack, srcTrack->rating() );
-    m_wc->libSetType( destTrack, srcTrack->type() );
+    m_wc->libSetFileSize( destTrack, srcTrack->filesize() ); Debug::stamp();
+    m_wc->libSetPlayCount( destTrack, srcTrack->playCount() ); Debug::stamp();
+    m_wc->libSetLastPlayed( destTrack, srcTrack->lastPlayed() ); Debug::stamp();
+    m_wc->libSetRating( destTrack, srcTrack->rating() ); Debug::stamp();
+    m_wc->libSetType( destTrack, srcTrack->type() ); Debug::stamp();
     //libSetPlayableUrl( destTrack, srcTrack );
 
     //if( srcTrack->album()->hasImage() )

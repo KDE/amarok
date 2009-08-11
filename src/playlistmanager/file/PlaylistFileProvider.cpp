@@ -24,6 +24,7 @@
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"
+#include "playlist/PlaylistModel.h"
 #include "StatusBar.h"
 
 #include <QString>
@@ -45,13 +46,12 @@ PlaylistFileProvider::PlaylistFileProvider()
     foreach( const QString &key, keys )
     {
         QStringList configEntry = loadedPlaylistsConfig().readXdgListEntry( key );
-        QString name = configEntry[0];
-        KUrl url( configEntry[1] );
+        KUrl url( configEntry[0] );
         Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( url.path() );
         if( playlist.isNull() )
         {
             The::statusBar()->longMessage(
-                    i18n("The playlist file \"%1\" could not be loaded!").arg( name ),
+                    i18n("The playlist file \"%1\" could not be loaded!").arg( url.fileName() ),
                     StatusBar::Error
                 );
             continue;
@@ -59,9 +59,8 @@ PlaylistFileProvider::PlaylistFileProvider()
 
         if( playlist->isWritable() )
         {
-            playlist->setName( name );
-            if( configEntry.length() >= 3 )
-                playlist->setGroups( configEntry[2].split( ",",  QString::SkipEmptyParts ) );
+            if( configEntry.length() >= 2 )
+                playlist->setGroups( configEntry[1].split( ",",  QString::SkipEmptyParts ) );
         }
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
@@ -77,16 +76,15 @@ PlaylistFileProvider::~PlaylistFileProvider()
     {
         QStringList configEntry;
         KUrl url = playlist->retrievableUrl();
-        debug() << "storing: " << playlist->name() << " : " << url.url();
+        debug() << "storing: " << url.url();
 
-        configEntry << playlist->name();
         configEntry << url.url();
         configEntry << playlist->groups();
 
         loadedPlaylistsConfig().writeXdgListEntry(
                         QString("Playlist %1").arg( ++i ), configEntry );
     }
-    Amarok::config( "Loaded Playlist Files" ).sync();
+    loadedPlaylistsConfig().sync();
 }
 
 QString
@@ -98,20 +96,39 @@ PlaylistFileProvider::prettyName() const
 Meta::PlaylistList
 PlaylistFileProvider::playlists()
 {
-    DEBUG_BLOCK
     return m_playlists;
 }
+
+QList<QAction *>
+PlaylistFileProvider::playlistActions( Meta::PlaylistPtr playlist )
+{
+    Q_UNUSED( playlist );
+    QList<QAction *> actions;
+
+    return actions;
+}
+
+QList<QAction *>
+PlaylistFileProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
+{
+    Q_UNUSED( playlist );
+    Q_UNUSED( trackIndex );
+    QList<QAction *> actions;
+
+    return actions;
+}
+
 
 Meta::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks )
 {
-    DEBUG_BLOCK
     return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
 }
 
 Meta::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
+    DEBUG_BLOCK
     KUrl path( Amarok::saveLocation( "playlists" ) );
     path.addPath( name );
     if( QFileInfo( path.path() ).exists() )
@@ -150,12 +167,44 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 bool
 PlaylistFileProvider::import( const KUrl &path )
 {
+    DEBUG_BLOCK
+    debug() << "Importing playlist file " << path;
+    if( path == The::playlistModel()->defaultPlaylistPath() )
+    {
+        error() << "trying to load saved session playlist at %s" << path.path();
+        return false;
+    }
+
     Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( path );
     if( !playlist )
         return false;
     m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     emit updated();
     return true;
+}
+
+void
+PlaylistFileProvider::rename( Meta::PlaylistPtr playlist, const QString &newName )
+{
+    DEBUG_BLOCK
+    Q_UNUSED(playlist);
+    Q_UNUSED(newName);
+}
+
+void
+PlaylistFileProvider::deletePlaylists( Meta::PlaylistList playlistList )
+{
+    DEBUG_BLOCK
+    foreach( Meta::PlaylistPtr playlist, playlistList )
+    {
+        Meta::PlaylistFilePtr playlistFile = Meta::PlaylistFilePtr::dynamicCast( playlist );
+        if( playlistFile.isNull() )
+        {
+            error() << "Could not cast to playlistFilePtr at " << __FILE__ << ":" << __LINE__;
+            continue;
+        }
+        QFile::remove( playlistFile->retrievableUrl().path() );
+    }
 }
 
 KConfigGroup
