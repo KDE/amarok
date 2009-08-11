@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#include "MagnatunePurchaseAction.h"
+#include "MagnatuneActions.h"
 #include "SvgHandler.h"
 
 #include <KIcon>
@@ -61,7 +61,7 @@ void MagnatuneAddToFavoritesAction::slotTriggered()
     m_album->addToFavorites();
 }
 
-#include "MagnatunePurchaseAction.moc"
+#include "MagnatuneActions.moc"
 
 
 

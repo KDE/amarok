@@ -19,7 +19,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "MagnatunePurchaseAction.h"
+#include "MagnatuneActions.h"
 #include "MagnatuneConfig.h"
 #include "meta/support/PermanentUrlStatisticsProvider.h"
 #include "SvgHandler.h"

@@ -14,6 +14,7 @@
 ########### next target ###############
 
         set(amarok_service_magnatune_PART_SRCS
+            MagnatuneActions.cpp
             MagnatuneAlbumDownloader.cpp
             MagnatuneCollectionLocation.cpp
             MagnatuneConfig.cpp
@@ -23,7 +24,6 @@
             MagnatuneDownloadInfo.cpp
             MagnatuneInfoParser.cpp
             MagnatuneMeta.cpp
-            MagnatunePurchaseAction.cpp
             MagnatunePurchaseDialog.cpp
             MagnatunePurchaseHandler.cpp
             MagnatuneRedownloadDialog.cpp
