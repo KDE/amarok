@@ -123,7 +123,20 @@ XSPFPlaylist::save( const KUrl &location, bool relative )
     if( savePath.fileName().isNull() )
         savePath.setFileName( name() );
 
-    QFile file( savePath.path() );
+    QFile file;
+    
+    if( location.isLocalFile() )
+    {
+        file.setFileName( savePath.toLocalFile() );
+    }
+    else
+    {
+        file.setFileName( savePath.path() );
+    }
+
+    if( file.exists() )
+        //TODO: prompt for overwrite.
+        return false;
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
