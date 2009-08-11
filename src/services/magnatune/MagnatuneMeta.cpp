@@ -452,7 +452,6 @@ QList< QAction * > MagnatuneAlbum::customActions()
     {
          QString text = i18n( "Add to Magnatune.com &favorites" );
          m_addToFavoritesAction = new MagnatuneAddToFavoritesAction( text, this );
-         m_addToFavoritesAction->setIcon( KIcon( "favorite" ) );
     }
 
     MagnatuneConfig config;

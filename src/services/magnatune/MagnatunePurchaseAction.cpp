@@ -43,7 +43,7 @@ void MagnatunePurchaseAction::slotTriggered()
 
 
 MagnatuneAddToFavoritesAction::MagnatuneAddToFavoritesAction( const QString &text, Meta::MagnatuneAlbum * album )
-    : QAction( KIcon("download-amarok" ), text, album )
+    : QAction( KIcon("favorites" ), text, album )
     , m_album( album )
 {
     setProperty( "popupdropper_svg_id", "append" );
