@@ -636,10 +636,6 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( exportPlaylist() ) );
     ac->addAction( "playlist_export", action );
 
-    action = new KAction( KIcon( "document-save-amarok" ), i18n("&Save Playlist"), this );
-    connect( action, SIGNAL( triggered(bool) ), this, SLOT( savePlaylist() ) );
-    ac->addAction( "playlist_save", action );
-
     action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark This Location" ), this );
     ac->addAction( "bookmark_browser", action );
     connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentBrowserView() ) );

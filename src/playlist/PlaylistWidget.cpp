@@ -34,6 +34,7 @@
 #include "ProgressiveSearchWidget.h"
 #include "widgets/HorizontalDivider.h"
 
+#include <KActionMenu>
 #include <KToolBarSpacerAction>
 
 #include <QHBoxLayout>
@@ -116,7 +117,15 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
         plBar->addSeparator();
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_save" ) );
+
+        KActionMenu *saveMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Playlist"), this );
+        connect( saveMenu, SIGNAL( triggered(bool) ), The::playlistModel(),
+                 SLOT( savePlaylist() ) );
+        action = new KAction( KIcon( "multimedia-player-apple-ipod" ), i18n("&Save to iPod"), this );
+        saveMenu->addAction( action );
+        connect( action, SIGNAL( triggered(bool) ), The::playlistModel(),
+                 SLOT( savePlaylist() ) );
+        plBar->addAction( saveMenu );
 
         plBar->addSeparator();
 
