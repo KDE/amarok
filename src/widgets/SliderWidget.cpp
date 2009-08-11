@@ -68,7 +68,8 @@ Amarok::Slider::wheelEvent( QWheelEvent *e )
     }
 
     // Position Slider (horizontal)
-    int step = e->delta() / VOLUME_SENSITIVITY;
+    // only used for progress slider now!
+    int step = e->delta() * 24;
     int nval = QSlider::value() + step;
     nval = qMax(nval, minimum());
     nval = qMin(nval, maximum());
