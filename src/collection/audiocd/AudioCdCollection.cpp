@@ -34,9 +34,12 @@
 #include <kio/netaccess.h>
 
 #include <KConfigGroup>
+#include <KEncodingProber>
+
 #include <KSharedConfig>
 
 #include <QDir>
+#include <QTextCodec>
 
 AMAROK_EXPORT_PLUGIN( AudioCdCollectionFactory )
 
@@ -104,6 +107,13 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     {
 
         QString cddbInfo = m_cdInfoJob->data();
+        
+        KEncodingProber prober;
+        KEncodingProber::ProberState result = prober.feed( m_cdInfoJob->data() );
+        if( result != KEncodingProber::NotMe )
+           cddbInfo = QTextCodec::codecForName( prober.encodingName() )->toUnicode( m_cdInfoJob->data() );
+
+        debug() << "Encoding: " << prober.encodingName();
         debug() << "got cddb info: " << cddbInfo;
 
         int startIndex;
