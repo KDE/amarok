@@ -343,7 +343,10 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
     else
     {
         debug() << "All tracks belong to the same collection";
-        prov = QList<Amarok::Collection*>::fromSet( collections ).front()->userPlaylistProvider();
+        Amarok::Collection *collection =
+            QList<Amarok::Collection*>::fromSet( collections ).front();
+        if( collection )
+          prov = collection->userPlaylistProvider();
     }
 
     // NOTE: For now, we tell the provider to only save the tracks
