@@ -578,7 +578,10 @@ PlaylistBrowserNS::UserModel::createWriteActions( QModelIndexList indices )
     {
         // NOTE: rename only 1 playlist at a time
         if( m_selectedPlaylists.count() == 1 )
+        {
+            debug() << "one playlist selected, allowing rename";
             actions << m_renameAction;
+        }
         actions << m_deleteAction;
     }
 
@@ -634,10 +637,15 @@ Meta::PlaylistList
 PlaylistBrowserNS::UserModel::selectedPlaylists( const QModelIndexList &list )
 {
     Meta::PlaylistList playlists;
+    QSet<int> indices;
+
     foreach( const QModelIndex &index, list )
     {
-        if( !IS_TRACK(index) )
+        if( !indices.contains( index.internalId() ) && !IS_TRACK(index) )
+        {
             playlists << m_playlists.value( index.internalId() );
+            indices.insert( index.internalId() );
+        }
     }
     return playlists;
 }
