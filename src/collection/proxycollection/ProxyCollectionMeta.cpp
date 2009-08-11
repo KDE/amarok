@@ -16,9 +16,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#define DEBUG_PREFIX "ProxyCollectionMeta"
+
 #include "ProxyCollectionMeta.h"
 
 #include "ProxyCollection.h"
+
+#include "Debug.h"
 
 #include <QSet>
 
@@ -61,6 +65,15 @@ ProxyCollection::Track::name() const
 QString
 ProxyCollection::Track::prettyName() const
 {
+    return m_name;
+}
+
+QString
+ProxyCollection::Track::sortableName() const
+{
+    if( !m_tracks.isEmpty() )
+        return m_tracks.first()->sortableName();
+
     return m_name;
 }
 
@@ -398,6 +411,7 @@ ProxyCollection::Track::add( const Meta::TrackPtr &track )
 void
 ProxyCollection::Track::metadataChanged( Meta::TrackPtr track )
 {
+    DEBUG_BLOCK
     if( !track )
         return;
 
@@ -482,9 +496,19 @@ ProxyCollection::Album::prettyName() const
     return m_name;
 }
 
+QString
+ProxyCollection::Album::sortableName() const
+{
+    if( !m_albums.isEmpty() )
+        return m_albums.first()->sortableName();
+
+    return m_name;
+}
+
 Meta::TrackList
 ProxyCollection::Album::tracks()
 {
+    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -592,9 +616,19 @@ ProxyCollection::Artist::prettyName() const
     return m_name;
 }
 
+QString
+ProxyCollection::Artist::sortableName() const
+{
+    if( !m_artists.isEmpty() )
+        return m_artists.first()->sortableName();
+
+    return m_name;
+}
+
 Meta::TrackList
 ProxyCollection::Artist::tracks()
 {
+    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::ArtistPtr artist, m_artists )
     {
@@ -703,9 +737,19 @@ ProxyCollection::Genre::prettyName() const
     return m_name;
 }
 
+QString
+ProxyCollection::Genre::sortableName() const
+{
+    if( !m_genres.isEmpty() )
+        return m_genres.first()->sortableName();
+
+    return m_name;
+}
+
 Meta::TrackList
 ProxyCollection::Genre::tracks()
 {
+    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::GenrePtr genre, m_genres )
     {
@@ -787,9 +831,19 @@ ProxyCollection::Composer::prettyName() const
     return m_name;
 }
 
+QString
+ProxyCollection::Composer::sortableName() const
+{
+    if( !m_composers.isEmpty() )
+        return m_composers.first()->sortableName();
+
+    return m_name;
+}
+
 Meta::TrackList
 ProxyCollection::Composer::tracks()
 {
+    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::ComposerPtr composer, m_composers )
     {
@@ -872,9 +926,19 @@ ProxyCollection::Year::prettyName() const
     return m_name;
 }
 
+QString
+ProxyCollection::Year::sortableName() const
+{
+    if( !m_years.isEmpty() )
+        return m_years.first()->sortableName();
+
+    return m_name;
+}
+
 Meta::TrackList
 ProxyCollection::Year::tracks()
 {
+    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::YearPtr year, m_years )
     {

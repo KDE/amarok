@@ -35,6 +35,7 @@ namespace ProxyCollection
 
             QString name() const;
             QString prettyName() const;
+            virtual QString sortableName() const;
 
             KUrl playableUrl() const;
             QString prettyUrl() const;
@@ -92,6 +93,7 @@ namespace ProxyCollection
 
         QString name() const;
         QString prettyName() const;
+        virtual QString sortableName() const;
 
         Meta::TrackList tracks();
         Meta::ArtistPtr albumArtist() const;
@@ -119,6 +121,7 @@ namespace ProxyCollection
 
         QString name() const;
         QString prettyName() const;
+        virtual QString sortableName() const;
 
         Meta::TrackList tracks();
 
@@ -144,6 +147,7 @@ namespace ProxyCollection
 
         QString name() const;
         QString prettyName() const;
+        virtual QString sortableName() const;
 
         Meta::TrackList tracks();
 
@@ -167,6 +171,7 @@ namespace ProxyCollection
 
         QString name() const;
         QString prettyName() const;
+        virtual QString sortableName() const;
 
         Meta::TrackList tracks();
 
@@ -190,6 +195,7 @@ namespace ProxyCollection
 
         QString name() const;
         QString prettyName() const;
+        virtual QString sortableName() const;
 
         Meta::TrackList tracks();
 
