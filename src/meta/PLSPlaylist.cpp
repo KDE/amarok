@@ -59,7 +59,7 @@ PLSPlaylist::PLSPlaylist( const KUrl &url )
     //check if file is local or remote
     if ( m_url.isLocalFile() )
     {
-        QFile file( m_url.path() );
+        QFile file( m_url.toLocalFile() );
         if( !file.open( QIODevice::ReadOnly ) ) {
             debug() << "cannot open file";
             return;

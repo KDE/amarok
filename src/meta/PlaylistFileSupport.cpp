@@ -62,10 +62,21 @@ loadPlaylistFile( const KUrl &url )
     QFile file;
     KUrl fileToLoad;
 
-    if( !QFileInfo( url.path() ).exists() )
+    if( url.isLocalFile() )
     {
-        error() << QString("Could not load playlist file %1!").arg( url.path() );
-        return PlaylistFilePtr();
+        if( !QFileInfo( url.toLocalFile() ).exists() )
+        {
+            error() << QString("Could not load playlist file %1!").arg( url.toLocalfile() );
+            return PlaylistFilePtr();
+        }
+    }
+    else
+    {
+        if( !QFileInfo( url.path() ).exists() )
+        {
+            error() << QString("Could not load playlist file %1!").arg( url.path() );
+            return PlaylistFilePtr();
+        }
     }
 
     if( url.isLocalFile() )
