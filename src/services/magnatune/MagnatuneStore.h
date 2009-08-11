@@ -95,6 +95,8 @@ public:
     virtual QString messages();
     virtual QString sendMessage( const QString &message );
 
+    void addToFavorites( Meta::MagnatuneAlbum * album );
+
 public slots:
     /**
     * Slot for catching cancelled list downloads
@@ -129,7 +131,7 @@ private slots:
      * Triggers a parse of the file to get the info added to the databse
      * @param downLoadJob The calling download Job
      */
-    void listDownloadComplete( KJob* downLoadJob);
+    void listDownloadComplete( KJob* downLoadJob );
 
 
     /**
@@ -169,7 +171,7 @@ private slots:
     void moodyTracksReady( Meta::TrackList tracks );
 
     void timestampDownloadComplete( KJob * job );
-
+    void addToFavoritesResult( KJob* addToFavoritesJob );
 
 private:
     /**
@@ -215,6 +217,7 @@ private:
 
     KIO::FileCopyJob * m_listDownloadJob;
     KIO::StoredTransferJob* m_updateTimestampDownloadJob;
+    KIO::StoredTransferJob* m_favoritesJob;
 
     MagnatuneSqlCollection * m_collection;
 

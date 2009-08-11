@@ -675,6 +675,32 @@ void MagnatuneStore::purchase( const QString &sku )
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 }
 
+void MagnatuneStore::addToFavorites( Meta::MagnatuneAlbum * album )
+{
+    DEBUG_BLOCK
+    MagnatuneConfig config;
+
+    if( !config.isMember() )
+        return;
+
+    QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=add_simple&sku=%4";
+    url = url.arg( config.username(), config.password(), config.membershipType(), album->albumCode() );
+
+    debug() << "favorites url: " << url;
+
+    m_favoritesJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    connect( m_favoritesJob, SIGNAL( result( KJob * ) ), SLOT( addToFavoritesResult( KJob *  ) ) );
+}
+
+void MagnatuneStore::addToFavoritesResult( KJob* addToFavoritesJob )
+{
+    if( addToFavoritesJob != m_favoritesJob )
+        return;
+
+    //show the favorites page
+    showFavoritesPage();
+}
+
 
 
 #include "MagnatuneStore.moc"

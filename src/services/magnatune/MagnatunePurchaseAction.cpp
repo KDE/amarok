@@ -38,6 +38,29 @@ void MagnatunePurchaseAction::slotTriggered()
     m_album->purchase();
 }
 
+
+
+
+
+MagnatuneAddToFavoritesAction::MagnatuneAddToFavoritesAction( const QString &text, Meta::MagnatuneAlbum * album )
+    : QAction( KIcon("download-amarok" ), text, album )
+    , m_album( album )
+{
+    setProperty( "popupdropper_svg_id", "append" );
+    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+}
+
+
+MagnatuneAddToFavoritesAction::~MagnatuneAddToFavoritesAction()
+{
+}
+
+void MagnatuneAddToFavoritesAction::slotTriggered()
+{
+    DEBUG_BLOCK
+    m_album->addToFavorites();
+}
+
 #include "MagnatunePurchaseAction.moc"
 
 

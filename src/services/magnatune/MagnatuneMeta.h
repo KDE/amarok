@@ -141,8 +141,10 @@ public:
 
 public slots:
     void purchase();
+    void addToFavorites();
 private:
     QAction * m_purchaseAction;
+    QAction * m_addToFavoritesAction;
 };
 
 class MagnatuneGenre  : public ServiceGenre

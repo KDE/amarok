@@ -365,6 +365,7 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     , m_store( 0 )
     , m_downloadMembership( false )
     , m_purchaseAction( 0 )
+    , m_addToFavoritesAction( 0 )
 
 {}
 
@@ -446,6 +447,14 @@ QList< QAction * > MagnatuneAlbum::customActions()
         m_purchaseAction = new MagnatunePurchaseAction( text, this );
     }
 
+    if ( !m_addToFavoritesAction )
+    {
+         QString text = i18n( "Add to Magnatune.com &favorites" );
+         m_addToFavoritesAction = new MagnatuneAddToFavoritesAction( text, this );
+         m_addToFavoritesAction->setIcon( KIcon( "favorite" ) );
+    }
+
+    actions.append( m_addToFavoritesAction );
     actions.append( m_purchaseAction );
 
     return actions;
@@ -456,6 +465,13 @@ void Meta::MagnatuneAlbum::purchase()
     DEBUG_BLOCK
     if ( store() )
         store()->purchase( this );
+}
+
+void Meta::MagnatuneAlbum::addToFavorites()
+{
+    DEBUG_BLOCK
+    if ( store() )
+        store()->addToFavorites( this );
 }
 
 

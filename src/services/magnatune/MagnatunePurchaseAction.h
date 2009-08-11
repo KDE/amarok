@@ -42,4 +42,25 @@ private:
 
 };
 
+/**
+A simple QAction subclass for purchasing or downloading content from Magnatune
+
+    Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+*/
+class MagnatuneAddToFavoritesAction : public QAction
+{
+    Q_OBJECT
+public:
+    MagnatuneAddToFavoritesAction( const QString &text, Meta::MagnatuneAlbum * album );
+
+    ~MagnatuneAddToFavoritesAction();
+
+private slots:
+    void slotTriggered();
+
+private:
+    Meta::MagnatuneAlbum * m_album;
+
+};
+
 #endif
