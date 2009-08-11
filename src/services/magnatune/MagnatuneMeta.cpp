@@ -20,6 +20,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "MagnatunePurchaseAction.h"
+#include "MagnatuneConfig.h"
 #include "meta/support/PermanentUrlStatisticsProvider.h"
 #include "SvgHandler.h"
 
@@ -454,7 +455,10 @@ QList< QAction * > MagnatuneAlbum::customActions()
          m_addToFavoritesAction->setIcon( KIcon( "favorite" ) );
     }
 
-    actions.append( m_addToFavoritesAction );
+    MagnatuneConfig config;
+    if ( config.isMember() )
+        actions.append( m_addToFavoritesAction );
+    
     actions.append( m_purchaseAction );
 
     return actions;
