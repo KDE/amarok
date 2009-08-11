@@ -25,7 +25,9 @@
 #include <QFont>
 #include <QTreeView>
 
-#include <KWidgetItemDelegate>
+//Please leave the include style of this item as it is, as the "modern" inlcude style breaks
+//build on *ubunt KDE 4.2.x.
+#include <kwidgetitemdelegate.h>
 
 class CollectionTreeItemDelegate : public KWidgetItemDelegate
 {
