@@ -715,6 +715,10 @@ void MagnatuneStore::favoritesResult( KJob* addToFavoritesJob )
     if( addToFavoritesJob != m_favoritesJob )
         return;
 
+    QString result = m_favoritesJob->data();
+
+    The::statusBar()->longMessage( result );
+
     //show the favorites page
     showFavoritesPage();
 }

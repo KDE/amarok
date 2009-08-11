@@ -50,15 +50,11 @@ void PopupWidget::reposition()
 {
     adjustSize();
 
-    // p is in the anchor's coordinates
+    // p is no longer in the anchor's coordinates
     QPoint p;
 
     p.setX( m_anchor->x() );
     p.setY( m_anchor->y() - ( height() + 4 ) );
-    debug() << "p before: " << p;
-    p = m_anchor->mapTo( The::mainWindow(), p );
-    debug() << "p after: " << p;
-
     move( p );
 }
 

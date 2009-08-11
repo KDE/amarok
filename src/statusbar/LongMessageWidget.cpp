@@ -32,6 +32,7 @@ LongMessageWidget::LongMessageWidget( QWidget * anchor, const QString & message,
         , m_counter( 0 )
         , m_timeout( 6000 )
 {
+    DEBUG_BLOCK
     Q_UNUSED( type )
 
     setFrameStyle( QFrame::Panel | QFrame::Sunken );
