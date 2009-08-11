@@ -125,10 +125,6 @@ XSPFPlaylist::save( const KUrl &location, bool relative )
 
     QFile file( savePath.path() );
 
-    if( file.exists() )
-        //TODO: prompt for overwrite.
-        return false;
-
     if( !file.open( QIODevice::WriteOnly ) )
     {
         if( The::mainWindow() ) // MainWindow might already be destroyed at this point (at program shutdown)

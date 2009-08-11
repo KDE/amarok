@@ -149,10 +149,6 @@ M3UPlaylist::save( const KUrl &location, bool relative )
 
     QFile file( savePath.path() );
 
-    if( file.exists() )
-        //TODO: prompt for overwrite.
-        return false;
-
     if( !file.open( QIODevice::WriteOnly ) )
     {
         debug() << "Unable to write to playlist " << savePath.path();
