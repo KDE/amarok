@@ -648,7 +648,7 @@ Playlist::Model::savePlaylist() const //SLOT
     foreach( Item* item, m_items )
         tl << item->track();
 
-    return The::playlistManager()->save( tl, name, true );
+    return The::playlistManager()->save( tl, name );
 }
 
 void

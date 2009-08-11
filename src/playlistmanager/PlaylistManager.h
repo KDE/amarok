@@ -136,7 +136,8 @@ class PlaylistManager : public QObject
         *   @arg tracks list of tracks to save
         *   @arg name name of playlist to save
         */
-        bool save( Meta::TrackList tracks, const QString &name, bool editNow = false, const QString &fromLocation = QString() );
+        bool save( Meta::TrackList tracks, const QString &name,
+                   UserPlaylistProvider *toProvider = 0 );
 
         /**
          *  Saves a playlist from a file to the database.

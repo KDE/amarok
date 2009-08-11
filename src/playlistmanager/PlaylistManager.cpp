@@ -296,114 +296,24 @@ switch( playlistCategory )
 }
 
 bool
-PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow, const QString &fromLocation )
+PlaylistManager::save( Meta::TrackList tracks, const QString & name,
+                       UserPlaylistProvider *toProvider )
 {
-    DEBUG_BLOCK
-    Q_UNUSED( fromLocation )
-
-    debug() << "Tracks received for saving: " << tracks.count();
-
-    QSet<Amarok::Collection*> collections;
-
-    // Get the collections that the tracks belong to
-    foreach( Meta::TrackPtr track, tracks )
-    {
-        Amarok::Collection *coll = track->collection();
-        if( coll )
-         collections << coll;
-    }
-
-    UserPlaylistProvider *prov = 0;
-
-    // If they don't all belong to one and the same collection,
-    // ask the user which provider to save to
-    if ( collections.size() > 1 )
-    {
-        QList<Amarok::Collection*> colls = QList<Amarok::Collection*>::fromSet( collections );
-
-        // TODO: sort the collections by prettyName
-
-        QStringList collList;
-
-        foreach( Amarok::Collection* coll, colls )
-            collList << coll->prettyName();
-
-        bool ok = false;
-
-        // Present the dialog to the user
-
-        QString item = KInputDialog::getItem(  i18n(  "Select Collection to Save Playlist" ),  i18n(  "Collections" ),  collList,  0,  false,  &ok,  0 );
-
-        if ( !ok )
-            return false;
-
-        prov = colls[ collList.indexOf( item ) ]->userPlaylistProvider();
-
-    }
-    // If they all belong to the same collection, save to that
-    // collection's provider
-    else if( collections.size() == 1 )
-    {
-        debug() << "All tracks belong to the same collection";
-        Amarok::Collection *collection =
-            QList<Amarok::Collection*>::fromSet( collections ).front();
-        if( collection )
-          prov = collection->userPlaylistProvider();
-    }
-
-    // NOTE: For now, we tell the provider to only save the tracks
-    // that correspond to its collection, since that's all the provider
-    // should have the ability to save.  Later on, we will give the option
-    // of copying tracks belonging to other collections, to this one, in which
-    // case we will put ALL the tracks into the playlist
-
-    // find collection associated with the provider we are saving to
-    Amarok::Collection *coll;
-
-    foreach( Amarok::Collection *co, collections )
-    {
-        if( co->userPlaylistProvider() == prov )
-        {
-            coll = co;
-            break;
-        }
-    }
-
-    // HACK: If no provider available, assume we're using the default sql user playlist provider
-    if( !prov )
-    {
-        debug() << "Provider is null, assuming default playlist provider";
-        prov = m_defaultUserPlaylistProvider;
-    }
-
-    Meta::TrackList playlistTracks;
-
-    // Filter the tracklist for tracks that belong to the collection
-    // whose provider we are saving to
-    foreach( const Meta::TrackPtr track, tracks )
-    {
-        if( track->collection() == coll )
-            playlistTracks << track;
-
-    }
-
-    debug() << "Tracks to put in playlist: " << playlistTracks.count();
-
+    //if toProvider is 0 use the default UserPlaylistProvider (SQL)
+    UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
     Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
-    if( name.isEmpty() || editNow )
+    if( name.isEmpty() )
     {
         debug() << "Empty name of playlist, or editing now";
-        playlist = prov->save( playlistTracks );
+        playlist = prov->save( tracks );
         AmarokUrl("amarok://navigate/playlists/user playlists").run();
         emit( renamePlaylist( playlist ) );
     }
     else
     {
         debug() << "Playlist is being saved with name: " << name;
-        playlist = prov->save( playlistTracks, name );
+        playlist = prov->save( tracks, name );
     }
-
-    debug() << "Playlist was saved: " << ( playlist.isNull() ? "false" : "true" );
 
     return !playlist.isNull();
 }
