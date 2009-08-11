@@ -91,52 +91,11 @@ PlaylistBrowserNS::PlaylistCategory::~PlaylistCategory()
 {
 }
 
-PlaylistBrowserNS::StreamEditor::StreamEditor( QWidget* parent )
-    : KDialog( parent )
-    , m_mainWidget( new QWidget( this ) )
-    , m_streamName( new KLineEdit( m_mainWidget ) )
-    , m_streamUrl( new KLineEdit( m_mainWidget ) )
-{
-    setCaption( i18n("Add Stream Location") );
-    setButtons( KDialog::Ok | KDialog::Cancel );
-    QGridLayout* layout = new QGridLayout();
-    layout->addWidget( new QLabel( i18n("Name:"), m_mainWidget ), 0, 0 );
-    layout->addWidget( m_streamName, 0, 1 );
-    layout->addWidget( new QLabel( i18n("Stream URL:"), m_mainWidget ), 1, 0 );
-    layout->addWidget( m_streamUrl, 1, 1 );
-    m_mainWidget->setLayout( layout );
-    setMainWidget( m_mainWidget );
-    connect( this, SIGNAL( closeClicked() ), this, SLOT( delayedDestruct() ) );
-    connect( this, SIGNAL( hidden() ), this, SLOT( delayedDestruct() ) );
-    connect( this, SIGNAL( cancelClicked() ), this, SLOT( delayedDestruct() ) );
-    connect( m_streamUrl, SIGNAL( textChanged(const QString &) ), this,
-             SLOT( slotTextChanged( const QString& ) ) );
-    enableButtonOk( false );
-    show();
-}
-
-QString
-PlaylistBrowserNS::StreamEditor::streamName()
-{
-    return m_streamName->text().trimmed();
-}
-
-QString
-PlaylistBrowserNS::StreamEditor::streamUrl()
-{
-    return m_streamUrl->text().trimmed();
-}
-
 void PlaylistBrowserNS::PlaylistCategory::newPalette(const QPalette & palette)
 {
     Q_UNUSED( palette )
 
     The::paletteHandler()->updateItemView( m_playlistView );
-}
-
-void PlaylistBrowserNS::StreamEditor::slotTextChanged( const QString & text )
-{
-    enableButtonOk( !text.isEmpty() );
 }
 
 #include "PlaylistCategory.moc"

@@ -65,21 +65,6 @@ private:
 
 };
 
-class StreamEditor : public KDialog
-{
-    Q_OBJECT
-    public:
-        StreamEditor( QWidget* parent );
-        QString streamName();
-        QString streamUrl();
-    private slots:
-        void slotTextChanged( const QString & );
-    private:
-        QWidget   *m_mainWidget;
-        KLineEdit *m_streamName;
-        KLineEdit *m_streamUrl;
-};
-
 }
 
 #endif
