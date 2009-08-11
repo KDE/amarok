@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Default Context Theme
-Name[bg]=Контекстна тема
+Name[bg]=Стандартна тема на контекста
 Name[ca]=Tema del Context per omissió
 Name[cs]=Výchozí motiv Kontextu
 Name[csb]=Domëslnô téma kòntekstu
@@ -42,7 +42,7 @@ Name[wa]=Tinme prémetou di contecse
 Name[x-test]=xxDefault Context Themexx
 Name[zh_CN]=默认上下文主题
 Comment=Default Amarok Context Theme
-Comment[bg]=Контекстна тема по подразбиране
+Comment[bg]=Стандартна тема за контекст
 Comment[ca]=Tema del Context de l'Amarok per omissió
 Comment[cs]=Výchozí motiv Amarok Kontextu
 Comment[csb]=Domëslnô téma kòntekstu Amaroka

@@ -2,7 +2,7 @@
 Type=Service
 Name=DAAP Collection
 Name[be]=Калекцыя DAAP
-Name[bg]=DAAP колекция
+Name[bg]=Колекция DAAP
 Name[ca]=Col·lecció DAAP
 Name[cs]=DAAP kolekce
 Name[csb]=Kòlekcëjô DAAP
@@ -49,7 +49,7 @@ Name[zh_CN]=DAAP 收藏
 Name[zh_TW]=DAAP 收藏
 Comment=DAAP collection plugin for Amarok
 Comment[be]=Утулка калекцыі DAAP для Amarok
-Comment[bg]=Приставка за DAAP колекция за Amarok
+Comment[bg]=Приставка за колекция DAAP (Amarok)
 Comment[ca]=Connector de col·leccions DAAP per a l'Amarok
 Comment[cs]=Modul kolekce DAAP pro AmaroK
 Comment[csb]=Wtëkôcz kòlekcëji DAAP dlô Amaroka

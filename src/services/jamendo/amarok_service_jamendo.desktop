@@ -3,7 +3,6 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-jamendo-amarok
 Name=Jamendo
-Name[bg]=Услуга Jamendo
 Name[fi]=Jamendo-palvelu
 Name[pa]=ਜਾਮੀਂਡੋ
 Name[x-test]=xxJamendoxx

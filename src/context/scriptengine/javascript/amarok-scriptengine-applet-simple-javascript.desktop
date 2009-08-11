@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Amarok JavaScript Applet
+Name[bg]=JavaScript аплет (Amarok)
 Name[csb]=Aplet JavaScriptu Amaroka
 Name[es]=Miniaplicación JavaScript de Amarok
 Name[et]=Amaroki JavaScripti aplett
@@ -17,6 +18,7 @@ Name[tr]=Amarok JavaScript Programcığı
 Name[uk]=Аплет JavaScript Amarok
 Name[x-test]=xxAmarok JavaScript Appletxx
 Comment=Native Amarok applet written in JavaScript
+Comment[bg]=Семпъл аплет за Amarok, написан на JavaScript
 Comment[csb]=Aplet Amaroka napisóny w JavaScript
 Comment[es]=Miniaplicación nativa de Amarok escrita en JavaScript
 Comment[et]=Amaroki omaaplett JavaScriptis

@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Service
 Name=iPhone OS 3.0 Read-only Collection
+Name[bg]=Колекция iPhone OS 3.0 Read-only
 Name[es]=Colección de solo lectura de iPhone OS 3.0
 Name[it]=Collezione in sola lettura iPhone OS 3.0
 Name[ko]=iPhone OS 3.0 읽기 전용 모음집
@@ -13,6 +14,7 @@ Name[tr]=iPhone OS 3.0 Salt Okunur Koleksiyonu
 Name[uk]=Придатна лише для читання збірка iPhone OS 3.0
 Name[x-test]=xxiPhone OS 3.0 Read-only Collectionxx
 Comment=iPhone OS 3.0 Read-only collection plugin for Amarok
+Comment[bg]=Приставка за колекция iPhone OS 3.0 Read-only (Amarok)
 Comment[es]=Complemento de colección de solo lectura de iPhone OS 3.0 para Amarok
 Comment[it]=Estensione di Amarok per la collezione in sola lettura iPhone OS 3.0
 Comment[ko]=Amarok의 iPhone OS 3.0 읽기 전용 모음집 플러그인

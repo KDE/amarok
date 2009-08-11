@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Amarok Data Engine
-Name[bg]=Ядро за Amarok
+Name[bg]=Ядро Amarok
 Name[ca]=Motor de dades de l'Amarok
 Name[cs]=Datový nástroj Amarok
 Name[csb]=Mòtór pòdôwków Amaroka
@@ -46,7 +46,7 @@ Type=ServiceType
 X-KDE-ServiceType=Plasma/DataEngine
 
 Comment=Amarok Data Engine
-Comment[bg]=Ядро за Amarok
+Comment[bg]=Ядро Amarok
 Comment[ca]=Motor de dades de l'Amarok
 Comment[cs]=Datový nástroj Amarok
 Comment[csb]=Mòtór pòdôwków Amaroka

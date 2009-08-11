@@ -9,7 +9,7 @@ X-KDE-ParentApp=amarok_service_magnatunestore
 X-KDE-ParentComponents=amarok_service_magnatunestore
 
 Name=MagnatuneStore Service Config
-Name[bg]=Настройване на MagnatuneStore
+Name[bg]=Настройване на услугата MagnatuneStore
 Name[ca]=Configuració del servei MagnatuneStore
 Name[cs]=Nastavení služby MagnatuneStore
 Name[da]=Konfiguration af MagnatuneStore-tjenesten

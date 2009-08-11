@@ -2,7 +2,7 @@
 Type=Service
 Name=UPnP Collection
 Name[be]=Калекцыя UPnP
-Name[bg]=UPnP колекция
+Name[bg]=Колекция UPnP
 Name[ca]=Col·lecció UPnP
 Name[cs]=Kolekce UPnP
 Name[csb]=Kòlekcëjô UPnP
@@ -47,7 +47,7 @@ Name[zh_CN]=UPnP 收藏
 Name[zh_TW]=UPnP 收藏
 Comment=UPnP collection plugin for Amarok
 Comment[be]=Утулка калекцыі UPnP для Amarok
-Comment[bg]=Приставка за UPnP колекция (Amarok)
+Comment[bg]=Приставка за колекция  UPnP (Amarok)
 Comment[ca]=Connector de col·leccions UPnP per a l'Amarok
 Comment[cs]=Modul UPnP kolekce pro AmaroK
 Comment[csb]=Wtëkôcz kòlekcëji UPnP dlô Amaroka

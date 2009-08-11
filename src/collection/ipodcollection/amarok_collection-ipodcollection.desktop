@@ -2,7 +2,7 @@
 Type=Service
 Name=Ipod Collection
 Name[be]=Калекцыя Ipod
-Name[bg]=IPod колекция
+Name[bg]=Колекция IPod 
 Name[ca]=Col·lecció de l'ipod
 Name[cs]=Ipod kolekce
 Name[csb]=Kòlekcëjô Ipoda
@@ -47,7 +47,7 @@ Name[zh_CN]=Ipod 收藏
 Name[zh_TW]=Ipod 收藏
 Comment=Ipod collection plugin for Amarok
 Comment[be]=Утулка калекцыі Ipod для Amarok
-Comment[bg]=Приставка за Ipod колекция (Amarok)
+Comment[bg]=Приставка за колекция IPod (Amarok)
 Comment[ca]=Connector de col·leccions ipod per a l'Amarok
 Comment[cs]=Modul kolekce Ipodu pro AmaroK
 Comment[csb]=Wtëkôcz kòlekcëji Ipoda dlô Amaroka

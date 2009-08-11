@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=JS Sample Engine
+Name[bg]=Ядро JS
 Name[csb]=Przëmiarowi mòtór JS
 Name[es]=Motor de muestras JS
 Name[et]=JS näidismootor
@@ -16,6 +17,7 @@ Name[tr]=JS Örnek Motoru
 Name[uk]=Зразок рушія JS
 Name[x-test]=xxJS Sample Enginexx
 Comment=Javascript Sample Engine
+Comment[bg]=Ядро Javascript
 Comment[csb]=Przëmiarowi mòtór Javascript
 Comment[es]=Motor de muestras Javascript
 Comment[et]=Javascripti näidismootor

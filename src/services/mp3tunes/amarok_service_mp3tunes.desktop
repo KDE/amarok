@@ -3,7 +3,6 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-mp3tunes-amarok
 Name=Mp3tunes
-Name[bg]=Услуга Mp3tunes
 Name[da]=MP3tunes
 Name[fi]=Mp3tunes-palvelu
 Name[ga]=MP3tunes
