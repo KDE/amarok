@@ -49,7 +49,6 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
-#include "playlist/layouts/LayoutConfigAction.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h"
@@ -876,9 +875,6 @@ MainWindow::createMenus()
 
 
 #ifndef Q_WS_MAC
-
-    Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
-    m_settingsMenu->addAction( layoutConfigAction );
     m_settingsMenu->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
     m_settingsMenu->addSeparator();
 #endif
