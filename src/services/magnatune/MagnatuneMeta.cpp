@@ -477,7 +477,6 @@ void Meta::MagnatuneAlbum::addToFavorites()
         store()->addToFavorites( albumCode() );
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 // class MagnatuneGenre
 ///////////////////////////////////////////////////////////////////////////////
@@ -490,11 +489,4 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {}
 
-
-
 #include "MagnatuneMeta.moc"
-
-
-
-
-

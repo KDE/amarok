@@ -57,5 +57,3 @@ void PopupWidget::reposition()
     p.setY( m_anchor->y() - ( height() + 4 ) );
     move( p );
 }
-
-

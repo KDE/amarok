@@ -39,9 +39,6 @@ void MagnatunePurchaseAction::slotTriggered()
 }
 
 
-
-
-
 MagnatuneAddToFavoritesAction::MagnatuneAddToFavoritesAction( const QString &text, Meta::MagnatuneAlbum * album )
     : QAction( KIcon("favorites" ), text, album )
     , m_album( album )
@@ -62,6 +59,3 @@ void MagnatuneAddToFavoritesAction::slotTriggered()
 }
 
 #include "MagnatuneActions.moc"
-
-
-
