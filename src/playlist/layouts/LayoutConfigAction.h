@@ -38,7 +38,7 @@ class LayoutConfigAction : public KAction
     public:
         /**
          * Constructor.
-         * @param parent PArent wiget.
+         * @param parent Parent widget.
          */
         LayoutConfigAction( QWidget * parent );
 

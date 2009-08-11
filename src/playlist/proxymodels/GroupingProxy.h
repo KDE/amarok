@@ -82,6 +82,9 @@ public:
     int tracksInGroup( int row ) const;
     int lengthOfGroup( int row ) const;
 
+    QString groupingCategory() const;
+    void setGroupingCategory( const QString &groupingCategory );
+
 signals:
     /**
      * This signal is emitted when tracks are added to the playlist.
@@ -114,6 +117,8 @@ private:
 
     // grouping auxiliary functions -- deprecated, but used by GraphicsView
     int groupRowCount( int row ) const;
+
+    QString m_groupingCategory;
 
     /**
      * This function is used to determine if 2 tracks belong in the same group.

@@ -159,13 +159,11 @@ static const QStringList sortableCategories = ( QStringList()
 
 static const QStringList groupableCategories = ( QStringList()
         << "Album"
-        << "Album artist"
         << "Artist"
         << "Composer"
         << "Genre"
         << "Rating"
         << "Source"
-        << "Title"
         << "Year" );
 
 static const QStringList iconNames = ( QStringList()

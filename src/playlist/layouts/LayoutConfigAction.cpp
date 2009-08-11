@@ -33,7 +33,7 @@ namespace Playlist
 LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     : KAction( parent )
 {
-    KIcon actionIcon( "configure" );    //TEMPORARY ICON
+    KIcon actionIcon( "align-horizontal-left" );    //TEMPORARY ICON
     setIcon( actionIcon );
     m_layoutMenu = new KMenu( parent );
     setMenu( m_layoutMenu );

@@ -385,6 +385,7 @@ set(libplaylist_SRCS
     playlist/PlaylistBreadcrumbItemSortButton.cpp
     playlist/PlaylistBreadcrumbLevel.cpp
     playlist/PlaylistController.cpp
+    playlist/PlaylistGroupingAction.cpp
     playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp

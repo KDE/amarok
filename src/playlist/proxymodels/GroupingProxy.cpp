@@ -26,6 +26,7 @@
 
 #include "Debug.h"
 #include "meta/MetaUtility.h"
+#include "playlist/PlaylistDefines.h"
 
 #include <QVariant>
 
@@ -48,6 +49,7 @@ Playlist::GroupingProxy::destroy()
 
 Playlist::GroupingProxy::GroupingProxy()
     : ProxyBase( Playlist::SearchProxy::instance() )
+    , m_groupingCategory( QString( "Album" ) )
 {
     m_belowModel = SearchProxy::instance();
     setSourceModel( dynamic_cast< Playlist::SearchProxy * >( m_belowModel ) );
@@ -272,9 +274,35 @@ Playlist::GroupingProxy::groupRowCount( int row ) const
 bool
 Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 )
 {
-    if( track1 && track1->album() && track2 && track2->album() )
-        return ( *track1->album().data() ) == ( *track2->album().data() );
-
+    if( groupableCategories.contains( m_groupingCategory ) )   //sanity
+    {
+        switch( groupableCategories.indexOf( m_groupingCategory ) )
+        {
+            case 0: //Album
+                if( track1 && track1->album() && track2 && track2->album() )
+                    return ( *track1->album().data() ) == ( *track2->album().data() );
+            case 1: //Artist
+                if( track1 && track1->artist() && track2 && track2->artist() )
+                    return ( *track1->artist().data() ) == ( *track2->artist().data() );
+            case 2: //Composer
+                if( track1 && track1->composer() && track2 && track2->composer() )
+                    return ( *track1->composer().data() ) == ( *track2->composer().data() );
+            case 3: //Genre
+                if( track1 && track1->genre() && track2 && track2->genre() )
+                    return ( *track1->genre().data() ) == ( *track2->genre().data() );
+            case 4: //Rating
+                if( track1 && track1->rating() && track2 && track2->rating() )
+                    return ( track1->rating() ) == ( track2->rating() );
+            case 5: //Source
+                if( track1 && track1->artist() && track2 && track2->artist() )
+                    return ( *track1->artist().data() ) == ( *track2->artist().data() );
+            case 6: //Year
+                if( track1 && track1->year() && track2 && track2->year() )
+                    return ( *track1->year().data() ) == ( *track2->year().data() );
+            default:
+                return false;
+        }
+    }
     return false;
 }
 
@@ -296,4 +324,20 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
     }
 
     return totalLenght;
+}
+
+QString
+Playlist::GroupingProxy::groupingCategory() const
+{
+    return m_groupingCategory;
+}
+
+void
+Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
+{
+    if( groupableCategories.contains( groupingCategory ) )
+    {
+        m_groupingCategory = groupingCategory;
+        regroupAll();
+    }
 }

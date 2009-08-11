@@ -23,17 +23,17 @@
 #include "App.h"
 #include "Debug.h"
 #include "DynamicModel.h"
+#include "layouts/LayoutConfigAction.h"
+#include "layouts/LayoutManager.h"
 #include "MainWindow.h"
 #include "PaletteHandler.h"
 #include "PlaylistController.h"
 #include "PlaylistDefines.h"
 #include "PlaylistHeader.h"
 #include "PlaylistModel.h"
-#include "layouts/LayoutManager.h"
 #include "ProgressiveSearchWidget.h"
+#include "playlist/PlaylistGroupingAction.h"
 #include "widgets/HorizontalDivider.h"
-#include "layouts/LayoutConfigAction.h"
-
 
 #include <KToolBarSpacerAction>
 
@@ -126,7 +126,13 @@ Playlist::Widget::Widget( QWidget* parent )
         QToolButton *tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( layoutConfigAction ) );
         if( tbutton )
             tbutton->setPopupMode( QToolButton::InstantPopup );
-        tbutton->setIcon( KIcon( "align-horizontal-left" ) );
+        QMenu *groupMenu = layoutConfigAction->menu()->addMenu( KIcon( "object-group" ), i18n( "Group &by" ) );
+
+        Playlist::GroupingAction *groupingAction = new Playlist::GroupingAction( this );
+        plBar->addAction( groupingAction );
+        QToolButton *gbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( groupingAction ) );
+        if( gbutton )
+            gbutton->setPopupMode( QToolButton::InstantPopup );
 
         plBar->addAction( new KToolBarSpacerAction( this ) );
     } //END Playlist Toolbar
