@@ -308,7 +308,9 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
     // Get the collections that the tracks belong to
     foreach( Meta::TrackPtr track, tracks )
     {
-        collections << track->collection();
+        Amarok::Collection *coll = track->collection();
+        if( coll )
+         collections << coll;
     }
 
     UserPlaylistProvider *prov = 0;
@@ -340,7 +342,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNo
     }
     // If they all belong to the same collection, save to that
     // collection's provider
-    else
+    else if( collections.size() == 1 )
     {
         debug() << "All tracks belong to the same collection";
         Amarok::Collection *collection =
