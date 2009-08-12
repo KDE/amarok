@@ -105,7 +105,7 @@ void LayoutManager::loadUserLayouts()
 void LayoutManager::loadDefaultLayouts()
 {
     const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
-    QString configFile = url.path() + "DefaultPlaylistLayouts.xml";
+    QString configFile = url.toLocalFile() + "DefaultPlaylistLayouts.xml";
     loadLayouts( configFile, false );
 }
 
