@@ -51,6 +51,9 @@ SortProxy::SortProxy()
     //needed by GroupingProxy:
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
     connect( sourceModel(), SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
+
+
+    setObjectName( "SortProxy" );
 }
 
 SortProxy::~SortProxy()
@@ -108,12 +111,12 @@ SortProxy::rowFromSource( int row ) const
 int
 SortProxy::rowToSource( int row ) const
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = SortProxy::mapToSource( index );
 //    metaObject()->method( metaObject()->indexOfMethod( metaObject()->normalizedSignature( "mapToSource( const QModelIndex )" ) ) );
-    debug()<< "     SortProxy row is " << row;
-    debug()<< "     FilterProxy row will be "<< sourceIndex.row();
+    //debug()<< "     SortProxy row is " << row;
+    //debug()<< "     FilterProxy row will be "<< sourceIndex.row();
     if ( !sourceIndex.isValid() )
         return ( row == rowCount() ) ? m_belowModel->rowCount() : -1;
     return sourceIndex.row();

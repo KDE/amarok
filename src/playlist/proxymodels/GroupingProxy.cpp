@@ -70,6 +70,9 @@ Playlist::GroupingProxy::GroupingProxy()
     regroupRows( 0, max - 1 );
 
     s_instance = this;
+
+     setObjectName( "GroupingProxy" );
+
 }
 
 Playlist::GroupingProxy::~GroupingProxy()

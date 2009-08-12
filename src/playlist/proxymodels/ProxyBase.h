@@ -372,8 +372,10 @@ protected:
      * @return the index of the row that's valid in the proxy below this one.
      */
     virtual int rowToSource( int row ) const
-    { DEBUG_BLOCK
-      debug()<< "DEFAULT IMPLEMENTATION"; return row; }
+    {
+      debug()<< "DEFAULT IMPLEMENTATION";
+      return row;
+    }
 
 
     AbstractModel *m_belowModel;

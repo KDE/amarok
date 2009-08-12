@@ -24,7 +24,8 @@ namespace Playlist
 
 ProxyBase::ProxyBase( QObject *parent )
     : QSortFilterProxyModel( parent )
-{}
+{
+}
 
 ProxyBase::~ProxyBase()
 {}
@@ -226,7 +227,22 @@ ProxyBase::setAllUnplayed()
 void
 ProxyBase::setRowQueued( int row )
 {
-    m_belowModel->setRowQueued( rowToSource( row ) );
+    DEBUG_BLOCK
+    debug() << "I am " << objectName();
+    debug() << "I have " << rowCount() << " rows";
+    debug() << "my row: " << row;
+
+    QModelIndex myIndex = createIndex( row, Title );
+    debug() << "my index is valid: " << myIndex.isValid();
+    debug() << "item name: " << myIndex.data( Qt::DisplayRole ).toString();
+    
+    int sourceRow = rowToSource( row );
+
+    QModelIndex sourceIndex = createIndex( sourceRow, Title );
+    debug() << "source item name: " << sourceIndex.data( Qt::DisplayRole ).toString();
+
+    debug() << "source row: " << sourceIndex.row();
+    m_belowModel->setRowQueued( sourceIndex.row() );
 }
 
 void

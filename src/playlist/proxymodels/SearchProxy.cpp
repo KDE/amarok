@@ -46,6 +46,9 @@ SearchProxy::SearchProxy()
     //needed by GroupingProxy:
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
     connect( sourceModel(), SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
+
+     setObjectName( "SearchProxy" );
+
 }
 
 SearchProxy::~SearchProxy()
