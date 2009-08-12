@@ -312,13 +312,20 @@ ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
     QString prefix = m_metaFactory->tablePrefix();
 
-    //this should NOT be made into a static cast as this might get called with an incompatible type!
-    const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
-    if( !d || !serviceArtist )
+    if( !d )
         return this;
 
+    //this should NOT be made into a static cast as this might get called with an incompatible type!
+    const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
     d->linkedTables |= Private::ARTISTS_TABLE;
-    d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
+    if( serviceArtist )
+    {
+        d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
+    }
+    else
+    {
+        d->queryMatch += QString( " AND " + prefix + "_artists.name='%1'" ).arg( escape( artist->name() ) );
+    }
     return this;
 }
 
@@ -327,16 +334,24 @@ ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 {
     QString prefix = m_metaFactory->tablePrefix();
 
+    if( !d )
+        return this;
+
     //this should NOT be made into a static cast as this might get called with an incompatible type!
     const ServiceAlbumPtr serviceAlbum = ServiceAlbumPtr::dynamicCast( album );
-    if( !d || !serviceAlbum )
-        return this;
 
     d->linkedTables |= Private::ALBUMS_TABLE;
     d->linkedTables |= Private::ARTISTS_TABLE;
     if( d->queryType == Private::GENRE )
         d->linkedTables |= Private::GENRE_TABLE;
-    d->queryMatch += QString( " AND " + prefix + "_albums.id = '%1'" ).arg( serviceAlbum->id() );
+    if( serviceAlbum )
+    {
+        d->queryMatch += QString( " AND " + prefix + "_albums.id = '%1'" ).arg( serviceAlbum->id() );
+    }
+    else
+    {
+        d->queryMatch += QString( " AND " + prefix + "_albums.name='%1'" ).arg( escape( album->name() ) );
+    }
     return this;
 }
 
