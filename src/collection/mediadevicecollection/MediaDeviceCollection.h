@@ -44,7 +44,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionFactoryBase : public Ama
     public:
         virtual ~MediaDeviceCollectionFactoryBase();
         virtual void init();
-    
+
     protected:
         MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant );
 
@@ -68,7 +68,7 @@ class MediaDeviceCollectionFactory : public MediaDeviceCollectionFactoryBase
         MediaDeviceCollectionFactory( ConnectionAssistant *assistant )
             : MediaDeviceCollectionFactoryBase( assistant )
         {}
-        
+
         virtual ~MediaDeviceCollectionFactory() {}
 
     private:
@@ -138,7 +138,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         /** MediaDeviceCollection-specific */
         Meta::MediaDeviceHandler* handler();
-	void init() { m_handler->init(); } // tell handler to start connection
+        void init() { m_handler->init(); } // tell handler to start connection
+        void emitCollectionReady();
 
     signals:
         void collectionReady( Amarok::Collection* );
@@ -165,6 +166,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
     private:
         void initCapacities();
+
 };
 
 

@@ -20,6 +20,7 @@
 #define MEDIADEVICEHANDLER_H
 
 #include "MediaDeviceHandlerCapability.h"
+#include "capabilities/CustomReadCapability.h"
 #include "capabilities/PlaylistCapability.h"
 #include "capabilities/ReadCapability.h"
 #include "capabilities/WriteCapability.h"
@@ -118,12 +119,6 @@ public:
         return m_success;
     }
 
-    /**
-    * Parses the media device's database and creates a Meta::MediaDeviceTrack
-    * for each track in the database.
-    */
-    void parseTracks(); // collection
-
     /// Methods provided for CollectionLocation
 
     /**
@@ -195,6 +190,12 @@ signals:
 public slots:
 
    /**
+    * Parses the media device's database and creates a Meta::MediaDeviceTrack
+    * for each track in the database.  NOTE: only call once per device.
+    */
+    void parseTracks(); // collection
+
+   /**
     * Writes to the device's database if it has one, otherwise
     * simply calls slotDatabaseWritten to continue the workflow.
     */
@@ -230,6 +231,26 @@ protected:
 
     void addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr &track );
 
+   /**  Removes the @param track from all the collection's maps to reflect that
+    *  it has been removed from the collection
+    *  @param track The track to remove from the collection
+    */
+
+    void removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track );
+
+   /** Uses wrapped libGet methods to fill a track with information from device
+    *  @param track The track from whose associated struct to get the information
+    *  @param destTrack The track that we want to fill with information
+    */
+    void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
+
+   /** Convenience method.  Can be used to just pull information out of a track
+    *  that was custom constructed, instead of parsing using specific device's
+    *  library methods.
+    */
+
+    void getBasicMediaDeviceTrackInfo( const Meta::TrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
+
     /** Uses wrapped libSet methods to fill a track struct of the particular library
     *  with information from a Meta::Track
     *  @param srcTrack The track that has the source information
@@ -243,6 +264,7 @@ protected:
 
     bool m_success;
     bool m_copyingthreadsafe; // whether or not the handler's method of copying is threadsafe
+    TitleMap          m_titlemap; /// Map of track titles to tracks, used to detect duplicates
 
 
 protected slots:
@@ -262,19 +284,6 @@ protected slots:
     void slotDeletingHandler();
 
 private:
-
-    /**  Removes the @param track from all the collection's maps to reflect that
-    *  it has been removed from the collection
-    *  @param track The track to remove from the collection
-    */
-
-    void removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrackPtr &track );
-
-    /** Uses wrapped libGet methods to fill a track with information from device
-    *  @param track The track from whose associated struct to get the information
-    *  @param destTrack The track that we want to fill with information
-    */
-    void getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPtr& track, Meta::MediaDeviceTrackPtr destTrack );
 
     /**
     * Pulls out meta information (e.g. artist string)
@@ -320,7 +329,6 @@ private:
     */
 
     MediaDeviceUserPlaylistProvider *m_provider; /// Associated playlist provider
-    TitleMap          m_titlemap; /// Map of track titles to tracks, used to detect duplicates
 
     bool m_copyFailed; /// Indicates whether a copy failed or not
     bool m_isCopying;
@@ -341,7 +349,9 @@ private:
     /// Capability-related variables
 
     Handler::PlaylistCapability *m_pc;
-    Handler::ReadCapability     *m_rc;
+    Handler::ReadCapabilityBase *m_rcb;
+    Handler::CustomReadCapability *m_crc;
+    Handler::ReadCapability *m_rc;
     Handler::WriteCapability    *m_wc;
 
 };

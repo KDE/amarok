@@ -24,7 +24,7 @@ set(amarok_collection-umscollection_PART_SRCS
   handler/UmsHandler.cpp
 #  handler/capabilities/UmsArtworkCapability.cpp
 #  handler/capabilities/UmsPlaylistCapability.cpp
-#  handler/capabilities/UmsReadCapability.cpp
+  handler/capabilities/UmsReadCapability.cpp
 #  handler/capabilities/UmsWriteCapability.cpp	
   support/UmsDeviceInfo.cpp
   support/UmsConnectionAssistant.cpp)

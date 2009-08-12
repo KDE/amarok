@@ -272,5 +272,11 @@ MediaDeviceCollection::totalCapacity() const
     return m_totalCapacity;
 }
 
+void
+MediaDeviceCollection::emitCollectionReady()
+{
+    emit collectionReady( this );
+}
+
 #include "MediaDeviceCollection.moc"
 

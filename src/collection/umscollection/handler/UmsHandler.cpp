@@ -46,8 +46,10 @@
 
 #include <QAction>
 #include <QDir>
+#include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
+#include <QList>
 #include <QMutexLocker>
 #include <QPixmap>
 #include <QProcess>
@@ -62,15 +64,14 @@ using namespace Meta;
 
 UmsHandler::UmsHandler( UmsCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
+    , m_watcher()
+    , m_timer()
     , m_capacity( 0.0 )
     , m_jobcounter( 0 )
     , m_autoConnect( false )
     , m_mountPoint( mountPoint )
     , m_wasMounted( !mountPoint.isEmpty() )
     , m_name()
-    , m_dbChanged( false )
-    , m_copyFailed( false )
-    , m_isCanceled( false )
     , m_wait( false )
     , m_tempdir( new KTempDir() )
 {
@@ -119,36 +120,188 @@ UmsHandler::init()
         m_capacity = 0.0;
     }
 
-    m_dirLister = new KDirLister();
-    m_dirLister->setNameFilter( "*.mp3 *.wav *.asf *.flac *.wma *.ogg *.aac *.m4a *.mp4 *.mp2 *.ac3" );
-    m_dirLister->setAutoUpdate( false );
+    m_formats << "mp3" << "wav" << "asf" << "flac" << "wma" << "ogg" << "aac" << "m4a"
+            << "mp4" << "mp2" << "ac3";
 
-    //m_spacesToUnderscores = false;
-    //m_ignoreThePrefix     = false;
-    //m_asciiTextOnly       = false;
+    QDirIterator it( m_mountPoint, QDirIterator::Subdirectories );
+    while( it.hasNext() )
+    {
+        addPath( it.next() );
+    }
 
-    //m_songLocation = QString::null;
-    //m_podcastLocation = QString::null;
+    m_timer.setSingleShot( true );
+    //m_dirtytimer.setSingleShot( true );
 
-    //m_supportedFileTypes.clear();
+    connect( &m_timer, SIGNAL( timeout() ),
+             m_memColl, SLOT( collectionUpdated() ) );
+    connect( &m_dirtytimer, SIGNAL( timeout() ),
+             this, SLOT( slotCheckDirty() ) );
 
-    //m_configDialog = 0;
+    connect( &m_watcher, SIGNAL( created( const QString & ) ),
+             this, SLOT(slotCreateEntry( const QString& ) ), Qt::QueuedConnection );
+    connect( &m_watcher, SIGNAL( dirty( const QString & ) ),
+             this, SLOT(slotDirtyEntry( const QString&) ), Qt::QueuedConnection );
+    connect( &m_watcher, SIGNAL( deleted( const QString & ) ),
+             this, SLOT(slotDeleteEntry( const QString& ) ), Qt::QueuedConnection );
 
-    //connect( m_dirLister, SIGNAL( newItems(const KFileItemList &) ), this, SLOT( newItems(const KFileItemList &) ) );
-    connect( m_dirLister, SIGNAL( completed() ), SLOT( dirListerParseCompleted() ) );
-    //connect( m_dirLister, SIGNAL( clear() ), this, SLOT( dirListerClear() ) );
-    //connect( m_dirLister, SIGNAL( clear(const KURL &) ), this, SLOT( dirListerClear(const KURL &) ) );
-    //connect( m_dirLister, SIGNAL( deleteItem(KFileItem *) ), this, SLOT( dirListerDeleteItem(KFileItem *) ) );
+    m_watcher.addDir( m_mountPoint, KDirWatch::WatchDirOnly | KDirWatch::WatchFiles | KDirWatch::WatchSubDirs );
 
-    dirListerParseCompleted();
+    m_parsed = false;
+    m_parseAction = 0;
+
+    debug() << "Succeeded: true";
+    m_memColl->emitCollectionReady();
+    //m_memColl->slotAttemptConnectionDone( true );
+}
+
+void
+UmsHandler::slotCreateEntry( const QString &path )
+{
+    DEBUG_BLOCK
+
+    // Check if it's a file, and if not, abort
+
+    if( addPath( path ) != 2 )
+        return;
+
+    debug() << "adding to dirty list";
+    m_dirtylist << path;
+
+    if( !m_dirtytimer.isActive() )
+    {
+        debug() << "timer inactive, starting...";
+        m_dirtytimer.start( 5000 );
+    }
+    else
+    {
+        m_dirtytimer.stop();
+        m_dirtytimer.start( 5000 );
+    }
+}
+
+void
+UmsHandler::slotCheckDirty()
+{
+    if( m_dirtylist.isEmpty() )
+    {
+        m_dirtytimer.stop();
+        return;
+    }
+
+    foreach( QString path, m_dirtylist )
+    {
+        // Create track based on URL
+
+        //QString path = m_dirtylist.takeFirst();
+
+        Meta::TrackPtr srcTrack( new MetaFile::Track( path ) );
+
+        m_currtrack = srcTrack;
+
+        // Create new track
+
+        Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
+
+        // associate it to track
+
+        setAssociateTrack( destTrack );
+
+        // Fill the track struct of the destTrack with info from the filetrack as source
+
+        getBasicMediaDeviceTrackInfo( srcTrack, destTrack );
+
+        // Add the new Meta::MediaDeviceTrackPtr into the device collection
+
+        // add track to collection
+        addMediaDeviceTrackToCollection( destTrack );
+
+        // only send collection updates every 5 seconds, to avoid constant refresh
+        // on each new entry
+
+        if( !m_timer.isActive() )
+        {
+            m_timer.start( 5000 );
+        }
+
+    }
 
 }
 
 void
-UmsHandler::dirListerParseCompleted()
+UmsHandler::slotDirtyEntry( const QString &path )
 {
-    debug() << "Succeeded: true";
-    m_memColl->slotAttemptConnectionDone( true );
+    DEBUG_BLOCK
+    Q_UNUSED( path )
+    if( !m_dirtytimer.isActive() )
+    {
+        debug() << "timer inactive, starting...";
+        m_dirtytimer.start( 5000 );
+    }
+    else
+    {
+        m_dirtytimer.stop();
+        m_dirtytimer.start( 5000 );
+    }
+}
+
+void
+UmsHandler::slotDeleteEntry( const QString &path )
+{
+    DEBUG_BLOCK
+
+    if( !m_files.contains( path ) )
+        return;
+
+    Meta::MediaDeviceTrackPtr devicetrack = m_files.value( path );
+
+    Meta::TrackPtr track = Meta::TrackPtr::staticCast( devicetrack );
+
+    // remove from titlemap
+
+    m_titlemap.remove( track->name(), track );
+
+    // remove from collection
+
+    removeMediaDeviceTrackFromCollection( devicetrack );
+
+    m_files.remove( path );
+    m_currtracklist.removeOne( path );
+
+    // only send collection updates every 5 seconds, to avoid constant refresh
+    // on each new entry
+
+    if( !m_timer.isActive() )
+    {
+        m_timer.start( 5000 );
+    }
+}
+
+int
+UmsHandler::addPath( const QString &path )
+{
+    DEBUG_BLOCK
+    QFileInfo info( path );
+    if( info.isDir() )
+    {
+        if( m_dirList.contains( path ) )
+            return 0;
+        m_dirList << info.canonicalPath();
+        return 1;
+    }
+    else if( info.isFile() )
+    {
+        if( m_currtracklist.contains( path ) )
+            return 0;
+        foreach( QString format, m_formats )
+            if( info.suffix() == format )
+            {
+                debug() << "File found is: " << info.canonicalFilePath();
+                m_currtracklist << info.canonicalFilePath();
+                return 2;
+            }
+    }
+
+    return 0;
 }
 
 bool
@@ -178,6 +331,21 @@ UmsHandler::collectionActions()
 {
 
     QList< QAction* > actions;
+
+    // Button to start parse
+
+    if( !m_parsed )
+    {
+        if( !m_parseAction )
+        {
+            m_parseAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n(  "&Read Device" ), this );
+            m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
+
+            connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( parseTracks() ) );
+        }
+
+        actions.append( m_parseAction );
+    }
 
     return actions;
 }
@@ -351,45 +519,43 @@ UmsHandler::fileDeleted( KJob *job )  //SLOT
     }
 }
 #endif
-
 #if 0
-
 QString
 UmsHandler::libGetTitle( const Meta::MediaDeviceTrackPtr &track )
 {
     return QString::fromUtf8( m_itdbtrackhash[ track ]->title );
 }
-
+#endif
 QString
 UmsHandler::libGetAlbum( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_itdbtrackhash[ track ]->album );
+    return m_umstrackhash.value( track )->album()->name();
 }
 
 QString
 UmsHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_itdbtrackhash[ track ]->artist );
+    return m_umstrackhash.value( track )->artist()->name();
 }
 
 QString
 UmsHandler::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_itdbtrackhash[ track ]->composer );
+    return m_umstrackhash.value( track )->composer()->name();
 }
 
 QString
 UmsHandler::libGetGenre( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QString::fromUtf8( m_itdbtrackhash[ track ]->genre );
+    return m_umstrackhash.value( track )->genre()->name();
 }
 
 int
 UmsHandler::libGetYear( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_itdbtrackhash[ track ]->year;
+    return m_umstrackhash.value( track )->year()->name().toInt();
 }
-
+#if 0
 int
 UmsHandler::libGetLength( const Meta::MediaDeviceTrackPtr &track )
 {
@@ -652,38 +818,58 @@ UmsHandler::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta:
     m_itdbtrackhash[ destTrack ]->ums_path = g_strdup( umsPath(pathname).toLatin1() );
     debug() << "on iPod: " << m_itdbtrackhash[ destTrack ]->ums_path;
 }
-#endif
-#if 0
+
+
 void
 UmsHandler::libCreateTrack( const Meta::MediaDeviceTrackPtr& track )
 {
     m_umstrackhash[ track ] = itdb_track_new();
 }
-
+#endif
 void
 UmsHandler::prepareToParseTracks()
 {
-    m_currtrackurl = new QListIterator<KUrl>( m_dirLister->items().urlList() );
+    DEBUG_BLOCK
+    m_parsed = true;
+    m_listpos = 0;
+    //m_currtrackurllist = m_dirLister->items().urlList();
+    debug() << "list size: " << m_currtracklist.size();
 }
 
 bool
 UmsHandler::isEndOfParseTracksList()
 {
-    return m_currtrackurl->hasNext();
+        DEBUG_BLOCK
+    return !( m_listpos < m_currtracklist.size() );
 }
 
 void
 UmsHandler::prepareToParseNextTrack()
 {
-    /* do nothing, next() moves iterator forward */
+    m_listpos++;
 }
 
 void
 UmsHandler::nextTrackToParse()
 {
-    MetaFile::Track( m_currtrackurl->next() );
+        DEBUG_BLOCK
+    Meta::TrackPtr track( new MetaFile::Track( m_currtracklist.at( m_listpos ) ) );
+    m_currtrack = track;
 }
-#endif
+
+void
+UmsHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
+{
+    m_umstrackhash.insert( track, m_currtrack );
+    m_files.insert( m_currtrack->playableUrl().path(), track );
+}
+
+Meta::TrackPtr
+UmsHandler::sourceTrack()
+{
+    return m_currtrack;
+}
+
 /// Playlist Parsing
 #if 0
 void
@@ -816,14 +1002,7 @@ UmsHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
     }
 }
 #endif
-#if 0
-void
-UmsHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
-{
-    m_itdbtrackhash[ track ] = m_currtrack;
-    m_files.insert( QString(m_currtrack->ums_path).toLower(), m_currtrack );
-}
-#endif
+
 QStringList
 UmsHandler::supportedFormats()
 {
@@ -866,7 +1045,7 @@ UmsHandler::hasCapabilityInterface( Handler::Capability::Type type ) const
     switch( type )
     {
         case Handler::Capability::Readable:
-            return false;
+            return true;
         case Handler::Capability::Artwork:
         case Handler::Capability::Playlist:
         case Handler::Capability::Writable:
@@ -884,7 +1063,7 @@ UmsHandler::createCapabilityInterface( Handler::Capability::Type type )
     switch( type )
     {
         case Handler::Capability::Readable:
-            //return new Handler::UmsReadCapability( this );
+            return new Handler::UmsReadCapability( this );
             /*
         case Handler::Capability::Artwork:
             return new Handler::UmsArtworkCapability( this );

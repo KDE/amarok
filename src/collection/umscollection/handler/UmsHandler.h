@@ -25,7 +25,7 @@
 
 //#include "UmsArtworkCapability.h"
 //#include "UmsPlaylistCapability.h"
-//#include "UmsReadCapability.h"
+#include "UmsReadCapability.h"
 //#include "UmsWriteCapability.h"
 
 #include "MediaDeviceMeta.h"
@@ -35,12 +35,14 @@
 
 #include <KDiskFreeSpaceInfo>
 
+#include <KDirWatch>
 #include <KIO/Job>
 #include "kjob.h"
 #include <ctime> // for kjob.h
 #include <KTempDir>
 #include <threadweaver/Job.h>
 
+#include <QList>
 #include <QObject>
 #include <QMap>
 #include <QMultiMap>
@@ -56,6 +58,7 @@ class KDirLister;
 class KFileItem;
 class KUrl;
 
+class QAction;
 class QString;
 class QMutex;
 
@@ -87,9 +90,11 @@ class UmsHandler : public Meta::MediaDeviceHandler
         virtual bool hasCapabilityInterface( Handler::Capability::Type type ) const;
         virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
 
+
+
         //friend class Handler::UmsArtworkCapability;
         //friend class Handler::UmsPlaylistCapability;
-        //friend class Handler::UmsReadCapability;
+        friend class Handler::UmsReadCapability;
         //friend class Handler::UmsWriteCapability;
 
         /// Ums-Specific Methods
@@ -174,7 +179,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
         };
 
         /// Functions for ReadCapability
-#if 0
+
         virtual void prepareToParseTracks();
         virtual bool isEndOfParseTracksList();
         virtual void prepareToParseNextTrack();
@@ -182,12 +187,18 @@ class UmsHandler : public Meta::MediaDeviceHandler
 
         virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
 
-        virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
+        Meta::TrackPtr sourceTrack();
+
         virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
+
+        int addPath( const QString &path );
+#if 0
+        virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
+
         virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track );
@@ -207,6 +218,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
 
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;
+
         /// Ums Methods
 
 #if 0
@@ -215,13 +227,28 @@ class UmsHandler : public Meta::MediaDeviceHandler
         bool kioCopyTrack( const KUrl &src, const KUrl &dst );
         void deleteFile( const KUrl &url );
 #endif
+
+
         /**
         * Handler Variables
         */
 
-        KDirLister           *m_dirLister;
+        KDirWatch             m_watcher;
 
-        QListIterator<KUrl>  *m_currtrackurl;
+        //KUrl::List            m_currtrackurllist;
+        QStringList           m_currtracklist;
+        int                   m_listpos; // list position
+        Meta::TrackPtr        m_currtrack;
+
+        QList<QString>        m_dirtylist;
+
+        QStringList           m_dirList;
+        int                   m_dirs;
+
+        QTimer                m_timer;
+        QTimer                m_dirtytimer;
+
+        QStringList           m_formats;
 
         // For space checks
         QString               m_filepath;
@@ -245,6 +272,11 @@ class UmsHandler : public Meta::MediaDeviceHandler
         bool    m_wasMounted;
         QString m_name;
 
+        /* Ums Parsing */
+
+        bool m_parsed;
+        QAction *m_parseAction;
+
         /* Success/Failure */
         bool m_dbChanged;
         bool m_copyFailed;
@@ -255,6 +287,8 @@ class UmsHandler : public Meta::MediaDeviceHandler
 
         // Hash that associates an MetaFile::Track to every Track*
         QHash<Meta::MediaDeviceTrackPtr, Meta::TrackPtr> m_umstrackhash;
+
+        QHash<QString,Meta::MediaDeviceTrackPtr> m_files; // path, MDTrackPtr
 
         // Hash that associates an Itdb_Playlist* to every PlaylistPtr
         //QHash<Meta::MediaDevicePlaylistPtr, Itdb_Playlist*> m_itdbplaylisthash;
@@ -267,7 +301,10 @@ class UmsHandler : public Meta::MediaDeviceHandler
         QSet<QString> m_coverArt;
 
     private slots:
-        void dirListerParseCompleted();
+        void slotCreateEntry( const QString &path );
+        void slotCheckDirty();
+        void slotDirtyEntry( const QString &path );
+        void slotDeleteEntry( const QString &path );
 #if 0
         void fileTransferred( KJob *job );
         void fileDeleted( KJob *job );

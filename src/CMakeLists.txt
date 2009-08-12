@@ -96,8 +96,10 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
   collection/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
+  collection/mediadevicecollection/handler/capabilities/CustomReadCapability.cpp
   collection/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
   collection/mediadevicecollection/handler/capabilities/ReadCapability.cpp
+  collection/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
   collection/mediadevicecollection/handler/capabilities/WriteCapability.cpp
   collection/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
   collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp

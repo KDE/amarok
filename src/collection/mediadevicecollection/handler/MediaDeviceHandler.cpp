@@ -54,6 +54,8 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     , m_isCopying( false )
     , m_isDeleting( false )
     , m_pc( 0 )
+    , m_rcb( 0 )
+    , m_crc( 0 )
     , m_rc( 0 )
     , m_wc( 0 )
 {
@@ -102,6 +104,27 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::MediaDeviceTrackPt
     destTrack->setPlayableUrl( m_rc->libGetPlayableUrl( srcTrack ) );
 
     destTrack->setType( m_rc->libGetType( srcTrack ) );
+}
+
+void
+MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack )
+{
+    /* 1-liner info retrieval */
+    destTrack->setTitle( srcTrack->name() );
+    destTrack->setLength( srcTrack->length() );
+    destTrack->setTrackNumber( srcTrack->trackNumber() );
+    destTrack->setComment( srcTrack->comment() );
+    destTrack->setDiscNumber( srcTrack->discNumber() );
+    destTrack->setBitrate( srcTrack->bitrate() );
+    destTrack->setSamplerate( srcTrack->sampleRate() );
+    destTrack->setFileSize( srcTrack->filesize() );
+    destTrack->setPlayCount( srcTrack->lastPlayed() );
+    destTrack->setLastPlayed( srcTrack->lastPlayed() );
+    destTrack->setRating( srcTrack->rating() );
+
+    destTrack->setPlayableUrl( srcTrack->playableUrl() );
+
+    destTrack->setType( srcTrack->type() );
 }
 
 void
@@ -154,9 +177,13 @@ MediaDeviceHandler::addMediaDeviceTrackToCollection(Meta::MediaDeviceTrackPtr& t
     ComposerMap composerMap = m_memColl->composerMap();
     YearMap yearMap = m_memColl->yearMap();
 
+    debug() << "1";
+
     /* 1-liner info retrieval */
 
-    getBasicMediaDeviceTrackInfo( track, track );
+    //Meta::TrackPtr srcTrack = Meta::TrackPtr::staticCast( track );
+
+    //getBasicMediaDeviceTrackInfo( srcTrack, track );
 
     /* map-related info retrieval */
     setupArtistMap( track, artistMap );
@@ -458,6 +485,10 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     setBasicMediaDeviceTrackInfo( track, destTrack );
 
+    // Fill metadata of destTrack too with the same info
+
+    getBasicMediaDeviceTrackInfo( track, destTrack );
+
     // set up the play url
 
     m_wc->libSetPlayableUrl( destTrack, track );
@@ -678,7 +709,7 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
 void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
 {
-    QString artist( m_rc->libGetArtist( track ) );
+    QString artist( m_rcb->libGetArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
     if ( artistMap.contains( artist ) )
@@ -696,7 +727,7 @@ MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& 
 void
 MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& albumMap )
 {
-    QString album( m_rc->libGetAlbum( track ) );
+    QString album( m_rcb->libGetAlbum( track ) );
     MediaDeviceAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
@@ -714,7 +745,7 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 void
 MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& genreMap )
 {
-    QString genre = m_rc->libGetGenre( track );
+    QString genre = m_rcb->libGetGenre( track );
     MediaDeviceGenrePtr genrePtr;
 
     if ( genreMap.contains( genre ) )
@@ -733,7 +764,7 @@ MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& ge
 void
 MediaDeviceHandler::setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap& composerMap )
 {
-    QString composer ( m_rc->libGetComposer( track ) );
+    QString composer ( m_rcb->libGetComposer( track ) );
     MediaDeviceComposerPtr composerPtr;
 
     if ( composerMap.contains( composer ) )
@@ -752,7 +783,7 @@ void
 MediaDeviceHandler::setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap& yearMap )
 {
     QString year;
-    year = year.setNum( m_rc->libGetYear( track ) );
+    year = year.setNum( m_rcb->libGetYear( track ) );
     MediaDeviceYearPtr yearPtr;
     if ( yearMap.contains( year ) )
         yearPtr = MediaDeviceYearPtr::staticCast( yearMap.value( year ) );
@@ -771,7 +802,7 @@ MediaDeviceHandler::parseTracks()
     DEBUG_BLOCK
 
     setupReadCapability();
-    if ( !m_rc )
+    if ( !m_rcb )
         return;
 
     TrackMap trackMap;
@@ -782,17 +813,26 @@ MediaDeviceHandler::parseTracks()
     YearMap yearMap;
 
     /* iterate through tracklist and add to appropriate map */
-    for( m_rc->prepareToParseTracks(); !m_rc->isEndOfParseTracksList(); m_rc->prepareToParseNextTrack() )
+    for( m_rcb->prepareToParseTracks(); !m_rcb->isEndOfParseTracksList(); m_rcb->prepareToParseNextTrack() )
     {
         /// Fetch next track to parse
 
-        m_rc->nextTrackToParse();
+        m_rcb->nextTrackToParse();
 
         MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
-        m_rc->setAssociateTrack( track );
+        m_rcb->setAssociateTrack( track );
 
-        getBasicMediaDeviceTrackInfo( track, track );
+        if( m_rc != 0 )
+        {
+            getBasicMediaDeviceTrackInfo( track, track );
+        }
+
+        else if( m_crc != 0 )
+        {
+            Meta::TrackPtr srcTrack = m_crc->sourceTrack();
+            getBasicMediaDeviceTrackInfo( srcTrack, track );
+        }
 
         /* map-related info retrieval */
         setupArtistMap( track, artistMap );
@@ -885,6 +925,8 @@ MediaDeviceHandler::parseTracks()
     m_memColl->setComposerMap( composerMap );
     m_memColl->setYearMap( yearMap );
     m_memColl->releaseLock();
+
+    m_memColl->collectionUpdated();
 }
 
 void
@@ -946,8 +988,8 @@ MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
 float
 MediaDeviceHandler::freeSpace() const
 {
-    if ( m_rc )
-        return ( m_rc->totalCapacity() - m_rc->usedCapacity() );
+    if ( m_rcb )
+        return ( m_rcb->totalCapacity() - m_rcb->usedCapacity() );
     else
         return 0.0;
 }
@@ -955,8 +997,8 @@ MediaDeviceHandler::freeSpace() const
 float
 MediaDeviceHandler::usedcapacity() const
 {
-    if ( m_rc )
-        return m_rc->usedCapacity();
+    if ( m_rcb )
+        return m_rcb->usedCapacity();
     else
         return 0.0;
 }
@@ -964,8 +1006,8 @@ MediaDeviceHandler::usedcapacity() const
 float
 MediaDeviceHandler::totalcapacity() const
 {
-    if ( m_rc )
-        return m_rc->totalCapacity();
+    if ( m_rcb )
+        return m_rcb->totalCapacity();
     else
         return 0.0;
 }
@@ -1055,16 +1097,29 @@ MediaDeviceHandler::deletePlaylists( const Meta::MediaDevicePlaylistList &playli
 void
 MediaDeviceHandler::setupReadCapability()
 {
+    DEBUG_BLOCK
     MediaDeviceHandler *handler = const_cast<MediaDeviceHandler*> ( this );
-    if( !m_rc )
+    if( !m_rcb )
     {
-        debug() << "RC does not exist";
+        debug() << "RCB does not exist";
         if( handler->hasCapabilityInterface( Handler::Capability::Readable ) )
         {
             debug() << "Has read capability interface";
-            m_rc = handler->create<Handler::ReadCapability>();
+            m_rcb = handler->create<Handler::ReadCapabilityBase>();
+            m_rc = 0;
+            m_crc = 0;
+            if( m_rcb->inherits( "Handler::ReadCapability" ) )
+            {
+                debug() << "Making read capability";
+                m_rc = qobject_cast<Handler::ReadCapability *>( m_rcb );
+            }
+            else if( m_rcb->inherits( "Handler::CustomReadCapability" ) )
+            {
+                debug() << "making custom read capability";
+                m_crc = qobject_cast<Handler::CustomReadCapability *>( m_rcb );
+            }
             debug() << "Created rc";
-            if( !m_rc )
+            if( !m_rcb )
             {
                 debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting.";
             }

@@ -14,50 +14,32 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef UMSHANDLER_READCAPABILITY_H
-#define UMSHANDLER_READCAPABILITY_H
+#ifndef MEDIADEVICEHANDLER_CUSTOMREADCAPABILITY_H
+#define MEDIADEVICEHANDLER_CUSTOMREADCAPABILITY_H
 
-#include "CustomReadCapability.h"
-
-namespace Meta {
-    class UmsHandler;
-}
+#include "mediadevicecollection_export.h"
+#include "ReadCapabilityBase.h"
+#include "../../MediaDeviceMeta.h"
 
 namespace Handler
 {
 
-class UmsReadCapability : public CustomReadCapability
+class MEDIADEVICECOLLECTION_EXPORT CustomReadCapability : public Handler::ReadCapabilityBase
 {
-        Q_OBJECT
+    Q_OBJECT
 
     public:
-        UmsReadCapability( Meta::UmsHandler *handler );
+        virtual ~CustomReadCapability();
 
-        virtual void prepareToParseTracks();
+        /* Parsing of Tracks on Device */
 
-        virtual bool isEndOfParseTracksList();
+        /**
+         * Get a track from which to copy metadata for new media device track
+         */
 
-        virtual void prepareToParseNextTrack();
+        virtual Meta::TrackPtr sourceTrack() = 0;
 
-        virtual void nextTrackToParse();
-
-        virtual void setAssociateTrack( const Meta::MediaDeviceTrackPtr track );
-
-        virtual float usedCapacity() const;
-        virtual float totalCapacity() const;
-
-        virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
-
-        virtual Meta::TrackPtr sourceTrack();
-
-    private:
-        Meta::UmsHandler *m_handler;
 };
-
 }
 
 #endif

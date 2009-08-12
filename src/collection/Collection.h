@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef AMAROK_COLLECTION_H
 #define AMAROK_COLLECTION_H
 
@@ -32,7 +32,7 @@
 #include <KUrl>
 
 class CollectionLocation;
- 
+
 namespace Amarok
 {
 
@@ -59,14 +59,14 @@ class AMAROK_EXPORT TrackProvider
         virtual ~TrackProvider();
 
         /**
-            Returns true if this track provider has a chance of providing the 
+            Returns true if this track provider has a chance of providing the
             track specified by @p url.
             This should do a minimal amount of checking, and return quickly.
         */
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         /**
-            Creates a TrackPtr object for url @p url.  Returns a null track Ptr if 
-            it cannot be done. 
+            Creates a TrackPtr object for url @p url.  Returns a null track Ptr if
+            it cannot be done.
             If asynchronysity is desired it is suggested to return a MetaProxy track here
             and have the proxy watch for the real track.
         */
@@ -124,12 +124,12 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
             @return A querymaker that belongs to this collection.
         */
         virtual QueryMaker * queryMaker() = 0;
-	/**
-	   The collection's UserPlaylistProvider
-	   @return The UserPlaylistProvider that belongs to this collection.
+        /**
+           The collection's UserPlaylistProvider
+           @return The UserPlaylistProvider that belongs to this collection.
 
-	*/
-	virtual UserPlaylistProvider* userPlaylistProvider() { return 0; }
+        */
+        virtual UserPlaylistProvider* userPlaylistProvider() { return 0; }
         /**
             Begin a full scan on the collection.  This is not valid for all collections
         */
@@ -165,13 +165,14 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
         virtual float usedCapacity() const { return 0.0; }
         virtual float totalCapacity() const { return 0.0; }
 
-        virtual void collectionUpdated() { emit updated(); }
-
         virtual CollectionLocation* location() const;
 
         //convenience methods so that it is not necessary to create a CollectionLocation
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
+
+    public slots:
+        virtual void collectionUpdated() { emit updated(); }
 
 
     signals:
