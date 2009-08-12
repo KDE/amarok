@@ -182,9 +182,10 @@ UmsHandler::slotCreateEntry( const QString &path )
 void
 UmsHandler::slotCheckDirty()
 {
+    m_dirtytimer.stop();
+
     if( m_dirtylist.isEmpty() )
     {
-        m_dirtytimer.stop();
         return;
     }
 
@@ -215,16 +216,17 @@ UmsHandler::slotCheckDirty()
         // add track to collection
         addMediaDeviceTrackToCollection( destTrack );
 
-        // only send collection updates every 5 seconds, to avoid constant refresh
-        // on each new entry
-
-        if( !m_timer.isActive() )
-        {
-            m_timer.start( 5000 );
-        }
-
     }
 
+    m_dirtylist.clear();
+
+    // only send collection updates every 5 seconds, to avoid constant refresh
+    // on each new entry
+
+    if( !m_timer.isActive() )
+    {
+        m_timer.start( 5000 );
+    }
 }
 
 void
