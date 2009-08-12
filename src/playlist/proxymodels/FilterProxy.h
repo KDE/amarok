@@ -97,7 +97,7 @@ protected:
      * @param row the row index to be converted.
      * @return the index of the row that's valid in this proxy.
      */
-    int rowFromSource( int row ) const;
+    virtual int rowFromSource( int row ) const;
 
     /**
      * Converts a row index that's valid in this proxy to a row index valid in the proxy
@@ -105,7 +105,7 @@ protected:
      * @param row the row index to be converted.
      * @return the index of the row that's valid in the proxy below this one.
      */
-    int rowToSource( int row ) const;
+    virtual int rowToSource( int row ) const;
 
 protected slots:
     /**

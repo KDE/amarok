@@ -155,6 +155,7 @@ FilterProxy::matchesCurrentSearchTerm( int source_row ) const
 int
 FilterProxy::rowToSource( int row ) const
 {
+    DEBUG_BLOCK
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
 

@@ -295,9 +295,11 @@ Playlist::Actions::queuePosition( quint64 id )
 void
 Playlist::Actions::queue( QList<int> rows )
 {
+    DEBUG_BLOCK
     foreach( int row, rows )
     {
         quint64 id = m_topmostModel->idAt( row );
+        debug() << "About to queue proxy row"<< row;
         m_navigator->queueId( id );
         m_topmostModel->setRowQueued( row );
     }

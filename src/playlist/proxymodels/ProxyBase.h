@@ -19,6 +19,7 @@
 
 #include "AbstractModel.h"
 #include "playlist/PlaylistItem.h"
+#include "Debug.h"
 
 #include <QSortFilterProxyModel>
 
@@ -358,7 +359,7 @@ protected:
      * @param row the row index to be converted.
      * @return the index of the row that's valid in this proxy.
      */
-    virtual inline int rowFromSource( int row ) const
+    virtual int rowFromSource( int row ) const
     { return row; }
 
     /**
@@ -370,8 +371,10 @@ protected:
      * @param row the row index to be converted.
      * @return the index of the row that's valid in the proxy below this one.
      */
-    virtual inline int rowToSource( int row ) const
-    { return row; }
+    virtual int rowToSource( int row ) const
+    { DEBUG_BLOCK
+      debug()<< "DEFAULT IMPLEMENTATION"; return row; }
+
 
     AbstractModel *m_belowModel;
 };
