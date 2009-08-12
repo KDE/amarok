@@ -374,6 +374,7 @@ MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     : ServiceAlbumWithCover( resultRow )
     , m_downloadMembership ( false )
     , m_purchaseAction( 0 )
+    , m_addToFavoritesAction( 0 )
 {
     debug() << "create album from result row: " << resultRow;
 
