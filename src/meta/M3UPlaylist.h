@@ -43,32 +43,32 @@ class M3UPlaylist : public PlaylistFile
         ~M3UPlaylist();
 
         /* Playlist virtual functions */
-        virtual QString name() const { return prettyName(); };
-        virtual QString prettyName() const { return m_url.fileName(); };
+        virtual QString name() const { return prettyName(); }
+        virtual QString prettyName() const { return m_url.fileName(); }
 
         /** returns all tracks in this playlist */
-        virtual TrackList tracks() { return m_tracks; };
+        virtual TrackList tracks() { return m_tracks; }
 
-            /* the following has been copied from Meta.h
+       /* the following has been copied from Meta.h
         * it is my hope that we can integrate Playlists
         * better into the rest of the Meta framework someday ~Bart Cerneels
         * TODO: Playlist : public MetaBase
-            */
-        bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; };
+        */
+        bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
-        Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; };
+        Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
-        KUrl retrievableUrl() { return m_url; };
+        KUrl retrievableUrl() { return m_url; }
 
         virtual QStringList groups() { return m_groups; }
 
         /* PlaylistFile methods */
         bool isWritable();
         void setName( const QString &name );
-        void setGroups( const QStringList &groups ) { m_groups = groups; };
+        void setGroups( const QStringList &groups ) { m_groups = groups; }
 
         bool save( const KUrl &location, bool relative );
-        bool load( QTextStream &stream ) { return loadM3u( stream ); };
+        bool load( QTextStream &stream ) { return loadM3u( stream ); }
 
     private:
         bool loadM3u( QTextStream &stream );
@@ -77,7 +77,6 @@ class M3UPlaylist : public PlaylistFile
 
         TrackList m_tracks;
         QStringList m_groups;
-
 };
 
 }

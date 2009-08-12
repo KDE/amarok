@@ -592,6 +592,7 @@ set(amaroklib_LIB_SRCS
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
+        ../tests/meta/TestM3UPlaylist.cpp
         ../tests/meta/TestMetaTrack.cpp
         ../tests/meta/TestPLSPlaylist.cpp
         ../tests/meta/TestPlaylistFileSupport.cpp

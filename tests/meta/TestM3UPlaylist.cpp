@@ -17,19 +17,19 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "TestPLSPlaylist.h"
+#include "TestM3UPlaylist.h"
 
 #include <KStandardDirs>
 
-TestPLSPlaylist::TestPLSPlaylist( QStringList testArgumentList )
+TestM3UPlaylist::TestM3UPlaylist( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PLSPlaylist.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "M3UPlaylist.log" );
     QTest::qExec( this, testArgumentList );
 }
 
-void TestPLSPlaylist::initTestCase()
+void TestM3UPlaylist::initTestCase()
 {
-    QFile playlistFile1( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.pls" ) );
+    QFile playlistFile1( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.m3u" ) );
     QTextStream playlistStream1;
 
     if( !playlistFile1.open( QFile::ReadOnly ) )
@@ -42,9 +42,9 @@ void TestPLSPlaylist::initTestCase()
 }
 
 
-void TestPLSPlaylist::setAndGetName()
+void TestM3UPlaylist::testSetAndGetName()
 {
-    QCOMPARE( m_testPlaylist1.name(), QString( "Playlist_1pls" ) );
+    QCOMPARE( m_testPlaylist1.name(), QString( "Playlist_1m3u" ) );
 
     m_testPlaylist1.setName( "test" );
     QCOMPARE( m_testPlaylist1.name(), QString( "test" ) );
@@ -56,33 +56,49 @@ void TestPLSPlaylist::setAndGetName()
     QCOMPARE( m_testPlaylist1.name(), QString( "playlists" ) );
 }
 
-void TestPLSPlaylist::prettyName()
+void TestM3UPlaylist::testPrettyName()
 {
     QCOMPARE( m_testPlaylist1.prettyName(), QString( "playlists" ) );
 }
 
-void TestPLSPlaylist::tracks()
+void TestM3UPlaylist::testTracks()
 {
     Meta::TrackList tracklist = m_testPlaylist1.tracks();
 
-    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "Stream (http://85.214.44.27:8000)" ) );
-    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "Stream (http://217.20.121.40:8000)" ) );
-    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "Stream (http://85.214.44.27:8100)" ) );
-    QCOMPARE( tracklist.at( 3 ).data()->name(), QString( "Stream (http://85.214.44.27:8200)" ) );
+    QCOMPARE( tracklist.size(), 25 );
+    QCOMPARE( tracklist.at( 0 ).data()->name(), QString( "Free Music Charts (One-Intro by darkermusic)" ) );
+    QCOMPARE( tracklist.at( 1 ).data()->name(), QString( "Reloj de arena" ) );
+    QCOMPARE( tracklist.at( 2 ).data()->name(), QString( "Get up!" ) );
+    QCOMPARE( tracklist.at( 24 ).data()->name(), QString( "Raus" ) );
 }
 
-void TestPLSPlaylist::retrievableUrl()
+void TestM3UPlaylist::testRetrievableUrl()
 {
-    QCOMPARE( m_testPlaylist1.retrievableUrl().pathOrUrl(), KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.pls" ) );
+    QCOMPARE( m_testPlaylist1.retrievableUrl().pathOrUrl(), KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.m3u" ) );
 }
 
-void TestPLSPlaylist::isWritable()
+void TestM3UPlaylist::testSetAndGetGroups()
 {
-    QVERIFY( !m_testPlaylist1.isWritable() );
+    QStringList grouplist;
+    QStringList newGrouplist;
+
+    grouplist = m_testPlaylist1.groups();
+    QCOMPARE( grouplist.size(), 0 );
+
+    newGrouplist.append( "test" );
+    m_testPlaylist1.setGroups( newGrouplist );
+    grouplist = m_testPlaylist1.groups();
+    QCOMPARE( grouplist.size(), 1 );
+    QCOMPARE( grouplist.at(0), QString( "test" ) );
 }
 
-void TestPLSPlaylist::save()
+void TestM3UPlaylist::testIsWritable()
 {
-    QFile::remove( QDir::tempPath() + QDir::separator() + "test.pls" );
-    QVERIFY( m_testPlaylist1.save( QDir::tempPath() + QDir::separator() + "test.pls", false ) );
+    QVERIFY( m_testPlaylist1.isWritable() );
+}
+
+void TestM3UPlaylist::testSave()
+{
+    QFile::remove( QDir::tempPath() + QDir::separator() + "test.m3u" );
+    QVERIFY( m_testPlaylist1.save( QDir::tempPath() + QDir::separator() + "test.m3u", false ) );
 }

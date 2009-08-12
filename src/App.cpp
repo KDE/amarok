@@ -93,6 +93,7 @@ extern void setupEventHandler_mac(long);
 #include "TestCaseConverter.h"
 #include "TestDirectoryLoader.h"
 #include "TestExpression.h"
+#include "TestM3UPlaylist.h"
 #include "TestMetaCueCueFileItem.h"
 #include "TestMetaCueTrack.h"
 #include "TestMetaFileTrack.h"
@@ -597,6 +598,7 @@ App::runUnitTests()
     TestCaseConverter        testCaseConverter( testArgumentList );
     TestDirectoryLoader      testDirectoryLoader( testArgumentList );
     TestExpression           testExpression( testArgumentList );
+    TestM3UPlaylist          testM3UPlaylist( testArgumentList );
     TestMetaCueCueFileItem   testMetaCueCueFileItem( testArgumentList );
     TestMetaCueTrack         testMetaCueTrack( testArgumentList );
     TestMetaFileTrack        testMetaFileTrack( testArgumentList );

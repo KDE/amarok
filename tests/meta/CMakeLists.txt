@@ -1,7 +1,8 @@
 include_directories( .
 )
 
-QT4_AUTOMOC( TestMetaTrack.cpp
+QT4_AUTOMOC( TestM3UPlaylist.cpp
+             TestMetaTrack.cpp
              TestPlaylistFileSupport.cpp
              TestPLSPlaylist.cpp
              )

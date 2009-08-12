@@ -17,32 +17,33 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef TESTPLSPLAYLIST_H
-#define TESTPLSPLAYLIST_H
+#ifndef TESTM3UPLAYLIST_H
+#define TESTM3UPLAYLIST_H
 
-#include "meta/PLSPlaylist.h"
+#include "meta/M3UPlaylist.h"
 
 #include <QtTest>
 
-class TestPLSPlaylist : public QObject
+class TestM3UPlaylist : public QObject
 {
 Q_OBJECT
 
 public:
-    TestPLSPlaylist( QStringList testArgumentList );
+    TestM3UPlaylist( QStringList testArgumentList );
 
 private slots:
     void initTestCase();
 
-    void setAndGetName();
-    void prettyName();
-    void tracks();
-    void retrievableUrl();
-    void isWritable();
-    void save();
+    void testSetAndGetName();
+    void testPrettyName();
+    void testTracks();
+    void testRetrievableUrl();
+    void testSetAndGetGroups();
+    void testIsWritable();
+    void testSave();
 
 private:
-    Meta::PLSPlaylist m_testPlaylist1;
+    Meta::M3UPlaylist m_testPlaylist1;
 };
 
-#endif // TESTPLSPLAYLIST_H
+#endif // TESTM3UPLAYLIST_H
