@@ -69,10 +69,7 @@ public:
     static void destroy();
 
     // functions from QAbstractProxyModel
-    QModelIndex index( int, int c = 0, const QModelIndex& parent = QModelIndex() ) const;
-    QModelIndex parent( const QModelIndex& ) const;
-    QModelIndex mapToSource( const QModelIndex& ) const;
-    QModelIndex mapFromSource( const QModelIndex& ) const;
+
     QVariant data( const QModelIndex &index, int role ) const;
 
     // grouping-related functions

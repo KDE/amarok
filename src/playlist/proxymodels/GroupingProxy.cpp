@@ -79,31 +79,6 @@ Playlist::GroupingProxy::~GroupingProxy()
 {
 }
 
-QModelIndex
-Playlist::GroupingProxy::index( int r, int c, const QModelIndex& ) const
-{
-    if ( m_belowModel->rowExists( r ) )
-        return createIndex( r, c );
-    return QModelIndex();
-}
-
-QModelIndex
-Playlist::GroupingProxy::parent( const QModelIndex& i ) const
-{
-    return sourceModel()->parent( i );
-}
-
-QModelIndex
-Playlist::GroupingProxy::mapToSource( const QModelIndex& i ) const
-{
-    return createIndex( i.row(), i.column() );
-}
-
-QModelIndex
-Playlist::GroupingProxy::mapFromSource( const QModelIndex& i ) const
-{
-    return sourceModel()->index( i.row(), i.column() );
-}
 
 QVariant
 Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
