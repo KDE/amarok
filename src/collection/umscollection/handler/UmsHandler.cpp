@@ -123,12 +123,6 @@ UmsHandler::init()
     m_formats << "mp3" << "wav" << "asf" << "flac" << "wma" << "ogg" << "aac" << "m4a"
             << "mp4" << "mp2" << "ac3";
 
-    QDirIterator it( m_mountPoint, QDirIterator::Subdirectories );
-    while( it.hasNext() )
-    {
-        addPath( it.next() );
-    }
-
     m_timer.setSingleShot( true );
     //m_dirtytimer.setSingleShot( true );
 
@@ -837,6 +831,13 @@ void
 UmsHandler::prepareToParseTracks()
 {
     DEBUG_BLOCK
+
+    QDirIterator it( m_mountPoint, QDirIterator::Subdirectories );
+    while( it.hasNext() )
+    {
+        addPath( it.next() );
+    }
+
     m_parsed = true;
     m_listpos = 0;
     //m_currtrackurllist = m_dirLister->items().urlList();
