@@ -248,7 +248,7 @@ bool isReadable( const KUrl& url )
     if ( !url.isLocalFile() )
         return true; // what else can we say?
 
-    QDir dir( url.path() );
+    QDir dir( url.toLocalFile() );
     return dir.exists();
 }
 
