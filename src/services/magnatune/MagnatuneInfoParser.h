@@ -49,16 +49,17 @@ public:
 
     void getFrontPage();
     void getFavoritesPage();
+    void getReccomendationsPage();
 
 private slots:
 
     void artistInfoDownloadComplete( KJob *downLoadJob );
-    void frontPageDownloadComplete( KJob *downLoadJob );
+    void pageDownloadComplete( KJob *downLoadJob );
 
 private:
 
     KJob * m_infoDownloadJob;
-    KJob * m_frontPageDownloadJob;
+    KJob * m_pageDownloadJob;
 
     QString extractArtistInfo( const QString &artistPage );
     QString generateMemberMenu();

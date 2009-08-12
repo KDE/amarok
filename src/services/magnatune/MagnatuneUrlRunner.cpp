@@ -51,6 +51,10 @@ bool MagnatuneUrlRunner::run( AmarokUrl url )
         {
             emit( showHome() );
         }
+        else if ( command == "show_reccomendations" )
+        {
+            emit( showReccomendations() );
+        }
         else if ( command == "download" || command == "purchase" || command == "buy" )
         {
             //allow some aliases for this command as the context might make one of

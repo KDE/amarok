@@ -107,6 +107,7 @@ public slots:
 
     void showFavoritesPage();
     void showHomePage();
+    void showReccomendationsPage();
 
     void addToFavorites( const QString &sku );
     void removeFromFavorites( const QString &sku );

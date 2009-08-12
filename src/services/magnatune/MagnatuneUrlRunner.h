@@ -41,6 +41,7 @@ public:
 signals:
     void showFavorites();
     void showHome();
+    void showReccomendations();
     void buyOrDownload( const QString &sku );
     void removeFromFavorites( const QString &sku );
 };

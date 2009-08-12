@@ -156,9 +156,9 @@ void MagnatuneInfoParser::getFrontPage()
 {
     showLoading( i18n( "Loading Magnatune.com frontpage..." ) );
     
-    m_frontPageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_frontPageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
-    connect( m_frontPageDownloadJob, SIGNAL(result(KJob *)), SLOT( frontPageDownloadComplete( KJob*) ) );
+    m_pageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
+    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
 }
 
 void MagnatuneInfoParser::getFavoritesPage()
@@ -180,19 +180,45 @@ void MagnatuneInfoParser::getFavoritesPage()
    
     debug() << "loading url: " << url;
 
-    m_frontPageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_frontPageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
-    connect( m_frontPageDownloadJob, SIGNAL(result(KJob *)), SLOT( frontPageDownloadComplete( KJob*) ) );
+    m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
 }
 
-void MagnatuneInfoParser::frontPageDownloadComplete(KJob * downLoadJob)
+void MagnatuneInfoParser::getReccomendationsPage()
 {
+    DEBUG_BLOCK
+
+    MagnatuneConfig config;
+
+    if ( !config.isMember() )
+        return;
+
+    showLoading( i18n( "Loading your personal Magnatune.com reccomendations page..." ) );
+
+    QString type = config.membershipType();
+    QString user = config.username();
+    QString password = config.password();
+
+    QString url = "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_reccomendations.php";
+
+    debug() << "loading url: " << url;
+
+    m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com reccomendations page..." ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
+    
+}
+
+void MagnatuneInfoParser::pageDownloadComplete( KJob * downLoadJob )
+{
+    DEBUG_BLOCK
     if ( !downLoadJob->error() == 0 )
     {
         //TODO: error handling here
         return ;
     }
-    if ( downLoadJob != m_frontPageDownloadJob )
+    if ( downLoadJob != m_pageDownloadJob )
         return ; //not the right job, so let's ignore it
 
 
@@ -211,10 +237,12 @@ QString MagnatuneInfoParser::generateMemberMenu()
 {
     QString homeUrl = "amarok://service_magnatune?command=show_home";
     QString favoritesUrl = "amarok://service_magnatune?command=show_favorites";
+    QString reccomendationsUrl = "amarok://service_magnatune?command=show_reccomendations";
 
     QString menu = "<div align='right'>"
                        "[<a href='" + homeUrl + "' >Home</a>]&nbsp;"
                        "[<a href='" + favoritesUrl + "' >Favorites</a>]&nbsp;"
+                       "[<a href='" + reccomendationsUrl + "' >Reccomendations</a>]&nbsp;"
                     "</div>";
 
     return menu;
