@@ -185,7 +185,7 @@ void MagnatuneInfoParser::getFavoritesPage()
     connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
 }
 
-void MagnatuneInfoParser::getReccomendationsPage()
+void MagnatuneInfoParser::getRecommendationsPage()
 {
     DEBUG_BLOCK
 
@@ -194,18 +194,18 @@ void MagnatuneInfoParser::getReccomendationsPage()
     if ( !config.isMember() )
         return;
 
-    showLoading( i18n( "Loading your personal Magnatune.com reccomendations page..." ) );
+    showLoading( i18n( "Loading your personal Magnatune.com recommendations page..." ) );
 
     QString type = config.membershipType();
     QString user = config.username();
     QString password = config.password();
 
-    QString url = "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_reccomendations.php";
+    QString url = "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_recommendations.php";
 
     debug() << "loading url: " << url;
 
     m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com reccomendations page..." ) );
+    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
     connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
     
 }
@@ -237,12 +237,12 @@ QString MagnatuneInfoParser::generateMemberMenu()
 {
     QString homeUrl = "amarok://service_magnatune?command=show_home";
     QString favoritesUrl = "amarok://service_magnatune?command=show_favorites";
-    QString reccomendationsUrl = "amarok://service_magnatune?command=show_reccomendations";
+    QString recommendationsUrl = "amarok://service_magnatune?command=show_recommendations";
 
     QString menu = "<div align='right'>"
                        "[<a href='" + homeUrl + "' >Home</a>]&nbsp;"
                        "[<a href='" + favoritesUrl + "' >Favorites</a>]&nbsp;"
-                       "[<a href='" + reccomendationsUrl + "' >Reccomendations</a>]&nbsp;"
+                       "[<a href='" + recommendationsUrl + "' >Recommendations</a>]&nbsp;"
                     "</div>";
 
     return menu;

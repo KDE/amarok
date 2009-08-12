@@ -49,7 +49,7 @@ public:
 
     void getFrontPage();
     void getFavoritesPage();
-    void getReccomendationsPage();
+    void getRecommendationsPage();
 
 private slots:
 

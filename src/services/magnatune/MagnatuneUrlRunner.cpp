@@ -51,9 +51,9 @@ bool MagnatuneUrlRunner::run( AmarokUrl url )
         {
             emit( showHome() );
         }
-        else if ( command == "show_reccomendations" )
+        else if ( command == "show_recommendations" )
         {
-            emit( showReccomendations() );
+            emit( showRecommendations() );
         }
         else if ( command == "download" || command == "purchase" || command == "buy" )
         {

@@ -460,7 +460,7 @@ void MagnatuneStore::polish()
 
         connect( runner, SIGNAL( showFavorites() ), this, SLOT( showFavoritesPage() ) );
         connect( runner, SIGNAL( showHome() ), this, SLOT( showHomePage() ) );
-        connect( runner, SIGNAL( showReccomendations() ), this, SLOT( showReccomendationsPage() ) );
+        connect( runner, SIGNAL( showRecommendations() ), this, SLOT( showRecommendationsPage() ) );
         connect( runner, SIGNAL( buyOrDownload( const QString & ) ), this, SLOT( purchase( const QString & ) ) );
         connect( runner, SIGNAL( removeFromFavorites( const QString & ) ), this, SLOT( removeFromFavorites( const QString & ) ) );
         
@@ -673,10 +673,10 @@ void MagnatuneStore::showHomePage()
     m_magnatuneInfoParser->getFrontPage();
 }
 
-void MagnatuneStore::showReccomendationsPage()
+void MagnatuneStore::showRecommendationsPage()
 {
     DEBUG_BLOCK
-    m_magnatuneInfoParser->getReccomendationsPage();
+    m_magnatuneInfoParser->getRecommendationsPage();
 }
 
 void MagnatuneStore::purchase( const QString &sku )
