@@ -56,7 +56,6 @@ class KDirLister;
 class KFileItem;
 class KUrl;
 
-class QListIterator<KUrl>;
 class QString;
 class QMutex;
 
@@ -68,7 +67,7 @@ namespace Meta
     typedef QMap<QString, Meta::TrackPtr> TrackMap;
 
 /* The backend for all Ums calls */
-class MEDIADEVICECOLLECTION_EXPORT UmsHandler : public Meta::MediaDeviceHandler
+class UmsHandler : public Meta::MediaDeviceHandler
 {
     Q_OBJECT
 
