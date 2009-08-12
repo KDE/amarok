@@ -191,6 +191,11 @@ UmsHandler::slotCheckDirty()
 
     foreach( QString path, m_dirtylist )
     {
+        // Skip dupes.  Can happen when new file is
+        // being added outside of Amarok, and
+        // device is being parsed at the same time
+        if( m_files.contains( path ) )
+            continue;
         // Create track based on URL
 
         //QString path = m_dirtylist.takeFirst();
