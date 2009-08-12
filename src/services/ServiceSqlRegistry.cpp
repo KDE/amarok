@@ -189,7 +189,6 @@ ServiceSqlRegistry::getYear( const QString &name, int id )
 AlbumPtr
 ServiceSqlRegistry::getAlbum( const QStringList &rowData )
 {
-    DEBUG_BLOCK
     int id = rowData[0].toInt();
     QMutexLocker locker( &m_albumMutex );
     if( m_albumMap.contains( id ) )
