@@ -126,7 +126,6 @@ Playlist::Widget::Widget( QWidget* parent )
         QToolButton *tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( layoutConfigAction ) );
         if( tbutton )
             tbutton->setPopupMode( QToolButton::InstantPopup );
-        QMenu *groupMenu = layoutConfigAction->menu()->addMenu( KIcon( "object-group" ), i18n( "Group &by" ) );
 
         Playlist::GroupingAction *groupingAction = new Playlist::GroupingAction( this );
         plBar->addAction( groupingAction );
