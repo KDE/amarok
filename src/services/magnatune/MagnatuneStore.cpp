@@ -130,7 +130,14 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     m_registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new MagnatuneSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
     m_serviceready = true;
+    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
     emit( ready() );
+}
+
+MagnatuneStore::~MagnatuneStore()
+{
+    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+    //hm, memory handling?
 }
 
 

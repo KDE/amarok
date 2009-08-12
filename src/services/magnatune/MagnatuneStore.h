@@ -75,7 +75,7 @@ public:
     /**
      * Destructor
      */
-    ~MagnatuneStore() { }
+    ~MagnatuneStore();
 
     void setMembership( const QString &type, const QString &username,  const QString &password );
 
