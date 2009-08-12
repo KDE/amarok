@@ -82,7 +82,7 @@ JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & n
     ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
-
+    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
     m_serviceready = true;
     emit( ready() );
 }
