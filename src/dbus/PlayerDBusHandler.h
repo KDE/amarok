@@ -92,6 +92,7 @@ namespace Amarok
             void VolumeUp( int step ) const;
             void VolumeDown( int step ) const;
             void Mute() const;
+            void ShowOSD() const;
 
         signals:
             void CapsChange( int );

@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Add a dbus ShowOSD method to /Player. (BR 213532)
     * Playlist layouts can now show simple inline playback controls and a
       progress bar for the currently active track. This can be enabled on 
       a per layout basis in the playlist layout manager dialog.

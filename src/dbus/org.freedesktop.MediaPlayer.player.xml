@@ -80,5 +80,8 @@
     <method name="Mute">
     </method>
 
+    <method name="ShowOSD">
+    </method>
+
   </interface>
 </node>

@@ -18,6 +18,7 @@
 #include "PlayerDBusHandler.h"
 
 #include "amarokconfig.h"
+#include "ActionClasses.h"
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
@@ -25,7 +26,7 @@
 #include "PlayerAdaptor.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
-#include "ActionClasses.h"
+#include "Osd.h"
 
 // Marshall the DBusStatus data into a D-BUS argument
 QDBusArgument &operator<<(QDBusArgument &argument, const DBusStatus &status)
@@ -183,6 +184,11 @@ namespace Amarok
     void PlayerDBusHandler::Mute() const
     {
         The::engineController()->toggleMute();
+    }
+
+    void PlayerDBusHandler::ShowOSD() const
+    {
+        Amarok::OSD::instance()->show();
     }
 
     QVariantMap PlayerDBusHandler::GetMetadata()
