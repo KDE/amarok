@@ -9,9 +9,7 @@ add_subdirectory( audiocd )
 
 add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
-if (NOT Q_WS_WIN)
-    add_subdirectory( umscollection )
-endif (Q_WS_WIN)
+add_subdirectory( umscollection )
 
 add_subdirectory( device )
 
