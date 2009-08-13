@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ServiceInfo.h"
+#include "InfoApplet.h"
 
 #include "Amarok.h"
 #include "App.h"
@@ -29,7 +29,7 @@
 #include <PaletteHandler.h>
 
 
-QString ServiceInfo::s_defaultHtml = "<html>"
+QString InfoApplet::s_defaultHtml = "<html>"
                                     "    <head>"
                                     "        <style type=\"text/css\">body {text-align:center}</style>"
                                     "    </head>"
@@ -38,7 +38,7 @@ QString ServiceInfo::s_defaultHtml = "<html>"
                                     "    </body>"
                                     "</html>";
 
-ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
+InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_initialized( false )
     , m_currentPlaylist( 0 )
@@ -65,13 +65,13 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
     constraintsEvent();
 }
 
-ServiceInfo::~ServiceInfo()
+InfoApplet::~InfoApplet()
 {
     delete m_webView;
 
 }
 
-void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
+void InfoApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
     
@@ -84,7 +84,7 @@ void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
 
 }
 
-void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
+void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     Q_UNUSED( name );
 
@@ -121,7 +121,7 @@ void ServiceInfo::dataUpdated( const QString& name, const Plasma::DataEngine::Da
 
 }
 
-void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
+void InfoApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {    
     Q_UNUSED( option );
 
@@ -146,7 +146,7 @@ void ServiceInfo::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *o
 
 }
 
-void ServiceInfo::linkClicked( const QUrl & url )
+void InfoApplet::linkClicked( const QUrl & url )
 {
     debug() << "Link clicked: " << url.toString();
 
@@ -161,5 +161,5 @@ void ServiceInfo::linkClicked( const QUrl & url )
     }
 }
 
-#include "ServiceInfo.moc"
+#include "InfoApplet.moc"
 

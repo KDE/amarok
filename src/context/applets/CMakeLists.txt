@@ -1,7 +1,7 @@
 add_subdirectory( albums )
 add_subdirectory( currenttrack )
 add_subdirectory( lyrics )
-add_subdirectory( serviceinfo )
+add_subdirectory( info )
 add_subdirectory( wikipedia )
 add_subdirectory( videoclip )
 add_subdirectory( photos )

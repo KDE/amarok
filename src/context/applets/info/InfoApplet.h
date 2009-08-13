@@ -39,12 +39,12 @@ class QHBoxLayout;
 class QSpinBox;
 class QCheckBox;
 
-class ServiceInfo : public Context::Applet
+class InfoApplet : public Context::Applet
 {
     Q_OBJECT
 public:
-    ServiceInfo( QObject* parent, const QVariantList& args );
-    virtual ~ServiceInfo();
+    InfoApplet( QObject* parent, const QVariantList& args );
+    virtual ~InfoApplet();
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
@@ -64,6 +64,6 @@ private:
 
 };
 
-K_EXPORT_AMAROK_APPLET( serviceinfo, ServiceInfo )
+K_EXPORT_AMAROK_APPLET( info, InfoApplet )
 
 #endif
