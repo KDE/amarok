@@ -249,6 +249,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
         QTimer                m_dirtytimer;
 
         QStringList           m_formats;
+        QStringList           m_mimetypes;
 
         // For space checks
         QString               m_filepath;
