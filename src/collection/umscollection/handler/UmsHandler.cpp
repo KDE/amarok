@@ -98,28 +98,6 @@ UmsHandler::init()
         return;
     }
 
-    // Get storage access for getting device space capacity/usage
-
-    Solid::Device device = Solid::Device(  m_memColl->udi() );
-    if (  device.isValid() )
-    {
-        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-        if ( storage )
-            m_filepath = storage->filePath();
-        else if ( !m_mountPoint.isEmpty() )
-            m_filepath = m_mountPoint;
-
-        if ( !m_filepath.isEmpty() )
-            m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
-        else
-            m_capacity = 0.0;
-    }
-    else
-    {
-        m_filepath = "";
-        m_capacity = 0.0;
-    }
-
     m_formats << "mp3" << "wav" << "asf" << "flac" << "wma" << "ogg" << "aac" << "m4a"
             << "mp4" << "mp2" << "ac3";
 
@@ -831,6 +809,28 @@ void
 UmsHandler::prepareToParseTracks()
 {
     DEBUG_BLOCK
+
+    // Get storage access for getting device space capacity/usage
+
+    Solid::Device device = Solid::Device(  m_memColl->udi() );
+    if (  device.isValid() )
+    {
+        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+        if ( storage )
+            m_filepath = storage->filePath();
+        else if ( !m_mountPoint.isEmpty() )
+            m_filepath = m_mountPoint;
+
+        if ( !m_filepath.isEmpty() )
+            m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
+        else
+            m_capacity = 0.0;
+    }
+    else
+    {
+        m_filepath = "";
+        m_capacity = 0.0;
+    }
 
     QDirIterator it( m_mountPoint, QDirIterator::Subdirectories );
     while( it.hasNext() )
