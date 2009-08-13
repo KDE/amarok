@@ -36,6 +36,7 @@
 #include <kinputdialog.h>
 #include "kjob.h"
 #include <KMessageBox>
+#include <kmimetype.h>
 #include <KPasswordDialog>
 #include <KStandardDirs>
 #include <KUrl>
@@ -50,6 +51,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QList>
+#include <QMutex>
 #include <QMutexLocker>
 #include <QPixmap>
 #include <QProcess>
@@ -57,6 +59,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTime>
+#include <QWaitCondition>
 
 using namespace Meta;
 
@@ -98,8 +101,16 @@ UmsHandler::init()
         return;
     }
 
+
+/*
     m_formats << "mp3" << "wav" << "asf" << "flac" << "wma" << "ogg" << "aac" << "m4a"
             << "mp4" << "mp2" << "ac3";
+
+*/
+    m_mimetypes << "audio/mpeg" << "audio/x-wav" << "video/x-ms-asf" << "audio/flac"
+            << "audio/x-ms-wma" << "application/x-ogg" << "audio/x-aac" << "audio/mp4a-latm"
+            << "video/mp4" << "audio/ac3";
+
 
     m_timer.setSingleShot( true );
     //m_dirtytimer.setSingleShot( true );
@@ -115,8 +126,6 @@ UmsHandler::init()
              this, SLOT(slotDirtyEntry( const QString&) ), Qt::QueuedConnection );
     connect( &m_watcher, SIGNAL( deleted( const QString & ) ),
              this, SLOT(slotDeleteEntry( const QString& ) ), Qt::QueuedConnection );
-
-    m_watcher.addDir( m_mountPoint, KDirWatch::WatchDirOnly | KDirWatch::WatchFiles | KDirWatch::WatchSubDirs );
 
     m_parsed = false;
     m_parseAction = 0;
@@ -209,7 +218,6 @@ UmsHandler::slotCheckDirty()
 void
 UmsHandler::slotDirtyEntry( const QString &path )
 {
-    DEBUG_BLOCK
     Q_UNUSED( path )
     if( !m_dirtytimer.isActive() )
     {
@@ -259,6 +267,9 @@ int
 UmsHandler::addPath( const QString &path )
 {
     DEBUG_BLOCK
+    int acc = 0;
+    KMimeType::Ptr mime = KMimeType::findByFileContent( path, &acc );
+    debug() << "Got type: " << mime->name();
     QFileInfo info( path );
     if( info.isDir() )
     {
@@ -271,13 +282,23 @@ UmsHandler::addPath( const QString &path )
     {
         if( m_currtracklist.contains( path ) )
             return 0;
-        foreach( QString format, m_formats )
-            if( info.suffix() == format )
+
+        foreach( QString mimetype, m_mimetypes )
+        {
+            if( mime->name() == mimetype )
             {
-                debug() << "File found is: " << info.canonicalFilePath();
                 m_currtracklist << info.canonicalFilePath();
                 return 2;
             }
+        }
+        /*
+        foreach( QString format, m_formats )
+            if( info.suffix() == format )
+            {
+                m_currtracklist << info.canonicalFilePath();
+                return 2;
+            }
+            */
     }
 
     return 0;
@@ -832,6 +853,8 @@ UmsHandler::prepareToParseTracks()
         m_capacity = 0.0;
     }
 
+    m_watcher.addDir( m_mountPoint, KDirWatch::WatchDirOnly | KDirWatch::WatchFiles | KDirWatch::WatchSubDirs );
+
     QDirIterator it( m_mountPoint, QDirIterator::Subdirectories );
     while( it.hasNext() )
     {
@@ -847,7 +870,6 @@ UmsHandler::prepareToParseTracks()
 bool
 UmsHandler::isEndOfParseTracksList()
 {
-        DEBUG_BLOCK
     return !( m_listpos < m_currtracklist.size() );
 }
 
@@ -860,7 +882,6 @@ UmsHandler::prepareToParseNextTrack()
 void
 UmsHandler::nextTrackToParse()
 {
-        DEBUG_BLOCK
     Meta::TrackPtr track( new MetaFile::Track( m_currtracklist.at( m_listpos ) ) );
     m_currtrack = track;
 }
