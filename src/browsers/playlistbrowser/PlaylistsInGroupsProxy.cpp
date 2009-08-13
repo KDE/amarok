@@ -581,7 +581,7 @@ PlaylistsInGroupsProxy::createGroupActions()
 
     if ( m_deleteFolderAction == 0 )
     {
-        m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete group" ), this );
+        m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete Folder" ), this );
         m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
         connect( m_deleteFolderAction, SIGNAL( triggered() ), this, SLOT( slotDeleteGroup() ) );
     }
@@ -589,7 +589,7 @@ PlaylistsInGroupsProxy::createGroupActions()
 
     if ( m_renameFolderAction == 0 )
     {
-        m_renameFolderAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename group" ), this );
+        m_renameFolderAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename Folder..." ), this );
         m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
         connect( m_renameFolderAction, SIGNAL( triggered() ), this, SLOT( slotRenameGroup() ) );
     }
