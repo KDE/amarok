@@ -19,7 +19,6 @@
 #define AMAROK_PLAYLISTSORTPROXY_H
 
 #include "ProxyBase.h"
-#include "FilterProxy.h"
 #include "SortScheme.h"
 
 namespace Playlist

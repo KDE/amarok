@@ -19,7 +19,6 @@
 #define AMAROK_PLAYLISTFILTERPROXY_H
 
 #include "ProxyBase.h"
-#include "playlist/PlaylistModel.h"
 
 namespace Playlist
 {

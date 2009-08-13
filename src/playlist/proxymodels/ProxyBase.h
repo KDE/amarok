@@ -19,7 +19,6 @@
 
 #include "AbstractModel.h"
 #include "playlist/PlaylistItem.h"
-#include "Debug.h"
 
 #include <QSortFilterProxyModel>
 
@@ -372,10 +371,7 @@ protected:
      * @return the index of the row that's valid in the proxy below this one.
      */
     virtual int rowToSource( int row ) const
-    {
-      debug()<< "DEFAULT IMPLEMENTATION";
-      return row;
-    }
+    { return row; }
 
 
     AbstractModel *m_belowModel;

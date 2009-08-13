@@ -16,18 +16,17 @@
  ****************************************************************************************/
 
 #include "FilterProxy.h"
-#include "SearchProxy.h"
 
-#include "Debug.h"
+#include "Amarok.h"
+#include "amarokconfig.h"
 
 namespace Playlist {
 
 FilterProxy::FilterProxy( AbstractModel *belowModel, QObject *parent )
     : ProxyBase( parent )
 {
-    DEBUG_BLOCK
     m_belowModel = belowModel;
-    setSourceModel( dynamic_cast< Model * >( m_belowModel ) );
+    setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
 
     connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
@@ -35,9 +34,6 @@ FilterProxy::FilterProxy( AbstractModel *belowModel, QObject *parent )
 
     KConfigGroup config = Amarok::config("Playlist Search");
     m_passThrough = !config.readEntry( "ShowOnlyMatches", true );
-
-    setObjectName( "FilterProxy" );
-
     setDynamicSortFilter( true );
 }
 
@@ -59,8 +55,6 @@ bool FilterProxy::filterAcceptsRow( int source_row, const QModelIndex & source_p
 int
 FilterProxy::rowCount(const QModelIndex& parent) const
 {
-         debug() << "I am " << objectName() << ", " << this;
-     debug() << "returning " << QSortFilterProxyModel::rowCount( parent ) << " rows";
     return QSortFilterProxyModel::rowCount( parent );
 }
 
@@ -76,7 +70,6 @@ void FilterProxy::filterUpdated()
 int
 FilterProxy::find( const QString &searchTerm, int searchFields )
 {
-    DEBUG_BLOCK
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
     if( !m_passThrough )
@@ -151,7 +144,6 @@ FilterProxy::matchesCurrentSearchTerm( int source_row ) const
 int
 FilterProxy::rowToSource( int row ) const
 {
-    //DEBUG_BLOCK
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = mapToSource( index );
 

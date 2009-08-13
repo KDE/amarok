@@ -15,7 +15,6 @@
  ****************************************************************************************/
 
 #include "ProxyBase.h"
-#include "Debug.h"
 #include "meta/Meta.h"
 
 namespace Playlist
@@ -67,7 +66,6 @@ ProxyBase::clearSearchTerm()
 bool
 ProxyBase::containsId( const quint64 id ) const
 {
-    DEBUG_BLOCK
     // The complexity of this isn't optimal
     for( int i = 0; i < rowCount(); i++ )   //O(n^2) at worst
     {
@@ -80,7 +78,6 @@ ProxyBase::containsId( const quint64 id ) const
 bool
 ProxyBase::containsTrack( const Meta::TrackPtr track ) const
 {
-    DEBUG_BLOCK
     // The complexity of this isn't optimal
     for( int i = 0; i < rowCount(); i++ )   //O(n^2) at worst
     {
@@ -177,12 +174,7 @@ ProxyBase::mimeTypes() const
 int
 ProxyBase::rowCount(const QModelIndex& parent) const
 {
-    DEBUG_BLOCK
-
-     int rowCount = m_belowModel->rowCount( parent );
-     debug() << "I am " << objectName() << ", " << this;
-     debug() << "returning " << rowCount << " rows";
-    return rowCount;
+    return QSortFilterProxyModel::rowCount( parent );
 }
 
 bool
@@ -231,24 +223,7 @@ ProxyBase::setAllUnplayed()
 void
 ProxyBase::setRowQueued( int row )
 {
-    DEBUG_BLOCK
-    debug() << "I am " << objectName();
-    debug() << "I have " << rowCount() << " rows";
-    //debug() << "the filter proxy has " << FilterProxy::instance()->rowCount() << " rows";
-    
-    debug() << "my row: " << row;
-
-    QModelIndex myIndex = createIndex( row, Title );
-    debug() << "my index is valid: " << myIndex.isValid();
-    debug() << "item name: " << myIndex.data( Qt::DisplayRole ).toString();
-    
-    int sourceRow = rowToSource( row );
-
-    QModelIndex sourceIndex = createIndex( sourceRow, Title );
-    debug() << "source item name: " << sourceIndex.data( Qt::DisplayRole ).toString();
-
-    debug() << "source row: " << sourceIndex.row();
-    m_belowModel->setRowQueued( sourceIndex.row() );
+    m_belowModel->setRowQueued( rowToSource( row ) );
 }
 
 void

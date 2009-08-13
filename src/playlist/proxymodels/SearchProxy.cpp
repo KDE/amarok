@@ -17,8 +17,6 @@
 
 #include "SearchProxy.h"
 
-#include "Debug.h"
-
 namespace Playlist
 {
 
@@ -27,7 +25,7 @@ SearchProxy::SearchProxy( AbstractModel *belowModel, QObject *parent )
     , m_currentSearchFields( 0 )
 {
     m_belowModel = belowModel;
-    setSourceModel( dynamic_cast< SortProxy * >( m_belowModel ) );
+    setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
 
     connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
@@ -36,9 +34,6 @@ SearchProxy::SearchProxy( AbstractModel *belowModel, QObject *parent )
     //needed by GroupingProxy:
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
     connect( sourceModel(), SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
-
-     setObjectName( "SearchProxy" );
-
 }
 
 SearchProxy::~SearchProxy()
@@ -47,8 +42,6 @@ SearchProxy::~SearchProxy()
 int
 SearchProxy::find( const QString & searchTerm, int searchFields )
 {
-    DEBUG_BLOCK
-
     ProxyBase::find( searchTerm, searchFields );
 
     m_currentSearchTerm = searchTerm;
@@ -64,8 +57,6 @@ SearchProxy::find( const QString & searchTerm, int searchFields )
 int
 SearchProxy::findNext( const QString & searchTerm, int selectedRow, int searchFields )
 {
-    DEBUG_BLOCK
-
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
     int firstMatch = -1;
@@ -88,8 +79,6 @@ SearchProxy::findNext( const QString & searchTerm, int selectedRow, int searchFi
 int
 SearchProxy::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
 {
-    DEBUG_BLOCK
-
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
     int lastMatch = -1;
@@ -113,7 +102,6 @@ SearchProxy::findPrevious( const QString & searchTerm, int selectedRow, int sear
 void
 SearchProxy::clearSearchTerm()
 {
-    DEBUG_BLOCK
     m_currentSearchTerm.clear();
     m_currentSearchFields = 0;
 

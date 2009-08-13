@@ -17,7 +17,6 @@
 
 #include "SortProxy.h"
 
-#include "Debug.h"
 #include "SortAlgorithms.h"
 
 namespace Playlist
@@ -26,10 +25,8 @@ namespace Playlist
 SortProxy::SortProxy( AbstractModel *belowModel, QObject *parent )
     : ProxyBase( parent )
 {
-    DEBUG_BLOCK
-    debug() << "Instantiating SortProxy";
     m_belowModel = belowModel;
-    setSourceModel( dynamic_cast< FilterProxy * >( m_belowModel ) );
+    setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
     setDynamicSortFilter( false );
 
     //As this Proxy doesn't add or remove tracks, and unique track IDs must be left untouched
@@ -41,9 +38,6 @@ SortProxy::SortProxy( AbstractModel *belowModel, QObject *parent )
     //needed by GroupingProxy:
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
     connect( sourceModel(), SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
-
-
-    setObjectName( "SortProxy" );
 }
 
 SortProxy::~SortProxy()
@@ -101,12 +95,8 @@ SortProxy::rowFromSource( int row ) const
 int
 SortProxy::rowToSource( int row ) const
 {
-    //DEBUG_BLOCK
     QModelIndex index = this->index( row, 0 );
     QModelIndex sourceIndex = SortProxy::mapToSource( index );
-//    metaObject()->method( metaObject()->indexOfMethod( metaObject()->normalizedSignature( "mapToSource( const QModelIndex )" ) ) );
-    //debug()<< "     SortProxy row is " << row;
-    //debug()<< "     FilterProxy row will be "<< sourceIndex.row();
     if ( !sourceIndex.isValid() )
         return ( row == rowCount() ) ? m_belowModel->rowCount() : -1;
     return sourceIndex.row();
