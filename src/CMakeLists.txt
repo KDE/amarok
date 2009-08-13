@@ -56,9 +56,7 @@ include_directories(
     ../tests/meta/file/
     ../tests/meta/multi/
     ../tests/playlistmanager/
-    ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
-    ${TAGLIB_INCLUDES}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
@@ -254,7 +252,7 @@ set(meta_SRCS
     meta/M3UPlaylist.cpp
     meta/Meta.cpp
     meta/MetaUtility.cpp
-    meta/MetaReplayGain.cpp
+    ../shared/MetaReplayGain.cpp
     meta/PLSPlaylist.cpp
     meta/StatisticsProvider.cpp
     meta/PlaylistFileSupport.cpp

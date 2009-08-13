@@ -4,8 +4,6 @@ include_directories( ../
                      charset-detector/src
                      charset-detector/src/tables
                      ${QT_INCLUDES}
-                     ${TAGLIB_INCLUDES}
-                     ${CMAKE_CURRENT_BINARY_DIR}
                    )
 
 if ( TAGLIB-EXTRAS_FOUND )
@@ -52,7 +50,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 
 qt4_automoc( CollectionScanner.cpp )
 
-set(amarokcollectionscanner_SRCS CollectionScanner.cpp MetaReplayGain.cpp AFTUtility.cpp)
+set(amarokcollectionscanner_SRCS CollectionScanner.cpp ../../shared/MetaReplayGain.cpp AFTUtility.cpp)
 
 add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
 

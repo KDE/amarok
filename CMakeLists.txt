@@ -39,6 +39,8 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     endif( NOT WIN32 AND NOT APPLE )
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/shared )
+
 if( WITH_PLAYER )
 #We depend on kde4.2 now.. I believe this is the easiest way to do it.
     set(KDE_MIN_VERSION "4.2.0")
@@ -162,5 +164,4 @@ if( WITH_UTILITIES )
     set(BIN_INSTALL_DIR          "${EXEC_INSTALL_PREFIX}/bin"    CACHE PATH "The subdirectory to the binaries prefix (default prefix/bin)" FORCE)
     add_subdirectory( utilities )
 endif( WITH_UTILITIES )
-
 
