@@ -32,7 +32,9 @@ ShoutcastServiceCollection::ShoutcastServiceCollection( bool isTop500 )
 
 
 ShoutcastServiceCollection::~ShoutcastServiceCollection()
-{}
+{
+    DEBUG_BLOCK
+}
 
 QueryMaker * ShoutcastServiceCollection::queryMaker()
 {

@@ -54,6 +54,8 @@ ShoutcastServiceQueryMaker::ShoutcastServiceQueryMaker( ShoutcastServiceCollecti
 
 ShoutcastServiceQueryMaker::~ShoutcastServiceQueryMaker()
 {
+    DEBUG_BLOCK
+
     delete d;
 }
 
