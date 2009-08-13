@@ -48,6 +48,7 @@
 
 #include <KLocale>
 #include <KPasswordDialog>
+#include <KStandardDirs>
 #include <solid/networking.h>
 
 #include <QComboBox>
@@ -189,11 +190,8 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 
     setShortDescription( i18n( "Last.fm: The social music revolution" ) );
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
-
     setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends or that last.fm considers your musical \"neighbors\"" ) );
-
-    KIconLoader loader;
-    setImagePath( loader.iconPath( "view-services-lastfm-amarok", -128, true ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_lastfm.png" ) );
 
     if( !username.isEmpty() && !password.isEmpty() )
         init();

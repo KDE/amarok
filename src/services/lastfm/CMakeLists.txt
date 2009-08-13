@@ -1,6 +1,4 @@
 
-#add_subdirectory( lastfm )
-
 include_directories(
         ../
         ../../
@@ -18,6 +16,8 @@ include_directories(
         ${LIBLASTFM_INCLUDE_DIR}/.. # so lastfm/foo/bar.h references work
         ${LIBLASTFM_INCLUDE_DIR}
         )
+
+        add_subdirectory( images ) 
 
 ########### next target ###############
 
