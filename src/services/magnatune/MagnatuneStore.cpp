@@ -101,11 +101,8 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
 
     // xgettext: no-c-format
     setLongDescription( i18n( "Magnatune.com is a different kind of record company with the motto \"We are not evil!\" 50% of every purchase goes directly to the artist and if you purchase an album through Amarok, the Amarok project receives a 10% commission. Magnatune.com also offers \"all you can eat\" memberships that lets you download as much of their music as you like." ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_magnatune.png" ) );
 
-    KIconLoader loader;
-    setImagePath( loader.iconPath( "view-services-magnatune-amarok", -128, true ) );
-
-    debug() << "Magnatune browser starting...";
 
     //initBottomPanel();
 //    m_currentlySelectedItem = 0;
