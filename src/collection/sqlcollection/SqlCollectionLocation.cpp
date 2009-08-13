@@ -320,7 +320,6 @@ bool SqlCollectionLocation::startNextJob()
         Meta::TrackPtr track = m_sources.keys().first();
         KUrl src = m_sources.take( track );
 
-        bool jobsCreated = false;
         KIO::FileCopyJob *job = 0;
         KUrl dest = m_destinations[ track ];
         dest.cleanPath();
