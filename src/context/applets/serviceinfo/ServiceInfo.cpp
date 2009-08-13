@@ -51,7 +51,7 @@ ServiceInfo::ServiceInfo( QObject* parent, const QVariantList& args )
 
     m_webView = new Plasma::WebView( this );
 
-    resize( 500, 450 );
+    resize( 500, -1 );
     
     QPalette p = m_webView->palette();
     p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
@@ -77,12 +77,8 @@ void ServiceInfo::constraintsEvent( Plasma::Constraints constraints )
     
     prepareGeometryChange();
 
-    //QSizeF infoSize( m_header->elementRect( "main_info" ).bottomRight().x() - m_header->elementRect( "main_info" ).topLeft().x() - 14, m_header->elementRect( "main_info" ).bottomRight().y() - m_header->elementRect( "main_info" ).topLeft().y() - 10 );
-    
-    m_webView->setPos( 6, 6 );
-    m_webView->resize( boundingRect().width() - 12, 438 );
-
-    
+    m_webView->setPos( standardPadding(), standardPadding() );
+    m_webView->resize( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - 2 * standardPadding() );
 
     m_initialized = true;
 
