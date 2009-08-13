@@ -34,7 +34,7 @@ QString InfoApplet::s_defaultHtml = "<html>"
                                     "        <style type=\"text/css\">body {text-align:center}</style>"
                                     "    </head>"
                                     "    <body>"
-                                    "        <b>%%SERVICE_NAME%%</b>"
+                                    "        <b>%%SUBJECT_NAME%%</b>"
                                     "    </body>"
                                     "</html>";
 
@@ -57,8 +57,6 @@ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
     p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
     p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
     m_webView->setPalette( p );
-
-    //m_serviceMainInfo->setWidget( m_webView );
 
     connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
@@ -112,7 +110,7 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         else
         {
             QString html = s_defaultHtml;
-            html = html.replace( "%%SERVICE_NAME%%", data[ "subject_name" ].toString() );
+            html = html.replace( "%%SUBJECT_NAME%%", data[ "subject_name" ].toString() );
             m_webView->setHtml( html );
         }
         m_webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
