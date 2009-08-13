@@ -5,6 +5,14 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Magnatune.com store: Add support for the personal recommendations
+      featue availalbe to Magnatune.com members. 
+    * Magnatune.com store: Add support for the membership "favorites"
+      feature. Albums can now be marked as favorites using a context 
+      menu action, and the list of favorite albums is availalbe in the
+      info applet. From here cliking links can add albums to the playlist,
+      navigate to the artist or album in the browser, remove an album from
+      favorites and (for download members) start a download.
     * Add a dbus ShowOSD method to /Player. (BR 213532)
     * Playlist layouts can now show simple inline playback controls and a
       progress bar for the currently active track. This can be enabled on 
