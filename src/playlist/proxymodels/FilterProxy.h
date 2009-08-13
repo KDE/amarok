@@ -24,24 +24,23 @@
 namespace Playlist
 {
 /**
-A proxy model used by navigators to only operate on tracks that match the current paylist search term
-
-This model only forwards the functions needed by the navigators and is not intended to be used for
-populating a view. The proxy also provides a number of special functions to deal with cases like when
-a search term is active and the currently playing track is not in the subset represented by this proxy.
-
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+ * A proxy model used by navigators to only operate on tracks that match the current
+ * paylist search term.
+ * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ */
 class FilterProxy : public ProxyBase
 {
     Q_OBJECT
 public:
+    /**
+     * Constructor.
+     */
+    FilterProxy( AbstractModel *belowModel, QObject *parent = 0 );
 
     /**
-     * Accessor function for singleton pattern.
-     * @return The class instance.
+     * Destructor.
      */
-    static FilterProxy* instance();
+    ~FilterProxy();
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
@@ -138,22 +137,10 @@ signals:
     void removedIds( const QList<quint64>& );
 
 private:
-    /**
-     * Constructor.
-     */
-    FilterProxy();
-
-    /**
-     * Destructor.
-     */
-    ~FilterProxy();
-
     QString m_currentSearchTerm;
     int m_currentSearchFields;
 
     bool m_passThrough;
-
-    static FilterProxy* s_instance;      //! instance variable
 };
 
 }

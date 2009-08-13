@@ -22,21 +22,11 @@
 namespace Playlist
 {
 
-SearchProxy* SearchProxy::s_instance = 0;
-
-SearchProxy*
-SearchProxy::instance()
-{
-    if ( s_instance == 0 )
-        s_instance = new SearchProxy();
-    return s_instance;
-}
-
-SearchProxy::SearchProxy()
-    : ProxyBase( SortProxy::instance() )
+SearchProxy::SearchProxy( AbstractModel *belowModel, QObject *parent )
+    : ProxyBase( parent )
     , m_currentSearchFields( 0 )
 {
-    m_belowModel = SortProxy::instance();
+    m_belowModel = belowModel;
     setSourceModel( dynamic_cast< SortProxy * >( m_belowModel ) );
 
     connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );

@@ -24,12 +24,12 @@
 
 #include "Debug.h"
 #include "Meta.h"
-#include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/PlaylistModelStack.h"
 
 Playlist::RepeatAlbumNavigator::RepeatAlbumNavigator()
 {
     DEBUG_BLOCK
-    m_model = GroupingProxy::instance();
+    m_model = Playlist::ModelStack::instance()->top();
     connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ),
              this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
@@ -118,9 +118,9 @@ Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
     if ( id == m_currentTrack )
         return;
 
-    if ( GroupingProxy::instance()->containsId( id ) )
+    if ( Playlist::ModelStack::instance()->top()->containsId( id ) )
     {
-        m_currentAlbum = GroupingProxy::instance()->trackForId( id )->album();
+        m_currentAlbum = Playlist::ModelStack::instance()->top()->trackForId( id )->album();
     }
     else
     {
@@ -162,8 +162,8 @@ Playlist::RepeatAlbumNavigator::requestLastTrack()
 bool
 Playlist::RepeatAlbumNavigator::idLessThan( const quint64& l, const quint64& r )
 {
-    Meta::TrackPtr left = GroupingProxy::instance()->trackForId( l );
-    Meta::TrackPtr right = GroupingProxy::instance()->trackForId( r );
+    Meta::TrackPtr left = Playlist::ModelStack::instance()->top()->trackForId( l );
+    Meta::TrackPtr right = Playlist::ModelStack::instance()->top()->trackForId( r );
     return Meta::Track::lessThan( left, right );
 }
 

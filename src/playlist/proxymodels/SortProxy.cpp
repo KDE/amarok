@@ -23,22 +23,12 @@
 namespace Playlist
 {
 
-SortProxy* SortProxy::s_instance = 0;
-
-SortProxy*
-SortProxy::instance()
-{
-    if ( s_instance == 0 )
-        s_instance = new SortProxy();
-    return s_instance;
-}
-
-SortProxy::SortProxy()
-    : ProxyBase( FilterProxy::instance() )
+SortProxy::SortProxy( AbstractModel *belowModel, QObject *parent )
+    : ProxyBase( parent )
 {
     DEBUG_BLOCK
     debug() << "Instantiating SortProxy";
-    m_belowModel = FilterProxy::instance();
+    m_belowModel = belowModel;
     setSourceModel( dynamic_cast< FilterProxy * >( m_belowModel ) );
     setDynamicSortFilter( false );
 

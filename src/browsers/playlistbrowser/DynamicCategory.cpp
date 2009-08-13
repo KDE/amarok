@@ -26,7 +26,7 @@
 #include "dynamic/biases/EchoNest.h"
 #include "amarokconfig.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "PaletteHandler.h"
 
 #include <QInputDialog>
@@ -227,7 +227,7 @@ DynamicCategory::On()
     //if the playlist is empty, repopulate while we are at it:
 
     DynamicModel::instance()->enable( true );
-    if ( The::playlistModel()->rowCount() == 0 )
+    if ( Playlist::ModelStack::instance()->source()->rowCount() == 0 )
         The::playlistActions()->repopulateDynamicPlaylist();
 }
 

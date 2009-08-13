@@ -49,30 +49,12 @@
 
 #include <typeinfo>
 
-Playlist::Model* Playlist::Model::s_instance = 0;
-
-Playlist::Model* Playlist::Model::instance()
-{
-    return ( s_instance ) ? s_instance : new Model();
-}
-
-void
-Playlist::Model::destroy()
-{
-    if ( s_instance )
-    {
-        delete s_instance;
-        s_instance = 0;
-    }
-}
-
-Playlist::Model::Model()
-        : QAbstractListModel( 0 )
+Playlist::Model::Model( QObject *parent )
+        : QAbstractListModel( parent )
         , m_activeRow( -1 )
         , m_totalLength( 0 )
 {
     DEBUG_BLOCK
-    s_instance = this;
 
     /* The ServicePluginManager needs to be loaded up so that it can handle
      * any tracks in the saved playlist that are associated with services.
@@ -134,11 +116,6 @@ Playlist::Model::Model()
 
    if ( playingTrack > -1 )
        setActiveRow( playingTrack );
-
-   //Stop Amarok from advancing to the next track when play
-   //is pressed.
-   Playlist::Actions::instance()->requestTrack( idAt( playingTrack ) );
-
 }
 
 Playlist::Model::~Model()
@@ -962,12 +939,3 @@ void Playlist::Model::setAllUnplayed()
     foreach( Item * item, m_items )
         item->setState( Item::Unplayed );
 }
-
-namespace The
-{
-    AMAROK_EXPORT Playlist::Model* playlistModel()
-    {
-        return Playlist::Model::instance();
-    }
-}
-

@@ -30,7 +30,7 @@
 #include "PlaylistController.h"
 #include "PlaylistDefines.h"
 #include "PlaylistHeader.h"
-#include "PlaylistModel.h"
+#include "PlaylistModelStack.h"
 #include "ProgressiveSearchWidget.h"
 #include "playlist/PlaylistGroupingAction.h"
 #include "widgets/HorizontalDivider.h"
@@ -93,7 +93,7 @@ Playlist::Widget::Widget( QWidget* parent )
     plBar->setFixedHeight( 30 );
     plBar->setObjectName( "PlaylistToolBar" );
 
-    Model::instance();
+    ModelStack::instance();
 
     // the Controller ctor creates the undo/redo actions that we use below, so we want
     // to make sure that it's been constructed and the the actions registered

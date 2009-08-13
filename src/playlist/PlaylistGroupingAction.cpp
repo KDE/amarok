@@ -17,7 +17,7 @@
 #include "PlaylistGroupingAction.h"
 
 #include "playlist/PlaylistDefines.h"
-#include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/PlaylistModelStack.h"
 
 namespace Playlist
 {
@@ -43,7 +43,7 @@ GroupingAction::GroupingAction( QWidget *parent )
         action->setData( it );
     }
     m_groupingMenu->addActions( m_groupingActions->actions() );
-    int index = groupableCategories.indexOf( GroupingProxy::instance()->groupingCategory() );
+    int index = groupableCategories.indexOf( Playlist::ModelStack::instance()->top()->groupingCategory() );
     if( index > -1 )
         m_groupingActions->actions()[ index ]->setChecked( true );
     connect( m_groupingActions, SIGNAL( triggered( QAction* ) ), this, SLOT( setGrouping( QAction* ) ) );
@@ -56,7 +56,7 @@ void
 GroupingAction::setGrouping( QAction *groupingAction )
 {
     QString groupingCategory = groupingAction->data().toString();
-    GroupingProxy::instance()->setGroupingCategory( groupingCategory );
+    Playlist::ModelStack::instance()->top()->setGroupingCategory( groupingCategory );
 }
 
 }   //namespace Playlist

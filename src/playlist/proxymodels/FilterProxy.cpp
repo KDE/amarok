@@ -22,19 +22,11 @@
 
 namespace Playlist {
 
-FilterProxy* FilterProxy::s_instance = 0;
-
-FilterProxy* FilterProxy::instance()
+FilterProxy::FilterProxy( AbstractModel *belowModel, QObject *parent )
+    : ProxyBase( parent )
 {
-    if ( s_instance == 0 )
-        s_instance = new FilterProxy();
-    return s_instance;
-}
-
-FilterProxy::FilterProxy()
-    : ProxyBase( Model::instance() )
-{
-    m_belowModel = Model::instance();
+    DEBUG_BLOCK
+    m_belowModel = belowModel;
     setSourceModel( dynamic_cast< Model * >( m_belowModel ) );
 
     connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
@@ -67,6 +59,8 @@ bool FilterProxy::filterAcceptsRow( int source_row, const QModelIndex & source_p
 int
 FilterProxy::rowCount(const QModelIndex& parent) const
 {
+         debug() << "I am " << objectName() << ", " << this;
+     debug() << "returning " << QSortFilterProxyModel::rowCount( parent ) << " rows";
     return QSortFilterProxyModel::rowCount( parent );
 }
 

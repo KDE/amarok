@@ -47,7 +47,7 @@
 #include "covermanager/CoverManager.h" // for actions
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistWidget.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -492,14 +492,14 @@ MainWindow::exportPlaylist() const //SLOT
     if( !playlistName.isEmpty() )
     {
         AmarokConfig::setRelativePlaylist( saveRelativeCheck->isChecked() );
-        The::playlistModel()->exportPlaylist( playlistName );
+        Playlist::ModelStack::instance()->source()->exportPlaylist( playlistName );
     }
 }
 
 void
 MainWindow::savePlaylist() const
 {
-    The::playlistModel()->savePlaylist();
+    Playlist::ModelStack::instance()->source()->savePlaylist();
 }
 
 void

@@ -16,7 +16,7 @@
 
 #include "PlaylistSortWidget.h"
 
-#include "proxymodels/SortProxy.h"
+#include "PlaylistModelStack.h"
 #include "proxymodels/SortScheme.h"
 
 namespace Playlist
@@ -116,7 +116,7 @@ SortWidget::updateSortScheme()
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
         scheme.addLevel( SortLevel( category, sortOrder ) );
     }
-    SortProxy::instance()->updateSortMap( scheme );
+    ModelStack::instance()->sortProxy()->updateSortMap( scheme );
 }
 
 }

@@ -39,16 +39,6 @@ class QModelIndex;
 
 namespace Playlist
 {
-class Model;
-}
-
-namespace The
-{
-AMAROK_EXPORT Playlist::Model* playlistModel();
-}
-
-namespace Playlist
-{
 
 class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, public AbstractModel
 {
@@ -59,8 +49,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
     Q_OBJECT
 
     public:
-        static Model* instance();
-        static void destroy();
+        Model( QObject *parent = 0 );
+        ~Model();
 
         // inherited from QAbstractListModel
         int rowCount( const QModelIndex& parent = QModelIndex() ) const { Q_UNUSED( parent ); return m_items.size(); }
@@ -149,8 +139,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void activeRowChanged( int );
 
     private:
-        Model();
-        ~Model();
+
 
         // inherit from QAbstractListModel, and make private so that nobody uses them
         bool insertRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
@@ -173,8 +162,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
         QString m_playlistName;
         bool m_proposeOverwriting;
-
-        static Model* s_instance;      //! instance variable
 
 };
 } // namespace Playlist

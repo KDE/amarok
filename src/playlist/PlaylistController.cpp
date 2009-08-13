@@ -28,7 +28,7 @@
 #include "EngineController.h"
 #include "collection/QueryMaker.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PlaylistFileSupport.h"
 #include "meta/multi/MultiTrack.h"
@@ -58,7 +58,7 @@ Playlist::Controller::Controller( QObject* parent )
         , m_undoStack( new QUndoStack( this ) )
 {
     s_instance = this;
-    m_topmostModel = Playlist::GroupingProxy::instance();
+    m_topmostModel = Playlist::ModelStack::instance()->top();
 
     m_undoStack->setUndoLimit( 20 );
     connect( m_undoStack, SIGNAL( canRedoChanged( bool ) ), this, SIGNAL( canRedoChanged( bool ) ) );
@@ -438,7 +438,7 @@ void
 Playlist::Controller::clear()
 {
     DEBUG_BLOCK
-    removeRows( 0, Model::instance()->rowCount() );
+    removeRows( 0, Playlist::ModelStack::instance()->source()->rowCount() );
 }
 
 /**************************************************
@@ -513,7 +513,7 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 
     InsertCmdList cmds;
 
-    row = qBound( 0, m_topmostModel->rowToBottomModel( row ), Model::instance()->rowCount() );
+    row = qBound( 0, m_topmostModel->rowToBottomModel( row ), Playlist::ModelStack::instance()->source()->rowCount() );
 
     foreach( Meta::TrackPtr t, tl )
         cmds.append( InsertCmd( t, row++ ) );

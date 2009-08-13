@@ -36,7 +36,7 @@
 #include "navigators/RepeatAlbumNavigator.h"
 #include "navigators/RepeatTrackNavigator.h"
 #include "navigators/StandardTrackNavigator.h"
-#include "proxymodels/GroupingProxy.h"
+#include "PlaylistModelStack.h"
 #include "statusbar/StatusBar.h"
 
 
@@ -70,9 +70,13 @@ Playlist::Actions::Actions()
         , m_waitingForNextTrack( false )
 {
     DEBUG_BLOCK
-    m_topmostModel = Playlist::GroupingProxy::instance();
+    m_topmostModel = Playlist::ModelStack::instance()->top();
     playlistModeChanged(); // sets m_navigator.
     m_nextTrackCandidate = m_navigator->requestNextTrack();
+
+    //Stop Amarok from advancing to the next track when play
+    //is pressed.
+    requestTrack( Playlist::ModelStack::instance()->source()->idAt( AmarokConfig::lastPlaying() ) );
 }
 
 Playlist::Actions::~Actions()

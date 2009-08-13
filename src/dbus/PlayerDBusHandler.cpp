@@ -25,7 +25,7 @@
 #include "meta/Meta.h"
 #include "PlayerAdaptor.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "Osd.h"
 
 // Marshall the DBusStatus data into a D-BUS argument
@@ -205,7 +205,7 @@ namespace Amarok
         if ( GetStatus().Play == 0 /*playing*/ ) caps |= CAN_PAUSE;
         if ( ( GetStatus().Play == 1 /*paused*/ ) || ( GetStatus().Play == 2 /*stoped*/ ) ) caps |= CAN_PLAY;
         if ( ( GetStatus().Play == 0 /*playing*/ ) || ( GetStatus().Play == 1 /*paused*/ ) ) caps |= CAN_SEEK;
-        if ( ( The::playlistModel()->activeRow() >= 0 ) && ( The::playlistModel()->activeRow() <= The::playlistModel()->rowCount() ) )
+        if ( ( Playlist::ModelStack::instance()->source()->activeRow() >= 0 ) && ( Playlist::ModelStack::instance()->source()->activeRow() <= Playlist::ModelStack::instance()->source()->rowCount() ) )
         {
             caps |= CAN_GO_NEXT;
             caps |= CAN_GO_PREV;

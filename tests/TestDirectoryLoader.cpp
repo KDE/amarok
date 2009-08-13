@@ -20,7 +20,7 @@
 #include "TestDirectoryLoader.h"
 
 #include "playlist/PlaylistController.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KStandardDirs>
 
@@ -62,11 +62,11 @@ void TestDirectoryLoader::cleanupTestCase()
 void TestDirectoryLoader::testInitAndInsertAtRow()
 {
     /* more uglyness: we test both methods at once... I don't see another way */
-    QCOMPARE( The::playlistModel()->rowCount(), 20 );
+    QCOMPARE( Playlist::ModelStack::instance()->source()->rowCount(), 20 );
 
-    QCOMPARE( The::playlistModel()->trackAt( 1 )->prettyName(), QString( "" ) ); // TODO
-    QCOMPARE( The::playlistModel()->trackAt( 4 )->prettyName(), QString( "" ) );
-    QCOMPARE( The::playlistModel()->trackAt( 5 )->prettyName(), QString( "" ) );
-    QCOMPARE( The::playlistModel()->trackAt( 14 )->prettyName(), QString( "" ) );
-    QCOMPARE( The::playlistModel()->trackAt( 20 )->prettyName(), QString( "" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 1 )->prettyName(), QString( "" ) ); // TODO
+    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 4 )->prettyName(), QString( "" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 5 )->prettyName(), QString( "" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 14 )->prettyName(), QString( "" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 20 )->prettyName(), QString( "" ) );
 }

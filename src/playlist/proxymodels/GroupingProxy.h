@@ -65,6 +65,9 @@ class GroupingProxy : public ProxyBase
     Q_OBJECT
 
 public:
+    GroupingProxy( AbstractModel *belowModel, QObject *parent = 0 );
+    ~GroupingProxy();
+
     static GroupingProxy* instance();
     static void destroy();
 
@@ -107,9 +110,6 @@ private slots:
     void regroupAll();
 
 private:
-    GroupingProxy();
-    ~GroupingProxy();
-
     void regroupRows( int firstRow, int lastRow );
     QList<GroupMode> m_rowGroupMode;
 
@@ -127,8 +127,6 @@ private:
      * @return true if track should be grouped together, false otherwise
      */
     bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
-
-    static GroupingProxy* s_instance;
 };
 } // namespace Playlist
 

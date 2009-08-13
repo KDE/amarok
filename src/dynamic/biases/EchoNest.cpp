@@ -22,7 +22,7 @@
 #include "EngineController.h"
 #include "Meta.h"
 #include "QueryMaker.h"
-#include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <kio/job.h>
 #include <KComboBox>
@@ -156,9 +156,9 @@ Dynamic::EchoNestBias::engineNewTrackPlaying()
             { // mode is set to whole playlist, so check if any tracks in the playlist aren't saved as Ids yet and query those
                 QList< Meta::TrackPtr > playlist;
                 m_currentPlaylist.clear(); // for searching in later
-                for( int i = 0; i < Playlist::GroupingProxy::instance()->rowCount(); i++ )
+                for( int i = 0; i < The::playlist()->rowCount(); i++ )
                 {
-                    Meta::TrackPtr t = Playlist::GroupingProxy::instance()->trackAt( i );
+                    Meta::TrackPtr t = The::playlist()->trackAt( i );
                     playlist << t;
                     if( !m_currentPlaylist.contains( t->artist()->name() ) )
                         m_currentPlaylist << t->artist()->name();

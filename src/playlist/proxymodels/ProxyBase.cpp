@@ -15,7 +15,6 @@
  ****************************************************************************************/
 
 #include "ProxyBase.h"
-
 #include "Debug.h"
 #include "meta/Meta.h"
 
@@ -178,7 +177,12 @@ ProxyBase::mimeTypes() const
 int
 ProxyBase::rowCount(const QModelIndex& parent) const
 {
-    return m_belowModel->rowCount( parent );
+    DEBUG_BLOCK
+
+     int rowCount = m_belowModel->rowCount( parent );
+     debug() << "I am " << objectName() << ", " << this;
+     debug() << "returning " << rowCount << " rows";
+    return rowCount;
 }
 
 bool
@@ -230,6 +234,8 @@ ProxyBase::setRowQueued( int row )
     DEBUG_BLOCK
     debug() << "I am " << objectName();
     debug() << "I have " << rowCount() << " rows";
+    //debug() << "the filter proxy has " << FilterProxy::instance()->rowCount() << " rows";
+    
     debug() << "my row: " << row;
 
     QModelIndex myIndex = createIndex( row, Title );

@@ -24,7 +24,7 @@
 #include "DynamicPlaylist.h"
 #include "Meta.h"
 #include "amarokconfig.h"
-#include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"
 
 #include <QMutexLocker>
@@ -33,7 +33,7 @@
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylistPtr p )
         : m_playlist( p )
 {
-    m_model = GroupingProxy::instance();
+    m_model = Playlist::ModelStack::instance()->top();
     connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
     connect( model(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
     connect( model(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
@@ -58,8 +58,8 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
 {
     DEBUG_BLOCK
 
-    int updateRow = GroupingProxy::instance()->activeRow() + 1;
-    int rowCount = GroupingProxy::instance()->rowCount();
+    int updateRow = Playlist::ModelStack::instance()->top()->activeRow() + 1;
+    int rowCount = Playlist::ModelStack::instance()->top()->rowCount();
     int upcomingCountLag = AmarokConfig::upcomingTracks() - ( rowCount - updateRow );
 
     if ( upcomingCountLag > 0 )
@@ -69,7 +69,7 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
 void
 Playlist::DynamicTrackNavigator::removePlayed()
 {
-    int activeRow = GroupingProxy::instance()->activeRow();
+    int activeRow = Playlist::ModelStack::instance()->top()->activeRow();
     if ( activeRow > AmarokConfig::previousTracks() )
     {
         Controller::instance()->removeRows( 0, activeRow - AmarokConfig::previousTracks() );
@@ -109,7 +109,7 @@ Playlist::DynamicTrackNavigator::repopulate()
     if ( !m_mutex.tryLock() )
         return;
 
-    int row = GroupingProxy::instance()->activeRow() + 1;
+    int row = Playlist::ModelStack::instance()->top()->activeRow() + 1;
     if ( row < 0 )
         row = 0;
 
@@ -117,11 +117,11 @@ Playlist::DynamicTrackNavigator::repopulate()
     QList<int> rows;
 
     do {
-        if( !(GroupingProxy::instance()->stateOfRow( row ) & Item::Queued) )
+        if( !(Playlist::ModelStack::instance()->top()->stateOfRow( row ) & Item::Queued) )
             rows << row;
         row++;
     }
-    while( row < GroupingProxy::instance()->rowCount() );
+    while( row < Playlist::ModelStack::instance()->top()->rowCount() );
 
     if( !rows.isEmpty() )
         Controller::instance()->removeRows( rows );

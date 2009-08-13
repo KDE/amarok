@@ -21,12 +21,13 @@
 #include "meta/Playlist.h"
 #include "SvgHandler.h"
 #include "UserPlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KIcon>
 #include <KInputDialog>
 
 PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
-    : QAbstractProxyModel( The::playlistModel() )
+    : QAbstractProxyModel( model )
     , m_model( model )
     , m_renameFolderAction( 0 )
     , m_deleteFolderAction( 0 )

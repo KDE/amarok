@@ -24,7 +24,7 @@
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "StatusBar.h"
 
 #include <QString>
@@ -169,7 +169,7 @@ PlaylistFileProvider::import( const KUrl &path )
 {
     DEBUG_BLOCK
     debug() << "Importing playlist file " << path;
-    if( path == The::playlistModel()->defaultPlaylistPath() )
+    if( path == Playlist::ModelStack::instance()->source()->defaultPlaylistPath() )
     {
         error() << "trying to load saved session playlist at %s" << path.path();
         return false;

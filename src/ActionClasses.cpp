@@ -28,7 +28,7 @@
 #include "amarokconfig.h"
 #include "covermanager/CoverManager.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KAuthorized>
 #include <KHelpMenu>
@@ -500,10 +500,10 @@ StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionC
 void
 StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
 {
-    if ( !The::playlistActions()->willStopAfterTrack( The::playlistModel()->activeId() ) )
+    if ( !The::playlistActions()->willStopAfterTrack( Playlist::ModelStack::instance()->source()->activeId() ) )
     {
         The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
-        The::playlistActions()->setTrackToBeLast( The::playlistModel()->activeId() );
+        The::playlistActions()->setTrackToBeLast( Playlist::ModelStack::instance()->source()->activeId() );
         Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: On" ) );       
     } else {

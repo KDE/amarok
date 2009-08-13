@@ -1,6 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
- * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -16,15 +14,71 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "RepeatTrackNavigator.h"
+#include "PlaylistModelStack.h"
 
-#include "playlist/PlaylistModelStack.h"
+#include "Debug.h"
+#include "PlaylistActions.h"
+#include "amarokconfig.h"
 
-Playlist::RepeatTrackNavigator::RepeatTrackNavigator()
+
+namespace The
 {
-    m_model = Playlist::ModelStack::instance()->top();
-    m_trackid = m_model->activeId();
-
-    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
-             this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
+    AMAROK_EXPORT Playlist::GroupingProxy* playlist()
+    {
+        return Playlist::ModelStack::instance()->top();
+    }
 }
+
+namespace Playlist
+{
+
+ModelStack* ModelStack::s_instance = 0;
+
+ModelStack*
+ModelStack::instance()
+{
+    if( s_instance == 0 )
+        s_instance = new ModelStack();
+    return s_instance;
+}
+
+void
+ModelStack::destroy()
+{
+    if( s_instance )
+        delete s_instance;
+}
+
+ModelStack::ModelStack()
+    : QObject()
+{
+    m_model = new Model( this );
+    m_filter = new FilterProxy( m_model, this );
+    m_sort = new SortProxy( m_filter, this );
+    m_search = new SearchProxy( m_sort, this );
+    m_grouping = new GroupingProxy( m_search, this );
+}
+
+ModelStack::~ModelStack()
+{}
+
+GroupingProxy *
+ModelStack::top()
+{
+    return m_grouping;
+}
+
+Model *
+ModelStack::source()
+{
+    return m_model;
+}
+
+SortProxy *
+ModelStack::sortProxy()
+{
+    return m_sort;
+}
+
+}   //namespace Playlist
+

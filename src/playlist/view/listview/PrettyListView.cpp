@@ -37,6 +37,7 @@
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlist/view/PlaylistViewCommon.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
@@ -56,7 +57,6 @@
 #include <QPalette>
 #include <QPersistentModelIndex>
 #include <QTimer>
-#include "../../proxymodels/GroupingProxy.h"
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
@@ -65,9 +65,9 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
         , m_pd( 0 )
-        , m_topmostProxy( GroupingProxy::instance() )
+        , m_topmostProxy( Playlist::ModelStack::instance()->top() )
 {
-    setModel( GroupingProxy::instance() );
+    setModel( Playlist::ModelStack::instance()->top() );
     m_prettyDelegate = new PrettyItemDelegate( this );
     setItemDelegate( m_prettyDelegate );
     setSelectionMode( QAbstractItemView::ExtendedSelection );

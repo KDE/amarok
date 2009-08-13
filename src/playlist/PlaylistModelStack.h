@@ -1,6 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
- * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -16,15 +14,51 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "RepeatTrackNavigator.h"
+#ifndef AMAROK_PLAYLISTMODELSTACK_H
+#define AMAROK_PLAYLISTMODELSTACK_H
 
-#include "playlist/PlaylistModelStack.h"
+#include "proxymodels/AbstractModel.h"
+#include "PlaylistModel.h"
+#include "proxymodels/FilterProxy.h"
+#include "proxymodels/SortProxy.h"
+#include "proxymodels/SearchProxy.h"
+#include "proxymodels/GroupingProxy.h"
 
-Playlist::RepeatTrackNavigator::RepeatTrackNavigator()
+namespace Playlist
 {
-    m_model = Playlist::ModelStack::instance()->top();
-    m_trackid = m_model->activeId();
 
-    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
-             this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
+/**
+ *
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ */
+class ModelStack : public QObject
+{
+    Q_OBJECT
+public:
+    static ModelStack *instance();
+    static void destroy();
+    GroupingProxy * top();
+    Model *         source();
+    SortProxy *     sortProxy();
+
+private:
+    ModelStack();
+    ~ModelStack();
+    static ModelStack *s_instance;       //! Instance member.
+
+    Model *             m_model;
+    FilterProxy *       m_filter;
+    SortProxy *         m_sort;
+    SearchProxy *       m_search;
+    GroupingProxy *     m_grouping;
+
+};
+
+}   //namespace Playlist
+
+namespace The
+{
+AMAROK_EXPORT Playlist::GroupingProxy* playlist();
 }
+
+#endif  //AMAROK_PLAYLISTMODELSTACK_H

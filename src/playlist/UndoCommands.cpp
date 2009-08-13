@@ -20,7 +20,7 @@
 
 #include "UndoCommands.h"
 
-#include "PlaylistModel.h"
+#include "PlaylistModelStack.h"
 
 /************************
  * Insert
@@ -33,13 +33,13 @@ Playlist::InsertTracksCmd::InsertTracksCmd( QUndoCommand* parent, const InsertCm
 void
 Playlist::InsertTracksCmd::redo()
 {
-    Model::instance()->insertTracksCommand( m_cmdlist );
+    Playlist::ModelStack::instance()->source()->insertTracksCommand( m_cmdlist );
 }
 
 void
 Playlist::InsertTracksCmd::undo()
 {
-    Model::instance()->removeTracksCommand( m_cmdlist );
+    Playlist::ModelStack::instance()->source()->removeTracksCommand( m_cmdlist );
 }
 
 /************************
@@ -53,13 +53,13 @@ Playlist::RemoveTracksCmd::RemoveTracksCmd( QUndoCommand* parent, const RemoveCm
 void
 Playlist::RemoveTracksCmd::redo()
 {
-    Model::instance()->removeTracksCommand( m_cmdlist );
+    Playlist::ModelStack::instance()->source()->removeTracksCommand( m_cmdlist );
 }
 
 void
 Playlist::RemoveTracksCmd::undo()
 {
-    Model::instance()->insertTracksCommand( m_cmdlist );
+    Playlist::ModelStack::instance()->source()->insertTracksCommand( m_cmdlist );
 }
 
 /************************
@@ -73,11 +73,11 @@ Playlist::MoveTracksCmd::MoveTracksCmd( QUndoCommand* parent, const MoveCmdList&
 void
 Playlist::MoveTracksCmd::redo()
 {
-    Model::instance()->moveTracksCommand( m_cmdlist, false );
+    Playlist::ModelStack::instance()->source()->moveTracksCommand( m_cmdlist, false );
 }
 
 void
 Playlist::MoveTracksCmd::undo()
 {
-    Model::instance()->moveTracksCommand( m_cmdlist, true );
+    Playlist::ModelStack::instance()->source()->moveTracksCommand( m_cmdlist, true );
 }

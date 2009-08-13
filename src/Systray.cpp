@@ -30,7 +30,7 @@
 #include "meta/MetaUtility.h" // for time formatting
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KAction>
 #include <KApplication>
@@ -240,7 +240,7 @@ Amarok::TrayIcon::event( QEvent *e )
                 KMenu *popup = new KMenu;
                 popup->addAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this, SLOT( appendDrops() ) );
                 popup->addAction( KIcon( "media-track-add-amarok" ), i18n( "Append && &Play" ), this, SLOT( appendAndPlayDrops() ) );
-                if( The::playlistModel()->activeRow() >= 0 )
+                if( The::playlist()->activeRow() >= 0 )
                     popup->addAction( KIcon( "go-next-amarok" ), i18n( "&Queue Track" ), this, SLOT( queueDrops() ) );
 
                 popup->addSeparator();

@@ -35,7 +35,7 @@
 #include "Playlist.h"
 #include "PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PluginManager.h"
@@ -238,7 +238,7 @@ App::~App()
             {
                 AmarokConfig::setResumeTrack( track->playableUrl().prettyUrl() );
                 AmarokConfig::setResumeTime( The::engineController()->trackPosition() * 1000 );
-                AmarokConfig::setLastPlaying( Playlist::Model::instance()->activeRow() );
+                AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
             }
         }
         else
@@ -270,7 +270,7 @@ App::~App()
 
     // I tried this in the destructor for the Model but the object is destroyed after the
     // Config is written. Go figure!
-    AmarokConfig::setLastPlaying( Playlist::Model::instance()->rowForTrack( Playlist::Model::instance()->activeTrack() ) );
+    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->rowForTrack( Playlist::ModelStack::instance()->source()->activeTrack() ) );
 
     AmarokConfig::self()->writeConfig();
 
@@ -280,7 +280,7 @@ App::~App()
     CollectionManager::destroy();
     MountPointManager::destroy();
     Playlist::Actions::destroy();
-    Playlist::Model::destroy();
+    Playlist::ModelStack::destroy();
     PlaylistManager::destroy();
     EngineController::destroy();
     CoverFetcher::destroy();

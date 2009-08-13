@@ -27,7 +27,7 @@
 #include "meta/stream/Stream.h"
 #include "meta/file/File.h"
 #include "playlist/PlaylistController.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "PlaylistManager.h"
 #include "PlaylistFileSupport.h"
 
@@ -172,7 +172,7 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
     }
 
     if( m_autoAppendAfterLoad )
-        The::playlistController()->insertPlaylist( The::playlistModel()->rowCount(), Meta::PlaylistPtr( this ) );
+        The::playlistController()->insertPlaylist( ::Playlist::ModelStack::instance()->source()->rowCount(), Meta::PlaylistPtr( this ) );
 
     return true;
 }

@@ -35,10 +35,14 @@ class SearchProxy : public ProxyBase
     Q_OBJECT
 public:
     /**
-     * Returns the single instance of SearchProxy.
-     * @return the class instance.
+     * Constructor.
      */
-    static SearchProxy *instance();
+    SearchProxy( AbstractModel *belowModel, QObject *parent = 0 );
+
+    /**
+     * Destructor.
+     */
+    ~SearchProxy();
 
     /**
      * Find the first track in the playlist that matches the search term in one of the
@@ -89,20 +93,8 @@ public:
     int currentSearchFields() { return m_currentSearchFields; }
 
 private:
-    /**
-     * Constructor.
-     */
-    SearchProxy();
-
-    /**
-     * Destructor.
-     */
-    ~SearchProxy();
-
     QString m_currentSearchTerm;
     int m_currentSearchFields;
-
-    static SearchProxy *s_instance;    //! Instance member.
 };
 
 }   //namespace Playlist

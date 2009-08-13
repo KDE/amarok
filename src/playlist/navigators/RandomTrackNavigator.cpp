@@ -24,7 +24,7 @@
 #include "RandomTrackNavigator.h"
 
 #include "Debug.h"
-#include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KRandom>
 
@@ -32,7 +32,7 @@
 
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
-    m_model = GroupingProxy::instance();
+    m_model = Playlist::ModelStack::instance()->top();
     connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ),
              this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
@@ -107,7 +107,7 @@ Playlist::RandomTrackNavigator::requestNextTrack()
         else if ( !m_unplayedRows.isEmpty() )
             requestedTrack = m_unplayedRows.takeFirst();
 
-        if ( requestedTrack == GroupingProxy::instance()->activeId())
+        if ( requestedTrack == Playlist::ModelStack::instance()->top()->activeId())
         {
             m_playedRows.prepend( requestedTrack );
             if ( !m_unplayedRows.isEmpty() )
@@ -136,7 +136,7 @@ Playlist::RandomTrackNavigator::requestLastTrack()
 
         quint64 requestedTrack =  !m_playedRows.isEmpty() ? m_playedRows.takeFirst() : 0;
 
-        if ( requestedTrack == GroupingProxy::instance()->activeId())
+        if ( requestedTrack == Playlist::ModelStack::instance()->top()->activeId())
         {
             m_unplayedRows.prepend( requestedTrack );
             if ( !m_playedRows.isEmpty() )

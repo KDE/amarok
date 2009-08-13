@@ -35,10 +35,14 @@ class SortProxy : public ProxyBase
     Q_OBJECT
 public:
     /**
-     * Returns the single instance of SortProxy.
-     * @return the class instance.
+     * Constructor.
      */
-    static SortProxy *instance();
+    SortProxy( AbstractModel *belowModel, QObject *parent = 0 );
+
+    /**
+     * Destructor.
+     */
+    ~SortProxy();
 
     /**
      * Comparison function used by sort(). It wraps around a common LessThan-style functor
@@ -80,18 +84,6 @@ protected:
     virtual int rowToSource( int row ) const;
 
 private:
-    /**
-     * Constructor.
-     */
-    SortProxy();
-
-    /**
-     * Destructor.
-     */
-    ~SortProxy();
-
-    static SortProxy *s_instance;       //! Instance member.
-
     SortScheme m_scheme;               //! The current sorting scheme.
 };
 

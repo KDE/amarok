@@ -30,28 +30,11 @@
 
 #include <QVariant>
 
-Playlist::GroupingProxy* Playlist::GroupingProxy::s_instance = 0;
-
-Playlist::GroupingProxy* Playlist::GroupingProxy::instance()
-{
-    return ( s_instance ) ? s_instance : new GroupingProxy();
-}
-
-void
-Playlist::GroupingProxy::destroy()
-{
-    if ( s_instance )
-    {
-        s_instance->deleteLater();
-        s_instance = 0;
-    }
-}
-
-Playlist::GroupingProxy::GroupingProxy()
-    : ProxyBase( Playlist::SearchProxy::instance() )
+Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QObject *parent )
+    : ProxyBase( parent )
     , m_groupingCategory( QString( "Album" ) )
 {
-    m_belowModel = SearchProxy::instance();
+    m_belowModel = belowModel;
     setSourceModel( dynamic_cast< Playlist::SearchProxy * >( m_belowModel ) );
     // signal proxies
     connect( sourceModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
@@ -68,8 +51,6 @@ Playlist::GroupingProxy::GroupingProxy()
         m_rowGroupMode.append( None );
 
     regroupRows( 0, max - 1 );
-
-    s_instance = this;
 
      setObjectName( "GroupingProxy" );
 

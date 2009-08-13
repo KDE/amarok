@@ -26,7 +26,7 @@
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "MetaQueryMaker.h"
-#include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/PlaylistModelStack.h"
 #include "statusbar/StatusBar.h"
 
 #include <threadweaver/ThreadWeaver.h>
@@ -273,11 +273,11 @@ Dynamic::BiasedPlaylist::getContext()
 {
     m_context.clear();
 
-    int i = qMax( 0, Playlist::GroupingProxy::instance()->activeRow() );
+    int i = qMax( 0, The::playlist()->activeRow() );
 
-    for( ; i < Playlist::GroupingProxy::instance()->rowCount(); ++i )
+    for( ; i < The::playlist()->rowCount(); ++i )
     {
-        m_context.append( Playlist::GroupingProxy::instance()->trackAt(i) );
+        m_context.append( The::playlist()->trackAt(i) );
     }
 }
 

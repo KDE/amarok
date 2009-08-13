@@ -21,7 +21,7 @@
 #include "App.h"
 #include "collection/CollectionManager.h"
 #include "playlist/PlaylistController.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "dbus/PlayerDBusHandler.h"
 #include "ActionClasses.h"
 
@@ -37,8 +37,8 @@ namespace Amarok
     {
         new TracklistAdaptor(this);
         QDBusConnection::sessionBus().registerObject( "/TrackList", this );
-        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
-        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
+        connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
+        connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
     }
 
     int TracklistDBusHandler::AddTrack( const QString& url, bool playImmediately )
@@ -64,17 +64,17 @@ namespace Amarok
 
     int TracklistDBusHandler::GetCurrentTrack()
     {
-        return The::playlistModel()->activeRow();
+        return Playlist::ModelStack::instance()->source()->activeRow();
     }
 
     int TracklistDBusHandler::GetLength()
     {
-        return The::playlistModel()->rowCount();
+        return Playlist::ModelStack::instance()->source()->rowCount();
     }
 
     QVariantMap TracklistDBusHandler::GetMetadata( int position )
     {
-        return The::playerDBusHandler()->GetTrackMetadata( The::playlistModel()->trackAt( position ) );
+        return The::playerDBusHandler()->GetTrackMetadata( Playlist::ModelStack::instance()->source()->trackAt( position ) );
     }
 
     void TracklistDBusHandler::SetLoop(bool enable)
@@ -91,7 +91,7 @@ namespace Amarok
 
     void TracklistDBusHandler::slotTrackListChange()
     {
-        emit TrackListChange( The::playlistModel()->rowCount() );
+        emit TrackListChange( Playlist::ModelStack::instance()->source()->rowCount() );
     }
 }
 

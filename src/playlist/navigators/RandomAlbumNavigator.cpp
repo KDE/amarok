@@ -24,13 +24,13 @@
 
 #include "Debug.h"
 #include "Meta.h"
-#include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <algorithm> // STL
 
 Playlist::RandomAlbumNavigator::RandomAlbumNavigator()
 {
-    m_model = GroupingProxy::instance();
+    m_model = Playlist::ModelStack::instance()->top();
     connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ),
              this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
@@ -237,8 +237,8 @@ Playlist::RandomAlbumNavigator::requestLastTrack()
 bool
 Playlist::RandomAlbumNavigator::idLessThan( const quint64& l, const quint64& r )
 {
-    Meta::TrackPtr left = GroupingProxy::instance()->trackForId( l );
-    Meta::TrackPtr right = GroupingProxy::instance()->trackForId( r );
+    Meta::TrackPtr left = Playlist::ModelStack::instance()->top()->trackForId( l );
+    Meta::TrackPtr right = Playlist::ModelStack::instance()->top()->trackForId( r );
 
     return Meta::Track::lessThan( left, right );
 }

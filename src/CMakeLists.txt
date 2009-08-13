@@ -391,6 +391,7 @@ set(libplaylist_SRCS
     playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
+    playlist/PlaylistModelStack.cpp
     playlist/PlaylistSortWidget.cpp
     playlist/PlaylistWidget.cpp
     playlist/ProgressiveSearchWidget.cpp

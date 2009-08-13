@@ -24,7 +24,7 @@
 #include "MainWindow.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlist/view/listview/PrettyListView.h"
 #include "playlist/PlaylistWidget.h"
 
@@ -37,9 +37,9 @@ namespace AmarokScript
         , m_wrapperList( wrapperList )
         , m_scriptEngine( scriptEngine )
     {
-        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
-        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
-        connect( The::playlistModel(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
+        connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
+        connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
+        connect( Playlist::ModelStack::instance()->source(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
     }
 
     AmarokPlaylistScript::~AmarokPlaylistScript()
@@ -47,18 +47,18 @@ namespace AmarokScript
 
     int AmarokPlaylistScript::activeIndex()
     {
-        return The::playlistModel()->activeRow();
+        return Playlist::ModelStack::instance()->source()->activeRow();
     }
 
     int AmarokPlaylistScript::totalTrackCount()
     {
-        return The::playlistModel()->rowCount();
+        return Playlist::ModelStack::instance()->source()->rowCount();
     }
 
     QString AmarokPlaylistScript::saveCurrentPlaylist()
     {
-        QString savePath = The::playlistModel()->defaultPlaylistPath();
-        The::playlistModel()->exportPlaylist( savePath );
+        QString savePath = Playlist::ModelStack::instance()->source()->defaultPlaylistPath();
+        Playlist::ModelStack::instance()->source()->exportPlaylist( savePath );
         return savePath;
     }
 
@@ -107,7 +107,7 @@ namespace AmarokScript
 
     void AmarokPlaylistScript::savePlaylist( const QString& path )
     {
-        The::playlistModel()->exportPlaylist( path );
+        Playlist::ModelStack::instance()->source()->exportPlaylist( path );
     }
 
     void AmarokPlaylistScript::setStopAfterCurrent( bool on )
@@ -123,15 +123,15 @@ namespace AmarokScript
     QStringList AmarokPlaylistScript::filenames()
     {
         QStringList fileNames;
-        for( int i=0; i < The::playlistModel()->rowCount(); i++ )
-            fileNames << The::playlistModel()->trackAt(i)->prettyUrl();
+        for( int i=0; i < Playlist::ModelStack::instance()->source()->rowCount(); i++ )
+            fileNames << Playlist::ModelStack::instance()->source()->trackAt(i)->prettyUrl();
         return fileNames;
     }
 
     QVariant AmarokPlaylistScript::trackAt( int row )
     {
         DEBUG_BLOCK
-        Meta::TrackPtr track = The::playlistModel()->trackAt( row );
+        Meta::TrackPtr track = Playlist::ModelStack::instance()->source()->trackAt( row );
         return QVariant::fromValue( track );;
     }
 
@@ -151,7 +151,7 @@ namespace AmarokScript
         const QList<int> indexes = selectedIndexes();
 
         for( int i=0; i < indexes.size(); i++ )
-            fileNames << The::playlistModel()->trackAt( indexes[i] )->prettyUrl();
+            fileNames << Playlist::ModelStack::instance()->source()->trackAt( indexes[i] )->prettyUrl();
 
         return fileNames;
     }
