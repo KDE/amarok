@@ -27,6 +27,7 @@
 #include <KMenuBar>
 #include <KRun>
 #include <KShell>
+#include <KStandardDirs>
 #include <KTemporaryFile>
 #include <threadweaver/ThreadWeaver.h>
 
@@ -76,8 +77,7 @@ JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & n
 
     setLongDescription( i18n( "Jamendo.com puts artists and music lovers in touch with each other. The sites allows artists to upload their own albums to share them with the world and users to download all of them for free. Listen to and download all Jamendo.com contents from within Amarok." ) );
 
-    KIconLoader loader;
-    setImagePath( loader.iconPath( "view-services-jamendo-amarok", -128, true ) );
+setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_jamendo.png" ) );
 
     ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
