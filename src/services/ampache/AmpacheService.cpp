@@ -117,11 +117,8 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
 
     setShortDescription( i18n( "Amarok frontend for your Ampache server." ) );
     setIcon( KIcon( "view-services-ampache-amarok" ) );
-
     setLongDescription( i18n( "Use Amarok as a seamless frontend to your Ampache server. This lets you browse and play all the Ampache contents from within Amarok." ) );
-
-    KIconLoader loader;
-    setImagePath( loader.iconPath( "view-services-ampache-amarok", -128, true ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_ampache.png" ) );
 
     //we are using http queries later on, so we require
     KUrl kurl;

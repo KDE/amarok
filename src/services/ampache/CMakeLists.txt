@@ -11,6 +11,8 @@
             ${STRIGI_INCLUDE_DIR}
             ${QT_INCLUDES} )
 
+add_subdirectory( images )
+
 ########### next target ###############
 
         set(amarok_service_ampache_PART_SRCS
