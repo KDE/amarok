@@ -46,7 +46,10 @@ void
 ModelStack::destroy()
 {
     if( s_instance )
+    {
         delete s_instance;
+        s_instance = 0;
+    }
 }
 
 ModelStack::ModelStack()

@@ -28,22 +28,44 @@ namespace Playlist
 {
 
 /**
- *
+ * Singleton class that handles and wraps around the Playlist models architecture.
+ * To talk to the playlist, use The::playlist(). Playlist::ModelStack::instance()->source()
+ * should only be used internally or in very specific situations.
  * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
  */
 class ModelStack : public QObject
 {
     Q_OBJECT
 public:
+    /**
+     * Accessor for the singleton pattern.
+     * @return a pointer to the only instance of Playlist::ModelStack.
+     */
     static ModelStack *instance();
+
+    /**
+     * Singleton destructor.
+     */
     static void destroy();
+
+    /**
+     * The topmost proxy model in the stack
+     */
     GroupingProxy * top();
     Model *         source();
     SortProxy *     sortProxy();
 
 private:
+    /**
+     * Constructor.
+     */
     ModelStack();
+
+    /**
+     * Destructor.
+     */
     ~ModelStack();
+
     static ModelStack *s_instance;       //! Instance member.
 
     Model *             m_model;
@@ -51,7 +73,6 @@ private:
     SortProxy *         m_sort;
     SearchProxy *       m_search;
     GroupingProxy *     m_grouping;
-
 };
 
 }   //namespace Playlist
