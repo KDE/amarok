@@ -698,7 +698,7 @@ void MagnatuneStore::addToFavorites( const QString &sku )
     if( !config.isMember() )
         return;
 
-    QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=add_simple&sku=%4";
+    QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=add_api&sku=%4";
     url = url.arg( config.username(), config.password(), config.membershipType(), sku );
 
     debug() << "favorites url: " << url;
@@ -715,7 +715,7 @@ void MagnatuneStore::removeFromFavorites( const QString &sku )
     if( !config.isMember() )
         return;
 
-    QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=remove_simple&sku=%4";
+    QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=remove_api&sku=%4";
     url = url.arg( config.username(), config.password(), config.membershipType(), sku );
 
     debug() << "favorites url: " << url;
