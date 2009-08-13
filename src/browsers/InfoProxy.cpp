@@ -138,7 +138,7 @@ InfoProxy::loadHomePage()
 
     //load html
 
-    QString htmlPath = dataPath + "service_info_frontpage.html";
+    QString htmlPath = dataPath + "info_frontpage.html";
     QFile file( htmlPath );
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text) )
     {
