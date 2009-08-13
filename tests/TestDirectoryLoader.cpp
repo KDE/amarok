@@ -30,43 +30,51 @@
 TestDirectoryLoader::TestDirectoryLoader( QStringList testArgumentList )
 {
     testArgumentList.replace( 2, testArgumentList.at( 2 ) + "DirectoryLoader.log" );
-    QTest::qExec( this, testArgumentList );
-}
+    m_testArgumentList = testArgumentList;
+    m_finishedLoaders = 0;
 
-void TestDirectoryLoader::initTestCase()
-{
     The::playlistController()->clear(); // we need a clear playlist for those tests
 
-    m_loader1 = new DirectoryLoader;
-    m_loader2 = new DirectoryLoader;
+    DirectoryLoader *loader1 = new DirectoryLoader;
+    DirectoryLoader *loader2 = new DirectoryLoader;
     QList<QUrl> testList;
     QUrl testUrl;
 
     testUrl = QUrl::fromLocalFile( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/" ) );
     testList.append( testUrl );
 
-    m_loader1->insertAtRow( 1 ); // TODO: negative values always seem to append at the beginning. is that correct?
-    m_loader1->init( testList );
-    // wait until finished... HOW? might only work with --nofork?
-    m_loader2->insertAtRow( 4 );
-    m_loader2->init( testList );
-    // here we should wait again
+    connect( loader1, SIGNAL( finished( Meta::TrackList ) ), this, SLOT( loadersFinished() ) );
+    connect( loader2, SIGNAL( finished( Meta::TrackList ) ), this, SLOT( loadersFinished() ) );
+
+    loader1->insertAtRow( 1 ); // TODO: negative values always seem to append at the beginning. is that correct?
+    loader1->init( testList );
+    loader2->insertAtRow( 4 );
+    loader2->init( testList );
 }
 
-void TestDirectoryLoader::cleanupTestCase()
+void TestDirectoryLoader::loadersFinished()
 {
-    // DirecoryLoaders delete themselves when the job is done
+    m_mutex.lock();
+    m_finishedLoaders++;
+
+    if( m_finishedLoaders == 2 )
+    {
+        m_mutex.unlock();
+        QTest::qExec( this, m_testArgumentList );
+        delete this;
+    }
+    else
+        m_mutex.unlock();
 }
 
 
 void TestDirectoryLoader::testInitAndInsertAtRow()
 {
-    /* more uglyness: we test both methods at once... I don't see another way */
     QCOMPARE( Playlist::ModelStack::instance()->source()->rowCount(), 20 );
 
-    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 1 )->prettyName(), QString( "" ) ); // TODO
-    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 4 )->prettyName(), QString( "" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 5 )->prettyName(), QString( "" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 14 )->prettyName(), QString( "" ) );
-    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 20 )->prettyName(), QString( "" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 0 )->prettyName(), QString( "Platz 01" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 4 )->prettyName(), QString( "Platz 01" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 5 )->prettyName(), QString( "Platz 02" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 14 )->prettyName(), QString( "Platz 05" ) );
+    QCOMPARE( Playlist::ModelStack::instance()->source()->trackAt( 19 )->prettyName(), QString( "Platz 10" ) );
 }

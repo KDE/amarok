@@ -31,13 +31,16 @@ Q_OBJECT
 public:
     TestDirectoryLoader( QStringList testArgumentList );
 
+public slots:
+    void loadersFinished();
+
 private slots:
-    void initTestCase();
-    void cleanupTestCase();
     void testInitAndInsertAtRow();
 
 private:
-    DirectoryLoader *m_loader1, *m_loader2;
+    int m_finishedLoaders;
+    QMutex m_mutex;
+    QStringList m_testArgumentList;
 };
 
 #endif // TESTDIRECTORYLOADER_H

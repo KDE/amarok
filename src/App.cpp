@@ -597,7 +597,7 @@ App::runUnitTests()
     PERF_LOG( "Running Unit Tests" )
     TestAmarok               testAmarok( testArgumentList );
     TestCaseConverter        testCaseConverter( testArgumentList );
-    TestDirectoryLoader      testDirectoryLoader( testArgumentList );
+    TestDirectoryLoader      *testDirectoryLoader = new TestDirectoryLoader( testArgumentList );
     TestExpression           testExpression( testArgumentList );
     TestM3UPlaylist          testM3UPlaylist( testArgumentList );
     TestMetaCueCueFileItem   testMetaCueCueFileItem( testArgumentList );
@@ -614,6 +614,7 @@ App::runUnitTests()
     /* add more test classes here ^^ */
 
     PERF_LOG( "Done Running Unit Tests" )
+    Q_UNUSED( testDirectoryLoader )
 }
 #endif // DEBUG
 
