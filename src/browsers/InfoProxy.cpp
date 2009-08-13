@@ -66,7 +66,7 @@ InfoProxy::subscribe( InfoObserver * observer )
     if( observer )
     {
         m_observers.insert( observer );
-        observer->serviceInfoChanged( m_storedInfo );
+        observer->infoChanged( m_storedInfo );
     }
 }
 
@@ -77,7 +77,7 @@ InfoProxy::subscribeForCloud( InfoObserver * observer )
     if( observer )
     {
         m_cloudObservers.insert( observer );
-        observer->serviceInfoChanged( m_storedCloud );
+        observer->infoChanged( m_storedCloud );
     }
 }
 
@@ -92,14 +92,14 @@ void
 InfoProxy::notifyObservers( const QVariantMap &infoMap ) const
 {
     foreach( InfoObserver *observer, m_observers )
-        observer->serviceInfoChanged( infoMap );
+        observer->infoChanged( infoMap );
 }
 
 void
 InfoProxy::notifyCloudObservers( const QVariantMap &cloudMap ) const
 {
     foreach( InfoObserver *observer, m_cloudObservers )
-        observer->serviceInfoChanged( cloudMap );
+        observer->infoChanged( cloudMap );
 }
 
 void

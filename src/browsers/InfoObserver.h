@@ -28,7 +28,7 @@ An abstract base class for observers that wants to be notified when here is new 
 */
 class AMAROK_EXPORT InfoObserver{
 public:
-    virtual void serviceInfoChanged( QVariantMap infoMap ) = 0;
+    virtual void infoChanged( QVariantMap infoMap ) = 0;
     virtual ~InfoObserver() {};
 };
 

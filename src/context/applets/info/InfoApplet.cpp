@@ -47,7 +47,7 @@ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
     setHasConfigurationInterface( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
 
-    dataEngine( "amarok-service" )->connectSource( "service", this );
+    dataEngine( "amarok-info" )->connectSource( "info", this );
 
     m_webView = new Plasma::WebView( this );
 
@@ -90,7 +90,7 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 
     if( data.size() == 0 ) return;
 
-    kDebug() << "got data from engine: " << data[ "service_name" ].toString();
+    kDebug() << "got data from engine: " << data[ "subject_name" ].toString();
 
     if  ( m_initialized ) {
 
@@ -112,7 +112,7 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         else
         {
             QString html = s_defaultHtml;
-            html = html.replace( "%%SERVICE_NAME%%", data[ "service_name" ].toString() );
+            html = html.replace( "%%SERVICE_NAME%%", data[ "subject_name" ].toString() );
             m_webView->setHtml( html );
         }
         m_webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );

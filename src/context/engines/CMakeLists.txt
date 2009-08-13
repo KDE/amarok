@@ -1,7 +1,7 @@
 add_subdirectory( wikipedia )
 add_subdirectory( lyrics )
 add_subdirectory( current )
-add_subdirectory( service )
+add_subdirectory( info )
 add_subdirectory( videoclip )
 add_subdirectory( photos )
 #add_subdirectory( songkick )

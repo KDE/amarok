@@ -35,7 +35,7 @@
 
 */
 
-class ServiceEngine : public Context::DataEngine, 
+class InfoEngine : public Context::DataEngine,
                       public InfoObserver,
                       public ContextObserver
 {
@@ -44,13 +44,13 @@ class ServiceEngine : public Context::DataEngine,
     
 public:
 
-    ServiceEngine( QObject* parent, const QList<QVariant>& args );
-    ~ServiceEngine();
+    InfoEngine( QObject* parent, const QList<QVariant>& args );
+    ~InfoEngine();
 
     QStringList sources() const;
     void message( const Context::ContextState& state );
 
-    void serviceInfoChanged( QVariantMap infoMap );
+    void infoChanged( QVariantMap infoMap );
 
 protected:
     bool sourceRequestEvent( const QString& name );
@@ -64,6 +64,6 @@ private:
 
 };
 
-K_EXPORT_AMAROK_DATAENGINE( service, ServiceEngine )
+K_EXPORT_AMAROK_DATAENGINE( info, InfoEngine )
 
 #endif

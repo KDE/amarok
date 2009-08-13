@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ServiceEngine.h"
+#include "InfoEngine.h"
 
 #include "Amarok.h"
 #include "Debug.h"
@@ -27,7 +27,7 @@
 
 using namespace Context;
 
-ServiceEngine::ServiceEngine( QObject* parent, const QList<QVariant>& args )
+InfoEngine::InfoEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , m_requested( true )
 {
@@ -39,17 +39,17 @@ ServiceEngine::ServiceEngine( QObject* parent, const QList<QVariant>& args )
     The::infoProxy()->subscribe( this );
 }
 
-ServiceEngine::~ ServiceEngine()
+InfoEngine::~ InfoEngine()
 {
     The::infoProxy()->unsubscribe( this );
 }
 
-QStringList ServiceEngine::sources() const
+QStringList InfoEngine::sources() const
 {
     return m_sources; // we don't have sources, if connected, it is enabled.
 }
 
-bool ServiceEngine::sourceRequestEvent( const QString& name )
+bool InfoEngine::sourceRequestEvent( const QString& name )
 {
     Q_UNUSED( name );
 /*    m_sources << name;    // we are already enabled if we are alive*/
@@ -59,7 +59,7 @@ bool ServiceEngine::sourceRequestEvent( const QString& name )
     return true;
 }
 
-void ServiceEngine::message( const ContextState& state )
+void InfoEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK;
     if( state == Current && m_requested ) {
@@ -69,21 +69,21 @@ void ServiceEngine::message( const ContextState& state )
 }
 
 
-void ServiceEngine::serviceInfoChanged( QVariantMap infoMap )
+void InfoEngine::infoChanged( QVariantMap infoMap )
 {
     m_storedInfo = infoMap;
     update();
 }
 
-void ServiceEngine::update()
+void InfoEngine::update()
 {
-    setData( "service", "service_name", m_storedInfo["service_name"] );
-    setData( "service", "main_info", m_storedInfo["main_info"] );
+    setData( "info", "subject_name", m_storedInfo["service_name"] );
+    setData( "info", "main_info", m_storedInfo["main_info"] );
 
 }
 
 
 
-#include "ServiceEngine.moc"
+#include "InfoEngine.moc"
 
 
