@@ -293,7 +293,8 @@ SqlTrack::refreshFromDatabase( const QString &uid, SqlCollection* collection, bo
         return;
     
     updateData( result, true );
-    notifyObservers();
+    if( updateObservers )
+        notifyObservers();
 }
 
 void
