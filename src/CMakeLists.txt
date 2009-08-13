@@ -599,6 +599,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/meta/TestMetaTrack.cpp
         ../tests/meta/TestPLSPlaylist.cpp
         ../tests/meta/TestPlaylistFileSupport.cpp
+        ../tests/meta/TestXSPFPlaylist.cpp
         ../tests/meta/cue/TestMetaCueCueFileItem.cpp
         ../tests/meta/cue/TestMetaCueTrack.cpp
         ../tests/meta/file/TestMetaFileTrack.cpp

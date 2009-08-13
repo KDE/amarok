@@ -103,6 +103,7 @@ extern void setupEventHandler_mac(long);
 #include "TestPLSPlaylist.h"
 #include "TestQStringx.h"
 #include "TestSmartPointerList.h"
+#include "TestXSPFPlaylist.h"
 #endif // DEBUG
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
@@ -608,6 +609,7 @@ App::runUnitTests()
     TestPLSPlaylist          testPLSPlaylist( testArgumentList );
     TestQStringx             testQStringx( testArgumentList );
     TestSmartPointerList     testSmartPointerList( testArgumentList );
+    TestXSPFPlaylist         testXSPFPlaylist( testArgumentList );
 
     /* add more test classes here ^^ */
 
