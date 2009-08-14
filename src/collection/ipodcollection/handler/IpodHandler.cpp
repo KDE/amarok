@@ -1484,10 +1484,7 @@ IpodHandler::libGetRating( const Meta::MediaDeviceTrackPtr &track )
 QString
 IpodHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
 {
-    if( QString::fromUtf8( m_itdbtrackhash[ track ]->filetype ) == "mpeg" )
-        return "mp3";
-
-    return QString::fromUtf8( m_itdbtrackhash[ track ]->filetype );
+    return QFileInfo( track->playableUrl().path() ).suffix();
 }
 
 KUrl

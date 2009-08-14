@@ -127,7 +127,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         // NOTE: do not use writeITunesDB,
         // use the threaded writeDatabase
         bool writeITunesDB( bool threaded = false );
-        
+
     public slots:
         virtual void writeDatabase();
 
