@@ -118,9 +118,9 @@ Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
     if ( id == m_currentTrack )
         return;
 
-    if ( Playlist::ModelStack::instance()->top()->containsId( id ) )
+    if ( m_model->containsId( id ) )
     {
-        m_currentAlbum = Playlist::ModelStack::instance()->top()->trackForId( id )->album();
+        m_currentAlbum = m_model->trackForId( id )->album();
     }
     else
     {

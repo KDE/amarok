@@ -29,7 +29,7 @@ namespace Playlist
 class StandardTrackNavigator : public TrackNavigator
 {
 public:
-    StandardTrackNavigator() { }
+    StandardTrackNavigator() : TrackNavigator() { }
 
     quint64 requestNextTrack();
     quint64 requestUserNextTrack() { return requestNextTrack(); }

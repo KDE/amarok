@@ -107,7 +107,7 @@ Playlist::RandomTrackNavigator::requestNextTrack()
         else if ( !m_unplayedRows.isEmpty() )
             requestedTrack = m_unplayedRows.takeFirst();
 
-        if ( requestedTrack == Playlist::ModelStack::instance()->top()->activeId())
+        if ( requestedTrack == m_model->activeId())
         {
             m_playedRows.prepend( requestedTrack );
             if ( !m_unplayedRows.isEmpty() )
@@ -136,7 +136,7 @@ Playlist::RandomTrackNavigator::requestLastTrack()
 
         quint64 requestedTrack =  !m_playedRows.isEmpty() ? m_playedRows.takeFirst() : 0;
 
-        if ( requestedTrack == Playlist::ModelStack::instance()->top()->activeId())
+        if ( requestedTrack == m_model->activeId())
         {
             m_unplayedRows.prepend( requestedTrack );
             if ( !m_playedRows.isEmpty() )

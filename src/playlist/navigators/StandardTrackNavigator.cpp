@@ -21,12 +21,9 @@
 
 #include "StandardTrackNavigator.h"
 
-#include "playlist/PlaylistModelStack.h"
-
 quint64
 Playlist::StandardTrackNavigator::requestNextTrack()
 {
-    m_model = Playlist::ModelStack::instance()->top();
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
     int updateRow = m_model->activeRow() + 1;
@@ -38,7 +35,6 @@ Playlist::StandardTrackNavigator::requestNextTrack()
 quint64
 Playlist::StandardTrackNavigator::requestLastTrack()
 {
-    m_model = Playlist::ModelStack::instance()->top();
     int updateRow = m_model->activeRow() - 1;
     if ( m_repeatPlaylist )
         updateRow = ( updateRow < 0 ) ? m_model->rowCount() - 1 : updateRow;

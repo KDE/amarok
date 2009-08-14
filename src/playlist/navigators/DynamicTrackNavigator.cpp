@@ -58,8 +58,8 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
 {
     DEBUG_BLOCK
 
-    int updateRow = Playlist::ModelStack::instance()->top()->activeRow() + 1;
-    int rowCount = Playlist::ModelStack::instance()->top()->rowCount();
+    int updateRow = m_model->activeRow() + 1;
+    int rowCount = m_model->rowCount();
     int upcomingCountLag = AmarokConfig::upcomingTracks() - ( rowCount - updateRow );
 
     if ( upcomingCountLag > 0 )
@@ -69,7 +69,7 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
 void
 Playlist::DynamicTrackNavigator::removePlayed()
 {
-    int activeRow = Playlist::ModelStack::instance()->top()->activeRow();
+    int activeRow = m_model->activeRow();
     if ( activeRow > AmarokConfig::previousTracks() )
     {
         Controller::instance()->removeRows( 0, activeRow - AmarokConfig::previousTracks() );
@@ -109,7 +109,7 @@ Playlist::DynamicTrackNavigator::repopulate()
     if ( !m_mutex.tryLock() )
         return;
 
-    int row = Playlist::ModelStack::instance()->top()->activeRow() + 1;
+    int row = m_model->activeRow() + 1;
     if ( row < 0 )
         row = 0;
 
@@ -117,11 +117,11 @@ Playlist::DynamicTrackNavigator::repopulate()
     QList<int> rows;
 
     do {
-        if( !(Playlist::ModelStack::instance()->top()->stateOfRow( row ) & Item::Queued) )
+        if( !(m_model->stateOfRow( row ) & Item::Queued) )
             rows << row;
         row++;
     }
-    while( row < Playlist::ModelStack::instance()->top()->rowCount() );
+    while( row < m_model->rowCount() );
 
     if( !rows.isEmpty() )
         Controller::instance()->removeRows( rows );
