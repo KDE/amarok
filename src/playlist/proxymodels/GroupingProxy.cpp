@@ -269,6 +269,13 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
                     }
                     else
                     {
+                        // First I make sure I delete sic1 and sic2 if only one of them was
+                        // instantiated:
+                        if( sic1 )
+                            delete sic1;
+                        if( sic2 )
+                            delete sic2;
+
                         if( track1->collection() && track2->collection() )
                         {
                             source1 = track1->collection()->collectionId();
