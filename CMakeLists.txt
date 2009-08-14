@@ -148,9 +148,6 @@ endif(CMAKE_BUILD_TYPE MATCHES debugfull)
     #PO_SUBDIR
     #DOC_SUBDIR
 
-    add_executable( bindingstest cmake/modules/QtScriptBindingsTest.cpp )
-    target_link_libraries( bindingstest ${QT_QTSCRIPT_LIBRARY} ${KDE4_KDEUI_LIBS} )
-
 else( WITH_PLAYER )
 
     find_package( Qt4 REQUIRED )

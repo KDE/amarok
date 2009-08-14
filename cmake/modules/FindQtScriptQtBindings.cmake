@@ -18,7 +18,7 @@
 include(CheckCXXSourceRuns)
 
 if(NOT WIN32)
-    file( READ "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/QtScriptBindingsTest.cpp" source )
+    file( READ "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/bindingstest/QtScriptBindingsTest.cpp" source )
     message(STATUS "Checking if the QtScript Qt Bindings are installed.")
 
 
@@ -32,7 +32,7 @@ if(NOT WIN32)
         message( STATUS "QtBindings found")
         set(QTSCRIPTQTBINDINGS_FOUND TRUE)
     else(BINDINGS_RUN_RESULT EQUAL 1)
-        message( STATUS "QtBindings not found. run `make bindingstest && ./bindingstest && echo $?` to see what is missing. If it only prints '0' then you're actually fine.")
+        message( STATUS "QtBindings not found. run `cd cmake/modules/bindingstest; mkdir build; cd build; cmake ..; make; ./bindingstest; echo $?` If it prints '0' then you're actually fine.")
         set(QTSCRIPTQTBINDINGS_FOUND FALSE)
     endif(BINDINGS_RUN_RESULT EQUAL 1)
 
