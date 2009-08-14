@@ -214,6 +214,7 @@ Meta::SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
     DEBUG_BLOCK
     int insertAt = (position == -1) ? m_tracks.count() : position;
     m_tracks.insert( insertAt, track );
+    saveToDb( true );
     notifyObserversTrackAdded( track, position );
 }
 
@@ -225,6 +226,7 @@ Meta::SqlPlaylist::removeTrack( int position )
     if( position < 0 || position >= m_tracks.size() )
         return;
     m_tracks.removeAt( position );
+    saveToDb( true );
     notifyObserversTrackRemoved( position );
 }
 
