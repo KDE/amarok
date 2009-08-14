@@ -40,8 +40,8 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     , m_collapsed( false )
     , m_animationId( 0 )
     , m_transient( 0 )
-    , m_textBackground( 0 )
     , m_standardPadding( 6.0 )
+    , m_textBackground( 0 )
 {
     connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animateEnd( int ) ) );
     setBackgroundHints(NoBackground);
@@ -129,7 +129,7 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     // draw non-gradient backround. going for elegance and style
     p->save();
     QPainterPath path;
-    path.addRoundedRect( boundingRect().adjusted( 1, 4, -2, -3 ), 4, 4 );
+    path.addRoundedRect( boundingRect().adjusted( 0, 2, -2, -2 ), 4, 4 );
     //p->fillPath( path, gradient );
     QColor highlight = PaletteHandler::highlightColor( 0.4, 1.05 );
     highlight.setAlphaF( highlight.alphaF() * 0.5 );
@@ -141,7 +141,7 @@ Context::Applet::addGradientToAppletBackground( QPainter* p )
     QColor col = PaletteHandler::highlightColor( 0.3, 0.5 );
     col.setAlphaF( col.alphaF() * 0.7 );
     p->setPen( col );
-    p->drawRoundedRect( boundingRect().adjusted( 1, 4, -2, -3 ), 4, 4 );
+    p->drawRoundedRect( boundingRect().adjusted( 0, 2, -2, -2 ), 4, 4 );
     p->restore();
 }
 

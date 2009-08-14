@@ -186,7 +186,8 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         m_appletList[ i ]->resize( width, currentHeight );
         m_appletList[ i ]->hide();
     }
-    runningHeight = currentHeight = 0.0;
+    runningHeight = currentHeight = 1.0; // there is a fixed 1px padding on the left and right sides that we can't get rid of, so to keep it
+                                         // consistent and pretty, show it on the top too
 
     /**
       * If an applet has a vertical sizeHint of < 0 (which means effectiveSizeHint < 15  ), then it means it wants to be laid out to maxmize vertical space.
