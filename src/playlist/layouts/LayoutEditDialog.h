@@ -34,8 +34,10 @@ class LayoutEditDialog : public QDialog
 public:
     LayoutEditDialog( QWidget *parent = 0 );
     void setToken( TokenWithLayout *t );
+public slots:
+    void close();
 private slots:
-    void reset();
+    void apply();
     void setPeerWidth( bool peer );
 private:
     QPointer<TokenWithLayout> m_token;
@@ -45,11 +47,6 @@ private:
     int m_previousWidth;
     QToolButton *m_bold, *m_italic, *m_alignLeft, *m_alignCenter, *m_alignRight;
     QRadioButton *m_fixedWidth, *m_fitContent, *m_peerWidth;
-
-    Qt::Alignment m_originalAlignment;
-    QString m_originalPrefix, m_originalSuffix;
-    int m_originalWidth;
-    bool m_originalBold, m_originalItalic;
 };
 
 #endif

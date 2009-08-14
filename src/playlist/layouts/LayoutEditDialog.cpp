@@ -35,6 +35,8 @@
 #include <QStyleOptionFrame>
 #include <QToolButton>
 
+#include <QtDebug>
+
 class HintingLineEdit : public QLineEdit
 {
 public:
@@ -159,9 +161,8 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent ), m_tok
     QDialogButtonBox *box = new QDialogButtonBox(this);
     box->addButton( QDialogButtonBox::Cancel );
     box->addButton( QDialogButtonBox::Ok );
-    connect( box, SIGNAL( rejected() ), SLOT( reset() ) );
     connect( box, SIGNAL( rejected() ), SLOT( close() ) );
-    connect( box, SIGNAL( accepted() ), SLOT( close() ) );
+    connect( box, SIGNAL( accepted() ), SLOT( apply() ) );
     l1->addWidget( box );
 
     l1->addStretch();
@@ -185,16 +186,32 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent ), m_tok
 
 }
 
-void LayoutEditDialog::reset()
+void LayoutEditDialog::apply()
 {
     if ( !m_token )
         return;
-    m_token->setPrefix( m_originalPrefix );
-    m_token->setSuffix( m_originalSuffix );
-    m_token->setWidth( m_originalWidth );
-    m_token->setAlignment( m_originalAlignment );
-    m_token->setBold( m_originalBold );
-    m_token->setItalic( m_originalItalic );
+
+    m_token->setPrefix( m_prefix->text() );
+    m_token->setSuffix( m_suffix->text() );
+    m_token->setWidth( m_width->value() );
+    if ( m_alignLeft->isChecked() )
+        m_token->setAlignment( Qt::AlignLeft );
+    else if ( m_alignCenter->isChecked() )
+        m_token->setAlignment( Qt::AlignHCenter );
+    else if ( m_alignRight->isChecked() )
+        m_token->setAlignment( Qt::AlignRight );
+    m_token->setBold( m_bold->isChecked() );
+    m_token->setItalic( m_italic->isChecked() );
+
+    // we do this here to avoid reliance on the connection order (i.e. prevent close before apply)
+    if ( sender() )
+        close();
+}
+
+void LayoutEditDialog::close()
+{
+    m_token = 0;
+    QDialog::close();
 }
 
 void LayoutEditDialog::setPeerWidth( bool peer )
@@ -202,32 +219,26 @@ void LayoutEditDialog::setPeerWidth( bool peer )
     if ( peer )
     {
         m_previousWidth = m_width->value();
+        m_width->setRange( 0, 100 );
         m_width->setValue( 0 );
     }
     else
+    {
         m_width->setValue( m_previousWidth );
+        m_width->setRange( 1, 100 );
+    }
 }
 
 
 void LayoutEditDialog::setToken( TokenWithLayout *t )
 {
-    if ( m_token )
-    {
-        m_prefix->disconnect( m_token );
-        m_suffix->disconnect( m_token );
-        m_width->disconnect( m_token );
-        m_alignLeft->disconnect( m_token );
-        m_alignCenter->disconnect( m_token );
-        m_alignRight->disconnect( m_token );
-        m_bold->disconnect( m_token );
-        m_italic->disconnect( m_token );
-    }
+    apply();
     m_token = t;
     if ( m_token )
     {
         m_element->setText( m_token->name() );
-        m_prefix->setText( m_originalPrefix = m_token->prefix() );
-        m_suffix->setText( m_originalSuffix = m_token->suffix() );
+        m_prefix->setText( m_token->prefix() );
+        m_suffix->setText( m_token->suffix() );
 
 
         // this should still not be done here as it makes upward assumptions
@@ -259,32 +270,22 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
             }
         }
         m_width->setValue( m_token->width() * 100.0 );
+        m_previousWidth = m_width->value();
+        
         if ( m_token->width() > 0.0 )
             m_fixedWidth->setChecked( true );
         else
             m_peerWidth->setChecked( true );
-        m_originalWidth = m_token->width();
-        m_previousWidth = m_width->value();
 
-        m_originalAlignment = m_token->alignment();
-        if ( m_originalAlignment & Qt::AlignLeft )
+        if ( m_token->alignment() & Qt::AlignLeft )
             m_alignLeft->setChecked(true);
-        else if ( m_originalAlignment & Qt::AlignHCenter )
+        else if ( m_token->alignment() & Qt::AlignHCenter )
             m_alignCenter->setChecked(true);
-        else if ( m_originalAlignment & Qt::AlignRight )
+        else if ( m_token->alignment() & Qt::AlignRight )
             m_alignRight->setChecked(true);
 
-        m_bold->setChecked( m_originalBold = m_token->bold() );
-        m_italic->setChecked( m_originalItalic = m_token->italic() );
-
-        m_token->connect( m_prefix, SIGNAL( textChanged(const QString&) ), SLOT( setPrefix(const QString&) ) );
-        m_token->connect( m_suffix, SIGNAL( textChanged(const QString&) ), SLOT( setSuffix(const QString&) ) );
-        m_token->connect( m_width, SIGNAL( valueChanged(int) ), SLOT( setWidth(int) ) );
-        m_token->connect( m_alignLeft, SIGNAL( toggled(bool) ), SLOT( setAlignLeft(bool) ) );
-        m_token->connect( m_alignCenter, SIGNAL( toggled(bool) ), SLOT( setAlignCenter(bool) ) );
-        m_token->connect( m_alignRight, SIGNAL( toggled(bool) ), SLOT( setAlignRight(bool) ) );
-        m_token->connect( m_bold, SIGNAL( toggled(bool) ), SLOT( setBold(bool) ) );
-        m_token->connect( m_italic, SIGNAL( toggled(bool) ), SLOT( setItalic(bool) ) );
+        m_bold->setChecked( m_token->bold() );
+        m_italic->setChecked( m_token->italic() );
     }
 }
 
