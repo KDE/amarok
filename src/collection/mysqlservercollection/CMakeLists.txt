@@ -28,7 +28,6 @@ endif (NOT WIN32)
 
 set(amarok_collection-mysqlservercollection_PART_SRCS
     ../sqlcollection/DatabaseUpdater.cpp
-    ../sqlcollection/OrganizeCollectionDialog.cpp
     ../sqlcollection/ScanManager.cpp
     ../sqlcollection/ScanResultProcessor.cpp
     ../sqlcollection/SqlBookmarkThisCapability.cpp
@@ -43,10 +42,6 @@ set(amarok_collection-mysqlservercollection_PART_SRCS
     ../../../utilities/collectionscanner/AFTUtility.cpp
     ${extra_src}
  )
-
-kde4_add_ui_files(amarok_collection-mysqlservercollection_PART_SRCS
-    ../sqlcollection/OrganizeCollectionDialogBase.ui
-)
 
 qt4_add_dbus_adaptor( amarok_collection-mysqlservercollection_PART_SRCS
     ../sqlcollection/org.kde.amarok.SqlCollection.xml

@@ -99,6 +99,7 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/handler/capabilities/ReadCapability.cpp
   collection/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
   collection/mediadevicecollection/handler/capabilities/WriteCapability.cpp
+  collection/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
   collection/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
   collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
   collection/mediadevicecollection/support/ConnectionAssistant.cpp
@@ -541,6 +542,7 @@ set(amaroklib_LIB_SRCS
     dialogs/DatabaseImporterDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
+    dialogs/OrganizeCollectionDialog.cpp
     dialogs/PodcastSettingsDialog.cpp
     dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
@@ -626,6 +628,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/ScriptManagerBase.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
+    dialogs/OrganizeCollectionDialogBase.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
     dialogs/PodcastSettingsBase.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui

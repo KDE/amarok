@@ -304,11 +304,23 @@ UmsHandler::addPath( const QString &path )
     return 0;
 }
 
+QString
+UmsHandler::baseMusicFolder() const
+{
+    return mountPoint();
+}
+
 bool
 UmsHandler::isWritable() const
 {
     // TODO: check if writable
-    return false;
+    return true;
+}
+
+bool
+UmsHandler::isOrganizable() const
+{
+    return true;
 }
 
 QString
@@ -351,21 +363,47 @@ UmsHandler::collectionActions()
 }
 
 void
-UmsHandler::writeDatabase()
+UmsHandler::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack )
 {
-    return;
-}
+    Q_UNUSED( destTrack )
+        debug() << "Mountpoint is: " << mountPoint();
 
-#if 0
+    KUrl url = KUrl( m_destinations.value( srcTrack ) );
+
+    debug() << "Url's path is: " << url.path();
+
+    QFileInfo finfo( url.path() );
+    QDir dir = finfo.dir();
+    QDir root( QDir::rootPath() );
+    // Check if directory exists
+    if ( !dir.exists() )
+    {
+        // If it doesn't exist, make it and the path to it
+        if ( !root.mkpath( dir.absolutePath() ) )
+        {
+            debug() << "Creating directory failed";
+            url = "";
+        }
+        // If fails to create, set its url to blank so the copying will fail
+        else
+            debug() << "Directory created!";
+    }
+
+    debug() << "About to copy from: " << srcTrack->playableUrl().path();
+    debug() << "to: " << url;
+
+    m_trackdesturl[ srcTrack ] = url;
+}
 
 bool
 UmsHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack )
 {
     Q_UNUSED( destTrack )
     DEBUG_BLOCK
-//    findPathToCopy( srcTrack );
+
     KUrl srcurl = KUrl::fromPath( srcTrack->playableUrl().path() );
     m_trackscopying[ srcurl ] = srcTrack;
+    m_destTrack = destTrack;
     return kioCopyTrack( srcurl, m_trackdesturl[ srcTrack ] );
 }
 
@@ -373,6 +411,8 @@ bool
 UmsHandler::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
 {
     DEBUG_BLOCK
+            Q_UNUSED( track )
+            /*
     Itdb_Track *umstrack = m_itdbtrackhash[ track ];
 
     // delete file
@@ -381,21 +421,9 @@ UmsHandler::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
     Meta::TrackPtr trackptr = Meta::TrackPtr::staticCast( track );
     m_tracksdeleting[ url ] = trackptr;
     deleteFile( url );
+*/
+    return false;
 
-    return true;
-
-}
-
-void
-UmsHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
-{
-    DEBUG_BLOCK
-    Itdb_Track *umstrack = m_itdbtrackhash[ track ];
-
-    m_itdbtrackhash.remove( track );
-    m_files.remove( QString(umstrack->ums_path).toLower() );
-
-    itdb_track_remove( umstrack );
 }
 
 bool
@@ -465,7 +493,12 @@ UmsHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bo
     Meta::TrackPtr track = m_trackscopying[from];
 
     if( !job->error() )
+    {
+        Meta::TrackPtr metafiletrack( new MetaFile::Track( to ) );
+        m_umstrackhash.insert( m_destTrack, metafiletrack );
+        m_files.insert( to.path(), m_destTrack );
         slotFinalizeTrackCopy( track );
+    }
 }
 
 void
@@ -518,14 +551,7 @@ UmsHandler::fileDeleted( KJob *job )  //SLOT
         slotFinalizeTrackRemove( track );
     }
 }
-#endif
-#if 0
-QString
-UmsHandler::libGetTitle( const Meta::MediaDeviceTrackPtr &track )
-{
-    return QString::fromUtf8( m_itdbtrackhash[ track ]->title );
-}
-#endif
+
 QString
 UmsHandler::libGetAlbum( const Meta::MediaDeviceTrackPtr &track )
 {
@@ -555,83 +581,6 @@ UmsHandler::libGetYear( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_umstrackhash.value( track )->year()->name().toInt();
 }
-#if 0
-int
-UmsHandler::libGetLength( const Meta::MediaDeviceTrackPtr &track )
-{
-    return ( ( m_itdbtrackhash[ track ]->tracklen ) / 1000 );
-}
-
-int
-UmsHandler::libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track )
-{
-    return m_itdbtrackhash[ track ]->track_nr;
-}
-
-QString
-UmsHandler::libGetComment( const Meta::MediaDeviceTrackPtr &track )
-{
-    return QString::fromUtf8( m_itdbtrackhash[ track ]->comment );
-}
-
-int
-UmsHandler::libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track )
-{
-    return m_itdbtrackhash[ track ]->cd_nr;
-}
-
-int
-UmsHandler::libGetBitrate( const Meta::MediaDeviceTrackPtr &track )
-{
-    return m_itdbtrackhash[ track ]->bitrate;
-}
-
-int
-UmsHandler::libGetSamplerate( const Meta::MediaDeviceTrackPtr &track )
-{
-    return m_itdbtrackhash[ track ]->samplerate;
-}
-
-float
-UmsHandler::libGetBpm( const Meta::MediaDeviceTrackPtr &track )
-{
-    return m_itdbtrackhash[ track ]->BPM;
-}
-int
-UmsHandler::libGetFileSize( const Meta::MediaDeviceTrackPtr &track )
-{
-    return m_itdbtrackhash[ track ]->size;
-}
-int
-UmsHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
-{
-    return m_itdbtrackhash[ track ]->playcount;
-}
-uint
-UmsHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
-{
-    return m_itdbtrackhash[ track ]->time_played;
-}
-int
-UmsHandler::libGetRating( const Meta::MediaDeviceTrackPtr &track )
-{
-    return ( m_itdbtrackhash[ track ]->rating / ITDB_RATING_STEP * 2 );
-}
-QString
-UmsHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
-{
-    if( QString::fromUtf8( m_itdbtrackhash[ track ]->filetype ) == "mpeg" )
-        return "mp3";
-
-    return QString::fromUtf8( m_itdbtrackhash[ track ]->filetype );
-}
-
-KUrl
-UmsHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
-{
-    return KUrl(m_mountPoint + (QString( m_itdbtrackhash[ track ]->ums_path ).split( ':' ).join( "/" )));
-}
-#endif
 
 float
 UmsHandler::usedCapacity() const
@@ -649,183 +598,13 @@ UmsHandler::totalCapacity() const
 }
 
 /// Sets
-#if 0
-void
-UmsHandler::libSetTitle( Meta::MediaDeviceTrackPtr& track, const QString& title )
-{
-    m_itdbtrackhash[ track ]->title = g_strdup( title.toUtf8() );
-}
-void
-UmsHandler::libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album )
-{
-    m_itdbtrackhash[ track ]->album = g_strdup( album.toUtf8() );
-}
-void
-UmsHandler::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist )
-{
-    m_itdbtrackhash[ track ]->artist = g_strdup( artist.toUtf8() );
-}
-void
-UmsHandler::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
-{
-    m_itdbtrackhash[ track ]->composer = g_strdup( composer.toUtf8() );
-}
-void
-UmsHandler::libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre )
-{
-    if( genre.startsWith("audiobook", Qt::CaseInsensitive) )
-    {
-        m_itdbtrackhash[ track ]->remember_playback_position |= 0x01;
-        m_itdbtrackhash[ track ]->skip_when_shuffling |= 0x01;
-        m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
-    }
-
-    m_itdbtrackhash[ track ]->genre = g_strdup( genre.toUtf8() );
-}
-void
-UmsHandler::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )
-{
-    bool ok;
-    int yr = year.toInt( &ok, 10 );
-    if( ok )
-        m_itdbtrackhash[ track ]->year = yr;
-}
-void
-UmsHandler::libSetLength( Meta::MediaDeviceTrackPtr &track, int length )
-{
-    m_itdbtrackhash[ track ]->tracklen = length*1000;
-}
-void
-UmsHandler::libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum )
-{
-    m_itdbtrackhash[ track ]->track_nr = tracknum;
-}
-void
-UmsHandler::libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment )
-{
-    m_itdbtrackhash[ track ]->comment = g_strdup( comment.toUtf8() );
-}
-void
-UmsHandler::libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum )
-{
-    m_itdbtrackhash[ track ]->cd_nr = discnum;
-}
-void
-UmsHandler::libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate )
-{
-    m_itdbtrackhash[ track ]->bitrate = bitrate;
-}
-void
-UmsHandler::libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate )
-{
-    m_itdbtrackhash[ track ]->samplerate = samplerate;
-}
-void
-UmsHandler::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
-{
-    m_itdbtrackhash[ track ]->BPM = static_cast<int>( bpm );
-}
-void
-UmsHandler::libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize )
-{
-    m_itdbtrackhash[ track ]->size = filesize;
-}
-void
-UmsHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
-{
-    m_itdbtrackhash[ track ]->playcount = playcount;
-}
-void
-UmsHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed)
-{
-    Q_UNUSED( track )
-    Q_UNUSED( lastplayed )
-}
-void
-UmsHandler::libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )
-{
-    m_itdbtrackhash[ track ]->rating = ( rating * ITDB_RATING_STEP / 2 );
-}
-void
-UmsHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
-{
-    m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIO;
-    bool audiobook = false;
-    if(type=="wav")
-    {
-        m_itdbtrackhash[ track ]->filetype = g_strdup( "wav" );
-    }
-    else if(type=="mp3" || type=="mpeg")
-    {
-        m_itdbtrackhash[ track ]->filetype = g_strdup( "mpeg" );
-    }
-    else if(type=="aac" || type=="m4a" || (!m_supportsVideo && type=="mp4"))
-    {
-        m_itdbtrackhash[ track ]->filetype = g_strdup( "mp4" );
-    }
-    else if(type=="m4b")
-    {
-        audiobook = true;
-        m_itdbtrackhash[ track ]->filetype = g_strdup( "mp4" );
-    }
-    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
-    {
-        m_itdbtrackhash[ track ]->filetype = g_strdup( "m4v video" );
-        m_itdbtrackhash[ track ]->movie_flag = 0x01; // for videos
-        m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_MOVIE;
-    }
-    // TODO: NYI, TagLib calls need to be ported
-    /*
-    else if(type=="aa")
-    {
-        audiobook = true;
-        m_itdbtrackhash[ track ]->filetype = g_strdup( "audible" );
-
-        TagLib::Audible::File f( QFile::encodeName( url.path() ) );
-        TagLib::Audible::Tag *t = f.getAudibleTag();
-        if( t )
-            m_itdbtrackhash[ track ]->drm_userid = t->userID();
-        // libgpod also tries to set those, but this won't work
-        m_itdbtrackhash[ track ]->unk126 = 0x01;
-        m_itdbtrackhash[ track ]->unk144 = 0x0029;
-
-    }
-    */
-    else
-    {
-        m_itdbtrackhash[ track ]->filetype = g_strdup( type.toUtf8() );
-    }
-
-    if( audiobook )
-    {
-        m_itdbtrackhash[ track ]->remember_playback_position |= 0x01;
-        m_itdbtrackhash[ track ]->skip_when_shuffling |= 0x01;
-        m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
-    }
-}
 
 void
 UmsHandler::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack )
 {
-    KUrl copyurl = m_trackdesturl[ srcTrack ];
-    QString pathname = copyurl.path();
-
-    QString type = pathname.section('.', -1).toLower();
-    type = type.toLower();
-
-    debug() << "Path before put in ums_path: " << pathname;
-
-    m_itdbtrackhash[ destTrack ]->ums_path = g_strdup( umsPath(pathname).toLatin1() );
-    debug() << "on iPod: " << m_itdbtrackhash[ destTrack ]->ums_path;
+    destTrack->setPlayableUrl( KUrl( m_destinations.value( srcTrack ) ) );
 }
 
-
-void
-UmsHandler::libCreateTrack( const Meta::MediaDeviceTrackPtr& track )
-{
-    m_umstrackhash[ track ] = itdb_track_new();
-}
-#endif
 void
 UmsHandler::prepareToParseTracks()
 {
@@ -1044,7 +823,7 @@ UmsHandler::supportedFormats()
 
 
 /* Private Functions */
-#if 0
+
 void
 UmsHandler::prepareToCopy()
 {
@@ -1065,7 +844,7 @@ UmsHandler::prepareToDelete()
 
     m_tracksdeleting.clear();
 }
-#endif
+
 /// Capability-related functions
 
 bool
@@ -1074,10 +853,10 @@ UmsHandler::hasCapabilityInterface( Handler::Capability::Type type ) const
     switch( type )
     {
         case Handler::Capability::Readable:
+        case Handler::Capability::Writable:
             return true;
         case Handler::Capability::Artwork:
         case Handler::Capability::Playlist:
-        case Handler::Capability::Writable:
             return false;
 
 
@@ -1093,14 +872,15 @@ UmsHandler::createCapabilityInterface( Handler::Capability::Type type )
     {
         case Handler::Capability::Readable:
             return new Handler::UmsReadCapability( this );
+        case Handler::Capability::Writable:
+            return new Handler::UmsWriteCapability( this );
             /*
         case Handler::Capability::Artwork:
             return new Handler::UmsArtworkCapability( this );
 
         case Handler::Capability::Playlist:
             return new Handler::UmsPlaylistCapability( this );
-        case Handler::Capability::Writable:
-            return new Handler::UmsWriteCapability( this );
+
 */
         default:
             return 0;

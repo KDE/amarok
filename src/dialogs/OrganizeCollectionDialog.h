@@ -18,8 +18,9 @@
 #ifndef AMAROK_ORGANIZECOLLECTIONDIALOG_H
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_H
 
+#include "amarok_export.h"
 #include "meta/Meta.h"
-#include "dialogs/FilenameLayoutDialog.h"
+#include "FilenameLayoutDialog.h"
 #include "widgets/TokenPool.h"
 
 #include <KDialog>
@@ -32,30 +33,27 @@ namespace Ui
     class OrganizeCollectionDialogBase;
 }
 
-class OrganizeCollectionDialog : public KDialog
+class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
 {
     Q_OBJECT
 
     public:
-        explicit OrganizeCollectionDialog( QueryMaker *qm, QWidget *parent=0, const char *name=0, bool modal=true,
-                                           const QString &caption=QString(),
-                                           QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel );
 
-        explicit OrganizeCollectionDialog( const Meta::TrackList &tracks, QWidget *parent=0, const char *name=0,
+        AMAROK_EXPORT explicit OrganizeCollectionDialog( const Meta::TrackList &tracks, const QStringList &folders, QWidget *parent=0, const char *name=0,
                                            bool modal=true, const QString &caption=QString(),
                                            QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel );
 
         ~OrganizeCollectionDialog();
 
-        QMap<Meta::TrackPtr, QString> getDestinations();
-        bool overwriteDestinations() const;
+        AMAROK_EXPORT QMap<Meta::TrackPtr, QString> getDestinations();
+        AMAROK_EXPORT bool overwriteDestinations() const;
 
     signals:
         void updatePreview(QString);
 
     public slots:
-        void slotUpdatePreview();
-        void slotDialogAccepted();
+        AMAROK_EXPORT void slotUpdatePreview();
+        AMAROK_EXPORT void slotDialogAccepted();
 
     private:
         QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;

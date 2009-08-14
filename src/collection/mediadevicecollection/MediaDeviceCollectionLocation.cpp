@@ -24,6 +24,7 @@
 #include "../../statusbar/StatusBar.h"
 #include "MediaDeviceCache.h" // for collection refresh hack
 
+#include "dialogs/OrganizeCollectionDialog.h"
 
 #include <kjob.h>
 #include <KLocale>
@@ -69,6 +70,40 @@ MediaDeviceCollectionLocation::remove( const Meta::TrackPtr &track )
 }
 
 void
+MediaDeviceCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
+{
+    Q_UNUSED( removeSources )
+    if( m_handler->isOrganizable() )
+    {
+        QStringList folders;
+        folders << m_handler->baseMusicFolder();
+        OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks, folders );
+        connect( dialog, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
+        connect( dialog, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
+        dialog->show();
+    }
+    else
+        slotShowDestinationDialogDone();
+}
+
+void
+MediaDeviceCollectionLocation::slotDialogAccepted()
+{
+    sender()->deleteLater();
+    OrganizeCollectionDialog *dialog = qobject_cast<OrganizeCollectionDialog*>( sender() );
+    m_destinations = dialog->getDestinations();
+    slotShowDestinationDialogDone();
+}
+
+void
+MediaDeviceCollectionLocation::slotDialogRejected()
+{
+    DEBUG_BLOCK
+    sender()->deleteLater();
+    abort();
+}
+
+void
 MediaDeviceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
 {
     //    CollectionLocation::getKIOCopyableUrls(tracks);
@@ -82,6 +117,9 @@ void
 MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
     DEBUG_BLOCK
+
+    if( m_handler->isOrganizable() )
+        m_handler->setDestinations( m_destinations );
 
     connect( m_handler, SIGNAL( copyTracksDone( bool  ) ),
              SLOT( copyOperationFinished( bool ) ),
@@ -146,7 +184,7 @@ void
 MediaDeviceCollectionLocation::removeOperationFinished()
 {
     DEBUG_BLOCK
-    
+
     m_handler->writeDatabase();
 
     slotRemoveOperationFinished();

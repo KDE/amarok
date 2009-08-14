@@ -21,7 +21,7 @@
 #include "Meta.h"
 #include "MetaUtility.h"
 #include "MountPointManager.h"
-#include "OrganizeCollectionDialog.h"
+#include "dialogs/OrganizeCollectionDialog.h"
 #include "ScanManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
@@ -144,7 +144,7 @@ void
 SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
 {
     setGoingToRemoveSources( removeSources );
-    OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks );
+    OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks, MountPointManager::instance()->collectionFolders() );
     connect( dialog, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( dialog, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
     dialog->show();

@@ -41,18 +41,22 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollectionLocation : public Collec
         virtual bool remove( const Meta::TrackPtr &track );
 
     protected:
-
+        virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
+
         /// Copies these tracks to the Collection using the Handler
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
-        
+
 
     private slots:
+        void slotDialogAccepted();
+        void slotDialogRejected();
         void copyOperationFinished( bool success );
         void removeOperationFinished();
 
     private:
+        QMap<Meta::TrackPtr, QString> m_destinations;
         MediaDeviceCollection *m_collection;
         Meta::MediaDeviceHandler *m_handler;
 };

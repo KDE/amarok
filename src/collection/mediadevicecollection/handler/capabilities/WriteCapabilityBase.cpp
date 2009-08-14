@@ -14,41 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef UMSHANDLER_WRITECAPABILITY_H
-#define UMSHANDLER_WRITECAPABILITY_H
-
 #include "WriteCapabilityBase.h"
 
-namespace Meta {
-    class UmsHandler;
+Handler::WriteCapabilityBase::~WriteCapabilityBase()
+{
+    // nothing to do here
 }
 
-namespace Handler
-{
-
-class UmsWriteCapability : public WriteCapabilityBase
-{
-    Q_OBJECT
-    public:
-    UmsWriteCapability( Meta::UmsHandler *handler );
-
-    virtual QStringList supportedFormats();
-
-    virtual void findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack );
-
-    virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack );
-
-    virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track );
-
-    virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
-
-    virtual void prepareToCopy();
-    virtual void prepareToDelete();
-
-    private:
-        Meta::UmsHandler *m_handler;
-};
-
-}
-
-#endif
+#include "WriteCapabilityBase.moc"

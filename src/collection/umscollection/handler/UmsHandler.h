@@ -26,7 +26,7 @@
 //#include "UmsArtworkCapability.h"
 //#include "UmsPlaylistCapability.h"
 #include "UmsReadCapability.h"
-//#include "UmsWriteCapability.h"
+#include "UmsWriteCapability.h"
 
 #include "MediaDeviceMeta.h"
 #include "MediaDeviceHandler.h"
@@ -79,7 +79,9 @@ class UmsHandler : public Meta::MediaDeviceHandler
         virtual ~UmsHandler();
 
         virtual void init(); // collection
+        virtual QString baseMusicFolder() const;
         virtual bool isWritable() const;
+        virtual bool isOrganizable() const;
 
         virtual QString prettyName() const;
 
@@ -95,7 +97,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
         //friend class Handler::UmsArtworkCapability;
         //friend class Handler::UmsPlaylistCapability;
         friend class Handler::UmsReadCapability;
-        //friend class Handler::UmsWriteCapability;
+        friend class Handler::UmsWriteCapability;
 
         /// Ums-Specific Methods
         QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
@@ -103,7 +105,6 @@ class UmsHandler : public Meta::MediaDeviceHandler
         void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
 
     public slots:
-        virtual void writeDatabase();
 
     protected:
         /// Functions for PlaylistCapability
@@ -125,14 +126,16 @@ class UmsHandler : public Meta::MediaDeviceHandler
         virtual void nextPlaylistTrackToParse();
 #endif
         virtual QStringList supportedFormats();
-#if 0
+
         virtual void findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack );
         virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack );
         virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track );
-        virtual void libCreateTrack( const Meta::MediaDeviceTrackPtr &track );
-        virtual void libDeleteTrack( const Meta::MediaDeviceTrackPtr &track );
 
-        virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct();
+        virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
+
+        virtual void prepareToCopy();
+        virtual void prepareToDelete();
+#if 0
 
         virtual QString libGetPlaylistName();
         void setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
@@ -142,32 +145,11 @@ class UmsHandler : public Meta::MediaDeviceHandler
 #endif
 #if 0
 
-        virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
-        virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
-        virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
-        virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
-        virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
-        virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
-        virtual void libSetLength( Meta::MediaDeviceTrackPtr &track, int length );
-        virtual void libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum );
-        virtual void libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment );
-        virtual void libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum );
-        virtual void libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate );
-        virtual void libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate );
-        virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm );
-        virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
-        virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
-        virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
-        virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
-        virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
-        virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
-
         // TODO: MediaDeviceTrackPtr
         virtual void libSetCoverArt( Itdb_Track *umstrack, const QPixmap &image );
         virtual void setCoverArt( Itdb_Track *umstrack, const QString &path );
 
-        virtual void prepareToCopy();
-        virtual void prepareToDelete();
+
 #endif
     private:
         enum FileType
@@ -196,38 +178,17 @@ class UmsHandler : public Meta::MediaDeviceHandler
         virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
 
         int addPath( const QString &path );
-#if 0
-        virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
-
-        virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track );
-        virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetBitrate( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetSamplerate( const Meta::MediaDeviceTrackPtr &track );
-        virtual float   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
-        virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
-        virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
-        virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
-        virtual QPixmap libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
-#endif
-
 
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;
 
         /// Ums Methods
 
-#if 0
+
         /* File I/O Methods */
-        // TODO: abstract copy/delete methods (not too bad)
+
         bool kioCopyTrack( const KUrl &src, const KUrl &dst );
         void deleteFile( const KUrl &url );
-#endif
-
 
         /**
         * Handler Variables
@@ -239,6 +200,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
         QStringList           m_currtracklist;
         int                   m_listpos; // list position
         Meta::TrackPtr        m_currtrack;
+        Meta::MediaDeviceTrackPtr m_destTrack;
 
         QList<QString>        m_dirtylist;
 
@@ -306,12 +268,12 @@ class UmsHandler : public Meta::MediaDeviceHandler
         void slotCheckDirty();
         void slotDirtyEntry( const QString &path );
         void slotDeleteEntry( const QString &path );
-#if 0
+
         void fileTransferred( KJob *job );
         void fileDeleted( KJob *job );
 
         void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed );
-#endif
+
 };
 
 

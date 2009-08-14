@@ -18,52 +18,18 @@
 #define MEDIADEVICEHANDLER_WRITECAPABILITY_H
 
 #include "mediadevicecollection_export.h"
-#include "../MediaDeviceHandlerCapability.h"
+#include "WriteCapabilityBase.h"
 #include "../../MediaDeviceMeta.h"
 
 namespace Handler
 {
 
-class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::Capability
+class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::WriteCapabilityBase
 {
     Q_OBJECT
 
     public:
         virtual ~WriteCapability();
-
-        /**
-         * Returns a list of formats supported by the device, all in lowercase
-         * For example mp3, mpeg, aac.  This is used to avoid copying unsupported
-         * types to a particular device.
-         */
-        virtual QStringList supportedFormats() = 0; // md:write
-
-        /**
-         * Finds the place to copy the track to on the device, which
-         * could be a url in the case of Ipods, or a folder in the
-         * case of MTP devices.
-         * @param srcTrack The source track of the copy
-         * @param destTrack The destination track whose path we seek
-         */
-        virtual void findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack ) = 0;
-
-        /**
-         * libCopyTrack does the actual file copying.  For Ipods, it uses KIO,
-         * for MTPs this uses a libmtp call
-         * Copy the file associate with srcTrack to destTrack
-         * @param srcTrack The track being copied from
-         * @param destTrack The track being copied to
-         * @return Whether or not the track copy was successful
-         */
-        virtual bool libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack ) = 0;
-
-        /**
-         * libDeleteTrack does the actual file deleting.  For Ipods, it uses KIO,
-         * for MTPs this uses a libmtp call.  Must emit libRemoveTrackDone when finished.
-         * @param track The track whose file is to be deleted
-         * @return Whether or not the track removal was successful
-         */
-        virtual bool libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
         /**
          * Creates a new track struct particular to the library of the device
@@ -85,7 +51,7 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::Capability
          * database struct of the particular device, e.g. into the itdb for Ipods.
          * MTP devices automatically add the track into the database upon copying,
          * so MTP would do nothing.
-         * @param track The track whose associated track struct is to be added 
+         * @param track The track whose associated track struct is to be added
          * into the database.
          */
         virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track ) = 0;
@@ -128,34 +94,6 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::Capability
         virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type ) = 0;
         virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack ) = 0;
 
-        // TODO: NYI
-        //virtual void    libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap& image ) = 0;
-
-        /**
-         * This function is called just before copying tracks begin and allows
-         * a subclass to prepare to copy, e.g. for Ipods it would initialize
-         * the job counter to 0.
-         */
-        virtual void prepareToCopy() = 0;
-
-        /**
-         * This function is called just before deleting tracks begin and allows
-         * a subclass to prepare to delete, e.g. for Ipods it would initialize
-         * the m_tracksdeleting to keep track of urls it is deleting.
-         */
-        virtual void prepareToDelete() = 0;
-
-        /**
-         * Tells subclass that it can update the track, usually because
-         * the track's tags have changed.
-         * @param track The track whose tags should be updated
-         */
-        virtual void updateTrack( Meta::MediaDeviceTrackPtr &track )
-        {
-            Q_UNUSED( track )
-        }
-
-        static Type capabilityInterfaceType() { return Handler::Capability::Writable; }
 };
 }
 

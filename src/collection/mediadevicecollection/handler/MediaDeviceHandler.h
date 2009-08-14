@@ -122,12 +122,29 @@ public:
     /// Methods provided for CollectionLocation
 
     /**
+     * Allows organizable devices to tell
+     * from which base folder to organize music
+     * into folders
+     */
+
+    virtual QString baseMusicFolder() const
+    {
+        return QString();
+    }
+
+    /**
     * Checks if a device can be written to.
     * @return
     *   TRUE if the device can be written to
     *   FALSE if the device can not be written to
     */
     virtual bool isWritable() const = 0;
+
+    /**
+    * Checks if a device supports customizing
+    * filename when being copied to
+    */
+    virtual bool isOrganizable() const { return false; }
 
     /** Given a list of tracks, get URLs for device tracks
     *  of this type of device.  If the device needs to
@@ -174,6 +191,9 @@ public:
     // HACK: Used for device-specific actions, such as initialize for iPod
     virtual QList<QAction *> collectionActions() { return QList<QAction*> (); }
 
+    // Used by CollLocation to set destinations if organizable device
+    void setDestinations( const QMap<Meta::TrackPtr, QString> &destinations );
+
 signals:
     void gotCopyableUrls( const QMap<Meta::TrackPtr, KUrl> &urls );
     void databaseWritten( bool succeeded );
@@ -200,7 +220,7 @@ public slots:
     * simply calls slotDatabaseWritten to continue the workflow.
     */
 
-    virtual void writeDatabase() {}
+    virtual void writeDatabase() { slotDatabaseWritten( true ); }
 
     void savePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
     void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
@@ -265,6 +285,7 @@ protected:
     bool m_success;
     bool m_copyingthreadsafe; // whether or not the handler's method of copying is threadsafe
     TitleMap          m_titlemap; /// Map of track titles to tracks, used to detect duplicates
+    QMap<Meta::TrackPtr, QString> m_destinations;/// Destination urls for organizable devices, on copy
 
 
 protected slots:
@@ -352,6 +373,7 @@ private:
     Handler::ReadCapabilityBase *m_rcb;
     Handler::CustomReadCapability *m_crc;
     Handler::ReadCapability *m_rc;
+    Handler::WriteCapabilityBase *m_wcb;
     Handler::WriteCapability    *m_wc;
 
 };

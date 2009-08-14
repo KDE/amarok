@@ -57,6 +57,7 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     , m_rcb( 0 )
     , m_crc( 0 )
     , m_rc( 0 )
+    , m_wcb( 0 )
     , m_wc( 0 )
 {
     DEBUG_BLOCK
@@ -169,6 +170,11 @@ void
 MediaDeviceHandler::addMediaDeviceTrackToCollection(Meta::MediaDeviceTrackPtr& track)
 {
     DEBUG_BLOCK
+
+    setupReadCapability();
+
+    if( !m_rcb )
+        return;
 
     TrackMap trackMap = m_memColl->trackMap();
     ArtistMap artistMap = m_memColl->artistMap();
@@ -304,7 +310,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     setupWriteCapability();
 
-    if( !m_wc )
+    if( !m_wcb )
         return;
 
     m_isCopying = true;
@@ -332,7 +338,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         // Check for compatible formats
         format = track->type();
 
-        if( !m_wc->supportedFormats().contains( format ) )
+        if( !m_wcb->supportedFormats().contains( format ) )
         {
              const QString error = i18n("Unsupported format: %1", format);
              m_tracksFailed.insert( track, error );
@@ -430,7 +436,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     // prepare to copy
 
-    m_wc->prepareToCopy();
+    m_wcb->prepareToCopy();
 
     m_numTracksToCopy = m_tracksToCopy.count();
     m_tracksCopying.clear();
@@ -475,29 +481,33 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
     // find path to copy to
 
-    m_wc->findPathToCopy( track, destTrack );
+    m_wcb->findPathToCopy( track, destTrack );
 
-    // Create a track struct, associate it to destTrack
+    if( !isOrganizable() )
+    {
+        // Create a track struct, associate it to destTrack
 
-    m_wc->libCreateTrack( destTrack );
+        m_wc->libCreateTrack( destTrack );
 
-    // Fill the track struct of the destTrack with info from the track parameter as source
+        // Fill the track struct of the destTrack with info from the track parameter as source
 
-    setBasicMediaDeviceTrackInfo( track, destTrack );
+        setBasicMediaDeviceTrackInfo( track, destTrack );
+
+        // set up the play url
+
+        m_wc->libSetPlayableUrl( destTrack, track );
+
+    }
 
     // Fill metadata of destTrack too with the same info
 
     getBasicMediaDeviceTrackInfo( track, destTrack );
 
-    // set up the play url
-
-    m_wc->libSetPlayableUrl( destTrack, track );
-
     m_trackSrcDst[ track ] = destTrack; // associate source with destination, for finalizing copy
 
     // Copy the file to the device
 
-    success = m_wc->libCopyTrack( track, destTrack );
+    success = m_wcb->libCopyTrack( track, destTrack );
 
     return success;
 }
@@ -511,13 +521,16 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
 
     Meta::MediaDeviceTrackPtr destTrack = m_trackSrcDst[ track ];
 
-    // Add the track struct into the database, if the library needs to
+    if( !isOrganizable() )
+    {
+        // Add the track struct into the database, if the library needs to
 
-    m_wc->addTrackInDB( destTrack );
+        m_wc->addTrackInDB( destTrack );
 
-    // Inform subclass that a track has been added to the db
+        // Inform subclass that a track has been added to the db
 
-    m_wc->databaseChanged();
+        m_wc->databaseChanged();
+    }
 
     // Add the new Meta::MediaDeviceTrackPtr into the device collection
 
@@ -709,6 +722,7 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
 void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
 {
+    DEBUG_BLOCK
     QString artist( m_rcb->libGetArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
@@ -1012,6 +1026,13 @@ MediaDeviceHandler::totalcapacity() const
         return 0.0;
 }
 
+void
+MediaDeviceHandler::setDestinations( const QMap<Meta::TrackPtr, QString> &destinations )
+{
+    m_destinations.clear();
+    m_destinations = destinations;
+}
+
 UserPlaylistProvider*
 MediaDeviceHandler::provider()
 {
@@ -1130,12 +1151,20 @@ MediaDeviceHandler::setupReadCapability()
 void
 MediaDeviceHandler::setupWriteCapability()
 {
-    if( !m_wc )
+    DEBUG_BLOCK
+    if( !m_wcb )
     {
+        debug() << "WCB does not exist";
         if( this->hasCapabilityInterface( Handler::Capability::Writable ) )
         {
-            m_wc = this->create<Handler::WriteCapability>();
-            if( !m_wc )
+            m_wcb = this->create<Handler::WriteCapabilityBase>();
+            m_wc = 0;
+            if( m_wcb->inherits( "Handler::WriteCapability" ) )
+            {
+                debug() << "Making write capability";
+                m_wc = qobject_cast<Handler::WriteCapability *>( m_wcb );
+            }
+            if( !m_wcb )
             {
                 debug() << "Handler does not have MediaDeviceHandler::WriteCapability. Aborting.";
                 return;

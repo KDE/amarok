@@ -25,31 +25,12 @@
 #include "amarokconfig.h"
 #include "file/File.h"
 #include "MountPointManager.h"
-#include "QueryMaker.h"
 #include "QStringx.h"
-#include "SqlQueryMaker.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 
 #include <QDir>
 
-OrganizeCollectionDialog::OrganizeCollectionDialog( QueryMaker *qm, QWidget *parent,  const char *name, bool modal,
-                                                    const QString &caption, QFlags<KDialog::ButtonCode> buttonMask )
-{
-    SqlQueryMaker *sqlqm  = static_cast<SqlQueryMaker*>( qm );
-    sqlqm->setQueryType( QueryMaker::Track );
-    sqlqm->setBlocking( true );
-    sqlqm->run();
-    Meta::TrackList tracks;
-    foreach( const QString &collectionId, sqlqm->collectionIds() )
-    {
-        tracks << sqlqm->tracks( collectionId );
-    }
-    // FIXME: someone has to delete it. should it really be done here?
-    delete qm;
-    OrganizeCollectionDialog( tracks, parent, name, modal, caption, buttonMask );
-}
-
-OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &tracks, QWidget *parent,  const char *name, bool modal,
+OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &tracks, const QStringList &folders, QWidget *parent,  const char *name, bool modal,
                                                     const QString &caption, QFlags<KDialog::ButtonCode> buttonMask )
     : KDialog( parent )
     , ui( new Ui::OrganizeCollectionDialogBase )
@@ -82,14 +63,12 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->verticalLayout->insertWidget( 3, m_filenameLayoutDialog );
     ui->ignoreTheCheck->show();
 
-    const QStringList folders = MountPointManager::instance()->collectionFolders();
-
     ui->folderCombo->insertItems( 0, folders );
     ui->folderCombo->setCurrentIndex( AmarokConfig::organizeDirectory() );
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
     ui->filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
     ui->initialCheck->setChecked( AmarokConfig::groupArtists() );
-    ui->spaceCheck->setChecked( AmarokConfig::replaceSpace() ); 
+    ui->spaceCheck->setChecked( AmarokConfig::replaceSpace() );
     ui->ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
     ui->vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
     ui->asciiCheck->setChecked( AmarokConfig::asciiOnly() );
@@ -115,7 +94,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
              this, SLOT( slotUpdatePreview() ) );
     connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
              this, SLOT( slotEnableOk( const QString & ) ) );
-             
+
     toggleCustomScheme( ui->customschemeCheck->isChecked() );
     slotEnableOk( ui->folderCombo->currentText() );
 
@@ -154,9 +133,9 @@ OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::T
     //TODO: handle if track==NULL to avoid bug 169684
     //This could maybe happen with an empty collection, when the TrackList is empty and then m_previewTrack is null.
     //FIXME: 169684
-    
+
     bool isCompilation = track->album() && track->album()->isCompilation();
-    
+
     QMap<QString, QString> args;
     QString artist = track->artist()->name();
     QString albumartist;
