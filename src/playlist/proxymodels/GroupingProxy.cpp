@@ -25,7 +25,9 @@
 #include "GroupingProxy.h"
 
 #include "Debug.h"
+#include "Collection.h"
 #include "meta/MetaUtility.h"
+#include "meta/capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistDefines.h"
 
 #include <QVariant>
@@ -253,8 +255,30 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
                 if( track1 && track1->rating() && track2 && track2->rating() )
                     return ( track1->rating() ) == ( track2->rating() );
             case 5: //Source
-                if( track1 && track1->artist() && track2 && track2->artist() )
-                    return ( *track1->artist().data() ) == ( *track2->artist().data() );
+                if( track1 && track2 )
+                {
+                    Meta::SourceInfoCapability *sic1 = track1->create< Meta::SourceInfoCapability >();
+                    Meta::SourceInfoCapability *sic2 = track2->create< Meta::SourceInfoCapability >();
+                    QString source1, source2;
+                    if( sic1 && sic2)
+                    {
+                        source1 = sic1->sourceName();
+                        source2 = sic2->sourceName();
+                        delete sic1;
+                        delete sic2;
+                    }
+                    else
+                    {
+                        if( track1->collection() && track2->collection() )
+                        {
+                            source1 = track1->collection()->collectionId();
+                            source2 = track2->collection()->collectionId();
+                        }
+                        else
+                            return false;
+                    }
+                    return source1 == source2;
+                }
             case 6: //Year
                 if( track1 && track1->year() && track2 && track2->year() )
                     return ( *track1->year().data() ) == ( *track2->year().data() );
