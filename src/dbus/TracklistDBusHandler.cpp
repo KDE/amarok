@@ -37,8 +37,8 @@ namespace Amarok
     {
         new TracklistAdaptor(this);
         QDBusConnection::sessionBus().registerObject( "/TrackList", this );
-        connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
-        connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
+        connect( The::playlist(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
+        connect( The::playlist(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotTrackListChange() ) );
     }
 
     int TracklistDBusHandler::AddTrack( const QString& url, bool playImmediately )
@@ -64,17 +64,17 @@ namespace Amarok
 
     int TracklistDBusHandler::GetCurrentTrack()
     {
-        return Playlist::ModelStack::instance()->source()->activeRow();
+        return The::playlist()->activeRow();
     }
 
     int TracklistDBusHandler::GetLength()
     {
-        return Playlist::ModelStack::instance()->source()->rowCount();
+        return The::playlist()->rowCount();
     }
 
     QVariantMap TracklistDBusHandler::GetMetadata( int position )
     {
-        return The::playerDBusHandler()->GetTrackMetadata( Playlist::ModelStack::instance()->source()->trackAt( position ) );
+        return The::playerDBusHandler()->GetTrackMetadata( The::playlist()->trackAt( position ) );
     }
 
     void TracklistDBusHandler::SetLoop(bool enable)
@@ -91,7 +91,7 @@ namespace Amarok
 
     void TracklistDBusHandler::slotTrackListChange()
     {
-        emit TrackListChange( Playlist::ModelStack::instance()->source()->rowCount() );
+        emit TrackListChange( The::playlist()->rowCount() );
     }
 }
 
