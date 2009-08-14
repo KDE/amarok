@@ -311,15 +311,15 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             QList<QVariant> list;
             foreach( Meta::TrackPtr track, tracks )
             {
-                list.append( QVariant( QUrl( track->playableUrl().url() ) ) );
+                list.append( QVariant( QUrl( track->playableUrl() ) ) );
             }
             foreach( Meta::PodcastEpisodePtr episode, episodes )
             {
-                list.append( QVariant( QUrl( episode->playableUrl().url() ) ) );
+                list.append( QVariant( QUrl( episode->playableUrl() ) ) );
             }
             foreach( Meta::PlaylistPtr playlist, playlists )
             {
-                list.append( QVariant( QUrl( playlist->retrievableUrl().url() ) ) );
+                list.append( QVariant( QUrl( playlist->retrievableUrl() ) ) );
             }
             foreach( Meta::PodcastChannelPtr channel, channels )
             {
