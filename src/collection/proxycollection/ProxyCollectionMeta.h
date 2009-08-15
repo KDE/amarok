@@ -102,6 +102,24 @@ namespace ProxyCollection
 
         void add( Meta::AlbumPtr album );
 
+        /** returns true if the album has a cover set */
+        virtual bool hasImage( int size = 1 ) const;
+        /** returns the cover of the album */
+        virtual QPixmap image( int size = 1 );
+        /** returns the image location on disk */
+        virtual KUrl imageLocation( int size = 1 );
+        /** returns the cover of the album with a nice border around it*/
+        virtual QPixmap imageWithBorder( int size = 1, int borderWidth = 5 );
+        /** Returns true if it is possible to update the cover of the album */
+        virtual bool canUpdateImage() const;
+        /** updates the cover of the album */
+        virtual void setImage( const QPixmap &pixmap );
+        virtual void removeImage();
+        /** don't automatically fetch artwork */
+        virtual void setSuppressImageAutoFetch( const bool suppress );
+        /** should automatic artwork retrieval be suppressed? */
+        virtual bool suppressImageAutoFetch() const;
+
         protected:
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::AlbumPtr album );

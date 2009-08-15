@@ -557,6 +557,113 @@ ProxyCollection::Album::add( Meta::AlbumPtr album )
     notifyObservers();
 }
 
+bool
+ProxyCollection::Album::hasImage( int size ) const
+{
+    foreach( const Meta::AlbumPtr &album, m_albums )
+    {
+        if( album->hasImage( size ) )
+            return true;
+    }
+    return false;
+}
+
+QPixmap
+ProxyCollection::Album::image( int size )
+{
+    foreach( Meta::AlbumPtr album, m_albums )
+    {
+        if( album->hasImage( size ) )
+        {
+            return album->image( size );
+        }
+    }
+    return QPixmap();
+}
+
+KUrl
+ProxyCollection::Album::imageLocation( int size )
+{
+    foreach( Meta::AlbumPtr album, m_albums )
+    {
+        if( album->hasImage( size ) )
+        {
+            KUrl url = album->imageLocation( size );
+            if( url.isValid() )
+            {
+                return url;
+            }
+        }
+    }
+    return KUrl();
+}
+
+QPixmap
+ProxyCollection::Album::imageWithBorder( int size, int borderWidth )
+{
+    foreach( Meta::AlbumPtr album, m_albums )
+    {
+        if( album->hasImage( size ) )
+        {
+            return album->imageWithBorder( size, borderWidth );
+        }
+    }
+    return QPixmap();
+}
+
+bool
+ProxyCollection::Album::canUpdateImage() const
+{
+    if( m_albums.count() == 0 )
+        return false;
+
+    foreach( const Meta::AlbumPtr &album, m_albums )
+    {
+        //we can only update the image for all albusm at the same time
+        if( !album->canUpdateImage() )
+            return false;
+    }
+    return true;
+}
+
+void
+ProxyCollection::Album::setImage( const QPixmap &pixmap )
+{
+    foreach( Meta::AlbumPtr album, m_albums )
+    {
+        album->setImage( pixmap );
+    }
+}
+
+void
+ProxyCollection::Album::removeImage()
+{
+    foreach( Meta::AlbumPtr album, m_albums )
+    {
+        album->removeImage();
+    }
+}
+
+void
+ProxyCollection::Album::setSuppressImageAutoFetch( bool suppress )
+{
+    foreach( Meta::AlbumPtr album, m_albums )
+    {
+        album->setSuppressImageAutoFetch( suppress );
+    }
+}
+
+bool
+ProxyCollection::Album::suppressImageAutoFetch() const
+{
+    foreach( const Meta::AlbumPtr &album, m_albums )
+    {
+        if( !album->suppressImageAutoFetch() )
+            return false;
+    }
+    return true;
+}
+
 void
 ProxyCollection::Album::metadataChanged( Meta::AlbumPtr album )
 {
