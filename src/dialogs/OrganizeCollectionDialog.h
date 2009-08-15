@@ -39,21 +39,21 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
 
     public:
 
-        AMAROK_EXPORT explicit OrganizeCollectionDialog( const Meta::TrackList &tracks, const QStringList &folders, QWidget *parent=0, const char *name=0,
+        explicit OrganizeCollectionDialog( const Meta::TrackList &tracks, const QStringList &folders, QWidget *parent=0, const char *name=0,
                                            bool modal=true, const QString &caption=QString(),
                                            QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel );
 
         ~OrganizeCollectionDialog();
 
-        AMAROK_EXPORT QMap<Meta::TrackPtr, QString> getDestinations();
-        AMAROK_EXPORT bool overwriteDestinations() const;
+        QMap<Meta::TrackPtr, QString> getDestinations();
+        bool overwriteDestinations() const;
 
     signals:
         void updatePreview(QString);
 
     public slots:
-        AMAROK_EXPORT void slotUpdatePreview();
-        AMAROK_EXPORT void slotDialogAccepted();
+        void slotUpdatePreview();
+        void slotDialogAccepted();
 
     private:
         QString buildDestination( const QString &format, const Meta::TrackPtr &track ) const;
