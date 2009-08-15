@@ -67,7 +67,8 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 
     connect( this, SIGNAL( incrementProgress() ),
              The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
-
+    connect( this, SIGNAL(endProgressOperation(const QObject*)),
+             The::statusBar(), SLOT(endProgressOperation(const QObject*)));
     connect( this, SIGNAL( databaseWritten(bool)),
              this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
 }
