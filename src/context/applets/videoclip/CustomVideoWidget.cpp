@@ -25,7 +25,6 @@ using namespace Phonon;
 
 void CustomVideoWidget::mouseDoubleClickEvent( QMouseEvent* )
 {
-    DEBUG_BLOCK;
     // If we already are in full screen
     if ( !isFullScreen() )
     {
@@ -40,7 +39,6 @@ void CustomVideoWidget::mouseDoubleClickEvent( QMouseEvent* )
 void
 CustomVideoWidget::keyPressEvent( QKeyEvent *e )
 {
-    DEBUG_BLOCK
     if( !isFullScreen() )
     {
         Phonon::VideoWidget::keyPressEvent( e );
