@@ -411,19 +411,16 @@ bool
 UmsHandler::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
 {
     DEBUG_BLOCK
-            Q_UNUSED( track )
-            /*
-    Itdb_Track *umstrack = m_itdbtrackhash[ track ];
+
+    Meta::TrackPtr metafiletrack = m_umstrackhash[ track ];
 
     // delete file
-    KUrl url;
-    url.setPath( realPath( umstrack->ums_path ) );
+    KUrl url = metafiletrack->playableUrl().path();
     Meta::TrackPtr trackptr = Meta::TrackPtr::staticCast( track );
     m_tracksdeleting[ url ] = trackptr;
     deleteFile( url );
-*/
-    return false;
 
+    return true;
 }
 
 bool
@@ -545,6 +542,9 @@ UmsHandler::fileDeleted( KJob *job )  //SLOT
         KUrl url = djob->urls().first();
 
         Meta::TrackPtr track = m_tracksdeleting[ url ];
+        Meta::MediaDeviceTrackPtr devtrack = Meta::MediaDeviceTrackPtr::staticCast( track );
+        m_umstrackhash.remove( devtrack );
+        m_files.remove( devtrack->playableUrl().path() );
 
         debug() << "emitting libRemoveTrackDone";
 
@@ -843,6 +843,32 @@ UmsHandler::prepareToDelete()
     //m_jobcounter = 0;
 
     m_tracksdeleting.clear();
+}
+
+void
+UmsHandler::endTrackRemove()
+{
+    // TODO: remove empty directories of deleted tracks
+    /*
+    /// Look for empty directories that should now be deleted
+    //QMap<KUrl, Meta::TrackPtr> m_tracksdeleting;
+    foreach( KUrl url, m_tracksdeleting.keys() )
+    {
+        QDir currDir( url.directory() );
+        QDir dirup(
+
+        // Pull out the directory one deeper than the mount root
+
+        while( currDir.exists() && !( currDir.canonicalPath() == m_mountPoint ) )
+        {
+            // if it's empty, delete
+            if( currDir.count() == 0 )
+                currDir.rmdir( "
+        }
+
+
+    }
+    */
 }
 
 /// Capability-related functions

@@ -91,6 +91,13 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapabilityBase : public Handler::Capabil
             Q_UNUSED( track )
         }
 
+        /**
+         * Allow device to do post-deletion cleanup, such as removing
+         * empty directories
+         */
+
+        virtual void endTrackRemove() {}
+
         static Type capabilityInterfaceType() { return Handler::Capability::Writable; }
 };
 }

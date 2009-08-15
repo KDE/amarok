@@ -135,6 +135,8 @@ class UmsHandler : public Meta::MediaDeviceHandler
 
         virtual void prepareToCopy();
         virtual void prepareToDelete();
+
+        virtual void endTrackRemove();
 #if 0
 
         virtual QString libGetPlaylistName();

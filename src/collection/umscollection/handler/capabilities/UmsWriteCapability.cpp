@@ -67,4 +67,10 @@ UmsWriteCapability::prepareToDelete()
     m_handler->prepareToDelete();
 }
 
+void
+UmsWriteCapability::endTrackRemove()
+{
+    m_handler->endTrackRemove();
+}
+
 #include "UmsWriteCapability.moc"

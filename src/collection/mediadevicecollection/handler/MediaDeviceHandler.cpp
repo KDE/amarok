@@ -593,18 +593,10 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
         return;
     }
 
-    if( !m_wc )
-    {
-        if( this->hasCapabilityInterface( Handler::Capability::Writable ) )
-        {
-            m_wc = this->create<Handler::WriteCapability>();
-            if( !m_wc )
-            {
-                debug() << "Handler does not have MediaDeviceHandler::WriteCapability. Aborting remove.";
-                return;
-            }
-        }
-    }
+    setupWriteCapability();
+
+    if( !m_wcb )
+        return;
 
     m_isDeleting = true;
 
@@ -618,13 +610,7 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
 
     m_statusbar->setMaximum( tracks.size() );
 
-    connect( this, SIGNAL( incrementProgress() ),
-            The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
-
-     connect( this, SIGNAL( databaseWritten(bool)),
-              this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
-
-    m_wc->prepareToDelete();
+    m_wcb->prepareToDelete();
 
     m_numTracksToRemove = m_tracksToDelete.count();
 
@@ -659,7 +645,7 @@ MediaDeviceHandler::privateRemoveTrackFromDevice( const Meta::TrackPtr &track )
 
     // Remove the physical file from the device, perhaps using a libcall, or KIO
 
-    m_wc->libDeleteTrackFile( devicetrack );
+    m_wcb->libDeleteTrackFile( devicetrack );
 
 
 }
@@ -670,13 +656,20 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
     DEBUG_BLOCK
     Meta::MediaDeviceTrackPtr devicetrack = Meta::MediaDeviceTrackPtr::staticCast( track );
 
-    // Remove the track struct from the db, references to it
+    if( !isOrganizable() )
+    {
+        // Remove the track struct from the db, references to it
 
-    m_wc->removeTrackFromDB( devicetrack );
+        m_wc->removeTrackFromDB( devicetrack );
 
-    // delete the struct associated with this track
+        // delete the struct associated with this track
 
-    m_wc->libDeleteTrack( devicetrack );
+        m_wc->libDeleteTrack( devicetrack );
+
+        // Inform subclass that a track has been removed from
+
+        m_wc->databaseChanged();
+    }
 
     // remove from titlemap
 
@@ -685,10 +678,6 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
     // remove from collection
 
     removeMediaDeviceTrackFromCollection( devicetrack );
-
-    // Inform subclass that a track has been removed from
-
-    m_wc->databaseChanged();
 
     emit incrementProgress();
 
@@ -702,6 +691,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
             The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         */
+        m_wcb->endTrackRemove();
         debug() << "Done removing tracks";
         m_isDeleting = false;
         emit removeTracksDone();
