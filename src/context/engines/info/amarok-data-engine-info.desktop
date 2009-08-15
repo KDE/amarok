@@ -1,5 +1,10 @@
 [Desktop Entry]
 Name=Info Data Engine
+Name[pt]=Motor de Dados da Informação
+Name[pt_BR]=Motor de Dados da Informação
+Name[sv]=Datagränssnitt för information
+Name[uk]=Рушій інформаційних даних
+Name[x-test]=xxInfo Data Enginexx
 
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service

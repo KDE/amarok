@@ -1,5 +1,10 @@
 [Desktop Entry]
 Name=Info
+Name[pt]=Informação
+Name[pt_BR]=Informação
+Name[sv]=Information
+Name[uk]=Інформація
+Name[x-test]=xxInfoxx
 Type=Service
 ServiceTypes=Plasma/Applet
 
