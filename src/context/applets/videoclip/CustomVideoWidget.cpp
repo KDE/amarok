@@ -17,6 +17,8 @@
 #include "CustomVideoWidget.h"
 #include "Debug.h"
 
+#include <QKeyEvent>
+
 #define DEBUG_PREFIX "CustomVideoWidget"
 
 using namespace Phonon;
@@ -27,17 +29,46 @@ void CustomVideoWidget::mouseDoubleClickEvent( QMouseEvent* )
     // If we already are in full screen
     if ( !isFullScreen() )
     {
-        m_parent = parentWidget();
-        m_rect = geometry();
-        setWindowFlags( Qt::Window );
-        setFullScreen( true );
+        enableFullscreen();
     }
     else
     {
-        setFullScreen( false );
-        setParent( m_parent, Qt::SubWindow | Qt::FramelessWindowHint );
-        setGeometry( m_rect );
-        show();
+        disableFullscreen();
     }
+}
+
+void
+CustomVideoWidget::keyPressEvent( QKeyEvent *e )
+{
+    DEBUG_BLOCK
+    if( !isFullScreen() )
+    {
+        Phonon::VideoWidget::keyPressEvent( e );
+    }
+    else
+    {
+        if( e->key() == Qt::Key_Escape )
+        {
+            disableFullscreen();
+        }
+    }
+}
+
+void
+CustomVideoWidget::enableFullscreen()
+{
+     m_parent = parentWidget();
+     m_rect = geometry();
+     setWindowFlags( Qt::Window );
+     setFullScreen( true );
+}
+
+void
+CustomVideoWidget::disableFullscreen()
+{
+    setFullScreen( false );
+    setParent( m_parent, Qt::SubWindow | Qt::FramelessWindowHint );
+    setGeometry( m_rect );
+    show();
 }
 

@@ -36,6 +36,12 @@ class CustomVideoWidget : public Phonon::VideoWidget
     protected:
         virtual void mouseDoubleClickEvent(QMouseEvent* );
 
+        virtual void keyPressEvent( QKeyEvent* e );
+
+    private:
+        void enableFullscreen();
+        void disableFullscreen();
+
         QWidget *m_parent;
         QRect    m_rect;
 };
