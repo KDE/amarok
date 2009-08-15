@@ -94,6 +94,8 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Fixed track drag-and-drop problem when special characters are present
+      in file path. (BR 193878)
     * Don't crash when trying to load an empty playlist folder. (BR 202643)
     * Make using the mouse wheel over the progress slider correctly navigate
       in the currently playing track. (BR 195913)
@@ -126,8 +128,6 @@ VERSION 2.2-beta1
     * Fixed giant Edit Filter dialog with some translations. (BR 197566)
     * Files browser remembers its view mode. (BR 197122)
     * Fixed non-Latin UTF-8 encoding tags not being correctly decoded.
-    * Fixed track drag-and-drop problem when special characters are present
-      in file path. (BR 193878)
 
 
 VERSION 2.1.1
