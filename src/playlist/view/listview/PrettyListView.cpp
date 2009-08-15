@@ -73,6 +73,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setDragDropMode( QAbstractItemView::DragDrop );
     setDropIndicatorShown( false ); // we draw our own drop indicator
+    setEditTriggers ( QAbstractItemView::AllEditTriggers );
     setAutoScroll( true );
 
     setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );

@@ -49,6 +49,8 @@ public:
     */
     bool clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index );
 
+    QWidget * createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+
 private:
     void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
     void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const;

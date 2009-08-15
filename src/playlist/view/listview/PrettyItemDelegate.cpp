@@ -25,6 +25,7 @@
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "InlineEditorWidget.h""
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"
@@ -605,6 +606,13 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     
 
     return false;
+}
+
+QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    DEBUG_BLOCK
+    const int groupMode = index.data( GroupRole ).toInt();
+    return new InlineEditorWidget( parent, LayoutManager::instance()->activeLayout(), groupMode );
 }
 
 
