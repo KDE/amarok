@@ -136,7 +136,7 @@ class PlaylistManager : public QObject
         *   @arg tracks list of tracks to save
         *   @arg name name of playlist to save
         */
-        bool save( Meta::TrackList tracks, const QString &name,
+        bool save( Meta::TrackList tracks, const QString &name = QString(),
                    UserPlaylistProvider *toProvider = 0 );
 
         /**
@@ -177,6 +177,9 @@ class PlaylistManager : public QObject
         QList<QAction *> playlistActions( const Meta::PlaylistList lists );
         QList<QAction *> trackActions( const Meta::PlaylistPtr playlist,
                                                   int trackIndex );
+
+    public slots:
+        void saveCurrentPlaylist();
 
     signals:
         void updated();

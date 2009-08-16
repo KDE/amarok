@@ -22,6 +22,7 @@
 #include "statusbar/StatusBar.h"
 #include "CollectionManager.h"
 #include "PlaylistFile.h"
+#include "playlist/PlaylistModelStack.h"
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"
 #include "file/PlaylistFileProvider.h"
@@ -296,7 +297,7 @@ switch( playlistCategory )
 }
 
 bool
-PlaylistManager::save( Meta::TrackList tracks, const QString & name,
+PlaylistManager::save( Meta::TrackList tracks, const QString &name,
                        UserPlaylistProvider *toProvider )
 {
     //if toProvider is 0 use the default UserPlaylistProvider (SQL)
@@ -316,6 +317,14 @@ PlaylistManager::save( Meta::TrackList tracks, const QString & name,
     }
 
     return !playlist.isNull();
+}
+
+
+void
+PlaylistManager::saveCurrentPlaylist() //SLOT
+{
+    Meta::TrackList tracks = Playlist::ModelStack::instance()->source()->tracks();
+    save( tracks );
 }
 
 bool

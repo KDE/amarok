@@ -30,6 +30,7 @@
 #include "PlaylistController.h"
 #include "PlaylistDefines.h"
 #include "PlaylistHeader.h"
+#include "PlaylistManager.h"
 #include "PlaylistModelStack.h"
 #include "ProgressiveSearchWidget.h"
 #include "widgets/HorizontalDivider.h"
@@ -118,13 +119,13 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
         plBar->addSeparator();
 
-        KActionMenu *saveMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Playlist"), this );
-        connect( saveMenu, SIGNAL( triggered(bool) ), The::playlistModel(),
-                 SLOT( savePlaylist() ) );
+        KActionMenu *saveMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), this );
+        connect( saveMenu, SIGNAL( triggered(bool) ), The::playlistManager(),
+                 SLOT( saveCurrentPlaylist() ) );
         action = new KAction( KIcon( "multimedia-player-apple-ipod" ), i18n("&Save to iPod"), this );
         saveMenu->addAction( action );
-        connect( action, SIGNAL( triggered(bool) ), The::playlistModel(),
-                 SLOT( savePlaylist() ) );
+        connect( action, SIGNAL( triggered(bool) ), The::playlistManager(),
+                 SLOT( saveCurrentPlaylist() ) );
         plBar->addAction( saveMenu );
 
         plBar->addSeparator();

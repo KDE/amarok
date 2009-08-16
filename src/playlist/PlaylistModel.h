@@ -83,6 +83,12 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         Meta::TrackPtr trackAt( int row ) const;
         Meta::TrackPtr activeTrack() const;
 
+        /**
+         * Get the ordered list of tracks from this model
+         */
+        //TODO: add this to Playlist::AbstractModel
+        virtual Meta::TrackList tracks() const;
+
         // position-independent access methods
         // these are useful when you care what tracks are in the playlist, but not what order they're in (eg, the Random Track navigator)
         bool containsId( const quint64 id ) const { return m_itemIds.contains( id ); }
@@ -132,12 +138,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         static QString prettyColumnName( Column index ); //!takes a Column enum and returns its string name
 
         int rowToBottomModel( const int row ) { return row; }
-
-    public slots:
-        /**
-         * Saves a playlist to the playlist browser.
-         */
-        bool savePlaylist() const;
 
     signals:
         void insertedIds( const QList<quint64>& );

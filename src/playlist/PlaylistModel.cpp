@@ -638,17 +638,14 @@ Playlist::Model::exportPlaylist( const QString &path ) const
     return The::playlistManager()->exportPlaylist( tl, path );
 }
 
-bool
-Playlist::Model::savePlaylist() const //SLOT
+Meta::TrackList
+Playlist::Model::tracks() const
 {
-    DEBUG_BLOCK
-    QString name = QString();
-
     Meta::TrackList tl;
     foreach( Item* item, m_items )
         tl << item->track();
 
-    return The::playlistManager()->save( tl, name );
+    return tl;
 }
 
 void
