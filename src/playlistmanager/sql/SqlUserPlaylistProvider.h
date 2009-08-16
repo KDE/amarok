@@ -34,14 +34,14 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         ~SqlUserPlaylistProvider();
 
         /* PlaylistProvider functions */
-        virtual QString prettyName() const { return i18n("Internal Database"); }
-        virtual QString description() const { return i18n("Local playlists stored in the database"); };
+        virtual QString prettyName() const { return i18n( "Internal Database" ); }
+        virtual QString description() const { return i18n( "Local playlists stored in the database" ); }
         virtual KIcon icon() const { return KIcon( "server-database" ); }
 
         /* UserPlaylistProvider functions */
         virtual Meta::PlaylistList playlists();
 
-        virtual bool canSavePlaylists() { return true; };
+        virtual bool canSavePlaylists() { return true; }
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks );
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
 
@@ -74,7 +74,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         void loadFromDb();
 
         Meta::SqlPlaylistList selectedPlaylists() const
-            { return m_selectedPlaylists; };
+            { return m_selectedPlaylists; }
         Meta::SqlPlaylistList m_selectedPlaylists;
         QAction *m_renameAction;
         QAction *m_deleteAction;

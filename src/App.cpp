@@ -104,6 +104,7 @@ extern void setupEventHandler_mac(long);
 #include "TestPLSPlaylist.h"
 #include "TestQStringx.h"
 #include "TestSmartPointerList.h"
+#include "TestSqlUserPlaylistProvider.h"
 #include "TestXSPFPlaylist.h"
 #endif // DEBUG
 
@@ -596,24 +597,25 @@ App::runUnitTests()
     logDir.mkpath( logPath );
 
     PERF_LOG( "Running Unit Tests" )
-    TestAmarok               testAmarok( testArgumentList );
-    TestCaseConverter        testCaseConverter( testArgumentList );
-    TestExpression           testExpression( testArgumentList );
-    TestM3UPlaylist          testM3UPlaylist( testArgumentList );
-    TestMetaCueCueFileItem   testMetaCueCueFileItem( testArgumentList );
-    TestMetaCueTrack         testMetaCueTrack( testArgumentList );
-    TestMetaFileTrack        testMetaFileTrack( testArgumentList );
-    TestMetaMultiTrack       testMetaMultiTrack( testArgumentList );
-    TestMetaTrack            testMetaTrack( testArgumentList );
-    TestPlaylistFileProvider testPlaylistFileProvider( testArgumentList );
-    TestPlaylistFileSupport  testPlaylistFileSupport( testArgumentList );
-    TestPLSPlaylist          testPLSPlaylist( testArgumentList );
-    TestQStringx             testQStringx( testArgumentList );
-    TestSmartPointerList     testSmartPointerList( testArgumentList );
-    TestXSPFPlaylist         testXSPFPlaylist( testArgumentList );
+    TestAmarok                  testAmarok( testArgumentList );
+    TestCaseConverter           testCaseConverter( testArgumentList );
+    TestExpression              testExpression( testArgumentList );
+    TestM3UPlaylist             testM3UPlaylist( testArgumentList );
+    TestMetaCueCueFileItem      testMetaCueCueFileItem( testArgumentList );
+    TestMetaCueTrack            testMetaCueTrack( testArgumentList );
+    TestMetaFileTrack           testMetaFileTrack( testArgumentList );
+    TestMetaMultiTrack          testMetaMultiTrack( testArgumentList );
+    TestMetaTrack               testMetaTrack( testArgumentList );
+    TestPlaylistFileProvider    testPlaylistFileProvider( testArgumentList );
+    TestPlaylistFileSupport     testPlaylistFileSupport( testArgumentList );
+    TestPLSPlaylist             testPLSPlaylist( testArgumentList );
+    TestQStringx                testQStringx( testArgumentList );
+    TestSmartPointerList        testSmartPointerList( testArgumentList );
+    TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList );
+    TestXSPFPlaylist            testXSPFPlaylist( testArgumentList );
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
-    TestDirectoryLoader      *testDirectoryLoader = new TestDirectoryLoader( testArgumentList );
+    TestDirectoryLoader        *testDirectoryLoader = new TestDirectoryLoader( testArgumentList );
 
     PERF_LOG( "Done Running Unit Tests" )
     Q_UNUSED( testDirectoryLoader )
