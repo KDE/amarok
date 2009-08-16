@@ -271,7 +271,7 @@ MountPointManager::getRelativePath( const int deviceId, const QString& absoluteP
 {
     KUrl url;
     getRelativePath( deviceId, KUrl( absolutePath ), url );
-    return url.path();
+    return url.toLocalFile();
 }
 
 // void
