@@ -99,6 +99,7 @@ extern void setupEventHandler_mac(long);
 #include "TestMetaFileTrack.h"
 #include "TestMetaMultiTrack.h"
 #include "TestMetaTrack.h"
+#include "TestPlaylistFileProvider.h"
 #include "TestPlaylistFileSupport.h"
 #include "TestPLSPlaylist.h"
 #include "TestQStringx.h"
@@ -605,6 +606,7 @@ App::runUnitTests()
     TestMetaFileTrack        testMetaFileTrack( testArgumentList );
     TestMetaMultiTrack       testMetaMultiTrack( testArgumentList );
     TestMetaTrack            testMetaTrack( testArgumentList );
+    TestPlaylistFileProvider testPlaylistFileProvider( testArgumentList );
     TestPlaylistFileSupport  testPlaylistFileSupport( testArgumentList );
     TestPLSPlaylist          testPLSPlaylist( testArgumentList );
     TestQStringx             testQStringx( testArgumentList );

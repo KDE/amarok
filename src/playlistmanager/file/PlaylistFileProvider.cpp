@@ -90,7 +90,7 @@ PlaylistFileProvider::~PlaylistFileProvider()
 QString
 PlaylistFileProvider::prettyName() const
 {
-    return i18n("Playlist Files");
+    return i18n( "Playlist Files" );
 }
 
 Meta::PlaylistList

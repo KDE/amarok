@@ -39,7 +39,7 @@ class PlaylistFileProvider : public UserPlaylistProvider
         QString prettyName() const;
         virtual KIcon icon() const { return KIcon( "folder-documents" ); }
 
-        int category() const { return PlaylistManager::UserPlaylist; };
+        int category() const { return PlaylistManager::UserPlaylist; }
 
         virtual Meta::PlaylistList playlists();
 

@@ -31,7 +31,7 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
     Q_OBJECT
 
     public:
-        virtual ~PlaylistProvider() {};
+        virtual ~PlaylistProvider() {}
 
         /**
         * @returns A translated string to identify this Provider.

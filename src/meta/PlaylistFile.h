@@ -34,9 +34,9 @@ namespace Meta
     class PlaylistFile : public Playlist
     {
         public:
-            PlaylistFile() {};
+            PlaylistFile() {}
             PlaylistFile( const KUrl &url ) { Q_UNUSED( url ); }
-            virtual ~PlaylistFile() {};
+            virtual ~PlaylistFile() {}
 
             virtual bool isWritable() { return false; }
 
