@@ -12,3 +12,5 @@ install(
         Platz\ 10.mp3
         DESTINATION ${DATA_INSTALL_DIR}/amarok/testdata/audio
 )
+
+add_subdirectory( album )
