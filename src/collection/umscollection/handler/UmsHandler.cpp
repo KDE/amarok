@@ -94,6 +94,7 @@ UmsHandler::~UmsHandler()
 void
 UmsHandler::init()
 {
+    DEBUG_BLOCK
     if( m_mountPoint.isEmpty() )
     {
         debug() << "Empty mountpoint, aborting";
@@ -101,7 +102,29 @@ UmsHandler::init()
         return;
     }
 
+    QFile playerFile( m_mountPoint + "/.is_audio_player" );
 
+    if (playerFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        debug() << "Got .is_audio_player file";
+        QTextStream in(&playerFile);
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            if( line.startsWith( "audio_folder=" ) )
+            {
+                debug() << "Found audio_folder=";
+                QString path = m_mountPoint + "/" + line.section( '=', 1, 1 );
+                debug() << "Path trying to set to: " << path;
+                QDir dir( path );
+                if( dir.exists() )
+                {
+                    debug() << "Custom audio folder now set to: " << path;
+                    m_mountPoint = path;
+                }
+            }
+        }
+
+    }
 /*
     m_formats << "mp3" << "wav" << "asf" << "flac" << "wma" << "ogg" << "aac" << "m4a"
             << "mp4" << "mp2" << "ac3";
