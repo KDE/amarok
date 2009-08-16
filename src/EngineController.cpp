@@ -745,7 +745,6 @@ EngineController::slotQueueEnded()
 
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
-        m_currentTrack->finishedPlaying( 1.0 );
         playbackEnded( trackPosition(), m_currentTrack->length(), EngineObserver::EndedStopped );
         m_currentTrack = 0;
         trackChangedNotify( m_currentTrack );

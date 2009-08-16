@@ -94,6 +94,7 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Fixed double playcount increase for last track in queue (BR 188330)
     * Fixed track drag-and-drop problem when special characters are present
       in file path. (BR 193878)
     * Don't crash when trying to load an empty playlist folder. (BR 202643)
