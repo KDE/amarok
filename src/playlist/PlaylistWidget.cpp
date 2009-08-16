@@ -120,6 +120,7 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addSeparator();
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), this );
+        m_saveActions = new KActionCollection( this );
         connect( m_savePlaylistMenu, SIGNAL( triggered(bool) ), The::playlistManager(),
                  SLOT( saveCurrentPlaylist() ) );
         foreach( const PlaylistProvider *provider,
@@ -131,6 +132,11 @@ Playlist::Widget::Widget( QWidget* parent )
                  SIGNAL( providerAdded( const PlaylistProvider *, int ) ),
                  SLOT( playlistProviderAdded( const PlaylistProvider *, int ) )
                  );
+        connect( The::playlistManager(),
+                 SIGNAL( providerRemoved( const PlaylistProvider *, int ) ),
+                 SLOT( playlistProviderRemoved( const PlaylistProvider *, int ) )
+                 );
+
         plBar->addAction( m_savePlaylistMenu );
 
         Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
@@ -171,9 +177,22 @@ Playlist::Widget::playlistProviderAdded( const PlaylistProvider *provider, int c
                                   i18n("&Save to %1").arg( provider->prettyName() ),
                                   this
                                 );
+    m_saveActions->addAction( provider->objectName(), action );
+
     m_savePlaylistMenu->addAction( action );
     connect( action, SIGNAL( triggered(bool) ), The::playlistManager(),
              SLOT( saveCurrentPlaylist() ) );
+}
+
+void
+Playlist::Widget::playlistProviderRemoved( const PlaylistProvider *provider, int category )
+{
+    if( category != PlaylistManager::UserPlaylist )
+        return;
+
+    QAction *action = m_saveActions->action( provider->objectName() );
+    if( action )
+        m_savePlaylistMenu->removeAction( action );
 }
 
 void

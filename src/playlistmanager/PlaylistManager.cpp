@@ -104,7 +104,7 @@ PlaylistManager::addProvider( PlaylistProvider * provider, int category )
 }
 
 void
-PlaylistManager::removeProvider( PlaylistProvider * provider )
+PlaylistManager::removeProvider( PlaylistProvider *provider )
 {
     DEBUG_BLOCK
 
@@ -118,8 +118,9 @@ PlaylistManager::removeProvider( PlaylistProvider * provider )
         int removed = m_map.remove( provider->category(), provider );
         debug() << "Removed provider from map:" << ( m_map.contains( provider->category(), provider ) ? "false" : "true" );
         debug() << "Providers removed: " << removed;
-        // Handle deletion of provider here
-//        provider->deleteLater();
+
+        emit( providerRemoved( provider, provider->category() ) );
+
         slotUpdated();
 
     }

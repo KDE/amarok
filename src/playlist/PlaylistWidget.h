@@ -28,6 +28,7 @@
 #include <QComboBox>
 #include <QLabel>
 
+class KActionCollection;
 class KActionMenu;
 class PlaylistProvider;
 class QWidget;
@@ -58,9 +59,11 @@ protected:
 
 private slots:
     void playlistProviderAdded( const PlaylistProvider *provider, int category );
+    void playlistProviderRemoved( const PlaylistProvider *provider, int category );
 
 private:
     KActionMenu *m_savePlaylistMenu;
+    KActionCollection *m_saveActions;
 
     PrettyListView* m_playlistView;
     ProgressiveSearchWidget * m_searchWidget;
