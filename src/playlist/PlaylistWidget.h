@@ -28,6 +28,8 @@
 #include <QComboBox>
 #include <QLabel>
 
+class KActionMenu;
+class PlaylistProvider;
 class QWidget;
 
 namespace Playlist
@@ -54,7 +56,12 @@ public slots:
 protected:
     QSize sizeHint() const;
 
+private slots:
+    void playlistProviderAdded( const PlaylistProvider *provider, int category );
+
 private:
+    KActionMenu *m_savePlaylistMenu;
+
     PrettyListView* m_playlistView;
     ProgressiveSearchWidget * m_searchWidget;
     SortWidget * m_sortWidget;

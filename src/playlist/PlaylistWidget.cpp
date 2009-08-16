@@ -119,16 +119,19 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
         plBar->addSeparator();
 
-        KActionMenu *saveMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), this );
-        connect( saveMenu, SIGNAL( triggered(bool) ), The::playlistManager(),
+        m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), this );
+        connect( m_savePlaylistMenu, SIGNAL( triggered(bool) ), The::playlistManager(),
                  SLOT( saveCurrentPlaylist() ) );
-        action = new KAction( KIcon( "multimedia-player-apple-ipod" ), i18n("&Save to iPod"), this );
-        saveMenu->addAction( action );
-        connect( action, SIGNAL( triggered(bool) ), The::playlistManager(),
-                 SLOT( saveCurrentPlaylist() ) );
-        plBar->addAction( saveMenu );
+        foreach( const PlaylistProvider *provider,
+                 The::playlistManager()->providersForCategory(
+                            PlaylistManager::UserPlaylist ) )
+            playlistProviderAdded( provider, PlaylistManager::UserPlaylist );
 
-        plBar->addSeparator();
+        connect( The::playlistManager(),
+                 SIGNAL( providerAdded( const PlaylistProvider *, int ) ),
+                 SLOT( playlistProviderAdded( const PlaylistProvider *, int ) )
+                 );
+        plBar->addAction( m_savePlaylistMenu );
 
         Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
         plBar->addAction( layoutConfigAction );
@@ -159,6 +162,21 @@ Playlist::Widget::sizeHint() const
 }
 
 void
+Playlist::Widget::playlistProviderAdded( const PlaylistProvider *provider, int category )
+{
+    if( category != PlaylistManager::UserPlaylist )
+        return;
+
+    QAction *action = new KAction( KIcon( "multimedia-player-apple-ipod" ),
+                                  i18n("&Save to %1").arg( provider->prettyName() ),
+                                  this
+                                );
+    m_savePlaylistMenu->addAction( action );
+    connect( action, SIGNAL( triggered(bool) ), The::playlistManager(),
+             SLOT( saveCurrentPlaylist() ) );
+}
+
+void
 Playlist::Widget::showDynamicHint( bool enabled )
 {
     DEBUG_BLOCK
@@ -166,7 +184,6 @@ Playlist::Widget::showDynamicHint( bool enabled )
         m_dynamicHintWidget->show();
     else
         m_dynamicHintWidget->hide();
-
 }
 
 void

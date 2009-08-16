@@ -99,6 +99,8 @@ PlaylistManager::addProvider( PlaylistProvider * provider, int category )
 
     if( newCategory )
         emit( categoryAdded( category ) );
+
+    emit( providerAdded( provider, category ) );
 }
 
 void
