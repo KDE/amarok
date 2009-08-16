@@ -17,11 +17,15 @@
 #include "InlineEditorWidget.h"
 
 #include "Debug.h"
+#include "SvgHandler.h"
 #include "playlist/proxymodels/GroupingProxy.h"
+
 
 #include <kratingwidget.h>
 
+#include <QLabel>
 #include <QLineEdit>
+#include <QPainter>
 
 using namespace Playlist;
 
@@ -145,6 +149,7 @@ void InlineEditorWidget::createChildWidgets()
             LayoutItemConfigRowElement element = row.element( j );
 
             int value = element.value();
+            int alignment = element.alignment();
 
             QModelIndex textIndex = m_index.model()->index( m_index.row(), value );
             QString text = textIndex.data( Qt::DisplayRole ).toString();
@@ -171,8 +176,9 @@ void InlineEditorWidget::createChildWidgets()
                     KRatingWidget * ratingWidget = new KRatingWidget( rowWidget );
                     ratingWidget->setGeometry( QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2)  );
 
-                } /*else if ( value == Divider )
+                } else if ( value == Divider )
                 {
+                    debug() << "painting divider...";
                     QPixmap left = The::svgHandler()->renderSvg(
                             "divider_left",
                             1, rowHeight ,
@@ -183,23 +189,30 @@ void InlineEditorWidget::createChildWidgets()
                             1, rowHeight,
                             "divider_right" );
 
+                    QPainter painter( this );
+
+                    QLabel * leftLabel = new QLabel( rowWidget );
+                    leftLabel->setPixmap( left );
+                    QLabel * rightLabel = new QLabel( rowWidget );
+                    rightLabel->setPixmap( right );
+                         
                     if ( alignment & Qt::AlignLeft )
                     {
-                        painter->drawPixmap( currentItemX, rowOffsetY, left );
-                        painter->drawPixmap( currentItemX + 1, rowOffsetY, right );
+                        leftLabel->setGeometry( currentItemX, rowOffsetY, 1, rowHeight );
+                        rightLabel->setGeometry( currentItemX + 1, rowOffsetY, 1, rowHeight );
                     }
                     else if ( alignment & Qt::AlignRight )
                     {
-                        painter->drawPixmap( currentItemX + itemWidth - 1, rowOffsetY, left );
-                        painter->drawPixmap( currentItemX + itemWidth, rowOffsetY, right );
+                        leftLabel->setGeometry( currentItemX + itemWidth - 1, rowOffsetY, 1, rowHeight );
+                        rightLabel->setGeometry( currentItemX + itemWidth, rowOffsetY, 1, rowHeight );
                     }
                     else
                     {
                         int center = currentItemX + ( itemWidth / 2 );
-                        painter->drawPixmap( center, rowOffsetY, left );
-                        painter->drawPixmap( center + 1, rowOffsetY, right );
+                        leftLabel->setGeometry( center, rowOffsetY, 1, rowHeight );
+                        rightLabel->setGeometry( center + 1, rowOffsetY, 1, rowHeight );
                     }
-                }*/
+                }
                 else
                 {
                      QLineEdit * edit = new QLineEdit( text, rowWidget );
