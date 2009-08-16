@@ -70,13 +70,13 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setModel( Playlist::ModelStack::instance()->top() );
     m_prettyDelegate = new PrettyItemDelegate( this );
     setItemDelegate( m_prettyDelegate );
-    setSelectionMode( QAbstractItemView::ExtendedSelection );
-    setDragDropMode( QAbstractItemView::DragDrop );
+    setSelectionMode( ExtendedSelection );
+    setDragDropMode( DragDrop );
     setDropIndicatorShown( false ); // we draw our own drop indicator
-    setEditTriggers ( QAbstractItemView::AllEditTriggers );
+    setEditTriggers ( SelectedClicked | EditKeyPressed );
     setAutoScroll( true );
 
-    setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    setVerticalScrollMode( ScrollPerPixel );
 
     // rendering adjustments
     setFrameShape( QFrame::NoFrame );
