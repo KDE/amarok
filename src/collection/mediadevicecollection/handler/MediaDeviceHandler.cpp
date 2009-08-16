@@ -1175,13 +1175,18 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
 
     setupWriteCapability();
 
-    if( !m_wc )
+    if( !m_wcb )
         return;
 
-    setBasicMediaDeviceTrackInfo( track, trackPtr );
+    if ( !isOrganizable() )
+    {
+        setBasicMediaDeviceTrackInfo( track, trackPtr );
 
-    m_wc->updateTrack( trackPtr );
-    m_wc->databaseChanged();
+        m_wc->databaseChanged();
+    }
+
+    m_wcb->updateTrack( trackPtr );
+
 }
 
 void

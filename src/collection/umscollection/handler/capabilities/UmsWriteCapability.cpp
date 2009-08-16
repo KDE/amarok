@@ -68,6 +68,12 @@ UmsWriteCapability::prepareToDelete()
 }
 
 void
+UmsWriteCapability::updateTrack( Meta::MediaDeviceTrackPtr &track )
+{
+    m_handler->updateTrack( track );
+}
+
+void
 UmsWriteCapability::endTrackRemove()
 {
     m_handler->endTrackRemove();

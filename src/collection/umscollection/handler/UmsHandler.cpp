@@ -851,6 +851,34 @@ UmsHandler::prepareToDelete()
 }
 
 void
+UmsHandler::updateTrack( Meta::MediaDeviceTrackPtr &track )
+{
+    MetaFile::TrackPtr metafile = MetaFile::TrackPtr::staticCast( m_umstrackhash.value( track ) );
+    if( !metafile )
+        return;
+
+    // Data has changed, update the MetaFile::Track
+    metafile->setTitle( track->name() );
+    if ( track->album() )
+        metafile->setAlbum( track->album()->name() );
+    if ( track->artist() )
+        metafile->setArtist( track->artist()->name() );
+    if ( track->composer() )
+        metafile->setComposer( track->composer()->name() );
+    if ( track->genre() )
+        metafile->setGenre( track->genre()->name() );
+    if ( track->year() )
+        metafile->setYear( track->year()->name() );
+    metafile->setTrackNumber( track->trackNumber() );
+    metafile->setComment( track->comment() );
+    metafile->setDiscNumber( track->discNumber() );
+
+    metafile->setPlayCount( track->playCount() );
+    metafile->setLastPlayed( track->lastPlayed() );
+    metafile->setRating( track->rating() );
+}
+
+void
 UmsHandler::endTrackRemove()
 {
     // TODO: remove empty directories of deleted tracks

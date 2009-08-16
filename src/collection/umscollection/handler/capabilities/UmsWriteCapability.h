@@ -45,6 +45,8 @@ class UmsWriteCapability : public WriteCapabilityBase
     virtual void prepareToCopy();
     virtual void prepareToDelete();
 
+    virtual void updateTrack( Meta::MediaDeviceTrackPtr &track );
+
     virtual void endTrackRemove();
 
     private:

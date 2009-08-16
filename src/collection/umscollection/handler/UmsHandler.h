@@ -136,6 +136,8 @@ class UmsHandler : public Meta::MediaDeviceHandler
         virtual void prepareToCopy();
         virtual void prepareToDelete();
 
+        virtual void updateTrack( Meta::MediaDeviceTrackPtr &track );
+
         virtual void endTrackRemove();
 #if 0
 
@@ -228,7 +230,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
 
         QMap<KUrl, Meta::TrackPtr> m_trackscopying; // associates source url to track of source url
         QMap<Meta::TrackPtr, KUrl> m_trackdesturl; // keeps track of destination url for new tracks, mapped from source track
-	QMap<Meta::TrackPtr, Meta::MediaDeviceTrackPtr> m_srctodest;
+        QMap<Meta::TrackPtr, Meta::MediaDeviceTrackPtr> m_srctodest;
         QMap<KUrl, Meta::TrackPtr> m_tracksdeleting; // associates source url to track of source url being deleted
 
         /* Ums Connection */
