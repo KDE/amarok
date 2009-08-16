@@ -69,7 +69,7 @@
 #include <KAction>          //m_actionCollection
 #include <KActionCollection>
 #include <KApplication>     //kapp
-#include <KFileDialog>      //savePlaylist(), openPlaylist()
+#include <KFileDialog>      //openPlaylist()
 #include <KInputDialog>     //slotAddStream()
 #include <KMessageBox>
 #include <KLocale>
@@ -79,7 +79,7 @@
 #include <KStandardAction>
 #include <KStandardDirs>
 #include <KWindowSystem>
-#include <kabstractfilewidget.h> //savePlaylist()
+#include <kabstractfilewidget.h>
 
 #include <plasma/plasma.h>
 
@@ -494,12 +494,6 @@ MainWindow::exportPlaylist() const //SLOT
         AmarokConfig::setRelativePlaylist( saveRelativeCheck->isChecked() );
         Playlist::ModelStack::instance()->source()->exportPlaylist( playlistName );
     }
-}
-
-void
-MainWindow::savePlaylist() const
-{
-    Playlist::ModelStack::instance()->source()->savePlaylist();
 }
 
 void
