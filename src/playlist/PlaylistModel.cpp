@@ -630,6 +630,7 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 bool
 Playlist::Model::exportPlaylist( const QString &path ) const
 {
+    DEBUG_BLOCK
     Meta::TrackList tl;
     foreach( Item* item, m_items )
         tl << item->track();

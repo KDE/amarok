@@ -425,7 +425,7 @@ PlaylistManager::exportPlaylist( Meta::TrackList tracks,
                         const QString &location )
 {
     DEBUG_BLOCK
-
+    debug()<<"About to export playlist to "<< location;
     KUrl url( location );
 
     return Meta::exportPlaylistFile( tracks, url );

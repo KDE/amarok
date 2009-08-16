@@ -117,6 +117,10 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void setAllUnplayed();
 
         // methods to save playlist to file
+        /**
+         * Saves a playlist to a specified location.
+         * @param path the path of the playlist file, as chosen by a FileDialog in MainWindow.
+         */
         bool exportPlaylist( const QString &path ) const;
         void setPlaylistName( const QString &name, bool proposeOverwriting = false );
         void proposePlaylistName( const QString &name, bool proposeOverwriting = false );
@@ -130,6 +134,9 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         int rowToBottomModel( const int row ) { return row; }
 
     public slots:
+        /**
+         * Saves a playlist to the playlist browser.
+         */
         bool savePlaylist() const;
 
     signals:
@@ -139,8 +146,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void activeRowChanged( int );
 
     private:
-
-
         // inherit from QAbstractListModel, and make private so that nobody uses them
         bool insertRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
         bool insertRows( int, int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }

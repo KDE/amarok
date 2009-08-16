@@ -136,8 +136,13 @@ XSPFPlaylist::save( const KUrl &location, bool relative )
 
     if( file.exists() )
         //TODO: prompt for overwrite.
-        return false;
-
+        {
+            if( KUrl( ::Playlist::ModelStack::instance()->source()->defaultPlaylistPath() ) != savePath )
+            {
+                return false;
+            }
+            warning() << "The file" << location << "exists, overwriting...";
+        }
     if( !file.open( QIODevice::WriteOnly ) )
     {
         if( The::mainWindow() ) // MainWindow might already be destroyed at this point (at program shutdown)
