@@ -28,7 +28,7 @@ const qreal InlineEditorWidget::MARGINBODY = 1.0;
 const qreal InlineEditorWidget::PADDING = 1.0;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, PlaylistLayout layout, int groupMode )
- : KVBox()
+ : KVBox( parent )
  , m_layout( layout )
 {
 
