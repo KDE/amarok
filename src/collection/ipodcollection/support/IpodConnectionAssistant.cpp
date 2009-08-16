@@ -24,6 +24,7 @@
 #include <QString>
 
 #include <solid/device.h>
+#include <solid/portablemediaplayer.h>
 
 IpodConnectionAssistant::~IpodConnectionAssistant()
 {
@@ -37,11 +38,14 @@ IpodConnectionAssistant::identify( const QString& udi )
     Solid::Device device;
 
     device = Solid::Device(udi);
+
     /* going until we reach a vendor, e.g. Apple */
     while ( device.isValid() && device.vendor().isEmpty() )
     {
         device = Solid::Device( device.parentUdi() );
     }
+
+    Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
 
     debug() << "Device udi: " << udi;
     debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
@@ -52,8 +56,16 @@ IpodConnectionAssistant::identify( const QString& udi )
         debug() << "vendor: " << device.vendor() << ", product: " << device.product();
     }
 
+    if( pmp )
+    {
+        debug() <<  "Supported protocols: " << pmp->supportedProtocols();
+        debug() << "Supported drivers: " << pmp->supportedDrivers();
+        return pmp->supportedProtocols().contains( "ipod" );
+    }
+
     /* if iPod or iPhone found, return true */
-    return device.product() == "iPod" || device.product().startsWith("iPhone");
+
+    return  device.product() == "iPod" || device.product().startsWith("iPhone");
 }
 
 
