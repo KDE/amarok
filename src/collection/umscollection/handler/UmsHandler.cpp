@@ -403,7 +403,7 @@ UmsHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrack
 
     KUrl srcurl = KUrl::fromPath( srcTrack->playableUrl().path() );
     m_trackscopying[ srcurl ] = srcTrack;
-    m_destTrack = destTrack;
+    m_srctodest.insert( srcTrack, destTrack );
     return kioCopyTrack( srcurl, m_trackdesturl[ srcTrack ] );
 }
 
@@ -412,7 +412,7 @@ UmsHandler::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
 {
     DEBUG_BLOCK
 
-    Meta::TrackPtr metafiletrack = m_umstrackhash[ track ];
+    Meta::TrackPtr metafiletrack = m_umstrackhash.value( track );
 
     // delete file
     KUrl url = metafiletrack->playableUrl().path();
@@ -492,8 +492,9 @@ UmsHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bo
     if( !job->error() )
     {
         Meta::TrackPtr metafiletrack( new MetaFile::Track( to ) );
-        m_umstrackhash.insert( m_destTrack, metafiletrack );
-        m_files.insert( to.path(), m_destTrack );
+        Meta::MediaDeviceTrackPtr destTrack = m_srctodest.value( track );
+        m_umstrackhash.insert( destTrack, metafiletrack );
+        m_files.insert( to.path(), destTrack );
         slotFinalizeTrackCopy( track );
     }
 }
@@ -561,6 +562,9 @@ UmsHandler::libGetAlbum( const Meta::MediaDeviceTrackPtr &track )
 QString
 UmsHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 {
+    DEBUG_BLOCK
+    if ( !m_umstrackhash.contains( track ) )
+        debug() << "Error!  track not in hash!";
     return m_umstrackhash.value( track )->artist()->name();
 }
 
@@ -833,6 +837,7 @@ UmsHandler::prepareToCopy()
 
     m_trackdesturl.clear();
     m_trackscopying.clear();
+    m_srctodest.clear();
 }
 
 void
