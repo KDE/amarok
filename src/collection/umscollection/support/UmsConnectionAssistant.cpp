@@ -24,6 +24,7 @@
 #include <QString>
 
 #include <solid/device.h>
+#include <solid/storagedrive.h>
 
 UmsConnectionAssistant::UmsConnectionAssistant()
     : ConnectionAssistant( true )
@@ -39,12 +40,17 @@ UmsConnectionAssistant::identify( const QString& udi )
 {
     DEBUG_BLOCK
 
+    // NOTE: device detection code taken from KDE's device notifier applet
+
     Solid::Device device;
+    Solid::Device parentDevice;
 
     device = Solid::Device(udi);
+    parentDevice = device.parent();
+    Solid::StorageDrive *drive = parentDevice.as<Solid::StorageDrive>();
 
     /* going until we reach a vendor */
-    /*
+/*
     while ( device.isValid() )
     {
         device = Solid::Device( device.parentUdi() );
@@ -62,7 +68,8 @@ UmsConnectionAssistant::identify( const QString& udi )
     // TODO: deal with iPod case, since it's also generic
 
     return ( !MediaDeviceCache::instance()->volumeMountPoint( udi ).isEmpty()
-             && MediaDeviceCache::instance()->isGenericEnabled( udi ) );
+             && drive && (drive->isHotpluggable() || drive->isRemovable()) );
+             //&& MediaDeviceCache::instance()->isGenericEnabled( udi ) );
 
 }
 
