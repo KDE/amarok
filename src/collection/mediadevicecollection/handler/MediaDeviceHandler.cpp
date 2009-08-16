@@ -713,7 +713,6 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
 void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
 {
-    DEBUG_BLOCK
     QString artist( m_rcb->libGetArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
