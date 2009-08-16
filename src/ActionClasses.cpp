@@ -347,8 +347,7 @@ FavorAction::FavorAction( KActionCollection *ac, QObject *parent ) :
                             << i18n( "Not Recently &Played" ) );
 
     setCurrentItem( AmarokConfig::favorTracks() );
-    connect( Amarok::actionCollection()->action("random_mode"), SIGNAL( triggered( bool ) ), this, SLOT( setEnabled( bool ) ) );
-    setEnabled( AmarokConfig::randomMode() );
+    setEnabled( false );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
