@@ -227,5 +227,18 @@ void TestMetaTrack::testOperatorEquals()
 
 void TestMetaTrack::testLessThan()
 {
+    Meta::TrackPtr albumTrack1, albumTrack2, albumTrack3;
+
+    albumTrack1 = CollectionManager::instance()->trackForUrl( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/album/Track01.ogg" ) );
+    albumTrack2 = CollectionManager::instance()->trackForUrl( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/album/Track02.ogg" ) );
+    albumTrack2 = CollectionManager::instance()->trackForUrl( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/album/Track02.ogg" ) );
+
     QVERIFY( !Meta::Track::lessThan( m_testTrack1, m_testTrack1 ) );
+
+    QVERIFY( Meta::Track::lessThan( albumTrack1, albumTrack2 ) );
+    QVERIFY( Meta::Track::lessThan( albumTrack2, albumTrack3 ) );
+    QVERIFY( Meta::Track::lessThan( albumTrack1, albumTrack3 ) );
+    QVERIFY( !Meta::Track::lessThan( albumTrack3, albumTrack2 ) );
+    QVERIFY( !Meta::Track::lessThan( albumTrack3, albumTrack1 ) );
+    QVERIFY( !Meta::Track::lessThan( albumTrack3, albumTrack3 ) );
 }
