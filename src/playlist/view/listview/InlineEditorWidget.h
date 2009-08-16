@@ -21,6 +21,8 @@
 
 #include <KVBox>
 
+#include <QModelIndex>
+
 /**
 An inline editor for a playlist item. Relies on the same item layout configuration as is used by the delegate, and strives to have a simmilar look.
 
@@ -29,11 +31,13 @@ An inline editor for a playlist item. Relies on the same item layout configurati
 class InlineEditorWidget : public KVBox
 {
 public:
-    InlineEditorWidget( QWidget * parent, Playlist::PlaylistLayout layout, int groupMode );
+    InlineEditorWidget( QWidget * parent, const QModelIndex &index, Playlist::PlaylistLayout layout, int groupMode );
 
     ~InlineEditorWidget();
 
 private:
+
+    void createChildWidgets();
 
     static const qreal ALBUM_WIDTH;
     static const qreal SINGLE_TRACK_ALBUM_WIDTH;
@@ -42,7 +46,9 @@ private:
     static const qreal MARGINBODY;
     static const qreal PADDING;
 
+    QModelIndex m_index;
     Playlist::PlaylistLayout m_layout;
+    int m_groupMode;
 
 };
 

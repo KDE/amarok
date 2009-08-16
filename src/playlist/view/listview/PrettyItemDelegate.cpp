@@ -612,7 +612,7 @@ QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const Q
 {
     DEBUG_BLOCK
     const int groupMode = index.data( GroupRole ).toInt();
-    return new InlineEditorWidget( parent, LayoutManager::instance()->activeLayout(), groupMode );
+    return new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
 }
 
 
