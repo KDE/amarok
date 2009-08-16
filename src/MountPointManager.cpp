@@ -195,7 +195,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const KUrl& relativePath
     if ( deviceId == -1 )
     {
 #ifdef Q_OS_WIN32
-        absolutePath.setPath( relativePath.path() );
+        absolutePath.setPath( relativePath.toLocalFile() );
 #else
         absolutePath.setPath( "/" );
         absolutePath.addPath( relativePath.path() );
@@ -258,7 +258,7 @@ MountPointManager::getRelativePath( const int deviceId, const KUrl& absolutePath
         m_handlerMapMutex.unlock();
         //TODO: better error handling
 #ifdef Q_OS_WIN32
-        QString rpath = absolutePath.path();
+        QString rpath = absolutePath.toLocalFile();
 #else
         QString rpath = KUrl::relativePath( "/", absolutePath.path() );
 #endif
