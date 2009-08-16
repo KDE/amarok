@@ -32,7 +32,6 @@
 #include "PlaylistHeader.h"
 #include "PlaylistModelStack.h"
 #include "ProgressiveSearchWidget.h"
-#include "playlist/PlaylistGroupingAction.h"
 #include "widgets/HorizontalDivider.h"
 
 #include <KToolBarSpacerAction>
@@ -127,9 +126,9 @@ Playlist::Widget::Widget( QWidget* parent )
         if( tbutton )
             tbutton->setPopupMode( QToolButton::InstantPopup );
 
-        Playlist::GroupingAction *groupingAction = new Playlist::GroupingAction( this );
-        plBar->addAction( groupingAction );
-        QToolButton *gbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( groupingAction ) );
+        m_groupingAction = new Playlist::GroupingAction( this );
+        plBar->addAction( m_groupingAction );
+        QToolButton *gbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( m_groupingAction ) );
         if( gbutton )
             gbutton->setPopupMode( QToolButton::InstantPopup );
 

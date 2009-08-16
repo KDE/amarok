@@ -49,6 +49,9 @@ SortWidget::SortWidget( QWidget *parent )
     m_layout->addWidget( m_addButton );
     m_layout->addStretch( 10 );
 
+    m_urlButton = new BreadcrumbUrlMenuButton( "playlist", this );
+    m_layout->addWidget( m_urlButton );
+
     connect( m_addButton, SIGNAL( siblingClicked( QString ) ), this, SLOT( addLevel( QString ) ) );
 }
 
@@ -56,7 +59,7 @@ SortWidget::~SortWidget()
 {}
 
 void
-SortWidget::addLevel( QString internalColumnName )
+SortWidget::addLevel( QString internalColumnName, Qt::SortOrder sortOrder )  //private slot
 {
     BreadcrumbLevel *bLevel = new BreadcrumbLevel( internalColumnName );
     BreadcrumbItem *item = new BreadcrumbItem( bLevel, this );
@@ -64,9 +67,12 @@ SortWidget::addLevel( QString internalColumnName )
     connect( item, SIGNAL( clicked() ), this, SLOT( onItemClicked() ) );
     connect( item, SIGNAL( siblingClicked( QAction* ) ), this, SLOT( onItemSiblingClicked( QAction * ) ) );
     connect( item, SIGNAL( orderInverted() ), this, SLOT( updateSortScheme() ) );
+    if( sortOrder != item->sortOrder() )
+        item->invertOrder();
     m_addButton->updateMenu( levels() );
     updateSortScheme();
 }
+
 
 void
 SortWidget::trimToLevel( const int level )
@@ -82,7 +88,7 @@ SortWidget::trimToLevel( const int level )
 }
 
 QStringList
-SortWidget::levels()
+SortWidget::levels() const
 {
     QStringList levels = QStringList();
     for( int i = 0; i < m_ribbon->count(); ++i )
@@ -112,11 +118,41 @@ SortWidget::updateSortScheme()
     for( int i = 0; i < m_ribbon->count(); ++i )    //could be faster if done with iterator
     {
         QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
-        int category = ( name == "random" ) ? -1 : internalColumnNames.indexOf( name );
+        int category = ( name == "Random" ) ? -1 : internalColumnNames.indexOf( name );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
         scheme.addLevel( SortLevel( category, sortOrder ) );
     }
     ModelStack::instance()->sortProxy()->updateSortMap( scheme );
+}
+
+QString
+SortWidget::sortPath() const
+{
+    QString path;
+    for( int i = 0; i < m_ribbon->count(); ++i )    //could be faster if done with iterator
+    {
+        QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
+        Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
+        QString level = ( name == "Random" ) ? name : ( name + "_" + ( sortOrder ? "des" : "asc" ) );
+        path.append( ( i == m_ribbon->count() - 1 ) ? level : ( level + "-" ) );
+    }
+    return path;
+}
+
+QString
+SortWidget::prettySortPath() const
+{
+    QString prettyPath;
+    for( int i = 0; i < m_ribbon->count(); ++i )    //could be faster if done with iterator
+    {
+        QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
+        QString prettyName( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->prettyName() );
+        Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
+        QString prettyLevel = ( name == "Random" ) ? prettyName : ( prettyName + ( sortOrder ? "↓" : "↑" ) );
+        prettyPath.append( ( i == m_ribbon->count() - 1 ) ? prettyLevel : ( prettyLevel + " > " ) );
+        //TODO: see how this behaves on RTL systems
+    }
+    return prettyPath;
 }
 
 }

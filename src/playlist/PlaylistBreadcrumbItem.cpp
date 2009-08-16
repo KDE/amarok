@@ -32,6 +32,7 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
     : KHBox( parent )
 {
      m_name = level->name();
+     m_prettyName = level->prettyName();
 
      //Let's set up the "siblings" button first...
     m_menuButton = new BreadcrumbItemMenuButton( this );
@@ -53,7 +54,7 @@ BreadcrumbItem::BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent )
 
     //And then the main breadcrumb button...
     bool noArrow = false;
-    if( m_name == "random" )
+    if( m_name == "Random" )
         noArrow = true;
     m_mainButton = new BreadcrumbItemSortButton( level->icon(), level->prettyName(), noArrow, this );
 
@@ -80,6 +81,12 @@ Qt::SortOrder
 BreadcrumbItem::sortOrder() const
 {
     return m_mainButton->orderState();
+}
+
+void
+BreadcrumbItem::invertOrder()
+{
+    m_mainButton->invertOrder();
 }
 
 void
@@ -113,7 +120,7 @@ BreadcrumbAddMenuButton::BreadcrumbAddMenuButton( QWidget *parent )
         //       BrowserBreadcrumb menus.
     }
     QAction *action = m_menu->addAction( KIcon( "media-playlist-shuffle" ), QString( i18n( "Random" ) ) );
-    action->setData( "random" );
+    action->setData( "Random" );
 
     connect( m_menu, SIGNAL( triggered( QAction* ) ), this, SLOT( siblingTriggered( QAction* ) ) );
 
@@ -132,7 +139,7 @@ BreadcrumbAddMenuButton::siblingTriggered( QAction *action )
 void
 BreadcrumbAddMenuButton::updateMenu( const QStringList &usedBreadcrumbLevels )
 {
-    if( usedBreadcrumbLevels.contains( "random" ) )
+    if( usedBreadcrumbLevels.contains( "Random" ) )
         hide();
     else
         show();

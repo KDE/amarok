@@ -31,10 +31,40 @@ class GroupingAction : public KAction
 {
     Q_OBJECT
 public:
+    /**
+     * Constructor.
+     * @param parent the parent QWidget
+     */
     GroupingAction( QWidget *parent = 0 );
+
+    /**
+     * Destructor.
+     */
     ~GroupingAction();
 
+    /**
+     * Accessor for the internal name of the current grouping category.
+     * @return the name of the category.
+     */
+    QString currentGroupingCategory() const { return m_groupingActions->checkedAction()->data().toString(); }
+
+    /**
+     * Accessor for the pretty name of the current grouping category.
+     * @return the visible name of the category.
+     */
+    QString prettyGroupingCategory() const { return m_groupingActions->checkedAction()->text(); }
+
+    /**
+     * Returns the QActionGroup that contains the grouping categories.
+     * @return the QActionGroup.
+     */
+    QActionGroup *groupingActionGroup() const { return m_groupingActions; }
+
 protected slots:
+    /**
+     * Applies a grouping category to the playlist.
+     * @param the action that corresponds to the requested grouping category.
+     */
     void setGrouping( QAction *groupingAction );
 
 private:

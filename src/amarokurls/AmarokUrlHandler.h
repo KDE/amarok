@@ -20,6 +20,7 @@
 #include "amarok_export.h"
 #include "AmarokUrlRunnerBase.h"
 #include "Meta.h"
+#include "playlist/PlaylistViewUrlRunner.h"
 
 #include <KIcon>
 
@@ -61,6 +62,7 @@ public slots:
     void bookmarkArtist( Meta::ArtistPtr artist );
 
     void bookmarkCurrentBrowserView();
+    void bookmarkCurrentPlaylistView();
 
 private:
 
@@ -70,6 +72,7 @@ private:
     QMap<QString, AmarokUrlRunnerBase *> m_registeredRunners;
 
     NavigationUrlRunner * m_navigationRunner;
+    Playlist::ViewUrlRunner * m_playlistViewRunner;
     PlayUrlRunner * m_playRunner;
     TimecodeObserver * m_timecodeObserver;
 

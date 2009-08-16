@@ -23,6 +23,7 @@
 #include "NavigationUrlGenerator.h"
 #include "NavigationUrlRunner.h"
 #include "PlayUrlRunner.h"
+#include "playlist/PlaylistViewUrlGenerator.h"
 #include "BookmarkModel.h"
 #include "SqlStorage.h"
 #include "timecode/TimecodeObserver.h"
@@ -49,16 +50,19 @@ AmarokUrlHandler::AmarokUrlHandler()
 {
     //we init some of the default runners here.
     m_navigationRunner = new NavigationUrlRunner();
+    m_playlistViewRunner = new Playlist::ViewUrlRunner();
     m_playRunner = new PlayUrlRunner();
     m_timecodeObserver = new TimecodeObserver();
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
     registerRunner( m_playRunner, m_playRunner->command() );
+    registerRunner( m_playlistViewRunner, m_playlistViewRunner->command() );
 }
 
 
 AmarokUrlHandler::~AmarokUrlHandler()
 {
     delete m_navigationRunner;
+    delete m_playlistViewRunner;
 }
 
 void AmarokUrlHandler::registerRunner( AmarokUrlRunnerBase * runner, const QString & command )
@@ -131,6 +135,15 @@ void AmarokUrlHandler::bookmarkCurrentBrowserView()
 {
     NavigationUrlGenerator generator;
     AmarokUrl url = generator.CreateAmarokUrl();
+    url.saveToDb();
+    BookmarkModel::instance()->reloadFromDb();
+}
+
+void
+AmarokUrlHandler::bookmarkCurrentPlaylistView()
+{
+    Playlist::ViewUrlGenerator generator;
+    AmarokUrl url = generator.createAmarokUrl();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }

@@ -48,7 +48,17 @@ public:
      * Returns the list of levels that are currently defined in the breadcrumb path.
      * @return the list of names of levels.
      */
-    QStringList levels();
+    QStringList levels() const;
+
+    /**
+     * Generates a QString usable by a URL runner that represents the current sort scheme.
+     */
+    QString sortPath() const;
+
+    /**
+     * Generates a user-visible QString usable by a URL runner for the title of a bookmark.
+     */
+    QString prettySortPath() const;
 
 public slots:
     /**
@@ -57,18 +67,12 @@ public slots:
      */
     void updateSortScheme();
 
-private:
-    QHBoxLayout * m_ribbon;
-    QList< BreadcrumbItem * > m_items;
-    BreadcrumbAddMenuButton * m_addButton;
-    QHBoxLayout * m_layout;
-
-private slots:
     /**
      * Adds a level to the breadcrumb path.
      * @param internalColumnName the name of the level.
+     * @param sortOrder the Qt::SortOrder of the level.
      */
-    void addLevel( QString internalColumnName );
+    void addLevel( QString internalColumnName, Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
      * Removes items from the breadcrumb path up to a certain level.
@@ -76,6 +80,14 @@ private slots:
      */
     void trimToLevel( const int level = -1 );
 
+private:
+    QHBoxLayout * m_ribbon;
+    QList< BreadcrumbItem * > m_items;
+    BreadcrumbAddMenuButton * m_addButton;
+    QHBoxLayout * m_layout;
+    BreadcrumbUrlMenuButton *m_urlButton;
+
+private slots:
     /**
      * Handles the (possible) deletion of further levels when an item is clicked.
      */

@@ -119,15 +119,19 @@ void
 BreadcrumbItemSortButton::mouseReleaseEvent( QMouseEvent *e )
 {
     if( m_arrowPressed && e->pos() == m_pressedPos )
-    {
-        if( m_order == Qt::DescendingOrder )
-            m_order = Qt::AscendingOrder;
-        else    //ascending
-            m_order = Qt::DescendingOrder;
-        emit arrowToggled( m_order );
-        repaint();
-    }
+        invertOrder();
     BreadcrumbItemButton::mouseReleaseEvent( e );
+}
+
+void
+BreadcrumbItemSortButton::invertOrder()
+{
+    if( m_order == Qt::DescendingOrder )
+        m_order = Qt::AscendingOrder;
+    else    //ascending
+        m_order = Qt::DescendingOrder;
+    emit arrowToggled( m_order );
+    repaint();
 }
 
 QSize

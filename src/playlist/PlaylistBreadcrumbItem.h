@@ -50,16 +50,27 @@ public:
     ~BreadcrumbItem();
 
     /**
-     * Returns the name of this item.
+     * Returns the internal name of this item.
      * @return the name;
      */
     QString name() const;
+
+    /**
+     * Returns the user visible name of this item.
+     * @return the name;
+     */
+    QString prettyName() const { return m_prettyName; }
 
     /**
      * Returns the state of the sort order.
      * @return the sort order.
      */
     Qt::SortOrder sortOrder() const;
+
+    /**
+     * Flips the Qt::SortOrder state of the main button.
+     */
+    void invertOrder();
 
 signals:
     /**
@@ -85,6 +96,7 @@ private:
     BreadcrumbItemMenuButton *m_menuButton;
     BreadcrumbItemSortButton *m_mainButton;
     QString m_name;
+    QString m_prettyName;
 
 private slots:
     /**

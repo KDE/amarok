@@ -66,6 +66,11 @@ public:
      */
     Qt::SortOrder orderState() const;
 
+    /**
+     * Flips the Qt::SortOrder.
+     */
+    void invertOrder();
+
 signals:
     /**
      * Emitted when the order inversion arrow has been toggled.

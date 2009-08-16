@@ -645,8 +645,12 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentBrowserView() ) );
 
     action = new KAction( KIcon( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
-    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
     ac->addAction( "bookmark_manager", action );
+    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
+
+    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark This Location" ), this );
+    ac->addAction( "bookmark_playlistview", action );
+    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentPlaylistView() ) );
 
     action = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );

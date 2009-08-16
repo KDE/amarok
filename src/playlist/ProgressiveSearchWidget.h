@@ -56,6 +56,12 @@ public:
      */
     ~ProgressiveSearchWidget();
 
+    QString currentFilter() { return m_searchEdit->text(); }
+
+    void setCurrentFilter( const QString filterExpr ) { m_searchEdit->setText( filterExpr ); }
+
+    bool onlyMatches() { return m_showOnlyMatches; }
+
 signals:
     /**
      * Signal emitted when the search term has changed.
@@ -119,6 +125,14 @@ public slots:
      */
     void slotFilterClear();
 
+    /**
+     * Toggle navigate only tracks that match the current search term and
+     * search fields. (The user can always manually select a track that
+     * is not a part of the search results.
+     * @param showOnlyMatches On/off.
+     */
+    void slotShowOnlyMatches( bool onlyMatches );
+
 protected slots:
     /**
      * Notify widget that the text in the search edit has changed.
@@ -171,14 +185,6 @@ protected slots:
      * @param search On/off.
      */
     void slotSearchYears( bool search );
-
-    /**
-     * Toggle navigate only tracks that match the current search term and
-     * search fields. (The user can always manually select a track that
-     * is not a part of the search results.
-     * @param showOnlyMatches On/off.
-     */
-    void slotShowOnlyMatches( bool onlyMatches );
 
 protected:
     void keyPressEvent( QKeyEvent *event );

@@ -210,26 +210,35 @@ BreadcrumbUrlMenuButton::~BreadcrumbUrlMenuButton()
 void BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
 {
 
-   DEBUG_BLOCK
-    
-   BookmarkList list = The::amarokUrlHandler()->urlsByCommand( m_urlsCommand );
+    DEBUG_BLOCK
 
-   QMenu * menu = new QMenu();
-   menu->setTitle( i18n("Browser Bookmarks" ) );
+    BookmarkList list = The::amarokUrlHandler()->urlsByCommand( m_urlsCommand );
 
-   menu->addAction( Amarok::actionCollection()->action("bookmark_browser") );
-   menu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
-   
-   menu->addSeparator();
+    QMenu * menu = new QMenu();
+    menu->setTitle( i18n("Amarok Bookmarks" ) );
 
-   foreach( AmarokUrlPtr url, list )
-   {
-       menu->addAction( new AmarokUrlAction( url, menu ) );
-   }
+    if( m_urlsCommand == "navigate" )
+        menu->addAction( Amarok::actionCollection()->action( "bookmark_browser" ) );
+    else if( m_urlsCommand == "playlist" )
+    {
+        menu->addAction( Amarok::actionCollection()->action( "bookmark_playlistview" ) );
+        debug()<<"Adding bookmark playlist action";
+    }
+    else
+        warning()<<"Bad URL command.";
 
-   debug() << "showing menu at " << pos;
-   menu->exec( pos );
-   delete menu;
+    menu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
+
+    menu->addSeparator();
+
+    foreach( AmarokUrlPtr url, list )
+    {
+        menu->addAction( new AmarokUrlAction( url, menu ) );
+    }
+
+    debug() << "showing menu at " << pos;
+    menu->exec( pos );
+    delete menu;
    
 }
 
@@ -238,7 +247,5 @@ void BreadcrumbUrlMenuButton::showMenu()
     QPoint pos( 0, height() );
     generateMenu( mapToGlobal( pos ) );
 }
-
-
 
 #include "BreadcrumbItemButton.moc"
