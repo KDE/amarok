@@ -34,8 +34,7 @@ namespace Playlist
 
 ViewUrlRunner::ViewUrlRunner()
     : AmarokUrlRunnerBase()
-{
-}
+{}
 
 ViewUrlRunner::~ViewUrlRunner()
 {
