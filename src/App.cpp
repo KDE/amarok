@@ -598,7 +598,6 @@ App::runUnitTests()
     PERF_LOG( "Running Unit Tests" )
     TestAmarok               testAmarok( testArgumentList );
     TestCaseConverter        testCaseConverter( testArgumentList );
-    TestDirectoryLoader      *testDirectoryLoader = new TestDirectoryLoader( testArgumentList );
     TestExpression           testExpression( testArgumentList );
     TestM3UPlaylist          testM3UPlaylist( testArgumentList );
     TestMetaCueCueFileItem   testMetaCueCueFileItem( testArgumentList );
@@ -613,7 +612,8 @@ App::runUnitTests()
     TestSmartPointerList     testSmartPointerList( testArgumentList );
     TestXSPFPlaylist         testXSPFPlaylist( testArgumentList );
 
-    /* add more test classes here ^^ */
+    // modifies the playlist asynchronously, so run this last to avoid messing other test results
+    TestDirectoryLoader      *testDirectoryLoader = new TestDirectoryLoader( testArgumentList );
 
     PERF_LOG( "Done Running Unit Tests" )
     Q_UNUSED( testDirectoryLoader )
