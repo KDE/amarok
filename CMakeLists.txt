@@ -151,6 +151,7 @@ endif(CMAKE_BUILD_TYPE MATCHES debugfull)
 else( WITH_PLAYER )
 
     find_package( Qt4 REQUIRED )
+    set( CMAKE_INCLUDE_CURRENT_DIR ON )
     add_definitions(${QT_DEFINITIONS})
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${TAGLIB_INCLUDES})
 
