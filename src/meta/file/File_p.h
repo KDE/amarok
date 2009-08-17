@@ -130,9 +130,25 @@ TagLib::FileRef
 Track::Private::getFileRef()
 {
 #ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
+    const wchar_t * encodedName;
+    if(url.isLocalFile())
+    {
+        encodedName = reinterpret_cast<const wchar_t *>(url.toLocalFile().utf16());
+    }
+    else
+    {
+        encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
+    }
 #else
-    QByteArray fileName = QFile::encodeName( url.path() );
+    QByteArray fileName;
+    if(url.isLocalFile())
+    {
+        fileName = QFile::encodeName( url.toLocalFile() );
+    }
+    else
+    {
+        fileName = QFile::encodeName( url.path() );
+    }
     const char * encodedName = fileName.constData(); // valid as long as fileName exists
 #endif
     return TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
@@ -284,7 +300,14 @@ void Track::Private::readMetaData()
             m_data.discNumber = disc.toInt();
     }
 #undef strip
-    m_data.fileSize = QFile( url.path() ).size();
+    if(url.isLocalFile())
+    {
+        m_data.fileSize = QFile( url.toLocalFile() ).size();
+    }
+    else
+    {
+        m_data.fileSize = QFile( url.path() ).size();
+    }
 
     debug() << "Read metadata from file for: " + m_data.title;
 }
