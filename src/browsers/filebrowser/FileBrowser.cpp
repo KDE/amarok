@@ -177,7 +177,7 @@ void FileBrowser::Widget::writeConfig()
 
     KConfigGroup config = Amarok::config( "File Browser" );
 
-    config.writeEntry( "Current Directory", m_dirOperator->url() );
+    config.writeEntry( "Current Directory", m_dirOperator->url().toLocalFile() );
     config.writeEntry( "Filter History Length", m_filter->maxCount() );
     config.writeEntry( "Filter History", m_filter->historyItems() );
     config.writeEntry( "UrlEditable", m_urlNav->isUrlEditable() );
