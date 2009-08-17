@@ -16,3 +16,4 @@ QT4_AUTOMOC( TestAmarok.cpp
 add_subdirectory( data )
 add_subdirectory( meta )
 add_subdirectory( playlistmanager )
+add_subdirectory( timecode )

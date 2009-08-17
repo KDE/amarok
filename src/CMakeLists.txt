@@ -58,6 +58,7 @@ include_directories(
     ../tests/playlistmanager/
     ../tests/playlistmanager/file/
     ../tests/playlistmanager/sql/
+    ../tests/timecode/
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${QT_INCLUDES}
@@ -610,6 +611,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/meta/multi/TestMetaMultiTrack.cpp
         ../tests/playlistmanager/file/TestPlaylistFileProvider.cpp
         ../tests/playlistmanager/sql/TestSqlUserPlaylistProvider.cpp
+        ../tests/timecode/TestTimecodeTrackProvider.cpp
         ../tests/TestAmarok.cpp
         ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp

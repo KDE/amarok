@@ -105,6 +105,7 @@ extern void setupEventHandler_mac(long);
 #include "TestQStringx.h"
 #include "TestSmartPointerList.h"
 #include "TestSqlUserPlaylistProvider.h"
+#include "TestTimecodeTrackProvider.h"
 #include "TestXSPFPlaylist.h"
 #endif // DEBUG
 
@@ -612,6 +613,7 @@ App::runUnitTests()
     TestQStringx                testQStringx( testArgumentList );
     TestSmartPointerList        testSmartPointerList( testArgumentList );
     TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList );
+    TestTimecodeTrackProvider   testTimecodeTrackProvider( testArgumentList );
     TestXSPFPlaylist            testXSPFPlaylist( testArgumentList );
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
