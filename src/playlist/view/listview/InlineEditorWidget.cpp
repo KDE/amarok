@@ -135,12 +135,15 @@ void InlineEditorWidget::createChildWidgets()
     //int rowOffsetY = 0;
 
     int imageSize = height() - MARGIN * 2;
-    QRectF nominalImageRect( MARGINH, MARGIN, imageSize, imageSize );
 
     qreal rowWidth = width() - ( rowOffsetX + MARGINH );
 
     if ( config.showCover() )
     {
+        //add a small "spacer" widget to offset the cover a little.
+        QWidget * coverSpacer = new QWidget( contentsBox );
+        coverSpacer->setFixedWidth( 1 + MARGINH - MARGIN );
+        
         QModelIndex coverIndex = m_index.model()->index( m_index.row(), CoverImage );
         QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
 
@@ -149,26 +152,19 @@ void InlineEditorWidget::createChildWidgets()
         else
             albumPixmap = albumPixmap.scaledToHeight( imageSize );
 
-        //offset cover if non square
-        QPoint offset = centerImage( albumPixmap, nominalImageRect );
-        QRect imageRect( nominalImageRect.x() + offset.x(),
-                          nominalImageRect.y() + offset.y(),
-                          nominalImageRect.width() - offset.x() * 2,
-                          nominalImageRect.height() - offset.y() * 2 );
-
         QModelIndex emblemIndex = m_index.model()->index( m_index.row(), SourceEmblem );
         QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
 
-       
         if ( !albumPixmap.isNull() )
         {
             QPainter painter( &albumPixmap );
-            painter.drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
+            painter.drawPixmap( QRectF( 0, 0, 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
 
             QLabel * coverLabel = new QLabel( contentsBox );
             coverLabel->setPixmap( albumPixmap );
-            coverLabel->setGeometry( imageRect );
-            coverLabel->setMaximumSize( imageSize, imageSize );
+            coverLabel->setGeometry( QRect( 0, 0, imageSize + MARGIN * 2, imageSize + ( MARGIN - 1 ) * 2 ) );
+            coverLabel->setMaximumSize( imageSize + MARGIN * 2, imageSize + ( MARGIN - 1 ) * 2 );
+            coverLabel->setMargin ( MARGIN - 1 );
         }
 
         rowWidth = width() - ( rowOffsetX + MARGINH + imageSize );
