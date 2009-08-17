@@ -498,11 +498,14 @@ MediaDeviceHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
 
         m_wc->libSetPlayableUrl( destTrack, track );
 
+        getBasicMediaDeviceTrackInfo( destTrack, destTrack );
     }
+    else
+    {
+        // Fill metadata of destTrack too with the same info
 
-    // Fill metadata of destTrack too with the same info
-
-    getBasicMediaDeviceTrackInfo( track, destTrack );
+        getBasicMediaDeviceTrackInfo( track, destTrack );
+    }
 
     m_trackSrcDst[ track ] = destTrack; // associate source with destination, for finalizing copy
 
