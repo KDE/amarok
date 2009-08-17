@@ -24,7 +24,7 @@ namespace Playlist
 BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
     : m_name( internalColumnName )
 {
-    if( m_name == "random" )
+    if( m_name == "Random" )
     {
         m_icon = KIcon( "media-playlist-shuffle" );
         m_prettyName = i18n( "Random" );
@@ -44,8 +44,8 @@ BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
         m_siblings.insert( currentInternalColumnName,
                            QPair< KIcon, QString>( KIcon( iconNames.at( i ) ), columnNames.at( i ) ) );
     }
-    if( m_name != "random" )
-        m_siblings.insert( "random", QPair< KIcon, QString>( KIcon( "media-playlist-shuffle" ), i18n("Random" ) ) );
+    if( m_name != "Random" )
+        m_siblings.insert( "Random", QPair< KIcon, QString>( KIcon( "media-playlist-shuffle" ), i18n("Random" ) ) );
 }
 
 BreadcrumbLevel::~BreadcrumbLevel()
