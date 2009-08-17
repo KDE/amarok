@@ -37,6 +37,7 @@ namespace AmarokScript
         , m_wrapperList( wrapperList )
         , m_scriptEngine( scriptEngine )
     {
+        //TODO: make this class use The::playlist() for everything.
         connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
         connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
         connect( Playlist::ModelStack::instance()->source(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
@@ -107,7 +108,7 @@ namespace AmarokScript
 
     void AmarokPlaylistScript::savePlaylist( const QString& path )
     {
-        Playlist::ModelStack::instance()->source()->exportPlaylist( path );
+        The::playlist()->exportPlaylist( path );
     }
 
     void AmarokPlaylistScript::setStopAfterCurrent( bool on )

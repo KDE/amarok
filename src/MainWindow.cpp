@@ -492,7 +492,7 @@ MainWindow::exportPlaylist() const //SLOT
     if( !playlistName.isEmpty() )
     {
         AmarokConfig::setRelativePlaylist( saveRelativeCheck->isChecked() );
-        Playlist::ModelStack::instance()->source()->exportPlaylist( playlistName );
+        The::playlist()->exportPlaylist( playlistName );
     }
 }
 

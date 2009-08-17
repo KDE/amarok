@@ -123,12 +123,7 @@ Playlist::Model::~Model()
     DEBUG_BLOCK
 
     // Save current playlist
-    Meta::TrackList list;
-    foreach( Item* item, m_items )
-    {
-        list << item->track();
-    }
-    The::playlistManager()->exportPlaylist( list, defaultPlaylistPath() );
+    exportPlaylist( defaultPlaylistPath() );
 }
 
 QVariant
@@ -631,11 +626,8 @@ bool
 Playlist::Model::exportPlaylist( const QString &path ) const
 {
     DEBUG_BLOCK
-    Meta::TrackList tl;
-    foreach( Item* item, m_items )
-        tl << item->track();
-
-    return The::playlistManager()->exportPlaylist( tl, path );
+    debug() << "WARNING: You shouldn't see this at any time except on exit.";
+    return The::playlistManager()->exportPlaylist( tracks(), path );
 }
 
 Meta::TrackList
@@ -644,24 +636,7 @@ Playlist::Model::tracks() const
     Meta::TrackList tl;
     foreach( Item* item, m_items )
         tl << item->track();
-
     return tl;
-}
-
-void
-Playlist::Model::setPlaylistName( const QString &name, bool proposeOverwriting )
-{
-    m_playlistName = name;
-    m_proposeOverwriting = proposeOverwriting;
-}
-
-void
-Playlist::Model::proposePlaylistName( const QString &name, bool proposeOverwriting )
-{
-    if (( rowCount() == 0 ) || m_playlistName == i18n( "Untitled" ) ) {
-        m_playlistName = name;
-    }
-    m_proposeOverwriting = proposeOverwriting;
 }
 
 QString

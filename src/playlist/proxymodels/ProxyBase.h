@@ -128,6 +128,12 @@ public:
     virtual bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
 
     /**
+     * Saves a playlist to a specified location.
+     * @param path the path of the playlist file, as chosen by a FileDialog in MainWindow.
+     */
+    virtual bool exportPlaylist( const QString &path ) const;
+
+    /**
      * Notify FilterProxy that the search term of searched fields has changed. Since this
      * call does not use the parent's filter values, this method needs to be called when the
      * values change.

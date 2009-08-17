@@ -126,11 +126,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
          * Saves a playlist to a specified location.
          * @param path the path of the playlist file, as chosen by a FileDialog in MainWindow.
          */
-        bool exportPlaylist( const QString &path ) const;
-        void setPlaylistName( const QString &name, bool proposeOverwriting = false );
-        void proposePlaylistName( const QString &name, bool proposeOverwriting = false );
-        const QString& playlistName() const { return m_playlistName; }
-        bool proposeOverwriteOnSave() const { return m_proposeOverwriting; }
+        virtual bool exportPlaylist( const QString &path ) const;
         inline const QString defaultPlaylistPath() const { return Amarok::saveLocation() + "current.xspf"; }
 
         // static member functions
