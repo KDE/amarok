@@ -19,7 +19,7 @@
 
 #include "playlist/layouts/LayoutItemConfig.h"
 
-#include <KVBox>
+#include <KHBox>
 
 #include <QModelIndex>
 
@@ -28,12 +28,15 @@ An inline editor for a playlist item. Relies on the same item layout configurati
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class InlineEditorWidget : public KVBox
+class InlineEditorWidget : public KHBox
 {
 public:
     InlineEditorWidget( QWidget * parent, const QModelIndex &index, Playlist::PlaylistLayout layout, int groupMode );
 
     ~InlineEditorWidget();
+
+protected:
+    void paintEvent( QPaintEvent * event );
 
 private:
 

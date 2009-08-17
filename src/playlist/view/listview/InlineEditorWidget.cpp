@@ -39,13 +39,14 @@ const qreal InlineEditorWidget::MARGINBODY = 1.0;
 const qreal InlineEditorWidget::PADDING = 1.0;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index, PlaylistLayout layout, int groupMode )
- : KVBox( parent )
+ : KHBox( parent )
  , m_index( index )
  , m_layout( layout )
  , m_groupMode( groupMode )
 {
 
     setContentsMargins( 0, 0, 0, 0 );
+    setAutoFillBackground ( false );
     int height = 0;
 
     QFontMetricsF nfm( font() );
@@ -93,31 +94,6 @@ void InlineEditorWidget::createChildWidgets()
 {
     DEBUG_BLOCK
 
-    //First create the main KHBox ( for covers and all the rest ) and the top and bottom divider labels
-    //To make this weird widget look as close to one of the tracks painted by the delegate as possible
-
-    QPixmap top = The::svgHandler()->renderSvg(
-                   "divider_top",
-                   width(), 1,
-                   "divider_top" );
-
-    QPixmap bottom = The::svgHandler()->renderSvg(
-                    "divider_bottom",
-                    width(), 1,
-                    "divider_bottom" );
-
-    QLabel * topDividerLabel = new QLabel( this );
-    topDividerLabel->setPixmap( top );
-    topDividerLabel->setGeometry( 0, 0, width(), 1 );
-    topDividerLabel->setFixedHeight( 1 );
-    
-    KHBox * contentsBox = new KHBox( this );
-
-    QLabel * bottomDividerLabel = new QLabel( this );
-    bottomDividerLabel->setPixmap( bottom );
-    bottomDividerLabel->setGeometry( 0, height(), width(), 1 );
-    bottomDividerLabel->setFixedHeight( 1 );
-
     debug() << "width: " << width();
     //for now, only handle body items
     if( m_groupMode != Body )
@@ -141,8 +117,8 @@ void InlineEditorWidget::createChildWidgets()
     if ( config.showCover() )
     {
         //add a small "spacer" widget to offset the cover a little.
-        QWidget * coverSpacer = new QWidget( contentsBox );
-        coverSpacer->setFixedWidth( 1 + MARGINH - MARGIN );
+        QWidget * coverSpacer = new QWidget( this );
+        coverSpacer->setFixedWidth( MARGINH - MARGIN );
         
         QModelIndex coverIndex = m_index.model()->index( m_index.row(), CoverImage );
         QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
@@ -160,11 +136,11 @@ void InlineEditorWidget::createChildWidgets()
             QPainter painter( &albumPixmap );
             painter.drawPixmap( QRectF( 0, 0, 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
 
-            QLabel * coverLabel = new QLabel( contentsBox );
+            QLabel * coverLabel = new QLabel( this );
             coverLabel->setPixmap( albumPixmap );
-            coverLabel->setGeometry( QRect( 0, 0, imageSize + MARGIN * 2, imageSize + ( MARGIN - 1 ) * 2 ) );
-            coverLabel->setMaximumSize( imageSize + MARGIN * 2, imageSize + ( MARGIN - 1 ) * 2 );
-            coverLabel->setMargin ( MARGIN - 1 );
+            coverLabel->setGeometry( QRect( 0, 0, imageSize + MARGIN * 2, imageSize + MARGIN * 2 ) );
+            coverLabel->setMaximumSize( imageSize + MARGIN * 2, imageSize + MARGIN * 2 );
+            coverLabel->setMargin ( MARGIN );
         }
 
         rowWidth = width() - ( rowOffsetX + MARGINH + imageSize );
@@ -172,7 +148,7 @@ void InlineEditorWidget::createChildWidgets()
         //rowOffsetX = imageSize + MARGINH + PADDING * 2;
     }
 
-    KVBox * rowsWidget = new KVBox( contentsBox );
+    KVBox * rowsWidget = new KVBox( this );
     
     rowsWidget->setContentsMargins( 0, 0, 0, 0 );
 
@@ -300,5 +276,15 @@ InlineEditorWidget::centerImage( const QPixmap& pixmap, const QRectF& rect ) con
         moveByX = ( rect.width() - ( rect.height() * pixmapRatio ) ) / 2.0;
 
     return QPoint( moveByX, moveByY );
+}
+
+void
+InlineEditorWidget::paintEvent( QPaintEvent * event )
+{
+
+    QPainter painter( this );
+    painter.drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", ( int ) width(), ( int ) height(), "track" ) );
+
+    KHBox::paintEvent( event );
 }
 
