@@ -22,6 +22,7 @@
 
 
 #include <kratingwidget.h>
+#include <KHBox>
 #include <KVBox>
 
 #include <QLabel>
@@ -38,7 +39,7 @@ const qreal InlineEditorWidget::MARGINBODY = 1.0;
 const qreal InlineEditorWidget::PADDING = 1.0;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index, PlaylistLayout layout, int groupMode )
- : KHBox( parent )
+ : KVBox( parent )
  , m_index( index )
  , m_layout( layout )
  , m_groupMode( groupMode )
@@ -92,6 +93,31 @@ void InlineEditorWidget::createChildWidgets()
 {
     DEBUG_BLOCK
 
+    //First create the main KHBox ( for covers and all the rest ) and the top and bottom divider labels
+    //To make this weird widget look as close to one of the tracks painted by the delegate as possible
+
+    QPixmap top = The::svgHandler()->renderSvg(
+                   "divider_top",
+                   width(), 1,
+                   "divider_top" );
+
+    QPixmap bottom = The::svgHandler()->renderSvg(
+                    "divider_bottom",
+                    width(), 1,
+                    "divider_bottom" );
+
+    QLabel * topDividerLabel = new QLabel( this );
+    topDividerLabel->setPixmap( top );
+    topDividerLabel->setGeometry( 0, 0, width(), 1 );
+    topDividerLabel->setFixedHeight( 1 );
+    
+    KHBox * contentsBox = new KHBox( this );
+
+    QLabel * bottomDividerLabel = new QLabel( this );
+    bottomDividerLabel->setPixmap( bottom );
+    bottomDividerLabel->setGeometry( 0, height(), width(), 1 );
+    bottomDividerLabel->setFixedHeight( 1 );
+
     debug() << "width: " << width();
     //for now, only handle body items
     if( m_groupMode != Body )
@@ -139,7 +165,7 @@ void InlineEditorWidget::createChildWidgets()
             QPainter painter( &albumPixmap );
             painter.drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
 
-            QLabel * coverLabel = new QLabel( this );
+            QLabel * coverLabel = new QLabel( contentsBox );
             coverLabel->setPixmap( albumPixmap );
             coverLabel->setGeometry( imageRect );
             coverLabel->setMaximumSize( imageSize, imageSize );
@@ -150,7 +176,7 @@ void InlineEditorWidget::createChildWidgets()
         //rowOffsetX = imageSize + MARGINH + PADDING * 2;
     }
 
-    KVBox * rowsWidget = new KVBox( this );
+    KVBox * rowsWidget = new KVBox( contentsBox );
     
     rowsWidget->setContentsMargins( 0, 0, 0, 0 );
     
