@@ -60,6 +60,7 @@
 //#include "mediabrowser.h"
 
 #include <QCheckBox>
+#include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDockWidget>
 #include <QList>
@@ -519,7 +520,7 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
 {
     // open a file selector to add media to the playlist
     KUrl::List files;
-    KFileDialog dlg( KUrl(QString()), QString("*.*|"), this );
+    KFileDialog dlg( KUrl(QDesktopServices::storageLocation(QDesktopServices::MusicLocation)), QString("*.*|"), this );
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
     dlg.setMode( KFile::Files | KFile::Directory );
     dlg.exec();
