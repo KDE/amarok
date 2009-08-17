@@ -24,6 +24,7 @@
 #include <QString>
 
 #include <solid/device.h>
+#include <solid/opticaldisc.h>
 #include <solid/storagedrive.h>
 
 UmsConnectionAssistant::UmsConnectionAssistant()
@@ -68,9 +69,9 @@ UmsConnectionAssistant::identify( const QString& udi )
     // TODO: deal with iPod case, since it's also generic
 
     return ( !MediaDeviceCache::instance()->volumeMountPoint( udi ).isEmpty()
-             && drive && (drive->isHotpluggable() || drive->isRemovable()) );
+             && drive && (drive->isHotpluggable() || drive->isRemovable())
+             && !( parentDevice.as<Solid::OpticalDisc>() ) );
              //&& MediaDeviceCache::instance()->isGenericEnabled( udi ) );
-
 }
 
 
