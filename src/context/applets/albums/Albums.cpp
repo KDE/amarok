@@ -66,7 +66,6 @@ void Albums::init()
     m_headerText->setText( i18n( "Recently added albums" ) );
     
     m_width = globalConfig().readEntry( "width", 500 );
-    m_height = globalConfig().readEntry( "height", 300 );
 
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
@@ -77,7 +76,8 @@ void Albums::init()
     m_albumsView->show();
 
     // properly set the height
-    resize( m_width, m_height );
+    // -1 means ask for all available space left
+    resize( m_width, -1 );
 
     dataEngine( "amarok-current" )->connectSource( "albums", this );
 

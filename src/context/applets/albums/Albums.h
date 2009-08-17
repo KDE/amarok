@@ -67,7 +67,6 @@ private:
 
     QHBoxLayout* m_configLayout;
     int m_width;
-    int m_height;
     const qreal m_albumWidth;
 
     Meta::AlbumList m_albums;
