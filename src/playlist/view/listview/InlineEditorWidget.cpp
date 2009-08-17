@@ -46,6 +46,7 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
 {
 
     setContentsMargins( 0, 0, 0, 0 );
+    setSpacing( 0 );
     setAutoFillBackground ( false );
     int height = 0;
 
@@ -83,7 +84,6 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
     setFixedWidth( parent->width() );
 
     createChildWidgets();
-
 }
 
 InlineEditorWidget::~InlineEditorWidget()
@@ -107,12 +107,10 @@ void InlineEditorWidget::createChildWidgets()
 
     int rowHeight = height() / rowCount;
 
-    int rowOffsetX = MARGINH;
-    //int rowOffsetY = 0;
 
     int imageSize = height() - MARGIN * 2;
 
-    qreal rowWidth = width() - ( rowOffsetX + MARGINH );
+    int rowWidth = width() - MARGINH;
 
     if ( config.showCover() )
     {
@@ -138,26 +136,27 @@ void InlineEditorWidget::createChildWidgets()
 
             QLabel * coverLabel = new QLabel( this );
             coverLabel->setPixmap( albumPixmap );
-            coverLabel->setGeometry( QRect( 0, 0, imageSize + MARGIN * 2, imageSize + MARGIN * 2 ) );
-            coverLabel->setMaximumSize( imageSize + MARGIN * 2, imageSize + MARGIN * 2 );
+            coverLabel->setGeometry( QRect( 0, 0, height(), height() ) );
+            coverLabel->setMaximumSize( height(), height() );
             coverLabel->setMargin ( MARGIN );
         }
 
-        rowWidth = width() - ( rowOffsetX + MARGINH + imageSize );
+        rowWidth = width() - ( MARGINH + imageSize );
 
         //rowOffsetX = imageSize + MARGINH + PADDING * 2;
     }
 
     KVBox * rowsWidget = new KVBox( this );
-    
     rowsWidget->setContentsMargins( 0, 0, 0, 0 );
+    rowsWidget->setSpacing( 0 );
 
     for ( int i = 0; i < rowCount; i++ )
     {
         QWidget * rowWidget = new QWidget( rowsWidget );
         rowWidget->setContentsMargins( 0, 0, 0, 0 );
+
         LayoutItemConfigRow row = config.row( i );
-        qreal itemOffsetX = rowOffsetX;
+        int itemOffsetX = 0;
 
         const int elementCount = row.count();
 
