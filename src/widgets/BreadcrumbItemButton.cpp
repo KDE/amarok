@@ -36,12 +36,14 @@
 
 BreadcrumbItemButton::BreadcrumbItemButton( QWidget *parent )
     : Amarok::ElidingButton( parent )
+    , m_displayHint( 0 )
 {
     init();
 }
 
 BreadcrumbItemButton::BreadcrumbItemButton( const QIcon &icon, const QString &text, QWidget *parent )
     : Amarok::ElidingButton( icon, text, parent )
+    , m_displayHint( 0 )
 {
     init();
 }
