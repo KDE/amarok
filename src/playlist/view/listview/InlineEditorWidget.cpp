@@ -179,8 +179,6 @@ void InlineEditorWidget::createChildWidgets()
     KVBox * rowsWidget = new KVBox( contentsBox );
     
     rowsWidget->setContentsMargins( 0, 0, 0, 0 );
-    
-    int markerOffsetX = nominalImageRect.x();
 
     for ( int i = 0; i < rowCount; i++ )
     {
@@ -237,6 +235,7 @@ void InlineEditorWidget::createChildWidgets()
 
                     KRatingWidget * ratingWidget = new KRatingWidget( rowWidget );
                     ratingWidget->setGeometry( QRect( currentItemX, 1, itemWidth, rowHeight - 2)  );
+                    ratingWidget->setRating( rating );
 
                 } else if ( value == Divider )
                 {

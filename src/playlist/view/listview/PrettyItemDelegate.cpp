@@ -25,7 +25,7 @@
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "InlineEditorWidget.h""
+#include "InlineEditorWidget.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"
@@ -140,8 +140,8 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
     if ( groupMode == None ||  groupMode == Body || groupMode == Tail )
     {
 
-        int trackHeight;
-        int extraHeight;
+        int trackHeight = 0;
+        int extraHeight = 0;
         QStyleOptionViewItem trackOption( option );
         if ( paintInlineControls )
         {
@@ -466,6 +466,8 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
 void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const
 {
+    Q_UNUSED( index );
+    
     int x = rect.x();
     int y = rect.y();
     int width = rect.width();
@@ -610,6 +612,8 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
 
 QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
+    Q_UNUSED( option );
+    
     DEBUG_BLOCK
     const int groupMode = index.data( GroupRole ).toInt();
     return new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
