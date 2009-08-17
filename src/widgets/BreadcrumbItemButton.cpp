@@ -198,7 +198,7 @@ BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QW
     , m_urlsCommand( urlsCommand )
 {
     setFixedWidth( 20 );
-    setToolTip( i18n( "List and run browser bookmarks, or create new ones" ) );
+    setToolTip( i18n( "List and run bookmarks, or create new ones" ) );
 
     connect( this, SIGNAL( clicked ( bool ) ), this, SLOT( showMenu() ) );
 }
