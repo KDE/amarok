@@ -86,7 +86,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         /**
          * Get the ordered list of tracks from this model
          */
-        //TODO: add this to Playlist::AbstractModel
         virtual Meta::TrackList tracks() const;
 
         // position-independent access methods

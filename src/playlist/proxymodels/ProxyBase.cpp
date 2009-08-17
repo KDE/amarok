@@ -274,6 +274,15 @@ ProxyBase::trackForId( const quint64 id ) const
     return m_belowModel->trackForId( id );
 }
 
+Meta::TrackList
+ProxyBase::tracks() const
+{
+    Meta::TrackList tl;
+    for( int i = 0; i < rowCount(); ++i )
+        tl << trackAt( i );
+    return tl;
+}
+
 //protected:
 
 bool

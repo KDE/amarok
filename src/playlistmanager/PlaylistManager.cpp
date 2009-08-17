@@ -326,7 +326,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString &name,
 void
 PlaylistManager::saveCurrentPlaylist() //SLOT
 {
-    Meta::TrackList tracks = Playlist::ModelStack::instance()->source()->tracks();
+    Meta::TrackList tracks = The::playlist()->tracks();
     save( tracks );
 }
 

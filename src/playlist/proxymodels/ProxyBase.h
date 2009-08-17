@@ -316,6 +316,12 @@ public:
      */
     virtual Meta::TrackPtr trackForId( const quint64 id ) const;
 
+    /**
+     * Returns an ordered list of tracks exposed by the current model.
+     * @return the tracklist.
+     */
+    virtual Meta::TrackList tracks() const;
+
 signals:
     /**
      * Signal forwarded from the source model. IDs are unique so they shouldn't be modified

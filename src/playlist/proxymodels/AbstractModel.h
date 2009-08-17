@@ -311,6 +311,12 @@ public:
     virtual Meta::TrackPtr trackForId( const quint64 id ) const = 0;
 
     /**
+     * Returns an ordered list of tracks exposed by the current model.
+     * @return the tracklist.
+     */
+    virtual Meta::TrackList tracks() const = 0;
+
+    /**
      * Destructor.
      */
     virtual ~AbstractModel() {};
