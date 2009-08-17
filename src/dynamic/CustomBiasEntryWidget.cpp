@@ -151,6 +151,11 @@ void Dynamic::CustomBiasEntryWidget::refreshBiasFactories()
             debug() << "found new bias factory that wasn't in the list, so appending";
             debug() << "size of list before appending: " << m_fieldSelection->count() << "current index:" << m_fieldSelection->currentIndex();
             m_fieldSelection->addItem( entry->name(), data );
+            if( m_cbias->currentEntry() && m_cbias->currentEntry()->pluginName() == entry->pluginName() )
+            {
+                m_fieldSelection->setCurrentItem( entry->name() );
+                selectionChanged( m_fieldSelection->currentIndex() );
+            }
         }
     }
     // remove and stale ones
