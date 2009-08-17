@@ -22,6 +22,7 @@
 
 
 #include <kratingwidget.h>
+#include <KVBox>
 
 #include <QLabel>
 #include <QLineEdit>
@@ -37,7 +38,7 @@ const qreal InlineEditorWidget::MARGINBODY = 1.0;
 const qreal InlineEditorWidget::PADDING = 1.0;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index, PlaylistLayout layout, int groupMode )
- : KVBox( parent )
+ : KHBox( parent )
  , m_index( index )
  , m_layout( layout )
  , m_groupMode( groupMode )
@@ -105,31 +106,66 @@ void InlineEditorWidget::createChildWidgets()
     int rowHeight = height() / rowCount;
 
     int rowOffsetX = MARGINH;
-    int rowOffsetY = 0;
+    //int rowOffsetY = 0;
 
     int imageSize = height() - MARGIN * 2;
     QRectF nominalImageRect( MARGINH, MARGIN, imageSize, imageSize );
 
+    qreal rowWidth = width() - ( rowOffsetX + MARGINH );
+
     if ( config.showCover() )
     {
-        //FIXME
-        return;
+        QModelIndex coverIndex = m_index.model()->index( m_index.row(), CoverImage );
+        QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
+
+        if ( albumPixmap.width() > albumPixmap.width() )
+            albumPixmap = albumPixmap.scaledToWidth( imageSize );
+        else
+            albumPixmap = albumPixmap.scaledToHeight( imageSize );
+
+        //offset cover if non square
+        QPoint offset = centerImage( albumPixmap, nominalImageRect );
+        QRect imageRect( nominalImageRect.x() + offset.x(),
+                          nominalImageRect.y() + offset.y(),
+                          nominalImageRect.width() - offset.x() * 2,
+                          nominalImageRect.height() - offset.y() * 2 );
+
+        QModelIndex emblemIndex = m_index.model()->index( m_index.row(), SourceEmblem );
+        QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
+
+       
+        if ( !albumPixmap.isNull() )
+        {
+            QPainter painter( &albumPixmap );
+            painter.drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
+
+            QLabel * coverLabel = new QLabel( this );
+            coverLabel->setPixmap( albumPixmap );
+            coverLabel->setGeometry( imageRect );
+            coverLabel->setMaximumSize( imageSize, imageSize );
+        }
+
+        rowWidth = width() - ( rowOffsetX + MARGINH + imageSize );
+
+        //rowOffsetX = imageSize + MARGINH + PADDING * 2;
     }
 
+    KVBox * rowsWidget = new KVBox( this );
+    
+    rowsWidget->setContentsMargins( 0, 0, 0, 0 );
+    
     int markerOffsetX = nominalImageRect.x();
 
     for ( int i = 0; i < rowCount; i++ )
     {
-        QWidget * rowWidget = new QWidget( this );
+        QWidget * rowWidget = new QWidget( rowsWidget );
         rowWidget->setContentsMargins( 0, 0, 0, 0 );
         LayoutItemConfigRow row = config.row( i );
         qreal itemOffsetX = rowOffsetX;
 
         const int elementCount = row.count();
 
-        qreal rowWidth = width() - ( rowOffsetX + MARGINH );
-
-        QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth, rowHeight );
+        QRectF rowBox( itemOffsetX, 0, rowWidth, rowHeight );
         int currentItemX = itemOffsetX;
 
         //we need to do a quick pass to figure out how much space is left for auto sizing elements
@@ -174,7 +210,7 @@ void InlineEditorWidget::createChildWidgets()
                     int rating = textIndex.data( Qt::DisplayRole ).toInt();
 
                     KRatingWidget * ratingWidget = new KRatingWidget( rowWidget );
-                    ratingWidget->setGeometry( QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2)  );
+                    ratingWidget->setGeometry( QRect( currentItemX, 1, itemWidth, rowHeight - 2)  );
 
                 } else if ( value == Divider )
                 {
@@ -198,27 +234,27 @@ void InlineEditorWidget::createChildWidgets()
                          
                     if ( alignment & Qt::AlignLeft )
                     {
-                        leftLabel->setGeometry( currentItemX, rowOffsetY, 1, rowHeight );
-                        rightLabel->setGeometry( currentItemX + 1, rowOffsetY, 1, rowHeight );
+                        leftLabel->setGeometry( currentItemX, 0, 1, rowHeight );
+                        rightLabel->setGeometry( currentItemX + 1, 0, 1, rowHeight );
                     }
                     else if ( alignment & Qt::AlignRight )
                     {
-                        leftLabel->setGeometry( currentItemX + itemWidth - 1, rowOffsetY, 1, rowHeight );
-                        rightLabel->setGeometry( currentItemX + itemWidth, rowOffsetY, 1, rowHeight );
+                        leftLabel->setGeometry( currentItemX + itemWidth - 1, 0, 1, rowHeight );
+                        rightLabel->setGeometry( currentItemX + itemWidth, 0, 1, rowHeight );
                     }
                     else
                     {
                         int center = currentItemX + ( itemWidth / 2 );
-                        leftLabel->setGeometry( center, rowOffsetY, 1, rowHeight );
-                        rightLabel->setGeometry( center + 1, rowOffsetY, 1, rowHeight );
+                        leftLabel->setGeometry( center, 0, 1, rowHeight );
+                        rightLabel->setGeometry( center + 1, 0, 1, rowHeight );
                     }
                 }
                 else
                 {
                      QLineEdit * edit = new QLineEdit( text, rowWidget );
-                     edit->setGeometry( QRect( currentItemX, rowOffsetY, itemWidth, rowHeight ) );
+                     edit->setGeometry( QRect( currentItemX, 0, itemWidth, rowHeight ) );
 
-                     debug() << "creating line edit at " << currentItemX << ", " << rowOffsetY;
+                     debug() << "creating line edit at " << currentItemX << ", " << 0;
                      debug() << "with size " << itemWidth << ", " << rowHeight;
                 }
 
@@ -226,7 +262,22 @@ void InlineEditorWidget::createChildWidgets()
             }
 
         }
-        rowOffsetY += rowHeight;
     }
+}
+
+QPoint
+InlineEditorWidget::centerImage( const QPixmap& pixmap, const QRectF& rect ) const
+{
+    qreal pixmapRatio = ( qreal )pixmap.width() / ( qreal )pixmap.height();
+
+    qreal moveByX = 0.0;
+    qreal moveByY = 0.0;
+
+    if ( pixmapRatio >= 1 )
+        moveByY = ( rect.height() - ( rect.width() / pixmapRatio ) ) / 2.0;
+    else
+        moveByX = ( rect.width() - ( rect.height() * pixmapRatio ) ) / 2.0;
+
+    return QPoint( moveByX, moveByY );
 }
 
