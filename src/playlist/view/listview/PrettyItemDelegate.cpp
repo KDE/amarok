@@ -29,6 +29,7 @@
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"
+#include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/SourceInfoCapability.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
@@ -617,6 +618,90 @@ QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const Q
     DEBUG_BLOCK
     const int groupMode = index.data( GroupRole ).toInt();
     return new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
+}
+
+void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &index ) const
+{
+    DEBUG_BLOCK
+    InlineEditorWidget * inlineEditor = dynamic_cast<InlineEditorWidget *>( editor );
+    if( !inlineEditor )
+        return;
+
+    QMap<int, QString> changeMap = inlineEditor->changedValues();
+    
+    debug() << "got inline editor!!";
+    debug() << "changed values map: " << changeMap;
+
+    //ok, now get the track, figure out if it is editable and if so, apply new values.
+    //It's as simple as that! :-)
+
+    Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
+    if( !track )
+        return;
+
+    Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+    if( !ec || !ec->isEditable() )
+        return;
+
+    QList<int> columns = changeMap.keys();
+
+    foreach( int column, columns )
+    {
+        QString value = changeMap.value( column );
+        
+        switch( column )
+        {
+            case Album:
+                ec->setAlbum( value );
+                break;
+            case AlbumArtist:
+                 //FIXME
+                 break;
+            case Artist:
+                ec->setArtist( value );
+                break;
+            case Comment:
+                ec->setComment( value );
+                break;
+            case Composer:
+                ec->setComposer( value );
+                break;
+            case DiscNumber:
+                {
+                    int discNumber = value.toInt();
+                    ec->setDiscNumber( discNumber );
+                    break;
+                }
+            case Genre:
+                ec->setGenre( value );
+                break;
+            case Mood:
+                //FIXME
+                break;
+            case Rating:
+                {
+                    int rating = value.toInt();
+                    track->setRating( rating );
+                    break;
+                }
+            case Title:
+                ec->setTitle( value );
+                break;
+            case TitleWithTrackNum:
+                //FIXME:
+                break;
+            case TrackNumber:
+                {
+                    int TrackNumber = value.toInt();
+                    ec->setTrackNumber( TrackNumber );
+                    break;
+                }
+            case Year:
+                ec->setYear( value );
+                break;
+        }
+
+    }
 }
 
 
