@@ -193,7 +193,14 @@ Track::playableUrl() const
 QString
 Track::prettyUrl() const
 {
-    return d->url.path();
+    if(d->url.isLocalFile())
+    {
+        return d->url.toLocalFile();
+    }
+    else
+    {
+        return d->url.path();
+    }
 }
 
 QString
@@ -215,7 +222,15 @@ Track::isEditable() const
     DEBUG_BLOCK
 
     //note this probably needs more work on *nix
-    QFile::Permissions p = QFile::permissions( d->url.path() );
+    QFile::Permissions p;
+    if(d->url.isLocalFile())
+    {
+        p = QFile::permissions( d->url.toLocalFile() );
+    }
+    else
+    {
+        p = QFile::permissions( d->url.path() );
+    }
     const bool editable = ( p & QFile::WriteUser ) || ( p & QFile::WriteGroup ) || ( p & QFile::WriteOther );
 
     debug() << d->url.path() << " editable: " << editable;
