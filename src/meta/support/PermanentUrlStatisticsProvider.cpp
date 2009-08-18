@@ -19,11 +19,20 @@
 #include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
 
+#include "Debug.h"
+
 PermanentUrlStatisticsProvider::PermanentUrlStatisticsProvider( const QString &permanentUrl )
         : StatisticsProvider()
         , m_permanentUrl( permanentUrl )
 {
+    DEBUG_BLOCK
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    if( !sql )
+    {
+        debug() << "Could not get SqlStorage, aborting" << endl;
+        return;
+    }
+
 
     const QString query = "SELECT firstplayed, lastplayed, score, rating, playcount FROM "
                           "statistics_permanent WHERE url = '%1'";
@@ -41,7 +50,13 @@ PermanentUrlStatisticsProvider::PermanentUrlStatisticsProvider( const QString &p
 void
 PermanentUrlStatisticsProvider::save()
 {
+    DEBUG_BLOCK
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    if( !sql )
+    {
+        debug() << "Could not get SqlStorage, aborting" << endl;
+        return;
+    }
 
     const QString check = "SELECT COUNT(*) FROM statistics_permanent WHERE url = '%1'";
     QStringList rsCheck = sql->query( check.arg( sql->escape( m_permanentUrl ) ) );
