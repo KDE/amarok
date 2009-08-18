@@ -119,7 +119,8 @@ int main( int argc, char *argv[] )
     startFlag = args->isSet( "multipleinstances" ) ? KUniqueApplication::NonUniqueInstance : KUniqueApplication::StartFlag( 0 );
 
     if( !KUniqueApplication::start( startFlag ) ) {
-        fprintf( stderr, "Amarok is already running!\n" );
+        if( !args->isSet( "append" ) )
+            fprintf( stderr, "Amarok is already running!\n" );
         return 0;
     }
 
