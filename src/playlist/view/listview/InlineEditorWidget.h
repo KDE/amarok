@@ -30,14 +30,21 @@ An inline editor for a playlist item. Relies on the same item layout configurati
 */
 class InlineEditorWidget : public KHBox
 {
+    Q_OBJECT
 public:
     InlineEditorWidget( QWidget * parent, const QModelIndex &index, Playlist::PlaylistLayout layout, int groupMode );
 
     ~InlineEditorWidget();
 
+    QMap<int, QString> changedValues();
+
 protected:
     void paintEvent( QPaintEvent * event );
 
+protected slots:
+    void editValueChanged();
+    void ratingValueChanged();
+        
 private:
 
     void createChildWidgets();
@@ -53,6 +60,9 @@ private:
     QModelIndex m_index;
     Playlist::PlaylistLayout m_layout;
     int m_groupMode;
+
+    QMap<QWidget *, int> m_editorRoleMap;
+    QMap<int, QString> m_changedValues;
 
 };
 

@@ -208,6 +208,10 @@ void InlineEditorWidget::createChildWidgets()
                     ratingWidget->setGeometry( QRect( currentItemX, 1, itemWidth, rowHeight - 2)  );
                     ratingWidget->setRating( rating );
 
+                    connect( ratingWidget, SIGNAL( ratingChanged( uint ) ), this, SLOT( ratingValueChanged() ) );
+
+                    m_editorRoleMap.insert( ratingWidget, value );
+
                 } else if ( value == Divider )
                 {
                     debug() << "painting divider...";
@@ -250,8 +254,12 @@ void InlineEditorWidget::createChildWidgets()
                      QLineEdit * edit = new QLineEdit( text, rowWidget );
                      edit->setGeometry( QRect( currentItemX, 0, itemWidth, rowHeight ) );
 
+                     connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
+
                      debug() << "creating line edit at " << currentItemX << ", " << 0;
                      debug() << "with size " << itemWidth << ", " << rowHeight;
+
+                     m_editorRoleMap.insert( edit, value );
                 }
 
                 currentItemX += itemWidth;
@@ -287,3 +295,33 @@ InlineEditorWidget::paintEvent( QPaintEvent * event )
     KHBox::paintEvent( event );
 }
 
+void InlineEditorWidget::editValueChanged()
+{
+    DEBUG_BLOCK
+    QObject * senderObject = sender();
+
+    QLineEdit * edit = dynamic_cast<QLineEdit *>( senderObject );
+    if( !edit )
+        return;
+
+    int role = m_editorRoleMap.value( edit );
+    m_changedValues.insert( role, edit->text() );
+}
+
+void InlineEditorWidget::ratingValueChanged()
+{
+    DEBUG_BLOCK
+    QObject * senderObject = sender();
+
+    KRatingWidget * edit = dynamic_cast<KRatingWidget *>( senderObject );
+    if( !edit )
+        return;
+
+    int role = m_editorRoleMap.value( edit );
+    m_changedValues.insert( role, QString::number( edit->rating() ) );
+}
+
+QMap<int, QString> InlineEditorWidget::changedValues()
+{
+    return m_changedValues;
+}
