@@ -23,6 +23,7 @@
 
 #include <config-amarok.h>    //HAVE_LIBVISUAL definition
 
+#include "aboutdialog/ExtendedAboutDialog.h"
 #include "ActionClasses.h"
 #include "Amarok.h"
 #include "Debug.h"
@@ -98,6 +99,8 @@
 #else
 #define AMAROK_CAPTION "Amarok"
 #endif
+
+extern KAboutData aboutData;
 
 class ContextWidget : public KVBox
 {
@@ -882,7 +885,16 @@ MainWindow::createMenus()
     m_menubar->addMenu( playlistMenu );
     m_menubar->addMenu( m_toolsMenu );
     m_menubar->addMenu( m_settingsMenu );
-    m_menubar->addMenu( Amarok::Menu::helpMenu() );
+    KMenu *helpMenu = Amarok::Menu::helpMenu();
+    m_menubar->addMenu( helpMenu );
+}
+
+void
+MainWindow::showAbout()
+{
+    ExtendedAboutDialog *dialog = new ExtendedAboutDialog( &aboutData, this );
+    dialog->exec();
+    delete dialog;
 }
 
 void

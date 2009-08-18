@@ -115,6 +115,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
         void setLayoutLocked( bool locked );
 
+        void showAbout();
+
     protected:
         //Reimplemented from EngineObserver
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );

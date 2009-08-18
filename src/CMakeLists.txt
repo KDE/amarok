@@ -517,6 +517,7 @@ set(amaroklib_LIB_SRCS
     ${scriptengine_SRCS}
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
+    aboutdialog/ExtendedAboutDialog.cpp
     ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp

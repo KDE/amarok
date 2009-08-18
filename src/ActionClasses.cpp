@@ -159,7 +159,11 @@ Menu::helpMenu( QWidget *parent ) //STATIC
     // NOTE: "What's This" isn't currently defined for anything in Amarok, so let's remove that too
     s_helpMenu->action( KHelpMenu::menuWhatsThis )->setVisible( false );
 
+    s_helpMenu->action( KHelpMenu::menuAboutApp )->setVisible( false );
 
+    QAction *extendedAboutAction = new QAction( KIcon( "amarok" ), i18n( "&About Amarok" ), menu ); //translateme
+    menu->insertAction( s_helpMenu->action(KHelpMenu::menuAboutKDE ),extendedAboutAction );
+    connect( extendedAboutAction, SIGNAL(triggered()), The::mainWindow(), SLOT(showAbout()) );
     return menu;
 }
 

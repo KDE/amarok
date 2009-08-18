@@ -48,7 +48,10 @@ int main( int argc, char *argv[] )
             ki18n(( "Developer (nhnFreespirit)" )), "nhnfreespirit@gmail.com" );
     aboutData.addAuthor( ki18n("Seb 'Surfin' down under' Ruiz"),
             ki18n(( "Developer (sebr)" )), "ruiz@kde.org", "http://www.sebruiz.net" );
-
+///////////////////// TESTING
+////////////////// FAKE NAME, REMOVE WHEN DONE
+    aboutData.addAuthor( ki18n("Foo Bar"),ki18n("Developer (foo)"),"foo@kde.org","foo.com" );
+/////////////////////////////////////
 
     aboutData.addCredit( ki18n("Alejandro Wainzinger"), ki18n(( "Media device support" )), "aikawarazuni@gmail.com" );
     aboutData.addCredit( ki18n("Alex Merry"), ki18n(( "Developer, Replay gain support" )), "kde@randomguy3.me.uk" );
