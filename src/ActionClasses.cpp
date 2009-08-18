@@ -352,7 +352,8 @@ FavorAction::FavorAction( KActionCollection *ac, QObject *parent ) :
                             << i18n( "Not Recently &Played" ) );
 
     setCurrentItem( AmarokConfig::favorTracks() );
-    setEnabled( false );
+    setEnabled( true );
+    connect( this, SIGNAL( triggered( int ) ), The::playlistActions(), SLOT( playlistModeChanged() ) );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

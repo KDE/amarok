@@ -36,6 +36,7 @@
 #include "navigators/RepeatAlbumNavigator.h"
 #include "navigators/RepeatTrackNavigator.h"
 #include "navigators/StandardTrackNavigator.h"
+#include "navigators/FavoredRandomTrackNavigator.h"
 #include "PlaylistModelStack.h"
 #include "statusbar/StatusBar.h"
 
@@ -262,7 +263,12 @@ Playlist::Actions::playlistModeChanged()
     if ( Amarok::randomEnabled() )
     {
         if ( Amarok::randomTracks() )
-            m_navigator = new RandomTrackNavigator();
+        {
+            if( Amarok::favorNone() )
+                m_navigator = new RandomTrackNavigator();
+            else
+                m_navigator = new FavoredRandomTrackNavigator();
+        }
         else if ( Amarok::randomAlbums() )
             m_navigator = new RandomAlbumNavigator();
         else

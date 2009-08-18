@@ -410,6 +410,7 @@ set(libplaylist_SRCS
     playlist/layouts/LayoutManager.cpp
     playlist/layouts/PlaylistLayoutEditDialog.cpp
     playlist/navigators/DynamicTrackNavigator.cpp
+    playlist/navigators/FavoredRandomTrackNavigator.cpp
     playlist/navigators/RandomAlbumNavigator.cpp
     playlist/navigators/RandomTrackNavigator.cpp
     playlist/navigators/RepeatAlbumNavigator.cpp
