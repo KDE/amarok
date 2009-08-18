@@ -48,6 +48,10 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
     connect( sourceModel(), SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
 
+    connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
+    connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
+    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
+
     int max = m_belowModel->rowCount();
     for ( int i = 0; i < max; i++ )
         m_rowGroupMode.append( None );
