@@ -111,10 +111,7 @@ void InlineEditorWidget::createChildWidgets()
 
     int rowHeight = height() / rowCount;
 
-
     int imageSize = height() - MARGIN * 2;
-
-    int rowWidth = width();
 
     if ( config.showCover() )
     {
@@ -144,10 +141,6 @@ void InlineEditorWidget::createChildWidgets()
             coverLabel->setMaximumSize( height(), height() );
             coverLabel->setMargin ( MARGIN );
         }
-
-        rowWidth = width() - ( MARGINH + imageSize );
-
-        //rowOffsetX = imageSize + MARGINH + PADDING * 2;
     }
 
     KVBox * rowsWidget = new KVBox( this );
@@ -156,16 +149,12 @@ void InlineEditorWidget::createChildWidgets()
 
     for ( int i = 0; i < rowCount; i++ )
     {
-        QWidget * rowWidget = new QWidget( rowsWidget );
+        KHBox * rowWidget = new KHBox( rowsWidget );
         rowWidget->setContentsMargins( 0, 0, 0, 0 );
 
         LayoutItemConfigRow row = config.row( i );
-        int itemOffsetX = 0;
 
         const int elementCount = row.count();
-
-        QRectF rowBox( itemOffsetX, 0, rowWidth, rowHeight );
-        int currentItemX = itemOffsetX;
 
         //we need to do a quick pass to figure out how much space is left for auto sizing elements
         qreal spareSpace = 1.0;
@@ -201,7 +190,7 @@ void InlineEditorWidget::createChildWidgets()
 
             if ( size > 0.0001 )
             {
-                itemWidth = rowWidth * size;
+                itemWidth = 100 * size;
 
                 //special case for painting the rating...
                 if ( value == Rating )
@@ -209,7 +198,7 @@ void InlineEditorWidget::createChildWidgets()
                     int rating = textIndex.data( Qt::DisplayRole ).toInt();
 
                     KRatingWidget * ratingWidget = new KRatingWidget( rowWidget );
-                    ratingWidget->setGeometry( QRect( currentItemX, 1, itemWidth, rowHeight - 2)  );
+                    rowWidget->setStretchFactor( ratingWidget, itemWidth );
                     ratingWidget->setRating( rating );
                     ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
 
@@ -241,23 +230,18 @@ void InlineEditorWidget::createChildWidgets()
                     QLabel * dividerLabel = new QLabel( rowWidget );
                     dividerLabel->setPixmap( dividerPixmap );
                     dividerLabel->setAlignment( element.alignment() );
-                    dividerLabel->setGeometry( QRect( currentItemX, 0, itemWidth, rowHeight ) );
-                    
+                    rowWidget->setStretchFactor( dividerLabel, itemWidth );
                 }
                 else
                 {
                      QLineEdit * edit = new QLineEdit( text, rowWidget );
-                     edit->setGeometry( QRect( currentItemX, 0, itemWidth, rowHeight ) );
+                     rowWidget->setStretchFactor( edit, itemWidth );
                      edit->setAlignment( element.alignment() );
 
                      connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
 
-                     debug() << "creating line edit at " << currentItemX << ", " << 0;
-                     debug() << "with size " << itemWidth << ", " << rowHeight;
-
-                     //check if this is acolumn that is editable. If not, make the
+                     //check if this is a column that is editable. If not, make the
                      //line edit read only.
-
                      if ( !editableColumns.contains( value ) )
                      {
                          edit->setReadOnly( true );
@@ -266,8 +250,6 @@ void InlineEditorWidget::createChildWidgets()
 
                      m_editorRoleMap.insert( edit, value );
                 }
-
-                currentItemX += itemWidth;
             }
 
         }
