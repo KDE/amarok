@@ -688,8 +688,21 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
                 ec->setTitle( value );
                 break;
             case TitleWithTrackNum:
-                //FIXME:
-                break;
+                {
+                    debug() << "parse TitleWithTrackNum";
+                    //we need to parse out the track number and the track name (and check
+                    //if the string is even valid...)
+                    //QRegExp rx("(\\d+)\\s-\\s(.*))");
+                    QRegExp rx("(\\d+)(\\s-\\s)(.*)");
+                    if ( rx.indexIn( value ) != -1) {
+                        int trackNumber = rx.cap( 1 ).toInt();
+                        QString trackName = rx.cap( 3 );
+                        debug() << "split TitleWithTrackNum into " << trackNumber << " and " << trackName;
+                        ec->setTrackNumber( trackNumber );
+                        ec->setTitle( trackName );
+                    }
+                    break;
+                }
             case TrackNumber:
                 {
                     int TrackNumber = value.toInt();
