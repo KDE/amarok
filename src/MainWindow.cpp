@@ -101,6 +101,7 @@
 #endif
 
 extern KAboutData aboutData;
+extern OcsData ocsData;
 
 class ContextWidget : public KVBox
 {
@@ -892,7 +893,7 @@ MainWindow::createMenus()
 void
 MainWindow::showAbout()
 {
-    ExtendedAboutDialog *dialog = new ExtendedAboutDialog( &aboutData, this );
+    ExtendedAboutDialog *dialog = new ExtendedAboutDialog( &aboutData, &ocsData, this );
     dialog->exec();
     delete dialog;
 }

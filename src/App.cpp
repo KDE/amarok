@@ -47,7 +47,6 @@
 
 #include <iostream>
 
-#include <KAboutData>
 #include <KAction>
 #include <KCalendarSystem>
 #include <KCmdLineArgs>                  //initCliArgs()
@@ -115,6 +114,7 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2009, The Amarok Development Squad" ),
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
              ( "http://amarok.kde.org" ) );
+AMAROK_EXPORT OcsData ocsData;
 
 App::App()
         : KUniqueApplication()

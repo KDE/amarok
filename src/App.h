@@ -21,6 +21,7 @@
 
 #include "amarok_export.h"
 
+#include <KAboutData>
 #include <KUniqueApplication>   //baseclass
 #include <KUrl>
 
@@ -32,6 +33,7 @@ namespace Amarok {
     class TrayIcon;
 }
 
+typedef QMap< QString, KAboutPerson > OcsData;
 
 namespace KIO { class Job; }
 

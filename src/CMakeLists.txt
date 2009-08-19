@@ -18,12 +18,15 @@ add_subdirectory( images )
 add_subdirectory( services )
 add_subdirectory( scripts )
 add_subdirectory( themes )
+add_subdirectory( aboutdialog/libattica-ocsclient )
 
 if( STRIGI_FOUND )
     add_subdirectory( strigi )
 endif( STRIGI_FOUND )
 
 include_directories(
+    aboutdialog
+    aboutdialog/libattica-ocsclient
     amarokurls
     browsers/
     browsers/playlistbrowser
@@ -518,6 +521,7 @@ set(amaroklib_LIB_SRCS
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
     aboutdialog/ExtendedAboutDialog.cpp
+    aboutdialog/OcsAuthorItem.cpp
     ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
@@ -665,6 +669,7 @@ target_link_libraries(amaroklib
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
+    ocsclient
 )
 
 if(CMAKE_BUILD_TYPE MATCHES debugfull)

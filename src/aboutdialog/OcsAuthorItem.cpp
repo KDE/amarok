@@ -1,10 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Urs Wolfer <uwolfer at kde.org>                                   *
- * Copyright (c) 2008 Friedrich W. H. Kossebau <kossebau@kde.org>                       *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
- *                                                                                      *
- * Parts of this class have been take from the KAboutApplication class, which was       *
- * Copyright (c) 2000 Waldo Bastian (bastian@kde.org) and Espen Sand (espen@kde.org)    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,42 +14,43 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_ABOUTDIALOG_H
-#define AMAROK_ABOUTDIALOG_H
+#include "OcsAuthorItem.h"
 
-#include "Amarok.h"
-#include "App.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
-#include <KAboutData>
-#include <kdialog.h>
-
-class AMAROK_EXPORT ExtendedAboutDialog : public KDialog
+OcsAuthorItem::OcsAuthorItem( const KAboutPerson *person, const Attica::Person *ocsPerson, QWidget *parent )
+    : QWidget( parent )
+    , m_person( person )
+    , m_ocsPerson( ocsPerson )
 {
-    Q_OBJECT
-public:
-    explicit ExtendedAboutDialog( const KAboutData *aboutData, const OcsData *ocsData, QWidget *parent = 0 );
-    virtual ~ExtendedAboutDialog();
+    init();
 
-private slots:
-    void setupOcsAuthorWidget();
+}
 
-private:
-    class Private;
-    Private* const d;
+OcsAuthorItem::OcsAuthorItem( const KAboutPerson *person, QWidget *parent )
+    : QWidget( parent )
+    , m_person( person )
+{
+    init();
+}
 
-    Q_PRIVATE_SLOT( d, void _k_showLicense(const QString&) )
+void
+OcsAuthorItem::init()
+{
 
-    Q_DISABLE_COPY( ExtendedAboutDialog )
 
-    OcsData m_ocsData;
-    QPushButton *m_showOcsButton;
-    QWidget *m_authorWidget;
-    QWidget *m_offlineAuthorWidget;
-    QWidget *m_ocsAuthorWidget;
-    QString m_authorPageTitle;
-    QPalette m_transparentBackgroundPalette;
+    m_name = new QLabel( this );
+    m_role = new QLabel( this );
+    m_email = new QLabel( this );
+    m_homepage = new QLabel( this );
+    m_avatar = new QLabel( this );
+    m_location = new QLabel( this );
+    m_ircChannels = new QLabel( this );
+    m_profile = new QLabel( this );
 
-    void setupOfflineAuthorWidget();
-};
 
-#endif  //AMAROK_ABOUTDIALOG_H
+}
+
+OcsAuthorItem::~OcsAuthorItem()
+{}

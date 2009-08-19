@@ -39,6 +39,7 @@
 
 
 extern KAboutData aboutData;
+extern OcsData ocsData;
 
 namespace Amarok
 {

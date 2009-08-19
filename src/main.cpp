@@ -24,6 +24,7 @@
 //#define AMAROK_USE_DRKONQI
 
 extern AMAROK_EXPORT class KAboutData aboutData; //defined in App.cpp
+extern AMAROK_EXPORT OcsData ocsData;
 
 
 int main( int argc, char *argv[] )
@@ -51,6 +52,18 @@ int main( int argc, char *argv[] )
 ///////////////////// TESTING
 ////////////////// FAKE NAME, REMOVE WHEN DONE
     aboutData.addAuthor( ki18n("Foo Bar"),ki18n("Developer (foo)"),"foo@kde.org","foo.com" );
+    ocsData.insert( "Stecchino", aboutData.authors().at( 0 ) );
+    ocsData.insert( QString(), aboutData.authors().at( 1 ) );
+    ocsData.insert( "eean", aboutData.authors().at( 2 ) );
+    ocsData.insert( QString(), aboutData.authors().at( 3 ) );
+    ocsData.insert( QString(), aboutData.authors().at( 4 ) );
+    ocsData.insert( "nightrose", aboutData.authors().at( 5 ) );
+    ocsData.insert( QString(), aboutData.authors().at( 6 ) );
+    ocsData.insert( QString(), aboutData.authors().at( 7 ) );
+    ocsData.insert( "nhnFreespirit", aboutData.authors().at( 8 ) );
+    ocsData.insert( QString(), aboutData.authors().at( 9 ) );
+
+    ocsData.insert( "teom", aboutData.authors().at( 10 ) );
 /////////////////////////////////////
 
     aboutData.addCredit( ki18n("Alejandro Wainzinger"), ki18n(( "Media device support" )), "aikawarazuni@gmail.com" );

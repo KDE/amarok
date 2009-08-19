@@ -21,13 +21,19 @@
 
 #include "ExtendedAboutDialog.h"
 
+#include "Amarok.h"
+#include "Debug.h"
+#include "libattica-ocsclient/ocsapi.h"
+#include "libattica-ocsclient/personjob.h"
+#include "OcsAuthorItem.h"
+
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
+#include <QScrollArea>
 #include <QScrollBar>
 #include <QTabWidget>
 
-#include <kaboutdata.h>
 #include <kapplication.h>
 #include <kglobal.h>
 #include <kglobalsettings.h>
@@ -35,6 +41,7 @@
 #include <klocale.h>
 #include <ktextbrowser.h>
 #include <ktitlewidget.h>
+
 
 class ExtendedAboutDialog::Private
 {
@@ -51,14 +58,16 @@ public:
     const KAboutData *aboutData;
 };
 
-ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, QWidget *parent)
+ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsData *ocsData, QWidget *parent)
   : KDialog(parent),
     d(new Private(this))
 {
+    DEBUG_BLOCK
     if (aboutData == 0)
         aboutData = KGlobal::mainComponent().aboutData();
 
     d->aboutData = aboutData;
+    m_ocsData = *ocsData;
 
     if (!aboutData) {
         QLabel *errorLabel = new QLabel(i18n("<qt>No information available.<br />"
@@ -68,8 +77,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, QWidget *p
         setMainWidget(errorLabel);
         return;
     }
-
-    setPlainCaption(i18n("TEST About %1", aboutData->programName()));
+    setPlainCaption(i18n("About %1", aboutData->programName()));
     setButtons(KDialog::Close);
     setDefaultButton(KDialog::Close);
     setModal(false);
@@ -137,57 +145,22 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, QWidget *p
 
     tabWidget->addTab(aboutWidget, i18n("&About"));
 
-    QPalette transparentBackgroundPalette;
-    transparentBackgroundPalette.setColor(QPalette::Base, Qt::transparent);
-    transparentBackgroundPalette.setColor(QPalette::Text, transparentBackgroundPalette.color(QPalette::WindowText));
+    m_transparentBackgroundPalette.setColor(QPalette::Base, Qt::transparent);
+    m_transparentBackgroundPalette.setColor(QPalette::Text, m_transparentBackgroundPalette.color(QPalette::WindowText));
 
-    const int authorCount = aboutData->authors().count();
-    if (authorCount) {
-        QString authorPageText;
+    m_authorWidget = new QWidget( this );
+    QHBoxLayout *authorLayout = new QHBoxLayout( m_authorWidget );
+    m_offlineAuthorWidget = new QWidget( m_authorWidget );
+    m_ocsAuthorWidget = new QWidget( m_authorWidget );
 
-        QString authorPageTitle = authorCount == 1 ? i18n("A&uthor") : i18n("A&uthors");
+    setupOfflineAuthorWidget(); //populate m_authorWidget and set m_authorPageTitle
 
-        if (!aboutData->customAuthorTextEnabled() || !aboutData->customAuthorRichText().isEmpty()) {
-            if (!aboutData->customAuthorTextEnabled()) {
-                if (aboutData->bugAddress().isEmpty() || aboutData->bugAddress() == "submit@bugs.kde.org")
-                    authorPageText = i18n("Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report bugs.\n");
-                else {
-                    if(aboutData->authors().count() == 1 && (aboutData->authors().first().emailAddress() == aboutData->bugAddress())) {
-                        authorPageText = i18n("Please report bugs to <a href=\"mailto:%1\">%2</a>.\n",
-                                              aboutData->authors().first().emailAddress(),
-                                              aboutData->authors().first().emailAddress());
-                    }
-                    else {
-                        authorPageText = i18n("Please report bugs to <a href=\"mailto:%1\">%2</a>.\n",
-                                              aboutData->bugAddress(), aboutData->bugAddress());
-                    }
-                }
-            }
-            else
-                authorPageText = aboutData->customAuthorRichText();
-        }
+    authorLayout->addWidget( m_offlineAuthorWidget );
+    authorLayout->addWidget( m_ocsAuthorWidget );
+    authorLayout->setMargin( 0 );
+    m_authorWidget->setLayout( authorLayout );
 
-        authorPageText += "<br />";
-
-        const QList<KAboutPerson> lst = aboutData->authors();
-        for (int i = 0; i < lst.size(); ++i) {
-            authorPageText += QString("<p style=\"margin: 0px;\">%1</p>").arg(lst.at(i).name());
-            if (!lst.at(i).emailAddress().isEmpty())
-                authorPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"mailto:%1\">%1</a></p>").arg(lst.at(i).emailAddress());
-            if (!lst.at(i).webAddress().isEmpty())
-                authorPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"%3\">%3</a></p>").arg(lst.at(i).webAddress());
-            if (!lst.at(i).task().isEmpty())
-                authorPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\">%4</p>").arg(lst.at(i).task());
-            if (i < lst.size() - 1)
-                authorPageText += "<p style=\"margin: 0px;\">&nbsp;</p>";
-        }
-
-        KTextBrowser *authorTextBrowser = new KTextBrowser;
-        authorTextBrowser->setFrameStyle(QFrame::NoFrame);
-        authorTextBrowser->setPalette(transparentBackgroundPalette);
-        authorTextBrowser->setHtml(authorPageText);
-        tabWidget->addTab(authorTextBrowser, authorPageTitle);
-    }
+    tabWidget->addTab(m_authorWidget, m_authorPageTitle);
 
     const int creditsCount = aboutData->credits().count();
     if (creditsCount) {
@@ -208,7 +181,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, QWidget *p
 
         KTextBrowser *creditsTextBrowser = new KTextBrowser;
         creditsTextBrowser->setFrameStyle(QFrame::NoFrame);
-        creditsTextBrowser->setPalette(transparentBackgroundPalette);
+        creditsTextBrowser->setPalette(m_transparentBackgroundPalette);
         creditsTextBrowser->setHtml(creditsPageText);
         tabWidget->addTab(creditsTextBrowser, i18n("&Thanks To"));
     }
@@ -230,7 +203,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, QWidget *p
 
         KTextBrowser *translatorTextBrowser = new KTextBrowser;
         translatorTextBrowser->setFrameStyle(QFrame::NoFrame);
-        translatorTextBrowser->setPalette(transparentBackgroundPalette);
+        translatorTextBrowser->setPalette(m_transparentBackgroundPalette);
         translatorTextBrowser->setHtml(translatorPageText);
         tabWidget->addTab(translatorTextBrowser, i18n("T&ranslation"));
     }
@@ -242,8 +215,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, QWidget *p
 
     QWidget *mainWidget = new QWidget;
     mainWidget->setLayout(mainLayout);
-
     setMainWidget(mainWidget);
+    setInitialSize( QSize( 400, 450 ) );
 }
 
 ExtendedAboutDialog::~ExtendedAboutDialog()
@@ -280,6 +253,113 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 
     dialog->setInitialSize(dialog->sizeHint().expandedTo(QSize((int)idealWidth,idealHeight)));
     dialog->show();
+}
+
+void
+ExtendedAboutDialog::setupOfflineAuthorWidget()
+{
+    m_ocsAuthorWidget->hide();
+    const KAboutData *aboutData = d->aboutData;
+    const int authorCount = aboutData->authors().count();
+
+    if (authorCount) {
+        QString authorPageText;
+
+        m_authorPageTitle = authorCount == 1 ? i18n("A&uthor") : i18n("A&uthors");
+
+        if (!aboutData->customAuthorTextEnabled() || !aboutData->customAuthorRichText().isEmpty()) {
+            if (!aboutData->customAuthorTextEnabled()) {
+                if (aboutData->bugAddress().isEmpty() || aboutData->bugAddress() == "submit@bugs.kde.org")
+                    authorPageText = i18n("Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report bugs.\n");
+                else {
+                    if(aboutData->authors().count() == 1 && (aboutData->authors().first().emailAddress() == aboutData->bugAddress())) {
+                        authorPageText = i18n("Please report bugs to <a href=\"mailto:%1\">%2</a>.\n",
+                                              aboutData->authors().first().emailAddress(),
+                                              aboutData->authors().first().emailAddress());
+                    }
+                    else {
+                        authorPageText = i18n("Please report bugs to <a href=\"mailto:%1\">%2</a>.\n",
+                                              aboutData->bugAddress(), aboutData->bugAddress());
+                    }
+                }
+            }
+            else
+                authorPageText = aboutData->customAuthorRichText();
+        }
+
+        authorPageText += "<br />";
+
+        const QList<KAboutPerson> lst = aboutData->authors();
+        for (int i = 0; i < lst.size(); ++i) {
+            authorPageText += QString("<p style=\"margin: 0px;\"><font size=\"4\"><b>%1</b></font></p>").arg(lst.at(i).name());
+            if (!lst.at(i).emailAddress().isEmpty())
+                authorPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"mailto:%1\">%1</a></p>").arg(lst.at(i).emailAddress());
+            if (!lst.at(i).webAddress().isEmpty())
+                authorPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"%3\">%3</a></p>").arg(lst.at(i).webAddress());
+            if (!lst.at(i).task().isEmpty())
+                authorPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\">%4</p>").arg(lst.at(i).task());
+            if (i < lst.size() - 1)
+                authorPageText += "<p style=\"margin: 0px;\">&nbsp;</p>";
+        }
+
+        QVBoxLayout *offlineAuthorWidgetLayout = new QVBoxLayout( m_offlineAuthorWidget );
+        offlineAuthorWidgetLayout->setMargin( 0 );
+        KTextBrowser *authorTextBrowser = new KTextBrowser( m_offlineAuthorWidget );
+        authorTextBrowser->setFrameStyle(QFrame::NoFrame);
+        authorTextBrowser->setPalette(m_transparentBackgroundPalette);
+        authorTextBrowser->setHtml(authorPageText);
+        m_showOcsButton = new QPushButton( KIcon( "get-hot-new-stuff" ),
+                                 i18n( "Connect to openDesktop.org to learn more about the team" ),
+                                 m_offlineAuthorWidget );
+        connect( m_showOcsButton, SIGNAL( clicked() ), this, SLOT( setupOcsAuthorWidget() ) );
+        offlineAuthorWidgetLayout->addWidget( authorTextBrowser );
+        offlineAuthorWidgetLayout->addWidget( m_showOcsButton );
+        m_offlineAuthorWidget->setLayout( offlineAuthorWidgetLayout );
+    }
+}
+
+void
+ExtendedAboutDialog::setupOcsAuthorWidget()
+{
+    const KAboutData *aboutData = d->aboutData;
+    m_showOcsButton->setIcon( KIcon( "timeadjust" ) );
+    m_showOcsButton->setEnabled( false );
+
+    QHBoxLayout *scrollLayout = new QHBoxLayout( m_ocsAuthorWidget );
+    scrollLayout->setMargin( 0 );
+    m_ocsAuthorWidget->setLayout( scrollLayout );
+    QScrollArea *authorScrollArea = new QScrollArea( m_ocsAuthorWidget );
+    scrollLayout->addWidget( authorScrollArea );
+    authorScrollArea->setFrameStyle( QFrame::NoFrame );
+    QWidget *authorArea = new QWidget( authorScrollArea );
+    authorScrollArea->setWidget( authorArea );
+    QVBoxLayout *areaLayout = new QVBoxLayout( authorArea );
+    areaLayout->setMargin( 0 );
+    authorArea->setLayout( areaLayout );
+
+    Attica::PersonJob *personJob;
+    for( QMap< QString, KAboutPerson >::const_iterator author = m_ocsData.constBegin();
+            author != m_ocsData.constEnd(); ++author )
+    {
+        QString userName = author.key();
+        if( !userName.isEmpty() )
+        {
+            personJob = Attica::OcsApi::requestPerson( userName );
+            personJob->exec();
+            OcsAuthorItem *item = new OcsAuthorItem( personJob->person(), authorArea );
+            areaLayout->addWidget( item );
+        }
+        else
+        {
+            OcsAuthorItem *item = new OcsAuthorItem( author.value(), authorArea );
+            areaLayout->addWidget( item );
+        }
+    }
+
+    m_showOcsButton->setIcon( KIcon( "get-hot-new-stuff" ) );
+    m_offlineAuthorWidget->hide();
+    m_ocsAuthorWidget->show();
+
 }
 
 #include "ExtendedAboutDialog.moc"
