@@ -217,7 +217,8 @@ void InlineEditorWidget::createChildWidgets()
 
                     m_editorRoleMap.insert( ratingWidget, value );
 
-                } else if ( value == Divider )
+                }
+                else if ( value == Divider )
                 {
                     debug() << "painting divider...";
                     QPixmap left = The::svgHandler()->renderSvg(
@@ -230,29 +231,18 @@ void InlineEditorWidget::createChildWidgets()
                             1, rowHeight,
                             "divider_right" );
 
-                    QPainter painter( this );
+                    QPixmap dividerPixmap( 2, rowHeight );
+                    dividerPixmap.fill( Qt::transparent );
 
-                    QLabel * leftLabel = new QLabel( rowWidget );
-                    leftLabel->setPixmap( left );
-                    QLabel * rightLabel = new QLabel( rowWidget );
-                    rightLabel->setPixmap( right );
-                         
-                    if ( alignment & Qt::AlignLeft )
-                    {
-                        leftLabel->setGeometry( currentItemX, 0, 1, rowHeight );
-                        rightLabel->setGeometry( currentItemX + 1, 0, 1, rowHeight );
-                    }
-                    else if ( alignment & Qt::AlignRight )
-                    {
-                        leftLabel->setGeometry( currentItemX + itemWidth - 1, 0, 1, rowHeight );
-                        rightLabel->setGeometry( currentItemX + itemWidth, 0, 1, rowHeight );
-                    }
-                    else
-                    {
-                        int center = currentItemX + ( itemWidth / 2 );
-                        leftLabel->setGeometry( center, 0, 1, rowHeight );
-                        rightLabel->setGeometry( center + 1, 0, 1, rowHeight );
-                    }
+                    QPainter painter( &dividerPixmap );
+                    painter.drawPixmap( 0, 0, left );
+                    painter.drawPixmap( 1, 0, right );
+
+                    QLabel * dividerLabel = new QLabel( rowWidget );
+                    dividerLabel->setPixmap( dividerPixmap );
+                    dividerLabel->setAlignment( element.alignment() );
+                    dividerLabel->setGeometry( QRect( currentItemX, 0, itemWidth, rowHeight ) );
+                    
                 }
                 else
                 {
