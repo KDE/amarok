@@ -114,7 +114,7 @@ void InlineEditorWidget::createChildWidgets()
 
     int imageSize = height() - MARGIN * 2;
 
-    int rowWidth = width() - MARGINH;
+    int rowWidth = width();
 
     if ( config.showCover() )
     {
