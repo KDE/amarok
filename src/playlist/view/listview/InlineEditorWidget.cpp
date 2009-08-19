@@ -259,6 +259,15 @@ void InlineEditorWidget::createChildWidgets()
                      debug() << "creating line edit at " << currentItemX << ", " << 0;
                      debug() << "with size " << itemWidth << ", " << rowHeight;
 
+                     //check if this is acolumn that is editable. If not, make the
+                     //line edit read only.
+
+                     if ( !editableColumns.contains( value ) )
+                     {
+                         edit->setReadOnly( true );
+                         edit->setDisabled( true );
+                     }
+
                      m_editorRoleMap.insert( edit, value );
                 }
 

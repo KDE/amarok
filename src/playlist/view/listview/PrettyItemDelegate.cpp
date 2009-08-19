@@ -654,9 +654,6 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
             case Album:
                 ec->setAlbum( value );
                 break;
-            case AlbumArtist:
-                 //FIXME
-                 break;
             case Artist:
                 ec->setArtist( value );
                 break;
@@ -674,9 +671,6 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
                 }
             case Genre:
                 ec->setGenre( value );
-                break;
-            case Mood:
-                //FIXME
                 break;
             case Rating:
                 {

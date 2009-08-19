@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 - 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>             *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -62,6 +62,20 @@ enum Column
     NUM_COLUMNS
 };
 //when sorting, Random is -1
+
+//these are the colums that can be directly edited by the user.
+static const QList<int> editableColumns = ( QList<int>() )
+        << Album
+        << Artist
+        << Comment
+        << Composer
+        << DiscNumber
+        << Genre
+        << Rating
+        << Title
+        << TitleWithTrackNum
+        << TrackNumber
+        << Year;
 
 //this is the list of user visible token nemes and hence needs to be translated
 static const QList<const char *> columnNames = ( QList<const char *>()
