@@ -711,4 +711,11 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     }
 }
 
+void
+Playlist::PrettyItemDelegate::updateEditorGeometry( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    editor->setFixedSize( option.rect.size() );
+    editor->setGeometry( option.rect );
+}
+
 
