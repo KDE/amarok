@@ -83,6 +83,10 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
     setFixedHeight( height );
     setFixedWidth( parent->width() );
 
+    //prevent editor closing when cliking a rating widget or pressing return in a line edit.
+    
+    setFocusPolicy( Qt::StrongFocus );
+
     createChildWidgets();
 }
 
@@ -207,6 +211,7 @@ void InlineEditorWidget::createChildWidgets()
                     KRatingWidget * ratingWidget = new KRatingWidget( rowWidget );
                     ratingWidget->setGeometry( QRect( currentItemX, 1, itemWidth, rowHeight - 2)  );
                     ratingWidget->setRating( rating );
+                    ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
 
                     connect( ratingWidget, SIGNAL( ratingChanged( uint ) ), this, SLOT( ratingValueChanged() ) );
 
