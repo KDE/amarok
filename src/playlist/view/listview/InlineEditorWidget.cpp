@@ -258,6 +258,7 @@ void InlineEditorWidget::createChildWidgets()
                 {
                      QLineEdit * edit = new QLineEdit( text, rowWidget );
                      edit->setGeometry( QRect( currentItemX, 0, itemWidth, rowHeight ) );
+                     edit->setAlignment( element.alignment() );
 
                      connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
 
