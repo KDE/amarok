@@ -98,7 +98,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         virtual QueryMaker* queryMaker();
         virtual UserPlaylistProvider* userPlaylistProvider();
         virtual void startFullScan(); // TODO: this will replace connectDevice() call to parsetracks in handler
-        void startFullScanDevice();
+        virtual void startFullScanDevice();
 
         // NOTE: incrementalscan and stopscan not implemented, might be used by UMS later though
 
