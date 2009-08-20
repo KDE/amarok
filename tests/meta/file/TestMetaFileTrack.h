@@ -67,6 +67,7 @@ private slots:
     void testReplayGain();
     void testReplayPeakGain();
     void testType();
+    void testCreateDate();
 
 private:
     MetaFile::Track *track;

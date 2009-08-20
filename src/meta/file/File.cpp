@@ -463,6 +463,12 @@ Track::bitrate() const
    return bitrate;
 }
 
+QDateTime
+Track::createDate() const
+{
+    return d->m_data.created;
+}
+
 uint
 Track::lastPlayed() const
 {

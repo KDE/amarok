@@ -19,6 +19,9 @@
 
 #include "TestMetaFileTrack.h"
 
+#include <QDateTime>
+#include <QFileInfo>
+
 #include <KStandardDirs>
 
 TestMetaFileTrack::TestMetaFileTrack( QStringList testArgumentList )
@@ -422,4 +425,11 @@ void TestMetaFileTrack::testReplayPeakGain()
 void TestMetaFileTrack::testType()
 {
     QCOMPARE( track->type(), QString( "mp3" ) );
+}
+
+void TestMetaFileTrack::testCreateDate()
+{
+    QFileInfo fi( QDir::tempPath() + QDir::separator() + "tempfile.mp3" );
+    QDateTime created = fi.created();
+    QCOMPARE( track->createDate(), created );
 }

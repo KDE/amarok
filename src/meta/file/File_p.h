@@ -25,7 +25,9 @@
 #include "MetaReplayGain.h"
 #include "meta/StatisticsProvider.h"
 
+#include <QDateTime>
 #include <QFile>
+#include <QFileInfo>
 #include <QObject>
 #include <QPointer>
 #include <QSet>
@@ -79,6 +81,7 @@ struct MetaData
     QString comment;
     QString composer;
     QString genre;
+    QDateTime created;
     int discNumber;
     int trackNumber;
     int length;
@@ -156,6 +159,9 @@ Track::Private::getFileRef()
 
 void Track::Private::readMetaData()
 {
+    QFileInfo fi( url.isLocalFile() ? url.toLocalFile() : url.path() );
+    m_data.created = fi.created();
+
 #define strip( x ) TStringToQString( x ).trimmed()
     TagLib::FileRef fileRef = getFileRef();
 
