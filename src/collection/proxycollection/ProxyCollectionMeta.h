@@ -63,6 +63,7 @@ namespace ProxyCollection
             int filesize() const;
             int sampleRate() const;
             int bitrate() const;
+            QDateTime createDate() const;
             int trackNumber() const;
             int discNumber() const;
             QString type() const;

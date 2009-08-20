@@ -24,6 +24,7 @@
 
 #include "Debug.h"
 
+#include <QDateTime>
 #include <QSet>
 
 ProxyCollection::Track::Track( ProxyCollection::Collection *coll, const Meta::TrackPtr &track )
@@ -341,6 +342,24 @@ ProxyCollection::Track::bitrate() const
             return track->bitrate();
     }
     return 0;
+}
+
+QDateTime
+ProxyCollection::Track::createDate() const
+{
+    QDateTime result;
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        QDateTime dt = track->createDate();
+        if( !dt.isValid() )
+            continue;
+        else
+        {
+            if( !result.isValid() || dt < result )
+                result = dt;
+        }
+    }
+    return result;
 }
 
 int
