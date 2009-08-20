@@ -313,9 +313,6 @@ PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVariant 
         default:
             return false;
     }
-
-    //call update reload playlists and emit signals
-    slotUpdate();
     return true;
 }
 
