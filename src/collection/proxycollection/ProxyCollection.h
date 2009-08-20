@@ -80,10 +80,6 @@ namespace ProxyCollection
 
         //ProxyCollection::Collection methods
 
-        void addCollection( Amarok::Collection *collection );
-        void removeCollection( Amarok::Collection *collection );
-        void removeCollection( const QString &collectionId );
-
         void removeTrack( const TrackKey &key );
         Track* getTrack( Meta::TrackPtr track );
         void setTrack( ProxyCollection::Track *track );
@@ -113,6 +109,11 @@ namespace ProxyCollection
         void removeYear( const QString &name );
         Year* getYear( Meta::YearPtr year );
         void setYear( ProxyCollection::Year *year );
+
+        public slots:
+        void removeCollection( const QString &collectionId );
+        void removeCollection( Amarok::Collection *collection );
+        void addCollection( Amarok::Collection *collection );
 
         private slots:
         void slotUpdated();

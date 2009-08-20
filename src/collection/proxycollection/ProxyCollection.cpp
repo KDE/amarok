@@ -110,18 +110,21 @@ ProxyCollection::Collection::addCollection( Amarok::Collection *collection )
 
     m_idCollectionMap.insert( collection->collectionId(), collection );
     //TODO
+    emit updated();
 }
 
 void
 ProxyCollection::Collection::removeCollection( const QString &collectionId )
 {
     m_idCollectionMap.remove( collectionId );
+    emit updated();
 }
 
 void
 ProxyCollection::Collection::removeCollection( Amarok::Collection *collection )
 {
     m_idCollectionMap.remove( collection->collectionId() );
+    emit updated();
 }
 
 void
