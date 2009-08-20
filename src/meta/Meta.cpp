@@ -271,6 +271,11 @@ Meta::Track::addMatchTo( QueryMaker *qm )
     qm->addMatch( TrackPtr( this ) );
 }
 
+QDateTime
+Meta::Track::createDate() const
+{
+    return QDateTime();
+}
 qreal
 Meta::Track::replayGain( Meta::Track::ReplayGainMode mode ) const
 {

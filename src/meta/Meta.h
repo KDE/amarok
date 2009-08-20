@@ -228,7 +228,7 @@ namespace Meta
             virtual int bitrate() const = 0;
             /** Returns the time when the track was added to the collection,
                 or an invalid QDateTime instance if the time is not known */
-            virtual QDateTime createDate() const = 0;
+            virtual QDateTime createDate() const;
             /** Returns the track number of this track */
             virtual int trackNumber() const = 0;
             /** Returns the discnumber of this track */
