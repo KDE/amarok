@@ -87,7 +87,7 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
     setFixedWidth( parent->width() );
 
     if( groupMode == Head )
-        m_headerHeight = ( height * layout.head().rows() ) / rowCount;
+        m_headerHeight = ( height * layout.head().rows() ) / rowCount - 1;
 
     //prevent editor closing when cliking a rating widget or pressing return in a line edit.
     
