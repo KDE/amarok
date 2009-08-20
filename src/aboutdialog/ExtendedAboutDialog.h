@@ -24,6 +24,7 @@
 
 #include "Amarok.h"
 #include "App.h"
+#include "OcsPersonListWidget.h"
 
 #include <KAboutData>
 #include <kdialog.h>
@@ -37,6 +38,7 @@ public:
 
 private slots:
     void setupOcsAuthorWidget();
+    void personJobFinished( KJob *job );
 
 private:
     class Private;
@@ -50,7 +52,7 @@ private:
     QPushButton *m_showOcsButton;
     QWidget *m_authorWidget;
     QWidget *m_offlineAuthorWidget;
-    QWidget *m_ocsAuthorWidget;
+    OcsPersonListWidget *m_ocsAuthorWidget;
     QString m_authorPageTitle;
     QPalette m_transparentBackgroundPalette;
 

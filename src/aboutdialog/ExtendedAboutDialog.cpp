@@ -31,7 +31,6 @@
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
-#include <QScrollArea>
 #include <QScrollBar>
 #include <QTabWidget>
 
@@ -152,7 +151,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     m_authorWidget = new QWidget( this );
     QHBoxLayout *authorLayout = new QHBoxLayout( m_authorWidget );
     m_offlineAuthorWidget = new QWidget( m_authorWidget );
-    m_ocsAuthorWidget = new QWidget( m_authorWidget );
+    m_ocsAuthorWidget = new OcsPersonListWidget( m_authorWidget );
 
     setupOfflineAuthorWidget(); //populate m_authorWidget and set m_authorPageTitle
 
@@ -324,35 +323,12 @@ void
 ExtendedAboutDialog::setupOcsAuthorWidget()
 {
     m_offlineAuthorWidget->hide();
-//TODO: add a spinner when I implement asynchronious download
-/*
-    QWidget *animatedBack = new QWidget( m_authorWidget );
-    m_authorWidget->layout()->addWidget( animatedBack );
-    AnimatedWidget *animatedWidget = new AnimatedWidget( "process-working", animatedBack );
-    QVBoxLayout *animatedLayout = new QVBoxLayout( animatedBack );
-    animatedBack->setLayout( animatedLayout );
 
-    animatedLayout->addSpacerItem( new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding) );
-    animatedLayout->addWidget( animatedWidget );
-
-    animatedLayout->addSpacerItem( new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding) );
-    animatedWidget->start();
-*/
+    m_ocsAuthorWidget = new OcsPersonListWidget( m_authorWidget );
+    m_authorWidget->layout()->addWidget( m_ocsAuthorWidget );
 
     //TODO: Ask Solid if the network is available.
     m_showOcsButton->setEnabled( false );
-
-    QHBoxLayout *scrollLayout = new QHBoxLayout( m_ocsAuthorWidget );
-    scrollLayout->setMargin( 0 );
-    m_ocsAuthorWidget->setLayout( scrollLayout );
-    QScrollArea *authorScrollArea = new QScrollArea( m_ocsAuthorWidget );
-    scrollLayout->addWidget( authorScrollArea );
-    authorScrollArea->setFrameStyle( QFrame::NoFrame );
-    QWidget *authorArea = new QWidget( authorScrollArea );
-    QVBoxLayout *areaLayout = new QVBoxLayout( authorArea );
-    areaLayout->setMargin( 0 );
-    authorArea->setLayout( areaLayout );
-    authorArea->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
     Attica::PersonJob *personJob;
     for( QList< QPair< QString, KAboutPerson > >::const_iterator author = m_ocsData.constBegin();
@@ -362,23 +338,35 @@ ExtendedAboutDialog::setupOcsAuthorWidget()
         if( !userName.isEmpty() )
         {
             personJob = Attica::OcsApi::requestPerson( userName );
-            personJob->exec();  //TODO: Make asynchronious
-            OcsAuthorItem *item = new OcsAuthorItem( (*author).second, personJob->person(), authorArea );
-            areaLayout->addWidget( item );
+            personJob->start();
+            connect( personJob, SIGNAL( result( KJob * ) ), this, SLOT( personJobFinished( KJob * ) ) );
         }
         else
         {
-            OcsAuthorItem *item = new OcsAuthorItem( (*author).second, authorArea );
-            areaLayout->addWidget( item );
+            m_ocsAuthorWidget->addPerson( (*author).second );
         }
     }
-    authorScrollArea->setWidgetResizable( true );
-    authorScrollArea->setWidget( authorArea );
-    authorArea->show();
 
-//    delete animatedBack;
+
     m_ocsAuthorWidget->show();
 
+}
+
+void
+ExtendedAboutDialog::personJobFinished( KJob *job )
+{
+    Attica::PersonJob *personJob = qobject_cast< Attica::PersonJob * >( job );
+    QString userName = personJob->person().id();
+    KAboutPerson *person;
+    for( QList< QPair< QString, KAboutPerson > >::const_iterator it = m_ocsData.constBegin(); it != m_ocsData.constEnd(); ++it )
+    {
+        if( (*it).first == userName )
+        {
+            person = new KAboutPerson( (*it).second );
+            break;
+        }
+    }
+    m_ocsAuthorWidget->addPerson( *person, personJob->person() );
 }
 
 #include "ExtendedAboutDialog.moc"

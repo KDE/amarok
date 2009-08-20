@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>509</width>
-    <height>61</height>
+    <width>507</width>
+    <height>59</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -54,9 +54,12 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>50</width>
+         <width>56</width>
          <height>1</height>
         </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
        </property>
        <property name="text">
         <string/>

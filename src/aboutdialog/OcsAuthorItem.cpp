@@ -31,7 +31,9 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
     init();
 
     m_avatar->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-    m_avatar->resize( 50, 50 );
+
+
+    m_avatar->resize( 56, 56 );
     m_avatar->setFrameStyle( QFrame::StyledPanel );
     m_avatar->setPixmap( m_ocsPerson->avatar() );
 
@@ -70,10 +72,16 @@ OcsAuthorItem::init()
 
     m_aboutText.append( "<b>" + m_person->name() + "</b>" );
     m_aboutText.append( "<br/>" + m_person->task() );
-    m_aboutText.append( "<br/>" + m_person->emailAddress() );
+    m_aboutText.append( QString( "<br/><a href=\"mailto:%1\">%1</a>" ).arg( m_person->emailAddress() ) );
     if( !m_person->webAddress().isEmpty() )
-        m_aboutText.append( "<br/>" + m_person->webAddress() );
+        m_aboutText.append( QString( "<br/><a href=\"%3\">%3</a>" ).arg( m_person->webAddress() ) );
 }
 
 OcsAuthorItem::~OcsAuthorItem()
 {}
+
+QString
+OcsAuthorItem::name()
+{
+    return m_person->name();
+}
