@@ -57,8 +57,10 @@ OcsAuthorItem::init()
     name->setText( "<b>" + m_person->name() + "</b>" );
     task->setText( m_person->task() );
     email->setText( m_person->emailAddress() );
-    homepage->setText( m_person->webAddress() );
-
+    if( m_person->webAddress().isEmpty() )
+        homepage->hide();
+    else
+        homepage->setText( m_person->webAddress() );
 }
 
 OcsAuthorItem::~OcsAuthorItem()
