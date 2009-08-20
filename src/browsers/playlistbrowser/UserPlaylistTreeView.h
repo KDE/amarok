@@ -44,8 +44,6 @@ public slots:
 
 protected:
     void keyPressEvent( QKeyEvent *event );
-    void mousePressEvent( QMouseEvent *event );
-    void mouseReleaseEvent( QMouseEvent *event );
     void mouseDoubleClickEvent( QMouseEvent *event );
     void startDrag( Qt::DropActions supportedActions );
 
@@ -56,8 +54,6 @@ private:
     PopupDropper* m_pd;
 
     KAction *m_addGroupAction;
-
-    QPoint m_dragStartPosition;
 };
 
 }

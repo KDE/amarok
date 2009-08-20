@@ -49,8 +49,14 @@ public:
     */
     bool clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index );
 
-private:
+    QWidget * createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+
+    void setModelData ( QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const;
+    void updateEditorGeometry ( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+
     void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
+
+private:
     void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const;
 
     QPointF centerImage( const QPixmap&, const QRectF& ) const;

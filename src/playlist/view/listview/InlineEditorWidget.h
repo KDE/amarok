@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,54 +14,58 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYLISTCATEGORY_H
-#define PLAYLISTCATEGORY_H
+#ifndef INLINEEDITORWIDGET_H
+#define INLINEEDITORWIDGET_H
 
+#include "playlist/layouts/LayoutItemConfig.h"
 
-#include "UserPlaylistTreeView.h"
-#include "browsers/BrowserCategory.h"
-
-#include <KDialog>
+#include <KVBox>
 
 #include <QModelIndex>
-#include <QPoint>
-
-class QToolBar;
-class QTreeView;
-
-class KAction;
-class KLineEdit;
-
-class PlaylistsInGroupsProxy;
-
-namespace PlaylistBrowserNS {
 
 /**
-The widget that displays playlists in the playlist browser
+An inline editor for a playlist item. Relies on the same item layout configuration as is used by the delegate, and strives to have a simmilar look.
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class PlaylistCategory : public BrowserCategory
+class InlineEditorWidget : public KVBox
 {
-Q_OBJECT
+    Q_OBJECT
 public:
-    PlaylistCategory( QWidget * parent );
+    InlineEditorWidget( QWidget * parent, const QModelIndex &index, Playlist::PlaylistLayout layout, int groupMode );
 
-    ~PlaylistCategory();
+    ~InlineEditorWidget();
 
-private slots:
-    void newPalette( const QPalette & palette );
+    QMap<int, QString> changedValues();
 
+protected:
+    void paintEvent( QPaintEvent * event );
+
+protected slots:
+    void editValueChanged();
+    void ratingValueChanged();
+        
 private:
 
-    QToolBar * m_toolBar;
-    UserPlaylistTreeView * m_playlistView;
+    void createChildWidgets();
+    QPoint centerImage( const QPixmap&, const QRectF& ) const;
 
-    KAction * m_addGroupAction;
-    PlaylistsInGroupsProxy *m_groupedProxy;
+    static const qreal ALBUM_WIDTH;
+    static const qreal SINGLE_TRACK_ALBUM_WIDTH;
+    static const qreal MARGIN;
+    static const qreal MARGINH;
+    static const qreal MARGINBODY;
+    static const qreal PADDING;
+
+    QModelIndex m_index;
+    Playlist::PlaylistLayout m_layout;
+    int m_groupMode;
+
+    QMap<QWidget *, int> m_editorRoleMap;
+    QMap<int, QString> m_changedValues;
+
+    int m_headerHeight;
 
 };
-
-}
 
 #endif

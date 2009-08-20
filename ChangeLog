@@ -94,6 +94,7 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Fixed broken selection in the "Saved Playlists" category.
     * Fixed wrong Random Album mode behavior when playlists contains only
       one album. (BR 194066)
     * Fixed double playcount increase for last track in queue (BR 188330)

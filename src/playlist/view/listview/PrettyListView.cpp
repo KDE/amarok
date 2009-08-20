@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -70,12 +71,13 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setModel( Playlist::ModelStack::instance()->top() );
     m_prettyDelegate = new PrettyItemDelegate( this );
     setItemDelegate( m_prettyDelegate );
-    setSelectionMode( QAbstractItemView::ExtendedSelection );
-    setDragDropMode( QAbstractItemView::DragDrop );
+    setSelectionMode( ExtendedSelection );
+    setDragDropMode( DragDrop );
     setDropIndicatorShown( false ); // we draw our own drop indicator
+    setEditTriggers ( SelectedClicked | EditKeyPressed );
     setAutoScroll( true );
 
-    setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    setVerticalScrollMode( ScrollPerPixel );
 
     // rendering adjustments
     setFrameShape( QFrame::NoFrame );

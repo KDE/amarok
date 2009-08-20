@@ -366,7 +366,7 @@ Qt::ItemFlags
 Playlist::Model::flags( const QModelIndex &index ) const
 {
     if ( index.isValid() )
-        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled );
+        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsEditable );
     return Qt::ItemIsDropEnabled;
 }
 

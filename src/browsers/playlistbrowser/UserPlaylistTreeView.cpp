@@ -51,6 +51,8 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QAbstractItemMode
     setSelectionBehavior( QAbstractItemView::SelectRows );
     setDragDropMode( QAbstractItemView::DragDrop );
     setAcceptDrops( true );
+    setAnimated( true );
+    setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
 
     The::paletteHandler()->updateItemView( this );
 
@@ -66,26 +68,6 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QAbstractItemMode
 
 PlaylistBrowserNS::UserPlaylistTreeView::~UserPlaylistTreeView()
 {
-}
-
-void PlaylistBrowserNS::UserPlaylistTreeView::mousePressEvent( QMouseEvent * event )
-{
-    if( event->button() == Qt::LeftButton )
-        m_dragStartPosition = event->pos();
-
-    QTreeView::mousePressEvent( event );
-}
-
-void PlaylistBrowserNS::UserPlaylistTreeView::mouseReleaseEvent( QMouseEvent * event )
-{
-    Q_UNUSED( event )
-
-    if( m_pd )
-    {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
-        m_pd->hide();
-    }
-    m_pd = 0;
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent * event )
@@ -126,7 +108,8 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
             return;
         QList<QAction*> actions = mpm->actionsFor( indices );
 
-        foreach( QAction * action, actions ) {
+        foreach( QAction * action, actions )
+        {
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
 
@@ -148,24 +131,12 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 void
 PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
 {
-    Q_UNUSED( event )
-
     switch( event->key() )
     {
         case Qt::Key_Delete:
         {
-            QModelIndex selectedIdx = selectedIndexes().first();
-            m_model->removeRow( selectedIdx.row(), selectedIdx.parent() );
-            return;
-        }
-
-        case Qt::Key_F2:
-        {
-            //can only rename if one is selected
-            if( selectedIndexes().count() != 1 )
-                return;
-            event->accept();
-            edit( selectedIndexes().first() );
+            foreach( const QModelIndex &selectedIdx, selectedIndexes() )
+                m_model->removeRow( selectedIdx.row(), selectedIdx.parent() );
             return;
         }
      }

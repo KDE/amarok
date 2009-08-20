@@ -414,6 +414,7 @@ set(libplaylist_SRCS
     playlist/navigators/StandardTrackNavigator.cpp
     playlist/navigators/TrackNavigator.cpp
     playlist/view/PlaylistViewCommon.cpp
+    playlist/view/listview/InlineEditorWidget.cpp
     playlist/view/listview/PrettyItemDelegate.cpp
     playlist/view/listview/PrettyListView.cpp
     playlist/view/listview/SourceSelectionPopup.cpp

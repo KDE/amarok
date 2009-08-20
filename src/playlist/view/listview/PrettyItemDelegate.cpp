@@ -25,9 +25,11 @@
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "InlineEditorWidget.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"
+#include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/SourceInfoCapability.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
@@ -139,8 +141,8 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
     if ( groupMode == None ||  groupMode == Body || groupMode == Tail )
     {
 
-        int trackHeight;
-        int extraHeight;
+        int trackHeight = 0;
+        int extraHeight = 0;
         QStyleOptionViewItem trackOption( option );
         if ( paintInlineControls )
         {
@@ -465,6 +467,8 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
 void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const
 {
+    Q_UNUSED( index );
+    
     int x = rect.x();
     int y = rect.y();
     int width = rect.width();
@@ -605,6 +609,113 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     
 
     return false;
+}
+
+QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    Q_UNUSED( option );
+    
+    DEBUG_BLOCK
+    const int groupMode = index.data( GroupRole ).toInt();
+    return new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
+}
+
+void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &index ) const
+{
+    DEBUG_BLOCK
+    InlineEditorWidget * inlineEditor = dynamic_cast<InlineEditorWidget *>( editor );
+    if( !inlineEditor )
+        return;
+
+    QMap<int, QString> changeMap = inlineEditor->changedValues();
+    
+    debug() << "got inline editor!!";
+    debug() << "changed values map: " << changeMap;
+
+    //ok, now get the track, figure out if it is editable and if so, apply new values.
+    //It's as simple as that! :-)
+
+    Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
+    if( !track )
+        return;
+
+    Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+    if( !ec || !ec->isEditable() )
+        return;
+
+    QList<int> columns = changeMap.keys();
+
+    foreach( int column, columns )
+    {
+        QString value = changeMap.value( column );
+        
+        switch( column )
+        {
+            case Album:
+                ec->setAlbum( value );
+                break;
+            case Artist:
+                ec->setArtist( value );
+                break;
+            case Comment:
+                ec->setComment( value );
+                break;
+            case Composer:
+                ec->setComposer( value );
+                break;
+            case DiscNumber:
+                {
+                    int discNumber = value.toInt();
+                    ec->setDiscNumber( discNumber );
+                    break;
+                }
+            case Genre:
+                ec->setGenre( value );
+                break;
+            case Rating:
+                {
+                    int rating = value.toInt();
+                    track->setRating( rating );
+                    break;
+                }
+            case Title:
+                ec->setTitle( value );
+                break;
+            case TitleWithTrackNum:
+                {
+                    debug() << "parse TitleWithTrackNum";
+                    //we need to parse out the track number and the track name (and check
+                    //if the string is even valid...)
+                    //QRegExp rx("(\\d+)\\s-\\s(.*))");
+                    QRegExp rx("(\\d+)(\\s-\\s)(.*)");
+                    if ( rx.indexIn( value ) != -1) {
+                        int trackNumber = rx.cap( 1 ).toInt();
+                        QString trackName = rx.cap( 3 );
+                        debug() << "split TitleWithTrackNum into " << trackNumber << " and " << trackName;
+                        ec->setTrackNumber( trackNumber );
+                        ec->setTitle( trackName );
+                    }
+                    break;
+                }
+            case TrackNumber:
+                {
+                    int TrackNumber = value.toInt();
+                    ec->setTrackNumber( TrackNumber );
+                    break;
+                }
+            case Year:
+                ec->setYear( value );
+                break;
+        }
+
+    }
+}
+
+void
+Playlist::PrettyItemDelegate::updateEditorGeometry( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    editor->setFixedSize( option.rect.size() );
+    editor->setGeometry( option.rect );
 }
 
 
