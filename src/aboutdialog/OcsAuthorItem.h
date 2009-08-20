@@ -37,6 +37,7 @@ private:
     void init();
     const KAboutPerson *m_person;
     const Attica::Person *m_ocsPerson;
+    QString m_aboutText;
 /*
    <firstname>Frank</firstname>
    <lastname>Test</lastname>

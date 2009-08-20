@@ -54,7 +54,7 @@ int main( int argc, char *argv[] )
     ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 1 ) ) );
     ocsData.append( QPair< QString, KAboutPerson >("eean", aboutData.authors().at( 2 ) ) );
     ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 3 ) ) );
-    ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 4 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >("lfranchi", aboutData.authors().at( 4 ) ) );
     ocsData.append( QPair< QString, KAboutPerson >("nightrose", aboutData.authors().at( 5 ) ) );
     ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 6 ) ) );
     ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 7 ) ) );

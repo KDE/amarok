@@ -30,12 +30,19 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
     setupUi( this );
     init();
 
-    avatar->setPixmap( m_ocsPerson->avatar() );
-    location->setText( m_ocsPerson->city() + ", " + m_ocsPerson->country() );
-    ircChannels->setText( m_ocsPerson->extendedAttribute( "ircchannels" ) );
-    profile->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    profile->setOpenExternalLinks( true );
-    profile->setText( QString( i18n( "<a href=\"%1\">Visit profile</a>", m_ocsPerson->extendedAttribute( "profilepage" ) ) ) );
+    m_avatar->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    m_avatar->resize( 50, 50 );
+    m_avatar->setPixmap( m_ocsPerson->avatar() );
+
+    m_aboutText.append( "<br/>" + ( m_ocsPerson->city().isEmpty() ? "" : ( m_ocsPerson->city() + ", " ) ) + m_ocsPerson->country() );
+    if( !m_ocsPerson->extendedAttribute( "ircchannels" ).isEmpty() )
+    {
+        QString channelsWithLinks = m_ocsPerson->extendedAttribute( "irclink" );
+        debug()<< "Irc links are" << channelsWithLinks;
+        m_aboutText.append( "<br/>" + m_ocsPerson->extendedAttribute( "ircchannels" ) );
+    }
+    m_aboutText.append( QString( "<br/>" + i18n( "<a href=\"%1\">Visit profile</a>", m_ocsPerson->extendedAttribute( "profilepage" ) ) ) );
+    m_textLabel->setText( m_aboutText );
 }
 
 OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, QWidget *parent )
@@ -46,21 +53,20 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, QWidget *parent )
     setupUi( this );
     init();
 
-    location->hide();
-    ircChannels->hide();
-    profile->hide();
+    m_textLabel->setText( m_aboutText );
 }
 
 void
 OcsAuthorItem::init()
 {
-    name->setText( "<b>" + m_person->name() + "</b>" );
-    task->setText( m_person->task() );
-    email->setText( m_person->emailAddress() );
-    if( m_person->webAddress().isEmpty() )
-        homepage->hide();
-    else
-        homepage->setText( m_person->webAddress() );
+    m_textLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    m_textLabel->setOpenExternalLinks( true );
+
+    m_aboutText.append( "<b>" + m_person->name() + "</b>" );
+    m_aboutText.append( "<br/>" + m_person->task() );
+    m_aboutText.append( "<br/>" + m_person->emailAddress() );
+    if( !m_person->webAddress().isEmpty() )
+        m_aboutText.append( "<br/>" + m_person->webAddress() );
 }
 
 OcsAuthorItem::~OcsAuthorItem()
