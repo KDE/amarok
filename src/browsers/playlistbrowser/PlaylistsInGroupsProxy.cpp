@@ -454,7 +454,7 @@ PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
 {
     if( isGroup( index ) )
         return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
-                 Qt::ItemIsDropEnabled );
+                 Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled );
 
     QModelIndex originalIdx = mapToSource( index );
     Qt::ItemFlags originalItemFlags = m_model->flags( originalIdx );
