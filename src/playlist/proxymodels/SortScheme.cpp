@@ -116,7 +116,7 @@ SortScheme::length()
 void
 SortScheme::trimToLevel( int lastLevel )
 {
-    for( int i = length() - 1; i < lastLevel; i--)
+    for( int i = length() - 1; i > lastLevel; i--)
         m_scheme->pop();
 }
 
