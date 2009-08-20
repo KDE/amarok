@@ -282,13 +282,13 @@ PlaylistManager::categoryLongDescription( int playlistCategory )
 KIcon
 PlaylistManager::categoryIcon( int playlistCategory )
 {
-switch( playlistCategory )
+    switch( playlistCategory )
     {
         case CurrentPlaylist: return KIcon( "amarok_playlist" );
         case UserPlaylist: return KIcon( "amarok_playlist" );
-        case PodcastChannel: KIcon( "podcast-amarok" );
+        case PodcastChannel: return KIcon( "podcast-amarok" );
         case Dynamic: return KIcon( "dynamic-amarok" );
-       case SmartPlaylist: return KIcon( "dynamic-amarok" );
+        case SmartPlaylist: return KIcon( "dynamic-amarok" );
     }
     //if control reaches here playlistCategory is either invalid or a custom category
 //TODO: custom categories
@@ -296,7 +296,7 @@ switch( playlistCategory )
 //        return m_customCategories[playlistCategory];
 //    else
         //note: this shouldn't happen so I'm not translating it to facilitate bug reports
-        return KIcon( "amarok_playlist" );
+    return KIcon( "amarok_playlist" );
 }
 
 bool
