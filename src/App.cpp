@@ -598,6 +598,9 @@ App::runUnitTests()
     QDir logDir( logPath );
     logDir.mkpath( logPath );
 
+    QFile::remove( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+    QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+
     PERF_LOG( "Running Unit Tests" )
     TestAmarok                  testAmarok( testArgumentList );
     TestCaseConverter           testCaseConverter( testArgumentList );
