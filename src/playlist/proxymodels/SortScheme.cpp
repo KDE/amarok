@@ -90,6 +90,11 @@ SortScheme::SortScheme()
 
 }
 
+SortScheme::~SortScheme()
+{
+    delete m_scheme;
+}
+
 SortLevel &
 SortScheme::level( int i )
 {

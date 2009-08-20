@@ -55,6 +55,7 @@ class SortScheme
 {
     public:
         SortScheme();
+        ~SortScheme();
         SortLevel & level( int i );
         void addLevel( const SortLevel & level );
         void trimToLevel( int lastLevel );        //deletes all the levels up to level # length
