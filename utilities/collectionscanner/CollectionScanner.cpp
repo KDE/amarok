@@ -302,6 +302,8 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     writeElement( "folder", attributes );
     d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files | QDir::Readable );
     QFileInfoList list = d.entryInfoList();
+ 
+    QStringList recurseDirs;
     foreach( QFileInfo f, list )
     {
         if( !f.exists() )
@@ -327,11 +329,13 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
             }
 
             if( !m_incremental || !isInCollection )
-                readDir( f.absoluteFilePath() + '/', entries );
+                recurseDirs << QString( f.absoluteFilePath() + '/' );
         }
         else if( f.isFile() )
             entries.append( f.absoluteFilePath() );
     }
+    foreach( QString dir, recurseDirs )
+        readDir( dir, entries );
 }
 
 
