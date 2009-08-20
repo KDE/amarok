@@ -54,8 +54,9 @@ public:
     void setModelData ( QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const;
     void updateEditorGeometry ( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
-private:
     void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
+
+private:
     void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const;
 
     QPointF centerImage( const QPixmap&, const QRectF& ) const;

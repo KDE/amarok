@@ -17,6 +17,7 @@
 #include "InlineEditorWidget.h"
 
 #include "Debug.h"
+#include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 
@@ -289,7 +290,19 @@ InlineEditorWidget::paintEvent( QPaintEvent * event )
 {
 
     QPainter painter( this );
-    painter.drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", ( int ) width(), ( int ) height(), "track" ) );
+    painter.drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", width(), height(), "track" ) );
+
+
+    //if this is an editor for a head item, use the delegates paintItem function
+    //to draw the head part, which currently cannot be edited this way
+
+    if( m_headerHeight != 0 )
+    {
+        PrettyItemDelegate delegate;
+        QStyleOptionViewItem option;
+        option.rect = QRect( 0, 0, width(), m_headerHeight );
+        delegate.paintItem( m_layout.head(), &painter, option, m_index );
+    }
 
     KHBox::paintEvent( event );
 }
