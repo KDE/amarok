@@ -540,6 +540,10 @@ void App::applySettings( bool firstTime )
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
 
+    // show or hide CV
+    if( mainWindow() )
+        mainWindow()->hideContextView( AmarokConfig::hideContextView() );
+
     if( ( main_window && firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
     {
         PERF_LOG( "showing main window again" )
@@ -574,9 +578,6 @@ void App::applySettings( bool firstTime )
         PERF_LOG( "done cover handling" )
     }
 
-    // show or hide CV
-    if( mainWindow() )
-        mainWindow()->hideContextView( AmarokConfig::hideContextView() );
     //if ( !firstTime )
         // Bizarrely and ironically calling this causes crashes for
         // some people! FIXME
@@ -591,7 +592,7 @@ App::runUnitTests()
     DEBUG_BLOCK
     QStringList testArgumentList;
     QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + "/" );
-    testArgumentList << "amarok" << "-o" << logPath << "-xml";
+    testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v1";
 
     // create log folder for this run:
     QDir logDir( logPath );
