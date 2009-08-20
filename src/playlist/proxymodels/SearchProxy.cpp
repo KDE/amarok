@@ -52,6 +52,7 @@ SearchProxy::find( const QString & searchTerm, int searchFields )
         if( rowMatch( row, searchTerm, searchFields ) )
             return row;
     }
+    return -1;
 }
 
 int
