@@ -32,6 +32,7 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
 
     m_avatar->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
     m_avatar->resize( 50, 50 );
+    m_avatar->setFrameStyle( QFrame::StyledPanel );
     m_avatar->setPixmap( m_ocsPerson->avatar() );
 
     m_aboutText.append( "<br/>" + ( m_ocsPerson->city().isEmpty() ? "" : ( m_ocsPerson->city() + ", " ) ) + m_ocsPerson->country() );
