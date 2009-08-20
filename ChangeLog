@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Add inline editing of track metadata in the playlist. 
     * The Playlist supports different grouping modes.
     * The playlist can be partly or fully randomized (shuffled) by 
       selecting "random" as a sorting level. 
