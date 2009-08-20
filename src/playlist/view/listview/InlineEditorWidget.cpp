@@ -39,7 +39,7 @@ const qreal InlineEditorWidget::MARGINBODY = 1.0;
 const qreal InlineEditorWidget::PADDING = 1.0;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index, PlaylistLayout layout, int groupMode )
- : KHBox( parent )
+ : KVBox( parent )
  , m_index( index )
  , m_layout( layout )
  , m_groupMode( groupMode )
@@ -58,6 +58,8 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
     int s_fontHeight = bfm.height();
 
     int rowCount = 1;
+
+    m_headerHeight = 0;
 
     switch ( groupMode )
     {
@@ -83,6 +85,9 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
     setFixedHeight( height );
     setFixedWidth( parent->width() );
 
+    if( groupMode == Head )
+        m_headerHeight = ( height * layout.head().rows() ) / rowCount;
+
     //prevent editor closing when cliking a rating widget or pressing return in a line edit.
     
     setFocusPolicy( Qt::StrongFocus );
@@ -99,9 +104,16 @@ void InlineEditorWidget::createChildWidgets()
     DEBUG_BLOCK
 
     debug() << "width: " << width();
-    //for now, only handle body items
-    if( m_groupMode != Body )
-        return;
+
+    //if we are a head item, create a blank widget to make space for the head info
+
+    if ( m_headerHeight != 0 )
+    {
+        QWidget * headSpacer = new QWidget( this );
+        headSpacer->setFixedHeight( m_headerHeight );
+    }
+
+    KHBox * trackBox = new KHBox( this );
 
     LayoutItemConfig config = m_layout.body();
     int rowCount = config.rows();
@@ -116,7 +128,7 @@ void InlineEditorWidget::createChildWidgets()
     if ( config.showCover() )
     {
         //add a small "spacer" widget to offset the cover a little.
-        QWidget * coverSpacer = new QWidget( this );
+        QWidget * coverSpacer = new QWidget( trackBox );
         coverSpacer->setFixedWidth( MARGINH - MARGIN );
         
         QModelIndex coverIndex = m_index.model()->index( m_index.row(), CoverImage );
@@ -135,7 +147,7 @@ void InlineEditorWidget::createChildWidgets()
             QPainter painter( &albumPixmap );
             painter.drawPixmap( QRectF( 0, 0, 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
 
-            QLabel * coverLabel = new QLabel( this );
+            QLabel * coverLabel = new QLabel( trackBox );
             coverLabel->setPixmap( albumPixmap );
             coverLabel->setGeometry( QRect( 0, 0, height(), height() ) );
             coverLabel->setMaximumSize( height(), height() );
@@ -143,7 +155,7 @@ void InlineEditorWidget::createChildWidgets()
         }
     }
 
-    KVBox * rowsWidget = new KVBox( this );
+    KVBox * rowsWidget = new KVBox( trackBox );
     rowsWidget->setContentsMargins( 0, 0, 0, 0 );
     rowsWidget->setSpacing( 0 );
 
