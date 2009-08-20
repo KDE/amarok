@@ -21,6 +21,7 @@
 #include "Debug.h"
 #include "ServiceMetaBase.h"
 #include "ShoutcastMeta.h"
+#include "StatusBar.h"
 #include "collection/support/MemoryMatcher.h"
 
 #include <kio/job.h>
@@ -300,8 +301,13 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
         return;
     }
 
-    QDomDocument doc( "genres" );
+    if( m_storedTransferJob->data().contains( "<title>503" ) )
+    {
+        The::statusBar()->longMessage( i18n( "The Shoutcast server is busy.\nPlease try again later." ) );
+        return;
+    }
 
+    QDomDocument doc( "genres" );
     doc.setContent( m_storedTransferJob->data() );
 
     //debug() << "So far so good... Got this data: " << m_storedTransferJob->data();
@@ -364,10 +370,15 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
         return;
     }
 
+    if( m_storedTransferJob->data().contains( "<title>503" ) )
+    {
+        The::statusBar()->longMessage( i18n( "The Shoutcast server is busy.\n\Please try again later." ) );
+        return;
+    }
+
     m_currentTrackQueryResults.clear();
 
     QDomDocument doc( "list" );
-
     doc.setContent( m_storedTransferJob->data() );
 
     //Go through the XML file and add all the stations
