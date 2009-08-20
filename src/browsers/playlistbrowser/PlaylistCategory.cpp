@@ -72,8 +72,6 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_playlistView->setAcceptDrops( true );
     m_playlistView->setDropIndicatorShown( true );
 
-    m_playlistView->setEditTriggers( QAbstractItemView::NoEditTriggers );
-
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ),
              SLOT( newPalette( const QPalette & ) ) );
 

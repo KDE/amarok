@@ -264,14 +264,14 @@ PlaylistBrowserNS::UserModel::columnCount(const QModelIndex & /*parent*/) const
 Qt::ItemFlags
 PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
 {
-    if (!index.isValid())
-        return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
+    if( !index.isValid() )
+        return Qt::NoItemFlags;
 
     if( IS_TRACK(index) )
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
     //item is a playlist
-    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 }
 
 QVariant

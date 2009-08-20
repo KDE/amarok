@@ -51,6 +51,8 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QAbstractItemMode
     setSelectionBehavior( QAbstractItemView::SelectRows );
     setDragDropMode( QAbstractItemView::DragDrop );
     setAcceptDrops( true );
+    setAnimated( true );
+    setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
 
     The::paletteHandler()->updateItemView( this );
 
@@ -86,6 +88,8 @@ void PlaylistBrowserNS::UserPlaylistTreeView::mouseReleaseEvent( QMouseEvent * e
         m_pd->hide();
     }
     m_pd = 0;
+
+    QTreeView::mouseReleaseEvent( event );
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent * event )
@@ -148,24 +152,12 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 void
 PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
 {
-    Q_UNUSED( event )
-
     switch( event->key() )
     {
         case Qt::Key_Delete:
         {
-            QModelIndex selectedIdx = selectedIndexes().first();
-            m_model->removeRow( selectedIdx.row(), selectedIdx.parent() );
-            return;
-        }
-
-        case Qt::Key_F2:
-        {
-            //can only rename if one is selected
-            if( selectedIndexes().count() != 1 )
-                return;
-            event->accept();
-            edit( selectedIndexes().first() );
+            foreach( const QModelIndex &selectedIdx, selectedIndexes() )
+                m_model->removeRow( selectedIdx.row(), selectedIdx.parent() );
             return;
         }
      }
