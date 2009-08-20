@@ -23,7 +23,7 @@
 
 TestPLSPlaylist::TestPLSPlaylist( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PLSPlaylist.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PLSPlaylist.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

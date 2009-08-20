@@ -25,7 +25,7 @@
 
 TestPlaylistFileSupport::TestPlaylistFileSupport( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PlaylistFileSupport.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PlaylistFileSupport.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

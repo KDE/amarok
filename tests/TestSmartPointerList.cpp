@@ -25,7 +25,7 @@
 
 TestSmartPointerList::TestSmartPointerList( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SmartPointerList.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SmartPointerList.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

@@ -27,7 +27,7 @@ MetaCue::CueFileItem testItem4( "ti tle", "ar tist", "al bum", 1000, 1000 );
 
 TestMetaCueCueFileItem::TestMetaCueCueFileItem( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueCueFileItem.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueCueFileItem.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

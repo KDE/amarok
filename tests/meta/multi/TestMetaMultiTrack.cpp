@@ -25,7 +25,7 @@
 
 TestMetaMultiTrack::TestMetaMultiTrack( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaMultiTrack.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaMultiTrack.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

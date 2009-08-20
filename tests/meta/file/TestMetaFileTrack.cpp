@@ -23,7 +23,7 @@
 
 TestMetaFileTrack::TestMetaFileTrack( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaFileTrack.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaFileTrack.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

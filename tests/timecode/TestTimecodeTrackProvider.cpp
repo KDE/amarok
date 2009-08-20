@@ -23,7 +23,7 @@
 
 TestTimecodeTrackProvider::TestTimecodeTrackProvider( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "TimecodeTrackProvider.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "TimecodeTrackProvider.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

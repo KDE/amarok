@@ -22,7 +22,7 @@
 
 TestCaseConverter::TestCaseConverter( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "CaseConverter.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "CaseConverter.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

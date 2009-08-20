@@ -23,7 +23,7 @@
 
 TestXSPFPlaylist::TestXSPFPlaylist( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "XSPFPlaylist.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "XSPFPlaylist.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

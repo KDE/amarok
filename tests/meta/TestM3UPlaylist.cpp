@@ -23,7 +23,7 @@
 
 TestM3UPlaylist::TestM3UPlaylist( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "M3UPlaylist.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "M3UPlaylist.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

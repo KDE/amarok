@@ -21,7 +21,7 @@
 
 TestQStringx::TestQStringx( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "QStringx.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "QStringx.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

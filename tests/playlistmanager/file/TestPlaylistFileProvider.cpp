@@ -25,7 +25,7 @@
 
 TestPlaylistFileProvider::TestPlaylistFileProvider( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PlaylistFileProvider.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PlaylistFileProvider.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

@@ -24,7 +24,7 @@
 
 TestMetaCueTrack::TestMetaCueTrack( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueTrack.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueTrack.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

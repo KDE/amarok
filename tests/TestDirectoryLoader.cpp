@@ -29,7 +29,7 @@
 
 TestDirectoryLoader::TestDirectoryLoader( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "DirectoryLoader.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "DirectoryLoader.xml" );
     m_testArgumentList = testArgumentList;
     m_finishedLoaders = 0;
 

@@ -25,7 +25,7 @@
 
 TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SqlUserPlaylistProvider.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SqlUserPlaylistProvider.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

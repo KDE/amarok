@@ -27,7 +27,7 @@
 
 TestAmarok::TestAmarok( QStringList testArgumentList )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Amarok.log" );
+    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Amarok.xml" );
     QTest::qExec( this, testArgumentList );
 }
 
