@@ -1437,6 +1437,9 @@ int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, const char *path
 
     /* get the file size of the local file */
     hd = open(path, O_RDONLY);
+    if (hd == -1)
+        return -1;
+
     fstat(hd, &file_info);
     close(hd);
     /* get a FILE * of the same file*/
