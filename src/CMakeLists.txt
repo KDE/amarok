@@ -637,6 +637,7 @@ set( amaroklib_DEPENDS "amarokpud" )
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
+    aboutdialog/OcsAuthorItem.ui
     dialogs/EditCoverSearchDialog.ui
     dialogs/EditFilterDialog.ui
     dialogs/ScriptManagerBase.ui

@@ -49,22 +49,17 @@ int main( int argc, char *argv[] )
             ki18n(( "Developer (nhnFreespirit)" )), "nhnfreespirit@gmail.com" );
     aboutData.addAuthor( ki18n("Seb 'Surfin' down under' Ruiz"),
             ki18n(( "Developer (sebr)" )), "ruiz@kde.org", "http://www.sebruiz.net" );
-///////////////////// TESTING
-////////////////// FAKE NAME, REMOVE WHEN DONE
-    aboutData.addAuthor( ki18n("Foo Bar"),ki18n("Developer (foo)"),"foo@kde.org","foo.com" );
-    ocsData.insert( "Stecchino", aboutData.authors().at( 0 ) );
-    ocsData.insert( QString(), aboutData.authors().at( 1 ) );
-    ocsData.insert( "eean", aboutData.authors().at( 2 ) );
-    ocsData.insert( QString(), aboutData.authors().at( 3 ) );
-    ocsData.insert( QString(), aboutData.authors().at( 4 ) );
-    ocsData.insert( "nightrose", aboutData.authors().at( 5 ) );
-    ocsData.insert( QString(), aboutData.authors().at( 6 ) );
-    ocsData.insert( QString(), aboutData.authors().at( 7 ) );
-    ocsData.insert( "nhnFreespirit", aboutData.authors().at( 8 ) );
-    ocsData.insert( QString(), aboutData.authors().at( 9 ) );
 
-    ocsData.insert( "teom", aboutData.authors().at( 10 ) );
-/////////////////////////////////////
+    ocsData.append( QPair< QString, KAboutPerson >("Stecchino", aboutData.authors().at( 0 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 1 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >("eean", aboutData.authors().at( 2 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 3 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 4 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >("nightrose", aboutData.authors().at( 5 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 6 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 7 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >("nhnFreespirit", aboutData.authors().at( 8 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 9 ) ) );
 
     aboutData.addCredit( ki18n("Alejandro Wainzinger"), ki18n(( "Media device support" )), "aikawarazuni@gmail.com" );
     aboutData.addCredit( ki18n("Alex Merry"), ki18n(( "Developer, Replay gain support" )), "kde@randomguy3.me.uk" );

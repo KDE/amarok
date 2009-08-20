@@ -291,7 +291,7 @@ ExtendedAboutDialog::setupOfflineAuthorWidget()
 
         const QList<KAboutPerson> lst = aboutData->authors();
         for (int i = 0; i < lst.size(); ++i) {
-            authorPageText += QString("<p style=\"margin: 0px;\"><font size=\"4\"><b>%1</b></font></p>").arg(lst.at(i).name());
+            authorPageText += QString("<p style=\"margin: 0px;\"><b>%1</b></p>").arg(lst.at(i).name());
             if (!lst.at(i).emailAddress().isEmpty())
                 authorPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"mailto:%1\">%1</a></p>").arg(lst.at(i).emailAddress());
             if (!lst.at(i).webAddress().isEmpty())
@@ -321,7 +321,6 @@ ExtendedAboutDialog::setupOfflineAuthorWidget()
 void
 ExtendedAboutDialog::setupOcsAuthorWidget()
 {
-    const KAboutData *aboutData = d->aboutData;
     m_showOcsButton->setIcon( KIcon( "timeadjust" ) );
     m_showOcsButton->setEnabled( false );
 
@@ -332,29 +331,32 @@ ExtendedAboutDialog::setupOcsAuthorWidget()
     scrollLayout->addWidget( authorScrollArea );
     authorScrollArea->setFrameStyle( QFrame::NoFrame );
     QWidget *authorArea = new QWidget( authorScrollArea );
-    authorScrollArea->setWidget( authorArea );
     QVBoxLayout *areaLayout = new QVBoxLayout( authorArea );
     areaLayout->setMargin( 0 );
     authorArea->setLayout( areaLayout );
+    authorArea->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
     Attica::PersonJob *personJob;
-    for( QMap< QString, KAboutPerson >::const_iterator author = m_ocsData.constBegin();
+    for( QList< QPair< QString, KAboutPerson > >::const_iterator author = m_ocsData.constBegin();
             author != m_ocsData.constEnd(); ++author )
     {
-        QString userName = author.key();
+        QString userName = (*author).first;
         if( !userName.isEmpty() )
         {
             personJob = Attica::OcsApi::requestPerson( userName );
             personJob->exec();
-            OcsAuthorItem *item = new OcsAuthorItem( personJob->person(), authorArea );
+            OcsAuthorItem *item = new OcsAuthorItem( (*author).second, personJob->person(), authorArea );
             areaLayout->addWidget( item );
         }
         else
         {
-            OcsAuthorItem *item = new OcsAuthorItem( author.value(), authorArea );
+            OcsAuthorItem *item = new OcsAuthorItem( (*author).second, authorArea );
             areaLayout->addWidget( item );
         }
     }
+    authorScrollArea->setWidgetResizable( true );
+    authorScrollArea->setWidget( authorArea );
+    authorArea->show();
 
     m_showOcsButton->setIcon( KIcon( "get-hot-new-stuff" ) );
     m_offlineAuthorWidget->hide();

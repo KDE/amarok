@@ -16,39 +16,48 @@
 
 #include "OcsAuthorItem.h"
 
+#include "Debug.h"
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-OcsAuthorItem::OcsAuthorItem( const KAboutPerson *person, const Attica::Person *ocsPerson, QWidget *parent )
+OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &ocsPerson, QWidget *parent )
     : QWidget( parent )
-    , m_person( person )
-    , m_ocsPerson( ocsPerson )
 {
+    m_person = &person;
+    m_ocsPerson = &ocsPerson;
+
+    setupUi( this );
     init();
 
+    avatar->setPixmap( m_ocsPerson->avatar() );
+    location->setText( m_ocsPerson->city() + ", " + m_ocsPerson->country() );
+    ircChannels->setText( m_ocsPerson->extendedAttribute( "ircchannels" ) );
+    profile->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    profile->setOpenExternalLinks( true );
+    profile->setText( QString( i18n( "<a href=\"%1\">Visit profile</a>", m_ocsPerson->extendedAttribute( "profilepage" ) ) ) );
 }
 
-OcsAuthorItem::OcsAuthorItem( const KAboutPerson *person, QWidget *parent )
+OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, QWidget *parent )
     : QWidget( parent )
-    , m_person( person )
 {
+    m_person = &person;
+
+    setupUi( this );
     init();
+
+    location->hide();
+    ircChannels->hide();
+    profile->hide();
 }
 
 void
 OcsAuthorItem::init()
 {
-
-
-    m_name = new QLabel( this );
-    m_role = new QLabel( this );
-    m_email = new QLabel( this );
-    m_homepage = new QLabel( this );
-    m_avatar = new QLabel( this );
-    m_location = new QLabel( this );
-    m_ircChannels = new QLabel( this );
-    m_profile = new QLabel( this );
-
+    name->setText( "<b>" + m_person->name() + "</b>" );
+    task->setText( m_person->task() );
+    email->setText( m_person->emailAddress() );
+    homepage->setText( m_person->webAddress() );
 
 }
 

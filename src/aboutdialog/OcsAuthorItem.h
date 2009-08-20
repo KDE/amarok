@@ -17,33 +17,27 @@
 #ifndef AMAROK_OCSAUTHORITEM_H
 #define AMAROK_OCSAUTHORITEM_H
 
+#include "ui_OcsAuthorItem.h"
+
 #include "libattica-ocsclient/ocsapi.h"
 
 #include <KAboutPerson>
 
 #include <QLabel>
 
-class OcsAuthorItem : public QWidget
+class OcsAuthorItem : public QWidget, private Ui::OcsAuthorItem
 {
     Q_OBJECT
 public:
-    OcsAuthorItem( const KAboutPerson *person, const Attica::Person *ocsPerson, QWidget *parent = 0 );
-    OcsAuthorItem( const KAboutPerson *person, QWidget *parent = 0 );
+    OcsAuthorItem( const KAboutPerson &person, const Attica::Person &ocsPerson, QWidget *parent = 0 );
+    OcsAuthorItem( const KAboutPerson &person, QWidget *parent = 0 );
     virtual ~OcsAuthorItem();
 
 private:
     void init();
-    KAboutPerson *m_person;
-    Attica::Person *m_ocsPerson;
-    QLabel m_name;  //! Name 'Attribute' Surname (Nick)
-    QLabel m_role;
-    QLabel m_email;
-    QLabel m_homepage;
-    QLabel m_avatar;
-    QLabel m_location; //! City, Country
-    QLabel m_ircChannels;
-    QLabel m_profile;
-    /*
+    const KAboutPerson *m_person;
+    const Attica::Person *m_ocsPerson;
+/*
    <firstname>Frank</firstname>
    <lastname>Test</lastname>
    <communityrole>developer</communityrole>

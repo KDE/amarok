@@ -33,7 +33,7 @@ namespace Amarok {
     class TrayIcon;
 }
 
-typedef QMap< QString, KAboutPerson > OcsData;
+typedef QList< QPair< QString, KAboutPerson > > OcsData;
 
 namespace KIO { class Job; }
 
