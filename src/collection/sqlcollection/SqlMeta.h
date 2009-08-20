@@ -21,6 +21,7 @@
 #include "Meta.h"
 
 #include <QByteArray>
+#include <QDateTime>
 #include <QHash>
 #include <QMap>
 #include <QMutex>
@@ -101,6 +102,7 @@ class SqlTrack : public Meta::Track
         virtual int filesize() const { return m_filesize; }
         virtual int sampleRate() const { return m_sampleRate; }
         virtual int bitrate() const { return m_bitrate; }
+        virtual QDateTime createDate() const { return m_createDate; }
 
         virtual int trackNumber() const { return m_trackNumber; }
         virtual void setTrackNumber( int newTrackNumber );
@@ -188,6 +190,7 @@ class SqlTrack : public Meta::Track
         qreal m_albumPeakGain;
         qreal m_trackGain;
         qreal m_trackPeakGain;
+        QDateTime m_createDate;
 
         Meta::AlbumPtr m_album;
         Meta::ArtistPtr m_artist;

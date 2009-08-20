@@ -227,7 +227,7 @@ SqlTrack::getTrackReturnValues()
            "tracks.filesize, tracks.samplerate, "
            "statistics.createdate, statistics.accessdate, "
            "statistics.playcount, tracks.filetype, tracks.bpm, "
-           "tracks.albumgain, tracks.albumpeakgain, "
+           "tracks.createdate, tracks.albumgain, tracks.albumpeakgain, "
            "tracks.trackgain, tracks.trackpeakgain, "
            "artists.name, artists.id, "
            "albums.name, albums.id, albums.artist, "
@@ -321,6 +321,7 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
     m_playCount = (*(iter++)).toInt();
     ++iter; //file type
     ++iter; //BPM
+    m_createDate = QDateTime::fromTime_t( (*(iter++)).toUInt() );
 
     // if there is no track gain, we assume a gain of 0
     // if there is no album gain, we use the track gain
