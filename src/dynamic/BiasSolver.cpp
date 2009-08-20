@@ -777,6 +777,7 @@ Dynamic::BiasSolver::computeDomain()
                 {
                     debug() << "infeasible bias detected"; // ugly but we're using the higher cast as they don't share a root parent
                     b->setActive(false);
+                    delete fc;
                 }
                 else
                 {
