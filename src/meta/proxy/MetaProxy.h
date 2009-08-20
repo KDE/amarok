@@ -81,6 +81,7 @@ namespace MetaProxy
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
+            virtual QDateTime createDate() const;
 
             virtual uint firstPlayed() const;
             virtual uint lastPlayed() const;

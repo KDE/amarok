@@ -22,6 +22,7 @@
 
 #include "CollectionManager.h"
 
+#include <QDateTime>
 #include <QObject>
 #include <QPointer>
 #include <QTimer>
@@ -344,6 +345,14 @@ MetaProxy::Track::bitrate() const
     if( d->realTrack )
         return d->realTrack->bitrate();
     return 0;
+}
+
+QDateTime
+MetaProxy::Track::createDate() const
+{
+    if( d->realTrack )
+        return d->realTrack->createDate();
+    return QDateTime();
 }
 
 uint
