@@ -303,7 +303,7 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 
     if( m_storedTransferJob->data().contains( "<title>503" ) )
     {
-        The::statusBar()->longMessage( i18n( "The Shoutcast server is busy.\nPlease try again later." ) );
+        The::statusBar()->longMessage( i18n( "The Shoutcast server is busy.<BR>Please try again later." ) );
         return;
     }
 
@@ -372,7 +372,7 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
 
     if( m_storedTransferJob->data().contains( "<title>503" ) )
     {
-        The::statusBar()->longMessage( i18n( "The Shoutcast server is busy.\n\Please try again later." ) );
+        The::statusBar()->longMessage( i18n( "The Shoutcast server is busy.<BR>Please try again later." ) );
         return;
     }
 
