@@ -22,6 +22,7 @@
 #include "ExtendedAboutDialog.h"
 
 #include "Amarok.h"
+#include "AnimatedWidget.h"
 #include "Debug.h"
 #include "libattica-ocsclient/ocsapi.h"
 #include "libattica-ocsclient/personjob.h"
@@ -311,9 +312,10 @@ ExtendedAboutDialog::setupOfflineAuthorWidget()
         m_showOcsButton = new QPushButton( KIcon( "get-hot-new-stuff" ),
                                  i18n( "Connect to openDesktop.org to learn more about the team" ),
                                  m_offlineAuthorWidget );
+        m_showOcsButton->setStyleSheet( "background: " + App::instance()->palette().toolTipBase().color().name() );
         connect( m_showOcsButton, SIGNAL( clicked() ), this, SLOT( setupOcsAuthorWidget() ) );
-        offlineAuthorWidgetLayout->addWidget( authorTextBrowser );
         offlineAuthorWidgetLayout->addWidget( m_showOcsButton );
+        offlineAuthorWidgetLayout->addWidget( authorTextBrowser );
         m_offlineAuthorWidget->setLayout( offlineAuthorWidgetLayout );
     }
 }
@@ -321,7 +323,23 @@ ExtendedAboutDialog::setupOfflineAuthorWidget()
 void
 ExtendedAboutDialog::setupOcsAuthorWidget()
 {
-    m_showOcsButton->setIcon( KIcon( "timeadjust" ) );
+    m_offlineAuthorWidget->hide();
+//TODO: add a spinner when I implement asynchronious download
+/*
+    QWidget *animatedBack = new QWidget( m_authorWidget );
+    m_authorWidget->layout()->addWidget( animatedBack );
+    AnimatedWidget *animatedWidget = new AnimatedWidget( "process-working", animatedBack );
+    QVBoxLayout *animatedLayout = new QVBoxLayout( animatedBack );
+    animatedBack->setLayout( animatedLayout );
+
+    animatedLayout->addSpacerItem( new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding) );
+    animatedLayout->addWidget( animatedWidget );
+
+    animatedLayout->addSpacerItem( new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding) );
+    animatedWidget->start();
+*/
+
+    //TODO: Ask Solid if the network is available.
     m_showOcsButton->setEnabled( false );
 
     QHBoxLayout *scrollLayout = new QHBoxLayout( m_ocsAuthorWidget );
@@ -344,7 +362,7 @@ ExtendedAboutDialog::setupOcsAuthorWidget()
         if( !userName.isEmpty() )
         {
             personJob = Attica::OcsApi::requestPerson( userName );
-            personJob->exec();
+            personJob->exec();  //TODO: Make asynchronious
             OcsAuthorItem *item = new OcsAuthorItem( (*author).second, personJob->person(), authorArea );
             areaLayout->addWidget( item );
         }
@@ -358,8 +376,7 @@ ExtendedAboutDialog::setupOcsAuthorWidget()
     authorScrollArea->setWidget( authorArea );
     authorArea->show();
 
-    m_showOcsButton->setIcon( KIcon( "get-hot-new-stuff" ) );
-    m_offlineAuthorWidget->hide();
+//    delete animatedBack;
     m_ocsAuthorWidget->show();
 
 }

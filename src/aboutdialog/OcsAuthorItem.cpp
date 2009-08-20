@@ -37,8 +37,13 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
     m_aboutText.append( "<br/>" + ( m_ocsPerson->city().isEmpty() ? "" : ( m_ocsPerson->city() + ", " ) ) + m_ocsPerson->country() );
     if( !m_ocsPerson->extendedAttribute( "ircchannels" ).isEmpty() )
     {
-        QString channelsWithLinks = m_ocsPerson->extendedAttribute( "irclink" );
-        debug()<< "Irc links are" << channelsWithLinks;
+        QString channelsString = m_ocsPerson->extendedAttribute( "ircchannels" );
+        //FIXME: Learn regexps, extract channel names and feed them into links.
+        //QRegExp channelRegExp = QRegExp( "(#\\S*)([,\\s]+$)", Qt::CaseInsensitive );
+        //channelRegExp.indexIn( channelsString );
+        //QStringList channels = channelRegExp.capturedTexts();
+        //debug()<< "Irc channels are" << channels;
+        //  irc://irc.freenode.org/
         m_aboutText.append( "<br/>" + m_ocsPerson->extendedAttribute( "ircchannels" ) );
     }
     m_aboutText.append( QString( "<br/>" + i18n( "<a href=\"%1\">Visit profile</a>", m_ocsPerson->extendedAttribute( "profilepage" ) ) ) );
