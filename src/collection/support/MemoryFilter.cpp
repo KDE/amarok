@@ -16,6 +16,7 @@
 
 #include "MemoryFilter.h"
 
+#include <QDateTime>
 
 namespace FilterFactory
 {
@@ -94,6 +95,9 @@ namespace FilterFactory
                 break;
             case Meta::valBitrate:
                 result = new BitrateFilter();
+                break;
+            case Meta::valCreateDate:
+                result = new CreateDateFilter();
                 break;
         }
         Q_ASSERT_X( result, "FilterFactory::numberFilter", "called numberFilter with an illegal value, value was " + value );
@@ -544,5 +548,19 @@ BitrateFilter::value( const Meta::TrackPtr &track ) const
     return track->bitrate();
 }
 
+CreateDateFilter::CreateDateFilter()
+    : NumberMemoryFilter()
+{
+}
+
+CreateDateFilter::~CreateDateFilter()
+{
+}
+
+qint64
+CreateDateFilter::value( const Meta::TrackPtr &track ) const
+{
+    return track->createDate().toTime_t();
+}
 
 

@@ -276,4 +276,13 @@ class AMAROK_EXPORT BitrateFilter : public NumberMemoryFilter
         virtual qint64 value( const Meta::TrackPtr &track ) const;
 };
 
+class AMAROK_EXPORT CreateDateFilter : public NumberMemoryFilter
+{
+    public:
+        CreateDateFilter();
+        virtual ~CreateDateFilter();
+    protected:
+        virtual qint64 value( const Meta::TrackPtr &track ) const;
+};
+
 #endif
