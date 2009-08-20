@@ -2,6 +2,7 @@
  * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2004 Stefan Bogner <bochi@online.ms>                                   *
  * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
+ * Copyright (c) 2009 Martin Sandsmark <sandsmark@samfundet.no>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -71,8 +72,6 @@ public:
     /// Main Fetch loop
     AMAROK_EXPORT void manualFetch( Meta::AlbumPtr album );
 
-    QString amazonURL() const { return m_amazonURL; }
-    QString asin() const { return m_asin; }
     QPixmap image() const { return m_pixmap; }
 
     AMAROK_EXPORT void queueAlbum( Meta::AlbumPtr album );
@@ -81,14 +80,9 @@ public:
     bool wasError() const { return !m_success; }
     QStringList errors() const { return m_errors; }
 
-    enum Locale { International = 0, Canada, France, Germany, Japan, UK };
-    static QString localeIDToString( int id );
-    static int localeStringToID( const QString &locale );
-
 private slots:
     void finishedXmlFetch( KJob * job );
     void finishedImageFetch( KJob * job );
-    void changeLocale( int id );
 
 private:
     static CoverFetcher* s_instance;
@@ -106,15 +100,10 @@ private:
     QString m_userQuery; /// the query from the query edit dialog
     QString m_xml;
     QPixmap  m_pixmap;
-    QString m_amazonURL;
     QString m_asin;
     int     m_size;
 
     QStringList m_queries;
-    QStringList m_coverAsins;
-    QStringList m_coverAmazonUrls;
-    QStringList m_coverUrls;
-    QStringList m_coverNames;
     QString     m_currentCoverName;
     QStringList m_errors;
 
@@ -122,8 +111,6 @@ private:
     bool m_isFetching;
 
 private:
-    void buildQueries( Meta::AlbumPtr album );
-
     /// Fetch a cover
     void startFetch( Meta::AlbumPtr album );
 
@@ -132,12 +119,6 @@ private:
 
     /// The fetch failed, finish up and log an error message
     void finishWithError( const QString &message, KJob *job = 0 );
-
-    /// Prompt the user for a query
-    void getUserQuery( QString explanation = QString() );
-
-    /// Will try all available queries, and then prompt the user, if allowed
-    void attemptAnotherFetch();
 
     /// Show the cover that has been found
     void showCover();
