@@ -70,28 +70,6 @@ PlaylistBrowserNS::UserPlaylistTreeView::~UserPlaylistTreeView()
 {
 }
 
-void PlaylistBrowserNS::UserPlaylistTreeView::mousePressEvent( QMouseEvent * event )
-{
-    if( event->button() == Qt::LeftButton )
-        m_dragStartPosition = event->pos();
-
-    QTreeView::mousePressEvent( event );
-}
-
-void PlaylistBrowserNS::UserPlaylistTreeView::mouseReleaseEvent( QMouseEvent * event )
-{
-    Q_UNUSED( event )
-
-    if( m_pd )
-    {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
-        m_pd->hide();
-    }
-    m_pd = 0;
-
-    QTreeView::mouseReleaseEvent( event );
-}
-
 void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent * event )
 {
     QModelIndex index = indexAt( event->pos() );
@@ -130,7 +108,8 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
             return;
         QList<QAction*> actions = mpm->actionsFor( indices );
 
-        foreach( QAction * action, actions ) {
+        foreach( QAction * action, actions )
+        {
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
 
