@@ -50,9 +50,6 @@ public:
     ~PlaylistCategory();
 
 private slots:
-
-//     void showAddStreamDialog();
-//     void streamDialogConfirmed();
     void newPalette( const QPalette & palette );
 
 private:
