@@ -94,6 +94,8 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Fixed some album art in a folder not getting picked up if a subfolder
+      contained any files. (BR 167158)
     * Fixed broken selection in the "Saved Playlists" category.
     * Fixed wrong Random Album mode behavior when playlists contains only
       one album. (BR 194066)
