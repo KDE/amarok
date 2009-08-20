@@ -133,22 +133,32 @@ ProxyBase::filterUpdated()
 int
 ProxyBase::find( const QString &searchTerm, int searchFields )
 {
-    return rowFromSource( ( dynamic_cast< ProxyBase * >( m_belowModel ) )->find( searchTerm, searchFields ) );
+    ProxyBase *proxyBase = dynamic_cast< ProxyBase * >( m_belowModel );
+    if ( !proxyBase )
+        return -1;
+
+    return rowFromSource( proxyBase->find( searchTerm, searchFields ) );
 }
 
 int
 ProxyBase::findNext( const QString &searchTerm, int selectedRow, int searchFields )
 {
+    ProxyBase *proxyBase = dynamic_cast< ProxyBase * >( m_belowModel );
+    if ( !proxyBase )
+        return -1;
     //FIXME: selectedRow might need to be adjusted through rowToSource now that SortProxy
     //       changes the order of rows.     -- Téo 28/6/2009
-    return rowFromSource( ( dynamic_cast< ProxyBase * >( m_belowModel ) )->findNext( searchTerm, selectedRow, searchFields ) );
+    return rowFromSource( proxyBase->findNext( searchTerm, selectedRow, searchFields ) );
 }
 
 int
 ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchFields )
 {
+    ProxyBase *proxyBase = dynamic_cast< ProxyBase * >( m_belowModel );
+    if ( !proxyBase )
+        return -1;
     //FIXME: see findNext().
-    return rowFromSource( ( dynamic_cast< ProxyBase * >( m_belowModel ) )->findPrevious( searchTerm, selectedRow, searchFields ) );
+    return rowFromSource( proxyBase->findPrevious( searchTerm, selectedRow, searchFields ) );
 }
 
 Qt::ItemFlags
@@ -243,7 +253,11 @@ ProxyBase::setRowDequeued( int row )
 void
 ProxyBase::showOnlyMatches( bool onlyMatches )
 {
-    ( dynamic_cast< ProxyBase * >( m_belowModel) )->showOnlyMatches( onlyMatches );
+    ProxyBase *proxyBase = dynamic_cast< ProxyBase * >( m_belowModel );
+    if ( !proxyBase )
+        return ;
+
+    proxyBase->showOnlyMatches( onlyMatches );
 }
 
 Item::State
@@ -296,7 +310,11 @@ ProxyBase::tracks() const
 bool
 ProxyBase::rowMatch( int row, const QString &searchTerm, int searchFields ) const
 {
-    QModelIndex index = ( dynamic_cast< QAbstractItemModel * >( m_belowModel ) )->index( row, 0 );
+    QAbstractItemModel *abstractItemModel = dynamic_cast< QAbstractItemModel * >( m_belowModel );
+    if ( !abstractItemModel )
+        return false;
+
+    QModelIndex index = abstractItemModel->index( row, 0 );
     Meta::TrackPtr track = m_belowModel->data( index, TrackRole ).value< Meta::TrackPtr >();
     if ( searchFields & MatchTrack &&
         track->prettyName().contains( searchTerm, Qt::CaseInsensitive )

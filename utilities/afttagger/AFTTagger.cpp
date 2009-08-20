@@ -334,12 +334,15 @@ AFTTagger::handleOgg( TagLib::Ogg::File *file )
     }
     
     TagLib::Ogg::XiphComment *comment = 0;
-    if( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )
-        comment = ( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )->tag();
-    else if( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )
-        comment = ( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )->tag();
-    else if( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )
-        comment = ( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )->tag();
+    TagLib::Ogg::FLAC::File* flacFile;
+    TagLib::Ogg::Speex::File* speexFile;
+    TagLib::Ogg::Vorbis::File* vorbisFile;
+    if( ( flacFile = dynamic_cast<TagLib::Ogg::FLAC::File*>( file ) ) )
+        comment = flacFile->tag();
+    else if( ( speexFile = dynamic_cast<TagLib::Ogg::Speex::File*>( file ) ) )
+        comment = speexFile->tag();
+    else if( ( vorbisFile = dynamic_cast<TagLib::Ogg::Vorbis::File*>( file ) ) )
+        comment = vorbisFile->tag();
 
     if( !comment )
         return false;
