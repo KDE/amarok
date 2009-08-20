@@ -252,11 +252,11 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
                 if ( row > -1 )
                 {
                     QList<Token*> tokens = editWidget->drags( row );
-                    foreach ( Token *t, tokens )
+                    foreach ( Token *token, tokens )
                     {
-                        if ( t == m_token )
+                        if ( token == m_token )
                             continue;
-                        if ( TokenWithLayout *twl = qobject_cast<TokenWithLayout*>( t ) )
+                        if ( TokenWithLayout *twl = qobject_cast<TokenWithLayout*>( token ) )
                             spareWidth -= twl->width() * 100.0;
                     }
                 }
