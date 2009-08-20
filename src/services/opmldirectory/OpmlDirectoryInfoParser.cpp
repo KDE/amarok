@@ -82,7 +82,11 @@ void OpmlDirectoryInfoParser::rssDownloadComplete(KJob * downLoadJob)
     debug() << "rss: " << rssString;
 
     QDomDocument doc( "reply" );
-    doc.setContent( rssString );
+    if ( !doc.setContent( rssString ) )
+    {
+        debug() << "could not set reply document to given RSS string";
+        return;
+    }
 
     //there might be an rss node, there might not...
 
