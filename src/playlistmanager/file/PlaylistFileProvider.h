@@ -59,6 +59,9 @@ class PlaylistFileProvider : public UserPlaylistProvider
         virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );
         virtual void deletePlaylists( Meta::PlaylistList playlistList );
 
+    signals:
+            virtual void updated();
+
     private:
         KConfigGroup loadedPlaylistsConfig();
 

@@ -45,9 +45,9 @@ PlaylistFileProvider::PlaylistFileProvider()
     //ConfigEntry: name, file
     foreach( const QString &key, keys )
     {
-        QStringList configEntry = loadedPlaylistsConfig().readXdgListEntry( key );
-        KUrl url( configEntry[0] );
-        Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( url.path() );
+        KUrl url( key );
+        QString groups = loadedPlaylistsConfig().readEntry( key );
+        Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( url );
         if( playlist.isNull() )
         {
             The::statusBar()->longMessage(
@@ -57,11 +57,9 @@ PlaylistFileProvider::PlaylistFileProvider()
             continue;
         }
 
-        if( playlist->isWritable() )
-        {
-            if( configEntry.length() >= 2 )
-                playlist->setGroups( configEntry[1].split( ",",  QString::SkipEmptyParts ) );
-        }
+        if( !groups.isEmpty() && playlist->isWritable() )
+            playlist->setGroups( groups.split( ",",  QString::SkipEmptyParts ) );
+
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
 }
@@ -71,18 +69,14 @@ PlaylistFileProvider::~PlaylistFileProvider()
     DEBUG_BLOCK
     //Write loaded playlists to config file
     debug() << m_playlists.size()  << " Playlists loaded";
-    int i = 0;
     foreach( Meta::PlaylistPtr playlist, m_playlists )
     {
-        QStringList configEntry;
         KUrl url = playlist->retrievableUrl();
+        if( loadedPlaylistsConfig().keyList().contains( url.url() ) )
+            continue;
         debug() << "storing: " << url.url();
 
-        configEntry << url.url();
-        configEntry << playlist->groups();
-
-        loadedPlaylistsConfig().writeXdgListEntry(
-                        QString("Playlist %1").arg( ++i ), configEntry );
+        loadedPlaylistsConfig().writeEntry( url.url(), playlist->groups() );
     }
     loadedPlaylistsConfig().sync();
 }
@@ -203,8 +197,12 @@ PlaylistFileProvider::deletePlaylists( Meta::PlaylistList playlistList )
             error() << "Could not cast to playlistFilePtr at " << __FILE__ << ":" << __LINE__;
             continue;
         }
+        m_playlists.removeAll( playlist );
+        loadedPlaylistsConfig().deleteEntry( playlistFile->retrievableUrl().url() );
         QFile::remove( playlistFile->retrievableUrl().path() );
     }
+    loadedPlaylistsConfig().sync();
+    emit updated();
 }
 
 KConfigGroup
