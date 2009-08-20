@@ -181,8 +181,12 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
                 {
                     PlaylistProvider *provider =
                             The::playlistManager()->getProviderForPlaylist( playlist );
-                    name = provider->prettyName();
-                    icon = provider->icon();
+                    //if provider is 0 there is something seriously wrong.
+                    if( provider )
+                    {
+                        name = provider->prettyName();
+                        icon = provider->icon();
+                    }
                 }
                 break;
             default: return QVariant();
