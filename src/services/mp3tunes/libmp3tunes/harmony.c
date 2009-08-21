@@ -727,10 +727,13 @@ void mp3tunes_harmony_set_email(MP3tunesHarmony *harmony, char *email) {
 void mp3tunes_harmony_set_device_attribute(MP3tunesHarmony *harmony, const char *attribute, ...) {
     va_list argp;
     mp3tunes_harmony_device_attribute_t* da;
-    da = (mp3tunes_harmony_device_attribute_t*)malloc(sizeof(mp3tunes_harmony_device_attribute_t));
 
     GList *current = NULL;
     mp3tunes_harmony_device_attribute_t *current_da;
+
+    da = (mp3tunes_harmony_device_attribute_t*)malloc(sizeof(mp3tunes_harmony_device_attribute_t));
+    if (da == NULL)
+        return;
 
     va_start(argp, attribute);
 
@@ -748,6 +751,7 @@ void mp3tunes_harmony_set_device_attribute(MP3tunesHarmony *harmony, const char 
         da->attribute_value_type = MP3TUNES_HARMONY_DEVICE_ATTRIBUTE_TYPE_INT;
     } else {
         va_end(argp);
+        free(da);
         return;
     }
 

@@ -62,6 +62,7 @@ char* md5_calc_file_signature(const char *filename)
   if (err) {
     fprintf(stderr, "MD5 context creation failure: %s/%s",
       gcry_strsource (err), gcry_strerror (err));
+    fclose(stream);
     return NULL;
   }
 #else
@@ -88,6 +89,7 @@ char* md5_calc_file_signature(const char *filename)
   sig = gcry_md_read(md5, GCRY_MD_MD5);
   if (!sig) {
     fprintf(stderr, "Unable to calculate MD5 signature for %s", filename);
+    fclose(stream);
     return NULL;
   }
 #else
