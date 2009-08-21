@@ -51,6 +51,7 @@ BreadcrumbItemButton::BreadcrumbItemButton( const QIcon &icon, const QString &te
 void BreadcrumbItemButton::init()
 {
     setFocusPolicy( Qt::NoFocus );
+    setDisplayHintEnabled( HoverHint, false );
 }
 
 BreadcrumbItemButton::~BreadcrumbItemButton()
@@ -60,7 +61,7 @@ BreadcrumbItemButton::~BreadcrumbItemButton()
 void BreadcrumbItemButton::setActive( const bool active )
 {
     setDisplayHintEnabled( ActiveHint, active );
-    
+
     QFont f = font();
     f.setBold( active );
     setFont( f );
@@ -72,7 +73,7 @@ void BreadcrumbItemButton::setDisplayHintEnabled( DisplayHint hint, bool enable 
         m_displayHint = m_displayHint | hint;
     else
         m_displayHint = m_displayHint & ~hint;
-    
+
     update();
 }
 
@@ -177,7 +178,7 @@ void BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
     drawHoverBackground(&painter);
 
     const QColor fgColor = foregroundColor();
-    
+
     QStyleOption option;
     option.initFrom(this);
     option.rect = QRect(0, 0, width(), height());
@@ -185,7 +186,7 @@ void BreadcrumbItemMenuButton::paintEvent( QPaintEvent* event )
     option.palette.setColor(QPalette::Text, fgColor);
     option.palette.setColor(QPalette::WindowText, fgColor);
     option.palette.setColor(QPalette::ButtonText, fgColor);
-    
+
     if (layoutDirection() == Qt::LeftToRight) {
         style()->drawPrimitive(QStyle::PE_IndicatorArrowRight, &option, &painter, this);
     } else {
@@ -241,7 +242,7 @@ void BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
     debug() << "showing menu at " << pos;
     menu->exec( pos );
     delete menu;
-   
+
 }
 
 void BreadcrumbUrlMenuButton::showMenu()
