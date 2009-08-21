@@ -46,7 +46,6 @@
 #include <mp4filetyperesolver.h>
 #endif
 
-#include <QtDebug>
 #include <QFile>
 #include <QTime>
 
@@ -79,15 +78,9 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
             {
                 QString owner = TStringToQString( currFrame->owner() );
                 if( owner.compare( ourId, Qt::CaseInsensitive ) == 0 )
-                {
-                    qDebug() << "Found MP3 identifier: " << TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
                     return TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
-                }
                 else if( owner.compare( mbId, Qt::CaseInsensitive ) == 0 )
-                {
-                    qDebug() << "Found MB identifier: " << QString( "MB_") << TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
                     storedMBId = QString( "MB_" ) + TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
-                }
             }
         }
         if( !storedMBId.isEmpty() )
@@ -115,13 +108,11 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     if( comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
     {
         QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(ourId.toUpper())].front()).toLower();
-        qDebug() << "Found Ogg or FLAC identifier: " << identifier;
         return identifier;
     }
     else if( comment->contains( Qt4QStringToTString( mbId.toUpper() ) ) )
     {
         QString identifier = QString( "MB_" ) + TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
-        qDebug() << "Found Ogg or FLAC identifier: " << identifier;
         return identifier;
     }
 
