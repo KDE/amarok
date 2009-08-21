@@ -629,8 +629,8 @@ gboolean close_connection(MP3tunesHarmony *harmony) {
             error_emit(harmony, MP3TUNES_HARMONY_ERROR_MISC, "Closing the connection failed", err);
             return FALSE;
         }
-        return TRUE;
-        state_change_emit(harmony, MP3TUNES_HARMONY_STATE_DISCONNECTED);
+/*        return TRUE; */
+/*        state_change_emit(harmony, MP3TUNES_HARMONY_STATE_DISCONNECTED); */
     }
 
     return TRUE;
