@@ -1122,6 +1122,11 @@ MediaDeviceHandler::setupReadCapability()
             m_rcb = handler->create<Handler::ReadCapabilityBase>();
             m_rc = 0;
             m_crc = 0;
+            if( !m_rcb )
+            {
+                debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting.";
+                return;
+            }
             if( m_rcb->inherits( "Handler::ReadCapability" ) )
             {
                 debug() << "Making read capability";
@@ -1133,10 +1138,6 @@ MediaDeviceHandler::setupReadCapability()
                 m_crc = qobject_cast<Handler::CustomReadCapability *>( m_rcb );
             }
             debug() << "Created rc";
-            if( !m_rcb )
-            {
-                debug() << "Handler does not have MediaDeviceHandler::ReadCapability. Aborting.";
-            }
         }
     }
 }
@@ -1152,15 +1153,15 @@ MediaDeviceHandler::setupWriteCapability()
         {
             m_wcb = this->create<Handler::WriteCapabilityBase>();
             m_wc = 0;
-            if( m_wcb->inherits( "Handler::WriteCapability" ) )
-            {
-                debug() << "Making write capability";
-                m_wc = qobject_cast<Handler::WriteCapability *>( m_wcb );
-            }
             if( !m_wcb )
             {
                 debug() << "Handler does not have MediaDeviceHandler::WriteCapability. Aborting.";
                 return;
+            }
+            if( m_wcb->inherits( "Handler::WriteCapability" ) )
+            {
+                debug() << "Making write capability";
+                m_wc = qobject_cast<Handler::WriteCapability *>( m_wcb );
             }
         }
     }
