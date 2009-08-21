@@ -74,7 +74,7 @@ ViewUrlRunner::run( AmarokUrl url )
                 break;
             }
             QStringList levelParts = level.split( "_" );
-            if( levelParts.length() > 2 )
+            if( levelParts.count() > 2 )
                 warning() << "Playlist view URL parse error: Invalid sort level " << level;
             if( levelParts.at( 1 ) == QString( "asc" ) )
                 playlistWidget->sortWidget()->addLevel( levelParts.at( 0 ), Qt::AscendingOrder );
