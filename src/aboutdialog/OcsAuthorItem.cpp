@@ -19,7 +19,8 @@
 #include "Debug.h"
 
 #include <KAction>
-#include <KToolBar>
+#include <KRun>
+#include <KStandardDirs>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -52,9 +53,14 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
         //  irc://irc.freenode.org/
         m_aboutText.append( "<br/>" + m_ocsPerson->extendedAttribute( "ircchannels" ) );
     }
-    m_aboutText.append( QString( "<br/>" + i18n( "<a href=\"%1\">Visit profile</a>", m_ocsPerson->extendedAttribute( "profilepage" ) ) ) );
+    KAction *visitProfile = new KAction( KIcon( QPixmap( KStandardDirs::locate( "data",
+            "amarok/images/opendesktop.png" ) ) ), i18n( "Visit openDesktop.org profile" ), this );
+    visitProfile->setToolTip( i18n( "Visit the contributor's profile on openDesktop.org" ) );
+    visitProfile->setData( m_ocsPerson->extendedAttribute( "profilepage" ) );
+    m_iconsBar->addAction( visitProfile );
+
     m_textLabel->setText( m_aboutText );
-    //TODO: put an envelope and a house instead of the links
+    //TODO: Add favorite artists!
 
 }
 
@@ -78,23 +84,26 @@ OcsAuthorItem::init()
     m_aboutText.append( "<b>" + m_person->name() + "</b>" );
     m_aboutText.append( "<br/>" + m_person->task() );
 
-    KToolBar *iconsBar = new KToolBar( this, false, false );
-    m_verticalLayout->addWidget( iconsBar );
-    iconsBar->setIconSize( QSize( 16, 16 ) );
-    iconsBar->setContentsMargins( 0, 0, 0, 0 );
+    m_iconsBar = new KToolBar( this, false, false );
+    m_verticalLayout->insertWidget( m_verticalLayout->count() - 1, m_iconsBar );
+    m_iconsBar->setIconSize( QSize( 22, 22 ) );
+    m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
 
     KAction *email = new KAction( KIcon( "mail-mark-unread-new" ), "", this );
     email->setToolTip( m_person->emailAddress() );
-    iconsBar->addAction( email );
+    email->setData( QString( "mailto:" + m_person->emailAddress() ) );
+    m_iconsBar->addAction( email );
 
-    connect( email, SIGNAL( triggered() ), this, SLOT( launchUrl() ) );
 
     if( !m_person->webAddress().isEmpty() )
     {
         KAction *homepage = new KAction( KIcon( "internet-web-browser" ), "", this );
         homepage->setToolTip( m_person->webAddress() );
-        iconsBar->addAction( homepage );
+        homepage->setData( m_person->webAddress() );
+        m_iconsBar->addAction( homepage );
     }
+
+    connect( m_iconsBar, SIGNAL( actionTriggered( QAction * ) ), this, SLOT( launchUrl( QAction * ) ) );
 
 //    m_aboutText.append( QString( "<br/><a href=\"mailto:%1\">%1</a>" ).arg( m_person->emailAddress() ) );
 //    if( !m_person->webAddress().isEmpty() )
@@ -111,5 +120,8 @@ OcsAuthorItem::name()
 }
 
 void
-OcsAuthorItem::launchUrl()
-{}
+OcsAuthorItem::launchUrl( QAction *action )
+{
+    KUrl url = KUrl( action->data().toString() );
+    KRun::runUrl( url, "text/html", 0, false );
+}

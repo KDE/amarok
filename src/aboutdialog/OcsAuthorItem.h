@@ -22,6 +22,7 @@
 #include "libattica-ocsclient/ocsapi.h"
 
 #include <KAboutPerson>
+#include <KToolBar>
 
 #include <QLabel>
 
@@ -36,13 +37,14 @@ public:
     QString name();
 
 private slots:
-    void launchUrl();
+    void launchUrl( QAction *action );
 
 private:
     void init();
     const KAboutPerson *m_person;
     const Attica::Person *m_ocsPerson;
     QString m_aboutText;
+    KToolBar *m_iconsBar;
 /*
    <firstname>Frank</firstname>
    <lastname>Test</lastname>
