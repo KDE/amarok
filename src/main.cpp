@@ -75,7 +75,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Lee Olson"), ki18n(( "Artwork" )), "leetolson@gmail.com" );
     aboutData.addCredit( ki18n("Ljubomir Simin"), ki18n(( "Rokymoter (ljubomir)" )), "ljubomir.simin@gmail.com" );
     aboutData.addCredit( ki18n("Max Howell"), ki18n(( "Developer, Vision" )), "max.howell@methylblue.com" );
-    aboutData.addCredit( ki18n("Myriam Schweingruber"), ki18n(( "Rokymoter (Mamarok)" )), "schweingruber@pharma-traduction.ch" );
+    aboutData.addCredit( ki18n("Myriam Schweingruber"), ki18n(( "Rokymoter, bug squashing (Mamarok)" )), "myriam@kde.org" );
     aboutData.addCredit( ki18n("Nuno Pinheiro"), ki18n(( "Artwork" )), "nuno@oxygen-icons.org" );
     aboutData.addCredit( ki18n("Olivier Bédard"), ki18n(( "Website hosting" )), "paleo@pwsp.net" );
     aboutData.addCredit( ki18n("Pasi Lalinaho"), ki18n(( "Rokymoter (emunkki)" )), "pasi@getamarok.com" );
