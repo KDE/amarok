@@ -92,6 +92,25 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 void
 ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, QString> > covers )
 {
+    DEBUG_BLOCK
+    m_imageMap[path] = covers;
+}
+
+void
+ScanResultProcessor::doneWithImages()
+{
+    DEBUG_BLOCK
+    if( m_imageMap.isEmpty() )
+        return;
+
+    //now -- find the best candidate with heuristics, then throw the rest away
+    debug() << "Finding best image candidate";
+    const QString path = findBestImagePath( m_imageMap.keys() );
+    debug() << "path is " << path;
+    if( path.isEmpty() )
+        return;
+
+    QList< QPair<QString,QString> > covers = m_imageMap[path];
     QList< QPair<QString,QString> >::ConstIterator it = covers.begin();
     for( ; it != covers.end(); ++it )
     {
@@ -105,6 +124,67 @@ ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, 
         // Will automatically add the image path to the database if needed
         imageId( path, album );
     }
+
+    m_imageMap.clear();
+}
+
+QString
+ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
+{
+    DEBUG_BLOCK
+    QStringList files;
+
+    //prioritize "front"
+    QString front;
+    foreach( QString path, paths )
+    {
+        QString file = QFileInfo( path ).fileName();
+        if( file.contains( "front", Qt::CaseInsensitive ) ||
+                file.contains( i18nc( "front", "Front cover of an album" ), Qt::CaseInsensitive ) )
+            front = path;
+    }
+    if( !front.isEmpty() )
+        return front;
+
+    //then: try "cover"
+    QString cover;
+    foreach( QString path, paths )
+    {
+        QString file = QFileInfo( path ).fileName();
+        if( file.contains( "cover", Qt::CaseInsensitive ) ||
+                file.contains( i18nc( "cover", "(Front) Cover of an album" ), Qt::CaseInsensitive ) )
+            cover = path;
+    }
+    if( !cover.isEmpty() )
+        return cover;
+
+    //last: try "large"
+    QString large;
+    foreach( const QString path, paths )
+    {
+        QString file = QFileInfo( path ).fileName();
+        if( file.contains( "large", Qt::CaseInsensitive ) ||
+                file.contains( i18nc( "large", "(Large front) Cover of an album" ), Qt::CaseInsensitive ) )
+            large = path;
+    }
+    if( !large.isEmpty() )
+        return large;
+
+    //finally: pick largest image -- often a high-quality blowup of the front
+    //so that people can print it out
+    qint64 size = 0;
+    QString current;
+    foreach( QString path, paths )
+    {
+        QFileInfo info( path );
+        if( info.size() > size )
+        {
+            size = info.size();
+            current = path;
+        }
+    }
+    return current;
+
 }
 
 void
@@ -546,28 +626,37 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
 int
 ScanResultProcessor::imageId( const QString &image, int albumId )
 {
+    DEBUG_BLOCK
     // assume the album is valid
     if( albumId < 0 )
         return -1;
 
+    debug() << "album valid";
     QPair<QString, int> key( image, albumId );
     if( m_images.contains( key ) )
         return m_images.value( key );
 
+    debug() << "key not found";
     QString query = QString( "SELECT images_temp.id FROM images_temp WHERE images_temp.path = '%1'" )
                         .arg( m_collection->escape( image ) );
     QStringList res = m_collection->query( query );
     int imageId = -1;
     if( res.isEmpty() )
     {
+        debug() << "SQL lookup was empty, inserting image: " << image;
         QString insert = QString( "INSERT INTO images_temp( path ) VALUES ('%1');" ).arg( m_collection->escape( image ) );
         imageId = m_collection->insert( insert, "images_temp" );
+        debug() << "new imageId is: " << imageId;
     }
     else
+    {
+        debug() << "Found image in db, imageId is: " << imageId;
         imageId = res[0].toInt();
+    }
 
     if( imageId >= 0 )
     {
+        debug() << "Updating album table";
         // Make sure the album table is up to date
         QString update = QString( "UPDATE albums_temp SET image = %1 WHERE id = %2" )
                             .arg( QString::number( imageId ), QString::number( albumId ) );

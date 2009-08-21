@@ -47,6 +47,7 @@ class ScanResultProcessor : public QObject
         void addDirectory( const QString &dir, uint mtime );
         void addImage( const QString &path, const QList< QPair<QString, QString> > );
         void setScanType( ScanType type );
+        void doneWithImages();
         void processDirectory( const QList<QVariantMap > &data );
         void commit();
         void rollback();
@@ -72,6 +73,8 @@ class ScanResultProcessor : public QObject
         int urlId( const QString &url, const QString &uid );
         int directoryId( const QString &dir );
 
+        QString findBestImagePath( const QList<QString> &paths );
+
         //void updateAftPermanentTablesUrlId( int urlId, const QString &uid );
         //void updateAftPermanentTablesUidId( int urlId, const QString &uid );
         void updateAftPermanentTablesUrlString();
@@ -93,6 +96,7 @@ class ScanResultProcessor : public QObject
         QMap<QPair<QString, int>, int> m_albums;
         QMap<QPair<QString, int>, int> m_images;
         QMap<QString, int> m_directories;
+        QMap<QString, QList< QPair< QString, QString > > > m_imageMap;
 
         QHash<QString, uint> m_filesInDirs;
 

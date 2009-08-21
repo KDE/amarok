@@ -653,12 +653,14 @@ XmlParseJob::run()
 
                 if( localname == "itemcount" )
                 {
+                    processor.doneWithImages();
 //                     debug() << "Got an itemcount with value: " << localname.toString();
                     if( The::statusBar() )
                         The::statusBar()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
                 }
                 else if( localname == "tags" )
                 {
+                    processor.doneWithImages();
 //                     debug() << "Parsing FILE:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QList<QXmlStreamAttribute> list = attrs.toList();
@@ -739,6 +741,7 @@ XmlParseJob::run()
                 }
                 else if( localname == "folder" )
                 {
+                    processor.doneWithImages();
 //                     debug() << "Parsing FOLDER:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QList<QXmlStreamAttribute> list = attrs.toList();
@@ -754,6 +757,7 @@ XmlParseJob::run()
                 }
                 else if( localname == "playlist" )
                 {
+                    processor.doneWithImages();
                     //TODO check for duplicates
                     //debug() << "Saving playlist with path: " << m_reader.attributes().value( "path" ).toString();
                     The::playlistManager()->import( m_reader.attributes().value( "path" ).toString() );
