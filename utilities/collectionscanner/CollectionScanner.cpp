@@ -334,8 +334,8 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         else if( f.isFile() )
             entries.append( f.absoluteFilePath() );
     }
-    foreach( QString dir, recurseDirs )
-        readDir( dir, entries );
+    foreach( QString directory, recurseDirs )
+        readDir( directory, entries );
 }
 
 
