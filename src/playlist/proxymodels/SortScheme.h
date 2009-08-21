@@ -62,7 +62,7 @@ class SortScheme
         int length();
 
     private:
-        QStack< SortLevel > *m_scheme;
+        QStack< SortLevel > m_scheme;
 };
 
 }   //namespace Playlist

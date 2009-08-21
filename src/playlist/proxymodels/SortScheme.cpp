@@ -85,39 +85,36 @@ SortLevel::prettyName()
 // BEGIN SortScheme
 
 SortScheme::SortScheme()
-    : m_scheme( new QStack< SortLevel > )
 {
-
 }
 
 SortScheme::~SortScheme()
 {
-    delete m_scheme;
 }
 
 SortLevel &
 SortScheme::level( int i )
 {
-    return m_scheme->operator[]( i );    //SortLevel( 0 ) is a dummy, as in PlaylistDefines.h 0=PlaceHolder
+    return m_scheme.operator[]( i );    //SortLevel( 0 ) is a dummy, as in PlaylistDefines.h 0=PlaceHolder
 }
 
 void
 SortScheme::addLevel( const Playlist::SortLevel& level )
 {
-    m_scheme->push( level );
+    m_scheme.push( level );
 }
 
 int
 SortScheme::length()
 {
-    return m_scheme->size();
+    return m_scheme.size();
 }
 
 void
 SortScheme::trimToLevel( int lastLevel )
 {
     for( int i = length() - 1; i > lastLevel; i--)
-        m_scheme->pop();
+        m_scheme.pop();
 }
 
 }   //namespace Playlist
