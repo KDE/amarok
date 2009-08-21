@@ -18,6 +18,9 @@
 
 #include "Debug.h"
 
+#include <KAction>
+#include <KToolBar>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
@@ -74,9 +77,28 @@ OcsAuthorItem::init()
 
     m_aboutText.append( "<b>" + m_person->name() + "</b>" );
     m_aboutText.append( "<br/>" + m_person->task() );
-    m_aboutText.append( QString( "<br/><a href=\"mailto:%1\">%1</a>" ).arg( m_person->emailAddress() ) );
+
+    KToolBar *iconsBar = new KToolBar( this, false, false );
+    m_verticalLayout->addWidget( iconsBar );
+    iconsBar->setIconSize( QSize( 16, 16 ) );
+    iconsBar->setContentsMargins( 0, 0, 0, 0 );
+
+    KAction *email = new KAction( KIcon( "mail-mark-unread-new" ), "", this );
+    email->setToolTip( m_person->emailAddress() );
+    iconsBar->addAction( email );
+
+    connect( email, SIGNAL( triggered() ), this, SLOT( launchUrl() ) );
+
     if( !m_person->webAddress().isEmpty() )
-        m_aboutText.append( QString( "<br/><a href=\"%3\">%3</a>" ).arg( m_person->webAddress() ) );
+    {
+        KAction *homepage = new KAction( KIcon( "internet-web-browser" ), "", this );
+        homepage->setToolTip( m_person->webAddress() );
+        iconsBar->addAction( homepage );
+    }
+
+//    m_aboutText.append( QString( "<br/><a href=\"mailto:%1\">%1</a>" ).arg( m_person->emailAddress() ) );
+//    if( !m_person->webAddress().isEmpty() )
+//        m_aboutText.append( QString( "<br/><a href=\"%3\">%3</a>" ).arg( m_person->webAddress() ) );
 }
 
 OcsAuthorItem::~OcsAuthorItem()
@@ -87,3 +109,7 @@ OcsAuthorItem::name()
 {
     return m_person->name();
 }
+
+void
+OcsAuthorItem::launchUrl()
+{}

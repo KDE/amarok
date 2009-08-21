@@ -35,6 +35,9 @@ public:
 
     QString name();
 
+private slots:
+    void launchUrl();
+
 private:
     void init();
     const KAboutPerson *m_person;
