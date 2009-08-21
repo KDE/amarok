@@ -168,6 +168,8 @@ static char* xml_xpath_get_string(xml_xpath_t *xml_xpath, const char* xpath_expr
     char* result = NULL;
 
     xpath_obj = xml_xpath_query(xml_xpath, xpath_expression);
+    if (xpath_obj == NULL)
+        return NULL;
 
     result = xml_get_text_from_nodeset(xpath_obj->nodesetval);
 
@@ -592,8 +594,8 @@ int mp3tunes_locker_playlist_list_add(mp3tunes_locker_playlist_list_t **list, mp
 
 int mp3tunes_locker_list_deinit(struct mp3tunes_locker_list_s **list) {
     struct mp3tunes_locker_list_s *l = *list;
-    mp3tunes_locker_list_item_t *list_item = l->first;
     if (l) {
+        mp3tunes_locker_list_item_t *list_item = l->first;
         while(l->first) {
             list_item = l->first->next;
             free(l->first);
@@ -1171,6 +1173,8 @@ int mp3tunes_locker_search(mp3tunes_locker_object_t *obj, mp3tunes_locker_artist
     /*printf("type: '%s' query: '%s'\n", placeholder, query);*/
 
     xml_xpath = mp3tunes_locker_api_simple_fetch(obj, MP3TUNES_SERVER_API, "api/v1/lockerSearch", "type", type, "s", query, NULL);
+    if (xml_xpath == NULL)
+        return -1;
 
     if(artists != NULL) {
         xmlXPathObjectPtr xpath_obj;
@@ -1178,10 +1182,6 @@ int mp3tunes_locker_search(mp3tunes_locker_object_t *obj, mp3tunes_locker_artist
         xmlNodePtr node;
         int i;
         mp3tunes_locker_artist_list_init(artists);
-
-        if (xml_xpath == NULL) {
-            return -1;
-        }
 
         xpath_obj = xml_xpath_query(xml_xpath, "/mp3tunes/artistList/item");
         if (xpath_obj == NULL) {
