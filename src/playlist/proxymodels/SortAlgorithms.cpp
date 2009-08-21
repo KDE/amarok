@@ -24,7 +24,7 @@ namespace Playlist
 bool
 multilevelLessThan::operator()( int rowA, int rowB)
 {
-    quint8 verdict;  //0 = false  1 = true  2 = nextIteration
+    quint8 verdict = 0;  //0 = false  1 = true  2 = nextIteration
     for( int i = 0; i < m_scheme.length(); i++ )
     {
         int currentCategory = m_scheme.level( i ).category();  //see enum Column in PlaylistDefines.h
