@@ -299,11 +299,25 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
         QString page = storedJob->data();
         bool isHQ18 = false;
         bool isHQ22 = false;
+
+
+        QString sk;
+        QString t;
         
-        QString regex( "&fmt_map=" );
+        // Youtube has change again its api
+        QString regex( "var swfArgs =" );
         if ( page.indexOf( regex ) != -1 )
         {
-            page = page.mid( page.indexOf( regex ) + regex.size() );
+            page = page.mid( page.indexOf( regex ) );
+            QString reg( "var isWidescreen = ");
+            if ( page.indexOf( reg ) != -1 )
+                page = page.mid( 0, page.indexOf( reg ) );
+        }
+
+        QString regex1( "\"fmt_map\": " );
+        if ( page.indexOf( regex1 ) != -1 )
+        {
+            page = page.mid( page.indexOf( regex1 ) + regex1.size() + 1 );
 
             // if the next time we've got true
             if ( page.mid( 0, 3 ).contains( "18" ) || page.mid( 0, 3 ).contains( "35" ))
@@ -312,14 +326,26 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
             else if ( page.mid( 0, 3 ).contains( "22" ) )
                 isHQ22 = true ;
         }
-            
-        QString regex2( "&t=" );
 
+        QString regex2( "\"sk\": " );
         if ( page.indexOf( regex2 ) != -1 )
         {
-            page = page.mid( page.indexOf( regex2 ) + regex2.size() );
-            vidlink = jobUrl + regex2 + page.mid( 0, page.indexOf( "&" ) );
+            page = page.mid( page.indexOf( regex2 ) + regex2.size() + 1 );
+            sk = page.mid( 0, page.indexOf( "\"" ) );
+        }
 
+        QString regex3( "\"t\": " );
+        if ( page.indexOf( regex3 ) != -1 )
+        {
+            page = page.mid( page.indexOf( regex3 ) + regex3.size() + 1 );
+            t = page.mid( 0, page.indexOf( "\"" ) );
+            debug()<<" T " <<t;
+        }
+        debug() << page ;
+        if ( !t.isEmpty() && !sk.isEmpty() )
+        {
+            vidlink = jobUrl + "&sk=" + sk + "&t=" + t ;
+         //   debug() << vidlink;
             // enable youtube HQ if user as request and HQ is available
             if ( m_youtubeHQ && isHQ18 )
                 vidlink+="&fmt=18";
