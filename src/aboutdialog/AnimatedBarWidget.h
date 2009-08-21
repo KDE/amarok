@@ -14,29 +14,50 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_OCSPERSONLISTWIDGET_H
-#define AMAROK_OCSPERSONLISTWIDGET_H
+#ifndef AMAROK_ANIMATEDBARWIDGET_H
+#define AMAROK_ANIMATEDBARWIDGET_H
 
-#include "OcsAuthorItem.h"
+#include "AnimatedWidget.h"
 
+#include <QAbstractButton>
+#include <QLabel>
 
-
-class OcsPersonListWidget : public QWidget
+class AnimatedBarWidget : public QAbstractButton
 {
     Q_OBJECT
 public:
-    OcsPersonListWidget( QWidget *parent = 0 );
-    void addPerson( const KAboutPerson &person, const Attica::Person &ocsPerson );
-    void addPerson( const KAboutPerson &person );
+    AnimatedBarWidget( const QIcon &icon, const QString &text, const QString &animatedIconName = "process-working", QWidget *parent = 0 );
+    ~AnimatedBarWidget();
 
-signals:
-    void personAdded( int persons );
+    virtual QSize sizeHint() const;
+
+public slots:
+    void animate();
+    void stop();
+    void fold();
+
+protected:
+    void setHoverHintEnabled( bool enable);
+    bool isHoverHintEnabled() const;
+
+    virtual void enterEvent(QEvent* event);
+    virtual void leaveEvent(QEvent* event);
+
+    virtual void paintEvent(QPaintEvent* event);
+    void drawHoverBackground(QPainter* painter);
+
+    //! Returns the foreground color by respecting the current display hint.
+    QColor foregroundColor() const;
 
 private:
-    void addPersonPrivate( OcsAuthorItem *item );
-    QWidget *m_personsArea;
-    QVBoxLayout *m_areaLayout;
-
+    void init();
+    bool m_hoverHint;
+    AnimatedWidget *m_animatedWidget;
+    QString *m_text;
+    bool m_animating;
+    QIcon m_icon;
 };
 
-#endif  //AMAROK_OCSPERSONLISTWIDGET_H
+
+
+#endif //AMAROK_ANIMATEDBARWIDGET_H

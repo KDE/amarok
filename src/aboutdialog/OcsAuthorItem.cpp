@@ -51,6 +51,8 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
     }
     m_aboutText.append( QString( "<br/>" + i18n( "<a href=\"%1\">Visit profile</a>", m_ocsPerson->extendedAttribute( "profilepage" ) ) ) );
     m_textLabel->setText( m_aboutText );
+    //TODO: put an envelope and a house instead of the links
+
 }
 
 OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, QWidget *parent )

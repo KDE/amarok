@@ -25,7 +25,7 @@
 #include "Amarok.h"
 #include "App.h"
 #include "OcsPersonListWidget.h"
-#include "widgets/BreadcrumbItemButton.h"
+#include "AnimatedBarWidget.h"
 
 #include <KAboutData>
 #include <kdialog.h>
@@ -40,6 +40,7 @@ public:
 private slots:
     void setupOcsAuthorWidget();
     void personJobFinished( KJob *job );
+    void onPersonAdded( int persons );
 
 private:
     class Private;
@@ -50,7 +51,8 @@ private:
     Q_DISABLE_COPY( ExtendedAboutDialog )
 
     OcsData m_ocsData;
-    QPushButton *m_showOcsButton;
+//    QPushButton *m_showOcsButton;
+    AnimatedBarWidget *m_showOcsButton;
     QWidget *m_authorWidget;
     QWidget *m_offlineAuthorWidget;
     OcsPersonListWidget *m_ocsAuthorWidget;

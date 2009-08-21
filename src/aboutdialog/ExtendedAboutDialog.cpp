@@ -22,7 +22,6 @@
 #include "ExtendedAboutDialog.h"
 
 #include "Amarok.h"
-#include "AnimatedWidget.h"
 #include "Debug.h"
 #include "libattica-ocsclient/ocsapi.h"
 #include "libattica-ocsclient/personjob.h"
@@ -39,6 +38,7 @@
 #include <kglobalsettings.h>
 #include <kiconloader.h>
 #include <klocale.h>
+#include <kstandarddirs.h>
 #include <ktextbrowser.h>
 #include <ktitlewidget.h>
 
@@ -149,9 +149,19 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     m_transparentBackgroundPalette.setColor(QPalette::Text, m_transparentBackgroundPalette.color(QPalette::WindowText));
 
     m_authorWidget = new QWidget( this );
-    QHBoxLayout *authorLayout = new QHBoxLayout( m_authorWidget );
+    QVBoxLayout *authorLayout = new QVBoxLayout( m_authorWidget );
     m_offlineAuthorWidget = new QWidget( m_authorWidget );
     m_ocsAuthorWidget = new OcsPersonListWidget( m_authorWidget );
+
+    QPixmap openDesktopPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/opendesktop.png" ) );
+    QIcon openDesktopIcon = QIcon( openDesktopPixmap );
+    m_showOcsButton = new AnimatedBarWidget( openDesktopIcon,
+                                 i18n( "Connect to openDesktop.org to learn more about the team" ),
+                                 "process-working", m_authorWidget );
+    m_showOcsButton->setStyleSheet( "background: " + App::instance()->palette().toolTipBase().color().name() );
+    connect( m_showOcsButton, SIGNAL( clicked() ), this, SLOT( setupOcsAuthorWidget() ) );
+    connect( m_showOcsButton, SIGNAL( clicked() ), m_showOcsButton, SLOT( animate() ) );
+    authorLayout->addWidget( m_showOcsButton );
 
     setupOfflineAuthorWidget(); //populate m_authorWidget and set m_authorPageTitle
 
@@ -216,7 +226,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     QWidget *mainWidget = new QWidget;
     mainWidget->setLayout(mainLayout);
     setMainWidget(mainWidget);
-    setInitialSize( QSize( 400, 450 ) );
+    setInitialSize( QSize( 600, 460 ) );
 }
 
 ExtendedAboutDialog::~ExtendedAboutDialog()
@@ -308,12 +318,7 @@ ExtendedAboutDialog::setupOfflineAuthorWidget()
         authorTextBrowser->setFrameStyle(QFrame::NoFrame);
         authorTextBrowser->setPalette(m_transparentBackgroundPalette);
         authorTextBrowser->setHtml(authorPageText);
-        m_showOcsButton = new QPushButton( KIcon( "get-hot-new-stuff" ),
-                                 i18n( "Connect to openDesktop.org to learn more about the team" ),
-                                 m_offlineAuthorWidget );
-        m_showOcsButton->setStyleSheet( "background: " + App::instance()->palette().toolTipBase().color().name() );
-        connect( m_showOcsButton, SIGNAL( clicked() ), this, SLOT( setupOcsAuthorWidget() ) );
-        offlineAuthorWidgetLayout->addWidget( m_showOcsButton );
+
         offlineAuthorWidgetLayout->addWidget( authorTextBrowser );
         m_offlineAuthorWidget->setLayout( offlineAuthorWidgetLayout );
     }
@@ -326,9 +331,9 @@ ExtendedAboutDialog::setupOcsAuthorWidget()
 
     m_ocsAuthorWidget = new OcsPersonListWidget( m_authorWidget );
     m_authorWidget->layout()->addWidget( m_ocsAuthorWidget );
+    connect( m_ocsAuthorWidget, SIGNAL( personAdded( int ) ), this, SLOT( onPersonAdded( int ) ) );
 
     //TODO: Ask Solid if the network is available.
-    m_showOcsButton->setEnabled( false );
 
     Attica::PersonJob *personJob;
     for( QList< QPair< QString, KAboutPerson > >::const_iterator author = m_ocsData.constBegin();
@@ -367,6 +372,17 @@ ExtendedAboutDialog::personJobFinished( KJob *job )
         }
     }
     m_ocsAuthorWidget->addPerson( *person, personJob->person() );
+}
+
+void
+ExtendedAboutDialog::onPersonAdded( int persons )
+{
+    if( persons == d->aboutData->authors().count() )
+    {
+        //Yay, the OCS authors list has been populated!
+        m_showOcsButton->stop();
+        m_showOcsButton->fold();
+    }
 }
 
 #include "ExtendedAboutDialog.moc"

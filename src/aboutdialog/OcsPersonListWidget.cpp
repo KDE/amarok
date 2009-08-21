@@ -95,5 +95,5 @@ OcsPersonListWidget::addPersonPrivate( OcsAuthorItem *item )
                 m_areaLayout->insertWidget( 0, item );
         }
     }
-
+    emit personAdded( m_areaLayout->count() );
 }
