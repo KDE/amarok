@@ -47,7 +47,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( ki18n("Maximilian Kossick"),
             ki18n(( "Developer (maxx_k)" )), "maximilian.kossick@gmail.com" );
     aboutData.addAuthor( ki18n("Nikolaj Hald 'Also very hot' Nielsen"),
-            ki18n(( "Developer (nhnFreespirit)" )), "nhnfreespirit@gmail.com" );
+            ki18n(( "Developer (nhn)" )), "nhnfreespirit@gmail.com", "http://amarok.kde.org/blog/categories/18-freespirit" );
     aboutData.addAuthor( ki18n("Seb 'Surfin' down under' Ruiz"),
             ki18n(( "Developer (sebr)" )), "ruiz@kde.org", "http://www.sebruiz.net" );
 
