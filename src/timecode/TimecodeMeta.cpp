@@ -371,7 +371,7 @@ void TimecodeTrack::endMetaDataUpdate()
 
     bool updateCover = false;
 
-    if ( m_updatedFields | ALBUM_UPDATED )
+    if ( m_updatedFields & ALBUM_UPDATED )
     {
         //create a new album:
         m_album = TimecodeAlbumPtr( new TimecodeAlbum( m_fields.value( ALBUM_UPDATED ) ) );
@@ -380,7 +380,7 @@ void TimecodeTrack::endMetaDataUpdate()
         m_album->setAlbumArtist( m_artist );
     }
 
-    if ( m_updatedFields | ARTIST_UPDATED )
+    if ( m_updatedFields & ARTIST_UPDATED )
     {
         //create a new album:
         m_artist = TimecodeArtistPtr( new TimecodeArtist( m_fields.value( ARTIST_UPDATED ) ) );
@@ -390,7 +390,7 @@ void TimecodeTrack::endMetaDataUpdate()
         updateCover = true;
     }
 
-    if ( m_updatedFields | COMPOSER_UPDATED )
+    if ( m_updatedFields & COMPOSER_UPDATED )
     {
         //create a new album:
         m_composer = TimecodeComposerPtr( new TimecodeComposer( m_fields.value( COMPOSER_UPDATED ) ) );
@@ -398,7 +398,7 @@ void TimecodeTrack::endMetaDataUpdate()
         setComposer( m_composer );
     }
 
-    if ( m_updatedFields | GENRE_UPDATED )
+    if ( m_updatedFields & GENRE_UPDATED )
     {
         //create a new album:
         m_genre = TimecodeGenrePtr( new TimecodeGenre( m_fields.value( GENRE_UPDATED ) ) );
@@ -406,7 +406,7 @@ void TimecodeTrack::endMetaDataUpdate()
         setGenre( m_genre );
     }
 
-    if ( m_updatedFields | YEAR_UPDATED )
+    if ( m_updatedFields & YEAR_UPDATED )
     {
         //create a new album:
         m_year = TimecodeYearPtr( new TimecodeYear( m_fields.value( YEAR_UPDATED ) ) );
@@ -414,26 +414,26 @@ void TimecodeTrack::endMetaDataUpdate()
         setYear( m_year );
     }
 
-    if ( m_updatedFields | TITLE_UPDATED )
+    if ( m_updatedFields & TITLE_UPDATED )
     {
         //create a new album:
         m_name = m_fields.value( TITLE_UPDATED );
         updateCover = true;
     }
 
-    if ( m_updatedFields | COMMENT_UPDATED )
+    if ( m_updatedFields & COMMENT_UPDATED )
     {
         //create a new album:
         m_comment = m_fields.value( COMMENT_UPDATED );
     }
 
-    if ( m_updatedFields | TRACKNUMBER_UPDATED )
+    if ( m_updatedFields & TRACKNUMBER_UPDATED )
     {
         //create a new album:
         m_trackNumber = m_fields.value( TRACKNUMBER_UPDATED ).toInt();
     }
 
-    if ( m_updatedFields | DISCNUMBER_UPDATED )
+    if ( m_updatedFields & DISCNUMBER_UPDATED )
     {
         //create a new album:
         m_discNumber = m_fields.value( DISCNUMBER_UPDATED ).toInt();
