@@ -25,6 +25,7 @@
 #include "Amarok.h"
 #include "App.h"
 #include "OcsPersonListWidget.h"
+#include "widgets/BreadcrumbItemButton.h"
 
 #include <KAboutData>
 #include <kdialog.h>
