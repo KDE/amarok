@@ -36,9 +36,8 @@ QList<QAction *>
 CollectionCapabilityMediaDevice::collectionActions()
 {
     // Create Standard Device Actions
-
-    QAction *disconnectAction = new QAction( KIcon( "remove-amarok" ),  i18n(  "&Disconnect Device" ),  0 );
-    disconnectAction->setProperty( "popupdropper_svg_id", "delete" );
+    QAction *disconnectAction = new QAction( KIcon( "remove-amarok" ), i18n( "&Disconnect Device" ), 0 );
+    disconnectAction->setProperty( "popupdropper_svg_id", "media-eject" );
 
     connect( disconnectAction, SIGNAL( triggered() ), m_coll, SLOT( disconnectDevice() ) );
 
