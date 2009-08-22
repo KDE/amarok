@@ -93,6 +93,8 @@ OcsAuthorItem::init()
     m_textLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
     m_textLabel->setOpenExternalLinks( true );
     m_textLabel->setContentsMargins( 5, 0, 0, 2 );
+    m_verticalLayout->setSpacing( 0 );
+
 
     m_aboutText.append( "<b>" + m_person->name() + "</b>" );
     m_aboutText.append( "<br/>" + m_person->task() );

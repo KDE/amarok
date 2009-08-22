@@ -158,7 +158,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     m_showOcsButton = new AnimatedBarWidget( openDesktopIcon,
                                  i18n( "Connect to openDesktop.org to learn more about the team" ),
                                  "process-working", m_authorWidget );
-    m_showOcsButton->setStyleSheet( "background: " + App::instance()->palette().toolTipBase().color().name() );
     connect( m_showOcsButton, SIGNAL( clicked() ), this, SLOT( setupOcsAuthorWidget() ) );
     connect( m_showOcsButton, SIGNAL( clicked() ), m_showOcsButton, SLOT( animate() ) );
     authorLayout->addWidget( m_showOcsButton );
