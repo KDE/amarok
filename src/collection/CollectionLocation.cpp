@@ -41,6 +41,7 @@ CollectionLocation::CollectionLocation( const Amarok::Collection* parentCollecti
     , m_sourceTracks()
     , m_parentCollection( parentCollection )
     , m_removeSources( false )
+    , m_isRemoveAction( false )
 {
     //nothing to do
 }

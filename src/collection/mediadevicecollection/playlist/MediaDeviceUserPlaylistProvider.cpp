@@ -41,7 +41,7 @@ static const QString key("AMAROK_USERPLAYLIST");
 
 MediaDeviceUserPlaylistProvider::MediaDeviceUserPlaylistProvider()
     : UserPlaylistProvider()
-//    , m_renameAction( 0 )
+    , m_renameAction( 0 )
 {
     DEBUG_BLOCK
 //    checkTables();
