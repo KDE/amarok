@@ -192,9 +192,8 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
         virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
 
-        // TODO: MediaDeviceTrackPtr
-        virtual void libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
-        virtual void setCoverArt( Itdb_Track *ipodtrack, const QString &path );
+        virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &image );
+        virtual void libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path );
 
         virtual void prepareToCopy();
         virtual void prepareToDelete();

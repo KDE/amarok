@@ -36,6 +36,10 @@ namespace Handler
 
             virtual QPixmap getCover( const Meta::MediaDeviceTrackPtr &track );
 
+            virtual void setCover( Meta::MediaDeviceAlbumPtr album, const QPixmap &pixmap );
+
+            virtual void setCoverPath( Meta::MediaDeviceAlbumPtr album, const QString &path );
+
             virtual bool canUpdateCover() const;
 
             static Type capabilityInterfaceType() { return Handler::Capability::Artwork; }

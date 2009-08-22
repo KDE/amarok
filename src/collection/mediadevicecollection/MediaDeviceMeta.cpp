@@ -866,19 +866,22 @@ MediaDeviceAlbum::canUpdateImage() const
 void
 MediaDeviceAlbum::setImage( const QPixmap &pixmap )
 {
-    m_image = pixmap;
-    m_hasImage = true;
-    //if( m_artworkCapability )
-    //    return m_artworkCapability->setImage( pixmap );
+    if( m_artworkCapability && m_artworkCapability->canUpdateCover() )
+    {
+        m_image = pixmap;
+        m_hasImage = true;
+        m_artworkCapability->setCover( MediaDeviceAlbumPtr( this ), pixmap );
+    }
 }
 
 void
 MediaDeviceAlbum::setImagePath( const QString &path )
 {
-    m_coverPath = path;
-    m_hasImage = true;
-    //if( m_artworkCapability )
-    //    return m_artworkCapability->setImagePath( pixmap );
+    if( m_artworkCapability && m_artworkCapability->canUpdateCover() )
+    {
+        m_hasImage = true;
+        m_artworkCapability->setCoverPath( MediaDeviceAlbumPtr( this ), path );
+    }
 }
 
 // TODO: forward call to handler to remove image, etc.

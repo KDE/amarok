@@ -21,4 +21,12 @@ Handler::ArtworkCapability::~ArtworkCapability()
     // nothing to do here
 }
 
+void
+Handler::ArtworkCapability::setCoverPath( Meta::MediaDeviceAlbumPtr album, const QString &path )
+{
+    const QPixmap pix( path );
+    if( !pix.isNull() )
+        setCover( album, pix );
+}
+
 #include "ArtworkCapability.moc"

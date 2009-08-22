@@ -35,6 +35,24 @@ QPixmap IpodArtworkCapability::getCover( const Meta::MediaDeviceTrackPtr &track 
     return m_handler->libGetCoverArt( track );
 }
 
+void IpodArtworkCapability::setCover( Meta::MediaDeviceAlbumPtr album, const QPixmap &pixmap )
+{
+    foreach( Meta::TrackPtr t, album->tracks() )
+    {
+        Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::dynamicCast( t );
+        m_handler->libSetCoverArt( track, pixmap );
+    }
+}
+
+void IpodArtworkCapability::setCoverPath( Meta::MediaDeviceAlbumPtr album, const QString &path )
+{
+    foreach( Meta::TrackPtr t, album->tracks() )
+    {
+        Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::dynamicCast( t );
+        m_handler->libSetCoverArtPath( track, path );
+    }
+}
+
 bool IpodArtworkCapability::canUpdateCover() const
 {
     return m_handler->isWritable();

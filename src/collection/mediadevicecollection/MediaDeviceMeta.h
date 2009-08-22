@@ -233,7 +233,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         Handler::ArtworkCapability *m_artworkCapability;
 
         QString         m_name;
-        QString         m_coverPath;
         TrackList       m_tracks;
         bool            m_isCompilation;
         mutable bool    m_hasImage;

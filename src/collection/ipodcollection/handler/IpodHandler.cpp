@@ -1724,13 +1724,15 @@ IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 }
 
 void
-IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path )
+IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path )
 {
 #ifdef GDK_FOUND
     DEBUG_BLOCK
 
     if( !m_supportsArtwork )
         return;
+
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
 
     itdb_artwork_remove_thumbnails( ipodtrack->artwork );
     itdb_track_set_thumbnails( ipodtrack, QFile::encodeName(path) );
@@ -1742,7 +1744,7 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path )
 }
 
 void
-IpodHandler::libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
+IpodHandler::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &image )
 {
 #ifdef GDK_FOUND
     DEBUG_BLOCK
@@ -1750,12 +1752,14 @@ IpodHandler::libSetCoverArt( Itdb_Track *ipodtrack, const QPixmap &image )
     if( image.isNull() || !m_supportsArtwork )
         return;
 
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
+
     const QString filename = ipodArtFilename( ipodtrack );
     bool saved = image.save( filename );
     if( !saved )
         return;
 
-    setCoverArt( ipodtrack, filename );
+    libSetCoverArtPath( track, filename );
 #else
     Q_UNUSED( ipodtrack );
     Q_UNUSED( image );
