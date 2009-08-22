@@ -129,6 +129,7 @@ TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 
     , m_discNumber( 0 )
     , m_comment( QString() )
     , m_playableUrl( url )
+    , m_updatedFields( 0 )
 {
     DEBUG_BLOCK
     m_displayUrl = url + ":" + QString::number( start / 1000 ) + "-" + QString::number( end / 1000 );

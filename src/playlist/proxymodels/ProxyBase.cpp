@@ -24,6 +24,7 @@ namespace Playlist
 
 ProxyBase::ProxyBase( QObject *parent )
     : QSortFilterProxyModel( parent )
+    , m_belowModel( 0 )
 {
 }
 

@@ -65,6 +65,7 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , hoverIndicatorShowStyle( PopupDropperItem::Never )
     , orientation( PopupDropperItem::Left )
     , textProtection( PopupDropperItem::ScaleFont )
+    , separatorStyle( PopupDropperItem::TextSeparator )
     , pd( 0 )
     , q( parent )
     {
