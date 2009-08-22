@@ -352,7 +352,7 @@ static xml_xpath_t* mp3tunes_locker_api_simple_fetch(mp3tunes_locker_object_t *o
 
     res = curl_easy_perform(request->curl);
     curl_easy_cleanup(request->curl);
-    free(request);
+    mp3tunes_request_deinit(&request);
 
     if (res != CURLE_OK) {
         chunk_deinit(&chunk);
@@ -398,7 +398,7 @@ static xml_xpath_t* mp3tunes_locker_api_post_fetch(mp3tunes_locker_object_t *obj
 
     res = curl_easy_perform(request->curl);
     curl_easy_cleanup(request->curl);
-    free(request);
+    mp3tunes_request_deinit(&request);
 
     if (res != CURLE_OK) {
         chunk_deinit(&chunk);
@@ -428,6 +428,9 @@ char* mp3tunes_locker_generate_download_url_from_file_key(mp3tunes_locker_object
     char *ret;
     snprintf(path, 256, "storage/lockerget/%s", file_key);
     request = mp3tunes_locker_api_generate_request(obj, MP3TUNES_SERVER_CONTENT, path, NULL);
+    if (request == NULL)
+        return NULL;
+
     ret = request->url; request->url = NULL;
     free(path);
     mp3tunes_request_deinit(&request);
@@ -440,6 +443,9 @@ char* mp3tunes_locker_generate_download_url_from_file_key_and_bitrate(mp3tunes_l
     char *ret;
     snprintf(path, 256, "storage/lockerget/%s", file_key);
     request = mp3tunes_locker_api_generate_request(obj, MP3TUNES_SERVER_CONTENT, path, "bitrate", bitrate, NULL);
+    if (request == NULL)
+        return NULL;
+
     ret = request->url; request->url = NULL;
     free(path);
     mp3tunes_request_deinit(&request);
@@ -503,7 +509,7 @@ int mp3tunes_locker_session_valid(mp3tunes_locker_object_t *obj) {
 
     res = curl_easy_perform(request->curl);
     curl_easy_cleanup(request->curl);
-    free(request);
+    mp3tunes_request_deinit(&request);
 
     if (res != CURLE_OK) {
         chunk_deinit(&chunk);
@@ -1499,7 +1505,7 @@ int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, const char *path
     /*printf("uploading...\n");*/
     res = curl_easy_perform(request->curl);
     curl_easy_cleanup(request->curl);
-    free(request);
+    mp3tunes_request_deinit(&request);
     free(url);
 
     fclose(hd_src); /* close the local file */
