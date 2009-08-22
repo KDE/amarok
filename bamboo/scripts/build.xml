@@ -1,0 +1,35 @@
+<!-- QTestLib to JUnit: http://wiki.qtcentre.org/index.php?title=Integrating_QTestLib_with_CruiseControl -->
+<project name="amarok">
+    <property name="amarok.test.dir"
+        value="${user.home}/.kde/share/apps/amarok/testresults/LATEST"/>
+    <property name="bamboo.build.dir" value="${user.home}/Bamboo/xml-data/build-dir/AMK-TRUNK"/>
+    <property name="bamboo.test.dir" value="${bamboo.build.dir}/tests"/>
+
+    <target name="qtest2junit">
+        <property name="test.dir" value="tests"/>
+        <property name="qtest.dir" value="${test.dir}/qtest"/>
+        <property name="junit.dir" value="${test.dir}/junit"/>
+
+        <delete dir="${test.dir}"/>
+        <mkdir dir="${qtest.dir}"/>
+        <mkdir dir="${junit.dir}"/>
+        
+        <copy todir="${basedir}/${qtest.dir}">
+            <fileset dir="${amarok.test.dir}"
+                includes="**/*.xml"/>
+        </copy>
+        <xslt destdir="tests/junit" style="qtestxml2junitxml.xsl">
+            <include name="${qtest.dir}/*.xml" />
+            <mapper
+                type="regexp"
+                from="^${qtest.dir}/(.*).xml$"
+                to="TEST-\1Test.xml" />
+        </xslt>
+        
+        <delete dir="${bamboo.test.dir}"/>
+        <copy todir="${bamboo.test.dir}">
+            <fileset dir="${junit.dir}"/>
+        </copy>
+        <delete dir="${test.dir}"/>
+    </target>
+</project>
