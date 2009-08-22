@@ -98,7 +98,6 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
 
     g_type_init();
     m_success = false;
-
 }
 
 IpodHandler::~IpodHandler()
@@ -121,7 +120,6 @@ IpodHandler::init()
         m_memColl->slotAttemptConnectionDone( false );
         return;
     }
-
 
     GError *err = 0;
     QString initError = i18n( "iPod was not initialized:" );
@@ -282,8 +280,6 @@ IpodHandler::init()
             KMessageBox::information( 0, i18n( "%1 you chose not to initialize the iPod. It will not be usable until it is initialized.", initError), initErrorCaption );
             m_success = false;
         }
-
-
     }
     else
         m_success = true;
@@ -419,6 +415,7 @@ IpodHandler::findStale()
 bool
 IpodHandler::findOrphaned()
 {
+    m_orphanedPaths.clear();
     m_orphanedPaths = orphanedTracks();
     return true;
 }
