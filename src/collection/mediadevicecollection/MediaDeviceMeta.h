@@ -127,9 +127,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual Amarok::Collection* collection() const;
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-//    virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
-
 
         //MediaDeviceTrack specific methods
 
@@ -143,7 +141,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         void setType( const QString & type );
 
         void setLength( int length );
-    void setPlayableUrl( const KUrl &url) { m_playableUrl = url; }
+        void setPlayableUrl( const KUrl &url) { m_playableUrl = url; }
 
     private:
         MediaDeviceCollection *m_collection;

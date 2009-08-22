@@ -754,7 +754,7 @@ MediaDeviceAlbum::MediaDeviceAlbum( MediaDeviceCollection *collection, const QSt
     , m_name( name )
     , m_tracks()
     , m_isCompilation( false )
-    , m_hasImage( false )
+    , m_hasImage( true ) // assume it has a cover until proven otherwise
     , m_hasImageChecked( false )
     , m_image( QPixmap() )
     , m_albumArtist( 0 )
@@ -812,43 +812,45 @@ MediaDeviceAlbum::tracks()
 bool
 MediaDeviceAlbum::hasImage( int size ) const
 {
+    Q_UNUSED( size )
+
     if( !m_hasImageChecked )
-        m_hasImage = ! const_cast<MediaDeviceAlbum*>( this )->image( size ).isNull();
+        m_hasImage = ! const_cast<MediaDeviceAlbum*>( this )->image().isNull();
     return m_hasImage;
 }
 
 QPixmap
 MediaDeviceAlbum::image( int size )
 {
-    // NOTE: commented out while porting to
-    // new infrastructure
-    if( m_name.isEmpty() )
+    if( m_name.isEmpty() || !m_hasImage )
         return Meta::Album::image( size );
-    else
-    {
-        if( !m_image.isNull() )
-        {
-            if( !size )
-                return m_image;
-            return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
-        }
-        MediaDeviceHandler *handler = m_collection->handler();
-        if( handler && handler->hasCapabilityInterface( Handler::Capability::Artwork ) )
-        {
-            Handler::ArtworkCapability *ac = handler->create<Handler::ArtworkCapability>();
-            if( ac )
-            {
-                MediaDeviceTrackPtr track = MediaDeviceTrackPtr::dynamicCast( m_tracks.first() );
-                QPixmap cover = ac->getCover( track );
 
-                if( !cover.isNull() )
-                {
-                    m_image = cover;
-                    if( !size )
-                        return m_image;
-                    return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
-                }
+    if( !m_image.isNull() )
+    {
+        if( !size )
+            return m_image;
+        return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
+    }
+    MediaDeviceHandler *handler = m_collection->handler();
+    if( handler && handler->hasCapabilityInterface( Handler::Capability::Artwork ) )
+    {
+        Handler::ArtworkCapability *ac = handler->create<Handler::ArtworkCapability>();
+        if( ac )
+        {
+            MediaDeviceTrackPtr track = MediaDeviceTrackPtr::dynamicCast( m_tracks.first() );
+            QPixmap cover = ac->getCover( track );
+
+            if( !cover.isNull() )
+            {
+                m_hasImage = true;
+                m_image = cover;
+                if( !size )
+                    return m_image;
+                return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
             }
+            else
+                m_hasImage = false;
+            m_hasImageChecked = true;
         }
     }
     return Meta::Album::image( size );

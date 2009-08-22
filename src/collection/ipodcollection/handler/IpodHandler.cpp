@@ -1696,7 +1696,6 @@ QPixmap
 IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 {
 #ifdef GDK_FOUND
-    AMAROK_NOTIMPLEMENTED
     Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
     if( !ipodtrack )
         return QPixmap();
