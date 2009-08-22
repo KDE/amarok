@@ -219,7 +219,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         virtual void removeImage();
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-        virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         //MediaDeviceAlbum specific methods
 

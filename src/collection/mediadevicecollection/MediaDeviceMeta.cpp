@@ -904,7 +904,7 @@ MediaDeviceAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-MediaDeviceAlbum::asCapabilityInterface( Meta::Capability::Type type )
+MediaDeviceAlbum::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {
@@ -929,7 +929,6 @@ MediaDeviceAlbum::asCapabilityInterface( Meta::Capability::Type type )
                     unsetCoverAction->setEnabled( false );
                 }
                 actions.append( unsetCoverAction );
-
             }
             return new CustomActionsCapability( actions );
         }
