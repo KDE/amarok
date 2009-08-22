@@ -115,7 +115,7 @@ ViewUrlRunner::command() const
 KIcon
 ViewUrlRunner::icon() const
 {
-    return KIcon( "flag-amarok" );
+    return KIcon( "view-sort-ascending" );
 }
 
 } //namespace Playlist
