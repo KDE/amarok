@@ -46,7 +46,7 @@ find_library(MYSQL_LIBRARIES NAMES ${MYSQL_CLIENT_LIBRARY_NAME}
    /opt/ports/lib/mysql5/mysql
 )
 
-find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld libmysqld
+find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld_pic mysqld libmysqld
    PATHS
    ~/usr/lib/mysql
    /opt/local/lib/mysql5/mysql
