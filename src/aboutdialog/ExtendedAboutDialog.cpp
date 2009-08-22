@@ -156,7 +156,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     QPixmap openDesktopPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/opendesktop.png" ) );
     QIcon openDesktopIcon = QIcon( openDesktopPixmap );
     m_showOcsButton = new AnimatedBarWidget( openDesktopIcon,
-                                 i18n( "Connect to openDesktop.org to learn more about the team" ),
+                                 i18n( "Get data from openDesktop.org to learn more about the team" ),
                                  "process-working", m_authorWidget );
     connect( m_showOcsButton, SIGNAL( clicked() ), this, SLOT( setupOcsAuthorWidget() ) );
     connect( m_showOcsButton, SIGNAL( clicked() ), m_showOcsButton, SLOT( animate() ) );
@@ -326,34 +326,36 @@ ExtendedAboutDialog::setupOfflineAuthorWidget()
 void
 ExtendedAboutDialog::setupOcsAuthorWidget()
 {
-    m_offlineAuthorWidget->hide();
-
-    m_ocsAuthorWidget = new OcsPersonListWidget( m_authorWidget );
-    m_authorWidget->layout()->addWidget( m_ocsAuthorWidget );
-    connect( m_ocsAuthorWidget, SIGNAL( personAdded( int ) ), this, SLOT( onPersonAdded( int ) ) );
-
     //TODO: Ask Solid if the network is available.
 
-    Attica::PersonJob *personJob;
-    for( QList< QPair< QString, KAboutPerson > >::const_iterator author = m_ocsData.constBegin();
-            author != m_ocsData.constEnd(); ++author )
+    if( m_offlineAuthorWidget->isVisible() )
     {
-        QString userName = (*author).first;
-        if( !userName.isEmpty() )
+        m_offlineAuthorWidget->hide();
+
+        m_ocsAuthorWidget = new OcsPersonListWidget( m_authorWidget );
+        m_authorWidget->layout()->addWidget( m_ocsAuthorWidget );
+        connect( m_ocsAuthorWidget, SIGNAL( personAdded( int ) ), this, SLOT( onPersonAdded( int ) ) );
+
+        Attica::PersonJob *personJob;
+        for( QList< QPair< QString, KAboutPerson > >::const_iterator author = m_ocsData.constBegin();
+                author != m_ocsData.constEnd(); ++author )
         {
-            personJob = Attica::OcsApi::requestPerson( userName );
-            personJob->start();
-            connect( personJob, SIGNAL( result( KJob * ) ), this, SLOT( personJobFinished( KJob * ) ) );
+            QString userName = (*author).first;
+            if( !userName.isEmpty() )
+            {
+                personJob = Attica::OcsApi::requestPerson( userName );
+                personJob->start();
+                connect( personJob, SIGNAL( result( KJob * ) ), this, SLOT( personJobFinished( KJob * ) ) );
+            }
+            else
+            {
+                m_ocsAuthorWidget->addPerson( (*author).second );
+            }
         }
-        else
-        {
-            m_ocsAuthorWidget->addPerson( (*author).second );
-        }
+
+
+        m_ocsAuthorWidget->show();
     }
-
-
-    m_ocsAuthorWidget->show();
-
 }
 
 void

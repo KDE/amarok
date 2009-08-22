@@ -67,9 +67,9 @@ OcsPersonListWidget::addPersonPrivate( OcsAuthorItem *item )
         for( int i = m_areaLayout->count() - 1; i >= 0; --i )
         {
             QString currentName = qobject_cast< OcsAuthorItem * >( m_areaLayout->itemAt( i )->widget() )->name();
-            debug()<<"Inserting"<< currentName;
             if( name > currentName )
             {
+                debug()<<"Inserting"<< currentName;
                 m_areaLayout->insertWidget( i + 1, item );
                 break;
             }
