@@ -80,6 +80,7 @@ OcsAuthorItem::init()
 {
     m_textLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
     m_textLabel->setOpenExternalLinks( true );
+    m_textLabel->setContentsMargins( 5, 0, 0, 2 );
 
     m_aboutText.append( "<b>" + m_person->name() + "</b>" );
     m_aboutText.append( "<br/>" + m_person->task() );
@@ -89,7 +90,7 @@ OcsAuthorItem::init()
     m_iconsBar->setIconSize( QSize( 22, 22 ) );
     m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
 
-    KAction *email = new KAction( KIcon( "mail-mark-unread-new" ), "", this );
+    KAction *email = new KAction( KIcon( "internet-mail" ), "", this );
     email->setToolTip( m_person->emailAddress() );
     email->setData( QString( "mailto:" + m_person->emailAddress() ) );
     m_iconsBar->addAction( email );
@@ -97,17 +98,13 @@ OcsAuthorItem::init()
 
     if( !m_person->webAddress().isEmpty() )
     {
-        KAction *homepage = new KAction( KIcon( "internet-web-browser" ), "", this );
+        KAction *homepage = new KAction( KIcon( "applications-internet" ), "", this );
         homepage->setToolTip( m_person->webAddress() );
         homepage->setData( m_person->webAddress() );
         m_iconsBar->addAction( homepage );
     }
 
     connect( m_iconsBar, SIGNAL( actionTriggered( QAction * ) ), this, SLOT( launchUrl( QAction * ) ) );
-
-//    m_aboutText.append( QString( "<br/><a href=\"mailto:%1\">%1</a>" ).arg( m_person->emailAddress() ) );
-//    if( !m_person->webAddress().isEmpty() )
-//        m_aboutText.append( QString( "<br/><a href=\"%3\">%3</a>" ).arg( m_person->webAddress() ) );
 }
 
 OcsAuthorItem::~OcsAuthorItem()
