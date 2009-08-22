@@ -751,6 +751,7 @@ MediaDeviceArtist::remTrack( MediaDeviceTrackPtr track )
 MediaDeviceAlbum::MediaDeviceAlbum( MediaDeviceCollection *collection, const QString &name )
     : Meta::Album()
     , m_collection( collection )
+    , m_artworkCapability( 0 )
     , m_name( name )
     , m_tracks()
     , m_isCompilation( false )
@@ -758,8 +759,10 @@ MediaDeviceAlbum::MediaDeviceAlbum( MediaDeviceCollection *collection, const QSt
     , m_hasImageChecked( false )
     , m_image( QPixmap() )
     , m_albumArtist( 0 )
-{
-    //nothing to do
+{ 
+    MediaDeviceHandler *handler = m_collection->handler();
+    if( handler && handler->hasCapabilityInterface( Handler::Capability::Artwork ) )
+        m_artworkCapability = handler->create<Handler::ArtworkCapability>();
 }
 
 MediaDeviceAlbum::~MediaDeviceAlbum()
@@ -831,27 +834,22 @@ MediaDeviceAlbum::image( int size )
             return m_image;
         return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
     }
-    MediaDeviceHandler *handler = m_collection->handler();
-    if( handler && handler->hasCapabilityInterface( Handler::Capability::Artwork ) )
+    if( m_artworkCapability )
     {
-        Handler::ArtworkCapability *ac = handler->create<Handler::ArtworkCapability>();
-        if( ac )
-        {
-            MediaDeviceTrackPtr track = MediaDeviceTrackPtr::dynamicCast( m_tracks.first() );
-            QPixmap cover = ac->getCover( track );
+        MediaDeviceTrackPtr track = MediaDeviceTrackPtr::dynamicCast( m_tracks.first() );
+        QPixmap cover = m_artworkCapability->getCover( track );
 
-            if( !cover.isNull() )
-            {
-                m_hasImage = true;
-                m_image = cover;
-                if( !size )
-                    return m_image;
-                return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
-            }
-            else
-                m_hasImage = false;
-            m_hasImageChecked = true;
+        if( !cover.isNull() )
+        {
+            m_hasImage = true;
+            m_image = cover;
+            if( !size )
+                return m_image;
+            return m_image.scaled( QSize( size, size ), Qt::KeepAspectRatio );
         }
+        else
+            m_hasImage = false;
+        m_hasImageChecked = true;
     }
     return Meta::Album::image( size );
 }
@@ -859,13 +857,8 @@ MediaDeviceAlbum::image( int size )
 bool
 MediaDeviceAlbum::canUpdateImage() const
 {
-    MediaDeviceHandler *handler = m_collection->handler();
-    if( handler && handler->hasCapabilityInterface( Handler::Capability::Artwork ) )
-    {
-        Handler::ArtworkCapability *ac = handler->create<Handler::ArtworkCapability>();
-        if( ac )
-            return ac->canUpdateCover();
-    }
+    if( m_artworkCapability )
+        return m_artworkCapability->canUpdateCover();
     return false;
 }
 
@@ -875,8 +868,8 @@ MediaDeviceAlbum::setImage( const QPixmap &pixmap )
 {
     m_image = pixmap;
     m_hasImage = true;
-   // foreach( TrackPtr track, m_tracks )
-   //     MediaDeviceTrackPtr::staticCast(track)->updateItdb();
+    //if( m_artworkCapability )
+    //    return m_artworkCapability->setImage( pixmap );
 }
 
 void
@@ -884,8 +877,8 @@ MediaDeviceAlbum::setImagePath( const QString &path )
 {
     m_coverPath = path;
     m_hasImage = true;
-   // foreach( TrackPtr track, m_tracks )
-   //     MediaDeviceTrackPtr::staticCast(track)->updateItdb();
+    //if( m_artworkCapability )
+    //    return m_artworkCapability->setImagePath( pixmap );
 }
 
 // TODO: forward call to handler to remove image, etc.

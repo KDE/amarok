@@ -27,6 +27,8 @@
 class MediaDeviceCollection;
 class QAction;
 
+namespace Handler { class ArtworkCapability; }
+
 namespace Meta
 {
 
@@ -48,7 +50,6 @@ typedef QList<MediaDeviceTrackPtr> MediaDeviceTrackList;
 
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
 {
-
     public:
         MediaDeviceTrack( MediaDeviceCollection *collection );
         virtual ~MediaDeviceTrack();
@@ -228,6 +229,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
 
     private:
         MediaDeviceCollection *m_collection;
+
+        Handler::ArtworkCapability *m_artworkCapability;
 
         QString         m_name;
         QString         m_coverPath;
