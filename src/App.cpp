@@ -592,7 +592,7 @@ App::runUnitTests()
     DEBUG_BLOCK
     QStringList testArgumentList;
     QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + "/" );
-    testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v1";
+    testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v2";
 
     // create log folder for this run:
     QDir logDir( logPath );
