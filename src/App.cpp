@@ -26,7 +26,6 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "firstruntutorial/FirstRunTutorial.h"
-#include "MainWindow.h"
 #include "Meta.h"
 #include "meta/MetaConstants.h"
 #include "MountPointManager.h"
@@ -413,7 +412,12 @@ App::handleCliArgs() //static
     }
 
     if( !firstTime && !haveArgs )
-        pApp->mainWindow()->activate();
+    {
+        // mainWindow() can be 0 if another instance is loading, see https://bugs.kde.org/show_bug.cgi?id=202713
+        if( pApp->mainWindow() )
+            pApp->mainWindow()->activate();
+    }
+    
     firstTime = false;
 
 #ifdef DEBUG

@@ -20,6 +20,7 @@
 #include <config-amarok.h>  
 
 #include "amarok_export.h"
+#include "MainWindow.h"
 
 #include <KAboutData>
 #include <KUniqueApplication>   //baseclass
@@ -38,7 +39,6 @@ typedef QList< QPair< QString, KAboutPerson > > OcsData;
 namespace KIO { class Job; }
 
 class KJob;
-class MainWindow;
 class MediaDeviceManager;
 class KSplashScreen;
 
@@ -95,10 +95,10 @@ class AMAROK_EXPORT App : public KUniqueApplication
     private:
         // ATTRIBUTES ------
         bool                 m_isUniqueInstance;
-        MainWindow          *m_mainWindow;
-        Amarok::TrayIcon    *m_tray;
-        MediaDeviceManager  *m_mediaDeviceManager;
-        KSplashScreen       *m_splash;
+        QPointer<MainWindow> m_mainWindow;
+        Amarok::TrayIcon     *m_tray;
+        MediaDeviceManager   *m_mediaDeviceManager;
+        KSplashScreen        *m_splash;
 };
 
 #define pApp static_cast<App*>(kapp)
