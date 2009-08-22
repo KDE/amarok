@@ -90,7 +90,7 @@ OcsAuthorItem::init()
     m_iconsBar->setIconSize( QSize( 22, 22 ) );
     m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
 
-    KAction *email = new KAction( KIcon( "internet-mail" ), "", this );
+    KAction *email = new KAction( KIcon( "internet-mail" ), i18n("Email contributor"), this );
     email->setToolTip( m_person->emailAddress() );
     email->setData( QString( "mailto:" + m_person->emailAddress() ) );
     m_iconsBar->addAction( email );
@@ -98,7 +98,7 @@ OcsAuthorItem::init()
 
     if( !m_person->webAddress().isEmpty() )
     {
-        KAction *homepage = new KAction( KIcon( "applications-internet" ), "", this );
+        KAction *homepage = new KAction( KIcon( "applications-internet" ), i18n("Visit contributor's homepage"), this );
         homepage->setToolTip( m_person->webAddress() );
         homepage->setData( m_person->webAddress() );
         m_iconsBar->addAction( homepage );
