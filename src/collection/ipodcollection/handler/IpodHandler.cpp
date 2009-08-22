@@ -480,12 +480,7 @@ IpodHandler::slotOrphaned()
                                                          i18n("Find Orphaned Tracks") ) == KMessageBox::Continue;
 
     if( init )
-    {
         ThreadWeaver::Weaver::instance()->enqueue( new OrphanedWorkerThread( this ) );
-    } // init
-
-
-
 }
 
 bool
