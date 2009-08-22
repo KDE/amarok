@@ -45,13 +45,25 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
     if( !m_ocsPerson->extendedAttribute( "ircchannels" ).isEmpty() )
     {
         QString channelsString = m_ocsPerson->extendedAttribute( "ircchannels" );
-        //FIXME: Learn regexps, extract channel names and feed them into links.
-        //QRegExp channelRegExp = QRegExp( "(#\\S*)([,\\s]+$)", Qt::CaseInsensitive );
-        //channelRegExp.indexIn( channelsString );
-        //QStringList channels = channelRegExp.capturedTexts();
-        //debug()<< "Irc channels are" << channels;
-        //  irc://irc.freenode.org/
-        m_aboutText.append( "<br/>" + m_ocsPerson->extendedAttribute( "ircchannels" ) );
+        //We extract the channel names from the string provided by OCS:
+        QRegExp channelrx = QRegExp( "#+[\\w\\.\\-\\/!()+]+([\\w\\-\\/!()+]?)", Qt::CaseInsensitive );
+        QStringList channels;
+        int pos = 0;
+        while( ( pos = channelrx.indexIn( channelsString, pos ) ) != -1 )
+        {
+            channels << channelrx.cap( 0 );
+            pos += channelrx.matchedLength();
+        }
+
+        m_aboutText.append( "<br/>" );
+        QString link;
+        foreach( QString channel, channels )
+        {
+            QString channelName = channel;
+            channelName.remove( "#" );
+            link = QString( "irc://irc.freenode.org/%1" ).arg( channelName );
+            m_aboutText.append( QString( "<a href=\"%1\">%2</a>" ).arg( link, channel ) + "  " );
+        }
     }
     KAction *visitProfile = new KAction( KIcon( QPixmap( KStandardDirs::locate( "data",
             "amarok/images/opendesktop.png" ) ) ), i18n( "Visit openDesktop.org profile" ), this );
