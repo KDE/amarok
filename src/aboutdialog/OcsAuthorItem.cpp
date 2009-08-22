@@ -55,7 +55,7 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
             pos += channelrx.matchedLength();
         }
 
-        m_aboutText.append( "<br/>" );
+        m_aboutText.append( "<br/>" + i18n("IRC channels: ") );
         QString link;
         foreach( QString channel, channels )
         {
@@ -65,6 +65,15 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
             m_aboutText.append( QString( "<a href=\"%1\">%2</a>" ).arg( link, channel ) + "  " );
         }
     }
+    if( !m_ocsPerson->extendedAttribute( "favouritemusic" ).isEmpty() )
+    {
+        QStringList artists = m_ocsPerson->extendedAttribute( "favouritemusic" ).split( ", " );
+        //TODO: make them clickable
+        m_aboutText.append( "<br/>" + i18n( "Favorite music: " ) + artists.join( ", " ) );
+
+    }
+
+
     KAction *visitProfile = new KAction( KIcon( QPixmap( KStandardDirs::locate( "data",
             "amarok/images/opendesktop.png" ) ) ), i18n( "Visit openDesktop.org profile" ), this );
     visitProfile->setToolTip( i18n( "Visit the contributor's profile on openDesktop.org" ) );
