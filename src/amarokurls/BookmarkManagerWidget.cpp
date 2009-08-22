@@ -71,6 +71,7 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_bookmarkView->setModel( m_proxyModel );
     m_bookmarkView->setProxy( m_proxyModel );
     m_bookmarkView->setSortingEnabled( true );
+    m_bookmarkView->resizeColumnToContents( 0 );
 
     connect( BookmarkModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_bookmarkView, SLOT( slotEdit( const QModelIndex & ) ) );
 
