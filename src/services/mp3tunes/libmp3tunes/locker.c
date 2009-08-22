@@ -351,8 +351,8 @@ static xml_xpath_t* mp3tunes_locker_api_simple_fetch(mp3tunes_locker_object_t *o
     curl_easy_setopt( request->curl, CURLOPT_NOPROGRESS, 1 );
 
     res = curl_easy_perform(request->curl);
-    curl_easy_cleanup(request->curl);
-    free(request);
+/*    curl_easy_cleanup(request->curl); */
+    mp3tunes_request_deinit(&request);
 
     if (res != CURLE_OK) {
         chunk_deinit(&chunk);
@@ -397,8 +397,8 @@ static xml_xpath_t* mp3tunes_locker_api_post_fetch(mp3tunes_locker_object_t *obj
     curl_easy_setopt( request->curl, CURLOPT_NOPROGRESS, 1 );
 
     res = curl_easy_perform(request->curl);
-    curl_easy_cleanup(request->curl);
-    free(request);
+/*    curl_easy_cleanup(request->curl); */
+    mp3tunes_request_deinit(&request);
 
     if (res != CURLE_OK) {
         chunk_deinit(&chunk);
@@ -502,8 +502,8 @@ int mp3tunes_locker_session_valid(mp3tunes_locker_object_t *obj) {
     curl_easy_setopt( request->curl, CURLOPT_NOPROGRESS, 1 );
 
     res = curl_easy_perform(request->curl);
-    curl_easy_cleanup(request->curl);
-    free(request);
+/*    curl_easy_cleanup(request->curl); */
+    mp3tunes_request_deinit(&request);
 
     if (res != CURLE_OK) {
         chunk_deinit(&chunk);
@@ -1498,8 +1498,8 @@ int mp3tunes_locker_upload_track(mp3tunes_locker_object_t *obj, const char *path
     curl_easy_setopt( request->curl, CURLOPT_USERAGENT, "liboboe/1.0" );
     /*printf("uploading...\n");*/
     res = curl_easy_perform(request->curl);
-    curl_easy_cleanup(request->curl);
-    free(request);
+/*    curl_easy_cleanup(request->curl); */
+    mp3tunes_request_deinit(&request);
     free(url);
 
     fclose(hd_src); /* close the local file */
