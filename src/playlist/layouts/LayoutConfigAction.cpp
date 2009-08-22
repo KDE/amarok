@@ -52,7 +52,6 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     }
     m_layoutMenu->addActions( m_layoutActions->actions() );
     int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
-    debug() << "About to check layout at index " << index;
     if( index > -1 )    //needed to avoid crash when created a layout which is moved by the LayoutManager when sorting alphabetically.
                         //this should be fixed by itself when layouts ordering will be supported in the LayoutManager
     m_layoutActions->actions()[ index ]->setChecked( true );
@@ -93,19 +92,17 @@ void Playlist::LayoutConfigAction::layoutListChanged()
     m_layoutMenu->clear();
     m_layoutMenu->addAction( m_configAction );
     m_layoutMenu->addSeparator();
+    
     foreach( QAction * action, m_layoutActions->actions() )
-    {
         delete action;
-    }
+    
     QStringList layoutsList( LayoutManager::instance()->layouts() );
-    debug() << "Layouts are " << layoutsList;
     foreach( QString iterator, layoutsList )
-    {
         m_layoutActions->addAction( iterator )->setCheckable( true );
-    }
+    
     m_layoutMenu->addActions( m_layoutActions->actions() );
+    
     int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
-    debug() << "About to check layout at index " << index;
     if( index > -1 )    //needed to avoid crash when created a layout which is moved by the LayoutManager when sorting alphabetically.
                         //this should be fixed by itself when layouts ordering will be supported in the LayoutManager
         m_layoutActions->actions()[ index ]->setChecked( true );
@@ -118,7 +115,6 @@ void LayoutConfigAction::onActiveLayoutChanged()
     if( layoutName != QString( "%%PREVIEW%%" ) )           //if it's not just a preview
     {
         int index = LayoutManager::instance()->layouts().indexOf( layoutName );
-        debug() << "Index in the LayoutManager of currently active layout, called " << LayoutManager::instance()->activeLayoutName() << ", is: " << index;
         if( index != -1 && m_layoutActions->actions()[ index ] != m_layoutActions->checkedAction() )
             m_layoutActions->actions()[ index ]->setChecked( true );
     }

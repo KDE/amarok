@@ -97,7 +97,6 @@ void LayoutManager::loadUserLayouts()
     for ( int i = 0; i < list.size(); ++i )
     {
         QFileInfo fileInfo = list.at(i);
-        debug() << "found user file: " << fileInfo.fileName();
         loadLayouts( layoutsDir.filePath( fileInfo.fileName() ), true );
     }
 }
@@ -245,7 +244,6 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     newLayout.appendChild( createItemElement( doc, "group_head", layout.head() ) );
     newLayout.appendChild( createItemElement( doc, "group_body", layout.body() ) );
 
-    debug() << doc.toString();
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
     //make sure that this dir exists
@@ -323,10 +321,9 @@ void LayoutManager::deleteLayout( const QString &layout )
     {
         QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
         QString xmlFile = layoutsDir.path() + '/' + layout + ".xml";
-        debug() << "deleting file: " << xmlFile;
        
         if ( !QFile::remove( xmlFile ) )
-            debug() << "error deleting file....";
+            debug() << "error deleting file" << xmlFile;
 
         m_layouts.remove( layout );
         m_layoutNames.removeAll( layout );

@@ -160,7 +160,6 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
         return;
     }
 
-    debug() << "Creating new layout " << layoutName;
     PlaylistLayout layout;
     layout.setEditable( true );      //Should I use true, TRUE or 1?
     layout.setDirty( true );
@@ -202,7 +201,6 @@ void PlaylistLayoutEditDialog::copyLayout()
         KMessageBox::sorry( this, i18n( "Cannot create a layout with the same name as an existing layout." ), i18n( "Layout name error" ) );
         return;
     }
-    debug() << "Copying layout " << layoutName;
     //layoutListWidget->addItem( layoutName );
     PlaylistLayout layout;
     layout.setEditable( true );      //Should I use true, TRUE or 1?
@@ -260,7 +258,6 @@ void PlaylistLayoutEditDialog::renameLayout()
         if( m_layoutsMap->keys().contains( layoutName ) )
             KMessageBox::sorry( this, i18n( "Cannot rename a layout to have the same name as an existing layout." ), i18n( "Layout name error" ) );
     }
-    debug() << "Renaming layout " << layoutName;
     m_layoutsMap->remove( layoutListWidget->currentItem()->text() );
     if( LayoutManager::instance()->layouts().contains( layoutListWidget->currentItem()->text() ) )  //if the layout is already saved in the LayoutManager
         LayoutManager::instance()->deleteLayout( layoutListWidget->currentItem()->text() );         //delete it
@@ -278,7 +275,6 @@ void PlaylistLayoutEditDialog::renameLayout()
 void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
 {
     m_layoutName = layoutName;
-    debug()<< "Trying to load layout for configuration " << layoutName;
 
     if( m_layoutsMap->keys().contains( layoutName ) )   //is the layout exists in the list of loaded layouts
     {
@@ -290,7 +286,6 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
     }
     else
     {
-        debug() << "Empty layout, clearing config view";
         m_headEdit->clear();
         m_bodyEdit->clear();
         m_singleEdit->clear();
@@ -356,10 +351,8 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
     QMap<QString, PlaylistLayout>::Iterator i = m_layoutsMap->begin();
     while( i != m_layoutsMap->end() )
     {
-        debug() << "I'm on layout " << i.key();
         if( i.value().isDirty() )
         {
-            debug() << "Layout " << i.key() << " has been modified and will be saved.";
             if ( LayoutManager::instance()->isDefaultLayout( i.key() ) )
             {
                 const QString msg = i18n( "The layout '%1' you modified is one of the default layouts and cannot be overwritten. "
@@ -378,7 +371,6 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
             i.value().setInlineControls( inlineControlsChekbox->isChecked() );
             i.value().setDirty( false );
             LayoutManager::instance()->addUserLayout( i.key(), i.value() );
-            debug() << "Layout " << i.key() << " saved to LayoutManager";
         }
         i++;
     }
