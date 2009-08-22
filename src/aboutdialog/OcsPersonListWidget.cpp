@@ -24,22 +24,6 @@
 OcsPersonListWidget::OcsPersonListWidget( QWidget *parent )
     : QWidget( parent )
 {
-//TODO: add a spinner when I implement asynchronious download
-/*
-    QWidget *animatedBack = new QWidget( m_authorWidget );
-    m_authorWidget->layout()->addWidget( animatedBack );
-    AnimatedWidget *animatedWidget = new AnimatedWidget( "process-working", animatedBack );
-    QVBoxLayout *animatedLayout = new QVBoxLayout( animatedBack );
-    animatedBack->setLayout( animatedLayout );
-
-    animatedLayout->addSpacerItem( new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding) );
-    animatedLayout->addWidget( animatedWidget );
-    animatedWidget->setFixedSize( 22, 22 );
-
-    animatedLayout->addSpacerItem( new QSpacerItem(10, 10, QSizePolicy::Expanding, QSizePolicy::Expanding) );
-    animatedWidget->start();
-*/
-
     //Set up the layouts...
     QHBoxLayout *scrollLayout = new QHBoxLayout( this );
     scrollLayout->setMargin( 1 );
@@ -57,8 +41,6 @@ OcsPersonListWidget::OcsPersonListWidget( QWidget *parent )
     personsScrollArea->setWidgetResizable( true );
     personsScrollArea->setWidget( m_personsArea );
     m_personsArea->show();
-//    delete animatedBack;
-
 }
 
 void

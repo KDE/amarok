@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Add openDesktop.org support to the About dialog to make it easier
+      to interact with the Amarok team.
     * Add inline editing of track metadata in the playlist. 
     * The Playlist supports different grouping modes.
     * The playlist can be partly or fully randomized (shuffled) by 
