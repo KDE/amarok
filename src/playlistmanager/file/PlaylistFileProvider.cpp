@@ -162,6 +162,23 @@ bool
 PlaylistFileProvider::import( const KUrl &path )
 {
     DEBUG_BLOCK
+    foreach( const Meta::PlaylistPtr playlist, m_playlists )
+    {
+        Meta::PlaylistFilePtr playlistFile =
+                Meta::PlaylistFilePtr::dynamicCast( playlist );
+        if( !playlistFile )
+        {
+            error() << "Could not cast down.";
+            error() << "m_playlists got corrupted! " << __FILE__ << ":" << __LINE__;
+            continue;
+        }
+        if( playlistFile->retrievableUrl() == path )
+        {
+            debug() << "Playlist " << path.path() << " was already imported";
+            return false;
+        }
+    }
+
     debug() << "Importing playlist file " << path;
     if( path == Playlist::ModelStack::instance()->source()->defaultPlaylistPath() )
     {
