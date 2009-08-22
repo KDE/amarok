@@ -35,6 +35,16 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
 {
     resetVariables();
 
+    //HACK work around a bug in liblastfm---it doesn't create its config dir, so when it
+    // tries to write the track cache, it fails silently. until we have a fixed version, do this
+    // path finding code taken from liblastfm/src/misc.cpp
+    QString lpath = QDir::home().filePath( ".local/share/Last.fm" );
+    QDir ldir = QDir( lpath );
+    if( !ldir.exists() )
+    {
+        ldir.mkpath( lpath );
+    }
+    
     connect( The::mainWindow(), SIGNAL( loveTrack(Meta::TrackPtr) ), SLOT( loveTrack(Meta::TrackPtr) ) );
 }
 
