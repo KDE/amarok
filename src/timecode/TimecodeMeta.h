@@ -183,15 +183,15 @@ private:
 
     enum
     {
-        ALBUM_UPDATED = 1,
-        ARTIST_UPDATED = 2,
-        COMPOSER_UPDATED = 4,
-        GENRE_UPDATED = 8,
-        YEAR_UPDATED = 16,
-        TITLE_UPDATED = 32,
-        COMMENT_UPDATED = 64,
-        TRACKNUMBER_UPDATED = 128,
-        DISCNUMBER_UPDATED = 256
+        ALBUM_UPDATED       = 1 << 0,
+        ARTIST_UPDATED      = 1 << 1,
+        COMPOSER_UPDATED    = 1 << 2,
+        GENRE_UPDATED       = 1 << 3,
+        YEAR_UPDATED        = 1 << 4,
+        TITLE_UPDATED       = 1 << 5,
+        COMMENT_UPDATED     = 1 << 6,
+        TRACKNUMBER_UPDATED = 1 << 7,
+        DISCNUMBER_UPDATED  = 1 << 8
     };
 };
 

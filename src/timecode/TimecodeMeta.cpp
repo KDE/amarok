@@ -300,63 +300,63 @@ TimecodeTrack::type() const
 void
 TimecodeTrack::setAlbum( const QString &newAlbum )
 {
-    m_updatedFields &= ALBUM_UPDATED;
+    m_updatedFields |= ALBUM_UPDATED;
     m_fields.insert( ALBUM_UPDATED, newAlbum );
 }
 
 void
 TimecodeTrack::setArtist( const QString &newArtist )
 {
-    m_updatedFields &= ARTIST_UPDATED;
+    m_updatedFields |= ARTIST_UPDATED;
     m_fields.insert( ARTIST_UPDATED, newArtist );
 }
 
 void
 TimecodeTrack::setComposer( const QString &newComposer )
 {
-    m_updatedFields &= COMPOSER_UPDATED;
+    m_updatedFields |= COMPOSER_UPDATED;
     m_fields.insert( COMPOSER_UPDATED, newComposer );
 }
 
 void
 TimecodeTrack::setGenre( const QString &newGenre )
 {
-    m_updatedFields &= GENRE_UPDATED;
+    m_updatedFields |= GENRE_UPDATED;
     m_fields.insert( GENRE_UPDATED, newGenre );
 }
 
 void
 TimecodeTrack::setYear( const QString &newYear )
 {
-    m_updatedFields &= YEAR_UPDATED;
+    m_updatedFields |= YEAR_UPDATED;
     m_fields.insert( YEAR_UPDATED, newYear );
 }
 
 void
 TimecodeTrack::setTitle( const QString &newTitle )
 {
-    m_updatedFields &= TITLE_UPDATED;
+    m_updatedFields |= TITLE_UPDATED;
     m_fields.insert( TITLE_UPDATED, newTitle );
 }
 
 void
 TimecodeTrack::setComment( const QString &newComment )
 {
-    m_updatedFields &= COMMENT_UPDATED;
+    m_updatedFields |= COMMENT_UPDATED;
     m_fields.insert( COMMENT_UPDATED, newComment );
 }
 
 void
 TimecodeTrack::setTrackNumber( int newTrackNumber )
 {
-    m_updatedFields &= TRACKNUMBER_UPDATED;
+    m_updatedFields |= TRACKNUMBER_UPDATED;
     m_fields.insert( TRACKNUMBER_UPDATED, QString::number( newTrackNumber ) );
 }
 
 void
 TimecodeTrack::setDiscNumber( int newDiscNumber )
 {
-    m_updatedFields &= DISCNUMBER_UPDATED;
+    m_updatedFields |= DISCNUMBER_UPDATED;
     m_fields.insert( DISCNUMBER_UPDATED, QString::number( newDiscNumber ) );
 }
 
