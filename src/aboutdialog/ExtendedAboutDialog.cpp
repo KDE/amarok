@@ -362,7 +362,7 @@ ExtendedAboutDialog::personJobFinished( KJob *job )
 {
     Attica::PersonJob *personJob = qobject_cast< Attica::PersonJob * >( job );
     QString userName = personJob->person().id();
-    KAboutPerson *person;
+    KAboutPerson *person = 0;
     for( QList< QPair< QString, KAboutPerson > >::const_iterator it = m_ocsData.constBegin(); it != m_ocsData.constEnd(); ++it )
     {
         if( (*it).first == userName )
@@ -371,7 +371,8 @@ ExtendedAboutDialog::personJobFinished( KJob *job )
             break;
         }
     }
-    m_ocsAuthorWidget->addPerson( *person, personJob->person() );
+    if ( person )
+        m_ocsAuthorWidget->addPerson( *person, personJob->person() );
 }
 
 void
