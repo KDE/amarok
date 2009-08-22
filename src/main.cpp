@@ -64,6 +64,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Alejandro Wainzinger"), ki18n(( "Media device support" )), "aikawarazuni@gmail.com" );
     aboutData.addCredit( ki18n("Alex Merry"), ki18n(( "Developer, Replay gain support" )), "kde@randomguy3.me.uk" );
     aboutData.addCredit( ki18n("Casey Link"), ki18n(( "MP3tunes integration" )), "unnamedrambler@gmail.com" );
+    aboutData.addCredit( ki18n("Casper van Donderen"), ki18n(( "Windows porting" )), "casper.vandonderen@gmail.com" );
     aboutData.addCredit( ki18n("Christie Harris"), ki18n(( "Rokymoter (dangle)" )), "dangle.baby@gmail.com" );
     aboutData.addCredit( ki18n("Dan Leinir Turthra Jensen"), ki18n(( "Usability" )), "admin@leinir.dk" );
     aboutData.addCredit( ki18n("Daniel Caleb Jones"), ki18n(( "Biased playlists" )), "danielcjones@gmail.com" );
@@ -86,6 +87,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Soren Harward"), ki18n(( "Developer" )), "stharward@gmail.com" );
     aboutData.addCredit( ki18n("Sven Krohlas"), ki18n(( "Rokymoter (sven423)" )), "sven@asbest-online.de" );
     aboutData.addCredit( ki18n("Téo Mrnjavac"), ki18n(( "Developer" )), "teo.mrnjavac@gmail.com" );
+    aboutData.addCredit( ki18n("Wade Olson"), ki18n(( "Splash screen artist" )), "wade@corefunction.com" );
     aboutData.addCredit( ki18n("William Viana Soares"), ki18n(( "Context view" )), "vianasw@gmail.com" );
     aboutData.addCredit( ki18n("Former contributors"), ki18n(( "People listed below have contributed to Amarok in the past. Thank you!" )), "" );
     aboutData.addCredit( ki18n("Adam Pigg"), ki18n(( "Analyzers, patches, shoutcast" )), "adam@piggz.co.uk" );
