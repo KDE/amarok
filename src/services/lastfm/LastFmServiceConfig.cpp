@@ -36,7 +36,6 @@ LastFmServiceConfig::LastFmServiceConfig()
     
     if( !m_wallet && !config.hasKey( "ignoreWallet" ) )
     {
-        debug() << "asking for info from dialog";
         m_askDiag = new KDialog( 0 );
         m_askDiag->setCaption( i18n( "Last.fm credentials" ) );
         m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your Last.fm credentials in plaintext?" ), m_askDiag ) );
@@ -63,7 +62,6 @@ LastFmServiceConfig::~LastFmServiceConfig()
 void
 LastFmServiceConfig::load()
 {
-    debug() << "load config";
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     // delete info from kconfig, as a safety measure
 
@@ -94,10 +92,8 @@ LastFmServiceConfig::load()
             m_username = QString::fromUtf8( rawUsername );   
     } else if( config.readEntry( "ignoreWallet", QString() ) == "yes" )
     {
-        debug() << "loading saved config";
         m_username = config.readEntry( "username", QString() );
         m_password = config.readEntry( "password", QString() );
-        debug() << "loading saved config" << m_username << m_password;
     }
     
     m_sessionKey = config.readEntry( "sessionKey", QString() );
@@ -145,7 +141,6 @@ LastFmServiceConfig::reset()
 void
 LastFmServiceConfig::textDialogOK()
 {
-    DEBUG_BLOCK
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     config.writeEntry( "ignoreWallet", "yes" );
     config.sync();
@@ -155,7 +150,6 @@ LastFmServiceConfig::textDialogOK()
 void
 LastFmServiceConfig::textDialogCancel()
 {
-    DEBUG_BLOCK
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     config.writeEntry( "ignoreWallet", "no" );
     config.sync();
