@@ -385,9 +385,10 @@ MediaDeviceTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
     switch( type )
     {
         case Meta::Capability::Editable:
-            return true;
+            return m_collection ? m_collection->isWritable() : false;
+        
         case Meta::Capability::Updatable:
-            return true;
+            return m_collection ? m_collection->isWritable() : false;
 
         default:
             return false;
