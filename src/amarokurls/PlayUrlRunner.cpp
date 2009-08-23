@@ -64,9 +64,9 @@ QString PlayUrlRunner::command() const
 {
     return "play";
 }
+
 BookmarkList PlayUrlRunner::bookmarksFromUrl ( KUrl url )
 {
-    DEBUG_BLOCK
     BookmarkList list;
 
     //See PlayUrlGenerator for the description of a 'play' amarokurl
@@ -81,7 +81,6 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl ( KUrl url )
     // the base64 encoded url (minus the '=').
     QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks WHERE url LIKE '%%1%'";
     query = query.arg ( track_encoded );
-    debug() << "query: " << query;
     QStringList result = CollectionManager::instance()->sqlStorage()->query ( query );
 
     int resultRows = result.count() / 6;
