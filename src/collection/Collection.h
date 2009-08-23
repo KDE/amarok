@@ -84,12 +84,12 @@ class AMAROK_EXPORT CollectionBase : public QSharedData
 
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
-            /**
+        /**
          * Retrieves a specialized interface which represents a capability of this
          * MetaBase object.
          *
          * @returns a pointer to the capability interface if it exists, 0 otherwise
-             */
+         */
         template <class CapIface> CapIface *create()
         {
             Meta::Capability::Type type = CapIface::capabilityInterfaceType();
@@ -97,11 +97,11 @@ class AMAROK_EXPORT CollectionBase : public QSharedData
             return qobject_cast<CapIface *>(iface);
         }
 
-            /**
+        /**
          * Tests if a MetaBase object provides a given capability interface.
          *
          * @returns true if the interface is available, false otherwise
-             */
+         */
         template <class CapIface> bool is() const
         {
             return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
@@ -161,6 +161,10 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
          */
         virtual KIcon icon() const = 0;
 
+        /**
+         * A local collection cannot have a capacity since it may be spread over multiple
+         * physical locations (even network components)
+         */
         virtual bool hasCapacity() const { return false; }
         virtual float usedCapacity() const { return 0.0; }
         virtual float totalCapacity() const { return 0.0; }
