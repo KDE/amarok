@@ -520,12 +520,13 @@ set(amaroklib_LIB_SRCS
     ${scriptengine_SRCS}
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
+    aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
     aboutdialog/ExtendedAboutDialog.cpp
+    aboutdialog/FramedLabel.cpp
     aboutdialog/OcsData.cpp
     aboutdialog/OcsPersonItem.cpp
     aboutdialog/OcsPersonListWidget.cpp
-    aboutdialog/AnimatedBarWidget.cpp
     ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp

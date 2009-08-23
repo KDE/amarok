@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>497</width>
-    <height>49</height>
+    <width>495</width>
+    <height>47</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -61,7 +61,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="m_avatar">
+      <widget class="FramedLabel" name="m_avatar">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
          <horstretch>0</horstretch>
@@ -161,6 +161,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FramedLabel</class>
+   <extends>QLabel</extends>
+   <header>FramedLabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

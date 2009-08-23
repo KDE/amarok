@@ -24,6 +24,8 @@
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QPainter>
+#include <QStyleOption>
 
 OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const Attica::Person &ocsPerson, PersonStatus status, QWidget *parent )
     : QWidget( parent )
