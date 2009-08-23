@@ -59,7 +59,7 @@ int main( int argc, char *argv[] )
     ocsData.append( QPair< QString, KAboutPerson >("MarkKretschmann", aboutData.authors().at( 6 ) ) );
     ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 7 ) ) );
     ocsData.append( QPair< QString, KAboutPerson >("nhnFreespirit", aboutData.authors().at( 8 ) ) );
-    ocsData.append( QPair< QString, KAboutPerson >(QString(), aboutData.authors().at( 9 ) ) );
+    ocsData.append( QPair< QString, KAboutPerson >("seb", aboutData.authors().at( 9 ) ) );
 
     aboutData.addCredit( ki18n("Alejandro Wainzinger"), ki18n(( "Media device support" )), "aikawarazuni@gmail.com" );
     aboutData.addCredit( ki18n("Alex Merry"), ki18n(( "Developer, Replay gain support" )), "kde@randomguy3.me.uk" );
