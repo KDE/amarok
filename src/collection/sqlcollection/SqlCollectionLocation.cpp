@@ -17,6 +17,7 @@
 
 #include "SqlCollectionLocation.h"
 
+#include "AFTUtility.h"
 #include "Debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
@@ -217,10 +218,13 @@ SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackM
 {
     QList<QVariantMap > metadata;
     QStringList urls;
+    AFTUtility aftutil;
     foreach( const Meta::TrackPtr &track, trackMap.keys() )
     {
         QVariantMap trackData = Meta::Field::mapFromTrack( track );
         trackData.insert( Meta::Field::URL, trackMap[ track ] );  //store the new url of the file
+        // overwrite any uidUrl that came with the track with our own sql AFT one
+        trackData.insert( Meta::Field::UNIQUEID, QString( "amarok-sqltrackuid://" ) + aftutil.readUniqueId( trackMap[ track ] ) );
         metadata.append( trackData );
         urls.append( trackMap[ track ] );
     }
