@@ -101,14 +101,6 @@ EngineController::~EngineController()
 }
 
 void
-EngineController::createFadeoutEffect()
-{
-    m_fader = new Phonon::VolumeFaderEffect( this );
-    m_path.insertEffect( m_fader );
-    m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
-}
-
-void
 EngineController::initializePhonon()
 {
     DEBUG_BLOCK
@@ -117,7 +109,6 @@ EngineController::initializePhonon()
     delete m_controller;
     delete m_audio;
     delete m_preamp;
-    delete m_fader;
 
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
@@ -127,25 +118,17 @@ EngineController::initializePhonon()
 
     m_controller = new Phonon::MediaController( m_media );
 
-    // HACK we turn off replaygain and fader manually on OSX, until the phonon
-    // coreaudio backend is fixed as the default is specified in the .cfg file,
-    // we can't just tell it to be a different default on OSX
+    // HACK we turn off replaygain manually on OSX, until the phonon coreaudio backend is fixed.
+    // as the default is specified in the .cfg file, we can't just tell it to be a different default on OSX
 #ifdef Q_WS_MAC
     AmarokConfig::setReplayGainMode( AmarokConfig::EnumReplayGainMode::Off );
-    AmarokConfig::setFadeout( false );
 #endif
 
-    // only create pre-amp if we have replaygain on, VolumeFaderEffect can cause phonon issues
+    // only create pre-amp if we have replaygain on, preamp can cause phonon issues
     if( AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
         m_preamp = new Phonon::VolumeFaderEffect( this );
         m_path.insertEffect( m_preamp );
-    }
-
-    // only create fader if we have fadeout on, VolumeFaderEffect can cause phonon issues
-    if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() )
-    {
-        createFadeoutEffect();
     }
 
     m_media->setTickInterval( 100 );
@@ -166,10 +149,13 @@ EngineController::initializePhonon()
     connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
 
+    //TODO: The xine engine does not support crossfading. Cannot get the gstreamer engine to work, will test this once I do.
+#if 0
     if( AmarokConfig::trackDelayLength() > -1 )
         m_media->setTransitionTime( AmarokConfig::trackDelayLength() ); // Also Handles gapless.
     else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
         m_media->setTransitionTime( -AmarokConfig::crossfadeLength() );
+#endif
 }
 
 
@@ -285,15 +271,11 @@ EngineController::play() //SLOT
 {
     DEBUG_BLOCK
 
-    // FIXME: what should we do in BufferingState?
     if( m_media->state() == Phonon::PlayingState )
         return;
 
-    if ( m_fader )
-    {
-        m_fadeoutTimer->stop();
-        m_fader->setVolume(1.0);
-    }
+    if( m_fader )
+        m_fader->deleteLater();
 
     if ( m_media->state() == Phonon::PausedState )
     {
@@ -361,6 +343,7 @@ EngineController::playUrl( const KUrl &url, uint offset )
     slotStopFadeout();
 
     debug() << "URL: " << url.url();
+    /// TODO: commented out since audiocd needs porting to new devicelib framework, should not affect other urls
 
     if ( url.url().startsWith( "audiocd:/" ) )
     {
@@ -457,23 +440,22 @@ EngineController::stop( bool forceInstant ) //SLOT
         trackChangedNotify( Meta::TrackPtr( 0 ) );
     }
 
-    // Stop instantly if fadeout is already running, or if the media is not actually playing
-    if( m_fadeoutTimer->isActive() || m_media->state() != Phonon::PlayingState )
+    // Stop instantly if fadeout is already running, or the media is paused (i.e. pressing Stop twice)
+    if( m_fader || m_media->state() == Phonon::PausedState )
     {
         forceInstant = true;
     }
 
     if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() && !forceInstant )
     {
-        // WARNING: this can cause a gap in playback on GStreamer...
-        if ( !m_fader )
-            createFadeoutEffect();
+        stateChangedNotify( Phonon::StoppedState, Phonon::PlayingState ); //immediately disable Stop action
 
+        m_fader = new Phonon::VolumeFaderEffect( this );
+        m_path.insertEffect( m_fader );
+        m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
         m_fader->fadeOut( AmarokConfig::fadeoutLength() );
 
         m_fadeoutTimer->start( AmarokConfig::fadeoutLength() + 1000 ); //add 1s for good measure, otherwise seems to cut off early (buffering..)
-
-        stateChangedNotify( Phonon::StoppedState, m_media->state() );
     }
     else
         m_media->stop();
@@ -495,17 +477,12 @@ EngineController::playPause() //SLOT
     //this is used by the TrayIcon, PlayPauseAction and DBus
     debug() << "PlayPause: phonon state" << m_media->state();
 
-    switch ( m_media->state() )
-    {
-        case Phonon::PausedState:
-        case Phonon::StoppedState:
-        case Phonon::LoadingState:
-            play();
-            break;
-        default:
-            pause();
-            break;
-    }
+    if( m_media->state() == Phonon::PausedState ||
+        m_media->state() == Phonon::StoppedState ||
+        m_media->state() == Phonon::LoadingState )
+        play();
+    else
+        pause();
 }
 
 void
@@ -522,10 +499,9 @@ EngineController::seek( int ms ) //SLOT
         if ( m_boundedPlayback )
             seekTo = m_boundedPlayback->startPosition() + ms;
         else
-            seekTo = ms;
+           seekTo = ms;
 
         m_media->seek( static_cast<qint64>( seekTo ) );
-        // FIXME: is this correct for bounded playback?
         trackPositionChangedNotify( seekTo, true ); /* User seek */
     }
     else
@@ -654,15 +630,6 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     {
         play( track );
     }
-}
-
-Phonon::State
-EngineController::state() const
-{
-    if ( m_fadeoutTimer->isActive() )
-        return Phonon::StoppedState;
-    else
-        return phononMediaObject()->state();
 }
 
 bool
@@ -849,6 +816,9 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     else if( m_preamp )
         m_preamp->setVolumeDecibel( 0.0 );
 
+    // state never changes if tracks are queued, but we need this to update the caption
+    stateChangedNotify( m_media->state(), m_media->state() );
+
     trackChangedNotify( m_currentTrack );
     newTrackPlaying();
 }
@@ -857,6 +827,10 @@ void
 EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldState ) //SLOT
 {
     DEBUG_BLOCK
+
+    // Sanity checks:
+    if( newState == oldState )
+        return;
 
     // HACK:
     // The following check is an attempt to fix http://bugs.kde.org/show_bug.cgi?id=180339
@@ -873,10 +847,6 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
         initializePhonon();
         newState = Phonon::ErrorState;  // Indicate error
     }
-
-    // Sanity checks:
-    if( newState == oldState )
-        return;
 
     if( newState == Phonon::ErrorState )  // If media is borked, skip to next track
     {
@@ -909,16 +879,6 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
 
         else if( m_media->queue().isEmpty() )
             The::playlistActions()->requestNextTrack();
-    }
-
-    if ( m_fadeoutTimer->isActive() )
-    {
-        // We've stopped already as far as the rest of Amarok is concerned
-        if ( oldState == Phonon::PlayingState )
-            oldState = Phonon::StoppedState;
-
-        if ( oldState == newState )
-            return;
     }
 
     stateChangedNotify( newState, oldState );
@@ -1029,8 +989,8 @@ EngineController::slotStopFadeout() //SLOT
     m_fadeoutTimer->stop();
 
     if ( m_fader ) {
+        m_fader->deleteLater();
         m_media->stop();
-        m_fader->setVolume( 1.0 );
     }
 }
 
