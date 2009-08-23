@@ -22,6 +22,7 @@
 #include "ContextView.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "meta/MetaConstants.h"
 
 // KDE
 #include <KIO/Job>
@@ -104,6 +105,15 @@ void
 PhotosEngine::metadataChanged( Meta::TrackPtr track )
 {
     const bool hasChanged = track->artist()->name() != m_artist;
+    if ( hasChanged )
+        update();
+}
+
+void
+PhotosEngine::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+{
+    Q_UNUSED( trackChanged );
+    const bool hasChanged = newMetaData.value( Meta::valArtist ) != m_artist;
     if ( hasChanged )
         update();
 }

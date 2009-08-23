@@ -80,6 +80,16 @@ void SongkickEngine::metadataChanged( Meta::TrackPtr track )
     update();
 }
 
+void
+SongkickEngine::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+{
+    Q_UNUSED( trackChanged );
+    Q_UNUSED( newMetaData );
+    DEBUG_BLOCK
+
+    update();
+}
+
 void SongkickEngine::update()
 {
     DEBUG_BLOCK

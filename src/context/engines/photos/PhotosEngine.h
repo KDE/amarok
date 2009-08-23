@@ -19,6 +19,7 @@
 
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
+#include "EngineObserver.h"
 #include "meta/Meta.h"
 #include "PhotosInfo.h"
 
@@ -31,7 +32,7 @@ using namespace Context;
    *   This class provide photos from flickr
    *   
    */
-class PhotosEngine : public DataEngine, public ContextObserver, Meta::Observer
+class PhotosEngine : public DataEngine, public ContextObserver, Meta::Observer, public EngineObserver
 {
     Q_OBJECT
 public:
@@ -44,6 +45,8 @@ public:
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     void metadataChanged( Meta::TrackPtr track );
+    // inherited from EngineObserver
+    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
 protected:
     //reimplement from Plasma::DataEngine

@@ -120,6 +120,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
     protected:
         //Reimplemented from EngineObserver
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
+        virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
         //Reimplemented from Meta::Observer
         using Observer::metadataChanged;

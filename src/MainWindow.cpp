@@ -981,6 +981,13 @@ void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState
     }
 }
 
+void MainWindow::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if ( track )
+        metadataChanged( track );
+}
+
 void MainWindow::metadataChanged( Meta::TrackPtr track )
 {
     setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );

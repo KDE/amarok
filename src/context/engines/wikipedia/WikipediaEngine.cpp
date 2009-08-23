@@ -113,6 +113,12 @@ void WikipediaEngine::metadataChanged( Meta::TrackPtr track )
     update();
 }
 
+void
+WikipediaEngine::engineNewTrackPlaying()
+{
+    update();
+}
+
 void WikipediaEngine::update()
 {
     DEBUG_BLOCK

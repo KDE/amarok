@@ -21,6 +21,7 @@
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "context/LyricsManager.h"
+#include "EngineObserver.h"
 #include "meta/Meta.h"
 
 #include <kio/job.h>
@@ -35,7 +36,7 @@ NOTE: The QVariant data is structured like this:
 
 using namespace Context;
 
-class LyricsEngine : public DataEngine, public ContextObserver, public LyricsObserver, public Meta::Observer
+class LyricsEngine : public DataEngine, public ContextObserver, public LyricsObserver, public Meta::Observer, public EngineObserver
 {
     Q_OBJECT
 
@@ -56,7 +57,10 @@ public:
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     void metadataChanged( Meta::TrackPtr track );
-    
+
+    // reimplemented from EngineObserver
+    virtual void engineNewTrackPlaying();
+
 protected:
     bool sourceRequestEvent( const QString& name );
     

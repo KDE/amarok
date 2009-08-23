@@ -103,6 +103,12 @@ VideoclipEngine::metadataChanged( Meta::TrackPtr track )
         update();
 }
 
+void
+VideoclipEngine::engineNewTrackPlaying()
+{
+    update();
+}
+
 void VideoclipEngine::update()
 {
     DEBUG_BLOCK

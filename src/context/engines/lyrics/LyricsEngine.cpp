@@ -30,6 +30,7 @@ LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
     , LyricsObserver( LyricsManager::self() )
+    , EngineObserver( The::engineController() )
 {
     m_requested = true; // testing
 }
@@ -99,6 +100,12 @@ void LyricsEngine::metadataChanged( Meta::TrackPtr track )
 
     if( hasChanged )
         update();
+}
+
+void
+LyricsEngine::engineNewTrackPlaying()
+{
+    update();
 }
 
 void LyricsEngine::update()
