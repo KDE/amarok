@@ -401,7 +401,10 @@ class AbstractIpodWorkerThread : public ThreadWeaver::Job
             : ThreadWeaver::Job()
             , m_handler( handler )
             , m_success( false )
-        {}
+        {
+            connect( this, SIGNAL( done( ThreadWeaver::Job* ) ),
+                     this, SLOT( deleteLater() ), Qt::QueuedConnection );
+        }
 
         virtual ~AbstractIpodWorkerThread() {}
 
