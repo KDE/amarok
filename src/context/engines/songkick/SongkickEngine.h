@@ -20,7 +20,6 @@
 
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
-#include "EngineObserver.h"
 #include "meta/Meta.h"
 
 #include <kio/job.h>
@@ -32,7 +31,7 @@
 
 using namespace Context;
 
-class SongkickEngine : public DataEngine, public ContextObserver, Meta::Observer, public EngineObserver
+class SongkickEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
     Q_OBJECT
 
@@ -47,9 +46,6 @@ public:
     //reimplemented from Meta::Observer
     using Observer::metadataChanged;
     void metadataChanged( Meta::TrackPtr track );
-
-    // inherited from EngineObserver
-    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
 protected:
     bool sourceRequestEvent( const QString& name );

@@ -112,12 +112,6 @@ CurrentEngine::engineStateChanged(Phonon::State newState, Phonon::State )
 }
 
 void
-CurrentEngine::engineNewTrackPlaying()
-{
-    update();
-}
-
-void
 CurrentEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK

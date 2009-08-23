@@ -20,7 +20,6 @@
 #define AMAROK_WIKIPEDIA_ENGINE
 
 #include "ContextObserver.h"
-#include "EngineObserver.h"
 #include "meta/Meta.h"
 
 #include <context/DataEngine.h>
@@ -39,7 +38,7 @@ NOTE: The QVariant data is structured like this:
 
 using namespace Context;
 
-class WikipediaEngine : public DataEngine, public ContextObserver, Meta::Observer, public EngineObserver
+class WikipediaEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
     Q_OBJECT
     Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
@@ -52,9 +51,6 @@ public:
     
     // reimplemented from Context::Observer
     virtual void message( const ContextState& state );
-
-    // reimplemented from EngineObserver
-    virtual void engineNewTrackPlaying();
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;

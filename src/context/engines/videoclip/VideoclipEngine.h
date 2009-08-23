@@ -19,7 +19,6 @@
 
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
-#include "EngineObserver.h"
 #include "meta/Meta.h"
 #include "VideoclipInfo.h"
 
@@ -36,7 +35,7 @@ using namespace Context;
    *   This class provide video-clip youtube, dailymotion and vimeo data
    *   for the Video-clip context applet
    */
-class VideoclipEngine : public DataEngine, public ContextObserver, Meta::Observer, public EngineObserver
+class VideoclipEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
     Q_OBJECT
 public:
@@ -49,9 +48,6 @@ public:
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     void metadataChanged( Meta::TrackPtr track );
-
-    // reimplemented from EngineObserver
-    virtual void engineNewTrackPlaying();
 
 protected:
     //reimplement from Plasma::DataEngine

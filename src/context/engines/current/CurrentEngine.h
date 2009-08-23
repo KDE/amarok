@@ -68,7 +68,6 @@ public:
 
     // inherited from EngineObserver
     virtual void engineStateChanged(Phonon::State, Phonon::State );
-    virtual void engineNewTrackPlaying();
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
