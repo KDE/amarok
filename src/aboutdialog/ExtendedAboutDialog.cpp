@@ -29,7 +29,6 @@
 
 #include <QLabel>
 #include <QLayout>
-#include <QMessageBox>
 #include <QPushButton>
 #include <QScrollBar>
 #include <QTabWidget>
@@ -39,6 +38,7 @@
 #include <kglobalsettings.h>
 #include <kiconloader.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <ktextbrowser.h>
 #include <ktitlewidget.h>
@@ -291,7 +291,7 @@ ExtendedAboutDialog::switchToOcsWidgets()
     if( !( Solid::Networking::status() == Solid::Networking::Connected ||
            Solid::Networking::status() == Solid::Networking::Unknown ) )
     {
-        QMessageBox::critical( this, i18n( "Network error" ), i18n( "Internet connection not available" ), QMessageBox::Ok );
+        KMessageBox::error( this, i18n( "Network error" ), i18n( "Internet connection not available" ) );
         return;
     }
 
