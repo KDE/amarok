@@ -49,6 +49,10 @@ OcsPersonListWidget::addPerson( const KAboutPerson &person, const Attica::Person
 {
     DEBUG_BLOCK
     OcsPersonItem *item = new OcsPersonItem( person, ocsPerson, m_status, m_personsArea );
+    //DEBUG
+    if( !m_addedNames.contains( person.name() ) )
+        m_addedNames.append( person.name() );
+    //
     addPersonPrivate( item );
 }
 void
@@ -56,6 +60,10 @@ OcsPersonListWidget::addPerson( const KAboutPerson &person )
 {
     DEBUG_BLOCK
     OcsPersonItem *item = new OcsPersonItem( person, m_status, m_personsArea );
+    //DEBUG
+    if( !m_addedNames.contains( person.name() ) )
+        m_addedNames.append( person.name() );
+    //
     addPersonPrivate( item );
 }
 

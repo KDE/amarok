@@ -30,6 +30,10 @@ public:
     void addPerson( const KAboutPerson &person, const Attica::Person &ocsPerson );
     void addPerson( const KAboutPerson &person );
 
+//DEBUG:
+    QStringList m_addedNames;
+
+
 signals:
     void personAdded( OcsPersonItem::PersonStatus status, int persons );
 

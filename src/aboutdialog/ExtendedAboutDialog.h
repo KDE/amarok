@@ -72,10 +72,6 @@ private:
     void setupOcsCreditWidget();
     bool m_isOfflineCreditWidget;
 
-    //temp:
-    QStringList addedPersons;
-
-
     QPalette m_transparentBackgroundPalette;
 
 };

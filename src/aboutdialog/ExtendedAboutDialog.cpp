@@ -29,6 +29,7 @@
 
 #include <QLabel>
 #include <QLayout>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QScrollBar>
 #include <QTabWidget>
@@ -41,6 +42,7 @@
 #include <kstandarddirs.h>
 #include <ktextbrowser.h>
 #include <ktitlewidget.h>
+#include <solid/networking.h>
 
 
 class ExtendedAboutDialog::Private
@@ -286,6 +288,13 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 void
 ExtendedAboutDialog::switchToOcsWidgets()
 {
+    if( !( Solid::Networking::status() == Solid::Networking::Connected ||
+           Solid::Networking::status() == Solid::Networking::Unknown ) )
+    {
+        QMessageBox::critical( this, i18n( "Network error" ), i18n( "Internet connection not available" ), QMessageBox::Ok );
+        return;
+    }
+
     m_showOcsAuthorButton->animate();
     m_showOcsCreditButton->animate();
     //TODO: Ask Solid if the network is available.
@@ -466,8 +475,6 @@ ExtendedAboutDialog::setupOcsCreditWidget()
             else
             {
                 m_ocsCreditWidget->addPerson( (*credit).second );
-                if( !addedPersons.contains( (*credit).second.name() ) )
-                    addedPersons.append( (*credit).second.name() );
             }
         }
         m_ocsCreditWidget->show();
@@ -519,12 +526,6 @@ ExtendedAboutDialog::creditJobFinished( KJob *job )
     if ( person )
     {
         m_ocsCreditWidget->addPerson( *person, personJob->person() );
-        for( OcsData::OcsPersonList::const_iterator it = m_ocsData.credits()->constBegin();
-        it != m_ocsData.credits()->constEnd(); ++it )
-        {
-            if( !addedPersons.contains( (*person).name() ) )
-                addedPersons.append( (*person).name() );
-        }
     }
 }
 
@@ -543,17 +544,20 @@ ExtendedAboutDialog::onPersonAdded( OcsPersonItem::PersonStatus status, int pers
     }
     else if( status == OcsPersonItem::Contributor )
     {
-        for( OcsData::OcsPersonList::const_iterator it = m_ocsData.credits()->constBegin();
-        it != m_ocsData.credits()->constEnd(); ++it )
-        {
-            debug()<< (*it).second.name() << addedPersons.contains( (*it).second.name() );
-        }
-
-        debug()<< "There are"<< persons<<"credits loaded";
-        debug()<< "     out of"<<d->aboutData->credits().count();
+        debug()<< "There are" << persons<<"credits loaded";
+        debug()<< "     out of" << d->aboutData->credits().count();
         //TODO: implement separator. until then, this must be -1:
         if( persons == d->aboutData->credits().count() -1 )
         {
+            //DEBUG:
+            debug()<<"Listed contributors";
+            debug()<<"Inserted | Name";
+            for( OcsData::OcsPersonList::const_iterator it = m_ocsData.credits()->constBegin();
+                    it != m_ocsData.credits()->constEnd(); ++it )
+            {
+                debug() << m_ocsCreditWidget->m_addedNames.contains( (*it).second.name() ) << "    "<< (*it).second.name();
+            }
+
             m_showOcsCreditButton->stop();
             m_showOcsCreditButton->fold();
         }

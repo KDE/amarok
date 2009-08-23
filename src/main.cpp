@@ -54,7 +54,7 @@ int main( int argc, char *argv[] )
     ocsData.addAuthor( "Stecchino", aboutData.authors().at( 0 ) );
     ocsData.addAuthor( QString(), aboutData.authors().at( 1 ) );
     ocsData.addAuthor( "eean", aboutData.authors().at( 2 ) );
-    ocsData.addAuthor( QString(), aboutData.authors().at( 3 ) );
+    ocsData.addAuthor( "jefferai", aboutData.authors().at( 3 ) );
     ocsData.addAuthor( "lfranchi", aboutData.authors().at( 4 ) );
     ocsData.addAuthor( "nightrose", aboutData.authors().at( 5 ) );
     ocsData.addAuthor( "MarkKretschmann", aboutData.authors().at( 6 ) );
