@@ -291,7 +291,7 @@ ExtendedAboutDialog::switchToOcsWidgets()
     if( !( Solid::Networking::status() == Solid::Networking::Connected ||
            Solid::Networking::status() == Solid::Networking::Unknown ) )
     {
-        KMessageBox::error( this, i18n( "Network error" ), i18n( "Internet connection not available" ) );
+        KMessageBox::error( this, i18n( "Internet connection not available" ), i18n( "Network error" ) );
         return;
     }
 
