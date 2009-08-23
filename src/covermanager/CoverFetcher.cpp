@@ -175,7 +175,7 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
 
     // reset all values
     m_xml.clear();
-    m_size = 2;
+    m_size = 3;
 
     QUrl url;
     url.setScheme( "http" );
@@ -230,7 +230,8 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     {
         case 0:  size = "small";  break;
         case 1:  size = "medium"; break;
-        default: size = "large";  break;
+        case 2:  size = "large"; break;
+        default: size = "extralarge";  break;
     }
     QString coverUrl;
     for( int i = 0; i < list.count(); i++ )
