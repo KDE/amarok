@@ -140,32 +140,20 @@ ContextView::clear( const ContextState& state )
     contextScene()->clearContainments();
 }
 
-void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
+
+void ContextView::enginePlaybackEnded(int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason)
 {
     DEBUG_BLOCK
+    messageNotify( Home );
+}
 
-    /*if( oldState == Phonon::PlayingState )
-        debug() << "got state change from playing: state";
-    else if( oldState == Phonon::StoppedState )
-        debug() << "got state change from stopped";
-    else if( oldState == Phonon::PausedState )
-        debug() << "got state change from paused";
-            
-    if( state == Phonon::PlayingState )
-        debug() << "got state change to playing: state";
-    else if( state == Phonon::StoppedState )
-        debug() << "got state change to stopped";
-    else if( state == Phonon::PausedState )
-        debug() << "got state change to paused";
-    */
-    
-    if( state == Phonon::PlayingState && ( oldState != Phonon::PausedState || m_firstPlayingState ) )
-    {
-        messageNotify( Current );
-        m_firstPlayingState = false;
-    }
-    else if( state == Phonon::StoppedState )
-        messageNotify( Home );
+
+void ContextView::engineNewTrackPlaying()
+{
+    DEBUG_BLOCK
+    messageNotify( Current );
+    m_firstPlayingState = false;
+   
 }
 
 

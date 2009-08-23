@@ -80,9 +80,11 @@ public slots:
     Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
 
 protected:
-    void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
+    
+    virtual void enginePlaybackEnded(int finalPosition, int trackLength, PlaybackEndedReason reason);
     void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged ); // for stream scrobbling
-
+    virtual void engineNewTrackPlaying();
+    
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
 
