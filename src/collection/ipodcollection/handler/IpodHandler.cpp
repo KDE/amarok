@@ -348,22 +348,27 @@ IpodHandler::prettyName() const
 QList<QAction *>
 IpodHandler::collectionActions()
 {
-
     QList< QAction* > actions;
 
-    QAction *staleOrphanedAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Stale and Orphaned" ), this );
-    staleOrphanedAction->setProperty( "popupdropper_svg_id", "edit" );
+    if( isWritable() )
+    {
+        QAction *staleOrphanedAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Stale and Orphaned" ), this );
+        staleOrphanedAction->setProperty( "popupdropper_svg_id", "edit" );
 
-    connect( staleOrphanedAction, SIGNAL( triggered() ), this, SLOT( slotStaleOrphaned() ) );
+        connect( staleOrphanedAction, SIGNAL( triggered() ), this, SLOT( slotStaleOrphaned() ) );
 
-    actions.append( staleOrphanedAction );
+        actions.append( staleOrphanedAction );
 
-    QAction *syncArtworkAction = new QAction( KIcon( "insert-image" ), i18n( "Synchronise Artwork" ), this );
-    syncArtworkAction->setProperty( "popupdropper_svg_id", "edit" );
+        if( m_supportsArtwork )
+        {
+            QAction *syncArtworkAction = new QAction( KIcon( "insert-image" ), i18n( "Synchronise Artwork" ), this );
+            syncArtworkAction->setProperty( "popupdropper_svg_id", "edit" );
 
-    connect( syncArtworkAction, SIGNAL( triggered() ), this, SLOT( slotSyncArtwork() ) );
+            connect( syncArtworkAction, SIGNAL( triggered() ), this, SLOT( slotSyncArtwork() ) );
 
-    actions.append( syncArtworkAction );
+            actions.append( syncArtworkAction );
+        }
+    }
 
     return actions;
 }
