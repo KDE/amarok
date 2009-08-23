@@ -14,30 +14,23 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_OCSPERSONLISTWIDGET_H
-#define AMAROK_OCSPERSONLISTWIDGET_H
+#include "OcsData.h"
 
-#include "OcsPersonItem.h"
+OcsData::OcsData()
+{}
 
+OcsData::~OcsData()
+{}
 
-
-class OcsPersonListWidget : public QWidget
+void
+OcsData::addAuthor( const QString &username, const KAboutPerson &person )
 {
-    Q_OBJECT
+    m_authors.append( QPair< QString, KAboutPerson >( username, person ) );
+}
 
-public:
-    OcsPersonListWidget( OcsPersonItem::PersonStatus status = OcsPersonItem::Author, QWidget *parent = 0 );
-    void addPerson( const KAboutPerson &person, const Attica::Person &ocsPerson );
-    void addPerson( const KAboutPerson &person );
+void
+OcsData::addCredit( const QString &username, const KAboutPerson &person )
+{
+    m_credits.append( QPair< QString, KAboutPerson >( username, person ) );
+}
 
-signals:
-    void personAdded( OcsPersonItem::PersonStatus status, int persons );
-
-private:
-    void addPersonPrivate( OcsPersonItem *item );
-    QWidget *m_personsArea;
-    QVBoxLayout *m_areaLayout;
-    OcsPersonItem::PersonStatus m_status;
-};
-
-#endif  //AMAROK_OCSPERSONLISTWIDGET_H

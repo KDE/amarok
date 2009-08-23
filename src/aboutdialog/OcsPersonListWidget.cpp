@@ -21,8 +21,9 @@
 #include <QScrollArea>
 
 
-OcsPersonListWidget::OcsPersonListWidget( QWidget *parent )
+OcsPersonListWidget::OcsPersonListWidget( OcsPersonItem::PersonStatus status, QWidget *parent )
     : QWidget( parent )
+    , m_status( status )
 {
     //Set up the layouts...
     QHBoxLayout *scrollLayout = new QHBoxLayout( this );
@@ -46,19 +47,22 @@ OcsPersonListWidget::OcsPersonListWidget( QWidget *parent )
 void
 OcsPersonListWidget::addPerson( const KAboutPerson &person, const Attica::Person &ocsPerson )
 {
-    OcsAuthorItem *item = new OcsAuthorItem( person, ocsPerson, m_personsArea );
+    DEBUG_BLOCK
+    OcsPersonItem *item = new OcsPersonItem( person, ocsPerson, m_status, m_personsArea );
     addPersonPrivate( item );
 }
 void
 OcsPersonListWidget::addPerson( const KAboutPerson &person )
 {
-    OcsAuthorItem *item = new OcsAuthorItem( person, m_personsArea );
+    DEBUG_BLOCK
+    OcsPersonItem *item = new OcsPersonItem( person, m_status, m_personsArea );
     addPersonPrivate( item );
 }
 
 void
-OcsPersonListWidget::addPersonPrivate( OcsAuthorItem *item )
+OcsPersonListWidget::addPersonPrivate( OcsPersonItem *item )
 {
+    DEBUG_BLOCK
     if( m_areaLayout->count() == 0 )
         m_areaLayout->addWidget( item );
     else
@@ -66,7 +70,7 @@ OcsPersonListWidget::addPersonPrivate( OcsAuthorItem *item )
         QString name = item->name();
         for( int i = m_areaLayout->count() - 1; i >= 0; --i )
         {
-            QString currentName = qobject_cast< OcsAuthorItem * >( m_areaLayout->itemAt( i )->widget() )->name();
+            QString currentName = qobject_cast< OcsPersonItem * >( m_areaLayout->itemAt( i )->widget() )->name();
             if( name > currentName )
             {
                 debug()<<"Inserting"<< currentName;
@@ -77,5 +81,5 @@ OcsPersonListWidget::addPersonPrivate( OcsAuthorItem *item )
                 m_areaLayout->insertWidget( 0, item );
         }
     }
-    emit personAdded( m_areaLayout->count() );
+    emit personAdded( m_status, m_areaLayout->count() );
 }

@@ -34,9 +34,9 @@
 #include "ScriptManager.h"
 #include "SearchWidget.h"
 #include "amarokconfig.h"
+#include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/BookmarkManager.h"
-
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
@@ -162,7 +162,7 @@ MainWindow::MainWindow()
     const QString path = config.readEntry( "Browser Path", QString() );
     if ( !path.isEmpty() )
         browserWidget()->list()->navigate( path );
-    
+
 }
 
 MainWindow::~MainWindow()
@@ -174,9 +174,9 @@ MainWindow::~MainWindow()
     config.writeEntry( "MainWindow Position", pos() );
 
     //save currently active category
-    
+
     config.writeEntry( "Browser Path", browserWidget()->list()->path() );
-    
+
 
     QList<int> sPanels;
 

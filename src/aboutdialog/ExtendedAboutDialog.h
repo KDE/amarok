@@ -38,9 +38,10 @@ public:
     virtual ~ExtendedAboutDialog();
 
 private slots:
-    void setupOcsAuthorWidget();
-    void personJobFinished( KJob *job );
-    void onPersonAdded( int persons );
+    void switchToOcsWidgets();
+    void authorJobFinished( KJob *job );
+    void creditJobFinished( KJob *job );
+    void onPersonAdded( OcsPersonItem::PersonStatus status, int persons );
 
 private:
     class Private;
@@ -51,15 +52,32 @@ private:
     Q_DISABLE_COPY( ExtendedAboutDialog )
 
     OcsData m_ocsData;
-//    QPushButton *m_showOcsButton;
-    AnimatedBarWidget *m_showOcsButton;
+
+//Authors:
+    AnimatedBarWidget *m_showOcsAuthorButton;
+    QString m_authorPageTitle;
     QWidget *m_authorWidget;
     QWidget *m_offlineAuthorWidget;
     OcsPersonListWidget *m_ocsAuthorWidget;
-    QString m_authorPageTitle;
+    void setupOfflineAuthorWidget();
+    void setupOcsAuthorWidget();
+    bool m_isOfflineAuthorWidget;
+
+//Contributors:
+    AnimatedBarWidget *m_showOcsCreditButton;
+    QWidget *m_creditWidget;
+    QWidget *m_offlineCreditWidget;
+    OcsPersonListWidget *m_ocsCreditWidget;
+    void setupOfflineCreditWidget();
+    void setupOcsCreditWidget();
+    bool m_isOfflineCreditWidget;
+
+    //temp:
+    QStringList addedPersons;
+
+
     QPalette m_transparentBackgroundPalette;
 
-    void setupOfflineAuthorWidget();
 };
 
 #endif  //AMAROK_ABOUTDIALOG_H

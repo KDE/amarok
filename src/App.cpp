@@ -113,6 +113,7 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2009, The Amarok Development Squad" ),
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
              ( "http://amarok.kde.org" ) );
+             
 AMAROK_EXPORT OcsData ocsData;
 
 App::App()
@@ -389,7 +390,7 @@ App::handleCliArgs() //static
     const bool debugIsDisabled = !args->isSet( "debug" );
     //allows debugging on OS X. Bundles have to be started with "open". Therefore it is not possible to pass an argument
     const bool forceDebug = Amarok::config().readEntry( "Force Debug", false );
-    
+
 
     Amarok::config().writeEntry( "Debug Enabled", forceDebug ? true : args->isSet( "debug" ) );
 
@@ -417,7 +418,7 @@ App::handleCliArgs() //static
         if( pApp->mainWindow() )
             pApp->mainWindow()->activate();
     }
-    
+
     firstTime = false;
 
 #ifdef DEBUG

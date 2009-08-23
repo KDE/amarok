@@ -14,30 +14,33 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_OCSPERSONLISTWIDGET_H
-#define AMAROK_OCSPERSONLISTWIDGET_H
+#ifndef AMAROK_OCSDATA_H
+#define AMAROK_OCSDATA_H
 
-#include "OcsPersonItem.h"
+#include "Amarok.h"
 
+#include "kaboutdata.h"
 
+#include <QList>
+#include <QPair>
+#include <QString>
 
-class OcsPersonListWidget : public QWidget
+class AMAROK_EXPORT OcsData
 {
-    Q_OBJECT
-
 public:
-    OcsPersonListWidget( OcsPersonItem::PersonStatus status = OcsPersonItem::Author, QWidget *parent = 0 );
-    void addPerson( const KAboutPerson &person, const Attica::Person &ocsPerson );
-    void addPerson( const KAboutPerson &person );
+    typedef QList< QPair< QString, KAboutPerson > > OcsPersonList;
 
-signals:
-    void personAdded( OcsPersonItem::PersonStatus status, int persons );
+    OcsData();
+    virtual ~OcsData();
+    void addAuthor( const QString &username, const KAboutPerson &person );
+    void addCredit( const QString &username, const KAboutPerson &person );
+
+    const OcsPersonList * authors() const { return &m_authors; }
+    const OcsPersonList * credits() const { return &m_credits; }
 
 private:
-    void addPersonPrivate( OcsPersonItem *item );
-    QWidget *m_personsArea;
-    QVBoxLayout *m_areaLayout;
-    OcsPersonItem::PersonStatus m_status;
+    QList< QPair< QString, KAboutPerson > > m_authors;
+    QList< QPair< QString, KAboutPerson > > m_credits;
 };
 
-#endif  //AMAROK_OCSPERSONLISTWIDGET_H
+#endif //AMAROK_OCSDATA_H

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>OcsAuthorItem</class>
- <widget class="QWidget" name="OcsAuthorItem">
+ <class>OcsPersonItem</class>
+ <widget class="QWidget" name="OcsPersonItem">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>499</width>
-    <height>51</height>
+    <width>497</width>
+    <height>49</height>
    </rect>
   </property>
   <property name="sizePolicy">

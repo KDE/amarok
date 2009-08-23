@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "OcsAuthorItem.h"
+#include "OcsPersonItem.h"
 
 #include "Debug.h"
 
@@ -25,8 +25,9 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &ocsPerson, QWidget *parent )
+OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const Attica::Person &ocsPerson, PersonStatus status, QWidget *parent )
     : QWidget( parent )
+    , m_status( status )
 {
     m_person = &person;
     m_ocsPerson = &ocsPerson;
@@ -44,37 +45,38 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
     if( !( m_ocsPerson->city().isEmpty() && m_ocsPerson->country().isEmpty() ) )
         m_aboutText.append( "<br/>" + ( m_ocsPerson->city().isEmpty() ? "" : ( m_ocsPerson->city() + ", " ) ) + m_ocsPerson->country() );
 
-    if( !m_ocsPerson->extendedAttribute( "ircchannels" ).isEmpty() )
+    if( m_status == Author )
     {
-        QString channelsString = m_ocsPerson->extendedAttribute( "ircchannels" );
-        //We extract the channel names from the string provided by OCS:
-        QRegExp channelrx = QRegExp( "#+[\\w\\.\\-\\/!()+]+([\\w\\-\\/!()+]?)", Qt::CaseInsensitive );
-        QStringList channels;
-        int pos = 0;
-        while( ( pos = channelrx.indexIn( channelsString, pos ) ) != -1 )
+        if( !m_ocsPerson->extendedAttribute( "ircchannels" ).isEmpty() )
         {
-            channels << channelrx.cap( 0 );
-            pos += channelrx.matchedLength();
-        }
+            QString channelsString = m_ocsPerson->extendedAttribute( "ircchannels" );
+            //We extract the channel names from the string provided by OCS:
+            QRegExp channelrx = QRegExp( "#+[\\w\\.\\-\\/!()+]+([\\w\\-\\/!()+]?)", Qt::CaseInsensitive );
+            QStringList channels;
+            int pos = 0;
+            while( ( pos = channelrx.indexIn( channelsString, pos ) ) != -1 )
+            {
+                channels << channelrx.cap( 0 );
+                pos += channelrx.matchedLength();
+            }
 
-        m_aboutText.append( "<br/>" + i18n("IRC channels: ") );
-        QString link;
-        foreach( QString channel, channels )
+            m_aboutText.append( "<br/>" + i18n("IRC channels: ") );
+            QString link;
+            foreach( QString channel, channels )
+            {
+                QString channelName = channel;
+                channelName.remove( "#" );
+                link = QString( "irc://irc.freenode.org/%1" ).arg( channelName );
+                m_aboutText.append( QString( "<a href=\"%1\">%2</a>" ).arg( link, channel ) + "  " );
+            }
+        }
+        if( !m_ocsPerson->extendedAttribute( "favouritemusic" ).isEmpty() )
         {
-            QString channelName = channel;
-            channelName.remove( "#" );
-            link = QString( "irc://irc.freenode.org/%1" ).arg( channelName );
-            m_aboutText.append( QString( "<a href=\"%1\">%2</a>" ).arg( link, channel ) + "  " );
+            QStringList artists = m_ocsPerson->extendedAttribute( "favouritemusic" ).split( ", " );
+            //TODO: make them clickable
+            m_aboutText.append( "<br/>" + i18n( "Favorite music: " ) + artists.join( ", " ) );
         }
     }
-    if( !m_ocsPerson->extendedAttribute( "favouritemusic" ).isEmpty() )
-    {
-        QStringList artists = m_ocsPerson->extendedAttribute( "favouritemusic" ).split( ", " );
-        //TODO: make them clickable
-        m_aboutText.append( "<br/>" + i18n( "Favorite music: " ) + artists.join( ", " ) );
-
-    }
-
 
     KAction *visitProfile = new KAction( KIcon( QPixmap( KStandardDirs::locate( "data",
             "amarok/images/opendesktop.png" ) ) ), i18n( "Visit openDesktop.org profile" ), this );
@@ -87,8 +89,9 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, const Attica::Person &
 
 }
 
-OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, QWidget *parent )
+OcsPersonItem::OcsPersonItem( const KAboutPerson &person, PersonStatus status, QWidget *parent )
     : QWidget( parent )
+    , m_status( status )
 {
     m_person = &person;
 
@@ -99,7 +102,7 @@ OcsAuthorItem::OcsAuthorItem( const KAboutPerson &person, QWidget *parent )
 }
 
 void
-OcsAuthorItem::init()
+OcsPersonItem::init()
 {
     m_textLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
     m_textLabel->setOpenExternalLinks( true );
@@ -111,7 +114,10 @@ OcsAuthorItem::init()
     m_aboutText.append( "<br/>" + m_person->task() );
 
     m_iconsBar = new KToolBar( this, false, false );
-    m_verticalLayout->insertWidget( m_verticalLayout->count() - 1, m_iconsBar );
+    if( m_status == Author )
+        m_verticalLayout->insertWidget( m_verticalLayout->count() - 1, m_iconsBar );
+    else
+        layout()->addWidget( m_iconsBar );
     m_iconsBar->setIconSize( QSize( 22, 22 ) );
     m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
 
@@ -132,17 +138,17 @@ OcsAuthorItem::init()
     connect( m_iconsBar, SIGNAL( actionTriggered( QAction * ) ), this, SLOT( launchUrl( QAction * ) ) );
 }
 
-OcsAuthorItem::~OcsAuthorItem()
+OcsPersonItem::~OcsPersonItem()
 {}
 
 QString
-OcsAuthorItem::name()
+OcsPersonItem::name()
 {
     return m_person->name();
 }
 
 void
-OcsAuthorItem::launchUrl( QAction *action )
+OcsPersonItem::launchUrl( QAction *action )
 {
     KUrl url = KUrl( action->data().toString() );
     KRun::runUrl( url, "text/html", 0, false );

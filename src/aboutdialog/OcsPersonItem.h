@@ -14,10 +14,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_OCSAUTHORITEM_H
-#define AMAROK_OCSAUTHORITEM_H
+#ifndef AMAROK_OCSPERSONITEM_H
+#define AMAROK_OCSPERSONITEM_H
 
-#include "ui_OcsAuthorItem.h"
+#include "ui_OcsPersonItem.h"
 
 #include "libattica-ocsclient/ocsapi.h"
 
@@ -26,13 +26,21 @@
 
 #include <QLabel>
 
-class OcsAuthorItem : public QWidget, private Ui::OcsAuthorItem
+class OcsPersonItem : public QWidget, private Ui::OcsPersonItem
 {
     Q_OBJECT
+
 public:
-    OcsAuthorItem( const KAboutPerson &person, const Attica::Person &ocsPerson, QWidget *parent = 0 );
-    OcsAuthorItem( const KAboutPerson &person, QWidget *parent = 0 );
-    virtual ~OcsAuthorItem();
+    enum PersonStatus
+    {
+        Author = 0,
+        Contributor = 1
+    };
+
+    OcsPersonItem( const KAboutPerson &person, const Attica::Person &ocsPerson, PersonStatus status, QWidget *parent = 0 );
+    OcsPersonItem( const KAboutPerson &person, PersonStatus status, QWidget *parent = 0 );
+
+    virtual ~OcsPersonItem();
 
     QString name();
 
@@ -45,6 +53,7 @@ private:
     const Attica::Person *m_ocsPerson;
     QString m_aboutText;
     KToolBar *m_iconsBar;
+    PersonStatus m_status;
 /*
    <firstname>Frank</firstname>
    <lastname>Test</lastname>
@@ -65,4 +74,4 @@ private:
       */
 };
 
-#endif //AMAROK_OCSAUTHORITEM_H
+#endif //AMAROK_OCSPERSONITEM_H
