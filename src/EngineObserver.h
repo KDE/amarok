@@ -35,31 +35,83 @@ class QString;
 class AMAROK_EXPORT EngineObserver
 {
 public:
+    /**
+     * Indicates why playback ended
+     */
     enum PlaybackEndedReason
     {
+        /**
+         * Playback ended because the engine was stopped.
+         *
+         * This may be because the end of the playlist was reached or
+         * because the user explicitly stopped playback.
+         */
         EndedStopped = 0,
+        /**
+         * Playback ended because Amarok was asked to quit.
+         *
+         * In this case, playback may well resume from the same point
+         * when Amarok is started again.
+         */
         EndedQuit    = 1
     };
 
+    /**
+     * Initializes the EngineObserver to watch for notifications from
+     * The::EngineController()
+     */
     EngineObserver();
-    EngineObserver( EngineSubject* );
+    /**
+     * Initializes the EngineObserver to watch for notifications from
+     * a specified EngineSubject.
+     *
+     * @param subject  the subject that notifications should be received from
+     */
+    EngineObserver( EngineSubject* subject );
+
     virtual ~EngineObserver();
     /**
      * Called when the engine state changes
+     *
+     * Note that you must not rely on this to tell you when a track changes.
+     * Playing -> Playing is not a state change.  However, some Phonon
+     * backends may potentially make the state changes
+     * Playing -> Buffering -> Playing when a track changes.
+     *
+     * Use engineTrackChanged() or engineNewTrackPlaying() instead.
      */
     virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
 
     // is this when playback stops completely, or when a track stops?
     virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
 
-    // should be called when a tracks starts or stops playing
-    // on stop, pass Meta::TrackPtr( 0 )
+    /**
+     * Called when the current track changes
+     *
+     * Unlike engineNewTrackPlaying(), this is called when playback stops
+     * with Meta::TrackPtr( 0 ) for @p track.
+     *
+     * @param track  the new track; may be null
+     */
     virtual void engineTrackChanged( Meta::TrackPtr track );
 
-    // called when a new track starts playing
+    /**
+     * Called when a new track starts playing
+     *
+     * Unlike engineTrackChanged(), this is not called when playback stops.
+     */
     virtual void engineNewTrackPlaying();
 
-    // called when metadata changes for any reason
+    /**
+     * Called when the track metadata changes
+     *
+     * NB: currently, this is triggered when the metadata <em>as seen by
+     * the Phonon backend</em> changes, and only a limited subset of metadata
+     * items will be passed in @p newMetaData.  Amarok internally knows
+     * about much more metadata.
+     *
+     * See the Meta namespace for more metadata info.
+     */
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
     /**
