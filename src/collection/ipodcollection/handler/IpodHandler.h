@@ -89,6 +89,7 @@ namespace Meta
 {
 
     typedef QMap<QString, Meta::TrackPtr> TrackMap;
+    typedef QMap<QString, Meta::AlbumPtr> AlbumMap;
 
 /* The libgpod backend for all Ipod calls */
 class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler

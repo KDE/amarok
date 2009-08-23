@@ -22,6 +22,7 @@
 #include "IpodHandler.h"
 
 #include "IpodCollection.h"
+#include "CollectionManager.h"
 #include "Debug.h"
 
 #ifdef GDK_FOUND
@@ -491,6 +492,19 @@ bool
 IpodHandler::syncArtwork()
 {
     DEBUG_BLOCK
+
+    Amarok::Collection *localCollection = CollectionManager::instance()->primaryCollection();
+
+    if( !localCollection )
+        return false;
+
+    Meta::AlbumMap albumMap = m_memColl->albumMap();
+
+    foreach( Meta::AlbumPtr album, albumMap.values() )
+    {
+        debug() << "Updating artwork for" << (album->albumArtist() ? album->albumArtist()->name() : "unknown") << "-" << album->name();
+    }
+
     return true;
 }
 
@@ -1232,8 +1246,6 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 
     debug() << "Copying from *" << src << "* to *" << dst << "*";
 
-
-
     KIO::CopyJob *job = KIO::copy( src, dst, KIO::HideProgressInfo );
     m_jobcounter++;
 
@@ -1246,8 +1258,6 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
 
     connect( job, SIGNAL( copyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)),
              this, SLOT(slotCopyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)) );
-
-    //return KIO::NetAccess::file_copy( src, dst );
 
     return true;
 }
@@ -1547,21 +1557,25 @@ void
 IpodHandler::libSetTitle( Meta::MediaDeviceTrackPtr& track, const QString& title )
 {
     m_itdbtrackhash[ track ]->title = g_strdup( title.toUtf8() );
+    databaseChanged();
 }
 void
 IpodHandler::libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album )
 {
     m_itdbtrackhash[ track ]->album = g_strdup( album.toUtf8() );
+    databaseChanged();
 }
 void
 IpodHandler::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist )
 {
     m_itdbtrackhash[ track ]->artist = g_strdup( artist.toUtf8() );
+    databaseChanged();
 }
 void
 IpodHandler::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
 {
     m_itdbtrackhash[ track ]->composer = g_strdup( composer.toUtf8() );
+    databaseChanged();
 }
 void
 IpodHandler::libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre )
@@ -1574,6 +1588,7 @@ IpodHandler::libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre
     }
 
     m_itdbtrackhash[ track ]->genre = g_strdup( genre.toUtf8() );
+    databaseChanged();
 }
 void
 IpodHandler::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )
@@ -1581,52 +1596,64 @@ IpodHandler::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )
     bool ok;
     int yr = year.toInt( &ok, 10 );
     if( ok )
+    {
         m_itdbtrackhash[ track ]->year = yr;
+        databaseChanged();
+    }
 }
 void
 IpodHandler::libSetLength( Meta::MediaDeviceTrackPtr &track, int length )
 {
     m_itdbtrackhash[ track ]->tracklen = length*1000;
+    databaseChanged();
 }
 void
 IpodHandler::libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum )
 {
     m_itdbtrackhash[ track ]->track_nr = tracknum;
+    databaseChanged();
 }
 void
 IpodHandler::libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment )
 {
     m_itdbtrackhash[ track ]->comment = g_strdup( comment.toUtf8() );
+    databaseChanged();
 }
 void
 IpodHandler::libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum )
 {
     m_itdbtrackhash[ track ]->cd_nr = discnum;
+    databaseChanged();
 }
 void
 IpodHandler::libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate )
 {
     m_itdbtrackhash[ track ]->bitrate = bitrate;
+    databaseChanged();
 }
 void
 IpodHandler::libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate )
 {
     m_itdbtrackhash[ track ]->samplerate = samplerate;
+    databaseChanged();
 }
 void
 IpodHandler::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
 {
     m_itdbtrackhash[ track ]->BPM = static_cast<int>( bpm );
+    databaseChanged();
 }
 void
 IpodHandler::libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize )
 {
     m_itdbtrackhash[ track ]->size = filesize;
+    databaseChanged();
 }
 void
 IpodHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
 {
     m_itdbtrackhash[ track ]->playcount = playcount;
+    databaseChanged();
 }
 void
 IpodHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed)
@@ -1638,6 +1665,7 @@ void
 IpodHandler::libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )
 {
     m_itdbtrackhash[ track ]->rating = ( rating * ITDB_RATING_STEP / 2 );
+    databaseChanged();
 }
 void
 IpodHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
@@ -1695,6 +1723,7 @@ IpodHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
         m_itdbtrackhash[ track ]->skip_when_shuffling |= 0x01;
         m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
     }
+    databaseChanged();
 }
 
 void
@@ -1710,6 +1739,7 @@ IpodHandler::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta
 
     m_itdbtrackhash[ destTrack ]->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
     debug() << "on iPod: " << m_itdbtrackhash[ destTrack ]->ipod_path;
+    databaseChanged();
 }
 
 void
