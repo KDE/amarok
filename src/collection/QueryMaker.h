@@ -167,7 +167,8 @@ class AMAROK_EXPORT QueryMaker : public QObject
 
         /**
             limit the maximum number of items in a result. the result will have [0..@p size ] items. When this function
-            is not used, the result size is unbounded. Note: the maximum size applies to each result individually, so if the newResultReady signal is emitted multiple times, each result may have up to @p size items.
+            is not used, the result size is unbounded. Note: the maximum size applies to each result individually, so if
+            the newResultReady signal is emitted multiple times, each result may have up to @p size items.
         */
         virtual QueryMaker* limitMaxResultSize( int size ) = 0;
 
