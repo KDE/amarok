@@ -61,6 +61,7 @@ private:
     void setEditing( const bool isEditing );
 
     Plasma::IconWidget* addAction( QAction *action );
+    void collapseToMin();
 
     QString m_titleText;
     TextScrollingWidget* m_titleLabel;

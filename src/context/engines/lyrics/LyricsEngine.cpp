@@ -88,7 +88,13 @@ void LyricsEngine::message( const ContextState& state )
         m_currentSuggestionsList.clear();
     }
     if( state == Current && m_requested )
+    {
         update();
+    } else if( state == Home )
+    {
+        removeAllData( "lyrics" );
+        setData( "lyrics", "stopped" ,"stopped" );
+    }
     
 }
 

@@ -82,6 +82,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         int  m_heightCollapseOn;
         int  m_heightCollapseOff;
         int  m_animationId;
+        int  m_animFromHeight;
         
     private:
         void cleanUpAndDelete();

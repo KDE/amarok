@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
+ * Copyright (c) 2007-2009 Leo Franchi <lfranchi@gmail.com>                             *
  * Copyright (c) 2009 Riccardo Iaconelli <riccardo@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -210,7 +210,11 @@ Context::Applet::setCollapseOn()
 //    DEBUG_BLOCK
     if ( size().height() == m_heightCollapseOn )
         return;
-
+    if( m_heightCollapseOff == -1 )
+        m_animFromHeight = size().height();
+    else
+        m_animFromHeight = m_heightCollapseOff;
+    
     if ( m_animationId != 0 ) // warning we are moving right now
     {
         // stop the anim
@@ -224,9 +228,20 @@ Context::Applet::setCollapseOn()
 void
 Context::Applet::setCollapseOff()
 {
-//    DEBUG_BLOCK
+    DEBUG_BLOCK
+    debug() << "height:" << size().height() << "target:" << m_heightCollapseOff;
     if ( size().height() == m_heightCollapseOff )
         return;
+    else if( m_heightCollapseOff == -1 && !m_collapsed ) // if this is a self-expanding applet, and it's already expanded
+        return;
+    else if( m_heightCollapseOff == -1 && m_collapsed ) // if it's self-expanding, don't animate as we don't know where we're going
+    {
+        m_heightCurrent =  m_heightCollapseOff;
+        emit sizeHintChanged(Qt::PreferredSize);
+        updateGeometry();
+        m_collapsed = false;
+        return;
+    }
     
     if ( m_animationId != 0 ) // warning we are moving right now
     {
@@ -248,8 +263,8 @@ void
 Context::Applet::animateOn( qreal anim )
 {
 //    DEBUG_BLOCK
-    m_heightCurrent = m_heightCollapseOff - ( m_heightCollapseOff - m_heightCollapseOn ) * anim ;
-//    debug()<< "animate " << m_heightCurrent << " m_heightCollapseOff :" << m_heightCollapseOff << " | m_heightCollapseOn :" << m_heightCollapseOn ;
+    m_heightCurrent = m_animFromHeight - ( m_animFromHeight - m_heightCollapseOn ) * anim ;
+    //debug()<< "animate " << m_heightCurrent << " m_animFromHeight :" << m_animFromHeight << " | m_heightCollapseOn :" << m_heightCollapseOn ;
     emit sizeHintChanged(Qt::PreferredSize);
 }
 
