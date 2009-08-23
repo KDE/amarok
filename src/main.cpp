@@ -97,7 +97,7 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Myriam Schweingruber"), ki18n(( "Rokymoter, bug squashing (Mamarok)" )), "myriam@kde.org" );
         ocsData.addCredit( "Mamarok", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Nuno Pinheiro"), ki18n(( "Artwork" )), "nuno@oxygen-icons.org" );
-        ocsData.addCredit( "Nunopinheirokde", aboutData.credits().last() );
+        ocsData.addCredit( QString()/*"Nunopinheirokde"*/, aboutData.credits().last() );
     aboutData.addCredit( ki18n("Olivier Bédard"), ki18n(( "Website hosting" )), "paleo@pwsp.net" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Pasi Lalinaho"), ki18n(( "Rokymoter (emunkki)" )), "pasi@getamarok.com" );

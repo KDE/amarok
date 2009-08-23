@@ -466,8 +466,8 @@ ExtendedAboutDialog::setupOcsCreditWidget()
             else
             {
                 m_ocsCreditWidget->addPerson( (*credit).second );
-//                if( !addedPersons.contains( (*credit).second.name() ) )
-//                    addedPersons.append( (*credit).second.name() );
+                if( !addedPersons.contains( (*credit).second.name() ) )
+                    addedPersons.append( (*credit).second.name() );
             }
         }
         m_ocsCreditWidget->show();
@@ -519,12 +519,12 @@ ExtendedAboutDialog::creditJobFinished( KJob *job )
     if ( person )
     {
         m_ocsCreditWidget->addPerson( *person, personJob->person() );
-//        for( OcsData::OcsPersonList::const_iterator it = m_ocsData.credits()->constBegin();
-//        it != m_ocsData.credits()->constEnd(); ++it )
-//        {
-//            if( !addedPersons.contains( (*person).name() ) )
-//                addedPersons.append( (*person).name() );
-//        }
+        for( OcsData::OcsPersonList::const_iterator it = m_ocsData.credits()->constBegin();
+        it != m_ocsData.credits()->constEnd(); ++it )
+        {
+            if( !addedPersons.contains( (*person).name() ) )
+                addedPersons.append( (*person).name() );
+        }
     }
 }
 
@@ -543,14 +543,14 @@ ExtendedAboutDialog::onPersonAdded( OcsPersonItem::PersonStatus status, int pers
     }
     else if( status == OcsPersonItem::Contributor )
     {
-//        for( OcsData::OcsPersonList::const_iterator it = m_ocsData.credits()->constBegin();
-//        it != m_ocsData.credits()->constEnd(); ++it )
-//        {
-//            debug()<< (*it).second.name() << addedPersons.contains( (*it).second.name() );
-//        }
-//
-//        debug()<< "There are"<< persons<<"credits loaded";
-//        debug()<< "     out of"<<d->aboutData->credits().count();
+        for( OcsData::OcsPersonList::const_iterator it = m_ocsData.credits()->constBegin();
+        it != m_ocsData.credits()->constEnd(); ++it )
+        {
+            debug()<< (*it).second.name() << addedPersons.contains( (*it).second.name() );
+        }
+
+        debug()<< "There are"<< persons<<"credits loaded";
+        debug()<< "     out of"<<d->aboutData->credits().count();
         //TODO: implement separator. until then, this must be -1:
         if( persons == d->aboutData->credits().count() -1 )
         {
