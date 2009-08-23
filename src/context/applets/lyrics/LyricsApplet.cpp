@@ -220,7 +220,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     if( data.size() == 0 ) return;
 
-    debug() << "got lyrics data: " << data;
+    //debug() << "got lyrics data: " << data;
 
     m_titleLabel->show();
     if( data.contains( "noscriptrunning" ) )
