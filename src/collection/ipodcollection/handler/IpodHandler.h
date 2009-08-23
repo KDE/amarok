@@ -118,6 +118,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         friend class StaleWorkerThread;
         friend class OrphanedWorkerThread;
         friend class AddOrphanedWorkerThread;
+        friend class SyncArtworkWorkerThread;
 
         /// Ipod-Specific Methods
         QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
@@ -133,6 +134,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 
         void slotInitializeIpod();
         void slotStaleOrphaned();
+        void slotSyncArtwork();
 
     protected:
         /// Functions for PlaylistCapability
@@ -258,6 +260,8 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         bool findStale();
         bool findOrphaned();
         bool addNextOrphaned();
+
+        bool syncArtwork();
 
         bool initializeIpod();
 
@@ -388,6 +392,9 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         void slotAddOrphanedFailed( ThreadWeaver::Job* job );
         void slotAddOrphanedSucceeded( ThreadWeaver::Job* job );
 
+        void slotSyncArtworkFailed( ThreadWeaver::Job *job );
+        void slotSyncArtworkSucceeded( ThreadWeaver::Job *job );
+
         void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed );
 
         void slotOrphaned();
@@ -462,7 +469,16 @@ class AddOrphanedWorkerThread : public AbstractIpodWorkerThread
         virtual void run();
 };
 
+class SyncArtworkWorkerThread : public AbstractIpodWorkerThread
+{
+        Q_OBJECT
+    public:
+        SyncArtworkWorkerThread( IpodHandler* handler );
+        virtual ~SyncArtworkWorkerThread() {}
 
+    protected:
+        virtual void run();
+};
 
 }
 #endif

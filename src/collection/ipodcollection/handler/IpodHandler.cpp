@@ -350,25 +350,20 @@ IpodHandler::collectionActions()
 {
 
     QList< QAction* > actions;
-// NOTE: disabled, since users likely don't want to initialize unless
-// their iPod is hosed.
 
-#if 0
-    QAction *initializeAction = new QAction(  The::svgHandler()->getRenderer(  "amarok/images/pud_items.svg" ),
-                                                                    "edit",  KIcon(  "media-track-edit-amarok" ),  i18n(  "&Initialize Device" ),  0 );
-
-    connect( initializeAction, SIGNAL( triggered() ), this, SLOT( slotInitializeIpod() ) );
-
-    actions.append( initializeAction );
-
-#endif
-
-    QAction *staleOrphanedAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n(  "&Stale and Orphaned" ), this );
+    QAction *staleOrphanedAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Stale and Orphaned" ), this );
     staleOrphanedAction->setProperty( "popupdropper_svg_id", "edit" );
 
     connect( staleOrphanedAction, SIGNAL( triggered() ), this, SLOT( slotStaleOrphaned() ) );
 
     actions.append( staleOrphanedAction );
+
+    QAction *syncArtworkAction = new QAction( KIcon( "insert-image" ), i18n( "Synchronise Artwork" ), this );
+    syncArtworkAction->setProperty( "popupdropper_svg_id", "edit" );
+
+    connect( syncArtworkAction, SIGNAL( triggered() ), this, SLOT( slotSyncArtwork() ) );
+
+    actions.append( syncArtworkAction );
 
     return actions;
 }
@@ -404,11 +399,7 @@ IpodHandler::slotStaleOrphaned()
                                                          i18n("Find Stale Tracks") ) == KMessageBox::Continue;
 
     if( init )
-    {
         ThreadWeaver::Weaver::instance()->enqueue( new OrphanedWorkerThread( this ) );
-    }
-
-
 }
 
 bool
@@ -489,6 +480,44 @@ IpodHandler::slotOrphaned()
 
     if( init )
         ThreadWeaver::Weaver::instance()->enqueue( new OrphanedWorkerThread( this ) );
+}
+
+bool
+IpodHandler::syncArtwork()
+{
+    DEBUG_BLOCK
+    return true;
+}
+
+void
+IpodHandler::slotSyncArtwork()
+{
+    DEBUG_BLOCK
+
+    const QString text( i18n( "Amarok is about to syncronise artwork on <i>%1</i>. Do you want to continue?", prettyName() ) );
+
+    if( KMessageBox::warningContinueCancel(0, text, i18n("Synchronise Artwork") ) == KMessageBox::Continue )
+        ThreadWeaver::Weaver::instance()->enqueue( new SyncArtworkWorkerThread( this ) );
+}
+
+void
+IpodHandler::slotSyncArtworkFailed( ThreadWeaver::Job *job )
+{
+    Q_UNUSED( job )
+ 
+    const QString msg( i18n( "iPod artwork could not be synchronised" ) );
+    The::statusBar()->shortMessage( msg );
+}
+
+
+void
+IpodHandler::slotSyncArtworkSucceeded( ThreadWeaver::Job *job )
+{
+    Q_UNUSED( job )
+
+    writeDatabase();
+    const QString msg( i18n( "Artwork synchronised" ) );
+    The::statusBar()->shortMessage( msg );
 }
 
 bool
@@ -601,14 +630,12 @@ IpodHandler::detectModel()
             switch( ipodInfo->ipod_model )
             {
             case ITDB_IPOD_MODEL_SHUFFLE:
-
             case ITDB_IPOD_MODEL_SHUFFLE_SILVER:
             case ITDB_IPOD_MODEL_SHUFFLE_PINK:
             case ITDB_IPOD_MODEL_SHUFFLE_BLUE:
             case ITDB_IPOD_MODEL_SHUFFLE_GREEN:
             case ITDB_IPOD_MODEL_SHUFFLE_ORANGE:
             case ITDB_IPOD_MODEL_SHUFFLE_PURPLE:
-
                 m_isShuffle = true;
                 break;
 
@@ -619,25 +646,28 @@ IpodHandler::detectModel()
                 m_isIPhone = true;
                 debug() << "detected iPhone/iPod Touch" << endl;
                 break;
+
             case ITDB_IPOD_MODEL_CLASSIC_SILVER:
             case ITDB_IPOD_MODEL_CLASSIC_BLACK:
                 debug() << "detected iPod classic";
-
             case ITDB_IPOD_MODEL_VIDEO_WHITE:
             case ITDB_IPOD_MODEL_VIDEO_BLACK:
             case ITDB_IPOD_MODEL_VIDEO_U2:
                 m_supportsVideo = true;
                 debug() << "detected video-capable iPod";
                 break;
+
             case ITDB_IPOD_MODEL_MOBILE_1:
                 m_isMobile = true;
                 debug() << "detected iTunes phone" << endl;
                 break;
+
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
                 modelString = 0;
                 guess = true;
                 break;
+
             default:
                 break;
             }
@@ -892,18 +922,16 @@ IpodHandler::writeITunesDB( bool threaded )
     DEBUG_BLOCK
 
     QMutexLocker locker( &m_dbLocker );
-    if(!m_itdb)
+    if( !m_itdb )
         return false;
 
-    if(m_dbChanged)
+    if( m_dbChanged )
     {
         bool ok = false;
         if( !threaded )
         {
             if( !m_itdb )
-            {
                 return false;
-            }
 
             ok = true;
             GError *error = 0;
@@ -2223,6 +2251,21 @@ void
 AddOrphanedWorkerThread::run()
 {
     m_success = m_handler->addNextOrphaned();
+}
+
+// Sync Artwork
+
+SyncArtworkWorkerThread::SyncArtworkWorkerThread( IpodHandler* handler )
+    : AbstractIpodWorkerThread( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotSyncArtworkFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotSyncArtworkSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+}
+
+void
+SyncArtworkWorkerThread::run()
+{
+    m_success = m_handler->syncArtwork();
 }
 
 #include "IpodHandler.moc"
