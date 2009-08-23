@@ -88,7 +88,7 @@ CoverFetcher::~CoverFetcher()
 void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
-    m_userCanEditQuery = true;
+    m_interactive = true;
     m_albums << album;
     startFetch( album );
 }
@@ -98,7 +98,7 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 {
     if( m_albumPtr == album || m_albums.contains( album ) )
         return;
-    m_userCanEditQuery = false;
+    m_interactive = false;
     m_albumsMutex.lock();
     m_albums << album;
     m_albumsMutex.unlock();
@@ -128,7 +128,7 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 void
 CoverFetcher::queueAlbums( Meta::AlbumList albums )
 {
-    m_userCanEditQuery = false;
+    m_interactive = false;
     m_albumsMutex.lock();
     foreach( Meta::AlbumPtr album, albums )
     {
@@ -193,7 +193,7 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
 
-    if( m_userCanEditQuery )
+    if( m_interactive )
         The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
 }
 
@@ -250,7 +250,14 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
         }
     }
 
-    if ( coverUrl.isEmpty() ) return;
+    if ( coverUrl.isEmpty() ) {
+        if (m_interactive)
+            The::statusBar()->longMessage( "Unable to find a cover for the specified song.", StatusBar::Sorry );
+        else
+            The::statusBar()->shortMessage( "Unable to find a cover for the specified song." );
+
+        return;
+    }
 
     KJob* getJob = KIO::storedGet( KUrl(coverUrl), KIO::NoReload, KIO::HideProgressInfo );
     connect( getJob, SIGNAL( result( KJob* ) ), SLOT( finishedImageFetch( KJob* ) ) );
@@ -266,7 +273,7 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
         return;
     }
 
-    else if( m_userCanEditQuery )
+    else if( m_interactive )
     {
         //yay! image found :)
         //lets see if the user wants it
@@ -347,7 +354,7 @@ CoverFetcher::finish()
     The::statusBar()->shortMessage( i18n( "Retrieved cover successfully" ) );
     m_albumPtr->setImage( image() );
     m_isFetching = false;
-    if( !m_userCanEditQuery /*manual fetch*/ && !m_albums.isEmpty() )
+    if( !m_interactive /*manual fetch*/ && !m_albums.isEmpty() )
         startFetch( m_albums.takeFirst() );
 
 }
