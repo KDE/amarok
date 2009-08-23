@@ -393,72 +393,70 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         void slotOrphaned();
 };
 
-class DBWorkerThread : public ThreadWeaver::Job
+class AbstractIpodWorkerThread : public ThreadWeaver::Job
+{
+        Q_OBJECT
+    public:
+        AbstractIpodWorkerThread( IpodHandler *handler )
+            : ThreadWeaver::Job()
+            , m_handler( handler )
+            , m_success( false )
+        {}
+
+        virtual ~AbstractIpodWorkerThread() {}
+
+        virtual bool success() const { return m_success; }
+
+    protected:
+        virtual void run() = 0;
+
+        IpodHandler *m_handler;
+        bool m_success;
+};
+
+
+class DBWorkerThread : public AbstractIpodWorkerThread
 {
         Q_OBJECT
     public:
         DBWorkerThread( IpodHandler* handler );
-        virtual ~DBWorkerThread();
-
-        virtual bool success() const;
+        virtual ~DBWorkerThread() {}
 
     protected:
         virtual void run();
-
-    private:
-        bool m_success;
-        IpodHandler *m_handler;
 };
 
-class StaleWorkerThread : public ThreadWeaver::Job
+class StaleWorkerThread : public AbstractIpodWorkerThread
 {
         Q_OBJECT
     public:
         StaleWorkerThread( IpodHandler* handler );
-        virtual ~StaleWorkerThread();
-
-        virtual bool success() const;
+        virtual ~StaleWorkerThread() {}
 
     protected:
         virtual void run();
-
-    private:
-        bool m_success;
-        IpodHandler *m_handler;
 };
 
-class OrphanedWorkerThread : public ThreadWeaver::Job
+class OrphanedWorkerThread : public AbstractIpodWorkerThread
 {
         Q_OBJECT
     public:
         OrphanedWorkerThread( IpodHandler* handler );
-        virtual ~OrphanedWorkerThread();
-
-        virtual bool success() const;
+        virtual ~OrphanedWorkerThread() {}
 
     protected:
         virtual void run();
-
-    private:
-        bool m_success;
-        IpodHandler *m_handler;
 };
 
-class AddOrphanedWorkerThread : public ThreadWeaver::Job
+class AddOrphanedWorkerThread : public AbstractIpodWorkerThread
 {
         Q_OBJECT
     public:
         AddOrphanedWorkerThread( IpodHandler* handler );
-        virtual ~AddOrphanedWorkerThread();
-
-        virtual bool success() const;
+        virtual ~AddOrphanedWorkerThread() {}
 
     protected:
         virtual void run();
-
-    private:
-        bool m_success;
-        IpodHandler *m_handler;
 };
 
 

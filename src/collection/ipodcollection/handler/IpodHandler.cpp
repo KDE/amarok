@@ -2168,24 +2168,11 @@ IpodHandler::createCapabilityInterface( Handler::Capability::Type type )
 }
 
 DBWorkerThread::DBWorkerThread( IpodHandler* handler )
-    : ThreadWeaver::Job()
-    , m_success( false )
-    , m_handler( handler )
+    : AbstractIpodWorkerThread( handler )
 {
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
-}
-
-DBWorkerThread::~DBWorkerThread()
-{
-    //nothing to do
-}
-
-bool
-DBWorkerThread::success() const
-{
-    return m_success;
 }
 
 void
@@ -2197,24 +2184,11 @@ DBWorkerThread::run()
 // stale
 
 StaleWorkerThread::StaleWorkerThread( IpodHandler* handler )
-    : ThreadWeaver::Job()
-    , m_success( false )
-    , m_handler( handler )
+    : AbstractIpodWorkerThread( handler )
 {
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
-}
-
-StaleWorkerThread::~StaleWorkerThread()
-{
-    //nothing to do
-}
-
-bool
-StaleWorkerThread::success() const
-{
-    return m_success;
 }
 
 void
@@ -2226,24 +2200,11 @@ StaleWorkerThread::run()
 // Orphaned
 
 OrphanedWorkerThread::OrphanedWorkerThread( IpodHandler* handler )
-    : ThreadWeaver::Job()
-    , m_success( false )
-    , m_handler( handler )
+    : AbstractIpodWorkerThread( handler )
 {
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
-}
-
-OrphanedWorkerThread::~OrphanedWorkerThread()
-{
-    //nothing to do
-}
-
-bool
-OrphanedWorkerThread::success() const
-{
-    return m_success;
 }
 
 void
@@ -2255,24 +2216,11 @@ OrphanedWorkerThread::run()
 // Add Orphaned
 
 AddOrphanedWorkerThread::AddOrphanedWorkerThread( IpodHandler* handler )
-    : ThreadWeaver::Job()
-    , m_success( false )
-    , m_handler( handler )
+    : AbstractIpodWorkerThread( handler )
 {
     connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ), Qt::QueuedConnection );
-}
-
-AddOrphanedWorkerThread::~AddOrphanedWorkerThread()
-{
-    //nothing to do
-}
-
-bool
-AddOrphanedWorkerThread::success() const
-{
-    return m_success;
 }
 
 void
