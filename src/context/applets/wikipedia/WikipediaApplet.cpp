@@ -25,11 +25,8 @@
 #include "EngineController.h"
 #include "PaletteHandler.h"
 
-
 #include <Plasma/Theme>
 #include <plasma/widgets/webview.h>
-#include <plasma/widgets/iconwidget.h>
-#include <plasma/widgets/iconwidget.h>
 #include <plasma/widgets/iconwidget.h>
 #include <plasma/widgets/pushbutton.h>
 
@@ -84,7 +81,6 @@ WikipediaApplet::init()
     m_webView = new Plasma::WebView( this );
     m_webView->setAttribute( Qt::WA_NoSystemBackground );
 
-
     // ask for all the CV height
     resize( 500, -1 );
 
@@ -99,7 +95,6 @@ WikipediaApplet::init()
     palette.setBrush(QPalette::Base, Qt::transparent);
     m_webView->page()->setPalette(palette);   
     m_webView->setAttribute(Qt::WA_OpaquePaintEvent, false);
-    
     
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
@@ -166,17 +161,13 @@ WikipediaApplet::init()
     KConfigGroup config = Amarok::config("Wikipedia Applet");
     m_wikiPreferredLang = config.readEntry( "PreferredLang", "aut" );
     dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
-
 }
 
 Plasma::IconWidget *
 WikipediaApplet::addAction( QAction *action )
 {
-    if ( !action ) {
-        DEBUG_BLOCK
-        debug() << "ERROR!!! PASSED INVALID ACTION";
+    if( !action )
         return 0;
-    }
     
     Plasma::IconWidget *tool = new Plasma::IconWidget( this );
     tool->setAction( action );
