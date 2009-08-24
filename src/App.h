@@ -17,8 +17,9 @@
 #ifndef AMAROK_APP_H
 #define AMAROK_APP_H
 
-#include <config-amarok.h>  
+#include <config-amarok.h>
 
+#include "aboutdialog/OcsData.h"
 #include "amarok_export.h"
 #include "MainWindow.h"
 
@@ -34,7 +35,7 @@ namespace Amarok {
     class TrayIcon;
 }
 
-typedef QList< QPair< QString, KAboutPerson > > OcsData;
+class OcsData;
 
 namespace KIO { class Job; }
 

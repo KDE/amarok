@@ -14,34 +14,37 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_OCSPERSONLISTWIDGET_H
-#define AMAROK_OCSPERSONLISTWIDGET_H
+#include "FramedLabel.h"
 
-#include "OcsPersonItem.h"
+#include <QPainter>
+#include <QPaintEvent>
+#include <QStyleOption>
 
+FramedLabel::FramedLabel( QWidget *parent, Qt::WindowFlags f )
+        : QLabel( parent, f )
+{}
 
+FramedLabel::FramedLabel( const QString &text, QWidget *parent, Qt::WindowFlags f )
+        : QLabel( text, parent, f )
+{}
 
-class OcsPersonListWidget : public QWidget
+FramedLabel::~FramedLabel()
+{}
+
+void
+FramedLabel::paintEvent( QPaintEvent *event )
 {
-    Q_OBJECT
-
-public:
-    OcsPersonListWidget( OcsPersonItem::PersonStatus status = OcsPersonItem::Author, QWidget *parent = 0 );
-    void addPerson( const KAboutPerson &person, const Attica::Person &ocsPerson );
-    void addPerson( const KAboutPerson &person );
-
-//DEBUG:
-    QStringList m_addedNames;
-
-
-signals:
-    void personAdded( OcsPersonItem::PersonStatus status, int persons );
-
-private:
-    void addPersonPrivate( OcsPersonItem *item );
-    QWidget *m_personsArea;
-    QVBoxLayout *m_areaLayout;
-    OcsPersonItem::PersonStatus m_status;
-};
-
-#endif  //AMAROK_OCSPERSONLISTWIDGET_H
+    Q_UNUSED( event )
+    if( frameShape() == QFrame::StyledPanel )
+    {
+        QPainter painter( this );
+        QStyleOptionViewItemV4 option;
+        option.initFrom( this );
+        option.state = QStyle::State_Enabled | QStyle::State_MouseOver;
+        option.viewItemPosition = QStyleOptionViewItemV4::OnlyOne;
+        style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, &painter, this );
+    }
+    QRect cr = contentsRect();
+    QPaintEvent *e = new QPaintEvent( cr );
+    QLabel::paintEvent( e );
+}

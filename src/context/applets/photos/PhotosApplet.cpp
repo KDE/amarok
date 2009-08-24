@@ -183,7 +183,7 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
 
     if ( m_stoppedstate )
     {
-        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + i18n( "No track playing" ) );
+        m_headerText->setText( i18n( "Photos" )  );
         updateConstraints();
         update();
         m_widget->clear();

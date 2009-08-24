@@ -67,7 +67,7 @@ public:
     AMAROK_EXPORT static void destroy();
 
     /// allow the user to edit the query?
-    void setUserCanEditQuery( bool b ) { m_userCanEditQuery = b; }
+    void setInteractive( bool b ) { m_interactive = b; }
 
     /// Main Fetch loop
     AMAROK_EXPORT void manualFetch( Meta::AlbumPtr album );
@@ -96,7 +96,7 @@ private:
     QMutex m_albumsMutex;
     QMutex m_fetchMutex;
 
-    bool    m_userCanEditQuery;
+    bool    m_interactive; /// whether we should consult the user
     QString m_userQuery; /// the query from the query edit dialog
     QString m_xml;
     QPixmap  m_pixmap;

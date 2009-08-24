@@ -14,34 +14,27 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_OCSPERSONLISTWIDGET_H
-#define AMAROK_OCSPERSONLISTWIDGET_H
+#ifndef AMAROK_FRAMEDLABEL_H
+#define AMAROK_FRAMEDLABEL_H
 
-#include "OcsPersonItem.h"
+#include <QLabel>
 
-
-
-class OcsPersonListWidget : public QWidget
+/**
+ * A simple subclass of QLabel that unlike a QLabel under Oxygen, actually obeys setting
+ * the shape to QFrame::StyledPanel.
+ * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ */
+class FramedLabel : public QLabel
 {
     Q_OBJECT
 
 public:
-    OcsPersonListWidget( OcsPersonItem::PersonStatus status = OcsPersonItem::Author, QWidget *parent = 0 );
-    void addPerson( const KAboutPerson &person, const Attica::Person &ocsPerson );
-    void addPerson( const KAboutPerson &person );
+    FramedLabel( QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    FramedLabel( const QString &text, QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    ~FramedLabel();
 
-//DEBUG:
-    QStringList m_addedNames;
-
-
-signals:
-    void personAdded( OcsPersonItem::PersonStatus status, int persons );
-
-private:
-    void addPersonPrivate( OcsPersonItem *item );
-    QWidget *m_personsArea;
-    QVBoxLayout *m_areaLayout;
-    OcsPersonItem::PersonStatus m_status;
+protected:
+    virtual void paintEvent( QPaintEvent *event );
 };
 
-#endif  //AMAROK_OCSPERSONLISTWIDGET_H
+#endif //AMAROK_FRAMEDLABEL_H

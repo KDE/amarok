@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,15 +18,24 @@
 #ifndef LASTFMSERVICECONFIG_H
 #define LASTFMSERVICECONFIG_H
 
+#include <QObject>
 #include <QString>
 
-class LastFmServiceConfig
+namespace KWallet {
+    class Wallet;
+}
+
+class KDialog;
+
+class LastFmServiceConfig : public QObject
 {
+    Q_OBJECT
 public:
     static const char *configSectionName() { return "Service_LastFm"; }
 
     LastFmServiceConfig();
-
+    ~LastFmServiceConfig();
+    
     void load();
     void save();
     void reset();
@@ -45,12 +55,19 @@ public:
     bool fetchSimilar() { return m_fetchSimilar; }
     void setFetchSimilar( bool fetchSimilar ) { m_fetchSimilar = fetchSimilar; }
 
+private slots:
+    void textDialogOK();
+    void textDialogCancel();
+    
 private:
     QString m_username;
     QString m_password;
     QString m_sessionKey;
     bool m_scrobble;
     bool m_fetchSimilar;
+
+    KDialog* m_askDiag;
+    KWallet::Wallet* m_wallet;
 };
 
 #endif // LASTFMSERVICECONFIG_H

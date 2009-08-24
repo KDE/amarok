@@ -520,11 +520,13 @@ set(amaroklib_LIB_SRCS
     ${scriptengine_SRCS}
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
+    aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
     aboutdialog/ExtendedAboutDialog.cpp
-    aboutdialog/OcsAuthorItem.cpp
+    aboutdialog/FramedLabel.cpp
+    aboutdialog/OcsData.cpp
+    aboutdialog/OcsPersonItem.cpp
     aboutdialog/OcsPersonListWidget.cpp
-    aboutdialog/AnimatedBarWidget.cpp
     ActionClasses.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
@@ -640,7 +642,7 @@ set( amaroklib_DEPENDS "amarokpud" )
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
-    aboutdialog/OcsAuthorItem.ui
+    aboutdialog/OcsPersonItem.ui
     dialogs/EditCoverSearchDialog.ui
     dialogs/EditFilterDialog.ui
     dialogs/ScriptManagerBase.ui
@@ -673,7 +675,7 @@ target_link_libraries(amaroklib
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
-    ocsclient
+    amarok-ocsclient
 )
 
 if(CMAKE_BUILD_TYPE MATCHES debugfull)

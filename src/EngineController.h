@@ -101,7 +101,7 @@ public:
     /**
      * The state of the engine
      */
-    Phonon::State state() const;
+    Phonon::State state() const { return phononMediaObject()->state(); }
 
     /*enum Filetype { MP3 };*/ //assuming MP3 for time being
     /*AMAROK_EXPORT*/ static bool installDistroCodec();
@@ -275,8 +275,6 @@ private:
      * @param offset the position in the media to start at in milliseconds
      */
     void playUrl( const KUrl &url, uint offset );
-
-    void createFadeoutEffect();
 
     static EngineController* s_instance;
     EngineController();

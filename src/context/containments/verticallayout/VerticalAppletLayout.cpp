@@ -58,7 +58,6 @@ Context::VerticalAppletLayout::resizeEvent( QGraphicsSceneResizeEvent * event )
 void 
 Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
 {
-    DEBUG_BLOCK
     debug() << "layout told to add applet at" << location;
     if( m_appletList.size() == 0 )
         emit noApplets( false );
@@ -163,7 +162,6 @@ Context::VerticalAppletLayout::appletRemoved( Plasma::Applet* app )
 void
 Context::VerticalAppletLayout::showAtIndex( int index )
 {
-    DEBUG_BLOCK
     if( index < 0 || index > m_appletList.size() )
         return;
     

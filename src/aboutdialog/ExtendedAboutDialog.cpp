@@ -25,7 +25,7 @@
 #include "Debug.h"
 #include "libattica-ocsclient/ocsapi.h"
 #include "libattica-ocsclient/personjob.h"
-#include "OcsAuthorItem.h"
+#include "OcsPersonItem.h"
 
 #include <QLabel>
 #include <QLayout>
@@ -38,9 +38,11 @@
 #include <kglobalsettings.h>
 #include <kiconloader.h>
 #include <klocale.h>
+#include <kmessagebox.h>
 #include <kstandarddirs.h>
 #include <ktextbrowser.h>
 #include <ktitlewidget.h>
+#include <solid/networking.h>
 
 
 class ExtendedAboutDialog::Private
@@ -77,11 +79,23 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         setMainWidget(errorLabel);
         return;
     }
+    if( !ocsData )
+    {
+        QLabel *errorLabel = new QLabel(i18n("<qt>No information available.<br />"
+                                             "The supplied OcsData object does not exist.</qt>"), this);
+
+        errorLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+        setMainWidget(errorLabel);
+        return;
+    }
+
     setPlainCaption(i18n("About %1", aboutData->programName()));
     setButtons(KDialog::Close);
     setDefaultButton(KDialog::Close);
     setModal(false);
 
+
+    //Set up the title widget...
     KTitleWidget *titleWidget = new KTitleWidget(this);
 
     QIcon windowIcon;
@@ -99,9 +113,13 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     titleWidget->setText(i18n("<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</html>",
                          aboutData->programName(), aboutData->version(), QString(KDE_VERSION_STRING)));
 
+
+    //Now let's add the tab bar...
     QTabWidget *tabWidget = new QTabWidget;
     tabWidget->setUsesScrollButtons(false);
 
+
+    //Set up the first page...
     QString aboutPageText = aboutData->shortDescription() + '\n';
 
     if (!aboutData->otherText().isEmpty())
@@ -145,22 +163,25 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
 
     tabWidget->addTab(aboutWidget, i18n("&About"));
 
+
+    //Stuff needed by both Authors and Credits pages:
     m_transparentBackgroundPalette.setColor(QPalette::Base, Qt::transparent);
     m_transparentBackgroundPalette.setColor(QPalette::Text, m_transparentBackgroundPalette.color(QPalette::WindowText));
+    QPixmap openDesktopPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/opendesktop.png" ) );
+    QIcon openDesktopIcon = QIcon( openDesktopPixmap );
 
+
+    //And now, the Authors page:
     m_authorWidget = new QWidget( this );
     QVBoxLayout *authorLayout = new QVBoxLayout( m_authorWidget );
     m_offlineAuthorWidget = new QWidget( m_authorWidget );
-    m_ocsAuthorWidget = new OcsPersonListWidget( m_authorWidget );
+    m_ocsAuthorWidget = new OcsPersonListWidget( OcsPersonItem::Author, m_authorWidget );
 
-    QPixmap openDesktopPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/opendesktop.png" ) );
-    QIcon openDesktopIcon = QIcon( openDesktopPixmap );
-    m_showOcsButton = new AnimatedBarWidget( openDesktopIcon,
+    m_showOcsAuthorButton = new AnimatedBarWidget( openDesktopIcon,
                                  i18n( "Get data from openDesktop.org to learn more about the team" ),
                                  "process-working", m_authorWidget );
-    connect( m_showOcsButton, SIGNAL( clicked() ), this, SLOT( setupOcsAuthorWidget() ) );
-    connect( m_showOcsButton, SIGNAL( clicked() ), m_showOcsButton, SLOT( animate() ) );
-    authorLayout->addWidget( m_showOcsButton );
+    connect( m_showOcsAuthorButton, SIGNAL( clicked() ), this, SLOT( switchToOcsWidgets() ) );
+    authorLayout->addWidget( m_showOcsAuthorButton );
 
     setupOfflineAuthorWidget(); //populate m_authorWidget and set m_authorPageTitle
 
@@ -171,30 +192,30 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
 
     tabWidget->addTab(m_authorWidget, m_authorPageTitle);
 
-    const int creditsCount = aboutData->credits().count();
-    if (creditsCount) {
-        QString creditsPageText;
 
-        const QList<KAboutPerson> lst = aboutData->credits();
-        for (int i = 0; i < lst.size(); ++i) {
-            creditsPageText += QString("<p style=\"margin: 0px;\">%1</p>").arg(lst.at(i).name());
-            if (!lst.at(i).emailAddress().isEmpty())
-                creditsPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"mailto:%1\">%1</a></p>").arg(lst.at(i).emailAddress());
-            if (!lst.at(i).webAddress().isEmpty())
-                creditsPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"%3\">%3</a></p>").arg(lst.at(i).webAddress());
-            if (!lst.at(i).task().isEmpty())
-                creditsPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\">%4</p>").arg(lst.at(i).task());
-            if (i < lst.size() - 1)
-                creditsPageText += "<p style=\"margin: 0px;\">&nbsp;</p>";
-        }
+    //Finally, the Credits page:
+    m_creditWidget = new QWidget( this );
+    QVBoxLayout *creditLayout = new QVBoxLayout( m_creditWidget );
+    m_offlineCreditWidget = new QWidget( m_creditWidget );
+    m_ocsCreditWidget = new OcsPersonListWidget( OcsPersonItem::Contributor, m_creditWidget );
 
-        KTextBrowser *creditsTextBrowser = new KTextBrowser;
-        creditsTextBrowser->setFrameStyle(QFrame::NoFrame);
-        creditsTextBrowser->setPalette(m_transparentBackgroundPalette);
-        creditsTextBrowser->setHtml(creditsPageText);
-        tabWidget->addTab(creditsTextBrowser, i18n("&Thanks To"));
-    }
+    m_showOcsCreditButton = new AnimatedBarWidget( openDesktopIcon,
+                                 i18n( "Get data from openDesktop.org to learn more about contributors" ),
+                                 "process-working", m_creditWidget );
+    connect( m_showOcsCreditButton, SIGNAL( clicked() ), this, SLOT( switchToOcsWidgets() ) );
+    creditLayout->addWidget( m_showOcsCreditButton );
 
+    setupOfflineCreditWidget(); //populate m_creditWidget
+
+    creditLayout->addWidget( m_offlineCreditWidget );
+    creditLayout->addWidget( m_ocsCreditWidget );
+    creditLayout->setMargin( 0 );
+    m_creditWidget->setLayout( creditLayout );
+
+    tabWidget->addTab( m_creditWidget, i18n("&Thanks To"));
+
+
+    //And the translators:
     const QList<KAboutPerson> translatorList = aboutData->translators();
 
     if(translatorList.count() > 0) {
@@ -265,6 +286,33 @@ void ExtendedAboutDialog::Private::_k_showLicense( const QString &number )
 }
 
 void
+ExtendedAboutDialog::switchToOcsWidgets()
+{
+    if( !( Solid::Networking::status() == Solid::Networking::Connected ||
+           Solid::Networking::status() == Solid::Networking::Unknown ) )
+    {
+        KMessageBox::error( this, i18n( "Internet connection not available" ), i18n( "Network error" ) );
+        return;
+    }
+
+    m_showOcsAuthorButton->animate();
+    m_showOcsCreditButton->animate();
+    //TODO: Ask Solid if the network is available.
+    if( sender() == m_showOcsAuthorButton )
+    {
+        setupOcsAuthorWidget();
+        setupOcsCreditWidget();
+    }
+    else if( sender() == m_showOcsCreditButton )
+    {
+        setupOcsCreditWidget();
+        setupOcsAuthorWidget();
+    }
+    else
+        warning() << "Invalid sender for ExtendedAboutDialog::switchToOcsWidgets()";
+}
+
+void
 ExtendedAboutDialog::setupOfflineAuthorWidget()
 {
     m_ocsAuthorWidget->hide();
@@ -320,51 +368,128 @@ ExtendedAboutDialog::setupOfflineAuthorWidget()
 
         offlineAuthorWidgetLayout->addWidget( authorTextBrowser );
         m_offlineAuthorWidget->setLayout( offlineAuthorWidgetLayout );
+        m_isOfflineAuthorWidget = true;
     }
 }
 
 void
 ExtendedAboutDialog::setupOcsAuthorWidget()
 {
-    //TODO: Ask Solid if the network is available.
-
-    if( m_offlineAuthorWidget->isVisible() )
+    if( m_isOfflineAuthorWidget )
     {
         m_offlineAuthorWidget->hide();
+        m_isOfflineAuthorWidget = false;
 
-        m_ocsAuthorWidget = new OcsPersonListWidget( m_authorWidget );
         m_authorWidget->layout()->addWidget( m_ocsAuthorWidget );
-        connect( m_ocsAuthorWidget, SIGNAL( personAdded( int ) ), this, SLOT( onPersonAdded( int ) ) );
+        connect( m_ocsAuthorWidget, SIGNAL( personAdded( OcsPersonItem::PersonStatus, int ) ),
+                 this, SLOT( onPersonAdded( OcsPersonItem::PersonStatus, int ) ) );
 
         Attica::PersonJob *personJob;
-        for( QList< QPair< QString, KAboutPerson > >::const_iterator author = m_ocsData.constBegin();
-                author != m_ocsData.constEnd(); ++author )
+        for( OcsData::OcsPersonList::const_iterator author = m_ocsData.authors()->constBegin();
+                author != m_ocsData.authors()->constEnd(); ++author )
         {
             QString userName = (*author).first;
             if( !userName.isEmpty() )
             {
                 personJob = Attica::OcsApi::requestPerson( userName );
                 personJob->start();
-                connect( personJob, SIGNAL( result( KJob * ) ), this, SLOT( personJobFinished( KJob * ) ) );
+                connect( personJob, SIGNAL( result( KJob * ) ), this, SLOT( authorJobFinished( KJob * ) ) );
             }
             else
             {
                 m_ocsAuthorWidget->addPerson( (*author).second );
             }
         }
-
-
         m_ocsAuthorWidget->show();
     }
 }
 
 void
-ExtendedAboutDialog::personJobFinished( KJob *job )
+ExtendedAboutDialog::setupOfflineCreditWidget()
+{
+    m_ocsCreditWidget->hide();
+    const KAboutData *aboutData = d->aboutData;
+    const int creditCount = aboutData->credits().count();
+
+    if (creditCount) {
+        QString creditPageText;
+
+        const QList<KAboutPerson> lst = aboutData->credits();
+        for (int i = 0; i < lst.size(); ++i) {
+            creditPageText += QString("<p style=\"margin: 0px;\">%1</p>").arg(lst.at(i).name());
+            if (!lst.at(i).emailAddress().isEmpty())
+                creditPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"mailto:%1\">%1</a></p>").arg(lst.at(i).emailAddress());
+            if (!lst.at(i).webAddress().isEmpty())
+                creditPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\"><a href=\"%3\">%3</a></p>").arg(lst.at(i).webAddress());
+            if (!lst.at(i).task().isEmpty())
+                creditPageText += QString("<p style=\"margin: 0px; margin-left: 15px;\">%4</p>").arg(lst.at(i).task());
+            if (i < lst.size() - 1)
+                creditPageText += "<p style=\"margin: 0px;\">&nbsp;</p>";
+        }
+
+        QVBoxLayout *offlineCreditWidgetLayout = new QVBoxLayout( m_offlineCreditWidget );
+        offlineCreditWidgetLayout->setMargin( 0 );
+        KTextBrowser *creditTextBrowser = new KTextBrowser( m_offlineCreditWidget );
+        creditTextBrowser->setFrameStyle(QFrame::NoFrame);
+        creditTextBrowser->setPalette(m_transparentBackgroundPalette);
+        creditTextBrowser->setHtml(creditPageText);
+
+        offlineCreditWidgetLayout->addWidget( creditTextBrowser );
+        m_offlineCreditWidget->setLayout( offlineCreditWidgetLayout );
+        m_isOfflineCreditWidget = true;
+    }
+}
+
+void
+ExtendedAboutDialog::setupOcsCreditWidget()
+{
+    if( m_isOfflineCreditWidget )
+    {
+        m_offlineCreditWidget->hide();
+        m_isOfflineCreditWidget = false;
+
+        m_creditWidget->layout()->addWidget( m_ocsCreditWidget );
+        connect( m_ocsCreditWidget, SIGNAL( personAdded( OcsPersonItem::PersonStatus, int ) ),
+                 this, SLOT( onPersonAdded( OcsPersonItem::PersonStatus, int ) ) );
+
+        Attica::PersonJob *personJob;
+        for( OcsData::OcsPersonList::const_iterator credit = m_ocsData.credits()->constBegin();
+                credit != m_ocsData.credits()->constEnd(); ++credit )
+        {
+            QString userName = (*credit).first;
+            if( !userName.isEmpty() )
+            {
+                if( userName == "%%category%%" )
+                {
+                    //m_ocsCreditWidget->addPerson( (*credit).second );
+                    // ^ this is a category separator string in the old widget
+                    //TODO: implement two sections: active and former
+                }
+                else
+                {
+                    personJob = Attica::OcsApi::requestPerson( userName );
+                    personJob->start();
+                    connect( personJob, SIGNAL( result( KJob * ) ), this, SLOT( creditJobFinished( KJob * ) ) );
+                }
+            }
+            else
+            {
+                m_ocsCreditWidget->addPerson( (*credit).second );
+            }
+        }
+        m_ocsCreditWidget->show();
+    }
+}
+
+void
+ExtendedAboutDialog::authorJobFinished( KJob *job )
 {
     Attica::PersonJob *personJob = qobject_cast< Attica::PersonJob * >( job );
     QString userName = personJob->person().id();
+
     KAboutPerson *person = 0;
-    for( QList< QPair< QString, KAboutPerson > >::const_iterator it = m_ocsData.constBegin(); it != m_ocsData.constEnd(); ++it )
+    for( OcsData::OcsPersonList::const_iterator it = m_ocsData.authors()->constBegin();
+            it != m_ocsData.authors()->constEnd(); ++it )
     {
         if( (*it).first == userName )
         {
@@ -373,17 +498,69 @@ ExtendedAboutDialog::personJobFinished( KJob *job )
         }
     }
     if ( person )
+    {
         m_ocsAuthorWidget->addPerson( *person, personJob->person() );
+    }
 }
 
 void
-ExtendedAboutDialog::onPersonAdded( int persons )
+ExtendedAboutDialog::creditJobFinished( KJob *job )
 {
-    if( persons == d->aboutData->authors().count() )
+    DEBUG_BLOCK
+    Attica::PersonJob *personJob = qobject_cast< Attica::PersonJob * >( job );
+
+    debug()<< m_ocsData.credits()->count();
+    debug()<< d->aboutData->credits().count();
+    QString userName = personJob->person().id();
+    KAboutPerson *person = 0;
+    for( OcsData::OcsPersonList::const_iterator it = m_ocsData.credits()->constBegin();
+            it != m_ocsData.credits()->constEnd(); ++it )
     {
-        //Yay, the OCS authors list has been populated!
-        m_showOcsButton->stop();
-        m_showOcsButton->fold();
+        if( (*it).first == userName )
+        {
+            //TODO: for some reason this is capped to 12 persons, fix it somehow
+            person = new KAboutPerson( (*it).second );
+            break;
+        }
+    }
+    if ( person )
+    {
+        m_ocsCreditWidget->addPerson( *person, personJob->person() );
+    }
+}
+
+void
+ExtendedAboutDialog::onPersonAdded( OcsPersonItem::PersonStatus status, int persons )  //SLOT
+{
+    DEBUG_BLOCK
+    if( status == OcsPersonItem::Author )
+    {
+        if( persons == d->aboutData->authors().count() )
+        {
+            //Yay, the OCS authors list has been populated!
+            m_showOcsAuthorButton->stop();
+            m_showOcsAuthorButton->fold();
+        }
+    }
+    else if( status == OcsPersonItem::Contributor )
+    {
+        debug()<< "There are" << persons<<"credits loaded";
+        debug()<< "     out of" << d->aboutData->credits().count();
+        //TODO: implement separator. until then, this must be -1:
+        if( persons == d->aboutData->credits().count() -1 )
+        {
+            //DEBUG:
+            debug()<<"Listed contributors";
+            debug()<<"Inserted | Name";
+            for( OcsData::OcsPersonList::const_iterator it = m_ocsData.credits()->constBegin();
+                    it != m_ocsData.credits()->constEnd(); ++it )
+            {
+                debug() << m_ocsCreditWidget->m_addedNames.contains( (*it).second.name() ) << "    "<< (*it).second.name();
+            }
+
+            m_showOcsCreditButton->stop();
+            m_showOcsCreditButton->fold();
+        }
     }
 }
 

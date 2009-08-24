@@ -220,23 +220,37 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     if( data.size() == 0 ) return;
 
+    //debug() << "got lyrics data: " << data;
+
     m_titleLabel->show();
     if( data.contains( "noscriptrunning" ) )
     {
         m_suggested->hide();
         m_lyrics->show();m_lyrics->setPlainText( i18n( "No lyrics script is running." ) );
     }
+    else if( data.contains( "stopped" ) )
+    {
+        m_lyrics->clear();
+        m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
+        setCollapseHeight( 40 );
+        setCollapseOn();
+    }
     else if( data.contains( "fetching" ) )
     {
         m_suggested->hide();
         m_lyrics->show();
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
+        setCollapseHeight( 80 );
+        debug() << "lyrics small sizehint height:" << m_lyrics->sizeHint().height();
+        setCollapseOn();
     }
     else if( data.contains( "error" ) )
     {
         m_suggested->hide();
         m_lyrics->show();
         m_lyrics->setPlainText( i18n( "Lyrics were not able to be downloaded. Please check your internet connection: %1", data["error"].toString() ) );
+        setCollapseHeight( 80 );
+        setCollapseOn();
     }
     else if( data.contains( "suggested" ) )
     {
@@ -262,6 +276,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_suggested->hide();
         m_lyrics->setHtml( data[ "html" ].toString() );
         m_lyrics->show();
+        setCollapseOff();
     }
     else if( data.contains( "lyrics" ) )
     {
@@ -273,12 +288,17 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_titleText = QString( " %1 : %2 - %3" ).arg( i18n( "Lyrics" ) ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() );
         //  need padding for title
         m_lyrics->setPlainText( lyrics[ 3 ].toString().trimmed() );
+        setCollapseOff();
     }
     else if( data.contains( "notfound" ) )
     {
         m_suggested->hide();
         m_lyrics->show();
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
+
+        setCollapseHeight( m_lyrics->sizeHint().height() );
+        debug() << "lyrics small sizehint height:" << m_lyrics->sizeHint().height();
+        setCollapseOn();
     }
 
     setEditing( false );
