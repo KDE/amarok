@@ -25,6 +25,7 @@
 BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
     : KHBox( parent)
     , m_rootList( 0 )
+    , m_childMenuButton( 0 )
 {
     setFixedHeight( 28 );
     setContentsMargins( 3, 0, 3, 0 );
@@ -56,6 +57,11 @@ BrowserBreadcrumbWidget::clearCrumbs()
         item->setParent( 0 );
     }
     m_items.clear();
+
+    //if we have a final menu button, also delete it.
+    delete m_childMenuButton;
+    m_childMenuButton = 0;
+    
 }
 
 void
@@ -117,6 +123,40 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
     else
     {
         item->setActive( true );
+
+        //if this item has children, add a menu button for selecting these.
+        BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( list );
+        if( childList )
+        {
+            m_childMenuButton = new BreadcrumbItemMenuButton( m_breadcrumbArea );
+
+            QMenu *menu = new QMenu( 0 );
+
+            QMap<QString,BrowserCategory *> childMap =  childList->categories();
+
+            QStringList childNames = childMap.keys();
+
+            foreach( QString siblingName, childNames )
+            {
+                //no point in adding ourselves to this menu
+                if ( siblingName == list->name() )
+                    continue;
+
+                BrowserCategory * siblingCategory = childMap.value( siblingName );
+
+                QAction * action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
+                connect( action, SIGNAL( triggered() ), childMap.value( siblingName ), SLOT( activate() ) );
+
+            }
+
+        m_childMenuButton->setMenu( menu );
+        
+        //do a little magic to line up items in the menu with the current item
+        int offset = 6;
+        menu->setContentsMargins( offset, 1, 1, 2 );
+
+        }
+        
     }
 }
 

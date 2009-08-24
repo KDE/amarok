@@ -64,6 +64,7 @@ private:
     QWidget * m_spacer;
 
     KHBox * m_breadcrumbArea;
+    BreadcrumbItemMenuButton * m_childMenuButton;
 
 };
 
