@@ -557,6 +557,11 @@ ExtendedAboutDialog::onPersonAdded( OcsPersonItem::PersonStatus status, int pers
             {
                 debug() << m_ocsCreditWidget->m_addedNames.contains( (*it).second.name() ) << "    "<< (*it).second.name();
             }
+            debug()<< "And for some reason, these have been added at least twice:";
+            foreach( QString st, m_ocsCreditWidget->m_twiceAddedNames )
+            {
+                debug() << st;
+            }
 
             m_showOcsCreditButton->stop();
             m_showOcsCreditButton->fold();

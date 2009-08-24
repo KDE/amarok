@@ -52,6 +52,9 @@ OcsPersonListWidget::addPerson( const KAboutPerson &person, const Attica::Person
     //DEBUG
     if( !m_addedNames.contains( person.name() ) )
         m_addedNames.append( person.name() );
+    else
+        m_twiceAddedNames.append( person.name() );
+
     //
     addPersonPrivate( item );
 }
@@ -63,6 +66,8 @@ OcsPersonListWidget::addPerson( const KAboutPerson &person )
     //DEBUG
     if( !m_addedNames.contains( person.name() ) )
         m_addedNames.append( person.name() );
+    else
+        m_twiceAddedNames.append( person.name() );
     //
     addPersonPrivate( item );
 }

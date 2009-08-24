@@ -40,7 +40,7 @@ OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const Attica::Person &
     m_avatar->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
     m_avatar->setFixedSize( 56, 56 );
-    m_avatar->setFrameShape( QFrame::StyledPanel );
+    m_avatar->setFrameShape( QFrame::StyledPanel ); //this is a FramedLabel, otherwise oxygen wouldn't paint the frame
     m_avatar->setPixmap( m_ocsPerson->avatar() );
     m_avatar->setAlignment( Qt::AlignCenter );
 

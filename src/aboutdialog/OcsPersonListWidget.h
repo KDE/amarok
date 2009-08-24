@@ -32,6 +32,7 @@ public:
 
 //DEBUG:
     QStringList m_addedNames;
+    QStringList m_twiceAddedNames;
 
 
 signals:
