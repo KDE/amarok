@@ -44,11 +44,11 @@
 #include <QWebHistory>
 #include <QWebPage>
 
+
 WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_aspectRatio( 0 )
     , m_headerAspectRatio( 0.0 )
-    , m_size( QSizeF() )
     , m_wikipediaLabel( 0 )
     , m_webView( 0 )
     , m_backwardIcon( 0 )
@@ -59,8 +59,6 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     , m_settingsIcon( 0 )
     , m_reloadIcon( 0 )
     , m_css( 0 )
-    , m_current( "" )
-    , m_wikiPreferredLang( QString() )
     , m_gotMessage( 0 )
 {
     setHasConfigurationInterface( true );
@@ -88,7 +86,7 @@ WikipediaApplet::init()
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 
     m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
-    connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
+    connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ), SLOT( linkClicked ( const QUrl & ) ) );
 
     // make transparent so we can use qpainter translucency to draw the  background
     QPalette palette = m_webView->palette();
@@ -104,56 +102,48 @@ WikipediaApplet::init()
 
     QAction* backwardAction = new QAction( i18n( "Previous" ), this );
     backwardAction->setIcon( KIcon( "go-previous" ) );
-    backwardAction->setVisible( true );
     backwardAction->setEnabled( false );
     m_backwardIcon = addAction( backwardAction );
     connect( backwardAction, SIGNAL( activated() ), this, SLOT( goBackward() ) );
     
     QAction* forwardAction = new QAction( i18n( "Next" ), this );
     forwardAction->setIcon( KIcon( "go-next" ) );
-    forwardAction->setVisible( true );
     forwardAction->setEnabled( false );
     m_forwardIcon = addAction( forwardAction );
     connect( m_forwardIcon, SIGNAL( activated() ), this, SLOT( goForward() ) );
 
     QAction* artistAction = new QAction( i18n( "Artist" ), this );
     artistAction->setIcon( KIcon( "filename-artist-amarok" ) );
-    artistAction->setVisible( true );
     artistAction->setEnabled( false );
     m_artistIcon = addAction( artistAction );
     connect( m_artistIcon, SIGNAL( activated() ), this, SLOT( gotoArtist() ) );
     
     QAction* albumAction = new QAction( i18n( "Album" ), this );
     albumAction->setIcon( KIcon( "filename-album-amarok" ) );
-    albumAction->setVisible( true );
     albumAction->setEnabled( false );
     m_albumIcon = addAction( albumAction );
     connect( m_albumIcon, SIGNAL( activated() ), this, SLOT( gotoAlbum() ) );
 
     QAction* trackAction = new QAction( i18n( "Track" ), this );
     trackAction->setIcon( KIcon( "filename-title-amarok" ) );
-    trackAction->setVisible( true );
     trackAction->setEnabled( false );
     m_trackIcon = addAction( trackAction );
     connect( m_trackIcon, SIGNAL( activated() ), this, SLOT( gotoTrack() ) );
 
     QAction* langAction = new QAction( i18n( "Settings" ), this );
     langAction->setIcon( KIcon( "preferences-system" ) );
-    langAction->setVisible( true );
     langAction->setEnabled( true );
     m_settingsIcon = addAction( langAction );
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( switchLang() ) );
     
     QAction* reloadAction = new QAction( i18n( "Reload" ), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
-    reloadAction->setVisible( true );
     reloadAction->setEnabled( false );
     m_reloadIcon = addAction( reloadAction );
     connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( reloadWikipedia() ) );    
 
     connectSource( "wikipedia" );
-    connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ),
-             this, SLOT( connectSource( const QString & ) ) );
+    connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );
     
     constraintsEvent();
 
@@ -197,8 +187,8 @@ WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
     
     prepareGeometryChange();
-    float textWidth = m_wikipediaLabel->boundingRect().width();
-    float offsetX =  ( boundingRect().width() - textWidth ) / 2;
+    const float textWidth = m_wikipediaLabel->boundingRect().width();
+    const float offsetX =  ( boundingRect().width() - textWidth ) / 2;
 
     m_wikipediaLabel->setPos( offsetX, standardPadding() + 2 );
 
@@ -235,7 +225,8 @@ WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 {
     Q_UNUSED( name )
 
-    if( data.size() == 0 ) return;
+    if( data.size() == 0 )
+        return;
 
     if( data.contains("busy") )
     {
@@ -257,9 +248,9 @@ WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         // save last page, usefull when u where reading but the song change
         if ( m_current != "" )
         {
-            m_histoBack.push_front( m_current );
-            while ( m_histoBack.size() > 20 )
-                m_histoBack.pop_back();
+            m_historyBack.push_front( m_current );
+            while ( m_historyBack.size() > 20 )
+                m_historyBack.pop_back();
 
             if ( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
                 m_backwardIcon->action()->setEnabled( true );
@@ -268,7 +259,8 @@ WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         m_current = data[ "page" ].toString();
         m_webView->setHtml( m_current, KUrl( QString() ) );
         m_gotMessage = false;
-        m_histoFor.clear();
+        m_historyForward.clear();
+
         if ( m_forwardIcon->action() && m_forwardIcon->action()->isEnabled() )
             m_forwardIcon->action()->setEnabled( false );
     }
@@ -278,7 +270,6 @@ WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         m_webView->setHtml( data[ "message" ].toString(), KUrl( QString() ) ); // set data
         m_gotMessage = true; // we have a message and don't want to save it in history
     }
-
 
     if( m_reloadIcon->action() && !m_reloadIcon->action()->isEnabled() )
         m_reloadIcon->action()->setEnabled( true );
@@ -298,6 +289,7 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
 {
     Q_UNUSED( option )
     Q_UNUSED( contentsRect )
+
     p->setRenderHint( QPainter::Antialiasing );
 
     addGradientToAppletBackground( p );
@@ -322,24 +314,24 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     round.addRoundedRect( wikiRect, 3, 3 );
     p->fillPath( round , bg  );
     p->restore(); 
-    
 }
 
 void
 WikipediaApplet::goBackward()
 {
     DEBUG_BLOCK
-    if( !m_histoBack.empty() )
+
+    if( !m_historyBack.empty() )
     {
-        
-        m_histoFor.push_front( m_current );
-        m_current =  m_histoBack.front();
-        m_histoBack.pop_front();
+        m_historyForward.push_front( m_current );
+        m_current =  m_historyBack.front();
+        m_historyBack.pop_front();
         m_webView->setHtml( m_current , KUrl( QString() ) );
+
         if( m_forwardIcon->action() && !m_forwardIcon->action()->isEnabled() )
             m_forwardIcon->action()->setEnabled( true );
 
-        if ( m_histoBack.empty() && m_backwardIcon->action()->isEnabled() )
+        if ( m_historyBack.empty() && m_backwardIcon->action()->isEnabled() )
             m_backwardIcon->action()->setEnabled( false );
     }
 }
@@ -349,19 +341,18 @@ WikipediaApplet::goForward()
 {
     DEBUG_BLOCK
 
-    if( !m_histoFor.empty() )
+    if( !m_historyForward.empty() )
     {
-        m_histoBack.push_front( m_current );
-        m_current = m_histoFor.front();
-        m_histoFor.pop_front();
+        m_historyBack.push_front( m_current );
+        m_current = m_historyForward.front();
+        m_historyForward.pop_front();
         m_webView->setHtml( m_current , KUrl( QString() ) );
         
         if( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
             m_backwardIcon->action()->setEnabled( true );
         
-        if ( m_histoFor.empty() && m_forwardIcon->action()->isEnabled() )
+        if ( m_historyForward.empty() && m_forwardIcon->action()->isEnabled() )
             m_forwardIcon->action()->setEnabled( false );
-        
     }
 }
 
@@ -396,10 +387,9 @@ WikipediaApplet::linkClicked( const QUrl &url )
         if( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
             m_backwardIcon->action()->setEnabled( true );
 
-        m_histoFor.clear();
+        m_historyForward.clear();
         if( m_forwardIcon->action() && m_forwardIcon->action()->isEnabled() )
             m_forwardIcon->action()->setEnabled( false );
-
     }
     else
         QDesktopServices::openUrl( url.toString() );
@@ -467,10 +457,6 @@ WikipediaApplet::createConfigurationInterface( KConfigDialog *parent )
 void
 WikipediaApplet::paletteChanged( const QPalette & palette )
 {
-
-  //  m_webView->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 150 ).name() )
-  //                                                                                                            .arg( Amarok::highlightColor().darker( 400 ).name() ) );
-    //m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     // read css, replace color placeholders, write to file, load into page
     QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
@@ -494,6 +480,7 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
         delete m_css;
         m_css = new KTemporaryFile();
         m_css->setSuffix( ".css" );
+
         if( m_css->open() )
         {
             m_css->write( contents.toLatin1() );

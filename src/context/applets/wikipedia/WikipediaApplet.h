@@ -45,6 +45,7 @@ namespace Plasma
 class WikipediaApplet : public Context::Applet
 {
     Q_OBJECT
+
 public:
     WikipediaApplet( QObject* parent, const QVariantList& args );
     ~WikipediaApplet();
@@ -57,11 +58,8 @@ public:
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
 
-
 protected:
     void createConfigurationInterface(KConfigDialog *parent);
-
-
     
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
@@ -90,11 +88,10 @@ private:
 
     Ui::wikipediaSettings ui_Settings;
     
-    
     KTemporaryFile* m_css;
 
-    QList <QString> m_histoBack;
-    QList <QString> m_histoFor;
+    QList <QString> m_historyBack;
+    QList <QString> m_historyForward;
     QString m_current;
 
     QString m_wikiPreferredLang;
@@ -116,7 +113,6 @@ private slots:
     void reloadWikipedia();
     
     void paletteChanged( const QPalette & palette );
-
 };
 
 K_EXPORT_AMAROK_APPLET( wikipedia, WikipediaApplet )
