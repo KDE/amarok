@@ -81,8 +81,10 @@ OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const Attica::Person &
     }
 
     KAction *visitProfile = new KAction( KIcon( QPixmap( KStandardDirs::locate( "data",
-            "amarok/images/opendesktop.png" ) ) ), i18n( "Visit openDesktop.org profile" ), this );
-    visitProfile->setToolTip( i18n( "Visit the contributor's profile on openDesktop.org" ) );
+            "amarok/images/opendesktop.png" ) ) ), i18n( "Visit %1's openDesktop.org profile", m_ocsPerson->firstName() ), this );
+
+    visitProfile->setToolTip( i18n( "Visit %1's profile on openDesktop.org", m_ocsPerson->firstName() ) );
+    
     visitProfile->setData( m_ocsPerson->extendedAttribute( "profilepage" ) );
     m_iconsBar->addAction( visitProfile );
 
