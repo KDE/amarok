@@ -30,7 +30,7 @@ LastFmServiceConfig::LastFmServiceConfig()
     , m_wallet( 0 )
 {
 
-    KWallet::Wallet* m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
+    m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
 
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     
