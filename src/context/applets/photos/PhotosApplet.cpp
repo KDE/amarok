@@ -71,11 +71,12 @@ PhotosApplet::init()
     setCollapseHeight( m_headerText->boundingRect().height() + 3 * standardPadding() );
     
     // Icon
-    QAction* settingsAction = new QAction( i18n( "Settings" ), this );
+    QAction* settingsAction = new QAction( "", this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setVisible( true );
     settingsAction->setEnabled( true );
     m_settingsIcon = addAction( settingsAction );
+    m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
 
     m_widget = new PhotosScrollWidget( this );
@@ -231,15 +232,12 @@ Plasma::IconWidget *
 PhotosApplet::addAction( QAction *action )
 {
     DEBUG_BLOCK
-    if ( !action ) {
-        debug() << "ERROR!!! PASSED INVALID ACTION";
+    if ( !action ) 
         return 0;
-    }
+
     
     Plasma::IconWidget *tool = new Plasma::IconWidget( this );
     tool->setAction( action );
-    tool->setText( "" );
-    tool->setToolTip( action->text() );
     tool->setDrawBackground( false );
     tool->setOrientation( Qt::Horizontal );
     QSizeF iconSize = tool->sizeFromIconSize( 16 );

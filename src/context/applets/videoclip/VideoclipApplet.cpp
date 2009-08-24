@@ -96,11 +96,12 @@ VideoclipApplet::init()
     m_pixDailymotion = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-dailymotion.png" ) );
     m_pixVimeo = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-vimeo.png" ) );
 
-    QAction* langAction = new QAction( i18n( "Settings" ), this );
+    QAction* langAction = new QAction( "", this );
     langAction->setIcon( KIcon( "preferences-system" ) );
     langAction->setVisible( true );
     langAction->setEnabled( true );
     m_settingsIcon = addAction( langAction );
+    m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
 
     
@@ -508,16 +509,11 @@ VideoclipApplet::videoMenu( QPoint point )
 Plasma::IconWidget *
 VideoclipApplet::addAction( QAction *action )
 {
-    DEBUG_BLOCK
-    if ( !action ) {
-        debug() << "ERROR!!! PASSED INVALID ACTION";
+    if( !action )
         return 0;
-    }
-    
+
     Plasma::IconWidget *tool = new Plasma::IconWidget( this );
     tool->setAction( action );
-    tool->setText( "" );
-    tool->setToolTip( action->text() );
     tool->setDrawBackground( false );
     tool->setOrientation( Qt::Horizontal );
     QSizeF iconSize = tool->sizeFromIconSize( 16 );
@@ -525,7 +521,7 @@ VideoclipApplet::addAction( QAction *action )
     tool->setMaximumSize( iconSize );
     tool->resize( iconSize );
     tool->setZValue( zValue() + 1 );
-    
+
     return tool;
 }
 

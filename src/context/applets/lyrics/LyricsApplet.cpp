@@ -74,27 +74,30 @@ void LyricsApplet::init()
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
     m_titleLabel->setText( i18n( "Lyrics" ) );
 
-    QAction* editAction = new QAction( i18n( "Edit Lyrics" ), this );
+    QAction* editAction = new QAction( "", this );
     editAction->setIcon( KIcon( "document-edit" ) );
     editAction->setVisible( true );
     editAction->setEnabled( false );
     m_editIcon = addAction( editAction );
+    m_editIcon->setToolTip( i18n( "Edit Lyrics" ) );
 
     connect( m_editIcon, SIGNAL( activated() ), this, SLOT( editLyrics() ) );
 
-    QAction* saveAction = new QAction( i18n( "Save Lyrics" ), this );
+    QAction* saveAction = new QAction( "", this );
     saveAction->setIcon( KIcon( "document-save" ) );
     saveAction->setVisible( false );
     saveAction->setEnabled( false );
     m_saveIcon = addAction( saveAction );
+    m_saveIcon->setToolTip( i18n( "Save Lyrics" ) );
 
     connect( m_saveIcon, SIGNAL( activated() ), this, SLOT( saveLyrics() ) );
     
-    QAction* reloadAction = new QAction( i18n( "Reload Lyrics" ), this );
+    QAction* reloadAction = new QAction( "", this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
     m_reloadIcon = addAction( reloadAction );
+    m_reloadIcon->setToolTip( i18n( "Reload Lyrics" ) );
 
     connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( refreshLyrics() ) );
 
@@ -149,8 +152,6 @@ LyricsApplet::addAction( QAction *action )
     Plasma::IconWidget *tool = new Plasma::IconWidget( this );
 
     tool->setAction( action );
-    tool->setText( "" );
-    tool->setToolTip( action->text() );
     tool->setDrawBackground( false );
     tool->setOrientation( Qt::Horizontal );
     QSizeF iconSize = tool->sizeFromIconSize( 16 );
