@@ -392,7 +392,7 @@ ExtendedAboutDialog::setupOcsAuthorWidget()
             if( !userName.isEmpty() )
             {
                 personJob = Attica::OcsApi::requestPerson( userName );
-                personJob->start();
+//                personJob->start();
                 connect( personJob, SIGNAL( result( KJob * ) ), this, SLOT( authorJobFinished( KJob * ) ) );
             }
             else
@@ -468,7 +468,7 @@ ExtendedAboutDialog::setupOcsCreditWidget()
                 else
                 {
                     personJob = Attica::OcsApi::requestPerson( userName );
-                    personJob->start();
+//                    personJob->start();
                     connect( personJob, SIGNAL( result( KJob * ) ), this, SLOT( creditJobFinished( KJob * ) ) );
                 }
             }
