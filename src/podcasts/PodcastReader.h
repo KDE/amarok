@@ -27,6 +27,7 @@
 namespace KIO
 {
     class Job;
+    class TransferJob;
 }
 
 class KUrl;
@@ -49,7 +50,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
         ~PodcastReader();
 
     signals:
-        void finished( PodcastReader *podcastReader, bool result );
+        void finished( PodcastReader *podcastReader );
 
     private slots:
         void slotRedirection( KIO::Job *job, const KUrl & url );
@@ -61,8 +62,12 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void downloadResult( KJob * );
 
     private:
+        enum FeedType { UnknownFeedType, ErrorPageType, Rss20FeedType };
+
+        FeedType m_feedType;
         KUrl m_url;
         PodcastProvider * m_podcastProvider;
+        KIO::TransferJob *m_transferJob;
         Meta::PodcastMetaCommon *m_current;
         Meta::PodcastChannelPtr m_channel;
 

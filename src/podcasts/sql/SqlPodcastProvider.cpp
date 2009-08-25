@@ -205,8 +205,8 @@ SqlPodcastProvider::addPodcast(const KUrl & url)
         m_updatingChannels++;
         PodcastReader * podcastReader = new PodcastReader( this );
 
-        connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
-                SLOT( slotReadResult( PodcastReader *, bool ) ) );
+        connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
+                SLOT( slotReadResult( PodcastReader * ) ) );
 
         result = podcastReader->read( kurl );
     }
@@ -559,8 +559,8 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
     m_updatingChannels++;
     PodcastReader * podcastReader = new PodcastReader( this );
 
-    connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
-             SLOT( slotReadResult( PodcastReader *, bool ) ) );
+    connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
+             SLOT( slotReadResult( PodcastReader * ) ) );
     //PodcastReader will create a progress bar in The StatusBar.
 
     podcastReader->update( channel );
@@ -603,16 +603,12 @@ SqlPodcastProvider::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode )
 }
 
 void
-SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader, bool result )
+SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
 {
     DEBUG_BLOCK
-    if ( !result )
+    if( podcastReader->error() != QXmlStreamReader::NoError )
     {
-        debug() << "Parse error in podcast "
-            << podcastReader->url() << " line: "
-            << podcastReader->lineNumber() << " column "
-            << podcastReader->columnNumber() << " : "
-            << podcastReader->errorString();
+        debug() << podcastReader->errorString();
     }
     else
     {

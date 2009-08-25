@@ -74,7 +74,7 @@ class SqlPodcastProvider : public PodcastProvider
         void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );
         void slotUpdated();
 
-        void slotReadResult( PodcastReader *podcastReader, bool result );
+        void slotReadResult( PodcastReader *podcastReader );
         void update( Meta::SqlPodcastChannelPtr channel );
         void downloadEpisode( Meta::SqlPodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode );
