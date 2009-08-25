@@ -22,12 +22,16 @@
 #include "context/DataEngine.h"
 #include "context/Svg.h"
 
-#include <plasma/widgets/iconwidget.h>
-
 class TextScrollingWidget;
 class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
 class QTextBrowser;
+
+namespace Plasma
+{
+    class FrameSvg;
+    class IconWidget;
+}
 
 class LyricsApplet : public Context::Applet
 {
@@ -60,7 +64,6 @@ private:
     void calculateHeight();
     void setEditing( const bool isEditing );
 
-    Plasma::IconWidget* addAction( QAction *action );
     void collapseToMin();
 
     QString m_titleText;

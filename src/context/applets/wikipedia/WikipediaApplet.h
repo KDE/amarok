@@ -65,8 +65,6 @@ public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
 private:
-    Plasma::IconWidget * addAction( QAction *action );
-
     qreal m_aspectRatio;
     qreal m_headerAspectRatio;
     QSizeF m_size;

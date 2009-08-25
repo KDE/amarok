@@ -26,9 +26,11 @@
 #include <QString>
 
 class QPainter;
+
 namespace Plasma
 {
     class FrameSvg;
+    class IconWidget;
 }
 
 namespace Context
@@ -76,7 +78,10 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         void animateOn( qreal );
         void animateOff( qreal );
         void animateEnd( int );
+
     protected:
+        Plasma::IconWidget* addAction( QAction *action );
+
         bool m_collapsed;
         int  m_heightCurrent; 
         int  m_heightCollapseOn;

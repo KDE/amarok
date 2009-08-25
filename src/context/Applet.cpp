@@ -22,6 +22,7 @@
 #include "PaletteHandler.h"
 #include <Plasma/Animator>
 #include <Plasma/FrameSvg>
+#include <Plasma/IconWidget>
 #include <Plasma/Theme>
 
 #include <QGraphicsLayout>
@@ -195,13 +196,31 @@ Context::Applet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
     return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), m_heightCurrent );
 }
 
-
 void
 Context::Applet::resize( qreal wid, qreal hei)
 {
     m_heightCollapseOff = hei;
     m_heightCurrent = hei;
     QGraphicsWidget::resize( wid, hei );
+}
+
+Plasma::IconWidget*
+Context::Applet::addAction( QAction *action )
+{
+    if( !action )
+        return 0;
+
+    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
+    tool->setAction( action );
+    tool->setDrawBackground( false );
+    tool->setOrientation( Qt::Horizontal );
+    QSizeF iconSize = tool->sizeFromIconSize( 16 );
+    tool->setMinimumSize( iconSize );
+    tool->setMaximumSize( iconSize );
+    tool->resize( iconSize );
+    tool->setZValue( zValue() + 1 );
+
+    return tool;
 }
 
 void

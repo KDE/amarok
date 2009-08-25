@@ -506,25 +506,6 @@ VideoclipApplet::videoMenu( QPoint point )
     men->exec( m_videoWidget->mapToGlobal( point ) );
 }
 
-Plasma::IconWidget *
-VideoclipApplet::addAction( QAction *action )
-{
-    if( !action )
-        return 0;
-
-    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
-    tool->setAction( action );
-    tool->setDrawBackground( false );
-    tool->setOrientation( Qt::Horizontal );
-    QSizeF iconSize = tool->sizeFromIconSize( 16 );
-    tool->setMinimumSize( iconSize );
-    tool->setMaximumSize( iconSize );
-    tool->resize( iconSize );
-    tool->setZValue( zValue() + 1 );
-
-    return tool;
-}
-
 void
 VideoclipApplet::createConfigurationInterface( KConfigDialog *parent )
 {

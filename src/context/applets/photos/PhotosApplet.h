@@ -31,6 +31,7 @@ class TextScrollingWidget;
 class KConfigDialog;
 class PhotosScrollWidget;
 class QGraphicsSimpleTextItem;
+
 namespace Plasma
 {
     class IconWidget;
@@ -64,7 +65,6 @@ class PhotosApplet : public Context::Applet, public EngineObserver
         void createConfigurationInterface(KConfigDialog *parent);
         
     private:
-        Plasma::IconWidget * addAction( QAction *action );
         TextScrollingWidget     *m_headerText;
         PhotosScrollWidget      *m_widget;
 

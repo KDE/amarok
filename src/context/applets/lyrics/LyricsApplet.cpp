@@ -30,6 +30,8 @@
 #include <KGlobalSettings>
 #include <KStandardDirs>
 
+#include <Plasma/IconWidget>
+
 #include <QAction>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsProxyWidget>
@@ -138,31 +140,6 @@ void LyricsApplet::init()
     constraintsEvent();
     updateConstraints();
     connectSource( "lyrics" );
-}
-
-Plasma::IconWidget*
-LyricsApplet::addAction( QAction *action )
-{
-    if ( !action )
-    {
-        debug() << "ERROR!!! PASSED INVALID ACTION";
-        return 0;
-    }
-
-    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
-
-    tool->setAction( action );
-    tool->setDrawBackground( false );
-    tool->setOrientation( Qt::Horizontal );
-    QSizeF iconSize = tool->sizeFromIconSize( 16 );
-    tool->setMinimumSize( iconSize );
-    tool->setMaximumSize( iconSize );
-    tool->resize( iconSize );
-
-    tool->hide();
-    tool->setZValue( zValue() + 1 );
-
-    return tool;
 }
 
 void LyricsApplet::connectSource( const QString& source )

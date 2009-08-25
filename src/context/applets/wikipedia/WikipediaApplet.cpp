@@ -160,25 +160,6 @@ WikipediaApplet::init()
     dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
 }
 
-Plasma::IconWidget *
-WikipediaApplet::addAction( QAction *action )
-{
-    if( !action )
-        return 0;
-    
-    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
-    tool->setAction( action );
-    tool->setDrawBackground( false );
-    tool->setOrientation( Qt::Horizontal );
-    QSizeF iconSize = tool->sizeFromIconSize( 16 );
-    tool->setMinimumSize( iconSize );
-    tool->setMaximumSize( iconSize );
-    tool->resize( iconSize );
-    tool->setZValue( zValue() + 1 );
-
-    return tool;
-}
-
 void
 WikipediaApplet::connectSource( const QString &source )
 {

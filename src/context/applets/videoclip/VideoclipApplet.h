@@ -93,8 +93,6 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
 
     private:
-        Plasma::IconWidget      *addAction( QAction *action );
-        
         CustomVideoWidget       *m_videoWidget;
      //   Phonon::VideoWidget       *m_videoWidget;
 

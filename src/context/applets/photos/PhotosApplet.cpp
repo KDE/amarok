@@ -228,27 +228,6 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     update();
 }
 
-Plasma::IconWidget *
-PhotosApplet::addAction( QAction *action )
-{
-    DEBUG_BLOCK
-    if ( !action ) 
-        return 0;
-
-    
-    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
-    tool->setAction( action );
-    tool->setDrawBackground( false );
-    tool->setOrientation( Qt::Horizontal );
-    QSizeF iconSize = tool->sizeFromIconSize( 16 );
-    tool->setMinimumSize( iconSize );
-    tool->setMaximumSize( iconSize );
-    tool->resize( iconSize );
-    tool->setZValue( zValue() + 1 );
-    
-    return tool;
-}
-
 void
 PhotosApplet::createConfigurationInterface( KConfigDialog *parent )
 {
