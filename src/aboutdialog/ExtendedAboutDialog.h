@@ -23,6 +23,7 @@
 #define AMAROK_ABOUTDIALOG_H
 
 #include "Amarok.h"
+#include "amarok_export.h"
 #include "App.h"
 #include "OcsPersonListWidget.h"
 #include "AnimatedBarWidget.h"

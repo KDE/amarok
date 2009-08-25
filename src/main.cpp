@@ -25,7 +25,7 @@
 //#define AMAROK_USE_DRKONQI
 
 extern AMAROK_EXPORT class KAboutData aboutData; //defined in App.cpp
-extern OcsData ocsData;
+extern AMAROK_EXPORT class OcsData ocsData;
 
 
 int main( int argc, char *argv[] )

@@ -23,7 +23,7 @@
 #include <kdemacros.h>
 
 #ifndef ATTICA_EXPORT
-# if defined(MAKE_OCSCLIENT_LIB)
+# if defined(MAKE_AMAROKOCSCLIENT_LIB)
    /* We are building this library */
 #  define ATTICA_EXPORT KDE_EXPORT
 # else

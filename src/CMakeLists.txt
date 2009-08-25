@@ -676,7 +676,7 @@ target_link_libraries(amaroklib
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
-    amarok-ocsclient
+    amarokocsclient
 )
 
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
