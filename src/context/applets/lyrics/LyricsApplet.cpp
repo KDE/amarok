@@ -74,7 +74,7 @@ void LyricsApplet::init()
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
     m_titleLabel->setText( i18n( "Lyrics" ) );
 
-    QAction* editAction = new QAction( "", this );
+    QAction* editAction = new QAction( this );
     editAction->setIcon( KIcon( "document-edit" ) );
     editAction->setVisible( true );
     editAction->setEnabled( false );
@@ -83,7 +83,7 @@ void LyricsApplet::init()
 
     connect( m_editIcon, SIGNAL( activated() ), this, SLOT( editLyrics() ) );
 
-    QAction* saveAction = new QAction( "", this );
+    QAction* saveAction = new QAction( this );
     saveAction->setIcon( KIcon( "document-save" ) );
     saveAction->setVisible( false );
     saveAction->setEnabled( false );
@@ -92,7 +92,7 @@ void LyricsApplet::init()
 
     connect( m_saveIcon, SIGNAL( activated() ), this, SLOT( saveLyrics() ) );
     
-    QAction* reloadAction = new QAction( "", this );
+    QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );

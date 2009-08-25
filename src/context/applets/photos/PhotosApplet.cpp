@@ -71,7 +71,7 @@ PhotosApplet::init()
     setCollapseHeight( m_headerText->boundingRect().height() + 3 * standardPadding() );
     
     // Icon
-    QAction* settingsAction = new QAction( "", this );
+    QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setVisible( true );
     settingsAction->setEnabled( true );

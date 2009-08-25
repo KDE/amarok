@@ -100,49 +100,49 @@ WikipediaApplet::init()
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
 
-    QAction* backwardAction = new QAction( "" , this );
+    QAction* backwardAction = new QAction( this );
     backwardAction->setIcon( KIcon( "go-previous" ) );
     backwardAction->setEnabled( false );
     m_backwardIcon = addAction( backwardAction );
     m_backwardIcon->setToolTip( i18n( "Previous" ) );
     connect( backwardAction, SIGNAL( activated() ), this, SLOT( goBackward() ) );
     
-    QAction* forwardAction = new QAction( "", this );
+    QAction* forwardAction = new QAction( this );
     forwardAction->setIcon( KIcon( "go-next" ) );
     forwardAction->setEnabled( false );
     m_forwardIcon = addAction( forwardAction );
     m_forwardIcon->setToolTip( i18n( "Next" ) );
     connect( m_forwardIcon, SIGNAL( activated() ), this, SLOT( goForward() ) );
 
-    QAction* artistAction = new QAction( "", this );
+    QAction* artistAction = new QAction( this );
     artistAction->setIcon( KIcon( "filename-artist-amarok" ) );
     artistAction->setEnabled( false );
     m_artistIcon = addAction( artistAction );
     m_artistIcon->setToolTip( i18n( "Artist" ) );
     connect( m_artistIcon, SIGNAL( activated() ), this, SLOT( gotoArtist() ) );
     
-    QAction* albumAction = new QAction( "", this );
+    QAction* albumAction = new QAction( this );
     albumAction->setIcon( KIcon( "filename-album-amarok" ) );
     albumAction->setEnabled( false );
     m_albumIcon = addAction( albumAction );
     m_albumIcon->setToolTip( i18n( "Album" ) );
     connect( m_albumIcon, SIGNAL( activated() ), this, SLOT( gotoAlbum() ) );
 
-    QAction* trackAction = new QAction( "", this );
+    QAction* trackAction = new QAction( this );
     trackAction->setIcon( KIcon( "filename-title-amarok" ) );
     trackAction->setEnabled( false );
     m_trackIcon = addAction( trackAction );
     m_trackIcon->setToolTip( i18n( "Track" ) );
     connect( m_trackIcon, SIGNAL( activated() ), this, SLOT( gotoTrack() ) );
 
-    QAction* langAction = new QAction( "", this );
+    QAction* langAction = new QAction( this );
     langAction->setIcon( KIcon( "preferences-system" ) );
     langAction->setEnabled( true );
     m_settingsIcon = addAction( langAction );
     m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( switchLang() ) );
     
-    QAction* reloadAction = new QAction( "", this );
+    QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setEnabled( false );
     m_reloadIcon = addAction( reloadAction );

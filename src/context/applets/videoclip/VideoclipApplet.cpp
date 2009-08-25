@@ -96,7 +96,7 @@ VideoclipApplet::init()
     m_pixDailymotion = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-dailymotion.png" ) );
     m_pixVimeo = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-vimeo.png" ) );
 
-    QAction* langAction = new QAction( "", this );
+    QAction* langAction = new QAction( this );
     langAction->setIcon( KIcon( "preferences-system" ) );
     langAction->setVisible( true );
     langAction->setEnabled( true );
