@@ -622,7 +622,9 @@ QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const Q
 
 void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &index ) const
 {
+    Q_UNUSED( model )
     DEBUG_BLOCK
+
     InlineEditorWidget * inlineEditor = dynamic_cast<InlineEditorWidget *>( editor );
     if( !inlineEditor )
         return;
@@ -714,6 +716,8 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
 void
 Playlist::PrettyItemDelegate::updateEditorGeometry( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
+    Q_UNUSED( index )
+
     editor->setFixedSize( option.rect.size() );
     editor->setGeometry( option.rect );
 }
