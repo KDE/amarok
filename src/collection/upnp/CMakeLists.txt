@@ -15,7 +15,7 @@ set(amarok_collection-upnpcollection_PART_SRCS
    upnpcollection.cpp)
 
 
-kde4_add_plugin(amarok_collection-upnpcollection WITH_PREFIX ${amarok_collection-upnpcollection_PART_SRCS})
+kde4_add_plugin(amarok_collection-upnpcollection ${amarok_collection-upnpcollection_PART_SRCS})
 
 target_link_libraries(amarok_collection-upnpcollection amaroklib ${KDE4_THREADWEAVER_LIBRARIES} ${KDE4_KDNSSD_LIBS})
 

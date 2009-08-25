@@ -29,7 +29,7 @@ set(amarok_collection-umscollection_PART_SRCS
   support/UmsDeviceInfo.cpp
   support/UmsConnectionAssistant.cpp)
 
-kde4_add_plugin(amarok_collection-umscollection WITH_PREFIX ${amarok_collection-umscollection_PART_SRCS})
+kde4_add_plugin(amarok_collection-umscollection ${amarok_collection-umscollection_PART_SRCS})
 	
 target_link_libraries(amarok_collection-umscollection
   amaroklib

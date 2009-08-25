@@ -32,7 +32,7 @@ set(amarok_collection-nepomukcollection_PART_SRCS
 #   ./search-api/searchresult.cpp
 
 
-kde4_add_plugin(amarok_collection-nepomukcollection WITH_PREFIX ${amarok_collection-nepomukcollection_PART_SRCS})
+kde4_add_plugin(amarok_collection-nepomukcollection ${amarok_collection-nepomukcollection_PART_SRCS})
 
 target_link_libraries(amarok_collection-nepomukcollection 
     amaroklib

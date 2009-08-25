@@ -35,7 +35,7 @@ if (MTP_FOUND)
 	handler/capabilities/MtpWriteCapability.cpp	
 	support/MtpDeviceInfo.cpp
 	support/MtpConnectionAssistant.cpp)
-	kde4_add_plugin(amarok_collection-mtpcollection WITH_PREFIX ${amarok_collection-mtpcollection_PART_SRCS})
+	kde4_add_plugin(amarok_collection-mtpcollection ${amarok_collection-mtpcollection_PART_SRCS})
 
 	target_link_libraries(amarok_collection-mtpcollection
         amaroklib 

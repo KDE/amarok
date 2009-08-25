@@ -6,7 +6,7 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../..
 
 set(amarok_nfs-device_PART_SRCS NfsDeviceHandler.cpp )
 
-kde4_add_plugin(amarok_nfs-device WITH_PREFIX
+kde4_add_plugin(amarok_nfs-device 
 ${amarok_nfs-device_PART_SRCS})
 
 target_link_libraries(amarok_nfs-device amarok ${KDE4_KDECORE_LIBS} )

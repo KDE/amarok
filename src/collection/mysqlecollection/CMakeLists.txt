@@ -49,7 +49,7 @@ qt4_add_dbus_adaptor( amarok_collection-mysqlecollection_PART_SRCS
     SqlCollectionDBusHandler SqlCollectionAdaptor
     SqlCollectionAdaptor)
 
-kde4_add_plugin(amarok_collection-mysqlecollection WITH_PREFIX ${amarok_collection-mysqlecollection_PART_SRCS})
+kde4_add_plugin(amarok_collection-mysqlecollection ${amarok_collection-mysqlecollection_PART_SRCS})
 
 STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN ${CMAKE_SHARED_LINKER_FLAGS})
 SET(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )

@@ -30,7 +30,7 @@ set(amarok_collection-iphoneoscollection_PART_SRCS
    handler/capabilities/IphoneOsPlaylistCapability.cpp
    )
 
-kde4_add_plugin(amarok_collection-iphoneoscollection WITH_PREFIX
+kde4_add_plugin(amarok_collection-iphoneoscollection 
    ${amarok_collection-iphoneoscollection_PART_SRCS})
 
 target_link_libraries(amarok_collection-iphoneoscollection

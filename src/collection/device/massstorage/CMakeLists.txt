@@ -13,7 +13,7 @@ include_directories(
 
 set(amarok_massstorage-device_PART_SRCS MassStorageDeviceHandler.cpp )
 
-kde4_add_plugin(amarok_massstorage-device WITH_PREFIX
+kde4_add_plugin(amarok_massstorage-device 
 ${amarok_massstorage-device_PART_SRCS})
 
 target_link_libraries(amarok_massstorage-device
