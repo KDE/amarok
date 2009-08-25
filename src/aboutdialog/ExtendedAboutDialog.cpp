@@ -69,7 +69,6 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         aboutData = KGlobal::mainComponent().aboutData();
 
     d->aboutData = aboutData;
-    m_ocsData = *ocsData;
 
     if (!aboutData) {
         QLabel *errorLabel = new QLabel(i18n("<qt>No information available.<br />"
@@ -88,6 +87,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         setMainWidget(errorLabel);
         return;
     }
+    m_ocsData = *ocsData;
 
     setPlainCaption(i18n("About %1", aboutData->programName()));
     setButtons(KDialog::Close);
