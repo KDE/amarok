@@ -97,7 +97,7 @@ Comment[zh_CN]=Amarok 的设备插件
 Comment[zh_TW]=Amarok 的裝置外掛程式
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=libamarok_massstorage-device
+X-KDE-Library=amarok_massstorage-device
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com

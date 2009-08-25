@@ -67,7 +67,7 @@ Comment[zh_TW]=Amarok 的收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=libamarok_collection-mysqlservercollection
+X-KDE-Library=amarok_collection-mysqlservercollection
 
 X-KDE-Amarok-authors=Jeff Mitchell
 X-KDE-Amarok-email=mitchell@kde.org

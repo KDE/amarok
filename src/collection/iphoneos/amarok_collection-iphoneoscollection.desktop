@@ -29,7 +29,7 @@ Comment[x-test]=xxiPhone OS 3.0 Read-only collection plugin for Amarokxx
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=libamarok_collection-iphoneoscollection
+X-KDE-Library=amarok_collection-iphoneoscollection
 
 X-KDE-Amarok-authors=Martin Aumueller
 X-KDE-Amarok-email=aumuell@reserv.at

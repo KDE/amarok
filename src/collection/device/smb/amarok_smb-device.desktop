@@ -94,7 +94,7 @@ Comment[zh_CN]=Amarok 支持 SMBFS 的设备插件
 Comment[zh_TW]=Amarok 的支援 SMBFS 的裝置外掛程式
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=libamarok_smb-device
+X-KDE-Library=amarok_smb-device
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com

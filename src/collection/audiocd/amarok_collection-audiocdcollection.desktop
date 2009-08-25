@@ -39,7 +39,7 @@ Comment[x-test]=xxAudioCd collection plugin for Amarokxx
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=libamarok_collection-audiocdcollection
+X-KDE-Library=amarok_collection-audiocdcollection
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com

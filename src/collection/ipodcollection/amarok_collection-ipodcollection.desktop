@@ -93,7 +93,7 @@ Comment[zh_TW]=Amarok 的 Ipod 收藏外掛程式
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=libamarok_collection-ipodcollection
+X-KDE-Library=amarok_collection-ipodcollection
 
 X-KDE-Amarok-authors=Alejandro Wainzinger
 X-KDE-Amarok-email=aikawarazuni@gmail.com

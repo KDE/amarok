@@ -11,7 +11,7 @@ Name[x-test]=xxUniversal Mass Storage Collectionxx
 
 ServiceTypes=Amarok/Plugin
 
-X-KDE-Library=libamarok_collection-umscollection
+X-KDE-Library=amarok_collection-umscollection
 
 X-KDE-Amarok-authors=Alejandro Wainzinger
 X-KDE-Amarok-email=aikawarazuni@gmail.com
