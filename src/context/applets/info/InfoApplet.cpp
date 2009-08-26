@@ -21,12 +21,12 @@
 #include "App.h"
 #include "amarokurls/AmarokUrl.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 #include "playlist/PlaylistController.h"
 
 #include <KStandardDirs>
 
 #include <QPainter>
-#include <PaletteHandler.h>
 
 
 QString InfoApplet::s_defaultHtml = "<html>"
@@ -42,7 +42,6 @@ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_initialized( false )
     , m_currentPlaylist( 0 )
-
 {
     setHasConfigurationInterface( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
@@ -58,7 +57,7 @@ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
     p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
     m_webView->setPalette( p );
 
-    connect ( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
+    connect( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ), SLOT( linkClicked ( const QUrl & ) ) );
 
     constraintsEvent();
 }
@@ -66,7 +65,6 @@ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
 InfoApplet::~InfoApplet()
 {
     delete m_webView;
-
 }
 
 void InfoApplet::constraintsEvent( Plasma::Constraints constraints )
@@ -79,20 +77,19 @@ void InfoApplet::constraintsEvent( Plasma::Constraints constraints )
     m_webView->resize( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - 2 * standardPadding() );
 
     m_initialized = true;
-
 }
 
 void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
     Q_UNUSED( name );
 
-    if( data.size() == 0 ) return;
+    if( data.isEmpty() )
+        return;
 
-    kDebug() << "got data from engine: " << data[ "subject_name" ].toString();
+    debug() << "got data from engine: " << data[ "subject_name" ].toString();
 
-    if  ( m_initialized ) {
-
-
+    if  ( m_initialized )
+    {
         if ( !data[ "main_info" ].toString().isEmpty() )
         {
 
@@ -113,10 +110,10 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
             html = html.replace( "%%SUBJECT_NAME%%", data[ "subject_name" ].toString() );
             m_webView->setHtml( html );
         }
+
         m_webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
         updateConstraints();
     }
-
 }
 
 void InfoApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -125,23 +122,23 @@ void InfoApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
 
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
-    if ( ( contentsRect.width() < 40 ) || ( contentsRect.height() < 40 ) ) {
+    if ( ( contentsRect.width() < 40 ) || ( contentsRect.height() < 40 ) )
+    {
         debug() << "Too little room to paint, hiding all children ( making myself invisible but still painted )!";
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() ) {
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
             childItem->hide();
-        }
-        return;
-    } else {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () ) {
-            childItem->show();
-        }
-    }
 
+        return;
+    }
+    else
+    {
+        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
+            childItem->show();
+    }
 
     p->setRenderHint( QPainter::Antialiasing );
 
     addGradientToAppletBackground( p );
-
 }
 
 void InfoApplet::linkClicked( const QUrl & url )
@@ -155,7 +152,7 @@ void InfoApplet::linkClicked( const QUrl & url )
     }
     else if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) )
     {
-        Meta::XSPFPlaylist * playlist = new Meta::XSPFPlaylist( url, true );
+        new Meta::XSPFPlaylist( url, true );
     }
 }
 

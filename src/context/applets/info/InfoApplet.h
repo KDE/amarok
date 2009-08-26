@@ -24,8 +24,8 @@
 #include "meta/XSPFPlaylist.h"
 #include "meta/Playlist.h"
 
-#include <plasma/framesvg.h>
-#include <plasma/widgets/webview.h>
+#include <Plasma/FrameSvg>
+#include <Plasma/WebView>
  
 #include <KDialog>
 
@@ -42,6 +42,7 @@ class QCheckBox;
 class InfoApplet : public Context::Applet
 {
     Q_OBJECT
+
 public:
     InfoApplet( QObject* parent, const QVariantList& args );
     virtual ~InfoApplet();
@@ -51,6 +52,7 @@ public:
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
+
 private slots:
     void linkClicked( const QUrl & url );
 
@@ -60,8 +62,6 @@ private:
     Meta::XSPFPlaylist * m_currentPlaylist;
 
     static QString s_defaultHtml;
-
-
 };
 
 K_EXPORT_AMAROK_APPLET( info, InfoApplet )
