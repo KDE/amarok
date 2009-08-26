@@ -143,16 +143,14 @@ Amarok::TrayIcon::setupToolTip()
 
         // HACK: This block is inefficient and more or less stupid
         // (Unnecessary I/O on disk. Workaround?)
-        #ifndef Q_WS_WIN
-            const QString tmpFilename = Amarok::saveLocation() + "tooltipcover.png";
-            if( m_track->album() )
-            {
-                const QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
-                image.save( tmpFilename, "PNG" );
-                tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
-                tooltip += "<img src='"+tmpFilename+"' /></td></tr>";
-            }
-        #endif
+        const QString tmpFilename = Amarok::saveLocation() + "tooltipcover.png";
+        if( m_track->album() )
+        {
+            const QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
+            image.save( tmpFilename, "PNG" );
+            tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
+            tooltip += "<img src='"+tmpFilename+"' /></td></tr>";
+        }
 
         QStringList left, right;
 
@@ -214,11 +212,6 @@ Amarok::TrayIcon::setupToolTip()
 
         tooltip += "</table>";
 
-        #ifdef Q_WS_WIN
-            tooltip.replace( "<tr>", "\n" );
-            QRegExp rx( "(<[^>]+>)" );
-            tooltip.replace( rx, "" );
-        #endif
         setToolTip( tooltip );
     }
     else
