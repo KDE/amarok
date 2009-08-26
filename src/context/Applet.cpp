@@ -64,7 +64,7 @@ Context::Applet::shrinkTextSizeToFit( const QString& text, const QRectF& bounds 
     QFont font( QString(), size, QFont::Light );
     font.setStyleHint( QFont::SansSerif );
     font.setStyleStrategy( QFont::PreferAntialias );
-    
+
     QFontMetrics fm( font );
     while( fm.height() > bounds.height() + 4 )
     {
@@ -76,14 +76,14 @@ Context::Applet::shrinkTextSizeToFit( const QString& text, const QRectF& bounds 
         size--;
         fm = QFontMetrics( QFont( QString(), size ) );
     }
-    
+
     // for aesthetics, we make it one smaller
     size--;
 
     QFont returnFont( QString(), size, QFont::Light );
     font.setStyleHint( QFont::SansSerif );
     font.setStyleStrategy( QFont::PreferAntialias );
-    
+
     return QFont( returnFont );
 }
 
@@ -105,7 +105,7 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
         m_textBackground->setImagePath( "widgets/text-background" );
         m_textBackground->setEnabledBorders( Plasma::FrameSvg::AllBorders );
     }
-    
+
     // Paint in integer coordinates, align to grid
     QRectF rect = t->boundingRect();
     QPointF pos = t->pos();
@@ -205,7 +205,7 @@ Context::Applet::resize( qreal wid, qreal hei)
 }
 
 Plasma::IconWidget*
-Context::Applet::addAction( QAction *action )
+Context::Applet::addAction( QAction *action, const int size )
 {
     if( !action )
         return 0;
@@ -214,7 +214,7 @@ Context::Applet::addAction( QAction *action )
     tool->setAction( action );
     tool->setDrawBackground( false );
     tool->setOrientation( Qt::Horizontal );
-    QSizeF iconSize = tool->sizeFromIconSize( 16 );
+    QSizeF iconSize = tool->sizeFromIconSize( size );
     tool->setMinimumSize( iconSize );
     tool->setMaximumSize( iconSize );
     tool->resize( iconSize );
@@ -228,12 +228,12 @@ Context::Applet::setCollapseOn()
 {
     if ( size().height() == m_heightCollapseOn )
         return;
-    //debug() << "collapsing applet to..." << m_heightCollapseOn;
+    
     if( m_heightCollapseOff == -1 )
         m_animFromHeight = size().height();
     else
         m_animFromHeight = m_heightCollapseOff;
-    
+
     if ( m_animationId != 0 ) // warning we are moving right now
     {
         // stop the anim
@@ -247,12 +247,11 @@ Context::Applet::setCollapseOn()
 void
 Context::Applet::setCollapseOff()
 {
-    //DEBUG_BLOCK
-    //debug() << "height:" << size().height() << "target:" << m_heightCollapseOff << "m_collapsed:" << m_collapsed;
     if ( size().height() == m_heightCollapseOff )
         return;
-    else if( m_heightCollapseOff == -1 && ( m_collapsed || m_animationId != 0) ) // if it's self-expanding, don't animate as we don't know where we're going. also, if we're shrinking
-    {                                                                            // stop that and expand regardless
+    
+    if( m_heightCollapseOff == -1 && ( m_collapsed || m_animationId != 0) ) // if it's self-expanding, don't animate as we don't know where we're going. also, if we're shrinking
+    {                                                                       // stop that and expand regardless
         // stop the anim
         if( m_animationId != 0 )
         {
@@ -264,14 +263,16 @@ Context::Applet::setCollapseOff()
         updateGeometry();
         m_collapsed = false;
         return;
-    } else if( m_heightCollapseOff == -1 && !m_collapsed ) // if this is a self-expanding applet, and it's already expanded
+    }
+    
+    if( m_heightCollapseOff == -1 && !m_collapsed ) // if this is a self-expanding applet, and it's already expanded
         return;
     
     if ( m_animationId != 0 ) // warning we are moving right now
     {
         // stop the anim
         Plasma::Animator::self()->stopCustomAnimation( m_animationId );
-        m_animationId = 0;        
+        m_animationId = 0;
     }
     m_collapsed = true ;
     m_animationId = Plasma::Animator::self()->customAnimation(20, 1000, Plasma::Animator::EaseInCurve, this, "animateOff" );
@@ -286,25 +287,20 @@ Context::Applet::setCollapseHeight( int h )
 void
 Context::Applet::animateOn( qreal anim )
 {
-//    DEBUG_BLOCK
     m_heightCurrent = m_animFromHeight - ( m_animFromHeight - m_heightCollapseOn ) * anim ;
-    //debug()<< "animate " << m_heightCurrent << " m_animFromHeight :" << m_animFromHeight << " | m_heightCollapseOn :" << m_heightCollapseOn ;
     emit sizeHintChanged(Qt::PreferredSize);
 }
 
 void
 Context::Applet::animateOff( qreal anim )
 {
-//    DEBUG_BLOCK
     m_heightCurrent =  m_heightCollapseOn + ( m_heightCollapseOff - m_heightCollapseOn ) * anim ;
-//    debug()<< "animate " << m_heightCurrent << " m_heightCollapseOff :" << m_heightCollapseOff << " | m_heightCollapseOn :" << m_heightCollapseOn ;
     emit sizeHintChanged(Qt::PreferredSize);
 }
 
 void
 Context::Applet::animateEnd( int id )
 {
-    //DEBUG_BLOCK
     if( id == m_animationId )
     {
         if( !m_collapsed )

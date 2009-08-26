@@ -110,6 +110,8 @@ private:
     Meta::TrackList m_favoriteTracks;
     int m_tracksToShow;
 
+    QList<Plasma::IconWidget*> m_trackActions;
+
     Plasma::TabBar *m_tabBar;
 };
 

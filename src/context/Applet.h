@@ -69,10 +69,10 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
         /**
           * resize is reimplemented here is reimplemented here only for all the applet.
-          */          
+          */
         virtual void   resize( qreal, qreal );
-        
-        
+
+
     public Q_SLOTS:
         virtual void destroy();
         void animateOn( qreal );
@@ -80,15 +80,15 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         void animateEnd( int );
 
     protected:
-        Plasma::IconWidget* addAction( QAction *action );
+        Plasma::IconWidget* addAction( QAction *action, const int size = 16 );
 
         bool m_collapsed;
-        int  m_heightCurrent; 
+        int  m_heightCurrent;
         int  m_heightCollapseOn;
         int  m_heightCollapseOff;
         int  m_animationId;
         int  m_animFromHeight;
-        
+
     private:
         void cleanUpAndDelete();
 

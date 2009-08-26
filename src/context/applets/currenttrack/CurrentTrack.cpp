@@ -20,13 +20,14 @@
 
 #include "Amarok.h"
 #include "App.h"
+#include "collection/CollectionManager.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/MetaUtility.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
-#include <context/widgets/RatingWidget.h>
+#include "context/widgets/RatingWidget.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "context/widgets/DropPixmapItem.h"
 #include "UpdateCapability.h"
@@ -50,7 +51,6 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_tabBar( 0 )
 {
     setHasConfigurationInterface( true );
-//    setConfigurationRequired( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
     setImmutability( Plasma::Mutable );
     // Fix for BUG 190923:
@@ -78,7 +78,7 @@ CurrentTrack::init()
     m_artist       = new TextScrollingWidget( this );
     m_album        = new TextScrollingWidget( this );
     m_noTrack      = new QGraphicsSimpleTextItem( this );
-    m_albumCover   = new DropPixmapItem    ( this );
+    m_albumCover   = new DropPixmapItem( this );
     m_byText       = new QGraphicsSimpleTextItem( i18nc( "What artist is this track by", "By" ), this );
     m_onText       = new QGraphicsSimpleTextItem( i18nc( "What album is this track on", "On" ), this );
 
@@ -151,18 +151,16 @@ CurrentTrack::changeTrackRating( int rating )
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    track->setRating( rating );
-    debug() << "change rating to: " << rating;
 
     // Inform collections of end of a metadata update
     Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
     if( !uc )
-    {
         return;
-    }
+
+    track->setRating( rating );
+    debug() << "change rating to: " << rating;
 
     uc->collectionUpdated();
-
 }
 
 QList<QAction*>
@@ -196,7 +194,6 @@ CurrentTrack::contextualActions()
 void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
-//    DEBUG_BLOCK
 
     prepareGeometryChange();
 
@@ -227,18 +224,20 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_maxTextWidth = textWidth;
 
     // align to either the album or artist line, depending of "On" or "By" is longer in this current translation
-    // i10n makes things complicated :P
+    // i18n makes things complicated :P
     if( m_byText->boundingRect().width() > m_onText->boundingRect().width() )
-    { // align to location of on text
+    {
+        // align to location of on text
         m_byText->setPos( textX, textY + lineSpacing + 3  );
         m_artist->setPos( m_byText->pos().x() + m_byText->boundingRect().width() + 5, 0 );
         alignBottomToFirst( m_byText, m_artist );
         m_album->setPos( m_artist->pos().x(), 0 );
         m_onText->setPos( m_album->pos().x() - m_onText->boundingRect().width() - 5, textY + lineSpacing * 2 + 3 );
         alignBottomToFirst( m_onText, m_album );
-
-    } else // align to location/width of by text
+    }
+    else
     {
+        // align to location/width of by text
         m_onText->setPos( textX, textY + lineSpacing * 2 + 3 );
         m_album->setPos( m_onText->pos().x() + m_onText->boundingRect().width() + 5, 0 );
         alignBottomToFirst( m_onText, m_album );
@@ -252,12 +251,21 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-    const QString lastPlayed = m_currentInfo.contains( Meta::Field::LAST_PLAYED ) ? Amarok::conciseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ) : QString();
 
-    m_title->setScrollingText( title, QRectF( m_artist->pos().x(), textY, textWidth, 30 ) );
+    m_title->setScrollingText( title, QRectF( m_title->pos().x(), textY, textWidth, 30 ) );
     m_artist->setScrollingText( artist, QRectF( m_artist->pos().x(), textY, textWidth, 30 ) );
-    m_album->setScrollingText( album, QRectF( m_artist->pos().x(), textY, textWidth, 30 ) );
+    m_album->setScrollingText( album, QRectF( m_album->pos().x(), textY, textWidth, 30 ) );
 
+    if( !m_trackActions.isEmpty() )
+    {
+        QPointF iconPos = m_album->boundingRect().bottomLeft();
+        iconPos.ry() += 5;
+        foreach( Plasma::IconWidget *icon, m_trackActions )
+        {
+            icon->setPos( iconPos );
+            iconPos.rx() += 30;
+        }
+    }
 
     if( !m_lastTracks.isEmpty() )
     {
@@ -361,6 +369,30 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     m_bigCover = data[ "albumart" ].value<QPixmap>();
     m_sourceEmblemPath = data[ "source_emblem" ].toString();
 
+    qDeleteAll( m_trackActions );
+    m_trackActions.clear();
+
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( track )
+    {
+        bool localCollectionTrack = track->collection() == CollectionManager::instance()->primaryCollection();
+        if( !localCollectionTrack && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+        {
+            Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+            if( cac )
+            {
+                QList<QAction*> actions = cac->customActions();
+                foreach( QAction *action, actions )
+                {
+                    Plasma::IconWidget *icon = addAction( action, 24 );
+                    icon->setText(QString()); // We don't want text on the icon
+                    connect( icon, SIGNAL( activated() ), action, SIGNAL( triggered() ) );
+                    m_trackActions << icon;
+                }
+            }
+        }
+    }
+
     // without that the rating doesn't get update for a playing track
     update();
     updateConstraints();
@@ -424,16 +456,17 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
-    // Only show the ratings widget if the current track is in the collection
+    bool hasActions = !m_trackActions.isEmpty();
+    bool updatable = false;
+
     if( track )
     {
-        m_ratingWidget->show();
-        m_showStatistics = true;
-    }
-    else
-    {
-        m_ratingWidget->hide();
-        m_showStatistics = false;
+        // Don't show collection actions for local tracks
+        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        if( uc )
+            updatable = true;
+
+        m_showStatistics = updatable || hasActions;
     }
 
     p->restore();
@@ -501,9 +534,9 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         // draw label text
         p->save();
         // draw "Play count"
-        QString playCountText = i18n( "Play count" );
-        QString scoreText = i18n( "Score" );
-        QString lastPlayedText = i18n( "Last Played" );
+        const QString playCountText = i18n( "Play count" );
+        const QString scoreText = i18n( "Score" );
+        const QString lastPlayedText = i18n( "Last Played" );
 
         //Align labels taking into account the string widths for each label
         QFontMetrics fm( this->font() );
