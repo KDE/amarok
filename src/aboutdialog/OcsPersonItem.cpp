@@ -60,10 +60,24 @@ OcsPersonItem::init()
     m_aboutText.append( "<br/>" + m_person->task() );
 
     m_iconsBar = new KToolBar( this, false, false );
+    m_snBar = new KToolBar( this, false, false );
     if( m_status == Author )
-        m_verticalLayout->insertWidget( m_verticalLayout->count() - 1, m_iconsBar );
+    {
+        QHBoxLayout *iconsLayout = new QHBoxLayout( this );
+        iconsLayout->setMargin( 0 );
+        iconsLayout->setSpacing( 0 );
+        m_verticalLayout->insertLayout( m_verticalLayout->count() - 1, iconsLayout );
+        iconsLayout->addWidget( m_iconsBar );
+        iconsLayout->addWidget( m_snBar );
+
+        m_snBar->setIconSize( QSize( 16, 16 ) );
+        m_snBar->setContentsMargins( 0, 0, 0, 0 );
+    }
     else
+    {
         layout()->addWidget( m_iconsBar );
+        m_snBar->hide();
+    }
     m_iconsBar->setIconSize( QSize( 22, 22 ) );
     m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
 
