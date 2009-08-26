@@ -100,7 +100,7 @@ VERSION 2.2-beta1
 
   BUGFIXES:
     * Changing Amarok's settings no longer removes album covers from playlist.
-      (BR 202258).
+      (BR 202258)
     * Fixed crash on startup if another Amarok instance was still loading.
       (BR 202713)
     * Fixed some album art in a folder not getting picked up if a subfolder
