@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>                         *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,8 +23,9 @@
 #include "Debug.h"
 #include "PaletteHandler.h"
 
-#include <plasma/applet.h>
-#include <plasma/widgets/iconwidget.h>
+#include <Plasma/Animator>
+#include <Plasma/Applet>
+#include <Plasma/IconWidget>
 
 #include <KIcon>
 
@@ -183,21 +186,28 @@ Context::AppletToolbarAppletItem::addAction( QAction *action, int size )
     return tool;
 }
 
-
 void
 Context::AppletToolbarAppletItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
 {
-    //TODO Someone should add here some fancy effect, with animation and stuff
-//    debug() << "Enter event ";
-    m_label->setOpacity(0.5);
+    Plasma::Animator::self()->customAnimation( 20, 300, Plasma::Animator::EaseInCurve, this, "animateHoverIn" );
 }
 
 void
 Context::AppletToolbarAppletItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
 {
-    //TODO Someone should add here some fancy effect. with animation and stuff
-//    debug() << "Leave event ";
-    m_label->setOpacity(1.);
+    Plasma::Animator::self()->customAnimation( 20, 300, Plasma::Animator::EaseOutCurve, this, "animateHoverOut" );
+}
+
+void
+Context::AppletToolbarAppletItem::animateHoverIn( qreal progress )
+{
+    m_label->setOpacity( 1.0 - progress * 0.5 );
+}
+
+void
+Context::AppletToolbarAppletItem::animateHoverOut( qreal progress )
+{
+    m_label->setOpacity( 0.5 + progress * 0.5 );
 }
 
 
