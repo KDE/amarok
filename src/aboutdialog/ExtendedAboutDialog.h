@@ -40,9 +40,6 @@ public:
 
 private slots:
     void switchToOcsWidgets();
-    void authorJobFinished( KJob *job );
-    void creditJobFinished( KJob *job );
-    void onPersonAdded( OcsPersonItem::PersonStatus status, int persons );
 
 private:
     class Private;
@@ -58,22 +55,14 @@ private:
     AnimatedBarWidget *m_showOcsAuthorButton;
     QString m_authorPageTitle;
     QWidget *m_authorWidget;
-    QWidget *m_offlineAuthorWidget;
-    OcsPersonListWidget *m_ocsAuthorWidget;
-    void setupOfflineAuthorWidget();
-    void setupOcsAuthorWidget();
+    OcsPersonListWidget *m_authorListWidget;
     bool m_isOfflineAuthorWidget;
 
 //Contributors:
     AnimatedBarWidget *m_showOcsCreditButton;
     QWidget *m_creditWidget;
-    QWidget *m_offlineCreditWidget;
-    OcsPersonListWidget *m_ocsCreditWidget;
-    void setupOfflineCreditWidget();
-    void setupOcsCreditWidget();
+    OcsPersonListWidget *m_creditListWidget;
     bool m_isOfflineCreditWidget;
-
-    QPalette m_transparentBackgroundPalette;
 
 };
 

@@ -29,6 +29,8 @@ public:
     AnimatedBarWidget( const QIcon &icon, const QString &text, const QString &animatedIconName = "process-working", QWidget *parent = 0 );
     ~AnimatedBarWidget();
 
+    bool isAnimating() const { return m_animating; }
+
     virtual QSize sizeHint() const;
 
 public slots:

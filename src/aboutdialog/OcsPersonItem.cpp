@@ -27,31 +27,128 @@
 #include <QPainter>
 #include <QStyleOption>
 
-OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const Attica::Person &ocsPerson, PersonStatus status, QWidget *parent )
+OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const QString ocsUsername, PersonStatus status, QWidget *parent )
     : QWidget( parent )
     , m_status( status )
+    , m_state( Offline )
 {
     m_person = &person;
-    m_ocsPerson = &ocsPerson;
+    m_ocsUsername = ocsUsername;
 
     setupUi( this );
     init();
 
     m_avatar->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
+    //TODO: Add favorite artists!
+
+}
+
+void
+OcsPersonItem::init()
+{
+    m_textLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+    m_textLabel->setOpenExternalLinks( true );
+    m_textLabel->setContentsMargins( 5, 0, 0, 2 );
+    m_verticalLayout->setSpacing( 0 );
+
+    m_vertLine->hide();
+    m_initialSpacer->changeSize( 0, 40, QSizePolicy::Fixed, QSizePolicy::Fixed );
+    layout()->invalidate();
+
+    m_aboutText.append( "<b>" + m_person->name() + "</b>" );
+    m_aboutText.append( "<br/>" + m_person->task() );
+
+    m_iconsBar = new KToolBar( this, false, false );
+    if( m_status == Author )
+        m_verticalLayout->insertWidget( m_verticalLayout->count() - 1, m_iconsBar );
+    else
+        layout()->addWidget( m_iconsBar );
+    m_iconsBar->setIconSize( QSize( 22, 22 ) );
+    m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
+
+    KAction *email = new KAction( KIcon( "internet-mail" ), i18n("Email contributor"), this );
+    email->setToolTip( m_person->emailAddress() );
+    email->setData( QString( "mailto:" + m_person->emailAddress() ) );
+    m_iconsBar->addAction( email );
+
+    if( !m_person->webAddress().isEmpty() )
+    {
+        KAction *homepage = new KAction( KIcon( "applications-internet" ), i18n("Visit contributor's homepage"), this );
+        homepage->setToolTip( m_person->webAddress() );
+        homepage->setData( m_person->webAddress() );
+        m_iconsBar->addAction( homepage );
+    }
+
+    connect( m_iconsBar, SIGNAL( actionTriggered( QAction * ) ), this, SLOT( launchUrl( QAction * ) ) );
+    m_textLabel->setText( m_aboutText );
+}
+
+OcsPersonItem::~OcsPersonItem()
+{}
+
+QString
+OcsPersonItem::name()
+{
+    return m_person->name();
+}
+
+void
+OcsPersonItem::launchUrl( QAction *action ) //SLOT
+{
+    KUrl url = KUrl( action->data().toString() );
+    KRun::runUrl( url, "text/html", 0, false );
+}
+
+void
+OcsPersonItem::switchToOcs()
+{
+    if( m_state == Online )
+        return;
+    m_avatar->setFixedWidth( 56 );
+    m_vertLine->show();
+    m_initialSpacer->changeSize( 5, 40, QSizePolicy::Fixed, QSizePolicy::Fixed );
+    layout()->invalidate();
+
+    if( !m_ocsUsername.isEmpty() )
+    {
+        Attica::PersonJob *personJob;
+        if( m_ocsUsername == QString( "%%category%%" ) )   //TODO: handle grouping
+            return;
+        personJob = Attica::OcsApi::requestPerson( m_ocsUsername );
+        connect( personJob, SIGNAL( result( KJob * ) ), this, SLOT( onJobFinished( KJob * ) ) );
+        emit ocsFetchStarted();
+        m_state = Online;
+    }
+}
+
+void
+OcsPersonItem::onJobFinished( KJob *job )
+{
+    Attica::PersonJob *personJob = qobject_cast< Attica::PersonJob * >( job );
+    if( personJob->error() == 0 )
+    {
+        fillOcsData( personJob->person() );
+    }
+    emit ocsFetchResult( personJob->error() );
+}
+
+void
+OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
+{
     m_avatar->setFixedSize( 56, 56 );
     m_avatar->setFrameShape( QFrame::StyledPanel ); //this is a FramedLabel, otherwise oxygen wouldn't paint the frame
-    m_avatar->setPixmap( m_ocsPerson->avatar() );
+    m_avatar->setPixmap( ocsPerson.avatar() );
     m_avatar->setAlignment( Qt::AlignCenter );
 
-    if( !( m_ocsPerson->city().isEmpty() && m_ocsPerson->country().isEmpty() ) )
-        m_aboutText.append( "<br/>" + ( m_ocsPerson->city().isEmpty() ? "" : ( m_ocsPerson->city() + ", " ) ) + m_ocsPerson->country() );
+    if( !( ocsPerson.city().isEmpty() && ocsPerson.country().isEmpty() ) )
+        m_aboutText.append( "<br/>" + ( ocsPerson.city().isEmpty() ? "" : ( ocsPerson.city() + ", " ) ) + ocsPerson.country() );
 
     if( m_status == Author )
     {
-        if( !m_ocsPerson->extendedAttribute( "ircchannels" ).isEmpty() )
+        if( !ocsPerson.extendedAttribute( "ircchannels" ).isEmpty() )
         {
-            QString channelsString = m_ocsPerson->extendedAttribute( "ircchannels" );
+            QString channelsString = ocsPerson.extendedAttribute( "ircchannels" );
             //We extract the channel names from the string provided by OCS:
             QRegExp channelrx = QRegExp( "#+[\\w\\.\\-\\/!()+]+([\\w\\-\\/!()+]?)", Qt::CaseInsensitive );
             QStringList channels;
@@ -72,88 +169,22 @@ OcsPersonItem::OcsPersonItem( const KAboutPerson &person, const Attica::Person &
                 m_aboutText.append( QString( "<a href=\"%1\">%2</a>" ).arg( link, channel ) + "  " );
             }
         }
-        if( !m_ocsPerson->extendedAttribute( "favouritemusic" ).isEmpty() )
+        if( !ocsPerson.extendedAttribute( "favouritemusic" ).isEmpty() )
         {
-            QStringList artists = m_ocsPerson->extendedAttribute( "favouritemusic" ).split( ", " );
+            QStringList artists = ocsPerson.extendedAttribute( "favouritemusic" ).split( ", " );
             //TODO: make them clickable
             m_aboutText.append( "<br/>" + i18n( "Favorite music: " ) + artists.join( ", " ) );
         }
     }
 
     KAction *visitProfile = new KAction( KIcon( QPixmap( KStandardDirs::locate( "data",
-            "amarok/images/opendesktop.png" ) ) ), i18n( "Visit %1's openDesktop.org profile", m_ocsPerson->firstName() ), this );
+            "amarok/images/opendesktop.png" ) ) ), i18n( "Visit %1's openDesktop.org profile", ocsPerson.firstName() ), this );
 
-    visitProfile->setToolTip( i18n( "Visit %1's profile on openDesktop.org", m_ocsPerson->firstName() ) );
-    
-    visitProfile->setData( m_ocsPerson->extendedAttribute( "profilepage" ) );
+    visitProfile->setToolTip( i18n( "Visit %1's profile on openDesktop.org", ocsPerson.firstName() ) );
+
+    visitProfile->setData( ocsPerson.extendedAttribute( "profilepage" ) );
     m_iconsBar->addAction( visitProfile );
 
     m_textLabel->setText( m_aboutText );
-    //TODO: Add favorite artists!
-
 }
 
-OcsPersonItem::OcsPersonItem( const KAboutPerson &person, PersonStatus status, QWidget *parent )
-    : QWidget( parent )
-    , m_status( status )
-{
-    m_person = &person;
-
-    setupUi( this );
-    init();
-
-    m_textLabel->setText( m_aboutText );
-}
-
-void
-OcsPersonItem::init()
-{
-    m_textLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
-    m_textLabel->setOpenExternalLinks( true );
-    m_textLabel->setContentsMargins( 5, 0, 0, 2 );
-    m_verticalLayout->setSpacing( 0 );
-
-
-    m_aboutText.append( "<b>" + m_person->name() + "</b>" );
-    m_aboutText.append( "<br/>" + m_person->task() );
-
-    m_iconsBar = new KToolBar( this, false, false );
-    if( m_status == Author )
-        m_verticalLayout->insertWidget( m_verticalLayout->count() - 1, m_iconsBar );
-    else
-        layout()->addWidget( m_iconsBar );
-    m_iconsBar->setIconSize( QSize( 22, 22 ) );
-    m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
-
-    KAction *email = new KAction( KIcon( "internet-mail" ), i18n("Email contributor"), this );
-    email->setToolTip( m_person->emailAddress() );
-    email->setData( QString( "mailto:" + m_person->emailAddress() ) );
-    m_iconsBar->addAction( email );
-
-
-    if( !m_person->webAddress().isEmpty() )
-    {
-        KAction *homepage = new KAction( KIcon( "applications-internet" ), i18n("Visit contributor's homepage"), this );
-        homepage->setToolTip( m_person->webAddress() );
-        homepage->setData( m_person->webAddress() );
-        m_iconsBar->addAction( homepage );
-    }
-
-    connect( m_iconsBar, SIGNAL( actionTriggered( QAction * ) ), this, SLOT( launchUrl( QAction * ) ) );
-}
-
-OcsPersonItem::~OcsPersonItem()
-{}
-
-QString
-OcsPersonItem::name()
-{
-    return m_person->name();
-}
-
-void
-OcsPersonItem::launchUrl( QAction *action )
-{
-    KUrl url = KUrl( action->data().toString() );
-    KRun::runUrl( url, "text/html", 0, false );
-}

@@ -125,8 +125,8 @@ AnimatedBarWidget::paintEvent( QPaintEvent* event )
     else
         m_animatedWidget->move( left + padding, iconTop );
 
-    const QRect textRect( left + (padding * 2) + iconWidth, top,
-                          buttonWidth - (left + padding * 2 + iconWidth) - padding, buttonHeight);
+    const QRect textRect( left + (padding * 3) + iconWidth, top,
+                          buttonWidth - (left + padding * 3 + iconWidth) - padding, buttonHeight);
     QFontMetrics fm( font() );
     QString elidedText = fm.elidedText( text(), Qt::ElideRight, textRect.width() );
     painter.drawText( textRect, Qt::AlignVCenter, elidedText );

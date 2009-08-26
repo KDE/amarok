@@ -21,9 +21,10 @@
 #include <QScrollArea>
 
 
-OcsPersonListWidget::OcsPersonListWidget( OcsPersonItem::PersonStatus status, QWidget *parent )
+OcsPersonListWidget::OcsPersonListWidget( const QList< KAboutPerson > &persons, const OcsData::OcsPersonList *ocsPersons, OcsPersonItem::PersonStatus status, QWidget *parent )
     : QWidget( parent )
     , m_status( status )
+    , m_fetchCount( 0 )
 {
     //Set up the layouts...
     QHBoxLayout *scrollLayout = new QHBoxLayout( this );
@@ -42,57 +43,43 @@ OcsPersonListWidget::OcsPersonListWidget( OcsPersonItem::PersonStatus status, QW
     personsScrollArea->setWidgetResizable( true );
     personsScrollArea->setWidget( m_personsArea );
     m_personsArea->show();
-}
 
-void
-OcsPersonListWidget::addPerson( const KAboutPerson &person, const Attica::Person &ocsPerson )
-{
-    DEBUG_BLOCK
-    OcsPersonItem *item = new OcsPersonItem( person, ocsPerson, m_status, m_personsArea );
-    //DEBUG
-    if( !m_addedNames.contains( person.name() ) )
-        m_addedNames.append( person.name() );
-    else
-        m_twiceAddedNames.append( person.name() );
-
-    //
-    addPersonPrivate( item );
-}
-void
-OcsPersonListWidget::addPerson( const KAboutPerson &person )
-{
-    DEBUG_BLOCK
-    OcsPersonItem *item = new OcsPersonItem( person, m_status, m_personsArea );
-    //DEBUG
-    if( !m_addedNames.contains( person.name() ) )
-        m_addedNames.append( person.name() );
-    else
-        m_twiceAddedNames.append( person.name() );
-    //
-    addPersonPrivate( item );
-}
-
-void
-OcsPersonListWidget::addPersonPrivate( OcsPersonItem *item )
-{
-    DEBUG_BLOCK
-    if( m_areaLayout->count() == 0 )
-        m_areaLayout->addWidget( item );
-    else
+    //Populate the scroll area...
+    for( int i = 0; i < persons.count(); ++i )  //TODO: really ugly and inefficient, fix this
     {
-        QString name = item->name();
-        for( int i = m_areaLayout->count() - 1; i >= 0; --i )
-        {
-            QString currentName = qobject_cast< OcsPersonItem * >( m_areaLayout->itemAt( i )->widget() )->name();
-            if( name > currentName )
-            {
-                debug()<<"Inserting"<< currentName;
-                m_areaLayout->insertWidget( i + 1, item );
-                break;
-            }
-            if( i == 0 )
-                m_areaLayout->insertWidget( 0, item );
-        }
+        OcsPersonItem *item = new OcsPersonItem( persons.at( i ), ocsPersons->at( i ).first, status, m_personsArea );
+        m_areaLayout->addWidget( item );
+        connect( item, SIGNAL( ocsFetchStarted() ), this, SLOT( onOcsFetchStarted() ) );
+        connect( item, SIGNAL( ocsFetchResult( int ) ), this, SLOT( onOcsDataFetched( int ) ) );
     }
-    emit personAdded( m_status, m_areaLayout->count() );
+}
+
+void
+OcsPersonListWidget::switchToOcs()
+{
+    for( int i = 0; i < m_areaLayout->count(); ++i )
+    {
+        OcsPersonItem *item = qobject_cast< OcsPersonItem * >( m_areaLayout->itemAt( i )->widget() );
+        item->switchToOcs();
+    }
+}
+
+void
+OcsPersonListWidget::onOcsFetchStarted()        //SLOT
+{
+    m_fetchCount++;
+}
+
+void
+OcsPersonListWidget::onOcsDataFetched( int err )    //SLOT
+{
+    m_fetchCount--;
+    debug()<<m_status<<"Fetch count is"<< m_fetchCount;
+    if( err != 0 )
+        warning() << "OCS data download failed with error"<<err;
+    if( m_fetchCount == 0 )
+    {
+        debug()<<m_status<<"FETCH COMPLETE";
+        emit switchedToOcs();
+    }
 }

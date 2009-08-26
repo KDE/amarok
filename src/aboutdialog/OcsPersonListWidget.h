@@ -18,31 +18,29 @@
 #define AMAROK_OCSPERSONLISTWIDGET_H
 
 #include "OcsPersonItem.h"
-
-
+#include "OcsData.h"
 
 class OcsPersonListWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    OcsPersonListWidget( OcsPersonItem::PersonStatus status = OcsPersonItem::Author, QWidget *parent = 0 );
-    void addPerson( const KAboutPerson &person, const Attica::Person &ocsPerson );
-    void addPerson( const KAboutPerson &person );
+    OcsPersonListWidget( const QList< KAboutPerson > &persons, const OcsData::OcsPersonList *ocsPersons,
+                         OcsPersonItem::PersonStatus status = OcsPersonItem::Author, QWidget *parent = 0 );
 
-//DEBUG:
-    QStringList m_addedNames;
-    QStringList m_twiceAddedNames;
-
+public slots:
+    void switchToOcs();
+    void onOcsFetchStarted();
+    void onOcsDataFetched( int err );
 
 signals:
-    void personAdded( OcsPersonItem::PersonStatus status, int persons );
+    void switchedToOcs();
 
 private:
-    void addPersonPrivate( OcsPersonItem *item );
     QWidget *m_personsArea;
     QVBoxLayout *m_areaLayout;
     OcsPersonItem::PersonStatus m_status;
+    int m_fetchCount;
 };
 
 #endif  //AMAROK_OCSPERSONLISTWIDGET_H

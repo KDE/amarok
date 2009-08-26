@@ -20,6 +20,7 @@
 #include "ui_OcsPersonItem.h"
 
 #include "libattica-ocsclient/ocsapi.h"
+#include "OcsData.h"
 
 #include <KAboutPerson>
 #include <KToolBar>
@@ -36,24 +37,37 @@ public:
         Author = 0,
         Contributor = 1
     };
+    enum State
+    {
+        Offline = 0,
+        Online = 1
+    };
 
-    OcsPersonItem( const KAboutPerson &person, const Attica::Person &ocsPerson, PersonStatus status, QWidget *parent = 0 );
-    OcsPersonItem( const KAboutPerson &person, PersonStatus status, QWidget *parent = 0 );
+    OcsPersonItem( const KAboutPerson &person, const QString ocsUsername, PersonStatus status, QWidget *parent = 0 );
 
     virtual ~OcsPersonItem();
 
     QString name();
 
+    void switchToOcs();
+
+signals:
+    void ocsFetchStarted();
+    void ocsFetchResult( int err );
+
 private slots:
     void launchUrl( QAction *action );
+    void onJobFinished( KJob *job );
 
 private:
     void init();
+    void fillOcsData( const Attica::Person &ocsPerson );
     const KAboutPerson *m_person;
-    const Attica::Person *m_ocsPerson;
+    QString m_ocsUsername;
     QString m_aboutText;
     KToolBar *m_iconsBar;
     PersonStatus m_status;
+    State m_state;
 /*
    <firstname>Frank</firstname>
    <lastname>Test</lastname>

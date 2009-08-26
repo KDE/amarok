@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>495</width>
-    <height>47</height>
+    <width>493</width>
+    <height>45</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <spacer name="horizontalSpacer">
+    <spacer name="m_initialSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -70,7 +70,7 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>56</width>
+         <width>0</width>
          <height>1</height>
         </size>
        </property>
@@ -98,7 +98,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QFrame" name="frame">
+    <widget class="QFrame" name="m_vertLine">
      <property name="frameShape">
       <enum>QFrame::VLine</enum>
      </property>
