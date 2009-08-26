@@ -290,17 +290,30 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
     int sliderY = y + ( height / 2 );
 
 
+    //first draw the played part
     p->drawPixmap( x, sliderY,
+                   renderSvg(
+                   "new_slider_top_played",
+                   width, 1,
+                   "new_slider_top_played" ),
+                   0, 0, knobRelPos, 1 );
+
+    //and then the unplayed part
+    p->drawPixmap( knobRelPos + 1, sliderY,
                    renderSvg(
                    "new_slider_top",
                    width, 1,
-                   "new_slider_top" ) );
+                   "new_slider_top" ),
+                   knobRelPos + 1, 0, -1, 1 );
 
+    //and then the buttom
     p->drawPixmap( x, sliderY + 1,
                    renderSvg(
                    "new_slider_bottom",
                    width, 1,
                    "new_slider_bottom" ) );
+
+
 
 
     //draw end markers
