@@ -75,8 +75,6 @@ AmarokMimeData::~AmarokMimeData()
 QStringList
 AmarokMimeData::formats() const
 {
-    DEBUG_BLOCK
-
     QStringList formats( QMimeData::formats() );
     if( !d->tracks.isEmpty() || !d->queryMakers.isEmpty() || !d->playlistGroups.isEmpty() || !d->bookmarks.isEmpty() || !d->bookmarkGroups.isEmpty() )
     {
@@ -94,7 +92,6 @@ AmarokMimeData::formats() const
             formats.append( "text/plain" );
     }
 
-    debug() << "returning formats: " << formats;
     return formats;
 }
 
@@ -367,7 +364,6 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
 void
 AmarokMimeData::startQueries()
 {
-    DEBUG_BLOCK
     foreach( QueryMaker *qm, d->queryMakers )
     {
         qm->setQueryType( QueryMaker::Track );
