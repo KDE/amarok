@@ -582,11 +582,6 @@ void App::applySettings( bool firstTime )
 
         PERF_LOG( "done cover handling" )
     }
-
-    //if ( !firstTime )
-        // Bizarrely and ironically calling this causes crashes for
-        // some people! FIXME
-        //AmarokConfig::self()->writeConfig();
 }
 
 #ifdef DEBUG
