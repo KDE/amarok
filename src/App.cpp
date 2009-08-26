@@ -570,6 +570,7 @@ void App::applySettings( bool firstTime )
             The::engineController()->setMuted( AmarokConfig::muteState() );
     } //</Engine>
 
+    if( firstTime )
     {   // delete unneeded cover images from cache
         PERF_LOG( "Begin cover handling" )
         const QString size = QString::number( 100 ) + '@';
