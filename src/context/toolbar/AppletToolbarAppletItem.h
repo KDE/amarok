@@ -57,6 +57,9 @@ class AppletToolbarAppletItem : public AppletToolbarBase
          * Reimplemented from QGraphicsItem
          */
          virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
+         virtual void hoverEnterEvent( QGraphicsSceneHoverEvent * event );
+         virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent * event );
     
         void mousePressEvent( QGraphicsSceneMouseEvent * event );
 

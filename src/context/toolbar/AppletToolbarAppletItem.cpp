@@ -48,7 +48,9 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
        m_label->setText( m_applet->name() );
     else
         m_label->setText( i18n("no applet name") );
-        
+
+    setAcceptHoverEvents( true );
+    m_label->setAcceptHoverEvents( true );
     QAction* delApplet = new QAction( i18n( "Remove Applet" ), this );
     delApplet->setIcon( KIcon( "edit-delete" ) );
     delApplet->setVisible( true );
@@ -180,5 +182,23 @@ Context::AppletToolbarAppletItem::addAction( QAction *action, int size )
 
     return tool;
 }
+
+
+void
+Context::AppletToolbarAppletItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
+{
+    //TODO Someone should add here some fancy effect, with animation and stuff
+//    debug() << "Enter event ";
+    m_label->setOpacity(0.5);
+}
+
+void
+Context::AppletToolbarAppletItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
+{
+    //TODO Someone should add here some fancy effect. with animation and stuff
+//    debug() << "Leave event ";
+    m_label->setOpacity(1.);
+}
+
 
 #include "AppletToolbarAppletItem.moc"
