@@ -244,6 +244,9 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     newLayout.appendChild( createItemElement( doc, "group_head", layout.head() ) );
     newLayout.appendChild( createItemElement( doc, "group_body", layout.body() ) );
 
+    if( layout.inlineControls() )
+        newLayout.setAttribute( "inline_controls", "true" ); 
+
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
     //make sure that this dir exists
