@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Support for copying aiff files to iPods. (BR 200820)
     * Add openDesktop.org support to the About dialog to make it easier
       to interact with the Amarok team.
     * Add inline editing of track metadata in the playlist. 

@@ -1673,6 +1673,9 @@ IpodHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
     if( type == "wav" )
         m_itdbtrackhash[ track ]->filetype = g_strdup( "wav" );
 
+    else if( type == "aiff" )
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "aiff" );
+
     else if( type == "mp3" || type == "mpeg")
         m_itdbtrackhash[ track ]->filetype = g_strdup( "mpeg" );
 
@@ -1991,11 +1994,7 @@ IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 QStringList
 IpodHandler::supportedFormats()
 {
-    QStringList formats;
-
-    formats << "mp3" << "aac" << "mp4" << "m4a";
-
-    return formats;
+    return ( QStringList() ) << "mp3" << "aac" << "mp4" << "m4a" << "aiff";
 }
 
 
