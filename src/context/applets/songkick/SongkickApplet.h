@@ -45,22 +45,21 @@ public:
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
 
     virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
-    
+
 public slots:
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-    
+
 private slots:
     void paletteChanged( const QPalette & palette );
 
 private:
     void calculateHeight();
-    Plasma::IconWidget* addAction( QAction *action );
 
     QString m_titleText;
     QGraphicsSimpleTextItem* m_titleLabel;
     Plasma::IconWidget* m_reloadIcon;
-    
+
     // holds main body
     QGraphicsProxyWidget *m_songkickProxy;
     QTextBrowser* m_songkick;

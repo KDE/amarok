@@ -38,7 +38,7 @@
 
 SongkickApplet::SongkickApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_titleText( "Songkick Concert Information" )
+    , m_titleText( i18n("Songkick Concert Information") )
     , m_titleLabel( 0 )
     , m_reloadIcon( 0 )
     , m_songkick( 0 )
@@ -58,22 +58,22 @@ SongkickApplet::~ SongkickApplet()
 void SongkickApplet::init()
 {
     QColor highlight = PaletteHandler::highlightColor().darker( 300 );
-    
-    m_titleLabel = new QGraphicsSimpleTextItem( "Concerts", this );
+
+    m_titleLabel = new QGraphicsSimpleTextItem( i18n("Concerts"), this );
     QFont bigger = m_titleLabel->font();
     bigger.setPointSize( bigger.pointSize() + 2 );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
    // m_titleLabel->setBrush( highlight );
-    
-    QAction* reloadAction = new QAction( "Reload Songkick", this );
+
+    QAction* reloadAction = new QAction( i18n("Reload Songkick"), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
     m_reloadIcon = addAction( reloadAction );
 
     connect( m_reloadIcon, SIGNAL( activated() ), dataEngine( "amarok-songkick" ), SLOT( update() ) );
-    
+
     m_songkickProxy = new QGraphicsProxyWidget( this );
     m_songkick = new QTextBrowser;
     m_songkick->setAttribute( Qt::WA_NoSystemBackground );
@@ -90,8 +90,9 @@ void SongkickApplet::init()
     pal.setBrush( QPalette::Window, brush );
     m_songkick->setPalette( pal );
     m_songkickProxy->setPalette( pal );
-    m_songkick->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
-                                                                                                              .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
+    m_songkick->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
+                                    .arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
+                                    .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
 
     connect( dataEngine( "amarok-songkick" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
@@ -101,45 +102,19 @@ void SongkickApplet::init()
     connectSource( "dates" );
 }
 
-Plasma::IconWidget*
-SongkickApplet::addAction( QAction *action )
-{
-    if ( !action )
-    {
-        debug() << "ERROR!!! PASSED INVALID ACTION";
-        return 0;
-    }
-
-    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
-
-    tool->setAction( action );
-    tool->setText( "" );
-    tool->setToolTip( action->text() );
-    tool->setDrawBackground( false );
-    tool->setOrientation( Qt::Horizontal );
-    QSizeF iconSize = tool->sizeFromIconSize( 16 );
-    tool->setMinimumSize( iconSize );
-    tool->setMaximumSize( iconSize );
-    tool->resize( iconSize );
-
-
-    tool->hide();
-    tool->setZValue( zValue() + 1 );
-
-    return tool;
-}
-
 void SongkickApplet::connectSource( const QString& source )
 {
-    if( source == "ontour" ) {
+    if( source == "ontour" )
+    {
         dataEngine( "amarok-songkick" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-songkick" )->query( "ontour" ) );
-    } else if( source == "dates" )
+    }
+    else if( source == "dates" )
     {
         dataEngine( "amarok-songkick" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-songkick" )->query( "dates" ) );
     }
-} 
+}
 
 void SongkickApplet::constraintsEvent( Plasma::Constraints constraints )
 {
@@ -151,10 +126,10 @@ void SongkickApplet::constraintsEvent( Plasma::Constraints constraints )
     rect.setWidth( rect.width() - 30 );
     m_titleLabel->setText( truncateTextToFit( m_titleText, m_titleLabel->font(), rect ) );
     m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, standardPadding() + 2 );
-    
+
     m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - standardPadding(), standardPadding() );
     m_reloadIcon->show();
-    
+
     //m_songkickProxy->setPos( 0, m_reloadIcon->size().height() );
     m_songkickProxy->setPos( standardPadding(), m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding() );
     QSize songkickSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_songkickProxy->pos().y() - standardPadding() );
@@ -173,12 +148,12 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
     if( data.contains( "fetching" ) )
     {
         m_songkick->show();
-        m_songkick->setPlainText( ("Concert information is being fetched.") );
+        m_songkick->setPlainText( i18n("Concert information is being fetched.") );
     }
     else if( data.contains( "error" ) )
     {
         m_songkick->show();
-        m_songkick->setPlainText( QString( "Songkick was not able to be downloaded. Please check your internet connection: %1").arg( data["error"].toString() ) );
+        m_songkick->setPlainText( i18n( "Songkick was not able to be downloaded. Please check your internet connection: %1", data["error"].toString() ) );
     }
     else if( data.contains( "suggested" ) )
     {
@@ -192,7 +167,12 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
                 QString sug = suggestion.toString();
                 //debug() << "parsing suggestion:" << sug;
                 QStringList pieces = sug.split( " - " );
-                QString link = QString( "<a href=\"%1|%2|%3\">%4 - %5</a><br>" ).arg( pieces[ 0 ] ).arg( pieces[ 1 ] ).arg( pieces[ 2 ] ).arg( pieces[ 1 ] ).arg( pieces[ 0 ] );
+                const QString link = QString( "<a href=\"%1|%2|%3\">%4 - %5</a><br>" )
+                                        .arg( pieces[0] )
+                                        .arg( pieces[1] )
+                                        .arg( pieces[2] )
+                                        .arg( pieces[1] )
+                                        .arg( pieces[0] );
                 html += link;
         }
         //debug() << "setting html: " << html;
@@ -210,14 +190,15 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
         m_songkick->show();
         QVariantList lyrics  = data[ "lyrics" ].toList();
 
-        m_titleText = QString( " %1 : %2 - %3" ).arg( "Songkick" ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() );
+        m_titleText = QString( "Songkick: %1 - %2" ).arg( lyrics[0].toString() )
+                                                    .arg( lyrics[1].toString() );
         //  need padding for title
         m_songkick->setPlainText( lyrics[ 3 ].toString().trimmed() );
     }
     else if( data.contains( "notfound" ) )
     {
         m_songkick->show();
-        m_songkick->setPlainText( ("There was no information found for this track" ));
+        m_songkick->setPlainText( i18n("There was no information found for this track" ));
     }
     setPreferredSize( (int)size().width(), (int)size().height() );
     updateConstraints();
@@ -253,7 +234,7 @@ SongkickApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *opt
     path.addRoundedRect( songkickRect, 5, 5 );
     p->fillPath( path , highlight );
     p->restore();
-    
+
 }
 
 QSizeF SongkickApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
@@ -270,9 +251,7 @@ QSizeF SongkickApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) c
     } else
         return QGraphicsWidget::sizeHint( which, constraint ); */
     return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), 500 );
-    
 }
-
 
 void
 SongkickApplet::paletteChanged( const QPalette & palette )
@@ -281,9 +260,11 @@ SongkickApplet::paletteChanged( const QPalette & palette )
 
     QColor highlight = PaletteHandler::highlightColor().darker( 200 );
     if( m_songkick )
-        m_songkick->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
-                                                                                                              .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
-    
+        m_songkick->setStyleSheet(
+                        QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
+                            .arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
+                            .arg( PaletteHandler::highlightColor().darker( 400 ).name() )
+                            );
 }
 
 #include "SongkickApplet.moc"
