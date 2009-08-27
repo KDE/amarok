@@ -59,25 +59,61 @@ class AMAROK_EXPORT SvgHandler : public QObject
         * @return The svg element/file rendered into a pixmap
         */
         QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString() );
-
         
         /**
          * Yet another oveloaded function. This one renders the svg element and adds half a divider element to the top and the bottom
          * so it looks sane when multiple elements with the same widh are stacked.
-         * @param keyname the name of the key to save in the cache
-         * @param width Widht of the resulting pixmap
-         * @param height Height of the resulting pixmap
+         *
+         * @param keyname the name of the key to save in the cache.
+         * @param width Widht of the resulting pixmap.
+         * @param height Height of the resulting pixmap.
          * @param element The theme element to render ( if none the entire svg is rendered )
-         * @return The svg element/file rendered into a pixmap
+         * @return The svg element/file rendered into a pixmap.
          */
         QPixmap renderSvgWithDividers( const QString& keyname, int width, int height, const QString& element = QString() );
 
-
+        /**
+         * Add nice borders to a pixmap. The function will create and return a new
+         * Pixmal that is the size of the old one plus twice the border width in
+         * each dimension.
+         * 
+         * @param orgPixmap The original pixmap.
+         * @param borderWidth The pixel width of the borders to add to the pixmap. 
+         * @param name A name for use as the basis of the cache key that for caching the completed image plus borders.
+         * @param skipCache If true, the pixmap will always get rendered and never fetched from the cache.
+         */
         QPixmap addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache =false );
 
+        /**
+         * Paint a custom slider using the specified painter. The slider consists
+         * of a background part, a "knob" that moves along it to show the current
+         * position, and 2 end markers to clearly mark the ends of the slider.
+         * The bacground part before the knob, is painted in a differnt color than the
+         * part after (and under) the knob.
+         * @param p The painter to use.
+         * @param x The x position to begin painting at.
+         * @param y The y position to begin painting at.
+         * @param width The width of the slider to paint.
+         * @param height The height of the slider. The background part does not scale in height, it will always be a relatively thin line, but the knob and end markers do.
+         * @param percentage The percetange of the slider that the knob is positioned at.
+         * @param active Specifies wheter the slider should be painted "active" using the current palettes active colors, to specify that it currently has mouse focus or hover.
+         */
         void paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active );
 
+        /**
+         * Get the path of the currently used svg theme file.
+         *
+         * @return the path of the currently used theme file.
+         */
         QString themeFile();
+
+        /**
+         * Change the currently used svg theme file. This function also
+         * clears the pixmap cache as all svg elements have potentially changed
+         * and should be re-rendered.
+         *
+         * @param themeFile The path of the new theme file to use.
+         */
         void setThemeFile( const QString  & themeFile );
 
     public slots:
