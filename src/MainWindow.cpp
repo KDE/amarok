@@ -984,6 +984,9 @@ void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState
 
 void MainWindow::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
+    Q_UNUSED( newMetaData )
+    Q_UNUSED( trackChanged )
+
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if ( track )
         metadataChanged( track );
