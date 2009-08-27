@@ -7749,7 +7749,7 @@
     </rect>
     <rect
        style="opacity:0.71100003;fill:url(#radialGradient4848);fill-opacity:1;fill-rule:nonzero;stroke:none"
-       id="new_slider_top_bottom"
+       id="new_slider_bottom"
        width="961.98999"
        height="2"
        x="-326.36615"
@@ -7759,7 +7759,7 @@
        transform="scale(1,-1)">
       <title
          id="title7339-8"
-         style="fill-opacity:1">new_slider_top_bottom</title>
+         style="fill-opacity:1">new_slider_bottom</title>
     </rect>
   </g>
 </svg>
