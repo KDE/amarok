@@ -122,7 +122,7 @@ UmsHandler::init()
             if( line.startsWith( "audio_folder=" ) )
             {
                 debug() << "Found audio_folder=";
-                QString path = m_mountPoint + "/" + line.section( '=', 1, 1 );
+                QString path = m_mountPoint + '/' + line.section( '=', 1, 1 );
                 debug() << "Path trying to set to: " << path;
                 QDir dir( path );
                 if( dir.exists() )

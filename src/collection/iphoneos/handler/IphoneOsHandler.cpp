@@ -243,7 +243,7 @@ IphoneOsHandler::metaForPid(const QString &pid)
         while(locResult.size() < 10)
             locResult.push_back(QString("ERROR!!!"));
     }
-    meta->setPlayableUrl(mountPoint() + "/" + locResult[0] + "/" + locResult[1]);
+    meta->setPlayableUrl(mountPoint() + '/' + locResult[0] + '/' + locResult[1]);
     meta->setFileSize(locResult[2].toInt());
     uint extId = locResult[4].toUInt();
     char extString[5] = { (extId>>24)&0xff, (extId>>16)&0xff, (extId>>8)&0xff, extId&0xff, '\0' };

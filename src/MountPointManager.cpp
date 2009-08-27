@@ -184,7 +184,7 @@ MountPointManager::getMountPointForId( const int id ) const
     }
     else
         //TODO better error handling
-        mountPoint = "/";
+        mountPoint = '/';
     return mountPoint;
 }
 

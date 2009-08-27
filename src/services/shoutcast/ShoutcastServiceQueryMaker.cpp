@@ -392,7 +392,7 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
             if( !e.attribute( "name" ).isNull() /*&& ! m_currentTrackQueryResults.contains( e.attribute( "name" ) )*/ )
             {
 
-                QString name = "(" + e.attribute( "lc" ) + ") " +  e.attribute( "name" ); //lc: listeners count
+                QString name = '(' + e.attribute( "lc" ) + ") " +  e.attribute( "name" ); //lc: listeners count
 
                 QString playlistUrl = "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
                         + e.attribute( "id" ) + "&file=filename.pls";

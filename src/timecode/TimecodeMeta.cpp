@@ -132,7 +132,7 @@ TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 
     , m_updatedFields( 0 )
 {
     DEBUG_BLOCK
-    m_displayUrl = url + ":" + QString::number( start / 1000 ) + "-" + QString::number( end / 1000 );
+    m_displayUrl = url + ':' + QString::number( start / 1000 ) + '-' + QString::number( end / 1000 );
 
     debug() << "created with length: " << m_length;
     

@@ -188,16 +188,16 @@ AudioCdCollection::infoFetchComplete( KJob *job )
             endIndex = cddbInfo.indexOf( "\nEXTD=", startIndex );
             QString tracksBlock = cddbInfo.mid( startIndex, endIndex - startIndex );
             debug() << "Tracks block: " << tracksBlock;
-            QStringList tracksBlockList = tracksBlock.split( "\n" );
+            QStringList tracksBlockList = tracksBlock.split( '\n' );
 
             int numberOfTracks = tracksBlockList.count();
 
             for ( int i = 0; i < numberOfTracks; i++ )
             {
-                QString prefix = "TTITLE" + QString::number( i ) + "=";
+                QString prefix = "TTITLE" + QString::number( i ) + '=';
                 debug() << "prefix: " << prefix;
                 QString trackName = tracksBlockList.at( i );
-                trackName = trackName.replace( prefix, "" );
+                trackName = trackName.remove( prefix );
 
                 QString trackArtist;
                 //check if a track artist is included in the track name:
@@ -226,7 +226,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
                 baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
 
                 //we hack the url so the engine controller knows what track on the CD to play..
-                QString baseUrl = "audiocd:/" + m_discCddbId + "/" + QString::number( i + 1 );
+                QString baseUrl = "audiocd:/" + m_discCddbId + '/' + QString::number( i + 1 );
 
                 debug() << "Track Base File Name (after): " << baseFileName;
                 debug() << "Track url: " << baseUrl;
@@ -409,7 +409,7 @@ AudioCdCollection::noInfoAvailable()
 
         debug() << "got track: " << "audiocd:/" + trackName + ".wav";
 
-        QString baseUrl = "audiocd:/" + m_discCddbId + "/" + QString::number( i );
+        QString baseUrl = "audiocd:/" + m_discCddbId + '/' + QString::number( i );
         
         AudioCdTrackPtr trackPtr = AudioCdTrackPtr( new AudioCdTrack( this, trackName, baseUrl ) );
 
@@ -469,9 +469,9 @@ AudioCdCollection::trackForUrl( const KUrl & url )
     if ( !m_discCddbId.isEmpty() )
     {
     
-        QString urlString = url.url().replace( "audiocd:/", "" );
+        QString urlString = url.url().remove( "audiocd:/" );
 
-        QStringList parts = urlString.split( "/" );
+        QStringList parts = urlString.split( '/' );
 
         if ( parts.count() != 2 )
             return TrackPtr();
@@ -514,8 +514,8 @@ AudioCdCollection::updateProxyTracks()
     foreach( KUrl url, m_proxyMap.keys() )
     {
 
-        QString urlString = url.url().replace( "audiocd:/", "" );
-        QStringList parts = urlString.split( "/" );
+        QString urlString = url.url().remove( "audiocd:/" );
+        QStringList parts = urlString.split( '/' );
 
         if ( parts.count() != 2 )
             continue;
