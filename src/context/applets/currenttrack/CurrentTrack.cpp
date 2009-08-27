@@ -258,12 +258,18 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
     if( !m_trackActions.isEmpty() )
     {
-        QPointF iconPos = m_album->boundingRect().bottomLeft();
-        iconPos.ry() += 5;
+        QPointF iconPos = m_album->pos();
+        bool setY = true;
         foreach( Plasma::IconWidget *icon, m_trackActions )
         {
+            const int iconSize = icon->size().width();
+            if( setY )
+            {
+                iconPos.ry() += iconSize - 2;
+                setY = false;
+            }
             icon->setPos( iconPos );
-            iconPos.rx() += 30;
+            iconPos.rx() += iconSize + 5;
         }
     }
 
@@ -385,8 +391,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
                 foreach( QAction *action, actions )
                 {
                     Plasma::IconWidget *icon = addAction( action, 24 );
-                    icon->setText(QString()); // We don't want text on the icon
-                    connect( icon, SIGNAL( activated() ), action, SIGNAL( triggered() ) );
+                    icon->setText( QString() );
                     m_trackActions << icon;
                 }
             }
@@ -598,7 +603,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     if( !m_sourceEmblemPath.isEmpty() )
     {
         p->save();
-        p->setOpacity( .4 );
+        p->setOpacity( 0.4 );
         KSvgRenderer svg( m_sourceEmblemPath );
 
         // paint the emblem half as tall as the applet, anchored at the top-right
@@ -636,7 +641,6 @@ CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
         moveByX += ( width / 2 ) - cover.rect().width() / 2;
         moveByY += ( width / 2 ) - cover.rect().height() / 2;
 
-//        debug() << "placing album at X:" << moveByX << " and Y:"  << moveByY;
         m_albumCover->setPos( moveByX, moveByY );
 
 
