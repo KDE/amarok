@@ -106,6 +106,8 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
     connect( m_treeModel, SIGNAL( queryFinished() ), SLOT( slotCheckAutoExpand() ));
 
+    CollectionSortFilterProxyModel *oldFilterModel = m_filterModel;
+
     m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSortRole( CustomRoles::SortRole );
     m_filterModel->setFilterRole( CustomRoles::FilterRole );
@@ -114,6 +116,8 @@ void CollectionTreeView::setModel(QAbstractItemModel * model)
     m_filterModel->setSourceModel( model );
 
     QTreeView::setModel( m_filterModel );
+
+    delete oldFilterModel;
 
     connect( m_treeModel, SIGNAL( expandIndex( const QModelIndex & ) ), SLOT( slotExpand( const QModelIndex & ) ) );
 }

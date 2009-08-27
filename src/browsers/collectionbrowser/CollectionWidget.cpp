@@ -22,8 +22,10 @@
 #include "CollectionTreeItemModel.h"
 #include "CollectionTreeItemDelegate.h"
 #include "CollectionBrowserTreeView.h"
+#include "collection/proxycollection/ProxyCollection.h"
 #include "Debug.h"
 #include "SearchWidget.h"
+#include "SingleCollectionTreeItemModel.h"
 #include <amarokconfig.h>
 
 #include <KAction>
@@ -34,6 +36,10 @@
 #include <KStandardDirs>
 
 #include <QActionGroup>
+#include <QMetaEnum>
+#include <QMetaObject>
+#include <QRect>
+#include <QStackedWidget>
 #include <QToolBar>
 #include <QToolButton>
 
@@ -41,6 +47,7 @@ CollectionWidget *CollectionWidget::s_instance = 0;
 
 CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     : BrowserCategory( name, parent )
+    , m_viewMode( CollectionWidget::NormalCollections )
 {
     s_instance = this;
     setObjectName( name );
@@ -52,7 +59,11 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     m_searchWidget = new SearchWidget( hbox );
     m_searchWidget->setClickMessage( i18n( "Search collection" ) );
 
-    m_treeView = new CollectionBrowserTreeView( this );
+    m_stack = new QStackedWidget( this );
+    m_stack->setFrameShape( QFrame::NoFrame );
+
+    m_treeView = new CollectionBrowserTreeView( m_stack );
+    m_stack->addWidget( m_treeView );
     m_treeView->setAlternatingRowColors( true );
     m_treeView->setFrameShape( QFrame::NoFrame );
     m_treeView->setRootIsDecorated( false );
@@ -60,12 +71,36 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( m_treeView );
     m_treeView->setItemDelegate( delegate );
 
+    m_singleTreeView = new CollectionBrowserTreeView( m_stack );
+    m_stack->addWidget( m_singleTreeView );
+    m_singleTreeView->setAlternatingRowColors( true );
+    m_singleTreeView->setFrameShape( QFrame::NoFrame );
+
     m_levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     if ( m_levels.isEmpty() )
         m_levels << CategoryId::Artist << CategoryId::Album;
 
-    m_treeView->setModel( new CollectionTreeItemModel( m_levels ) );
-    m_searchWidget->setup( m_treeView );
+    m_multiModel = new CollectionTreeItemModel( m_levels );
+    m_singleModel = new SingleCollectionTreeItemModel( new ProxyCollection::Collection(), m_levels );
+    m_treeView->setModel( m_multiModel );
+    m_singleTreeView->setModel( m_singleModel );
+
+    const QMetaObject *mo = metaObject();
+    const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
+    const QString &value = KGlobal::config()->group( "Collection Browser" ).readEntry( "View Mode" );
+    int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
+    enumValue == -1 ? m_viewMode = NormalCollections : m_viewMode = (ViewMode) enumValue;
+
+    if( m_viewMode == CollectionWidget::NormalCollections )
+    {
+        m_stack->setCurrentWidget( m_treeView );
+        m_searchWidget->setup( m_treeView );
+    }
+    else
+    {
+        m_stack->setCurrentWidget( m_singleTreeView );
+        m_searchWidget->setup( m_singleTreeView );
+    }
 
     QAction *action = new QAction( i18n( "Artist / Album" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
@@ -257,6 +292,12 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     m_searchWidget->toolBar()->addAction( searchMenuAction );
 
+    //workaround string-freeze for 2.2
+    debug() << i18n( "Toggle unified view mode" );
+    KAction *toggleAction = new KAction( KIcon( "preferences-other" ), i18n( "Toggle unified view mode. This is an experimental feature" ), this );
+    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView() ) );
+    m_searchWidget->toolBar()->addAction( toggleAction );
+
     QToolButton *tbutton = qobject_cast<QToolButton*>( m_searchWidget->toolBar()->widgetForAction( searchMenuAction ) );
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
@@ -289,7 +330,7 @@ CollectionWidget::customFilter( QAction *action )
         m_levels << secondLevel;
     if( thirdLevel != CategoryId::None )
         m_levels << thirdLevel;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void
@@ -297,7 +338,7 @@ CollectionWidget::sortByArtistAlbum()
 {
     m_levels.clear();
     m_levels << CategoryId::Artist << CategoryId::Album;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void
@@ -305,7 +346,7 @@ CollectionWidget::sortByGenreArtist()
 {
     m_levels.clear();
     m_levels << CategoryId::Genre << CategoryId::Artist;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void
@@ -313,35 +354,35 @@ CollectionWidget::sortByGenreArtistAlbum()
 {
     m_levels.clear();
     m_levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void CollectionWidget::sortByAlbum()
 {
     m_levels.clear();
     m_levels << CategoryId::Album;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void CollectionWidget::sortByArtist()
 {
     m_levels.clear();
     m_levels << CategoryId::Artist;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void
 CollectionWidget::slotShowYears( bool checked )
 {
     AmarokConfig::setShowYears( checked );
-    m_treeView->setLevels( levels() );
+    setLevels( levels() );
 }
 
 void
 CollectionWidget::slotShowCovers(bool checked)
 {
     AmarokConfig::setShowAlbumArt( checked );
-    m_treeView->setLevels( levels() );
+    setLevels( levels() );
 }
 
 
@@ -359,14 +400,40 @@ CollectionWidget::filter() const
 QList<int>
 CollectionWidget::levels() const
 {
-    return m_treeView->levels();
+    return m_viewMode == CollectionWidget::NormalCollections ? m_treeView->levels() : m_singleTreeView->levels();
 }
 
 void CollectionWidget::setLevels( const QList<int> &levels )
 {
-    m_levels.clear();
     m_levels = levels;
-    m_treeView->setLevels( m_levels );
+    m_viewMode == CollectionWidget::NormalCollections ? m_treeView->setLevels( m_levels ) : m_singleTreeView->setLevels( m_levels );
+}
+
+void CollectionWidget::toggleView()
+{
+    if( m_viewMode == CollectionWidget::NormalCollections )
+    {
+        debug() << "Switching to single tree model";
+        m_searchWidget->disconnect( m_treeView );
+        //m_treeView->hide();
+        m_searchWidget->setup( m_singleTreeView );
+        m_stack->setCurrentWidget( m_singleTreeView );
+        if( m_levels != m_singleTreeView->levels() )
+            m_singleTreeView->setLevels( m_levels );
+        m_viewMode = CollectionWidget::UnifiedCollection;
+    }
+    else
+    {
+        debug() << "switching to multi model";
+        m_searchWidget->disconnect( m_singleTreeView );
+        m_stack->setCurrentWidget( m_treeView );
+        if( m_levels != m_treeView->levels() )
+            m_treeView->setLevels( m_levels );
+        m_viewMode = CollectionWidget::NormalCollections;
+    }
+    const QMetaObject *mo = metaObject();
+    const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
+    KGlobal::config()->group( "Collection Browser" ).writeEntry( "View Mode", me.valueToKey( m_viewMode ) );
 }
 
 #include "CollectionWidget.moc"

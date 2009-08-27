@@ -20,10 +20,13 @@
 #define AMAROK_COLLECTION_WIDGET
 
 #include "BrowserCategory.h"
+#include "CollectionTreeItemModelBase.h"
+
 #include <KVBox>
 
 class QAction;
 class QMenu;
+class QStackedWidget;
 
 class SearchWidget;
 class CollectionBrowserTreeView;
@@ -31,7 +34,13 @@ class CollectionBrowserTreeView;
 class CollectionWidget : public BrowserCategory
 {
     Q_OBJECT
+    Q_ENUMS( ViewMode )
     public:
+    enum ViewMode {
+        UnifiedCollection,
+        NormalCollections
+    };
+
         CollectionWidget( const QString &name , QWidget *parent );
         static CollectionWidget *instance() { return s_instance; }
         CollectionBrowserTreeView *view() const { return m_treeView; }
@@ -57,9 +66,16 @@ class CollectionWidget : public BrowserCategory
 
         void setLevels( const QList<int> &levels );
 
+        void toggleView();
+
     private:
         SearchWidget        *m_searchWidget;
+        QStackedWidget *m_stack;
         CollectionBrowserTreeView  *m_treeView;
+        CollectionBrowserTreeView  *m_singleTreeView;
+        CollectionTreeItemModelBase *m_singleModel;
+        CollectionTreeItemModelBase *m_multiModel;
+        ViewMode m_viewMode;
 
         QAction             *m_firstLevelSelectedAction;
         QAction             *m_secondLevelSelectedAction;
