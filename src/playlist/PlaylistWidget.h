@@ -27,10 +27,12 @@
 
 #include <QComboBox>
 #include <QLabel>
+#include <QPointer>
 
 class KActionCollection;
 class KActionMenu;
 class PlaylistProvider;
+class UserPlaylistProvider;
 class QWidget;
 
 namespace Playlist
@@ -58,8 +60,9 @@ protected:
     QSize sizeHint() const;
 
 private slots:
-    void playlistProviderAdded( const PlaylistProvider *provider, int category );
-    void playlistProviderRemoved( const PlaylistProvider *provider, int category );
+    void playlistProviderAdded( PlaylistProvider *provider, int category );
+    void playlistProviderRemoved( PlaylistProvider *provider, int category );
+    void slotSaveCurrentPlaylist();
 
 private:
     KActionMenu *m_savePlaylistMenu;
@@ -74,4 +77,5 @@ private:
 };
 }
 
+Q_DECLARE_METATYPE( QPointer<UserPlaylistProvider> )
 #endif

@@ -33,12 +33,14 @@
 #include "PlaylistManager.h"
 #include "PlaylistModelStack.h"
 #include "ProgressiveSearchWidget.h"
+#include "UserPlaylistProvider.h"
 #include "widgets/HorizontalDivider.h"
 
 #include <KActionMenu>
 #include <KToolBarSpacerAction>
 
 #include <QHBoxLayout>
+
 #include <amarokconfig.h>
 
 Playlist::Widget::Widget( QWidget* parent )
@@ -123,18 +125,19 @@ Playlist::Widget::Widget( QWidget* parent )
         m_saveActions = new KActionCollection( this );
         connect( m_savePlaylistMenu, SIGNAL( triggered(bool) ), The::playlistManager(),
                  SLOT( saveCurrentPlaylist() ) );
-        foreach( const PlaylistProvider *provider,
-                 The::playlistManager()->providersForCategory(
+        foreach( PlaylistProvider *provider, The::playlistManager()->providersForCategory(
                             PlaylistManager::UserPlaylist ) )
+        {
             playlistProviderAdded( provider, PlaylistManager::UserPlaylist );
+        }
 
         connect( The::playlistManager(),
-                 SIGNAL( providerAdded( const PlaylistProvider *, int ) ),
-                 SLOT( playlistProviderAdded( const PlaylistProvider *, int ) )
+                 SIGNAL( providerAdded( PlaylistProvider *, int ) ),
+                 SLOT( playlistProviderAdded( PlaylistProvider *, int ) )
                  );
         connect( The::playlistManager(),
-                 SIGNAL( providerRemoved( const PlaylistProvider *, int ) ),
-                 SLOT( playlistProviderRemoved( const PlaylistProvider *, int ) )
+                 SIGNAL( providerRemoved( PlaylistProvider *, int ) ),
+                 SLOT( playlistProviderRemoved( PlaylistProvider *, int ) )
                  );
 
         plBar->addAction( m_savePlaylistMenu );
@@ -168,24 +171,29 @@ Playlist::Widget::sizeHint() const
 }
 
 void
-Playlist::Widget::playlistProviderAdded( const PlaylistProvider *provider, int category )
+Playlist::Widget::playlistProviderAdded( PlaylistProvider *provider, int category )
 {
     if( category != PlaylistManager::UserPlaylist )
         return;
 
-    QAction *action = new KAction( KIcon( "multimedia-player-apple-ipod" ),
-                                  i18n("&Save to %1").arg( provider->prettyName() ),
-                                  this
-                                );
+    debug() << "Adding provider: " << provider->objectName();
+    UserPlaylistProvider *userProvider =
+            dynamic_cast<UserPlaylistProvider *>(provider);
+    if( userProvider == 0 )
+        return;
+    QAction *action = new KAction( userProvider->icon(),
+                        i18n("&Save as playlist to %1").arg( provider->prettyName() ),
+                        this
+                    );
+    action->setData( QVariant::fromValue( QPointer<UserPlaylistProvider>( userProvider ) ) );
     m_saveActions->addAction( provider->objectName(), action );
 
     m_savePlaylistMenu->addAction( action );
-    connect( action, SIGNAL( triggered(bool) ), The::playlistManager(),
-             SLOT( saveCurrentPlaylist() ) );
+    connect( action, SIGNAL( triggered(bool) ), SLOT( slotSaveCurrentPlaylist() ) );
 }
 
 void
-Playlist::Widget::playlistProviderRemoved( const PlaylistProvider *provider, int category )
+Playlist::Widget::playlistProviderRemoved( PlaylistProvider *provider, int category )
 {
     if( category != PlaylistManager::UserPlaylist )
         return;
@@ -193,6 +201,21 @@ Playlist::Widget::playlistProviderRemoved( const PlaylistProvider *provider, int
     QAction *action = m_saveActions->action( provider->objectName() );
     if( action )
         m_savePlaylistMenu->removeAction( action );
+}
+
+void
+Playlist::Widget::slotSaveCurrentPlaylist()
+{
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    UserPlaylistProvider *provider =
+            action->data().value< QPointer<UserPlaylistProvider> >();
+    if( provider == 0 )
+        return;
+
+    The::playlistManager()->save( The::playlist()->tracks(), QString(), provider );
 }
 
 void

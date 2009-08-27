@@ -185,8 +185,8 @@ class PlaylistManager : public QObject
         void updated();
         void categoryAdded( int category );
         void showCategory( int category );
-        void providerAdded( const PlaylistProvider *provider, int category );
-        void providerRemoved( const PlaylistProvider *provider, int category );
+        void providerAdded( PlaylistProvider *provider, int category );
+        void providerRemoved( PlaylistProvider *provider, int category );
 
         void renamePlaylist( Meta::PlaylistPtr playlist );
 
