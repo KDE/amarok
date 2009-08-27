@@ -230,7 +230,7 @@ Context::Applet::setCollapseOn()
 {
     if ( size().height() == m_heightCollapseOn )
         return;
-
+    debug() << "collapsing applet to..." << m_heightCollapseOn;
     if( m_heightCollapseOff == -1 )
         m_animFromHeight = size().height();
     else
@@ -249,6 +249,8 @@ Context::Applet::setCollapseOn()
 void
 Context::Applet::setCollapseOff()
 {
+    DEBUG_BLOCK
+    debug() << "height:" << size().height() << "target:" << m_heightCollapseOff << "m_collapsed:" << m_collapsed;
     if ( size().height() == m_heightCollapseOff )
         return;
 
