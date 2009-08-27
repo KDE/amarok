@@ -226,9 +226,9 @@ Context::Applet::addAction( QAction *action )
 void
 Context::Applet::setCollapseOn()
 {
-//    DEBUG_BLOCK
     if ( size().height() == m_heightCollapseOn )
         return;
+    //debug() << "collapsing applet to..." << m_heightCollapseOn;
     if( m_heightCollapseOff == -1 )
         m_animFromHeight = size().height();
     else
@@ -247,20 +247,25 @@ Context::Applet::setCollapseOn()
 void
 Context::Applet::setCollapseOff()
 {
-    DEBUG_BLOCK
-    debug() << "height:" << size().height() << "target:" << m_heightCollapseOff;
+    //DEBUG_BLOCK
+    //debug() << "height:" << size().height() << "target:" << m_heightCollapseOff << "m_collapsed:" << m_collapsed;
     if ( size().height() == m_heightCollapseOff )
         return;
-    else if( m_heightCollapseOff == -1 && !m_collapsed ) // if this is a self-expanding applet, and it's already expanded
-        return;
-    else if( m_heightCollapseOff == -1 && m_collapsed ) // if it's self-expanding, don't animate as we don't know where we're going
-    {
+    else if( m_heightCollapseOff == -1 && ( m_collapsed || m_animationId != 0) ) // if it's self-expanding, don't animate as we don't know where we're going. also, if we're shrinking
+    {                                                                            // stop that and expand regardless
+        // stop the anim
+        if( m_animationId != 0 )
+        {
+            Plasma::Animator::self()->stopCustomAnimation( m_animationId );
+            m_animationId = 0;
+        }
         m_heightCurrent =  m_heightCollapseOff;
         emit sizeHintChanged(Qt::PreferredSize);
         updateGeometry();
         m_collapsed = false;
         return;
-    }
+    } else if( m_heightCollapseOff == -1 && !m_collapsed ) // if this is a self-expanding applet, and it's already expanded
+        return;
     
     if ( m_animationId != 0 ) // warning we are moving right now
     {
