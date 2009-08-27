@@ -891,8 +891,6 @@ IpodHandler::writeFirewireGuid()
 bool
 IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 {
-    //DEBUG_BLOCK
-    //debug() << "ipodPath: " << ipodPath;
     QDir curDir( mountPoint() );
     QString curPath = mountPoint();
     QStringList components;
@@ -908,7 +906,6 @@ IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
     QStringList::iterator it = components.begin();
     for( ; it != components.end(); ++it )
     {
-        //debug() << "(*it): " << (*it);
         found = false;
         for( uint i = 0;i < curDir.count(); i++ )
         {
@@ -1672,24 +1669,22 @@ IpodHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
 {
     m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIO;
     bool audiobook = false;
-    if(type=="wav")
-    {
+
+    if( type == "wav" )
         m_itdbtrackhash[ track ]->filetype = g_strdup( "wav" );
-    }
-    else if(type=="mp3" || type=="mpeg")
-    {
+
+    else if( type == "mp3" || type == "mpeg")
         m_itdbtrackhash[ track ]->filetype = g_strdup( "mpeg" );
-    }
-    else if(type=="aac" || type=="m4a" || (!m_supportsVideo && type=="mp4"))
-    {
+
+    else if( type == "aac" || type == "m4a" || (!m_supportsVideo && type == "mp4") )
         m_itdbtrackhash[ track ]->filetype = g_strdup( "mp4" );
-    }
-    else if(type=="m4b")
+
+    else if( type == "m4b" )
     {
         audiobook = true;
         m_itdbtrackhash[ track ]->filetype = g_strdup( "mp4" );
     }
-    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
+    else if( type == "m4v" || type == "mp4v" || type == "mov" || type == "mpg" || type == "mp4" )
     {
         m_itdbtrackhash[ track ]->filetype = g_strdup( "m4v video" );
         m_itdbtrackhash[ track ]->movie_flag = 0x01; // for videos
@@ -1713,9 +1708,7 @@ IpodHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
     }
     */
     else
-    {
         m_itdbtrackhash[ track ]->filetype = g_strdup( type.toUtf8() );
-    }
 
     if( audiobook )
     {
