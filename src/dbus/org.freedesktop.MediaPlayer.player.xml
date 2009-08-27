@@ -83,5 +83,9 @@
     <method name="ShowOSD">
     </method>
 
+    <method name="LoadThemeFile">
+        <arg type="s" drection="in"/>
+    </method>
+
   </interface>
 </node>

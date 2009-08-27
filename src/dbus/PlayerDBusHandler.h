@@ -94,6 +94,8 @@ namespace Amarok
             void Mute() const;
             void ShowOSD() const;
 
+            void LoadThemeFile( const QString &path ) const;
+
         signals:
             void CapsChange( int );
             void TrackChange( QVariantMap );

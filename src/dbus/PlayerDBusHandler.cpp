@@ -27,6 +27,7 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "Osd.h"
+#include "SvgHandler.h"
 
 // Marshall the DBusStatus data into a D-BUS argument
 QDBusArgument &operator<<(QDBusArgument &argument, const DBusStatus &status)
@@ -191,6 +192,11 @@ namespace Amarok
         Amarok::OSD::instance()->show();
     }
 
+    void PlayerDBusHandler::LoadThemeFile( const QString &path ) const
+    {
+        The::svgHandler()->setThemeFile( path );
+    }
+        
     QVariantMap PlayerDBusHandler::GetMetadata()
     {
         return GetTrackMetadata( The::engineController()->currentTrack() );
