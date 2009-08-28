@@ -254,7 +254,7 @@ Context::Applet::setCollapseOff()
     if ( size().height() == m_heightCollapseOff )
         return;
 
-    if( m_heightCollapseOff == -1 && ( m_collapsed || m_animationId != 0) ) // if it's self-expanding, don't animate as we don't know where we're going. also, if we're shrinking
+    if( m_heightCollapseOff == -1) // if it's self-expanding, don't animate as we don't know where we're going. also, if we're shrinking
     {                                                                       // stop that and expand regardless
         // stop the anim
         if( m_animationId != 0 )
@@ -268,9 +268,6 @@ Context::Applet::setCollapseOff()
         m_collapsed = false;
         return;
     }
-
-    if( m_heightCollapseOff == -1 && !m_collapsed ) // if this is a self-expanding applet, and it's already expanded
-        return;
 
     if ( m_animationId != 0 ) // warning we are moving right now
     {
