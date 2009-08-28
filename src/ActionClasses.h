@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -118,6 +119,21 @@ namespace Amarok
     {
         public:
             ReplayGainModeAction( KActionCollection *ac, QObject* );
+    };
+
+    class EqualizerAction : public SelectAction
+    {
+        Q_OBJECT
+        public:
+            EqualizerAction( KActionCollection *ac, QObject* );
+        public slots:
+            void UpdateContent();
+            void NewList();
+        private slots:
+            void actTrigg( int index );
+        private:
+            QStringList eqGlobalList();
+            QList<int> eqCfgGetPresetVal ( int mPresetNo );
     };
 
     class BurnMenu : public KMenu

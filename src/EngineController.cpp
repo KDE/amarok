@@ -5,6 +5,7 @@
  * Copyright (c) 2006,2008 Ian Monroe <ian@monroe.nu>                                   *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -109,6 +110,7 @@ EngineController::initializePhonon()
     delete m_controller;
     delete m_audio;
     delete m_preamp;
+    delete m_equalizer;
 
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
@@ -117,6 +119,15 @@ EngineController::initializePhonon()
     m_path = Phonon::createPath( m_media, m_audio );
 
     m_controller = new Phonon::MediaController( m_media );
+
+    //Add an equalizer effect if avaiable
+    QList<Phonon::EffectDescription> mEffectDescriptions = Phonon::BackendCapabilities::availableAudioEffects();
+    foreach ( Phonon::EffectDescription mDescr, mEffectDescriptions ) {
+        if ( mDescr.name() == QLatin1String( "KEqualizer" ) ) {
+            m_equalizer = new Phonon::Effect( mDescr );
+            eqUpdate();
+            }
+    }
 
     // HACK we turn off replaygain manually on OSX, until the phonon coreaudio backend is fixed.
     // as the default is specified in the .cfg file, we can't just tell it to be a different default on OSX
@@ -656,6 +667,106 @@ EngineController::trackPositionMs() const
     return m_media->currentTime();
 }
 
+bool
+EngineController::isEqSupported() const
+{
+    // If effect was created it means we have equalizer support
+    return ( !m_equalizer.isNull() );
+}
+
+
+double
+EngineController::eqMaxGain() const
+{
+   if( m_equalizer.isNull() )
+       return 100;
+   QList<Phonon::EffectParameter> mEqPar = m_equalizer->parameters();
+   if( mEqPar.isEmpty() )
+       return 100.0;
+   double mScale;
+   mScale = ( fabs(mEqPar.at(0).maximumValue().toDouble() ) +  fabs( mEqPar.at(0).minimumValue().toDouble() ) );
+   mScale /= 2.0;
+   return mScale;
+}
+
+QStringList
+EngineController::eqBandsFreq() const
+{
+    // This will extract the bands frequency values from effect paramter name
+    // as long as they folow the rules:
+    // eq-preamp paramter will contain 'pre-amp' string
+    // bands parameters are described using schema 'xxxHz'
+    QStringList mBandsFreq;
+    if( m_equalizer.isNull() )
+       return mBandsFreq;
+    QList<Phonon::EffectParameter> mEqPar = m_equalizer->parameters();
+    if( mEqPar.isEmpty() )
+       return mBandsFreq;
+    QRegExp rx( "\\d+(?=Hz)" );
+    foreach( Phonon::EffectParameter mParam, mEqPar )
+    {
+    if( mParam.name().contains( QString( "pre-amp" ) ) )
+        {
+            mBandsFreq << i18n( "Preamp" );
+        }
+        else if ( mParam.name().contains( rx ) )
+        {
+            if( rx.cap( 0 ).toInt() < 1000 )
+            {
+                mBandsFreq << QString( rx.cap( 0 )).append( " Hz" );
+            }
+            else
+            {
+                mBandsFreq << QString::number( rx.cap( 0 ).toInt()/1000 ).append( " kHz" );
+            }
+        }
+    }
+    return mBandsFreq;
+}
+
+void
+EngineController::eqUpdate() //SLOT
+{
+    // if equalizer not present simply return
+    if( m_equalizer.isNull() )
+        return;
+    // checkif equalizer should be disabled ??
+    if( AmarokConfig::equalizerMode() <= 0 )
+    {
+        // Remove effect from path
+        if( m_path.effects().indexOf( m_equalizer ) != -1 )
+            m_path.removeEffect( m_equalizer );
+    }
+    else
+    {
+        // Set equalizer parameter according to the gains from setttings
+        QList<Phonon::EffectParameter> mEqPar = m_equalizer->parameters();
+        QList<int> mEqParCfg = AmarokConfig::equalizerGains();
+
+        QListIterator<int> mEqParNewIt( mEqParCfg );
+        double scaledVal; // Scaled value to set from universal -100 - 100 range to plugin scale
+        foreach( Phonon::EffectParameter mParam, mEqPar )
+        {
+            scaledVal = mEqParNewIt.hasNext() ? mEqParNewIt.next() : 0;
+            scaledVal *= ( fabs(mParam.maximumValue().toDouble() ) +  fabs( mParam.minimumValue().toDouble() ) );
+            scaledVal /= 200.0;
+            m_equalizer->setParameterValue( mParam, scaledVal );
+        }
+        // Insert effect into path if needed
+        if( m_path.effects().indexOf( m_equalizer ) == -1 )
+        {
+            if( !m_path.effects().isEmpty() )
+            {
+                m_path.insertEffect( m_equalizer, m_path.effects().first() );
+            }
+            else
+            {
+                m_path.insertEffect( m_equalizer );
+            }
+        }
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // PRIVATE SLOTS
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1002,6 +1113,3 @@ void EngineController::slotTitleChanged( int titleNumber )
 }
 
 #include "EngineController.moc"
-
-
-

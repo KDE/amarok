@@ -3,6 +3,7 @@
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2002 Gabor Lehel <illissius@gmail.com>                                 *
  * Copyright (c) 2002 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -768,6 +769,7 @@ MainWindow::createActions()
     new Amarok::RandomAction( ac, this );
     new Amarok::FavorAction( ac, this );
     new Amarok::ReplayGainModeAction( ac, this );
+    new Amarok::EqualizerAction( ac, this);
 
     ac->addAssociatedWidget( this );
     foreach (QAction* action, ac->actions())
@@ -877,6 +879,10 @@ MainWindow::createMenus()
     m_settingsMenu->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
     m_settingsMenu->addSeparator();
 #endif
+
+    // Add equalizer action - a list with all equalizer presets avaiable
+    m_settingsMenu->addAction( Amarok::actionCollection()->action("equalizer_mode") );
+    m_settingsMenu->addSeparator();
 
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );

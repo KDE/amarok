@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -109,7 +110,6 @@ Menu::Menu( QWidget* parent )
 
     safePlug( ac, "cover_manager", this );
     safePlug( ac, "queue_manager", this );
-    safePlug( ac, "equalizer", this );
     safePlug( ac, "script_manager", this );
 
     addSeparator();
@@ -380,6 +380,82 @@ ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *pare
                             << i18n( "&Album" ) );
     //setIcons( QStringList() << "media-playlist-replaygain-off-amarok" << "media-track-replaygain-amarok" << "media-album-replaygain-amarok" );
     setCurrentItem( AmarokConfig::replayGainMode() );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// EqualizerAction
+//////////////////////////////////////////////////////////////////////////////////////////
+EqualizerAction::EqualizerAction( KActionCollection *ac, QObject *parent ) :
+    SelectAction( i18n( "&Equalizer" ), &AmarokConfig::setEqualizerMode, ac, "equalizer_mode", parent )
+{
+    NewList();
+    UpdateContent();
+    connect( this, SIGNAL( triggered( int ) ), this, SLOT( actTrigg( int ) ) );
+}
+
+void
+EqualizerAction::UpdateContent() //SLOT
+{
+    blockSignals( true );
+    setCurrentItem( AmarokConfig::equalizerMode() );
+    blockSignals( false );
+}
+
+void
+EqualizerAction::NewList() //SLOT
+{
+    if( !The::engineController()->isEqSupported() )
+    {
+        setEnabled( false );
+        return;
+    }
+    setEnabled( true );
+    setItems( QStringList() << i18nc( "State, as in, disabled", "&Off" ) << eqGlobalList() );
+}
+
+void
+EqualizerAction::actTrigg( int index ) //SLOT
+{
+    if( The::engineController()->isEqSupported() )
+    {
+        AmarokConfig::setEqualizerGains( eqCfgGetPresetVal( index - 1 ) );
+        The::engineController()->eqUpdate();
+    }
+}
+
+QStringList
+EqualizerAction::eqGlobalList()
+{
+    // Prepare a global list with duplicates removed
+    QStringList mGlobalList;
+    mGlobalList += AmarokConfig::defEqualizerPresetsNames();
+    foreach( QString mUsrName, AmarokConfig::equalizerPresetsNames() )
+    {
+        if( mGlobalList.indexOf( mUsrName ) < 0 )
+            mGlobalList.append( mUsrName );
+    }
+    return mGlobalList;
+}
+
+QList<int>
+EqualizerAction::eqCfgGetPresetVal( int mPresetNo )
+{
+    QList<int> mPresetVal;
+    if( mPresetNo > eqGlobalList().count() ||  mPresetNo < 0 )
+        return mPresetVal;
+    QString mPresetName = eqGlobalList().at(mPresetNo);
+    int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
+    int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
+    if( idUsr >= 0 )
+    {
+        mPresetVal = AmarokConfig::equalizerPresestValues().mid( idUsr*11,11 );
+    }
+    else if( idDef >= 0)
+    {
+
+        mPresetVal = AmarokConfig::defEqualizerPresestValues().mid( idDef*11,11 );
+    }
+    return mPresetVal;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

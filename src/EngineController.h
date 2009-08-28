@@ -3,6 +3,7 @@
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
  * Copyright (c) 2004-2008 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
+ * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -32,6 +33,8 @@
 #include <Phonon/Path>
 #include <Phonon/MediaController>
 #include <Phonon/MediaObject>
+#include <Phonon/Effect>
+#include <Phonon/EffectParameter>
 
 class QTimer;
 
@@ -136,6 +139,31 @@ public:
      * @return @c true if the current track is a stream, @c false otherwise
      */
     bool isStream();
+
+    /**
+     * Phonon kequalizer support is required for Amarok to enable equalizer
+     * this method return whatever ponon support kequalizer effect.
+     *
+     * @return @c true if the phonon support kequalizer effect, @c false otherwise
+     */
+    bool isEqSupported() const;
+
+    /**
+     * kequalizer implementation for different backends may have different 
+     * gain scale. To properly display it we need to get a scale from effect
+     *
+     * @return maximum gain value for kequalizer parameters.
+     */
+    double eqMaxGain() const;
+
+     /**
+     * kequalizer implementation for different backends may have different
+     * frequency bands. For proper display this will try to extract frequency values
+     * from effect parameters info.
+     *
+     * @return QStringList with band labels (form xxx Hz or xxx kHz).
+     */
+    QStringList eqBandsFreq() const;
 
 public slots:
     /**
@@ -245,6 +273,13 @@ public slots:
      */
     void toggleMute();
 
+    /**
+     * Update equalizer status - enabled,disabled,set values
+     *
+     * 
+     */
+    void eqUpdate();
+
 private slots:
     /**
      * Sets up the Phonon system
@@ -284,6 +319,7 @@ private:
 
     QPointer<Phonon::MediaObject>       m_media;
     QPointer<Phonon::VolumeFaderEffect> m_preamp;
+    QPointer<Phonon::Effect>            m_equalizer;
     QPointer<Phonon::AudioOutput>       m_audio;
     QPointer<Phonon::VolumeFaderEffect> m_fader;
     QPointer<Phonon::MediaController>   m_controller;

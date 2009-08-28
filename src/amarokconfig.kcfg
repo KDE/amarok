@@ -245,25 +245,50 @@
         <label>Whether to fade out when exiting the program.</label>
         <default>true</default>
     </entry>
-    <entry key="Equalizer Enabled" type="Bool">
-        <label>Enables the equalizer plugin</label>
+    <entry key="EqualizerMode" type="Int">
+        <label>Equalizer mode - 0 = off, 1 to n = preset no</label>
         <whatsthis>When enabled, an equalizer plugin filters the audio stream.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Equalizer Preamp" type="Int">
-        <label>Equalizer pre-amplification value, range -100..100, 0 is normal.</label>
-        <default>0</default>
-        <min>-100</min>
-        <max>100</max>
+    <entry key="EqualizerGains" type="IntList">
+        <label>11 Equalizer gains include pre-amp, range -100..100, 0 is normal.</label>
+        <default>0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0</default>
     </entry>
-    <entry key="Equalizer Gains" type="IntList">
-        <label>Band gains for equalizer, 10 values, range -100..100, 0 is normal.</label>
-        <default>0, 0, 0, 0, 0, 0, 0, 0, 0, 0</default>
+    <entry key="EqualizerPresetsNames" type="StringList">
+        <label>List with user equalizer preset names</label>
     </entry>
-    <entry key="Equalizer Preset" type="String">
-        <label>Equalizer preset name.</label>
-        <default>Zero</default>
+    <entry key="EqualizerPresestValues" type="IntList">
+        <label>List with user presets values</label>
     </entry>
+    <entry key="DefEqualizerPresetsNames" type="StringList">
+        <label>List with user equalizer preset names</label>
+        <default>Manual,Classical,Club,Dance,Full Bass,Full Treble,Full Bass +  Treble,Laptop/Headphones,Large Hall,Live,Party,Pop,Reggae,Rock,Soft,Ska,Soft Rock,Techno,Zero</default>  
+    </entry>
+    <entry key="DefEqualizerPresestValues" type="IntList">
+        <default>
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, <!-- Manual -->
+        0, 0, 0, 0, 0, 0, 0, -40, -40, -40, -50, <!-- Classical -->
+        0, 0, 0, 20, 30, 30, 30, 20, 0, 0, 0, <!-- Club -->
+        -10, 50, 35, 10, 0, 0, -30, -40, -40, 0, 0, <!-- Dance -->
+        0, 29, 40, 23, 15, 0, 0, 0, 0, 0, 0, <!-- Full Bass -->
+        -83, -50, -50, -50, -25, 15, 55, 80, 80, 80, 85, <!-- Full Treble -->
+        -41, 35, 30, 0, -40, -25, 10, 45, 55, 60, 60, <!-- Full Bass +  Treble -->
+        -16, 25, 50, 25, -20, 0, -30, -40, -40, 0, 0, <!-- Laptop/Headphones -->
+        -25, 50, 50, 30, 30, 0, -25, -25, -25, 0, 0, <!-- Large Hall -->
+        0, -25, 0, 20, 25, 30, 30, 20, 15, 15, 10, <!-- Live -->
+        0, 35, 35, 0, 0, 0, 0, 0, 0, 35, 35, <!-- Party -->
+        -15, -10, 25, 35, 40, 25, -5, -15, -15, -10, -10, <!-- Pop -->
+        0, 0, 0, -5, -30, 0, -35, -35, 0, 0, 0, <!-- Reggae -->
+        -28, 40, 25, -30, -40, -20, 20, 45, 55, 55, 55, <!-- Rock -->
+        -33, 25, 10, -5, -15, -5, 20, 45, 50, 55, 60, <!-- Soft -->
+        -29, -15, -25, -25, -5, 20, 30, 45, 50, 55, 50, <!-- Ska -->
+        0, 20, 20, 10, -5, -25, -30, -20, -5, 15, 45, <!-- Soft Rock -->
+        -26, 40, 30, 0, -30, -25, 0, 40, 50, 50, 45, <!-- Techno -->
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 <!-- Zero -->
+        </default>
+        <label>List with user presets values</label>
+    </entry>
+    
     <entry key="Replay Gain Mode" type="Enum">
         <label>The mode for adjusting playback volume.</label>
         <whatsthis>Whether to adjust the volume of tracks to make them sound the same volume, and if so whether to make the adjustments per-track or per-album.</whatsthis>
