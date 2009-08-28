@@ -212,7 +212,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         }
 
         m_authorListWidget = new OcsPersonListWidget( d->aboutData->authors(), m_ocsData.authors(), OcsPersonItem::Author, m_authorWidget );
-        connect( m_authorListWidget, SIGNAL( switchedToOcs() ), m_showOcsAuthorButton, SLOT( hide() ) );
+        connect( m_authorListWidget, SIGNAL( switchedToOcs() ), m_showOcsAuthorButton, SLOT( stop() ) );
+        connect( m_authorListWidget, SIGNAL( switchedToOcs() ), m_showOcsAuthorButton, SLOT( fold() ) );
 
         authorLayout->addWidget( m_authorListWidget );
         authorLayout->setMargin( 0 );
@@ -239,7 +240,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
         creditLayout->addWidget( m_showOcsCreditButton );
 
         m_creditListWidget = new OcsPersonListWidget( d->aboutData->credits(), m_ocsData.credits(), OcsPersonItem::Contributor, m_creditWidget );
-        connect( m_creditListWidget, SIGNAL( switchedToOcs() ), m_showOcsCreditButton, SLOT( hide() ) );
+        connect( m_creditListWidget, SIGNAL( switchedToOcs() ), m_showOcsCreditButton, SLOT( stop() ) );
+        connect( m_creditListWidget, SIGNAL( switchedToOcs() ), m_showOcsCreditButton, SLOT( fold() ) );
 
         creditLayout->addWidget( m_creditListWidget );
         creditLayout->setMargin( 0 );

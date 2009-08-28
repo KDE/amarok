@@ -81,10 +81,13 @@ OcsPersonItem::init()
     m_iconsBar->setIconSize( QSize( 22, 22 ) );
     m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
 
-    KAction *email = new KAction( KIcon( "internet-mail" ), i18n("Email contributor"), this );
-    email->setToolTip( m_person->emailAddress() );
-    email->setData( QString( "mailto:" + m_person->emailAddress() ) );
-    m_iconsBar->addAction( email );
+    if( !m_person->emailAddress().isEmpty() )
+    {
+        KAction *email = new KAction( KIcon( "internet-mail" ), i18n("Email contributor"), this );
+        email->setToolTip( m_person->emailAddress() );
+        email->setData( QString( "mailto:" + m_person->emailAddress() ) );
+        m_iconsBar->addAction( email );
+    }
 
     if( !m_person->webAddress().isEmpty() )
     {
