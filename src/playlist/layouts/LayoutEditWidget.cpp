@@ -37,7 +37,7 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     connect ( m_dragstack, SIGNAL( focussed(QWidget*) ), this, SIGNAL( focussed(QWidget*) ) );
     connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( changed() ) );
     
-    m_showCoverCheckBox = new QCheckBox( i18n( "Show Cover" ) , this );
+    m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
 }
 
 
@@ -52,7 +52,7 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
     int rowCount = config.rows();
 
     delete m_showCoverCheckBox;
-    m_showCoverCheckBox = new QCheckBox( i18n( "Show Cover" ) , this );
+    m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
     m_showCoverCheckBox->setChecked( config.showCover() );
     connect ( m_showCoverCheckBox, SIGNAL( stateChanged( int ) ), this, SIGNAL( changed() ) );
 
