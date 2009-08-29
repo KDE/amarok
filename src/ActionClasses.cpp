@@ -388,13 +388,13 @@ ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *pare
 EqualizerAction::EqualizerAction( KActionCollection *ac, QObject *parent ) :
     SelectAction( i18n( "&Equalizer" ), &AmarokConfig::setEqualizerMode, ac, "equalizer_mode", parent )
 {
-    NewList();
-    UpdateContent();
+    newList();
+    updateContent();
     connect( this, SIGNAL( triggered( int ) ), this, SLOT( actTrigg( int ) ) );
 }
 
 void
-EqualizerAction::UpdateContent() //SLOT
+EqualizerAction::updateContent() //SLOT
 {
     blockSignals( true );
     setCurrentItem( AmarokConfig::equalizerMode() );
@@ -402,7 +402,7 @@ EqualizerAction::UpdateContent() //SLOT
 }
 
 void
-EqualizerAction::NewList() //SLOT
+EqualizerAction::newList() //SLOT
 {
     if( !The::engineController()->isEqSupported() )
     {
@@ -446,15 +446,12 @@ EqualizerAction::eqCfgGetPresetVal( int mPresetNo )
     QString mPresetName = eqGlobalList().at(mPresetNo);
     int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
     int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
-    if( idUsr >= 0 )
-    {
-        mPresetVal = AmarokConfig::equalizerPresestValues().mid( idUsr*11,11 );
-    }
-    else if( idDef >= 0)
-    {
 
+    if( idUsr >= 0 )
+        mPresetVal = AmarokConfig::equalizerPresestValues().mid( idUsr*11,11 );
+    else if( idDef >= 0)
         mPresetVal = AmarokConfig::defEqualizerPresestValues().mid( idDef*11,11 );
-    }
+
     return mPresetVal;
 }
 

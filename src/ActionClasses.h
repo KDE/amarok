@@ -65,9 +65,7 @@ namespace Amarok
     {
         public:
             ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCollection* const ac, const char *name, QObject *parent );
-
             virtual void setChecked( bool b );
-
             virtual void setEnabled( bool b );
 
         private:
@@ -124,16 +122,20 @@ namespace Amarok
     class EqualizerAction : public SelectAction
     {
         Q_OBJECT
+
         public:
             EqualizerAction( KActionCollection *ac, QObject* );
+
         public slots:
-            void UpdateContent();
-            void NewList();
+            void updateContent();
+            void newList();
+
         private slots:
             void actTrigg( int index );
+
         private:
             QStringList eqGlobalList();
-            QList<int> eqCfgGetPresetVal ( int mPresetNo );
+            QList<int> eqCfgGetPresetVal( int mPresetNo );
     };
 
     class BurnMenu : public KMenu

@@ -242,13 +242,13 @@ PlaybackConfig::eqDeletePreset() //SLOT
         eqPresets->addItem( i18nc( "State, as in, disabled", "Off" ) );
         eqPresets->addItems( eqGlobalList() );
         eqPresets->blockSignals( false );
-        ( (Amarok::EqualizerAction*) Amarok::actionCollection()->action( "equalizer_mode") )->NewList();
+        ( (Amarok::EqualizerAction*) Amarok::actionCollection()->action( "equalizer_mode") )->newList();
         eqPresets->setCurrentIndex( 1 );
     }
     else
     {
-        KMessageBox::detailedSorry( this, i18n( "Can't delete this preset !" ),
-                                            i18n( "Default presets can't be deleted." ),
+        KMessageBox::detailedSorry( this, i18n( "Can't delete this preset" ),
+                                            i18n( "Default presets can not be deleted" ),
                                             i18n( "Error deleting preset" ) );
     }
 }
@@ -259,8 +259,8 @@ PlaybackConfig::eqRestorePreset() //SLOT
     QString mPresetSelected = eqPresets->currentText();
     if( !eqCfgRestorePreset( mPresetSelected ) )
     {    
-        KMessageBox::detailedSorry( this, i18n( "Can't restore this preset !" ),
-                                        i18n( "Only default presets can be restored." ),
+        KMessageBox::detailedSorry( this, i18n( "Can not restore this preset" ),
+                                        i18n( "Only default presets can be restored" ),
                                         i18n( "Error restoring preset" ) );
         return;
     }
@@ -278,7 +278,7 @@ PlaybackConfig::eqSavePreset() //SLOT
     QString mPresetSelected = eqPresets->currentText();
     if( mPresetSelected == QLatin1String( "Manual" ) )
     {
-        KMessageBox::detailedSorry( this, i18n( "Can't save this preset !" ),
+        KMessageBox::detailedSorry( this, i18n( "Can not save this preset" ),
                                         i18n( "Preset 'Manual' is reserved for momentary settings.\n\
                                                Please choose different name and try again." ),
                                         i18n( "Error saving preset" ) );
@@ -292,7 +292,7 @@ PlaybackConfig::eqSavePreset() //SLOT
     eqPresets->clear();
     eqPresets->addItem( i18nc( "State, as in, disabled", "Off" ) );
     eqPresets->addItems( eqGlobalList() );
-    ( (Amarok::EqualizerAction*) Amarok::actionCollection()->action( "equalizer_mode") )->NewList();
+    ( (Amarok::EqualizerAction*) Amarok::actionCollection()->action( "equalizer_mode") )->newList();
     eqPresets->blockSignals( false );
     eqPresets->setCurrentIndex( eqPresets->findText( mPresetSelected ) );
 }
@@ -334,9 +334,8 @@ PlaybackConfig::eqCfgRestorePreset( QString mPresetName )
           QList<int> mNewValues = AmarokConfig::equalizerPresestValues();
           mNewNames.removeAt( idUsr );
           for( int it = 0; it <= 10; it++ )
-          {
               mNewValues.removeAt( 11*idUsr );
-          }
+
           AmarokConfig::setEqualizerPresetsNames( mNewNames );
           AmarokConfig::setEqualizerPresestValues( mNewValues );
           return true;
@@ -361,9 +360,7 @@ PlaybackConfig::eqCfgSetPresetVal( QString & mPresetName, QList<int> & mPresetVa
     else
     {
         for( int it = 0; it <= 10; it++ )
-        {
-            mNewValues.replace( idUsr*11+it,mPresetValues.value(it) );
-        }
+            mNewValues.replace( idUsr * 11 + it, mPresetValues.value(it) );
     }
     AmarokConfig::setEqualizerPresetsNames( mNewNames );
     AmarokConfig::setEqualizerPresestValues( mNewValues );
@@ -379,14 +376,10 @@ PlaybackConfig::eqCfgGetPresetVal( QString mPresetName )
       
       QList<int> mPresetVal;
       if( idUsr >= 0 )
-      {
-          mPresetVal = AmarokConfig::equalizerPresestValues().mid( idUsr*11,11 );
-      }
+          mPresetVal = AmarokConfig::equalizerPresestValues().mid( idUsr * 11, 11 );
       else if( idDef >= 0)
-      {
-          
-          mPresetVal = AmarokConfig::defEqualizerPresestValues().mid( idDef*11,11 );
-      }
+          mPresetVal = AmarokConfig::defEqualizerPresestValues().mid( idDef * 11, 11 );
+
       return mPresetVal;
 }
 
