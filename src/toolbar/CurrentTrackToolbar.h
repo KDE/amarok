@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,8 +23,6 @@
 
 /**
 A toolbar that contains the CurrentTrackActions of the currently playing track.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class CurrentTrackToolbar : public QToolBar, public EngineObserver
 {
@@ -38,7 +36,6 @@ public:
 
 protected:
     void handleAddActions();
-
 };
 
 #endif

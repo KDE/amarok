@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,9 +20,10 @@
 #include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 
+
 CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )
- : QToolBar( parent )
- , EngineObserver( The::engineController() ) 
+    : QToolBar( parent )
+    , EngineObserver( The::engineController() )
 {
     setToolButtonStyle( Qt::ToolButtonIconOnly );
     setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
@@ -30,10 +31,8 @@ CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )
     setContentsMargins( 0, 0, 0, 0 );
 }
 
-
 CurrentTrackToolbar::~CurrentTrackToolbar()
-{
-}
+{}
 
 void CurrentTrackToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
@@ -57,7 +56,7 @@ void CurrentTrackToolbar::handleAddActions()
     foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
         addAction( action );
     
-    if ( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    if( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
     {
         Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
         if( cac )
