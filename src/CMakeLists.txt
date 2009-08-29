@@ -576,6 +576,7 @@ set(amaroklib_LIB_SRCS
     Systray.cpp
     toolbar/CurrentTrackToolbar.cpp
     toolbar/MainToolbarNG.cpp
+    toolbar/VolumePopupButton.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp

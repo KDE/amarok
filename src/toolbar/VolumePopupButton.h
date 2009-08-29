@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,37 +13,37 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef MAINTOOLBARNG_H
-#define MAINTOOLBARNG_H
 
-#include "CurrentTrackToolbar.h"
+#ifndef VOLUMEPOPUPBUTTON_H
+#define VOLUMEPOPUPBUTTON_H
 
-#include <QToolBar>
 
-class QAction;
-class QLabel;
-class QMenu;
-class QSlider;
-class QToolButton;
+#include "EngineObserver.h"
 
-/**
-An new toolbar implementation.
+#include "QAction"
+#include "QLabel"
+#include "QMenu"
+#include "QSlider"
+#include "QToolButton"
 
-	@author 
-*/
-class MainToolbarNG : public QToolBar, public EngineObserver
+class VolumePopupButton : public QToolButton, public EngineObserver
 {
     Q_OBJECT
 public:
+    VolumePopupButton( QWidget * parent );
     
-    MainToolbarNG( QWidget * parent );
-    ~MainToolbarNG();
+protected slots:
+    void clicked();
 
 private:
+    void engineVolumeChanged( int newVolume );
+    void engineMuteStateChanged( bool muted );
 
-    CurrentTrackToolbar * m_currentTrackToolbar;
-
+    QLabel * m_volumeLabel;
+    QToolButton * m_volumeToolButton;
+    QMenu * m_volumeMenu;
+    QSlider * m_volumeSlider;
+    QAction * m_muteAction;
 };
 
-#endif
+#endif // VOLUMEPOPUPBUTTON_H
