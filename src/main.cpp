@@ -95,6 +95,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "kwwii", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Kevin Funk"), ki18n(( "Developer, Website theme (KRF)" )), "krf@electrostorm.net" );
         ocsData.addCredit( "krf", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Kuba Serafinowski"), ki18n(( "Rokymoter" )), "zizzfizzix@gmail.com" );
+        ocsData.addCredit( "zizzfizzix", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Lee Olson"), ki18n(( "Artwork" )), "leetolson@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Ljubomir Simin"), ki18n(( "Rokymoter (ljubomir)" )), "ljubomir.simin@gmail.com" );
@@ -125,6 +127,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Thomas Lübking"), ki18n(( "Developer" )), "thomas.luebking@web.de" );
         ocsData.addCredit( "thomas12777", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Valentin Rouet"), ki18n(( "Developer" )), "v.rouet@gmail.com" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Wade Olson"), ki18n(( "Splash screen artist" )), "wade@corefunction.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("William Viana Soares"), ki18n(( "Context view" )), "vianasw@gmail.com" );
