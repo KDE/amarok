@@ -46,10 +46,9 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
 {
     setObjectName( "Main Toolbar NG" );
 
-    setFixedHeight( 32 );
     setIconSize( QSize( 28, 28 ) );
     layout()->setSpacing( 0 );
-    setContentsMargins( 0, 0, 0,0 );
+    setContentsMargins( 0, 0, 0, 0 );
 
     addAction( Amarok::actionCollection()->action( "prev" ) );
     addAction( Amarok::actionCollection()->action( "play_pause" ) );
@@ -67,7 +66,11 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     m_volumeToolButton->setIcon( KIcon( "audio-volume-high" ) );
     m_volumeToolButton->setPopupMode( QToolButton::InstantPopup );
 
-    addWidget( m_volumeToolButton );
+    QToolBar *volumeToolBar = new QToolBar( this );
+    volumeToolBar->setIconSize( QSize( 22, 22 ) );
+    volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
+    volumeToolBar->addWidget( m_volumeToolButton );
+    addWidget( volumeToolBar );
 
     //create the volume popup
     m_volumeMenu = new QMenu( 0 );
