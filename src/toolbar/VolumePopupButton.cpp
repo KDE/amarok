@@ -76,6 +76,9 @@ void VolumePopupButton::engineVolumeChanged( int newVolume )
 
     m_volumeLabel->setText( QString::number( newVolume ) + "%" );
     m_volumeSlider->setValue( newVolume );
+
+    //make sure to uncheck mute toolbar when moving slider
+    m_muteAction->setChecked( false );
 }
 
 void VolumePopupButton::engineMuteStateChanged( bool muted )
