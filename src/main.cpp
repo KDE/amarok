@@ -101,6 +101,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "ljubomir", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Max Howell"), ki18n(( "Developer, Vision" )), "max.howell@methylblue.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Mikko Caldara"), ki18n(( "Bug triaging and sanitizing" )), "mikko.cal@gmail.com" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Myriam Schweingruber"), ki18n(( "Rokymoter, bug squashing (Mamarok)" )), "myriam@kde.org" );
         ocsData.addCredit( "Mamarok", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Nuno Pinheiro"), ki18n(( "Artwork" )), "nuno@oxygen-icons.org" );
