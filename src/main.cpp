@@ -121,6 +121,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Sven Krohlas"), ki18n(( "Rokymoter (sven423)" )), "sven@asbest-online.de" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Thomas Lübking"), ki18n(( "Developer" )), "thomas.luebking@web.de" );
+        ocsData.addCredit( "thomas12777", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Wade Olson"), ki18n(( "Splash screen artist" )), "wade@corefunction.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("William Viana Soares"), ki18n(( "Context view" )), "vianasw@gmail.com" );

@@ -143,6 +143,8 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     aboutLayout->addWidget(aboutLabel);
 
     const int licenseCount = aboutData->licenses().count();
+    debug()<< "About to show license stuff";
+    debug()<< "License count is"<<licenseCount;
     for (int i = 0; i < licenseCount; ++i) {
         const KAboutLicense &license = aboutData->licenses().at(i);
 
@@ -155,6 +157,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
 
         aboutLayout->addWidget(showLicenseLabel);
     }
+    debug()<<"License widget added";
 
     aboutLayout->addStretch();
 
