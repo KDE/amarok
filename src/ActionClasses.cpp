@@ -407,9 +407,11 @@ EqualizerAction::newList() //SLOT
     if( !The::engineController()->isEqSupported() )
     {
         setEnabled( false );
+        setToolTip( i18n("Your current setup does not support the equalizer feature") );
         return;
     }
     setEnabled( true );
+    setToolTip( QString() );
     setItems( QStringList() << i18nc( "State, as in, disabled", "&Off" ) << eqGlobalList() );
 }
 
