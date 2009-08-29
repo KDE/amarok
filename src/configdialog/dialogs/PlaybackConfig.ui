@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>801</width>
-    <height>706</height>
+    <width>632</width>
+    <height>561</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_5">
@@ -232,7 +232,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_11">
          <property name="horizontalSpacing">
-          <number>5</number>
+          <number>0</number>
          </property>
          <item row="0" column="1">
           <widget class="QGroupBox" name="groupBox_4">
@@ -419,7 +419,7 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>40</width>
+             <width>0</width>
              <height>20</height>
             </size>
            </property>
