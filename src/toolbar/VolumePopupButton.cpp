@@ -18,6 +18,7 @@
 
 #include "ActionClasses.h"
 #include "Amarok.h"
+#include "Debug.h"
 #include "EngineController.h"
 
 #include "KHBox"
@@ -102,6 +103,19 @@ void VolumePopupButton::clicked()
         QPoint pos( 0, height() );
         m_volumeMenu->exec(  mapToGlobal( pos ) );
     }
+}
+
+void VolumePopupButton::wheelEvent( QWheelEvent * event )
+{
+    DEBUG_BLOCK
+    debug() << "delta: " << event->delta();
+    event->accept();
+
+    EngineController* const ec = The::engineController();
+    int volume = ec->volume();
+
+    volume = qBound( 0, volume + event->delta() / 40 , 100 );
+    ec->setVolume( volume );
 }
 
 #include "VolumePopupButton.moc"

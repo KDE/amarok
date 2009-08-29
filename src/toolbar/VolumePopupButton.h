@@ -25,6 +25,7 @@
 #include "QMenu"
 #include "QSlider"
 #include "QToolButton"
+#include "QWheelEvent"
 
 class VolumePopupButton : public QToolButton, public EngineObserver
 {
@@ -34,6 +35,7 @@ public:
     
 protected slots:
     void clicked();
+    void wheelEvent( QWheelEvent * event );
 
 private:
     void engineVolumeChanged( int newVolume );
