@@ -25,9 +25,12 @@
 #include "Debug.h"
 #include "MemoryQueryMaker.h"
 #include "Reader.h"
+#include "statusbar/StatusBar.h"
 
 #include <QStringList>
 #include <QTimer>
+
+#include <KLocale>
 
 #include <dnssd/remoteservice.h>
 #include <dnssd/servicebase.h>
@@ -77,6 +80,7 @@ DaapCollectionFactory::connectToManualServers()
             
         QString host = current.first();
         quint16 port = current.last().toUShort();
+        The::statusBar()->longMessage( i18n( "Loading remote collection from host %1", host), StatusBar::Information );
 
         int lookup_id = QHostInfo::lookupHost( host, this, SLOT( resolvedManualServerIp(QHostInfo)));
         m_lookupHash.insert( lookup_id, port );
@@ -92,13 +96,9 @@ DaapCollectionFactory::serverOffline( DNSSD::RemoteService::Ptr service )
     {
         DaapCollection *coll = m_collectionMap[ key ];
         if( coll )
-        {
             coll->serverOffline();  //collection will be deleted by collectionmanager
-        }
         else
-        {
             warning() << "collection already null";
-        }
         
         m_collectionMap.remove( key );
 
@@ -119,7 +119,6 @@ DaapCollectionFactory::foundDaap( DNSSD::RemoteService::Ptr service )
 void
 DaapCollectionFactory::resolvedDaap( bool success )
 {
-  //  DEBUG_BLOCK
     const DNSSD::RemoteService* service =  dynamic_cast<const DNSSD::RemoteService*>(sender());
     if( !success || !service ) return;
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type();
@@ -295,6 +294,7 @@ DaapCollection::loadedDataFromServer()
 void
 DaapCollection::parsingFailed()
 {
+    DEBUG_BLOCK
     emit remove();
 }
 

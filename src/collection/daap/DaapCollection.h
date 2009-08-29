@@ -103,7 +103,6 @@ class DaapCollection : public Amarok::Collection, public MemoryCollection
         QString m_ip;
 
         Daap::Reader *m_reader;
-
 };
 
 #endif

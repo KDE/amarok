@@ -100,6 +100,8 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
+    * Improved performance and decreased memory usage when loading music shares
+      (DAAP collections). Patch thanks to Duns <dunsens@web.de>. (BR 173048)
     * Changing Amarok's settings no longer removes album covers from playlist.
       (BR 202258)
     * Fixed crash on startup if another Amarok instance was still loading.

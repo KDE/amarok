@@ -23,6 +23,7 @@
 
 #include <kurl.h>
 #include <threadweaver/Job.h>
+#include "MemoryCollection.h"
 
 class QString;
 
@@ -92,6 +93,9 @@ namespace Daap
             static Map parse( QDataStream &raw, uint containerLength, bool first = false );
             static void addElement( Map &parentMap, char* tag, QVariant element ); //! supporter function for parse
             static quint32 getTagAndLength( QDataStream &raw, char tag[5] );
+            void addTrack( const QString& itemId, const QString& title, const QString& artist, const QString& composer,
+                           const QString& commment, const QString& album, const QString& genre, const QString& year,
+                           const QString& format, qint32 trackNumber, qint32 songTime );
 
             static QMap<QString, Code> s_codes;
 
@@ -102,7 +106,13 @@ namespace Daap
             QString m_databaseId;
             int m_sessionId;
             QString m_password;
-
+            TrackMap m_trackMap;
+            ArtistMap m_artistMap;
+            AlbumMap m_albumMap;
+            GenreMap m_genreMap;
+            ComposerMap m_composerMap;
+            YearMap m_yearMap;
+            int m_loadedTracks;
     };
 
     class WorkerThread : public ThreadWeaver::Job
