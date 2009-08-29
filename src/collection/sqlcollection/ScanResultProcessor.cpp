@@ -99,7 +99,6 @@ ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, 
 void
 ScanResultProcessor::doneWithImages()
 {
-    DEBUG_BLOCK
     if( m_imageMap.isEmpty() )
         return;
 
