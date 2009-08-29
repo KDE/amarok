@@ -242,7 +242,7 @@ PlaybackConfig::eqDeletePreset() //SLOT
         eqPresets->addItem( i18nc( "State, as in, disabled", "Off" ) );
         eqPresets->addItems( eqGlobalList() );
         eqPresets->blockSignals( false );
-        ( (Amarok::EqualizerAction*) Amarok::actionCollection()->action( "equalizer_mode") )->newList();
+        static_cast<Amarok::EqualizerAction*>( Amarok::actionCollection()->action( "equalizer_mode") )->newList();
         eqPresets->setCurrentIndex( 1 );
     }
     else
