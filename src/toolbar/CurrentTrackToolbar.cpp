@@ -37,11 +37,15 @@ CurrentTrackToolbar::~CurrentTrackToolbar()
 
 void CurrentTrackToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
+    Q_UNUSED( state )
+    Q_UNUSED( oldState )
+
     handleAddActions();
 }
 
 void CurrentTrackToolbar::engineNewMetaData( const QHash< qint64, QString > & newMetaData, bool trackChanged )
 {
+    //FIXME implement or remove
 }
 
 void CurrentTrackToolbar::handleAddActions()
@@ -65,7 +69,6 @@ void CurrentTrackToolbar::handleAddActions()
         }
         delete cac;
     }
-
 }
 
 
