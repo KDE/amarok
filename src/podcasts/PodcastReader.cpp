@@ -104,6 +104,7 @@ void
 PodcastReader::slotAddData( KIO::Job *job, const QByteArray &data )
 {
     DEBUG_BLOCK
+    Q_UNUSED( job )
 
     QXmlStreamReader::addData( data );
     //parse some more data
