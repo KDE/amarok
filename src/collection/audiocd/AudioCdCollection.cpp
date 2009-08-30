@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "AudioCdCollection.h"
 
 #include "AudioCdCollectionCapability.h"
@@ -47,8 +47,6 @@ using namespace Meta;
 
 AudioCdCollectionFactory::AudioCdCollectionFactory()
     : MediaDeviceCollectionFactory<AudioCdCollection>( new AudioCdConnectionAssistant() )
-    //, m_collection( 0 )
-    //, m_currentUid( QString() )
 {
     DEBUG_BLOCK
 }
@@ -90,7 +88,7 @@ AudioCdCollection::readCd()
     m_cdInfoJob =  KIO::storedGet(  KUrl( "audiocd:/Information/CDDB Information.txt" ), KIO::NoReload, KIO::HideProgressInfo );
     connect( m_cdInfoJob, SIGNAL( result( KJob * ) )
             , this, SLOT( infoFetchComplete( KJob *) ) );
-    
+
 }
 
 void
@@ -107,7 +105,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     {
 
         QString cddbInfo = m_cdInfoJob->data();
-        
+
         KEncodingProber prober;
         KEncodingProber::ProberState result = prober.feed( m_cdInfoJob->data() );
         if( result != KEncodingProber::NotMe )
@@ -170,7 +168,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
         addGenre( GenrePtr::staticCast( genrePtr ) );
 
         m_discCddbId = "unknown";
-        
+
         startIndex = cddbInfo.indexOf( "DISCID=", 0 );
         if ( startIndex != -1 )
         {
@@ -216,7 +214,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
                 QString baseFileName = m_fileNamePattern;
                 debug() << "Track Base File Name (before): " << baseFileName;
-                
+
                 baseFileName.replace( "%{title}", trackName, Qt::CaseInsensitive );
                 baseFileName.replace( "%{number}", padding  + QString::number( i + 1 ), Qt::CaseInsensitive );
                 baseFileName.replace( "%{albumtitle}", album, Qt::CaseInsensitive );
@@ -235,7 +233,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
                 trackPtr->setTrackNumber( i + 1 );
                 trackPtr->setFileNameBase( baseFileName );
-                
+
                 addTrack( TrackPtr::staticCast( trackPtr ) );
 
                 artistPtr->addTrack( trackPtr );
@@ -259,7 +257,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
                 yearPtr->addTrack( trackPtr );
                 trackPtr->setYear( yearPtr );
-                
+
             }
         }
 
@@ -383,7 +381,7 @@ AudioCdCollection::noInfoAvailable()
     m_discCddbId = "unknown";
 
     //MediaDeviceMonitor::instance()->setCurrentCdId( m_discCddbId );
-            
+
     QString artist = i18n( "Unknown" );
     QString album = i18n( "Unknown" );
     QString year = i18n( "Unknown" );
@@ -410,12 +408,12 @@ AudioCdCollection::noInfoAvailable()
         debug() << "got track: " << "audiocd:/" + trackName + ".wav";
 
         QString baseUrl = "audiocd:/" + m_discCddbId + '/' + QString::number( i );
-        
+
         AudioCdTrackPtr trackPtr = AudioCdTrackPtr( new AudioCdTrack( this, trackName, baseUrl ) );
 
         trackPtr->setTrackNumber( i );
         trackPtr->setFileNameBase( trackName );
-                
+
         addTrack( TrackPtr::staticCast( trackPtr ) );
 
         artistPtr->addTrack( trackPtr );
@@ -437,7 +435,7 @@ AudioCdCollection::noInfoAvailable()
 
     emit ( updated() );
     updateProxyTracks();
-    
+
 }
 
 void
@@ -468,19 +466,19 @@ AudioCdCollection::trackForUrl( const KUrl & url )
 
     if ( !m_discCddbId.isEmpty() )
     {
-    
+
         QString urlString = url.url().remove( "audiocd:/" );
 
         QStringList parts = urlString.split( '/' );
 
         if ( parts.count() != 2 )
             return TrackPtr();
-            
+
         QString discId = parts.at( 0 );
 
         if ( discId != m_discCddbId )
             return TrackPtr();
-        
+
         int trackNumber = parts.at( 1 ).toInt();
 
         foreach( TrackPtr track, trackMap().values() )
@@ -519,12 +517,12 @@ AudioCdCollection::updateProxyTracks()
 
         if ( parts.count() != 2 )
             continue;
-            
+
         QString discId = parts.at( 0 );
 
         if ( discId != m_discCddbId )
             continue;
-        
+
         int trackNumber = parts.at( 1 ).toInt();
 
         foreach( TrackPtr track, trackMap().values() )

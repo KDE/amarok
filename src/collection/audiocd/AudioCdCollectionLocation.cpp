@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "AudioCdCollectionLocation.h"
 
 #include "AudioCdMeta.h"
@@ -42,7 +42,7 @@ void AudioCdCollectionLocation::getKIOCopyableUrls( const Meta::TrackList & trac
         QString path = m_collection->copyableBasePath() + cdTrack->fileNameBase() + '.' + m_collection->encodingFormat();
 
         debug() << "adding path: " << path;
-        
+
         resultMap.insert( trackPtr, KUrl( path ) );
 
     }
@@ -50,19 +50,22 @@ void AudioCdCollectionLocation::getKIOCopyableUrls( const Meta::TrackList & trac
     slotGetKIOCopyableUrlsDone( resultMap );
 }
 
-void AudioCdCollectionLocation::showSourceDialog(const Meta::TrackList & tracks, bool removeSources)
+void AudioCdCollectionLocation::showSourceDialog( const Meta::TrackList &tracks, bool removeSources )
 {
     DEBUG_BLOCK
+    Q_UNUSED( tracks )
+    Q_UNUSED( removeSources )
     FormatSelectionDialog * dlg = new FormatSelectionDialog();
 
     connect( dlg, SIGNAL( formatSelected( int ) ), this, SLOT( onFormatSelected( int ) ) );
     connect( dlg, SIGNAL( rejected () ), this, SLOT( onCancel() ) );
-    
+
     dlg->show();
 }
 
-void AudioCdCollectionLocation::formatSelected(int format)
+void AudioCdCollectionLocation::formatSelected( int format )
 {
+    Q_UNUSED( format )
 }
 
 void AudioCdCollectionLocation::formatSelectionCancelled()
