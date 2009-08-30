@@ -24,16 +24,14 @@
 #include <QModelIndex>
 
 /**
-An inline editor for a playlist item. Relies on the same item layout configuration as is used by the delegate, and strives to have a simmilar look.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    An inline editor for a playlist item. Relies on the same item layout configuration as is used by the delegate, and strives to have a simmilar look.
 */
 class InlineEditorWidget : public KVBox
 {
     Q_OBJECT
+
 public:
     InlineEditorWidget( QWidget * parent, const QModelIndex &index, Playlist::PlaylistLayout layout, int groupMode );
-
     ~InlineEditorWidget();
 
     QMap<int, QString> changedValues();
@@ -46,7 +44,6 @@ protected slots:
     void ratingValueChanged();
         
 private:
-
     void createChildWidgets();
     QPoint centerImage( const QPixmap&, const QRectF& ) const;
 
@@ -65,7 +62,6 @@ private:
     QMap<int, QString> m_changedValues;
 
     int m_headerHeight;
-
 };
 
 #endif

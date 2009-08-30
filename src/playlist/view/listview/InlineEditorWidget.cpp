@@ -21,7 +21,6 @@
 #include "SvgHandler.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 
-
 #include <kratingwidget.h>
 #include <KHBox>
 #include <KVBox>
@@ -40,12 +39,11 @@ const qreal InlineEditorWidget::MARGINBODY = 1.0;
 const qreal InlineEditorWidget::PADDING = 1.0;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index, PlaylistLayout layout, int groupMode )
- : KVBox( parent )
- , m_index( index )
- , m_layout( layout )
- , m_groupMode( groupMode )
+    : KVBox( parent )
+    , m_index( index )
+    , m_layout( layout )
+    , m_groupMode( groupMode )
 {
-
     setContentsMargins( 0, 0, 0, 0 );
     setSpacing( 0 );
     setAutoFillBackground ( false );
@@ -186,7 +184,6 @@ void InlineEditorWidget::createChildWidgets()
             LayoutItemConfigRowElement element = row.element( j );
 
             int value = element.value();
-            int alignment = element.alignment();
 
             QModelIndex textIndex = m_index.model()->index( m_index.row(), value );
             QString text = textIndex.data( Qt::DisplayRole ).toString();
@@ -264,7 +261,6 @@ void InlineEditorWidget::createChildWidgets()
                      m_editorRoleMap.insert( edit, value );
                 }
             }
-
         }
     }
 }
@@ -272,7 +268,7 @@ void InlineEditorWidget::createChildWidgets()
 QPoint
 InlineEditorWidget::centerImage( const QPixmap& pixmap, const QRectF& rect ) const
 {
-    qreal pixmapRatio = ( qreal )pixmap.width() / ( qreal )pixmap.height();
+    const qreal pixmapRatio = ( qreal )pixmap.width() / ( qreal )pixmap.height();
 
     qreal moveByX = 0.0;
     qreal moveByY = 0.0;
@@ -288,10 +284,8 @@ InlineEditorWidget::centerImage( const QPixmap& pixmap, const QRectF& rect ) con
 void
 InlineEditorWidget::paintEvent( QPaintEvent * event )
 {
-
     QPainter painter( this );
     painter.drawPixmap( 0, 0, The::svgHandler()->renderSvgWithDividers( "track", width(), height(), "track" ) );
-
 
     //if this is an editor for a head item, use the delegates paintItem function
     //to draw the head part, which currently cannot be edited this way
@@ -310,6 +304,7 @@ InlineEditorWidget::paintEvent( QPaintEvent * event )
 void InlineEditorWidget::editValueChanged()
 {
     DEBUG_BLOCK
+
     QObject * senderObject = sender();
 
     QLineEdit * edit = dynamic_cast<QLineEdit *>( senderObject );
@@ -323,6 +318,7 @@ void InlineEditorWidget::editValueChanged()
 void InlineEditorWidget::ratingValueChanged()
 {
     DEBUG_BLOCK
+
     QObject * senderObject = sender();
 
     KRatingWidget * edit = dynamic_cast<KRatingWidget *>( senderObject );
