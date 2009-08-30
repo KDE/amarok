@@ -107,7 +107,7 @@ DatabaseConfig::writeConfiguration()
 
 
 void
-DatabaseConfig::toggleExternalConfigAvailable( int checkBoxState ) //SLOT
+DatabaseConfig::toggleExternalConfigAvailable( const int checkBoxState ) //SLOT
 {
     const bool enableExternalConfig = checkBoxState != Qt::Checked;
 
@@ -120,26 +120,22 @@ DatabaseConfig::toggleExternalConfigAvailable( int checkBoxState ) //SLOT
 void
 DatabaseConfig::updateSQLQuery() //SLOT
 {
+    QString query;
+
     if( isSQLInfoPresent() )
     {
         // Query template:
         // GRANT ALL ON amarokdb.* TO 'amarokuser'@'localhost' IDENTIFIED BY 'mypassword'; FLUSH PRIVILEGES;
 
         // Don't print the actual password!
-        QString examplePassword = i18nc( "A default password for insertion into an example SQL command (so as not to print the real one). To be manually replaced by the user.",
-                                         "password" );
-
-        text_SQL->setPlainText( "GRANT ALL ON " + kcfg_DBName->text() + ".* " +
-                                "TO '" + kcfg_Username->text() + "'@'" + kcfg_Server->text() + "' " +
-                                "IDENTIFIED BY '" + examplePassword + "';\n" +
-                                "FLUSH PRIVILEGES;"
-                                );
+        const QString examplePassword = i18nc( "A default password for insertion into an example SQL command (so as not to print the real one). To be manually replaced by the user.", "password" );
+        query = QString( "GRANT ALL ON %1.* TO '%2'@'%3' IDENTIFIED BY '%4';\nFLUSH PRIVILEGES;" )
+                   .arg( kcfg_DBName->text() )
+                   .arg( kcfg_Username->text() )
+                   .arg( kcfg_Server->text() )
+                   .arg( examplePassword );
     }
-    else
-    {
-        text_SQL->setPlainText("");
-    }
-
+    text_SQL->setPlainText( query );
 }
 
 
