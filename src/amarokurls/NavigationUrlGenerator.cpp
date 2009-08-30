@@ -115,7 +115,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
 
             QString path = btc->browserName();
             if ( !btc->collectionName().isEmpty() )
-                path += ( "/" + btc->collectionName() );
+                path += ( '/' + btc->collectionName() );
             url.setPath( path );
 
             QString filter;
@@ -168,7 +168,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
             
             QString path = btc->browserName();
             if ( !btc->collectionName().isEmpty() )
-                path += ( "/" + btc->collectionName() );
+                path += ( '/' + btc->collectionName() );
             url.setPath( path );
 
             //debug() << "Path: " << url.path();

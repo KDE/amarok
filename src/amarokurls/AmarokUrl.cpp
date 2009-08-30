@@ -58,7 +58,7 @@ void AmarokUrl::initFromString( const QString & urlString )
     strippedUrlString = strippedUrlString.replace( "amarok://", "" );
 
     //seperate path from arguments
-    QStringList parts = strippedUrlString.split( "?" );
+    QStringList parts = strippedUrlString.split( '?' );
 
     QString commandAndPath = parts.at( 0 );
 
@@ -68,12 +68,12 @@ void AmarokUrl::initFromString( const QString & urlString )
 
     if ( !argumentsString.isEmpty() )
     {
-        parts = argumentsString.split( "&" );
+        parts = argumentsString.split( '&' );
         
         foreach( QString argument, parts )
         {
             
-            QStringList argParts = argument.split( "=" );
+            QStringList argParts = argument.split( '=' );
             debug() << "argument: " << argument << " unescaped: " << unescape( argParts.at( 1 ) );
             appendArg( argParts.at( 0 ), unescape( argParts.at( 1 ) ) );
         }
@@ -81,7 +81,7 @@ void AmarokUrl::initFromString( const QString & urlString )
 
     //get the command
 
-    parts = commandAndPath.split( "/" );
+    parts = commandAndPath.split( '/' );
     m_command = parts.takeFirst();
 
     m_path = parts.join( "/" );
@@ -120,22 +120,22 @@ QString AmarokUrl::url() const
 {
     QString url = "amarok://";
     url += m_command;
-    url += "/";
+    url += '/';
     url += escape( m_path );
 
-    if ( url.endsWith( "/" ) )
+    if ( url.endsWith( '/' ) )
         url.chop( 1 );
 
     if( m_arguments.size() > 0 )
     {
     
-        url += "?";
+        url += '?';
         foreach( QString argName, m_arguments.keys() )
         {
             url += argName;
-            url += "=";
+            url += '=';
             url += escape( m_arguments.value( argName ) );
-            url += "&";
+            url += '&';
         }
         url.chop( 1 );
     }

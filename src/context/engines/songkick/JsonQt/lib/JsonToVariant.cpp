@@ -342,7 +342,7 @@ namespace JsonQt
 
 		// Match any negation mark
 		if(tryConsume('-'))
-			data = "-";
+			data = '-';
 
 		// Grab the first digit...
 		QChar firstDigit = parseDigit();

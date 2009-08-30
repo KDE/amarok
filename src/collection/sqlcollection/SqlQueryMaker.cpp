@@ -407,13 +407,13 @@ SqlQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberC
     switch( compare )
     {
         case QueryMaker::Equals:
-            comparison = "=";
+            comparison = '=';
             break;
         case QueryMaker::GreaterThan:
-            comparison = ">";
+            comparison = '>';
             break;
         case QueryMaker::LessThan:
-            comparison = "<";
+            comparison = '<';
             break;
     }
 

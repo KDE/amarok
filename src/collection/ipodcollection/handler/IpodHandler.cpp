@@ -241,7 +241,7 @@ IpodHandler::init()
 
             // Now we stick this information into the SysInfo file
 
-            bool wrote = writeToSysInfoFile( "ModelNumStr: x" + modelnum + "\n" );
+            bool wrote = writeToSysInfoFile( "ModelNumStr: x" + modelnum + '\n' );
 
             if( !wrote )
             {

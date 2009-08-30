@@ -255,7 +255,7 @@ DatabaseUpdater::upgradeVersion4to5()
 
     for( i = columns.begin(); i != columns.end(); ++i )
     {
-        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ")" );
+        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ')' );
         m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
             " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL" );
     }

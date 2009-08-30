@@ -65,7 +65,7 @@ ViewUrlRunner::run( AmarokUrl url )
 
         QString sortPath = args.value( "sort" );
 
-        QStringList levels = sortPath.split( "-" );
+        QStringList levels = sortPath.split( '-' );
         foreach( QString level, levels )
         {
             if( level == QString( "Random" ) )
@@ -73,7 +73,7 @@ ViewUrlRunner::run( AmarokUrl url )
                 playlistWidget->sortWidget()->addLevel( level );
                 break;
             }
-            QStringList levelParts = level.split( "_" );
+            QStringList levelParts = level.split( '_' );
             if( levelParts.count() > 2 )
                 warning() << "Playlist view URL parse error: Invalid sort level " << level;
             if( levelParts.at( 1 ) == QString( "asc" ) )

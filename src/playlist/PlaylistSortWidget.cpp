@@ -134,7 +134,7 @@ SortWidget::sortPath() const
         QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
         QString level = ( name == "Random" ) ? name : ( name + "_" + ( sortOrder ? "des" : "asc" ) );
-        path.append( ( i == m_ribbon->count() - 1 ) ? level : ( level + "-" ) );
+        path.append( ( i == m_ribbon->count() - 1 ) ? level : ( level + '-' ) );
     }
     return path;
 }

@@ -335,7 +335,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 		else if ( data.contains( "message" ) )
 		{
             //if nothing found, we collapse and inform user
-            m_headerText->setText( i18n( "Video Clip " ) + ":" + i18n( " No information found..." ) );
+            m_headerText->setText( i18n( "Video Clip " ) + ':' + i18n( " No information found..." ) );
             update();
 			setBusy( false );
             m_widget->hide();

@@ -400,8 +400,8 @@ void VideoclipEngine::resultDailymotion( KJob* job )
         
         // Get all the information
         item->title = xmlNode.firstChildElement( "title" ).text();
-        item->url = xmlNode.firstChildElement( "link" ).text().split( "?" )[ 0 ];
-        item->coverurl = xmlNode.firstChildElement( "media:thumbnail" ).attribute( "url" ).split( "?" )[ 0 ].replace( "/320x240/", "/160x120/" );
+        item->url = xmlNode.firstChildElement( "link" ).text().split( '?' )[ 0 ];
+        item->coverurl = xmlNode.firstChildElement( "media:thumbnail" ).attribute( "url" ).split( '?' )[ 0 ].replace( "/320x240/", "/160x120/" );
         item->length = xmlNode.firstChildElement( "media:group" ).firstChildElement( "media:content" ).attribute( "duration" ).toInt();
         item->duration  = time.addSecs( item->length ).toString( "mm:ss" );
         item->views = xmlNode.firstChildElement( "dm:views" ).text();

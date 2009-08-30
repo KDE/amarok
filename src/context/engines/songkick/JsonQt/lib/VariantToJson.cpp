@@ -25,7 +25,7 @@ namespace JsonQt
 		{
 			members.append(QString("\"%1\": %2").arg(it.key()).arg(parseElement(it.value())));
 		}
-		return "{" + members.join(", ") + "}";
+		return '{' + members.join(", ") + '}';
 	}
 	QString VariantToJson::parseElement(const QVariant& value)
 	{
@@ -65,7 +65,7 @@ namespace JsonQt
 		{
 			parts.append(parseElement(variant));
 		}
-		return "[" + parts.join(", ") + "]";
+		return '[' + parts.join(", ") + ']';
 	}
 	
 	QString VariantToJson::parseStringList(const QStringList& stringList)

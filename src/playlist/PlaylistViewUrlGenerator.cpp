@@ -45,9 +45,9 @@ ViewUrlGenerator::createAmarokUrl()
     QString filterExpr = playlistWidget->searchWidget()->currentFilter();
     QString onlyMatches = playlistWidget->searchWidget()->onlyMatches() ? "true" : "false";
     QString sortPath = playlistWidget->sortWidget()->sortPath();
-        QString prettySortPath = playlistWidget->sortWidget()->prettySortPath();
+    QString prettySortPath = playlistWidget->sortWidget()->prettySortPath();
     QString groupingCategory = playlistWidget->groupingAction()->currentGroupingCategory();
-        QString prettyGroupingCategory = playlistWidget->groupingAction()->prettyGroupingCategory().remove( "&" );
+    QString prettyGroupingCategory = playlistWidget->groupingAction()->prettyGroupingCategory().remove( '&' );
     QString layout = LayoutManager::instance()->activeLayoutName();
     debug()<< "The filter is "<< filterExpr;
     debug()<< "OnlyMatches is "<< onlyMatches;

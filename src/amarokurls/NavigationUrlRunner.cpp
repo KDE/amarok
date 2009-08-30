@@ -55,7 +55,7 @@ NavigationUrlRunner::run( AmarokUrl url )
         QString levelsString = args.value( "levels" );
         QList<int> levels;
 
-        QStringList levelsStringList = levelsString.split( "-" );
+        QStringList levelsStringList = levelsString.split( '-' );
 
         foreach( QString levelString, levelsStringList ) {
             if( levelString == "genre" )
