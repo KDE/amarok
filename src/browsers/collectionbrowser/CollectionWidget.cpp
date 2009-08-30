@@ -218,11 +218,15 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     showCovers->setChecked( AmarokConfig::showAlbumArt() );
     connect( showCovers, SIGNAL(toggled(bool)), SLOT( slotShowCovers( bool ) ) );
 
+    //do not use m_levels directly here, otherwise
+    //takeFirst() removes the first item from the list,
+    //but we need the correct m_levels in toggleView()
+    QList<int> levelCopy = m_levels;
     // Preset the checked status properly
-    if( m_levels.size() > 0 )
+    if( levelCopy.size() > 0 )
     {
         //First Category
-        const int i = m_levels.takeFirst();
+        const int i = levelCopy.takeFirst();
         switch( i )
         {
             case CategoryId::Artist:
@@ -239,9 +243,9 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
                 break;
         }
     }
-    if( m_levels.size() > 0 ) //We have a second level
+    if( levelCopy.size() > 0 ) //We have a second level
     {
-        const int i = m_levels.takeFirst();
+        const int i = levelCopy.takeFirst();
         switch( i )
         {
             case CategoryId::Artist:
@@ -260,9 +264,9 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
                 secondNullAction->setChecked( true );
         }
     }
-    if( m_levels.size() > 0 ) //We have a third level
+    if( levelCopy.size() > 0 ) //We have a third level
     {
-        const int i = m_levels.takeFirst();
+        const int i = levelCopy.takeFirst();
         switch( i )
         {
             case CategoryId::Artist:
