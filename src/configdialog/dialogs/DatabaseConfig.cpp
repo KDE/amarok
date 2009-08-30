@@ -26,6 +26,13 @@ DatabaseConfig::DatabaseConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
     setupUi( this );
+
+    // Fix some weird tab orderness
+    setTabOrder( kcfg_Server,   kcfg_Port );     // server to port
+    setTabOrder( kcfg_Port,     kcfg_Username ); // port to username
+    setTabOrder( kcfg_Username, kcfg_Password ); // username to password
+    setTabOrder( kcfg_Password, kcfg_DBName );   // password to database
+
     readConfiguration();
 
     connect( kcfg_UseInternalDB, SIGNAL( stateChanged(int) ), SLOT( toggleExternalConfigAvailable(int) ) );
