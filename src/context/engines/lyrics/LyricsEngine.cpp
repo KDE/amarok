@@ -58,7 +58,7 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
         if( m_prevLyricsList.size() > 0 )
             setData( "lyrics", "lyrics", m_prevLyricsList );
 
-        else if( m_prevLyrics != "" )
+        else if( !m_prevLyrics.isEmpty() )
             setData( "lyrics", "html", m_prevLyrics );
 
         if( m_prevSuggestionsList.size() > 0 )

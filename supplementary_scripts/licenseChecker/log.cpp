@@ -56,7 +56,7 @@ void Log::print(LogEntry::PrintStyle style, bool errors, bool warnings, bool inf
   QFile filePtr( outputFile );
   bool opened;
 
-  if( outputFile == "" )
+  if( outputFile.isEmpty() )
     opened = filePtr.open( stdout, QFile::WriteOnly );
   else
     opened = filePtr.open( QFile::WriteOnly | QFile::Truncate );

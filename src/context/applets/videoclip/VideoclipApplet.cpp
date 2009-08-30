@@ -355,7 +355,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
             for (int i=0; i< data.size(); i++ )
             {
                 VideoInfo *item = data[ QString ("item:" )+QString().setNum(i) ].value<VideoInfo *>() ;
-                if( item->url != "" ) // prevent some weird stuff ...
+                if( !( item->url.isEmpty() ) ) // prevent some weird stuff ...
                 {
 
                     VideoItemButton *vidButton = new VideoItemButton();

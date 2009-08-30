@@ -526,7 +526,7 @@ WikiApplet :: viewCurrentTrackInfo()
          m_webView -> enableCurrentTrackAction( false) ;
     }
 
-     if( m_pageState == 1 && m_current != "" )
+     if( m_pageState == 1 && !m_current.isEmpty() )
      {
          m_histoBack.push_front(m_current);
         if ( !m_histoBack.empty() && m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
@@ -575,7 +575,7 @@ WikiApplet :: viewPreviousTrackInfo()
         m_previousTrackIcon -> action() -> setVisible( false );
         m_previousTrackIcon -> action() -> setEnabled( false );
     }
-    if( m_pageState == 1 && m_current != "" )
+    if( m_pageState == 1 && !m_current.isEmpty() )
     {
          m_histoBack.push_front(m_current);
         if ( !m_histoBack.empty() && m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )

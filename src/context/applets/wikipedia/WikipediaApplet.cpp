@@ -231,8 +231,8 @@ WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         if ( m_current == data[ "page" ].toString() && !m_gotMessage)
             return;
         
-        // save last page, usefull when u where reading but the song change
-        if ( m_current != "" )
+        // save last page, useful when you are reading but the song changes
+        if ( !m_current.isEmpty() )
         {
             m_historyBack.push_front( m_current );
             while ( m_historyBack.size() > 20 )

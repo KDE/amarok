@@ -727,7 +727,7 @@ int main( int argc, char** argv )
   else
     log.printErrorReport( cliArgs.outputStyle, true, cliArgs.outputFile );
   
-  if( cliArgs.bashScriptFile != "" )
+  if( !cliArgs.bashScriptFile.isEmpty() )
     log.writeShellScript( cliArgs.bashScriptFile );
 
   return 0;
