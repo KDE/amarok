@@ -55,6 +55,6 @@ void IpodArtworkCapability::setCoverPath( Meta::MediaDeviceAlbumPtr album, const
 
 bool IpodArtworkCapability::canUpdateCover() const
 {
-    return m_handler->isWritable();
+    return m_handler->isWritable() && m_handler->supportsArtwork();
 }
 
