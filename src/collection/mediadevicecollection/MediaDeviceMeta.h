@@ -187,12 +187,16 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist
         virtual AlbumList albums();
 
         //MediaDeviceArtist specific methods
-        void addTrack( MediaDeviceTrackPtr track );
-        void remTrack( MediaDeviceTrackPtr track );
+        virtual void addTrack( MediaDeviceTrackPtr track );
+        virtual void remTrack( MediaDeviceTrackPtr track );
+
+        virtual void addAlbum( MediaDeviceAlbumPtr album );
+        virtual void remAlbum( MediaDeviceAlbumPtr album );
 
     private:
         QString m_name;
         TrackList m_tracks;
+        AlbumList m_albums;
 };
 
 class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album

@@ -191,8 +191,9 @@ MediaDeviceHandler::addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr& 
     //getBasicMediaDeviceTrackInfo( srcTrack, track );
 
     /* map-related info retrieval */
+    // NB: setupArtistMap _MUST_ be called before setupAlbumMap
     setupArtistMap( track, artistMap );
-    setupAlbumMap( track, albumMap );
+    setupAlbumMap( track, albumMap, artistMap );
     setupGenreMap( track, genreMap );
     setupComposerMap( track, composerMap );
     setupYearMap( track, yearMap );
@@ -715,7 +716,7 @@ MediaDeviceHandler::slotDatabaseWritten( bool success )
 void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
 {
-    QString artist( m_rcb->libGetArtist( track ) );
+    const QString artist( m_rcb->libGetArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
     if ( artistMap.contains( artist ) )
@@ -731,9 +732,10 @@ MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& 
 }
 
 void
-MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& albumMap )
+MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& albumMap, const ArtistMap &artistMap )
 {
-    QString album( m_rcb->libGetAlbum( track ) );
+    const QString album( m_rcb->libGetAlbum( track ) );
+    const QString artist( m_rcb->libGetArtist( track ) );
     MediaDeviceAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
@@ -746,12 +748,19 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 
     albumPtr->addTrack( track );
     track->setAlbum( albumPtr );
+
+    if( !artist.isEmpty() && artistMap.contains( artist ) )
+    {
+        MediaDeviceArtistPtr artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
+        artistPtr->addAlbum( albumPtr );
+        albumPtr->setAlbumArtist( artistPtr );
+    }
 }
 
 void
 MediaDeviceHandler::setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap& genreMap )
 {
-    QString genre = m_rcb->libGetGenre( track );
+    const QString genre = m_rcb->libGetGenre( track );
     MediaDeviceGenrePtr genrePtr;
 
     if ( genreMap.contains( genre ) )
@@ -842,7 +851,7 @@ MediaDeviceHandler::parseTracks()
 
         /* map-related info retrieval */
         setupArtistMap( track, artistMap );
-        setupAlbumMap( track, albumMap );
+        setupAlbumMap( track, albumMap, artistMap );
         setupGenreMap( track, genreMap );
         setupComposerMap( track, composerMap );
         setupYearMap( track, yearMap );

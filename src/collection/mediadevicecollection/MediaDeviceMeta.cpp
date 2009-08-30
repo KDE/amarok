@@ -386,7 +386,7 @@ MediaDeviceTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
     {
         case Meta::Capability::Editable:
             return m_collection ? m_collection->isWritable() : false;
-        
+
         case Meta::Capability::Updatable:
             return m_collection ? m_collection->isWritable() : false;
 
@@ -731,8 +731,7 @@ MediaDeviceArtist::tracks()
 AlbumList
 MediaDeviceArtist::albums()
 {
-    //TODO
-    return AlbumList();
+    return m_albums;
 }
 
 void
@@ -745,6 +744,18 @@ void
 MediaDeviceArtist::remTrack( MediaDeviceTrackPtr track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
+}
+
+void
+MediaDeviceArtist::addAlbum( MediaDeviceAlbumPtr album )
+{
+    m_albums.append( AlbumPtr::staticCast( album ) );
+}
+
+void
+MediaDeviceArtist::remAlbum( MediaDeviceAlbumPtr album )
+{
+    m_albums.removeOne( AlbumPtr::staticCast( album ) );
 }
 
 //---------------MediaDeviceAlbum-----------------------------------
@@ -760,7 +771,7 @@ MediaDeviceAlbum::MediaDeviceAlbum( MediaDeviceCollection *collection, const QSt
     , m_hasImageChecked( false )
     , m_image( QPixmap() )
     , m_albumArtist( 0 )
-{ 
+{
     MediaDeviceHandler *handler = m_collection->handler();
     if( handler && handler->hasCapabilityInterface( Handler::Capability::Artwork ) )
         m_artworkCapability = handler->create<Handler::ArtworkCapability>();

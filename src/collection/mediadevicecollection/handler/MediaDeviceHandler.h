@@ -319,7 +319,7 @@ private:
     */
 
     void setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap &artistMap );
-    void setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap &albumMap );
+    void setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap &albumMap, const ArtistMap &artistMap );
     void setupGenreMap( Meta::MediaDeviceTrackPtr track, GenreMap &genreMap );
     void setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerMap &composerMap );
     void setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap &yearMap );
