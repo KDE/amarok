@@ -130,7 +130,7 @@ protected:
     {
         Q_UNUSED( track )
     }
-    virtual void databaseChanged();
+    virtual void setDatabaseChanged();
 
     virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
     virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );

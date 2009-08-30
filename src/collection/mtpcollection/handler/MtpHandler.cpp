@@ -40,25 +40,25 @@
 using namespace Meta;
 
 MtpHandler::MtpHandler( MtpCollection *mc )
-        : MediaDeviceHandler( mc )
-        , m_device( 0 )
-        , m_capacity( 0.0 )
-        , m_default_parent_folder( 0 )
-        , m_folders( 0 )
-        , m_folderStructure()
-        , m_format()
-        , m_name()
-        , m_supportedFiles()
-        , m_isCanceled( false )
-        , m_wait( false )
-        , m_dbChanged( false )
-        , m_currtracklist( 0 )
-        , m_currtrack( 0 )
-        , m_currplaylistlist( 0 )
-        , m_currplaylist( 0 )
-        , m_trackcounter( 0 )
-        , m_copyparentid( 0 )
-        , m_tempdir( new KTempDir() )
+    : MediaDeviceHandler( mc )
+    , m_device( 0 )
+    , m_capacity( 0.0 )
+    , m_default_parent_folder( 0 )
+    , m_folders( 0 )
+    , m_folderStructure()
+    , m_format()
+    , m_name()
+    , m_supportedFiles()
+    , m_isCanceled( false )
+    , m_wait( false )
+    , m_dbChanged( false )
+    , m_currtracklist( 0 )
+    , m_currtrack( 0 )
+    , m_currplaylistlist( 0 )
+    , m_currplaylist( 0 )
+    , m_trackcounter( 0 )
+    , m_copyparentid( 0 )
+    , m_tempdir( new KTempDir() )
 {
     DEBUG_BLOCK
     m_copyingthreadsafe = true;
@@ -110,7 +110,6 @@ MtpHandler::isWritable() const
 void
 MtpHandler::init()
 {
-
     mtpFileTypes[LIBMTP_FILETYPE_WAV] = "wav";
     mtpFileTypes[LIBMTP_FILETYPE_MP3] = "mp3";
     mtpFileTypes[LIBMTP_FILETYPE_WMA] = "wma";
@@ -173,8 +172,8 @@ MtpHandler::init()
 
     switch ( err )
     {
-    case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
-        fprintf( stdout, "   No raw devices found.\n" );
+        case LIBMTP_ERROR_NO_DEVICE_ATTACHED:
+        fprintf( stdout, "No raw devices found.\n" );
         m_success = false;
         break;
 
@@ -189,30 +188,25 @@ MtpHandler::init()
         break;
 
     case LIBMTP_ERROR_NONE:
-    {
         m_success = true;
         break;
-    }
 
     default:
         debug() << "Unhandled mtp error";
         m_success = false;
         break;
-    }
+}
 
-
-
-    if ( m_success )
-    {
-        debug() << "Got mtp list, connecting to device using thread";
-        ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, this ) );
-    }
-    else
-    {
-        free( rawdevices );
+if ( m_success )
+{
+    debug() << "Got mtp list, connecting to device using thread";
+    ThreadWeaver::Weaver::instance()->enqueue( new WorkerThread( numrawdevices, rawdevices, this ) );
+}
+else
+{
+    free( rawdevices );
 //        emit failed();
-    }
-
+}
 }
 
 
@@ -220,222 +214,218 @@ MtpHandler::init()
 bool
 MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevices )
 {
-    DEBUG_BLOCK
+DEBUG_BLOCK
 
-    bool success = false;
+bool success = false;
 
-    LIBMTP_mtpdevice_t *device = 0;
-    // test raw device for connectability
-    for ( int i = 0; i < numrawdevices; i++ )
+LIBMTP_mtpdevice_t *device = 0;
+// test raw device for connectability
+for ( int i = 0; i < numrawdevices; i++ )
+{
+
+    debug() << "Opening raw device number: " << ( i + 1 );
+    device = LIBMTP_Open_Raw_Device( &rawdevices[i] );
+    if ( device == NULL )
     {
-
-        debug() << "Opening raw device number: " << ( i + 1 );
-        device = LIBMTP_Open_Raw_Device( &rawdevices[i] );
-        if ( device == NULL )
-        {
-            debug() << "Unable to open raw device: " << ( i + 1 );
-            success = false;
-            continue;
-        }
+        debug() << "Unable to open raw device: " << ( i + 1 );
+        success = false;
+        continue;
+    }
 
 //        debug() << "Testing serial number";
 
-        // HACK: not checking serial to confirm the right device is in place
-        // this is not incorrect, and long-term goal is to remove serial number from use altogether
+    // HACK: not checking serial to confirm the right device is in place
+    // this is not incorrect, and long-term goal is to remove serial number from use altogether
 
-        /*
-        QString mtpSerial = QString::fromUtf8( LIBMTP_Get_Serialnumber( device ) );
-        if( !mtpSerial.contains(serial) )
-        {
-            debug() << "Wrong device, going to next";
-            debug() << "Expected: " << serial << " but got: " << mtpSerial;
-            success = false;
-            LIBMTP_Release_Device( device );
-            continue;
-        }
-        */
-
-        debug() << "Correct device found";
-        success = true;
-        break;
-    }
-
-    m_device = device;
-
-    if ( m_device == 0 )
+    /*
+    QString mtpSerial = QString::fromUtf8( LIBMTP_Get_Serialnumber( device ) );
+    if( !mtpSerial.contains(serial) )
     {
-        // TODO: error protection
+        debug() << "Wrong device, going to next";
+        debug() << "Expected: " << serial << " but got: " << mtpSerial;
         success = false;
-        free( rawdevices );
-
+        LIBMTP_Release_Device( device );
+        continue;
     }
+    */
 
-    //QString serial = QString::fromUtf8( LIBMTP_Get_Serialnumber( m_device ) );
+    debug() << "Correct device found";
+    success = true;
+    break;
+}
+
+m_device = device;
+
+if ( m_device == 0 )
+{
+    // TODO: error protection
+    success = false;
+    free( rawdevices );
+
+}
+
+//QString serial = QString::fromUtf8( LIBMTP_Get_Serialnumber( m_device ) );
 
 //    debug() << "Serial is: " << serial;
 
-    debug() << "Success is: " << ( success ? "true" : "false" );
+debug() << "Success is: " << ( success ? "true" : "false" );
 
-    return success;
+return success;
 }
 
 void
 MtpHandler::getDeviceInfo()
 {
-    // Get information for device
+// Get information for device
 
-    // Get Battery level and print to debug
+// Get Battery level and print to debug
 
-    unsigned char max;
-    unsigned char curr;
-    int failed;
+unsigned char max;
+unsigned char curr;
+int failed;
 
-    failed = LIBMTP_Get_Batterylevel( m_device, &max, &curr );
+failed = LIBMTP_Get_Batterylevel( m_device, &max, &curr );
 
-    if ( !failed )
-        debug() << "Battery at: " << curr << "/" << max;
-    else
-        debug() << "Unknown battery level";
+if ( !failed )
+    debug() << "Battery at: " << curr << "/" << max;
+else
+    debug() << "Unknown battery level";
 
-    if( LIBMTP_Get_Storage( m_device, LIBMTP_STORAGE_SORTBY_NOTSORTED ) != 0 )
+if( LIBMTP_Get_Storage( m_device, LIBMTP_STORAGE_SORTBY_NOTSORTED ) != 0 )
+{
+    debug() << "Failed to get storage properties, cannot get capacity";
+    m_capacity = 0.0;
+}
+
+else
+{
+    m_capacity = m_device->storage->MaxCapacity;
+}
+
+QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
+
+// NOTE: on next libmtp bump, may reintroduce owner name
+// for now it doesn't work as expected
+/*
+QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );
+m_name = modelname;
+if(! ownername.isEmpty() )
+    if( modelname != ownername )
+        m_name += " (" + ownername + ')';
+
+else
+    m_name += " (No Owner Name)";
+
+*/
+
+m_name = modelname;
+
+m_default_parent_folder = m_device->default_music_folder;
+debug() << "setting default parent : " << m_default_parent_folder;
+
+
+m_folders = LIBMTP_Get_Folder_List( m_device );
+uint16_t *filetypes;
+uint16_t filetypes_len;
+int ret = LIBMTP_Get_Supported_Filetypes( m_device, &filetypes, &filetypes_len );
+if ( ret == 0 )
+{
+    uint16_t i;
+    for ( i = 0; i < filetypes_len; ++i )
     {
-        debug() << "Failed to get storage properties, cannot get capacity";
-        m_capacity = 0.0;
+        debug() << "Device supports: " << mtpFileTypes[ filetypes[ i ] ];
+        m_supportedFiles << mtpFileTypes[ filetypes[ i ] ];
     }
-
-    else
-    {
-        m_capacity = m_device->storage->MaxCapacity;
-    }
-
-    QString modelname = QString( LIBMTP_Get_Modelname( m_device ) );
-
-    // NOTE: on next libmtp bump, may reintroduce owner name
-    // for now it doesn't work as expected
-    /*
-    QString ownername = QString( LIBMTP_Get_Friendlyname( m_device ) );
-    m_name = modelname;
-    if(! ownername.isEmpty() )
-        if( modelname != ownername )
-            m_name += " (" + ownername + ')';
-
-    else
-        m_name += " (No Owner Name)";
-
-    */
-
-    m_name = modelname;
-
-    m_default_parent_folder = m_device->default_music_folder;
-    debug() << "setting default parent : " << m_default_parent_folder;
-
-
-    m_folders = LIBMTP_Get_Folder_List( m_device );
-    uint16_t *filetypes;
-    uint16_t filetypes_len;
-    int ret = LIBMTP_Get_Supported_Filetypes( m_device, &filetypes, &filetypes_len );
-    if ( ret == 0 )
-    {
-        uint16_t i;
-        for ( i = 0; i < filetypes_len; ++i )
-        {
-            debug() << "Device supports: " << mtpFileTypes[ filetypes[ i ] ];
-            m_supportedFiles << mtpFileTypes[ filetypes[ i ] ];
-        }
-    }
-    // find supported image types (for album art).
-    if ( m_supportedFiles.indexOf( "jpg" ) )
-        m_format = "JPEG";
-    else if ( m_supportedFiles.indexOf( "png" ) )
-        m_format = "PNG";
-    else if ( m_supportedFiles.indexOf( "gif" ) )
-        m_format = "GIF";
-    free( filetypes );
+}
+// find supported image types (for album art).
+if ( m_supportedFiles.indexOf( "jpg" ) )
+    m_format = "JPEG";
+else if ( m_supportedFiles.indexOf( "png" ) )
+    m_format = "PNG";
+else if ( m_supportedFiles.indexOf( "gif" ) )
+    m_format = "GIF";
+free( filetypes );
 }
 
 void
 MtpHandler::terminate()
 {
-    DEBUG_BLOCK
-    // clear folder structure
-    if ( m_folders != 0 )
-    {
+DEBUG_BLOCK
+// clear folder structure
+if ( m_folders != 0 )
+{
 
-        LIBMTP_destroy_folder_t( m_folders );
+    LIBMTP_destroy_folder_t( m_folders );
 
-        m_folders = 0;
-        debug() << "Folders destroyed";
-    }
+    m_folders = 0;
+    debug() << "Folders destroyed";
+}
 
-    // Delete temporary files
+// Delete temporary files
 
-    //delete m_tempdir;
+//delete m_tempdir;
 /*
-    TrackMap trackMap = m_memColl->trackMap();
+TrackMap trackMap = m_memColl->trackMap();
 
-    foreach( Meta::TrackPtr track,  trackMap.values() )
-    {
-        Meta::MtpTrackPtr mtptrack = Meta::MtpTrackPtr::staticCast( track );
-        mtptrack->deleteTempFile();
-    }
+foreach( Meta::TrackPtr track,  trackMap.values() )
+{
+    Meta::MtpTrackPtr mtptrack = Meta::MtpTrackPtr::staticCast( track );
+    mtptrack->deleteTempFile();
+}
 */
 
 
-    // release device
-    if ( m_device != 0 )
-    {
+// release device
+if ( m_device != 0 )
+{
 
-        LIBMTP_Release_Device( m_device );
-        /* possible race condition with statusbar destructor,
-        will uncomment when fixed */
-        //The::statusBar()->longMessage(
+    LIBMTP_Release_Device( m_device );
+    /* possible race condition with statusbar destructor,
+    will uncomment when fixed */
+    //The::statusBar()->longMessage(
 //                       i18n( "The MTP device %1 has been disconnected", prettyName() ), StatusBar::Information );
-        debug() << "Device released";
-    }
+    debug() << "Device released";
+}
 }
 
 void
 MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
 {
-        DEBUG_BLOCK
+    DEBUG_BLOCK
 
-            QMap<Meta::TrackPtr,  KUrl> urls;
+    QMap<Meta::TrackPtr,  KUrl> urls;
 
-        //m_tempdir.setAutoRemove(  true );
+    QString genericError = i18n( "Could not copy track from device." );
 
-        QString genericError = i18n(  "Could not copy track from device." );
+    foreach( Meta::TrackPtr trackptr,  tracks )
+    {
+        Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::staticCast( trackptr );
+        if( !track )
+            break;
 
-        foreach(  Meta::TrackPtr trackptr,  tracks )
-            {
-                Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::staticCast(  trackptr );
-                if (  !track )
-                    break;
+        QString trackFileName = QString::fromUtf8( m_mtptrackhash[ track ]->filename );
 
+        QString filename = m_tempdir->name() + trackFileName;
 
-                QString trackFileName = QString::fromUtf8( m_mtptrackhash[ track ]->filename );
+        debug() << "Temp Filename: " << filename;
 
-                QString filename = m_tempdir->name() + trackFileName;
+        int ret = getTrackToFile( m_mtptrackhash[ track ]->item_id, filename );
+        if (  ret != 0 )
+        {
+            debug() << "Get Track failed: " << ret;
+            /*The::statusBar()->shortLongMessage(
+                genericError,
+                i18n( "Could not copy track from device." ),
+                StatusBar::Error
+                );*/
+        }
+        else
+        {
+            urls.insert( trackptr, filename );
+        }
+    }
 
-                debug() << "Temp Filename: " << filename;
-
-                int ret = getTrackToFile( m_mtptrackhash[ track ]->item_id,  filename );
-                if (  ret != 0 )
-                {
-                    debug() << "Get Track failed: " << ret;
-                    /*The::statusBar()->shortLongMessage(
-                      genericError,
-                      i18n( "Could not copy track from device." ),
-                      StatusBar::Error
-                      );*/
-                }
-                else
-                {
-                    urls.insert(  trackptr,  filename );
-                }
-
-            }
-
-        emit gotCopyableUrls( urls );
+    emit gotCopyableUrls( urls );
 }
 
 /**

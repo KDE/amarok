@@ -81,9 +81,9 @@ MtpWriteCapability::removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track )
 
 
 void
-MtpWriteCapability::databaseChanged()
+MtpWriteCapability::setDatabaseChanged()
 {
-    m_handler->databaseChanged();
+    m_handler->setDatabaseChanged();
 }
 
 
