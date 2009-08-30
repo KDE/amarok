@@ -34,7 +34,7 @@ extern "C" {
 
 #include "SvgHandler.h"
 
-#include "File.h" // for KIO file handling
+#include "meta/file/File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5
 #include <kdiskfreespaceinfo.h>
@@ -72,7 +72,6 @@ using namespace Meta;
 IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
     , m_itdb( 0 )
-    //, m_memColl( mc )
     , m_masterPlaylist( 0 )
     , m_currtracklist( 0 )
     , m_currtrack( 0 )
@@ -114,8 +113,8 @@ IpodHandler::~IpodHandler()
     DEBUG_BLOCK
     delete m_tempdir;
     // Write to DB before closing, for ratings updates etc.
-    //writeDatabase();
     debug() << "Cleaning up Ipod Database";
+    writeITunesDB( false );
     if ( m_itdb )
         itdb_free( m_itdb );
 }
@@ -994,7 +993,7 @@ IpodHandler::writeITunesDB( bool threaded )
         return ok;
     }
 
-    debug() << "writeItunesDB is returning false because db wasn't changed";
+    debug() << "Database was not changed, will not flush";
 
     return false;
 }
@@ -1789,8 +1788,6 @@ void
 IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path )
 {
 #ifdef GDK_FOUND
-    DEBUG_BLOCK
-
     if( path.isEmpty() || !m_supportsArtwork )
         return;
 
@@ -1811,19 +1808,21 @@ void
 IpodHandler::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &image )
 {
 #ifdef GDK_FOUND
-    DEBUG_BLOCK
-
     if( image.isNull() || !m_supportsArtwork )
         return;
 
     Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
 
     const QString filename = ipodArtFilename( ipodtrack );
-    bool saved = image.save( filename );
-    if( !saved )
-        return;
+    // Don't write the file if it already exists (we probably just saved it)
+    if( !QFile::exists(filename) )
+    {
+        bool saved = image.save( filename );
+        if( !saved )
+            return;
+    }
 
-    libSetCoverArtPath( track, filename );
+    libSetCoverArtPath( track, filename ); // will call setDatabaseChanged() if required
 #else
     Q_UNUSED( ipodtrack );
     Q_UNUSED( image );
