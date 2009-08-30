@@ -312,8 +312,8 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
             this->setFixedSize( sizeHint() );
             this->setCaption( i18n("Cover Found") );
 
-            connect( save,      SIGNAL(clicked()), SLOT(accept()) );
-            connect( cancel,    SIGNAL(clicked()), SLOT(reject()) );
+            connect( save,   SIGNAL(clicked()), SLOT(accept()) );
+            connect( cancel, SIGNAL(clicked()), SLOT(reject()) );
         }
 
         virtual void accept()
