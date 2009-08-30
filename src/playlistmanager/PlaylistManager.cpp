@@ -304,7 +304,7 @@ PlaylistManager::save( Meta::TrackList tracks, const QString &name,
                        UserPlaylistProvider *toProvider )
 {
     //if toProvider is 0 use the default UserPlaylistProvider (SQL)
-    UserPlaylistProvider *prov = toProvider /*? toProvider : m_defaultUserPlaylistProvider*/;
+    UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
     Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
     if( name.isEmpty() )
     {
