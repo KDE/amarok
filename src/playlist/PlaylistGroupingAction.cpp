@@ -28,7 +28,7 @@ GroupingAction::GroupingAction( QWidget *parent )
     setIcon( KIcon( "object-group" ) );
     m_groupingMenu = new KMenu( parent );
     setMenu( m_groupingMenu );
-    setText( i18n( "Playlist Grouping" ) );
+    setText( i18n( "Group &by" ) );
 
     m_groupingActions = new QActionGroup( m_groupingMenu );
     m_groupingActions->setExclusive( true );
