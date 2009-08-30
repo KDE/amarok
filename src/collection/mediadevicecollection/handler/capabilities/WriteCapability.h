@@ -93,7 +93,7 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::WriteCapabi
         virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )  = 0;
         virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type ) = 0;
         virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack ) = 0;
-
+        virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &cover ) = 0;
 };
 }
 

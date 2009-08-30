@@ -122,7 +122,7 @@ MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, 
         m_handler->setDestinations( m_destinations );
 
     connect( m_handler, SIGNAL( copyTracksDone( bool  ) ),
-             SLOT( copyOperationFinished( bool ) ),
+             this,      SLOT( copyOperationFinished( bool ) ),
              Qt::QueuedConnection );
     m_handler->copyTrackListToDevice( sources.keys() );
 

@@ -163,8 +163,8 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetType( destTrack, srcTrack->type() ); Debug::stamp();
     //libSetPlayableUrl( destTrack, srcTrack );
 
-    //if( srcTrack->album()->hasImage() )
-    //    libSetCoverArt( destTrack, srcTrack->album()->image() );
+    if( srcTrack->album()->hasImage() )
+        m_wc->libSetCoverArt( destTrack, srcTrack->album()->image() );
 }
 
 void

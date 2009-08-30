@@ -216,6 +216,14 @@ MtpWriteCapability::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, con
 }
 
 void
+MtpWriteCapability::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &cover )
+{
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( track )
+    Q_UNUSED( cover )
+}
+
+void
 MtpWriteCapability::prepareToCopy()
 {
     m_handler->prepareToCopy();

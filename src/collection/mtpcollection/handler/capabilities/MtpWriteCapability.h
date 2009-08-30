@@ -70,6 +70,7 @@ class MtpWriteCapability : public WriteCapability
     virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
     virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
     virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
+    virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &cover );
 
     virtual void prepareToCopy();
     virtual void prepareToDelete();

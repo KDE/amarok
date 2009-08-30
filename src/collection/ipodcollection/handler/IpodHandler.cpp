@@ -523,7 +523,7 @@ void
 IpodHandler::slotSyncArtworkFailed( ThreadWeaver::Job *job )
 {
     Q_UNUSED( job )
- 
+
     const QString msg( i18n( "iPod artwork could not be synchronised" ) );
     The::statusBar()->shortMessage( msg );
 }
@@ -1791,7 +1791,7 @@ IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString
 #ifdef GDK_FOUND
     DEBUG_BLOCK
 
-    if( !m_supportsArtwork )
+    if( path.isEmpty() || !m_supportsArtwork )
         return;
 
     Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
