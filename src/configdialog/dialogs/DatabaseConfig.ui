@@ -37,6 +37,9 @@
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_DatabaseEngine">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="text">
         <string>&amp;External database engine:</string>
        </property>
@@ -80,6 +83,12 @@
         </item>
         <item row="0" column="4">
          <widget class="QLabel" name="label_Port">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>P&amp;ort:</string>
           </property>
@@ -88,6 +97,9 @@
           </property>
           <property name="alignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <property name="margin">
+           <number>2</number>
           </property>
           <property name="buddy">
            <cstring>kcfg_Port</cstring>
@@ -191,7 +203,7 @@
           <widget class="QLabel" name="label_Info">
            <property name="font">
             <font>
-             <pointsize>8</pointsize>
+             <pointsize>9</pointsize>
             </font>
            </property>
            <property name="text">
@@ -209,7 +221,7 @@
           <widget class="QLabel" name="label_SQL">
            <property name="font">
             <font>
-             <pointsize>8</pointsize>
+             <pointsize>9</pointsize>
             </font>
            </property>
            <property name="text">
@@ -239,11 +251,11 @@
            </property>
            <property name="font">
             <font>
-             <pointsize>6</pointsize>
+             <pointsize>9</pointsize>
             </font>
            </property>
            <property name="cursor" stdset="0">
-            <cursorShape>IBeamCursor</cursorShape>
+            <cursorShape>ArrowCursor</cursorShape>
            </property>
            <property name="acceptDrops">
             <bool>false</bool>
