@@ -168,7 +168,7 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
 }
 
 void
-MediaDeviceHandler::addMediaDeviceTrackToCollection(Meta::MediaDeviceTrackPtr& track)
+MediaDeviceHandler::addMediaDeviceTrackToCollection( Meta::MediaDeviceTrackPtr& track )
 {
     DEBUG_BLOCK
 
@@ -183,8 +183,6 @@ MediaDeviceHandler::addMediaDeviceTrackToCollection(Meta::MediaDeviceTrackPtr& t
     GenreMap genreMap = m_memColl->genreMap();
     ComposerMap composerMap = m_memColl->composerMap();
     YearMap yearMap = m_memColl->yearMap();
-
-    debug() << "1";
 
     /* 1-liner info retrieval */
 
@@ -299,7 +297,7 @@ MediaDeviceHandler::getCopyableUrls(const Meta::TrackList &tracks)
 void
 MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 {
-    QString copyErrorCaption = i18n( "Copying Tracks Failed" );
+    const QString copyErrorCaption = i18n( "Copying Tracks Failed" );
 
     if ( m_isCopying )
     {
@@ -316,16 +314,14 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     m_isCopying = true;
 
-    bool isDupe;
-    bool hasDupe;
+    bool isDupe = false;
+    bool hasDupe = false;
     QString format;
     TrackMap trackMap = m_memColl->trackMap();
 
     Meta::TrackList tempTrackList;
 
     m_copyFailed = false;
-
-    hasDupe = false;
 
     m_tracksFailed.clear();
 
@@ -388,7 +384,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         {
             debug() << "Track " << track->name() << " is a dupe!";
 
-            QString error = i18n("Already on device");
+            const QString error = i18n("Already on device");
             m_tracksFailed.insert( track, error );
         }
     }
@@ -418,6 +414,9 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         transfersize += track->filesize();
 
     // NOTE: if the device will not have more than 5 MB to spare, abort the copy
+    // This is important because on some devices if there is insufficient space to write the database, it will appear as
+    // though all music has been wiped off the device - since neither the device nor amarok will be able to read the
+    // (corrupted) database.
     if( !( (freeSpace() - transfersize) > 1024*1024*5 ) )
     {
         debug() << "Free space: " << freeSpace();
