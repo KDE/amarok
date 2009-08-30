@@ -136,8 +136,11 @@ void Playlist::LayoutItemConfig::setActiveIndicatorRow( int row )
 //////////////////////////////////////////////
 
 
-Playlist::PlaylistLayout::PlaylistLayout():
-    m_allowGrouping(true)
+Playlist::PlaylistLayout::PlaylistLayout()
+    : m_isEditable(false)
+    , m_isDirty(false)
+    , m_inlineControls(false)
+    , m_allowGrouping(true)
 {}
 
 LayoutItemConfig Playlist::PlaylistLayout::head() const
