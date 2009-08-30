@@ -206,7 +206,14 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     QActionList actions = createBasicActions( indices );
     actions += &separator;
     actions += createExtendedActions( indices );
-    actions += createCollectionActions( indices );
+
+    QList<QAction*> collectionActions = createCollectionActions( indices );
+    if( !collectionActions.isEmpty() )
+    {
+        actions += &separator;
+        actions += collectionActions;
+    }
+
 
     KMenu* menu = new KMenu( this );
 
@@ -959,8 +966,10 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
     // Extract collection whose constituent was selected
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
-    while( item->isDataItem() )
-        item = item->parent();
+
+    // Don't return any collection actions for non collection items
+    if( item->isDataItem() )
+        return actions;
 
     Amarok::Collection *collection = item->parentCollection();
 
