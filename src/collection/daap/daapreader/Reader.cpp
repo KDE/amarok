@@ -368,9 +368,9 @@ Reader::parseSongList( const QByteArray &data )
                 if ( QString( tag ) == "miid" )
                     itemId = QString::number( longData );
                 if ( QString( tag ) == "astm" )
-                    songTime = tagLength ? longData/1000 : 0;
+                    songTime = longData/1000;
                 if ( QString( tag ) == "astn" )
-                    trackNumber = tagLength ? longData : 0;
+                    trackNumber = longData;
                 break;
             }
             case LONGLONG:
@@ -591,6 +591,7 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 qint64 longlongData;
                 raw >> longlongData; DEBUGTAG( longlongData )
                 addElement( childMap, tag, QVariant( longlongData ) );
+                break;
             }
             case STRING:
             {
