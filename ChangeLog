@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2-beta1
   FEATURES:
+    * Allow pasting an URL from clipboard to playlist with middle mouse click.
+      Patch by Felix Geyer <debfx-kde@fobos.de>.
     * Support for copying aiff files to iPods. (BR 200820)
     * Add openDesktop.org support to the About dialog to make it easier
       to interact with the Amarok team.
