@@ -115,7 +115,7 @@ ProxyCollection::Collection::addCollection( Amarok::Collection *collection )
     if( !collection )
         return;
 
-    if( !CollectionManager::instance()->collectionStatus( collection->collectionId() ) & CollectionManager::CollectionViewable )
+    if( !( CollectionManager::instance()->collectionStatus( collection->collectionId() ) & CollectionManager::CollectionViewable ) )
         return;
 
     m_idCollectionMap.insert( collection->collectionId(), collection );
