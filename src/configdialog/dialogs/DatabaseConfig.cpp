@@ -30,9 +30,9 @@ DatabaseConfig::DatabaseConfig( QWidget* parent )
 
     connect( kcfg_UseInternalDB, SIGNAL( stateChanged(int) ), SLOT( toggleExternalConfigAvailable(int) ) );
 
-    connect( kcfg_DBName,   SIGNAL( editingFinished() ), SLOT( updateSQLQuery() ) );
-    connect( kcfg_Username, SIGNAL( editingFinished() ), SLOT( updateSQLQuery() ) );
-    connect( kcfg_Server,   SIGNAL( editingFinished() ), SLOT( updateSQLQuery() ) );
+    connect( kcfg_DBName,   SIGNAL( textChanged(const QString &) ), SLOT( updateSQLQuery() ) );
+    connect( kcfg_Username, SIGNAL( textChanged(const QString &) ), SLOT( updateSQLQuery() ) );
+    connect( kcfg_Server,   SIGNAL( textChanged(const QString &) ), SLOT( updateSQLQuery() ) );
 
 }
 
@@ -64,7 +64,7 @@ DatabaseConfig::updateSettings()
 
 
 ///////////////////////////////////////////////////////////////
-// PRIVATE METHODS 
+// PRIVATE METHODS
 ///////////////////////////////////////////////////////////////
 
 void
@@ -82,7 +82,7 @@ DatabaseConfig::readConfiguration()
     kcfg_Password->setText( config.readEntry( "Password", "" ).toUtf8() );
 
 
-    toggleExternalConfigAvailable(kcfg_UseInternalDB->checkState());
+    toggleExternalConfigAvailable( kcfg_UseInternalDB->checkState() );
     updateSQLQuery();
 }
 
@@ -91,17 +91,17 @@ DatabaseConfig::writeConfiguration()
 {
     KConfigGroup config = Amarok::config( "MySQL" );
 
-    bool useExternal = (kcfg_UseInternalDB->checkState() != Qt::Checked);
+    const bool useExternal = kcfg_UseInternalDB->checkState() != Qt::Checked;
 
     config.writeEntry( "UseServer", useExternal );
 
-    if(useExternal)
+    if( useExternal )
     {
-        config.writeEntry( "Host",      kcfg_Server->text() );
-        config.writeEntry( "Port",      kcfg_Port->value() );
-        config.writeEntry( "Database",  kcfg_DBName->text() );
-        config.writeEntry( "User",      kcfg_Username->text() );
-        config.writeEntry( "Password",  kcfg_Password->text() );
+        config.writeEntry( "Host",     kcfg_Server->text() );
+        config.writeEntry( "Port",     kcfg_Port->value() );
+        config.writeEntry( "Database", kcfg_DBName->text() );
+        config.writeEntry( "User",     kcfg_Username->text() );
+        config.writeEntry( "Password", kcfg_Password->text() );
     }
 }
 
@@ -109,8 +109,9 @@ DatabaseConfig::writeConfiguration()
 void
 DatabaseConfig::toggleExternalConfigAvailable( int checkBoxState ) //SLOT
 {
-    bool enableExternalConfig = (checkBoxState != Qt::Checked);
+    const bool enableExternalConfig = checkBoxState != Qt::Checked;
 
+    label_DatabaseEngine->setEnabled( enableExternalConfig );
     kcfg_DatabaseEngine->setEnabled( enableExternalConfig );
     group_Connection->setVisible( enableExternalConfig );
 
@@ -119,7 +120,7 @@ DatabaseConfig::toggleExternalConfigAvailable( int checkBoxState ) //SLOT
 void
 DatabaseConfig::updateSQLQuery() //SLOT
 {
-    if(isSQLInfoPresent())
+    if( isSQLInfoPresent() )
     {
         // Query template:
         // GRANT ALL ON amarokdb.* TO 'amarokuser'@'localhost' IDENTIFIED BY 'mypassword'; FLUSH PRIVILEGES;
@@ -146,9 +147,7 @@ bool
 DatabaseConfig::isSQLInfoPresent()
 {
     if( kcfg_DBName->text().isEmpty() || kcfg_Username->text().isEmpty() || kcfg_Server->text().isEmpty() )
-    {
         return false;
-    }
 
     return true;
 }

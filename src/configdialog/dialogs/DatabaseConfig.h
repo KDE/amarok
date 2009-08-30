@@ -37,8 +37,8 @@ class DatabaseConfig : public ConfigDialogBase, public Ui_DatabaseConfig
         void readConfiguration();
         void writeConfiguration();
 
-    private Q_SLOTS:
-        void toggleExternalConfigAvailable( int checkBoxState );
+    private slots:
+        void toggleExternalConfigAvailable( const int checkBoxState );
         void updateSQLQuery();
 
     private:
