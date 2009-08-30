@@ -145,7 +145,13 @@ void
 SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
 {
     setGoingToRemoveSources( removeSources );
-    OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks, MountPointManager::instance()->collectionFolders() );
+    OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks,
+                MountPointManager::instance()->collectionFolders(),
+                The::mainWindow(), //parent
+                "", //name is unused
+                true, //modal
+                i18n( "Organize Files" ) //caption
+            );
     connect( dialog, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( dialog, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
     dialog->show();
