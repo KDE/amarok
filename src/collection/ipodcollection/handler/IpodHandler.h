@@ -102,6 +102,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 
         virtual void init(); // collection
         virtual bool isWritable() const;
+        virtual bool supportsArtwork() const { return m_supportsArtwork; }
 
         virtual QString prettyName() const;
 
@@ -173,7 +174,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 
         virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
         virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
-        virtual void databaseChanged();
+        virtual inline void setDatabaseChanged();
 
         virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
         virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );

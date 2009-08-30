@@ -215,7 +215,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         virtual QPixmap image( int size = 1 );
         virtual bool canUpdateImage() const;
         virtual void setImage( const QPixmap &pixmap );
-        void setImagePath( const QString &path );
+        virtual void setImagePath( const QString &path );
         virtual void removeImage();
 
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
