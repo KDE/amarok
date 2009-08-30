@@ -42,7 +42,7 @@ class DatabaseConfig : public ConfigDialogBase, public Ui_DatabaseConfig
         void updateSQLQuery();
 
     private:
-        bool isSQLInfoPresent();
+        inline bool isSQLInfoPresent() const;
 };
 
 

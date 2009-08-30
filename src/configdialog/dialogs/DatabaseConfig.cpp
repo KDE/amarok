@@ -139,13 +139,10 @@ DatabaseConfig::updateSQLQuery() //SLOT
 }
 
 
-bool
-DatabaseConfig::isSQLInfoPresent()
+inline bool
+DatabaseConfig::isSQLInfoPresent() const
 {
-    if( kcfg_DBName->text().isEmpty() || kcfg_Username->text().isEmpty() || kcfg_Server->text().isEmpty() )
-        return false;
-
-    return true;
+    return !kcfg_DBName->text().isEmpty() && !kcfg_Username->text().isEmpty() && !kcfg_Server->text().isEmpty();
 }
 
 
