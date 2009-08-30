@@ -548,7 +548,7 @@ AFTTagger::readArgs()
             else
                 displayHelp();
         }
-        else if( arg.startsWith( "-" ) )
+        else if( arg.startsWith( '-' ) )
         {
             QString myarg = arg.remove( 0, 1 );
             int pos = 0;

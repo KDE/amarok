@@ -316,9 +316,9 @@ QString BrowserCategoryList::path()
     BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
 
     if ( childList )
-        pathString += "/" + childList->path();
+        pathString += '/' + childList->path();
     else if ( m_currentCategory )
-        pathString += "/" + m_currentCategory->name();
+        pathString += '/' + m_currentCategory->name();
 
     debug() << "path: " << pathString;
     return pathString;

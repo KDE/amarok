@@ -156,10 +156,10 @@ void TestAmarok::testManipulateThe()
     Amarok::manipulateThe( teststring = "", false );
     QCOMPARE( teststring, QString( "" ) );
 
-    Amarok::manipulateThe( teststring = "A", true );
+    Amarok::manipulateThe( teststring = 'A', true );
     QCOMPARE( teststring, QString( "A" ) );
 
-    Amarok::manipulateThe( teststring = "A", false );
+    Amarok::manipulateThe( teststring = 'A', false );
     QCOMPARE( teststring, QString( "A" ) );
 
     Amarok::manipulateThe( teststring = "ABC", true );

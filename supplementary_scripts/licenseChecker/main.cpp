@@ -424,7 +424,7 @@ void readFile( QString filename ) {
       //Need to check here as this could be due to not enough width for name & email
       if( header[j].at( header[j].lastIndexOf( "*" ) ) == ' ' )
       {
-        header[j] = header[j].left( startEmail ) + " " + header[j].mid( startEmail );
+        header[j] = header[j].left( startEmail ) + ' ' + header[j].mid( startEmail );
         //Now remove extra space
         header[j] = header[j].left( header[j].lastIndexOf( "*" ) - 1 ) + header[j].mid( header[j].lastIndexOf( "*" ) );
         autofixed = true;
@@ -438,7 +438,7 @@ void readFile( QString filename ) {
       while( header[j].mid( 17+(5*k), 1 ) == " " )
       {
         header[j] = header[j].left( 17+(5*k) ) + header[j].mid( 18+(5*k) );
-        header[j] = header[j].left( header[j].lastIndexOf( "*" ) ) + " " + header[j].mid( header[j].lastIndexOf( "*" ) );
+        header[j] = header[j].left( header[j].lastIndexOf( '*' ) ) + ' ' + header[j].mid( header[j].lastIndexOf( '*' ) );
       }
       autofixed = true;
     }
@@ -480,9 +480,9 @@ void readFile( QString filename ) {
       header[j] = header[j].left( header[j].lastIndexOf( ">" ) + 1 );
       //Now add trailing spaces and *
       for ( int k = header[j].length(); k < 88; k++ )
-        header[j] += " ";
+        header[j] += ' ';
       
-      header[j] += "*";
+      header[j] += '*';
       
       log.append( LogEntry( filename, QString( "Length of copyright holder line incorrect. (Line " ).append( (char)(j+48) ).append( " of header) - Fixed" ), LogEntry::information ) );
       
@@ -665,10 +665,10 @@ void processCliArgs(int argc, char** argv)
 
 QString appendTrailingForwardSlash( const QString a )
 {
-    if( !a.endsWith( "/" ) )
-  return a + "/";
+    if( !a.endsWith( '/' ) )
+        return a + '/';
     else
-  return a;
+        return a;
 }
 
 void iterateFolder( QString folder )

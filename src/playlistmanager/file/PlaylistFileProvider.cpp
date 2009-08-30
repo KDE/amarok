@@ -58,7 +58,7 @@ PlaylistFileProvider::PlaylistFileProvider()
         }
 
         if( !groups.isEmpty() && playlist->isWritable() )
-            playlist->setGroups( groups.split( ",",  QString::SkipEmptyParts ) );
+            playlist->setGroups( groups.split( ',',  QString::SkipEmptyParts ) );
 
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }

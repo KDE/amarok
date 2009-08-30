@@ -250,7 +250,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 {
     DEBUG_BLOCK
 
-    const QString currentVersion = "1";
+    const QString currentVersion( '1' );
 
     QFile file( Amarok::saveLocation() + "dynamic.xml" );
     if( !file.open( QIODevice::ReadWrite ) )

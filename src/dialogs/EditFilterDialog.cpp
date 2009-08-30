@@ -427,9 +427,9 @@ void EditFilterDialog::slotCheckOR() // SLOT
 void EditFilterDialog::assignPrefixNOT() // SLOT
 {
     if (m_ui.invertButton->isChecked())
-        m_strPrefixNOT = "-";
+        m_strPrefixNOT = '-';
     else
-        m_strPrefixNOT = "";
+        m_strPrefixNOT.clear();
 }
 
 void EditFilterDialog::slotDefault() // SLOT
