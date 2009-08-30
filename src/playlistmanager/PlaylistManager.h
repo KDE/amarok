@@ -70,7 +70,7 @@ class PlaylistManager : public QObject
         /**
          * @returns all available categories registered at that moment
          */
-        QList<int> availableCategories() { return m_map.uniqueKeys(); };
+        QList<int> availableCategories() { return m_providerMap.uniqueKeys(); };
 
         /**
          * @returns A translated string to identify the category of the Playlist. Always a plural form.
@@ -178,6 +178,8 @@ class PlaylistManager : public QObject
         QList<QAction *> trackActions( const Meta::PlaylistPtr playlist,
                                                   int trackIndex );
 
+        void completePodcastDownloads();
+
     public slots:
         void saveCurrentPlaylist();
 
@@ -203,7 +205,7 @@ class PlaylistManager : public QObject
         UserPlaylistProvider *m_defaultUserPlaylistProvider;
         PlaylistFileProvider *m_playlistFileProvider;
 
-        QMultiMap<int, PlaylistProvider*> m_map; //Map PlaylistCategories to providers
+        QMultiMap<int, PlaylistProvider*> m_providerMap; //Map PlaylistCategories to providers
         QMap<int, QString> m_customCategories;
 
         QMap<KJob *, Meta::PlaylistFilePtr> m_downloadJobMap;

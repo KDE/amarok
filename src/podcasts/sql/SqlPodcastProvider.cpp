@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "SqlPodcastProvider.h"
+#include <kprogressdialog.h>
 
 #include "Amarok.h"
 #include "CollectionManager.h"
@@ -48,6 +49,7 @@ static const QString key("AMAROK_PODCAST");
 SqlPodcastProvider::SqlPodcastProvider()
     : m_updateTimer( new QTimer(this) )
     , m_updatingChannels( 0 )
+    , m_completedDownloads( 0 )
     , m_configureAction( 0 )
     , m_deleteAction( 0 )
     , m_downloadAction( 0 )
@@ -59,10 +61,18 @@ SqlPodcastProvider::SqlPodcastProvider()
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
+    if( !sqlStorage )
+    {
+        error() << "Could not get a SqlStorage instance";
+        return;
+    }
     QStringList values;
-    if ( sqlStorage )
-        values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
-    if( sqlStorage && values.isEmpty() )
+
+    values = sqlStorage->query(
+                QString("SELECT version FROM admin WHERE component = '%1';")
+                    .arg(sqlStorage->escape( key ) )
+            );
+    if( values.isEmpty() )
     {
         debug() << "creating Podcast Tables";
         createTables();
@@ -495,6 +505,20 @@ SqlPodcastProvider::slotUpdateChannels()
 }
 
 void
+SqlPodcastProvider::slotDownloadProgress( KJob *job, unsigned long percent )
+{
+    unsigned int totalDownloadPercentage = 0;
+    foreach( const KJob *job, m_downloadJobMap.keys() )
+        totalDownloadPercentage += job->percent();
+
+    //keep the completed jobs in mind as well.
+    totalDownloadPercentage += m_completedDownloads * 100;
+
+    emit totalPodcastDownloadProgress(
+            totalDownloadPercentage / (m_downloadJobMap.count() + m_completedDownloads) );
+}
+
+void
 SqlPodcastProvider::slotConfigureChannel()
 {
     DEBUG_BLOCK
@@ -530,6 +554,43 @@ SqlPodcastProvider::podcastChannelForId( int podcastChannelId )
             return i.previous();
     }
     return Meta::SqlPodcastChannelPtr();
+}
+
+void
+SqlPodcastProvider::completePodcastDownloads()
+{
+    //check to see if there are still downloads in progress
+    if( !m_downloadJobMap.isEmpty() )
+    {
+        debug() << QString("There are still %1 podcast download jobs running!")
+                .arg( m_downloadJobMap.count() );
+        KProgressDialog progressDialog( The::mainWindow(),
+                            i18n( "Waiting for Podcast Downloads to Finish" ),
+                            i18np( "There is still a podcast download in progress",
+                                "There are still %1 podcast downloads in progress",
+                                m_downloadJobMap.count() )
+                       );
+        progressDialog.setButtonText( "Cancel Download and Quit." );
+
+        m_completedDownloads = 0;
+        foreach( KJob *job, m_downloadJobMap.keys() )
+        {
+            connect( job, SIGNAL( percent( KJob *, unsigned long ) ),
+                 SLOT( slotDownloadProgress( KJob *, unsigned long ) )
+                   );
+        }
+        connect( this, SIGNAL( totalPodcastDownloadProgress( int ) ),
+                         progressDialog.progressBar(), SLOT( setValue( int ) ) );
+        int result = progressDialog.exec();
+        if( result == QDialog::Rejected )
+        {
+            foreach( KJob *job, m_downloadJobMap.keys() )
+            {
+                debug() << "Stopping download of " << m_downloadJobMap[ job ]->title();
+                job->kill();
+            }
+        }
+    }
 }
 
 void
@@ -575,9 +636,10 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
         return;
     }
 
-    KIO::StoredTransferJob *storedTransferJob = KIO::storedGet( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
+    KIO::StoredTransferJob *storedTransferJob =
+            KIO::storedGet( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
 
-    m_jobMap[storedTransferJob] = sqlEpisode.data();
+    m_downloadJobMap[storedTransferJob] = sqlEpisode.data();
     m_fileNameMap[storedTransferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
 
     debug() << "starting download for " << sqlEpisode->title() << " url: " << sqlEpisode->prettyUrl();
@@ -586,7 +648,8 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
             ->setAbortSlot( this, SLOT( abortDownload()) );
 
     connect( storedTransferJob, SIGNAL(  finished( KJob * ) ), SLOT( downloadResult( KJob * ) ) );
-    connect( storedTransferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ), SLOT( redirected( KIO::Job *,const KUrl& ) ) );
+    connect( storedTransferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ),
+             SLOT( redirected( KIO::Job *,const KUrl& ) ) );
 }
 
 void
@@ -645,13 +708,13 @@ SqlPodcastProvider::downloadResult( KJob * job )
         The::statusBar()->longMessage( job->errorText() );
         debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
     }
-    else if( ! m_jobMap.contains( job ) )
+    else if( ! m_downloadJobMap.contains( job ) )
     {
-        warning() << "Download is finished for a job that was not added to m_jobMap. Waah?";
+        warning() << "Download is finished for a job that was not added to m_downloadJobMap. Waah?";
     }
     else
     {
-        Meta::SqlPodcastEpisode *sqlEpisode = m_jobMap.value( job );
+        Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
         if( sqlEpisode == 0 )
         {
             debug() << "sqlEpisodePtr is NULL after download";
@@ -680,7 +743,8 @@ SqlPodcastProvider::downloadResult( KJob * job )
         localFile->close();
     }
     //remove it from the jobmap
-    m_jobMap.remove( job );
+    m_completedDownloads++;
+    m_downloadJobMap.remove( job );
     m_fileNameMap.remove( job );
 }
 

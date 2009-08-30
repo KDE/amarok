@@ -68,6 +68,8 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
                                                   int trackIndex )
                 { Q_UNUSED( playlist) Q_UNUSED( trackIndex ) return QList<QAction *>(); }
 
+        virtual void completePodcastDownloads() = 0;
+
     public slots:
         virtual void updateAll() = 0;
         virtual void update( Meta::PodcastChannelPtr channel ) = 0;

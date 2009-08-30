@@ -751,6 +751,8 @@ void App::slotTrashResult( KJob *job )
 
 void App::quit()
 {
+    The::playlistManager()->completePodcastDownloads();
+
     emit prepareToQuit();
     /*
     if( MediaBrowser::instance() && MediaBrowser::instance()->blockQuit() )

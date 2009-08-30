@@ -64,6 +64,8 @@ class SqlPodcastProvider : public PodcastProvider
         QList<QAction *> episodeActions( Meta::PodcastEpisodeList );
         QList<QAction *> channelActions( Meta::PodcastChannelList );
 
+        void completePodcastDownloads();
+
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 
@@ -88,9 +90,11 @@ class SqlPodcastProvider : public PodcastProvider
         void slotConfigureChannel();
         void slotRemoveChannels();
         void slotUpdateChannels();
+        void slotDownloadProgress( KJob *job, unsigned long percent );
 
     signals:
         void updated();
+        void totalPodcastDownloadProgress( int progress );
 
     private:
         /** creates all the necessary tables, indexes etc. for the database */
@@ -100,10 +104,11 @@ class SqlPodcastProvider : public PodcastProvider
 
         Meta::SqlPodcastChannelList m_channels;
 
-        QHash<KJob *, Meta::SqlPodcastEpisode *> m_jobMap;
+        QHash<KJob *, Meta::SqlPodcastEpisode *> m_downloadJobMap;
         QHash<KJob *, QString> m_fileNameMap;
         QTimer *m_updateTimer;
         int m_updatingChannels;
+        unsigned int m_completedDownloads;
 
         QAction * m_configureAction; //Configure a Channel
         QAction * m_deleteAction; //delete a downloaded Episode
