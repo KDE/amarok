@@ -63,6 +63,8 @@ private:
 
     int rowsForItem( const QModelIndex &index ) const;
 
+    int getGroupMode( const QModelIndex &index) const;
+
     static const qreal ALBUM_WIDTH;
     static const qreal SINGLE_TRACK_ALBUM_WIDTH;
     static const qreal MARGIN;

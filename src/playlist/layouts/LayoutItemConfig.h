@@ -209,6 +209,10 @@ class LayoutItemConfig
 class PlaylistLayout
 {
     public:
+        /**
+        * Default Constructor
+        */
+        PlaylistLayout();
 
         /**
          * Get the config to use for painting group headers.
@@ -274,6 +278,9 @@ class PlaylistLayout
         bool inlineControls();
         void setInlineControls( bool inlineControls );
 
+        bool allowGrouping();
+        void setAllowGrouping( bool allowGrouping );
+
     private:
         LayoutItemConfig m_head;
         LayoutItemConfig m_body;
@@ -281,6 +288,7 @@ class PlaylistLayout
         bool m_isEditable;
         bool m_isDirty;
         bool m_inlineControls;
+        bool m_allowGrouping;
 };
 
 }

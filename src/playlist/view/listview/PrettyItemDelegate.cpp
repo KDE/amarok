@@ -63,13 +63,21 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
 
+int PrettyItemDelegate::getGroupMode( const QModelIndex &index) const
+{
+    //If this layout doesn't allow grouping, we want to override whatever would be the group mode with "Single"
+    if (LayoutManager::instance()->activeLayout().allowGrouping())
+        return index.data( GroupRole ).toInt();
+    else
+        return None;
+}
 
 int PrettyItemDelegate::rowsForItem( const QModelIndex &index ) const
 {
 
     PlaylistLayout layout = LayoutManager::instance()->activeLayout();
 
-    const int groupMode = index.data( GroupRole ).toInt();
+    const int groupMode = getGroupMode(index);
     int rowCount = 1;
 
     switch ( groupMode )
@@ -133,7 +141,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         painter->setPen( App::instance()->palette().text().color() );
 
     // call paint method based on type
-    const int groupMode = index.data( GroupRole ).toInt();
+    const int groupMode = getGroupMode(index);
 
     int rowCount = rowsForItem( index );
     bool paintInlineControls = LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool();
@@ -616,7 +624,7 @@ QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const Q
     Q_UNUSED( option );
     
     DEBUG_BLOCK
-    const int groupMode = index.data( GroupRole ).toInt();
+    const int groupMode = getGroupMode(index);
     return new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
 }
 

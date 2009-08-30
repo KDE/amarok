@@ -136,6 +136,10 @@ void Playlist::LayoutItemConfig::setActiveIndicatorRow( int row )
 //////////////////////////////////////////////
 
 
+Playlist::PlaylistLayout::PlaylistLayout():
+    m_allowGrouping(true)
+{}
+
 LayoutItemConfig Playlist::PlaylistLayout::head() const
 {
     return m_head;
@@ -193,6 +197,16 @@ bool Playlist::PlaylistLayout::inlineControls()
 void Playlist::PlaylistLayout::setInlineControls( bool inlineControls )
 {
     m_inlineControls = inlineControls;
+}
+
+bool Playlist::PlaylistLayout::allowGrouping()
+{
+    return m_allowGrouping;
+}
+
+void Playlist::PlaylistLayout::setAllowGrouping(bool allowGrouping)
+{
+    m_allowGrouping = allowGrouping;
 }
 
 }

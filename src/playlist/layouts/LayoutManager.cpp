@@ -148,6 +148,7 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
         currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+        currentLayout.setAllowGrouping(  layout.toElement().attribute( "allow_grouping", "true" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
         currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
@@ -246,6 +247,10 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 
     if( layout.inlineControls() )
         newLayout.setAttribute( "inline_controls", "true" ); 
+
+    //allowGrouping defaults to true, so we want to note if false instead of if true
+    if(!layout.allowGrouping() )
+        newLayout.setAttribute( "allow_grouping", "false");
 
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
