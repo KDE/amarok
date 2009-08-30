@@ -532,7 +532,7 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
 
         // Inform subclass that a track has been added to the db
 
-        m_wc->databaseChanged();
+        m_wc->setDatabaseChanged();
     }
 
     // Add the new Meta::MediaDeviceTrackPtr into the device collection
@@ -670,7 +670,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
 
         // Inform subclass that a track has been removed from
 
-        m_wc->databaseChanged();
+        m_wc->setDatabaseChanged();
     }
 
     // remove from titlemap
@@ -1180,15 +1180,13 @@ MediaDeviceHandler::metadataChanged( TrackPtr track )
     if( !m_wcb )
         return;
 
-    if ( !isOrganizable() )
+    if( !isOrganizable() )
     {
         setBasicMediaDeviceTrackInfo( track, trackPtr );
-
-        m_wc->databaseChanged();
+        m_wc->setDatabaseChanged();
     }
 
     m_wcb->updateTrack( trackPtr );
-
 }
 
 void

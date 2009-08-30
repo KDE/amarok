@@ -48,7 +48,7 @@ class IpodWriteCapability : public WriteCapability
 
     virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
 
-    virtual void databaseChanged();
+    virtual void setDatabaseChanged();
 
     virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
     virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );

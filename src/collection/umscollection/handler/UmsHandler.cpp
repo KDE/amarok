@@ -814,7 +814,7 @@ UmsHandler::libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const
 
     m_itdbplaylisthash[ playlist ] = pl;
 
-    databaseChanged();
+    setDatabaseChanged();
 }
 
 void
@@ -828,7 +828,7 @@ UmsHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
         debug() << "Playlist removed";
         itdb_playlist_remove( pl );
         m_itdbplaylisthash.remove( playlist );
-        databaseChanged();
+        setDatabaseChanged();
     }
 }
 
@@ -842,7 +842,7 @@ UmsHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
     {
         debug() << "Playlist renamed";
         pl->name = g_strdup( playlist->name().toUtf8() );
-        databaseChanged();
+        setDatabaseChanged();
     }
 }
 #endif

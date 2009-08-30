@@ -74,9 +74,9 @@ IpodWriteCapability::removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track )
 }
 
 void
-IpodWriteCapability::databaseChanged()
+IpodWriteCapability::setDatabaseChanged()
 {
-    m_handler->databaseChanged();
+    m_handler->setDatabaseChanged();
 }
 
 void

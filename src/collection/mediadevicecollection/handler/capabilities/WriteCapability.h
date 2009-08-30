@@ -66,9 +66,8 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::WriteCapabi
 
         /**
          * Indicates to the subclass that the database has been updated
-         * for ipods, just sets m_dbchanged = true
          */
-        virtual void databaseChanged() = 0;
+        virtual void setDatabaseChanged() = 0;
 
         /**
          * Each libSet function sets the private track struct associated with @param track

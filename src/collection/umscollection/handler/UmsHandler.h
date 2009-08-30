@@ -92,10 +92,6 @@ class UmsHandler : public Meta::MediaDeviceHandler
         virtual bool hasCapabilityInterface( Handler::Capability::Type type ) const;
         virtual Handler::Capability* createCapabilityInterface( Handler::Capability::Type type );
 
-
-
-        //friend class Handler::UmsArtworkCapability;
-        //friend class Handler::UmsPlaylistCapability;
         friend class Handler::UmsReadCapability;
         friend class Handler::UmsWriteCapability;
 
@@ -146,14 +142,10 @@ class UmsHandler : public Meta::MediaDeviceHandler
         void libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name );
         void deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
         void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
-#endif
-#if 0
 
         // TODO: MediaDeviceTrackPtr
         virtual void libSetCoverArt( Itdb_Track *umstrack, const QPixmap &image );
         virtual void setCoverArt( Itdb_Track *umstrack, const QString &path );
-
-
 #endif
     private:
         enum FileType
@@ -187,10 +179,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
         virtual float totalCapacity() const;
 
         /// Ums Methods
-
-
         /* File I/O Methods */
-
         bool kioCopyTrack( const KUrl &src, const KUrl &dst );
         void deleteFile( const KUrl &url );
 
@@ -200,7 +189,6 @@ class UmsHandler : public Meta::MediaDeviceHandler
 
         KDirWatch             m_watcher;
 
-        //KUrl::List            m_currtrackurllist;
         QStringList           m_currtracklist;
         int                   m_listpos; // list position
         Meta::TrackPtr        m_currtrack;

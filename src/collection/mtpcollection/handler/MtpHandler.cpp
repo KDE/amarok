@@ -793,7 +793,7 @@ MtpHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
 }
 
 void
-MtpHandler::databaseChanged()
+MtpHandler::setDatabaseChanged()
 {
     m_dbChanged = true;
 }
@@ -808,7 +808,7 @@ MtpHandler::prepareToParseTracks()
 bool
 MtpHandler::isEndOfParseTracksList()
 {
-    return (m_currtracklist ? false : true);
+    return m_currtracklist ? false : true;
 }
 
 void
