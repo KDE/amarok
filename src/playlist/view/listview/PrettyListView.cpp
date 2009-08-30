@@ -46,7 +46,9 @@
 
 #include <KApplication>
 #include <KMenu>
+#include <KUrl>
 
+#include <QClipboard>
 #include <QContextMenuEvent>
 #include <QDropEvent>
 #include <QItemSelection>
@@ -422,6 +424,17 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
     else
     {
         m_mousePressInHeader = false;
+    }
+
+    if ( event->button() == Qt::MidButton )
+    {
+        KUrl url( QApplication::clipboard()->text() );
+        if ( url.isValid() )
+        {
+            QList<KUrl> list;
+            list.append( url );
+            The::playlistController()->insertOptioned( list, Playlist::AppendAndPlay );
+        }
     }
 
     // This should always be forwarded, as it is used to determine the offset
