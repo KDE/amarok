@@ -486,6 +486,12 @@ MainWindow::exportPlaylist() const //SLOT
     KFileDialog fileDialog( KUrl("kfiledialog:///amarok-playlist-export"), QString(), 0 );
     QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving") );
 
+    QStringList supportedMimeTypes;
+    supportedMimeTypes << "audio/x-mpegurl"; //M3U
+    supportedMimeTypes << "audio/x-scpls"; //PLS
+    supportedMimeTypes << "application/xspf+xml"; //XSPF
+
+    fileDialog.setMimeFilter( supportedMimeTypes, supportedMimeTypes.first() );
     fileDialog.fileWidget()->setCustomWidget( saveRelativeCheck );
     fileDialog.setOperationMode( KFileDialog::Saving );
     fileDialog.setMode( KFile::File );
@@ -493,12 +499,12 @@ MainWindow::exportPlaylist() const //SLOT
 
     fileDialog.exec();
 
-    QString playlistName = fileDialog.selectedFile();
+    QString playlistPath = fileDialog.selectedFile();
 
-    if( !playlistName.isEmpty() )
+    if( !playlistPath.isEmpty() )
     {
         AmarokConfig::setRelativePlaylist( saveRelativeCheck->isChecked() );
-        The::playlist()->exportPlaylist( playlistName );
+        The::playlist()->exportPlaylist( playlistPath );
     }
 }
 

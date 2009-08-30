@@ -37,7 +37,7 @@ getFormat( const KUrl &path )
 {
     const QString ext = Amarok::extension( path.fileName() );
 
-    if( ext == "m3u" ) return M3U;
+    if( ext == "m3u" || ext == "m3u8" ) return M3U; //m3u8 is M3U in UTF8
     if( ext == "pls" ) return PLS;
     if( ext == "ram" ) return RAM;
     if( ext == "smil") return SMIL;
