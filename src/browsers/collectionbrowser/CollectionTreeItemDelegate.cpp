@@ -76,7 +76,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         painter->setPen( App::instance()->palette().highlightedText().color() );
     else
         painter->setPen( App::instance()->palette().text().color() );
-    
+
     painter->setRenderHint( QPainter::Antialiasing );
 
     const int iconYPadding = ( height - iconHeight ) / 2;
@@ -99,7 +99,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int infoRectWidth = width - iconRight;
 
     const int titleRectWidth = infoRectWidth - actionsRectWidth;
-    
+
     QRectF titleRect;
     titleRect.setLeft( infoRectLeft );
     titleRect.setTop( option.rect.top() + iconYPadding );
@@ -116,7 +116,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     textRect.setHeight( smallFm.boundingRect( bylineText ).height() );
 
     painter->setFont( m_smallFont );
-    painter->drawText( textRect, Qt::TextWordWrap, bylineText ); 
+    painter->drawText( textRect, Qt::TextWordWrap, bylineText );
 
     const bool isHover = option.state & QStyle::State_MouseOver;
     QPoint cursorPos = m_view->mapFromGlobal( QCursor::pos() );
@@ -181,13 +181,18 @@ CollectionTreeItemDelegate::updateItemWidgets( const QList<QWidget*> widgets, co
         QMenu *menu = new QMenu( toolButton );
         foreach( QAction *action, actions )
             menu->addAction( action );
-        
+
         toolButton->setMenu( menu );
         toolButton->setPopupMode( QToolButton::MenuButtonPopup );
     }
 
     toolButton->setAutoFillBackground( false );
     toolButton->setAutoRaise( true );
+
+    debug() << "Moving toolbutton for" << index.data( Qt::DisplayRole ).toString() << "to:"
+            << (option.rect.width() - toolButton->size().width() - 10) << ","
+            << (sizeHint( option, index ).height() / 2 - toolButton->size().height() / 2);
+
     toolButton->move( option.rect.width() - toolButton->size().width() - 10,
                       sizeHint( option, index ).height() / 2 - toolButton->size().height() / 2 );
 }
@@ -204,7 +209,7 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
 
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
-    
+
     height = bigFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( Qt::DisplayRole ).toString() ).height()
            + smallFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft, index.data( CustomRoles::ByLineRole ).toString() ).height()
            + (hasCapacity ? CAPACITYRECT_HEIGHT : 0)
