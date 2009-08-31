@@ -34,12 +34,12 @@ class PlaylistFileProvider : public UserPlaylistProvider
 
     public:
         PlaylistFileProvider();
-        ~PlaylistFileProvider();
+        virtual ~PlaylistFileProvider();
 
-        QString prettyName() const;
+        virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon( "folder-documents" ); }
 
-        int category() const { return PlaylistManager::UserPlaylist; }
+        virtual int category() const { return PlaylistManager::UserPlaylist; }
 
         virtual Meta::PlaylistList playlists();
 
@@ -53,7 +53,7 @@ class PlaylistFileProvider : public UserPlaylistProvider
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks,
                                         const QString &name );
 
-        bool import( const KUrl &path );
+        virtual bool import( const KUrl &path );
 
         virtual bool isWritable() { return true; }
         virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );
