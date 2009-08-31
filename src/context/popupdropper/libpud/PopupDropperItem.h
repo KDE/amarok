@@ -168,7 +168,7 @@ public:
     virtual QRectF boundingRect() const;
     virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0 );
 
-public slots:
+public Q_SLOTS:
     virtual void dropped( QDropEvent *event );
     virtual void hoverFinished();
     virtual void hoverFrameChanged( int frame );

@@ -128,15 +128,15 @@ public:
     void addItem( PopupDropperItem *item, bool useSharedRenderer = true );
     void addSeparator( PopupDropperItem *separator = 0 );
 
-signals:
+Q_SIGNALS:
     void fadeHideFinished();
 
-public slots:
+public Q_SLOTS:
     void clear();
     void hide();
     bool subtractOverlay();
 
-private slots:
+private Q_SLOTS:
     void activateSubmenu();
     void slotHideAllOverlays();
 
