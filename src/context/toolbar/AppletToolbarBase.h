@@ -25,7 +25,7 @@ namespace Context
 class AppletToolbarBase : public QGraphicsWidget
 {
 public:
-    AppletToolbarBase(QGraphicsItem* parent = 0, Qt::WindowFlags wFlags = 0);
+    explicit AppletToolbarBase(QGraphicsItem* parent = 0, Qt::WindowFlags wFlags = 0);
     ~AppletToolbarBase();
     
     virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );

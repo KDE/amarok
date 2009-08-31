@@ -63,7 +63,7 @@ class GroupingProxy : public ProxyBase
     Q_OBJECT
 
 public:
-    GroupingProxy( AbstractModel *belowModel, QObject *parent = 0 );
+    explicit GroupingProxy( AbstractModel *belowModel, QObject *parent = 0 );
     ~GroupingProxy();
 
     static GroupingProxy* instance();

@@ -68,7 +68,7 @@ namespace JsonQt
 			/** Construct a JsonRpcAdaptor.
 			 * This will expose @param adapt via JSON.
 			 */
-			JsonRpcAdaptor(QObject* adapt, QObject* parent = NULL);
+			explicit JsonRpcAdaptor(QObject* adapt, QObject* parent = NULL);
 		public slots:
 			/// Handle received JSON.
 			void processJson(const QString& json);

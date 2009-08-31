@@ -66,7 +66,7 @@ public:
     * @param autoAppend Should this playlist automatically append itself to the playlist when loaded (useful when loading a remote url as it
     * allows the caller to do it in a "one shot" way and not have to worry about waiting untill download and parsing is completed.
     */
-    XSPFPlaylist( const KUrl &url, bool autoAppend = false );
+    explicit XSPFPlaylist( const KUrl &url, bool autoAppend = false );
     XSPFPlaylist( Meta::TrackList list );
 
     ~XSPFPlaylist();

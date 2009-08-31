@@ -42,7 +42,7 @@ public:
      * @param level The BreadcrumbLevel assigned to this item.
      * @param parent The parent QWidget.
      */
-    BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent = 0 );
+    explicit BreadcrumbItem( BreadcrumbLevel *level, QWidget *parent = 0 );
 
     /**
      * Destructor.

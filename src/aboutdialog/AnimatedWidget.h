@@ -26,7 +26,7 @@ class AnimatedWidget : public QWidget
     Q_OBJECT
 
     public:
-        AnimatedWidget( const QString& iconName, QWidget *parent = 0 );
+        explicit AnimatedWidget( const QString& iconName, QWidget *parent = 0 );
         virtual ~AnimatedWidget();
 
     public slots:

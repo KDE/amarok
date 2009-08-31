@@ -35,7 +35,7 @@ public:
     /**
      * Constructor.
      */
-    SearchProxy( AbstractModel *belowModel, QObject *parent = 0 );
+    explicit SearchProxy( AbstractModel *belowModel, QObject *parent = 0 );
 
     /**
      * Destructor.

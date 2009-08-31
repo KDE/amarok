@@ -33,7 +33,7 @@ namespace Playlist
 class SortLevel
 {
     public:
-        SortLevel( int sortCategory = PlaceHolder, Qt::SortOrder sortOrder = Qt::AscendingOrder );
+        explicit SortLevel( int sortCategory = PlaceHolder, Qt::SortOrder sortOrder = Qt::AscendingOrder );
         int category();
         Qt::SortOrder order();
         void setCategory( int sortCategory );

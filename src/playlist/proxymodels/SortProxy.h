@@ -36,7 +36,7 @@ public:
     /**
      * Constructor.
      */
-    SortProxy( AbstractModel *belowModel, QObject *parent = 0 );
+    explicit SortProxy( AbstractModel *belowModel, QObject *parent = 0 );
 
     /**
      * Destructor.

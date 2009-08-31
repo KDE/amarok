@@ -34,7 +34,7 @@ public:
     /**
      * Constructor.
      */
-    FilterProxy( AbstractModel *belowModel, QObject *parent = 0 );
+    explicit FilterProxy( AbstractModel *belowModel, QObject *parent = 0 );
 
     /**
      * Destructor.
