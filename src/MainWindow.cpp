@@ -237,6 +237,7 @@ MainWindow::init()
     m_newToolbar->setMovable ( true );
 
     addToolBar( Qt::TopToolBarArea, m_newToolbar );
+    m_newToolbar->hide();
 
 
     PERF_LOG( "Create sidebar" )
