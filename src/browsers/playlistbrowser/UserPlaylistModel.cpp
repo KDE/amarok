@@ -541,7 +541,7 @@ PlaylistBrowserNS::UserModel::createCommonActions( QModelIndexList indices )
 
     if ( m_loadAction == 0 )
     {
-        m_loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+        m_loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
         m_loadAction->setProperty( "popupdropper_svg_id", "load" );
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
     }
