@@ -174,7 +174,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 
         virtual void addTrackInDB( const Meta::MediaDeviceTrackPtr &track );
         virtual void removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track );
-        virtual inline void setDatabaseChanged();
+        virtual void setDatabaseChanged();
 
         virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
         virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
