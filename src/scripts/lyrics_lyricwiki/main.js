@@ -38,9 +38,9 @@ function onFinished2( response )
         else
         {
             doc2 = new QDomDocument();
-            doc2.setContent( response );
-            textboxtext = doc2.elementsByTagName( "textarea" ).at( 0 ).toElement().text();
-            lyr = /<lyrics>(.*)<\/lyrics>/.exec(textboxtext)[1];
+            var relevant = /&lt;lyrics&gt;(.*)&lt;\/lyrics&gt;/.exec(response)[1];
+            doc2.setContent( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><lyrics>" + relevant + "</lyrics>" );
+            lyr = doc2.elementsByTagName( "lyrics" ).at( 0 ).toElement().text();
             //Amarok.debug( "matched: " + lyr );
             newxml = newxml.replace( "{lyrics}", Amarok.Lyrics.escape( lyr ) );
             Amarok.Lyrics.showLyrics( newxml );
@@ -48,8 +48,9 @@ function onFinished2( response )
     }
     catch( err )
     {
-        Amarok.Lyrics.showLyricsError( "Could not retrieve lyrics: " + err );
-        Amarok.debug( "error: " + err );
+        newxml = newxml.replace( "{lyrics}", "Lyrics not found. Please check your internet connection and make sure that title and artist tags are present and spelled correctly." );
+        Amarok.Lyrics.showLyrics( newxml );
+        Amarok.debug( "Could not retrieve lyrics: " + err );
     }
 }
 
@@ -66,9 +67,9 @@ function onFinished( dat )
             newxml = xml.replace( "{artist}", Amarok.Lyrics.escape( doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ) );
             newxml = newxml.replace( "{title}", Amarok.Lyrics.escape( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() ) );
             Amarok.debug( "returned real lyricwiki URL: " + doc.elementsByTagName( "url" ).at( 0 ).toElement().text());
-            var url = decodeURI(doc.elementsByTagName( "url" ).at( 0 ).toElement().text());
+            var url = doc.elementsByTagName( "url" ).at( 0 ).toElement().text();
             url = url.replace( /lyricwiki\.org\//, "lyricwiki.org/index.php?action=edit&title=" );
-            var url2 = new QUrl(url);
+            var url2 = QUrl.fromEncoded( new QByteArray( url ), 1 );
             Amarok.debug( "request-2 URL: " + url2.toString() );
             new Downloader( url2, onFinished2 );
         }
