@@ -156,7 +156,7 @@ public:
      /**
       * Constructor.
       */
-    ServiceBase( const QString &name, ServiceFactory* parent, bool useCollectionTreeView = true, const QString &m_prettyName = QString::Null() );
+    ServiceBase( const QString &name, ServiceFactory* parent, bool useCollectionTreeView = true, const QString &m_prettyName = QString() );
 
     /**
      * Destructor.

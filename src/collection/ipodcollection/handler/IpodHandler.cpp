@@ -1184,14 +1184,14 @@ IpodHandler::orphanedTracks()
 
     debug() << "Found path for Music";
 
-    QDir dir( musicpath, QString::null, QDir::Unsorted, QDir::Dirs );
+    QDir dir( musicpath, QString(), QDir::Unsorted, QDir::Dirs );
     for(unsigned i=0; i<dir.count(); i++)
     {
         if(dir[i] == "." || dir[i] == "..")
             continue;
 
         QString hashpath = musicpath + '/' + dir[i];
-        QDir hashdir( hashpath, QString::null, QDir::Unsorted, QDir::Files );
+        QDir hashdir( hashpath, QString(), QDir::Unsorted, QDir::Files );
         for(unsigned j=0; j<hashdir.count(); j++)
         {
             QString filename = hashpath + '/' + hashdir[j];

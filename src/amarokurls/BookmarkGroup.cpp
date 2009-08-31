@@ -26,13 +26,13 @@
 BookmarkGroup::BookmarkGroup( const QStringList & dbResultRow, BookmarkGroupPtr parent )
     : BookmarkViewItem()
     , m_parent( parent )
+    , m_customType()
     , m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
 {
     m_dbId = dbResultRow[0].toInt();
     m_name = dbResultRow[2];
     m_description = dbResultRow[3];
-    m_customType = QString();
 }
 
 BookmarkGroup::BookmarkGroup( const QString & name, BookmarkGroupPtr parent )
@@ -40,8 +40,8 @@ BookmarkGroup::BookmarkGroup( const QString & name, BookmarkGroupPtr parent )
     , m_dbId( -1 )
     , m_parent( parent )
     , m_name( name )
-    , m_description( QString() )
-    , m_customType( QString() )
+    , m_description()
+    , m_customType()
     , m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
 {

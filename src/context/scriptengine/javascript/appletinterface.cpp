@@ -111,7 +111,7 @@ QString AppletInterface::activeConfig() const
 void AppletInterface::setActiveConfig(const QString &name)
 {
     if (name == "main") {
-        m_currentConfig = QString();
+        m_currentConfig.clear();
         return;
     }
 

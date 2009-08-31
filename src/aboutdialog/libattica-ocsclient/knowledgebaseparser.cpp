@@ -77,8 +77,8 @@ KnowledgeBase::Metadata KnowledgeBaseParser::lastMetadata()
 KnowledgeBase::Metadata KnowledgeBaseParser::parseMetadata( QXmlStreamReader &xml )
 {
     KnowledgeBase::Metadata meta;
-    meta.status = QString();
-    meta.message = QString();
+    meta.status.clear();
+    meta.message.clear();
     meta.totalItems = 0;
     meta.itemsPerPage = 0;
 

@@ -678,7 +678,7 @@ XmlParseJob::run()
                         if( attrs.value( "artist" ).toString() == i18n( "Various Artists" ) )
                             compilationValue = QString::number( 1 );
                         else
-                            compilationValue = QString();
+                            compilationValue.clear();
                     }                            
 
                     QVariantMap data;

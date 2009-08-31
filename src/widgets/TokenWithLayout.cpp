@@ -239,7 +239,7 @@ void TokenWithLayout::setPrefix( const QString& string )
     if ( m_prefix == string )
         return;
     if ( string == i18n( "[prefix]" ) )
-        m_prefix = QString();
+        m_prefix.clear();
     else
         m_prefix = string;
     emit changed();
@@ -250,7 +250,7 @@ void TokenWithLayout::setSuffix( const QString& string )
     if ( m_suffix == string )
         return;
     if ( string == i18n( "[suffix]" ) )
-        m_suffix = QString();
+        m_suffix.clear();
     else
         m_suffix = string;
     emit changed();

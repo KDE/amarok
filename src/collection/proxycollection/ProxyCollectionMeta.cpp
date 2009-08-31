@@ -176,7 +176,7 @@ ProxyCollection::Track::comment() const
     {
         if( track->comment() != comment )
         {
-            comment = QString();
+            comment.clear();
             break;
         }
     }
