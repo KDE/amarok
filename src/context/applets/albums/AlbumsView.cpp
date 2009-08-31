@@ -107,8 +107,8 @@ AlbumsView::itemClicked( const QModelIndex &index )
 void
 AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
 {
-    KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
-    KAction *loadAction   = new KAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Load" ), this );
+    KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this );
+    KAction *loadAction   = new KAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
     KAction *queueAction  = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "&Queue" ), this );
     KAction *editAction   = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
     

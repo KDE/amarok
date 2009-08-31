@@ -78,7 +78,7 @@ void VideoItemButton::mouseDoubleClickEvent(QMouseEvent* )
 void VideoItemButton::myMenu(QPoint point)
 {
     DEBUG_BLOCK
-    KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to playlist" ), this );
+    KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to playlist" ), this );
     KAction *queueAction  = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "&Queue" ), this );
     KAction *appendPlayAction   = new KAction( KIcon( "music-amarok" ), i18n( "Append and &Play" ), this );
     

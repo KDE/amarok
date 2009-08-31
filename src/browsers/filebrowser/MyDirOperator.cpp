@@ -267,7 +267,7 @@ MyDirOperator::createBasicActions()
 {
     QList<QAction*> actions;
 
-    QAction* appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this );
+    QAction* appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this );
     QAction* loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
     QAction* editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
 

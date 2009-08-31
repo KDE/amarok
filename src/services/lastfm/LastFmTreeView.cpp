@@ -109,7 +109,7 @@ QActionList LastFmTreeView::createBasicActions( const QModelIndexList & indices 
         {
             if ( m_appendAction == 0 )
             {
-                m_appendAction = new QAction ( KIcon ( "media-track-add-amarok" ), i18n ( "&Append to Playlist" ), this );
+                m_appendAction = new QAction ( KIcon ( "media-track-add-amarok" ), i18n ( "&Add to Playlist" ), this );
                 m_appendAction->setProperty( "popupdropper_svg_id", "append" );
                 connect ( m_appendAction, SIGNAL ( triggered() ), this, SLOT ( slotAppendChildTracks() ) );
             }

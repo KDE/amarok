@@ -685,7 +685,7 @@ PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
     {
         m_appendAction = new QAction(
             KIcon( "media-track-add-amarok" ),
-            i18n( "&Append to Playlist" ),
+            i18n( "&Add to Playlist" ),
             this
         );
         m_appendAction->setProperty( "popupdropper_svg_id", "append" );
