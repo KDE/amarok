@@ -697,7 +697,7 @@ PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
         m_loadAction = new QAction(
             KIcon( "folder-open" ),
             i18nc( "Replace the currently loaded tracks with these",
-            "&Load" ),
+            "&Replace Playlist" ),
             this
         );
         m_loadAction->setProperty( "popupdropper_svg_id", "load" );
