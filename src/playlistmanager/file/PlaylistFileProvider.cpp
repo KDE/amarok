@@ -27,11 +27,13 @@
 #include "playlist/PlaylistModelStack.h"
 #include "StatusBar.h"
 
-#include <QString>
-
+#include <KDialog>
 #include <KInputDialog>
 #include <KLocale>
 #include <KUrl>
+
+#include <QLabel>
+#include <QString>
 
 PlaylistFileProvider::PlaylistFileProvider()
  : UserPlaylistProvider()
@@ -206,6 +208,19 @@ void
 PlaylistFileProvider::deletePlaylists( Meta::PlaylistList playlistList )
 {
     DEBUG_BLOCK
+    KDialog dialog( The::mainWindow() );
+    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QLabel label( i18np( "Are you sure you want to delete this playlist?",
+                         "Are you sure you want to delete these %1 playlist files?",
+                         playlistList.count() )
+                    , &dialog
+                  );
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
+    dialog.setMainWidget( &label );
+    if( dialog.exec() != QDialog::Accepted )
+        return;
+
     foreach( Meta::PlaylistPtr playlist, playlistList )
     {
         Meta::PlaylistFilePtr playlistFile = Meta::PlaylistFilePtr::dynamicCast( playlist );
