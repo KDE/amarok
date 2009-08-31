@@ -61,14 +61,6 @@
 #include "widgets/Splitter.h"
 //#include "mediabrowser.h"
 
-#include <QCheckBox>
-#include <QDesktopServices>
-#include <QDesktopWidget>
-#include <QDockWidget>
-#include <QList>
-#include <QSizeGrip>
-#include <QVBoxLayout>
-
 #include <KAction>          //m_actionCollection
 #include <KActionCollection>
 #include <KApplication>     //kapp
@@ -85,6 +77,15 @@
 #include <kabstractfilewidget.h>
 
 #include <plasma/plasma.h>
+
+#include <QCheckBox>
+#include <QDesktopServices>
+#include <QDesktopWidget>
+#include <QDockWidget>
+#include <QList>
+#include <QSizeGrip>
+#include <QSysInfo>
+#include <QVBoxLayout>
 
 #ifdef Q_WS_X11
 #include <fixx11h.h>
@@ -1110,7 +1111,12 @@ void MainWindow::restoreLayout()
     {
 
         const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
-        QFile defaultFile( url.path() + "DefaultDockLayout" );
+
+        QString defaultLayoutFile = "DefaultDockLayout32";
+        if( QSysInfo::WordSize == 64 )
+            defaultLayoutFile = "DefaultDockLayout64";
+            
+        QFile defaultFile( url.path() + defaultLayoutFile );
 
         if ( defaultFile.open( QIODevice::ReadOnly ) )
         {
