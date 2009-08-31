@@ -1115,6 +1115,8 @@ void MainWindow::restoreLayout()
         QString defaultLayoutFile = "DefaultDockLayout32";
         if( QSysInfo::WordSize == 64 )
             defaultLayoutFile = "DefaultDockLayout64";
+
+        debug() << "Loading default layout: " << defaultLayoutFile;
             
         QFile defaultFile( url.path() + defaultLayoutFile );
 
