@@ -120,7 +120,7 @@ EngineController::initializePhonon()
 
     m_controller = new Phonon::MediaController( m_media );
 
-    //Add an equalizer effect if avaiable
+    //Add an equalizer effect if available
     QList<Phonon::EffectDescription> mEffectDescriptions = Phonon::BackendCapabilities::availableAudioEffects();
     foreach ( Phonon::EffectDescription mDescr, mEffectDescriptions ) {
         if ( mDescr.name() == QLatin1String( "KEqualizer" ) ) {
@@ -188,7 +188,7 @@ EngineController::canDecode( const KUrl &url ) //static
     if( !item.size() )
         return false;
 
-    // We can't play directories, reguardless of what the engine says.
+    // We can't play directories, regardless of what the engine says.
     if( item.isDir() )
         return false;
 
@@ -373,8 +373,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
         QString discId = parts.at( 0 );
 
         //we really only want to play it if it is the disc that is currently present.
-        //In the case of cds for which we dont have any id, any "unknown" cds will
-        //be considdered equal.
+        //In the case of CDs for which we don't have any id, any "unknown" CDs will
+        //be considered equal.
 
 
         //FIXME:
@@ -617,7 +617,7 @@ EngineController::setNextTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
-    debug() << "goin to lock mutex";
+    debug() << "locking mutex";
     QMutexLocker locker( &m_mutex );
     debug() << "locked!";
 
@@ -692,9 +692,9 @@ EngineController::eqMaxGain() const
 QStringList
 EngineController::eqBandsFreq() const
 {
-    // This will extract the bands frequency values from effect paramter name
-    // as long as they folow the rules:
-    // eq-preamp paramter will contain 'pre-amp' string
+    // This will extract the bands frequency values from effect parameter name
+    // as long as they follow the rules:
+    // eq-preamp parameter will contain 'pre-amp' string
     // bands parameters are described using schema 'xxxHz'
     QStringList mBandsFreq;
     if( m_equalizer.isNull() )
@@ -730,7 +730,7 @@ EngineController::eqUpdate() //SLOT
     // if equalizer not present simply return
     if( m_equalizer.isNull() )
         return;
-    // checkif equalizer should be disabled ??
+    // check if equalizer should be disabled ??
     if( AmarokConfig::equalizerMode() <= 0 )
     {
         // Remove effect from path
@@ -739,7 +739,7 @@ EngineController::eqUpdate() //SLOT
     }
     else
     {
-        // Set equalizer parameter according to the gains from setttings
+        // Set equalizer parameter according to the gains from settings
         QList<Phonon::EffectParameter> mEqPar = m_equalizer->parameters();
         QList<int> mEqParCfg = AmarokConfig::equalizerGains();
 
@@ -780,7 +780,7 @@ EngineController::slotTick( qint64 position )
     {
         trackPositionChangedNotify( static_cast<long>( position - m_boundedPlayback->startPosition() ), false );
 
-        //dont go beyound the stop point
+        //don't go beyond the stop point
         if ( position >= m_boundedPlayback->endPosition() )
         {
             slotAboutToFinish();
@@ -830,7 +830,7 @@ EngineController::slotAboutToFinish()
     }
     else if ( m_boundedPlayback )
     {
-        debug() << "finished a track that consistst of part of another track, go to next track even if this url is technically not done yet";
+        debug() << "finished a track that consists of part of another track, go to next track even if this url is technically not done yet";
 
         //stop this track, now, as the source track might go on and on, and
         //there might not be any more tracks in the playlist...
@@ -840,7 +840,7 @@ EngineController::slotAboutToFinish()
     }
     else if ( m_currentTrack && m_currentTrack->playableUrl().url().startsWith( "audiocd:/" ) )
     {
-        debug() << "finished a cd track, dont care if queue is not empty, just get new track...";
+        debug() << "finished a CD track, don't care if queue is not empty, just get new track...";
         //m_media->stop();
         The::playlistActions()->requestNextTrack();
         slotQueueEnded();

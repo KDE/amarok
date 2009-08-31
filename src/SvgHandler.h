@@ -35,7 +35,7 @@ namespace The {
 }
 
 /**
-A class to abstract out some common opperations of users of tinted svgs
+A class to abstract out some common operations of users of tinted svgs
 */
 class AMAROK_EXPORT SvgHandler : public QObject
 {
@@ -53,7 +53,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
         /**
         * Overloaded function that uses the current theme
         * @param keyname the name of the key to save in the cache
-        * @param width Widht of the resulting pixmap
+        * @param width Width of the resulting pixmap
         * @param height Height of the resulting pixmap
         * @param element The theme element to render ( if none the entire svg is rendered )
         * @return The svg element/file rendered into a pixmap
@@ -61,11 +61,11 @@ class AMAROK_EXPORT SvgHandler : public QObject
         QPixmap renderSvg( const QString& keyname, int width, int height, const QString& element = QString() );
         
         /**
-         * Yet another oveloaded function. This one renders the svg element and adds half a divider element to the top and the bottom
-         * so it looks sane when multiple elements with the same widh are stacked.
+         * Yet another overloaded function. This one renders the svg element and adds half a divider element to the top and the bottom
+         * so it looks sane when multiple elements with the same width are stacked.
          *
          * @param keyname the name of the key to save in the cache.
-         * @param width Widht of the resulting pixmap.
+         * @param width Width of the resulting pixmap.
          * @param height Height of the resulting pixmap.
          * @param element The theme element to render ( if none the entire svg is rendered )
          * @return The svg element/file rendered into a pixmap.
@@ -88,15 +88,15 @@ class AMAROK_EXPORT SvgHandler : public QObject
          * Paint a custom slider using the specified painter. The slider consists
          * of a background part, a "knob" that moves along it to show the current
          * position, and 2 end markers to clearly mark the ends of the slider.
-         * The bacground part before the knob, is painted in a differnt color than the
+         * The background part before the knob, is painted in a different color than the
          * part after (and under) the knob.
          * @param p The painter to use.
          * @param x The x position to begin painting at.
          * @param y The y position to begin painting at.
          * @param width The width of the slider to paint.
          * @param height The height of the slider. The background part does not scale in height, it will always be a relatively thin line, but the knob and end markers do.
-         * @param percentage The percetange of the slider that the knob is positioned at.
-         * @param active Specifies wheter the slider should be painted "active" using the current palettes active colors, to specify that it currently has mouse focus or hover.
+         * @param percentage The percentange of the slider that the knob is positioned at.
+         * @param active Specifies whether the slider should be painted "active" using the current palettes active colors, to specify that it currently has mouse focus or hover.
          */
         void paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active );
 
