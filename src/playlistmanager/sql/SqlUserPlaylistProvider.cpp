@@ -190,7 +190,6 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& nam
     Meta::SqlPlaylistPtr sqlPlaylist = Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name, tracks,
             Meta::SqlPlaylistGroupPtr() ) );
     reloadFromDb();
-    emit updated();
 
     return Meta::PlaylistPtr::dynamicCast( sqlPlaylist ); //assumes insertion in db was successful!
 }
