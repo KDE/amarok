@@ -75,7 +75,7 @@ void VolumePopupButton::engineVolumeChanged( int newVolume )
     else
         setIcon( KIcon( "audio-volume-high" ) );
 
-    m_volumeLabel->setText( QString::number( newVolume ) + "%" );
+    m_volumeLabel->setText( QString::number( newVolume ) + '%' );
     m_volumeSlider->setValue( newVolume );
 
     //make sure to uncheck mute toolbar when moving slider
@@ -117,5 +117,4 @@ void VolumePopupButton::wheelEvent( QWheelEvent * event )
     volume = qBound( 0, volume + event->delta() / 40 , 100 );
     ec->setVolume( volume );
 }
-
 #include "VolumePopupButton.moc"
