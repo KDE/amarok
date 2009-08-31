@@ -472,7 +472,7 @@ Reader::addTrack( const QString& itemId, const QString& title, const QString& ar
     track->setLength( songTime );
     track->setTrackNumber( trackNumber );
     track->setComment( comment );
-    track->setComment( composer );
+    track->setComposer( composer );
 
     DaapAlbumPtr albumPtr;
     if ( m_albumMap.contains( album ) )
