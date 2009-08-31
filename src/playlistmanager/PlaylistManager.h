@@ -164,7 +164,7 @@ class PlaylistManager : public QObject
          *  Retrieves the provider owning the given playlist
          *  @arg playlist the playlist whose provider we want
          */
-        PlaylistProvider* getProviderForPlaylist( const Meta::PlaylistPtr &playlist );
+        PlaylistProvider* getProviderForPlaylist( const Meta::PlaylistPtr playlist );
 
         /**
          *  Checks if the provider to whom this playlist belongs supports writing

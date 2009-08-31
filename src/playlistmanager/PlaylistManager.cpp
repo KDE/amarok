@@ -425,7 +425,7 @@ PlaylistManager::moveTrack( Meta::PlaylistPtr playlist, int from, int to )
 }
 
 PlaylistProvider*
-PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
+PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr playlist )
 {
     // Iteratively check all providers' playlists for ownership
     foreach( PlaylistProvider* provider, m_providerMap.values( UserPlaylist ) )
