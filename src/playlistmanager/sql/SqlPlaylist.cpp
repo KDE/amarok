@@ -27,10 +27,12 @@
 #include <typeinfo>
 
 Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
-        &tracks, Meta::SqlPlaylistGroupPtr parent, const QString &urlId )
+        &tracks, Meta::SqlPlaylistGroupPtr parent, PlaylistProvider *provider,
+        const QString &urlId )
     : m_dbId( -1 )
     , m_parent( parent )
     , m_tracks( tracks )
+    , m_provider( provider)
     , m_name( name )
     , m_description( QString() )
     , m_urlId( urlId )
@@ -39,8 +41,11 @@ Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
     saveToDb();
 }
 
-Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow, Meta::SqlPlaylistGroupPtr parent )
+Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow,
+                                Meta::SqlPlaylistGroupPtr parent,
+                                PlaylistProvider *provider )
     : m_parent( parent )
+    , m_provider( provider)
     , m_tracksLoaded( false )
 {
     m_dbId = resultRow[0].toInt();

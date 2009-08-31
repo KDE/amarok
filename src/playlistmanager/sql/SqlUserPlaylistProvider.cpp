@@ -49,7 +49,7 @@ SqlUserPlaylistProvider::SqlUserPlaylistProvider()
 {
     checkTables();
     m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( "",
-            Meta::SqlPlaylistGroupPtr() ) );
+            Meta::SqlPlaylistGroupPtr(), this ) );
 }
 
 SqlUserPlaylistProvider::~SqlUserPlaylistProvider()
@@ -187,8 +187,11 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& nam
 {
     DEBUG_BLOCK
     debug() << "saving " << tracks.count() << " tracks to db with name" << name;
-    Meta::SqlPlaylistPtr sqlPlaylist = Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name, tracks,
-            Meta::SqlPlaylistGroupPtr() ) );
+    Meta::SqlPlaylistPtr sqlPlaylist = Meta::SqlPlaylistPtr(
+            new Meta::SqlPlaylist( name, tracks,
+                Meta::SqlPlaylistGroupPtr(),
+                this )
+            );
     reloadFromDb();
 
     return Meta::PlaylistPtr::dynamicCast( sqlPlaylist ); //assumes insertion in db was successful!
@@ -239,7 +242,10 @@ SqlUserPlaylistProvider::import( const QString& fromLocation )
 
     Meta::SqlPlaylistPtr sqlPlaylist =
         Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( playlist->name(), tracks,
-                                                     Meta::SqlPlaylistGroupPtr(), fromLocation ) );
+                                                     Meta::SqlPlaylistGroupPtr(),
+                                                     this,
+                                                     fromLocation )
+                              );
     reloadFromDb();
     emit updated();
 
@@ -277,7 +283,7 @@ SqlUserPlaylistProvider::group( const QString &name )
     }
 
     debug() << "Creating a new group " << name;
-    group = new Meta::SqlPlaylistGroup( name, m_root );
+    group = new Meta::SqlPlaylistGroup( name, m_root, this );
     group->save();
 
     return group;

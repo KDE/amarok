@@ -33,6 +33,7 @@
 #include <kurl.h>
 
 class QTextStream;
+class PlaylistProvider;
 
 namespace Meta
 {
@@ -67,6 +68,8 @@ namespace Meta
             virtual QString name() const = 0;
             virtual QString prettyName() const = 0;
             virtual QString description() const { return QString(); }
+
+            virtual PlaylistProvider *provider() const { return 0; }
 
             /**override showing just the filename */
             virtual void setName( const QString &name ) { m_name = name; }

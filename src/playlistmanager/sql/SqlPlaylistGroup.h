@@ -39,9 +39,9 @@ namespace Meta
     {
         public:
             SqlPlaylistGroup( const QStringList &dbResultRow,
-                    Meta::SqlPlaylistGroupPtr parent );
+                    Meta::SqlPlaylistGroupPtr parent, PlaylistProvider *provider );
             SqlPlaylistGroup( const QString &name,
-                    Meta::SqlPlaylistGroupPtr parent );
+                    Meta::SqlPlaylistGroupPtr parent, PlaylistProvider *provider );
 
             ~SqlPlaylistGroup();
 
@@ -73,6 +73,8 @@ namespace Meta
             QString m_name;
             QString m_description;
             Meta::SqlPlaylistGroupPtr m_parent;
+
+            PlaylistProvider *m_provider;
     };
 }
 

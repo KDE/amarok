@@ -22,23 +22,29 @@
 
 #include <typeinfo>
 
-Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow, Meta::SqlPlaylistGroupPtr parent )
+Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QStringList & dbResultRow,
+                                          Meta::SqlPlaylistGroupPtr parent,
+                                          PlaylistProvider *provider )
     : m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
     , m_parent( parent )
+    , m_provider( provider )
 {
     m_dbId = dbResultRow[0].toInt();
     m_name = dbResultRow[2];
     m_description = dbResultRow[3];
 }
 
-Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QString & name, Meta::SqlPlaylistGroupPtr parent )
+Meta::SqlPlaylistGroup::SqlPlaylistGroup( const QString & name,
+                                          Meta::SqlPlaylistGroupPtr parent,
+                                          PlaylistProvider *provider )
     : m_dbId( -1 )
     , m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
     , m_name( name )
     , m_description( QString() )
     , m_parent( parent )
+    , m_provider( provider )
 {}
 
 Meta::SqlPlaylistGroup::~SqlPlaylistGroup()
@@ -142,7 +148,7 @@ Meta::SqlPlaylistGroup::childSqlGroups() const
             SqlPlaylistGroup* mutableThis =
                     const_cast<SqlPlaylistGroup*>( this );
             m_childGroups << SqlPlaylistGroupPtr(
-                new SqlPlaylistGroup( row, SqlPlaylistGroupPtr( mutableThis ) )
+                new SqlPlaylistGroup( row, SqlPlaylistGroupPtr( mutableThis ), m_provider )
             );
         }
 
@@ -175,7 +181,8 @@ Meta::SqlPlaylistGroup::childSqlPlaylists() const
             m_childPlaylists << Meta::SqlPlaylistPtr(
                     new Meta::SqlPlaylist(
                                 row,
-                                SqlPlaylistGroupPtr( mutableThis )
+                                SqlPlaylistGroupPtr( mutableThis ),
+                                m_provider
                     )
             );
         }

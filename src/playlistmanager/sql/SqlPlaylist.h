@@ -20,6 +20,8 @@
 #include "Playlist.h"
 // #include "playlistmanager/sql/SqlPlaylistGroup.h"
 
+class PlaylistProvider;
+
 namespace Meta
 {
 class SqlPlaylist;
@@ -40,8 +42,10 @@ class SqlPlaylist : public Playlist
     public:
         //SqlPlaylist( int id );
         SqlPlaylist( const QString &name, const TrackList &tracks,
-                SqlPlaylistGroupPtr parent, const QString &urlId = QString() );
-        SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent );
+                SqlPlaylistGroupPtr parent, PlaylistProvider *provider,
+                const QString &urlId = QString() );
+        SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent,
+                     PlaylistProvider *provider );
 
         ~SqlPlaylist();
 
@@ -49,6 +53,9 @@ class SqlPlaylist : public Playlist
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
         virtual QString description() const { return m_description; }
+
+        virtual PlaylistProvider *provider() const { return m_provider; }
+
         virtual void setName( const QString &name );
 
         virtual QStringList groups();
@@ -80,6 +87,7 @@ class SqlPlaylist : public Playlist
         int m_dbId;
         Meta::SqlPlaylistGroupPtr m_parent;
         Meta::TrackList m_tracks;
+        PlaylistProvider *m_provider;
         QString m_name;
         QString m_description;
         QString m_urlId;
