@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -65,7 +65,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     }
 
     m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
-    if( category->prettyName() == QString() )   //if it's a root item
+    if( category->prettyName().isEmpty() )   //if it's a root item
         m_mainButton->setFixedWidth( 20 );
     
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );

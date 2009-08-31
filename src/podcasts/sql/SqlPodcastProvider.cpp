@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -508,8 +508,8 @@ void
 SqlPodcastProvider::slotDownloadProgress( KJob *job, unsigned long percent )
 {
     unsigned int totalDownloadPercentage = 0;
-    foreach( const KJob *job, m_downloadJobMap.keys() )
-        totalDownloadPercentage += job->percent();
+    foreach( const KJob *jobKey, m_downloadJobMap.keys() )
+        totalDownloadPercentage += jobKey->percent();
 
     //keep the completed jobs in mind as well.
     totalDownloadPercentage += m_completedDownloads * 100;

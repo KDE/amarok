@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -173,7 +173,7 @@ App::App()
 #ifdef Q_WS_MAC
     // this is inspired by OpenSceneGraph: osgDB/FilePath.cpp
 
-    // Start with the the Bundle PlugIns directory.
+    // Start with the Bundle PlugIns directory.
 
     // Get the main bundle first. No need to retain or release it since
     //  we are not keeping a reference
@@ -641,7 +641,7 @@ App::continueInit()
                                 || Amarok::config().readEntry( "AppendAsDefault", false );
 
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
-    QTextCodec::setCodecForCStrings( utf8codec ); //We need this to make CollectionViewItem showing the right charecters.
+    QTextCodec::setCodecForCStrings( utf8codec ); //We need this to make CollectionViewItem showing the right characters.
 
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();
@@ -824,7 +824,7 @@ namespace Amarok
                           cal->yearString(date, KCalendarSystem::LongFormat) );
         }
 
-        //TODO "last week" = maybe within 7 days, but prolly before last sunday
+        //TODO "last week" = maybe within 7 days, but prolly before last Sunday
 
         if( datediff >= 7 )  // return difference in weeks
             return i18np( "One week ago", "%1 weeks ago", (datediff+3)/7 );
@@ -976,7 +976,7 @@ namespace Amarok
         result.replace( QChar(0x00D8), "OE" );
         result.replace( QChar(0x00F8), "oe" );
 
-        // normalize in a form where accents are seperate characters
+        // normalize in a form where accents are separate characters
         result = result.normalized( QString::NormalizationForm_D );
 
         // remove accents from table "Combining Diacritical Marks"
@@ -1048,7 +1048,7 @@ namespace Amarok
         /* max path length of Windows API */
         s = s.left(255);
 
-        /* whitespaces at the end of folder/file names or extensions are bad */
+        /* whitespace at the end of folder/file names or extensions are bad */
         len = s.length();
         if( s[len-1] == ' ' )
             s[len-1] = '_';
@@ -1058,7 +1058,7 @@ namespace Amarok
             if( s.at( extensionIndex - 1 ) == ' ' )
                 s[extensionIndex - 1] = '_';
 
-        for( int i = 1; i < s.length(); i++ ) // correct trailing whitespaces in folder names
+        for( int i = 1; i < s.length(); i++ ) // correct trailing whitespace in folder names
         {
             if( ( s.at( i ) == QDir::separator() ) && ( s.at( i - 1 ) == ' ' ) )
                 s[i - 1] = '_';
@@ -1068,7 +1068,7 @@ namespace Amarok
     }
 
     /* Strip the common prefix of two strings from the first one and trim
-     * whitespaces from the beginning of the resultant string.
+     * whitespace from the beginning of the resultant string.
      * Case-insensitive.
      *
      * @param input the string being processed
