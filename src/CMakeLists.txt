@@ -187,7 +187,6 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/OsdConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
     configdialog/dialogs/ServiceConfig.cpp
-    configdialog/dialogs/DatabaseConfig.cpp
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
@@ -195,7 +194,6 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/OsdConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
-    configdialog/dialogs/DatabaseConfig.ui
 )
 
 set(libbrowserframework_SRCS

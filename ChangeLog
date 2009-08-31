@@ -64,7 +64,8 @@ VERSION 2.2-beta1
       The video can be appended to the playlist, and rendered within the applet.
     * Photo applet to show images from Flickr, with customizable animations.
     * Customizable user interface using dock widgets.
-    * Support for external MySQL database.
+    * Support for external MySQL database. See
+      http://amarok.kde.org/wiki/MySQL_Server.
     * GHNS integration for downloading and installing Context applets.
     * Support for Context applets to be written in QtScript.
     * Custom Dynamic Playlists using Last.fm.
