@@ -35,6 +35,7 @@
 
 #include <kurl.h>
 #include <KMessageBox>
+#include <KMimeType>
 
 #include <QDateTime>
 #include <QDomElement>
@@ -112,6 +113,16 @@ XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
 XSPFPlaylist::~XSPFPlaylist()
 {}
 
+QString
+XSPFPlaylist::description() const
+{
+    if( !annotation().isEmpty() )
+        return annotation();
+
+    KMimeType::Ptr mimeType = KMimeType::mimeType( "application/xspf+xml" );
+    return QString( "%1 (%2)").arg( mimeType->name(), mimeType->mainExtension() );
+}
+
 bool
 XSPFPlaylist::save( const KUrl &location, bool relative )
 {
@@ -134,15 +145,6 @@ XSPFPlaylist::save( const KUrl &location, bool relative )
         file.setFileName( savePath.path() );
     }
 
-    if( file.exists() )
-        //TODO: prompt for overwrite.
-        {
-            if( KUrl( ::Playlist::ModelStack::instance()->source()->defaultPlaylistPath() ) != savePath )
-            {
-                return false;
-            }
-            warning() << "The file" << location << "exists, overwriting...";
-        }
     if( !file.open( QIODevice::WriteOnly ) )
     {
         if( The::mainWindow() ) // MainWindow might already be destroyed at this point (at program shutdown)
@@ -264,55 +266,55 @@ XSPFPlaylist::title() const
 }
 
 QString
-XSPFPlaylist::creator()
+XSPFPlaylist::creator() const
 {
     return documentElement().namedItem( "creator" ).firstChild().nodeValue();
 }
 
 QString
-XSPFPlaylist::annotation()
+XSPFPlaylist::annotation() const
 {
     return documentElement().namedItem( "annotation" ).firstChild().nodeValue();
 }
 
 KUrl
-XSPFPlaylist::info()
+XSPFPlaylist::info() const
 {
     return KUrl( documentElement().namedItem( "info" ).firstChild().nodeValue() );
 }
 
 KUrl
-XSPFPlaylist::location()
+XSPFPlaylist::location() const
 {
     return KUrl( documentElement().namedItem( "location" ).firstChild().nodeValue() );
 }
 
 QString
-XSPFPlaylist::identifier()
+XSPFPlaylist::identifier() const
 {
     return documentElement().namedItem( "identifier" ).firstChild().nodeValue();
 }
 
 KUrl
-XSPFPlaylist::image()
+XSPFPlaylist::image() const
 {
     return KUrl( documentElement().namedItem( "image" ).firstChild().nodeValue() );
 }
 
 QDateTime
-XSPFPlaylist::date()
+XSPFPlaylist::date() const
 {
     return QDateTime::fromString( documentElement().namedItem( "date" ).firstChild().nodeValue(), Qt::ISODate );
 }
 
 KUrl
-XSPFPlaylist::license()
+XSPFPlaylist::license() const
 {
     return KUrl( documentElement().namedItem( "license" ).firstChild().nodeValue() );
 }
 
 KUrl::List
-XSPFPlaylist::attribution()
+XSPFPlaylist::attribution() const
 {
     QDomNode node = documentElement().namedItem( "attribution" );
     KUrl::List list;
@@ -331,7 +333,7 @@ XSPFPlaylist::attribution()
 }
 
 KUrl
-XSPFPlaylist::link()
+XSPFPlaylist::link() const
 {
     return KUrl( documentElement().namedItem( "link" ).firstChild().nodeValue() );
 }
@@ -347,7 +349,14 @@ XSPFPlaylist::setTitle( const QString &title )
         documentElement().insertBefore( node, documentElement().namedItem( "trackList" ) );
     }
     else
-        documentElement().namedItem( "title" ).replaceChild( createTextNode( title ), documentElement().namedItem( "title" ).firstChild() );
+    {
+        documentElement().namedItem( "title" ).replaceChild( createTextNode( title ),
+                                    documentElement().namedItem( "title" ).firstChild()
+                                );
+    }
+
+    //write these changes directly to the file
+    save( m_url, false );
 }
 
 void

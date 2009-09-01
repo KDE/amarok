@@ -23,6 +23,7 @@
 #include "PlaylistManager.h"
 #include "PlaylistFileSupport.h"
 
+#include <KMimeType>
 #include <KLocale>
 
 #include <QTextStream>
@@ -80,6 +81,13 @@ PLSPlaylist::PLSPlaylist( const KUrl &url )
 
 PLSPlaylist::~PLSPlaylist()
 {
+}
+
+QString
+PLSPlaylist::description() const
+{
+    KMimeType::Ptr mimeType = KMimeType::mimeType( "audio/x-mpegurl" );
+    return QString( "%1 (%2)").arg( mimeType->name(), mimeType->mainExtension() );
 }
 
 bool

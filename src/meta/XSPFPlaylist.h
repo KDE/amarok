@@ -73,22 +73,23 @@ public:
 
     virtual QString name() const { return title(); }
     virtual QString prettyName() const { return name(); }
+    virtual QString description() const;
 
     /** returns all tracks in this playlist */
     TrackList tracks();
 
     /* convenience functions */
     QString title() const;
-    QString creator();
-    QString annotation();
-    KUrl info();
-    KUrl location();
-    QString identifier();
-    KUrl image();
-    QDateTime date();
-    KUrl license();
-    KUrl::List attribution();
-    KUrl link();
+    QString creator() const;
+    QString annotation() const;
+    KUrl info() const;
+    KUrl location() const;
+    QString identifier() const;
+    KUrl image() const;
+    QDateTime date() const;
+    KUrl license() const;
+    KUrl::List attribution() const ;
+    KUrl link() const;
 
     /* EditablePlaylistCapability virtual functions */
     void setTitle( const QString &title );

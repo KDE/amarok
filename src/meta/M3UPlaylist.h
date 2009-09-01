@@ -45,6 +45,7 @@ class M3UPlaylist : public PlaylistFile
         /* Playlist virtual functions */
         virtual QString name() const { return prettyName(); }
         virtual QString prettyName() const { return m_url.fileName(); }
+        virtual QString description() const;
 
         /** returns all tracks in this playlist */
         virtual TrackList tracks() { return m_tracks; }
