@@ -47,6 +47,7 @@ FastForwardWorker::FastForwardWorker()
     , m_password()
     , m_smartMatch( false )
     , m_importArtwork( false )
+    , m_queryRunning( false )
 {
 }
 
