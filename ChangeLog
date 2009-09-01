@@ -2,6 +2,12 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
+VERSION 2.2-beta2
+  BUGFIXES:
+    * Fixed track queuing when the playlist uses a random track progression.
+      (BR 194328)
+    * Fixed issue where files or folders with the same name but different case
+      sensitivity were not scanned and/or retained. (BR 197384)
 
 VERSION 2.2-beta1
   FEATURES:
@@ -104,10 +110,6 @@ VERSION 2.2-beta1
     * Changed trackInserted and trackRemoved API signals. (BR 194220)
 
   BUGFIXES:
-    * Fixed track queuing when the playlist uses a random track progression.
-      (BR 194328)
-    * Fixed issue where files or folders with the same name but different case
-      sensitivity were not scanned and/or retained. (BR 197384)
     * Improved Amarok 1.4 import. Patch thanks to Michael Reiher <redm@gmx.de>.
     * Improved performance and decreased memory usage when loading music shares
       (DAAP collections). Patch thanks to Duns <dunsens@web.de>. (BR 173048)
