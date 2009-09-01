@@ -557,4 +557,32 @@
         <default>Default</default>
     </entry>
 </group>
+
+<group name="MySQL">
+    <entry key="UseServer" type="Bool">
+        <label>Whether Amarok uses its own internal database, as opposed to an external engine.</label>
+        <default>false</default>
+    </entry>
+    <entry key="Host" type="String">
+        <label>The hostname of the external server to connect to.</label>
+        <default>localhost</default>
+    </entry>
+    <entry key="Port" type="Int">
+        <label>Which server port to connect to the database engine.</label>
+        <default>3306</default>
+    </entry>
+    <entry key="Database" type="String">
+        <label>The name of the database Amarok will use. The user should have sufficient access permissions.</label>
+        <default>amarokdb</default>
+    </entry>
+    <entry key="User" type="String">
+        <label>Username used to access the external database.</label>
+        <default>amarokuser</default>
+    </entry>
+    <entry key="Password" type="String">
+        <label>Password for the external database user.</label>
+        <default></default>
+    </entry>
+</group>
+
 </kcfg>

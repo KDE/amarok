@@ -34,7 +34,7 @@ MySqlServerCollectionFactory::init()
 {
     Amarok::Collection* collection;
 
-    collection = new MySqlServerCollection( "serverCollection", i18n( "Local Collection (on %1)").arg( Amarok::config( "MySQL" ).readEntry( "Host" ) ) );
+    collection = new MySqlServerCollection( "serverCollection", i18n( "Local Collection (on %1)").arg( Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ) ) );
 
     emit newCollection( collection );
 }
@@ -58,9 +58,9 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
     }
 
     if( !mysql_real_connect( m_db,
-                Amarok::config( "MySQL" ).readEntry( "Host" ).toUtf8(),
-                Amarok::config( "MySQL" ).readEntry( "User" ).toUtf8(),
-                Amarok::config( "MySQL" ).readEntry( "Password" ).toUtf8(),
+                Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ).toUtf8(),
+                Amarok::config( "MySQL" ).readEntry( "User", "amarokuser" ).toUtf8(),
+                Amarok::config( "MySQL" ).readEntry( "Password", "" ).toUtf8(),
                 NULL,
                 Amarok::config( "MySQL" ).readEntry( "Port", "3306" ).toInt(),
                 NULL,
@@ -75,7 +75,7 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
     }
     else
     {
-        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarok" );
+        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
         if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
             reportError( "SET NAMES 'utf8' died" );
         if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" ).arg( databaseName ).toUtf8() ) )

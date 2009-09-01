@@ -21,6 +21,7 @@
 #include "Debug.h"
 
 #include "CollectionConfig.h"
+#include "DatabaseConfig.h"
 #include "GeneralConfig.h"
 #include "MainWindow.h"
 //#include "MediadeviceConfig.h"
@@ -47,6 +48,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* services    = new ServiceConfig( this );
     ConfigDialogBase* playback    = new PlaybackConfig( this );
     ConfigDialogBase* osd         = new OsdConfig( this );
+    ConfigDialogBase* database    = new DatabaseConfig( this );
 
     connect( general, SIGNAL( lockLayout( bool ) ), The::mainWindow(), SLOT ( setLayoutLocked( bool ) ) );
 
@@ -57,6 +59,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( services,    i18n( "Internet Services" ), "services-amarok", i18n( "Configure Services" ) );
     addPage( playback,    i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
     addPage( osd,         i18n( "On Screen Display" ), "preferences-indicator-amarok", i18n( "Configure On-Screen-Display" ) );
+    addPage( database,    i18n( "Database" ), "preferences-database-amarok", i18n( "Configure Database" ) );
 //    addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
     setButtons( Help | Ok | Apply | Cancel );
