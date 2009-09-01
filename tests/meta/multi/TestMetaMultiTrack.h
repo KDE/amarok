@@ -31,7 +31,7 @@ class TestMetaMultiTrack : public QObject
 Q_OBJECT
 
 public:
-    TestMetaMultiTrack( QStringList testArgumentList );
+    TestMetaMultiTrack( QStringList testArgumentList, bool stdout );
 
 private slots:
     void initTestCase();

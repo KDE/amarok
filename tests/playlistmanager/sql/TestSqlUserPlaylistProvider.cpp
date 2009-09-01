@@ -25,9 +25,10 @@
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 
-TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider( QStringList testArgumentList )
+TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SqlUserPlaylistProvider.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SqlUserPlaylistProvider.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

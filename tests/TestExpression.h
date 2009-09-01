@@ -27,7 +27,7 @@ class TestExpression : public QObject
 Q_OBJECT
 
 public:
-    TestExpression( QStringList testArgumentList );
+    TestExpression( QStringList testArgumentList, bool stdout );
 
 private slots:
     void testParse();

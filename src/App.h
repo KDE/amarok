@@ -79,7 +79,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
     public slots:
         void applySettings( bool firstTime = false );
 #ifdef DEBUG
-        static void runUnitTests();
+        static void runUnitTests( bool stdout );
 #endif // DEBUG
         void slotConfigAmarok( const QString& page = QString() );
         void slotConfigShortcuts();

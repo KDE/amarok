@@ -25,9 +25,10 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 
-TestPLSPlaylist::TestPLSPlaylist( QStringList testArgumentList )
+TestPLSPlaylist::TestPLSPlaylist( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PLSPlaylist.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PLSPlaylist.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

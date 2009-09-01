@@ -22,9 +22,10 @@
 
 #include <QtTest/QTest>
 
-TestCaseConverter::TestCaseConverter( QStringList testArgumentList )
+TestCaseConverter::TestCaseConverter( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "CaseConverter.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "CaseConverter.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

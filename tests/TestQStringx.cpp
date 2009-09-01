@@ -23,9 +23,10 @@
 #include <QtCore/QString>
 #include <QtCore/QMap>
 
-TestQStringx::TestQStringx( QStringList testArgumentList )
+TestQStringx::TestQStringx( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "QStringx.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "QStringx.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

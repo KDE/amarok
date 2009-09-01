@@ -31,7 +31,7 @@ class TestMetaCueTrack : public QObject
 Q_OBJECT
 
 public:
-    TestMetaCueTrack( QStringList testArgumentList );
+    TestMetaCueTrack( QStringList testArgumentList, bool stdout );
 
 private slots:
     void initTestCase();

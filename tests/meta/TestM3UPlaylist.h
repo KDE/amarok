@@ -29,7 +29,7 @@ class TestM3UPlaylist : public QObject
 Q_OBJECT
 
 public:
-    TestM3UPlaylist( QStringList testArgumentList );
+    TestM3UPlaylist( QStringList testArgumentList, bool stdout );
 
 private slots:
     void initTestCase();

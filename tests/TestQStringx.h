@@ -29,7 +29,7 @@ class TestQStringx : public QObject
 Q_OBJECT
 
 public:
-    TestQStringx( QStringList testArgumentList );
+    TestQStringx( QStringList testArgumentList, bool stdout );
 
 private slots:
     void testArgs();

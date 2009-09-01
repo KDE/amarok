@@ -26,9 +26,10 @@
 // use a macro, as we don't want to test copy ctor early
 #define THREE_TIMERS( x ) SmartPointerList<QTimer> x; x << new QTimer << new QTimer << new QTimer
 
-TestSmartPointerList::TestSmartPointerList( QStringList testArgumentList )
+TestSmartPointerList::TestSmartPointerList( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SmartPointerList.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SmartPointerList.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

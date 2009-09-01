@@ -23,9 +23,10 @@
 
 #include <QtTest/QTest>
 
-TestTimecodeTrackProvider::TestTimecodeTrackProvider( QStringList testArgumentList )
+TestTimecodeTrackProvider::TestTimecodeTrackProvider( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "TimecodeTrackProvider.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "TimecodeTrackProvider.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

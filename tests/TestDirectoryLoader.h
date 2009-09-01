@@ -30,7 +30,7 @@ class TestDirectoryLoader : public QObject
 Q_OBJECT
 
 public:
-    TestDirectoryLoader( QStringList testArgumentList );
+    TestDirectoryLoader( QStringList testArgumentList, bool stdout );
 
 public slots:
     void loadersFinished();

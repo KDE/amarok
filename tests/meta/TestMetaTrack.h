@@ -29,7 +29,7 @@ class TestMetaTrack : public QObject
 Q_OBJECT
 
 public:
-    TestMetaTrack( QStringList testArgumentList );
+    TestMetaTrack( QStringList testArgumentList, bool stdout );
 
 private slots:
     void initTestCase();

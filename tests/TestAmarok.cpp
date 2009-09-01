@@ -27,9 +27,10 @@
 #include <QtCore/QString>
 #include <QtCore/QDateTime>
 
-TestAmarok::TestAmarok( QStringList testArgumentList )
+TestAmarok::TestAmarok( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Amarok.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Amarok.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

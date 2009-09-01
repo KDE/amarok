@@ -27,9 +27,10 @@
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 
-TestMetaMultiTrack::TestMetaMultiTrack( QStringList testArgumentList )
+TestMetaMultiTrack::TestMetaMultiTrack( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaMultiTrack.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaMultiTrack.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

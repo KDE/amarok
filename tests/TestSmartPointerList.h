@@ -27,7 +27,7 @@ class TestSmartPointerList : public QObject
 Q_OBJECT
 
 public:
-    TestSmartPointerList( QStringList testArgumentList );
+    TestSmartPointerList( QStringList testArgumentList, bool stdout );
 
 private slots:
     void testCount();

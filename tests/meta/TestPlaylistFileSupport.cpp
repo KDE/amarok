@@ -26,9 +26,10 @@
 #include <QtCore/QDir>
 
 
-TestPlaylistFileSupport::TestPlaylistFileSupport( QStringList testArgumentList )
+TestPlaylistFileSupport::TestPlaylistFileSupport( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PlaylistFileSupport.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PlaylistFileSupport.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

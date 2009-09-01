@@ -27,7 +27,7 @@ class TestMetaCueCueFileItem : public QObject
 Q_OBJECT
 
 public:
-    TestMetaCueCueFileItem( QStringList testArgumentList );
+    TestMetaCueCueFileItem( QStringList testArgumentList, bool stdout );
 
 private slots:
     void testSetAndGetLength();

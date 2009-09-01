@@ -27,7 +27,7 @@ class TestAmarok : public QObject
 Q_OBJECT
 
 public:
-    TestAmarok( QStringList testArgumentList );
+    TestAmarok( QStringList testArgumentList, bool stdout );
 
 private slots:
     void testAsciiPath();

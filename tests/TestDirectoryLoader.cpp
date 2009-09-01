@@ -29,9 +29,11 @@
 /* This one is a bit ugly, as the results of the methods in DirectoryLoader can't *
  * be checked directly there but only in the playlist.                            */
 
-TestDirectoryLoader::TestDirectoryLoader( QStringList testArgumentList )
+TestDirectoryLoader::TestDirectoryLoader( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "DirectoryLoader.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "DirectoryLoader.xml" );
+
     m_testArgumentList = testArgumentList;
     m_finishedLoaders = 0;
 

@@ -26,9 +26,10 @@
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 
-TestXSPFPlaylist::TestXSPFPlaylist( QStringList testArgumentList )
+TestXSPFPlaylist::TestXSPFPlaylist( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "XSPFPlaylist.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "XSPFPlaylist.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

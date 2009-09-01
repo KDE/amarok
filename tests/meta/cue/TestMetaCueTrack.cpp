@@ -26,9 +26,10 @@
 #include <QtCore/QString>
 
 
-TestMetaCueTrack::TestMetaCueTrack( QStringList testArgumentList )
+TestMetaCueTrack::TestMetaCueTrack( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueTrack.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueTrack.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

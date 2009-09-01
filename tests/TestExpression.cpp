@@ -22,9 +22,10 @@
 
 #include <QtTest/QTest>
 
-TestExpression::TestExpression( QStringList testArgumentList )
+TestExpression::TestExpression( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Expression.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Expression.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

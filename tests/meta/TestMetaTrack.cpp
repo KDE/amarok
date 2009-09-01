@@ -25,9 +25,10 @@
 
 #include <QtTest/QTest>
 
-TestMetaTrack::TestMetaTrack( QStringList testArgumentList )
+TestMetaTrack::TestMetaTrack( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaTrack.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaTrack.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

@@ -26,9 +26,10 @@
 #include <QtCore/QDir>
 #include <QtCore/QString>
 
-TestM3UPlaylist::TestM3UPlaylist( QStringList testArgumentList )
+TestM3UPlaylist::TestM3UPlaylist( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "M3UPlaylist.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "M3UPlaylist.xml" );
     QTest::qExec( this, testArgumentList );
 }
 

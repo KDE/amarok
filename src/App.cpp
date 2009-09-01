@@ -433,7 +433,7 @@ App::handleCliArgs() //static
 #ifdef DEBUG
     if( args->isSet( "test" ) )
     {
-        runUnitTests();
+        runUnitTests( args->isSet( "teststdout" ) );
     }
 #endif // DEBUG
 
@@ -493,6 +493,7 @@ App::initCliArgs() //static
     options.add("test", ki18n( "Run integrated unit tests, if your build supports it" ));
     options.add("p");
     options.add("subscribe <feed-url>", ki18n( "Subscribe to podcast feed" ) );
+    options.add("teststdout", ki18n( "output test results to stdout instead of log files" ));
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
@@ -608,12 +609,21 @@ void App::applySettings( bool firstTime )
 #ifdef DEBUG
 //SLOT
 void
-App::runUnitTests()
+App::runUnitTests( bool stdout )
 {
     DEBUG_BLOCK
     QStringList testArgumentList;
+<<<<<<< HEAD:src/App.cpp
     QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + '/' );
     testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v2";
+=======
+    QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + "/" );
+
+    if( !stdout )
+        testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v2";
+    else
+        testArgumentList << "amarok" << "-xml" << "-v2";
+>>>>>>> make it possible to output test logs to stdout. to do this start amarok with --test --teststdout:src/App.cpp
 
     // create log folder for this run:
     QDir logDir( logPath );
@@ -623,26 +633,26 @@ App::runUnitTests()
     QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
 
     PERF_LOG( "Running Unit Tests" )
-    TestAmarok                  testAmarok( testArgumentList );
-    TestCaseConverter           testCaseConverter( testArgumentList );
-    TestExpression              testExpression( testArgumentList );
-    TestM3UPlaylist             testM3UPlaylist( testArgumentList );
-    TestMetaCueCueFileItem      testMetaCueCueFileItem( testArgumentList );
-    TestMetaCueTrack            testMetaCueTrack( testArgumentList );
-    TestMetaFileTrack           testMetaFileTrack( testArgumentList );
-    TestMetaMultiTrack          testMetaMultiTrack( testArgumentList );
-    TestMetaTrack               testMetaTrack( testArgumentList );
-    TestPlaylistFileProvider    testPlaylistFileProvider( testArgumentList );
-    TestPlaylistFileSupport     testPlaylistFileSupport( testArgumentList );
-    TestPLSPlaylist             testPLSPlaylist( testArgumentList );
-    TestQStringx                testQStringx( testArgumentList );
-    TestSmartPointerList        testSmartPointerList( testArgumentList );
-    TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList );
-    TestTimecodeTrackProvider   testTimecodeTrackProvider( testArgumentList );
-    TestXSPFPlaylist            testXSPFPlaylist( testArgumentList );
+    TestAmarok                  testAmarok( testArgumentList, stdout );
+    TestCaseConverter           testCaseConverter( testArgumentList, stdout );
+    TestExpression              testExpression( testArgumentList, stdout );
+    TestM3UPlaylist             testM3UPlaylist( testArgumentList, stdout );
+    TestMetaCueCueFileItem      testMetaCueCueFileItem( testArgumentList, stdout );
+    TestMetaCueTrack            testMetaCueTrack( testArgumentList, stdout );
+    TestMetaFileTrack           testMetaFileTrack( testArgumentList, stdout );
+    TestMetaMultiTrack          testMetaMultiTrack( testArgumentList, stdout );
+    TestMetaTrack               testMetaTrack( testArgumentList, stdout );
+    TestPlaylistFileProvider    testPlaylistFileProvider( testArgumentList, stdout );
+    TestPlaylistFileSupport     testPlaylistFileSupport( testArgumentList, stdout );
+    TestPLSPlaylist             testPLSPlaylist( testArgumentList, stdout );
+    TestQStringx                testQStringx( testArgumentList, stdout );
+    TestSmartPointerList        testSmartPointerList( testArgumentList, stdout );
+    TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList, stdout );
+    TestTimecodeTrackProvider   testTimecodeTrackProvider( testArgumentList, stdout );
+    TestXSPFPlaylist            testXSPFPlaylist( testArgumentList, stdout);
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
-    TestDirectoryLoader        *testDirectoryLoader = new TestDirectoryLoader( testArgumentList );
+    TestDirectoryLoader        *testDirectoryLoader = new TestDirectoryLoader( testArgumentList, stdout );
 
     PERF_LOG( "Done Running Unit Tests" )
     Q_UNUSED( testDirectoryLoader )
