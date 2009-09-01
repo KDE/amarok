@@ -60,90 +60,41 @@ loadPlaylistFile( const KUrl &url )
     DEBUG_BLOCK
 
     QFile file;
-    KUrl fileToLoad;
 
-    if( url.isLocalFile() )
+    //remote files are not supported ATM
+    if( !url.isLocalFile() )
+        return PlaylistFilePtr();
+
+    if( !QFileInfo( url.toLocalFile() ).exists() )
     {
-        if( !QFileInfo( url.toLocalFile() ).exists() )
-        {
-            error() << QString("Could not load local playlist file %1!").arg( url.toLocalFile() );
-            return PlaylistFilePtr();
-        }
+        error() << QString("Could not load local playlist file %1!").arg( url.toLocalFile() );
+        return PlaylistFilePtr();
     }
 
-    if( url.isLocalFile() )
+    file.setFileName( url.toLocalFile() );
+
+    if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-        debug() << "local file";
-
-        file.setFileName( url.toLocalFile() );
-
-        if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-        {
-            debug() << "could not read file " << url.path();
-            The::statusBar()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
-            return Meta::PlaylistFilePtr( 0 );
-        }
-        fileToLoad = url;
-    }
-    else
-    {
-        debug() << "remote file: " << url;
-        //FIXME: for now, just do a blocking download... Someone please come up with a better way...
-
-        KTemporaryFile tempFile;
-
-        tempFile.setSuffix(  '.' + Amarok::extension( url.url() ) );
-        tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
-        if( !tempFile.open() )
-        {
-            The::statusBar()->longMessage(
-                    i18n( "Could not create a temporary file to download playlist.") );
-            return Meta::PlaylistFilePtr( 0 ); //error
-        }
-
-
-        QString tempFileName = tempFile.fileName();
-        #ifdef Q_WS_WIN
-        // KIO::file_copy faild to overwrite an open file
-        // using KTemporary.close() is not enough here
-        tempFile.remove();
-        #endif
-        KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
-
-        The::statusBar()->newProgressOperation( job, i18n( "Downloading remote playlist" ) );
-
-        if( !job->exec() ) //Job deletes itself after execution
-        {
-            error() << "error";
-            return Meta::PlaylistFilePtr( 0 );
-        }
-        else
-        {
-            file.setFileName( tempFileName );
-            if( !file.open( QFile::ReadOnly ) )
-            {
-                debug() << "error opening file: " << tempFileName;
-                return Meta::PlaylistFilePtr( 0 );
-            }
-            fileToLoad = KUrl::fromPath( file.fileName() );
-        }
+        debug() << "could not read file " << url.path();
+        The::statusBar()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
+        return Meta::PlaylistFilePtr();
     }
 
-    PlaylistFormat format = getFormat( fileToLoad );
+    PlaylistFormat format = getFormat( url );
     PlaylistFile *playlist = 0;
     switch( format )
     {
         case PLS:
-            playlist = new PLSPlaylist( fileToLoad );
+            playlist = new PLSPlaylist( url );
             break;
         case M3U:
-            playlist = new M3UPlaylist( fileToLoad );
+            playlist = new M3UPlaylist( url );
             break;
         case XSPF:
-            playlist = new XSPFPlaylist( fileToLoad );
+            playlist = new XSPFPlaylist( url );
             break;
         default:
-            debug() << "Could not load playlist file " << fileToLoad;
+            debug() << "Could not load playlist file " << url;
             break;
     }
 
