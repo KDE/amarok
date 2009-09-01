@@ -60,7 +60,7 @@ bump_desktop_files
 
 puts
 puts
-print "Done :) Now commit the source git."
+print "Done :) Now commit the source to git."
 puts
 puts
 
