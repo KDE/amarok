@@ -145,9 +145,10 @@ Playlist::RandomAlbumNavigator::recvActiveTrackChanged( const quint64 id )
 quint64
 Playlist::RandomAlbumNavigator::requestNextTrack()
 {
+    if( !m_queue.isEmpty() )
+        return m_queue.takeFirst();
     if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
         return 0;
-
     if ( m_unplayedAlbums.isEmpty() && m_repeatPlaylist )
     {
         m_unplayedAlbums = m_playedAlbums;
