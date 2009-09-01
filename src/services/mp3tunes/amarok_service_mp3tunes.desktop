@@ -53,7 +53,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=46
+X-KDE-Amarok-framework-version=47
 X-KDE-Amarok-name=Mp3tunesService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100
