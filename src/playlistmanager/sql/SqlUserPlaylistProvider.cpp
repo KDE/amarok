@@ -157,7 +157,8 @@ SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackInde
     {
         m_removeTrackAction = new QAction(
                     KIcon( "media-track-remove-amarok" ),
-                    i18n( "Remove From Playlist" ),
+                    i18nc( "Remove a track from a saved playlist", "Remove From \"%1\"" )
+                        .arg( playlist->name() ),
                     this
                 );
         m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
