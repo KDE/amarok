@@ -17,11 +17,11 @@ VERSION 2.2-beta1
     * Info about the categories in the "Browsers" area is now shown in 
       the info applet on mouse over.
     * Magnatune.com store: Add support for the personal recommendations
-      featue availalbe to Magnatune.com members. 
+      feature available to Magnatune.com members. 
     * Magnatune.com store: Add support for the membership "favorites"
       feature. Albums can now be marked as favorites using a context 
-      menu action, and the list of favorite albums is availalbe in the
-      info applet. From here cliking links can add albums to the playlist,
+      menu action, and the list of favorite albums is available in the
+      info applet. From here clicking links can add albums to the playlist,
       navigate to the artist or album in the browser, remove an album from
       favorites and (for download members) start a download.
     * Add a dbus ShowOSD method to /Player. (BR 213532)
@@ -40,9 +40,9 @@ VERSION 2.2-beta1
     * Add a small bookmark menu to the browser breadcrumb bar allowing for
       navigation to a bookmark, as well as creating a new bookmark based on
       the current "view" or calling up the bookmark manager.
-    * Magnatune.com store: Allow redownloads of any previous Magnatune.com 
+    * Magnatune.com store: Allow re-downloads of any previous Magnatune.com 
       purchases by a given email, not just purchases made from a specific 
-      instalation of Amarok.
+      installation of Amarok.
     * Inline editing of lyrics from the context applet. (BR 201342)
     * Ipod initialization support when failed to read an iPod database.
     * Improvements to the "Show Cover" dialog. Resizes to match the image, auto
@@ -58,7 +58,7 @@ VERSION 2.2-beta1
       tracks directly to the local (or any other writable) collection. 
     * Sortable playlist. The playlist can now be hierarchical sorted using a 
       breadcrumb like interface to select sorting levels. Sorting can be
-      easilly reverted.
+      easily reverted.
     * Improved media device support.
     * Video applet to show videos from YouTube, Dailymotion and Vimeo.
       The video can be appended to the playlist, and rendered within the applet.
@@ -74,13 +74,13 @@ VERSION 2.2-beta1
       configurable. (BR 177540)
 
   CHANGES:
-    * Hueristics when deciding which album to use in a directory. See comments
+    * Heuristics when deciding which album to use in a directory. See comments
       in (BR 196559)
     * The "Service Info" applet is now simply called "Info" to reflect that
       it now shows info from other parts of Amarok as well.
     * Remove the bookmark manager context applet and add a bookmark manager
       dialog instead.
-    * Magnatune.com store: Add a link to purchase gift cards to the purhcase 
+    * Magnatune.com store: Add a link to purchase gift cards to the purchase 
       dialog.
     * Reset playlist filter when using the "replace playlist" action. Patch 
       by John Atkinson <john@fauxnetic.co.uk> (BR 200709)
@@ -147,7 +147,7 @@ VERSION 2.2-beta1
       service. (BR 190704)
     * Cached lyrics will now be shown when offline. (BR 197589)
     * Fixed pressing play after reaching the end of the playlist not starting
-      the playlist from the top (or whereever the navigator thinks it should 
+      the playlist from the top (or wherever the navigator thinks it should 
       start. (BR 176445)
     * Fixed local playlists being renamed to blank when user hits cancel
     * Fixed giant Edit Filter dialog with some translations. (BR 197566)
