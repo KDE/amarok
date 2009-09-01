@@ -29,7 +29,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 6;
+static const int DB_VERSION = 7;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -88,6 +88,11 @@ DatabaseUpdater::update()
         {
             upgradeVersion5to6();
             dbVersion = 6;
+        }
+        if( dbVersion == 6 && dbVersion < DB_VERSION )
+        {
+            upgradeVersion6to7();
+            dbVersion = 7;
         }
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->query( query );
@@ -343,6 +348,28 @@ DatabaseUpdater::upgradeVersion5to6()
 }
 
 void
+DatabaseUpdater::upgradeVersion6to7()
+{
+    DEBUG_BLOCK
+    typedef QPair<QString, int> vcpair;
+    QMultiMap<QString, vcpair> columns;
+    columns.insert( "directories", vcpair( "dir", 1000 ) );
+    columns.insert( "urls", vcpair( "rpath", 324 ) );
+    columns.insert( "statistics_permanent", vcpair( "url", 324 ) );
+
+    QMultiMap<QString, vcpair>::const_iterator i;
+
+    for( i = columns.begin(); i != columns.end(); ++i )
+    {
+        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
+            " VARCHAR(" + QString::number( i.value().second ) + ") COLLATE utf8_bin NOT NULL" );
+    }
+
+    columns.clear();
+ 
+}
+
+void
 DatabaseUpdater::createTemporaryTables()
 {
     DEBUG_BLOCK
@@ -356,7 +383,7 @@ DatabaseUpdater::createTemporaryTables()
         QString create = "CREATE TEMPORARY TABLE urls_temp "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",rpath " + m_collection->exactIndexableTextColumnType() +
+                         ",rpath " + m_collection->exactIndexableTextColumnType() + " COLLATE utf8_bin NOT NULL" +
                          ",directory INTEGER"
                          ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE) ENGINE = MyISAM;";
         m_collection->query( create );
@@ -367,7 +394,7 @@ DatabaseUpdater::createTemporaryTables()
         QString create = "CREATE TEMPORARY TABLE directories_temp "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",dir " + m_collection->exactTextColumnType() +
+                         ",dir " + m_collection->exactTextColumnType() + " COLLATE utf8_bin NOT NULL" +
                          ",changedate INTEGER) ENGINE = MyISAM;";
         m_collection->query( create );
     }
@@ -656,7 +683,7 @@ DatabaseUpdater::createTables() const
         QString create = "CREATE TABLE urls "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",rpath " + m_collection->exactIndexableTextColumnType() +
+                         ",rpath " + m_collection->exactIndexableTextColumnType() + " COLLATE utf8_bin NOT NULL" +
                          ",directory INTEGER"
                          ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE) ENGINE = MyISAM;";
         m_collection->query( create );
@@ -667,7 +694,7 @@ DatabaseUpdater::createTables() const
         QString create = "CREATE TABLE directories "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",dir " + m_collection->exactTextColumnType() +
+                         ",dir " + m_collection->exactTextColumnType() + " COLLATE utf8_bin NOT NULL" +
                          ",changedate INTEGER) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX directories_deviceid ON directories(deviceid);" );
@@ -816,7 +843,7 @@ DatabaseUpdater::createTables() const
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );
     {
          m_collection->query( "CREATE TABLE statistics_permanent "
-                            "(url " + m_collection->exactIndexableTextColumnType() +
+                            "(url " + m_collection->exactIndexableTextColumnType() + " COLLATE utf8_bin NOT NULL" +
                             ",firstplayed DATETIME"
                             ",lastplayed DATETIME"
                             ",score FLOAT"

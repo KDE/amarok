@@ -366,11 +366,10 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     QFileInfo file( path );
 
     QDir dir = file.dir();
-    dir.setFilter( QDir::Files );
+    dir.setFilter( QDir::Files | QDir::Readable | QDir::CaseSensitive );
 
-    //name filtering should be case-insensitive because we do not use QDir::CaseSensitive
     QStringList filters;
-    filters << "*.mp3" << "*.ogg" << "*.oga" << "*.flac" << "*.wma" << "*.m4a";
+    filters << "*.[mM][pP]3" << "*.[oO][gG][gG]" << "*.[oO][gG][aA]" << "*.[fF][lL][aA][cC]" << "*.[wW][mM][aA]" << "*.[mM]4[aA]";
     dir.setNameFilters( filters );
 
     int compilationId = 0;
