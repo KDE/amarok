@@ -431,6 +431,7 @@ App::handleCliArgs() //static
 
     if( args->isSet( "subscribe" ) )
     {
+        debug() << "Subscribe to " << args->getOption( "subscribe" );
         The::playlistManager()->defaultPodcasts()->addPodcast(
                     KUrl( args->getOption( "subscribe" ) )
                 );
@@ -481,7 +482,7 @@ App::initCliArgs() //static
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
     options.add("test", ki18n( "Run integrated unit tests, if your build supports it" ));
-    options.add("p <feed-url>");
+    options.add("p");
     options.add("subscribe <feed-url>", ki18n( "Subscribe to podcast feed" ) );
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
