@@ -84,6 +84,8 @@ Playlist::RandomTrackNavigator::recvActiveTrackChanged( const quint64 id )
 quint64
 Playlist::RandomTrackNavigator::requestNextTrack()
 {
+    if( !m_queue.isEmpty() )
+        return m_queue.takeFirst();
     if( m_unplayedRows.isEmpty() && m_playedRows.isEmpty() )
         return 0;
     else if( m_unplayedRows.isEmpty() && !m_repeatPlaylist )
