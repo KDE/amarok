@@ -38,6 +38,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PluginManager.h"
+#include "podcasts/PodcastProvider.h"
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
 #include "statusbar/StatusBar.h"
@@ -428,6 +429,13 @@ App::handleCliArgs() //static
     }
 #endif // DEBUG
 
+    if( args->isSet( "subscribe" ) )
+    {
+        The::playlistManager()->defaultPodcasts()->addPodcast(
+                    KUrl( args->getOption( "subscribe" ) )
+                );
+    }
+
     args->clear();    //free up memory
 }
 
@@ -473,6 +481,8 @@ App::initCliArgs() //static
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
     options.add("test", ki18n( "Run integrated unit tests, if your build supports it" ));
+    options.add("p <feed-url>");
+    options.add("subscribe <feed-url>", ki18n( "Subscribe to podcast feed" ) );
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
