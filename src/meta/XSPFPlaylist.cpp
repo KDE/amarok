@@ -259,6 +259,28 @@ XSPFPlaylist::tracks()
     return tracks;
 }
 
+void
+XSPFPlaylist::addTrack( Meta::TrackPtr track, int position )
+{
+    TrackList trackList = tracks();
+    int trackPos = position < 0 ? trackList.count() : position;
+    if( trackPos > trackList.count() )
+        trackPos = trackList.count();
+    trackList.insert( trackPos, track );
+    setTrackList( trackList );
+}
+
+void
+XSPFPlaylist::removeTrack( int position )
+{
+    TrackList trackList = tracks();
+    if( position < 0  || position > trackList.count() )
+        return;
+
+    trackList.removeAt( position );
+    setTrackList( trackList );
+}
+
 QString
 XSPFPlaylist::title() const
 {
@@ -671,6 +693,9 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     }
     else
         documentElement().replaceChild( node, documentElement().namedItem( "trackList" ) );
+
+    //write these changes directly to the file
+    save( m_url, false );
 }
 
 bool

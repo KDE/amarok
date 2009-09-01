@@ -77,6 +77,8 @@ public:
 
     /** returns all tracks in this playlist */
     TrackList tracks();
+    virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+    virtual void removeTrack( int position );
 
     /* convenience functions */
     QString title() const;
