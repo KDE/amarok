@@ -100,7 +100,7 @@ SqlUserPlaylistProvider::slotRename()
                 i18n("Enter new name for playlist:"), playlist->name(),
                                                    &ok );
     if ( ok )
-        playlist->setName( newName.trimmed() );\
+        playlist->setName( newName.trimmed() );
 }
 
 void
