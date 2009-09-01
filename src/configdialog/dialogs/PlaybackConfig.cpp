@@ -149,7 +149,7 @@ PlaybackConfig::eqSetupUI()
     QStringListIterator i( meqBandFrq );
     foreach( QLabel* mLabel, mBandsLabels )
         mLabel-> setText( i.hasNext() ?  i.next() : "N/A" );
-    // Set initial preset to current with signal blocking toprevent circular loops
+    // Set initial preset to current with signal blocking to prevent circular loops
     eqPresets->blockSignals( true );
     eqPresets->addItem( i18nc( "State, as in, disabled", "Off" ) );
     eqPresets->addItems( eqGlobalList() );
@@ -297,12 +297,12 @@ PlaybackConfig::eqSavePreset() //SLOT
     eqPresets->setCurrentIndex( eqPresets->findText( mPresetSelected ) );
 }
 
-// Equalizer preset managment helper functions
+// Equalizer preset management helper functions
 bool
 PlaybackConfig::eqCfgDeletePreset( QString & mPresetName )
 {
       // Idea is to delete the preset only if it is user preset:
-      // present on user list & absent od default list
+      // present on user list & absent on default list
       int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
       int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
       if( idUsr >= 0 && idDef < 0 )
@@ -370,7 +370,7 @@ QList<int>
 PlaybackConfig::eqCfgGetPresetVal( QString mPresetName )
 {
       // Idea is to return user preset with request name first
-      // if not look into into deafult preset names
+      // if not look into into default preset names
       int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
       int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
       
@@ -389,7 +389,7 @@ PlaybackConfig::eqGlobalList()
 {
     // This function will build up a global list
     // first a default preset will comes
-    // then user list is filtered to ommit duplicates from default preset list
+    // then user list is filtered to omit duplicates from default preset list
     QStringList mGlobalList;
     mGlobalList += AmarokConfig::defEqualizerPresetsNames();
     foreach( QString mUsrName, AmarokConfig::equalizerPresetsNames() )

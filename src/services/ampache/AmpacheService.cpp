@@ -193,10 +193,10 @@ AmpacheService::authenticate(KJob * job)
 
     versionVerify(job); 
 
-    //lets keep this around for now if we want to allow pwople to add a service that prompts for stuff
+    //lets keep this around for now if we want to allow people to add a service that prompts for stuff
     if ( m_server.isEmpty() || m_password.isEmpty() )
     {
-        KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to api, but that does not work
+        KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );  //FIXME 0x02 = KPasswordDialog::showUsername according to the API, but that does not work
         dlg.setPrompt( i18n( "Enter the server name and a password" ) );
         if( !dlg.exec() )
             return; //the user canceled
@@ -318,7 +318,7 @@ void AmpacheService::versionVerify(KJob * job)
     if( !job->error() == 0 )
     {
 	debug() << "Job Error" << job->error();
-	// If an error has occured, it's non-fatal unless they are using 3.5, as we default to 3.4 currently
+	// If an error has occurred, it's non-fatal unless they are using 3.5, as we default to 3.4 currently
         return;
     }
     QString xmlReply = ((KIO::StoredTransferJob* )job)->data();
@@ -333,7 +333,7 @@ void AmpacheService::versionVerify(KJob * job)
 
     QDomElement error = root.firstChildElement("error");
 
-    // It's ok if we get a null response from the version, that just means we're dealing with an older version
+    // It's OK if we get a null response from the version, that just means we're dealing with an older version
     if ( !error.isNull() )
     {
 	// Default the Version down if it didn't work 

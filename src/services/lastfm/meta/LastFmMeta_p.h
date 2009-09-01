@@ -286,7 +286,7 @@ public:
                 pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ) );
             else
             {
-                QPixmap orgPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/lastfm-default-cover.png" ) ); //optimise this!
+                QPixmap orgPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/lastfm-default-cover.png" ) ); //optimize this!
                 //scaled() does not change the original image but returns a scaled copy
                 pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
                 pixmap.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );

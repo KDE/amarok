@@ -163,7 +163,7 @@ void Dynamic::BiasSolver::run()
      */
 
     /*
-     * NOTE: For now I am disabling the the ga phase, until I can do more
+     * NOTE: For now I am disabling the ga phase, until I can do more
      * experimentation.
      */
     //Meta::TrackList playlist = ga_optimize( GA_ITERATION_LIMIT, true );
@@ -543,7 +543,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
      * with a [0,1] proportion p_i and a subset of the universe, S_i.
      *
      * We build up a playlist one track at a time.  For each bias we must make a
-     * decision: is the the track in the set S_i, or not in the set S_i. So the
+     * decision: is the track in the set S_i, or not in the set S_i. So the
      * algorithm can be thought of as working its way down a tree:
      *
      *                              In S_0?
@@ -569,11 +569,11 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
      * the p_i value to reflect the proportion of _remaining_ tracks should be
      * in S_i. So if, p_0 = 0.4, and we add a track that is in S_0, then that
      * number will go down, since we need fewer tracks to satisfy that bias.
-     * This way we always get a the best possible playlist.
+     * This way we always get the best possible playlist.
      *
      * There are a couple of other caveats (such as producing reasonable
      * playlists when given infeasible systems of biases, e.g. 100% Radiohead,
-     * AND 100% Bob Dylon), that you can read on to learn about.
+     * AND 100% Bob Dylan), that you can read on to learn about.
      *
      */                
 
@@ -676,7 +676,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
             // empty set. If that's the case, we have to choose the other
             // branch, even if it does defy the probability. (This is how we
             // deal with infeasible systems.)
-            //debug() << "after set intersection/substraction, R has size:" << R.size();
+            //debug() << "after set intersection/subtraction, R has size:" << R.size();
 
             if( R.size() == 0 )
                 branches.toggleBit( i );
