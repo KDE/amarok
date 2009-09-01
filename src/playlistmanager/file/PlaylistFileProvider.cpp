@@ -200,8 +200,7 @@ void
 PlaylistFileProvider::rename( Meta::PlaylistPtr playlist, const QString &newName )
 {
     DEBUG_BLOCK
-    Q_UNUSED(playlist);
-    Q_UNUSED(newName);
+    playlist->setName( newName );
 }
 
 void
