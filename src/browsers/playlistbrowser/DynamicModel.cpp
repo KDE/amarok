@@ -273,6 +273,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
         error() << QString().sprintf( "Line: %d, Column %d", errorLine, errorColumn );
 
         m_savedPlaylistsRoot = m_savedPlaylists.createElement( "biasedPlaylists" );
+        m_savedPlaylistsRoot.setAttribute( "version", currentVersion );
         m_savedPlaylists.appendChild( m_savedPlaylistsRoot );
         return;
     }
