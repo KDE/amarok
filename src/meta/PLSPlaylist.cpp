@@ -86,8 +86,8 @@ PLSPlaylist::~PLSPlaylist()
 QString
 PLSPlaylist::description() const
 {
-    KMimeType::Ptr mimeType = KMimeType::mimeType( "audio/x-mpegurl" );
-    return QString( "%1 (%2)").arg( mimeType->name(), mimeType->mainExtension() );
+    KMimeType::Ptr mimeType = KMimeType::mimeType( "audio/x-scpls" );
+    return QString( "%1 (%2)").arg( mimeType->name(), "pls" );
 }
 
 bool

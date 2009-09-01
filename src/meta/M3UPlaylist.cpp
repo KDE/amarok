@@ -84,7 +84,7 @@ QString
 M3UPlaylist::description() const
 {
     KMimeType::Ptr mimeType = KMimeType::mimeType( "audio/x-mpegurl" );
-    return QString( "%1 (%2)").arg( mimeType->name(), mimeType->mainExtension() );
+    return QString( "%1 (%2)").arg( mimeType->name(), "m3u" );
 }
 
 bool

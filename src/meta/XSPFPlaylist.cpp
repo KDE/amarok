@@ -120,7 +120,7 @@ XSPFPlaylist::description() const
         return annotation();
 
     KMimeType::Ptr mimeType = KMimeType::mimeType( "application/xspf+xml" );
-    return QString( "%1 (%2)").arg( mimeType->name(), mimeType->mainExtension() );
+    return QString( "%1 (%2)").arg( mimeType->name(), "xspf" );
 }
 
 bool
