@@ -109,7 +109,7 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     {
         debug() << "could not read the xml of lyrics, malformed";
         lyricsError( i18n("Lyrics data could not be parsed") );
-        //TODO: how about showing chached lyrics then?
+        //TODO: how about showing cached lyrics then?
         return;
     }
 
@@ -149,10 +149,10 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
         lyrics = el.text();
 
-        if ( lyrics != "Not found" ) //I dont know if this will work with translated stuff, different scripts...
+        if ( lyrics != "Not found" ) //I don't know if this will work with translated stuff, different scripts...
         {
 
-            //BAAAD thing to do indisciminately as you might be overwriting cached lyric with nothing!
+            //BAAAD thing to do indiscriminately as you might be overwriting cached lyric with nothing!
             debug() << "setting cached lyrics: ";
             The::engineController()->currentTrack()->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
 
@@ -211,7 +211,7 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 void
 LyricsManager::lyricsError( const QString &error )
 {
-    //if we have cached lyris there is absolutely no point in not showing these..
+    //if we have cached lyrics there is absolutely no point in not showing these..
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( currentTrack && !currentTrack->cachedLyrics().isEmpty() )
     {

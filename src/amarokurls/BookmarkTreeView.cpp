@@ -274,7 +274,7 @@ KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
 void BookmarkTreeView::slotCreateTimecodeTrack() const
 {
 
-    //TODO: Factor into seperate class
+    //TODO: Factor into separate class
     
     QList<BookmarkViewItemPtr> list = selectedItems().toList();
     if ( list.count() != 2 )

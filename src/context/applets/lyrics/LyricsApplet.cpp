@@ -147,7 +147,7 @@ void LyricsApplet::connectSource( const QString& source )
     if( source == "lyrics" )
     {
         dataEngine( "amarok-lyrics" )->connectSource( source, this );
-        refreshLyrics(); // get data initally
+        refreshLyrics(); // get data initially
     }
     else if( source == "suggested" )
     {

@@ -65,7 +65,7 @@ class PhotosScrollWidget : public QGraphicsWidget
         void automaticAnimEnd( int );
 
        /**
-        * Reimplement resize in order to correctly repositionned the stack of pixmap
+        * Reimplement resize in order to correctly repositioned the stack of pixmap
         */
         virtual void resize( qreal, qreal );
         
@@ -84,21 +84,21 @@ class PhotosScrollWidget : public QGraphicsWidget
  //       virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
         
     private:
-        int     m_id;           // id of the animator
-        float   m_speed;        // if negative, go to left, if positif go to right,
-        int     m_margin;       // margin beetween the photos
-        int     m_scrollmax;    // lenght of the whole stack
-        int     m_actualpos;    //
-        int     m_currentPix;   // index of the current pix
-        int     m_lastPix;   // index of the lat pix
-        int     m_interval;        // time in ms beetween to change
-        int     m_mode;         //
+        int     m_id;         // id of the animator
+        float   m_speed;      // if negative, go to left, if positive go to right,
+        int     m_margin;     // margin between the photos
+        int     m_scrollmax;  // length of the whole stack
+        int     m_actualpos;  //
+        int     m_currentPix; // index of the current pix
+        int     m_lastPix;    // index of the lat pix
+        int     m_interval;   // time in ms between to change
+        int     m_mode;       //
         int     m_delta;
         int     m_deltastart;
         QList < int >               m_timerlist;
         QList < PhotosInfo * >      m_currentlist; // contain the list of the current PhotosItem in the widget
         QList < DragPixmapItem * >  m_pixmaplist;  // contain the list of dragpixmap item
-        QTimer                      *m_timer;       // our magnificiant timer
+        QTimer                      *m_timer;      // our magnificent timer
 };
 
 #endif // PHOTOSSCROLLWIDGET_H

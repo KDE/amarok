@@ -37,7 +37,7 @@ namespace Plasma
     class IconWidget;
 }
 
- /** PhotosApplet will display photos from internet, relatively to the current playing song
+ /** PhotosApplet will display photos from the Internet, relative to the current playing song
    */
 class PhotosApplet : public Context::Applet, public EngineObserver
 {

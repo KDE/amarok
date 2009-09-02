@@ -57,7 +57,7 @@ void AmarokUrl::initFromString( const QString & urlString )
     QString strippedUrlString = urlString;
     strippedUrlString = strippedUrlString.replace( "amarok://", "" );
 
-    //seperate path from arguments
+    //separate path from arguments
     QStringList parts = strippedUrlString.split( '?' );
 
     QString commandAndPath = parts.at( 0 );

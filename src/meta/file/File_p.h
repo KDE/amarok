@@ -230,7 +230,7 @@ void Track::Private::readMetaData()
             QString track_encoding( prober.encodingName() );
             if ( result != KEncodingProber::NotMe )
             {
-                /*  for further infomation please refer to:
+                /*  for further information please refer to:
                     http://doc.trolltech.com/4.4/qtextcodec.html
                     http://www.mozilla.org/projects/intl/chardet.html
                 */

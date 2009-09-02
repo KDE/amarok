@@ -671,7 +671,7 @@ XmlParseJob::run()
 
                     //NOTE: compilation may not be used according to the comment below,
                     //but this is functionality getting moved from the collection scanner
-                    //until (if ever) pure-Qt transations are supported
+                    //until (if ever) pure-Qt translations are supported
                     QString compilationValue = attrs.value( "compilation" ).toString();
                     if( compilationValue == "checkforvarious" )
                     {

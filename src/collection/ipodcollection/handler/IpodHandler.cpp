@@ -11,7 +11,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -512,7 +512,7 @@ IpodHandler::slotSyncArtwork()
 {
     DEBUG_BLOCK
 
-    const QString text( i18n( "Amarok is about to syncronise artwork on <i>%1</i>. Do you want to continue?", prettyName() ) );
+    const QString text( i18n( "Amarok is about to synchronize artwork on <i>%1</i>. Do you want to continue?", prettyName() ) );
 
     if( KMessageBox::warningContinueCancel(0, text, i18n("Synchronise Artwork") ) == KMessageBox::Continue )
         ThreadWeaver::Weaver::instance()->enqueue( new SyncArtworkWorkerThread( this ) );

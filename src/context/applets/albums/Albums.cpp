@@ -241,7 +241,7 @@ void Albums::connectSource( const QString &source )
     if( source == "albums" )
     {
         dataEngine( "amarok-current" )->connectSource( source, this );
-        dataUpdated( source, dataEngine("amarok-current" )->query( "albums" ) ); // get data initally
+        dataUpdated( source, dataEngine("amarok-current" )->query( "albums" ) ); // get data initially
     }
 }
 

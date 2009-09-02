@@ -25,7 +25,7 @@
 namespace Meta {
 
 /**
-This capability dertermines wheter a meta item in a collection can be directly bookmarked. Not all collections/services supports bookmarks on all levels, and some might not support Item level bookmarks at all as they have no query field and some might only support simple queries.
+This capability determines whether a meta item in a collection can be directly bookmarked. Not all collections/services supports bookmarks on all levels, and some might not support Item level bookmarks at all as they have no query field and some might only support simple queries.
 
     @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */

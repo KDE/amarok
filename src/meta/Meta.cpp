@@ -413,7 +413,7 @@ Meta::Album::image( int size )
          pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
     else
     {
-        QPixmap orgPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimise this!
+        QPixmap orgPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimize this!
         //scaled() does not change the original image but returns a scaled copy
         pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );

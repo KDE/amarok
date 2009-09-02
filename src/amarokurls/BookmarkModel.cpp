@@ -205,7 +205,7 @@ BookmarkModel::rowCount( const QModelIndex & parent ) const
     //DEBUG_BLOCK
 
     if ( parent.column() > 0 ) {
-      //  debug() << "baad collumn";
+      //  debug() << "bad column";
         return 0;
     }
 
@@ -518,7 +518,7 @@ BookmarkModel::createNewGroup()
     foreach ( BookmarkGroupPtr childGroup, m_root->childGroups() ) {
         if ( childGroup->id() == id )
         {
-            debug() << "emmiting edit for " << childGroup->name() << " id " << childGroup->id() << " in row " << row;
+            debug() << "emitting edit for " << childGroup->name() << " id " << childGroup->id() << " in row " << row;
             emit editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( childGroup ) ) );
         }
         row++;
@@ -546,7 +546,7 @@ BookmarkModel::createNewBookmark()
         debug() << id << " == " << childBookmark->id() << " ? ";
         if ( childBookmark->id() == id )
         {
-            debug() << "emmiting edit for " << childBookmark->name() << " id " << childBookmark->id() << " in row " << row;
+            debug() << "emitting edit for " << childBookmark->name() << " id " << childBookmark->id() << " in row " << row;
             emit editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( childBookmark ) ) );
         }
         row++;

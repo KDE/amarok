@@ -212,7 +212,7 @@ Track::uidUrl() const
 bool
 Track::isPlayable() const
 {
-    //simple implementation, check internet connectivity or ping server?
+    //simple implementation, check Internet connectivity or ping server?
     return true;
 }
 

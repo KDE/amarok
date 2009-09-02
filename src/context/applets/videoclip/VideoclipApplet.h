@@ -55,8 +55,8 @@ class QHBoxLayout;
 class CustomVideoWidget;
 
 
- /** VideoclipApplet will display videoclip from internet, relatively to the current playing song
-   * If a video is detected in the playlist, it will also play trhe video inside the a VideoWidget.
+ /** VideoclipApplet will display videoclip from the Internet, relative to the current playing song
+   * If a video is detected in the playlist, it will also play the video inside the VideoWidget.
    */
 class VideoclipApplet : public Context::Applet, public EngineObserver
 {

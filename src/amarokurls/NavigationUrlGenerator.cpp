@@ -47,7 +47,7 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
 
     QStringList pathParts = path.split( '/' );
 
-    //we dont use the "Home" part in navigation urls
+    //we don't use the "Home" part in navigation urls
     if ( pathParts.at( 0 ) == "root list" )
         pathParts.removeFirst();
     
@@ -175,7 +175,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 
             QString filter;
             if ( btc->simpleFiltering() ) {
-                //for services only suporting simple filtering, do not try to set the sorting mode
+                //for services only supporting simple filtering, do not try to set the sorting mode
                 filter = "\"" + artistName + "\"";
             }
             else

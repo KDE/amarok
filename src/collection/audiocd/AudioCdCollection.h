@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -53,10 +53,11 @@ private:
 
 
 /**
-This is a Memorycollection sublclass that uses the KIO audiocd:/ slave to populate itself whenever it detects a cd.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+ * This is a Memorycollection sublclass that uses the KIO audiocd:/ slave to
+ * populate itself whenever it detects a CD.
+ *
+ * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ */
 class AudioCdCollection : public MediaDeviceCollection
 {
     Q_OBJECT
@@ -89,7 +90,7 @@ public:
     virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
     virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
 
-    virtual void startFullScan(); //Override this one as I really dont want to do move partsing to the handler atm.
+    virtual void startFullScan(); //Override this one as I really don't want to move parsing to the handler atm.
     virtual void startFullScanDevice() { startFullScan(); }
 
 public slots:
@@ -101,7 +102,7 @@ private:
     void readAudioCdSettings();
     
     /**
-     * Clear collection and read the cd currently in the drive, adding Artist, Album,
+     * Clear collection and read the CD currently in the drive, adding Artist, Album,
      * Genre, Year and whatnot as detected by audiocd using CDDB.
      */
     void readCd();
@@ -123,9 +124,6 @@ private:
     QString m_albumNamePattern;
 
     QMap<KUrl, MetaProxy::Track*> m_proxyMap;
-
-
-    
 };
 
 #endif

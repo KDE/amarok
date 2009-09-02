@@ -123,7 +123,7 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
                 case PHOTOS_MODE_INTERACTIVE :
                 {
 
-                    if ( !m_id ) // carefull we're animating
+                    if ( !m_id ) // careful we're animating
                     {
                         Plasma::Animator::self()->stopCustomAnimation( m_id );
                         m_id = 0;
@@ -409,7 +409,7 @@ void PhotosScrollWidget::animate( qreal anim )
                 
                 m_actualpos--;
                 
-                //this is not totally obvious, but we alrady made number two visual image the current one,
+                //this is not totally obvious, but we already made the number two visual image the current one,
                 //so if we draw this as the first one, there will be no animation...
                 int a = m_lastPix;
                 

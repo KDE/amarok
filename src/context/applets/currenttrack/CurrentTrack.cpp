@@ -142,7 +142,7 @@ CurrentTrack::connectSource( const QString &source )
     if( source == "current" )
     {
         dataEngine( "amarok-current" )->connectSource( source, this );
-        dataUpdated( source, dataEngine("amarok-current" )->query( "current" ) ); // get data initally
+        dataUpdated( source, dataEngine("amarok-current" )->query( "current" ) ); // get data initially
     }
 }
 
@@ -197,7 +197,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
 
     prepareGeometryChange();
 
-    // these all used to be based on fancy calculatons based on the height
+    // these all used to be based on fancy calculations based on the height
     // guess what: the height is fixed. so that's a waste of hard-working gerbils
     const qreal textHeight = 30;
     const qreal albumWidth = 135;
