@@ -1,10 +1,14 @@
 [Desktop Entry]
 Name=Info Data Engine
 Name[bg]=Ядро за данни
+Name[de]=Info-Datenmodul
+Name[et]=Teabe andmemootor
 Name[is]=Gagnavél fyrir spilun
 Name[it]=Motore dati informazione
 Name[pt]=Motor de Dados da Informação
-Name[pt_BR]=Motor de Dados da Informação
+Name[pt_BR]=Mecanismo de Dados das Informações
+Name[sr]=Датомотор података
+Name[sr@latin]=Datomotor podataka
 Name[sv]=Datagränssnitt för information
 Name[tr]=Bilgi Veri Motoru
 Name[uk]=Рушій інформаційних даних

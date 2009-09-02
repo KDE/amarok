@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Wiki Data Engine
 Name[bg]=Ядро Уикипедия
+Name[de]=Wiki-Datenmodul
 Name[es]=Motor de datos de Wiki
 Name[et]=Wiki andmete mootor
 Name[is]=Wikipedia gagnavél
@@ -12,6 +13,8 @@ Name[nn]=Datamotor for Wiki
 Name[pl]=Moduł danych Wiki
 Name[pt]=Motor de Dados de Wikis
 Name[pt_BR]=Mecanismo de Dados Wiki
+Name[sr]=Датомотор Википедије
+Name[sr@latin]=Datomotor Wikipedije
 Name[sv]=Datagränssnitt för Webbjournal
 Name[tr]=Wiki Veri Motoru
 Name[uk]=Рушій даних Вікі

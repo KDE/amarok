@@ -2,6 +2,7 @@
 Name=Amarok JavaScript Runner
 Name[bg]=Изпълнение на JavaScript (Amarok)
 Name[csb]=Zrëszôcz JavaScriptu Amaroka
+Name[de]=Ausführer für Amarok-Javascript
 Name[et]=Amaroki JavaScripti käivitaja
 Name[is]=Amarok JavaScript keyrari
 Name[it]=Esecutore JavaScript di Amarok
@@ -12,6 +13,8 @@ Name[nn]=JavaScript-køyrar for Amarok
 Name[pl]=JavaScript Runner Amaroka
 Name[pt]=Execução de JavaScript do Amarok
 Name[pt_BR]=Executor JavaScript do Amarok
+Name[sr]=Амароков извођач јаваскрипта
+Name[sr@latin]=Amarokov izvođač JavaScripta
 Name[sv]=Amarok Javascript-körprogram
 Name[tr]=Amarok JavaScript Çalıştırıcısı
 Name[uk]=Інструмент запуску JavaScript Amarok

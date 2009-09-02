@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Photos
 Name[bg]=Снимки
+Name[de]=Fotos
 Name[es]=Fotos
 Name[et]=Fotod
 Name[fi]=Valokuvat
@@ -12,6 +13,8 @@ Name[nn]=Bilete
 Name[pl]=Zdjęcia
 Name[pt]=Fotografias
 Name[pt_BR]=Fotos
+Name[sr]=Фотографије
+Name[sr@latin]=Fotografije
 Name[sv]=Foton
 Name[tr]=Fotoğraflar
 Name[uk]=Фотографії

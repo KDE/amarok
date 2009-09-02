@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Songkick
+Name[sr]=Сонгкик
 Name[x-test]=xxSongkickxx
 Type=Service
 ServiceTypes=Plasma/Applet
