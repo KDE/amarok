@@ -434,7 +434,7 @@ PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr playlist )
     // Iteratively check all providers' playlists for ownership
     foreach( PlaylistProvider* provider, m_providerMap.values( UserPlaylist ) )
     {
-        if( provider->playlists().contains( playlist ) );
+        if( provider->playlists().contains( playlist ) )
                 return provider;
     }
     return 0;
