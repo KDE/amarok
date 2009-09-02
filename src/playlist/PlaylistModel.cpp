@@ -860,6 +860,8 @@ void Playlist::Model::clearCommand()
     m_itemIds.clear();
     endRemoveRows();
 
+    m_activeRow = -1;
+
     emit removedIds( delIds );
 
 }
