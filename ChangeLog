@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.2-beta2
   BUGFIXES:
+    * Fixed typo in D-Bus manifest, that resulted in incorrect function
+      invokation in IRKick. (BR 205729)
     * Correctly mark playing track as active in the playlist after removing it
       using the "clear playlist" button and later re-adding it.
     * Fixed crash when removing an "albumless" track, like a podcast from the 
