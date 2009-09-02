@@ -50,7 +50,7 @@ install(
         hover_info_playlists.png
         hover_info_user_playlists.png
         hover_info_podcasts.png
-	opendesktop.png
+	opendesktop-22.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )
 

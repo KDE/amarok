@@ -195,7 +195,7 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
     }
 
     KAction *visitProfile = new KAction( KIcon( QPixmap( KStandardDirs::locate( "data",
-            "amarok/images/opendesktop.png" ) ) ), i18n( "Visit %1's openDesktop.org profile", ocsPerson.firstName() ), this );
+            "amarok/images/opendesktop-22.png" ) ) ), i18n( "Visit %1's openDesktop.org profile", ocsPerson.firstName() ), this );
 
     visitProfile->setToolTip( i18n( "Visit %1's profile on openDesktop.org", ocsPerson.firstName() ) );
 

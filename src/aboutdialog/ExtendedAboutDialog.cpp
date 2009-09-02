@@ -168,7 +168,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
 
 
     //Stuff needed by both Authors and Credits pages:
-    QPixmap openDesktopPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/opendesktop.png" ) );
+    QPixmap openDesktopPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/opendesktop-22.png" ) );
     QIcon openDesktopIcon = QIcon( openDesktopPixmap );
 
 
