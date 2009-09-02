@@ -104,7 +104,6 @@ private:
             {
                 // TODO: nice poof animation? ;-)
                 delete token;
-                emit static_cast<TokenDropTarget*>( parent() )->changed();
                 ret = true; // THIS IS IMPORTANT
             }
             // anyway, tell daddy to wipe empty rows NOW
@@ -238,6 +237,7 @@ TokenDropTarget::deleteEmptyRows()
             ++row;
     }
     update(); // in case we're empty now
+    emit changed();
 }
 
 QList< Token *>
