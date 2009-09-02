@@ -225,7 +225,7 @@ ScanResultProcessor::commit()
 
     updateAftPermanentTablesUrlString();
     updateAftPermanentTablesUidString();
-    
+
     connect( this, SIGNAL( changedTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ),
              CollectionManager::instance()->primaryCollection(), SLOT( updateTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ) );
 
@@ -406,13 +406,13 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
                          trackData.value( Field::YEAR ).toString(),
                          trackData.value( Field::ALBUM ).toString(), albumArtistId );
     }
-            
+
     int artist = artistId( trackData.value( Field::ARTIST ).toString() );
     int genre = genreId( trackData.value( Field::GENRE ).toString() );
     int composer = composerId( trackData.value( Field::COMPOSER ).toString() );
     int year = yearId( trackData.value( Field::YEAR ).toString() );
     int album = albumId( trackData.value( Field::ALBUM ).toString(), albumArtistId );
-    
+
     QString uid = trackData.value( Field::UNIQUEID ).toString();
 
     const int created  = file.created().toTime_t();
@@ -624,37 +624,28 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
 int
 ScanResultProcessor::imageId( const QString &image, int albumId )
 {
-    DEBUG_BLOCK
     // assume the album is valid
     if( albumId < 0 )
         return -1;
 
-    debug() << "album valid";
     QPair<QString, int> key( image, albumId );
     if( m_images.contains( key ) )
         return m_images.value( key );
 
-    debug() << "key not found";
     QString query = QString( "SELECT images_temp.id FROM images_temp WHERE images_temp.path = '%1'" )
                         .arg( m_collection->escape( image ) );
     QStringList res = m_collection->query( query );
     int imageId = -1;
     if( res.isEmpty() )
     {
-        debug() << "SQL lookup was empty, inserting image: " << image;
         QString insert = QString( "INSERT INTO images_temp( path ) VALUES ('%1');" ).arg( m_collection->escape( image ) );
         imageId = m_collection->insert( insert, "images_temp" );
-        debug() << "new imageId is: " << imageId;
     }
     else
-    {
-        debug() << "Found image in db, imageId is: " << imageId;
         imageId = res[0].toInt();
-    }
 
     if( imageId >= 0 )
     {
-        debug() << "Updating album table";
         // Make sure the album table is up to date
         QString update = QString( "UPDATE albums_temp SET image = %1 WHERE id = %2" )
                             .arg( QString::number( imageId ), QString::number( albumId ) );
@@ -710,7 +701,7 @@ ScanResultProcessor::albumId( const QString &album, int artistId )
     m_albums.insert( key, id );
     return id;
 }
-    
+
 int
 ScanResultProcessor::albumInsert( const QString &album, int artistId )
 {
@@ -750,7 +741,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         //everything matches, don't need to do anything, just return the ID
         return result[0].toInt();
     }
-     
+
     if( result[4] == uid )
     {
         //we found an existing entry with this uniqueid, update the deviceid and path
@@ -771,7 +762,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
             .arg( uid, QString::number( deviceId ), m_collection->escape( rpath ) );
         m_collection->query( query );
         m_permanentTablesUidUpdates.insert( url, uid );
-        m_changedUids.insert( result[4], uid ); 
+        m_changedUids.insert( result[4], uid );
         return result[0].toInt();
     }
 
@@ -801,7 +792,7 @@ ScanResultProcessor::updateAftPermanentTablesUrlString()
             first = false;
         }
         query += QString( " END WHERE uniqueid IN(%1);" ).arg( query2 );
-        
+
         m_collection->query( query );
     }
 }
