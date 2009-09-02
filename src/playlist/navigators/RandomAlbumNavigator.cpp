@@ -82,7 +82,8 @@ Playlist::RandomAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
         QHash<Meta::AlbumPtr, ItemList>::iterator alb_iter = m_albumGroups.begin();
         while ( alb_iter != m_albumGroups.end() ) {
             if ( alb_iter->contains( id ) ) {
-                debug() << "    from" << alb_iter.key()->prettyName();
+                if( alb_iter.key() != Meta::AlbumPtr() )
+                    debug() << "    from" << alb_iter.key()->prettyName();
                 Meta::AlbumPtr album = alb_iter.key();
                 ItemList atl = alb_iter.value();
                 if ( m_currentTrack == id ) {
@@ -91,7 +92,8 @@ Playlist::RandomAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
                 }
                 atl.removeAll( id );
                 if ( atl.isEmpty() ) {
-                    debug() << album->prettyName() << "is now empty";
+                    if( album != Meta::AlbumPtr() )
+                        debug() << album->prettyName() << "is now empty";
                     alb_iter = m_albumGroups.erase( alb_iter );
                     m_playedAlbums.removeAll( album );
                     m_unplayedAlbums.removeAll( album );
