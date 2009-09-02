@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.2-beta2
   BUGFIXES:
+    * Correctly mark playing track as active in the playlist after removing it
+      using the "clear playlist" button and later re-adding it.
     * Fixed crash when removing an "albumless" track, like a podcast from the 
       playlist with the random album playback mode enabled. (BR 201476)
     * Fixed track queuing when the playlist uses a random track progression.
