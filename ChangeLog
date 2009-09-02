@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.2-beta2
   BUGFIXES:
+    * Fixed crash when removing an "albumless" track, like a podcast from the 
+      playlist with the random album playback mode enabled. (BR 201476)
     * Fixed track queuing when the playlist uses a random track progression.
       (BR 194328)
     * Fixed issue where files or folders with the same name but different case
