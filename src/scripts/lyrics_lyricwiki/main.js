@@ -68,7 +68,7 @@ function onFinished( dat )
             newxml = newxml.replace( "{title}", Amarok.Lyrics.escape( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() ) );
             Amarok.debug( "returned real lyricwiki URL: " + doc.elementsByTagName( "url" ).at( 0 ).toElement().text());
             var url = doc.elementsByTagName( "url" ).at( 0 ).toElement().text();
-            url = url.replace( /lyricwiki\.org\//, "lyricwiki.org/index.php?action=edit&title=" );
+            url = url.replace( /lyricwiki\.org\//, "lyrics.wikia.com/index.php?action=edit&title=" );
             var url2 = QUrl.fromEncoded( new QByteArray( url ), 1 );
             Amarok.debug( "request-2 URL: " + url2.toString() );
             new Downloader( url2, onFinished2 );
