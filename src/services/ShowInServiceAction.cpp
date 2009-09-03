@@ -42,7 +42,7 @@ void ShowInServiceAction::slotTriggered()
     if ( m_service == 0 || !m_track || !m_track->artist() )
         return;
 
-    QString urlString = QString( "amarok://navigate/service/%1/artist-album/artist:\"%2\"" )
+    QString urlString = QString( "amarok://navigate/internet/%1?levels=artist-album&filter=artist:\"%2\"" )
                         .arg( m_service->name() )
                         .arg( m_track->artist()->prettyName() );
 
