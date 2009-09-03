@@ -298,7 +298,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     //workaround string-freeze for 2.2
     debug() << i18n( "Toggle unified view mode" );
-    KAction *toggleAction = new KAction( KIcon( "preferences-other" ), i18n( "Toggle unified view mode. This is an experimental feature" ), this );
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Toggle unified view mode. This is an experimental feature" ), this );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView() ) );
     m_searchWidget->toolBar()->addAction( toggleAction );
 
