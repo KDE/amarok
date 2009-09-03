@@ -239,6 +239,10 @@ Playlist::GroupingProxy::groupRowCount( int row ) const
 bool
 Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 )
 {
+    //An empty grouping category means "no grouping"
+    if ( m_groupingCategory.isEmpty() )
+        return false;
+
     if( groupableCategories.contains( m_groupingCategory ) )   //sanity
     {
         switch( groupableCategories.indexOf( m_groupingCategory ) )
@@ -329,7 +333,7 @@ Playlist::GroupingProxy::groupingCategory() const
 void
 Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
 {
-    if( groupableCategories.contains( groupingCategory ) )
+    if( groupableCategories.contains( groupingCategory ) || groupingCategory.isEmpty() )
     {
         m_groupingCategory = groupingCategory;
         regroupAll();

@@ -20,6 +20,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "playlist/PlaylistDefines.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KMessageBox>
 #include <KStandardDirs>
@@ -63,8 +64,12 @@ QStringList LayoutManager::layouts() const
 void LayoutManager::setActiveLayout( const QString &layout )
 {
     m_activeLayout = layout;
-    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );
+    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );  
     emit( activeLayoutChanged() );
+
+    //Change the grouping style to that of this layout.
+    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
+
 }
 
 void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
@@ -72,6 +77,9 @@ void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
     m_activeLayout = PREVIEW_LAYOUT;
     m_previewLayout = layout;
     emit( activeLayoutChanged() );
+
+    //Change the grouping style to that of this layout.
+    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
 }
 
 PlaylistLayout LayoutManager::activeLayout() const
@@ -148,7 +156,9 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
         currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
-        currentLayout.setAllowGrouping(  layout.toElement().attribute( "allow_grouping", "true" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+
+        //For backwards compatability, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
+        currentLayout.setGroupBy( layout.toElement().attribute( "group_by", "Album" ) );
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
         currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
@@ -248,9 +258,7 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     if( layout.inlineControls() )
         newLayout.setAttribute( "inline_controls", "true" );
 
-    //allowGrouping defaults to true, so we want to note if false instead of if true
-    if(!layout.allowGrouping() )
-        newLayout.setAttribute( "allow_grouping", "false");
+    newLayout.setAttribute( "group_by", layout.groupBy() );
 
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 

@@ -114,7 +114,21 @@ void InlineEditorWidget::createChildWidgets()
 
     KHBox * trackBox = new KHBox( this );
 
-    LayoutItemConfig config = m_layout.body();
+    LayoutItemConfig config;
+    switch(m_groupMode)
+    {
+        //For now, we don't allow editing of the "head" data, just the body
+        case Head:
+        case Body:
+        case Tail:
+            config = m_layout.body();
+            break;
+        case None:
+        default:
+            config = m_layout.single();
+            break;
+    }
+
     int rowCount = config.rows();
 
     if ( rowCount == 0 )

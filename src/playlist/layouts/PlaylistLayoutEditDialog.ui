@@ -193,11 +193,21 @@
          </widget>
         </item>
         <item row="1" column="0">
-         <widget class="QCheckBox" name="noGroupingChekbox">
-          <property name="text">
-           <string>No Grouping</string>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="bottomMargin">
+           <number>0</number>
           </property>
-         </widget>
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Group By</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="groupByComboBox"/>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>

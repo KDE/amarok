@@ -65,11 +65,7 @@ PrettyItemDelegate::~PrettyItemDelegate() { }
 
 int PrettyItemDelegate::getGroupMode( const QModelIndex &index) const
 {
-    //If this layout doesn't allow grouping, we want to override whatever would be the group mode with "Single"
-    if (LayoutManager::instance()->activeLayout().allowGrouping())
-        return index.data( GroupRole ).toInt();
-    else
-        return None;
+    return index.data( GroupRole ).toInt();
 }
 
 int PrettyItemDelegate::rowsForItem( const QModelIndex &index ) const

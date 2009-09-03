@@ -19,7 +19,6 @@
 #include "Debug.h"
 #include "layouts/LayoutManager.h"
 #include "MainWindow.h"
-#include "PlaylistGroupingAction.h"
 #include "PlaylistWidget.h"
 #include "PlaylistSortWidget.h"
 #include "ProgressiveSearchWidget.h"
@@ -46,8 +45,6 @@ ViewUrlGenerator::createAmarokUrl()
     QString onlyMatches = playlistWidget->searchWidget()->onlyMatches() ? "true" : "false";
     QString sortPath = playlistWidget->sortWidget()->sortPath();
     QString prettySortPath = playlistWidget->sortWidget()->prettySortPath();
-    QString groupingCategory = playlistWidget->groupingAction()->currentGroupingCategory();
-    QString prettyGroupingCategory = playlistWidget->groupingAction()->prettyGroupingCategory().remove( '&' );
     QString layout = LayoutManager::instance()->activeLayoutName();
     debug()<< "The filter is "<< filterExpr;
     debug()<< "OnlyMatches is "<< onlyMatches;
@@ -72,13 +69,6 @@ ViewUrlGenerator::createAmarokUrl()
         prettyUrlName.append( ( onlyMatches == QString( "true" ) )
                               ? i18n( "Filter %1", prettyFilterExpr )
                               : i18n( "Search %1", prettyFilterExpr ) );
-    }
-    if( !groupingCategory.isEmpty() )
-    {
-        url.appendArg( "group", groupingCategory );
-        if( !prettyUrlName.isEmpty() )
-            prettyUrlName.append( "  |  " );
-        prettyUrlName.append( i18n( "Group by %1", prettyGroupingCategory ) );
     }
     if( !layout.isEmpty() )
     {

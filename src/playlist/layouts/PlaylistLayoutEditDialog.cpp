@@ -87,6 +87,8 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
 
     layoutListWidget->setCurrentRow( LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() ) );
 
+    setupGroupByCombo();
+
     if ( layoutListWidget->currentItem() )
         setLayout( layoutListWidget->currentItem()->text() );
 
@@ -130,7 +132,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     connect( m_bodyEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( m_singleEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( inlineControlsChekbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
-    connect( noGroupingChekbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
+    connect( groupByComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setLayoutChanged() ) );
 }
 
 
@@ -213,7 +215,7 @@ void PlaylistLayoutEditDialog::copyLayout()
     layout.setSingle( singleConfig );
 
     layout.setInlineControls( inlineControlsChekbox->isChecked() );
-    layout.setAllowGrouping(  !noGroupingChekbox->isChecked() );
+    layout.setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
 
     LayoutManager::instance()->addUserLayout( layoutName, layout );
 
@@ -285,7 +287,7 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
         m_bodyEdit->readLayout( layout.body() );
         m_singleEdit->readLayout( layout.single() );
         inlineControlsChekbox->setChecked( layout.inlineControls() );
-        noGroupingChekbox->setChecked(  !layout.allowGrouping()  );
+        groupByComboBox->setCurrentIndex( groupByComboBox->findData( layout.groupBy() ) );
         setEnabledTabs();
     }
     else
@@ -307,7 +309,7 @@ void PlaylistLayoutEditDialog::preview()
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
     layout.setInlineControls( inlineControlsChekbox->isChecked() );
-    layout.setAllowGrouping(  !noGroupingChekbox->isChecked() );
+    layout.setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
 
     LayoutManager::instance()->setPreviewLayout( layout );
 }
@@ -368,13 +370,14 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
                 i.value().setBody( LayoutManager::instance()->layout( i.key() ).body() );
                 i.value().setSingle( LayoutManager::instance()->layout( i.key() ).single() );
                 i.value().setInlineControls( LayoutManager::instance()->layout( i.key() ).inlineControls() );
+                i.value().setGroupBy( LayoutManager::instance()->layout( i.key() ).groupBy() );
                 i.value().setDirty( false );
                 if ( m_layoutName == i.key() )
                     setLayout( i.key() );
                 return;
             }
             i.value().setInlineControls( inlineControlsChekbox->isChecked() );
-            i.value().setAllowGrouping( !noGroupingChekbox->isChecked() );
+            i.value().setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
             i.value().setDirty( false );
             LayoutManager::instance()->addUserLayout( i.key(), i.value() );
         }
@@ -422,7 +425,8 @@ void PlaylistLayoutEditDialog::moveDown()
 void PlaylistLayoutEditDialog::setEnabledTabs()
 {
     //Enable or disable tabs depending on whether grouping is allowed. 
-    if (!noGroupingChekbox->isChecked())
+    //An empty QString is used to specify no grouping
+    if ( !groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString().isEmpty() )
     {
         //Grouping allowed - enable all tabs
         elementTabs->setTabEnabled(elementTabs->indexOf(m_headEdit), true);
@@ -437,6 +441,24 @@ void PlaylistLayoutEditDialog::setEnabledTabs()
     }
 }
 
+//Sets up a combo box that presents the possible grouping categories, as well as the option
+//to perform no grouping.
+//We'll use the "user data" to store the un-i18n-ized category name for internal use.
+void PlaylistLayoutEditDialog::setupGroupByCombo()
+{
+    QStringList groupingList( groupableCategories );
+    foreach ( QString it, groupingList )
+    {
+        QString prettyCategoryName = columnNames.at( internalColumnNames.indexOf( it ) );
+        QString iconName = iconNames.at( internalColumnNames.indexOf( it ) );
+        groupByComboBox->addItem( KIcon( iconName ), prettyCategoryName, QVariant( it ) );
+    }
+
+    //Add the option to not perform grouping
+    //Use a null string to specify "no grouping"
+    groupByComboBox->addItem( i18n( "No Grouping" ), QVariant( QString() ) );
+}
+
 void PlaylistLayoutEditDialog::setLayoutChanged()
 {
     setEnabledTabs();
@@ -446,7 +468,7 @@ void PlaylistLayoutEditDialog::setLayoutChanged()
     (*m_layoutsMap)[m_layoutName].setSingle( m_singleEdit->config() );
    
     (*m_layoutsMap)[m_layoutName].setInlineControls( inlineControlsChekbox->isChecked() );
-    (*m_layoutsMap)[m_layoutName].setAllowGrouping(  !noGroupingChekbox->isChecked() );
+    (*m_layoutsMap)[m_layoutName].setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
     (*m_layoutsMap)[m_layoutName].setDirty( true );  
 }
 

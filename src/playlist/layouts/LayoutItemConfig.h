@@ -278,8 +278,8 @@ class PlaylistLayout
         bool inlineControls();
         void setInlineControls( bool inlineControls );
 
-        bool allowGrouping();
-        void setAllowGrouping( bool allowGrouping );
+        QString groupBy();
+        void setGroupBy(const QString &);
 
     private:
         LayoutItemConfig m_head;
@@ -288,7 +288,8 @@ class PlaylistLayout
         bool m_isEditable;
         bool m_isDirty;
         bool m_inlineControls;
-        bool m_allowGrouping;
+
+        QString m_groupBy;
 };
 
 }

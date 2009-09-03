@@ -122,8 +122,17 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         void setLayoutChanged();
 
     private:
+        /**
+         * Changes which layout tabs are enabled based on the grouping mode selected
+         */
         void setEnabledTabs();
 
+        /**
+         * Populates the grouping mode combo box with options
+         */
+        void setupGroupByCombo(); 
+        
+        
         Playlist::LayoutEditWidget *m_headEdit;
         Playlist::LayoutEditWidget *m_bodyEdit;
         Playlist::LayoutEditWidget *m_singleEdit;

@@ -22,7 +22,6 @@
 #include "MainWindow.h"
 #include "PlaylistWidget.h"
 #include "ProgressiveSearchWidget.h"
-#include "PlaylistGroupingAction.h"
 #include "layouts/LayoutManager.h"
 
 #include <QList>
@@ -84,19 +83,7 @@ ViewUrlRunner::run( AmarokUrl url )
                 warning() << "Playlist view URL parse error: Invalid sort order for level " << level;
         }
     }
-    if( args.keys().contains( "group" ) )
-    {
-        QString groupingCategory = args.value( "group" );
-        QList< QAction * > actions = playlistWidget->groupingAction()->groupingActionGroup()->actions();
-        foreach( QAction *action, actions )
-        {
-            if( action->data().toString() == groupingCategory )
-            {
-                action->trigger();
-                break;
-            }
-        }
-    }
+
     if( args.keys().contains( "layout" ) )
     {
         QString layout = args.value( "layout" );

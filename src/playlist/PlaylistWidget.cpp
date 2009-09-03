@@ -148,9 +148,6 @@ Playlist::Widget::Widget( QWidget* parent )
         if( tbutton )
             tbutton->setPopupMode( QToolButton::InstantPopup );
 
-        m_groupingAction = new Playlist::GroupingAction( this );
-        layoutConfigAction->menu()->insertAction( layoutConfigAction->menu()->actions().at( 1 ), m_groupingAction );
-
         plBar->addAction( new KToolBarSpacerAction( this ) );
     } //END Playlist Toolbar
 

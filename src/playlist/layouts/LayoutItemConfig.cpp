@@ -140,7 +140,6 @@ Playlist::PlaylistLayout::PlaylistLayout()
     : m_isEditable(false)
     , m_isDirty(false)
     , m_inlineControls(false)
-    , m_allowGrouping(true)
 {}
 
 LayoutItemConfig Playlist::PlaylistLayout::head() const
@@ -202,14 +201,14 @@ void Playlist::PlaylistLayout::setInlineControls( bool inlineControls )
     m_inlineControls = inlineControls;
 }
 
-bool Playlist::PlaylistLayout::allowGrouping()
+QString Playlist::PlaylistLayout::groupBy()
 {
-    return m_allowGrouping;
+    return m_groupBy;
 }
 
-void Playlist::PlaylistLayout::setAllowGrouping(bool allowGrouping)
+void Playlist::PlaylistLayout::setGroupBy(const QString& groupBy)
 {
-    m_allowGrouping = allowGrouping;
+    m_groupBy = groupBy;
 }
 
 }

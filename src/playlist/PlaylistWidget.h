@@ -21,7 +21,6 @@
 
 #include "PlaylistSortWidget.h"
 #include "view/listview/PrettyListView.h"
-#include "playlist/PlaylistGroupingAction.h"
 
 #include <KVBox>
 
@@ -50,7 +49,6 @@ public:
 
     SortWidget * sortWidget() { return m_sortWidget; }
     ProgressiveSearchWidget * searchWidget() { return m_searchWidget; }
-    GroupingAction * groupingAction() { return m_groupingAction; }
 
 public slots:
     void showDynamicHint( bool enabled );
@@ -71,7 +69,6 @@ private:
     PrettyListView* m_playlistView;
     ProgressiveSearchWidget * m_searchWidget;
     SortWidget * m_sortWidget;
-    GroupingAction * m_groupingAction;
     QLabel* m_dynamicHintWidget;
 
 };
