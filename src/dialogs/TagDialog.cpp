@@ -1516,6 +1516,10 @@ TagDialog::saveTags()
             continue;
         }
 
+        //if a track is not in a collection, no collection has to be updated either
+        if( !track->collection() )
+            continue;
+
         QString collId = track->collection()->collectionId();
 
         if( !collectionsToUpdateMap.contains( collId ) )
