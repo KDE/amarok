@@ -3,6 +3,12 @@ Amarok ChangeLog
 (C) 2002-2009 the Amarok authors.
 
 VERSION 2.2-beta2
+  CHANGES:
+    * Grouping mode has been merged into the playlist layouts so each layout
+      sets its own. The default grouping mode for layout files that do not 
+      have this value explicitly set is "Album". Thanks to Tim Bocek 
+      <tim.bocek@gmail.com> for this set of patches.
+
   BUGFIXES:
     * Fix extra empty rows sometimes getting added to the playlist layout xml
       when using the playlist layout editor. (BR 205182)
