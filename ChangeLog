@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.2-beta2
   BUGFIXES:
+    * Fix extra empty rows sometimes getting added to the playlist layout xml
+      when using the playlist layout editor. (BR 205182)
     * Fixed typo in D-Bus manifest, that resulted in incorrect function
       invokation in IRKick. (BR 205729)
     * Correctly mark playing track as active in the playlist after removing it
