@@ -50,7 +50,7 @@ public slots:
 //     inline void setColumnLimit( uint c ) { m_limits[0] = c; }
 signals:
     void changed();
-    void focussed( QWidget* );
+    void focusReceived( QWidget* );
 
 protected:
     bool eventFilter( QObject *, QEvent * );

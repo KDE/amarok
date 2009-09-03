@@ -39,16 +39,16 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
     setDrawWallpaper( false );
    // setScreen( -1 );
     setImmutability( Plasma::Mutable );
-    
+
     debug() << "applet containment has corona:" << corona();
     m_applets = new VerticalAppletLayout( this );
-    
+
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), SLOT( appletRemoved( Plasma::Applet* ) ) );
     connect( this, SIGNAL( appletRemoved( Plasma::Applet* ) ), SIGNAL( geometryChanged() ) );
-             
+
     connect( m_applets,  SIGNAL( appletAdded( Plasma::Applet*, int ) ), SIGNAL( appletAdded( Plasma::Applet*, int) ) ); // goes out to applet toolbar
     connect( m_applets, SIGNAL(  appletAdded( Plasma::Applet*, int ) ), SIGNAL( geometryChanged() ) );
-    
+
     connect( m_applets, SIGNAL( noApplets( bool ) ), SLOT( showEmptyText( bool ) ) );
 
     m_noAppletText = new QGraphicsTextItem( this );
@@ -56,13 +56,13 @@ Context::VerticalToolbarContainment::VerticalToolbarContainment( QObject *parent
                                         <body> <p align=\"center\"> %3 </p></body></html>" )
                                        .arg( PaletteHandler::highlightColor().name() )
                                        .arg( i18n( "Please add some applets from the toolbar at the bottom of the context view." ) ) );
-                                       
+
 }
 
 Context::VerticalToolbarContainment::~VerticalToolbarContainment()
 {}
 
-void 
+void
 Context::VerticalToolbarContainment::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
@@ -71,20 +71,20 @@ Context::VerticalToolbarContainment::constraintsEvent( Plasma::Constraints const
     m_applets->setGeometry( contentsRect() );
 }
 
-QList<QAction*> 
+QList<QAction*>
 Context::VerticalToolbarContainment::contextualActions()
 {
     return QList< QAction* >();
 }
 
-void 
+void
 Context::VerticalToolbarContainment::paintInterface(QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect& contentsRect)
 {
     Q_UNUSED( painter );
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
 
-    
+
     if( m_noApplets ) // draw help text
     {
         QRectF masterRect = view()->rect();
@@ -118,7 +118,7 @@ Context::VerticalToolbarContainment::loadConfig( const KConfigGroup &conf )
     m_applets->showAtIndex( showing );
 }
 
-void 
+void
 Context::VerticalToolbarContainment::setView( ContextView* view )
 {
     DEBUG_BLOCK
@@ -134,13 +134,13 @@ Context::VerticalToolbarContainment::view()
     return m_view;
 }
 
-QRectF 
+QRectF
 Context::VerticalToolbarContainment::boundingRect () const
 {
     return QRectF( QPointF( 0, 0), m_applets->totalSize() );
 }
 
-Plasma::Applet* 
+Plasma::Applet*
 Context::VerticalToolbarContainment::addApplet( const QString& pluginName, const int loc ) // SLOT
 {
     DEBUG_BLOCK
@@ -155,7 +155,7 @@ Context::VerticalToolbarContainment::addApplet( const QString& pluginName, const
     return applet;
 }
 
-void    
+void
 Context::VerticalToolbarContainment::appletRemoved( Plasma::Applet* applet )
 {
     m_applets->appletRemoved( applet );
@@ -178,7 +178,7 @@ Context::VerticalToolbarContainment::wheelEvent( QGraphicsSceneWheelEvent* event
 {
     Q_UNUSED( event )
 
-    //eat wheel events, we dont want scrolling
+    //eat wheel events, we don't want scrolling
 }
 
 void

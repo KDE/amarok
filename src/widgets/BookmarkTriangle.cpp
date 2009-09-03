@@ -50,7 +50,7 @@ QSize BookmarkTriangle::minimumSizeHint() const
 void BookmarkTriangle::paintEvent ( QPaintEvent* )
 {
     QPainter p ( this );
-    p.drawPixmap ( 0, 0, The::svgHandler()->renderSvg ( "blue_triangle", 10 , 10, "blue_triangle" ) ); // TODO THIS DOESNT WORK
+    p.drawPixmap ( 0, 0, The::svgHandler()->renderSvg ( "blue_triangle", 10 , 10, "blue_triangle" ) ); // TODO: This doesn't work
 }
 
 void BookmarkTriangle::mousePressEvent ( QMouseEvent * event )
@@ -75,7 +75,7 @@ void BookmarkTriangle::enterEvent ( QEvent * event )
     if ( !m_tooltip )
         m_tooltip = new BookmarkPopup ( nativeParentWidget(), m_name );
     QPoint pt = mapTo( nativeParentWidget(), QPoint( 0, 0 ) );
-    m_tooltip->move ( pt.x(), 25 ); //TODO better way to calc the y position
+    m_tooltip->move ( pt.x(), 25 ); //TODO better way to calculate the y position
     m_tooltip->show();
 }
 

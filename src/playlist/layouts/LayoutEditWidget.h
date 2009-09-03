@@ -72,10 +72,10 @@ class LayoutEditWidget : public KVBox
     signals:
 
         /**
-         * Signal emited when the token drop target recieves input focus.
-         * @param The widget that recieved the focus.
+         * Signal emitted when the token drop target receives input focus.
+         * @param The widget that received the focus.
          */
-        void focussed( QWidget* );
+        void focuseReceived( QWidget* );
         void changed();
 
     private:

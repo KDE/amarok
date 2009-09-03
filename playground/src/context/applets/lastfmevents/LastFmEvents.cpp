@@ -55,7 +55,7 @@ void LastFmEvents::init()
     m_theme->setImagePath( "widgets/amarok-lastfm" );
     m_theme->setContainsMultipleImages( false );
     debug() << "LastFmEvents loaded theme file:" << m_theme->imagePath();
-    
+
     for( int i = 0; i < 14; i++ ) // create all the items
     {
         m_titles << new QGraphicsSimpleTextItem( this );
@@ -69,7 +69,7 @@ void LastFmEvents::init()
     connectSource( "sysevents" );
     connectSource( "userevents" );
     connectSource( "friendevents" );
-    
+
     connect( dataEngine( "amarok-lastfm" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
 
     // calculate aspect ratio, and resize to desired width
@@ -86,7 +86,7 @@ void
 LastFmEvents::connectSource( const QString &source )
 {
         dataEngine( "amarok-lastfm" )->connectSource( source, this );
-        dataUpdated( source, dataEngine("amarok-lastfm" )->query( source ) ); // get data initally
+        dataUpdated( source, dataEngine("amarok-lastfm" )->query( source ) ); // get data initially
 }
 
 
@@ -207,7 +207,7 @@ void LastFmEvents::dataUpdated( const QString& name, const Plasma::DataEngine::D
     update();
 }
 
-QSizeF 
+QSizeF
 LastFmEvents::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
     Q_UNUSED( which );
@@ -229,7 +229,7 @@ void LastFmEvents::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *
 
     //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
     //context view has been minimized completely
-    if ( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) ) 
+    if ( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
     {
         debug() << "Too little room to paint, hiding all children ( making myself invisible but still painted )!";
         foreach ( QGraphicsItem * childItem, QGraphicsItem::children() ) {

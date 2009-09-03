@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "LayoutManager.h"
 
 #include "Amarok.h"
@@ -69,7 +69,7 @@ void LayoutManager::setActiveLayout( const QString &layout )
 
 void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
 {
-    m_activeLayout = PREVIEW_LAYOUT; 
+    m_activeLayout = PREVIEW_LAYOUT;
     m_previewLayout = layout;
     emit( activeLayoutChanged() );
 }
@@ -144,7 +144,7 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         index++;
 
         QString layoutName = layout.toElement().attribute( "name", "" );
-        
+
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
         currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
@@ -194,7 +194,7 @@ LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
             bool italic = ( elementNode.toElement().attribute( "italic", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
             QString alignmentString = elementNode.toElement().attribute( "alignment", "left" );
             Qt::Alignment alignment;
-            
+
 
             if ( alignmentString.compare( "left", Qt::CaseInsensitive ) == 0 )
                 alignment = Qt::AlignLeft | Qt::AlignVCenter;
@@ -246,7 +246,7 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     newLayout.appendChild( createItemElement( doc, "group_body", layout.body() ) );
 
     if( layout.inlineControls() )
-        newLayout.setAttribute( "inline_controls", "true" ); 
+        newLayout.setAttribute( "inline_controls", "true" );
 
     //allowGrouping defaults to true, so we want to note if false instead of if true
     if(!layout.allowGrouping() )
@@ -299,7 +299,7 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
                 alignmentString = "right";
             else
                 alignmentString = "center";
-            
+
             elementElement.setAttribute ( "alignment", alignmentString );
 
             rowElement.appendChild( elementElement );
@@ -329,7 +329,7 @@ void LayoutManager::deleteLayout( const QString &layout )
     {
         QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
         QString xmlFile = layoutsDir.path() + '/' + layout + ".xml";
-       
+
         if ( !QFile::remove( xmlFile ) )
             debug() << "error deleting file" << xmlFile;
 
@@ -379,7 +379,7 @@ void LayoutManager::orderLayouts()
 {
     KConfigGroup config = Amarok::config( "Playlist Layout" );
     QString orderString = config.readEntry( "Order", "Default" );
-    
+
     QStringList knownLayouts = m_layouts.keys();
 
     QStringList orderingList = orderString.split( ';', QString::SkipEmptyParts );
@@ -388,7 +388,7 @@ void LayoutManager::orderLayouts()
     {
         if ( knownLayouts.contains( layout ) )
         {
-            //skip any layout names that are in config but that we dont know. Perhaps someone manually deleted a layout file
+            //skip any layout names that are in config but that we don't know. Perhaps someone manually deleted a layout file
             m_layoutNames.append( layout );
             knownLayouts.removeAll( layout );
         }
@@ -414,7 +414,7 @@ void Playlist::LayoutManager::storeLayoutOrdering()
 
     if ( !ordering.isEmpty() )
         ordering.chop( 1 ); //remove trailing;
-    
+
     KConfigGroup config = Amarok::config("Playlist Layout");
     config.writeEntry( "Order", ordering );
 }

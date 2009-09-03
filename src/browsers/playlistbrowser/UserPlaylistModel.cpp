@@ -343,7 +343,7 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
     if( row + count - 1 >= playlist->tracks().count() )
     {
         debug() << "ERROR: tried to remove a track using an index that is not there:";
-        debug() << "row: " << row << " count: " << count << " numbr. of tracks: "
+        debug() << "row: " << row << " count: " << count << " number of tracks: "
                 << playlist->tracks().count();
         return false;
     }
@@ -404,7 +404,7 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
         int column, const QModelIndex &parent ) //reimplemented
 {
     DEBUG_BLOCK
-    debug() << "droped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
+    debug() << "dropped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
     debug() << parent;
 
     if( action == Qt::IgnoreAction )

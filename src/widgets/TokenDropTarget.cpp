@@ -50,7 +50,7 @@ protected:
             if ( static_cast<QMouseEvent*>(e)->buttons() & Qt::LeftButton )
             {
                 setCursor( qobject_cast<QWidget*>(o), Qt::ClosedHandCursor );
-//                 m_startPos = me->pos(); // not sure whether i like this...
+//                 m_startPos = me->pos(); // not sure whether I like this...
 //             else if ( event->button() == Qt::MidButton ) // TODO: really kick item on mmbc?
             }
             return false;
@@ -62,7 +62,7 @@ protected:
             return false;
         }
         else if ( e->type() == QEvent::FocusIn )
-            emit static_cast<TokenDropTarget*>( parent() )->focussed( qobject_cast<QWidget*>(o) );
+            emit static_cast<TokenDropTarget*>( parent() )->focusReceived( qobject_cast<QWidget*>(o) );
         else if ( e->type() == QEvent::Hide )
         {
             setCursor( qobject_cast<QWidget*>(o), Qt::OpenHandCursor );
@@ -81,23 +81,23 @@ private:
         bool stacked = token->parentWidget() && qobject_cast<TokenDropTarget*>( token->parentWidget() );
         if (stacked)
             token->hide();
-        
+
         QPixmap pixmap( token->size() );
         token->render( &pixmap );
         QDrag *drag = new QDrag( token );
         QMimeData *data = new QMimeData;
-        
+
         QByteArray itemData;
         QDataStream dataStream( &itemData, QIODevice::WriteOnly );
 //         dataStream << child->name() << child->iconName() << child->value();
-        
+
         data->setData( m_mimeType, itemData );
         drag->setMimeData( data );
         drag->setPixmap( pixmap );
         drag->setHotSpot ( pixmap.rect().center() );
-        
+
         Qt::DropAction dropAction = drag->exec( Qt::CopyAction | Qt::MoveAction, Qt::CopyAction );
-        
+
         if ( stacked )
         {
             if ( dropAction != Qt::MoveAction && dropAction != Qt::CopyAction ) // dragged out
@@ -135,7 +135,7 @@ m_tokenFactory( new TokenFactory() )
     // ...and handle drop events for him
     parent->removeEventFilter( this );
     parent->installEventFilter( this );
-    
+
     // visual, maybe there should be spacing? however, frames etc. can have contentmargin.
     layout()->setSpacing( 0 );
     // top-align content
@@ -150,7 +150,7 @@ TokenDropTarget::accept( QDropEvent *de )
         de->ignore();
         return false;
     }
-    
+
     if ( de->source() && parentWidget() && de->source()->parentWidget() == parentWidget() )
     {   // move
         de->setDropAction(Qt::MoveAction);
@@ -199,7 +199,7 @@ TokenDropTarget::clear()
         }
         delete row;
     }
-    //readd our spacer
+    //read our spacer
     layout()->addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding ) );
     update(); // reshow the text
 }
@@ -213,7 +213,7 @@ TokenDropTarget::count( int row ) const
         lower = row;
         upper = row + 1;
     }
-    
+
     int c = 0;
     for ( row = lower; row < upper; ++row )
         if ( QHBoxLayout *rowBox = qobject_cast<QHBoxLayout*>( layout()->itemAt( row )->layout() ) )
@@ -249,7 +249,7 @@ TokenDropTarget::drags( int row )
         lower = row;
         upper = row + 1;
     }
-    
+
     QList< Token *> list;
     Token *token;
     for ( row = lower; row < upper; ++row )
@@ -259,7 +259,7 @@ TokenDropTarget::drags( int row )
                 if ( ( token = qobject_cast<Token*>( rowBox->itemAt( col )->widget() ) ) )
                     list << token;
         }
-        
+
         return list;
 }
 
@@ -268,7 +268,7 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
 {
     if ( !token )
         return;
-    
+
     // unlayout in case of move
     if ( QBoxLayout *box = rowBox( token ) )
         box->removeWidget( token );
@@ -288,7 +288,7 @@ TokenDropTarget::drop( Token *token, const QPoint &pos )
     {
         if ( rowLimit() && rows() >= (int)rowLimit() ) // we usually don't want more rows
             box = qobject_cast<QBoxLayout*>( layout()->itemAt( rows() - 1 )->layout() );
-        
+
         if ( !box )
         {
             box = rowBox( pos ); // maybe this is on an existing row
@@ -327,7 +327,7 @@ TokenDropTarget::eventFilter( QObject *o, QEvent *ev )
             {
                 QByteArray itemData = de->mimeData()->data( m_mimeType );
                 QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-                
+
                 QString tokenName;
                 QString tokenIconName;
                 int tokenValue;
@@ -353,7 +353,7 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
     QBoxLayout *box = 0;
     if ( row < 0 && rows() >= rowLimit() )
         row = rowLimit() - 1; // want to append, but we can't so use the last row instead
-    
+
     if ( row < 0 || row > rows() - 1 )
         box = appendRow();
     else

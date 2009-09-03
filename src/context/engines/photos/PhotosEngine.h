@@ -29,7 +29,7 @@ using namespace Context;
 
  /**
    *   This class provide photos from flickr
-   *   
+   *
    */
 class PhotosEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
@@ -61,12 +61,12 @@ private slots:
     void resultFlickr( KJob* );
 
   /**
-   *   An image fetcher, will sotre the QPixmap in the corresponding videoInfo
+   *   An image fetcher, will store the QPixmap in the corresponding videoInfo
    */
     void resultImageFetcher( KJob * );
 
   /**
-   *   This method will send the infos to the applet and order them if every jobs are finished
+   *   This method will send the info to the applet and order them if every jobs are finished
    */
     void resultFinalize();
 

@@ -84,7 +84,7 @@ PlaylistsInGroupsProxy::buildTree()
     for( int row = 0; row < max; row++ )
     {
         QModelIndex idx = m_model->index( row, 0, QModelIndex() );
-        //Playlists can be in multiple groups but we only use the first TODO: multigroup
+        //Playlists can be in multiple groups but we only use the first TODO: multiple groups
         QStringList groups = idx.data( PlaylistBrowserNS::UserModel::GroupRole ).toStringList();
         QString groupName = groups.isEmpty() ? QString() : groups.first();
         debug() << QString("index %1 belongs to groupName %2").arg( row ).arg( groupName );
@@ -260,7 +260,7 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
     DEBUG_BLOCK
     Q_UNUSED( row );
     Q_UNUSED( column );
-    debug() << "droped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
+    debug() << "dropped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
     debug() << parent;
     if( action == Qt::IgnoreAction )
     {
@@ -642,7 +642,7 @@ void
 PlaylistsInGroupsProxy::deleteFolder( const QModelIndex &groupIdx )
 {
     DEBUG_BLOCK
-    //TODO: ask the user for configmation to delete children
+    //TODO: ask the user for configuration to delete children
     for( int i = 0; i < m_groupHash.values( groupIdx.row() ).count(); i++ )
     {
         QModelIndex proxyIdx = index( i, 0, groupIdx );

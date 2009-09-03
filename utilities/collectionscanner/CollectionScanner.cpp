@@ -281,7 +281,7 @@ CollectionScanner::doJob() //SLOT
 void
 CollectionScanner::readDir( const QString& dir, QStringList& entries )
 {
-    // linux specific, but this fits the 90% rule
+    // Linux specific, but this fits the 90% rule
     if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
         return;
     QDir d( dir );
@@ -302,7 +302,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     writeElement( "folder", attributes );
     d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files | QDir::Readable );
     QFileInfoList list = d.entryInfoList();
- 
+
     QStringList recurseDirs;
     foreach( QFileInfo f, list )
     {
@@ -536,7 +536,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         QString disc;
         QString compilation;
 
-        /* As mpeg implementation on TagLib uses a Tag class that's not defined on the headers,
+        /* As MPEG implementation on TagLib uses a Tag class that's not defined on the headers,
            we have to cast the files, not the tags! */
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
@@ -583,7 +583,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 
                 if ( res == CHARDET_RESULT_OK )
                 {
-                    /*  for further infomation please refer to:
+                    /*  for further information please refer to:
                      http://doc.trolltech.com/4.4/qtextcodec.html
                      http://www.mozilla.org/projects/intl/chardet.html
                      */

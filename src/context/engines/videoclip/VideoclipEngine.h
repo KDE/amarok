@@ -103,12 +103,12 @@ private slots:
     void resultVimeoGetLink( KJob* );
 
   /**
-   *   An image fetcher, will sotre the QPixmap in the corresponding videoInfo
+   *   An image fetcher, will store the QPixmap in the corresponding videoInfo
    */
     void resultImageFetcher( KJob * );
 
   /**
-   *   This method will send the infos to the applet and order them if every jobs are finished
+   *   This method will send the info to the applet and order them if every jobs are finished
    */
     void resultFinalize();
 
@@ -127,7 +127,7 @@ private:
    *   We don't want some jobs if it's useless
    *   So if the video title doesn't contain ARTIST or TITLE
    *   and the description doesn't contain ARTIST either, we remove this item
-   *   \return true if the video Info is ok, else false
+   *   \return true if the video Info is OK, else false
    */
     bool isVideoInfoValid( VideoInfo * );
 
@@ -154,7 +154,7 @@ private:
     int        m_length;
 
     bool       m_youtubeHQ; // boolean, store youtube HQ state, default is no
-    
+
     // stores what features are enabled
     bool m_requested;
 

@@ -43,7 +43,7 @@ class AMAROK_EXPORT TextScrollingWidget : public QObject, public QGraphicsSimple
 {
     Q_OBJECT
     public:
-        
+
         TextScrollingWidget( QGraphicsItem* parent = 0 );
 
         /**
@@ -52,11 +52,11 @@ class AMAROK_EXPORT TextScrollingWidget : public QObject, public QGraphicsSimple
         void setScrollingText( const QString, QRectF );
 
         bool isAnimating( );
-        
+
     public slots:
         void animateFor( qreal anim );
         void animateBack( qreal anim );
-        
+
         void animationFinished(int);
         void startAnimFor();
         void startAnimBack();
@@ -75,7 +75,7 @@ class AMAROK_EXPORT TextScrollingWidget : public QObject, public QGraphicsSimple
 
     private:
         QRectF            m_rect;           // box size
-        QFontMetrics     *m_fm;             // font metrics wich will cut the text.
+        QFontMetrics     *m_fm;             // font metrics which will cut the text.
         QString           m_text;           // full sentence
         int               m_delta;          // complete delta
         float             m_currentDelta;   // current delta

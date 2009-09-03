@@ -104,7 +104,7 @@ namespace JsonQt
 			void sendJson(const QString& json);
 
 			/** A notification has been received from the other peer.
-			 * No reponse is neccessary.
+			 * No response is necessary.
 			 */
 			void notificationReceived(const QString& method, const QVariant& parameters);
 			/** A request has been received from the other peer.
@@ -113,7 +113,7 @@ namespace JsonQt
 			void requestReceived(const QVariant& id, const QString& method, const QVariant& parameters);
 			/// A successful response has been received from the other peer.
 			void responseReceived(const QVariant& id, const QVariant& result);
-			/// An error has been recevied from the other peer.
+			/// An error has been received from the other peer.
 			void errorReceived(const QVariant& id, int errorCode, const QString& message, const QVariant& data);
 	};
 };

@@ -99,5 +99,3 @@ void ServiceBrowser::addService( ServiceBase * service )
 
 #include "ServiceBrowser.moc"
 
-
-

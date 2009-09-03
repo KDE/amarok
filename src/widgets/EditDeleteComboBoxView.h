@@ -13,17 +13,17 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef EDITDELETECOMBOBOXVIEW_H
 #define EDITDELETECOMBOBOXVIEW_H
 
 #include <QListView>
 
 /**
-    A specialised QListView class needed for detecting mouse clicks on the "buttons" 
-    on the items in the popup.
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-*/
+ *  A specialized QListView class needed for detecting mouse clicks on the "buttons"
+ *  on the items in the popup.
+ *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ */
 class EditDeleteComboBoxView : public QListView
 {
     Q_OBJECT

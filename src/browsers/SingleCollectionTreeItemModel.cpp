@@ -65,7 +65,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
     if ( item->isDataItem() )
     {
         if ( role == Qt::DecorationRole ) {
-            //don't substract one here like in collectiontreeitemmodel because
+            //don't subtract one here like in collectiontreeitemmodel because
             //there is no collection level here
 
             //check if the item being queried is currently being populated
@@ -80,7 +80,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 
             if ( level < m_levelType.count() )
             {
-                if (  m_levelType[level] == CategoryId::Album ) 
+                if (  m_levelType[level] == CategoryId::Album )
                 {
                     Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                     if( album)
@@ -88,7 +88,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
                     else
                         return iconForLevel( level );
                 }
-                else 
+                else
                     return iconForLevel( level );
             }
         } else if ( role == AlternateCollectionRowRole )
@@ -98,7 +98,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
     return item->data( role );
 }
 
-Qt::ItemFlags 
+Qt::ItemFlags
 SingleCollectionTreeItemModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags f = CollectionTreeItemModelBase::flags( index );

@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "LayoutEditWidget.h"
 #include "TokenDropTarget.h"
 #include "playlist/PlaylistDefines.h"
@@ -34,9 +34,9 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     m_tokenFactory = new TokenWithLayoutFactory;
     m_dragstack = new TokenDropTarget( "application/x-amarok-tag-token", this );
     m_dragstack->setCustomTokenFactory( m_tokenFactory );
-    connect ( m_dragstack, SIGNAL( focussed(QWidget*) ), this, SIGNAL( focussed(QWidget*) ) );
+    connect ( m_dragstack, SIGNAL( focusReceived(QWidget*) ), this, SIGNAL( focusReceived(QWidget*) ) );
     connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( changed() ) );
-    
+
     m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
 }
 
@@ -67,7 +67,7 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 
         //FIXME! for now, each element get the same size. This needs extensions to the token stuff
         //qreal size = 1.0 / (qreal) elementCount;
-        
+
         for( int j = 0; j < elementCount; j++ )
         {
             Playlist::LayoutItemConfigRowElement element = rowConfig.element( j );
@@ -75,16 +75,16 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
             debug() << "value: " << element.value();
             if ( element.value()  == -1 )
             {
-  
+
                 error() << "Invalid element value '" << element.value() << "' in playlist layout.";
                 KMessageBox::detailedError( this,
                                             i18n( "Invalid playlist layout." ),
                                             i18n( "Encountered an unknown element name while reading layout." ) );
                 m_dragstack->clear();
                 return;
-                
+
             }
-            
+
             TokenWithLayout *token =  new TokenWithLayout( columnNames[element.value()], iconNames[element.value()], element.value() );
             token->setBold( element.bold() );
             token->setItalic( element.italic() );
@@ -105,7 +105,7 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
 
     LayoutItemConfig config;
     config.setShowCover( m_showCoverCheckBox->isChecked() );
-    
+
     int noOfRows = m_dragstack->rows();
 
     for( int i = 0; i < noOfRows; i++ )

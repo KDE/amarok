@@ -24,7 +24,7 @@
 
 const QString BLANKLINE( " *                                                                                      *" );
 const QString TOPLINE( "/****************************************************************************************" );
-QList<QStringList> LICENSES = QList<QStringList>() << 
+QList<QStringList> LICENSES = QList<QStringList>() <<
     ( QStringList() <<
         " * This program is free software; you can redistribute it and/or modify it under        *" <<
         " * the terms of the GNU General Public License as published by the Free Software        *" <<
@@ -36,7 +36,7 @@ QList<QStringList> LICENSES = QList<QStringList>() <<
         " * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *" <<
         " *                                                                                      *" <<
         " * You should have received a copy of the GNU General Public License along with         *" <<
-        " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *" 
+        " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *"
     )
     <<
     ( QStringList() <<
@@ -50,7 +50,7 @@ QList<QStringList> LICENSES = QList<QStringList>() <<
         " * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *" <<
         " *                                                                                      *" <<
         " * You should have received a copy of the GNU Library General Public License along with *" <<
-        " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *" 
+        " * this program.  If not, see <http://www.gnu.org/licenses/>.                           *"
     )
     <<
     ( QStringList() <<
@@ -142,7 +142,7 @@ void readFile( QString filename ) {
   if( startpos == -1 ) //No block comments
   {
     log.append( LogEntry( filename, "No license header - could not find block comment", LogEntry::failure ) );
-    
+
     log.addProblemFile( filename );
 
     return;
@@ -151,7 +151,7 @@ void readFile( QString filename ) {
   if( endpos != -1 || endpos > startpos ) //Single line comment - not license header
   {
     log.append( LogEntry( filename, "First block comment is single-line. Therefore not license header", LogEntry::failure ) );
-    
+
     log.addProblemFile( filename );
 
     return;
@@ -161,7 +161,7 @@ void readFile( QString filename ) {
   QList<QString> header;
 
   header.append(line);
-  
+
   while( !line.contains( "*/" ) && !inStream.atEnd() )
   {
     line = inStream.readLine();
@@ -174,18 +174,18 @@ void readFile( QString filename ) {
   if( !line.contains( "*/" ) )
   {
     log.append( LogEntry( filename, "No license header - could not find end of block comment", LogEntry::failure ) );
-    
+
     log.addProblemFile( filename );
 
     return;
   }
-  
+
   bool problemFile = false;
 
   if ( !headerAtStart )
   {
     log.append( LogEntry( filename, "License header is not at the start of the file", LogEntry::warning ) );
-    
+
     problemFile = true;
   }
 
@@ -200,59 +200,59 @@ void readFile( QString filename ) {
 
   //Find first line of license
   int i = 1;
-  
+
   bool  firstLineFound = false;
-  
+
   while( i < header.count() )
   {
     for( int j = 0; j < LICENSES.count(); j++ )
-    {      
+    {
       if( header[i] == LICENSES[j][0] )
       {
         firstLineFound = true;
         break;
       }
     }
-    
+
     if( firstLineFound )
       break;
-    
+
     i++;
   }
 
   if( i == header.count() )
   {
     log.append( LogEntry( filename, "Required License wording and format not found. (Could not find match for first line)", LogEntry::failure ) );
-    
+
     log.addProblemFile( filename );
     return;
   }
-  
+
   bool licenseFound = false;
 
   //Declaring k here so that it stays around for the log entry if needed.
   int k;
-  
+
   for( int j = 0; j < LICENSES.count(); j++ )
   {
     if( header.count() + i < LICENSES[j].count() )
       continue; //Too short to be header, so continue
-      
+
     k = 1;
     while( k < LICENSES[j].count() && header[k+i] == LICENSES[j][k] )
       k++;
-    
+
     if( k == LICENSES[j].count() )
     {
       //Check for extra lines. Means extra terms (+1 to incorporate last line)
       if( header.count() - i > LICENSES[j].count() + 1 )
         log.append( LogEntry( filename, "Extra license terms in license header.", LogEntry::information ) );
-      
+
       licenseFound = true;
       break;
     }
   }
-  
+
   if( !licenseFound )
   {
     log.append( LogEntry( filename, "Required license wording and format not found.", LogEntry::failure ) );
@@ -260,7 +260,7 @@ void readFile( QString filename ) {
     return;
   }
 
-  //Line i-1 shoud be a blank line
+  //Line i-1 should be a blank line
   if( header[i - 1] != BLANKLINE )
   {
     log.append( LogEntry( filename, "No blank line between copyright holders and license text. - Fixed", LogEntry::information ) );
@@ -275,7 +275,7 @@ void readFile( QString filename ) {
     log.append( LogEntry( filename, "No copyright holders present", LogEntry::warning ) );
     log.addProblemFile( filename );
   }
-  
+
   bool overallSuccess = true;
 
   //For each copyright holder
@@ -299,7 +299,7 @@ void readFile( QString filename ) {
     {
       log.append( LogEntry( filename, QString( "First 3 characters of copyright line incorrect (incorrect * border) (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
       individualSuccess = false;
-    
+
       problemFile = true;
     }
 
@@ -317,7 +317,7 @@ void readFile( QString filename ) {
       {
         log.append( LogEntry( filename, QString( "\"Copyright\" not found in proper place (Line ").append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
         individualSuccess = false;
-    
+
         problemFile = true;
       }
     }
@@ -327,7 +327,7 @@ void readFile( QString filename ) {
     {
       log.append( LogEntry( filename, QString( "No space between \"Copyright\" and \"(c)\" (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
       individualSuccess = false;
-      
+
       problemFile = true;
     }
 
@@ -344,7 +344,7 @@ void readFile( QString filename ) {
       {
         log.append( LogEntry( filename, QString( "\"(c)\" not found in proper place (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
         individualSuccess = false;
-    
+
         problemFile = true;
       }
     }
@@ -354,7 +354,7 @@ void readFile( QString filename ) {
     {
       log.append( LogEntry( filename, QString( "No space between \"(c)\" and copyright holder's name (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
       individualSuccess = false;
-    
+
       problemFile = true;
     }
 
@@ -367,7 +367,7 @@ void readFile( QString filename ) {
     {
       log.append( LogEntry( filename, QString( "Year is not found in correct format. (Not a numeric value) (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
       individualSuccess = false;
-    
+
       problemFile = true;
     }
 
@@ -383,7 +383,7 @@ void readFile( QString filename ) {
       {
         log.append( LogEntry( filename, QString( "Year is not found in correct format. (Not a numeric value) (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
         individualSuccess = false;
-    
+
         problemFile = true;
         break; //Leave loop so no false warning for in-order years
       }
@@ -396,24 +396,24 @@ void readFile( QString filename ) {
       //Move on to next year
       k++;
     }
-    
+
     if( individualSuccess && header[j].mid( 16+(5*k), 1 ) != " " )
     {
       log.append( LogEntry( filename, QString( "Incorrect separator character between years, or no space between year(s) and name. (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
       individualSuccess = false;
-    
+
       problemFile = true;
     }
 
     //Find < at start of email
     int startEmail = header[j].indexOf( "<", 16+(5*k) );
-  
+
     //Check for presence of name (startEmail > 18) (18 is first possible position plus a space)
     if( individualSuccess && startEmail <= 17+(5*k) )
     {
-      log.append( LogEntry( filename, QString( "Copyright holder's name not present in corerct place. (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
+      log.append( LogEntry( filename, QString( "Copyright holder's name not present in correct place. (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
       individualSuccess = false;
-    
+
       problemFile = true;
     }
 
@@ -448,7 +448,7 @@ void readFile( QString filename ) {
     {
       log.append( LogEntry( filename, QString( "No closing brackets for email address (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::error ) );
       individualSuccess = false;
-    
+
       problemFile = true;
     }
 
@@ -459,10 +459,10 @@ void readFile( QString filename ) {
     if( individualSuccess && ( atPos == -1 || dotPos < atPos ) )
     {
       log.append( LogEntry( filename, QString( "Invalid email address (not format *@*.*) (Line " ).append( (char)(j+48) ).append( " of header)" ), LogEntry::warning ) );
-    
+
     problemFile = true;
     }
-    
+
     //Check for 'by So and So'
     if( individualSuccess && header[j].mid( 17+(5*k), 5 ).trimmed().toLower().startsWith( "by " ) )
     {
@@ -472,7 +472,7 @@ void readFile( QString filename ) {
               header[j].mid( header[j].indexOf( "by ", 17+(5*k) ) + 3 );
       autofixed = true;
     }
-    
+
     //Check length of line (stars in line at end)
     if( individualSuccess && header[j].trimmed().length() != 88 )
     {
@@ -481,14 +481,14 @@ void readFile( QString filename ) {
       //Now add trailing spaces and *
       for ( int k = header[j].length(); k < 88; k++ )
         header[j] += ' ';
-      
+
       header[j] += '*';
-      
+
       log.append( LogEntry( filename, QString( "Length of copyright holder line incorrect. (Line " ).append( (char)(j+48) ).append( " of header) - Fixed" ), LogEntry::information ) );
-      
+
       autofixed=true;
     }
-    
+
     //Add copyright holder (only if success)
     if( individualSuccess )
     {
@@ -498,37 +498,37 @@ void readFile( QString filename ) {
               filename
               );
     }
-    
+
     //Set overallSuccess false if this run failed
     if( !individualSuccess )
       overallSuccess = false;
-    
-  
+
+
   }
 
   if( autofixed )
   {
     inStream.seek( 0 );
     QList<QString> newFile;
-    
+
     for( int i = 0; i < numLinesBeforeHeader; i++ )
     {
       newFile.append( inStream.readLine() );
     }
-    
+
     newFile.append( header );
-    
+
     //Skip old header
     for( int i = 0; i < originalLength; i++ )
     {
       inStream.readLine();
     }
-    
+
     while( !inStream.atEnd() )
     {
       newFile.append( inStream.readLine() );
     }
-    
+
     file.close();
     if( !file.open( QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text ) )
     {
@@ -537,10 +537,10 @@ void readFile( QString filename ) {
     else
     {
       QTextStream outStream( &file );
-      
+
       foreach( QString i, newFile )
         outStream << i << "\n";
-      
+
       log.append( LogEntry( filename, "Some warnings autofixed", LogEntry::information ) );
     }
   }
@@ -548,14 +548,14 @@ void readFile( QString filename ) {
   if( overallSuccess )
   {
     log.append( LogEntry( filename, "Success", LogEntry::success ) );
-    
+
     if( problemFile )
       log.addProblemFile( filename );
   }
   else
   {
     log.append( LogEntry( filename, "Errors in copyright holders (see above errors)", LogEntry::failure ) );
-    
+
     log.addProblemFile( filename );
   }
 
@@ -589,7 +589,7 @@ void processCliArgs(int argc, char** argv)
         cliArgs.outputFile = QString( argv[i + 1] );
         i++;
       }
-    } 
+    }
     else if( argv[i][1] == 'b' ) //Output filename for bash script
     {
       if( QString( argv[i] ).length() > 2 )
@@ -695,7 +695,7 @@ void iterateFolder( QString folder )
 }
 
 int main( int argc, char** argv )
-{ 
+{
   processCliArgs(argc, argv);
 
   if( cliArgs.help )
@@ -726,7 +726,7 @@ int main( int argc, char** argv )
     log.printFullReport( cliArgs.outputStyle, cliArgs.outputFile );
   else
     log.printErrorReport( cliArgs.outputStyle, true, cliArgs.outputFile );
-  
+
   if( !cliArgs.bashScriptFile.isEmpty() )
     log.writeShellScript( cliArgs.bashScriptFile );
 

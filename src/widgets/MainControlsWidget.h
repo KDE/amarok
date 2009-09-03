@@ -8,12 +8,12 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef MAINCONTROLSWIDGET_H
 #define MAINCONTROLSWIDGET_H
 
@@ -23,10 +23,11 @@
 class MainControlsButton;
 
 /**
-A small widget containing the 4 main control buttons. Manages special layout for these butons
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-*/
+ * A small widget containing the 4 main control buttons. Manages special layout
+ * for these buttons
+ *
+ * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ */
 class MainControlsWidget : public QGraphicsView
 {
 public:
