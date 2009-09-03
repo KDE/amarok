@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPOD_DEVICE_INFO_H
-#define IPOD_DEVICE_INFO_H
+#ifndef IPHONEOSDEVICEINFO_H
+#define IPHONEOSDEVICEINFO_H
 
 #include "MediaDeviceInfo.h"
 

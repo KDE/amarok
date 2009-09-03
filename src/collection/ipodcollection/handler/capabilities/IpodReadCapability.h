@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPODHANDLER_READCAPABILITY_H
-#define IPODHANDLER_READCAPABILITY_H
+#ifndef IPODREADCAPABILITY_H
+#define IPODREADCAPABILITY_H
 
 #include "ReadCapability.h"
 

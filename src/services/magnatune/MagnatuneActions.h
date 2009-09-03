@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#ifndef MAGNATUNEPURCHASEACTION_H
-#define MAGNATUNEPURCHASEACTION_H
+#ifndef MAGNATUNEACTIONS_H
+#define MAGNATUNEACTIONS_H
 
 #include "MagnatuneMeta.h"
 

@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef UMSHANDLER_READCAPABILITY_H
-#define UMSHANDLER_READCAPABILITY_H
+#ifndef UMSREADCAPABILITY_H
+#define UMSREADCAPABILITY_H
 
 #include "CustomReadCapability.h"
 

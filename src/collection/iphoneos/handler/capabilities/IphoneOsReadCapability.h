@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPHONEOSHANDLER_READCAPABILITY_H
-#define IPHONEOSHANDLER_READCAPABILITY_H
+#ifndef IPHONEOSREADCAPABILITY_H
+#define IPHONEOSREADCAPABILITY_H
 
 #include <mediadevicecollection_export.h>
 #include <handler/capabilities/ReadCapability.h>

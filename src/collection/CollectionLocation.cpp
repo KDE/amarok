@@ -15,12 +15,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include <KMessageBox> // TODO put the delete confirmation code somewhere else?
-
 #include "CollectionLocation.h"
+
 #include "Collection.h"
 #include "Debug.h"
 #include "QueryMaker.h"
+
+#include <KMessageBox> // TODO put the delete confirmation code somewhere else?
+
 
 CollectionLocation::CollectionLocation()
     :QObject()

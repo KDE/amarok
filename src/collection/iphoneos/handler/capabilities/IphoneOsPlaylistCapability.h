@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPHONEOSHANDLER_PLAYLISTCAPABILITY_H
-#define IPHONEOSHANDLER_PLAYLISTCAPABILITY_H
+#ifndef IPHONEOSPLAYLISTCAPABILITY_H
+#define IPHONEOSPLAYLISTCAPABILITY_H
 
 #include <mediadevicecollection_export.h>
 #include <handler/capabilities/PlaylistCapability.h>

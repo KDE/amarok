@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPODHANDLER_ARTWORK_CAPABILITY_H
-#define IPODHANDLER_ARTWORK_CAPABILITY_H
+#ifndef IPODARTWORKCAPABILITY_H
+#define IPODARTWORKCAPABILITY_H
 
 #include "ArtworkCapability.h"
 #include "../../MediaDeviceMeta.h"

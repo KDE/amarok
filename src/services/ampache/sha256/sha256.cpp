@@ -19,9 +19,10 @@
 #define UNROLL_LOOPS /* Enable loops unrolling */
 #endif
 
+#include "sha256.h"
+
 #include <string.h>
 
-#include "sha256.h"
 
 #define SHFR(x, n)    (x >> n)
 #define ROTR(x, n)   ((x >> n) | (x << ((sizeof(x) << 3) - n)))

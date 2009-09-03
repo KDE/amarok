@@ -36,7 +36,6 @@
 #include <KLocale>
 #include <KToolBar>
 #include <Osd.h>
-#include <Osd.h>
 
 
 extern KAboutData aboutData;

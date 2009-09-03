@@ -14,12 +14,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "IphoneOs::ReadCapability"
+#include "IphoneOsReadCapability.h"
+#include "../IphoneOsHandler.h"
+
+#define DEBUG_PREFIX "IphoneOsReadCapability"
 
 #include <kdiskfreespaceinfo.h>
 
-#include "IphoneOsReadCapability.h"
-#include "../IphoneOsHandler.h"
 
 namespace Handler
 {

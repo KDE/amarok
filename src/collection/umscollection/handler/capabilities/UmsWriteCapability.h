@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef UMSHANDLER_WRITECAPABILITY_H
-#define UMSHANDLER_WRITECAPABILITY_H
+#ifndef UMSWRITECAPABILITY_H
+#define UMSWRITECAPABILITY_H
 
 #include "WriteCapabilityBase.h"
 

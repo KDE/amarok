@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPODHANDLER_WRITECAPABILITY_H
-#define IPODHANDLER_WRITECAPABILITY_H
+#ifndef IPODWRITECAPABILITY_H
+#define IPODWRITECAPABILITY_H
 
 #include "WriteCapability.h"
 

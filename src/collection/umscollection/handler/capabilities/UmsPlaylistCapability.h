@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPODHANDLER_PLAYLISTCAPABILITY_H
-#define IPODHANDLER_PLAYLISTCAPABILITY_H
+#ifndef UMSPLAYLISTCAPABILITY_H
+#define UMSPLAYLISTCAPABILITY_H
 
 #include "PlaylistCapability.h"
 

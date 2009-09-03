@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPODCONNECTIONASSISTANT_H
-#define IPODCONNECTIONASSISTANT_H
+#ifndef IPHONEOSCONNECTIONASSISTANT_H
+#define IPHONEOSCONNECTIONASSISTANT_H
 
 #include "ConnectionAssistant.h"
 
@@ -33,4 +33,4 @@ public:
 
 };
 
-#endif // IPODCONNECTIONASSISTANT_H
+#endif // IPHONEOSCONNECTIONASSISTANT_H
