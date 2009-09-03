@@ -10,7 +10,8 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
-    * Fix extra empty rows sometimes getting added to the playlist layout xml
+    * Fixed "Show in Service" action.
+    * Fixed extra empty rows sometimes getting added to the playlist layout xml
       when using the playlist layout editor. (BR 205182)
     * Fixed typo in D-Bus manifest, that resulted in incorrect function
       invokation in IRKick. (BR 205729)
