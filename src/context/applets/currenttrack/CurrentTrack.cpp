@@ -223,7 +223,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     qreal lineSpacing = fm.height() + 4;
     m_maxTextWidth = textWidth;
 
-    // align to either the album or artist line, depending of "On" or "By" is longer in this current translation
+    // align to either the album or artist line, depending if "On" or "By" is longer in this current translation
     // i18n makes things complicated :P
     if( m_byText->boundingRect().width() > m_onText->boundingRect().width() )
     {
@@ -259,17 +259,15 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     if( !m_trackActions.isEmpty() )
     {
         QPointF iconPos = m_album->pos();
-        bool setY = true;
+        iconPos.setY( iconPos.y() + m_album->boundingRect().height() );
         foreach( Plasma::IconWidget *icon, m_trackActions )
         {
             const int iconSize = icon->size().width();
-            if( setY )
-            {
-                iconPos.ry() += iconSize - 2;
-                setY = false;
-            }
             icon->setPos( iconPos );
-            iconPos.rx() += iconSize + 5;
+            iconPos.rx() += iconSize + 4;
+#if QT_VERSION >= 0x040500
+	        icon->setOpacity( .72 );
+#endif
         }
     }
 
