@@ -14,25 +14,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPODHANDLER_ARTWORK_CAPABILITY_H
-#define IPODHANDLER_ARTWORK_CAPABILITY_H
+#ifndef UMSARTWORKCAPABILITY_H
+#define UMSARTWORKCAPABILITY_H
 
 #include "ArtworkCapability.h"
 #include "../../MediaDeviceMeta.h"
 
 namespace Meta {
-    class IpodHandler;
+    class UmsHandler;
 }
 
 namespace Handler
 {
-    class IpodArtworkCapability : public ArtworkCapability
+    class UmsArtworkCapability : public ArtworkCapability
     {
         Q_OBJECT
 
         public:
-            IpodArtworkCapability( Meta::IpodHandler *handler );
-            virtual ~IpodArtworkCapability();
+            UmsArtworkCapability( Meta::UmsHandler *handler );
+            virtual ~UmsArtworkCapability();
 
             virtual QPixmap getCover( const Meta::MediaDeviceTrackPtr &track );
 
@@ -41,7 +41,7 @@ namespace Handler
             static Type capabilityInterfaceType() { return Handler::Capability::Artwork; }
 
         private:
-            Meta::IpodHandler *m_handler;
+            Meta::UmsHandler *m_handler;
     };
 }
 
