@@ -21,9 +21,10 @@
 #include "Debug.h"
 #include "EngineController.h"
 
-#include "KHBox"
+#include "KVBox"
 
 #include <QWidgetAction>
+#include <QToolBar>
 
 VolumePopupButton::VolumePopupButton( QWidget * parent )
 {
@@ -31,33 +32,40 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     //create the volume popup
     m_volumeMenu = new QMenu( 0 );
 
-    KHBox * m_sliderLayout = new KHBox( 0 );
-    m_volumeSlider = new QSlider( Qt::Vertical, m_sliderLayout );
+    KVBox * mainBox = new KVBox( 0 );
+
+    m_volumeLabel= new QLabel( mainBox );
+    m_volumeLabel->setAlignment( Qt::AlignHCenter );
+
+    KHBox * sliderBox = new KHBox( mainBox );
+    m_volumeSlider = new QSlider( Qt::Vertical, sliderBox );
     m_volumeSlider->setMaximum( 100 );
     m_volumeSlider->setFixedHeight( 170 );
-    m_sliderLayout->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    mainBox->setMargin( 0 );
+    mainBox->setSpacing( 0 );
+    sliderBox->setSpacing( 0 );
+    sliderBox->setMargin( 0 );
+    mainBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    sliderBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
     EngineController* ec = The::engineController();
 
     QWidgetAction * sliderActionWidget = new QWidgetAction( this );
-    sliderActionWidget->setDefaultWidget( m_sliderLayout );
+    sliderActionWidget->setDefaultWidget( mainBox );
 
     connect( m_volumeSlider, SIGNAL( valueChanged( int ) ), ec, SLOT( setVolume( int ) ) );
 
-    m_volumeLabel= new QLabel( 0 );
-    QWidgetAction * labelActionWidget = new QWidgetAction( this );
-    m_volumeLabel->setAlignment( Qt::AlignHCenter );
-    labelActionWidget->setDefaultWidget( m_volumeLabel );
-
+    QToolBar *muteBar = new QToolBar( QString(), mainBox );
+    muteBar->setContentsMargins( 0, 0, 0, 0 );
+    muteBar->setIconSize( QSize( 16, 16 ) );
     m_muteAction = new QAction( KIcon( "audio-volume-muted" ), QString(), 0 );
     m_muteAction->setCheckable ( true );
     m_muteAction->setChecked( ec->isMuted() );
 
     connect( m_muteAction, SIGNAL( toggled( bool ) ), ec, SLOT( setMuted( bool ) ) );
 
-    m_volumeMenu->addAction( labelActionWidget );
     m_volumeMenu->addAction( sliderActionWidget );
-    m_volumeMenu->addAction( m_muteAction );
+    muteBar->addAction( m_muteAction );
 
     //set correct icon and label initially
     engineVolumeChanged( ec->volume() );
