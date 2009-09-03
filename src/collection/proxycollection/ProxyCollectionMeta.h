@@ -23,6 +23,11 @@
 
 #include <QList>
 
+namespace Amarok
+{
+    class Collection;
+}
+
 namespace ProxyCollection
 {
     class Collection;
@@ -68,6 +73,10 @@ namespace ProxyCollection
             int discNumber() const;
             QString type() const;
 
+            Amarok::Collection* collection() const;
+
+            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+            virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
             void add( const Meta::TrackPtr &track );
 

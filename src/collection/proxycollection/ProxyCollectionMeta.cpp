@@ -414,6 +414,52 @@ ProxyCollection::Track::type() const
     }
 }
 
+Amarok::Collection*
+ProxyCollection::Track::collection() const
+{
+    return m_collection;
+}
+
+bool
+ProxyCollection::Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    if( m_tracks.count() == 1 )
+    {
+        //if we proxy only one track, simply return the tracks capability directly
+        return m_tracks.at( 0 )->hasCapabilityInterface( type );
+    }
+    else
+    {
+        //if there is more than one track, check all tracks for the given
+        //capability if and only if ProxyCollection::Track supports it as well
+
+        //as there are no supported capabilities yet...
+        return false;
+
+        foreach( const Meta::TrackPtr &track, m_tracks )
+        {
+            if( !track->hasCapabilityInterface( type ) )
+                return false;
+        }
+        return true;
+    }
+}
+
+Meta::Capability*
+ProxyCollection::Track::createCapabilityInterface( Meta::Capability::Type type )
+{
+    if( m_tracks.count() == 1 )
+    {
+        Meta::TrackPtr track = m_tracks.at( 0 );
+        return track->createCapabilityInterface( type );
+    }
+    else
+    {
+        //we should create a ProxyCapability here...
+        return 0;
+    }
+}
+
 
 void
 ProxyCollection::Track::add( const Meta::TrackPtr &track )
