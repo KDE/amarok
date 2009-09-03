@@ -49,7 +49,6 @@ ViewUrlGenerator::createAmarokUrl()
     debug()<< "The filter is "<< filterExpr;
     debug()<< "OnlyMatches is "<< onlyMatches;
     debug()<< "The sortPath is "<< sortPath;
-    debug()<< "The grouping is "<< groupingCategory;
     debug()<< "The layout is "<< layout;
 
     QString prettyUrlName;
