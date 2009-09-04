@@ -16,6 +16,8 @@
 
 #include "JamendoService.h"
 
+#include "browsers/CollectionTreeItem.h"
+#include "browsers/SingleCollectionTreeItemModel.h"
 #include "collection/CollectionManager.h"
 #include "Debug.h"
 #include "EngineController.h"

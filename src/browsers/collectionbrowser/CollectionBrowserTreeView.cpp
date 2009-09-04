@@ -17,6 +17,7 @@
 
 #include "CollectionBrowserTreeView.h"
 #include "CollectionTreeItemDelegate.h"
+#include "browsers/CollectionTreeItem.h"
 
 #include "Debug.h"
 

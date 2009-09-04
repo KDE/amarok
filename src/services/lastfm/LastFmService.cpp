@@ -22,6 +22,8 @@
 #include "EngineController.h"
 #include "biases/SimilarArtistsBias.h"
 #include "biases/WeeklyTopBias.h"
+#include "browsers/CollectionTreeItem.h"
+#include "browsers/CollectionTreeItemModelBase.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "LoveTrackAction.h"

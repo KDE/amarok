@@ -18,6 +18,7 @@
 
 #include "Amarok.h"
 #include "AmpacheConfig.h"
+#include "browsers/SingleCollectionTreeItemModel.h"
 #include "collection/CollectionManager.h"
 #include "Debug.h"
 #include "sha256/sha256.h"

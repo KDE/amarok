@@ -19,6 +19,8 @@
 
 #include "Debug.h"
 #include "Amarok.h"
+#include "browsers/CollectionTreeItem.h"
+#include "browsers/SingleCollectionTreeItemModel.h"
 #include "statusbar/StatusBar.h"
 
 using namespace Meta;

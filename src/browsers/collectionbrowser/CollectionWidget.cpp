@@ -20,6 +20,7 @@
 #include "CollectionWidget.h"
 
 #include "CollectionTreeItemModel.h"
+#include "CollectionTreeItemModelBase.h"
 #include "CollectionTreeItemDelegate.h"
 #include "CollectionBrowserTreeView.h"
 #include "collection/proxycollection/ProxyCollection.h"

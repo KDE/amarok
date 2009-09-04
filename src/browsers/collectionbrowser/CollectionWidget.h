@@ -20,7 +20,6 @@
 #define AMAROK_COLLECTION_WIDGET
 
 #include "BrowserCategory.h"
-#include "CollectionTreeItemModelBase.h"
 
 #include <KVBox>
 
@@ -30,6 +29,7 @@ class QStackedWidget;
 
 class SearchWidget;
 class CollectionBrowserTreeView;
+class CollectionTreeItemModelBase;
 
 class CollectionWidget : public BrowserCategory
 {

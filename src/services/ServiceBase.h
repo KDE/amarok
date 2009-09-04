@@ -18,8 +18,6 @@
 #define AMAROKSERVICEBASE_H
 
 #include "browsers/BrowserCategory.h"
-#include "browsers/CollectionTreeItem.h"
-#include "browsers/SingleCollectionTreeItemModel.h"
 #include "Amarok.h"
 #include "InfoParserBase.h"
 #include "ServiceCollectionTreeView.h"
@@ -34,6 +32,7 @@
 #include <KVBox>
 #include <khtml_part.h>
 
+#include <QAbstractItemModel>
 #include <QPushButton>
 #include <QQueue>
 #include <QSortFilterProxyModel>
@@ -355,7 +354,7 @@ protected:
 
 private: // need to move stuff here
     QAbstractItemModel * m_model;
-     QSortFilterProxyModel * m_filterModel;
+    QSortFilterProxyModel * m_filterModel;
 };
 
 

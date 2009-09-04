@@ -22,6 +22,7 @@
 
 #include "MainWindow.h"
 #include "PlaylistManager.h"
+#include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"

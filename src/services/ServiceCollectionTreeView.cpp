@@ -16,6 +16,7 @@
 
 #include "ServiceCollectionTreeView.h"
 
+#include "browsers/CollectionTreeItem.h"
 #include "Debug.h"
 #include "../meta/capabilities/CustomActionsCapability.h"
 

@@ -18,6 +18,8 @@
 
 #include "Amarok.h"
 #include "amarokurls/AmarokUrlHandler.h"
+#include "browsers/CollectionTreeItem.h"
+#include "browsers/SingleCollectionTreeItemModel.h"
 #include "statusbar/StatusBar.h"
 #include "statusbar/ProgressBar.h"
 #include "EngineController.h"

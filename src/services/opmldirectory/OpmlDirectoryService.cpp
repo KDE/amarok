@@ -17,6 +17,8 @@
 #include "OpmlDirectoryService.h"
 
 #include "Debug.h"
+#include "browsers/CollectionTreeItem.h"
+#include "browsers/SingleCollectionTreeItemModel.h"
 #include "OpmlDirectoryInfoParser.h"
 #include "OpmlDirectoryXmlParser.h"
 #include "playlistmanager/PlaylistManager.h"
