@@ -383,7 +383,6 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
 
 void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent) const
 {
-    DEBUG_BLOCK
     if ( qm && parent )
     {
         //this check should not hurt anyone... needs to check if single... needs it
@@ -395,17 +394,8 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         if ( level > m_levelType.count() )
             return;
 
-        {
-            CollectionTreeItem *tmp = parent;
-            while( tmp->isDataItem() )
-            {
-                if( tmp->isVariousArtistItem() )
-                    debug() << "querying for VA";
-                tmp = tmp->parent();
-            }
-            if( parent->isVariousArtistItem() )
-                return;
-        }
+        if( parent->isVariousArtistItem() )
+            return;
 
         if ( level == m_levelType.count() )
             qm->setQueryType( QueryMaker::Track );
@@ -696,7 +686,6 @@ CollectionTreeItemModelBase::queryDone()
 void
 CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::DataList data)
 {
-    DEBUG_BLOCK
     Q_UNUSED( collectionId )
 
     //if we are expanding an item, we'll find the sender in m_childQueries
@@ -718,7 +707,6 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
 void
 CollectionTreeItemModelBase::handleCompilationQueryResult( QueryMaker *qm, const Meta::DataList &dataList )
 {
-    DEBUG_BLOCK
     CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
     d->m_runningQueries.remove( parent );
     QModelIndex parentIndex;
@@ -822,7 +810,6 @@ CollectionTreeItemModelBase::handleCompilationQueryResult( QueryMaker *qm, const
 void
 CollectionTreeItemModelBase::handleNormalQueryResult( QueryMaker *qm, const Meta::DataList &dataList )
 {
-    DEBUG_BLOCK
     CollectionTreeItem *parent = d->m_childQueries.value( qm );
     d->m_runningQueries.remove( parent );
     QModelIndex parentIndex;
@@ -834,15 +821,6 @@ CollectionTreeItemModelBase::handleNormalQueryResult( QueryMaker *qm, const Meta
             parentIndex = createIndex( parent->row(), 0, parent );
 
         populateChildren( dataList, parent, parentIndex );
-
-        /*for( int count = parent->childCount(), i = 0; i < count; ++i )
-        {
-            CollectionTreeItem *item = parent->child( i );
-            if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
-            {
-                listForLevel( item->level() + levelModfier(), item->queryMaker(), item );
-            }
-        }*/
 
         if ( parent->isDataItem() )
         {
@@ -862,11 +840,8 @@ CollectionTreeItemModelBase::handleNormalQueryResult( QueryMaker *qm, const Meta
 void
 CollectionTreeItemModelBase::populateChildren(const DataList & dataList, CollectionTreeItem * parent, const QModelIndex &parentIndex )
 {
-    DEBUG_BLOCK
-    debug() << "populating children of " << ( parent->isDataItem() ? (parent->isVariousArtistItem() ? "Various Artists" : parent->data()->name() ) : "Collection") << "with " << dataList.count();
     //add new rows after existing ones here (which means all artists nodes
     //will be inserted after the "Various Artists" node)
-    //if( parent->childrenLoaded() )
     {
         //figure out which children of parent have to be removed,
         //which new children have to be added, and preemptively emit dataChanged for the rest
@@ -924,14 +899,6 @@ CollectionTreeItemModelBase::populateChildren(const DataList & dataList, Collect
         endInsertRows();
         parent->setRequiresUpdate( false );
     }
-    /*else
-    {
-        beginInsertRows( parentIndex, parent->childCount(), parent->childCount() + dataList.count()-1 );
-        foreach( Meta::DataPtr data, dataList )
-            new CollectionTreeItem( data, parent );
-        parent->setChildrenLoaded( true );
-        endInsertRows();
-    }*/
 }
 
 void

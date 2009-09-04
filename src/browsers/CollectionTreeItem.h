@@ -122,7 +122,7 @@ class CollectionTreeItem : public QObject
         bool m_updateRequired;
         int  m_trackCount;
         Type m_type;
-        QString m_name;
+        //QString m_name;
         mutable bool m_isCounting;
 
         mutable QAction *m_decoratorAction;

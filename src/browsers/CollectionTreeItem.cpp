@@ -35,7 +35,7 @@ CollectionTreeItem::CollectionTreeItem( CollectionTreeItemModelBase *model )
     , m_updateRequired( false )
     , m_trackCount( -1 )
     , m_type( Root )
-    , m_name( "Root" )
+    //, m_name( "Root" )
     , m_isCounting( false )
     , m_decoratorAction( 0 )
     , m_decoratorActionLoaded( false )
@@ -50,7 +50,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
     , m_updateRequired( true )
     , m_trackCount( -1 )
     , m_type( Data )
-    , m_name( data ? data->name() : "NullData" )
+    //, m_name( data ? data->name() : "NullData" )
     , m_isCounting( false )
     , m_decoratorAction( 0 )
     , m_decoratorActionLoaded( false )
@@ -67,7 +67,7 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
     , m_updateRequired( true )
     , m_trackCount( -1 )
     , m_type( Collection )
-    , m_name( parentCollection ? parentCollection->collectionId() : "NullColl" )
+    //, m_name( parentCollection ? parentCollection->collectionId() : "NullColl" )
     , m_isCounting( false )
     , m_decoratorAction( 0 )
     , m_decoratorActionLoaded( false )
@@ -86,7 +86,7 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
     , m_updateRequired( false )  //the node already has all children
     , m_trackCount( -1 )
     , m_type( VariousArtist )
-    , m_name("VA")
+    //, m_name("VA")
     , m_isCounting( false )
     , m_decoratorAction( 0 )
     , m_decoratorActionLoaded( false )
@@ -394,17 +394,6 @@ CollectionTreeItem::allDescendentTracksLoaded() const
 
     return true;
 }
-
-/*void
-CollectionTreeItem::setChildrenLoaded( bool loaded )
-{
-    m_childrenLoaded = loaded;
-    if ( !loaded )
-    {
-        qDeleteAll( m_childItems );
-        m_childItems.clear();
-    }
-}*/
 
 void
 CollectionTreeItem::setRequiresUpdate( bool updateRequired )
