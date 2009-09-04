@@ -19,6 +19,8 @@
 #include "PlaylistModelStack.h"
 #include "proxymodels/SortScheme.h"
 
+#include <KStandardDirs>
+
 namespace Playlist
 {
 
@@ -33,7 +35,9 @@ SortWidget::SortWidget( QWidget *parent )
     m_layout->setSpacing( 0 );
     m_layout->setContentsMargins( 0, 0, 0, 0 );
 
-    BreadcrumbItemButton *rootItem = new BreadcrumbItemButton( KIcon( "format-list-ordered" ), QString(), this );
+    BreadcrumbItemButton *rootItem = new BreadcrumbItemButton(
+            KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-sorting-16.png" ) ) ),
+            QString(), this );
     rootItem->setFixedWidth( 20 );
     rootItem->setToolTip( i18n( "Clear the playlist sorting configuration." ) );
     m_layout->addWidget( rootItem );

@@ -24,6 +24,8 @@
 #include "ProgressiveSearchWidget.h"
 #include "layouts/LayoutManager.h"
 
+#include <KStandardDirs>
+
 #include <QList>
 #include <QStringList>
 #include <QActionGroup>
@@ -102,7 +104,7 @@ ViewUrlRunner::command() const
 KIcon
 ViewUrlRunner::icon() const
 {
-    return KIcon( "view-sort-ascending" );
+    return KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-bookmark-16.png" ) ) );
 }
 
 } //namespace Playlist

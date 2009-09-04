@@ -24,7 +24,9 @@ install(
         loading2.png
         navigation_arrows.svg
         nocover.png
+        playlist-bookmark-16.png
         playlist-layouts-22.png
+        playlist-sorting-16.png
         pud_items.svg
         smallstar.png
         splash_screen.jpg
