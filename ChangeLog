@@ -12,7 +12,7 @@ VERSION 2.2-beta2
   BUGFIXES:
     * Media device eject/disconnect actions render properly when scrolling the 
       collection browser. (BR 204566)
-    * Change wikipedia url to use the default MediaWiki skins. Thanks to Stefan 
+    * Fixed wikipedia applet not working when using a custom skin. Thanks to Stefan 
       Majewsky for the suggestion. (BR 205901)
     * Fixed "Show in Service" action.
     * Fixed extra empty rows sometimes getting added to the playlist layout xml
