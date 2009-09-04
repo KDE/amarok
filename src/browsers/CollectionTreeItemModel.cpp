@@ -39,6 +39,17 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     CollectionManager* collMgr = CollectionManager::instance();
     connect( collMgr, SIGNAL( collectionAdded( Amarok::Collection* ) ), this, SLOT( collectionAdded( Amarok::Collection* ) ), Qt::QueuedConnection );
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
+    //delete m_rootItem; //clears the whole tree!
+    m_rootItem = new CollectionTreeItem( this );
+    d->m_collections.clear();
+    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
+    foreach( Amarok::Collection *coll, collections )
+    {
+        connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
+        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+    }
+    //m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
+    updateHeaderText();
     setLevels( levelType );
     debug() << "Collection root has " << m_rootItem->childCount() << " children";
 }
@@ -100,29 +111,6 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
     return item->data( role );
 }
 
-
-bool
-CollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const
-{
-     if( !parent.isValid() )
-         return true; // must be root item!
-
-    CollectionTreeItem *item = static_cast<CollectionTreeItem*>(parent.internalPointer());
-    //we added the collection level so we have to be careful with the item level
-    return !item->isDataItem() || item->level() <= m_levelType.count();
-
-}
-
-void
-CollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const
-{
-    if ( !item->childrenLoaded() )
-    {
-        listForLevel( item->level() /* +1 -1 */, item->queryMaker(), item );
-        item->setChildrenLoaded( true );
-    }
-}
-
 bool
 CollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const
 {
@@ -130,7 +118,7 @@ CollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const
         return false;       //children of the root item are the collections, and they are always known
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
-    return item->level() <= m_levelType.count() && !item->childrenLoaded();
+    return item->level() <= m_levelType.count() && item->requiresUpdate();
 }
 
 void
@@ -158,7 +146,7 @@ CollectionTreeItemModel::collectionAdded( Amarok::Collection *newCollection )
 
     //inserts new collection at the end. sort collection alphabetically?
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
-    d->m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem ) ) );
+    d->m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
     endInsertRows();
 
     if( d->m_collections.count() == 1 )
@@ -189,9 +177,11 @@ CollectionTreeItemModel::filterChildren()
     int count = m_rootItem->childCount();
     for ( int i = 0; i < count; i++ )
     {
-        CollectionTreeItem *item = m_rootItem->child( i );
-        if( item )
-            item->setChildrenLoaded( false );
+        //CollectionTreeItem *item = m_rootItem->child( i );
+        //if( item )
+        //    item->setChildrenLoaded( false );
+        markSubTreeAsDirty( m_rootItem->child( i ) );
+        ensureChildrenLoaded( m_rootItem->child( i ) );
     }
 }
 
@@ -235,7 +225,7 @@ namespace Amarok {
 
 void CollectionTreeItemModel::update()
 {
-    delete m_rootItem; //clears the whole tree!
+    /*delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
     d->m_collections.clear();
     QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
@@ -248,7 +238,14 @@ void CollectionTreeItemModel::update()
     updateHeaderText();
     m_expandedItems.clear();
     m_expandedVariousArtistsNodes.clear();
-    reset();
+    reset();*/
+    for( int i = 0; i < m_rootItem->childCount(); i++ )
+    {
+        markSubTreeAsDirty( m_rootItem->child( i ) );
+        ensureChildrenLoaded( m_rootItem->child( i ) );
+    }
+
 }
+
 #include "CollectionTreeItemModel.moc"
 

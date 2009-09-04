@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
- * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -72,6 +72,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QModelIndex parent(const QModelIndex &index) const;
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+        virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
         
         // Writable..
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
@@ -93,6 +94,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         bool isQuerying() const;
 
+        void itemAboutToBeDeleted( CollectionTreeItem *item );
+
     signals:
         void expandIndex( const QModelIndex &index );
         void queryFinished();
@@ -107,13 +110,20 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
     
         void slotExpanded( const QModelIndex &index );
 
+    private:
+        void handleCompilationQueryResult( QueryMaker *qm, const Meta::DataList &dataList );
+        void handleNormalQueryResult( QueryMaker *qm, const Meta::DataList &dataList );
+
     protected:
-        virtual void populateChildren(const Meta::DataList &dataList, CollectionTreeItem *parent) const;
-        virtual void ensureChildrenLoaded( CollectionTreeItem *item ) const = 0;
+        virtual void populateChildren(const Meta::DataList &dataList, CollectionTreeItem *parent, const QModelIndex &parentIndex );
         virtual void updateHeaderText();
         virtual QString nameForLevel( int level ) const;
+        virtual int levelModifier() const = 0;
 
         virtual void filterChildren() = 0;
+        void ensureChildrenLoaded( CollectionTreeItem *item ) const;
+
+        void markSubTreeAsDirty( CollectionTreeItem *item );
 
         void handleCompilations( CollectionTreeItem *parent ) const;
 
@@ -144,6 +154,7 @@ class CollectionTreeItemModelBase::Private
     QMap<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
     QMap<QueryMaker* , CollectionTreeItem* > m_childQueries;
     QMap<QueryMaker* , CollectionTreeItem* > m_compilationQueries;
+    QSet<CollectionTreeItem*> m_runningQueries;
 };
 
 #endif

@@ -24,6 +24,7 @@
 #include "Debug.h"
 #include "CollectionLocation.h"
 #include "CollectionManager.h"
+#include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
 #include "GlobalCollectionActions.h"
@@ -1206,10 +1207,10 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
         CollectionTreeItem *tmp = item;
         while( tmp->isDataItem() )
         {
-            if ( tmp->data() )
-                qm->addMatch( tmp->data() );
-            else
+            if ( tmp->isVariousArtistItem() )
                 qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+            else
+                qm->addMatch( tmp->data() );
             tmp = tmp->parent();
         }
         m_treeModel->addFilters( qm );

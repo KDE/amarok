@@ -18,7 +18,6 @@
 #define COLLECTIONTREEVIEW_H
 
 #include "CollectionSortFilterProxyModel.h"
-#include "CollectionTreeItem.h"
 #include "playlist/PlaylistController.h"
 #include "meta/Meta.h"
 #include "widgets/PrettyTreeView.h"
@@ -34,6 +33,7 @@
 class QSortFilterProxyModel;
 class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
+class CollectionTreeItem;
 class PopupDropper;
 class QAction;
 class AmarokMimeData;

@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
- * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -16,7 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CollectionTreeView.h"
+#include "CollectionTreeItem.h"
+#include "CollectionTreeItemModelBase.h"
 #include "Debug.h"
 #include "amarokconfig.h"
 
@@ -26,13 +27,30 @@
 
 Q_DECLARE_METATYPE( QAction* )
 
-CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent )
+CollectionTreeItem::CollectionTreeItem( CollectionTreeItemModelBase *model )
+: m_data( 0 )
+    , m_parent( 0 )
+    , m_model( model )
+    , m_parentCollection( 0 )
+    , m_updateRequired( false )
+    , m_trackCount( -1 )
+    , m_type( Root )
+    , m_name( "Root" )
+    , m_isCounting( false )
+    , m_decoratorAction( 0 )
+    , m_decoratorActionLoaded( false )
+{
+}
+
+CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
     : m_data( data )
     , m_parent( parent )
+    , m_model( model )
     , m_parentCollection( 0 )
-    , m_childrenLoaded( false )
-    , m_isVariousArtistsNode( false )
+    , m_updateRequired( true )
     , m_trackCount( -1 )
+    , m_type( Data )
+    , m_name( data ? data->name() : "NullData" )
     , m_isCounting( false )
     , m_decoratorAction( 0 )
     , m_decoratorActionLoaded( false )
@@ -41,13 +59,15 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
         m_parent->appendChild( this );
 }
 
-CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, CollectionTreeItem *parent )
+CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
     : m_data( 0 )
     , m_parent( parent )
+    , m_model( model )
     , m_parentCollection( parentCollection )
-    , m_childrenLoaded( false )
-    , m_isVariousArtistsNode( false )
+    , m_updateRequired( true )
     , m_trackCount( -1 )
+    , m_type( Collection )
+    , m_name( parentCollection ? parentCollection->collectionId() : "NullColl" )
     , m_isCounting( false )
     , m_decoratorAction( 0 )
     , m_decoratorActionLoaded( false )
@@ -58,26 +78,32 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
     connect( parentCollection, SIGNAL( updated() ), SLOT( collectionUpdated() ) );
 }
 
-CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent )
+CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
     : m_data( 0 )
     , m_parent( parent )
+    , m_model( model )
     , m_parentCollection( 0 )
-    , m_childrenLoaded( true )
-    , m_isVariousArtistsNode( true )
+    , m_updateRequired( false )  //the node already has all children
     , m_trackCount( -1 )
+    , m_type( VariousArtist )
+    , m_name("VA")
     , m_isCounting( false )
     , m_decoratorAction( 0 )
     , m_decoratorActionLoaded( false )
 {
+    DEBUG_BLOCK
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
 
     foreach( Meta::DataPtr datap, data )
-        new CollectionTreeItem( datap, this );
+        new CollectionTreeItem( datap, this, m_model );
 }
 
 CollectionTreeItem::~CollectionTreeItem()
 {
+    m_model->itemAboutToBeDeleted( this );
+    if( m_parent )
+        m_parent->m_childItems.removeAll( const_cast<CollectionTreeItem*>(this) );
     qDeleteAll(m_childItems);
 }
 
@@ -160,7 +186,7 @@ CollectionTreeItem::data( int role ) const
 
         return QVariant();
     }
-    else if( m_isVariousArtistsNode )
+    else if( isVariousArtistItem() )
     {
         if( role == Qt::DisplayRole )
             return i18n( "Various Artists" );
@@ -273,21 +299,25 @@ CollectionTreeItem::level() const
 bool
 CollectionTreeItem::isDataItem() const
 {
-    //return !m_data.isNull();
-    //note a various artists node is also a special data node!
-    return !m_parentCollection;
+    return m_type == Data || m_type == VariousArtist;
+}
+
+bool
+CollectionTreeItem::isVariousArtistItem() const
+{
+    return m_type == VariousArtist;
 }
 
 bool
 CollectionTreeItem::isAlbumItem() const
 {
-    return isDataItem() && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
+    return isDataItem() && !isVariousArtistItem() && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
 }
 
 bool
 CollectionTreeItem::isTrackItem() const
 {
-    return isDataItem() && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
+    return isDataItem() && !isVariousArtistItem() && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
 }
 
 QueryMaker*
@@ -323,7 +353,7 @@ CollectionTreeItem::urls() const
 bool
 CollectionTreeItem::operator<( const CollectionTreeItem& other ) const
 {
-    if( m_isVariousArtistsNode )
+    if( isVariousArtistItem() )
         return true;
     return m_data->sortableName() < other.m_data->sortableName();
 }
@@ -350,23 +380,22 @@ bool
 CollectionTreeItem::allDescendentTracksLoaded() const
 {
     Meta::TrackPtr track;
-    if( isDataItem() && !( track = Meta::TrackPtr::dynamicCast( m_data ) ).isNull() )
+    if( isTrackItem() )
         return true;
 
-    if( childrenLoaded() )
+    if( requiresUpdate() )
+        return false;
+
+    foreach( CollectionTreeItem *item, m_childItems )
     {
-        foreach( CollectionTreeItem *item, m_childItems )
-        {
-            if( !item->allDescendentTracksLoaded() )
-                return false;
-        }
-
-        return true;
+        if( !item->allDescendentTracksLoaded() )
+            return false;
     }
-    return false;
+
+    return true;
 }
 
-void
+/*void
 CollectionTreeItem::setChildrenLoaded( bool loaded )
 {
     m_childrenLoaded = loaded;
@@ -375,6 +404,30 @@ CollectionTreeItem::setChildrenLoaded( bool loaded )
         qDeleteAll( m_childItems );
         m_childItems.clear();
     }
+}*/
+
+void
+CollectionTreeItem::setRequiresUpdate( bool updateRequired )
+{
+    m_updateRequired = updateRequired;
+}
+
+bool
+CollectionTreeItem::requiresUpdate() const
+{
+    return m_updateRequired;
+}
+
+CollectionTreeItem::Type
+CollectionTreeItem::type() const
+{
+    return m_type;
+}
+
+QList<CollectionTreeItem*>
+CollectionTreeItem::children() const
+{
+    return m_childItems;
 }
 
 #include "CollectionTreeItem.moc"

@@ -44,9 +44,9 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
 {
     delete m_rootItem; //clears the whole tree!
     m_levelType = levelType;
-    m_rootItem = new CollectionTreeItem( m_collection, 0 );
+    m_rootItem = new CollectionTreeItem( m_collection, 0, this );
 
-    d->m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, new CollectionTreeItem( Meta::DataPtr(0), 0 ) ) );
+    d->m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
 
     updateHeaderText();
     m_expandedItems.clear();
@@ -106,34 +106,13 @@ SingleCollectionTreeItemModel::flags(const QModelIndex &index) const
 }
 
 bool
-SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const
-{
-    CollectionTreeItem *item;
-    if ( !parent.isValid() )
-        item = m_rootItem;  // must be root item!
-    else
-        item = static_cast<CollectionTreeItem*>(parent.internalPointer());
-
-    //we added the collection level so we have to be careful with the item level
-    //return item->childrenLoaded() || item->level() == m_levelType.count();  //that's track level
-    return item->level() < m_levelType.count();
-}
-
-void
-SingleCollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const
-{
-    if ( !item->childrenLoaded() )
-        listForLevel( item->level() +1, item->queryMaker(), item );
-}
-
-bool
 SingleCollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const
 {
     if ( !parent.isValid() )
-       return !m_rootItem->childrenLoaded();
+       return m_rootItem->requiresUpdate();
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
-    return item->level() < m_levelType.count() && !item->childrenLoaded();
+    return item->level() < m_levelType.count() && item->requiresUpdate();
 }
 
 void
@@ -151,7 +130,8 @@ SingleCollectionTreeItemModel::fetchMore( const QModelIndex &parent )
 void
 SingleCollectionTreeItemModel::filterChildren()
 {
-    m_rootItem->setChildrenLoaded( false );
+    markSubTreeAsDirty( m_rootItem );
+    ensureChildrenLoaded( m_rootItem );
 }
 
 #include "SingleCollectionTreeItemModel.moc"

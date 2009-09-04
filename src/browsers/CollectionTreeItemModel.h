@@ -38,7 +38,6 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         ~CollectionTreeItemModel();
 
         virtual QVariant data(const QModelIndex &index, int role) const;
-        virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
         virtual bool canFetchMore( const QModelIndex &parent ) const;
         virtual void fetchMore( const QModelIndex &parent );
         virtual void setLevels( const QList<int> &levelType );
@@ -49,13 +48,12 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
 
     protected:
         virtual void filterChildren();
+        virtual int levelModifier() const { return 0; }
 
     private slots:
         virtual void requestCollectionsExpansion();
         void update();
 
-    private:
-        void ensureChildrenLoaded( CollectionTreeItem *item ) const;
 };
 
 #endif
