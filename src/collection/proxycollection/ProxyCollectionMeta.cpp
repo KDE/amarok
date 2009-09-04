@@ -573,7 +573,6 @@ ProxyCollection::Album::sortableName() const
 Meta::TrackList
 ProxyCollection::Album::tracks()
 {
-    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::AlbumPtr album, m_albums )
     {
