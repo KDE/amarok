@@ -10,6 +10,8 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * Media device eject/disconnect actions render properly when scrolling the 
+      collection browser. (BR 204566)
     * Change wikipedia url to use the default MediaWiki skins. Thanks to Stefan 
       Majewsky for the suggestion. (BR 205901)
     * Fixed "Show in Service" action.
