@@ -15,8 +15,8 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-#ifndef PROXYCOLLECTION_PROXYQUERYMAKER_H
-#define PROXYCOLLECTION_PROXYQUERYMAKER_H
+#ifndef PROXYCOLLECTIONQUERYMAKER_H
+#define PROXYCOLLECTIONQUERYMAKER_H
 
 #include "QueryMaker.h"
 #include "Collection.h"
@@ -126,4 +126,4 @@ class ProxyQueryMaker : public QueryMaker
 
 }
 
-#endif /* COLLECTION_METAQUERYMAKER_H */
+#endif /* PROXYCOLLECTIONQUERYMAKER_H */

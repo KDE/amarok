@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MTPHANDLER_WRITECAPABILITY_H
-#define MTPHANDLER_WRITECAPABILITY_H
+#ifndef MTPWRITECAPABILITY_H
+#define MTPWRITECAPABILITY_H
 
 #include "mediadevicecollection_export.h"
 #include "WriteCapability.h"

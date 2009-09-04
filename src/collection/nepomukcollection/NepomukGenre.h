@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKGENRE_H_
-#define NEPOMUKGENRE_H_
+#ifndef NEPOMUKGENRE_H
+#define NEPOMUKGENRE_H
 
 #include "Meta.h"
 
@@ -39,4 +39,4 @@ class NepomukGenre : public Genre
 };
 
 }
-#endif /*NEPOMUKENRE_H_*/
+#endif /*NEPOMUKENRE_H*/
