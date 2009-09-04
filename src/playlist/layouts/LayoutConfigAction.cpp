@@ -24,8 +24,11 @@
 #include "widgets/EditDeleteComboBoxView.h"
 #include "MainWindow.h"
 
+#include <KStandardDirs>
+
 #include <QLabel>
 #include <QComboBox>
+#include <QPixmap>
 
 namespace Playlist
 {
@@ -33,7 +36,7 @@ namespace Playlist
 LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     : KAction( parent )
 {
-    KIcon actionIcon( "align-horizontal-left" );    //TEMPORARY ICON
+    KIcon actionIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-layouts-22.png") ) );    //TEMPORARY ICON
     setIcon( actionIcon );
     m_layoutMenu = new KMenu( parent );
     setMenu( m_layoutMenu );
