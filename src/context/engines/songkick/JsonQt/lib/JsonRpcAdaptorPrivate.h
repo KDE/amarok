@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef _JSONQT_JSON_RPC_ADAPTOR_PRIVATE_H
-#define _JSONQT_JSON_RPC_ADAPTOR_PRIVATE_H
+#ifndef JSONQT_JSON_RPC_ADAPTOR_PRIVATE_H
+#define JSONQT_JSON_RPC_ADAPTOR_PRIVATE_H
 
 #include "JsonRpc.h"
 

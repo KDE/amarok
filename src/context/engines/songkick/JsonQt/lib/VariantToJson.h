@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef _JSONQT_VARIANT_TO_JSON_H
-#define _JSONQT_VARIANT_TO_JSON_H
+#ifndef JSONQT_VARIANT_TO_JSON_H
+#define JSONQT_VARIANT_TO_JSON_H
 
 #include "JsonQtExport.h"
 

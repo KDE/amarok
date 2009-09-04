@@ -17,6 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#ifndef AFTUTILITY_H
+#define AFTUTILITY_H
 
 #include <QCryptographicHash>
 #include <QString>
@@ -34,3 +36,4 @@ class AFTUtility
         const QString randomUniqueId( QCryptographicHash &md5 );
         const QString readUniqueId( const QString &path );
 };
+#endif

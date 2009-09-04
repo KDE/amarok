@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef _JSONQT_EXPORT_H
-#define _JSONQT_EXPORT_H
+#ifndef JSONQT_EXPORT_H
+#define JSONQT_EXPORT_H
 
 #include <QtGlobal>
 

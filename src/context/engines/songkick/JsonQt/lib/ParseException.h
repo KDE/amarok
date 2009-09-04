@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef _JSONQT_PARSE_EXCEPTION_H
-#define _JSONQT_PARSE_EXCEPTION_H
+#ifndef JSONQT_PARSE_EXCEPTION_H
+#define JSONQT_PARSE_EXCEPTION_H
 
 #include "JsonQtExport.h"
 

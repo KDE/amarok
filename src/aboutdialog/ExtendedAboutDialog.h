@@ -19,8 +19,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_ABOUTDIALOG_H
-#define AMAROK_ABOUTDIALOG_H
+#ifndef AMAROK_EXTENDEDABOUTDIALOG_H
+#define AMAROK_EXTENDEDABOUTDIALOG_H
 
 #include "Amarok.h"
 #include "amarok_export.h"
@@ -66,4 +66,4 @@ private:
 
 };
 
-#endif  //AMAROK_ABOUTDIALOG_H
+#endif  //AMAROK_EXTENDEDABOUTDIALOG_H

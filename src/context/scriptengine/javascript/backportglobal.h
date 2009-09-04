@@ -19,8 +19,8 @@
  * http://www.trolltech.com/products/qt/gplexception/                                   *
  ****************************************************************************************/
 
-#ifndef QTSCRIPTEXTENSIONS_GLOBAL_H
-#define QTSCRIPTEXTENSIONS_GLOBAL_H
+#ifndef SCRIPTENGINE_BACKPORTGLOBAL_H
+#define SCRIPTENGINE_BACKPORTGLOBAL_H
 
 #include <QtCore/QSharedData>
 
@@ -344,4 +344,4 @@ inline QScriptValue wrapGVPointer(QScriptEngine *eng, T *item)
 
 #endif // QGRAPHICSITEM_H
 
-#endif // QTSCRIPTEXTENSIONS_GLOBAL_H
+#endif // SCRIPTENGINE_BACKPORTGLOBAL_H
