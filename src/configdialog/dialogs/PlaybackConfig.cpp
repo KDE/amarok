@@ -247,7 +247,7 @@ PlaybackConfig::eqDeletePreset() //SLOT
     }
     else
     {
-        KMessageBox::detailedSorry( this, i18n( "Can't delete this preset" ),
+        KMessageBox::detailedSorry( this, i18n( "Can not delete this preset" ),
                                             i18n( "Default presets can not be deleted" ),
                                             i18n( "Error deleting preset" ) );
     }

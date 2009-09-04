@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>632</width>
-    <height>561</height>
+    <width>634</width>
+    <height>569</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_5">
@@ -155,7 +155,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>List of avaiable equalizer presets.</string>
+         <string>List of available equalizer presets.</string>
         </property>
         <property name="editable">
          <bool>true</bool>
@@ -187,7 +187,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Delete currently selected preset. Not avaiable for built-in presets.</string>
+         <string>Delete currently selected preset. Not available for built-in presets.</string>
         </property>
         <property name="text">
          <string>Delete preset</string>
@@ -203,7 +203,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Reset selected preset setting to default. Avaiable only for built-in preset.</string>
+         <string>Reset selected preset setting to default. Available only for built-in preset.</string>
         </property>
         <property name="text">
          <string>Reset to default</string>
