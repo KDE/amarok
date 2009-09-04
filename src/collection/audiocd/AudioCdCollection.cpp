@@ -352,7 +352,7 @@ AudioCdCollection::eject()
 }
 
 QAction *
-AudioCdCollection::ejectAction()
+AudioCdCollection::ejectAction() const
 {
     return m_ejectAction;
 }
@@ -360,7 +360,15 @@ AudioCdCollection::ejectAction()
 bool
 AudioCdCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type ==  Meta::Capability::Collection;
+    switch( type )
+    {
+        case Meta::Capability::Collection:
+        case Meta::Capability::Decorator:
+            return true;
+
+        default:
+            return false;
+    }
 }
 
 Meta::Capability *
@@ -368,14 +376,12 @@ AudioCdCollection::asCapabilityInterface( Meta::Capability::Type type )
 {
     if ( type == Meta::Capability::Collection )
         return new Meta::AudioCdCollectionCapability( this );
-    else
-        return 0;
+    return 0;
 }
 
 void
 AudioCdCollection::noInfoAvailable()
 {
-
     DEBUG_BLOCK
 
     m_discCddbId = "unknown";

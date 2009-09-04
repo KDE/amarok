@@ -32,12 +32,15 @@
 
 #include <kcapacitybar.h>
 
-Q_DECLARE_METATYPE( QList<QAction*> )
+Q_DECLARE_METATYPE( QAction* )
 
 #define CAPACITYRECT_HEIGHT 6
+#define ACTIONICON_SIZE 16
+
+QHash<QPersistentModelIndex, QRect> CollectionTreeItemDelegate::s_indexDecoratorRects;
 
 CollectionTreeItemDelegate::CollectionTreeItemDelegate( QTreeView *view )
-    : KWidgetItemDelegate( view )
+    : QStyledItemDelegate( view )
     , m_view( view )
 {
     DEBUG_BLOCK
@@ -54,7 +57,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 {
     if( index.parent().isValid() ) // not a root item
     {
-        m_styledDelegate.paint( painter, option, index );
+        QStyledItemDelegate::paint( painter, option, index );
         return;
     }
 
@@ -66,7 +69,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int iconHeight = 32;
     const int iconPadX = 4;
     const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
-    const bool hasActions = index.data( CustomRoles::HasDecoratorsRole ).toBool();
+    const bool hasAction = index.data( CustomRoles::HasDecoratorRole ).toBool();
 
     painter->save();
 
@@ -92,7 +95,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
 
-    const int actionsRectWidth = hasActions ? 30 : 0;
+    const int actionsRectWidth = hasAction ? (ACTIONICON_SIZE + 2*2/*margin*/) : 0;
 
     const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
     const int infoRectLeft = isRTL ? actionsRectWidth : iconRight;
@@ -141,67 +144,38 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         capacityBar.drawCapacityBar( painter, capacityRect );
     }
 
+    if( hasAction )
+    {
+        const QAction* action = index.data( CustomRoles::DecoratorRole ).value<QAction*>();
+        QRect decoratorRect;
+        decoratorRect.setLeft( (width - ACTIONICON_SIZE) - 2 );
+        decoratorRect.setTop( option.rect.top() + (height - ACTIONICON_SIZE) / 2 );
+        decoratorRect.setWidth( actionsRectWidth );
+        decoratorRect.setHeight( ACTIONICON_SIZE );
+
+        QPoint actionTopLeft = decoratorRect.topLeft();
+        const QSize iconSize = QSize( ACTIONICON_SIZE, ACTIONICON_SIZE );
+
+        QIcon icon = action->icon();
+        QRect iconRect( actionTopLeft, iconSize );
+
+        const bool isOver = isHover && iconRect.contains( cursorPos );
+
+        icon.paint( painter, iconRect, Qt::AlignCenter, isOver ? QIcon::Active : QIcon::Normal, isOver ? QIcon::On : QIcon::Off );
+
+        // Store the Model index for lookups for clicks. FAIL.
+        QPersistentModelIndex persistentIndex( index );
+        s_indexDecoratorRects.insert( persistentIndex, decoratorRect );
+    }
+
     painter->restore();
-}
-
-QList<QWidget*>
-CollectionTreeItemDelegate::createItemWidgets() const
-{
-    QList<QEvent::Type> blockedEvents;
-    blockedEvents << QEvent::MouseButtonPress
-                  << QEvent::MouseButtonRelease
-                  << QEvent::MouseButtonDblClick;
-
-    QToolButton *button = new QToolButton();
-    setBlockedEventTypes( button, blockedEvents );
-
-    return QList<QWidget*>() << button;
-}
-
-void
-CollectionTreeItemDelegate::updateItemWidgets( const QList<QWidget*> widgets, const QStyleOptionViewItem &option, const QPersistentModelIndex &index ) const
-{
-    const QList<QAction*> actions = index.data( CustomRoles::DecoratorsRole ).value< QList<QAction*> >();
-
-    if( index.parent().isValid() || actions.isEmpty() )
-    {
-        foreach( QWidget *w, widgets )
-        {
-            if( w )
-                w->hide();
-        }
-        return;
-    }
-
-    QToolButton *toolButton = static_cast<QToolButton*>( widgets[0] );
-    toolButton->setDefaultAction( actions.first() );
-
-    if( !toolButton->menu() && actions.size() > 1 )
-    {
-        QMenu *menu = new QMenu( toolButton );
-        foreach( QAction *action, actions )
-            menu->addAction( action );
-
-        toolButton->setMenu( menu );
-        toolButton->setPopupMode( QToolButton::MenuButtonPopup );
-    }
-
-    toolButton->setAutoFillBackground( false );
-    toolButton->setAutoRaise( true );
-
-    debug() << "Moving toolbutton for" << index.data( Qt::DisplayRole ).toString() << "to:"
-            << (option.rect.width() - toolButton->size().width() - 10) << ","
-            << (sizeHint( option, index ).height() / 2 - toolButton->size().height() / 2);
-
-    toolButton->move( option.rect.width() - toolButton->size().width() - 10,
-                      sizeHint( option, index ).height() / 2 - toolButton->size().height() / 2 );
 }
 
 QSize
 CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     if( index.parent().isValid() )
-        return m_styledDelegate.sizeHint( option, index );
+        return QStyledItemDelegate::sizeHint( option, index );
 
     int width = m_view->viewport()->size().width() - 4;
     int height;
@@ -216,5 +190,12 @@ CollectionTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const
            + 20;
 
     return QSize( width, height );
+}
+
+QRect
+CollectionTreeItemDelegate::decoratorRect( const QModelIndex &index )
+{
+    QPersistentModelIndex persistentIndex( index );
+    return s_indexDecoratorRects.value( persistentIndex );
 }
 

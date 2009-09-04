@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef AUDIOCDCOLLECTION_H
 #define AUDIOCDCOLLECTION_H
 
@@ -48,7 +48,7 @@ private:
 
     QString m_currentUid;
     AudioCdCollection * m_collection;*/
-    
+
 };
 
 
@@ -80,10 +80,10 @@ public:
 
     virtual CollectionLocation* location() const;
 
-    bool possiblyContainsTrack( const KUrl &url ) const;
-    Meta::TrackPtr trackForUrl( const KUrl &url );
+    virtual bool possiblyContainsTrack( const KUrl &url ) const;
+    virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-    QAction * ejectAction();
+    virtual QAction* ejectAction() const;
 
     void cdRemoved();
 
@@ -100,7 +100,7 @@ public slots:
 private:
 
     void readAudioCdSettings();
-    
+
     /**
      * Clear collection and read the CD currently in the drive, adding Artist, Album,
      * Genre, Year and whatnot as detected by audiocd using CDDB.

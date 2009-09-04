@@ -1,6 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
- * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -16,33 +14,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTION_TREE_ITEM_DELEGATE_H
-#define AMAROK_COLLECTION_TREE_ITEM_DELEGATE_H
+#ifndef MEDIADEVICE_DECORATOR_CAPABILITY_H
+#define MEDIADEVICE_DECORATOR_CAPABILITY_H
 
-#include <QAction>
-#include <QFont>
-#include <QPersistentModelIndex>
-#include <QRect>
-#include <QStyledItemDelegate>
-#include <QTreeView>
+#include "Meta.h"
 
-class CollectionTreeItemDelegate : public QStyledItemDelegate
+#include "meta/capabilities/DecoratorCapability.h"
+
+class MediaDeviceCollection;
+class QAction;
+
+namespace Meta
 {
-    public:
-        CollectionTreeItemDelegate( QTreeView *view );
-        ~CollectionTreeItemDelegate();
+    class MediaDeviceDecoratorCapability : public DecoratorCapability
+    {
+        Q_OBJECT
 
-        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-        QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+        public:
+            MediaDeviceDecoratorCapability( MediaDeviceCollection *coll );
 
-        static QRect decoratorRect( const QModelIndex &index );
+            virtual QAction* decoratorAction();
 
-    private:
-        QTreeView *m_view;
-        QFont m_bigFont;
-        QFont m_smallFont;
-
-        static QHash<QPersistentModelIndex, QRect> s_indexDecoratorRects;
-};
-
+        private:
+            MediaDeviceCollection *m_coll;
+    };
+}
 #endif

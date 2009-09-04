@@ -33,8 +33,8 @@ namespace CustomRoles
         ByLineRole = Qt::UserRole + 3,
         HasCapacityRole = Qt::UserRole + 4,
         UsedCapacityRole = Qt::UserRole + 5,
-        HasDecoratorsRole = Qt::UserRole + 6,
-        DecoratorsRole = Qt::UserRole + 7
+        HasDecoratorRole = Qt::UserRole + 6,
+        DecoratorRole = Qt::UserRole + 7
     };
 }
 
@@ -55,7 +55,7 @@ class CollectionTreeItem : public QObject
         void appendChild( CollectionTreeItem *child );
         void removeChild( int index );
 
-        CollectionTreeItem *child( int row );
+        CollectionTreeItem* child( int row );
 
         int childCount() const { return m_childItems.count(); }
         int columnCount() const { return 1; }
@@ -93,11 +93,11 @@ class CollectionTreeItem : public QObject
 
     private:
         QString albumYear() const;
-        QList<QAction*> collectionActions() const;
+        QAction* decoratorAction() const;
 
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
-        Amarok::Collection* m_parentCollection;
+        Amarok::Collection *m_parentCollection;
 
         QList<CollectionTreeItem*> m_childItems;
         bool m_childrenLoaded;
@@ -105,8 +105,8 @@ class CollectionTreeItem : public QObject
         int  m_trackCount;
         mutable bool m_isCounting;
 
-        mutable QList<QAction*> m_collectionActions;
-        mutable bool m_collectionActionsLoaded;
+        mutable QAction *m_decoratorAction;
+        mutable bool m_decoratorActionLoaded;
 };
 
 #endif

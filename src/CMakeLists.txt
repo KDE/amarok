@@ -97,6 +97,7 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/MediaDeviceCollectionLocation.cpp
   collection/mediadevicecollection/MediaDeviceMeta.cpp  
   collection/mediadevicecollection/CollectionCapabilityMediaDevice.cpp
+  collection/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
   collection/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
@@ -272,6 +273,7 @@ set(meta_SRCS
     meta/capabilities/CollectionCapability.cpp
     meta/capabilities/CurrentTrackActionsCapability.cpp
     meta/capabilities/CustomActionsCapability.cpp
+    meta/capabilities/DecoratorCapability.cpp
     meta/capabilities/EditCapability.cpp
     meta/capabilities/EditablePlaylistCapability.cpp
     meta/capabilities/LastFmCapability.cpp

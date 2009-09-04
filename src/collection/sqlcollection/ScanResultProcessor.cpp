@@ -92,7 +92,6 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 void
 ScanResultProcessor::addImage( const QString &path, const QList< QPair<QString, QString> > covers )
 {
-    DEBUG_BLOCK
     m_imageMap[path] = covers;
 }
 
@@ -103,9 +102,7 @@ ScanResultProcessor::doneWithImages()
         return;
 
     //now -- find the best candidate with heuristics, then throw the rest away
-    debug() << "Finding best image candidate";
     const QString path = findBestImagePath( m_imageMap.keys() );
-    debug() << "path is " << path;
     if( path.isEmpty() )
         return;
 

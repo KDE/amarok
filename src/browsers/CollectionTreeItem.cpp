@@ -20,11 +20,11 @@
 #include "Debug.h"
 #include "amarokconfig.h"
 
-#include "meta/capabilities/CollectionCapability.h"
+#include "meta/capabilities/DecoratorCapability.h"
 
 #include <KLocale>
 
-Q_DECLARE_METATYPE( QList<QAction*> )
+Q_DECLARE_METATYPE( QAction* )
 
 CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent )
     : m_data( data )
@@ -34,7 +34,8 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
     , m_isVariousArtistsNode( false )
     , m_trackCount( -1 )
     , m_isCounting( false )
-    , m_collectionActionsLoaded( false )
+    , m_decoratorAction( 0 )
+    , m_decoratorActionLoaded( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -48,7 +49,8 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
     , m_isVariousArtistsNode( false )
     , m_trackCount( -1 )
     , m_isCounting( false )
-    , m_collectionActionsLoaded( false )
+    , m_decoratorAction( 0 )
+    , m_decoratorActionLoaded( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -64,7 +66,8 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
     , m_isVariousArtistsNode( true )
     , m_trackCount( -1 )
     , m_isCounting( false )
-    , m_collectionActionsLoaded( false )
+    , m_decoratorAction( 0 )
+    , m_decoratorActionLoaded( false )
 {
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
@@ -200,14 +203,14 @@ CollectionTreeItem::data( int role ) const
             if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
                 return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();
         }
-        else if( role == CustomRoles::HasDecoratorsRole )
+        else if( role == CustomRoles::HasDecoratorRole )
         {
-            return !collectionActions().isEmpty();
+            return !!decoratorAction();
         }
-        else if( role == CustomRoles::DecoratorsRole )
+        else if( role == CustomRoles::DecoratorRole )
         {
             QVariant v;
-            v.setValue( collectionActions() );
+            v.setValue( decoratorAction() );
             return v;
         }
     }
@@ -215,21 +218,21 @@ CollectionTreeItem::data( int role ) const
     return QVariant();
 }
 
-QList<QAction*>
-CollectionTreeItem::collectionActions() const
+QAction*
+CollectionTreeItem::decoratorAction() const
 {
-    if( m_collectionActionsLoaded )
-        return m_collectionActions;
+    if( m_decoratorActionLoaded )
+        return m_decoratorAction;
 
-    Meta::CollectionCapability *cc = m_parentCollection->create<Meta::CollectionCapability>();
-    if( cc )
+    Meta::DecoratorCapability *dc = m_parentCollection->create<Meta::DecoratorCapability>();
+    if( dc )
     {
-        m_collectionActions = cc->collectionActions();
-        delete cc;
+        m_decoratorAction = dc->decoratorAction();
+        delete dc;
     }
 
-    m_collectionActionsLoaded = true;
-    return m_collectionActions;
+    m_decoratorActionLoaded = true;
+    return m_decoratorAction;
 }
 
 void

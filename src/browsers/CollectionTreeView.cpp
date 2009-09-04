@@ -961,7 +961,6 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
 QActionList
 CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 {
-    DEBUG_BLOCK
     QActionList actions;
     // Extract collection whose constituent was selected
 

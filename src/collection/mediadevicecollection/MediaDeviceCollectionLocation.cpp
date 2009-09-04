@@ -44,7 +44,6 @@ MediaDeviceCollectionLocation::MediaDeviceCollectionLocation( MediaDeviceCollect
 
 MediaDeviceCollectionLocation::~MediaDeviceCollectionLocation()
 {
-    DEBUG_BLOCK
     //nothing to do
 }
 

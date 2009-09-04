@@ -1,6 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
- * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -16,33 +14,30 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTION_TREE_ITEM_DELEGATE_H
-#define AMAROK_COLLECTION_TREE_ITEM_DELEGATE_H
+#ifndef AMAROK_DECORATORCAPABILITY_H
+#define AMAROK_DECORATORCAPABILITY_H
+
+#include "amarok_export.h"
+#include "meta/Capability.h"
+#include "Meta.h"
+
 
 #include <QAction>
-#include <QFont>
-#include <QPersistentModelIndex>
-#include <QRect>
-#include <QStyledItemDelegate>
-#include <QTreeView>
+#include <QList>
+#include <QObject>
 
-class CollectionTreeItemDelegate : public QStyledItemDelegate
+namespace Meta
 {
-    public:
-        CollectionTreeItemDelegate( QTreeView *view );
-        ~CollectionTreeItemDelegate();
+    class AMAROK_EXPORT DecoratorCapability : public Meta::Capability
+    {
+        Q_OBJECT
 
-        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-        QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+        public:
+            virtual ~DecoratorCapability();
 
-        static QRect decoratorRect( const QModelIndex &index );
-
-    private:
-        QTreeView *m_view;
-        QFont m_bigFont;
-        QFont m_smallFont;
-
-        static QHash<QPersistentModelIndex, QRect> s_indexDecoratorRects;
-};
+            static Type capabilityInterfaceType() { return Meta::Capability::Decorator; }
+            virtual QAction* decoratorAction() = 0;
+    };
+}
 
 #endif

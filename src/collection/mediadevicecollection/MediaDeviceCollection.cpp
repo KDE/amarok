@@ -25,6 +25,7 @@
 
 #include "meta/capabilities/CollectionCapability.h"
 #include "CollectionCapabilityMediaDevice.h"
+#include "MediaDeviceDecoratorCapability.h"
 
 #include "MediaDeviceMonitor.h"
 
@@ -61,13 +62,11 @@ MediaDeviceCollectionFactoryBase::init()
     //DEBUG_BLOCK
 
     // When assistant identifies a device, Factory will attempt to build Collection
-    connect( m_assistant, SIGNAL( identified(MediaDeviceInfo*) )
-    , SLOT( slotDeviceDetected( MediaDeviceInfo* ) ) );
+    connect( m_assistant, SIGNAL( identified(MediaDeviceInfo*) ), SLOT( slotDeviceDetected( MediaDeviceInfo* ) ) );
 
     // When assistant told to disconnect, Factory will disconnect
     // the device, and have the Collection destroyed
-    connect( m_assistant, SIGNAL( disconnected(QString))
-    , SLOT( slotDeviceDisconnected(QString)) );
+    connect( m_assistant, SIGNAL( disconnected(QString)), SLOT( slotDeviceDisconnected(QString)) );
 
     // Register the device type with the Monitor
     MediaDeviceMonitor::instance()->registerDeviceType( m_assistant );
@@ -124,13 +123,13 @@ MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
 MediaDeviceCollection::MediaDeviceCollection()
     : Collection()
     , MemoryCollection()
+    , m_ejectAction( 0 )
     , m_usedCapacity( -1 )
     , m_totalCapacity( -1 )
 {
     connect( this, SIGNAL( attemptConnectionDone(bool)),
              this, SLOT( slotAttemptConnectionDone(bool)) );
 }
-
 
 MediaDeviceCollection::~MediaDeviceCollection()
 {
@@ -230,10 +229,10 @@ MediaDeviceCollection::slotAttemptConnectionDone( bool success )
 bool
 MediaDeviceCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    DEBUG_BLOCK
     switch( type )
     {
         case Meta::Capability::Collection:
+        case Meta::Capability::Decorator:
             return true;
 
         default:
@@ -244,11 +243,12 @@ MediaDeviceCollection::hasCapabilityInterface( Meta::Capability::Type type ) con
 Meta::Capability*
 MediaDeviceCollection::createCapabilityInterface( Meta::Capability::Type type )
 {
-    DEBUG_BLOCK
     switch( type )
     {
         case Meta::Capability::Collection:
             return new Meta::CollectionCapabilityMediaDevice( this );
+        case Meta::Capability::Decorator:
+            return new Meta::MediaDeviceDecoratorCapability( this );
         default:
             return 0;
     }
@@ -281,6 +281,19 @@ void
 MediaDeviceCollection::emitCollectionReady()
 {
     emit collectionReady( this );
+}
+
+QAction *
+MediaDeviceCollection::ejectAction() const
+{
+    if( !m_ejectAction )
+    {
+        m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Disconnect Device" ), 0 );
+        m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
+
+        connect( m_ejectAction, SIGNAL( triggered() ), SLOT( disconnectDevice() ) );
+    }
+    return m_ejectAction;
 }
 
 #include "MediaDeviceCollection.moc"

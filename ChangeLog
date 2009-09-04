@@ -10,7 +10,6 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
-<<<<<<< HEAD:ChangeLog
     * Change wikipedia url to use the default MediaWiki skins. Thanks to Stefan 
       Majewsky for the suggestion. (BR 205901)
     * Fixed "Show in Service" action.
@@ -18,8 +17,6 @@ VERSION 2.2-beta2
       when using the playlist layout editor. (BR 205182)
     * Fixed typo in D-Bus manifest, that resulted in incorrect function
       invokation in IRKick. (BR 205729)
-=======
->>>>>>> ChangeLog++:ChangeLog
     * Correctly mark playing track as active in the playlist after removing it
       using the "clear playlist" button and later re-adding it.
     * Fixed crash when removing an "albumless" track, like a podcast from the 
