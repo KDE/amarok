@@ -709,13 +709,13 @@ App::continueInit()
         FirstRunTutorial *frt = new FirstRunTutorial( mainWindow() );
         QTimer::singleShot( 1000, frt, SLOT( initOverlay() ) );
     }
+#endif
 
     if( config.readEntry( "First Run", true ) )
     {
         slotConfigAmarok( "CollectionConfig" );
         config.writeEntry( "First Run", false );
     }
-#endif
 }
 
 void App::slotConfigEqualizer() //SLOT
