@@ -10,6 +10,8 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * Change wikipedia url to use the default MediaWiki skins. Thanks to Stefan 
+      Majewsky for the suggestion. (BR 205901)
     * Fixed "Show in Service" action.
     * Fixed extra empty rows sometimes getting added to the playlist layout xml
       when using the playlist layout editor. (BR 205182)
