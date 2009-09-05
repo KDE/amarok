@@ -872,12 +872,15 @@ CollectionTreeItemModelBase::populateChildren(const DataList & dataList, Collect
             emit dataChanged( createIndex( 0, 0, parent->child( 0 ) ), createIndex( lastRow, 0, parent->child( lastRow ) ) );
         }
         //add the new rows
-        beginInsertRows( parentIndex, lastRow + 1, lastRow + dataToBeAdded.count() );
-        foreach( Meta::DataPtr data, dataToBeAdded )
+        if( !dataToBeAdded.isEmpty() )
         {
-            new CollectionTreeItem( data, parent, this );
+            beginInsertRows( parentIndex, lastRow + 1, lastRow + dataToBeAdded.count() );
+            foreach( Meta::DataPtr data, dataToBeAdded )
+            {
+                new CollectionTreeItem( data, parent, this );
+            }
+            endInsertRows();
         }
-        endInsertRows();
         parent->setRequiresUpdate( false );
     }
 }
