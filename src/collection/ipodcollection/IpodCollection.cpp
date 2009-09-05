@@ -39,7 +39,7 @@ IpodCollectionFactory::~IpodCollectionFactory()
 
 //IpodCollection
 
-IpodCollection::IpodCollection(MediaDeviceInfo* info)
+IpodCollection::IpodCollection( MediaDeviceInfo* info )
     : MediaDeviceCollection()
 {
     DEBUG_BLOCK

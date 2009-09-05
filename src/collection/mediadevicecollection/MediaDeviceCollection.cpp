@@ -33,12 +33,6 @@
 #include "MediaDeviceCache.h"
 #include "MemoryQueryMaker.h"
 
-//solid specific includes
-#include <solid/devicenotifier.h>
-#include <solid/device.h>
-#include <solid/storageaccess.h>
-#include <solid/storagedrive.h>
-
 #include <kdiskfreespaceinfo.h>
 
 MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant )

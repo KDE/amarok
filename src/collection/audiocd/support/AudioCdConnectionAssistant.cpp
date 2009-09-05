@@ -35,14 +35,12 @@ AudioCdConnectionAssistant::identify( const QString& udi )
 {
     DEBUG_BLOCK
 
-    Solid::Device device;
+    const Solid::Device device = Solid::Device(udi);
 
-    device = Solid::Device(udi);
-    
     if( device.is<Solid::OpticalDisc>() )
     {
         debug() << "OpticalDisc";
-        Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+        const Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
         if ( opt->availableContent() & Solid::OpticalDisc::Audio )
         {
             debug() << "AudioCd";
@@ -57,11 +55,9 @@ AudioCdConnectionAssistant::identify( const QString& udi )
 MediaDeviceInfo*
 AudioCdConnectionAssistant::deviceInfo( const QString& udi )
 {
+    const QString mountpoint = MediaDeviceCache::instance()->volumeMountPoint(udi);
 
-    QString mountpoint = MediaDeviceCache::instance()->volumeMountPoint(udi);
-
-    MediaDeviceInfo* info = new AudioCdDeviceInfo( mountpoint, udi );
-    return info;
+    return new AudioCdDeviceInfo( mountpoint, udi );
 }
 
 #include "AudioCdConnectionAssistant.moc"

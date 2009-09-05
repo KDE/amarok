@@ -36,15 +36,12 @@ void AudioCdCollectionLocation::getKIOCopyableUrls( const Meta::TrackList & trac
     DEBUG_BLOCK
 
     QMap<Meta::TrackPtr, KUrl> resultMap;
-    foreach( Meta::TrackPtr trackPtr, tracks ) {
+    foreach( Meta::TrackPtr trackPtr, tracks )
+    {
         Meta::AudioCdTrackPtr cdTrack = Meta::AudioCdTrackPtr::staticCast( trackPtr );
 
-        QString path = m_collection->copyableBasePath() + cdTrack->fileNameBase() + '.' + m_collection->encodingFormat();
-
-        debug() << "adding path: " << path;
-
+        const QString path = m_collection->copyableBasePath() + cdTrack->fileNameBase() + '.' + m_collection->encodingFormat();
         resultMap.insert( trackPtr, KUrl( path ) );
-
     }
 
     slotGetKIOCopyableUrlsDone( resultMap );

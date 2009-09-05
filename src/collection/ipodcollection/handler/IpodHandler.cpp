@@ -314,8 +314,8 @@ IpodHandler::init()
 
     // Get storage access for getting device space capacity/usage
 
-    Solid::Device device = Solid::Device(  m_memColl->udi() );
-    if (  device.isValid() )
+    Solid::Device device = Solid::Device( m_memColl->udi() );
+    if( device.isValid() )
     {
         Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
         m_filepath = storage->filePath();
