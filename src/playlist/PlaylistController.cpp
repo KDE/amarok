@@ -288,6 +288,30 @@ Playlist::Controller::removeRows( QList<int>& rows )
 }
 
 void
+Playlist::Controller::removeDuplicates()
+{
+    DEBUG_BLOCK
+
+    Meta::TrackList visibleTracks = m_topmostModel->tracks();
+    Meta::TrackList uniqueTracks = m_topmostModel->tracks().toSet().toList();
+
+    foreach( Meta::TrackPtr track, uniqueTracks )
+        visibleTracks.removeOne(track);
+
+    if( !visibleTracks.empty() )
+    {
+        QList<int> rowsToRemove;
+
+        foreach( Meta::TrackPtr duplicateEntry, visibleTracks )
+            rowsToRemove.append( m_topmostModel->rowForTrack( duplicateEntry ) );
+
+        m_undoStack->beginMacro( "Remove duplicates" );     // TODO: Internationalize?
+        removeRows( rowsToRemove );
+        m_undoStack->endMacro();
+    }
+}
+
+void
 Playlist::Controller::moveRow( int from, int to )
 {
     DEBUG_BLOCK

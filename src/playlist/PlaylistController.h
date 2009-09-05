@@ -85,6 +85,9 @@ public slots:
     void removeRows( int row, int count );
     void removeRows( QList<int>& rows );
 
+    void removeDuplicates();    // Removes duplicate entries in the topmost playlist model only
+                                // (i.e. Respects filtering via "Show only matches" etc)
+
     void moveRow( int from, int to );
     int  moveRows( QList<int>& from, int to ); // see function definition for info abt return value
     void moveRows( QList<int>& from, QList<int>& to );
