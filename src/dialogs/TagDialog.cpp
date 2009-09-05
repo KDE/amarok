@@ -646,6 +646,7 @@ void TagDialog::init()
 
         loadLyrics( m_currentTrack );
         loadLabels( m_currentTrack );
+        loadTags( m_currentTrack );
         readTags();
     }
 
@@ -871,23 +872,33 @@ void TagDialog::readTags()
     ui->trackArtistAlbumLabel->setText( niceTitle );
     ui->trackArtistAlbumLabel2->setText( niceTitle );
 
-    ui->kLineEdit_title->setText( m_currentTrack->name() );
-    if( m_currentTrack->artist() )
-        selectOrInsertText( m_currentTrack->artist()->name(), ui->kComboBox_artist );
-    if( m_currentTrack->album() )
-        selectOrInsertText( m_currentTrack->album()->name(), ui->kComboBox_album );
-    if( m_currentTrack->genre() )
-        selectOrInsertText( m_currentTrack->genre()->name(), ui->kComboBox_genre );
-    if( m_currentTrack->composer() )
-        selectOrInsertText( m_currentTrack->composer()->name(), ui->kComboBox_composer );
-    ui->ratingWidget->setRating( m_currentTrack->rating() );
+    ui->kLineEdit_title->setText( m_currentData.value( Meta::Field::TITLE ).toString() );
+    if( m_currentData.contains( Meta::Field::ARTIST ) )
+        selectOrInsertText( m_currentData.value( Meta::Field::ARTIST ).toString(), ui->kComboBox_artist );
+    else
+        selectOrInsertText( QString(), ui->kComboBox_artist );
+    if( m_currentData.contains( Meta::Field::ALBUM )  )
+        selectOrInsertText( m_currentData.value( Meta::Field::ALBUM ).toString(), ui->kComboBox_album );
+    else
+        selectOrInsertText( QString(), ui->kComboBox_album );
+    if( m_currentData.contains( Meta::Field::GENRE ) )
+        selectOrInsertText( m_currentData.value( Meta::Field::GENRE ).toString(), ui->kComboBox_genre );
+    else
+        selectOrInsertText( QString(), ui->kComboBox_genre );
+    if( m_currentData.contains( Meta::Field::COMPOSER ) )
+        selectOrInsertText( m_currentData.value( Meta::Field::COMPOSER ).toString(), ui->kComboBox_composer );
+    else
+        selectOrInsertText( QString(), ui->kComboBox_genre );
+    ui->ratingWidget->setRating( m_currentData.value( Meta::Field::RATING ).toInt() );
     ui->ratingWidget->setMaxRating( 10 );
-    ui->qSpinBox_track->setValue( m_currentTrack->trackNumber() );
-    if( m_currentTrack->year() )
-        ui->qSpinBox_year->setValue( m_currentTrack->year()->name().toInt() );
-    ui->qSpinBox_score->setValue( static_cast<int>(m_currentTrack->score()) );
-    ui->qSpinBox_discNumber->setValue( m_currentTrack->discNumber() );
-    ui->qPlainTextEdit_comment->setPlainText( Qt::escape( m_currentTrack->comment() ) );
+    ui->qSpinBox_track->setValue( m_currentData.value( Meta::Field::TRACKNUMBER ).toInt() );
+    if( m_currentData.contains( Meta::Field::YEAR ) )
+        ui->qSpinBox_year->setValue( m_currentData.value( Meta::Field::YEAR ).toInt() );
+    else
+        ui->qSpinBox_year->setValue( 0 );
+    ui->qSpinBox_score->setValue( m_currentData.value( Meta::Field::SCORE ).toInt() );
+    ui->qSpinBox_discNumber->setValue( m_currentData.value( Meta::Field::DISCNUMBER ).toInt() );
+    ui->qPlainTextEdit_comment->setPlainText( Qt::escape( m_currentData.value( Meta::Field::COMMENT ).toString() ) );
 
     QString summaryText, statisticsText;
     const QString body2cols = "<tr><td><nobr>%1</nobr></td><td><b>%2</b></td></tr>";
