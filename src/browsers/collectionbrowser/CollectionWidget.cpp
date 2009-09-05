@@ -420,9 +420,10 @@ void CollectionWidget::toggleView()
     {
         debug() << "Switching to single tree model";
         m_searchWidget->disconnect( m_treeView );
-        //m_treeView->hide();
         m_searchWidget->setup( m_singleTreeView );
         m_stack->setCurrentWidget( m_singleTreeView );
+        m_singleModel->setCurrentFilter( m_searchWidget->lineEdit()->text() );
+        m_singleTreeView->slotFilterNow();
         if( m_levels != m_singleTreeView->levels() )
             m_singleTreeView->setLevels( m_levels );
         m_viewMode = CollectionWidget::UnifiedCollection;
@@ -431,7 +432,10 @@ void CollectionWidget::toggleView()
     {
         debug() << "switching to multi model";
         m_searchWidget->disconnect( m_singleTreeView );
+        m_searchWidget->setup( m_treeView );
         m_stack->setCurrentWidget( m_treeView );
+        m_multiModel->setCurrentFilter( m_searchWidget->lineEdit()->text() );
+        m_treeView->slotFilterNow();
         if( m_levels != m_treeView->levels() )
             m_treeView->setLevels( m_levels );
         m_viewMode = CollectionWidget::NormalCollections;
