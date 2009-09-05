@@ -105,19 +105,6 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
             return true;
         }
     }
-    /*else
-    {
-        QModelIndex in = index;
-        while( in.model()->hasChildren( in ) )
-        {
-            int rows = in.model()->rowCount( in );
-            for( int i = 0; i < rows; i++ )
-            {
-                setData( in.child( i, 1 ), value, role );
-                in = in.sibling( in.row() + 1, in.column() );
-            }
-        }
-    }*/
     else if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( data ) )
     {
         Meta::TrackList tracks = album->tracks();
