@@ -99,6 +99,9 @@ namespace FilterFactory
             case Meta::valCreateDate:
                 result = new CreateDateFilter();
                 break;
+            case Meta::valYear:
+                result = new YearNumberFilter();
+                break;
         }
         Q_ASSERT_X( result, "FilterFactory::numberFilter", "called numberFilter with an illegal value, value was " + value );
         if (result)
@@ -563,4 +566,21 @@ CreateDateFilter::value( const Meta::TrackPtr &track ) const
     return track->createDate().toTime_t();
 }
 
+YearNumberFilter::YearNumberFilter()
+    : NumberMemoryFilter()
+{
+}
+
+YearNumberFilter::~YearNumberFilter()
+{
+}
+
+qint64
+YearNumberFilter::value( const Meta::TrackPtr &track ) const
+{
+    if( !track->year() )
+        return 0;
+
+    return track->year()->name().toInt();
+}
 

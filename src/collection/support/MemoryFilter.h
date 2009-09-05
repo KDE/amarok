@@ -285,4 +285,13 @@ class AMAROK_EXPORT CreateDateFilter : public NumberMemoryFilter
         virtual qint64 value( const Meta::TrackPtr &track ) const;
 };
 
+class AMAROK_EXPORT YearNumberFilter : public NumberMemoryFilter
+{
+    public:
+        YearNumberFilter();
+        virtual ~YearNumberFilter();
+    protected:
+        virtual qint64 value( const Meta::TrackPtr &track ) const;
+};
+
 #endif
