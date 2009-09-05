@@ -82,7 +82,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
         virtual QPixmap iconForLevel( int level ) const;
-        virtual void listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent ) const;
+        virtual void listForLevel( int level, QueryMaker *qm, CollectionTreeItem* parent );
 
 
         virtual void setLevels( const QList<int> &levelType ) = 0;
@@ -121,7 +121,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual int levelModifier() const = 0;
 
         virtual void filterChildren() = 0;
-        void ensureChildrenLoaded( CollectionTreeItem *item ) const;
+        void ensureChildrenLoaded( CollectionTreeItem *item );
 
         void markSubTreeAsDirty( CollectionTreeItem *item );
 
@@ -144,6 +144,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         QSet<Amarok::Collection*> m_expandedVariousArtistsNodes;
         
     protected slots:
+        void startAnimationTick();
         void loadingAnimationTick();
         void update();
 };

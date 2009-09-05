@@ -39,6 +39,7 @@
 #include <KStandardDirs>
 #include <QPixmap>
 #include <QTimeLine>
+#include <QTimer>
 
 using namespace Meta;
 
@@ -347,7 +348,7 @@ CollectionTreeItemModelBase::hasChildren ( const QModelIndex & parent ) const
 }
 
 void
-CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item ) const
+CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
 {
     if ( item->requiresUpdate() )
     {
@@ -381,7 +382,7 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
     return KIconLoader::global()->loadIcon( icon, KIconLoader::Toolbar, KIconLoader::SizeSmall );
 }
 
-void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent) const
+void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent)
 {
     if ( qm && parent )
     {
@@ -458,8 +459,12 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         qm->run();
 
         //start animation
-        if( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) )
-            m_timeLine->start();
+        //if( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) )
+        //     m_timeLine->start();
+
+        //some very quick queries may be dode so fast that the loading
+        //animation creates an unnecessary flicker, therfore delay it for a bit
+        QTimer::singleShot( 150, this, SLOT( startAnimationTick() ) );
     }
 }
 
@@ -952,6 +957,13 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     qm->run();
 }
 
+void CollectionTreeItemModelBase::startAnimationTick()
+{
+    //start animation
+    if( ( m_timeLine->state() != QTimeLine::Running ) && !d->m_runningQueries.isEmpty() )
+        m_timeLine->start();
+}
+
 void CollectionTreeItemModelBase::loadingAnimationTick()
 {
     if ( m_animFrame == 0 )
@@ -962,10 +974,13 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
     m_animFrame = 1 - m_animFrame;
 
     //trigger an update of all items being populated at the moment;
-    QList<CollectionTreeItem* > items = d->m_childQueries.values();
 
-    foreach ( CollectionTreeItem* item, items )
-        emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
+    foreach ( CollectionTreeItem* item, d->m_runningQueries )
+    {
+        if( item == m_rootItem )
+            continue;
+        emit dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) );
+    }
 }
 
 void
