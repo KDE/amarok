@@ -458,10 +458,6 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         d->m_runningQueries.insert( parent );
         qm->run();
 
-        //start animation
-        //if( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) )
-        //     m_timeLine->start();
-
         //some very quick queries may be dode so fast that the loading
         //animation creates an unnecessary flicker, therfore delay it for a bit
         QTimer::singleShot( 150, this, SLOT( startAnimationTick() ) );
