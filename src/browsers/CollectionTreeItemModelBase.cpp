@@ -222,16 +222,11 @@ CollectionTreeItemModelBase::index(int row, int column, const QModelIndex & pare
     else
         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
-   //if ( parentItem->childrenLoaded() )
-   //{
-        CollectionTreeItem *childItem = parentItem->child(row);
-        if( childItem )
-            return createIndex(row, column, childItem);
-        else
-            return QModelIndex();
-    //}
-    //else
-    //   return QModelIndex();
+    CollectionTreeItem *childItem = parentItem->child(row);
+    if( childItem )
+        return createIndex(row, column, childItem);
+    else
+        return QModelIndex();
 }
 
 QModelIndex
@@ -259,9 +254,7 @@ CollectionTreeItemModelBase::rowCount(const QModelIndex & parent) const
     else
         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
-    if( !parentItem->requiresUpdate() )
-        return parentItem->childCount();
-    return 0;
+    return parentItem->childCount();
 }
 
 int CollectionTreeItemModelBase::columnCount(const QModelIndex & parent) const
