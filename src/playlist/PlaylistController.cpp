@@ -296,7 +296,7 @@ Playlist::Controller::removeDuplicates()
     Meta::TrackList uniqueTracks = m_topmostModel->tracks().toSet().toList();
 
     foreach( Meta::TrackPtr track, uniqueTracks )
-        visibleTracks.removeOne(track);
+        visibleTracks.removeOne( track );
 
     if( !visibleTracks.empty() )
     {

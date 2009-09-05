@@ -548,7 +548,7 @@ Playlist::Model::rowForTrackLast( const Meta::TrackPtr track ) const
 {
     for( int row = m_items.size() - 1; row >= 0; row-- )
     {
-        if ( m_items.at(row)->track() == track )
+        if ( m_items.at( row )->track() == track )
             return row;
     }
     return -1;
