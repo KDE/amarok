@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
- * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -66,7 +66,23 @@ void
 CollectionTreeItemModel::setLevels( const QList<int> &levelType )
 {
     m_levelType = levelType;
-    update();
+    delete m_rootItem; //clears the whole tree!
+    m_rootItem = new CollectionTreeItem( this );
+    d->m_collections.clear();
+    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
+    foreach( Amarok::Collection *coll, collections )
+    {
+        connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
+        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+    }
+    m_rootItem->setRequiresUpdate( false );  //all collections have been loaded already
+    updateHeaderText();
+    m_expandedItems.clear();
+    m_expandedVariousArtistsNodes.clear();
+    d->m_runningQueries.clear();
+    d->m_childQueries.clear();
+    d->m_compilationQueries.clear();
+    reset();
     if ( d->m_collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
@@ -225,20 +241,6 @@ namespace Amarok {
 
 void CollectionTreeItemModel::update()
 {
-    /*delete m_rootItem; //clears the whole tree!
-    m_rootItem = new CollectionTreeItem( Meta::DataPtr(0), 0 );
-    d->m_collections.clear();
-    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
-    foreach( Amarok::Collection *coll, collections )
-    {
-        connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem ) ) );
-    }
-    m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
-    updateHeaderText();
-    m_expandedItems.clear();
-    m_expandedVariousArtistsNodes.clear();
-    reset();*/
     for( int i = 0; i < m_rootItem->childCount(); i++ )
     {
         markSubTreeAsDirty( m_rootItem->child( i ) );
