@@ -275,7 +275,7 @@ App::~App()
 
     // I tried this in the destructor for the Model but the object is destroyed after the
     // Config is written. Go figure!
-    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->rowForTrack( Playlist::ModelStack::instance()->source()->activeTrack() ) );
+    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->rowForTrackFirst( Playlist::ModelStack::instance()->source()->activeTrack() ) );
 
     AmarokConfig::self()->writeConfig();
 

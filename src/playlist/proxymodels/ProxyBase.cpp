@@ -210,9 +210,15 @@ ProxyBase::rowForId( const quint64 id ) const
 }
 
 int
-ProxyBase::rowForTrack( const Meta::TrackPtr track ) const
+ProxyBase::rowForTrackFirst( const Meta::TrackPtr track ) const
 {
-    return rowFromSource( m_belowModel->rowForTrack( track ) );
+    return rowFromSource( m_belowModel->rowForTrackFirst( track ) );
+}
+
+int
+ProxyBase::rowForTrackLast( const Meta::TrackPtr track ) const
+{
+    return rowFromSource( m_belowModel->rowForTrackLast( track ) );
 }
 
 int

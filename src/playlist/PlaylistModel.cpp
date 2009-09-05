@@ -531,7 +531,7 @@ Playlist::Model::containsTrack( const Meta::TrackPtr track ) const
 }
 
 int
-Playlist::Model::rowForTrack( const Meta::TrackPtr track ) const
+Playlist::Model::rowForTrackFirst( const Meta::TrackPtr track ) const
 {
     int row = 0;
     foreach( Item* i, m_items )
@@ -539,6 +539,17 @@ Playlist::Model::rowForTrack( const Meta::TrackPtr track ) const
         if ( i->track() == track )
             return row;
         row++;
+    }
+    return -1;
+}
+
+int
+Playlist::Model::rowForTrackLast( const Meta::TrackPtr track ) const
+{
+    for( int row = m_items.size() - 1; row >= 0; row-- )
+    {
+        if ( m_items.at(row)->track() == track )
+            return row;
     }
     return -1;
 }

@@ -230,11 +230,18 @@ public:
     virtual int rowForId( const quint64 id ) const;
 
     /**
-     * Returns the row in the current model for a given track pointer.
+     * Returns the first row in the current model which matches a given track pointer.
      * @param track the track.
      * @return the row, -1 if the track pointer is invalid.
      */
-    virtual int rowForTrack( const Meta::TrackPtr track ) const;
+    virtual int rowForTrackFirst( const Meta::TrackPtr track ) const;
+
+    /**
+     * Returns the last row in the current model which matches a given track pointer.
+     * @param track the track.
+     * @return the row, -1 if the track pointer is invalid.
+     */
+    virtual int rowForTrackLast( const Meta::TrackPtr track ) const;
 
     /**
      * Returns the row number of a track in terms of the bottom model.
