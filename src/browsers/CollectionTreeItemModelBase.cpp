@@ -654,12 +654,12 @@ CollectionTreeItemModelBase::queryDone()
     //reset icon for this item
     if( item && item != m_rootItem )
     {
-        emit dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) );
+        emit dataChanged( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) );
         emit queryFinished();
     }
 
     //stop timer if there are no more animations active
-    if( d->m_childQueries.count() == 0 /*&& d->m_compilationQueries.count() == 0 */ )
+    if( d->m_runningQueries.count() == 0 )
         m_timeLine->stop();
     qm->deleteLater();
 }
@@ -782,7 +782,7 @@ CollectionTreeItemModelBase::handleCompilationQueryResult( QueryMaker *qm, const
 
             if( m_expandedVariousArtistsNodes.contains( tmp->parentCollection() ) )
             {
-                emit expandIndex( createIndex( 0, 0, vaNode ) ); //we've just inserted the vaItem at row 0
+                emit expandIndex( createIndex( 0, 0, vaNode ) ); //we have just inserted the vaItem at row 0
             }
         }
     }
@@ -839,7 +839,6 @@ CollectionTreeItemModelBase::populateChildren(const DataList & dataList, Collect
         QSet<Meta::DataPtr> dataSet = dataList.toSet();
         QSet<Meta::DataPtr> dataToBeAdded = dataSet - childrenSet;
         QSet<Meta::DataPtr> dataToBeRemoved = childrenSet - dataSet;
-        QSet<Meta::DataPtr> dataToBeUpdated = childrenSet & dataSet;  //might not be necessary
 
         QList<int> currentIndices;
         //first remove all rows that have to be removed
@@ -874,6 +873,7 @@ CollectionTreeItemModelBase::populateChildren(const DataList & dataList, Collect
         //add the new rows
         if( !dataToBeAdded.isEmpty() )
         {
+            //the above check ensures that Qt does not crash on beginInsertRows ( because lastRow+1 > lastRow+0)
             beginInsertRows( parentIndex, lastRow + 1, lastRow + dataToBeAdded.count() );
             foreach( Meta::DataPtr data, dataToBeAdded )
             {
