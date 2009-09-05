@@ -74,6 +74,7 @@ namespace Amarok
 
             void Pause();
             void Play();
+            void PlayPause();
             void Stop();
             void Prev();
             void Next();

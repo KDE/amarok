@@ -118,6 +118,15 @@ namespace Amarok
         The::engineController()->play();
     }
 
+    void PlayerDBusHandler::PlayPause()
+    {
+        if(The::engineController()->state() == Phonon::PlayingState) {
+            The::engineController()->pause();
+        } else {
+            The::engineController()->play();
+        }
+    }
+
     void PlayerDBusHandler::Next()
     {
         The::playlistActions()->next();
