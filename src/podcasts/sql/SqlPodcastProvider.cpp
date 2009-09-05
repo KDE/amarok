@@ -507,6 +507,9 @@ SqlPodcastProvider::slotUpdateChannels()
 void
 SqlPodcastProvider::slotDownloadProgress( KJob *job, unsigned long percent )
 {
+    Q_UNUSED( job );
+    Q_UNUSED( percent );
+
     unsigned int totalDownloadPercentage = 0;
     foreach( const KJob *jobKey, m_downloadJobMap.keys() )
         totalDownloadPercentage += jobKey->percent();
