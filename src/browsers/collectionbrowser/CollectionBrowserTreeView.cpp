@@ -97,5 +97,4 @@ CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
     }
     else
         CollectionTreeView::mouseReleaseEvent( event );
-
 }
