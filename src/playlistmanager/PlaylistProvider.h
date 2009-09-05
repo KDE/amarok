@@ -46,6 +46,10 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
          */
         virtual int category() const = 0;
 
+        /** @returns the number of playlists this provider as or a negative value if it
+         * can not determine that before loading them all.
+         */
+        virtual int playlistCount() const { return -1; }
         virtual Meta::PlaylistList playlists() = 0;
 
         virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist ) = 0;

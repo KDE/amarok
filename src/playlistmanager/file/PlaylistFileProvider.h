@@ -41,6 +41,7 @@ class PlaylistFileProvider : public UserPlaylistProvider
 
         virtual int category() const { return PlaylistManager::UserPlaylist; }
 
+        virtual int playlistCount() const;
         virtual Meta::PlaylistList playlists();
 
         virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist );
@@ -65,7 +66,7 @@ class PlaylistFileProvider : public UserPlaylistProvider
             virtual void updated();
 
     private:
-        KConfigGroup loadedPlaylistsConfig();
+        KConfigGroup loadedPlaylistsConfig() const;
 
         bool m_playlistsLoaded;
         Meta::PlaylistList m_playlists;

@@ -66,6 +66,15 @@ PlaylistFileProvider::prettyName() const
     return i18n( "Playlist Files on Disk" );
 }
 
+int
+PlaylistFileProvider::playlistCount() const
+{
+    if( m_playlistsLoaded )
+        return m_playlists.count();
+    //count the entries in the config file
+    return loadedPlaylistsConfig().keyList().count();
+}
+
 Meta::PlaylistList
 PlaylistFileProvider::playlists()
 {
@@ -251,7 +260,7 @@ PlaylistFileProvider::loadPlaylists()
 }
 
 KConfigGroup
-PlaylistFileProvider::loadedPlaylistsConfig()
+PlaylistFileProvider::loadedPlaylistsConfig() const
 {
     return Amarok::config( "Loaded Playlist Files" );
 }
