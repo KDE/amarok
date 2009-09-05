@@ -59,12 +59,15 @@ class PlaylistFileProvider : public UserPlaylistProvider
         virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );
         virtual void deletePlaylists( Meta::PlaylistList playlistList );
 
+        virtual void loadPlaylists();
+
     signals:
             virtual void updated();
 
     private:
         KConfigGroup loadedPlaylistsConfig();
 
+        bool m_playlistsLoaded;
         Meta::PlaylistList m_playlists;
         Meta::PlaylistFormat m_defaultFormat;
         QMultiMap<QString, Meta::PlaylistPtr> m_groupMap;
