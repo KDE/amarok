@@ -134,21 +134,22 @@ PlaybackConfig::eqSetupUI()
     connect( eqPresetResetBtn, SIGNAL( clicked() ), SLOT( eqRestorePreset() ) );
     // Signals exchange to keep both config dialog and eq action in sync
     connect( eqPresets, SIGNAL( currentIndexChanged( int ) ),
-             Amarok::actionCollection()->action( "equalizer_mode" ), SLOT( UpdateContent() ) );
+             Amarok::actionCollection()->action( "equalizer_mode" ), SLOT( updateContent() ) );
     connect( Amarok::actionCollection()->action( "equalizer_mode" ), SIGNAL( triggered(int) ),
              SLOT( eqUpdateUI( int ) ) );
     // Ask engine for maximum gain value and compute scale to display values
     mValueScale = The::engineController()->eqMaxGain();
     QString mlblText;
     mlblText = QString::number( mValueScale, 'f', 1 );
-    mlblText.append( QString( "dB" ) );
-    eqMaxEq->setText( mlblText.prepend( QString( "+ " ) ) );
-    eqMinEq->setText( mlblText.prepend( QString( "- " ) ) );
-    // Ask engine for band frequencies and set labels 
+    mlblText.append( QString( "\ndB" ) );
+    eqMaxEq->setText( QString("+") + mlblText );
+    eqMinEq->setText( QString("-") + mlblText );
+    // Ask engine for band frequencies and set labels
     QStringList meqBandFrq = The::engineController()->eqBandsFreq();
     QStringListIterator i( meqBandFrq );
     foreach( QLabel* mLabel, mBandsLabels )
         mLabel-> setText( i.hasNext() ?  i.next() : "N/A" );
+    mBandsLabels.first()->setText( mBandsLabels.first()->text() + QString( "\ndB" ) );
     // Set initial preset to current with signal blocking to prevent circular loops
     eqPresets->blockSignals( true );
     eqPresets->addItem( i18nc( "State, as in, disabled", "Off" ) );
