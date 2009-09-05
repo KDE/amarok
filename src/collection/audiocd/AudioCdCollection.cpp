@@ -306,7 +306,7 @@ AudioCdCollection::encodingFormat() const
     switch( m_encodingFormat )
     {
         case WAV:
-            return "vaw";
+            return "wav";
         case FLAC:
             return "flac";
         case OGG:
