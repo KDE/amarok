@@ -509,6 +509,7 @@ ProxyCollection::Track::metadataChanged( Meta::TrackPtr track )
             }
             else
             {
+                m_name = track->name();
                 if( track->album() )
                      m_album = Meta::AlbumPtr( m_collection->getAlbum( track->album() ) );
                 if( track->artist() )
