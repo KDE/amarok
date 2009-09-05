@@ -45,7 +45,7 @@ Dynamic::WeeklyTopBiasFactory::WeeklyTopBiasFactory()
 
 Dynamic::WeeklyTopBiasFactory::~WeeklyTopBiasFactory()
 {
-    
+
 }
 
 
@@ -70,7 +70,8 @@ Dynamic::WeeklyTopBiasFactory::newCustomBias( double weight )
 Dynamic::CustomBiasEntry*
 Dynamic::WeeklyTopBiasFactory::newCustomBias( QDomElement e, double weight )
 {
-    // TODO implement
+    AMAROK_NOTIMPLEMENTED
+    Q_UNUSED( e );
     return new Dynamic::WeeklyTopBias( weight );
 }
 
@@ -103,7 +104,7 @@ QWidget*
 Dynamic::WeeklyTopBias::configWidget( QWidget* parent )
 {
     DEBUG_BLOCK
-    
+
     QFrame * frame = new QFrame( parent );
     m_layout = new QVBoxLayout( frame );
 
@@ -119,9 +120,9 @@ Dynamic::WeeklyTopBias::configWidget( QWidget* parent )
     m_layout->addWidget( m_fromEdit );
 
     connect( m_fromEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ), this, SLOT( fromDateChanged( const QDateTime& ) ) );
-    
+
     QLabel * to = new QLabel( i18nc( "From one date to another, this text is in between", "to" ), parent );
-    
+
     to->setAlignment( Qt::AlignCenter );
     m_layout->addWidget( to, Qt::AlignCenter );
 
@@ -132,25 +133,28 @@ Dynamic::WeeklyTopBias::configWidget( QWidget* parent )
     m_layout->addWidget( m_toEdit );
 
     connect( m_toEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ), this, SLOT( toDateChanged( const QDateTime& ) ) );
-    
+
     return frame;
 }
 
 bool
 Dynamic::WeeklyTopBias::trackSatisfies( const Meta::TrackPtr track )
 {
+    Q_UNUSED( track )
     return false;
 }
 
 double
 Dynamic::WeeklyTopBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
 {
+    Q_UNUSED( tracks )
     return 0;
 }
 
 QDomElement
 Dynamic::WeeklyTopBias::xml( QDomDocument doc ) const
-{  
+{
+    Q_UNUSED( doc )
     return QDomElement();
 }
 
@@ -183,7 +187,7 @@ Dynamic::WeeklyTopBias::toDateChanged( const QDateTime& d ) // SLOT
     m_toDate = d.toTime_t();
 
     update();
-   
+
 }
 
 void
@@ -199,7 +203,7 @@ Dynamic::WeeklyTopBias::rangeJobFinished() // SLOT
         debug() << "couldn't parse XML from rangeJob!";
         return;
     }
-    
+
     QDomNodeList nodes = doc.elementsByTagName( "chart" );
     if( nodes.count() == 0 )
     {
@@ -250,7 +254,7 @@ Dynamic::WeeklyTopBias::dataJobFinished()
             if( count > 3 )
                 break; // just top 20
             count++;
-            
+
         }
         m_qm->endAndOr();
 
@@ -259,12 +263,12 @@ Dynamic::WeeklyTopBias::dataJobFinished()
         m_qm->setQueryType( QueryMaker::Custom );
         m_qm->addReturnValue( Meta::valUniqueId );
         m_qm->orderByRandom(); // as to not affect the amortized time
-        
+
         connect( m_qm, SIGNAL( newResultReady( QString, QStringList ) ),
                  SLOT( updateReady( QString, QStringList ) ), Qt::DirectConnection );
-                 
+
         m_qm->run();
-        
+
     } catch( lastfm::ws::ParseError& e )
     {
         debug() << "failed in parsing top tracks!";
@@ -284,14 +288,14 @@ Dynamic::WeeklyTopBias::updateReady( QString collectionId, QStringList uids )
     debug() << "setting cache of top UIDs for selected date: to:" << uids;
     m_trackList.clear();
     m_trackList.reserve( uids.size() );
-    
+
     QByteArray uid;
     foreach( const QString &uidString, uids )
     {
         uid = QByteArray::fromHex( uidString.mid(protocolLength).toAscii() );
         m_trackList.insert( uid );
     }
-    
+
 }
 
 
@@ -299,7 +303,7 @@ void
 Dynamic::WeeklyTopBias::getPossibleRange()
 {
     DEBUG_BLOCK
-    
+
     QMap< QString, QString > params;
     params[ "method" ] = "user.getWeeklyChartList" ;
     params[ "user" ] = lastfm::ws::Username;
@@ -307,7 +311,7 @@ Dynamic::WeeklyTopBias::getPossibleRange()
     m_rangeJob = lastfm::ws::get( params );
 
     connect( m_rangeJob, SIGNAL( finished() ), this, SLOT( rangeJobFinished() ) );
-    
+
 }
 
 
@@ -336,7 +340,7 @@ Dynamic::WeeklyTopBias::update()
     m_dataJob = lastfm::ws::get( params );
 
     connect( m_dataJob, SIGNAL( finished() ), this, SLOT( dataJobFinished() ) );
-    
+
 }
 
 
