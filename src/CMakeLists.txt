@@ -96,7 +96,7 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/MediaDeviceCollection.cpp
   collection/mediadevicecollection/MediaDeviceCollectionLocation.cpp
   collection/mediadevicecollection/MediaDeviceMeta.cpp  
-  collection/mediadevicecollection/CollectionCapabilityMediaDevice.cpp
+  collection/mediadevicecollection/MediaDeviceCollectionCapability.cpp
   collection/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp

@@ -21,16 +21,15 @@
 #include "MediaDeviceCollection.h"
 #include "MediaDeviceInfo.h"
 #include "MediaDeviceMeta.h"
-//#include "MediaDeviceHandler.h"
 
 #include "meta/capabilities/CollectionCapability.h"
-#include "CollectionCapabilityMediaDevice.h"
+#include "MediaDeviceCollectionCapability.h"
 #include "MediaDeviceDecoratorCapability.h"
 
 #include "MediaDeviceMonitor.h"
 
 #include "amarokconfig.h"
-//#include "Debug.h"
+#include "Debug.h"
 #include "MediaDeviceCache.h"
 #include "MemoryQueryMaker.h"
 
@@ -41,9 +40,6 @@
 #include <solid/storagedrive.h>
 
 #include <kdiskfreespaceinfo.h>
-
-
-//AMAROK_EXPORT_PLUGIN( MediaDeviceCollectionFactory )
 
 MediaDeviceCollectionFactoryBase::MediaDeviceCollectionFactoryBase( ConnectionAssistant* assistant )
     : Amarok::CollectionFactory()
@@ -59,8 +55,6 @@ MediaDeviceCollectionFactoryBase::~MediaDeviceCollectionFactoryBase()
 void
 MediaDeviceCollectionFactoryBase::init()
 {
-    //DEBUG_BLOCK
-
     // When assistant identifies a device, Factory will attempt to build Collection
     connect( m_assistant, SIGNAL( identified(MediaDeviceInfo*) ), SLOT( slotDeviceDetected( MediaDeviceInfo* ) ) );
 
@@ -246,7 +240,7 @@ MediaDeviceCollection::createCapabilityInterface( Meta::Capability::Type type )
     switch( type )
     {
         case Meta::Capability::Collection:
-            return new Meta::CollectionCapabilityMediaDevice( this );
+            return new Meta::MediaDeviceCollectionCapability( this );
         case Meta::Capability::Decorator:
             return new Meta::MediaDeviceDecoratorCapability( this );
         default:

@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CollectionCapabilityMediaDevice.h"
+#include "MediaDeviceCollectionCapability.h"
 #include "MediaDeviceCollection.h"
 #include "SvgHandler.h"
 #include "MetaQueryMaker.h"
@@ -25,7 +25,7 @@
 
 using namespace Meta;
 
-CollectionCapabilityMediaDevice::CollectionCapabilityMediaDevice( MediaDeviceCollection *coll )
+MediaDeviceCollectionCapability::MediaDeviceCollectionCapability( MediaDeviceCollection *coll )
     : CollectionCapability()
     ,  m_coll( coll )
 {
@@ -33,7 +33,7 @@ CollectionCapabilityMediaDevice::CollectionCapabilityMediaDevice( MediaDeviceCol
 
 
 QList<QAction *>
-CollectionCapabilityMediaDevice::collectionActions()
+MediaDeviceCollectionCapability::collectionActions()
 {
     // Create Standard Device Actions
     QList<QAction*> actions;
@@ -45,4 +45,4 @@ CollectionCapabilityMediaDevice::collectionActions()
     return actions;
 }
 
-#include "CollectionCapabilityMediaDevice.moc"
+#include "MediaDeviceCollectionCapability.moc"

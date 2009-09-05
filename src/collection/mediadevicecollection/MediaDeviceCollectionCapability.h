@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef COLLECTIONCAPABILITYMEDIADEVICE_H
-#define COLLECTIONCAPABILITYMEDIADEVICE_H
+#ifndef MEDIADEVICECOLLECTIONCAPABILITY_H
+#define MEDIADEVICECOLLECTIONCAPABILITY_H
 
 #include "Meta.h"
 
@@ -25,12 +25,12 @@ class MediaDeviceCollection;
 
 namespace Meta
 {
-    class CollectionCapabilityMediaDevice : public CollectionCapability
+    class MediaDeviceCollectionCapability : public CollectionCapability
     {
         Q_OBJECT
 
         public:
-            CollectionCapabilityMediaDevice( MediaDeviceCollection *coll );
+            MediaDeviceCollectionCapability( MediaDeviceCollection *coll );
 
             virtual QList<QAction*> collectionActions();
 
