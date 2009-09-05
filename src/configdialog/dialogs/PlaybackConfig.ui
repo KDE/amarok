@@ -6,13 +6,10 @@
    <rect>
     <x>0</x>
     <y>0</y>
-<<<<<<< HEAD:src/configdialog/dialogs/PlaybackConfig.ui
     <width>634</width>
     <height>569</height>
-=======
     <width>618</width>
     <height>549</height>
->>>>>>> Fix equalizer gui to somewhat smaller but still expandable.:src/configdialog/dialogs/PlaybackConfig.ui
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_5">
