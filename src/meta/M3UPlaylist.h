@@ -47,8 +47,9 @@ class M3UPlaylist : public PlaylistFile
         virtual QString prettyName() const { return m_url.fileName(); }
         virtual QString description() const;
 
+        virtual int trackCount();
         /** returns all tracks in this playlist */
-        virtual TrackList tracks() { return m_tracks; }
+        virtual TrackList tracks();
 
        /* the following has been copied from Meta.h
         * it is my hope that we can integrate Playlists
@@ -76,6 +77,7 @@ class M3UPlaylist : public PlaylistFile
 
         KUrl m_url;
 
+        bool m_tracksLoaded;
         TrackList m_tracks;
         QStringList m_groups;
 };
