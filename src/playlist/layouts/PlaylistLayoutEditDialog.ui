@@ -186,6 +186,13 @@
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
+         <widget class="QCheckBox" name="inlineControlsChekbox">
+          <property name="text">
+           <string>Show inline playback controls</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
          <layout class="QHBoxLayout" name="horizontalLayout">
           <property name="bottomMargin">
            <number>0</number>
