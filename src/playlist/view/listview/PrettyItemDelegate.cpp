@@ -113,9 +113,6 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
 
     int rowCount = rowsForItem( index );
 
-    if( LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool() )
-        rowCount++; //add room for extras
-
     height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
     return QSize( 120, height );
 }
@@ -124,7 +121,7 @@ void
 PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
     PlaylistLayout layout = LayoutManager::instance()->activeLayout();
-    
+
     painter->save();
     QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
     painter->translate( option.rect.topLeft() );
@@ -139,22 +136,9 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
     // call paint method based on type
     const int groupMode = getGroupMode(index);
 
-    int rowCount = rowsForItem( index );
-    bool paintInlineControls = LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool();
-
     if ( groupMode == None ||  groupMode == Body || groupMode == Tail )
     {
-
-        int trackHeight = 0;
-        int extraHeight = 0;
         QStyleOptionViewItem trackOption( option );
-        if ( paintInlineControls )
-        {
-            int adjustedRowCount = rowCount + 1;
-            trackHeight = ( option.rect.height() * rowCount ) / adjustedRowCount;
-            extraHeight = option.rect.height() - trackHeight;
-            trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
-        }
 
         if ( groupMode == None )
             paintItem( layout.single(), painter, trackOption, index );
@@ -162,13 +146,6 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
             paintItem( layout.body(), painter, trackOption, index );
         else
             paintItem( layout.body(), painter, trackOption, index );
-        
-        if (paintInlineControls )
-        {
-            QRect extrasRect( 0, trackHeight, option.rect.width(), extraHeight );
-            paintActiveTrackExtras( extrasRect, painter, index );
-
-        }
     }
     else if ( groupMode == Head )
     {
@@ -185,11 +162,6 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         int trackRows = layout.body().rows();
         int totalRows = headRows + trackRows;
 
-        if ( paintInlineControls )
-        {
-            totalRows = totalRows + 1;
-        }
-
         int headHeight = ( headRows * option.rect.height() ) / totalRows - 1;
         int trackHeight = ( trackRows * option.rect.height() ) / totalRows;
 
@@ -198,19 +170,11 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
             headOption.rect = QRect( 0, 0, option.rect.width(), headHeight );
             paintItem( layout.head(), painter, headOption, index, true );
             painter->translate( 0, headHeight );
-        } 
+        }
 
         trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
         paintItem( layout.body(), painter, trackOption, index );
-
-        if ( paintInlineControls )
-        {
-            int extraHeight = option.rect.height() - ( headHeight + trackHeight );
-            QRect extrasRect( 0, trackHeight, option.rect.width(), extraHeight );
-            paintActiveTrackExtras( extrasRect, painter, index );
-
-        }
-    } 
+    }
     else
         QStyledItemDelegate::paint( painter, option, index );
 
@@ -229,7 +193,7 @@ PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& rect )
                                         ( int )MARGIN,
                                         ( int )( -MARGINH ),
                                                     0 );
-    
+
     headerBounds.setHeight( static_cast<int>( 2 * MARGIN + headRows * s_fontHeight ) );
 
     return headerBounds.contains( pt );
@@ -258,7 +222,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
     if ( rowCount == 0 )
         return;
-    
+
     int rowHeight = option.rect.height() / rowCount;
 
     int rowOffsetX = MARGINH;
@@ -266,7 +230,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
     int imageSize = option.rect.height() - MARGIN * 2;
     QRectF nominalImageRect( MARGINH, MARGIN, imageSize, imageSize );
-    
+
     if ( config.showCover() )
     {
         QModelIndex coverIndex = index.model()->index( index.row(), CoverImage );
@@ -292,7 +256,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
     }
 
     int markerOffsetX = nominalImageRect.x();
-    
+
     if( index.data( StateRole ).toInt() & Item::Queued && !ignoreQueueMarker )
     {
         // Check that the queue position is actually valid
@@ -363,7 +327,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
         QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth, rowHeight );
         int currentItemX = itemOffsetX;
-        
+
         //we need to do a quick pass to figure out how much space is left for auto sizing elements
         qreal spareSpace = 1.0;
         int autoSizeElemCount = 0;
@@ -403,7 +367,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
             qreal size;
             if ( element.size() > 0.0001 )
                 size = element.size();
-            else 
+            else
                 size = spacePerAutoSizeElem;
 
             if ( size > 0.0001 )
@@ -472,7 +436,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const
 {
     Q_UNUSED( index );
-    
+
     int x = rect.x();
     int y = rect.y();
     int width = rect.width();
@@ -501,7 +465,7 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
     }
     else
     {
-                              
+
     offset += ( buttonSize + MARGINH );
     painter->drawPixmap( offset, y + 2,
                             The::svgHandler()->renderSvg(
@@ -516,8 +480,8 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
                          "stop_button",
                          buttonSize, buttonSize,
                          "stop_button" ) );
-                         
-    offset += ( buttonSize + MARGINH );                        
+
+    offset += ( buttonSize + MARGINH );
     painter->drawPixmap( offset, y + 2,
                          The::svgHandler()->renderSvg(
                          "next_button",
@@ -535,21 +499,18 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
 
     int sliderWidth = width - ( offset + MARGINH );
 
-    The::svgHandler()->paintCustomSlider( painter, offset, y, sliderWidth, height, trackPercentage, false );  
+    The::svgHandler()->paintCustomSlider( painter, offset, y, sliderWidth, height, trackPercentage, false );
 }
 
 bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index )
 {
-    
+
     //for now, only handle clicks in the currently playing item.
     if ( !index.data( ActiveTrackRole ).toBool() )
         return false;
-    
+
     int rowCount = rowsForItem( index );
     int modifiedRowCount = rowCount;
-
-    if( LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool() )
-        modifiedRowCount++; //add room for extras
 
     int height = itemRect.height();;
 
@@ -567,7 +528,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
          return true;
     }
 
-    offset += ( buttonSize + MARGINH ); 
+    offset += ( buttonSize + MARGINH );
     QRect playRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
     if( playRect.contains( pos ) )
     {
@@ -575,7 +536,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
          return true;
     }
 
-    offset += ( buttonSize + MARGINH ); 
+    offset += ( buttonSize + MARGINH );
     QRect stopRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
     if( stopRect.contains( pos ) )
     {
@@ -584,21 +545,21 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     }
 
 
-    offset += ( buttonSize + MARGINH ); 
+    offset += ( buttonSize + MARGINH );
     QRect nextRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
     if( nextRect.contains( pos ) )
     {
          Amarok::actionCollection()->action( "next" )->trigger();
          return true;
     }
-    
+
     offset += ( buttonSize + MARGINH );
 
     //handle clicks on the slider
 
     int sliderWidth = itemRect.width() - ( offset + MARGINH );
     int knobSize = buttonSize - 2;
-    
+
     QRect sliderActiveRect( offset, extrasOffsetY + 3, sliderWidth, knobSize );
     if( sliderActiveRect.contains( pos ) )
     {
@@ -610,7 +571,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
         return true;
 
     }
-    
+
 
     return false;
 }
@@ -618,7 +579,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
 QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     Q_UNUSED( option );
-    
+
     DEBUG_BLOCK
     const int groupMode = getGroupMode(index);
     return new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
@@ -634,7 +595,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
         return;
 
     QMap<int, QString> changeMap = inlineEditor->changedValues();
-    
+
     debug() << "got inline editor!!";
     debug() << "changed values map: " << changeMap;
 
@@ -654,7 +615,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     foreach( int column, columns )
     {
         QString value = changeMap.value( column );
-        
+
         switch( column )
         {
             case Album:

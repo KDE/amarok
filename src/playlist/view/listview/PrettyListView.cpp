@@ -106,11 +106,6 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
      m_animationTimer->setInterval( 250 );
 
      connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
-     
-     if ( LayoutManager::instance()->activeLayout().inlineControls() )
-         m_animationTimer->start();
-
-     
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -167,7 +162,7 @@ Playlist::PrettyListView::removeSelection()
         //Select the track occupied by the first deleted track. Also move the current item to here as
         //button presses up or down wil otherwise not behave as expected.
         firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
-        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() ); 
+        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() );
         setCurrentIndex( newSelectionIndex );
         selectionModel()->select( newSelectionIndex, QItemSelectionModel::Select );
     }
@@ -399,13 +394,13 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
         //we need to translate the position of the click into something relative to the item that was clicked.
         QRect itemRect = visualRect( index );
         QPoint relPos =  event->pos() - itemRect.topLeft();
-        
+
         if ( m_prettyDelegate->clicked( relPos, itemRect, index ) )
             return;  //click already handled...
 
     }
 
-    
+
     if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) )
     {
         m_mousePressInHeader = true;
@@ -773,10 +768,7 @@ void Playlist::PrettyListView::redrawActive()
 
 void Playlist::PrettyListView::playlistLayoutChanged()
 {
-    if ( LayoutManager::instance()->activeLayout().inlineControls() )
-        m_animationTimer->start();
-    else
-        m_animationTimer->stop();
+    m_animationTimer->stop();
 }
 
 

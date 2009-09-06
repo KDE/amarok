@@ -64,7 +64,7 @@ QStringList LayoutManager::layouts() const
 void LayoutManager::setActiveLayout( const QString &layout )
 {
     m_activeLayout = layout;
-    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );  
+    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );
     emit( activeLayoutChanged() );
 
     //Change the grouping style to that of this layout.
@@ -155,7 +155,6 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
 
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
-        currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
         //For backwards compatability, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
         currentLayout.setGroupBy( layout.toElement().attribute( "group_by", "Album" ) );
@@ -237,7 +236,6 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 
     m_layouts.insert( name, layout );
 
-
     QDomDocument doc( "layouts" );
     QDomElement layouts_element = doc.createElement( "playlist_layouts" );
     QDomElement newLayout = doc.createElement( ("layout" ) );
@@ -254,9 +252,6 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     newLayout.appendChild( createItemElement( doc, "single_track", layout.single() ) );
     newLayout.appendChild( createItemElement( doc, "group_head", layout.head() ) );
     newLayout.appendChild( createItemElement( doc, "group_body", layout.body() ) );
-
-    if( layout.inlineControls() )
-        newLayout.setAttribute( "inline_controls", "true" );
 
     newLayout.setAttribute( "group_by", layout.groupBy() );
 

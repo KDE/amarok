@@ -4,6 +4,7 @@ Amarok ChangeLog
 
 VERSION 2.2-beta2
   CHANGES:
+    * Playlist inline playback controls have been removed.
     * Grouping mode has been merged into the playlist layouts so each layout
       sets its own. The default grouping mode for layout files that do not 
       have this value explicitly set is "Album". Thanks to Tim Bocek 
