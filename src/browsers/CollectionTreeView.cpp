@@ -97,9 +97,9 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
 }
 
-void CollectionTreeView::setModel(QAbstractItemModel * model)
+void CollectionTreeView::setModel( QAbstractItemModel * model )
 {
-    m_treeModel = qobject_cast<CollectionTreeItemModelBase *> ( model );
+    m_treeModel = qobject_cast<CollectionTreeItemModelBase*>( model );
     if( !m_treeModel )
         return;
 
@@ -668,9 +668,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 {
     DEBUG_BLOCK
     if( !items.count() )
-    {
         return;
-    }
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
     QueryMaker *qm = createMetaQueryFromItems( items, true );
@@ -679,9 +677,8 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
-    {
         item = item->parent();
-    }
+
     Amarok::Collection *coll = item->parentCollection();
     CollectionLocation *location = coll->location();
     if( !location->isOrganizable() )
@@ -755,9 +752,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
 
     //copied from organizeTracks. create a method for this somewhere
     if( !items.count() )
-    {
         return;
-    }
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
     QueryMaker *qm = createMetaQueryFromItems( items, true );
@@ -766,27 +761,23 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
 
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
-    {
         item = item->parent();
-    }
+    
     Amarok::Collection *coll = item->parentCollection();
 
     if( !coll->isWritable() )
-    {
         return;
-    }
 
     CollectionLocation *source = coll->location();
 
-        if( !source->isWritable() ) //error
-        {
-            warning() << "We can not write to ze source!!! OMGooses!";
-            delete source;
-            delete qm;
-            return;
-        }
-        source->prepareRemove( qm );
-
+    if( !source->isWritable() ) //error
+    {
+        warning() << "We can not write to ze source!!! OMGooses!";
+        delete source;
+        delete qm;
+        return;
+    }
+    source->prepareRemove( qm );
 }
 
 void
@@ -867,9 +858,8 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                     Q_UNUSED( index )
                     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
                     while( item->isDataItem() )
-                    {
                         item = item->parent();
-                    }
+
                     onlyOneCollection = item->parentCollection() == collection;
                     if( !onlyOneCollection )
                         break;
@@ -1031,9 +1021,7 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const Q
         {
             Amarok::Collection *coll = it.key();
             if( coll && coll->isWritable() && coll != collection )
-            {
                 writableCollections.append( coll );
-            }
             ++it;
         }
         if( !writableCollections.isEmpty() )
@@ -1132,15 +1120,17 @@ void CollectionTreeView::slotEditTracks()
 
 void CollectionTreeView::slotCopyTracks()
 {
-    if( sender() ) {
-        if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
+    if( sender() )
+    {
+        if( QAction * action = dynamic_cast<QAction *>( sender() ) )
             copyTracks( m_currentItems, m_currentCopyDestination[ action ], false );
     }
 }
 
 void CollectionTreeView::slotMoveTracks()
 {
-    if( sender() ) {
+    if( sender() )
+    {
         if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
             copyTracks( m_currentItems, m_currentCopyDestination[ action ], true );
     }
@@ -1148,8 +1138,8 @@ void CollectionTreeView::slotMoveTracks()
 
 void CollectionTreeView::slotRemoveTracks()
 {
-
-    if( sender() ) {
+    if( sender() )
+    {
         if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
         {
             Q_UNUSED( action );
@@ -1160,7 +1150,8 @@ void CollectionTreeView::slotRemoveTracks()
 
 void CollectionTreeView::slotOrganize()
 {
-    if( sender() ) {
+    if( sender() )
+    {
         if( QAction * action = dynamic_cast<QAction *>( sender() ) )
         {
             Q_UNUSED( action )
@@ -1179,9 +1170,7 @@ CollectionTreeView::cleanItemSet( const QSet<CollectionTreeItem*> &items )
         while( tmpItem )
         {
             if( items.contains( tmpItem->parent() ) )
-            {
                 tmpItem = tmpItem->parent();
-            }
             else
             {
                 parents.insert( tmpItem );
