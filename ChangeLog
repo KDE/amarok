@@ -11,6 +11,7 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * The playlist sorting scheme is restored on startup.
     * Fixed compilation of iPod collections without gdk-pixbuf.h. (BR 206347)
     * Audio CDs are ejected properly.
     * Media device eject/disconnect actions render properly when scrolling the 
