@@ -159,7 +159,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
     {
         switch( index.column() )
         {
-            case 0: //playlist
+            case PlaylistColumn: //playlist
                 {
                     food = QVariant::fromValue( playlist );
                     name = playlist->name();
@@ -168,7 +168,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
                     groups = playlist->groups();
                 }
                 break;
-            case 1: //group
+            case GroupColumn: //group
                 {
                     if( !playlist->groups().isEmpty() )
                     {
@@ -177,7 +177,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
                     }
                 }
                 break;
-            case 2: //source
+            case ProviderColumn: //source
                 {
                     PlaylistProvider *provider =
                             The::playlistManager()->getProviderForPlaylist( playlist );
@@ -200,9 +200,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
         case Qt::EditRole: return name;
         case DescriptionRole:
         case Qt::ToolTipRole: return description;
-        case OriginRole: return QVariant(); //TODO return the provider name
         case Qt::DecorationRole: return QVariant( icon );
-        case GroupRole: return groups;
         default: return QVariant();
     }
 }
@@ -287,9 +285,9 @@ PlaylistBrowserNS::UserModel::headerData(int section, Qt::Orientation orientatio
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
         {
-            case 0: return i18n("Name");
-            case 1: return i18n("Group");
-            case 2: return i18n("Source");
+            case PlaylistColumn: return i18n("Name");
+            case GroupColumn: return i18n("Group");
+            case ProviderColumn: return i18n("Source");
             default: return QVariant();
         }
     }
@@ -298,22 +296,23 @@ PlaylistBrowserNS::UserModel::headerData(int section, Qt::Orientation orientatio
 }
 
 bool
-PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVariant & value, int role)
+PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &value,
+                                      int role )
 {
     DEBUG_BLOCK
-    switch( role )
+    switch( idx.column() )
     {
-        case Qt::EditRole:
+        case PlaylistColumn:
         {
-            debug() << "setting name of item " << index.internalId() << " to " << value.toString();
-            Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
+            debug() << "setting name of item " << idx.internalId() << " to " << value.toString();
+            Meta::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setName( value.toString() );
             break;
         }
-        case GroupRole:
+        case GroupColumn:
         {
-            debug() << "changing group of item " << index.internalId() << " to " << value.toString();
-            Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
+            debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
+            Meta::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setGroups( value.toStringList() );
             break;
         }
