@@ -265,7 +265,16 @@ void FileBrowser::Widget::setDir( const KUrl& url )
     else
         newurl = url;
 
-    QString pathstr = newurl.path( KUrl::AddTrailingSlash );
+    QString pathstr;
+    
+    #ifdef Q_OS_WIN32
+        if(newurl.isLocalFile())
+        {
+            pathstr = newurl.toLocalFile( KUrl::AddTrailingSlash );
+        }
+    #else
+        pathstr = newurl.path( KUrl::AddTrailingSlash );
+    #endif
     newurl.setPath( pathstr );
 
     if ( !FileBrowser::isReadable( newurl ) )
