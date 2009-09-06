@@ -54,10 +54,6 @@ class PlaylistsInGroupsProxy :  public QtGroupingProxy
         QModelIndex createNewGroup( const QString &groupName );
 
     signals:
-        void rowsInserted( const QModelIndex&, int, int );
-        void rowsRemoved( const QModelIndex&, int, int );
-        void layoutAboutToBeChanged();
-        void layoutChanged();
         void renameIndex( QModelIndex idx );
 
     private slots:

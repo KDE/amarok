@@ -97,7 +97,10 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
     {
         qDebug() << variant.typeName() << ": "<< variant;
         if( !variant.isNull() )
+        {
             empty = false;
+            break;
+        }
     }
 
     ColumnVariantMap cvm;
@@ -255,8 +258,6 @@ QtGroupingProxy::rowCount( const QModelIndex& index ) const
     }
 
     QModelIndex originalIndex = mapToSource( index );
-    if( m_model->canFetchMore( originalIndex ) )
-        m_model->fetchMore( originalIndex );
     int rowCount = m_model->rowCount( originalIndex );
     //qDebug() << "original item: rowCount == " << rowCount;
     return rowCount;
@@ -430,10 +431,17 @@ QtGroupingProxy::mapFromSource( const QModelIndex &idx ) const
 Qt::ItemFlags
 QtGroupingProxy::flags( const QModelIndex &index ) const
 {
-    if( index.isValid() )
-        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    //TODO: check to see if the grouped column has an edit role, only then allow the
+    //actions leading to setData on the source (edit, drop & drag)
+    if( isGroup( index ) )
+        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
+                 Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled );
 
-    return 0;
+    QModelIndex originalIdx = mapToSource( index );
+    Qt::ItemFlags originalItemFlags = m_model->flags( originalIdx );
+
+    //make the original one drag enabled if it didn't have it yet. We can drag it on a group.
+    return originalItemFlags | Qt::ItemIsDragEnabled;
 }
 
 QVariant
@@ -483,6 +491,9 @@ QtGroupingProxy::modelDataChanged( const QModelIndex& start, const QModelIndex& 
 {
     Q_UNUSED( start )
     Q_UNUSED( end )
+    //HACK: range might not be continues in the proxy. Worse case it will refresh to much
+    //data though.
+    emit dataChanged( mapFromSource( start ), mapFromSource( end ) );
 }
 
 void
@@ -491,6 +502,8 @@ QtGroupingProxy::modelRowsInserted( const QModelIndex& index, int start, int end
     Q_UNUSED( index )
     Q_UNUSED( start )
     Q_UNUSED( end )
+    //TODO: see if new groups have to be created, deleted or adjusted. Try to avoid buildTree()
+    buildTree();
 }
 
 void
@@ -499,6 +512,7 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex& index, int start, int end 
     Q_UNUSED( index )
     Q_UNUSED( start )
     Q_UNUSED( end )
+    buildTree();
 }
 
 void
