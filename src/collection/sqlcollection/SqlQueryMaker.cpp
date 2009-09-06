@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "SqlQueryMaker.h"
 
 #define DEBUG_PREFIX "SqlQueryMaker"
@@ -143,7 +143,7 @@ SqlQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
     // reseting result type without reseting the QM
     if ( d->blocking && d->used )
         return this;
-    
+
     d->resultAsDataPtrs = resultAsDataPtrs;
     return this;
 }
@@ -169,7 +169,7 @@ SqlQueryMaker::run()
         connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
     }
-    else //use it blocking 
+    else //use it blocking
     {
         QString query = this->query();
         QStringList result = runQuery( query );
@@ -194,7 +194,7 @@ SqlQueryMaker::setQueryType( QueryType type )
     // reseting queryType without reseting the QM
     if ( d->blocking && d->used )
         return this;
-    
+
     switch( type ) {
     case QueryMaker::Track:
         //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
@@ -223,7 +223,7 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->queryReturnValues = "artists.name, artists.id";
         }
         return this;
-        
+
     case QueryMaker::Album:
         if( d->queryType == QueryMaker::None )
         {
@@ -852,9 +852,10 @@ SqlQueryMaker::years( const QString &id ) const
 QStringList
 SqlQueryMaker::customData( const QString &id ) const
 {
+    AMAROK_NOTIMPLEMENTED
     Q_UNUSED( id )
     // not implemented yet
-            return QStringList();
+    return QStringList();
 }
 
 QString
