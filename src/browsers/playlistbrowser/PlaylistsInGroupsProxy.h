@@ -14,38 +14,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_PLAYLISTSINGROUPSPROXY_H
-#define AMAROK_PLAYLISTSINGROUPSPROXY_H
+#ifndef PLAYLISTSINGROUPSPROXY_H
+#define PLAYLISTSINGROUPSPROXY_H
 
+#include "QtGroupingProxy.h"
 #include "MetaPlaylistModel.h"
 
 #include <QAction>
-#include <QAbstractProxyModel>
-#include <QModelIndex>
-#include <QMultiHash>
-#include <QStringList>
 
 class QAction;
 
-class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
-                                public PlaylistBrowserNS::MetaPlaylistModel
+class PlaylistsInGroupsProxy :  public QtGroupingProxy
+        , public PlaylistBrowserNS::MetaPlaylistModel
 {
     Q_OBJECT
     public:
         PlaylistsInGroupsProxy( QAbstractItemModel *model );
         ~PlaylistsInGroupsProxy();
 
-        // functions from QAbstractProxyModel
-        QModelIndex index( int, int c = 0, const QModelIndex& parent = QModelIndex() ) const;
-        Qt::ItemFlags flags( const QModelIndex &index ) const;
-        QModelIndex parent( const QModelIndex& ) const;
-        int rowCount( const QModelIndex& idx = QModelIndex() ) const;
-        int columnCount( const QModelIndex& ) const;
-        QModelIndex mapToSource( const QModelIndex& ) const;
-        QModelIndex mapFromSource( const QModelIndex& ) const;
-        QVariant data( const QModelIndex &index, int role ) const;
-        virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
-        virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+//        virtual QList<ColumnVariantMap> belongsTo( const QModelIndex &idx );
+
+        /* QAbstractModel methods */
+        virtual bool removeRows( int row, int count,
+                                 const QModelIndex &parent = QModelIndex() );
         virtual QStringList mimeTypes() const;
         virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
         virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action,
@@ -54,10 +45,12 @@ class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
         virtual Qt::DropActions supportedDropActions() const;
         virtual Qt::DropActions supportedDragActions() const;
 
+        /* MetaPlaylistModel methods */
         QList<QAction *> actionsFor( const QModelIndexList &indexes );
 
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
+        /* PlaylistInGroupsProxy methods */
         QModelIndex createNewGroup( const QString &groupName );
 
     signals:
@@ -68,50 +61,21 @@ class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
         void renameIndex( QModelIndex idx );
 
     private slots:
-        void modelDataChanged( const QModelIndex&, const QModelIndex& );
-        void modelRowsInserted( const QModelIndex&, int, int );
-        void modelRowsAboutToBeRemoved( const QModelIndex&, int, int );
-        void modelRowsRemoved( const QModelIndex&, int, int );
         void slotRename( QModelIndex idx );
-        void buildTree();
 
         void slotDeleteFolder();
         void slotRenameFolder();
-        void slotAddToFolder();
 
     private:
-        bool isGroup( const QModelIndex &index ) const;
-        QModelIndexList mapToSource( const QModelIndexList& list ) const;
         QList<QAction *> createGroupActions();
-        bool isAGroupSelected( const QModelIndexList& list ) const;
         bool isAPlaylistSelected( const QModelIndexList& list ) const;
-        bool changeGroupName( const QString &from, const QString &to );
-
         void deleteFolder( const QModelIndex &groupIdx );
-
-        QAbstractItemModel *m_model;
 
         QAction *m_renameFolderAction;
         QAction *m_deleteFolderAction;
-
-        QMultiHash<quint32, int> m_groupHash;
-        QStringList m_groupNames;
-
-        /** "instuctions" how to create a item in the tree.
-        This is used by parent( QModelIndex )
-        */
-        struct ParentCreate
-        {
-            int parentCreateIndex;
-            int row;
-        };
-        mutable QList<struct ParentCreate> m_parentCreateList;
-        /** @returns index of the "instructions" to recreate the parent. Will create new if it doesn't exist yet.
-        */
-        int indexOfParentCreate( const QModelIndex &parent ) const;
 
         QModelIndexList m_selectedGroups;
         QModelIndexList m_selectedPlaylists;
 };
 
-#endif //AMAROK_PLAYLISTSINGROUPSPROXY_H
+#endif //PLAYLISTSINGROUPSPROXY_H
