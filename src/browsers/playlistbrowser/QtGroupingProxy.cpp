@@ -90,13 +90,20 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
     //qDebug() << __FILE__ << __FUNCTION__;
     QList<ColumnVariantMap> rvmList;
 
-    RoleVariantMap roleVariantMap;
-    roleVariantMap.insert( Qt::DisplayRole, idx.data( Qt::DisplayRole ) );
-//    roleVariantMap.insert( Qt::DecorationRole, idx.data( Qt::DecorationRole ) );
-    roleVariantMap.insert( Qt::DecorationRole, m_folderIcon );
+    //get all the data we have for this index
+    RoleVariantMap roleVariantMap = m_model->itemData( idx );
+    bool empty = true;
+    foreach( const QVariant &variant, roleVariantMap.values() )
+    {
+        qDebug() << variant.typeName() << ": "<< variant;
+        if( !variant.isNull() )
+            empty = false;
+    }
 
     ColumnVariantMap cvm;
-    cvm.insert( 0, roleVariantMap );
+    if( !empty )
+        cvm.insert( 0, roleVariantMap );
+    //insert and empty ColumnVariantMap to put this index in the root
     rvmList << cvm;
     return rvmList;
 }
@@ -120,7 +127,7 @@ QtGroupingProxy::buildTree()
     m_parentCreateList.clear();
 
     int max = m_model->rowCount( m_rootNode );
-    //qDebug() << QString("building tree with %1 leafs.").arg( max );
+    qDebug() << QString("building tree with %1 leafs.").arg( max );
     for( int row = max-1; row >= 0; row-- )
     {
         QModelIndex idx = m_model->index( row, m_groupedColumn, m_rootNode );
@@ -129,32 +136,38 @@ QtGroupingProxy::buildTree()
         //an item can be in multiple groups
         foreach( ColumnVariantMap data, groupData )
         {
-            QString groupName = data[0][Qt::DisplayRole].toString();
-            //qDebug() << QString("index %1 belongs to group %2").arg( row ).arg( groupName );
-
-            foreach( const ColumnVariantMap &cachedData, m_groupMaps )
+            int groupIndex = -1;
+            if( !data.isEmpty() )
             {
-                if( compareColumnVariantMap( data, cachedData ) )
+                QString groupName = data[0][Qt::DisplayRole].toString();
+                qDebug() << QString("index %1 belongs to group %2").arg( row ).arg( groupName );
+
+                foreach( const ColumnVariantMap &cachedData, m_groupMaps )
                 {
-                    data = cachedData;
-                    break;
+                    if( compareColumnVariantMap( data, cachedData ) )
+                    {
+                        data = cachedData;
+                        break;
+                    }
                 }
-            }
 
-            int groupIndex = m_groupMaps.indexOf( data ); //groups are added to the end of the existing list
-            if( groupIndex == -1 && !data.isEmpty() )
-            {
-                m_groupMaps << data;
-                groupIndex = m_groupMaps.count() - 1;
+                groupIndex = m_groupMaps.indexOf( data );
+                //-1 means not found
+                if( groupIndex == -1 )
+                {
+                    //new groups are added to the end of the existing list
+                    m_groupMaps << data;
+                    groupIndex = m_groupMaps.count() - 1;
+                }
             }
 
             m_groupHash.insertMulti( groupIndex, row );
         }
     }
-    //qDebug() << "m_groupHash: ";
+    qDebug() << "m_groupHash: ";
     for( int groupIndex = 0; groupIndex < m_groupMaps.count(); groupIndex++ )
-        //qDebug() << m_groupMaps[groupIndex] << ": " << m_groupHash.values( groupIndex );
-    //qDebug() << m_groupHash.values( -1 );
+        qDebug() << m_groupMaps[groupIndex] << ": " << m_groupHash.values( groupIndex );
+    qDebug() << m_groupHash.values( -1 );
 
     emit layoutChanged();
 }
