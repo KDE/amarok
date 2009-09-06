@@ -50,7 +50,9 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
             setDragDropMode( QAbstractItemView::DragOnly );
             setSelectionMode( QAbstractItemView::ExtendedSelection );
             setSelectionBehavior( QAbstractItemView::SelectItems );
-            //setAnimated( true ); // looks TERRIBLE
+            #if QT_VERSION >= 0x040500
+            setAnimated( true );
+            #endif
             
             setRootIsDecorated( false );
 
