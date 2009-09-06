@@ -65,7 +65,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
    // setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setMouseTracking( true );
     setScreen( -1 );
-    
+
     //make background transparent
     QPalette p = palette();
     QColor c = p.color( QPalette::Base );
@@ -79,10 +79,10 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     Theme::defaultTheme()->setThemeName( "Amarok-Mockup" );
     PERF_LOG( "Access to Plasma::Theme complete" )
     contextScene()->setAppletMimeType( "text/x-amarokappletservicename" );
-  
+
     cont->setPos( 0, 0 );
     cont->updateConstraints();
-    Containment* amarokContainment = qobject_cast<Containment* >( cont );    
+    Containment* amarokContainment = qobject_cast<Containment* >( cont );
     if( amarokContainment )
     {
         amarokContainment->setView( this );
@@ -108,7 +108,7 @@ ContextView::~ContextView()
         while( Plasma::DataEngineManager::self()->engine( engine )->isValid() )
             Plasma::DataEngineManager::self()->unloadEngine( engine );
     }
-     
+
     clear( m_curState );
     //this should be done to prevent a crash on exit
     clearFocus();
@@ -121,7 +121,7 @@ ContextView::clear( const ContextState& state )
     Q_UNUSED( state )
     DEBUG_BLOCK
 
-    QString name = "amarok_homerc";
+    const QString name = "amarok_homerc";
     // now we save the state, remembering the column info etc
     KConfig appletConfig( name );
     // erase previous config
@@ -157,7 +157,6 @@ void ContextView::engineNewTrackPlaying()
     DEBUG_BLOCK
     messageNotify( Current );
     m_firstPlayingState = false;
-   
 }
 
 
@@ -167,7 +166,6 @@ ContextView::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool 
     Q_UNUSED( newMetaData )
     Q_UNUSED( trackChanged )
     DEBUG_BLOCK
-
 
     // if we are listening to a stream, take the new metadata as a "new track"
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -189,7 +187,7 @@ void ContextView::showHome()
 void
 ContextView::loadConfig()
 {
-    contextScene()->clearContainments();    
+    contextScene()->clearContainments();
 
     int numContainments = contextScene()->containments().size();
     KConfig conf( "amarok_homerc", KConfig::FullConfig );
@@ -227,12 +225,10 @@ ContextView::contextScene()
 void
 ContextView::resizeEvent( QResizeEvent* event )
 {
-  //  DEBUG_BLOCK
     Q_UNUSED( event )
-       
-    if ( testAttribute( Qt::WA_PendingResizeEvent ) ) {
+
+    if ( testAttribute( Qt::WA_PendingResizeEvent ) )
         return; // lets not do this more than necessary, shall we?
-    }
 
    updateContainmentsGeometry();
 }
@@ -241,13 +237,8 @@ ContextView::resizeEvent( QResizeEvent* event )
 void
 ContextView::updateContainmentsGeometry()
 {
-  //  DEBUG_BLOCK
-    
-    debug() << "resizing containment to: " << rect();
-
     containment()->resize( rect().size() );
     containment()->setPos( rect().topLeft() );
-
 }
 
 void
