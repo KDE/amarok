@@ -27,7 +27,7 @@
 #include <KInputDialog>
 
 PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
-    : QtGroupingProxy( model, QModelIndex(), 0 )
+    : QtGroupingProxy( model, QModelIndex(), 1 )
     , m_renameFolderAction( 0 )
     , m_deleteFolderAction( 0 )
 {
