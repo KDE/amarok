@@ -25,12 +25,12 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 
-#ifdef GDK_FOUND
 extern "C" {
 #include <glib-object.h> // g_type_init
+#ifdef GDK_FOUND
 #include <gdk-pixbuf/gdk-pixbuf.h>
-}
 #endif
+}
 
 #include "SvgHandler.h"
 
