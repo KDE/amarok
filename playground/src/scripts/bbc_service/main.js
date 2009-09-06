@@ -202,7 +202,7 @@ function populateShows( filter ) {
 /* Fill tree view in Amarok */
 function onPopulate( level, callbackData, filter ) {
   var i = 0;
-  //Amarok.debug( "populating bbc level: " + level );
+  Amarok.debug( "populating bbc level: " + level );
 
   filter = filter.replace( "%20", " " );
   filter = filter.trim();
