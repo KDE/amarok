@@ -531,7 +531,7 @@ Playlist::Model::containsTrack( const Meta::TrackPtr track ) const
 }
 
 int
-Playlist::Model::rowForTrackFirst( const Meta::TrackPtr track ) const
+Playlist::Model::firstRowForTrack( const Meta::TrackPtr track ) const
 {
     int row = 0;
     foreach( Item* i, m_items )
@@ -544,7 +544,7 @@ Playlist::Model::rowForTrackFirst( const Meta::TrackPtr track ) const
 }
 
 int
-Playlist::Model::rowForTrackLast( const Meta::TrackPtr track ) const
+Playlist::Model::lastRowForTrack( const Meta::TrackPtr track ) const
 {
     for( int row = m_items.size() - 1; row >= 0; row-- )
     {

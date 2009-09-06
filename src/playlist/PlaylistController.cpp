@@ -303,7 +303,7 @@ Playlist::Controller::removeDuplicates()
         QList<int> rowsToRemove;
 
         foreach( Meta::TrackPtr duplicateEntry, visibleTracks )
-            rowsToRemove.append( m_topmostModel->rowForTrackLast( duplicateEntry ) );
+            rowsToRemove.append( m_topmostModel->lastRowForTrack( duplicateEntry ) );
 
         m_undoStack->beginMacro( "Remove duplicates" );     // TODO: Internationalize?
         removeRows( rowsToRemove );

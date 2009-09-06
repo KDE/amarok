@@ -162,6 +162,12 @@ ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchF
     return rowFromSource( proxyBase->findPrevious( searchTerm, selectedRow, searchFields ) );
 }
 
+int
+ProxyBase::firstRowForTrack( const Meta::TrackPtr track ) const
+{
+    return rowFromSource( m_belowModel->firstRowForTrack( track ) );
+}
+
 Qt::ItemFlags
 ProxyBase::flags( const QModelIndex &index ) const
 {
@@ -176,6 +182,12 @@ ProxyBase::idAt( const int row ) const
     if( rowExists( row ) )
         return m_belowModel->idAt( rowToSource( row ) );
     return 0;
+}
+
+int
+ProxyBase::lastRowForTrack( const Meta::TrackPtr track ) const
+{
+    return rowFromSource( m_belowModel->lastRowForTrack( track ) );
 }
 
 QMimeData *
@@ -207,18 +219,6 @@ int
 ProxyBase::rowForId( const quint64 id ) const
 {
     return rowFromSource( m_belowModel->rowForId( id ) );
-}
-
-int
-ProxyBase::rowForTrackFirst( const Meta::TrackPtr track ) const
-{
-    return rowFromSource( m_belowModel->rowForTrackFirst( track ) );
-}
-
-int
-ProxyBase::rowForTrackLast( const Meta::TrackPtr track ) const
-{
-    return rowFromSource( m_belowModel->rowForTrackLast( track ) );
 }
 
 int

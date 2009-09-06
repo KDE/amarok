@@ -180,6 +180,14 @@ public:
     virtual int findPrevious( const QString &searchTerm, int selectedRow, int searchFields );
 
     /**
+     * Returns the first row in the current model which matches a given track pointer.
+     * @see lastRowForTrack
+     * @param track the track.
+     * @return the row, -1 if the track pointer is invalid.
+     */
+    virtual int firstRowForTrack( const Meta::TrackPtr track ) const;
+
+    /**
      * Returns the item flags for the given index.
      * @param index the index to retrieve the flags for.
      * @return the item flags.
@@ -192,6 +200,14 @@ public:
      * @return the unique id, or 0 if the row does not exist.
      */
     virtual quint64 idAt( const int row ) const;
+
+    /**
+     * Returns the last row in the current model which matches a given track pointer.
+     * @see firstRowForTrack
+     * @param track the track.
+     * @return the row, -1 if the track pointer is invalid.
+     */
+    virtual int lastRowForTrack( const Meta::TrackPtr track ) const;
 
     /**
      * Returns an object that contains serialized items of data corresponding to the list
@@ -228,20 +244,6 @@ public:
      * @return the row, -1 if the id is invalid.
      */
     virtual int rowForId( const quint64 id ) const;
-
-    /**
-     * Returns the first row in the current model which matches a given track pointer.
-     * @param track the track.
-     * @return the row, -1 if the track pointer is invalid.
-     */
-    virtual int rowForTrackFirst( const Meta::TrackPtr track ) const;
-
-    /**
-     * Returns the last row in the current model which matches a given track pointer.
-     * @param track the track.
-     * @return the row, -1 if the track pointer is invalid.
-     */
-    virtual int rowForTrackLast( const Meta::TrackPtr track ) const;
 
     /**
      * Returns the row number of a track in terms of the bottom model.
