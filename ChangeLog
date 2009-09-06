@@ -4,12 +4,14 @@ Amarok ChangeLog
 
 VERSION 2.2-beta2
   CHANGES:
+    * Playlist inline playback controls have been removed.
     * Grouping mode has been merged into the playlist layouts so each layout
       sets its own. The default grouping mode for layout files that do not 
       have this value explicitly set is "Album". Thanks to Tim Bocek 
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * Fixed compilation of iPod collections without gdk-pixbuf.h. (BR 206347)
     * Audio CDs are ejected properly.
     * Media device eject/disconnect actions render properly when scrolling the 
       collection browser. (BR 204566)

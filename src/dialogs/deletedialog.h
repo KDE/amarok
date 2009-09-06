@@ -15,8 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef _DELETEDIALOG_H
-#define _DELETEDIALOG_H
+#ifndef DELETEDIALOG_H
+#define DELETEDIALOG_H
 
 #include "ui_deletedialogbase.h"
 

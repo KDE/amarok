@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKCOMPOSER_H_
-#define NEPOMUKCOMPOSER_H_
+#ifndef NEPOMUKCOMPOSER_H
+#define NEPOMUKCOMPOSER_H
 
 #include "Meta.h"
 
@@ -39,4 +39,4 @@ class NepomukComposer : public Composer
 };
 
 }
-#endif /*NEPOMUKCOMPOSER_H_*/
+#endif /*NEPOMUKCOMPOSER_H*/

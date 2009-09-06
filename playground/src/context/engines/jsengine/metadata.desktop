@@ -2,6 +2,7 @@
 Name=JS Sample Engine
 Name[bg]=Ядро JS
 Name[csb]=Przëmiarowi mòtór JS
+Name[da]=JS prøvemotor
 Name[de]=JS-Beispielmodul
 Name[es]=Motor de muestras JS
 Name[et]=JS näidismootor
@@ -24,6 +25,7 @@ Name[x-test]=xxJS Sample Enginexx
 Comment=Javascript Sample Engine
 Comment[bg]=Ядро Javascript
 Comment[csb]=Przëmiarowi mòtór Javascript
+Comment[da]=Prøvemotor til Javascript
 Comment[de]=Javscript-Beispielmodul
 Comment[es]=Motor de muestras Javascript
 Comment[et]=Javascripti näidismootor

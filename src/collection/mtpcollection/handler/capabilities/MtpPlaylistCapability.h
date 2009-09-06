@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MTPHANDLER_PLAYLISTCAPABILITY_H
-#define MTPHANDLER_PLAYLISTCAPABILITY_H
+#ifndef MTPPLAYLISTCAPABILITY_H
+#define MTPPLAYLISTCAPABILITY_H
 
 #include "mediadevicecollection_export.h"
 #include "PlaylistCapability.h"

@@ -88,7 +88,7 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
         m_headerHeight = ( height * layout.head().rows() ) / rowCount - 1;
 
     //prevent editor closing when cliking a rating widget or pressing return in a line edit.
-    
+
     setFocusPolicy( Qt::StrongFocus );
 
     createChildWidgets();
@@ -143,11 +143,11 @@ void InlineEditorWidget::createChildWidgets()
         //add a small "spacer" widget to offset the cover a little.
         QWidget * coverSpacer = new QWidget( trackBox );
         coverSpacer->setFixedWidth( MARGINH - MARGIN );
-        
+
         QModelIndex coverIndex = m_index.model()->index( m_index.row(), CoverImage );
         QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
 
-        if ( albumPixmap.width() > albumPixmap.width() )
+        if( albumPixmap.width() > albumPixmap.width() )
             albumPixmap = albumPixmap.scaledToWidth( imageSize );
         else
             albumPixmap = albumPixmap.scaledToHeight( imageSize );
@@ -155,7 +155,7 @@ void InlineEditorWidget::createChildWidgets()
         QModelIndex emblemIndex = m_index.model()->index( m_index.row(), SourceEmblem );
         QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
 
-        if ( !albumPixmap.isNull() )
+        if( !albumPixmap.isNull() )
         {
             QPainter painter( &albumPixmap );
             painter.drawPixmap( QRectF( 0, 0, 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );

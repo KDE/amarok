@@ -15,8 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_SERVICE_ENGINE
-#define AMAROK_SERVICE_ENGINE
+#ifndef AMAROK_INFO_ENGINE
+#define AMAROK_INFO_ENGINE
 
 #include "ContextObserver.h"
 #include "browsers/InfoObserver.h"

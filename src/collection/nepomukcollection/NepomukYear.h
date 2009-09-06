@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKYEAR_H_
-#define NEPOMUKYEAR_H_
+#ifndef NEPOMUKYEAR_H
+#define NEPOMUKYEAR_H
 
 #include "Meta.h"
 
@@ -39,4 +39,4 @@ class NepomukYear : public Year
 };
 
 }
-#endif /*NEPOMUKYEAR_H_*/
+#endif /*NEPOMUKYEAR_H*/

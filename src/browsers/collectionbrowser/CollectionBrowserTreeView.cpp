@@ -64,11 +64,10 @@ CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
     if( hasAction )
     {
         const QRect rect = CollectionTreeItemDelegate::decoratorRect( index );
-        if( rect.isNull() || !rect.contains( event->pos() ) )
-            CollectionTreeView::mousePressEvent( event );
+        if( rect.contains( event->pos() ) )
+            return;
     }
-    else
-        CollectionTreeView::mousePressEvent( event );
+    CollectionTreeView::mousePressEvent( event );
 }
 
 void
@@ -86,16 +85,15 @@ CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
     if( hasAction )
     {
         const QRect rect = CollectionTreeItemDelegate::decoratorRect( index );
-        if( rect.isValid() && rect.contains( event->pos() ) )
+        if( rect.contains( event->pos() ) )
         {
             QAction* action = index.data( CustomRoles::DecoratorRole ).value<QAction*>();
             if( action )
+            {
                 action->trigger();
-            else
-                CollectionTreeView::mouseReleaseEvent( event );
+                return;
+            }
         }
     }
-    else
-        CollectionTreeView::mouseReleaseEvent( event );
-
+    CollectionTreeView::mouseReleaseEvent( event );
 }

@@ -15,8 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#ifndef PLAYLISTLAYOUTCONFIGWIDGET_H
-#define PLAYLISTLAYOUTCONFIGWIDGET_H
+#ifndef LAYOUTCONFIGACTION_H
+#define LAYOUTCONFIGACTION_H
 
 #include <KAction>
 #include <KPushButton>

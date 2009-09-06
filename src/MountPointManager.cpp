@@ -239,7 +239,11 @@ MountPointManager::getAbsolutePath( const int deviceId, const QString& relativeP
     rpath.setPath( relativePath );
     KUrl url;
     getAbsolutePath( deviceId, rpath, url );
-    return url.path();
+    #ifdef Q_OS_WIN32
+        return url.toLocalFile();
+    #else
+        return url.path();
+    #endif
 }
 
 void

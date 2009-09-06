@@ -34,6 +34,7 @@ namespace Meta {
 M3UPlaylist::M3UPlaylist()
     : PlaylistFile()
     , m_url( Meta::newPlaylistFilePath( "m3u" ) )
+    , m_tracksLoaded( false )
 {
     m_name = m_url.fileName();
 }
@@ -41,6 +42,7 @@ M3UPlaylist::M3UPlaylist()
 M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
     : PlaylistFile()
     , m_url( Meta::newPlaylistFilePath( "m3u" ) )
+    , m_tracksLoaded( true )
     , m_tracks( tracks )
 {
     m_name = m_url.fileName();
@@ -49,31 +51,11 @@ M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
 M3UPlaylist::M3UPlaylist( const KUrl &url )
     : PlaylistFile( url )
     , m_url( url )
+    , m_tracksLoaded( false )
 {
     DEBUG_BLOCK
     debug() << "url: " << m_url;
     m_name = m_url.fileName();
-
-    //check if file is local or remote
-    if ( m_url.isLocalFile() )
-    {
-        QFile file( m_url.toLocalFile() );
-        if( !file.open( QIODevice::ReadOnly ) ) {
-            debug() << "cannot open file";
-            return;
-        }
-
-        QString contents( file.readAll() );
-        file.close();
-
-        QTextStream stream;
-        stream.setString( &contents );
-        loadM3u( stream );
-    }
-    else
-    {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
-    }
 }
 
 M3UPlaylist::~M3UPlaylist()
@@ -85,6 +67,36 @@ M3UPlaylist::description() const
 {
     KMimeType::Ptr mimeType = KMimeType::mimeType( "audio/x-mpegurl" );
     return QString( "%1 (%2)").arg( mimeType->name(), "m3u" );
+}
+
+TrackList
+M3UPlaylist::tracks()
+{
+    if( m_tracksLoaded )
+        return m_tracks;
+
+    //check if file is local or remote
+    if ( m_url.isLocalFile() )
+    {
+        QFile file( m_url.toLocalFile() );
+        if( !file.open( QIODevice::ReadOnly ) ) {
+            debug() << "cannot open file";
+            return m_tracks;
+        }
+
+        QString contents( file.readAll() );
+        file.close();
+
+        QTextStream stream;
+        stream.setString( &contents );
+        loadM3u( stream );
+        m_tracksLoaded = true;
+    }
+    else
+    {
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
+    }
+    return m_tracks;
 }
 
 bool
@@ -137,11 +149,6 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                     m_tracks.append( trackPtr );
                 }
             }
-
-            // Ensure that we always have a title: use the URL as fallback
-            //if( b.title().isEmpty() )
-            //    b.setTitle( url );
-
         }
     }
     return true;

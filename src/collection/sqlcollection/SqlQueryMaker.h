@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef AMAROK_COLLECTION_SQLQUERYMAKER_H
 #define AMAROK_COLLECTION_SQLQUERYMAKER_H
 
@@ -78,7 +78,7 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
         // for using it blocking (only for collection internal use)
 
         void setBlocking( bool enabled );
-        
+
         QStringList collectionIds() const;
 
         Meta::DataList data( const QString &id ) const;
@@ -93,9 +93,11 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
     protected:
         virtual QString escape( QString text ) const;
 
-        /** returns a pattern for LIKE operator that will match given text with given options
-         *
+        /**
+         * returns a pattern for LIKE operator that will match given text with given options
          * @param text the text to match (should not be escape()'d, function does it itself)
+         * @param anyBegin wildcard match the beginning of @p text (*text)
+         * @param anyEnd wildcard match the end of @p text (text*)
          */
         virtual QString likeCondition( const QString &text, bool anyBegin, bool anyEnd ) const;
 

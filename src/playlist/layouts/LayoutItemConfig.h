@@ -275,9 +275,6 @@ class PlaylistLayout
          */
         void setDirty( bool dirty );
 
-        bool inlineControls();
-        void setInlineControls( bool inlineControls );
-
         QString groupBy();
         void setGroupBy(const QString &);
 
@@ -287,7 +284,6 @@ class PlaylistLayout
         LayoutItemConfig m_single;
         bool m_isEditable;
         bool m_isDirty;
-        bool m_inlineControls;
 
         QString m_groupBy;
 };

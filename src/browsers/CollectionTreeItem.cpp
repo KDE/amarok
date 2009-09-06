@@ -202,7 +202,7 @@ CollectionTreeItem::data( int role ) const
         {
             static const QString counting = i18n( "Counting" );
             if( m_isCounting )
-                  return counting;
+                return counting;
             if( m_trackCount < 0 )
             {
                 m_isCounting = true;

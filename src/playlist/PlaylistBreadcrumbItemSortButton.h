@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef PLAYLISTBREADCRUMBITEMBUTTON_H
-#define PLAYLISTBREADCRUMBITEMBUTTON_H
+#ifndef PLAYLISTBREADCRUMBITEMSORTBUTTON_H
+#define PLAYLISTBREADCRUMBITEMSORTBUTTON_H
 
 #include "widgets/BreadcrumbItemButton.h"
 
@@ -97,4 +97,4 @@ private:
 
 }   //namespace Playlist
 
-#endif //PLAYLISTBREADCRUMBITEMBUTTON_H
+#endif //PLAYLISTBREADCRUMBITEMSORTBUTTON_H

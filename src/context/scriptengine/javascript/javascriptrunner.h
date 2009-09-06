@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef RUNNERSCRIPTQSCRIPT_H
-#define RUNNERSCRIPTQSCRIPT_H
+#ifndef SCRIPTENGINE_JAVASCRIPTRUNNER_H
+#define SCRIPTENGINE_JAVASCRIPTRUNNER_H
 
 #include <QScriptValue>
 
@@ -54,4 +54,4 @@ private:
 
 K_EXPORT_PLASMA_RUNNERSCRIPTENGINE(qscriptrunner, JavaScriptRunner)
 
-#endif // RUNNERSCRIPTQSCRIPT_H
+#endif // SCRIPTENGINE_JAVASCRIPTRUNNER_H

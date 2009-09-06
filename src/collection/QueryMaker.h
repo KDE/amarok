@@ -54,7 +54,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
                                GreaterThan = 1,
                                LessThan = 2 };
 
-        enum QueryType { None = 0, // Set to faciliate using this in subclasses 
+        enum QueryType { None = 0, // Set to faciliate using this in subclasses
                          Track,
                          Artist,
                          Album,
@@ -152,13 +152,19 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addMatch( const Meta::DataPtr &data ) = 0;
 
         /**
-            Add a filter of type @p value and value @p filter. The querymaker applies this to all queries.
-            @return this
-        */
+         * Add a filter of type @p value and value @p filter. The querymaker applies this to all queries.
+         * @param text the text to match
+         * @param anyBegin wildcard match the beginning of @p text (*text)
+         * @param anyEnd wildcard match the end of @p text (text*)
+         * @return this
+         */
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
         /**
-            Exclude @p filter of type @p value from all queries made by this query maker.
-            @return this
+        * Exclude filter of type @p value and value @p filter. The querymaker applies this to all queries.
+        * @param text the text to match
+        * @param anyBegin wildcard match the beginning of @p text (*text)
+        * @param anyEnd wildcard match the end of @p text (text*)
+        * @return this
         */
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
 
@@ -181,7 +187,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* beginAnd() = 0;
         virtual QueryMaker* beginOr() = 0;
         virtual QueryMaker* endAndOr() = 0;
-                                                     
+
         /**
          * Choose whether the query maker instance should delete itself after the query.
          * By passing true the query maker instance will delete itself after emitting queryDone().

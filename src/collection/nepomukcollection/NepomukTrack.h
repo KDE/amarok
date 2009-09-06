@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKTRACK_H_
-#define NEPOMUKTRACK_H_
+#ifndef NEPOMUKTRACK_H
+#define NEPOMUKTRACK_H
 
 #include "Meta.h"
 
@@ -132,5 +132,4 @@ class NepomukTrack : public Track
 };
 
 }
-#endif /*NEPOMUKTRACK_H_*/
-
+#endif /*NEPOMUKTRACK_H*/

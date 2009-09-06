@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKARTIST_H_
-#define NEPOMUKARTIST_H_
+#ifndef NEPOMUKARTIST_H
+#define NEPOMUKARTIST_H
 
 #include "NepomukCollection.h"
 
@@ -53,4 +53,4 @@ class NepomukArtist : public Artist
 };
 
 }
-#endif /*NEPOMUKARTIST_H_*/
+#endif /*NEPOMUKARTIST_H*/

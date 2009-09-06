@@ -713,11 +713,11 @@ EngineController::eqBandsFreq() const
         {
             if( rx.cap( 0 ).toInt() < 1000 )
             {
-                mBandsFreq << QString( rx.cap( 0 )).append( " Hz" );
+                mBandsFreq << QString( rx.cap( 0 )).append( "\nHz" );
             }
             else
             {
-                mBandsFreq << QString::number( rx.cap( 0 ).toInt()/1000 ).append( " kHz" );
+                mBandsFreq << QString::number( rx.cap( 0 ).toInt()/1000 ).append( "\nkHz" );
             }
         }
     }

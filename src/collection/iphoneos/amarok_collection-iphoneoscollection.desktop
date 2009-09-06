@@ -2,6 +2,7 @@
 Type=Service
 Name=iPhone OS 3.0 Read-only Collection
 Name[bg]=Колекция iPhone OS 3.0 Read-only
+Name[da]=iPhone OS 3.0 samling kun til læsning
 Name[de]=Nur-Lesen-Sammlung für iPhone-OS 3.0
 Name[es]=Colección de solo lectura de iPhone OS 3.0
 Name[et]=iPhone OS 3.0 kirjutuskaitstud kogu
@@ -21,6 +22,7 @@ Name[uk]=Придатна лише для читання збірка iPhone OS 
 Name[x-test]=xxiPhone OS 3.0 Read-only Collectionxx
 Comment=iPhone OS 3.0 Read-only collection plugin for Amarok
 Comment[bg]=Приставка за колекция iPhone OS 3.0 Read-only (Amarok)
+Comment[da]=Plugin til iPhone OS 3.0 samling kun til læsning til Amarok
 Comment[de]=Nur-Lesen-Sammlung für iPhone-OS 3.0 für Amarok
 Comment[es]=Complemento de colección de solo lectura de iPhone OS 3.0 para Amarok
 Comment[et]=Amaroki iPhone OS 3.0 kirjutuskaitstud kogu plugin

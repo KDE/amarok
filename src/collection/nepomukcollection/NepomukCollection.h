@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKCOLLECTION_H_
-#define NEPOMUKCOLLECTION_H_
+#ifndef NEPOMUKCOLLECTION_H
+#define NEPOMUKCOLLECTION_H
 
 #include "Collection.h"
 
@@ -80,4 +80,4 @@ private:
     NepomukRegistry *m_registry;
 };
 
-#endif /*NEPOMUKCOLLECTION_H_*/
+#endif /*NEPOMUKCOLLECTION_H*/

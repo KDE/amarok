@@ -74,6 +74,10 @@ namespace Meta
             /**override showing just the filename */
             virtual void setName( const QString &name ) { m_name = name; }
 
+            /** @returns the number of tracks this playlist contains. -1 if this can not
+              * be determined before loading them all.
+              */
+            virtual int trackCount() const { return -1; }
             /** returns all tracks in this playlist */
             virtual TrackList tracks() = 0;
             virtual void addTrack( Meta::TrackPtr track, int position = -1 )

@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MTPHANDLER_READCAPABILITY_H
-#define MTPHANDLER_READCAPABILITY_H
+#ifndef MTPREADCAPABILITY_H
+#define MTPREADCAPABILITY_H
 
 #include "mediadevicecollection_export.h"
 #include "ReadCapability.h"

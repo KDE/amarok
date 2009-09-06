@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#ifndef PLAYLISTLAYOUTDIALOG_H
-#define PLAYLISTLAYOUTDIALOG_H
+#ifndef LAYOUTEDITDIALOG_H
+#define LAYOUTEDITDIALOG_H
 
 #include <QDialog>
 #include <QPointer>

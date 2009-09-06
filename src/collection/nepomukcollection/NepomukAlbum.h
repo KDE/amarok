@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKALBUM_H_
-#define NEPOMUKALBUM_H_
+#ifndef NEPOMUKALBUM_H
+#define NEPOMUKALBUM_H
 
 #include "NepomukCollection.h"
 
@@ -76,4 +76,4 @@ class NepomukAlbum : public Album
 };
 
 }
-#endif /*NEPOMUKALBUM_H_*/
+#endif /*NEPOMUKALBUM_H*/

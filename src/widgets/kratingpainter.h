@@ -14,10 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef _NEPOMUK_RATING_PAINTER_H_
-#define _NEPOMUK_RATING_PAINTER_H_
-
-//#include "nepomuk_export.h"
+#ifndef KRATINGPAINTER_H
+#define KRATINGPAINTER_H
 
 #include <QtCore/Qt>
 

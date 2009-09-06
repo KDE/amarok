@@ -16,9 +16,11 @@
 
 #include "PlaylistSortWidget.h"
 
+#include "Debug.h"
 #include "PlaylistModelStack.h"
 #include "proxymodels/SortScheme.h"
 
+#include <KConfigGroup>
 #include <KStandardDirs>
 
 namespace Playlist
@@ -57,6 +59,30 @@ SortWidget::SortWidget( QWidget *parent )
     m_layout->addWidget( m_urlButton );
 
     connect( m_addButton, SIGNAL( siblingClicked( QString ) ), this, SLOT( addLevel( QString ) ) );
+
+
+    QString sortPath = Amarok::config( "Playlist Sorting" ).readEntry( "SortPath", QString() );
+    if( !sortPath.isEmpty() )
+    {
+        QStringList levels = sortPath.split( '-' );
+        foreach( QString level, levels )
+        {
+            if( level == QString( "Random" ) )
+            {
+                addLevel( level );
+                break;
+            }
+            QStringList levelParts = level.split( '_' );
+            if( levelParts.count() > 2 )
+                warning() << "Playlist sorting load error: Invalid sort level " << level;
+            if( levelParts.at( 1 ) == QString( "asc" ) )
+                addLevel( levelParts.at( 0 ), Qt::AscendingOrder );
+            else if( levelParts.at( 1 ) == QString( "des" ) )
+                addLevel( levelParts.at( 0 ), Qt::DescendingOrder );
+            else
+                warning() << "Playlist sorting load error: Invalid sort order for level " << level;
+        }
+    }
 }
 
 SortWidget::~SortWidget()
@@ -127,6 +153,9 @@ SortWidget::updateSortScheme()
         scheme.addLevel( SortLevel( category, sortOrder ) );
     }
     ModelStack::instance()->sortProxy()->updateSortMap( scheme );
+
+    KConfigGroup config = Amarok::config( "Playlist Sorting" );
+    config.writeEntry( "SortPath", sortPath() );
 }
 
 QString
