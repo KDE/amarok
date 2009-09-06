@@ -288,24 +288,30 @@ Playlist::Controller::removeRows( QList<int>& rows )
 }
 
 void
-Playlist::Controller::removeDuplicates()
+Playlist::Controller::removeDeadAndDuplicates()
 {
     DEBUG_BLOCK
 
     Meta::TrackList visibleTracks = m_topmostModel->tracks();
     Meta::TrackList uniqueTracks = m_topmostModel->tracks().toSet().toList();
 
-    foreach( Meta::TrackPtr track, uniqueTracks )
-        visibleTracks.removeOne( track );
+    foreach( Meta::TrackPtr unique, uniqueTracks )
+    {
+        // TODO: Check for ability to access remote files as well
+        if( !unique->playableUrl().isLocalFile() || QFile::exists( unique->playableUrl().path() ) )
+            visibleTracks.removeOne( unique );
+    }
+
+    // visibleTracks now contains only tracks which cannot be accessed or are duplicated.
 
     if( !visibleTracks.empty() )
     {
         QList<int> rowsToRemove;
 
-        foreach( Meta::TrackPtr duplicateEntry, visibleTracks )
-            rowsToRemove.append( m_topmostModel->lastRowForTrack( duplicateEntry ) );
+        foreach( Meta::TrackPtr track, visibleTracks )
+            rowsToRemove.append( m_topmostModel->lastRowForTrack( track ) );
 
-        m_undoStack->beginMacro( "Remove duplicates" );     // TODO: Internationalize?
+        m_undoStack->beginMacro( "Remove dead and duplicate entries" );     // TODO: Internationalize?
         removeRows( rowsToRemove );
         m_undoStack->endMacro();
     }

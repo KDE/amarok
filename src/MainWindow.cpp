@@ -636,9 +636,9 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( clear() ) );
     ac->addAction( "playlist_clear", action );
 
-    action = new KAction( i18nc( "remove duplicate tracks from the playlist", "Remove Duplicate &Tracks" ), this );
-    connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( removeDuplicates() ) );
-    ac->addAction( "playlist_remove_duplicates", action );
+    action = new KAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicate && Dead Entries" ), this );
+    connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( removeDeadAndDuplicates() ) );
+    ac->addAction( "playlist_remove_dead_and_duplicates", action );
 
     action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Stream..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
@@ -851,7 +851,7 @@ MainWindow::createMenus()
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_redo") );
     playlistMenu->addSeparator();
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_clear") );
-    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_remove_duplicates") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_remove_dead_and_duplicates") );
     playlistMenu->addSeparator();
 
     QAction *repeat = Amarok::actionCollection()->action("repeat");
