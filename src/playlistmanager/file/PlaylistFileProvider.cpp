@@ -46,13 +46,13 @@ PlaylistFileProvider::PlaylistFileProvider()
 PlaylistFileProvider::~PlaylistFileProvider()
 {
     DEBUG_BLOCK
+    //remove all, well add them again soon
+    loadedPlaylistsConfig().deleteGroup();
     //Write loaded playlists to config file
     debug() << m_playlists.size()  << " Playlists loaded";
     foreach( Meta::PlaylistPtr playlist, m_playlists )
     {
         KUrl url = playlist->retrievableUrl();
-        if( loadedPlaylistsConfig().keyList().contains( url.url() ) )
-            continue;
         debug() << "storing: " << url.url();
 
         loadedPlaylistsConfig().writeEntry( url.url(), playlist->groups() );
