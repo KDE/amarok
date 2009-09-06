@@ -1799,7 +1799,7 @@ IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString
 
     setDatabaseChanged();
 #else
-    Q_UNUSED( ipodtrack );
+    Q_UNUSED( track );
     Q_UNUSED( path );
 #endif
 }
@@ -1824,7 +1824,7 @@ IpodHandler::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &im
 
     libSetCoverArtPath( track, filename ); // will call setDatabaseChanged() if required
 #else
-    Q_UNUSED( ipodtrack );
+    Q_UNUSED( track );
     Q_UNUSED( image );
 #endif
 }
