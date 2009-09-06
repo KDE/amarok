@@ -259,10 +259,13 @@ PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
 }
 
 int
-PlaylistBrowserNS::UserModel::columnCount(const QModelIndex & /*parent*/) const
+PlaylistBrowserNS::UserModel::columnCount(const QModelIndex &parent) const
 {
-    //name, group and source
-    return 3;
+    if( !parent.isValid() ) //for playlists (children of root)
+        return 3; //name, group and source
+
+    //for tracks
+    return 1; //only name
 }
 
 Qt::ItemFlags
