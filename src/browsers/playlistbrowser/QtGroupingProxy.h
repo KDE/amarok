@@ -50,6 +50,8 @@ class QtGroupingProxy : public QAbstractProxyModel
         virtual QModelIndexList mapToSource( const QModelIndexList &list ) const;
         virtual QModelIndex mapFromSource( const QModelIndex &idx ) const;
         virtual QVariant data( const QModelIndex &idx, int role ) const;
+        virtual bool setData( const QModelIndex &index, const QVariant &value,
+                              int role = Qt::EditRole );
         virtual QVariant headerData ( int section, Qt::Orientation orientation,
                                       int role ) const;
         virtual bool canFetchMore( const QModelIndex &parent ) const;
@@ -110,6 +112,7 @@ class QtGroupingProxy : public QAbstractProxyModel
         QModelIndex m_rootNode;
         int m_groupedColumn;
         QVariant m_folderIcon;
+        void dumpGroups();
 };
 
 #endif //GROUPINGPROXY_H

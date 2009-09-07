@@ -167,10 +167,7 @@ QtGroupingProxy::buildTree()
             m_groupHash.insertMulti( groupIndex, row );
         }
     }
-    qDebug() << "m_groupHash: ";
-    for( int groupIndex = 0; groupIndex < m_groupMaps.count(); groupIndex++ )
-        qDebug() << m_groupMaps[groupIndex] << ": " << m_groupHash.values( groupIndex );
-    qDebug() << m_groupHash.values( -1 );
+    dumpGroups();
 
     emit layoutChanged();
 }
@@ -326,6 +323,46 @@ QtGroupingProxy::data( const QModelIndex &index, int role ) const
     }
 
     return mapToSource( index ).data( role );
+}
+
+bool
+QtGroupingProxy::setData( const QModelIndex &idx, const QVariant &value, int role )
+{
+    if( !idx.isValid() )
+        return false;
+
+    //no need to set data to exactly the same value
+    if( idx.data( role ) == value )
+        return false;
+
+    if( isGroup( idx ) )
+    {
+        RoleVariantMap columnData = m_groupMaps[idx.row()][idx.column()];
+        qDebug() << "pre edit group data: ";
+        dumpGroups();
+        columnData.insert( role, value );
+
+        //also set the display role if we are changing the grouped column data or the
+        //first column
+        if( idx.column() == m_groupedColumn || idx.column() == 0 )
+            columnData.insert( Qt::DisplayRole, value );
+
+        m_groupMaps[idx.row()].insert( idx.column(), columnData );
+        qDebug() << "post edit group data: ";
+        dumpGroups();
+        int columnToChange = idx.row() != 0 ? idx.row() : m_groupedColumn;
+        foreach( int originalRow, m_groupHash.values( idx.row() ) )
+        {
+            QModelIndex childIdx = m_model->index( originalRow, columnToChange,
+                                                   m_rootNode );
+            if( childIdx.isValid() )
+                m_model->setData( childIdx, value, role );
+        }
+        emit dataChanged( idx, idx );
+        return true;
+    }
+
+    return setData( mapToSource( idx ), value, role );
 }
 
 bool
@@ -549,4 +586,12 @@ QtGroupingProxy::isAGroupSelected( const QModelIndexList& list ) const
     return false;
 }
 
+void
+QtGroupingProxy::dumpGroups()
+{
+    qDebug() << "m_groupHash: ";
+    for( int groupIndex = 0; groupIndex < m_groupMaps.count(); groupIndex++ )
+        qDebug() << m_groupMaps[groupIndex] << ": " << m_groupHash.values( groupIndex );
+    qDebug() << m_groupHash.values( -1 );
+}
 //#include "GroupingProxy.moc"
