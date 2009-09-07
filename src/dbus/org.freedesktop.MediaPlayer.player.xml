@@ -90,5 +90,13 @@
         <arg type="s" direction="in"/>
     </method>
 
+    <method name="Forward">
+        <arg type="i" direction="in"/>
+    </method>
+
+    <method name="Backward">
+        <arg type="i" direction="in"/>
+    </method>
+
   </interface>
 </node>

@@ -205,6 +205,18 @@ namespace Amarok
     {
         The::svgHandler()->setThemeFile( path );
     }
+
+    void PlayerDBusHandler::Forward( int time )
+    {
+        if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
+            The::engineController()->seek( The::engineController()->trackPosition() * 1000 + time );
+    }
+
+    void PlayerDBusHandler::Backward( int time )
+    {
+        if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
+            The::engineController()->seek( The::engineController()->trackPosition() * 1000 - time );
+    }
         
     QVariantMap PlayerDBusHandler::GetMetadata()
     {
