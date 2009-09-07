@@ -322,7 +322,8 @@ void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX );
+    paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
+    //paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX );
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
