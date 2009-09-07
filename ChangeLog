@@ -10,8 +10,10 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * Do not crash if trying to load a completely empty playlist layout.
+      (BR 204236)
     * Correctly show timecodes, if present, when starting playback of a new track. 
-      (BR 204961 ??)
+      (BR 191185 ??)
     * The playlist sorting scheme is restored on startup.
     * Fixed compilation of iPod collections without gdk-pixbuf.h. (BR 206347)
     * Audio CDs are ejected properly.

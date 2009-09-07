@@ -185,6 +185,10 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         int trackRows = layout.body().rows();
         int totalRows = headRows + trackRows;
 
+        //if this layout is completely empty, bail out or we will get in divide-by-zero trouble
+        if ( totalRows == 0 )
+            return;
+
         if ( paintInlineControls )
         {
             totalRows = totalRows + 1;
