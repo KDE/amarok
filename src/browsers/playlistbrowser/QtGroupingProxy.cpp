@@ -338,18 +338,15 @@ QtGroupingProxy::setData( const QModelIndex &idx, const QVariant &value, int rol
     if( isGroup( idx ) )
     {
         RoleVariantMap columnData = m_groupMaps[idx.row()][idx.column()];
-        qDebug() << "pre edit group data: ";
-        dumpGroups();
-        columnData.insert( role, value );
 
+        columnData.insert( role, value );
         //also set the display role if we are changing the grouped column data or the
         //first column
         if( idx.column() == m_groupedColumn || idx.column() == 0 )
             columnData.insert( Qt::DisplayRole, value );
-
+        //and make sure it's stored in the map
         m_groupMaps[idx.row()].insert( idx.column(), columnData );
-        qDebug() << "post edit group data: ";
-        dumpGroups();
+
         int columnToChange = idx.row() != 0 ? idx.row() : m_groupedColumn;
         foreach( int originalRow, m_groupHash.values( idx.row() ) )
         {
@@ -362,7 +359,7 @@ QtGroupingProxy::setData( const QModelIndex &idx, const QVariant &value, int rol
         return true;
     }
 
-    return setData( mapToSource( idx ), value, role );
+    return m_model->setData( mapToSource( idx ), value, role );
 }
 
 bool
