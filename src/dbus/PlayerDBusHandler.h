@@ -96,6 +96,9 @@ namespace Amarok
 
             void LoadThemeFile( const QString &path ) const;
 
+            void Forward( int time );
+            void Backward( int time );
+
         signals:
             void CapsChange( int );
             void TrackChange( QVariantMap );
