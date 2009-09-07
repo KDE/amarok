@@ -675,6 +675,7 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
     if( podcastReader->error() != QXmlStreamReader::NoError )
     {
         debug() << podcastReader->errorString();
+        The::statusBar()->longMessage( podcastReader->errorString(), StatusBar::Error );
     }
     else
     {
