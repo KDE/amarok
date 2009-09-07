@@ -14,6 +14,7 @@ Name[sv]=Datagränssnitt för information
 Name[tr]=Bilgi Veri Motoru
 Name[uk]=Рушій інформаційних даних
 Name[x-test]=xxInfo Data Enginexx
+Name[zh_CN]=信息数据引擎
 
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service

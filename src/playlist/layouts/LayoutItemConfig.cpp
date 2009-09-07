@@ -13,13 +13,13 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
-
+ 
 #include "LayoutItemConfig.h"
 
-using namespace Playlist;
+namespace Playlist {
 
-LayoutItemConfigRowElement::LayoutItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
-                                                        const QString &prefix , const QString &suffix )
+    LayoutItemConfigRowElement::LayoutItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
+                                                            const QString &prefix , const QString &suffix )
     : m_value( value )
     , m_size( size )
     , m_bold( bold )
@@ -139,6 +139,7 @@ void Playlist::LayoutItemConfig::setActiveIndicatorRow( int row )
 Playlist::PlaylistLayout::PlaylistLayout()
     : m_isEditable(false)
     , m_isDirty(false)
+    , m_inlineControls(false)
 {}
 
 LayoutItemConfig Playlist::PlaylistLayout::head() const
@@ -191,6 +192,15 @@ void Playlist::PlaylistLayout::setDirty( bool dirty )
     m_isDirty = dirty;
 }
 
+bool Playlist::PlaylistLayout::inlineControls()
+{
+    return m_inlineControls;
+}
+void Playlist::PlaylistLayout::setInlineControls( bool inlineControls )
+{
+    m_inlineControls = inlineControls;
+}
+
 QString Playlist::PlaylistLayout::groupBy()
 {
     return m_groupBy;
@@ -200,3 +210,12 @@ void Playlist::PlaylistLayout::setGroupBy(const QString& groupBy)
 {
     m_groupBy = groupBy;
 }
+
+}
+
+
+
+
+
+
+

@@ -23,6 +23,7 @@ Name[sv]=Ljudcd-samling
 Name[tr]=AudioCd Koleksiyonu
 Name[uk]=Збірка звукових КД
 Name[x-test]=xxAudioCd Collectionxx
+Name[zh_CN]=音频 CD 收藏
 Comment=AudioCd collection plugin for Amarok
 Comment[bg]=Приставка за колекция с компактдискове (Amarok)
 Comment[csb]=Wtëkôcz kòlekcëji AudioCd dlô Amaroka
@@ -46,6 +47,7 @@ Comment[sv]=Insticksprogram med ljudcd-samling för Amarok
 Comment[tr]=Amarok için AudioCd koleksiyonu eklentisi
 Comment[uk]=Додаток збірки звукових КД для Amarok
 Comment[x-test]=xxAudioCd collection plugin for Amarokxx
+Comment[zh_CN]=Amarok 的音频 CD 收藏插件
 
 ServiceTypes=Amarok/Plugin
 

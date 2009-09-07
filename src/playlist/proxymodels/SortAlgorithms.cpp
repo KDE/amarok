@@ -56,6 +56,18 @@ multilevelLessThan::operator()( int rowA, int rowB)
                 verdict = verdict ? 0 : 1;
             break;
         }
+        else
+        {
+            if( m_scheme.level( i ).order() == Qt::DescendingOrder )
+                verdict = verdict ? 0 : 1;
+        }
+    }
+    if( verdict == 2 )
+    {
+        if( m_scheme.level( m_scheme.length() - 1 ).order() == Qt::DescendingOrder )
+            verdict = 1;
+        else
+            verdict = 0;
     }
     return static_cast<bool>( verdict );
 }

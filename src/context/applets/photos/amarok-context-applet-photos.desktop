@@ -21,6 +21,7 @@ Name[sv]=Foton
 Name[tr]=Fotoğraflar
 Name[uk]=Фотографії
 Name[x-test]=xxPhotosxx
+Name[zh_CN]=照片
 Type=Service
 ServiceTypes=Plasma/Applet
 X-KDE-Library=amarok_context_applet_photos

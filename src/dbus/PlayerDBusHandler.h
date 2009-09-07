@@ -74,6 +74,7 @@ namespace Amarok
 
             void Pause();
             void Play();
+            void PlayPause();
             void Stop();
             void Prev();
             void Next();
@@ -95,6 +96,9 @@ namespace Amarok
             void ShowOSD() const;
 
             void LoadThemeFile( const QString &path ) const;
+
+            void Forward( int time );
+            void Backward( int time );
 
         signals:
             void CapsChange( int );

@@ -51,6 +51,7 @@ void ScriptableServiceCollection::donePopulating(int parentId)
     DEBUG_BLOCK
     Q_UNUSED( parentId );
     emit updateComplete();
+    collectionUpdated();
     //emitUpdated();
 }
 

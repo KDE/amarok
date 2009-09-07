@@ -48,7 +48,7 @@ SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     , m_removeTrackAction( 0 )
 {
     checkTables();
-    m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( "",
+    m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( QString(),
             Meta::SqlPlaylistGroupPtr(), this ) );
 }
 

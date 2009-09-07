@@ -73,7 +73,7 @@ QStringList
 Meta::SqlPlaylist::groups()
 {
     QStringList groups;
-    if( m_parent )
+    if( m_parent && !m_parent->name().isNull() )
         groups << m_parent->name();
     return groups;
 }

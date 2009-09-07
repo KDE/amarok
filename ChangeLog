@@ -3,14 +3,23 @@ Amarok ChangeLog
 (C) 2002-2009 the Amarok authors.
 
 VERSION 2.2-beta2
+  FEATURES:
+    * Added DBus methods Forward and Backward for relative seeking (BR 206028)
+      and PlayPause for toggling pause state (patches by Michael Zanetti
+      <michael_zanetti@gmx.net>).
+
   CHANGES:
-    * Playlist inline playback controls have been removed.
     * Grouping mode has been merged into the playlist layouts so each layout
       sets its own. The default grouping mode for layout files that do not 
       have this value explicitly set is "Album". Thanks to Tim Bocek 
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * Do not crash if trying to load a completely empty playlist layout.
+      (BR 204236)
+    * Correctly show timecodes, if present, when starting playback of a new track. 
+      (BR 191185 ??)
+    * The playlist sorting scheme is restored on startup.
     * Fixed compilation of iPod collections without gdk-pixbuf.h. (BR 206347)
     * Audio CDs are ejected properly.
     * Media device eject/disconnect actions render properly when scrolling the 

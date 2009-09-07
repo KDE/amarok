@@ -97,7 +97,10 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
     {
         qDebug() << variant.typeName() << ": "<< variant;
         if( !variant.isNull() )
+        {
             empty = false;
+            break;
+        }
     }
 
     ColumnVariantMap cvm;
@@ -164,10 +167,7 @@ QtGroupingProxy::buildTree()
             m_groupHash.insertMulti( groupIndex, row );
         }
     }
-    qDebug() << "m_groupHash: ";
-    for( int groupIndex = 0; groupIndex < m_groupMaps.count(); groupIndex++ )
-        qDebug() << m_groupMaps[groupIndex] << ": " << m_groupHash.values( groupIndex );
-    qDebug() << m_groupHash.values( -1 );
+    dumpGroups();
 
     emit layoutChanged();
 }
@@ -255,8 +255,6 @@ QtGroupingProxy::rowCount( const QModelIndex& index ) const
     }
 
     QModelIndex originalIndex = mapToSource( index );
-    if( m_model->canFetchMore( originalIndex ) )
-        m_model->fetchMore( originalIndex );
     int rowCount = m_model->rowCount( originalIndex );
     //qDebug() << "original item: rowCount == " << rowCount;
     return rowCount;
@@ -325,6 +323,43 @@ QtGroupingProxy::data( const QModelIndex &index, int role ) const
     }
 
     return mapToSource( index ).data( role );
+}
+
+bool
+QtGroupingProxy::setData( const QModelIndex &idx, const QVariant &value, int role )
+{
+    if( !idx.isValid() )
+        return false;
+
+    //no need to set data to exactly the same value
+    if( idx.data( role ) == value )
+        return false;
+
+    if( isGroup( idx ) )
+    {
+        RoleVariantMap columnData = m_groupMaps[idx.row()][idx.column()];
+
+        columnData.insert( role, value );
+        //also set the display role if we are changing the grouped column data or the
+        //first column
+        if( idx.column() == m_groupedColumn || idx.column() == 0 )
+            columnData.insert( Qt::DisplayRole, value );
+        //and make sure it's stored in the map
+        m_groupMaps[idx.row()].insert( idx.column(), columnData );
+
+        int columnToChange = idx.row() != 0 ? idx.row() : m_groupedColumn;
+        foreach( int originalRow, m_groupHash.values( idx.row() ) )
+        {
+            QModelIndex childIdx = m_model->index( originalRow, columnToChange,
+                                                   m_rootNode );
+            if( childIdx.isValid() )
+                m_model->setData( childIdx, value, role );
+        }
+        emit dataChanged( idx, idx );
+        return true;
+    }
+
+    return m_model->setData( mapToSource( idx ), value, role );
 }
 
 bool
@@ -430,10 +465,17 @@ QtGroupingProxy::mapFromSource( const QModelIndex &idx ) const
 Qt::ItemFlags
 QtGroupingProxy::flags( const QModelIndex &index ) const
 {
-    if( index.isValid() )
-        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    //TODO: check to see if the grouped column has an edit role, only then allow the
+    //actions leading to setData on the source (edit, drop & drag)
+    if( isGroup( index ) )
+        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
+                 Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled );
 
-    return 0;
+    QModelIndex originalIdx = mapToSource( index );
+    Qt::ItemFlags originalItemFlags = m_model->flags( originalIdx );
+
+    //make the original one drag enabled if it didn't have it yet. We can drag it on a group.
+    return originalItemFlags | Qt::ItemIsDragEnabled;
 }
 
 QVariant
@@ -483,6 +525,9 @@ QtGroupingProxy::modelDataChanged( const QModelIndex& start, const QModelIndex& 
 {
     Q_UNUSED( start )
     Q_UNUSED( end )
+    //HACK: range might not be continues in the proxy. Worse case it will refresh to much
+    //data though.
+    emit dataChanged( mapFromSource( start ), mapFromSource( end ) );
 }
 
 void
@@ -491,6 +536,8 @@ QtGroupingProxy::modelRowsInserted( const QModelIndex& index, int start, int end
     Q_UNUSED( index )
     Q_UNUSED( start )
     Q_UNUSED( end )
+    //TODO: see if new groups have to be created, deleted or adjusted. Try to avoid buildTree()
+    buildTree();
 }
 
 void
@@ -499,6 +546,7 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex& index, int start, int end 
     Q_UNUSED( index )
     Q_UNUSED( start )
     Q_UNUSED( end )
+    buildTree();
 }
 
 void
@@ -535,4 +583,12 @@ QtGroupingProxy::isAGroupSelected( const QModelIndexList& list ) const
     return false;
 }
 
+void
+QtGroupingProxy::dumpGroups()
+{
+    qDebug() << "m_groupHash: ";
+    for( int groupIndex = 0; groupIndex < m_groupMaps.count(); groupIndex++ )
+        qDebug() << m_groupMaps[groupIndex] << ": " << m_groupHash.values( groupIndex );
+    qDebug() << m_groupHash.values( -1 );
+}
 //#include "GroupingProxy.moc"

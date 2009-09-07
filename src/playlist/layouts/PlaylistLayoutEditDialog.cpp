@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
-
+ 
 #include "PlaylistLayoutEditDialog.h"
 
 #include "Debug.h"
@@ -38,7 +38,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     tokenPool->addToken( new Token( i18nc( "'Artist' playlist column name and token for playlist layouts", columnNames[Artist] ), iconNames[Artist], Artist ) );
     tokenPool->addToken( new Token( i18nc( "'Bitrate' playlist column name and token for playlist layouts", columnNames[Bitrate] ), iconNames[Bitrate], Bitrate ) );
     tokenPool->addToken( new Token( i18nc( "'Comment' playlist column name and token for playlist layouts", columnNames[Comment] ), iconNames[Comment], Comment ) );
-    tokenPool->addToken( new Token( i18nc( "'Composer' playlist column name and token for playlist layouts", columnNames[Composer] ), iconNames[Composer], Composer ) );
+    tokenPool->addToken( new Token(  i18nc( "'Composer' playlist column name and token for playlist layouts", columnNames[Composer] ), iconNames[Composer], Composer ) );
     tokenPool->addToken( new Token( i18nc( "'Directory' playlist column name and token for playlist layouts", columnNames[Directory] ), iconNames[Directory], Directory ) );
     tokenPool->addToken( new Token( i18nc( "'Disc number' playlist column name and token for playlist layouts", columnNames[DiscNumber] ), iconNames[DiscNumber], DiscNumber ) );
     tokenPool->addToken( new Token( i18nc( "'Divider' token for playlist layouts representing a small visual divider", columnNames[Divider] ), iconNames[Divider], Divider ) );
@@ -58,7 +58,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     tokenPool->addToken( new Token( i18nc( "'Title' (track name) playlist column name and token for playlist layouts", columnNames[Title] ), iconNames[Title], Title ) );
     tokenPool->addToken( new Token( i18nc( "'Title (with track number)' (track name prefixed with the track number) playlist column name and token for playlist layouts", columnNames[TitleWithTrackNum] ), iconNames[TitleWithTrackNum], TitleWithTrackNum ) );
     tokenPool->addToken( new Token( i18nc( "'Track number' playlist column name and token for playlist layouts", columnNames[TrackNumber] ), iconNames[TrackNumber], TrackNumber ) );
-    tokenPool->addToken( new Token( i18nc( "'Type' (file format) playlist column name and token for playlist layouts",  columnNames[Type] ), iconNames[Type], Type ) );
+    tokenPool->addToken( new Token(i18nc( "'Type' (file format) playlist column name and token for playlist layouts",  columnNames[Type] ), iconNames[Type], Type ) );
     tokenPool->addToken( new Token( i18nc( "'Year' playlist column name and token for playlist layouts", columnNames[Year] ), iconNames[Year], Year ) );
 
     m_firstActiveLayout = LayoutManager::instance()->activeLayoutName();
@@ -109,12 +109,12 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     newLayoutButton->setIcon( newIcon );
     newLayoutButton->setToolTip( i18n( "New playlist layout" ) );
     connect( newLayoutButton, SIGNAL( clicked() ), this, SLOT( newLayout() ) );
-
+    
     const KIcon copyIcon( "edit-copy" );
     copyLayoutButton->setIcon( copyIcon );
     copyLayoutButton->setToolTip( i18n( "Copy playlist layout" ) );
     connect( copyLayoutButton, SIGNAL( clicked() ), this, SLOT( copyLayout() ) );
-
+    
     const KIcon deleteIcon( "edit-delete" );
     deleteLayoutButton->setIcon( deleteIcon );
     deleteLayoutButton->setToolTip( i18n( "Delete playlist layout" ) );
@@ -131,6 +131,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     connect( m_headEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( m_bodyEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( m_singleEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
+    connect( inlineControlsChekbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
     connect( groupByComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setLayoutChanged() ) );
 }
 
@@ -186,12 +187,12 @@ void PlaylistLayoutEditDialog::copyLayout()
     LayoutItemConfig headConfig = m_headEdit->config();
     LayoutItemConfig bodyConfig = m_bodyEdit->config();
     LayoutItemConfig singleConfig = m_singleEdit->config();
-
-    bool ok;
+   
+    bool ok; 
     QString layoutName = KInputDialog::getText( i18n( "Choose a name for the new playlist layout" ),
                     i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':",
                     layoutListWidget->currentItem()->text() ),QString(), &ok, this );
-    if( !ok)
+    if( !ok) 
 	return;
     if( layoutName.isEmpty() )
     {
@@ -213,6 +214,7 @@ void PlaylistLayoutEditDialog::copyLayout()
     layout.setBody( bodyConfig );
     layout.setSingle( singleConfig );
 
+    layout.setInlineControls( inlineControlsChekbox->isChecked() );
     layout.setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
 
     LayoutManager::instance()->addUserLayout( layoutName, layout );
@@ -237,7 +239,7 @@ void PlaylistLayoutEditDialog::deleteLayout()   //SLOT
 void PlaylistLayoutEditDialog::renameLayout()
 {
     PlaylistLayout layout = m_layoutsMap->value( layoutListWidget->currentItem()->text() );
-
+    
     QString layoutName;
     while( layoutName.isEmpty() || m_layoutsMap->keys().contains( layoutName ) )
     {
@@ -249,7 +251,7 @@ void PlaylistLayoutEditDialog::renameLayout()
         {
             //Cancelled so just return
             return;
-        }
+        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
         if( LayoutManager::instance()->isDefaultLayout( layoutName ) )
         {
             KMessageBox::sorry( this, i18n( "Cannot rename one of the default layouts." ), i18n( "Layout name error" ) );
@@ -284,6 +286,7 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
         m_headEdit->readLayout( layout.head() );
         m_bodyEdit->readLayout( layout.body() );
         m_singleEdit->readLayout( layout.single() );
+        inlineControlsChekbox->setChecked( layout.inlineControls() );
         groupByComboBox->setCurrentIndex( groupByComboBox->findData( layout.groupBy() ) );
         setEnabledTabs();
     }
@@ -301,10 +304,11 @@ void PlaylistLayoutEditDialog::preview()
 
     LayoutItemConfig headConfig = m_headEdit->config() ;
     headConfig.setActiveIndicatorRow( -1 );
-
+    
     layout.setHead( headConfig );
     layout.setBody( m_bodyEdit->config() );
     layout.setSingle( m_singleEdit->config() );
+    layout.setInlineControls( inlineControlsChekbox->isChecked() );
     layout.setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
 
     LayoutManager::instance()->setPreviewLayout( layout );
@@ -345,8 +349,8 @@ void PlaylistLayoutEditDialog::toggleUpDownButtons()
         moveDownButton->setEnabled( 1 );
         moveUpButton->setEnabled( 1 );
     }
-
-
+        
+    
 }
 
 void PlaylistLayoutEditDialog::apply()  //SLOT
@@ -365,12 +369,14 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
                 i.value().setHead( LayoutManager::instance()->layout( i.key() ).head() );
                 i.value().setBody( LayoutManager::instance()->layout( i.key() ).body() );
                 i.value().setSingle( LayoutManager::instance()->layout( i.key() ).single() );
+                i.value().setInlineControls( LayoutManager::instance()->layout( i.key() ).inlineControls() );
                 i.value().setGroupBy( LayoutManager::instance()->layout( i.key() ).groupBy() );
                 i.value().setDirty( false );
                 if ( m_layoutName == i.key() )
                     setLayout( i.key() );
                 return;
             }
+            i.value().setInlineControls( inlineControlsChekbox->isChecked() );
             i.value().setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
             i.value().setDirty( false );
             LayoutManager::instance()->addUserLayout( i.key(), i.value() );
@@ -418,7 +424,7 @@ void PlaylistLayoutEditDialog::moveDown()
 
 void PlaylistLayoutEditDialog::setEnabledTabs()
 {
-    //Enable or disable tabs depending on whether grouping is allowed.
+    //Enable or disable tabs depending on whether grouping is allowed. 
     //An empty QString is used to specify no grouping
     if ( !groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString().isEmpty() )
     {
@@ -460,9 +466,10 @@ void PlaylistLayoutEditDialog::setLayoutChanged()
     (*m_layoutsMap)[m_layoutName].setHead( m_headEdit->config() );
     (*m_layoutsMap)[m_layoutName].setBody( m_bodyEdit->config() );
     (*m_layoutsMap)[m_layoutName].setSingle( m_singleEdit->config() );
-
+   
+    (*m_layoutsMap)[m_layoutName].setInlineControls( inlineControlsChekbox->isChecked() );
     (*m_layoutsMap)[m_layoutName].setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
-    (*m_layoutsMap)[m_layoutName].setDirty( true );
+    (*m_layoutsMap)[m_layoutName].setDirty( true );  
 }
 
 #include "PlaylistLayoutEditDialog.moc"

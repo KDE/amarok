@@ -25,6 +25,7 @@ Name[tr]=Video Klibi
 Name[uk]=Відеокліп
 Name[wa]=Clip videyo
 Name[x-test]=xxVideoclipxx
+Name[zh_CN]=视频剪辑
 Name[zh_TW]=影片剪輯
 Type=Service
 ServiceTypes=Plasma/Applet

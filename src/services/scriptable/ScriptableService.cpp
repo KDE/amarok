@@ -221,6 +221,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
 
 int ScriptableService::addTrack( ScriptableServiceTrack * track )
 {
+    DEBUG_BLOCK
 
     int artistId = -1;
     int genreId = -1;

@@ -40,7 +40,6 @@ struct ScriptableServiceQueryMaker::Private {
     QString lastFilter;
 };
 
-
 ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name )
  : DynamicServiceQueryMaker()
  , d( new Private )
@@ -53,7 +52,6 @@ ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceColle
 
     reset();
 }
-
 
 ScriptableServiceQueryMaker::~ScriptableServiceQueryMaker()
 {
@@ -115,7 +113,6 @@ void ScriptableServiceQueryMaker::run()
     }
 
 }
-
 
 void ScriptableServiceQueryMaker::abortQuery()
 {
@@ -400,20 +397,6 @@ void ScriptableServiceQueryMaker::slotScriptComplete()
        debug() << "there are " << albums.count() << " albums";
        handleResult( albums );
     }
-    else if ( d->type == Private::ALBUM )
-    {
-       AlbumList albums;
-       if ( d->parentId != -1 )
-       {
-           ArtistMatcher artistMatcher( m_collection->artistById( d->parentId ) );
-           albums = artistMatcher.matchAlbums( m_collection );
-       }
-       else
-           albums = m_collection->albumMap().values();
-
-       debug() << "there are " << albums.count() << " albums";
-       handleResult( albums );
-    }
     else if ( d->type == Private::TRACK )
     {
         TrackList tracks;
@@ -425,7 +408,9 @@ void ScriptableServiceQueryMaker::slotScriptComplete()
                 AlbumMatcher albumMatcher( album );
                 tracks = albumMatcher.match( m_collection );
             }
-        } 
+        }
+        else
+                tracks = m_collection->trackMap().values();
         debug() << "there are " << tracks.count() << " tracks";
         handleResult( tracks );
     }
@@ -486,15 +471,4 @@ QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::DataPtr & data )
     return this;
 }
 
-
-
 #include "ScriptableServiceQueryMaker.moc"
-
-
-
-
-
-
-
-
-
