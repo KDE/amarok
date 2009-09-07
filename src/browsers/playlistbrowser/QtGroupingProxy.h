@@ -58,6 +58,9 @@ class QtGroupingProxy : public QAbstractProxyModel
         virtual void fetchMore( const QModelIndex &parent );
         virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
+        /* QtGroupingProxy methods */
+        virtual QModelIndex addEmptyGroup( const ColumnVariantMap &data );
+
     signals:
         void rowsInserted( const QModelIndex&, int, int );
         void rowsRemoved( const QModelIndex&, int, int );
