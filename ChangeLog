@@ -3,6 +3,11 @@ Amarok ChangeLog
 (C) 2002-2009 the Amarok authors.
 
 VERSION 2.2-beta2
+  FEATURES:
+    * Added DBus methods Forward and Backward for relative seeking (BR 206028)
+      and PlayPause for toggling pause state (patches by Michael Zanetti
+      <michael_zanetti@gmx.net>).
+
   CHANGES:
     * Grouping mode has been merged into the playlist layouts so each layout
       sets its own. The default grouping mode for layout files that do not 
