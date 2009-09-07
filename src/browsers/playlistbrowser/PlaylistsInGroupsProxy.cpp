@@ -295,13 +295,6 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
     }
     else if( groupSelected )
     {
-        QModelIndexList originalList;
-        originalList << m_model->index( 0, 0, QModelIndex() );
-        originalList << m_model->index( 1, 0, QModelIndex() );
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
-        if( mpm == 0 )
-            return actions;
-        actions << mpm->actionsFor( originalList );
         actions << createGroupActions();
         foreach( const QModelIndex &index, list )
         {
