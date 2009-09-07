@@ -120,7 +120,7 @@ namespace Amarok
             TimeSlider( QWidget *parent );
 
             void setSliderValue( int value );
-            void drawTriangle( const QString &name, int x );
+            void drawTriangle( const QString &name, int miliSeconds );
             void clearTriangles();
 
         public slots:
