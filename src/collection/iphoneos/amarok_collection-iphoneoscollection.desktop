@@ -20,6 +20,7 @@ Name[sv]=iPhone OS 3.0 skrivskyddad samling
 Name[tr]=iPhone OS 3.0 Salt Okunur Koleksiyonu
 Name[uk]=Придатна лише для читання збірка iPhone OS 3.0
 Name[x-test]=xxiPhone OS 3.0 Read-only Collectionxx
+Name[zh_CN]=iPhone OS 3.0 只读收藏
 Comment=iPhone OS 3.0 Read-only collection plugin for Amarok
 Comment[bg]=Приставка за колекция iPhone OS 3.0 Read-only (Amarok)
 Comment[da]=Plugin til iPhone OS 3.0 samling kun til læsning til Amarok
@@ -39,6 +40,7 @@ Comment[sv]=Insticksprogram med iPhone OS 3.0 skrivskyddad samling för Amarok
 Comment[tr]=Amarok için iPhone OS 3.0 salt okunur koleksiyon eklentisi
 Comment[uk]=Додаток збірки iPhone OS 3.0 для Amarok (лише читання)
 Comment[x-test]=xxiPhone OS 3.0 Read-only collection plugin for Amarokxx
+Comment[zh_CN]=Amarok 的 iPhone OS 3.0 只读收藏插件
 
 ServiceTypes=Amarok/Plugin
 

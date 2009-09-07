@@ -19,6 +19,7 @@ Name[sv]=Datagränssnitt för foton
 Name[tr]=Fotoğraflar Veri Motoru
 Name[uk]=Рушій даних фотографій
 Name[x-test]=xxPhotos Data Enginexx
+Name[zh_CN]=照片数据引擎
 X-KDE-ServiceTypes=Plasma/DataEngine
 X-KDE-ParentApp=Amarok
 Type=Service

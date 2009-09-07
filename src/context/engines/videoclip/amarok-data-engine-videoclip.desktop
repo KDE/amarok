@@ -28,6 +28,7 @@ Name[tr]=Video Klibi Veri Motoru
 Name[uk]=Рушій даних відеокліпів
 Name[wa]=Éndjin d' dinêyes Clip Videyo
 Name[x-test]=xxVideo Clip Data Enginexx
+Name[zh_CN]=视频剪辑数据引擎
 Name[zh_TW]=影片剪輯資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine
 X-KDE-ParentApp=Amarok
