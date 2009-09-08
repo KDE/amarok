@@ -181,7 +181,7 @@ PlaylistBrowserNS::UserPlaylistTreeView::createNewGroup()
     PlaylistsInGroupsProxy *pigp = dynamic_cast<PlaylistsInGroupsProxy *>(m_model);
     if( pigp == 0 )
         return;
-    QModelIndex idx = pigp->createNewGroup( QString("New Folder") );
+    QModelIndex idx = pigp->createNewGroup( i18np( "New Folder", "New Folder (%1)", 1 ) );
     edit( idx );
 }
 

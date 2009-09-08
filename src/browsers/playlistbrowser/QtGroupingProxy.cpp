@@ -126,7 +126,7 @@ QtGroupingProxy::buildTree()
     emit layoutAboutToBeChanged();
 
     m_groupHash.clear();
-    m_groupMaps.clear();
+    //don't clear the data maps since most of it will probably be needed again.
     m_parentCreateList.clear();
 
     int max = m_model->rowCount( m_rootNode );
@@ -147,7 +147,7 @@ QtGroupingProxy::buildTree()
 
                 foreach( const ColumnVariantMap &cachedData, m_groupMaps )
                 {
-                    if( compareColumnVariantMap( data, cachedData ) )
+                    if( data[0][Qt::DisplayRole] == cachedData[0][Qt::DisplayRole] )
                     {
                         data = cachedData;
                         break;
@@ -291,6 +291,9 @@ QtGroupingProxy::data( const QModelIndex &index, int role ) const
         //map all data from children to columns of group to allow grouping one level up
         QVariantList variantsOfChildren;
         int childCount = m_groupHash.count( row );
+        if( childCount == 0 )
+            return QVariant();
+
         //qDebug() << __FUNCTION__ << "childCount: " << childCount;
         //Need a parentIndex with column == 0 because only those have children.
         QModelIndex parentIndex = this->index( row, 0, index.parent() );
@@ -508,6 +511,17 @@ QtGroupingProxy::fetchMore ( const QModelIndex & parent )
     return m_model->fetchMore( mapToSource( parent ) );
 }
 
+QModelIndex
+QtGroupingProxy::addEmptyGroup( const ColumnVariantMap &data )
+{
+    int newRow = m_groupMaps.count();
+    beginInsertRows( QModelIndex(), newRow, newRow );
+    m_groupMaps << data;
+    endInsertRows();
+    emit layoutChanged();
+    return index( newRow, 0, QModelIndex() );
+}
+
 bool
 QtGroupingProxy::hasChildren( const QModelIndex &parent ) const
 {
@@ -515,7 +529,7 @@ QtGroupingProxy::hasChildren( const QModelIndex &parent ) const
         return true;
 
     if( isGroup( parent ) )
-        return true;
+        return !m_groupHash.values( parent.row() ).isEmpty();
 
     return m_model->hasChildren( mapToSource( parent ) );
 }

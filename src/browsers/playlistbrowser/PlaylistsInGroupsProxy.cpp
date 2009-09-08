@@ -295,13 +295,6 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
     }
     else if( groupSelected )
     {
-        QModelIndexList originalList;
-        originalList << m_model->index( 0, 0, QModelIndex() );
-        originalList << m_model->index( 1, 0, QModelIndex() );
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
-        if( mpm == 0 )
-            return actions;
-        actions << mpm->actionsFor( originalList );
         actions << createGroupActions();
         foreach( const QModelIndex &index, list )
         {
@@ -328,11 +321,13 @@ PlaylistsInGroupsProxy::loadItems( QModelIndexList list, Playlist::AddOptions in
 QModelIndex
 PlaylistsInGroupsProxy::createNewGroup( const QString &groupName )
 {
-    if( !insertRow( 0, QModelIndex() ) )
-        return QModelIndex();
-
-    emit layoutChanged();
-    return index( 0, 0, QModelIndex() );
+    ColumnVariantMap data;
+    RoleVariantMap roleData;
+    roleData.insert( Qt::DisplayRole, groupName );
+    roleData.insert( Qt::DecorationRole, QVariant( KIcon( "folder" ) ) );
+    roleData.insert( Qt::EditRole, groupName );
+    data.insert( 0, roleData );
+    return addEmptyGroup( data );
 }
 
 #include "PlaylistsInGroupsProxy.moc"
