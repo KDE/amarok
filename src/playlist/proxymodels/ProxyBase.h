@@ -350,6 +350,11 @@ signals:
      */
     void activeTrackChanged( const quint64 );
 
+    /**
+     * Signal forwarded from the source model. Emitted when the metadata of a track changes.
+     */
+    void metadataUpdated();
+
 protected:
     /**
      * Check if a certain row matches a search term when looking at the fields specified by
