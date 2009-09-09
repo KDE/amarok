@@ -81,9 +81,9 @@ public:
 InputStream*
 AudibleThroughAnalyzer::connectInputStream(InputStream* in) {
     if (in == 0) return in;
-    const int32_t nreq = 207;
+    const qint32 nreq = 207;
     const char* buf;
-    int32_t nread = in->read(buf, nreq, nreq);
+    qint32 nread = in->read(buf, nreq, nreq);
     in->reset(0);
 
     if (nread < nreq) {
@@ -114,15 +114,15 @@ AudibleThroughAnalyzer::connectInputStream(InputStream* in) {
     size_t filepos = 189; // this is where the first key/value-pair is stored
     do
     {
-        int32_t nreq = filepos + 2*4;
+        qint32 nreq = filepos + 2*4;
         nread = in->read(buf, nreq, nreq);
         in->reset(0);
         if (nread < nreq) {
             return in;
         }
 
-        uint32_t keyLength = readBigEndianUInt32(buf+filepos);
-        uint32_t valueLength = readBigEndianUInt32(buf+filepos+4);
+        quint32 keyLength = readBigEndianUInt32(buf+filepos);
+        quint32 valueLength = readBigEndianUInt32(buf+filepos+4);
         if(keyLength > 1000 || valueLength > 100000)
             return in;
         const char *key = buf+filepos+2*4;

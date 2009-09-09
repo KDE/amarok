@@ -736,7 +736,7 @@ MtpHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
 
     m_mtptrackhash.remove( track );
 
-    u_int32_t object_id = mtptrack->item_id;
+    quint32 object_id = mtptrack->item_id;
 
     const QString genericError = i18n( "Could not delete item" );
 
@@ -917,7 +917,7 @@ MtpHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 
         m_mtpplaylisthash.remove( playlist );
 
-        u_int32_t object_id = pl->playlist_id;
+        quint32 object_id = pl->playlist_id;
 
         QString genericError = i18n( "Could not delete item" );
 
