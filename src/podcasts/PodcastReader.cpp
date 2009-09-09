@@ -204,8 +204,10 @@ PodcastReader::read()
             }
             else if( tokenType() != QXmlStreamReader::StartDocument )
             {
-                debug() << "some weird thing happend. " << QXmlStreamReader::name().toString()
-                        << " : " << tokenString();
+                debug() << "some weird thing happend at line: "
+                        << QXmlStreamReader::lineNumber();
+                debug() << "\terror: " << QXmlStreamReader::name().toString();
+                debug() << "\ttoken type: " << tokenString();
             }
         }
         else
