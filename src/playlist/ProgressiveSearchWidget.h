@@ -189,6 +189,9 @@ protected slots:
 protected:
     void keyPressEvent( QKeyEvent *event );
 
+private slots:
+    void defocus() { m_searchEdit->clearFocus(); }
+
 private:
     /**
      * Load the current search field settings from config.
