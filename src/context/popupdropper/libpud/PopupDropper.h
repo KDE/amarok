@@ -20,9 +20,9 @@
 #ifndef POPUPDROPPER_H
 #define POPUPDROPPER_H
 
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QStack>
+#include <QtGui/QGraphicsScene>
+#include <QtGui/QGraphicsView>
+#include <QtCore/QStack>
 
 #include "PopupDropper_Export.h"
 
