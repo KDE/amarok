@@ -15,6 +15,7 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * OSX: Fixed crash when activating inline playlist editing. (BR 206576)
     * Fixed dockwidget menu getting shown when right clicking on the progress
       slider causing the slider to follow the mouse. (BR 206350)
     * Use filename as track title for non collection files if no other title can be
