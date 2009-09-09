@@ -312,7 +312,7 @@ InlineEditorWidget::paintEvent( QPaintEvent * event )
         delegate.paintItem( m_layout.head(), &painter, option, m_index );
     }
 
-    KHBox::paintEvent( event );
+    event->accept();
 }
 
 void InlineEditorWidget::editValueChanged()
