@@ -53,6 +53,7 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
 {
     setRange( 0, max );
     setFixedHeight( 20 );
+    setAttribute( Qt::WA_NoMousePropagation, true );
 }
 
 void
