@@ -28,6 +28,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPainter>
+#include <QPaintEvent>
 
 using namespace Playlist;
 
