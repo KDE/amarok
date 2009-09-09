@@ -157,7 +157,7 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         currentLayout.setEditable( user );
         currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
-        //For backwards compatability, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
+        //For backwards compatibility, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
         currentLayout.setGroupBy( layout.toElement().attribute( "group_by", "Album" ) );
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
@@ -262,7 +262,7 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
-    //make sure that this dir exists
+    //make sure that this directory exists
     if ( !layoutsDir.exists() )
         layoutsDir.mkpath( Amarok::saveLocation( "playlist_layouts/" ) );
 
