@@ -15,6 +15,8 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * Use filename as track title for non collection files if no other title can be
+      found by reading metadata tags. (BR 206794)
     * Update playlist filter, sort order and grouping when the metadata of a track
       changes. (BR 206754)
     * Do not crash if trying to load a completely empty playlist layout.
