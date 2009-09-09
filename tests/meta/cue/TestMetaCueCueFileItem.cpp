@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "meta/cue/Cue.h"
 #include "TestMetaCueCueFileItem.h"
+#include "meta/cue/Cue.h"
 
 MetaCue::CueFileItem testItem1( "", "", "", 0, 0 );
 MetaCue::CueFileItem testItem2( "title", "artist", "album", 10, 10 );

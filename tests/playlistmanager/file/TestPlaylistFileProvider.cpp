@@ -17,11 +17,12 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "TestPlaylistFileProvider.h"
+
 #include <KStandardDirs>
 
 #include "collection/CollectionManager.h"
 
-#include "TestPlaylistFileProvider.h"
 
 TestPlaylistFileProvider::TestPlaylistFileProvider( QStringList testArgumentList )
 {

@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "CaseConverter.h"
 #include "TestCaseConverter.h"
+#include "CaseConverter.h"
 
 TestCaseConverter::TestCaseConverter( QStringList testArgumentList )
 {

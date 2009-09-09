@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "Amarok.h"
 #include "TestAmarok.h"
+#include "Amarok.h"
 
 #include <QDir>
 #include <QString>

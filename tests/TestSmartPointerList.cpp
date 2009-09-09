@@ -17,8 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "SmartPointerList.h"
 #include "TestSmartPointerList.h"
+#include "SmartPointerList.h"
 
 // use a macro, as we don't want to test copy ctor early
 #define THREE_TIMERS( x ) SmartPointerList<QTimer> x; x << new QTimer << new QTimer << new QTimer
