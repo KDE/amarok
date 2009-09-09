@@ -315,6 +315,12 @@ void Track::Private::readMetaData()
         m_data.fileSize = QFile( url.path() ).size();
     }
 
+    //as a last ditch effort, use the filename as the title if nothing else has been found
+    if ( m_data.title.isEmpty() )
+    {
+        m_data.title = url.fileName();
+    }
+
     debug() << "Read metadata from file for: " + m_data.title;
 }
 
