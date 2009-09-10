@@ -2,6 +2,7 @@
 Type=Service
 Name=AudioCd Collection
 Name[bg]=Колекция с компактдискове
+Name[ca]=Col·lecció de CD d'àudio
 Name[csb]=Kòlekcëjô AudioCd
 Name[da]=Lyd-cd-samling
 Name[de]=Audio-CD-Sammlung
@@ -26,6 +27,7 @@ Name[x-test]=xxAudioCd Collectionxx
 Name[zh_CN]=音频 CD 收藏
 Comment=AudioCd collection plugin for Amarok
 Comment[bg]=Приставка за колекция с компактдискове (Amarok)
+Comment[ca]=Connector de col·leccions de CD d'àudio per a l'Amarok
 Comment[csb]=Wtëkôcz kòlekcëji AudioCd dlô Amaroka
 Comment[da]=Plugin til lyd-cd-samling til Amarok
 Comment[de]=Audio-CD-Sammlungsmodul für Amarok

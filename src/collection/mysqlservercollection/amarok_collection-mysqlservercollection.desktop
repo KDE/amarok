@@ -2,6 +2,7 @@
 Type=Service
 Name=MySQLServer Collection
 Name[bg]=Колекция MySQLServer
+Name[ca]=Col·lecció MySQLServer
 Name[da]=MySQLServer-samling
 Name[de]=MySQLServer-Sammlung
 Name[es]=Colección MySQLServer
