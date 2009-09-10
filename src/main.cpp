@@ -41,7 +41,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( ki18n("Ian 'The Beard' Monroe"),
             ki18n(( "Developer (eean)" )), "ian@monroe.nu", "http://www.monroe.nu/" );
     aboutData.addAuthor( ki18n("Jeff 'IROCKSOHARD' Mitchell"),
-            ki18n(( "Developer (jefferai)" )), "mitchell@kde.org" );
+            ki18n(( "Developer (jefferai)" )), "mitchell@kde.org", "http://amarok.kde.org/blog/categories/13-jefferai" );
     aboutData.addAuthor( ki18n("Leo Franchi"),
             ki18n(( "Developer (lfranchi)" )), "lfranchi@kde.org" );
     aboutData.addAuthor( ki18n("Lydia 'is wrong(TM)' Pintscher"),
