@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>493</width>
-    <height>45</height>
+    <width>491</width>
+    <height>43</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -138,6 +138,9 @@
        </property>
        <property name="text">
         <string>Name</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
