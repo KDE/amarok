@@ -1,7 +1,7 @@
 /*
     This file is part of KDE.
 
-    Copyright (c) 2008 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2009 Eckhart Wörner <ewoerner@kde.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,50 +18,51 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
     USA.
 */
-#ifndef ATTICA_ACTIVITY_H
-#define ATTICA_ACTIVITY_H
 
-#include <QtCore/QList>
-#include <QtCore/QSharedDataPointer>
+#ifndef ATTICA_EVENTLISTJOB_H
+#define ATTICA_EVENTLISTJOB_H
+
+#include <KJob>
+#include <KUrl>
 
 #include "atticaclient_export.h"
+#include "event.h"
 
 
-class QDateTime;
+namespace KIO {
+    class Job;
+}
 
 namespace Attica {
 
-
-class ATTICA_EXPORT Activity
+class ATTICA_EXPORT EventListJob : public KJob
 {
-  public:
-    typedef QList<Activity> List;
+    Q_OBJECT
 
-    Activity();
-    Activity(const Activity& other);
-    Activity& operator=(const Activity& other);
-    ~Activity();
+    public:
+        EventListJob();
 
-    void setId( const QString & );
-    QString id() const;
+        void setUrl(const KUrl& url);
 
-    void setUser( const QString & );
-    QString user() const;
+        void start();
 
-    void setTimestamp( const QDateTime & );
-    QDateTime timestamp() const;
+        Event::List eventList() const;
+        
+    protected slots:
+        void doWork();
 
-    void setMessage( const QString & );
-    QString message() const;
-
-    void setLink( const QString & );
-    QString link() const;
-
-  private:
-    class Private;
-    QSharedDataPointer<Private> d;
+        void slotJobResult(KJob* job);
+        void slotJobData(KIO::Job* job, const QByteArray& data);
+        
+    private:
+        KUrl m_url;
+        KIO::Job* m_job;
+        QByteArray m_data;
+    
+        Event::List m_eventList;
 };
 
 }
+
 
 #endif

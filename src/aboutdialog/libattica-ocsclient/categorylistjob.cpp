@@ -23,6 +23,9 @@
 
 #include "categoryparser.h"
 
+#include <QtCore/QDebug>
+#include <QtCore/QTimer>
+
 #include <kio/job.h>
 #include <klocale.h>
 

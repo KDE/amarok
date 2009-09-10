@@ -23,6 +23,9 @@
 
 #include "personparser.h"
 
+#include <QtCore/QDebug>
+#include <QtCore/QTimer>
+
 #include <kio/job.h>
 #include <klocale.h>
 
@@ -70,7 +73,7 @@ void PersonListJob::slotUserJobResult( KJob *job )
   
     emitResult();
   } else {
-    qDebug() << m_userData;
+    // qDebug() << m_userData;
     m_personList = PersonParser().parseList( m_userData );
 
 #if 0

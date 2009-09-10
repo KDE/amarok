@@ -23,6 +23,9 @@
 
 #include "personparser.h"
 
+#include <QtCore/QDebug>
+#include <QtCore/QTimer>
+
 #include <kio/job.h>
 #include <klocale.h>
 
@@ -70,17 +73,21 @@ void PersonJob::slotUserJobResult( KJob *job )
   
     emitResult();
   } else {
-    qDebug() << m_userData;
+    // qDebug() << m_userData;
     m_person = PersonParser().parse( m_userData );
   
-    qDebug() << "Getting avatar from" << m_person.avatarUrl();
-  
-    m_job = KIO::get( m_person.avatarUrl(), KIO::NoReload,
-      KIO::HideProgressInfo );
-    connect( m_job, SIGNAL( result( KJob * ) ),
-      SLOT( slotAvatarJobResult( KJob * ) ) );
-    connect( m_job, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
-      SLOT( slotAvatarJobData( KIO::Job *, const QByteArray & ) ) );    
+    if (!m_person.avatarUrl().isEmpty()) {
+      qDebug() << "Getting avatar from" << m_person.avatarUrl();
+
+      m_job = KIO::get( m_person.avatarUrl(), KIO::NoReload,
+        KIO::HideProgressInfo );
+      connect( m_job, SIGNAL( result( KJob * ) ),
+        SLOT( slotAvatarJobResult( KJob * ) ) );
+      connect( m_job, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
+        SLOT( slotAvatarJobData( KIO::Job *, const QByteArray & ) ) );
+    } else {
+      emitResult();
+    }
   }
 }
 
@@ -97,10 +104,7 @@ void PersonJob::slotAvatarJobResult( KJob *job )
     qWarning() << "Error retrieving Avatar:" << job->errorText();
   } else {
     QPixmap pic;
-    if ( !pic.loadFromData( m_avatarData ) ) {
-      setError( UserDefinedError );
-      setErrorText( i18n("Unable to parse avatar image data.") );
-    } else {
+    if ( pic.loadFromData( m_avatarData ) ) {
       m_person.setAvatar( pic );
     }
   }

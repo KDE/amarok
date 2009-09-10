@@ -1,7 +1,7 @@
 /*
     This file is part of KDE.
 
-    Copyright (c) 2008 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2009 Eckhart Wörner <ewoerner@kde.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,39 +18,37 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
     USA.
 */
-#ifndef ATTICA_CATEGORY_H
-#define ATTICA_CATEGORY_H
 
-#include <QtCore/QSharedDataPointer>
-#include <QtCore/QList>
+#ifndef PROVIDERINITJOB_H
+#define PROVIDERINITJOB_H
+
+#include <KJob>
 
 #include "atticaclient_export.h"
-
+#include "provider.h"
 
 namespace Attica {
 
-
-class ATTICA_EXPORT Category
+class ATTICA_EXPORT ProviderInitJob : public KJob
 {
-  public:
-    typedef QList<Category> List;
-  
-    Category();
-    Category(const Category& other);
-    Category& operator=(const Category& other);
-    ~Category();
+    Q_OBJECT
 
-    void setId( const QString & );
-    QString id() const;
+    public:
+        ProviderInitJob(const QString& id, QObject* parent = 0);
 
-    void setName( const QString & );
-    QString name() const;
+        void start();
 
-  private:
-    class Private;
-    QSharedDataPointer<Private> d;
+        Provider provider() const;
+
+    private slots:
+        void doWork();
+
+    private:
+        const QString m_id;
+        Provider m_provider;
 };
 
 }
+
 
 #endif

@@ -21,60 +21,86 @@
 
 #include "activity.h"
 
-#include "activitylistjob.h"
+#include <QDateTime>
+
 
 using namespace Attica;
 
-Activity::Activity()
+class Activity::Private : public QSharedData {
+    public:
+        QString m_id;
+        QString m_user;
+        QDateTime m_timestamp;
+        QString m_message;
+        QString m_link;
+};
+
+Activity::Activity() : d(new Private)
 {
 }
 
+Activity::Activity(const Attica::Activity& other)
+    : d(other.d)
+{
+}
+
+Activity& Activity::operator=(const Attica::Activity & other)
+{
+    d = other.d;
+    return *this;
+}
+
+Activity::~Activity()
+{
+}
+
+
 void Activity::setId( const QString &id )
 {
-    m_id = id;
+    d->m_id = id;
 }
 
 QString Activity::id() const
 {
-    return m_id;
+    return d->m_id;
 }
 
 void Activity::setUser( const QString &u )
 {
-  m_user = u;
+  d->m_user = u;
 }
 
 QString Activity::user() const
 {
-  return m_user;
+  return d->m_user;
 }
 
-void Activity::setTimestamp( const QDateTime &d )
+void Activity::setTimestamp( const QDateTime &date )
 {
-  m_timestamp = d;
+  d->m_timestamp = date;
 }
 
 QDateTime Activity::timestamp() const
 {
-  return m_timestamp;
+  return d->m_timestamp;
 }
 
 void Activity::setMessage( const QString &c )
 {
-  m_message = c;
+  d->m_message = c;
 }
 
 QString Activity::message() const
 {
-  return m_message;
+  return d->m_message;
 }
 
 void Activity::setLink( const QString &v )
 {
-  m_link = v;
+  d->m_link = v;
 }
 
 QString Activity::link() const
 {
-  return m_link;
+  return d->m_link;
 }

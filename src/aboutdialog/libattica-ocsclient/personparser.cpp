@@ -68,6 +68,7 @@ Person PersonParser::parse( const QString &xmlString )
 Person PersonParser::parsePerson( QXmlStreamReader &xml )
 {
   Person person;
+  bool hasAvatarPic = false;
   
   while ( !xml.atEnd() ) {
     xml.readNext();
@@ -83,6 +84,11 @@ Person PersonParser::parsePerson( QXmlStreamReader &xml )
         person.setHomepage( xml.readElementText() );
       } else if ( xml.name() == "avatarpic" ) {
         person.setAvatarUrl( xml.readElementText() );
+      } else if ( xml.name() == "avatarpicfound" ) {
+        QString value = xml.readElementText();
+        if (value.toInt()) {
+          hasAvatarPic = true;
+        }
       } else if ( xml.name() == "birthday" ) {
         person.setBirthday( QDate::fromString( xml.readElementText(),
           Qt::ISODate ) );
@@ -102,6 +108,10 @@ Person PersonParser::parsePerson( QXmlStreamReader &xml )
 
     if ( xml.isEndElement() &&
          ( xml.name() == "person" || xml.name() == "user" ) ) break;
+  }
+
+  if (!hasAvatarPic) {
+    person.setAvatarUrl(QString());
   }
 
   return person;

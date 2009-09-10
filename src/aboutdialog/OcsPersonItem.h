@@ -19,7 +19,8 @@
 
 #include "ui_OcsPersonItem.h"
 
-#include "libattica-ocsclient/ocsapi.h"
+#include "libattica-ocsclient/person.h"
+#include "libattica-ocsclient/provider.h"
 #include "OcsData.h"
 
 #include <KAboutPerson>
@@ -49,7 +50,7 @@ public:
 
     QString name();
 
-    void switchToOcs();
+    void switchToOcs( const Attica::Provider &provider );
 
 signals:
     void ocsFetchStarted();

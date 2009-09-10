@@ -23,9 +23,8 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "libattica-ocsclient/ocsapi.h"
-#include "libattica-ocsclient/personjob.h"
 #include "OcsPersonItem.h"
+#include "libattica-ocsclient/providerinitjob.h"
 
 #include <QLabel>
 #include <QLayout>
@@ -61,8 +60,8 @@ public:
 };
 
 ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsData *ocsData, QWidget *parent)
-  : KDialog(parent),
-    d(new Private(this))
+  : KDialog(parent)
+  , d(new Private(this))
 {
     DEBUG_BLOCK
     if (aboutData == 0)
@@ -343,19 +342,22 @@ ExtendedAboutDialog::switchToOcsWidgets()
 
     m_showOcsAuthorButton->animate();
     m_showOcsCreditButton->animate();
-    //TODO: Ask Solid if the network is available.
-    if( sender() == m_showOcsAuthorButton )
+    Attica::ProviderInitJob *providerJob = Attica::Provider::byId( m_ocsData.providerId() );
+    connect( providerJob, SIGNAL( result( KJob * ) ), this, SLOT( onProviderFetched( KJob * ) ) );
+}
+void
+ExtendedAboutDialog::onProviderFetched( KJob *job )
+{
+    Attica::ProviderInitJob *providerJob = qobject_cast< Attica::ProviderInitJob * >( job );
+    if( providerJob->error() == 0 )
     {
-        m_authorListWidget->switchToOcs();
-        m_creditListWidget->switchToOcs();
-    }
-    else if( sender() == m_showOcsCreditButton )
-    {
-        m_creditListWidget->switchToOcs();
-        m_authorListWidget->switchToOcs();
+        debug()<<"Successfully fetched OCS provider"<< providerJob->provider().name();
+        debug()<<"About to request OCS data";
+        m_authorListWidget->switchToOcs( providerJob->provider() );
+        m_creditListWidget->switchToOcs( providerJob->provider() );
     }
     else
-        warning() << "Invalid sender for ExtendedAboutDialog::switchToOcsWidgets()";
+        warning() << "OCS provider fetch failed";
 }
 
 #include "ExtendedAboutDialog.moc"

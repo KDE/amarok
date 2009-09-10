@@ -21,12 +21,14 @@
 #ifndef ATTICA_PERSON_H
 #define ATTICA_PERSON_H
 
+#include <QtCore/QDate>
+#include <QtCore/QList>
+#include <QtGui/QPixmap>
+
+#include <KUrl>
+
 #include "atticaclient_export.h"
 
-#include <kurl.h>
-
-#include <QtCore>
-#include <QPixmap>
 
 namespace Attica {
 

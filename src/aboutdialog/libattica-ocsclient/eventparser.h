@@ -1,7 +1,7 @@
 /*
     This file is part of KDE.
 
-    Copyright (c) 2008 Cornelius Schumacher <schumacher@kde.org>
+    Copyright (c) 2009 Eckhart Wörner <ewoerner@kde.org>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,39 +18,30 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
     USA.
 */
-#ifndef ATTICA_CATEGORY_H
-#define ATTICA_CATEGORY_H
 
-#include <QtCore/QSharedDataPointer>
-#include <QtCore/QList>
+#ifndef ATTICA_EVENTPARSER_H
+#define ATTICA_EVENTPARSER_H
 
-#include "atticaclient_export.h"
+#include "event.h"
 
+
+class QXmlStreamReader;
 
 namespace Attica {
 
-
-class ATTICA_EXPORT Category
+class EventParser
 {
-  public:
-    typedef QList<Category> List;
-  
-    Category();
-    Category(const Category& other);
-    Category& operator=(const Category& other);
-    ~Category();
+    public:
+        EventParser();
 
-    void setId( const QString & );
-    QString id() const;
+        Event parse(const QString& xml);
+        Event::List parseList(const QString& xml);
 
-    void setName( const QString & );
-    QString name() const;
-
-  private:
-    class Private;
-    QSharedDataPointer<Private> d;
+    private:
+        Event parseEvent(QXmlStreamReader& xml);
 };
 
 }
+
 
 #endif

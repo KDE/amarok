@@ -21,9 +21,11 @@
 #ifndef ATTICA_ACTIVITYLISTJOB_H
 #define ATTICA_ACTIVITYLISTJOB_H
 
+#include <KJob>
+#include <KUrl>
+
 #include "activity.h"
 
-#include <kjob.h>
 
 namespace KIO {
 class Job;

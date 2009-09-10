@@ -21,84 +21,122 @@
 
 #include "content.h"
 
+#include <QtCore/QDateTime>
+
+
 using namespace Attica;
 
+class Content::Private : public QSharedData {
+    public:
+        QDateTime m_created;
+        int m_downloads;
+        QString m_id;  
+        QString m_name;
+        int m_rating;
+        QDateTime m_updated;
+
+        QMap<QString,QString> m_extendedAttributes;
+
+        Private()
+            : m_downloads(0),
+              m_rating(0)
+        {
+        }
+};
+
+
 Content::Content()
-  : m_rating( 0 ), m_downloads( 0 )
+  : d(new Private)
 {
 }
 
+Content::Content(const Attica::Content& other)
+    : d(other.d)
+{
+}
+
+Content& Content::operator=(const Attica::Content & other)
+{
+    d = other.d;
+    return *this;
+}
+
+Content::~Content()
+{
+}
+
+
 void Content::setId( const QString &u )
 {
-  m_id = u;
+  d->m_id = u;
 }
 
 QString Content::id() const
 {
-  return m_id;
+  return d->m_id;
 }
 
 void Content::setName( const QString &name )
 {
-  m_name = name;
+  d->m_name = name;
 }
 
 QString Content::name() const
 {
-  return m_name;
+  return d->m_name;
 }
   
 void Content::setRating( int v )
 {
-  m_rating = v;
+  d->m_rating = v;
 }
 
 int Content::rating() const
 {
-  return m_rating;
+  return d->m_rating;
 }
     
 void Content::setDownloads( int v )
 {
-  m_downloads = v;
+  d->m_downloads = v;
 }
 
 int Content::downloads() const
 {
-  return m_downloads;
+  return d->m_downloads;
 }
     
-void Content::setCreated( const QDateTime &d )
+void Content::setCreated( const QDateTime &date )
 {
-  m_created = d;
+  d->m_created = date;
 }
 
 QDateTime Content::created() const
 {
-  return m_created;
+  return d->m_created;
 }
 
-void Content::setUpdated( const QDateTime &d )
+void Content::setUpdated( const QDateTime &date )
 {
-  m_updated = d;
+  d->m_updated = date;
 }
 
 QDateTime Content::updated() const
 {
-  return m_updated;
+  return d->m_updated;
 }
 
 void Content::addExtendedAttribute( const QString &key, const QString &value )
 {
-  m_extendedAttributes.insert( key, value );
+  d->m_extendedAttributes.insert( key, value );
 }
 
 QString Content::extendedAttribute( const QString &key ) const
 {
-  return m_extendedAttributes.value( key );
+  return d->m_extendedAttributes.value( key );
 }
 
 QMap<QString,QString> Content::extendedAttributes() const
 {
-  return m_extendedAttributes;
+  return d->m_extendedAttributes;
 }

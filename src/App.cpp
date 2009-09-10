@@ -115,7 +115,7 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
              ( "http://amarok.kde.org" ) );
              
-AMAROK_EXPORT OcsData ocsData;
+AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
         : KUniqueApplication()

@@ -21,9 +21,11 @@
 #ifndef ATTICA_MESSAGE_H
 #define ATTICA_MESSAGE_H
 
+#include <QtCore/QDateTime>
+#include <QtCore/QList>
+
 #include "atticaclient_export.h"
 
-#include <QtCore>
 
 namespace Attica {
 
