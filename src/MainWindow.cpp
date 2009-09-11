@@ -638,8 +638,10 @@ MainWindow::createActions()
     const Playlist::Controller* const pc = The::playlistController();
 
     KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
+    KStandardAction::configureNotifications( kapp, SLOT( slotConfigNotifications() ), ac );
     KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
     ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( KIcon( "configure-shortcuts-amarok" ) );
+    ac->action(KStandardAction::name(KStandardAction::ConfigureNotifications) );
     ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( "configure-amarok" ) );
     ac->action(KStandardAction::name(KStandardAction::Preferences))->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
 
@@ -910,6 +912,7 @@ MainWindow::createMenus()
     m_settingsMenu->addAction( Amarok::actionCollection()->action("equalizer_mode") );
     m_settingsMenu->addSeparator();
 
+    m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureNotifications)) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
     //END Settings menu

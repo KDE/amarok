@@ -573,6 +573,7 @@ set(amaroklib_LIB_SRCS
     EngineController.cpp
     EngineObserver.cpp
     Expression.cpp
+    KNotificationBackend.cpp
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
@@ -702,6 +703,7 @@ target_link_libraries(amaroklib
     ${KDE4_KFILE_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KNEWSTUFF2_LIBS}
+    ${KDE4_KNOTIFYCONFIG_LIBS}
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
@@ -801,6 +803,7 @@ install(FILES data/DefaultPlaylistLayouts.xml
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 
 install( FILES data/amarok_homerc DESTINATION ${CONFIG_INSTALL_DIR} )
+install( FILES data/amarok.notifyrc DESTINATION ${DATA_INSTALL_DIR}/amarok )
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 

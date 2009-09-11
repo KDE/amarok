@@ -1,0 +1,7 @@
+[Global]
+Comment=Amarok
+
+[Event/trackChange]
+Name=Track Change
+Comment=Amarok changed to a new track
+Action=Popup

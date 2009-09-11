@@ -26,6 +26,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "firstruntutorial/FirstRunTutorial.h"
+#include "KNotificationBackend.h"
 #include "Meta.h"
 #include "meta/MetaConstants.h"
 #include "MountPointManager.h"
@@ -57,6 +58,7 @@
 #include <KJob>
 #include <KJobUiDelegate>
 #include <KLocale>
+#include <KNotifyConfigWidget>           //slotConfigNotifications()
 #include <KShortcutsDialog>              //slotConfigShortcuts()
 #include <KSplashScreen>
 #include <KStandardDirs>
@@ -663,6 +665,7 @@ App::continueInit()
     PERF_LOG( "Done creating MainWindow" )
 
     m_tray = new Amarok::TrayIcon( mainWindow() );
+    new Amarok::KNotificationBackend();
 
     PERF_LOG( "Creating DBus handlers" )
     new Amarok::RootDBusHandler();
@@ -748,6 +751,11 @@ void App::slotConfigShortcuts()
 {
     KShortcutsDialog::configure( Amarok::actionCollection(), KShortcutsEditor::LetterShortcutsAllowed, mainWindow() );
     AmarokConfig::self()->writeConfig();
+}
+
+void App::slotConfigNotifications()
+{
+    KNotifyConfigWidget::configure( mainWindow() );
 }
 
 KIO::Job *App::trashFiles( const KUrl::List &files )

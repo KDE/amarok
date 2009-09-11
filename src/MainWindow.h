@@ -74,7 +74,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
     public:
         MainWindow();
-       ~MainWindow();
+        ~MainWindow();
 
         //allows us to switch browsers from within other browsers etc
         void showBrowser( const QString& name );
