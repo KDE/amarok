@@ -160,7 +160,7 @@ Amarok::TrayIcon::setupToolTip()
         else
             volume = QString( "%1%" ).arg( The::engineController()->volume() );
         right << QString("<i>%1</i>").arg( volume );
-        left << "<i>Volume</i>";
+        left << QString( "<i>%1</i>" ).arg( i18n( "Volume" ) );
 
         const float score = m_track->score();
         if( score > 0.f )
