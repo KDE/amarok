@@ -21,6 +21,10 @@
 
 #include <KStandardDirs>
 
+#include <QtTest/QTest>
+#include <QtCore/QDir>
+#include <QtCore/QString>
+
 
 TestMetaCueTrack::TestMetaCueTrack( QStringList testArgumentList )
 {

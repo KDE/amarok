@@ -20,10 +20,12 @@
 #include "TestAmarok.h"
 #include "Amarok.h"
 
-#include <QDir>
-#include <QString>
-
 #include <KStandardDirs>
+
+#include <QtTest/QTest>
+#include <QtCore/QDir>
+#include <QtCore/QString>
+#include <QtCore/QDateTime>
 
 TestAmarok::TestAmarok( QStringList testArgumentList )
 {

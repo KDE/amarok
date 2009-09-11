@@ -22,7 +22,7 @@
 
 #include "playlistmanager/file/PlaylistFileProvider.h"
 
-#include <QtTest>
+#include <QtCore/QStringList>
 
 class TestPlaylistFileProvider : public QObject
 {

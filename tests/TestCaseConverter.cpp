@@ -20,6 +20,8 @@
 #include "TestCaseConverter.h"
 #include "CaseConverter.h"
 
+#include <QtTest/QTest>
+
 TestCaseConverter::TestCaseConverter( QStringList testArgumentList )
 {
     testArgumentList.replace( 2, testArgumentList.at( 2 ) + "CaseConverter.xml" );

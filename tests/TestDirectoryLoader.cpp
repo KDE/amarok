@@ -24,6 +24,8 @@
 
 #include <KStandardDirs>
 
+#include <QtTest/QTest>
+
 /* This one is a bit ugly, as the results of the methods in DirectoryLoader can't *
  * be checked directly there but only in the playlist.                            */
 

@@ -21,6 +21,11 @@
 
 #include <KStandardDirs>
 
+#include <QtTest/QTest>
+#include <QtCore/QFile>
+#include <QtCore/QDir>
+#include <QtCore/QString>
+
 TestM3UPlaylist::TestM3UPlaylist( QStringList testArgumentList )
 {
     testArgumentList.replace( 2, testArgumentList.at( 2 ) + "M3UPlaylist.xml" );

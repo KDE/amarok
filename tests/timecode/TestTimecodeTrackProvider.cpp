@@ -21,6 +21,8 @@
 
 #include <KStandardDirs>
 
+#include <QtTest/QTest>
+
 TestTimecodeTrackProvider::TestTimecodeTrackProvider( QStringList testArgumentList )
 {
     testArgumentList.replace( 2, testArgumentList.at( 2 ) + "TimecodeTrackProvider.xml" );

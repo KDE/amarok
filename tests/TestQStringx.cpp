@@ -19,6 +19,10 @@
 
 #include "TestQStringx.h"
 
+#include <QtTest/QTest>
+#include <QtCore/QString>
+#include <QtCore/QMap>
+
 TestQStringx::TestQStringx( QStringList testArgumentList )
 {
     testArgumentList.replace( 2, testArgumentList.at( 2 ) + "QStringx.xml" );

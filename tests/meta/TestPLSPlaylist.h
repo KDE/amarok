@@ -22,7 +22,7 @@
 
 #include "meta/PLSPlaylist.h"
 
-#include <QtTest>
+#include <QtCore/QStringList>
 
 class TestPLSPlaylist : public QObject
 {

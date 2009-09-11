@@ -20,6 +20,8 @@
 #include "TestExpression.h"
 #include "Expression.h"
 
+#include <QtTest/QTest>
+
 TestExpression::TestExpression( QStringList testArgumentList )
 {
     testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Expression.xml" );

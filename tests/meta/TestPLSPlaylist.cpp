@@ -21,6 +21,10 @@
 
 #include <KStandardDirs>
 
+#include <QtTest/QTest>
+#include <QtCore/QFile>
+#include <QtCore/QDir>
+
 TestPLSPlaylist::TestPLSPlaylist( QStringList testArgumentList )
 {
     testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PLSPlaylist.xml" );

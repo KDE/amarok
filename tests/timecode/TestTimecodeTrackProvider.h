@@ -22,7 +22,7 @@
 
 #include "timecode/TimecodeTrackProvider.h"
 
-#include <QtTest>
+#include <QtCore/QStringList>
 
 class TestTimecodeTrackProvider : public QObject
 {

@@ -20,6 +20,8 @@
 #include "TestMetaCueCueFileItem.h"
 #include "meta/cue/Cue.h"
 
+#include <QtTest/QTest>
+
 MetaCue::CueFileItem testItem1( "", "", "", 0, 0 );
 MetaCue::CueFileItem testItem2( "title", "artist", "album", 10, 10 );
 MetaCue::CueFileItem testItem3( " title ", " artist ", " album ", 100, 100 );

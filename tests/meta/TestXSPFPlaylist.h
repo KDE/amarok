@@ -20,9 +20,11 @@
 #ifndef TESTXSPFPLAYLIST_H
 #define TESTXSPFPLAYLIST_H
 
-#include "meta/XSPFPlaylist.h"
+#include <QtCore/QStringList>
 
-#include <QtTest>
+namespace Meta {
+    class XSPFPlaylist;
+}
 
 class TestXSPFPlaylist : public QObject
 {

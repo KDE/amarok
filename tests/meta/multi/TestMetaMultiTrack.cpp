@@ -19,9 +19,13 @@
 
 #include "TestMetaMultiTrack.h"
 
+#include "meta/multi/MultiTrack.h"
 #include "meta/PlaylistFileSupport.h"
 
 #include <KStandardDirs>
+
+#include <QtTest/QTest>
+#include <QtCore/QDir>
 
 TestMetaMultiTrack::TestMetaMultiTrack( QStringList testArgumentList )
 {

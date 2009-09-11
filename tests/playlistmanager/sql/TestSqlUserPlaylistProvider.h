@@ -22,7 +22,7 @@
 
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 
-#include <QtTest>
+#include <QtCore/QStringList>
 
 class TestSqlUserPlaylistProvider : public QObject
 {

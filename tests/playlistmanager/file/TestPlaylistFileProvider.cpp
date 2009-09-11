@@ -18,11 +18,13 @@
  ***************************************************************************/
 
 #include "TestPlaylistFileProvider.h"
+#include "collection/CollectionManager.h"
 
 #include <KStandardDirs>
 
-#include "collection/CollectionManager.h"
-
+#include <QtTest/QTest>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
 
 TestPlaylistFileProvider::TestPlaylistFileProvider( QStringList testArgumentList )
 {

@@ -19,10 +19,15 @@
 
 #include "TestMetaFileTrack.h"
 
-#include <QDateTime>
-#include <QFileInfo>
+#include "meta/file/File.h"
 
 #include <KStandardDirs>
+
+#include <QtTest/QTest>
+#include <QtCore/QFile>
+#include <QtCore/QDir>
+#include <QtCore/QDateTime>
+#include <QtCore/QFileInfo>
 
 TestMetaFileTrack::TestMetaFileTrack( QStringList testArgumentList )
 {
@@ -419,7 +424,7 @@ void TestMetaFileTrack::testReplayGain()
 void TestMetaFileTrack::testReplayPeakGain()
 {
     QCOMPARE( static_cast<float>( track->replayPeakGain( Meta::Track::TrackReplayGain ) ), 4.1263f );
-    QCOMPARE( (float)track->replayPeakGain( Meta::Track::AlbumReplayGain ), 4.1263f );
+    QCOMPARE( static_cast<float>( track->replayPeakGain( Meta::Track::AlbumReplayGain ) ), 4.1263f );
 }
 
 void TestMetaFileTrack::testType()

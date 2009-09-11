@@ -20,6 +20,9 @@
 #include "TestSmartPointerList.h"
 #include "SmartPointerList.h"
 
+#include <QtTest/QTest>
+#include <QtCore/QTimer>
+
 // use a macro, as we don't want to test copy ctor early
 #define THREE_TIMERS( x ) SmartPointerList<QTimer> x; x << new QTimer << new QTimer << new QTimer
 

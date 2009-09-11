@@ -20,9 +20,8 @@
 #ifndef TESTPLAYLISTFILESUPPORT_H
 #define TESTPLAYLISTFILESUPPORT_H
 
-#include <QString>
-#include <QStringList>
-#include <QtTest>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 
 class TestPlaylistFileSupport : public QObject
 {

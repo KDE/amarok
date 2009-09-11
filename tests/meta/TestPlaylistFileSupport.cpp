@@ -22,6 +22,9 @@
 
 #include <KStandardDirs>
 
+#include <QtTest/QTest>
+#include <QtCore/QDir>
+
 
 TestPlaylistFileSupport::TestPlaylistFileSupport( QStringList testArgumentList )
 {
