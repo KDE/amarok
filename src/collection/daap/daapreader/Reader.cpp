@@ -384,21 +384,21 @@ Reader::parseSongList( const QByteArray &data )
                 QByteArray stringData(tagLength, ' ');
                 raw.readRawData( stringData.data(), tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
                 if ( QString( tag ) == "asfm" )
-                     format = tagLength ? QString::fromUtf8( stringData, tagLength ) : QString();
-                if ( QString( tag ) == "minm" )
-                     title = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "asal" )
-                     album = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "asar" )
-                     artist = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "ascp" )
-                     composer = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "ascm" )
-                     comment = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "asyr" )
-                     year = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "asgn" )
-                     genre = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
+                     format = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "minm" )
+                     title = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "asal" )
+                     album = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "asar" )
+                     artist = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "ascp" )
+                     composer = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "ascm" )
+                     comment = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "asyr" )
+                     year = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "asgn" )
+                     genre = QString::fromUtf8( stringData, tagLength );
                 break;
             }
             case DATE:
