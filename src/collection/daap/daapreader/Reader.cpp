@@ -334,7 +334,6 @@ Reader::parseSongList( const QByteArray &data )
     QString year;
     qint32 trackNumber=0;
     qint32 songTime=0;
-    bool isFirstTrack = false;
     bool first=true;
     uint containerLength=0;
 
@@ -419,10 +418,8 @@ Reader::parseSongList( const QByteArray &data )
             }
             case CONTAINER:
             {
-                if ( !isFirstTrack && QString( tag ) == "mlit" )
+                if ( QString( tag ) == "mlit" )
                     addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
-                else
-                    isFirstTrack=false;
                 break;
             }
             default:
@@ -434,15 +431,7 @@ Reader::parseSongList( const QByteArray &data )
         index += tagLength + 8;
     }
 
-
-    if( isFirstTrack )
-    {
-        emit httpError( "Invalid response" ); //it's not a real http error, but the effect is the same
-        deleteLater();
-        return false;
-    }
-    else // add the last track which is otherwise lost
-        addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
+    addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
 
     m_memColl->acquireWriteLock();
     m_memColl->setTrackMap( m_trackMap );
