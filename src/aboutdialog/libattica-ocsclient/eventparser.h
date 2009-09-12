@@ -24,8 +24,7 @@
 
 #include "event.h"
 
-
-class QXmlStreamReader;
+#include <QtXml/QXmlStreamReader>
 
 namespace Attica {
 
