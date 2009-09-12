@@ -91,7 +91,7 @@ private:
     const Mp4ThroughAnalyzerFactory* factory;
 
     bool isFullBox(const std::string &type);
-    bool parseFullBox(const char *buf, qint64 size, uint8_t *version, uint32_t *flags);
+    bool parseFullBox(const char *buf, qint64 size, uint8_t *version, quint32 *flags);
     bool parseBox(const char *buf, qint64 size, const std::string &typepath, int level);
     bool haveSubBoxes(const std::string &type);
     bool readSubBoxes(const char *buf, qint64 size, const std::string &parenttype, int level);
@@ -275,7 +275,7 @@ bool Mp4ThroughAnalyzer::parseFtypBox(const char *buf, qint64 size, const std::s
 {
 #ifdef VERBOSE
     std::string majorbrand(buf,4);
-    uint32_t majorversion = readBigEndianUInt32(buf+4);
+    quint32 majorversion = readBigEndianUInt32(buf+4);
     std::cerr << "ftyp: majorbrand=" << majorbrand << ", vers=" << majorversion << std::endl;
     for(qint64 pos=8; pos+4<=size; pos+=4)
     {
@@ -295,15 +295,15 @@ bool Mp4ThroughAnalyzer::parseHintBox(const char *buf, qint64 size, const std::s
    Q_UNUSED( typepath );
    Q_UNUSED( level );
    uint8_t version;
-   uint32_t flags;
+   quint32 flags;
    parseFullBox(buf, size, &version, &flags);
 
    if(version > 0)
       return false;
 
 #ifdef VERBOSE
-   uint32_t maxbr = readBigEndianUInt32(buf+8);
-   uint32_t avgbr = readBigEndianUInt32(buf+12);
+   quint32 maxbr = readBigEndianUInt32(buf+8);
+   quint32 avgbr = readBigEndianUInt32(buf+12);
 
    std::cerr << "bit rate=" << avgbr << " (" << maxbr << " max)" << std::endl;
 #endif
@@ -315,7 +315,7 @@ bool Mp4ThroughAnalyzer::parseStsdBox(const char *buf, qint64 size, const std::s
    Q_UNUSED( typepath );
    Q_UNUSED( level );
    uint8_t version;
-   uint32_t flags;
+   quint32 flags;
    parseFullBox(buf, size, &version, &flags);
 
    if(version > 0)
@@ -336,7 +336,7 @@ bool Mp4ThroughAnalyzer::parseStsdBox(const char *buf, qint64 size, const std::s
       std::stringstream stream;
       stream << samplesize << " bit int";
       analysisResult->addValue(sampleFormatField, stream.str());
-      uint32_t samplerate = readBigEndianUInt32(buf+40);
+      quint32 samplerate = readBigEndianUInt32(buf+40);
       analysisResult->addValue(sampleRateField, samplerate>>16);
       analysisResult->addValue(audioCodecField, format);
    }
@@ -349,7 +349,7 @@ bool Mp4ThroughAnalyzer::parseHdlrBox(const char *buf, qint64 size, const std::s
    Q_UNUSED( typepath );
    Q_UNUSED( level );
    uint8_t version;
-   uint32_t flags;
+   quint32 flags;
    parseFullBox(buf, size, &version, &flags);
 
    std::string quicktimetype(buf+4,4);
@@ -369,12 +369,12 @@ bool Mp4ThroughAnalyzer::parseMdhdBox(const char *buf, qint64 size, const std::s
    Q_UNUSED( typepath );
    Q_UNUSED( level );
    uint8_t version;
-   uint32_t flags;
+   quint32 flags;
    parseFullBox(buf, size, &version, &flags);
 
    quint64 creationTime = 0;
    quint64 modTime = 0;
-   uint32_t timescale = 0;
+   quint32 timescale = 0;
    qint64 duration = 0;
 
    if(version == 1)
@@ -394,7 +394,7 @@ bool Mp4ThroughAnalyzer::parseMdhdBox(const char *buf, qint64 size, const std::s
    else
       return false;
 
-   analysisResult->addValue(mediaDurationField, static_cast<int32_t>(duration/timescale));
+   analysisResult->addValue(mediaDurationField, static_cast<qint32>(duration/timescale));
 
    return true;
 }
@@ -429,7 +429,7 @@ bool Mp4ThroughAnalyzer::parseMvhdBox(const char *buf, qint64 size, const std::s
    else
       return false;
 
-   analysisResult->addValue(videoDurationField, static_cast<int32_t>(duration/timescale));
+   analysisResult->addValue(videoDurationField, static_cast<qint32>(duration/timescale));
 
    return true;
 }
@@ -437,7 +437,7 @@ bool Mp4ThroughAnalyzer::parseMvhdBox(const char *buf, qint64 size, const std::s
 bool Mp4ThroughAnalyzer::parseMetaBox(const char *buf, qint64 size, const std::string &typepath, int level)
 {
    uint8_t version;
-   uint32_t flags;
+   quint32 flags;
    parseFullBox(buf, size, &version, &flags);
    if(version == 0)
    {
@@ -544,7 +544,7 @@ bool Mp4ThroughAnalyzer::parseDataBox(const char *buf, qint64 size, const std::s
 
 }
 
-bool Mp4ThroughAnalyzer::parseFullBox(const char *buf, qint64 size, uint8_t *version, uint32_t *flags)
+bool Mp4ThroughAnalyzer::parseFullBox(const char *buf, qint64 size, uint8_t *version, quint32 *flags)
 {
    Q_UNUSED( size );
    *flags = readBigEndianUInt32(buf);
@@ -600,9 +600,9 @@ Mp4ThroughAnalyzer::parseBox(const char *buf, qint64 size, const std::string &ty
 InputStream*
 Mp4ThroughAnalyzer::connectInputStream(InputStream* in) {
     if (in == 0) return in;
-    const int32_t nreq = 8;
+    const qint32 nreq = 8;
     const char* buf;
-    int32_t nread = in->read(buf, nreq, nreq);
+    qint32 nread = in->read(buf, nreq, nreq);
     in->reset(0);
 
     if (nread < nreq) {
@@ -621,7 +621,7 @@ Mp4ThroughAnalyzer::connectInputStream(InputStream* in) {
     qint64 filepos = 0;
     while(in->size() == -1 || filepos < in->size())
     {
-        int32_t nreq = filepos + 2*4;
+        qint32 nreq = filepos + 2*4;
         if (nreq < 0) { // overflow
             return in;
         }
@@ -631,7 +631,7 @@ Mp4ThroughAnalyzer::connectInputStream(InputStream* in) {
             return in;
         }
 
-        uint32_t boxlength = readBigEndianUInt32(buf+filepos); // this includes the 8 header bytes
+        quint32 boxlength = readBigEndianUInt32(buf+filepos); // this includes the 8 header bytes
         std::string type(buf+filepos+4,4);
         if(boxlength==0)
         {
