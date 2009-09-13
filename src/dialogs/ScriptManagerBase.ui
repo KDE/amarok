@@ -41,6 +41,19 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="kcfg_AutoUpdateScripts">
+     <property name="toolTip">
+      <string>Automatically download and install updates for the built-in scripts from the Amarok website if available</string>
+     </property>
+     <property name="whatsThis">
+      <string>Automatically download and install updates for the built-in scripts from the Amarok website if available</string>
+     </property>
+     <property name="text">
+      <string>Automatically update built-in scripts</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout" >
      <item>
       <widget class="QPushButton" name="installButton" >
@@ -63,7 +76,7 @@
          <height>0</height>
         </size>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>&amp;Uninstall</string>
        </property>
       </widget>

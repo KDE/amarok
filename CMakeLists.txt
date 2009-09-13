@@ -83,6 +83,10 @@ if( WITH_PLAYER )
     # zlib is required for mysql embedded
     find_package(ZLIB REQUIRED)
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
+    
+    # QCA2 is required for the Script Updater
+    find_package(QCA2 REQUIRED)
+    macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" TRUE "" "" )
 
     macro_optional_find_package(Strigi)
     macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )

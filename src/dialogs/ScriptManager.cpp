@@ -5,6 +5,7 @@
  * Copyright (c) 2006 Martin Ellis <martin.ellis@kdemail.net>                           *
  * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
  * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ * Copyright (c) 2009 Jakob Kummerow <jakob.kummerow@gmail.com>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -47,6 +48,7 @@
 #include "scriptengine/AmarokWindowScript.h"
 #include "scriptengine/MetaTypeExporter.h"
 #include "scriptengine/ScriptImporter.h"
+#include "ScriptUpdater.h"
 #include "ui_ScriptManagerBase.h"
 
 #include <KApplication>
@@ -98,6 +100,9 @@ ScriptManager::ScriptManager( QWidget* parent )
     gui.setupUi( main );
     setMainWidget( main );
 
+    // Load config
+    gui.kcfg_AutoUpdateScripts->setChecked( AmarokConfig::autoUpdateScripts() );
+
     m_scriptSelector = gui.pluginWidget;
     gui.pluginWidget->setSizePolicy(QSizePolicy::Preferred ,QSizePolicy::Expanding);
 
@@ -107,18 +112,20 @@ ScriptManager::ScriptManager( QWidget* parent )
     connect( gui.okButton,        SIGNAL( clicked() ), SLOT( reject() ) );
     connect( m_scriptSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
     connect( m_scriptSelector, SIGNAL( configCommitted ( const QByteArray & ) ), SLOT( slotConfigComitted( const QByteArray & ) ) );
+    connect( gui.kcfg_AutoUpdateScripts, SIGNAL( toggled( bool ) ), SLOT( slotUpdateSettingChanged( bool ) ) );
 
     gui.installButton  ->setIcon( KIcon( "folder-amarok" ) );
     gui.retrieveButton ->setIcon( KIcon( "get-hot-new-stuff-amarok" ) );
     gui.uninstallButton->setIcon( KIcon( "edit-delete-amarok" ) );
     gui.okButton       ->setIcon( KIcon( "dialog-ok" ) );
+    
     // Center the dialog in the middle of the mainwindow
     const int x = parentWidget()->width() / 2 - sizeHint().width() / 2;
     const int y = parentWidget()->height() / 2 - sizeHint().height() / 2;
     move( x, y );
 
     // Delay this call via eventloop, because it's a bit slow and would block
-    QTimer::singleShot( 0, this, SLOT( findScripts() ) );
+    QTimer::singleShot( 0, this, SLOT( updateAllScripts() ) );
 
 }
 
@@ -218,40 +225,62 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& artist, const QString& tit
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// private slots
+// private slots (script updater stuff)
 ////////////////////////////////////////////////////////////////////////////////
 
 void
-ScriptManager::findScripts() //SLOT
+ScriptManager::updateAllScripts() // SLOT
+{
+
+    DEBUG_BLOCK
+    // find all scripts (both in $KDEHOME and /usr)
+    QStringList foundScripts = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js", KStandardDirs::Recursive | KStandardDirs::NoDuplicates);
+    m_nScripts = foundScripts.count();
+    // create a ScriptUpdater for each script
+    m_updaters = new ScriptUpdater[m_nScripts];
+    for (int i = 0; i < m_nScripts; i++)
+    {
+        // all the ScriptUpdaters are now started in the background in parallel.
+        // tell them which script to work on
+        m_updaters[i].setScriptPath(foundScripts.at(i));
+        // tell them whom to signal when they're finished
+        connect ( &(m_updaters[i]), SIGNAL( finished( QString ) ), SLOT( updaterFinished( QString )) );
+        // start their event loop (absolutely necessary!)
+        m_updaters[i].start();
+        // and finally tell them to get to work
+        QTimer::singleShot( 0, &(m_updaters[i]), SLOT( updateScript() ) );
+    }
+
+}
+
+void
+ScriptManager::updaterFinished( QString scriptPath ) // SLOT
 {
     DEBUG_BLOCK
-
-    const QStringList allFiles = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js", KStandardDirs::Recursive );
-
-    // Add found scripts to treeWidget:
-    QList<KPluginInfo> LyricsInfoList;
-    QList<KPluginInfo> GenericInfoList;
-    QList<KPluginInfo> ServiceInfoList;
-    foreach( const QString &str, allFiles )
+    // count this event
+    m_updateSemaphore.release();
+    // load the script now (so that findScripts() doesn't have to do this)
+    loadScript( scriptPath );
+    // if all ScriptUpdaters have returned now, call findScripts()
+    if ( m_updateSemaphore.tryAcquire(m_nScripts) )
     {
-        loadScript( str );
+        findScripts();
     }
-    foreach( const QString &key, m_scripts.keys() )
-    {
-        if ( m_scripts[key].info.category() == "Generic" )
-            GenericInfoList.append( m_scripts[key].info );
-        else if ( m_scripts[key].info.category() == "Lyrics" )
-            LyricsInfoList.append( m_scripts[key].info );
-        else if ( m_scripts[key].info.category() == "Scriptable Service" )
-            ServiceInfoList.append( m_scripts[key].info );
-    }
-    m_scriptSelector->addScripts( GenericInfoList, KPluginSelector::ReadConfigFile, "Generic" );
-    m_scriptSelector->addScripts( LyricsInfoList, KPluginSelector::ReadConfigFile, "Lyrics" );
-    m_scriptSelector->addScripts( ServiceInfoList, KPluginSelector::ReadConfigFile, "Scriptable Service" );
-
-    // Handle auto-run:
-    slotConfigChanged( true );
 }
+
+void
+ScriptManager::slotUpdateSettingChanged( bool enabled )
+{
+    DEBUG_BLOCK
+    // Save config
+    AmarokConfig::setAutoUpdateScripts( enabled );
+}
+
+// TODO: is it better to run findScripts first and reload updated scripts?
+
+////////////////////////////////////////////////////////////////////////////////
+// private slots
+////////////////////////////////////////////////////////////////////////////////
 
 bool
 ScriptManager::slotInstallScript( const QString& path )
@@ -582,6 +611,32 @@ ScriptManager::loadScript( const QString& path )
 }
 
 void
+ScriptManager::findScripts()
+{
+    DEBUG_BLOCK
+
+    // Add found scripts to treeWidget:
+    QList<KPluginInfo> LyricsInfoList;
+    QList<KPluginInfo> GenericInfoList;
+    QList<KPluginInfo> ServiceInfoList;
+    foreach( const QString &key, m_scripts.keys() )
+    {
+        if ( m_scripts[key].info.category() == "Generic" )
+            GenericInfoList.append( m_scripts[key].info );
+        else if ( m_scripts[key].info.category() == "Lyrics" )
+            LyricsInfoList.append( m_scripts[key].info );
+        else if ( m_scripts[key].info.category() == "Scriptable Service" )
+            ServiceInfoList.append( m_scripts[key].info );
+    }
+    m_scriptSelector->addScripts( GenericInfoList, KPluginSelector::ReadConfigFile, "Generic" );
+    m_scriptSelector->addScripts( LyricsInfoList, KPluginSelector::ReadConfigFile, "Lyrics" );
+    m_scriptSelector->addScripts( ServiceInfoList, KPluginSelector::ReadConfigFile, "Scriptable Service" );
+
+    // Handle auto-run:
+    slotConfigChanged( true );
+}
+
+void
 ScriptManager::startScriptEngine( QString name )
 {
     DEBUG_BLOCK
@@ -682,10 +737,6 @@ ScriptManager::startScriptEngine( QString name )
                                 scriptEngine->newQObject( trackProto ) );
     m_scripts[name].wrapperList.append( trackProto );
 }
-
-
-
-
 
 #include "ScriptManager.moc"
 

@@ -23,6 +23,7 @@
 #include "scriptengine/AmarokScriptableServiceScript.h"
 #include "EngineObserver.h"   //baseclass
 #include "ScriptSelector.h"
+#include "ScriptUpdater.h"
 
 #include <KDialog>      //baseclass
 
@@ -36,6 +37,7 @@ class KArchiveDirectory;
 class KPluginInfo;
 class KPluginSelector;
 class QScriptEngine;
+class ScriptUpdater;
 
 class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
 {
@@ -104,9 +106,6 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void fetchLyrics( const QString&, const QString&, const QString& url );
 
     private slots:
-        /** Finds all installed scripts and adds them to the listview */
-        void findScripts();
-
         bool slotInstallScript( const QString& path = QString() );
         void slotRetrieveScript();
         void slotUninstallScript();
@@ -118,9 +117,17 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void slotConfigComitted( const QByteArray & name );
         void scriptFinished( QString name );
 
+        /** Finds installed scripts, updates them, and loads them */
+        void updateAllScripts();
+        void updaterFinished( QString scriptPath );
+        void slotUpdateSettingChanged( bool enabled );
+
     private:
         explicit ScriptManager( QWidget* parent );
         virtual ~ScriptManager();
+
+        /** Finds all loaded scripts and adds them to the listview */
+        void findScripts();
 
         bool loadScript( const QString& path ); //return false if loadScript failed.
 
@@ -141,6 +148,14 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         QScriptValue   m_global;
         bool           m_configChanged;
         QStringList    m_changedScripts;
+
+        // count returning ScriptUpdaters in a thread-safe way
+        QSemaphore     m_updateSemaphore;
+        // this is actually an array. The ScriptUpdaters must live longer than the
+        // method that creates them, so they're class members
+        ScriptUpdater* m_updaters;
+        // memorize how many scripts were found and tried to be updated
+        int            m_nScripts;
 
 };
 

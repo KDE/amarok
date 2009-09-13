@@ -68,6 +68,8 @@ include_directories(
     ${TAGLIB-EXTRAS_INCLUDES}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
+    ${APPLE_SECURITY_INCLUDE_DIR}
+    ${QCA2_INCLUDE_DIR}
 )
 
 if ( KDEMULTIMEDIA_FOUND )
@@ -600,6 +602,7 @@ set(amaroklib_LIB_SRCS
     dialogs/PodcastSettingsDialog.cpp
     dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
+    dialogs/ScriptUpdater.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     browsers/filebrowser/FileBrowser.cpp
@@ -712,6 +715,7 @@ target_link_libraries(amaroklib
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
+    ${QCA2_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud

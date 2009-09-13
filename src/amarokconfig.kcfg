@@ -587,4 +587,12 @@
     </entry>
 </group>
 
+<group name="ScriptManager">
+    <entry key="AutoUpdateScripts" type="Bool">
+        <label>Whether to automatically update built-in scripts</label>
+        <whatsthis>Enable/Disable automatic update for built-in scripts.</whatsthis>
+        <default>true</default>
+    </entry>
+</group>
+
 </kcfg>
