@@ -162,7 +162,8 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     prepareGeometryChange();
 
-    m_suggested->setTextWidth( size().width() );
+    m_suggested->setTextWidth( size().width() - 2*standardPadding() );
+    m_suggested->setPos( standardPadding(), m_suggested->pos().y() );
 
     // Assumes all icons are of equal width
     const int iconWidth = m_reloadIcon->size().width();
@@ -246,6 +247,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         }
         m_suggested->setHtml( html );
         m_suggested->show();
+        // adjust to required size
+        setCollapseHeight( m_suggested->boundingRect().height() );
+        setCollapseOn();
     }
     else if( data.contains( "html" ) )
     {
@@ -255,6 +259,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->setHtml( data[ "html" ].toString() );
         m_lyrics->show();
         setCollapseOff();
+        emit sizeHintChanged(Qt::MaximumSize);
     }
     else if( data.contains( "lyrics" ) )
     {
@@ -267,6 +272,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         //  need padding for title
         m_lyrics->setPlainText( lyrics[ 3 ].toString().trimmed() );
         setCollapseOff();
+        // the following line is needed to fix the bug of the lyrics applet sometimes not being correctly resized.
+        // I don't have the courage to put this into Applet::setCollapseOff(), maybe that would break other applets.
+        emit sizeHintChanged(Qt::MaximumSize);
     }
     else if( data.contains( "notfound" ) )
     {
@@ -316,14 +324,10 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         background = highlight;
     }
 
-    // HACK
-    // sometimes paint is done before the updateconstraints call
-    // so m_lyricsProxy bounding rect is not yet correct
     QRectF lyricsRect(
-        QPointF( standardPadding(), m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding() ),
-        QSizeF( size().width() - 2 * standardPadding(), boundingRect().height() - m_lyricsProxy->pos().y() - standardPadding() ) );
+        m_lyricsProxy->pos(),
+        QSizeF( size().width() - 2 * standardPadding(), m_lyricsProxy->boundingRect().height() ) );
 
-    lyricsRect.moveTopLeft( m_lyricsProxy->pos() );
     QPainterPath path;
     path.addRoundedRect( lyricsRect, 5, 5 );
     p->fillPath( path, background );
