@@ -167,7 +167,7 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
             lyrics = The::engineController()->currentTrack()->cachedLyrics();
             //debug() << "using cached lyrics: " << lyrics;
 
-            if( lyrics.contains( "<html>" , Qt::CaseInsensitive) )
+            if( lyrics.contains( "<html" , Qt::CaseInsensitive) )
             {
                 //we have stored html lyrics, so use that directly
                 sendNewLyricsHtml( lyrics );
@@ -218,7 +218,7 @@ LyricsManager::lyricsError( const QString &error )
         debug() << "showing cached lyrics!";
         //TODO: add some sort of feedback that we could not fetch new ones
         //so we are showing a cached result
-        if( currentTrack->cachedLyrics().contains( "<html>" , Qt::CaseInsensitive ) )
+        if( currentTrack->cachedLyrics().contains( "<html" , Qt::CaseInsensitive ) )
         {
             //we have stored html lyrics, so use that directly
             sendNewLyricsHtml( currentTrack->cachedLyrics() );

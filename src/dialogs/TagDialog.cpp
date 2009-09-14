@@ -945,7 +945,7 @@ void TagDialog::readTags()
 
     //lyrics
     // if there is no <html> tag, set it as text instead
-    if( m_lyrics.contains( "<html>" ) )
+    if( m_lyrics.contains( "<html" , Qt::CaseInsensitive ) )
         ui->kTextEdit_lyrics->setHtml( m_lyrics );
     else
          ui->kTextEdit_lyrics->setPlainText( m_lyrics );
