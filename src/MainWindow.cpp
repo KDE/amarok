@@ -123,6 +123,7 @@ MainWindow::MainWindow()
     : KMainWindow( 0 )
     , EngineObserver( The::engineController() )
     , m_lastBrowser( 0 )
+    , m_dockWidthsLocked( false )
 {
     DEBUG_BLOCK
 
@@ -299,7 +300,7 @@ MainWindow::init()
     setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browsersDock );
-    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock );
+    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock, Qt::Horizontal );
     addDockWidget( Qt::RightDockWidgetArea, m_playlistDock );
 
     KConfigGroup config = Amarok::config( "General Options" );
@@ -944,6 +945,19 @@ void MainWindow::resizeEvent( QResizeEvent * event )
 {
     QWidget::resizeEvent( event );
     m_controlBar->reRender();
+
+    if ( m_dockWidthsLocked )
+    {
+        m_dockWidthsLocked = false;
+        m_browsers->setMinimumWidth( 0 );
+        m_contextWidget->setMinimumWidth( 0 );
+        m_playlistWidget->setMinimumWidth( 0 );
+
+        m_browsers->setMaximumWidth( 9999 );
+        m_contextWidget->setMaximumWidth( 9999 );
+        m_playlistWidget->setMaximumWidth( 9999 );
+
+    }     
 }
 
 QPoint MainWindow::globalBackgroundOffset()
@@ -1095,38 +1109,53 @@ bool MainWindow::isLayoutLocked()
 void MainWindow::restoreLayout()
 {
 
+    DEBUG_BLOCK
     QFile file( Amarok::saveLocation() + "layout" );
 
-    bool loadDefault = true;
+    QByteArray layout;
     if ( file.open( QIODevice::ReadOnly ) )
     {
 
-        QByteArray layout = file.readAll();
+        layout = file.readAll();
         file.close();
 
-        loadDefault = !restoreState( layout, LAYOUT_VERSION );
     }
 
-    if ( loadDefault )
+    if ( !restoreState( layout, LAYOUT_VERSION ) )
     {
 
-        const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
+        //since no layout has been loaded, we know that the items are all placed next to each other in the main window
+        //so get the combined size of the widgets, as this is the space we have to play with. Then figure out
+        //how much to give to each. Give the context view any pixels leftover from the integer division.
 
-        QString defaultLayoutFile = "DefaultDockLayout32";
-        if( QSysInfo::WordSize == 64 )
-            defaultLayoutFile = "DefaultDockLayout64";
+        //int totalWidgetWidth = m_browsers->width() + m_contextView->width() + m_playlistWidget->width();
+        int totalWidgetWidth = contentsRect().width();
 
-        debug() << "Loading default layout: " << defaultLayoutFile;
-            
-        QFile defaultFile( url.path() + defaultLayoutFile );
+        //get the width of the splitter handles, we need to subtract these...
 
-        if ( defaultFile.open( QIODevice::ReadOnly ) )
-        {
-            QByteArray defaultLayout = defaultFile.readAll();
-            defaultFile.close();
+        QSplitter *dummySplitter = new QSplitter();
+        int splitterHandleWidth = dummySplitter->handleWidth();
+        delete dummySplitter;
 
-            restoreState( defaultLayout, LAYOUT_VERSION );
-        }
+        debug() << "splitter handle widths " << splitterHandleWidth;
+
+        totalWidgetWidth -= ( splitterHandleWidth * 2 );
+
+        debug() << "mainwindow width" <<  contentsRect().width();
+        debug() << "totalWidgetWidth" <<  totalWidgetWidth;
+        
+        int widgetWidth = totalWidgetWidth / 3;
+        int leftover = totalWidgetWidth % 3;
+
+
+        //We need to set fixed widths initially, just until the main window has been properly layed out. As soon as this has
+        //happened, we will unlock these sizes again so that the elements can be resized by the user.
+        m_browsers->setFixedWidth( widgetWidth );
+        m_contextWidget->setFixedWidth( widgetWidth + leftover );
+        m_playlistWidget->setFixedWidth( widgetWidth );
+
+        m_dockWidthsLocked = true;
+ 
     }
 }
 

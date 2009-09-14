@@ -206,6 +206,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         static QPointer<MainWindow> s_instance;
 
         bool m_layoutLocked;
+        bool m_dockWidthsLocked;
 
     private slots:
         void createContextView( Plasma::Containment *c );
