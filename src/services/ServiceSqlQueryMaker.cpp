@@ -592,6 +592,35 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
             debug() << "Warning: queryResult with queryType == NONE";
         }
     }
+        else
+    {
+        switch( d->queryType ) {
+            case QueryMaker::Custom:
+                emit newResultReady( m_collection->collectionId(), QStringList() );
+                break;
+            case QueryMaker::Track:
+                emit newResultReady( m_collection->collectionId(), Meta::TrackList() );
+                break;
+            case QueryMaker::Artist:
+                emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
+                break;
+            case QueryMaker::Album:
+                emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
+                break;
+            case QueryMaker::Genre:
+                emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
+                break;
+            case QueryMaker::Composer:
+                emit newResultReady( m_collection->collectionId(), Meta::ComposerList() );
+                break;
+            case QueryMaker::Year:
+                emit newResultReady( m_collection->collectionId(), Meta::YearList() );
+                break;
+
+        case QueryMaker::None:
+            debug() << "Warning: queryResult with queryType == NONE";
+        }
+    }
 
     //queryDone will be emitted in done(Job*)
 }
