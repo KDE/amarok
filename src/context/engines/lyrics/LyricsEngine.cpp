@@ -120,7 +120,7 @@ void LyricsEngine::update()
     QString lyrics = currentTrack->cachedLyrics();
     
     // don't rely on caching for streams
-    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream() && ( currentTrack->name() == m_title ) && ( currentTrack->artist()->name() == m_artist );
+    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
     
     m_title = currentTrack->name();
     m_artist = currentTrack->artist()->name();
