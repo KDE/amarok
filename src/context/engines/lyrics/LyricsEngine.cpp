@@ -152,7 +152,7 @@ void LyricsEngine::update()
 
     if( cached )
     {
-        if( lyrics.contains( "<html>" ) )
+        if( lyrics.contains( "<html" , Qt::CaseInsensitive ) )
             newLyricsHtml( lyrics );
         else
         {
