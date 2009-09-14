@@ -162,7 +162,7 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     prepareGeometryChange();
 
-    m_suggested->setTextWidth( size().width() - 2*standardPadding() );
+    m_suggested->setTextWidth( size().width() - 2 * standardPadding() );
     m_suggested->setPos( standardPadding(), m_suggested->pos().y() );
 
     // Assumes all icons are of equal width
@@ -324,9 +324,8 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         background = highlight;
     }
 
-    QRectF lyricsRect(
-        m_lyricsProxy->pos(),
-        QSizeF( size().width() - 2 * standardPadding(), m_lyricsProxy->boundingRect().height() ) );
+    const QRectF
+      lyricsRect( m_lyricsProxy->pos(), QSizeF( size().width() - 2 * standardPadding(), m_lyricsProxy->boundingRect().height() ) );
 
     QPainterPath path;
     path.addRoundedRect( lyricsRect, 5, 5 );
