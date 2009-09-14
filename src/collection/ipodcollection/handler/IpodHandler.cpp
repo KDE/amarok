@@ -359,6 +359,7 @@ IpodHandler::collectionActions()
 
         actions.append( staleOrphanedAction );
 
+#if 0
         if( m_supportsArtwork )
         {
             QAction *syncArtworkAction = new QAction( KIcon( "insert-image" ), i18n( "Synchronise Artwork" ), this );
@@ -368,6 +369,7 @@ IpodHandler::collectionActions()
 
             actions.append( syncArtworkAction );
         }
+#endif
     }
 
     return actions;
