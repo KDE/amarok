@@ -102,6 +102,14 @@ EngineController::~EngineController()
 }
 
 void
+EngineController::createFadeoutEffect()
+{
+    m_fader = new Phonon::VolumeFaderEffect( this );
+    m_path.insertEffect( m_fader );
+    m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
+}
+
+void
 EngineController::initializePhonon()
 {
     DEBUG_BLOCK
@@ -111,6 +119,7 @@ EngineController::initializePhonon()
     delete m_audio;
     delete m_preamp;
     delete m_equalizer;
+    delete m_fader;
 
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
@@ -133,6 +142,7 @@ EngineController::initializePhonon()
     // as the default is specified in the .cfg file, we can't just tell it to be a different default on OSX
 #ifdef Q_WS_MAC
     AmarokConfig::setReplayGainMode( AmarokConfig::EnumReplayGainMode::Off );
+    AmarokConfig::setFadeout( false );
 #endif
 
     // only create pre-amp if we have replaygain on, VolumeFaderEffect can cause phonon issues
@@ -140,6 +150,12 @@ EngineController::initializePhonon()
     {
         m_preamp = new Phonon::VolumeFaderEffect( this );
         m_path.insertEffect( m_preamp );
+    }
+
+    // only create fader if we have fadeout on, VolumeFaderEffect can cause phonon issues
+    if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() )
+    {
+        createFadeoutEffect();
     }
 
     m_media->setTickInterval( 100 );
@@ -287,7 +303,10 @@ EngineController::play() //SLOT
         return;
 
     if( m_fader )
-        m_fader->deleteLater();
+    {
+        m_fadeoutTimer->stop();
+        m_fader->setVolume(1.0);
+    }
 
     if ( m_media->state() == Phonon::PausedState )
     {
@@ -461,9 +480,10 @@ EngineController::stop( bool forceInstant ) //SLOT
     {
         stateChangedNotify( Phonon::StoppedState, Phonon::PlayingState ); //immediately disable Stop action
 
-        m_fader = new Phonon::VolumeFaderEffect( this );
-        m_path.insertEffect( m_fader );
-        m_fader->setFadeCurve( Phonon::VolumeFaderEffect::Fade9Decibel );
+        // WARNING: this can cause a gap in playback in GStreamer
+        if (! m_fader )
+            createFadeoutEffect();
+
         m_fader->fadeOut( AmarokConfig::fadeoutLength() );
 
         m_fadeoutTimer->start( AmarokConfig::fadeoutLength() + 1000 ); //add 1s for good measure, otherwise seems to cut off early (buffering..)
@@ -1099,8 +1119,8 @@ EngineController::slotStopFadeout() //SLOT
 
     if ( m_fader )
     {
-        m_fader->deleteLater();
         m_media->stop();
+        m_fader->setVolume( 1.0 );
     }
 }
 
