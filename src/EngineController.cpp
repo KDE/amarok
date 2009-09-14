@@ -135,7 +135,7 @@ EngineController::initializePhonon()
     AmarokConfig::setReplayGainMode( AmarokConfig::EnumReplayGainMode::Off );
 #endif
 
-    // only create pre-amp if we have replaygain on, preamp can cause phonon issues
+    // only create pre-amp if we have replaygain on, VolumeFaderEffect can cause phonon issues
     if( AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
         m_preamp = new Phonon::VolumeFaderEffect( this );
@@ -282,6 +282,7 @@ EngineController::play() //SLOT
 {
     DEBUG_BLOCK
 
+    // FIXME: what should we do in buffering state?
     if( m_media->state() == Phonon::PlayingState )
         return;
 
@@ -354,7 +355,6 @@ EngineController::playUrl( const KUrl &url, uint offset )
     slotStopFadeout();
 
     debug() << "URL: " << url.url();
-    /// TODO: commented out since audiocd needs porting to new devicelib framework, should not affect other urls
 
     if ( url.url().startsWith( "audiocd:/" ) )
     {
@@ -510,9 +510,10 @@ EngineController::seek( int ms ) //SLOT
         if ( m_boundedPlayback )
             seekTo = m_boundedPlayback->startPosition() + ms;
         else
-           seekTo = ms;
+            seekTo = ms;
 
         m_media->seek( static_cast<qint64>( seekTo ) );
+        // FIXME: is this correct for bounded playback?
         trackPositionChangedNotify( seekTo, true ); /* User seek */
     }
     else
