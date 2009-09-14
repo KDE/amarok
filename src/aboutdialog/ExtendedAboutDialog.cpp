@@ -291,7 +291,7 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     QWidget *mainWidget = new QWidget;
     mainWidget->setLayout(mainLayout);
     setMainWidget(mainWidget);
-    setInitialSize( QSize( 600, 460 ) );
+    setInitialSize( QSize( 480, 460 ) );
 }
 
 ExtendedAboutDialog::~ExtendedAboutDialog()
