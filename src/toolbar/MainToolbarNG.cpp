@@ -27,19 +27,12 @@
 #include <KLocale>
 #include <KVBox>
 
-#include <QAction>
-#include <QLabel>
 #include <QLayout>
-#include <QMenu>
-#include <QSlider>
-#include <QToolButton>
-#include <QWidgetAction>
 
 MainToolbarNG::MainToolbarNG( QWidget * parent )
     : QToolBar( i18n( "Main Toolbar NG" ), parent )
     , EngineObserver( The::engineController() )
     , m_currentTrackToolbar( 0 )
-
 {
     setObjectName( "Main Toolbar NG" );
 
@@ -65,8 +58,6 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
     volumeToolBar->addWidget( new VolumePopupButton( this ) );
     addWidget( volumeToolBar );
-
-
 }
 
 MainToolbarNG::~MainToolbarNG()

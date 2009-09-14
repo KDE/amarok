@@ -21,29 +21,19 @@
 
 #include <QToolBar>
 
-class QAction;
-class QLabel;
-class QMenu;
-class QSlider;
-class QToolButton;
-
 /**
-An new toolbar implementation.
-
-	@author 
+  An new toolbar implementation.
 */
 class MainToolbarNG : public QToolBar, public EngineObserver
 {
     Q_OBJECT
+
 public:
-    
     MainToolbarNG( QWidget * parent );
     ~MainToolbarNG();
 
 private:
-
     CurrentTrackToolbar * m_currentTrackToolbar;
-
 };
 
 #endif
