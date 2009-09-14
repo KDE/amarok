@@ -176,13 +176,10 @@ EngineController::initializePhonon()
     connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
 
-    //TODO: The xine engine does not support crossfading. Cannot get the gstreamer engine to work, will test this once I do.
-#if 0
     if( AmarokConfig::trackDelayLength() > -1 )
         m_media->setTransitionTime( AmarokConfig::trackDelayLength() ); // Also Handles gapless.
     else if( AmarokConfig::crossfadeLength() > 0 )  // TODO: Handle the possible options on when to crossfade.. the values are not documented anywhere however
         m_media->setTransitionTime( -AmarokConfig::crossfadeLength() );
-#endif
 }
 
 
