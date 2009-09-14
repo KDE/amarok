@@ -1065,7 +1065,7 @@ namespace Amarok
             s[len-1] = '_';
 
         int extensionIndex = s.lastIndexOf( '.' ); // correct trailing spaces in file name itself
-        if( ( extensionIndex != -1 ) && ( s.length() > 1 ) )
+        if( ( s.length() > 1 ) &&  ( extensionIndex > 0 ) )
             if( s.at( extensionIndex - 1 ) == ' ' )
                 s[extensionIndex - 1] = '_';
 
