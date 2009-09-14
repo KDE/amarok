@@ -75,6 +75,7 @@ OcsPersonItem::init()
 
         m_snBar->setIconSize( QSize( 16, 16 ) );
         m_snBar->setContentsMargins( 0, 0, 0, 0 );
+        m_snBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     }
     else
     {
@@ -83,6 +84,7 @@ OcsPersonItem::init()
     }
     m_iconsBar->setIconSize( QSize( 22, 22 ) );
     m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
+    m_iconsBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
 
     if( !m_person->emailAddress().isEmpty() )
     {
