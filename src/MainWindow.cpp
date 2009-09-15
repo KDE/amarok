@@ -382,6 +382,39 @@ MainWindow::createContextView( Plasma::Containment *containment )
     hideContextView( hide );
 }
 
+QMenu*
+MainWindow::createPopupMenu()
+{
+    QMenu* menu = new QMenu( this );
+
+    QList<QDockWidget *> dockwidgets = qFindChildren<QDockWidget *>( this );
+
+    foreach( QDockWidget* dockWidget, dockwidgets )
+    {
+        if( dockWidget->parentWidget() == this )
+            menu->addAction( dockWidget->toggleViewAction());
+    }
+
+    menu->addSeparator();
+
+    QList<QToolBar *> toolbars = qFindChildren<QToolBar *>( this );
+    QActionGroup* toolBarGroup = new QActionGroup( this );
+    toolBarGroup->setExclusive( true );
+
+    foreach( QToolBar* toolBar, toolbars )
+    {
+        if( toolBar->parentWidget() == this )
+        {
+            QAction* action = toolBar->toggleViewAction();
+            connect( action, SIGNAL( toggled( bool ) ), toolBar, SLOT( setVisible( bool ) ) );
+            toolBarGroup->addAction( action );
+            menu->addAction( action );
+        }
+    }
+
+    return menu;
+}
+
 void
 MainWindow::slotShrinkBrowsers( int index )
 {
@@ -1123,7 +1156,6 @@ void MainWindow::restoreLayout()
 
     if ( !restoreState( layout, LAYOUT_VERSION ) )
     {
-
         //since no layout has been loaded, we know that the items are all placed next to each other in the main window
         //so get the combined size of the widgets, as this is the space we have to play with. Then figure out
         //how much to give to each. Give the context view any pixels leftover from the integer division.
@@ -1155,8 +1187,11 @@ void MainWindow::restoreLayout()
         m_playlistWidget->setFixedWidth( widgetWidth );
 
         m_dockWidthsLocked = true;
- 
     }
+
+    // Ensure that only one toolbar is visible
+    if( !m_controlBar->isHidden() && !m_newToolbar->isHidden() )
+        m_newToolbar->hide();
 }
 
 namespace The {

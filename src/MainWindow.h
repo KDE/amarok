@@ -91,6 +91,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
         void deleteBrowsers();
 
+        /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
+        virtual QMenu* createPopupMenu();
+
         QString activeBrowserName();
 
         CollectionWidget * collectionBrowser();
