@@ -106,7 +106,7 @@ public:
     /**
      * The state of the engine
      */
-    Phonon::State state() const { return phononMediaObject()->state(); }
+    Phonon::State state() const;
 
     /*enum Filetype { MP3 };*/ //assuming MP3 for time being
     /*AMAROK_EXPORT*/ static bool installDistroCodec();

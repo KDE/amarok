@@ -475,8 +475,6 @@ EngineController::stop( bool forceInstant ) //SLOT
 
     if( AmarokConfig::fadeout() && AmarokConfig::fadeoutLength() && !forceInstant )
     {
-        stateChangedNotify( Phonon::StoppedState, Phonon::PlayingState ); //immediately disable Stop action
-
         // WARNING: this can cause a gap in playback in GStreamer
         if (! m_fader )
             createFadeoutEffect();
@@ -484,6 +482,8 @@ EngineController::stop( bool forceInstant ) //SLOT
         m_fader->fadeOut( AmarokConfig::fadeoutLength() );
 
         m_fadeoutTimer->start( AmarokConfig::fadeoutLength() + 1000 ); //add 1s for good measure, otherwise seems to cut off early (buffering..)
+
+        stateChangedNotify( Phonon::StoppedState, m_media->state() ); //immediately disable Stop action
     }
     else
         m_media->stop();
@@ -659,6 +659,15 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     {
         play( track );
     }
+}
+
+Phonon::State
+EngineController::state() const
+{
+    if ( m_fadeoutTimer->isActive() )
+        return Phonon::StoppedState;
+    else
+        return phononMediaObject()->state();
 }
 
 bool
@@ -1005,6 +1014,16 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
 
         else if( m_media->queue().isEmpty() )
             The::playlistActions()->requestNextTrack();
+    }
+
+    if ( m_fadeoutTimer->isActive() )
+    {
+        // We've stopped already as far as the rest of Amarok is concerned
+        if ( oldState == Phonon::PlayingState )
+            oldState = Phonon::StoppedState;
+
+        if ( oldState == newState )
+            return;
     }
 
     stateChangedNotify( newState, oldState );
