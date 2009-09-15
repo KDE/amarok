@@ -467,8 +467,8 @@ EngineController::stop( bool forceInstant ) //SLOT
         trackChangedNotify( Meta::TrackPtr( 0 ) );
     }
 
-    // Stop instantly if fadeout is already running, or the media is paused (i.e. pressing Stop twice)
-    if( m_fader || m_media->state() == Phonon::PausedState )
+    // Stop instantly if fadeout is already running, or the media is not playing
+    if( m_fader || m_media->state() != Phonon::PlayingState )
     {
         forceInstant = true;
     }
