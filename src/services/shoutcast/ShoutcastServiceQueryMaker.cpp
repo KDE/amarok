@@ -247,10 +247,18 @@ void ShoutcastServiceQueryMaker::fetchStations()
     if ( m_collection->genreMap().isEmpty() )
         refetch = true;
     else {
-        GenreMatcher genreMatcher( m_collection->genreMap()[m_genreMatch] );
-        m_currentTrackQueryResults = genreMatcher.match( m_collection );
-        if ( m_currentTrackQueryResults.count() == 0 )
+        Meta::GenrePtr genre = m_collection->genreMap().value( m_genreMatch );
+        if( genre )
+        {
+            GenreMatcher genreMatcher( genre);
+            m_currentTrackQueryResults = genreMatcher.match( m_collection );
+            if ( m_currentTrackQueryResults.count() == 0 )
+                refetch = true;
+        }
+        else
+        {
             refetch = true;
+        }
     }
 
     
