@@ -951,9 +951,6 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
     else if( m_preamp )
         m_preamp->setVolumeDecibel( 0.0 );
 
-    // state never changes if tracks are queued, but we need this to update the caption
-    stateChangedNotify( m_media->state(), m_media->state() );
-
     trackChangedNotify( m_currentTrack );
     newTrackPlaying();
 }
