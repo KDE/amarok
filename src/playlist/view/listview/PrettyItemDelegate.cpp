@@ -363,26 +363,28 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
             //TODO: propper 9 part painting, but I dont want to bother with this until we
             //get some new graphics anyway...
 
-           int overlayHeight = rowHeight - 2;
-           int endWidth = overlayHeight / 4;
+            int overlayXOffset = rowOffsetX - 3;
+            int overlayHeight = rowHeight - 2;
+            int overlayLength = rowWidth + 6;
+            int endWidth = overlayHeight / 4;
 
-            painter->drawPixmap( rowOffsetX - 1, rowOffsetY + 1,
-                                  The::svgHandler()->renderSvg(
-                                  "active_overlay_left",
-                                  endWidth, overlayHeight,
-                                  "active_overlay_left" ) );
+            painter->drawPixmap( overlayXOffset, rowOffsetY + 1,
+                                 The::svgHandler()->renderSvg(
+                                 "active_overlay_left",
+                                 endWidth, overlayHeight,
+                                 "active_overlay_left" ) );
            
-            painter->drawPixmap( ( rowOffsetX + endWidth ) - 1, rowOffsetY + 1,
-                                  The::svgHandler()->renderSvg(
-                                  "active_overlay_center",
-                                  ( rowWidth + 2 ) - ( endWidth * 2 ), overlayHeight,
-                                  "active_overlay_center" ) );
+            painter->drawPixmap( overlayXOffset + endWidth, rowOffsetY + 1,
+                                 The::svgHandler()->renderSvg(
+                                 "active_overlay_mid",
+                                 overlayLength - endWidth * 2, overlayHeight,
+                                 "active_overlay_mid" ) );
 
-            painter->drawPixmap( ( rowOffsetX - 1 ) + ( ( rowWidth + 2 ) - endWidth ) , rowOffsetY + 1,
-                                   The::svgHandler()->renderSvg(
-                                   "active_overlay_right",
-                                   endWidth, overlayHeight,
-                                   "active_overlay_right" ) );
+            painter->drawPixmap( overlayXOffset + ( overlayLength - endWidth ), rowOffsetY + 1,
+                                 The::svgHandler()->renderSvg(
+                                 "active_overlay_right",
+                                 endWidth, overlayHeight,
+                                 "active_overlay_right" ) );
         }
 
         QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth, rowHeight );
