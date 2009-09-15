@@ -963,10 +963,6 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
 {
     DEBUG_BLOCK
 
-    // Sanity checks:
-    if( newState == oldState )
-        return;
-
     // HACK:
     // The following check is an attempt to fix http://bugs.kde.org/show_bug.cgi?id=180339
     // ("amarok stops playing tracks") and other issues with Phonon.
@@ -982,6 +978,10 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
         initializePhonon();
         newState = Phonon::ErrorState;  // Indicate error
     }
+
+    // Sanity checks:
+    if( newState == oldState )
+        return;
 
     if( newState == Phonon::ErrorState )  // If media is borked, skip to next track
     {
