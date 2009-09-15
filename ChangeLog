@@ -15,6 +15,10 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * Multiple fixes for the Track Timecode popups. They are no longer truncated
+      if there is not enough space to the right and the issue with them getting 
+      "stuck" has also been fixed. Thanks to Simon Bühler 
+      <simon@aktionspotential.de> for this patch. (BR 196924)
     * Do not crash when removing a track with no album from the playlist while
       the repeat album navigator is active. (BR 207427)
     * Fix genre tag in old MP4 files not being shown correctly (fixed in
