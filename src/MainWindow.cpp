@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2002 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2002-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2002 Gabor Lehel <illissius@gmail.com>                                 *
  * Copyright (c) 2002 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *

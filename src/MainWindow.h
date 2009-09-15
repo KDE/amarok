@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2002 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2002-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
