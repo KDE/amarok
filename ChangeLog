@@ -2,7 +2,11 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
+
 VERSION 2.2-rc1
+  CHANGES:
+    * Added "Lock layout" option to the main window's context menu.    
+
   BUGFIXES:
     * Fix the ends of the active track indicator getting stretched badly on 
       wide playlists
@@ -15,9 +19,9 @@ VERSION 2.2-rc1
     * Do not crash when removing a track with no album from the playlist while
       the repeat album navigator is active. (BR 207427)
 
+
 VERSION 2.2-beta2
   FEATURES:
-    * Added "Lock layout" option to the mainwindow's context menu.    
     * Added DBus methods Forward and Backward for relative seeking (BR 206028)
       and PlayPause for toggling pause state (patches by Michael Zanetti
       <michael_zanetti@gmx.net>).
