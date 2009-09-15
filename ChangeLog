@@ -2,8 +2,10 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
+
 VERSION 2.2-beta2
   FEATURES:
+    * Added "Lock layout" option to the mainwindow's context menu.    
     * Added DBus methods Forward and Backward for relative seeking (BR 206028)
       and PlayPause for toggling pause state (patches by Michael Zanetti
       <michael_zanetti@gmx.net>).
@@ -15,6 +17,8 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * Only one toolbar type will be enabled at any time (Toolbar or ToolbarNG).
+      Previously both could be enabled concurrently by accident.
     * Multiple fixes for the Track Timecode popups. They are no longer truncated
       if there is not enough space to the right and the issue with them getting 
       "stuck" has also been fixed. Thanks to Simon Bühler 
@@ -56,6 +60,7 @@ VERSION 2.2-beta2
       (BR 194328)
     * Fixed issue where files or folders with the same name but different case
       sensitivity were not scanned and/or retained. (BR 197384)
+
 
 VERSION 2.2-beta1
   FEATURES:
