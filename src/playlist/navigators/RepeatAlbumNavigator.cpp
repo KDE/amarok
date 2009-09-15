@@ -79,7 +79,12 @@ Playlist::RepeatAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
         {
             if ( alb_iter->contains( id ) )
             {
-                debug() << "    from" << alb_iter.key()->prettyName();
+
+                if( alb_iter.key() )
+                    debug() << "    from" << alb_iter.key()->prettyName();
+                else
+                    debug() << "    which is not in any album";
+                
                 Meta::AlbumPtr album = alb_iter.key();
                 ItemList atl = alb_iter.value();
                 if ( m_currentTrack == id )
@@ -90,7 +95,8 @@ Playlist::RepeatAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
                 atl.removeAll( id );
                 if ( atl.isEmpty() )
                 {
-                    debug() << album->prettyName() << "is now empty";
+                    if( album )
+                        debug() << album->prettyName() << "is now empty";
                     alb_iter = m_albumGroups.erase( alb_iter );
                     if ( album == m_currentAlbum )
                     {
