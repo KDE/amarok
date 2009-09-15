@@ -358,11 +358,31 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
         if ( i == config.activeIndicatorRow() && index.data( ActiveTrackRole ).toBool() )
         {
+
+            //paint this in 3 parts to solve stretching issues with wide playlists
+            //TODO: propper 9 part painting, but I dont want to bother with this until we
+            //get some new graphics anyway...
+
+           int overlayHeight = rowHeight - 2;
+           int endWidth = overlayHeight / 4;
+
             painter->drawPixmap( rowOffsetX - 1, rowOffsetY + 1,
                                   The::svgHandler()->renderSvg(
-                                  "active_overlay",
-                                  rowWidth + 2, rowHeight - 2,
-                                  "active_overlay" ) );
+                                  "active_overlay_left",
+                                  endWidth, overlayHeight,
+                                  "active_overlay_left" ) );
+           
+            painter->drawPixmap( ( rowOffsetX + endWidth ) - 1, rowOffsetY + 1,
+                                  The::svgHandler()->renderSvg(
+                                  "active_overlay_center",
+                                  ( rowWidth + 2 ) - ( endWidth * 2 ), overlayHeight,
+                                  "active_overlay_center" ) );
+
+            painter->drawPixmap( ( rowOffsetX - 1 ) + ( ( rowWidth + 2 ) - endWidth ) , rowOffsetY + 1,
+                                   The::svgHandler()->renderSvg(
+                                   "active_overlay_right",
+                                   endWidth, overlayHeight,
+                                   "active_overlay_right" ) );
         }
 
         QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth, rowHeight );
