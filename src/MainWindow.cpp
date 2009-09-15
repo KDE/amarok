@@ -303,10 +303,7 @@ MainWindow::init()
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock, Qt::Horizontal );
     addDockWidget( Qt::RightDockWidgetArea, m_playlistDock );
 
-    KConfigGroup config = Amarok::config( "General Options" );
-    const bool locked = config.readEntry( "Lock Layout", true );
-
-    setLayoutLocked( locked );
+    setLayoutLocked( AmarokConfig::lockLayout() );
 
     //<Browsers>
     {
@@ -387,6 +384,16 @@ MainWindow::createPopupMenu()
 {
     QMenu* menu = new QMenu( this );
 
+    // Layout locking:
+    QAction* lockAction = new QAction( i18n( "Lock layout" ), this );
+    lockAction->setCheckable( true );
+    lockAction->setChecked( AmarokConfig::lockLayout() );
+    connect( lockAction, SIGNAL( toggled( bool ) ), SLOT( setLayoutLocked( bool ) ) );
+    menu->addAction( lockAction );
+
+    menu->addSeparator();
+
+    // Dock widgets:
     QList<QDockWidget *> dockwidgets = qFindChildren<QDockWidget *>( this );
 
     foreach( QDockWidget* dockWidget, dockwidgets )
@@ -397,6 +404,7 @@ MainWindow::createPopupMenu()
 
     menu->addSeparator();
 
+    // Toolbars:
     QList<QToolBar *> toolbars = qFindChildren<QToolBar *>( this );
     QActionGroup* toolBarGroup = new QActionGroup( this );
     toolBarGroup->setExclusive( true );
@@ -1139,6 +1147,8 @@ void MainWindow::setLayoutLocked( bool locked )
         m_newToolbar->setMovable( true );
     }
 
+    AmarokConfig::setLockLayout( locked );
+    AmarokConfig::self()->writeConfig();
     m_layoutLocked = locked;
 }
 
