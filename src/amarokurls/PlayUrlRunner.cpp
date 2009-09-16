@@ -65,7 +65,7 @@ QString PlayUrlRunner::command() const
     return "play";
 }
 
-BookmarkList PlayUrlRunner::bookmarksFromUrl ( KUrl url )
+BookmarkList PlayUrlRunner::bookmarksFromUrl( KUrl url )
 {
     BookmarkList list;
 
@@ -75,7 +75,10 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl ( KUrl url )
     // The last character of a base64 encoded string is always '=', which
     // chokes the SQL. Since we are using a substring like text comparison
     // and every url in the database will have the '=', just chop it off.
-    track_encoded.chop ( 1 );
+
+    // some tracks even seem to have multiple '='s at the end... chop them all off!
+    while( track_encoded.endsWith( '=' ) )
+        track_encoded.chop ( 1 );
 
     // Queries the database for bookmarks where the url field contains
     // the base64 encoded url (minus the '=').
