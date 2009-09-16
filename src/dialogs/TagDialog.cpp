@@ -1328,7 +1328,11 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         else
         {
             m_storedLyrics.remove( track );
-            m_storedLyrics.insert( track, ui->kTextEdit_lyrics->toHtml() );
+
+            // don't call toHtml() here as it would break user-supplied HTML code
+            // (since the HTML code would be escaped, the plain HTML code would
+            // be shown in the lyrics applet)
+            m_storedLyrics.insert( track, ui->kTextEdit_lyrics->toPlainText() );
         }
     }
 }
