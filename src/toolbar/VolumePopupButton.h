@@ -25,6 +25,7 @@
 class QAction;
 class QLabel;
 class QMenu;
+class QMouseEvent;
 class QSlider;
 class QWheelEvent;
 
@@ -36,8 +37,8 @@ class VolumePopupButton : public QToolButton, public EngineObserver
 public:
     VolumePopupButton( QWidget * parent );
     
-protected slots:
-    void clicked();
+protected:
+    void mouseReleaseEvent( QMouseEvent * event );
     void wheelEvent( QWheelEvent * event );
 
 private:

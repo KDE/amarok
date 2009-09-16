@@ -76,8 +76,6 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
 
     //set correct icon and label initially
     engineVolumeChanged( ec->volume() );
-
-    connect( this, SIGNAL( clicked( bool ) ), SLOT( clicked() ) );
 }
 
 void
@@ -118,15 +116,24 @@ VolumePopupButton::engineMuteStateChanged( bool muted )
 }
 
 void
-VolumePopupButton::clicked()
+VolumePopupButton::mouseReleaseEvent( QMouseEvent * event )
 {
-    if ( m_volumeMenu->isVisible() )
-        m_volumeMenu->hide();
-    else
+    if( event->button() == Qt::LeftButton )
     {
-        const QPoint pos( 0, height() );
-        m_volumeMenu->exec( mapToGlobal( pos ) );
+        if ( m_volumeMenu->isVisible() )
+            m_volumeMenu->hide();
+        else
+        {
+            const QPoint pos( 0, height() );
+            m_volumeMenu->exec( mapToGlobal( pos ) );
+        }
     }
+    else if( event->button() == Qt::MidButton )
+    {
+        The::engineController()->toggleMute();
+    }
+
+    QToolButton::mouseReleaseEvent( event );
 }
 
 void
