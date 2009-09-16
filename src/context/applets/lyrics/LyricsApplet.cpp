@@ -205,6 +205,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     //debug() << "got lyrics data: " << data;
 
     m_titleLabel->show();
+
+    setBusy( false );
+    
     if( data.contains( "noscriptrunning" ) )
     {
         m_suggested->hide();
@@ -220,6 +223,8 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
     else if( data.contains( "fetching" ) )
     {
+        setBusy( true );
+        
         m_suggested->hide();
         m_lyrics->show();
         m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
