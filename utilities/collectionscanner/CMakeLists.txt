@@ -50,6 +50,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 
 qt4_automoc( CollectionScanner.cpp )
 
+add_definitions( "-DUTILITIES_BUILD" )
+
 set(amarokcollectionscanner_SRCS CollectionScanner.cpp ../../shared/MetaReplayGain.cpp AFTUtility.cpp)
 
 add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
