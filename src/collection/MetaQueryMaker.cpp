@@ -105,48 +105,9 @@ MetaQueryMaker::resultCount() const
 QueryMaker*
 MetaQueryMaker::setQueryType( QueryType type )
 {
-    if( type == QueryMaker::Track )
-    {
-        foreach( QueryMaker *b, builders )
-            b->setQueryType( QueryMaker::Track );
-        return this;
-    }
-    else if( type == QueryMaker::Artist )
-    {
-        foreach( QueryMaker *b, builders )
-            b->setQueryType( QueryMaker::Artist );
-        return this;
-    }
-    else if( type == QueryMaker::Album )
-    {
-        foreach( QueryMaker *b, builders )
-            b->setQueryType( QueryMaker::Album );
-        return this;
-    }
-    else if( type == QueryMaker::Genre )
-    {
-        foreach( QueryMaker *b, builders )
-            b->setQueryType( QueryMaker::Genre );
-        return this;
-    }
-    else if( type == QueryMaker::Composer )
-    {
-        foreach( QueryMaker *b, builders )
-            b->setQueryType( QueryMaker::Composer );
-        return this;
-    }
-    else if( type == QueryMaker::Year )
-    {
-        foreach( QueryMaker *b, builders )
-            b->setQueryType( QueryMaker::Year );
-        return this;
-    }
-    else
-    {
-        foreach( QueryMaker *b, builders )
-            b->setQueryType( QueryMaker::Custom );
-        return this;
-    }
+    foreach( QueryMaker *qm, builders )
+        qm->setQueryType( type );
+    return this;
 }
 
 QueryMaker*
@@ -323,6 +284,14 @@ MetaQueryMaker::endAndOr()
 {
     foreach( QueryMaker *b, builders )
         b->endAndOr();
+    return this;
+}
+
+QueryMaker*
+MetaQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
+{
+    foreach( QueryMaker *qm, builders )
+        qm->setAlbumQueryMode( mode );
     return this;
 }
 
