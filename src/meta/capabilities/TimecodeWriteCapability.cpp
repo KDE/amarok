@@ -39,18 +39,14 @@ bool TimecodeWriteCapability::writeTimecode( int seconds, Meta::TrackPtr track )
     // lets see if we are bookmarking the currently playing track, if so
     // we need to update the slider with another icon
     Meta::TrackPtr currtrack = The::engineController()->currentTrack();
-    if(  currtrack  == track )
+    if( currtrack  == track )
     {
         debug() << " current track";
         ProgressWidget* pw = ProgressWidget::instance();
         if( pw )
         {
-            QMap<QString, QString> args = url.args();
-            if ( args.keys().contains( "pos" ) )
-            {
-                int pos = args.value( "pos" ).toInt();
-                ProgressWidget::instance()->addBookmark( url.name(), pos );
-            }
+            debug() << "adding at seconds: " << seconds;
+            ProgressWidget::instance()->addBookmark( url.name(), seconds * 1000 );
         }
         else
             debug() << "ProgressWidget is NULL";

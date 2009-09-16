@@ -77,11 +77,11 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 }
 
 void
-ProgressWidget::addBookmark( const QString &name, int x )
+ProgressWidget::addBookmark( const QString &name, int milliSeconds )
 {
     DEBUG_BLOCK
     if( m_slider )
-        m_slider->drawTriangle( name, x );
+        m_slider->drawTriangle( name, milliSeconds );
 }
 
 void
