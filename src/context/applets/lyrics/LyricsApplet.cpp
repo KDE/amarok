@@ -112,20 +112,10 @@ void LyricsApplet::init()
     setEditing( false );
 
     m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
-        .arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
-        .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
+        .arg( App::instance()->palette().background().color().name() )
+        .arg( App::instance()->palette().text().color().name() ) );
 
     m_lyricsProxy->setWidget( m_lyrics );
-
-    QPalette pal;
-    QBrush brush( PaletteHandler::highlightColor().lighter( 170 ) );
-    brush.setStyle( Qt::SolidPattern );
-    pal.setBrush( QPalette::Active, QPalette::Base, brush );
-    pal.setBrush( QPalette::Inactive, QPalette::Base, brush );
-    pal.setBrush( QPalette::Disabled, QPalette::Base, brush );
-    pal.setBrush( QPalette::Window, brush );
-    m_lyrics->setPalette( pal );
-    m_lyricsProxy->setPalette( pal );
 
     // only show when we need to let the user
     // choose between suggestions
@@ -315,13 +305,12 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     //draw background of lyrics text
     p->save();
 
-    QColor background = Qt::white; // TODO: Looks crap on dark colour schemes?
-    if( m_lyrics->isReadOnly() )
+    QColor background( App::instance()->palette().background().color() );
+    
+    if( !m_lyrics->isReadOnly() )
     {
-        QColor highlight( App::instance()->palette().highlight().color() );
-        highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
-
-        background = highlight;
+        // different background color when we're in edit mode
+        background = App::instance()->palette().alternateBase().color();
     }
 
     const QRectF
@@ -340,7 +329,8 @@ LyricsApplet::paletteChanged( const QPalette & palette )
 
     if( m_lyrics )
        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
-            .arg( PaletteHandler::highlightColor().lighter( 150 ).name() ).arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
+       .arg( App::instance()->palette().background().color().name() )
+       .arg( App::instance()->palette().text().color().name() ) );
 }
 
 void
