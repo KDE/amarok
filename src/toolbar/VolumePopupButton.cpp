@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -28,7 +29,6 @@
 
 VolumePopupButton::VolumePopupButton( QWidget * parent )
 {
-
     //create the volume popup
     m_volumeMenu = new QMenu( 0 );
 
@@ -88,17 +88,24 @@ void VolumePopupButton::engineVolumeChanged( int newVolume )
 
     //make sure to uncheck mute toolbar when moving slider
     m_muteAction->setChecked( false );
+
+    setToolTip( i18n( "Volume: %1% %2", newVolume, ( m_muteAction->isChecked() ? i18n( "(muted)" ) : "" ) ) );
 }
 
 void VolumePopupButton::engineMuteStateChanged( bool muted )
 {
+    const int volume = The::engineController()->volume();
+
     if ( muted )
+    {
         setIcon( KIcon( "audio-volume-muted" ) );
+        setToolTip( i18n( "Volume: %1% %2", volume, ( muted ? i18n( "(muted)" ) : "" ) ) );
+    }
     else
     {
-        EngineController* const ec = The::engineController();
-        engineVolumeChanged( ec->volume() );
+        engineVolumeChanged( volume );
     }
+
     m_muteAction->setChecked( muted );
 }
 
