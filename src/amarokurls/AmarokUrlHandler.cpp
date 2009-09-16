@@ -48,6 +48,11 @@ AmarokUrlHandler::AmarokUrlHandler()
     , m_playRunner ( 0 )
     , m_timecodeObserver( 0 )
 {
+    DEBUG_BLOCK
+
+    //init the bookmark model to make sure that db tables are created/updated if needed.
+    BookmarkModel::instance();
+    
     //we init some of the default runners here.
     m_navigationRunner = new NavigationUrlRunner();
     m_playlistViewRunner = new Playlist::ViewUrlRunner();
