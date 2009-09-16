@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,16 +24,19 @@
 
 #include "widgets/ProgressWidget.h"
 
+#include <KApplication>
 #include <KIcon>
 #include <KLocale>
 #include <KVBox>
 
+#include <QEvent>
 #include <QLayout>
 
 MainToolbarNG::MainToolbarNG( QWidget * parent )
     : QToolBar( i18n( "Main Toolbar NG" ), parent )
     , EngineObserver( The::engineController() )
     , m_currentTrackToolbar( 0 )
+    , m_volumePopupButton( 0 )
 {
     setObjectName( "Main Toolbar NG" );
 
@@ -56,12 +60,27 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     QToolBar *volumeToolBar = new QToolBar( this );
     volumeToolBar->setIconSize( QSize( 22, 22 ) );
     volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
-    volumeToolBar->addWidget( new VolumePopupButton( this ) );
+    m_volumePopupButton = new VolumePopupButton( this );
+    volumeToolBar->addWidget( m_volumePopupButton );
     addWidget( volumeToolBar );
+
+    installEventFilter( this );
 }
 
 MainToolbarNG::~MainToolbarNG()
+{}
+
+bool
+MainToolbarNG::eventFilter( QObject* object, QEvent* event )
 {
+    // This makes it possible to change volume by using the mouse wheel anywhere on the toolbar
+    if( event->type() == QEvent::Wheel && object == this )
+    {
+        kapp->sendEvent( m_volumePopupButton, event );
+        return true;
+    }
+
+    return QToolBar::eventFilter( object, event );
 }
 
 #include "MainToolbarNG.moc"

@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,6 +22,9 @@
 
 #include <QToolBar>
 
+class QEvent;
+class VolumePopupButton;
+
 /**
   An new toolbar implementation.
 */
@@ -32,8 +36,11 @@ public:
     MainToolbarNG( QWidget * parent );
     ~MainToolbarNG();
 
+    virtual bool eventFilter( QObject* object, QEvent* event );
+
 private:
     CurrentTrackToolbar * m_currentTrackToolbar;
+    VolumePopupButton* m_volumePopupButton;
 };
 
 #endif
