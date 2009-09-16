@@ -20,17 +20,19 @@
 
 #include "EngineObserver.h"
 
-#include "QAction"
-#include "QLabel"
-#include "QMenu"
-#include "QSlider"
-#include "QToolButton"
-#include "QWheelEvent"
+#include <QToolButton>
+
+class QAction;
+class QLabel;
+class QMenu;
+class QSlider;
+class QWheelEvent;
 
 
 class VolumePopupButton : public QToolButton, public EngineObserver
 {
     Q_OBJECT
+
 public:
     VolumePopupButton( QWidget * parent );
     

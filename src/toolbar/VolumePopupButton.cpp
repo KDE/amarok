@@ -22,12 +22,19 @@
 #include "Debug.h"
 #include "EngineController.h"
 
-#include "KVBox"
+#include <KVBox>
 
-#include <QWidgetAction>
+#include <QAction>
+#include <QLabel>
+#include <QMenu>
+#include <QSlider>
 #include <QToolBar>
+#include <QWheelEvent>
+#include <QWidgetAction>
+
 
 VolumePopupButton::VolumePopupButton( QWidget * parent )
+    : QToolButton( parent )
 {
     //create the volume popup
     m_volumeMenu = new QMenu( 0 );
@@ -70,11 +77,11 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     //set correct icon and label initially
     engineVolumeChanged( ec->volume() );
 
-    connect( this, SIGNAL( clicked ( bool ) ), this, SLOT( clicked() ) );
-
+    connect( this, SIGNAL( clicked( bool ) ), SLOT( clicked() ) );
 }
 
-void VolumePopupButton::engineVolumeChanged( int newVolume )
+void
+VolumePopupButton::engineVolumeChanged( int newVolume )
 {
     if ( newVolume < 34 )
         setIcon( KIcon( "audio-volume-low" ) );
@@ -92,7 +99,8 @@ void VolumePopupButton::engineVolumeChanged( int newVolume )
     setToolTip( i18n( "Volume: %1% %2", newVolume, ( m_muteAction->isChecked() ? i18n( "(muted)" ) : "" ) ) );
 }
 
-void VolumePopupButton::engineMuteStateChanged( bool muted )
+void
+VolumePopupButton::engineMuteStateChanged( bool muted )
 {
     const int volume = The::engineController()->volume();
 
@@ -109,27 +117,28 @@ void VolumePopupButton::engineMuteStateChanged( bool muted )
     m_muteAction->setChecked( muted );
 }
 
-void VolumePopupButton::clicked()
+void
+VolumePopupButton::clicked()
 {
     if ( m_volumeMenu->isVisible() )
         m_volumeMenu->hide();
     else
     {
-        QPoint pos( 0, height() );
-        m_volumeMenu->exec(  mapToGlobal( pos ) );
+        const QPoint pos( 0, height() );
+        m_volumeMenu->exec( mapToGlobal( pos ) );
     }
 }
 
-void VolumePopupButton::wheelEvent( QWheelEvent * event )
+void
+VolumePopupButton::wheelEvent( QWheelEvent * event )
 {
-    DEBUG_BLOCK
-    debug() << "delta: " << event->delta();
+    //debug() << "delta: " << event->delta();
     event->accept();
 
     EngineController* const ec = The::engineController();
-    int volume = ec->volume();
 
-    volume = qBound( 0, volume + event->delta() / 40 , 100 );
+    const int volume = qBound( 0, ec->volume() + event->delta() / 40 , 100 );
     ec->setVolume( volume );
 }
+
 #include "VolumePopupButton.moc"
