@@ -944,7 +944,8 @@ void TagDialog::readTags()
     ui->kLineEdit_location->setText( m_currentTrack->prettyUrl() );
 
     //lyrics
-    // if there is no <html> tag, set it as text instead
+    // check if the lyrics data contains "<html" (note the missing closing bracket,
+    // this enables XHTML lyrics to be recognized) - otherwise the data is plaintext
     if( m_lyrics.contains( "<html" , Qt::CaseInsensitive ) )
         ui->kTextEdit_lyrics->setHtml( m_lyrics );
     else

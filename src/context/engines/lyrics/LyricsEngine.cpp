@@ -152,6 +152,8 @@ void LyricsEngine::update()
 
     if( cached )
     {
+        // check if the lyrics data contains "<html" (note the missing closing bracket,
+        // this enables XHTML lyrics to be recognized)
         if( lyrics.contains( "<html" , Qt::CaseInsensitive ) )
             newLyricsHtml( lyrics );
         else
