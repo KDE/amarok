@@ -675,7 +675,6 @@ EngineController::isEqSupported() const
     return ( !m_equalizer.isNull() );
 }
 
-
 double
 EngineController::eqMaxGain() const
 {
@@ -775,8 +774,6 @@ EngineController::eqUpdate() //SLOT
 void
 EngineController::slotTick( qint64 position )
 {
-
-
     if ( m_boundedPlayback )
     {
         trackPositionChangedNotify( static_cast<long>( position - m_boundedPlayback->startPosition() ), false );
@@ -793,12 +790,12 @@ EngineController::slotTick( qint64 position )
     }
 }
 
-
 void
 EngineController::slotAboutToFinish()
 {
     DEBUG_BLOCK
     debug() << "Track finished completely, updating statistics";
+
     if( m_currentTrack ) // not sure why this should not be the case, but sometimes happens. don't crash.
         m_currentTrack->finishedPlaying( 1.0 ); // If we reach aboutToFinish, the track is done as far as we are concerned.
     if( m_multiPlayback )
@@ -1100,7 +1097,8 @@ EngineController::slotStopFadeout() //SLOT
     // Make sure the timer won't call this method again
     m_fadeoutTimer->stop();
 
-    if ( m_fader ) {
+    if ( m_fader )
+    {
         m_fader->deleteLater();
         m_media->stop();
     }
@@ -1110,6 +1108,7 @@ void EngineController::slotTitleChanged( int titleNumber )
 {
     DEBUG_BLOCK
     Q_UNUSED( titleNumber );
+
     slotAboutToFinish();
 }
 

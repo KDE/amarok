@@ -56,6 +56,7 @@ public:
      * Returns the global EngineController instance
      */
     static EngineController* instance();
+
     /**
      * Destroys the global EngineController instance
      */
@@ -66,6 +67,7 @@ public:
      * called (ie: when Amarok was quit)
      */
     void restoreSession();
+
     /**
      * Saves the currently playing track and the playing/paused/stopped state
      */
@@ -172,24 +174,28 @@ public slots:
      * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
      */
     void play();
+
     /**
      * Plays the specified track
      *
      * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
      */
     void play( const Meta::TrackPtr&, uint offset = 0 );
+
     /**
      * Pauses the current track
      *
      * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
      */
     void pause();
+
     /**
      * Stops playing
      *
      * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
      */
     void stop( bool forceInstant = false );
+
     /**
      * Pauses if Amarok is currently playing, plays if Amarok is stopped or paused
      *
@@ -208,6 +214,7 @@ public slots:
      * @param ms the position in milliseconds (counting from the start of the track)
      */
     void seek( int ms );
+
     /**
      * Seeks forward or backward in the track
      *
@@ -224,12 +231,14 @@ public slots:
      * @param ms the offset from the current position in milliseconds
      */
     void seekRelative( int ms );
+
     /**
      * Seeks forward in the track
      *
      * Same as seekRelative()
      */
     void seekForward( int ms = 10000 );
+
     /**
      * Seeks backward in the track
      *
@@ -244,6 +253,7 @@ public slots:
      * maximum possible volume (ie: the same units as for setVolume()).
      */
     int increaseVolume( int ticks = 100/25 );
+
     /**
      * Decreases the volume
      *
@@ -251,6 +261,7 @@ public slots:
      * maximum possible volume (ie: the same units as for setVolume()).
      */
     int decreaseVolume( int ticks = 100/25 );
+
     /**
      * Sets the volume
      *
@@ -266,6 +277,7 @@ public slots:
      * will be enabled.
      */
     void setMuted( bool mute );
+
     /**
      * Toggles mute
      *
