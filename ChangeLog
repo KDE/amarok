@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2-rc1
   CHANGES:
+    * Improvements for volume widget in ToolbarNG.
     * Added "Lock layout" option to the main window's context menu.    
 
   BUGFIXES:
