@@ -8,6 +8,12 @@ VERSION 2.2-rc1
     * Added "Lock layout" option to the main window's context menu.    
 
   BUGFIXES:
+    * Fixed new track timecodes always getting shown at the very beginning of
+      the progress slider until the track was reloaded.
+    * Fixed some tracks not correctly loading timecodes due to url encoding 
+      issues.
+    * Fixed bookmark database tables not correctly getting created on first 
+      run, leading to frequent sql errors.
     * Fix the ends of the active track indicator getting stretched badly on 
       wide playlists
     * Only one toolbar type will be enabled at any time (Toolbar or ToolbarNG).
