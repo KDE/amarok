@@ -5,10 +5,16 @@ Amarok ChangeLog
 
 VERSION 2.2-rc1
   CHANGES:
+    * Remove non working menu entry "rename" from the Bookmark Manager. This
+      functionality is no longer needed as inline renaming is possible.
     * Improvements for volume widget in ToolbarNG.
     * Added "Lock layout" option to the main window's context menu.    
 
   BUGFIXES:
+    * Do not show the "load" context action in the Bookmark Manager when more
+      than 1 bookmark is selected.
+    * Fixed "Create timecode track" menu entry not showing up in the Bookmark 
+      Managers context menu when exactly 2 bookmarks are selected.
     * Fixed new track timecodes always getting shown at the very beginning of
       the progress slider until the track was reloaded.
     * Fixed some tracks not correctly loading timecodes due to url encoding 
