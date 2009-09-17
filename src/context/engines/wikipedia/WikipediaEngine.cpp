@@ -223,7 +223,7 @@ WikipediaEngine::wikiResult( KJob* job )
 
 
     // Refined search thing
-    if( m_wiki.contains( "var wgArticleId = 0" ) ) // The article does not exist
+    if( m_wiki.contains( "wgArticleId=0" ) ) // The article does not exist
     {
         if ( m_triedRefinedSearch == -1 )
         {
