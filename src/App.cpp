@@ -70,10 +70,7 @@
 
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefiletyperesolver.h>
-#include <asffiletyperesolver.h>
-#include <wavfiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
-#include <mp4filetyperesolver.h>
 #endif
 
 QMutex Debug::mutex;
@@ -143,11 +140,8 @@ App::App()
 
 #ifdef TAGLIB_EXTRAS_FOUND
     PERF_LOG( "Registering taglib plugins" )
-    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new WavFileTypeResolver);
     PERF_LOG( "Done Registering taglib plugins" )
 #endif
 

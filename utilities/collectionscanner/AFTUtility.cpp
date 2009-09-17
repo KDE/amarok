@@ -26,6 +26,9 @@
 #include <id3v2tag.h>
 #include <mpcfile.h>
 #include <mpegfile.h>
+#include <mp4item.h>
+#include <mp4file.h>
+#include <mp4tag.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
 #include <speexfile.h>
@@ -34,17 +37,6 @@
 #include <uniquefileidentifierframe.h>
 #include <vorbisfile.h>
 #include <xiphcomment.h>
-
-#ifdef TAGLIB_EXTRAS_FOUND
-#include <mp4file.h>
-#include <mp4tag.h>
-#include <mp4item.h>
-#include <audiblefiletyperesolver.h>
-#include <asffiletyperesolver.h>
-#include <wavfiletyperesolver.h>
-#include <realmediafiletyperesolver.h>
-#include <mp4filetyperesolver.h>
-#endif
 
 #include <QFile>
 #include <QTime>

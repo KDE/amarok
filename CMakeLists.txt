@@ -13,10 +13,10 @@ option(WITH_IPOD "Enable iPod support in Amarok" ON)
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
 
-set(TAGLIB_MIN_VERSION "1.5")
+set(TAGLIB_MIN_VERSION "1.6")
 find_package(Taglib REQUIRED)
 
-find_package(Taglib-Extras 0.1 REQUIRED)
+find_package(Taglib-Extras 1.0 REQUIRED)
 if( TAGLIB-EXTRAS_FOUND )
     add_definitions( -DTAGLIB_EXTRAS_FOUND )
 endif( TAGLIB-EXTRAS_FOUND )

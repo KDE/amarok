@@ -5,6 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.2-rc1
   CHANGES:
+    * TagLib 1.6 built with ASF and MP4 support is now required. This release
+      of TagLib fixes many, many bugs and contains new format support.
+    * TagLib-Extras 1.0.0 is now required. This release is compatible with the
+      new TagLib 1.6 release.
     * Remove non working menu entry "rename" from the Bookmark Manager. This
       functionality is no longer needed as inline renaming is possible.
     * Improvements for volume widget in ToolbarNG.
