@@ -1,7 +1,35 @@
 [Desktop Entry]
 Name=Songkick
+Name[bg]=Songkick
+Name[ca]=Songkick
+Name[csb]=Songkick
+Name[da]=Songkick
+Name[de]=Songkick
+Name[en_GB]=Songkick
+Name[es]=Songkick
+Name[et]=Songkick
+Name[is]=Songkick
+Name[it]=Songkick
+Name[km]=Songkick
+Name[ko]=Songkick
+Name[nb]=Songkick
+Name[nds]=Songkick
+Name[nl]=Songkick
+Name[nn]=Songkick
+Name[pl]=Songkick
+Name[pt]=Songkick
+Name[pt_BR]=Songkick
+Name[ru]=Songkick
+Name[sl]=Songkick
 Name[sr]=Сонгкик
+Name[sr@latin]=Songkick
+Name[sv]=Songkick
+Name[tr]=Songkick
+Name[uk]=Songkick
+Name[wa]=Songkick
 Name[x-test]=xxSongkickxx
+Name[zh_CN]=Songkick
+Name[zh_TW]=Songkick
 Type=Service
 ServiceTypes=Plasma/Applet
 
