@@ -119,19 +119,17 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
         m_createTimecodeTrackAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
         connect( m_createTimecodeTrackAction, SIGNAL( triggered() ), this, SLOT( slotCreateTimecodeTrack() ) );
     }
-    
-    if ( selectedRowCount > 0 )
-    {
+
+    if ( selectedRowCount == 1 )
         actions << m_loadAction;
+
+    if ( selectedRowCount > 0 )
         actions << m_deleteAction;
-    }
 
     if ( selectedRowCount == 2 ) {
         debug() << "adding m_createTimecodeTrackAction";
         actions << m_createTimecodeTrackAction;
-
     }
-
 
     return actions;
 }
