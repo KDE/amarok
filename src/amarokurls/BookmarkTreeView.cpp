@@ -97,6 +97,9 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
 {
     DEBUG_BLOCK
 
+    //there are 4 colums, so for each selected row we get 4 indices...
+    int selectedRowCount = indices.count() / 4;
+
     QList< KAction * > actions;
     
     if ( m_loadAction == 0 )
@@ -124,18 +127,16 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
         connect( m_createTimecodeTrackAction, SIGNAL( triggered() ), this, SLOT( slotCreateTimecodeTrack() ) );
     }
     
-    if ( indices.count() > 0 )
+    if ( selectedRowCount > 0 )
     {
         actions << m_loadAction;
+        actions << m_deleteAction;
     }
 
-    if ( indices.count() > 0 )
-        actions << m_deleteAction;
-
-    if ( indices.count() == 1 )
+    if ( selectedRowCount == 1 )
         actions << m_renameAction;
 
-    if ( indices.count() == 2 ) {
+    if ( selectedRowCount == 2 ) {
         debug() << "adding m_createTimecodeTrackAction";
         actions << m_createTimecodeTrackAction;
 
