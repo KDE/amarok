@@ -42,7 +42,6 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     : QTreeView( parent )
     , m_loadAction( 0 )
     , m_deleteAction( 0 )
-    , m_renameAction( 0 )
     , m_createTimecodeTrackAction( 0 )
     , m_addGroupAction( 0 )
 {
@@ -114,12 +113,6 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
     }
 
-    if ( m_renameAction == 0 )
-    {
-        m_renameAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotCreateTimecodeTrack() ) );
-    }
-
     if ( m_createTimecodeTrackAction == 0 )
     {
         debug() << "creating m_createTimecodeTrackAction";
@@ -132,9 +125,6 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
         actions << m_loadAction;
         actions << m_deleteAction;
     }
-
-    if ( selectedRowCount == 1 )
-        actions << m_renameAction;
 
     if ( selectedRowCount == 2 ) {
         debug() << "adding m_createTimecodeTrackAction";
