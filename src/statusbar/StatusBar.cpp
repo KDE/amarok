@@ -331,12 +331,14 @@ void
 StatusBar::updateTotalPlaylistLength() //SLOT
 {
     const int totalLength = The::playlist()->totalLength();
+    const quint64 totalSize = The::playlist()->totalSize();
     const int trackCount = The::playlist()->rowCount();
-    const QString totalTime = Meta::secToPrettyTime( totalLength );
+    const QString prettyTotalLength = Meta::secToPrettyTime( totalLength );
+    const QString prettyTotalSize = Meta::prettyFilesize( totalSize );
 
     if( totalLength > 0 && trackCount > 0 )
     {
-        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
+        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2, %3)", trackCount, prettyTotalLength, prettyTotalSize ) );
         m_playlistLengthLabel->show();
         m_separator->show();
     }
