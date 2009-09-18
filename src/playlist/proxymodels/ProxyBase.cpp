@@ -285,6 +285,12 @@ ProxyBase::totalLength() const
     return m_belowModel->totalLength();
 }
 
+quint64
+ProxyBase::totalSize() const
+{
+    return m_belowModel->totalSize();
+}
+
 Meta::TrackPtr
 ProxyBase::trackAt(int row) const
 {

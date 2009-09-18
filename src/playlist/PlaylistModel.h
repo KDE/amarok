@@ -69,6 +69,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void metadataChanged( Meta::AlbumPtr album );
 
         int totalLength() const { return m_totalLength; }
+        quint64 totalSize() const { return m_totalSize; }
 
         // convenience access methods
         bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
@@ -160,6 +161,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         int m_activeRow;                 //! the row being played
 
         int m_totalLength;
+        size_t m_totalSize;
 
         QString m_playlistName;
         bool m_proposeOverwriting;

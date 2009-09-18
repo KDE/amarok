@@ -309,6 +309,14 @@ public:
     virtual int totalLength() const;
 
     /**
+     * Returns the total size of the playlist.
+     * The default implementation forwards the total size from the proxy or model below the
+     * current proxy.
+     * @return the total size of the playlist.
+     */
+    virtual quint64 totalSize() const;
+
+    /**
      * Returns a pointer to the track at a given row in the current proxy.
      * @param row the row to return the track pointer for.
      * @return a pointer to the track at the given row.

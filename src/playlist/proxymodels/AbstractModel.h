@@ -303,6 +303,12 @@ public:
     virtual int totalLength() const = 0;
 
     /**
+     * Asks the model sitting below the total size of the playlist.
+     * @return the total size of the playlist.
+     */
+    virtual quint64 totalSize() const = 0;
+
+    /**
      * Returns a pointer to the track at a given row.
      * @param row the row to return the track pointer for.
      * @return a pointer to the track at the given row.

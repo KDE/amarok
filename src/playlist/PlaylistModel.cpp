@@ -53,6 +53,7 @@ Playlist::Model::Model( QObject *parent )
         : QAbstractListModel( parent )
         , m_activeRow( -1 )
         , m_totalLength( 0 )
+        , m_totalSize( 0 )
 {
     DEBUG_BLOCK
 
@@ -101,6 +102,7 @@ Playlist::Model::Model( QObject *parent )
 
         foreach( Meta::TrackPtr track, tracks ) {
             m_totalLength += track->length();
+            m_totalSize += track->filesize();
             subscribeTo( track );
             if ( track->album() )
                 subscribeTo( track->album() );
@@ -714,6 +716,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     {
         Meta::TrackPtr track = ic.first;
         m_totalLength += track->length();
+        m_totalSize += track->filesize();
         subscribeTo( track );
 
         if ( track->album() )
@@ -763,6 +766,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     {
         clearCommand();
         m_totalLength = 0;
+        m_totalSize = 0;
         return;
     }
 
@@ -805,6 +809,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     {
         Meta::TrackPtr track = rc.first;
         m_totalLength -= track->length();
+        m_totalSize -= track->filesize();
         unsubscribeFrom( track );
         if ( track->album() )
             unsubscribeFrom( track->album() );
