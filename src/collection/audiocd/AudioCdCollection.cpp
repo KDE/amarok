@@ -17,6 +17,7 @@
 
 #include "AudioCdCollection.h"
 
+#include "amarokconfig.h"
 #include "AudioCdCollectionCapability.h"
 #include "AudioCdCollectionLocation.h"
 #include "AudioCdMeta.h"
@@ -263,7 +264,8 @@ AudioCdCollection::infoFetchComplete( KJob *job )
         }
 
         //lets see if we can find a cover for the album:
-        The::coverFetcher()->queueAlbum( AlbumPtr::staticCast( albumPtr ) );
+        if( AmarokConfig::autoGetCoverArt() )
+            The::coverFetcher()->queueAlbum( AlbumPtr::staticCast( albumPtr ) );
 
     }
 
