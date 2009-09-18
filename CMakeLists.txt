@@ -16,6 +16,16 @@ check_library_exists(dl dlopen "" LIBDL_FOUND)
 set(TAGLIB_MIN_VERSION "1.6")
 find_package(Taglib REQUIRED)
 
+FIND_PATH( TAGLIB_ASF_FOUND asffile.h ${TAGLIB_INCLUDES} )
+if( NOT TAGLIB_ASF_FOUND )
+    message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
+endif( NOT TAGLIB_ASF_FOUND ) 
+
+FIND_PATH( TAGLIB_MP4_FOUND mp4file.h ${TAGLIB_INCLUDES} )
+if( NOT TAGLIB_MP4_FOUND )
+    message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
+endif( NOT TAGLIB_MP4_FOUND ) 
+
 find_package(Taglib-Extras 1.0 REQUIRED)
 if( TAGLIB-EXTRAS_FOUND )
     add_definitions( -DTAGLIB_EXTRAS_FOUND )
