@@ -234,7 +234,7 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
 {
     if( fileref.isNull() || changes.isEmpty() )
         return;
-    
+
     TagLib::Tag *tag = fileref.tag();
     if( !tag )
         return;
@@ -525,7 +525,7 @@ Meta::secToPrettyTime( int seconds )
 }
 
 QString
-Meta::prettyFilesize( int size )
+Meta::prettyFilesize( quint64 size )
 {
     return KIO::convertSize( size );
 }
