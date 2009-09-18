@@ -16,6 +16,9 @@ VERSION 2.2-rc1
     * Added "Lock layout" option to the main window's context menu.    
 
   BUGFIXES:
+    * Fixed crash when using the eject action on an audio CD collection while
+      a track from the CD is playing. Instead playback is now stopped before 
+      the CD is ejected.
     * Do not show the "load" context action in the Bookmark Manager when more
       than 1 bookmark is selected.
     * Fixed "Create timecode track" menu entry not showing up in the Bookmark 

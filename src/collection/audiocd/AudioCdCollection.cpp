@@ -353,8 +353,18 @@ void
 AudioCdCollection::eject()
 {
     DEBUG_BLOCK
-    Solid::Device device = Solid::Device( m_udi );
 
+    //we need to do a quick check if we are currently playing from this cd, if so, stop playback and then eject
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+
+    if ( track )
+    {
+        if( track->playableUrl().url().startsWith( "audiocd:/" ) )
+            The::engineController()->stop();
+    }
+
+    Solid::Device device = Solid::Device( m_udi );
+    
     Solid::OpticalDrive *drive = device.parent().as<Solid::OpticalDrive>();
     if( drive )
         drive->eject();
