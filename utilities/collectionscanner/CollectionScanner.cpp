@@ -61,10 +61,11 @@
 #include <tstring.h>
 #include <vorbisfile.h>
 
-#ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
-#endif
+#include "shared/taglib_filetype_resolvers/asffiletyperesolver.h"
+#include "shared/taglib_filetype_resolvers/mp4filetyperesolver.h"
+#include "shared/taglib_filetype_resolvers/wavfiletyperesolver.h"
 
 #include <textidentificationframe.h>
 #include <uniquefileidentifierframe.h>
@@ -97,10 +98,11 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
 
     readArgs();
 
-#ifdef TAGLIB_EXTRAS_FOUND
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
-#endif
+    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new WAVFileTypeResolver);
 
     m_logfile = ( m_batch ? ( m_incremental ? "amarokcollectionscanner_batchincrementalscan.log" : "amarokcollectionscanner_batchfullscan.log" )
                        : m_saveLocation + "collection_scan.log" );

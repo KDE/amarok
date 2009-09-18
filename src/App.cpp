@@ -68,6 +68,11 @@
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QtDBus/QtDBus>
 
+#include "shared/taglib_filetype_resolvers/asffiletyperesolver.h"
+#include "shared/taglib_filetype_resolvers/mimefiletyperesolver.h"
+#include "shared/taglib_filetype_resolvers/mp4filetyperesolver.h"
+#include "shared/taglib_filetype_resolvers/wavfiletyperesolver.h"
+
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
@@ -142,6 +147,10 @@ App::App()
     PERF_LOG( "Registering taglib plugins" )
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new WAVFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new MimeFileTypeResolver);
     PERF_LOG( "Done Registering taglib plugins" )
 #endif
 

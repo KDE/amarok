@@ -517,6 +517,17 @@ set(libdynamic_SRCS
 )
 
 #####################################################################
+# RESOLVERS
+#####################################################################
+set(taglib_filetype_resolver_SRCS
+    ../shared/taglib_filetype_resolvers/asffiletyperesolver.cpp
+    ../shared/taglib_filetype_resolvers/mp4filetyperesolver.cpp
+    ../shared/taglib_filetype_resolvers/wavfiletyperesolver.cpp
+    ../shared/taglib_filetype_resolvers/mimefiletyperesolver.cpp
+)
+
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -545,6 +556,7 @@ set(amaroklib_LIB_SRCS
     ${scriptengine_SRCS}
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
+    ${taglib_filetype_resolver_SRCS}
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
     aboutdialog/ExtendedAboutDialog.cpp
