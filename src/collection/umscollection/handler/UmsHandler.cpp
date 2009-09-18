@@ -135,7 +135,7 @@ UmsHandler::init()
 
     }
 /*
-    m_formats << "mp3" << "wav" << "asf" << "flac" << "wma" << "ogg" << "aac" << "m4a"
+    m_formats << "mp3" << "wav" << "asf" << "flac" << "wma" << "ogg" << "aac" << "m4a" << "m4b"
             << "mp4" << "mp2" << "ac3";
 
 */
@@ -852,7 +852,7 @@ UmsHandler::supportedFormats()
 {
     QStringList formats;
 
-    formats << "mp3" << "aac" << "mp4" << "m4a";
+    formats << "mp3" << "aac" << "mp4" << "m4a" << "m4b";
 
     return formats;
 }

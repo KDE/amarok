@@ -321,7 +321,7 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
     else if( key == "type" || key == "filetype" )
     {
         QStringList types;
-        types << "mp3" << "flac" << "ogg" << "oga" << "aac" << "m4a" << "mp4" << "mp2" << "ac3"
+        types << "mp3" << "flac" << "ogg" << "oga" << "aac" << "m4a" << "m4b" << "mp4" << "mp2" << "ac3"
             << "wav" << "asf" << "wma";
         textWanted( types );
     }
