@@ -16,15 +16,25 @@ check_library_exists(dl dlopen "" LIBDL_FOUND)
 set(TAGLIB_MIN_VERSION "1.6")
 find_package(Taglib REQUIRED)
 
-FIND_PATH( TAGLIB_ASF_FOUND asffile.h ${TAGLIB_INCLUDES} )
+# Check if TagLib is built with ASF and MP4 support
+include(CheckCXXSourceCompiles)
+set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
+set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
+
+check_cxx_source_compiles("#include <asftag.h>
+int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
 if( NOT TAGLIB_ASF_FOUND )
     message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
 endif( NOT TAGLIB_ASF_FOUND ) 
 
-FIND_PATH( TAGLIB_MP4_FOUND mp4file.h ${TAGLIB_INCLUDES} )
+check_cxx_source_compiles("#include <mp4tag.h>
+int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
 if( NOT TAGLIB_MP4_FOUND )
     message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
 endif( NOT TAGLIB_MP4_FOUND ) 
+
+set(CMAKE_REQUIRED_INCLUDES)
+set(CMAKE_REQUIRED_LIBRARIES)
 
 find_package(Taglib-Extras 1.0 REQUIRED)
 if( TAGLIB-EXTRAS_FOUND )
