@@ -213,6 +213,10 @@ EngineController::canDecode( const KUrl &url ) //static
     static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
                                    Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
 
+    // Add whitelist hacks
+    mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
+    //mimeTable << "?/?"; //Add comment
+
     const QString mimeType = item.mimetype();
     const bool valid = mimeTable.contains( mimeType, Qt::CaseInsensitive );
 
