@@ -10,12 +10,13 @@ VERSION 2.2-rc1
       of TagLib fixes many, many bugs and contains new format support.
     * TagLib-Extras 1.0.0 is now required. This release is compatible with the
       new TagLib 1.6 release.
-    * Remove non working menu entry "rename" from the Bookmark Manager. This
+    * Removed non working menu entry "rename" from the Bookmark Manager. This
       functionality is no longer needed as inline renaming is possible.
     * Improvements for volume widget in ToolbarNG.
     * Added "Lock layout" option to the main window's context menu.    
 
   BUGFIXES:
+    * Improved visibility of the Context View's menus. (BR 198221)
     * Fixed crash when using the eject action on an audio CD collection while
       a track from the CD is playing. Instead playback is now stopped before 
       the CD is ejected.
