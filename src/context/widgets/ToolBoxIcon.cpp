@@ -43,7 +43,7 @@ ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
 
     QFont font;
     font.setBold( false );
-    font.setPointSize( font.pointSize() - 2 );
+    font.setPointSize( font.pointSize() - 1 );
     font.setStyleStrategy( QFont::PreferAntialias );
     
     m_text->setFont( font );
