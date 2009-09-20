@@ -16,6 +16,8 @@ VERSION 2.2-rc1
     * Added "Lock layout" option to the main window's context menu.    
 
   BUGFIXES:
+    * Implemented proper check for running instance options on the command
+      line. (BR 207988)
     * Improved visibility of the Context View's menus. (BR 198221)
     * Fixed crash when using the eject action on an audio CD collection while
       a track from the CD is playing. Instead playback is now stopped before 

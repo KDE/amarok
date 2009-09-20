@@ -116,7 +116,7 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2009, The Amarok Development Squad" ),
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
              ( "http://amarok.kde.org" ) );
-             
+
 AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
@@ -459,6 +459,7 @@ App::initCliArgs( int argc, char *argv[] )
 void
 App::initCliArgs() //static
 {
+    // Update main.cpp (below KUniqueApplication::start() wrt instanceOptions) aswell if needed!
     KCmdLineOptions options;
 
     options.add("+[URL(s)]", ki18n( "Files/URLs to open" ));
