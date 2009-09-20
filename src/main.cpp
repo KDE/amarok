@@ -206,7 +206,16 @@ int main( int argc, char *argv[] )
     startFlag = args->isSet( "multipleinstances" ) ? KUniqueApplication::NonUniqueInstance : KUniqueApplication::StartFlag( 0 );
 
     if( !KUniqueApplication::start( startFlag ) ) {
-        if( !args->isSet( "append" ) )
+        QList<QByteArray> instanceOptions;
+        instanceOptions << "previous" << "play" << "play-pause" << "stop" << "next" << "append" << "queue" << "load";
+
+        // Check if an option for a running instance is set
+        bool isSet = false;
+        for( int i = 0; i < instanceOptions.size(); ++i )
+            if( args->isSet( instanceOptions[ i ] ) )
+                isSet = true;
+
+        if ( !isSet )
             fprintf( stderr, "Amarok is already running!\n" );
         return 0;
     }
