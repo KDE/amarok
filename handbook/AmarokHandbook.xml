@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This document was created with Syntext Serna Free. --><!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "docbookV4.5/docbookx.dtd" []>
+<book>
+  <title>The Amarok Handbook </title>
+  <chapter>
+    <title>Welcome to Amarok</title>
+    <para>Amarok is an advanced music player. It lets you rediscover your own music and lets you explore different sources of music, radio stations and audio books on line.</para>
+    <para>The typical Amarok might look something like this:<screenshot>
+        <screeninfo>The default layout of Amarok</screeninfo>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Amarok overview - full.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot></para>
+    <para>In this picture you see The Main Toolbar at the top (below the menu). Below this you see – from left to right -  The Content Browser, The Context View and The Playlist. Each area is described below.</para>
+    <para>The following chapter contains a brief description of Amarok 2, enough to get you started.
+Many of the advanced features are mentioned only briefly, but will be covered in more detail later. </para>
+    <sect1>
+      <title>The Main Toolbar</title>
+      <para>The Main Toolbar lets you control the basic playback functions.</para>
+      <screenshot>
+        <screeninfo>A screenshot of the default Amarok main toolbar</screeninfo>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Amarok overview - toolbar.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+      <para>The four big buttons allow you to play or pause your music or you can skip to the next or previous number In your playlist. Depending on what you are listening to there might be one or more extra, smaller, additional buttons.</para>
+      <para>Next to the buttons you see the progress slider. It tells you how far into the currently playing track you are. It also allow you to search through the track by clicking on it. Numbers on each side of the progress slider shows how much of the track you have heard already and how much remains.
+In the right corner you see the volume control.
+</para>
+    </sect1>
+    <sect1>
+      <title>The Content Browser</title>
+      <para>The Content Browser lets you Browse through your collections.</para>
+      <screenshot>
+        <screeninfo>A screenshot of the content browser showing the root categories</screeninfo>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Amarok overview - content.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+      <para>At the top of The Content Browser you have the Breadcrumb bar.
+It shows you where you are and lets you change your position easily. The little star next to the Breadcrumb bar opens the Bookmark Quick Menu.</para>
+      <para>Below the Breadcrumb bar you can search through the content listed below.</para>
+      <para>Under the search bar you see the different content categories.</para>
+      <para>The first of these is the Local Music category. Opening it lets you browse through the music you have defined as a part of your local collection. If you put a CD in your drive it is also here it will appear. Also mobile music players will show up here.</para>
+      <para>The Internet category lets you browse through some of the online services, like Magnatune.com, Jamendo.org, Last.fm and many others.</para>
+      <para>You use the Playlist category if you want to make or play your own predefined playlist. It also lets you manage your podcast subscriptions. Finally it lets you use Amarok as your personal DJ  based on your preferences. </para>
+      <para>The Files button lets you browse your entire Hard drive or extra drives to find additional files to play directly without adding it to  your local collection.</para>
+    </sect1>
+    <sect1>
+      <title>The Playlist</title>
+      <para>The playlist lets you control what track you are listening to at the moment. It also lets you decide in which order you want to listen to the tracks. Simply drag and drop to rearrange the track order.</para>
+      <screenshot>
+        <screeninfo>A screenshot of the playlist with the default playlist layout</screeninfo>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Amarok overview - the playlist.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+      <para>The playlist lets you control what track you are listening to at the moment. It also lets you decide in which order you want to listen to the tracks. Simply drag and drop to rearrange the track order.</para>
+      <para>At the top of the playlist you can sort your tracks by title, by album, by artist and by genre to mention some of oppertunities. You can sort your tracks multiple times so you sort by title first, then by artist and so on. </para>
+      <para>The next box lets you search or filter your tracks in a way that you can choose only to listen to tracks that for instance contains the letters “ne”. The 2 big arrows lets you skip to the next or previous track containing the letters you have chosen.
+The wrench to the right lets you filter your tracks by artist album etc.
+</para>
+      <para>At the bottom of the playlist you have some buttons.
+The first button lets you clear the playlist. The next takes you to the track currently playing if it is further down the tracklist.
+The 2 arrows lets you undo or redo what you just did.
+The second button from the right lets you save your playlist. The final button lets you change the layout on your playlist. (More about this in a later edition). </para>
+    </sect1>
+    <sect1>
+      <title>The Context View</title>
+      <para>The Context View is one of the things that makes Amarok different from other music players.<screenshot>
+          <screeninfo>A screenshout of the contet view showing some applets</screeninfo>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Amarok overview - context view.png" format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot></para>
+      <para>The Context View shows information about the track playing or the content you are browsing.</para>
+      <para>It lets you add different applets that shows different info such as the Wikipedia applet that shows Wikipedia articles about current artist, album or track or the Photo applet which finds and shows pictures related to the artist you are listening to.</para>
+      <para>Applets are added or removed by using the wrench in the bottom right corner.</para>
+    </sect1>
+  </chapter>
+</book>
