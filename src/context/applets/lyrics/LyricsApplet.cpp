@@ -47,6 +47,7 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     , m_saveIcon( 0 )
     , m_editIcon( 0 )
     , m_reloadIcon( 0 )
+    , m_closeIcon( 0 )
     , m_lyrics( 0 )
     , m_suggested( 0 )
     , m_hasLyrics( false )
@@ -84,6 +85,15 @@ void LyricsApplet::init()
     m_editIcon->setToolTip( i18n( "Edit Lyrics" ) );
 
     connect( m_editIcon, SIGNAL( activated() ), this, SLOT( editLyrics() ) );
+
+    QAction* closeAction = new QAction( this );
+    closeAction->setIcon( KIcon( "document-close" ) );
+    closeAction->setVisible( false );
+    closeAction->setEnabled( false );
+    m_closeIcon = addAction( closeAction );
+    m_closeIcon->setToolTip( i18n( "Close" ) );
+
+    connect( m_closeIcon, SIGNAL( activated() ), this, SLOT( closeLyrics() ) );
 
     QAction* saveAction = new QAction( this );
     saveAction->setIcon( KIcon( "document-save" ) );
@@ -169,7 +179,9 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     QPoint editIconPos( m_reloadIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
     m_editIcon->setPos( editIconPos );
-    m_saveIcon->setPos( editIconPos );
+    m_closeIcon->setPos( editIconPos );
+
+    m_saveIcon->setPos( m_editIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
     
     m_lyricsProxy->setPos( standardPadding(), m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding() );
     
@@ -364,6 +376,20 @@ LyricsApplet::editLyrics()
 }
 
 void
+LyricsApplet::closeLyrics()
+{
+    if( m_hasLyrics )
+    {
+        m_lyrics->setPlainText( The::engineController()->currentTrack()->cachedLyrics() );
+        m_lyrics->show();
+        setCollapseOff();
+        emit sizeHintChanged(Qt::MaximumSize);
+    }
+
+    setEditing( false );
+}
+
+void
 LyricsApplet::saveLyrics()
 {
     if( m_lyrics->toPlainText().isEmpty() )
@@ -386,6 +412,10 @@ LyricsApplet::setEditing( const bool isEditing )
     // If we're editing, hide and disable the edit icon
     m_editIcon->action()->setEnabled( !isEditing );
     m_editIcon->action()->setVisible( !isEditing );
+
+    // If we're editing, show and enable the save icon
+    m_closeIcon->action()->setEnabled( isEditing );
+    m_closeIcon->action()->setVisible( isEditing );
 
     // If we're editing, show and enable the save icon
     m_saveIcon->action()->setEnabled( isEditing );

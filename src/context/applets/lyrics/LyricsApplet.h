@@ -58,6 +58,7 @@ public slots:
 private slots:
     void paletteChanged( const QPalette & palette );
     void editLyrics();
+    void closeLyrics();
     void saveLyrics();
 
 private:
@@ -72,7 +73,8 @@ private:
     Plasma::IconWidget*  m_saveIcon;
     Plasma::IconWidget*  m_editIcon;
     Plasma::IconWidget*  m_reloadIcon;
-    
+    Plasma::IconWidget*  m_closeIcon;
+
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
     QTextBrowser* m_lyrics;
