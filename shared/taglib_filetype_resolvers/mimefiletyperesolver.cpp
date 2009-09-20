@@ -73,7 +73,7 @@ TagLib::File *MimeFileTypeResolver::createFile(TagLib::FileName fileName,
             || mimetype->is( "audio/x-pn-realaudioplugin" )
             || mimetype->is( "audio/vnd.rn-realvideo" ) )
     {
-        return new TagLibExtras::RealMedia::File(fileName, readProperties, propertiesStyle);
+        return new TagLib::RealMedia::File(fileName, readProperties, propertiesStyle);
     }
     else if( mimetype->is( "audio/x-vorbis+ogg" ) )
     {
