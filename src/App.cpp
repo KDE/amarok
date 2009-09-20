@@ -832,6 +832,10 @@ namespace Amarok
         const QDateTime now = QDateTime::currentDateTime();
         const int datediff = datetime.daysTo( now );
 
+         // HACK: Fix 203522. Arithmetic overflow? Getting weird values from Plasma::DataEngine (LAST_PLAYED field).
+        if( datediff < 0 )
+            return i18nc( "The amount of time since last played", "Never" );
+
         if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
             const KCalendarSystem *cal = KGlobal::locale()->calendar();
             const QDate date = datetime.date();
@@ -843,9 +847,6 @@ namespace Amarok
 
         if( datediff >= 7 )  // return difference in weeks
             return i18np( "One week ago", "%1 weeks ago", (datediff+3)/7 );
-
-        if( datediff == -1 )
-            return i18nc( "When this track was last played", "Tomorrow" );
 
         const int timediff = datetime.secsTo( now );
 
