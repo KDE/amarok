@@ -368,7 +368,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     dir.setFilter( QDir::Files | QDir::Readable | QDir::CaseSensitive );
 
     QStringList filters;
-    filters << "*.[mM][pP]3" << "*.[oO][gG][gG]" << "*.[oO][gG][aA]" << "*.[fF][lL][aA][cC]" << "*.[wW][mM][aA]" << "*.[mM]4[aA]";
+    filters << "*.[mM][pP]3" << "*.[oO][gG][gG]" << "*.[oO][gG][aA]" << "*.[fF][lL][aA][cC]" << "*.[wW][mM][aA]" << "*.[mM]4[aAbB]";
     dir.setNameFilters( filters );
 
     int compilationId = 0;
