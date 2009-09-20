@@ -66,7 +66,7 @@ class ScanResultProcessor : public QObject
         int composerInsert( const QString &composer );
         int yearId( const QString &year );
         int yearInsert( const QString &year );
-        void databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int artistId );
+        void databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year );
         int imageId( const QString &image, int albumId );
         int albumId( const QString &album, int artistId );
         int albumInsert( const QString &album, int artistId );
