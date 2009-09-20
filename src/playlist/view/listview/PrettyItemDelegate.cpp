@@ -570,12 +570,13 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     //for now, only handle clicks in the currently playing item.
     if ( !index.data( ActiveTrackRole ).toBool() )
         return false;
+
+    //also, if we are not using the inline controls, we should not reacto to these clicks at all
+    if( !LayoutManager::instance()->activeLayout().inlineControls() )
+        return false;
     
     int rowCount = rowsForItem( index );
-    int modifiedRowCount = rowCount;
-
-    if( LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool() )
-        modifiedRowCount++; //add room for extras
+    int modifiedRowCount = rowCount + 1;
 
     int height = itemRect.height();;
 
