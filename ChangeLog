@@ -4,6 +4,9 @@ Amarok ChangeLog
 
 
 VERSION 2.2-rc1
+  FEATURES:
+    * Added "subscribe" command line switch to add a podcast channel.
+
   CHANGES:
     * Make audio CDs respect the "Automatically retrieve cover art" setting.
     * TagLib 1.6 built with ASF and MP4 support is now required. This release

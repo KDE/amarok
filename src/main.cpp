@@ -207,7 +207,7 @@ int main( int argc, char *argv[] )
 
     if( !KUniqueApplication::start( startFlag ) ) {
         QList<QByteArray> instanceOptions;
-        instanceOptions << "previous" << "play" << "play-pause" << "stop" << "next" << "append" << "queue" << "load";
+        instanceOptions << "previous" << "play" << "play-pause" << "stop" << "next" << "append" << "queue" << "load" << "subscribe";
 
         // Check if an option for a running instance is set
         bool isSet = false;
