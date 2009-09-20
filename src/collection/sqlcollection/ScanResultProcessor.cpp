@@ -690,22 +690,20 @@ ScanResultProcessor::albumId( const QString &album, int artistId )
                         .arg( QString::number( artistId ), m_collection->escape( album ) );
     }
     QStringList res = m_collection->query( query );
-    int id = 0;
     if( res.isEmpty() )
-        id = albumInsert( album, artistId );
+    {
+        QString insert = QString( "INSERT INTO albums_temp(artist, name) VALUES( %1, '%2' );" )
+                    .arg( artistId ? QString::number( artistId ) : "NULL", m_collection->escape( album ) );
+        int id = m_collection->insert( insert, "albums_temp" );
+        m_albums.insert( key, id );
+        return id;
+    }
     else
-        id = res[0].toInt();
-    m_albums.insert( key, id );
-    return id;
-}
-
-int
-ScanResultProcessor::albumInsert( const QString &album, int artistId )
-{
-    QString insert = QString( "INSERT INTO albums_temp( artist, name ) VALUES ( %1, '%2');" )
-        .arg( artistId ? QString::number( artistId ) : "NULL", m_collection->escape( album ) );
-    int id = m_collection->insert( insert, "albums_temp" );
-    return id;
+    {
+        int id = res[0].toInt();
+        m_albums.insert( key, id );
+        return id;
+    }
 }
 
 int
