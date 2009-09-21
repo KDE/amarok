@@ -460,8 +460,16 @@ PlaylistManager::playlistActions( const Meta::PlaylistList playlists )
     foreach( const Meta::PlaylistPtr playlist, playlists )
     {
         PlaylistProvider *provider = getProviderForPlaylist( playlist );
-        if( provider )
-            actions << provider->playlistActions( playlist );
+        if( !provider )
+            continue;
+
+        //only add actions that are not in the list yet.
+        QList<QAction *> playlistActions( provider->playlistActions( playlist ) );
+        foreach( QAction *action, playlistActions )
+        {
+            if( !actions.contains( action ) )
+                actions << action;
+        }
     }
 
     return actions;
