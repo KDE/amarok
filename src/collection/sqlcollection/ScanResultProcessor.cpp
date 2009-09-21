@@ -568,15 +568,31 @@ ScanResultProcessor::yearInsert( const QString &year )
 }
 
 void
-ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year )
+ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId )
 {
     //DEBUG_BLOCK
+    Q_UNUSED( album );
+    Q_UNUSED( albumArtistId );
+    int l = 0; //album
+    bool albumFound = false;
     int a = 0; //artist
+    bool artistFound = false;
     int g = 0; //genre
+    bool genreFound = false;
     int c = 0; //composer
+    bool composerFound = false;
     int y = 0; //year
+    bool yearFound = false;
 
     QString query;
+/*
+    if( albumArtistId == 0 )
+        query += QString( "SELECT id, CONCAT('ALBUMNAME_', name) AS name FROM albums_temp WHERE artist IS NULL AND name = '%1' " )
+                    .arg( m_collection->escape( album ) );
+    else
+        query += QString( "SELECT id, CONCAT('ALBUMNAME_', name) AS name FROM albums_temp WHERE artist = %1 AND name = '%2' " )
+                        .arg( QString::number( albumArtistId ), m_collection->escape( album ) );
+*/
     query += QString( "SELECT id, CONCAT('ARTISTNAME_', name) AS name FROM artists_temp WHERE name = '%1' " ).arg( m_collection->escape( artist ) );
     query += QString( "UNION ALL SELECT id, CONCAT('GENRENAME_', name) AS name FROM genres_temp WHERE name = '%1' " ).arg( m_collection->escape( genre ) );
     query += QString( "UNION ALL SELECT id, CONCAT('COMPOSERNAME_', name) AS name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
@@ -590,23 +606,59 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
         first = res.at( index++ );
         second = res.at( index++ );
              a = first.toInt();
-        if( second == QString( "ARTISTNAME_" + artist ) )
+        if( second == QString( "ALBUMNAME_" + album ) )
+        {
+            l = first.toInt();
+            albumFound = true;
+        }
+        else if( second == QString( "ARTISTNAME_" + artist ) )
+        {
             a = first.toInt();
-        if( second == QString( "GENRENAME_" + genre ) )
+            artistFound = true;
+        }
+        else if( second == QString( "GENRENAME_" + genre ) )
+        {
             g = first.toInt();
-        if( second == QString( "COMPOSERNAME_" + composer ) )
+            genreFound = true;
+        }
+        else if( second == QString( "COMPOSERNAME_" + composer ) )
+        {
             c = first.toInt();
-        if( second == QString( "YEARSNAME_" + year ) )
+            composerFound = true;
+        }
+        else if( second == QString( "YEARSNAME_" + year ) )
+        {
             y = first.toInt();
+            yearFound = true;
+        }
     }
-    if( !a )
+    /*
+    if( albumFound )
+    {
+        QPair<QString, int> key( album, albumArtistId );
+        m_albums.insert( key, albumInsert( album, albumArtistId ) );
+    }
+    */
+    if( artistFound )
+    {
         m_artists.insert( artist, artistInsert( artist ) );
-    if( !g )
+        artistFound = false;
+    }
+    if( genreFound )
+    {
         m_genre.insert( genre, genreInsert( genre ) );
-    if( !c )
+        genreFound = false;
+    }
+    if( composerFound )
+    {
         m_composer.insert( composer, composerInsert( composer ) );
-    if( !y )
+        composerFound = false;
+    }
+    if( yearFound )
+    {
         m_year.insert( year, yearInsert( year ) );
+        yearFound = false;
+    }
 }
 
 int
