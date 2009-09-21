@@ -406,7 +406,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
         databaseIdFetch( trackData.value( Field::ARTIST ).toString(),
                          trackData.value( Field::GENRE ).toString(),
                          trackData.value( Field::COMPOSER ).toString(),
-                         trackData.value( Field::YEAR ).toString()
+                         trackData.value( Field::YEAR ).toString(),
                          albumName, albumArtistId );
     }
 
