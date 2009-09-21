@@ -634,31 +634,32 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
         }
     }
     /*
-    if( albumFound )
+    if( !albumFound )
     {
         QPair<QString, int> key( album, albumArtistId );
         m_albums.insert( key, albumInsert( album, albumArtistId ) );
+        albumFound = true;
     }
     */
-    if( artistFound )
+    if( !artistFound )
     {
         m_artists.insert( artist, artistInsert( artist ) );
-        artistFound = false;
+        artistFound = true;
     }
-    if( genreFound )
+    if( !genreFound )
     {
         m_genre.insert( genre, genreInsert( genre ) );
-        genreFound = false;
+        genreFound = true;
     }
-    if( composerFound )
+    if( !composerFound )
     {
         m_composer.insert( composer, composerInsert( composer ) );
-        composerFound = false;
+        composerFound = true;
     }
-    if( yearFound )
+    if( !yearFound )
     {
         m_year.insert( year, yearInsert( year ) );
-        yearFound = false;
+        yearFound = true;
     }
 }
 
