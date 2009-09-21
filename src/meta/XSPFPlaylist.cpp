@@ -53,6 +53,7 @@ XSPFPlaylist::XSPFPlaylist()
     , m_url( Meta::newPlaylistFilePath( "xspf" ) )
 {
     m_name = m_url.fileName();
+
     QDomElement root = createElement( "playlist" );
 
     root.setAttribute( "version", 1 );
@@ -61,6 +62,8 @@ XSPFPlaylist::XSPFPlaylist()
     root.appendChild( createElement( "trackList" ) );
 
     appendChild( root );
+
+    setTitle( m_name );
 }
 
 XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
@@ -99,6 +102,7 @@ XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
     , m_url( Meta::newPlaylistFilePath( "xspf" ) )
 {
     DEBUG_BLOCK
+    m_name = m_url.fileName();
 
     QDomElement root = createElement( "playlist" );
 
@@ -108,6 +112,9 @@ XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
     root.appendChild( createElement( "trackList" ) );
 
     appendChild( root );
+
+    setTitle( m_name );
+
     setTrackList( list );
 }
 

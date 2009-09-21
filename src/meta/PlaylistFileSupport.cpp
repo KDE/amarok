@@ -190,7 +190,7 @@ expand( TrackPtr track )
 }
 
 KUrl
-newPlaylistFilePath( const QString & fileExtension )
+newPlaylistFilePath( const QString &fileExtension )
 {
     int trailingNumber = 1;
     KLocalizedString fileName = ki18n("Playlist_%1");
@@ -200,7 +200,7 @@ newPlaylistFilePath( const QString & fileExtension )
     while( QFileInfo( url.path() ).exists() )
         url.setFileName( fileName.subs( ++trailingNumber ).toString() );
 
-    return KUrl( url.path() + fileExtension );
+    return KUrl( QString( "%1.%2" ).arg( url.path() ).arg( fileExtension ) );
 }
 
 }
