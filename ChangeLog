@@ -23,8 +23,10 @@ VERSION 2.2-rc1
     * Added "Lock layout" option to the main window's context menu.    
 
   BUGFIXES:
+    * Crash in QTextCodec while scanning collection has been fixed.
+      Apparently. (BR 191447)
     * A dialog with "Can not write playlist (/)" was displayed when using
-      saving from within a script (BR 206659).
+      saving from within a script. (BR 206659)
     * Fixed playlist grouping mode not getting correctly applied on startup. 
       (BR 208087)
     * Fixed track queue getting "lost" when switching between different track 
