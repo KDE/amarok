@@ -575,11 +575,12 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     int g = 0; //genre
     int c = 0; //composer
     int y = 0; //year
-    QString query = QString( "SELECT id, name FROM artists_temp WHERE name = '%1' " ).arg( m_collection->escape( artist ) );
 
-    query += QString( "UNION ALL SELECT id, name FROM genres_temp WHERE name = '%1' " ).arg( m_collection->escape( genre ) );
-    query += QString( "UNION ALL SELECT id, name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
-    query += QString( "UNION ALL SELECT id, name FROM years_temp WHERE name = '%1';" ).arg( m_collection->escape( year ) );
+    QString query;
+    query += QString( "SELECT id, CONCAT('ARTISTNAME_', name) AS name FROM artists_temp WHERE name = '%1' " ).arg( m_collection->escape( artist ) );
+    query += QString( "UNION ALL SELECT id, CONCAT('GENRENAME_', name) AS name FROM genres_temp WHERE name = '%1' " ).arg( m_collection->escape( genre ) );
+    query += QString( "UNION ALL SELECT id, CONCAT('COMPOSERNAME_', name) AS name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
+    query += QString( "UNION ALL SELECT id, CONCAT('YEARSNAME_', name) AS name FROM years_temp WHERE name = '%1';" ).arg( m_collection->escape( year ) );
     QStringList res = m_collection->query( query );
     int index = 0;
     QString first;
@@ -588,13 +589,14 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     {
         first = res.at( index++ );
         second = res.at( index++ );
-        if( second == artist )
+             a = first.toInt();
+        if( second == QString( "ARTISTNAME_" + artist ) )
             a = first.toInt();
-        if( second == genre )
+        if( second == QString( "GENRENAME_" + genre ) )
             g = first.toInt();
-        if( second == composer )
+        if( second == QString( "COMPOSERNAME_" + composer ) )
             c = first.toInt();
-        if( second == year )
+        if( second == QString( "YEARSNAME_" + year ) )
             y = first.toInt();
     }
     if( !a )
