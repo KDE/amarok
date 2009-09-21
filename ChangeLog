@@ -8,7 +8,8 @@ VERSION 2.2-rc1
     * Added "subscribe" command line switch to add a podcast channel.
 
   CHANGES:
-    * Make audio CDs respect the "Automatically retrieve cover art" setting.
+    * Removed Shoutcast Directory service due to technical and other issues.
+    * Made audio CDs respect the "Automatically retrieve cover art" setting.
     * TagLib 1.6 built with ASF and MP4 support is now required. This release
       of TagLib fixes many, many bugs and contains new format support.
     * TagLib-Extras 1.0.0 is now required. This release is compatible with the
