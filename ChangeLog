@@ -23,6 +23,8 @@ VERSION 2.2-rc1
     * Added "Lock layout" option to the main window's context menu.    
 
   BUGFIXES:
+    * Fixed playlist grouping mode not getting correctly applied on startup. 
+      (BR 208087)
     * Fixed track queue getting "lost" when switching between different track 
       navigators. (BR 205920)
     * Implemented proper check for running instance options on the command
