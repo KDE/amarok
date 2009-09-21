@@ -192,9 +192,15 @@ SqlPodcastProvider::playlists()
 }
 
 void
-SqlPodcastProvider::addPodcast(const KUrl & url)
+SqlPodcastProvider::addPodcast( const KUrl &url )
 {
     KUrl kurl = KUrl( url );
+    if( kurl.protocol() == "itpc" )
+    {
+        debug() << "Importing an itpc:// url";
+        kurl.setProtocol( "http" );
+    }
+    debug() << "importing " << kurl.url();
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
