@@ -21,13 +21,14 @@
 #include "CollectionManager.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
-#include "statusbar/StatusBar.h"
 #include "Debug.h"
+#include "EngineController.h"
 #include "PodcastModel.h"
 #include "PodcastReader.h"
 #include "PodcastSettingsDialog.h"
-#include "SqlStorage.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
+#include "SqlStorage.h"
+#include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
 
 #include <KLocale>
@@ -593,6 +594,35 @@ SqlPodcastProvider::completePodcastDownloads()
                 job->kill();
             }
         }
+    }
+}
+
+void
+SqlPodcastProvider::engineStateChanged( Phonon::State newState, Phonon::State oldState )
+{
+    DEBUG_BLOCK
+    debug() << "NEWSTATE: " << newState << "OLDSTATE: " << oldState;
+    if( !( newState == Phonon::PlayingState || newState == Phonon::StoppedState ) )
+        return;
+
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    Meta::SqlPodcastEpisodePtr currentEpisode = Meta::SqlPodcastEpisodePtr::dynamicCast( currentTrack );
+
+    if( currentEpisode.isNull() )
+        return;
+
+    //TODO: wait a at least 10% of the tracklength before setting isNew to false
+    switch( newState )
+    {
+        case Phonon::PlayingState:
+            currentEpisode->setNew( false );
+            break;
+        case Phonon::StoppedState:
+            if( oldState == Phonon::PlayingState )
+                currentEpisode->setNew( false );
+            break;
+        default:
+            break;
     }
 }
 

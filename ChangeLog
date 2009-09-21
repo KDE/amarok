@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2-rc1
   FEATURES:
+    * Mark podcast episode as not-new when starting to play it.
+    * Reintroduced indicator icons for new podcast episodes.
     * Added "subscribe" command line switch to add a podcast channel.
 
   CHANGES:
