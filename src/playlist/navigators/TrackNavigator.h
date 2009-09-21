@@ -75,6 +75,12 @@ namespace Playlist
              */
             int queuePosition( const quint64 id ) const;
 
+            /**
+             * Getter for the internal queue. 
+             * @return the tracks queued.
+             */
+            QQueue<quint64> queue();
+
         public slots:
             /**
              * Queues the specified id and schedules it to be played.
