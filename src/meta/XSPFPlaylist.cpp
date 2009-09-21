@@ -96,6 +96,7 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
 XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
     : PlaylistFile()
     , QDomDocument()
+    , m_url( Meta::newPlaylistFilePath( "xspf" ) )
 {
     DEBUG_BLOCK
 
