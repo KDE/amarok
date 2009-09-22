@@ -385,23 +385,13 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     if( dir.count() == 1 )
         compilationId = checkExistingAlbums( albumName );
 
-    bool needToQuery = false;
-    if( !m_artists.contains( trackData.value( Field::ARTIST ).toString() ) ||
-        !m_genre.contains( trackData.value( Field::GENRE ).toString() )  ||
-        !m_composer.contains( trackData.value( Field::COMPOSER ).toString() ) ||
-        !m_year.contains( trackData.value( Field::YEAR ).toString() ) )
-            needToQuery = true;
-
-    if( needToQuery )
-    {
-        //run a single query to fetch these at once, to save time
-        //then values will be cached in local maps, so can use the same calls below
-        databaseIdFetch( trackData.value( Field::ARTIST ).toString(),
-                         trackData.value( Field::GENRE ).toString(),
-                         trackData.value( Field::COMPOSER ).toString(),
-                         trackData.value( Field::YEAR ).toString(),
-                         albumName, albumArtistId );
-    }
+    //run a single query to fetch these at once, to save time
+    //then values will be cached in local maps, so can use the same calls below
+    databaseIdFetch( trackData.value( Field::ARTIST ).toString(),
+                     trackData.value( Field::GENRE ).toString(),
+                     trackData.value( Field::COMPOSER ).toString(),
+                     trackData.value( Field::YEAR ).toString(),
+                     albumName, albumArtistId );
 
     int artist = artistId( trackData.value( Field::ARTIST ).toString() );
     int genre = genreId( trackData.value( Field::GENRE ).toString() );
@@ -568,18 +558,17 @@ void
 ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId )
 {
     //DEBUG_BLOCK
-    Q_UNUSED( album );
-    Q_UNUSED( albumArtistId );
+    QPair<QString, int> albumKey( album, albumArtistId );
     int l = 0; //album
-    bool albumFound = false;
+    bool albumFound = m_albums.contains( albumKey );
     int a = 0; //artist
-    bool artistFound = false;
+    bool artistFound = m_artists.contains( artist );
     int g = 0; //genre
-    bool genreFound = false;
+    bool genreFound = m_genre.contains( genre );
     int c = 0; //composer
-    bool composerFound = false;
+    bool composerFound = m_composer.contains( composer );
     int y = 0; //year
-    bool yearFound = false;
+    bool yearFound = m_year.contains( year );
 
     QString query;
 /*
@@ -590,10 +579,17 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
         query += QString( "SELECT id, CONCAT('ALBUMNAME_', name) AS name FROM albums_temp WHERE artist = %1 AND name = '%2' " )
                         .arg( QString::number( albumArtistId ), m_collection->escape( album ) );
 */
-    query += QString( "SELECT id, CONCAT('ARTISTNAME_', name) AS name FROM artists_temp WHERE name = '%1' " ).arg( m_collection->escape( artist ) );
-    query += QString( "UNION ALL SELECT id, CONCAT('GENRENAME_', name) AS name FROM genres_temp WHERE name = '%1' " ).arg( m_collection->escape( genre ) );
-    query += QString( "UNION ALL SELECT id, CONCAT('COMPOSERNAME_', name) AS name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
-    query += QString( "UNION ALL SELECT id, CONCAT('YEARSNAME_', name) AS name FROM years_temp WHERE name = '%1';" ).arg( m_collection->escape( year ) );
+    if( !artistFound )
+        query += QString( "UNION ALL SELECT id, CONCAT('ARTISTNAME_', name) AS name FROM artists_temp WHERE name = '%1' " ).arg( m_collection->escape( artist ) );
+    if( !genreFound )
+        query += QString( "UNION ALL SELECT id, CONCAT('GENRENAME_', name) AS name FROM genres_temp WHERE name = '%1' " ).arg( m_collection->escape( genre ) );
+    if( !composerFound )
+        query += QString( "UNION ALL SELECT id, CONCAT('COMPOSERNAME_', name) AS name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
+    if( !yearFound )
+        query += QString( "UNION ALL SELECT id, CONCAT('YEARSNAME_', name) AS name FROM years_temp WHERE name = '%1';" ).arg( m_collection->escape( year ) );
+    if( query.startsWith( "UNION ALL " ) )
+        query.remove( 0, 10 );
+        
     QStringList res = m_collection->query( query );
     int index = 0;
     QString first;
@@ -603,27 +599,27 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
         first = res.at( index++ );
         second = res.at( index++ );
              a = first.toInt();
-        if( second == QString( "ALBUMNAME_" + album ) )
+        if( !albumFound && second == QString( "ALBUMNAME_" + album ) )
         {
             l = first.toInt();
             albumFound = true;
         }
-        else if( second == QString( "ARTISTNAME_" + artist ) )
+        else if( !artistFound && second == QString( "ARTISTNAME_" + artist ) )
         {
             a = first.toInt();
             artistFound = true;
         }
-        else if( second == QString( "GENRENAME_" + genre ) )
+        else if( !genreFound && second == QString( "GENRENAME_" + genre ) )
         {
             g = first.toInt();
             genreFound = true;
         }
-        else if( second == QString( "COMPOSERNAME_" + composer ) )
+        else if( !composerFound && second == QString( "COMPOSERNAME_" + composer ) )
         {
             c = first.toInt();
             composerFound = true;
         }
-        else if( second == QString( "YEARSNAME_" + year ) )
+        else if( !yearFound && second == QString( "YEARSNAME_" + year ) )
         {
             y = first.toInt();
             yearFound = true;
@@ -632,8 +628,7 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     /*
     if( !albumFound )
     {
-        QPair<QString, int> key( album, albumArtistId );
-        m_albums.insert( key, albumInsert( album, albumArtistId ) );
+        m_albums.insert( albumKey, albumInsert( album, albumArtistId ) );
         albumFound = true;
     }
     */
