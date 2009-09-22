@@ -398,9 +398,6 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
     switch ( m_groupMode )
     {
         case Head:
-            itemConfig = m_layout.head();
-            break;
-
         case Body:
         case Tail:
             itemConfig = m_layout.body();
@@ -441,9 +438,6 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
     switch ( m_groupMode )
     {
         case Head:
-            m_layout.setHead( newItemConfig );
-            break;
-
         case Body:
         case Tail:
             m_layout.setBody( newItemConfig );
