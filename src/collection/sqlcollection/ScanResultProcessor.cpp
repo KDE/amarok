@@ -514,6 +514,9 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     int y = 0; //year
     bool yearFound = m_years.contains( year );
 
+    if( albumFound && artistFound && genreFound && composerFound && yearFound )
+        return; //nothing to do
+
     QString query;
     if( !albumFound )
     {
