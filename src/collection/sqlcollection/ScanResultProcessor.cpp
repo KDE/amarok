@@ -503,19 +503,20 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
 {
     //DEBUG_BLOCK
     QPair<QString, int> albumKey( album, albumArtistId );
-    int l = 0; //album
     bool albumFound = compilationId || m_albums.contains( albumKey );
-    int a = 0; //artist
     bool artistFound = m_artists.contains( artist );
-    int g = 0; //genre
     bool genreFound = m_genres.contains( genre );
-    int c = 0; //composer
     bool composerFound = m_composers.contains( composer );
-    int y = 0; //year
     bool yearFound = m_years.contains( year );
 
     if( albumFound && artistFound && genreFound && composerFound && yearFound )
         return; //nothing to do
+
+    int l = 0; //album
+    int a = 0; //artist
+    int g = 0; //genre
+    int c = 0; //composer
+    int y = 0; //year
 
     QString query;
     if( !albumFound )
