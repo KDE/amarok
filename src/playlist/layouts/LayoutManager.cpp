@@ -75,6 +75,7 @@ void LayoutManager::setActiveLayout( const QString &layout )
 
 void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
 {
+    DEBUG_BLOCK
     m_activeLayout = PREVIEW_LAYOUT;
     m_previewLayout = layout;
     emit( activeLayoutChanged() );

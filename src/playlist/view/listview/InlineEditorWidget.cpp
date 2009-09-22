@@ -17,6 +17,7 @@
 #include "InlineEditorWidget.h"
 
 #include "Debug.h"
+#include "playlist/layouts/LayoutManager.h"
 #include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
 #include "playlist/proxymodels/GroupingProxy.h"
@@ -104,7 +105,7 @@ void InlineEditorWidget::createChildWidgets()
     DEBUG_BLOCK
 
     debug() << "width: " << width();
-
+    
     //if we are a head item, create a blank widget to make space for the head info
 
     if ( m_headerHeight != 0 )
@@ -175,7 +176,12 @@ void InlineEditorWidget::createChildWidgets()
 
     for ( int i = 0; i < rowCount; i++ )
     {
-        KHBox * rowWidget = new KHBox( rowsWidget );
+
+        QSplitter *rowWidget = new QSplitter( rowsWidget );
+        connect( rowWidget, SIGNAL( splitterMoved ( int, int ) ), this, SLOT( splitterMoved( int, int ) ) );
+        
+        m_splitterRowMap.insert( rowWidget, i );
+        
         rowWidget->setContentsMargins( 0, 0, 0, 0 );
 
         LayoutItemConfigRow row = config.row( i );
@@ -194,6 +200,7 @@ void InlineEditorWidget::createChildWidgets()
 
         qreal spacePerAutoSizeElem = spareSpace / (qreal) autoSizeElemCount;
 
+        int itemIndex = 0;
         for ( int j = 0; j < elementCount; ++j )
         {
             LayoutItemConfigRowElement element = row.element( j );
@@ -222,8 +229,9 @@ void InlineEditorWidget::createChildWidgets()
                 {
                     int rating = textIndex.data( Qt::DisplayRole ).toInt();
 
-                    KRatingWidget * ratingWidget = new KRatingWidget( rowWidget );
-                    rowWidget->setStretchFactor( ratingWidget, itemWidth );
+                    KRatingWidget * ratingWidget = new KRatingWidget( 0 );
+                    rowWidget->addWidget( ratingWidget );
+                    rowWidget->setStretchFactor( itemIndex, itemWidth );
                     ratingWidget->setRating( rating );
                     ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
 
@@ -252,15 +260,17 @@ void InlineEditorWidget::createChildWidgets()
                     painter.drawPixmap( 0, 0, left );
                     painter.drawPixmap( 1, 0, right );
 
-                    QLabel * dividerLabel = new QLabel( rowWidget );
+                    QLabel * dividerLabel = new QLabel( 0 );
+                    rowWidget->addWidget( dividerLabel );
                     dividerLabel->setPixmap( dividerPixmap );
                     dividerLabel->setAlignment( element.alignment() );
-                    rowWidget->setStretchFactor( dividerLabel, itemWidth );
+                    rowWidget->setStretchFactor( itemIndex, itemWidth );
                 }
                 else
                 {
-                     QLineEdit * edit = new QLineEdit( text, rowWidget );
-                     rowWidget->setStretchFactor( edit, itemWidth );
+                     QLineEdit * edit = new QLineEdit( text, 0 );
+                     rowWidget->addWidget( edit );
+                     rowWidget->setStretchFactor( itemIndex, itemWidth );
                      edit->setAlignment( element.alignment() );
 
                      connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
@@ -275,6 +285,8 @@ void InlineEditorWidget::createChildWidgets()
 
                      m_editorRoleMap.insert( edit, value );
                 }
+
+                itemIndex++;
             }
         }
     }
@@ -346,5 +358,100 @@ void InlineEditorWidget::ratingValueChanged()
 
 QMap<int, QString> InlineEditorWidget::changedValues()
 {
+    DEBUG_BLOCK
+    LayoutManager::instance()->setPreviewLayout( m_layout );
     return m_changedValues;
+}
+
+
+void InlineEditorWidget::splitterMoved( int pos, int index )
+{
+    DEBUG_BLOCK
+
+    Q_UNUSED( pos )
+    
+    QSplitter * splitter = dynamic_cast<QSplitter *>( sender() );
+    if ( !splitter )
+        return;
+
+    int row = m_splitterRowMap.value( splitter );
+    debug() << "on row: " << row;
+    
+    //first, get total size of all items;
+    QList<int> sizes = splitter->sizes();
+
+    int total = 0;
+    foreach( int size, sizes )
+        total += size;
+
+    //resize all items as the splitters take up some space, so we need to normalize the combined size to 1.
+    QList<qreal> newSizes;
+
+    foreach( int size, sizes )
+    {
+        qreal newSize = (qreal) size / (qreal) total;
+        newSizes << newSize;
+    }
+
+    LayoutItemConfig itemConfig;
+
+    switch ( m_groupMode )
+    {
+        case Head:
+            itemConfig = m_layout.head();
+            break;
+
+        case Body:
+        case Tail:
+            itemConfig = m_layout.body();
+            break;
+
+        case None:
+        default:
+            itemConfig = m_layout.single();
+            break;
+    }
+
+    LayoutItemConfigRow rowConfig = itemConfig.row( row );
+
+    //and now we rebuild a new layout...
+    LayoutItemConfigRow newRowConfig;
+
+    for( int i = 0; i<rowConfig.count(); i++ )
+    {
+        LayoutItemConfigRowElement element = rowConfig.element( i );
+        debug() << "item " << i << " old/new: " << element.size() << "/" << newSizes.at( i );
+        element.setSize( newSizes.at( i ) );
+        newRowConfig.addElement( element );
+    }
+
+
+    LayoutItemConfig newItemConfig;
+    newItemConfig.setActiveIndicatorRow( itemConfig.activeIndicatorRow() );
+    newItemConfig.setShowCover( itemConfig.showCover() );
+
+    for( int i = 0; i<itemConfig.rows(); i++ )
+    {
+        if( i == row )
+            newItemConfig.addRow( newRowConfig );
+        else
+            newItemConfig.addRow( itemConfig.row( i ) );
+    }
+
+    switch ( m_groupMode )
+    {
+        case Head:
+            m_layout.setHead( newItemConfig );
+            break;
+
+        case Body:
+        case Tail:
+            m_layout.setBody( newItemConfig );
+            break;
+
+        case None:
+        default:
+            m_layout.setSingle( newItemConfig );
+            break;
+    }
 }

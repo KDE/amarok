@@ -40,6 +40,11 @@ qreal LayoutItemConfigRowElement::size() const
     return m_size;
 }
 
+void LayoutItemConfigRowElement::setSize( qreal size )
+{
+    m_size = size;
+}
+
 bool LayoutItemConfigRowElement::bold() const
 {
     return m_bold;
