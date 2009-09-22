@@ -114,7 +114,7 @@ ScanResultProcessor::doneWithImages()
         if( key.first.isEmpty() || key.second.isEmpty() )
             continue;
 
-        int artist = artistId( key.first );
+        int artist = genericId( "artists", key.first );
         int album  = albumId( key.second, artist );
 
         // Will automatically add the image path to the database if needed
@@ -261,7 +261,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     {
         foreach( const QVariantMap &row, data )
         {
-            int artist = artistId( row.value( Field::ARTIST ).toString() );
+            int artist = genericId( "artists", row.value( Field::ARTIST ).toString() );
             addTrack( row, artist );
         }
     }
@@ -269,7 +269,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     {
         QString albumArtist = findAlbumArtist( artists, data.count() );
         //an empty string means that no albumartist was found
-        int artist = albumArtist.isEmpty() ? 0 : artistId( albumArtist );
+        int artist = albumArtist.isEmpty() ? 0 : genericId( "artists", albumArtist );
 
         debug() << "albumartist " << albumArtist << "for artists" << artists;
         foreach( const QVariantMap &row, data )
@@ -393,10 +393,10 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
                      trackData.value( Field::YEAR ).toString(),
                      albumName, albumArtistId );
 
-    int artist = artistId( trackData.value( Field::ARTIST ).toString() );
-    int genre = genreId( trackData.value( Field::GENRE ).toString() );
-    int composer = composerId( trackData.value( Field::COMPOSER ).toString() );
-    int year = yearId( trackData.value( Field::YEAR ).toString() );
+    int artist = genericId( "artists", trackData.value( Field::ARTIST ).toString() );
+    int genre = genericId( "genres", trackData.value( Field::GENRE ).toString() );
+    int composer = genericId( "composers", trackData.value( Field::COMPOSER ).toString() );
+    int year = genericId( "years", trackData.value( Field::YEAR ).toString() );
 
     if( !compilationId )
         album = albumId( albumName, albumArtistId );
@@ -459,98 +459,42 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 }
 
 int
-ScanResultProcessor::artistId( const QString &artist )
+ScanResultProcessor::genericId( const QString &key, const QString &value )
 {
-    if( m_artists.contains( artist ) )
-        return m_artists.value( artist );
-    QString query = QString( "SELECT id FROM artists_temp WHERE name = '%1';" ).arg( m_collection->escape( artist ) );
+    QMap<QString, int> *currMap;
+    if( key == "artists" )
+        currMap = &m_artists;
+    else if( key == "genres" )
+        currMap = &m_genres;
+    else if( key == "composers" )
+        currMap = &m_composers;
+    else if( key == "years" )
+        currMap = &m_years;
+    else
+    {
+        debug() << "Holy hell Batman, what just happened in genericId?";
+        return -9999;
+    }
+
+    if( currMap->contains( value ) )
+        return currMap->value( value );
+
+    QString query = QString( "SELECT id FROM %1_temp WHERE name = '%2';" ).arg( key, m_collection->escape( value ) );
     QStringList res = m_collection->query( query );
     int id = 0;
     if( res.isEmpty() )
-        id = artistInsert( artist );
+        id = genericInsert( key, value );
     else
         id = res[0].toInt();
-    m_artists.insert( artist, id );
+    currMap->insert( value, id );
     return id;
 }
 
 int
-ScanResultProcessor::artistInsert( const QString &artist )
+ScanResultProcessor::genericInsert( const QString &key, const QString &value )
 {
-    QString insert = QString( "INSERT INTO artists_temp( name ) VALUES ('%1');" ).arg( m_collection->escape( artist ) );
-    int id = m_collection->insert( insert, "artists_temp" );
-    return id;
-}
-
-int
-ScanResultProcessor::genreId( const QString &genre )
-{
-    if( m_genre.contains( genre ) )
-        return m_genre.value( genre );
-    QString query = QString( "SELECT id FROM genres_temp WHERE name = '%1';" ).arg( m_collection->escape( genre ) );
-    QStringList res = m_collection->query( query );
-    int id = 0;
-    if( res.isEmpty() )
-        id = genreInsert( genre );
-    else
-        id = res[0].toInt();
-    m_genre.insert( genre, id );
-    return id;
-}
-
-int
-ScanResultProcessor::genreInsert( const QString &genre )
-{
-    QString insert = QString( "INSERT INTO genres_temp( name ) VALUES ('%1');" ).arg( m_collection->escape( genre ) );
-    int id = m_collection->insert( insert, "genres_temp" );
-    return id;
-}
-
-int
-ScanResultProcessor::composerId( const QString &composer )
-{
-    if( m_composer.contains( composer ) )
-        return m_composer.value( composer );
-    QString query = QString( "SELECT id FROM composers_temp WHERE name = '%1';" ).arg( m_collection->escape( composer ) );
-    QStringList res = m_collection->query( query );
-    int id = 0;
-    if( res.isEmpty() )
-        id = composerInsert( composer );
-    else
-        id = res[0].toInt();
-    m_composer.insert( composer, id );
-    return id;
-}
-
-int
-ScanResultProcessor::composerInsert( const QString &composer )
-{
-    QString insert = QString( "INSERT INTO composers_temp( name ) VALUES ('%1');" ).arg( m_collection->escape( composer ) );
-    int id = m_collection->insert( insert, "composers_temp" );
-    return id;
-}
-
-int
-ScanResultProcessor::yearId( const QString &year )
-{
-    if( m_year.contains( year ) )
-        return m_year.value( year );
-    QString query = QString( "SELECT id FROM years_temp WHERE name = '%1';" ).arg( m_collection->escape( year ) );
-    QStringList res = m_collection->query( query );
-    int id = 0;
-    if( res.isEmpty() )
-        id = yearInsert( year );
-    else
-        id = res[0].toInt();
-    m_year.insert( year, id );
-    return id;
-}
-
-int
-ScanResultProcessor::yearInsert( const QString &year )
-{
-    QString insert = QString( "INSERT INTO years_temp( name ) VALUES ('%1');" ).arg( m_collection->escape( year ) );
-    int id = m_collection->insert( insert, "years_temp" );
+    QString insert = QString( "INSERT INTO %1_temp( name ) VALUES ('%2');" ).arg( key, m_collection->escape( value ) );
+    int id = m_collection->insert( insert, QString( "%1_temp" ).arg( key ) );
     return id;
 }
 
@@ -564,11 +508,11 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     int a = 0; //artist
     bool artistFound = m_artists.contains( artist );
     int g = 0; //genre
-    bool genreFound = m_genre.contains( genre );
+    bool genreFound = m_genres.contains( genre );
     int c = 0; //composer
-    bool composerFound = m_composer.contains( composer );
+    bool composerFound = m_composers.contains( composer );
     int y = 0; //year
-    bool yearFound = m_year.contains( year );
+    bool yearFound = m_years.contains( year );
 
     QString query;
 /*
@@ -634,22 +578,22 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     */
     if( !artistFound )
     {
-        m_artists.insert( artist, artistInsert( artist ) );
+        m_artists.insert( artist, genericInsert( "artists", artist ) );
         artistFound = true;
     }
     if( !genreFound )
     {
-        m_genre.insert( genre, genreInsert( genre ) );
+        m_genres.insert( genre, genericInsert( "genres", genre ) );
         genreFound = true;
     }
     if( !composerFound )
     {
-        m_composer.insert( composer, composerInsert( composer ) );
+        m_composers.insert( composer, genericInsert( "composers", composer ) );
         composerFound = true;
     }
     if( !yearFound )
     {
-        m_year.insert( year, yearInsert( year ) );
+        m_years.insert( year, genericInsert( "years", year ) );
         yearFound = true;
     }
 }
