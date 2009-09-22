@@ -391,7 +391,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
                      trackData.value( Field::GENRE ).toString(),
                      trackData.value( Field::COMPOSER ).toString(),
                      trackData.value( Field::YEAR ).toString(),
-                     albumName, albumArtistId );
+                     albumName, albumArtistId, compilationId );
 
     int artist = genericId( "artists", trackData.value( Field::ARTIST ).toString() );
     int genre = genericId( "genres", trackData.value( Field::GENRE ).toString() );
@@ -499,12 +499,12 @@ ScanResultProcessor::genericInsert( const QString &key, const QString &value )
 }
 
 void
-ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId )
+ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId, int compilationId )
 {
     //DEBUG_BLOCK
     QPair<QString, int> albumKey( album, albumArtistId );
     int l = 0; //album
-    bool albumFound = m_albums.contains( albumKey );
+    bool albumFound = compilationId || m_albums.contains( albumKey );
     int a = 0; //artist
     bool artistFound = m_artists.contains( artist );
     int g = 0; //genre
@@ -515,14 +515,15 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     bool yearFound = m_years.contains( year );
 
     QString query;
-/*
-    if( albumArtistId == 0 )
-        query += QString( "SELECT id, CONCAT('ALBUMNAME_', name) AS name FROM albums_temp WHERE artist IS NULL AND name = '%1' " )
-                    .arg( m_collection->escape( album ) );
-    else
-        query += QString( "SELECT id, CONCAT('ALBUMNAME_', name) AS name FROM albums_temp WHERE artist = %1 AND name = '%2' " )
-                        .arg( QString::number( albumArtistId ), m_collection->escape( album ) );
-*/
+    if( !albumFound )
+    {
+        if( albumArtistId == 0 )
+            query += QString( "SELECT id, CONCAT('ALBUMNAME_', name) AS name FROM albums_temp WHERE artist IS NULL AND name = '%1' " )
+                        .arg( m_collection->escape( album ) );
+        else
+            query += QString( "SELECT id, CONCAT('ALBUMNAME_', name) AS name FROM albums_temp WHERE artist = %1 AND name = '%2' " )
+                            .arg( QString::number( albumArtistId ), m_collection->escape( album ) );
+    }
     if( !artistFound )
         query += QString( "UNION ALL SELECT id, CONCAT('ARTISTNAME_', name) AS name FROM artists_temp WHERE name = '%1' " ).arg( m_collection->escape( artist ) );
     if( !genreFound )
@@ -569,13 +570,11 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
             yearFound = true;
         }
     }
-    /*
     if( !albumFound )
     {
         m_albums.insert( albumKey, albumInsert( album, albumArtistId ) );
         albumFound = true;
     }
-    */
     if( !artistFound )
     {
         m_artists.insert( artist, genericInsert( "artists", artist ) );
