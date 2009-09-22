@@ -383,14 +383,10 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     }
 
     if( dir.count() == 1 )
-    {
         compilationId = checkExistingAlbums( albumName );
-    }
 
     if( 0 == compilationId )
-    {
         album = albumId( albumName, albumArtistId );
-    }
 
     bool needToQuery = false;
     if( !m_artists.contains( trackData.value( Field::ARTIST ).toString() ) ||
