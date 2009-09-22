@@ -385,9 +385,6 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     if( dir.count() == 1 )
         compilationId = checkExistingAlbums( albumName );
 
-    if( 0 == compilationId )
-        album = albumId( albumName, albumArtistId );
-
     bool needToQuery = false;
     if( !m_artists.contains( trackData.value( Field::ARTIST ).toString() ) ||
         !m_genre.contains( trackData.value( Field::GENRE ).toString() )  ||
@@ -410,6 +407,9 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     int genre = genreId( trackData.value( Field::GENRE ).toString() );
     int composer = composerId( trackData.value( Field::COMPOSER ).toString() );
     int year = yearId( trackData.value( Field::YEAR ).toString() );
+
+    if( !compilationId )
+        album = albumId( albumName, albumArtistId );
 
     QString uid = trackData.value( Field::UNIQUEID ).toString();
 
