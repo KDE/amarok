@@ -466,10 +466,10 @@ ScanResultProcessor::genericId( const QString &key, const QString &value )
         currMap = &m_artists;
     else if( key == "genres" )
         currMap = &m_genres;
-    else if( key == "composers" )
-        currMap = &m_composers;
     else if( key == "years" )
         currMap = &m_years;
+    else if( key == "composers" )
+        currMap = &m_composers;
     else
     {
         debug() << "Holy hell Batman, what just happened in genericId?";
