@@ -7,6 +7,8 @@ VERSION 2.2
     * More collection scanning speedups.
 
   BUGFIXES:
+    * Don't reshuffle the playlist every time the active track changes when
+    * using a random sort order.
     * Fix the Various Artist node sometimes being shown in the Collection
       Browser with nothing underneath it (or an empty "Unknown" album).
     * Fix some tracks' tags not being saved correctly to the database.
