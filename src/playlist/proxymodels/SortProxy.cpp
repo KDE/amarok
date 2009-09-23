@@ -48,7 +48,14 @@ SortProxy::~SortProxy()
 void
 SortProxy::invalidateSorting()
 {
-    if( !( m_scheme.level( m_scheme.length() - 1 ).category() == -1 ) ) //if it's not random
+    if( m_scheme.length() )
+    {
+        if( !( m_scheme.level( m_scheme.length() - 1 ).category() == -1 ) ) //if it's not random
+        {
+            invalidate();
+        }
+    }
+    else
         invalidate();
     //FIXME: this is a band-aid so that the playlist doesn't reshuffle every time the current track changes
     // However the real issue is deeper, the Observer seems to notify metadataChanged() even if the metadata
