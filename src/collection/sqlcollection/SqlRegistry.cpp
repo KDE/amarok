@@ -302,12 +302,6 @@ SqlRegistry::getYear( const QString &name, int id, bool refresh )
 AlbumPtr
 SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
 {
-    DEBUG_BLOCK
-    if( name.isEmpty() && id == 0 && artist == 0 )
-    {
-        AlbumPtr album( new SqlAlbum( m_collection, id, "**AMAROKHACK_TOTALLYNULL_AMAROKHACK**", artist ) );
-        return album;
-    }
     QMutexLocker locker( &m_albumMutex );
     if( m_albumMap.contains( id ) && !refresh )
         return m_albumMap.value( id );

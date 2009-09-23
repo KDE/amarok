@@ -698,10 +698,7 @@ CollectionTreeItemModelBase::handleCompilationQueryResult( QueryMaker *qm, const
 
         //if the compilation query did not return a result we have to remove the
         //the various artists node itself
-
-        //HACK: SQL left joins can cause a row of NULLs to be returned in the query, meaning the dataList
-        //size is 1 (not empty) and the VA node gets shown with crap in it. So explicitly look for this.
-        if( dataList.isEmpty() || ( dataList.size() == 1 && dataList[0]->name() == "**AMAROKHACK_TOTALLYNULL_AMAROKHACK**" ) )
+        if( dataList.isEmpty() )
         {
             for( int i = 0; i < parent->childCount(); i++ )
             {
