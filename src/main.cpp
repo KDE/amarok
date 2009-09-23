@@ -40,7 +40,7 @@ int main( int argc, char *argv[] )
             ki18n("Developer (hydrogen)"), "parallelgrapefruit@gmail.com" );
     aboutData.addAuthor( ki18n("Ian 'The Beard' Monroe"),
             ki18n("Developer (eean)"), "ian@monroe.nu", "http://www.monroe.nu/" );
-    aboutData.addAuthor( ki18n("Jeff 'IROCKSOHARD' Mitchell"),
+    aboutData.addAuthor( ki18n("Jeff 'IROKSOHARD' Mitchell"),
             ki18n("Developer (jefferai)"), "mitchell@kde.org", "http://amarok.kde.org/blog/categories/13-jefferai" );
     aboutData.addAuthor( ki18n("Leo Franchi"),
             ki18n("Developer (lfranchi)"), "lfranchi@kde.org" );
