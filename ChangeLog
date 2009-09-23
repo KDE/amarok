@@ -2,6 +2,13 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
+VERSION 2.2
+  CHANGES:
+    * More collection scanning speedups.
+
+  BUGFIXES:
+    * Fix some tracks' tags not being saved correctly to the database.
+      (BR 202021)
 
 VERSION 2.2-rc1
   FEATURES:
