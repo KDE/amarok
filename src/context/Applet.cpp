@@ -39,7 +39,8 @@ namespace Context
 Context::Applet::Applet( QObject * parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
     , m_collapsed( false )
-    , m_animationId( 0 )
+    , m_animationIdOn( 0 )
+    , m_animationIdOff( 0 )
     , m_transient( 0 )
     , m_standardPadding( 6.0 )
     , m_textBackground( 0 )
@@ -50,8 +51,10 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
 
 Context::Applet::~Applet( )
 {
-    if ( m_animationId != 0)
-        Plasma::Animator::self()->stopCustomAnimation( m_animationId );
+    if ( m_animationIdOn != 0 )
+        Plasma::Animator::self()->stopCustomAnimation( m_animationIdOn );
+    if ( m_animationIdOff != 0 )
+        Plasma::Animator::self()->stopCustomAnimation( m_animationIdOff );
 }
 
 
@@ -228,39 +231,51 @@ Context::Applet::addAction( QAction *action, const int size )
 void
 Context::Applet::setCollapseOn()
 {
+    // We are asked to collapse, but the applet is already animating to collapse, do nothing
+    if ( m_animationIdOn != 0 )
+        return;
+
+    // We are already collapsed
     if ( size().height() == m_heightCollapseOn )
         return;
+
     debug() << "collapsing applet to..." << m_heightCollapseOn;
     if( m_heightCollapseOff == -1 )
         m_animFromHeight = size().height();
     else
         m_animFromHeight = m_heightCollapseOff;
 
-    if ( m_animationId != 0 ) // warning we are moving right now
+    if ( m_animationIdOff != 0 ) // warning we are extanding right now we should stop
     {
         // stop the anim
-        Plasma::Animator::self()->stopCustomAnimation( m_animationId );
-        m_animationId = 0;
+        Plasma::Animator::self()->stopCustomAnimation( m_animationIdOff );
+        m_animationIdOff = 0;
     }
     m_collapsed = false;
-    m_animationId = Plasma::Animator::self()->customAnimation(20, 1000, Plasma::Animator::EaseInCurve, this, "animateOn" );
+    m_animationIdOn = Plasma::Animator::self()->customAnimation(20, 1000, Plasma::Animator::EaseInCurve, this, "animateOn" );
 }
 
 void
 Context::Applet::setCollapseOff()
 {
     DEBUG_BLOCK
-    debug() << "height:" << size().height() << "target:" << m_heightCollapseOff << "m_collapsed:" << m_collapsed;
+
+    // We are asked to extend, but the applet is already animating to extend, do nothing
+    if ( m_animationIdOff != 0 )
+        return;
+    
+    // Applet already extended
     if ( size().height() == m_heightCollapseOff )
         return;
 
+    debug() << "height:" << size().height() << "target:" << m_heightCollapseOff << "m_collapsed:" << m_collapsed;
     if( m_heightCollapseOff == -1) // if it's self-expanding, don't animate as we don't know where we're going. also, if we're shrinking
     {                                                                       // stop that and expand regardless
-        // stop the anim
-        if( m_animationId != 0 )
+        // stop the animation on now
+        if( m_animationIdOn != 0 )
         {
-            Plasma::Animator::self()->stopCustomAnimation( m_animationId );
-            m_animationId = 0;
+            Plasma::Animator::self()->stopCustomAnimation( m_animationIdOn );
+            m_animationIdOn = 0;
         }
         m_heightCurrent =  m_heightCollapseOff;
         emit sizeHintChanged(Qt::PreferredSize);
@@ -269,14 +284,14 @@ Context::Applet::setCollapseOff()
         return;
     }
 
-    if ( m_animationId != 0 ) // warning we are moving right now
+    if ( m_animationIdOn != 0 ) // warning we are collapsing right now, stop that and reverse it !
     {
         // stop the anim
-        Plasma::Animator::self()->stopCustomAnimation( m_animationId );
-        m_animationId = 0;
+        Plasma::Animator::self()->stopCustomAnimation( m_animationIdOn );
+        m_animationIdOn = 0;
     }
     m_collapsed = true ;
-    m_animationId = Plasma::Animator::self()->customAnimation(20, 1000, Plasma::Animator::EaseInCurve, this, "animateOff" );
+    m_animationIdOff = Plasma::Animator::self()->customAnimation(20, 1000, Plasma::Animator::EaseInCurve, this, "animateOff" );
 }
 
 void
@@ -284,6 +299,19 @@ Context::Applet::setCollapseHeight( int h )
 {
     m_heightCollapseOn = h;
 }
+
+bool
+Context::Applet::isAppletCollapsed()
+{
+    return ( m_heightCollapseOn == m_heightCurrent );
+}
+
+bool
+Context::Applet::isAppletExtended()
+{
+    return ( m_heightCollapseOff == m_heightCurrent );
+}
+
 
 void
 Context::Applet::animateOn( qreal anim )
@@ -302,22 +330,20 @@ Context::Applet::animateOff( qreal anim )
 void
 Context::Applet::animateEnd( int id )
 {
-    if( id == m_animationId )
+    if( id == m_animationIdOn )
     {
-        if( !m_collapsed )
-        {
-            Plasma::Applet::resize( size().width(), m_heightCollapseOn );
-            m_collapsed = true;
-        }
-        else
-        {
-            Plasma::Applet::resize( size().width(), m_heightCollapseOff );
-            m_collapsed = false;
-        }
-        updateGeometry();
-        emit sizeHintChanged(Qt::PreferredSize);
-        m_animationId = 0;
+        Plasma::Applet::resize( size().width(), m_heightCollapseOn );
+        m_collapsed = true;
+        m_animationIdOn = 0;
     }
+    if ( id == m_animationIdOff )
+    {
+        Plasma::Applet::resize( size().width(), m_heightCollapseOff );
+        m_collapsed = false;
+        m_animationIdOff = 0;
+    }
+    updateGeometry();
+    emit sizeHintChanged(Qt::PreferredSize);
 }
 
 
