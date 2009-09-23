@@ -888,7 +888,7 @@ void TagDialog::readTags()
     if( m_currentData.contains( Meta::Field::COMPOSER ) )
         selectOrInsertText( m_currentData.value( Meta::Field::COMPOSER ).toString(), ui->kComboBox_composer );
     else
-        selectOrInsertText( QString(), ui->kComboBox_genre );
+        selectOrInsertText( QString(), ui->kComboBox_composer );
     ui->ratingWidget->setRating( m_currentData.value( Meta::Field::RATING ).toInt() );
     ui->ratingWidget->setMaxRating( 10 );
     ui->qSpinBox_track->setValue( m_currentData.value( Meta::Field::TRACKNUMBER ).toInt() );
