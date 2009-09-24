@@ -785,19 +785,20 @@ void Playlist::PrettyListView::saveTrackSelection()
     m_savedTrackSelection.clear();
 
     foreach( int rowId, selectedRows() )
-        m_savedTrackSelection.append( The::playlist()->idAt( rowId ) );
+        m_savedTrackSelection.append( m_topmostProxy->idAt( rowId ) );
 }
 
 void Playlist::PrettyListView::restoreTrackSelection()
 {
     selectionModel()->clearSelection();
 
-    foreach( qint64 trackId, m_savedTrackSelection )
+    foreach( qint64 savedTrackId, m_savedTrackSelection )
     {
-        QModelIndex newIndex = model()->index( The::playlist()->rowForId( trackId ), 0, QModelIndex() );
-        selectionModel()->select( newIndex, QItemSelectionModel::Select );
-    }
+        QModelIndex restoredIndex = model()->index( m_topmostProxy->rowForId( savedTrackId ), 0, QModelIndex() );
 
+        if ( restoredIndex.isValid() )
+            selectionModel()->select( restoredIndex, QItemSelectionModel::Select );
+    }
 }
 
 #include "PrettyListView.moc"
