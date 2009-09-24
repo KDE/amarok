@@ -80,6 +80,9 @@ public slots:
 protected slots:
     void newPalette( const QPalette & palette );
 
+    void saveTrackSelection();
+    void restoreTrackSelection();
+
 private slots:
     void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
@@ -119,6 +122,8 @@ private:
     PrettyItemDelegate * m_prettyDelegate;
 
     QTimer *m_animationTimer;
+
+    QList<qint64> m_savedTrackSelection;
 
 public:
     QList<int> selectedRows() const;

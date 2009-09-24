@@ -110,7 +110,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
      if ( LayoutManager::instance()->activeLayout().inlineControls() )
          m_animationTimer->start();
 
-     
+     connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
+     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -779,7 +780,25 @@ void Playlist::PrettyListView::playlistLayoutChanged()
         m_animationTimer->stop();
 }
 
+void Playlist::PrettyListView::saveTrackSelection()
+{
+    m_savedTrackSelection.clear();
 
+    foreach( int rowId, selectedRows() )
+        m_savedTrackSelection.append( The::playlist()->idAt( rowId ) );
+}
+
+void Playlist::PrettyListView::restoreTrackSelection()
+{
+    selectionModel()->clearSelection();
+
+    foreach( qint64 trackId, m_savedTrackSelection )
+    {
+        QModelIndex newIndex = model()->index( The::playlist()->rowForId( trackId ), 0, QModelIndex() );
+        selectionModel()->select( newIndex, QItemSelectionModel::Select );
+    }
+
+}
 
 #include "PrettyListView.moc"
 
