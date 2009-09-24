@@ -17,10 +17,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "meta/PlaylistFileSupport.h"
 #include "TestPlaylistFileSupport.h"
+#include "meta/PlaylistFileSupport.h"
 
 #include <KStandardDirs>
+
+#include <QtTest/QTest>
+#include <QtCore/QDir>
 
 
 TestPlaylistFileSupport::TestPlaylistFileSupport( QStringList testArgumentList )

@@ -17,8 +17,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "Expression.h"
 #include "TestExpression.h"
+#include "Expression.h"
+
+#include <QtTest/QTest>
 
 TestExpression::TestExpression( QStringList testArgumentList )
 {

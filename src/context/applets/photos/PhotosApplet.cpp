@@ -116,7 +116,7 @@ PhotosApplet::~PhotosApplet()
 void
 PhotosApplet::engineNewTrackPlaying( )
 {
- //   DEBUG_BLOCK
+    DEBUG_BLOCK
     m_stoppedstate = false;
     dataEngine( "amarok-photos" )->query( QString( "photos" ) );
 }
@@ -124,13 +124,14 @@ PhotosApplet::engineNewTrackPlaying( )
 void
 PhotosApplet::enginePlaybackEnded( int, int, PlaybackEndedReason )
 {
-//    DEBUG_BLOCK
+    DEBUG_BLOCK
     m_stoppedstate = true;;
     m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + i18n( "No track playing" ) );
     m_widget->clear();
     m_widget->hide();
     setBusy( false );
     setCollapseOn();
+    dataEngine( "amarok-photos" )->query( QString( "photos:stopped" ) );
 }
 
 void 
@@ -215,14 +216,22 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     }
     else if ( data.contains( "data" ) )
     {
-        m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );
-        updateConstraints();
-        update();
-        setCollapseOff();
-        // Send the data to the scrolling widget
-        m_widget->setPixmapList( data[ "data" ].value< QList < PhotosInfo * > >() );
-        m_widget->show();
-        setBusy(false);
+        // Do not show some picture if we're still animating as it can lead to trouble
+        // let's hope animating time will be shorter than fetching time of all the picture :/
+        // this also prevent the stupid effect of reanimating several time.
+        if ( isAppletExtended() )
+        {
+            m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );
+            updateConstraints();
+            update();
+            setCollapseOff();
+            // Send the data to the scrolling widget
+            m_widget->setPixmapList( data[ "data" ].value< QList < PhotosInfo * > >() );
+            m_widget->show();
+            setBusy(false);
+        }
+        else
+            return;
     }
     updateConstraints();
     update();

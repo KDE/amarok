@@ -28,6 +28,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPainter>
+#include <QPaintEvent>
 
 using namespace Playlist;
 
@@ -312,7 +313,7 @@ InlineEditorWidget::paintEvent( QPaintEvent * event )
         delegate.paintItem( m_layout.head(), &painter, option, m_index );
     }
 
-    KHBox::paintEvent( event );
+    event->accept();
 }
 
 void InlineEditorWidget::editValueChanged()

@@ -41,12 +41,10 @@
 #include <vorbisfile.h>
 #include <textidentificationframe.h>
 #include <xiphcomment.h>
-#ifdef TAGLIB_EXTRAS_FOUND
 #include <mp4file.h>
 #include <mp4item.h>
 #include <mp4tag.h>
 #include <asftag.h>
-#endif
 
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
         static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
@@ -320,7 +318,6 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             file->xiphComment()->addField("DISCNUMBER", disc);
         }
     }
-#ifdef TAGLIB_EXTRAS_FOUND
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
     {
         if( changes.contains( Meta::Field::COMPOSER ) )
@@ -338,7 +335,6 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             mp4tag->itemListMap()["disk"] = TagLib::MP4::Item( discnumber, 0 );
         }
     }
-#endif
     if( shouldSave )
         fileref.save();
 }

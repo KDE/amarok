@@ -21,11 +21,13 @@
 #ifndef ATTICA_ACTIVITY_H
 #define ATTICA_ACTIVITY_H
 
+#include <QtCore/QList>
+#include <QtCore/QSharedDataPointer>
+
 #include "atticaclient_export.h"
 
-#include <kurl.h>
 
-#include <QtCore>
+class QDateTime;
 
 namespace Attica {
 
@@ -36,6 +38,9 @@ class ATTICA_EXPORT Activity
     typedef QList<Activity> List;
 
     Activity();
+    Activity(const Activity& other);
+    Activity& operator=(const Activity& other);
+    ~Activity();
 
     void setId( const QString & );
     QString id() const;
@@ -53,11 +58,8 @@ class ATTICA_EXPORT Activity
     QString link() const;
 
   private:
-    QString m_id;
-    QString m_user;
-    QDateTime m_timestamp;
-    QString m_message;
-    QString m_link;
+    class Private;
+    QSharedDataPointer<Private> d;
 };
 
 }

@@ -17,13 +17,15 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "Amarok.h"
 #include "TestAmarok.h"
-
-#include <QDir>
-#include <QString>
+#include "Amarok.h"
 
 #include <KStandardDirs>
+
+#include <QtTest/QTest>
+#include <QtCore/QDir>
+#include <QtCore/QString>
+#include <QtCore/QDateTime>
 
 TestAmarok::TestAmarok( QStringList testArgumentList )
 {

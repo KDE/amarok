@@ -20,7 +20,7 @@
 #ifndef TESTAMAROK_H
 #define TESTAMAROK_H
 
-#include <QtTest>
+#include <QtCore/QStringList>
 
 class TestAmarok : public QObject
 {

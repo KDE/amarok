@@ -72,3 +72,9 @@ Playlist::TrackNavigator::queuePosition( const quint64 id ) const
 {
     return m_queue.indexOf( id );
 }
+
+QQueue<quint64> Playlist::TrackNavigator::queue()
+{
+    return m_queue;
+}
+

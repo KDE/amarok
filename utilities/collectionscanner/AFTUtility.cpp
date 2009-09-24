@@ -26,6 +26,9 @@
 #include <id3v2tag.h>
 #include <mpcfile.h>
 #include <mpegfile.h>
+#include <mp4item.h>
+#include <mp4file.h>
+#include <mp4tag.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
 #include <speexfile.h>
@@ -34,17 +37,6 @@
 #include <uniquefileidentifierframe.h>
 #include <vorbisfile.h>
 #include <xiphcomment.h>
-
-#ifdef TAGLIB_EXTRAS_FOUND
-#include <mp4file.h>
-#include <mp4tag.h>
-#include <mp4item.h>
-#include <audiblefiletyperesolver.h>
-#include <asffiletyperesolver.h>
-#include <wavfiletyperesolver.h>
-#include <realmediafiletyperesolver.h>
-#include <mp4filetyperesolver.h>
-#endif
 
 #include <QFile>
 #include <QTime>
@@ -80,11 +72,11 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
                 if( owner.compare( ourId, Qt::CaseInsensitive ) == 0 )
                     return TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
                 else if( owner.compare( mbId, Qt::CaseInsensitive ) == 0 )
-                    storedMBId = QString( "MB_" ) + TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
+                    storedMBId = TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
             }
         }
         if( !storedMBId.isEmpty() )
-            return storedMBId;
+            return QString( "MB_" ) + storedMBId;
     }
     //from here below assumes a file with a XiphComment; put non-conforming formats up above...
     TagLib::Ogg::XiphComment *comment = 0;
@@ -112,8 +104,9 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     }
     else if( comment->contains( Qt4QStringToTString( mbId.toUpper() ) ) )
     {
-        QString identifier = QString( "MB_" ) + TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
-        return identifier;
+        QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
+        if( !identifier.isEmpty() )
+            return QString( "MB_" ) + identifier;
     }
 
     return QString();

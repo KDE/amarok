@@ -235,8 +235,19 @@ Playlist::Actions::back()
 void
 Playlist::Actions::playlistModeChanged()
 {
+
+
+    QQueue<quint64> currentQueue;
+    
     if ( m_navigator )
+    {
+        //HACK: Migrate the queue to the new navigator
+        //TODO: The queue really should not be maintained by the navigators in this way
+        // but should be handled by a seperate and persistant object.
+        
+        currentQueue = m_navigator->queue();
         m_navigator->deleteLater();
+    }
 
     debug() << "Dynamic mode:   " << AmarokConfig::dynamicMode();
     debug() << "Repeat enabled: " << Amarok::repeatEnabled();
@@ -285,6 +296,10 @@ Playlist::Actions::playlistModeChanged()
     }
     else
         m_navigator = new StandardTrackNavigator();
+
+
+    m_navigator->queueIds( currentQueue );
+    
 }
 
 void

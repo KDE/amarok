@@ -191,8 +191,11 @@ FastForwardWorker::run()
                 tracksForInsert.insert( track, track->playableUrl().url() );
                 debug() << c << " inserting track:" << track->playableUrl();
             }
-            else
-                debug() << c << " track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
+            else {
+                Amarok::Collection* collection = track->collection();
+                if (collection)
+                    debug() << c << " track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
+            }
 
             emit trackAdded( track );
 

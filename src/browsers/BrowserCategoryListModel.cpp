@@ -14,8 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "BrowserCategory.h"
 #include "BrowserCategoryListModel.h"
+#include "BrowserCategory.h"
 #include "Debug.h"
 
 BrowserCategoryListModel::BrowserCategoryListModel()

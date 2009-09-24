@@ -877,7 +877,7 @@ MediaDeviceHandler::parseTracks()
         // Register the playlist provider with the playlistmanager
 
         // register a playlist provider for this type of device
-        m_provider = new MediaDeviceUserPlaylistProvider();
+        m_provider = new MediaDeviceUserPlaylistProvider( m_memColl );
 
         // Begin parsing the playlists
         Meta::MediaDevicePlaylistList playlists;

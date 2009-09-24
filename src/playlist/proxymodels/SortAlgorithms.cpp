@@ -59,7 +59,7 @@ multilevelLessThan::operator()( int rowA, int rowB)
         else
         {
             if( m_scheme.level( i ).order() == Qt::DescendingOrder )
-                verdict = verdict ? 0 : 1;
+                verdict = 0;
         }
     }
     if( verdict == 2 )

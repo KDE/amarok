@@ -134,11 +134,41 @@ CollectionManager::init()
 
     foreach( KService::Ptr service, plugins )
     {
-        if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqlserver-collection" &&
+        const QString name = service->property( "X-KDE-Amarok-name" ).toString();
+        if( name == "mysqlserver-collection" &&
            !Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
                 continue;
-        if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqle-collection" &&
+        if( name == "mysqle-collection" &&
             Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
+                continue;
+        if( name == "mysqle-collection" || name == "mysqlserver-collection" )
+        {
+            Amarok::Plugin *plugin = PluginManager::createFromService( service );
+            if ( plugin )
+            {
+                Amarok::CollectionFactory* factory = dynamic_cast<Amarok::CollectionFactory*>( plugin );
+                if ( factory )
+                {
+                    debug() << "Initialising sqlcollection";
+                    connect( factory, SIGNAL( newCollection( Amarok::Collection* ) ), this, SLOT( slotNewCollection( Amarok::Collection* ) ) );
+                    d->factories.append( factory );
+                    factory->init();
+                }
+                else
+                {
+                    debug() << "SqlCollection Plugin has wrong factory class";
+                }
+            }
+            break;
+        }
+    }
+
+    foreach( KService::Ptr service, plugins )
+    {
+        //ignore sqlcollection plugins, we have already loaded it above
+        if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqlserver-collection" )
+                continue;
+        if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqle-collection" )
                 continue;
 
         Amarok::Plugin *plugin = PluginManager::createFromService( service );

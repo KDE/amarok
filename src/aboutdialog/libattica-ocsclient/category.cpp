@@ -21,28 +21,54 @@
 
 #include "category.h"
 
+#include <QtCore/QString>
+
+
 using namespace Attica;
 
-Category::Category()
+class Category::Private : public QSharedData {
+    public:
+        QString m_id;
+        QString m_name;
+};
+
+
+Category::Category() : d(new Private)
 {
 }
 
+Category::Category(const Attica::Category& other)
+    : d(other.d)
+{
+}
+
+Category& Category::operator=(const Attica::Category & other)
+{
+    d = other.d;
+    return *this;
+}
+
+Category::~Category()
+{
+}
+
+
 void Category::setId( const QString &u )
 {
-  m_id = u;
+  d->m_id = u;
 }
 
 QString Category::id() const
 {
-  return m_id;
+  return d->m_id;
 }
 
-void Category::setName( const QString &d )
+void Category::setName( const QString &name )
 {
-  m_name = d;
+  d->m_name = name;
 }
 
 QString Category::name() const
 {
-  return m_name;
+  return d->m_name;
 }

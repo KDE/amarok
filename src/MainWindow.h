@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2002 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2002-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -90,6 +90,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
         QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
         void deleteBrowsers();
+
+        /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
+        virtual QMenu* createPopupMenu();
 
         QString activeBrowserName();
 
@@ -206,6 +209,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         static QPointer<MainWindow> s_instance;
 
         bool m_layoutLocked;
+        bool m_dockWidthsLocked;
 
     private slots:
         void createContextView( Plasma::Containment *c );

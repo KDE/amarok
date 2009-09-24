@@ -618,7 +618,7 @@ QString LastFmTreeModel::mapTypeToUrl ( LastFm::Type type, const QString &key )
     case NeighborhoodRadio:
         return "lastfm://user/" + encoded_username + "/neighbours";
     case MyTagsChild:
-        return "lastfm://globaltags/" + KUrl::toPercentEncoding ( key );
+        return "lastfm://usertags/" + encoded_username + "/" + KUrl::toPercentEncoding ( key );
     case FriendsChild:
         return "lastfm://user/" + KUrl::toPercentEncoding ( key ) + "/personal";
     case ArtistsChild:

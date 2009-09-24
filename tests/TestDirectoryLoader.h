@@ -22,7 +22,8 @@
 
 #include "DirectoryLoader.h"
 
-#include <QtTest>
+#include <QtCore/QStringList>
+#include <QtCore/QMutex>
 
 class TestDirectoryLoader : public QObject
 {

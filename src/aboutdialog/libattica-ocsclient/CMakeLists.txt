@@ -1,4 +1,9 @@
 set(ocsclient_SRCS
+   providerinitjob.cpp
+   eventjob.cpp
+   eventlistjob.cpp
+   eventparser.cpp
+   event.cpp
    activity.cpp
    activityparser.cpp
    activitylistjob.cpp
@@ -6,7 +11,7 @@ set(ocsclient_SRCS
    personparser.cpp
    personjob.cpp
    personlistjob.cpp
-   ocsapi.cpp
+   provider.cpp
    postjob.cpp
    folder.cpp
    folderlistjob.cpp

@@ -42,7 +42,6 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     : QTreeView( parent )
     , m_loadAction( 0 )
     , m_deleteAction( 0 )
-    , m_renameAction( 0 )
     , m_createTimecodeTrackAction( 0 )
     , m_addGroupAction( 0 )
 {
@@ -97,6 +96,9 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
 {
     DEBUG_BLOCK
 
+    //there are 4 colums, so for each selected row we get 4 indices...
+    int selectedRowCount = indices.count() / 4;
+
     QList< KAction * > actions;
     
     if ( m_loadAction == 0 )
@@ -111,36 +113,23 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
     }
 
-    if ( m_renameAction == 0 )
-    {
-        m_renameAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotCreateTimecodeTrack() ) );
-    }
-
     if ( m_createTimecodeTrackAction == 0 )
     {
         debug() << "creating m_createTimecodeTrackAction";
         m_createTimecodeTrackAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
         connect( m_createTimecodeTrackAction, SIGNAL( triggered() ), this, SLOT( slotCreateTimecodeTrack() ) );
     }
-    
-    if ( indices.count() > 0 )
-    {
-        actions << m_loadAction;
-    }
 
-    if ( indices.count() > 0 )
+    if ( selectedRowCount == 1 )
+        actions << m_loadAction;
+
+    if ( selectedRowCount > 0 )
         actions << m_deleteAction;
 
-    if ( indices.count() == 1 )
-        actions << m_renameAction;
-
-    if ( indices.count() == 2 ) {
+    if ( selectedRowCount == 2 ) {
         debug() << "adding m_createTimecodeTrackAction";
         actions << m_createTimecodeTrackAction;
-
     }
-
 
     return actions;
 }

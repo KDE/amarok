@@ -68,12 +68,14 @@
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QtDBus/QtDBus>
 
+#include "shared/taglib_filetype_resolvers/asffiletyperesolver.h"
+#include "shared/taglib_filetype_resolvers/mimefiletyperesolver.h"
+#include "shared/taglib_filetype_resolvers/mp4filetyperesolver.h"
+#include "shared/taglib_filetype_resolvers/wavfiletyperesolver.h"
+
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefiletyperesolver.h>
-#include <asffiletyperesolver.h>
-#include <wavfiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
-#include <mp4filetyperesolver.h>
 #endif
 
 QMutex Debug::mutex;
@@ -114,8 +116,8 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2009, The Amarok Development Squad" ),
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
              ( "http://amarok.kde.org" ) );
-             
-AMAROK_EXPORT OcsData ocsData;
+
+AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
         : KUniqueApplication()
@@ -143,11 +145,12 @@ App::App()
 
 #ifdef TAGLIB_EXTRAS_FOUND
     PERF_LOG( "Registering taglib plugins" )
-    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new WavFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new WAVFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new MimeFileTypeResolver);
     PERF_LOG( "Done Registering taglib plugins" )
 #endif
 
@@ -456,6 +459,7 @@ App::initCliArgs( int argc, char *argv[] )
 void
 App::initCliArgs() //static
 {
+    // Update main.cpp (below KUniqueApplication::start() wrt instanceOptions) aswell if needed!
     KCmdLineOptions options;
 
     options.add("+[URL(s)]", ki18n( "Files/URLs to open" ));
@@ -828,6 +832,10 @@ namespace Amarok
         const QDateTime now = QDateTime::currentDateTime();
         const int datediff = datetime.daysTo( now );
 
+         // HACK: Fix 203522. Arithmetic overflow? Getting weird values from Plasma::DataEngine (LAST_PLAYED field).
+        if( datediff < 0 )
+            return i18nc( "The amount of time since last played", "Never" );
+
         if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
             const KCalendarSystem *cal = KGlobal::locale()->calendar();
             const QDate date = datetime.date();
@@ -839,9 +847,6 @@ namespace Amarok
 
         if( datediff >= 7 )  // return difference in weeks
             return i18np( "One week ago", "%1 weeks ago", (datediff+3)/7 );
-
-        if( datediff == -1 )
-            return i18nc( "When this track was last played", "Tomorrow" );
 
         const int timediff = datetime.secsTo( now );
 
@@ -1065,7 +1070,7 @@ namespace Amarok
             s[len-1] = '_';
 
         int extensionIndex = s.lastIndexOf( '.' ); // correct trailing spaces in file name itself
-        if( ( extensionIndex != -1 ) && ( s.length() > 1 ) )
+        if( ( s.length() > 1 ) &&  ( extensionIndex > 0 ) )
             if( s.at( extensionIndex - 1 ) == ' ' )
                 s[extensionIndex - 1] = '_';
 

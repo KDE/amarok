@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,24 +18,27 @@
 #ifndef VOLUMEPOPUPBUTTON_H
 #define VOLUMEPOPUPBUTTON_H
 
-
 #include "EngineObserver.h"
 
-#include "QAction"
-#include "QLabel"
-#include "QMenu"
-#include "QSlider"
-#include "QToolButton"
-#include "QWheelEvent"
+#include <QToolButton>
+
+class QAction;
+class QLabel;
+class QMenu;
+class QMouseEvent;
+class QSlider;
+class QWheelEvent;
+
 
 class VolumePopupButton : public QToolButton, public EngineObserver
 {
     Q_OBJECT
+
 public:
     VolumePopupButton( QWidget * parent );
     
-protected slots:
-    void clicked();
+protected:
+    void mouseReleaseEvent( QMouseEvent * event );
     void wheelEvent( QWheelEvent * event );
 
 private:

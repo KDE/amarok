@@ -64,7 +64,7 @@ class ServiceSqlWorkerThread : public ThreadWeaver::Job
 
 struct ServiceSqlQueryMaker::Private
 {
-    enum QueryType { NONE, TRACK, ARTIST, ALBUM, GENRE/*, COMPOSER, YEAR, CUSTOM*/ };
+    enum QueryType { NONE, TRACK, ARTIST, ALBUM, GENRE, COMPOSER, YEAR, CUSTOM };
     enum {TRACKS_TABLE = 1, ALBUMS_TABLE = 2, ARTISTS_TABLE = 4, GENRE_TABLE = 8};
     int linkedTables;
     QueryType queryType;
@@ -587,8 +587,39 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
         case Private::YEAR:
             handleYears( result );
             break;*/
-
         case Private::NONE:
+            debug() << "Warning: queryResult with queryType == NONE";
+
+        default:
+            break;
+        }
+    }
+        else
+    {
+        switch( d->queryType ) {
+            case QueryMaker::Custom:
+                emit newResultReady( m_collection->collectionId(), QStringList() );
+                break;
+            case QueryMaker::Track:
+                emit newResultReady( m_collection->collectionId(), Meta::TrackList() );
+                break;
+            case QueryMaker::Artist:
+                emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
+                break;
+            case QueryMaker::Album:
+                emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
+                break;
+            case QueryMaker::Genre:
+                emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
+                break;
+            case QueryMaker::Composer:
+                emit newResultReady( m_collection->collectionId(), Meta::ComposerList() );
+                break;
+            case QueryMaker::Year:
+                emit newResultReady( m_collection->collectionId(), Meta::YearList() );
+                break;
+
+        case QueryMaker::None:
             debug() << "Warning: queryResult with queryType == NONE";
         }
     }

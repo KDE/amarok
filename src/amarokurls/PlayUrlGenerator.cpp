@@ -41,6 +41,7 @@ PlayUrlGenerator::createCurrentTrackBookmark()
 AmarokUrl
 PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int seconds, QString name )
 {
+    DEBUG_BLOCK
     AmarokUrl url;
     if( !track )
         return url;
@@ -56,6 +57,7 @@ PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int seconds, QStrin
         url.setName( name + " - " + Meta::secToPrettyTime( seconds ) );
 
     debug() << "concocted url: " << url.url();
+    debug() << "pos: " << seconds;
     return url;
 }
 

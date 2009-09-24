@@ -16,14 +16,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include <QList>
-
-#include <KRandom>
+#include "FavoredRandomTrackNavigator.h"
 
 #include "amarokconfig.h"
 #include "Debug.h"
-#include "FavoredRandomTrackNavigator.h"
 #include "playlist/PlaylistModelStack.h"
+
+#include <QList>
+
+#include <KRandom>
 
 quint64
 Playlist::FavoredRandomTrackNavigator::requestNextTrack()

@@ -30,12 +30,11 @@
 #define PADDING 15
 
 
-static const float TOOLBOX_OPACITY = 0.4;
-
-ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
+ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent, const float opacity )
     : Plasma::IconWidget( parent )
     , m_hovering( 0 )
-    , m_animOpacity( TOOLBOX_OPACITY )
+    , m_baseOpacity( opacity )
+    , m_animOpacity( opacity )
     , m_animHighlightId( 0 )
 {
     m_text = new QGraphicsSimpleTextItem( this );
@@ -43,7 +42,7 @@ ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
 
     QFont font;
     font.setBold( false );
-    font.setPointSize( font.pointSize() - 2 );
+    font.setPointSize( font.pointSize() - 1 );
     font.setStyleStrategy( QFont::PreferAntialias );
     
     m_text->setFont( font );
@@ -160,9 +159,9 @@ void
 ToolBoxIcon::animateHighlight( qreal progress )
 {
     if( m_hovering )
-        m_animOpacity = TOOLBOX_OPACITY + ( ( 1.0 - TOOLBOX_OPACITY ) * progress );
+        m_animOpacity = m_baseOpacity + ( ( 1.0 - m_baseOpacity ) * progress );
     else
-        m_animOpacity = 1.0 - ( ( 1.0 - TOOLBOX_OPACITY ) * progress );
+        m_animOpacity = 1.0 - ( ( 1.0 - m_baseOpacity ) * progress );
 
     if( progress >= 1.0 )
         m_animHighlightId = 0;

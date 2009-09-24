@@ -24,6 +24,10 @@ if( STRIGI_FOUND )
     add_subdirectory( strigi )
 endif( STRIGI_FOUND )
 
+if(APPLE)
+    find_package( SecurityFramework REQUIRED )
+endif(APPLE)
+
 include_directories(
     aboutdialog
     aboutdialog/libattica-ocsclient
@@ -66,6 +70,7 @@ include_directories(
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
+    ${APPLE_SECURITY_INCLUDE_DIR}
 )
 
 if ( KDEMULTIMEDIA_FOUND )
@@ -112,6 +117,20 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/support/ConnectionAssistant.cpp
   collection/mediadevicecollection/support/MediaDeviceInfo.cpp
 )
+
+#####################################################################
+# CREDENTIALSTORAGE
+#####################################################################
+
+if(APPLE)
+    set(credentialstorage_SRCS
+        CredentialStorage_mac.cpp
+    )
+else(APPLE)
+    set(credentialstorage_SRCS
+        CredentialStorage.cpp
+    )
+endif(APPLE)
 
 #####################################################################
 # SERVICEFRAMEWORK
@@ -498,6 +517,17 @@ set(libdynamic_SRCS
 )
 
 #####################################################################
+# RESOLVERS
+#####################################################################
+set(taglib_filetype_resolver_SRCS
+    ../shared/taglib_filetype_resolvers/asffiletyperesolver.cpp
+    ../shared/taglib_filetype_resolvers/mp4filetyperesolver.cpp
+    ../shared/taglib_filetype_resolvers/wavfiletyperesolver.cpp
+    ../shared/taglib_filetype_resolvers/mimefiletyperesolver.cpp
+)
+
+
+#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -507,6 +537,7 @@ set(amaroklib_LIB_SRCS
     ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
+    ${credentialstorage_SRCS}
     ${libplaylist_SRCS}
     ${libplugin_SRCS}
     ${libproxycollection_SRCS}
@@ -525,6 +556,7 @@ set(amaroklib_LIB_SRCS
     ${scriptengine_SRCS}
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
+    ${taglib_filetype_resolver_SRCS}
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
     aboutdialog/ExtendedAboutDialog.cpp
@@ -692,6 +724,7 @@ if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
 endif(WIN32)
 if(APPLE)
+    target_link_libraries(amaroklib ${APPLE_SECURITY_LIBRARY})
     SET_TARGET_PROPERTIES(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
@@ -763,8 +796,6 @@ install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
 
 
 install(FILES data/DefaultPlaylistLayouts.xml
-              data/DefaultDockLayout32
-              data/DefaultDockLayout64
               services/InfoParserLoading.html
               browsers/hover_info_template.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)

@@ -71,7 +71,6 @@ private:
 
     KAction *m_loadAction;
     KAction *m_deleteAction;
-    KAction *m_renameAction;
 
     //for testing...
     KAction *m_createTimecodeTrackAction;

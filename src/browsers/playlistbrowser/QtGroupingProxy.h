@@ -33,8 +33,8 @@ class QtGroupingProxy : public QAbstractProxyModel
 {
     Q_OBJECT
     public:
-        QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNode = QModelIndex(),
-                       int groupedColumn = -1 );
+        explicit QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNode = QModelIndex(),
+                                  int groupedColumn = -1 );
         ~QtGroupingProxy();
 
         void setGroupedColumn( int groupedColumn );

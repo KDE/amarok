@@ -20,7 +20,7 @@
 #ifndef TESTMETACUECUEFILEITEM_H
 #define TESTMETACUECUEFILEITEM_H
 
-#include <QtTest>
+#include <QtCore/QStringList>
 
 class TestMetaCueCueFileItem : public QObject
 {

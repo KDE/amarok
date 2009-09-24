@@ -408,7 +408,6 @@ ProxyCollection::Collection::getTrack( Meta::TrackPtr track )
     m_trackLock.lockForRead();
     if( m_trackMap.contains( key ) )
     {
-        //debug() << "track already exists, " << m_trackMap.count() << " unique tracks. track was: name [" << key.trackName << "], artist[" << key.artistName << "], album [" << key.albumName << "]";
         KSharedPtr<ProxyCollection::Track> proxy = m_trackMap.value( key );
         proxy->add( track );
         m_trackLock.unlock();
@@ -422,7 +421,6 @@ ProxyCollection::Collection::getTrack( Meta::TrackPtr track )
         //which would show some weird behaviour in other places
         ProxyCollection::Track *proxy = new ProxyCollection::Track( this, track );
         m_trackMap.insert( key, KSharedPtr<ProxyCollection::Track>( proxy ) );
-        //debug() << "track new, " << m_trackMap.count() << " unique tracks";
         m_trackLock.unlock();
         return proxy;
     }
@@ -462,7 +460,6 @@ ProxyCollection::keyFromTrack( const Meta::TrackPtr &track )
 void
 ProxyCollection::Collection::emptyCache()
 {
-    DEBUG_BLOCK
     bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasUid;
     hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = false;
 
@@ -480,13 +477,6 @@ ProxyCollection::Collection::emptyCache()
         #define foreachInvalidateCache( Type, RealType, x ) \
         for( QMutableHashIterator<int,Type > iter(x); iter.hasNext(); ) \
             RealType::staticCast( iter.next().value() )->invalidateCache()
-
-        /*debug() << "tracks before GC: " << m_trackMap.count();
-        debug() << "artists before GC: " << m_artistMap.count();
-        debug() << "albums before GC: " << m_albumMap.count();
-        debug() << "genres before GC: " << m_genreMap.count();
-        debug() << "composers before GC: " << m_composerMap.count();
-        debug() << "years before GC: " << m_yearMap.count();*/
 
         //elem.count() == 2 is correct because elem is one pointer to the object
         //and the other is stored in the hash map (except for m_trackMap, where
@@ -506,13 +496,6 @@ ProxyCollection::Collection::emptyCache()
         foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Genre>, 2, m_genreMap )
         foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Composer>, 2, m_composerMap )
         foreachCollectGarbage( QString, KSharedPtr<ProxyCollection::Year>, 2, m_yearMap )
-
-        /*debug() << "tracks after GC: " << m_trackMap.count();
-        debug() << "artists after GC: " << m_artistMap.count();
-        debug() << "albums after GC: " << m_albumMap.count();
-        debug() << "genres after GC: " << m_genreMap.count();
-        debug() << "composers after GC: " << m_composerMap.count();
-        debug() << "years after GC: " << m_yearMap.count();*/
     }
 
     //make sure to unlock all necessary locks

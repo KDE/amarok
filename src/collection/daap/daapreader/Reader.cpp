@@ -334,11 +334,9 @@ Reader::parseSongList( const QByteArray &data )
     QString year;
     qint32 trackNumber=0;
     qint32 songTime=0;
-    bool isFirstTrack = false;
-    bool first=true;
     uint containerLength=0;
 
-    while( (first ? !raw.atEnd() : ( index < containerLength ) ) )
+    while( !raw.atEnd() )
     {
         char tag[5];
         quint32 tagLength = getTagAndLength( raw, tag );
@@ -384,21 +382,21 @@ Reader::parseSongList( const QByteArray &data )
                 QByteArray stringData(tagLength, ' ');
                 raw.readRawData( stringData.data(), tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
                 if ( QString( tag ) == "asfm" )
-                     format = tagLength ? QString::fromUtf8( stringData, tagLength ) : QString();
-                if ( QString( tag ) == "minm" )
-                     title = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "asal" )
-                     album = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "asar" )
-                     artist = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "ascp" )
-                     composer = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "ascm" )
-                     comment = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "asyr" )
-                     year = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
-                if ( QString( tag ) == "asgn" )
-                     genre = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
+                     format = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "minm" )
+                     title = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "asal" )
+                     album = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "asar" )
+                     artist = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "ascp" )
+                     composer = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "ascm" )
+                     comment = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "asyr" )
+                     year = QString::fromUtf8( stringData, tagLength );
+                else if ( QString( tag ) == "asgn" )
+                     genre = QString::fromUtf8( stringData, tagLength );
                 break;
             }
             case DATE:
@@ -419,10 +417,8 @@ Reader::parseSongList( const QByteArray &data )
             }
             case CONTAINER:
             {
-                if ( !isFirstTrack && QString( tag ) == "mlit" )
+                if ( QString( tag ) == "mlit" )
                     addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
-                else
-                    isFirstTrack=false;
                 break;
             }
             default:
@@ -434,15 +430,7 @@ Reader::parseSongList( const QByteArray &data )
         index += tagLength + 8;
     }
 
-
-    if( isFirstTrack )
-    {
-        emit httpError( "Invalid response" ); //it's not a real http error, but the effect is the same
-        deleteLater();
-        return false;
-    }
-    else // add the last track which is otherwise lost
-        addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
+    addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
 
     m_memColl->acquireWriteLock();
     m_memColl->setTrackMap( m_trackMap );

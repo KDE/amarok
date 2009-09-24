@@ -25,11 +25,13 @@
 
 class QAction;
 
+class MediaDeviceCollection;
+
 class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvider
 {
     Q_OBJECT
     public:
-        MediaDeviceUserPlaylistProvider();
+        MediaDeviceUserPlaylistProvider( MediaDeviceCollection *collection );
         ~MediaDeviceUserPlaylistProvider();
 
         /* PlaylistProvider functions */
@@ -76,6 +78,7 @@ class AMAROK_EXPORT MediaDeviceUserPlaylistProvider : public UserPlaylistProvide
     Meta::MediaDevicePlaylistList m_playlists;
 
     QAction *m_renameAction;
+    MediaDeviceCollection *m_collection;
 };
 
 #endif

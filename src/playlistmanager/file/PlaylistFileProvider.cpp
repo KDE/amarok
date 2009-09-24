@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "PlaylistFileProvider.h"
 #include "App.h"
 #include "amarokconfig.h"
-#include "PlaylistFileProvider.h"
 #include "PlaylistFileSupport.h"
 #include "EditablePlaylistCapability.h"
 #include "Amarok.h"

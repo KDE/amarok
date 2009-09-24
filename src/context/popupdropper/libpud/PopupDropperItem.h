@@ -21,8 +21,8 @@
 #define POPUPDROPPERITEM_H
 
 #include <QtSvg/QGraphicsSvgItem>
-#include <QString>
-#include <QFont>
+#include <QtCore/QString>
+#include <QtGui/QFont>
 
 #include "PopupDropper_Export.h"
 
@@ -30,6 +30,7 @@ class QDropEvent;
 class QGraphicsTextItem;
 class QGraphicsView;
 class QSvgRenderer;
+class QAction;
 class PopupDropper;
 class PopupDropperItemPrivate;
 

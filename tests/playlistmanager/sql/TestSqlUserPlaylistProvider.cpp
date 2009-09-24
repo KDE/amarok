@@ -17,11 +17,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include <KStandardDirs>
-
+#include "TestSqlUserPlaylistProvider.h"
 #include "collection/CollectionManager.h"
 
-#include "TestSqlUserPlaylistProvider.h"
+#include <KStandardDirs>
+
+#include <QtTest/QTest>
+#include <QtCore/QDir>
 
 TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider( QStringList testArgumentList )
 {

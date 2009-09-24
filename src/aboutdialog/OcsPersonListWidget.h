@@ -19,17 +19,20 @@
 
 #include "OcsPersonItem.h"
 #include "OcsData.h"
+#include "libattica-ocsclient/provider.h"
 
 class OcsPersonListWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    OcsPersonListWidget( const QList< KAboutPerson > &persons, const OcsData::OcsPersonList *ocsPersons,
-                         OcsPersonItem::PersonStatus status = OcsPersonItem::Author, QWidget *parent = 0 );
+    OcsPersonListWidget( const QList< KAboutPerson > &persons,
+                         const OcsData::OcsPersonList *ocsPersons,
+                         OcsPersonItem::PersonStatus status = OcsPersonItem::Author,
+                         QWidget *parent = 0 );
 
 public slots:
-    void switchToOcs();
+    void switchToOcs( const Attica::Provider &provider );
     void onOcsFetchStarted();
     void onOcsDataFetched( int err );
 

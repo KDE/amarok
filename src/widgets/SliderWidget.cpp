@@ -53,6 +53,7 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
 {
     setRange( 0, max );
     setFixedHeight( 20 );
+    setAttribute( Qt::WA_NoMousePropagation, true );
 }
 
 void
@@ -332,16 +333,16 @@ void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
     ProgressWidget::instance()->redrawBookmarks();
 }
 
-void Amarok::TimeSlider::drawTriangle( const QString &name, int miliSeconds )
+void Amarok::TimeSlider::drawTriangle( const QString &name, int milliSeconds )
 {
     DEBUG_BLOCK
     int sliderHeight = height() - ( m_sliderInsertY * 2 );
     int sliderLeftWidth = sliderHeight / 3;
 
     // This mess converts the # of seconds into the pixel width value where the triangle should be drawn
-    int x_pos = ( ( ( double ) miliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
+    int x_pos = ( ( ( double ) milliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
-    BookmarkTriangle * tri = new BookmarkTriangle( this, miliSeconds, name );
+    BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
     m_triangles << tri;
     tri->setGeometry( x_pos + 6 /* to center the point */, 1 /*y*/, 11, 11 ); // 6 = hard coded border width

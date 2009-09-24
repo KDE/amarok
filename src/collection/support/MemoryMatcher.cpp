@@ -55,6 +55,8 @@ TrackMatcher::TrackMatcher( TrackPtr track )
 
 TrackList TrackMatcher::match( MemoryCollection *memColl )
 {
+    if( !m_track || !memColl )
+        return TrackList();
     TrackMap trackMap = memColl->trackMap();
     TrackList result;
     if ( trackMap.contains( m_track->uidUrl()  ) )
@@ -64,6 +66,8 @@ TrackList TrackMatcher::match( MemoryCollection *memColl )
 
 TrackList TrackMatcher::match( const TrackList &tracks )
 {
+    if( !m_track )
+        return TrackList();
     TrackList result;
     QString url = m_track->uidUrl();
     foreach( TrackPtr track, tracks )
@@ -84,6 +88,8 @@ ArtistMatcher::ArtistMatcher( ArtistPtr artist )
 
 TrackList ArtistMatcher::match( MemoryCollection *memColl )
 {
+    if( !m_artist || !memColl )
+        return TrackList();
     ArtistMap artistMap = memColl->artistMap();
     if ( artistMap.contains( m_artist->name() ) )
     {
@@ -100,6 +106,8 @@ TrackList ArtistMatcher::match( MemoryCollection *memColl )
 
 AlbumList ArtistMatcher::matchAlbums(MemoryCollection * memColl)
 {
+    if( !m_artist || !memColl )
+        return AlbumList();
     ArtistMap artistMap = memColl->artistMap();
     if ( m_artist && artistMap.contains( m_artist->name() ) )
     {
@@ -123,6 +131,8 @@ AlbumList ArtistMatcher::matchAlbums(MemoryCollection * memColl)
 
 TrackList ArtistMatcher::match( const TrackList &tracks )
 {
+    if( !m_artist )
+        return TrackList();
     TrackList matchingTracks;
     QString name = m_artist->name();
     foreach( TrackPtr track, tracks )
@@ -143,6 +153,8 @@ AlbumMatcher::AlbumMatcher( AlbumPtr album )
 
 TrackList AlbumMatcher::match( MemoryCollection *memColl )
 {
+    if( !m_album || !memColl )
+        return TrackList();
     AlbumMap albumMap = memColl->albumMap();
     if ( albumMap.contains( m_album->name() ) )
     {
@@ -159,6 +171,8 @@ TrackList AlbumMatcher::match( MemoryCollection *memColl )
 
 TrackList AlbumMatcher::match( const TrackList &tracks )
 {
+    if( !m_album )
+        return TrackList();
     TrackList matchingTracks;
     QString name = m_album->name();
     foreach( TrackPtr track, tracks )
@@ -179,6 +193,8 @@ GenreMatcher::GenreMatcher( GenrePtr genre )
 
 TrackList GenreMatcher::match( MemoryCollection *memColl )
 {
+    if( !m_genre || !memColl )
+        return TrackList();
     GenreMap genreMap = memColl->genreMap();
     if ( genreMap.contains( m_genre->name() ) )
     {
@@ -195,6 +211,8 @@ TrackList GenreMatcher::match( MemoryCollection *memColl )
 
 TrackList GenreMatcher::match( const TrackList &tracks )
 {
+    if( !m_genre )
+        return TrackList();
     TrackList matchingTracks;
     QString name = m_genre->name();
     foreach( TrackPtr track, tracks )
@@ -215,6 +233,8 @@ ComposerMatcher::ComposerMatcher( ComposerPtr composer )
 
 TrackList ComposerMatcher::match( MemoryCollection *memColl )
 {
+    if( !m_composer || !memColl )
+        return TrackList();
     ComposerMap composerMap = memColl->composerMap();
     if ( composerMap.contains( m_composer->name() ) )
     {
@@ -231,6 +251,8 @@ TrackList ComposerMatcher::match( MemoryCollection *memColl )
 
 TrackList ComposerMatcher::match( const TrackList &tracks )
 {
+    if( !m_composer )
+        return TrackList();
     TrackList matchingTracks;
     QString name = m_composer->name();
     foreach( TrackPtr track, tracks )
@@ -251,6 +273,8 @@ YearMatcher::YearMatcher( YearPtr year )
 
 TrackList YearMatcher::match( MemoryCollection *memColl )
 {
+    if( !m_year || !memColl )
+        return TrackList();
     YearMap yearMap = memColl->yearMap();
     if ( yearMap.contains( m_year->name() ) )
     {
@@ -267,6 +291,8 @@ TrackList YearMatcher::match( MemoryCollection *memColl )
 
 TrackList YearMatcher::match( const TrackList &tracks )
 {
+    if( !m_year )
+        return TrackList();
     TrackList matchingTracks;
     QString name = m_year->name();
     foreach( TrackPtr track, tracks )

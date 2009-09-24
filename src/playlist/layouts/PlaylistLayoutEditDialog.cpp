@@ -456,7 +456,7 @@ void PlaylistLayoutEditDialog::setupGroupByCombo()
 
     //Add the option to not perform grouping
     //Use a null string to specify "no grouping"
-    groupByComboBox->addItem( i18n( "No Grouping" ), QVariant( QString() ) );
+    groupByComboBox->addItem( i18n( "No Grouping" ), QVariant( "None" ) );
 }
 
 void PlaylistLayoutEditDialog::setLayoutChanged()

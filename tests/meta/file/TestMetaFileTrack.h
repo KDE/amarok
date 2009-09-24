@@ -20,9 +20,11 @@
 #ifndef TESTMETAFILETRACK_H
 #define TESTMETAFILETRACK_H
 
-#include "meta/file/File.h"
+#include <QtCore/QStringList>
 
-#include <QtTest>
+namespace MetaFile {
+    class Track;
+}
 
 class TestMetaFileTrack : public QObject
 {

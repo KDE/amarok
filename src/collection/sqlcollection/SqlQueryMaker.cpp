@@ -992,6 +992,7 @@ SqlQueryMaker::handleArtists( const QStringList &result )
 void
 SqlQueryMaker::handleAlbums( const QStringList &result )
 {
+    DEBUG_BLOCK
     AlbumList albums;
     SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
@@ -999,6 +1000,10 @@ SqlQueryMaker::handleAlbums( const QStringList &result )
         QString name = iter.next();
         QString id = iter.next();
         QString artist = iter.next();
+        //HACK: The following is a HACK and should be fixed by fixing the HACK
+        //of always including the "tracks" table in queries in SqlQueryMaker
+        if( name.isEmpty() && id.isEmpty() && artist.isEmpty() )
+            continue;
         albums.append( reg->getAlbum( name, id.toInt(), artist.toInt() ) );
     }
     emitOrStoreProperResult( AlbumPtr, albums );

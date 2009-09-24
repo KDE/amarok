@@ -22,7 +22,7 @@
 
 #include "meta/M3UPlaylist.h"
 
-#include <QtTest>
+#include <QtCore/QStringList>
 
 class TestM3UPlaylist : public QObject
 {

@@ -206,7 +206,7 @@ QString Playlist::PlaylistLayout::groupBy()
     return m_groupBy;
 }
 
-void Playlist::PlaylistLayout::setGroupBy(const QString& groupBy)
+void Playlist::PlaylistLayout::setGroupBy( const QString& groupBy )
 {
     m_groupBy = groupBy;
 }

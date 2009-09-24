@@ -465,9 +465,13 @@ void BookmarkModel::checkTables()
             
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
-    if( values.isEmpty() )
+
+    //also check if the db  version is correct but the table is simply missing... can happen due to a bug in 2.2.0 beta1 and beta2
+    QStringList values2 = sqlStorage->query( "show tables like 'bookmarks';");
+    
+    if( values.isEmpty() || values2.isEmpty() )
     {
-        //debug() << "creating Playlist Tables";
+        debug() << "creating Playlist Tables";
         createTables();
         sqlStorage->query( "INSERT INTO admin(component,version) "
                 "VALUES('" + key + "'," + QString::number( BOOKMARK_DB_VERSION ) + ");" );

@@ -335,7 +335,7 @@ Playlist::GroupingProxy::groupingCategory() const
 void
 Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
 {
-    if( groupableCategories.contains( groupingCategory ) || groupingCategory.isEmpty() )
+    if( groupableCategories.contains( groupingCategory ) || groupingCategory == "None" || groupingCategory.isEmpty() )
     {
         m_groupingCategory = groupingCategory;
         regroupAll();

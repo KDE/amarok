@@ -476,7 +476,6 @@ ProxyCollection::Track::add( const Meta::TrackPtr &track )
 void
 ProxyCollection::Track::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
     if( !track )
         return;
 
@@ -800,7 +799,6 @@ ProxyCollection::Artist::sortableName() const
 Meta::TrackList
 ProxyCollection::Artist::tracks()
 {
-    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::ArtistPtr artist, m_artists )
     {
@@ -921,7 +919,6 @@ ProxyCollection::Genre::sortableName() const
 Meta::TrackList
 ProxyCollection::Genre::tracks()
 {
-    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::GenrePtr genre, m_genres )
     {
@@ -1015,7 +1012,6 @@ ProxyCollection::Composer::sortableName() const
 Meta::TrackList
 ProxyCollection::Composer::tracks()
 {
-    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::ComposerPtr composer, m_composers )
     {
@@ -1110,7 +1106,6 @@ ProxyCollection::Year::sortableName() const
 Meta::TrackList
 ProxyCollection::Year::tracks()
 {
-    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::YearPtr year, m_years )
     {

@@ -38,10 +38,8 @@
 #include <trueaudiofile.h>
 #include <vorbisfile.h>
 #include <wavpackfile.h>
-#ifdef TAGLIB_EXTRAS_FOUND
 #include <asffile.h>
 #include <mp4file.h>
-#endif
 
 // converts a peak value from the normal digital scale form to the more useful decibel form
 // decibels are relative to the /adjusted/ waveform
@@ -229,7 +227,6 @@ static Meta::ReplayGainTagMap readXiphTags( TagLib::Ogg::XiphComment *tag )
     return outputMap;
 }
 
-#ifdef TAGLIB_EXTRAS_FOUND
 static Meta::ReplayGainTagMap readASFTags( TagLib::ASF::Tag *tag )
 {
     const TagLib::ASF::AttributeListMap &tagMap = tag->attributeListMap();
@@ -251,7 +248,6 @@ static Meta::ReplayGainTagMap readASFTags( TagLib::ASF::Tag *tag )
 
     return outputMap;
 }
-#endif
 // Bad news: ReplayGain in MP4 is not actually standardized in any way.  Maybe reimplement at some point...maybe.  See
 // http://www.hydrogenaudio.org/forums/lofiversion/index.php/t14322.html
 #ifdef DO_NOT_USE_THIS_UNTIL_FIXED
@@ -332,13 +328,11 @@ Meta::readReplayGainTags( TagLib::FileRef fileref )
         if ( file->APETag() )
             map = readAPETags( file->APETag() );
     }
-#ifdef TAGLIB_EXTRAS_FOUND
     else if ( TagLib::ASF::File *file = dynamic_cast<TagLib::ASF::File *>( fileref.file() ) )
     {
         if ( file->tag() )
             map = readASFTags( file->tag() );
     }
-#endif
 // See comment above
 #ifdef DO_NOT_USE_THIS_UNTIL_FIXED
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )

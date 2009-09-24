@@ -62,6 +62,9 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         void setCollapseOff();
         void setCollapseHeight( int );
 
+        bool isAppletCollapsed();
+        bool isAppletExtended();
+
         /**
           * sizeHint is reimplemented here only for all the applet.
           */
@@ -86,7 +89,8 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         int  m_heightCurrent;
         int  m_heightCollapseOn;
         int  m_heightCollapseOff;
-        int  m_animationId;
+        int  m_animationIdOn;
+        int  m_animationIdOff;
         int  m_animFromHeight;
 
     private:

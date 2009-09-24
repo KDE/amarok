@@ -20,9 +20,11 @@
 #ifndef TESTMETAMULTITRACK_H
 #define TESTMETAMULTITRACK_H
 
-#include "meta/multi/MultiTrack.h"
+#include <QtCore/QStringList>
 
-#include <QtTest>
+namespace Meta {
+    class MultiTrack;
+}
 
 class TestMetaMultiTrack : public QObject
 {

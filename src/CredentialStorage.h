@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,29 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef SHOUTCASTSERVICECOLLECTION_H
-#define SHOUTCASTSERVICECOLLECTION_H
+#ifndef CREDENTIALSTORAGE_H
+#define CREDENTIALSTORAGE_H
 
-#include <ServiceCollection.h>
+#include "amarok_export.h"
 
-/**
-A collection that dynamically fetches data from a remote location as needed
-*/
-class ShoutcastServiceCollection : public ServiceCollection
+#include <QString>
+
+namespace CredentialStorage
 {
-public:
-    ShoutcastServiceCollection();
-    ShoutcastServiceCollection(bool isTop500);
+    enum Status
+    {
+        Success,
+        DoesNotExist,
+        Error
+    };
 
-    ~ShoutcastServiceCollection();
-
-    virtual QueryMaker* queryMaker();
-
-    virtual QString collectionId() const;
-    virtual QString prettyName() const;
-
-private:
-    bool m_top500;
-};
+    AMAROK_EXPORT Status readEntry( const QString &folder, const QString &key, QString &value );
+    AMAROK_EXPORT Status writeEntry( const QString &folder, const QString &key, const QString &value );
+    AMAROK_EXPORT Status writePassword( const QString &folder, const QString &key, const QString &password );
+    AMAROK_EXPORT Status readPassword( const QString &folder, const QString &key, QString &password );
+}
 
 #endif

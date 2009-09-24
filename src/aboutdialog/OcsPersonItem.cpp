@@ -17,6 +17,9 @@
 #include "OcsPersonItem.h"
 
 #include "Debug.h"
+#include "libattica-ocsclient/provider.h"
+#include "libattica-ocsclient/providerinitjob.h"
+#include "libattica-ocsclient/personjob.h"
 
 #include <KAction>
 #include <KRun>
@@ -72,6 +75,7 @@ OcsPersonItem::init()
 
         m_snBar->setIconSize( QSize( 16, 16 ) );
         m_snBar->setContentsMargins( 0, 0, 0, 0 );
+        m_snBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
     }
     else
     {
@@ -80,6 +84,7 @@ OcsPersonItem::init()
     }
     m_iconsBar->setIconSize( QSize( 22, 22 ) );
     m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
+    m_iconsBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
 
     if( !m_person->emailAddress().isEmpty() )
     {
@@ -118,7 +123,7 @@ OcsPersonItem::launchUrl( QAction *action ) //SLOT
 }
 
 void
-OcsPersonItem::switchToOcs()
+OcsPersonItem::switchToOcs( const Attica::Provider &provider )
 {
     if( m_state == Online )
         return;
@@ -132,7 +137,8 @@ OcsPersonItem::switchToOcs()
         Attica::PersonJob *personJob;
         if( m_ocsUsername == QString( "%%category%%" ) )   //TODO: handle grouping
             return;
-        personJob = Attica::OcsApi::requestPerson( m_ocsUsername );
+
+        personJob = provider.requestPerson( m_ocsUsername );
         connect( personJob, SIGNAL( result( KJob * ) ), this, SLOT( onJobFinished( KJob * ) ) );
         emit ocsFetchStarted();
         m_state = Online;
@@ -153,11 +159,13 @@ OcsPersonItem::onJobFinished( KJob *job )
 void
 OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
 {
-    m_avatar->setFixedSize( 56, 56 );
-    m_avatar->setFrameShape( QFrame::StyledPanel ); //this is a FramedLabel, otherwise oxygen wouldn't paint the frame
-    m_avatar->setPixmap( ocsPerson.avatar() );
-    m_avatar->setAlignment( Qt::AlignCenter );
-
+    if( !( ocsPerson.avatar().isNull() ) )
+    {
+        m_avatar->setFixedSize( 56, 56 );
+        m_avatar->setFrameShape( QFrame::StyledPanel ); //this is a FramedLabel, otherwise oxygen wouldn't paint the frame
+        m_avatar->setPixmap( ocsPerson.avatar() );
+        m_avatar->setAlignment( Qt::AlignCenter );
+    }
     if( !( ocsPerson.city().isEmpty() && ocsPerson.country().isEmpty() ) )
         m_aboutText.append( "<br/>" + ( ocsPerson.city().isEmpty() ? "" : ( ocsPerson.city() + ", " ) ) + ocsPerson.country() );
 

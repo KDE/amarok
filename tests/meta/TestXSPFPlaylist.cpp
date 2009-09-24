@@ -18,8 +18,13 @@
  ***************************************************************************/
 
 #include "TestXSPFPlaylist.h"
+#include "meta/XSPFPlaylist.h"
 
 #include <KStandardDirs>
+
+#include <QtTest/QTest>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
 
 TestXSPFPlaylist::TestXSPFPlaylist( QStringList testArgumentList )
 {

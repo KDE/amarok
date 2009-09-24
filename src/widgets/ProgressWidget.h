@@ -41,7 +41,7 @@ class ProgressWidget : public QWidget, public EngineObserver
 
         virtual QSize sizeHint() const;
 
-        void addBookmark( const QString &name, int x );
+        void addBookmark( const QString &name, int milliSeconds );
         void redrawBookmarks();
 
     public slots:

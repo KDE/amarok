@@ -145,11 +145,25 @@ QueryMaker *
 AmpacheServiceQueryMaker::addMatch( const ArtistPtr & artist )
 {
     DEBUG_BLOCK
-
-    if ( m_parentAlbumId.isEmpty() )
+    if( m_parentAlbumId.isEmpty() )
     {
-        const ServiceArtist * serviceArtist = static_cast< const ServiceArtist * >( artist.data() );
-        m_parentArtistId = QString::number( serviceArtist->id() );
+        const ServiceArtist * serviceArtist = dynamic_cast< const ServiceArtist * >( artist.data() );
+        if( serviceArtist )
+        {
+            m_parentArtistId = QString::number( serviceArtist->id() );
+        }
+        else
+        {
+            if( m_collection->artistMap().contains( artist->name() ) )
+            {
+                serviceArtist = static_cast< const ServiceArtist* >( m_collection->artistMap().value( artist->name() ).data() );
+                m_parentArtistId = QString::number( serviceArtist->id() );
+            }
+            else
+            {
+                //hmm, not sure what to do now
+            }
+        }
         //debug() << "parent id set to: " << m_parentArtistId;
     }
     return this;
@@ -159,10 +173,25 @@ QueryMaker *
 AmpacheServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
 {
     DEBUG_BLOCK
-    const ServiceAlbum * serviceAlbum = static_cast< const ServiceAlbum * >( album.data() );
-    m_parentAlbumId = QString::number( serviceAlbum->id() );
-    //debug() << "parent id set to: " << m_parentAlbumId;
-    m_parentArtistId.clear();
+    const ServiceAlbum * serviceAlbum = dynamic_cast< const ServiceAlbum * >( album.data() );
+    if( serviceAlbum )
+    {
+        m_parentAlbumId = QString::number( serviceAlbum->id() );
+        //debug() << "parent id set to: " << m_parentAlbumId;
+        m_parentArtistId.clear();
+    }
+    else
+    {
+        if( m_collection->albumMap().contains( album->name() ) )
+        {
+            serviceAlbum = static_cast< const ServiceAlbum* >( m_collection->albumMap().value( album->name() ).data() );
+            m_parentAlbumId = QString::number( serviceAlbum->id() );
+        }
+        else
+        {
+            //hmm, not sure what to do now
+        }
+    }
 
     return this;
 }
@@ -224,29 +253,28 @@ AmpacheServiceQueryMaker::fetchArtists()
 
     }*/
     //else {
-
-        QString urlString = "<SERVER>/server/xml.server.php?action=artists&auth=<SESSION_ID>";
-
-        urlString.replace( "<SERVER>", m_server);
-        urlString.replace( "<SESSION_ID>", m_sessionId);
+        KUrl request( m_server );
+        request.addPath( "/server/xml.server.php" );
+        request.addQueryItem( "action", "artists" );
+        request.addQueryItem( "auth", m_sessionId );
 
         if ( !m_artistFilter.isEmpty() )
-            urlString += QString( "&filter=" + m_artistFilter );
+            request.addQueryItem( "filter", m_artistFilter );
         
         if( m_dateFilter > 0 )
         {
             QDateTime from;
             from.setTime_t( m_dateFilter );
-            urlString += QString( "&add=" + from.toString( Qt::ISODate ) );
+            request.addQueryItem( "add", from.toString( Qt::ISODate ) );
             debug() << "added date filter with time:" <<  from.toString( Qt::ISODate );
         } else
             debug() << "m_dateFilter is:" << m_dateFilter;
         
-        urlString += QString( "&limit=" + QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
-        debug() << "Artist url: " << urlString;
+        request.addQueryItem( "limit", QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
+        debug() << "Artist url: " << request.url();
 
 
-        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
+        m_storedTransferJob =  KIO::storedGet(  request, KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
             , this, SLOT( artistDownloadComplete( KJob *) ) );
     //}
@@ -261,8 +289,6 @@ AmpacheServiceQueryMaker::fetchAlbums()
 
     AlbumList albums;
 
-    //debug() << "parent id: " << m_parentId;
-
     if( !m_parentArtistId.isEmpty() )
     {
         ArtistMatcher artistMatcher( m_collection->artistById( m_parentArtistId.toInt() ) );
@@ -276,23 +302,24 @@ AmpacheServiceQueryMaker::fetchAlbums()
     }
     else
     {
-        QString urlString = "<SERVER>/server/xml.server.php?action=artist_albums&auth=<SESSION_ID>";
+        KUrl request( m_server );
+        request.addPath( "/server/xml.server.php" );
+        request.addQueryItem( "action", "artist_albums" );
+        request.addQueryItem( "auth", m_sessionId );
 
-        urlString.replace( "<SERVER>", m_server);
-        urlString.replace( "<SESSION_ID>", m_sessionId);
         if( !m_parentArtistId.isEmpty() )
-            urlString += QString( "&filter=" + m_parentArtistId );
+            request.addQueryItem( "filter", m_parentArtistId );
             
         if( m_dateFilter > 0 )
         {
             QDateTime from;
             from.setTime_t( m_dateFilter );
-            urlString += QString( "&add=" + from.toString( Qt::ISODate ) );
+            request.addQueryItem( "add", from.toString( Qt::ISODate ) );
         }
-        debug() << "request url: " << urlString;
-        urlString += QString( "&limit=" + QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
+        request.addQueryItem( "limit", QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
+        debug() << "request url: " << request.url();
 
-        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
+        m_storedTransferJob =  KIO::storedGet(  request, KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
             , this, SLOT( albumDownloadComplete( KJob *) ) );
     }
@@ -325,32 +352,32 @@ AmpacheServiceQueryMaker::fetchTracks()
     }
     else
     {
-        QString urlString;
+        KUrl request( m_server );
+        request.addPath( "/server/xml.server.php" );
+        request.addQueryItem( "auth", m_sessionId );
 
         if( !m_parentAlbumId.isEmpty() )
-            urlString = "<SERVER>/server/xml.server.php?action=album_songs&auth=<SESSION_ID>";
+            request.addQueryItem( "action", "album_songs" );
         else if( !m_parentArtistId.isEmpty() )
-            urlString = "<SERVER>/server/xml.server.php?action=artist_songs&auth=<SESSION_ID>";
+            request.addQueryItem( "action", "artist_songs" );
         else
-            urlString = "<SERVER>/server/xml.server.php?action=songs&auth=<SESSION_ID>";
+            request.addQueryItem( "action", "songs" );
 
-        urlString.replace( "<SERVER>", m_server);
-        urlString.replace( "<SESSION_ID>", m_sessionId);
         if( !m_parentAlbumId.isEmpty() )
-            urlString += QString( "&filter=" + m_parentAlbumId );
+            request.addQueryItem( "filter", m_parentAlbumId );
         else if( !m_parentArtistId.isEmpty() )
-            urlString += QString( "&filter=" + m_parentArtistId );
+            request.addQueryItem( "filter", m_parentArtistId );
         if( m_dateFilter > 0 )
         {
             QDateTime from;
             from.setTime_t( m_dateFilter );
-            urlString += QString( "&add=" + from.toString( Qt::ISODate ) );
+            request.addQueryItem( "add", from.toString( Qt::ISODate ) );
         }
-        debug() << "request url: " << urlString;
+        debug() << "request url: " << request.url();
         
-        urlString += QString( "&limit=" + QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
+        request.addQueryItem( "limit", QString::number( d->maxsize ) );// set to 0 in reset() so fine to use uncondiationally
 
-        m_storedTransferJob =  KIO::storedGet(  KUrl( urlString ), KIO::NoReload, KIO::HideProgressInfo );
+        m_storedTransferJob =  KIO::storedGet(  request, KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
             , this, SLOT( trackDownloadComplete( KJob *) ) );
     }
@@ -369,8 +396,6 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
     }
 
     ArtistList artists;
-
-    //debug() << "received artists: " <<  m_storedTransferJob->data();
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );

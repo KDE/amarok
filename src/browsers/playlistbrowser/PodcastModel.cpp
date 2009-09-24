@@ -110,9 +110,16 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         isChannel = false;
         isOnDisk = !episode->localUrl().isEmpty();
         if( isOnDisk )
+        {
             icon = KIcon( "go-down" );
+        }
         else
-            icon = KIcon( "podcast-amarok" );
+        {
+            if( episode->isNew() )
+                icon = KIcon( "rating" );
+            else
+                icon = KIcon( "podcast-amarok" );
+        }
     }
     else
     {
@@ -664,13 +671,13 @@ PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
 
     //HACK: since we only have one PodcastProvider implementation
     PodcastProvider *provider = The::playlistManager()->defaultPodcasts();
-    if( provider )
-    {
-        if( !m_selectedEpisodes.isEmpty() )
-            actions << provider->episodeActions( m_selectedEpisodes );
-        if( !m_selectedChannels.isEmpty() )
-            actions << provider->channelActions( m_selectedChannels );
-    }
+    if( !provider )
+        return actions;
+
+    if( !m_selectedChannels.isEmpty() )
+        actions << provider->channelActions( m_selectedChannels );
+    else if( !m_selectedEpisodes.isEmpty() )
+        actions << provider->episodeActions( m_selectedEpisodes );
 
     return actions;
 }

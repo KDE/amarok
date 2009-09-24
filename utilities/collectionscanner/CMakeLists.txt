@@ -44,15 +44,30 @@ set( libchardet_SRCS
     charset-detector/src/nsUTF8Prober.cpp
 )
 
+#####################################################################
+# TagLib File Type Resolvers
+#####################################################################
+set( taglib_filetype_resolver_SRCS
+    ../../shared/taglib_filetype_resolvers/wavfiletyperesolver.cpp
+    ../../shared/taglib_filetype_resolvers/mp4filetyperesolver.cpp
+    ../../shared/taglib_filetype_resolvers/asffiletyperesolver.cpp
+)
+
 ########### next target ###############
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions")
 
 qt4_automoc( CollectionScanner.cpp )
 
-set(amarokcollectionscanner_SRCS CollectionScanner.cpp ../../shared/MetaReplayGain.cpp AFTUtility.cpp)
+add_definitions( "-DUTILITIES_BUILD" )
 
-add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
+set(amarokcollectionscanner_SRCS
+    CollectionScanner.cpp
+    AFTUtility.cpp
+    ../../shared/MetaReplayGain.cpp
+)
+
+add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS} ${taglib_filetype_resolver_SRCS})
 
 target_link_libraries(amarokcollectionscanner 
                       ${QT_QTCORE_LIBRARY}

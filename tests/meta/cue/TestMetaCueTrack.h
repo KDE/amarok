@@ -22,7 +22,9 @@
 
 #include "meta/cue/Cue.h"
 
-#include <QtTest>
+#include <QtCore/QStringList>
+
+class QString;
 
 class TestMetaCueTrack : public QObject
 {

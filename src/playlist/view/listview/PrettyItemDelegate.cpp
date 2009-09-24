@@ -358,11 +358,33 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
         if ( i == config.activeIndicatorRow() && index.data( ActiveTrackRole ).toBool() )
         {
-            painter->drawPixmap( rowOffsetX - 1, rowOffsetY + 1,
-                                  The::svgHandler()->renderSvg(
-                                  "active_overlay",
-                                  rowWidth + 2, rowHeight - 2,
-                                  "active_overlay" ) );
+
+            //paint this in 3 parts to solve stretching issues with wide playlists
+            //TODO: propper 9 part painting, but I dont want to bother with this until we
+            //get some new graphics anyway...
+
+            int overlayXOffset = rowOffsetX - 3;
+            int overlayHeight = rowHeight - 2;
+            int overlayLength = rowWidth + 6;
+            int endWidth = overlayHeight / 4;
+
+            painter->drawPixmap( overlayXOffset, rowOffsetY + 1,
+                                 The::svgHandler()->renderSvg(
+                                 "active_overlay_left",
+                                 endWidth, overlayHeight,
+                                 "active_overlay_left" ) );
+           
+            painter->drawPixmap( overlayXOffset + endWidth, rowOffsetY + 1,
+                                 The::svgHandler()->renderSvg(
+                                 "active_overlay_mid",
+                                 overlayLength - endWidth * 2, overlayHeight,
+                                 "active_overlay_mid" ) );
+
+            painter->drawPixmap( overlayXOffset + ( overlayLength - endWidth ), rowOffsetY + 1,
+                                 The::svgHandler()->renderSvg(
+                                 "active_overlay_right",
+                                 endWidth, overlayHeight,
+                                 "active_overlay_right" ) );
         }
 
         QRectF rowBox( itemOffsetX, rowOffsetY, rowWidth, rowHeight );
@@ -548,12 +570,13 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     //for now, only handle clicks in the currently playing item.
     if ( !index.data( ActiveTrackRole ).toBool() )
         return false;
+
+    //also, if we are not using the inline controls, we should not reacto to these clicks at all
+    if( !LayoutManager::instance()->activeLayout().inlineControls() )
+        return false;
     
     int rowCount = rowsForItem( index );
-    int modifiedRowCount = rowCount;
-
-    if( LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool() )
-        modifiedRowCount++; //add room for extras
+    int modifiedRowCount = rowCount + 1;
 
     int height = itemRect.height();;
 

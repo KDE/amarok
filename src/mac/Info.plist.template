@@ -120,6 +120,23 @@
         <dict>
             <key>CFBundleTypeExtensions</key>
             <array>
+                <string>m4b</string>
+            </array>
+            <key>CFBundleTypeOSTypes</key>
+            <array>
+            </array>
+            <key>CFBundleTypeMIMETypes</key>
+            <array>
+                <string>audio/mp4</string>
+            </array>
+            <key>CFBundleTypeName</key>
+            <string>MPEG-4AudioBookFile</string>
+            <key>CFBundleTypeRole</key>
+            <string>Viewer</string>
+        </dict>
+        <dict>
+            <key>CFBundleTypeExtensions</key>
+            <array>
                 <string>wma</string>
             </array>
             <key>CFBundleTypeOSTypes</key>

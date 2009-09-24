@@ -21,7 +21,10 @@
 
 #include "activityparser.h"
 
+#include <QtCore/QDateTime>
+#include <QRegExp>
 #include <QXmlStreamReader>
+
 
 using namespace Attica;
 

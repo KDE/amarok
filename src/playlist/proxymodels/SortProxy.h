@@ -63,7 +63,7 @@ public slots:
     /**
      * Resets the proxy to its original pass-through state.
      */
-    void invalidateSorting();
+    void resetSorting();
 
 protected:
     /**
@@ -81,6 +81,12 @@ protected:
      * @return the index of the row that's valid in the proxy below this one.
      */
     virtual int rowToSource( int row ) const;
+
+protected slots:
+    /**
+     * Reapplies the current sorting scheme.
+     */
+    void invalidateSorting();
 
 private:
     SortScheme m_scheme;               //! The current sorting scheme.

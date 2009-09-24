@@ -23,6 +23,8 @@
 
 #include <KStandardDirs>
 
+#include <QtTest/QTest>
+
 TestMetaTrack::TestMetaTrack( QStringList testArgumentList )
 {
     testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaTrack.xml" );

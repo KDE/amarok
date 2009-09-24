@@ -280,6 +280,7 @@ OrganizeCollectionDialog::cleanPath( const QString &component ) const
     result.simplified();
     if( ui->spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
+    debug()<<"I'm about to do Amarok::vfatPath( result ), this is result: "<<result;
     if( ui->vfatCheck->isChecked() )
         result = Amarok::vfatPath( result );
 

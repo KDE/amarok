@@ -112,20 +112,10 @@ void LyricsApplet::init()
     setEditing( false );
 
     m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
-        .arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
-        .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
+        .arg( App::instance()->palette().background().color().name() )
+        .arg( App::instance()->palette().text().color().name() ) );
 
     m_lyricsProxy->setWidget( m_lyrics );
-
-    QPalette pal;
-    QBrush brush( PaletteHandler::highlightColor().lighter( 170 ) );
-    brush.setStyle( Qt::SolidPattern );
-    pal.setBrush( QPalette::Active, QPalette::Base, brush );
-    pal.setBrush( QPalette::Inactive, QPalette::Base, brush );
-    pal.setBrush( QPalette::Disabled, QPalette::Base, brush );
-    pal.setBrush( QPalette::Window, brush );
-    m_lyrics->setPalette( pal );
-    m_lyricsProxy->setPalette( pal );
 
     // only show when we need to let the user
     // choose between suggestions
@@ -162,7 +152,8 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     prepareGeometryChange();
 
-    m_suggested->setTextWidth( size().width() );
+    m_suggested->setTextWidth( size().width() - 2 * standardPadding() );
+    m_suggested->setPos( standardPadding(), m_suggested->pos().y() );
 
     // Assumes all icons are of equal width
     const int iconWidth = m_reloadIcon->size().width();
@@ -227,7 +218,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_suggested->hide();
         m_lyrics->show();
         m_lyrics->setPlainText( i18n( "Could not download lyrics.\nPlease check your internet connection.\nError message:\n%1", data["error"].toString() ) );
-        setCollapseHeight( 80 );
+        setCollapseHeight( 120 );
         setCollapseOn();
     }
     else if( data.contains( "suggested" ) )
@@ -246,6 +237,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         }
         m_suggested->setHtml( html );
         m_suggested->show();
+        // adjust to required size
+        setCollapseHeight( m_suggested->boundingRect().height() );
+        setCollapseOn();
     }
     else if( data.contains( "html" ) )
     {
@@ -255,6 +249,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->setHtml( data[ "html" ].toString() );
         m_lyrics->show();
         setCollapseOff();
+        emit sizeHintChanged(Qt::MaximumSize);
     }
     else if( data.contains( "lyrics" ) )
     {
@@ -267,6 +262,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         //  need padding for title
         m_lyrics->setPlainText( lyrics[ 3 ].toString().trimmed() );
         setCollapseOff();
+        // the following line is needed to fix the bug of the lyrics applet sometimes not being correctly resized.
+        // I don't have the courage to put this into Applet::setCollapseOff(), maybe that would break other applets.
+        emit sizeHintChanged(Qt::MaximumSize);
     }
     else if( data.contains( "notfound" ) )
     {
@@ -307,23 +305,17 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     //draw background of lyrics text
     p->save();
 
-    QColor background = Qt::white; // TODO: Looks crap on dark colour schemes?
-    if( m_lyrics->isReadOnly() )
+    QColor background( App::instance()->palette().background().color() );
+    
+    if( !m_lyrics->isReadOnly() )
     {
-        QColor highlight( App::instance()->palette().highlight().color() );
-        highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
-
-        background = highlight;
+        // different background color when we're in edit mode
+        background = App::instance()->palette().alternateBase().color();
     }
 
-    // HACK
-    // sometimes paint is done before the updateconstraints call
-    // so m_lyricsProxy bounding rect is not yet correct
-    QRectF lyricsRect(
-        QPointF( standardPadding(), m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding() ),
-        QSizeF( size().width() - 2 * standardPadding(), boundingRect().height() - m_lyricsProxy->pos().y() - standardPadding() ) );
+    const QRectF
+      lyricsRect( m_lyricsProxy->pos(), QSizeF( size().width() - 2 * standardPadding(), m_lyricsProxy->boundingRect().height() ) );
 
-    lyricsRect.moveTopLeft( m_lyricsProxy->pos() );
     QPainterPath path;
     path.addRoundedRect( lyricsRect, 5, 5 );
     p->fillPath( path, background );
@@ -337,7 +329,8 @@ LyricsApplet::paletteChanged( const QPalette & palette )
 
     if( m_lyrics )
        m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
-            .arg( PaletteHandler::highlightColor().lighter( 150 ).name() ).arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
+       .arg( App::instance()->palette().background().color().name() )
+       .arg( App::instance()->palette().text().color().name() ) );
 }
 
 void

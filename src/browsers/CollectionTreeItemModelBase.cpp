@@ -392,10 +392,6 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
                     {
                         qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
                     }
-                    else
-                    {
-                        qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
-                    }
                     break;
                 case CategoryId::Artist :
                     qm->setQueryType( QueryMaker::Artist );
@@ -424,7 +420,9 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         {
             //ignore Various artists node (which will not have a data pointer)
             if( tmpItem->isVariousArtistItem() )
+            {
                 qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+            }
             else
                 qm->addMatch( tmpItem->data() );
 

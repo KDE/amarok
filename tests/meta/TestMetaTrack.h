@@ -22,7 +22,7 @@
 
 #include "meta/Meta.h"
 
-#include <QtTest>
+#include <QtCore/QStringList>
 
 class TestMetaTrack : public QObject
 {

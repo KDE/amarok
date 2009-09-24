@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2002 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2002-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2002 Gabor Lehel <illissius@gmail.com>                                 *
  * Copyright (c) 2002 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
@@ -123,6 +123,7 @@ MainWindow::MainWindow()
     : KMainWindow( 0 )
     , EngineObserver( The::engineController() )
     , m_lastBrowser( 0 )
+    , m_dockWidthsLocked( false )
 {
     DEBUG_BLOCK
 
@@ -299,13 +300,10 @@ MainWindow::init()
     setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browsersDock );
-    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock );
+    addDockWidget( Qt::LeftDockWidgetArea, m_contextDock, Qt::Horizontal );
     addDockWidget( Qt::RightDockWidgetArea, m_playlistDock );
 
-    KConfigGroup config = Amarok::config( "General Options" );
-    const bool locked = config.readEntry( "Lock Layout", true );
-
-    setLayoutLocked( locked );
+    setLayoutLocked( AmarokConfig::lockLayout() );
 
     //<Browsers>
     {
@@ -379,6 +377,50 @@ MainWindow::createContextView( Plasma::Containment *containment )
 
     bool hide = AmarokConfig::hideContextView();
     hideContextView( hide );
+}
+
+QMenu*
+MainWindow::createPopupMenu()
+{
+    QMenu* menu = new QMenu( this );
+
+    // Layout locking:
+    QAction* lockAction = new QAction( i18n( "Lock layout" ), this );
+    lockAction->setCheckable( true );
+    lockAction->setChecked( AmarokConfig::lockLayout() );
+    connect( lockAction, SIGNAL( toggled( bool ) ), SLOT( setLayoutLocked( bool ) ) );
+    menu->addAction( lockAction );
+
+    menu->addSeparator();
+
+    // Dock widgets:
+    QList<QDockWidget *> dockwidgets = qFindChildren<QDockWidget *>( this );
+
+    foreach( QDockWidget* dockWidget, dockwidgets )
+    {
+        if( dockWidget->parentWidget() == this )
+            menu->addAction( dockWidget->toggleViewAction());
+    }
+
+    menu->addSeparator();
+
+    // Toolbars:
+    QList<QToolBar *> toolbars = qFindChildren<QToolBar *>( this );
+    QActionGroup* toolBarGroup = new QActionGroup( this );
+    toolBarGroup->setExclusive( true );
+
+    foreach( QToolBar* toolBar, toolbars )
+    {
+        if( toolBar->parentWidget() == this )
+        {
+            QAction* action = toolBar->toggleViewAction();
+            connect( action, SIGNAL( toggled( bool ) ), toolBar, SLOT( setVisible( bool ) ) );
+            toolBarGroup->addAction( action );
+            menu->addAction( action );
+        }
+    }
+
+    return menu;
 }
 
 void
@@ -931,8 +973,8 @@ MainWindow::paletteChange(const QPalette & oldPalette)
 QSize
 MainWindow::backgroundSize()
 {
-    QPoint topLeft = mapToGlobal( QPoint( 0, 0 ) );
-    QPoint bottomRight1 = mapToGlobal( QPoint( width(), height() ) );
+    const QPoint topLeft = mapToGlobal( QPoint( 0, 0 ) );
+    const QPoint bottomRight1 = mapToGlobal( QPoint( width(), height() ) );
 
     return QSize( bottomRight1.x() - topLeft.x() + 1, bottomRight1.y() - topLeft.y() );
 }
@@ -940,31 +982,47 @@ MainWindow::backgroundSize()
 int
 MainWindow::contextXOffset()
 {
-    QPoint topLeft1 = mapToGlobal( m_controlBar->pos() );
-    QPoint topLeft2 = mapToGlobal( m_contextWidget->pos() );
+    const QPoint topLeft1 = mapToGlobal( m_controlBar->pos() );
+    const QPoint topLeft2 = mapToGlobal( m_contextWidget->pos() );
 
     return topLeft2.x() - topLeft1.x();
 }
 
-void MainWindow::resizeEvent( QResizeEvent * event )
+void
+MainWindow::resizeEvent( QResizeEvent * event )
 {
     QWidget::resizeEvent( event );
     m_controlBar->reRender();
+
+    if ( m_dockWidthsLocked )
+    {
+        m_dockWidthsLocked = false;
+        m_browsers->setMinimumWidth( 0 );
+        m_contextWidget->setMinimumWidth( 0 );
+        m_playlistWidget->setMinimumWidth( 0 );
+
+        m_browsers->setMaximumWidth( 9999 );
+        m_contextWidget->setMaximumWidth( 9999 );
+        m_playlistWidget->setMaximumWidth( 9999 );
+    }     
 }
 
-QPoint MainWindow::globalBackgroundOffset()
+QPoint
+MainWindow::globalBackgroundOffset()
 {
     return menuBar()->mapToGlobal( QPoint( 0, 0 ) );
 }
 
-QRect MainWindow::contextRectGlobal()
+QRect
+MainWindow::contextRectGlobal()
 {
     //debug() << "pos of context vidget within main window is: " << m_contextWidget->pos();
     QPoint contextPos = mapToGlobal( m_contextWidget->pos() );
     return QRect( contextPos.x(), contextPos.y(), m_contextWidget->width(), m_contextWidget->height() );
 }
 
-void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState )
+void
+MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     Q_UNUSED( oldState )
     DEBUG_BLOCK
@@ -1001,8 +1059,8 @@ void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState
     }
 }
 
-
-void MainWindow::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+void
+MainWindow::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
 {
     Q_UNUSED( newMetaData )
     Q_UNUSED( trackChanged )
@@ -1012,17 +1070,20 @@ void MainWindow::engineNewMetaData( const QHash<qint64, QString> &newMetaData, b
         metadataChanged( track );
 }
 
-void MainWindow::metadataChanged( Meta::TrackPtr track )
+void
+MainWindow::metadataChanged( Meta::TrackPtr track )
 {
     setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
 }
 
-CollectionWidget * MainWindow::collectionBrowser()
+CollectionWidget *
+MainWindow::collectionBrowser()
 {
     return m_collectionBrowser;
 }
 
-QString MainWindow::activeBrowserName()
+QString
+MainWindow::activeBrowserName()
 {
     if ( m_browsers->list()->activeCategory() )
         return m_browsers->list()->activeCategory()->name();
@@ -1030,14 +1091,17 @@ QString MainWindow::activeBrowserName()
         return QString();
 }
 
-PlaylistBrowserNS::PlaylistBrowser * MainWindow::playlistBrowser()
+PlaylistBrowserNS::PlaylistBrowser *
+MainWindow::playlistBrowser()
 {
     return m_playlistBrowser;
 }
 
-void MainWindow::hideContextView( bool hide )
+void
+MainWindow::hideContextView( bool hide )
 {
     DEBUG_BLOCK
+
     if ( hide )
         m_contextWidget->hide();
     else
@@ -1047,7 +1111,8 @@ void MainWindow::hideContextView( bool hide )
 void MainWindow::setLayoutLocked( bool locked )
 {
     DEBUG_BLOCK
-    if ( locked )
+
+    if( locked )
     {
         debug() << "locked!";
         const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::NoDockWidgetFeatures;
@@ -1066,7 +1131,6 @@ void MainWindow::setLayoutLocked( bool locked )
 
         m_newToolbar->setFloatable( false );
         m_newToolbar->setMovable( false );
-
     }
     else
     {
@@ -1087,53 +1151,69 @@ void MainWindow::setLayoutLocked( bool locked )
 
         m_newToolbar->setFloatable( true );
         m_newToolbar->setMovable( true );
-
     }
 
+    AmarokConfig::setLockLayout( locked );
+    AmarokConfig::self()->writeConfig();
     m_layoutLocked = locked;
 }
 
-bool MainWindow::isLayoutLocked()
+bool
+MainWindow::isLayoutLocked()
 {
     return m_layoutLocked;
 }
 
-void MainWindow::restoreLayout()
+void
+MainWindow::restoreLayout()
 {
+    DEBUG_BLOCK
 
     QFile file( Amarok::saveLocation() + "layout" );
 
-    bool loadDefault = true;
+    QByteArray layout;
     if ( file.open( QIODevice::ReadOnly ) )
     {
-
-        QByteArray layout = file.readAll();
+        layout = file.readAll();
         file.close();
-
-        loadDefault = !restoreState( layout, LAYOUT_VERSION );
     }
 
-    if ( loadDefault )
+    if ( !restoreState( layout, LAYOUT_VERSION ) )
     {
+        //since no layout has been loaded, we know that the items are all placed next to each other in the main window
+        //so get the combined size of the widgets, as this is the space we have to play with. Then figure out
+        //how much to give to each. Give the context view any pixels leftover from the integer division.
 
-        const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
+        //int totalWidgetWidth = m_browsers->width() + m_contextView->width() + m_playlistWidget->width();
+        int totalWidgetWidth = contentsRect().width();
 
-        QString defaultLayoutFile = "DefaultDockLayout32";
-        if( QSysInfo::WordSize == 64 )
-            defaultLayoutFile = "DefaultDockLayout64";
+        //get the width of the splitter handles, we need to subtract these...
 
-        debug() << "Loading default layout: " << defaultLayoutFile;
-            
-        QFile defaultFile( url.path() + defaultLayoutFile );
+        const QSplitter dummySplitter;
+        const int splitterHandleWidth = dummySplitter.handleWidth();
 
-        if ( defaultFile.open( QIODevice::ReadOnly ) )
-        {
-            QByteArray defaultLayout = defaultFile.readAll();
-            defaultFile.close();
+        debug() << "splitter handle widths " << splitterHandleWidth;
 
-            restoreState( defaultLayout, LAYOUT_VERSION );
-        }
+        totalWidgetWidth -= ( splitterHandleWidth * 2 );
+
+        debug() << "mainwindow width" <<  contentsRect().width();
+        debug() << "totalWidgetWidth" <<  totalWidgetWidth;
+        
+        const int widgetWidth = totalWidgetWidth / 3;
+        const int leftover = totalWidgetWidth % 3;
+
+        //We need to set fixed widths initially, just until the main window has been properly layed out. As soon as this has
+        //happened, we will unlock these sizes again so that the elements can be resized by the user.
+        m_browsers->setFixedWidth( widgetWidth );
+        m_contextWidget->setFixedWidth( widgetWidth + leftover );
+        m_playlistWidget->setFixedWidth( widgetWidth );
+
+        m_dockWidthsLocked = true;
     }
+
+    // Ensure that only one toolbar is visible
+    if( !m_controlBar->isHidden() && !m_newToolbar->isHidden() )
+        m_newToolbar->hide();
 }
 
 namespace The {

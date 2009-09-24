@@ -54,6 +54,7 @@ LayoutManager::LayoutManager()
 
     KConfigGroup config = Amarok::config("Playlist Layout");
     m_activeLayout = config.readEntry( "CurrentLayout", "Default" );
+    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
 }
 
 QStringList LayoutManager::layouts() const
@@ -119,6 +120,7 @@ void LayoutManager::loadDefaultLayouts()
 
 void LayoutManager::loadLayouts( const QString &fileName, bool user )
 {
+    DEBUG_BLOCK
     QDomDocument doc( "layouts" );
 
     if ( !QFile::exists( fileName ) )
@@ -152,13 +154,16 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         index++;
 
         QString layoutName = layout.toElement().attribute( "name", "" );
+        debug() << "loading layout " << layoutName;
 
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
         currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
-        //For backwards compatability, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
+        //For backwards compatibility, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
         currentLayout.setGroupBy( layout.toElement().attribute( "group_by", "Album" ) );
+        debug() << "grouping mode is: " << layout.toElement().attribute( "group_by", "Album" );
+        
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
         currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
@@ -262,7 +267,7 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
-    //make sure that this dir exists
+    //make sure that this directory exists
     if ( !layoutsDir.exists() )
         layoutsDir.mkpath( Amarok::saveLocation( "playlist_layouts/" ) );
 

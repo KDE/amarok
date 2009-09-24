@@ -24,7 +24,7 @@
 
 #include "knowledgebase.h"
 
-#include <QXmlStreamReader>
+#include <QtXml/QXmlStreamReader>
 
 namespace Attica {
 

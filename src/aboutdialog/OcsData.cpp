@@ -16,8 +16,10 @@
 
 #include "OcsData.h"
 
-OcsData::OcsData()
-{}
+OcsData::OcsData( const QByteArray &providerId )
+{
+    m_providerId = QString::fromUtf8( providerId );
+}
 
 OcsData::~OcsData()
 {}

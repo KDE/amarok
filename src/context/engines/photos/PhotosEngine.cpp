@@ -65,6 +65,7 @@ PhotosEngine::sources() const
 bool 
 PhotosEngine::sourceRequestEvent( const QString& name )
 {
+    DEBUG_BLOCK
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     QStringList tokens = name.split( ':' );
 
@@ -86,7 +87,18 @@ PhotosEngine::sourceRequestEvent( const QString& name )
             m_reload = true;
         }
     }
-        
+
+    // we've been notified by the applet to be in state stop <3
+    else if ( tokens.contains( "stopped" ) && tokens.size() > 1 )
+    {
+        if ( tokens.at( 1 ) == QString( "stopped" ) )
+        {
+            removeSource( "photos" );
+            m_reload = true;
+            return false;
+        }
+    }
+    
     removeAllData( name );
     setData( name, QVariant() );
     update();

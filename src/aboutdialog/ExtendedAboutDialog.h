@@ -40,6 +40,7 @@ public:
 
 private slots:
     void switchToOcsWidgets();
+    void onProviderFetched( KJob *job );
 
 private:
     class Private;
