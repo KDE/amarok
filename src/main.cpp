@@ -91,6 +91,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "oggb4mp3", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Harald Sitter"), ki18n("Rokymoter (apachelogger)"), "harald.sitter@kdemail.net" );
         ocsData.addCredit( "apachelogger", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("John Atkinson"), ki18n(( "Assorted patches" )), "john@fauxnetic.co.uk" );
+        ocsData.addCredit( "fauxnetic", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Kenneth Wesley Wimer II"), ki18n("Icons"), "kwwii@bootsplash.org" );
         ocsData.addCredit( "kwwii", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Kevin Funk"), ki18n("Developer, Website theme (KRF)"), "krf@electrostorm.net" );
