@@ -32,7 +32,7 @@ class AMAROK_EXPORT ToolBoxIcon: public Plasma::IconWidget
     Q_OBJECT
 
 public:
-    explicit ToolBoxIcon( QGraphicsItem *parent = 0 );
+    explicit ToolBoxIcon( QGraphicsItem *parent = 0, const float opacity = 0.8 );
     ~ToolBoxIcon();
     
     /**
@@ -67,6 +67,7 @@ private slots:
 private:
     bool m_hovering;
 
+    const qreal m_baseOpacity;
     qreal m_animOpacity;
     int m_animHighlightId;
 

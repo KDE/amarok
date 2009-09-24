@@ -40,7 +40,7 @@ int main( int argc, char *argv[] )
             ki18n("Developer (hydrogen)"), "parallelgrapefruit@gmail.com" );
     aboutData.addAuthor( ki18n("Ian 'The Beard' Monroe"),
             ki18n("Developer (eean)"), "ian@monroe.nu", "http://www.monroe.nu/" );
-    aboutData.addAuthor( ki18n("Jeff 'IROCKSOHARD' Mitchell"),
+    aboutData.addAuthor( ki18n("Jeff 'IROKSOHARD' Mitchell"),
             ki18n("Developer (jefferai)"), "mitchell@kde.org", "http://amarok.kde.org/blog/categories/13-jefferai" );
     aboutData.addAuthor( ki18n("Leo Franchi"),
             ki18n("Developer (lfranchi)"), "lfranchi@kde.org" );
@@ -206,7 +206,16 @@ int main( int argc, char *argv[] )
     startFlag = args->isSet( "multipleinstances" ) ? KUniqueApplication::NonUniqueInstance : KUniqueApplication::StartFlag( 0 );
 
     if( !KUniqueApplication::start( startFlag ) ) {
-        if( !args->isSet( "append" ) )
+        QList<QByteArray> instanceOptions;
+        instanceOptions << "previous" << "play" << "play-pause" << "stop" << "next" << "append" << "queue" << "load" << "subscribe";
+
+        // Check if an option for a running instance is set
+        bool isSet = false;
+        for( int i = 0; i < instanceOptions.size(); ++i )
+            if( args->isSet( instanceOptions[ i ] ) )
+                isSet = true;
+
+        if ( !isSet )
             fprintf( stderr, "Amarok is already running!\n" );
         return 0;
     }

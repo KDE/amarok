@@ -13,10 +13,30 @@ option(WITH_IPOD "Enable iPod support in Amarok" ON)
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
 
-set(TAGLIB_MIN_VERSION "1.5")
+set(TAGLIB_MIN_VERSION "1.6")
 find_package(Taglib REQUIRED)
 
-find_package(Taglib-Extras 0.1 REQUIRED)
+# Check if TagLib is built with ASF and MP4 support
+include(CheckCXXSourceCompiles)
+set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
+set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
+
+check_cxx_source_compiles("#include <asftag.h>
+int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
+if( NOT TAGLIB_ASF_FOUND )
+    message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
+endif( NOT TAGLIB_ASF_FOUND ) 
+
+check_cxx_source_compiles("#include <mp4tag.h>
+int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
+if( NOT TAGLIB_MP4_FOUND )
+    message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
+endif( NOT TAGLIB_MP4_FOUND ) 
+
+set(CMAKE_REQUIRED_INCLUDES)
+set(CMAKE_REQUIRED_LIBRARIES)
+
+find_package(Taglib-Extras 1.0 REQUIRED)
 if( TAGLIB-EXTRAS_FOUND )
     add_definitions( -DTAGLIB_EXTRAS_FOUND )
 endif( TAGLIB-EXTRAS_FOUND )

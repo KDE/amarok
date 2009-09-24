@@ -74,8 +74,15 @@ void BookmarkTriangle::enterEvent ( QEvent * event )
     QString timeLabel = Meta::secToPrettyTime( m_mseconds/1000 );
     if ( !m_tooltip )
         m_tooltip = new BookmarkPopup ( nativeParentWidget(), m_name );
-    QPoint pt = mapTo( nativeParentWidget(), QPoint( 0, 0 ) );
-    m_tooltip->move ( pt.x(), 25 ); //TODO better way to calculate the y position
+    QPoint pt = mapTo( nativeParentWidget(), QPoint(0,0) );
+    // Calculate x position where the tooltip is fully visible
+    int offsetX = pt.x() + m_tooltip->width() - nativeParentWidget()->width();
+    if ( offsetX < 0 ) offsetX = 0;
+    // Calculate y position above
+    int offsetY =  - m_tooltip->height() - 2;
+    // Not enough space? put it below
+    if ( pt.y() <= m_tooltip->height() + 2 ) offsetY =  this->height() + 2;
+    m_tooltip->move ( pt.x() - offsetX, pt.y() + offsetY );
     m_tooltip->show();
 }
 

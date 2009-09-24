@@ -58,15 +58,9 @@ class ScanResultProcessor : public QObject
     private:
         void addTrack( const QVariantMap &trackData, int albumArtistId );
 
-        int artistId( const QString &artist );
-        int artistInsert( const QString &artist );
-        int genreId( const QString &genre );
-        int genreInsert( const QString &genre );
-        int composerId( const QString &composer );
-        int composerInsert( const QString &composer );
-        int yearId( const QString &year );
-        int yearInsert( const QString &year );
-        void databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int artistId );
+        int genericId( const QString &key, const QString &value );
+        int genericInsert( const QString &key, const QString &value );
+        void databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId, int compilationId );
         int imageId( const QString &image, int albumId );
         int albumId( const QString &album, int artistId );
         int albumInsert( const QString &album, int artistId );
@@ -90,9 +84,9 @@ class ScanResultProcessor : public QObject
         bool m_setupComplete;
 
         QMap<QString, int> m_artists;
-        QMap<QString, int> m_genre;
-        QMap<QString, int> m_year;
-        QMap<QString, int> m_composer;
+        QMap<QString, int> m_genres;
+        QMap<QString, int> m_years;
+        QMap<QString, int> m_composers;
         QMap<QPair<QString, int>, int> m_albums;
         QMap<QPair<QString, int>, int> m_images;
         QMap<QString, int> m_directories;

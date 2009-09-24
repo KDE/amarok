@@ -38,13 +38,13 @@ Required
     * KDE-Libs 4.2 + KDE-Base-runtime 4.2 (or newer)
       http://www.kde.org
 
-    * TagLib 1.5 (or newer)
+    * TagLib 1.6 (or newer)
       (Metadata tagging library)
       http://freshmeat.net/projects/taglib
 
-    * TagLib Extras 0.1.7 (or newer)
+    * TagLib Extras 1.0.0 (or newer)
       (Support for metadata reading of additional file types)
-      http://www.kollide.net/~jefferai/taglib-extras-0.1.7.tar.gz
+      http://www.kollide.net/~jefferai/taglib-extras-1.0.0.tar.gz
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
 
     * MySQL 5.0 (or newer) Embedded: libmysqld compiled with fPIC
@@ -78,6 +78,8 @@ Optional
       (For scrobbling, internet radio, and artist info)
       http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2
       http://github.com/mxcl/liblastfm/tree/master
+
+    * MySQL 5.0 (or newer) Server (external database support)
 
 
 Please note, if compiling from source you must also install the devel versions

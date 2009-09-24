@@ -104,7 +104,7 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         {
             if( e == lastfm::ws::SubscribersOnly || e == lastfm::ws::AuthenticationFailed )
             {   // last.fm is returning an AuthenticationFailed message when the user is not a subscriber, even if the credentials are OK
-                The::statusBar()->shortMessage( i18n( "Unfortunately, Last.Fm radio streams are only functional for Last.Fm subscribers. All the other Last.Fm features are unaffected." ) );
+                The::statusBar()->shortMessage( i18n( "To listen to this stream you need to be a paying Last.Fm subscriber. All the other Last.Fm features are unaffected." ) );
             } else {
                 The::statusBar()->shortMessage( i18n( "Error starting track from Last.Fm radio" )   );
             }

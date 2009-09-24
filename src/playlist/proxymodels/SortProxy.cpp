@@ -36,7 +36,7 @@ SortProxy::SortProxy( AbstractModel *belowModel, QObject *parent )
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
     connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );
-    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( invalidate() ) );
+    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( invalidateSorting() ) );
 
     //needed by GroupingProxy:
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
@@ -48,6 +48,27 @@ SortProxy::~SortProxy()
 
 void
 SortProxy::invalidateSorting()
+{
+    if( m_scheme.length() )
+    {
+        if( !( m_scheme.level( m_scheme.length() - 1 ).category() == -1 ) ) //if it's not random
+        {
+            invalidate();
+        }
+    }
+    else
+        invalidate();
+    //FIXME: this is a band-aid so that the playlist doesn't reshuffle every time the current track changes
+    // However the real issue is deeper, the Observer seems to notify metadataChanged() even if the metadata
+    // of a track doesn't change but just the currently active track changes, and this results in the playlist
+    // being resorted on every "next", "previous" or track selection. Twice. This is a Bad Thing (TM) and very
+    // inefficient.
+    // We're shipping 2.2 as it is, because it's way too late to go poking around Observer, but this needs
+    // to be solved ASAP post-2.2.      --Téo 23/9/2009
+}
+
+void
+SortProxy::resetSorting()
 {
     m_scheme = SortScheme();
     reset();
@@ -65,7 +86,7 @@ SortProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
 void
 SortProxy::updateSortMap( SortScheme scheme )
 {
-    invalidateSorting();
+    resetSorting();
     m_scheme = scheme;
     sort( 0 );  //0 is a dummy column
     //HACK: sort() inverts the sortOrder on each call, this keeps the order ascending.

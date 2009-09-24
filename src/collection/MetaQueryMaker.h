@@ -69,6 +69,8 @@ class AMAROK_EXPORT MetaQueryMaker : public QueryMaker
         virtual QueryMaker* beginOr();
         virtual QueryMaker* endAndOr();
 
+        virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+
     private slots:
         void slotQueryDone();
 

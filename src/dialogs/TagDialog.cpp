@@ -888,7 +888,7 @@ void TagDialog::readTags()
     if( m_currentData.contains( Meta::Field::COMPOSER ) )
         selectOrInsertText( m_currentData.value( Meta::Field::COMPOSER ).toString(), ui->kComboBox_composer );
     else
-        selectOrInsertText( QString(), ui->kComboBox_genre );
+        selectOrInsertText( QString(), ui->kComboBox_composer );
     ui->ratingWidget->setRating( m_currentData.value( Meta::Field::RATING ).toInt() );
     ui->ratingWidget->setMaxRating( 10 );
     ui->qSpinBox_track->setValue( m_currentData.value( Meta::Field::TRACKNUMBER ).toInt() );
@@ -944,8 +944,9 @@ void TagDialog::readTags()
     ui->kLineEdit_location->setText( m_currentTrack->prettyUrl() );
 
     //lyrics
-    // if there is no <html> tag, set it as text instead
-    if( m_lyrics.contains( "<html>" ) )
+    // check if the lyrics data contains "<html" (note the missing closing bracket,
+    // this enables XHTML lyrics to be recognized) - otherwise the data is plaintext
+    if( m_lyrics.contains( "<html" , Qt::CaseInsensitive ) )
         ui->kTextEdit_lyrics->setHtml( m_lyrics );
     else
          ui->kTextEdit_lyrics->setPlainText( m_lyrics );
@@ -1327,7 +1328,11 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         else
         {
             m_storedLyrics.remove( track );
-            m_storedLyrics.insert( track, ui->kTextEdit_lyrics->toHtml() );
+
+            // don't call toHtml() here as it would break user-supplied HTML code
+            // (since the HTML code would be escaped, the plain HTML code would
+            // be shown in the lyrics applet)
+            m_storedLyrics.insert( track, ui->kTextEdit_lyrics->toPlainText() );
         }
     }
 }

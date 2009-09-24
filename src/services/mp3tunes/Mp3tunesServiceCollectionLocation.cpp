@@ -63,7 +63,7 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         debug() << "copying " << sources[ track ] << " to mp3tunes locker";
         debug() << "file is at " << sources[ track ].pathOrUrl();
 
-        QString supported_types = "mp3 mp4 m4a m4p aac wma ogg";
+        QString supported_types = "mp3 mp4 m4a m4b m4p aac wma ogg";
         
         if( supported_types.contains( track->type() ) )
         {   

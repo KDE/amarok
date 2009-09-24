@@ -20,6 +20,7 @@
 #include "Amarok.h"
 #include "CollectionManager.h"
 #include "Debug.h"
+#include "MediaDeviceCollection.h"
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"
@@ -39,9 +40,10 @@
 static const int USERPLAYLIST_DB_VERSION = 2;
 static const QString key("AMAROK_USERPLAYLIST");
 
-MediaDeviceUserPlaylistProvider::MediaDeviceUserPlaylistProvider()
+MediaDeviceUserPlaylistProvider::MediaDeviceUserPlaylistProvider( MediaDeviceCollection *collection )
     : UserPlaylistProvider()
     , m_renameAction( 0 )
+    , m_collection( collection )
 {
     DEBUG_BLOCK
 //    checkTables();
@@ -139,9 +141,14 @@ Meta::PlaylistPtr
 MediaDeviceUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    return save( tracks,
-          QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
+    // This provider can only save it's own tracks for now, filter out all the others.
+    Meta::TrackList filteredTracks;
+    foreach( const Meta::TrackPtr track, tracks )
+        if( track->collection() == m_collection )
+            filteredTracks << track;
 
+    return save( filteredTracks,
+                 QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm" ) );
 }
 
 Meta::PlaylistPtr

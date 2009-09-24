@@ -120,7 +120,7 @@ void LyricsEngine::update()
     QString lyrics = currentTrack->cachedLyrics();
     
     // don't rely on caching for streams
-    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream() && ( currentTrack->name() == m_title ) && ( currentTrack->artist()->name() == m_artist );
+    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
     
     m_title = currentTrack->name();
     m_artist = currentTrack->artist()->name();
@@ -152,7 +152,9 @@ void LyricsEngine::update()
 
     if( cached )
     {
-        if( lyrics.contains( "<html>" ) )
+        // check if the lyrics data contains "<html" (note the missing closing bracket,
+        // this enables XHTML lyrics to be recognized)
+        if( lyrics.contains( "<html" , Qt::CaseInsensitive ) )
             newLyricsHtml( lyrics );
         else
         {

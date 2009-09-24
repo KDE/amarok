@@ -122,6 +122,12 @@ protected slots:
      */
     void slotRemovedIds( const QList<quint64> &ids );
 
+    /**
+     * Slot that wraps around the method invalidateFilter() so one doesn't trigger the
+     * sorting invalidation too by using invalidate().
+     */
+    void slotInvalidateFilter(){ invalidateFilter(); }
+
 signals:
     /**
      * Signal forwarded from the source model.

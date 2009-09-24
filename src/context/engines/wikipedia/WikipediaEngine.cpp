@@ -222,9 +222,11 @@ WikipediaEngine::wikiResult( KJob* job )
         m_wiki = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
 
 
-    // Refined search thing
-    if( m_wiki.contains( "var wgArticleId = 0" ) ) // The article does not exist
+    // FIXME: For now we test if we got an article or not with a test on this string "wgArticleId=0"
+    // This is bad
+    if( m_wiki.contains( "wgArticleId=0" ) ) // The article does not exist
     {
+        // Refined search is done here 
         if ( m_triedRefinedSearch == -1 )
         {
             debug() << "We already tried some refined search. Lets end this madness...";

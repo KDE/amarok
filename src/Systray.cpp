@@ -315,6 +315,11 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
 void
 Amarok::TrayIcon::engineNewTrackPlaying()
 {
+    m_track = The::engineController()->currentTrack();
+    m_trackLength = m_track ? m_track->length() : 0;
+
+    paintIcon( 0 );
+
     setupToolTip();
     setupMenu();
 }

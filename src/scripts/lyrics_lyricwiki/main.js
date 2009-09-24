@@ -38,7 +38,37 @@ newxml = "";
 triedArtist = "";
 triedSong = "";
 retryNumber = 0;
+// the error message that is displayed if no lyrics were found or there was an error while trying to fetch them
+errormsg = "Lyrics not found. Sorry.";
 
+/* receives an XML response from the API call and constructs a new request out of it */
+function onFinishedAPI( response )
+{
+    try
+    {
+        if( response.length == 0 )
+            Amarok.Lyrics.showLyricsError( errormsg );
+        else
+        {
+            // construct a QDomDocument out of the response and extract the <url>...</url> part
+            doc = new QDomDocument();
+            doc.setContent( response );
+            Amarok.debug( "returned wiki URL: " + doc.elementsByTagName( "url" ).at( 0 ).toElement().text());
+            var url = doc.elementsByTagName( "url" ).at( 0 ).toElement().text();
+            var url2 = QUrl.fromEncoded( new QByteArray( url ), 1 );
+            Amarok.debug( "request no. 3 URL: " + url2.toString() );
+            // access the URL, let the response be handled by onFinished
+            new Downloader( url2, onFinished );
+        }
+    }
+    catch( err )
+    {
+        Amarok.Lyrics.showLyricsError( errormsg );
+        Amarok.debug( "script error in stage 2: " + err );
+    }
+}
+
+/* receives a Wiki page (in HTML format) and extracts lyrics from it */
 function onFinished( response )
 {
     try
@@ -49,25 +79,25 @@ function onFinished( response )
         {
             //Amarok.debug( "response: " + response );
             response = response.replace(/[\n\r]/g, ""); // remove all line breaks
-            // parse the relevant part of the html source of the returned page
-            var relevant = /<div[^<>]*['"]lyricbox['"][^<>]*>(.*)<\/div>/.exec(response)[1];
             // if lyrics for this song don't exist, try something else
-            if ( relevant.indexOf( "Click here to start this page!" ) != -1 ) {
+            if ( response.indexOf( "Click here to start this page!" ) != -1 ) {
                 if ( retryNumber == 0 ) {
-                    // first additional attempt: prepend The_ to the artist
-                    var urlstring = "http://lyrics.wikia.com/lyrics/" + "The_" + triedArtist + ":" + triedSong;
+                    // try again using the re-born API :)
+                    var urlstring = "http://lyrics.wikia.com/api.php?action=lyrics&func=getSong&fmt=xml&artist=" + triedArtist + "&song=" + triedSong;
                     retryNumber = 1;
-                    var url = QUrl.fromEncoded( new QByteArray( urlstring ), 1);
-                    Amarok.debug( "request URL: " + url.toString() );
-                    new Downloader( url, onFinished );
+                    var url = QUrl.fromEncoded( new QByteArray( urlstring ), 1 );
+                    Amarok.debug( "request no. 2 URL: " + url.toString() );
+                    // since the result will be XML stuff, we need onFinishedAPI to handle it
+                    new Downloader( url, onFinishedAPI );
                     return;
                 }
-                // no further attempts defined yet, print a pretty message
-                newxml = newxml.replace( "{lyrics}", "Lyrics not found. Please check your internet connection and make sure that title and artist tags are present and spelled correctly." );
-                Amarok.Lyrics.showLyrics( newxml );
+                // despite second attempt no lyrics were found. print an error message. 
+                Amarok.Lyrics.showLyricsError( errormsg );
                 Amarok.debug( "No lyrics found for artist=" + triedArtist + ", song=" + triedSong );
                 return;
             }
+            // parse the relevant part of the html source of the returned page
+            relevant = /<div[^<>]*['"]lyricbox['"][^<>]*>(.*)<\/div>/.exec(response)[1];
             // take care of a few special cases
             relevant = relevant.replace(/<br\s*\/?>/g, "\n") + "\n\n"; // convert <br> to \n
             relevant = relevant.replace( /&mdash;/g, "—" ); // not supported by QDomDocument
@@ -82,16 +112,13 @@ function onFinished( response )
     }
     catch( err )
     {
-        // if there was an error, display an according message instead of lyrics
-        newxml = newxml.replace( "{lyrics}", "Lyrics not found. Please check your internet connection and make sure that title and artist tags are present and spelled correctly." );
-        Amarok.Lyrics.showLyrics( newxml );
-        Amarok.debug( "Could not retrieve lyrics: " + err );
+        Amarok.Lyrics.showLyricsError( errormsg );
+        Amarok.debug( "script error in stage 1: " + err );
     }
 }
 
 // build a URL component out of a string containing an artist or a song title
 function URLify( string ) {
-    Amarok.debug( "URLifying: " + string );
     try {
         // replace (erroneously used) accent ` with a proper apostrophe '
         string = string.replace( "`", "'" );
@@ -126,7 +153,6 @@ function URLify( string ) {
         } 
         // join the words back together and return the result
         var result = words.join( "_" );
-        Amarok.debug( " --> " + result );
         return result;
     } catch ( err ) {
         Amarok.debug ( "lyrics-URLify-error: " + err );

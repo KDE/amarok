@@ -261,10 +261,10 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
                     }
                 }
 
-                int max = qMax( spareWidth, 0.0 );
+                int max = qMax( spareWidth, qreal( 0.0 ) );
 
                 if ( max >= m_token->width() * 100.0 )
-                    m_width->setMaximum( qMax( spareWidth, 0.0 ) );
+                    m_width->setMaximum( qMax( spareWidth, qreal( 0.0 ) ) );
                 else
                     m_width->setMaximum( m_token->width() * 100.0 );
             }

@@ -110,9 +110,16 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         isChannel = false;
         isOnDisk = !episode->localUrl().isEmpty();
         if( isOnDisk )
+        {
             icon = KIcon( "go-down" );
+        }
         else
-            icon = KIcon( "podcast-amarok" );
+        {
+            if( episode->isNew() )
+                icon = KIcon( "rating" );
+            else
+                icon = KIcon( "podcast-amarok" );
+        }
     }
     else
     {

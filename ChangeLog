@@ -2,6 +2,78 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
+VERSION 2.2
+  CHANGES:
+    * More collection scanning speedups.
+
+  BUGFIXES:
+    * Fix photos applet not working after resuming playback. (BR 206829)
+    * Fix regression where the genre field in the Tag Dialog would show the
+      composer of the track. (BR 208255)
+    * Don't reshuffle the playlist every time the active track changes when
+    * using a random sort order.
+    * Fix the Various Artist node sometimes being shown in the Collection
+      Browser with nothing underneath it (or an empty "Unknown" album).
+    * Fix some tracks' tags not being saved correctly to the database.
+      (BR 202021)
+
+VERSION 2.2-rc1
+  FEATURES:
+    * Import itpc:// podcast urls (BR 206615).
+    * Mark podcast episode as not-new when starting to play it.
+    * Reintroduced indicator icons for new podcast episodes.
+    * Added "subscribe" command line switch to add a podcast channel.
+
+  CHANGES:
+    * Removed Shoutcast Directory service due to technical and other issues.
+    * Made audio CDs respect the "Automatically retrieve cover art" setting.
+    * TagLib 1.6 built with ASF and MP4 support is now required. This release
+      of TagLib fixes many, many bugs and contains new format support.
+    * TagLib-Extras 1.0.0 is now required. This release is compatible with the
+      new TagLib 1.6 release.
+    * Removed non working menu entry "rename" from the Bookmark Manager. This
+      functionality is no longer needed as inline renaming is possible.
+    * Improvements for volume widget in ToolbarNG.
+    * Added "Lock layout" option to the main window's context menu.    
+
+  BUGFIXES:
+    * Fix wikipedia engine refined search broken. (BR 208024)
+    * Crash in QTextCodec while scanning collection has been fixed.
+      Apparently. (BR 191447)
+    * A dialog with "Can not write playlist (/)" was displayed when using
+      saving from within a script. (BR 206659)
+    * Fixed playlist grouping mode not getting correctly applied on startup. 
+      (BR 208087)
+    * Fixed track queue getting "lost" when switching between different track 
+      navigators. (BR 205920)
+    * Implemented proper check for running instance options on the command
+      line. (BR 207988)
+    * Improved visibility of the Context View's menus. (BR 198221)
+    * Fixed crash when using the eject action on an audio CD collection while
+      a track from the CD is playing. Instead playback is now stopped before 
+      the CD is ejected.
+    * Do not show the "load" context action in the Bookmark Manager when more
+      than 1 bookmark is selected.
+    * Fixed "Create timecode track" menu entry not showing up in the Bookmark 
+      Managers context menu when exactly 2 bookmarks are selected.
+    * Fixed new track timecodes always getting shown at the very beginning of
+      the progress slider until the track was reloaded.
+    * Fixed some tracks not correctly loading timecodes due to url encoding 
+      issues.
+    * Fixed bookmark database tables not correctly getting created on first 
+      run, leading to frequent sql errors.
+    * Fix the ends of the active track indicator getting stretched badly on 
+      wide playlists
+    * Only one toolbar type will be enabled at any time (Toolbar or ToolbarNG).
+      Previously both could be enabled concurrently by accident.
+    * Multiple fixes for the Track Timecode popups. They are no longer truncated
+      if there is not enough space to the right and the issue with them getting 
+      "stuck" has also been fixed. Thanks to Simon Bühler 
+      <simon@aktionspotential.de> for this patch. (BR 196924)
+    * Do not crash when removing a track with no album from the playlist while
+      the repeat album navigator is active. (BR 207427)
+
+
 VERSION 2.2-beta2
   FEATURES:
     * Added DBus methods Forward and Backward for relative seeking (BR 206028)
@@ -15,6 +87,7 @@ VERSION 2.2-beta2
       <tim.bocek@gmail.com> for this set of patches.
 
   BUGFIXES:
+    * Default layouts should now be sane across all architectures.
     * Fix genre tag in old MP4 files not being shown correctly (fixed in
       Taglib-Extras-0.1.7, and upcoming TagLib-1.6). (BR 198238)
     * Focus behavior is now consistent between the browsers filter widget and the
@@ -50,6 +123,7 @@ VERSION 2.2-beta2
       (BR 194328)
     * Fixed issue where files or folders with the same name but different case
       sensitivity were not scanned and/or retained. (BR 197384)
+
 
 VERSION 2.2-beta1
   FEATURES:

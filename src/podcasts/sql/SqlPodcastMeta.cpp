@@ -42,10 +42,7 @@
 #include <tlist.h>
 #include <tstring.h>
 #include <vorbisfile.h>
-
-#ifdef TAGLIB_EXTRAS_FOUND
 #include <mp4file.h>
-#endif
 
 class TimecodeWriteCapabilityPodcastImpl : public Meta::TimecodeWriteCapability
 {

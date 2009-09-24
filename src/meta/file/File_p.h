@@ -50,10 +50,7 @@
 #include <tlist.h>
 #include <tstring.h>
 #include <vorbisfile.h>
-
-#ifdef TAGLIB_EXTRAS_FOUND
 #include <mp4file.h>
-#endif
 
 namespace MetaFile
 {
@@ -283,7 +280,6 @@ void Track::Private::readMetaData()
                 disc = strip( flm[ "DISCNUMBER" ].front() );
         }
     }
-#ifdef TAGLIB_EXTRAS_FOUND
     else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileRef.file() ) )
     {
         TagLib::MP4::Tag *mp4tag = dynamic_cast< TagLib::MP4::Tag *>( file->tag() );
@@ -296,7 +292,6 @@ void Track::Private::readMetaData()
                 disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
         }
     }
-#endif
     if( !disc.isEmpty() )
     {
         int i = disc.indexOf( '/' );

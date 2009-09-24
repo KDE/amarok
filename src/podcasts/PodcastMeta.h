@@ -185,11 +185,13 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual QDateTime pubDate() const { return m_pubDate; }
         virtual int duration() const { return m_duration; }
         virtual QString guid() const { return m_guid; }
+        virtual bool isNew() const { return m_isNew; }
 
         void setUidUrl( const KUrl &url ) { m_url = url; }
         void setPubDate( const QDateTime &pubDate ) { m_pubDate = pubDate; }
         void setDuration( int duration ) { m_duration = duration; }
         void setGuid( const QString &guid ) { m_guid = guid; }
+        void setNew( bool isNew ) { m_isNew = isNew; }
 
         virtual int sequenceNumber() const { return m_sequenceNumber; }
         void setSequenceNumber( int sequenceNumber ) { m_sequenceNumber = sequenceNumber; }

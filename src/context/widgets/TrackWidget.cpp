@@ -32,7 +32,7 @@
 
 
 TrackWidget::TrackWidget( QGraphicsItem *parent )
-    : ToolBoxIcon( parent )
+    : ToolBoxIcon( parent, 0.4 ) // second argument = opacity
     , m_track( 0 )
     , m_rating( new RatingWidget( this ) )
 {

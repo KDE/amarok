@@ -112,90 +112,94 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
     if ( list == m_currentlist )
         return;
 
-    debug() << "adding " << list.count() << "new pics";
+  //  debug() << "adding " << list.count() << "new pics";
     // If a new one arrived, we change.
     foreach( PhotosInfo *item, list )
     {
         if ( !m_currentlist.contains( item ) )
         {
-            switch ( m_mode )
+            if ( !item->photo->isNull() )
             {
-                case PHOTOS_MODE_INTERACTIVE :
+                switch ( m_mode )
                 {
-
-                    if ( !m_id ) // careful we're animating
+                    case PHOTOS_MODE_INTERACTIVE :
                     {
-                        Plasma::Animator::self()->stopCustomAnimation( m_id );
-                        m_id = 0;
-                    }
-                    DragPixmapItem *dragpix = new DragPixmapItem( this );
-                    dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                    item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
-                    dragpix->setPos( m_actualpos, 0 );
-                    dragpix->SetClickableUrl( item->urlpage );
-                    dragpix->show();
 
-                    m_pixmaplist << dragpix;
+                        if ( !m_id ) // careful we're animating
+                        {
+                            Plasma::Animator::self()->stopCustomAnimation( m_id );
+                            m_id = 0;
+                        }
 
-                    int delta = dragpix->boundingRect().width() + m_margin;
-                    m_scrollmax += delta;
-                    m_actualpos += delta;
-
-                    break;
-                }
-                case PHOTOS_MODE_AUTOMATIC :
-                {
-
-                    DragPixmapItem *dragpix = new DragPixmapItem( this );
-                    dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
+                        DragPixmapItem *dragpix = new DragPixmapItem( this );
+                        dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
                         item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
-                    dragpix->SetClickableUrl( item->urlpage );
-
-                    if ( m_id == 0 ) // only pos and show if no animation, otherwise it will be set at the end automatically
-                    {
-                        if ( ! m_pixmaplist.empty() )
-                        {
-                            dragpix->setPos( m_pixmaplist.last()->boundingRect().width() + m_pixmaplist.last()->pos().x() + m_margin , 0 ) ;
-                            dragpix->show();
-                        }
-                        else
-                        {
-                            m_actualpos = 0;
-                            dragpix->setPos( m_actualpos, 0 ) ;
-                            dragpix->show();
-                        }
-                    }
-
-                    m_pixmaplist << dragpix;
-
-                    // set a timer after and launch
-                    QTimer::singleShot( m_interval, this, SLOT( automaticAnimBegin() ) );
-
-                    break;
-                }
-                case PHOTOS_MODE_FADING :
-                {
-
-                    DragPixmapItem *dragpix = new DragPixmapItem( this );
-                    dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
-                    item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
-                    dragpix->setPos( ( size().width() - dragpix->boundingRect().width() ) / 2, 0 );
-                    dragpix->SetClickableUrl( item->urlpage );
-                    dragpix->hide();
-                    m_pixmaplist << dragpix;
-                    if ( m_pixmaplist.size() == 1 )
-                    {
+                        dragpix->setPos( m_actualpos, 0 );
+                        dragpix->SetClickableUrl( item->urlpage );
                         dragpix->show();
-                        m_timer->start( m_interval );
-                    }
 
-                    break;
+                        m_pixmaplist << dragpix;
+
+                        int delta = dragpix->boundingRect().width() + m_margin;
+                        m_scrollmax += delta;
+                        m_actualpos += delta;
+
+                        break;
+                    }
+                    case PHOTOS_MODE_AUTOMATIC :
+                    {
+
+                        DragPixmapItem *dragpix = new DragPixmapItem( this );
+                        dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
+                            item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                        dragpix->SetClickableUrl( item->urlpage );
+
+                        if ( m_id == 0 ) // only pos and show if no animation, otherwise it will be set at the end automatically
+                        {
+                            if ( ! m_pixmaplist.empty() )
+                            {
+                                dragpix->setPos( m_pixmaplist.last()->boundingRect().width() + m_pixmaplist.last()->pos().x() + m_margin , 0 ) ;
+                                dragpix->show();
+                            }
+                            else
+                            {
+                                m_actualpos = 0;
+                                dragpix->setPos( m_actualpos, 0 ) ;
+                                dragpix->show();
+                            }
+                        }
+
+                        m_pixmaplist << dragpix;
+
+                        // set a timer after and launch
+                        QTimer::singleShot( m_interval, this, SLOT( automaticAnimBegin() ) );
+
+                        break;
+                    }
+                    case PHOTOS_MODE_FADING :
+                    {
+
+                        DragPixmapItem *dragpix = new DragPixmapItem( this );
+                        dragpix->setPixmap( The::svgHandler()->addBordersToPixmap(
+                        item->photo->scaledToHeight( (int) size().height() - 4 * m_margin,  Qt::SmoothTransformation ), 5, "", true ) );
+                        dragpix->setPos( ( size().width() - dragpix->boundingRect().width() ) / 2, 0 );
+                        dragpix->SetClickableUrl( item->urlpage );
+                        dragpix->hide();
+                        m_pixmaplist << dragpix;
+                        if ( m_pixmaplist.size() == 1 )
+                        {
+                            dragpix->show();
+                            m_timer->start( m_interval );
+                        }
+
+                        break;
+                    }
                 }
             }
         }
     }
     m_currentlist = list;
-    debug() << "total count: " << m_pixmaplist.count();
+  //  debug() << "total count: " << m_pixmaplist.count();
 }
 
 void PhotosScrollWidget::hoverEnterEvent(QGraphicsSceneHoverEvent*)
@@ -266,10 +270,13 @@ void PhotosScrollWidget::resize(qreal wid, qreal hei)
         {
             foreach (DragPixmapItem *item, m_pixmaplist)
             {
-                if ( size().height() != hei )
-                    item->setPixmap( item->pixmap().scaledToHeight( (int) hei - 4 * m_margin,  Qt::SmoothTransformation ) );
-                if ( size().width() != wid )
-                    item->setPos( ( wid - item->boundingRect().width() ) / 2, 0 );
+                if ( !item->pixmap().isNull() )
+                {
+                    if ( size().height() != hei )
+                        item->setPixmap( item->pixmap().scaledToHeight( (int) hei - 4 * m_margin,  Qt::SmoothTransformation ) );
+                    if ( size().width() != wid )
+                        item->setPos( ( wid - item->boundingRect().width() ) / 2, 0 );
+                }
             }
             break;
         }
