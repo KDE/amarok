@@ -797,7 +797,7 @@ void Playlist::PrettyListView::restoreTrackSelection()
     {
         QModelIndex restoredIndex = model()->index( m_topmostProxy->rowForId( savedTrackId ), 0, QModelIndex() );
 
-        if ( restoredIndex.isValid() )
+        if( restoredIndex.isValid() )
             selectionModel()->select( restoredIndex, QItemSelectionModel::Select );
     }
 }
