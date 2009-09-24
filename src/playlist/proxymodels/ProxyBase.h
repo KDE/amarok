@@ -338,6 +338,7 @@ signals:
 
     /**
      * Signal forwarded from the source model.
+     * Emitted before items are removed from the model.
      */
     void beginRemoveIds();
 
