@@ -40,8 +40,8 @@ Required
 
     * TagLib 1.6 (or newer)
       (Metadata tagging library)
-      http://freshmeat.net/projects/taglib
-
+      http://developer.kde.org/~wheeler/taglib.html
+ 
     * TagLib Extras 1.0.0 (or newer)
       (Support for metadata reading of additional file types)
       http://www.kollide.net/~jefferai/taglib-extras-1.0.0.tar.gz
