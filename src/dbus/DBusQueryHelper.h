@@ -41,12 +41,15 @@ class DBusQueryHelper : public QObject
         void slotResultReady( const QString &collectionId, const Meta::TrackList &tracks );
         
         void slotQueryDone();
+
+        void abortQuery();
         
     private:
         QDBusConnection m_connection;
         QDBusMessage m_message;
         VariantMapList m_result;
         bool m_mprisCompatibleResult;
+        bool m_timeout;
 };
 
 #endif

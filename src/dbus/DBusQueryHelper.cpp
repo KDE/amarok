@@ -20,6 +20,8 @@
 #include "collection/QueryMaker.h"
 #include "meta/MetaUtility.h"
 
+#include <QTimer>
+
 Q_DECLARE_METATYPE( VariantMapList )
  
 DBusQueryHelper::DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible )
@@ -27,12 +29,16 @@ DBusQueryHelper::DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusCo
     , m_connection( conn )
     , m_message( msg )
     , m_mprisCompatibleResult( mprisCompatible )
+    , m_timeout( false )
 {
     qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Track );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
     qm->run();
+
+    //abort query after 15 seconds in case the query does not return
+    QTimer::singleShot( 15000, this, SLOT( abortQuery() ) );
 }
 
 void
@@ -53,8 +59,23 @@ DBusQueryHelper::slotQueryDone()
 {
     deleteLater();
 
+    if( m_timeout )
+        return;
+
     QDBusMessage reply = m_message.createReply( QVariant::fromValue( m_result ) );
     bool success = m_connection.send( reply );
     if( !success )
         debug() << "sending async reply failed";
+}
+
+void
+DBusQueryHelper::abortQuery()
+{
+    deleteLater();
+    m_timeout = true;
+
+    QDBusMessage error = m_message.createError( QDBusError::InternalError, "Internal timeout" );
+    bool success = m_connection.send( error );
+    if( !success )
+        debug() << "sending async error failed";
 }
