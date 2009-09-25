@@ -63,7 +63,7 @@ VERSION 2.2-rc1
     * Fixed some tracks not correctly loading timecodes due to url encoding 
       issues.
     * Fixed bookmark database tables not correctly getting created on first 
-      run, leading to frequent sql errors.
+      run, leading to frequent SQL errors.
     * Fix the ends of the active track indicator getting stretched badly on 
       wide playlists
     * Only one toolbar type will be enabled at any time (Toolbar or ToolbarNG).
