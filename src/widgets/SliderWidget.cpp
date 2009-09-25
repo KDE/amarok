@@ -53,6 +53,9 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
     setRange( 0, max );
     setFixedHeight( 20 );
     setAttribute( Qt::WA_NoMousePropagation, true );
+
+    //FIXME: make global singleton
+    m_moodbarManager = new MoodbarManager();
 }
 
 void
@@ -167,7 +170,7 @@ Amarok::Slider::setValue( int newValue )
 }
 
 
-void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
+void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, bool drawMoodbar )
 {
     const QString prefix = "slider_bg_";
 
@@ -193,6 +196,27 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         m_needsResize = false;
     }
 
+
+    //HACK: just for testing/fun
+    if( drawMoodbar )
+    {
+
+        int moodWidth = width - ( 2 * m_borderWidth );
+        int moodHeight = height - 8;
+
+        if ( m_currentMoodBar.width() != moodWidth )
+            {
+            Meta::TrackPtr track = The::engineController()->currentTrack();
+            if ( track && m_moodbarManager->hasMoodbar( track ) )
+            {
+                m_currentMoodBar = m_moodbarManager->getMoodbar( track, moodWidth, moodHeight );
+            }
+        }
+
+        if ( !m_currentMoodBar.isNull() )
+            p->drawPixmap( x + m_borderWidth, y + 4, m_currentMoodBar );
+    }
+
     p->drawPixmap( x, y, m_topLeft );
     p->drawPixmap( x + m_borderWidth, y, m_top );
     p->drawPixmap( x + ( width - m_borderWidth ), y, m_topRight );
@@ -208,6 +232,7 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         const int sliderLeftWidth = sliderHeight / 3;
         const int sliderRightWidth = sliderLeftWidth;
 
+        
         int knobX = ( ( (double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2) );
 
         const QString barLeft = "slider_bar_left";

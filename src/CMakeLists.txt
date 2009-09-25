@@ -654,6 +654,7 @@ set(amaroklib_LIB_SRCS
     widgets/BookmarkPopup.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
+    moodbar/MoodbarManager.cpp
 )
 
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
@@ -822,7 +823,5 @@ kde4_install_icons( ${ICON_INSTALL_DIR} )
 ############ amarok protocol handler ###########
 
 install( FILES amarokurls/amarok.protocol  DESTINATION  ${SERVICES_INSTALL_DIR} )
-
-
 
 

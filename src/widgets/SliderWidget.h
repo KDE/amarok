@@ -19,6 +19,8 @@
 #ifndef SLIDERWIDGET_H
 #define SLIDERWIDGET_H
 
+#include "moodbar/MoodbarManager.h"
+
 #include <QList>
 #include <QPixmap>
 #include <QSlider>
@@ -58,7 +60,7 @@ namespace Amarok
             virtual void slideEvent( QMouseEvent* );
             virtual void resizeEvent( QResizeEvent * ) { m_needsResize = true; }
 
-            void paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos = -1.0 );
+            void paintCustomSlider( QPainter *p, int x, int y, int width, int height, bool drawMoodbar = false );
             void paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double pos = -1.0 );
 
             bool m_sliding;
@@ -89,6 +91,9 @@ namespace Amarok
             QPixmap m_bottomLeft;
             QPixmap m_bottom;
             QPixmap m_left;
+
+            MoodbarManager * m_moodbarManager;
+            QPixmap m_currentMoodBar;
 
             Q_DISABLE_COPY( Slider )
     };
