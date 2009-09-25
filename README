@@ -41,10 +41,11 @@ Required
     * TagLib 1.6 (or newer)
       (Metadata tagging library)
       http://developer.kde.org/~wheeler/taglib.html
+      svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib
  
-    * TagLib Extras 1.0.0 (or newer)
+    * TagLib Extras 1.0.1 (or newer)
       (Support for metadata reading of additional file types)
-      http://www.kollide.net/~jefferai/taglib-extras-1.0.0.tar.gz
+      http://www.kollide.net/~jefferai/taglib-extras-1.0.1.tar.gz
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
 
     * MySQL 5.0 (or newer) Embedded: libmysqld compiled with fPIC
@@ -60,11 +61,6 @@ Optional
     * libgpod 0.4.2 (or newer)
       (iPod support)
       http://www.gtkpod.org/libgpod.html
-
-    * libmp4v2 (mpeg4ip 1.5 is recommended, faad2 is less reliable)
-      (MP4/AAC tag reading & writing)
-      http://www.sf.net/projects/mpeg4ip
-      http://www.audiocoding.com
 
     * Mp3tunes.com integration (including syncronization) requires:
       * OpenSSL http://www.openssl.org
