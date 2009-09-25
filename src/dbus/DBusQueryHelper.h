@@ -35,7 +35,7 @@ class DBusQueryHelper : public QObject
     Q_OBJECT
     
     public:
-        DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg );
+        DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible );
         
     private slots:
         void slotResultReady( const QString &collectionId, const Meta::TrackList &tracks );
@@ -46,6 +46,7 @@ class DBusQueryHelper : public QObject
         QDBusConnection m_connection;
         QDBusMessage m_message;
         VariantMapList m_result;
+        bool m_mprisCompatibleResult;
 };
 
 #endif

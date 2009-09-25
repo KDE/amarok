@@ -44,6 +44,12 @@ class CollectionDBusHandler : public QObject, protected QDBusContext
          * for the result of the query. Will return an empty string if the XML query is invalid.
          */
     VariantMapList Query( const QString &xmlQuery );
+
+        /*
+         * same as above, but returns the metadata in a MPRIS compatible format
+         *
+         */
+    VariantMapList MprisQuery( const QString &xmlQuery );
         
 };
 

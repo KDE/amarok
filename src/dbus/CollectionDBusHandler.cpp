@@ -53,7 +53,30 @@ CollectionDBusHandler::Query( const QString &xmlQuery )
 
     setDelayedReply( true );
 
-    new DBusQueryHelper( this, qm, connection(), message() );
+    new DBusQueryHelper( this, qm, connection(), message(), false );
     
+    return VariantMapList();
+}
+
+VariantMapList
+CollectionDBusHandler::MprisQuery( const QString &xmlQuery )
+{
+    if( !calledFromDBus() )
+        return VariantMapList();
+
+    QueryMaker* qm = XmlQueryReader::getQueryMaker( xmlQuery, XmlQueryReader::IgnoreReturnValues );
+
+    //probably invalid XML
+    if( !qm )
+    {
+        debug() << "Invalid XML query: " << xmlQuery;
+        sendErrorReply( QDBusError::InvalidArgs, "Invalid XML: " + xmlQuery );
+        return VariantMapList();
+    }
+
+    setDelayedReply( true );
+
+    new DBusQueryHelper( this, qm, connection(), message(), true );
+
     return VariantMapList();
 }

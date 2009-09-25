@@ -22,10 +22,11 @@
 
 Q_DECLARE_METATYPE( VariantMapList )
  
-DBusQueryHelper::DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg )
+DBusQueryHelper::DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible )
     : QObject( parent )
     , m_connection( conn )
     , m_message( msg )
+    , m_mprisCompatibleResult( mprisCompatible )
 {
     qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Track );
@@ -40,7 +41,10 @@ DBusQueryHelper::slotResultReady( const QString &collectionId, const Meta::Track
     Q_UNUSED( collectionId );
     foreach( const Meta::TrackPtr &track, tracks )
     {
-        m_result.append( Meta::Field::mapFromTrack( track ) );
+        if( m_mprisCompatibleResult )
+            m_result.append( Meta::Field::mprisMapFromTrack( track ) );
+        else
+            m_result.append( Meta::Field::mapFromTrack( track ) );
     }
 }
 

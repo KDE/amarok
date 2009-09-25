@@ -23,6 +23,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "meta/Meta.h"
+#include "meta/MetaUtility.h"
 #include "PlayerAdaptor.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
@@ -249,50 +250,7 @@ namespace Amarok
 
     QVariantMap PlayerDBusHandler::GetTrackMetadata( Meta::TrackPtr track )
     {
-        QVariantMap map;
-        if( track )
-        {
-            // MANDATORY:
-            map["location"] = track->playableUrl().url();
-
-            // INFORMATIONAL:
-            map["title"] = track->prettyName();
-            
-            if( track->artist() )
-                map["artist"] = track->artist()->name();
-            
-            if( track->album() )
-                map["album"] = track->album()->name();
-            
-            map["tracknumber"] = track->trackNumber();
-            map["time"] = track->length();
-            map["mtime"] = track->length() * 1000;
-            
-            if( track->genre() )
-                map["genre"] = track->genre()->name();
-            
-            map["comment"] = track->comment();
-            map["rating"] = track->rating()/2;  //out of 5, not 10.
-            
-            if( track->year() )
-                map["year"] = track->year()->name();
-
-            if( track->album() )
-                map["arturl"] = track->album()->imageLocation().url();
-
-            //TODO: external service meta info
-
-            // TECHNICAL:
-            map["audio-bitrate"] = track->bitrate();
-            map["audio-samplerate"] = track->sampleRate();
-            //amarok has no video-bitrate
-
-            // EXTRA Amarok specific
-            const QString lyrics = track->cachedLyrics();
-            if( !lyrics.isEmpty() )
-                map["lyrics"] = lyrics;
-        }
-        return map;
+        return Meta::Field::mprisMapFromTrack( track );
     }
 
     void PlayerDBusHandler::engineTrackChanged( Meta::TrackPtr track )

@@ -6,5 +6,11 @@
       <arg name="result" type="aa{sv}" direction="out"/>
       <arg name="queryXml" type="s" direction="in"/>
     </method>
+    <method name="MprisQuery">
+      <!-- This query will return the metadata in a MPRIS compatible format -->
+      <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QList&lt;QVariantMap >"/>
+      <arg name="result" type="aa{sv}" direction="out"/>
+      <arg name="queryXml" type="s" direction="in"/>
+    </method>
   </interface>
 </node>

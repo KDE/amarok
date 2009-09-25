@@ -66,7 +66,10 @@ namespace Meta
         static const QString UNIQUEID       = "xesam:id";
 
 
+        //deprecated
         AMAROK_EXPORT QVariantMap mapFromTrack( const Meta::TrackPtr track );
+        //this method will return a map with keys that are compatible to the fdo MPRIS specification
+        AMAROK_EXPORT QVariantMap mprisMapFromTrack( const Meta::TrackPtr track );
         AMAROK_EXPORT void updateTrack( Meta::TrackPtr track, const QVariantMap &metadata );
         AMAROK_EXPORT void writeFields( const QString &filename, const QVariantMap &changes );
         AMAROK_EXPORT void writeFields( TagLib::FileRef fileref, const QVariantMap &changes );
