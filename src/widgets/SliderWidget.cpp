@@ -54,8 +54,7 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
     setFixedHeight( 20 );
     setAttribute( Qt::WA_NoMousePropagation, true );
 
-    //FIXME: make global singleton
-    m_moodbarManager = new MoodbarManager();
+    m_moodbarManager = The::moodbarManager();
 }
 
 void

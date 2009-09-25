@@ -38,7 +38,20 @@ installed, but it could none the less do with a major update, perhaps to use Pho
 #define NUM_HUES 12
 #define CLAMP(n, v, x) ((v) < (n) ? (n) : (v) > (x) ? (x) : (v))
 
+namespace The {
+    static MoodbarManager* s_MoodbarManager_instance = 0;
+
+    MoodbarManager* moodbarManager()
+    {
+        if( !s_MoodbarManager_instance )
+            s_MoodbarManager_instance = new MoodbarManager();
+
+        return s_MoodbarManager_instance;
+    }
+}
+
 MoodbarManager::MoodbarManager()
+    : m_cache( new KPixmapCache( "Amarok-moodbars" ) )
 {
 }
 
@@ -51,19 +64,29 @@ bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
 
     DEBUG_BLOCK
 
+    //check if we already checked this track:
+    if ( m_hasMoodMap.contains( track ) )
+        return m_hasMoodMap.value( track );
+        
+ 
     KUrl trackUrl = track->playableUrl();
     //only supports local files for now.
     if ( !trackUrl.isLocalFile() )
+    {
+        m_hasMoodMap.insert( track, false );
         return false;
+    }
 
-    //Now, lets see if there is amood file that matches the track filename
-    QString moodFilePath = trackUrl.path();
-    
-    QStringList parts = moodFilePath.split(".");
-    parts.takeLast();
-    parts.append( "mood" );
+    //do we already have a moodFile path for this track?
+    QString moodFilePath;
+    if ( m_moodFileMap.contains( track ) )
+        moodFilePath = m_moodFileMap.value( track );
+    else
+    {
+        //Now, lets see if there is a mood file that matches the track filename
+        moodFilePath = moodPath( trackUrl.path() );
 
-    moodFilePath = parts.join( "." );
+    }
 
     debug() << "file path: " << trackUrl.path();
     debug() << "mood file path: " << moodFilePath;
@@ -71,9 +94,15 @@ bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
     if( !QFile::exists( moodFilePath ) )
     {
         debug() << "no such file";
+        m_hasMoodMap.insert( track, false );
         return false;
     }
+
     //it is a local file with a matching .mood file. Good enough for now!
+    
+    m_moodFileMap.insert( track, moodFilePath );
+    m_hasMoodMap.insert( track, true );
+    
     return true;
     
 }
@@ -83,27 +112,54 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
 
     DEBUG_BLOCK
 
-    //TODO: all sort of caching and threading!
+    //first of all... if we have marked this track as not ahving a moodbar, don't even bother...
+    if ( m_hasMoodMap.contains( track ) )
+        if( !m_hasMoodMap.value( track ) )
+            return QPixmap();
 
-    QString moodFilePath = track->playableUrl().path();
-    QStringList parts = moodFilePath.split(".");
-    parts.takeLast();
-    parts.append( "mood" );
-    moodFilePath = parts.join( "." );
 
-    MoodbarColorList data = readMoodFile( moodFilePath );
+    //Do we alrady have this pixmap cached?
+    QString pixmapKey = QString( "mood:%1-%2x%3" ).arg( track->uidUrl(), width, height );
+    
+    QPixmap moodbar( width, height );
+    moodbar.fill( Qt::transparent );
+
+    if( m_cache->find( pixmapKey, moodbar ) )
+        return moodbar;
+        
+    //No? Ok, then create it reusing as much info as possible
+
+
+    QString moodFilePath;
+    if ( m_moodFileMap.contains( track ) )
+        moodFilePath = m_moodFileMap.value( track );
+    else
+        moodFilePath = moodPath( track->playableUrl().path() );
+
+    MoodbarColorList data;
+
+    if ( m_moodDataMap.contains( track ) )
+        data = m_moodDataMap.value( track );
+    else
+    {
+        data = readMoodFile( moodFilePath );
+
+        if ( data.size() < 10 )
+            m_moodDataMap.insert( track, data );
+        else
+        {
+            //likely a corrupt file, so mark this track as not having a moodbar
+             m_hasMoodMap.insert( track, false );
+        }
+    }
 
     //assume that the readMoodFile function emits the proper error...
     if ( data.size() < 10 )
-        QPixmap();
+        return QPixmap();
 
-    QPixmap moodbar = drawMoodbar( data, width, height );
-
-    if ( !moodbar.isNull() )
-        emit( moodbarReady( moodbar ) );
-
-
-    //for testing since everything is syncronous still.
+    moodbar = drawMoodbar( data, width, height );
+    m_cache->insert( pixmapKey, moodbar );
+    
     return moodbar;
     
 }
@@ -111,18 +167,20 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
 MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 {
 
+     DEBUG_BLOCK
+
     MoodbarColorList data;
 
     QString path = moodFileUrl.path();
     if( path.isEmpty() )
-      return data;
+        return data;
 
     debug() << "Moodbar::readFile: Trying to read " << path << endl;
 
     QFile moodFile( path );
 
     if( !moodFile.open( QIODevice::ReadOnly ) )
-      return data;
+        return data;
 
 
     int r, g, b, samples = moodFile.size() / 3;
@@ -131,12 +189,12 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 
     // This would be bad.
     if( samples == 0 )
-      {
+    {
         debug() << "Moodbar::readFile: File " << moodFile.fileName()
                 << " is corrupted, removing." << endl;
         //moodFile.remove();
         return data;
-      }
+    }
 
     int huedist[360], mx = 0; // For alterMood
     int modalHue[NUM_HUES];   // For m_hueSort
@@ -204,8 +262,8 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     // value are scaled by sat and val, respectively, which are percentage
     // values.
 
-    if( true )
-      {
+    if( false )
+    {
         // Explanation of the parameters:
         //
         //   threshold: A hue value is considered to be a "spike" in the
@@ -222,8 +280,8 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
         int total = 0;
         memset( modalHue, 0, sizeof( modalHue ) );  // Recalculate this
 
-        switch( 6 )
-          {
+        switch( 3 )
+        {
           case 1: // Angry
             threshold  = samples / 360 * 9;
             rangeStart = 45;
@@ -246,7 +304,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
             rangeDelta = 359;
             sat        = 150;
             val        = 250;
-          }
+        }
 
         //debug() << "ReadMood: Applying filter t=" << threshold
         //        << ", rS=" << rangeStart << ", rD=" << rangeDelta
@@ -258,24 +316,24 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
         // The total determines how many output hues there are,
         // evenly spaced between rangeStart and rangeStart + rangeDelta.
         for( int i = 0; i < 360; i++ )
-          if( huedist[i] > threshold )
-            total++;
+            if( huedist[i] > threshold )
+                total++;
 
         if( total < 360 && total > 0 )
-          {
+        {
             // Remap the hue values to be between rangeStart and
             // rangeStart + rangeDelta.  Every time we see an input hue
             // above the threshold, increment the output hue by
             // (1/total) * rangeDelta.
             for( int i = 0, n = 0; i < 360; i++ )
-              huedist[i] = ( ( huedist[i] > threshold ? n++ : n )
-                             * rangeDelta / total + rangeStart ) % 360;
+                huedist[i] = ( ( huedist[i] > threshold ? n++ : n )
+                               * rangeDelta / total + rangeStart ) % 360;
 
             // Now huedist is a hue mapper: huedist[h] is the new hue value
             // for a bar with hue h
 
-            for(uint i = 0; i < data.size(); i++)
-              {
+            for( uint i = 0; i < data.size(); i++ )
+            {
                 data[i].getHsv( &h, &s, &v );
                 if( h < 0 ) h = 0;  else h = h % 360;
                 data[i].setHsv( CLAMP( 0, huedist[h], 359 ),
@@ -284,9 +342,9 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 
                 modalHue[CLAMP(0, huedist[h] * NUM_HUES / 360, NUM_HUES - 1)]
                   += (v * val / 100);
-              }
-          }
-      }
+            }
+        }
+    }
 
     // Calculate m_hueSort.  This is a 3-digit number in base NUM_HUES,
     // where the most significant digit is the first strongest hue, the
@@ -325,6 +383,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 
 QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, int height )
 {
+     DEBUG_BLOCK
     
     QPixmap pixmap = QPixmap( width, height );
     QPainter paint( &pixmap );
@@ -348,14 +407,14 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
         uint start = i * data.size() / width;
         uint end   = (i + 1) * data.size() / width;
         if( start == end )
-          end = start + 1;
+            end = start + 1;
 
         for( uint j = start; j < end; j++ )
-          {
+        {
             r += data[j].red();
             g += data[j].green();
             b += data[j].blue();
-          }
+        }
 
         uint n = end - start;
         bar =  QColor( int( r / float( n ) ),
@@ -384,10 +443,10 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
             coeff = 1.f - ( 1.f - coeff ) / 2.f;
             coeff2 = 1.f - ( 1.f - coeff2 ) / 2.f;
 
-        QColor hsvColor;
-        hsvColor.setHsv( h,
-                CLAMP( 0, int( float( s ) * coeff ), 255 ),
-                CLAMP( 0, int( 255.f - (255.f - float( v ) ) * coeff2 ), 255 ) ) ;
+            QColor hsvColor;
+            hsvColor.setHsv( h,
+            CLAMP( 0, int( float( s ) * coeff ), 255 ),
+            CLAMP( 0, int( 255.f - (255.f - float( v ) ) * coeff2 ), 255 ) ) ;
             paint.setPen( hsvColor );
             paint.drawPoint( x, y );
             paint.drawPoint( x, height - 1 - y );
@@ -396,4 +455,12 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
 
     return pixmap;
 
+}
+
+QString MoodbarManager::moodPath( const QString &trackPath )
+{
+    QStringList parts = trackPath.split(".");
+    parts.takeLast();
+    parts.append( "mood" );
+    return parts.join( "." );
 }
