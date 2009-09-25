@@ -24,8 +24,10 @@
 #include <QString>
 #include <QVariant>
 
-// Taglib
-#include <fileref.h>
+namespace TagLib
+{
+    class FileRef;
+}
 
 namespace Meta
 {

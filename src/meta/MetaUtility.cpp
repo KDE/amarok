@@ -28,6 +28,7 @@
 #include <kio/global.h>
 
 // Taglib
+#include <fileref.h>
 #include <tag.h>
 #include <tlist.h>
 #include <tmap.h>
