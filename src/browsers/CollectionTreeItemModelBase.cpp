@@ -330,7 +330,7 @@ CollectionTreeItemModelBase::hasChildren ( const QModelIndex & parent ) const
 void
 CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
 {
-    if ( item->requiresUpdate() )
+    if ( item->requiresUpdate() && !d->m_runningQueries.contains( item ) )
     {
         listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
     }
@@ -364,6 +364,8 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
 
 void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent)
 {
+    DEBUG_BLOCK
+    debug() << "starting query for " << (parent->data() ? parent->data()->name() : "root") << " with filter " << m_currentFilter;
     if ( qm && parent )
     {
         //this check should not hurt anyone... needs to check if single... needs it
@@ -819,6 +821,8 @@ CollectionTreeItemModelBase::handleNormalQueryResult( QueryMaker *qm, const Meta
 void
 CollectionTreeItemModelBase::populateChildren(const DataList & dataList, CollectionTreeItem * parent, const QModelIndex &parentIndex )
 {
+    DEBUG_BLOCK
+    debug() << "populating children of " << (parent->data() ? parent->data()->name() : "root");
     //add new rows after existing ones here (which means all artists nodes
     //will be inserted after the "Various Artists" node)
     {
@@ -838,6 +842,9 @@ CollectionTreeItemModelBase::populateChildren(const DataList & dataList, Collect
         QSet<Meta::DataPtr> dataToBeAdded = dataSet - childrenSet;
         QSet<Meta::DataPtr> dataToBeRemoved = childrenSet - dataSet;
 
+        debug() << "removing " << dataToBeRemoved.count() << " items.";
+        debug() << "adding " << dataToBeAdded.count() << " items.";
+        debug() << "updating " << (dataSet & childrenSet).count() << " items.";
         QList<int> currentIndices;
         //first remove all rows that have to be removed
         //walking through the cildren in reverse order does not screw up the order
@@ -969,8 +976,9 @@ CollectionTreeItemModelBase::setCurrentFilter( const QString &filter )
 void
 CollectionTreeItemModelBase::slotFilter()
 {
-    if ( isQuerying() )
-        return; // we are already busy, do not try to change filters in the middle of everything as that will cause crashes
+    DEBUG_BLOCK
+    //if ( isQuerying() )
+    //    return; // we are already busy, do not try to change filters in the middle of everything as that will cause crashes
 
     filterChildren();
     //reset();
@@ -1040,7 +1048,19 @@ void CollectionTreeItemModelBase::update()
 
 bool CollectionTreeItemModelBase::isQuerying() const
 {
-    return !( d->m_childQueries.isEmpty() && d->m_compilationQueries.isEmpty() );
+    bool result = !( d->m_childQueries.isEmpty() && d->m_compilationQueries.isEmpty() );
+    if( result )
+    {
+        foreach( CollectionTreeItem *item, d->m_childQueries.values() )
+        {
+            debug() << "still querying for " << (item->isDataItem() ? (item->data() ? item->data()->name() : "VA") : (item->parentCollection() ? item->parentCollection()->collectionId() : "root"));
+        }
+        foreach( CollectionTreeItem *item, d->m_compilationQueries.values() )
+        {
+            debug() << "still querying (VA) for " << (item->isDataItem() ? (item->data() ? item->data()->name() : "VA") : (item->parentCollection() ? item->parentCollection()->collectionId() : "root"));
+        }
+    }
+    return result;
 }
 
 void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
@@ -1064,12 +1084,21 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
     {
         d->m_childQueries.remove( qm );
         //we found the item in this map, it won't be in the other
-        return;
+        //but we still need to disconnect the qm below
     }
-
-    qm = d->m_compilationQueries.key( item, 0 );
-    if( qm )
-        d->m_compilationQueries.remove( qm );
+    else
+    {
+        qm = d->m_compilationQueries.key( item, 0 );
+        if( qm )
+            d->m_compilationQueries.remove( qm );
+    }
+    //disconnect the model from the querymake so we do not get
+    //notified about the results
+    qm->disconnect( this );
+    //although we could abort the query here,
+    //I strongly suspect that the querymaker's autodelete would not work anymore
+    //(as it has to be implemented in separately in each subclass)
+    //so just let the querymaker run, it's result will be ignored
 }
 
 #include "CollectionTreeItemModelBase.moc"
