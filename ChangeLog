@@ -4,6 +4,8 @@ Amarok ChangeLog
 
 VERSION 2.2
   CHANGES:
+    * The MusicBrainz ID of a track is now scrobbled to Last.fm, if it exists.
+      (BR 122281)
     * More collection scanning speedups.
 
   BUGFIXES:

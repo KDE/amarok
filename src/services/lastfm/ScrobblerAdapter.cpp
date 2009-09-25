@@ -77,8 +77,12 @@ ScrobblerAdapter::engineNewTrackPlaying()
         if( track->album() )
             m_current.setAlbum( track->album()->name() );
 
-        // TODO: need to get music brainz id from somewhere
-        // m_current.setMbId( );
+        QString uid = track->uidUrl();
+        if( uid.startsWith( "amarok-sqltrackuid://MB_" ) )
+        {
+            uid.remove( "amarok-sqltrackuid://MB_" );
+            m_current.setMbid( lastfm::Mbid( uid ) );
+        }
 
         // TODO also set fingerprint... whatever that is :)
         // m_current.setFingerprintId( qstring );
