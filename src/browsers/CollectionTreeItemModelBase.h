@@ -24,7 +24,7 @@
 #include "meta/Meta.h"
 
 #include <QAbstractItemModel>
-#include <QMap>
+#include <QHash>
 #include <QPair>
 #include <QSet>
 
@@ -92,8 +92,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         void setCurrentFilter( const QString &filter );
 
-        bool isQuerying() const;
-
         void itemAboutToBeDeleted( CollectionTreeItem *item );
 
     signals:
@@ -152,9 +150,9 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 class CollectionTreeItemModelBase::Private
 {
  public:
-    QMap<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
-    QMap<QueryMaker* , CollectionTreeItem* > m_childQueries;
-    QMap<QueryMaker* , CollectionTreeItem* > m_compilationQueries;
+    QHash<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
+    QHash<QueryMaker* , CollectionTreeItem* > m_childQueries;
+    QHash<QueryMaker* , CollectionTreeItem* > m_compilationQueries;
     QSet<CollectionTreeItem*> m_runningQueries;
 };
 

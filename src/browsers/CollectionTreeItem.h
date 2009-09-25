@@ -112,6 +112,7 @@ class CollectionTreeItem : public QObject
     private:
         QString albumYear() const;
         QAction* decoratorAction() const;
+        void prepareForRemoval();
 
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;

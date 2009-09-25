@@ -101,9 +101,6 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
 
 CollectionTreeItem::~CollectionTreeItem()
 {
-    m_model->itemAboutToBeDeleted( this );
-    if( m_parent )
-        m_parent->m_childItems.removeAll( const_cast<CollectionTreeItem*>(this) );
     qDeleteAll(m_childItems);
 }
 
@@ -118,7 +115,16 @@ CollectionTreeItem::removeChild( int index )
 {
     CollectionTreeItem *child = m_childItems[index];
     m_childItems.removeAt( index );
-    delete child;
+    child->prepareForRemoval();
+    child->deleteLater();
+}
+
+void
+CollectionTreeItem::prepareForRemoval()
+{
+    m_model->itemAboutToBeDeleted( this );
+    foreach( CollectionTreeItem *item, m_childItems )
+        item->prepareForRemoval();
 }
 
 CollectionTreeItem*
