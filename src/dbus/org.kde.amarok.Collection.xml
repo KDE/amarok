@@ -2,6 +2,7 @@
 <node>
   <interface name="org.kde.amarok.Collection">
     <method name="Query">
+     <!-- this method is deprecated and will be removed for Amarok 2.3. use MprisQuery instead -->
       <annotation name="com.trolltech.QtDBus.QtTypeName.Out0" value="QList&lt;QVariantMap >"/>
       <arg name="result" type="aa{sv}" direction="out"/>
       <arg name="queryXml" type="s" direction="in"/>

@@ -38,15 +38,16 @@ class CollectionDBusHandler : public QObject, protected QDBusContext
         
     public slots:
         /*
-         * Takes a query in XML form and executes it. Amarok runs queries asynchronously, therefore the result
-         * of the query will be returned by the queryResult() signal. The return value of this method is a token
-         * that uniquely identifies the query. It will also be the first parameter of the queryResult() signal
-         * for the result of the query. Will return an empty string if the XML query is invalid.
+         * Takes a query in XML form and executes it. Will return an empty map if the query XML is invalid
+         *
+         * This method return the metadata in a format that is not compatible to MPRIS. It is therefore superceded
+         * by MprisQuery and will be removed for Amarok 2.3
          */
     VariantMapList Query( const QString &xmlQuery );
 
         /*
-         * same as above, but returns the metadata in a MPRIS compatible format
+         * Takes a query in XML form and executes it. Will return an empty map if the query XML is invalid
+         * Returns the metadata in a MPRIS compatible format
          *
          */
     VariantMapList MprisQuery( const QString &xmlQuery );
