@@ -263,6 +263,10 @@ CollectionScanner::doJob() //SLOT
             if( !dir.endsWith( '/' ) )
                 dir += '/';
 
+            // Linux specific, but this fits the 90% rule
+            if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
+                continue;
+ 
             readDir( dir, entries );
         }
 
@@ -316,9 +320,6 @@ CollectionScanner::doJob() //SLOT
 void
 CollectionScanner::readDir( const QString& dir, QStringList& entries )
 {
-    // Linux specific, but this fits the 90% rule
-    if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
-        return;
     QDir d( dir );
     m_scannedFolders << d.canonicalPath();
 
