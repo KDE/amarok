@@ -635,14 +635,6 @@ DatabaseUpdater::copyToPermanentTables()
     m_collection->query( "DELETE FROM directories;" );
     m_collection->query( "INSERT INTO directories SELECT * FROM directories_temp;" );
 
-    //copy tracks last so that we don't get problems with foreign key constraints
-    QStringList trackIdList = m_collection->query( "SELECT tracks.id FROM tracks;" );
-    QString trackIds = "-1";
-    foreach( const QString &trackId, trackIdList )
-    {
-        trackIds += ',';
-        trackIds += trackId;
-    }
     m_collection->insert( QString( "REPLACE INTO tracks SELECT * FROM tracks_temp;" ), QString() );
 
     writeCSVFile( "artists", "artists_after" );
@@ -902,7 +894,7 @@ DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
                 ids += ',';
             ids += id;
         }
-        QString drop = QString( "DELETE FROM tracks WHERE id IN (%1);" ).arg( ids );
+        QString drop = QString( "DELETE FROM tracks WHERE url IN (%1);" ).arg( ids );
         m_collection->query( drop );
     }
 }
@@ -923,7 +915,7 @@ DatabaseUpdater::removeFilesInDirFromTemporaryTables( int deviceid, const QStrin
                 ids += ',';
             ids += id;
         }
-        QString drop = QString( "DELETE FROM tracks_temp WHERE id IN (%1);" ).arg( ids );
+        QString drop = QString( "DELETE FROM tracks_temp WHERE url IN (%1);" ).arg( ids );
         m_collection->query( drop );
     }
 }
