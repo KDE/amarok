@@ -12,14 +12,14 @@ VERSION 2.2
   BUGFIXES:
     * "Configure Amarok" dialog takes up less space, making it suitable for
       for small screens.
-    * Fix photos applet not working after resuming playback. (BR 206829)
-    * Fix regression where the genre field in the Tag Dialog would show the
+    * Fixed photos applet not working after resuming playback. (BR 206829)
+    * Fixed regression where the genre field in the Tag Dialog would show the
       composer of the track. (BR 208255)
     * Don't reshuffle the playlist every time the active track changes when
     * using a random sort order.
-    * Fix the Various Artist node sometimes being shown in the Collection
+    * Fixed the Various Artist node sometimes being shown in the Collection
       Browser with nothing underneath it (or an empty "Unknown" album).
-    * Fix some tracks' tags not being saved correctly to the database.
+    * Fixed some tracks' tags not being saved correctly to the database.
       (BR 202021)
 
 
