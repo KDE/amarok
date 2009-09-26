@@ -296,9 +296,6 @@ ScanManager::slotFinished( )
         m_dbusHandler->deleteLater();
         m_dbusHandler = 0;
     }
-
-    if( m_isIncremental )
-        writeBatchIncrementalInfoFile();
 }
 
 void
@@ -412,7 +409,7 @@ ScanManager::getDirsToScan()
         QFileInfo info( folder );
         if( info.exists() )
         {
-            m_incrementalDirs << folder << QString( "_AMAROKMTIME_" ) << QString::number( mtime );
+            m_incrementalDirs << QString( folder + "_AMAROKMTIME_" + QString::number( mtime ) );
             if( info.lastModified().toTime_t() != mtime )
                 changedFolderIds << id;
         }
