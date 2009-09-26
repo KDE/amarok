@@ -197,10 +197,12 @@ CollectionScanner::readMtimeFile()
     {
         QStringList parts  = temp.split( "_AMAROKMTIME_" );
         m_folders << parts[0];
-        m_mtimeMap[parts[0]] = parts[1].toUInt();
+        m_mTimeMap[parts[0]] = parts[1].toUInt();
         temp = folderStream.readLine();
     }
 
+    qDebug() << "contents of folders: " << m_folders << endl;
+    qDebug() << "contents of mtimemap: " << m_mTimeMap << endl;
     folderFile.close();
     return true;
 }
@@ -319,6 +321,28 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     // Linux specific, but this fits the 90% rule
     if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
         return;
+
+    if( m_scannedDirs.contains( dir ) )
+        return;
+ 
+    m_scannedDirs << dir;
+
+    //qDebug() << "Checking dir " << dir;
+    if( m_incremental && m_mTimeMap.contains( dir ) )
+    {
+        //qDebug() << "Found in mTimeMap!";
+        uint mtime = m_mTimeMap[dir];
+        QFileInfo info( dir );
+        //qDebug() << "info lastmodified: " << info.lastModified().toTime_t();
+        //qDebug() << "mtime = " << mtime;
+        if( !info.exists() || info.lastModified().toTime_t() == mtime )
+        {
+            //qDebug() << "mtimes mean no scanning";
+            return;
+        }
+        //qDebug() << "Going ahead with the scan";
+    }
+
     QDir d( dir );
     m_scannedFolders << d.canonicalPath();
 
@@ -369,8 +393,8 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         else if( f.isFile() )
             entries.append( f.absoluteFilePath() );
     }
-    foreach( QString directory, recurseDirs )
-        readDir( directory, entries );
+    foreach( QString dir, recurseDirs )
+        readDir( dir, entries );
 }
 
 

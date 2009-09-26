@@ -31,6 +31,7 @@
 #include <QDateTime>
 #include <QDBusInterface>
 #include <QHash>
+#include <QSet>
 #include <QStringList>
 
 //Taglib includes..
@@ -111,7 +112,8 @@ private:
     bool                        m_batch;
     bool                        m_importPlaylists;
     QStringList                 m_folders;
-    QMap<QString, uint>         m_mtimeMap;
+    QHash<QString, uint>        m_mTimeMap;
+    QSet<QString>               m_scannedDirs;
     QDateTime                   m_batchFolderTime;
     bool                        m_recursively;
     bool                        m_incremental;
