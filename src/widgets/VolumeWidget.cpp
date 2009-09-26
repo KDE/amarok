@@ -54,9 +54,20 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     addWidget( m_label );
 
     EngineController* const ec = The::engineController();
-    connect( m_action, SIGNAL( triggered( bool ) ), ec, SLOT( toggleMute() ) );
+
+    connect( m_action, SIGNAL( triggered() ), ec, SLOT( toggleMute() ) );
+    connect( m_action, SIGNAL( triggered( Qt::MouseButtons, Qt::KeyboardModifiers ) ), SLOT( toggleMute( Qt::MouseButtons, Qt::KeyboardModifiers ) ) );
     connect( m_slider, SIGNAL( sliderMoved( int ) ), ec, SLOT( setVolume( int ) ) );
     connect( m_slider, SIGNAL( sliderReleased( int ) ), ec, SLOT( setVolume( int ) ) );
+}
+
+void
+VolumeWidget::toggleMute( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
+{
+    Q_UNUSED( modifiers )
+
+    if( buttons == Qt::MidButton )
+        The::engineController()->toggleMute();
 }
 
 void

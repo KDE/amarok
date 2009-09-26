@@ -39,6 +39,9 @@ public:
     VolumeWidget( QWidget * );
     Amarok::VolumeSlider* slider() const { return m_slider; }
 
+private Q_SLOTS:
+    void toggleMute( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+
 private:
     void engineVolumeChanged( int value );
     void engineMuteStateChanged( bool mute );
