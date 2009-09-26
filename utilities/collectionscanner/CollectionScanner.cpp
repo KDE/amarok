@@ -201,8 +201,8 @@ CollectionScanner::readMtimeFile()
         temp = folderStream.readLine();
     }
 
-    qDebug() << "contents of folders: " << m_folders << endl;
-    qDebug() << "contents of mtimemap: " << m_mTimeMap << endl;
+    //qDebug() << "contents of folders: " << m_folders << endl;
+    //qDebug() << "contents of mtimemap: " << m_mTimeMap << endl;
     folderFile.close();
     return true;
 }
@@ -322,12 +322,15 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
         return;
 
+    //qDebug() << "Checking dir " << dir;
     if( m_scannedDirs.contains( dir ) )
+    {
+        //qDebug() << "Not scanning dir because already scanned";
         return;
+    }
  
     m_scannedDirs << dir;
 
-    //qDebug() << "Checking dir " << dir;
     if( m_incremental && m_mTimeMap.contains( dir ) )
     {
         //qDebug() << "Found in mTimeMap!";
@@ -337,7 +340,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         //qDebug() << "mtime = " << mtime;
         if( !info.exists() || info.lastModified().toTime_t() == mtime )
         {
-            //qDebug() << "mtimes mean no scanning";
+        //    qDebug() << "mtimes mean no scanning";
             return;
         }
         //qDebug() << "Going ahead with the scan";
