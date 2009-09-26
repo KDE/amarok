@@ -653,16 +653,6 @@ CollectionTreeItemModelBase::queryDone()
     {
         emit dataChanged( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) );
         emit queryFinished();
-
-        int level = item->level() + levelModifier();
-        //query for children if we are not at track level yet
-        if( level != m_levelType.count() )
-        {
-            foreach( CollectionTreeItem *child, item->children() )
-            {
-                //ensureChildrenLoaded( child );
-            }
-        }
     }
 
     //stop timer if there are no more animations active
