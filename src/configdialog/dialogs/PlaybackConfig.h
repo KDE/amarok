@@ -22,7 +22,6 @@
 #include "ConfigDialogBase.h"
 
 
-
 class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
 {
     Q_OBJECT
@@ -34,8 +33,10 @@ class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
         virtual bool hasChanged();
         virtual bool isDefault();
         virtual void updateSettings();
+
     public Q_SLOTS:
         void eqUpdateUI( int index );
+
     private Q_SLOTS:
         void configurePhonon();
         void eqPresetChanged( int index );
@@ -43,11 +44,13 @@ class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
         void eqSavePreset();
         void eqDeletePreset();
         void eqRestorePreset();
+
     private:
         double mValueScale;
         QVector<QSlider*> mBands;
         QVector<QLabel*> mBandsValues;
         QVector<QLabel*> mBandsLabels;
+
         void eqSetupUI();
         void eqUpdateToolTips();
         void eqUpdateLabels( QList<int> & mEqGains );

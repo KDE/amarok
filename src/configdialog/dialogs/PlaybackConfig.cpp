@@ -16,13 +16,16 @@
  ****************************************************************************************/
 
 #include "PlaybackConfig.h"
+
 #include "amarokconfig.h"
 #include "Amarok.h"
 #include "ActionClasses.h"
 #include "EngineController.h"
 #include "Debug.h"
+
 #include <KCMultiDialog>
 #include <kmessagebox.h>
+
 
 PlaybackConfig::PlaybackConfig( QWidget* parent )
     : ConfigDialogBase( parent )
@@ -181,6 +184,7 @@ PlaybackConfig::eqBandsChanged() //SLOT
     QList<int> eqGains;
     foreach( QSlider* mSlider, mBands )
         eqGains << mSlider->value();
+
     eqUpdateToolTips();
     eqUpdateLabels( eqGains );
     AmarokConfig::setEqualizerGains( eqGains );
@@ -213,7 +217,8 @@ PlaybackConfig::eqUpdateUI( int index ) // SLOT
 {
     if( index < 0 )
         return;
-    bool mstate = index>0 ? true : false;
+
+    const bool mstate = index > 0 ? true : false;
     eqBandsGroupBox->setEnabled( mstate );
     eqPresetSaveBtn->setEnabled( mstate );
     eqPresetDeleteBtn->setEnabled( mstate );
@@ -252,15 +257,15 @@ PlaybackConfig::eqDeletePreset() //SLOT
     else
     {
         KMessageBox::detailedSorry( this, i18n( "Can not delete this preset" ),
-                                            i18n( "Default presets can not be deleted" ),
-                                            i18n( "Error deleting preset" ) );
+                                          i18n( "Default presets can not be deleted" ),
+                                          i18n( "Error deleting preset" ) );
     }
 }
 
 void
 PlaybackConfig::eqRestorePreset() //SLOT
 {
-    QString mPresetSelected = eqPresets->currentText();
+    const QString mPresetSelected = eqPresets->currentText();
     if( !eqCfgRestorePreset( mPresetSelected ) )
     {    
         KMessageBox::detailedSorry( this, i18n( "Can not restore this preset" ),
@@ -288,6 +293,7 @@ PlaybackConfig::eqSavePreset() //SLOT
                                         i18n( "Error saving preset" ) );
         return;
     }
+
     QList<int> eqGains;
     foreach( QSlider* mSlider, mBands )
         eqGains << mSlider->value();
@@ -307,21 +313,23 @@ PlaybackConfig::eqCfgDeletePreset( QString & mPresetName )
 {
       // Idea is to delete the preset only if it is user preset:
       // present on user list & absent on default list
-      int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
-      int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
+      const int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
+      const int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
+
       if( idUsr >= 0 && idDef < 0 )
       {
           QStringList mNewNames = AmarokConfig::equalizerPresetsNames();
           QList<int> mNewValues = AmarokConfig::equalizerPresestValues();
           mNewNames.removeAt( idUsr );
+
           for( int it = 0; it <= 10; it++ )
-          {
               mNewValues.removeAt( 11*idUsr );
-          }
+
           AmarokConfig::setEqualizerPresetsNames( mNewNames );
           AmarokConfig::setEqualizerPresestValues( mNewValues );
           return true;
       }
+
       return false; 
 }
 
@@ -330,13 +338,15 @@ PlaybackConfig::eqCfgRestorePreset( QString mPresetName )
 {
       // Idea is to delete the preset if it found on both
       // user list and default list - delete from the latter if so
-      int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
-      int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
+      const int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
+      const int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
+
       if( idDef >= 0 )
       {
           QStringList mNewNames = AmarokConfig::equalizerPresetsNames();
           QList<int> mNewValues = AmarokConfig::equalizerPresestValues();
           mNewNames.removeAt( idUsr );
+
           for( int it = 0; it <= 10; it++ )
               mNewValues.removeAt( 11*idUsr );
 
@@ -344,6 +354,7 @@ PlaybackConfig::eqCfgRestorePreset( QString mPresetName )
           AmarokConfig::setEqualizerPresestValues( mNewValues );
           return true;
       }
+
       return false;
 }
 
@@ -352,7 +363,7 @@ PlaybackConfig::eqCfgSetPresetVal( QString & mPresetName, QList<int> & mPresetVa
 {
     // Idea is to insert new values into user list
     // if preset exist on the list - replace it values
-    int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
+    const int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
     QStringList mNewNames = AmarokConfig::equalizerPresetsNames();
     QList<int> mNewValues = AmarokConfig::equalizerPresestValues();
 
@@ -375,8 +386,8 @@ PlaybackConfig::eqCfgGetPresetVal( QString mPresetName )
 {
       // Idea is to return user preset with request name first
       // if not look into into default preset names
-      int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
-      int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
+      const int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
+      const int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
       
       QList<int> mPresetVal;
       if( idUsr >= 0 )
