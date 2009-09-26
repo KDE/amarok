@@ -158,12 +158,14 @@ CollectionScanner::readBatchIncrementalFile()
     QString temp = folderStream.readLine();
     while( !temp.isEmpty() )
     {
-        QFileInfo info( temp );
+        QStringList parts  = temp.split( "_AMAROKMTIME_" );
+        QString dir = parts[0];
+        QFileInfo info( dir );
         if( info.exists() && info.isDir() )
         {
             QDateTime lastMod = info.lastModified();
             if( lastMod > m_batchFolderTime )
-                m_folders << temp;
+                m_folders << dir;
         }
         //TODO: rpath substitution?
         temp = folderStream.readLine();
