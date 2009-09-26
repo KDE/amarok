@@ -802,7 +802,6 @@ CollectionTreeItemModelBase::handleNormalQueryResult( QueryMaker *qm, const Meta
     d->m_runningQueries.remove( parent );
     QModelIndex parentIndex;
     if( parent ) {
-        m_rootItem->dumpObjectTree();
         if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel, but will happen in Single!
             parentIndex = QModelIndex();
         else
@@ -880,7 +879,8 @@ CollectionTreeItemModelBase::populateChildren(const DataList & dataList, Collect
         //the remainging child items may be dirty, so refresh them
         foreach( CollectionTreeItem *item, parent->children() )
         {
-            ensureChildrenLoaded( item );
+            if( item->isDataItem() && item->data() && m_expandedItems.contains( item->data() ) )
+                ensureChildrenLoaded( item );
         }
         //add the new rows
         if( !dataToBeAdded.isEmpty() )
