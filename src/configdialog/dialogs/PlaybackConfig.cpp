@@ -87,10 +87,13 @@ PlaybackConfig::eqSetupUI()
     // Check if equalizer is supported - disable controls if not
     if( !The::engineController()->isEqSupported() )
     {
-        EqualizerGroupBox->setDisabled(true);
+        EqualizerGroupBox->setDisabled( true );
         EqualizerGroupBox->setTitle( i18n( "Equalizer not supported by Phonon") );
+        eqPresetsGroupBox->hide();
+        eqBandsGroupBox->hide();
         return;
     }
+
     // Assign slider items to vectors
     mBands.append( eqPreampSlider );
     mBands.append( eqBand0Slider );
