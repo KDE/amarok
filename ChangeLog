@@ -2,6 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
+
 VERSION 2.2
   CHANGES:
     * The MusicBrainz ID of a track is now scrobbled to Last.fm, if it exists.
@@ -9,6 +10,8 @@ VERSION 2.2
     * More collection scanning speedups.
 
   BUGFIXES:
+    * "Configure Amarok" dialog takes up less space, making it suitable for
+      for small screens.
     * Fix photos applet not working after resuming playback. (BR 206829)
     * Fix regression where the genre field in the Tag Dialog would show the
       composer of the track. (BR 208255)
@@ -18,6 +21,7 @@ VERSION 2.2
       Browser with nothing underneath it (or an empty "Unknown" album).
     * Fix some tracks' tags not being saved correctly to the database.
       (BR 202021)
+
 
 VERSION 2.2-rc1
   FEATURES:
