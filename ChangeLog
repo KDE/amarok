@@ -10,6 +10,8 @@ VERSION 2.2
     * More collection scanning speedups.
 
   BUGFIXES:
+    * Fixed regression where the last album to be scanned would not have its
+      cover picked up by the collection scanner.
     * Sorting by track length in the playlist is now possible. (BR 208689)
     * Fixed track bookmarks not immediately getting removed from progress bar 
       when they are deleted from the bookmark manager. 

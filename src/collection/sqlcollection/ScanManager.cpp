@@ -651,6 +651,9 @@ XmlParseJob::run()
                     emit incrementProgress();
                 }
 
+                if( localname == "dud" || localname == "compilation" )
+                    processor.doneWithImages();
+
                 if( localname == "itemcount" )
                 {
                     processor.doneWithImages();
@@ -764,7 +767,7 @@ XmlParseJob::run()
                 }
                 else if( localname == "image" )
                 {
-//                     debug() << "Parsing IMAGE:\n";
+                    //debug() << "Parsing IMAGE:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QList<QXmlStreamAttribute> thisList = attrs.toList();
 
@@ -782,6 +785,7 @@ XmlParseJob::run()
                         for( int i = 0; i < list.count(); i += 2 )
                             covers += qMakePair( list[i], list[i + 1] );
 
+                        //debug() << "Adding image with path " << attrs.value( "path" );
                         processor.addImage( attrs.value( "path" ).toString(), covers );
                     }
                 }
