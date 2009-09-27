@@ -17,6 +17,7 @@
 #include "TimecodeWriteCapability.h"
 
 #include "amarokurls/AmarokUrl.h"
+#include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/PlayUrlGenerator.h"
 #include "amarokurls/BookmarkModel.h"
 #include "Debug.h"
@@ -42,14 +43,9 @@ bool TimecodeWriteCapability::writeTimecode( int seconds, Meta::TrackPtr track )
     if( currtrack  == track )
     {
         debug() << " current track";
-        ProgressWidget* pw = ProgressWidget::instance();
-        if( pw )
-        {
-            debug() << "adding at seconds: " << seconds;
-            ProgressWidget::instance()->addBookmark( url.name(), seconds * 1000 );
-        }
-        else
-            debug() << "ProgressWidget is NULL";
+        debug() << "adding at seconds: " << seconds;
+        The::amarokUrlHandler()->paintNewTimecode( url.name(), seconds * 1000 );
+
     }
 
     url.saveToDb();
@@ -91,18 +87,12 @@ bool Meta::TimecodeWriteCapability::writeAutoTimecode( int seconds, Meta::TrackP
     if( currtrack == track )
     {
         debug() << " current track";
-        ProgressWidget* pw = ProgressWidget::instance();
-        if( pw )
+        QMap<QString, QString> args = url.args();
+        if ( args.keys().contains( "pos" ) )
         {
-            QMap<QString, QString> args = url.args();
-            if ( args.keys().contains( "pos" ) )
-            {
-                int pos = args.value( "pos" ).toInt();
-                ProgressWidget::instance()->addBookmark( url.name(), pos );
-            }
+            int pos = args.value( "pos" ).toInt();
+            The::amarokUrlHandler()->paintNewTimecode( url.name(), pos * 1000 );
         }
-        else
-            debug() << "ProgressWidget is NULL";
     }
 
     //change the name a little bit

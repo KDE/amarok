@@ -153,12 +153,43 @@ AmarokUrlHandler::bookmarkCurrentPlaylistView()
     BookmarkModel::instance()->reloadFromDb();
 }
 
-KIcon AmarokUrlHandler::iconForCommand( const QString &command )
+KIcon
+AmarokUrlHandler::iconForCommand( const QString &command )
 {
     if( m_registeredRunners.keys().contains( command ) )
         return m_registeredRunners.value( command )->icon();
 
     return KIcon( "unknown" );
+}
+
+void
+AmarokUrlHandler::registerForTimecodes( ProgressWidget * progressWidget )
+{
+    if( !m_progresWidgets.contains( progressWidget ) )
+        m_progresWidgets.append( progressWidget );
+}
+
+void
+AmarokUrlHandler::unregisterForTimecodes( ProgressWidget * progressWidget )
+{
+    m_progresWidgets.removeAll( progressWidget );
+}
+
+void AmarokUrlHandler::updateTimecodes()
+{
+        foreach( ProgressWidget * progressWidget, m_progresWidgets )
+    {
+        progressWidget->redrawBookmarks();
+    }
+}
+
+void
+AmarokUrlHandler::paintNewTimecode( const QString &name, int pos )
+{
+    foreach( ProgressWidget * progressWidget, m_progresWidgets )
+    {
+        progressWidget->addBookmark( name, pos );
+    }
 }
 
 
