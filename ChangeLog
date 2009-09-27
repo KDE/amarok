@@ -10,6 +10,7 @@ VERSION 2.2
     * More collection scanning speedups.
 
   BUGFIXES:
+    * Sorting by track length in the playlist is now possible. (BR 208689)
     * Fixed track bookmarks not immediately getting removed from progress bar 
       when they are deleted from the bookmark manager. 
     * Fixed new track bookmarks not getting shown in the progress bar
