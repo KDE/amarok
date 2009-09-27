@@ -25,7 +25,6 @@ PermanentUrlStatisticsProvider::PermanentUrlStatisticsProvider( const QString &p
         : StatisticsProvider()
         , m_permanentUrl( permanentUrl )
 {
-    DEBUG_BLOCK
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
     if( !sql )
     {
@@ -50,7 +49,6 @@ PermanentUrlStatisticsProvider::PermanentUrlStatisticsProvider( const QString &p
 void
 PermanentUrlStatisticsProvider::save()
 {
-    DEBUG_BLOCK
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
     if( !sql )
     {
