@@ -419,7 +419,7 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
         d->linkedTables |= Private::ARTISTS_TABLE;
         d->linkedTables |= Private::GENRE_TABLE;
     }
-    QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
+    QString like = likeCondition( filter, !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
 }
@@ -427,7 +427,7 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
 QueryMaker*
 ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
+    QString like = likeCondition( filter, !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
 }
@@ -781,8 +781,9 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
     if( anyBegin || anyEnd )
     {
         QString escaped = text;
-        escaped.replace( '/', "//" ).replace( '%', "/%" ).replace( '_', "/_" );
         escaped = escape( escaped );
+        //see comments in SqlQueryMaker::likeCondition
+        escaped.replace( '%', "/%" ).replace( '_', "/_" );
 
         QString ret = " LIKE ";
 
