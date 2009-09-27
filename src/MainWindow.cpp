@@ -727,11 +727,6 @@ MainWindow::createActions()
     connect(action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()));
     ac->addAction( "update_collection", action );
 
-    PERF_LOG( "MainWindow::createActions 7" )
-    action = new KAction( KIcon("collection-rescan-amarok"), i18n( "Rescan Collection" ), this );
-    connect(action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(startFullScan()));
-    ac->addAction( "rescan_collection", action );
-
     action = new KAction( this );
     ac->addAction( "prev", action );
     action->setIcon( KIcon("media-skip-backward-amarok") );
@@ -917,7 +912,6 @@ MainWindow::createMenus()
     m_toolsMenu->addAction( Amarok::actionCollection()->action("script_manager") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( Amarok::actionCollection()->action("update_collection") );
-    m_toolsMenu->addAction( Amarok::actionCollection()->action("rescan_collection") );
     //END Tools menu
 
     //BEGIN Settings menu

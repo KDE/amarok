@@ -12,7 +12,7 @@ VERSION 2.2
   BUGFIXES:
     * Correct a logic bug during incremental scanning that could cause the
       wrong tracks to be removed from the collection, requiring a full rescan.
-      Should fixe bug 208403 and likely multiple others. (BR 208403)
+      Should fix bug 208403 and likely multiple others. (BR 208403)
     * "Configure Amarok" dialog takes up less space, making it suitable for
       small screens.
     * Fixed photos applet not working after resuming playback. (BR 206829)
