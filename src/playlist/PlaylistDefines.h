@@ -47,6 +47,7 @@ enum Column
     GroupTracks,
     LastPlayed,
     Length,
+    LengthInSeconds,
     Mood,
     PlayCount,
     Rating,
@@ -98,6 +99,7 @@ static const QList<const char *> columnNames = ( QList<const char *>()
         << I18N_NOOP2( "'Group tracks' (number of tracks in group) playlist column name and token for playlist layouts", "Group tracks" )
         << I18N_NOOP2( "'Last played' (when was track last played) playlist column name and token for playlist layouts", "Last played" )
         << I18N_NOOP2( "'Length' (track length) playlist column name and token for playlist layouts", "Length" )
+        << I18N_NOOP2( "'Length' (track length) playlist column name and token for playlist layouts", "Length" )
         << I18N_NOOP2( "'Mood' playlist column name and token for playlist layouts", "Mood" )
         << I18N_NOOP2( "'Play count' playlist column name and token for playlist layouts", "Play count" )
         << I18N_NOOP2( "'Rating' playlist column name and token for playlist layouts", "Rating" )
@@ -134,6 +136,7 @@ static const QStringList internalColumnNames = ( QStringList()
         << "Group tracks"
         << "Last played"
         << "Length"
+        << "Length (seconds)"
         << "Mood"
         << "Play count"
         << "Rating"
@@ -161,6 +164,7 @@ static const QStringList sortableCategories = ( QStringList()
         << "File name"
         << "Genre"
         << "Last played"
+        << "Length (seconds)"
         << "Play count"
         << "Rating"
         << "Sample rate"
@@ -199,6 +203,7 @@ static const QStringList iconNames = ( QStringList()
         << "filename-group-length"
         << "filename-group-tracks"
         << "filename-last-played"
+        << "chronometer"
         << "chronometer"
         << ""
         << "amarok_playcount"
