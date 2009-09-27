@@ -20,6 +20,7 @@
 #include "dialogs/TagDialog.h"
 #include "PaletteHandler.h"
 #include "AmarokUrl.h"
+#include "AmarokUrlHandler.h"
 #include "BookmarkGroup.h"
 #include "playlist/PlaylistController.h"
 #include "SvgHandler.h"
@@ -160,6 +161,7 @@ void BookmarkTreeView::slotDelete()
         item->parent()->deleteChild( item );
     }
     BookmarkModel::instance()->reloadFromDb();
+    The::amarokUrlHandler()->updateTimecodes();
 }
 
 void BookmarkTreeView::slotRename()

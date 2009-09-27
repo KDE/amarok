@@ -32,12 +32,9 @@ namespace Amarok { class TimeSlider; }
 class ProgressWidget : public QWidget, public EngineObserver
 {
     Q_OBJECT
-
-    AMAROK_EXPORT static ProgressWidget *s_instance;
-
     public:
         ProgressWidget( QWidget* );
-        static ProgressWidget *instance() { return s_instance; }
+        ~ProgressWidget();
 
         virtual QSize sizeHint() const;
 

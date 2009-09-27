@@ -24,20 +24,18 @@
 #include "meta/MetaUtility.h"
 #include "meta/capabilities/TimecodeLoadCapability.h"
 #include "amarokurls/AmarokUrl.h"
+#include "amarokurls/AmarokUrlHandler.h"
 
 #include <QHBoxLayout>
 
 #include <KLocale>
 
-//Class ProgressWidget
-ProgressWidget *ProgressWidget::s_instance = 0;
 
 ProgressWidget::ProgressWidget( QWidget *parent )
     : QWidget( parent )
     , EngineObserver( The::engineController() )
     , m_timeLength( 0 )
 {
-    s_instance = this;
 
     QHBoxLayout *box = new QHBoxLayout( this );
     setLayout( box );
@@ -74,6 +72,13 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     connect( m_slider, SIGNAL( valueChanged( int ) ), SLOT( drawTimeDisplay( int ) ) );
 
     setBackgroundRole( QPalette::BrightText );
+
+    The::amarokUrlHandler()->registerForTimecodes( this );
+}
+
+ProgressWidget::~ProgressWidget()
+{
+    The::amarokUrlHandler()->unregisterForTimecodes( this );
 }
 
 void

@@ -40,8 +40,9 @@ public:
     virtual void mousePressEvent( QMouseEvent * )
     {
         AmarokConfig::setLeftTimeDisplayRemaining( !AmarokConfig::leftTimeDisplayRemaining() );
-
-        ProgressWidget::instance()->drawTimeDisplay( The::engineController()->trackPosition() * 1000 );
+        ProgressWidget * progressWidget = dynamic_cast<ProgressWidget *>( parentWidget() );
+        if( progressWidget )
+            progressWidget->drawTimeDisplay( The::engineController()->trackPosition() * 1000 );
     }
     
     virtual QSize sizeHint() const

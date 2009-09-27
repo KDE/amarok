@@ -21,6 +21,7 @@
 #include <config-amarok.h>
 
 #include "Amarok.h"
+#include "amarokurls/AmarokUrlHandler.h"
 #include "amarokconfig.h"
 #include "App.h"
 #include "BookmarkTriangle.h"
@@ -330,7 +331,7 @@ Amarok::TimeSlider::paintEvent( QPaintEvent * )
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
 {
     Amarok::Slider::resizeEvent( event );
-    ProgressWidget::instance()->redrawBookmarks();
+   The::amarokUrlHandler()->updateTimecodes();
 }
 
 void Amarok::TimeSlider::drawTriangle( const QString &name, int milliSeconds )

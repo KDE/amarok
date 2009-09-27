@@ -21,6 +21,8 @@
 
 #include "Debug.h"
 
+#include "collection/CollectionManager.h"
+#include "collection/SqlStorage.h"
 #include "MetaConstants.h"
 #include "ServiceSqlCollection.h"
 
@@ -417,7 +419,7 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
         d->linkedTables |= Private::ARTISTS_TABLE;
         d->linkedTables |= Private::GENRE_TABLE;
     }
-    QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
+    QString like = likeCondition( filter, !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
 }
@@ -425,7 +427,7 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
 QueryMaker*
 ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    QString like = likeCondition( escape( filter ), !matchBegin, !matchEnd );
+    QString like = likeCondition( filter, !matchBegin, !matchEnd );
     d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
     return this;
 }
@@ -594,7 +596,11 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
             break;
         }
     }
-        else
+    else if( d->returnDataPtrs )
+    {
+        emit newResultReady( m_collection->collectionId(), Meta::DataList() );
+    }
+    else
     {
         switch( d->queryType ) {
             case QueryMaker::Custom:
@@ -766,7 +772,11 @@ ServiceSqlQueryMaker::handleYears( const QStringList &result )
 QString
 ServiceSqlQueryMaker::escape( QString text ) const //krazy2:exclude=constref
 {
-    return text.replace( '\'', "''" );;
+    SqlStorage *storage = CollectionManager::instance()->sqlStorage();
+    if( storage )
+        return storage->escape( text );
+    else
+        return QString();
 }
 
 QString
@@ -775,8 +785,9 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
     if( anyBegin || anyEnd )
     {
         QString escaped = text;
-        escaped.replace( '/', "//" ).replace( '%', "/%" ).replace( '_', "/_" );
         escaped = escape( escaped );
+        //see comments in SqlQueryMaker::likeCondition
+        escaped.replace( '%', "/%" ).replace( '_', "/_" );
 
         QString ret = " LIKE ";
 
