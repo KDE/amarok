@@ -52,7 +52,9 @@ class ServiceSqlWorkerThread : public ThreadWeaver::Job
     protected:
         virtual void run()
         {
+            DEBUG_BLOCK
             QString query = m_queryMaker->query();
+            debug() << "Service query is " << query;
             QStringList result = m_queryMaker->runQuery( query );
             if( !m_aborted )
                 m_queryMaker->handleResult( result );
@@ -565,6 +567,7 @@ ServiceSqlQueryMaker::runQuery( const QString &query )
 void
 ServiceSqlQueryMaker::handleResult( const QStringList &result )
 {
+    DEBUG_BLOCK
     if( !result.isEmpty() )
     {
         switch( d->queryType ) {
@@ -596,7 +599,11 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
             break;
         }
     }
-        else
+    else if( d->returnDataPtrs )
+    {
+        emit newResultReady( m_collection->collectionId(), Meta::DataList() );
+    }
+    else
     {
         switch( d->queryType ) {
             case QueryMaker::Custom:
