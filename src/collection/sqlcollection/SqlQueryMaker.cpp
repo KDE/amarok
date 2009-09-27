@@ -387,16 +387,33 @@ SqlQueryMaker::addMatch( const DataPtr &data )
 QueryMaker*
 SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    QString like = likeCondition( filter, !matchBegin, !matchEnd );
-    d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+    //special casing for albumartist...
+    if( value == Meta::valAlbumArtist && filter.isEmpty() )
+    {
+        d->linkedTables |= Private::ALBUMARTIST_TAB;
+        d->queryFilter += QString( " %1 ( albums.artist IS NULL or albumartists.name = '') " ).arg( andOr() );
+    }
+    else
+    {
+        QString like = likeCondition( filter, !matchBegin, !matchEnd );
+        d->queryFilter += QString( " %1 %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+    }
     return this;
 }
 
 QueryMaker*
 SqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    QString like = likeCondition( filter, !matchBegin, !matchEnd );
-    d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+    if( value == Meta::valAlbumArtist && filter.isEmpty() )
+    {
+        d->linkedTables |= Private::ALBUMARTIST_TAB;
+        d->queryFilter += QString( " %1 NOT ( albums.artist IS NULL or albumartists.name = '') " ).arg( andOr() );
+    }
+    else
+    {
+        QString like = likeCondition( filter, !matchBegin, !matchEnd );
+        d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+    }
     return this;
 }
 
@@ -569,13 +586,65 @@ SqlQueryMaker::endAndOr()
 void
 SqlQueryMaker::linkTables()
 {
-    d->linkedTables |= Private::TAGS_TAB; //HACK!!!
-    //assuming that tracks is always included for now
+    switch( d->queryType )
+    {
+        case QueryMaker::Custom:
+        case QueryMaker::Track:
+        {
+            d->queryFrom += " tracks";
+            if( d->linkedTables & Private::TAGS_TAB )
+                d->linkedTables ^= Private::TAGS_TAB;
+            break;
+        }
+        case QueryMaker::Artist:
+        {
+            d->queryFrom += " artists";
+            if( d->linkedTables != Private::ARTIST_TAB )
+                d->queryFrom += " INNER JOIN tracks ON tracks.artist = artists.id";
+            if( d->linkedTables & Private::ARTIST_TAB )
+                d->linkedTables ^= Private::ARTIST_TAB;
+            break;
+        }
+        case QueryMaker::Album:
+        {
+            d->queryFrom += " albums";
+            if( d->linkedTables != Private::ALBUM_TAB && d->linkedTables != ( Private::ALBUM_TAB | Private::ALBUMARTIST_TAB ) )
+                d->queryFrom += " INNER JOIN tracks ON tracks.album = albums.id";
+            if( d->linkedTables & Private::ALBUM_TAB )
+                d->linkedTables ^= Private::ALBUM_TAB;
+            break;
+        }
+        case QueryMaker::Genre:
+        {
+            d->queryFrom += " genres";
+            if( d->linkedTables != Private::GENRE_TAB )
+                d->queryFrom += " INNER JOIN tracks ON tracks.genre = genres.id";
+            if( d->linkedTables & Private::GENRE_TAB )
+                d->linkedTables ^= Private::GENRE_TAB;
+            break;
+        }
+        case QueryMaker::Composer:
+        {
+            d->queryFrom += " composers";
+            if( d->linkedTables != Private::COMPOSER_TAB )
+                d->queryFrom += " INNER JOIN tracks ON tracks.composer = composers.id";
+            if( d->linkedTables & Private::COMPOSER_TAB )
+                d->linkedTables ^= Private::COMPOSER_TAB;
+            break;
+        }
+        case QueryMaker::Year:
+        {
+            d->queryFrom += " years";
+            if( d->linkedTables != Private::YEAR_TAB )
+                d->queryFrom += " INNER JOIN tracks on tracks.year = years.id";
+            if( d->linkedTables & Private::YEAR_TAB )
+                d->linkedTables ^= Private::YEAR_TAB;
+            break;
+        }
+    }
     if( !d->linkedTables )
         return;
 
-    if( d->linkedTables & Private::TAGS_TAB )
-        d->queryFrom += " tracks";
     if( d->linkedTables & Private::URLS_TAB )
         d->queryFrom += " INNER JOIN urls ON tracks.url = urls.id";
     if( d->linkedTables & Private::ARTIST_TAB )
@@ -929,6 +998,9 @@ SqlQueryMaker::nameForValue( qint64 value )
         case valUniqueId:
             d->linkedTables |= Private::URLS_TAB;
             return "urls.uniqueid";
+        case valAlbumArtist:
+            d->linkedTables |= Private::ALBUMARTIST_TAB;
+            return "albumartists.name";
         default:
             return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
     }
@@ -1000,10 +1072,6 @@ SqlQueryMaker::handleAlbums( const QStringList &result )
         QString name = iter.next();
         QString id = iter.next();
         QString artist = iter.next();
-        //HACK: The following is a HACK and should be fixed by fixing the HACK
-        //of always including the "tracks" table in queries in SqlQueryMaker
-        if( name.isEmpty() && id.isEmpty() && artist.isEmpty() )
-            continue;
         albums.append( reg->getAlbum( name, id.toInt(), artist.toInt() ) );
     }
     emitOrStoreProperResult( AlbumPtr, albums );
@@ -1063,8 +1131,14 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
     if( anyBegin || anyEnd )
     {
         QString escaped = text;
-        escaped.replace( '/', "//" ).replace( '%', "/%" ).replace( '_', "/_" );
         escaped = escape( escaped );
+        //as we are in pattern matching mode '_' and '%' have to be escaped
+        //mysql_real_excape_string does not do that for us
+        //see http://dev.mysql.com/doc/refman/5.0/en/string-syntax.html
+        //and http://dev.mysql.com/doc/refman/5.0/en/mysql-real-escape-string.html
+        //replace those characters after calling escape(), which calls the mysql
+        //function in turn, so that mysql does not escape the escape backslashes
+        escaped.replace( '%', "/%" ).replace( '_', "/_" );
 
         QString ret = " LIKE ";
 
