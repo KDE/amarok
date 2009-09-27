@@ -123,6 +123,16 @@ class AMAROK_EXPORT AlbumMemoryFilter : public StringMemoryFilter
         virtual QString value( const Meta::TrackPtr &track ) const;
 };
 
+class AMAROK_EXPORT AlbumArtistMemoryFilter : public StringMemoryFilter
+{
+    public:
+        AlbumArtistMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd );
+        virtual ~AlbumArtistMemoryFilter();
+
+    protected:
+        virtual QString value( const Meta::TrackPtr &track ) const;
+};
+
 class AMAROK_EXPORT GenreMemoryFilter : public StringMemoryFilter
 {
     public:

@@ -54,6 +54,10 @@ namespace FilterFactory
             {
                 result = new CommentMemoryFilter( filter, matchBegin, matchEnd );
             }
+            case Meta::valAlbumArtist:
+            {
+                result = new AlbumArtistMemoryFilter( filter, matchBegin, matchEnd );
+            }
         }
         return result;
     }
@@ -286,6 +290,25 @@ QString
 AlbumMemoryFilter::value( const Meta::TrackPtr &track ) const
 {
     return track->album()->name();
+}
+
+AlbumArtistMemoryFilter::AlbumArtistMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )
+    : StringMemoryFilter()
+{
+    setFilter( filter, matchBegin, matchEnd );
+}
+
+AlbumArtistMemoryFilter::~AlbumArtistMemoryFilter()
+{
+}
+
+QString
+AlbumArtistMemoryFilter::value( const Meta::TrackPtr &track ) const
+{
+    if( track->album() && track->album()->hasAlbumArtist() )
+        return track->album()->albumArtist()->name();
+    else
+        return QString();
 }
 
 GenreMemoryFilter::GenreMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )

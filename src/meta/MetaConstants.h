@@ -51,6 +51,8 @@ namespace Meta
     static const qint64 valTrackGainPeak= 1LL << 23;
     static const qint64 valAlbumGain    = 1LL << 24;
     static const qint64 valAlbumGainPeak= 1LL << 25;
+
+    static const qint64 valAlbumArtist  = 1LL << 26;
 }
 
 #endif
