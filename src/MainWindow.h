@@ -130,7 +130,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         virtual void metadataChanged( Meta::TrackPtr track );
 
     private slots:
-        void slotShrinkBrowsers( int index );
         void exportPlaylist() const;
         void slotShowBookmarkManager() const;
         void slotShowCoverManager() const;

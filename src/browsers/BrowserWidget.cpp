@@ -37,7 +37,6 @@ BrowserWidget::BrowserWidget( QWidget * parent )
 
     m_categoryList->setMinimumSize( 100, 300 );
 
-    connect( m_categoryList, SIGNAL( viewChanged() ), this, SLOT( categoryChanged() ) );
     connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
 
     setFrameShape( QFrame::NoFrame );

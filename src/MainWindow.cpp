@@ -295,8 +295,6 @@ MainWindow::init()
     m_corona->loadDefaultSetup(); // this method adds our containment to the scene
     PERF_LOG( "Loaded default contextScene" )
 
-    connect( m_browsers, SIGNAL( widgetActivated( int ) ), SLOT( slotShrinkBrowsers( int ) ) );
-
     setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browsersDock );
@@ -421,28 +419,6 @@ MainWindow::createPopupMenu()
     }
 
     return menu;
-}
-
-void
-MainWindow::slotShrinkBrowsers( int index )
-{
-    Q_UNUSED( index )
-    DEBUG_BLOCK
-
-    // Because QSplitter sucks and will not recompute sizes if a pane is shrunk and not hidden.
-   /* if( index == -1 )
-    {
-        m_splitterState = m_splitter->saveState();
-
-        QList<int> sizes;
-        sizes << m_splitter->sizes()[1] + m_splitter->sizes()[0]  // context view
-              << m_splitter->sizes()[2]; // playlist
-        m_splitter->setSizes( sizes );
-    }
-    else
-    {
-        m_splitter->restoreState( m_splitterState );
-    }*/
 }
 
 void
