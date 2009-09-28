@@ -300,12 +300,12 @@ EngineController::play() //SLOT
     DEBUG_BLOCK
 
     // FIXME: what should we do in buffering state?
-    if( m_media->state() == Phonon::PlayingState )
+    if( state() == Phonon::PlayingState )
         return;
 
     resetFadeout();
 
-    if ( m_media->state() == Phonon::PausedState )
+    if ( state() == Phonon::PausedState )
     {
         m_media->play();
     }
@@ -495,7 +495,7 @@ EngineController::stop( bool forceInstant ) //SLOT
 bool
 EngineController::isPaused() const
 {
-    return m_media->state() == Phonon::PausedState;
+    return state() == Phonon::PausedState;
 }
 
 void
@@ -504,14 +504,19 @@ EngineController::playPause() //SLOT
     DEBUG_BLOCK
 
     //this is used by the TrayIcon, PlayPauseAction and DBus
-    debug() << "PlayPause: phonon state" << m_media->state();
+    debug() << "PlayPause: EngineController state" << state();
 
-    if( m_media->state() == Phonon::PausedState ||
-        m_media->state() == Phonon::StoppedState ||
-        m_media->state() == Phonon::LoadingState )
-        play();
-    else
-        pause();
+    switch ( state() )
+    {
+        case Phonon::PausedState:
+        case Phonon::StoppedState:
+        case Phonon::LoadingState:
+            play();
+            break;
+        default:
+            pause();
+            break;
+    }
 }
 
 void
@@ -647,8 +652,8 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     if( track->playableUrl().isEmpty() )
         return;
 
-    if( m_media->state() == Phonon::PlayingState ||
-        m_media->state() == Phonon::BufferingState )
+    if( state() == Phonon::PlayingState ||
+        state() == Phonon::BufferingState )
     {
         m_media->clearQueue();
         if( track->playableUrl().isLocalFile() )
