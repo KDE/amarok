@@ -324,6 +324,7 @@ private:
     void playUrl( const KUrl &url, uint offset );
 
     void createFadeoutEffect();
+    void resetFadeout();
 
     static EngineController* s_instance;
     EngineController();
