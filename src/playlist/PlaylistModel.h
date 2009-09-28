@@ -161,7 +161,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         int m_activeRow;                 //! the row being played
 
         int m_totalLength;
-        size_t m_totalSize;
+        quint64 m_totalSize;
 
         QString m_playlistName;
         bool m_proposeOverwriting;
