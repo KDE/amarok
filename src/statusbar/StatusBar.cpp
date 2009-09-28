@@ -338,14 +338,16 @@ StatusBar::updateTotalPlaylistLength() //SLOT
 
     if( totalLength > 0 && trackCount > 0 )
     {
-        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2, %3)", trackCount, prettyTotalLength, prettyTotalSize ) );
+        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, prettyTotalLength ) );
         m_playlistLengthLabel->show();
+        m_playlistLengthLabel->setToolTip( i18n( "Total playlist size: %1", prettyTotalSize ) );
         m_separator->show();
     }
     else if( ( totalLength == 0 ) && ( trackCount > 0 ) )
     {
         m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
         m_playlistLengthLabel->show();
+        m_playlistLengthLabel->setToolTip( 0 );
         m_separator->show();
     }
     //Total Length will not be > 0 if trackCount is 0, so we can ignore it
