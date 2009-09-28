@@ -19,7 +19,7 @@ VERSION 2.2
     * Fixed new track bookmarks not getting shown in the progress bar
       immediately.
     * Fixed track bookmarks not getting correctly repainted when resizing 
-      progress bar (BR  207091)
+      progress bar. (BR 207091)
     * Correct a logic bug during incremental scanning that could cause the
       wrong tracks to be removed from the collection, requiring a full rescan.
       Should fix bug 208403 and likely multiple others. (BR 208403)
