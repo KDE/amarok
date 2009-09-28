@@ -336,7 +336,7 @@ JamendoXmlParser::readTrack()
 
     QString name;
     QString id;
-    int     length;
+    int     length = 0;
     QString trackNumber;
     QString genre;
 
