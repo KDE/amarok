@@ -31,6 +31,7 @@
 #include <QDateTime>
 #include <QDBusInterface>
 #include <QHash>
+#include <QSet>
 #include <QStringList>
 
 //Taglib includes..
@@ -67,6 +68,7 @@ private:
     };
 
     bool readBatchIncrementalFile();
+    bool readMtimeFile();
 
     void readDir( const QString& dir, QStringList& entries );
     void scanFiles( const QStringList& entries );
@@ -105,20 +107,23 @@ private:
     void readArgs();
     void displayHelp();
 
-    QString       m_collectionId;
-    QString       m_amarokPid;
-    bool          m_batch;
-    bool          m_importPlaylists;
-    QStringList   m_folders;
-    QDateTime     m_batchFolderTime;
-    bool          m_recursively;
-    bool          m_incremental;
-    bool          m_restart;
-    QString       m_saveLocation;
-    QString       m_logfile;
-    QString       m_rpath;
-    QStringList   m_scannedFolders;
-    QDBusInterface *m_amarokCollectionInterface;
+    QString                     m_collectionId;
+    QString                     m_amarokPid;
+    bool                        m_batch;
+    bool                        m_importPlaylists;
+    QStringList                 m_folders;
+    QHash<QString, uint>        m_mTimeMap;
+    QSet<QString>               m_scannedDirs;
+    QDateTime                   m_batchFolderTime;
+    bool                        m_recursively;
+    bool                        m_incremental;
+    bool                        m_restart;
+    QString                     m_saveLocation;
+    QString                     m_logfile;
+    QString                     m_rpath;
+    QString                     m_mtimeFile;
+    QStringList                 m_scannedFolders;
+    QDBusInterface             *m_amarokCollectionInterface;
 
     // Disable copy constructor and assignment
     CollectionScanner( const CollectionScanner& );

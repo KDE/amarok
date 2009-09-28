@@ -118,6 +118,13 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
         if( !success )
             return;
     }
+    
+    if( !m_mtimeFile.isEmpty() && m_incremental )
+    {
+        bool success = readMtimeFile();
+        if( !success )
+            return;
+    }
 
     QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
@@ -151,17 +158,51 @@ CollectionScanner::readBatchIncrementalFile()
     QString temp = folderStream.readLine();
     while( !temp.isEmpty() )
     {
-        QFileInfo info( temp );
+        QStringList parts  = temp.split( "_AMAROKMTIME_" );
+        QString dir = parts[0];
+        QFileInfo info( dir );
         if( info.exists() && info.isDir() )
         {
             QDateTime lastMod = info.lastModified();
             if( lastMod > m_batchFolderTime )
-                m_folders << temp;
+                m_folders << dir;
         }
         //TODO: rpath substitution?
         temp = folderStream.readLine();
     }
 
+    folderFile.close();
+    return true;
+}
+
+//Populate m_folders with folders, but also m_mtimes with mtimes
+bool
+CollectionScanner::readMtimeFile()
+{
+    QString filePath = m_mtimeFile;
+    if( !QFile::exists( filePath ) )
+        return false;
+
+    QFile folderFile( filePath );
+    if( !folderFile.open( QIODevice::ReadOnly ) )
+        return false;
+
+    m_folders.clear();
+
+    QTextStream folderStream;
+    folderStream.setDevice( &folderFile );
+
+    QString temp = folderStream.readLine();
+    while( !temp.isEmpty() )
+    {
+        QStringList parts  = temp.split( "_AMAROKMTIME_" );
+        m_folders << parts[0];
+        m_mTimeMap[parts[0]] = parts[1].toUInt();
+        temp = folderStream.readLine();
+    }
+
+    //qDebug() << "contents of folders: " << m_folders << endl;
+    //qDebug() << "contents of mtimemap: " << m_mTimeMap << endl;
     folderFile.close();
     return true;
 }
@@ -280,6 +321,31 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     // Linux specific, but this fits the 90% rule
     if( dir.startsWith( "/dev" ) || dir.startsWith( "/sys" ) || dir.startsWith( "/proc" ) )
         return;
+
+    //qDebug() << "Checking dir " << dir;
+    if( m_scannedDirs.contains( dir ) )
+    {
+        //qDebug() << "Not scanning dir because already scanned";
+        return;
+    }
+ 
+    m_scannedDirs << dir;
+
+    if( m_incremental && m_mTimeMap.contains( dir ) )
+    {
+        //qDebug() << "Found in mTimeMap!";
+        uint mtime = m_mTimeMap[dir];
+        QFileInfo info( dir );
+        //qDebug() << "info lastmodified: " << info.lastModified().toTime_t();
+        //qDebug() << "mtime = " << mtime;
+        if( !info.exists() || info.lastModified().toTime_t() == mtime )
+        {
+        //    qDebug() << "mtimes mean no scanning";
+            return;
+        }
+        //qDebug() << "Going ahead with the scan";
+    }
+
     QDir d( dir );
     m_scannedFolders << d.canonicalPath();
 
@@ -330,8 +396,8 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         else if( f.isFile() )
             entries.append( f.absoluteFilePath() );
     }
-    foreach( QString directory, recurseDirs )
-        readDir( directory, entries );
+    foreach( QString dir, recurseDirs )
+        readDir( dir, entries );
 }
 
 
@@ -818,6 +884,7 @@ CollectionScanner::readArgs()
     int argnum = 0;
     bool rpatharg = false;
     bool pidarg = false;
+    bool mtimearg = false;
     bool savelocationarg = false;
     bool collectionidarg = false;
     foreach( QString arg, argslist )
@@ -843,6 +910,8 @@ CollectionScanner::readArgs()
                     m_saveLocation = arg;
                 else if( collectionidarg )
                     m_collectionId = arg;
+                else if( mtimearg )
+                    m_mtimeFile = arg;
                 else
                     displayHelp();
 
@@ -850,6 +919,7 @@ CollectionScanner::readArgs()
                 pidarg = false;
                 savelocationarg = false;
                 collectionidarg = false;
+                mtimearg = false;
             }
             else
             {
@@ -872,6 +942,11 @@ CollectionScanner::readArgs()
                 else if( myarg == "collectionid" )
                 {
                     collectionidarg = true;
+                    longopt = true;
+                }
+                else if( myarg == "mtime-file" )
+                {
+                    mtimearg = true;
                     longopt = true;
                 }
                 else if( myarg == "recursive" )

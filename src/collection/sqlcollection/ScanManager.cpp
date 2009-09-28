@@ -157,10 +157,10 @@ void ScanManager::startIncrementalScan()
         foreach( const QString &dir, dirs )
             debug() << "    " << dir;
 
+        writeBatchIncrementalInfoFile();
         if( dirs.isEmpty() )
         {
             debug() << "Scanning nothing, return.";
-            writeBatchIncrementalInfoFile();
             return;
         }
 
@@ -188,7 +188,8 @@ void ScanManager::startIncrementalScan()
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
         if( pApp->isNonUniqueInstance() )
             *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
-        *m_scanner << dirs;
+        *m_scanner << "--mtime-file" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true )
+                + "amarokcollectionscanner_batchincrementalinput.data";
         m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
         connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
         connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished() ) );
@@ -295,9 +296,6 @@ ScanManager::slotFinished( )
         m_dbusHandler->deleteLater();
         m_dbusHandler = 0;
     }
-
-    if( m_isIncremental )
-        writeBatchIncrementalInfoFile();
 }
 
 void
@@ -384,6 +382,7 @@ ScanManager::getDirsToScan()
 {
     DEBUG_BLOCK
 
+    m_incrementalDirs.clear();
     const IdList list = MountPointManager::instance()->getMountedDeviceIds();
     QString deviceIds;
     foreach( int id, list )
@@ -410,12 +409,9 @@ ScanManager::getDirsToScan()
         QFileInfo info( folder );
         if( info.exists() )
         {
-            m_incrementalDirs << folder;
+            m_incrementalDirs << QString( folder + "_AMAROKMTIME_" + QString::number( mtime ) );
             if( info.lastModified().toTime_t() != mtime )
-            {
-                result << folder;
                 changedFolderIds << id;
-            }
         }
         else
         {
@@ -465,7 +461,7 @@ ScanManager::getDirsToScan()
         }
     }
     //debug() << "Scanning the following dirs: " << result;
-    return result;
+    return m_incrementalDirs;
 }
 
 void
@@ -569,7 +565,6 @@ ScanManager::writeBatchIncrementalInfoFile()
         stream << m_incrementalDirs.join( "\n" );
         incrementalFile.close();
     }
-    m_incrementalDirs.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

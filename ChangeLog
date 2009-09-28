@@ -3,6 +3,18 @@ Amarok ChangeLog
 (C) 2002-2009 the Amarok authors.
 
 
+VERSION 2.2.1
+  CHANGES:
+    * Collection scanner won't scan a directory more than once if passed in
+      multiple times. Should significantly speed up certain incremental
+      scanning cases.
+    * When doing a recursive incremental scan, the scanner will no longer scan
+      subdirectories of changed directories if those subdirectories' mtimes
+      have not changed, for extremely large speedups in some cases. For very
+      flat collection trees, the difference is basically between a small
+      incremental scan and a near full rescan.
+
+
 VERSION 2.2
   CHANGES:
     * The MusicBrainz ID of a track is now scrobbled to Last.fm, if it exists.
