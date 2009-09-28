@@ -85,7 +85,7 @@ PhotosApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Photos Applet");
     m_nbPhotos = config.readEntry( "NbPhotos", "10" ).toInt();
-    m_Animation = config.readEntry( "Animation", "Automatic" );
+    m_Animation = config.readEntry( "Animation", "Fading" );
     m_KeyWords = config.readEntry( "KeyWords", "" );
     
 

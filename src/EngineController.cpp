@@ -303,11 +303,7 @@ EngineController::play() //SLOT
     if( m_media->state() == Phonon::PlayingState )
         return;
 
-    if( m_fader )
-    {
-        m_fadeoutTimer->stop();
-        m_fader->setVolume(1.0);
-    }
+    resetFadeout();
 
     if ( m_media->state() == Phonon::PausedState )
     {
@@ -372,7 +368,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
 {
     DEBUG_BLOCK
 
-    slotStopFadeout();
+    m_media->stop();
+    resetFadeout();
 
     debug() << "URL: " << url.url();
 
@@ -472,7 +469,7 @@ EngineController::stop( bool forceInstant ) //SLOT
     }
 
     // Stop instantly if fadeout is already running, or the media is not playing
-    if( m_fader || m_media->state() != Phonon::PlayingState )
+    if( m_fadeoutTimer->isActive() || m_media->state() != Phonon::PlayingState )
     {
         forceInstant = true;
     }
@@ -951,9 +948,13 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         // we calculate the volume change ourselves, because m_preamp->setVolumeDecibel is
         // a little confused about minus signs
         m_preamp->setVolume( exp( gain * log10over20 ) );
+        m_preamp->fadeTo( exp( gain * log10over20 ), 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
     }
     else if( m_preamp )
-        m_preamp->setVolumeDecibel( 0.0 );
+    {
+        m_preamp->setVolume( 1.0 );
+        m_preamp->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
+    }
 
     trackChangedNotify( m_currentTrack );
     newTrackPlaying();
@@ -1131,13 +1132,18 @@ EngineController::slotStopFadeout() //SLOT
 {
     DEBUG_BLOCK
 
-    // Make sure the timer won't call this method again
-    m_fadeoutTimer->stop();
+    m_media->stop();
+    resetFadeout();
+}
 
+void
+EngineController::resetFadeout()
+{
+    m_fadeoutTimer->stop();
     if ( m_fader )
     {
-        m_media->stop();
         m_fader->setVolume( 1.0 );
+        m_fader->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
     }
 }
 
