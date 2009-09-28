@@ -91,7 +91,7 @@ X-KDE-Library=amarok_service_lastfm
 
 X-KDE-Amarok-authors=Shane King
 X-KDE-Amarok-email=kde@dontletsstart.com
-X-KDE-Amarok-framework-version=48
+X-KDE-Amarok-framework-version=49
 X-KDE-Amarok-name=LastFmService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100
