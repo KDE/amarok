@@ -10,6 +10,7 @@ VERSION 2.2
     * More collection scanning speedups.
 
   BUGFIXES:
+    * Replay gain works on the Phonon Xine backend.
     * Fadeout on track end works again.
     * Fixed regression where the last album to be scanned would not have its
       cover picked up by the collection scanner.

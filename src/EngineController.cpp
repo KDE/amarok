@@ -947,10 +947,14 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         debug() << "Using gain of" << gain << "with relative peak of" << peak;
         // we calculate the volume change ourselves, because m_preamp->setVolumeDecibel is
         // a little confused about minus signs
-        m_preamp->fadeTo( exp( gain * log10over20 ), 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine
+        m_preamp->setVolume( exp( gain * log10over20 ) );
+        m_preamp->fadeTo( exp( gain * log10over20 ), 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
     }
     else if( m_preamp )
-        m_preamp->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine
+    {
+        m_preamp->setVolume( 1.0 );
+        m_preamp->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
+    }
 
     trackChangedNotify( m_currentTrack );
     newTrackPlaying();
@@ -1137,7 +1141,10 @@ EngineController::resetFadeout()
 {
     m_fadeoutTimer->stop();
     if ( m_fader )
-        m_fader->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine
+    {
+        m_fader->setVolume( 1.0 );
+        m_fader->fadeTo( 1.0, 0 ); // HACK: we use fadeTo because setVolume is b0rked in Phonon Xine before r1028879
+    }
 }
 
 void EngineController::slotTitleChanged( int titleNumber )
