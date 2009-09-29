@@ -247,14 +247,11 @@ void StatusBar::engineNewTrackPlaying()
 
 void StatusBar::updateInfo( Meta::TrackPtr track )
 {
-    QString title = Amarok::prettyNowPlaying();
-
     // Check if we have any source info:
     Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
     if ( sic )
     {
-        QString source = sic->sourceName();
-        if ( !source.isEmpty() )
+        if ( !sic->sourceName().isEmpty() )
         {
             m_nowPlayingEmblem->setPixmap( sic->emblem() );
             m_nowPlayingEmblem->show();
@@ -266,7 +263,7 @@ void StatusBar::updateInfo( Meta::TrackPtr track )
     else
         m_nowPlayingEmblem->hide();
 
-    m_nowPlayingLabel->setText( i18n( "Playing: %1", title ) );
+    m_nowPlayingLabel->setText( i18n( "Playing: %1", Amarok::prettyNowPlaying() ) );
 }
 
 void StatusBar::longMessage( const QString & text, MessageType type )
