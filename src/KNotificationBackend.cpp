@@ -89,7 +89,10 @@ Amarok::KNotificationBackend::slotShowCurrentTrack()
             if( !album.isEmpty() )
                 text += i18n( " on <b>%1</b>", album );
             
-            KNotification::event( "trackChange", text, track->album()->image( 80 ) )->setTitle( i18n( "Now playing" ) );
+            KNotification::event( "trackChange", text, track->album()->image( 80 ) );
+
+            //BAAAD JUJU, this is KDE 4.3 only!
+            /*->setTitle( i18n( "Now playing" ) ); */
         }
     }
 }
