@@ -745,7 +745,7 @@ MainWindow::createActions()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
     connect( action, SIGNAL( triggered() ), SLOT( showHide() ) );
 
-    action = new KAction( i18n( "Jump to..." ), this );
+    action = new KAction( i18n( "Jump to" ), this );
     ac->addAction( "jumpTo", action );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_J ) );
     connect( action, SIGNAL( triggered() ), SLOT( slotJumpTo() ) );
