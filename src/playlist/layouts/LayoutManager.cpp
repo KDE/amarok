@@ -75,12 +75,29 @@ void LayoutManager::setActiveLayout( const QString &layout )
 
 void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
 {
+    DEBUG_BLOCK
     m_activeLayout = PREVIEW_LAYOUT;
     m_previewLayout = layout;
     emit( activeLayoutChanged() );
 
     //Change the grouping style to that of this layout.
     Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
+}
+
+void LayoutManager::updateCurrentLayout( const PlaylistLayout &layout )
+{
+    //Do not store preview layouts.
+    if ( m_activeLayout == PREVIEW_LAYOUT )
+        return;
+
+    //also, for now, do not save it this is a default layout
+    //TODO: copy on write for default alyouts
+
+    if ( !m_layouts.value( m_activeLayout ).isEditable() )
+        return;
+
+    addUserLayout( m_activeLayout, layout );
+    setActiveLayout( m_activeLayout );
 }
 
 PlaylistLayout LayoutManager::activeLayout() const

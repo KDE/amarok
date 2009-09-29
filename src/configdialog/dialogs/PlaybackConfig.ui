@@ -40,7 +40,7 @@
 &lt;p&gt;On exit, Amarok can slowly fade the volume of the playing track (which is configurable), or stop playback immediately.&lt;/p&gt;</string>
      </property>
      <property name="title">
-      <string>Fadeout on track end</string>
+      <string>Fadeout on stop</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">

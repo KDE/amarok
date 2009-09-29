@@ -63,6 +63,11 @@ class LayoutItemConfigRowElement
         qreal size() const;
 
         /**
+         * Set the percentage of the row that this element should take up.
+         */
+        void setSize( qreal size );
+
+        /**
          * Get whether text should be bold.
          * @return Bold or not.
          */
@@ -279,7 +284,7 @@ class PlaylistLayout
         void setInlineControls( bool inlineControls );
 
         QString groupBy();
-        void setGroupBy(const QString &);
+        void setGroupBy( const QString & );
 
     private:
         LayoutItemConfig m_head;
