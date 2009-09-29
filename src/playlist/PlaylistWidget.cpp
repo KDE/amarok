@@ -20,6 +20,7 @@
 #include "PlaylistWidget.h"
 
 #include "ActionClasses.h"
+#include "amarokconfig.h"
 #include "App.h"
 #include "Debug.h"
 #include "DynamicModel.h"
@@ -40,8 +41,6 @@
 #include <KToolBarSpacerAction>
 
 #include <QHBoxLayout>
-
-#include <amarokconfig.h>
 
 Playlist::Widget::Widget( QWidget* parent )
         : KVBox( parent )
@@ -102,8 +101,7 @@ Playlist::Widget::Widget( QWidget* parent )
     // to make sure that it's been constructed and the the actions registered
     Controller::instance();
 
-    {
-        //START Playlist toolbar
+    { // START Playlist toolbar
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setIconDimensions( 22 );
         plBar->setMovable( false );
@@ -149,13 +147,12 @@ Playlist::Widget::Widget( QWidget* parent )
             tbutton->setPopupMode( QToolButton::InstantPopup );
 
         plBar->addAction( new KToolBarSpacerAction( this ) );
-    } //END Playlist Toolbar
+    } // END Playlist Toolbar
 
     setFrameShape( QFrame::NoFrame );
 
     // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
     connect( The::playlistController(), SIGNAL( replacingPlaylist() ), this, SLOT( clearFilterIfActive() ) );
-
 }
 
 QSize
@@ -213,9 +210,10 @@ Playlist::Widget::slotSaveCurrentPlaylist()
 }
 
 void
-Playlist::Widget::showDynamicHint( bool enabled )
+Playlist::Widget::showDynamicHint( bool enabled ) // slot
 {
     DEBUG_BLOCK
+
     if( enabled )
         m_dynamicHintWidget->show();
     else
@@ -223,7 +221,7 @@ Playlist::Widget::showDynamicHint( bool enabled )
 }
 
 void
-Playlist::Widget::clearFilterIfActive()
+Playlist::Widget::clearFilterIfActive() // slot
 {
     DEBUG_BLOCK
     KConfigGroup config = Amarok::config( "Playlist Search" );
@@ -231,5 +229,4 @@ Playlist::Widget::clearFilterIfActive()
 
     if( filterActive )
         m_searchWidget->slotFilterClear();
-
 }
