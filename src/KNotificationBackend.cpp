@@ -21,6 +21,7 @@
 #include "EngineController.h"
 #include "meta/Meta.h"
 
+#include <kdeversion.h> // REMIND
 #include <KStandardDirs>
 
 #include <QTextDocument> // for Qt::escape()
@@ -75,6 +76,7 @@ Amarok::KNotificationBackend::slotShowCurrentTrack()
     if( track )
     {
         QString text;
+        KNotification* notify = new KNotification( "trackChange" );
 
         text = "<b>" + Qt::escape( track->prettyName() ) + "</b>";
         if( track->artist() )
@@ -88,12 +90,16 @@ Amarok::KNotificationBackend::slotShowCurrentTrack()
             const QString album = Qt::escape( track->album()->prettyName() );
             if( !album.isEmpty() )
                 text += i18n( " on <b>%1</b>", album );
-            
-            KNotification::event( "trackChange", text, track->album()->image( 80 ) );
 
-            //BAAAD JUJU, this is KDE 4.3 only!
-            /*->setTitle( i18n( "Now playing" ) ); */
+            notify->setPixmap( track->album()->imageWithBorder( 80 ) );
         }
+
+        #if KDE_IS_VERSION(4,3,0)
+            notify->setTitle( i18n( "Now playing" ) );
+        #endif
+
+        notify->setText( text );
+        notify->sendEvent();
     }
 }
 
