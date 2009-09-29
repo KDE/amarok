@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Allow changing of playlist layout item sizes using the inline editor.
     * Initial KNotify support.
 
   CHANGES:
