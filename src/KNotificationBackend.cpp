@@ -88,9 +88,9 @@ Amarok::KNotificationBackend::slotShowCurrentTrack()
             const QString album = Qt::escape( track->album()->prettyName() );
             if( !album.isEmpty() )
                 text += i18n( " on <b>%1</b>", album );
+            
+            KNotification::event( "trackChange", text, track->album()->image( 80 ) )->setTitle( i18n( "Now playing" ) );
         }
-
-        KNotification::event( "trackChange", text, track->album()->image( 80 ) )->setTitle( i18n( "Now playing" ) );
     }
 }
 
