@@ -51,6 +51,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistWidget.h"
+#include "playlist/ProgressiveSearchWidget.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h"
@@ -578,6 +579,14 @@ MainWindow::slotAddStream() //SLOT
 }
 
 void
+MainWindow::slotJumpTo() // slot
+{
+    DEBUG_BLOCK
+
+    m_playlistWidget->searchWidget()->focusInputLine();
+}
+
+void
 MainWindow::showScriptSelector() //SLOT
 {
     ScriptManager::instance()->show();
@@ -735,6 +744,11 @@ MainWindow::createActions()
     ac->addAction( "toggleMainWindow", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
     connect( action, SIGNAL( triggered() ), SLOT( showHide() ) );
+
+    action = new KAction( i18n( "Jump to..." ), this );
+    ac->addAction( "jumpTo", action );
+    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_J ) );
+    connect( action, SIGNAL( triggered() ), SLOT( slotJumpTo() ) );
 
     action = new KAction( i18n( "Show On Screen Display" ), this );
     ac->addAction( "showOsd", action );
@@ -977,7 +991,7 @@ MainWindow::resizeEvent( QResizeEvent * event )
         m_browsers->setMaximumWidth( 9999 );
         m_contextWidget->setMaximumWidth( 9999 );
         m_playlistWidget->setMaximumWidth( 9999 );
-    }     
+    }
 }
 
 QPoint
@@ -1171,7 +1185,7 @@ MainWindow::restoreLayout()
 
         debug() << "mainwindow width" <<  contentsRect().width();
         debug() << "totalWidgetWidth" <<  totalWidgetWidth;
-        
+
         const int widgetWidth = totalWidgetWidth / 3;
         const int leftover = totalWidgetWidth % 3;
 

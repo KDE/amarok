@@ -361,6 +361,12 @@ ProgressiveSearchWidget::keyPressEvent( QKeyEvent *event )
     }
 }
 
+void
+ProgressiveSearchWidget::focusInputLine()
+{
+    m_searchEdit->setFocus();
+}
+
 void ProgressiveSearchWidget::slotFilterClear()
 {
     m_searchEdit->setText( QString() );

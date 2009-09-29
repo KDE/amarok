@@ -18,6 +18,7 @@
 #define PROGRESSIVESEARCHWIDGET_H
 
 #include <KVBox>
+
 #include "LineEdit.h"
 
 class KAction;
@@ -58,6 +59,7 @@ public:
 
     QString currentFilter() { return m_searchEdit->text(); }
 
+    void focusInputLine();
     void setCurrentFilter( const QString filterExpr ) { m_searchEdit->setText( filterExpr ); }
 
     bool onlyMatches() { return m_showOnlyMatches; }

@@ -124,7 +124,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         //Reimplemented from EngineObserver
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
         virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
-        
+
         //Reimplemented from Meta::Observer
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::TrackPtr track );
@@ -136,6 +136,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
+        void slotJumpTo();
         void showScriptSelector();
 
     protected:
@@ -157,7 +158,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void init();
         void setRating( int n );
         void showBrowser( const int index );
-        
+
         /**
          * Try to restore saved layout, if this fails, try to use the default layout.
          */
