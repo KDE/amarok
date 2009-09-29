@@ -229,7 +229,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->show();
         m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
-        setCollapseHeight( 80 );
+        setCollapseHeight( 130 );
         debug() << "lyrics small sizehint height:" << m_lyrics->sizeHint().height();
         setCollapseOn();
     }
