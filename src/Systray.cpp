@@ -27,7 +27,6 @@
 #include "GlobalCurrentTrackActions.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
-#include "meta/MetaUtility.h" // for time formatting
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
@@ -46,7 +45,6 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
-#include <QTextDocument> // for Qt::escape()
 #include <QToolTip>
 
 namespace Amarok
@@ -120,25 +118,14 @@ Amarok::TrayIcon::setVisible( bool visible )
 void
 Amarok::TrayIcon::setupToolTip()
 {
+    QString tooltip;
+
+    tooltip = "<center>";
+    tooltip += Amarok::prettyNowPlaying();
+    tooltip += "</center>";
+
     if( m_track )
     {
-        QString tooltip;
-
-        QFontMetrics fm( QToolTip::font() );
-        const int elideWidth = 200;
-        tooltip = "<center><b>" + fm.elidedText( Qt::escape(m_track->prettyName()), Qt::ElideRight, elideWidth ) + "</b>";
-        if( m_track->artist() ) {
-            const QString artist = fm.elidedText( Qt::escape(m_track->artist()->prettyName()), Qt::ElideRight, elideWidth );
-            if( !artist.isEmpty() )
-                tooltip += i18n( " by <b>%1</b>", artist );
-        }
-        if( m_track->album() ) {
-            const QString album = fm.elidedText( Qt::escape(m_track->album()->prettyName()), Qt::ElideRight, elideWidth );
-            if( !album.isEmpty() )
-                tooltip += i18n( " on <b>%1</b>", album );
-        }
-        tooltip += "</center>";
-
         tooltip += "<table cellspacing='2' align='center' width='100%'>";
 
         // HACK: This block is inefficient and more or less stupid
@@ -198,12 +185,6 @@ Amarok::TrayIcon::setupToolTip()
         right << Amarok::verboseTimeSince( lastPlayed );
         left << i18n( "Last Played" );
 
-        if( m_trackLength > 0 )
-        {
-            right << Meta::secToPrettyTime( m_trackLength );
-            left << i18n( "Length" );
-        }
-
         // NOTE: It seems to be necessary to <center> each element indivdually
         const QString tableRow = "<tr><td align='right'>%1: </td><td align='left'>%2</td></tr>";
         for( int x = 0; x < left.count(); ++x )
@@ -212,12 +193,10 @@ Amarok::TrayIcon::setupToolTip()
 
         tooltip += "</table>";
 
-        setToolTip( tooltip );
+        
     }
-    else
-    {
-        setToolTip( i18n( "Amarok - No track playing" ) );
-    }
+
+    setToolTip( tooltip );
 }
 
 bool

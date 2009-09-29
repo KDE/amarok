@@ -24,7 +24,6 @@
 #include <kdeversion.h> // REMIND
 #include <KStandardDirs>
 
-#include <QTextDocument> // for Qt::escape()
 #include <QTimer>
 
 Amarok::KNotificationBackend::KNotificationBackend()
@@ -72,33 +71,18 @@ Amarok::KNotificationBackend::slotShowCurrentTrack()
     DEBUG_BLOCK
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-
     if( track )
     {
-        QString text;
         KNotification* notify = new KNotification( "trackChange" );
 
-        text = "<b>" + Qt::escape( track->prettyName() ) + "</b>";
-        if( track->artist() )
-        {
-            const QString artist = Qt::escape( track->artist()->prettyName() );
-            if( !artist.isEmpty() )
-                text += i18n( " by <b>%1</b>", artist );
-        }
         if( track->album() )
-        {
-            const QString album = Qt::escape( track->album()->prettyName() );
-            if( !album.isEmpty() )
-                text += i18n( " on <b>%1</b>", album );
-
             notify->setPixmap( track->album()->imageWithBorder( 80 ) );
-        }
 
         #if KDE_IS_VERSION(4,3,0)
-            notify->setTitle( i18n( "Now playing" ) );
+        notify->setTitle( i18n( "Now playing" ) );
         #endif
 
-        notify->setText( text );
+        notify->setText( Amarok::prettyNowPlaying() );
         notify->sendEvent();
     }
 }

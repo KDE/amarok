@@ -27,8 +27,6 @@
 
 #include "KJobProgressBar.h"
 
-#include <QTextDocument>
-
 #include <cmath>
 
 StatusBar* StatusBar::s_instance = 0;
@@ -249,39 +247,15 @@ void StatusBar::engineNewTrackPlaying()
 
 void StatusBar::updateInfo( Meta::TrackPtr track )
 {
-    QString title       = Qt::escape( track->name() );
-    QString prettyTitle = Qt::escape( track->prettyName() );
-    QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
-    QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
-    QString length      = Qt::escape( Meta::secToPrettyTime( track->length() ) );
+    QString title = Amarok::prettyNowPlaying();
 
-    // ugly because of translation requirements
-    if ( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
-        title = i18nc( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>", title, artist, album );
-
-    else if ( !title.isEmpty() && !artist.isEmpty() )
-        title = i18nc( "track by artist", "<b>%1</b> by <b>%2</b>", title, artist );
-
-    else if ( !album.isEmpty() )
-        // we try for pretty title as it may come out better
-        title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>", prettyTitle, album );
-    else
-        title = "<b>" + prettyTitle + "</b>";
-
-    if ( title.isEmpty() )
-        title = i18n( "Unknown track" );
-
-
-    // check if we have any source info:
-
+    // Check if we have any source info:
     Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
     if ( sic )
     {
-        //is the source defined
         QString source = sic->sourceName();
         if ( !source.isEmpty() )
         {
-            title += ' ' + i18n( "from" ) + " <b>" + source + "</b>";
             m_nowPlayingEmblem->setPixmap( sic->emblem() );
             m_nowPlayingEmblem->show();
         }
@@ -291,14 +265,6 @@ void StatusBar::updateInfo( Meta::TrackPtr track )
     }
     else
         m_nowPlayingEmblem->hide();
-
-    // don't show '-' or '?'
-    if ( length.length() > 1 )
-    {
-        title += " (";
-        title += length;
-        title += ')';
-    }
 
     m_nowPlayingLabel->setText( i18n( "Playing: %1", title ) );
 }

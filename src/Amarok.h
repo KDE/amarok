@@ -85,7 +85,7 @@ namespace Amarok
      */
     inline double computeScore( double oldScore, unsigned int playCount, double playedFraction )
     {
-        const int percentage = static_cast<int>(playedFraction * 100); 
+        const int percentage = static_cast<int>(playedFraction * 100);
         double newScore;
 
         if( playCount == 0 )
@@ -131,10 +131,10 @@ namespace Amarok
     AMAROK_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls ); // defined in PlaylistManager.cpp
 
     AMAROK_EXPORT QString verboseTimeSince( const QDateTime &datetime ); // defined in App.cpp
-
     AMAROK_EXPORT QString verboseTimeSince( uint time_t ); // defined in App.cpp
-
     AMAROK_EXPORT QString conciseTimeSince( uint time_t ); // defined in App.cpp
+
+    AMAROK_EXPORT QString prettyNowPlaying(); // defined in App.cpp
 
     /**
      * @return the LOWERCASE file extension without the preceding '.', or "" if there is none

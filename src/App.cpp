@@ -27,8 +27,10 @@
 #include "EngineController.h"
 #include "firstruntutorial/FirstRunTutorial.h"
 #include "KNotificationBackend.h"
-#include "Meta.h"
+#include "meta/capabilities/SourceInfoCapability.h"
 #include "meta/MetaConstants.h"
+#include "Meta.h"
+#include "MetaUtility.h"
 #include "MountPointManager.h"
 #include "Osd.h"
 #include "PlayerDBusHandler.h"
@@ -67,6 +69,7 @@
 #include <QFile>
 #include <KPixmapCache>
 #include <QStringList>
+#include <QTextDocument>                // for Qt::escape()
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QtDBus/QtDBus>
 
@@ -925,7 +928,57 @@ namespace Amarok
             return QString("%1\"").arg( ( timediff + 1 )/60 );
 
         return i18n( "0" );
+    }
 
+    QString prettyNowPlaying()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+
+        if( track )
+        {
+            QString title       = Qt::escape( track->name() );
+            QString prettyTitle = Qt::escape( track->prettyName() );
+            QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
+            QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
+            QString length      = Qt::escape( Meta::secToPrettyTime( track->length() ) );
+
+            // ugly because of translation requirements
+            if ( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
+                title = i18nc( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>", title, artist, album );
+
+            else if ( !title.isEmpty() && !artist.isEmpty() )
+                title = i18nc( "track by artist", "<b>%1</b> by <b>%2</b>", title, artist );
+
+            else if ( !album.isEmpty() )
+                // we try for pretty title as it may come out better
+                title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>", prettyTitle, album );
+            else
+                title = "<b>" + prettyTitle + "</b>";
+
+            if ( title.isEmpty() )
+                title = i18n( "Unknown track" );
+
+            Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
+            if ( sic )
+            {
+                QString source = sic->sourceName();
+                if ( !source.isEmpty() )
+                    title += ' ' + i18n( "from" ) + " <b>" + source + "</b>";
+
+                delete sic;
+            }
+
+            if ( length.length() > 1 )
+            {
+                title += " (";
+                title += length;
+                title += ')';
+            }
+
+            return title;
+        }
+        else
+            return i18n( "No track playing" );
     }
 
     QWidget *mainWindow()
@@ -1156,7 +1209,7 @@ namespace Amarok
 
         return urls;
     }
-}
+} // End namespace Amarok
 
 int App::newInstance()
 {
