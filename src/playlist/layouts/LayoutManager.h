@@ -62,6 +62,13 @@ public:
      * @param layout The layout to preview.
      */
     void setPreviewLayout( const PlaylistLayout &layout );
+
+    /**
+     * Replace the current layout with a new one and also store changes to disk.
+     * Also use the new layout as current.
+     * @param layout The updated layout.
+     */
+    void updateCurrentLayout( const PlaylistLayout &layout );
     
     /**
      * Get the layout with a specific name. Returns an empty layout if there is no layout matchig the name.

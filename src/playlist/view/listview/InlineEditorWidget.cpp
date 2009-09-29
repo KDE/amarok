@@ -359,7 +359,7 @@ void InlineEditorWidget::ratingValueChanged()
 QMap<int, QString> InlineEditorWidget::changedValues()
 {
     DEBUG_BLOCK
-    LayoutManager::instance()->setPreviewLayout( m_layout );
+    LayoutManager::instance()->updateCurrentLayout( m_layout );
     return m_changedValues;
 }
 
