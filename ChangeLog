@@ -8,7 +8,9 @@ VERSION 2.2.1
     * Allow changing of playlist layout item sizes using the inline editor.
     * Initial KNotify support.
     * Show total playlist file size in a tooltip when hovering over the total
-      play list time (BR 91640).
+      play list time. (BR 91640)
+    * Implemented Jump To. Press Ctrl+J to focus the playlist search.
+      (BR 92400)
 
   CHANGES:
     * Collection scanner won't scan a directory more than once if passed in
@@ -4115,4 +4117,4 @@ VERSION 0.1 - 0.11:
   tried no less then 4 different sound interfaces:
     mpg123, smpeg, alsaplayer, and finally aRts
 
-# vim: expandtab
+# vim: expandtab ts=2 sw=2
