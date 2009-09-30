@@ -293,38 +293,32 @@ Playlist::Controller::removeDeadAndDuplicates()
 {
     DEBUG_BLOCK
 
-    Meta::TrackList uniqueTracks = m_topmostModel->tracks().toSet().toList();
-    QSet<int> rowsToRemove;
+    QSet<Meta::TrackPtr> uniqueTracks = m_topmostModel->tracks().toSet();
+    QList<int> rowsToRemove;
 
     foreach( Meta::TrackPtr unique, uniqueTracks )
     {
+        QList<int> trackRows = m_topmostModel->allRowsForTrack( unique ).toList();
+
         if( unique->playableUrl().isLocalFile() && !QFile::exists( unique->playableUrl().path() ) )
         {
             // Track is Dead
             // TODO: Check remote files as well
-            rowsToRemove.unite( m_topmostModel->allRowsForTrack( unique ) );
+            rowsToRemove <<  trackRows;
         }
-        else
+        else if( trackRows.size() > 1 )
         {
-            QSet<int> trackRows = m_topmostModel->allRowsForTrack( unique );
-
-            if( trackRows.size() > 1 )
-            {
-                // Track is Duplicated
-                // Remove all rows except the first
-                for( QSet<int>::const_iterator it = ++trackRows.constBegin(); it != trackRows.constEnd(); ++it )
-                    rowsToRemove.insert( *it );
-            }
+            // Track is Duplicated
+            // Remove all rows except the first
+            for( QList<int>::const_iterator it = ++trackRows.constBegin(); it != trackRows.constEnd(); ++it )
+                rowsToRemove.push_back( *it );
         }
     }
 
     if( !rowsToRemove.empty() )
     {
-        // removeRows() requires a QList reference.
-        QList<int> removalRowList = rowsToRemove.toList();
-
         m_undoStack->beginMacro( "Remove dead and duplicate entries" );     // TODO: Internationalize?
-        removeRows( removalRowList );
+        removeRows( rowsToRemove );
         m_undoStack->endMacro();
     }
 }
