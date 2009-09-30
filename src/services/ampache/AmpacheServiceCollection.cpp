@@ -112,7 +112,7 @@ void AmpacheTrackForUrlWorker::parseTrack( const QString &xml )
     m_urlTrack->setId( m_urlTrackId );
 
     element = song.firstChildElement("time");
-    m_urlTrack->setLength( element.text().toInt() );
+    m_urlTrack->setLength( element.text().toInt() * 1000 );
 
     element = song.firstChildElement("track");
     m_urlTrack->setTrackNumber( element.text().toInt() );

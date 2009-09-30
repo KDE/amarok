@@ -93,9 +93,9 @@ AmpacheServiceQueryMaker::run()
     //TODO error handling
     if ( d->type == Private::NONE )
         return;
-    
+
     m_collection->acquireReadLock();
-    
+
     if (  d->type == Private::ARTIST )
         fetchArtists();
     else if( d->type == Private::ALBUM )
@@ -260,7 +260,7 @@ AmpacheServiceQueryMaker::fetchArtists()
 
         if ( !m_artistFilter.isEmpty() )
             request.addQueryItem( "filter", m_artistFilter );
-        
+
         if( m_dateFilter > 0 )
         {
             QDateTime from;
@@ -269,7 +269,7 @@ AmpacheServiceQueryMaker::fetchArtists()
             debug() << "added date filter with time:" <<  from.toString( Qt::ISODate );
         } else
             debug() << "m_dateFilter is:" << m_dateFilter;
-        
+
         request.addQueryItem( "limit", QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
         debug() << "Artist url: " << request.url();
 
@@ -309,7 +309,7 @@ AmpacheServiceQueryMaker::fetchAlbums()
 
         if( !m_parentArtistId.isEmpty() )
             request.addQueryItem( "filter", m_parentArtistId );
-            
+
         if( m_dateFilter > 0 )
         {
             QDateTime from;
@@ -374,7 +374,7 @@ AmpacheServiceQueryMaker::fetchTracks()
             request.addQueryItem( "add", from.toString( Qt::ISODate ) );
         }
         debug() << "request url: " << request.url();
-        
+
         request.addQueryItem( "limit", QString::number( d->maxsize ) );// set to 0 in reset() so fine to use uncondiationally
 
         m_storedTransferJob =  KIO::storedGet(  request, KIO::NoReload, KIO::HideProgressInfo );
@@ -402,18 +402,18 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement("root");
 
-    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning 
-    QDomElement error = root.firstChildElement("error"); 
+    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
+    QDomElement error = root.firstChildElement("error");
 
-    if ( !error.isNull() ) 
+    if ( !error.isNull() )
     {
         debug () << "Error getting Artist List" << error.text();
         AmpacheService *m_parentService = dynamic_cast< AmpacheService * >(m_collection->service());
-        if ( m_parentService == 0 ) 
+        if ( m_parentService == 0 )
         {
                 return;
         }
-        else 
+        else
         {
             m_parentService->reauthenticate();
         }
@@ -475,7 +475,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete(KJob * job)
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement( "root" );
 
-    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning 
+    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
     QDomElement error = root.firstChildElement("error");
 
     if ( !error.isNull() )
@@ -568,7 +568,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
     doc.setContent( m_storedTransferJob->data() );
     QDomElement root = doc.firstChildElement("root");
 
-    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning 
+    // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
     QDomElement error = root.firstChildElement("error");
 
     if ( !error.isNull() )
@@ -608,7 +608,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete(KJob * job)
         track->setUidUrl( element.text() );
 
         element = n.firstChildElement("time");
-        track->setLength( element.text().toInt() );
+        track->setLength( element.text().toInt() * 1000 );
 
         element = n.firstChildElement("track");
         track->setTrackNumber( element.text().toInt() );
@@ -668,11 +668,11 @@ AmpacheServiceQueryMaker::addFilter(qint64 value, const QString & filter, bool m
     return this;
 }
 
-QueryMaker* 
+QueryMaker*
 AmpacheServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare )
 {
     DEBUG_BLOCK
-    
+
     if( value == valCreateDate && compare == QueryMaker::GreaterThan )
     {
         debug() << "asking to filter based on added date";
