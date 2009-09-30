@@ -195,12 +195,6 @@ ProxyBase::idAt( const int row ) const
     return 0;
 }
 
-int
-ProxyBase::lastRowForTrack( const Meta::TrackPtr track ) const
-{
-    return rowFromSource( m_belowModel->lastRowForTrack( track ) );
-}
-
 QMimeData *
 ProxyBase::mimeData( const QModelIndexList &indexes ) const
 {

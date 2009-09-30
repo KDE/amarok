@@ -72,7 +72,6 @@ public:
     /**
      * Returns all rows in the current model which match a given track pointer.
      * @see firstRowForTrack
-     * @see lastRowForTrack
      * @param track the track.
      * @return collection of rows, empty if the track pointer is invalid.
      */
@@ -190,7 +189,6 @@ public:
 
     /**
      * Returns the first row in the current model which matches a given track pointer.
-     * @see lastRowForTrack
      * @see allRowsForTrack
      * @param track the track.
      * @return the row, -1 if the track pointer is invalid.
@@ -210,15 +208,6 @@ public:
      * @return the unique id, or 0 if the row does not exist.
      */
     virtual quint64 idAt( const int row ) const;
-
-    /**
-     * Returns the last row in the current model which matches a given track pointer.
-     * @see firstRowForTrack
-     * @see allRowsForTrack
-     * @param track the track.
-     * @return the row, -1 if the track pointer is invalid.
-     */
-    virtual int lastRowForTrack( const Meta::TrackPtr track ) const;
 
     /**
      * Returns an object that contains serialized items of data corresponding to the list

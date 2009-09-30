@@ -549,17 +549,6 @@ Playlist::Model::firstRowForTrack( const Meta::TrackPtr track ) const
     return -1;
 }
 
-int
-Playlist::Model::lastRowForTrack( const Meta::TrackPtr track ) const
-{
-    for( int row = m_items.size() - 1; row >= 0; row-- )
-    {
-        if ( m_items.at( row )->track() == track )
-            return row;
-    }
-    return -1;
-}
-
 QSet<int>
 Playlist::Model::allRowsForTrack( const Meta::TrackPtr track ) const
 {

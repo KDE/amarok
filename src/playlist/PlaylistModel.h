@@ -81,7 +81,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
         bool containsTrack( const Meta::TrackPtr track ) const;
         int firstRowForTrack( const Meta::TrackPtr track ) const;
-        int lastRowForTrack( const Meta::TrackPtr track ) const;
         QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
 
         Meta::TrackPtr trackAt( int row ) const;
