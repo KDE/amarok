@@ -34,6 +34,7 @@ static const int DB_VERSION = 7;
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
     , m_debugDatabaseContent( false )
+    , m_rescanNeeded( false )
 {
     m_debugDatabaseContent = KGlobal::config()->group( "SqlCollection" ).readEntry( "DebugDatabaseContent", false );
 }
@@ -68,32 +69,46 @@ DatabaseUpdater::update()
         {
             upgradeVersion1to2();
             dbVersion = 2;
+            m_rescanNeeded = true;
         }
         if( dbVersion == 2 && dbVersion < DB_VERSION )
         {
             upgradeVersion2to3();
             dbVersion = 3;
+            m_rescanNeeded = true;
         }
         if( dbVersion == 3 && dbVersion < DB_VERSION )
         {
             upgradeVersion3to4();
             dbVersion = 4;
+            m_rescanNeeded = true;
         }
         if( dbVersion == 4 && dbVersion < DB_VERSION )
         {
             upgradeVersion4to5();
             dbVersion = 5;
+            m_rescanNeeded = true;
         }
         if( dbVersion == 5 && dbVersion < DB_VERSION )
         {
             upgradeVersion5to6();
             dbVersion = 6;
+            m_rescanNeeded = true;
         }
         if( dbVersion == 6 && dbVersion < DB_VERSION )
         {
             upgradeVersion6to7();
             dbVersion = 7;
+            m_rescanNeeded = true;
         }
+        /*
+        if( dbVersion == X && dbVersion < DB_VERSION )
+        {
+            upgradeVersionXtoY();
+            dbVersion = Y;
+            //if rescan not needed, don't set m_rescanNeeded to true  
+        }
+        */
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->query( query );
 

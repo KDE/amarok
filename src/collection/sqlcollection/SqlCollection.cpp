@@ -66,17 +66,14 @@ SqlCollection::init()
         return;
     }
 
-    bool rescanRequired = false;
     if( m_updater->needsUpdate() )
-    {
-        rescanRequired = true;
         m_updater->update();
-    }
+
     QStringList result = query( "SELECT count(*) FROM tracks" );
     // If database version is updated, the collection needs to be rescanned.
     // Works also if the collection is empty for some other reason
     // (e.g. deleted collection.db)
-    if( rescanRequired || ( !result.isEmpty() && result.first().toInt() == 0 ) )
+    if( m_updater->rescanNeeded() || ( !result.isEmpty() && result.first().toInt() == 0 ) )
     {
         QTimer::singleShot( 0, m_scanManager, SLOT( startFullScan() ) );
     }

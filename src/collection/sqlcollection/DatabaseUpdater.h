@@ -29,6 +29,7 @@ public:
 
     bool needsUpdate() const;
     void update();
+    bool rescanNeeded() const { return m_rescanNeeded; }
 
     void createTemporaryTables();
     void prepareTemporaryTables(); //copies data into temporary tables
@@ -60,6 +61,7 @@ private:
 
     SqlCollection *m_collection;
     bool m_debugDatabaseContent;
+    bool m_rescanNeeded;
 
 };
 
