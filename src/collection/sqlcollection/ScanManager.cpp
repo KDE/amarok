@@ -106,9 +106,9 @@ ScanManager::startFullScan()
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 
-    QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchfullscan.xml" );
+    const QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchfullscan.xml" );
     debug() << "Checking for batch file in " << batchfileLocation;
-    
+
     if( !QFile::exists( batchfileLocation ) || !readBatchFile( batchfileLocation )  )
     {
         m_scanner = new AmarokProcess( this );
@@ -148,7 +148,7 @@ void ScanManager::startIncrementalScan()
         debug() << "Found batchfile in " << batchfileLocation;
 
     QStringList dirs;
-    
+
     if( !batchfileExists )
     {
         dirs = getDirsToScan();
@@ -194,7 +194,7 @@ void ScanManager::startIncrementalScan()
         connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
         connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished() ) );
         connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
-        m_scanner->start();        
+        m_scanner->start();
     }
 }
 
@@ -320,7 +320,7 @@ ScanManager::abort( const QString &reason )
         debug() << "Scan error: " << reason;
     else
         debug() << "Unknown error: reseting scan manager state";
-    
+
     slotReadReady(); //make sure that we read the complete buffer
 
     disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -328,7 +328,7 @@ ScanManager::abort( const QString &reason )
     disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
     m_scanner->deleteLater();
     m_scanner = 0;
-    
+
     stopParser();
 }
 
@@ -342,7 +342,7 @@ ScanManager::readBatchFile( QString fileLocation )
         debug() << "Couldn't open batchscan file, which does exist";
         return false;
     }
-    
+
     QByteArray data;
     data = file.readAll();
 
@@ -677,7 +677,7 @@ XmlParseJob::run()
                             compilationValue = QString::number( 1 );
                         else
                             compilationValue.clear();
-                    }                            
+                    }
 
                     QVariantMap data;
                     data.insert( Meta::Field::URL, attrs.value( "path" ).toString() );

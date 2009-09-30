@@ -29,7 +29,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 7;
+static const int DB_VERSION = 8;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -112,7 +112,7 @@ DatabaseUpdater::update()
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->query( query );
 
-        //NOTE: A rescan will be triggered automatically as a result of an upgrade.  Don't trigger it here, as the 
+        //NOTE: A rescan will be triggered automatically as a result of an upgrade.  Don't trigger it here, as the
         //collection isn't fully initialized and this will trigger a crash/assert.
     }
     else if( dbVersion > DB_VERSION )
@@ -281,7 +281,7 @@ DatabaseUpdater::upgradeVersion4to5()
     }
 
     columns.clear();
-    
+
     //text fields, not varchars
     columns.insert( "lyrics", vcpair( "lyrics", 0 ) );
     columns.insert( "podcastchannels", vcpair( "url", 0 ) );
@@ -298,7 +298,7 @@ DatabaseUpdater::upgradeVersion4to5()
 
     m_collection->query( "DROP INDEX url_podchannel ON podcastchannels" );
     m_collection->query( "DROP INDEX url_podepisode ON podcastepisodes" );
-    m_collection->query( "DROP INDEX localurl_podepisode ON podcastepisodes" );   
+    m_collection->query( "DROP INDEX localurl_podepisode ON podcastepisodes" );
     for( i = columns.begin(); i != columns.end(); ++i )
     {
         m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " BLOB" );
@@ -381,7 +381,7 @@ DatabaseUpdater::upgradeVersion6to7()
     }
 
     columns.clear();
- 
+
 }
 
 void
