@@ -188,6 +188,7 @@ public:
 
     /**
      * Returns the first row in the current model which matches a given track pointer.
+     * @see allRowsForTrack
      * @param track the track.
      * @return the row, -1 if the track pointer is invalid.
      */
