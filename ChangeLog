@@ -27,6 +27,10 @@ VERSION 2.2.1
       the lyrics applet
 
   BUGFIXES:
+    * Magnatune.com store: Fixed problematic use of external unzip command
+      for unpacking downloaded album zip files. (BR 138499)
+    * Magnatune.com store: Download high quality covers when purchasing or 
+      downloading albums. (BR: 176177)
     * Correctly modify the Lyrics Applet's title when its state changes
 
 VERSION 2.2

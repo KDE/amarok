@@ -22,7 +22,6 @@
 #include "statusbar/StatusBar.h"
 
 #include <KLocale>
-#include <kshell.h>
 #include <KZip>
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
@@ -36,14 +35,14 @@ MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
 
 }
 
-
 MagnatuneAlbumDownloader::~MagnatuneAlbumDownloader()
 {
     delete m_tempDir;
     m_tempDir = 0;
 }
 
-void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
+void
+MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 {
     DEBUG_BLOCK
 
@@ -74,7 +73,8 @@ void MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 
 
 
-void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
+void
+MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 {
     DEBUG_BLOCK
 
@@ -113,6 +113,7 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
     directory->copyTo( m_currentAlbumUnpackLocation );
 
     debug() <<  "done!";
+    
 
     if ( m_currentAlbum ) {
 
@@ -142,7 +143,8 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
 
 }
 
-void MagnatuneAlbumDownloader::albumDownloadAborted( )
+void
+MagnatuneAlbumDownloader::albumDownloadAborted( )
 {
     DEBUG_BLOCK
     
@@ -156,10 +158,4 @@ void MagnatuneAlbumDownloader::albumDownloadAborted( )
 
 }
 
-
 #include "MagnatuneAlbumDownloader.moc"
-
-
-
-
-
