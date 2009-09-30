@@ -25,9 +25,9 @@ VERSION 2.2.1
       flat collection trees, the difference is basically between a small
       incremental scan and a near full rescan.
     * Ask the user for confirmation before refetching lyrics and overwriting
-      cached ones
+      cached ones.
     * It is now possible to stop editing lyrics without saving changes in
-      the lyrics applet
+      the lyrics applet.
 
   BUGFIXES:
     * Track selection is now correctly preserved when using Dynamic Playlists.
@@ -37,8 +37,8 @@ VERSION 2.2.1
     * Magnatune.com store: Fixed problematic use of external unzip command
       for unpacking downloaded album zip files. (BR 138499)
     * Magnatune.com store: Download high quality covers when purchasing or 
-      downloading albums. (BR: 176177)
-    * Correctly modify the Lyrics Applet's title when its state changes
+      downloading albums. (BR 176177)
+    * Correctly modify the Lyrics Applet's title when its state changes.
 
 
 VERSION 2.2
