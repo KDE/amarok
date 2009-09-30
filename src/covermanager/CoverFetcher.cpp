@@ -251,11 +251,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     }
 
     if ( coverUrl.isEmpty() ) {
-        if (m_interactive)
-            The::statusBar()->longMessage( "Unable to find a cover for the specified song.", StatusBar::Sorry );
-        else
-            The::statusBar()->shortMessage( "Unable to find a cover for the specified song." );
-
+        finishNotFound();
         return;
     }
 
@@ -270,6 +266,7 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
     {
         debug() << "finishedImageFetch(): KIO::error(): " << job->error();
         m_errors += i18n( "The cover could not be retrieved." );
+        finishWithError( i18n( "The cover could not be retrieved." ), job );
         return;
     }
 
@@ -379,6 +376,23 @@ CoverFetcher::finishWithError( const QString &message, KJob *job )
         startFetch( m_albums.takeFirst() );
     }
 
+}
+
+void 
+CoverFetcher::finishNotFound()
+{
+    if( m_interactive )
+        The::statusBar()->longMessage( i18n( "Unable to find a cover for the specified song." ), StatusBar::Sorry );
+    else
+        The::statusBar()->shortMessage( i18n( "Unable to find a cover for %1.", m_albumPtr->name() ) );
+    
+    m_isFetching = false;
+
+    if( !m_interactive /*manual fetch*/ && !m_albums.isEmpty() )
+    {
+				debug() << "album not found, size of m_albums: " << m_albums.size();
+        startFetch( m_albums.takeFirst() );
+    }
 }
 
 #include "CoverFetcher.moc"

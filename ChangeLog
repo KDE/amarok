@@ -28,6 +28,8 @@ VERSION 2.2.1
       the lyrics applet
 
   BUGFIXES:
+    * Cover Manager no longer stops when one cover cannot be fetched. Patch by
+      Tycho Andersen <kdebugs@tycho.ws>. (BR 205032)
     * Magnatune.com store: Fixed problematic use of external unzip command
       for unpacking downloaded album zip files. (BR 138499)
     * Magnatune.com store: Download high quality covers when purchasing or 
