@@ -182,7 +182,7 @@ AudioCdTrack::setRating( int newRating )
     Q_UNUSED( newRating )
 }
 
-int
+qint64
 AudioCdTrack::length() const
 {
     return m_length;
@@ -309,7 +309,7 @@ AudioCdTrack::setTitle( const QString &title )
 }
 
 void
-AudioCdTrack::setLength( int length )
+AudioCdTrack::setLength( qint64 length )
 {
     m_length = length;
 }
@@ -434,7 +434,7 @@ AudioCdAlbum::image( int size )
          return m_coverSizeMap.value( size );
 
     QPixmap scaled = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-    
+
     m_coverSizeMap.insert( size, scaled );
     return scaled;
 }

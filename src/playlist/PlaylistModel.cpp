@@ -268,11 +268,11 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Length:
             {
-                return Meta::secToPrettyTime( m_items.at( row )->track()->length() );
+                return Meta::msToPrettyTime( m_items.at( row )->track()->length() );
             }
             case LengthInSeconds:
             {
-                return m_items.at( row )->track()->length();
+                return m_items.at( row )->track()->length() / 1000;
             }
             case Mood:
             {

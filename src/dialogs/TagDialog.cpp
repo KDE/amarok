@@ -63,7 +63,7 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     setCurrentTrack( m_tracks.first() );
 
     ui->setupUi( mainWidget() );
-    resize( minimumSizeHint() ); 
+    resize( minimumSizeHint() );
     init();
     startDataQuery();
 }
@@ -84,7 +84,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     //we changed the list after creating the iterator, so create a new iterator
     m_trackIterator = QListIterator<Meta::TrackPtr >( m_tracks );
     ui->setupUi( mainWidget() );
-    resize( minimumSizeHint() ); 
+    resize( minimumSizeHint() );
     init();
     startDataQuery();
 }
@@ -101,7 +101,7 @@ TagDialog::TagDialog( QueryMaker *qm )
     DEBUG_BLOCK
 
     ui->setupUi( mainWidget() );
-    resize( minimumSizeHint() ); 
+    resize( minimumSizeHint() );
     startDataQuery();
     qm->setQueryType( QueryMaker::Track );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
@@ -280,7 +280,7 @@ TagDialog::dataQueryDone()
     ui->kComboBox_genre->insertItems( 0, m_genres );
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
-   
+
 
     if( !m_queryMaker )  //track query complete or not necessary
     {
@@ -906,7 +906,7 @@ void TagDialog::readTags()
     const QString emptyLine = "<tr><td colspan=2></td></tr>";
 
     summaryText = "<table width=100%><tr><td width=50%><table>";
-    summaryText += body2cols.arg( i18n("Length:"), unknownSafe( Meta::secToPrettyTime( m_currentTrack->length() ) ) );
+    summaryText += body2cols.arg( i18n("Length:"), unknownSafe( Meta::msToPrettyTime( m_currentTrack->length() ) ) );
     summaryText += body2cols.arg( i18n("Bit rate:"), unknownSafe( Meta::prettyBitrate( m_currentTrack->bitrate() ) ) );
     summaryText += body2cols.arg( i18n("Sample rate:"), unknownSafe( QString::number( m_currentTrack->sampleRate() ) ) );
     summaryText += body2cols.arg( i18n("Size:"), unknownSafe( Meta::prettyFilesize( m_currentTrack->filesize() ) ) );

@@ -124,7 +124,7 @@ TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 
     : m_name( name )
     , m_start( start )
     , m_end( end )
-    , m_length( ( end - start ) / 1000 )
+    , m_length( end - start )
     , m_trackNumber( 0 )
     , m_discNumber( 0 )
     , m_comment( QString() )
@@ -132,10 +132,10 @@ TimecodeTrack::TimecodeTrack( const QString & name, const QString & url, qint64 
     , m_updatedFields( 0 )
 {
     DEBUG_BLOCK
-    m_displayUrl = url + ':' + QString::number( start / 1000 ) + '-' + QString::number( end / 1000 );
+    m_displayUrl = url + ':' + QString::number( start ) + '-' + QString::number( end );
 
     debug() << "created with length: " << m_length;
-    
+
 }
 
 TimecodeTrack::~ TimecodeTrack()
@@ -256,7 +256,7 @@ TimecodeTrack::filesize() const
     return -1;
 }
 
-int
+qint64
 TimecodeTrack::length() const
 {
     return m_length;
@@ -497,7 +497,7 @@ Meta::Capability *
 TimecodeTrack::createCapabilityInterface( Meta::Capability::Type type )
 {
     DEBUG_BLOCK
-    
+
     if ( type == Meta::Capability::BoundedPlayback )
         return new BoundedPlaybackCapabilityImpl( this );
     else if( type == Meta::Capability::Editable )

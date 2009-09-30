@@ -48,7 +48,7 @@ class SqlPodcastEpisode : public PodcastEpisode
         virtual bool isNew() const { return m_isNew; }
 
         //Track Methods
-        virtual int length() const;
+        virtual qint64 length() const;
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 

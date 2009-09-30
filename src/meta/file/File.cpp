@@ -430,10 +430,10 @@ Track::setDiscNumber( int newDiscNumber )
     }
 }
 
-int
+qint64
 Track::length() const
 {
-    int length = d->m_data.length;
+    qint64 length = d->m_data.length;
     if( length == -2 /*Undetermined*/ )
         length = 0;
     return length;

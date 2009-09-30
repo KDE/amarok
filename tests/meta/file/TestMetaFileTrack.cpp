@@ -346,7 +346,7 @@ void TestMetaFileTrack::testSetGetDiscNumber()
 
 void TestMetaFileTrack::testLength()
 {
-    QCOMPARE( track->length(), 12 );
+    QCOMPARE( track->length(), 12000LL );
 }
 
 void TestMetaFileTrack::testFilesize()

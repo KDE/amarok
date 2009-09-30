@@ -91,9 +91,9 @@ public:
      */
     Meta::TrackPtr currentTrack() const;
     /**
-     * @return the length of the current track
+     * @return the length of the current track in milliseconds
      */
-    int trackLength() const;
+    qint64 trackLength() const;
 
     /**
      * Used to enqueue a track before it starts to play, for gapless playback.
@@ -151,7 +151,7 @@ public:
     bool isEqSupported() const;
 
     /**
-     * kequalizer implementation for different backends may have different 
+     * kequalizer implementation for different backends may have different
      * gain scale. To properly display it we need to get a scale from effect
      *
      * @return maximum gain value for kequalizer parameters.
@@ -288,7 +288,7 @@ public slots:
     /**
      * Update equalizer status - enabled,disabled,set values
      *
-     * 
+     *
      */
     void eqUpdate();
 
@@ -310,7 +310,7 @@ private slots:
     /**
      *  Notify the engine that a new title has been reached when playing a cd. This
      *  is needed as a cd counts as basically one lone track, and we want to be able
-     *  to play something else once one track has finished 
+     *  to play something else once one track has finished
      */
     void slotTitleChanged( int titleNumber );
 

@@ -225,7 +225,7 @@ MediaDeviceTrack::setRating( int newRating )
     notifyObservers();
 }
 
-int
+qint64
 MediaDeviceTrack::length() const
 {
     return m_length;
@@ -681,7 +681,7 @@ MediaDeviceTrack::setTitle( const QString &title )
 }
 
 void
-MediaDeviceTrack::setLength( int length )
+MediaDeviceTrack::setLength( qint64 length )
 {
     m_length = length;
 }

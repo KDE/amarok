@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef METAMULTITRACK_H
 #define METAMULTITRACK_H
 
@@ -67,7 +67,7 @@ public:
     virtual void setScore( double newScore ) { m_currentTrack->setScore( newScore ); }
     virtual int rating() const { return m_currentTrack->rating(); }
     virtual void setRating( int newRating ) { m_currentTrack->setRating( newRating ); }
-    virtual int length() const { return m_currentTrack->length(); }
+    virtual qint64 length() const { return m_currentTrack->length(); }
     virtual int filesize() const { return m_currentTrack->filesize(); }
     virtual int sampleRate() const { return m_currentTrack->sampleRate(); }
     virtual int bitrate() const { return m_currentTrack->bitrate(); }
@@ -85,7 +85,7 @@ public:
 
 signals:
     void urlChanged( const KUrl &url );
-    
+
 private:
     PlaylistPtr m_playlist;
     TrackPtr m_currentTrack;

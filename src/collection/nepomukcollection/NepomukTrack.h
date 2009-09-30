@@ -70,7 +70,7 @@ class NepomukTrack : public Track
         virtual int rating() const;
         virtual void setRating ( int newRating );
 
-        virtual int length() const;
+        virtual qint64 length() const;
 
         virtual int filesize() const;
         virtual int sampleRate() const;

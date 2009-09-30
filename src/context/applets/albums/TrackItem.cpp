@@ -42,7 +42,7 @@ TrackItem::metadataChanged( Meta::TrackPtr track )
     int trackNumber = track->trackNumber();
     QString trackName = track->prettyName();
     QString trackArtist = track->artist()->prettyName();
-    QString trackTime = Meta::secToPrettyTime( track->length() );
+    QString trackTime = Meta::msToPrettyTime( track->length() );
     bool isCompilation = track->album()->isCompilation();
 
     QString text;

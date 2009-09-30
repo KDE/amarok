@@ -64,7 +64,7 @@ namespace ProxyCollection
             int playCount() const;
             void finishedPlaying( double playedFraction );
 
-            int length() const;
+            qint64 length() const;
             int filesize() const;
             int sampleRate() const;
             int bitrate() const;

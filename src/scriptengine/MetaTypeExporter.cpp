@@ -81,7 +81,7 @@ MetaTrackPrototype::type() const
     return track ? track->type() : QString();
 }
 
-int
+qint64
 MetaTrackPrototype::length() const
 {
     GET_TRACK

@@ -74,7 +74,7 @@ namespace LastFm
 
             virtual int discNumber() const;
 
-            virtual int length() const;
+            virtual qint64 length() const;
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
@@ -104,7 +104,7 @@ namespace LastFm
 
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
-            KUrl internalUrl() const; // this returns the private temporary url to the .mp3, DO NOT USE, 
+            KUrl internalUrl() const; // this returns the private temporary url to the .mp3, DO NOT USE,
                                    // if you are asking, it has already expired
             QString streamName() const; // A nice name for the stream..
         public slots:
@@ -115,7 +115,7 @@ namespace LastFm
         private slots:
             void slotResultReady();
             void slotWsReply();
-            
+
         signals:
             void skipTrack(); // needed for communication with multiplayablecapability
         private:

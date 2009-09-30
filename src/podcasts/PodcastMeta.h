@@ -149,7 +149,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual void setScore( double newScore ) { Q_UNUSED( newScore ); }
         virtual int rating() const { return 0; }
         virtual void setRating( int newRating ) { Q_UNUSED( newRating ); }
-        virtual int length() const { return m_duration; }
+        virtual qint64 length() const { return m_duration * 1000; }
         virtual int filesize() const { return m_fileSize; }
         virtual int sampleRate() const { return 0; }
         virtual int bitrate() const { return 0; }

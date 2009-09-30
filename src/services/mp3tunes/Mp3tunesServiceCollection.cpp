@@ -85,17 +85,17 @@ Mp3tunesServiceCollection::trackForUrl( const KUrl & url )
         return Meta::TrackPtr(); // It's not an mp3tunes track
     }
     debug() << "filekey: " << filekey;
-    
+
     Meta::Mp3TunesTrack * serviceTrack = new Meta::Mp3TunesTrack( QString() );
     serviceTrack->setUidUrl( url.url() );
-    
+
     Mp3tunesTrackFromFileKeyFetcher* trackFetcher = new Mp3tunesTrackFromFileKeyFetcher( m_locker, filekey );
     m_tracksFetching[filekey] = serviceTrack;
     connect( trackFetcher, SIGNAL( trackFetched( Mp3tunesLockerTrack& ) ), this, SLOT( trackForUrlComplete( Mp3tunesLockerTrack& ) ) );
     //debug() << "Connection complete. Enqueueing..";
     ThreadWeaver::Weaver::instance()->enqueue( trackFetcher );
     //debug() << "m_trackFetcher queue";
-    
+
     return Meta::TrackPtr( serviceTrack );
 }
 
@@ -110,14 +110,14 @@ void Mp3tunesServiceCollection::trackForUrlComplete( Mp3tunesLockerTrack &track 
         return;
     }
     Meta::Mp3TunesTrack * serviceTrack = m_tracksFetching.take( filekey );
-    
+
     //Building a Meta::Track
     QString title = track.trackTitle().isEmpty() ? "Unknown" :  track.trackTitle();
     serviceTrack->setTitle( title );
     serviceTrack->setId( track.trackId() );
     serviceTrack->setUidUrl( track.playUrl() ); //was: setUrl
     serviceTrack->setDownloadableUrl( track.downloadUrl() );
-    serviceTrack->setLength( (int)( track.trackLength() / 1000 ) );
+    serviceTrack->setLength( track.trackLength() );
     serviceTrack->setTrackNumber( track.trackNumber() );
     serviceTrack->setYear( QString::number( track.albumYear() ) );
 

@@ -88,7 +88,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual int rating() const;
         virtual void setRating ( int newRating );
 
-        virtual int length() const;
+        virtual qint64 length() const;
 
         void setFileSize( int newFileSize );
         virtual int filesize() const;
@@ -141,7 +141,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
 
         void setType( const QString & type );
 
-        void setLength( int length );
+        void setLength( qint64 length );
         void setPlayableUrl( const KUrl &url) { m_playableUrl = url; }
 
     private:
@@ -162,7 +162,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         QString m_type;
         int m_bitrate;
         int m_filesize;
-        int m_length;
+        qint64 m_length;
         int m_discNumber;
         int m_samplerate;
         int m_trackNumber;

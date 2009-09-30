@@ -49,7 +49,7 @@ class IphoneOsReadCapability : public ReadCapability
         virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
-        virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track );
+        virtual qint64  libGetLength( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track );

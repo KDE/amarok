@@ -97,7 +97,7 @@ IphoneOsReadCapability::libGetYear( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->metaForTrack(track)->year()->name().toInt();
 }
 
-int
+qint64
 IphoneOsReadCapability::libGetLength( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->metaForTrack(track)->length();

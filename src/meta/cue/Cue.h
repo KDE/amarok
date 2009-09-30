@@ -145,7 +145,7 @@ public:
     virtual QString sortableName() const;
 
     virtual int trackNumber() const;
-    virtual int length() const;
+    virtual qint64 length() const;
 
     virtual Meta::AlbumPtr album() const;
     virtual Meta::ArtistPtr artist() const;
@@ -162,7 +162,7 @@ public:
 private:
     typedef KSharedPtr<Track> TrackPtr;
 
-    bool load ( int mediaLength );
+    bool load ( qint64 mediaLength );
     void notify() const;
 
     KUrl m_cuefile;

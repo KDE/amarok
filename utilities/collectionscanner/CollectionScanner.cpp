@@ -118,7 +118,7 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
         if( !success )
             return;
     }
-    
+
     if( !m_mtimeFile.isEmpty() && m_incremental )
     {
         bool success = readMtimeFile();
@@ -328,7 +328,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         //qDebug() << "Not scanning dir because already scanned";
         return;
     }
- 
+
     m_scannedDirs << dir;
 
     if( m_incremental && m_mTimeMap.contains( dir ) )
@@ -780,12 +780,12 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     static const int Undetermined = -2;
 
     int bitrate = Undetermined;
-    int length = Undetermined;
+    qint64 length = Undetermined;
     int samplerate = Undetermined;
     if( fileref.audioProperties() )
     {
         bitrate = fileref.audioProperties()->bitrate();
-        length = fileref.audioProperties()->length();
+        length = fileref.audioProperties()->length() * 1000;
         samplerate = fileref.audioProperties()->sampleRate();
     }
     if ( bitrate == Undetermined || length == Undetermined || samplerate == Undetermined )

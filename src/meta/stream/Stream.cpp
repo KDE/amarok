@@ -232,7 +232,7 @@ Track::setDiscNumber( int newDiscNumber )
     Q_UNUSED( newDiscNumber )
 }
 
-int
+qint64
 Track::length() const
 {
     //TODO

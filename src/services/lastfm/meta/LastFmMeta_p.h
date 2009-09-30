@@ -60,7 +60,7 @@ class Track::Private : public QObject
         QString artist;
         QString album;
         QString track;
-        int length;
+        qint64 length;
 
         //not sure what these are for but they exist in the LastFmBundle
         QString albumUrl;
@@ -107,7 +107,7 @@ class Track::Private : public QObject
             artist = trackInfo.artist();
             album = trackInfo.album();
             track = trackInfo.title();
-            length = trackInfo.duration();
+            length = trackInfo.duration() * 1000;
             trackPath = trackInfo.url();
 
             // need to reset other items
@@ -192,7 +192,7 @@ class Track::Private : public QObject
             }
             notifyObservers();
         }
-        
+
     private:
         QNetworkReply* m_userFetch;
 

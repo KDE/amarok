@@ -91,7 +91,7 @@ IpodReadCapability::libGetYear( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libGetYear( track );
 }
 
-int
+qint64
 IpodReadCapability::libGetLength( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetLength( track );

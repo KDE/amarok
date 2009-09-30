@@ -193,7 +193,7 @@ Amarok::TrayIcon::setupToolTip()
 
         tooltip += "</table>";
 
-        
+
     }
 
     setToolTip( tooltip );
@@ -264,7 +264,7 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
     {
         case Phonon::PlayingState:
             m_track = The::engineController()->currentTrack();
-            m_trackLength = m_track ? m_track->length() : 0;
+            m_trackLength = (m_track ? m_track->length() : 0 ) / 1000;
 
             paintIcon( 0 );
             setupMenu();
@@ -419,9 +419,9 @@ Amarok::TrayIcon::setupMenu()
 {
     foreach( QAction* action, m_extraActions )
         contextMenu()->removeAction( action );
-    
+
     contextMenu()->removeAction( m_separator );
-    
+
     delete m_separator;
 
     if( !m_track )

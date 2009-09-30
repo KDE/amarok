@@ -77,10 +77,10 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *regi
             .literal().toInt();
     m_score = data[ collection->getNameForValue( Meta::valScore ) ]
             .literal().toInt();
-    
+
     // Soprano gives a warning when they are empty
     Soprano::LiteralValue litval;
-    
+
     litval = data[ collection->getNameForValue( Meta::valFirstPlayed ) ]
             .literal();
     if ( litval.isDateTime() )
@@ -90,12 +90,12 @@ NepomukTrack::NepomukTrack( NepomukCollection *collection, NepomukRegistry *regi
             .literal();
     if ( litval.isDateTime() )
         m_lastPlayed = litval.toDateTime();
-    
+
     litval = data[ collection->getNameForValue( Meta::valCreateDate ) ]
             .literal();
     if ( litval.isDateTime() )
         m_createDate = litval.toDateTime();
- 
+
     // assuming that Xesam content created is a DateTime, we only want the year
     litval = data[ collection->getNameForValue( Meta::valYear ) ].literal();
     if ( litval.isDateTime() )
@@ -208,13 +208,13 @@ NepomukTrack::setScore( double newScore )
     // multiply them by 100 (hope that is enough)
 
     m_lastWrote = QTime::currentTime();
-    
+
     debug() << "setscore " << endl;
     int tmpScore =  int( newScore*100 );
     m_nepores.setProperty( QUrl( m_collection->getUrlForValue( Meta::valScore ) ), Nepomuk::Variant( tmpScore ) );
     m_score = newScore;
     notifyObservers();
-    
+
 }
 
 int
@@ -227,16 +227,16 @@ void
 NepomukTrack::setRating( int newRating )
 {
     m_lastWrote = QTime::currentTime();
-    
+
     m_nepores.setRating( newRating );
     m_rating = newRating;
     notifyObservers();
 }
 
-int
+qint64
 NepomukTrack::length() const
 {
-    return m_length;
+    return m_length * 1000;
 }
 
 int
@@ -293,7 +293,7 @@ NepomukTrack::type() const
     return m_type;
 }
 
-void 
+void
 NepomukTrack::finishedPlaying( double playedFraction )
 {
     debug() << "finshedPlaying " << endl;
@@ -347,7 +347,7 @@ NepomukTrack::resourceUri() const
 void
 NepomukTrack::valueChangedInNepomuk( qint64 value, const Soprano::LiteralValue &literal )
 {
-    
+
     // TODO: find a better way to ignore own writes
     // ignore if last own write is less than 3 seconds ago
     // the change will be our own

@@ -134,7 +134,7 @@ void TestMetaTrack::testSetAndGetRating()
 
 void TestMetaTrack::testLength()
 {
-    QCOMPARE( m_testTrack1->length(), 10800 );
+    QCOMPARE( m_testTrack1->length(), 10800000LL );
 }
 
 void TestMetaTrack::testFilesize()

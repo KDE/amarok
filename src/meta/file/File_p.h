@@ -81,7 +81,7 @@ struct MetaData
     QDateTime created;
     int discNumber;
     int trackNumber;
-    int length;
+    qint64 length;
     int fileSize;
     int sampleRate;
     int bitRate;
@@ -182,7 +182,7 @@ void Track::Private::readMetaData()
         {
             m_data.bitRate = fileRef.audioProperties()->bitrate();
             m_data.sampleRate = fileRef.audioProperties()->sampleRate();
-            m_data.length = fileRef.audioProperties()->length();
+            m_data.length = fileRef.audioProperties()->length() * 1000;
         }
 
         Meta::ReplayGainTagMap map = Meta::readReplayGainTags( fileRef );

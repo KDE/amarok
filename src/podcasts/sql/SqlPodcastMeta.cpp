@@ -155,12 +155,12 @@ Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 {
 }
 
-int
+qint64
 Meta::SqlPodcastEpisode::length() const
 {
     //if downloaded get the duration from the file, else use the value read from the feed
     if( m_localUrl.isEmpty() )
-        return m_duration;
+        return m_duration * 1000;
 
     int length = -2;
 
@@ -175,7 +175,7 @@ Meta::SqlPodcastEpisode::length() const
 
     if( !fileRef.isNull() )
         if( fileRef.audioProperties() )
-            length = fileRef.audioProperties()->length();
+            length = fileRef.audioProperties()->length() * 1000;
 
     if( length == -2 /*Undetermined*/ )
         return 0;

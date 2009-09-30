@@ -218,16 +218,16 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
 }
 
 void
-ProgressWidget::engineTrackLengthChanged( long seconds )
+ProgressWidget::engineTrackLengthChanged( qint64 milliseconds )
 {
     DEBUG_BLOCK
 
-    debug() << "new length: " << seconds;
+    debug() << "new length: " << milliseconds;
     m_slider->setMinimum( 0 );
-    m_slider->setMaximum( seconds * 1000 );
-    m_slider->setEnabled( seconds > 0 );
+    m_slider->setMaximum( milliseconds );
+    m_slider->setEnabled( milliseconds > 0 );
     debug() << "slider enabled!";
-    m_timeLength = Meta::secToPrettyTime( seconds ).length()+1; // account for - in remaining time
+    m_timeLength = Meta::msToPrettyTime( milliseconds ).length()+1; // account for - in remaining time
 
     //get the urlid of the current track as the engine might stop and start several times
     //when skipping lst.fm tracks, so we need to know if we are still on the same track...

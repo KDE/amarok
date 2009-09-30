@@ -130,12 +130,11 @@ void Track::notify() const
     }
 }
 
-void Track::engineTrackPositionChanged ( long position, bool userSeek )
+void Track::engineTrackPositionChanged( long position, bool userSeek )
 {
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if ( !currentTrack || currentTrack->playableUrl().url() != MetaFile::Track::playableUrl().url() )
         return;
-    position /= 1000;
 //     debug() << "userSeek: " << userSeek << " pos: " << position << " lastseekPos: " << m_lastSeekPos;
     if ( userSeek || position > m_lastSeekPos )
     {
@@ -144,7 +143,7 @@ void Track::engineTrackPositionChanged ( long position, bool userSeek )
         {
             --it;
 //             debug() << "Checking " << position << " against pos " << it.key()/1000 << " title " << (*it).getTitle() << endl;
-            if ( it.key() /1000 <= position )
+            if ( it.key() <= position )
             {
 //                 debug() << "\tcurr: " << currentTrack->artist()->name() << " " << currentTrack->album()->name() << " " <<  currentTrack->name() << " "<< currentTrack->trackNumber();
 //                 debug() << "\titer: " << (*it).getArtist() << " " << (*it).getAlbum() << " " << (*it).getTitle()<< " " << (*it).getTrackNumber();
@@ -163,7 +162,7 @@ void Track::engineTrackPositionChanged ( long position, bool userSeek )
                     if ( length == -1 ) // need to calculate
                     {
                         ++it;
-                        long nextKey = it == m_cueitems.end() ? currentTrack->length() * 1000 : it.key();
+                        long nextKey = it == m_cueitems.end() ? currentTrack->length() : it.key();
                         --it;
                         length = qMax ( nextKey - it.key(), 0L );
                     }
@@ -183,7 +182,7 @@ void Track::engineTrackPositionChanged ( long position, bool userSeek )
 * @return true if the cuefile could be successfully loaded
 * @author (C) 2005 by Martin Ehmke <ehmke@gmx.de>
 */
-bool Track::load ( int mediaLength )
+bool Track::load ( qint64 mediaLength )
 {
     DEBUG_BLOCK
     m_cueitems.clear();
@@ -303,7 +302,7 @@ bool Track::load ( int mediaLength )
                         {
                             QStringList time = line.section ( ' ', -1, -1 ).split ( ':' );
 
-                            length = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
+                            length = time[0].toLong() * 60 * 1000 + time[1].toLong() * 1000 + time[2].toLong() *1000/75; //75 frames per second
 
                             if ( prevIndex != -1 )
                             {
@@ -346,8 +345,8 @@ bool Track::load ( int mediaLength )
         *  we can set the lenth for the last track after all the cue file was loaded into array.
         */
 
-        m_cueitems[index].setLength ( mediaLength*1000 - index );
-        debug() << "Setting length of track " << m_cueitems[index].getTitle() << " to " << mediaLength*1000 - index << " msecs.";
+        m_cueitems[index].setLength ( mediaLength - index );
+        debug() << "Setting length of track " << m_cueitems[index].getTitle() << " to " << mediaLength - index << " msecs.";
 
         return true;
     }
@@ -620,7 +619,7 @@ Track::setTrackNumber ( int newTrackNumber )
     d->tracknumber = newTrackNumber;
 }
 
-int
+qint64
 Track::length() const
 {
     return d->length;

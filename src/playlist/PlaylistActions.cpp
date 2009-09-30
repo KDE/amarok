@@ -204,7 +204,7 @@ Playlist::Actions::play( const quint64 trackid, bool now )
                                || engineState == Phonon::BufferingState ) )
             {
                 //Theres a track playing now, calculate statistics for that track before playing a new one.
-                const double finishedPercent = (double)The::engineController()->trackPosition() / (double)currentTrack->length();
+                const double finishedPercent = (double)The::engineController()->trackPositionMs() / (double)currentTrack->length();
                 debug() << "Manually advancing to the next track, calculating previous statistics for track here.  Finished % is: "  << finishedPercent;
                 currentTrack->finishedPlaying( finishedPercent );
             }
@@ -238,13 +238,13 @@ Playlist::Actions::playlistModeChanged()
 
 
     QQueue<quint64> currentQueue;
-    
+
     if ( m_navigator )
     {
         //HACK: Migrate the queue to the new navigator
         //TODO: The queue really should not be maintained by the navigators in this way
         // but should be handled by a seperate and persistant object.
-        
+
         currentQueue = m_navigator->queue();
         m_navigator->deleteLater();
     }
@@ -299,7 +299,7 @@ Playlist::Actions::playlistModeChanged()
 
 
     m_navigator->queueIds( currentQueue );
-    
+
 }
 
 void

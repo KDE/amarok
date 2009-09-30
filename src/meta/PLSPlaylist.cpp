@@ -251,7 +251,7 @@ PLSPlaylist::save( const KUrl &location, bool relative )
         stream << "\nTitle" << i << "=";
         stream << track->name();
         stream << "\nLength" << i << "=";
-        stream << track->length();
+        stream << track->length() / 1000;
         stream << "\n";
         i++;
     }

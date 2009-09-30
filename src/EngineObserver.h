@@ -137,7 +137,7 @@ public:
     /**
      * Called when the track length changes, typically because the track has changed
      */
-    virtual void engineTrackLengthChanged( long seconds );
+    virtual void engineTrackLengthChanged( qint64 milliseconds );
 
     /**
      * Called when the EngineSubject is deleted.
@@ -171,7 +171,7 @@ protected:
     void muteStateChangedNotify( bool mute );
     /* userSeek means the position didn't change due to normal playback */
     void trackPositionChangedNotify( long position , bool userSeek = false );
-    void trackLengthChangedNotify( long seconds );
+    void trackLengthChangedNotify( qint64 seconds );
     void newTrackPlaying() const;
     void trackChangedNotify( Meta::TrackPtr track );
 

@@ -218,8 +218,8 @@ namespace Meta
             /** Returns the rating of this track */
             virtual int rating() const = 0;
             virtual void setRating( int newRating ) = 0;
-            /** Returns the length of this track in seconds, or 0 if unknown */
-            virtual int length() const = 0;
+            /** Returns the length of this track in milliseconds, or 0 if unknown */
+            virtual qint64 length() const = 0;
             /** Returns the filesize of this track in bytes */
             virtual int filesize() const = 0;
             /** Returns the sample rate of this track */

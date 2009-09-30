@@ -95,9 +95,9 @@ EngineObserver::engineTrackPositionChanged( long position , bool userSeek )
 }
 
 void
-EngineObserver::engineTrackLengthChanged( long seconds )
+EngineObserver::engineTrackLengthChanged( qint64 milliseconds )
 {
-    Q_UNUSED( seconds );
+    Q_UNUSED( milliseconds );
 }
 
 void
@@ -185,11 +185,11 @@ void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
 }
 
 
-void EngineSubject::trackLengthChangedNotify( long seconds )
+void EngineSubject::trackLengthChangedNotify( qint64 milliseconds )
 {
     foreach( EngineObserver *observer, Observers )
     {
-        observer->engineTrackLengthChanged( seconds );
+        observer->engineTrackLengthChanged( milliseconds );
     }
 }
 

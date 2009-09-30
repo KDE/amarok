@@ -74,7 +74,7 @@ namespace MetaFile
             virtual int discNumber() const;
             virtual void setDiscNumber( int newDiscNumber );
 
-            virtual int length() const;
+            virtual qint64 length() const;
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;

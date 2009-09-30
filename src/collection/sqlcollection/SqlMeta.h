@@ -98,7 +98,7 @@ class SqlTrack : public Meta::Track
         virtual int rating() const { return m_rating; }
         virtual void setRating( int newRating );
 
-        virtual int length() const { return m_length; }
+        virtual qint64 length() const { return m_length; }
         virtual int filesize() const { return m_filesize; }
         virtual int sampleRate() const { return m_sampleRate; }
         virtual int bitrate() const { return m_bitrate; }

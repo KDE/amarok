@@ -77,7 +77,7 @@ namespace MetaProxy
             virtual int discNumber() const;
             virtual void setDiscNumber( int discNumber );
 
-            virtual int length() const;
+            virtual qint64 length() const;
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
@@ -101,7 +101,7 @@ namespace MetaProxy
             virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
             virtual bool operator==( const Meta::Track &track ) const;
-		
+
 		/**
 		 * allows subclasses to create an instance of trackprovider which will only check the TrackProvider
 		 * passed to lookupTrack(TrackProvider*) for the real track.

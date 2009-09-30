@@ -40,7 +40,7 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapability : public Handler::ReadCapabili
          * and to set the struct's information to the passed metadata in libSet*
          */
         virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track ) = 0;
-        virtual int     libGetLength( const Meta::MediaDeviceTrackPtr &track ) = 0;
+        virtual qint64  libGetLength( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual QString libGetComment( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track ) = 0;

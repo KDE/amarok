@@ -314,17 +314,17 @@ int Playlist::GroupingProxy::tracksInGroup( int row ) const
 
 int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 {
-    int totalLenght = 0;
+    int totalLength = 0;
     for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ )
     {
         Meta::TrackPtr track = m_belowModel->trackAt( i );
         if ( track )
-            totalLenght += track->length();
+            totalLength += track->length();
         else
             warning() << "Playlist::GroupingProxy::lengthOfGroup(): TrackPtr is 0!  i = " << i << ", rowCount = " << m_belowModel->rowCount();
     }
 
-    return totalLenght;
+    return totalLength;
 }
 
 QString

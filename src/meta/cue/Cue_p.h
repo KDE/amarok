@@ -50,7 +50,7 @@ public:
     QString artist;
     QString album;
     int tracknumber;
-    int length;
+    qint64 length;
 
     Meta::ArtistPtr artistPtr;
     Meta::AlbumPtr albumPtr;

@@ -42,14 +42,14 @@ public:
         AmarokConfig::setLeftTimeDisplayRemaining( !AmarokConfig::leftTimeDisplayRemaining() );
         ProgressWidget * progressWidget = dynamic_cast<ProgressWidget *>( parentWidget() );
         if( progressWidget )
-            progressWidget->drawTimeDisplay( The::engineController()->trackPosition() * 1000 );
+            progressWidget->drawTimeDisplay( The::engineController()->trackPositionMs() );
     }
-    
+
     virtual QSize sizeHint() const
     {
         return fontMetrics().boundingRect( KGlobal::locale()->negativeSign() + KGlobal::locale()->formatTime( QTime( 0, 0, 0 ), true, true ) ).size();
     }
-    
+
     void setShowTime( bool showTime )
     {
         m_showTime = showTime;
@@ -58,18 +58,18 @@ public:
             QLabel::setText( "" );
         }
     }
-    
+
     bool showTime() const
     {
         return m_showTime;
     }
-    
+
     void setText( const QString &text )
     {
         if( m_showTime )
             QLabel::setText( text );
     }
-    
+
 private:
     bool m_showTime;
 

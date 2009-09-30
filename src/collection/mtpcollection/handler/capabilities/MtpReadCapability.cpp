@@ -91,7 +91,7 @@ MtpReadCapability::libGetYear( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libGetYear( track );
 }
 
-int
+qint64
 MtpReadCapability::libGetLength( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetLength( track );

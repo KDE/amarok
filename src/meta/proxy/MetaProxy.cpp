@@ -315,7 +315,7 @@ MetaProxy::Track::setDiscNumber( int discNumber )
     d->cachedDiscNumber = discNumber;
 }
 
-int
+qint64
 MetaProxy::Track::length() const
 {
     if( d->realTrack )

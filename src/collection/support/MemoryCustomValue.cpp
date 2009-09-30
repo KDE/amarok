@@ -23,19 +23,19 @@ class SumReturnFunction : public CustomReturnFunction
     public:
         SumReturnFunction( CustomReturnValue * rv ) : returnValue( rv ) {}
         ~SumReturnFunction() { delete returnValue; }
-        
+
         QString value( const Meta::TrackList &tracks ) const
         {
             if( !returnValue )
                 return QString::number( 0 );
-            
+
             double sum = 0.0;
             foreach( const Meta::TrackPtr &track, tracks )
                 sum += returnValue->value( track ).toDouble();
-            
+
             return QString::number( sum );
         }
-    
+
     private:
         CustomReturnValue *returnValue;
 };
@@ -45,19 +45,19 @@ class MinimumReturnFunction : public CustomReturnFunction
     public:
         MinimumReturnFunction( CustomReturnValue * rv ) : returnValue( rv ) {}
         ~MinimumReturnFunction() { delete returnValue; }
-        
+
         QString value( const Meta::TrackList &tracks ) const
         {
             if( tracks.empty() || !returnValue )
                 return QString::number( 0 );
-            
+
             double min = returnValue->value( tracks.first() ).toDouble();
             foreach( const Meta::TrackPtr &track, tracks )
                 min = qMin( min, returnValue->value( track ).toDouble() );
-            
+
             return QString::number( min );
         }
-    
+
     private:
         CustomReturnValue *returnValue;
 };
@@ -67,7 +67,7 @@ class MaximumReturnFunction : public CustomReturnFunction
     public:
         MaximumReturnFunction( CustomReturnValue * rv ) : returnValue( rv ) {}
         ~MaximumReturnFunction() { delete returnValue; }
-        
+
         QString value( const Meta::TrackList &tracks ) const
         {
             if( tracks.empty() || !returnValue )
@@ -79,7 +79,7 @@ class MaximumReturnFunction : public CustomReturnFunction
 
             return QString::number( max );
         }
-    
+
     private:
         CustomReturnValue *returnValue;
 };
@@ -120,7 +120,7 @@ CustomValueFactory::returnFunction( QueryMaker::ReturnFunction function, qint64 
                 }
                 default:
                     return 0;
-            }   
+            }
         }
         case QueryMaker::Sum:
         {
@@ -396,7 +396,7 @@ class LengthReturnValue : public CustomReturnValue
     public:
         LengthReturnValue() {}
         virtual ~LengthReturnValue() {}
-        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->length() ); }
+        virtual QString value( const Meta::TrackPtr &track ) const { return QString::number( track->length() / 1000 ); }
 };
 
 class BitrateReturnValue : public CustomReturnValue

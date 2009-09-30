@@ -427,7 +427,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     sql2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9"; // goes up to modifydate
     sql2 = sql2.arg( QString::number( trackData[Field::DISCNUMBER].toInt() )
                 , QString::number( trackData[Field::BITRATE].toInt() )
-                , QString::number( trackData[Field::LENGTH].toInt() )
+                , QString::number( trackData[Field::LENGTH].toLongLong() )
                 , QString::number( trackData[Field::SAMPLERATE].toInt() )
                 , QString::number( trackData[Field::FILESIZE].toInt() )
                 , "0" // NYI: filetype
@@ -538,7 +538,7 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
         query += QString( "UNION ALL SELECT id, CONCAT('YEARSNAME_', name) AS name FROM years_temp WHERE name = '%1';" ).arg( m_collection->escape( year ) );
     if( query.startsWith( "UNION ALL " ) )
         query.remove( 0, 10 );
-        
+
     QStringList res = m_collection->query( query );
     int index = 0;
     QString first;

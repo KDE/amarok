@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "GrowlInterface.h"
 
 #include "amarokconfig.h"
@@ -22,13 +22,13 @@
 #include "EngineController.h"
 #include "MetaUtility.h" // for secToPrettyTime
 #include "Systray.h"
- 
+
 GrowlInterface::GrowlInterface( QString appName ) :
                 m_appName( appName )
               ,  EngineObserver( The::engineController() )
 {}
- 
-void 
+
+void
 GrowlInterface::show( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
@@ -45,9 +45,9 @@ GrowlInterface::show( Meta::TrackPtr track )
         else
             text += '\n';
         if( track->length() > 0 )
-            text += Meta::secToPrettyTime( track->length() );
+            text += Meta::msToPrettyTime( track->length() );
     }
-    
+
     if( text.isEmpty() )
         text =  track->playableUrl().fileName();
 
@@ -64,10 +64,10 @@ GrowlInterface::show( Meta::TrackPtr track )
             App::instance()->trayIcon()->setIcon( QIcon( track->album()->imageWithBorder( 100, 5 ) ) );
         App::instance()->trayIcon()->showMessage( "Amarok", text );
     }
-    
+
 }
 
-void 
+void
 GrowlInterface::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
@@ -77,7 +77,7 @@ GrowlInterface::engineNewTrackPlaying()
     m_currentTrack = track;
     subscribeTo( track );
     metadataChanged( track );
-    
+
     show( m_currentTrack );
 }
 
@@ -104,4 +104,4 @@ GrowlInterface::metadataChanged( Meta::TrackPtr track )
     DEBUG_BLOCK
 
    // show( m_currentTrack );
-} 
+}

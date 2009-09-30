@@ -1461,10 +1461,10 @@ IpodHandler::libGetYear( const Meta::MediaDeviceTrackPtr &track )
     return m_itdbtrackhash[ track ]->year;
 }
 
-int
+qint64
 IpodHandler::libGetLength( const Meta::MediaDeviceTrackPtr &track )
 {
-    return ( ( m_itdbtrackhash[ track ]->tracklen ) / 1000 );
+    return ( ( m_itdbtrackhash[ track ]->tracklen ) );
 }
 
 int

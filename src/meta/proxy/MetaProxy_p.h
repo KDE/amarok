@@ -53,7 +53,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         QString cachedGenre;
         QString cachedComposer;
         QString cachedYear;
-        int cachedLength;
+        qint64 cachedLength;
         int cachedTrackNumber;
         int cachedDiscNumber;
 

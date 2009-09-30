@@ -134,7 +134,7 @@ ServiceTrack::ServiceTrack( const QString & name )
     , m_composer( 0 )
     , m_year( 0 )
     , m_id( 0 )
-    , m_trackNumber( 0 )    
+    , m_trackNumber( 0 )
     , m_length( 0 )
     , m_displayUrl( 0 )
     , m_playableUrl( 0 )
@@ -409,7 +409,7 @@ ServiceTrack::setRating( int newRating )
         m_provider->setRating( newRating );
 }
 
-int
+qint64
 ServiceTrack::length() const
 {
     return m_length;
@@ -547,7 +547,7 @@ ServiceTrack::setTitle( const QString &title )
 }
 
 void
-ServiceTrack::setLength( int length )
+ServiceTrack::setLength( qint64 length )
 {
     m_length = length;
 }

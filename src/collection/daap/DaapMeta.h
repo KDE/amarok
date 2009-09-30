@@ -77,7 +77,7 @@ class DaapTrack : public Meta::Track
         virtual int rating() const;
         virtual void setRating ( int newRating );
 
-        virtual int length() const;
+        virtual qint64 length() const;
 
         virtual int filesize() const;
         virtual int sampleRate() const;
@@ -111,7 +111,7 @@ class DaapTrack : public Meta::Track
         void setGenre( DaapGenrePtr genre );
         void setYear( DaapYearPtr year );
 
-        void setLength( int length );
+        void setLength( qint64 length );
 
     private:
         DaapCollection *m_collection;
@@ -124,7 +124,7 @@ class DaapTrack : public Meta::Track
 
         QString m_name;
         QString m_type;
-        int m_length;
+        qint64 m_length;
         int m_trackNumber;
         QString m_displayUrl;
         QString m_playableUrl;

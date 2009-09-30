@@ -176,7 +176,7 @@ OSDWidget::setVisible( bool visible )
 
         update();
     }
-    else 
+    else
         QWidget::setVisible( visible );
 }
 
@@ -586,7 +586,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
         else
             text += '\n';
         if( track->length() > 0 )
-            text += Meta::secToPrettyTime( track->length() );
+            text += Meta::msToPrettyTime( track->length() );
     }
 
     if( text.isEmpty() )

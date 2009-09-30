@@ -143,7 +143,7 @@ XSPFPlaylist::save( const KUrl &location, bool relative )
         savePath.setFileName( name() );
 
     QFile file;
-    
+
     if( location.isLocalFile() )
     {
         file.setFileName( savePath.toLocalFile() );
@@ -158,7 +158,7 @@ XSPFPlaylist::save( const KUrl &location, bool relative )
         if( The::mainWindow() ) // MainWindow might already be destroyed at this point (at program shutdown)
             KMessageBox::sorry( The::mainWindow(), i18n( "Cannot write playlist (%1).", file.fileName() ) );
         else
-            warning() << QString( "Cannot write playlist (%1)." ).arg( file.fileName() ); 
+            warning() << QString( "Cannot write playlist (%1)." ).arg( file.fileName() );
 
         return false;
     }
@@ -178,7 +178,7 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
     int errorLine, errorColumn;
 
     QString rawText = stream.readAll();
-    
+
     if ( !setContent( rawText, &errorMsg, &errorLine, &errorColumn ) )
     {
         debug() << "[XSPFPlaylist]: Error loading xml file: " "(" << errorMsg << ")"
@@ -228,7 +228,7 @@ XSPFPlaylist::tracks()
             {
                 Meta::TimecodeTrack * timecodeTrack = dynamic_cast<Meta::TimecodeTrack *> ( trackPtr.data() );
                 if ( timecodeTrack )
-                { 
+                {
                     timecodeTrack->beginMetaDataUpdate();
                     timecodeTrack->setTitle( track.title );
                     timecodeTrack->setAlbum( track.album );
@@ -236,17 +236,17 @@ XSPFPlaylist::tracks()
                     timecodeTrack->endMetaDataUpdate();
                 }
             }
-            
+
             tracks << trackPtr;
         }
 
-        
+
         // why do we need this? sqlplaylist is not doing this
         // we don't want (probably) unplayable tracks
         // and it causes problems for me (DanielW) as long
         // amarok not respects Track::isPlayable()
         /*else {
-        
+
             MetaProxy::Track *proxyTrack = new MetaProxy::Track( track.location );
             {
                 //Fill in values from xspf..
@@ -262,7 +262,7 @@ XSPFPlaylist::tracks()
             tracks << Meta::TrackPtr( proxyTrack );
     //         tracks << CollectionManager::instance()->trackForUrl( track.location );
         }*/
-        
+
     }
     return tracks;
 }
@@ -686,7 +686,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
         if ( track->trackNumber() > 0 )
             APPENDNODE( trackNum, QString::number( track->trackNumber() ) );
         if ( track->length() > 0 )
-            APPENDNODE( duration, QString::number( track->length() * 1000 ) );
+            APPENDNODE( duration, QString::number( track->length() ) );
         node.appendChild( subNode );
     }
     #undef APPENDNODE

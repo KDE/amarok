@@ -78,7 +78,7 @@ class AudioCdTrack : public Meta::Track
         virtual int rating() const;
         virtual void setRating ( int newRating );
 
-        virtual int length() const;
+        virtual qint64 length() const;
 
         virtual int filesize() const;
         virtual int sampleRate() const;
@@ -112,7 +112,7 @@ class AudioCdTrack : public Meta::Track
         void setGenre( AudioCdGenrePtr genre );
         void setYear( AudioCdYearPtr year );
 
-        void setLength( int length );
+        void setLength( qint64 length );
 
         void setFileNameBase( const QString &fileNameBase );
         QString fileNameBase();
@@ -127,7 +127,7 @@ class AudioCdTrack : public Meta::Track
         AudioCdYearPtr m_year;
 
         QString m_name;
-        int m_length;
+        qint64 m_length;
         int m_trackNumber;
         QString m_displayUrl;
         QString m_playableUrl;

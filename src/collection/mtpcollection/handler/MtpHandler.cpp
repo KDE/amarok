@@ -1003,11 +1003,11 @@ MtpHandler::libGetYear( const Meta::MediaDeviceTrackPtr &track )
     return QString::fromUtf8( m_mtptrackhash.value( track )->date ).mid( 0, 4 ).toUInt();
 }
 
-int
+qint64
 MtpHandler::libGetLength( const Meta::MediaDeviceTrackPtr &track )
 {
     if ( m_mtptrackhash.value( track )->duration > 0 )
-        return ( ( m_mtptrackhash.value( track )->duration ) / 1000 );
+        return ( ( m_mtptrackhash.value( track )->duration ) );
     return 0;
 }
 

@@ -272,7 +272,7 @@ Track::discNumber() const
     return 0;
 }
 
-int
+qint64
 Track::length() const
 {
     return d->length;
@@ -568,7 +568,7 @@ QPixmap LastFm::Track::emblem()
     else
         return QPixmap();
 }
- 
+
 QString LastFm::Track::scalableEmblem()
 {
     if ( !d->track.isEmpty() )

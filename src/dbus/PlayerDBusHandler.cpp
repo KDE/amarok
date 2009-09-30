@@ -158,7 +158,7 @@ namespace Amarok
     //position is specified in milliseconds
     int PlayerDBusHandler::PositionGet()
     {
-        return The::engineController()->trackPosition() * 1000;
+        return The::engineController()->trackPositionMs();
     }
 
     void PlayerDBusHandler::PositionSet( int time )
@@ -218,7 +218,7 @@ namespace Amarok
         if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
             The::engineController()->seek( The::engineController()->trackPosition() * 1000 - time );
     }
-        
+
     QVariantMap PlayerDBusHandler::GetMetadata()
     {
         return GetTrackMetadata( The::engineController()->currentTrack() );

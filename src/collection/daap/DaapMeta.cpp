@@ -186,7 +186,7 @@ DaapTrack::setRating( int newRating )
     Q_UNUSED( newRating )
 }
 
-int
+qint64
 DaapTrack::length() const
 {
     return m_length;
@@ -313,7 +313,7 @@ DaapTrack::setTitle( const QString &title )
 }
 
 void
-DaapTrack::setLength( int length )
+DaapTrack::setLength( qint64 length )
 {
     m_length = length;
 }

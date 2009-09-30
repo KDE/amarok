@@ -177,16 +177,16 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         virtual AlbumPtr album() const;
         virtual void setAlbum( const QString &newAlbum );
-        
+
         virtual ArtistPtr artist() const;
         virtual void setArtist( const QString &newArtist );
-        
+
         virtual GenrePtr genre() const;
         virtual void setGenre( const QString &newGenre );
-        
+
         virtual ComposerPtr composer() const;
         virtual void setComposer( const QString &newComposer );
-        
+
         virtual YearPtr year() const;
         virtual void setYear( const QString &newYear );
 
@@ -204,7 +204,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual int rating() const;
         virtual void setRating( int newRating );
 
-        virtual int length() const;
+        virtual qint64 length() const;
 
         virtual int filesize() const;
         virtual int sampleRate() const;
@@ -260,7 +260,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void setYear( Meta::YearPtr year );
         void setStatisticsProvider( StatisticsProvider *provider );
 
-        void setLength( int length );
+        void setLength( qint64 length );
 
         void setId( int id );
         int  id( ) const;
@@ -283,7 +283,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
 
         int     m_id;
         int     m_trackNumber;
-        int     m_length;
+        qint64     m_length;
         QString m_description;
         QString m_displayUrl;
         QString m_playableUrl;
@@ -320,7 +320,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const
         {
             return ( type == Meta::Capability::CustomActions ) ||
-                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) || 
+                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
                     ( type == Meta::Capability::BookmarkThis );
         }
 
@@ -424,16 +424,16 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
 
         void setDescription( const QString &description );
         QString description( ) const;
-        
+
         void setId( int id );
         int  id() const;
-        
+
         void setArtistId( int artistId );
         int  artistId( ) const;
 
         void setArtistName( const QString &name );
         QString artistName() const;
-        
+
         void setTitle( const QString &title );
 
         void setSourceName( const QString source ) { m_sourceName = source; }

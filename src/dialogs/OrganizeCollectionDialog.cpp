@@ -181,7 +181,7 @@ OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::T
     args["filetype"] = track->type();
     args["rating"] = track->rating();
     args["filesize"] = track->filesize();
-    args["length"] = track->length();
+    args["length"] = track->length() / 1000;
 
     if ( track->trackNumber() )
     {

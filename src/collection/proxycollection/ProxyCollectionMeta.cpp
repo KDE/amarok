@@ -298,7 +298,7 @@ ProxyCollection::Track::finishedPlaying( double playedFraction )
     }
 }
 
-int
+qint64
 ProxyCollection::Track::length() const
 {
     foreach( const Meta::TrackPtr &track, m_tracks )

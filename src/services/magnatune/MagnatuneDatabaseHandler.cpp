@@ -153,7 +153,7 @@ MagnatuneDatabaseHandler::insertTrack( ServiceTrack *track )
             "album_id, artist_id, preview_lofi, preview_ogg, preview_url ) VALUES ( '"
                           + sqlDb->escape( mTrack->name()) + "', "
                           + QString::number( mTrack->trackNumber() ) + ", "
-                          + QString::number( mTrack->length() ) + ", "
+                          + QString::number( mTrack->length() * 1000 ) + ", "
                           + QString::number( mTrack->albumId() ) + ", "
                           + QString::number( mTrack->artistId() ) + ", '"
                           + sqlDb->escape( mTrack->lofiUrl() ) + "', '"

@@ -143,8 +143,8 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
             map["album"] = track->album()->name();
 
         map["tracknumber"] = track->trackNumber();
-        map["time"] = track->length();
-        map["mtime"] = track->length() * 1000;
+        map["time"] = track->length() / 1000;
+        map["mtime"] = track->length();
 
         if( track->genre() )
             map["genre"] = track->genre()->name();

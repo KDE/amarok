@@ -126,7 +126,7 @@ void TestMetaCueTrack::testTrackNumber()
 
 void TestMetaCueTrack::testLength()
 {
-    QCOMPARE( m_testTrack1->length(), 0 ); // why?
+    QCOMPARE( m_testTrack1->length(), qint64(0) ); // why?
 }
 
 void TestMetaCueTrack::testAlbum()

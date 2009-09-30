@@ -72,7 +72,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
         int rating() const;
         bool inCollection() const;
         QString type() const;
-        int length() const;
+        qint64 length() const;
         int fileSize() const;
         int trackNumber() const;
         int discNumber() const;

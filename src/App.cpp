@@ -250,7 +250,7 @@ App::~App()
             if( track )
             {
                 AmarokConfig::setResumeTrack( track->playableUrl().prettyUrl() );
-                AmarokConfig::setResumeTime( The::engineController()->trackPosition() * 1000 );
+                AmarokConfig::setResumeTime( The::engineController()->trackPositionMs() );
                 AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
             }
         }
@@ -945,7 +945,7 @@ namespace Amarok
             QString prettyTitle = Qt::escape( track->prettyName() );
             QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
             QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
-            QString length      = Qt::escape( Meta::secToPrettyTime( track->length() ) );
+            QString length      = Qt::escape( Meta::msToPrettyTime( track->length() ) );
 
             // ugly because of translation requirements
             if ( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
