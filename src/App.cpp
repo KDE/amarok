@@ -613,17 +613,12 @@ App::runUnitTests( bool stdout )
 {
     DEBUG_BLOCK
     QStringList testArgumentList;
-<<<<<<< HEAD:src/App.cpp
-    QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + '/' );
-    testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v2";
-=======
     QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + "/" );
 
     if( !stdout )
         testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v2";
     else
         testArgumentList << "amarok" << "-xml" << "-v2";
->>>>>>> make it possible to output test logs to stdout. to do this start amarok with --test --teststdout:src/App.cpp
 
     // create log folder for this run:
     QDir logDir( logPath );
