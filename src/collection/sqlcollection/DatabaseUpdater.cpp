@@ -405,7 +405,7 @@ DatabaseUpdater::upgradeVersion7to8()
 
     // Now Iterate over the hash, and insert each track back in, changing the length to milliseconds
     QHashIterator<int,int> iter2( trackLengthHash );
-    const QString updateString = QString( "UPDATE tracks SET length=%1 WHERE id=%2");
+    const QString updateString = QString( "UPDATE tracks SET length=%1 WHERE id=%2;");
     while( iter2.hasNext() )
     {
         iter2.next();
