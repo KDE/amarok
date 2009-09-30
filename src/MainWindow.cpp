@@ -665,7 +665,7 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( clear() ) );
     ac->addAction( "playlist_clear", action );
 
-    action = new KAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicate && Dead Entries" ), this );
+    action = new KAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicates" ), this );
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( removeDeadAndDuplicates() ) );
     ac->addAction( "playlist_remove_dead_and_duplicates", action );
 
