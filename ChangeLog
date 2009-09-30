@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Added feature for removing duplicates from the playlist. Patch by John
+      Atkinson <john@fauxnetic.co.uk>. (BR 200445)
     * Allow changing of playlist layout item sizes using the inline editor.
     * Initial KNotify support.
     * Show total playlist file size in a tooltip when hovering over the total
