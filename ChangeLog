@@ -13,6 +13,7 @@ VERSION 2.2.1
       (BR 92400)
 
   CHANGES:
+    * Usability improvements in the Context View's applet tab bar.
     * Collection scanner won't scan a directory more than once if passed in
       multiple times. Should significantly speed up certain incremental
       scanning cases.
@@ -32,6 +33,7 @@ VERSION 2.2.1
     * Magnatune.com store: Download high quality covers when purchasing or 
       downloading albums. (BR: 176177)
     * Correctly modify the Lyrics Applet's title when its state changes
+
 
 VERSION 2.2
   CHANGES:
