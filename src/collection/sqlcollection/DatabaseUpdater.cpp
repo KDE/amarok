@@ -101,12 +101,17 @@ DatabaseUpdater::update()
             dbVersion = 7;
             m_rescanNeeded = true;
         }
+        if( dbVersion == 7 && dbVersion < DB_VERSION )
+        {
+            upgradeVersion7to8();
+            dbVersion = 8;
+        }
         /*
         if( dbVersion == X && dbVersion < DB_VERSION )
         {
             upgradeVersionXtoY();
             dbVersion = Y;
-            //if rescan not needed, don't set m_rescanNeeded to true  
+            //if rescan not needed, don't set m_rescanNeeded to true
         }
         */
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
@@ -382,6 +387,30 @@ DatabaseUpdater::upgradeVersion6to7()
 
     columns.clear();
 
+}
+
+
+void
+DatabaseUpdater::upgradeVersion7to8()
+{
+    DEBUG_BLOCK
+    QHash< int, int > trackLengthHash;
+
+    // First, get the lengths from the db and insert them into a hash
+    const QStringList result = m_collection->query( "SELECT id, length FROM tracks" );
+
+    QListIterator<QString> iter(result);
+    while( iter.hasNext() )
+        trackLengthHash.insert( iter.next().toInt(), iter.next().toInt() );
+
+    // Now Iterate over the hash, and insert each track back in, changing the length to milliseconds
+    QHashIterator<int,int> iter2( trackLengthHash );
+    const QString updateString = QString( "UPDATE tracks SET length=%1 WHERE id=%2");
+    while( iter2.hasNext() )
+    {
+        iter2.next();
+        m_collection->query( updateString.arg( ( iter2.value() * 1000 ), iter2.key() ) );
+    }
 }
 
 void

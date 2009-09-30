@@ -43,15 +43,17 @@ public:
     void upgradeVersion4to5();
     void upgradeVersion5to6();
     void upgradeVersion6to7();
-    
+    void upgradeVersion7to8();
+
     void deleteAllRedundant( const QString &type ); //type is artist,album,genre,composer or year
 
     void removeFilesInDir( int deviceid, const QString &rdir );
     void removeFilesInDirFromTemporaryTables( int deviceid, const QString &rdir );
-    
+
     void cleanupDatabase();
 
     void writeCSVFile( const QString &table, const QString &filename, bool forceDebug = false );
+
 
 private:
     /** creates all the necessary tables, indexes etc. for the database */
