@@ -23,6 +23,7 @@
 
 #include <KLocale>
 #include <kshell.h>
+#include <KZip>
 
 MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
     : QObject()
@@ -87,25 +88,40 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
     if ( downloadJob != m_albumDownloadJob )
         return ; //not the right job, so let's ignore it
 
+    const QString finalAlbumPath = m_currentAlbumUnpackLocation + '/' + m_currentAlbum->albumArtist()->name() + '/' + m_currentAlbum->name();
+
     //ok, now we have the .zip file downloaded. All we need is to unpack it to the desired location and add it to the collection.
 
-    QString unzipString = "unzip " + KShell::quoteArg( m_tempDir->name() + m_currentAlbumFileName ) + " -d " + KShell::quoteArg( m_currentAlbumUnpackLocation ) + " &";
+    KZip kzip( m_tempDir->name() + m_currentAlbumFileName );
 
-    debug() << "unpacking: " << unzipString;
-
-    if ( system( unzipString.toAscii() ) == -1 )
+    if ( !kzip.open( QIODevice::ReadOnly ) )
+    {
+        The::statusBar()->shortMessage( i18n( "Magnatune download seems to have failed. Cannot read zip file" ) );
+        emit( downloadComplete( false ) );
         return;
+    }
+
+    debug() << m_tempDir->name() + m_currentAlbumFileName << " opened for decompression";
+
+    const KArchiveDirectory * directory = kzip.directory();
+
+    The::statusBar()->shortMessage( i18n( "Uncompressing Magnatune.com download..." ) );
+
+    //Is this really blocking with no progress status!? Why is it not a KJob?
+
+    debug() <<  "decompressing to " << finalAlbumPath;
+    directory->copyTo( m_currentAlbumUnpackLocation );
+
+    debug() <<  "done!";
 
     if ( m_currentAlbum ) {
 
         //now I really want to add the album cover to the same folder where I just unzipped the album... The
         //only way of getting the actual location where the album was unpacked is using the artist and album names
-
-        QString finalAlbumPath = m_currentAlbumUnpackLocation + '/' + m_currentAlbum->albumArtist()->name() + '/' + m_currentAlbum->name();
+        
         QString coverUrlString = m_currentAlbum->coverUrl();
 
-
-        KUrl downloadUrl( coverUrlString );
+        KUrl downloadUrl( coverUrlString.replace( "_200.jpg", "_1400.jpg") );
 
         debug() << "Adding cover " << downloadUrl.url() << " to collection at " << finalAlbumPath;
 
@@ -125,7 +141,6 @@ void MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
     }
 
 }
-
 
 void MagnatuneAlbumDownloader::albumDownloadAborted( )
 {
