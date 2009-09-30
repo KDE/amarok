@@ -388,7 +388,7 @@ Playlist::Actions::engineNewTrackPlaying()
                 if ( AmarokConfig::lastPlaying() > -1 )
                     m_topmostModel->setActiveRow( AmarokConfig::lastPlaying() );
                 else
-                    m_topmostModel->setActiveRow( m_topmostModel->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
+                    m_topmostModel->setActiveRow( m_topmostModel->firstRowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
             }
         }
     }
