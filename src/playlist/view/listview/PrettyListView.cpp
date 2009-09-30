@@ -2,6 +2,7 @@
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                                                                                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -110,7 +111,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
      if ( LayoutManager::instance()->activeLayout().inlineControls() )
          m_animationTimer->start();
 
-     
+     connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
+     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -779,7 +781,26 @@ void Playlist::PrettyListView::playlistLayoutChanged()
         m_animationTimer->stop();
 }
 
+void Playlist::PrettyListView::saveTrackSelection()
+{
+    m_savedTrackSelection.clear();
 
+    foreach( int rowId, selectedRows() )
+        m_savedTrackSelection.append( m_topmostProxy->idAt( rowId ) );
+}
+
+void Playlist::PrettyListView::restoreTrackSelection()
+{
+    selectionModel()->clearSelection();
+
+    foreach( qint64 savedTrackId, m_savedTrackSelection )
+    {
+        QModelIndex restoredIndex = model()->index( m_topmostProxy->rowForId( savedTrackId ), 0, QModelIndex() );
+
+        if( restoredIndex.isValid() )
+            selectionModel()->select( restoredIndex, QItemSelectionModel::Select );
+    }
+}
 
 #include "PrettyListView.moc"
 
