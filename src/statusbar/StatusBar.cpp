@@ -296,7 +296,7 @@ StatusBar::updateTotalPlaylistLength() //SLOT
     const int totalLength = The::playlist()->totalLength();
     const quint64 totalSize = The::playlist()->totalSize();
     const int trackCount = The::playlist()->rowCount();
-    const QString prettyTotalLength = Meta::secToPrettyTime( totalLength );
+    const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
     const QString prettyTotalSize = Meta::prettyFilesize( totalSize );
 
     if( totalLength > 0 && trackCount > 0 )

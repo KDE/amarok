@@ -285,7 +285,7 @@ ProxyBase::supportedDropActions() const
     return m_belowModel->supportedDropActions();
 }
 
-int
+qint64
 ProxyBase::totalLength() const
 {
     return m_belowModel->totalLength();

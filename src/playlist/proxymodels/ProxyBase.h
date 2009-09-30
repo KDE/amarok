@@ -313,9 +313,9 @@ public:
      * Returns the total length of the playlist.
      * The default implementation forwards the total time from the proxy or model below the
      * current proxy.
-     * @return the total length of the playlist.
+     * @return the total length of the playlist in milliseconds.
      */
-    virtual int totalLength() const;
+    virtual qint64 totalLength() const;
 
     /**
      * Returns the total size of the playlist.

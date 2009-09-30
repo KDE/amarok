@@ -68,7 +68,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void metadataChanged( Meta::TrackPtr track );
         void metadataChanged( Meta::AlbumPtr album );
 
-        int totalLength() const { return m_totalLength; }
+        qint64 totalLength() const { return m_totalLength; }
         quint64 totalSize() const { return m_totalSize; }
 
         // convenience access methods
@@ -162,7 +162,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         QHash<quint64, Item*> m_itemIds; //! maps track id's to items
         int m_activeRow;                 //! the row being played
 
-        int m_totalLength;
+        qint64 m_totalLength;
         quint64 m_totalSize;
 
         QString m_playlistName;

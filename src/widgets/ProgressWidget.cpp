@@ -95,13 +95,13 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label
 
-    const uint trackLength = The::engineController()->trackLength();
+    const qint64 trackLength = The::engineController()->trackLength();
 
     // when the left label shows the remaining time and it's not a stream
     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
         seconds2 = seconds;
-        seconds = trackLength - seconds;
+        seconds = ( trackLength / 1000 ) - seconds;
     }
 
     // when the left label shows the remaining time and it's a stream
@@ -114,7 +114,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     // when the right label shows the remaining time and it's not a stream
     else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
-        seconds2 = trackLength - seconds;
+        seconds2 = ( trackLength / 1000 ) - seconds;
     }
 
     // when the right label shows the remaining time and it's a stream
@@ -128,14 +128,12 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     QString s2 = Meta::secToPrettyTime( seconds2 );
 
     // when the left label shows the remaining time and it's not a stream
-    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
+    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
         s1.prepend( '-' );
-    }
+
     // when the right label shows the remaining time and it's not a stream
     else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-    {
         s2.prepend( '-' );
-    }
 
     if( m_timeLength > s1.length() )
         s1.prepend( QString( m_timeLength - s1.length(), ' ' ) );

@@ -176,7 +176,7 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     }
 
     m_reader.setDevice( file );
-    
+
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
 
@@ -217,11 +217,11 @@ JamendoXmlParser::readArtist()
     QString description;
     QString imageUrl;
     QString jamendoUrl;
-    
+
     while( !m_reader.atEnd() )
     {
         m_reader.readNext();
-        
+
         if( m_reader.isEndElement() && m_reader.name() == "artist" )
             break;
         if( m_reader.isStartElement() )
@@ -336,7 +336,7 @@ JamendoXmlParser::readTrack()
 
     QString name;
     QString id;
-    int     length = 0;
+    qint64     length = 0LL;
     QString trackNumber;
     QString genre;
 
@@ -354,7 +354,7 @@ JamendoXmlParser::readTrack()
             else if( localname == "id" )
                 id = m_reader.readElementText();
             else if( localname == "duration" )
-                length = m_reader.readElementText().toInt();
+                length = m_reader.readElementText().toInt() * 1000;
             else if ( localname == "numalbum" )
                 trackNumber = m_reader.readElementText();
             else if ( localname == "id3genre" )
@@ -362,7 +362,7 @@ JamendoXmlParser::readTrack()
         }
     }
     static const QString previewUrl = "http://api.jamendo.com/get2/stream/track/redirect/?id=%1&streamencoding=ogg2";
-    
+
     JamendoTrack currentTrack( name );
     currentTrack.setId( id.toInt() );
     currentTrack.setUidUrl( previewUrl.arg( id ) );

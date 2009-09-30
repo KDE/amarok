@@ -307,9 +307,9 @@ public:
 
     /**
      * Asks the model sitting below the total length of the playlist.
-     * @return the total length of the playlist.
+     * @return the total length of the playlist in milliseconds.
      */
-    virtual int totalLength() const = 0;
+    virtual qint64 totalLength() const = 0;
 
     /**
      * Asks the model sitting below the total size of the playlist.
