@@ -70,6 +70,15 @@ public:
     virtual Meta::TrackPtr activeTrack() const = 0;
 
     /**
+     * Returns all rows in the current model which match a given track pointer.
+     * @see firstRowForTrack
+     * @see lastRowForTrack
+     * @param track the track.
+     * @return collection of rows, empty if the track pointer is invalid.
+     */
+    virtual QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const = 0;
+
+    /**
      * Clears the current search term.
      */
     virtual void clearSearchTerm() {}    //dummy, needed by Playlist::Model

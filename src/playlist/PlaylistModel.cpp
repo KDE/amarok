@@ -560,6 +560,21 @@ Playlist::Model::lastRowForTrack( const Meta::TrackPtr track ) const
     return -1;
 }
 
+QSet<int>
+Playlist::Model::allRowsForTrack( const Meta::TrackPtr track ) const
+{
+    QSet<int> trackRows;
+
+    int row = 0;
+    foreach( Item* i, m_items )
+    {
+        if ( i->track() == track )
+            trackRows.insert( row );
+        row++;
+    }
+    return trackRows;
+}
+
 Meta::TrackPtr
 Playlist::Model::trackAt( int row ) const
 {

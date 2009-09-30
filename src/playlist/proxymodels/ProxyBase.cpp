@@ -54,6 +54,17 @@ ProxyBase::activeTrack() const
     return m_belowModel->activeTrack();
 }
 
+QSet<int>
+ProxyBase::allRowsForTrack( const Meta::TrackPtr track ) const
+{
+    QSet<int> trackRows;
+
+    foreach( int row, m_belowModel->allRowsForTrack( track ) )
+        trackRows.insert( rowFromSource( row ) );
+
+    return trackRows;
+}
+
 int
 ProxyBase::columnCount( const QModelIndex& i ) const
 {

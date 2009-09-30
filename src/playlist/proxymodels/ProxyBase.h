@@ -70,6 +70,15 @@ public:
     virtual Meta::TrackPtr activeTrack() const;
 
     /**
+     * Returns all rows in the current model which match a given track pointer.
+     * @see firstRowForTrack
+     * @see lastRowForTrack
+     * @param track the track.
+     * @return collection of rows, empty if the track pointer is invalid.
+     */
+    virtual QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
+
+    /**
      * Clears the current search term.
      */
     virtual void clearSearchTerm();
@@ -182,6 +191,7 @@ public:
     /**
      * Returns the first row in the current model which matches a given track pointer.
      * @see lastRowForTrack
+     * @see allRowsForTrack
      * @param track the track.
      * @return the row, -1 if the track pointer is invalid.
      */
@@ -204,6 +214,7 @@ public:
     /**
      * Returns the last row in the current model which matches a given track pointer.
      * @see firstRowForTrack
+     * @see allRowsForTrack
      * @param track the track.
      * @return the row, -1 if the track pointer is invalid.
      */
