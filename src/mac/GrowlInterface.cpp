@@ -21,7 +21,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "MetaUtility.h" // for secToPrettyTime
-#include "Systray.h"
+#include "TrayIcon.h"
 
 GrowlInterface::GrowlInterface( QString appName ) :
                 m_appName( appName )

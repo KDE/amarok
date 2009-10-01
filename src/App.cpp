@@ -45,8 +45,8 @@
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
 #include "statusbar/StatusBar.h"
-#include "Systray.h"
 #include "TracklistDBusHandler.h"
+#include "TrayIcon.h"
 
 #include <iostream>
 

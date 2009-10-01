@@ -18,7 +18,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Systray.h"
+#include "TrayIcon.h"
 
 #include "Amarok.h"
 #include "Debug.h"
@@ -466,4 +466,4 @@ Amarok::TrayIcon::slotActivated( QSystemTrayIcon::ActivationReason reason )
         The::engineController()->playPause();
 }
 
-#include "Systray.moc"
+#include "TrayIcon.moc"

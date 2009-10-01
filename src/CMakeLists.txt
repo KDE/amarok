@@ -610,10 +610,10 @@ set(amaroklib_LIB_SRCS
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
-    Systray.cpp
     toolbar/CurrentTrackToolbar.cpp
     toolbar/MainToolbarNG.cpp
     toolbar/VolumePopupButton.cpp
+    TrayIcon.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp
