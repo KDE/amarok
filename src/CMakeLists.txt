@@ -782,7 +782,8 @@ if(Q_WS_MAC)
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
-    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amaroklib )
+    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amaroklib ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
+
     install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif(Q_WS_MAC)
 
