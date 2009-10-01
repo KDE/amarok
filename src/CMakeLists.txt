@@ -55,6 +55,7 @@ include_directories(
     plugin
     podcasts
     statusbar
+    synchronization
     timecode
     widgets
     ../tests/
@@ -246,6 +247,15 @@ set(libcollectionbrowser_SRCS
 )
 
 #####################################################################
+# SYNCHRONIZATION
+#####################################################################
+set(libsynchronization_SRCS
+    synchronization/MasterSlaveSynchronizationJob.cpp
+    synchronization/SynchronizationBaseJob.cpp
+    synchronization/UnionJob.cpp
+)
+
+#####################################################################
 # ANALYZERS
 #####################################################################
 #set(libanalyzers_SRCS
@@ -330,6 +340,8 @@ set(collection_SRCS
     collection/support/MemoryMatcher.cpp
     collection/support/MemoryQueryMaker.cpp
     collection/support/MemoryQueryMakerHelper.cpp
+    collection/support/PlaylistCollection.cpp
+    collection/support/PlaylistCollectionLocation.cpp
     collection/support/XmlQueryReader.cpp
     collection/support/XmlQueryWriter.cpp
     collection/support/FileCollectionLocation.cpp
@@ -557,6 +569,7 @@ set(amaroklib_LIB_SRCS
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
     ${taglib_filetype_resolver_SRCS}
+    ${libsynchronization_SRCS}
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
     aboutdialog/ExtendedAboutDialog.cpp
