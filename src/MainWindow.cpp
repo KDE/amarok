@@ -773,12 +773,12 @@ MainWindow::createActions()
 
     action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Enqueue Track" ), this );
     ac->addAction( "enqueueTrack", action );
-    action->setGlobalShortcut( KShortcut( Qt::CTRL + Qt::Key_E ) );
+    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_E ) );
     connect( action, SIGNAL( triggered() ), SIGNAL( enqueueSelection() ) );
 
     action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Dequeue Track" ), this );
     ac->addAction( "dequeueTrack", action );
-    action->setGlobalShortcut( KShortcut( Qt::CTRL + Qt::Key_D ) );
+    action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_D ) );
     connect( action, SIGNAL( triggered() ), SIGNAL( dequeueSelection() ) );
 
     action = new KAction( i18n( "Rate Current Track: 1" ), this );
