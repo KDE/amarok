@@ -30,7 +30,7 @@ if(TAGLIBCONFIG_EXECUTABLE)
   exec_program(${TAGLIBCONFIG_EXECUTABLE} ARGS --version RETURN_VALUE _return_VALUE OUTPUT_VARIABLE TAGLIB_VERSION)
 
   if(TAGLIB_VERSION STRLESS "${TAGLIB_MIN_VERSION}")
-     message(STATUS "TagLib version not found: version searched :${TAGLIB_MIN_VERSION}, found ${TAGLIB_VERSION}")
+     message(STATUS "TagLib version too old: version searched :${TAGLIB_MIN_VERSION}, found ${TAGLIB_VERSION}")
      set(TAGLIB_FOUND FALSE)
   else(TAGLIB_VERSION STRLESS "${TAGLIB_MIN_VERSION}")
 
