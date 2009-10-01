@@ -764,12 +764,12 @@ MainWindow::createActions()
     action = new KAction( i18n( "Last.fm: Ban Current Track" ), this );
     ac->addAction( "banTrack", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
-    connect( action, SIGNAL( triggered() ), SLOT( slotBanTrack() ) );
+    connect( action, SIGNAL( triggered() ), SIGNAL( banTrack() ) );
 
     action = new KAction( i18n( "Last.fm: Skip Current Track" ), this );
     ac->addAction( "skipTrack", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_S ) );
-    connect( action, SIGNAL( triggered() ), SLOT( slotSkipTrack() ) );
+    connect( action, SIGNAL( triggered() ), SIGNAL( skipTrack() ) );
 
     action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Enqueue Track" ), this );
     ac->addAction( "enqueueTrack", action );

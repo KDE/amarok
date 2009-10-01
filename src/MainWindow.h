@@ -118,8 +118,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
     public slots:
         void showHide();
         void slotLoveTrack() { emit loveTrack( The::engineController()->currentTrack() ); }
-        void slotBanTrack() { emit banTrack(); }
-        void slotSkipTrack() { emit skipTrack(); }
         void hideContextView( bool hide );
 
         void setLayoutLocked( bool locked );
