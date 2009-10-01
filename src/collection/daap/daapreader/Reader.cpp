@@ -334,7 +334,6 @@ Reader::parseSongList( const QByteArray &data )
     QString year;
     qint32 trackNumber=0;
     qint32 songTime=0;
-    uint containerLength=0;
 
     while( !raw.atEnd() )
     {
