@@ -1,5 +1,6 @@
 ==1.3.2 (2009-10-01)==
 * update "This Artist on Jamendo" URLs to work in Amarok 2.2
+* some small service info beautifications
 
 ==1.3.1 (2009-06-13)==
 * show a link to the artist on the Jamendo service in the service info
