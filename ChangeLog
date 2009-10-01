@@ -13,8 +13,8 @@ VERSION 2.2.1
       play list time. (BR 91640)
     * Implemented Jump To. Press Ctrl+J to focus the playlist search.
       (BR 92400)
-    * Made Love/Skip/Ban available in Shortcuts configuration dialog.
-      (BR 136232)
+    * Made Love/Skip/Ban/Enqueue/Dequeue available in Shortcuts configuration
+      dialog. (BR 136232, BR 187542)
 
   CHANGES:
     * Usability improvements in the Context View's applet tab bar.
