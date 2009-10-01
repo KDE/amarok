@@ -410,6 +410,10 @@ ServiceSqlQueryMaker::addMatch( const DataPtr &data )
 QueryMaker*
 ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
+    if( value == Meta::valAlbumArtist )
+    {
+        return this;
+    }
     //a few hacks needed by some of the speedup code:
     if ( d->queryType == Private::GENRE )
     {
@@ -427,8 +431,12 @@ ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool match
 QueryMaker*
 ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    QString like = likeCondition( filter, !matchBegin, !matchEnd );
-    d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+
+    if( value != Meta::valAlbumArtist )
+    {
+        QString like = likeCondition( filter, !matchBegin, !matchEnd );
+        d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
+    }
     return this;
 }
 
