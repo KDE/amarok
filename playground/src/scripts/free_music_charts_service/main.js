@@ -256,8 +256,8 @@ function onPopulate( level, callbackData, filter ) {
 
       item.infoHtml = item.infoHtml + "<br/><br/><center>";
       item.infoHtml = item.infoHtml + "<a style=\"text-decoration:none;\"";
-      item.infoHtml = item.infoHtml + "href=\"amarok://navigate/service/Jamendo.com/artist-album/artist:%22";
-      item.infoHtml = item.infoHtml + songArtistTitle[0] + "%22\">";
+      item.infoHtml = item.infoHtml + "href=\"amarok://navigate/internet%2FJamendo.com?filter=artist%3A%22";
+      item.infoHtml = item.infoHtml + songArtistTitle[0] + "%22&levels=artist-album\">";
       item.infoHtml = item.infoHtml + songArtistTitle[0] + " on Jamendo</a></center>";
       item.infoHtml = item.infoHtml + "</div></div>";
 
