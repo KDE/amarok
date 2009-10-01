@@ -58,9 +58,13 @@ Required
 
 
 Optional
-    * libgpod 0.4.2 (or newer)
+    * libgpod 0.7.0 (or newer)
       (iPod support)
-      http://www.gtkpod.org/libgpod.html
+      http://www.gtkpod.org/libgpod/
+
+    * libmtp 0.3.x
+      (MTP device support)
+      http://libmtp.sourceforge.net/
 
     * Mp3tunes.com integration (including syncronization) requires:
       * OpenSSL http://www.openssl.org
