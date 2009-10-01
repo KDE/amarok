@@ -38,9 +38,6 @@ set(CMAKE_REQUIRED_LIBRARIES)
 
 set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
 find_package(Taglib-Extras REQUIRED)
-if( TAGLIB-EXTRAS_FOUND )
-    add_definitions( -DTAGLIB_EXTRAS_FOUND )
-endif( TAGLIB-EXTRAS_FOUND )
 
 include(CheckTagLibFileName)
 

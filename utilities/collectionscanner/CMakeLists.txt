@@ -4,11 +4,9 @@ include_directories( ../
                      charset-detector/src
                      charset-detector/src/tables
                      ${QT_INCLUDES}
+                     ${TAGLIB_INCLUDES}
+                     ${TAGLIB-EXTRAS_INCLUDES}
                    )
-
-if ( TAGLIB-EXTRAS_FOUND )
-    include_directories( ${include_directories} ${TAGLIB-EXTRAS_INCLUDE_DIR} )
-endif ( TAGLIB-EXTRAS_FOUND )
 
 add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
 
