@@ -10,7 +10,7 @@ if ( TAGLIB-EXTRAS_FOUND )
     include_directories( ${include_directories} ${TAGLIB-EXTRAS_INCLUDE_DIR} )
 endif ( TAGLIB-EXTRAS_FOUND )
 
-add_definitions(${TAGLIB_CFLAGS})
+add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
 
 #####################################################################
 # Character Encoding Detector
