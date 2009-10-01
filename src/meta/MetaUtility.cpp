@@ -564,3 +564,17 @@ Meta::prettyRating( int rating )
     }
     return "if you can see this, then that's a bad sign.";
 }
+
+TrackKey
+Meta::keyFromTrack( const Meta::TrackPtr &track )
+{
+    TrackKey k;
+    k.trackName = track->name();
+    if( track->artist() )
+        k.artistName = track->artist()->name();
+
+    if( track->album() )
+        k.albumName = track->album()->name();
+
+    return k;
+}

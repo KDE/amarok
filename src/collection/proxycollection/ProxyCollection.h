@@ -21,30 +21,11 @@
 
 #include "collection/Collection.h"
 #include "meta/Meta.h"
+#include "meta/MetaUtility.h"
 
 #include <QString>
 #include <QHash>
 #include <QReadWriteLock>
-
-struct AlbumKey
-{
-    QString albumName;
-    QString artistName;
-
-    AlbumKey &operator=( const AlbumKey &o )
-    { albumName = o.albumName; artistName = o.artistName; return *this; }
-};
-
-struct TrackKey
-{
-    QString trackName;
-    QString albumName;
-    QString artistName;
-    //more?
-
-    TrackKey &operator=( const TrackKey &o )
-    { trackName = o.trackName; albumName = o.albumName; artistName = o.artistName; return *this; }
-};
 
 namespace ProxyCollection
 {
@@ -137,34 +118,6 @@ namespace ProxyCollection
         QReadWriteLock m_trackLock;
 
     };
-
-    TrackKey keyFromTrack( const Meta::TrackPtr &track );
-}
-
-inline bool
-operator==( const TrackKey &k1, const TrackKey &k2 )
-{
-    return k1.trackName == k2.trackName &&
-                          k1.albumName == k2.albumName &&
-                          k1.artistName == k2.artistName;
-}
-
-inline uint
-qHash( const TrackKey &key )
-{
-    return qHash( key.trackName ) + 17 * qHash( key.albumName ) + 31 * qHash( key.artistName );
-}
-
-inline bool
-operator==( const AlbumKey &k1, const AlbumKey &k2 )
-{
-    return k1.albumName == k2.albumName && k1.artistName == k2.artistName;
-}
-
-inline uint
-qHash( const AlbumKey &key )
-{
-    return qHash( key.albumName ) + 17 * qHash( key.artistName );
 }
 
 #endif

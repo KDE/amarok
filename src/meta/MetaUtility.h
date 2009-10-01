@@ -29,6 +29,34 @@ namespace TagLib
     class FileRef;
 }
 
+class AMAROK_EXPORT AlbumKey
+{
+public:
+    QString albumName;
+    QString artistName;
+
+    AlbumKey() {}
+    AlbumKey( const QString &artist, const QString &album )
+    { artistName = artist; albumName = album; }
+
+    AlbumKey &operator=( const AlbumKey &o )
+    { albumName = o.albumName; artistName = o.artistName; return *this; }
+};
+
+class AMAROK_EXPORT TrackKey
+{
+public:
+    QString trackName;
+    QString albumName;
+    QString artistName;
+    //more?
+
+    TrackKey() {}
+
+    TrackKey &operator=( const TrackKey &o )
+    { trackName = o.trackName; albumName = o.albumName; artistName = o.artistName; return *this; }
+};
+
 namespace Meta
 {
     class Track;
@@ -85,6 +113,34 @@ namespace Meta
     AMAROK_EXPORT QString prettyBitrate( int bitrate );
 
     AMAROK_EXPORT QString prettyRating( int rating );
+
+    AMAROK_EXPORT TrackKey keyFromTrack( const Meta::TrackPtr &track );
+}
+
+inline bool
+operator==( const TrackKey &k1, const TrackKey &k2 )
+{
+    return k1.trackName == k2.trackName &&
+                          k1.albumName == k2.albumName &&
+                          k1.artistName == k2.artistName;
+}
+
+inline uint
+qHash( const TrackKey &key )
+{
+    return qHash( key.trackName ) + 17 * qHash( key.albumName ) + 31 * qHash( key.artistName );
+}
+
+inline bool
+operator==( const AlbumKey &k1, const AlbumKey &k2 )
+{
+    return k1.albumName == k2.albumName && k1.artistName == k2.artistName;
+}
+
+inline uint
+qHash( const AlbumKey &key )
+{
+    return qHash( key.albumName ) + 17 * qHash( key.artistName );
 }
 
 #endif
