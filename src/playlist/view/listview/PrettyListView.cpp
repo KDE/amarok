@@ -2,7 +2,7 @@
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
- * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                                                                                     *
+ * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -102,17 +102,17 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 
-     m_animationTimer = new QTimer(this);
-     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
-     m_animationTimer->setInterval( 250 );
+    m_animationTimer = new QTimer(this);
+    connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
+    m_animationTimer->setInterval( 250 );
 
-     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
-     
-     if ( LayoutManager::instance()->activeLayout().inlineControls() )
-         m_animationTimer->start();
+    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
 
-     connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
-     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
+    if ( LayoutManager::instance()->activeLayout().inlineControls() )
+        m_animationTimer->start();
+
+    connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
+    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -189,7 +189,6 @@ Playlist::PrettyListView::dequeueSelection()
 
 void Playlist::PrettyListView::selectSource()
 {
-
     DEBUG_BLOCK
 
     QList<int> rows = selectedRows();
@@ -212,9 +211,7 @@ void Playlist::PrettyListView::selectSource()
         sourceSelector->show();
         //dialog deletes msc when done with it.
     }
-
 }
-
 
 void
 Playlist::PrettyListView::scrollToActiveTrack()
@@ -389,25 +386,20 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
 {
-
-
     //first of all, if a left click, check if the delegate wants to do something about this click
     if( event->button() == Qt::LeftButton )
     {
-
         //get the item that was clicked
         QModelIndex index = indexAt( event->pos() );
 
         //we need to translate the position of the click into something relative to the item that was clicked.
         QRect itemRect = visualRect( index );
         QPoint relPos =  event->pos() - itemRect.topLeft();
-        
+
         if ( m_prettyDelegate->clicked( relPos, itemRect, index ) )
             return;  //click already handled...
-
     }
 
-    
     if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) )
     {
         m_mousePressInHeader = true;
@@ -623,7 +615,6 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     else
         emit( notFound() );
 
-
     //instead of kicking the proxy right away, start a 500msec timeout.
     //this stops us from updating it for each letter of a long search term,
     //and since it does not affect any views, this is fine. Worst case is that
@@ -803,5 +794,3 @@ void Playlist::PrettyListView::restoreTrackSelection()
 }
 
 #include "PrettyListView.moc"
-
-
