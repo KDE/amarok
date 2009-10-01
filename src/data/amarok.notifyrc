@@ -1,15 +1,22 @@
 [Global]
 Comment=Amarok
+Comment[it]=Amarok
+Comment[nl]=Amarok
 Comment[pt]=Amarok
+Comment[pt_BR]=Amarok
 Comment[uk]=Amarok
 Comment[x-test]=xxAmarokxx
 
 [Event/trackChange]
 Name=Track Change
+Name[it]=Cambiamento della traccia
+Name[nl]=Wijziging van track
 Name[pt]=Mudança de Faixa
 Name[uk]=Зміна композиції
 Name[x-test]=xxTrack Changexx
 Comment=Amarok changed to a new track
+Comment[it]=Amarok è passato a una nuova traccia
+Comment[nl]=Amarok is naar een nieuwe track gegaan
 Comment[pt]=O Amarok mudou para uma faixa nova
 Comment[uk]=Композиція у Amarok змінилася
 Comment[x-test]=xxAmarok changed to a new trackxx
