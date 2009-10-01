@@ -55,7 +55,7 @@ namespace Meta
              */
             virtual void trackRemoved( PlaylistPtr playlist, int position ) = 0;
 
-            virtual ~PlaylistObserver() {}
+            virtual ~PlaylistObserver();
 
         private:
             QSet<PlaylistPtr> m_playlistSubscriptions;
