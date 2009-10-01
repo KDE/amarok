@@ -20,6 +20,7 @@
 
 #include "ProxyCollectionMeta.h"
 
+#include "meta/MetaUtility.h"
 #include "ProxyCollection.h"
 
 #include "Debug.h"
@@ -486,8 +487,8 @@ ProxyCollection::Track::metadataChanged( Meta::TrackPtr track )
         return;
     }
 
-    const TrackKey myKey = ProxyCollection::keyFromTrack( Meta::TrackPtr( this ) );
-    const TrackKey otherKey = ProxyCollection::keyFromTrack( track );
+    const TrackKey myKey = Meta::keyFromTrack( Meta::TrackPtr( this ) );
+    const TrackKey otherKey = Meta::keyFromTrack( track );
     if( myKey == otherKey )
     {
         //no key relevant metadata did change
