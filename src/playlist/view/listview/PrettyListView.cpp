@@ -179,12 +179,14 @@ void
 Playlist::PrettyListView::queueSelection()
 {
     Actions::instance()->queue( selectedRows() );
+    update(); // repaint list when using shortcuts
 }
 
 void
 Playlist::PrettyListView::dequeueSelection()
 {
     Actions::instance()->dequeue( selectedRows() );
+    update(); // repaint list when using shortcuts
 }
 
 void Playlist::PrettyListView::selectSource()
@@ -313,9 +315,12 @@ void
 Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
 {
     QModelIndex index = indexAt( event->pos() );
-    if ( index.isValid() ) {
+    if ( index.isValid() )
+    {
         m_dropIndicator = visualRect( index );
-    } else {
+    }
+    else
+    {
         // draw it on the bottom of the last item
         index = model()->index( m_topmostProxy->rowCount() - 1, 0, QModelIndex() );
         m_dropIndicator = visualRect( index );

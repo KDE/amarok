@@ -771,6 +771,16 @@ MainWindow::createActions()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_S ) );
     connect( action, SIGNAL( triggered() ), SLOT( slotSkipTrack() ) );
 
+    action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Enqueue Track" ), this );
+    ac->addAction( "enqueueTrack", action );
+    action->setGlobalShortcut( KShortcut( Qt::CTRL + Qt::Key_E ) );
+    connect( action, SIGNAL( triggered() ), SIGNAL( enqueueSelection() ) );
+
+    action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Dequeue Track" ), this );
+    ac->addAction( "dequeueTrack", action );
+    action->setGlobalShortcut( KShortcut( Qt::CTRL + Qt::Key_D ) );
+    connect( action, SIGNAL( triggered() ), SIGNAL( dequeueSelection() ) );
+
     action = new KAction( i18n( "Rate Current Track: 1" ), this );
     ac->addAction( "rate1", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_1 ) );

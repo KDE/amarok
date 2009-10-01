@@ -112,6 +112,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void loveTrack( Meta::TrackPtr track );
         void banTrack();
         void skipTrack();
+        void enqueueSelection();
+        void dequeueSelection();
 
     public slots:
         void showHide();
