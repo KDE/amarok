@@ -92,7 +92,7 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
         {
             case GroupLength:
             {
-                return Meta::secToPrettyTime( lengthOfGroup( row ) );
+                return Meta::msToPrettyTime( lengthOfGroup( row ) );
             }
             case GroupTracks:
             {
