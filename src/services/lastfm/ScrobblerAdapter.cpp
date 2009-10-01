@@ -45,7 +45,8 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
         ldir.mkpath( lpath );
     }
     
-    connect( The::mainWindow(), SIGNAL( loveTrack(Meta::TrackPtr) ), SLOT( loveTrack(Meta::TrackPtr) ) );
+    connect( The::mainWindow(), SIGNAL( loveTrack( Meta::TrackPtr) ), SLOT( loveTrack( Meta::TrackPtr ) ) );
+    connect( The::mainWindow(), SIGNAL( banTrack() ), SLOT( banTrack() ) );
 }
 
 
@@ -193,7 +194,7 @@ ScrobblerAdapter::love()
 }
 
 void
-ScrobblerAdapter::loveTrack( Meta::TrackPtr track )
+ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
 {
     DEBUG_BLOCK
 
@@ -210,6 +211,13 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track )
     }
 }
 
+void
+ScrobblerAdapter::banTrack() // slot
+{
+    DEBUG_BLOCK
+
+    m_current.ban();
+}
 
 void
 ScrobblerAdapter::ban()

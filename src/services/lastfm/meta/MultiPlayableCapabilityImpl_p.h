@@ -42,6 +42,7 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
             subscribeTo( trackptr );
             
             connect( track, SIGNAL( skipTrack() ), this, SLOT( skip() ) );
+            connect( The::mainWindow(), SIGNAL( skipTrack() ), SLOT( skip() ) );
         }
 
         virtual ~MultiPlayableCapabilityImpl() 

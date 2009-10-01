@@ -109,11 +109,15 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         bool isLayoutLocked();
 
     signals:
-        void loveTrack( Meta::TrackPtr );
+        void loveTrack( Meta::TrackPtr track );
+        void banTrack();
+        void skipTrack();
 
     public slots:
         void showHide();
-        void loveTrack();
+        void slotLoveTrack() { emit loveTrack( The::engineController()->currentTrack() ); }
+        void slotBanTrack() { emit banTrack(); }
+        void slotSkipTrack() { emit skipTrack(); }
         void hideContextView( bool hide );
 
         void setLayoutLocked( bool locked );

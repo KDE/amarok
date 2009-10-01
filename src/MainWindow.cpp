@@ -603,14 +603,6 @@ MainWindow::showHide() //SLOT
 }
 
 void
-MainWindow::loveTrack()
-{
-    Meta::TrackPtr cTrack = The::engineController()->currentTrack();
-    if( cTrack )
-        emit loveTrack( cTrack );
-}
-
-void
 MainWindow::activate()
 {
 #ifdef Q_WS_X11
@@ -764,10 +756,20 @@ MainWindow::createActions()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_M ) );
     connect( action, SIGNAL( triggered() ), ec, SLOT( toggleMute() ) );
 
-    action = new KAction( i18n( "Love Current Track" ), this );
+    action = new KAction( i18n( "Last.fm: Love Current Track" ), this );
     ac->addAction( "loveTrack", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_L ) );
-    connect( action, SIGNAL(triggered()), SLOT(loveTrack()) );
+    connect( action, SIGNAL( triggered() ), SLOT( slotLoveTrack() ) );
+
+    action = new KAction( i18n( "Last.fm: Ban Current Track" ), this );
+    ac->addAction( "banTrack", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
+    connect( action, SIGNAL( triggered() ), SLOT( slotBanTrack() ) );
+
+    action = new KAction( i18n( "Last.fm: Skip Current Track" ), this );
+    ac->addAction( "skipTrack", action );
+    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_S ) );
+    connect( action, SIGNAL( triggered() ), SLOT( slotSkipTrack() ) );
 
     action = new KAction( i18n( "Rate Current Track: 1" ), this );
     ac->addAction( "rate1", action );

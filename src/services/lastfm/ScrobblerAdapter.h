@@ -46,6 +46,7 @@ public:
 
 public slots:
     void loveTrack( Meta::TrackPtr );
+    void banTrack();
 
 private:
     void resetVariables();
