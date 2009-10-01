@@ -35,6 +35,7 @@ var stationArray = new Array (
     new Station( "Afterhours.FM [Trance/Livesets]",                     "http://www.ah.fm/192k.m3u" ),
     new Station( "Bassdrive [Drum \'n Bass]",                           "http://www.bassdrive.com/v2/streams/BassDrive.m3u" ),
     new Station( "Bluemars [Ambient/Space-Music]",                      "http://207.200.96.225:8020/listen.pls" ),
+    new Station( "Darkerradio [Alternative/Indie/Goth/Wave]",           "http://www.darkerradio.com/listen.pls" ),
     new Station( "Digitally Imported - Chillout [Chill-Out]",           "http://di.fm/mp3/classictechno.pls" ),
     new Station( "Digitally Imported - Classic Techno [Techno]",        "http://di.fm/mp3/classictechno.pls" ),
     new Station( "Digitally Imported - Trance [Trance]",                "http://di.fm/mp3/trance.pls" ),
