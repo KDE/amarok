@@ -101,7 +101,7 @@ set(libproxycollection_SRCS
 set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/MediaDeviceCollection.cpp
   collection/mediadevicecollection/MediaDeviceCollectionLocation.cpp
-  collection/mediadevicecollection/MediaDeviceMeta.cpp  
+  collection/mediadevicecollection/MediaDeviceMeta.cpp
   collection/mediadevicecollection/MediaDeviceCollectionCapability.cpp
   collection/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
@@ -292,6 +292,7 @@ set(meta_SRCS
     meta/Meta.cpp
     meta/MetaUtility.cpp
     ../shared/MetaReplayGain.cpp
+    meta/Playlist.cpp
     meta/PLSPlaylist.cpp
     meta/StatisticsProvider.cpp
     meta/PlaylistFileSupport.cpp
@@ -769,7 +770,7 @@ set(amarok_SRCS main.cpp )
 
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
 
-if(Q_WS_MAC)    
+if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
     target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
     SET_TARGET_PROPERTIES(Amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
