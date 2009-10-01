@@ -382,9 +382,9 @@ bool Amarok::TimeSlider::event ( QEvent * event )
             //figure out "percentage" of mouse position
             qreal percentage = (qreal) helpEvent->x() / (qreal) width();
             long trackLength = The::engineController()->trackLength();
-            int positionTime = trackLength * percentage;
+            int trackPosition = trackLength * percentage;
 
-            setToolTip( Meta::secToPrettyTime( positionTime ) );
+            setToolTip( Meta::msToPrettyTime( trackPosition ) );
         }
             
     }
