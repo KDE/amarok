@@ -15,7 +15,7 @@ include_directories(
         ${QT_INCLUDES}
         ${MYSQL_INCLUDE_DIR}
         ${TAGLIB_INCLUDES}
-        ${TAGLIB-EXTRAS_INCLUDE_DIR}
+        ${TAGLIB-EXTRAS_INCLUDES}
         )
 
 if (NOT WIN32)
