@@ -26,6 +26,18 @@
 
 #include <QTimer>
 
+
+namespace Amarok
+{
+    KNotificationBackend* KNotificationBackend::s_instance = 0;
+
+    KNotificationBackend*
+    KNotificationBackend::instance()
+    {
+        return s_instance ? s_instance : new KNotificationBackend();
+    }
+}
+
 Amarok::KNotificationBackend::KNotificationBackend()
     : EngineObserver( The::engineController() )
 {

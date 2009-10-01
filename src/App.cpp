@@ -668,7 +668,7 @@ App::continueInit()
     PERF_LOG( "Done creating MainWindow" )
 
     m_tray = new Amarok::TrayIcon( mainWindow() );
-    new Amarok::KNotificationBackend();
+    Amarok::KNotificationBackend::instance();
 
     PERF_LOG( "Creating DBus handlers" )
     new Amarok::RootDBusHandler();

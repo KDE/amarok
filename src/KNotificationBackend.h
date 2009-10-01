@@ -32,8 +32,7 @@ class KNotificationBackend : public QObject, public EngineObserver
     Q_OBJECT
 
 public:
-    KNotificationBackend();
-    ~KNotificationBackend();
+    static KNotificationBackend* instance();
 
 public Q_SLOTS:
 
@@ -46,6 +45,11 @@ private Q_SLOTS:
     void slotShowCurrentTrack();
 
 private:
+    KNotificationBackend();
+    ~KNotificationBackend();
+
+    static KNotificationBackend* s_instance;
+    
     QTimer *m_timer;
 
 };
