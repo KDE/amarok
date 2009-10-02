@@ -27,7 +27,6 @@
 typedef QMap<int, QVariant> RoleVariantMap;
 typedef QMap<int, RoleVariantMap> ColumnVariantMap;
 
-static bool compareColumnVariantMap( const ColumnVariantMap &a, const ColumnVariantMap &b );
 
 class QtGroupingProxy : public QAbstractProxyModel
 {

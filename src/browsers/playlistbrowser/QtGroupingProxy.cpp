@@ -22,33 +22,6 @@
 #include <QIcon>
 #include <QInputDialog>
 
-bool
-compareColumnVariantMap( const ColumnVariantMap &a, const ColumnVariantMap &b )
-{
-    //qDebug() << QString("comparing: %1 with %2").arg(a[0][Qt::DisplayRole].toString()).arg(b[0][Qt::DisplayRole].toString());
-    foreach( int column, a.keys() )
-    {
-        //qDebug() << "column: " << column;
-        const RoleVariantMap &roleMap = a[column];
-        foreach( int role, roleMap.keys() )
-        {
-            //qDebug() << "role: " << role;
-            //ignore usertypes since we can not compare those.
-            if( roleMap[role].type() == QMetaType::QIcon )
-            {
-                //qDebug() << QString("ignore %1 since we can not compare those.").arg(roleMap[role].typeName());
-                continue;
-            }
-            if( roleMap[role] != b[column][role] )
-            {
-                //qDebug() << "Doesn't match!";
-                return false;
-            }
-        }
-    }
-    //qDebug() << "Matches!";
-    return true;
-}
 
 QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNode, int groupedColumn )
     : QAbstractProxyModel()
