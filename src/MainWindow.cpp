@@ -763,7 +763,7 @@ MainWindow::createActions()
 
     action = new KAction( i18n( "Last.fm: Ban Current Track" ), this );
     ac->addAction( "banTrack", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
+    //action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
     connect( action, SIGNAL( triggered() ), SIGNAL( banTrack() ) );
 
     action = new KAction( i18n( "Last.fm: Skip Current Track" ), this );
