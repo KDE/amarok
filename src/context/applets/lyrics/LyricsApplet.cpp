@@ -264,6 +264,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_suggested->hide();
         m_lyrics->setHtml( data[ "html" ].toString() );
         m_lyrics->show();
+        m_titleText = QString( "%1 : %2" ).arg( i18n( "Lyrics" ) ).arg( data[ "html" ].toString().section( "<title>", 1, 1 ).section( "</title>", 0, 0 ) );
         setCollapseOff();
         emit sizeHintChanged(Qt::MaximumSize);
     }
