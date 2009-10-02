@@ -91,6 +91,8 @@ PlaylistCollection::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track
 void
 PlaylistCollection::trackRemoved( Meta::PlaylistPtr playlist, int position )
 {
+    Q_UNUSED( position )
+
     //ok, what now? is the removed track still availabe at position
     //as this is not clear from the API, and apparently not used
     //anywhere, do it the hard way...

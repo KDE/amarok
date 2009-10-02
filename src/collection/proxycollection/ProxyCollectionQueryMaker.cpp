@@ -569,6 +569,8 @@ ProxyQueryMaker::handleResult()
 void
 ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::TrackList &tracks )
 {
+    Q_UNUSED( collectionId )
+
     foreach( const Meta::TrackPtr &track, tracks )
     {
         m_tracks.insert( KSharedPtr<ProxyCollection::Track>( m_collection->getTrack( track ) ) );
@@ -578,6 +580,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Tr
 void
 ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::ArtistList &artists )
 {
+    Q_UNUSED( collectionId )
+
     foreach( const Meta::ArtistPtr &artist, artists )
     {
         m_artists.insert( KSharedPtr<ProxyCollection::Artist>( m_collection->getArtist( artist ) ) );
@@ -587,6 +591,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ar
 void
 ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::AlbumList &albums )
 {
+    Q_UNUSED( collectionId )
+
     foreach( const Meta::AlbumPtr &album, albums )
     {
         m_albums.insert( KSharedPtr<ProxyCollection::Album>( m_collection->getAlbum( album ) ) );
@@ -596,6 +602,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Al
 void
 ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::GenreList &genres )
 {
+    Q_UNUSED( collectionId )
+
     foreach( const Meta::GenrePtr &genre, genres )
     {
         m_genres.insert( KSharedPtr<ProxyCollection::Genre>( m_collection->getGenre( genre ) ) );
@@ -605,6 +613,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ge
 void
 ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::ComposerList &composers )
 {
+    Q_UNUSED( collectionId )
+
     foreach( const Meta::ComposerPtr &composer, composers )
     {
         m_composers.insert( KSharedPtr<ProxyCollection::Composer>( m_collection->getComposer( composer ) ) );
@@ -614,6 +624,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Co
 void
 ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::YearList &years )
 {
+    Q_UNUSED( collectionId )
+
     foreach( const Meta::YearPtr &year, years )
     {
         m_years.insert( KSharedPtr<ProxyCollection::Year>( m_collection->getYear( year ) ) );

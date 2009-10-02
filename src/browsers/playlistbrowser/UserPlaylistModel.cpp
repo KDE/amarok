@@ -296,10 +296,11 @@ PlaylistBrowserNS::UserModel::headerData(int section, Qt::Orientation orientatio
 }
 
 bool
-PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &value,
-                                      int role )
+PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
+    Q_UNUSED( role )
     DEBUG_BLOCK
+
     switch( idx.column() )
     {
         case PlaylistColumn:
@@ -319,6 +320,7 @@ PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &v
         default:
             return false;
     }
+
     return true;
 }
 
