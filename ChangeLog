@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Middle-clicking an item in the Collection Browser appends it to the
+      playlist. Patch by Felix Geyer <debfx-kde@fobos.de>. (BR 197423)
     * Added feature for removing duplicates from the playlist. Patch by John
       Atkinson <john@fauxnetic.co.uk>. (BR 200445)
     * Allow changing of playlist layout item sizes using the inline editor.

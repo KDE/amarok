@@ -275,20 +275,20 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
-    QModelIndex origIndex = indexAt( event->pos() );
-    QModelIndex filteredIndex;
-    if( m_filterModel )
-        filteredIndex = m_filterModel->mapToSource( indexAt( event->pos() ) );
-    else
-        filteredIndex = indexAt( event->pos() );
-
-    if( !filteredIndex.isValid() )
+    if( event->button() == Qt::MidButton )
     {
         event->accept();
         return;
     }
 
-    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( filteredIndex.internalPointer() );
+    QModelIndex origIndex = indexAt( event->pos() );
+    CollectionTreeItem *item = getItemFromIndex( origIndex );
+
+    if( !item )
+    {
+        event->accept();
+        return;
+    }
 
     if( event->button() != Qt::LeftButton || event->modifiers()
         || KGlobalSettings::singleClick() || ( item && item->isTrackItem() ) )
@@ -326,6 +326,18 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     m_pd = 0;
 
     setItemsExpandable( true );
+    if( event->button() == Qt::MidButton )
+    {
+        QModelIndex origIndex = indexAt( event->pos() );
+        CollectionTreeItem *item = getItemFromIndex( origIndex );
+        if ( item )
+        {
+            playChildTracks( item, Playlist::AppendAndPlay );
+            update();
+            event->accept();
+            return;
+        }
+    }
     if( event->button() != Qt::LeftButton
             || event->modifiers()
             || selectedIndexes().size() > 1)
@@ -370,6 +382,22 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
     }
     else
         Amarok::PrettyTreeView::mouseMoveEvent( event );
+}
+
+CollectionTreeItem* CollectionTreeView::getItemFromIndex( QModelIndex &index )
+{
+    QModelIndex filteredIndex;
+    if( m_filterModel )
+        filteredIndex = m_filterModel->mapToSource( index );
+    else
+        filteredIndex = index;
+
+    if( !filteredIndex.isValid() )
+    {
+        return NULL;
+    }
+
+    return static_cast<CollectionTreeItem*>( filteredIndex.internalPointer() );
 }
 
 void CollectionTreeView::slotClickTimeout()
