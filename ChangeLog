@@ -32,6 +32,7 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * Correctly set the lyrics applet's title when displaying HTML formatted lyrics
     * Track selection is now correctly preserved when using Dynamic Playlists.
       Patch by John Atkinson <john@fauxnetic.co.uk>. (BR 208349)
     * Cover Manager no longer stops when one cover cannot be fetched. Patch by
