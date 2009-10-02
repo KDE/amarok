@@ -252,6 +252,7 @@ set(libcollectionbrowser_SRCS
 #####################################################################
 set(libsynchronization_SRCS
     synchronization/MasterSlaveSynchronizationJob.cpp
+    synchronization/OneWaySynchronizationJob.cpp
     synchronization/SynchronizationBaseJob.cpp
     synchronization/UnionJob.cpp
 )
