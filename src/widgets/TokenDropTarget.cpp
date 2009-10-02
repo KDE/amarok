@@ -351,7 +351,7 @@ void
 TokenDropTarget::insertToken( Token *token, int row, int col )
 {
     QBoxLayout *box = 0;
-    if ( row < 0 && rows() >= rowLimit() )
+    if ( row < 0 && rows() >= (int)rowLimit() )
         row = rowLimit() - 1; // want to append, but we can't so use the last row instead
 
     if ( row < 0 || row > rows() - 1 )
