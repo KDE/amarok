@@ -69,6 +69,7 @@ include_directories(
     ../tests/timecode/
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
+    ${TAGLIB-EXTRAS_INCLUDES}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${APPLE_SECURITY_INCLUDE_DIR}
