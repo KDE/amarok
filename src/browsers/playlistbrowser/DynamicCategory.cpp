@@ -150,9 +150,9 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_biasListView = new QListView( this );
     m_biasListView->setFrameShape( QFrame::NoFrame );
-
-
+    m_biasListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
     m_biasListView->setAlternatingRowColors( true );
+
     The::paletteHandler()->updateItemView( m_biasListView );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 
