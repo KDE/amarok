@@ -14,16 +14,16 @@ interface that really makes playlist handling easy.
 
     * Quick and simple drag and drop playlist creation
     * Music library
-    * Cross platform. Support for Unix, MacOS X and Windows.
+    * Cross platform: Support for Unix, MacOS X and Windows
     * Plays all audio formats known to man
-    * Cover art download using Amazon services
+    * Cover art download using Last.fm services
     * Automatic play-statistics generation (iRate style)
     * Full lyrics download
     * Learn about your music with integrated Wikipedia
     * Full Last.fm support
-    * Fully configurable on screen display for track changes
+    * Configurable on screen display for track changes
     * Podcast support
-    * iPod support
+    * iPod support, as well as other media players
     * Powerful scripting interface
     * KDE integration
     * Integration with multiple web sources, Magnatune, Jamendo, Ampache and Mp3tunes 
@@ -37,6 +37,9 @@ interface that really makes playlist handling easy.
 Required
     * KDE-Libs 4.2 + KDE-Base-runtime 4.2 (or newer)
       http://www.kde.org
+
+    * Qt 4.4 (or newer)
+      http://qt.nokia.com/
 
     * TagLib 1.6 (or newer)
       (Metadata tagging library)
@@ -132,15 +135,15 @@ homepage (as long as you don't object).
 
 If you wish to contribute to Amarok, you should build it from Git and subscribe
 to the amarok AT kde.org mailing list. The IRC channel is also a place where
-it's  nice  to  be, since you can talk to other developers much easier, and
-get instant notification of commits to the master git repo. For instant email notification
-of commits, visit http://commitfilter.kde.org/ and http://amarok.be/fisheye
+it's nice to be. There you can talk to other developers easily, and you can see
+instant notifications of commits to the Git master repository. For instant email 
+notification of commits, visit http://commitfilter.kde.org/ and http://amarok.be/fisheye
 provides a slightly-less-instant overview.
 
-More info at:
+More information at:
 http://amarok.kde.org/wiki/Development/Join
 
-See you in IRC!
+See you on IRC!
 
 --------------------------------------------------------------------------------
 
