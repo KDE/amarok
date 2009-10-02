@@ -34,6 +34,9 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * When using a MySQL server, very long periods of idle Amarok could allow
+      the server to close the local connection. This is now detected and
+      should be worked around.
     * Correctly set the lyrics applet's title when displaying HTML formatted lyrics
     * Track selection is now correctly preserved when using Dynamic Playlists.
       Patch by John Atkinson <john@fauxnetic.co.uk>. (BR 208349)

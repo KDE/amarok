@@ -45,6 +45,7 @@ class MySqlServerCollection: public MySqlCollection
         virtual ~MySqlServerCollection();
 
         virtual QString type() const;
+        virtual QStringList query( const QString &query );
 };
 
 #endif

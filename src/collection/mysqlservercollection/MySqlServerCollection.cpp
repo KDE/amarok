@@ -75,6 +75,12 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
     }
     else
     {
+        my_bool reconnect = true;
+        if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
+            reportError( "Asking for automatic reconnect did not succeed!" );
+        else
+            debug() << "Automatic reconnect successfully activated";
+
         QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
         if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
             reportError( "SET NAMES 'utf8' died" );
@@ -101,6 +107,32 @@ QString
 MySqlServerCollection::type() const
 {
     return "MySQL";
+}
+
+QStringList
+MySqlServerCollection::query( const QString &query )
+{
+    unsigned long tid = mysql_thread_id( m_db );
+
+    int res = mysql_ping( m_db );
+    if( res )
+    {
+        reportError( "mysql_ping failed!" );
+        return QStringList();
+    }
+
+    if( tid != mysql_thread_id( m_db ) )
+    {
+        debug() << "NOTE: MySQL server had gone away, ping reconnected it";
+        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
+        if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
+            reportError( "SET NAMES 'utf8' died" );
+        if( mysql_query( m_db, QString( "USE %1" ).arg( databaseName ).toUtf8() ) )
+            reportError( "Could not select database" );
+    }
+
+
+    return MySqlCollection::query( query );
 }
 
 #include "MySqlServerCollection.moc"
