@@ -111,7 +111,8 @@ EngineObserver::engineDeleted()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 EngineSubject::EngineSubject()
-    : m_realState( Phonon::StoppedState )
+    : QObject()
+    , m_realState( Phonon::StoppedState )
 {}
 
 EngineSubject::~EngineSubject()
@@ -211,6 +212,11 @@ void EngineSubject::attach( EngineObserver *observer )
 {
     if( !observer )
         return;
+
+    QObject* object = dynamic_cast<QObject*>( observer );
+    if( object )
+        connect( object, SIGNAL( destroyed( QObject* ) ), this, SLOT( observerDestroyed( QObject* ) ) );
+
     Observers.insert( observer );
 }
 
@@ -218,6 +224,16 @@ void EngineSubject::attach( EngineObserver *observer )
 void EngineSubject::detach( EngineObserver *observer )
 {
     Observers.remove( observer );
+}
+
+void EngineSubject::observerDestroyed( QObject* object ) //SLOT
+{
+    DEBUG_BLOCK
+
+    EngineObserver* observer = reinterpret_cast<EngineObserver*>( object ); // cast is OK, it's guaranteed to be an EngineObserver
+    Observers.remove( observer );
+
+    debug() << "Removed EngineObserver: " << observer;
 }
 
 /* Try to detect MetaData spam in Streams. */

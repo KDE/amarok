@@ -157,8 +157,10 @@ private:
  * Inherited by EngineController.
  * Notify observer functionality is captured in this class.
  */
-class EngineSubject
+class EngineSubject : public QObject
 {
+    Q_OBJECT
+
     friend class EngineObserver;
 
 protected:
@@ -174,6 +176,9 @@ protected:
     void trackLengthChangedNotify( qint64 seconds );
     void newTrackPlaying() const;
     void trackChangedNotify( Meta::TrackPtr track );
+
+private Q_SLOTS:
+    void observerDestroyed( QObject* object );
 
 private:
     void attach( EngineObserver *observer );
