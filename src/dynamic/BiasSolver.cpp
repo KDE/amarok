@@ -717,7 +717,6 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
     return playlist;
 }
 
-
 Meta::TrackPtr
 Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset )
 {
@@ -730,7 +729,15 @@ Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset )
     int giveup = 50;
     while( giveup-- && !track )
         track = trackForUid( subset[ KRandom::random() % subset.size() ] );
-    debug() << "track selected:" << track->name() << track->artist()->name();
+
+    if( track )
+    {
+        if( track->artist() )
+            debug() << "track selected:" << track->name() << track->artist()->name();
+    }
+    else
+        error() << "track is 0 in BiasSolver::getRandomTrack()";
+    
     return track;
 }
 
