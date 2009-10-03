@@ -18,7 +18,8 @@
 #include "Meta.h"
 
 
-namespace The {
+namespace The
+{
     static GlobalCollectionActions* s_GlobalCollectionActions_instance = 0;
 
     GlobalCollectionActions* globalCollectionActions()
@@ -31,13 +32,11 @@ namespace The {
 }
 
 GlobalCollectionActions::GlobalCollectionActions()
-{
-}
+{}
 
 
 GlobalCollectionActions::~GlobalCollectionActions()
-{
-}
+{}
 
 void
 GlobalCollectionActions::addGenreAction( GlobalCollectionGenreAction * action )
@@ -187,15 +186,14 @@ GlobalCollectionActions::actionsFor( Meta::ComposerPtr composer )
 
 GlobalCollectionAction::GlobalCollectionAction( const QString &text, QObject * parent )
     : QAction( text, parent )
-{
-}
+{}
 
 GlobalCollectionGenreAction::GlobalCollectionGenreAction( const QString &text, QObject * parent )
     : GlobalCollectionAction( text, parent )
-{
-}
+{}
 
-void GlobalCollectionGenreAction::setGenre( Meta::GenrePtr genre )
+void
+GlobalCollectionGenreAction::setGenre( Meta::GenrePtr genre )
 {
     m_currentGenre = genre;
 }
@@ -207,10 +205,10 @@ Meta::GenrePtr GlobalCollectionGenreAction::genre()
 
 GlobalCollectionArtistAction::GlobalCollectionArtistAction( const QString &text, QObject * parent )
     : GlobalCollectionAction( text, parent )
-{
-}
+{}
 
-void GlobalCollectionArtistAction::setArtist( Meta::ArtistPtr artist )
+void
+GlobalCollectionArtistAction::setArtist( Meta::ArtistPtr artist )
 {
     m_currentArtist = artist;
 }
@@ -222,8 +220,7 @@ Meta::ArtistPtr GlobalCollectionArtistAction::artist()
 
 GlobalCollectionAlbumAction::GlobalCollectionAlbumAction( const QString &text, QObject * parent )
     : GlobalCollectionAction( text, parent )
-{
-}
+{}
 
 void GlobalCollectionAlbumAction::setAlbum( Meta::AlbumPtr album )
 {
@@ -237,49 +234,49 @@ Meta::AlbumPtr GlobalCollectionAlbumAction::album()
 
 GlobalCollectionTrackAction::GlobalCollectionTrackAction( const QString &text, QObject * parent )
     : GlobalCollectionAction( text, parent )
-{
-}
+{}
 
 void GlobalCollectionTrackAction::setTrack( Meta::TrackPtr track )
 {
     m_currentTrack = track;
 }
 
-Meta::TrackPtr GlobalCollectionTrackAction::track()
+Meta::TrackPtr
+GlobalCollectionTrackAction::track()
 {
     return m_currentTrack;
 }
 
 GlobalCollectionYearAction::GlobalCollectionYearAction( const QString &text, QObject * parent )
     : GlobalCollectionAction( text, parent )
-{
-}
+{}
 
-void GlobalCollectionYearAction::setYear( Meta::YearPtr year )
+void
+GlobalCollectionYearAction::setYear( Meta::YearPtr year )
 {
     m_currentYear = year;
 }
 
-Meta::YearPtr GlobalCollectionYearAction::year()
+Meta::YearPtr
+GlobalCollectionYearAction::year()
 {
     return m_currentYear;
 }
 
 GlobalCollectionComposerAction::GlobalCollectionComposerAction( const QString &text, QObject * parent )
     : GlobalCollectionAction( text, parent )
-{
-}
+{}
 
-void GlobalCollectionComposerAction::setComposer(Meta::ComposerPtr composer)
+void
+GlobalCollectionComposerAction::setComposer(Meta::ComposerPtr composer)
 {
     m_currentComposer = composer;
 }
 
-Meta::ComposerPtr GlobalCollectionComposerAction::composer()
+Meta::ComposerPtr
+GlobalCollectionComposerAction::composer()
 {
     return m_currentComposer;
 }
-
-
 
 
