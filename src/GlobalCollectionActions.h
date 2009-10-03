@@ -20,7 +20,7 @@
 
 #include "amarok_export.h"
 #include "Meta.h"
-
+#include "SmartPointerList.h"
 
 #include <QAction>
 
@@ -172,12 +172,12 @@ private:
     QList<QAction *> actionsFor( Meta::YearPtr year );
     QList<QAction *> actionsFor( Meta::ComposerPtr composer );
 
-    QList<GlobalCollectionGenreAction *> m_genreActions;
-    QList<GlobalCollectionArtistAction *> m_artistActions;
-    QList<GlobalCollectionAlbumAction *> m_albumActions;
-    QList<GlobalCollectionTrackAction *> m_trackActions;
-    QList<GlobalCollectionYearAction *> m_yearActions;
-    QList<GlobalCollectionComposerAction *> m_composerActions;
+    SmartPointerList<GlobalCollectionGenreAction> m_genreActions;
+    SmartPointerList<GlobalCollectionArtistAction> m_artistActions;
+    SmartPointerList<GlobalCollectionAlbumAction> m_albumActions;
+    SmartPointerList<GlobalCollectionTrackAction> m_trackActions;
+    SmartPointerList<GlobalCollectionYearAction> m_yearActions;
+    SmartPointerList<GlobalCollectionComposerAction> m_composerActions;
 
 
 
