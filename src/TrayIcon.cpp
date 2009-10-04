@@ -264,7 +264,7 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
     {
         case Phonon::PlayingState:
             m_track = The::engineController()->currentTrack();
-            m_trackLength = (m_track ? m_track->length() : 0 ) / 1000;
+            m_trackLength = (m_track ? m_track->length() : 0 );
 
             paintIcon( 0 );
             setupMenu();
@@ -317,6 +317,8 @@ void
 Amarok::TrayIcon::engineTrackPositionChanged( long position, bool userSeek )
 {
     Q_UNUSED( userSeek );
+
+    //position = position / 1000; // milliseconds -> seconds
 
     if( m_trackLength )
         paintIcon( position );
@@ -382,7 +384,7 @@ Amarok::TrayIcon::paintIcon( long trackPosition )
         return;
     }
 
-    const int mergePos = ( ( float( trackPosition ) / 1000 ) / m_trackLength ) * geometry().height();
+    const int mergePos = ( float( trackPosition ) / m_trackLength ) * geometry().height();
 
     // return if pixmap would stay the same
     if( oldMergePos == mergePos )
