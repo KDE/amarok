@@ -160,6 +160,9 @@ ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
     // workaround for 2.1.0 until i can rewrite this class properly to not need to do it
     // this way.
     //debug() << "m_lastPosition:" << m_lastPosition << "position:" << position << "m_lastSaved:" << m_lastSaved;
+
+    position = position / 1000; // milliseconds -> seconds
+
     if( m_lastPosition == 0 && m_lastSaved != 0 && position > m_lastSaved ) // this is probably when the fucked up info came through, ignore
         return;
     m_lastSaved = 0;
