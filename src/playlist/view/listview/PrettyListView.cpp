@@ -179,14 +179,22 @@ void
 Playlist::PrettyListView::queueSelection()
 {
     Actions::instance()->queue( selectedRows() );
-    update(); // repaint list when using shortcuts
 }
 
 void
 Playlist::PrettyListView::dequeueSelection()
 {
     Actions::instance()->dequeue( selectedRows() );
-    update(); // repaint list when using shortcuts
+}
+
+void
+Playlist::PrettyListView::switchQueueState()
+{
+    DEBUG_BLOCK
+
+    const bool isQueued = currentIndex().data( Playlist::StateRole ).toInt() & Item::Queued;
+    isQueued ? dequeueSelection() : queueSelection();
+    update(); // repaint (necessary when using shortcut)
 }
 
 void Playlist::PrettyListView::selectSource()

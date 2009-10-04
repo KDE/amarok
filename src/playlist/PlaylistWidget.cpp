@@ -76,8 +76,7 @@ Playlist::Widget::Widget( QWidget* parent )
     connect( m_searchWidget, SIGNAL( activateFilterResult() ), m_playlistView, SLOT( playFirstSelected() ) );
     connect( m_searchWidget, SIGNAL( downPressed() ), m_playlistView, SLOT( setFocus() ) );
 
-    connect( The::mainWindow(), SIGNAL( enqueueSelection() ), m_playlistView, SLOT( queueSelection() ) );
-    connect( The::mainWindow(), SIGNAL( dequeueSelection() ), m_playlistView, SLOT( dequeueSelection() ) );
+    connect( The::mainWindow(), SIGNAL( switchQueueStateShortcut() ), m_playlistView, SLOT( switchQueueState() ) );
 
     KConfigGroup searchConfig = Amarok::config("Playlist Search");
     m_playlistView->showOnlyMatches( searchConfig.readEntry( "ShowOnlyMatches", false ) );

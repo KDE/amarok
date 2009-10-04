@@ -62,6 +62,10 @@ public slots:
     void playFirstSelected();
     void dequeueSelection();
     void queueSelection();
+
+    /* Switch queue state for selected rows in playlist */
+    void switchQueueState();
+
     void removeSelection();
     void stopAfterTrack();
     void scrollToActiveTrack();
