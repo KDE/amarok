@@ -318,8 +318,6 @@ Amarok::TrayIcon::engineTrackPositionChanged( long position, bool userSeek )
 {
     Q_UNUSED( userSeek );
 
-    //position = position / 1000; // milliseconds -> seconds
-
     if( m_trackLength )
         paintIcon( position );
 }
