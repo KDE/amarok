@@ -57,6 +57,14 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
         return;
     }
 
+    //first here, the right way for >= 5.1.6
+
+    my_bool reconnect = true;
+    if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
+        reportError( "Asking for automatic reconnect did not succeed!" );
+    else
+        debug() << "Automatic reconnect successfully activated";
+
     if( !mysql_real_connect( m_db,
                 Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ).toUtf8(),
                 Amarok::config( "MySQL" ).readEntry( "User", "amarokuser" ).toUtf8(),
@@ -75,6 +83,7 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
     }
     else
     {
+        //but in versions prior to 5.1.6, have to call it after every real_connect
         my_bool reconnect = true;
         if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
             reportError( "Asking for automatic reconnect did not succeed!" );
