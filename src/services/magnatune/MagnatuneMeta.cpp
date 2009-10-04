@@ -106,7 +106,6 @@ int MagnatuneMetaFactory::getAlbumSqlRowCount()
 
 QString MagnatuneMetaFactory::getAlbumSqlRows()
 {
-    DEBUG_BLOCK
     QString sqlRows = ServiceMetaFactory::getAlbumSqlRows();
 
     sqlRows += ", ";
