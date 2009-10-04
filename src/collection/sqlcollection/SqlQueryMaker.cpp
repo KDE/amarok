@@ -665,13 +665,9 @@ SqlQueryMaker::linkTables()
         {
             d->queryFrom += " LEFT JOIN statistics ON urls.id = statistics.url";
         }
-        else if( d->linkedTables & Private::TAGS_TAB )
-        {
-            d->queryFrom += " LEFT JOIN statistics ON tracks.url = statistics.url";
-        }
         else
         {
-            d->queryFrom += " statistics";
+            d->queryFrom += " LEFT JOIN statistics ON tracks.url = statistics.url";
         }
     }
 }
