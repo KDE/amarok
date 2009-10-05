@@ -209,13 +209,14 @@ ScanResultProcessor::commit()
     m_collection->dbUpdater()->copyToPermanentTables();
     debug() << "tracks after commit: " << m_collection->query("select count(*) from tracks");
     m_collection->dbUpdater()->removeTemporaryTables();
-
-    m_collection->dbUpdater()->deleteAllRedundant( "album" );
-    m_collection->dbUpdater()->deleteAllRedundant( "artist" );
-    m_collection->dbUpdater()->deleteAllRedundant( "genre" );
-    m_collection->dbUpdater()->deleteAllRedundant( "composer" );
-    m_collection->dbUpdater()->deleteAllRedundant( "year" );
-
+    if( m_type == ScanResultProcessor::IncrementalScan )
+    {
+        m_collection->dbUpdater()->deleteAllRedundant( "album" );
+        m_collection->dbUpdater()->deleteAllRedundant( "artist" );
+        m_collection->dbUpdater()->deleteAllRedundant( "genre" );
+        m_collection->dbUpdater()->deleteAllRedundant( "composer" );
+        m_collection->dbUpdater()->deleteAllRedundant( "year" );
+    }
     debug() << "Sending changed signal";
     m_collection->sendChangedSignal();
 
