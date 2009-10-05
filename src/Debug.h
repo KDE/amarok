@@ -248,7 +248,13 @@ namespace Debug
             double duration = double(end.tv_sec) + (double(end.tv_usec) / 1000000.0);
 
             Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
-            dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - Took " + QString::number( duration, 'g', 2 ) + "s" );
+
+            // Print timing information, and a special message (GREPME) if the method took longer than 5s
+            if( duration < 5.0 )
+                dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - Took " + QString::number( duration, 'g', 2 ) + "s" );
+            else
+                dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - GREPME Took (quite long) " + QString::number( duration, 'g', 2 ) + "s" );
+
             mutex.unlock();
         }
     };
