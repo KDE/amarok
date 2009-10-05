@@ -121,6 +121,8 @@ MySqlServerCollection::type() const
 QStringList
 MySqlServerCollection::query( const QString &query )
 {
+    MySqlCollection::initThreadInitializer();
+    QMutexLocker locker( &m_mutex );
     if( !m_db )
     {
         error() << "Tried to query an uninitialized m_db!";

@@ -86,6 +86,7 @@ QThreadStorage< ThreadInitializer* > ThreadInitializer::storage;
 MySqlCollection::MySqlCollection( const QString &id, const QString &prettyName )
     : SqlCollection( id, prettyName )
     , m_db( 0 )
+    , m_mutex( QMutex::Recursive )
 {
     //Relevant code must be implemented in subclasses
 }
@@ -106,7 +107,7 @@ QStringList MySqlCollection::query( const QString& statement )
     //DEBUG_BLOCK
     //debug() << "[ATTN!] MySql::query( " << statement << " )";
 
-    ThreadInitializer::init();
+    initThreadInitializer();
     QMutexLocker locker( &m_mutex );
 
     QStringList values;
@@ -159,7 +160,7 @@ int MySqlCollection::insert( const QString& statement, const QString& /* table *
     //DEBUG_BLOCK
     //debug() << "[ATTN!] MySql::insert( " << statement << " )";
 
-    ThreadInitializer::init();
+    initThreadInitializer();
     QMutexLocker locker( &m_mutex );
 
     if( !m_db )
