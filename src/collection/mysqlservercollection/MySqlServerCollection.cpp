@@ -121,6 +121,12 @@ MySqlServerCollection::type() const
 QStringList
 MySqlServerCollection::query( const QString &query )
 {
+    if( !m_db )
+    {
+        error() << "Tried to query an uninitialized m_db!";
+        return QStringList();
+    }
+
     unsigned long tid = mysql_thread_id( m_db );
 
     int res = mysql_ping( m_db );
