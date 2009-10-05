@@ -141,7 +141,7 @@ ContextView::clear( const ContextState& state )
 }
 
 
-void ContextView::enginePlaybackEnded( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason )
+void ContextView::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, EngineObserver::PlaybackEndedReason reason )
 {
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )

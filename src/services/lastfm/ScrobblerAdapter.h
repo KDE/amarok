@@ -35,7 +35,7 @@ public:
     ScrobblerAdapter( QObject *parent, const QString &clientId );
     virtual ~ScrobblerAdapter();
 
-    virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
+    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
     virtual void engineTrackPositionChanged( long position , bool userSeek );
     virtual void engineNewTrackPlaying();
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged ); // for stream scrobbling
@@ -54,11 +54,11 @@ private:
 
     lastfm::Audioscrobbler *m_scrobbler;
     lastfm::MutableTrack m_current;
-    long m_lastPosition;
-    uint m_totalPlayed;
+    qint64 m_lastPosition;
+    qint64 m_totalPlayed;
     QString m_clientId;
 
-    long int m_lastSaved;
+    qint64 m_lastSaved;
 };
 
 #endif // LASTFMSCROBBLERADAPTER_H

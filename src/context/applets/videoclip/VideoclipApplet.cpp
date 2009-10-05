@@ -242,7 +242,7 @@ VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State ol
 }
 
 void 
-VideoclipApplet::enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason )
+VideoclipApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason )
 {
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )

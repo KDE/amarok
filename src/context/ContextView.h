@@ -81,7 +81,7 @@ public slots:
 
 protected:
     
-    virtual void enginePlaybackEnded(int finalPosition, int trackLength, PlaybackEndedReason reason);
+    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
     void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged ); // for stream scrobbling
     virtual void engineNewTrackPlaying();
     

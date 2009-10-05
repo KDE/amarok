@@ -21,7 +21,7 @@
 #include "meta/capabilities/TimecodeWriteCapability.h"
 
 
-const int TimecodeObserver::m_threshold = 600; // 600s = 10 minutes
+const qint64 TimecodeObserver::m_threshold = 600 * 1000; // 6000000ms = 10 minutes
 
 
 TimecodeObserver::TimecodeObserver()
@@ -45,7 +45,7 @@ TimecodeObserver::engineNewTrackPlaying()
 
     if( m_currentTrack ) // this is really the track _just_ played
     {
-        if( m_trackTimecodeable && m_currPos != m_currentTrack->length() && m_currentTrack->length() > m_threshold && m_currPos > 60 )
+        if( m_trackTimecodeable && m_currPos != m_currentTrack->length() && m_currentTrack->length() > m_threshold && m_currPos > 60 * 1000 )
         {
             Meta::TimecodeWriteCapability *tcw = m_currentTrack->create<Meta::TimecodeWriteCapability>();
             if( tcw )
@@ -69,12 +69,12 @@ TimecodeObserver::engineNewTrackPlaying()
 }
 
 void
-TimecodeObserver::enginePlaybackEnded( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason )
+TimecodeObserver::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, EngineObserver::PlaybackEndedReason reason )
 {
     Q_UNUSED ( reason )
     DEBUG_BLOCK
 
-    if( m_trackTimecodeable && finalPosition != trackLength && trackLength > m_threshold && finalPosition > 60 )
+    if( m_trackTimecodeable && finalPosition != trackLength && trackLength > m_threshold && finalPosition > 60 * 1000 )
     {
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
         if( currentTrack )
@@ -93,6 +93,6 @@ void TimecodeObserver::engineTrackPositionChanged( long position, bool userSeek 
 {
     Q_UNUSED ( userSeek )
 
-    m_currPos = position / 1000; // <------ ARGH
+    m_currPos = position;
 }
 

@@ -33,6 +33,8 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
       m_clientId( clientId ),
       m_lastSaved( 0 )
 {
+    DEBUG_BLOCK
+
     resetVariables();
 
     //HACK work around a bug in liblastfm---it doesn't create its config dir, so when it
@@ -72,7 +74,7 @@ ScrobblerAdapter::engineNewTrackPlaying()
         m_current.stamp();
         
         m_current.setTitle( track->name() );
-        m_current.setDuration( track->length() );
+        m_current.setDuration( track->length() / 1000 );
         if( track->artist() )
             m_current.setArtist( track->artist()->name() );
         if( track->album() )
@@ -142,9 +144,12 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
 }
 
 void
-ScrobblerAdapter::enginePlaybackEnded( int finalPosition, int /*trackLength*/, PlaybackEndedReason /*reason*/ )
+ScrobblerAdapter::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason )
 {
+    Q_UNUSED( trackLength )
+    Q_UNUSED( reason )
     DEBUG_BLOCK
+
     engineTrackPositionChanged( finalPosition, false );
     checkScrobble();
     resetVariables();
@@ -160,8 +165,6 @@ ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
     // workaround for 2.1.0 until i can rewrite this class properly to not need to do it
     // this way.
     //debug() << "m_lastPosition:" << m_lastPosition << "position:" << position << "m_lastSaved:" << m_lastSaved;
-
-    position = position / 1000; // milliseconds -> seconds
 
     if( m_lastPosition == 0 && m_lastSaved != 0 && position > m_lastSaved ) // this is probably when the fucked up info came through, ignore
         return;

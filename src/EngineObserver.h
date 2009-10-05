@@ -84,7 +84,7 @@ public:
     virtual void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
 
     // is this when playback stops completely, or when a track stops?
-    virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
+    virtual void enginePlaybackEnded( qint64 /*ms*/ finalPosition, qint64 /*ms*/ trackLength, PlaybackEndedReason reason );
 
     /**
      * Called when the current track changes
@@ -168,7 +168,7 @@ protected:
     EngineSubject();
     virtual ~EngineSubject();
     void stateChangedNotify( Phonon::State newState, Phonon::State oldState );
-    void playbackEnded( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason );
+    void playbackEnded( qint64 /*ms*/ finalPosition, qint64 /*ms*/ trackLength, EngineObserver::PlaybackEndedReason reason );
     void newMetaDataNotify( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     void volumeChangedNotify( int percent );
     void muteStateChangedNotify( bool mute );

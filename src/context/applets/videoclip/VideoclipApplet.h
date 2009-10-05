@@ -74,7 +74,7 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
         // inherited from EngineObserver
         virtual void engineNewTrackPlaying();
         virtual void engineStateChanged(Phonon::State, Phonon::State );
-        virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
+        virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
         
     public slots:
         void    setGeom();
