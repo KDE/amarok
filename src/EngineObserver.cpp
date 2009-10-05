@@ -39,7 +39,7 @@ EngineObserver::EngineObserver()
 
 EngineObserver::~EngineObserver()
 {
-    if (m_subject)
+    if( m_subject )
         m_subject->detach( this );
 }
 
@@ -120,24 +120,22 @@ EngineSubject::~EngineSubject()
 {
     // tell any remaining observers that we are gone
     foreach( EngineObserver *observer, Observers )
-    {
         observer->engineDeleted();
-    }
 
     //do not delete the observers, we don't have ownership of them!
 }
 
-
-void EngineSubject::stateChangedNotify( Phonon::State newState, Phonon::State oldState )
+void
+EngineSubject::stateChangedNotify( Phonon::State newState, Phonon::State oldState )
 {
     DEBUG_BLOCK
     // We explicitly block notifications where newState == buffering in enginecontroller, so if the old state = buffering we can ignore the playing update.
     if( newState == m_realState && newState != Phonon::PlayingState )  // To prevent Playing->Buffering->Playing->buffering.
         return;
+
     foreach( EngineObserver *observer, Observers )
-    {
         observer->engineStateChanged( newState, oldState );
-    }
+
     m_realState = newState;
 }
 
@@ -165,34 +163,26 @@ EngineSubject::newMetaDataNotify( const QHash<qint64, QString> &newMetaData, boo
 void EngineSubject::volumeChangedNotify( int percent )
 {
     foreach( EngineObserver *observer, Observers )
-    {
         observer->engineVolumeChanged( percent );
-    }
 }
 
 void EngineSubject::muteStateChangedNotify( bool mute )
 {
-        foreach( EngineObserver *observer, Observers )
-    {
+    foreach( EngineObserver *observer, Observers )
         observer->engineMuteStateChanged( mute );
-    }
 }
 
 void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
 {
     foreach( EngineObserver *observer, Observers )
-    {
         observer->engineTrackPositionChanged( position, userSeek );
-    }
 }
 
 
 void EngineSubject::trackLengthChangedNotify( qint64 milliseconds )
 {
     foreach( EngineObserver *observer, Observers )
-    {
         observer->engineTrackLengthChanged( milliseconds );
-    }
 }
 
 void
@@ -209,7 +199,8 @@ EngineSubject::trackChangedNotify( Meta::TrackPtr track )
         observer->engineTrackChanged( track );
 }
 
-void EngineSubject::attach( EngineObserver *observer )
+void
+EngineSubject::attach( EngineObserver *observer )
 {
     if( !observer )
         return;
@@ -221,13 +212,14 @@ void EngineSubject::attach( EngineObserver *observer )
     Observers.insert( observer );
 }
 
-
-void EngineSubject::detach( EngineObserver *observer )
+void
+EngineSubject::detach( EngineObserver *observer )
 {
     Observers.remove( observer );
 }
 
-void EngineSubject::observerDestroyed( QObject* object ) //SLOT
+void
+EngineSubject::observerDestroyed( QObject* object ) //SLOT
 {
     DEBUG_BLOCK
 
@@ -238,7 +230,8 @@ void EngineSubject::observerDestroyed( QObject* object ) //SLOT
 }
 
 /* Try to detect MetaData spam in Streams. */
-bool EngineSubject::isMetaDataSpam( QHash<qint64, QString> newMetaData )
+bool
+EngineSubject::isMetaDataSpam( QHash<qint64, QString> newMetaData )
 {
     // search for Metadata in history
     for( int i = 0; i < m_metaDataHistory.size(); i++)
