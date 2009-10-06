@@ -173,6 +173,9 @@ EngineController::initializePhonon()
     connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
     connect( m_media, SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ), SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
 
+    // This should probably by handled by Phonon internally, but it fails to do this currently 
+    connect( m_audio, SIGNAL( outputDeviceChanged( const Phonon::AudioOutputDevice & ) ), SLOT( initializePhonon ) );
+
     connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
 
