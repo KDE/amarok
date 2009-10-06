@@ -70,6 +70,7 @@ public slots:
 
     void bookmarkCurrentBrowserView();
     void bookmarkCurrentPlaylistView();
+    void bookmarkCurrentContextView();
 
 private:
 

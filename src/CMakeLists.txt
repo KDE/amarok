@@ -171,6 +171,8 @@ set(libamarokurl_SRCS
     amarokurls/AmarokUrl.cpp
     amarokurls/AmarokUrlAction.cpp
     amarokurls/AmarokUrlHandler.cpp
+    amarokurls/ContextUrlGenerator.cpp
+    amarokurls/ContextUrlRunner.cpp
     amarokurls/NavigationUrlRunner.cpp
     amarokurls/NavigationUrlGenerator.cpp
     amarokurls/PlayUrlRunner.cpp
@@ -371,6 +373,7 @@ set( libcontextview_SRCS
     context/toolbar/AppletToolbarAppletItem.cpp
     context/toolbar/AppletToolbarBase.cpp
     context/toolbar/AppletToolbarConfigItem.cpp
+    context/toolbar/AppletToolbarBookmarkItem.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/TextScrollingWidget.cpp
     context/widgets/DropPixmapItem.cpp

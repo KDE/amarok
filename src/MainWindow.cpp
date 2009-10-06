@@ -681,6 +681,10 @@ MainWindow::createActions()
     ac->addAction( "bookmark_playlistview", action );
     connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentPlaylistView() ) );
 
+    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Context Applets" ), this );
+    ac->addAction( "bookmark_contextview", action );
+    connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentContextView() ) );
+
     action = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );

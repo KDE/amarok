@@ -23,6 +23,7 @@
 #include "AppletToolbarAddItem.h"
 #include "AppletToolbarAppletItem.h"
 #include "AppletToolbarConfigItem.h"
+#include "AppletToolbarBookmarkItem.h"
 #include "Containment.h"
 #include "Debug.h"
 #include "PaletteHandler.h"
@@ -42,6 +43,7 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     , m_cont( 0 )
     , m_addItem( 0 )
     , m_configItem( 0 )
+    , m_bookmarkItem( 0 )
 {    
     Context::Containment* cont = dynamic_cast<Context::Containment*>( parent );
     if( cont )
@@ -195,7 +197,14 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
         m_appletLayout->addItem( m_configItem );
         m_appletLayout->setAlignment( m_configItem, Qt::AlignRight );
     }
-    
+
+    if( !m_bookmarkItem )
+    {
+        m_bookmarkItem = new AppletToolbarBookmarkItem( this );
+        m_appletLayout->addItem( m_bookmarkItem );
+        m_appletLayout->setAlignment( m_bookmarkItem, Qt::AlignRight );
+    }
+   
     if( m_configMode )
     {
         // loc doesn't take into account additional + icons, also we need to add 1 more + icon

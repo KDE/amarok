@@ -27,6 +27,7 @@
 #include "BookmarkModel.h"
 #include "SqlStorage.h"
 #include "timecode/TimecodeObserver.h"
+#include "ContextUrlGenerator.h"
 
 #include <KIcon>
 
@@ -119,7 +120,7 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
 {
     DEBUG_BLOCK
 
-    QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks where url like 'amarok://%1/%' ORDER BY name;";
+    QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks where url like 'amarok://%1%' ORDER BY name;";
     query = query.arg( command );
     QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 
@@ -151,6 +152,15 @@ AmarokUrlHandler::bookmarkCurrentPlaylistView()
     AmarokUrl url = generator.createAmarokUrl();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
+}
+
+void
+AmarokUrlHandler::bookmarkCurrentContextView()
+{
+    ContextUrlGenerator generator;
+    AmarokUrl url = generator.createContextBookmark();
+    url.saveToDb();
+    BookmarkModel::instance()->reloadFromDb(); 
 }
 
 KIcon

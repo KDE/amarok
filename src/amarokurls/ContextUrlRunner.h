@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -8,53 +8,33 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_CONTAINMENT_H
-#define AMAROK_CONTAINMENT_H
+
+#ifndef CONTEXTURLRUNNER_H
+#define CONTEXTURLRUNNER_H
 
 #include "amarok_export.h"
+#include "AmarokUrlRunnerBase.h"
 
-#include <plasma/containment.h>
+class AmarokUrl;
+class KIcon;
+class QString;
 
-#include <QAction>
-#include <QRectF>
 
-namespace Context
+class AMAROK_EXPORT ContextUrlRunner : public AmarokUrlRunnerBase
 {
-
-class ContextView;
-
-class AMAROK_EXPORT Containment : public Plasma::Containment
-{
-    Q_OBJECT
 public:
-    explicit Containment(QGraphicsItem* parent = 0,
-                         const QString& serviceId = QString(),
-                         uint containmentId = 0);
+    ContextUrlRunner();
+    ~ContextUrlRunner();
     
-    Containment(QObject* parent, const QVariantList& args);
-    
-    ~Containment();
-    
-    virtual void saveToConfig( KConfigGroup &conf ) = 0;
-    virtual void loadConfig( const KConfigGroup &conf ) = 0;
-
-    virtual void setView( ContextView *newView ) = 0;
-
-    virtual ContextView *view() = 0;
-    
-public slots:
-    void showApplet( Plasma::Applet* ) {}
-    void moveApplet( Plasma::Applet*, int, int ) {}
-    virtual Applet* addApplet( const QString& pluginName, const int ) { return 0; }
-
-    
+    virtual KIcon icon() const;
+    virtual bool run(AmarokUrl url);
+    virtual QString command() const;
 };
 
-} // Context namespace
-#endif
+#endif // CONTEXTURLRUNNER_H

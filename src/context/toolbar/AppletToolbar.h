@@ -41,6 +41,7 @@ namespace Context
 class AppletItemOverlay;
 class AppletToolbarAddItem;    
 class AppletToolbarConfigItem;
+class AppletToolbarBookmarkItem;
 class Containment;
 
 class AppletToolbar : public QGraphicsWidget
@@ -98,6 +99,7 @@ class AppletToolbar : public QGraphicsWidget
         Containment* m_cont;
         AppletToolbarAddItem* m_addItem;
         AppletToolbarConfigItem* m_configItem;
+        AppletToolbarBookmarkItem* m_bookmarkItem;
 };
 
 }
