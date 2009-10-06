@@ -362,7 +362,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     else
         attributes["path"] = dir;
     writeElement( "folder", attributes );
-    d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files | QDir::Readable );
+    d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files );
     QFileInfoList list = d.entryInfoList();
 
     QStringList recurseDirs;
