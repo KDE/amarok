@@ -184,7 +184,7 @@ MainWindow::MainWindow()
     //restore active category ( as well as filters and levels and whatnot.. )
     const QString path = config.readEntry( "Browser Path", QString() );
     if ( !path.isEmpty() )
-        browserWidget()->list()->navigate( path );
+        m_browsers->list()->navigate( path );
 }
 
 MainWindow::~MainWindow()
@@ -196,7 +196,7 @@ MainWindow::~MainWindow()
     config.writeEntry( "MainWindow Position", pos() );
 
     //save currently active category
-    config.writeEntry( "Browser Path", browserWidget()->list()->path() );
+    config.writeEntry( "Browser Path", m_browsers->list()->path() );
 
     QList<int> sPanels;
 
