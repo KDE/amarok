@@ -142,7 +142,7 @@ namespace AmarokScript
     {
         emit volumeChanged( newVolume );
     }
-    void AmarokEngineScript::engineTrackPositionChanged( long position, bool userSeek )
+    void AmarokEngineScript::engineTrackPositionChanged( qint64 position, bool userSeek )
     {
         Q_UNUSED( userSeek )
         emit trackSeeked( position );

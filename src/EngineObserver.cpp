@@ -89,7 +89,7 @@ EngineObserver::engineMuteStateChanged( bool mute )
 }
 
 void
-EngineObserver::engineTrackPositionChanged( long position , bool userSeek )
+EngineObserver::engineTrackPositionChanged( qint64 position , bool userSeek )
 {
     Q_UNUSED( position );
     Q_UNUSED( userSeek );
@@ -172,7 +172,7 @@ void EngineSubject::muteStateChangedNotify( bool mute )
         observer->engineMuteStateChanged( mute );
 }
 
-void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
+void EngineSubject::trackPositionChangedNotify( qint64 position, bool userSeek )
 {
     foreach( EngineObserver *observer, Observers )
         observer->engineTrackPositionChanged( position, userSeek );

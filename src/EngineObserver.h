@@ -133,7 +133,7 @@ public:
      *
      * (even when play just progresses?)
      */
-    virtual void engineTrackPositionChanged( long position, bool userSeek );
+    virtual void engineTrackPositionChanged( qint64 position, bool userSeek );
 
     /**
      * Called when the track length changes, typically because the track has changed
@@ -173,7 +173,7 @@ protected:
     void volumeChangedNotify( int percent );
     void muteStateChangedNotify( bool mute );
     /* userSeek means the position didn't change due to normal playback */
-    void trackPositionChangedNotify( long position , bool userSeek = false );
+    void trackPositionChangedNotify( qint64 position, bool userSeek = false );
     void trackLengthChangedNotify( qint64 seconds );
     void newTrackPlaying() const;
     void trackChangedNotify( Meta::TrackPtr track );

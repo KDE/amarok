@@ -112,7 +112,7 @@ public:
 
     virtual CueFileItemMap cueItems() const;
 
-    virtual void engineTrackPositionChanged ( long /*position*/ , bool /*userSeek*/ );
+    virtual void engineTrackPositionChanged ( qint64 /*position*/, bool /*userSeek*/ );
 
     virtual void subscribe ( Meta::Observer *observer );
     virtual void unsubscribe ( Meta::Observer *observer );

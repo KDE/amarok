@@ -130,7 +130,7 @@ void Track::notify() const
     }
 }
 
-void Track::engineTrackPositionChanged( long position, bool userSeek )
+void Track::engineTrackPositionChanged( qint64 position, bool userSeek )
 {
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if ( !currentTrack || currentTrack->playableUrl().url() != MetaFile::Track::playableUrl().url() )
