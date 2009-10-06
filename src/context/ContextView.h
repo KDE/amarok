@@ -82,6 +82,11 @@ public:
     */
     QStringList currentApplets();
 
+    /**
+        Get the user visible applet names, in order, of the applets currently in the contextView.
+    */
+    QStringList currentAppletNames();
+
 
 public slots:
 

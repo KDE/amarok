@@ -33,11 +33,14 @@ AmarokUrl
 ContextUrlGenerator::createContextBookmark()
 {
     QStringList pluginNames = Context::ContextView::self()->currentApplets();
+    QStringList appletNames = Context::ContextView::self()->currentAppletNames();
 
     AmarokUrl url;
-    url.setName( i18n( "new context bookmark" ) );
+
     url.setCommand( "context" );
     url.appendArg( "applets", pluginNames.join( "," ) );
+
+    url.setName( i18n( "Context: %1", appletNames.join( "," ) ) );
 
     return url;
 }

@@ -277,6 +277,22 @@ ContextView::currentApplets()
     return appletNames;
 }
 
+QStringList ContextView::currentAppletNames()
+{
+    DEBUG_BLOCK
+    QStringList appletNames;
+
+    Applet::List applets = containment()->applets();
+    foreach( Plasma::Applet * applet, applets )
+    {
+        appletNames << applet->name();
+    }
+
+    debug() << "current applets: " << appletNames;
+
+    return appletNames; 
+}
+
 } // Context namespace
 
 #include "ContextView.moc"
