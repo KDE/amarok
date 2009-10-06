@@ -157,7 +157,7 @@ ScrobblerAdapter::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength,
 
 
 void
-ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
+ScrobblerAdapter::engineTrackPositionChanged( qint64 position, bool userSeek )
 {
     // HACK enginecontroller is fscked. it sends engineTrackPositionChanged messages
     // with info for the last track even after engineNewTrackPlaying. this means that

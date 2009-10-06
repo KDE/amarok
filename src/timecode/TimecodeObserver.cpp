@@ -89,7 +89,7 @@ TimecodeObserver::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength,
     }
 }
 
-void TimecodeObserver::engineTrackPositionChanged( long position, bool userSeek )
+void TimecodeObserver::engineTrackPositionChanged( qint64 position, bool userSeek )
 {
     Q_UNUSED ( userSeek )
 

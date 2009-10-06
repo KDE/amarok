@@ -165,7 +165,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 }
 
 void
-ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
+ProgressWidget::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
 {
     //debug() << "POSITION: " << position;
     m_slider->setSliderValue( position );

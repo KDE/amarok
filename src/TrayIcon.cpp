@@ -314,7 +314,7 @@ Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
 }
 
 void
-Amarok::TrayIcon::engineTrackPositionChanged( long position, bool userSeek )
+Amarok::TrayIcon::engineTrackPositionChanged( qint64 position, bool userSeek )
 {
     Q_UNUSED( userSeek );
 
@@ -347,7 +347,7 @@ Amarok::TrayIcon::paletteChange( const QPalette & op )
 }
 
 void
-Amarok::TrayIcon::paintIcon( long trackPosition )
+Amarok::TrayIcon::paintIcon( qint64 trackPosition )
 {
     static qint64 oldMergePos = -1;
 

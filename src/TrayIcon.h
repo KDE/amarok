@@ -48,7 +48,7 @@ protected:
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewTrackPlaying();
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
-    virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
+    virtual void engineTrackPositionChanged( qint64 position, bool /*userSeek*/ );
     virtual void engineVolumeChanged( int percent );
     virtual void engineMuteStateChanged( bool mute );
 
@@ -63,11 +63,11 @@ private:
     void setupMenu();
     void setupToolTip();
 
-    void paintIcon( long trackPosition = -1 );
+    void paintIcon( qint64 trackPosition = -1 );
     void blendOverlay( const QPixmap &overlay );
 
     Meta::TrackPtr m_track;
-    long m_trackLength;
+    qint64 m_trackLength;
 
     QPixmap m_baseIcon, m_grayedIcon, m_icon;
     QPixmap m_playOverlay, m_pauseOverlay;

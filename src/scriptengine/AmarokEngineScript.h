@@ -76,7 +76,7 @@ namespace AmarokScript
 
         private:
             void engineVolumeChanged( int value );
-            void engineTrackPositionChanged( long position, bool userSeek );
+            void engineTrackPositionChanged( qint64 position, bool userSeek );
             void engineTrackChanged( Meta::TrackPtr track );
             void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
 

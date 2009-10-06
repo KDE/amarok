@@ -45,7 +45,7 @@ class ProgressWidget : public QWidget, public EngineObserver
         void drawTimeDisplay( int position );
 
     protected:
-        virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
+        virtual void engineTrackPositionChanged( qint64 position, bool /*userSeek*/ );
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
         virtual void engineTrackLengthChanged( qint64 milliseconds );
         virtual void engineNewTrackPlaying();
