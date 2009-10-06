@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,47 +15,48 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_CONTAINMENT_H
-#define AMAROK_CONTAINMENT_H
+#ifndef AMAROK_APPLET_TOOLBAR_BOOKMARK_ITEM_H
+#define AMAROK_APPLET_TOOLBAR_BOOKMARK_ITEM_H
 
-#include "amarok_export.h"
+#include <QGraphicsWidget>
+#include "AppletToolbarBase.h"
 
-#include <plasma/containment.h>
+#include "widgets/BreadcrumbItemButton.h"
 
-#include <QAction>
-#include <QRectF>
+
+class QPainter;
+class QSizePolicy;
+class QStyleOptionGraphicsItem;
+
+namespace Plasma
+{
+    class IconWidget;
+}
 
 namespace Context
 {
 
-class ContextView;
-
-class AMAROK_EXPORT Containment : public Plasma::Containment
+class AppletToolbarBookmarkItem : public AppletToolbarBase
 {
     Q_OBJECT
-public:
-    explicit Containment(QGraphicsItem* parent = 0,
-                         const QString& serviceId = QString(),
-                         uint containmentId = 0);
-    
-    Containment(QObject* parent, const QVariantList& args);
-    
-    ~Containment();
-    
-    virtual void saveToConfig( KConfigGroup &conf ) = 0;
-    virtual void loadConfig( const KConfigGroup &conf ) = 0;
-
-    virtual void setView( ContextView *newView ) = 0;
-
-    virtual ContextView *view() = 0;
-    
-public slots:
-    void showApplet( Plasma::Applet* ) {}
-    void moveApplet( Plasma::Applet*, int, int ) {}
-    virtual Applet* addApplet( const QString& pluginName, const int ) { return 0; }
-
-    
+    public:
+        AppletToolbarBookmarkItem( QGraphicsItem* parent = 0 );
+        ~AppletToolbarBookmarkItem();
+        
+    protected:    
+         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
+         virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
+         
+    protected slots:
+         void showMenu();
+         
+    private:
+        Plasma::IconWidget* m_icon;
+        int m_iconPadding;
+        
+        BreadcrumbUrlMenuButton * m_bookmarkButton;
 };
 
-} // Context namespace
+}
+
 #endif

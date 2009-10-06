@@ -29,6 +29,8 @@
 #include "Svg.h"
 #include "Theme.h"
 #include "amarokconfig.h"
+#include "amarokurls/AmarokUrlHandler.h"
+#include "amarokurls/ContextUrlRunner.h"
 
 #include <plasma/dataenginemanager.h>
 
@@ -88,6 +90,9 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
         amarokContainment->setView( this );
     //    amarokContainment->addCurrentTrack();
     }
+
+    m_urlRunner = new ContextUrlRunner();
+    The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
 }
 
 ContextView::~ContextView()
@@ -112,6 +117,8 @@ ContextView::~ContextView()
     clear( m_curState );
     //this should be done to prevent a crash on exit
     clearFocus();
+
+    delete m_urlRunner;
 }
 
 
@@ -137,6 +144,11 @@ ContextView::clear( const ContextState& state )
         if( containment )
             containment->saveToConfig( cg );
     }
+    contextScene()->clearContainments();
+}
+
+void ContextView::clearNoSave()
+{
     contextScene()->clearContainments();
 }
 
@@ -246,6 +258,23 @@ ContextView::wheelEvent( QWheelEvent* event )
 {
     if( event->orientation() != Qt::Horizontal )
         QGraphicsView::wheelEvent( event );
+}
+
+QStringList
+ContextView::currentApplets()
+{
+    DEBUG_BLOCK
+    QStringList appletNames;
+    
+    Applet::List applets = containment()->applets();
+    foreach( Plasma::Applet * applet, applets )
+    {
+        appletNames << applet->pluginName();
+    }
+
+    debug() << "current applets: " << appletNames;
+
+    return appletNames;
 }
 
 } // Context namespace
