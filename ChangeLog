@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Added bookmarks to the context view, allowing saving and restoring of 
+      applet setups.
     * Enhanced --debug feature: When a function takes very long to run (> 5s),
       we print a special message (GREPME) that can be searched easily.
     * Middle-clicking an item in the Collection Browser appends it to the
