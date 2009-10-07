@@ -24,6 +24,7 @@
 #include <Phonon/Global>
 #include <QHash>
 #include <QPointer>
+#include <QSet>
 
 class EngineSubject;
 class QString;
@@ -186,7 +187,7 @@ private:
     bool isMetaDataSpam( QHash<qint64, QString> newMetaData );
 
     QList<QHash<qint64, QString> > m_metaDataHistory;
-    QList<EngineObserver*> Observers;
+    QSet<EngineObserver*> Observers;
     Phonon::State m_realState; // To work around the buffering issue
 };
 

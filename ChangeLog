@@ -38,7 +38,6 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
-    * Automatic playlist scrolling was broken in some cases. (BR 193459) 
     * The On Screen Display now uses a sane font size with all display
       resolutions. (BR 195186)
     * Fix rare regression where inaccessible subfolders (due to permissions)
