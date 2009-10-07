@@ -202,7 +202,7 @@ EngineSubject::trackChangedNotify( Meta::TrackPtr track )
 void
 EngineSubject::attach( EngineObserver *observer )
 {
-    if( !observer )
+    if( !observer || Observers.contains( observer ) )
         return;
 
     QObject* object = dynamic_cast<QObject*>( observer );
