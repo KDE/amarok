@@ -580,7 +580,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
 
     int height = itemRect.height();;
 
-    int baseHeight = ( height * rowCount ) / modifiedRowCount;
+    int baseHeight = ( height * rowCount ) / modifiedRowCount + 3;
     int extrasHeight = height - baseHeight;
     int extrasOffsetY = height - extrasHeight;
 
