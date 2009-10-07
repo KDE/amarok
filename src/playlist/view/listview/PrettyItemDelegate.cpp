@@ -194,8 +194,8 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
             totalRows = totalRows + 1;
         }
 
-        int headHeight = ( headRows * option.rect.height() ) / totalRows - 1;
-        int trackHeight = ( trackRows * option.rect.height() ) / totalRows;
+        int headHeight = ( headRows * option.rect.height() ) / totalRows - 2;
+        int trackHeight = ( trackRows * option.rect.height() ) / totalRows + 3;
 
         if ( headRows > 0 )
         {
