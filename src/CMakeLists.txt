@@ -68,7 +68,6 @@ include_directories(
     ${TAGLIB-EXTRAS_INCLUDES}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
-    ${APPLE_SECURITY_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
 )
 
