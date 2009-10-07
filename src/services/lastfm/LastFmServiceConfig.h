@@ -21,6 +21,10 @@
 #include <QObject>
 #include <QString>
 
+namespace KWallet {
+    class Wallet;
+}
+
 class KDialog;
 
 class LastFmServiceConfig : public QObject
@@ -50,6 +54,10 @@ public:
 
     bool fetchSimilar() { return m_fetchSimilar; }
     void setFetchSimilar( bool fetchSimilar ) { m_fetchSimilar = fetchSimilar; }
+
+private slots:
+    void textDialogOK();
+    void textDialogCancel();
     
 private:
     QString m_username;
@@ -57,6 +65,9 @@ private:
     QString m_sessionKey;
     bool m_scrobble;
     bool m_fetchSimilar;
+
+    KDialog* m_askDiag;
+    KWallet::Wallet* m_wallet;
 };
 
 #endif // LASTFMSERVICECONFIG_H
