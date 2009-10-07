@@ -25,6 +25,23 @@
 #include <QSemaphore>
 #include <QTemporaryFile>
 
+// static configuration
+// TODO: remember to change the base URL before release!
+static const QString updateBaseUrl     = "http://home.in.tum.de/~kummeroj/update/"; // must end with '/'
+static const QString archiveFilename   = "/main.tar.bz2";  // must start with '/'
+static const QString versionFilename   = "/version";      // must start with '/'
+static const QString signatureFilename = "/signature";    // must start with '/'
+// TODO: remember to change the public key before release!
+static const QString publicKey = "-----BEGIN PUBLIC KEY-----\n"
+"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqSVx2dsSkfNniS/bK81q\n"
+"JqyWsBiOaTFcvKn3SsQ8hWlPiyYgJUc0BFThbpOLw0et2cxvgCCryudWigCW5iNq\n"
+"DeOYU2rC+fWjqMJMV/pSMQKIDtvlZRKpR6pmqcWSlpfLXxTVHPKBk4LKcb62O4Vi\n"
+"TUQ6YYDQuMeDmpvdNJLRJtHs3ZAT5nLxLGP5TqLgcBtnte43uNgdJ1FSDROSwQcS\n"
+"JpwhhEWsMnHB8wC6kr2oS721DJscMdGkqPvDZqqUqCfybzyFy20kFZ6ws5Ae4LgQ\n"
+"c6vqkUUfaeiFx2Cx2htEgU4A1tze58h7Om3q3YXX1Rpl+iEMCMLAKRVHwYkLkUSe\n"
+"sQIDAQAB\n"
+"-----END PUBLIC KEY-----";
+
 
 class ScriptUpdater : public QThread
 {
@@ -51,14 +68,12 @@ class ScriptUpdater : public QThread
         void phase4( KJob * job );
 
     private:
+
+        bool isNewer(const QString & update, const QString & installed);
         
         QString m_scriptPath;
-        QSemaphore m_stayAlive;
-        // static configuration
-        QString m_updateBaseUrl;
-        QString m_archiveFilename, m_versionFilename, m_signatureFilename;
-        QString m_publicKey;
-        // dynamic information about the script
+
+        // dynamically collected information about the script
         QString m_scriptname, m_scriptversion, m_fileName;
         QTemporaryFile m_archiveFile, m_sigFile;
 

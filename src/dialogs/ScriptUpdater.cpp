@@ -23,6 +23,7 @@
 
 #include <KIO/Job>
 #include <KIO/NetAccess>
+#include <KPluginInfo>
 #include <KStandardDirs>
 #include <KTar>
 
@@ -33,21 +34,6 @@
 
 ScriptUpdater::ScriptUpdater() : QThread()
 {
-    // configuration
-    m_updateBaseUrl     = "http://home.in.tum.de/~kummeroj/update/"; // must end with '/'
-    m_archiveFilename   = "/main.tar.gz";  // must start with '/'
-    m_versionFilename   = "/version";      // must start with '/'
-    m_signatureFilename = "/signature";    // must start with '/'
-    // TODO: remember to change the public key before release!
-    m_publicKey = "-----BEGIN PUBLIC KEY-----"
-"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqSVx2dsSkfNniS/bK81q"
-"JqyWsBiOaTFcvKn3SsQ8hWlPiyYgJUc0BFThbpOLw0et2cxvgCCryudWigCW5iNq"
-"DeOYU2rC+fWjqMJMV/pSMQKIDtvlZRKpR6pmqcWSlpfLXxTVHPKBk4LKcb62O4Vi"
-"TUQ6YYDQuMeDmpvdNJLRJtHs3ZAT5nLxLGP5TqLgcBtnte43uNgdJ1FSDROSwQcS"
-"JpwhhEWsMnHB8wC6kr2oS721DJscMdGkqPvDZqqUqCfybzyFy20kFZ6ws5Ae4LgQ"
-"c6vqkUUfaeiFx2Cx2htEgU4A1tze58h7Om3q3YXX1Rpl+iEMCMLAKRVHwYkLkUSe"
-"sQIDAQAB"
-"-----END PUBLIC KEY-----";
 }
 
 ScriptUpdater::~ScriptUpdater()
@@ -82,29 +68,35 @@ ScriptUpdater::updateScript()
         return;
     }
 
-    // 1. detect script name, open main.js and read version information
-    QFile file(m_scriptPath);
-    m_fileName = file.fileName();
-    QRegExp rxname("amarok/scripts/(.+)/main.js");
-    rxname.indexIn(m_fileName);
-    m_scriptname = rxname.cap(1);
-    QRegExp rxver("AmarokScriptVersion\\s*=\\s*(\\d+)\\b");
-    file.open(QIODevice::ReadOnly);
-    QString line(file.readLine());
-    file.close();
-    if (rxver.indexIn(line) != -1)
+    // 1a. detect currently installed version
+    QFileInfo info( m_scriptPath );
+    const QString specPath = info.path() + '/' + "script.spec";
+    if( !QFile::exists( specPath ) )
     {
-        m_scriptversion = rxver.cap(1);
-    } else {
-        // if no version information was found, cancel the update
+        // no .spec file found, can't continue
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
     }
+    KPluginInfo pInfo( specPath );
+    if ( !pInfo.isValid() || pInfo.name() == "" || pInfo.version() == "" )
+    {
+        // invalid or unusable .spec file, can't continue
+        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        return;
+    }
+    m_scriptversion = pInfo.version();
 
+    // 1b. detect script name
+    QFile file( m_scriptPath );
+    m_fileName = file.fileName();
+    QRegExp rxname( "amarok/scripts/(.+)/main.js" );
+    rxname.indexIn( m_fileName );
+    m_scriptname = rxname.cap( 1 );
+    
     // 2. check if there are updates: get 'update' file from server
-    KUrl versionUrl( m_updateBaseUrl );
+    KUrl versionUrl( updateBaseUrl );
     versionUrl.addPath( m_scriptname );
-    versionUrl.addPath( m_versionFilename );
+    versionUrl.addPath( versionFilename );
     debug() << m_scriptname << ": Accessing " << versionUrl.prettyUrl() << " ...";
     KJob* kjob = KIO::storedGet( versionUrl , KIO::NoReload, KIO::HideProgressInfo );
     connect ( kjob, SIGNAL( result( KJob* ) ), this, SLOT( phase2( KJob* )) );
@@ -120,7 +112,7 @@ ScriptUpdater::phase2( KJob * job )
         return;
     }
     QString response = QString( ((KIO::StoredTransferJob*) job)->data() );
-    if ( response.toInt() <= m_scriptversion.toInt() )
+    if ( !isNewer( response, m_scriptversion ) )
     {
         // if no newer version is available, cancel update
         QTimer::singleShot( 0, this, SLOT( quit() ) );
@@ -129,9 +121,9 @@ ScriptUpdater::phase2( KJob * job )
     debug() << m_scriptname << ": newer version found, starting update :-)";
 
     // 3. get the update archive, download it to a temporary file
-    KUrl archiveSrc( m_updateBaseUrl );
+    KUrl archiveSrc( updateBaseUrl );
     archiveSrc.addPath( m_scriptname );
-    archiveSrc.addPath( m_archiveFilename );
+    archiveSrc.addPath( archiveFilename );
     m_archiveFile.open(); // temporary files only have a fileName() after they've been opened
     KUrl archiveDest(m_archiveFile.fileName());
     KIO::FileCopyJob *archiveJob = KIO::file_copy( archiveSrc, archiveDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
@@ -148,9 +140,9 @@ void ScriptUpdater::phase3( KJob * job )
     }
 
     // 4. get the archive's signature, download it to a temporary file as well
-    KUrl sigSrc( m_updateBaseUrl );
+    KUrl sigSrc( updateBaseUrl );
     sigSrc.addPath( m_scriptname );
-    sigSrc.addPath( m_signatureFilename );
+    sigSrc.addPath( signatureFilename );
     m_sigFile.open();
     KUrl sigDest( m_sigFile.fileName() );
     KIO::FileCopyJob *sigJob = KIO::file_copy( sigSrc, sigDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
@@ -170,16 +162,16 @@ ScriptUpdater::phase4( KJob * job )
     // 5. compare the signature to the archive's hash
     QCA::Initializer init;
     QCA::ConvertResult conversionResult;
-    QCA::PublicKey pubkey = QCA::PublicKey::fromPEM( m_publicKey, &conversionResult );
+    QCA::PublicKey pubkey = QCA::PublicKey::fromPEM( publicKey, &conversionResult );
     if ( !( QCA::ConvertGood == conversionResult ) )
     {
-        debug() << m_scriptname << "Failed to read public key!";
+        debug() << m_scriptname << ": Failed to read public key!";
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
     }
     QFile file( m_archiveFile.fileName() );
     if ( !file.open( QIODevice::ReadOnly ) ) {
-        debug() << m_scriptname << "Failed to open file for reading!";
+        debug() << m_scriptname << ": Failed to open file for reading!";
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
     }
@@ -189,7 +181,7 @@ ScriptUpdater::phase4( KJob * job )
     QFile sigFile( m_sigFile.fileName() );
     if ( !sigFile.open( QIODevice::ReadOnly ) )
     {
-        debug() << m_scriptname << "Failed to open signature file for reading!";
+        debug() << m_scriptname << ": Failed to open signature file for reading!";
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
     }
@@ -199,7 +191,7 @@ ScriptUpdater::phase4( KJob * job )
     pubkey.update( hash.final() );
     if ( !pubkey.validSignature( signature ) )
     {
-        debug() << m_scriptname << "Invalid signature, no update performed.";
+        debug() << m_scriptname << ": Invalid signature, no update performed.";
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
     }
@@ -219,9 +211,38 @@ ScriptUpdater::phase4( KJob * job )
     QString destination = KGlobal::dirs()->saveLocation( "data", fileinfo.path(), false );
     const KArchiveDirectory* const archiveDir = archive.directory();
     archiveDir->copyTo( destination );
+    // update m_scriptPath so that the updated version of the script will be loaded
+    m_scriptPath = destination + "/main.js";
     debug() << m_scriptname << ": Updating finished successfully :-)";
 
     // all done, temporary files are deleted automatically by Qt
     QTimer::singleShot( 0, this, SLOT( quit() ) );
+}
+
+// decide whether a version string 'update' is newer than 'installed'
+bool
+ScriptUpdater::isNewer(const QString & update, const QString & installed)
+{
+    // only dots are supported as separators, and only integers are supported
+    // between the dots (so no fancy stuff like 2.1-1 or 2.1.beta2)
+    QStringList uList = update.split(".");
+    QStringList iList = installed.split(".");
+    int i = 0;
+    // stop working if the end of both lists is reached
+    while ( i < uList.length() || i < iList.length() ) {
+        // read current number, or use 0 if it isn't present (so that "2" == "2.0" == "2.0.0.0.0.0" == "2...0")
+        int up = ( ( uList.length() > i && uList[i] != "" ) ? uList[i].toInt() : 0 );
+        int in = ( ( iList.length() > i && iList[i] != "" ) ? iList[i].toInt() : 0 );
+        if ( up > in ) {
+            return true;
+        } else if ( up < in ) {
+            return false;
+        } else {
+            // both strings are equal up to this point -> look at the next pair of numbers
+            i++;
+        }
+    }
+    // if we reach this point, both versions are considered equal
+    return false;
 }
 
