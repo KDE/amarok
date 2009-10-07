@@ -360,26 +360,22 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
     {
         if( i.value().isDirty() )
         {
+            QString layoutName = i.key();
             if ( LayoutManager::instance()->isDefaultLayout( i.key() ) )
             {
+
+                QString newLayoutName = i18n( "copy of %1", layoutName );
                 const QString msg = i18n( "The layout '%1' you modified is one of the default layouts and cannot be overwritten. "
-                                          "Please select a different name to save a copy.", i.key() );
-                KMessageBox::sorry( this, msg, i18n( "Reserved Layout Name" ) );
-                //TODO: handle this on layout switch maybe? this is not the right time to tell users they needed to make a copy in the first place
-                i.value().setHead( LayoutManager::instance()->layout( i.key() ).head() );
-                i.value().setBody( LayoutManager::instance()->layout( i.key() ).body() );
-                i.value().setSingle( LayoutManager::instance()->layout( i.key() ).single() );
-                i.value().setInlineControls( LayoutManager::instance()->layout( i.key() ).inlineControls() );
-                i.value().setGroupBy( LayoutManager::instance()->layout( i.key() ).groupBy() );
-                i.value().setDirty( false );
-                if ( m_layoutName == i.key() )
-                    setLayout( i.key() );
-                return;
+                                          "Saved as new layout '%2'", layoutName, newLayoutName );
+                KMessageBox::sorry( this, msg, i18n( "Default Layout" ) );
+
+                layoutName = newLayoutName;
+                
             }
             i.value().setInlineControls( inlineControlsChekbox->isChecked() );
             i.value().setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
             i.value().setDirty( false );
-            LayoutManager::instance()->addUserLayout( i.key(), i.value() );
+            LayoutManager::instance()->addUserLayout( layoutName, i.value() );
         }
         i++;
     }
