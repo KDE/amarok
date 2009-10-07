@@ -151,7 +151,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         if ( paintInlineControls )
         {
             int adjustedRowCount = rowCount + 1;
-            trackHeight = ( option.rect.height() * rowCount ) / adjustedRowCount;
+            trackHeight = ( option.rect.height() * rowCount ) / adjustedRowCount + 3;
             extraHeight = option.rect.height() - trackHeight;
             trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
         }
@@ -571,7 +571,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     if ( !index.data( ActiveTrackRole ).toBool() )
         return false;
 
-    //also, if we are not using the inline controls, we should not reacto to these clicks at all
+    //also, if we are not using the inline controls, we should not react to these clicks at all
     if( !LayoutManager::instance()->activeLayout().inlineControls() )
         return false;
 
