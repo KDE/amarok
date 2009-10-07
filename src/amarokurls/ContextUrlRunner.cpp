@@ -57,6 +57,7 @@ bool ContextUrlRunner::run( AmarokUrl url )
         }
     }
 
+    return true;
 }
 
 QString ContextUrlRunner::command() const
