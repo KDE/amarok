@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Added "Copy on Write" when trying to edit a read only (one of the 
+      default) playlist layouts. The changed layout is now simply saved under 
+      a new name. 
     * Added bookmarks to the context view, allowing saving and restoring of 
       applet setups.
     * Enhanced --debug feature: When a function takes very long to run (> 5s),
@@ -23,6 +26,8 @@ VERSION 2.2.1
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * Improvements to the row heights in the playlist, making especially the
+      size of the rating stars more consistent.
     * Usability improvements in the Context View's applet tab bar.
     * Collection scanner won't scan a directory more than once if passed in
       multiple times. Should significantly speed up certain incremental
