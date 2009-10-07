@@ -344,11 +344,6 @@
         <whatsthis>Customize the OSD display text.</whatsthis>
         <default>%artist - %title {(%length)}\n%album</default>
     </entry>
-    <entry key="Osd Font" type="Font">
-        <label>Font for On-Screen Display</label>
-        <whatsthis>The font to use for the On-Screen Display.</whatsthis>
-        <default code="true">QFont("Arial",16)</default>
-    </entry>
     <entry key="Osd Use Translucency" type="Bool">
         <label>Translucency Toggle</label>
         <whatsthis>Make the background of the OSD translucent.</whatsthis>
