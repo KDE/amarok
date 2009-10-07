@@ -35,6 +35,9 @@ TestMetaTrack::TestMetaTrack( QStringList testArgumentList, bool stdout )
 void TestMetaTrack::initTestCase()
 {
     m_testTrack1 = CollectionManager::instance()->trackForUrl( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/test_silence.ogg" ) );
+
+    // If the pointer is 0, it makes no sense to continue. We would crash with a qFatal().
+    QVERIFY2( m_testTrack1, "The pointer to the test track is 0." );
 }
 
 void TestMetaTrack::cleanupTestCase()
