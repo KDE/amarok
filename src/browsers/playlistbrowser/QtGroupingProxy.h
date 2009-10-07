@@ -59,6 +59,7 @@ class QtGroupingProxy : public QAbstractProxyModel
 
         /* QtGroupingProxy methods */
         virtual QModelIndex addEmptyGroup( const ColumnVariantMap &data );
+        virtual bool removeGroup( const QModelIndex &idx );
 
     signals:
         void rowsInserted( const QModelIndex&, int, int );

@@ -120,6 +120,7 @@ QtGroupingProxy::buildTree()
 
                 foreach( const ColumnVariantMap &cachedData, m_groupMaps )
                 {
+                    //when this matches the index belongs to an existing group
                     if( data[0][Qt::DisplayRole] == cachedData[0][Qt::DisplayRole] )
                     {
                         data = cachedData;
@@ -493,6 +494,20 @@ QtGroupingProxy::addEmptyGroup( const ColumnVariantMap &data )
     endInsertRows();
     emit layoutChanged();
     return index( newRow, 0, QModelIndex() );
+}
+
+bool
+QtGroupingProxy::removeGroup( const QModelIndex &idx )
+{
+    //TODO:unset this groups value from the childrens grouped column
+    beginRemoveRows( idx.parent(), idx.row(), idx.row() );
+    m_groupHash.remove( idx.row() );
+    m_groupMaps.removeAt( idx.row() );
+    m_parentCreateList.removeAt( idx.internalId() );
+    endRemoveRows();
+
+    //TODO: only true if all data could be unset.
+    return true;
 }
 
 bool

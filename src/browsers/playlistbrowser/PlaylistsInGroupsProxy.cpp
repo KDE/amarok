@@ -43,16 +43,37 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
 {
     DEBUG_BLOCK
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-    if( !parent.isValid() && isGroup( index( row, 0, parent ) ) )
+    if( !parent.isValid() )
     {
-        deleteFolder( parent );
-        return true;
+        QModelIndex folderIdx = index( row, 0, parent );
+        if( isGroup( folderIdx ) )
+        {
+            deleteFolder( folderIdx );
+            return true;
+        }
+
+        //is a playlist not in a folder
+        QModelIndex childIdx = mapToSource( index( row, 0, parent ) );
+        return m_model->removeRow( childIdx.row(), QModelIndex() );
     }
 
-    QModelIndex originalIdx = mapToSource( parent );
-    bool success = m_model->removeRows( row, count, originalIdx );
+    if( isGroup( parent ) )
+    {
+        bool success = true;
+        for( int i = row; i < row + count; i++ )
+        {
+            //individually remove all children of this group in the source model
+            QModelIndex childIdx = mapToSource( index( i, 0, parent ) );
+            //set success to false if removeRows returns false
+            success =
+                m_model->removeRow( childIdx.row(), QModelIndex() ) ? success : false;
+        }
+        return success;
+    }
 
-    return success;
+    //removing a track from a playlist
+    QModelIndex originalIdx = mapToSource( parent );
+    return m_model->removeRows( row, count, originalIdx );
 }
 
 QStringList
@@ -261,7 +282,11 @@ void
 PlaylistsInGroupsProxy::deleteFolder( const QModelIndex &groupIdx )
 {
     DEBUG_BLOCK
-    //TODO: make work
+    int childCount = rowCount( groupIdx );
+    if( childCount > 0 )
+        removeRows( 0, childCount, groupIdx );
+    removeGroup( groupIdx );
+    buildTree();
 }
 
 QList<QAction *>

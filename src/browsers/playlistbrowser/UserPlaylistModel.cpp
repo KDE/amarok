@@ -341,7 +341,11 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
       for( int i = row; i < row + count; i++ )
       {
         if( m_playlists.count() > i )
-          playlistToRemove << m_playlists[i];
+        {
+            Meta::PlaylistPtr playlist = m_playlists[i];
+            debug() << "Removing " << playlist->name();
+            playlistToRemove << playlist;
+        }
       }
       if( playlistToRemove.isEmpty() )
         return false;
