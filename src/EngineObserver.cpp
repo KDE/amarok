@@ -202,20 +202,20 @@ EngineSubject::trackChangedNotify( Meta::TrackPtr track )
 void
 EngineSubject::attach( EngineObserver *observer )
 {
-    if( !observer )
+    if( !observer || Observers.contains( observer ) )
         return;
 
     QObject* object = dynamic_cast<QObject*>( observer );
     if( object )
         connect( object, SIGNAL( destroyed( QObject* ) ), this, SLOT( observerDestroyed( QObject* ) ) );
 
-    Observers.insert( observer );
+    Observers.append( observer );
 }
 
 void
 EngineSubject::detach( EngineObserver *observer )
 {
-    Observers.remove( observer );
+    Observers.removeAll( observer );
 }
 
 void
@@ -224,7 +224,7 @@ EngineSubject::observerDestroyed( QObject* object ) //SLOT
     DEBUG_BLOCK
 
     EngineObserver* observer = reinterpret_cast<EngineObserver*>( object ); // cast is OK, it's guaranteed to be an EngineObserver
-    Observers.remove( observer );
+    Observers.removeAll( observer );
 
     debug() << "Removed EngineObserver: " << observer;
 }
