@@ -3,7 +3,7 @@
  * Copyright (c) 2004-2006 Seb Ruiz <ruiz@kde.org>                                      *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
  * Copyright (c) 2005 Gabor Lehel <illissius@gmail.com>                                 *
- * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2008,2009 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -82,8 +82,12 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     #endif
 
     m_timer->setSingleShot( true );
-
     connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
+
+    QFont f = font();
+    f.setFamily( "Arial" );
+    f.setPointSize( f.pointSize() + 8 );
+    setFont( f );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -363,7 +367,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
         pixmap.fill( Qt::black );
 
         QPainter p2( &pixmap );
-        p2.setFont( font() );
         p2.setPen( Qt::white );
         p2.setBrush( Qt::white );
         p2.drawText( QRect( QPoint( 5, 5 ), rect.size() ), align, m_text );
@@ -373,7 +376,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
     }
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
     //p.setPen( Qt::white ); // This too.
-    p.setFont( font() );
     p.drawText( rect, align, m_text );
 
     m_paused = false;
@@ -440,9 +442,6 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
     m_alignment = static_cast<Alignment>( AmarokConfig::osdAlignment() );
     m_y = AmarokConfig::osdYOffset();
     m_cover = Amarok::icon();
-    QFont f = font();
-    f.setPointSize( 16 );
-    setFont( f );
     setTranslucent( AmarokConfig::osdUseTranslucency() );
     setText( m_text );
     setImage( m_cover );
@@ -615,7 +614,6 @@ Amarok::OSD::applySettings()
     setEnabled( AmarokConfig::osdEnabled() );
     setOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
-    setFont( AmarokConfig::osdFont() );
 
     if( AmarokConfig::osdUseCustomColors() )
         setTextColor( AmarokConfig::osdTextColor() );

@@ -38,6 +38,8 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * The On Screen Display now uses a sane font size with all display
+      resolutions. (BR 195186)
     * Fix rare regression where inaccessible subfolders (due to permissions)
       in the collection could not be picked up by an incremental scan when
       permissions were fixed and their mtime updated, requiring a full rescan.
