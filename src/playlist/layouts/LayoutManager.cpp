@@ -21,6 +21,7 @@
 #include "Debug.h"
 #include "playlist/PlaylistDefines.h"
 #include "playlist/PlaylistModelStack.h"
+#include "statusbar/StatusBar.h"
 
 #include <KMessageBox>
 #include <KStandardDirs>
@@ -90,14 +91,21 @@ void LayoutManager::updateCurrentLayout( const PlaylistLayout &layout )
     if ( m_activeLayout == PREVIEW_LAYOUT )
         return;
 
-    //also, for now, do not save it this is a default layout
-    //TODO: copy on write for default alyouts
+    if ( m_layouts.value( m_activeLayout ).isEditable() )
+    {
+        addUserLayout( m_activeLayout, layout );
+        setActiveLayout( m_activeLayout );
+    }
+    else
+    {
+        //create a writable copy of this layout. (Copy on Write)
+        QString newLayoutName = i18n( "copy of %1", m_activeLayout );
 
-    if ( !m_layouts.value( m_activeLayout ).isEditable() )
-        return;
-
-    addUserLayout( m_activeLayout, layout );
-    setActiveLayout( m_activeLayout );
+        The::statusBar()->longMessage( i18n( "curent layout '%1' is write only. Creating a new layout '%2' with your changes and setting this as active", m_activeLayout, newLayoutName ) );
+        
+        addUserLayout( newLayoutName, layout );
+        setActiveLayout( newLayoutName );
+    }
 }
 
 PlaylistLayout LayoutManager::activeLayout() const
