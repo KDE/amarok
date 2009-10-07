@@ -51,9 +51,7 @@ public:
 public slots:
     void showApplet( Plasma::Applet* ) {}
     void moveApplet( Plasma::Applet*, int, int ) {}
-    virtual Applet* addApplet( const QString& pluginName, const int ) { return 0; }
-
-    
+    virtual Applet* addApplet( const QString& pluginName, const int ) { Q_UNUSED( pluginName ); return 0; }
 };
 
 } // Context namespace
