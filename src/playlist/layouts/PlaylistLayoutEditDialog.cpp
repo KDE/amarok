@@ -364,7 +364,19 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
             if ( LayoutManager::instance()->isDefaultLayout( i.key() ) )
             {
 
+               
+
                 QString newLayoutName = i18n( "copy of %1", layoutName );
+                QString orgCopyName = newLayoutName;
+
+                int copyNumber = 1;
+                QStringList existingLayouts = LayoutManager::instance()->layouts();
+                while( existingLayouts.contains( newLayoutName ) )
+                {
+                    copyNumber++;
+                    newLayoutName = i18nc( "adds a copy number to a generated name if the name already exists, for instance 'copy of Foo 2' if 'copy of Foo' is taken", "%1 %2", orgCopyName, copyNumber );
+                }
+                
                 const QString msg = i18n( "The layout '%1' you modified is one of the default layouts and cannot be overwritten. "
                                           "Saved as new layout '%2'", layoutName, newLayoutName );
                 KMessageBox::sorry( this, msg, i18n( "Default Layout" ) );

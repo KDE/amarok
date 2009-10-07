@@ -100,6 +100,16 @@ void LayoutManager::updateCurrentLayout( const PlaylistLayout &layout )
     {
         //create a writable copy of this layout. (Copy on Write)
         QString newLayoutName = i18n( "copy of %1", m_activeLayout );
+        QString orgCopyName = newLayoutName;
+
+        int copyNumber = 1;
+        QStringList existingLayouts = LayoutManager::instance()->layouts();
+        while( existingLayouts.contains( newLayoutName ) )
+        {
+            copyNumber++;
+            newLayoutName = i18nc( "adds a copy number to a generated name if the name already exists, for instance 'copy of Foo 2' if 'copy of Foo' is taken", "%1 %2", orgCopyName, copyNumber );
+        }
+                
 
         The::statusBar()->longMessage( i18n( "curent layout '%1' is write only. Creating a new layout '%2' with your changes and setting this as active", m_activeLayout, newLayoutName ) );
         
