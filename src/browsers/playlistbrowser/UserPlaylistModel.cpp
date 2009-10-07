@@ -125,7 +125,12 @@ PlaylistBrowserNS::UserModel::loadPlaylists()
     m_playlists.clear();
     while( i.hasNext() )
     {
-        Meta::PlaylistPtr playlist = Meta::PlaylistPtr::staticCast( i.next() );
+        Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( i.next() );
+        if( playlist.isNull() )
+        {
+          error() << "Playlist was NULL!";
+          continue;
+        }
         m_playlists << playlist;
         playlist->subscribe( this );
     }
