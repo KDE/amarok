@@ -71,19 +71,7 @@ void
 SqlUserPlaylistProvider::slotDelete()
 {
     DEBUG_BLOCK
-
-    //TODO FIXME Confirmation of delete
-    foreach( Meta::PlaylistPtr playlist, The::userPlaylistModel()->selectedPlaylists() )
-    {
-        Meta::SqlPlaylistPtr sqlPlaylist =
-                Meta::SqlPlaylistPtr::dynamicCast( playlist );
-        if( sqlPlaylist )
-        {
-            debug() << "deleting " << sqlPlaylist->name();
-            sqlPlaylist->removeFromDb();
-        }
-    }
-    reloadFromDb();
+    deletePlaylists( The::userPlaylistModel()->selectedPlaylists() );
 }
 
 void
@@ -173,6 +161,23 @@ SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackInde
     actions << m_removeTrackAction;
 
     return actions;
+}
+
+void
+SqlUserPlaylistProvider::deletePlaylists( Meta::PlaylistList playlistlist )
+{
+    //TODO FIXME Confirmation of delete
+    foreach( Meta::PlaylistPtr playlist, playlistlist )
+    {
+        Meta::SqlPlaylistPtr sqlPlaylist =
+                Meta::SqlPlaylistPtr::dynamicCast( playlist );
+        if( sqlPlaylist )
+        {
+            debug() << "deleting " << sqlPlaylist->name();
+            sqlPlaylist->removeFromDb();
+        }
+    }
+    reloadFromDb();
 }
 
 Meta::PlaylistPtr

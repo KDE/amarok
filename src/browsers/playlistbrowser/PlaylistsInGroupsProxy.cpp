@@ -43,7 +43,7 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
 {
     DEBUG_BLOCK
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-    if( isGroup( parent ) )
+    if( !parent.isValid() && isGroup( index( row, 0, parent ) ) )
     {
         deleteFolder( parent );
         return true;

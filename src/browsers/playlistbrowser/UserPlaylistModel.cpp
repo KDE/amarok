@@ -334,6 +334,21 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
 {
     DEBUG_BLOCK
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
+
+    if( !parent.isValid() )
+    {
+      Meta::PlaylistList playlistToRemove;
+      for( int i = row; i < row + count; i++ )
+      {
+        if( m_playlists.count() > i )
+          playlistToRemove << m_playlists[i];
+      }
+      if( playlistToRemove.isEmpty() )
+        return false;
+
+      The::playlistManager()->deletePlaylists( playlistToRemove );
+      return true;
+    }
     int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
     debug() << "playlist at row: " << playlistRow;
 
