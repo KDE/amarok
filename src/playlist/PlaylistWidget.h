@@ -58,6 +58,7 @@ protected:
     QSize sizeHint() const;
 
 private slots:
+    void paletteChanged( const QPalette& palette );
     void playlistProviderAdded( PlaylistProvider *provider, int category );
     void playlistProviderRemoved( PlaylistProvider *provider, int category );
     void slotSaveCurrentPlaylist();

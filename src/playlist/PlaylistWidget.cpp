@@ -66,6 +66,9 @@ Playlist::Widget::Widget( QWidget* parent )
 
     showDynamicHint( AmarokConfig::dynamicMode() );
 
+    paletteChanged( App::instance()->palette() );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+
     QWidget * layoutHolder = new QWidget( this );
 
     QVBoxLayout* mainPlaylistlayout = new QVBoxLayout( layoutHolder );
@@ -167,6 +170,16 @@ QSize
 Playlist::Widget::sizeHint() const
 {
     return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
+}
+
+
+void
+Playlist::Widget::paletteChanged( const QPalette& palette )
+{
+    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; color: %2; } " )
+                                        .arg( PaletteHandler::highlightColor().name() )
+                                        .arg( palette.highlightedText().color().name() ) );
+
 }
 
 void
