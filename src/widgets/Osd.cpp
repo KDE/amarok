@@ -367,6 +367,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
         pixmap.fill( Qt::black );
 
         QPainter p2( &pixmap );
+        p2.setFont( font() );
         p2.setPen( Qt::white );
         p2.setBrush( Qt::white );
         p2.drawText( QRect( QPoint( 5, 5 ), rect.size() ), align, m_text );
