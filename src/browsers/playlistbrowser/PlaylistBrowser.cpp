@@ -90,7 +90,7 @@ PlaylistBrowser::addCategory( int category )
         case PlaylistManager::CurrentPlaylist: return;
         //TODO: add the UserPlaylistCategory widget
         case PlaylistManager::UserPlaylist: bCategory = new PlaylistCategory( 0 ); break;
-        case PlaylistManager::PodcastChannel: bCategory = loadPodcastCategory(); break;
+        case PlaylistManager::PodcastChannel: /* already loaded in MainWindow.cpp */ return;
         case PlaylistManager::Dynamic: bCategory = loadDynamicCategory(); break;
         //TODO: add the SmartPlaylistCategory widget
         //case PlaylistManager::SmartPlaylist: bCategory = loadSmartPlaylistCategory(); break;

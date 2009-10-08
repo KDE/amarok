@@ -32,6 +32,7 @@ VERSION 2.2.1
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * Moved the Podcast category to the top level of the Content panel.
     * Renamed "Browsers" panel to more suited "Content" panel.
     * Improvements to the row heights in the playlist, making especially the
       size of the rating stars more consistent.

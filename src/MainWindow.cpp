@@ -54,6 +54,7 @@
 #include "playlist/ProgressiveSearchWidget.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "PodcastCategory.h"
 #include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
@@ -352,6 +353,10 @@ MainWindow::init()
 
         internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
+
+        PERF_LOG( "Creating Podcast Category" )
+        m_browsers->list()->addCategory( The::podcastCategory() );
+        PERF_LOG( "Created Podcast Category" )
 
         PERF_LOG( "finished MainWindow::init" )
     }
