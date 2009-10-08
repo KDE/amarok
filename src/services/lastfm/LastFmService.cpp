@@ -434,7 +434,7 @@ LastFmService::onAvatarDownloaded( QPixmap avatar )
         if( m_avatarLabel )
             m_avatarLabel->setPixmap( m_avatar );
     }
-//     sender()->deleteLater();
+    sender()->deleteLater();
 }
 
 void
