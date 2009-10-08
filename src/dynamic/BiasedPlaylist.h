@@ -53,7 +53,8 @@ namespace Dynamic
             void requestAbort();
 
         public slots:
-            virtual void recalculate();
+            virtual void recalculate();       
+            virtual void invalidate();
 
         private slots:
             void solverReady();

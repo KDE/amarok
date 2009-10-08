@@ -30,6 +30,7 @@
 #include "statusbar/StatusBar.h"
 
 #include <threadweaver/ThreadWeaver.h>
+#include <QThread>
 
 
 
@@ -117,10 +118,12 @@ void
 Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 {
     DEBUG_BLOCK
-
+    debug() << "BiasedPlaylist in:" << QThread::currentThreadId();
+    
     if( !m_solver )
     {
         BiasSolver::setUniverseCollection( m_collection );
+        debug() << "assigning new m_solver";
         m_solver = new BiasSolver(
                 BUFFER_SIZE, m_biases, m_context );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
@@ -135,12 +138,17 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 
         connect( m_solver, SIGNAL(readyToRun()), SLOT(solverReady()) );
         m_solver->prepareToRun();
+        debug() << "called prepareToRun";
+    } else
+    {
+        debug() << "solver already running!";
     }
 }
 
 void
 Dynamic::BiasedPlaylist::solverReady()
 {
+    debug() << "ENQUEUEING new m_solver!" << m_solver;
     if( m_solver )
         ThreadWeaver::Weaver::instance()->enqueue( m_solver );
 }
@@ -155,6 +163,8 @@ Dynamic::BiasedPlaylist::updateStatus( int progress )
 
 Dynamic::BiasedPlaylist::~BiasedPlaylist()
 {
+    
+    DEBUG_BLOCK
     if( m_solver )
         delete m_solver;
 }
@@ -179,7 +189,7 @@ void
 Dynamic::BiasedPlaylist::recalculate()
 {
     DEBUG_BLOCK
-    if ( AmarokConfig::dynamicMode() ) {
+    if ( AmarokConfig::dynamicMode() && !m_solver ) {
         m_buffer.clear();
         if ( m_backbufferMutex.tryLock() ) {
             m_backbuffer.clear();
@@ -191,6 +201,18 @@ Dynamic::BiasedPlaylist::recalculate()
     }
 }
 
+
+void
+Dynamic::BiasedPlaylist::invalidate()
+{
+    DEBUG_BLOCK
+     if ( AmarokConfig::dynamicMode() )
+     {
+         BiasSolver::outdateUniverse();
+         if( m_active )
+            recalculate();
+     }
+}
 
 QList<Dynamic::Bias*>&
 Dynamic::BiasedPlaylist::biases()

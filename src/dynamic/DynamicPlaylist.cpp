@@ -22,12 +22,12 @@
 
 
 Dynamic::DynamicPlaylist::DynamicPlaylist( Amarok::Collection* coll )
-     : m_collection(coll)
+     : m_collection(coll), m_active(true)
 {
     if( !m_collection )
     {
         m_collection = CollectionManager::instance()->primaryCollection();
-        connect( m_collection, SIGNAL(updated()), this, SLOT(recalculate()) );
+        connect( m_collection, SIGNAL(updated()), this, SLOT(invalidate()) );
     }
 }
 
@@ -47,6 +47,20 @@ void
 Dynamic::DynamicPlaylist::recalculate()
 {
     // do nothing by default
+}
+
+
+void
+Dynamic::DynamicPlaylist::invalidate()
+{
+    // do nothing by default
+}
+
+
+void
+Dynamic::DynamicPlaylist::setActive(bool active)
+{
+    m_active = active;
 }
 
 

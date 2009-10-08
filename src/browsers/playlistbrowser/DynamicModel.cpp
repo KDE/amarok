@@ -116,7 +116,16 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( const QString& name )
     if( p == Dynamic::DynamicPlaylistPtr() )
         debug() << "Failed to retrieve biased playlist: " << name;
     m_activePlaylist = m_playlistList.indexOf( p );
-
+    m_playlistList[ m_activePlaylist ]->setActive( true );
+    
+    for(int i = 0; i < m_playlistList.size(); i++)
+    {
+        if(i != m_activePlaylist)
+        {
+            m_playlistList[ i ]->setActive( false) ;
+        }
+    }
+    
     emit activeChanged();
 
     return p;
@@ -139,7 +148,16 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
     if( p == Dynamic::DynamicPlaylistPtr() )
         debug() << "Failed to retrieve biased playlist: " << index;
     m_activePlaylist = index;
+    m_playlistList[ m_activePlaylist ]->setActive( true );
 
+    for(int i = 0; i < m_playlistList.size(); i++)
+    {
+        if(i != m_activePlaylist)
+        {
+            m_playlistList[ i ]->setActive( false) ;
+        }
+    }
+    
     emit activeChanged();
 
     return p;

@@ -47,7 +47,8 @@ class DynamicPlaylist : public QObject, public QSharedData
         QString title() const;
 
         void setTitle( QString );
-
+        virtual void setActive(bool active);
+        
         virtual void requestAbort() {}
 
     signals:
@@ -55,10 +56,12 @@ class DynamicPlaylist : public QObject, public QSharedData
 
     public slots:
         virtual void recalculate();
-
+        virtual void invalidate();
+        
     protected:
         Amarok::Collection* m_collection;
         QString m_title;
+        bool m_active;
 };
 
 

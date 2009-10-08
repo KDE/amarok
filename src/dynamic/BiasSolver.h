@@ -75,6 +75,8 @@ namespace Dynamic
                     int n, QList<Bias*> biases,
                     Meta::TrackList context = Meta::TrackList() );
 
+            ~BiasSolver();
+            
             /**
              * Before the solver is run, it must prepared. This function returns
              * immediately, but the preparation is not finished until readyToRun
@@ -237,7 +239,6 @@ namespace Dynamic
             double m_epsilon;           //! highest energy we consider optimal
 
             int m_pendingBiasUpdates;
-            QMutex m_biasMutex;
 
             QList<QByteArray> m_domain; //! set of tracks being considered, potentially different than s_universe.
 
