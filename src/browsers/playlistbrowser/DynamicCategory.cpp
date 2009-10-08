@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
  * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -36,6 +37,7 @@
 #include <KHBox>
 #include <KIcon>
 #include <KStandardDirs>
+#include <KSeparator>
 #include <KToolBar>
 
 
@@ -60,43 +62,51 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     setContentsMargins(0,0,0,0);
 
-    KHBox* controlsLayout = new KHBox( this );
+    
+    KHBox* controls1Layout = new KHBox( this );
 
-    new QLabel( i18n( "Previous:" ), controlsLayout );
-
-    m_previous = new QSpinBox( controlsLayout );
-    m_previous->setMinimum( 0 );
-    m_previous->setToolTip( i18n( "Number of previous tracks to remain in the playlist." ) );
-    m_previous->setValue( AmarokConfig::previousTracks() );
-    QObject::connect( m_previous, SIGNAL( valueChanged( int ) ), this, SLOT( setPreviousTracks( int ) ) );
-
-    new QLabel( i18n( "Upcoming:" ), controlsLayout );
-
-    m_upcoming = new QSpinBox( controlsLayout );
-    m_upcoming->setMinimum( 1 );
-    m_upcoming->setToolTip( i18n( "Number of upcoming tracks to add to the playlist." ) );
-    m_upcoming->setValue( AmarokConfig::upcomingTracks() );
-    QObject::connect( m_upcoming, SIGNAL( valueChanged( int ) ), this, SLOT( setUpcomingTracks( int ) ) );
-
-    m_onOffCheckbox = new QCheckBox( controlsLayout );
+    m_onOffCheckbox = new QCheckBox( controls1Layout );
     m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
     m_onOffCheckbox->setText( i18n( "On" ) );
     m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
     m_onOffCheckbox->setCheckable( true );
-    m_onOffCheckbox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+    m_onOffCheckbox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     QObject::connect( m_onOffCheckbox, SIGNAL( toggled( bool ) ), this, SLOT( OnOff ( bool ) ) );
 
-    QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ) );
-    
-    m_repopulateButton = new QPushButton( this );
+    m_repopulateButton = new QPushButton( controls1Layout );
     m_repopulateButton->setText( i18n("Repopulate") );
     m_repopulateButton->setToolTip( i18n("Replace the upcoming tracks with fresh ones.") );
     m_repopulateButton->setIcon( KIcon( "view-refresh-amarok" ) );
     m_repopulateButton->setEnabled( enabled );
     m_repopulateButton->setSizePolicy( 
-            QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
+    QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
     QObject::connect( m_repopulateButton, SIGNAL( clicked(bool) ), The::playlistActions(), SLOT( repopulateDynamicPlaylist() ) );
             
+
+    new KSeparator( Qt::Horizontal, this );
+
+
+    KHBox* controls2Layout = new KHBox( this );
+
+    new QLabel( i18n( "Previous:" ), controls2Layout );
+
+    m_previous = new QSpinBox( controls2Layout );
+    m_previous->setMinimum( 0 );
+    m_previous->setToolTip( i18n( "Number of previous tracks to remain in the playlist." ) );
+    m_previous->setValue( AmarokConfig::previousTracks() );
+    QObject::connect( m_previous, SIGNAL( valueChanged( int ) ), this, SLOT( setPreviousTracks( int ) ) );
+
+    new QLabel( i18n( "Upcoming:" ), controls2Layout );
+
+    m_upcoming = new QSpinBox( controls2Layout );
+    m_upcoming->setMinimum( 1 );
+    m_upcoming->setToolTip( i18n( "Number of upcoming tracks to add to the playlist." ) );
+    m_upcoming->setValue( AmarokConfig::upcomingTracks() );
+    QObject::connect( m_upcoming, SIGNAL( valueChanged( int ) ), this, SLOT( setUpcomingTracks( int ) ) );
+
+
+    QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ) );
+
 
     KHBox* presetLayout = new KHBox( this );
 
