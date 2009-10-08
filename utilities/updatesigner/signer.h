@@ -34,8 +34,7 @@ class signer : public QObject
 		void checkSignature();
 		
 	private:
-		QString m_fileName;
-		QString m_pubkey;
+		QString m_pubkeyFilename, m_privkeyFilename;
 };
 
 #endif // signer_H

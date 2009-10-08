@@ -28,9 +28,9 @@
 // static configuration
 // TODO: remember to change the base URL before release!
 static const QString updateBaseUrl     = "http://home.in.tum.de/~kummeroj/update/"; // must end with '/'
-static const QString archiveFilename   = "/main.tar.bz2";  // must start with '/'
-static const QString versionFilename   = "/version";      // must start with '/'
-static const QString signatureFilename = "/signature";    // must start with '/'
+static const QString archiveFilename   = "main.tar.bz2";
+static const QString versionFilename   = "version";
+static const QString signatureFilename = "signature";
 // TODO: remember to change the public key before release!
 static const QString publicKey = "-----BEGIN PUBLIC KEY-----\n"
 "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqSVx2dsSkfNniS/bK81q\n"
@@ -75,7 +75,7 @@ class ScriptUpdater : public QThread
 
         // dynamically collected information about the script
         QString m_scriptname, m_scriptversion, m_fileName;
-        QTemporaryFile m_archiveFile, m_sigFile;
+        QTemporaryFile m_archiveFile, m_sigFile, m_versionFile;
 
 };
 

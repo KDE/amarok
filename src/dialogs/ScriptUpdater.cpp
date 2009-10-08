@@ -93,13 +93,15 @@ ScriptUpdater::updateScript()
     rxname.indexIn( m_fileName );
     m_scriptname = rxname.cap( 1 );
     
-    // 2. check if there are updates: get 'update' file from server
+    // 2. check if there are updates: get 'version' file from server
     KUrl versionUrl( updateBaseUrl );
     versionUrl.addPath( m_scriptname );
-    versionUrl.addPath( versionFilename );
+    versionUrl.addPath( "/" + versionFilename );
+    m_versionFile.open();
     debug() << m_scriptname << ": Accessing " << versionUrl.prettyUrl() << " ...";
-    KJob* kjob = KIO::storedGet( versionUrl , KIO::NoReload, KIO::HideProgressInfo );
-    connect ( kjob, SIGNAL( result( KJob* ) ), this, SLOT( phase2( KJob* )) );
+    KUrl versionDest( m_versionFile.fileName() );
+    KIO::FileCopyJob *versionJob = KIO::file_copy( versionUrl, versionDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
+    connect ( versionJob, SIGNAL( result( KJob* ) ), this, SLOT( phase2( KJob* )) );
 }
 
 void
@@ -111,7 +113,15 @@ ScriptUpdater::phase2( KJob * job )
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
     }
-    QString response = QString( ((KIO::StoredTransferJob*) job)->data() );
+    QFile file( m_versionFile.fileName() );
+    if ( !file.open( QIODevice::ReadOnly ) ) {
+        debug() << m_scriptname << ": Failed to open version file for reading!";
+        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        return;
+    }
+    QString response( file.readAll() );
+    file.close();
+    debug() << m_scriptname << ": online version: " << response;
     if ( !isNewer( response, m_scriptversion ) )
     {
         // if no newer version is available, cancel update
@@ -123,9 +133,9 @@ ScriptUpdater::phase2( KJob * job )
     // 3. get the update archive, download it to a temporary file
     KUrl archiveSrc( updateBaseUrl );
     archiveSrc.addPath( m_scriptname );
-    archiveSrc.addPath( archiveFilename );
+    archiveSrc.addPath( "/" + archiveFilename );
     m_archiveFile.open(); // temporary files only have a fileName() after they've been opened
-    KUrl archiveDest(m_archiveFile.fileName());
+    KUrl archiveDest( m_archiveFile.fileName() );
     KIO::FileCopyJob *archiveJob = KIO::file_copy( archiveSrc, archiveDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
     connect ( archiveJob, SIGNAL( result( KJob* ) ), this, SLOT( phase3( KJob* )) );
 }
@@ -142,7 +152,7 @@ void ScriptUpdater::phase3( KJob * job )
     // 4. get the archive's signature, download it to a temporary file as well
     KUrl sigSrc( updateBaseUrl );
     sigSrc.addPath( m_scriptname );
-    sigSrc.addPath( signatureFilename );
+    sigSrc.addPath( "/" + signatureFilename );
     m_sigFile.open();
     KUrl sigDest( m_sigFile.fileName() );
     KIO::FileCopyJob *sigJob = KIO::file_copy( sigSrc, sigDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
@@ -170,14 +180,25 @@ ScriptUpdater::phase4( KJob * job )
         return;
     }
     QFile file( m_archiveFile.fileName() );
-    if ( !file.open( QIODevice::ReadOnly ) ) {
-        debug() << m_scriptname << ": Failed to open file for reading!";
+    if ( !file.open( QIODevice::ReadOnly ) )
+    {
+        debug() << m_scriptname << ": Failed to open archive file for reading!";
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
     }
     QCA::Hash hash( "sha1" );
     hash.update( &file );
     file.close();
+    QFile versionFile( m_versionFile.fileName() );
+    if ( !versionFile.open( QIODevice::ReadOnly ) )
+    {
+        debug() << m_scriptname << ": Failed to open version file for reading!";
+        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        return;
+    }
+    QCA::Hash versionHash( "sha1" );
+    versionHash.update( &versionFile );
+    versionFile.close();
     QFile sigFile( m_sigFile.fileName() );
     if ( !sigFile.open( QIODevice::ReadOnly ) )
     {
@@ -189,6 +210,7 @@ ScriptUpdater::phase4( KJob * job )
     sigFile.close();
     pubkey.startVerify( QCA::EMSA3_SHA1 );
     pubkey.update( hash.final() );
+    pubkey.update( versionHash.final() );
     if ( !pubkey.validSignature( signature ) )
     {
         debug() << m_scriptname << ": Invalid signature, no update performed.";
