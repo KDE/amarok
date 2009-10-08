@@ -50,13 +50,6 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="kcfg_LockLayout">
-        <property name="text">
-         <string>Lock layout</string>
-        </property>
-       </widget>
-      </item>
      </layout>
      <zorder>kcfg_ShowSplashscreen</zorder>
      <zorder>kcfg_ShowTrayIcon</zorder>

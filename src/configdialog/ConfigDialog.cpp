@@ -50,8 +50,6 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* osd         = new OsdConfig( this );
     ConfigDialogBase* database    = new DatabaseConfig( this );
 
-    connect( general, SIGNAL( lockLayout( bool ) ), The::mainWindow(), SLOT ( setLayoutLocked( bool ) ) );
-
 //    ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
     addPage( general,     i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
