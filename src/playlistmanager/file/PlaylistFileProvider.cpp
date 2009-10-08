@@ -53,7 +53,11 @@ PlaylistFileProvider::~PlaylistFileProvider()
     foreach( Meta::PlaylistPtr playlist, m_playlists )
     {
         KUrl url = playlist->retrievableUrl();
-        debug() << "storing: " << url.url();
+        //only save files NOT in "playlists", those are automatically loaded.
+        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
+            continue;
+
+        debug() << "storing to rc-file: " << url.url();
 
         loadedPlaylistsConfig().writeEntry( url.url(), playlist->groups() );
     }
@@ -240,6 +244,10 @@ PlaylistFileProvider::loadPlaylists()
     foreach( const QString &key, keys )
     {
         KUrl url( key );
+        //Don't load these from the config file, they are read from the directory anyway
+        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
+            continue;
+
         QString groups = loadedPlaylistsConfig().readEntry( key );
         Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( url );
         if( playlist.isNull() )
@@ -256,6 +264,27 @@ PlaylistFileProvider::loadPlaylists()
 
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
+
+    QDir playlistDir = QDir( Amarok::saveLocation( "playlists" ), "",
+                             QDir::Name,
+                             QDir::Files | QDir::Readable );
+    foreach( const QString &file, playlistDir.entryList() )
+    {
+        KUrl url( playlistDir.path() );
+        url.addPath( file );
+        debug() << QString( "Trying to open %1 as a playlist file" ).arg( url.url() );
+        Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( url );
+        if( playlist.isNull() )
+        {
+            The::statusBar()->longMessage(
+                    i18n("The playlist file \"%1\" could not be loaded!").arg( url.fileName() ),
+                    StatusBar::Error
+                );
+            continue;
+        }
+        m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
+    }
+
     m_playlistsLoaded = true;
 }
 
