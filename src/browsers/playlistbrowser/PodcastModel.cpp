@@ -108,7 +108,19 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         title = episode->title();
         description = episode->description();
         isChannel = false;
-        isOnDisk = !episode->localUrl().isEmpty();
+        KUrl episodeFile = episode->localUrl();
+        if( episodeFile.isEmpty() )
+        {
+            isOnDisk = false;
+        }
+        else
+        {
+            isOnDisk = QFileInfo( episodeFile.toLocalFile() ).exists();
+            //reset localUrl because the file is not there.
+            if( !isOnDisk )
+                episode->setLocalUrl( KUrl() );
+        }
+
         if( isOnDisk )
         {
             icon = KIcon( "go-down" );
