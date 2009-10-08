@@ -477,8 +477,8 @@ SqlPodcastProvider::slotDownloadEpisodes()
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode =
                 Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
-//         if( !sqlEpisode )
-//             continue;
+         if( !sqlEpisode )
+             continue;
 
         downloadEpisode( sqlEpisode );
     }
