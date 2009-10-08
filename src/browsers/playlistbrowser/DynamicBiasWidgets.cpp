@@ -203,7 +203,6 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
             this, SLOT(weightChanged(int)) );
 
     m_fieldSelection = new KComboBox( m_controlFrame );
-    m_fieldSelection->setPalette( QApplication::palette() );
 
     m_controlLayout->addWidget( new QLabel( i18n( "Proportion:" ), m_controlFrame ), 0, 0 );
     m_controlLayout->addWidget( new QLabel( i18n( "Match:" ), m_controlFrame ), 1, 0 );
@@ -402,7 +401,6 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection( QWidget* parent )
 {
     m_compareSelection = new KComboBox( parent );
-    m_compareSelection->setPalette( QApplication::palette() );
     m_compareSelection->addItem( "", -1 );
     m_compareSelection->addItem( i18n( "less than" ),    (int)QueryMaker::LessThan );
     m_compareSelection->addItem( i18n( "equal to" ),     (int)QueryMaker::Equals );
@@ -428,7 +426,6 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, QueryMaker* populateQuery )
 {
     KComboBox* combo = new KComboBox( m_controlFrame );
-    combo->setPalette( QApplication::palette() );
     combo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     combo->setEditable( editable );
 
@@ -668,7 +665,6 @@ PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias
             SLOT(scaleChanged(int)) );
 
     m_fieldSelection = new KComboBox( m_controlFrame );
-    m_fieldSelection->setPalette( QApplication::palette() );
 
     m_controlLayout->addWidget( new QLabel( i18n( "Strictness:" ), m_controlFrame ), 0, 0 );
     m_controlLayout->addWidget( new QLabel( i18n( "Match:" ), m_controlFrame ), 1, 0 );

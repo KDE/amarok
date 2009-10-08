@@ -114,7 +114,6 @@ Dynamic::EchoNestBias::configWidget( QWidget* parent )
     m_fieldSelection = new KComboBox( parent );
     m_fieldSelection->addItem( i18n( "Current Track" ), "current" );
     m_fieldSelection->addItem( i18n( "Playlist" ), "playlist" );
-    m_fieldSelection->setPalette( QApplication::palette() );
 
     connect( m_fieldSelection, SIGNAL( currentIndexChanged(int) ), this, SLOT( selectionChanged( int ) ) );
 

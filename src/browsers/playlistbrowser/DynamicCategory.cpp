@@ -114,7 +114,6 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     QLabel* presetLabel = new QLabel( i18n( "Playlist:" ), presetLayout );
 
     m_presetComboBox = new KComboBox( presetLayout );
-    m_presetComboBox->setPalette( QApplication::palette() );
     DynamicModel::instance()->loadPlaylists();
     m_presetComboBox->setModel( DynamicModel::instance() );
     

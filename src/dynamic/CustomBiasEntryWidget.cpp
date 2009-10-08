@@ -53,7 +53,6 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
              this, SIGNAL( weightChangedInt(int) ) );
 
     m_fieldSelection = new KComboBox( frame );
-    m_fieldSelection->setPalette( QApplication::palette() );
 
     m_layout->addWidget( new QLabel( i18n( "Proportion:" ), frame ), 0, 0 );
     m_layout->addWidget( new QLabel( i18n( "Match Type:" ), frame ), 1, 0 );
