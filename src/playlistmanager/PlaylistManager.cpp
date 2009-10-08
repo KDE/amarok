@@ -341,7 +341,7 @@ PlaylistManager::import( const QString& fromLocation )
         debug() << "ERROR: m_playlistFileProvider was null";
         return false;
     }
-    return m_playlistFileProvider->import( KUrl::fromPath(fromLocation) );
+    return m_playlistFileProvider->import( KUrl(fromLocation) );
 }
 
 bool
