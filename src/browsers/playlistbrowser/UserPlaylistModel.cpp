@@ -275,7 +275,7 @@ Qt::ItemFlags
 PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
 {
     if( !index.isValid() )
-        return Qt::NoItemFlags;
+        return Qt::ItemIsDropEnabled;
 
     if( IS_TRACK(index) )
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
@@ -466,6 +466,14 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
         emit rowsInserted( parent, row, insertAt );
 
         return true;
+    }
+
+    if( data->hasUrls() )
+    {
+        bool success = true;
+        foreach( const QUrl &url, data->urls() )
+            success = The::playlistManager()->import( url.toString() ) ? success : false;
+        return success;
     }
 
 #if 0
