@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Saved playlists and folders can now be deleted with the keyboard.
     * Added "Copy on Write" when trying to edit a read only (one of the 
       default) playlist layouts. The changed layout is now simply saved under 
       a new name. 

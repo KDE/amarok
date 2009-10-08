@@ -136,6 +136,7 @@ void TestAmarok::testExtension()
     QCOMPARE( Amarok::extension( "" ), QString( "" ) );
     QCOMPARE( Amarok::extension( "..." ), QString( "" ) );
     QCOMPARE( Amarok::extension( "test" ), QString( "" ) );
+    QCOMPARE( Amarok::extension( "test." ), QString( "" ) );
     QCOMPARE( Amarok::extension( "test.mp3" ), QString( "mp3" ) );
     QCOMPARE( Amarok::extension( "test.mP3" ), QString( "mp3" ) );
     QCOMPARE( Amarok::extension( "test.MP3" ), QString( "mp3" ) );

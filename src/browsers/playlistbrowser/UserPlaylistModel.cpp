@@ -335,6 +335,9 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
     DEBUG_BLOCK
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
 
+    if( row < 0 || row > rowCount( parent ) )
+        return false;
+
     if( !parent.isValid() )
     {
       Meta::PlaylistList playlistToRemove;
