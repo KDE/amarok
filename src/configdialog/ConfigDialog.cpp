@@ -50,7 +50,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* osd         = new OsdConfig( this );
     ConfigDialogBase* database    = new DatabaseConfig( this );
 
-//    ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
+    //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
     addPage( general,     i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
     addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
@@ -58,7 +58,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( playback,    i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
     addPage( osd,         i18n( "On Screen Display" ), "preferences-indicator-amarok", i18n( "Configure On-Screen-Display" ) );
     addPage( database,    i18n( "Database" ), "server-database", i18n( "Configure Database" ) );
-//    addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
+    //addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
     setButtons( Help | Ok | Apply | Cancel );
 }
@@ -88,7 +88,6 @@ void Amarok2ConfigDialog::updateButtons() //SLOT
     enableButtonApply( hasChanged() );
 }
 
-
 /** Reimplemented from KConfigDialog */
 void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName, const QString &header, bool manage )
 {
@@ -99,7 +98,6 @@ void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemNa
     KPageWidgetItem *pageWidget = KConfigDialog::addPage( page, itemName, pixmapName, header, manage );
     m_pageMap.insert( page, pageWidget );
 }
-
 
 void Amarok2ConfigDialog::show( QString page )
 {
@@ -138,7 +136,6 @@ void Amarok2ConfigDialog::updateSettings()
         page->updateSettings();
 }
 
-
 /**
  * Update the configuration-widgets in the dialog based on Amarok's current settings.
  * Example use: Initialisation of dialog.
@@ -150,7 +147,6 @@ void Amarok2ConfigDialog::updateWidgets()
     foreach( ConfigDialogBase* page, m_pageList )
         page->updateWidgets();
 }
-
 
 /**
  * Update the configuration-widgets in the dialog based on the default values for Amarok's settings.
@@ -187,7 +183,6 @@ bool Amarok2ConfigDialog::hasChanged()
 
     return changed;
 }
-
 
 /** REIMPLEMENTED */
 bool Amarok2ConfigDialog::isDefault()

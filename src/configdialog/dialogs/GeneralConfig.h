@@ -34,4 +34,3 @@ class GeneralConfig : public ConfigDialogBase, public Ui_GeneralConfig
 };
 
 #endif
-

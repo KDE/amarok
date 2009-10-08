@@ -16,17 +16,6 @@
  ****************************************************************************************/
 
 #include "GeneralConfig.h"
-#include "Amarok.h"
-#include "amarokconfig.h"
-#include "Debug.h"
-
-#include <config-amarok.h>  
-
-#include <KStandardDirs>
-
-#include <QHBoxLayout>
-#include <QLabel>
-
 
 GeneralConfig::GeneralConfig( QWidget* parent )
     : ConfigDialogBase( parent )

@@ -54,8 +54,6 @@
      <zorder>kcfg_ShowSplashscreen</zorder>
      <zorder>kcfg_ShowTrayIcon</zorder>
      <zorder>kcfg_AutoGetCoverArt</zorder>
-     <zorder>playlistBox</zorder>
-     <zorder>kcfg_HideContextView</zorder>
     </widget>
    </item>
    <item>
