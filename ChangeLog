@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Podcasts can now be grouped in the playlist and show useful info in the
+      tag editor.
     * Playlist files can be droped on the "Saved Playlist" category to
       import them into Amarok.
     * Playlist files from the default playlist location are now loaded by
