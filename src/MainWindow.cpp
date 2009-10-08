@@ -246,6 +246,7 @@ MainWindow::init()
     addToolBar( Qt::TopToolBarArea, m_newToolbar );
     m_newToolbar->hide();
 
+    //BEGIN Creating Widgets
     PERF_LOG( "Create sidebar" )
     m_browsers = new BrowserWidget( this );
     m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
@@ -271,8 +272,6 @@ MainWindow::init()
     m_playlistDock->setAllowedAreas( Qt::AllDockWidgetAreas );
     PERF_LOG( "Playlist created" )
 
-    createMenus();
-
     PERF_LOG( "Creating ContextWidget" )
     m_contextWidget = new ContextWidget( this );
     m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -292,6 +291,9 @@ MainWindow::init()
     m_contextDock->setWidget( m_contextWidget );
     m_contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
     PERF_LOG( "ContextScene created" )
+    //END Creating Widgets
+
+    createMenus();
 
     PERF_LOG( "Loading default contextScene" )
     m_corona->loadDefaultSetup(); // this method adds our containment to the scene
@@ -381,6 +383,7 @@ MainWindow::createContextView( Plasma::Containment *containment )
 QMenu*
 MainWindow::createPopupMenu()
 {
+    DEBUG_BLOCK
     QMenu* menu = new QMenu( this );
     menu->setTitle( "&View" );
 
@@ -398,6 +401,7 @@ MainWindow::createPopupMenu()
 
     foreach( QDockWidget* dockWidget, dockwidgets )
     {
+        debug() << "RM: " << dockWidget->accessibleName();
         if( dockWidget->parentWidget() == this )
             menu->addAction( dockWidget->toggleViewAction());
     }
