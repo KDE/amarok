@@ -27,6 +27,7 @@ VERSION 2.2.1
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * Renamed "Browsers" panel to more suited "Content" panel.
     * Improvements to the row heights in the playlist, making especially the
       size of the rating stars more consistent.
     * Usability improvements in the Context View's applet tab bar.

@@ -251,8 +251,8 @@ MainWindow::init()
     m_contextDummyTitleBarWidget = new QWidget();
     m_playlistDummyTitleBarWidget = new QWidget();
 
-    m_browsersDock = new QDockWidget( i18n( "Browsers" ), this );
-    m_browsersDock->setObjectName( "Browsers dock" );
+    m_browsersDock = new QDockWidget( i18n( "Content" ), this );
+    m_browsersDock->setObjectName( "Content dock" );
     m_browsersDock->setWidget( m_browsers );
     m_browsersDock->setAllowedAreas( Qt::AllDockWidgetAreas );
 
