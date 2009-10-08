@@ -413,30 +413,9 @@ LastFmService::onAvatarDownloaded( QPixmap avatar )
 
         int m = lfm->avatarSize();
         avatar = avatar.scaled( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-
-        // This code is here to stop Qt from crashing on certain weirdly shaped avatars.
-        // We had a case were an avatar got a height of 1px after scaling and it would
-        // crash in the rendering code. This here just fills in the background with
-        // transparency first.
-        if ( avatar.width() < m || avatar.height() < m )
-        {
-            QImage finalAvatar( m, m, QImage::Format_ARGB32 );
-            finalAvatar.fill( 0 );
-
-            QPainter p( &finalAvatar );
-            QRect r;
-
-            if ( avatar.width() < m )
-                r = QRect( ( m - avatar.width() ) / 2, 0, avatar.width(), avatar.height() );
-            else
-                r = QRect( 0, ( m - avatar.height() ) / 2, avatar.width(), avatar.height() );
-
-            p.drawPixmap( r, avatar );
-            p.end();
-
-            avatar = QPixmap::fromImage( finalAvatar );
-        }
+        lfm->prepareAvatar( avatar, m );
         m_avatar = avatar;
+
         if( m_avatarLabel )
             m_avatarLabel->setPixmap( m_avatar );
     }

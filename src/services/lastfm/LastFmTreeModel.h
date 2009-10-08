@@ -109,7 +109,7 @@ public:
     int rowCount ( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount ( const QModelIndex &parent = QModelIndex() ) const;
     int avatarSize () const;
-
+    void prepareAvatar ( QPixmap& avatar, int size );
 
     void sortTags ( WeightedStringList tagsToSort, Qt::SortOrder sortOrder );
     void sortTags ( Qt::SortOrder sortOrder );
