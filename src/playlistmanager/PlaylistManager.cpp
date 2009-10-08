@@ -310,6 +310,9 @@ PlaylistManager::save( Meta::TrackList tracks, const QString &name,
     {
         debug() << "Empty name of playlist, or editing now";
         playlist = prov->save( tracks );
+        if( playlist.isNull() )
+            return false;
+
         AmarokUrl("amarok://navigate/playlists/user playlists").run();
         emit( renamePlaylist( playlist ) );
     }

@@ -122,7 +122,7 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     }
     QString ext = Amarok::extension( path.fileName() );
     Meta::PlaylistFormat format = m_defaultFormat;
-    if( !ext.isEmpty() )
+    if( !name.isNull() && !ext.isEmpty() )
         format = Meta::getFormat( path );
 
     Meta::Playlist *playlist = 0;
@@ -138,8 +138,8 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
             playlist = new Meta::XSPFPlaylist( tracks );
             break;
         default:
-            debug() << "unknown type!";
-            break;
+            debug() << QString("Do not support filetype with extension \"%1!\"").arg( ext );
+            return Meta::PlaylistPtr();
     }
     Meta::PlaylistPtr playlistPtr( playlist );
     m_playlists << playlistPtr;
