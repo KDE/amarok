@@ -35,7 +35,7 @@
 using namespace LastFm;
 
 LastFmTreeModel::LastFmTreeModel ( const QString &username, QObject *parent )
-        : QAbstractItemModel ( parent ), mUserName ( username ), mUser()
+        : QAbstractItemModel ( parent ), mUserName ( username ), mUser(), m_avatarSize( 32 )
 {
 //     rootData << "Title" << "Summary";
     rootItem = new LastFmTreeItem ( LastFm::Root, "Hello" );
@@ -277,16 +277,15 @@ LastFmTreeModel::onAvatarDownloaded ( QPixmap avatar )
 
     if ( !avatar.isNull() && avatar.height() > 0 && avatar.width() > 0 )
     {
+        int m = m_avatarSize;
+
         if ( username.toLower() == mUserName.toLower() )
         {
-            int m = 32;
-
             mAvatar = avatar.scaled ( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
             //             emitRowChanged( LastFm::MyProfile );
         }
         else
         {
-            int m = 32;
             avatar = avatar.scaled ( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
             // This code is here to stop Qt from crashing on certain weirdly shaped avatars.
@@ -333,6 +332,11 @@ int LastFmTreeModel::columnCount ( const QModelIndex &parent ) const
 {
     Q_UNUSED( parent )
     return 1;
+}
+
+int LastFmTreeModel::avatarSize () const
+{
+    return m_avatarSize;
 }
 
 QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const

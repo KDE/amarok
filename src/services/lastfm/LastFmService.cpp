@@ -405,7 +405,13 @@ LastFmService::onAvatarDownloaded( QPixmap avatar )
 {
     DEBUG_BLOCK
     if( !avatar.isNull() ) {
-        int m = 48;
+
+        if( !m_polished )
+            polish();
+
+        LastFmTreeModel* lfm = dynamic_cast<LastFmTreeModel*>( model() );
+
+        int m = lfm->avatarSize();
         avatar = avatar.scaled( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
         // This code is here to stop Qt from crashing on certain weirdly shaped avatars.
@@ -514,8 +520,9 @@ LastFmService::polish()
         m_avatarLabel = new QLabel(outerProfilebox);
         if( !m_avatar )
         {
-            m_avatarLabel->setPixmap( KIcon( "filename-artist-amarok" ).pixmap(32, 32) );
-            m_avatarLabel->setFixedSize( 32, 32 );
+            int m = dynamic_cast<LastFmTreeModel*>( model() )->avatarSize();
+            m_avatarLabel->setPixmap( KIcon( "filename-artist-amarok" ).pixmap(m, m) );
+            m_avatarLabel->setFixedSize( m, m );
         }
         else
         {
