@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Playlist files can be droped on the "Saved Playlist" category to
+      import them into Amarok.
     * Playlist files from the default playlist location are now loaded by
       default. (BR 209596)
     * Added view menu to menu bar for ease of use.
