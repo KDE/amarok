@@ -120,6 +120,10 @@ class ContextWidget : public KVBox
 
 QPointer<MainWindow> MainWindow::s_instance = 0;
 
+namespace The {
+    MainWindow* mainWindow() { return MainWindow::s_instance; }
+}
+
 MainWindow::MainWindow()
     : KMainWindow( 0 )
     , EngineObserver( The::engineController() )
@@ -242,7 +246,6 @@ MainWindow::init()
     addToolBar( Qt::TopToolBarArea, m_newToolbar );
     m_newToolbar->hide();
 
-
     PERF_LOG( "Create sidebar" )
     m_browsers = new BrowserWidget( this );
     m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
@@ -255,7 +258,7 @@ MainWindow::init()
     m_browsersDock->setObjectName( "Content dock" );
     m_browsersDock->setWidget( m_browsers );
     m_browsersDock->setAllowedAreas( Qt::AllDockWidgetAreas );
-
+    PERF_LOG( "Sidebar created" )
 
     PERF_LOG( "Create Playlist" )
     m_playlistWidget = new Playlist::Widget( 0 );
@@ -266,21 +269,20 @@ MainWindow::init()
     m_playlistDock->setObjectName( "Playlist dock" );
     m_playlistDock->setWidget( m_playlistWidget );
     m_playlistDock->setAllowedAreas( Qt::AllDockWidgetAreas );
-
     PERF_LOG( "Playlist created" )
 
     createMenus();
 
     PERF_LOG( "Creating ContextWidget" )
     m_contextWidget = new ContextWidget( this );
-    PERF_LOG( "ContextWidget created" )
     m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_contextWidget->setSpacing( 0 );
     m_contextWidget->setFrameShape( QFrame::NoFrame );
     m_contextWidget->setFrameShadow( QFrame::Sunken );
     m_contextWidget->setMinimumSize( 100, 100 );
-    PERF_LOG( "Creating ContexScene" )
+    PERF_LOG( "ContextWidget created" )
 
+    PERF_LOG( "Creating ContexScene" )
     m_corona = new Context::ContextScene( this );
     connect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
             this, SLOT( createContextView( Plasma::Containment* ) ) );
@@ -289,7 +291,6 @@ MainWindow::init()
     m_contextDock->setObjectName( "Context dock" );
     m_contextDock->setWidget( m_contextWidget );
     m_contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
-
     PERF_LOG( "ContextScene created" )
 
     PERF_LOG( "Loading default contextScene" )
@@ -357,7 +358,6 @@ MainWindow::init()
 
     //restore the layout
     restoreLayout();
-
 }
 
 void
@@ -467,12 +467,9 @@ MainWindow::closeEvent( QCloseEvent *e )
     DEBUG_BLOCK
 
 #ifdef Q_WS_MAC
-
     Q_UNUSED( e );
     hide();
-
 #else
-
     //KDE policy states we should hide to tray and not quit() when the
     //close window button is pushed for the main widget
 
@@ -490,7 +487,6 @@ MainWindow::closeEvent( QCloseEvent *e )
 
     e->accept();
     kapp->quit();
-
 #endif
 }
 
@@ -917,8 +913,6 @@ MainWindow::createMenus()
 
     m_toolsMenu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("cover_manager") );
-//FIXME: Reenable when ported//working
-//     m_toolsMenu->addAction( Amarok::actionCollection()->action("queue_manager") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("script_manager") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( Amarok::actionCollection()->action("update_collection") );
@@ -927,13 +921,13 @@ MainWindow::createMenus()
     //BEGIN Settings menu
     m_settingsMenu = new KMenu( m_menubar );
     m_settingsMenu->setTitle( i18n("&Settings") );
+
     //TODO use KStandardAction or KXmlGuiWindow
 
     // the phonon-coreaudio  backend has major issues with either the VolumeFaderEffect itself
     // or with it in the pipeline. track playback stops every ~3-4 tracks, and on tracks >5min it
     // stops at about 5:40. while we get this resolved upstream, don't make playing amarok such on osx.
     // so we disable replaygain on osx
-
 
 #ifndef Q_WS_MAC
     m_settingsMenu->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
@@ -1220,10 +1214,6 @@ MainWindow::restoreLayout()
     // Ensure that only one toolbar is visible
     if( !m_controlBar->isHidden() && !m_newToolbar->isHidden() )
         m_newToolbar->hide();
-}
-
-namespace The {
-    MainWindow* mainWindow() { return MainWindow::s_instance; }
 }
 
 #include "MainWindow.moc"
