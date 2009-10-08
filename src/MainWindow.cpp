@@ -736,6 +736,12 @@ MainWindow::createActions()
     connect( action, SIGNAL(triggered(bool)), pa, SLOT( back() ) );
 
     action = new KAction( this );
+    ac->addAction( "repopulate", action );
+    action->setText( i18n( "Repopulate Playlist" ) );
+    action->setIcon( KIcon("view-refresh-amarok") );
+    connect( action, SIGNAL(triggered(bool)), pa, SLOT( repopulateDynamicPlaylist() ) );
+
+    action = new KAction( this );
     ac->addAction( "next", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
     action->setIcon( KIcon("media-skip-forward-amarok") );
