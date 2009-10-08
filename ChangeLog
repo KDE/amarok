@@ -7,6 +7,7 @@ VERSION 2.2.1
   FEATURES:
     * Playlist files from the default playlist location are now loaded by
       default. (BR 209596)
+    * Added view menu to menu bar for ease of use.
     * Saved playlists and folders can now be deleted with the keyboard.
     * Added "Copy on Write" when trying to edit a read only (one of the 
       default) playlist layouts. The changed layout is now simply saved under 

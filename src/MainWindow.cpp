@@ -382,6 +382,7 @@ QMenu*
 MainWindow::createPopupMenu()
 {
     QMenu* menu = new QMenu( this );
+    menu->setTitle( "&View" );
 
     // Layout locking:
     QAction* lockAction = new QAction( i18n( "Lock layout" ), this );
@@ -949,6 +950,7 @@ MainWindow::createMenus()
     //END Settings menu
 
     m_menubar->addMenu( actionsMenu );
+    m_menubar->addMenu( createPopupMenu() );
     m_menubar->addMenu( playlistMenu );
     m_menubar->addMenu( m_toolsMenu );
     m_menubar->addMenu( m_settingsMenu );
