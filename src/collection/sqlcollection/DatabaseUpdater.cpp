@@ -29,7 +29,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 8;
+static const int DB_VERSION = 9;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -105,6 +105,12 @@ DatabaseUpdater::update()
         {
             upgradeVersion7to8();
             dbVersion = 8;
+        }
+        if( dbVersion == 8 && dbVersion < DB_VERSION )
+        {
+            //removes stray rows from albums that were caused by the initial full scan
+            upgradeVersion8to9();
+            dbVersion = 9;
         }
         /*
         if( dbVersion == X && dbVersion < DB_VERSION )
@@ -412,6 +418,12 @@ DatabaseUpdater::upgradeVersion7to8()
         debug() << "Running the following query: " << updateString.arg( QString::number( iter2.value() * 1000 ), QString::number( iter2.key() ) );
         m_collection->query( updateString.arg( QString::number( iter2.value() * 1000 ), QString::number( iter2.key() ) ) );
     }
+}
+
+void
+DatabaseUpdater::upgradeVersion8to9()
+{
+    deleteAllRedundant( "album" );
 }
 
 void

@@ -209,9 +209,12 @@ ScanResultProcessor::commit()
     m_collection->dbUpdater()->copyToPermanentTables();
     debug() << "tracks after commit: " << m_collection->query("select count(*) from tracks");
     m_collection->dbUpdater()->removeTemporaryTables();
+
+    //the albums table is updated during the scanning (both full and incremental)
+    //therefore we have to remove any rows that are not linked to a track anymore
+    m_collection->dbUpdater()->deleteAllRedundant( "album" );
     if( m_type == ScanResultProcessor::IncrementalScan )
     {
-        m_collection->dbUpdater()->deleteAllRedundant( "album" );
         m_collection->dbUpdater()->deleteAllRedundant( "artist" );
         m_collection->dbUpdater()->deleteAllRedundant( "genre" );
         m_collection->dbUpdater()->deleteAllRedundant( "composer" );
