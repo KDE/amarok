@@ -18,7 +18,7 @@
 #define SQLPODCASTMETA_H
 
 #include "PodcastMeta.h"
-
+#include "meta/file/File.h"
 
 namespace Meta
 {
@@ -46,11 +46,13 @@ class SqlPodcastEpisode : public PodcastEpisode
         //PodcastEpisode methods
         PodcastChannelPtr channel() { return PodcastChannelPtr::dynamicCast( m_channel ); }
         virtual bool isNew() const { return m_isNew; }
+        virtual void setLocalUrl( const KUrl &url );
 
         //Track Methods
         virtual qint64 length() const;
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool isEditable() const;
 
         //SqlPodcastEpisode specific methods
         int dbId() const { return m_dbId; };
@@ -63,6 +65,8 @@ class SqlPodcastEpisode : public PodcastEpisode
 
         int m_dbId; //database ID
         SqlPodcastChannelPtr m_channel; //the parent of this episode
+
+        MetaFile::TrackPtr m_localFile;
 };
 
 class SqlPodcastChannel : public PodcastChannel

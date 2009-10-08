@@ -181,7 +181,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
 
         //PodcastEpisode methods
         virtual KUrl localUrl() const { return m_localUrl; }
-        void setLocalUrl( const KUrl &url ) { m_localUrl = url; }
+        virtual void setLocalUrl( const KUrl &url ) { m_localUrl = url; }
         virtual QDateTime pubDate() const { return m_pubDate; }
         virtual int duration() const { return m_duration; }
         virtual QString guid() const { return m_guid; }

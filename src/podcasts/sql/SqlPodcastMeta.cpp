@@ -29,21 +29,6 @@
 #include <QDate>
 #include <QFile>
 
-// Taglib Includes
-#include <fileref.h>
-#include <tag.h>
-#include <flacfile.h>
-#include <id3v1tag.h>
-#include <id3v2tag.h>
-#include <mpcfile.h>
-#include <mpegfile.h>
-#include <oggfile.h>
-#include <oggflacfile.h>
-#include <tlist.h>
-#include <tstring.h>
-#include <vorbisfile.h>
-#include <mp4file.h>
-
 class TimecodeWriteCapabilityPodcastImpl : public Meta::TimecodeWriteCapability
 {
     public:
@@ -128,6 +113,11 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::Sql
     m_isNew = sqlStorage->boolTrue() == (*(iter++));
 
     Q_ASSERT_X( iter == result.constEnd(), "SqlPodcastEpisode( PodcastCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
+
+    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
+    {
+        m_localFile = new MetaFile::Track( m_localUrl );
+    }
 }
 
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
@@ -149,38 +139,46 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
 
     //commit to the database
     updateInDb();
+
+    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
+    {
+        m_localFile = new MetaFile::Track( m_localUrl );
+    }
 }
 
 Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 {
 }
 
+void
+Meta::SqlPodcastEpisode::setLocalUrl( const KUrl &url )
+{
+    m_localUrl = url;
+
+    if( m_localUrl.isEmpty() )
+    {
+        if( !m_localFile.isNull() )
+        {
+            m_localFile.clear();
+            return;
+        }
+    }
+    else
+    {
+        //if we had a local file previously it will get deleted by the KSharedPtr.
+        m_localFile = new MetaFile::Track( m_localUrl );
+        return;
+    }
+}
+
 qint64
 Meta::SqlPodcastEpisode::length() const
 {
     //if downloaded get the duration from the file, else use the value read from the feed
-    if( m_localUrl.isEmpty() )
+    if( m_localFile.isNull() )
         return m_duration * 1000;
 
-    int length = -2;
-
-    #ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(m_localUrl.path().utf16());
-    #else
-    QByteArray fileName = QFile::encodeName( m_localUrl.path() );
-    const char * encodedName = fileName.constData(); // valid as long as fileName exists
-    #endif
-    TagLib::FileRef fileRef = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
-
-
-    if( !fileRef.isNull() )
-        if( fileRef.audioProperties() )
-            length = fileRef.audioProperties()->length() * 1000;
-
-    if( length == -2 /*Undetermined*/ )
-        return 0;
-
-    return length;
+    return m_localFile->length();
 }
 
 bool
@@ -195,8 +193,8 @@ Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) c
 //            return !localUrl().isEmpty();
             return true;
             //TODO: downloaded episodes can be edited
-//         case Meta::Capability::Editable:
-//             return isEditable();
+        case Meta::Capability::Editable:
+            return isEditable();
 
         default:
             return false;
@@ -222,6 +220,15 @@ Meta::SqlPodcastEpisode::createCapabilityInterface( Meta::Capability::Type type 
         default:
             return 0;
     }
+}
+
+bool
+Meta::SqlPodcastEpisode::isEditable() const
+{
+     if( m_localFile.isNull() )
+         return false;
+
+     return m_localFile->isEditable();
 }
 
 void
