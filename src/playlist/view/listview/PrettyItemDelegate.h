@@ -72,6 +72,7 @@ private:
     static const qreal MARGINBODY;
     static const qreal PADDING;
     static QFontMetricsF* s_nfm; //normal
+    static QFontMetricsF* s_ufm; //underline
     static QFontMetricsF* s_ifm; //italic
     static QFontMetricsF* s_bfm; //bold
 

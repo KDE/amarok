@@ -43,12 +43,16 @@ class LayoutItemConfigRowElement
          * item shares the space leftover by any non 0 items with all other items with size 0 on the same row.
          * @param bold Make the item text bold.
          * @param italic Make the item text italic.
+         * @param underline Make the item text underline.
          * @param alignment the alignment of the item (ITEM_LEFT, ITEM_RIGHT or ITEM_CENTER).
          * @param prefix Text to show before the actual value text.
          * @param suffix  Text to show after the actual value text.
          */
-        LayoutItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
-                                    const QString &prefix = QString(), const QString &suffix = QString() );
+        LayoutItemConfigRowElement( int value, qreal size,
+                                    bool bold, bool italic, bool underline,
+                                    Qt::Alignment alignment,
+                                    const QString &prefix = QString(),
+                                    const QString &suffix = QString() );
 
         /**
          * Get the value of this element.
@@ -80,6 +84,12 @@ class LayoutItemConfigRowElement
         bool italic() const;
 
         /**
+         * Get whether text should be underlined.
+         * @return Underlined or not.
+         */
+        bool underline() const;
+
+        /**
          * Get the alignment of this element.
          * @return The alignment.
          */
@@ -104,6 +114,7 @@ class LayoutItemConfigRowElement
         qreal m_size;
         bool m_bold;
         bool m_italic;
+        bool m_underline;
         Qt::Alignment m_alignment;
         QString m_prefix, m_suffix;
 };

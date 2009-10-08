@@ -60,6 +60,7 @@ public:
 
     bool bold() const;
     bool italic() const;
+    bool underline() const;
     inline qreal size() const { return width(); }
     qreal width() const;
     inline bool widthForced() const { return m_widthForced; }
@@ -72,6 +73,7 @@ public slots:
     void setAlignRight( bool );
     void setBold( bool bold );
     void setItalic( bool italic );
+    void setUnderline( bool underline );
     void setPrefix( const QString& );
     void setSuffix( const QString& );
     void setWidth( int width );
@@ -91,6 +93,7 @@ private:
     Qt::Alignment m_alignment;
     bool m_bold;
     bool m_italic;
+    bool m_underline;
     bool m_widthForced;
     qreal m_width;
     QString m_prefix, m_suffix;

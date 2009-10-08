@@ -88,6 +88,7 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
             TokenWithLayout *token =  new TokenWithLayout( columnNames[element.value()], iconNames[element.value()], element.value() );
             token->setBold( element.bold() );
             token->setItalic( element.italic() );
+            token->setUnderline( element.underline() );
             token->setAlignment( element.alignment() );
             token->setWidth( element.size() * 100.0 );
             token->setPrefix( element.prefix() );
@@ -122,7 +123,8 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
                 if ( twl->widthForced() && twl->width() > 0.01) {
                     width = twl->width();
                 }
-                currentRowConfig.addElement( LayoutItemConfigRowElement( twl->value(), width, twl->bold(), twl->italic(),
+                currentRowConfig.addElement( LayoutItemConfigRowElement( twl->value(), width,
+                                                                         twl->bold(), twl->italic(), twl->underline(),
                                                                          twl->alignment(), twl->prefix(), twl->suffix() ) );
             }
         }

@@ -45,7 +45,7 @@ private:
     QLabel *m_element;
     QSlider *m_width;
     int m_previousWidth;
-    QToolButton *m_bold, *m_italic, *m_alignLeft, *m_alignCenter, *m_alignRight;
+    QToolButton *m_bold, *m_italic, *m_underline,  *m_alignLeft, *m_alignCenter, *m_alignRight;
     QRadioButton *m_fixedWidth, *m_fitContent, *m_peerWidth;
 };
 

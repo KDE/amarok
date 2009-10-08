@@ -18,12 +18,16 @@
 
 namespace Playlist {
 
-    LayoutItemConfigRowElement::LayoutItemConfigRowElement( int value, qreal size, bool bold, bool italic, Qt::Alignment alignment,
-                                                            const QString &prefix , const QString &suffix )
+    LayoutItemConfigRowElement::LayoutItemConfigRowElement( int value, qreal size,
+                                                            bool bold, bool italic, bool underline,
+                                                            Qt::Alignment alignment,
+                                                            const QString &prefix ,
+                                                            const QString &suffix )
     : m_value( value )
     , m_size( size )
     , m_bold( bold )
     , m_italic( italic )
+    , m_underline( underline )
     , m_alignment( alignment )
     , m_prefix( prefix )
     , m_suffix( suffix )
@@ -50,9 +54,14 @@ bool LayoutItemConfigRowElement::bold() const
     return m_bold;
 }
 
-bool Playlist::LayoutItemConfigRowElement::italic() const
+bool LayoutItemConfigRowElement::italic() const
 {
     return m_italic;
+}
+
+bool LayoutItemConfigRowElement::underline() const
+{
+    return m_underline;
 }
 
 Qt::Alignment LayoutItemConfigRowElement::alignment() const

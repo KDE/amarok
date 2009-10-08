@@ -417,11 +417,13 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
             bool bold = element.bold();
             bool italic = element.italic();
+            bool underline = element.underline();
             int alignment = element.alignment();
 
             QFont font = option.font;
             font.setBold( bold );
             font.setItalic( italic );
+            font.setUnderline( underline );
             painter->setFont( font );
 
             QRectF elementBox;

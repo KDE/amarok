@@ -101,6 +101,7 @@ TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, 
     m_alignment = Qt::AlignCenter;
     m_bold = false;
     m_italic = false;
+    m_underline = false;
     m_wrench = new Wrench( this );
     m_wrench->installEventFilter( this );
     m_wrench->hide();
@@ -280,6 +281,11 @@ bool TokenWithLayout::italic() const
     return m_italic;
 }
 
+bool TokenWithLayout::underline() const
+{
+    return m_underline;
+}
+
 void TokenWithLayout::setItalic( bool italic )
 {
     if ( m_italic == italic )
@@ -288,6 +294,19 @@ void TokenWithLayout::setItalic( bool italic )
     m_italic = italic;
     QFont font = m_label->font();
     font.setItalic( italic );
+    m_label->setFont( font );
+
+    emit changed();
+}
+
+void TokenWithLayout::setUnderline( bool underline )
+{
+    if( m_underline == underline )
+        return;
+
+    m_underline = underline;
+    QFont font  = m_label->font();
+    font.setUnderline( underline );
     m_label->setFont( font );
 
     emit changed();

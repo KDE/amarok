@@ -242,6 +242,7 @@ LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
             qreal size = elementNode.toElement().attribute( "size", "0.0" ).toDouble();
             bool bold = ( elementNode.toElement().attribute( "bold", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
             bool italic = ( elementNode.toElement().attribute( "italic", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+            bool underline = ( elementNode.toElement().attribute( "underline", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
             QString alignmentString = elementNode.toElement().attribute( "alignment", "left" );
             Qt::Alignment alignment;
 
@@ -253,7 +254,8 @@ LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
             else
                 alignment = Qt::AlignCenter| Qt::AlignVCenter;
 
-            row.addElement( LayoutItemConfigRowElement( value, size, bold, italic, alignment, prefix, sufix ) );
+            row.addElement( LayoutItemConfigRowElement( value, size, bold, italic, underline,
+                                                        alignment, prefix, sufix ) );
         }
 
         config.addRow( row );
@@ -339,6 +341,7 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
             elementElement.setAttribute ( "size", QString::number( element.size() ) );
             elementElement.setAttribute ( "bold", element.bold() ? "true" : "false" );
             elementElement.setAttribute ( "italic", element.italic() ? "true" : "false" );
+            elementElement.setAttribute ( "underline", element.underline() ? "true" : "false" );
 
             QString alignmentString;
             if ( element.alignment() & Qt::AlignLeft )

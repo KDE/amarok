@@ -155,6 +155,7 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent ), m_tok
     l3->addWidget( l );
     l3->addWidget( m_bold = new QToolButton( this ) );
     l3->addWidget( m_italic = new QToolButton( this ) );
+    l3->addWidget( m_underline = new QToolButton( this ) );
     l3->addStretch();
     l1->addLayout( l3 );
 
@@ -183,6 +184,8 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent ), m_tok
     m_bold->setCheckable( true );
     m_italic->setIcon( KIcon( "format-text-italic" ) );
     m_italic->setCheckable( true );
+    m_underline->setIcon( KIcon( "format-text-underline" ) );
+    m_underline->setCheckable( true );
 
 }
 
@@ -202,6 +205,7 @@ void LayoutEditDialog::apply()
         m_token->setAlignment( Qt::AlignRight );
     m_token->setBold( m_bold->isChecked() );
     m_token->setItalic( m_italic->isChecked() );
+    m_token->setUnderline( m_underline->isChecked() );
 
     // we do this here to avoid reliance on the connection order (i.e. prevent close before apply)
     if ( sender() )
@@ -286,6 +290,7 @@ void LayoutEditDialog::setToken( TokenWithLayout *t )
 
         m_bold->setChecked( m_token->bold() );
         m_italic->setChecked( m_token->italic() );
+        m_underline->setChecked( m_token->underline() );
     }
 }
 
