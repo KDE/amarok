@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2007-2009 Bart Cerneels <bart.cerneels@kde.org>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -37,6 +37,12 @@ namespace Meta
 class PodcastMetaCommon;
 class PodcastEpisode;
 class PodcastChannel;
+
+class PodcastArtist;
+class PodcastAlbum;
+class PodcastComposer;
+class PodcastGenre;
+class PodcastYear;
 
 // typedef KSharedPtr<PodcastMetaCommon> PodcastMetaCommonPtr;
 typedef KSharedPtr<PodcastEpisode> PodcastEpisodePtr;
@@ -91,31 +97,8 @@ class PodcastMetaCommon
 class PodcastEpisode : public PodcastMetaCommon, public Track
 {
     public:
-        PodcastEpisode()
-            : PodcastMetaCommon()
-            , Track()
-            , m_channel( 0 )
-            , m_guid()
-            , m_mimeType()
-            , m_pubDate()
-            , m_duration( 0 )
-            , m_fileSize( 0 )
-            , m_sequenceNumber( 0 )
-            , m_isNew( true )
-        {}
-
-        PodcastEpisode( PodcastChannelPtr channel )
-            : PodcastMetaCommon()
-            , Track()
-            , m_channel( channel )
-            , m_guid()
-            , m_mimeType()
-            , m_pubDate()
-            , m_duration( 0 )
-            , m_fileSize( 0 )
-            , m_sequenceNumber( 0 )
-            , m_isNew( true )
-        {}
+        PodcastEpisode();
+        PodcastEpisode( PodcastChannelPtr channel );
 
         virtual ~PodcastEpisode() {}
 
@@ -130,15 +113,15 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual bool isPlayable() const { return true; }
         virtual bool isEditable() const { return false; }
 
-        virtual AlbumPtr album() const { return AlbumPtr(); }
+        virtual AlbumPtr album() const { return m_albumPtr; }
         virtual void setAlbum( const QString &newAlbum ) { Q_UNUSED( newAlbum ); }
-        virtual ArtistPtr artist() const { return ArtistPtr(); }
+        virtual ArtistPtr artist() const { return m_artistPtr; }
         virtual void setArtist( const QString &newArtist ) { Q_UNUSED( newArtist ); }
-        virtual ComposerPtr composer() const { return ComposerPtr(); }
+        virtual ComposerPtr composer() const { return m_composerPtr; }
         virtual void setComposer( const QString &newComposer ) { Q_UNUSED( newComposer ); }
-        virtual GenrePtr genre() const { return GenrePtr(); }
+        virtual GenrePtr genre() const { return m_genrePtr; }
         virtual void setGenre( const QString &newGenre ) { Q_UNUSED( newGenre ); }
-        virtual YearPtr year() const { return YearPtr(); }
+        virtual YearPtr year() const { return m_yearPtr; }
         virtual void setYear( const QString &newYear ) { Q_UNUSED( newYear ); }
 
         virtual void setTitle( const QString &title ) { m_title = title; }
@@ -196,7 +179,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual int sequenceNumber() const { return m_sequenceNumber; }
         void setSequenceNumber( int sequenceNumber ) { m_sequenceNumber = sequenceNumber; }
 
-        virtual PodcastChannelPtr channel() { return m_channel; }
+        virtual PodcastChannelPtr channel() const { return m_channel; }
         void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; }
 
     protected:
@@ -211,6 +194,13 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         int m_fileSize; //the size tag from the enclosure
         int m_sequenceNumber; //number of the episode
         bool m_isNew; //listened to or not?
+
+        //data members
+        Meta::AlbumPtr m_albumPtr;
+        Meta::ArtistPtr m_artistPtr;
+        Meta::ComposerPtr m_composerPtr;
+        Meta::GenrePtr m_genrePtr;
+        Meta::YearPtr m_yearPtr;
 };
 
 class PodcastChannel : public PodcastMetaCommon, public Playlist
@@ -304,6 +294,189 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
 
         PodcastEpisodeList m_episodes;
         TrackList m_tracks;
+};
+
+// internal helper classes
+
+class PodcastArtist : public Meta::Artist
+{
+public:
+    PodcastArtist( PodcastEpisode *episode )
+        : Meta::Artist()
+        , episode( episode )
+    {}
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    Meta::AlbumList albums()
+    {
+        return Meta::AlbumList();
+    }
+
+    QString name() const
+    {
+        const QString artist = episode->channel()->author();
+        return artist;
+    }
+
+    QString prettyName() const
+    {
+        return name();
+    }
+
+    PodcastEpisode const *episode;
+};
+
+class PodcastAlbum : public Meta::Album
+{
+public:
+    PodcastAlbum( PodcastEpisode *episode )
+        : Meta::Album()
+        , episode( episode )
+    {}
+
+    bool isCompilation() const
+    {
+        return false;
+    }
+
+    bool hasAlbumArtist() const
+    {
+        return false;
+    }
+
+    Meta::ArtistPtr albumArtist() const
+    {
+        return Meta::ArtistPtr();
+    }
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    QString name() const
+    {
+        if( episode != 0 )
+        {
+            const QString albumName = episode->channel()->title();
+            return albumName;
+        }
+        else
+            return QString();
+    }
+
+    QString prettyName() const
+    {
+        return name();
+    }
+
+    QPixmap image( int size )
+    {
+        return Meta::Album::image( size );
+    }
+
+    bool operator==( const Meta::Album &other ) const
+    {
+        return name() == other.name();
+    }
+
+    PodcastEpisode const *episode;
+};
+
+class PodcastGenre : public Meta::Genre
+{
+public:
+    PodcastGenre( PodcastEpisode *episode )
+        : Meta::Genre()
+        , episode( episode )
+    {}
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    QString name() const
+    {
+        const QString genreName = i18n( "Podcast" );
+        return genreName;
+    }
+
+    QString prettyName() const
+    {
+        return name();
+    }
+
+    PodcastEpisode const *episode;
+};
+
+class PodcastComposer : public Meta::Composer
+{
+public:
+    PodcastComposer( PodcastEpisode *episode )
+        : Meta::Composer()
+        , episode( episode )
+    {}
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    QString name() const
+    {
+        if( episode != 0 )
+        {
+            const QString composer = episode->channel()->author();
+            return composer;
+        }
+        else
+            return QString();
+
+     }
+
+    QString prettyName() const
+    {
+        return name();
+    }
+
+    PodcastEpisode const *episode;
+};
+
+class PodcastYear : public Meta::Year
+{
+public:
+    PodcastYear( PodcastEpisode *episode )
+        : Meta::Year()
+        , episode( episode )
+    {}
+
+    Meta::TrackList tracks()
+    {
+        return Meta::TrackList();
+    }
+
+    QString name() const
+    {
+        if( episode != 0 )
+        {
+            const QString year = episode->pubDate().toString( "yyyy" );
+            return year;
+        }
+        else
+            return QString();
+    }
+
+    QString prettyName() const
+    {
+        return name();
+    }
+
+    PodcastEpisode const *episode;
 };
 
 }

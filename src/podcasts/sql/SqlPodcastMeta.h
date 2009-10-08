@@ -44,7 +44,7 @@ class SqlPodcastEpisode : public PodcastEpisode
         ~SqlPodcastEpisode();
 
         //PodcastEpisode methods
-        PodcastChannelPtr channel() { return PodcastChannelPtr::dynamicCast( m_channel ); }
+        PodcastChannelPtr channel() const { return PodcastChannelPtr::dynamicCast( m_channel ); }
         virtual bool isNew() const { return m_isNew; }
         virtual void setLocalUrl( const KUrl &url );
 
