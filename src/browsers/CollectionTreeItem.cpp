@@ -122,9 +122,12 @@ CollectionTreeItem::removeChild( int index )
 void
 CollectionTreeItem::prepareForRemoval()
 {
+    m_parent = 0;
     m_model->itemAboutToBeDeleted( this );
     foreach( CollectionTreeItem *item, m_childItems )
+    {
         item->prepareForRemoval();
+    }
 }
 
 CollectionTreeItem*

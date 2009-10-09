@@ -153,7 +153,7 @@ class CollectionTreeItemModelBase::Private
     QHash<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
     QHash<QueryMaker* , CollectionTreeItem* > m_childQueries;
     QHash<QueryMaker* , CollectionTreeItem* > m_compilationQueries;
-    QSet<CollectionTreeItem*> m_runningQueries;
+    QHash<CollectionTreeItem*, QueryMaker*> m_runningQueries;
 };
 
 #endif
