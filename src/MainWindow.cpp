@@ -256,8 +256,8 @@ MainWindow::init()
     m_contextDummyTitleBarWidget = new QWidget();
     m_playlistDummyTitleBarWidget = new QWidget();
 
-    m_browsersDock = new QDockWidget( i18n( "Content" ), this );
-    m_browsersDock->setObjectName( "Content dock" );
+    m_browsersDock = new QDockWidget( i18n( "Music Sources" ), this );
+    m_browsersDock->setObjectName( "Music Sources dock" );
     m_browsersDock->setWidget( m_browsers );
     m_browsersDock->setAllowedAreas( Qt::AllDockWidgetAreas );
     PERF_LOG( "Sidebar created" )
