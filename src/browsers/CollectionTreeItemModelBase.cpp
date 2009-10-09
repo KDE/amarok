@@ -432,7 +432,7 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
         d->m_childQueries.insert( qm, parent );
-        d->m_runningQueries.insert( parent );
+        d->m_runningQueries.insert( parent, qm );
         qm->run();
 
         //some very quick queries may be dode so fast that the loading
@@ -648,6 +648,8 @@ CollectionTreeItemModelBase::queryDone()
 
     CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
 
+    d->m_runningQueries.remove( item );
+
     //reset icon for this item
     if( item && item != m_rootItem )
     {
@@ -686,7 +688,6 @@ void
 CollectionTreeItemModelBase::handleCompilationQueryResult( QueryMaker *qm, const Meta::DataList &dataList )
 {
     CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
-    d->m_runningQueries.remove( parent );
     QModelIndex parentIndex;
     if( parent )
     {
@@ -789,7 +790,6 @@ void
 CollectionTreeItemModelBase::handleNormalQueryResult( QueryMaker *qm, const Meta::DataList &dataList )
 {
     CollectionTreeItem *parent = d->m_childQueries.value( qm );
-    d->m_runningQueries.remove( parent );
     QModelIndex parentIndex;
     if( parent ) {
         if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel, but will happen in Single!
@@ -934,7 +934,7 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->m_compilationQueries.insert( qm, parent );
-    d->m_runningQueries.insert( parent );
+    d->m_runningQueries.insert( parent, qm );
     qm->run();
 }
 
@@ -956,7 +956,7 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
 
     //trigger an update of all items being populated at the moment;
 
-    foreach ( CollectionTreeItem* item, d->m_runningQueries )
+    foreach ( CollectionTreeItem* item, d->m_runningQueries.keys() )
     {
         if( item == m_rootItem )
             continue;
@@ -1052,29 +1052,25 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
     if( !d->m_runningQueries.contains( item ) )
         return;
     //replace this hack with QWeakPointer as soon as we depend on Qt 4.6
-    d->m_runningQueries.remove( item );
-    QueryMaker *qm = 0;
-    qm = d->m_childQueries.key( item, 0 );
+    QueryMaker *qm = d->m_runningQueries.take( item );
     if( qm )
     {
+
         d->m_childQueries.remove( qm );
-        //we found the item in this map, it won't be in the other
-        //but we still need to disconnect the qm below
+        d->m_compilationQueries.remove( qm );
+        //we still need to disconnect the qm below
     }
-    else
+    if( qm )
     {
-        qm = d->m_compilationQueries.key( item, 0 );
-        if( qm )
-            d->m_compilationQueries.remove( qm );
+        //disconnect the model from the querymake so we do not get
+        //notified about the results
+        qm->disconnect( this );
+        //although we could abort the query here,
+        //I strongly suspect that the querymaker's autodelete would not work anymore
+        //(as it has to be implemented in separately in each subclass)
+        //so just let the querymaker run, its result will be ignored
+        qm->setAutoDelete( true );
     }
-    //disconnect the model from the querymake so we do not get
-    //notified about the results
-    qm->disconnect( this );
-    //although we could abort the query here,
-    //I strongly suspect that the querymaker's autodelete would not work anymore
-    //(as it has to be implemented in separately in each subclass)
-    //so just let the querymaker run, its result will be ignored
-    qm->setAutoDelete( true );
 }
 
 #include "CollectionTreeItemModelBase.moc"
