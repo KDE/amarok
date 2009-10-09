@@ -20,7 +20,6 @@
 #ifndef PRETTYLISTVIEW_H
 #define PRETTYLISTVIEW_H
 
-#include "EngineObserver.h"
 #include "PrettyItemDelegate.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 
@@ -44,7 +43,7 @@ class QTimer;
 
 namespace Playlist
 {
-class PrettyListView : public QListView, public EngineObserver
+class PrettyListView : public QListView
 {
     Q_OBJECT
 
@@ -78,8 +77,6 @@ public slots:
     void showOnlyMatches( bool onlyMatches );
 
     void itemsAdded( const QModelIndex& parent, int firstRow, int lastRow );
-
-    virtual void engineNewTrackPlaying(); // from EngineObserver
 
 protected slots:
     void newPalette( const QPalette & palette );

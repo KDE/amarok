@@ -30,6 +30,7 @@
 #include "DynamicModel.h"
 #include "EngineController.h"
 #include "EngineObserver.h"
+#include "MainWindow.h"
 #include "navigators/DynamicTrackNavigator.h"
 #include "navigators/RandomAlbumNavigator.h"
 #include "navigators/RandomTrackNavigator.h"
@@ -38,8 +39,8 @@
 #include "navigators/StandardTrackNavigator.h"
 #include "navigators/FavoredRandomTrackNavigator.h"
 #include "PlaylistModelStack.h"
+#include "playlist/PlaylistWidget.h"
 #include "statusbar/StatusBar.h"
-
 
 #include <typeinfo>
 
@@ -396,6 +397,9 @@ Playlist::Actions::engineNewTrackPlaying()
         warning() << "engineNewTrackPlaying: not really a track";
 
     m_nextTrackCandidate = 0;
+
+    if( AmarokConfig::autoScrollPlaylist() )
+        The::mainWindow()->playlistWidget()->currentView()->scrollToActiveTrack();
 }
 
 

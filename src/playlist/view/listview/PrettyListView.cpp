@@ -64,7 +64,6 @@
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
-        , EngineObserver( The::engineController() )
         , m_headerPressIndex( QModelIndex() )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
@@ -115,14 +114,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
 }
 
-Playlist::PrettyListView::~PrettyListView() {}
-
-void
-Playlist::PrettyListView::engineNewTrackPlaying()
-{
-    if( AmarokConfig::autoScrollPlaylist() )
-        scrollToActiveTrack();
-}
+Playlist::PrettyListView::~PrettyListView()
+{}
 
 void
 Playlist::PrettyListView::editTrackInformation()
