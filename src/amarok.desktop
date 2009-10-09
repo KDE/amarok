@@ -167,6 +167,7 @@ Comment[zh_TW]=Amarok - 重新探索您的音樂世界！
 Icon=amarok
 MimeType=audio/aac;audio/mp4;audio/mpeg;audio/mpegurl;audio/vnd.rn-realaudio;audio/vorbis;audio/x-flac;audio/x-mp3;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-oggflac;audio/x-pn-realaudio;audio/x-scpls;audio/x-speex;audio/x-vorbis;audio/x-wav;video/x-ms-asf;application/x-ogm-audio;audio/x-vorbis+ogg;application/ogg;audio/ogg;
 X-DocPath=amarok/index.html
+X-KDE-Keywords=music,podcast
 X-KDE-Protocols=http
 Terminal=false
 Categories=Qt;KDE;AudioVideo;Audio;Player;
