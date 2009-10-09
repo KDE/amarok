@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -503,7 +504,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
     qm->addReturnValue( Meta::valArtist );
-    makeGenericComboSelection( true, qm );
+    makeGenericComboSelection( false, qm );
 }
 
 
@@ -513,7 +514,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeComposerSelection()
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
     qm->addReturnValue( Meta::valComposer );
-    makeGenericComboSelection( true, qm );
+    makeGenericComboSelection( false, qm );
 }
 
 
@@ -523,7 +524,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
     qm->addReturnValue( Meta::valAlbum );
-    makeGenericComboSelection( true, qm );
+    makeGenericComboSelection( false, qm );
 }
 
 
@@ -541,7 +542,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
     qm->addReturnValue( Meta::valGenre );
-    makeGenericComboSelection( true, qm );
+    makeGenericComboSelection( false, qm );
 }
 
 void
