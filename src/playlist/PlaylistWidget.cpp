@@ -57,7 +57,7 @@ Playlist::Widget::Widget( QWidget* parent )
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ), SLOT( showDynamicHint( bool ) ) );
     m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), this );
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
-    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; } " ).arg( PaletteHandler::highlightColor().name() ) );
+    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; border-radius: 3px; } " ).arg( PaletteHandler::highlightColor().name() ) );
     showDynamicHint( AmarokConfig::dynamicMode() );
 
     QWidget * layoutHolder = new QWidget( this );
