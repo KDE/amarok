@@ -150,7 +150,7 @@ QColor BreadcrumbItemButton::foregroundColor() const
 
     QColor foregroundColor = palette().color( foregroundRole() );
     if( !isActive && !isHighlighted )
-        foregroundColor.setAlpha( 60 );
+        foregroundColor.setAlpha( 180 );
 
     return foregroundColor;
 }
