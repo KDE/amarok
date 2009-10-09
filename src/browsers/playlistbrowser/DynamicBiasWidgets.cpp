@@ -120,20 +120,25 @@ PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, const Q
     mainLayout->addWidget( descLabel );
     mainLayout->setStretchFactor( descLabel, 1 );
 
-    connect( this, SIGNAL( clicked() ), SLOT( slotClicked() ) );
-
     setLayout( mainLayout );
 }
 
+// TODO: For some reason this only works with double-click. Also, mouseReleaseEvent() doesn't work at all. Don't know why.
 void
-PlaylistBrowserNS::BiasAddWidget::mouseReleaseEvent( QMouseEvent* )
+PlaylistBrowserNS::BiasAddWidget::mousePressEvent( QMouseEvent* event )
 {
-    emit clicked();
+    DEBUG_BLOCK
+
+    slotClicked();
+
+    BiasBoxWidget::mousePressEvent( event );
 }
 
 void
 PlaylistBrowserNS::BiasAddWidget::slotClicked()
 {
+    DEBUG_BLOCK
+
     emit addBias();
 }
 

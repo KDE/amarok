@@ -78,7 +78,7 @@ namespace PlaylistBrowserNS
             void clicked();
 
         protected:
-            virtual void mouseReleaseEvent( QMouseEvent* );
+            virtual void mousePressEvent( QMouseEvent* event );
 
         private:
            // KToolBar*    m_addToolbar;
