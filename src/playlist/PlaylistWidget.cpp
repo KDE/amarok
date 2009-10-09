@@ -57,8 +57,9 @@ Playlist::Widget::Widget( QWidget* parent )
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ), SLOT( showDynamicHint( bool ) ) );
     m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), this );
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
-    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; border-radius: 3px; } " )
-                                                 .arg( PaletteHandler::highlightColor().name() ) );
+    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; color: %2; border-radius: 3px; } " )
+                                                 .arg( PaletteHandler::highlightColor().name() )
+                                                 .arg( The::paletteHandler()->palette().highlightedText().color().name() ) );
     QFont dynamicHintWidgetFont = m_dynamicHintWidget->font();
     dynamicHintWidgetFont.setPointSize( dynamicHintWidgetFont.pointSize() + 1 );
     m_dynamicHintWidget->setFont( dynamicHintWidgetFont );
