@@ -181,8 +181,15 @@ void InlineEditorWidget::createChildWidgets()
         connect( rowWidget, SIGNAL( splitterMoved ( int, int ) ), this, SLOT( splitterMoved( int, int ) ) );
         
         m_splitterRowMap.insert( rowWidget, i );
-        
-        rowWidget->setContentsMargins( 0, 0, 0, 0 );
+
+        // the Oxygen widget style causes the frame around items too squashed
+        const KConfigGroup configGlobale( KGlobal::config(), "General" );
+        QString widgetStyle = configGlobale.readEntry( "widgetStyle", QString() );
+        if( widgetStyle == "oxygen" ) {
+            rowWidget->setContentsMargins( 0, -3, 0, -3 );
+        } else {
+            rowWidget->setContentsMargins( 0, 0, 0, 0 );
+        }
 
         LayoutItemConfigRow row = config.row( i );
 
