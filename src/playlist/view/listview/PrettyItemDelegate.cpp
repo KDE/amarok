@@ -43,13 +43,6 @@
 
 using namespace Playlist;
 
-const qreal PrettyItemDelegate::ALBUM_WIDTH = 50.0;
-const qreal PrettyItemDelegate::SINGLE_TRACK_ALBUM_WIDTH = 40.0;
-const qreal PrettyItemDelegate::MARGIN = 2.0;
-const qreal PrettyItemDelegate::MARGINH = 6.0;
-const qreal PrettyItemDelegate::MARGINBODY = 1.0;
-const qreal PrettyItemDelegate::PADDING = 1.0;
-
 int Playlist::PrettyItemDelegate::s_fontHeight = 0;
 
 

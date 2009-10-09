@@ -33,12 +33,12 @@
 
 using namespace Playlist;
 
-const qreal InlineEditorWidget::ALBUM_WIDTH = 50.0;
-const qreal InlineEditorWidget::SINGLE_TRACK_ALBUM_WIDTH = 40.0;
-const qreal InlineEditorWidget::MARGIN = 2.0;
-const qreal InlineEditorWidget::MARGINH = 6.0;
-const qreal InlineEditorWidget::MARGINBODY = 1.0;
-const qreal InlineEditorWidget::PADDING = 1.0;
+const qreal Playlist::ALBUM_WIDTH = 50.0;
+const qreal Playlist::SINGLE_TRACK_ALBUM_WIDTH = 40.0;
+const qreal Playlist::MARGIN = 2.0;
+const qreal Playlist::MARGINH = 6.0;
+const qreal Playlist::MARGINBODY = 1.0;
+const qreal Playlist::PADDING = 1.0;
 
 InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &index, PlaylistLayout layout, int groupMode )
     : KVBox( parent )

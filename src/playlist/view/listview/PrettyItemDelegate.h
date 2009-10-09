@@ -65,12 +65,6 @@ private:
 
     int getGroupMode( const QModelIndex &index) const;
 
-    static const qreal ALBUM_WIDTH;
-    static const qreal SINGLE_TRACK_ALBUM_WIDTH;
-    static const qreal MARGIN;
-    static const qreal MARGINH;
-    static const qreal MARGINBODY;
-    static const qreal PADDING;
     static QFontMetricsF* s_nfm; //normal
     static QFontMetricsF* s_ufm; //underline
     static QFontMetricsF* s_ifm; //italic

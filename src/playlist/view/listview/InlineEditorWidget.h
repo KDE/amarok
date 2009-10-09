@@ -49,13 +49,6 @@ private:
     void createChildWidgets();
     QPoint centerImage( const QPixmap&, const QRectF& ) const;
 
-    static const qreal ALBUM_WIDTH;
-    static const qreal SINGLE_TRACK_ALBUM_WIDTH;
-    static const qreal MARGIN;
-    static const qreal MARGINH;
-    static const qreal MARGINBODY;
-    static const qreal PADDING;
-
     QModelIndex m_index;
     Playlist::PlaylistLayout m_layout;
     int m_groupMode;
@@ -68,5 +61,15 @@ private:
     QMap<QSplitter *, int> m_splitterRowMap;
 
 };
+
+namespace Playlist
+{
+    extern const qreal ALBUM_WIDTH;
+    extern const qreal SINGLE_TRACK_ALBUM_WIDTH;
+    extern const qreal MARGIN;
+    extern const qreal MARGINH;
+    extern const qreal MARGINBODY;
+    extern const qreal PADDING;
+}
 
 #endif
