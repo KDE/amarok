@@ -151,7 +151,8 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
         // FIXME: lyrics != "Not found" will not work when the lyrics script displays i18n'ed
         // error messages
-        if ( lyrics != "Not found" )
+        if ( !lyrics.isEmpty() &&
+              lyrics != "Not found" )
         {
             // overwrite cached lyrics (as either there were no lyircs available previously OR
             // the user exlicitly agreed to overwrite the lyrics)
