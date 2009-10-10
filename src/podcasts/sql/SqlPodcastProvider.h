@@ -68,7 +68,8 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void completePodcastDownloads();
 
         //EngineObserver methods
-        virtual void engineStateChanged( Phonon::State newState, Phonon::State oldState= Phonon::StoppedState );
+        virtual void engineStateChanged( Phonon::State newState,
+                                         Phonon::State oldState= Phonon::StoppedState );
 
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
