@@ -173,6 +173,7 @@ namespace Amarok
         // Reimplemented from EngineObserver
         virtual void engineVolumeChanged( int );
         virtual void engineMuteStateChanged( bool );
+        virtual void engineNewTrackPlaying();
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
 
     public slots:

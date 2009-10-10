@@ -653,19 +653,25 @@ Amarok::OSD::engineMuteStateChanged( bool mute )
 }
 
 void
-Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
+Amarok::OSD::engineNewTrackPlaying()
 {
-    Q_UNUSED( oldState )
     DEBUG_BLOCK
 
-    Meta::TrackPtr track = The::engineController()->currentTrack();
+    m_currentTrack = The::engineController()->currentTrack();
+    show( m_currentTrack );
+}
+
+void
+Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
+{
+    DEBUG_BLOCK
 
     switch( state )
     {
         case Phonon::PlayingState:
-            m_currentTrack = track;
-            show( m_currentTrack );
             m_paused = false;
+            if( oldState == Phonon::PausedState )
+                show( m_currentTrack );
             break;
 
         case Phonon::PausedState:
