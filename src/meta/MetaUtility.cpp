@@ -494,7 +494,7 @@ Meta::Field::xesamFullToPrettyFieldName( const QString &name )
 
 
 QString
-Meta::msToPrettyTime( int ms )
+Meta::msToPrettyTime( qint64 ms )
 {
     return Meta::secToPrettyTime( ms / 1000 );
 }
