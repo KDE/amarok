@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "AlbumItem.h"
+#include "meta/MetaUtility.h"
 
 #include <KLocale>
 
@@ -91,7 +92,15 @@ AlbumItem::metadataChanged( Meta::AlbumPtr album )
         displayText = QString( "%1 - %2" ).arg( album->albumArtist()->name(), displayText );
 
     QString trackCount = i18np( "%1 track", "%1 tracks", tracks.size() );
-    displayText += '\n' + trackCount;
+
+    qint64 totalTime = 0;
+    foreach( Meta::TrackPtr item, tracks )
+    {
+        totalTime += item->length();
+    }
+    QString albumLength = QString( " %1" ).arg( Meta::msToPrettyTime( totalTime ) );
+
+    displayText += '\n' + trackCount + ", " + albumLength;
 
     setText( displayText );
 
