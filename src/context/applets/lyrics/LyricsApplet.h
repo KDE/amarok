@@ -60,6 +60,7 @@ private slots:
     void editLyrics();
     void closeLyrics();
     void saveLyrics();
+    void changeLyricsFont();
 
 private:
     void setEditing( const bool isEditing );
@@ -70,6 +71,7 @@ private:
 
     Plasma::IconWidget*  m_saveIcon;
     Plasma::IconWidget*  m_editIcon;
+    Plasma::IconWidget*  m_fontIcon;
     Plasma::IconWidget*  m_reloadIcon;
     Plasma::IconWidget*  m_closeIcon;
 
