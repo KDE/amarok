@@ -86,6 +86,9 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         void animateOff( qreal );
         void animateEnd( int );
 
+    private slots:
+        void paletteChanged( const QPalette & palette );
+
     protected:
         Plasma::IconWidget* addAction( QAction *action, const int size = 16 );
 
@@ -99,6 +102,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
     private:
         void cleanUpAndDelete();
+        void determineBackgroundColor();
 
         bool m_transient;
         qreal m_standardPadding;
