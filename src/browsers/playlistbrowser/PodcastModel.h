@@ -90,6 +90,7 @@ class PodcastModel : public QAbstractItemModel
     private slots:
         void slotAppend();
         void slotLoad();
+        void slotSetNew( bool newState );
 
     private:
         static PodcastModel* s_instance;
@@ -101,8 +102,10 @@ class PodcastModel : public QAbstractItemModel
         Meta::PodcastChannelList selectedChannels( const QModelIndexList &indices );
         Meta::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
         QList<QAction *> createCommonActions( QModelIndexList indices );
+        QList< QAction * > createEpisodeActions( Meta::PodcastEpisodeList epsiodes );
         QAction * m_appendAction;
         QAction * m_loadAction;
+        QAction *m_setNewAction;
         Meta::PodcastEpisodeList m_selectedEpisodes;
         Meta::PodcastChannelList m_selectedChannels;
 
