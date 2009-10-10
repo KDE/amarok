@@ -330,8 +330,7 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     if( m_lyrics->isReadOnly() )
     {
-        background = App::instance()->palette().highlight().color();
-        background.setHsvF( background.hueF(), 0.07, 1, background.alphaF() );
+        background = commonBackgroundColor();
     }
     else
     {

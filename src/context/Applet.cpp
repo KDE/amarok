@@ -15,6 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "App.h"
 #include "Applet.h"
 #include "Containment.h"
 #include "Debug.h"
@@ -47,6 +48,9 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
 {
     connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animateEnd( int ) ) );
     setBackgroundHints(NoBackground);
+
+    commonBackground = App::instance()->palette().highlight().color();
+    commonBackground.setHsvF( commonBackground.hueF(), 0.07, 1, commonBackground.alphaF() );
 }
 
 Context::Applet::~Applet( )
@@ -205,6 +209,12 @@ Context::Applet::resize( qreal wid, qreal hei)
     m_heightCollapseOff = hei;
     m_heightCurrent = hei;
     QGraphicsWidget::resize( wid, hei );
+}
+
+QColor
+Context::Applet::commonBackgroundColor() const
+{
+    return commonBackground;
 }
 
 Plasma::IconWidget*

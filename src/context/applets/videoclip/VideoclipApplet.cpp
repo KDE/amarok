@@ -22,7 +22,6 @@
 
 // Amarok
 #include "Amarok.h"
-#include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "meta/stream/Stream.h"
@@ -296,12 +295,9 @@ VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     const QSizeF widgetSize( proxySize.width(), proxySize.height() - scrollBarHeight );
     const QRectF widgetRect( m_widget->pos(), widgetSize );
 
-    QColor background = App::instance()->palette().highlight().color();
-    background.setHsvF( background.hueF(), 0.07, 1, background.alphaF() );
-
     QPainterPath path;
     path.addRoundedRect( widgetRect, 5, 5 );
-    p->fillPath( path, background );
+    p->fillPath( path, commonBackgroundColor() );
 
     p->restore();
 }
