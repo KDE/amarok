@@ -19,7 +19,6 @@
 
 #include <meta/Meta.h>
 
-#include <QSize>
 #include <QStandardItem>
 
 class TrackItem : public QStandardItem, public Meta::Observer
