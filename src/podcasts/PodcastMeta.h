@@ -114,15 +114,10 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual bool isEditable() const { return false; }
 
         virtual AlbumPtr album() const { return m_albumPtr; }
-        virtual void setAlbum( const QString &newAlbum ) { Q_UNUSED( newAlbum ); }
         virtual ArtistPtr artist() const { return m_artistPtr; }
-        virtual void setArtist( const QString &newArtist ) { Q_UNUSED( newArtist ); }
         virtual ComposerPtr composer() const { return m_composerPtr; }
-        virtual void setComposer( const QString &newComposer ) { Q_UNUSED( newComposer ); }
         virtual GenrePtr genre() const { return m_genrePtr; }
-        virtual void setGenre( const QString &newGenre ) { Q_UNUSED( newGenre ); }
         virtual YearPtr year() const { return m_yearPtr; }
-        virtual void setYear( const QString &newYear ) { Q_UNUSED( newYear ); }
 
         virtual void setTitle( const QString &title ) { m_title = title; }
 
@@ -149,9 +144,6 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
             return Amarok::extension( fileName );
         }
 
-        virtual void beginMetaDataUpdate() {}
-        virtual void endMetaDataUpdate() {}
-        virtual void abortMetaDataUpdate() {}
         virtual void finishedPlaying( double playedFraction ) { Q_UNUSED( playedFraction ); }
         virtual void addMatchTo( QueryMaker* qm ) { Q_UNUSED( qm ); }
         virtual bool inCollection() const { return false; }
