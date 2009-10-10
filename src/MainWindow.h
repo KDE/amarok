@@ -58,7 +58,7 @@ namespace The {
 
 //This should only change if docks or toolbars are added or removed, and in this case a new src/data/DefaultDockLayyout
 //file should be created as well
-#define LAYOUT_VERSION 1
+#define LAYOUT_VERSION 2
 
 /**
   * @class MainWindow
