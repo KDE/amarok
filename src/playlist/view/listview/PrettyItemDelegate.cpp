@@ -271,81 +271,12 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
     int imageSize = option.rect.height() - MARGIN * 2;
     QRectF nominalImageRect( MARGINH, MARGIN, imageSize, imageSize );
 
-    if ( config.showCover() )
-    {
-        QModelIndex coverIndex = index.model()->index( index.row(), CoverImage );
-        QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
-
-        //offset cover if non square
-        QPointF offset = centerImage( albumPixmap, nominalImageRect );
-        QRectF imageRect( nominalImageRect.x() + offset.x(),
-                          nominalImageRect.y() + offset.y(),
-                          nominalImageRect.width() - offset.x() * 2,
-                          nominalImageRect.height() - offset.y() * 2 );
-
-        if ( !albumPixmap.isNull() )
-            painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
-
-        QModelIndex emblemIndex = index.model()->index( index.row(), SourceEmblem );
-        QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
-
-        if ( !albumPixmap.isNull() )
-            painter->drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
-
-        rowOffsetX = imageSize + MARGINH + PADDING * 2;
-    }
-
     int markerOffsetX = nominalImageRect.x();
 
-    if( index.data( StateRole ).toInt() & Item::Queued && !ignoreQueueMarker )
-    {
-        // Check that the queue position is actually valid
-        const int queuePosition = index.data( QueuePositionRole ).toInt();
-        if( queuePosition > 0 )
-        {
-            const int w = 16, h = 16;
-            const int x = markerOffsetX;
-            const int y = nominalImageRect.y() + ( imageSize - h );
-            const QRect rect( x, y, w, h );
-            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "queue_marker", w, h, "queue_marker" ) );
-            painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
+    const bool showCover = config.showCover();
 
-            markerOffsetX += ( 16 + PADDING );
-
-            if ( !config.showCover() )
-                rowOffsetX = markerOffsetX;
-        }
-        else
-            warning() << "discrepancy: Item::Queued but queuePosition == 0";
-    }
-
-    if( index.data( MultiSourceRole ).toBool() && !ignoreQueueMarker )
-    {
-        const int w = 16, h = 16;
-        const int x = markerOffsetX;
-        const int y = nominalImageRect.y() + ( imageSize - h );
-        const QRect rect( x, y, w, h );
-        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "multi_marker", w, h, "multi_marker" ) );
-
-        markerOffsetX += ( 16 + PADDING );
-
-        if ( !config.showCover() )
-            rowOffsetX += ( 16 + PADDING );
-    }
-
-    if( index.data( StopAfterTrackRole ).toBool() )
-    {
-        const int w = 16, h = 16;
-        const int x = markerOffsetX;
-        const int y = nominalImageRect.y() + ( imageSize - h );
-        const QRect rect( x, y, w, h );
-        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "stop_button", w, h, "stop_button" ) );
-
-        markerOffsetX += ( 16 + PADDING );
-
-        if ( !config.showCover() )
-            rowOffsetX += ( 16 + PADDING );
-    }
+    if ( showCover )
+        rowOffsetX = imageSize + MARGINH + PADDING * 2;
 
     for ( int i = 0; i < rowCount; i++ )
     {
@@ -363,24 +294,25 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
             //TODO: propper 9 part painting, but I dont want to bother with this until we
             //get some new graphics anyway...
 
-            int overlayXOffset = rowOffsetX - 3;
-            int overlayHeight = rowHeight - 2;
-            int overlayLength = rowWidth + 6;
+            int overlayXOffset = 0;
+            int overlayYOffset = rowOffsetY - 2;
+            int overlayHeight = option.rect.height() + 4;
+            int overlayLength = option.rect.width();
             int endWidth = overlayHeight / 4;
 
-            painter->drawPixmap( overlayXOffset, rowOffsetY + 1,
+            painter->drawPixmap( overlayXOffset, overlayYOffset,
                                  The::svgHandler()->renderSvg(
                                  "active_overlay_left",
                                  endWidth, overlayHeight,
                                  "active_overlay_left" ) );
 
-            painter->drawPixmap( overlayXOffset + endWidth, rowOffsetY + 1,
+            painter->drawPixmap( overlayXOffset + endWidth, overlayYOffset,
                                  The::svgHandler()->renderSvg(
                                  "active_overlay_mid",
                                  overlayLength - endWidth * 2, overlayHeight,
                                  "active_overlay_mid" ) );
 
-            painter->drawPixmap( overlayXOffset + ( overlayLength - endWidth ), rowOffsetY + 1,
+            painter->drawPixmap( overlayXOffset + ( overlayLength - endWidth ), overlayYOffset,
                                  The::svgHandler()->renderSvg(
                                  "active_overlay_right",
                                  endWidth, overlayHeight,
@@ -495,6 +427,77 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
         rowOffsetY += rowHeight;
     }
 
+    if ( showCover )
+    {
+        QModelIndex coverIndex = index.model()->index( index.row(), CoverImage );
+        QPixmap albumPixmap = coverIndex.data( Qt::DisplayRole ).value<QPixmap>();
+
+        //offset cover if non square
+        QPointF offset = centerImage( albumPixmap, nominalImageRect );
+        QRectF imageRect( nominalImageRect.x() + offset.x(),
+                          nominalImageRect.y() + offset.y(),
+                          nominalImageRect.width() - offset.x() * 2,
+                          nominalImageRect.height() - offset.y() * 2 );
+
+        if ( !albumPixmap.isNull() )
+            painter->drawPixmap( imageRect, albumPixmap, QRectF( albumPixmap.rect() ) );
+
+        QModelIndex emblemIndex = index.model()->index( index.row(), SourceEmblem );
+        QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
+
+        if ( !albumPixmap.isNull() )
+            painter->drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
+    }
+
+    if( index.data( StateRole ).toInt() & Item::Queued && !ignoreQueueMarker )
+    {
+        // Check that the queue position is actually valid
+        const int queuePosition = index.data( QueuePositionRole ).toInt();
+        if( queuePosition > 0 )
+        {
+            const int w = 16, h = 16;
+            const int x = markerOffsetX;
+            const int y = nominalImageRect.y() + ( imageSize - h );
+            const QRect rect( x, y, w, h );
+            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "queue_marker", w, h, "queue_marker" ) );
+            painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
+
+            markerOffsetX += ( 16 + PADDING );
+
+            if ( !showCover )
+                rowOffsetX = markerOffsetX;
+        }
+        else
+            warning() << "discrepancy: Item::Queued but queuePosition == 0";
+    }
+
+    if( index.data( MultiSourceRole ).toBool() && !ignoreQueueMarker )
+    {
+        const int w = 16, h = 16;
+        const int x = markerOffsetX;
+        const int y = nominalImageRect.y() + ( imageSize - h );
+        const QRect rect( x, y, w, h );
+        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "multi_marker", w, h, "multi_marker" ) );
+
+        markerOffsetX += ( 16 + PADDING );
+
+        if ( !showCover )
+            rowOffsetX += ( 16 + PADDING );
+    }
+
+    if( index.data( StopAfterTrackRole ).toBool() )
+    {
+        const int w = 16, h = 16;
+        const int x = markerOffsetX;
+        const int y = nominalImageRect.y() + ( imageSize - h );
+        const QRect rect( x, y, w, h );
+        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "stop_button", w, h, "stop_button" ) );
+
+        markerOffsetX += ( 16 + PADDING );
+
+        if ( !showCover )
+            rowOffsetX += ( 16 + PADDING );
+    }
 }
 
 void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const
