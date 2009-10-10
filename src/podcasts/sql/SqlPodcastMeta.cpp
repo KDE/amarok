@@ -217,6 +217,9 @@ Meta::SqlPodcastEpisode::createCapabilityInterface( Meta::Capability::Type type 
             return new TimecodeWriteCapabilityPodcastImpl( this );
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityPodcastImpl( this );
+        case Meta::Capability::Editable:
+            if( !m_localFile.isNull() )
+                return m_localFile->createCapabilityInterface( type );
         default:
             return 0;
     }
@@ -229,6 +232,71 @@ Meta::SqlPodcastEpisode::isEditable() const
          return false;
 
      return m_localFile->isEditable();
+}
+
+Meta::AlbumPtr
+Meta::SqlPodcastEpisode::album() const
+{
+    if( m_localFile.isNull() )
+        return m_albumPtr;
+
+    return m_localFile->album();
+}
+
+Meta::ArtistPtr
+Meta::SqlPodcastEpisode::artist() const
+{
+    if( m_localFile.isNull() )
+        return m_artistPtr;
+
+    return m_localFile->artist();
+}
+
+Meta::ComposerPtr
+Meta::SqlPodcastEpisode::composer() const
+{
+    if( m_localFile.isNull() )
+        return m_composerPtr;
+
+    return m_localFile->composer();
+}
+
+Meta::GenrePtr
+Meta::SqlPodcastEpisode::genre() const
+{
+    if( m_localFile.isNull() )
+        return m_genrePtr;
+
+    return m_localFile->genre();
+}
+
+Meta::YearPtr
+Meta::SqlPodcastEpisode::year() const
+{
+    if( m_localFile.isNull() )
+        return m_yearPtr;
+
+    return m_localFile->year();
+}
+
+void
+Meta::SqlPodcastEpisode::beginMetaDataUpdate()
+{
+    if( !m_localFile.isNull() && m_localFile->isEditable() )
+        m_localFile->beginMetaDataUpdate();
+}
+
+void
+Meta::SqlPodcastEpisode::endMetaDataUpdate()
+{
+    if( !m_localFile.isNull() && m_localFile->isEditable() )
+        m_localFile->endMetaDataUpdate();
+}
+void
+Meta::SqlPodcastEpisode::abortMetaDataUpdate()
+{
+    if( !m_localFile.isNull() && m_localFile->isEditable() )
+        m_localFile->abortMetaDataUpdate();
 }
 
 void

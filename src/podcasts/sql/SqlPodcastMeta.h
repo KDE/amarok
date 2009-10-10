@@ -54,6 +54,16 @@ class SqlPodcastEpisode : public PodcastEpisode
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
         virtual bool isEditable() const;
 
+        virtual AlbumPtr album() const;
+        virtual ArtistPtr artist() const;
+        virtual ComposerPtr composer() const;
+        virtual GenrePtr genre() const;
+        virtual YearPtr year() const;
+
+        virtual void beginMetaDataUpdate();
+        virtual void endMetaDataUpdate();
+        virtual void abortMetaDataUpdate();
+
         //SqlPodcastEpisode specific methods
         int dbId() const { return m_dbId; };
 
