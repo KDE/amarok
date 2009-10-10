@@ -109,7 +109,7 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     {
         debug() << "could not read the xml of lyrics, malformed";
         lyricsError( i18n("Lyrics data could not be parsed") );
-        //TODO: how about showing cached lyrics then?
+        // TODO: how about showing cached lyrics then?
         return;
     }
 
@@ -149,19 +149,21 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
         lyrics = el.text();
 
-        if ( lyrics != "Not found" ) //I don't know if this will work with translated stuff, different scripts...
+        // FIXME: lyrics != "Not found" will not work when the lyrics script displays i18n'ed
+        // error messages
+        if ( lyrics != "Not found" )
         {
             // overwrite cached lyrics (as either there were no lyircs available previously OR
             // the user exlicitly agreed to overwrite the lyrics)
-            debug() << "setting cached lyrics: ";
+            debug() << "setting cached lyrics...";
             The::engineController()->currentTrack()->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
         }
         else if( !The::engineController()->currentTrack()->cachedLyrics().isEmpty() &&
                   The::engineController()->currentTrack()->cachedLyrics() != "Not found" )
         {
-            //we found nothing, so if we have cached lyrics, use it!
+            // we found nothing, so if we have cached lyrics, use it!
+            debug() << "using cached lyrics...";
             lyrics = The::engineController()->currentTrack()->cachedLyrics();
-            //debug() << "using cached lyrics: " << lyrics;
 
             // check if the lyrics data contains "<html" (note the missing closing bracket,
             // this enables XHTML lyrics to be recognized)
@@ -173,6 +175,7 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
             }
         }
 
+        // TODO: why don't we use currentTrack->prettyName() here?
         const QString title = el.attribute( "title" );
 
         QStringList lyricsData;
@@ -214,8 +217,8 @@ LyricsManager::lyricsError( const QString &error )
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( currentTrack && !currentTrack->cachedLyrics().isEmpty() )
     {
-        //TODO: add some sort of feedback that we could not fetch new ones
-        //so we are showing a cached result
+        // TODO: add some sort of feedback that we could not fetch new ones
+        // so we are showing a cached result
         debug() << "showing cached lyrics!";
 
         // check if the lyrics data contains "<html" (note the missing closing bracket,
