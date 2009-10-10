@@ -400,8 +400,14 @@ LyricsApplet::closeLyrics()
 {
     if( m_hasLyrics )
     {
+        QScrollBar *vbar = m_lyrics->verticalScrollBar();
+        int savedPosition = vbar->isVisible() ? vbar->value() : vbar->minimum();
+
         m_lyrics->setPlainText( The::engineController()->currentTrack()->cachedLyrics() );
         m_lyrics->show();
+
+        vbar->setSliderPosition( savedPosition );
+
         setCollapseOff();
         emit sizeHintChanged(Qt::MaximumSize);
     }
