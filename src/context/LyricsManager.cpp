@@ -175,16 +175,20 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
             }
         }
 
-        // TODO: why don't we use currentTrack->prettyName() here?
-        const QString title = el.attribute( "title" );
+        // only continue if the given lyrics are not empty
+        if ( !lyrics.isEmpty() )
+        {
+            // TODO: why don't we use currentTrack->prettyName() here?
+            const QString title = el.attribute( "title" );
 
-        QStringList lyricsData;
-        lyricsData << title
-            << The::engineController()->currentTrack()->artist()->name()
-            << QString() // TODO lyrics site
-            << lyrics;
+            QStringList lyricsData;
+            lyricsData << title
+                << The::engineController()->currentTrack()->artist()->name()
+                << QString() // TODO lyrics site
+                << lyrics;
 
-        sendNewLyrics( lyricsData );
+            sendNewLyrics( lyricsData );
+        }
     }
 }
 
