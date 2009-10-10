@@ -70,7 +70,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_onOffCheckbox->setText( i18n( "On" ) );
     m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
     m_onOffCheckbox->setCheckable( true );
-    m_onOffCheckbox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_onOffCheckbox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     QObject::connect( m_onOffCheckbox, SIGNAL( toggled( bool ) ), this, SLOT( OnOff ( bool ) ) );
 
     m_repopulateButton = new QPushButton( controls1Layout );
