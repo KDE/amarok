@@ -54,7 +54,7 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     QGraphicsScene *scene  = new QGraphicsScene();
 
     const float startX = 3.0;
-    const float gapX = 39.8;
+    const float gapX = 40.0;
     const float startY = 6.5;
 
     MainControlsButton * backButton = new MainControlsButton( 0 );
