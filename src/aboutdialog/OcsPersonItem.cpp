@@ -103,6 +103,7 @@ OcsPersonItem::init()
     }
 
     connect( m_iconsBar, SIGNAL( actionTriggered( QAction * ) ), this, SLOT( launchUrl( QAction * ) ) );
+    connect( m_snBar, SIGNAL( actionTriggered( QAction * ) ), this, SLOT( launchUrl( QAction * ) ) );
     m_textLabel->setText( m_aboutText );
 }
 
@@ -209,6 +210,163 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
 
     visitProfile->setData( ocsPerson.extendedAttribute( "profilepage" ) );
     m_iconsBar->addAction( visitProfile );
+
+    //Adding more homepage links...
+    //Homepage types as POST arguments from the OCS API:
+    /*
+    10 - Blog
+    20 - Facebook
+    30 - Forum
+    40 - Homepage
+    50 - Mailinglist
+    60 - Twitter
+    70 - Wiki
+    80 - Wikipedia
+    90 - identi.ca
+    100 - last.fm
+    110 - libre.fm
+    120 - StackOverflow
+    500 - other
+    */
+    /*QStringList linkTypes;
+    linkTypes << "Blog" << "Facebook" << "Forum" <<
+
+    m_snBar->addAction(;
+*/
+    QStringList ocsHomepageTypes = QStringList()
+            << "Blog"
+            << "delicious"
+            << "Digg"
+            << "Facebook"
+            << "Homepage"
+            << "LinkedIn"
+            << "MySpace"
+            << "other"
+            << "Reddit"
+            << "YouTube"
+            << "Twitter"
+            << "Wikipedia"
+            << "Xing"
+            << "identi.ca"
+            << "libre.fm"
+            << "StackOverflow";
+    QList< QPair< QString, QString > > ocsHomepages;
+    ocsHomepages.append( QPair< QString, QString >( ocsPerson.extendedAttribute( "homepagetype" ), ocsPerson.homepage() ) );
+    debug() << "USER HOMEPAGE DATA STARTS HERE";
+    debug() << ocsHomepages.last().first << " :: " << ocsHomepages.last().second;
+    for( int i = 2; i <= 10; i++ )  //OCS supports 10 total homepages as of 2/oct/2009
+    {
+        QString type = ocsPerson.extendedAttribute( QString( "homepagetype%1" ).arg( i ) );
+        ocsHomepages.append( QPair< QString, QString >( ( type == "&nbsp;" ) ? "" : type,
+                                                        ocsPerson.extendedAttribute( QString( "homepage%1" ).arg( i ) ) ) );
+        debug() << ocsHomepages.last().first << " :: " << ocsHomepages.last().second;
+    }
+
+    bool fillHomepageFromOcs = m_person->webAddress().isEmpty();
+
+    for( QList< QPair< QString, QString > >::const_iterator entry = ocsHomepages.constBegin();
+         entry != ocsHomepages.constEnd(); ++entry )
+    {
+        QString type = (*entry).first;
+        QString url = (*entry).second;
+        KIcon icon;
+        QString text;
+
+        if( type == "Blog" )
+        {
+            icon = KIcon( "mail-flag" );
+            text = i18n( "Visit contributor's blog" );
+        }
+        else if( type == "delicious" )
+        {
+            icon = KIcon( "flag-yellow" );
+            text = i18n( "Visit contributor's del.icio.us profile" );
+        }
+        else if( type == "Digg" )
+        {
+            icon = KIcon( "flag-black" );
+            text = i18n( "Visit contributor's Digg profile" );
+        }
+        else if( type == "Facebook" )
+        {
+            icon = KIcon( "flag-blue" );
+            text = i18n( "Visit contributor's Facebook profile" );
+        }
+        else if( type == "Homepage" || type == "other" || ( type.isEmpty() && !url.isEmpty() ) )
+        {
+            if( fillHomepageFromOcs )
+            {
+                KAction *homepage = new KAction( KIcon( "applications-internet" ), i18n("Visit contributor's homepage"), this );
+                homepage->setToolTip( m_person->webAddress() );
+                homepage->setData( m_person->webAddress() );
+                m_iconsBar->addAction( homepage );
+                fillHomepageFromOcs = false;
+                continue;
+            }
+            icon = KIcon( "applications-internet" );
+            text = i18n( "Visit contributor's homepage" );
+        }
+        else if( type == "LinkedIn" )
+        {
+            icon = KIcon( "flag-blue" );
+            text = i18n( "Visit contributor's LinkedIn profile" );
+        }
+        else if( type == "MySpace" )
+        {
+            icon = KIcon( "flag-red" );
+            text = i18n( "Visit contributor's MySpace homepage" );
+        }
+        else if( type == "Reddit" )
+        {
+            icon = KIcon( "flag-black" );
+            text = i18n( "Visit contributor's Reddit profile" );
+        }
+        else if( type == "YouTube" )
+        {
+            icon = KIcon( "flag-yellow" );
+            text = i18n( "Visit contributor's YouTube profile" );
+        }
+        else if( type == "Twitter" )
+        {
+            icon = KIcon( "mail-flag" );
+            text = i18n( "Visit contributor's Twitter feed" );
+        }
+        else if( type == "Wikipedia" )
+        {
+            icon = KIcon( "flag-black" );
+            text = i18n( "Visit contributor's Wikipedia profile" );
+        }
+        else if( type == "Xing" )
+        {
+            icon = KIcon( "flag-black" );
+            text = i18n( "Visit contributor's Xing profile" );
+        }
+        else if( type == "identi.ca" )
+        {
+            icon = KIcon( "flag-yellow" );
+            text = i18n( "Visit contributor's identi.ca feed" );
+        }
+        else if( type == "libre.fm" )
+        {
+            icon = KIcon( "flag-red" );
+            text = i18n( "Visit contributor's libre.fm profile" );
+        }
+        else if( type == "StackOverflow" )
+        {
+            icon = KIcon( "flag-yellow" );
+            text = i18n( "Visit contributor's StackOverflow profile" );
+        }
+        else
+            break;
+        KAction *action = new KAction( icon, text, this );
+        action->setToolTip( url );
+        action->setData( url );
+        m_snBar->addAction( action );
+    }
+
+
+
+    debug() << "END USER HOMEPAGE DATA";
 
     m_textLabel->setText( m_aboutText );
 }
