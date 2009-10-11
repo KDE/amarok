@@ -26,7 +26,7 @@
 
 #include <QGraphicsSvgItem>
 #include <QGraphicsScene>
-
+#include <QToolButton>
 
 
 MainControlsWidget::MainControlsWidget( QWidget * parent )
@@ -89,17 +89,18 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
 
 
 MainControlsWidget::~MainControlsWidget()
-{
-}
+{}
 
 /* Changes the PlayPause button icon to use the play icon. */
-void MainControlsWidget::setPlayButton()
+void
+MainControlsWidget::setPlayButton()
 {
     m_playPauseButton->setSvgPrefix( "play_button" );
 }
 
 /* Changes the PlayPause button icon to use the pause icon. */
-void MainControlsWidget::setPauseButton()
+void
+MainControlsWidget::setPauseButton()
 {
     m_playPauseButton->setSvgPrefix( "pause_button" );
 }
