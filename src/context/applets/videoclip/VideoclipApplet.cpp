@@ -19,6 +19,7 @@
 #include "VideoclipApplet.h" 
 #include "VideoItemButton.h"
 #include "CustomVideoWidget.h"
+#include "PaletteHandler.h"
 
 // Amarok
 #include "Amarok.h"
@@ -297,7 +298,7 @@ VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
 
     QPainterPath path;
     path.addRoundedRect( widgetRect, 5, 5 );
-    p->fillPath( path, commonBackgroundColor() );
+    p->fillPath( path, The::paletteHandler()->backgroundColor() );
 
     p->restore();
 }

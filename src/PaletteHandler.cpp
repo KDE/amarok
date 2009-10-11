@@ -103,7 +103,25 @@ PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
     return highlight;
 }
 
-    
+QColor
+PaletteHandler::backgroundColor()
+{
+    QColor bg = App::instance()->palette().highlight().color();
+    qreal value = bg.valueF() > 0.5 ? 1.0 : 0.1;
+    bg.setHsvF( bg.hueF(), 0.07, value, bg.alphaF() );
+
+    return bg;
+}
+
+QColor
+PaletteHandler::backgroundColor( qreal percentSaturation, qreal percentValue )
+{
+    QColor bg = App::instance()->palette().highlight().color();
+    qreal value = bg.valueF() > 0.5 ? 1.0 : 0.2;
+    value *= percentValue;
+    bg.setHsvF( bg.hueF(), 0.07 * percentSaturation, value, bg.alphaF() );
+
+    return bg;
+}
+
 #include "PaletteHandler.moc"
-
-

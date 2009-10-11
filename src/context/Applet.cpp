@@ -49,8 +49,6 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animateEnd( int ) ) );
     setBackgroundHints(NoBackground);
 
-    determineBackgroundColor();
-
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 }
 
@@ -212,12 +210,6 @@ Context::Applet::resize( qreal wid, qreal hei)
     QGraphicsWidget::resize( wid, hei );
 }
 
-QColor
-Context::Applet::commonBackgroundColor() const
-{
-    return commonBackground;
-}
-
 Plasma::IconWidget*
 Context::Applet::addAction( QAction *action, const int size )
 {
@@ -361,20 +353,6 @@ void
 Context::Applet::paletteChanged( const QPalette & palette )
 {
     Q_UNUSED( palette )
-
-    determineBackgroundColor();
 }
-
-void
-Context::Applet::determineBackgroundColor()
-{
-    commonBackground = App::instance()->palette().highlight().color();
-    qreal backgroundValue = commonBackground.valueF() > 0.5 ? 1.0 : 0.2;
-    commonBackground.setHsvF( commonBackground.hueF(),
-                              0.07,
-                              backgroundValue,
-                              commonBackground.alphaF() );
-}
-
 
 #include "Applet.moc"

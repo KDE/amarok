@@ -330,7 +330,7 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     if( m_lyrics->isReadOnly() )
     {
-        background = commonBackgroundColor();
+        background = The::paletteHandler()->backgroundColor();
     }
     else
     {

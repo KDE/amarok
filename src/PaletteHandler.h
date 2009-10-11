@@ -61,10 +61,24 @@ public:
      */
     static QColor highlightColor( qreal percentSaturation, qreal percentValue );  //defined in App.cpp
 
-    
+    /**
+     * Returns the background color used for context applets.
+     * @return Background color with good contrast to highlightColor().
+     */
+    static QColor backgroundColor();
+
+    /**
+     * Returns the background color used for context applets.
+     * @param percentSaturation percentage to saturate the background color.
+     * Will reduce (or magnify) the saturation in HSV representation.
+     * @param percentValue percentage to multiply the value of the HSV color with.
+     * @return Background color with good contrast to highlightColor().
+     */
+    static QColor backgroundColor( qreal percentSaturation, qreal percentValue );
+
 signals:
     void newPalette( const QPalette & palette );
-    
+
 private:
     PaletteHandler( QObject* parent = 0 );
 

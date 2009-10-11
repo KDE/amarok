@@ -75,11 +75,6 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
           */
         virtual void   resize( qreal, qreal );
 
-        /**
-         * Returns a common background colour for context applets
-         */
-        QColor commonBackgroundColor() const;
-
     public Q_SLOTS:
         virtual void destroy();
         void animateOn( qreal );
@@ -102,12 +97,10 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
     private:
         void cleanUpAndDelete();
-        void determineBackgroundColor();
 
         bool m_transient;
         qreal m_standardPadding;
         Plasma::FrameSvg *m_textBackground;
-        QColor commonBackground;
 };
 
 } // Context namespace
