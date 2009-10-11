@@ -32,12 +32,14 @@
 MainControlsWidget::MainControlsWidget( QWidget * parent )
     : QGraphicsView( parent )
 {
-    setFixedHeight( 67 );
-    setFixedWidth( 203 );
+    const float aspectRatio = 3.02;
+    const int ourHeight = 57;
+    setFixedHeight( ourHeight );
+    setFixedWidth( int( ourHeight * aspectRatio ) );
+
     setContentsMargins( 0, 0, 0, 0 );
 
     setFrameStyle( QFrame::NoFrame );
-
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -52,33 +54,34 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     QGraphicsScene *scene  = new QGraphicsScene();
 
     const float startX = 3.0;
-    const float gapX = 45.0;
+    const float gapX = 39.8;
+    const float startY = 6.5;
 
     MainControlsButton * backButton = new MainControlsButton( 0 );
     backButton->setSvgPrefix( "back_button" );
     backButton->setAction( Amarok::actionCollection()->action( "prev" ) );
-    backButton->moveBy( startX + gapX * 0, 6.5 );
+    backButton->moveBy( startX + gapX * 0, startY );
     backButton->setZValue( 2 );
     scene->addItem( backButton );
 
     m_playPauseButton = new MainControlsButton( 0 );
     m_playPauseButton->setSvgPrefix( "play_button" );
     m_playPauseButton->setAction( Amarok::actionCollection()->action( "play_pause" ) );
-    m_playPauseButton->moveBy( startX + gapX * 1, 6.5 );
+    m_playPauseButton->moveBy( startX + gapX * 1, startY );
     m_playPauseButton->setZValue( 10 );
     scene->addItem( m_playPauseButton );
 
     MainControlsButton * stopButton = new MainControlsButton( 0 );
     stopButton->setSvgPrefix( "stop_button" );
     stopButton->setAction( Amarok::actionCollection()->action( "stop" ) );
-    stopButton->moveBy( startX + gapX * 2, 6.5 );
+    stopButton->moveBy( startX + gapX * 2, startY );
     stopButton->setZValue( 5 );
     scene->addItem( stopButton );
 
     MainControlsButton * nextButton = new MainControlsButton( 0 );
     nextButton->setSvgPrefix( "next_button" );
     nextButton->setAction( Amarok::actionCollection()->action( "next" ) );
-    nextButton->moveBy( startX + gapX * 3, 6.5 );
+    nextButton->moveBy( startX + gapX * 3, startY );
     nextButton->setZValue( 2 );
     scene->addItem( nextButton );
 
