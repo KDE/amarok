@@ -285,8 +285,6 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
 
     //draw background of wiki text
     p->save();
-    QColor bg( App::instance()->palette().highlight().color() );
-    bg.setHsvF( bg.hueF(), 0.07, 1, bg.alphaF() );
 
     // HACK
     // sometimes paint is done before the updateconstraints call
@@ -298,7 +296,7 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     wikiRect.moveTopLeft( m_webView->pos() );
     QPainterPath round;
     round.addRoundedRect( wikiRect, 3, 3 );
-    p->fillPath( round , bg  );
+    p->fillPath( round , The::paletteHandler()->backgroundColor() );
     p->restore(); 
 }
 
@@ -447,9 +445,8 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
     QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        QColor highlight( App::instance()->palette().highlight().color() );
-        highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
-        
+        QColor highlight( The::paletteHandler()->backgroundColor() );
+
         QString contents = QString( file.readAll() );
         //debug() << "setting background:" << Amarok::highlightColor().lighter( 130 ).name();
         contents.replace( "{background_color}", PaletteHandler::highlightColor( 0.12, 1 ).name() );
@@ -457,8 +454,8 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
         contents.replace( "{border_color}", highlight.name() );
         contents.replace( "{text_color}", PaletteHandler::highlightColor().darker( 400 ).name()  );
         contents.replace( "{link_color}", palette.link().color().name() );
+        highlight = The::paletteHandler()->backgroundColor( 300, 300 );
         contents.replace( "{link_hover_color}", palette.link().color().darker( 200 ).name() );
-        highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
         contents.replace( "{shaded_text_background_color}", highlight.name() );
         contents.replace( "{table_background_color}", highlight.name() );
         contents.replace( "{headings_background_color}", highlight.name() );
