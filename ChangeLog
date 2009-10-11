@@ -55,6 +55,7 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * On Screen Display was not shown when cover image changed. (BR 195188)
     * On Screen Display was not shown on automatic track change. (BR 209376)
     * Automatic playlist scrolling was broken in some cases. (BR 193459)
     * The On Screen Display now uses a sane font size with all display

@@ -657,7 +657,15 @@ Amarok::OSD::engineNewTrackPlaying()
 {
     DEBUG_BLOCK
 
-    m_currentTrack = The::engineController()->currentTrack();
+    if( m_currentTrack )
+        unsubscribeFrom( m_currentTrack->album() );
+
+    if( The::engineController()->currentTrack() )
+    {
+        m_currentTrack = The::engineController()->currentTrack();
+        subscribeTo( m_currentTrack->album() );
+    }
+
     show( m_currentTrack );
 }
 
@@ -683,6 +691,15 @@ Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
         default:
             break;
     }
+}
+
+void
+Amarok::OSD::metadataChanged( Meta::AlbumPtr album )
+{
+    Q_UNUSED( album )
+    DEBUG_BLOCK
+
+    show( m_currentTrack );
 }
 
 
