@@ -62,7 +62,6 @@
 #include <KLocale>
 #include <KNotifyConfigWidget>           //slotConfigNotifications()
 #include <KShortcutsDialog>              //slotConfigShortcuts()
-#include <KSplashScreen>
 #include <KStandardDirs>
 
 #include <QByteArray>
@@ -123,7 +122,6 @@ AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
         : KUniqueApplication()
-        , m_splash( 0 )
 {
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
@@ -230,7 +228,6 @@ App::~App()
     DEBUG_BLOCK
 
     delete m_splash;
-    m_splash = 0;
 
     CollectionManager::instance()->stopScan();
 

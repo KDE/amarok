@@ -18,6 +18,8 @@
 #define DEBUG_PREFIX "lastfm"
 
 #include "LastFmServiceConfig.h"
+
+#include "App.h"
 #include "Debug.h"
 
 #include <KWallet/Wallet>
@@ -29,13 +31,17 @@ LastFmServiceConfig::LastFmServiceConfig()
     : m_askDiag( 0 )
     , m_wallet( 0 )
 {
-
-    m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
+    if( KWallet::Wallet::isEnabled() )
+    {
+        pApp->hideSplashScreen();
+        m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
+    }
 
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     
     if( !m_wallet && !config.hasKey( "ignoreWallet" ) )
     {
+        pApp->hideSplashScreen();
         m_askDiag = new KDialog( 0 );
         m_askDiag->setCaption( i18n( "Last.fm credentials" ) );
         m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your Last.fm credentials in plaintext?" ), m_askDiag ) );
@@ -46,6 +52,7 @@ LastFmServiceConfig::LastFmServiceConfig()
         connect( m_askDiag, SIGNAL( cancelClicked() ), this, SLOT( textDialogCancel() ) );
         m_askDiag->exec();
     }
+
     load();
 }
 

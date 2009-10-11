@@ -24,6 +24,7 @@
 #include "MainWindow.h"
 
 #include <KAboutData>
+#include <KSplashScreen>
 #include <KUniqueApplication>   //baseclass
 #include <KUrl>
 
@@ -41,7 +42,6 @@ namespace KIO { class Job; }
 
 class KJob;
 class MediaDeviceManager;
-class KSplashScreen;
 
 class AMAROK_EXPORT App : public KUniqueApplication
 {
@@ -64,10 +64,11 @@ class AMAROK_EXPORT App : public KUniqueApplication
         static int mainThreadId;
 
         virtual int newInstance();
+        void hideSplashScreen() { delete m_splash; }
 
         inline MainWindow *mainWindow() const { return m_mainWindow; }
 
-        // FRIENDS ------
+        // FRIENDS
         friend class MainWindow; //requires access to applySettings()
 
     signals:
@@ -95,12 +96,12 @@ class AMAROK_EXPORT App : public KUniqueApplication
         void slotTrashResult( KJob *job );
 
     private:
-        // ATTRIBUTES ------
-        bool                 m_isUniqueInstance;
-        QPointer<MainWindow> m_mainWindow;
-        Amarok::TrayIcon     *m_tray;
-        MediaDeviceManager   *m_mediaDeviceManager;
-        KSplashScreen        *m_splash;
+        // ATTRIBUTES
+        bool                    m_isUniqueInstance;
+        QPointer<MainWindow>    m_mainWindow;
+        Amarok::TrayIcon        *m_tray;
+        MediaDeviceManager      *m_mediaDeviceManager;
+        QPointer<KSplashScreen> m_splash;
 };
 
 #define pApp static_cast<App*>(kapp)
