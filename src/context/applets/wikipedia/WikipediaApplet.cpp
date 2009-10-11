@@ -295,7 +295,7 @@ WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
                     
     wikiRect.moveTopLeft( m_webView->pos() );
     QPainterPath round;
-    round.addRoundedRect( wikiRect, 3, 3 );
+    round.addRoundedRect( wikiRect, 5, 5 );
     p->fillPath( round , The::paletteHandler()->backgroundColor() );
     p->restore(); 
 }
