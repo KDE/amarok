@@ -449,13 +449,12 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
 
         QString contents = QString( file.readAll() );
         //debug() << "setting background:" << Amarok::highlightColor().lighter( 130 ).name();
-        contents.replace( "{background_color}", PaletteHandler::highlightColor( 0.12, 1 ).name() );
         contents.replace( "{text_background_color}", highlight.name() );
         contents.replace( "{border_color}", highlight.name() );
-        contents.replace( "{text_color}", PaletteHandler::highlightColor().darker( 400 ).name()  );
+        contents.replace( "{text_color}", palette.text().color().name() );
         contents.replace( "{link_color}", palette.link().color().name() );
+        contents.replace( "{link_hover_color}", palette.light().color().name() );
         highlight = The::paletteHandler()->backgroundColor( 300, 300 );
-        contents.replace( "{link_hover_color}", palette.link().color().darker( 200 ).name() );
         contents.replace( "{shaded_text_background_color}", highlight.name() );
         contents.replace( "{table_background_color}", highlight.name() );
         contents.replace( "{headings_background_color}", highlight.name() );
