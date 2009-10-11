@@ -151,14 +151,10 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
         if ( lyrics != "Not found" ) //I don't know if this will work with translated stuff, different scripts...
         {
-
-            //BAAAD thing to do indiscriminately as you might be overwriting cached lyric with nothing!
+            // overwrite cached lyrics (as either there were no lyircs available previously OR
+            // the user exlicitly agreed to overwrite the lyrics)
             debug() << "setting cached lyrics: ";
             The::engineController()->currentTrack()->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
-
-            //TODO: what is the sane thing to do if we get a valid lyrics result but there is cached lyrics set already?
-            //this entire system needs to be thought through a little better I think -nhn
-
         }
         else if( !The::engineController()->currentTrack()->cachedLyrics().isEmpty() &&
                   The::engineController()->currentTrack()->cachedLyrics() != "Not found" )
@@ -200,13 +196,14 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
     // be suggestions. this is for HTML display only
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( currentTrack )
+    if( currentTrack &&
+        !lyricsHTML.isEmpty() )
     {
         sendNewLyricsHtml( lyricsHTML );
 
-        // cache the Html anyway.
-        if( currentTrack->cachedLyrics().isEmpty() )
-            currentTrack->setCachedLyrics( lyricsHTML );
+        // overwrite cached lyrics (as either there were no lyircs available previously OR
+        // the user exlicitly agreed to overwrite the lyrics)
+        currentTrack->setCachedLyrics( lyricsHTML );
     }
 }
 
