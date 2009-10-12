@@ -388,6 +388,7 @@ LyricsApplet::editLyrics()
 {
     if( !m_hasLyrics )
     {
+        // TODO: m_lyricsTmpContent was used by saveLyrics, but now it is unused
         m_lyricsTmpContent = m_lyrics->toPlainText();
         m_lyrics->clear();
     }
@@ -418,15 +419,24 @@ LyricsApplet::closeLyrics()
 void
 LyricsApplet::saveLyrics()
 {
-    if( m_lyrics->toPlainText().isEmpty() )
-        m_lyrics->setPlainText( m_lyricsTmpContent );
-    else
+    Meta::TrackPtr curtrack = The::engineController()->currentTrack();
+
+    if( curtrack )
     {
-        Meta::TrackPtr curtrack = The::engineController()->currentTrack();
-        if( curtrack )
+        if( !m_lyrics->toPlainText().isEmpty() )
+        {
             curtrack->setCachedLyrics( m_lyrics->toPlainText() );
+            setCollapseOff();
+            m_hasLyrics = true;
+        }
+        else
+        {
+            curtrack->setCachedLyrics( QString() );
+            m_hasLyrics = false;
+        }
+        emit sizeHintChanged(Qt::MaximumSize);
     }
-    
+
     setEditing( false );
 }
 
