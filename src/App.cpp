@@ -423,10 +423,10 @@ App::handleCliArgs() //static
     firstTime = false;
 
 #ifdef DEBUG
-    if( args->isSet( "test" ) )
-    {
-        runUnitTests( args->isSet( "teststdout" ) );
-    }
+    if( args->getOption( "test" ) == "log" )
+        runUnitTests( false );
+    else if( args->getOption( "test" ) == "stdout" )
+        runUnitTests( true );
 #endif // DEBUG
 
     if( args->isSet( "subscribe" ) )
@@ -482,10 +482,9 @@ App::initCliArgs() //static
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
-    options.add("test", ki18n( "Run integrated unit tests, if your build supports it" ));
+    options.add("test <argument>", ki18n( "Run integrated unit tests, if your build supports it. The argument sets result output: 'log' for logfiles, 'stdout' for stdout." ) );
     options.add("p");
     options.add("subscribe <feed-url>", ki18n( "Subscribe to podcast feed" ) );
-    options.add("teststdout", ki18n( "output test results to stdout instead of log files" ));
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
