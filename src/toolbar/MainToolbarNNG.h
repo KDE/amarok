@@ -51,11 +51,13 @@ protected:
       virtual void resizeEvent( QResizeEvent * event );
       void handleAddActions();
       void centerAddActions();
+      virtual bool eventFilter( QObject* object, QEvent* event );
 
 private:
     QWidget            *m_insideBox;
     KToolBar           *m_addControlsToolbar;
-    QToolBar           *m_volumePopupButton;
+    QToolBar           *m_volumeToolBar;
+    VolumePopupButton  *m_volumePopupButton;
     MainControlsWidget *m_mainControlsWidget;
 
     bool m_ignoreCache;

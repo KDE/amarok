@@ -68,11 +68,11 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     m_addControlsToolbar->setFloatable ( false );
     m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
 
-    m_volumePopupButton = new QToolBar( m_insideBox );
-    m_volumePopupButton->setIconSize( QSize( 22, 22 ) );
-    m_volumePopupButton->setContentsMargins( 0, 0, 0, 0 );
-    VolumePopupButton *button = new VolumePopupButton( this );
-    m_volumePopupButton->addWidget( button );
+    m_volumeToolBar = new QToolBar( m_insideBox );
+    m_volumeToolBar->setIconSize( QSize( 22, 22 ) );
+    m_volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
+    m_volumePopupButton = new VolumePopupButton( this );
+    m_volumeToolBar->addWidget( m_volumePopupButton );
 
     KHBox * progressBox = new KHBox( mainBox );
     progressBox->setContentsMargins( 0, 0, 0, 4 );
@@ -80,6 +80,7 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     progressWidget->setMinimumSize( 100, 12 );
 
     centerAddActions();
+    installEventFilter( this );
 }
 
 MainToolbarNNG::~MainToolbarNNG()
@@ -154,7 +155,7 @@ void MainToolbarNNG::resizeEvent(QResizeEvent *event)
     const int controlWidth = m_mainControlsWidget->width();
 
     m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 3 );
-    m_volumePopupButton->move( event->size().width() - 40, 0 );
+    m_volumeToolBar->move( event->size().width() - 40, 0 );
     centerAddActions();
 }
 
@@ -170,6 +171,19 @@ void MainToolbarNNG::centerAddActions()
 
     int controlWidth = m_mainControlsWidget->width();
     m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 3, 10 );
+}
+
+bool
+MainToolbarNNG::eventFilter( QObject* object, QEvent* event )
+{
+    // This makes it possible to change volume by using the mouse wheel anywhere on the toolbar
+    if( event->type() == QEvent::Wheel && object == this )
+    {
+        kapp->sendEvent( m_volumePopupButton, event );
+        return true;
+    }
+
+    return QToolBar::eventFilter( object, event );
 }
 
 void MainToolbarNNG::reRender()
