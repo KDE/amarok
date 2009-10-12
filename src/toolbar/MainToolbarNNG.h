@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,8 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MAINTOOLBAR_H
-#define MAINTOOLBAR_H
+#ifndef MainToolbarNNG_H
+#define MainToolbarNNG_H
 
 #include "EngineObserver.h" //baseclass
 #include "SmartPointerList.h"
@@ -32,15 +33,14 @@ class VolumeWidget;
 /**
     A KHBox based toolbar with a nice svg background and takes care of 
     adding any additional controls needed by individual tracks
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class MainToolbar : public QToolBar, public EngineObserver
+class MainToolbarNNG : public QToolBar, public EngineObserver
 {
 
 public:
-    MainToolbar( QWidget * parent );
+    MainToolbarNNG( QWidget * parent );
 
-    ~MainToolbar();
+    ~MainToolbarNNG();
 
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );

@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MainToolbar.h"
+#include "MainToolbarNNG.h"
 
 #include "ActionClasses.h"
 #include "Amarok.h"
@@ -35,13 +36,13 @@
 #include <QResizeEvent>
 #include <QVBoxLayout>
 
-MainToolbar::MainToolbar( QWidget * parent )
-    : QToolBar( i18n( "Main Toolbar" ), parent )
+MainToolbarNNG::MainToolbarNNG( QWidget * parent )
+    : QToolBar( i18n( "Main Toolbar NNG" ), parent )
     , EngineObserver( The::engineController() )
     , m_addActionsOffsetX( 0 )
     , m_ignoreCache( false )
 {
-    setObjectName( "MainToolbar" );
+    setObjectName( "MainToolbarNNG" );
 
     setContentsMargins( 0, 0, 0, 0 );
     setFixedHeight( 67 );
@@ -91,12 +92,12 @@ MainToolbar::MainToolbar( QWidget * parent )
     kapp->installEventFilter( this );
 }
 
-MainToolbar::~MainToolbar()
+MainToolbarNNG::~MainToolbarNNG()
 {
     DEBUG_BLOCK
 }
 
-void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
+void MainToolbarNNG::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     if( (state != oldState) )
     {
@@ -109,13 +110,13 @@ void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldStat
     handleAddActions();
 }
 
-void MainToolbar::engineNewMetaData( const QHash< qint64, QString > &newMetaData, bool trackChanged )
+void MainToolbarNNG::engineNewMetaData( const QHash< qint64, QString > &newMetaData, bool trackChanged )
 {
     Q_UNUSED( newMetaData ); Q_UNUSED( trackChanged );
     handleAddActions();
 }
 
-void MainToolbar::handleAddActions()
+void MainToolbarNNG::handleAddActions()
 {
     foreach( QAction* action, m_additionalActions )
         m_addControlsToolbar->removeAction( action );
@@ -151,7 +152,7 @@ void MainToolbar::handleAddActions()
     repaint ( 0, 0, -1, -1 ); // make sure that the add info area is shown or hidden at once.
 }
 
-void MainToolbar::resizeEvent(QResizeEvent *event)
+void MainToolbarNNG::resizeEvent(QResizeEvent *event)
 {
     DEBUG_BLOCK
 
@@ -167,7 +168,7 @@ void MainToolbar::resizeEvent(QResizeEvent *event)
     //centerAddActions();
 }
 
-bool MainToolbar::eventFilter( QObject* object, QEvent* event )
+bool MainToolbarNNG::eventFilter( QObject* object, QEvent* event )
 {
     // This makes it possible to change volume by using the mouse wheel anywhere on the toolbar
     if( event->type() == QEvent::Wheel && object == this ) {
@@ -178,7 +179,7 @@ bool MainToolbar::eventFilter( QObject* object, QEvent* event )
     return QWidget::eventFilter( object, event );
 }
 
-/*void MainToolbar::centerAddActions()
+/*void MainToolbarNNG::centerAddActions()
 {
     int numberOfActions = m_additionalActions.size();
 
@@ -192,7 +193,7 @@ bool MainToolbar::eventFilter( QObject* object, QEvent* event )
     m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 + m_addActionsOffsetX, 10 );
 }*/
 
-void MainToolbar::reRender()
+void MainToolbarNNG::reRender()
 {
     m_ignoreCache = true;
     update();

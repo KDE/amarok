@@ -612,6 +612,7 @@ set(amaroklib_LIB_SRCS
     PopupDropperFactory.cpp
     toolbar/CurrentTrackToolbar.cpp
     toolbar/MainToolbarNG.cpp
+    toolbar/MainToolbarNNG.cpp
     toolbar/VolumePopupButton.cpp
     TrayIcon.cpp
     widgets/BreadcrumbItemButton.cpp
