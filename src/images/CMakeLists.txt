@@ -54,6 +54,19 @@ install(
         hover_info_user_playlists.png
         hover_info_podcasts.png
 	opendesktop-22.png
+
+        emblem-delicious.png
+        emblem-digg.png
+        emblem-facebook.png
+        emblem-identica.png
+        emblem-linkedin.png
+        emblem-myspace.png
+        emblem-reddit.png
+        emblem-stackoverflow.png
+        emblem-twitter.png
+        emblem-wikipedia.png
+        emblem-xing.png
+
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )
 
