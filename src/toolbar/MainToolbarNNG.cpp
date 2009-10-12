@@ -51,15 +51,14 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
 
     setAutoFillBackground ( false );
 
-    m_insideBox = new QWidget( this );
-    m_insideBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    addWidget( m_insideBox );
-    //QHBoxLayout * layout = new QHBoxLayout( topBar );
-    //topBar->setLayout( layout );
+    KVBox * mainBox = new KVBox( this );
+    mainBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    addWidget( mainBox );
 
-    //layout->addStretch();
+    m_insideBox = new QWidget( mainBox );
+    m_insideBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
     m_mainControlsWidget = new MainControlsWidget( m_insideBox );
-    //layout->addWidget( m_mainControlsWidget );
 
     m_addControlsToolbar = new Amarok::ToolBar( m_insideBox );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -68,19 +67,16 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     m_addControlsToolbar->setMovable( false );
     m_addControlsToolbar->setFloatable ( false );
     m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
-    //layout->addWidget( m_addControlsToolbar );
-    //layout->addStretch();
 
-#if 0
-    QToolBar *volumeToolBar = new QToolBar( m_insideBox );
-    volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
-#endif
-    m_volumePopupButton = new VolumePopupButton( m_insideBox );
+    m_volumePopupButton = new QToolBar( m_insideBox );
     m_volumePopupButton->setIconSize( QSize( 22, 22 ) );
-    //volumeToolBar->addWidget( m_volumePopupButton );
-    //layout->addWidget( volumeToolBar );
+    m_volumePopupButton->setContentsMargins( 0, 0, 0, 0 );
+    VolumePopupButton *button = new VolumePopupButton( this );
+    m_volumePopupButton->addWidget( button );
 
-    ProgressWidget *progressWidget = new ProgressWidget( m_insideBox );
+    KHBox * progressBox = new KHBox( mainBox );
+    //volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
+    ProgressWidget *progressWidget = new ProgressWidget( progressBox );
     progressWidget->setMinimumSize( 100, 12 );
 }
 

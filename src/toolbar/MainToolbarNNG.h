@@ -55,7 +55,7 @@ protected:
 private:
     QWidget            *m_insideBox;
     KToolBar           *m_addControlsToolbar;
-    VolumePopupButton  *m_volumePopupButton;
+    QToolBar           *m_volumePopupButton;
     MainControlsWidget *m_mainControlsWidget;
 
     int m_addActionsOffsetX;
