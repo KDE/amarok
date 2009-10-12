@@ -36,6 +36,7 @@
 #include <QResizeEvent>
 #include <QVBoxLayout>
 
+
 MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     : QToolBar( i18n( "Main Toolbar NNG" ), parent )
     , EngineObserver( The::engineController() )
@@ -88,7 +89,8 @@ MainToolbarNNG::~MainToolbarNNG()
     DEBUG_BLOCK
 }
 
-void MainToolbarNNG::engineStateChanged( Phonon::State state, Phonon::State oldState )
+void
+MainToolbarNNG::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     if( (state != oldState) )
     {
@@ -101,13 +103,15 @@ void MainToolbarNNG::engineStateChanged( Phonon::State state, Phonon::State oldS
     handleAddActions();
 }
 
-void MainToolbarNNG::engineNewMetaData( const QHash< qint64, QString > &newMetaData, bool trackChanged )
+void
+MainToolbarNNG::engineNewMetaData( const QHash< qint64, QString > &newMetaData, bool trackChanged )
 {
     Q_UNUSED( newMetaData ); Q_UNUSED( trackChanged );
     handleAddActions();
 }
 
-void MainToolbarNNG::handleAddActions()
+void
+MainToolbarNNG::handleAddActions()
 {
     foreach( QAction* action, m_additionalActions )
         m_addControlsToolbar->removeAction( action );
@@ -144,7 +148,8 @@ void MainToolbarNNG::handleAddActions()
     repaint ( 0, 0, -1, -1 ); // make sure that the add info area is shown or hidden at once.
 }
 
-void MainToolbarNNG::resizeEvent(QResizeEvent *event)
+void
+MainToolbarNNG::resizeEvent( QResizeEvent *event )
 {
     DEBUG_BLOCK
 
@@ -159,17 +164,14 @@ void MainToolbarNNG::resizeEvent(QResizeEvent *event)
     centerAddActions();
 }
 
-
-void MainToolbarNNG::centerAddActions()
+void
+MainToolbarNNG::centerAddActions()
 {
-    int numberOfActions = m_additionalActions.size();
-
     int marginLeft, marginRight, marginTop, marginBottom;
     m_addControlsToolbar->getContentsMargins( &marginLeft, &marginTop, &marginRight, &marginBottom );
-    int actionsSize = ( numberOfActions * 24 ) + marginLeft + marginRight + 8;
-    int middle = contentsRect().width() / 2;
+    const int middle = contentsRect().width() / 2;
+    const int controlWidth = m_mainControlsWidget->width();
 
-    int controlWidth = m_mainControlsWidget->width();
     m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 3, 10 );
 }
 
@@ -186,7 +188,8 @@ MainToolbarNNG::eventFilter( QObject* object, QEvent* event )
     return QToolBar::eventFilter( object, event );
 }
 
-void MainToolbarNNG::reRender()
+void
+MainToolbarNNG::reRender()
 {
     m_ignoreCache = true;
     update();

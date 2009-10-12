@@ -25,9 +25,9 @@
 
 #include <QToolBar>
 
+class QAction;
 class KToolBar;
 class MainControlsWidget;
-class QAction;
 class VolumePopupButton;
 
 /**
