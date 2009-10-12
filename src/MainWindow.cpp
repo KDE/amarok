@@ -59,6 +59,7 @@
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
 #include "toolbar/MainToolbarNG.h"
+#include "toolbar/MainToolbarNNG.h"
 #include "SvgHandler.h"
 #include "widgets/Splitter.h"
 //#include "mediabrowser.h"
@@ -238,7 +239,6 @@ MainWindow::init()
 
     addToolBar( Qt::TopToolBarArea, m_controlBar );
 
-
     m_newToolbar = new MainToolbarNG( 0 );
     //newToolbar->setAllowedAreas( Qt::AllToolBarAreas );
     m_newToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
@@ -246,6 +246,14 @@ MainWindow::init()
 
     addToolBar( Qt::TopToolBarArea, m_newToolbar );
     m_newToolbar->hide();
+
+    m_newToolbar2 = new MainToolbarNNG( 0 );
+    //newToolbar2->setAllowedAreas( Qt::AllToolBarAreas );
+    m_newToolbar2->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
+    m_newToolbar2->setMovable ( true );
+
+    addToolBar( Qt::TopToolBarArea, m_newToolbar2 );
+    m_newToolbar2->hide();
 
     //BEGIN Creating Widgets
     PERF_LOG( "Create sidebar" )
@@ -1140,6 +1148,9 @@ void MainWindow::setLayoutLocked( bool locked )
 
         m_newToolbar->setFloatable( false );
         m_newToolbar->setMovable( false );
+
+        m_newToolbar2->setFloatable( false );
+        m_newToolbar2->setMovable( false );
     }
     else
     {
@@ -1160,6 +1171,9 @@ void MainWindow::setLayoutLocked( bool locked )
 
         m_newToolbar->setFloatable( true );
         m_newToolbar->setMovable( true );
+
+        m_newToolbar2->setFloatable( true );
+        m_newToolbar2->setMovable( true );
     }
 
     AmarokConfig::setLockLayout( locked );

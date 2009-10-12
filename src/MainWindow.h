@@ -32,6 +32,7 @@ class CollectionWidget;
 class ContextWidget;
 class MainToolbar;
 class MainToolbarNG;
+class MainToolbarNNG;
 class MainWindow;
 class PlaylistFileProvider;
 class SearchWidget;
@@ -198,6 +199,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QDockWidget * m_playlistDock;
 
         MainToolbarNG * m_newToolbar;
+        MainToolbarNNG * m_newToolbar2;
 
         QWidget *     m_browserDummyTitleBarWidget;
         QWidget *     m_contextDummyTitleBarWidget;
