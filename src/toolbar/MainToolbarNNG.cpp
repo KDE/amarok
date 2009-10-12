@@ -51,24 +51,18 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
 
     setAutoFillBackground ( false );
 
-    KHBox * hBox = new KHBox( 0 );
-    addWidget( hBox );
-    //hBox->setFixedHeight( 67 );
-    //hBox->setMinimumWidth( 594 );
-    hBox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
-    hBox->setContentsMargins( 0, 0, 0, 0 );
-
-    m_mainControlsWidget = new MainControlsWidget( hBox );
-
-    KVBox * vBox = new KVBox( hBox );
-    vBox->setContentsMargins( 0, 3, 0, 0 );
+    KVBox * vBox = new KVBox( this );
+    addWidget( vBox );
+    vBox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+    vBox->setContentsMargins( 0, 0, 0, 0 );
 
     QWidget * topBar = new QWidget( vBox );
-
     QHBoxLayout * layout = new QHBoxLayout( topBar );
     topBar->setLayout( layout );
-    layout->setMargin( 1 ); // align correctly with the progress bar
-    layout->setSpacing( 3 ); // here aswell
+
+    layout->addStretch();
+    m_mainControlsWidget = new MainControlsWidget( topBar );
+    layout->addWidget( m_mainControlsWidget );
 
     m_addControlsToolbar = new Amarok::ToolBar( topBar );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -77,19 +71,15 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     m_addControlsToolbar->setMovable( false );
     m_addControlsToolbar->setFloatable ( false );
     m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
+    layout->addWidget( m_addControlsToolbar );
+    layout->addStretch();
 
-    QToolBar *volumeToolBar = new QToolBar( this );
+    QToolBar *volumeToolBar = new QToolBar( topBar );
     volumeToolBar->setIconSize( QSize( 22, 22 ) );
     volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
     m_volumePopupButton = new VolumePopupButton( this );
     volumeToolBar->addWidget( m_volumePopupButton );
-    addWidget( volumeToolBar );
-
-    layout->addWidget( m_addControlsToolbar );
-#if 0
-    layout->addWidget( m_volumeWidget );
-    layout->setAlignment( m_volumeWidget, Qt::AlignRight );
-#endif
+    layout->addWidget( volumeToolBar );
 
     ProgressWidget *progressWidget = new ProgressWidget( vBox );
     progressWidget->setMinimumSize( 100, 17 );
