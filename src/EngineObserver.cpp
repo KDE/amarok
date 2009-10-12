@@ -209,13 +209,13 @@ EngineSubject::attach( EngineObserver *observer )
     if( object )
         connect( object, SIGNAL( destroyed( QObject* ) ), this, SLOT( observerDestroyed( QObject* ) ) );
 
-    Observers.append( observer );
+    Observers.insert( observer );
 }
 
 void
 EngineSubject::detach( EngineObserver *observer )
 {
-    Observers.removeAll( observer );
+    Observers.remove( observer );
 }
 
 void
@@ -224,7 +224,7 @@ EngineSubject::observerDestroyed( QObject* object ) //SLOT
     DEBUG_BLOCK
 
     EngineObserver* observer = reinterpret_cast<EngineObserver*>( object ); // cast is OK, it's guaranteed to be an EngineObserver
-    Observers.removeAll( observer );
+    Observers.remove( observer );
 
     debug() << "Removed EngineObserver: " << observer;
 }
