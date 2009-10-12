@@ -155,7 +155,7 @@ void MainToolbarNNG::resizeEvent(QResizeEvent *event)
     const int controlWidth = m_mainControlsWidget->width();
 
     m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 3 );
-    m_volumeToolBar->move( event->size().width() - 40, 0 );
+    m_volumeToolBar->move( event->size().width() - 50, 0 );
     centerAddActions();
 }
 
