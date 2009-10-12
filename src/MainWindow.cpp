@@ -617,6 +617,12 @@ MainWindow::showHide() //SLOT
 }
 
 void
+MainWindow::slotFullScreen() // slot
+{
+    setWindowState( windowState() ^ Qt::WindowFullScreen );
+}
+
+void
 MainWindow::activate()
 {
 #ifdef Q_WS_X11
@@ -764,6 +770,11 @@ MainWindow::createActions()
     ac->addAction( "toggleMainWindow", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
     connect( action, SIGNAL( triggered() ), SLOT( showHide() ) );
+
+    action = new KAction( i18n( "Toggle Full Screen" ), this );
+    ac->addAction( "toggleFullScreen", action );
+    action->setGlobalShortcut( KShortcut( Qt::CTRL + Qt::SHIFT + Qt::Key_F ) );
+    connect( action, SIGNAL( triggered() ), SLOT( slotFullScreen() ) );
 
     action = new KAction( i18n( "Jump to" ), this );
     ac->addAction( "jumpTo", action );
