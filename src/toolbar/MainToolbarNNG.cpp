@@ -51,37 +51,36 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
 
     setAutoFillBackground ( false );
 
-    KVBox * vBox = new KVBox( this );
-    addWidget( vBox );
-    vBox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-    vBox->setContentsMargins( 0, 0, 0, 0 );
+    m_insideBox = new QWidget( this );
+    m_insideBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    addWidget( m_insideBox );
+    //QHBoxLayout * layout = new QHBoxLayout( topBar );
+    //topBar->setLayout( layout );
 
-    QWidget * topBar = new QWidget( vBox );
-    QHBoxLayout * layout = new QHBoxLayout( topBar );
-    topBar->setLayout( layout );
+    //layout->addStretch();
+    m_mainControlsWidget = new MainControlsWidget( m_insideBox );
+    //layout->addWidget( m_mainControlsWidget );
 
-    layout->addStretch();
-    m_mainControlsWidget = new MainControlsWidget( topBar );
-    layout->addWidget( m_mainControlsWidget );
-
-    m_addControlsToolbar = new Amarok::ToolBar( topBar );
+    m_addControlsToolbar = new Amarok::ToolBar( m_insideBox );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_addControlsToolbar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
     m_addControlsToolbar->setIconDimensions( 16 );
     m_addControlsToolbar->setMovable( false );
     m_addControlsToolbar->setFloatable ( false );
     m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
-    layout->addWidget( m_addControlsToolbar );
-    layout->addStretch();
+    //layout->addWidget( m_addControlsToolbar );
+    //layout->addStretch();
 
-    QToolBar *volumeToolBar = new QToolBar( topBar );
-    volumeToolBar->setIconSize( QSize( 22, 22 ) );
+#if 0
+    QToolBar *volumeToolBar = new QToolBar( m_insideBox );
     volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
-    m_volumePopupButton = new VolumePopupButton( this );
-    volumeToolBar->addWidget( m_volumePopupButton );
-    layout->addWidget( volumeToolBar );
+#endif
+    m_volumePopupButton = new VolumePopupButton( m_insideBox );
+    m_volumePopupButton->setIconSize( QSize( 22, 22 ) );
+    //volumeToolBar->addWidget( m_volumePopupButton );
+    //layout->addWidget( volumeToolBar );
 
-    ProgressWidget *progressWidget = new ProgressWidget( vBox );
+    ProgressWidget *progressWidget = new ProgressWidget( m_insideBox );
     progressWidget->setMinimumSize( 100, 12 );
 }
 
@@ -133,8 +132,7 @@ void MainToolbarNNG::handleAddActions()
 
             m_addControlsToolbar->adjustSize();
 
-            //centerAddActions();
-            //m_insideBox->layout()->setAlignment( m_addControlsToolbar, Qt::AlignCenter );
+            centerAddActions();
         }
         delete cac;
     }
@@ -152,17 +150,17 @@ void MainToolbarNNG::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent( event );
     //as we handle our own layout, we need to position items correctly
 
-    /*const int middle = event->size().width() / 2;
-    const int controlWidth = m_playerControlsToolbar->width();
+    const int middle = event->size().width() / 2;
+    const int controlWidth = m_mainControlsWidget->width();
 
-    m_playerControlsToolbar->move( middle - ( controlWidth / 2 ), 0 );
-    m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 , 9 );
-    m_volumeWidget->move( event->size().width() - 170, 11 );*/
-    //centerAddActions();
+    m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 0 );
+    m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 , 4 );
+    m_volumePopupButton->move( event->size().width() - 80, 0 );
+    centerAddActions();
 }
 
 
-/*void MainToolbarNNG::centerAddActions()
+void MainToolbarNNG::centerAddActions()
 {
     int numberOfActions = m_additionalActions.size();
 
@@ -172,9 +170,9 @@ void MainToolbarNNG::resizeEvent(QResizeEvent *event)
     m_addActionsOffsetX = ( m_addControlsToolbar->width() - actionsSize ) / 2;
     int middle = contentsRect().width() / 2;
 
-    int controlWidth = m_playerControlsToolbar->width();
+    int controlWidth = m_mainControlsWidget->width();
     m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 + m_addActionsOffsetX, 10 );
-}*/
+}
 
 void MainToolbarNNG::reRender()
 {

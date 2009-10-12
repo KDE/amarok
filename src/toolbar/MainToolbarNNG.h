@@ -50,6 +50,7 @@ public:
 protected:
       virtual void resizeEvent( QResizeEvent * event );
       void handleAddActions();
+      void centerAddActions();
 
 private:
     QWidget            *m_insideBox;
