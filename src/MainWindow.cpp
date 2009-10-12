@@ -613,7 +613,17 @@ MainWindow::showScriptSelector() //SLOT
 void
 MainWindow::showHide() //SLOT
 {
-    setVisible( !isVisible() );
+    if( !isVisible() )
+    {
+        setVisible( true );
+    }
+    else
+    {
+        if( !isMinimized() )
+            setVisible( false );
+        else
+            setWindowState( windowState() & (~Qt::WindowMinimized | Qt::WindowActive) );
+    }
 }
 
 void
