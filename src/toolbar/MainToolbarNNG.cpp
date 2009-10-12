@@ -45,7 +45,7 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     setObjectName( "MainToolbarNNG" );
 
     setContentsMargins( 0, 0, 0, 0 );
-    setFixedHeight( 67 );
+    setFixedHeight( 80 );
     setMinimumWidth( 600 );
     setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
 
@@ -82,7 +82,7 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     layout->addWidget( volumeToolBar );
 
     ProgressWidget *progressWidget = new ProgressWidget( vBox );
-    progressWidget->setMinimumSize( 100, 17 );
+    progressWidget->setMinimumSize( 100, 12 );
 }
 
 MainToolbarNNG::~MainToolbarNNG()

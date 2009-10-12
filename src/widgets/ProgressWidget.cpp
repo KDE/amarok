@@ -39,8 +39,8 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 
     QHBoxLayout *box = new QHBoxLayout( this );
     setLayout( box );
-    box->setMargin( 1 );
-    box->setSpacing( 3 );
+    box->setMargin( 0 );
+    box->setSpacing( 0 );
 
     m_slider = new Amarok::TimeSlider( this );
     m_slider->setMouseTracking( true );
