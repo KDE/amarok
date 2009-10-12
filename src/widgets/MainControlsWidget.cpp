@@ -33,7 +33,7 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     : QGraphicsView( parent )
 {
     const float aspectRatio = 3.02;
-    const int ourHeight = 45;
+    const int ourHeight = 50;
     setFixedHeight( ourHeight );
     setFixedWidth( int( ourHeight * aspectRatio ) );
 
@@ -54,7 +54,7 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     QGraphicsScene *scene  = new QGraphicsScene();
 
     const float startX = 0.0;
-    const float gapX = 31.0;
+    const float gapX = 34.5;
     const float startY = 0.0;
 
     MainControlsButton * backButton = new MainControlsButton( 0 );

@@ -58,7 +58,6 @@ private:
     QToolBar           *m_volumePopupButton;
     MainControlsWidget *m_mainControlsWidget;
 
-    int m_addActionsOffsetX;
     bool m_ignoreCache;
 
     SmartPointerList<QAction> m_additionalActions;

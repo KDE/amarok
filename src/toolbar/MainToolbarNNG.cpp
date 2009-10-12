@@ -39,7 +39,6 @@
 MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     : QToolBar( i18n( "Main Toolbar NNG" ), parent )
     , EngineObserver( The::engineController() )
-    , m_addActionsOffsetX( 0 )
     , m_ignoreCache( false )
 {
     setObjectName( "MainToolbarNNG" );
@@ -57,12 +56,13 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
 
     m_insideBox = new QWidget( mainBox );
     m_insideBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_insideBox->setContentsMargins( 0, 0, 0, 0 );
 
     m_mainControlsWidget = new MainControlsWidget( m_insideBox );
 
     m_addControlsToolbar = new Amarok::ToolBar( m_insideBox );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    m_addControlsToolbar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
+    m_addControlsToolbar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
     m_addControlsToolbar->setIconDimensions( 16 );
     m_addControlsToolbar->setMovable( false );
     m_addControlsToolbar->setFloatable ( false );
@@ -75,9 +75,11 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     m_volumePopupButton->addWidget( button );
 
     KHBox * progressBox = new KHBox( mainBox );
-    //volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
+    progressBox->setContentsMargins( 0, 0, 0, 4 );
     ProgressWidget *progressWidget = new ProgressWidget( progressBox );
     progressWidget->setMinimumSize( 100, 12 );
+
+    centerAddActions();
 }
 
 MainToolbarNNG::~MainToolbarNNG()
@@ -136,6 +138,8 @@ void MainToolbarNNG::handleAddActions()
     foreach( QAction* action, m_additionalActions )
         m_addControlsToolbar->addAction( action );
 
+    m_addControlsToolbar->adjustSize();
+
     repaint ( 0, 0, -1, -1 ); // make sure that the add info area is shown or hidden at once.
 }
 
@@ -149,9 +153,8 @@ void MainToolbarNNG::resizeEvent(QResizeEvent *event)
     const int middle = event->size().width() / 2;
     const int controlWidth = m_mainControlsWidget->width();
 
-    m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 0 );
-    m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 , 4 );
-    m_volumePopupButton->move( event->size().width() - 80, 0 );
+    m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 5 );
+    m_volumePopupButton->move( event->size().width() - 40, 0 );
     centerAddActions();
 }
 
@@ -163,11 +166,10 @@ void MainToolbarNNG::centerAddActions()
     int marginLeft, marginRight, marginTop, marginBottom;
     m_addControlsToolbar->getContentsMargins( &marginLeft, &marginTop, &marginRight, &marginBottom );
     int actionsSize = ( numberOfActions * 24 ) + marginLeft + marginRight + 8;
-    m_addActionsOffsetX = ( m_addControlsToolbar->width() - actionsSize ) / 2;
     int middle = contentsRect().width() / 2;
 
     int controlWidth = m_mainControlsWidget->width();
-    m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 10 + m_addActionsOffsetX, 10 );
+    m_addControlsToolbar->move( middle + ( controlWidth / 2 ) + 3, 10 );
 }
 
 void MainToolbarNNG::reRender()
