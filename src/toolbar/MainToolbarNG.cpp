@@ -33,12 +33,12 @@
 #include <QLayout>
 
 MainToolbarNG::MainToolbarNG( QWidget * parent )
-    : QToolBar( i18n( "Slim Toolbar" ), parent )
+    : QToolBar( i18n( "Main Toolbar NG" ), parent )
     , EngineObserver( The::engineController() )
     , m_currentTrackToolbar( 0 )
     , m_volumePopupButton( 0 )
 {
-    setObjectName( "Slim Toolbar" );
+    setObjectName( "Main Toolbar NG" );
 
     setIconSize( QSize( 28, 28 ) );
     layout()->setSpacing( 0 );
