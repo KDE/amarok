@@ -44,16 +44,15 @@ public:
     AppletItemOverlay(AppletToolbarAppletItem *applet, QGraphicsLinearLayout* layout, QWidget *parent);
     ~AppletItemOverlay();
     
-    void paintEvent(QPaintEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-    void enterEvent(QEvent *event);
-    void leaveEvent(QEvent *event);
-    
     AppletToolbarAppletItem* applet();
 protected:
     virtual void resizeEvent( QResizeEvent* );
+    virtual void paintEvent(QPaintEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseMoveEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void enterEvent(QEvent *event);
+    virtual void leaveEvent(QEvent *event);
     
 signals:
     void moveApplet( Plasma::Applet*, int, int );
