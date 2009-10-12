@@ -36,7 +36,7 @@
 #include <QVBoxLayout>
 
 MainToolbar::MainToolbar( QWidget * parent )
-    : QToolBar( i18n( "Main Toolbar" ), parent )
+    : QToolBar( i18n( "Toolbar" ), parent )
     , EngineObserver( The::engineController() )
     , m_addActionsOffsetX( 0 )
     , m_ignoreCache( false )
