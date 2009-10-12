@@ -153,7 +153,7 @@ void MainToolbarNNG::resizeEvent(QResizeEvent *event)
     const int middle = event->size().width() / 2;
     const int controlWidth = m_mainControlsWidget->width();
 
-    m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 5 );
+    m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 3 );
     m_volumePopupButton->move( event->size().width() - 40, 0 );
     centerAddActions();
 }
