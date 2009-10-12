@@ -26,7 +26,7 @@
 #include "MainControlsWidget.h"
 #include "ProgressWidget.h"
 #include "SvgHandler.h"
-#include "VolumeWidget.h"
+#include "VolumePopupButton.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "ToolBar.h"
 
@@ -78,18 +78,21 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     m_addControlsToolbar->setFloatable ( false );
     m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
 
-    m_volumeWidget = new VolumeWidget( topBar );
-    m_volumeWidget->setIconDimensions( 16 );
-    m_volumeWidget->setFixedWidth( 340 );
+    QToolBar *volumeToolBar = new QToolBar( this );
+    volumeToolBar->setIconSize( QSize( 22, 22 ) );
+    volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
+    m_volumePopupButton = new VolumePopupButton( this );
+    volumeToolBar->addWidget( m_volumePopupButton );
+    addWidget( volumeToolBar );
 
     layout->addWidget( m_addControlsToolbar );
+#if 0
     layout->addWidget( m_volumeWidget );
     layout->setAlignment( m_volumeWidget, Qt::AlignRight );
+#endif
 
     ProgressWidget *progressWidget = new ProgressWidget( vBox );
     progressWidget->setMinimumSize( 100, 17 );
-
-    kapp->installEventFilter( this );
 }
 
 MainToolbarNNG::~MainToolbarNNG()
@@ -168,16 +171,6 @@ void MainToolbarNNG::resizeEvent(QResizeEvent *event)
     //centerAddActions();
 }
 
-bool MainToolbarNNG::eventFilter( QObject* object, QEvent* event )
-{
-    // This makes it possible to change volume by using the mouse wheel anywhere on the toolbar
-    if( event->type() == QEvent::Wheel && object == this ) {
-        kapp->sendEvent( m_volumeWidget->slider(), event );
-        return true;
-    }
-
-    return QWidget::eventFilter( object, event );
-}
 
 /*void MainToolbarNNG::centerAddActions()
 {

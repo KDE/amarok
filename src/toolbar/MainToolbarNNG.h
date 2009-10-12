@@ -28,7 +28,7 @@
 class KToolBar;
 class MainControlsWidget;
 class QAction;
-class VolumeWidget;
+class VolumePopupButton;
 
 /**
     A KHBox based toolbar with a nice svg background and takes care of 
@@ -49,13 +49,12 @@ public:
 
 protected:
       virtual void resizeEvent( QResizeEvent * event );
-      virtual bool eventFilter( QObject*, QEvent* );
       void handleAddActions();
 
 private:
     QWidget            *m_insideBox;
     KToolBar           *m_addControlsToolbar;
-    VolumeWidget       *m_volumeWidget;
+    VolumePopupButton  *m_volumePopupButton;
     MainControlsWidget *m_mainControlsWidget;
 
     int m_addActionsOffsetX;
