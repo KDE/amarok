@@ -345,10 +345,18 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 // Experimental, using a mockup from Nuno Pinheiro (new_slider_nuno)
 void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active )
 {
-    int knobSize = height - 4;
-    int sliderRange = width - ( knobSize + 4 );
-    int knobRelPos = x + sliderRange * percentage + 2;
-    int knobY = y + ( height - knobSize ) / 2 - 1;
+    const int knobSize = height - 4;
+    const int relPos = width * percentage;
+
+    // Weird block to fix bug 208618, just dont try to understand it.
+    int knobX;
+    if( relPos < knobSize/2 ) knobX = x;
+    else if( relPos > (width - knobSize/2) ) knobX = x + width - knobSize;
+    else knobX =  x + relPos - knobSize/2;
+
+    const int knobY = y + ( height - knobSize ) / 2 - 1;
+
+    //debug() << "rel: " << knobRelPos << ", width: " << width << ", height:" << height << ", %: " << percentage;
 
     // Draw the slider
     p->drawPixmap( x, y + 2,
@@ -359,13 +367,13 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
     // Draw the knob (handle)
     if( active )
-        p->drawPixmap( knobRelPos, knobY,
+        p->drawPixmap( knobX, knobY,
                        renderSvg(
                        "new_slider_knob_active",
                        knobSize, knobSize,
                        "new_slider_knob_active" ) );
     else
-        p->drawPixmap( knobRelPos, knobY,
+        p->drawPixmap( knobX, knobY,
                        renderSvg(
                        "new_slider_knob",
                        knobSize, knobSize,
