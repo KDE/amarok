@@ -613,6 +613,9 @@ MainWindow::showScriptSelector() //SLOT
 void
 MainWindow::showHide() //SLOT
 {
+    const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
+    const int currentDesktop = KWindowSystem::currentDesktop();
+
     if( !isVisible() )
     {
         setVisible( true );
@@ -620,9 +623,23 @@ MainWindow::showHide() //SLOT
     else
     {
         if( !isMinimized() )
-            setVisible( false );
-        else
-            setWindowState( windowState() & (~Qt::WindowMinimized | Qt::WindowActive) );
+        {
+            if( !isActiveWindow() ) // not minimised and without focus
+            {
+                KWindowSystem::setOnDesktop( winId(), currentDesktop );
+                KWindowSystem::activateWindow( winId() );
+            }
+            else // Amarok has focus
+            {
+                setVisible( false );
+            }
+        }
+        else // Amarok is minimised
+        {
+            setWindowState( windowState() & ~Qt::WindowMinimized );
+            KWindowSystem::setOnDesktop( winId(), currentDesktop );
+            KWindowSystem::activateWindow( winId() );
+        }
     }
 }
 
