@@ -214,121 +214,124 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
     visitProfile->setData( ocsPerson.extendedAttribute( "profilepage" ) );
     m_iconsBar->addAction( visitProfile );
 
-    QList< QPair< QString, QString > > ocsHomepages;
-    ocsHomepages.append( QPair< QString, QString >( ocsPerson.extendedAttribute( "homepagetype" ), ocsPerson.homepage() ) );
-    debug() << "USER HOMEPAGE DATA STARTS HERE";
-    debug() << ocsHomepages.last().first << " :: " << ocsHomepages.last().second;
-    for( int i = 2; i <= 10; i++ )  //OCS supports 10 total homepages as of 2/oct/2009
+    if( m_status == Author )
     {
-        QString type = ocsPerson.extendedAttribute( QString( "homepagetype%1" ).arg( i ) );
-        ocsHomepages.append( QPair< QString, QString >( ( type == "&nbsp;" ) ? "" : type,
-                                                        ocsPerson.extendedAttribute( QString( "homepage%1" ).arg( i ) ) ) );
+        QList< QPair< QString, QString > > ocsHomepages;
+        ocsHomepages.append( QPair< QString, QString >( ocsPerson.extendedAttribute( "homepagetype" ), ocsPerson.homepage() ) );
+
+        debug() << "USER HOMEPAGE DATA STARTS HERE";
         debug() << ocsHomepages.last().first << " :: " << ocsHomepages.last().second;
-    }
 
-    bool fillHomepageFromOcs = m_person->webAddress().isEmpty();
+        for( int i = 2; i <= 10; i++ )  //OCS supports 10 total homepages as of 2/oct/2009
+        {
+            QString type = ocsPerson.extendedAttribute( QString( "homepagetype%1" ).arg( i ) );
+            ocsHomepages.append( QPair< QString, QString >( ( type == "&nbsp;" ) ? "" : type,
+                                                            ocsPerson.extendedAttribute( QString( "homepage%1" ).arg( i ) ) ) );
+            debug() << ocsHomepages.last().first << " :: " << ocsHomepages.last().second;
+        }
 
-    for( QList< QPair< QString, QString > >::const_iterator entry = ocsHomepages.constBegin();
-         entry != ocsHomepages.constEnd(); ++entry )
-    {
-        QString type = (*entry).first;
-        QString url = (*entry).second;
-        KIcon icon;
-        QString text;
+        bool fillHomepageFromOcs = m_person->webAddress().isEmpty();    //We check if the person already has a homepage in KAboutPerson.
 
-        if( type == "Blog" )
+        for( QList< QPair< QString, QString > >::const_iterator entry = ocsHomepages.constBegin();
+             entry != ocsHomepages.constEnd(); ++entry )
         {
-            icon = KIcon( "kblogger" );
-            text = i18n( "Visit contributor's blog" );
-        }
-        else if( type == "delicious" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-delicious.png" ) ) );
-            text = i18n( "Visit contributor's del.icio.us profile" );
-        }
-        else if( type == "Digg" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-digg.png" ) ) );
-            text = i18n( "Visit contributor's Digg profile" );
-        }
-        else if( type == "Facebook" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-facebook.png" ) ) );
-            text = i18n( "Visit contributor's Facebook profile" );
-        }
-        else if( type == "Homepage" || type == "other" || ( type.isEmpty() && !url.isEmpty() ) )
-        {
-            if( fillHomepageFromOcs )
+            QString type = (*entry).first;
+            QString url = (*entry).second;
+            KIcon icon;
+            QString text;
+
+            if( type == "Blog" )
             {
-                KAction *homepage = new KAction( KIcon( "applications-internet" ), i18n("Visit contributor's homepage"), this );
-                homepage->setToolTip( url );
-                homepage->setData( url );
-                m_iconsBar->addAction( homepage );
-                fillHomepageFromOcs = false;
+                icon = KIcon( "kblogger" );
+                text = i18n( "Visit contributor's blog" );
             }
-            continue;
+            else if( type == "delicious" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-delicious.png" ) ) );
+                text = i18n( "Visit contributor's del.icio.us profile" );
+            }
+            else if( type == "Digg" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-digg.png" ) ) );
+                text = i18n( "Visit contributor's Digg profile" );
+            }
+            else if( type == "Facebook" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-facebook.png" ) ) );
+                text = i18n( "Visit contributor's Facebook profile" );
+            }
+            else if( type == "Homepage" || type == "other" || ( type.isEmpty() && !url.isEmpty() ) )
+            {
+                if( fillHomepageFromOcs )
+                {
+                    KAction *homepage = new KAction( KIcon( "applications-internet" ), i18n("Visit contributor's homepage"), this );
+                    homepage->setToolTip( url );
+                    homepage->setData( url );
+                    m_iconsBar->addAction( homepage );
+                    fillHomepageFromOcs = false;
+                }
+                continue;
+            }
+            else if( type == "LinkedIn" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-linkedin.png" ) ) );
+                text = i18n( "Visit contributor's LinkedIn profile" );
+            }
+            else if( type == "MySpace" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-myspace.png" ) ) );
+                text = i18n( "Visit contributor's MySpace homepage" );
+            }
+            else if( type == "Reddit" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-reddit.png" ) ) );
+                text = i18n( "Visit contributor's Reddit profile" );
+            }
+            else if( type == "YouTube" )
+            {
+                icon = KIcon( "dragonplayer" ); //FIXME: icon
+                text = i18n( "Visit contributor's YouTube profile" );
+            }
+            else if( type == "Twitter" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-twitter.png" ) ) );
+                text = i18n( "Visit contributor's Twitter feed" );
+            }
+            else if( type == "Wikipedia" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-wikipedia.png" ) ) );
+                text = i18n( "Visit contributor's Wikipedia profile" );
+            }
+            else if( type == "Xing" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-xing.png" ) ) );
+                text = i18n( "Visit contributor's Xing profile" );
+            }
+            else if( type == "identi.ca" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-identica.png" ) ) );
+                text = i18n( "Visit contributor's identi.ca feed" );
+            }
+            else if( type == "libre.fm" )
+            {
+                icon = KIcon( "juk" );  //FIXME: icon
+                text = i18n( "Visit contributor's libre.fm profile" );
+            }
+            else if( type == "StackOverflow" )
+            {
+                icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-stackoverflow.png" ) ) );
+                text = i18n( "Visit contributor's StackOverflow profile" );
+            }
+            else
+                break;
+            KAction *action = new KAction( icon, text, this );
+            action->setToolTip( url );
+            action->setData( url );
+            m_snBar->addAction( action );
         }
-        else if( type == "LinkedIn" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-linkedin.png" ) ) );
-            text = i18n( "Visit contributor's LinkedIn profile" );
-        }
-        else if( type == "MySpace" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-myspace.png" ) ) );
-            text = i18n( "Visit contributor's MySpace homepage" );
-        }
-        else if( type == "Reddit" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-reddit.png" ) ) );
-            text = i18n( "Visit contributor's Reddit profile" );
-        }
-        else if( type == "YouTube" )
-        {
-            icon = KIcon( "dragonplayer" );
-            text = i18n( "Visit contributor's YouTube profile" );
-        }
-        else if( type == "Twitter" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-twitter.png" ) ) );
-            text = i18n( "Visit contributor's Twitter feed" );
-        }
-        else if( type == "Wikipedia" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-wikipedia.png" ) ) );
-            text = i18n( "Visit contributor's Wikipedia profile" );
-        }
-        else if( type == "Xing" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-xing.png" ) ) );
-            text = i18n( "Visit contributor's Xing profile" );
-        }
-        else if( type == "identi.ca" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-identica.png" ) ) );
-            text = i18n( "Visit contributor's identi.ca feed" );
-        }
-        else if( type == "libre.fm" )
-        {
-            icon = KIcon( "juk" );
-            text = i18n( "Visit contributor's libre.fm profile" );
-        }
-        else if( type == "StackOverflow" )
-        {
-            icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-stackoverflow.png" ) ) );
-            text = i18n( "Visit contributor's StackOverflow profile" );
-        }
-        else
-            break;
-        KAction *action = new KAction( icon, text, this );
-        action->setToolTip( url );
-        action->setData( url );
-        m_snBar->addAction( action );
+
+        debug() << "END USER HOMEPAGE DATA";
     }
-
-
-
-    debug() << "END USER HOMEPAGE DATA";
 
     m_textLabel->setText( m_aboutText );
 }
