@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * CTRL+SHIFT+F toggles full screen mode. Patch by Rick W. Chen
+      <stuffcorpse@archlinux.us>.
     * Podcast episodes can now be marked as new/old manually.
     * Podcasts can now be grouped in the playlist and show useful info in the
       tag editor.
