@@ -65,7 +65,7 @@ void BookmarkPopup::paintEvent ( QPaintEvent* )
     QPainter p ( this );
     p.setRenderHint ( QPainter::Antialiasing );
     p.setBrush ( Qt::white );
-    p.setOpacity ( 0.7 );
+    p.setOpacity ( 0.85 );
     QPen pen = QPen ( Qt::black );
     pen.setCosmetic ( true );
     p.setPen ( pen );
