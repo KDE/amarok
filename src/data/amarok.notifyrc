@@ -1,11 +1,13 @@
 [Global]
 Comment=Amarok
+Comment[et]=Amarok
 Comment[hu]=Amarok
 Comment[it]=Amarok
 Comment[nb]=Amarok
 Comment[nl]=Amarok
 Comment[pt]=Amarok
 Comment[pt_BR]=Amarok
+Comment[ro]=Amarok
 Comment[sv]=Amarok
 Comment[tr]=Amarok
 Comment[uk]=Amarok
@@ -13,23 +15,27 @@ Comment[x-test]=xxAmarokxx
 
 [Event/trackChange]
 Name=Track Change
+Name[et]=Pala muutumine
 Name[hu]=Számváltás
 Name[it]=Cambiamento della traccia
 Name[nb]=Sporbytte
 Name[nl]=Wijziging van track
 Name[pt]=Mudança de Faixa
 Name[pt_BR]=Alterar faixa
+Name[ro]=Schimbare pistă
 Name[sv]=Spårändring
 Name[tr]=Parça Değişimi
 Name[uk]=Зміна композиції
 Name[x-test]=xxTrack Changexx
 Comment=Amarok changed to a new track
+Comment[et]=Amarok võttis ette uue pala
 Comment[hu]=Az Amarok átváltott egy új számra
 Comment[it]=Amarok è passato a una nuova traccia
 Comment[nb]=Amarok byttet til et nytt spor
 Comment[nl]=Amarok is naar een nieuwe track gegaan
 Comment[pt]=O Amarok mudou para uma faixa nova
 Comment[pt_BR]=O Amarok mudou para uma nova faixa
+Comment[ro]=Amarok a schimbat la altă pistă
 Comment[sv]=Amarok bytte till ett nytt spår
 Comment[tr]=Amarok yeni bir parçaya geçti
 Comment[uk]=Композиція у Amarok змінилася
