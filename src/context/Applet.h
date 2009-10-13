@@ -75,12 +75,14 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
           */
         virtual void   resize( qreal, qreal );
 
-
     public Q_SLOTS:
         virtual void destroy();
         void animateOn( qreal );
         void animateOff( qreal );
         void animateEnd( int );
+
+    private slots:
+        void paletteChanged( const QPalette & palette );
 
     protected:
         Plasma::IconWidget* addAction( QAction *action, const int size = 16 );

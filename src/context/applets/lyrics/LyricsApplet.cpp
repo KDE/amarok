@@ -40,6 +40,7 @@
 #include <QTextBrowser>
 #include <QPainter>
 #include <QPoint>
+#include <QScrollBar>
 
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -115,16 +116,16 @@ void LyricsApplet::init()
     connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( refreshLyrics() ) );
 
     m_lyricsProxy = new QGraphicsProxyWidget( this );
+    m_lyricsProxy->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics = new QTextBrowser;
     m_lyrics->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics->setOpenExternalLinks( true );
+    m_lyrics->setAutoFillBackground( false );
+    m_lyrics->setFrameShape( QFrame::NoFrame );
     m_lyrics->setWordWrapMode( QTextOption::WordWrap );
+    m_lyrics->viewport()->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     setEditing( false );
-
-    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
-        .arg( App::instance()->palette().background().color().name() )
-        .arg( App::instance()->palette().text().color().name() ) );
 
     m_lyricsProxy->setWidget( m_lyrics );
 
@@ -325,19 +326,27 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     if ( !m_titleLabel->isAnimating() )
         drawRoundedRectAroundText( p, m_titleLabel );
 
-    //draw background of lyrics text
-    p->save();
+    QColor background;
 
-    QColor background( App::instance()->palette().background().color() );
-    
-    if( !m_lyrics->isReadOnly() )
+    if( m_lyrics->isReadOnly() )
+    {
+        background = The::paletteHandler()->backgroundColor();
+    }
+    else
     {
         // different background color when we're in edit mode
         background = App::instance()->palette().alternateBase().color();
     }
 
-    const QRectF
-      lyricsRect( m_lyricsProxy->pos(), QSizeF( size().width() - 2 * standardPadding(), m_lyricsProxy->boundingRect().height() ) );
+    p->save();
+
+    const QScrollBar *hScrollBar = m_lyrics->horizontalScrollBar();
+    const QScrollBar *vScrollBar = m_lyrics->verticalScrollBar();
+    const qreal hScrollBarHeight = hScrollBar->isVisible() ? hScrollBar->height() + 2 : 0;
+    const qreal vScrollBarWidth  = vScrollBar->isVisible() ? vScrollBar->width()  + 2 : 0;
+    const QSizeF lyricsSize( m_lyrics->width() - vScrollBarWidth,
+                             m_lyricsProxy->boundingRect().height() - hScrollBarHeight );
+    const QRectF lyricsRect( m_lyricsProxy->pos(), lyricsSize );
 
     QPainterPath path;
     path.addRoundedRect( lyricsRect, 5, 5 );
@@ -349,11 +358,6 @@ void
 LyricsApplet::paletteChanged( const QPalette & palette )
 {
     Q_UNUSED( palette )
-
-    if( m_lyrics )
-       m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
-       .arg( App::instance()->palette().background().color().name() )
-       .arg( App::instance()->palette().text().color().name() ) );
 }
 
 void

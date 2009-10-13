@@ -19,6 +19,7 @@
 #include "VideoclipApplet.h" 
 #include "VideoItemButton.h"
 #include "CustomVideoWidget.h"
+#include "PaletteHandler.h"
 
 // Amarok
 #include "Amarok.h"
@@ -57,6 +58,7 @@
 #include <QPainter>
 #include <QToolButton>
 #include <QScrollArea>
+#include <QScrollBar>
 
 #define DEBUG_PREFIX "VideoclipApplet"
 
@@ -128,9 +130,10 @@ VideoclipApplet::init()
     window->setLayout( m_layout );
 
     // create a scroll Area
-    QScrollArea *m_scroll = new QScrollArea();
+    m_scroll = new QScrollArea();
     m_scroll->setMaximumHeight( m_height - m_headerText->boundingRect().height() - 4*standardPadding() );
     m_scroll->setWidget( window );
+    m_scroll->setFrameShape( QFrame::NoFrame );
     m_scroll->setAttribute( Qt::WA_NoSystemBackground );
     m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
 
@@ -284,6 +287,20 @@ VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     addGradientToAppletBackground( p );
     // draw rounded rect around title
     drawRoundedRectAroundText( p, m_headerText );
+
+    p->save();
+
+    const QScrollBar *scrollBar = m_scroll->horizontalScrollBar();
+    const qreal scrollBarHeight = scrollBar->isVisible() ? scrollBar->height() + 2 : 0;
+    const QSizeF proxySize = m_widget->size();
+    const QSizeF widgetSize( proxySize.width(), proxySize.height() - scrollBarHeight );
+    const QRectF widgetRect( m_widget->pos(), widgetSize );
+
+    QPainterPath path;
+    path.addRoundedRect( widgetRect, 5, 5 );
+    p->fillPath( path, The::paletteHandler()->backgroundColor() );
+
+    p->restore();
 }
 
 void

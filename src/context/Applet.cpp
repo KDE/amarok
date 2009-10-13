@@ -15,6 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "App.h"
 #include "Applet.h"
 #include "Containment.h"
 #include "Debug.h"
@@ -47,6 +48,8 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
 {
     connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animateEnd( int ) ) );
     setBackgroundHints(NoBackground);
+
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 }
 
 Context::Applet::~Applet( )
@@ -346,6 +349,10 @@ Context::Applet::animateEnd( int id )
     emit sizeHintChanged(Qt::PreferredSize);
 }
 
-
+void
+Context::Applet::paletteChanged( const QPalette & palette )
+{
+    Q_UNUSED( palette )
+}
 
 #include "Applet.moc"
