@@ -64,6 +64,11 @@ OcsPersonItem::init()
 
     m_iconsBar = new KToolBar( this, false, false );
     m_snBar = new KToolBar( this, false, false );
+
+    m_iconsBar->setIconSize( QSize( 22, 22 ) );
+    m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
+    m_iconsBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
+
     if( m_status == Author )
     {
         QHBoxLayout *iconsLayout = new QHBoxLayout( this );
@@ -72,6 +77,7 @@ OcsPersonItem::init()
         m_verticalLayout->insertLayout( m_verticalLayout->count() - 1, iconsLayout );
         iconsLayout->addWidget( m_iconsBar );
         iconsLayout->addWidget( m_snBar );
+        iconsLayout->addStretch( 0 );
 
         m_snBar->setIconSize( QSize( 16, 16 ) );
         m_snBar->setContentsMargins( 0, 0, 0, 0 );
@@ -82,9 +88,6 @@ OcsPersonItem::init()
         layout()->addWidget( m_iconsBar );
         m_snBar->hide();
     }
-    m_iconsBar->setIconSize( QSize( 22, 22 ) );
-    m_iconsBar->setContentsMargins( 0, 0, 0, 0 );
-    m_iconsBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
 
     if( !m_person->emailAddress().isEmpty() )
     {
@@ -211,45 +214,6 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
     visitProfile->setData( ocsPerson.extendedAttribute( "profilepage" ) );
     m_iconsBar->addAction( visitProfile );
 
-    //Adding more homepage links...
-    //Homepage types as POST arguments from the OCS API:
-    /*
-    10 - Blog
-    20 - Facebook
-    30 - Forum
-    40 - Homepage
-    50 - Mailinglist
-    60 - Twitter
-    70 - Wiki
-    80 - Wikipedia
-    90 - identi.ca
-    100 - last.fm
-    110 - libre.fm
-    120 - StackOverflow
-    500 - other
-    */
-    /*QStringList linkTypes;
-    linkTypes << "Blog" << "Facebook" << "Forum" <<
-
-    m_snBar->addAction(;
-*/
-    QStringList ocsHomepageTypes = QStringList()
-            << "Blog"
-            << "delicious"
-            << "Digg"
-            << "Facebook"
-            << "Homepage"
-            << "LinkedIn"
-            << "MySpace"
-            << "other"
-            << "Reddit"
-            << "YouTube"
-            << "Twitter"
-            << "Wikipedia"
-            << "Xing"
-            << "identi.ca"
-            << "libre.fm"
-            << "StackOverflow";
     QList< QPair< QString, QString > > ocsHomepages;
     ocsHomepages.append( QPair< QString, QString >( ocsPerson.extendedAttribute( "homepagetype" ), ocsPerson.homepage() ) );
     debug() << "USER HOMEPAGE DATA STARTS HERE";
@@ -297,14 +261,12 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
             if( fillHomepageFromOcs )
             {
                 KAction *homepage = new KAction( KIcon( "applications-internet" ), i18n("Visit contributor's homepage"), this );
-                homepage->setToolTip( m_person->webAddress() );
-                homepage->setData( m_person->webAddress() );
+                homepage->setToolTip( url );
+                homepage->setData( url );
                 m_iconsBar->addAction( homepage );
                 fillHomepageFromOcs = false;
-                continue;
             }
-            icon = KIcon( "applications-internet" );
-            text = i18n( "Visit contributor's homepage" );
+            continue;
         }
         else if( type == "LinkedIn" )
         {
