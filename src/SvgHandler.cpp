@@ -363,11 +363,18 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
 
     // Draw the knob (handle)
-    p->drawPixmap( knobRelPos, knobY,
-                   renderSvg(
-                   "new_slider_knob_nuno",
-                   knobSize, knobSize,
-                   "new_slider_knob_nuno" ) );
+    if( active )
+        p->drawPixmap( knobRelPos, knobY,
+                       renderSvg(
+                       "new_slider_knob_active",
+                       knobSize, knobSize,
+                       "new_slider_knob_active" ) );
+    else
+        p->drawPixmap( knobRelPos, knobY,
+                       renderSvg(
+                       "new_slider_knob",
+                       knobSize, knobSize,
+                       "new_slider_knob" ) );
 }
 
 #include "SvgHandler.moc"
