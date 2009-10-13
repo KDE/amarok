@@ -108,7 +108,8 @@ public:
     QModelIndex parent ( const QModelIndex &index ) const;
     int rowCount ( const QModelIndex &parent = QModelIndex() ) const;
     int columnCount ( const QModelIndex &parent = QModelIndex() ) const;
-
+    int avatarSize () const;
+    void prepareAvatar ( QPixmap& avatar, int size );
 
     void sortTags ( WeightedStringList tagsToSort, Qt::SortOrder sortOrder );
     void sortTags ( Qt::SortOrder sortOrder );
@@ -140,6 +141,7 @@ private:
     QPixmap mAvatar;
     QMap<QString, QString> m_avatarQueue;
     QHash<QString, QIcon> m_avatars;
+    int m_avatarSize;
 
     QMap< QString, QNetworkReply* > m_jobs;
 

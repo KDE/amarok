@@ -405,36 +405,21 @@ LastFmService::onAvatarDownloaded( QPixmap avatar )
 {
     DEBUG_BLOCK
     if( !avatar.isNull() ) {
-        int m = 48;
+
+        if( !m_polished )
+            polish();
+
+        LastFmTreeModel* lfm = dynamic_cast<LastFmTreeModel*>( model() );
+
+        int m = lfm->avatarSize();
         avatar = avatar.scaled( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-
-        // This code is here to stop Qt from crashing on certain weirdly shaped avatars.
-        // We had a case were an avatar got a height of 1px after scaling and it would
-        // crash in the rendering code. This here just fills in the background with
-        // transparency first.
-        if ( avatar.width() < m || avatar.height() < m )
-        {
-            QImage finalAvatar( m, m, QImage::Format_ARGB32 );
-            finalAvatar.fill( 0 );
-
-            QPainter p( &finalAvatar );
-            QRect r;
-
-            if ( avatar.width() < m )
-                r = QRect( ( m - avatar.width() ) / 2, 0, avatar.width(), avatar.height() );
-            else
-                r = QRect( 0, ( m - avatar.height() ) / 2, avatar.width(), avatar.height() );
-
-            p.drawPixmap( r, avatar );
-            p.end();
-
-            avatar = QPixmap::fromImage( finalAvatar );
-        }
+        lfm->prepareAvatar( avatar, m );
         m_avatar = avatar;
+
         if( m_avatarLabel )
             m_avatarLabel->setPixmap( m_avatar );
     }
-//     sender()->deleteLater();
+    sender()->deleteLater();
 }
 
 void
@@ -514,8 +499,9 @@ LastFmService::polish()
         m_avatarLabel = new QLabel(outerProfilebox);
         if( !m_avatar )
         {
-            m_avatarLabel->setPixmap( KIcon( "filename-artist-amarok" ).pixmap(32, 32) );
-            m_avatarLabel->setFixedSize( 32, 32 );
+            int m = dynamic_cast<LastFmTreeModel*>( model() )->avatarSize();
+            m_avatarLabel->setPixmap( KIcon( "filename-artist-amarok" ).pixmap(m, m) );
+            m_avatarLabel->setFixedSize( m, m );
         }
         else
         {
