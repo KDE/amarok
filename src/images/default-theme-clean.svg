@@ -30,14 +30,14 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="10.906346"
-     inkscape:cx="751.69245"
-     inkscape:cy="509.7361"
+     inkscape:zoom="0.5"
+     inkscape:cx="1110.9234"
+     inkscape:cy="651.71321"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1142"
+     inkscape:window-width="1280"
+     inkscape:window-height="964"
      inkscape:window-x="-4"
      inkscape:window-y="-3"
      inkscape:window-maximized="1" />
@@ -4191,6 +4191,124 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective8250"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5851"
+       id="linearGradient5744"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(513,-548)"
+       x1="328.37207"
+       y1="545.68927"
+       x2="328.37207"
+       y2="561.68927" />
+    <linearGradient
+       id="linearGradient5851">
+      <stop
+         id="stop5853"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0.41040462" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0.22134387;"
+         offset="0.08838835"
+         id="stop5855-6" />
+      <stop
+         id="stop5857-3"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:0.08695652" />
+    </linearGradient>
+    <linearGradient
+       y2="561.68927"
+       x2="328.37207"
+       y1="545.68927"
+       x1="328.37207"
+       gradientTransform="translate(465.13804,499.63657)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient8260"
+       xlink:href="#linearGradient5851"
+       inkscape:collect="always" />
+    <inkscape:perspective
+       id="perspective8291"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3958"
+       id="linearGradient3552"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.38980392,0,0,0.38980392,-132.99205,-43.476187)"
+       x1="904"
+       y1="105"
+       x2="904"
+       y2="186.5" />
+    <linearGradient
+       id="linearGradient3958">
+      <stop
+         id="stop3960"
+         offset="0"
+         style="stop-color:#ffffff;stop-opacity:1;" />
+      <stop
+         id="stop3962"
+         offset="1"
+         style="stop-color:#a3a3a3;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       y2="186.5"
+       x2="904"
+       y1="105"
+       x1="904"
+       gradientTransform="matrix(0.38980392,0,0,0.38980392,-179.96758,974.49333)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient8300"
+       xlink:href="#linearGradient3958"
+       inkscape:collect="always" />
+    <inkscape:perspective
+       id="perspective8348"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3958-1"
+       id="linearGradient3552-3"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.38980392,0,0,0.38980392,-132.99205,-43.476187)"
+       x1="904"
+       y1="105"
+       x2="904"
+       y2="186.5" />
+    <linearGradient
+       id="linearGradient3958-1">
+      <stop
+         id="stop3960-7"
+         offset="0"
+         style="stop-color:#ffffff;stop-opacity:1;" />
+      <stop
+         id="stop3962-5"
+         offset="1"
+         style="stop-color:#a3a3a3;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       y2="186.5"
+       x2="904"
+       y1="105"
+       x1="904"
+       gradientTransform="matrix(0.38980392,0,0,0.38980392,-85.96758,956.4933)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient8357"
+       xlink:href="#linearGradient3958-1"
+       inkscape:collect="always" />
   </defs>
   <metadata
      id="metadata6835">
@@ -8269,5 +8387,28 @@
          d="m 1146.7967,248.04265 c -0.8952,0 -1.6172,0.80065 -1.6172,1.79783 l 0,6.72095 3,0 0,-8.51878 -1.3828,0 z"
          style="opacity:0.3;fill:#f0f0f0;fill-opacity:1;stroke:none" />
     </g>
+    <rect
+       style="opacity:0.59420286;fill:url(#linearGradient8260);fill-opacity:1;stroke:none"
+       id="new_slider_nuno"
+       width="659"
+       height="15.000001"
+       x="-106.48988"
+       y="1045.3258"
+       rx="5"
+       ry="5">
+      <title
+         id="title8382">new_slider_nuno</title>
+    </rect>
+    <path
+       id="path3542"
+       d="m 165.0101,1015.4195 c -4.09036,0 -7.40626,3.3159 -7.40626,7.4063 0,4.0904 3.3159,7.4063 7.40626,7.4063 4.09038,0 7.40629,-3.3159 7.40629,-7.4063 0,-4.0904 -3.31591,-7.4063 -7.40629,-7.4063 z m 0,0.7187 c 3.69676,0 6.68759,2.9909 6.68759,6.6876 0,3.6968 -2.99083,6.6998 -6.68759,6.6998 -3.69673,0 -6.69973,-3.003 -6.69973,-6.6998 0,-3.6967 3.003,-6.6876 6.69973,-6.6876 z"
+       style="fill:url(#linearGradient8300);fill-opacity:1;stroke:none" />
+    <path
+       id="new_slider_knob_nuno"
+       d="m 259.0101,997.4195 c -4.09036,0 -7.40626,3.3159 -7.40626,7.4063 0,4.0904 3.3159,7.4063 7.40626,7.4063 4.09038,0 7.40629,-3.3159 7.40629,-7.4063 0,-4.0904 -3.31591,-7.4063 -7.40629,-7.4063 z m 0,0.7187 c 3.69676,0 6.68759,2.9909 6.68759,6.6876 0,3.6968 -2.99083,6.6998 -6.68759,6.6998 -3.69673,0 -6.69973,-3.003 -6.69973,-6.6998 0,-3.6967 3.003,-6.6876 6.69973,-6.6876 z"
+       style="fill:url(#linearGradient8357);fill-opacity:1;stroke:none">
+      <title
+         id="title8380">new_slider_knob_nuno</title>
+    </path>
   </g>
 </svg>
