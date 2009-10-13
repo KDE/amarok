@@ -188,7 +188,7 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
 
         //add dividers. 5% spacing on each side
         int margin = width / 20;
-        
+
         m_renderers[name]->render( &pt, "divider_top", QRectF( margin, 0 , width - 1 * margin, 1 ) );
         m_renderers[name]->render( &pt, "divider_bottom", QRectF( margin, height - 1 , width - 2 * margin, 1 ) );
     
@@ -196,7 +196,6 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
     }
 
     return pixmap;
-
 }
 
 
@@ -351,16 +350,12 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
     int knobRelPos = x + sliderRange * percentage + 2;
     int knobY = y + ( height - knobSize ) / 2 - 1;
 
-    int sliderY = y + ( height / 2 ) - 1;
-
-
     // Draw the slider
     p->drawPixmap( x, y + 2,
                    renderSvg(
                    "new_slider_nuno",
                    width, height - 6,
                    "new_slider_nuno" ) );
-
 
     // Draw the knob (handle)
     if( active )

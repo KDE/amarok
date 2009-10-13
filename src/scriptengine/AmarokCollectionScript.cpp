@@ -38,8 +38,6 @@ namespace AmarokScript
 
     int AmarokCollectionScript::totalAlbums() const
     {
-        SqlStorage *s = CollectionManager::instance()->sqlStorage();
-        Q_ASSERT(s);
         QStringList albums = query( "SELECT COUNT( id ) FROM albums;" );
         if( albums.size() < 1 )
             return 0;
