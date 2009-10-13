@@ -35,7 +35,7 @@
 using namespace LastFm;
 
 LastFmTreeModel::LastFmTreeModel ( const QString &username, QObject *parent )
-        : QAbstractItemModel ( parent ), mUserName ( username ), mUser()
+        : QAbstractItemModel ( parent ), mUserName ( username ), mUser(), m_avatarSize( 32 )
 {
 //     rootData << "Title" << "Summary";
     rootItem = new LastFmTreeItem ( LastFm::Root, "Hello" );
@@ -268,6 +268,32 @@ LastFmTreeModel::downloadAvatar ( const QString& user, const KUrl& url )
     connect ( downloader, SIGNAL ( signalAvatarDownloaded ( QPixmap ) ), SLOT ( onAvatarDownloaded ( QPixmap ) ) );
 }
 
+void
+LastFmTreeModel::prepareAvatar ( QPixmap& avatar, int size )
+{
+    // This code is here to stop Qt from crashing on certain weirdly shaped avatars.
+    // We had a case were an avatar got a height of 1px after scaling and it would
+    // crash in the rendering code. This here just fills in the background with
+    // transparency first.
+    if ( avatar.width() < size || avatar.height() < size )
+    {
+        QImage finalAvatar ( size, size, QImage::Format_ARGB32 );
+        finalAvatar.fill ( 0 );
+
+        QPainter p ( &finalAvatar );
+        QRect r;
+
+        if ( avatar.width() < size )
+            r = QRect ( ( size - avatar.width() ) / 2, 0, avatar.width(), avatar.height() );
+        else
+            r = QRect ( 0, ( size - avatar.height() ) / 2, avatar.width(), avatar.height() );
+
+        p.drawPixmap ( r, avatar );
+        p.end();
+
+        avatar = QPixmap::fromImage ( finalAvatar );
+    }
+}
 
 void
 LastFmTreeModel::onAvatarDownloaded ( QPixmap avatar )
@@ -277,40 +303,18 @@ LastFmTreeModel::onAvatarDownloaded ( QPixmap avatar )
 
     if ( !avatar.isNull() && avatar.height() > 0 && avatar.width() > 0 )
     {
+        int m = m_avatarSize;
+
         if ( username.toLower() == mUserName.toLower() )
         {
-            int m = 32;
-
             mAvatar = avatar.scaled ( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
             //             emitRowChanged( LastFm::MyProfile );
         }
         else
         {
-            int m = 32;
             avatar = avatar.scaled ( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
-            // This code is here to stop Qt from crashing on certain weirdly shaped avatars.
-            // We had a case were an avatar got a height of 1px after scaling and it would
-            // crash in the rendering code. This here just fills in the background with
-            // transparency first.
-            if ( avatar.width() < m || avatar.height() < m )
-            {
-                QImage finalAvatar ( m, m, QImage::Format_ARGB32 );
-                finalAvatar.fill ( 0 );
-
-                QPainter p ( &finalAvatar );
-                QRect r;
-
-                if ( avatar.width() < m )
-                    r = QRect ( ( m - avatar.width() ) / 2, 0, avatar.width(), avatar.height() );
-                else
-                    r = QRect ( 0, ( m - avatar.height() ) / 2, avatar.width(), avatar.height() );
-
-                p.drawPixmap ( r, avatar );
-                p.end();
-
-                avatar = QPixmap::fromImage ( finalAvatar );
-            }
+            prepareAvatar( avatar, m );
 
             if ( !avatar.isNull() && avatar.height() > 0 && avatar.width() > 0 )
             {
@@ -333,6 +337,11 @@ int LastFmTreeModel::columnCount ( const QModelIndex &parent ) const
 {
     Q_UNUSED( parent )
     return 1;
+}
+
+int LastFmTreeModel::avatarSize () const
+{
+    return m_avatarSize;
 }
 
 QVariant LastFmTreeModel::data ( const QModelIndex &index, int role ) const
