@@ -175,9 +175,6 @@ CoverManager::slotContinueConstruction() //SLOT
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         m_searchEdit->setClearButtonShown( true );
 
-        // TODO FIX FUCKED UP ENGLISH
-        m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the albums" ) );
-
         hbox->setStretchFactor( m_searchEdit, 1 );
     } //</Search LineEdit>
 
