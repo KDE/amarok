@@ -84,12 +84,14 @@ CurrentTrack::init()
 
     connect( m_albumCover, SIGNAL( imageDropped( QPixmap) ), this, SLOT( coverDropped( QPixmap ) ) );
 
-    QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
+    const QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
 
     m_title->setBrush( brush );
     m_artist->setBrush( brush );
-    m_album->setBrush( brush );;
+    m_album->setBrush( brush );
     m_noTrack->setBrush( brush );
+    m_byText->setBrush( brush );
+    m_onText->setBrush( brush );
 
     QFont bigFont;
     bigFont.setPointSize( bigFont.pointSize() +  3 );
