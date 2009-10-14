@@ -337,7 +337,7 @@ namespace Meta
              */
             /** returns true if the album has a cover set */
             virtual bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return false; }
-            /** returns the cover of the album */
+            /** returns the cover of the album. size = 1 means unscaled. */
             virtual QPixmap image( int size = 1 );
             /** returns the image location on disk */
             virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl(); }

@@ -803,7 +803,7 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
 
     const bool isSuppressing = album->suppressImageAutoFetch();
     album->setSuppressImageAutoFetch( true );
-    setIcon( album->image( 100 ) );
+    setIcon( album->image( -1 ) ); // -1 == unscaled
     album->setSuppressImageAutoFetch( isSuppressing );
 
     CoverManager::instance()->subscribeTo( album );
@@ -822,7 +822,7 @@ void CoverViewItem::loadCover()
     const bool isSuppressing = m_albumPtr->suppressImageAutoFetch();
     m_albumPtr->setSuppressImageAutoFetch( true );
     m_albumPtr->setSuppressImageAutoFetch( isSuppressing );
-    setIcon( m_albumPtr->image() );
+    setIcon( m_albumPtr->image( -1 ) ); // -1 == unscaled
 }
 
 void CoverViewItem::dragEntered()

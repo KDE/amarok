@@ -402,11 +402,15 @@ Meta::Album::notifyObservers() const
 QPixmap
 Meta::Album::image( int size )
 {
+    const bool unscaled = ( size == -1 );
+
     // Return "nocover" until it's fetched.
     QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     if ( size <= 1 )
         size = 100;
     QString sizeKey = QString::number( size ) + '@';
+
+    m_noCoverImage = true; //FIXME is this correct? Why do we set it unconditionally?
 
     QPixmap pixmap;
     if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
@@ -414,12 +418,15 @@ Meta::Album::image( int size )
     else
     {
         QPixmap orgPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimize this!
-        //scaled() does not change the original image but returns a scaled copy
-        pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-        pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
+        if( unscaled )
+            return orgPixmap;
+        else
+        {
+            //scaled() does not change the original image but returns a scaled copy
+            pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+            pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
+        }
     }
-
-    m_noCoverImage = true;
 
     return pixmap;
 }
