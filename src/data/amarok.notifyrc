@@ -16,6 +16,7 @@ Comment[x-test]=xxAmarokxx
 [Event/trackChange]
 Name=Track Change
 Name[et]=Pala muutumine
+Name[fi]=Kappaleen vaihdos
 Name[hu]=Számváltás
 Name[it]=Cambiamento della traccia
 Name[nb]=Sporbytte
@@ -29,6 +30,7 @@ Name[uk]=Зміна композиції
 Name[x-test]=xxTrack Changexx
 Comment=Amarok changed to a new track
 Comment[et]=Amarok võttis ette uue pala
+Comment[fi]=Amarok vaihtoi kappaletta
 Comment[hu]=Az Amarok átváltott egy új számra
 Comment[it]=Amarok è passato a una nuova traccia
 Comment[nb]=Amarok byttet til et nytt spor
