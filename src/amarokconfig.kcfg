@@ -323,6 +323,13 @@
     </entry>
 </group>
 
+<group name="KNotify">
+    <entry key="KNotify Enabled" type="Bool">
+        <label>Use KNotify support</label>
+        <default>false</default>
+    </entry>
+</group>
+
 <group name="OSD">
     <entry key="Osd Enabled" type="Bool">
         <label>Use On-Screen Display</label>

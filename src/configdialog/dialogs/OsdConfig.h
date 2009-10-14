@@ -40,7 +40,7 @@ class OsdConfig : public ConfigDialogBase, public Ui_OsdConfig
         void slotPositionChanged();
         void useCustomColorsToggled( bool );
         void setGrowlEnabled( bool );
-        
+
     private:
         OSDPreviewWidget* m_osdPreview;
 

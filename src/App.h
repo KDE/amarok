@@ -84,7 +84,6 @@ class AMAROK_EXPORT App : public KUniqueApplication
 #endif // DEBUG
         void slotConfigAmarok( const QString& page = QString() );
         void slotConfigShortcuts();
-        void slotConfigNotifications();
         void slotConfigEqualizer();
         KIO::Job *trashFiles( const KUrl::List &files );
         void quit();

@@ -16,8 +16,10 @@
  ****************************************************************************************/
 
 #include "OsdConfig.h"
+
 #include "amarokconfig.h"
 #include "Debug.h"
+#include "KNotificationBackend.h"
 #include "Osd.h"
 //#include "QStringx.h"
 
@@ -111,9 +113,17 @@ OsdConfig::isDefault()
 void
 OsdConfig::updateSettings()
 {
+    DEBUG_BLOCK
+
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
     AmarokConfig::setOsdYOffset( m_osdPreview->y() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
+
+    // Enable/disable knotify support
+    if( kcfg_KNotifyEnabled->isChecked() )
+        Amarok::KNotificationBackend::instance();
+    else
+        Amarok::KNotificationBackend::destroy();
 
     emit settingsChanged( QString() );
 }
@@ -162,7 +172,4 @@ OsdConfig::useCustomColorsToggled( bool on )
     m_osdPreview->setUseCustomColors( on, kcfg_OsdTextColor->color() );
 }
 
-
 #include "OsdConfig.moc"
-
-

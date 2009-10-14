@@ -60,7 +60,6 @@
 #include <KJob>
 #include <KJobUiDelegate>
 #include <KLocale>
-#include <KNotifyConfigWidget>           //slotConfigNotifications()
 #include <KShortcutsDialog>              //slotConfigShortcuts()
 #include <KStandardDirs>
 
@@ -664,7 +663,6 @@ App::continueInit()
     PERF_LOG( "Done creating MainWindow" )
 
     m_tray = new Amarok::TrayIcon( mainWindow() );
-    Amarok::KNotificationBackend::instance();
 
     PERF_LOG( "Creating DBus handlers" )
     new Amarok::RootDBusHandler();
@@ -687,7 +685,10 @@ App::continueInit()
     ScriptManager::instance();
     PERF_LOG( "ScriptManager started" )
 
-    if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
+    if( AmarokConfig::kNotifyEnabled() )
+        Amarok::KNotificationBackend::instance();
+
+    if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly
         The::engineController()->restoreSession();
@@ -750,11 +751,6 @@ void App::slotConfigShortcuts()
 {
     KShortcutsDialog::configure( Amarok::actionCollection(), KShortcutsEditor::LetterShortcutsAllowed, mainWindow() );
     AmarokConfig::self()->writeConfig();
-}
-
-void App::slotConfigNotifications()
-{
-    KNotifyConfigWidget::configure( mainWindow() );
 }
 
 KIO::Job *App::trashFiles( const KUrl::List &files )
