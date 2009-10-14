@@ -84,6 +84,7 @@ PluginManager::createFromQuery( const QString &constraint )
 Plugin*
 PluginManager::createFromService( const KService::Ptr service )
 {
+    DEBUG_BLOCK
     debug() << "Trying to load: " << service->library();
 
     //get the library loader instance
@@ -91,13 +92,14 @@ PluginManager::createFromService( const KService::Ptr service )
     //try to load the specified library
     KLibrary *lib = loader->library( QFile::encodeName( service->library() ), QLibrary::ExportExternalSymbolsHint );
 
-    if ( !lib ) {
-        KMessageBox::error( 0, i18n( "<p>KLibLoader could not load the plugin:<br/><i>%1</i></p>"
-                                     "<p>Error message:<br/><i>%2</i></p>",
-                                     service->library(),
-                                     loader->lastErrorMessage() ) );
+    if ( !lib )
+    {
+        warning() << "KLibLoader could not load the plugin: " << service->library();
+        warning() << "Error Message: " << loader->lastErrorMessage();
+
         return 0;
     }
+
     //look up address of init function and cast it to pointer-to-function
     Plugin* (*create_plugin)() = ( Plugin* (*)() ) lib->resolveSymbol( "create_plugin" );
 
