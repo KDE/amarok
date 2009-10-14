@@ -414,10 +414,10 @@ Meta::Album::image( int size )
 
     QPixmap pixmap;
     if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
-         pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
+         pixmap.load( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
     else
     {
-        QPixmap orgPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimize this!
+        QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
         if( unscaled )
             return orgPixmap;
         else
