@@ -17,17 +17,31 @@
 #include "PlayUrlGenerator.h"
 
 #include "AmarokUrl.h"
+#include "AmarokUrlHandler.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "MetaUtility.h"
 
+PlayUrlGenerator * PlayUrlGenerator::s_instance = 0;
+
+PlayUrlGenerator * PlayUrlGenerator::instance()
+{
+    if( s_instance == 0)
+        s_instance = new PlayUrlGenerator();
+
+    return s_instance;
+}
 
 PlayUrlGenerator::PlayUrlGenerator()
-{}
+{
+    The::amarokUrlHandler()->registerGenerator( this );
+}
 
 
 PlayUrlGenerator::~PlayUrlGenerator()
-{}
+{
+    The::amarokUrlHandler()->unRegisterGenerator( this );
+}
 
 AmarokUrl
 PlayUrlGenerator::createCurrentTrackBookmark()
@@ -59,5 +73,17 @@ PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int seconds, QStrin
     debug() << "concocted url: " << url.url();
     debug() << "pos: " << seconds;
     return url;
+}
+
+QString
+PlayUrlGenerator::description()
+{
+    return i18n( "current track position" );
+}
+
+AmarokUrl
+PlayUrlGenerator::createUrl()
+{
+    return createCurrentTrackBookmark();
 }
 

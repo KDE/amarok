@@ -17,16 +17,30 @@
 #include "ContextUrlGenerator.h"
 
 #include "AmarokUrl.h"
+#include "AmarokUrlHandler.h"
 #include "context/ContextView.h"
 
 #include <KLocale>
 
+
+ContextUrlGenerator * ContextUrlGenerator::s_instance = 0;
+
+ContextUrlGenerator * ContextUrlGenerator::instance()
+{
+    if( s_instance == 0 )
+        s_instance = new ContextUrlGenerator();
+
+    return s_instance;
+}
+
 ContextUrlGenerator::ContextUrlGenerator()
 {
+    The::amarokUrlHandler()->registerGenerator( this );
 }
 
 ContextUrlGenerator::~ContextUrlGenerator()
 {
+    The::amarokUrlHandler()->unRegisterGenerator( this );
 }
 
 AmarokUrl
@@ -43,6 +57,19 @@ ContextUrlGenerator::createContextBookmark()
     url.setName( i18n( "Context: %1", appletNames.join( "," ) ) );
 
     return url;
+}
+
+    
+QString
+ContextUrlGenerator::description()
+{
+    return i18n( "Context View Applets" );
+}
+
+AmarokUrl
+ContextUrlGenerator::createUrl()
+{
+    return createContextBookmark();
 }
 
 #include "ContextUrlGenerator.h"

@@ -18,6 +18,7 @@
 #define PLAYURLGENERATOR_H
 
 #include "amarok_export.h"
+#include "AmarokUrlGenerator.h"
 #include "Meta.h"
 
 #include <QString>
@@ -30,14 +31,23 @@ class AmarokUrl;
  * The format of a 'play' amarokurl is:
  * amarokurl://play/<Base 64 Encoded playableUrl() of the track>/<integer seconds>
  */
-class AMAROK_EXPORT PlayUrlGenerator
+class AMAROK_EXPORT PlayUrlGenerator : public AmarokUrlGenerator
 {
-    public:
-        PlayUrlGenerator();
-        ~PlayUrlGenerator();
+public:
 
-        AmarokUrl createCurrentTrackBookmark();
-        AmarokUrl createTrackBookmark( Meta::TrackPtr track, int seconds, QString name = QString() );
+    static PlayUrlGenerator * instance();
+
+    AmarokUrl createCurrentTrackBookmark();
+    AmarokUrl createTrackBookmark( Meta::TrackPtr track, int seconds, QString name = QString() );
+
+    QString description();
+    AmarokUrl createUrl();
+
+private:
+    PlayUrlGenerator();
+    ~PlayUrlGenerator();
+
+    static PlayUrlGenerator * s_instance;
 };
 
 #endif // PLAYURLGENERATOR_H

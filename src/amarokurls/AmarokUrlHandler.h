@@ -18,6 +18,7 @@
 #define AMAROKURLHANDLER_H
 
 #include "amarok_export.h"
+#include "AmarokUrlGenerator.h"
 #include "AmarokUrlRunnerBase.h"
 #include "Meta.h"
 #include "playlist/PlaylistViewUrlRunner.h"
@@ -52,6 +53,9 @@ public:
     void registerRunner( AmarokUrlRunnerBase * runner, const QString & command );
     void unRegisterRunner( AmarokUrlRunnerBase * runner );
 
+    void registerGenerator( AmarokUrlGenerator * generator );
+    void unRegisterGenerator( AmarokUrlGenerator * generator );
+
     bool run( AmarokUrl url );
 
     BookmarkList urlsByCommand( const QString &command );
@@ -78,6 +82,7 @@ private:
     ~AmarokUrlHandler();
 
     QMap<QString, AmarokUrlRunnerBase *> m_registeredRunners;
+    QList<AmarokUrlGenerator *> m_registeredGenerators;
 
     NavigationUrlRunner * m_navigationRunner;
     Playlist::ViewUrlRunner * m_playlistViewRunner;

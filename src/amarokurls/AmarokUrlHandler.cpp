@@ -85,6 +85,15 @@ void AmarokUrlHandler::unRegisterRunner( AmarokUrlRunnerBase * runner )
         m_registeredRunners.remove( key );
 }
 
+void AmarokUrlHandler::registerGenerator( AmarokUrlGenerator * generator )
+{
+    
+}
+
+void AmarokUrlHandler::unRegisterGenerator( AmarokUrlGenerator * generator )
+{
+}
+
 bool AmarokUrlHandler::run( AmarokUrl url )
 {
 
@@ -104,15 +113,13 @@ bool AmarokUrlHandler::run( AmarokUrl url )
 
 void AmarokUrlHandler::bookmarkAlbum( Meta::AlbumPtr album ) //slot
 {
-    NavigationUrlGenerator generator;
-    generator.urlFromAlbum( album ).saveToDb();
+    NavigationUrlGenerator::instance()->urlFromAlbum( album ).saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
 
 void AmarokUrlHandler::bookmarkArtist( Meta::ArtistPtr artist ) //slot
 {
-    NavigationUrlGenerator generator;
-    generator.urlFromArtist( artist ).saveToDb();
+    NavigationUrlGenerator::instance()->urlFromArtist( artist ).saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
 
@@ -139,8 +146,7 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
 
 void AmarokUrlHandler::bookmarkCurrentBrowserView()
 {
-    NavigationUrlGenerator generator;
-    AmarokUrl url = generator.CreateAmarokUrl();
+    AmarokUrl url = NavigationUrlGenerator::instance()->CreateAmarokUrl();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
@@ -157,8 +163,7 @@ AmarokUrlHandler::bookmarkCurrentPlaylistView()
 void
 AmarokUrlHandler::bookmarkCurrentContextView()
 {
-    ContextUrlGenerator generator;
-    AmarokUrl url = generator.createContextBookmark();
+    AmarokUrl url = ContextUrlGenerator::instance()->createContextBookmark();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb(); 
 }

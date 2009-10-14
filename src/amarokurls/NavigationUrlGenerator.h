@@ -18,6 +18,7 @@
 #define NAVIGATIONURLGENERATOR_H
 
 #include "amarok_export.h"
+#include "AmarokUrlGenerator.h"
 #include "Meta.h"
 
 class AmarokUrl;
@@ -27,15 +28,25 @@ A class used to generate navigation urls.
 
 	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
-class AMAROK_EXPORT NavigationUrlGenerator{
+class AMAROK_EXPORT NavigationUrlGenerator : public AmarokUrlGenerator
+{
 public:
-    NavigationUrlGenerator();
-    ~NavigationUrlGenerator();
+
+    static NavigationUrlGenerator * instance();
 
     AmarokUrl CreateAmarokUrl();
 
     AmarokUrl urlFromAlbum( Meta::AlbumPtr album );
     AmarokUrl urlFromArtist( Meta::ArtistPtr artist );
+
+    QString description();
+    AmarokUrl createUrl();
+
+private:
+    NavigationUrlGenerator();
+    virtual ~NavigationUrlGenerator();
+
+    static NavigationUrlGenerator * s_instance;
 
 };
 

@@ -8,37 +8,30 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+#ifndef AMAROKURLGENERATOR_H
+#define AMAROKURLGENERATOR_H
 
+#include "AmarokUrl.h"
 
-#ifndef CONTEXTURLGENERATOR_H
-#define CONTEXTURLGENERATOR_H
-
-#include "AmarokUrlGenerator.h"
-
-class AmarokUrl;
-
-class ContextUrlGenerator : public AmarokUrlGenerator
+class AmarokUrlGenerator
 {
+
 public:
 
-    static ContextUrlGenerator * instance();
+    /**
+       Get the user visible description of what the createUrl() function will actualy bookmarks.
+    */
+    virtual QString description() = 0;
 
-    AmarokUrl createContextBookmark();
-
-    QString description();
-    AmarokUrl createUrl();
-
-private:
-    ContextUrlGenerator();
-    virtual ~ContextUrlGenerator();
-
-    static ContextUrlGenerator * s_instance;
-    
+    /**
+       Cretate the default url for this generator.
+    */
+    virtual AmarokUrl createUrl() = 0;
 };
 
-#endif // CONTEXTURLGENERATOR_H
+#endif // AMAROKURLGENERATOR_H

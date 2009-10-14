@@ -16,6 +16,7 @@
  
 #include "NavigationUrlGenerator.h"
 #include "AmarokUrl.h"
+#include "AmarokUrlHandler.h"
 #include "Debug.h"
 #include "MainWindow.h"
 #include "ServiceBrowser.h"
@@ -26,13 +27,24 @@
 #include "collection/sqlcollection/SqlMeta.h"
 #include "PlaylistManager.h"
 
-NavigationUrlGenerator::NavigationUrlGenerator()
+NavigationUrlGenerator * NavigationUrlGenerator::s_instance = 0;
+
+NavigationUrlGenerator * NavigationUrlGenerator::instance()
 {
+    if( s_instance == 0 )
+        s_instance = new NavigationUrlGenerator();
+
+    return s_instance;
 }
 
+NavigationUrlGenerator::NavigationUrlGenerator()
+{
+    The::amarokUrlHandler()->registerGenerator( this );
+}
 
 NavigationUrlGenerator::~NavigationUrlGenerator()
 {
+    The::amarokUrlHandler()->unRegisterGenerator( this );
 }
 
 AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
@@ -197,5 +209,17 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 
     return url;
 
+}
+
+QString
+NavigationUrlGenerator::description()
+{
+    return i18n( "current Media Sources view" );
+}
+
+AmarokUrl
+NavigationUrlGenerator::createUrl()
+{
+    return CreateAmarokUrl();
 }
 
