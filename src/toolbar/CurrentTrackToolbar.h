@@ -32,7 +32,6 @@ public:
     ~CurrentTrackToolbar();
 
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
 protected:
     void handleAddActions();

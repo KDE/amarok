@@ -42,11 +42,6 @@ void CurrentTrackToolbar::engineStateChanged( Phonon::State state, Phonon::State
     handleAddActions();
 }
 
-void CurrentTrackToolbar::engineNewMetaData( const QHash< qint64, QString > & newMetaData, bool trackChanged )
-{
-    //FIXME implement or remove
-}
-
 void CurrentTrackToolbar::handleAddActions()
 {
     clear();
