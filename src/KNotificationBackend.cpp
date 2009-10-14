@@ -16,25 +16,32 @@
 
 #include "KNotificationBackend.h"
 
+#include "amarokconfig.h"
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "meta/Meta.h"
 
 #include <kdeversion.h> // REMIND
-#include <KStandardDirs>
 
 #include <QTimer>
 
 
 namespace Amarok
 {
-    KNotificationBackend* KNotificationBackend::s_instance = 0;
+    KNotificationBackend*
+    KNotificationBackend::s_instance = 0;
 
     KNotificationBackend*
     KNotificationBackend::instance()
     {
-        return s_instance ? s_instance : new KNotificationBackend();
+        return s_instance ? s_instance : s_instance = new KNotificationBackend();
+    }
+
+    void
+    KNotificationBackend::destroy()
+    {
+        if( s_instance ) { delete s_instance; s_instance = 0; }
     }
 }
 

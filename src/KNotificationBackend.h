@@ -33,6 +33,7 @@ class KNotificationBackend : public QObject, public EngineObserver
 
 public:
     static KNotificationBackend* instance();
+    static void destroy();
 
 public Q_SLOTS:
 
