@@ -25,7 +25,6 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include <QPixmap>
 
 namespace Amarok { class LineEdit; }
 
