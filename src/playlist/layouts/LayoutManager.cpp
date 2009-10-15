@@ -111,7 +111,7 @@ void LayoutManager::updateCurrentLayout( const PlaylistLayout &layout )
         }
                 
 
-        The::statusBar()->longMessage( i18n( "curent layout '%1' is write only. Creating a new layout '%2' with your changes and setting this as active", m_activeLayout, newLayoutName ) );
+        The::statusBar()->longMessage( i18n( "curent layout '%1' is read only. Creating a new layout '%2' with your changes and setting this as active", m_activeLayout, newLayoutName ) );
         
         addUserLayout( newLayoutName, layout );
         setActiveLayout( newLayoutName );
