@@ -96,6 +96,21 @@ function onFinished( response )
                 Amarok.debug( "No lyrics found for artist=" + triedArtist + ", song=" + triedSong );
                 return;
             }
+            // strip "display:none" parts (they would cause confusion otherwise)
+            while ( response.indexOf( "display:none" ) != -1 ) {
+                var stripstart = response.indexOf( "display:none" );
+                stripstart = response.lastIndexOf( "<", stripstart );
+                var stripend = response.indexOf( " ", stripstart );
+                var element = response.substring( stripstart + 1, stripend );
+                Amarok.debug( "stripping hidden element of type: " + element );
+                stripend = response.indexOf( "</" + element + ">", stripstart );
+                var nextStart = response.indexOf( "<" + element, stripstart + 1 );
+                while ( nextStart != -1 && nextStart < stripend ) {
+                    stripend = response.indexOf( "</" + element + ">", stripend + 1 );
+                    nextStart = response.indexOf( "<" + element, nextStart + 1 );
+                }
+                response = response.substring( 0, stripstart ) + response.substring( stripend + 4 + element.length );
+            }
             // parse the relevant part of the html source of the returned page
             var pos = response.indexOf( "lyricbox" );
             var startPos = response.indexOf( ">", pos ) + 1;
