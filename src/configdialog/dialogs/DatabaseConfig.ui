@@ -169,11 +169,6 @@
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QLabel" name="label_Info">
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Amarok expects the above database and user account to already exist. This user also requires full access to the database.</string>
            </property>
@@ -187,11 +182,6 @@
          </item>
          <item>
           <widget class="QLabel" name="label_SQL">
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
            <property name="text">
             <string>Access rights can be assigned with the following S&amp;QL commands (after replacing the password with the correct one):</string>
            </property>
@@ -216,11 +206,6 @@
              <width>16777215</width>
              <height>50</height>
             </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
            </property>
            <property name="cursor" stdset="0">
             <cursorShape>ArrowCursor</cursorShape>
