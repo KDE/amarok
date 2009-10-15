@@ -457,15 +457,17 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
         int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
         debug() << "playlist at row: " << playlistRow;
         Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
-        int insertAt = (row == -1) ? playlist->tracks().count() : row;
-        foreach( Meta::TrackPtr track, dragList->tracks() )
+        if( playlist )
         {
-            debug() << track->prettyName() << "dropped on " << playlist->prettyName() << "insert at " << insertAt;
-            playlist->addTrack( track, insertAt++ );
+            int insertAt = (row == -1) ? playlist->tracks().count() : row;
+            foreach( Meta::TrackPtr track, dragList->tracks() )
+            {
+                debug() << track->prettyName() << "dropped on " << playlist->prettyName() << "insert at " << insertAt;
+                playlist->addTrack( track, insertAt++ );
+            }
+            emit rowsInserted( parent, row, insertAt );
         }
-        emit rowsInserted( parent, row, insertAt );
-
-        return true;
+        return !playlist.isNull();
     }
 
     if( data->hasUrls() )
