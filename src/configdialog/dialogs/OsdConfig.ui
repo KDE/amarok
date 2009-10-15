@@ -11,232 +11,223 @@
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QCheckBox" name="kcfg_OsdEnabled">
-       <property name="toolTip">
-        <string>Check to enable the On-Screen-Display. &lt;br&gt;The OSD briefly displays track data when a new track is played.</string>
-       </property>
-       <property name="whatsThis">
-        <string>Check to enable the On-Screen-Display. The OSD briefly displays track data when a new track is played.</string>
-       </property>
-       <property name="text">
-        <string>&amp;Use On-Screen-Display</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="kcfg_KNotifyEnabled">
-       <property name="text">
-        <string>Use KNotify</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="1" column="0">
-    <widget class="QGroupBox" name="mainBox">
-     <property name="title">
-      <string>&amp;Appearance</string>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QCheckBox" name="kcfg_OsdUseTranslucency">
-        <property name="text">
-         <string>&amp;Translucent</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="textLabel1">
-          <property name="text">
-           <string>&amp;Duration:</string>
-          </property>
-          <property name="wordWrap">
-           <bool>false</bool>
-          </property>
-          <property name="buddy">
-           <cstring>kcfg_OsdDuration</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QSpinBox" name="kcfg_OsdDuration">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>2</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>The time in milliseconds for which to show the OSD. The value must be between 500 ms and 10000 ms.</string>
-          </property>
-          <property name="whatsThis">
-           <string>The time in milliseconds for which to show the OSD. The value must be between 500 ms and 10000 ms.</string>
-          </property>
-          <property name="buttonSymbols">
-           <enum>QAbstractSpinBox::UpDownArrows</enum>
-          </property>
-          <property name="specialValueText">
-           <string>Forever</string>
-          </property>
-          <property name="suffix">
-           <string> ms</string>
-          </property>
-          <property name="minimum">
-           <number>0</number>
-          </property>
-          <property name="maximum">
-           <number>600000</number>
-          </property>
-          <property name="singleStep">
-           <number>1000</number>
-          </property>
-          <property name="value">
-           <number>5000</number>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="textLabel2_3">
-          <property name="text">
-           <string>Sc&amp;reen:</string>
-          </property>
-          <property name="wordWrap">
-           <bool>false</bool>
-          </property>
-          <property name="buddy">
-           <cstring>kcfg_OsdScreen</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="KComboBox" name="kcfg_OsdScreen">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>2</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>The screen that should display the OSD.</string>
-          </property>
-          <property name="whatsThis">
-           <string>The screen that should display the OSD.</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="kcfg_OsdUseCustomColors">
-        <property name="toolTip">
-         <string>Check to enable custom colors for the On-Screen-Display.</string>
-        </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>General</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <widget class="QGroupBox" name="kcfg_OsdEnabled">
         <property name="whatsThis">
-         <string>Check to enable custom colors for the On-Screen-Display.</string>
-        </property>
-        <property name="text">
-         <string>Use &amp;custom colors</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="colorsBox">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+         <string>Check to enable the On-Screen-Display. The OSD briefly displays track data when a new track is played.</string>
         </property>
         <property name="title">
-         <string/>
+         <string>&amp;Use On-Screen-Display</string>
         </property>
         <property name="flat">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="textLabel2">
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="1" column="0">
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="textLabel1">
+             <property name="text">
+              <string>&amp;Duration:</string>
+             </property>
+             <property name="wordWrap">
+              <bool>false</bool>
+             </property>
+             <property name="buddy">
+              <cstring>kcfg_OsdDuration</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="kcfg_OsdDuration">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>2</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>The time in milliseconds for which to show the OSD. The value must be between 500 ms and 10000 ms.</string>
+             </property>
+             <property name="whatsThis">
+              <string>The time in milliseconds for which to show the OSD. The value must be between 500 ms and 10000 ms.</string>
+             </property>
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::UpDownArrows</enum>
+             </property>
+             <property name="specialValueText">
+              <string>Forever</string>
+             </property>
+             <property name="suffix">
+              <string> ms</string>
+             </property>
+             <property name="minimum">
+              <number>0</number>
+             </property>
+             <property name="maximum">
+              <number>600000</number>
+             </property>
+             <property name="singleStep">
+              <number>1000</number>
+             </property>
+             <property name="value">
+              <number>5000</number>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="textLabel2_3">
+             <property name="text">
+              <string>Sc&amp;reen:</string>
+             </property>
+             <property name="wordWrap">
+              <bool>false</bool>
+             </property>
+             <property name="buddy">
+              <cstring>kcfg_OsdScreen</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="KComboBox" name="kcfg_OsdScreen">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>2</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="toolTip">
+              <string>The screen that should display the OSD.</string>
+             </property>
+             <property name="whatsThis">
+              <string>The screen that should display the OSD.</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="0">
+          <widget class="QGroupBox" name="kcfg_OsdUseCustomColors">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-             <horstretch>1</horstretch>
+            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+             <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
-           <property name="minimumSize">
-            <size>
-             <width>59</width>
-             <height>0</height>
-            </size>
-           </property>
            <property name="whatsThis">
-            <string>The color of the OSD text.</string>
+            <string>Check to enable custom colors for the On-Screen-Display.</string>
            </property>
-           <property name="text">
-            <string>Text color:</string>
+           <property name="title">
+            <string>Use &amp;custom colors</string>
            </property>
-           <property name="wordWrap">
-            <bool>false</bool>
+           <property name="flat">
+            <bool>true</bool>
            </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="textLabel2">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                <horstretch>1</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>59</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="whatsThis">
+               <string>The color of the OSD text.</string>
+              </property>
+              <property name="text">
+               <string>Text color:</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="KColorButton" name="kcfg_OsdTextColor">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>2</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>72</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Click to select the color of the OSD text.</string>
+              </property>
+              <property name="whatsThis">
+               <string>The color of the OSD text.</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="color">
+               <color>
+                <red>255</red>
+                <green>0</green>
+                <blue>0</blue>
+               </color>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
-         <item>
-          <widget class="KColorButton" name="kcfg_OsdTextColor">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>2</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>72</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Click to select the color of the OSD text.</string>
-           </property>
-           <property name="whatsThis">
-            <string>The color of the OSD text.</string>
-           </property>
+         <item row="2" column="0">
+          <widget class="QCheckBox" name="kcfg_OsdUseTranslucency">
            <property name="text">
-            <string/>
-           </property>
-           <property name="color">
-            <color>
-             <red>255</red>
-             <green>0</green>
-             <blue>0</blue>
-            </color>
+            <string>&amp;Translucent</string>
            </property>
           </widget>
          </item>
         </layout>
        </widget>
       </item>
-      <item>
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="kcfg_KNotifyEnabled">
+        <property name="text">
+         <string>Use KNotify</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>0</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -262,54 +253,5 @@
   <include location="local">knuminput.h</include>
  </includes>
  <resources/>
- <connections>
-  <connection>
-   <sender>kcfg_OsdUseCustomColors</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>OsdConfig</receiver>
-   <slot>useCustomColorsToggled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>196</x>
-     <y>84</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>kcfg_OsdEnabled</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mainBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>149</x>
-     <y>15</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>155</x>
-     <y>46</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>kcfg_OsdUseCustomColors</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>colorsBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>196</x>
-     <y>84</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>197</x>
-     <y>110</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
