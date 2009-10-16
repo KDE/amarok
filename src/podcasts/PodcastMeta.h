@@ -319,6 +319,11 @@ public:
         return name();
     }
 
+    bool operator==( const Meta::Artist &other ) const
+    {
+        return name() == other.name();
+    }
+
     PodcastEpisode const *episode;
 };
 
@@ -403,6 +408,11 @@ public:
         return name();
     }
 
+    bool operator==( const Meta::Genre &other ) const
+    {
+        return name() == other.name();
+    }
+
     PodcastEpisode const *episode;
 };
 
@@ -436,6 +446,11 @@ public:
         return name();
     }
 
+    bool operator==( const Meta::Composer &other ) const
+    {
+        return name() == other.name();
+    }
+
     PodcastEpisode const *episode;
 };
 
@@ -466,6 +481,11 @@ public:
     QString prettyName() const
     {
         return name();
+    }
+
+    bool operator==( const Meta::Year &other ) const
+    {
+        return name() == other.name();
     }
 
     PodcastEpisode const *episode;
