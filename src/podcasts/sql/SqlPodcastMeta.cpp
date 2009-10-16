@@ -234,6 +234,35 @@ Meta::SqlPodcastEpisode::isEditable() const
      return m_localFile->isEditable();
 }
 
+QString
+Meta::SqlPodcastEpisode::name() const
+{
+    if( m_localFile.isNull() )
+        return m_title;
+
+    return m_localFile->name();
+}
+
+QString
+Meta::SqlPodcastEpisode::prettyName() const
+{
+    /*for now just do the same as name, but in the future we might want to used a cleaned
+      up string using some sort of regex tag rewrite for podcasts. decapitateString on
+      steroides. */
+    return name();
+}
+
+void
+Meta::SqlPodcastEpisode::setTitle( const QString &title )
+{
+    if( !m_localFile.isNull() )
+    {
+        m_localFile->setTitle( title );
+    }
+
+    m_title = title;
+}
+
 Meta::AlbumPtr
 Meta::SqlPodcastEpisode::album() const
 {

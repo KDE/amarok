@@ -49,6 +49,9 @@ class SqlPodcastEpisode : public PodcastEpisode
         virtual void setLocalUrl( const KUrl &url );
 
         //Track Methods
+        virtual QString name() const;
+        virtual QString prettyName() const;
+        virtual void setTitle( const QString &title );
         virtual qint64 length() const;
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
