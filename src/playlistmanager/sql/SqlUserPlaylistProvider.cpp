@@ -20,6 +20,7 @@
 #include "Amarok.h"
 #include "CollectionManager.h"
 #include "Debug.h"
+#include "MainWindow.h"
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
 #include "meta/XSPFPlaylist.h"
@@ -28,11 +29,13 @@
 #include "SvgHandler.h"
 #include "UserPlaylistModel.h"
 
+#include <KDialog>
 #include <KIcon>
 #include <KInputDialog>
 #include <KUrl>
 
 #include <QAction>
+#include <QLabel>
 #include <QMap>
 
 static const int USERPLAYLIST_DB_VERSION = 2;
@@ -164,10 +167,21 @@ SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackInde
 }
 
 void
-SqlUserPlaylistProvider::deletePlaylists( Meta::PlaylistList playlistlist )
+SqlUserPlaylistProvider::deletePlaylists( Meta::PlaylistList playlistList )
 {
-    //TODO FIXME Confirmation of delete
-    foreach( Meta::PlaylistPtr playlist, playlistlist )
+    KDialog dialog( The::mainWindow() );
+    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QLabel label( i18np( "Are you sure you want to delete this playlist?",
+                         "Are you sure you want to delete these %1 playlists?",
+                         playlistList.count() )
+                    , &dialog
+                  );
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from database." ) );
+    dialog.setMainWidget( &label );
+    if( dialog.exec() != QDialog::Accepted )
+        return;
+    foreach( Meta::PlaylistPtr playlist, playlistList )
     {
         Meta::SqlPlaylistPtr sqlPlaylist =
                 Meta::SqlPlaylistPtr::dynamicCast( playlist );
