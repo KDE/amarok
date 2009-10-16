@@ -374,6 +374,7 @@ set(libpodcasts_SRCS
     podcasts/PodcastMeta.cpp
     podcasts/sql/SqlPodcastMeta.cpp
     podcasts/sql/SqlPodcastProvider.cpp
+    podcasts/sql/PodcastSettingsDialog.cpp
 )
 
 #####################################################################
@@ -598,7 +599,6 @@ set(amaroklib_LIB_SRCS
     dialogs/EditFilterDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
     dialogs/OrganizeCollectionDialog.cpp
-    dialogs/PodcastSettingsDialog.cpp
     dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
     dialogs/ScriptUpdater.cpp
@@ -691,7 +691,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/FilenameLayoutDialog.ui
     dialogs/OrganizeCollectionDialogBase.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
-    dialogs/PodcastSettingsBase.ui
+    podcasts/sql/PodcastSettingsBase.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 
