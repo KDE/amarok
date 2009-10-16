@@ -402,8 +402,6 @@ Meta::Album::notifyObservers() const
 QPixmap
 Meta::Album::image( int size )
 {
-    const bool unscaled = ( size == -1 );
-
     // Return "nocover" until it's fetched.
     QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
     if ( size <= 1 )
@@ -418,14 +416,9 @@ Meta::Album::image( int size )
     else
     {
         QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
-        if( unscaled )
-            return orgPixmap;
-        else
-        {
-            //scaled() does not change the original image but returns a scaled copy
-            pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-            pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
-        }
+        //scaled() does not change the original image but returns a scaled copy
+        pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
     }
 
     return pixmap;
