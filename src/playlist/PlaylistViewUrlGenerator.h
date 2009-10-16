@@ -18,18 +18,27 @@
 #define PLAYLISTVIEWURLGENERATOR_H
 
 #include "amarok_export.h"
+#include "AmarokUrlGenerator.h"
 #include "AmarokUrl.h"
 
 namespace Playlist
 {
 
-class AMAROK_EXPORT ViewUrlGenerator
+class AMAROK_EXPORT ViewUrlGenerator : public AmarokUrlGenerator
 {
 public:
+
+    static ViewUrlGenerator * instance();
+
+    QString description();
+    AmarokUrl createUrl();
+
+private:
+
     ViewUrlGenerator();
     virtual ~ViewUrlGenerator();
-
-    AmarokUrl createAmarokUrl();
+    
+    static ViewUrlGenerator * s_instance;
 };
 
 }

@@ -66,6 +66,7 @@ AmarokUrlHandler::AmarokUrlHandler()
 
     registerGenerator( ContextUrlGenerator::instance() );
     registerGenerator( NavigationUrlGenerator::instance() );
+    registerGenerator( Playlist::ViewUrlGenerator::instance() );
     registerGenerator( PlayUrlGenerator::instance() );
 }
 
@@ -161,8 +162,7 @@ void AmarokUrlHandler::bookmarkCurrentBrowserView()
 void
 AmarokUrlHandler::bookmarkCurrentPlaylistView()
 {
-    Playlist::ViewUrlGenerator generator;
-    AmarokUrl url = generator.createAmarokUrl();
+    AmarokUrl url = Playlist::ViewUrlGenerator::instance()->createUrl();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
