@@ -955,7 +955,7 @@ namespace Amarok
             {
                 QString source = sic->sourceName();
                 if ( !source.isEmpty() )
-                    title += ' ' + i18n( "from" ) + " <b>" + source + "</b>";
+                    title += ' ' + i18nc( "track from source", "from" ) + " <b>%1</b>";
 
                 delete sic;
             }
