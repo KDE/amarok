@@ -35,7 +35,7 @@ SqlRegistry::SqlRegistry( SqlCollection* collection )
     setObjectName( "SqlRegistry" );
 
     m_timer = new QTimer( this );
-    m_timer->setInterval( 60000 );  //try to clean up every 60 seconds, change if necessary
+    m_timer->setInterval( 300 * 1000 );  //try to clean up every 300 seconds, change if necessary
     m_timer->setSingleShot( false );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( emptyCache() ) );
     m_timer->start();
