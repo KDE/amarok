@@ -23,7 +23,7 @@
 #include <QClipboard>
 #include <QFontMetrics>
 
-PodcastSettingsDialog::PodcastSettingsDialog( Meta::PodcastChannelPtr channel, QWidget* parent )
+PodcastSettingsDialog::PodcastSettingsDialog( Meta::SqlPodcastChannelPtr channel, QWidget* parent )
     : KDialog( parent )
     , m_ps( new Ui::PodcastSettingsBase() )
     , m_channel( channel )

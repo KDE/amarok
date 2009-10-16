@@ -300,7 +300,7 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
     bool oldHasPurge = sqlChannel->hasPurge();
     int oldPurgeCount = sqlChannel->purgeCount();
 
-    PodcastSettingsDialog dialog( channel, The::mainWindow() );
+    PodcastSettingsDialog dialog( sqlChannel, The::mainWindow() );
     dialog.configure();
 
     sqlChannel->updateInDb();
