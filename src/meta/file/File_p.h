@@ -350,6 +350,10 @@ public:
         return name();
     }
 
+    bool operator==( const Meta::Artist &other ) const {
+        return name() == other.name();
+    }
+
     QPointer<MetaFile::Track::Private> const d;
 };
 
@@ -433,6 +437,10 @@ public:
         return name();
     }
 
+    bool operator==( const Meta::Genre &other ) const {
+        return name() == other.name();
+    }
+
     QPointer<MetaFile::Track::Private> const d;
 };
 
@@ -460,6 +468,10 @@ public:
         return name();
     }
 
+    bool operator==( const Meta::Composer &other ) const {
+        return name() == other.name();
+    }
+
     QPointer<MetaFile::Track::Private> const d;
 };
 
@@ -485,6 +497,10 @@ public:
     QString prettyName() const
     {
         return name();
+    }
+
+    bool operator==( const Meta::Year &other ) const {
+        return name() == other.name();
     }
 
     QPointer<MetaFile::Track::Private> const d;
