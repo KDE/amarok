@@ -804,7 +804,6 @@ install(FILES data/DefaultPlaylistLayouts.xml
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 
 install( FILES data/amarok_homerc DESTINATION ${CONFIG_INSTALL_DIR} )
-install( FILES data/amarok.notifyrc DESTINATION ${DATA_INSTALL_DIR}/amarok )
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 
