@@ -42,4 +42,4 @@ Comment[sv]=Amarok bytte till ett nytt spår
 Comment[tr]=Amarok yeni bir parçaya geçti
 Comment[uk]=Композиція у Amarok змінилася
 Comment[x-test]=xxAmarok changed to a new trackxx
-Action=None
+Action=Popup
