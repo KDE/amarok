@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Add a menu allowing the creation of any known type of bookmark to the 
+      Bookmark Manager.
     * CTRL+SHIFT+F toggles full screen mode. Patch by Rick W. Chen
       <stuffcorpse@archlinux.us>.
     * Podcast episodes can now be marked as new/old manually.
@@ -19,8 +21,8 @@ VERSION 2.2.1
     * Added "Copy on Write" when trying to edit a read only (one of the 
       default) playlist layouts. The changed layout is now simply saved under 
       a new name. 
-    * Added bookmarks to the context view, allowing saving and restoring of 
-      applet setups.
+    * Added context view bookmarks, allowing saving and restoring of applet 
+      setups.
     * Enhanced --debug feature: When a function takes very long to run (> 5s),
       we print a special message (GREPME) that can be searched easily.
     * Middle-clicking an item in the Collection Browser appends it to the
