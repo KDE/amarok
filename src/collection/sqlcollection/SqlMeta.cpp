@@ -1326,8 +1326,18 @@ SqlAlbum::tracks()
 bool
 SqlAlbum::hasImage( int size ) const
 {
-    if( !m_hasImageChecked )
-        m_hasImage = ! const_cast<SqlAlbum*>( this )->image( size ).isNull();
+    if( !m_hasImageChecked ) {
+
+        m_hasImageChecked = true;
+
+        QString image = const_cast<SqlAlbum*>( this )->findImage( size );
+
+        // The user has explicitly set no cover
+        if( image == AMAROK_UNSET_MAGIC )
+            m_hasImage = false;
+        else m_hasImage = !image.isEmpty();
+    }
+
     return m_hasImage;
 }
 

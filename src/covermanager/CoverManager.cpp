@@ -435,7 +435,6 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
     {
         CoverViewItem *item = new CoverViewItem( m_coverView, album );
         m_coverItems.append( item );
-        item->loadCover();
 
         if ( ++x % 50 == 0 )
         {
@@ -803,7 +802,7 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
 
     const bool isSuppressing = album->suppressImageAutoFetch();
     album->setSuppressImageAutoFetch( true );
-    setIcon( album->image( -1 ) ); // -1 == unscaled
+    setIcon( album->image( 100 ) );
     album->setSuppressImageAutoFetch( isSuppressing );
 
     CoverManager::instance()->subscribeTo( album );
@@ -821,8 +820,8 @@ void CoverViewItem::loadCover()
 {
     const bool isSuppressing = m_albumPtr->suppressImageAutoFetch();
     m_albumPtr->setSuppressImageAutoFetch( true );
+    setIcon( m_albumPtr->image( 100 ) );
     m_albumPtr->setSuppressImageAutoFetch( isSuppressing );
-    setIcon( m_albumPtr->image( -1 ) ); // -1 == unscaled
 }
 
 void CoverViewItem::dragEntered()

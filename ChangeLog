@@ -37,6 +37,8 @@ VERSION 2.2.1
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * Huge performance improvements for the Cover Manager. Thanks to Michael
+      Reiher <redm@gmx.de> for the patch. (BR 210454)
     * Improved usability and look of main control buttons.
     * Multiple usability improvements for the Dynamic Playlist UI.
     * Moved the Podcast category to the top level of the Content panel.
