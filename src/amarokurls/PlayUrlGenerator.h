@@ -41,6 +41,7 @@ public:
     AmarokUrl createTrackBookmark( Meta::TrackPtr track, int seconds, QString name = QString() );
 
     QString description();
+    KIcon icon();
     AmarokUrl createUrl();
 
 private:

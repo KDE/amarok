@@ -18,6 +18,8 @@
 
 #include "AmarokUrl.h"
 
+#include <KIcon>
+
 class AmarokUrlGenerator
 {
 
@@ -27,6 +29,11 @@ public:
        Get the user visible description of what the createUrl() function will actualy bookmarks.
     */
     virtual QString description() = 0;
+
+    /**
+       Get the the icon for the type of bookmarks created.
+    */
+    virtual KIcon icon() = 0;
 
     /**
        Cretate the default url for this generator.

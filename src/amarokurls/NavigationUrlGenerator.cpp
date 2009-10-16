@@ -216,6 +216,11 @@ NavigationUrlGenerator::description()
     return i18n( "Bookmark Media Sources View" );
 }
 
+KIcon NavigationUrlGenerator::icon()
+{
+    return KIcon( "flag-amarok" );
+}
+
 AmarokUrl
 NavigationUrlGenerator::createUrl()
 {

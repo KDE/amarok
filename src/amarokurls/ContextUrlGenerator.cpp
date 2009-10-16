@@ -65,6 +65,11 @@ ContextUrlGenerator::description()
     return i18n( "Bookmark Context View Applets" );
 }
 
+KIcon ContextUrlGenerator::icon()
+{
+    return KIcon( "x-media-podcast-amarok" );
+}
+
 AmarokUrl
 ContextUrlGenerator::createUrl()
 {

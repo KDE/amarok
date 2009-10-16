@@ -54,7 +54,7 @@ void BookmarkCurrentButton::generateMenu( const QPoint &pos )
 
     foreach( AmarokUrlGenerator * generator, generators )
     {
-        generatorMap.insert( menu.addAction( generator->description() ), generator );
+        generatorMap.insert( menu.addAction( generator->icon() ,generator->description() ), generator );
     }
 
     QAction * action = menu.exec( pos );

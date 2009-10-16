@@ -80,6 +80,11 @@ PlayUrlGenerator::description()
     return i18n( "Bookmark Track Position" );
 }
 
+KIcon PlayUrlGenerator::icon()
+{
+    return KIcon( "x-media-podcast-amarok" );
+}
+
 AmarokUrl
 PlayUrlGenerator::createUrl()
 {

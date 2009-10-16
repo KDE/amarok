@@ -23,6 +23,8 @@
 #include "PlaylistSortWidget.h"
 #include "ProgressiveSearchWidget.h"
 
+#include <KStandardDirs>
+
 namespace Playlist
 {
 
@@ -97,6 +99,11 @@ QString
 ViewUrlGenerator::description()
 {
     return i18n( "Bookmark Playlist Setup" );
+}
+
+KIcon ViewUrlGenerator::icon()
+{
+    return KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-bookmark-16.png" ) ) );
 }
 
 } //namespace Playlist

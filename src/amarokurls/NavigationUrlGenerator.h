@@ -40,6 +40,7 @@ public:
     AmarokUrl urlFromArtist( Meta::ArtistPtr artist );
 
     QString description();
+    KIcon icon();
     AmarokUrl createUrl();
 
 private:

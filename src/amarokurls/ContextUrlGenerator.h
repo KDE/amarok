@@ -31,6 +31,7 @@ public:
     AmarokUrl createContextBookmark();
 
     QString description();
+    KIcon icon();
     AmarokUrl createUrl();
 
 private:
