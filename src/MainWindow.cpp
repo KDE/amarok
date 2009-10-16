@@ -798,7 +798,7 @@ MainWindow::createActions()
 
     action = new KAction( i18n( "Toggle Full Screen" ), this );
     ac->addAction( "toggleFullScreen", action );
-    action->setGlobalShortcut( KShortcut( Qt::CTRL + Qt::SHIFT + Qt::Key_F ) );
+    action->setShortcut( KShortcut( Qt::CTRL + Qt::SHIFT + Qt::Key_F ) );
     connect( action, SIGNAL( triggered() ), SLOT( slotFullScreen() ) );
 
     action = new KAction( i18n( "Jump to" ), this );
