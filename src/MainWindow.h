@@ -31,8 +31,8 @@
 class CollectionWidget;
 class ContextWidget;
 class MainToolbar;
-class MainToolbarNG;
-class MainToolbarNNG;
+class SlimToolbar;
+class MainToolbar;
 class MainWindow;
 class PlaylistFileProvider;
 class SearchWidget;
@@ -57,9 +57,8 @@ namespace The {
     AMAROK_EXPORT MainWindow* mainWindow();
 }
 
-//This should only change if docks or toolbars are added or removed, and in this case a new src/data/DefaultDockLayyout
-//file should be created as well
-#define LAYOUT_VERSION 2
+//This should only change if docks or toolbars are added or removed
+#define LAYOUT_VERSION 3
 
 /**
   * @class MainWindow
@@ -181,7 +180,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         //QPointer<KVBox>     m_statusbarArea;
 
         QPointer<SearchWidget>     m_searchWidget;
-        QPointer<MainToolbar>      m_controlBar;
         QPointer<Playlist::Widget> m_playlistWidget;
         QPointer<QTimer>           m_timer;  //search filter timer
         QPointer<QSplitter>        m_splitter;
@@ -199,8 +197,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QDockWidget * m_contextDock;
         QDockWidget * m_playlistDock;
 
-        MainToolbarNG * m_newToolbar;
-        MainToolbarNNG * m_newToolbar2;
+        QPointer<MainToolbar> m_mainToolbar;
+        QPointer<SlimToolbar> m_slimToolbar;
 
         QWidget *     m_browserDummyTitleBarWidget;
         QWidget *     m_contextDummyTitleBarWidget;

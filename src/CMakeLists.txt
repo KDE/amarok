@@ -611,8 +611,8 @@ set(amaroklib_LIB_SRCS
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     toolbar/CurrentTrackToolbar.cpp
-    toolbar/MainToolbarNG.cpp
-    toolbar/MainToolbarNNG.cpp
+    toolbar/MainToolbar.cpp
+    toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
     TrayIcon.cpp
     widgets/BreadcrumbItemButton.cpp
@@ -630,7 +630,6 @@ set(amaroklib_LIB_SRCS
     widgets/LineEdit.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
-    widgets/MainToolbar.cpp
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
     widgets/PrettyTreeView.cpp

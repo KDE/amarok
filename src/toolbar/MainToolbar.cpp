@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MainToolbarNNG.h"
+#include "MainToolbar.h"
 
 #include "ActionClasses.h"
 #include "Amarok.h"
@@ -37,12 +37,12 @@
 #include <QVBoxLayout>
 
 
-MainToolbarNNG::MainToolbarNNG( QWidget * parent )
-    : QToolBar( i18n( "Main Toolbar NNG" ), parent )
+MainToolbar::MainToolbar( QWidget * parent )
+    : QToolBar( i18n( "Main Toolbar" ), parent )
     , EngineObserver( The::engineController() )
     , m_ignoreCache( false )
 {
-    setObjectName( "MainToolbarNNG" );
+    setObjectName( "Main Toolbar" );
 
     setContentsMargins( 0, 0, 0, 0 );
     setFixedHeight( 80 );
@@ -84,13 +84,13 @@ MainToolbarNNG::MainToolbarNNG( QWidget * parent )
     installEventFilter( this );
 }
 
-MainToolbarNNG::~MainToolbarNNG()
+MainToolbar::~MainToolbar()
 {
     DEBUG_BLOCK
 }
 
 void
-MainToolbarNNG::engineStateChanged( Phonon::State state, Phonon::State oldState )
+MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     if( (state != oldState) )
     {
@@ -104,14 +104,14 @@ MainToolbarNNG::engineStateChanged( Phonon::State state, Phonon::State oldState 
 }
 
 void
-MainToolbarNNG::engineNewMetaData( const QHash< qint64, QString > &newMetaData, bool trackChanged )
+MainToolbar::engineNewMetaData( const QHash< qint64, QString > &newMetaData, bool trackChanged )
 {
     Q_UNUSED( newMetaData ); Q_UNUSED( trackChanged );
     handleAddActions();
 }
 
 void
-MainToolbarNNG::handleAddActions()
+MainToolbar::handleAddActions()
 {
     foreach( QAction* action, m_additionalActions )
         m_addControlsToolbar->removeAction( action );
@@ -149,7 +149,7 @@ MainToolbarNNG::handleAddActions()
 }
 
 void
-MainToolbarNNG::resizeEvent( QResizeEvent *event )
+MainToolbar::resizeEvent( QResizeEvent *event )
 {
     DEBUG_BLOCK
 
@@ -165,7 +165,7 @@ MainToolbarNNG::resizeEvent( QResizeEvent *event )
 }
 
 void
-MainToolbarNNG::centerAddActions()
+MainToolbar::centerAddActions()
 {
     int marginLeft, marginRight, marginTop, marginBottom;
     m_addControlsToolbar->getContentsMargins( &marginLeft, &marginTop, &marginRight, &marginBottom );
@@ -176,7 +176,7 @@ MainToolbarNNG::centerAddActions()
 }
 
 bool
-MainToolbarNNG::eventFilter( QObject* object, QEvent* event )
+MainToolbar::eventFilter( QObject* object, QEvent* event )
 {
     // This makes it possible to change volume by using the mouse wheel anywhere on the toolbar
     if( event->type() == QEvent::Wheel && object == this )
@@ -189,7 +189,7 @@ MainToolbarNNG::eventFilter( QObject* object, QEvent* event )
 }
 
 void
-MainToolbarNNG::reRender()
+MainToolbar::reRender()
 {
     m_ignoreCache = true;
     update();

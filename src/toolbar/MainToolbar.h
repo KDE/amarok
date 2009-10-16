@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -14,33 +14,55 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef MAINTOOLBARNG_H
-#define MAINTOOLBARNG_H
 
-#include "CurrentTrackToolbar.h"
+#ifndef MainToolbarNNG_H
+#define MainToolbarNNG_H
+
+#include "EngineObserver.h" //baseclass
+#include "SmartPointerList.h"
+
+#include <KHBox>
 
 #include <QToolBar>
 
-class QEvent;
+class QAction;
+class KToolBar;
+class MainControlsWidget;
 class VolumePopupButton;
 
 /**
-  An new toolbar implementation.
+    A KHBox based toolbar with a nice svg background and takes care of 
+    adding any additional controls needed by individual tracks
 */
-class MainToolbarNG : public QToolBar, public EngineObserver
+class MainToolbar : public QToolBar, public EngineObserver
 {
-    Q_OBJECT
 
 public:
-    MainToolbarNG( QWidget * parent );
-    ~MainToolbarNG();
+    MainToolbar( QWidget * parent );
 
-    virtual bool eventFilter( QObject* object, QEvent* event );
+    ~MainToolbar();
+
+    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
+    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
+
+    void reRender();
+
+protected:
+      virtual void resizeEvent( QResizeEvent * event );
+      void handleAddActions();
+      void centerAddActions();
+      virtual bool eventFilter( QObject* object, QEvent* event );
 
 private:
-    CurrentTrackToolbar * m_currentTrackToolbar;
-    VolumePopupButton* m_volumePopupButton;
+    QWidget            *m_insideBox;
+    KToolBar           *m_addControlsToolbar;
+    QToolBar           *m_volumeToolBar;
+    VolumePopupButton  *m_volumePopupButton;
+    MainControlsWidget *m_mainControlsWidget;
+
+    bool m_ignoreCache;
+
+    SmartPointerList<QAction> m_additionalActions;
 };
 
 #endif

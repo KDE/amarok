@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#include "MainToolbarNG.h"
+#include "SlimToolbar.h"
 
 #include "ActionClasses.h"
 #include "Amarok.h"
@@ -32,13 +32,13 @@
 #include <QEvent>
 #include <QLayout>
 
-MainToolbarNG::MainToolbarNG( QWidget * parent )
-    : QToolBar( i18n( "Main Toolbar NG" ), parent )
+SlimToolbar::SlimToolbar( QWidget * parent )
+    : QToolBar( i18n( "Slim Toolbar" ), parent )
     , EngineObserver( The::engineController() )
     , m_currentTrackToolbar( 0 )
     , m_volumePopupButton( 0 )
 {
-    setObjectName( "Main Toolbar NG" );
+    setObjectName( "Slim Toolbar" );
 
     setIconSize( QSize( 28, 28 ) );
     layout()->setSpacing( 0 );
@@ -67,11 +67,11 @@ MainToolbarNG::MainToolbarNG( QWidget * parent )
     installEventFilter( this );
 }
 
-MainToolbarNG::~MainToolbarNG()
+SlimToolbar::~SlimToolbar()
 {}
 
 bool
-MainToolbarNG::eventFilter( QObject* object, QEvent* event )
+SlimToolbar::eventFilter( QObject* object, QEvent* event )
 {
     // This makes it possible to change volume by using the mouse wheel anywhere on the toolbar
     if( event->type() == QEvent::Wheel && object == this )
@@ -83,5 +83,5 @@ MainToolbarNG::eventFilter( QObject* object, QEvent* event )
     return QToolBar::eventFilter( object, event );
 }
 
-#include "MainToolbarNG.moc"
+#include "SlimToolbar.moc"
 

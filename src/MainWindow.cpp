@@ -29,7 +29,6 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h" //for actions in ctor
-#include "MainToolbar.h"
 #include "Osd.h"
 #include "PaletteHandler.h"
 #include "ScriptManager.h"
@@ -58,8 +57,8 @@
 #include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
-#include "toolbar/MainToolbarNG.h"
-#include "toolbar/MainToolbarNNG.h"
+#include "toolbar/MainToolbar.h"
+#include "toolbar/SlimToolbar.h"
 #include "SvgHandler.h"
 #include "widgets/Splitter.h"
 //#include "mediabrowser.h"
@@ -212,7 +211,6 @@ MainWindow::~MainWindow()
     delete m_corona;
     //delete m_splitter;
     delete The::statusBar();
-    delete m_controlBar;
     delete The::svgHandler();
     delete The::paletteHandler();
 }
@@ -231,29 +229,18 @@ MainWindow::init()
     layout()->setContentsMargins( 0, 0, 0, 0 );
     layout()->setSpacing( 0 );
 
-    m_controlBar = new MainToolbar( 0 );
-    m_controlBar->layout()->setContentsMargins( 0, 0, 0, 0 );
-    m_controlBar->layout()->setSpacing( 0 );
-    m_controlBar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
-    m_controlBar->setMovable ( true );
+    //create main toolbar
+    m_mainToolbar = new MainToolbar( 0 );
+    m_mainToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
+    m_mainToolbar->setMovable ( true );
+    addToolBar( Qt::TopToolBarArea, m_mainToolbar );
 
-    addToolBar( Qt::TopToolBarArea, m_controlBar );
-
-    m_newToolbar = new MainToolbarNG( 0 );
-    //newToolbar->setAllowedAreas( Qt::AllToolBarAreas );
-    m_newToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
-    m_newToolbar->setMovable ( true );
-
-    addToolBar( Qt::TopToolBarArea, m_newToolbar );
-    m_newToolbar->hide();
-
-    m_newToolbar2 = new MainToolbarNNG( 0 );
-    //newToolbar2->setAllowedAreas( Qt::AllToolBarAreas );
-    m_newToolbar2->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
-    m_newToolbar2->setMovable ( true );
-
-    addToolBar( Qt::TopToolBarArea, m_newToolbar2 );
-    m_newToolbar2->hide();
+    //create slim toolbar
+    m_slimToolbar = new SlimToolbar( 0 );
+    m_slimToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
+    m_slimToolbar->setMovable ( true );
+    addToolBar( Qt::TopToolBarArea, m_slimToolbar );
+    m_slimToolbar->hide();
 
     //BEGIN Creating Widgets
     PERF_LOG( "Create sidebar" )
@@ -1037,20 +1024,10 @@ MainWindow::backgroundSize()
     return QSize( bottomRight1.x() - topLeft.x() + 1, bottomRight1.y() - topLeft.y() );
 }
 
-int
-MainWindow::contextXOffset()
-{
-    const QPoint topLeft1 = mapToGlobal( m_controlBar->pos() );
-    const QPoint topLeft2 = mapToGlobal( m_contextWidget->pos() );
-
-    return topLeft2.x() - topLeft1.x();
-}
-
 void
 MainWindow::resizeEvent( QResizeEvent * event )
 {
     QWidget::resizeEvent( event );
-    m_controlBar->reRender();
 
     if ( m_dockWidthsLocked )
     {
@@ -1184,14 +1161,11 @@ void MainWindow::setLayoutLocked( bool locked )
         m_playlistDock->setFeatures( features );
         m_playlistDock->setTitleBarWidget( m_playlistDummyTitleBarWidget );
 
-        m_controlBar->setFloatable( false );
-        m_controlBar->setMovable( false );
+        m_mainToolbar->setFloatable( false );
+        m_mainToolbar->setMovable( false );
 
-        m_newToolbar->setFloatable( false );
-        m_newToolbar->setMovable( false );
-
-        m_newToolbar2->setFloatable( false );
-        m_newToolbar2->setMovable( false );
+        m_slimToolbar->setFloatable( false );
+        m_slimToolbar->setMovable( false );
     }
     else
     {
@@ -1207,14 +1181,11 @@ void MainWindow::setLayoutLocked( bool locked )
         m_contextDock->setTitleBarWidget( 0 );
         m_playlistDock->setTitleBarWidget( 0 );
 
-        m_controlBar->setFloatable( true );
-        m_controlBar->setMovable( true );
+        m_mainToolbar->setFloatable( true );
+        m_mainToolbar->setMovable( true );
 
-        m_newToolbar->setFloatable( true );
-        m_newToolbar->setMovable( true );
-
-        m_newToolbar2->setFloatable( true );
-        m_newToolbar2->setMovable( true );
+        m_slimToolbar->setFloatable( true );
+        m_slimToolbar->setMovable( true );
     }
 
     AmarokConfig::setLockLayout( locked );
@@ -1276,8 +1247,8 @@ MainWindow::restoreLayout()
     }
 
     // Ensure that only one toolbar is visible
-    if( !m_controlBar->isHidden() && !m_newToolbar->isHidden() )
-        m_newToolbar->hide();
+    if( !m_mainToolbar->isHidden() && !m_slimToolbar->isHidden() )
+        m_slimToolbar->hide();
 }
 
 #include "MainWindow.moc"
