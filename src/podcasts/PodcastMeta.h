@@ -149,7 +149,6 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual bool inCollection() const { return false; }
         virtual QString cachedLyrics() const { return QString(); }
         virtual void setCachedLyrics( const QString &lyrics ) { Q_UNUSED( lyrics ); }
-        virtual void notifyObservers() const {}
 
         //PodcastMetaCommon methods
         int podcastType() { return EpisodeType; }

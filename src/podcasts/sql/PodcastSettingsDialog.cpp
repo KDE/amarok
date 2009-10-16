@@ -80,6 +80,8 @@ PodcastSettingsDialog::init()
         m_ps->m_purgeCountLabel->setEnabled( false );
     }
 
+    m_ps->m_writeTagsCheck->setChecked( false );
+
     enableButtonApply( false );
 
     // Connects for modification check
@@ -89,6 +91,7 @@ PodcastSettingsDialog::init()
     connect( m_ps->m_downloadRadio, SIGNAL(clicked()), SLOT(checkModified()) );
     connect( m_ps->m_purgeCheck, SIGNAL(clicked()), SLOT(checkModified()) );
     connect( m_ps->m_purgeCountSpinBox, SIGNAL(valueChanged( int )), SLOT(checkModified()) );
+    connect( m_ps->m_writeTagsCheck, SIGNAL(clicked()), SLOT(checkModified()) );
 
     connect( this, SIGNAL(applyClicked()), this ,SLOT(slotApply()) );
     connect( this, SIGNAL(okClicked()), this, SLOT(slotApply()) );
@@ -138,6 +141,7 @@ PodcastSettingsDialog::slotApply()       //slot
 
     m_channel->setPurge( m_ps->m_purgeCheck->isChecked() );
     m_channel->setPurgeCount( m_ps->m_purgeCountSpinBox->value() );
+    m_ps->m_writeTagsCheck->isChecked();
 
     enableButtonApply( false );
 }
