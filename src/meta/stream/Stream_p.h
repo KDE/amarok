@@ -158,6 +158,10 @@ class StreamArtist : public Meta::Artist
             return name();
         }
 
+        bool operator==( const Meta::Artist &other ) const {
+            return name() == other.name();
+        }
+
         MetaStream::Track::Private * const d;
 };
 
