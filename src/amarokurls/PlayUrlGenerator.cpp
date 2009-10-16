@@ -34,7 +34,6 @@ PlayUrlGenerator * PlayUrlGenerator::instance()
 
 PlayUrlGenerator::PlayUrlGenerator()
 {
-    The::amarokUrlHandler()->registerGenerator( this );
 }
 
 
@@ -78,7 +77,7 @@ PlayUrlGenerator::createTrackBookmark( Meta::TrackPtr track, int seconds, QStrin
 QString
 PlayUrlGenerator::description()
 {
-    return i18n( "current track position" );
+    return i18n( "Bookmark Track Position" );
 }
 
 AmarokUrl

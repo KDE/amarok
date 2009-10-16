@@ -28,6 +28,7 @@
 #include "SqlStorage.h"
 #include "timecode/TimecodeObserver.h"
 #include "ContextUrlGenerator.h"
+#include "PlayUrlGenerator.h"
 
 #include <KIcon>
 
@@ -62,6 +63,10 @@ AmarokUrlHandler::AmarokUrlHandler()
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
     registerRunner( m_playRunner, m_playRunner->command() );
     registerRunner( m_playlistViewRunner, m_playlistViewRunner->command() );
+
+    registerGenerator( ContextUrlGenerator::instance() );
+    registerGenerator( NavigationUrlGenerator::instance() );
+    registerGenerator( PlayUrlGenerator::instance() );
 }
 
 
@@ -87,11 +92,13 @@ void AmarokUrlHandler::unRegisterRunner( AmarokUrlRunnerBase * runner )
 
 void AmarokUrlHandler::registerGenerator( AmarokUrlGenerator * generator )
 {
-    
+    if( !m_registeredGenerators.contains( generator ) )
+        m_registeredGenerators.append( generator );
 }
 
 void AmarokUrlHandler::unRegisterGenerator( AmarokUrlGenerator * generator )
 {
+    m_registeredGenerators.removeAll( generator );
 }
 
 bool AmarokUrlHandler::run( AmarokUrl url )

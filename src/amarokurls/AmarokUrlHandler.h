@@ -67,6 +67,8 @@ public:
     void updateTimecodes();
     void paintNewTimecode( const QString &name, int pos );
 
+    QList<AmarokUrlGenerator *> generators() { return m_registeredGenerators; }
+
 
 public slots:
     void bookmarkAlbum( Meta::AlbumPtr album );

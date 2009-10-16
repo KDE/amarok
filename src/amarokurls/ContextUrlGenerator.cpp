@@ -35,7 +35,6 @@ ContextUrlGenerator * ContextUrlGenerator::instance()
 
 ContextUrlGenerator::ContextUrlGenerator()
 {
-    The::amarokUrlHandler()->registerGenerator( this );
 }
 
 ContextUrlGenerator::~ContextUrlGenerator()
@@ -63,7 +62,7 @@ ContextUrlGenerator::createContextBookmark()
 QString
 ContextUrlGenerator::description()
 {
-    return i18n( "Context View Applets" );
+    return i18n( "Bookmark Context View Applets" );
 }
 
 AmarokUrl

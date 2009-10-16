@@ -39,7 +39,6 @@ NavigationUrlGenerator * NavigationUrlGenerator::instance()
 
 NavigationUrlGenerator::NavigationUrlGenerator()
 {
-    The::amarokUrlHandler()->registerGenerator( this );
 }
 
 NavigationUrlGenerator::~NavigationUrlGenerator()
@@ -214,7 +213,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 QString
 NavigationUrlGenerator::description()
 {
-    return i18n( "current Media Sources view" );
+    return i18n( "Bookmark Media Sources View" );
 }
 
 AmarokUrl

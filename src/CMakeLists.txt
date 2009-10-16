@@ -152,6 +152,7 @@ set(libamarokurl_SRCS
     amarokurls/AmarokUrl.cpp
     amarokurls/AmarokUrlAction.cpp
     amarokurls/AmarokUrlHandler.cpp
+    amarokurls/BookmarkCurrentButton.cpp
     amarokurls/ContextUrlGenerator.cpp
     amarokurls/ContextUrlRunner.cpp
     amarokurls/NavigationUrlRunner.cpp
