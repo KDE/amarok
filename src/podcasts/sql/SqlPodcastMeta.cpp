@@ -158,17 +158,16 @@ Meta::SqlPodcastEpisode::setLocalUrl( const KUrl &url )
     if( m_localUrl.isEmpty() )
     {
         if( !m_localFile.isNull() )
-        {
             m_localFile.clear();
-            return;
-        }
     }
     else
     {
         //if we had a local file previously it will get deleted by the KSharedPtr.
         m_localFile = new MetaFile::Track( m_localUrl );
-        return;
     }
+
+    //metadata might have, very likely did change
+    Meta::Track::notifyObservers();
 }
 
 qint64
