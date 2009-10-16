@@ -269,8 +269,15 @@ OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
                     homepage->setData( url );
                     m_iconsBar->addAction( homepage );
                     fillHomepageFromOcs = false;
+                    continue;
                 }
-                continue;
+                if( type == "other" && url.contains( "last.fm/" ) )     //HACK: assign a last.fm icon if the URL contains last.fm
+                {
+                    icon = KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-lastfm.png" ) ) );
+                    text = i18n( "Visit contributor's Last.fm profile" );
+                }
+                else
+                    continue;
             }
             else if( type == "LinkedIn" )
             {
