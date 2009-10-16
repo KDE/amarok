@@ -77,7 +77,8 @@ public:
     virtual void setCoverUrl( const QString &coverURL );
     virtual QString coverUrl() const;
 
-    bool operator==( const Meta::Album &other ) const {
+    bool operator==( const Meta::Album &other ) const
+    {
         return name() == other.name();
     }
 
@@ -98,6 +99,11 @@ class AmpacheArtist : public ServiceArtist
         virtual bool isBookmarkable() { return true; }
         virtual QString collectionName() { return m_service->name(); }
         virtual bool simpleFiltering() { return true; }
+
+        bool operator==( const Meta::Artist &other ) const
+        {
+            return name() == other.name();
+        }
 
     private:
         ServiceBase * m_service;
