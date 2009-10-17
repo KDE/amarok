@@ -240,7 +240,6 @@ ProgressWidget::redrawBookmarks()
 {
     DEBUG_BLOCK
     m_slider->clearTriangles();
-
     if( The::engineController()->currentTrack() )
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();

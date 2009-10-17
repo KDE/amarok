@@ -199,7 +199,7 @@ AmarokUrlHandler::unregisterForTimecodes( ProgressWidget * progressWidget )
 
 void AmarokUrlHandler::updateTimecodes()
 {
-        foreach( ProgressWidget * progressWidget, m_progresWidgets )
+    foreach( ProgressWidget * progressWidget, m_progresWidgets )
     {
         progressWidget->redrawBookmarks();
     }

@@ -564,18 +564,39 @@ BookmarkModel::deleteBookmark( const QString& name )
 
     debug() << "Name: " << name;
 
-    foreach( AmarokUrlPtr item, m_root->childBookmarks() )
+    if( deleteBookmarkRecursively( m_root, name ) )
+    {
+        debug() << "Deleted!";
+        reloadFromDb();
+        The::amarokUrlHandler()->updateTimecodes();
+    }
+    else
+        debug() << "No such bookmark found!";
+}
+
+bool
+BookmarkModel::deleteBookmarkRecursively( BookmarkGroupPtr group, const QString& name )
+{
+    foreach( AmarokUrlPtr item, group->childBookmarks() )
     {
         debug() << "item->name(): " << item->name();
         if( item->name() == name )
         {
             debug() << "Deleting Bookmark: " << name;
             item->removeFromDb();
-            reloadFromDb();
-            The::amarokUrlHandler()->updateTimecodes();
-            break;
+            return true;
         }
     }
+
+    //if not found, recurse through child groups
+    foreach( BookmarkGroupPtr childGroup, group->childGroups() )
+    {
+        if( deleteBookmarkRecursively( childGroup, name ) )
+            return true;
+    }
+
+    return false;
+        
 }
 
 void BookmarkModel::upgradeTables( int from )

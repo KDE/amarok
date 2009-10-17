@@ -34,7 +34,9 @@ BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString 
 }
 
 BookmarkTriangle::~BookmarkTriangle()
-{}
+{
+    DEBUG_BLOCK
+}
 
 QSize BookmarkTriangle::sizeHint() const
 {

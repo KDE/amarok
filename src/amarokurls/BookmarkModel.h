@@ -101,6 +101,8 @@ private:
     void deleteTables();
     void upgradeTables( int from );
 
+    bool deleteBookmarkRecursively( BookmarkGroupPtr group, const QString& name );
+
     static BookmarkModel * s_instance;
 
     BookmarkGroupPtr m_root;
