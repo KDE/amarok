@@ -60,7 +60,6 @@ Amarok::KNotificationBackend::~KNotificationBackend()
     DEBUG_BLOCK
 }
 
-// TODO: Implement
 void
 Amarok::KNotificationBackend::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
@@ -71,6 +70,8 @@ Amarok::KNotificationBackend::engineStateChanged( Phonon::State state, Phonon::S
         case Phonon::PausedState:
         case Phonon::LoadingState:
         case Phonon::ErrorState:
+            if( m_timer->isActive() )
+                m_timer->stop(); // Do not notify if track cannot be played
         case Phonon::BufferingState:
             break;
     }
