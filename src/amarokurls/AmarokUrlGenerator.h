@@ -24,6 +24,7 @@ class AmarokUrlGenerator
 {
 
 public:
+    virtual ~AmarokUrlGenerator() {};
 
     /**
        Get the user visible description of what the createUrl() function will actualy bookmarks.
