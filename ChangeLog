@@ -63,6 +63,9 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * Fixed issue with collection scanner seeing duplicate tracks if they
+      contained the default MusicBrainz UUID. Patch by Egbert König
+      <e.kunig@home.nl>. (BR 209822)
     * Fixed issues with certain types of tracks not correctly getting grouped
       together in the playlist when grouping by something other than album.
     * Splash screen no longer hides KWallet on startup. (BR 210179)

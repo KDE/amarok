@@ -55,6 +55,7 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
     QString mbId = QString( "http://musicbrainz.org" );
     QString storedMBId;
+    QString mbDefaultUUID = QString( "[mb track uuid]" );
     if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
         if( !file->ID3v2Tag( false ) )
@@ -75,7 +76,7 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
                     storedMBId = TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
             }
         }
-        if( !storedMBId.isEmpty() )
+        if( !storedMBId.isEmpty() && ( storedMBId != mbDefaultUUID ) )
             return QString( "MB_" ) + storedMBId;
     }
     //from here below assumes a file with a XiphComment; put non-conforming formats up above...
@@ -105,7 +106,7 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     else if( comment->contains( Qt4QStringToTString( mbId.toUpper() ) ) )
     {
         QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
-        if( !identifier.isEmpty() )
+        if( !identifier.isEmpty() && ( identifier != mbDefaultUUID ) )
             return QString( "MB_" ) + identifier;
     }
 
