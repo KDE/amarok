@@ -69,6 +69,7 @@ Amarok::KNotificationBackend::engineStateChanged( Phonon::State state, Phonon::S
         case Phonon::StoppedState:
         case Phonon::PausedState:
         case Phonon::LoadingState:
+            break;
         case Phonon::ErrorState:
             if( m_timer->isActive() )
                 m_timer->stop(); // Do not notify if track cannot be played
