@@ -571,6 +571,7 @@ BookmarkModel::deleteBookmark( const QString& name )
         {
             item->removeFromDb();
             m_viewItems.remove( item );
+            reloadFromDb();
             break;
         }
     }
