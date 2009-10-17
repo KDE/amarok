@@ -558,6 +558,21 @@ BookmarkModel::createNewBookmark()
    
 }
 
+void
+BookmarkModel::deleteBookmark( const QString& name )
+{
+    DEBUG_BLOCK
+
+    foreach( BookmarkViewItemPtr item, m_viewItems )
+    {
+        if( item->name() == name )
+        {
+            item->removeFromDb();
+            break;
+        }
+    }
+}
+
 void BookmarkModel::upgradeTables( int from )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();

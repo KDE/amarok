@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,12 +16,15 @@
  ****************************************************************************************/
 
 #include "BookmarkTriangle.h"
+
+#include "BookmarkModel.h"
 #include "Debug.h"
 #include "MetaUtility.h"
 #include "SvgHandler.h"
 
 #include <KLocale>
 
+#include <QMenu>
 #include <QPainter>
 #include <QSize>
 #include <QSizePolicy>
@@ -62,8 +66,27 @@ void BookmarkTriangle::mousePressEvent ( QMouseEvent * event )
 
 void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
 {
-    Q_UNUSED ( event )
-    emit clicked ( m_mseconds );
+    DEBUG_BLOCK
+
+    if( event->button() == Qt::RightButton )
+    {
+        QMenu menu( this );
+        QAction* deleteAction = menu.addAction( i18n( "Remove Bookmark" ) );
+        connect( deleteAction, SIGNAL( triggered() ), this, SLOT( deleteBookmark() ) );
+        menu.exec( mapToGlobal( pos() ) );
+
+        event->accept();
+        return;
+    }
+
+   emit clicked ( m_mseconds );
+}
+
+void BookmarkTriangle::deleteBookmark ()
+{
+    DEBUG_BLOCK
+
+    BookmarkModel::instance()->deleteBookmark( m_name );
 }
 
 void BookmarkTriangle::enterEvent ( QEvent * event )
