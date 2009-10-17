@@ -58,6 +58,7 @@ PaletteHandler::setPalette( const QPalette & palette )
 void
 PaletteHandler::updateItemView( QAbstractItemView * view )
 {
+    return; // HACK: Get default background again
 
     QPalette p = m_palette;
 

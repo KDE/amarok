@@ -288,8 +288,8 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
             //get some new graphics anyway...
 
             int overlayXOffset = 0;
-            int overlayYOffset = rowOffsetY - 2;
-            int overlayHeight = option.rect.height() + 4;
+            int overlayYOffset = rowOffsetY - 1;
+            int overlayHeight = option.rect.height() + 1;
             int overlayLength = option.rect.width();
             int endWidth = overlayHeight / 4;
 
