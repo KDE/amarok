@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CollectionConfig</class>
- <widget class="QWidget" name="CollectionConfig" >
-  <property name="geometry" >
+ <widget class="QWidget" name="CollectionConfig">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,36 +10,23 @@
     <height>215</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Collection Setup</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="leftMargin" >
-    <number>0</number>
-   </property>
-   <property name="topMargin" >
-    <number>0</number>
-   </property>
-   <property name="rightMargin" >
-    <number>0</number>
-   </property>
-   <property name="bottomMargin" >
-    <number>0</number>
-   </property>
+  <layout class="QVBoxLayout" name="rootLayout">
    <item>
-    <widget class="QGroupBox" name="collectionFoldersBox" >
-     <property name="title" >
+    <widget class="QGroupBox" name="collectionFoldersBox">
+     <property name="title">
       <string>Collection Folders</string>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
  <includes>
-  <include location="local" >klineedit.h</include>
-  <include location="local" >kpushbutton.h</include>
-  <include location="local" >knuminput.h</include>
+  <include location="local">klineedit.h</include>
+  <include location="local">kpushbutton.h</include>
+  <include location="local">knuminput.h</include>
  </includes>
  <resources/>
  <connections/>
