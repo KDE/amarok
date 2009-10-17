@@ -114,6 +114,7 @@ EngineController::initializePhonon()
 {
     DEBUG_BLOCK
 
+    m_path.disconnect();
     delete m_media;
     delete m_controller;
     delete m_audio;
