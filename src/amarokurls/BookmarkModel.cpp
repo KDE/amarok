@@ -543,7 +543,6 @@ BookmarkModel::createNewBookmark()
     delete url;
 
     reloadFromDb();
-
     debug() << "id of new bookmark: " << id;
     int row = m_root->childGroups().count();
     foreach ( AmarokUrlPtr childBookmark, m_root->childBookmarks() ) {
@@ -565,13 +564,15 @@ BookmarkModel::deleteBookmark( const QString& name )
 
     debug() << "Name: " << name;
 
-    foreach( BookmarkViewItemPtr item, m_viewItems )
+    foreach( AmarokUrlPtr item, m_root->childBookmarks() )
     {
+        debug() << "item->name(): " << item->name();
         if( item->name() == name )
         {
+            debug() << "Deleting Bookmark: " << name;
             item->removeFromDb();
-            m_viewItems.remove( item );
             reloadFromDb();
+            The::amarokUrlHandler()->updateTimecodes();
             break;
         }
     }
