@@ -563,11 +563,14 @@ BookmarkModel::deleteBookmark( const QString& name )
 {
     DEBUG_BLOCK
 
+    debug() << "Name: " << name;
+
     foreach( BookmarkViewItemPtr item, m_viewItems )
     {
         if( item->name() == name )
         {
             item->removeFromDb();
+            m_viewItems.remove( item );
             break;
         }
     }

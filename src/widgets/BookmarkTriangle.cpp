@@ -86,6 +86,7 @@ void BookmarkTriangle::deleteBookmark ()
 {
     DEBUG_BLOCK
 
+    debug() << "Name: " << m_name;
     BookmarkModel::instance()->deleteBookmark( m_name );
 }
 
