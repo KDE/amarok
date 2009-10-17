@@ -15,22 +15,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef OSDCONFIG_H
-#define OSDCONFIG_H
+#ifndef NOTIFICATIONSCONFIG_H
+#define NOTIFICATIONSCONFIG_H
 
-#include "ui_OsdConfig.h"
+#include "ui_NotificationsConfig.h"
 #include "ConfigDialogBase.h"
 
 class OSDPreviewWidget;
 
 
-class OsdConfig : public ConfigDialogBase, public Ui_OsdConfig
+class NotificationsConfig : public ConfigDialogBase, public Ui_NotificationsConfig
 {
     Q_OBJECT
 
     public:
-        OsdConfig( QWidget* parent );
-        virtual ~OsdConfig();
+        NotificationsConfig( QWidget* parent );
+        virtual ~NotificationsConfig();
 
         virtual bool hasChanged();
         virtual bool isDefault();

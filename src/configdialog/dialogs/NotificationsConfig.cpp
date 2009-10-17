@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "OsdConfig.h"
+#include "NotificationsConfig.h"
 
 #include "amarokconfig.h"
 #include "Debug.h"
@@ -25,7 +25,7 @@
 
 #include <QDesktopWidget>
 
-OsdConfig::OsdConfig( QWidget* parent )
+NotificationsConfig::NotificationsConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
     setupUi( this ); 
@@ -90,7 +90,7 @@ OsdConfig::OsdConfig( QWidget* parent )
     */
 }
 
-OsdConfig::~OsdConfig()
+NotificationsConfig::~NotificationsConfig()
 {}
 
 
@@ -99,19 +99,19 @@ OsdConfig::~OsdConfig()
 ///////////////////////////////////////////////////////////////
 
 bool
-OsdConfig::hasChanged()
+NotificationsConfig::hasChanged()
 {
     return false;
 }
 
 bool
-OsdConfig::isDefault()
+NotificationsConfig::isDefault()
 {
     return false;
 }
 
 void
-OsdConfig::updateSettings()
+NotificationsConfig::updateSettings()
 {
     DEBUG_BLOCK
 
@@ -134,7 +134,7 @@ OsdConfig::updateSettings()
 ///////////////////////////////////////////////////////////////
 
 void
-OsdConfig::slotPositionChanged()
+NotificationsConfig::slotPositionChanged()
 {
     kcfg_OsdScreen->blockSignals( true );
     kcfg_OsdScreen->setCurrentIndex( m_osdPreview->screen() );
@@ -145,13 +145,13 @@ OsdConfig::slotPositionChanged()
 }
 
 void
-OsdConfig::hideEvent( QHideEvent* )
+NotificationsConfig::hideEvent( QHideEvent* )
 {
     m_osdPreview->hide();
 }
 
 void
-OsdConfig::showEvent( QShowEvent* )
+NotificationsConfig::showEvent( QShowEvent* )
 {
     useCustomColorsToggled( kcfg_OsdUseCustomColors->isChecked() );
 
@@ -160,16 +160,16 @@ OsdConfig::showEvent( QShowEvent* )
 }
 
 void
-OsdConfig::setGrowlEnabled( bool enable )
+NotificationsConfig::setGrowlEnabled( bool enable )
 {
     DEBUG_BLOCK
     AmarokConfig::setGrowlEnabled( enable );
 }
 
 void
-OsdConfig::useCustomColorsToggled( bool on )
+NotificationsConfig::useCustomColorsToggled( bool on )
 {
     m_osdPreview->setUseCustomColors( on, kcfg_OsdTextColor->color() );
 }
 
-#include "OsdConfig.moc"
+#include "NotificationsConfig.moc"

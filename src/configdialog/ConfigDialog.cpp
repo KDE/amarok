@@ -25,7 +25,7 @@
 #include "GeneralConfig.h"
 #include "MainWindow.h"
 //#include "MediadeviceConfig.h"
-#include "OsdConfig.h"
+#include "NotificationsConfig.h"
 #include "PlaybackConfig.h"
 #include "ServiceConfig.h"
 
@@ -47,7 +47,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* collection  = new CollectionConfig( this );
     ConfigDialogBase* services    = new ServiceConfig( this );
     ConfigDialogBase* playback    = new PlaybackConfig( this );
-    ConfigDialogBase* osd         = new OsdConfig( this );
+    ConfigDialogBase* notify      = new NotificationsConfig( this );
     ConfigDialogBase* database    = new DatabaseConfig( this );
 
     //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
@@ -56,7 +56,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( collection,  i18n( "Collection" ), "collection-amarok", i18n( "Configure Collection" ) );
     addPage( services,    i18n( "Internet Services" ), "services-amarok", i18n( "Configure Services" ) );
     addPage( playback,    i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
-    addPage( osd,         i18n( "On Screen Display" ), "preferences-indicator-amarok", i18n( "Configure On-Screen-Display" ) );
+    addPage( notify,         i18n( "Notifications" ), "preferences-indicator-amarok", i18n( "Configure Notifications" ) );
     addPage( database,    i18n( "Database" ), "server-database", i18n( "Configure Database" ) );
     //addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
 
