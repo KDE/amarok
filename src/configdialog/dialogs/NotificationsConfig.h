@@ -48,7 +48,4 @@ class NotificationsConfig : public ConfigDialogBase, public Ui_NotificationsConf
         void showEvent( QShowEvent* );
 };
 
-
 #endif
-
-

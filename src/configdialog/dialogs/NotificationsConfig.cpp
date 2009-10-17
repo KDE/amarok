@@ -28,7 +28,7 @@
 NotificationsConfig::NotificationsConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
-    setupUi( this ); 
+    setupUi( this );
 
     m_osdPreview = new OSDPreviewWidget( this ); //must be child!!!
     m_osdPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
@@ -40,7 +40,7 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
         gridLayout_2->addWidget( growl, 2, 0, 1, 1 );
         connect( growl,         SIGNAL( toggled( bool ) ),
                  this,                      SLOT( setGrowlEnabled( bool ) ) );
-    #endif 
+    #endif
     // Enable/disable the translucency option depending on whether the QWidget has the WindowOpacity property
     // kcfg_OsdUseTranslucency->setEnabled( CheckHasWindowOpacityProperty )
 
@@ -130,7 +130,7 @@ NotificationsConfig::updateSettings()
 
 
 ///////////////////////////////////////////////////////////////
-// PRIVATE METHODS 
+// PRIVATE METHODS
 ///////////////////////////////////////////////////////////////
 
 void
