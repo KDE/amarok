@@ -1,0 +1,52 @@
+Script Updating HOWTO
+===============================================================================
+
+This document describes how to release an update for a script that will be 
+deployed using Amarok's automatic script updating mechanism. 
+
+
+A. Quick step-by-step overview:
+
+* Have a look at the code you're about to deploy, to make sure it isn't 
+    malicious ;-)
+* Check to make sure the version number in script.spec has been incremented
+* Create the archive "main.tar.bz2" and the "version" file (see B.3 for 
+    details)
+* Create the signature (see B.4 above for details)
+* Put these three files into amarok.kde.org/scriptupdates/<script-name>/ (see 
+    B.2 for details)
+
+
+B. Appendix: General specification:
+
+1. The base URL for the update repository is amarok.kde.org/scriptupdates/.
+
+2. Inside this directory, for each script there must be a subdirectory that is 
+    spelled exactly like the script's directory when Amarok has been installed 
+    (i.e. currently "librivox_service", "lyrics_lyricwiki", 
+    "radio_station_service" and so on).
+
+3. Inside a script's subdirectory, three files are provided (in case there is 
+    an update for this script):
+    - "main.tar.bz2": the contents of the update, i.e. the full contents of the 
+        script's directory (without the directory itself). Specifically, the 
+        files "main.js" and "script.spec" (as well as any additional resources) 
+        are directly inside the archive's root. 
+    - "version": a plain text file specifying the version of the updated script. 
+        Any combination of numbers and dots is supported as the version number. 
+        The content of this file is compared by Amarok to the value of 
+        X-KDE-PluginInfo-Version in the *installed* script's script.spec in 
+        order to determine whether an update is available. 
+    - "signature": the digital signature for both the main archive and the 
+        "version" file. If this signature is missing or invalid, no update will 
+        be performed. 
+
+4. In the utilities/updatesigner/ directory of the Amarok sources, there is a 
+    tool for creating signatures (and key pairs), which is per default installed 
+    to /usr/bin/amarok-update-signer. To create a signature, cd to the directory 
+    where you put "main.tar.bz2" and "version", and run:
+    $ amarok-update-signer sign /path/to/your/privkey.pem
+    (or run amarok-update-signer without any parameters to get a usage 
+    description). This will, after asking you for the key's passphrase,  create 
+    the "signature" file. 
+
