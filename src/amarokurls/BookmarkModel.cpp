@@ -264,7 +264,7 @@ BookmarkModel::headerData(int section, Qt::Orientation orientation, int role) co
         {
             case Name: return i18n("Name");
             case Command: return i18n("Type");
-            case Url: return i18n("Url");
+            case Url: return i18n("URL");
             case Description: return i18n("Description");
             default: return QVariant();
         }

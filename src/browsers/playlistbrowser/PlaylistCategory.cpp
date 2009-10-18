@@ -47,7 +47,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
 
     setLongDescription( i18n( "Create, edit, organize and load playlists. "
         "Amarok automatically adds any playlists found when scanning your collection, "
-        " and any playlists that you save are also shown here." ) );
+        "and any playlists that you save are also shown here." ) );
 
     setImagePath( KStandardDirs::locate(
                         "data", "amarok/images/hover_info_user_playlists.png" )

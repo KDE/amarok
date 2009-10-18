@@ -90,7 +90,7 @@
     <item row="2" column="0">
      <widget class="QLabel" name="additionalkeywordsLabel">
       <property name="text">
-       <string>Additional key words :</string>
+       <string>Additional key words:</string>
       </property>
      </widget>
     </item>

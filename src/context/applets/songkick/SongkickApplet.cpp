@@ -153,7 +153,7 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
     else if( data.contains( "error" ) )
     {
         m_songkick->show();
-        m_songkick->setPlainText( i18n( "Songkick was not able to be downloaded. Please check your internet connection: %1", data["error"].toString() ) );
+        m_songkick->setPlainText( i18n( "Songkick was not able to be downloaded. Please check your Internet connection: %1", data["error"].toString() ) );
     }
     else if( data.contains( "suggested" ) )
     {
