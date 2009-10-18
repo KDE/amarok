@@ -67,6 +67,7 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * Made playlist layouts translatable. (BR 189751)
     * Fixed issue with collection scanner seeing duplicate tracks if they
       contained the default MusicBrainz UUID. Patch by Egbert König
       <e.kunig@home.nl>. (BR 209822)
