@@ -50,6 +50,23 @@
             </row>
         </group_body>
     </layout>
+    <layout group_by="None" name="No Grouping (Single Line)" >
+        <single_track active_indicator_row="0" show_cover="false" >
+            <row>
+                <element suffix="" prefix="" size="0.5" bold="true" alignment="left" value="Title" underline="false" italic="false" />
+                <element suffix="" prefix="" size="0" bold="false" alignment="left" value="Artist" underline="false" italic="false" />
+                <element suffix="" prefix="" size="0" bold="false" alignment="right" value="Length" underline="false" italic="false" />
+            </row>
+        </single_track>
+        <group_head active_indicator_row="0" show_cover="false" />
+        <group_body active_indicator_row="0" show_cover="false" >
+            <row>
+                <element suffix="" prefix="" size="0.5" bold="true" alignment="left" value="Title" underline="false" italic="false" />
+                <element suffix="" prefix="" size="0" bold="false" alignment="left" value="Artist" underline="false" italic="false" />
+                <element suffix="" prefix="" size="0" bold="false" alignment="right" value="Length" underline="false" italic="false" />
+            </row>
+        </group_body>
+    </layout>
     <layout name="Verbose" >
         <single_track active_indicator_row="0" show_cover="true" >
             <row>
