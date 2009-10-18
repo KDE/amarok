@@ -438,7 +438,7 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
         , m_dragging( false )
 {
     setObjectName( "osdpreview" );
-    m_text = i18n( "OSD Preview - drag to reposition" );
+    m_text = i18n( "On-Screen-Display preview\nDrag to reposition" );
     m_duration = 0;
     m_alignment = static_cast<Alignment>( AmarokConfig::osdAlignment() );
     m_y = AmarokConfig::osdYOffset();
