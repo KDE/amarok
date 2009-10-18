@@ -840,9 +840,9 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
     //if it does, and if each file of the album is alone in its directory
     //it's probably a compilation.
     //this handles A1 compilations that were automatically organized by Amarok
-    QString query = "SELECT urls.deviceid,urls.rpath,tracks_temp.id,albums.id,albums.artist FROM urls_temp AS urls "
-                    "LEFT JOIN tracks_temp on urls.id = tracks_temp.url LEFT JOIN albums_temp AS albums ON "
-                    "tracks_temp.album = albums.id WHERE albums.name = '%1';";
+    QString query = "SELECT urls_temp.deviceid,urls_temp.rpath,tracks_temp.id,albums_temp.id,albums_temp.artist FROM urls_temp "
+                    "LEFT JOIN tracks_temp on urls_temp.id = tracks_temp.url LEFT JOIN albums_temp ON "
+                    "tracks_temp.album = albums_temp.id WHERE albums_temp.name = '%1';";
     query = query.arg( m_collection->escape( album ) );
     QStringList result = m_collection->query( query );
     QList<QString> trackIds;
