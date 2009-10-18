@@ -228,18 +228,26 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
     if( !m_configMode )
     {
         // place add icons in all possible places that the user can add an icon
-        
+
         m_configMode = true;
-        
+
+        int loc = -1;                        // location of the configure icon
         int count = m_appletLayout->count(); // save now so we don't check count after adding :)
         for( int i = 0; i < count; i++ ) // tell each applet we are configuring
         {
-            Context::AppletToolbarAppletItem* appletItem = dynamic_cast< Context::AppletToolbarAppletItem* >( m_appletLayout->itemAt( i ) );
+            QGraphicsLayoutItem *item = m_appletLayout->itemAt( i );
+
+            Context::AppletToolbarAppletItem* appletItem = dynamic_cast< Context::AppletToolbarAppletItem* >( item );
             if( appletItem )
                 appletItem->setConfigEnabled( true );
+
+            Context::AppletToolbarConfigItem* configItem = dynamic_cast< Context::AppletToolbarConfigItem* >( item );
+            if( configItem )
+                loc = i;
         }
-        
-       newAddItem( count - 1 );
+
+        if( loc >= 0 )
+            newAddItem( loc );
     }
     else
     {
@@ -272,8 +280,18 @@ Context::AppletToolbar::refreshAddIcons() // SLOT
         item->deleteLater();
     }
     m_configAddIcons.clear();
-    
-    newAddItem( m_appletLayout->count() - 1 );
+
+    int loc = -1;
+    for( int i = 0; i < m_appletLayout->count(); ++i )
+    {
+        QGraphicsLayoutItem *item = m_appletLayout->itemAt( i );
+        Context::AppletToolbarConfigItem* configItem = dynamic_cast< Context::AppletToolbarConfigItem* >( item );
+        if( configItem )
+            loc = i;
+    }
+
+    if( loc >=0 )
+        newAddItem( loc );
 }
 
 void 

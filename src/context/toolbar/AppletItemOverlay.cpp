@@ -16,6 +16,7 @@
 
 #include "AppletItemOverlay.h"
 #include "Debug.h"
+#include "toolbar/AppletToolbarAddItem.h"
 #include "toolbar/AppletToolbarAppletItem.h"
 #include "ToolbarView.h"
 
@@ -273,16 +274,36 @@ Context::AppletItemOverlay::mouseMoveEvent( QMouseEvent *event )
 
     m_applet->setGeometry( g );
 
+    // find location of the AddItem icon
+    QRectF addItemGeom;
+    for( int i = 0; i < m_layout->count(); ++i )
+    {
+        QGraphicsLayoutItem *item = m_layout->itemAt( i );
+
+        Context::AppletToolbarAddItem* addItem =
+            dynamic_cast< Context::AppletToolbarAddItem* >( item );
+
+        if( addItem )
+        {
+            addItemGeom = addItem->geometry();
+            break;
+        }
+    }
+
     // swap items if we pass completely over the next/previous item or cross
     // more than halfway across it, whichever comes first
-  //  debug() << m_prevGeom << g << m_nextGeom;
-    if( m_prevGeom.isValid() && g.left() <= m_prevGeom.left() ) {
+    // debug() << m_prevGeom << g << m_nextGeom << addItemGeom;
+    if( m_prevGeom.isValid() && g.left() <= m_prevGeom.left() )
+    {
         swapWithPrevious();
-    }else if ( m_nextGeom.isValid() && g.right() >= m_nextGeom.right() ) {
+    }
+    else if( m_nextGeom.isValid() && g.right() >= m_nextGeom.right()
+                                  && g.right() <  addItemGeom.left() )
+    {
         swapWithNext();
     }
 
-  //  debug() << "=================================";
+    // debug() << "=================================";
 }
 
 void 
