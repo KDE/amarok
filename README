@@ -59,6 +59,9 @@ Required
       http://code.google.com/p/qtscriptgenerator/
       git://labs.trolltech.com/qtscriptgenerator
 
+    * LibQCA 2.0.2 (or newer)
+      (Qt Cryptographic Architecture)
+      http://delta.affinix.com/qca/
 
 Optional
     * libgpod 0.7.0 (or newer)
