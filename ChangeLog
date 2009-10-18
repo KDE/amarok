@@ -40,6 +40,9 @@ VERSION 2.2.1
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * Scanning speedups by getting rid of unnecessary code paths and
+      optimizing some queries. Patch by Egbert König <e.kunig@home.nl>.
+      (BR 209822)
     * New main toolbar and renaming of ToolbarNG to Slim Toolbar.
     * Huge performance improvements for the Cover Manager. Thanks to Michael
       Reiher <redm@gmx.de> for the patch. (BR 210454)

@@ -621,67 +621,28 @@ DatabaseUpdater::copyToPermanentTables()
 
 
     //handle artists before albums
-    QStringList artistIdList = m_collection->query( "SELECT artists.id FROM artists;" );
-    QString artistIds = "-1";
-    foreach( const QString &artistId, artistIdList )
-    {
-        artistIds += ',';
-        artistIds += artistId;
-    }
-    m_collection->insert( QString ( "INSERT INTO artists SELECT * FROM artists_temp WHERE artists_temp.id NOT IN ( %1 );" ).arg( artistIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO artists SELECT * FROM artists_temp WHERE artists_temp.id NOT IN"
+                   " (SELECT DISTINCT id FROM artists);" ), QString() );
 
     //handle images before albums
     m_collection->query( "DELETE FROM images;" );
     m_collection->insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
 
-    QStringList albumIdList = m_collection->query( "SELECT albums.id FROM albums;" );
-    //in an empty database, albumIdList is empty. This would result in a SQL query like NOT IN ( ) without
-    //the -1 below which is invalid SQL. The auto generated values start at 1 so this is fine
-    QString albumIds = "-1";
-    foreach( const QString &albumId, albumIdList )
-    {
-        albumIds += ',';
-        albumIds += albumId;
-    }
-    m_collection->insert( QString ( "INSERT INTO albums SELECT * FROM albums_temp WHERE albums_temp.id NOT IN ( %1 );" ).arg( albumIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO albums SELECT * FROM albums_temp WHERE albums_temp.id NOT IN"
+                   " ( SELECT DISTINCT id FROM albums );" ), QString() );
 
-    QStringList composerIdList = m_collection->query( "SELECT composers.id FROM composers;" );
-    QString composerIds = "-1";
-    foreach( const QString &composerId, composerIdList )
-    {
-        composerIds += ',';
-        composerIds += composerId;
-    }
-    m_collection->insert( QString ( "INSERT INTO composers SELECT * FROM composers_temp WHERE composers_temp.id NOT IN ( %1 );" ).arg( composerIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO composers SELECT * FROM composers_temp WHERE composers_temp.id NOT IN"
+                   " ( SELECT DISTINCT id FROM composers );" ), QString() );
 
-    QStringList genreIdList = m_collection->query( "SELECT genres.id FROM genres;" );
-    QString genreIds = "-1";
-    foreach( const QString &genreId, genreIdList )
-    {
-        genreIds += ',';
-        genreIds += genreId;
-    }
-    m_collection->insert( QString ( "INSERT INTO genres SELECT * FROM genres_temp WHERE genres_temp.id NOT IN ( %1 );" ).arg( genreIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO genres SELECT * FROM genres_temp WHERE genres_temp.id NOT IN"
+                   " ( SELECT DISTINCT id FROM genres );" ), QString() );
 
-    QStringList yearIdList = m_collection->query( "SELECT years.id FROM years;" );
-    QString yearIds = "-1";
-    foreach( const QString &yearId, yearIdList )
-    {
-        yearIds += ',';
-        yearIds += yearId;
-    }
-    m_collection->insert( QString ( "INSERT INTO years SELECT * FROM years_temp WHERE years_temp.id NOT IN ( %1 );" ).arg( yearIds ), QString() );
+    m_collection->insert( QString ( "INSERT INTO years SELECT * FROM years_temp WHERE years_temp.id NOT IN"
+                   " ( SELECT DISTINCT id FROM years );" ), QString() );
 
     //insert( "INSERT INTO embed SELECT * FROM embed_temp;", NULL );
     //m_collection->insert( "INSERT INTO directories SELECT * FROM directories_temp;", QString() );
 
-    QStringList urlIdList = m_collection->query( "SELECT urls.id FROM urls;" );
-    QString urlIds = "-1";
-    foreach( const QString &urlId, urlIdList )
-    {
-        urlIds += ',';
-        urlIds += urlId;
-    }
     m_collection->insert( QString( "REPLACE INTO urls SELECT * FROM urls_temp;" ), QString() );
 
     //update the directories table
@@ -983,9 +944,15 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
     if( !forceDebug && !m_debugDatabaseContent )
         return;
 
+    QString ctable = table;
+    if (ctable.endsWith("_temp")) {
+       // get the column information from the related base table:
+       ctable.remove("_temp");
+    }
+
     QStringList columns = m_collection->query(
-            QString( "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE table_schema='amarok' and table_name='%1'" )
-            .arg( m_collection->escape( table ) ) );
+            QString( "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE table_name='%1'" )
+            .arg( m_collection->escape( ctable ) ) );
 
     if( columns.isEmpty() )
         return; //no table with that name
@@ -998,7 +965,7 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
         select.append( column );
     }
 
-    QString query = "SELECT %1 FROM amarok.%2";
+    QString query = "SELECT %1 FROM %2";
 
     QStringList result = m_collection->query( query.arg( select, m_collection->escape( table ) ) );
     QString filePath =
