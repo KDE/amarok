@@ -481,7 +481,9 @@ App::initCliArgs() //static
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
-    options.add("test <argument>", ki18n( "Run integrated unit tests, if your build supports it. The argument sets result output: 'log' for logfiles, 'stdout' for stdout." ) );
+#ifdef DEBUG
+    options.add("test <output>", ki18n( "Run integrated unit tests. Output can be 'log' for logfiles, 'stdout' for stdout." ) );
+#endif // DEBUG
     options.add("p");
     options.add("subscribe <feed-url>", ki18n( "Subscribe to podcast feed" ) );
 
