@@ -256,7 +256,7 @@ PlaybackConfig::eqDeletePreset() //SLOT
     }
     else
     {
-        KMessageBox::detailedSorry( this, i18n( "Can not delete this preset" ),
+        KMessageBox::detailedSorry( this, i18n( "Cannot delete this preset" ),
                                           i18n( "Default presets can not be deleted" ),
                                           i18n( "Error deleting preset" ) );
     }
@@ -268,7 +268,7 @@ PlaybackConfig::eqRestorePreset() //SLOT
     const QString mPresetSelected = eqPresets->currentText();
     if( !eqCfgRestorePreset( mPresetSelected ) )
     {    
-        KMessageBox::detailedSorry( this, i18n( "Can not restore this preset" ),
+        KMessageBox::detailedSorry( this, i18n( "Cannot restore this preset" ),
                                         i18n( "Only default presets can be restored" ),
                                         i18n( "Error restoring preset" ) );
         return;
@@ -287,7 +287,7 @@ PlaybackConfig::eqSavePreset() //SLOT
     QString mPresetSelected = eqPresets->currentText();
     if( mPresetSelected == QLatin1String( "Manual" ) )
     {
-        KMessageBox::detailedSorry( this, i18n( "Can not save this preset" ),
+        KMessageBox::detailedSorry( this, i18n( "Cannot save this preset" ),
                                         i18n( "Preset 'Manual' is reserved for momentary settings.\n\
                                                Please choose different name and try again." ),
                                         i18n( "Error saving preset" ) );

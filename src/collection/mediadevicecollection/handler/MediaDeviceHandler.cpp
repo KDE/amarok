@@ -586,13 +586,12 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
 
-    QString removeError = i18n( "Tracks not deleted:" );
-    QString removeErrorCaption = i18n( "Deleting Tracks Failed" );
+    QString removeError = i18np( "Track not deleted:", "Tracks not deleted:", tracks.size() );
+    QString removeErrorCaption = i18np( "Deleting Track Failed", "Deleting Tracks Failed", tracks.size() );
 
     if ( m_isDeleting )
     {
-        KMessageBox::error( 0, i18np( "%1 Track is already being deleted from the device",
-                                      "%1 Tracks are already being deleted from the device", removeError ), removeErrorCaption );
+        KMessageBox::error( 0, i18n( "%1 tracks are already being deleted from the device.", removeError ), removeErrorCaption );
         return;
     }
 
@@ -609,7 +608,7 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
 
     // Set up statusbar for deletion operation
 
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Removing Tracks from Device" ) );
+    m_statusbar = The::statusBar()->newProgressOperation( this, i18np( "Removing Track from Device", "Removing Tracks from Device", tracks.size() ) );
 
     m_statusbar->setMaximum( tracks.size() );
 

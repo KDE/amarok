@@ -239,7 +239,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_suggested->hide();
         m_lyrics->show();
         m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
-        m_lyrics->setPlainText( i18n( "Could not download lyrics.\nPlease check your internet connection.\nError message:\n%1", data["error"].toString() ) );
+        m_lyrics->setPlainText( i18n( "Could not download lyrics.\nPlease check your Internet connection.\nError message:\n%1", data["error"].toString() ) );
         setCollapseHeight( m_lyrics->sizeHint().height() );
         setCollapseOn();
     }

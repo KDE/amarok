@@ -64,7 +64,7 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
     connect( The::playlistManager(), SIGNAL( categoryAdded( int ) ), SLOT( addCategory( int ) ) );
     connect( The::playlistManager(), SIGNAL( showCategory( int ) ), SLOT( showCategory( int ) ) );
 
-    setLongDescription( i18n( "The playlist browser contains your list of imported and saved playlists. It is also where you can specify powerful dynamic playlists and manage your podcast  subscriptions and episodes." ) );
+    setLongDescription( i18n( "The playlist browser contains your list of imported and saved playlists. It is also where you can specify powerful dynamic playlists and manage your podcast subscriptions and episodes." ) );
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_playlists.png" ) );
 }

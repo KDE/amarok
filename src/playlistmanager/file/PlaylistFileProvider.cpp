@@ -253,7 +253,7 @@ PlaylistFileProvider::loadPlaylists()
         if( playlist.isNull() )
         {
             The::statusBar()->longMessage(
-                    i18n("The playlist file \"%1\" could not be loaded!").arg( url.fileName() ),
+                    i18n("The playlist file \"%1\" could not be loaded.").arg( url.fileName() ),
                     StatusBar::Error
                 );
             continue;
@@ -277,7 +277,7 @@ PlaylistFileProvider::loadPlaylists()
         if( playlist.isNull() )
         {
             The::statusBar()->longMessage(
-                    i18n("The playlist file \"%1\" could not be loaded!").arg( url.fileName() ),
+                    i18n("The playlist file \"%1\" could not be loaded.").arg( url.fileName() ),
                     StatusBar::Error
                 );
             continue;

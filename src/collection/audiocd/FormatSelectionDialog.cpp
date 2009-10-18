@@ -59,13 +59,13 @@ void FormatSelectionDialog::selectionChanged( bool checked )
 
     if( sender() == oggButton )
     {
-        descriptionLabel->setText( i18n( "Ogg Vorbis is a fully free and unencumbered compressed audio format that is perfect for storing your compressed music on your computer. The sound quality is slightly better than Mp3 at the same bitrate. Note that not all mobile player support the Ogg Vorbis format" ) );
+        descriptionLabel->setText( i18n( "Ogg Vorbis is a fully free and unencumbered compressed audio format that is perfect for storing your compressed music on your computer. The sound quality is slightly better than Mp3 at the same bitrate. Note that not all mobile players support the Ogg Vorbis format." ) );
 
         m_selectedFormat = AudioCdCollection::OGG;
     }
     else if( sender() == flacButton )
     {
-        descriptionLabel->setText( i18n( "Flac is a lossless compressed audio format free of any patents or licence fees. It maintains perfect CD audio quality while reducing file size by about 50%. Because the filesize is much larger than Ogg Vorbis or Mp3 it is not recommended if you want to transfer your music to a mobile player." ) );
+        descriptionLabel->setText( i18n( "Flac is a lossless compressed audio format free of any patents or license fees. It maintains perfect CD audio quality while reducing file size by about 50%. Because the filesize is much larger than Ogg Vorbis or Mp3 it is not recommended if you want to transfer your music to a mobile player." ) );
 
         m_selectedFormat = AudioCdCollection::FLAC;
     }
@@ -77,7 +77,7 @@ void FormatSelectionDialog::selectionChanged( bool checked )
     }
     else if( sender() == mp3Button )
     {
-        descriptionLabel->setText( i18n( "Mp3 is the de facto standard in compressed audio compatible with almost all mobile players. It is however non free and generally not recommended" ) );
+        descriptionLabel->setText( i18n( "Mp3 is the de facto standard in compressed audio compatible with almost all mobile players. It is however non free and generally not recommended." ) );
 
         m_selectedFormat = AudioCdCollection::MP3;
     }

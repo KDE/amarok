@@ -266,7 +266,7 @@ PlaylistManager::categoryLongDescription( int playlistCategory )
         case UserPlaylist:
             return i18n( "Create, edit, organize and load playlists. "
         "Amarok automatically adds any playlists found when scanning your collection, "
-        " and any playlists that you save are also shown here." );
+        "and any playlists that you save are also shown here." );
         case PodcastChannel: return i18n("Podcasts");
         case Dynamic: return i18n("Dynamic Playlists");
         case SmartPlaylist: return i18n("Smart Playlist");

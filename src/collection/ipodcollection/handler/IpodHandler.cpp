@@ -156,7 +156,7 @@ IpodHandler::init()
         // TODO: turn into a switch statement, this is too convoluted
 
         QString msg = i18n(  "Media Device: could not find iTunesDB on device mounted at %1. "
-                             "Should I try to initialize your iPod?" ).arg(  mountPoint() );
+                             "Attempt to initialize your iPod?" ).arg(  mountPoint() );
         if( KMessageBox::warningContinueCancel( 0, msg, i18n( "Initialize iPod?" ),
                                                 KGuiItem( i18n( "&Initialize" ), "new" ) ) == KMessageBox::Continue )
         {
@@ -277,7 +277,7 @@ IpodHandler::init()
             }
             else
             {
-                KMessageBox::information( 0, i18n( "The iPod was successfully initialized!" ), i18n( "iPod Initialized" ) );
+                KMessageBox::information( 0, i18n( "The iPod was successfully initialized." ), i18n( "iPod Initialized" ) );
                 debug() << "iPod was initialized";
                 wasInitialized = true;
                 m_success = true;
@@ -362,7 +362,7 @@ IpodHandler::collectionActions()
 #if 0
         if( m_supportsArtwork )
         {
-            QAction *syncArtworkAction = new QAction( KIcon( "insert-image" ), i18n( "Synchronise Artwork" ), this );
+            QAction *syncArtworkAction = new QAction( KIcon( "insert-image" ), i18n( "Synchronize Artwork" ), this );
             syncArtworkAction->setProperty( "popupdropper_svg_id", "edit" );
 
             connect( syncArtworkAction, SIGNAL( triggered() ), this, SLOT( slotSyncArtwork() ) );
@@ -516,7 +516,7 @@ IpodHandler::slotSyncArtwork()
 
     const QString text( i18n( "Amarok is about to synchronize artwork on <i>%1</i>. Do you want to continue?", prettyName() ) );
 
-    if( KMessageBox::warningContinueCancel(0, text, i18n("Synchronise Artwork") ) == KMessageBox::Continue )
+    if( KMessageBox::warningContinueCancel(0, text, i18n("Synchronize Artwork") ) == KMessageBox::Continue )
         ThreadWeaver::Weaver::instance()->enqueue( new SyncArtworkWorkerThread( this ) );
 }
 
@@ -525,7 +525,7 @@ IpodHandler::slotSyncArtworkFailed( ThreadWeaver::Job *job )
 {
     Q_UNUSED( job )
 
-    const QString msg( i18n( "iPod artwork could not be synchronised" ) );
+    const QString msg( i18n( "iPod artwork could not be synchronized" ) );
     The::statusBar()->shortMessage( msg );
 }
 
@@ -536,7 +536,7 @@ IpodHandler::slotSyncArtworkSucceeded( ThreadWeaver::Job *job )
     Q_UNUSED( job )
 
     writeDatabase();
-    const QString msg( i18n( "Artwork synchronised" ) );
+    const QString msg( i18n( "Artwork synchronized" ) );
     The::statusBar()->shortMessage( msg );
 }
 
