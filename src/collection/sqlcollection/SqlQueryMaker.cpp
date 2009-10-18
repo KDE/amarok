@@ -641,6 +641,11 @@ SqlQueryMaker::linkTables()
                 d->linkedTables ^= Private::YEAR_TAB;
             break;
         }
+        case QueryMaker::None:
+        {
+            //???
+            break;
+        }
     }
     if( !d->linkedTables )
         return;
