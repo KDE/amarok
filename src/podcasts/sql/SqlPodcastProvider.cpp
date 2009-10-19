@@ -700,11 +700,11 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
 {
     if( sqlEpisode.isNull() )
     {
-        debug() << "Error: SqlPodcastProvider::downloadEpisode(  Meta::SqlPodcastEpisodePtr sqlEpisode ) was called for a non-SqlPodcastEpisode";
+        error() << "SqlPodcastProvider::downloadEpisode(  Meta::SqlPodcastEpisodePtr sqlEpisode ) was called for a non-SqlPodcastEpisode";
         return;
     }
 
-    if( m_downloadJobMap.contains( sqlEpisode.data() ) )
+    if( m_downloadJobMap.values().contains( sqlEpisode.data() ) )
     {
         debug() << "already downloading " << sqlEpisode->uidUrl();
         return;
