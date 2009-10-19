@@ -705,6 +705,12 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
         return;
     }
 
+    if( m_downloadJobMap.contains( sqlEpisode.data() ) )
+    {
+        debug() << "already downloading " << sqlEpisode->uidUrl();
+        return;
+    }
+
     KIO::StoredTransferJob *storedTransferJob =
             KIO::storedGet( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
 
