@@ -408,6 +408,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     //urlId will take care of the urls table part of AFT
     int url = urlId( path, uid );
+    m_currUrlIdValues.clear();
 
     QString sql,sql2,sql3;
     sql = "REPLACE INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
@@ -733,14 +734,8 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     int dirId = directoryId( dir );
     int deviceId = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
-    //don't bother caching the data, we only call this method for each url once
-    QString query = QString( "SELECT id, directory, deviceid, rpath, uniqueid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3';" )
-                        .arg( QString::number( deviceId ), m_collection->escape( rpath ), m_collection->escape( uid ) );
-    QStringList result = m_collection->query( query ); //tells us if the uid existed
 
-    debug() << "in urlId values returned are " << result;
-
-    if( result.isEmpty() )  //fresh -- insert
+    if( m_currUrlIdValues.isEmpty() )  //fresh -- insert
     {
         QString insert = QString( "INSERT INTO urls_temp(directory,deviceid,rpath,uniqueid) VALUES ( %1, %2, '%3', '%4' );" )
                     .arg( QString::number( dirId ), QString::number( deviceId ), m_collection->escape( rpath ),
@@ -748,17 +743,17 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         return m_collection->insert( insert, "urls_temp" );
     }
 
-    if( result[1] == QString::number( dirId ) &&
-        result[2] == QString::number( deviceId ) &&
-        result[3] == rpath &&
-        result[4] == uid
+    if( m_currUrlIdValues[1] == QString::number( dirId ) &&
+        m_currUrlIdValues[2] == QString::number( deviceId ) &&
+        m_currUrlIdValues[3] == rpath &&
+        m_currUrlIdValues[4] == uid
       )
     {
         //everything matches, don't need to do anything, just return the ID
-        return result[0].toInt();
+        return m_currUrlIdValues[0].toInt();
     }
 
-    if( result[4] == uid )
+    if( m_currUrlIdValues[4] == uid )
     {
         //we found an existing entry with this uniqueid, update the deviceid and path
         //Note that we ignore the situation where both a UID and path was found; UID takes precedence
@@ -767,19 +762,19 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
                             m_collection->escape( uid ) );
         m_collection->query( query );
         m_permanentTablesUrlUpdates.insert( uid, url );
-        m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( result[2].toInt(), result[3] ), url ) );
-        return result[0].toInt();
+        m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( m_currUrlIdValues[2].toInt(), m_currUrlIdValues[3] ), url ) );
+        return m_currUrlIdValues[0].toInt();
     }
 
-    if( result[2] == QString::number( deviceId ) && result[3] == rpath )
+    if( m_currUrlIdValues[2] == QString::number( deviceId ) && m_currUrlIdValues[3] == rpath )
     {
         //We found an existing path; give it the most recent UID value
         QString query = QString( "UPDATE urls_temp SET uniqueid='%1' WHERE deviceid=%2 AND rpath='%3';" )
             .arg( uid, QString::number( deviceId ), m_collection->escape( rpath ) );
         m_collection->query( query );
         m_permanentTablesUidUpdates.insert( url, uid );
-        m_changedUids.insert( result[4], uid );
-        return result[0].toInt();
+        m_changedUids.insert( m_currUrlIdValues[4], uid );
+        return m_currUrlIdValues[0].toInt();
     }
 
     debug() << "AFT algorithm died...you should not be here!  Returning something negative and bad.";
