@@ -1,5 +1,7 @@
 [Global]
 Comment=Amarok
+Comment[ca]=Amarok
+Comment[da]=Amarok
 Comment[et]=Amarok
 Comment[hu]=Amarok
 Comment[it]=Amarok
@@ -15,6 +17,8 @@ Comment[x-test]=xxAmarokxx
 
 [Event/trackChange]
 Name=Track Change
+Name[ca]=Canvi de peça
+Name[da]=Sporskift
 Name[et]=Pala muutumine
 Name[fi]=Kappaleen vaihdos
 Name[hu]=Számváltás
@@ -29,6 +33,8 @@ Name[tr]=Parça Değişimi
 Name[uk]=Зміна композиції
 Name[x-test]=xxTrack Changexx
 Comment=Amarok changed to a new track
+Comment[ca]=L'Amarok ha canviat a una peça nova
+Comment[da]=Amarok skiftede til et nyt spor
 Comment[et]=Amarok võttis ette uue pala
 Comment[fi]=Amarok vaihtoi kappaletta
 Comment[hu]=Az Amarok átváltott egy új számra
