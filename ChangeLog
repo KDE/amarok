@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * The information from the podcast feed can be written to the downloaded
+      files. Both manually and automatically.
     * Track bookmarks can be removed directly by right-clicking.
     * Add a menu allowing the creation of any known type of bookmark to the 
       Bookmark Manager.
