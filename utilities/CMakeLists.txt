@@ -1,3 +1,5 @@
 add_subdirectory( collectionscanner )
 add_subdirectory( afttagger )
+IF(NOT WIN32)
 add_subdirectory( updatesigner )
+ENDIF(NOT WIN32)
