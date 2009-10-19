@@ -60,7 +60,7 @@ class ScanResultProcessor : public QObject
 
         int genericId( const QString &key, const QString &value );
         int genericInsert( const QString &key, const QString &value );
-        void databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId, int compilationId );
+        void databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId, int compilationId, const QString &url, const QString &uid );
         int imageId( const QString &image, int albumId );
         int albumId( const QString &album, int artistId );
         int albumInsert( const QString &album, int artistId );
@@ -102,6 +102,8 @@ class ScanResultProcessor : public QObject
         QStringList m_aftPermanentTablesUrlString;
         QMap<QString, QString> m_permanentTablesUrlUpdates;
         QMap<QString, QString> m_permanentTablesUidUpdates;
+
+        QStringList m_currUrlIdValues;
 };
 
 #endif

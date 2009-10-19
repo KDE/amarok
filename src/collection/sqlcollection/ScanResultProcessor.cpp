@@ -384,13 +384,15 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     if( dir.count() == 1 )
         compilationId = checkExistingAlbums( albumName );
 
+    QString uid = trackData.value( Field::UNIQUEID ).toString();
+
     //run a single query to fetch these at once, to save time
     //then values will be cached in local maps, so can use the same calls below
     databaseIdFetch( trackData.value( Field::ARTIST ).toString(),
                      trackData.value( Field::GENRE ).toString(),
                      trackData.value( Field::COMPOSER ).toString(),
                      trackData.value( Field::YEAR ).toString(),
-                     albumName, albumArtistId, compilationId );
+                     albumName, albumArtistId, compilationId, path, uid );
 
     int artist = genericId( "artists", trackData.value( Field::ARTIST ).toString() );
     int genre = genericId( "genres", trackData.value( Field::GENRE ).toString() );
@@ -400,7 +402,6 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     if( !compilationId )
         album = albumId( albumName, albumArtistId );
 
-    QString uid = trackData.value( Field::UNIQUEID ).toString();
 
     const int created  = file.created().toTime_t();
     const int modified = file.lastModified().toTime_t();
@@ -498,9 +499,9 @@ ScanResultProcessor::genericInsert( const QString &key, const QString &value )
 }
 
 void
-ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId, int compilationId )
+ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId, int compilationId, const QString &url, const QString &uid )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     QPair<QString, int> albumKey( album, albumArtistId );
     bool albumFound = compilationId || m_albums.contains( albumKey );
     bool artistFound = m_artists.contains( artist );
@@ -534,19 +535,45 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     if( !composerFound )
         query += QString( "UNION ALL SELECT id, CONCAT('COMPOSERNAME_', name) AS name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
     if( !yearFound )
-        query += QString( "UNION ALL SELECT id, CONCAT('YEARSNAME_', name) AS name FROM years_temp WHERE name = '%1';" ).arg( m_collection->escape( year ) );
+        query += QString( "UNION ALL SELECT id, CONCAT('YEARSNAME_', name) AS name FROM years_temp WHERE name = '%1' " ).arg( m_collection->escape( year ) );
+
+    QFileInfo fileInfo( url );
+    const QString dir = fileInfo.absoluteDir().absolutePath();
+    int dirId = directoryId( dir );
+    int deviceId = MountPointManager::instance()->getIdForUrl( url );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
+    QString deviceidString = QString::number( deviceId );
+    QString escapedRpath = m_collection->escape( rpath );
+    QString escapedUid = m_collection->escape( uid );
+    //don't bother caching the data, we only call this method for each url once
+    query += QString( "UNION ALL SELECT 'DUMMYVALUE', id FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3' " )
+                        .arg( deviceidString, escapedRpath, escapedUid );
+    query += QString( "UNION ALL SELECT directory, deviceid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3' " )
+                        .arg( deviceidString, escapedRpath, escapedUid );
+    query += QString( "UNION ALL SELECT rpath, uniqueid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3';" )
+                        .arg( deviceidString, escapedRpath, escapedUid );
+
     if( query.startsWith( "UNION ALL " ) )
         query.remove( 0, 10 );
 
+    debug() << "Running this query: " << query;
     QStringList res = m_collection->query( query );
     int index = 0;
     QString first;
     QString second;
+    bool dummySeen = false;
     while( index < res.size() )
     {
         first = res.at( index++ );
         second = res.at( index++ );
              a = first.toInt();
+        debug() << "first = " << first;
+        debug() << "second = " << second;
+        if( first == "DUMMYVALUE" )
+        {
+            dummySeen = false;
+            break;
+        }
         if( !albumFound && second == QString( "ALBUMNAME_" + album ) )
         {
             l = first.toInt();
@@ -573,6 +600,13 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
             yearFound = true;
         }
     }
+    
+    if( dummySeen )
+    {
+        m_currUrlIdValues = res.mid( res.size() - 6, 6 );
+        debug() << "m_currUrlIdValues = " << m_currUrlIdValues;
+    }
+
     if( !albumFound )
     {
         m_albums.insert( albumKey, albumInsert( album, albumArtistId ) );
@@ -693,6 +727,7 @@ ScanResultProcessor::albumInsert( const QString &album, int artistId )
 int
 ScanResultProcessor::urlId( const QString &url, const QString &uid )
 {
+    DEBUG_BLOCK
     QFileInfo fileInfo( url );
     const QString dir = fileInfo.absoluteDir().absolutePath();
     int dirId = directoryId( dir );
@@ -702,6 +737,8 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     QString query = QString( "SELECT id, directory, deviceid, rpath, uniqueid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3';" )
                         .arg( QString::number( deviceId ), m_collection->escape( rpath ), m_collection->escape( uid ) );
     QStringList result = m_collection->query( query ); //tells us if the uid existed
+
+    debug() << "in urlId values returned are " << result;
 
     if( result.isEmpty() )  //fresh -- insert
     {
