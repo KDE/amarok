@@ -571,8 +571,7 @@ SqlPodcastProvider::slotConfigureChannel()
 void
 SqlPodcastProvider::deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode )
 {
-    DEBUG_BLOCK
-    if( episode->localUrl().isEmpty() )
+    if( !episode || episode->localUrl().isEmpty() )
         return;
 
     debug() << "deleting " << episode->title();
