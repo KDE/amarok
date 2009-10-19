@@ -34,7 +34,7 @@ VERSION 2.2.1
     * Initial KNotify support.
     * Show total playlist file size in a tooltip when hovering over the total
       play list time. (BR 91640)
-    * Implemented Jump To. Press Ctrl+J to focus the playlist search.
+    * Implemented "Jump To". Press Ctrl+J to focus the playlist search.
       (BR 92400)
     * Made Love/Skip/Ban/Enqueue/Dequeue available in Shortcuts configuration
       dialog. (BR 136232, BR 187542)
