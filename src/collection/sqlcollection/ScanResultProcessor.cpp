@@ -522,20 +522,20 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     if( !albumFound )
     {
         if( albumArtistId == 0 )
-            query += QString( "SELECT id, CONCAT('ALBUMNAME_', name) AS name FROM albums_temp WHERE artist IS NULL AND name = '%1' " )
+            query += QString( "SELECT id, CONCAT('ALBUMNAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM albums_temp WHERE artist IS NULL AND name = '%1' " )
                         .arg( m_collection->escape( album ) );
         else
-            query += QString( "SELECT id, CONCAT('ALBUMNAME_', name) AS name FROM albums_temp WHERE artist = %1 AND name = '%2' " )
+            query += QString( "SELECT id, CONCAT('ALBUMNAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM albums_temp WHERE artist = %1 AND name = '%2' " )
                             .arg( QString::number( albumArtistId ), m_collection->escape( album ) );
     }
     if( !artistFound )
-        query += QString( "UNION ALL SELECT id, CONCAT('ARTISTNAME_', name) AS name FROM artists_temp WHERE name = '%1' " ).arg( m_collection->escape( artist ) );
+        query += QString( "UNION ALL SELECT id, CONCAT('ARTISTNAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM artists_temp WHERE name = '%1' " ).arg( m_collection->escape( artist ) );
     if( !genreFound )
-        query += QString( "UNION ALL SELECT id, CONCAT('GENRENAME_', name) AS name FROM genres_temp WHERE name = '%1' " ).arg( m_collection->escape( genre ) );
+        query += QString( "UNION ALL SELECT id, CONCAT('GENRENAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM genres_temp WHERE name = '%1' " ).arg( m_collection->escape( genre ) );
     if( !composerFound )
-        query += QString( "UNION ALL SELECT id, CONCAT('COMPOSERNAME_', name) AS name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
+        query += QString( "UNION ALL SELECT id, CONCAT('COMPOSERNAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
     if( !yearFound )
-        query += QString( "UNION ALL SELECT id, CONCAT('YEARSNAME_', name) AS name FROM years_temp WHERE name = '%1' " ).arg( m_collection->escape( year ) );
+        query += QString( "UNION ALL SELECT id, CONCAT('YEARSNAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM years_temp WHERE name = '%1' " ).arg( m_collection->escape( year ) );
 
     QFileInfo fileInfo( url );
     const QString dir = fileInfo.absoluteDir().absolutePath();
@@ -546,11 +546,7 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     QString escapedRpath = m_collection->escape( rpath );
     QString escapedUid = m_collection->escape( uid );
     //don't bother caching the data, we only call this method for each url once
-    query += QString( "UNION ALL SELECT 'DUMMYVALUE', id FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3' " )
-                        .arg( deviceidString, escapedRpath, escapedUid );
-    query += QString( "UNION ALL SELECT directory, deviceid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3' " )
-                        .arg( deviceidString, escapedRpath, escapedUid );
-    query += QString( "UNION ALL SELECT rpath, uniqueid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3';" )
+    query += QString( "UNION ALL SELECT 'DUMMYVALUE', id, directory, deviceid, rpath, uniqueid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3' " )
                         .arg( deviceidString, escapedRpath, escapedUid );
 
     if( query.startsWith( "UNION ALL " ) )
@@ -571,7 +567,7 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
         debug() << "second = " << second;
         if( first == "DUMMYVALUE" )
         {
-            dummySeen = false;
+            dummySeen = true;
             break;
         }
         if( !albumFound && second == QString( "ALBUMNAME_" + album ) )
@@ -599,11 +595,15 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
             y = first.toInt();
             yearFound = true;
         }
+        index++;
+        index++;
+        index++;
+        index++;
     }
     
     if( dummySeen )
     {
-        m_currUrlIdValues = res.mid( res.size() - 6, 6 );
+        m_currUrlIdValues = res.mid( res.size() - 5, 5 );
         debug() << "m_currUrlIdValues = " << m_currUrlIdValues;
     }
 
