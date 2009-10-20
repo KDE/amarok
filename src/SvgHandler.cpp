@@ -368,13 +368,13 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
                    sliderHeight, sliderHeight,
                    "progress_slider_left" ) );
 
-   p->drawPixmap( x + sliderHeight, y + 2,
+    p->drawPixmap( x + sliderHeight, y + 2,
                    renderSvg(
                    "progress_slider_mid",
                    width - sliderHeight * 2, sliderHeight,
                    "progress_slider_mid" ) );
                   
-    p->drawPixmap( width - sliderHeight, y + 2,
+    p->drawPixmap( x + width - sliderHeight, y + 2,
                    renderSvg(
                    "progress_slider_right",
                    sliderHeight, sliderHeight,
