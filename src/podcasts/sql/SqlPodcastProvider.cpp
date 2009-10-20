@@ -57,6 +57,7 @@ SqlPodcastProvider::SqlPodcastProvider()
     , m_removeAction( 0 )
     , m_renameAction( 0 )
     , m_updateAction( 0 )
+    , m_writeTagsAction( 0 )
 {
     connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
 
@@ -300,7 +301,7 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
     bool oldHasPurge = sqlChannel->hasPurge();
     int oldPurgeCount = sqlChannel->purgeCount();
 
-    PodcastSettingsDialog dialog( channel, The::mainWindow() );
+    PodcastSettingsDialog dialog( sqlChannel, The::mainWindow() );
     dialog.configure();
 
     sqlChannel->updateInDb();
@@ -370,6 +371,18 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteEpisodes() ) );
     }
+
+    if( m_writeTagsAction == 0 )
+    {
+        m_writeTagsAction = new QAction(
+            KIcon( "media-track-edit-amarok" ),
+            i18n( "&Write Feed Information to File" ),
+            this
+        );
+        m_writeTagsAction->setProperty( "popupdropper_svg_id", "edit" );
+        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotWriteTagsToFile() ) );
+    }
+
     bool hasDownloaded = false;
     foreach( Meta::PodcastEpisodePtr episode, episodes )
     {
@@ -387,6 +400,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
     if( hasDownloaded )
     {
         actions << m_deleteAction;
+        actions << m_writeTagsAction;
     }
     else
     {
@@ -529,6 +543,22 @@ SqlPodcastProvider::slotDownloadProgress( KJob *job, unsigned long percent )
 }
 
 void
+SqlPodcastProvider::slotWriteTagsToFiles()
+{
+    Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
+    debug() << episodes.count() << " episodes selected";
+    foreach( Meta::PodcastEpisodePtr episode, episodes )
+    {
+        Meta::SqlPodcastEpisodePtr sqlEpisode =
+                Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+         if( !sqlEpisode )
+             continue;
+
+        sqlEpisode->writeTagsToFile();
+    }
+}
+
+void
 SqlPodcastProvider::slotConfigureChannel()
 {
     DEBUG_BLOCK
@@ -541,8 +571,7 @@ SqlPodcastProvider::slotConfigureChannel()
 void
 SqlPodcastProvider::deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode )
 {
-    DEBUG_BLOCK
-    if( episode->localUrl().isEmpty() )
+    if( !episode || episode->localUrl().isEmpty() )
         return;
 
     debug() << "deleting " << episode->title();
@@ -671,7 +700,13 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
 {
     if( sqlEpisode.isNull() )
     {
-        debug() << "Error: SqlPodcastProvider::downloadEpisode(  Meta::SqlPodcastEpisodePtr sqlEpisode ) was called for a non-SqlPodcastEpisode";
+        error() << "SqlPodcastProvider::downloadEpisode(  Meta::SqlPodcastEpisodePtr sqlEpisode ) was called for a non-SqlPodcastEpisode";
+        return;
+    }
+
+    if( m_downloadJobMap.values().contains( sqlEpisode.data() ) )
+    {
+        debug() << "already downloading " << sqlEpisode->uidUrl();
         return;
     }
 

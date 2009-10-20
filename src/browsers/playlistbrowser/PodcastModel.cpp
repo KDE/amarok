@@ -122,17 +122,14 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
                 episode->setLocalUrl( KUrl() );
         }
 
+        QStringList emblems;
         if( isOnDisk )
-        {
-            icon = KIcon( "go-down" );
-        }
+            emblems << "go-down";
+
+        if( episode->isNew() )
+            icon = KIcon( "rating", 0, emblems );
         else
-        {
-            if( episode->isNew() )
-                icon = KIcon( "rating" );
-            else
-                icon = KIcon( "podcast-amarok" );
-        }
+            icon = KIcon( "podcast-amarok", 0, emblems );
     }
     else
     {

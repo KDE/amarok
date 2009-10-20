@@ -20,6 +20,7 @@
 #include "amarokurls/PlayUrlRunner.h"
 #include "CollectionManager.h"
 #include "Debug.h"
+#include "EditCapability.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/TimecodeLoadCapability.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
@@ -155,19 +156,17 @@ Meta::SqlPodcastEpisode::setLocalUrl( const KUrl &url )
 {
     m_localUrl = url;
 
-    if( m_localUrl.isEmpty() )
+    if( m_localUrl.isEmpty() && !m_localFile.isNull() )
     {
-        if( !m_localFile.isNull() )
-        {
-            m_localFile.clear();
-            return;
-        }
+        m_localFile.clear();
+        notifyObservers();
     }
     else
     {
-        //if we had a local file previously it will get deleted by the KSharedPtr.
+        //if we had a local file previously it should get deleted by the KSharedPtr.
         m_localFile = new MetaFile::Track( m_localUrl );
-        return;
+        if( m_channel->writeTags() )
+            writeTagsToFile();
     }
 }
 
@@ -234,6 +233,35 @@ Meta::SqlPodcastEpisode::isEditable() const
      return m_localFile->isEditable();
 }
 
+QString
+Meta::SqlPodcastEpisode::name() const
+{
+    if( m_localFile.isNull() )
+        return m_title;
+
+    return m_localFile->name();
+}
+
+QString
+Meta::SqlPodcastEpisode::prettyName() const
+{
+    /*for now just do the same as name, but in the future we might want to used a cleaned
+      up string using some sort of regex tag rewrite for podcasts. decapitateString on
+      steroides. */
+    return name();
+}
+
+void
+Meta::SqlPodcastEpisode::setTitle( const QString &title )
+{
+    if( !m_localFile.isNull() )
+    {
+        m_localFile->setTitle( title );
+    }
+
+    m_title = title;
+}
+
 Meta::AlbumPtr
 Meta::SqlPodcastEpisode::album() const
 {
@@ -279,24 +307,30 @@ Meta::SqlPodcastEpisode::year() const
     return m_localFile->year();
 }
 
-void
-Meta::SqlPodcastEpisode::beginMetaDataUpdate()
+bool
+Meta::SqlPodcastEpisode::writeTagsToFile()
 {
-    if( !m_localFile.isNull() && m_localFile->isEditable() )
-        m_localFile->beginMetaDataUpdate();
-}
+    if( m_localFile.isNull() )
+        return false;
 
-void
-Meta::SqlPodcastEpisode::endMetaDataUpdate()
-{
-    if( !m_localFile.isNull() && m_localFile->isEditable() )
-        m_localFile->endMetaDataUpdate();
-}
-void
-Meta::SqlPodcastEpisode::abortMetaDataUpdate()
-{
-    if( !m_localFile.isNull() && m_localFile->isEditable() )
-        m_localFile->abortMetaDataUpdate();
+    Meta::EditCapability *ec = m_localFile->create<Meta::EditCapability>();
+    if( ec == 0 )
+        return false;
+
+    debug() << "writing tags for podcast episode " << title() << "to " << m_localUrl.url();
+    if( !ec->isEditable() )
+    {
+        debug() << QString( "local file (%1)is not editable!" ).arg( m_localUrl.url() );
+    }
+    ec->beginMetaDataUpdate();
+    ec->setTitle( m_title );
+    ec->setAlbum( m_channel->title() );
+    ec->setArtist( m_channel->author() );
+    ec->setGenre( i18n( "Podcast" ) );
+    ec->setYear( QString::number( m_pubDate.date().year() ) );
+    ec->endMetaDataUpdate();
+
+    notifyObservers();
 }
 
 void
@@ -394,11 +428,13 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ? DownloadWhenAvailable : StreamOrDownloadOnDemand;
     m_purge = sqlStorage->boolTrue() == *(iter++);
     m_purgeCount = (*(iter++)).toInt();
+    m_writeTags = true;
     loadEpisodes();
 }
 
 Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     : Meta::PodcastChannel()
+    , m_writeTags( true )
     , m_dbId( 0 )
 {
     m_url = channel->url();

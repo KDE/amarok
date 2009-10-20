@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * The information from the podcast feed can be written to the downloaded
+      files. Both manually and automatically.
     * Track bookmarks can be removed directly by right-clicking.
     * Add a menu allowing the creation of any known type of bookmark to the 
       Bookmark Manager.
@@ -34,12 +36,13 @@ VERSION 2.2.1
     * Initial KNotify support.
     * Show total playlist file size in a tooltip when hovering over the total
       play list time. (BR 91640)
-    * Implemented Jump To. Press Ctrl+J to focus the playlist search.
+    * Implemented "Jump To". Press Ctrl+J to focus the playlist search.
       (BR 92400)
     * Made Love/Skip/Ban/Enqueue/Dequeue available in Shortcuts configuration
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * Use an emblem for indicating a podcast episode is on disk. (BR 209433)
     * Scanning speedups by getting rid of unnecessary code paths and
       optimizing some queries. Patch by Egbert König <e.kunig@home.nl>.
       (BR 209822)

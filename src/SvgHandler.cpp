@@ -358,14 +358,58 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
     //debug() << "rel: " << knobRelPos << ", width: " << width << ", height:" << height << ", %: " << percentage;
 
-    // Draw the slider
+    // Draw the slider background in 3 parts
+
+    int sliderHeight = height - 6;
+
     p->drawPixmap( x, y + 2,
                    renderSvg(
-                   "new_slider_nuno",
-                   width, height - 6,
-                   "new_slider_nuno" ) );
+                   "progress_slider_left",
+                   sliderHeight, sliderHeight,
+                   "progress_slider_left" ) );
+
+   p->drawPixmap( x + sliderHeight, y + 2,
+                   renderSvg(
+                   "progress_slider_mid",
+                   width - sliderHeight * 2, sliderHeight,
+                   "progress_slider_mid" ) );
+                  
+    p->drawPixmap( width - sliderHeight, y + 2,
+                   renderSvg(
+                   "progress_slider_right",
+                   sliderHeight, sliderHeight,
+                   "progress_slider_right" ) );
+
+    //draw the played background.
+
+    int playedBarHeight = sliderHeight - 6;
+
+    int sizeOfLeftPlayed = qBound( 0, knobX - 2, playedBarHeight );
+
+    if( sizeOfLeftPlayed > 0 ) {
+
+        p->drawPixmap( x + 3, y + 5,
+                        renderSvg(
+                        "progress_slider_played_left",
+                        playedBarHeight, playedBarHeight,
+                        "progress_slider_played_left" ), 0, 0, sizeOfLeftPlayed, playedBarHeight );
+
+        int playedBarMidWidth = knobX - ( x + 3 + playedBarHeight );
+
+        //add one more pixel to avoid a "gap"between it and the top and botton of the round knob.
+        playedBarMidWidth++;
+
+        p->drawPixmap( x + 3 + playedBarHeight, y + 5,
+                        renderSvg(
+                        "progress_slider_played_mid",
+                        playedBarMidWidth, playedBarHeight,
+                        "progress_slider_played_mid" ) );
+
+    }
+
 
     // Draw the knob (handle)
+  
     if( active )
         p->drawPixmap( knobX, knobY,
                        renderSvg(

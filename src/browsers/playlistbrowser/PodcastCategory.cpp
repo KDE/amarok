@@ -116,6 +116,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setContentsMargins(0,0,0,0);
     m_podcastTreeView->setModel( podcastModel );
     m_podcastTreeView->header()->hide();
+    m_podcastTreeView->setIconSize( QSize( 24, 24 ) );
 
     m_podcastTreeView->setAlternatingRowColors( true );
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );

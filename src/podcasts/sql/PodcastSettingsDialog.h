@@ -17,7 +17,7 @@
 #ifndef AMAROK_PODCASTSETTINGSDIALOG_H
 #define AMAROK_PODCASTSETTINGSDIALOG_H
 
-#include "PodcastMeta.h"
+#include "SqlPodcastMeta.h"
 
 #include <KDialog>
 
@@ -30,7 +30,7 @@ class PodcastSettingsDialog : public KDialog
     Q_OBJECT
 
     public:
-        explicit PodcastSettingsDialog( Meta::PodcastChannelPtr channel, QWidget* parent=0 );
+        explicit PodcastSettingsDialog( Meta::SqlPodcastChannelPtr channel, QWidget* parent=0 );
 
         bool configure();
 
@@ -48,7 +48,7 @@ class PodcastSettingsDialog : public KDialog
 
         Ui::PodcastSettingsBase *m_ps;
 
-        Meta::PodcastChannelPtr m_channel;
+        Meta::SqlPodcastChannelPtr m_channel;
 };
 
 #endif /*AMAROK_PODCASTSETTINGSDIALOG_H*/

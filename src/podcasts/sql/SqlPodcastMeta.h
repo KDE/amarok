@@ -49,6 +49,9 @@ class SqlPodcastEpisode : public PodcastEpisode
         virtual void setLocalUrl( const KUrl &url );
 
         //Track Methods
+        virtual QString name() const;
+        virtual QString prettyName() const;
+        virtual void setTitle( const QString &title );
         virtual qint64 length() const;
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
@@ -60,11 +63,8 @@ class SqlPodcastEpisode : public PodcastEpisode
         virtual GenrePtr genre() const;
         virtual YearPtr year() const;
 
-        virtual void beginMetaDataUpdate();
-        virtual void endMetaDataUpdate();
-        virtual void abortMetaDataUpdate();
-
         //SqlPodcastEpisode specific methods
+        bool writeTagsToFile();
         int dbId() const { return m_dbId; };
 
         void updateInDb();
@@ -99,10 +99,12 @@ class SqlPodcastChannel : public PodcastChannel
         Meta::PodcastEpisodeList episodes();
 
         PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
+
         //SqlPodcastChannel specific methods
         int dbId() const { return m_dbId; }
         void addEpisode( SqlPodcastEpisodePtr episode ) { m_episodes << episode; }
 
+        bool writeTags() const { return m_writeTags; }
         void updateInDb();
         void deleteFromDb();
 
@@ -111,7 +113,7 @@ class SqlPodcastChannel : public PodcastChannel
         void loadEpisodes();
 
     private:
-
+        bool m_writeTags;
         int m_dbId; //database ID
 
         SqlPodcastEpisodeList m_episodes;
