@@ -42,6 +42,8 @@ VERSION 2.2.1
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * Some optimization of SQL queries during scan to speed things up. (BR
+      210201)
     * Use an emblem for indicating a podcast episode is on disk. (BR 209433)
     * Scanning speedups by getting rid of unnecessary code paths and
       optimizing some queries. Patch by Egbert König <e.kunig@home.nl>.
