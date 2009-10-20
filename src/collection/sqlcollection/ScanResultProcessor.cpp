@@ -510,9 +510,6 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     bool composerFound = m_composers.contains( composer );
     bool yearFound = m_years.contains( year );
 
-    if( albumFound && artistFound && genreFound && composerFound && yearFound )
-        return; //nothing to do
-
     int l = 0; //album
     int a = 0; //artist
     int g = 0; //genre
@@ -540,7 +537,6 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
 
     QFileInfo fileInfo( url );
     const QString dir = fileInfo.absoluteDir().absolutePath();
-    int dirId = directoryId( dir );
     int deviceId = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
     QString deviceidString = QString::number( deviceId );
@@ -553,8 +549,9 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     if( query.startsWith( "UNION ALL " ) )
         query.remove( 0, 10 );
 
-    //debug() << "Running this query: " << query;
+    //debug() << "Running this query: " << query << endl;
     QStringList res = m_collection->query( query );
+    //debug() << "res = " << res << endl;
     int index = 0;
     QString first;
     QString second;
