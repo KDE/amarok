@@ -154,8 +154,17 @@ void PhotosEngine::update()
         m_listJob.clear();
         
         // Show the information
-        setData( "photos", "message", "Fetching" );
-        setData( "photos", "artist", m_artist );
+        if( !m_artist.isEmpty() )
+        {
+            setData( "photos", "message", i18n( "Fetching" ) );
+            setData( "photos", "artist", m_artist );
+        }
+        else
+        {
+            setData( "photos", "message", "NA_Collapse" );
+            resultFinalize();
+            return;
+        }
 
         // Query flickr, order by relevance, 10 max
         // Flickr :http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=ARTIST&per_page=20

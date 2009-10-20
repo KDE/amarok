@@ -208,6 +208,15 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         m_widget->hide();
         setBusy( true );
     }
+    else if ( data.contains( "message" ) && data["message"].toString().contains("NA_Collapse") )
+    {
+        updateConstraints();
+        update();
+        setCollapseOn();
+        m_widget->clear();
+        m_widget->hide();
+        setBusy( false );
+    }
     else if ( data.contains( "message" ) )
     {
         m_headerText->setText( i18n( "Photos" ) + " : " + data[ "message" ].toString() );
