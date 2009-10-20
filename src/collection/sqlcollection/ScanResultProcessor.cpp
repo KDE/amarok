@@ -127,7 +127,7 @@ ScanResultProcessor::doneWithImages()
 QString
 ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QStringList files;
 
     //prioritize "front"
@@ -352,7 +352,7 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCou
 void
 ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 {
-//     DEBUG_BLOCK
+    //DEBUG_BLOCK
     //amarok 1 stored all tracks of a compilation in different directories.
     //when using its "Organize Collection" feature
     //try to detect these cases
@@ -502,7 +502,7 @@ ScanResultProcessor::genericInsert( const QString &key, const QString &value )
 void
 ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId, int compilationId, const QString &url, const QString &uid )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QPair<QString, int> albumKey( album, albumArtistId );
     bool albumFound = compilationId || m_albums.contains( albumKey );
     bool artistFound = m_artists.contains( artist );
@@ -553,7 +553,7 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     if( query.startsWith( "UNION ALL " ) )
         query.remove( 0, 10 );
 
-    debug() << "Running this query: " << query;
+    //debug() << "Running this query: " << query;
     QStringList res = m_collection->query( query );
     int index = 0;
     QString first;
@@ -564,8 +564,8 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
         first = res.at( index++ );
         second = res.at( index++ );
              a = first.toInt();
-        debug() << "first = " << first;
-        debug() << "second = " << second;
+        //debug() << "first = " << first;
+        //debug() << "second = " << second;
         if( first == "DUMMYVALUE" )
         {
             dummySeen = true;
@@ -605,7 +605,7 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     if( dummySeen )
     {
         m_currUrlIdValues = res.mid( res.size() - 5, 5 );
-        debug() << "m_currUrlIdValues = " << m_currUrlIdValues;
+        //debug() << "m_currUrlIdValues = " << m_currUrlIdValues;
     }
 
     if( !albumFound )
@@ -728,7 +728,7 @@ ScanResultProcessor::albumInsert( const QString &album, int artistId )
 int
 ScanResultProcessor::urlId( const QString &url, const QString &uid )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QFileInfo fileInfo( url );
     const QString dir = fileInfo.absoluteDir().absolutePath();
     int dirId = directoryId( dir );
@@ -784,7 +784,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
 void
 ScanResultProcessor::updateAftPermanentTablesUrlString()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if( m_permanentTablesUrlUpdates.isEmpty() )
         return;
     foreach( const QString &table, m_aftPermanentTablesUrlString )
@@ -811,7 +811,7 @@ ScanResultProcessor::updateAftPermanentTablesUrlString()
 void
 ScanResultProcessor::updateAftPermanentTablesUidString()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if( m_permanentTablesUidUpdates.isEmpty() )
         return;
     foreach( const QString &table, m_aftPermanentTablesUrlString )
