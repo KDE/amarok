@@ -42,6 +42,8 @@ VERSION 2.2.1
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * UMS device plugin now checks MIME types of tracks both by content and
+      filename. Thanks to Aran Cox <aroncox@gmail.com> for the patch.
     * Some optimization of SQL queries during scan to speed things up. (BR
       210201)
     * Use an emblem for indicating a podcast episode is on disk. (BR 209433)

@@ -301,7 +301,15 @@ UmsHandler::addPath( const QString &path )
     DEBUG_BLOCK
     int acc = 0;
     KMimeType::Ptr mime = KMimeType::findByFileContent( path, &acc );
-    debug() << "Got type: " << mime->name();
+    if( !mime || mime->name() == KMimeType::defaultMimeType() )
+    {
+        debug() << "Trying again with findByPath:" ;
+        mime = KMimeType::findByPath( path, 0, true, &acc );
+    }
+    else
+        return 0;
+    debug() << "Got type: " << mime->name() << "For file: " << path << ", with accuracy: " << acc;
+
     QFileInfo info( path );
     if( info.isDir() )
     {
