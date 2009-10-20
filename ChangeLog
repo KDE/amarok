@@ -16,7 +16,7 @@ VERSION 2.2.1
     * Podcasts can now be grouped in the playlist and show useful info in the
       tag editor.
     * Playlist files can be droped on the "Saved Playlist" category to
-      import them into Amarok.
+      import them into Amarok. (BR 193476)
     * Playlist files from the default playlist location are now loaded by
       default. (BR 209596)
     * Added view menu to menu bar for ease of use.
