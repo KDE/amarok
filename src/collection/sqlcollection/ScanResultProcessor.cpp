@@ -927,7 +927,7 @@ ScanResultProcessor::setupDatabase()
         }
         m_setupComplete = true;
         populateCacheHashes();
-        /*
+        // /*
         debug() << "Last URL num: " << m_lastUrlNum << ", next URL num: " << m_nextUrlNum;
         foreach( QString key, m_urlsHashByUid.keys() )
             debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
@@ -938,7 +938,14 @@ ScanResultProcessor::setupDatabase()
             debug() << "Key: " << key << ", list: " << *m_albumsHashById[key];
         foreach( QString key, m_albumsHashByName.keys() )
             debug() << "Key: " << key << ", list: " << *m_albumsHashByName[key];
-        */
+        debug() << "Last track num: " << m_lastTrackNum << ", next album num: " << m_nextTrackNum;
+        foreach( int key, m_tracksHashById.keys() )
+            debug() << "Key: " << key << ", list: " << *m_tracksHashById[key];
+        foreach( int key, m_tracksHashByUrl.keys() )
+            debug() << "Key: " << key << ", list: " << *m_tracksHashByUrl[key];
+        foreach( int key, m_tracksHashByAlbum.keys() )
+            debug() << "Key: " << key << ", list: " << *m_tracksHashByAlbum[key];
+        // */
     }
 
 }
@@ -982,6 +989,23 @@ ScanResultProcessor::populateCacheHashes()
         m_albumsHashById.insert( m_lastAlbumNum, currList );
     }
     m_nextAlbumNum = m_lastAlbumNum + 1;
+
+    //tracks
+    res = m_collection->query( "SELECT * FROM tracks_temp ORDER BY id ASC;" );
+    reserveSize = ( res.size() / 22 ) * 2;
+    m_tracksHashById.reserve( reserveSize );
+    index = 0;
+    while( index < res.size() )
+    {
+        currList = new QStringList();
+        m_lastTrackNum = res.at( index ).toInt();
+        for( int i = 0; i < 23; i++ )
+            currList->append( res.at(index++) );
+        m_tracksHashById.insert( m_lastTrackNum, currList );
+        m_tracksHashByUrl.insert( currList->at( 1 ).toInt(), currList );
+        m_tracksHashByAlbum.insert( currList->at( 3 ).toInt(), currList );
+    }
+    m_nextTrackNum = m_lastTrackNum + 1;
 
 }
 

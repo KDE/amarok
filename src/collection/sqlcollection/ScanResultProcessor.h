@@ -116,6 +116,12 @@ class ScanResultProcessor : public QObject
         QHash<QString, QStringList*> m_albumsHashByName;
         QHash<int, QStringList*> m_albumsHashById;
 
+        int m_lastTrackNum;
+        int m_nextTrackNum;
+        QHash<int, QStringList*> m_tracksHashById;
+        QHash<int, QStringList*> m_tracksHashByUrl;
+        QHash<int, QStringList*> m_tracksHashByAlbum;
+
 };
 
 #endif
