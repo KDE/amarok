@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
+ * Copyright (c) 2009 Victor Wollesen <victor.w@pervices.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -51,7 +52,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     m_timeLabelLeft->setToolTip( i18n( "The amount of time elapsed in current song" ) );
 
     m_timeLabelRight = new TimeLabel( this );
-    m_timeLabelRight->setFixedWidth( 60 );
+    m_timeLabelRight->setNomWidth( 60 ); //Sets nominal label width.
     m_timeLabelRight->setToolTip( i18n( "The amount of time remaining in current song" ) );
     m_timeLabelRight->setAlignment( Qt::AlignRight );
 
@@ -144,7 +145,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     s1 += ' ';
     s2 += ' ';
 
-    m_timeLabelLeft->setText( s1 );
+    m_timeLabelLeft->setText( s1 );   
     m_timeLabelRight->setText( s2 );
 
     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
@@ -226,6 +227,18 @@ ProgressWidget::engineTrackLengthChanged( qint64 milliseconds )
     m_slider->setEnabled( milliseconds > 0 );
     debug() << "slider enabled!";
     m_timeLength = Meta::msToPrettyTime( milliseconds ).length()+1; // account for - in remaining time
+
+    //https://bugs.kde.org/show_bug.cgi?id=195935: time of long tracks gets cut off
+    //For long tracks, the contents of m_timeLengthRight are cut off by the slider
+    //if they exceed 60px. Because such very long songs are rare, the idea here is
+    //to dynamically increase m_timeLengthRight.width as needed, and then restore
+    //the previous, nominal, width once in the clear.
+
+    //If the bounding rectangle is greater than the assigned nominal width, we override nominal width for the song
+    if ( fontMetrics().boundingRect( Meta::msToPrettyTime( milliseconds ) + "  " ).width() > m_timeLabelRight->nomWidth() )
+        m_timeLabelRight->setFixedWidth( fontMetrics().boundingRect( Meta::msToPrettyTime( milliseconds ) + "  " ).width() );
+    else
+        m_timeLabelRight->setFixedWidth( m_timeLabelRight->nomWidth() );
 
     //get the urlid of the current track as the engine might stop and start several times
     //when skipping lst.fm tracks, so we need to know if we are still on the same track...
