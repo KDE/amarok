@@ -463,6 +463,60 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     sql += sql2 + sql3;
 
     m_collection->query( sql );
+
+    int compOrAlbum = compilationId ? compilationId : album;
+    QStringList *trackList = new QStringList();
+    trackList->append( QString::number( m_nextTrackNum ) );
+    trackList->append( QString::number( url ) );
+    trackList->append( QString::number( artist ) );
+    trackList->append( QString::number( compOrAlbum ) );
+    trackList->append( QString::number( genre ) );
+    trackList->append( QString::number( composer ) );
+    trackList->append( QString::number( year ) );
+    trackList->append( trackData[ Field::TITLE ].toString() );
+    trackList->append( trackData[ Field::COMMENT ].toString() );
+    trackList->append( trackData[ Field::TRACKNUMBER ].toString() );
+    trackList->append( trackData[ Field::DISCNUMBER ].toString() );
+    trackList->append( trackData[ Field::BITRATE ].toString() );
+    trackList->append( trackData[ Field::LENGTH ].toString() );
+    trackList->append( trackData[ Field::SAMPLERATE ].toString() );
+    trackList->append( trackData[ Field::FILESIZE ].toString() );
+    trackList->append( 0 );
+    trackList->append( 0 );
+    trackList->append( QString::number( created ) );
+    trackList->append( QString::number( modified ) );
+    if( trackData.contains( Field::ALBUMGAIN ) && trackData.contains( Field::ALBUMPEAKGAIN ) )
+    {
+        trackList->append( QString::number( trackData[ Field::ALBUMGAIN ].toDouble() ) );
+        trackList->append( trackData[ Field::ALBUMPEAKGAIN ].toDouble() );
+    }
+    else
+    {
+        trackList->append( "NULL" );
+        trackList->append( "NULL" );
+    }
+    if( trackData.contains( Field::TRACKGAIN ) && trackData.contains( Field::TRACKPEAKGAIN ) )
+    {
+        trackList->append( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ) );
+        trackList->append( trackData[ Field::TRACKPEAKGAIN ].toDouble() );
+    }
+
+    //insert into hashes
+    m_tracksHashById.insert( m_nextTrackNum, trackList );
+    m_tracksHashByUrl.insert( url, trackList );
+    
+    if( m_tracksHashByAlbum.contains( compOrAlbum ) && m_tracksHashByAlbum[compOrAlbum] != 0 )
+        m_tracksHashByAlbum[compOrAlbum]->append( trackList );
+    else
+    {
+        QLinkedList<QStringList*> *list = new QLinkedList<QStringList*>();
+        list->append( trackList );
+        m_tracksHashByAlbum[compOrAlbum] = list;
+    }
+
+    //Don't forget to escape the fields that need it when inserting!
+    
+    m_nextTrackNum++;
 }
 
 int
