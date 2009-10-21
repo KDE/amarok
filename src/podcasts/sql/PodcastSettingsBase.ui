@@ -194,7 +194,7 @@
      <item>
       <widget class="QCheckBox" name="m_writeTagsCheck">
        <property name="whatsThis">
-        <string>The RSS feed and the tags if the downloaded file sometimes don't contain the same information. Writing the tags ensures the information in the playlist and on media devices will be the same as in the feed.</string>
+        <string>The RSS feed and the tags in the downloaded file sometimes do not contain the same information. Writing the tags ensures the information in the playlist and on media devices will be the same as in the feed.</string>
        </property>
        <property name="text">
         <string>Write feed information to tags after downloading.</string>
