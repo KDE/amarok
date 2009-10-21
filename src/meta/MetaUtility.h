@@ -106,7 +106,7 @@ namespace Meta
     }
 
 
-    AMAROK_EXPORT QString msToPrettyTime( int ms );
+    AMAROK_EXPORT QString msToPrettyTime( qint64 ms );
     AMAROK_EXPORT QString secToPrettyTime( int seconds );
 
     AMAROK_EXPORT QString prettyFilesize( quint64 size );
