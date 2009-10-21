@@ -74,8 +74,6 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
-    * Remaining time of track could get cut off for very long tracks. Patch by
-      Victor Wollesen <victor.w@pervices.com>. (BR 195935)
     * Made playlist layouts translatable. (BR 189751)
     * Fixed issue with collection scanner seeing duplicate tracks if they
       contained the default MusicBrainz UUID. Patch by Egbert König

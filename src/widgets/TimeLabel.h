@@ -1,6 +1,5 @@
 /****************************************************************************************
  * Copyright (c) 2005 Max Howell <max.howell@methylblue.com>                            *
- * Copyright (c) 2009 Victor Wollesen <victor.w@pervices.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -71,23 +70,8 @@ public:
             QLabel::setText( text );
     }
 
-    void setNomWidth( int nomWidth )
-    {
-        if( nomWidth > 0 )
-        {
-            m_nomWidth = nomWidth;
-            QWidget::setFixedWidth( m_nomWidth );
-        }
-    }
-
-    int nomWidth() const
-    {
-        return m_nomWidth;
-    }
-
 private:
     bool m_showTime;
-    int  m_nomWidth;
 
 };
 
