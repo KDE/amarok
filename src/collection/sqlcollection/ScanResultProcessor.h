@@ -78,6 +78,7 @@ class ScanResultProcessor : public QObject
 
         QString findAlbumArtist( const QSet<QString> &artists, int trackCount ) const;
         void setupDatabase();
+        void populateCacheHashes();
 
     private:
         SqlCollection *m_collection;
@@ -104,6 +105,17 @@ class ScanResultProcessor : public QObject
         QMap<QString, QString> m_permanentTablesUidUpdates;
 
         QStringList m_currUrlIdValues;
+
+        int m_lastUrlNum;
+        int m_nextUrlNum;
+        QHash<QString, QStringList*> m_urlsHashByUid;
+        QHash<int, QStringList*> m_urlsHashById;
+
+        int m_lastAlbumNum;
+        int m_nextAlbumNum;
+        QHash<QString, QStringList*> m_albumsHashByName;
+        QHash<int, QStringList*> m_albumsHashById;
+
 };
 
 #endif

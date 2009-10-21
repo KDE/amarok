@@ -913,6 +913,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
 void
 ScanResultProcessor::setupDatabase()
 {
+    DEBUG_BLOCK
     if( !m_setupComplete )
     {
         m_collection->dbUpdater()->createTemporaryTables();
@@ -925,7 +926,63 @@ ScanResultProcessor::setupDatabase()
             m_collection->dbUpdater()->prepareTemporaryTablesForFullScan();
         }
         m_setupComplete = true;
+        populateCacheHashes();
+        /*
+        debug() << "Last URL num: " << m_lastUrlNum << ", next URL num: " << m_nextUrlNum;
+        foreach( QString key, m_urlsHashByUid.keys() )
+            debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
+        foreach( int key, m_urlsHashById.keys() )
+            debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
+        debug() << "Last album num: " << m_lastAlbumNum << ", next album num: " << m_nextAlbumNum;
+        foreach( int key, m_albumsHashById.keys() )
+            debug() << "Key: " << key << ", list: " << *m_albumsHashById[key];
+        foreach( QString key, m_albumsHashByName.keys() )
+            debug() << "Key: " << key << ", list: " << *m_albumsHashByName[key];
+        */
     }
+
+}
+
+void
+ScanResultProcessor::populateCacheHashes()
+{
+    DEBUG_BLOCK
+
+    //urls
+    QStringList res = m_collection->query( "SELECT * FROM urls_temp ORDER BY id ASC;" );
+    int reserveSize = ( res.size() / 5 ) * 2; //Reserve plenty of space to bring insertion and lookup close to O(1)
+    m_urlsHashByUid.reserve( reserveSize );
+    m_urlsHashById.reserve( reserveSize );
+    QStringList *currList;
+    int index = 0;
+    while( index < res.size() )
+    {
+        currList = new QStringList();
+        m_lastUrlNum = res.at( index ).toInt();
+        for( int i = 0; i < 5; i++ )
+            currList->append( res.at(index++) );
+        m_urlsHashByUid.insert( currList->last(), currList );
+        m_urlsHashById.insert( m_lastUrlNum, currList );
+    }
+    m_nextUrlNum = m_lastUrlNum + 1;
+
+    //albums
+    res = m_collection->query( "SELECT * FROM albums_temp ORDER BY id ASC;" );
+    reserveSize = ( res.size() / 4 ) * 2;
+    m_albumsHashByName.reserve( reserveSize );
+    m_albumsHashById.reserve( reserveSize );
+    index = 0;
+    while( index < res.size() )
+    {
+        currList = new QStringList();
+        m_lastAlbumNum = res.at( index ).toInt();
+        for( int i = 0; i < 4; i++ )
+            currList->append( res.at(index++) );
+        m_albumsHashByName.insert( currList->at( 1 ), currList );
+        m_albumsHashById.insert( m_lastAlbumNum, currList );
+    }
+    m_nextAlbumNum = m_lastAlbumNum + 1;
+
 }
 
 #include "ScanResultProcessor.moc"
