@@ -891,6 +891,10 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
         }
     }
 
+    debug() << "Via SQL, trackIds is " << trackIds;
+    QList<QString> hashTrackIds;
+
+
     if( trackIds.isEmpty() )
     {
         return 0;
@@ -937,14 +941,20 @@ ScanResultProcessor::setupDatabase()
         foreach( int key, m_albumsHashById.keys() )
             debug() << "Key: " << key << ", list: " << *m_albumsHashById[key];
         foreach( QString key, m_albumsHashByName.keys() )
-            debug() << "Key: " << key << ", list: " << *m_albumsHashByName[key];
+        {
+            foreach( QStringList* list, *m_albumsHashByName[key] )
+               debug() << "Key: " << key << ", list ptrs: " << *list;
+        }
         debug() << "Last track num: " << m_lastTrackNum << ", next album num: " << m_nextTrackNum;
         foreach( int key, m_tracksHashById.keys() )
             debug() << "Key: " << key << ", list: " << *m_tracksHashById[key];
         foreach( int key, m_tracksHashByUrl.keys() )
             debug() << "Key: " << key << ", list: " << *m_tracksHashByUrl[key];
         foreach( int key, m_tracksHashByAlbum.keys() )
-            debug() << "Key: " << key << ", list: " << *m_tracksHashByAlbum[key];
+        {
+            foreach( QStringList* list, *m_tracksHashByAlbum[key] )
+                debug() << "Key: " << key << ", list: " << *list;
+        }
         // */
     }
 
@@ -961,6 +971,7 @@ ScanResultProcessor::populateCacheHashes()
     m_urlsHashByUid.reserve( reserveSize );
     m_urlsHashById.reserve( reserveSize );
     QStringList *currList;
+    QLinkedList<QStringList*> *llist;
     int index = 0;
     while( index < res.size() )
     {
@@ -985,8 +996,19 @@ ScanResultProcessor::populateCacheHashes()
         m_lastAlbumNum = res.at( index ).toInt();
         for( int i = 0; i < 4; i++ )
             currList->append( res.at(index++) );
-        m_albumsHashByName.insert( currList->at( 1 ), currList );
         m_albumsHashById.insert( m_lastAlbumNum, currList );
+
+        if( m_albumsHashByName.contains( currList->at( 1 ) ) )
+        {
+            llist = m_albumsHashByName[currList->at( 1 )];
+            llist->append( currList );
+        }
+        else
+        {
+            llist = new QLinkedList<QStringList*>();
+            llist->append( currList );
+            m_albumsHashByName.insert( currList->at( 1 ), llist );
+        }
     }
     m_nextAlbumNum = m_lastAlbumNum + 1;
 
@@ -1003,7 +1025,19 @@ ScanResultProcessor::populateCacheHashes()
             currList->append( res.at(index++) );
         m_tracksHashById.insert( m_lastTrackNum, currList );
         m_tracksHashByUrl.insert( currList->at( 1 ).toInt(), currList );
-        m_tracksHashByAlbum.insert( currList->at( 3 ).toInt(), currList );
+
+        int currAlbum = currList->at( 3 ).toInt();
+        if( m_tracksHashByAlbum.contains( currAlbum ) )
+        {
+            llist = m_tracksHashByAlbum[currAlbum];
+            llist->append( currList );
+        }
+        else
+        {
+            llist = new QLinkedList<QStringList*>();
+            llist->append( currList );
+            m_tracksHashByAlbum.insert( currAlbum, llist );
+        }
     }
     m_nextTrackNum = m_lastTrackNum + 1;
 
