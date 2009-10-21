@@ -891,9 +891,19 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
         }
     }
 
+    debug() << "trackIDs found via SQL: " << trackIds.size();
     debug() << "Via SQL, trackIds is " << trackIds;
     QList<QString> hashTrackIds;
 
+    if( !m_albumsHashByName.contains( album ) )
+    {
+        debug() << "trackIDs found via hashes: 0";
+        return 0
+    }
+    QLinkedList<QStringList*> *llist = m_albumsHashByName[album];
+    QLinkedList<int> intlist;
+    foreach( QStringList* album, *llist )
+        intlist.append( album[0].toInt() );
 
     if( trackIds.isEmpty() )
     {
