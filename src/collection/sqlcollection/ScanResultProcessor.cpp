@@ -44,6 +44,12 @@ ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
 ScanResultProcessor::~ScanResultProcessor()
 {
     DEBUG_BLOCK
+    foreach( QStringList *list, m_urlsHashByUid )
+        delete list;
+    foreach( QLinkedList<QStringList*> *list, m_albumsHashByName )
+        delete list;
+    foreach( QLinkedList<QStringList*> *list, m_tracksHashByAlbum )
+        delete list;
 }
 
 void
@@ -861,6 +867,7 @@ ScanResultProcessor::directoryId( const QString &dir )
 int
 ScanResultProcessor::checkExistingAlbums( const QString &album )
 {
+    DEBUG_BLOCK
     // "Unknown" albums shouldn't be handled as compilations
     if( album.isEmpty() )
         return 0;
@@ -892,18 +899,70 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
     }
 
     debug() << "trackIDs found via SQL: " << trackIds.size();
+    qSort( trackIds );
     debug() << "Via SQL, trackIds is " << trackIds;
-    QList<QString> hashTrackIds;
 
-    if( !m_albumsHashByName.contains( album ) )
+    QList<QString> hashTrackIds;
+    if( !m_albumsHashByName.contains( album ) || m_albumsHashByName[album] == 0 )
     {
-        debug() << "trackIDs found via hashes: 0";
-        return 0
+        debug() << "trackIDs found via hashes: 0 " << ( trackIds.size() == 0 ? "FUCKYEAH!" : "FUCKNAW" );
+        return 0;
     }
+
+    debug() << "Tracks size = " << m_tracksHashById.size();
     QLinkedList<QStringList*> *llist = m_albumsHashByName[album];
-    QLinkedList<int> intlist;
-    foreach( QStringList* album, *llist )
-        intlist.append( album[0].toInt() );
+    QLinkedList<int> albumIntList;
+    foreach( QStringList* albumList, *llist )
+        albumIntList.append( (*albumList)[0].toInt() ); //list of album IDs, now find tracks
+
+    QLinkedList<int> trackIntList;
+    foreach( int albumInt, albumIntList )
+    {
+        if( !m_tracksHashByAlbum.contains( albumInt ) || m_tracksHashByAlbum[albumInt] == 0 )
+            continue;
+        foreach( QStringList* slist, *m_tracksHashByAlbum[albumInt] )
+            trackIntList.append( (*slist)[0].toInt() ); //list of tracks matching those album IDs
+    }
+    
+    foreach( int track, trackIntList )
+        debug() << "trackIntList contains: " << track;
+    //note that there will be a 1:1 mapping between tracks and urls, although the id is not necessarily the same
+    //and there may be more urls than tracks -- this means that this track list is all we need
+    //the big mama
+    int l_deviceid;
+    QString l_rpath, l_trackId, l_albumId, l_albumArtistId, l_currentPath;
+    foreach( int track, trackIntList )
+    {
+        if( !m_tracksHashById.contains( track ) || m_tracksHashById[track] == 0 )
+            continue;
+        QStringList trackList = *m_tracksHashById[track];
+
+        if( !m_urlsHashById.contains( trackList[1].toInt() ) || m_urlsHashById[trackList[1].toInt()] == 0 )
+            continue;
+        QStringList urlList = *m_urlsHashById[trackList[1].toInt()];
+
+        if( !m_albumsHashById.contains( trackList[3].toInt() ) || m_albumsHashById[trackList[3].toInt()] == 0 )
+            continue;
+        QStringList albumList = *m_albumsHashById[trackList[3].toInt()];
+
+        l_deviceid = urlList[1].toInt();
+        l_rpath = urlList[2];
+        l_trackId = QString::number( track );
+        l_albumId = trackList[3];
+        l_albumArtistId = albumList[2];
+        l_currentPath = MountPointManager::instance()->getAbsolutePath( l_deviceid, l_rpath );
+        QFileInfo info( l_currentPath );
+        uint dirCount = m_filesInDirs.value( info.dir().absolutePath() );
+        if( dirCount == 1 )
+        {
+            hashTrackIds << l_trackId;
+        }
+    }
+    debug() << "trackIDs found via hash: " << hashTrackIds.size();
+    qSort( hashTrackIds );
+    debug() << "Via hash, trackIDs is " << hashTrackIds;
+
+    debug() << "Are lists equal? " << ( ( trackIds == hashTrackIds ) ? "FUCKYEAH" : "FUCKNAW" );
 
     if( trackIds.isEmpty() )
     {
@@ -943,28 +1002,28 @@ ScanResultProcessor::setupDatabase()
         populateCacheHashes();
         // /*
         debug() << "Last URL num: " << m_lastUrlNum << ", next URL num: " << m_nextUrlNum;
-        foreach( QString key, m_urlsHashByUid.keys() )
-            debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
-        foreach( int key, m_urlsHashById.keys() )
-            debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
+        //foreach( QString key, m_urlsHashByUid.keys() )
+        //    debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
+        //foreach( int key, m_urlsHashById.keys() )
+        //    debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
         debug() << "Last album num: " << m_lastAlbumNum << ", next album num: " << m_nextAlbumNum;
-        foreach( int key, m_albumsHashById.keys() )
-            debug() << "Key: " << key << ", list: " << *m_albumsHashById[key];
-        foreach( QString key, m_albumsHashByName.keys() )
-        {
-            foreach( QStringList* list, *m_albumsHashByName[key] )
-               debug() << "Key: " << key << ", list ptrs: " << *list;
-        }
+        //foreach( int key, m_albumsHashById.keys() )
+        //    debug() << "Key: " << key << ", list: " << *m_albumsHashById[key];
+        //foreach( QString key, m_albumsHashByName.keys() )
+        //{
+        //    foreach( QStringList* list, *m_albumsHashByName[key] )
+        //       debug() << "Key: " << key << ", list ptrs: " << *list;
+        //}
         debug() << "Last track num: " << m_lastTrackNum << ", next album num: " << m_nextTrackNum;
-        foreach( int key, m_tracksHashById.keys() )
-            debug() << "Key: " << key << ", list: " << *m_tracksHashById[key];
-        foreach( int key, m_tracksHashByUrl.keys() )
-            debug() << "Key: " << key << ", list: " << *m_tracksHashByUrl[key];
-        foreach( int key, m_tracksHashByAlbum.keys() )
-        {
-            foreach( QStringList* list, *m_tracksHashByAlbum[key] )
-                debug() << "Key: " << key << ", list: " << *list;
-        }
+        //foreach( int key, m_tracksHashById.keys() )
+        //    debug() << "Key: " << key << ", list: " << *m_tracksHashById[key];
+        //foreach( int key, m_tracksHashByUrl.keys() )
+        //    debug() << "Key: " << key << ", list: " << *m_tracksHashByUrl[key];
+        //foreach( int key, m_tracksHashByAlbum.keys() )
+        //{
+        //    foreach( QStringList* list, *m_tracksHashByAlbum[key] )
+        //        debug() << "Key: " << key << ", list: " << *list;
+        //}
         // */
     }
 
