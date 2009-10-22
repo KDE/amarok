@@ -247,7 +247,7 @@ ScrobblerAdapter::checkScrobble()
     DEBUG_BLOCK
     // note: in the 1.2 protocol submits are always done at end of file
     debug() << "total played" << m_totalPlayed << "duration" << m_current.duration() * 1000 / 2 << "isNull" << m_current.isNull() << "submit?" << AmarokConfig::submitPlayedSongs();
-    if( ( m_totalPlayed >= m_current.duration() * 1000 / 2 ) && !m_current.isNull() && AmarokConfig::submitPlayedSongs() )
+    if( ( m_totalPlayed > m_current.duration() * 1000 / 2 ) && !m_current.isNull() && AmarokConfig::submitPlayedSongs() )
     {
         debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();
         m_scrobbler->cache( m_current );
