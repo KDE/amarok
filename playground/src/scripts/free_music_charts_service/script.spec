@@ -14,4 +14,4 @@ X-KDE-PluginInfo-Category=Scriptable Service
 X-KDE-PluginInfo-Website=http://krohlas.de/
 X-KDE-PluginInfo-Depends=Amarok2.2
 X-KDE-PluginInfo-License=GPL
-X-KDE-PluginInfo-EnabledByDefault=false
+X-KDE-PluginInfo-EnabledByDefault=true
