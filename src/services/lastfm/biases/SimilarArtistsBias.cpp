@@ -163,7 +163,16 @@ Dynamic::SimilarArtistsBias::artistQueryDone() // slot
 
     QMutexLocker locker( &m_mutex );
     
-    QMap< int, QString > similar =  lastfm::Artist::getSimilar( m_artistQuery );
+    QMap< int, QString > similar;
+    try
+    {
+        similar =  lastfm::Artist::getSimilar( m_artistQuery );
+    } catch( lastfm::ws::ParseError e )
+    {
+        debug() << "Got exception in parsing similar artists from last.fm custom bias:" << e.what();
+	return;
+    }
+
     // ok we have the list, now figure out what we've got in the collection
 
     m_collection = CollectionManager::instance()->primaryCollection();
