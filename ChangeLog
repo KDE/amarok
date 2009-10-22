@@ -42,6 +42,9 @@ VERSION 2.2.1
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * Restore the proper custom bias when switching between saved biases (BR 209350).
+    * Don't crash when receiving bogus data from Last.Fm when asking for
+      recommended songs (BR 208173).
     * UMS device plugin now checks MIME types of tracks both by content and
       filename. Thanks to Aran Cox <aroncox@gmail.com> for the patch.
     * Some optimization of SQL queries during scan to speed things up. (BR

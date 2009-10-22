@@ -26,9 +26,9 @@
 #include "MainControlsWidget.h"
 #include "ProgressWidget.h"
 #include "SvgHandler.h"
-#include "VolumePopupButton.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "ToolBar.h"
+#include "VolumeWidget.h"
 
 #include <KApplication>
 #include <KVBox>
@@ -69,11 +69,7 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_addControlsToolbar->setFloatable ( false );
     m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
 
-    m_volumeToolBar = new QToolBar( m_insideBox );
-    m_volumeToolBar->setIconSize( QSize( 22, 22 ) );
-    m_volumeToolBar->setContentsMargins( 0, 0, 0, 0 );
-    m_volumePopupButton = new VolumePopupButton( this );
-    m_volumeToolBar->addWidget( m_volumePopupButton );
+    m_volumeWidget = new VolumeWidget( m_insideBox );
 
     KHBox * progressBox = new KHBox( mainBox );
     progressBox->setContentsMargins( 0, 0, 0, 4 );
@@ -160,7 +156,7 @@ MainToolbar::resizeEvent( QResizeEvent *event )
     const int controlWidth = m_mainControlsWidget->width();
 
     m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 3 );
-    m_volumeToolBar->move( event->size().width() - 50, 0 );
+    m_volumeWidget->move( event->size().width() - 172, 11 );
     centerAddActions();
 }
 
@@ -181,7 +177,7 @@ MainToolbar::eventFilter( QObject* object, QEvent* event )
     // This makes it possible to change volume by using the mouse wheel anywhere on the toolbar
     if( event->type() == QEvent::Wheel && object == this )
     {
-        kapp->sendEvent( m_volumePopupButton, event );
+        kapp->sendEvent( m_volumeWidget->slider(), event );
         return true;
     }
 

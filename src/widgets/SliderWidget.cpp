@@ -291,7 +291,7 @@ void
 Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    paintCustomSlider( &p, 0, 0, width(), height() );
+    paintCustomSliderNG( &p, 0, 2, width(), height() );
 }
 
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
