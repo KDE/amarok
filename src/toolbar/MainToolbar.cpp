@@ -156,7 +156,7 @@ MainToolbar::resizeEvent( QResizeEvent *event )
     const int controlWidth = m_mainControlsWidget->width();
 
     m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 3 );
-    m_volumeWidget->move( event->size().width() - 171, 11 );
+    m_volumeWidget->move( event->size().width() - 172, 11 );
     centerAddActions();
 }
 
