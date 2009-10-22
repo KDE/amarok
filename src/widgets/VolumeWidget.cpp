@@ -44,7 +44,7 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_slider->setToolTip( i18n( "Volume Control" ) );
     m_slider->setMaximumSize( 600000, 20 );
 
-    m_label = new QLabel( QString::number( AmarokConfig::masterVolume() ) + '%' + ' ', this );
+    m_label = new QLabel( /*QString::number( AmarokConfig::masterVolume() ) + '%' + ' ',*/ this );
     m_label->setFixedWidth( 60 ); // align correctly with the progress bar
     m_label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
     m_label->setFont( KGlobalSettings::fixedFont() );
@@ -75,7 +75,11 @@ VolumeWidget::engineVolumeChanged( int value )
 {
     if( value != m_slider->value() )
         m_slider->setValue( value );
+
+// Disabled text label to improve looks (it's not really needed). Remove whole label eventually.
+#if 0
     m_label->setText( QString::number( value ) + '%' + ' ' ); // align correctly with the progress bar
+#endif
 }
 
 void

@@ -28,7 +28,7 @@
 class QAction;
 class KToolBar;
 class MainControlsWidget;
-class VolumePopupButton;
+class VolumeWidget;
 
 /**
     A KHBox based toolbar with a nice svg background and takes care of 
@@ -56,8 +56,7 @@ protected:
 private:
     QWidget            *m_insideBox;
     KToolBar           *m_addControlsToolbar;
-    QToolBar           *m_volumeToolBar;
-    VolumePopupButton  *m_volumePopupButton;
+    VolumeWidget       *m_volumeWidget;
     MainControlsWidget *m_mainControlsWidget;
 
     bool m_ignoreCache;
