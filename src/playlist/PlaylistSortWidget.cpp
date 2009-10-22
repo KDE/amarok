@@ -45,7 +45,7 @@ SortWidget::SortWidget( QWidget *parent )
     m_layout->addWidget( rootItem );
     connect( rootItem, SIGNAL( clicked() ), this, SLOT( trimToLevel() ) );
 
-    m_ribbon = new QHBoxLayout( this );
+    m_ribbon = new QHBoxLayout();
     m_layout->addLayout( m_ribbon );
     m_ribbon->setContentsMargins( 0, 0, 0, 0 );
     m_ribbon->setSpacing( 0 );
