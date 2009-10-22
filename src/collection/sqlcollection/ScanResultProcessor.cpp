@@ -377,8 +377,6 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     filters << "*.[mM][pP]3" << "*.[oO][gG][gG]" << "*.[oO][gG][aA]" << "*.[fF][lL][aA][cC]" << "*.[wW][mM][aA]" << "*.[mM]4[aAbB]";
     dir.setNameFilters( filters );
 
-    int compilationId = 0;
-
     //do not check existing albums if there is more than one file in the directory
     //see comments in checkExistingAlbums
 
@@ -389,7 +387,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     }
 
     if( dir.count() == 1 )
-        compilationId = checkExistingAlbums( albumName );
+        album = checkExistingAlbums( albumName );
 
     QString uid = trackData.value( Field::UNIQUEID ).toString();
 
@@ -398,15 +396,14 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     databaseIdFetch( trackData.value( Field::ARTIST ).toString(),
                      trackData.value( Field::GENRE ).toString(),
                      trackData.value( Field::COMPOSER ).toString(),
-                     trackData.value( Field::YEAR ).toString(),
-                     albumName, albumArtistId, compilationId, path, uid );
+                     trackData.value( Field::YEAR ).toString() );
 
     int artist = genericId( "artists", trackData.value( Field::ARTIST ).toString() );
     int genre = genericId( "genres", trackData.value( Field::GENRE ).toString() );
     int composer = genericId( "composers", trackData.value( Field::COMPOSER ).toString() );
     int year = genericId( "years", trackData.value( Field::YEAR ).toString() );
 
-    if( !compilationId )
+    if( !album ) //no compilation
         album = albumId( albumName, albumArtistId );
 
 
@@ -415,62 +412,12 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     //urlId will take care of the urls table part of AFT
     int url = urlId( path, uid );
-    m_currUrlIdValues.clear();
 
-    QString sql,sql2,sql3;
-    sql = "REPLACE INTO tracks_temp(url,artist,album,genre,composer,year,title,comment,"
-                    "tracknumber,discnumber,bitrate,length,samplerate,filesize,filetype,bpm,"
-                    "createdate,modifydate,albumgain,albumpeakgain,trackgain,trackpeakgain) "
-                    "VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8',%9"; //goes up to tracknumber
-    sql = sql.arg( QString::number( url )
-                , QString::number( artist )
-                , QString::number( compilationId ? compilationId : album )
-                , QString::number( genre )
-                , QString::number( composer )
-                , QString::number( year )
-                , m_collection->escape( trackData[ Field::TITLE ].toString() )
-                , m_collection->escape( trackData[ Field::COMMENT ].toString() )
-                , QString::number( trackData[Field::TRACKNUMBER].toInt() ) );
-
-    sql2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9"; // goes up to modifydate
-    sql2 = sql2.arg( QString::number( trackData[Field::DISCNUMBER].toInt() )
-                , QString::number( trackData[Field::BITRATE].toInt() )
-                , QString::number( trackData[Field::LENGTH].toLongLong() )
-                , QString::number( trackData[Field::SAMPLERATE].toInt() )
-                , QString::number( trackData[Field::FILESIZE].toInt() )
-                , "0" // NYI: filetype
-                , "0" // NYI: bpm
-                , QString::number( created )
-                , QString::number( modified ) );
-
-    // replay gain - only store gain values if we also have peak gain values
-    //               (ie: ignore broken tags)
-    sql3 = ",%1,%2,%3,%4);";
-    if ( trackData.contains( Field::ALBUMGAIN ) && trackData.contains( Field::ALBUMPEAKGAIN ) )
-    {
-        sql3 = sql3.arg( QString::number( trackData[ Field::ALBUMGAIN ].toDouble() ) );
-        sql3 = sql3.arg( trackData[ Field::ALBUMPEAKGAIN ].toDouble() );
-    }
-    else
-        sql3 = sql3.arg( "NULL", "NULL" );
-    if ( trackData.contains( Field::TRACKGAIN ) && trackData.contains( Field::TRACKPEAKGAIN ) )
-    {
-        sql3 = sql3.arg( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ) );
-        sql3 = sql3.arg( trackData[ Field::TRACKPEAKGAIN ].toDouble() );
-    }
-    else
-        sql3 = sql3.arg( "NULL", "NULL" );
-
-    sql += sql2 + sql3;
-
-    m_collection->query( sql );
-
-    int compOrAlbum = compilationId ? compilationId : album;
     QStringList *trackList = new QStringList();
     trackList->append( QString::number( m_nextTrackNum ) );
     trackList->append( QString::number( url ) );
     trackList->append( QString::number( artist ) );
-    trackList->append( QString::number( compOrAlbum ) );
+    trackList->append( QString::number( album ) );
     trackList->append( QString::number( genre ) );
     trackList->append( QString::number( composer ) );
     trackList->append( QString::number( year ) );
@@ -503,16 +450,28 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     }
 
     //insert into hashes
-    m_tracksHashById.insert( m_nextTrackNum, trackList );
-    m_tracksHashByUrl.insert( url, trackList );
+    if( m_tracksHashByUrl.contains( url ) && m_tracksHashByUrl[url] != 0 )
+    {
+        //need to replace, not overwrite/add a new one
+        QStringList *oldValues = m_tracksHashByUrl[url];
+        oldValues->clear();
+        for( int i = 0; i < trackList->size(); i++ )
+            oldValues->append( trackList[i] );
+        delete trackList;
+        trackList = oldValues;
+    }
+    else
+        m_tracksHashByUrl.insert( url, trackList );
+
     
-    if( m_tracksHashByAlbum.contains( compOrAlbum ) && m_tracksHashByAlbum[compOrAlbum] != 0 )
-        m_tracksHashByAlbum[compOrAlbum]->append( trackList );
+    m_tracksHashById.insert( m_nextTrackNum, trackList );
+    if( m_tracksHashByAlbum.contains( album ) && m_tracksHashByAlbum[album] != 0 )
+        m_tracksHashByAlbum[album]->append( trackList );
     else
     {
         QLinkedList<QStringList*> *list = new QLinkedList<QStringList*>();
         list->append( trackList );
-        m_tracksHashByAlbum[compOrAlbum] = list;
+        m_tracksHashByAlbum[album] = list;
     }
 
     //Don't forget to escape the fields that need it when inserting!
@@ -561,76 +520,29 @@ ScanResultProcessor::genericInsert( const QString &key, const QString &value )
 }
 
 void
-ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId, int compilationId, const QString &url, const QString &uid )
+ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year )
 {
     //DEBUG_BLOCK
-    QPair<QString, int> albumKey( album, albumArtistId );
-    bool albumFound = compilationId || m_albums.contains( albumKey );
     bool artistFound = m_artists.contains( artist );
     bool genreFound = m_genres.contains( genre );
     bool composerFound = m_composers.contains( composer );
     bool yearFound = m_years.contains( year );
 
-    int l = 0; //album
     int a = 0; //artist
     int g = 0; //genre
     int c = 0; //composer
     int y = 0; //year
 
     QString query;
-    if( !albumFound )
-    {
-        if( m_albumsHashByName.contains( album ) && m_albumsHashByName[album] != 0 )
-        {
-            QLinkedList<QStringList*> *list = m_albumsHashByName[album];
-            foreach( QStringList *slist, *list )
-            {
-                if( slist->at( 2 ).isEmpty() && albumArtistId == 0 )
-                {
-                    debug() << "id found by hashes is " << slist->at( 0 );
-                    break;
-                }
-                else if( slist->at( 2 ).toInt() == albumArtistId )
-                {
-                    debug() << "id found by hashes is " << slist->at( 0 );
-                    break;
-                }
-            }
-        }
-        if( albumArtistId == 0 )
-            query += QString( "SELECT id, CONCAT('ALBUMNAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM albums_temp WHERE artist IS NULL AND name = '%1' " )
-                        .arg( m_collection->escape( album ) );
-        else
-            query += QString( "SELECT id, CONCAT('ALBUMNAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM albums_temp WHERE artist = %1 AND name = '%2' " )
-                            .arg( QString::number( albumArtistId ), m_collection->escape( album ) );
-    }
+
     if( !artistFound )
-        query += QString( "UNION ALL SELECT id, CONCAT('ARTISTNAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM artists_temp WHERE name = '%1' " ).arg( m_collection->escape( artist ) );
+        query += QString( "SELECT id, CONCAT('ARTISTNAME_', name) AS name FROM artists_temp WHERE name = '%1' " ).arg( m_collection->escape( artist ) );
     if( !genreFound )
-        query += QString( "UNION ALL SELECT id, CONCAT('GENRENAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM genres_temp WHERE name = '%1' " ).arg( m_collection->escape( genre ) );
+        query += QString( "UNION ALL SELECT id, CONCAT('GENRENAME_', name) AS name FROM genres_temp WHERE name = '%1' " ).arg( m_collection->escape( genre ) );
     if( !composerFound )
-        query += QString( "UNION ALL SELECT id, CONCAT('COMPOSERNAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
+        query += QString( "UNION ALL SELECT id, CONCAT('COMPOSERNAME_', name) AS name FROM composers_temp WHERE name = '%1' " ).arg( m_collection->escape( composer ) );
     if( !yearFound )
-        query += QString( "UNION ALL SELECT id, CONCAT('YEARSNAME_', name), 'dummy1', 'dummy2', 'dummy3', 'dummy4' AS name FROM years_temp WHERE name = '%1' " ).arg( m_collection->escape( year ) );
-
-    QFileInfo fileInfo( url );
-    const QString dir = fileInfo.absoluteDir().absolutePath();
-    int deviceId = MountPointManager::instance()->getIdForUrl( url );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
-    QString deviceidString = QString::number( deviceId );
-    QString escapedRpath = m_collection->escape( rpath );
-    QString escapedUid = m_collection->escape( uid );
-
-    QPair<int, QString> locationPair( deviceId, rpath );
-    QStringList hashCheck;
-    if( m_urlsHashByUid.contains( uid ) && m_urlsHashByUid[uid] != 0 )
-        hashCheck = *m_urlsHashByUid[uid];
-    else if( m_urlsHashByLocation.contains( locationPair ) && m_urlsHashByLocation[locationPair] != 0 )
-        hashCheck = *m_urlsHashByLocation[locationPair];
-
-    //don't bother caching the data, we only call this method for each url once
-    query += QString( "UNION ALL SELECT 'DUMMYVALUE', id, deviceid, rpath, directory, uniqueid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3' " )
-                        .arg( deviceidString, escapedRpath, escapedUid );
+        query += QString( "UNION ALL SELECT id, CONCAT('YEARSNAME_', name) AS name FROM years_temp WHERE name = '%1' " ).arg( m_collection->escape( year ) );
 
     if( query.startsWith( "UNION ALL " ) )
         query.remove( 0, 10 );
@@ -641,7 +553,6 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     int index = 0;
     QString first;
     QString second;
-    bool dummySeen = false;
     while( index < res.size() )
     {
         first = res.at( index++ );
@@ -649,18 +560,7 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
              a = first.toInt();
         //debug() << "first = " << first;
         //debug() << "second = " << second;
-        if( first == "DUMMYVALUE" )
-        {
-            dummySeen = true;
-            break;
-        }
-        if( !albumFound && second == QString( "ALBUMNAME_" + album ) )
-        {
-            l = first.toInt();
-            debug() << "album found by sql is: " << l;
-            albumFound = true;
-        }
-        else if( !artistFound && second == QString( "ARTISTNAME_" + artist ) )
+        if( !artistFound && second == QString( "ARTISTNAME_" + artist ) )
         {
             a = first.toInt();
             artistFound = true;
@@ -680,24 +580,8 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
             y = first.toInt();
             yearFound = true;
         }
-        index++;
-        index++;
-        index++;
-        index++;
     }
     
-    if( dummySeen )
-    {
-        m_currUrlIdValues = res.mid( res.size() - 5, 5 );
-        debug() << "m_currUrlIdValues = " << m_currUrlIdValues;
-        debug() << "hashCheck = " << hashCheck;
-    }
-
-    if( !albumFound )
-    {
-        m_albums.insert( albumKey, albumInsert( album, albumArtistId ) );
-        albumFound = true;
-    }
     if( !artistFound )
     {
         m_artists.insert( artist, genericInsert( "artists", artist ) );
@@ -745,32 +629,28 @@ ScanResultProcessor::imageId( const QString &image, int albumId )
 
     if( imageId >= 0 )
     {
-        // Make sure the album table is up to date
-        QString update = QString( "UPDATE albums_temp SET image = %1 WHERE id = %2" )
-                            .arg( QString::number( imageId ), QString::number( albumId ) );
-        m_collection->query( update );
-        m_images.insert( key, imageId );
         if( m_albumsHashById.contains( albumId ) && m_albumsHashById[albumId] != 0 )
         {
             QStringList *list = m_albumsHashById[albumId];
             list->replace( 3, QString::number( imageId ) );
         }
+        m_images.insert( key, imageId );
     }
 
     return imageId;
 }
 
 int
-ScanResultProcessor::albumId( const QString &album, int artistId )
+ScanResultProcessor::albumId( const QString &album, int albumArtistId )
 {
-    //artistId == 0 means no albumartist
-    QPair<QString, int> key( album, artistId );
+    //albumArtistId == 0 means no albumartist
+    QPair<QString, int> key( album, albumArtistId );
     if( m_albums.contains( key ) )
     {
         // if we already have the key but the artist == 0,
         // UPDATE the image field so that we won't forget the cover for a compilation
         int id = m_albums.value( key );
-        if ( artistId == 0 )
+        if ( albumArtistId == 0 )
         {
             if( m_albumsHashByName.contains( album ) && m_albumsHashByName[album] != 0 )
             {
@@ -791,56 +671,48 @@ ScanResultProcessor::albumId( const QString &album, int artistId )
                     {
                         QStringList *list = m_albumsHashById[id];
                         list->replace( 3, QString::number( maxImage ) );
-                        debug() << "Hash: setting image to " << maxImage << "where id is " << id;
                     }
                 }
-            }
-            QString select = QString( "SELECT MAX(image) FROM albums_temp WHERE name = '%1';" )
-                .arg( m_collection->escape( album ) );
-            QStringList res = m_collection->query( select );
-            if( !res.isEmpty() && !res[0].isEmpty() )
-            {
-                QString update = QString( "UPDATE albums_temp SET image = %1 WHERE id = %2" )
-                    .arg( res[0] , QString::number( id ) );
-                m_collection->query( update );
-                debug() << "SQL: setting image to " << res[0] << "where id is " << id;
             }
         }
         return id;
     }
 
-    QString query;
-    if( artistId == 0 )
-    {
-        query = QString( "SELECT id FROM albums_temp WHERE artist IS NULL AND name = '%1';" )
-                    .arg( m_collection->escape( album ) );
-    }
-    else
-    {
-        query = QString( "SELECT id FROM albums_temp WHERE artist = %1 AND name = '%2';" )
-                        .arg( QString::number( artistId ), m_collection->escape( album ) );
-    }
-    QStringList res = m_collection->query( query );
     int id = 0;
-    if( res.isEmpty() )
-        id = albumInsert( album, artistId );
-    else
-        id = res[0].toInt();
+    if( m_albumsHashByName.contains( album ) && m_albumsHashByName[album] != 0 )
+    {
+        QLinkedList<QStringList*> *list = m_albumsHashByName[album];
+        foreach( QStringList *slist, *list )
+        {
+            if( slist->at( 2 ).isEmpty() && albumArtistId == 0 )
+            {
+                id = slist->at( 0 ).toInt();
+                break;
+            }
+            else if( slist->at( 2 ).toInt() == albumArtistId )
+            {
+                id = slist->at( 0 ).toInt();
+                break;
+            }
+        }
+    }
+    if( !id )
+        id = albumInsert( album, albumArtistId );
     m_albums.insert( key, id );
     return id;
 }
 
 int
-ScanResultProcessor::albumInsert( const QString &album, int artistId )
+ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
 {
     DEBUG_BLOCK
-    debug() << "id returned from hash: " << m_nextAlbumNum;
+    int returnedNum = m_nextAlbumNum++;
     QStringList* albumList = new QStringList();
-    albumList->append( QString::number( m_nextAlbumNum ) );
+    albumList->append( QString::number( returnedNum ) );
     albumList->append( album );
-    albumList->append( QString::number( artistId ) );
+    albumList->append( QString::number( albumArtistId ) );
     albumList->append( QString() );
-    m_albumsHashById[m_nextAlbumNum] = albumList;
+    m_albumsHashById[returnedNum] = albumList;
     if( m_albumsHashByName.contains( album ) && m_albumsHashByName[album] != 0 )
         m_albumsHashByName[album]->append( albumList );
     else
@@ -849,12 +721,7 @@ ScanResultProcessor::albumInsert( const QString &album, int artistId )
         list->append( albumList );
         m_albumsHashByName[album] = list;
     }
-    m_nextAlbumNum++;
-    QString insert = QString( "INSERT INTO albums_temp( artist, name ) VALUES ( %1, '%2');" )
-        .arg( artistId ? QString::number( artistId ) : "NULL", m_collection->escape( album ) );
-    int id = m_collection->insert( insert, "albums_temp" );
-    debug() << "id returned from SQL: " << id;
-    return id;
+    return returnedNum;
 }
 
 int
@@ -867,35 +734,39 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     int deviceId = MountPointManager::instance()->getIdForUrl( url );
     QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
 
-    if( m_currUrlIdValues.isEmpty() )  //fresh -- insert
+    QPair<int, QString> locationPair( deviceId, rpath );
+    QStringList currUrlIdValues;
+    if( m_urlsHashByUid.contains( uid ) && m_urlsHashByUid[uid] != 0 )
+        currUrlIdValues = *m_urlsHashByUid[uid];
+    else if( m_urlsHashByLocation.contains( locationPair ) && m_urlsHashByLocation[locationPair] != 0 )
+        currUrlIdValues = *m_urlsHashByLocation[locationPair];
+
+    if( currUrlIdValues.isEmpty() )  //fresh -- insert
     {
+        int returnedNum = m_nextUrlNum++;
         QStringList *list = new QStringList();
-        list->append( QString::number( m_nextUrlNum ) );
+        list->append( QString::number( returnedNum ) );
         list->append( QString::number( deviceId ) );
         list->append( rpath );
         list->append( QString::number( dirId ) );
         list->append( uid );
         m_urlsHashByUid[uid] = list;
-        m_urlsHashById[m_nextUrlNum] = list;
+        m_urlsHashById[returnedNum] = list;
         m_urlsHashByLocation[QPair<int, QString>( deviceId, rpath )] = list;
-        m_nextUrlNum++;
-        QString insert = QString( "INSERT INTO urls_temp (deviceid,rpath,directory,uniqueid) VALUES ( %1, %2, '%3', '%4' );" )
-                    .arg( QString::number( deviceId ), m_collection->escape( rpath ), QString::number( dirId ),
-                              m_collection->escape( uid ) );
-        return m_collection->insert( insert, "urls_temp" );
+        return returnedNum;
     }
 
-    if( m_currUrlIdValues[1] == QString::number( deviceId ) &&
-        m_currUrlIdValues[2] == rpath &&
-        m_currUrlIdValues[3] == QString::number( dirId ) &&
-        m_currUrlIdValues[4] == uid
+    if( currUrlIdValues[1] == QString::number( deviceId ) &&
+        currUrlIdValues[2] == rpath &&
+        currUrlIdValues[3] == QString::number( dirId ) &&
+        currUrlIdValues[4] == uid
       )
     {
         //everything matches, don't need to do anything, just return the ID
-        return m_currUrlIdValues[0].toInt();
+        return currUrlIdValues[0].toInt();
     }
 
-    if( m_currUrlIdValues[4] == uid )
+    if( currUrlIdValues[4] == uid )
     {
         //we found an existing entry with this uniqueid, update the deviceid and path
         //Note that we ignore the situation where both a UID and path was found; UID takes precedence
@@ -908,20 +779,15 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
             list->replace( 3, QString::number( dirId ) );
             debug() << "Hash updated UID-based values for uid " << uid;
         }
-        QString query = QString( "UPDATE urls_temp SET deviceid=%1,rpath='%2',directory=%3 WHERE uniqueid='%4';" )
-            .arg( QString::number( deviceId ), m_collection->escape( rpath ), QString::number( dirId ),
-                            m_collection->escape( uid ) );
-        m_collection->query( query );
-        debug() << "SQL updated UID-based values for uid " << uid;
         m_permanentTablesUrlUpdates.insert( uid, url );
-        m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( m_currUrlIdValues[1].toInt(), m_currUrlIdValues[2] ), url ) );
-        return m_currUrlIdValues[0].toInt();
+        m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( currUrlIdValues[1].toInt(), currUrlIdValues[2] ), url ) );
+        return currUrlIdValues[0].toInt();
     }
 
-    if( m_currUrlIdValues[1] == QString::number( deviceId ) && m_currUrlIdValues[2] == rpath )
+    if( currUrlIdValues[1] == QString::number( deviceId ) && currUrlIdValues[2] == rpath )
     {
         //We found an existing path; give it the most recent UID value
-        int urlId = m_currUrlIdValues[0].toInt();
+        int urlId = currUrlIdValues[0].toInt();
         if( m_urlsHashById.contains( urlId ) && m_urlsHashById[urlId] != 0 )
         {
             QStringList *list = m_urlsHashById[urlId];
@@ -929,13 +795,9 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
             debug() << "Hash updated path-based values for uid " << uid;
         }
  
-        QString query = QString( "UPDATE urls_temp SET uniqueid='%1' WHERE deviceid=%2 AND rpath='%3';" )
-            .arg( uid, QString::number( deviceId ), m_collection->escape( rpath ) );
-        m_collection->query( query );
-        debug() << "SQL updated path-based values for uid " << uid;
         m_permanentTablesUidUpdates.insert( url, uid );
-        m_changedUids.insert( m_currUrlIdValues[4], uid );
-        return m_currUrlIdValues[0].toInt();
+        m_changedUids.insert( currUrlIdValues[4], uid );
+        return currUrlIdValues[0].toInt();
     }
 
     debug() << "AFT algorithm died...you should not be here!  Returning something negative and bad.";
@@ -1034,40 +896,10 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
     //if it does, and if each file of the album is alone in its directory
     //it's probably a compilation.
     //this handles A1 compilations that were automatically organized by Amarok
-    QString query = "SELECT urls_temp.deviceid,urls_temp.rpath,tracks_temp.id,albums_temp.id,albums_temp.artist FROM urls_temp "
-                    "LEFT JOIN tracks_temp on urls_temp.id = tracks_temp.url LEFT JOIN albums_temp ON "
-                    "tracks_temp.album = albums_temp.id WHERE albums_temp.name = '%1';";
-    query = query.arg( m_collection->escape( album ) );
-    QStringList result = m_collection->query( query );
-    QList<QString> trackIds;
-    for( QListIterator<QString> iter( result ); iter.hasNext(); )
-    {
-        int deviceid = iter.next().toInt();
-        QString rpath = iter.next();
-        QString trackId = iter.next();
-        QString albumId = iter.next();
-        QString albumArtistId = iter.next();
-        QString currentPath = MountPointManager::instance()->getAbsolutePath( deviceid, rpath );
-        QFileInfo info( currentPath );
-        uint dirCount = m_filesInDirs.value( info.dir().absolutePath() );
-        if( dirCount == 1 )
-        {
-            trackIds << trackId;
-        }
-    }
-
-    debug() << "trackIDs found via SQL: " << trackIds.size();
-    qSort( trackIds );
-    debug() << "Via SQL, trackIds is " << trackIds;
-
-    QList<QString> hashTrackIds;
     if( !m_albumsHashByName.contains( album ) || m_albumsHashByName[album] == 0 )
-    {
-        debug() << "trackIDs found via hashes: 0 " << ( trackIds.size() == 0 ? "FUCKYEAH!" : "FUCKNAW" );
         return 0;
-    }
 
-    debug() << "Tracks size = " << m_tracksHashById.size();
+    QStringList trackIds;
     QLinkedList<QStringList*> *llist = m_albumsHashByName[album];
     QLinkedList<int> albumIntList;
     foreach( QStringList* albumList, *llist )
@@ -1082,8 +914,6 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
             trackIntList.append( (*slist)[0].toInt() ); //list of tracks matching those album IDs
     }
     
-    foreach( int track, trackIntList )
-        debug() << "trackIntList contains: " << track;
     //note that there will be a 1:1 mapping between tracks and urls, although the id is not necessarily the same
     //and there may be more urls than tracks -- this means that this track list is all we need
     //the big mama
@@ -1113,14 +943,9 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
         uint dirCount = m_filesInDirs.value( info.dir().absolutePath() );
         if( dirCount == 1 )
         {
-            hashTrackIds << l_trackId;
+            trackIds << l_trackId;
         }
     }
-    debug() << "trackIDs found via hash: " << hashTrackIds.size();
-    qSort( hashTrackIds );
-    debug() << "Via hash, trackIDs is " << hashTrackIds;
-
-    debug() << "Are lists equal? " << ( ( trackIds == hashTrackIds ) ? "FUCKYEAH" : "FUCKNAW" );
 
     if( trackIds.isEmpty() )
     {
@@ -1128,15 +953,18 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
     }
     else
     {
+        trackIds << QString::number( -1 );
         int compilationId = albumId( album, 0 );
-        QString trackIdsSql = "-1";
-        foreach( const QString &trackId, trackIds )
+        QString compilationString = QString::number( compilationId );
+        foreach( QString trackId, trackIds )
         {
-            trackIdsSql += ',';
-            trackIdsSql += trackId;
+            int value = trackId.toInt();
+            if( m_tracksHashById.contains( value ) && m_tracksHashById[value] != 0 )
+            {
+                QStringList* list = m_tracksHashById[value];
+                list->replace( 3, compilationString );
+            }
         }
-        QString update = "UPDATE tracks_temp SET album = %1 where id IN (%2);";
-        m_collection->query( update.arg( QString::number( compilationId ), trackIdsSql ) );
         return compilationId;
     }
 }
