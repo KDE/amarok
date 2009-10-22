@@ -362,7 +362,7 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCou
 void
 ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     //amarok 1 stored all tracks of a compilation in different directories.
     //when using its "Organize Collection" feature
     //try to detect these cases
@@ -460,11 +460,17 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     //insert into hashes
     if( m_tracksHashByUrl.contains( url ) && m_tracksHashByUrl[url] != 0 )
     {
+        debug() << "Found QStringList = " << *m_tracksHashByUrl[url];
         //need to replace, not overwrite/add a new one
         QStringList *oldValues = m_tracksHashByUrl[url];
         oldValues->clear();
+        debug() << "oldValues is now " << *oldValues;
         for( int i = 0; i < trackList->size(); i++ )
+        {
+            debug() << "i = " << i;
+            debug() << "trackList[i] = " << trackList[i];
             oldValues->append( trackList[i] );
+        }
         delete trackList;
         trackList = oldValues;
     }
