@@ -109,6 +109,7 @@ class ScanResultProcessor : public QObject
         int m_lastUrlNum;
         int m_nextUrlNum;
         QHash<QString, QStringList*> m_urlsHashByUid;
+        QHash<QPair<int, QString>, QStringList*> m_urlsHashByLocation;
         QHash<int, QStringList*> m_urlsHashById;
 
         int m_lastAlbumNum;

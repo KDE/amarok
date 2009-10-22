@@ -44,6 +44,7 @@ ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
 ScanResultProcessor::~ScanResultProcessor()
 {
     DEBUG_BLOCK
+    //everything has a URL, so enough to just delete from here
     foreach( QStringList *list, m_urlsHashByUid )
         delete list;
     foreach( QLinkedList<QStringList*> *list, m_albumsHashByName )
@@ -619,8 +620,15 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     QString deviceidString = QString::number( deviceId );
     QString escapedRpath = m_collection->escape( rpath );
     QString escapedUid = m_collection->escape( uid );
+
+    QPair<int, QString> locationPair( deviceId, rpath );
+    QStringList hashCheck;
+    if( m_urlsHashByUid.contains( uid ) && m_urlsHashByUid[uid] != 0 )
+        hashCheck = *m_urlsHashByUid[uid];
+    else if( m_urlsHashByLocation.contains( locationPair ) && m_urlsHashByLocation[locationPair] != 0 )
+        hashCheck = *m_urlsHashByLocation[locationPair];
+
     //don't bother caching the data, we only call this method for each url once
-    PERFORMTHISLOOKUPVIAHASHES
     query += QString( "UNION ALL SELECT 'DUMMYVALUE', id, deviceid, rpath, directory, uniqueid FROM urls_temp WHERE (deviceid = %1 AND rpath = '%2') OR uniqueid='%3' " )
                         .arg( deviceidString, escapedRpath, escapedUid );
 
@@ -681,7 +689,8 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     if( dummySeen )
     {
         m_currUrlIdValues = res.mid( res.size() - 5, 5 );
-        //debug() << "m_currUrlIdValues = " << m_currUrlIdValues;
+        debug() << "m_currUrlIdValues = " << m_currUrlIdValues;
+        debug() << "hashCheck = " << hashCheck;
     }
 
     if( !albumFound )
@@ -868,6 +877,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         list->append( uid );
         m_urlsHashByUid[uid] = list;
         m_urlsHashById[m_nextUrlNum] = list;
+        m_urlsHashByLocation[QPair<int, QString>( deviceId, rpath )] = list;
         m_nextUrlNum++;
         QString insert = QString( "INSERT INTO urls_temp (deviceid,rpath,directory,uniqueid) VALUES ( %1, %2, '%3', '%4' );" )
                     .arg( QString::number( deviceId ), m_collection->escape( rpath ), QString::number( dirId ),
@@ -1154,6 +1164,8 @@ ScanResultProcessor::setupDatabase()
         //    debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
         //foreach( int key, m_urlsHashById.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
+        //foreach( QPair<int, QString> key, m_urlsHashByLocation.keys() )
+        //    debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
         debug() << "Last album num: " << m_lastAlbumNum << ", next album num: " << m_nextAlbumNum;
         //foreach( int key, m_albumsHashById.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_albumsHashById[key];
@@ -1187,6 +1199,7 @@ ScanResultProcessor::populateCacheHashes()
     int reserveSize = ( res.size() / 5 ) * 2; //Reserve plenty of space to bring insertion and lookup close to O(1)
     m_urlsHashByUid.reserve( reserveSize );
     m_urlsHashById.reserve( reserveSize );
+    m_urlsHashByLocation.reserve( reserveSize );
     QStringList *currList;
     QLinkedList<QStringList*> *llist;
     int index = 0;
@@ -1198,6 +1211,7 @@ ScanResultProcessor::populateCacheHashes()
             currList->append( res.at(index++) );
         m_urlsHashByUid.insert( currList->last(), currList );
         m_urlsHashById.insert( m_lastUrlNum, currList );
+        m_urlsHashByLocation.insert( QPair<int, QString>( res.at( 1 ).toInt(), res.at( 2 ) ), currList );
     }
     m_nextUrlNum = m_lastUrlNum + 1;
 
