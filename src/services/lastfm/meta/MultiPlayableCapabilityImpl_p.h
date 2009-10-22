@@ -68,7 +68,6 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::TrackPtr track )
         {
-            DEBUG_BLOCK
             const LastFm::TrackPtr ltrack = LastFm::TrackPtr::dynamicCast( track );
             
             if( ltrack.isNull() )

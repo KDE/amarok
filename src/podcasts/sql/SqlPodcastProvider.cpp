@@ -635,8 +635,6 @@ SqlPodcastProvider::completePodcastDownloads()
 void
 SqlPodcastProvider::engineStateChanged( Phonon::State newState, Phonon::State oldState )
 {
-    DEBUG_BLOCK
-    debug() << "NEWSTATE: " << newState << "OLDSTATE: " << oldState;
     if( !( newState == Phonon::PlayingState || newState == Phonon::StoppedState ) )
         return;
 

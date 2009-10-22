@@ -177,8 +177,6 @@ ProgressWidget::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
 void
 ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
-    DEBUG_BLOCK
-
     switch ( state )
     {
         case Phonon::LoadingState:

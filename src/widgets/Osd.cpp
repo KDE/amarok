@@ -672,8 +672,6 @@ Amarok::OSD::engineNewTrackPlaying()
 void
 Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
-    DEBUG_BLOCK
-
     switch( state )
     {
         case Phonon::PlayingState:
@@ -697,7 +695,6 @@ void
 Amarok::OSD::metadataChanged( Meta::AlbumPtr album )
 {
     Q_UNUSED( album )
-    DEBUG_BLOCK
 
     show( m_currentTrack );
 }
@@ -790,4 +787,3 @@ namespace ShadowEngine
 }
 
 #include "Osd.moc"
-
