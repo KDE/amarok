@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<TestCase name="TestAmarok">
+<Environment>
+    <QtVersion>4.5.2</QtVersion>
+    <QTestVersion>4.5.2</QTestVersion>
+</Environment>
+<TestFunction name="initTestCase">
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testAsciiPath">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="39">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="40">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="42">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="43">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="44">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="45">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="46">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="47">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="48">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="51">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="54">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="57">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testCleanPath">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="63">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="64">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="65">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="66">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="69">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="70">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="73">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="74">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="75">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="76">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="79">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="80">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="81">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="82">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="85">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="86">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="89">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="90">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testComputeScore">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="97">
+    <Description><![CDATA[QVERIFY(50 < Amarok::computeScore( 50, 1, 1 ))]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="98">
+    <Description><![CDATA[QVERIFY(0 < Amarok::computeScore( 0, 1, 1 ))]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="99">
+    <Description><![CDATA[QVERIFY(50 > Amarok::computeScore( 50, 1, 0.1 ))]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="100">
+    <Description><![CDATA[QVERIFY(50 > Amarok::computeScore( 50, 1, 0 ))]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="101">
+    <Description><![CDATA[QVERIFY(50 > Amarok::computeScore( 50, 0, 0 ))]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testConciseTimeSince">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="106">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="107">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="108">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="109">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testDecapitateString">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="115">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="117">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="118">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="119">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="120">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testEscapeHTMLAttr">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="125">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="127">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="128">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="129">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="130">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="131">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testExtension">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="136">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="137">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="138">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="139">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="140">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="141">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="142">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="143">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="144">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="145">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="146">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="147">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="148">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="149">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="150">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testManipulateThe">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="158">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="161">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="164">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="167">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="170">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="173">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="176">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="179">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="182">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="185">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="188">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="191">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="194">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testRecursiveUrlExpand">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="204">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="207">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="211">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="qwarn" file="" line="0">
+    <Description><![CDATA[QObject: Cannot create children for a parent that is in a different thread.
+(Parent is Solid::Backends::Hal::HalDevice(0x16fac00), parent's thread is QThread(0x121cc80), current thread is ThreadWeaver::Thread(0x1911e70)]]></Description>
+</Message>
+<Message type="qwarn" file="" line="0">
+    <Description><![CDATA[QObject: Cannot create children for a parent that is in a different thread.
+(Parent is Solid::Backends::Hal::HalDevice(0x16ec640), parent's thread is QThread(0x121cc80), current thread is ThreadWeaver::Thread(0x1911e70)]]></Description>
+</Message>
+<Message type="qwarn" file="" line="0">
+    <Description><![CDATA[QObject: Cannot create children for a parent that is in a different thread.
+(Parent is Solid::Backends::Hal::HalDevice(0x16e9fc0), parent's thread is QThread(0x121cc80), current thread is ThreadWeaver::Thread(0x1911e70)]]></Description>
+</Message>
+<Message type="qwarn" file="" line="0">
+    <Description><![CDATA[QObject: Cannot create children for a parent that is in a different thread.
+(Parent is Solid::Backends::Hal::HalDevice(0x1661120), parent's thread is QThread(0x121cc80), current thread is ThreadWeaver::Thread(0x1911e70)]]></Description>
+</Message>
+<Message type="qwarn" file="" line="0">
+    <Description><![CDATA[QObject: Cannot create children for a parent that is in a different thread.
+(Parent is Solid::Backends::Hal::HalDevice(0x16e8700), parent's thread is QThread(0x121cc80), current thread is ThreadWeaver::Thread(0x1911e70)]]></Description>
+</Message>
+<Message type="qwarn" file="" line="0">
+    <Description><![CDATA[QObject: Cannot create children for a parent that is in a different thread.
+(Parent is Solid::Backends::Hal::HalDevice(0x16f6810), parent's thread is QThread(0x121cc80), current thread is ThreadWeaver::Thread(0x1911e70)]]></Description>
+</Message>
+<Message type="qwarn" file="" line="0">
+    <Description><![CDATA[QObject: Cannot create children for a parent that is in a different thread.
+(Parent is Solid::Backends::Hal::HalDevice(0x1c4d070), parent's thread is QThread(0x121cc80), current thread is ThreadWeaver::Thread(0x1911e70)]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="215">
+    <Description><![CDATA[Compared values are not the same
+   Actual (resultList.size()): 0
+   Expected (1): 1]]></Description>
+</Message>
+<Incident type="fail" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="215">
+    <Description><![CDATA[Compared values are not the same
+   Actual (resultList.size()): 0
+   Expected (1): 1]]></Description>
+</Incident>
+</TestFunction>
+<TestFunction name="testSaveLocation">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="245">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="246">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="247">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testUnescapeHTMLAttr">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="253">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="255">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="256">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="257">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="258">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="259">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testVerboseTimeSince">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="265">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="266">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="268">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="269">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="271">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="272">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="274">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="275">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="testVfatPath">
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="281">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="284">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="285">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="286">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="287">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="290">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="293">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="296">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="297">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="298">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="299">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="300">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="302">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="303">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="304">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="305">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="306">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="307">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="310">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="311">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="312">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="313">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="314">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="322">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="323">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="324">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="325">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="330">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="333">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="335">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="336">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="338">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="339">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="341">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="342">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="344">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="345">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="347">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="348">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="350">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="351">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="353">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="354">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="356">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="357">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="359">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="360">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="362">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="363">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="365">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="366">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="368">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="369">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="371">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="372">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="374">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="375">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="377">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="378">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="380">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="381">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="383">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="384">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="386">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="387">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="389">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="390">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="392">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="393">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="395">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="396">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="398">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="399">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="402">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="403">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="405">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="406">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="409">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Message type="info" file="/home/mark/kde/src/amarok/tests/TestAmarok.cpp" line="410">
+    <Description><![CDATA[COMPARE()]]></Description>
+</Message>
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+<TestFunction name="cleanupTestCase">
+<Incident type="pass" file="" line="0" />
+</TestFunction>
+</TestCase>
