@@ -129,9 +129,12 @@ void
 EngineSubject::stateChangedNotify( Phonon::State newState, Phonon::State oldState )
 {
     DEBUG_BLOCK
+
     // We explicitly block notifications where newState == buffering in enginecontroller, so if the old state = buffering we can ignore the playing update.
     if( newState == m_realState && newState != Phonon::PlayingState )  // To prevent Playing->Buffering->Playing->buffering.
         return;
+
+    debug() << "State changed, oldState:" << oldState << "-> newState:" << newState;
 
     foreach( EngineObserver *observer, Observers )
         observer->engineStateChanged( newState, oldState );

@@ -192,7 +192,6 @@ void StatusBar::metadataChanged( Meta::TrackPtr track )
 void StatusBar::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     Q_UNUSED( oldState )
-    DEBUG_BLOCK
 
     switch ( state )
     {
@@ -202,7 +201,6 @@ void StatusBar::engineStateChanged( Phonon::State state, Phonon::State oldState 
         break;
 
     case Phonon::LoadingState:
-        debug() << "LoadingState: clear text";
         if ( m_currentTrack )
             updateInfo( m_currentTrack );
         else
@@ -216,7 +214,6 @@ void StatusBar::engineStateChanged( Phonon::State state, Phonon::State oldState 
         break;
 
     case Phonon::PlayingState:
-        debug() << "PlayingState: clear text";
         if ( m_currentTrack )
             updateInfo( m_currentTrack );
         //else

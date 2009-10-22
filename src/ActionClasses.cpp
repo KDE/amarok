@@ -189,8 +189,6 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
 void
 PlayPauseAction::engineStateChanged( Phonon::State state,  Phonon::State oldState )
 {
-    DEBUG_BLOCK
-    debug() << "NEWSTATE: " << state << "OLDSTATE: " << oldState;
     switch( state )
     {
     case Phonon::PlayingState:
