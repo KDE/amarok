@@ -987,14 +987,14 @@ ScanResultProcessor::setupDatabase()
         m_setupComplete = true;
         populateCacheHashes();
         // /*
-        debug() << "Last URL num: " << m_lastUrlNum << ", next URL num: " << m_nextUrlNum;
+        debug() << "Next URL num: " << m_nextUrlNum;
         //foreach( QString key, m_urlsHashByUid.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
         //foreach( int key, m_urlsHashById.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
         //foreach( QPair<int, QString> key, m_urlsHashByLocation.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
-        debug() << "Last album num: " << m_lastAlbumNum << ", next album num: " << m_nextAlbumNum;
+        debug() << "Next album num: " << m_nextAlbumNum;
         //foreach( int key, m_albumsHashById.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_albumsHashById[key];
         //foreach( QString key, m_albumsHashByName.keys() )
@@ -1002,7 +1002,7 @@ ScanResultProcessor::setupDatabase()
         //    foreach( QStringList* list, *m_albumsHashByName[key] )
         //       debug() << "Key: " << key << ", list ptrs: " << *list;
         //}
-        debug() << "Last track num: " << m_lastTrackNum << ", next album num: " << m_nextTrackNum;
+        debug() << "Next album num: " << m_nextTrackNum;
         //foreach( int key, m_tracksHashById.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_tracksHashById[key];
         //foreach( int key, m_tracksHashByUrl.keys() )
@@ -1031,17 +1031,19 @@ ScanResultProcessor::populateCacheHashes()
     QStringList *currList;
     QLinkedList<QStringList*> *llist;
     int index = 0;
+    int lastNum = 0;
     while( index < res.size() )
     {
         currList = new QStringList();
-        m_lastUrlNum = res.at( index ).toInt();
+        lastNum = res.at( index ).toInt();
         for( int i = 0; i < 5; i++ )
             currList->append( res.at(index++) );
         m_urlsHashByUid.insert( currList->last(), currList );
-        m_urlsHashById.insert( m_lastUrlNum, currList );
+        m_urlsHashById.insert( lastNum, currList );
         m_urlsHashByLocation.insert( QPair<int, QString>( res.at( 1 ).toInt(), res.at( 2 ) ), currList );
     }
-    m_nextUrlNum = m_lastUrlNum + 1;
+    m_nextUrlNum = lastNum + 1;
+    m_collection->query( "DELETE FROM urls_temp;" ); 
 
     //albums
     res = m_collection->query( "SELECT * FROM albums_temp ORDER BY id ASC;" );
@@ -1049,13 +1051,14 @@ ScanResultProcessor::populateCacheHashes()
     m_albumsHashByName.reserve( reserveSize );
     m_albumsHashById.reserve( reserveSize );
     index = 0;
+    lastNum = 0;
     while( index < res.size() )
     {
         currList = new QStringList();
-        m_lastAlbumNum = res.at( index ).toInt();
+        lastNum = res.at( index ).toInt();
         for( int i = 0; i < 4; i++ )
             currList->append( res.at(index++) );
-        m_albumsHashById.insert( m_lastAlbumNum, currList );
+        m_albumsHashById.insert( lastNum, currList );
 
         if( m_albumsHashByName.contains( currList->at( 1 ) ) )
         {
@@ -1069,20 +1072,22 @@ ScanResultProcessor::populateCacheHashes()
             m_albumsHashByName.insert( currList->at( 1 ), llist );
         }
     }
-    m_nextAlbumNum = m_lastAlbumNum + 1;
+    m_nextAlbumNum = lastNum + 1;
+    m_collection->query( "DELETE FROM albums_temp;" );
 
     //tracks
     res = m_collection->query( "SELECT * FROM tracks_temp ORDER BY id ASC;" );
     reserveSize = ( res.size() / 22 ) * 2;
     m_tracksHashById.reserve( reserveSize );
     index = 0;
+    lastNum = 0;
     while( index < res.size() )
     {
         currList = new QStringList();
-        m_lastTrackNum = res.at( index ).toInt();
+        lastNum = res.at( index ).toInt();
         for( int i = 0; i < 23; i++ )
             currList->append( res.at(index++) );
-        m_tracksHashById.insert( m_lastTrackNum, currList );
+        m_tracksHashById.insert( lastNum, currList );
         m_tracksHashByUrl.insert( currList->at( 1 ).toInt(), currList );
 
         int currAlbum = currList->at( 3 ).toInt();
@@ -1098,7 +1103,8 @@ ScanResultProcessor::populateCacheHashes()
             m_tracksHashByAlbum.insert( currAlbum, llist );
         }
     }
-    m_nextTrackNum = m_lastTrackNum + 1;
+    m_nextTrackNum = lastNum + 1;
+    m_collection->query( "DELETE FROM tracks_temp;" );
 
 }
 

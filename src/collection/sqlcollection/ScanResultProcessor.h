@@ -104,18 +104,15 @@ class ScanResultProcessor : public QObject
         QMap<QString, QString> m_permanentTablesUrlUpdates;
         QMap<QString, QString> m_permanentTablesUidUpdates;
 
-        int m_lastUrlNum;
         int m_nextUrlNum;
         QHash<QString, QStringList*> m_urlsHashByUid;
         QHash<QPair<int, QString>, QStringList*> m_urlsHashByLocation;
         QHash<int, QStringList*> m_urlsHashById;
 
-        int m_lastAlbumNum;
         int m_nextAlbumNum;
         QHash<QString, QLinkedList<QStringList*> *> m_albumsHashByName;
         QHash<int, QStringList*> m_albumsHashById;
 
-        int m_lastTrackNum;
         int m_nextTrackNum;
         QHash<int, QStringList*> m_tracksHashById;
         QHash<int, QStringList*> m_tracksHashByUrl;
