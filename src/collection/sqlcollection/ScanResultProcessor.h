@@ -79,6 +79,7 @@ class ScanResultProcessor : public QObject
         QString findAlbumArtist( const QSet<QString> &artists, int trackCount ) const;
         void setupDatabase();
         void populateCacheHashes();
+        void copyHashesToTempTables();
 
     private:
         SqlCollection *m_collection;

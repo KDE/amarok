@@ -211,6 +211,9 @@ ScanResultProcessor::commit()
     {
         m_collection->dbUpdater()->cleanPermanentTables();
     }
+
+    copyHashesToTempTables();
+
     debug() << "temp_tracks: " << m_collection->query("select count(*) from tracks_temp");
     debug() << "tracks before commit: " << m_collection->query("select count(*) from tracks");
     m_collection->dbUpdater()->copyToPermanentTables();
@@ -429,8 +432,8 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     trackList->append( trackData[ Field::LENGTH ].toString() );
     trackList->append( trackData[ Field::SAMPLERATE ].toString() );
     trackList->append( trackData[ Field::FILESIZE ].toString() );
-    trackList->append( 0 );
-    trackList->append( 0 );
+    trackList->append( QString() ); //filetype
+    trackList->append( QString() ); //bpm
     trackList->append( QString::number( created ) );
     trackList->append( QString::number( modified ) );
     if( trackData.contains( Field::ALBUMGAIN ) && trackData.contains( Field::ALBUMPEAKGAIN ) )
@@ -440,13 +443,18 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     }
     else
     {
-        trackList->append( "NULL" );
-        trackList->append( "NULL" );
+        trackList->append( QString() );
+        trackList->append( QString() );
     }
     if( trackData.contains( Field::TRACKGAIN ) && trackData.contains( Field::TRACKPEAKGAIN ) )
     {
         trackList->append( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ) );
         trackList->append( QString::number( trackData[ Field::TRACKPEAKGAIN ].toDouble() ) );
+    }
+    else
+    {
+        trackList->append( QString() );
+        trackList->append( QString() );
     }
 
     //insert into hashes
@@ -482,6 +490,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 int
 ScanResultProcessor::genericId( const QString &key, const QString &value )
 {
+    //DEBUG_BLOCK
     QMap<QString, int> *currMap;
     if( key == "artists" )
         currMap = &m_artists;
@@ -514,6 +523,7 @@ ScanResultProcessor::genericId( const QString &key, const QString &value )
 int
 ScanResultProcessor::genericInsert( const QString &key, const QString &value )
 {
+    //DEBUG_BLOCK
     QString insert = QString( "INSERT INTO %1_temp( name ) VALUES ('%2');" ).arg( key, m_collection->escape( value ) );
     int id = m_collection->insert( insert, QString( "%1_temp" ).arg( key ) );
     return id;
@@ -547,38 +557,41 @@ ScanResultProcessor::databaseIdFetch( const QString &artist, const QString &genr
     if( query.startsWith( "UNION ALL " ) )
         query.remove( 0, 10 );
 
-    //debug() << "Running this query: " << query << endl;
-    QStringList res = m_collection->query( query );
-    //debug() << "res = " << res << endl;
-    int index = 0;
-    QString first;
-    QString second;
-    while( index < res.size() )
+    if( !query.isEmpty() )
     {
-        first = res.at( index++ );
-        second = res.at( index++ );
-             a = first.toInt();
-        //debug() << "first = " << first;
-        //debug() << "second = " << second;
-        if( !artistFound && second == QString( "ARTISTNAME_" + artist ) )
+        //debug() << "Running this query: " << query << endl;
+        QStringList res = m_collection->query( query );
+        //debug() << "res = " << res << endl;
+        int index = 0;
+        QString first;
+        QString second;
+        while( index < res.size() )
         {
+            first = res.at( index++ );
+            second = res.at( index++ );
             a = first.toInt();
-            artistFound = true;
-        }
-        else if( !genreFound && second == QString( "GENRENAME_" + genre ) )
-        {
-            g = first.toInt();
-            genreFound = true;
-        }
-        else if( !composerFound && second == QString( "COMPOSERNAME_" + composer ) )
-        {
-            c = first.toInt();
-            composerFound = true;
-        }
-        else if( !yearFound && second == QString( "YEARSNAME_" + year ) )
-        {
-            y = first.toInt();
-            yearFound = true;
+            //debug() << "first = " << first;
+            //debug() << "second = " << second;
+            if( !artistFound && second == QString( "ARTISTNAME_" + artist ) )
+            {
+                a = first.toInt();
+                artistFound = true;
+            }
+            else if( !genreFound && second == QString( "GENRENAME_" + genre ) )
+            {
+                g = first.toInt();
+                genreFound = true;
+            }
+            else if( !composerFound && second == QString( "COMPOSERNAME_" + composer ) )
+            {
+                c = first.toInt();
+                composerFound = true;
+            }
+            else if( !yearFound && second == QString( "YEARSNAME_" + year ) )
+            {
+                y = first.toInt();
+                yearFound = true;
+            }
         }
     }
     
@@ -705,7 +718,7 @@ ScanResultProcessor::albumId( const QString &album, int albumArtistId )
 int
 ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     int returnedNum = m_nextAlbumNum++;
     QStringList* albumList = new QStringList();
     albumList->append( QString::number( returnedNum ) );
@@ -727,7 +740,7 @@ ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
 int
 ScanResultProcessor::urlId( const QString &url, const QString &uid )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     QFileInfo fileInfo( url );
     const QString dir = fileInfo.absoluteDir().absolutePath();
     int dirId = directoryId( dir );
@@ -972,7 +985,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
 void
 ScanResultProcessor::setupDatabase()
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     if( !m_setupComplete )
     {
         m_collection->dbUpdater()->createTemporaryTables();
@@ -1105,6 +1118,162 @@ ScanResultProcessor::populateCacheHashes()
     }
     m_nextTrackNum = lastNum + 1;
     m_collection->query( "DELETE FROM tracks_temp;" );
+
+}
+
+void
+ScanResultProcessor::copyHashesToTempTables()
+{
+    DEBUG_BLOCK
+    QString query;
+    QString queryStart;
+    QString currQuery;
+    QStringList *currList;
+    QStringList res;
+    bool valueReady;
+
+    res = m_collection->query( "SHOW VARIABLES LIKE 'max_allowed_packet';" );
+    if( res.size() < 2 || res[1].toInt() == 0 )
+    {
+        debug() << "Uh oh! For some reason MySQL thinks there isn't a max allowed size!";
+        return;
+    }
+    debug() << "obtained max_allowed_packet is " << res[1];
+    int maxSize = res[1].toInt() / 3; //for safety, due to multibyte encoding
+
+    //urls
+    queryStart = "INSERT INTO urls_temp VALUES ";
+    query = queryStart;
+    valueReady = false;
+    foreach( int key, m_urlsHashById.keys() )
+    {
+        currList = m_urlsHashById[key];
+        currQuery =   "(" + currList->at( 0 ) + ","
+                          + ( currList->at( 1 ).isEmpty() ? "NULL" : currList->at( 1 ) ) + ","
+                          + "'" + m_collection->escape( currList->at( 2 ) ) + "',"
+                          + ( currList->at( 3 ).isEmpty() ? "NULL" : currList->at( 3 ) ) + ","
+                          + "'" + m_collection->escape( currList->at( 4 ) ) + "')"; //technically allowed to be NULL but it's the primary key so won't get far
+        if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
+        {
+            query += ";";
+            //debug() << "inserting " << query << ", size " << query.size();
+            m_collection->insert( query );
+            query = queryStart + currQuery;
+            valueReady = false;
+        }   
+        else
+        {
+            if( !valueReady )
+            {
+                query += currQuery;
+                valueReady = true;
+            }
+            else
+                query += "," + currQuery;
+        }
+    }
+    if( valueReady )
+    {
+        query += ";";
+        //debug() << "inserting " << query << ", size " << query.size();
+        m_collection->insert( query );
+    }
+
+    //albums
+    queryStart = "INSERT INTO albums_temp VALUES ";
+    query = queryStart;
+    valueReady = false;
+    foreach( int key, m_albumsHashById.keys() )
+    {
+        currList = m_albumsHashById[key];
+        currQuery =   "(" + currList->at( 0 ) + ","
+                          + "'" + m_collection->escape( currList->at( 1 ) ) + "',"
+                          + ( currList->at( 2 ).isEmpty() ? "NULL" : currList->at( 2 ) ) + ","
+                          + ( currList->at( 3 ).isEmpty() ? "NULL" : currList->at( 3 ) ) + ")";
+        if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
+        {
+            query += ";";
+            //debug() << "inserting " << query << ", size " << query.size();
+            m_collection->insert( query );
+            query = queryStart + currQuery;
+            valueReady = false;
+        }   
+        else
+        {
+            if( !valueReady )
+            {
+                query += currQuery;
+                valueReady = true;
+            }
+            else
+                query += "," + currQuery;
+        }
+    }
+    if( valueReady )
+    {
+        query += ";";
+        //debug() << "inserting " << query << ", size " << query.size();
+        m_collection->insert( query );
+    }
+
+    //tracks
+    queryStart = "INSERT INTO tracks_temp VALUES ";
+    query = queryStart;
+    valueReady = false;
+    foreach( int key, m_tracksHashById.keys() )
+    {
+        currList = m_tracksHashById[key];
+        currQuery =   "(" + currList->at( 0 ) + ","                                               //id
+                          + ( currList->at( 1 ).isEmpty() ? "NULL" : currList->at( 1 ) ) + ","    //url
+                          + ( currList->at( 2 ).isEmpty() ? "NULL" : currList->at( 2 ) ) + ","    //artist
+                          + ( currList->at( 3 ).isEmpty() ? "NULL" : currList->at( 3 ) ) + ","    //album
+                          + ( currList->at( 4 ).isEmpty() ? "NULL" : currList->at( 4 ) ) + ","    //genre
+                          + ( currList->at( 5 ).isEmpty() ? "NULL" : currList->at( 5 ) ) + ","    //composer
+                          + ( currList->at( 6 ).isEmpty() ? "NULL" : currList->at( 6 ) ) + ","    //year
+                          + "'" + m_collection->escape( currList->at( 7 ) ) + "',"                //title
+                          + "'" + m_collection->escape( currList->at( 8 ) ) + "',"                //text
+                          + ( currList->at( 9 ).isEmpty() ? "NULL" : currList->at( 9 ) ) + ","    //tracknumber
+                          + ( currList->at( 10 ).isEmpty() ? "NULL" : currList->at( 10 ) ) + ","  //discnumber
+                          + ( currList->at( 11 ).isEmpty() ? "NULL" : currList->at( 11 ) ) + ","  //bitrate
+                          + ( currList->at( 12 ).isEmpty() ? "NULL" : currList->at( 12 ) ) + ","  //length
+                          + ( currList->at( 13 ).isEmpty() ? "NULL" : currList->at( 13 ) ) + ","  //samplerate
+                          + ( currList->at( 14 ).isEmpty() ? "NULL" : currList->at( 14 ) ) + ","  //filesize
+                          + ( currList->at( 15 ).isEmpty() ? "NULL" : currList->at( 15 ) ) + ","  //filetype
+                          + ( currList->at( 16 ).isEmpty() ? "NULL" : currList->at( 16 ) ) + ","  //bpm
+                          + ( currList->at( 17 ).isEmpty() ? "NULL" : currList->at( 17 ) ) + ","  //createdate
+                          + ( currList->at( 18 ).isEmpty() ? "NULL" : currList->at( 18 ) ) + ","  //modifydate
+                          + ( currList->at( 19 ).isEmpty() ? "NULL" : currList->at( 19 ) ) + ","  //albumgain
+                          + ( currList->at( 20 ).isEmpty() ? "NULL" : currList->at( 20 ) ) + ","  //albumpeakgain
+                          + ( currList->at( 21 ).isEmpty() ? "NULL" : currList->at( 21 ) ) + ","  //trackgain
+                          + ( currList->at( 22 ).isEmpty() ? "NULL" : currList->at( 22 ) ) + ")"; //trackpeakgain
+        if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
+        {
+            query += ";";
+            //debug() << "inserting " << query << ", size " << query.size();
+            m_collection->insert( query );
+            query = queryStart + currQuery;
+            valueReady = false;
+        }   
+        else
+        {
+            if( !valueReady )
+            {
+                query += currQuery;
+                valueReady = true;
+            }
+            else
+                query += "," + currQuery;
+        }
+    }
+    if( valueReady )
+    {
+        query += ";";
+        //debug() << "inserting " << query << ", size " << query.size();
+        m_collection->insert( query );
+    }
+
+
+
 
 }
 

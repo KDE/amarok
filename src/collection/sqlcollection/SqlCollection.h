@@ -73,7 +73,7 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
         virtual QString type() const;
 
         virtual QStringList query( const QString &query ) = 0;
-        virtual int insert( const QString &statement, const QString &table ) = 0;
+        virtual int insert( const QString &statement, const QString &table = QString() ) = 0;
 
         virtual QString escape( QString text ) const;
 

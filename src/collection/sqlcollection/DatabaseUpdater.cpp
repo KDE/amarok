@@ -561,6 +561,7 @@ DatabaseUpdater::prepareTemporaryTablesForFullScan()
 void
 DatabaseUpdater::cleanPermanentTables()
 {
+    DEBUG_BLOCK
     m_collection->query( "DELETE FROM composers;" );
     m_collection->query( "DELETE FROM genres;" );
     m_collection->query( "DELETE FROM images;" );
