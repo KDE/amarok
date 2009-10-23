@@ -1158,6 +1158,7 @@ ScanResultProcessor::copyHashesToTempTables()
     valueReady = false;
     foreach( int key, m_tracksHashById.keys() )
     {
+        debug() << "key = " << key << ", id = " << m_tracksHashById[key]->at( 0 );
         currList = m_tracksHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","                                               //id
                           + ( currList->at( 1 ).isEmpty() ? "NULL" : currList->at( 1 ) ) + ","    //url
