@@ -378,6 +378,7 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
     //if we should paint moodbar, paint this as the bottom layer
 
+    bool moodbarPainted = false;
     if( paintMoodbar )
     {
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
@@ -386,64 +387,67 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
             if( The::moodbarManager()->hasMoodbar( currentTrack ) )
             {
 
-                int moodbarWidth = width - sliderHeight * 2;
-                QPixmap moodbar = The::moodbarManager()->getMoodbar( currentTrack, moodbarWidth, sliderHeight );
+                QPixmap moodbar = The::moodbarManager()->getMoodbar( currentTrack, width - sliderHeight, sliderHeight );
 
-                p->drawPixmap( x + sliderHeight, y + 2, moodbar );
+                p->drawPixmap( x + ( sliderHeight / 2 ), y + 2, moodbar );
+
+                moodbarPainted = true;
                   
             }
         }
     }
+
+    if( !moodbarPainted )
+    {
     
 
-    // Draw the slider background in 3 parts
+        // Draw the slider background in 3 parts
 
+        p->drawPixmap( x, y + 2,
+                    renderSvg(
+                    "progress_slider_left",
+                    sliderHeight, sliderHeight,
+                    "progress_slider_left" ) );
 
+        p->drawPixmap( x + sliderHeight, y + 2,
+                    renderSvg(
+                    "progress_slider_mid",
+                    width - sliderHeight * 2, sliderHeight,
+                    "progress_slider_mid" ) );
 
-    p->drawPixmap( x, y + 2,
-                   renderSvg(
-                   "progress_slider_left",
-                   sliderHeight, sliderHeight,
-                   "progress_slider_left" ) );
+        p->drawPixmap( x + width - sliderHeight, y + 2,
+                    renderSvg(
+                    "progress_slider_right",
+                    sliderHeight, sliderHeight,
+                    "progress_slider_right" ) );
 
-    p->drawPixmap( x + sliderHeight, y + 2,
-                   renderSvg(
-                   "progress_slider_mid",
-                   width - sliderHeight * 2, sliderHeight,
-                   "progress_slider_mid" ) );
+        //draw the played background.
 
-    p->drawPixmap( x + width - sliderHeight, y + 2,
-                   renderSvg(
-                   "progress_slider_right",
-                   sliderHeight, sliderHeight,
-                   "progress_slider_right" ) );
+        int playedBarHeight = sliderHeight - 6;
 
-    //draw the played background.
+        int sizeOfLeftPlayed = qBound( 0, knob.x() - 2, playedBarHeight );
 
-    int playedBarHeight = sliderHeight - 6;
+        if( sizeOfLeftPlayed > 0 ) {
 
-    int sizeOfLeftPlayed = qBound( 0, knob.x() - 2, playedBarHeight );
+            p->drawPixmap( x + 3, y + 5,
+                            renderSvg(
+                            "progress_slider_played_left",
+                            playedBarHeight, playedBarHeight,
+                            "progress_slider_played_left" ), 0, 0, sizeOfLeftPlayed + 3, playedBarHeight );
 
-    if( sizeOfLeftPlayed > 0 ) {
+            int playedBarMidWidth = knob.x() - ( x + 3 + playedBarHeight );
 
-        p->drawPixmap( x + 3, y + 5,
-                        renderSvg(
-                        "progress_slider_played_left",
-                        playedBarHeight, playedBarHeight,
-                        "progress_slider_played_left" ), 0, 0, sizeOfLeftPlayed + 3, playedBarHeight );
+            //Add 5 more pixels to avoid a "gap" between it and the top and botton of the round knob.
+            playedBarMidWidth += 5;
 
-        int playedBarMidWidth = knob.x() - ( x + 3 + playedBarHeight );
+            p->drawPixmap( x + 3 + playedBarHeight, y + 5,
+                            renderSvg(
+                            "progress_slider_played_mid",
+                            playedBarMidWidth, playedBarHeight,
+                            "progress_slider_played_mid" ) );               
+        }
 
-        //Add 5 more pixels to avoid a "gap" between it and the top and botton of the round knob.
-        playedBarMidWidth += 5;
-
-        p->drawPixmap( x + 3 + playedBarHeight, y + 5,
-                        renderSvg(
-                        "progress_slider_played_mid",
-                        playedBarMidWidth, playedBarHeight,
-                        "progress_slider_played_mid" ) );
     }
-
 
     // Draw the knob (handle)
     if ( active )
