@@ -468,8 +468,8 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
         for( int i = 0; i < trackList->size(); i++ )
         {
             debug() << "i = " << i;
-            debug() << "trackList[i] = " << trackList[i];
-            oldValues->append( trackList[i] );
+            debug() << "trackList[i] = " << trackList->at( i );
+            oldValues->append( trackList->at( i ) );
         }
         delete trackList;
         trackList = oldValues;
