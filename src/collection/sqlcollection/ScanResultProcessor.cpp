@@ -409,6 +409,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     int url = urlId( path, uid );
 
     QStringList *trackList = new QStringList();
+    debug() << "Appending new track number with tracknum: " << m_nextTrackNum;
     trackList->append( QString::number( m_nextTrackNum ) );
     trackList->append( QString::number( url ) );
     trackList->append( QString::number( artist ) );
@@ -452,8 +453,10 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     //insert into hashes
     if( m_tracksHashByUrl.contains( url ) && m_tracksHashByUrl[url] != 0 )
     {
+        debug() << "m_tracksHashByUrl contains the url!";
         //need to replace, not overwrite/add a new one
         QStringList *oldValues = m_tracksHashByUrl[url];
+        debug() << "old id is " << oldValues->at( 0 );
         oldValues->clear();
         for( int i = 0; i < trackList->size(); i++ )
             oldValues->append( trackList->at( i ) );
@@ -463,8 +466,8 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     else
         m_tracksHashByUrl.insert( url, trackList );
 
-    
     m_tracksHashById.insert( m_nextTrackNum, trackList );
+
     if( m_tracksHashByAlbum.contains( album ) && m_tracksHashByAlbum[album] != 0 )
         m_tracksHashByAlbum[album]->append( trackList );
     else
