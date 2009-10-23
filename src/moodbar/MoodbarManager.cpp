@@ -66,13 +66,17 @@ bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
 
     //check if we already checked this track:
     if ( m_hasMoodMap.contains( track ) )
+    {
+        debug() << "Cached value, returning: " << m_hasMoodMap.value( track );
         return m_hasMoodMap.value( track );
+    }
         
  
     KUrl trackUrl = track->playableUrl();
     //only supports local files for now.
     if ( !trackUrl.isLocalFile() )
     {
+        debug() << "non local file, no moodbar...";
         m_hasMoodMap.insert( track, false );
         return false;
     }
@@ -144,7 +148,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
     {
         data = readMoodFile( moodFilePath );
 
-        if ( data.size() < 10 )
+        if ( data.size() > 10 )
             m_moodDataMap.insert( track, data );
         else
         {

@@ -244,13 +244,12 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
     }
 }
 
-void Amarok::Slider::paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
+void Amarok::Slider::paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double /*pos*/, bool paintMoodbar )
 {
     qreal percent = 0.0;
     if ( maximum() > minimum() )
         percent = ((qreal)value()) / ( maximum() - minimum() );
-    The::svgHandler()->paintCustomSlider( p, x, y, width, height, percent, underMouse() );
-
+    The::svgHandler()->paintCustomSlider( p,x, y, width, height, percent, underMouse(), paintMoodbar );
 }
 
 
@@ -350,8 +349,9 @@ Amarok::TimeSlider::paintEvent( QPaintEvent *pe )
 {
     QPainter p( this );
     //paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
+
     p.setClipRegion(pe->region());
-    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX );
+    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX, true );
     p.end();
 }
 

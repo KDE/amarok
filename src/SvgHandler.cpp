@@ -20,7 +20,9 @@
 
 #include "App.h"
 #include "Debug.h"
+#include "EngineController.h"
 #include "MainWindow.h"
+#include "moodbar/MoodbarManager.h"
 #include "PaletteHandler.h"
 #include "SvgTinter.h"
 
@@ -365,15 +367,38 @@ QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent )
 }
 
 // Experimental, using a mockup from Nuno Pinheiro (new_slider_nuno)
-void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active )
+void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active, bool paintMoodbar )
 {
     QRect knob = sliderKnobRect( QRect( x, y, width, height), percentage );
 
     //debug() << "rel: " << knobRelPos << ", width: " << width << ", height:" << height << ", %: " << percentage;
 
+    int sliderHeight = height - 6;
+
+
+    //if we should paint moodbar, paint this as the bottom layer
+
+    if( paintMoodbar )
+    {
+        Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+        if( currentTrack )
+        {
+            if( The::moodbarManager()->hasMoodbar( currentTrack ) )
+            {
+
+                int moodbarWidth = width - sliderHeight * 2;
+                QPixmap moodbar = The::moodbarManager()->getMoodbar( currentTrack, moodbarWidth, sliderHeight );
+
+                p->drawPixmap( x + sliderHeight, y + 2, moodbar );
+                  
+            }
+        }
+    }
+    
+
     // Draw the slider background in 3 parts
 
-    int sliderHeight = height - 6;
+
 
     p->drawPixmap( x, y + 2,
                    renderSvg(
