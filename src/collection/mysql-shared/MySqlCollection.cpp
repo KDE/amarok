@@ -227,8 +227,6 @@ MySqlCollection::initThreadInitializer()
 void
 MySqlCollection::sharedInit( const QString &databaseName )
 {
-    if( mysql_query( m_db, QString( "SET @@global.sql_mode = 'NO_ENGINE_SUBSTITUTION'" ).toUtf8() ) )
-        reportError( "Setting no engine substitution failed!" );
     if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
         reportError( "SET NAMES 'utf8' died" );
     if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
