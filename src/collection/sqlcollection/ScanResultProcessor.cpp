@@ -409,8 +409,9 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     int url = urlId( path, uid );
 
     QStringList *trackList = new QStringList();
-    debug() << "Appending new track number with tracknum: " << m_nextTrackNum;
-    trackList->append( QString::number( m_nextTrackNum ) );
+    int id = m_nextTrackNum;
+    debug() << "Appending new track number with tracknum: " << id;
+    trackList->append( QString::number( m_nextTrackNum++ ) );
     trackList->append( QString::number( url ) );
     trackList->append( QString::number( artist ) );
     trackList->append( QString::number( album ) );
@@ -456,17 +457,21 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
         debug() << "m_tracksHashByUrl contains the url!";
         //need to replace, not overwrite/add a new one
         QStringList *oldValues = m_tracksHashByUrl[url];
-        debug() << "old id is " << oldValues->at( 0 );
+        QString oldId = oldValues->at( 0 );
+        debug() << "old id is " << oldId;
         oldValues->clear();
-        for( int i = 0; i < trackList->size(); i++ )
+        oldValues->append( oldId );
+        for( int i = 1; i < trackList->size(); i++ ) //not 0 because we want to keep old ID
             oldValues->append( trackList->at( i ) );
         delete trackList;
         trackList = oldValues;
+        id = oldId.toInt();
+        m_nextTrackNum--;
     }
     else
         m_tracksHashByUrl.insert( url, trackList );
 
-    m_tracksHashById.insert( m_nextTrackNum, trackList );
+    m_tracksHashById.insert( id, trackList );
 
     if( m_tracksHashByAlbum.contains( album ) && m_tracksHashByAlbum[album] != 0 )
         m_tracksHashByAlbum[album]->append( trackList );
@@ -476,10 +481,6 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
         list->append( trackList );
         m_tracksHashByAlbum[album] = list;
     }
-
-    //Don't forget to escape the fields that need it when inserting!
-    
-    m_nextTrackNum++;
 }
 
 int
