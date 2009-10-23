@@ -64,7 +64,9 @@ VideoInfo * VideoItemButton::getVideoInfo()
 
 void VideoItemButton::mousePressEvent(QMouseEvent* event )
 {
-    // TODO what should we do on simple click ?
+    if( event->button() == Qt::LeftButton )
+        appendPlay();
+
     if ( event->button() == Qt::MidButton )
         queue();
 }
@@ -73,6 +75,16 @@ void VideoItemButton::mouseDoubleClickEvent(QMouseEvent* )
 {
     DEBUG_BLOCK
     appendPlay();
+}
+
+void VideoItemButton::enterEvent( QEvent* )
+{
+    setCursor( Qt::PointingHandCursor );
+}
+
+void VideoItemButton::leaveEvent( QEvent* )
+{
+    setCursor( Qt::ArrowCursor );
 }
 
 void VideoItemButton::myMenu(QPoint point)

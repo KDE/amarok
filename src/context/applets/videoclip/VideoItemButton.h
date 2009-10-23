@@ -42,7 +42,8 @@ public:
 protected:
     virtual void mousePressEvent( QMouseEvent* );
     virtual void mouseDoubleClickEvent( QMouseEvent* );
-        
+    virtual void enterEvent( QEvent* );
+    virtual void leaveEvent( QEvent* );
     
 public slots:
     void append();
