@@ -888,7 +888,7 @@ ScanResultProcessor::setupDatabase()
         //    foreach( QStringList* list, *m_albumsHashByName[key] )
         //       debug() << "Key: " << key << ", list ptrs: " << *list;
         //}
-        debug() << "Next album num: " << m_nextTrackNum;
+        debug() << "Next track num: " << m_nextTrackNum;
         //foreach( int key, m_tracksHashById.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_tracksHashById[key];
         //foreach( int key, m_tracksHashByUrl.keys() )
@@ -1080,6 +1080,7 @@ ScanResultProcessor::copyHashesToTempTables()
     int maxSize = res[1].toInt() / 3; //for safety, due to multibyte encoding
 
     //urls
+    debug() << "urls key size is " << m_urlsHashById.keys().size();
     queryStart = "INSERT INTO urls_temp VALUES ";
     query = queryStart;
     valueReady = false;
@@ -1155,6 +1156,7 @@ ScanResultProcessor::copyHashesToTempTables()
     }
 
     //tracks
+    debug() << "tracks key size is " << m_tracksHashById.keys().size();
     queryStart = "INSERT INTO tracks_temp VALUES ";
     query = queryStart;
     valueReady = false;
