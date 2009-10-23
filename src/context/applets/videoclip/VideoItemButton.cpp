@@ -77,6 +77,16 @@ void VideoItemButton::mouseDoubleClickEvent(QMouseEvent* )
     appendPlay();
 }
 
+void VideoItemButton::enterEvent( QEvent* )
+{
+    setCursor( Qt::PointingHandCursor );
+}
+
+void VideoItemButton::leaveEvent( QEvent* )
+{
+    setCursor( Qt::ArrowCursor );
+}
+
 void VideoItemButton::myMenu(QPoint point)
 {
     DEBUG_BLOCK
