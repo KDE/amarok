@@ -99,7 +99,6 @@ BrowserCategoryList::addCategory( BrowserCategory * category )
     //insert service into service map
     m_categories[category->name()] = category;
     m_categoryListModel->addCategory( category );
-    connect( category, SIGNAL( home() ), this, SLOT( home() ) );
 
     //if this is also a category list, watch it for changes as we need to report
     //these down the tree

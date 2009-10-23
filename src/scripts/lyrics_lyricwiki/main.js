@@ -53,10 +53,16 @@ function onFinishedAPI( response )
             // construct a QDomDocument out of the response and extract the <url>...</url> part
             doc = new QDomDocument();
             doc.setContent( response );
-            Amarok.debug( "returned wiki URL: " + doc.elementsByTagName( "url" ).at( 0 ).toElement().text());
             var url = doc.elementsByTagName( "url" ).at( 0 ).toElement().text();
+            Amarok.debug( "returned wiki URL: " + url );
             var url2 = QUrl.fromEncoded( new QByteArray( url ), 1 );
             Amarok.debug( "request no. 3 URL: " + url2.toString() );
+            // if we get redirected to the main page, then obviously no lyrics were found
+            if( url == "http://lyrics.wikia.com" ) {
+                Amarok.Lyrics.showLyricsError( errormsg );
+                Amarok.debug( "Redirected to main page for artist=" + triedArtist + ", song=" + triedSong );
+                return;
+            }
             // access the URL, let the response be handled by onFinished
             new Downloader( url2, onFinished );
         }
