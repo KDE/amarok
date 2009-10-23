@@ -213,7 +213,7 @@ static const QStringList iconNames = ( QStringList()
         << "chronometer"
         << "chronometer"
         << ""
-        << "" //moodbar
+        << "filename-moodbar"
         << "amarok_playcount"
         << "rating"
         << "filename-sample-rate"

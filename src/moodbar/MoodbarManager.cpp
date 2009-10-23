@@ -114,7 +114,8 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
 
     DEBUG_BLOCK
 
-    //first of all... if we have marked this track as not ahving a moodbar, don't even bother...
+    //first of all... if we have already marked this track as
+    //not having a moodbar, don't even bother...
     if ( m_hasMoodMap.contains( track ) )
         if( !m_hasMoodMap.value( track ) )
             return QPixmap();
@@ -131,19 +132,19 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
         
     //No? Ok, then create it reusing as much info as possible
 
-
-    QString moodFilePath;
-    if ( m_moodFileMap.contains( track ) )
-        moodFilePath = m_moodFileMap.value( track );
-    else
-        moodFilePath = moodPath( track->playableUrl().path() );
-
     MoodbarColorList data;
 
     if ( m_moodDataMap.contains( track ) )
         data = m_moodDataMap.value( track );
     else
     {
+
+        QString moodFilePath;
+        if ( m_moodFileMap.contains( track ) )
+            moodFilePath = m_moodFileMap.value( track );
+        else
+            moodFilePath = moodPath( track->playableUrl().path() );
+        
         data = readMoodFile( moodFilePath );
 
         if ( data.size() > 10 )
