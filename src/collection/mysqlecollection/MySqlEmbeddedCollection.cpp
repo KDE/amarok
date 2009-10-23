@@ -64,7 +64,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
         dir.mkpath( "." );
     }
 
-    static const int num_elements = 10;
+    static const int num_elements = 11;
     char **server_options = new char* [ num_elements + 1 ];
     server_options[0] = const_cast<char*>( "amarokmysqld" );
     server_options[1] = defaultsLine;
@@ -74,10 +74,11 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
     server_options[3] = const_cast<char*>( "--default-table-type=MYISAM" );
     server_options[4] = const_cast<char*>( "--default-storage-engine=MYISAM" );
     server_options[5] = const_cast<char*>( "--loose-skip-innodb" );
-    server_options[6] = const_cast<char*>( "--skip-grant-tables" );
-    server_options[7] = const_cast<char*>( "--myisam-recover=FORCE" );
-    server_options[8] = const_cast<char*>( "--character-set-server=utf8" );
-    server_options[9] = const_cast<char*>( "--collation-server=utf8_bin" );
+    server_options[6] = const_cast<char*>( "--innodb=OFF" );
+    server_options[7] = const_cast<char*>( "--skip-grant-tables" );
+    server_options[8] = const_cast<char*>( "--myisam-recover=FORCE" );
+    server_options[9] = const_cast<char*>( "--character-set-server=utf8" );
+    server_options[10] = const_cast<char*>( "--collation-server=utf8_bin" );
     server_options[num_elements] = 0;
 
     char **server_groups = new char* [ 3 ];
