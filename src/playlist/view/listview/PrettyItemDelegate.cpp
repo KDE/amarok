@@ -31,6 +31,7 @@
 #include "meta/Meta.h"
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/SourceInfoCapability.h"
+#include "moodbar/MoodbarManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/layouts/LayoutManager.h"
@@ -405,6 +406,24 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
                         int center = currentItemX + ( itemWidth / 2 );
                         painter->drawPixmap( center, rowOffsetY, left );
                         painter->drawPixmap( center + 1, rowOffsetY, right );
+                    }
+                }
+                else if( value == Moodbar )
+                {
+                    //we cannot ask the model for the moodbar directly as we have no
+                    //way of asking for a specific size. Instead just get the track from
+                    //the model and ask the moodbar manager ourselves.
+
+
+                    debug() << "painting moodbar in PrettyItemDelegate::paintItem";
+         
+                    Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
+
+                    if( The::moodbarManager()->hasMoodbar( track ) )
+                    {
+                        QPixmap moodbar = The::moodbarManager()->getMoodbar( track, itemWidth, rowHeight - 8 );
+
+                        painter->drawPixmap( currentItemX, rowOffsetY + 4, moodbar );
                     }
                 }
                 else

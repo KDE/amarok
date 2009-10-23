@@ -50,6 +50,7 @@ enum Column
     Length,
     LengthInSeconds,
     Mood,
+    Moodbar,
     PlayCount,
     Rating,
     SampleRate,
@@ -103,6 +104,7 @@ static const QList<const char *> columnNames = ( QList<const char *>()
         << I18N_NOOP2( "'Length' (track length) playlist column name and token for playlist layouts", "Length" )
         << I18N_NOOP2( "'Length' (track length) playlist column name and token for playlist layouts", "Length" )
         << I18N_NOOP2( "'Mood' playlist column name and token for playlist layouts", "Mood" )
+        << I18N_NOOP2( "'Moodbar' playlist column name and token for playlist layouts", "Moodbar" )
         << I18N_NOOP2( "'Play count' playlist column name and token for playlist layouts", "Play count" )
         << I18N_NOOP2( "'Rating' playlist column name and token for playlist layouts", "Rating" )
         << I18N_NOOP2( "'Sample rate' playlist column name and token for playlist layouts", "Sample rate" )
@@ -141,6 +143,7 @@ static const QStringList internalColumnNames = ( QStringList()
         << "Length"
         << "Length (seconds)"
         << "Mood"
+        << "Moodbar"
         << "Play count"
         << "Rating"
         << "Sample rate"
@@ -210,6 +213,7 @@ static const QStringList iconNames = ( QStringList()
         << "chronometer"
         << "chronometer"
         << ""
+        << "" //moodbar
         << "amarok_playcount"
         << "rating"
         << "filename-sample-rate"

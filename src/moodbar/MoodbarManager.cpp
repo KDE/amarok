@@ -62,12 +62,10 @@ MoodbarManager::~MoodbarManager()
 bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
 {
 
-    DEBUG_BLOCK
-
     //check if we already checked this track:
     if ( m_hasMoodMap.contains( track ) )
     {
-        debug() << "Cached value, returning: " << m_hasMoodMap.value( track );
+        //debug() << "Cached value, returning: " << m_hasMoodMap.value( track );
         return m_hasMoodMap.value( track );
     }
         
@@ -266,7 +264,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     // value are scaled by sat and val, respectively, which are percentage
     // values.
 
-    if( false )
+    if( true )
     {
         // Explanation of the parameters:
         //
