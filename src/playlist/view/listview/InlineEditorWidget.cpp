@@ -17,6 +17,7 @@
 #include "InlineEditorWidget.h"
 
 #include "Debug.h"
+#include "moodbar/MoodbarManager.h"
 #include "playlist/layouts/LayoutManager.h"
 #include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
@@ -273,7 +274,29 @@ void InlineEditorWidget::createChildWidgets()
                     dividerLabel->setAlignment( element.alignment() );
                     rowWidget->setStretchFactor( itemIndex, itemWidth );
                 }
-                else
+                else if( value == Moodbar )
+                {
+                    //we cannot ask the model for the moodbar directly as we have no
+                    //way of asking for a specific size. Instead just get the track from
+                    //the model and ask the moodbar manager ourselves.
+
+
+                    debug() << "painting moodbar in PrettyItemDelegate::paintItem";
+
+                    Meta::TrackPtr track = m_index.data( TrackRole ).value<Meta::TrackPtr>();
+
+                    if( The::moodbarManager()->hasMoodbar( track ) )
+                    {
+                        QPixmap moodbar = The::moodbarManager()->getMoodbar( track, itemWidth, rowHeight - 8 );
+
+                        QLabel * moodbarLabel = new QLabel( 0 );
+                        moodbarLabel->setScaledContents( true );
+                        rowWidget->addWidget( moodbarLabel );
+                        moodbarLabel->setPixmap( moodbar );
+                        rowWidget->setStretchFactor( itemIndex, itemWidth );
+                    }
+                }
+                else          
                 {
                      QLineEdit * edit = new QLineEdit( text, 0 );
                      rowWidget->addWidget( edit );
