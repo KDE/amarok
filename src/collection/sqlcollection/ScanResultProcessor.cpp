@@ -1097,21 +1097,19 @@ ScanResultProcessor::copyHashesToTempTables()
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
             m_collection->insert( query );
-            query = queryStart + currQuery;
+            query = queryStart;
             valueReady = false;
         }   
-        else
+
+        if( !valueReady )
         {
-            if( !valueReady )
-            {
-                query += currQuery;
-                valueReady = true;
-            }
-            else
-                query += "," + currQuery;
+            query += currQuery;
+            valueReady = true;
         }
+        else
+            query += "," + currQuery;
     }
-    if( valueReady )
+    if( query != queryStart )
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
@@ -1134,21 +1132,19 @@ ScanResultProcessor::copyHashesToTempTables()
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
             m_collection->insert( query );
-            query = queryStart + currQuery;
+            query = queryStart;
             valueReady = false;
-        }   
-        else
-        {
-            if( !valueReady )
-            {
-                query += currQuery;
-                valueReady = true;
-            }
-            else
-                query += "," + currQuery;
         }
+
+        if( !valueReady )
+        {
+            query += currQuery;
+            valueReady = true;
+        }
+        else
+            query += "," + currQuery;
     }
-    if( valueReady )
+    if( query != queryStart )
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
@@ -1191,21 +1187,19 @@ ScanResultProcessor::copyHashesToTempTables()
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
             m_collection->insert( query );
-            query = queryStart + currQuery;
+            query = queryStart;
             valueReady = false;
         }   
-        else
+
+        if( !valueReady )
         {
-            if( !valueReady )
-            {
-                query += currQuery;
-                valueReady = true;
-            }
-            else
-                query += "," + currQuery;
+            query += currQuery;
+            valueReady = true;
         }
+        else
+            query += "," + currQuery;
     }
-    if( valueReady )
+    if( query != queryStart )
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
@@ -1235,26 +1229,24 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
-            debug() << "inserting " << query << ", size " << query.size();
+            //debug() << "inserting " << query << ", size " << query.size();
             m_collection->insert( query );
-            query = queryStart + currQuery;
+            query = queryStart;
             valueReady = false;
         }   
-        else
+
+        if( !valueReady )
         {
-            if( !valueReady )
-            {
-                query += currQuery;
-                valueReady = true;
-            }
-            else
-                query += "," + currQuery;
+            query += currQuery;
+            valueReady = true;
         }
+        else
+            query += "," + currQuery;
     }
-    if( valueReady )
+    if( query != queryStart )
     {
         query += ";";
-        debug() << "inserting " << query << ", size " << query.size();
+        //debug() << "inserting " << query << ", size " << query.size();
         m_collection->insert( query );
     }
 }
