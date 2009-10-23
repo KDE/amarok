@@ -91,15 +91,7 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
             debug() << "Automatic reconnect successfully activated";
 
         QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
-        if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
-            reportError( "SET NAMES 'utf8' died" );
-        if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
-            reportError( QString( "Could not create %1 database" ).arg( databaseName ) );
-        if( mysql_query( m_db, QString( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
-            reportError( "Could not alter database charset/collation" );
-        if( mysql_query( m_db, QString( "USE %1" ).arg( databaseName ).toUtf8() ) )
-            reportError( "Could not select database" );
-
+        sharedInit( databaseName );
         debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
     }
 

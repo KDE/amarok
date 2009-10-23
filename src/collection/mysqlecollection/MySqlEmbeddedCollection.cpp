@@ -119,16 +119,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
     }
     else
     {
-
-        if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
-            reportError( "SET NAMES 'utf8' died" );
-        if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" ).toUtf8() ) )
-            reportError( "Could not create amarok database" );
-        if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS mysql" ).toUtf8() ) )
-            reportError( "Could not create mysql database" );
-        if( mysql_query( m_db, QString( "USE amarok" ).toUtf8() ) )
-            reportError( "Could not select database" );
-
+        sharedInit( "amarok" );
         debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
     }
 
