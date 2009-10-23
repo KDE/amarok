@@ -58,9 +58,7 @@ class ScanResultProcessor : public QObject
     private:
         void addTrack( const QVariantMap &trackData, int albumArtistId );
 
-        int genericId( const QString &key, const QString &value );
-        int genericInsert( const QString &key, const QString &value );
-        void databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year );
+        int genericId( QHash<QString, int> *hash, const QString &value, int *currNum );
         int imageId( const QString &image, int albumId );
         int albumId( const QString &album, int albumArtistId );
         int albumInsert( const QString &album, int albumArtistId );
@@ -80,15 +78,17 @@ class ScanResultProcessor : public QObject
         void setupDatabase();
         void populateCacheHashes();
         void copyHashesToTempTables();
+        void genericCopyHash( const QString &tableName, const QHash<QString, int> *hash, int maxSize );
 
     private:
         SqlCollection *m_collection;
         bool m_setupComplete;
 
-        QMap<QString, int> m_artists;
-        QMap<QString, int> m_genres;
-        QMap<QString, int> m_years;
-        QMap<QString, int> m_composers;
+        QHash<QString, int> m_artists;
+        QHash<QString, int> m_genres;
+        QHash<QString, int> m_years;
+        QHash<QString, int> m_composers;
+        QHash<QString, int> m_imagesFlat;
         QMap<QPair<QString, int>, int> m_albums;
         QMap<QPair<QString, int>, int> m_images;
         QMap<QString, int> m_directories;
@@ -119,6 +119,11 @@ class ScanResultProcessor : public QObject
         QHash<int, QStringList*> m_tracksHashByUrl;
         QHash<int, QLinkedList<QStringList*> *> m_tracksHashByAlbum;
 
+        int m_nextArtistNum;
+        int m_nextComposerNum;
+        int m_nextGenreNum;
+        int m_nextImageNum;
+        int m_nextYearNum;
 };
 
 #endif
