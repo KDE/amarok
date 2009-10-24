@@ -36,7 +36,6 @@ installed, but it could none the less do with a major update, perhaps to use Pho
 
 
 #define NUM_HUES 12
-#define CLAMP(n, v, x) ((v) < (n) ? (n) : (v) > (x) ? (x) : (v))
 
 namespace The {
     static MoodbarManager* s_MoodbarManager_instance = 0;
@@ -217,17 +216,17 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 
         r = qAbs( (int) rChar );
         g = qAbs( (int) gChar );
-        b = qAbs( (int) gChar );
-
-        data.append( QColor( CLAMP( 0, r, 255 ),
-                                  CLAMP( 0, g, 255 ),
-                                  CLAMP( 0, b, 255 ) ) );
+        b = qAbs( (int) bChar );
+  
+        data.append( QColor( qBound( 0, r, 255 ),
+                             qBound( 0, g, 255 ),
+                             qBound( 0, b, 255 ) ) );
 
         debug() << "Color: " << r << ", " << g << ", " << b;
 
         // Make a histogram of hues
         data.last().getHsv( &h, &s, &v );
-        modalHue[CLAMP( 0, h * NUM_HUES / 360, NUM_HUES - 1 )] += v;
+        modalHue[qBound( 0, h * NUM_HUES / 360, NUM_HUES - 1 )] += v;
 
         if( h < 0 ) h = 0;  else h = h % 360;
         huedist[h]++;
@@ -265,7 +264,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     // value are scaled by sat and val, respectively, which are percentage
     // values.
 
-    if( true )
+    if( false )
     {
         // Explanation of the parameters:
         //
@@ -339,11 +338,11 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
             {
                 data[i].getHsv( &h, &s, &v );
                 if( h < 0 ) h = 0;  else h = h % 360;
-                data[i].setHsv( CLAMP( 0, huedist[h], 359 ),
-                                  CLAMP( 0, s * sat / 100, 255 ),
-                                  CLAMP( 0, v * val / 100, 255 ) );
+                data[i].setHsv( qBound( 0, huedist[h], 359 ),
+                                  qBound( 0, s * sat / 100, 255 ),
+                                  qBound( 0, v * val / 100, 255 ) );
 
-                modalHue[CLAMP(0, huedist[h] * NUM_HUES / 360, NUM_HUES - 1)]
+                modalHue[qBound(0, huedist[h] * NUM_HUES / 360, NUM_HUES - 1)]
                   += (v * val / 100);
             }
         }
@@ -448,8 +447,8 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
 
             QColor hsvColor;
             hsvColor.setHsv( h,
-            CLAMP( 0, int( float( s ) * coeff ), 255 ),
-            CLAMP( 0, int( 255.f - (255.f - float( v ) ) * coeff2 ), 255 ) ) ;
+            qBound( 0, int( float( s ) * coeff ), 255 ),
+            qBound( 0, int( 255.f - (255.f - float( v ) ) * coeff2 ), 255 ) ) ;
             paint.setPen( hsvColor );
             paint.drawPoint( x, y );
             paint.drawPoint( x, height - 1 - y );
