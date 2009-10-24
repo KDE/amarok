@@ -151,6 +151,8 @@ Playlist::Widget::Widget( QWidget* parent )
 
         plBar->addAction( m_savePlaylistMenu );
 
+        plBar->addSeparator();
+
         Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
         plBar->addAction( layoutConfigAction );
         QToolButton *tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( layoutConfigAction ) );
