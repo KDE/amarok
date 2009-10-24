@@ -27,7 +27,7 @@ VERSION 2.2.1
     * Added context view bookmarks, allowing saving and restoring of applet 
       setups.
     * Enhanced --debug feature: When a function takes very long to run (> 5s),
-      we print a special message (GREPME) that can be searched easily.
+      we print a special message (DELAY) that can be searched easily.
     * Middle-clicking an item in the Collection Browser appends it to the
       playlist. Patch by Felix Geyer <debfx-kde@fobos.de>. (BR 197423)
     * Added feature for removing duplicates from the playlist. Patch by John

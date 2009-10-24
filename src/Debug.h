@@ -249,11 +249,11 @@ namespace Debug
 
             Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
 
-            // Print timing information, and a special message (GREPME) if the method took longer than 5s
+            // Print timing information, and a special message (DELAY) if the method took longer than 5s
             if( duration < 5.0 )
                 dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - Took " + QString::number( duration, 'g', 2 ) + "s" );
             else
-                dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - GREPME Took (quite long) " + QString::number( duration, 'g', 2 ) + "s" );
+                dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - DELAY Took (quite long) " + QString::number( duration, 'g', 2 ) + "s" );
 
             mutex.unlock();
         }
