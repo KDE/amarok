@@ -48,6 +48,7 @@ class MySqlCollection: public SqlCollection
         void reportError( const QString& message );
 
         void initThreadInitializer();
+        void sharedInit( const QString &databaseName );
 
         MYSQL* m_db;
         QMutex m_mutex;

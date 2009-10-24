@@ -409,7 +409,9 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     int url = urlId( path, uid );
 
     QStringList *trackList = new QStringList();
-    trackList->append( QString::number( m_nextTrackNum ) );
+    int id = m_nextTrackNum;
+    debug() << "Appending new track number with tracknum: " << id;
+    trackList->append( QString::number( m_nextTrackNum++ ) );
     trackList->append( QString::number( url ) );
     trackList->append( QString::number( artist ) );
     trackList->append( QString::number( album ) );
@@ -452,19 +454,25 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     //insert into hashes
     if( m_tracksHashByUrl.contains( url ) && m_tracksHashByUrl[url] != 0 )
     {
+        debug() << "m_tracksHashByUrl contains the url!";
         //need to replace, not overwrite/add a new one
         QStringList *oldValues = m_tracksHashByUrl[url];
+        QString oldId = oldValues->at( 0 );
+        debug() << "old id is " << oldId;
         oldValues->clear();
-        for( int i = 0; i < trackList->size(); i++ )
+        oldValues->append( oldId );
+        for( int i = 1; i < trackList->size(); i++ ) //not 0 because we want to keep old ID
             oldValues->append( trackList->at( i ) );
         delete trackList;
         trackList = oldValues;
+        id = oldId.toInt();
+        m_nextTrackNum--;
     }
     else
         m_tracksHashByUrl.insert( url, trackList );
 
-    
-    m_tracksHashById.insert( m_nextTrackNum, trackList );
+    m_tracksHashById.insert( id, trackList );
+
     if( m_tracksHashByAlbum.contains( album ) && m_tracksHashByAlbum[album] != 0 )
         m_tracksHashByAlbum[album]->append( trackList );
     else
@@ -473,10 +481,6 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
         list->append( trackList );
         m_tracksHashByAlbum[album] = list;
     }
-
-    //Don't forget to escape the fields that need it when inserting!
-    
-    m_nextTrackNum++;
 }
 
 int
@@ -888,7 +892,7 @@ ScanResultProcessor::setupDatabase()
         //    foreach( QStringList* list, *m_albumsHashByName[key] )
         //       debug() << "Key: " << key << ", list ptrs: " << *list;
         //}
-        debug() << "Next album num: " << m_nextTrackNum;
+        debug() << "Next track num: " << m_nextTrackNum;
         //foreach( int key, m_tracksHashById.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_tracksHashById[key];
         //foreach( int key, m_tracksHashByUrl.keys() )
@@ -1080,6 +1084,7 @@ ScanResultProcessor::copyHashesToTempTables()
     int maxSize = res[1].toInt() / 3; //for safety, due to multibyte encoding
 
     //urls
+    debug() << "urls key size is " << m_urlsHashById.keys().size();
     queryStart = "INSERT INTO urls_temp VALUES ";
     query = queryStart;
     valueReady = false;
@@ -1096,21 +1101,19 @@ ScanResultProcessor::copyHashesToTempTables()
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
             m_collection->insert( query );
-            query = queryStart + currQuery;
+            query = queryStart;
             valueReady = false;
         }   
-        else
+
+        if( !valueReady )
         {
-            if( !valueReady )
-            {
-                query += currQuery;
-                valueReady = true;
-            }
-            else
-                query += "," + currQuery;
+            query += currQuery;
+            valueReady = true;
         }
+        else
+            query += "," + currQuery;
     }
-    if( valueReady )
+    if( query != queryStart )
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
@@ -1133,21 +1136,19 @@ ScanResultProcessor::copyHashesToTempTables()
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
             m_collection->insert( query );
-            query = queryStart + currQuery;
+            query = queryStart;
             valueReady = false;
-        }   
-        else
-        {
-            if( !valueReady )
-            {
-                query += currQuery;
-                valueReady = true;
-            }
-            else
-                query += "," + currQuery;
         }
+
+        if( !valueReady )
+        {
+            query += currQuery;
+            valueReady = true;
+        }
+        else
+            query += "," + currQuery;
     }
-    if( valueReady )
+    if( query != queryStart )
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
@@ -1155,11 +1156,13 @@ ScanResultProcessor::copyHashesToTempTables()
     }
 
     //tracks
+    debug() << "tracks key size is " << m_tracksHashById.keys().size();
     queryStart = "INSERT INTO tracks_temp VALUES ";
     query = queryStart;
     valueReady = false;
     foreach( int key, m_tracksHashById.keys() )
     {
+        debug() << "key = " << key << ", id = " << m_tracksHashById[key]->at( 0 );
         currList = m_tracksHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","                                               //id
                           + ( currList->at( 1 ).isEmpty() ? "NULL" : currList->at( 1 ) ) + ","    //url
@@ -1189,21 +1192,19 @@ ScanResultProcessor::copyHashesToTempTables()
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
             m_collection->insert( query );
-            query = queryStart + currQuery;
+            query = queryStart;
             valueReady = false;
         }   
-        else
+
+        if( !valueReady )
         {
-            if( !valueReady )
-            {
-                query += currQuery;
-                valueReady = true;
-            }
-            else
-                query += "," + currQuery;
+            query += currQuery;
+            valueReady = true;
         }
+        else
+            query += "," + currQuery;
     }
-    if( valueReady )
+    if( query != queryStart )
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
@@ -1233,26 +1234,24 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
-            debug() << "inserting " << query << ", size " << query.size();
+            //debug() << "inserting " << query << ", size " << query.size();
             m_collection->insert( query );
-            query = queryStart + currQuery;
+            query = queryStart;
             valueReady = false;
         }   
-        else
+
+        if( !valueReady )
         {
-            if( !valueReady )
-            {
-                query += currQuery;
-                valueReady = true;
-            }
-            else
-                query += "," + currQuery;
+            query += currQuery;
+            valueReady = true;
         }
+        else
+            query += "," + currQuery;
     }
-    if( valueReady )
+    if( query != queryStart )
     {
         query += ";";
-        debug() << "inserting " << query << ", size " << query.size();
+        //debug() << "inserting " << query << ", size " << query.size();
         m_collection->insert( query );
     }
 }
