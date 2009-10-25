@@ -389,7 +389,20 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
                 QPixmap moodbar = The::moodbarManager()->getMoodbar( currentTrack, width - sliderHeight, sliderHeight );
 
+       
+                 p->drawPixmap( x, y + 2,
+                                renderSvg(
+                                "moodbar_end_left",
+                                sliderHeight / 2, sliderHeight,
+                                "moodbar_end_left" ) );
+                                
                 p->drawPixmap( x + ( sliderHeight / 2 ), y + 2, moodbar );
+
+                p->drawPixmap( x + ( width - sliderHeight / 2  ) , y + 2,
+                                renderSvg(
+                                "moodbar_end_right",
+                                sliderHeight / 2, sliderHeight,
+                                "moodbar_end_right" ) );
 
                 moodbarPainted = true;
                   
