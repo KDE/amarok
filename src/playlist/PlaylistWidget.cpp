@@ -120,14 +120,6 @@ Playlist::Widget::Widget( QWidget* parent )
 
         plBar->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
 
-        //FIXME this action should go in ActionController, but we don't have any visibility to the view
-        KAction *action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
-        connect( action, SIGNAL( triggered( bool ) ), m_playlistView, SLOT( scrollToActiveTrack() ) );
-        plBar->addAction( action );
-
-        plBar->addSeparator();
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
         plBar->addSeparator();
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), this );
@@ -150,6 +142,18 @@ Playlist::Widget::Widget( QWidget* parent )
                  );
 
         plBar->addAction( m_savePlaylistMenu );
+        
+        plBar->addSeparator();
+        plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
+        plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
+        plBar->addSeparator();
+
+        //FIXME this action should go in ActionController, but we don't have any visibility to the view
+        KAction *action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
+        connect( action, SIGNAL( triggered( bool ) ), m_playlistView, SLOT( scrollToActiveTrack() ) );
+        plBar->addAction( action );
+
+        plBar->addSeparator();
 
         Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
         plBar->addAction( layoutConfigAction );
