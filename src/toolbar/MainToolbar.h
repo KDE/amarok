@@ -28,6 +28,7 @@
 class QAction;
 class KToolBar;
 class MainControlsWidget;
+class ProgressWidget;
 class VolumeWidget;
 
 /**
@@ -39,7 +40,6 @@ class MainToolbar : public QToolBar, public EngineObserver
 
 public:
     MainToolbar( QWidget * parent );
-
     ~MainToolbar();
 
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
@@ -58,6 +58,7 @@ private:
     KToolBar           *m_addControlsToolbar;
     VolumeWidget       *m_volumeWidget;
     MainControlsWidget *m_mainControlsWidget;
+    ProgressWidget     *m_progressWidget;
 
     bool m_ignoreCache;
 

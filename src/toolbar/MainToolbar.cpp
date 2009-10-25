@@ -51,7 +51,7 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     setAutoFillBackground ( false );
 
-    KVBox * mainBox = new KVBox( this );
+    QWidget * mainBox = new QWidget( this );
     mainBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     addWidget( mainBox );
 
@@ -71,12 +71,9 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     m_volumeWidget = new VolumeWidget( m_insideBox );
 
-    KHBox * progressBox = new KHBox( mainBox );
-    progressBox->setContentsMargins( 0, 0, 0, 4 );
-    ProgressWidget *progressWidget = new ProgressWidget( progressBox );
-    progressWidget->setMinimumSize( 100, 12 );
+    m_progressWidget = new ProgressWidget( mainBox );
+    m_progressWidget->setMinimumSize( 100, 18 );
 
-    centerAddActions();
     installEventFilter( this );
 }
 
@@ -152,11 +149,18 @@ MainToolbar::resizeEvent( QResizeEvent *event )
     QWidget::resizeEvent( event );
     //as we handle our own layout, we need to position items correctly
 
-    const int middle = event->size().width() / 2;
+    const int mywidth = event->size().width();
+    const int middle = mywidth / 2;
     const int controlWidth = m_mainControlsWidget->width();
 
     m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 3 );
-    m_volumeWidget->move( event->size().width() - 172, 11 );
+
+    m_progressWidget->resize( mywidth - 200, m_progressWidget->minimumHeight() );
+    m_progressWidget->move( middle - m_progressWidget->width() / 2, 52 );
+
+    const int volumeX = middle + m_progressWidget->slider()->width() / 2 - m_volumeWidget->width();
+    m_volumeWidget->move( volumeX, 11 );
+
     centerAddActions();
 }
 

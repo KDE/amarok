@@ -25,7 +25,6 @@
 
 #include <KAction>
 
-#include <QLabel>
 #include <QPointer>
 #include <QStringList>
 
@@ -48,7 +47,6 @@ private:
 
     QPointer<Amarok::VolumeSlider> m_slider;
     KAction *m_action;
-    QLabel *m_label;
     QStringList m_icons;
 };
 
