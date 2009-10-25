@@ -67,6 +67,8 @@ private:
     QMap<Meta::TrackPtr, MoodbarColorList> m_moodDataMap;
 
     KPixmapCache * m_cache;
+
+    int m_lastPaintMode;
     
 };
 

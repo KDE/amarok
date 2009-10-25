@@ -21,7 +21,8 @@ The mood file loading and rendering code is based on the Amarok 1.4 moodbar impl
 by Gav Wood and Joseph Rabinoff, ported to Qt 4 with only a few modifications by me.
 
 The moodbar generator seems to be running just fine on modern systems if gstreamer is
-installed, but it could none the less do with a major update, perhaps to use Phonon.
+installed, but it could none the less do with a major update, perhaps to use Phonon or
+even porting to qtscript so it could be run, as needed, by Amarok.
 
 - Nikolaj
 */
@@ -29,6 +30,7 @@ installed, but it could none the less do with a major update, perhaps to use Pho
 
 #include "MoodbarManager.h"
 
+#include "amarokconfig.h"
 #include "Debug.h"
 
 #include <QFile>
@@ -51,6 +53,7 @@ namespace The {
 
 MoodbarManager::MoodbarManager()
     : m_cache( new KPixmapCache( "Amarok-moodbars" ) )
+    , m_lastPaintMode( 0 )
 {
 }
 
@@ -113,11 +116,21 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
 
     DEBUG_BLOCK
 
-    //first of all... if we have already marked this track as
+    //if we have already marked this track as
     //not having a moodbar, don't even bother...
     if ( m_hasMoodMap.contains( track ) )
         if( !m_hasMoodMap.value( track ) )
             return QPixmap();
+        
+
+    //first of all... Check if rendering settings have changed. If
+    //so, clear data and pixmap caches.
+    if( m_lastPaintMode != AmarokConfig::moodbarPaintStyle() )
+    {
+       m_lastPaintMode = AmarokConfig::moodbarPaintStyle();
+       m_cache->discard();
+       m_moodDataMap.clear();
+    }
 
 
     //Do we alrady have this pixmap cached?
@@ -194,6 +207,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     {
         debug() << "Moodbar::readFile: File " << moodFile.fileName()
                 << " is corrupted, removing." << endl;
+                //TODO: notify the user somehow
         //moodFile.remove();
         return data;
     }
@@ -264,7 +278,9 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     // value are scaled by sat and val, respectively, which are percentage
     // values.
 
-    if( false )
+    int paintStyle = AmarokConfig::moodbarPaintStyle();
+
+    if( paintStyle != 0 )
     {
         // Explanation of the parameters:
         //
@@ -282,7 +298,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
         int total = 0;
         memset( modalHue, 0, sizeof( modalHue ) );  // Recalculate this
 
-        switch( 3 )
+        switch( paintStyle )
         {
           case 1: // Angry
             threshold  = samples / 360 * 9;

@@ -2,8 +2,16 @@
 <ui version="4.0">
  <class>GeneralConfig</class>
  <widget class="QWidget" name="GeneralConfig">
-  <layout class="QGridLayout" name="rootLayout">
-   <item row="0" column="0">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>440</width>
+    <height>332</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="QGroupBox" name="generalBox">
      <property name="title">
       <string>General Options</string>
@@ -45,7 +53,7 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item>
     <widget class="QGroupBox" name="playlistBox">
      <property name="title">
       <string>Playlist Options</string>
@@ -58,7 +66,54 @@
         </property>
        </widget>
       </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="moodbarBox">
+     <property name="title">
+      <string>Moodbar Options</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0" colspan="3">
+       <widget class="QCheckBox" name="kcfg_ShowMoodbarInSlider">
+        <property name="text">
+         <string>Show Moodbar in Progress Slider</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Moodbar style</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QComboBox" name="kcfg_MoodbarPaintStyle">
+        <item>
+         <property name="text">
+          <string>Default</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Angry</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Frozen</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Happy</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="1">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -66,7 +121,7 @@
         <property name="sizeHint" stdset="0">
          <size>
           <width>20</width>
-          <height>40</height>
+          <height>26</height>
          </size>
         </property>
        </spacer>

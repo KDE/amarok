@@ -351,8 +351,9 @@ Amarok::TimeSlider::paintEvent( QPaintEvent *pe )
     //paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
 
     p.setClipRegion(pe->region());
-    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX, true );
+    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX, AmarokConfig::showMoodbarInSlider() );
     p.end();
+
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)

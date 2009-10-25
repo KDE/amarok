@@ -596,4 +596,16 @@
     </entry>
 </group>
 
+<group name="Moodbar">
+    <entry key="ShowMoodbarInSlider" type="Bool">
+        <label>Whether to show the moodbar of the current track, if availalble in the progress slider</label>
+        <whatsthis>Enable/Disable showing moodbar, if availalbe, in the progress slider.</whatsthis>
+        <default>false</default>
+    </entry>
+    <entry key="MoodbarPaintStyle" type="Int">
+        <label>The style to use when painting moodbar</label>
+        <default>0</default>
+    </entry>
+</group>
+
 </kcfg>
