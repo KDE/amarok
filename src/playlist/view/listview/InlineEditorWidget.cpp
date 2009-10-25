@@ -376,6 +376,7 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
     DEBUG_BLOCK
 
     Q_UNUSED( pos )
+    Q_UNUSED( index )
     
     QSplitter * splitter = dynamic_cast<QSplitter *>( sender() );
     if ( !splitter )
