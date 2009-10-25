@@ -114,8 +114,6 @@ bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
 QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height )
 {
 
-    DEBUG_BLOCK
-
     //if we have already marked this track as
     //not having a moodbar, don't even bother...
     if ( m_hasMoodMap.contains( track ) )
@@ -235,8 +233,6 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
         data.append( QColor( qBound( 0, r, 255 ),
                              qBound( 0, g, 255 ),
                              qBound( 0, b, 255 ) ) );
-
-        debug() << "Color: " << r << ", " << g << ", " << b;
 
         // Make a histogram of hues
         data.last().getHsv( &h, &s, &v );
@@ -401,7 +397,6 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 
 QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, int height )
 {
-     DEBUG_BLOCK
     
     QPixmap pixmap = QPixmap( width, height );
     QPainter paint( &pixmap );
@@ -424,6 +419,7 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
         // data.size() needs to be at least 1 for this not to crash!
         uint start = i * data.size() / width;
         uint end   = (i + 1) * data.size() / width;
+
         if( start == end )
             end = start + 1;
 
