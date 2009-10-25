@@ -533,10 +533,13 @@ ScanResultProcessor::imageId( const QString &image, int albumId )
 int
 ScanResultProcessor::albumId( const QString &album, int albumArtistId )
 {
+    DEBUG_BLOCK
+    debug() << "Looking up album " << album;
     //albumArtistId == 0 means no albumartist
     QPair<QString, int> key( album, albumArtistId );
     if( m_albums.contains( key ) )
     {
+        debug() << "m_albums contains album/albumArtistId key";
         // if we already have the key but the artist == 0,
         // UPDATE the image field so that we won't forget the cover for a compilation
         int id = m_albums.value( key );
@@ -571,31 +574,38 @@ ScanResultProcessor::albumId( const QString &album, int albumArtistId )
     int id = 0;
     if( m_albumsHashByName.contains( album ) && m_albumsHashByName[album] != 0 )
     {
+        debug() << "Hashes contain it";
         QLinkedList<QStringList*> *list = m_albumsHashByName[album];
         foreach( QStringList *slist, *list )
         {
             if( slist->at( 2 ).isEmpty() && albumArtistId == 0 )
             {
+                debug() << "artist is empty and albumArtistId = 0, returning " << slist->at( 0 );
                 id = slist->at( 0 ).toInt();
                 break;
             }
             else if( slist->at( 2 ).toInt() == albumArtistId )
             {
+                debug() << "artist == albumArtistId,  returning " << slist->at( 0 );
                 id = slist->at( 0 ).toInt();
                 break;
             }
         }
     }
     if( !id )
+    {
+        debug() << "Not found! Inserting...";
         id = albumInsert( album, albumArtistId );
+    }
     m_albums.insert( key, id );
+    debug() << "returning id = " << id;
     return id;
 }
 
 int
 ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     int returnedNum = m_nextAlbumNum++;
     QStringList* albumList = new QStringList();
     albumList->append( QString::number( returnedNum ) );
@@ -611,6 +621,7 @@ ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
         list->append( albumList );
         m_albumsHashByName[album] = list;
     }
+    debug() << "albumInsert returning " << returnedNum;
     return returnedNum;
 }
 
@@ -1088,7 +1099,9 @@ ScanResultProcessor::copyHashesToTempTables()
     queryStart = "INSERT INTO urls_temp VALUES ";
     query = queryStart;
     valueReady = false;
-    foreach( int key, m_urlsHashById.keys() )
+    QList<int> keys = m_urlsHashById.keys();
+    qSort( keys );
+    foreach( int key, keys )
     {
         currList = m_urlsHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","
@@ -1124,7 +1137,9 @@ ScanResultProcessor::copyHashesToTempTables()
     queryStart = "INSERT INTO albums_temp VALUES ";
     query = queryStart;
     valueReady = false;
-    foreach( int key, m_albumsHashById.keys() )
+    keys = m_albumsHashById.keys();
+    qSort( keys  );
+    foreach( int key, keys )
     {
         currList = m_albumsHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","
@@ -1160,7 +1175,9 @@ ScanResultProcessor::copyHashesToTempTables()
     queryStart = "INSERT INTO tracks_temp VALUES ";
     query = queryStart;
     valueReady = false;
-    foreach( int key, m_tracksHashById.keys() )
+    keys = m_tracksHashById.keys();
+    qSort( keys );
+    foreach( int key, keys )
     {
         debug() << "key = " << key << ", id = " << m_tracksHashById[key]->at( 0 );
         currList = m_tracksHashById[key];
@@ -1221,16 +1238,22 @@ ScanResultProcessor::copyHashesToTempTables()
 void
 ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QString, int> *hash, int maxSize )
 {
-    int currInt;
+    QString currString;
     QString currQuery;
     QString queryStart = "INSERT INTO " + tableName + "_temp VALUES ";
     QString query = queryStart;
     bool valueReady = false;
-    foreach( QString key, hash->keys() )
+    QStringList keys = hash->keys();
+    QHash<int, QString> sortedHash;
+    foreach( QString key, keys )
+        sortedHash.insert( hash->value( key ), key );
+    QList<int> intKeys = sortedHash.keys();
+    qSort( intKeys );
+    foreach( int key, intKeys )
     {
 
-        currInt = hash->value( key );
-        currQuery =   "(" + QString::number( currInt ) + ",'" + m_collection->escape( key ) + "')";
+        currString = sortedHash[key];
+        currQuery =   "(" + QString::number( key ) + ",'" + m_collection->escape( currString ) + "')";
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
