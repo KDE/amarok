@@ -390,7 +390,10 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     }
 
     if( dir.count() == 1 )
+    {
         album = checkExistingAlbums( albumName );
+        debug() << "album was set to checkExistingAlbums and got " << album;
+    }
 
     QString uid = trackData.value( Field::UNIQUEID ).toString();
 
@@ -400,7 +403,10 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     int year = genericId( &m_years, trackData.value( Field::YEAR ).toString(), &m_nextYearNum );
 
     if( !album ) //no compilation
+    {
         album = albumId( albumName, albumArtistId );
+        debug() << "album set to " << album;
+    }
 
     const int created  = file.created().toTime_t();
     const int modified = file.lastModified().toTime_t();
