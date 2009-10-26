@@ -2,6 +2,7 @@
  * Copyright (c) 2003 Frerich Raabe <raabe@kde.org>                                     *
  * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -106,11 +107,21 @@ QString FileNameScheme::title() const
     return m_regExp.capturedTexts()[ m_titleField ];
 }
 
+int FileNameScheme::titlePos() const
+{
+    return m_titleField;
+}
+
 QString FileNameScheme::artist() const
 {
     if( m_artistField == -1 )
         return QString();
     return m_regExp.capturedTexts()[ m_artistField ];
+}
+
+int FileNameScheme::artistPos() const
+{
+    return m_artistField;
 }
 
 QString FileNameScheme::album() const
@@ -120,11 +131,21 @@ QString FileNameScheme::album() const
     return m_regExp.capturedTexts()[ m_albumField ];
 }
 
+int FileNameScheme::albumPos() const
+{
+    return m_albumField;
+}
+
 QString FileNameScheme::track() const
 {
     if( m_trackField == -1 )
         return QString();
     return m_regExp.capturedTexts()[ m_trackField ];
+}
+
+int FileNameScheme::trackPos() const
+{
+    return m_trackField;
 }
 
 QString FileNameScheme::comment() const
@@ -134,11 +155,21 @@ QString FileNameScheme::comment() const
     return m_regExp.capturedTexts()[ m_commentField ];
 }
 
+int FileNameScheme::commentPos() const
+{
+    return m_commentField;
+}
+
 QString FileNameScheme::year() const
 {
     if( m_yearField == -1 )
         return QString();
     return m_regExp.capturedTexts()[ m_yearField ];
+}
+
+int FileNameScheme::yearPos() const
+{
+    return m_yearField;
 }
 
 QString FileNameScheme::composer() const
@@ -148,11 +179,21 @@ QString FileNameScheme::composer() const
     return m_regExp.capturedTexts()[ m_composerField ];
 }
 
+int FileNameScheme::composerPos() const
+{
+    return m_composerField;
+}
+
 QString FileNameScheme::genre() const
 {
     if( m_genreField == -1 )
         return QString();
     return m_regExp.capturedTexts()[ m_genreField ];
+}
+
+int FileNameScheme::genrePos() const
+{
+    return m_genreField;
 }
 
 QString FileNameScheme::composeRegExp( const QString &s ) const
@@ -291,6 +332,30 @@ void TagGuesser::guess( const QString &absFileName, FilenameLayoutDialog *dialog
                 composer = composer.trimmed();
                 genre = genre.trimmed();
             }
+
+            if ( !title.isEmpty() )
+                m_sorted.insert( schema.titlePos(),title );
+
+            if ( !artist.isEmpty() )
+                m_sorted.insert( schema.artistPos(),artist );
+
+            if ( !album.isEmpty() )
+                m_sorted.insert( schema.albumPos(),album );
+
+            if ( !track.isEmpty() )
+                m_sorted.insert( schema.trackPos(),track );
+
+            if ( !comment.isEmpty() )
+                m_sorted.insert( schema.commentPos(),comment );
+
+            if ( !year.isEmpty() )
+                m_sorted.insert( schema.yearPos(),year );
+
+            if ( !composer.isEmpty() )
+                m_sorted.insert( schema.composerPos(),composer );
+
+            if ( !genre.isEmpty() )
+                m_sorted.insert( schema.genrePos(),genre );
 
             //capitalizeWords stuff:
             if( caseOptions )

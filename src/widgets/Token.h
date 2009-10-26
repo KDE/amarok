@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2008-2009 Seb Ruiz <ruiz@kde.org>                                      *
+ * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -64,6 +65,9 @@ class Token : public QWidget
         QString iconName() const;
         QString name() const;
         int value() const;
+        QColor textColor() const;
+
+        void setTextColor( QColor textColor );
 
     signals:
         void changed();
@@ -77,6 +81,7 @@ class Token : public QWidget
         KIcon       m_icon;
         QString     m_iconName;
         int         m_value;
+        QColor      m_textColor;
 
         QLabel      *m_iconContainer;
         QLabel      *m_label;

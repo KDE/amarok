@@ -2,6 +2,7 @@
  * Copyright (c) 2003 Frerich Raabe <raabe@kde.org>                                     *
  * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -46,13 +47,21 @@ class FileNameScheme
         bool matches( const QString &s ) const;
 
         QString title() const;
+        int     titlePos() const;
         QString artist() const;
+        int     artistPos() const;
         QString album() const;
+        int     albumPos() const;
         QString track() const;
+        int     trackPos() const;
         QString comment() const;
+        int     commentPos() const;
         QString year() const;
+        int     yearPos() const;
         QString composer() const;
+        int     composerPos() const;
         QString genre() const;
+        int     genrePos() const;
 
         QString pattern() const { return m_cod; }
 
@@ -94,6 +103,7 @@ class TagGuesser
         QString year() const { return m_year; }
         QString composer() const { return m_composer; }
         QString genre() const { return m_genre; }
+        QMap<int,QString> sorted() const { return m_sorted; }
 
     private:
         void loadSchemes();
@@ -108,6 +118,7 @@ class TagGuesser
         QString m_year;
         QString m_composer;
         QString m_genre;
+        QMap<int,QString> m_sorted;
 };
 
 #endif /* TAGGUESSER_H */

@@ -4,6 +4,7 @@
  * Copyright (c) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>             *
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -562,6 +563,7 @@ TagDialog::guessFromFilename() //SLOT
     dialog->setCaption( i18n( "Filename Layout Chooser" ) );
     dialog->setButtons( KDialog::Ok | KDialog::Cancel );
     FilenameLayoutDialog *widget = new FilenameLayoutDialog( dialog );
+    widget->setFileName( m_currentTrack->playableUrl().path() );
     dialog->setMainWidget( widget );
     connect( dialog, SIGNAL( accepted() ),
              widget, SLOT( onAccept() ) );

@@ -2,6 +2,7 @@
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2008-2009 Seb Ruiz <ruiz@kde.org>                                      *
  * Copyright (c) 2009 Roman Jarosz <kedgedev@gmail.com>                                 *
+ * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -44,6 +45,8 @@ Token::Token( const QString &name, const QString &iconName, int value, QWidget *
         if ( TokenDropTarget *editWidget = qobject_cast<TokenDropTarget*>( parent ) )
             connect( this, SIGNAL(changed()), editWidget, SIGNAL(changed()) );
     }
+
+    m_textColor = QPalette::Text;
 
     m_label = new QLabel( this );
     m_label->setAlignment( Qt::AlignCenter );
@@ -92,6 +95,17 @@ Token::icon() const
 QString Token::iconName() const
 {
     return m_iconName;
+}
+
+QColor Token::textColor() const
+{
+    return m_textColor;
+}
+
+void Token::setTextColor( QColor textColor )
+{
+    m_textColor = textColor;
+    m_label->setText( "<font color=\"" + m_textColor.name() + "\">" + m_name + "</font>" );
 }
 
 void Token::paintEvent(QPaintEvent *pe)

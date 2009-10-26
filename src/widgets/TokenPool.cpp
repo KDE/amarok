@@ -2,6 +2,7 @@
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2009 Thomas Lbking <thomas.luebking@web.de>                            *
+ * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -46,7 +47,7 @@ public:
         // and (eilided) text
         const int textFlags = Qt::AlignBottom | Qt::AlignHCenter | Qt::TextSingleLine | Qt::TextShowMnemonic;
         QString text = painter->fontMetrics().elidedText( index.data().toString(), Qt::ElideMiddle, rect.width(), textFlags );
-        painter->setPen( option.palette.color( QPalette::Text ) );
+        painter->setPen( option.palette.color( QPalette::Text ) ); //TODO: Would be cool to have the Token textColor here but how?
         painter->drawText( rect, textFlags, text );
 
     }
@@ -77,7 +78,7 @@ TokenPool::addToken( Token * token )
 {
 
     QListWidgetItem *item = new QListWidgetItem( token->icon().pixmap( 48, 48 ), token->name() );
-    item->setToolTip(token->name());
+    item->setToolTip( "<font color=\"" + token->textColor().name() + "\">" + token->name() + "</font>" );
     addItem( item );
 
     m_itemTokenMap.insert( item, token );

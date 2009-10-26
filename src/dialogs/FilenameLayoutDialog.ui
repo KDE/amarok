@@ -110,7 +110,7 @@
       </size>
      </property>
      <property name="text" >
-      <string>The following tokens can be used to define a filename scheme: &lt;br>%track, %title, %artist, %composer, %year, %album, %comment, %genre&lt;br></string>
+      <string>The following tokens can be used to define a filename scheme: &lt;br /&gt;&amp;lt;font color=&quot;#DD0000&quot;&amp;gt;%track&amp;lt;/font&amp;gt;, &amp;lt;font color=&quot;#00AA00&quot;&amp;gt;%title&amp;lt;/font&amp;gt;, &amp;lt;font color=&quot;0000BB&quot;&amp;gt;%artist&amp;lt;/font&amp;gt;, &amp;lt;font color=&quot;#BB00BB&quot;&amp;gt;%composer&amp;lt;/font&amp;gt;, &amp;lt;font color=&quot;#B0B0FF&quot;&amp;gt;%year&amp;lt;/font&amp;gt;, &amp;lt;font color=&quot;#00AAAA&quot;&amp;gt;%album&amp;lt;/font&amp;gt;, &amp;lt;font color=&quot;#808080&quot;&amp;gt;%comment&amp;lt;/font&amp;gt;, &amp;lt;font color=&quot;#8F6A32&quot;&amp;gt;%genre&amp;lt;/font&amp;gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
@@ -211,6 +211,50 @@
        </property>
        <property name="text" >
         <string>&amp;Advanced...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0" >
+     <property name="spacing" >
+      <number>-1</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="filenamePreview" >
+       <property name="sizePolicy" >
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>0</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>30000</width>
+         <height>32</height>
+        </size>
+       </property>
+       <property name="acceptDrops" >
+        <bool>false</bool>
+       </property>
+       <property name="autoFillBackground" >
+        <bool>false</bool>
+       </property>
+       <property name="text" >
+        <string notr="true"/>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
