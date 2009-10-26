@@ -122,8 +122,6 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
     m_podcastTreeView->setDragEnabled(true);
-    m_podcastTreeView->setAcceptDrops(true);
-    m_podcastTreeView->setDropIndicatorShown(true);
 
     //transparency
     QPalette p = m_podcastTreeView->palette();
@@ -315,6 +313,8 @@ PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     : Amarok::PrettyTreeView( parent )
     , m_podcastModel( model )
     , m_pd( 0 )
+    , m_ongoingDrag( false )
+    , m_dragMutex()
 {
 }
 
@@ -328,20 +328,19 @@ PodcastView::mousePressEvent( QMouseEvent * event )
     if( event->button() == Qt::LeftButton )
         m_dragStartPosition = event->pos();
 
-    QTreeView::mousePressEvent( event );
+    Amarok::PrettyTreeView::mousePressEvent( event );
 }
 
 void
 PodcastView::mouseReleaseEvent( QMouseEvent * event )
 {
-    Q_UNUSED( event )
-
     if( m_pd )
     {
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
         m_pd->hide();
     }
     m_pd = 0;
+    event->accept();
 }
 
 void
@@ -362,18 +361,29 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
 {
     DEBUG_BLOCK
 
-    //Waah? when a parent item is dragged, startDrag is called a bunch of times
-    static bool ongoingDrags = false;
-    if( ongoingDrags )
+    //don't continue drag when not started over a selected item.
+    if( !visualRegionForSelection( selectionModel()->selection() ).contains(
+            m_dragStartPosition )
+      )
+    {
         return;
-    ongoingDrags = true;
+    }
+
+    // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
+    m_dragMutex.lock();
+    if( m_ongoingDrag )
+    {
+        m_dragMutex.unlock();
+        return;
+    }
+    m_ongoingDrag = true;
+    m_dragMutex.unlock();
 
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
     if( m_pd && m_pd->isHidden() )
     {
-
         QList<QAction*> actions = m_podcastModel->actionsFor( selectedIndexes() );
 
         foreach( QAction * action, actions )
@@ -393,7 +403,9 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
         m_pd->hide();
     }
-    ongoingDrags = false;
+    m_dragMutex.lock();
+    m_ongoingDrag = false;
+    m_dragMutex.unlock();
 }
 
 void

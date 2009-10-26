@@ -290,8 +290,7 @@ PlaylistBrowserNS::PodcastModel::flags(const QModelIndex & index) const
 {
     if( index.isValid() )
     {
-        return ( Qt::ItemIsEnabled     | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled |
-                 Qt::ItemIsDragEnabled );
+        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
     }
     return Qt::ItemIsDropEnabled;
 }
