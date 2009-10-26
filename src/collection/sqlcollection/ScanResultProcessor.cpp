@@ -545,7 +545,7 @@ ScanResultProcessor::albumId( const QString &album, int albumArtistId )
     QPair<QString, int> key( album, albumArtistId );
     if( m_albums.contains( key ) )
     {
-        debug() << "m_albums contains album/albumArtistId key";
+        //debug() << "m_albums contains album/albumArtistId key";
         // if we already have the key but the artist == 0,
         // UPDATE the image field so that we won't forget the cover for a compilation
         int id = m_albums.value( key );
