@@ -130,6 +130,7 @@ Amarok::TrayIcon::setupToolTip()
 
         // HACK: This block is inefficient and more or less stupid
         // (Unnecessary I/O on disk. Workaround?)
+        // TODO: Use Observer to get notified about changed album art
         const QString tmpFilename = Amarok::saveLocation() + "tooltipcover.png";
         if( m_track->album() )
         {
@@ -141,6 +142,7 @@ Amarok::TrayIcon::setupToolTip()
 
         QStringList left, right;
 
+        // TODO: Replace block by some other useful information
         QString volume;
         if ( The::engineController()->isMuted() )
             volume = i18n( "Muted" );
@@ -192,8 +194,6 @@ Amarok::TrayIcon::setupToolTip()
                 tooltip += tableRow.arg( left[x] ).arg( right[x] );
 
         tooltip += "</table>";
-
-
     }
 
     setToolTip( tooltip );
@@ -357,7 +357,7 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
         QIcon icon = KSystemTrayIcon::loadIcon( "amarok" );
         m_baseIcon = icon.pixmap( geometry().size() );
         setIcon( icon ); // show icon
-        return; // return because m_baseIcon is still null after first startup
+        return; // HACK: return because m_baseIcon is still null after first startup (why?)
     }
 
     if( m_grayedIcon.isNull() )
