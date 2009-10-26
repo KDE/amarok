@@ -128,7 +128,7 @@ Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem
     rect.moveTopLeft( pos );
     rect.adjust( -5, -5, 5, 5 );
 
-    m_textBackground->resize( rect.size() );
+    m_textBackground->resizeFrame( rect.size() );
     m_textBackground->paintFrame( p, rect.topLeft() );
     p->restore();
 }
