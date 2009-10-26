@@ -101,7 +101,17 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         title = channel->title();
         description = channel->description();
         isChannel = true;
-        icon = KIcon( "podcast-amarok" );
+        QStringList emblems;
+        //TODO: only check visible episodes. For now those are all returned by episodes().
+        foreach( const Meta::PodcastEpisodePtr ep, channel->episodes() )
+        {
+            if( ep->isNew() )
+            {
+                emblems << "rating";
+                break;
+            }
+        }
+        icon = KIcon( "podcast-amarok", 0, emblems );
     }
     else if ( pmc->podcastType() == Meta::EpisodeType )
     {

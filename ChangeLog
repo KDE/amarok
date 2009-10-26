@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Podcasts have better indication of status with emblem icons.
+      (BR 209433)
     * The information from the podcast feed can be written to the downloaded
       files. Both manually and automatically.
     * Track bookmarks can be removed directly by right-clicking.
