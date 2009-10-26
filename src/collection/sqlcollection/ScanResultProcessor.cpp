@@ -616,7 +616,7 @@ ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
     QStringList* albumList = new QStringList();
     albumList->append( QString::number( returnedNum ) );
     albumList->append( album );
-    albumList->append( QString::number( albumArtistId ) );
+    albumList->append( albumArtistId ? QString::number( albumArtistId ) : QString() );
     albumList->append( QString() );
     m_albumsHashById[returnedNum] = albumList;
     if( m_albumsHashByName.contains( album ) && m_albumsHashByName[album] != 0 )
