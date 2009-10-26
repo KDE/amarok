@@ -321,6 +321,7 @@ Meta::SqlPodcastEpisode::writeTagsToFile()
     if( !ec->isEditable() )
     {
         debug() << QString( "local file (%1)is not editable!" ).arg( m_localUrl.url() );
+        return false;
     }
     ec->beginMetaDataUpdate();
     ec->setTitle( m_title );
@@ -331,6 +332,8 @@ Meta::SqlPodcastEpisode::writeTagsToFile()
     ec->endMetaDataUpdate();
 
     notifyObservers();
+
+    return true;
 }
 
 void

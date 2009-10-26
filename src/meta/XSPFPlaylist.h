@@ -62,7 +62,7 @@ public:
 
     /**
     * Creates a new XSPFPlaylist and starts loading the xspf file of the url.
-    * @param url The Ulrf of the xspf file to load.
+    * @param url The Url of the xspf file to load.
     * @param autoAppend Should this playlist automatically append itself to the playlist when loaded (useful when loading a remote url as it
     * allows the caller to do it in a "one shot" way and not have to worry about waiting untill download and parsing is completed.
     */

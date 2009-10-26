@@ -24,6 +24,7 @@
 
 #include <QContextMenuEvent>
 #include <QItemDelegate>
+#include <QMutex>
 #include <QListView>
 #include <QToolButton>
 #include <QWebPage>
@@ -104,7 +105,8 @@ class PodcastView : public Amarok::PrettyTreeView
         PopupDropper* m_pd;
 
         QPoint m_dragStartPosition;
-
+        bool m_ongoingDrag;
+        QMutex m_dragMutex;
 };
 
 /**
