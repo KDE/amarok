@@ -280,7 +280,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
         //an empty string means that no albumartist was found
         int artist = albumArtist.isEmpty() ? 0 : genericId( &m_artists, albumArtist, &m_nextArtistNum );
 
-        debug() << "albumartist " << albumArtist << "for artists" << artists;
+        //debug() << "albumartist " << albumArtist << "for artists" << artists;
         foreach( const QVariantMap &row, data )
         {
             addTrack( row, artist );
@@ -392,7 +392,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     if( dir.count() == 1 )
     {
         album = checkExistingAlbums( albumName );
-        debug() << "album was set to checkExistingAlbums and got " << album;
+        //debug() << "album was set to checkExistingAlbums and got " << album;
     }
 
     QString uid = trackData.value( Field::UNIQUEID ).toString();
@@ -405,7 +405,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     if( !album ) //no compilation
     {
         album = albumId( albumName, albumArtistId );
-        debug() << "album set to " << album;
+        //debug() << "album set to " << album;
     }
 
     const int created  = file.created().toTime_t();
@@ -416,7 +416,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     QStringList *trackList = new QStringList();
     int id = m_nextTrackNum;
-    debug() << "Appending new track number with tracknum: " << id;
+    //debug() << "Appending new track number with tracknum: " << id;
     trackList->append( QString::number( m_nextTrackNum++ ) );
     trackList->append( QString::number( url ) );
     trackList->append( QString::number( artist ) );
@@ -460,11 +460,11 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     //insert into hashes
     if( m_tracksHashByUrl.contains( url ) && m_tracksHashByUrl[url] != 0 )
     {
-        debug() << "m_tracksHashByUrl contains the url!";
+        //debug() << "m_tracksHashByUrl contains the url!";
         //need to replace, not overwrite/add a new one
         QStringList *oldValues = m_tracksHashByUrl[url];
         QString oldId = oldValues->at( 0 );
-        debug() << "old id is " << oldId;
+        //debug() << "old id is " << oldId;
         oldValues->clear();
         oldValues->append( oldId );
         for( int i = 1; i < trackList->size(); i++ ) //not 0 because we want to keep old ID
@@ -539,8 +539,8 @@ ScanResultProcessor::imageId( const QString &image, int albumId )
 int
 ScanResultProcessor::albumId( const QString &album, int albumArtistId )
 {
-    DEBUG_BLOCK
-    debug() << "Looking up album " << album;
+    //DEBUG_BLOCK
+    //debug() << "Looking up album " << album;
     //albumArtistId == 0 means no albumartist
     QPair<QString, int> key( album, albumArtistId );
     if( m_albums.contains( key ) )
@@ -580,19 +580,19 @@ ScanResultProcessor::albumId( const QString &album, int albumArtistId )
     int id = 0;
     if( m_albumsHashByName.contains( album ) && m_albumsHashByName[album] != 0 )
     {
-        debug() << "Hashes contain it";
+        //debug() << "Hashes contain it";
         QLinkedList<QStringList*> *list = m_albumsHashByName[album];
         foreach( QStringList *slist, *list )
         {
             if( slist->at( 2 ).isEmpty() && albumArtistId == 0 )
             {
-                debug() << "artist is empty and albumArtistId = 0, returning " << slist->at( 0 );
+                //debug() << "artist is empty and albumArtistId = 0, returning " << slist->at( 0 );
                 id = slist->at( 0 ).toInt();
                 break;
             }
             else if( slist->at( 2 ).toInt() == albumArtistId )
             {
-                debug() << "artist == albumArtistId,  returning " << slist->at( 0 );
+                //debug() << "artist == albumArtistId,  returning " << slist->at( 0 );
                 id = slist->at( 0 ).toInt();
                 break;
             }
@@ -600,18 +600,18 @@ ScanResultProcessor::albumId( const QString &album, int albumArtistId )
     }
     if( !id )
     {
-        debug() << "Not found! Inserting...";
+        //debug() << "Not found! Inserting...";
         id = albumInsert( album, albumArtistId );
     }
     m_albums.insert( key, id );
-    debug() << "returning id = " << id;
+    //debug() << "returning id = " << id;
     return id;
 }
 
 int
 ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
     int returnedNum = m_nextAlbumNum++;
     QStringList* albumList = new QStringList();
     albumList->append( QString::number( returnedNum ) );
@@ -627,7 +627,7 @@ ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
         list->append( albumList );
         m_albumsHashByName[album] = list;
     }
-    debug() << "albumInsert returning " << returnedNum;
+    //debug() << "albumInsert returning " << returnedNum;
     return returnedNum;
 }
 
@@ -684,7 +684,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
             list->replace( 1, QString::number( deviceId ) );
             list->replace( 2, rpath );
             list->replace( 3, QString::number( dirId ) );
-            debug() << "Hash updated UID-based values for uid " << uid;
+            //debug() << "Hash updated UID-based values for uid " << uid;
         }
         m_permanentTablesUrlUpdates.insert( uid, url );
         m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( currUrlIdValues[1].toInt(), currUrlIdValues[2] ), url ) );
@@ -699,7 +699,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         {
             QStringList *list = m_urlsHashById[urlId];
             list->replace( 4, uid );
-            debug() << "Hash updated path-based values for uid " << uid;
+            //debug() << "Hash updated path-based values for uid " << uid;
         }
  
         m_permanentTablesUidUpdates.insert( url, uid );
@@ -1105,9 +1105,9 @@ ScanResultProcessor::copyHashesToTempTables()
     queryStart = "INSERT INTO urls_temp VALUES ";
     query = queryStart;
     valueReady = false;
-    QList<int> keys = m_urlsHashById.keys();
-    qSort( keys );
-    foreach( int key, keys )
+    //QList<int> keys = m_urlsHashById.keys();
+    //qSort( keys );
+    foreach( int key, m_urlsHashById.keys() )
     {
         currList = m_urlsHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","
@@ -1143,9 +1143,9 @@ ScanResultProcessor::copyHashesToTempTables()
     queryStart = "INSERT INTO albums_temp VALUES ";
     query = queryStart;
     valueReady = false;
-    keys = m_albumsHashById.keys();
-    qSort( keys  );
-    foreach( int key, keys )
+    //keys = m_albumsHashById.keys();
+    //qSort( keys  );
+    foreach( int key, m_albumsHashById.keys() )
     {
         currList = m_albumsHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","
@@ -1181,11 +1181,11 @@ ScanResultProcessor::copyHashesToTempTables()
     queryStart = "INSERT INTO tracks_temp VALUES ";
     query = queryStart;
     valueReady = false;
-    keys = m_tracksHashById.keys();
-    qSort( keys );
-    foreach( int key, keys )
+    //keys = m_tracksHashById.keys();
+    //qSort( keys );
+    foreach( int key, m_tracksHashById.keys() )
     {
-        debug() << "key = " << key << ", id = " << m_tracksHashById[key]->at( 0 );
+        //debug() << "key = " << key << ", id = " << m_tracksHashById[key]->at( 0 );
         currList = m_tracksHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","                                               //id
                           + ( currList->at( 1 ).isEmpty() ? "NULL" : currList->at( 1 ) ) + ","    //url
@@ -1249,17 +1249,17 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
     QString queryStart = "INSERT INTO " + tableName + "_temp VALUES ";
     QString query = queryStart;
     bool valueReady = false;
-    QStringList keys = hash->keys();
-    QHash<int, QString> sortedHash;
-    foreach( QString key, keys )
-        sortedHash.insert( hash->value( key ), key );
-    QList<int> intKeys = sortedHash.keys();
-    qSort( intKeys );
-    foreach( int key, intKeys )
+    //QStringList keys = hash->keys();
+    //QHash<int, QString> sortedHash;
+    //foreach( QString key, keys )
+    //    sortedHash.insert( hash->value( key ), key );
+    //QList<int> intKeys = sortedHash.keys();
+    //qSort( intKeys );
+    foreach( QString key, hash->keys() )
     {
 
-        currString = sortedHash[key];
-        currQuery =   "(" + QString::number( key ) + ",'" + m_collection->escape( currString ) + "')";
+        //currString = sortedHash[key];
+        currQuery =   "(" + QString::number( hash->value( key ) ) + ",'" + m_collection->escape( key ) + "')";
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
