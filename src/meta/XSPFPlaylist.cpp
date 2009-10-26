@@ -137,20 +137,21 @@ XSPFPlaylist::save( const KUrl &location, bool relative )
     DEBUG_BLOCK
     Q_UNUSED( relative );
 
-    KUrl savePath = location;
+    debug() << "Saving to " << location;
+    m_url = location;
     //if the location is a directory append the name of this playlist.
-    if( savePath.fileName().isNull() )
-        savePath.setFileName( name() );
+    if( m_url.fileName().isNull() )
+        m_url.setFileName( name() );
 
     QFile file;
 
     if( location.isLocalFile() )
     {
-        file.setFileName( savePath.toLocalFile() );
+        file.setFileName( m_url.toLocalFile() );
     }
     else
     {
-        file.setFileName( savePath.path() );
+        file.setFileName( m_url.path() );
     }
 
     if( !file.open( QIODevice::WriteOnly ) )
@@ -384,9 +385,6 @@ XSPFPlaylist::setTitle( const QString &title )
                                     documentElement().namedItem( "title" ).firstChild()
                                 );
     }
-
-    //write these changes directly to the file
-    save( m_url, false );
 }
 
 void
@@ -701,9 +699,6 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     }
     else
         documentElement().replaceChild( node, documentElement().namedItem( "trackList" ) );
-
-    //write these changes directly to the file
-    save( m_url, false );
 }
 
 bool
