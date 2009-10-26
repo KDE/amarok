@@ -331,6 +331,8 @@ Meta::SqlPodcastEpisode::writeTagsToFile()
     ec->endMetaDataUpdate();
 
     notifyObservers();
+
+    return true;
 }
 
 void
