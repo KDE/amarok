@@ -461,7 +461,7 @@ DatabaseUpdater::upgradeVersion9to10()
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
     foreach( QString table, tables )
-        m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin ENGINE = MyISAM" );
+        m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin COLLATE utf8_bin ENGINE = MyISAM" );
 
     //now the columns (ugh)
     //first, varchar
@@ -576,9 +576,9 @@ DatabaseUpdater::createTemporaryTables()
         QString create = "CREATE TEMPORARY TABLE urls_temp "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",rpath " + m_collection->exactIndexableTextColumnType() + " COLLATE utf8_bin NOT NULL" +
+                         ",rpath " + m_collection->exactIndexableTextColumnType() + " NOT NULL" +
                          ",directory INTEGER"
-                         ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE) ENGINE = MyISAM;";
+                         ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath_temp ON urls_temp(deviceid, rpath);" );
         m_collection->query( "CREATE INDEX urls_temp_uniqueid ON urls_temp(uniqueid);" );
@@ -587,14 +587,14 @@ DatabaseUpdater::createTemporaryTables()
         QString create = "CREATE TEMPORARY TABLE directories_temp "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",dir " + m_collection->exactTextColumnType() + " COLLATE utf8_bin NOT NULL" +
-                         ",changedate INTEGER) ENGINE = MyISAM;";
+                         ",dir " + m_collection->exactTextColumnType() + " NOT NULL" +
+                         ",changedate INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
     }
     {
         QString create = "CREATE TEMPORARY TABLE artists_temp "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX artists_temp_name ON artists_temp(name);" );
     }
@@ -603,7 +603,7 @@ DatabaseUpdater::createTemporaryTables()
                     "(id " + m_collection->idType() +
                     ",name " + m_collection->textColumnType() + " NOT NULL"
                     ",artist INTEGER" +
-                    ",image INTEGER) ENGINE = MyISAM;";
+                    ",image INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( c );
         m_collection->query( "CREATE INDEX albums_temp_name ON albums_temp(name);" );
         m_collection->query( "CREATE INDEX albums_temp_artist ON albums_temp(artist);" );
@@ -615,28 +615,28 @@ DatabaseUpdater::createTemporaryTables()
     {
         QString create = "CREATE TEMPORARY TABLE genres_temp "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX genres_temp_name ON genres_temp(name);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE composers_temp "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX composers_temp_name ON composers_temp(name);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE years_temp "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX years_temp_name ON years_temp(name);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE images_temp "
                          "(id " + m_collection->idType() +
-                         ",path " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
+                         ",path " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX images_temp_name ON images_temp(path);" );
     }
@@ -665,7 +665,7 @@ DatabaseUpdater::createTemporaryTables()
                     ",albumpeakgain FLOAT"
                     ",trackgain FLOAT"
                     ",trackpeakgain FLOAT"
-                    ") ENGINE = MyISAM;";
+                    ") COLLATE = utf8_bin ENGINE = MyISAM;";
 
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX tracks_temp_url ON tracks_temp(url);" );
@@ -809,7 +809,7 @@ DatabaseUpdater::createTables() const
     DEBUG_BLOCK
     // see docs/database/amarokTables.svg for documentation about database layout
     {
-        QString c = "CREATE TABLE admin (component " + m_collection->textColumnType() + ", version INTEGER) ENGINE = MyISAM;";
+        QString c = "CREATE TABLE admin (component " + m_collection->textColumnType() + ", version INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( c );
     }
     {
@@ -820,7 +820,7 @@ DatabaseUpdater::createTables() const
                          ",lastmountpoint " + m_collection->textColumnType() +
                          ",uuid " + m_collection->textColumnType() +
                          ",servername " + m_collection->textColumnType(80) +
-                         ",sharename " + m_collection->textColumnType(240) + ") ENGINE = MyISAM;";
+                         ",sharename " + m_collection->textColumnType(240) + ") COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX devices_type ON devices( type );" );
         m_collection->query( "CREATE UNIQUE INDEX devices_uuid ON devices( uuid );" );
@@ -832,7 +832,7 @@ DatabaseUpdater::createTables() const
                          ",deviceid INTEGER"
                          ",rpath " + m_collection->exactIndexableTextColumnType() + " NOT NULL" +
                          ",directory INTEGER"
-                         ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE) ENGINE = MyISAM;";
+                         ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
         m_collection->query( "CREATE INDEX urls_uniqueid ON urls(uniqueid);" );
@@ -842,21 +842,21 @@ DatabaseUpdater::createTables() const
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
                          ",dir " + m_collection->exactTextColumnType() + " NOT NULL" +
-                         ",changedate INTEGER) ENGINE = MyISAM;";
+                         ",changedate INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX directories_deviceid ON directories(deviceid);" );
     }
     {
         QString create = "CREATE TABLE artists "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX artists_name ON artists(name);" );
     }
     {
         QString create = "CREATE TABLE images "
                          "(id " + m_collection->idType() +
-                         ",path " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
+                         ",path " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX images_name ON images(path);" );
     }
@@ -865,7 +865,7 @@ DatabaseUpdater::createTables() const
                     "(id " + m_collection->idType() +
                     ",name " + m_collection->textColumnType() + " NOT NULL"
                     ",artist INTEGER" +
-                    ",image INTEGER) ENGINE = MyISAM;";
+                    ",image INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( c );
         m_collection->query( "CREATE INDEX albums_name ON albums(name);" );
         m_collection->query( "CREATE INDEX albums_artist ON albums(artist);" );
@@ -877,21 +877,21 @@ DatabaseUpdater::createTables() const
     {
         QString create = "CREATE TABLE genres "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX genres_name ON genres(name);" );
     }
     {
         QString create = "CREATE TABLE composers "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX composers_name ON composers(name);" );
     }
     {
         QString create = "CREATE TABLE years "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX years_name ON years(name);" );
     }
@@ -920,7 +920,7 @@ DatabaseUpdater::createTables() const
                     ",albumpeakgain FLOAT" // decibels, relative to albumgain
                     ",trackgain FLOAT"
                     ",trackpeakgain FLOAT" // decibels, relative to trackgain
-                    ") ENGINE = MyISAM;";
+                    ") COLLATE = utf8_bin ENGINE = MyISAM;";
 
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX tracks_url ON tracks(url);" );
@@ -944,7 +944,7 @@ DatabaseUpdater::createTables() const
                     ",rating INTEGER DEFAULT 0"
                     ",playcount INTEGER"
                     ",deleted BOOL DEFAULT " + m_collection->boolFalse() +
-                    ") ENGINE = MyISAM;";
+                    ") COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );
         QStringList indices;
@@ -959,7 +959,7 @@ DatabaseUpdater::createTables() const
         QString q = "CREATE TABLE labels "
                     "(id " + m_collection->idType() +
                     ",label " + m_collection->textColumnType() +
-                    ") ENGINE = MyISAM;";
+                    ") COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( q );
         m_collection->query( "CREATE UNIQUE INDEX labels_label ON labels(label);" );
 
@@ -973,7 +973,7 @@ DatabaseUpdater::createTables() const
                     "asin " + m_collection->textColumnType( 20 ) +
                     ",locale " + m_collection->textColumnType( 2 ) +
                     ",filename " + m_collection->textColumnType( 33 ) +
-                    ",refetchdate INTEGER ) ENGINE = MyISAM;";
+                    ",refetchdate INTEGER ) COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( q );
         m_collection->query( "CREATE INDEX amazon_date ON amazon(refetchdate);" );
     }
@@ -982,7 +982,7 @@ DatabaseUpdater::createTables() const
                     "id " + m_collection->idType() +
                     ",url " + m_collection->exactIndexableTextColumnType() +
                     ",lyrics " + m_collection->longTextColumnType() +
-                    ") ENGINE = MyISAM;";
+                    ") COLLATE = utf8_bin ENGINE = MyISAM;";
         m_collection->query( q );
         m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
     }
@@ -995,7 +995,7 @@ DatabaseUpdater::createTables() const
                             ",lastplayed DATETIME"
                             ",score FLOAT"
                             ",rating INTEGER DEFAULT 0"
-                            ",playcount INTEGER) ENGINE = MyISAM;" );
+                            ",playcount INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;" );
 
         //Below query is invalid!  Fix it, and then put the proper query in an upgrade function!
         m_collection->query( "CREATE UNIQUE INDEX stats_perm_url ON statistics_permanent(url)" );
@@ -1008,7 +1008,7 @@ DatabaseUpdater::createTables() const
                              ",lastplayed DATETIME"
                              ",score FLOAT"
                              ",rating INTEGER DEFAULT 0"
-                             ",playcount INTEGER) ENGINE = MyISAM" );
+                             ",playcount INTEGER) COLLATE = utf8_bin ENGINE = MyISAM" );
 
         //Below query is invalid!  Fix it, and then put the proper query in an upgrade function!
         m_collection->query( "CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)" );
