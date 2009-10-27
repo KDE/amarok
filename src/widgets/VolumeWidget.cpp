@@ -34,6 +34,15 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     : Amarok::ToolBar( parent )
     , EngineObserver( The::engineController() )
 {
+    setIconDimensions( 16 );
+    setToolButtonStyle( Qt::ToolButtonIconOnly );
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    setMovable( false );
+    setFloatable ( false );
+    setContentsMargins( 0, 0, 0, 0 );
+
+    layout()->setSpacing( 0 );
+
     m_icons << KStandardDirs::locate( "data", "amarok/images/volume_icon.png" );
     m_icons << KStandardDirs::locate( "data", "amarok/images/volume_muted_icon.png" );
     m_action = new KAction( KIcon( m_icons[ AmarokConfig::muteState() ] ), i18n( "Mute" ), this );
