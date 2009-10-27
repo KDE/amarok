@@ -68,7 +68,7 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
     bool empty = true;
     foreach( const QVariant &variant, roleVariantMap.values() )
     {
-        qDebug() << variant.typeName() << ": "<< variant;
+        //qDebug() << variant.typeName() << ": "<< variant; //so spammy
         if( !variant.isNull() )
         {
             empty = false;
@@ -103,7 +103,7 @@ QtGroupingProxy::buildTree()
     m_parentCreateList.clear();
 
     int max = m_model->rowCount( m_rootNode );
-    qDebug() << QString("building tree with %1 leafs.").arg( max );
+    //qDebug() << QString("building tree with %1 leafs.").arg( max );
     for( int row = max-1; row >= 0; row-- )
     {
         QModelIndex idx = m_model->index( row, m_groupedColumn, m_rootNode );
@@ -174,7 +174,7 @@ QtGroupingProxy::indexOfParentCreate( const QModelIndex &parent ) const
 QModelIndex
 QtGroupingProxy::index( int row, int column, const QModelIndex& parent ) const
 {
-    ////qDebug() << "index requested for: (" << row << "," << column << "), " << parent;
+    //qDebug() << "index requested for: (" << row << "," << column << "), " << parent;
     if( !hasIndex(row, column, parent) )
         return QModelIndex();
 
@@ -192,17 +192,17 @@ QtGroupingProxy::index( int row, int column, const QModelIndex& parent ) const
 QModelIndex
 QtGroupingProxy::parent( const QModelIndex &index ) const
 {
-    ////qDebug() << "parent: " << index;
+    //qDebug() << "parent: " << index;
     if( !index.isValid() )
         return QModelIndex();
 
     int parentCreateIndex = index.internalId();
-    ////qDebug() << "parentCreateIndex: " << parentCreateIndex;
+    //qDebug() << "parentCreateIndex: " << parentCreateIndex;
     if( parentCreateIndex == -1 || parentCreateIndex >= m_parentCreateList.count() )
         return QModelIndex();
 
     struct ParentCreate pc = m_parentCreateList[parentCreateIndex];
-    ////qDebug() << "parentCreate: (" << pc.parentCreateIndex << "," << pc.row << ")";
+    //qDebug() << "parentCreate: (" << pc.parentCreateIndex << "," << pc.row << ")";
     //only items at column 0 have children
     return createIndex( pc.row, 0, pc.parentCreateIndex );
 }
@@ -275,7 +275,7 @@ QtGroupingProxy::data( const QModelIndex &index, int role ) const
         {
             QModelIndex childIndex = this->index( childRow, column, parentIndex );
             QVariant data = mapToSource( childIndex ).data( role );
-            ////qDebug() << __FUNCTION__ << data << QVariant::typeToName(data.type());
+            //qDebug() << __FUNCTION__ << data << QVariant::typeToName(data.type());
             if( data.isValid() && !variantsOfChildren.contains( data ) )
                 variantsOfChildren << data;
         }
@@ -351,33 +351,33 @@ QtGroupingProxy::isGroup( const QModelIndex &index ) const
 QModelIndex
 QtGroupingProxy::mapToSource( const QModelIndex& index ) const
 {
-    ////qDebug() << "mapToSource: " << index;
+    //qDebug() << "mapToSource: " << index;
     if( !index.isValid() )
         return QModelIndex();
 
     if( isGroup( index ) )
     {
-        ////qDebug() << "is a group: " << index.data( Qt::DisplayRole ).toString();
+        //qDebug() << "is a group: " << index.data( Qt::DisplayRole ).toString();
         return m_rootNode;
     }
 
     QModelIndex proxyParent = index.parent();
-    ////qDebug() << "parent: " << proxyParent;
+    //qDebug() << "parent: " << proxyParent;
     QModelIndex originalParent = mapToSource( proxyParent );
-    ////qDebug() << "originalParent: " << originalParent;
+    //qDebug() << "originalParent: " << originalParent;
     int originalRow = index.row();
     if( originalParent == m_rootNode )
     {
         int indexInGroup = index.row();
         if( !proxyParent.isValid() )
             indexInGroup -= m_groupMaps.count();
-        ////qDebug() << "indexInGroup" << indexInGroup;
+        //qDebug() << "indexInGroup" << indexInGroup;
         QList<int> childRows = m_groupHash.values( proxyParent.row() );
         if( childRows.isEmpty() || indexInGroup >= childRows.count() )
             return QModelIndex();
 
         originalRow = childRows.at( indexInGroup );
-        ////qDebug() << "originalRow: " << originalRow;
+        //qDebug() << "originalRow: " << originalRow;
     }
     return m_model->index( originalRow, index.column(), originalParent );
 }
@@ -568,7 +568,7 @@ QtGroupingProxy::slotRenameGroup()
         QModelIndex index = m_model->index( originalRow, 0, QModelIndex() );
         QStringList groups;
         groups << newName;
-        ////qDebug() << "Applying " << groups << " to " << index;
+        //qDebug() << "Applying " << groups << " to " << index;
     }
     buildTree();
     emit layoutChanged();
@@ -588,6 +588,7 @@ QtGroupingProxy::isAGroupSelected( const QModelIndexList& list ) const
 void
 QtGroupingProxy::dumpGroups()
 {
+    return; //so spammy
     qDebug() << "m_groupHash: ";
     for( int groupIndex = 0; groupIndex < m_groupMaps.count(); groupIndex++ )
         qDebug() << m_groupMaps[groupIndex] << ": " << m_groupHash.values( groupIndex );

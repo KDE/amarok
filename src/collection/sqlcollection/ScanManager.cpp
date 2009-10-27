@@ -119,9 +119,15 @@ ScanManager::startFullScan()
             *m_scanner << "-r";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
         debug() << "GOING TO SCAN:";
-        foreach( const QString &dir, MountPointManager::instance()->collectionFolders() )
-            debug() << "    " << dir;
-        *m_scanner << MountPointManager::instance()->collectionFolders();
+        QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
+        if( collectionFolders.size() > 30 )
+            debug() << "(a *lot*)";
+        else
+        {
+            foreach( const QString &dir, MountPointManager::instance()->collectionFolders() )
+                debug() << "    " << dir;
+        }
+        *m_scanner << collectionFolders;
         m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
         connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
         connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );

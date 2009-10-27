@@ -57,7 +57,7 @@ isPlaylist( const KUrl &path )
 PlaylistFilePtr
 loadPlaylistFile( const KUrl &url )
 {
-    DEBUG_BLOCK
+    //DEBUG_BLOCK
 
     QFile file;
     KUrl fileToLoad;
@@ -73,7 +73,7 @@ loadPlaylistFile( const KUrl &url )
 
     if( url.isLocalFile() )
     {
-        debug() << "local file";
+        //debug() << "local file";
 
         file.setFileName( url.toLocalFile() );
 
@@ -87,7 +87,7 @@ loadPlaylistFile( const KUrl &url )
     }
     else
     {
-        debug() << "remote file: " << url;
+        //debug() << "remote file: " << url;
         //FIXME: for now, just do a blocking download... Someone please come up with a better way...
 
         KTemporaryFile tempFile;

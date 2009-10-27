@@ -53,8 +53,8 @@ M3UPlaylist::M3UPlaylist( const KUrl &url )
     , m_url( url )
     , m_tracksLoaded( false )
 {
-    DEBUG_BLOCK
-    debug() << "url: " << m_url;
+    //DEBUG_BLOCK
+    //debug() << "url: " << m_url;
     m_name = m_url.fileName();
 }
 
