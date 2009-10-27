@@ -58,12 +58,10 @@ class ScanResultProcessor : public QObject
     private:
         void addTrack( const QVariantMap &trackData, int albumArtistId );
 
-        int genericId( const QString &key, const QString &value );
-        int genericInsert( const QString &key, const QString &value );
-        void databaseIdFetch( const QString &artist, const QString &genre, const QString &composer, const QString &year, const QString &album, int albumArtistId, int compilationId, const QString &url, const QString &uid );
+        int genericId( QHash<QString, int> *hash, const QString &value, int *currNum );
         int imageId( const QString &image, int albumId );
-        int albumId( const QString &album, int artistId );
-        int albumInsert( const QString &album, int artistId );
+        int albumId( const QString &album, int albumArtistId );
+        int albumInsert( const QString &album, int albumArtistId );
         int urlId( const QString &url, const QString &uid );
         int directoryId( const QString &dir );
 
@@ -78,15 +76,19 @@ class ScanResultProcessor : public QObject
 
         QString findAlbumArtist( const QSet<QString> &artists, int trackCount ) const;
         void setupDatabase();
+        void populateCacheHashes();
+        void copyHashesToTempTables();
+        void genericCopyHash( const QString &tableName, const QHash<QString, int> *hash, int maxSize );
 
     private:
         SqlCollection *m_collection;
         bool m_setupComplete;
 
-        QMap<QString, int> m_artists;
-        QMap<QString, int> m_genres;
-        QMap<QString, int> m_years;
-        QMap<QString, int> m_composers;
+        QHash<QString, int> m_artists;
+        QHash<QString, int> m_genres;
+        QHash<QString, int> m_years;
+        QHash<QString, int> m_composers;
+        QHash<QString, int> m_imagesFlat;
         QMap<QPair<QString, int>, int> m_albums;
         QMap<QPair<QString, int>, int> m_images;
         QMap<QString, int> m_directories;
@@ -103,7 +105,25 @@ class ScanResultProcessor : public QObject
         QMap<QString, QString> m_permanentTablesUrlUpdates;
         QMap<QString, QString> m_permanentTablesUidUpdates;
 
-        QStringList m_currUrlIdValues;
+        int m_nextUrlNum;
+        QHash<QString, QStringList*> m_urlsHashByUid;
+        QHash<QPair<int, QString>, QStringList*> m_urlsHashByLocation;
+        QHash<int, QStringList*> m_urlsHashById;
+
+        int m_nextAlbumNum;
+        QHash<QString, QLinkedList<QStringList*> *> m_albumsHashByName;
+        QHash<int, QStringList*> m_albumsHashById;
+
+        int m_nextTrackNum;
+        QHash<int, QStringList*> m_tracksHashById;
+        QHash<int, QStringList*> m_tracksHashByUrl;
+        QHash<int, QLinkedList<QStringList*> *> m_tracksHashByAlbum;
+
+        int m_nextArtistNum;
+        int m_nextComposerNum;
+        int m_nextGenreNum;
+        int m_nextImageNum;
+        int m_nextYearNum;
 };
 
 #endif

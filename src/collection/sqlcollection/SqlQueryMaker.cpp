@@ -1151,6 +1151,9 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
             ret += '%';
         ret += '\'';
 
+        //Case insensitive collation for queries
+        ret += " COLLATE utf8_unicode_ci ";
+
         //Use / as the escape character
         ret += " ESCAPE '/' ";
 

@@ -44,6 +44,8 @@ VERSION 2.2.1
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * Removal of most SQL during scan result parsing means enormous speedups
+      during collection scanning. (BR 210201)
     * Usability improvements for the Videoclip applet.
     * Restore the proper custom bias when switching between saved biases (BR 209350).
     * Don't crash when receiving bogus data from Last.Fm when asking for

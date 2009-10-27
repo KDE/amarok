@@ -77,7 +77,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
     server_options[6] = const_cast<char*>( "--skip-grant-tables" );
     server_options[7] = const_cast<char*>( "--myisam-recover=FORCE" );
     server_options[8] = const_cast<char*>( "--character-set-server=utf8" );
-    server_options[9] = const_cast<char*>( "--collation-server=utf8_unicode_ci" );
+    server_options[9] = const_cast<char*>( "--collation-server=utf8_bin" );
     server_options[num_elements] = 0;
 
     char **server_groups = new char* [ 3 ];
@@ -118,16 +118,7 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
     }
     else
     {
-
-        if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
-            reportError( "SET NAMES 'utf8' died" );
-        if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" ).toUtf8() ) )
-            reportError( "Could not create amarok database" );
-        if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS mysql" ).toUtf8() ) )
-            reportError( "Could not create mysql database" );
-        if( mysql_query( m_db, QString( "USE amarok" ).toUtf8() ) )
-            reportError( "Could not select database" );
-
+        sharedInit( "amarok" );
         debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
     }
 

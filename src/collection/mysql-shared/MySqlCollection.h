@@ -37,7 +37,7 @@ class MySqlCollection: public SqlCollection
         virtual ~MySqlCollection();
 
         virtual QStringList query( const QString &query );
-        virtual int insert( const QString &statement, const QString &table );
+        virtual int insert( const QString &statement, const QString &table = QString() );
 
         virtual QString escape( QString text ) const;
         virtual QString randomFunc() const;
@@ -48,6 +48,7 @@ class MySqlCollection: public SqlCollection
         void reportError( const QString& message );
 
         void initThreadInitializer();
+        void sharedInit( const QString &databaseName );
 
         MYSQL* m_db;
         QMutex m_mutex;
