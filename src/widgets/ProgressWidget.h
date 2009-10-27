@@ -41,6 +41,8 @@ class ProgressWidget : public QWidget, public EngineObserver
         void addBookmark( const QString &name, int milliSeconds );
         void redrawBookmarks();
 
+       Amarok::TimeSlider* slider() const { return m_slider; }
+
     public slots:
         void drawTimeDisplay( int position );
 

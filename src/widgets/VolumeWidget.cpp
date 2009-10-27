@@ -34,6 +34,15 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     : Amarok::ToolBar( parent )
     , EngineObserver( The::engineController() )
 {
+    setIconDimensions( 16 );
+    setToolButtonStyle( Qt::ToolButtonIconOnly );
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+    setMovable( false );
+    setFloatable ( false );
+    setContentsMargins( 0, 0, 0, 0 );
+
+    layout()->setSpacing( 0 );
+
     m_icons << KStandardDirs::locate( "data", "amarok/images/volume_icon.png" );
     m_icons << KStandardDirs::locate( "data", "amarok/images/volume_muted_icon.png" );
     m_action = new KAction( KIcon( m_icons[ AmarokConfig::muteState() ] ), i18n( "Mute" ), this );
@@ -44,14 +53,8 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_slider->setToolTip( i18n( "Volume Control" ) );
     m_slider->setMaximumSize( 600000, 20 );
 
-    m_label = new QLabel( /*QString::number( AmarokConfig::masterVolume() ) + '%' + ' ',*/ this );
-    m_label->setFixedWidth( 60 ); // align correctly with the progress bar
-    m_label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-    m_label->setFont( KGlobalSettings::fixedFont() );
-
     addAction( m_action );
     addWidget( m_slider );
-    addWidget( m_label );
 
     EngineController* const ec = The::engineController();
 
@@ -75,11 +78,6 @@ VolumeWidget::engineVolumeChanged( int value )
 {
     if( value != m_slider->value() )
         m_slider->setValue( value );
-
-// Disabled text label to improve looks (it's not really needed). Remove whole label eventually.
-#if 0
-    m_label->setText( QString::number( value ) + '%' + ' ' ); // align correctly with the progress bar
-#endif
 }
 
 void

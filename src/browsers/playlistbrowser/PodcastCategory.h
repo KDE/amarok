@@ -92,7 +92,6 @@ class PodcastView : public Amarok::PrettyTreeView
         ~PodcastView();
 
     protected:
-        void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
         void startDrag( Qt::DropActions supportedActions );
@@ -104,7 +103,6 @@ class PodcastView : public Amarok::PrettyTreeView
 
         PopupDropper* m_pd;
 
-        QPoint m_dragStartPosition;
         bool m_ongoingDrag;
         QMutex m_dragMutex;
 };

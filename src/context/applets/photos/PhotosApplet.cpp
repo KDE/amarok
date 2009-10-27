@@ -200,6 +200,7 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     // if we get a message, show it
     if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
     {
+        //FIXME: This should use i18n( "blah %1 blah", foo ). 
         m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + i18n( "Fetching ..." ) );
         updateConstraints();
         update();
@@ -219,6 +220,7 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     }
     else if ( data.contains( "message" ) )
     {
+        //FIXME: This should use i18n( "blah %1 blah", foo ). 
         m_headerText->setText( i18n( "Photos" ) + " : " + data[ "message" ].toString() );
         updateConstraints();
         update();
@@ -233,6 +235,7 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         // this also prevent the stupid effect of reanimating several time.
         if ( isAppletExtended() )
         {
+            //FIXME: This should use i18n( "blah %1 blah", foo ). 
             m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + data[ "artist" ].toString() );
             updateConstraints();
             update();
