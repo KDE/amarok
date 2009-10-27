@@ -102,7 +102,7 @@ SqlUserPlaylistProvider::slotRemove()
         return;
 
     PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
-    foreach( Meta::PlaylistPtr playlist, playlistMap.keys() )
+    foreach( Meta::PlaylistPtr playlist, playlistMap.uniqueKeys() )
         foreach( Meta::TrackPtr track, playlistMap.values( playlist ) )
             playlist->removeTrack( playlist->tracks().indexOf( track ) );
 
@@ -156,9 +156,16 @@ SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackInde
         connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
     }
     //Add the playlist/track combination to a QMultiMap that is stored in the action.
-    //In the slot we use this data and use it to remove that track.
+    //In the slot we use this data to remove that track from the playlist.
     PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();
-    playlistMap.insert( playlist, playlist->tracks()[trackIndex] );
+    Meta::TrackPtr track = playlist->tracks()[trackIndex];
+    //only add action to map if playlist/track combo is not in there yet.
+    if( !playlistMap.keys().contains( playlist ) ||
+           !playlistMap.values( playlist ).contains( track )
+      )
+    {
+        playlistMap.insert( playlist, track );
+    }
     m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
 
     actions << m_removeTrackAction;
