@@ -900,6 +900,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                         connect( m_organizeAction, SIGNAL( triggered() ), this, SLOT( slotOrganize() ) );
                     }
                     actions.append( m_organizeAction );
+                    m_organizeAction->setVisible( false );  //Disabled Organize Collection until we figure out the data loss issues.
                 }
             }
             delete location;
