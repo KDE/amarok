@@ -40,7 +40,6 @@
 MainToolbar::MainToolbar( QWidget * parent )
     : QToolBar( i18n( "Main Toolbar" ), parent )
     , EngineObserver( The::engineController() )
-    , m_ignoreCache( false )
 {
     setObjectName( "Main Toolbar" );
 
@@ -188,9 +187,3 @@ MainToolbar::eventFilter( QObject* object, QEvent* event )
     return QToolBar::eventFilter( object, event );
 }
 
-void
-MainToolbar::reRender()
-{
-    m_ignoreCache = true;
-    update();
-}

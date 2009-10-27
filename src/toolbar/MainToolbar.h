@@ -45,8 +45,6 @@ public:
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
 
-    void reRender();
-
 protected:
       virtual void resizeEvent( QResizeEvent * event );
       void handleAddActions();
@@ -59,8 +57,6 @@ private:
     VolumeWidget       *m_volumeWidget;
     MainControlsWidget *m_mainControlsWidget;
     ProgressWidget     *m_progressWidget;
-
-    bool m_ignoreCache;
 
     SmartPointerList<QAction> m_additionalActions;
 };
