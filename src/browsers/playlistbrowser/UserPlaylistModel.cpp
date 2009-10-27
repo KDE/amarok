@@ -542,9 +542,16 @@ PlaylistBrowserNS::UserModel::actionsFor( const QModelIndexList &indices )
     {
         foreach( const QModelIndex &idx, indices )
         {
-            actions << The::playlistManager()->trackActions(
+            QList<QAction *> trackActions = The::playlistManager()->trackActions(
                                         m_playlists.value( idx.parent().internalId() ),
-                                        idx.row() );
+                                        idx.row()
+                                    );
+            //only unique actions in the list.
+            foreach( QAction *action, trackActions )
+            {
+                if( !actions.contains( action ) )
+                    actions << action;
+            }
         }
     }
 
@@ -604,6 +611,7 @@ PlaylistBrowserNS::UserModel::createWriteActions( QModelIndexList indices )
 
     if ( m_renameAction == 0 )
     {
+        //FIXME: add ellipsis ("...") since this action opens a dialog
         m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
         m_renameAction->setProperty( "pud_svg_id", "edit" );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
