@@ -343,7 +343,7 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
     {
         QModelIndexList indices;
         indices << index;
-        m_podcastModel->loadItems( indices, Playlist::Append );
+        m_podcastModel->loadItems( indices, Playlist::AppendAndPlay );
         event->accept();
     }
 
