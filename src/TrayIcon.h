@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>                         *
  * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                                 *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -33,7 +34,7 @@ class App;
 
 namespace Amarok {
 
-class TrayIcon : public KSystemTrayIcon, public EngineObserver
+class TrayIcon : public KSystemTrayIcon, public EngineObserver, public Meta::Observer
 {
     Q_OBJECT
 
@@ -47,10 +48,13 @@ protected:
     // reimplemented from engineobserver
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewTrackPlaying();
-    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineTrackPositionChanged( qint64 position, bool /*userSeek*/ );
     virtual void engineVolumeChanged( int percent );
     virtual void engineMuteStateChanged( bool mute );
+
+    //Reimplemented from Meta::Observer
+    using Observer::metadataChanged;
+    virtual void metadataChanged( Meta::TrackPtr track );
 
     // get notified of 'highlight' color change
     virtual void paletteChange( const QPalette & oldPalette );

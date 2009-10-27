@@ -4,6 +4,7 @@
  * Copyright (c) 2004 Enrico Ros <eros.kde@email.it>                                    *
  * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                                        *
  * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                                 *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -260,11 +261,15 @@ Amarok::TrayIcon::event( QEvent *e )
 void
 Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+
     switch( state )
     {
         case Phonon::PlayingState:
-            m_track = The::engineController()->currentTrack();
+            unsubscribeFrom( m_track );
+            m_track = track;
             m_trackLength = m_track ? m_track->length() : 0;
+            subscribeTo( track );
 
             paintIcon( 0 );
             setupMenu();
@@ -304,10 +309,9 @@ Amarok::TrayIcon::engineNewTrackPlaying()
 }
 
 void
-Amarok::TrayIcon::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+Amarok::TrayIcon::metadataChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( trackChanged )
-    Q_UNUSED( &newMetaData );
+    Q_UNUSED( track )
 
     setupToolTip();
     setupMenu();
