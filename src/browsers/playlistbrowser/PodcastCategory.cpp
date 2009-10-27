@@ -315,21 +315,10 @@ PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     , m_pd( 0 )
     , m_ongoingDrag( false )
     , m_dragMutex()
-{
-}
+{}
 
 PodcastView::~PodcastView()
-{
-}
-
-void
-PodcastView::mousePressEvent( QMouseEvent * event )
-{
-    if( event->button() == Qt::LeftButton )
-        m_dragStartPosition = event->pos();
-
-    Amarok::PrettyTreeView::mousePressEvent( event );
-}
+{}
 
 void
 PodcastView::mouseReleaseEvent( QMouseEvent * event )
@@ -341,6 +330,8 @@ PodcastView::mouseReleaseEvent( QMouseEvent * event )
     }
     m_pd = 0;
     event->accept();
+
+    Amarok::PrettyTreeView::mouseReleaseEvent( event );
 }
 
 void
@@ -353,21 +344,16 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
         QModelIndexList indices;
         indices << index;
         m_podcastModel->loadItems( indices, Playlist::Append );
+        event->accept();
     }
+
+    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void
 PodcastView::startDrag( Qt::DropActions supportedActions )
 {
     DEBUG_BLOCK
-
-    //don't continue drag when not started over a selected item.
-    if( !visualRegionForSelection( selectionModel()->selection() ).contains(
-            m_dragStartPosition )
-      )
-    {
-        return;
-    }
 
     // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
     m_dragMutex.lock();
