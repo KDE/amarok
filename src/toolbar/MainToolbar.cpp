@@ -154,11 +154,10 @@ MainToolbar::resizeEvent( QResizeEvent *event )
 
     m_mainControlsWidget->move( middle - ( controlWidth / 2 ), 3 );
 
-    m_progressWidget->resize( mywidth - 200, m_progressWidget->minimumHeight() );
+    m_progressWidget->resize( mywidth - 10, m_progressWidget->minimumHeight() );
     m_progressWidget->move( middle - m_progressWidget->width() / 2, 52 );
 
-    const int volumeX = middle + m_progressWidget->slider()->width() / 2 - m_volumeWidget->width();
-    m_volumeWidget->move( volumeX, 11 );
+    m_volumeWidget->move( mywidth - 175, 11 );
 
     centerAddActions();
 }
