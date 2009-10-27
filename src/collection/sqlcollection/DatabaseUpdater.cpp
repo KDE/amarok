@@ -736,6 +736,18 @@ DatabaseUpdater::cleanupDatabase()
 }
 
 void
+DatabaseUpdater::checkTables( bool full )
+{
+    DEBUG_BLOCK
+    QStringList res = m_collection->query( "SHOW TABLES" );
+    if( res.count() > 0 )
+    {
+        foreach( QString table, res )
+            m_collection->query( "CHECK TABLE " + table + ( full ? " EXTENDED;" : " MEDIUM;" ) );
+    }
+}
+
+void
 DatabaseUpdater::copyToPermanentTables()
 {
     DEBUG_BLOCK

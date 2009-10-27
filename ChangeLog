@@ -44,6 +44,8 @@ VERSION 2.2.1
       dialog. (BR 136232, BR 187542)
 
   CHANGES:
+    * Database now does consistency checks on a semi-regular basis, with full
+      checks upon full rescans.
     * Removal of most SQL during scan result parsing means enormous speedups
       during collection scanning. (BR 210201)
     * Usability improvements for the Videoclip applet.

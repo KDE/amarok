@@ -64,6 +64,7 @@ class ScanManager : public QObject
         QStringList getDirsToScan();
         void handleRestart();
         void cleanTables();
+        void checkTables( bool full = true );
         void stopParser();
         void writeBatchIncrementalInfoFile();
         bool readBatchFile( QString fileLocation );

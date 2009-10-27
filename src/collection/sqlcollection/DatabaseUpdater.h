@@ -53,6 +53,7 @@ public:
     void removeFilesInDirFromTemporaryTables( int deviceid, const QString &rdir );
 
     void cleanupDatabase();
+    void checkTables( bool full = true );
 
     void writeCSVFile( const QString &table, const QString &filename, bool forceDebug = false );
 

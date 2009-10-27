@@ -451,9 +451,6 @@
     </entry>
 </group>
 
-<group name="MySQLe">
-</group>
-
 <group name="Scrobbler">
     <entry key="SubmitPlayedSongs" type="Bool">
         <label>Submit played songs</label>
@@ -584,6 +581,10 @@
     <entry key="Password" type="String">
         <label>Password for the external database user.</label>
         <default></default>
+    </entry>
+    <entry key="CheckCount" type="Int">
+        <label>Keeps a running count to know when run a CHECK.</label>
+        <default>0</default>
     </entry>
 </group>
 

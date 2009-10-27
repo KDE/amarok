@@ -94,6 +94,8 @@ ScanManager::startFullScan()
         debug() << "scanning currently blocked";
         return;
     }
+
+    checkTables( true );
     cleanTables();
 
     if( m_parser )
@@ -141,6 +143,8 @@ void ScanManager::startIncrementalScan()
         debug() << "scanning currently blocked";
         return;
     }
+
+    checkTables( false );
 
     QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchincrementalscan.xml" );
     bool batchfileExists = QFile::exists( batchfileLocation );
@@ -531,6 +535,36 @@ ScanManager::cleanTables()
     m_collection->query( "DELETE FROM albums;" );
     m_collection->query( "DELETE FROM artists;" );
     //images table is deleted in DatabaseUpdater::copyToPermanentTables
+}
+
+void
+ScanManager::checkTables( bool full )
+{
+    DEBUG_BLOCK
+
+    int checkCount = 0; //0 is the default in amarokrc
+    if( !full )
+    {
+        checkCount = Amarok::config( "MySQL" ).readEntry( "CheckCount" ).toInt();
+        if( checkCount != 0 //always run a full one if you don't know the status
+            && checkCount < 30 ) //every 30 mins seems like a good amount
+        {
+            checkCount++;
+            Amarok::config( "MySQL" ).writeEntry( "CheckCount", QString::number( checkCount ) );
+            return;
+        }
+    }
+
+    DatabaseUpdater *dbUpdater = m_collection->dbUpdater();
+    if( !dbUpdater )
+    {
+        debug() << "WOAH, why is there no DB updater?";
+        return;
+    }
+    
+    dbUpdater->checkTables( checkCount == 0 );
+
+    Amarok::config( "MySQL" ).writeEntry( "CheckCount", 1 );
 }
 
 void
