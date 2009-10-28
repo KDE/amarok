@@ -370,7 +370,12 @@ SqlUserPlaylistProvider::checkTables()
     DEBUG_BLOCK
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
+    QStringList values;
+
+    //Prevents amarok from crashing on bad DB
+    if ( sqlStorage )
+            values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
+    
     if( values.isEmpty() )
     {
         //debug() << "creating Playlist Tables";
