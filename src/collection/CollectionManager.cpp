@@ -406,7 +406,7 @@ CollectionManager::trackForUrl( const KUrl &url )
         }
     }
 
-    if( url.protocol() == "http" || url.protocol() == "mms" )
+    if( url.protocol() == "http" || url.protocol() == "mms" || url.protocol() == "smb" )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
     if( url.protocol() == "file" && EngineController::canDecode( url ) )
