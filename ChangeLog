@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * The SMB (Samba) protocol is now supported in the playlist. Patch by 
+      Steven van der Vegt <s.vandervegt@student.utwente.nl>. (BR 178691)
     * Podcasts have better indication of status with emblem icons.
       (BR 209433)
     * The information from the podcast feed can be written to the downloaded
