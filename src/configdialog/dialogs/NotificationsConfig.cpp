@@ -37,7 +37,7 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
     #ifdef Q_WS_MAC
         QCheckBox* growl = new QCheckBox( i18n( "Use Growl for notifications" ), this );
         growl->setChecked( AmarokConfig::growlEnabled() );
-        gridLayout_2->addWidget( growl, 2, 0, 1, 1 );
+        gridLayout_5->addWidget( growl, 2, 0, 1, 1 );
         connect( growl,         SIGNAL( toggled( bool ) ),
                  this,                      SLOT( setGrowlEnabled( bool ) ) );
     #endif

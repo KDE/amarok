@@ -374,25 +374,23 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     QFileInfo file( path );
 
     QDir dir = file.dir();
-    dir.setFilter( QDir::Files | QDir::Readable | QDir::CaseSensitive );
-
-    QStringList filters;
-    filters << "*.[mM][pP]3" << "*.[oO][gG][gG]" << "*.[oO][gG][aA]" << "*.[fF][lL][aA][cC]" << "*.[wW][mM][aA]" << "*.[mM]4[aAbB]";
-    dir.setNameFilters( filters );
 
     //do not check existing albums if there is more than one file in the directory
     //see comments in checkExistingAlbums
 
-    //TODO: find a better way to ignore non-audio files than the extension matching above
+    //TODO: find a better way to ignore non-audio files than the extension matching below
     if( !m_filesInDirs.contains( dir.absolutePath() ) )
     {
+        dir.setFilter( QDir::Files | QDir::Readable | QDir::CaseSensitive );
+        QStringList filters;
+        filters << "*.[mM][pP]3" << "*.[oO][gG][gG]" << "*.[oO][gG][aA]" << "*.[fF][lL][aA][cC]" << "*.[wW][mM][aA]" << "*.[mM]4[aAbB]";
+        dir.setNameFilters( filters );
         m_filesInDirs.insert( dir.absolutePath(), dir.count() );
     }
 
-    if( dir.count() == 1 )
+    if( m_filesInDirs.value( dir.absolutePath() ) == 1 )
     {
         album = checkExistingAlbums( albumName );
-        //debug() << "album was set to checkExistingAlbums and got " << album;
     }
 
     QString uid = trackData.value( Field::UNIQUEID ).toString();

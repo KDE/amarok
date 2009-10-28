@@ -21,7 +21,6 @@
 #include "Debug.h"
 
 #include "Collection.h"
-#include "EngineController.h"
 #include "MetaQueryMaker.h"
 #include "meta/file/File.h"
 #include "meta/cue/Cue.h"
@@ -39,7 +38,6 @@
 #include <KBuildSycocaProgressDialog>
 #include <KGlobal>
 #include <KMessageBox>
-#include <KRun>
 #include <KService>
 
 #include <cstdlib>
