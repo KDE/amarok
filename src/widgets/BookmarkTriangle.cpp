@@ -75,7 +75,7 @@ void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
         QMenu menu;
         QAction* deleteAction = menu.addAction( i18n( "Remove Bookmark" ) );
         connect( deleteAction, SIGNAL( triggered() ), this, SLOT( deleteBookmark() ) );
-        menu.exec( mapToGlobal( pos() ) );
+        menu.exec( mapToGlobal( event->pos() ) );
 
         event->accept();
         return;
