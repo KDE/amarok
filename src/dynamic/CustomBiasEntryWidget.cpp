@@ -64,23 +64,23 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
     sliderLayout->addWidget( m_weightSelection );
     sliderLayout->addWidget( m_weightLabel );
 
-    int curEntry;
-    for( int i = 0; i <  m_cbias->currentFactories().size(); i++)
+    int currentEntry = 0;
+    for( int i = 0; i <  m_cbias->currentFactories().size(); i++ )
     {
         Dynamic::CustomBiasFactory* entry = m_cbias->currentFactories().at( i );
         QVariant data;
         data.setValue( entry );
         m_fieldSelection->addItem( entry->name(), data );
-        if( entry->pluginName() == m_cbias->currentEntry()->pluginName() )
-            curEntry = i;
+        if( m_cbias->currentEntry() )
+            if( entry->pluginName() == m_cbias->currentEntry()->pluginName() )
+                currentEntry = i;
        
     }
     
     connect( m_cbias, SIGNAL( biasFactoriesChanged() ), this, SLOT( reloadBiases() ) );
+    connect( m_fieldSelection, SIGNAL( activated( int ) ), this, SLOT( selectionChanged( int ) ) );
 
-    connect( m_fieldSelection, SIGNAL( activated( int ) ),
-            this, SLOT( selectionChanged( int ) ) );
-    m_fieldSelection->setCurrentIndex( curEntry );
+    m_fieldSelection->setCurrentIndex( currentEntry );
     m_weightSelection->setValue( m_cbias->weight() * 100 );
     weightChanged( m_cbias->weight() * 100 );
     selectionChanged( 0 );
