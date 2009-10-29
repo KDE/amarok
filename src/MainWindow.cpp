@@ -1082,7 +1082,6 @@ MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState )
         break;
 
     default:
-        metadataChanged( m_currentTrack );
         break;
     }
 }
