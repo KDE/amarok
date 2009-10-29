@@ -351,7 +351,7 @@ void Amarok::TimeSlider::sliderChange( SliderChange change )
     QRect knob = The::svgHandler()->sliderKnobRect( rect(), percent );
     m_knobX = knob.x();
     if (oldKnobX < m_knobX)
-        update( oldKnobX, knob.y(), knob.right()-oldKnobX, knob.height() );
+        update( oldKnobX, knob.y(), knob.right()-oldKnobX + 1, knob.height() );
     else if (oldKnobX > m_knobX)
         update( m_knobX, knob.y(), oldKnobX + knob.width(), knob.height() );
 }
