@@ -26,6 +26,7 @@
 #include <QGraphicsScene>
 #include <QtSvg/QSvgRenderer>
 #include <QAction>
+#include <QMenu>
 #include <QPalette>
 #include <QTimeLine>
 #include <QWidget>
@@ -399,6 +400,12 @@ void PopupDropper::activateSubmenu()
         addItem( item, false, false );
     oldd->view->deactivateHover();
     show();
+}
+
+bool PopupDropper::addMenu( const QMenu *menu )
+{
+    Q_UNUSED(menu)
+    return true;
 }
 
 bool PopupDropper::standalone() const
@@ -866,6 +873,28 @@ void PopupDropper::addItem( PopupDropperItem *item, bool useSharedRenderer, bool
     d->reposItems();
     pItem->setPopupDropper( this );
     d->scene->addItem( pItem );
+}
+
+QList<PopupDropperItem*> PopupDropper::items() const
+{
+    QList<PopupDropperItem*> list;
+    foreach( PopupDropperItem *item, d->pdiItems )
+        list.append( item );
+
+    return list;
+}
+
+QList<PopupDropperItem*> PopupDropper::submenuItems( const PopupDropperItem *item ) const
+{
+    QList<PopupDropperItem*> list;
+    if( !item || !item->submenuTrigger() || !d->submenuMap.contains( item->action() ) )
+        return list;
+
+    PopupDropperPrivate *pdp = d->submenuMap[item->action()];
+    foreach( PopupDropperItem *pdi, pdp->pdiItems )
+        list.append( pdi );
+
+    return list;
 }
 
 void PopupDropper::addSeparator( PopupDropperItem* separator )
