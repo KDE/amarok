@@ -1062,39 +1062,43 @@ MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState )
     Q_UNUSED( oldState )
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    //track is 0 if the engine state is Empty. we check that in the switch
+
     switch( state )
     {
     case Phonon::StoppedState:
+        m_currentTrack = 0;
         setPlainCaption( i18n( AMAROK_CAPTION ) );
         break;
 
     case Phonon::PlayingState:
-        if( track ) {
-            unsubscribeFrom( m_currentTrack );
-            m_currentTrack = track;
-            subscribeTo( track );
-            metadataChanged( track );
-        }
-        else
-            warning() << "currentTrack is 0. Can't subscribe to it!";
+        unsubscribeFrom( m_currentTrack );
+        m_currentTrack = track;
+        subscribeTo( track );
+        metadataChanged( track );
         break;
 
     case Phonon::PausedState:
         setPlainCaption( i18n( "Paused  ::  %1", QString( AMAROK_CAPTION ) ) );
         break;
 
-    case Phonon::LoadingState:
-    case Phonon::ErrorState:
-    case Phonon::BufferingState:
+    default:
+        metadataChanged( m_currentTrack );
         break;
     }
 }
 
 void
+MainWindow::engineNewTrackPlaying()
+{
+    m_currentTrack = The::engineController()->currentTrack();
+    metadataChanged( m_currentTrack );
+}
+
+void
 MainWindow::metadataChanged( Meta::TrackPtr track )
 {
-    setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
+    if( track )
+        setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
 }
 
 CollectionWidget *
