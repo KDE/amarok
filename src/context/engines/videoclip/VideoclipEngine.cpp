@@ -269,7 +269,7 @@ void VideoclipEngine::resultYoutube( KJob* job )
     }
     m_nbYoutube += xmlNodeList.length();
     // Check how many clip we've find and send message if all the job are finished but no clip were find
-    debug() << "Youtube fetch : " << m_nbYoutube << " songs ";
+    //debug() << "Youtube fetch : " << m_nbYoutube << " songs ";
 
     m_jobYoutube = 0;
     resultFinalize();
@@ -339,9 +339,9 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
         {
             page = page.mid( page.indexOf( regex3 ) + regex3.size() + 1 );
             t = page.mid( 0, page.indexOf( "\"" ) );
-            debug()<<" T " <<t;
+            //debug()<<" T " <<t;
         }
-        debug() << page ;
+        //debug() << page ;
         if ( !t.isEmpty() && !sk.isEmpty() )
         {
             vidlink = jobUrl + "&sk=" + sk + "&t=" + t ;
@@ -432,7 +432,7 @@ void VideoclipEngine::resultDailymotion( KJob* job )
     }
 
     // Check how many clip we've find and send message if all the job are finished but no clip were find
-    debug() << "Dailymotion fetch : " << m_nbDailymotion << " songs ";
+    //debug() << "Dailymotion fetch : " << m_nbDailymotion << " songs ";
 
     m_jobDailymotion = 0;
     resultFinalize();
@@ -469,7 +469,7 @@ void VideoclipEngine::resultVimeo( KJob* job )
         m_listJob << vimeoBis;
         connect( jobVimeo, SIGNAL( result( KJob* ) ), SLOT( resultVimeoBis( KJob* ) ) );
     }
-    debug() << "Vimeo fetch : " << m_nbVimeo << " songs ";
+    //debug() << "Vimeo fetch : " << m_nbVimeo << " songs ";
     m_jobVimeo = 0;
     resultFinalize();
 }
