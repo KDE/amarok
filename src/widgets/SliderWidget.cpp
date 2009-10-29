@@ -338,22 +338,23 @@ void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
 }
 
 void Amarok::TimeSlider::sliderChange( SliderChange change )
-{
-    if ( change != QAbstractSlider::SliderValueChange )
+{  
+    if ( change == SliderValueChange || change == SliderRangeChange )
     {
-        Amarok::Slider::sliderChange( change ); // update()
-        return;
+        int oldKnobX = m_knobX;
+        qreal percent = 0.0;
+        if ( maximum() > minimum() )
+            percent = ((qreal)value()) / ( maximum() - minimum() );
+        QRect knob = The::svgHandler()->sliderKnobRect( rect(), percent );
+        m_knobX = knob.x();
+
+        if (oldKnobX < m_knobX)
+            update( oldKnobX, knob.y(), knob.right() + 1 - oldKnobX, knob.height() );
+        else if (oldKnobX > m_knobX)
+            update( m_knobX, knob.y(), oldKnobX + knob.width(), knob.height() );
     }
-    int oldKnobX = m_knobX;
-    qreal percent = 0.0;
-    if ( maximum() > minimum() )
-        percent = ((qreal)value()) / ( maximum() - minimum() );
-    QRect knob = The::svgHandler()->sliderKnobRect( rect(), percent );
-    m_knobX = knob.x();
-    if (oldKnobX < m_knobX)
-        update( oldKnobX, knob.y(), knob.right() + 1 - oldKnobX, knob.height() );
-    else if (oldKnobX > m_knobX)
-        update( m_knobX, knob.y(), oldKnobX + knob.width(), knob.height() );
+    else
+        Amarok::Slider::sliderChange( change ); // calls update()
 }
 
 void Amarok::TimeSlider::drawTriangle( const QString &name, int milliSeconds )
