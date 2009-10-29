@@ -41,8 +41,6 @@
 #include <QFontMetrics>
 #include <QMenu>
 #include <QPainter>
-#include <QStyle>
-#include <QStyleOptionComplex>
 
 
 Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
@@ -113,21 +111,22 @@ Amarok::Slider::mouseMoveEvent( QMouseEvent *e )
 void
 Amarok::Slider::slideEvent( QMouseEvent *e )
 {
-    QStyleOptionComplex complex;
-    QRect rect = style()->subControlRect( QStyle::CC_Slider, &complex , QStyle::SC_SliderHandle, this );
+    QRect knob;
+    if ( maximum() > minimum() )
+        knob = The::svgHandler()->sliderKnobRect( rect(), ((qreal)value()) / ( maximum() - minimum() ) );
 
     int position;
     int span;
 
     if( orientation() == Qt::Horizontal )
     {
-        position = e->pos().x() - rect.width() / 2;
-        span = width() - rect.width();
+        position = e->pos().x() - knob.width() / 2;
+        span = width() - knob.width();
     }
     else
     {
-        position = e->pos().y() - rect.height() / 2;
-        span = height() - rect.height();
+        position = e->pos().y() - knob.height() / 2;
+        span = height() - knob.height();
     }
 
     const int val = QStyle::sliderValueFromPosition( minimum(), maximum(), position, span );
@@ -137,12 +136,13 @@ Amarok::Slider::slideEvent( QMouseEvent *e )
 void
 Amarok::Slider::mousePressEvent( QMouseEvent *e )
 {
-    QStyleOptionComplex complex;
-    QRect rect  = style()->subControlRect( QStyle::CC_Slider, &complex , QStyle::SC_SliderHandle, this );
     m_sliding   = true;
     m_prevValue = QSlider::value();
 
-    if ( !rect.contains( e->pos() ) )
+    QRect knob;
+    if ( maximum() > minimum() )
+        knob = The::svgHandler()->sliderKnobRect( rect(), ((qreal)value()) / ( maximum() - minimum() ) );
+    if ( !knob.contains( e->pos() ) )
         mouseMoveEvent( e );
 }
 
@@ -222,8 +222,10 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
 
 void Amarok::Slider::paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
 {
-    qreal percentage =  ( ( (double) value() - (double) minimum()) / (maximum() - minimum() ) );
-    The::svgHandler()->paintCustomSlider( p,x, y, width, height, percentage, underMouse() );
+    qreal percent = 0.0;
+    if ( maximum() > minimum() )
+        percent = ((qreal)value()) / ( maximum() - minimum() );
+    The::svgHandler()->paintCustomSlider( p, x, y, width, height, percent, underMouse() );
 
 }
 
@@ -292,6 +294,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
     paintCustomSliderNG( &p, 0, 2, width(), height() );
+    p.end();
 }
 
 void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
@@ -316,22 +319,41 @@ void
 Amarok::TimeSlider::setSliderValue( int value )
 {
     Amarok::Slider::setValue( value );
-    m_knobX = QStyle::sliderPositionFromValue( minimum(), maximum(), value, width() );
-    update();
 }
 
 void
-Amarok::TimeSlider::paintEvent( QPaintEvent * )
+Amarok::TimeSlider::paintEvent( QPaintEvent *pe )
 {
     QPainter p( this );
     //paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
+    p.setClipRegion(pe->region());
     paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX );
+    p.end();
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
 {
     Amarok::Slider::resizeEvent( event );
-   The::amarokUrlHandler()->updateTimecodes();
+    The::amarokUrlHandler()->updateTimecodes();
+}
+
+void Amarok::TimeSlider::sliderChange( SliderChange change )
+{
+    if ( change != QAbstractSlider::SliderValueChange )
+    {
+        Amarok::Slider::sliderChange( change ); // update()
+        return;
+    }
+    int oldKnobX = m_knobX;
+    qreal percent = 0.0;
+    if ( maximum() > minimum() )
+        percent = ((qreal)value()) / ( maximum() - minimum() );
+    QRect knob = The::svgHandler()->sliderKnobRect( rect(), percent );
+    m_knobX = knob.x();
+    if (oldKnobX < m_knobX)
+        update( oldKnobX, knob.y(), knob.right()-oldKnobX + 1, knob.height() );
+    else if (oldKnobX > m_knobX)
+        update( m_knobX, knob.y(), oldKnobX + knob.width(), knob.height() );
 }
 
 void Amarok::TimeSlider::drawTriangle( const QString &name, int milliSeconds )

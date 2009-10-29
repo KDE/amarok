@@ -341,20 +341,22 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 }
 #endif
 
+QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent )
+{
+    const int knobSize = slider.height() - 4;
+    QRect ret(0, 0, knobSize, knobSize);
+
+//     if (slider->orientation() == Qt::Horizontal)
+        ret.moveTo( slider.x() + qRound( ( slider.width() - knobSize ) * percent ), slider.y() + 1 );
+//     else // NOT supported by the current Amarok API
+//         ret.move(1, ( slider->height() - knobSize ) * value / d);
+    return ret;
+}
 
 // Experimental, using a mockup from Nuno Pinheiro (new_slider_nuno)
 void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active )
 {
-    const int knobSize = height - 4;
-    const int relPos = width * percentage;
-
-    // Weird block to fix bug 208618, just dont try to understand it.
-    int knobX;
-    if( relPos < knobSize/2 ) knobX = x;
-    else if( relPos > (width - knobSize/2) ) knobX = x + width - knobSize;
-    else knobX =  x + relPos - knobSize/2;
-
-    const int knobY = y + ( height - knobSize ) / 2 - 1;
+    QRect knob = sliderKnobRect( QRect( x, y, width, height), percentage );
 
     //debug() << "rel: " << knobRelPos << ", width: " << width << ", height:" << height << ", %: " << percentage;
 
@@ -384,7 +386,7 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
     int playedBarHeight = sliderHeight - 6;
 
-    int sizeOfLeftPlayed = qBound( 0, knobX - 2, playedBarHeight );
+    int sizeOfLeftPlayed = qBound( 0, knob.x() - 2, playedBarHeight );
 
     if( sizeOfLeftPlayed > 0 ) {
 
@@ -394,7 +396,7 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
                         playedBarHeight, playedBarHeight,
                         "progress_slider_played_left" ), 0, 0, sizeOfLeftPlayed, playedBarHeight );
 
-        int playedBarMidWidth = knobX - ( x + 3 + playedBarHeight );
+        int playedBarMidWidth = knob.x() - ( x + 3 + playedBarHeight );
 
         //add one more pixel to avoid a "gap"between it and the top and botton of the round knob.
         playedBarMidWidth++;
@@ -410,16 +412,16 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
     // Draw the knob (handle)
   
     if( active )
-        p->drawPixmap( knobX, knobY,
+        p->drawPixmap( knob.x(), knob.y(),
                        renderSvg(
                        "new_slider_knob_active",
-                       knobSize, knobSize,
+                       knob.width(), knob.height(),
                        "new_slider_knob_active" ) );
     else
-        p->drawPixmap( knobX, knobY,
+        p->drawPixmap( knob.x(), knob.y(),
                        renderSvg(
                        "new_slider_knob",
-                       knobSize, knobSize,
+                       knob.width(), knob.height(),
                        "new_slider_knob" ) );
 }
 

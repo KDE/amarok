@@ -130,6 +130,7 @@ namespace Amarok
             virtual void paintEvent( QPaintEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void resizeEvent(QResizeEvent * event);
+            virtual void sliderChange( SliderChange change );
             virtual bool event ( QEvent * event );
 
         private:
@@ -137,7 +138,7 @@ namespace Amarok
 
             QTimer *m_animTimer; // Used for a smooth progress.
             QList<BookmarkTriangle*> m_triangles;
-            double m_knobX; // The position of the current indicator.
+            int m_knobX; // The position of the current indicator.
     };
 }
 
