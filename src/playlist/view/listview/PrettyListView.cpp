@@ -526,7 +526,7 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         QList<QAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
 
         foreach( QAction * action, actions )
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
 
         m_pd->show();
     }

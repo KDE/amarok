@@ -374,7 +374,7 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
 
         foreach( QAction * action, actions )
         {
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
         }
 
         m_pd->show();

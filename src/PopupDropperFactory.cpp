@@ -94,7 +94,6 @@ PopupDropperItem * PopupDropperFactory::createItem( QAction * action )
     font.setBold( true );
 
     PopupDropperItem* pdi = new PopupDropperItem();
-    pdi->setSharedRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
 
     pdi->setAction( action );
 

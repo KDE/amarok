@@ -505,7 +505,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         font.setBold( true );
 
         foreach( QAction * action, actions )
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
 
         m_currentCopyDestination = getCopyActions( indices );
         m_currentMoveDestination = getMoveActions( indices );
@@ -527,10 +527,10 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             morePud = The::popupDropperFactory()->createPopupDropper( 0 );
 
             foreach( QAction * action, actions )
-                morePud->addItem( The::popupDropperFactory()->createItem( action ), false );
+                morePud->addItem( The::popupDropperFactory()->createItem( action ) );
         }
         else
-            m_pd->addItem( The::popupDropperFactory()->createItem( actions[0] ), false );
+            m_pd->addItem( The::popupDropperFactory()->createItem( actions[0] ) );
 
         //TODO: Keep bugging i18n team about problems with 3 dots
         if ( actions.count() > 1 )
