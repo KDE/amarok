@@ -126,7 +126,6 @@ JamendoService::polish()
 
     connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
     connect( m_downloadButton, SIGNAL( clicked() ), this, SLOT( download() ) );
-    updateButtonClicked(); // Automatically fetch the database on polish.
 
     setInfoParser( new JamendoInfoParser() );
 
