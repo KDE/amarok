@@ -80,7 +80,7 @@ PodcastSettingsDialog::init()
         m_ps->m_purgeCountLabel->setEnabled( false );
     }
 
-    m_ps->m_writeTagsCheck->setChecked( false );
+    m_ps->m_writeTagsCheck->setChecked( m_channel->writeTags() );
 
     enableButtonApply( false );
 
@@ -119,7 +119,9 @@ PodcastSettingsDialog::hasChanged()
             m_channel->autoScan() != m_ps->m_autoFetchCheck->isChecked() ||
             m_channel->hasPurge() != m_ps->m_purgeCheck->isChecked()     ||
             m_channel->purgeCount() != m_ps->m_purgeCountSpinBox->value() ||
-            fetchTypeChanged );
+            fetchTypeChanged ||
+            m_channel->writeTags() != m_ps->m_writeTagsCheck->isChecked()
+          );
 }
 
 void
@@ -141,7 +143,7 @@ PodcastSettingsDialog::slotApply()       //slot
 
     m_channel->setPurge( m_ps->m_purgeCheck->isChecked() );
     m_channel->setPurgeCount( m_ps->m_purgeCountSpinBox->value() );
-    m_ps->m_writeTagsCheck->isChecked();
+    m_channel->setWriteTags( m_ps->m_writeTagsCheck->isChecked() );
 
     enableButtonApply( false );
 }

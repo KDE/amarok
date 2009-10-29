@@ -105,6 +105,7 @@ class SqlPodcastChannel : public PodcastChannel
         void addEpisode( SqlPodcastEpisodePtr episode ) { m_episodes << episode; }
 
         bool writeTags() const { return m_writeTags; }
+        void setWriteTags( bool writeTags ) { m_writeTags = writeTags; }
         void updateInDb();
         void deleteFromDb();
 
