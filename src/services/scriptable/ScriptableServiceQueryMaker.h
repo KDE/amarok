@@ -62,13 +62,14 @@ protected slots:
 
     void slotScriptComplete( );
 
-
-protected:
+private slots:
 
     void fetchGenre();
     void fetchArtists();
     void fetchAlbums();
     void fetchTracks();
+
+protected:
 
     void handleResult( const Meta::GenreList &genres );
     void handleResult( const Meta::ArtistList &artists );
