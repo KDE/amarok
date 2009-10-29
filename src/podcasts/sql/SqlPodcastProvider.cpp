@@ -782,7 +782,7 @@ SqlPodcastProvider::downloadResult( KJob * job )
         }
         Meta::SqlPodcastChannelPtr sqlChannel =
                 Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
-        if( sqlChannel == 0 )
+        if( !sqlChannel )
         {
             error() << "sqlChannelPtr is NULL after download";
             return;
