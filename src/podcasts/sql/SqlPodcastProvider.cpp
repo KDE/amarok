@@ -634,12 +634,8 @@ SqlPodcastProvider::completePodcastDownloads()
     }
 }
 
-void
-SqlPodcastProvider::engineStateChanged( Phonon::State newState, Phonon::State oldState )
+void SqlPodcastProvider::engineNewTrackPlaying()
 {
-    if( !( newState == Phonon::PlayingState || newState == Phonon::StoppedState ) )
-        return;
-
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     Meta::SqlPodcastEpisodePtr currentEpisode = Meta::SqlPodcastEpisodePtr::dynamicCast( currentTrack );
 
@@ -647,18 +643,7 @@ SqlPodcastProvider::engineStateChanged( Phonon::State newState, Phonon::State ol
         return;
 
     //TODO: wait a at least 10% of the tracklength before setting isNew to false
-    switch( newState )
-    {
-        case Phonon::PlayingState:
-            currentEpisode->setNew( false );
-            break;
-        case Phonon::StoppedState:
-            if( oldState == Phonon::PlayingState )
-                currentEpisode->setNew( false );
-            break;
-        default:
-            break;
-    }
+    currentEpisode->setNew( false );
 }
 
 void
