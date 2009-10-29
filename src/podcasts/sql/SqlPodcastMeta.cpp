@@ -431,13 +431,12 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ? DownloadWhenAvailable : StreamOrDownloadOnDemand;
     m_purge = sqlStorage->boolTrue() == *(iter++);
     m_purgeCount = (*(iter++)).toInt();
-    m_writeTags = true;
+    m_writeTags = sqlStorage->boolTrue() == *(iter++);
     loadEpisodes();
 }
 
 Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     : Meta::PodcastChannel()
-    , m_writeTags( true )
     , m_dbId( 0 )
 {
     m_url = channel->url();
@@ -455,12 +454,14 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     m_fetchType = StreamOrDownloadOnDemand;
     m_purge = false;
     m_purgeCount = 10;
+    m_writeTags = true;
 
     updateInDb();
 
-    foreach ( Meta::PodcastEpisodePtr episode, channel->episodes() ) {
+    foreach( Meta::PodcastEpisodePtr episode, channel->episodes() )
+    {
         episode->setChannel( PodcastChannelPtr( this ) );
-        SqlPodcastEpisode * sqlEpisode = new SqlPodcastEpisode( episode );
+        SqlPodcastEpisode *sqlEpisode = new SqlPodcastEpisode( episode );
 
         m_episodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
@@ -533,13 +534,13 @@ Meta::SqlPodcastChannel::updateInDb()
     #define escape(x) sqlStorage->escape(x)
     QString insert = "INSERT INTO podcastchannels("
     "url,title,weblink,image,description,copyright,directory,labels,"
-    "subscribedate,autoscan,fetchtype,haspurge,purgecount) "
-    "VALUES ( '%1','%2','%3','%4','%5','%6','%7','%8','%9',%10,%11,%12,%13 );";
+    "subscribedate,autoscan,fetchtype,haspurge,purgecount,writetags) "
+    "VALUES ( '%1','%2','%3','%4','%5','%6','%7','%8','%9',%10,%11,%12,%13,%14 );";
 
     QString update = "UPDATE podcastchannels SET url='%1',title='%2'"
     ",weblink='%3',image='%4',description='%5',copyright='%6',directory='%7'"
     ",labels='%8',subscribedate='%9',autoscan=%10,fetchtype=%11,haspurge=%12,"
-    "purgecount=%13 WHERE id=%14;";
+    "purgecount=%13, writetags=%14 WHERE id=%15;";
     //if we don't have a database ID yet we should insert;
     QString command = m_dbId ? update : insert;
 
@@ -559,6 +560,7 @@ Meta::SqlPodcastChannel::updateInDb()
     command = command.arg( QString::number(m_fetchType) ); //%11
     command = command.arg( m_purge ? boolTrue : boolFalse ); //%12
     command = command.arg( QString::number(m_purgeCount) ); //%13
+    command = command.arg( m_writeTags ? boolTrue : boolFalse ); //%14
 
     if( m_dbId )
         sqlStorage->query( command.arg( m_dbId ) );

@@ -44,7 +44,7 @@
 
 using namespace Meta;
 
-static const int PODCAST_DB_VERSION = 3;
+static const int PODCAST_DB_VERSION = 4;
 static const QString key("AMAROK_PODCAST");
 
 SqlPodcastProvider::SqlPodcastProvider()
@@ -122,9 +122,11 @@ SqlPodcastProvider::loadPodcasts()
     m_channels.clear();
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image, description, copyright, directory, labels, subscribedate, autoscan, fetchtype, haspurge, purgecount FROM podcastchannels;" );
+    QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image"
+        ", description, copyright, directory, labels, subscribedate, autoscan, fetchtype"
+        ", haspurge, purgecount, writetags FROM podcastchannels;" );
 
-    int rowLength = 14;
+    int rowLength = 15;
     for(int i=0; i < results.size(); i+=rowLength)
     {
         QStringList channelResult = results.mid( i, rowLength );
@@ -846,7 +848,8 @@ SqlPodcastProvider::createTables() const
                     ",labels " + sqlStorage->textColumnType() +
                     ",subscribedate " + sqlStorage->textColumnType() +
                     ",autoscan BOOL, fetchtype INTEGER"
-                    ",haspurge BOOL, purgecount INTEGER ) ENGINE = MyISAM;" ) );
+                    ",haspurge BOOL, purgecount INTEGER"
+                    ",writetags BOOL ) ENGINE = MyISAM;" ) );
 
     sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
                     "id " + sqlStorage->idType() +
@@ -932,6 +935,17 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 
         sqlStorage->query( "DROP TABLE podcastchannels_temp;" );
         sqlStorage->query( "DROP TABLE podcastepisodes_temp;" );
+    }
+
+    if( fromVersion < 4 && toVersion == 4 )
+    {
+        QString updateChannelQuery = QString( "ALTER TABLE podcastchannels"
+            " ADD writetags BOOL;" );
+        sqlStorage->query( updateChannelQuery );
+        QString setWriteTagsQuery = QString( "UPDATE podcastchannels SET writetags=" +
+                                             sqlStorage->boolTrue() +
+                                             " WHERE 1;" );
+        sqlStorage->query( setWriteTagsQuery );
     }
 
 
