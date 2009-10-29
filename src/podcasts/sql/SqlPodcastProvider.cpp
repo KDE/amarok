@@ -382,7 +382,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
             this
         );
         m_writeTagsAction->setProperty( "popupdropper_svg_id", "edit" );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotWriteTagsToFile() ) );
+        connect( m_writeTagsAction, SIGNAL( triggered() ), this, SLOT( slotWriteTagsToFiles() ) );
     }
 
     bool hasDownloaded = false;
