@@ -19,6 +19,7 @@
 
 #include "ServiceBase.h"
 #include "JamendoDatabaseHandler.h"
+#include "JamendoXmlParser.h"
 #include "ServiceSqlCollection.h"
 
 #include "Amarok.h"
@@ -82,6 +83,8 @@ private:
     QString m_torrentFileName;
     ServiceSqlCollection * m_collection;
     Meta::JamendoAlbum * m_currentAlbum;
+
+    JamendoXmlParser * m_xmlParser;
 };
 
 #endif

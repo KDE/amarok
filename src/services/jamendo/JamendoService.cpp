@@ -22,7 +22,6 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "JamendoInfoParser.h"
-#include "JamendoXmlParser.h"
 #include "ServiceSqlRegistry.h"
 #include "widgets/SearchWidget.h"
 
@@ -73,6 +72,7 @@ JamendoServiceFactory::config()
 JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & name)
     : ServiceBase( name, parent )
     , m_currentAlbum( 0 )
+    , m_xmlParser( 0 )
 {
     setShortDescription(  i18n( "A site where artists can showcase their creations to the world" ) );
     setIcon( KIcon( "view-services-jamendo-amarok" ) );
@@ -91,6 +91,14 @@ setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_jamendo.p
 
 JamendoService::~JamendoService()
 {
+    DEBUG_BLOCK
+    
+    //if currently running, stop it or we will get crashes
+    if( m_xmlParser ) {
+        m_xmlParser->requestAbort();
+        delete m_xmlParser;
+        m_xmlParser = 0;
+    }
 }
 
 void
@@ -201,10 +209,12 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
 
     The::statusBar()->shortMessage( i18n( "Updating the local Jamendo database."  ) );
     debug() << "JamendoService: create xml parser";
-    JamendoXmlParser * parser = new JamendoXmlParser( m_tempFileName );
-    connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
 
-    ThreadWeaver::Weaver::instance()->enqueue( parser );
+    if( m_xmlParser == 0 )
+        m_xmlParser = new JamendoXmlParser( m_tempFileName );
+    connect( m_xmlParser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
+
+    ThreadWeaver::Weaver::instance()->enqueue( m_xmlParser );
     downloadJob->deleteLater();
     m_listDownloadJob = 0;
 }
@@ -230,6 +240,7 @@ JamendoService::doneParsing()
     // model->setGenre("All");
     //delete sender
     sender()->deleteLater();
+    m_xmlParser = 0;
     m_collection->emitUpdated();
 }
 

@@ -64,6 +64,8 @@ public:
      */
     void readConfigFile( const QString &filename );
 
+    virtual void requestAbort ();
+
 
 signals:
 
@@ -111,6 +113,8 @@ private:
     int n_maxNumberOfTransactions;
     QHash< int, QString > m_id3GenreHash;
     QMap<int, int> m_albumArtistMap;
+
+    bool m_aborted;
 };
 
 #endif
