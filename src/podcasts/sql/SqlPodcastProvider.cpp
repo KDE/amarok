@@ -792,11 +792,18 @@ SqlPodcastProvider::downloadResult( KJob * job )
         Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
         if( sqlEpisode == 0 )
         {
-            debug() << "sqlEpisodePtr is NULL after download";
+            error() << "sqlEpisodePtr is NULL after download";
+            return;
+        }
+        Meta::SqlPodcastChannelPtr sqlChannel =
+                Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
+        if( sqlChannel == 0 )
+        {
+            error() << "sqlChannelPtr is NULL after download";
             return;
         }
 
-        QDir dir( sqlEpisode->channel()->saveLocation().path() );
+        QDir dir( sqlChannel->saveLocation().path() );
         dir.mkpath( "." );
         KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
         localUrl.addPath( m_fileNameMap[job] );
@@ -807,6 +814,9 @@ SqlPodcastProvider::downloadResult( KJob * job )
         {
             debug() << "successfully written Podcast Episode " << sqlEpisode->title() << " to " << localUrl.path();
             sqlEpisode->setLocalUrl( localUrl );
+
+            if( sqlChannel->writeTags() )
+                sqlEpisode->writeTagsToFile();
             //force an update so the icon can be updated in the PlaylistBrowser
             emit( updated() );
         }
