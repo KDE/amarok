@@ -16,6 +16,7 @@
 
 #include "BookmarkPopup.h"
 #include "SvgHandler.h"
+#include "Debug.h"
 
 #include <KLocale>
 #include <KPixmapCache>
@@ -42,6 +43,7 @@ BookmarkPopup::BookmarkPopup ( QWidget* parent, QString label )
 
     setGeometry( 0, 0, m_width, m_height );
 
+    m_hasMouseOver = false;
 
 }
 
@@ -58,6 +60,11 @@ QSizePolicy BookmarkPopup::sizePolicy() const
 QSize BookmarkPopup::minimumSizeHint() const
 {
     return QSize ( m_width, m_height );
+}
+
+bool BookmarkPopup::hasMouseOver()
+{
+    return m_hasMouseOver;
 }
 
 void BookmarkPopup::paintEvent ( QPaintEvent* )
@@ -84,3 +91,12 @@ void BookmarkPopup::paintEvent ( QPaintEvent* )
     p.drawText ( rect, Qt::AlignCenter, m_label );
 }
 
+void BookmarkPopup::enterEvent ( QEvent* )
+{
+    m_hasMouseOver = true;
+}
+
+void BookmarkPopup::leaveEvent ( QEvent* )
+{
+    m_hasMouseOver = false;
+}

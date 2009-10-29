@@ -350,7 +350,7 @@ void Amarok::TimeSlider::sliderChange( SliderChange change )
         percent = ((qreal)value()) / ( maximum() - minimum() );
     QRect knob = The::svgHandler()->sliderKnobRect( rect(), percent );
     m_knobX = knob.x();
-    if (oldKnobX < m_knobX)
+    if ( oldKnobX < m_knobX )
         update( oldKnobX, knob.y(), knob.right()-oldKnobX + 1, knob.height() );
     else if (oldKnobX > m_knobX)
         update( m_knobX, knob.y(), oldKnobX + knob.width(), knob.height() );
@@ -367,6 +367,7 @@ void Amarok::TimeSlider::drawTriangle( const QString &name, int milliSeconds )
     debug() << "drawing triangle at " << x_pos;
     BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
+    connect( tri, SIGNAL( focused( int ) ), SLOT( slotTriangleFocused( int ) ) );
     m_triangles << tri;
     tri->setGeometry( x_pos + 6 /* to center the point */, 1 /*y*/, 11, 11 ); // 6 = hard coded border width
     tri->show();
@@ -375,6 +376,15 @@ void Amarok::TimeSlider::drawTriangle( const QString &name, int milliSeconds )
 void Amarok::TimeSlider::slotTriangleClicked( int seconds )
 {
     emit sliderReleased( seconds );
+}
+
+void Amarok::TimeSlider::slotTriangleFocused( int seconds )
+{
+    QList<BookmarkTriangle *>::iterator i;
+    for( i = m_triangles.begin(); i != m_triangles.end(); ++i ){
+         if( (*i)->getTimeValue() != seconds )
+             (*i)->hidePopup();
+    }
 }
 
 void Amarok::TimeSlider::clearTriangles()
@@ -386,21 +396,21 @@ void Amarok::TimeSlider::clearTriangles()
     m_triangles.clear();
 }
 
-void Amarok::TimeSlider::mousePressEvent(QMouseEvent *event )
+void Amarok::TimeSlider::mousePressEvent( QMouseEvent *event )
 {
     if( !The::engineController()->phononMediaObject()->isSeekable() )
         return; // Eat the event,, it's not possible to seek
     Amarok::Slider::mousePressEvent( event );
 }
 
-bool Amarok::TimeSlider::event ( QEvent * event )
+bool Amarok::TimeSlider::event( QEvent * event )
 {
-    if ( event->type() == QEvent::ToolTip )
+    if( event->type() == QEvent::ToolTip )
     {
 
         //make a QHelpEvent out of this
         QHelpEvent * helpEvent = dynamic_cast<QHelpEvent *>( event );
-        if ( helpEvent )
+        if( helpEvent )
         {
             //update tooltip to show track position of mouse.
 

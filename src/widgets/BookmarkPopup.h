@@ -28,6 +28,10 @@ public:
     virtual QSizePolicy sizePolicy() const;
     virtual QSize minimumSizeHint () const;
 
+    virtual void enterEvent ( QEvent * event );
+    virtual void leaveEvent ( QEvent * event );
+    virtual bool hasMouseOver();
+
 protected:
 
     virtual void paintEvent ( QPaintEvent* );
@@ -36,8 +40,9 @@ private:
     QString m_label;
     int m_width;
     int m_height;
-
     int m_lineHeight;
+
+    bool m_hasMouseOver;
 };
 
 #endif // BOOKMARKPOPUP_H
