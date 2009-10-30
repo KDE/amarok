@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.1
   FEATURES:
+    * Podcasts will only be automatically updated when there is a network
+      connection (using Solid).
     * The SMB (Samba) protocol is now supported in the playlist. Patch by 
       Steven van der Vegt <s.vandervegt@student.utwente.nl>. (BR 178691)
     * Podcasts have better indication of status with emblem icons.

@@ -36,6 +36,7 @@
 #include <KIO/DeleteJob>
 #include <KIO/Job>
 #include <KUrl>
+#include <Solid/Networking>
 
 #include <QAction>
 #include <QFile>
@@ -650,16 +651,19 @@ void
 SqlPodcastProvider::updateAll()
 {
     foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
-    {
         update( channel );
-        
-    }
 }
 
 void
 SqlPodcastProvider::autoUpdate()
 {
     DEBUG_BLOCK
+    if( Solid::Networking::status() != Solid::Networking::Connected )
+    {
+        debug() << "Solid reports we are not online, canceling podcast auto-update";
+        return;
+    }
+
     foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
     {
         if( channel->autoScan() )
