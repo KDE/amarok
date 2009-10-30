@@ -348,6 +348,8 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
     static int failures = 0;
     const int maxFailures = 10;
 
+    m_trackError = false;
+
     if ( currentState == Phonon::ErrorState )
     {
         failures++;
@@ -366,12 +368,10 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
         if ( failures > 0 )
         {
             debug() << "Successfully played track. Resetting failure count.";
+            failures = 0;
         }
-        failures = 0;
-        m_trackError = false;
     }
 }
-
 
 void
 Playlist::Actions::engineNewTrackPlaying()
