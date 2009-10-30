@@ -89,26 +89,50 @@ PopupDropper * PopupDropperFactory::createPopupDropper()
 
 PopupDropperItem * PopupDropperFactory::createItem( QAction * action )
 {
-    QFont font;
-    font.setPointSize( 16 );
-    font.setBold( true );
-
     PopupDropperItem* pdi = new PopupDropperItem();
-
     pdi->setAction( action );
-
     QString text = pdi->text();
     text.remove( QChar('&') );
     pdi->setText( text );
-    pdi->setFont( font );
-    pdi->setHoverMsecs( 800 );
+    adjustItem( pdi );
+    return pdi;
+}
+
+void PopupDropperFactory::adjustItem( PopupDropperItem *item )
+{
+    if( !item )
+        return;
+    QFont font;
+    font.setPointSize( 16 );
+    font.setBold( true );
+    item->setFont( font );
+    item->setHoverMsecs( 800 );
     QColor hoverIndicatorFillColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
     hoverIndicatorFillColor.setAlpha( 96 );
-    QBrush brush = pdi->hoverIndicatorFillBrush();
+    QBrush brush = item->hoverIndicatorFillBrush();
     brush.setColor( hoverIndicatorFillColor );
-    pdi->setHoverIndicatorFillBrush( brush );
+    item->setHoverIndicatorFillBrush( brush );
+}
 
-    return pdi;
+void PopupDropperFactory::adjustItems( PopupDropper* pud )
+{
+    if( !pud )
+        return;
+    adjustItems( pud, pud->items() );
+}
+
+void PopupDropperFactory::adjustItems( PopupDropper *pud, QList<PopupDropperItem*> items )
+{
+    foreach( PopupDropperItem *pdi, items )
+    {
+        if( !pdi->isSubmenuTrigger() )
+            adjustItem( pdi );
+        else
+        {
+            adjustSubmenuItem( pdi );
+            adjustItems( pud, pud->submenuItems( pdi ) );
+        }
+    }
 }
 
 void PopupDropperFactory::adjustSubmenuItem( PopupDropperItem *item )
@@ -116,17 +140,7 @@ void PopupDropperFactory::adjustSubmenuItem( PopupDropperItem *item )
     if( !item )
         return;
 
-    QFont font;
-    font.setPointSize( 16 );
-    font.setBold( true );
-
-    item->setFont( font );
-    item->setHoverMsecs( 800 );
+    adjustItem( item );
     item->setHoverIndicatorShowStyle( PopupDropperItem::OnHover );
-    QColor hoverIndicatorFillColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
-    hoverIndicatorFillColor.setAlpha( 96 );
-    QBrush brush = item->hoverIndicatorFillBrush();
-    brush.setColor( hoverIndicatorFillColor );
-    item->setHoverIndicatorFillBrush( brush );
 }
 

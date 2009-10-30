@@ -909,6 +909,8 @@ QList<PopupDropperItem*> PopupDropper::items() const
     return list;
 }
 
+//Won't currently work for > 1 level of submenu!
+//TODO: Figure out a better way. (Does anything else work > 1 level?)
 QList<PopupDropperItem*> PopupDropper::submenuItems( const PopupDropperItem *item ) const
 {
     QList<PopupDropperItem*> list;
