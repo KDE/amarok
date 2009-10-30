@@ -112,35 +112,21 @@ void PopupDropperFactory::adjustItem( PopupDropperItem *item )
     QBrush brush = item->hoverIndicatorFillBrush();
     brush.setColor( hoverIndicatorFillColor );
     item->setHoverIndicatorFillBrush( brush );
+
+    if( item->isSubmenuTrigger() )
+        item->setHoverIndicatorShowStyle( PopupDropperItem::OnHover );
+ 
 }
 
 void PopupDropperFactory::adjustItems( PopupDropper* pud )
 {
     if( !pud )
         return;
-    adjustItems( pud, pud->items() );
+    pud->forEachItem( adjustItemCallback );
 }
 
-void PopupDropperFactory::adjustItems( PopupDropper *pud, QList<PopupDropperItem*> items )
+void PopupDropperFactory::adjustItemCallback( void *pdi )
 {
-    foreach( PopupDropperItem *pdi, items )
-    {
-        if( !pdi->isSubmenuTrigger() )
-            adjustItem( pdi );
-        else
-        {
-            adjustSubmenuItem( pdi );
-            adjustItems( pud, pud->submenuItems( pdi ) );
-        }
-    }
-}
-
-void PopupDropperFactory::adjustSubmenuItem( PopupDropperItem *item )
-{
-    if( !item )
-        return;
-
-    adjustItem( item );
-    item->setHoverIndicatorShowStyle( PopupDropperItem::OnHover );
+    The::popupDropperFactory()->adjustItem( (PopupDropperItem*)pdi );
 }
 

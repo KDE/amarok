@@ -131,6 +131,7 @@ public:
     void addItem( PopupDropperItem *item, bool useSharedRenderer = true );
     QList<PopupDropperItem *> items() const;
     QList<PopupDropperItem *> submenuItems( const PopupDropperItem *item ) const;
+    void forEachItem( void callback(void*) );
     void addSeparator( PopupDropperItem *separator = 0 );
 
 Q_SIGNALS:
@@ -152,6 +153,7 @@ private:
 
     void addOverlay( PopupDropperPrivate* newD );
     void addItem( PopupDropperItem *item, bool useSharedRenderer, bool appendToList );
+    void forEachItemPrivate( PopupDropperPrivate *pdp, void callback(void*) );
 
     QStack<PopupDropperPrivate*> m_viewStack;
 };

@@ -383,6 +383,8 @@ PopupDropperItem* PopupDropper::addSubmenu( PopupDropper** pd, const QString &te
     d->submenuMap[action] = newD;
     delete (*pd);
     (*pd) = 0;
+    foreach( PopupDropperItem* item, newD->pdiItems )
+        item->setPopupDropper( this );
     //qDebug() << "d->submenuMap[pda] = " << d->submenuMap[pda];
     addItem( pdi );
     return pdi;
@@ -922,6 +924,21 @@ QList<PopupDropperItem*> PopupDropper::submenuItems( const PopupDropperItem *ite
         list.append( pdi );
 
     return list;
+}
+
+//Goes through and calls the callback on all items, including submenuItems
+//which can be adjusted differently by checking isSubmenuTrigger()
+void PopupDropper::forEachItem( void callback(void*) )
+{
+    forEachItemPrivate( d, callback );
+}
+
+void PopupDropper::forEachItemPrivate( PopupDropperPrivate *pdp, void callback(void* item) )
+{
+    foreach( PopupDropperItem *item, pdp->pdiItems )
+        callback( item );
+    foreach( QAction *action, pdp->submenuMap.keys() )
+        forEachItemPrivate( pdp->submenuMap[action], callback );
 }
 
 void PopupDropper::addSeparator( PopupDropperItem* separator )

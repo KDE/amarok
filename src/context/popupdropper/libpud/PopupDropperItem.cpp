@@ -472,7 +472,6 @@ void PopupDropperItem::reposTextItem()
 {
     if( !d->textItem || !d->borderRectItem )
         return;
- 
     d->textItem->setFont( d->font );
 
     qreal item_vert_center = ( d->borderRectItem->sceneBoundingRect().height() / 2 ) + d->borderRectItem->pos().y();

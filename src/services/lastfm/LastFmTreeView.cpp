@@ -200,7 +200,7 @@ LastFmTreeView::startDrag(Qt::DropActions supportedActions)
         if ( actions.count() > 1 )
         {
             subItem = m_pd->addSubmenu( &morePud, i18n( "More..." )  );
-            The::popupDropperFactory()->adjustSubmenuItem( subItem );
+            The::popupDropperFactory()->adjustItem( subItem );
         }
 
         m_pd->show();
