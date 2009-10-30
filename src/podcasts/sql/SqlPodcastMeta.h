@@ -96,7 +96,8 @@ class SqlPodcastChannel : public PodcastChannel
         TrackList tracks() { return sqlEpisodesToTracks( m_episodes ); }
 
         //Meta::PodcastChannel methods
-        Meta::PodcastEpisodeList episodes();
+        virtual void setTitle( const QString &title );
+        virtual Meta::PodcastEpisodeList episodes();
 
         PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
 

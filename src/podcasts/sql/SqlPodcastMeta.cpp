@@ -492,6 +492,16 @@ Meta::SqlPodcastChannel::sqlEpisodesToPodcastEpisodes( SqlPodcastEpisodeList epi
     return sqlEpisodes;
 }
 
+void
+Meta::SqlPodcastChannel::setTitle( const QString &title )
+{
+    /* also change the savelocation if a title is not set yet.
+       This is a special condition that can happen when first fetching a podcast feed */
+    if( m_title.isEmpty() )
+        m_directory.addPath( Amarok::vfatPath( title ) );
+    m_title = title;
+}
+
 Meta::PodcastEpisodeList
 Meta::SqlPodcastChannel::episodes()
 {
