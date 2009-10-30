@@ -446,6 +446,8 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     m_copyright = channel->copyright();
     m_labels = channel->labels();
     m_subscribeDate = channel->subscribeDate();
+    if( channel->hasImage() )
+        m_image = channel->image();
 
     //Default Settings
     m_directory = KUrl( Amarok::saveLocation("podcasts") );
@@ -506,6 +508,19 @@ Meta::PodcastEpisodeList
 Meta::SqlPodcastChannel::episodes()
 {
     return sqlEpisodesToPodcastEpisodes( m_episodes );
+}
+
+void
+Meta::SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
+{
+    DEBUG_BLOCK
+    if( imageUrl.isLocalFile() )
+    {
+        m_image = QPixmap( imageUrl.path() );
+        return;
+    }
+
+    debug() << "Image is remote, start a download job for " << imageUrl;
 }
 
 Meta::PodcastEpisodePtr

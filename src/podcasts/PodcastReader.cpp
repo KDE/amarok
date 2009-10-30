@@ -301,6 +301,12 @@ PodcastReader::read()
                 {
                     m_parsingImage = false;
                 }
+                else if( QXmlStreamReader::name() == "url" && m_parsingImage )
+                {
+                    if( m_channel )
+                        m_channel->setImageUrl( KUrl( m_urlString ) );
+                    m_urlString.clear();
+                }
             }
             else if( isCharacters() && !isWhitespace() )
             {
@@ -314,6 +320,8 @@ PodcastReader::read()
                     m_pubDateString += text().toString();
                 else if( m_currentTag == "guid" )
                     m_guidString += text().toString();
+                else if( m_currentTag == "url" )
+                    m_urlString += text().toString();
             }
         }
     }

@@ -93,7 +93,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
     bool isChannel = false;
     QString title;
     QString description;
-    KIcon icon;
+    QPixmap icon;
     bool isOnDisk = false;
     if ( pmc->podcastType() == Meta::ChannelType )
     {
@@ -111,7 +111,14 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
                 break;
             }
         }
-        icon = KIcon( "podcast-amarok", 0, emblems );
+        if( channel->hasImage() )
+        {
+            icon = channel->image().scaledToHeight( 32 );
+        }
+        else
+        {
+            icon = KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
+        }
     }
     else if ( pmc->podcastType() == Meta::EpisodeType )
     {
@@ -137,9 +144,9 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             emblems << "go-down";
 
         if( episode->isNew() )
-            icon = KIcon( "rating", 0, emblems );
+            icon = KIcon( "rating", 0, emblems ).pixmap( 32, 32 );
         else
-            icon = KIcon( "podcast-amarok", 0, emblems );
+            icon = KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
     }
     else
     {

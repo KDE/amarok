@@ -98,6 +98,9 @@ class SqlPodcastChannel : public PodcastChannel
         //Meta::PodcastChannel methods
         virtual void setTitle( const QString &title );
         virtual Meta::PodcastEpisodeList episodes();
+        virtual bool hasImage() const { return !m_image.isNull(); }
+        virtual QPixmap image() const { return m_image; }
+        virtual void setImageUrl( const KUrl &imageUrl );
 
         PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
 
