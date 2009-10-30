@@ -56,9 +56,9 @@ QList<LastFmEvent> LastFmAppletsServices::upcomingEvents(const QString &artist_n
         foreach (lastfm::XmlQuery xmlEvent, xml.children("event"))
         {
             QStringList artists;
-            foreach (lastfm::XmlQuery xmlArtists, xmlEvent["artists"])
+            foreach (lastfm::XmlQuery xmlArtists, xmlEvent.children("artists"))
             {
-                artists.append(xmlArtists.text());
+                artists.append(xmlArtists["artist"].text());
             }
             QString title = xmlEvent["title"].text();
             QString date = xmlEvent["startDate"].text();
@@ -69,7 +69,7 @@ QList<LastFmEvent> LastFmAppletsServices::upcomingEvents(const QString &artist_n
     }
     catch (lastfm::ws::ParseError& e)
     {
-        kDebug() << e.what();
+        //kDebug() << e.what();
     }
     //connect(m_reply, SIGNAL( finished() ), SLOT( eventsFetched() ))
 }

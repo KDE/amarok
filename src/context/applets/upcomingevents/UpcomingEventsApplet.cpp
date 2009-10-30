@@ -157,6 +157,10 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
 
     parent->addPage( settings, i18n( "Upcoming Events Settings" ), "preferences-system");
     connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );*/
+
+    KConfigGroup configuration = config();
+    QWidget *settings = new QWidget;
+    parent->addPage( settings, i18n( "Upcoming Events Settings" ), "preferences-system");
 }
 
 #include "UpcomingEventsApplet.moc"

@@ -18,12 +18,14 @@
 #define LASTFMAPPLETSSERVICES_H
 
 #include <QMutex>
+#include <QObject>
 
 #include <lastfm/Audioscrobbler>
 #include <lastfm/NetworkAccessManager>
 #include <lastfm/XmlQuery>
+#include "LastFmEvent.h"
 
-class LastFmAppletsServices
+class LastFmAppletsServices : public QObject
 {
     Q_OBJECT
 

@@ -21,7 +21,7 @@
 #include <KDateTime>
 #include <QStringList>
 
-class LastFmEvent
+class LastFmEvent : public QObject
 {
     Q_OBJECT
     
@@ -31,8 +31,10 @@ private:
     QString m_date;
 
 public:
-    Event(QStringList artists, QString name, QString date)
-        : m_artists(artists), m_name(name), m_date(date);
+    LastFmEvent(QStringList artists, QString name, QString date)
+        : m_artists(artists), m_name(name), m_date(date)
+        {
+        }
         
     QStringList artists();
     QString name();
