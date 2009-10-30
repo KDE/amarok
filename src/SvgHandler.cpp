@@ -1,6 +1,11 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  * Copyright (c) 2008 Jeff Mitchell <kde-dev@emailgoeshere.com>                         *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2008 Long Huynh Huu <long.upcase@googlemail.com>                       *
+ * Copyright (c) 2007 Matthew Woehlke <mw_triad@users.sourceforge.net>                  *
+ * Copyright (c) 2007 Casper Boemann <cbr@boemann.dk>                                   *
+ * Copyright (c) 2007 Fredrik HÃ¶glund <fredrik@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,6 +28,8 @@
 #include "PaletteHandler.h"
 #include "SvgTinter.h"
 
+#include <KColorScheme>
+#include <KColorUtils>
 #include <KStandardDirs>
 
 #include <QHash>
@@ -48,6 +55,7 @@ namespace The {
 SvgHandler::SvgHandler( QObject* parent )
     : QObject( parent )
     , m_cache( new KPixmapCache( "Amarok-pixmaps" ) )
+    , m_sliderHandleCache( new KPixmapCache( "Amarok-Slider-pixmaps" ) )
     , m_themeFile( "amarok/images/default-theme-clean.svg" )  // //use default theme
     , m_customTheme( false )
 {
@@ -61,6 +69,8 @@ SvgHandler::~SvgHandler()
 
     m_cache->deleteCache( "Amarok-pixmaps" ); 
     delete m_cache;
+    m_sliderHandleCache->deleteCache( "Amarok-Slider-pixmaps" );
+    delete m_sliderHandleCache;
 
     The::s_SvgHandler_instance = 0;
 }
@@ -343,7 +353,7 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
 QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent )
 {
-    const int knobSize = slider.height() - 4;
+    const int knobSize = slider.height() - 2;
     QRect ret(0, 0, knobSize, knobSize);
 
 //     if (slider->orientation() == Qt::Horizontal)
@@ -411,18 +421,73 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
     // Draw the knob (handle)
   
-    if( active )
-        p->drawPixmap( knob.x(), knob.y(),
-                       renderSvg(
-                       "new_slider_knob_active",
-                       knob.width(), knob.height(),
-                       "new_slider_knob_active" ) );
+    // The handle shadow only
+    p->drawPixmap( knob.x(), knob.y(), sliderHandle( Qt::black, active, (21.0 * knob.width() ) / 22 ) );
+    // The handle itself
+    p->drawPixmap( knob.x(), knob.y(), sliderHandle( QColor( "#868686" ), active, knob.width() ) );
+}
+
+
+// The following code was imported from Oxygen,
+// located in KDE/kdebase/runtime/kstyles/oxygen/helper.cpp
+// located in KDE/kdebase/workspace/kwin/clients/nitrogen/lib/helper.cpp
+
+QPixmap SvgHandler::sliderHandle( const QColor &color, bool pressed, int size )
+{
+    const QString key = QString::number( (quint64(color.rgba()) << 32) | (size << 1) | (int)pressed );
+    QPixmap pixmap;
+
+    if( !m_sliderHandleCache->find( key, pixmap ) )
+    {
+        pixmap = QPixmap(size, size);
+        pixmap.fill(Qt::transparent);
+
+        QColor light  = calcLightColor(color);
+        QColor dark   = calcDarkColor(color);
+
+        QPainter p( &pixmap );
+        p.setRenderHints( QPainter::Antialiasing );
+        p.setPen(Qt::NoPen);
+        double u = size/18.0;
+        p.translate( 0.5*u, (0.5-0.668)*u );
+
+        {
+            // outline circle
+            qreal penWidth = 1.2;
+            QLinearGradient lg( 0, u*(1.665-penWidth), 0, u*(12.33+1.665-penWidth) );
+            lg.setColorAt( 0, dark );
+            lg.setColorAt( 1, light );
+            QRectF r( u*0.5*(17-12.33+penWidth), u*(1.665+penWidth), u*(12.33-penWidth), u*(12.33-penWidth) );
+            p.setPen( QPen( lg, penWidth*u ) );
+            p.drawEllipse( r );
+            p.end();
+        }
+
+        m_sliderHandleCache->insert( key, pixmap );
+    }
+
+    return pixmap;
+}
+
+QColor SvgHandler::calcLightColor(const QColor &color) const
+{
+    const qreal contrast = 0.9;
+    return KColorScheme::shade(color, KColorScheme::LightShade, contrast);
+}
+
+QColor SvgHandler::calcDarkColor(const QColor &color) const
+{
+    const qreal contrast = 0.9;
+    if (lowThreshold(color))
+        return KColorUtils::mix(calcLightColor(color), color, 0.2 + 0.8 * contrast);
     else
-        p->drawPixmap( knob.x(), knob.y(),
-                       renderSvg(
-                       "new_slider_knob",
-                       knob.width(), knob.height(),
-                       "new_slider_knob" ) );
+        return KColorScheme::shade(color, KColorScheme::MidShade, contrast);
+}
+
+bool SvgHandler::lowThreshold(const QColor &color) const
+{
+    QColor darker = KColorScheme::shade(color, KColorScheme::MidShade, 0.5);
+    return KColorUtils::luma(darker) > KColorUtils::luma(color);
 }
 
 #include "SvgHandler.moc"

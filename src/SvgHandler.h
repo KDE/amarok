@@ -1,6 +1,11 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  * Copyright (c) 2008 Jeff Mitchell <kde-dev@emailgoeshere.com>                         *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2008 Long Huynh Huu <long.upcase@googlemail.com>                       *
+ * Copyright (c) 2007 Matthew Woehlke <mw_triad@users.sourceforge.net>                  *
+ * Copyright (c) 2007 Casper Boemann <cbr@boemann.dk>                                   *
+ * Copyright (c) 2007 Fredrik HÃ¶glund <fredrik@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -129,7 +134,13 @@ class AMAROK_EXPORT SvgHandler : public QObject
 
         bool loadSvg( const QString& name );
 
+        QPixmap sliderHandle( const QColor &color, bool pressed, int size );
+        QColor calcLightColor(const QColor &color) const;
+        QColor calcDarkColor(const QColor &color) const;
+        bool lowThreshold(const QColor &color) const;
+
         KPixmapCache * m_cache;
+        KPixmapCache * m_sliderHandleCache;
 
         QHash<QString,KSvgRenderer*> m_renderers;
         QReadWriteLock m_lock;
