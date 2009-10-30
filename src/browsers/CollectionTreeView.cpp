@@ -119,6 +119,8 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
     QTreeView::setModel( m_filterModel );
 
     delete oldFilterModel;
+
+    QTimer::singleShot( 0, this, SLOT( slotCheckAutoExpand() ) );
 }
 
 
