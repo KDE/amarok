@@ -419,8 +419,8 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
         int playedBarMidWidth = knob.x() - ( x + 3 + playedBarHeight );
 
-        //Add four more pixels to avoid a "gap" between it and the top and botton of the round knob.
-        playedBarMidWidth += 4;
+        //Add 5 more pixels to avoid a "gap" between it and the top and botton of the round knob.
+        playedBarMidWidth += 5;
 
         p->drawPixmap( x + 3 + playedBarHeight, y + 5,
                         renderSvg(
