@@ -1,6 +1,6 @@
 project(context-currenttrack)
 
-set( upcomingEvents_SRCS UpcomingEventsApplet.cpp )
+set( upcomingEvents_SRCS UpcomingEventsApplet.cpp LastFmAppletsServices.cpp LastFmEvent.cpp)
 
 include_directories( ../..
                     ../../.. )
