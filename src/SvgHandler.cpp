@@ -353,11 +353,11 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
 QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent )
 {
-    const int knobSize = slider.height() - 2;
+    const int knobSize = slider.height() - 1;
     QRect ret(0, 0, knobSize, knobSize);
 
 //     if (slider->orientation() == Qt::Horizontal)
-        ret.moveTo( slider.x() + qRound( ( slider.width() - knobSize ) * percent ), slider.y() + 1 );
+        ret.moveTo( slider.x() + qRound( ( slider.width() - knobSize ) * percent ), slider.y() );
 //     else // NOT supported by the current Amarok API
 //         ret.move(1, ( slider->height() - knobSize ) * value / d);
     return ret;
