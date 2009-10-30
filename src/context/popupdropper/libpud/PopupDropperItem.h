@@ -55,7 +55,7 @@ class POPUPDROPPER_EXPORT PopupDropperItem : public QObject, public QAbstractGra
     Q_PROPERTY( int hoverMsecs READ hoverMsecs WRITE setHoverMsecs )
     Q_PROPERTY( int borderWidth READ borderWidth WRITE setBorderWidth )
     Q_PROPERTY( int hoverIndicatorRectWidth READ hoverIndicatorRectWidth WRITE setHoverIndicatorRectWidth )
-    Q_PROPERTY( bool submenuTrigger READ submenuTrigger WRITE setSubmenuTrigger )
+    Q_PROPERTY( bool submenuTrigger READ isSubmenuTrigger WRITE setSubmenuTrigger )
     Q_PROPERTY( QColor baseTextColor READ baseTextColor WRITE setBaseTextColor )
     Q_PROPERTY( QColor hoveredTextColor READ hoveredTextColor WRITE setHoveredTextColor )
     Q_PROPERTY( QPen hoveredBorderPen READ hoveredBorderPen WRITE setHoveredBorderPen )
@@ -157,7 +157,7 @@ public:
     int hoverIndicatorRectWidth() const;
     void setHoverIndicatorRectWidth( int width );
 
-    bool submenuTrigger() const;
+    bool isSubmenuTrigger() const;
     void setSubmenuTrigger( bool trigger );
 
     void setPopupDropper( PopupDropper* pd );

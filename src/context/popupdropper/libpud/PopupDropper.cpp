@@ -405,6 +405,31 @@ void PopupDropper::activateSubmenu()
 bool PopupDropper::addMenu( const QMenu *menu )
 {
     Q_UNUSED(menu)
+    if( !menu )
+        return false;
+        
+    if( menu->actions().size() == 0 )
+        return true;
+
+    PopupDropperItem *pdi = 0;
+    foreach( QAction *action, menu->actions() )
+    {
+        if( !action->menu() )
+        {
+            pdi = new PopupDropperItem();
+            pdi->setAction( action );
+            addItem( pdi );
+        }
+        else
+        {
+            PopupDropper *pd = new PopupDropper( 0 );
+            bool success = pd->addMenu( action->menu() );
+            if( success )
+                pdi = addSubmenu( &pd, action->text() );
+        }
+        pdi = 0;
+    }
+    
     return true;
 }
 
@@ -565,7 +590,7 @@ void PopupDropper::clear()
         {
             if( dynamic_cast<PopupDropperItem*>(item) )
             {
-                if( dynamic_cast<PopupDropperItem*>(item)->submenuTrigger() )
+                if( dynamic_cast<PopupDropperItem*>(item)->isSubmenuTrigger() )
                 {
                     //qDebug() << "Disconnecting action";
                     disconnect( dynamic_cast<PopupDropperItem*>(item)->action(), SIGNAL( hovered() ), this, SLOT( activateSubmenu() ) );
@@ -887,7 +912,7 @@ QList<PopupDropperItem*> PopupDropper::items() const
 QList<PopupDropperItem*> PopupDropper::submenuItems( const PopupDropperItem *item ) const
 {
     QList<PopupDropperItem*> list;
-    if( !item || !item->submenuTrigger() || !d->submenuMap.contains( item->action() ) )
+    if( !item || !item->isSubmenuTrigger() || !d->submenuMap.contains( item->action() ) )
         return list;
 
     PopupDropperPrivate *pdp = d->submenuMap[item->action()];

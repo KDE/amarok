@@ -753,7 +753,7 @@ void PopupDropperItem::setHoverIndicatorRectWidth( int hoverIndicatorRectWidth )
     }
 }
 
-bool PopupDropperItem::submenuTrigger() const
+bool PopupDropperItem::isSubmenuTrigger() const
 {
     return d->submenuTrigger;
 }
