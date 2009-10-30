@@ -998,7 +998,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
         {
             DEBUG_LINE_INFO
             m_mutex.lock();
-            m_playWhenFetched = false;
+            m_playWhenFetched = true;
             m_mutex.unlock();
             m_multiPlayback->fetchNext();
             debug() << "The queue has: " << m_media->queue().size() << " tracks in it";
