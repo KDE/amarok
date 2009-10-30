@@ -442,8 +442,9 @@ QPixmap SvgHandler::sliderHandle( const QColor &color, bool pressed, int size )
         pixmap = QPixmap(size, size);
         pixmap.fill(Qt::transparent);
 
-        QColor light  = calcLightColor(color);
-        QColor dark   = calcDarkColor(color);
+        QColor blendedColor = pressed ? The::svgTinter()->blendColors( color, PaletteHandler::highlightColor(), 80 ) : color;
+        QColor light  = calcLightColor( blendedColor );
+        QColor dark   = calcDarkColor( blendedColor );
 
         QPainter p( &pixmap );
         p.setRenderHints( QPainter::Antialiasing );
