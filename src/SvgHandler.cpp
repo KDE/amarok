@@ -409,7 +409,7 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
                         renderSvg(
                         "progress_slider_played_left",
                         playedBarHeight, playedBarHeight,
-                        "progress_slider_played_left" ), 0, 0, sizeOfLeftPlayed, playedBarHeight );
+                        "progress_slider_played_left" ), 0, 0, sizeOfLeftPlayed + 3, playedBarHeight );
 
         int playedBarMidWidth = knob.x() - ( x + 3 + playedBarHeight );
 
