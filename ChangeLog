@@ -90,6 +90,8 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * Reversed the priority of repeat and random modes. Repeat now always 
+      takes precedence. (BR 178056)
     * Fixed crash if closing amarok while the JamendoXmlParser is running.
       (BR 208468) (BR 211015)
     * Systray information now updates correctly for streams. (BR 211748)
