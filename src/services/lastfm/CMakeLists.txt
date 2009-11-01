@@ -36,15 +36,16 @@ include_directories(
             meta/LastFmMeta.cpp
             meta/LastFmStreamInfoCapability.cpp
 
-	    biases/SimilarArtistsBias.cpp
-	    biases/WeeklyTopBias.cpp
+	        biases/SimilarArtistsBias.cpp
+	        biases/WeeklyTopBias.cpp
 
             kdenetwork/knetworkreply.cpp
             kdenetwork/knetworkaccessmanager.cpp
             SimilarArtistsAction.cpp
             LoveTrackAction.cpp
-
         )
+
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
         kde4_add_plugin(amarok_service_lastfm ${amarok_service_lastfm_PART_SRCS})
         target_link_libraries(amarok_service_lastfm
@@ -75,6 +76,8 @@ include_directories(
 		    kdenetwork/knetworkaccessmanager.cpp
         )
 
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
+
         kde4_add_ui_files( kcm_amarok_service_lastfm_PART_SRCS LastFmConfigWidget.ui )
 
 
@@ -94,5 +97,5 @@ include_directories(
 
         install( FILES amarok_service_lastfm.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
         install( FILES amarok_service_lastfm_config.desktop DESTINATION ${SERVICES_INSTALL_DIR} )
-	install(FILES amaroklastfm.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+	    install(FILES amaroklastfm.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 
