@@ -70,13 +70,14 @@ Playlist::Model::Model( QObject *parent )
      */
     The::playlistManager();
 
-    if ( QFile::exists( defaultPlaylistPath() ) )
+    Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( defaultPlaylistPath() );
+    if ( playlist )
     {
-        Meta::TrackList tracks =
-                Meta::loadPlaylistFile( KUrl( defaultPlaylistPath() ) )->tracks();
+        Meta::TrackList tracks = playlist->tracks();
 
         QMutableListIterator<Meta::TrackPtr> i( tracks );
-        while ( i.hasNext() ) {
+        while ( i.hasNext() )
+        {
             i.next();
             Meta::TrackPtr track = i.value();
             if ( track == Meta::TrackPtr() )
@@ -100,7 +101,8 @@ Playlist::Model::Model( QObject *parent )
             }
         }
 
-        foreach( Meta::TrackPtr track, tracks ) {
+        foreach( Meta::TrackPtr track, tracks )
+        {
             m_totalLength += track->length();
             m_totalSize += track->filesize();
             subscribeTo( track );
