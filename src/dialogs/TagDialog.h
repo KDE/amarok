@@ -24,6 +24,7 @@
 
 #include "amarok_export.h"
 #include "playlist/PlaylistItem.h"
+#include "LabelListModel.h"
 
 #include "meta/Meta.h"
 
@@ -70,9 +71,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
     signals:
         void lyricsChanged( const QString& );
 
-    public slots:
-        void openUrlRequest(const KUrl &url );
-
     private slots:
         void accept();
         void cancelPressed();
@@ -81,6 +79,9 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void nextTrack();
         void perTrack();
         void checkModified();
+
+        void removeLabelPressed();
+        void addLabelPressed();
 
         void showCoverMenu( const QPoint &pos );
         void loadCover();
@@ -107,6 +108,9 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void scoreModified();
         void commentModified();
         void discNumberModified();
+
+        void labelModified();
+        void labelSelected();
         
     private:
         void init();
@@ -139,10 +143,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
 
         const QStringList filenameSchemes();
 
-        QStringList labelListFromText( const QString &text );
-        void generateDeltaForLabelList( const QStringList &list );
-        QString generateHTML( const QStringList &labels );
-
         void selectOrInsertText( const QString &text, QComboBox *comboBox );
 
         QString m_lyrics;
@@ -155,11 +155,8 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QMap<Meta::TrackPtr, QStringList> m_originalLabels;
         QString m_path;
         QString m_currentCover;
+        LabelListModel *m_labelModel;
         QStringList m_labels;
-        QStringList m_addedLabels;
-        QStringList m_removedLabels;
-        QString m_commaSeparatedLabels;
-        KHTMLPart *m_labelCloud;
 
         //2.0 stuff
         Meta::TrackList m_tracks;

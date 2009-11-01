@@ -118,14 +118,6 @@ TagDialog::~TagDialog()
     if( m_currentTrack && m_currentTrack->album() )
         unsubscribeFrom( m_currentTrack->album() );
 
-    // NOTE: temporary crash prevention.  TreeView should _always_ be updated
-    // if tags have changed.
-
-    if ( !m_tracks.isEmpty() )
-        delete m_labelCloud;
-    else
-        debug() << "Empty tracklist?  Must mean TreeView has not been updated!";
-
     delete ui;
 }
 
@@ -298,6 +290,42 @@ TagDialog::dataQueryDone()
 }
 
 void
+TagDialog::removeLabelPressed() //SLOT
+{
+    DEBUG_BLOCK
+
+    if ( ui->labelsList->selectionModel()->hasSelection() )
+    {
+        QModelIndexList idxList = ui->labelsList->selectionModel()->selectedRows();
+        QStringList selection;
+
+        for (int x = 0; x < idxList.size(); ++x)
+        {
+            selection.append( idxList.at(x).data( Qt::DisplayRole ).toString() );
+        }
+
+        m_labelModel->removeLabels( selection );
+
+        ui->labelsList->selectionModel()->reset();
+        ui->kComboBox_label->completionObject()->setItems( m_labelModel->Labels() );
+        labelSelected();
+    }
+}
+
+void
+TagDialog::addLabelPressed() //SLOT
+{
+    DEBUG_BLOCK
+
+    if ( !ui->kComboBox_label->currentText().isEmpty() )
+    {
+        m_labelModel->addLabel( ui->kComboBox_label->currentText() );
+        ui->kComboBox_label->setCurrentIndex( -1 );
+        ui->kComboBox_label->completionObject()->setItems( m_labelModel->Labels() );
+    }
+}
+
+void
 TagDialog::cancelPressed() //SLOT
 {
     DEBUG_BLOCK
@@ -465,6 +493,18 @@ TagDialog::checkModified() //SLOT
                                || m_storedLyrics.count() > 0 || m_storedRatings.count() > 0 || m_newLabels.count() > 0 );
 }
 
+inline void
+TagDialog::labelModified() //SLOT
+{
+    ui->addButton->setEnabled( ui->kComboBox_label->currentText().length()>0 );
+}
+
+inline void
+TagDialog::labelSelected() //SLOT
+{
+    ui->removeButton->setEnabled( ui->labelsList->selectionModel()->hasSelection() );
+}
+
 void
 TagDialog::loadCover()
 {
@@ -584,9 +624,14 @@ void TagDialog::init()
     ui->kTabWidget->addTab( ui->lyricsTab    , i18n( "Lyrics" ) );
     ui->kTabWidget->addTab( ui->statisticsTab, i18n( "Statistics" ) );
 
-    const int labelsIndex = ui->kTabWidget->addTab( ui->labelsTab    , i18n( "Labels" ) );
-    ui->labelsTab->setEnabled( false );
-    ui->kTabWidget->removeTab( labelsIndex ); //Labels are not yet implemented, therefore disable the tab for now
+    const int labelsIndex = ui->kTabWidget->addTab( ui->labelsTab , i18n( "Labels" ) );
+
+    ui->kComboBox_label->completionObject()->setIgnoreCase( true );
+    ui->kComboBox_label->setCompletionMode( KGlobalSettings::CompletionPopup );
+
+    m_labelModel = new LabelListModel( m_labels );
+
+    ui->labelsList->setModel( m_labelModel );
 
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
@@ -602,21 +647,9 @@ void TagDialog::init()
     ui->kComboBox_genre->completionObject()->setIgnoreCase( true );
     ui->kComboBox_genre->setCompletionMode( KGlobalSettings::CompletionPopup );
 
-//     const QStringList labels = CollectionDB::instance()->labelList();
-    const QStringList labels;
-    //TODO: figure out a way to add auto-completion support to kTestEdit_selectedLabels
-
-    m_labelCloud = new KHTMLPart( ui->labels_favouriteLabelsFrame );
-    QSizePolicy policy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    m_labelCloud->view()->setSizePolicy(policy);
-
-    new QVBoxLayout( ui->labels_favouriteLabelsFrame );
-    //labels_favouriteLabelsFrame->layout()->addWidget( m_labelCloud->view() );
-    //const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
-    //QString html = generateHTML( favoriteLabels );
-    //m_labelCloud->write( html );
-    //connect( m_labelCloud->browserExtension(), SIGNAL( openUrlRequest( const KUrl &, const KParts::OpenUrlArguments&, const KParts::BrowserArguments& ) ),
-    //         this,                             SLOT( openUrlRequest( const KUrl & ) ) );
+    //TODO: Read available Labels and push into Combobox
+    ui->addButton->setEnabled( false );
+    ui->removeButton->setEnabled( false );
 
     // looks better to have a blank label than 0, we can't do this in
     // the UI file due to bug in Designer
@@ -667,7 +700,6 @@ void TagDialog::init()
     connect( ui->qSpinBox_score,      SIGNAL( valueChanged( int ) ),               SLOT(scoreModified()) );
     connect( ui->qPlainTextEdit_comment,   SIGNAL( textChanged() ),                     SLOT(commentModified()) );
     connect( ui->kTextEdit_lyrics,    SIGNAL( textChanged() ),                     SLOT(checkModified()) );
-    connect( ui->kTextEdit_selectedLabels, SIGNAL( textChanged() ),                SLOT(checkModified()) );
     connect( ui->qSpinBox_discNumber, SIGNAL( valueChanged( int ) ),               SLOT(discNumberModified()) );
 
     connect( ui->pushButton_cancel,   SIGNAL( clicked() ), SLOT( cancelPressed() ) );
@@ -676,6 +708,13 @@ void TagDialog::init()
     connect( ui->pushButton_previous, SIGNAL( clicked() ), SLOT( previousTrack() ) );
     connect( ui->pushButton_next,     SIGNAL( clicked() ), SLOT( nextTrack() ) );
     connect( ui->checkBox_perTrack,   SIGNAL( clicked() ), SLOT( perTrack() ) );
+
+    connect( ui->addButton,           SIGNAL( clicked() ),                          SLOT( addLabelPressed() ) );
+    connect( ui->removeButton,        SIGNAL( clicked() ),                          SLOT( removeLabelPressed() ) );
+    connect( ui->kComboBox_label,     SIGNAL( activated( int ) ),                   SLOT( labelModified() ) );
+    connect( ui->kComboBox_label,     SIGNAL( editTextChanged( const QString& ) ),  SLOT( labelModified() ) );
+    connect( ui->kComboBox_label,     SIGNAL( returnPressed() ),                    SLOT( addLabelPressed() ) );
+    connect( ui->labelsList,          SIGNAL( pressed( const QModelIndex& ) ),      SLOT( labelSelected() ) );
 
     ui->pixmap_cover->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( ui->pixmap_cover, SIGNAL( customContextMenuRequested(const QPoint &) ), SLOT( showCoverMenu(const QPoint &) ) );
@@ -971,8 +1010,6 @@ void TagDialog::readTags()
     ui->qSpinBox_discNumber->setEnabled( editable );
     ui->qSpinBox_year->setEnabled( editable );
     ui->qPlainTextEdit_comment->setEnabled( editable );
-    ui->kTextEdit_selectedLabels->setEnabled( editable );
-    m_labelCloud->view()->setEnabled( editable );
     ui->ratingWidget->setEnabled( true );
     ui->qSpinBox_score->setEnabled( true );
     ui->pushButton_guessTags->setEnabled( editable );
@@ -1184,17 +1221,6 @@ TagDialog::readMultipleTracks()
 
     ui->statisticsLabel->setText( statisticsText );
 
-    QStringList commonLabels = getCommonLabels();
-    QString text;
-    oldForeach ( commonLabels )
-    {
-        if ( !text.isEmpty() )
-            text.append( ", " );
-        text.append( *it );
-    }
-    ui->kTextEdit_selectedLabels->setText( text );
-    m_commaSeparatedLabels = text;
-
     // This will reset a wrongly enabled Ok button
     checkModified();
 }
@@ -1251,9 +1277,6 @@ TagDialog::changes()
         if ( !equalString( ui->kTextEdit_lyrics->toPlainText(), m_lyrics ) )
             result |= TagDialog::LYRICSCHANGED;
     }
-
-    if( !equalString( ui->kTextEdit_selectedLabels->toPlainText(), m_commaSeparatedLabels ) )
-        result |= TagDialog::LABELSCHANGED;
 
     return result;
 }
@@ -1558,8 +1581,6 @@ TagDialog::applyToAllTracks()
     DEBUG_BLOCK
             debug() << m_fieldEdited;
 
-    generateDeltaForLabelList( labelListFromText( ui->kTextEdit_selectedLabels->toPlainText() ) );
-
     foreach( Meta::TrackPtr track, m_tracks )
     {
         //do not use Meta::Field::updateTrack() here!
@@ -1624,7 +1645,7 @@ TagDialog::applyToAllTracks()
 
         storeTags( track, changed, data );
 
-        QStringList tmpLabels = labelsForTrack( track );
+/*        QStringList tmpLabels = labelsForTrack( track );
         //apply delta
         foreach( const QString &label, m_removedLabels )
         {
@@ -1634,103 +1655,86 @@ TagDialog::applyToAllTracks()
         {
             tmpLabels.append( label );
         }
-        storeLabels( track, tmpLabels );
+        storeLabels( track, tmpLabels );*/
     }
 }
 
-QStringList
-TagDialog::labelListFromText( const QString &text )
-{
-    const QStringList tmp = text.split(',', QString::SkipEmptyParts);
-    //insert each string into a map to remove duplicates
-    QMap<QString, int> map;
-    oldForeach( tmp )
-    {
-        QString tmpString = (*it).trimmed();
-        if ( !tmpString.isEmpty() )
-        {
-            map.remove( tmpString );
-            map.insert( tmpString, 0 );
-        }
-    }
-    QStringList result;
-    QMap<QString, int>::ConstIterator endMap( map.constEnd() );
-    for(QMap<QString, int>::ConstIterator it = map.constBegin(); it != endMap; ++it )
-    {
-        result.append( it.key() );
-    }
-    return result;
-}
+// QStringList
+// TagDialog::labelListFromText( const QString &text )
+// {
+//     const QStringList tmp = text.split(',', QString::SkipEmptyParts);
+//     //insert each string into a map to remove duplicates
+//     QMap<QString, int> map;
+//     oldForeach( tmp )
+//     {
+//         QString tmpString = (*it).trimmed();
+//         if ( !tmpString.isEmpty() )
+//         {
+//             map.remove( tmpString );
+//             map.insert( tmpString, 0 );
+//         }
+//     }
+//     QStringList result;
+//     QMap<QString, int>::ConstIterator endMap( map.constEnd() );
+//     for(QMap<QString, int>::ConstIterator it = map.constBegin(); it != endMap; ++it )
+//     {
+//         result.append( it.key() );
+//     }
+//     return result;
+// }
 
-void
-TagDialog::generateDeltaForLabelList( const QStringList &list )
-{
-    m_addedLabels.clear();
-    m_removedLabels.clear();
-    oldForeach( list )
-    {
-        if ( !m_labels.contains( *it ) )
-            m_addedLabels.append( *it );
-    }
-    oldForeach( m_labels )
-    {
-        if ( !list.contains( *it ) )
-            m_removedLabels.append( *it );
-    }
-    m_labels = list;
-}
+// void
+// TagDialog::generateDeltaForLabelList( const QStringList &list )
+// {
+//     m_addedLabels.clear();
+//     m_removedLabels.clear();
+//     oldForeach( list )
+//     {
+//         if ( !m_labels.contains( *it ) )
+//             m_addedLabels.append( *it );
+//     }
+//     oldForeach( m_labels )
+//     {
+//         if ( !list.contains( *it ) )
+//             m_removedLabels.append( *it );
+//     }
+//     m_labels = list;
+// }
 
-QString
-TagDialog::generateHTML( const QStringList &labels )
-{
-    //the first column of each row is the label name, the second the number of assigned songs
-    //loop through it to find the highest number of songs, can be removed if somebody figures out a better sql query
-    QMap<QString, QPair<QString, int> > mapping;
-    QStringList sortedLabels;
-    int max = 1;
-    oldForeach( labels )
-    {
-        QString label = *it;
-        sortedLabels << label.toLower();
-        ++it;
-        int value = ( *it ).toInt();
-        if ( value > max )
-            max = value;
-        mapping[label.toLower()] = QPair<QString, int>( label, value );
-    }
-    sortedLabels.sort();
-    QString html = "<html><body>";
-    oldForeach( sortedLabels )
-    {
-        QString key = *it;
-        //generate a number in the range 1..10 based on  how much the label is used
-        int labelUse = ( mapping[key].second * 10 ) / max;
-        if ( labelUse == 0 )
-            labelUse = 1;
-        html.append( QString( "<span class='label size%1'><a href=\"label:%2\">%3</a></span> " )
-                              .arg( QString::number( labelUse ), mapping[key].first, mapping[key].first ) );
-    }
-    html.append( "</body></html>" );
-    debug() << "Dumping HTML for label cloud: " << html;
-    return html;
-}
-
-void
-TagDialog::openUrlRequest(const KUrl &url )         //SLOT
-{
-    DEBUG_BLOCK
-    if ( url.protocol() == "label" )
-    {
-        QString text = ui->kTextEdit_selectedLabels->toPlainText();
-        QStringList currentLabels = labelListFromText( text );
-        if ( currentLabels.contains( url.path() ) )
-            return;
-        if ( !text.isEmpty() )
-            text.append( ", " );
-        text.append( url.path() );
-        ui->kTextEdit_selectedLabels->setText( text );
-    }
-}
+// QString
+// TagDialog::generateHTML( const QStringList &labels )
+// {
+//     //the first column of each row is the label name, the second the number of assigned songs
+//     //loop through it to find the highest number of songs, can be removed if somebody figures out a better sql query
+//     QMap<QString, QPair<QString, int> > mapping;
+//     QStringList sortedLabels;
+//     int max = 1;
+//     oldForeach( labels )
+//     {
+//         QString label = *it;
+//         sortedLabels << label.toLower();
+//         ++it;
+//         int value = ( *it ).toInt();
+//         if ( value > max )
+//             max = value;
+//         mapping[label.toLower()] = QPair<QString, int>( label, value );
+//     }
+//     sortedLabels.sort();
+//     QString html = "<html><body>";
+//     oldForeach( sortedLabels )
+//     {
+//         QString key = *it;
+//         //generate a number in the range 1..10 based on  how much the label is used
+//         int labelUse = ( mapping[key].second * 10 ) / max;
+//         if ( labelUse == 0 )
+//             labelUse = 1;
+//         html.append( QString( "<span class='label size%1'><a href=\"label:%2\">%3</a></span> " )
+//                               .arg( QString::number( labelUse ), mapping[key].first, mapping[key].first ) );
+//     }
+//     html.append( "</body></html>" );
+//     debug() << "Dumping HTML for label cloud: " << html;
+//     return html;
+// }
 
 void
 TagDialog::selectOrInsertText( const QString &text, QComboBox *comboBox )

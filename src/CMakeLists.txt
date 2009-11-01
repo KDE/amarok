@@ -604,6 +604,7 @@ set(amaroklib_LIB_SRCS
     dialogs/ScriptUpdater.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
+    dialogs/LabelListModel.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/MyDirOperator.cpp
     browsers/filebrowser/kbookmarkhandler.cpp
