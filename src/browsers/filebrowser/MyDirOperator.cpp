@@ -147,6 +147,8 @@ MyDirOperator::slotMoveTracks( const Meta::TrackList& tracks )
     source->prepareMove( tracks, destination );
     m_moveActivated = false;
     m_moveAction = 0;
+
+    updateDir();
 }
 
 void
