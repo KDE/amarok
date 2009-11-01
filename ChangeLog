@@ -90,6 +90,8 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * Enabled C++ exceptions handling in Amarok. This fixes various crashes
+      with liblastfm. (BR 212115)
     * Reversed the priority of repeat and random modes. Repeat now always 
       takes precedence. (BR 178056)
     * Fixed crash if closing amarok while the JamendoXmlParser is running.
