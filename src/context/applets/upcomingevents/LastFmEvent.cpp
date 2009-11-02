@@ -17,19 +17,17 @@
 #include "LastFmEvent.h"
 
 
-QStringList LastFmEvent::artists()
+QStringList LastFmEvent::artists() const
 {
     return m_artists;
 }
 
-
-QString LastFmEvent::date()
+LastFmDate* LastFmEvent::date() const
 {
     return m_date;
 }
 
-
-QString LastFmEvent::name()
+QString LastFmEvent::name() const
 {
     return m_name;
 }

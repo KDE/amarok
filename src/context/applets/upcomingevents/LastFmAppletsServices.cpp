@@ -40,7 +40,9 @@ void LastFmAppletsServices::sendSimilarArtistsRequest(const QString& artist_name
     connect(m_reply, SIGNAL(finished()), this, SLOT(similarArtistsFetched()));
 }*/
 
-QList<LastFmEvent> LastFmAppletsServices::upcomingEvents(const QString &artist_name) {
+QList<LastFmEvent*> LastFmAppletsServices::upcomingEvents(const QString &artist_name) {
+
+    //QMutexLocker locker(m_mutex);
 
     //Initialize the query parameters
     QMap< QString, QString > params;
@@ -48,9 +50,9 @@ QList<LastFmEvent> LastFmAppletsServices::upcomingEvents(const QString &artist_n
     params["artist"] = artist_name;
     
     m_reply = lastfm::ws::get(params);
-    QList<LastFmEvent> events;
-    try
-    {
+    QList<LastFmEvent*> events;
+//     try
+//     {
         //Parse the XML reply
         lastfm::XmlQuery xml = lastfm::ws::parse(m_reply);
         foreach (lastfm::XmlQuery xmlEvent, xml.children("event"))
@@ -62,14 +64,14 @@ QList<LastFmEvent> LastFmAppletsServices::upcomingEvents(const QString &artist_n
             }
             QString title = xmlEvent["title"].text();
             QString date = xmlEvent["startDate"].text();
-            LastFmEvent event(artists, title, date);
+            LastFmEvent* event = new LastFmEvent(artists, title, new LastFmDate(date));
             events.append(event);
         }
         return events;
-    }
-    catch (lastfm::ws::ParseError& e)
+//     }
+    /*catch (lastfm::ws::ParseError& e)
     {
         //kDebug() << e.what();
-    }
+    }*/
     //connect(m_reply, SIGNAL( finished() ), SLOT( eventsFetched() ))
 }

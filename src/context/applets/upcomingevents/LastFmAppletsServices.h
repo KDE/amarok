@@ -43,7 +43,7 @@ public:
     void sendSimilarArtistsRequest(const QString &artist_name);*/
 
 public:
-    QList<LastFmEvent> upcomingEvents(const QString &artist_name);
+    QList<LastFmEvent*> upcomingEvents(const QString &artist_name);
 };
 
 #endif // LASTFMAPPLETSSERVICES_H
