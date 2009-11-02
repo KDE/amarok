@@ -40,7 +40,7 @@ void LastFmAppletsServices::sendSimilarArtistsRequest(const QString& artist_name
     connect(m_reply, SIGNAL(finished()), this, SLOT(similarArtistsFetched()));
 }*/
 
-QList<LastFmEvent*> LastFmAppletsServices::upcomingEvents(const QString &artist_name) {
+QList<LastFmEvent*> LastFmAppletsServices::upcomingEvents(const QString artist_name) {
 
     //QMutexLocker locker(m_mutex);
 
@@ -51,27 +51,29 @@ QList<LastFmEvent*> LastFmAppletsServices::upcomingEvents(const QString &artist_
     
     m_reply = lastfm::ws::get(params);
     QList<LastFmEvent*> events;
-//     try
-//     {
-        //Parse the XML reply
-        lastfm::XmlQuery xml = lastfm::ws::parse(m_reply);
-        foreach (lastfm::XmlQuery xmlEvent, xml.children("event"))
-        {
-            QStringList artists;
-            foreach (lastfm::XmlQuery xmlArtists, xmlEvent.children("artists"))
-            {
-                artists.append(xmlArtists["artist"].text());
-            }
-            QString title = xmlEvent["title"].text();
-            QString date = xmlEvent["startDate"].text();
-            LastFmEvent* event = new LastFmEvent(artists, title, new LastFmDate(date));
-            events.append(event);
-        }
-        return events;
-//     }
-    /*catch (lastfm::ws::ParseError& e)
+    
+    //Parse the XML reply
+    lastfm::XmlQuery xml = lastfm::ws::parse(m_reply);
+    foreach (lastfm::XmlQuery xmlEvent, xml.children("event"))
     {
-        //kDebug() << e.what();
-    }*/
-    //connect(m_reply, SIGNAL( finished() ), SLOT( eventsFetched() ))
+        QStringList artists;
+        foreach (lastfm::XmlQuery xmlArtists, xmlEvent.children("artists"))
+        {
+            artists.append(xmlArtists["artist"].text());
+        }
+        QString title = xmlEvent["title"].text();
+        QDate date = QDate::fromString(xmlEvent["startDate"].text(), "ddd, dd MMM yyyy");
+        KUrl smallImageUrl(xmlEvent["image"]["image size=small"].text());
+        KUrl url(xmlEvent["url"].text());
+        LastFmEvent* event = new LastFmEvent(artists, title, date,smallImageUrl, url);
+        events.append(event);
+    }
+    return events;
+}
+
+
+QMap<int, QString> LastFmAppletsServices::similarArtists(const QString artist_name)
+{
+    lastfm::Artist artist(artist_name);
+    return artist.getSimilar(artist.getSimilar());
 }

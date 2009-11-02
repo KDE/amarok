@@ -22,7 +22,7 @@ QStringList LastFmEvent::artists() const
     return m_artists;
 }
 
-LastFmDate* LastFmEvent::date() const
+QDate LastFmEvent::date() const
 {
     return m_date;
 }
@@ -30,4 +30,14 @@ LastFmDate* LastFmEvent::date() const
 QString LastFmEvent::name() const
 {
     return m_name;
+}
+
+KUrl LastFmEvent::smallImageUrl() const
+{
+    return m_smallImageUrl;
+}
+
+KUrl LastFmEvent::url() const
+{
+    return m_url;
 }

@@ -18,27 +18,29 @@
 #define LASTFMEVENT_H
 
 #include <QString>
-#include <KDateTime>
+#include <QDate>
 #include <QStringList>
+#include <KUrl>
 
-#include "LastFmDate.h"
-
-class LastFmEvent : public QObject
+class LastFmEvent
 {
-    Q_OBJECT
-    
+
 private:
     QStringList m_artists;
     QString m_name;
-    LastFmDate* m_date;
+    QDate m_date;
+    KUrl m_smallImageUrl;
+    KUrl m_url;
 
 public:
-    LastFmEvent(QStringList artists, QString name, LastFmDate* date)
-    : m_artists(artists), m_name(name), m_date(date) {}
+    LastFmEvent(QStringList artists, QString name, QDate date, KUrl smallImageUrl, KUrl url)
+    : m_artists(artists), m_name(name), m_date(date), m_smallImageUrl(smallImageUrl), m_url(url) {}
         
     QStringList artists() const;
     QString name() const;
-    LastFmDate* date() const;
+    QDate date() const;
+    KUrl smallImageUrl() const;
+    KUrl url() const;
 };
 
 #endif // LASTFMEVENT_H
