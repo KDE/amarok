@@ -425,75 +425,19 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 
 
     // Draw the knob (handle)
-  
-    // The handle shadow only
-    p->drawPixmap( knob.x(), knob.y(), sliderHandle( Qt::black, active, (21.0 * knob.width() ) / 22 ) );
-    // The handle itself
-    p->drawPixmap( knob.x(), knob.y(), sliderHandle( QColor( "#868686" ), active, knob.width() ) );
-}
-
-
-// The following code was imported from Oxygen,
-// located in KDE/kdebase/runtime/kstyles/oxygen/helper.cpp
-// located in KDE/kdebase/workspace/kwin/clients/nitrogen/lib/helper.cpp
-
-QPixmap SvgHandler::sliderHandle( const QColor &color, bool pressed, int size )
-{
-    const QString key = QString::number( (quint64(color.rgba()) << 32) | (size << 1) | (int)pressed );
-    QPixmap pixmap;
-
-    if( !m_sliderHandleCache->find( key, pixmap ) )
-    {
-        pixmap = QPixmap(size, size);
-        pixmap.fill(Qt::transparent);
-
-        QColor blendedColor = pressed ? The::svgTinter()->blendColors( color, PaletteHandler::highlightColor(), 80 ) : color;
-        QColor light  = calcLightColor( blendedColor );
-        QColor dark   = calcDarkColor( blendedColor );
-
-        QPainter p( &pixmap );
-        p.setRenderHints( QPainter::Antialiasing );
-        p.setPen(Qt::NoPen);
-        double u = size/18.0;
-        p.translate( 0.5*u, (0.5-0.668)*u );
-
-        {
-            // outline circle
-            qreal penWidth = 1.2;
-            QLinearGradient lg( 0, u*(1.665-penWidth), 0, u*(12.33+1.665-penWidth) );
-            lg.setColorAt( 0, dark );
-            lg.setColorAt( 1, light );
-            QRectF r( u*0.5*(17-12.33+penWidth), u*(1.665+penWidth), u*(12.33-penWidth), u*(12.33-penWidth) );
-            p.setPen( QPen( lg, penWidth*u ) );
-            p.drawEllipse( r );
-            p.end();
-        }
-
-        m_sliderHandleCache->insert( key, pixmap );
-    }
-
-    return pixmap;
-}
-
-QColor SvgHandler::calcLightColor(const QColor &color) const
-{
-    const qreal contrast = 0.9;
-    return KColorScheme::shade(color, KColorScheme::LightShade, contrast);
-}
-
-QColor SvgHandler::calcDarkColor(const QColor &color) const
-{
-    const qreal contrast = 0.9;
-    if (lowThreshold(color))
-        return KColorUtils::mix(calcLightColor(color), color, 0.2 + 0.8 * contrast);
+    if ( active )
+        p->drawPixmap( knob.x(), knob.y(),
+                       renderSvg(
+                       "slider_knob_200911_active",
+                       knob.width(), knob.height(),
+                       "slider_knob_200911_active" ) );
     else
-        return KColorScheme::shade(color, KColorScheme::MidShade, contrast);
+        p->drawPixmap( knob.x(), knob.y(),
+                       renderSvg(
+                       "slider_knob_200911",
+                       knob.width(), knob.height(),
+                       "slider_knob_200911" ) );
 }
 
-bool SvgHandler::lowThreshold(const QColor &color) const
-{
-    QColor darker = KColorScheme::shade(color, KColorScheme::MidShade, 0.5);
-    return KColorUtils::luma(darker) > KColorUtils::luma(color);
-}
 
 #include "SvgHandler.moc"
