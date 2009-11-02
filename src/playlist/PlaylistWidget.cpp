@@ -27,6 +27,7 @@
 #include "layouts/LayoutConfigAction.h"
 #include "layouts/LayoutManager.h"
 #include "MainWindow.h"
+#include "navigators/NavigatorConfigAction.h"
 #include "PaletteHandler.h"
 #include "PlaylistController.h"
 #include "PlaylistDefines.h"
@@ -160,6 +161,9 @@ Playlist::Widget::Widget( QWidget* parent )
         QToolButton *tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( layoutConfigAction ) );
         if( tbutton )
             tbutton->setPopupMode( QToolButton::InstantPopup );
+
+        plBar->addAction( new NavigatorConfigAction( this ) );
+        
 
         plBar->addAction( new KToolBarSpacerAction( this ) );
     } // END Playlist Toolbar

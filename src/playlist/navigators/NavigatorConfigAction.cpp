@@ -34,6 +34,7 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
 
     QAction * action;
     action = navigatorActions->addAction( i18n( "Standard" ) );
+    action->setIcon( KIcon( "media-playlist-repeat-off-amarok" ) );
     action->setCheckable( true );
     //action->setIcon( true );
 
@@ -42,12 +43,15 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     navigatorActions->addAction( action );
     
     action = navigatorActions->addAction( i18n( "Repeat Track" ) );
+    action->setIcon( KIcon( "media-track-repeat-amarok" ) );
     action->setCheckable( true );
         
     action = navigatorActions->addAction( i18n( "Repeat Album" ) );
+    action->setIcon( KIcon( "media-album-repeat-amarok" ) );
     action->setCheckable( true );
         
     action = navigatorActions->addAction( i18n( "Repeat Playlist" ) );
+    action->setIcon( KIcon( "media-playlist-repeat-amarok" ) );
     action->setCheckable( true );
         
     action = new QAction( parent );
@@ -55,9 +59,11 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     navigatorActions->addAction( action );
     
     action = navigatorActions->addAction( i18n( "Random Tracks" ) );
+    action->setIcon( KIcon( "amarok_track" ) );
     action->setCheckable( true );
         
     action = navigatorActions->addAction( i18n( "Random Albums" ) );
+    action->setIcon( KIcon( "media-album-shuffle-amarok" ) );
     action->setCheckable( true );
 
     navigatorMenu->addActions( navigatorActions->actions() );
