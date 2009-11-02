@@ -436,8 +436,9 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     trackList->append( QString::number( modified ) );
     if( trackData.contains( Field::ALBUMGAIN ) && trackData.contains( Field::ALBUMPEAKGAIN ) )
     {
-        trackList->append( QString::number( trackData[ Field::ALBUMGAIN ].toDouble() ) );
-        trackList->append( QString::number( trackData[ Field::ALBUMPEAKGAIN ].toDouble() ) );
+        //QLocale is set by default from LANG, but this will use , for floats, which screws up the SQL.
+        trackList->append( QString::number( trackData[ Field::ALBUMGAIN ].toDouble() ).replace( ',', '.' ) );
+        trackList->append( QString::number( trackData[ Field::ALBUMPEAKGAIN ].toDouble() ).replace( ',', '.' ) );
     }
     else
     {
@@ -446,8 +447,8 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     }
     if( trackData.contains( Field::TRACKGAIN ) && trackData.contains( Field::TRACKPEAKGAIN ) )
     {
-        trackList->append( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ) );
-        trackList->append( QString::number( trackData[ Field::TRACKPEAKGAIN ].toDouble() ) );
+        trackList->append( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ).replace( ',', '.' ) );
+        trackList->append( QString::number( trackData[ Field::TRACKPEAKGAIN ].toDouble() ).replace( ',', '.' ) );
     }
     else
     {

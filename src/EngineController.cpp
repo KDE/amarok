@@ -1075,11 +1075,9 @@ EngineController::slotPlayableUrlFetched( const KUrl &url )
 void
 EngineController::slotTrackLengthChanged( qint64 milliseconds )
 {
-    Q_UNUSED( milliseconds )
     DEBUG_BLOCK
 
-    if( trackLength() != 0 ) //don't notify for 0 seconds, it's probably just a stream
-        trackLengthChangedNotify( trackLength() );
+    trackLengthChangedNotify( m_multiPlayback ? trackLength() : milliseconds );
 }
 
 void

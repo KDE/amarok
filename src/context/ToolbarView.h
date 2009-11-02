@@ -18,6 +18,7 @@
 #define AMAROK_CONTEXT_TOOLBAR_VIEW
 
 #include <QGraphicsView>
+#include <QPointer>
 
 class QGraphicsScene;
 class QWidget;
@@ -61,7 +62,7 @@ class ToolbarView : public QGraphicsView
     
     private:
         int m_height;
-        AppletToolbar* m_toolbar;
+        QPointer<AppletToolbar> m_toolbar;
         QList< AppletItemOverlay* > m_moveOverlays;
         Plasma::Containment* m_cont;
 };    

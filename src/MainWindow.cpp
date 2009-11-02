@@ -385,7 +385,7 @@ MainWindow::createPopupMenu()
 {
     DEBUG_BLOCK
     QMenu* menu = new QMenu( this );
-    menu->setTitle( "&View" );
+    menu->setTitle( i18nc("@item:inmenu", "&View" ) );
 
     // Layout locking:
     QAction* lockAction = new QAction( i18n( "Lock layout" ), this );

@@ -642,6 +642,8 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 void
 CollectionTreeItemModelBase::queryDone()
 {
+    DEBUG_BLOCK
+
     QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
     if( !qm )
         return;
@@ -660,7 +662,6 @@ CollectionTreeItemModelBase::queryDone()
     //stop timer if there are no more animations active
     if( d->m_runningQueries.count() == 0 )
         m_timeLine->stop();
-    qm->deleteLater();
 }
 
 void
@@ -1049,6 +1050,8 @@ void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 
 void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item )
 {
+    DEBUG_BLOCK
+
     if( !d->m_runningQueries.contains( item ) )
         return;
     //replace this hack with QWeakPointer as soon as we depend on Qt 4.6
@@ -1062,14 +1065,10 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
     }
     if( qm )
     {
-        //disconnect the model from the querymake so we do not get
-        //notified about the results
-        qm->disconnect( this );
-        //although we could abort the query here,
-        //I strongly suspect that the querymaker's autodelete would not work anymore
-        //(as it has to be implemented in separately in each subclass)
-        //so just let the querymaker run, its result will be ignored
-        qm->setAutoDelete( true );
+        //Disconnect all signals from the QueryMaker so we do not get notified about the results
+        qm->disconnect();
+        //Nuke it
+        qm->deleteLater();
     }
 }
 

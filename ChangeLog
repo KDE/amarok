@@ -90,6 +90,13 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * Ensure that ReplayGain float values are stored in the database with a
+      period, not a comma. (BR 212676)
+    * Fixed crashes with Icecast Directory script. (BR 206579)
+    * Enabled C++ exceptions handling in Amarok. This fixes various crashes
+      with liblastfm. (BR 212115)
+    * Reversed the priority of repeat and random modes. Repeat now always 
+      takes precedence. (BR 178056)
     * Fixed crash if closing amarok while the JamendoXmlParser is running.
       (BR 208468) (BR 211015)
     * Systray information now updates correctly for streams. (BR 211748)
