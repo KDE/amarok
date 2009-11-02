@@ -43,7 +43,6 @@
 Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsScene* scene, QWidget* parent )
     : QGraphicsView( scene, parent )
     , m_height( 30 )
-    , m_toolbar( 0 )
     , m_cont( containment )
 {
     setSceneRect( TOOLBAR_X_OFFSET, 0, size().width(), m_height );
@@ -113,8 +112,11 @@ void
 Context::ToolbarView::resizeEvent( QResizeEvent *event )
 {
     Q_UNUSED( event )
+
     setSceneRect( TOOLBAR_X_OFFSET, 0, size().width(), m_height );
-    m_toolbar->setGeometry( sceneRect() );
+
+    if( m_toolbar )
+        m_toolbar->setGeometry( sceneRect() );
 }
 
 void
