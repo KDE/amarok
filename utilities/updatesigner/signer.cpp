@@ -16,7 +16,7 @@
 
 #include "signer.h"
 
-#include "../src/dialogs/ScriptUpdater.h"
+#include "../../shared/ScriptUpdaterStatic.h"
 
 #include <QFile>
 #include <QTimer>

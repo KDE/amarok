@@ -1,8 +1,17 @@
+project(Amarok-Update-Signer)
+
+cmake_minimum_required(VERSION 2.6.2)
 
 find_package(Qt4 REQUIRED)
+find_package(KDE4 REQUIRED) #Needed for the QCA2 check to work
 find_package(QCA2 REQUIRED)
 
-include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${QCA2_INCLUDE_DIR})
+include_directories(
+    ${QT_INCLUDES}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${QCA2_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/shared
+    )
 
 set(amarok-update-signer_SRCS signer.cpp amarok-update-signer.cpp)
 qt4_automoc(${amarok-update-signer_SRCS})
