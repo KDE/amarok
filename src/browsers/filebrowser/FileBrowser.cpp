@@ -193,11 +193,17 @@ void FileBrowser::Widget::writeConfig()
 void FileBrowser::Widget::setupToolbar()
 {
     QStringList actions;
-    actions << "up" << "back" << "forward" << "home" << "short view" << "detailed view" << "bookmarks";
+    actions << "up" << "|" << "back" << "forward" << "|" << "home" << "|" << "short view" << "detailed view" << "|" << "bookmarks";
 
     QAction *ac;
     for ( QStringList::ConstIterator it = actions.constBegin(); it != actions.constEnd(); ++it )
     {
+        if ( *it == "|" )
+        {
+            m_toolbar->addSeparator();
+            continue;
+        }
+
         if ( *it == "bookmarks" )
             ac = m_actionCollection->action(( *it ).toLatin1().constData() );
         else
