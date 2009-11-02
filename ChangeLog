@@ -90,6 +90,8 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * Ensure that ReplayGain float values are stored in the database with a
+      period, not a comma. (BR 212676)
     * Fixed crashes with Icecast Directory script. (BR 206579)
     * Enabled C++ exceptions handling in Amarok. This fixes various crashes
       with liblastfm. (BR 212115)
