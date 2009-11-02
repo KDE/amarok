@@ -90,6 +90,7 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * Fixed crashes with Icecast Directory script. (BR 206579)
     * Enabled C++ exceptions handling in Amarok. This fixes various crashes
       with liblastfm. (BR 212115)
     * Reversed the priority of repeat and random modes. Repeat now always 
