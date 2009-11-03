@@ -110,7 +110,7 @@ ScriptUpdater::phase2( KJob * job )
     DEBUG_BLOCK
     if ( job->error() )
     {
-        debug() << "job error! no version file found is most likely culprit";
+        debug() << m_scriptname << ": job error! no version file found is most likely culprit";
         // if no 'version' file was found, cancel the update
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
@@ -233,6 +233,11 @@ ScriptUpdater::phase4( KJob * job )
     QString relPath = KGlobal::dirs()->relativeLocation( "data", m_fileName );
     QFileInfo fileinfo( relPath );
     QString destination = KGlobal::dirs()->saveLocation( "data", fileinfo.path(), false );
+    QDir dir; // only needed as a dummy because .exists() and .mkpath() aren't static
+    if (!dir.exists(destination))
+    {
+        dir.mkpath(destination);
+    }
     const KArchiveDirectory* const archiveDir = archive.directory();
     archiveDir->copyTo( destination );
     // update m_scriptPath so that the updated version of the script will be loaded
