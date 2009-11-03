@@ -258,6 +258,10 @@ namespace Amarok
 
 
 /// Update this when necessary
+//#ifdef CURRENT_GIT_VERSION
+//#define APP_VERSION #CURRENT_GIT_VERSION
+//#else
 #define APP_VERSION "2.2-GIT"
+//#endif
 
 #endif
