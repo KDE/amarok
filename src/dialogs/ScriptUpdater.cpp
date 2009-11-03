@@ -107,8 +107,10 @@ ScriptUpdater::updateScript()
 void
 ScriptUpdater::phase2( KJob * job )
 {
+    DEBUG_BLOCK
     if ( job->error() )
     {
+        debug() << "job error! no version file found is most likely culprit";
         // if no 'version' file was found, cancel the update
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
