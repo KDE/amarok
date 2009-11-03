@@ -1104,9 +1104,9 @@ ScanResultProcessor::copyHashesToTempTables()
     queryStart = "INSERT INTO urls_temp VALUES ";
     query = queryStart;
     valueReady = false;
-    //QList<int> keys = m_urlsHashById.keys();
-    //qSort( keys );
-    foreach( int key, m_urlsHashById.keys() )
+    QList<int> keys = m_urlsHashById.keys();
+    qSort( keys );
+    foreach( int key, keys )
     {
         currList = m_urlsHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","
@@ -1137,14 +1137,15 @@ ScanResultProcessor::copyHashesToTempTables()
         //debug() << "inserting " << query << ", size " << query.size();
         m_collection->insert( query );
     }
+    keys.clear();
 
     //albums
     queryStart = "INSERT INTO albums_temp VALUES ";
     query = queryStart;
     valueReady = false;
-    //keys = m_albumsHashById.keys();
-    //qSort( keys  );
-    foreach( int key, m_albumsHashById.keys() )
+    keys = m_albumsHashById.keys();
+    qSort( keys );
+    foreach( int key, keys )
     {
         currList = m_albumsHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","
@@ -1174,15 +1175,16 @@ ScanResultProcessor::copyHashesToTempTables()
         //debug() << "inserting " << query << ", size " << query.size();
         m_collection->insert( query );
     }
+    keys.clear();
 
     //tracks
     debug() << "tracks key size is " << m_tracksHashById.keys().size();
     queryStart = "INSERT INTO tracks_temp VALUES ";
     query = queryStart;
     valueReady = false;
-    //keys = m_tracksHashById.keys();
-    //qSort( keys );
-    foreach( int key, m_tracksHashById.keys() )
+    keys = m_tracksHashById.keys();
+    qSort( keys );
+    foreach( int key, keys )
     {
         //debug() << "key = " << key << ", id = " << m_tracksHashById[key]->at( 0 );
         currList = m_tracksHashById[key];
@@ -1248,17 +1250,18 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
     QString queryStart = "INSERT INTO " + tableName + "_temp VALUES ";
     QString query = queryStart;
     bool valueReady = false;
-    //QStringList keys = hash->keys();
-    //QHash<int, QString> sortedHash;
-    //foreach( QString key, keys )
-    //    sortedHash.insert( hash->value( key ), key );
-    //QList<int> intKeys = sortedHash.keys();
-    //qSort( intKeys );
-    foreach( QString key, hash->keys() )
+    QStringList keys = hash->keys();
+    QHash<int, QString> sortedHash;
+    foreach( QString key, keys )
+        sortedHash.insert( hash->value( key ), key );
+    QList<int> intKeys = sortedHash.keys();
+    qSort( intKeys );
+    foreach( int key, intKeys )
     {
 
-        //currString = sortedHash[key];
-        currQuery =   "(" + QString::number( hash->value( key ) ) + ",'" + m_collection->escape( key ) + "')";
+        currString = sortedHash[key];
+        //currQuery =   "(" + QString::number( hash->value( key ) ) + ",'" + m_collection->escape( key ) + "')";
+        currQuery =   "(" + QString::number( key ) + ",'" + m_collection->escape( sortedHash[key] ) + "')";
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
