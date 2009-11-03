@@ -364,7 +364,8 @@ Track::collection() const
 void
 Track::setTrackInfo( const lastfm::Track &track )
 {
-    d->setTrackInfo( track );
+    if( !track.isNull() )
+        d->setTrackInfo( track );
 }
 
 QString
