@@ -72,7 +72,7 @@ void LabelListModel::addLabel( const QString label )
 {
     if ( ( !label.isEmpty() ) && ( !isPresent( label ) ) )
     {
-        beginInsertRows( QModelIndex(), 0 , 0 );
+        beginInsertRows( QModelIndex(), 0 , m_labels.length()+1 );
         m_labels << label ;
         m_labels.sort();
         endInsertRows();
@@ -97,8 +97,9 @@ void LabelListModel::removeLabel( const QString label )
 
     if ( index >= 0 )
     {
+        beginRemoveRows( QModelIndex(), index, index );
         m_labels.removeAt( index );
-        emit dataChanged( QModelIndex(), QModelIndex() );
+        endRemoveRows();
     }
 }
 
@@ -121,7 +122,9 @@ QStringList LabelListModel::Labels()
 
 void LabelListModel::setLabels( QStringList labels )
 {
+    beginInsertRows( QModelIndex(), 0, m_labels.length() );
     m_labels = labels;
+    endInsertRows();
 }
 
 bool LabelListModel::insertRows( int position, int rows, const QModelIndex &parent )

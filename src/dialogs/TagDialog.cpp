@@ -380,6 +380,9 @@ inline void
 TagDialog::previousTrack()
 {
     storeTags( m_currentTrack );
+    storeLabels( m_currentTrack, m_removedLabels, m_newLabels );
+    m_removedLabels.clear();
+    m_newLabels.clear();
 
     if( m_trackIterator.hasPrevious() )
     {
@@ -389,6 +392,7 @@ TagDialog::previousTrack()
         setCurrentTrack( m_trackIterator.previous() );
     }
     loadTags( m_currentTrack );
+    loadLabels( m_currentTrack );
     enableItems();
     readTags();
 }
@@ -398,6 +402,9 @@ inline void
 TagDialog::nextTrack()
 {
     storeTags( m_currentTrack );
+    storeLabels( m_currentTrack, m_removedLabels, m_newLabels );
+    m_removedLabels.clear();
+    m_newLabels.clear();
 
     if( m_trackIterator.hasNext() )
     {
@@ -407,6 +414,7 @@ TagDialog::nextTrack()
         setCurrentTrack( m_trackIterator.next() );
     }
     loadTags( m_currentTrack );
+    loadLabels( m_currentTrack );
     enableItems();
     readTags();
 }
@@ -422,11 +430,14 @@ TagDialog::perTrack()
         applyToAllTracks();
         setSingleTrackMode();
         loadTags( m_currentTrack );
+        loadLabels( m_currentTrack );
         readTags();
     }
     else
     {
         storeLabels( m_currentTrack, m_removedLabels, m_newLabels );
+        m_removedLabels.clear();
+        m_newLabels.clear();
         storeTags( m_currentTrack );
         setMultipleTracksMode();
         readMultipleTracks();
@@ -1421,10 +1432,56 @@ TagDialog::storeTags( const Meta::TrackPtr &track, int changes, const QVariantMa
 void
 TagDialog::storeLabels( const Meta::TrackPtr &track, const QStringList &removedlabels, const QStringList &newlabels )
 {
-    AMAROK_NOTIMPLEMENTED
-    //TODO: Store Labels to Database
-    //COMMENT: Check if new label already exists (if not create it)
-    //COMMENT: Check if removed label isn't used anymore (if not delete it)
+    DEBUG_BLOCK
+
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    
+    if( !sql )
+    {
+        debug() << "Could not get SqlStorage, aborting" << endl;
+        return;
+    }
+
+    for ( int x = 0; x < newlabels.length(); x++)
+    {
+        //Check if all new labels are already in the Database
+        const QString checkQuery = "SELECT label FROM labels WHERE label=\"%1\"";
+        QStringList result = sql->query(  checkQuery.arg( sql->escape( newlabels.at( x ) ) ) );
+
+        if ( result.isEmpty() )
+        {
+            const QString newQuery = "INSERT INTO labels (label) VALUE(\"%1\")";
+            sql->query(  newQuery.arg( sql->escape( newlabels.at( x ) ) ) );
+        }
+
+        //Insert connection for every new label if not already there
+        const QString checkNewQuery = "SELECT label from urls_labels WHERE label=(SELECT id FROM labels WHERE label=\"%1\") AND url=(SELECT id FROM urls WHERE uniqueid=\"%2\")";
+        result = sql->query(  checkNewQuery.arg( sql->escape( newlabels.at( x ) ), sql->escape( track->uidUrl() ) ) );
+
+        if ( result.isEmpty() )
+        {
+            const QString insertQuery = "INSERT INTO urls_labels (label,url) VALUE((SELECT id FROM labels WHERE label=\"%1\"),(SELECT id FROM urls WHERE uniqueid=\"%2\"))";
+            sql->query(  insertQuery.arg( sql->escape( newlabels.at( x ) ), sql->escape( track->uidUrl() ) ) );
+        }
+    }
+
+    for ( int y = 0; y < removedlabels.length(); y++)
+    {
+        //Delete connections for every removed label
+        const QString removeQuery = "DELETE FROM urls_labels WHERE url=(SELECT id FROM urls WHERE uniqueid=\"%1\") AND label=(SELECT id FROM labels WHERE label=\"%2\")";
+        sql->query(  removeQuery.arg( sql->escape( track->uidUrl() ), sql->escape( removedlabels.at( y ) ) )  );
+
+        //Check if label isn't used anymore
+        const QString checkQuery = "SELECT label FROM urls_labels where label=(SELECT id FROM labels WHERE label=\"%1\")";
+        QStringList result = sql->query(  checkQuery.arg( sql->escape( removedlabels.at( y ) ) ) );
+
+        if ( result.isEmpty() )
+        {
+            const QString labelRemoveQuery = "DELETE FROM labels WHERE label=\"%1\"";
+            sql->query(  labelRemoveQuery.arg( sql->escape( removedlabels.at( y ) ) ) );
+        }
+    }
+    
 }
 
 
@@ -1557,6 +1614,8 @@ TagDialog::saveTags()
     else
     {
         storeLabels( m_currentTrack, m_removedLabels, m_newLabels );
+        m_removedLabels.clear();
+        m_newLabels.clear();
         storeTags();
     }
 
