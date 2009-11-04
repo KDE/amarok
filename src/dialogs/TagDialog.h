@@ -134,6 +134,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QVariantMap dataForTrack( const Meta::TrackPtr &track );
         double scoreForTrack( const Meta::TrackPtr &track );
         int ratingForTrack( const Meta::TrackPtr &track );
+        QStringList labelsForTrack( const Meta::TrackPtr &track );
         QString lyricsForTrack( const Meta::TrackPtr &track );
         void saveTags();
         const QString unknownSafe( QString );

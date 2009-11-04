@@ -426,6 +426,7 @@ TagDialog::perTrack()
     }
     else
     {
+        storeLabels( m_currentTrack, m_removedLabels, m_newLabels );
         storeTags( m_currentTrack );
         setMultipleTracksMode();
         readMultipleTracks();
@@ -708,7 +709,6 @@ void TagDialog::init()
         ui->pushButton_next->hide();
 
         loadLyrics( m_currentTrack );
-        loadLabels( m_currentTrack );
         loadTags( m_currentTrack );
         readTags();
     }
@@ -1126,6 +1126,8 @@ TagDialog::readMultipleTracks()
     //Check which fields are the same for all selected tracks
     QListIterator< Meta::TrackPtr > it( m_tracks );
 
+    QStringList validLabels = labelsForTrack( it.peekNext() );
+
     m_currentData = QVariantMap();
 
     QVariantMap first = dataForTrack( it.peekNext() );
@@ -1136,7 +1138,16 @@ TagDialog::readMultipleTracks()
     double scoreSum = 0.f;
     while( it.hasNext() )
     {
-        QVariantMap data = dataForTrack( it.next() );
+        Meta::TrackPtr next = it.next();
+        QStringList labels = labelsForTrack( next );
+
+        for ( int x = 0; x < validLabels.count(); x++ )
+        {
+            if ( !labels.contains( validLabels.at( x ) ) )
+                validLabels.removeAt( x );
+        }
+
+        QVariantMap data = dataForTrack( next );
         songCount++;
         if ( data.value( Meta::Field::RATING ).toInt() )
         {
@@ -1176,6 +1187,10 @@ TagDialog::readMultipleTracks()
         if ( rating && data.value( Meta::Field::RATING ).toInt() != first.value( Meta::Field::RATING ).toInt() )
             rating = false;
     }
+
+    m_labels = validLabels;
+    m_labelModel->setLabels( m_labels );
+    
     // Set them in the dialog and in the track ( so we don't break hasChanged() )
     int cur_item;
     if( artist )
@@ -1406,6 +1421,7 @@ TagDialog::storeTags( const Meta::TrackPtr &track, int changes, const QVariantMa
 void
 TagDialog::storeLabels( const Meta::TrackPtr &track, const QStringList &removedlabels, const QStringList &newlabels )
 {
+    AMAROK_NOTIMPLEMENTED
     //TODO: Store Labels to Database
     //COMMENT: Check if new label already exists (if not create it)
     //COMMENT: Check if removed label isn't used anymore (if not delete it)
@@ -1456,16 +1472,18 @@ TagDialog::loadAvailableLabels()
     ui->kComboBox_label->setCurrentIndex( -1 );
 }
 
-void
-TagDialog::loadLabels( const Meta::TrackPtr &track )
+QStringList
+TagDialog::labelsForTrack( const Meta::TrackPtr &track )
 {
     DEBUG_BLOCK
+
+    QStringList labels;
 
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
     if( !sql )
     {
         debug() << "Could not get SqlStorage, aborting" << endl;
-        return;
+        return labels;
     }
 
     const QString query = "SELECT a.label FROM labels a, urls_labels b, urls c WHERE a.id=b.label AND b.url=c.id AND c.uniqueid=\"%1\"";
@@ -1476,11 +1494,18 @@ TagDialog::loadLabels( const Meta::TrackPtr &track )
     {
         for ( int x = 0; x < result.count(); x++)
         {
-            if ( !m_labels.contains( result.value(x) ) )
-                m_labels.append( result.value(x) );
+            if ( !labels.contains( result.value(x) ) )
+                labels.append( result.value(x) );
         }
     }
 
+    return labels;
+}
+
+void
+TagDialog::loadLabels( const Meta::TrackPtr &track )
+{
+    m_labels = labelsForTrack( track );
     m_labelModel->setLabels( m_labels );
 }
 
@@ -1531,6 +1556,7 @@ TagDialog::saveTags()
     }
     else
     {
+        storeLabels( m_currentTrack, m_removedLabels, m_newLabels );
         storeTags();
     }
 
