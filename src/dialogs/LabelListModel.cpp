@@ -119,6 +119,11 @@ QStringList LabelListModel::Labels()
     return m_labels;
 }
 
+void LabelListModel::setLabels( QStringList labels )
+{
+    m_labels = labels;
+}
+
 bool LabelListModel::insertRows( int position, int rows, const QModelIndex &parent )
 {
     beginInsertRows( QModelIndex(), position, position+rows-1 );

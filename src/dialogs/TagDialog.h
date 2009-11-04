@@ -123,19 +123,18 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void enableItems();
         bool hasChanged();
         int changes();
+        void loadAvailableLabels();
         void storeTags();
         void storeTags( const Meta::TrackPtr &track );
         void storeTags( const Meta::TrackPtr &track, int changes, const QVariantMap &data );
-        void storeLabels( const Meta::TrackPtr &track, const QStringList &labels );
+        void storeLabels( const Meta::TrackPtr &track, const QStringList &removedlabels, const QStringList &newlabels );
         void loadTags( const Meta::TrackPtr &track );
-        void loadLyrics( const Meta::TrackPtr &track );
         void loadLabels( const Meta::TrackPtr &track );
+        void loadLyrics( const Meta::TrackPtr &track );
         QVariantMap dataForTrack( const Meta::TrackPtr &track );
         double scoreForTrack( const Meta::TrackPtr &track );
         int ratingForTrack( const Meta::TrackPtr &track );
         QString lyricsForTrack( const Meta::TrackPtr &track );
-        QStringList labelsForTrack( const Meta::TrackPtr &track );
-        QStringList getCommonLabels();
         void saveTags();
         const QString unknownSafe( QString );
         const QStringList statisticsData();
@@ -151,11 +150,11 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QMap<Meta::TrackPtr, double> m_storedScores;
         QMap<Meta::TrackPtr, int> m_storedRatings;
         QMap<Meta::TrackPtr, QString> m_storedLyrics;
-        QMap<Meta::TrackPtr, QStringList> m_newLabels;
-        QMap<Meta::TrackPtr, QStringList> m_originalLabels;
         QString m_path;
         QString m_currentCover;
         LabelListModel *m_labelModel;
+        QStringList m_newLabels;
+        QStringList m_removedLabels;
         QStringList m_labels;
 
         //2.0 stuff

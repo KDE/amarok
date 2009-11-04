@@ -39,6 +39,7 @@ class LabelListModel : public QAbstractListModel
         void addLabel( const QString label );
         void removeLabel( const QString label );
         void removeLabels( const QStringList labels );
+        void setLabels( const QStringList labels );
         QStringList Labels();
 
     private:
