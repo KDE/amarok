@@ -110,7 +110,6 @@ ScriptUpdater::phase2( KJob * job )
     DEBUG_BLOCK
     if ( job->error() )
     {
-        debug() << m_scriptname << ": job error! no version file found is most likely culprit";
         // if no 'version' file was found, cancel the update
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
@@ -233,10 +232,10 @@ ScriptUpdater::phase4( KJob * job )
     QString relPath = KGlobal::dirs()->relativeLocation( "data", m_fileName );
     QFileInfo fileinfo( relPath );
     QString destination = KGlobal::dirs()->saveLocation( "data", fileinfo.path(), false );
-    QDir dir; // only needed as a dummy because .exists() and .mkpath() aren't static
-    if (!dir.exists(destination))
+    QDir dir;
+    if( !dir.exists( destination ) )
     {
-        dir.mkpath(destination);
+        dir.mkpath( destination );
     }
     const KArchiveDirectory* const archiveDir = archive.directory();
     archiveDir->copyTo( destination );
@@ -250,23 +249,28 @@ ScriptUpdater::phase4( KJob * job )
 
 // decide whether a version string 'update' is newer than 'installed'
 bool
-ScriptUpdater::isNewer(const QString & update, const QString & installed)
+ScriptUpdater::isNewer( const QString & update, const QString & installed )
 {
     // only dots are supported as separators, and only integers are supported
     // between the dots (so no fancy stuff like 2.1-1 or 2.1.beta2)
-    QStringList uList = update.split(".");
-    QStringList iList = installed.split(".");
+    QStringList uList = update.split( "." );
+    QStringList iList = installed.split( "." );
     int i = 0;
     // stop working if the end of both lists is reached
     while ( i < uList.length() || i < iList.length() ) {
         // read current number, or use 0 if it isn't present (so that "2" == "2.0" == "2.0.0.0.0.0" == "2...0")
         int up = ( ( uList.length() > i && uList[i] != "" ) ? uList[i].toInt() : 0 );
         int in = ( ( iList.length() > i && iList[i] != "" ) ? iList[i].toInt() : 0 );
-        if ( up > in ) {
+        if ( up > in ) 
+	{
             return true;
-        } else if ( up < in ) {
+        } 
+	else if ( up < in ) 
+	{
             return false;
-        } else {
+        } 
+	else 
+	{
             // both strings are equal up to this point -> look at the next pair of numbers
             i++;
         }
