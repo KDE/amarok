@@ -21,6 +21,10 @@
 
 #include <QAbstractListModel>
 
+/**
+    @author Daniel Dewald <Daniel.Dewald@time-shift.de>
+*/
+
 
 class LabelListModel : public QAbstractListModel
 {
@@ -36,10 +40,34 @@ class LabelListModel : public QAbstractListModel
         bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
         bool insertRows( int position, int rows, const QModelIndex &index = QModelIndex() );
         bool removeRows( int position, int rows, const QModelIndex &index = QModelIndex() );
+
+        /**
+        * Adds a label
+        * @arg label Label that should be added
+        */
         void addLabel( const QString label );
+
+        /**
+        * Removes a label
+        * @arg label Label that should be removed
+        */
         void removeLabel( const QString label );
+
+        /**
+        * Removes labels
+        * @arg labels List of labels that should be removed
+        */
         void removeLabels( const QStringList labels );
+
+        /**
+        * Sets the labels
+        * @arg labels List of new Labels
+        */
         void setLabels( const QStringList labels );
+
+        /**
+        * @returns List of labels
+        */
         QStringList Labels();
 
     private:

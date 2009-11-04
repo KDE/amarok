@@ -109,7 +109,14 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void commentModified();
         void discNumberModified();
 
+        /**
+        * Updates Add label button
+        */
         void labelModified();
+
+        /**
+        * Updates Remove label button
+        */
         void labelSelected();
         
     private:
@@ -127,13 +134,30 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void storeTags();
         void storeTags( const Meta::TrackPtr &track );
         void storeTags( const Meta::TrackPtr &track, int changes, const QVariantMap &data );
+
+        /**
+        * Stores changes to labels for a specific track
+        * @arg track Track to store the labels to
+        * @arg removedlabels Labels to be removed from track
+        * @arg newlabels Labels to be added to track
+        */
         void storeLabels( const Meta::TrackPtr &track, const QStringList &removedlabels, const QStringList &newlabels );
         void loadTags( const Meta::TrackPtr &track );
+
+        /**
+        * Loads labels from a specific track to edit gui
+        * @arg track Track to load labels for
+        */
         void loadLabels( const Meta::TrackPtr &track );
         void loadLyrics( const Meta::TrackPtr &track );
         QVariantMap dataForTrack( const Meta::TrackPtr &track );
         double scoreForTrack( const Meta::TrackPtr &track );
         int ratingForTrack( const Meta::TrackPtr &track );
+
+        /**
+        * @returns Labels for a specific track
+        * @arg track Track to load labels for
+        */
         QStringList labelsForTrack( const Meta::TrackPtr &track );
         QString lyricsForTrack( const Meta::TrackPtr &track );
         void saveTags();

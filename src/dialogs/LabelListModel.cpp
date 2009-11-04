@@ -67,7 +67,7 @@ bool LabelListModel::setData( const QModelIndex &index, const QVariant &value, i
     return false;
 }
 
-// Adds a label to the list if not present
+//Adds a label to the list if not present
 void LabelListModel::addLabel( const QString label )
 {
     if ( ( !label.isEmpty() ) && ( !isPresent( label ) ) )
@@ -115,11 +115,13 @@ void LabelListModel::removeLabels( const QStringList labels )
     }
 }
 
+//Returns all labels in the list
 QStringList LabelListModel::Labels()
 {
     return m_labels;
 }
 
+//Sets label list to "labels"
 void LabelListModel::setLabels( QStringList labels )
 {
     beginInsertRows( QModelIndex(), 0, m_labels.length() );
