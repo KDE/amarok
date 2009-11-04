@@ -164,8 +164,13 @@ void ScanManager::startIncrementalScan()
         dirs = getDirsToScan();
 
         debug() << "GOING TO SCAN:";
-        foreach( const QString &dir, dirs )
-            debug() << "    " << dir;
+        if( dirs.size() > 30 )
+            debug() << "(a *lot*)";
+        else
+        {
+            foreach( const QString &dir, dirs )
+                debug() << "    " << dir;
+        }
 
         writeBatchIncrementalInfoFile();
         if( dirs.isEmpty() )
