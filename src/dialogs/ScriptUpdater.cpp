@@ -229,10 +229,10 @@ ScriptUpdater::phase4( KJob * job )
         QTimer::singleShot( 0, this, SLOT( quit() ) );
         return;
     }
-    QString relPath = KGlobal::dirs()->relativeLocation( "data", m_fileName );
-    QFileInfo fileinfo( relPath );
-    QString destination = KGlobal::dirs()->saveLocation( "data", fileinfo.path(), false );
-    QDir dir;
+    const QString relativePath = KGlobal::dirs()->relativeLocation( "data", m_fileName );
+    const QFileInfo fileinfo( relativePath );
+    const QString destination = KGlobal::dirs()->saveLocation( "data", fileinfo.path(), false );
+    const QDir dir;
     if( !dir.exists( destination ) )
     {
         dir.mkpath( destination );
