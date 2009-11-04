@@ -2,10 +2,6 @@
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  * Copyright (c) 2008 Jeff Mitchell <kde-dev@emailgoeshere.com>                         *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
- * Copyright (c) 2008 Long Huynh Huu <long.upcase@googlemail.com>                       *
- * Copyright (c) 2007 Matthew Woehlke <mw_triad@users.sourceforge.net>                  *
- * Copyright (c) 2007 Casper Boemann <cbr@boemann.dk>                                   *
- * Copyright (c) 2007 Fredrik HÃ¶glund <fredrik@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
