@@ -16,7 +16,6 @@
 
 #include "LastFmEvent.h"
 
-
 QStringList LastFmEvent::artists() const
 {
     return m_artists;

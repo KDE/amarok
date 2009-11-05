@@ -35,7 +35,6 @@ private:
 public:
     LastFmEvent(QStringList artists, QString name, QDate date, KUrl smallImageUrl, KUrl url)
     : m_artists(artists), m_name(name), m_date(date), m_smallImageUrl(smallImageUrl), m_url(url) {}
-        
     QStringList artists() const;
     QString name() const;
     QDate date() const;
