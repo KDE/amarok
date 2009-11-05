@@ -110,7 +110,7 @@ PlaylistFileProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
 Meta::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks )
 {
-    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
+    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") + ".xspf" );
 }
 
 Meta::PlaylistPtr
@@ -146,6 +146,8 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
             return Meta::PlaylistPtr();
     }
     Meta::PlaylistPtr playlistPtr( playlist );
+    debug() << "Forcing save of playlist!";
+    Meta::PlaylistFilePtr::dynamicCast( playlistPtr )->save( path, true );
     m_playlists << playlistPtr;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;

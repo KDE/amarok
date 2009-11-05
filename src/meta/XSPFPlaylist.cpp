@@ -140,7 +140,7 @@ XSPFPlaylist::save( const KUrl &location, bool relative )
     debug() << "Saving to " << location;
     m_url = location;
     //if the location is a directory append the name of this playlist.
-    if( m_url.fileName().isNull() )
+    if( m_url.fileName( KUrl::ObeyTrailingSlash ).isNull() )
         m_url.setFileName( name() );
 
     QFile file;
@@ -730,7 +730,17 @@ XSPFPlaylist::isWritable()
 void
 XSPFPlaylist::setName( const QString &name )
 {
+    DEBUG_BLOCK
+    m_name = name;
     setTitle( name );
+    if( QFileInfo( m_url.toLocalFile() ).exists() )
+    {
+        debug() << "Deleting old playlist file:" << m_url.toLocalFile();
+        QFile::remove( m_url.toLocalFile() );
+    }
+    m_url.setFileName( name + ( name.endsWith( ".xspf", Qt::CaseInsensitive ) ? "" : ".xspf" ) );
+    debug() << "new url:" << m_url;
+    save( m_url, true );
     //TODO: notify observers
 }
 
