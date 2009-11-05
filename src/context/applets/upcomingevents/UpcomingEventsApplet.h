@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+ * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,8 +21,10 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 
+
+
 // for use when gui created
-//#include <ui_UpcomingEventsSettings.h>
+#include <ui_upcomingEventsSettings.h>
 
 class QAction;
 class QGraphicsSimpleTextItem;
@@ -70,7 +73,11 @@ private:
     QGraphicsSimpleTextItem* m_headerLabel; 
 
     Plasma::IconWidget *m_settingsIcon;
+    Ui::upcomingEventsSettings ui_Settings;
 
+    QString m_timeSpan;
+    bool m_enabledLinks;
+    
 private slots:
     void connectSource( const QString &source );
 
@@ -78,6 +85,8 @@ private slots:
      * Show the settings windows
      */
     void configure();
+    void changeTimeSpan(QString span);
+    void setAddressAsLink(int state);
 
 };
 
