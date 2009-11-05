@@ -50,6 +50,7 @@ protected:
             if ( static_cast<QMouseEvent*>(e)->buttons() & Qt::LeftButton )
             {
                 setCursor( qobject_cast<QWidget*>(o), Qt::ClosedHandCursor );
+                return true; // don't propagate to parents
 //                 m_startPos = me->pos(); // not sure whether I like this...
 //             else if ( event->button() == Qt::MidButton ) // TODO: really kick item on mmbc?
             }
@@ -58,7 +59,10 @@ protected:
         else if ( e->type() == QEvent::MouseButtonRelease )
         {
             if ( static_cast<QMouseEvent*>(e)->buttons() & Qt::LeftButton )
+            {
                 setCursor( qobject_cast<QWidget*>(o), Qt::OpenHandCursor );
+                return true; // don't propagate to parents
+            }
             return false;
         }
         else if ( e->type() == QEvent::FocusIn )
@@ -260,7 +264,7 @@ TokenDropTarget::drags( int row )
                     list << token;
         }
 
-        return list;
+    return list;
 }
 
 void
