@@ -107,7 +107,7 @@ UnsetCoverAction::slotTriggered()
         foreach( Meta::AlbumPtr album, m_albums )
         {
             kapp->processEvents();
-            if( album->canUpdateImage() )
+            if( album && album->canUpdateImage() )
                 album->removeImage();
         }
     }
@@ -125,24 +125,31 @@ void SetCustomCoverAction::init()
 
     // this action is enabled if any one of the albums can be updated
     bool enabled = false;
+
     foreach( Meta::AlbumPtr album, m_albums )
-        enabled |= album->canUpdateImage();
+        if( album )
+            enabled |= album->canUpdateImage();
+
     setEnabled( enabled );
 }
 
 void
 SetCustomCoverAction::slotTriggered()
 {
-    QString startPath = m_albums.first()->tracks().first()->playableUrl().directory();
-    KUrl file = KFileDialog::getImageOpenUrl( startPath, qobject_cast<QWidget*>( parent() ), i18n( "Select Cover Image File" ) );
-    if( !file.isEmpty() )
+    if( m_albums.first() && !m_albums.first()->tracks().isEmpty() )
     {
-        QPixmap pixmap( file.path() );
+        const QString startPath = m_albums.first()->tracks().first()->playableUrl().directory();
 
-        foreach( Meta::AlbumPtr album, m_albums )
+        KUrl file = KFileDialog::getImageOpenUrl( startPath, qobject_cast<QWidget*>( parent() ), i18n( "Select Cover Image File" ) );
+        if( !file.isEmpty() )
         {
-            if( album->canUpdateImage() )
-                album->setImage( pixmap );
+            QPixmap pixmap( file.path() );
+
+            foreach( Meta::AlbumPtr album, m_albums )
+            {
+                if( album && album->canUpdateImage() )
+                    album->setImage( pixmap );
+            }
         }
     }
 }
