@@ -1,7 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
- * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
- * Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>                         *
+ * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -56,37 +54,12 @@ bool UpcomingEventsEngine::sourceRequestEvent( const QString& name )
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     QStringList tokens = name.split( ':' );
 
-    // User has requested a reload
-    if( tokens.contains( "reload" ) && tokens.size() > 1 )
-    {
-        if ( tokens.at( 1 ) == QString( "reload" ) )
-        {
-            reloadUpcomingEvents();
-            return true;
-        }
-    }
-
-    // User has clicked on a link, let's fetch the page
-    if( tokens.contains( "get" ) && tokens.size() > 1 )
-    {
-        if ( ( tokens.at( 1 ) == QString( "get" ) ) && ( tokens.size() > 3 ) )
-        {
-            // TODO adapt this to the Last.FM webservices
-            //m_wikiCurrentUrl = tokens.at( 2 ) + QString( ":" ) + tokens.at( 3 );
-            // removeSource( "wikipedia" );
-            // setData( "wikipedia", "busy", "busy" );
-            //m_upcomingEventsJob = KIO::storedGet( m_wikiCurrentUrl, KIO::NoReload, KIO::HideProgressInfo );
-            //connect( m_upcomingEventsJob, SIGNAL( result( KJob* ) ), SLOT( wikiResult( KJob* ) ) );
-            return true;
-        }
-    }
-
-    // user has selected the timespan.
+    // user has changed the timespan.
     if ( tokens.contains( "timeSpan" ) && tokens.size() > 1 )
         if ( ( tokens.at( 1 ) == QString( "timeSpan" ) )  && ( tokens.size() > 2 ) )
             m_timeSpan = tokens.at( 2 );
 
-    // user has selected the timespan.
+    // user has enabled or disabled showing addresses as links
     if ( tokens.contains( "enabledLinks" ) && tokens.size() > 1 )
         if ( ( tokens.at( 1 ) == QString( "enabledLinks" ) )  && ( tokens.size() > 2 ) )
             m_enabledLinks = (tokens.at( 2 ) == QString(Qt::Checked));

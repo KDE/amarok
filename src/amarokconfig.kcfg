@@ -595,4 +595,25 @@
     </entry>
 </group>
 
+<group name="UpcomingEvents">
+    <entry key="enabledLinks" type="Bool">
+        <label>Clickable locations' names</label>
+        <whatsthis>Enable/Disable links to Google Map</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="timeSpan" type="Enum">
+        <label>Timespan for upcoming events</label>
+        <whatsthis>Set the timespan for the upcoming events.</whatsthis>
+        <choices>
+            <choice name="AllEvents"/>
+            <choice name="ThisWeek"/>
+            <choice name="ThisMonth"/>
+            <choice name="ThisYear"/>
+        </choices>
+        <default>AllEvents</default>
+    </entry>
+</group>
+
+
+
 </kcfg>

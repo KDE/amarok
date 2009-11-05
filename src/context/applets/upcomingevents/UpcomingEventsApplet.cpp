@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+ * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -32,6 +33,8 @@
 
 #include <QDesktopServices>
 #include <QGraphicsSimpleTextItem>
+#include <QLabel>
+#include <QHBoxLayout>
 
 
 
@@ -73,7 +76,9 @@ UpcomingEventsApplet::init()
     constraintsEvent();
 
     // Read config and inform the engine.
-    KConfigGroup config = Amarok::config("upcomingEvents Applet");
+    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
+    m_timeSpan = config.readEntry( "timeSpan", "AllEvents" );
+    
 }
 
 void
@@ -158,9 +163,67 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
     parent->addPage( settings, i18n( "Upcoming Events Settings" ), "preferences-system");
     connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );*/
 
-    KConfigGroup configuration = config();
-    QWidget *settings = new QWidget;
+    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
+    QWidget *settings = new QWidget();
+    ui_Settings.setupUi( settings );
+
+       // TODO bad, it's done manually ...
+    if ( m_timeSpan == "AllEvents" )
+        ui_Settings.comboBox->setCurrentIndex( 0 );
+    else if ( m_timeSpan == "ThisWeek" )
+        ui_Settings.comboBox->setCurrentIndex( 1 );
+    else if ( m_timeSpan == "ThisMonth" )
+        ui_Settings.comboBox->setCurrentIndex( 2 );
+    else if ( m_timeSpan == "ThisYear" )
+        ui_Settings.comboBox->setCurrentIndex( 3 );
+
+    if ( m_enabledLinks )
+        ui_Settings.checkBox->setCheckState ( Qt::Checked );
+    
     parent->addPage( settings, i18n( "Upcoming Events Settings" ), "preferences-system");
+     connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( changeTimeSpan( QString ) ) );
+     connect( ui_Settings.checkBox, SIGNAL( stateChanged( int ) ), this, SLOT( setAddressAsLink( int ) ) );
+}
+
+void
+UpcomingEventsApplet::changeTimeSpan(QString span)
+{
+    DEBUG_BLOCK
+    // TODO change this b/c it's BAAADDD !!!
+
+    if (span == i18n("Automatic") )
+        m_timeSpan = "AllEvents";
+
+    else if (span == i18n("This week") )
+        m_timeSpan = "ThisWeek";
+
+    else if (span == i18n("This month") )
+        m_timeSpan = "ThisMonth";
+
+    else if (span == i18n("This year") )
+        m_timeSpan = "ThisYear";
+
+    else if (span == i18n("All events") )
+        m_timeSpan = "AllEvents";
+
+    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
+
+    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
+    config.writeEntry( "timeSpan", m_timeSpan );
+    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
+}
+
+void
+UpcomingEventsApplet::setAddressAsLink(int state) {
+    DEBUG_BLOCK
+
+    m_enabledLinks = (state == Qt::Checked);
+    
+    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + m_enabledLinks );
+
+    KConfigGroup config = Amarok::config("UpcomingEvents Applet");
+    config.writeEntry( "enabledLinks", m_enabledLinks );
+    dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + m_enabledLinks );
 }
 
 #include "UpcomingEventsApplet.moc"

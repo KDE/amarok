@@ -1,7 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
- * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
- * Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>                         *
+ * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -30,10 +28,6 @@
 
 /**
     This class provide UpcomingEvents data for use in Context applets.
-
-NOTE: The QVariant data is structured like this:
-           * the key name is the artist
-           * the data is a QString containing the html of the wikipedia page
 */
 
 using namespace Context;
