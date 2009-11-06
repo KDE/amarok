@@ -305,11 +305,12 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
         QString t;
 
         // Youtube has change again its api
-        QString regex( "var swfArgs =" );
+        // It changed once more (Oct 2009)
+        QString regex( "\'SWF_ARGS\':" );
         if ( page.indexOf( regex ) != -1 )
         {
             page = page.mid( page.indexOf( regex ) );
-            QString reg( "var isWidescreen = ");
+            QString reg( "\'IS_WIDESCREEN\':");
             if ( page.indexOf( reg ) != -1 )
                 page = page.mid( 0, page.indexOf( reg ) );
         }
@@ -317,28 +318,28 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
         QString regex1( "\"fmt_map\": " );
         if ( page.indexOf( regex1 ) != -1 )
         {
-            page = page.mid( page.indexOf( regex1 ) + regex1.size() + 1 );
+            QString fmtPage = page.mid( page.indexOf( regex1 ) + regex1.size() + 1 );
 
             // if the next time we've got true
-            if ( page.mid( 0, 3 ).contains( "18" ) || page.mid( 0, 3 ).contains( "35" ))
+            if ( fmtPage.mid( 0, 3 ).contains( "18" ) || fmtPage.mid( 0, 3 ).contains( "35" ))
                 isHQ18 = true;
 
-            else if ( page.mid( 0, 3 ).contains( "22" ) )
+            else if ( fmtPage.mid( 0, 3 ).contains( "22" ) )
                 isHQ22 = true ;
         }
 
         QString regex2( "\"sk\": " );
         if ( page.indexOf( regex2 ) != -1 )
         {
-            page = page.mid( page.indexOf( regex2 ) + regex2.size() + 1 );
-            sk = page.mid( 0, page.indexOf( "\"" ) );
+            QString skPage = page.mid( page.indexOf( regex2 ) + regex2.size() + 1 );
+            sk = skPage.mid( 0, skPage.indexOf( "\"" ) );
         }
 
         QString regex3( "\"t\": " );
         if ( page.indexOf( regex3 ) != -1 )
         {
-            page = page.mid( page.indexOf( regex3 ) + regex3.size() + 1 );
-            t = page.mid( 0, page.indexOf( "\"" ) );
+            QString tPage = page.mid( page.indexOf( regex3 ) + regex3.size() + 1 );
+            t = tPage.mid( 0, tPage.indexOf( "\"" ) );
             //debug()<<" T " <<t;
         }
         //debug() << page ;
