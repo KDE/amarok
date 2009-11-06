@@ -13,7 +13,8 @@ VERSION 2.2.1
       (BR 209433)
     * The information from the podcast feed can be written to the downloaded
       files. Both manually and automatically.
-    * Track bookmarks can be removed directly by right-clicking.
+    * Track bookmarks can be removed directly by using the delete icon shown
+      in the popup when the mouse is over it.
     * Add a menu allowing the creation of any known type of bookmark to the 
       Bookmark Manager.
     * CTRL+SHIFT+F toggles full screen mode. Patch by Rick W. Chen
