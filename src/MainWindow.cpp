@@ -192,14 +192,7 @@ MainWindow::~MainWindow()
     //foreach( int a, m_splitter->saveState() )
     //    sPanels.append( a );
 
-
-    //save layout to file. Does not go into to rc as it is binary data.
-    QFile file( Amarok::saveLocation() + "layout" );
-    if ( file.open( QIODevice::ReadWrite | QIODevice::Unbuffered | QIODevice::Truncate ) )
-    {
-        file.write( saveState( LAYOUT_VERSION ) );
-        file.close();
-    }
+    saveLayout();
 
     //AmarokConfig::setPanelsSavedState( sPanels );
 
@@ -440,6 +433,21 @@ MainWindow::showBrowser( const int index )
     Q_UNUSED( index )
     //if( index >= 0 && index != m_browsers->currentIndex() )
     //    m_browsers->showWidget( index );
+}
+
+void
+MainWindow::saveLayout()  //SLOT
+{
+    DEBUG_BLOCK
+
+    //save layout to file. Does not go into to rc as it is binary data.
+    QFile file( Amarok::saveLocation() + "layout" );
+
+    if ( file.open( QIODevice::ReadWrite | QIODevice::Unbuffered | QIODevice::Truncate ) )
+    {
+        file.write( saveState( LAYOUT_VERSION ) );
+        file.close();
+    }
 }
 
 void
@@ -1027,7 +1035,7 @@ MainWindow::backgroundSize()
 void
 MainWindow::resizeEvent( QResizeEvent * event )
 {
-    QWidget::resizeEvent( event );
+    saveLayout();
 
     if ( m_dockWidthsLocked )
     {
@@ -1040,6 +1048,10 @@ MainWindow::resizeEvent( QResizeEvent * event )
         m_contextWidget->setMaximumWidth( 9999 );
         m_playlistWidget->setMaximumWidth( 9999 );
     }
+
+    QWidget::resizeEvent( event );
+
+    restoreLayout();
 }
 
 QPoint
