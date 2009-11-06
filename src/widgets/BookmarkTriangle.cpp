@@ -82,6 +82,8 @@ void BookmarkTriangle::mousePressEvent ( QMouseEvent * event )
 
 void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
 {
+   Q_UNUSED( event )
+
    emit clicked ( m_mseconds );
 }
 
