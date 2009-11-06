@@ -61,6 +61,7 @@
 #include "toolbar/SlimToolbar.h"
 #include "SvgHandler.h"
 #include "widgets/Splitter.h"
+#include "widgets/AmarokDockWidget.h"
 //#include "mediabrowser.h"
 
 #include <KAction>          //m_actionCollection
@@ -83,7 +84,6 @@
 #include <QCheckBox>
 #include <QDesktopServices>
 #include <QDesktopWidget>
-#include <QDockWidget>
 #include <QList>
 #include <QSizeGrip>
 #include <QSysInfo>
@@ -130,8 +130,21 @@ MainWindow::MainWindow()
     , EngineObserver( The::engineController() )
     , m_lastBrowser( 0 )
     , m_dockWidthsLocked( false )
+    , m_dockChangesIgnored( false )
 {
     DEBUG_BLOCK
+
+    m_restoreLayoutTimer = new QTimer( this );
+    m_restoreLayoutTimer->setSingleShot( true );
+    connect( m_restoreLayoutTimer, SIGNAL( timeout() ), this, SLOT( restoreLayout() ) );
+
+    m_saveLayoutChangesTimer = new QTimer( this );
+    m_saveLayoutChangesTimer->setSingleShot( true );
+    connect( m_saveLayoutChangesTimer, SIGNAL( timeout() ), this, SLOT( saveLayout() ) );
+
+    m_ignoreLayoutChangesTimer = new QTimer( this );
+    m_ignoreLayoutChangesTimer->setSingleShot( true );
+    connect( m_ignoreLayoutChangesTimer, SIGNAL( timeout() ), this, SLOT( ignoreLayoutChangesTimeout() ) );
 
     setObjectName( "MainWindow" );
     s_instance = this;
@@ -244,7 +257,8 @@ MainWindow::init()
     m_contextDummyTitleBarWidget = new QWidget();
     m_playlistDummyTitleBarWidget = new QWidget();
 
-    m_browsersDock = new QDockWidget( i18n( "Media Sources" ), this );
+    m_browsersDock = new AmarokDockWidget( i18n( "Media Sources" ), this );
+    connect( m_browsersDock, SIGNAL( layoutChanged() ), this, SLOT( layoutChanged() ) );
     m_browsersDock->setObjectName( "Media Sources dock" );
     m_browsersDock->setWidget( m_browsers );
     m_browsersDock->setAllowedAreas( Qt::AllDockWidgetAreas );
@@ -255,7 +269,8 @@ MainWindow::init()
     m_playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
     m_playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
 
-    m_playlistDock = new QDockWidget( i18n( "Playlist" ), this );
+    m_playlistDock = new AmarokDockWidget( i18n( "Playlist" ), this );
+    connect( m_playlistDock, SIGNAL( layoutChanged() ), this, SLOT( layoutChanged() ) );
     m_playlistDock->setObjectName( "Playlist dock" );
     m_playlistDock->setWidget( m_playlistWidget );
     m_playlistDock->setAllowedAreas( Qt::AllDockWidgetAreas );
@@ -275,7 +290,8 @@ MainWindow::init()
     connect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
             this, SLOT( createContextView( Plasma::Containment* ) ) );
 
-    m_contextDock = new QDockWidget( i18n( "Context" ), this );
+    m_contextDock = new AmarokDockWidget( i18n( "Context" ), this );
+    connect( m_contextDock, SIGNAL( layoutChanged() ), this, SLOT( layoutChanged() ) );
     m_contextDock->setObjectName( "Context dock" );
     m_contextDock->setWidget( m_contextWidget );
     m_contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
@@ -1036,7 +1052,14 @@ MainWindow::backgroundSize()
 void
 MainWindow::resizeEvent( QResizeEvent * event )
 {
-    saveLayout();
+    DEBUG_BLOCK
+    m_dockChangesIgnored = true;
+    
+    m_saveLayoutChangesTimer->stop();
+    m_restoreLayoutTimer->stop();
+    m_ignoreLayoutChangesTimer->stop();
+
+    //saveLayout();
 
     if ( m_dockWidthsLocked )
     {
@@ -1052,7 +1075,8 @@ MainWindow::resizeEvent( QResizeEvent * event )
 
     QWidget::resizeEvent( event );
 
-    restoreLayout();
+    m_ignoreLayoutChangesTimer->start( 500 );
+    m_restoreLayoutTimer->start( 400 );
 }
 
 QPoint
@@ -1206,6 +1230,11 @@ MainWindow::restoreLayout()
 {
     DEBUG_BLOCK
 
+    m_dockChangesIgnored = true;
+    m_saveLayoutChangesTimer->stop();
+    m_restoreLayoutTimer->stop();
+    m_ignoreLayoutChangesTimer->stop();
+
     QFile file( Amarok::saveLocation() + "layout" );
 
     QByteArray layout;
@@ -1246,11 +1275,34 @@ MainWindow::restoreLayout()
         m_playlistWidget->setFixedWidth( widgetWidth );
 
         m_dockWidthsLocked = true;
+    } else {
+      debug() << "succesfully restored...";
     }
 
     // Ensure that only one toolbar is visible
     if( !m_mainToolbar->isHidden() && !m_slimToolbar->isHidden() )
         m_slimToolbar->hide();
+
+    m_dockChangesIgnored = false;
+}
+
+void MainWindow::layoutChanged()
+{
+    DEBUG_BLOCK
+    debug() << "ignored: " << m_dockChangesIgnored;
+
+    m_saveLayoutChangesTimer->stop();
+
+    if( !m_dockChangesIgnored )
+    {
+        m_saveLayoutChangesTimer->start( 500 );
+    }
+}
+
+void MainWindow::ignoreLayoutChangesTimeout()
+{
+    DEBUG_BLOCK
+    m_dockChangesIgnored = false;
 }
 
 #include "MainWindow.moc"

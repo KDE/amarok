@@ -617,6 +617,7 @@ set(amaroklib_LIB_SRCS
     toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
     TrayIcon.cpp
+    widgets/AmarokDockWidget.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp

@@ -142,13 +142,24 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void slotAddStream();
         void slotJumpTo();
         void showScriptSelector();
+        void layoutChanged();
+        void ignoreLayoutChangesTimeout();
+
+        /**
+         * Save state and position of dock widgets.
+         */
+        void saveLayout();
+
+        /**
+         * Try to restore saved layout, if this fails, try to use the default layout.
+         */
+        void restoreLayout();
 
     protected:
         virtual void closeEvent( QCloseEvent* );
         virtual void keyPressEvent( QKeyEvent* );
         virtual QSize sizeHint() const;
         virtual void resizeEvent ( QResizeEvent * event );
-
         virtual void paletteChange( const QPalette & oldPalette );
 
     private slots:
@@ -162,16 +173,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void init();
         void setRating( int n );
         void showBrowser( const int index );
-
-        /**
-         * Save state and position of dock widgets.
-         */
-        void saveLayout();
-
-        /**
-         * Try to restore saved layout, if this fails, try to use the default layout.
-         */
-        void restoreLayout();
 
         CollectionWidget * m_collectionBrowser;
         PlaylistBrowserNS::PlaylistBrowser * m_playlistBrowser;
@@ -219,6 +220,10 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
         bool m_layoutLocked;
         bool m_dockWidthsLocked;
+        bool m_dockChangesIgnored;
+        QTimer * m_restoreLayoutTimer;
+        QTimer * m_ignoreLayoutChangesTimer;
+        QTimer * m_saveLayoutChangesTimer;
 
     private slots:
         void createContextView( Plasma::Containment *c );
