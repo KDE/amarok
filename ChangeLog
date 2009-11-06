@@ -91,6 +91,8 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * Fix issue where data structures were loaded with wrong values. (BR
+      212676)
     * Videoclip applet didn't work correctly on some systems. Thanks for the
       patch go to Jacopo De Simoi.
     * Proportions of layout stay correct after window resizing. (BR 200527)

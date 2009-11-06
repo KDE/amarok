@@ -946,7 +946,7 @@ ScanResultProcessor::populateCacheHashes()
             currList->append( res.at(index++) );
         m_urlsHashByUid.insert( currList->last(), currList );
         m_urlsHashById.insert( lastNum, currList );
-        m_urlsHashByLocation.insert( QPair<int, QString>( res.at( 1 ).toInt(), res.at( 2 ) ), currList );
+        m_urlsHashByLocation.insert( QPair<int, QString>( currList->at( 1 ).toInt(), currList->at( 2 ) ), currList );
     }
     m_nextUrlNum = lastNum + 1;
     m_collection->query( "DELETE FROM urls_temp;" ); 
