@@ -443,9 +443,10 @@ MainWindow::saveLayout()  //SLOT
     //save layout to file. Does not go into to rc as it is binary data.
     QFile file( Amarok::saveLocation() + "layout" );
 
-    if ( file.open( QIODevice::ReadWrite | QIODevice::Unbuffered | QIODevice::Truncate ) )
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
         file.write( saveState( LAYOUT_VERSION ) );
+        fsync( file.handle() );
         file.close();
     }
 }
