@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org                             *
+ * Copyright (c) 2009 Simon Bühler <simon@aktionspotenzial.de>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
