@@ -91,6 +91,8 @@ VERSION 2.2.1
       the lyrics applet.
 
   BUGFIXES:
+    * Videoclip applet didn't work correctly on some systems. Thanks for the
+      patch go to Jacopo De Simoi.
     * Proportions of layout stay correct after window resizing. (BR 200527)
     * The GUI layout is now crash persistant. (BR 211509)
     * Ensure that ReplayGain float values are stored in the database with a
