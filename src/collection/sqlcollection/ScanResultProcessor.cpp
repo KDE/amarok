@@ -436,9 +436,8 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     trackList->append( QString::number( modified ) );
     if( trackData.contains( Field::ALBUMGAIN ) && trackData.contains( Field::ALBUMPEAKGAIN ) )
     {
-        //QLocale is set by default from LANG, but this will use , for floats, which screws up the SQL.
-        trackList->append( QString::number( trackData[ Field::ALBUMGAIN ].toDouble() ).replace( ',', '.' ) );
-        trackList->append( QString::number( trackData[ Field::ALBUMPEAKGAIN ].toDouble() ).replace( ',', '.' ) );
+        trackList->append( QString::number( trackData[ Field::ALBUMGAIN ].toDouble() ) );
+        trackList->append( QString::number( trackData[ Field::ALBUMPEAKGAIN ].toDouble() ) );
     }
     else
     {
@@ -447,8 +446,8 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     }
     if( trackData.contains( Field::TRACKGAIN ) && trackData.contains( Field::TRACKPEAKGAIN ) )
     {
-        trackList->append( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ).replace( ',', '.' ) );
-        trackList->append( QString::number( trackData[ Field::TRACKPEAKGAIN ].toDouble() ).replace( ',', '.' ) );
+        trackList->append( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ) );
+        trackList->append( QString::number( trackData[ Field::TRACKPEAKGAIN ].toDouble() ) );
     }
     else
     {
@@ -1207,10 +1206,10 @@ ScanResultProcessor::copyHashesToTempTables()
                           + ( currList->at( 16 ).isEmpty() ? "NULL" : currList->at( 16 ) ) + ","  //bpm
                           + ( currList->at( 17 ).isEmpty() ? "NULL" : currList->at( 17 ) ) + ","  //createdate
                           + ( currList->at( 18 ).isEmpty() ? "NULL" : currList->at( 18 ) ) + ","  //modifydate
-                          + ( currList->at( 19 ).isEmpty() ? "NULL" : currList->at( 19 ) ) + ","  //albumgain
-                          + ( currList->at( 20 ).isEmpty() ? "NULL" : currList->at( 20 ) ) + ","  //albumpeakgain
-                          + ( currList->at( 21 ).isEmpty() ? "NULL" : currList->at( 21 ) ) + ","  //trackgain
-                          + ( currList->at( 22 ).isEmpty() ? "NULL" : currList->at( 22 ) ) + ")"; //trackpeakgain
+                          + ( currList->at( 19 ).isEmpty() ? "NULL" : m_collection->escape( currList->at( 19 ) ) ) + ","  //albumgain
+                          + ( currList->at( 20 ).isEmpty() ? "NULL" : m_collection->escape( currList->at( 20 ) ) ) + ","  //albumpeakgain
+                          + ( currList->at( 21 ).isEmpty() ? "NULL" : m_collection->escape( currList->at( 21 ) ) ) + ","  //trackgain
+                          + ( currList->at( 22 ).isEmpty() ? "NULL" : m_collection->escape( currList->at( 22 ) ) ) + ")"; //trackpeakgain
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
