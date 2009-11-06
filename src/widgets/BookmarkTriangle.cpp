@@ -17,6 +17,7 @@
 
 #include "BookmarkTriangle.h"
 
+
 #include "BookmarkModel.h"
 #include "Debug.h"
 #include "MainWindow.h"
@@ -30,7 +31,11 @@
 #include <QSize>
 #include <QSizePolicy>
 
-BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString name ) : QWidget ( parent ), m_mseconds ( milliseconds ), m_name ( name ), m_tooltip ( 0 )
+BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString name )
+        : QWidget ( parent ),
+        m_mseconds ( milliseconds ),
+        m_name ( name ),
+        m_tooltip ( 0 )
 {
     m_timerId = 0;
 }
@@ -66,28 +71,16 @@ void BookmarkTriangle::paintEvent ( QPaintEvent* )
     p.drawPixmap ( 0, 0, The::svgHandler()->renderSvg ( "blue_triangle", 10 , 10, "blue_triangle" ) ); // TODO: This doesn't work
 }
 
+
 void BookmarkTriangle::mousePressEvent ( QMouseEvent * event )
 {
-    Q_UNUSED( event )
+    Q_UNUSED ( event )
 // we don't do anything here, but we want to prevent the event from being
 // propagated to the parent.
 }
 
 void BookmarkTriangle::mouseReleaseEvent ( QMouseEvent * event )
 {
-    DEBUG_BLOCK
-
-    if( event->button() == Qt::RightButton )
-    {
-        QMenu menu;
-        QAction* deleteAction = menu.addAction( i18n( "Remove Bookmark" ) );
-        connect( deleteAction, SIGNAL( triggered() ), this, SLOT( deleteBookmark() ) );
-        menu.exec( mapToGlobal( event->pos() ) );
-
-        event->accept();
-        return;
-    }
-
    emit clicked ( m_mseconds );
 }
 
@@ -96,24 +89,27 @@ void BookmarkTriangle::deleteBookmark ()
     DEBUG_BLOCK
 
     debug() << "Name: " << m_name;
-    BookmarkModel::instance()->deleteBookmark( m_name );
+    hidePopup();
+    BookmarkModel::instance()->deleteBookmark ( m_name );
+
 }
 
 void BookmarkTriangle::enterEvent ( QEvent * event )
 {
     DEBUG_BLOCK
-    Q_UNUSED( event )
+    Q_UNUSED ( event )
     emit focused ( m_mseconds );
-    if ( m_timerId != 0 ){
+    if ( m_timerId != 0 )
+    {
         // Keep Popup displayed, cancel a existing Hide-Timer here
-        killTimer(m_timerId);
+        killTimer ( m_timerId );
         m_timerId = 0;
         return;
     }
-    QString timeLabel = Meta::secToPrettyTime( m_mseconds/1000 );
+    QString timeLabel = Meta::secToPrettyTime ( m_mseconds/1000 );
     if ( !m_tooltip )
-        m_tooltip = new BookmarkPopup ( The::mainWindow(), m_name );
-    QPoint pt = mapTo( The::mainWindow(), QPoint( 0, 0 ) );
+        m_tooltip = new BookmarkPopup ( The::mainWindow(), m_name , this );
+    QPoint pt = mapTo ( The::mainWindow(), QPoint ( 0, 0 ) );
     // Calculate x position where the tooltip is fully visible
     int offsetX = pt.x() + m_tooltip->width() - The::mainWindow()->width();
     if ( offsetX < 0 ) offsetX = 0;
@@ -127,28 +123,33 @@ void BookmarkTriangle::enterEvent ( QEvent * event )
 
 void BookmarkTriangle::leaveEvent ( QEvent * event )
 {
-    Q_UNUSED( event )
+    Q_UNUSED ( event )
     m_timerId = startTimer ( 500 );
 }
 void BookmarkTriangle::timerEvent ( QTimerEvent * event )
 {
-    if ( event->timerId() == m_timerId ){
-        if ( m_tooltip && !m_tooltip->hasMouseOver() ){
+    if ( event->timerId() == m_timerId )
+    {
+        if ( m_tooltip && !m_tooltip->hasMouseOver() )
+        {
             m_tooltip->hide();
-            killTimer( m_timerId );
+            killTimer ( m_timerId );
             m_timerId = 0;
         }
-    }else {
-        QWidget::timerEvent( event );
-   }
+    }
+    else
+    {
+        QWidget::timerEvent ( event );
+    }
 }
 
 void BookmarkTriangle::hidePopup()
 {
     if ( m_tooltip )
         m_tooltip->hide();
-    if ( m_timerId != 0 ) {
-        killTimer( m_timerId );
+    if ( m_timerId != 0 )
+    {
+        killTimer ( m_timerId );
         m_timerId = 0;
     }
 }

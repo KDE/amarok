@@ -19,17 +19,25 @@
 
 #include <QPaintEvent>
 #include <QWidget>
+
+#include <KIcon>
+
+class BookmarkTriangle;
+
 class BookmarkPopup : public QWidget
 {
 public:
-    BookmarkPopup ( QWidget* parent, QString label);
+    BookmarkPopup ( QWidget* parent, QString label, BookmarkTriangle* triangle );
 
     virtual QSize sizeHint () const;
     virtual QSizePolicy sizePolicy() const;
     virtual QSize minimumSizeHint () const;
 
-    virtual void enterEvent ( QEvent * event );
-    virtual void leaveEvent ( QEvent * event );
+    virtual void mouseReleaseEvent ( QMouseEvent * event );
+    virtual void mouseMoveEvent ( QMouseEvent * event );
+
+    virtual void enterEvent ( QEvent* );
+    virtual void leaveEvent ( QEvent* );
     virtual bool hasMouseOver();
 
 protected:
@@ -38,11 +46,17 @@ protected:
 
 private:
     QString m_label;
+    BookmarkTriangle *m_triangle;
     int m_width;
     int m_height;
     int m_lineHeight;
 
     bool m_hasMouseOver;
+    bool m_overDelete;
+
+    KIcon m_deleteIcon;
+    bool isOverDeleteIcon ( QPoint arg1 );
+    QRect m_deleteIconRect;
 };
 
 #endif // BOOKMARKPOPUP_H
