@@ -446,7 +446,7 @@ ProxyCollection::Collection::hasTrack( const TrackKey &key )
 void
 ProxyCollection::Collection::emptyCache()
 {
-    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasUid;
+    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer;
     hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = false;
 
     //try to avoid possible deadlocks by aborting when we can't get all locks
