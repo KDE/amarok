@@ -431,13 +431,17 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     trackList->append( trackData[ Field::SAMPLERATE ].toString() );
     trackList->append( trackData[ Field::FILESIZE ].toString() );
     trackList->append( QString() ); //filetype
-    trackList->append( QString() ); //bpm
+    if( trackData.contains( Field::BPM ) )
+        trackList->append( QString::number( trackData[ Field::BPM ].toDouble() ).replace( ',' , '.' ) );
+    else
+        trackList->append( QString() );
     trackList->append( QString::number( created ) );
     trackList->append( QString::number( modified ) );
     if( trackData.contains( Field::ALBUMGAIN ) && trackData.contains( Field::ALBUMPEAKGAIN ) )
     {
-        trackList->append( QString::number( trackData[ Field::ALBUMGAIN ].toDouble() ) );
-        trackList->append( QString::number( trackData[ Field::ALBUMPEAKGAIN ].toDouble() ) );
+        //QLocale is set by default from LANG, but this will use , for floats, which screws up the SQL.
+        trackList->append( QString::number( trackData[ Field::ALBUMGAIN ].toDouble() ).replace( ',' , '.' ) );
+        trackList->append( QString::number( trackData[ Field::ALBUMPEAKGAIN ].toDouble() ).replace( ',' , '.' ) );
     }
     else
     {
@@ -446,8 +450,8 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     }
     if( trackData.contains( Field::TRACKGAIN ) && trackData.contains( Field::TRACKPEAKGAIN ) )
     {
-        trackList->append( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ) );
-        trackList->append( QString::number( trackData[ Field::TRACKPEAKGAIN ].toDouble() ) );
+        trackList->append( QString::number( trackData[ Field::TRACKGAIN ].toDouble() ).replace( ',' , '.' ) );
+        trackList->append( QString::number( trackData[ Field::TRACKPEAKGAIN ].toDouble() ).replace( ',' , '.' ) );
     }
     else
     {
@@ -1203,13 +1207,13 @@ ScanResultProcessor::copyHashesToTempTables()
                           + ( currList->at( 13 ).isEmpty() ? "NULL" : currList->at( 13 ) ) + ","  //samplerate
                           + ( currList->at( 14 ).isEmpty() ? "NULL" : currList->at( 14 ) ) + ","  //filesize
                           + ( currList->at( 15 ).isEmpty() ? "NULL" : currList->at( 15 ) ) + ","  //filetype
-                          + ( currList->at( 16 ).isEmpty() ? "NULL" : currList->at( 16 ) ) + ","  //bpm
+                          + ( currList->at( 16 ).isEmpty() ? "NULL" : QString( currList->at( 16 ) ).replace( ',' , '.' ) ) + ","  //bpm
                           + ( currList->at( 17 ).isEmpty() ? "NULL" : currList->at( 17 ) ) + ","  //createdate
                           + ( currList->at( 18 ).isEmpty() ? "NULL" : currList->at( 18 ) ) + ","  //modifydate
-                          + ( currList->at( 19 ).isEmpty() ? "NULL" : m_collection->escape( currList->at( 19 ) ) ) + ","  //albumgain
-                          + ( currList->at( 20 ).isEmpty() ? "NULL" : m_collection->escape( currList->at( 20 ) ) ) + ","  //albumpeakgain
-                          + ( currList->at( 21 ).isEmpty() ? "NULL" : m_collection->escape( currList->at( 21 ) ) ) + ","  //trackgain
-                          + ( currList->at( 22 ).isEmpty() ? "NULL" : m_collection->escape( currList->at( 22 ) ) ) + ")"; //trackpeakgain
+                          + ( currList->at( 19 ).isEmpty() ? "NULL" : QString( currList->at( 19 ) ).replace( ',' , '.' ) ) + ","  //albumgain
+                          + ( currList->at( 20 ).isEmpty() ? "NULL" : QString( currList->at( 20 ) ).replace( ',' , '.' ) ) + ","  //albumpeakgain
+                          + ( currList->at( 21 ).isEmpty() ? "NULL" : QString( currList->at( 21 ) ).replace( ',' , '.' ) ) + ","  //trackgain
+                          + ( currList->at( 22 ).isEmpty() ? "NULL" : QString( currList->at( 22 ) ).replace( ',' , '.' ) ) + ")"; //trackpeakgain
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
