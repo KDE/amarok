@@ -6,6 +6,8 @@ add_subdirectory( wikipedia )
 add_subdirectory( videoclip )
 add_subdirectory( photos )
 add_subdirectory( upcomingevents )
+add_subdirectory( similarartists )
 #add_subdirectory( songkick )
 # disabled, soon to be replaced
 #add_subdirectory( mediadevices )
+
