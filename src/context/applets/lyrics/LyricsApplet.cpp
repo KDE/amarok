@@ -453,9 +453,7 @@ void LyricsApplet::collapseToMin()
     testItem.setTextWidth( m_lyrics->size().width() );
 
     qreal contentHeight = testItem.boundingRect().height();
-    debug() << "Collapsing lyrics applet to qgti height of" << contentHeight;
     contentHeight += 40;
-    debug() << "with padding:" << contentHeight;
     setCollapseHeight( contentHeight );
     setCollapseOn();
 }
