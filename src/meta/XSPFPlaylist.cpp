@@ -767,7 +767,7 @@ XSPFPlaylist::setName( const QString &name )
     DEBUG_BLOCK
 
     //can't save to a new file if we don't know where.
-    if( !m_url.isEmpty() )
+    if( !m_url.isEmpty() && !name.isEmpty() )
     {
         if( QFileInfo( m_url.toLocalFile() ).exists() )
         {
