@@ -104,6 +104,8 @@
 #define AMAROK_CAPTION "Amarok"
 #endif
 
+
+
 extern KAboutData aboutData;
 extern OcsData ocsData;
 
@@ -130,7 +132,6 @@ MainWindow::MainWindow()
     , EngineObserver( The::engineController() )
     , m_lastBrowser( 0 )
     , m_dockWidthsLocked( false )
-    , m_dockChangesIgnored( false )
 {
     DEBUG_BLOCK
 
@@ -141,10 +142,6 @@ MainWindow::MainWindow()
     m_saveLayoutChangesTimer = new QTimer( this );
     m_saveLayoutChangesTimer->setSingleShot( true );
     connect( m_saveLayoutChangesTimer, SIGNAL( timeout() ), this, SLOT( saveLayout() ) );
-
-    m_ignoreLayoutChangesTimer = new QTimer( this );
-    m_ignoreLayoutChangesTimer->setSingleShot( true );
-    connect( m_ignoreLayoutChangesTimer, SIGNAL( timeout() ), this, SLOT( ignoreLayoutChangesTimeout() ) );
 
     setObjectName( "MainWindow" );
     s_instance = this;
@@ -456,14 +453,23 @@ MainWindow::saveLayout()  //SLOT
 {
     DEBUG_BLOCK
 
-    //save layout to file. Does not go into to rc as it is binary data.
-    QFile file( Amarok::saveLocation() + "layout" );
+    static QByteArray oldLayout;
+    const QByteArray newLayout = saveState( LAYOUT_VERSION );
 
-    if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    // Only store layout on HDD if it has actually changed
+    if( newLayout != oldLayout )
     {
-        file.write( saveState( LAYOUT_VERSION ) );
-        fsync( file.handle() );
-        file.close();
+        oldLayout = newLayout;
+
+        //save layout to file. Does not go into to rc as it is binary data.
+        QFile file( Amarok::saveLocation() + "layout" );
+
+        if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+        {
+            file.write( newLayout );
+            fsync( file.handle() );
+            file.close();
+        }
     }
 }
 
@@ -1053,13 +1059,9 @@ void
 MainWindow::resizeEvent( QResizeEvent * event )
 {
     DEBUG_BLOCK
-    m_dockChangesIgnored = true;
     
     m_saveLayoutChangesTimer->stop();
     m_restoreLayoutTimer->stop();
-    m_ignoreLayoutChangesTimer->stop();
-
-    //saveLayout();
 
     if ( m_dockWidthsLocked )
     {
@@ -1075,8 +1077,7 @@ MainWindow::resizeEvent( QResizeEvent * event )
 
     QWidget::resizeEvent( event );
 
-    m_ignoreLayoutChangesTimer->start( 500 );
-    m_restoreLayoutTimer->start( 400 );
+    m_restoreLayoutTimer->start( LAYOUT_SAVE_DELAY );
 }
 
 QPoint
@@ -1230,10 +1231,8 @@ MainWindow::restoreLayout()
 {
     DEBUG_BLOCK
 
-    m_dockChangesIgnored = true;
     m_saveLayoutChangesTimer->stop();
     m_restoreLayoutTimer->stop();
-    m_ignoreLayoutChangesTimer->stop();
 
     QFile file( Amarok::saveLocation() + "layout" );
 
@@ -1282,27 +1281,13 @@ MainWindow::restoreLayout()
     // Ensure that only one toolbar is visible
     if( !m_mainToolbar->isHidden() && !m_slimToolbar->isHidden() )
         m_slimToolbar->hide();
-
-    m_dockChangesIgnored = false;
 }
 
 void MainWindow::layoutChanged()
 {
     DEBUG_BLOCK
-    debug() << "ignored: " << m_dockChangesIgnored;
 
-    m_saveLayoutChangesTimer->stop();
-
-    if( !m_dockChangesIgnored )
-    {
-        m_saveLayoutChangesTimer->start( 500 );
-    }
-}
-
-void MainWindow::ignoreLayoutChangesTimeout()
-{
-    DEBUG_BLOCK
-    m_dockChangesIgnored = false;
+    m_saveLayoutChangesTimer->start( LAYOUT_SAVE_DELAY );
 }
 
 #include "MainWindow.moc"
