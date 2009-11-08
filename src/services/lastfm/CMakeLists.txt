@@ -17,7 +17,7 @@ include_directories(
         ${LIBLASTFM_INCLUDE_DIR}
         )
 
-        add_subdirectory( images ) 
+        add_subdirectory( images )
 
 ########### next target ###############
 
@@ -28,6 +28,7 @@ include_directories(
             LastFmServiceCollection.cpp
             LastFmServiceConfig.cpp
             LastFmServiceQueryMaker.cpp
+#             LastfmReadLabelCapability.cpp
             ScrobblerAdapter.cpp
             LastFmTreeModel.cpp
             LastFmTreeView.cpp

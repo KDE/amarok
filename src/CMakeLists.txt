@@ -69,6 +69,8 @@ include_directories(
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
+    ${LIBLASTFM_INCLUDE_DIR}/..
+    ${LIBLASTFM_INCLUDE_DIR}
 )
 
 if ( KDEMULTIMEDIA_FOUND )
@@ -612,6 +614,7 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
+    LastfmReadLabelCapability.cpp
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
@@ -713,6 +716,7 @@ target_link_libraries(amaroklib
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
+    ${LIBLASTFM_LIBRARY}
     ${TAGLIB_LIBRARIES}
     ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}

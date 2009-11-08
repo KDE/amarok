@@ -20,6 +20,7 @@
 
 #include "Amarok.h"
 #include "BookmarkMetaActions.h"
+#include "LastfmReadLabelCapability.h"
 #include "Meta.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
@@ -588,7 +589,8 @@ Track::hasCapabilityInterface( Meta::Capability::Type type ) const
            type == Meta::Capability::Importable ||
            type == Meta::Capability::CurrentTrackActions ||
            type == Meta::Capability::WriteTimecode ||
-           type == Meta::Capability::LoadTimecode;
+           type == Meta::Capability::LoadTimecode ||
+           type == Meta::Capability::ReadLabel;
 }
 
 Meta::Capability*
@@ -612,6 +614,8 @@ Track::createCapabilityInterface( Meta::Capability::Type type )
             return new TimecodeWriteCapabilityImpl( this );
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityImpl( this );
+        case Meta::Capability::ReadLabel:
+            return new Meta::LastfmReadLabelCapability( this );
         default:
             return 0;
     }
