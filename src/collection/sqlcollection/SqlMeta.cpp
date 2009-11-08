@@ -25,7 +25,9 @@
 #include "SqlBookmarkThisCapability.h"
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
+#include "SqlReadLabelCapability.h"
 #include "SqlRegistry.h"
+#include "SqlWriteLabelCapability.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/capabilities/CustomActionsCapability.h"
@@ -291,7 +293,7 @@ SqlTrack::refreshFromDatabase( const QString &uid, SqlCollection* collection, bo
     QStringList result = collection->query( query );
     if( result.isEmpty() )
         return;
-    
+
     updateData( result, true );
     if( updateObservers )
         notifyObservers();
@@ -893,7 +895,7 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
         debug() << "Running following update query: " << update;
         m_collection->query( update );
     }
-    
+
     if( !m_newUid.isEmpty() )
     {
         QString update = "UPDATE urls SET uniqueid='%1' WHERE uniqueid='%2';";
@@ -1086,6 +1088,10 @@ SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
             return new TimecodeWriteCapabilityImpl( this );
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityImpl( this );
+        case Meta::Capability::ReadLabel:
+            return new SqlReadLabelCapability( this, m_collection );
+        case Meta::Capability::WriteLabel:
+            return new SqlWriteLabelCapability( this, m_collection );
 
         default:
             return 0;

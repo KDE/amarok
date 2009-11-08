@@ -34,6 +34,8 @@
 #include "MainWindow.h"
 #include "MetaQueryMaker.h"
 #include "MetaUtility.h"
+#include "meta/capabilities/ReadLabelCapability.h"
+#include "meta/capabilities/WriteLabelCapability.h"
 #include "QueryMaker.h"
 #include "statusbar/StatusBar.h"       //for status messages
 #include "TagGuesser.h"
@@ -317,7 +319,7 @@ TagDialog::removeLabelPressed() //SLOT
         }
 
         m_labelModel->removeLabels( selection );
-       
+
         ui->labelsList->selectionModel()->reset();
         labelSelected();
     }
@@ -338,7 +340,7 @@ TagDialog::addLabelPressed() //SLOT
                 m_removedLabels.removeAll( label );
             else
                 m_newLabels.append( label );
-            
+
             m_labels.append( label );
         }
         m_labelModel->addLabel( label );
@@ -413,7 +415,7 @@ TagDialog::nextTrack()
 
         setCurrentTrack( m_trackIterator.next() );
     }
-    loadTags( m_currentTrack );
+    loadLabels( m_currentTrack );
     loadLabels( m_currentTrack );
     enableItems();
     readTags();
@@ -669,7 +671,7 @@ void TagDialog::init()
     m_newLabels.clear();
     m_removedLabels.clear();
     m_labels.clear();
-    
+
     m_labelModel = new LabelListModel( m_labels );
 
     ui->labelsList->setModel( m_labelModel );
@@ -720,7 +722,7 @@ void TagDialog::init()
         ui->pushButton_next->hide();
 
         loadLyrics( m_currentTrack );
-        loadTags( m_currentTrack );
+        loadLabels( m_currentTrack );
         readTags();
     }
 
@@ -1201,7 +1203,7 @@ TagDialog::readMultipleTracks()
 
     m_labels = validLabels;
     m_labelModel->setLabels( m_labels );
-    
+
     // Set them in the dialog and in the track ( so we don't break hasChanged() )
     int cur_item;
     if( artist )
@@ -1430,58 +1432,18 @@ TagDialog::storeTags( const Meta::TrackPtr &track, int changes, const QVariantMa
 }
 
 void
-TagDialog::storeLabels( const Meta::TrackPtr &track, const QStringList &removedlabels, const QStringList &newlabels )
+TagDialog::storeLabels( Meta::TrackPtr track, const QStringList &removedLabels, const QStringList &newLabels )
 {
     DEBUG_BLOCK
 
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
-    
-    if( !sql )
+    Meta::WriteLabelCapability *wlc = track->create<Meta::WriteLabelCapability>();
+
+    if( !wlc )
     {
-        debug() << "Could not get SqlStorage, aborting" << endl;
+        debug() << "Unable to get a write label capability, aborting";
         return;
     }
-
-    for ( int x = 0; x < newlabels.length(); x++)
-    {
-        //Check if all new labels are already in the Database
-        const QString checkQuery = "SELECT label FROM labels WHERE label=\"%1\"";
-        QStringList result = sql->query(  checkQuery.arg( sql->escape( newlabels.at( x ) ) ) );
-
-        if ( result.isEmpty() )
-        {
-            const QString newQuery = "INSERT INTO labels (label) VALUE(\"%1\")";
-            sql->query(  newQuery.arg( sql->escape( newlabels.at( x ) ) ) );
-        }
-
-        //Insert connection for every new label if not already there
-        const QString checkNewQuery = "SELECT label from urls_labels WHERE label=(SELECT id FROM labels WHERE label=\"%1\") AND url=(SELECT id FROM urls WHERE uniqueid=\"%2\")";
-        result = sql->query(  checkNewQuery.arg( sql->escape( newlabels.at( x ) ), sql->escape( track->uidUrl() ) ) );
-
-        if ( result.isEmpty() )
-        {
-            const QString insertQuery = "INSERT INTO urls_labels (label,url) VALUE((SELECT id FROM labels WHERE label=\"%1\"),(SELECT id FROM urls WHERE uniqueid=\"%2\"))";
-            sql->query(  insertQuery.arg( sql->escape( newlabels.at( x ) ), sql->escape( track->uidUrl() ) ) );
-        }
-    }
-
-    for ( int y = 0; y < removedlabels.length(); y++)
-    {
-        //Delete connections for every removed label
-        const QString removeQuery = "DELETE FROM urls_labels WHERE url=(SELECT id FROM urls WHERE uniqueid=\"%1\") AND label=(SELECT id FROM labels WHERE label=\"%2\")";
-        sql->query(  removeQuery.arg( sql->escape( track->uidUrl() ), sql->escape( removedlabels.at( y ) ) )  );
-
-        //Check if label isn't used anymore
-        const QString checkQuery = "SELECT label FROM urls_labels where label=(SELECT id FROM labels WHERE label=\"%1\")";
-        QStringList result = sql->query(  checkQuery.arg( sql->escape( removedlabels.at( y ) ) ) );
-
-        if ( result.isEmpty() )
-        {
-            const QString labelRemoveQuery = "DELETE FROM labels WHERE label=\"%1\"";
-            sql->query(  labelRemoveQuery.arg( sql->escape( removedlabels.at( y ) ) ) );
-        }
-    }
-    
+    wlc->setLabels( removedLabels, newLabels );
 }
 
 
@@ -1530,37 +1492,21 @@ TagDialog::loadAvailableLabels()
 }
 
 QStringList
-TagDialog::labelsForTrack( const Meta::TrackPtr &track )
+TagDialog::labelsForTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
-    QStringList labels;
-
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
-    if( !sql )
+    Meta::ReadLabelCapability *ric = track->Meta::Track::create<Meta::Capability::ReadLabel>();
+    if( !ric )
     {
-        debug() << "Could not get SqlStorage, aborting" << endl;
-        return labels;
+        debug() << "No Read Label Capability found, no labels available.";
+        return QStringList();
     }
-
-    const QString query = "SELECT a.label FROM labels a, urls_labels b, urls c WHERE a.id=b.label AND b.url=c.id AND c.uniqueid=\"%1\"";
-
-    QStringList result = sql->query( query.arg( sql->escape( track->uidUrl() ) ) );
-
-    if( !result.isEmpty() )
-    {
-        for ( int x = 0; x < result.count(); x++)
-        {
-            if ( !labels.contains( result.value(x) ) )
-                labels.append( result.value(x) );
-        }
-    }
-
-    return labels;
+    return ric->labels();
 }
 
 void
-TagDialog::loadLabels( const Meta::TrackPtr &track )
+TagDialog::loadLabels( Meta::TrackPtr track )
 {
     m_labels = labelsForTrack( track );
     m_labelModel->setLabels( m_labels );

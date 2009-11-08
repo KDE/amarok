@@ -49,7 +49,9 @@ namespace Meta
                         , LoadTimecode = 16
                         , MultiSource = 17
                         , BoundedPlayback = 18
-                        , Decorator
+                        , Decorator = 19
+                        , ReadLabel = 20
+                        , WriteLabel = 21
                       };
 
             virtual ~Capability();

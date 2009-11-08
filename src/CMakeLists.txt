@@ -297,12 +297,14 @@ set(meta_SRCS
     meta/capabilities/MultiPlayableCapability.cpp
     meta/capabilities/MultiSourceCapability.cpp
     meta/capabilities/OrganiseCapability.cpp
+    meta/capabilities/ReadLabelCapability.cpp
     meta/capabilities/SourceInfoCapability.cpp
     meta/capabilities/StatisticsCapability.cpp
     meta/capabilities/StreamInfoCapability.cpp
     meta/capabilities/TimecodeLoadCapability.cpp
     meta/capabilities/TimecodeWriteCapability.cpp
     meta/capabilities/UpdateCapability.cpp
+    meta/capabilities/WriteLabelCapability.cpp
     meta/file/File.cpp
     meta/multi/MultiTrack.cpp
     meta/multi/MultiSourceCapabilityImpl.cpp

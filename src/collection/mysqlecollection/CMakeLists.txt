@@ -35,8 +35,10 @@ set(amarok_collection-mysqlecollection_PART_SRCS
     ../sqlcollection/SqlCollectionDBusHandler.cpp
     ../sqlcollection/SqlCollectionLocation.cpp
     ../sqlcollection/SqlQueryMaker.cpp
+    ../sqlcollection/SqlReadLabelCapability.cpp
     ../sqlcollection/SqlRegistry.cpp
     ../sqlcollection/SqlMeta.cpp
+    ../sqlcollection/SqlWriteLabelCapability.cpp
     ../mysql-shared/MySqlCollection.cpp
     MySqlEmbeddedCollection.cpp
     ../../../utilities/collectionscanner/AFTUtility.cpp

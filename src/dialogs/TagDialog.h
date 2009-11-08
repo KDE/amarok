@@ -96,7 +96,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
         void resultReady( const QString &collectionId, const Meta::GenreList &genres );
         void dataQueryDone();
-        
+
         //individual item-specific slots, so we know which have been changed by the user
         // useful when editing multiple tracks and we can't compare against the tag itself
         void composerModified();
@@ -118,7 +118,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         * Updates Remove label button
         */
         void labelSelected();
-        
+
     private:
         void init();
         void setCurrentTrack( Meta::TrackPtr track );
@@ -141,14 +141,15 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         * @arg removedlabels Labels to be removed from track
         * @arg newlabels Labels to be added to track
         */
-        void storeLabels( const Meta::TrackPtr &track, const QStringList &removedlabels, const QStringList &newlabels );
-        void loadTags( const Meta::TrackPtr &track );
+        void storeLabels( Meta::TrackPtr track, const QStringList &removedlabels, const QStringList &newlabels );
 
         /**
         * Loads labels from a specific track to edit gui
         * @arg track Track to load labels for
         */
-        void loadLabels( const Meta::TrackPtr &track );
+        void loadLabels( Meta::TrackPtr track );
+
+        void loadTags( const Meta::TrackPtr &track );
         void loadLyrics( const Meta::TrackPtr &track );
         QVariantMap dataForTrack( const Meta::TrackPtr &track );
         double scoreForTrack( const Meta::TrackPtr &track );
@@ -158,7 +159,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         * @returns Labels for a specific track
         * @arg track Track to load labels for
         */
-        QStringList labelsForTrack( const Meta::TrackPtr &track );
+        QStringList labelsForTrack( Meta::TrackPtr track );
         QString lyricsForTrack( const Meta::TrackPtr &track );
         void saveTags();
         const QString unknownSafe( QString );
