@@ -290,7 +290,7 @@ void StatusBar::hideLongMessage()
 void
 StatusBar::updateTotalPlaylistLength() //SLOT
 {
-    const int totalLength = The::playlist()->totalLength();
+    const quint64 totalLength = The::playlist()->totalLength();
     const quint64 totalSize = The::playlist()->totalSize();
     const int trackCount = The::playlist()->rowCount();
     const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
