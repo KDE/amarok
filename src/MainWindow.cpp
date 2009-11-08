@@ -1077,7 +1077,7 @@ MainWindow::resizeEvent( QResizeEvent * event )
 
     QWidget::resizeEvent( event );
 
-    m_restoreLayoutTimer->start( LAYOUT_SAVE_DELAY );
+    m_restoreLayoutTimer->start( 0 );
 }
 
 QPoint
@@ -1287,7 +1287,7 @@ void MainWindow::layoutChanged()
 {
     DEBUG_BLOCK
 
-    m_saveLayoutChangesTimer->start( LAYOUT_SAVE_DELAY );
+    m_saveLayoutChangesTimer->start( 0 );
 }
 
 #include "MainWindow.moc"

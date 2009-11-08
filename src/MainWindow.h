@@ -60,9 +60,6 @@ namespace The {
 //This should only change if docks or toolbars are added or removed
 #define LAYOUT_VERSION 3
 
-// The delay between changing the layout and storing it
-#define LAYOUT_SAVE_DELAY 200
-
 
 /**
   * @class MainWindow
