@@ -453,7 +453,7 @@ LyricsApplet::setEditing( const bool isEditing )
     m_editIcon->action()->setEnabled( !isEditing );
     m_editIcon->action()->setVisible( !isEditing );
 
-    // If we're editing, show and enable the save icon
+    // If we're editing, show and enable the close icon
     m_closeIcon->action()->setEnabled( isEditing );
     m_closeIcon->action()->setVisible( isEditing );
 
