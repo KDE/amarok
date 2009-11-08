@@ -345,6 +345,7 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
             if( !episode->localUrl().isEmpty() )
             {
                 KUrl newLocation = sqlChannel->saveLocation();
+
                 newLocation.addPath( episode->localUrl().fileName() );
                 debug() << "Moving from " << episode->localUrl() << " to " << newLocation;
 
@@ -353,8 +354,13 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
                 episode->updateInDb();
             }
         }
+
         if( !filesToMove.isEmpty() )
+        {
+            QDir dir( sqlChannel->saveLocation().path() );
+            dir.mkpath( "." );
             KIO::move( filesToMove, sqlChannel->saveLocation(), KIO::HideProgressInfo );
+        }
     }
 }
 
