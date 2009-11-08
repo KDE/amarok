@@ -378,6 +378,11 @@ signals:
      */
     void metadataUpdated();
 
+    /**
+     * Signal forwarded from the source model. Emitted when tracks are (de)queued in the playlist.
+     */
+    void queueChanged();
+
 protected:
     /**
      * Check if a certain row matches a search term when looking at the fields specified by

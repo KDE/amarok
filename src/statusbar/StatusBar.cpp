@@ -91,6 +91,7 @@ StatusBar::StatusBar( QWidget * parent )
     connect( The::playlist(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlist(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlist(), SIGNAL( layoutChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlist(), SIGNAL( queueChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();
 }

@@ -144,6 +144,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void activeTrackChanged( quint64 );
         void activeRowChanged( int );
         void metadataUpdated();
+        void queueChanged();
 
     private:
         // inherit from QAbstractListModel, and make private so that nobody uses them

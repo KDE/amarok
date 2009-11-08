@@ -147,6 +147,12 @@ signals:
      */
     void removedIds( const QList<quint64>& );
 
+    /**
+     * Signal forwarded from the source model.
+     * Emitted when tracks are (de)queued in the playlist.
+     */
+    void queueChanged();
+
 private:
     QString m_currentSearchTerm;
     int m_currentSearchFields;

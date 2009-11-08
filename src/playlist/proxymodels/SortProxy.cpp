@@ -41,6 +41,7 @@ SortProxy::SortProxy( AbstractModel *belowModel, QObject *parent )
     //needed by GroupingProxy:
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
     connect( sourceModel(), SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
+    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
 }
 
 SortProxy::~SortProxy()
