@@ -26,7 +26,7 @@
 namespace Meta
 {
 
-SqlReadLabelCapability::SqlReadLabelCapability( const Meta::TrackPtr& track, SqlStorage *storage )
+SqlReadLabelCapability::SqlReadLabelCapability( Meta::SqlTrack *track, SqlStorage *storage )
     : ReadLabelCapability()
     , m_track( track )
     , m_storage( storage )
@@ -60,3 +60,4 @@ QStringList SqlReadLabelCapability::labels()
 }
 
 }
+

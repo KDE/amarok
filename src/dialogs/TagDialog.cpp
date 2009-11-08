@@ -1496,7 +1496,7 @@ TagDialog::labelsForTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
-    Meta::ReadLabelCapability *ric = track->Meta::Track::create<Meta::Capability::ReadLabel>();
+    Meta::ReadLabelCapability *ric = track->create<Meta::ReadLabelCapability>();
     if( !ric )
     {
         debug() << "No Read Label Capability found, no labels available.";

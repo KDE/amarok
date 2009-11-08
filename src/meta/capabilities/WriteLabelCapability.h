@@ -31,7 +31,6 @@ class AMAROK_EXPORT WriteLabelCapability : public Meta::Capability
 {
     Q_OBJECT
     public:
-        ~WriteLabelCapability();
         static Type capabilityInterfaceType() { return Meta::Capability::WriteLabel; }
 
         //Implementors

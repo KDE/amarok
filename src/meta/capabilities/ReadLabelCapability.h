@@ -31,7 +31,6 @@ class AMAROK_EXPORT ReadLabelCapability : public Meta::Capability
 {
     Q_OBJECT
     public:
-        ~ReadLabelCapability();
         static Type capabilityInterfaceType() { return Meta::Capability::ReadLabel; }
 
         //Implementors

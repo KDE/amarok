@@ -21,6 +21,7 @@
 #define SQLREADLABELCAPABILITY_H
 
 #include "meta/capabilities/ReadLabelCapability.h"
+#include "SqlMeta.h"
 
 class SqlStorage;
 
@@ -31,7 +32,7 @@ class SqlReadLabelCapability : public Meta::ReadLabelCapability
 {
     Q_OBJECT
     public:
-        SqlReadLabelCapability( const Meta::TrackPtr &track, SqlStorage *storage );
+        SqlReadLabelCapability( Meta::SqlTrack *track, SqlStorage *storage );
         virtual QStringList labels();
 
     private:

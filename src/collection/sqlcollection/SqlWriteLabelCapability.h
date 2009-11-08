@@ -21,6 +21,7 @@
 #define SQLWRITELABELCAPABILITY_H
 
 #include "meta/capabilities/WriteLabelCapability.h"
+#include "SqlMeta.h"
 
 class SqlStorage;
 
@@ -31,8 +32,8 @@ class SqlWriteLabelCapability : public WriteLabelCapability
 {
     Q_OBJECT
     public:
-        SqlWriteLabelCapability( const Meta::TrackPtr &track, SqlStorage *storage );
-        void QStringList setLabels( const QStringList &removedLabels, const QStringList &newlabels );
+        SqlWriteLabelCapability( Meta::SqlTrack *track, SqlStorage *storage );
+        void setLabels( const QStringList &removedLabels, const QStringList &newlabels );
 
     private:
         Meta::TrackPtr m_track;

@@ -26,7 +26,7 @@
 namespace Meta
 {
 
-SqlWriteLabelCapability::SqlWriteLabelCapability( const Meta::TrackPtr& track, SqlStorage *storage )
+SqlWriteLabelCapability::SqlWriteLabelCapability( Meta::SqlTrack* track, SqlStorage* storage )
     : WriteLabelCapability()
     , m_track( track )
     , m_storage( storage )
@@ -47,7 +47,7 @@ SqlWriteLabelCapability::setLabels( const QStringList &removedLabels, const QStr
     {
         //Check if all new labels are already in the Database
         const QString checkQuery = "SELECT label FROM labels WHERE label=\"%1\"";
-        const QStringList result = m_storage->query(  checkQuery.arg( m_storage->escape( newlabels.at( x ) ) ) );
+        QStringList result = m_storage->query(  checkQuery.arg( m_storage->escape( newlabels.at( x ) ) ) );
 
         if ( result.isEmpty() )
         {
