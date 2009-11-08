@@ -167,7 +167,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
             case PlaylistColumn: //playlist
                 {
                     food = QVariant::fromValue( playlist );
-                    name = playlist->name();
+                    name = playlist->prettyName();
                     description = playlist->description();
                     icon = KIcon( "amarok_playlist" );
                     groups = playlist->groups();
