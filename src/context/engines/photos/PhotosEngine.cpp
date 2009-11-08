@@ -273,7 +273,7 @@ void PhotosEngine::resultFinalize()
     {
         DEBUG_BLOCK
         debug() << "No Photos found";
-        setData( "photos", "message", i18n( "No information found ..." ) );
+        setData( "photos", "message", i18n( "No information found..." ) );
         return;
     }
 
