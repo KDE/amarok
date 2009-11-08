@@ -394,6 +394,7 @@ LyricsApplet::editLyrics()
     }
 
     setEditing( true );
+    setCollapseOff();
 }
 
 void
