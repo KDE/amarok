@@ -129,25 +129,27 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     if( !name.isNull() && !ext.isEmpty() )
         format = Meta::getFormat( path );
 
-    Meta::Playlist *playlist = 0;
+    Meta::PlaylistFile *playlistFile = 0;
     switch( format )
     {
         case Meta::PLS:
-            playlist = new Meta::PLSPlaylist( tracks );
+            playlistFile = new Meta::PLSPlaylist( tracks );
             break;
         case Meta::M3U:
-            playlist = new Meta::M3UPlaylist( tracks );
+            playlistFile = new Meta::M3UPlaylist( tracks );
             break;
         case Meta::XSPF:
-            playlist = new Meta::XSPFPlaylist( tracks );
+            playlistFile = new Meta::XSPFPlaylist( tracks );
             break;
         default:
             debug() << QString("Do not support filetype with extension \"%1!\"").arg( ext );
             return Meta::PlaylistPtr();
     }
-    Meta::PlaylistPtr playlistPtr( playlist );
+    playlistFile->setName( name );
     debug() << "Forcing save of playlist!";
-    Meta::PlaylistFilePtr::dynamicCast( playlistPtr )->save( path, true );
+    playlistFile->save( path, true );
+
+    Meta::PlaylistPtr playlistPtr( playlistFile );
     m_playlists << playlistPtr;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;

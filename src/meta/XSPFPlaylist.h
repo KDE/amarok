@@ -123,8 +123,10 @@ public:
 
     /* PlaylistFile methods */
     bool isWritable();
+    /** Changes both the filename and the title in XML */
     void setName( const QString &name );
     bool load( QTextStream &stream ) { return loadXSPF( stream ); }
+    /** save to location, relative is unused since XSPF mandates absolute paths */
     bool save( const KUrl &location, bool relative );
 
 private:

@@ -50,10 +50,7 @@ namespace Meta
 XSPFPlaylist::XSPFPlaylist()
     : PlaylistFile()
     , QDomDocument()
-    , m_url( Meta::newPlaylistFilePath( "xspf" ) )
 {
-    m_name = m_url.fileName();
-
     QDomElement root = createElement( "playlist" );
 
     root.setAttribute( "version", 1 );
@@ -62,8 +59,6 @@ XSPFPlaylist::XSPFPlaylist()
     root.appendChild( createElement( "trackList" ) );
 
     appendChild( root );
-
-    setTitle( m_name );
 }
 
 XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
@@ -74,7 +69,6 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
 {
     DEBUG_BLOCK
     debug() << "url: " << m_url;
-    m_name = m_url.fileName();
 
     //check if file is local or remote
     if ( m_url.isLocalFile() )
@@ -99,10 +93,8 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
 XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
     : PlaylistFile()
     , QDomDocument()
-    , m_url( Meta::newPlaylistFilePath( "xspf" ) )
 {
     DEBUG_BLOCK
-    m_name = m_url.fileName();
 
     QDomElement root = createElement( "playlist" );
 
@@ -112,8 +104,6 @@ XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
     root.appendChild( createElement( "trackList" ) );
 
     appendChild( root );
-
-    setTitle( m_name );
 
     setTrackList( list );
 }
@@ -385,6 +375,10 @@ XSPFPlaylist::setTitle( const QString &title )
                                     documentElement().namedItem( "title" ).firstChild()
                                 );
     }
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 void
@@ -399,6 +393,10 @@ XSPFPlaylist::setCreator( const QString &creator )
     }
     else
         documentElement().namedItem( "creator" ).replaceChild( createTextNode( creator ), documentElement().namedItem( "creator" ).firstChild() );
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 void
@@ -413,6 +411,10 @@ XSPFPlaylist::setAnnotation( const QString &annotation )
     }
     else
         documentElement().namedItem( "annotation" ).replaceChild( createTextNode( annotation ), documentElement().namedItem( "annotation" ).firstChild() );
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 void
@@ -427,6 +429,10 @@ XSPFPlaylist::setInfo( const KUrl &info )
     }
     else
         documentElement().namedItem( "info" ).replaceChild( createTextNode( info.url() ), documentElement().namedItem( "info" ).firstChild() );
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 void
@@ -441,6 +447,10 @@ XSPFPlaylist::setLocation( const KUrl &location )
     }
     else
         documentElement().namedItem( "location" ).replaceChild( createTextNode( location.url() ), documentElement().namedItem( "location" ).firstChild() );
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 void
@@ -455,6 +465,10 @@ XSPFPlaylist::setIdentifier( const QString &identifier )
     }
     else
         documentElement().namedItem( "identifier" ).replaceChild( createTextNode( identifier ), documentElement().namedItem( "identifier" ).firstChild() );
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 void
@@ -469,6 +483,10 @@ XSPFPlaylist::setImage( const KUrl &image )
     }
     else
         documentElement().namedItem( "image" ).replaceChild( createTextNode( image.url() ), documentElement().namedItem( "image" ).firstChild() );
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 void
@@ -486,6 +504,10 @@ XSPFPlaylist::setDate( const QDateTime &date )
     }
     else
         documentElement().namedItem( "date" ).replaceChild( createTextNode( date.toString( "yyyy-MM-ddThh:mm:ss" ) ), documentElement().namedItem( "date" ).firstChild() );
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 void
@@ -500,6 +522,10 @@ XSPFPlaylist::setLicense( const KUrl &license )
     }
     else
         documentElement().namedItem( "license" ).replaceChild( createTextNode( license.url() ), documentElement().namedItem( "license" ).firstChild() );
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 void
@@ -524,6 +550,10 @@ XSPFPlaylist::setAttribution( const KUrl &attribution, bool append )
         node.appendChild( subNode );
         documentElement().replaceChild( node, documentElement().namedItem( "attribution" ) );
     }
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 void
@@ -538,6 +568,10 @@ XSPFPlaylist::setLink( const KUrl &link )
     }
     else
         documentElement().namedItem( "link" ).replaceChild( createTextNode( link.url() ), documentElement().namedItem( "link" ).firstChild() );
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 XSPFTrackList
@@ -731,17 +765,20 @@ void
 XSPFPlaylist::setName( const QString &name )
 {
     DEBUG_BLOCK
-    m_name = name;
-    setTitle( name );
-    if( QFileInfo( m_url.toLocalFile() ).exists() )
+
+    //can't save to a new file if we don't know where.
+    if( !m_url.isEmpty() )
     {
-        debug() << "Deleting old playlist file:" << m_url.toLocalFile();
-        QFile::remove( m_url.toLocalFile() );
+        if( QFileInfo( m_url.toLocalFile() ).exists() )
+        {
+            debug() << "Deleting old playlist file:" << m_url.toLocalFile();
+            QFile::remove( m_url.toLocalFile() );
+        }
+        m_url.setFileName( name + ( name.endsWith( ".xspf", Qt::CaseInsensitive ) ? "" : ".xspf" ) );
+        debug() << "new url:" << m_url;
     }
-    m_url.setFileName( name + ( name.endsWith( ".xspf", Qt::CaseInsensitive ) ? "" : ".xspf" ) );
-    debug() << "new url:" << m_url;
-    save( m_url, true );
-    //TODO: notify observers
+    //setTitle will save if there is a url.
+    setTitle( name );
 }
 
 } //namespace Meta
