@@ -278,6 +278,7 @@ void PlaylistLayoutEditDialog::renameLayout()
  */
 void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
 {
+    DEBUG_BLOCK
     m_layoutName = layoutName;
 
     if( m_layoutsMap->keys().contains( layoutName ) )   //is the layout exists in the list of loaded layouts
@@ -289,6 +290,10 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
         inlineControlsChekbox->setChecked( layout.inlineControls() );
         groupByComboBox->setCurrentIndex( groupByComboBox->findData( layout.groupBy() ) );
         setEnabledTabs();
+        //make sure that it is not marked dirty (it will be because of the changed signal triggereing when loagin it)
+        //unless it is actually changed
+        debug() << "not dirty anyway!!";
+        (*m_layoutsMap)[m_layoutName].setDirty( false ); 
     }
     else
     {
@@ -469,6 +474,8 @@ void PlaylistLayoutEditDialog::setupGroupByCombo()
 
 void PlaylistLayoutEditDialog::setLayoutChanged()
 {
+    DEBUG_BLOCK
+    
     setEnabledTabs();
 
     (*m_layoutsMap)[m_layoutName].setHead( m_headEdit->config() );
