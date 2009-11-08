@@ -362,7 +362,8 @@ XSPFPlaylist::link() const
 void
 XSPFPlaylist::setTitle( const QString &title )
 {
-    if ( documentElement().namedItem( "title" ).isNull() )
+    QDomNode titleNode = documentElement().namedItem( "title" );
+    if( titleNode.isNull() || !titleNode.hasChildNodes() )
     {
         QDomNode node = createElement( "title" );
         QDomNode subNode = createTextNode( title );
