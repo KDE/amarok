@@ -62,9 +62,7 @@ private slots:
     void saveLyrics();
 
 private:
-    void calculateHeight();
     void setEditing( const bool isEditing );
-
     void collapseToMin();
 
     QString m_titleText;

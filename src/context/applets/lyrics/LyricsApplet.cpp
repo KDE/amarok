@@ -219,8 +219,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     {
         m_lyrics->clear();
         m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
-        setCollapseHeight( 40 );
-        setCollapseOn();
     }
     else if( data.contains( "fetching" ) )
     {
@@ -230,9 +228,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->show();
         m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
-        setCollapseHeight( 130 );
-        debug() << "lyrics small sizehint height:" << m_lyrics->sizeHint().height();
-        setCollapseOn();
     }
     else if( data.contains( "error" ) )
     {
@@ -240,8 +235,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->show();
         m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
         m_lyrics->setPlainText( i18n( "Could not download lyrics.\nPlease check your Internet connection.\nError message:\n%1", data["error"].toString() ) );
-        setCollapseHeight( m_lyrics->sizeHint().height() );
-        setCollapseOn();
     }
     else if( data.contains( "suggested" ) )
     {
@@ -262,6 +255,13 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         // adjust to required size
         setCollapseHeight( m_suggested->boundingRect().height() );
         setCollapseOn();
+        // from end of func, want to avoid call to minumum height as that uses m_lyrics rather t han m_suggested
+        setEditing( false );
+
+        updateConstraints();
+        update();
+
+        return;
     }
     else if( data.contains( "html" ) )
     {
@@ -271,7 +271,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->setHtml( data[ "html" ].toString() );
         m_lyrics->show();
         m_titleText = QString( "%1 : %2" ).arg( i18n( "Lyrics" ) ).arg( data[ "html" ].toString().section( "<title>", 1, 1 ).section( "</title>", 0, 0 ) );
-        setCollapseOff();
         emit sizeHintChanged(Qt::MaximumSize);
     }
     else if( data.contains( "lyrics" ) )
@@ -284,7 +283,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_titleText = QString( " %1 : %2 - %3" ).arg( i18n( "Lyrics" ) ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() );
         //  need padding for title
         m_lyrics->setPlainText( lyrics[ 3 ].toString().trimmed() );
-        setCollapseOff();
+
         // the following line is needed to fix the bug of the lyrics applet sometimes not being correctly resized.
         // I don't have the courage to put this into Applet::setCollapseOff(), maybe that would break other applets.
         emit sizeHintChanged(Qt::MaximumSize);
@@ -295,11 +294,9 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_lyrics->show();
         m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
-
-        setCollapseHeight( m_lyrics->sizeHint().height() );
-        debug() << "lyrics small sizehint height:" << m_lyrics->sizeHint().height();
-        setCollapseOn();
     }
+
+    collapseToMin();
 
     setEditing( false );
 
@@ -445,6 +442,23 @@ LyricsApplet::setEditing( const bool isEditing )
     m_saveIcon->action()->setVisible( isEditing );
 
     update();
+    collapseToMin();
 }
+
+
+void LyricsApplet::collapseToMin()
+{
+    QGraphicsTextItem testItem;
+    testItem.setHtml( m_lyrics->toHtml() );
+    testItem.setTextWidth( m_lyrics->size().width() );
+
+    qreal contentHeight = testItem.boundingRect().height();
+    debug() << "Collapsing lyrics applet to qgti height of" << contentHeight;
+    contentHeight += 40;
+    debug() << "with padding:" << contentHeight;
+    setCollapseHeight( contentHeight );
+    setCollapseOn();
+}
+
 
 #include "LyricsApplet.moc"

@@ -200,7 +200,9 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         m_appletList[ i ]->setPos( 0, runningHeight );
         qreal height = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize ).height();
         //debug() << "applet has sizeHinte height of:" << height << "preferred  height:" << m_appletList[ i ]->preferredHeight() ;
-        if( height < 15 ) // maximise its space
+        bool startsInCV = m_appletList[ i ]->pos().y() > 0 && m_appletList[ i ]->pos().y() < boundingRect().height();
+        bool fitsInCV = startsInCV && ( ( m_appletList[ i ]->pos().y() + height ) < boundingRect().height() );
+        if( height < 15 || ( startsInCV && !fitsInCV ) ) // maximise its space, or it wants more than it can get and shrink it to fit
         {
             qreal heightLeft = boundingRect().height() - runningHeight;
             //debug() << "layout has boundingRect FLOWING" << boundingRect() ;
