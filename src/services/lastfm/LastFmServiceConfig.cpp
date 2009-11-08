@@ -33,12 +33,13 @@ LastFmServiceConfig::LastFmServiceConfig()
 {
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
-    if( ( config.readEntry( "ignoreWallet", QString() ) == "no" ) && KWallet::Wallet::isEnabled() )
-    {
+    // open wallet unless explicitly told not to
+    if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) ) {
         pApp->hideSplashScreen();
         m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
     }
 
+    // if it failed and the user hasn't forced us to use the wallet, ask if he wants us to ignore it for the future
     if( !m_wallet && !config.hasKey( "ignoreWallet" ) )
     {
         pApp->hideSplashScreen();
@@ -70,7 +71,6 @@ void
 LastFmServiceConfig::load()
 {
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
-    // delete info from kconfig, as a safety measure
 
     if( m_wallet )
     {
@@ -79,16 +79,6 @@ LastFmServiceConfig::load()
         // do a one-time transfer
         // can remove at some point in the future, post-2.2
         m_wallet->setFolder( "Amarok" );
-        if( config.hasKey( "password" ) )
-        {
-            m_wallet->writePassword( "lastfm_password", config.readEntry( "password" ) );
-            config.deleteEntry( "password" );
-        }
-        if( config.hasKey( "username" ) )
-        {
-            m_wallet->writeEntry( "lastfm_username", config.readEntry( "username" ).toUtf8() );
-            config.deleteEntry( "username" );
-        }
 
         if( m_wallet->readPassword( "lastfm_password", m_password ) > 0 )
             debug() << "Failed to read lastfm password from kwallet!";
