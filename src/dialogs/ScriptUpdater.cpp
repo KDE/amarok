@@ -32,7 +32,7 @@
 
 #include <QtCrypto>
 
-ScriptUpdater::ScriptUpdater() : QThread()
+ScriptUpdater::ScriptUpdater() : QObject()
 {
 }
 
@@ -47,16 +47,6 @@ ScriptUpdater::setScriptPath( const QString& scriptPath )
 }
 
 void
-ScriptUpdater::run()
-{
-    // only start the thread's event loop here. Everything else will be controlled via signals.
-    this->exec();
-    debug() << m_scriptname << ": Event loop terminated, quitting.";
-    // once this ScriptUpdater is done, emit the corresponding signal
-    emit finished( m_scriptPath );
-}
-
-void
 ScriptUpdater::updateScript()
 {
     DEBUG_BLOCK
@@ -64,7 +54,7 @@ ScriptUpdater::updateScript()
     // cancel immediately if auto updating is disabled
     if( !AmarokConfig::autoUpdateScripts() )
     {
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
 
@@ -74,14 +64,14 @@ ScriptUpdater::updateScript()
     if( !QFile::exists( specPath ) )
     {
         // no .spec file found, can't continue
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     KPluginInfo pInfo( specPath );
     if ( !pInfo.isValid() || pInfo.name() == "" || pInfo.version() == "" )
     {
         // invalid or unusable .spec file, can't continue
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     m_scriptversion = pInfo.version();
@@ -111,13 +101,13 @@ ScriptUpdater::phase2( KJob * job )
     if ( job->error() )
     {
         // if no 'version' file was found, cancel the update
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     QFile file( m_versionFile.fileName() );
     if ( !file.open( QIODevice::ReadOnly ) ) {
         debug() << m_scriptname << ": Failed to open version file for reading!";
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     QString response( file.readAll() );
@@ -126,7 +116,7 @@ ScriptUpdater::phase2( KJob * job )
     if ( !isNewer( response, m_scriptversion ) )
     {
         // if no newer version is available, cancel update
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     debug() << m_scriptname << ": newer version found, starting update :-)";
@@ -146,7 +136,7 @@ void ScriptUpdater::phase3( KJob * job )
     if ( job->error() )
     {
         // if the file wasn't found, cancel the update
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
 
@@ -166,7 +156,7 @@ ScriptUpdater::phase4( KJob * job )
     if ( job->error() )
     {
         // if the signature couldn't be downloaded, cancel the update
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
 
@@ -177,14 +167,14 @@ ScriptUpdater::phase4( KJob * job )
     if ( !( QCA::ConvertGood == conversionResult ) )
     {
         debug() << m_scriptname << ": Failed to read public key!";
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     QFile file( m_archiveFile.fileName() );
     if ( !file.open( QIODevice::ReadOnly ) )
     {
         debug() << m_scriptname << ": Failed to open archive file for reading!";
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     QCA::Hash hash( "sha1" );
@@ -194,7 +184,7 @@ ScriptUpdater::phase4( KJob * job )
     if ( !versionFile.open( QIODevice::ReadOnly ) )
     {
         debug() << m_scriptname << ": Failed to open version file for reading!";
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     QCA::Hash versionHash( "sha1" );
@@ -204,7 +194,7 @@ ScriptUpdater::phase4( KJob * job )
     if ( !sigFile.open( QIODevice::ReadOnly ) )
     {
         debug() << m_scriptname << ": Failed to open signature file for reading!";
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     QByteArray signature = QByteArray::fromBase64( sigFile.readAll() );
@@ -215,7 +205,7 @@ ScriptUpdater::phase4( KJob * job )
     if ( !pubkey.validSignature( signature ) )
     {
         debug() << m_scriptname << ": Invalid signature, no update performed.";
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     debug() << m_scriptname << ": Signature matches. Performing update now.";
@@ -226,7 +216,7 @@ ScriptUpdater::phase4( KJob * job )
     {
         // in case of errors: bad luck, cancel the update
         debug() << m_scriptname << ": Error opening the update package.";
-        QTimer::singleShot( 0, this, SLOT( quit() ) );
+        emit finished( m_scriptPath );
         return;
     }
     const QString relativePath = KGlobal::dirs()->relativeLocation( "data", m_fileName );
@@ -244,7 +234,7 @@ ScriptUpdater::phase4( KJob * job )
     debug() << m_scriptname << ": Updating finished successfully :-)";
 
     // all done, temporary files are deleted automatically by Qt
-    QTimer::singleShot( 0, this, SLOT( quit() ) );
+    emit finished( m_scriptPath );
 }
 
 // decide whether a version string 'update' is newer than 'installed'

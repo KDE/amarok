@@ -23,11 +23,9 @@
 
 #include <KIO/Job>
 
-#include <QThread>
-#include <QSemaphore>
 #include <QTemporaryFile>
 
-class ScriptUpdater : public QThread
+class ScriptUpdater : public QObject
 {
 
     Q_OBJECT
@@ -43,8 +41,8 @@ class ScriptUpdater : public QThread
     signals:
         void finished( QString scriptPath );
 
-    protected:
-        virtual void run();
+    /*protected:
+        virtual void run();*/
 
     private slots:
         void phase2( KJob * job );

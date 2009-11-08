@@ -240,13 +240,11 @@ ScriptManager::updateAllScripts() // SLOT
     m_updaters = new ScriptUpdater[m_nScripts];
     for (int i = 0; i < m_nScripts; i++)
     {
-        // all the ScriptUpdaters are now started in the background in parallel.
+        // all the ScriptUpdaters are now started in parallel.
         // tell them which script to work on
         m_updaters[i].setScriptPath(foundScripts.at(i));
         // tell them whom to signal when they're finished
         connect ( &(m_updaters[i]), SIGNAL( finished( QString ) ), SLOT( updaterFinished( QString )) );
-        // start their event loop (absolutely necessary!)
-        m_updaters[i].start();
         // and finally tell them to get to work
         QTimer::singleShot( 0, &(m_updaters[i]), SLOT( updateScript() ) );
     }
