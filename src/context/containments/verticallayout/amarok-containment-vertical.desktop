@@ -35,6 +35,7 @@ Name[tr]=Dikey İçerik Kapsayıcı
 Name[uk]=Вертикальний контейнер вмісту
 Name[wa]=Contneu d' astampé do contecse
 Name[x-test]=xxVertical Context Containmentxx
+Name[zh_CN]=垂直上下文容器
 Comment=A vertical containment for the Amarok Context
 Comment[bg]=Вертикален контекст на Amarok
 Comment[ca]=Un contenidor vertical per a l'Amarok Context
@@ -71,6 +72,7 @@ Comment[tr]=Amarok İçeriği için bir dikey kapsayıcı
 Comment[uk]=Вертикальний контейнер для контексту Amarok
 Comment[wa]=On contneu d' astampé po l' contecse d' Amarok
 Comment[x-test]=xxA vertical containment for the Amarok Contextxx
+Comment[zh_CN]=Amarok 垂直上下文容器
 
 Icon=
 Type=Service

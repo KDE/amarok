@@ -1,5 +1,6 @@
 [Global]
 Comment=Amarok
+Comment[bg]=Amarok
 Comment[ca]=Amarok
 Comment[da]=Amarok
 Comment[de]=Amarok
@@ -19,9 +20,11 @@ Comment[sv]=Amarok
 Comment[tr]=Amarok
 Comment[uk]=Amarok
 Comment[x-test]=xxAmarokxx
+Comment[zh_CN]=Amarok
 
 [Event/trackChange]
 Name=Track Change
+Name[bg]=Прехвърляне запис
 Name[ca]=Canvi de peça
 Name[da]=Sporskift
 Name[de]=Stückwechsel
@@ -42,7 +45,9 @@ Name[sv]=Spårändring
 Name[tr]=Parça Değişimi
 Name[uk]=Зміна композиції
 Name[x-test]=xxTrack Changexx
+Name[zh_CN]=音轨更改
 Comment=Amarok changed to a new track
+Comment[bg]=Amarok прехвърли към друг запис
 Comment[ca]=L'Amarok ha canviat a una peça nova
 Comment[da]=Amarok skiftede til et nyt spor
 Comment[de]=Amarok spielt ein neues Stück ab
@@ -63,4 +68,5 @@ Comment[sv]=Amarok bytte till ett nytt spår
 Comment[tr]=Amarok yeni bir parçaya geçti
 Comment[uk]=Композиція у Amarok змінилася
 Comment[x-test]=xxAmarok changed to a new trackxx
+Comment[zh_CN]=Amarok 更改到新音轨
 Action=Popup
