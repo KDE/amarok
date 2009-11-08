@@ -31,14 +31,14 @@ LastFmServiceConfig::LastFmServiceConfig()
     : m_askDiag( 0 )
     , m_wallet( 0 )
 {
-    if( KWallet::Wallet::isEnabled() )
+    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+
+    if( ( config.readEntry( "ignoreWallet", QString() ) == "no" ) && KWallet::Wallet::isEnabled() )
     {
         pApp->hideSplashScreen();
         m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
     }
 
-    KConfigGroup config = KGlobal::config()->group( configSectionName() );
-    
     if( !m_wallet && !config.hasKey( "ignoreWallet" ) )
     {
         pApp->hideSplashScreen();
@@ -89,20 +89,20 @@ LastFmServiceConfig::load()
             m_wallet->writeEntry( "lastfm_username", config.readEntry( "username" ).toUtf8() );
             config.deleteEntry( "username" );
         }
-        
+
         if( m_wallet->readPassword( "lastfm_password", m_password ) > 0 )
             debug() << "Failed to read lastfm password from kwallet!";
         QByteArray rawUsername;
         if( m_wallet->readEntry( "lastfm_username", rawUsername ) > 0 )
             debug() << "failed to read last.fm username from kwallet.. :(";
         else
-            m_username = QString::fromUtf8( rawUsername );   
+            m_username = QString::fromUtf8( rawUsername );
     } else if( config.readEntry( "ignoreWallet", QString() ) == "yes" )
     {
         m_username = config.readEntry( "username", QString() );
         m_password = config.readEntry( "password", QString() );
     }
-    
+
     m_sessionKey = config.readEntry( "sessionKey", QString() );
     m_scrobble = config.readEntry( "scrobble", true );
     m_fetchSimilar = config.readEntry( "fetchSimilar", true );
@@ -117,7 +117,7 @@ void LastFmServiceConfig::save()
     config.writeEntry( "sessionKey", m_sessionKey );
     config.writeEntry( "scrobble", m_scrobble );
     config.writeEntry( "fetchSimilar", m_fetchSimilar );
-        
+
     if( m_wallet )
     {
         m_wallet->setFolder( "Amarok" );
