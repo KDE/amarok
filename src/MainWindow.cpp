@@ -135,14 +135,6 @@ MainWindow::MainWindow()
 {
     DEBUG_BLOCK
 
-    m_restoreLayoutTimer = new QTimer( this );
-    m_restoreLayoutTimer->setSingleShot( true );
-    connect( m_restoreLayoutTimer, SIGNAL( timeout() ), this, SLOT( restoreLayout() ) );
-
-    m_saveLayoutChangesTimer = new QTimer( this );
-    m_saveLayoutChangesTimer->setSingleShot( true );
-    connect( m_saveLayoutChangesTimer, SIGNAL( timeout() ), this, SLOT( saveLayout() ) );
-
     setObjectName( "MainWindow" );
     s_instance = this;
 
@@ -1060,9 +1052,6 @@ MainWindow::resizeEvent( QResizeEvent * event )
 {
     DEBUG_BLOCK
     
-    m_saveLayoutChangesTimer->stop();
-    m_restoreLayoutTimer->stop();
-
     if ( m_dockWidthsLocked )
     {
         m_dockWidthsLocked = false;
@@ -1077,7 +1066,7 @@ MainWindow::resizeEvent( QResizeEvent * event )
 
     QWidget::resizeEvent( event );
 
-    m_restoreLayoutTimer->start( 0 );
+    QTimer::singleShot( 0, this, SLOT( restoreLayout() ) );
 }
 
 QPoint
@@ -1231,9 +1220,6 @@ MainWindow::restoreLayout()
 {
     DEBUG_BLOCK
 
-    m_saveLayoutChangesTimer->stop();
-    m_restoreLayoutTimer->stop();
-
     QFile file( Amarok::saveLocation() + "layout" );
 
     QByteArray layout;
@@ -1287,7 +1273,7 @@ void MainWindow::layoutChanged()
 {
     DEBUG_BLOCK
 
-    m_saveLayoutChangesTimer->start( 0 );
+    QTimer::singleShot( 0, this, SLOT( saveLayout() ) );
 }
 
 #include "MainWindow.moc"
