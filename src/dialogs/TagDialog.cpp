@@ -394,7 +394,6 @@ TagDialog::previousTrack()
         setCurrentTrack( m_trackIterator.previous() );
     }
     loadTags( m_currentTrack );
-    loadLabels( m_currentTrack );
     enableItems();
     readTags();
 }
@@ -432,7 +431,6 @@ TagDialog::perTrack()
         applyToAllTracks();
         setSingleTrackMode();
         loadTags( m_currentTrack );
-        loadLabels( m_currentTrack );
         readTags();
     }
     else
