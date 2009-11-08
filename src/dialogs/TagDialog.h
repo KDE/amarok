@@ -119,6 +119,8 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         */
         void labelSelected();
 
+        void labelsFetched(QStringList labels);
+
     private:
         void init();
         void setCurrentTrack( Meta::TrackPtr track );
@@ -197,6 +199,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QStringList m_genres;
 
         Ui::TagDialogBase *ui;
+
 };
 
 

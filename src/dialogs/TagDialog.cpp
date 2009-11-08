@@ -673,6 +673,7 @@ void TagDialog::init()
     m_labelModel = new LabelListModel( m_labels );
 
     ui->labelsList->setModel( m_labelModel );
+    ui->labelsList->setEnabled( m_currentTrack->is<Meta::ReadLabelCapability>() );
 
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
@@ -1506,9 +1507,26 @@ TagDialog::labelsForTrack( Meta::TrackPtr track )
 void
 TagDialog::loadLabels( Meta::TrackPtr track )
 {
-    m_labels = labelsForTrack( track );
-    m_labelModel->setLabels( m_labels );
+    Meta::ReadLabelCapability *ric = track->create<Meta::ReadLabelCapability>();
+    if( !ric )
+    {
+        debug() << "No Read Label Capability found, no labels available.";
+        return;
+    }
+    connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(labelsFetched(QStringList)));
+    ric->fetchLabels();
 }
+
+
+void
+TagDialog::labelsFetched( QStringList labels )
+{
+    DEBUG_BLOCK
+    m_labels = labels;
+    m_labelModel->setLabels( labels );
+    ui->labelsList->update();
+}
+
 
 QVariantMap
 TagDialog::dataForTrack( const Meta::TrackPtr &track )

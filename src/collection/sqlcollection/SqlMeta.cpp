@@ -1039,6 +1039,8 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
         case Meta::Capability::CurrentTrackActions:
         case Meta::Capability::WriteTimecode:
         case Meta::Capability::LoadTimecode:
+        case Meta::Capability::ReadLabel:
+        case Meta::Capability::WriteLabel:
             return true;
 
         case Meta::Capability::Editable:

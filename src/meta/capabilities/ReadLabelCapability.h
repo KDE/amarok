@@ -34,7 +34,11 @@ class AMAROK_EXPORT ReadLabelCapability : public Meta::Capability
         static Type capabilityInterfaceType() { return Meta::Capability::ReadLabel; }
 
         //Implementors
+        virtual void fetchLabels() = 0;
         virtual QStringList labels() = 0;
+
+    signals:
+        void labelsFetched( QStringList );
 
 };
 

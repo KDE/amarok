@@ -33,14 +33,15 @@ SqlReadLabelCapability::SqlReadLabelCapability( Meta::SqlTrack *track, SqlStorag
 {
 }
 
-QStringList SqlReadLabelCapability::labels()
+void
+SqlReadLabelCapability::fetchLabels()
 {
     QStringList labels;
 
     if( !m_storage )
     {
         debug() << "Could not get SqlStorage, aborting" << endl;
-        return labels;
+        return;
     }
 
     const QString query = "SELECT a.label FROM labels a, urls_labels b, urls c WHERE a.id=b.label AND b.url=c.id AND c.uniqueid=\"%1\"";
@@ -56,7 +57,14 @@ QStringList SqlReadLabelCapability::labels()
         }
     }
 
-    return labels;
+    m_labels = labels;
+    emit labelsFetched( labels );
+}
+
+QStringList
+SqlReadLabelCapability::labels()
+{
+    return m_labels;
 }
 
 }
