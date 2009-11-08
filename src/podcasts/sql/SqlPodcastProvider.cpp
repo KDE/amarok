@@ -35,6 +35,7 @@
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KIO/Job>
+#include <KIO/NetAccess>
 #include <KUrl>
 #include <Solid/Networking>
 
@@ -345,22 +346,24 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
             if( !episode->localUrl().isEmpty() )
             {
                 KUrl newLocation = sqlChannel->saveLocation();
+                QDir dir( newLocation.toLocalFile() );
+                dir.mkpath( "." );
 
                 newLocation.addPath( episode->localUrl().fileName() );
                 debug() << "Moving from " << episode->localUrl() << " to " << newLocation;
-
-                filesToMove << episode->localUrl();
-                episode->setLocalUrl( newLocation );
-                episode->updateInDb();
+                KIO::Job *moveJob = KIO::move( episode->localUrl(), newLocation,
+                                               KIO::HideProgressInfo );
+                //wait until job is finished.
+                if( KIO::NetAccess::synchronousRun( moveJob, The::mainWindow() ) )
+                {
+                    episode->setLocalUrl( newLocation );
+                    episode->updateInDb();
+                }
             }
         }
 
-        if( !filesToMove.isEmpty() )
-        {
-            QDir dir( sqlChannel->saveLocation().path() );
-            dir.mkpath( "." );
-            KIO::move( filesToMove, sqlChannel->saveLocation(), KIO::HideProgressInfo );
-        }
+        if( !QDir().rmdir( oldSaveLocation.toLocalFile() ) )
+            debug() << "Could not remove old directory "<< oldSaveLocation.toLocalFile();
     }
 }
 
