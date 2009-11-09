@@ -60,10 +60,6 @@ namespace The {
 //This should only change if docks or toolbars are added or removed
 #define LAYOUT_VERSION 3
 
-// The delay between changing the layout and storing it
-#define LAYOUT_SAVE_DELAY 200
-
-
 /**
   * @class MainWindow
   * @short The MainWindow widget class.
@@ -147,6 +143,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void slotJumpTo();
         void showScriptSelector();
         void layoutChanged();
+        void ignoreLayoutChangesTimeout();
 
         /**
          * Save state and position of dock widgets.
@@ -225,6 +222,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         bool m_dockWidthsLocked;
         bool m_dockChangesIgnored;
         QTimer * m_restoreLayoutTimer;
+        QTimer * m_ignoreLayoutChangesTimer;
         QTimer * m_saveLayoutChangesTimer;
 
     private slots:
