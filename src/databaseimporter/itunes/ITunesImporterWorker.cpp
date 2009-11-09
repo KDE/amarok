@@ -162,7 +162,7 @@ ITunesImporterWorker::run()
             readNext();
             readNext(); // this skips the first all-encompassing <dict> tag 
             debug() << "got start of tracks";
-            while( !atEnd() )
+            while( !atEnd() && !( isEndElement() && name() == "dict" ) )
             {
                 if( m_aborted )
                     return;
