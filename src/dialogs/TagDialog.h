@@ -132,7 +132,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void enableItems();
         bool hasChanged();
         int changes();
-        void loadAvailableLabels();
         void storeTags();
         void storeTags( const Meta::TrackPtr &track );
         void storeTags( const Meta::TrackPtr &track, int changes, const QVariantMap &data );
@@ -164,7 +163,11 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QStringList labelsForTrack( Meta::TrackPtr track );
         QString lyricsForTrack( const Meta::TrackPtr &track );
         void saveTags();
-        const QString unknownSafe( QString );
+        /**
+        * Returns "Unknown" if the value is null or not known
+        * Otherwise returns the string
+        */
+        const QString unknownSafe( const QString & );
         const QStringList statisticsData();
         void applyToAllTracks();
 
