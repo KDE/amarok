@@ -223,6 +223,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
         bool m_layoutLocked;
         bool m_dockWidthsLocked;
+        bool m_dockChangesIgnored;
         QTimer * m_restoreLayoutTimer;
         QTimer * m_saveLayoutChangesTimer;
 
