@@ -348,7 +348,9 @@ void
 MediaDeviceTrack::prepareToPlay()
 {
     Meta::MediaDeviceTrackPtr ptr = Meta::MediaDeviceTrackPtr( this );
-    m_collection->handler()->prepareToPlay( ptr );
+
+    if( m_collection && m_collection->handler() )
+        m_collection->handler()->prepareToPlay( ptr );
 }
 
 // TODO: employ observers (e.g. Handler) to take care of updated
