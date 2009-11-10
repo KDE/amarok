@@ -325,7 +325,7 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
 bool SqlCollectionLocation::startNextJob()
 {
     DEBUG_BLOCK
-    if ( !m_sources.isEmpty() )
+    while ( !m_sources.isEmpty() )
     {
         Meta::TrackPtr track = m_sources.keys().first();
         KUrl src = m_sources.take( track );
@@ -349,12 +349,12 @@ bool SqlCollectionLocation::startNextJob()
             {
                 warning() << "Could not create directory " << dir;
                 source()->transferError(track, i18n( "Could not create directory: %1", dir.path() ) );
-                return false;
+                continue; // Attempt to copy/move the next item in m_sources
             }
         }
         if( src == dest) {
         //no changes, so leave the database alone, and don't erase anything
-            return false;
+            continue; // Attempt to copy/move the next item in m_sources
         }
     //we should only move it directly if we're moving within the same collection
         else if( isGoingToRemoveSources() && source()->collection() == collection() )
@@ -377,6 +377,7 @@ bool SqlCollectionLocation::startNextJob()
             m_jobs.insert( job, track );
             return true;
         }
+        break;
     }
     return false;
 }
