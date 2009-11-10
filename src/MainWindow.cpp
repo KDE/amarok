@@ -131,6 +131,7 @@ MainWindow::MainWindow()
     , m_lastBrowser( 0 )
     , m_dockWidthsLocked( false )
     , m_dockChangesIgnored( false )
+    , m_defaultLayoutCreated( false )
 {
     DEBUG_BLOCK
 
@@ -1080,6 +1081,7 @@ MainWindow::resizeEvent( QResizeEvent * event )
     QWidget::resizeEvent( event );
 
     m_ignoreLayoutChangesTimer->start( 500 );
+    
     m_restoreLayoutTimer->start( 400 );
 }
 
@@ -1248,7 +1250,7 @@ MainWindow::restoreLayout()
         file.close();
     }
 
-    if ( !restoreState( layout, LAYOUT_VERSION ) )
+    if ( !restoreState( layout, LAYOUT_VERSION ) && !m_defaultLayoutCreated )
     {
         //since no layout has been loaded, we know that the items are all placed next to each other in the main window
         //so get the combined size of the widgets, as this is the space we have to play with. Then figure out
@@ -1279,6 +1281,8 @@ MainWindow::restoreLayout()
         m_playlistWidget->setFixedWidth( widgetWidth );
 
         m_dockWidthsLocked = true;
+        m_defaultLayoutCreated = true;
+
     } else {
       debug() << "succesfully restored...";
     }
@@ -1287,7 +1291,7 @@ MainWindow::restoreLayout()
     if( !m_mainToolbar->isHidden() && !m_slimToolbar->isHidden() )
         m_slimToolbar->hide();
 
-    m_dockChangesIgnored = false;
+    //m_dockChangesIgnored = false;
 }
 
 void MainWindow::layoutChanged()

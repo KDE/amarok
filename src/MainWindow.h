@@ -225,6 +225,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QTimer * m_ignoreLayoutChangesTimer;
         QTimer * m_saveLayoutChangesTimer;
 
+        bool m_defaultLayoutCreated;;
+
     private slots:
         void createContextView( Plasma::Containment *c );
 };
