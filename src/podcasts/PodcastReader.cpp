@@ -340,16 +340,14 @@ PodcastReader::read()
 }
 
 QDateTime
-PodcastReader::parsePubDate( const QString &datestring )
+PodcastReader::parsePubDate( const QString &dateString )
 {
-    struct tm tmp;
+    QDateTime pubDate;
 
-    if( datestring.contains( ',' ) )
-        strptime( datestring.toAscii().data(), "%a, %d %b %Y %H:%M:%S %z", &tmp );
+    if( dateString.contains( ',' ) )
+        pubDate = QDateTime::fromString( dateString, "dddd d MMMM yyyy h:m:s" );
     else
-        strptime( datestring.toAscii().data(), "%d %b %Y %H:%M:%S %z", &tmp );
-
-    QDateTime pubDate = QDateTime::fromTime_t( mktime( &tmp ) );
+        pubDate = QDateTime::fromString( dateString, "d dddd MMMM yyyy h:m:s" );
 
     return pubDate;
 }
