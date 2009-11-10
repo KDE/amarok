@@ -462,7 +462,11 @@ MainWindow::saveLayout()  //SLOT
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
         file.write( saveState( LAYOUT_VERSION ) );
+
+        #ifdef Q_OS_UNIX  // fsync() only exists on Posix
         fsync( file.handle() );
+        #endif
+
         file.close();
     }
 }
