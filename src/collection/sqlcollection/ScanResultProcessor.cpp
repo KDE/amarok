@@ -197,7 +197,7 @@ ScanResultProcessor::commit()
 {
     if( !m_setupComplete )
     {
-        debug() << "ERROR: Database temporary table setup did not complete.  This is probably a result of no directories being scanned.";
+        debug() << "Database temporary table setup did not complete due to no directories needing to be processed.";
         return;
     }
     if( m_type == ScanResultProcessor::IncrementalScan )
