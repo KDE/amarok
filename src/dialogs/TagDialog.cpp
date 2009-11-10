@@ -1424,6 +1424,7 @@ TagDialog::storeLabels( Meta::TrackPtr track, const QStringList &removedLabels, 
         return;
     }
     wlc->setLabels( removedLabels, newLabels );
+    delete wlc;
 }
 
 
@@ -1457,7 +1458,9 @@ TagDialog::labelsForTrack( Meta::TrackPtr track )
         debug() << "No Read Label Capability found, no labels available.";
         return QStringList();
     }
-    return ric->labels();
+    const QStringList labels = ric->labels();
+    delete ric;
+    return labels;
 }
 
 void
@@ -1478,6 +1481,7 @@ void
 TagDialog::labelsFetched( QStringList labels )
 {
     DEBUG_BLOCK
+    sender()->deleteLater();
     m_labels = labels;
     m_labelModel->setLabels( labels );
     ui->labelsList->update();

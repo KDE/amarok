@@ -48,6 +48,7 @@
 
 
 #include <typeinfo>
+#include <ReadLabelCapability.h>
 
 Playlist::Model::Model( QObject *parent )
         : QAbstractListModel( parent )
@@ -257,6 +258,23 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case GroupTracks:
             {
+                return QString();
+            }
+            case Labels:
+            {
+                Meta::TrackPtr track = m_items.at( row )->track();
+                if( track )
+                {
+                    Meta::ReadLabelCapability *rlc = track->create<Meta::ReadLabelCapability>();
+                    if( rlc )
+                    {
+                        const QStringList labels = rlc->labels();
+                        if ( rlc->labels().isEmpty() )
+                            rlc->fetchLabels();
+                        return rlc->labels().join( "," );
+                        rlc->deleteLater();
+                    }
+                }
                 return QString();
             }
             case LastPlayed:
