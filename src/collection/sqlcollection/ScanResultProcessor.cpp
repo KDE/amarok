@@ -62,6 +62,8 @@ ScanResultProcessor::setScanType( ScanType type )
 void
 ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
 {
+    DEBUG_BLOCK
+    debug() << "SRP::addDirectory on " << dir << " with mtime " << mtime;
     if( dir.isEmpty() )
     {
         debug() << "got directory with no path from the scanner, not adding";
@@ -247,6 +249,7 @@ ScanResultProcessor::rollback()
 void
 ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
 {
+    DEBUG_BLOCK
     setupDatabase();
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
@@ -881,9 +884,10 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
 void
 ScanResultProcessor::setupDatabase()
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
     if( !m_setupComplete )
     {
+        debug() << "Setting up database";
         m_collection->dbUpdater()->createTemporaryTables();
         if( m_type == IncrementalScan )
         {
