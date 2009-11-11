@@ -190,15 +190,16 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_onOffCheckbox->setChecked( AmarokConfig::dynamicMode() );
 
-    
     /// HERE WE ADD ALL GENERAL CUSTOM BIASES
-    Dynamic::CustomBias::registerNewBiasFactory( new Dynamic::EchoNestBiasFactory() );
+    m_echoNestBiasFactory = new Dynamic::EchoNestBiasFactory;
+    Dynamic::CustomBias::registerNewBiasFactory( m_echoNestBiasFactory );
 }
 
 
-DynamicCategory::~DynamicCategory() 
+DynamicCategory::~DynamicCategory()
 {
     saveOnExit();
+    delete m_echoNestBiasFactory;
 }
 
 

@@ -30,6 +30,10 @@
 
 #include <KComboBox>
 
+namespace Dynamic {
+    class EchoNestBiasFactory;
+}
+
 namespace PlaylistBrowserNS {
 
     class DynamicBiasModel;
@@ -75,6 +79,8 @@ namespace PlaylistBrowserNS {
 
             QSpinBox *m_previous, *m_upcoming;
 
+            // custom biases
+            Dynamic::EchoNestBiasFactory *m_echoNestBiasFactory;
     };
 
 }
