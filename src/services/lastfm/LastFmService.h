@@ -126,6 +126,9 @@ private:
     QPixmap m_avatar;
     bool m_subscriber;
 
+    char *m_userNameArray;
+    char *m_sessionKeyArray;
+
     Dynamic::SimilarArtistsBiasFactory* m_similarArtistsBiasFactory;
 
     QMap< QString, QNetworkReply* > m_jobs;

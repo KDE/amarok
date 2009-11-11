@@ -206,6 +206,8 @@ LastFmService::~LastFmService()
     DEBUG_BLOCK
 
     delete m_similarArtistsBiasFactory;
+    delete[] m_userNameArray;
+    delete[] m_sessionKeyArray;
 
     if( m_collection )
     {
@@ -228,7 +230,8 @@ LastFmService::init()
     // testing w/ official keys
     //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
-    lastfm::ws::Username = qstrdup( m_userName.toLatin1().data() );
+    m_userNameArray = qstrdup( m_userName.toLatin1().data() );
+    lastfm::ws::Username = m_userNameArray;
 
 
     // set up proxy
@@ -254,7 +257,8 @@ LastFmService::init()
     } else
     {
         debug() << "using saved sessionkey from last.fm";
-        lastfm::ws::SessionKey = qstrdup( sessionKey.toLatin1().data() );
+        m_sessionKeyArray = qstrdup( sessionKey.toLatin1().data() );
+        lastfm::ws::SessionKey = m_sessionKeyArray;
         m_sessionKey = sessionKey;
 
         if( m_scrobble )
@@ -327,7 +331,8 @@ LastFmService::onAuthenticated()
             }
             m_sessionKey = lfm[ "session" ][ "key" ].text();
 
-            lastfm::ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
+            m_sessionKeyArray = qstrdup( m_sessionKey.toLatin1().data() );
+            lastfm::ws::SessionKey = m_sessionKeyArray;
             config.setSessionKey( m_sessionKey );
             config.save();
 
