@@ -35,10 +35,15 @@
 #include <QLabel>
 #include <QString>
 
+//For removing multiple tracks from different playlists with one QAction
+typedef QMultiMap<Meta::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
+Q_DECLARE_METATYPE( PlaylistTrackMap )
+
 PlaylistFileProvider::PlaylistFileProvider()
  : UserPlaylistProvider()
  , m_playlistsLoaded( false )
  , m_defaultFormat( Meta::XSPF )
+ , m_removeTrackAction( 0 )
 {
     //playlists are lazy loaded
 }
@@ -99,9 +104,47 @@ PlaylistFileProvider::playlistActions( Meta::PlaylistPtr playlist )
 QList<QAction *>
 PlaylistFileProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
 {
-    Q_UNUSED( playlist );
     Q_UNUSED( trackIndex );
     QList<QAction *> actions;
+    //no actions if this is not one of ours
+    if( !m_playlists.contains( playlist ) )
+        return actions;
+
+    if( trackIndex < 0 )
+        return actions;
+
+    int trackCount = playlist->trackCount();
+    if( trackCount == -1 )
+        trackCount = playlist->tracks().size();
+
+    if( trackIndex >= trackCount )
+        return actions;
+
+    if( m_removeTrackAction == 0 )
+    {
+        m_removeTrackAction = new QAction(
+                    KIcon( "media-track-remove-amarok" ),
+                    i18nc( "Remove a track from a saved playlist", "Remove From \"%1\"" )
+                        .arg( playlist->name() ),
+                    this
+                );
+        m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
+        connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
+    }
+    //Add the playlist/track combination to a QMultiMap that is stored in the action.
+    //In the slot we use this data to remove that track from the playlist.
+    PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();
+    Meta::TrackPtr track = playlist->tracks()[trackIndex];
+    //only add action to map if playlist/track combo is not in there yet.
+    if( !playlistMap.keys().contains( playlist ) ||
+           !playlistMap.values( playlist ).contains( track )
+      )
+    {
+        playlistMap.insert( playlist, track );
+    }
+    m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
+
+    actions << m_removeTrackAction;
 
     return actions;
 }
@@ -290,6 +333,22 @@ PlaylistFileProvider::loadPlaylists()
     }
 
     m_playlistsLoaded = true;
+}
+
+void
+PlaylistFileProvider::slotRemove()
+{
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
+    foreach( Meta::PlaylistPtr playlist, playlistMap.uniqueKeys() )
+        foreach( Meta::TrackPtr track, playlistMap.values( playlist ) )
+            playlist->removeTrack( playlist->tracks().indexOf( track ) );
+
+    //clear the data
+    action->setData( QVariant() );
 }
 
 KConfigGroup

@@ -25,6 +25,8 @@
 class KConfigGroup;
 class KUrl;
 
+class QAction;
+
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
@@ -65,6 +67,9 @@ class PlaylistFileProvider : public UserPlaylistProvider
     signals:
             virtual void updated();
 
+    private slots:
+            void slotRemove();
+
     private:
         KConfigGroup loadedPlaylistsConfig() const;
 
@@ -72,6 +77,8 @@ class PlaylistFileProvider : public UserPlaylistProvider
         Meta::PlaylistList m_playlists;
         Meta::PlaylistFormat m_defaultFormat;
         QMultiMap<QString, Meta::PlaylistPtr> m_groupMap;
+
+        QAction *m_removeTrackAction;
 };
 
 #endif
