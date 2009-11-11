@@ -72,6 +72,8 @@ private:
     Plasma::IconWidget *m_settingsIcon;
     Ui::similarArtistsSettings ui_Settings;
 
+    int m_maxArtists;
+
 private slots:
     void connectSource( const QString &source );
 
@@ -79,6 +81,7 @@ private slots:
      * Show the settings windows
      */
     void configure();
+    void maxArtistsChanged(int value);
 
 };
 

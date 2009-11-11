@@ -73,7 +73,8 @@ SimilarArtistsApplet::init()
     constraintsEvent();
 
     // Read config and inform the engine.
-    KConfigGroup config = Amarok::config("similarArtists Applet");
+    KConfigGroup config = Amarok::config("SimilarArtists Applet");
+    m_maxArtists = config.readEntry( "maxArtists", "20" ).toInt();
 }
 
 void
@@ -151,10 +152,29 @@ SimilarArtistsApplet::configure()
 void
 SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    //KConfigGroup config = Amarok::config("UpcomingEvents Applet");
+    KConfigGroup config = Amarok::config("SimilarArtists Applet");
     QWidget *settings = new QWidget();
     ui_Settings.setupUi( settings );
+
+    ui_Settings.spinBox->setValue( m_maxArtists );
+    
     parent->addPage( settings, i18n( "Similar Artists Settings" ), "preferences-system");
+
+    connect( ui_Settings.spinBox, SIGNAL( valueChanged( int ) ), this, SLOT( maxArtistsChanged( int ) ) );
+}
+
+void
+SimilarArtistsApplet::maxArtistsChanged( int value )
+{
+DEBUG_BLOCK
+
+    m_maxArtists = value;
+
+    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:" ) + m_maxArtists );
+
+    KConfigGroup config = Amarok::config("SimilarArtists Applet");
+    config.writeEntry( "maxArtists", m_maxArtists );
+    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:" ) + m_maxArtists );
 }
 
 #include "SimilarArtistsApplet.moc"

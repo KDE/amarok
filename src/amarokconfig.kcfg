@@ -614,6 +614,14 @@
     </entry>
 </group>
 
+<group name="SimilarArtists">
+    <entry key="maxArtists" type="Int">
+        <label>Maximum similar artists</label>
+        <whatsthis>Maximum similar artists to be shown</whatsthis>
+        <default>20</default>
+    </entry>
+</group>
+
 
 
 </kcfg>
