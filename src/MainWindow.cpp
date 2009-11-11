@@ -131,7 +131,6 @@ MainWindow::MainWindow()
     , m_lastBrowser( 0 )
     , m_dockWidthsLocked( false )
     , m_dockChangesIgnored( false )
-    , m_defaultLayoutCreated( false )
 {
     DEBUG_BLOCK
 
@@ -1242,7 +1241,6 @@ MainWindow::restoreLayout()
     m_ignoreLayoutChangesTimer->stop();
 
     QFile file( Amarok::saveLocation() + "layout" );
-
     QByteArray layout;
     if ( file.open( QIODevice::ReadOnly ) )
     {
@@ -1250,8 +1248,18 @@ MainWindow::restoreLayout()
         file.close();
     }
 
-    if ( !restoreState( layout, LAYOUT_VERSION ) && !m_defaultLayoutCreated )
+    static bool defaultLayoutCreated = false;
+    bool restoreSuccess = false;
+
+    if( !defaultLayoutCreated )
     {
+        restoreSuccess = restoreState( layout, LAYOUT_VERSION );
+    }
+
+    if( !restoreSuccess )
+    {
+        defaultLayoutCreated = true;
+
         //since no layout has been loaded, we know that the items are all placed next to each other in the main window
         //so get the combined size of the widgets, as this is the space we have to play with. Then figure out
         //how much to give to each. Give the context view any pixels leftover from the integer division.
@@ -1281,17 +1289,13 @@ MainWindow::restoreLayout()
         m_playlistWidget->setFixedWidth( widgetWidth );
 
         m_dockWidthsLocked = true;
-        m_defaultLayoutCreated = true;
-
-    } else {
-      debug() << "succesfully restored...";
     }
 
     // Ensure that only one toolbar is visible
     if( !m_mainToolbar->isHidden() && !m_slimToolbar->isHidden() )
         m_slimToolbar->hide();
 
-    //m_dockChangesIgnored = false;
+    m_dockChangesIgnored = false;
 }
 
 void MainWindow::layoutChanged()
