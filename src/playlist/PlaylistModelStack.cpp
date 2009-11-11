@@ -63,7 +63,13 @@ ModelStack::ModelStack()
 }
 
 ModelStack::~ModelStack()
-{}
+{
+    delete m_model;
+    delete m_filter;
+    delete m_sort;
+    delete m_search;
+    delete m_grouping;
+}
 
 GroupingProxy *
 ModelStack::top()
