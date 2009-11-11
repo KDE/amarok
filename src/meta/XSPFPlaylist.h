@@ -132,6 +132,9 @@ public:
 private:
     XSPFTrackList trackList();
     bool loadXSPF( QTextStream& );
+    bool m_tracksLoaded;
+    //cache for the tracklist since a tracks() is a called *a lot*.
+    TrackList m_tracks;
 
     KUrl m_url;
     bool m_autoAppendAfterLoad;

@@ -50,6 +50,7 @@ namespace Meta
 XSPFPlaylist::XSPFPlaylist()
     : PlaylistFile()
     , QDomDocument()
+    , m_tracksLoaded( false )
 {
     QDomElement root = createElement( "playlist" );
 
@@ -64,6 +65,7 @@ XSPFPlaylist::XSPFPlaylist()
 XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
     : PlaylistFile( url )
     , QDomDocument()
+    , m_tracksLoaded( false )
     , m_url( url )
     , m_autoAppendAfterLoad( autoAppend )
 {
@@ -90,7 +92,7 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
     }
 }
 
-XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
+XSPFPlaylist::XSPFPlaylist( Meta::TrackList tracks )
     : PlaylistFile()
     , QDomDocument()
 {
@@ -105,7 +107,10 @@ XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
 
     appendChild( root );
 
-    setTrackList( list );
+    setTrackList( tracks );
+
+    m_tracks = tracks;
+    m_tracksLoaded = true;
 }
 
 XSPFPlaylist::~XSPFPlaylist()
@@ -177,6 +182,7 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
         return false;
     }
 
+    //FIXME: this needs to be moved to whatever is creating the XSPFPlaylist
     if( m_autoAppendAfterLoad )
         The::playlistController()->insertPlaylist( ::Playlist::ModelStack::instance()->source()->rowCount(), Meta::PlaylistPtr( this ) );
 
@@ -187,6 +193,9 @@ TrackList
 XSPFPlaylist::tracks()
 {
     DEBUG_BLOCK
+    if( m_tracksLoaded )
+        return m_tracks;
+
     XSPFTrackList xspfTracks = trackList();
     TrackList tracks;
 
@@ -228,7 +237,7 @@ XSPFPlaylist::tracks()
                 }
             }
 
-            tracks << trackPtr;
+            m_tracks << trackPtr;
         }
 
 
@@ -250,12 +259,14 @@ XSPFPlaylist::tracks()
                 map.insert( Meta::Field::URL, track.location );
                 Meta::Field::updateTrack( proxyTrack, map );
             }
-            tracks << Meta::TrackPtr( proxyTrack );
-    //         tracks << CollectionManager::instance()->trackForUrl( track.location );
+            m_tracks << Meta::TrackPtr( proxyTrack );
+    //         m_tracks << CollectionManager::instance()->trackForUrl( track.location );
         }*/
 
     }
-    return tracks;
+
+    m_tracksLoaded = true;
+    return m_tracks;
 }
 
 void
@@ -267,6 +278,10 @@ XSPFPlaylist::addTrack( Meta::TrackPtr track, int position )
         trackPos = trackList.count();
     trackList.insert( trackPos, track );
     setTrackList( trackList );
+    //also add to cache
+    m_tracks.insert( trackPos, track );
+    //set in case no track was in the playlist before
+    m_tracksLoaded = true;
 }
 
 void
@@ -278,6 +293,8 @@ XSPFPlaylist::removeTrack( int position )
 
     trackList.removeAt( position );
     setTrackList( trackList );
+    //also remove from cache
+    m_tracks.removeAt( position );
 }
 
 QString
