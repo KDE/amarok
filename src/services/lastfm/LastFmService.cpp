@@ -205,6 +205,8 @@ LastFmService::~LastFmService()
 {
     DEBUG_BLOCK
 
+    delete m_similarArtistsBiasFactory;
+
     if( m_collection )
     {
         CollectionManager::instance()->removeUnmanagedCollection( m_collection );
@@ -269,8 +271,8 @@ LastFmService::init()
     m_searchWidget->setVisible( false );
 
     // enable custom bias
-    Dynamic::SimilarArtistsBiasFactory* similarF = new Dynamic::SimilarArtistsBiasFactory();
-    Dynamic::CustomBias::registerNewBiasFactory( similarF );
+    m_similarArtistsBiasFactory = new Dynamic::SimilarArtistsBiasFactory();
+    Dynamic::CustomBias::registerNewBiasFactory( m_similarArtistsBiasFactory );
 
     // disabled until I figure out how to get what I want from last.fm
     //Dynamic::WeeklyTopBiasFactory* weeklyF = new Dynamic::WeeklyTopBiasFactory();
