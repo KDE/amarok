@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+ * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -32,7 +33,6 @@
 
 #include <QDesktopServices>
 #include <QGraphicsSimpleTextItem>
-
 
 
 SimilarArtistsApplet::SimilarArtistsApplet( QObject* parent, const QVariantList& args )
@@ -144,13 +144,17 @@ SimilarArtistsApplet::configure()
 {
     DEBUG_BLOCK
     showConfigurationInterface();
+
 }
 
 
 void
 SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    // for the settings GUI
+    //KConfigGroup config = Amarok::config("UpcomingEvents Applet");
+    QWidget *settings = new QWidget();
+    ui_Settings.setupUi( settings );
+    parent->addPage( settings, i18n( "Similar Artists Settings" ), "preferences-system");
 }
 
 #include "SimilarArtistsApplet.moc"

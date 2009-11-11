@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+ * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,8 +21,7 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 
-// for the settings GUI
-//#include <ui_SimilarArtistsSettings.h>
+#include <ui_similarArtistsSettings.h>
 
 class QAction;
 class QGraphicsSimpleTextItem;
@@ -70,6 +70,7 @@ private:
     QGraphicsSimpleTextItem* m_headerLabel; 
 
     Plasma::IconWidget *m_settingsIcon;
+    Ui::similarArtistsSettings ui_Settings;
 
 private slots:
     void connectSource( const QString &source );
