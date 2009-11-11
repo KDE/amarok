@@ -751,6 +751,10 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     }
     else
         documentElement().replaceChild( node, documentElement().namedItem( "trackList" ) );
+
+    //write changes to file directly if we know where.
+    if( !m_url.isEmpty() )
+        save( m_url, false );
 }
 
 bool
