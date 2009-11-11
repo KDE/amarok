@@ -184,7 +184,6 @@ MainWindow::MainWindow()
     const QString path = config.readEntry( "Browser Path", QString() );
     if ( !path.isEmpty() )
         browserWidget()->list()->navigate( path );
-
 }
 
 MainWindow::~MainWindow()
@@ -196,9 +195,7 @@ MainWindow::~MainWindow()
     config.writeEntry( "MainWindow Position", pos() );
 
     //save currently active category
-
     config.writeEntry( "Browser Path", browserWidget()->list()->path() );
-
 
     QList<int> sPanels;
 
@@ -369,6 +366,8 @@ MainWindow::init()
 
     //restore the layout
     restoreLayout();
+
+    saveLayout();
 }
 
 void
@@ -521,12 +520,6 @@ MainWindow::closeEvent( QCloseEvent *e )
     e->accept();
     kapp->quit();
 #endif
-}
-
-QSize
-MainWindow::sizeHint() const
-{
-    return QApplication::desktop()->screenGeometry( (QWidget*)this ).size() / 1.5;
 }
 
 void
@@ -1057,13 +1050,19 @@ void
 MainWindow::resizeEvent( QResizeEvent * event )
 {
     DEBUG_BLOCK
+
+    if( m_dockChangesIgnored )
+    {
+        m_dockChangesIgnored = false;
+        QMainWindow::resizeEvent( event );
+        return;
+    }
+
     m_dockChangesIgnored = true;
     
     m_saveLayoutChangesTimer->stop();
     m_restoreLayoutTimer->stop();
     m_ignoreLayoutChangesTimer->stop();
-
-    //saveLayout();
 
     if ( m_dockWidthsLocked )
     {
@@ -1077,10 +1076,9 @@ MainWindow::resizeEvent( QResizeEvent * event )
         m_playlistWidget->setMaximumWidth( 9999 );
     }
 
-    QWidget::resizeEvent( event );
+    QMainWindow::resizeEvent( event );
 
     m_ignoreLayoutChangesTimer->start( 500 );
-    
     m_restoreLayoutTimer->start( 400 );
 }
 
@@ -1248,18 +1246,8 @@ MainWindow::restoreLayout()
         file.close();
     }
 
-    static bool defaultLayoutCreated = false;
-    bool restoreSuccess = false;
-
-    if( !defaultLayoutCreated )
+    if( !restoreState( layout, LAYOUT_VERSION ) )
     {
-        restoreSuccess = restoreState( layout, LAYOUT_VERSION );
-    }
-
-    if( !restoreSuccess )
-    {
-        defaultLayoutCreated = true;
-
         //since no layout has been loaded, we know that the items are all placed next to each other in the main window
         //so get the combined size of the widgets, as this is the space we have to play with. Then figure out
         //how much to give to each. Give the context view any pixels leftover from the integer division.
@@ -1289,13 +1277,15 @@ MainWindow::restoreLayout()
         m_playlistWidget->setFixedWidth( widgetWidth );
 
         m_dockWidthsLocked = true;
+        m_dockChangesIgnored = true;
     }
+    else
+        m_dockChangesIgnored = false;
+
 
     // Ensure that only one toolbar is visible
     if( !m_mainToolbar->isHidden() && !m_slimToolbar->isHidden() )
         m_slimToolbar->hide();
-
-    m_dockChangesIgnored = false;
 }
 
 void MainWindow::layoutChanged()

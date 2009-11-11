@@ -158,7 +158,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
     protected:
         virtual void closeEvent( QCloseEvent* );
         virtual void keyPressEvent( QKeyEvent* );
-        virtual QSize sizeHint() const;
         virtual void resizeEvent ( QResizeEvent * event );
         virtual void paletteChange( const QPalette & oldPalette );
 
