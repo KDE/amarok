@@ -40,13 +40,7 @@ DatabaseConfig::DatabaseConfig( QWidget* parent )
     connect( kcfg_User,     SIGNAL( textChanged(const QString &) ), SLOT( updateSQLQuery() ) );
     connect( kcfg_Host,     SIGNAL( textChanged(const QString &) ), SLOT( updateSQLQuery() ) );
 
-    if( !CollectionManager::instance()->haveEmbeddedMysql() )
-    {
-        kcfg_UseServer->setCheckState( Qt::Checked );
-        toggleExternalConfigAvailable( Qt::Checked );
-    }
-    else
-        toggleExternalConfigAvailable( kcfg_UseServer->checkState() );
+    toggleExternalConfigAvailable( kcfg_UseServer->checkState() );
 
     updateSQLQuery();
 }

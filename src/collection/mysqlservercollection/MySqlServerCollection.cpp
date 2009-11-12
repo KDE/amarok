@@ -144,34 +144,5 @@ MySqlServerCollection::query( const QString &query )
     return MySqlCollection::query( query );
 }
 
-bool MySqlServerCollection::testSettings( const QString &host, const QString &user, const QString &password, const QString &port )
-{
-    DEBUG_BLOCK
-    if( mysql_library_init( 0, NULL, NULL ) )
-    {
-        error() << "MySQL library initialization failed!";
-        return false;
-    }
-
-    MYSQL* db = mysql_init( NULL );
-
-    if( !db )
-    {
-        error() << "MySQL initialization failed";
-        return false;
-    }
-
-    if( !mysql_real_connect( db, host.toUtf8(), user.toUtf8(), password.toUtf8(), NULL, port.toInt(), NULL, CLIENT_COMPRESS ) )
-    {
-        mysql_close( db );
-        db = 0;
-        return false;
-    }
-    
-    mysql_close( db );
-    db = 0;
-    return true;
-}
-
 #include "MySqlServerCollection.moc"
 
