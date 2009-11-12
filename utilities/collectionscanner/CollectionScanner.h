@@ -110,6 +110,7 @@ private:
     QString                     m_collectionId;
     QString                     m_amarokPid;
     bool                        m_batch;
+    bool                        m_charset;
     bool                        m_importPlaylists;
     QStringList                 m_folders;
     QHash<QString, uint>        m_mTimeMap;
