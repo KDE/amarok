@@ -544,7 +544,12 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                     if ( ( validFilters & QueryMaker::GenreFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valGenre, elem.text, false, false );
                 }
-                else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0|| lcField.compare( i18n( "composer" ), Qt::CaseInsensitive ) == 0 )
+                else if ( lcField.compare( "title", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "title" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    if ( ( validFilters & QueryMaker::TitleFilter ) == 0 ) continue;
+                    ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false );
+                }
+                else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "composer" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & QueryMaker::ComposerFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, false, false );
