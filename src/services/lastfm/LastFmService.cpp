@@ -183,7 +183,10 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_profile( 0 ),
       m_userinfo( 0 ),
       m_userName( username ),
-      m_sessionKey( sessionKey )
+      m_sessionKey( sessionKey ),
+      m_userNameArray( 0 ),
+      m_sessionKeyArray( 0 ),
+      m_similarArtistsBiasFactory( 0 )
 {
     DEBUG_BLOCK
 
