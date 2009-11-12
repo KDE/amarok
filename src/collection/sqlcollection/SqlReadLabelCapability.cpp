@@ -22,7 +22,6 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "SqlStorage.h"
-#include <qt4/QtCore/QTimer>
 
 namespace Meta
 {
