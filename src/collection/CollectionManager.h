@@ -31,6 +31,7 @@ typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
 
 class SqlStorage;
 class CollectionManagerSingleton;
+class TimecodeTrackProvider;
 
 class AMAROK_EXPORT CollectionManager : public QObject
 {
@@ -161,6 +162,8 @@ class AMAROK_EXPORT CollectionManager : public QObject
         Meta::ArtistList m_resultArtistList;
         bool             m_resultEmitted;
         int              m_maxArtists;
+
+        TimecodeTrackProvider *m_timecodeTrackProvider;
 
         struct Private;
         Private * const d;

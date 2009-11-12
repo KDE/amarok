@@ -148,6 +148,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 
 PodcastCategory::~PodcastCategory()
 {
+    delete m_viewKicker;
 }
 
 void

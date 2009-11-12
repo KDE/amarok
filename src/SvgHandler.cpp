@@ -70,6 +70,12 @@ SvgHandler::~SvgHandler()
     m_sliderHandleCache->deleteCache( "Amarok-Slider-pixmaps" );
     delete m_sliderHandleCache;
 
+    foreach( KSvgRenderer* item, m_renderers )
+    {
+        delete item;
+    }
+    m_renderers.clear();
+
     The::s_SvgHandler_instance = 0;
 }
 

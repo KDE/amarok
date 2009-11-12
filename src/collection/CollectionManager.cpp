@@ -89,6 +89,7 @@ CollectionManager::~CollectionManager()
 {
     DEBUG_BLOCK
 
+    delete m_timecodeTrackProvider;
     d->collections.clear();
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
@@ -189,8 +190,8 @@ CollectionManager::init()
 
     //register the timceode track provider now, as it needs to get added before loading
     //the stored playlist...
-    TimecodeTrackProvider * provider = new TimecodeTrackProvider();
-    addTrackProvider( provider );
+    m_timecodeTrackProvider = new TimecodeTrackProvider();
+    addTrackProvider( m_timecodeTrackProvider );
 }
 
 void

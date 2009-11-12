@@ -38,6 +38,10 @@ namespace The
     LastFmService *lastFmService();
 }
 
+namespace Dynamic {
+    class SimilarArtistsBiasFactory;
+}
+
 class LastFmServiceFactory : public ServiceFactory
 {
     Q_OBJECT
@@ -121,6 +125,11 @@ private:
     QString m_playcount;
     QPixmap m_avatar;
     bool m_subscriber;
+
+    char *m_userNameArray;
+    char *m_sessionKeyArray;
+
+    Dynamic::SimilarArtistsBiasFactory* m_similarArtistsBiasFactory;
 
     QMap< QString, QNetworkReply* > m_jobs;
     static LastFmService *ms_service;

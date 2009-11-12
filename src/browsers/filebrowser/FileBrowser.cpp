@@ -133,6 +133,15 @@ FileBrowser::Widget::~Widget()
     DEBUG_BLOCK
 
     writeConfig();
+
+    delete m_toolbar;
+    delete m_actionCollection;
+    delete m_bookmarkHandler;
+    delete m_urlNav;
+    delete m_filePlacesModel;
+    delete m_dirOperator;
+    delete m_filter;
+    delete m_filterButton;
 }
 
 
