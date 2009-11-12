@@ -15,6 +15,7 @@ VERSION 2.2.2
   BUGFIXES:
     * Support for "title:" token in the collection search. Patch by Roberto
       Bertolusso <rbertolusso@yahoo.com>. (BR 211249)
+    * Lots of memory leaks reported by Valgrind.
 
 
 
