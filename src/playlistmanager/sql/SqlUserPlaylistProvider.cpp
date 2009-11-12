@@ -232,6 +232,11 @@ SqlUserPlaylistProvider::import( const QString& fromLocation )
     QString query = "SELECT id, parent_id, name, description, urlid FROM \
                 playlists where urlid='%1';";
     SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    if( !sql )
+    {
+        debug() << "No sql storage available!";
+	    return false;
+    }
     query = query.arg( sql->escape( fromLocation ) );
     QStringList result = sql->query( query );
     if( result.count() != 0 )
@@ -322,6 +327,11 @@ SqlUserPlaylistProvider::createTables()
     DEBUG_BLOCK
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+    {
+        debug() << "No SQL Storage available!";
+        return;
+    }
     sqlStorage->query( QString( "CREATE TABLE playlist_groups ("
             " id " + sqlStorage->idType() +
             ", parent_id INTEGER"
@@ -360,6 +370,12 @@ SqlUserPlaylistProvider::deleteTables()
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
+    if( !sqlStorage )
+    {
+        debug() << "No SQL Storage available!";
+        return;
+    }
+
     sqlStorage->query( "DROP INDEX parent_podchannel ON playlist_groups;" );
     sqlStorage->query( "DROP INDEX parent_playlist ON playlists;" );
     sqlStorage->query( "DROP INDEX parent_playlist_tracks ON playlist_tracks;" );
@@ -380,8 +396,10 @@ SqlUserPlaylistProvider::checkTables()
     QStringList values;
 
     //Prevents amarok from crashing on bad DB
-    if ( sqlStorage )
-            values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
+    if ( !sqlStorage )
+	    return;
+
+    values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
     
     if( values.isEmpty() )
     {

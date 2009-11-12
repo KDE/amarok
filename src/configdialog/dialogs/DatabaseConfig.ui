@@ -162,7 +162,7 @@
          <item>
           <widget class="QLabel" name="label_Info">
            <property name="text">
-            <string>Amarok expects the above database and user account to already exist. This user also requires full access to the database.</string>
+            <string>Amarok expects the above database and user account to already exist. This user also requires full access to the database. You MUST restart Amarok after changing these settings.</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>

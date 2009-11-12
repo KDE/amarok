@@ -429,6 +429,9 @@ void BookmarkModel::createTables()
     DEBUG_BLOCK
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
+
     sqlStorage->query( QString( "CREATE TABLE bookmark_groups ("
             " id " + sqlStorage->idType() +
             ", parent_id INTEGER"
@@ -452,6 +455,8 @@ void BookmarkModel::deleteTables()
     DEBUG_BLOCK
     
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
 
     sqlStorage->query( "DROP TABLE bookmark_groups;" );
     sqlStorage->query( "DROP TABLE bookmarks;" );
@@ -464,6 +469,9 @@ void BookmarkModel::checkTables()
     DEBUG_BLOCK
             
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
+
     QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
 
     //also check if the db  version is correct but the table is simply missing... can happen due to a bug in 2.2.0 beta1 and beta2
@@ -646,6 +654,8 @@ BookmarkModel::renameBookmarkRecursively( BookmarkGroupPtr group, const QString&
 void BookmarkModel::upgradeTables( int from )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
     
     if ( from == 2 ) {
         sqlStorage->query( "ALTER TABLE bookmarks ADD custom " + sqlStorage->textColumnType() + ';' );

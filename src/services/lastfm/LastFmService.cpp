@@ -209,7 +209,7 @@ LastFmService::~LastFmService()
     delete[] m_userNameArray;
     delete[] m_sessionKeyArray;
 
-    if( m_collection )
+    if( m_collection && CollectionManager::instance() )
     {
         CollectionManager::instance()->removeUnmanagedCollection( m_collection );
         delete m_collection;

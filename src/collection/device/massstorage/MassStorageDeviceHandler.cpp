@@ -127,7 +127,8 @@ DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Dev
 {
     DEBUG_BLOCK
     SqlStorage *s = CollectionManager::instance()->sqlStorage();
-    Q_ASSERT( s );
+    if( !s )
+        return 0;
     const Solid::StorageVolume *volume = device.as<Solid::StorageVolume>();
     const Solid::StorageAccess *volumeAccess = device.as<Solid::StorageAccess>();
     if( !volume || !volumeAccess )

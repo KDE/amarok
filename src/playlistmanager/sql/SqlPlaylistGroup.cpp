@@ -60,6 +60,10 @@ Meta::SqlPlaylistGroup::save()
     if ( m_parent )
         parentId = m_parent->id();
 
+    SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
+
     if ( m_dbId != -1 )
     {
         //update existing
@@ -67,7 +71,7 @@ Meta::SqlPlaylistGroup::save()
                 description='%3' WHERE id=%4;";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg(
             m_description ).arg( QString::number( m_dbId ) );
-        CollectionManager::instance()->sqlStorage()->query( query );
+        sqlStorage->query( query );
     }
     else
     {
@@ -76,7 +80,7 @@ Meta::SqlPlaylistGroup::save()
                 description) VALUES ( %1, '%2', '%3' );";
         query = query.arg( QString::number( parentId ) ).arg( m_name ).arg(
             m_description );
-        m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
+        m_dbId = sqlStorage->insert( query, NULL );
     }
 }
 
@@ -98,9 +102,14 @@ void
 Meta::SqlPlaylistGroup::removeFromDb()
 {
     DEBUG_BLOCK
+    SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
+
+
     QString query = "DELETE FROM playlist_groups where id=%1;";
     query = query.arg( QString::number( m_dbId ) );
-    QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
+    QStringList result = sqlStorage->query( query );
 }
 
 void
@@ -132,13 +141,16 @@ Meta::SqlPlaylistGroupList
 Meta::SqlPlaylistGroup::childSqlGroups() const
 {
     DEBUG_BLOCK
+    SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return Meta::SqlPlaylistGroupList();
+
     if ( !m_hasFetchedChildGroups )
     {
         QString query = "SELECT id, parent_id, name, description FROM \
                 playlist_groups where parent_id=%1 ORDER BY name;";
         query = query.arg( QString::number( m_dbId ) );
-        QStringList result =
-                CollectionManager::instance()->sqlStorage()->query( query );
+        QStringList result = sqlStorage->query( query );
 
         int resultRows = result.count() / 4;
 
@@ -162,13 +174,16 @@ Meta::SqlPlaylistList
 Meta::SqlPlaylistGroup::childSqlPlaylists() const
 {
     DEBUG_BLOCK
+    SqlStorage* sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return Meta::SqlPlaylistList();
+
     if ( !m_hasFetchedChildPlaylists )
     {
         QString query = "SELECT id, parent_id, name, description, urlid FROM \
                 playlists where parent_id=%1 ORDER BY name;";
         query = query.arg( QString::number( m_dbId ) );
-        QStringList result =
-                CollectionManager::instance()->sqlStorage()->query( query );
+        QStringList result = sqlStorage->query( query );
 
         //debug() << "Result: " << result;
         int resultRows = result.count() / 5;

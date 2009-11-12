@@ -180,6 +180,8 @@ CurrentEngine::stoppedState()
     if( m_requested[ "current" ] )
     {
         Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+        if( !coll )
+            return;
 
         if( m_qmTracks )
             m_qmTracks->reset();
