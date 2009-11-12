@@ -22,7 +22,8 @@
 #include <QAbstractListModel>
 
 /**
-    @author Daniel Dewald <Daniel.Dewald@time-shift.de>
+*	MVC Model Class for displaying a Label List
+*	should be used with a QListView
 */
 
 

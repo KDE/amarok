@@ -25,6 +25,7 @@ LabelListModel::LabelListModel( const QStringList &labels, QObject *parent )
 
 int LabelListModel::rowCount( const QModelIndex &parent ) const
 {
+    Q_UNUSED( parent );
     return m_labels.count();
 }
 
@@ -44,6 +45,9 @@ QVariant LabelListModel::data( const QModelIndex &index, int role ) const
 
 QVariant LabelListModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
+    Q_UNUSED( section );
+    Q_UNUSED( orientation );
+    Q_UNUSED( role );
     return QVariant();
 }
 
@@ -131,6 +135,8 @@ void LabelListModel::setLabels( QStringList labels )
 
 bool LabelListModel::insertRows( int position, int rows, const QModelIndex &parent )
 {
+    Q_UNUSED( parent );
+
     beginInsertRows( QModelIndex(), position, position+rows-1 );
 
     for ( int row = 0; row < rows; ++row )
@@ -144,6 +150,8 @@ bool LabelListModel::insertRows( int position, int rows, const QModelIndex &pare
 
 bool LabelListModel::removeRows( int position, int rows, const QModelIndex &parent )
 {
+    Q_UNUSED( parent );
+
     beginRemoveRows( QModelIndex(), position, position+rows-1 );
 
     for ( int row = 0; row < rows; ++row )
