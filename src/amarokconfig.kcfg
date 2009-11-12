@@ -449,6 +449,10 @@
         <label>Whether years are shown in the collection browser.</label>
         <default>true</default>
     </entry>
+    <entry key="Use Charset Detector" type="Bool">
+        <label>Whether to use Mozilla's Character Set Detector to try to guess ID3 tag encodings.</label>
+        <default>false</default>
+    </entry>
 </group>
 
 <group name="Scrobbler">
