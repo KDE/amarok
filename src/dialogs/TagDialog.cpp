@@ -860,8 +860,8 @@ const QStringList TagDialog::statisticsData()
         qm->orderBy( Meta::valPlaycount );
         qm->limitMaxResultSize( 1 );
         qm->run();
-        data += i18n( "Favorite by this Artist" );
-        data += "Lorem ipsum";
+//        data += i18n( "Favorite by this Artist" );
+//        data += "Lorem ipsum";
     }
     Meta::AlbumPtr trackAlbum = m_currentTrack->album();
     if( trackAlbum )
@@ -874,8 +874,8 @@ const QStringList TagDialog::statisticsData()
         qm->orderBy( Meta::valPlaycount );
         qm->limitMaxResultSize( 1 );
         qm->run();
-        data += i18n( "Favorite on this Album" );
-        data += "Lorem ipsum";
+//        data += i18n( "Favorite on this Album" );
+//        data += "Lorem ipsum";
     }
     //TODO: port
     /*
