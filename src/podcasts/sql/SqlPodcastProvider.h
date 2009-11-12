@@ -24,6 +24,8 @@
 #include <kio/jobclasses.h>
 #include <klocale.h>
 
+class PodcastImageFetcher;
+
 class KUrl;
 class PodcastReader;
 class SqlStorage;
@@ -106,6 +108,10 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void createTables() const;
         void loadPodcasts();
         void updateDatabase( int fromVersion, int toVersion );
+        QString imagePath( Meta::SqlPodcastChannelPtr channel );
+        bool hasCachedImage( Meta::SqlPodcastChannelPtr channel );
+        QPixmap loadImage( Meta::SqlPodcastChannelPtr channel );
+        void fetchImage( Meta::SqlPodcastChannelPtr channel );
 
         Meta::SqlPodcastChannelList m_channels;
 
@@ -122,6 +128,8 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         QAction * m_renameAction; //rename a Channel or Episode
         QAction * m_updateAction;
         QAction * m_writeTagsAction; //write feed information to downloaded file
+
+        PodcastImageFetcher *m_podcastImageFetcher;
 };
 
 #endif

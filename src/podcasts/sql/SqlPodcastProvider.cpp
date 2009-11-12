@@ -23,6 +23,7 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "PodcastImageFetcher.h"
 #include "PodcastModel.h"
 #include "PodcastReader.h"
 #include "PodcastSettingsDialog.h"
@@ -36,6 +37,8 @@
 #include <KIO/DeleteJob>
 #include <KIO/Job>
 #include <KIO/NetAccess>
+#include <KMD5>
+#include <KStandardDirs>
 #include <KUrl>
 #include <Solid/Networking>
 
@@ -60,6 +63,7 @@ SqlPodcastProvider::SqlPodcastProvider()
     , m_renameAction( 0 )
     , m_updateAction( 0 )
     , m_writeTagsAction( 0 )
+    , m_podcastImageFetcher( 0 )
 {
     connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
 
@@ -134,7 +138,14 @@ SqlPodcastProvider::loadPodcasts()
     for(int i=0; i < results.size(); i+=rowLength)
     {
         QStringList channelResult = results.mid( i, rowLength );
-        m_channels << SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
+        SqlPodcastChannelPtr channel =
+                SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
+        if( hasCachedImage( channel ) )
+            channel->setImage( loadImage( channel ) );
+        else
+            fetchImage( channel );
+
+        m_channels << channel;
     }
     emit( updated() );
 }
@@ -974,6 +985,45 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
     sqlStorage->query( updateAdmin.arg( toVersion ).arg( escape(key) ) );
 
     loadPodcasts();
+}
+
+QString
+SqlPodcastProvider::imagePath( SqlPodcastChannelPtr channel )
+{
+    KUrl imagePath = channel->saveLocation();
+    KMD5 md5( channel->url().url().toLocal8Bit() );
+    imagePath.addPath( md5.hexDigest() + "png" );
+    return imagePath.toLocalFile();
+}
+
+bool
+SqlPodcastProvider::hasCachedImage( SqlPodcastChannelPtr channel )
+{
+    DEBUG_BLOCK
+    return QFile( imagePath( channel ) ).exists();
+}
+
+QPixmap
+SqlPodcastProvider::loadImage( SqlPodcastChannelPtr channel )
+{
+    DEBUG_BLOCK
+    if( !hasCachedImage( channel ) )
+        return QPixmap();
+
+    return QPixmap( imagePath( channel ) );
+}
+
+void
+SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
+{
+    DEBUG_BLOCK
+
+    if( m_podcastImageFetcher == 0 )
+        m_podcastImageFetcher = new PodcastImageFetcher();
+
+    m_podcastImageFetcher->addChannel( PodcastChannelPtr::dynamicCast( channel ) );
+
+    m_podcastImageFetcher->run();
 }
 
 #include "SqlPodcastProvider.moc"
