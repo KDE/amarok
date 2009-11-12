@@ -46,6 +46,7 @@ public:
     void upgradeVersion7to8();
     void upgradeVersion8to9();
     void upgradeVersion9to10();
+    void upgradeVersion10to11();
 
     void deleteAllRedundant( const QString &type ); //type is artist,album,genre,composer or year
 

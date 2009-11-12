@@ -117,6 +117,8 @@ ScanManager::startFullScan()
         *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-p";
         if( AmarokConfig::scanRecursively() )
             *m_scanner << "-r";
+        if( AmarokConfig::useCharsetDetector() )
+            *m_scanner << "-c";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
         debug() << "GOING TO SCAN:";
         QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
@@ -200,6 +202,8 @@ void ScanManager::startIncrementalScan()
                 << "--collectionid" << m_collection->collectionId() << "-p";
         if( AmarokConfig::scanRecursively() )
             *m_scanner << "-r";
+        if( AmarokConfig::useCharsetDetector() )
+            *m_scanner << "-c";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
         if( pApp->isNonUniqueInstance() )
             *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );

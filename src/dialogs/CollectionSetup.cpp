@@ -70,14 +70,18 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
+    m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), this );
     connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    connect( m_charset  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
     m_monitor->setToolTip(   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
+    m_charset->setToolTip(   i18n( "If selected, Amarok will use Mozilla's Character Set Detector to attempt to automatically guess the character sets used in ID3 tags." ) );
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
+    m_charset->setChecked( AmarokConfig::useCharsetDetector() );
 
     // set the model _after_ constructing the checkboxes
     m_model = new CollectionFolder::Model();
@@ -109,8 +113,9 @@ CollectionSetup::hasChanged() const
     const bool foldersChanged = m_model->directories() != MountPointManager::instance()->collectionFolders();
     const bool recursiveChanged = m_recursive->isChecked() != AmarokConfig::scanRecursively();
     const bool monitorChanged  = m_monitor->isChecked() != AmarokConfig::monitorChanges();
+    const bool charsetChanged  = m_charset->isChecked() != AmarokConfig::useCharsetDetector();
 
-    return foldersChanged || recursiveChanged || monitorChanged;
+    return foldersChanged || recursiveChanged || monitorChanged || charsetChanged;
 }
 
 void
@@ -120,6 +125,7 @@ CollectionSetup::writeConfig()
 
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
+    AmarokConfig::setUseCharsetDetector( charset() );
 
     if( m_model->directories() != MountPointManager::instance()->collectionFolders() )
     {

@@ -49,6 +49,7 @@ class CollectionSetup : public KVBox
         QStringList dirs() const { return m_dirs; }
         bool recursive() const { return m_recursive && m_recursive->isChecked(); }
         bool monitor() const { return m_monitor && m_monitor->isChecked(); }
+        bool charset() const { return m_charset && m_charset->isChecked(); }
 
     signals:
         void changed();
@@ -64,6 +65,7 @@ class CollectionSetup : public KVBox
         QStringList m_dirs;
         QCheckBox *m_recursive;
         QCheckBox *m_monitor;
+        QCheckBox *m_charset;
 };
 
 
