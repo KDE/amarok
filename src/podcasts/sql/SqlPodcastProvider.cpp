@@ -123,6 +123,8 @@ SqlPodcastProvider::loadPodcasts()
 {
     m_channels.clear();
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
 
     QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image"
         ", description, copyright, directory, labels, subscribedate, autoscan, fetchtype"
@@ -141,6 +143,8 @@ bool
 SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return false;
 
     QString command = "SELECT title FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
@@ -155,6 +159,8 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
     DEBUG_BLOCK
             
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return TrackPtr();
 
     QString command = "SELECT id,channel FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
@@ -208,6 +214,8 @@ SqlPodcastProvider::addPodcast( const KUrl &url )
     debug() << "importing " << kurl.url();
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
 
     QString command = "SELECT title FROM podcastchannels WHERE url='%1';";
     command = command.arg( sqlStorage->escape( kurl.url() ) );
@@ -844,6 +852,9 @@ SqlPodcastProvider::createTables() const
     DEBUG_BLOCK
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
+
     sqlStorage->query( QString( "CREATE TABLE podcastchannels ("
                     "id " + sqlStorage->idType() +
                     ",url " + sqlStorage->longTextColumnType() +
@@ -886,6 +897,8 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
     debug() << QString( "Updating Podcast tables from version %1 to version %2" ).arg(fromVersion).arg(toVersion);
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
     #define escape(x) sqlStorage->escape(x)
 
     if( fromVersion == 1 && toVersion == 2 )

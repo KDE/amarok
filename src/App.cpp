@@ -745,11 +745,13 @@ App::continueInit()
             slotConfigAmarok( "DatabaseConfig" );
         }
     }
-
-    if( config.readEntry( "First Run", true ) )
+    else
     {
-        slotConfigAmarok( "CollectionConfig" );
-        config.writeEntry( "First Run", false );
+        if( config.readEntry( "First Run", true ) )
+        {
+            slotConfigAmarok( "CollectionConfig" );
+            config.writeEntry( "First Run", false );
+        }
     }
 }
 
