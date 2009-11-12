@@ -3,6 +3,11 @@ Amarok ChangeLog
 (C) 2002-2009 the Amarok authors.
 
 
+VERSION 2.2.2
+  FEATURES
+    * Custom Labels has returned.  Assign labels from the tag dialog, and
+      see them in the tag dialog or in the playlist.
+    * Fetch labels from last.fm for some tracks [UPDATE THIS ONCE WE FIGURE OUT WHEN TO DO SO]
 VERSION 2.2.1
   FEATURES:
     * Podcasts will only be automatically updated when there is a network
