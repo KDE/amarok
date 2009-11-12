@@ -46,6 +46,8 @@ class MySqlServerCollection: public MySqlCollection
 
         virtual QString type() const;
         virtual QStringList query( const QString &query );
+        
+        static bool testSettings( const QString &host, const QString &user, const QString &password, const QString &port );
 };
 
 #endif

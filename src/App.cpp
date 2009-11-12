@@ -720,6 +720,12 @@ App::continueInit()
     }
 #endif
 
+    if(    !CollectionManager::instance()->haveEmbeddedMysql()
+        && !KGlobal::config()->group( "MySQL" ).readEntry( "UseServer", false ) )
+    {
+        slotConfigAmarok( "DatabaseConfig" );
+    }
+
     if( config.readEntry( "First Run", true ) )
     {
         slotConfigAmarok( "CollectionConfig" );

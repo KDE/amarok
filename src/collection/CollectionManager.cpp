@@ -79,6 +79,7 @@ CollectionManager::CollectionManager()
     d->sqlDatabase = 0;
     d->primaryCollection = 0;
     s_instance = this;
+    m_haveEmbeddedMysql = false;
 
     qRegisterMetaType<TrackUrls>( "TrackUrls" );
     qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
@@ -152,6 +153,8 @@ CollectionManager::init()
                     connect( factory, SIGNAL( newCollection( Amarok::Collection* ) ), this, SLOT( slotNewCollection( Amarok::Collection* ) ) );
                     d->factories.append( factory );
                     factory->init();
+                    if( name == "mysqle-collection" )
+                        m_haveEmbeddedMysql = true;
                 }
                 else
                 {

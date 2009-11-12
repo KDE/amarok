@@ -121,6 +121,8 @@ class AMAROK_EXPORT CollectionManager : public QObject
          */
         void removeTrackProvider( Amarok::TrackProvider *provider );
 
+        bool haveEmbeddedMysql() { return m_haveEmbeddedMysql; }
+
     public slots:
         void startFullScan();
         void stopScan();
@@ -163,6 +165,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
         bool             m_resultEmitted;
         int              m_maxArtists;
 
+        bool             m_haveEmbeddedMysql;
         TimecodeTrackProvider *m_timecodeTrackProvider;
 
         struct Private;

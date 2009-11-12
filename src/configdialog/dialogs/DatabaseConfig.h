@@ -34,8 +34,10 @@ class DatabaseConfig : public ConfigDialogBase, public Ui_DatabaseConfig
         virtual bool isDefault();
         virtual void updateSettings();
 
-    private Q_SLOTS:
+    public slots:
         void toggleExternalConfigAvailable( int checkBoxState );
+
+    private Q_SLOTS:
         void updateSQLQuery();
 
     private:
