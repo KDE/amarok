@@ -35,37 +35,40 @@ LastfmReadLabelCapability::LastfmReadLabelCapability( Meta::Track *track )
     : ReadLabelCapability()
     , m_track( track )
 {
-
+    DEBUG_BLOCK
+    fetchLabels();
 }
 
 void
 LastfmReadLabelCapability::fetchLabels()
 {
+    DEBUG_BLOCK
     QMap<QString,QString> query;
     query[ "method" ] = "track.getTopTags";
     query[ "track"  ] = m_track->name();
     query[ "artist" ] = m_track->artist() ? m_track->artist()->name() : QString();
     query[ "api_key"] = APIKEY;
-    m_jobs[ "tags" ]  = lastfm::ws::post( query );
+    m_job  = lastfm::ws::post( query );
 
-    connect( m_jobs["tags"], SIGNAL( finished()), SLOT(onTagsFetched()) );
+    connect( m_job, SIGNAL( finished() ), SLOT(onTagsFetched()) );
 }
 
 
 void
 LastfmReadLabelCapability::onTagsFetched()
 {
-    if( !m_jobs[ "tags" ] )
+    DEBUG_BLOCK
+    if( !m_job )
     {
         debug() << "WARNING: GOT RESULT but no object";
         return;
     }
 
-    switch ( m_jobs[ "tags" ]->error() )
+    switch ( m_job->error() )
     {
         case QNetworkReply::NoError:
         {
-            lastfm::XmlQuery lfm = m_jobs[ "tags" ]->readAll();
+            lastfm::XmlQuery lfm = m_job->readAll();
             QList<lastfm::XmlQuery> tags = lfm.children( "tag" );
             QStringList ret;
             foreach( lastfm::XmlQuery child, tags )
@@ -77,7 +80,6 @@ LastfmReadLabelCapability::onTagsFetched()
         default:
             break;
     }
-    m_jobs["tags"]->deleteLater();
 }
 
 

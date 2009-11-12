@@ -22,6 +22,7 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "SqlStorage.h"
+#include <qt4/QtCore/QTimer>
 
 namespace Meta
 {
@@ -31,6 +32,8 @@ SqlReadLabelCapability::SqlReadLabelCapability( Meta::SqlTrack *track, SqlStorag
     , m_track( track )
     , m_storage( storage )
 {
+    //TODO: Update cached labels when new labels are added.
+    fetchLabels();
 }
 
 void

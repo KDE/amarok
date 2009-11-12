@@ -39,7 +39,7 @@ class LastfmReadLabelCapability : public ReadLabelCapability
     private:
         QStringList m_labels;
         Meta::TrackPtr m_track;
-        QMap<QString,QNetworkReply*> m_jobs;
+        QNetworkReply *m_job;
 
     private slots:
         void onTagsFetched();

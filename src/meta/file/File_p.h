@@ -52,6 +52,11 @@
 #include <vorbisfile.h>
 #include <mp4file.h>
 
+namespace Meta
+{
+    class LastfmReadLabelCapability;
+}
+
 namespace MetaFile
 {
 
@@ -103,6 +108,7 @@ public:
         , album()
         , artist()
         , provider( 0 )
+        , readLabelCapability( 0 )
         , track( t )
     {}
 
@@ -115,6 +121,7 @@ public:
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
     Meta::StatisticsProvider *provider;
+    Meta::LastfmReadLabelCapability *readLabelCapability;
 
     void readMetaData();
     QVariantMap changes;

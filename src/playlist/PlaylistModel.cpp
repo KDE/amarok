@@ -269,10 +269,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                     if( rlc )
                     {
                         const QStringList labels = rlc->labels();
-                        if ( rlc->labels().isEmpty() )
-                            rlc->fetchLabels();
-                        return rlc->labels().join( "," );
-                        rlc->deleteLater();
+                        return rlc->labels().join( ", " );
                     }
                 }
                 return QString();

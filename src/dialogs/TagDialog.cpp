@@ -1425,6 +1425,10 @@ TagDialog::storeLabels( Meta::TrackPtr track, const QStringList &removedLabels, 
     }
     wlc->setLabels( removedLabels, newLabels );
     delete wlc;
+
+    Meta::ReadLabelCapability *rlc = track->create<Meta::ReadLabelCapability>();
+    if( rlc )
+        rlc->fetchLabels(); // If new labels are set, we need to fetchLabels() again to update the cache.  This should probably be done centrally..
 }
 
 
@@ -1459,7 +1463,6 @@ TagDialog::labelsForTrack( Meta::TrackPtr track )
         return QStringList();
     }
     const QStringList labels = ric->labels();
-    delete ric;
     return labels;
 }
 
@@ -1473,7 +1476,6 @@ TagDialog::loadLabels( Meta::TrackPtr track )
         return;
     }
     connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(labelsFetched(QStringList)));
-    ric->fetchLabels();
 }
 
 

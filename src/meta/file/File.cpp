@@ -615,7 +615,9 @@ Track::createCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityImpl( this );
         case Meta::Capability::ReadLabel:
-            return new Meta::LastfmReadLabelCapability( this );
+            if( !d->readLabelCapability )
+                d->readLabelCapability = new Meta::LastfmReadLabelCapability( this );
+            return d->readLabelCapability;
         default:
             return 0;
     }
