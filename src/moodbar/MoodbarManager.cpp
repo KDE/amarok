@@ -474,12 +474,15 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
 
 QString MoodbarManager::moodPath( const QString &trackPath )
 {
-    QStringList parts = trackPath.split(".");
+    QStringList parts = trackPath.split( '.' );
     parts.takeLast();
     parts.append( "mood" );
     QString moodPath = parts.join( "." );
     
     //now prepend the filename with .
-    QFileInfo fileInfo( moodPath );
-    return fileInfo.fileName().prepend( '.' );
+    const QFileInfo fileInfo( moodPath );
+    const QString fileName = fileInfo.fileName();
+
+    return moodPath.replace( fileName, '.' + fileName );
 }
+
