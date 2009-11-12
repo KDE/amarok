@@ -16,6 +16,7 @@
 
 #include "DatabaseUpdater.h"
 
+#include "amarokconfig.h"
 #include "Debug.h"
 #include "MountPointManager.h"
 #include "SqlCollection.h"
@@ -567,7 +568,7 @@ DatabaseUpdater::upgradeVersion9to10()
 }
 
 void
-DatabaseUpdater::updateVersion10to11()
+DatabaseUpdater::upgradeVersion10to11()
 {
     DEBUG_BLOCK
     //OK, this isn't really a database upgrade, but it does affect scanning.
