@@ -480,10 +480,6 @@ QString MoodbarManager::moodPath( const QString &trackPath )
     QString moodPath = parts.join( "." );
     
     //now prepend the filename with .
-    QFileInfo fi( moodPath );
-    QString fileName = fi.fileName();
-    moodPath.replace( fileName, "." + fileName );
-
-    debug() << "mood file path: " << moodPath;
-    return moodPath;
+    QFileInfo fileInfo( moodPath );
+    return fileInfo.fileName().prepend( '.' );
 }
