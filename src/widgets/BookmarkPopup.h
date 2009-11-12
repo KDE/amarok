@@ -17,7 +17,9 @@
 #ifndef BOOKMARKPOPUP_H
 #define BOOKMARKPOPUP_H
 
+#include <QLineEdit>
 #include <QPaintEvent>
+#include <QTimer>
 #include <QWidget>
 
 #include <KIcon>
@@ -26,37 +28,54 @@ class BookmarkTriangle;
 
 class BookmarkPopup : public QWidget
 {
+    Q_OBJECT
+
 public:
     BookmarkPopup ( QWidget* parent, QString label, BookmarkTriangle* triangle );
 
     virtual QSize sizeHint () const;
-    virtual QSizePolicy sizePolicy() const;
+    virtual QSizePolicy sizePolicy () const;
     virtual QSize minimumSizeHint () const;
 
     virtual void mouseReleaseEvent ( QMouseEvent * event );
     virtual void mouseMoveEvent ( QMouseEvent * event );
-
     virtual void enterEvent ( QEvent* );
     virtual void leaveEvent ( QEvent* );
-    virtual bool hasMouseOver();
+
+    virtual void displayNeeded ( bool value );
 
 protected:
 
-    virtual void paintEvent ( QPaintEvent* );
+    virtual void paintEvent ( QPaintEvent* event );
+
+protected slots:
+    virtual void editValueChanged();
+    virtual void hideTimerAction();
 
 private:
+
+    bool isOverDeleteIcon ( QPoint arg1 );
+    bool isOverTitleLabel ( QPoint arg1 );
+
+    void adjustWidth ();
+    void startHideTimer ();
+
+    QTimer *m_timer;
     QString m_label;
-    BookmarkTriangle *m_triangle;
+    KIcon m_deleteIcon;
+    QRect m_deleteIconRect;
+    QLineEdit *m_edit;
     int m_width;
+    BookmarkTriangle *m_triangle;
     int m_height;
     int m_lineHeight;
 
+    bool m_displayNeeded;
     bool m_hasMouseOver;
     bool m_overDelete;
+    bool m_isEditMode;
 
-    KIcon m_deleteIcon;
-    bool isOverDeleteIcon ( QPoint arg1 );
-    QRect m_deleteIconRect;
+
 };
 
 #endif // BOOKMARKPOPUP_H

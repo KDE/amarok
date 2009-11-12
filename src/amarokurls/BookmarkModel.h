@@ -39,8 +39,9 @@ typedef QList<BookmarkGroupPtr> BookmarkGroupList;
 
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
+
 class BookmarkModel : public QAbstractItemModel
 {
     Q_OBJECT
@@ -61,37 +62,49 @@ public:
     virtual QVariant data( const QModelIndex &index, int role ) const;
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
     virtual QVariant headerData( int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole ) const;
+                                 int role = Qt::DisplayRole ) const;
     virtual QModelIndex index( int row, int column,
-                    const QModelIndex &parent = QModelIndex() ) const;
+                               const QModelIndex &parent = QModelIndex() ) const;
     virtual QModelIndex parent( const QModelIndex &index ) const;
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
-    virtual Qt::DropActions supportedDropActions() const{
+    virtual Qt::DropActions supportedDropActions() const
+    {
         return Qt::MoveAction;
     }
 
     virtual QStringList mimeTypes() const;
     QMimeData* mimeData( const QModelIndexList &indexes ) const;
-    bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
+    bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
 
     void reloadFromDb();
     void editBookmark( int id );
 
     QModelIndex createIndex( int row, int column, BookmarkViewItemPtr item ) const;
     //only use the above method
-    QModelIndex createIndex( int, int, void * ptr = 0) const { Q_UNUSED( ptr ); Q_ASSERT( 0 );  return QModelIndex(); }
-    QModelIndex createIndex( int, int, quint32 ) const { Q_ASSERT( 0 ); return QModelIndex(); }
+    QModelIndex createIndex( int, int, void * ptr = 0 ) const
+    {
+        Q_UNUSED( ptr );
+        Q_ASSERT( 0 );
+        return QModelIndex();
+    }
+
+    QModelIndex createIndex( int, int, quint32 ) const
+    {
+        Q_ASSERT( 0 );
+        return QModelIndex();
+    }
 
 public slots:
     void createNewGroup();
     void createNewBookmark();
-    void deleteBookmark( const QString& name );
+    void deleteBookmark( const QString &name );
+    void renameBookmark( const QString &oldName , const QString &newName );
 
 signals:
-    void editIndex( const QModelIndex & index );
+    void editIndex( const QModelIndex &index );
 
 private:
     BookmarkModel();
@@ -101,7 +114,8 @@ private:
     void deleteTables();
     void upgradeTables( int from );
 
-    bool deleteBookmarkRecursively( BookmarkGroupPtr group, const QString& name );
+    bool deleteBookmarkRecursively( BookmarkGroupPtr group, const QString &name );
+    bool renameBookmarkRecursively( BookmarkGroupPtr group, const QString &oldName, const QString &newName );
 
     static BookmarkModel * s_instance;
 

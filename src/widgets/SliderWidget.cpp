@@ -382,7 +382,7 @@ void Amarok::TimeSlider::sliderChange( SliderChange change )
         Amarok::Slider::sliderChange( change ); // calls update()
 }
 
-void Amarok::TimeSlider::drawTriangle( const QString &name, int milliSeconds )
+void Amarok::TimeSlider::drawTriangle( const QString& name, int milliSeconds, bool showPopup )
 {
     DEBUG_BLOCK
     int sliderHeight = height() - ( m_sliderInsertY * 2 );
@@ -391,7 +391,7 @@ void Amarok::TimeSlider::drawTriangle( const QString &name, int milliSeconds )
     // This mess converts the # of seconds into the pixel width value where the triangle should be drawn
     int x_pos = ( ( ( double ) milliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
-    BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name );
+    BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name, showPopup );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
     connect( tri, SIGNAL( focused( int ) ), SLOT( slotTriangleFocused( int ) ) );
     m_triangles << tri;

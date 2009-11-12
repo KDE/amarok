@@ -33,19 +33,18 @@ class BookmarkTriangle : public QWidget
 {
     Q_OBJECT
 public:
-    BookmarkTriangle ( QWidget *parent, int milliseconds, QString name );
+    BookmarkTriangle ( QWidget *parent, int milliseconds, QString name , bool showPopup = false);
     ~BookmarkTriangle();
     virtual QSize sizeHint() const;
     virtual QSizePolicy sizePolicy() const;
     virtual QSize minimumSizeHint() const;
 
+    virtual void showEvent ( QShowEvent * event );
     virtual void mousePressEvent ( QMouseEvent * event );
     virtual void mouseReleaseEvent  (QMouseEvent *);
     virtual void enterEvent ( QEvent * event );
     virtual void leaveEvent ( QEvent * event );
-
     virtual void paintEvent ( QPaintEvent* );
-    virtual void timerEvent ( QTimerEvent * event );
 
     virtual void hidePopup();
     virtual void deleteBookmark();
@@ -56,9 +55,10 @@ signals:
     void focused ( int );
 
 private:
+    void initPopup();
     int m_mseconds;
     QString m_name;
+    bool m_showPopup;
     BookmarkPopup* m_tooltip;
-    int m_timerId;
 };
 #endif // BOOKMARKTRIANGLE_H

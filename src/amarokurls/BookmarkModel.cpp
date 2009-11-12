@@ -574,6 +574,25 @@ BookmarkModel::deleteBookmark( const QString& name )
         debug() << "No such bookmark found!";
 }
 
+void
+BookmarkModel::renameBookmark( const QString& oldName, const QString& newName )
+{
+    DEBUG_BLOCK
+
+    debug() << "OldName: " << oldName << " NewName: " << newName;
+
+    if( renameBookmarkRecursively( m_root, oldName, newName ) )
+    {
+        debug() << "Renamed!!";
+        reloadFromDb();
+        const QString* name = &newName;
+        The::amarokUrlHandler()->updateTimecodes( name );
+    }
+    else
+        debug() << "No such bookmark found!";
+}
+
+
 bool
 BookmarkModel::deleteBookmarkRecursively( BookmarkGroupPtr group, const QString& name )
 {
@@ -596,7 +615,32 @@ BookmarkModel::deleteBookmarkRecursively( BookmarkGroupPtr group, const QString&
     }
 
     return false;
-        
+
+}
+
+bool
+BookmarkModel::renameBookmarkRecursively( BookmarkGroupPtr group, const QString& oldName, const QString& newName )
+{
+    foreach( AmarokUrlPtr item, group->childBookmarks() )
+    {
+        debug() << "item->name(): " << item->name();
+        if( item->name() == oldName)
+        {
+            debug() << "Renaming Bookmark: " << oldName;
+            item->rename(newName);
+            return true;
+        }
+    }
+
+    //if not found, recurse through child groups
+    foreach( BookmarkGroupPtr childGroup, group->childGroups() )
+    {
+        if( renameBookmarkRecursively( childGroup, oldName, newName ) )
+            return true;
+    }
+
+    return false;
+
 }
 
 void BookmarkModel::upgradeTables( int from )

@@ -32,9 +32,9 @@
 
 
 ProgressWidget::ProgressWidget( QWidget *parent )
-    : QWidget( parent )
-    , EngineObserver( The::engineController() )
-    , m_timeLength( 0 )
+        : QWidget( parent )
+        , EngineObserver( The::engineController() )
+        , m_timeLength( 0 )
 {
 
     QHBoxLayout *box = new QHBoxLayout( this );
@@ -55,7 +55,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     m_timeLabelRight->setToolTip( i18n( "The amount of time remaining in current song" ) );
     m_timeLabelRight->setAlignment( Qt::AlignRight );
 
-    m_timeLabelLeft->setShowTime( false);
+    m_timeLabelLeft->setShowTime( false );
     m_timeLabelLeft->setAlignment( Qt::AlignRight );
     m_timeLabelRight->setShowTime( false );
     m_timeLabelLeft->show();
@@ -82,11 +82,11 @@ ProgressWidget::~ProgressWidget()
 }
 
 void
-ProgressWidget::addBookmark( const QString &name, int milliSeconds )
+ProgressWidget::addBookmark( const QString &name, int milliSeconds, bool showPopup )
 {
     DEBUG_BLOCK
-    if( m_slider )
-        m_slider->drawTriangle( name, milliSeconds );
+    if ( m_slider )
+        m_slider->drawTriangle( name, milliSeconds, showPopup );
 }
 
 void
@@ -98,27 +98,27 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     const qint64 trackLength = The::engineController()->trackLength();
 
     // when the left label shows the remaining time and it's not a stream
-    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
         seconds2 = seconds;
         seconds = ( trackLength / 1000 ) - seconds;
     }
 
     // when the left label shows the remaining time and it's a stream
-    else if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    else if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
         seconds2 = seconds;
         seconds = 0; // for streams
     }
 
     // when the right label shows the remaining time and it's not a stream
-    else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
         seconds2 = ( trackLength / 1000 ) - seconds;
     }
 
     // when the right label shows the remaining time and it's a stream
-    else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
         seconds2 = 0;
     }
@@ -128,17 +128,17 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     QString s2 = Meta::secToPrettyTime( seconds2 );
 
     // when the left label shows the remaining time and it's not a stream
-    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
         s1.prepend( '-' );
 
     // when the right label shows the remaining time and it's not a stream
-    else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
         s2.prepend( '-' );
 
-    if( m_timeLength > s1.length() )
+    if ( m_timeLength > s1.length() )
         s1.prepend( QString( m_timeLength - s1.length(), ' ' ) );
 
-    if( m_timeLength > s2.length() )
+    if ( m_timeLength > s2.length() )
         s2.prepend( QString( m_timeLength - s2.length(), ' ' ) );
 
     s1 += ' ';
@@ -147,12 +147,12 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     m_timeLabelLeft->setText( s1 );
     m_timeLabelRight->setText( s2 );
 
-    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
         m_timeLabelLeft->setEnabled( false );
         m_timeLabelRight->setEnabled( true );
     }
-    else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+    else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
     {
         m_timeLabelLeft->setEnabled( true );
         m_timeLabelRight->setEnabled( false );
@@ -223,7 +223,7 @@ ProgressWidget::engineTrackLengthChanged( qint64 milliseconds )
     m_slider->setMaximum( milliseconds );
     m_slider->setEnabled( milliseconds > 0 );
     debug() << "slider enabled!";
-    m_timeLength = Meta::msToPrettyTime( milliseconds ).length()+1; // account for - in remaining time
+    m_timeLength = Meta::msToPrettyTime( milliseconds ).length() + 1; // account for - in remaining time
 
     //get the urlid of the current track as the engine might stop and start several times
     //when skipping lst.fm tracks, so we need to know if we are still on the same track...
@@ -234,27 +234,28 @@ ProgressWidget::engineTrackLengthChanged( qint64 milliseconds )
 }
 
 void
-ProgressWidget::redrawBookmarks()
+ProgressWidget::redrawBookmarks( const QString *BookmarkName )
 {
     DEBUG_BLOCK
     m_slider->clearTriangles();
-    if( The::engineController()->currentTrack() )
+    if ( The::engineController()->currentTrack() )
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
-        if( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
+        if ( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
         {
             Meta::TimecodeLoadCapability *tcl = track->create<Meta::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
             debug() << "found " << list.count() << " timecodes on this track";
             foreach( AmarokUrlPtr url, list )
             {
-                if( url->command() == "play"  ) {
+                if ( url->command() == "play" )
+                {
 
                     if ( url->args().keys().contains( "pos" ) )
                     {
                         int pos = url->args().value( "pos" ).toInt() * 1000;
                         debug() << "showing timecode: " << url->name() << " at " << pos ;
-                        addBookmark( url->name(), pos );
+                        addBookmark( url->name(), pos, ( BookmarkName && BookmarkName == url->name() ));
                     }
                 }
             }

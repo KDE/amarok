@@ -34,14 +34,15 @@ class AmarokUrlHandler;
 class NavigationUrlRunner;
 class PlayUrlRunner;
 
-namespace The {
-    AMAROK_EXPORT AmarokUrlHandler* amarokUrlHandler();
+namespace The
+{
+AMAROK_EXPORT AmarokUrlHandler* amarokUrlHandler();
 }
 
 /**
 A singleton class for handling and delegating all amarok:// urls
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
 class AMAROK_EXPORT AmarokUrlHandler : public QObject
 {
@@ -62,9 +63,9 @@ public:
     KIcon iconForCommand( const QString &command );
 
     void registerForTimecodes( ProgressWidget * progressWidget );
-    void unregisterForTimecodes(  ProgressWidget * progressWidget );
+    void unregisterForTimecodes( ProgressWidget * progressWidget );
 
-    void updateTimecodes();
+    void updateTimecodes( const QString * BookmarkName = 0 );
     void paintNewTimecode( const QString &name, int pos );
 
     QList<AmarokUrlGenerator *> generators() { return m_registeredGenerators; }

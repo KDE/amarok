@@ -197,11 +197,11 @@ AmarokUrlHandler::unregisterForTimecodes( ProgressWidget * progressWidget )
     m_progresWidgets.removeAll( progressWidget );
 }
 
-void AmarokUrlHandler::updateTimecodes()
+void AmarokUrlHandler::updateTimecodes(const QString* BookmarkName)
 {
     foreach( ProgressWidget * progressWidget, m_progresWidgets )
     {
-        progressWidget->redrawBookmarks();
+        if (progressWidget->isVisible())  progressWidget->redrawBookmarks( BookmarkName );
     }
 }
 

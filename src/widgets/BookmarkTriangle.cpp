@@ -32,18 +32,19 @@
 #include <QSize>
 #include <QSizePolicy>
 
-BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString name )
+BookmarkTriangle::BookmarkTriangle ( QWidget *parent, int milliseconds, QString name , bool showPopup)
         : QWidget ( parent ),
         m_mseconds ( milliseconds ),
         m_name ( name ),
+        m_showPopup ( showPopup ),
         m_tooltip ( 0 )
 {
-    m_timerId = 0;
 }
 
 BookmarkTriangle::~BookmarkTriangle()
 {
     DEBUG_BLOCK
+    m_tooltip->deleteLater();
 }
 
 QSize BookmarkTriangle::sizeHint() const
@@ -72,6 +73,13 @@ void BookmarkTriangle::paintEvent ( QPaintEvent* )
     p.drawPixmap ( 0, 0, The::svgHandler()->renderSvg ( "blue_triangle", 10 , 10, "blue_triangle" ) ); // TODO: This doesn't work
 }
 
+void BookmarkTriangle::showEvent ( QShowEvent * event )
+{
+    if (m_showPopup){
+        m_showPopup = false; // Force immediate Popup Display after editing
+        initPopup();
+    }
+}
 
 void BookmarkTriangle::mousePressEvent ( QMouseEvent * event )
 {
@@ -101,17 +109,23 @@ void BookmarkTriangle::enterEvent ( QEvent * event )
 {
     DEBUG_BLOCK
     Q_UNUSED ( event )
+
     emit focused ( m_mseconds );
-    if ( m_timerId != 0 )
-    {
-        // Keep Popup displayed, cancel a existing Hide-Timer here
-        killTimer ( m_timerId );
-        m_timerId = 0;
-        return;
-    }
-    QString timeLabel = Meta::secToPrettyTime ( m_mseconds/1000 );
-    if ( !m_tooltip )
-        m_tooltip = new BookmarkPopup ( The::mainWindow(), m_name , this );
+    initPopup();
+}
+
+void BookmarkTriangle::leaveEvent ( QEvent * event )
+{
+    Q_UNUSED ( event )
+    m_tooltip->displayNeeded(false);
+}
+
+void BookmarkTriangle::initPopup()
+{
+    if ( !m_tooltip )  m_tooltip = new BookmarkPopup ( The::mainWindow(), m_name , this );
+    // Keep existing tooltip alive
+    m_tooltip->displayNeeded(true);
+
     QPoint pt = mapTo ( The::mainWindow(), QPoint ( 0, 0 ) );
     // Calculate x position where the tooltip is fully visible
     int offsetX = pt.x() + m_tooltip->width() - The::mainWindow()->width();
@@ -121,40 +135,13 @@ void BookmarkTriangle::enterEvent ( QEvent * event )
     // Not enough space? put it below
     if ( pt.y() <= m_tooltip->height() + 2 ) offsetY =  this->height() + 2;
     m_tooltip->move ( pt.x() - offsetX, pt.y() + offsetY );
-    m_tooltip->show();
-}
 
-void BookmarkTriangle::leaveEvent ( QEvent * event )
-{
-    Q_UNUSED ( event )
-    m_timerId = startTimer ( 500 );
-}
-void BookmarkTriangle::timerEvent ( QTimerEvent * event )
-{
-    if ( event->timerId() == m_timerId )
-    {
-        if ( m_tooltip && !m_tooltip->hasMouseOver() )
-        {
-            m_tooltip->hide();
-            killTimer ( m_timerId );
-            m_timerId = 0;
-        }
-    }
-    else
-    {
-        QWidget::timerEvent ( event );
-    }
+    m_tooltip->show();
 }
 
 void BookmarkTriangle::hidePopup()
 {
-    if ( m_tooltip )
-        m_tooltip->hide();
-    if ( m_timerId != 0 )
-    {
-        killTimer ( m_timerId );
-        m_timerId = 0;
-    }
+    if ( m_tooltip )  m_tooltip->hide();
 }
 #include "BookmarkTriangle.moc"
 
