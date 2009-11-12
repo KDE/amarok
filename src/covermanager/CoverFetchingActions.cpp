@@ -143,39 +143,42 @@ SetCustomCoverAction::slotTriggered()
 {
     if( !m_albums.first() || m_albums.first()->tracks().isEmpty() )
         return;
-    
+
     const QString& startPath = m_albums.first()->tracks().first()->playableUrl().directory();
     const QStringList mimetypes( KImageIO::mimeTypes( KImageIO::Reading ) );
-    KFileDialog *dlg = new KFileDialog( startPath,
-                                        mimetypes.join(" "),
-                                        qobject_cast<QWidget*>( parent() ) );
+    KFileDialog dlg( startPath,
+                     mimetypes.join(" "),
+                     qobject_cast<QWidget*>( parent() ) );
 
-    dlg->setOperationMode( KFileDialog::Opening );
-    dlg->setMode( KFile::File );
-    dlg->setCaption( i18n("Select Cover Image File") );
-    dlg->setInlinePreviewShown( true );
+    dlg.setOperationMode( KFileDialog::Opening );
+    dlg.setMode( KFile::File );
+    dlg.setCaption( i18n("Select Cover Image File") );
+    dlg.setInlinePreviewShown( true );
 
-    KFileWidget *fileWidget = dynamic_cast<KFileWidget*>( dlg->fileWidget() );
+    KFileWidget *fileWidget = dynamic_cast<KFileWidget*>( dlg.fileWidget() );
     KDirLister *dirLister = fileWidget->dirOperator()->dirLister();
     dirLister->setAutoErrorHandlingEnabled( false, qobject_cast<QWidget*>( parent() ) );
 
-    dlg->exec();
-    KUrl file = dlg->selectedUrl();
-    delete dlg;
+    dlg.exec();
+    KUrl file = dlg.selectedUrl();
 
-    if( !file.isEmpty() ) {
+    if( !file.isEmpty() )
+    {
         QPixmap pixmap;
 
-        if( file.isLocalFile() ) {
+        if( file.isLocalFile() )
+        {
             pixmap.load( file.path() );
 
-        } else {
+        }
+        else
+        {
             debug() << "Custom Cover Fetch: " << file.prettyUrl() << endl;
 
             KTempDir tempDir;
             tempDir.setAutoRemove( true );
 
-            QString coverDownloadPath = tempDir.name() + file.fileName();
+            const QString coverDownloadPath = tempDir.name() + file.fileName();
 
             bool ret = KIO::NetAccess::file_copy( file,
                                                   KUrl( coverDownloadPath ),
@@ -185,8 +188,10 @@ SetCustomCoverAction::slotTriggered()
                 pixmap.load( coverDownloadPath );
         }
 
-        if( !pixmap.isNull() ) {
-            foreach( Meta::AlbumPtr album, m_albums ) {
+        if( !pixmap.isNull() )
+        {
+            foreach( Meta::AlbumPtr album, m_albums )
+            {
                 if( album && album->canUpdateImage() )
                     album->setImage( pixmap );
             }
