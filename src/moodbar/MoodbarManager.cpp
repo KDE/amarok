@@ -34,6 +34,7 @@ even porting to qtscript so it could be run, as needed, by Amarok.
 #include "Debug.h"
 
 #include <QFile>
+#include <QFileInfo>
 #include <QPainter>
 
 
@@ -476,5 +477,13 @@ QString MoodbarManager::moodPath( const QString &trackPath )
     QStringList parts = trackPath.split(".");
     parts.takeLast();
     parts.append( "mood" );
-    return parts.join( "." );
+    QString moodPath = parts.join( "." );
+    
+    //now prepend the filename with .
+    QFileInfo fi( moodPath );
+    QString fileName = fi.fileName();
+    moodPath.replace( fileName, "." + fileName );
+
+    debug() << "mood file path: " << moodPath;
+    return moodPath;
 }
