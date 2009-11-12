@@ -8,6 +8,15 @@ VERSION 2.2.2
     * Custom Labels has returned.  Assign labels from the tag dialog, and
       see them in the tag dialog or in the playlist.
     * Fetch labels from last.fm for some tracks [UPDATE THIS ONCE WE FIGURE OUT WHEN TO DO SO]
+
+  CHANGES:
+
+  BUGFIXES:
+    * Support for "title:" token in the collection search. Patch by Roberto
+      Bertolusso <rbertolusso@yahoo.com>. (BR 211249)
+
+
+
 VERSION 2.2.1
   FEATURES:
     * Podcasts will only be automatically updated when there is a network
