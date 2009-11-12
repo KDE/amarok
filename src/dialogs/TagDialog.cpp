@@ -825,14 +825,12 @@ TagDialog::showCoverMenu( const QPoint &pos )
 
 const QStringList TagDialog::statisticsData()
 {
-    AMAROK_NOTIMPLEMENTED
 
-    QStringList data, values;
-
-    QueryMaker *qm = m_currentTrack->collection()->queryMaker();
-
-    if( !qm )
-        return QStringList();
+    QStringList data;
+    QueryMaker *qm = 0;
+    Amarok::Collection *coll = m_currentTrack->collection();
+    if( coll )
+        qm = coll->queryMaker();
 
     Meta::ArtistPtr trackArtist = m_currentTrack->artist();
     if( trackArtist )
@@ -852,30 +850,36 @@ const QStringList TagDialog::statisticsData()
             ret.append( album->prettyName() );
         data += i18n( "Albums by this Artist" );
         data += QString::number( ret.count() );
-
-        // favorite track by this artist
-        qm->setQueryType( QueryMaker::Custom );
-        qm->addReturnValue( Meta::valTitle );
-        qm->addMatch( trackArtist );
-        qm->orderBy( Meta::valPlaycount );
-        qm->limitMaxResultSize( 1 );
-        qm->run();
-//        data += i18n( "Favorite by this Artist" );
-//        data += "Lorem ipsum";
+        
+        if( qm )
+        {
+            // favorite track by this artist
+            qm->setQueryType( QueryMaker::Custom );
+            qm->addReturnValue( Meta::valTitle );
+            qm->addMatch( trackArtist );
+            qm->orderBy( Meta::valPlaycount );
+            qm->limitMaxResultSize( 1 );
+            qm->run();
+//            data += i18n( "Favorite by this Artist" );
+//            data += "Lorem ipsum";
+        }
     }
     Meta::AlbumPtr trackAlbum = m_currentTrack->album();
     if( trackAlbum )
     {
-        // Favorite track on this album
-        qm->reset();
-        qm->setQueryType( QueryMaker::Custom );
-        qm->addReturnValue( Meta::valTitle );
-        qm->addMatch( trackAlbum );
-        qm->orderBy( Meta::valPlaycount );
-        qm->limitMaxResultSize( 1 );
-        qm->run();
-//        data += i18n( "Favorite on this Album" );
-//        data += "Lorem ipsum";
+        if( qm )
+        {
+            // Favorite track on this album
+            qm->reset();
+            qm->setQueryType( QueryMaker::Custom );
+            qm->addReturnValue( Meta::valTitle );
+            qm->addMatch( trackAlbum );
+            qm->orderBy( Meta::valPlaycount );
+            qm->limitMaxResultSize( 1 );
+            qm->run();
+//            data += i18n( "Favorite on this Album" );
+//            data += "Lorem ipsum";
+        }
     }
     //TODO: port
     /*
