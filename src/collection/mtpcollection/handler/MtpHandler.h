@@ -222,29 +222,29 @@ class MtpHandler : public MediaDeviceHandler
 
         LIBMTP_playlist_t *m_currplaylistlist;
         LIBMTP_playlist_t *m_currplaylist;
-        QHash<Meta::MediaDevicePlaylistPtr, LIBMTP_playlist_t*> m_mtpplaylisthash;
+        QHash<Meta::MediaDevicePlaylistPtr, LIBMTP_playlist_t*> m_mtpPlaylisthash;
 
         uint32_t m_trackcounter;
 
         // Hash that associates an LIBMTP_track_t* to every Track*
 
-        QHash<Meta::MediaDeviceTrackPtr, LIBMTP_track_t*> m_mtptrackhash;
+        QHash<Meta::MediaDeviceTrackPtr, LIBMTP_track_t*> m_mtpTrackHash;
 
         // Keeps track of which tracks have been copied/cached for playing
 
-        QHash<Meta::MediaDeviceTrackPtr, KTemporaryFile*> m_cachedtracks;
+        QHash<Meta::MediaDeviceTrackPtr, KTemporaryFile*> m_cachedTracks;
 
         // Maps id's to tracks
 
-        QHash<uint32_t, LIBMTP_track_t*> m_idtrackhash;
+        QHash<uint32_t, LIBMTP_track_t*> m_idTrackHash;
 
         // parentid calculated for new track copied to device
 
-        uint32_t m_copyparentid;
+        uint32_t m_copyParentId;
 
         // Used as temporary location for copying files from mtp
 
-        KTempDir *m_tempdir;
+        KTempDir *m_tempDir;
 };
 
 class WorkerThread : public ThreadWeaver::Job
