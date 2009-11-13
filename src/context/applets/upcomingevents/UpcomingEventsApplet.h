@@ -25,6 +25,7 @@
 
 // for use when gui created
 #include <ui_upcomingEventsSettings.h>
+#include <ui_UpcomingEvents.h>
 
 class QAction;
 class QGraphicsSimpleTextItem;

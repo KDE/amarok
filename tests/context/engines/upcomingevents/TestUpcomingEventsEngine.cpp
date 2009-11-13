@@ -14,37 +14,25 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#ifndef LASTFMAPPLETSSERVICES_H
-#define LASTFMAPPLETSSERVICES_H
+#ifndef TESTUPCOMINGEVENTSENGINE_H
+#define TESTUPCOMINGEVENTSENGINE_H
 
-#include <QMutex>
-#include <QObject>
+#include <QtCore/QObject>
+#include <QtTest/QTest>
+#include <src/context/engines/upcomingevents/UpcomingEventsEngine.h>
 
-#include <lastfm/Audioscrobbler>
-#include <lastfm/NetworkAccessManager>
-#include <lastfm/XmlQuery>
-#include "LastFmEvent.h"
-
-class LastFmAppletsServices : public QObject
+class TestUpcomingEventsEngine : public QObject
 {
     Q_OBJECT
 
-private:
-    QNetworkReply *m_reply;
-    QMutex m_mutex;
-
-/*private slots:
-    void similarArtistsFetched();
-
-public signals:
-    void readyToDisplaySimilarArtists(QList<lastfm::Artist> &similarArtists);
-
-public:
-    void sendSimilarArtistsRequest(const QString &artist_name);*/
-
-public:
-    QList<LastFmEvent> upcomingEvents(const QString &artist_name);
-    QMap<int, QString> similarArtists(const QString &artist_name);
+    private slots:
+        void testUpcomingEvents();
+        
 };
 
-#endif // LASTFMAPPLETSSERVICES_H
+void TestUpcomingEventsEngine::testUpcomingEvents()
+{
+    QVERIFY(TestUpcomingEventsEngine::upcomingEvents("Muse").size() > 0);
+}
+
+#endif // TESTUPCOMINGEVENTSENGINE_H

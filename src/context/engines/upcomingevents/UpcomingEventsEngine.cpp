@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,6 +22,8 @@
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "EngineController.h"
+#include <lastfm/XmlQuery>
+#include <lastfm/ws.h>
 
 using namespace Context;
 
@@ -121,11 +124,44 @@ void UpcomingEventsEngine::update()
 
 }
 
-void
-UpcomingEventsEngine::reloadUpcomingEvents()
+void UpcomingEventsEngine::reloadUpcomingEvents()
 {
 
 }
+
+
+QList< LastFmEvent > UpcomingEventsEngine::upcomingEvents(const QString& artist_name)
+{       
+    //QMutexLocker locker(m_mutex);
+
+    //Initialize the query parameters
+    QMap< QString, QString > params;
+    params["method"] = "getEvents";
+    params["artist"] = artist_name;
+
+    //Send the request
+    QNetworkReply* reply = lastfm::ws::get(params);
+
+    //Parse the XML reply
+    lastfm::XmlQuery xml = lastfm::ws::parse(reply);
+    QList<LastFmEvent> events;
+    foreach (lastfm::XmlQuery xmlEvent, xml.children("event"))
+    {
+        QStringList artists;
+        foreach (lastfm::XmlQuery xmlArtists, xmlEvent.children("artists"))
+        {
+            artists.append(xmlArtists["artist"].text());
+        }
+        QString title = xmlEvent["title"].text();
+        QDate date = QDate::fromString(xmlEvent["startDate"].text(), "ddd, dd MMM yyyy");
+        KUrl smallImageUrl(xmlEvent["image"]["image size=small"].text());
+        KUrl url(xmlEvent["url"].text());
+        LastFmEvent event(artists, title, date,smallImageUrl, url);
+        events.append(event);
+    }
+    return events;
+}
+
 
 #include "UpcomingEventsEngine.moc"
 

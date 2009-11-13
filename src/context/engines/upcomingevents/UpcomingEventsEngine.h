@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,6 +22,7 @@
 #include "meta/Meta.h"
 
 #include <context/DataEngine.h>
+#include <applets/upcomingevents/LastFmEvent.h>
 
 #include <KIO/Job>
 #include <QLocale>
@@ -52,6 +54,13 @@ public:
 
     void setSelection( const QString& selection ) { m_currentSelection = selection; }
     QString selection() { return m_currentSelection; }
+    
+    /**
+    * Fetches the upcoming events for an artist thanks to the LastFm WebService
+    * @param artist_name the name of the artist
+    * @return a list of events
+    */
+    QList<LastFmEvent> upcomingEvents(const QString &artist_name);
     
 protected:
     bool sourceRequestEvent( const QString& name );
