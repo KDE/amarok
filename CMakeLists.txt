@@ -85,7 +85,7 @@ if( WITH_PLAYER )
 
     find_package(MySQLAmarok REQUIRED)
     if( WITH_MYSQL_EMBEDDED )
-    set( BUILD_MYSQLE_COLLECTION TRUE )
+        set( BUILD_MYSQLE_COLLECTION TRUE )
         macro_log_feature( MYSQL_EMBEDDED_FOUND "mysqld" "Embedded MySQL Libraries" "http://www.mysql.com" TRUE "" "" )
     endif( WITH_MYSQL_EMBEDDED )
     macro_log_feature( MYSQL_FOUND "mysql" "MySQL Server Libraries" "http://www.mysql.com" TRUE "" "" )
