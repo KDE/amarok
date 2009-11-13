@@ -584,7 +584,6 @@ set(amaroklib_LIB_SRCS
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
-    MySqlServerTester.cpp
     PluginManager.cpp
     SmartPointerList.cpp
     StarManager.cpp
@@ -659,6 +658,14 @@ set(amaroklib_LIB_SRCS
     moodbar/MoodbarManager.cpp
 )
 
+if( BUILD_MYSQLE_COLLECTION )
+else( BUILD_MYSQLE_COLLECTION )
+        set(amaroklib_LIB_SRCS
+            ${amaroklib_LIB_SRCS}
+            MySqlServerTester.cpp
+           )
+endif( BUILD_MYSQLE_COLLECTION )
+
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
@@ -720,8 +727,6 @@ target_link_libraries(amaroklib
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${LIBLASTFM_LIBRARY}
-    ${MYSQL_LIBRARIES}
-    ${ZLIB_LIBRARIES}
     ${TAGLIB_LIBRARIES}
     ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
@@ -737,6 +742,11 @@ target_link_libraries(amaroklib
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+
+if( BUILD_MYSQLE_COLLECTION )
+else( BUILD_MYSQLE_COLLECTION )
+    target_link_libraries(amaroklib ${MYSQL_LIBRARIES} ${ZLIB_LIBRARIES})
+endif( BUILD_MYSQLE_COLLECTION )
 
 if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})

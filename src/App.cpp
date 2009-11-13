@@ -20,7 +20,6 @@
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "CollectionManager.h"
-#include "MySqlServerTester.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
 #include "dbus/CollectionDBusHandler.h"
@@ -48,6 +47,10 @@
 #include "statusbar/StatusBar.h"
 #include "TracklistDBusHandler.h"
 #include "TrayIcon.h"
+
+#ifdef NO_MYSQL_EMBEDDED
+#include "MySqlServerTester.h"
+#endif
 
 #include <iostream>
 
@@ -722,30 +725,29 @@ App::continueInit()
     }
 #endif
 
-    if( !CollectionManager::instance()->haveEmbeddedMysql() )
+#ifdef NO_MYSQL_EMBEDDED
+    bool useServer = true;
+    if( !AmarokConfig::useServer() )
     {
-        bool useServer = true;
-        if( !AmarokConfig::useServer() )
-        {
-            useServer = false;
-            AmarokConfig::setUseServer( true );
-        }
-        if( !MySqlServerTester::testSettings(
-                 AmarokConfig::host(),
-                 AmarokConfig::user(),
-                 AmarokConfig::password(),
-                 AmarokConfig::port()
-             )
-        )
-        {
-            KMessageBox::messageBox( 0, KMessageBox::Information,
-                    ( !useServer ? i18n( "The embedded database was not found; you must set up a database server connection.\nYou must restart Amarok after doing this." ) :
-                                  i18n( "The connection details for the database server were invalid.\nYou must enter correct settings and restart Amarok after doing this." ) ),
-                    i18n( "Database Error" ) );
-            slotConfigAmarok( "DatabaseConfig" );
-        }
+        useServer = false;
+        AmarokConfig::setUseServer( true );
+    }
+    if( !MySqlServerTester::testSettings(
+             AmarokConfig::host(),
+             AmarokConfig::user(),
+             AmarokConfig::password(),
+             AmarokConfig::port()
+         )
+    )
+    {
+        KMessageBox::messageBox( 0, KMessageBox::Information,
+                ( !useServer ? i18n( "The embedded database was not found; you must set up a database server connection.\nYou must restart Amarok after doing this." ) :
+                              i18n( "The connection details for the database server were invalid.\nYou must enter correct settings and restart Amarok after doing this." ) ),
+                i18n( "Database Error" ) );
+        slotConfigAmarok( "DatabaseConfig" );
     }
     else
+#endif
     {
         if( config.readEntry( "First Run", true ) )
         {
