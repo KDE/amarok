@@ -727,8 +727,8 @@ void TagDialog::init()
     connect( ui->qSpinBox_track,      SIGNAL( valueChanged( int ) ),               SLOT(checkModified()) );
     connect( ui->qSpinBox_year,       SIGNAL( valueChanged( int ) ),               SLOT(yearModified()) );
     connect( ui->qSpinBox_score,      SIGNAL( valueChanged( int ) ),               SLOT(scoreModified()) );
-    connect( ui->qPlainTextEdit_comment,   SIGNAL( textChanged() ),                     SLOT(commentModified()) );
-    connect( ui->kTextEdit_lyrics,    SIGNAL( textChanged() ),                     SLOT(checkModified()) );
+    connect( ui->qPlainTextEdit_comment,   SIGNAL( textChanged() ),                SLOT(commentModified()) );
+    connect( ui->kRichTextEdit_lyrics,    SIGNAL( textChanged() ),                 SLOT(checkModified()) );
     connect( ui->qSpinBox_discNumber, SIGNAL( valueChanged( int ) ),               SLOT(discNumberModified()) );
 
     connect( ui->pushButton_cancel,   SIGNAL( clicked() ), SLOT( cancelPressed() ) );
@@ -1012,13 +1012,7 @@ void TagDialog::readTags()
     ui->statisticsLabel->setText( statisticsText );
     ui->kLineEdit_location->setText( m_currentTrack->prettyUrl() );
 
-    //lyrics
-    // check if the lyrics data contains "<html" (note the missing closing bracket,
-    // this enables XHTML lyrics to be recognized) - otherwise the data is plaintext
-    if( m_lyrics.contains( "<html" , Qt::CaseInsensitive ) )
-        ui->kTextEdit_lyrics->setHtml( m_lyrics );
-    else
-         ui->kTextEdit_lyrics->setPlainText( m_lyrics );
+    ui->kRichTextEdit_lyrics->setTextOrHtml( m_lyrics );
 
     loadCover();
 
@@ -1312,7 +1306,7 @@ TagDialog::changes()
 
     if( !m_tracks.count() || m_perTrack )
     { //ignore these on MultipleTracksMode
-        if ( !equalString( ui->kTextEdit_lyrics->toPlainText(), m_lyrics ) )
+        if ( !equalString( ui->kRichTextEdit_lyrics->textOrHtml(), m_lyrics ) )
             result |= TagDialog::LYRICSCHANGED;
     }
 
@@ -1381,7 +1375,7 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
     {
         debug() << "TagDialog::LYRICSCHANGED";
 
-        if ( ui->kTextEdit_lyrics->toHtml().isEmpty() )
+        if ( ui->kRichTextEdit_lyrics->textOrHtml().isEmpty() )
         {
             m_storedLyrics.remove( track );
             m_storedLyrics.insert( track, QString() );
@@ -1389,11 +1383,7 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         else
         {
             m_storedLyrics.remove( track );
-
-            // don't call toHtml() here as it would break user-supplied HTML code
-            // (since the HTML code would be escaped, the plain HTML code would
-            // be shown in the lyrics applet)
-            m_storedLyrics.insert( track, ui->kTextEdit_lyrics->toPlainText() );
+            m_storedLyrics.insert( track, ui->kRichTextEdit_lyrics->textOrHtml() );
         }
     }
 }
