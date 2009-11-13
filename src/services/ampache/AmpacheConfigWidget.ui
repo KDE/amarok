@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>AmpacheConfigWidget</class>
- <widget class="QWidget" name="AmpacheConfigWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="AmpacheConfigWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,105 +10,98 @@
     <height>381</height>
    </rect>
   </property>
-  <layout class="QGridLayout" >
-   <item rowspan="2" row="0" column="0" >
-    <widget class="KListWidget" name="serverList" />
+  <layout class="QGridLayout">
+   <item row="0" column="0" rowspan="2">
+    <widget class="KListWidget" name="serverList"/>
    </item>
-   <item row="0" column="1" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+   <item row="0" column="1">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Server</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
-       <widget class="QLabel" name="label_8" >
-        <property name="text" >
-         <string comment="The user-definable name of an Ampache server" >Name:</string>
+     <layout class="QGridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string comment="The user-definable name of an Ampache server">Name:</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="KLineEdit" name="nameEdit" />
+      <item row="0" column="1">
+       <widget class="KLineEdit" name="nameEdit"/>
       </item>
-      <item row="1" column="0" >
-       <widget class="QLabel" name="label_7" >
-        <property name="text" >
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
          <string>Server:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="KLineEdit" name="serverEdit" />
+      <item row="1" column="1">
+       <widget class="KLineEdit" name="serverEdit"/>
       </item>
-      <item row="2" column="0" >
-       <widget class="QLabel" name="label_6" >
-        <property name="text" >
-         <string comment="The username to use for logins to an Ampache server" >Username:</string>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string comment="The username to use for logins to an Ampache server">Username:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" >
-       <widget class="KLineEdit" name="userEdit" />
+      <item row="2" column="1">
+       <widget class="KLineEdit" name="userEdit"/>
       </item>
-      <item row="3" column="0" >
-       <widget class="QLabel" name="label_5" >
-        <property name="text" >
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
          <string>Password:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" >
-       <widget class="KLineEdit" name="passEdit" >
-        <property name="echoMode" >
+      <item row="3" column="1">
+       <widget class="KLineEdit" name="passEdit">
+        <property name="echoMode">
          <enum>QLineEdit::Password</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="2" >
-       <widget class="QCheckBox" name="activeCheckBox" >
-        <property name="text" >
-         <string comment="Establish a connection to the Ampache server" >Active</string>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="1" >
-    <widget class="QGroupBox" name="groupBox_2" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+   <item row="1" column="1">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="title" >
+     <property name="title">
       <string>Edit</string>
      </property>
-     <layout class="QVBoxLayout" >
+     <layout class="QVBoxLayout">
       <item>
-       <widget class="KPushButton" name="addButton" >
-        <property name="text" >
+       <widget class="KPushButton" name="addButton">
+        <property name="text">
          <string>Add</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KPushButton" name="removeButton" >
-        <property name="text" >
+       <widget class="KPushButton" name="removeButton">
+        <property name="text">
          <string>Remove</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="KPushButton" name="modifyButton" >
-        <property name="text" >
+       <widget class="KPushButton" name="modifyButton">
+        <property name="text">
          <string>Modify</string>
         </property>
        </widget>
@@ -119,11 +113,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>klineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>KListWidget</class>
    <extends>QListWidget</extends>
    <header>klistwidget.h</header>
@@ -132,6 +121,11 @@
    <class>KPushButton</class>
    <extends>QPushButton</extends>
    <header>kpushbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>klineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
