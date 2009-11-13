@@ -98,6 +98,14 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
 void
 Playlist::DynamicTrackNavigator::trackChanged()
 {
+    const int activeRow = m_model->activeRow();
+    const int previousTracks = AmarokConfig::previousTracks();
+
+    if( activeRow < previousTracks )
+        Controller::instance()->moveRow( activeRow, previousTracks );
+    else if( activeRow > previousTracks )
+        Controller::instance()->moveRow( activeRow, previousTracks + 1 );
+
     appendUpcoming();
     removePlayed();
 }
