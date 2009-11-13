@@ -33,13 +33,27 @@ class SqlReadLabelCapability : public Meta::ReadLabelCapability
     Q_OBJECT
     public:
         SqlReadLabelCapability( Meta::SqlTrack *track, SqlStorage *storage );
+
+        /**
+        *   fetches a list of labels assigned to this track
+        */
         virtual void fetchLabels();
+
+        /**
+        *   fetches a list of all labels in the database
+        */
+        virtual void fetchGlobalLabels();   //TODO: This shouldnt be in a Track capability
+
+        /**
+        *   @returns all labels assigned to this track
+        */
         virtual QStringList labels();
 
     private:
         QStringList m_labels;
         Meta::TrackPtr m_track;
         SqlStorage *m_storage;
+        void fetch( QString uniqueURL );
 };
 
 }

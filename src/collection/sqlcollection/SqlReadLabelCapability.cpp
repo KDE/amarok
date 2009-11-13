@@ -36,7 +36,7 @@ SqlReadLabelCapability::SqlReadLabelCapability( Meta::SqlTrack *track, SqlStorag
 }
 
 void
-SqlReadLabelCapability::fetchLabels()
+SqlReadLabelCapability::fetch( QString uniqueURL )
 {
     QStringList labels;
 
@@ -46,9 +46,16 @@ SqlReadLabelCapability::fetchLabels()
         return;
     }
 
-    const QString query = "SELECT a.label FROM labels a, urls_labels b, urls c WHERE a.id=b.label AND b.url=c.id AND c.uniqueid=\"%1\"";
+    QString query = "SELECT a.label FROM labels a";
+    QStringList result;
 
-    const QStringList result = m_storage->query( query.arg( m_storage->escape( m_track->uidUrl() ) ) );
+    if ( !uniqueURL.isEmpty() )
+    {
+        query = query + QString( ", urls_labels b, urls c WHERE a.id=b.label AND b.url=c.id AND c.uniqueid=\"%1\"" );
+        result = m_storage->query( query.arg( m_storage->escape( uniqueURL ) ) );
+    }
+    else
+        result = m_storage->query( query );
 
     if( !result.isEmpty() )
     {
@@ -61,6 +68,20 @@ SqlReadLabelCapability::fetchLabels()
 
     m_labels = labels;
     emit labelsFetched( labels );
+}
+
+
+void
+SqlReadLabelCapability::fetchLabels()
+{
+    fetch( m_track->uidUrl() );
+}
+
+//TODO: This shouldn't be in a track capability
+void
+SqlReadLabelCapability::fetchGlobalLabels()
+{
+    fetch( QString() );
 }
 
 QStringList

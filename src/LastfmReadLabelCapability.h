@@ -34,6 +34,7 @@ class LastfmReadLabelCapability : public ReadLabelCapability
     public:
         LastfmReadLabelCapability( Meta::Track *track );
         virtual void fetchLabels();
+        virtual void fetchGlobalLabels();
         virtual QStringList labels();
 
     private:

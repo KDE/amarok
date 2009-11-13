@@ -340,6 +340,9 @@ TagDialog::addLabelPressed() //SLOT
         m_labelModel->addLabel( label );
         ui->kComboBox_label->setCurrentIndex( -1 );
         ui->kComboBox_label->completionObject()->insertItems( QStringList( label ) );
+
+        if ( !ui->kComboBox_label->contains( label ) )
+            ui->kComboBox_label->addItem( label );
     }
 }
 
@@ -664,6 +667,8 @@ void TagDialog::init()
 
     ui->labelsList->setModel( m_labelModel );
     ui->labelsTab->setEnabled( m_currentTrack->is<Meta::ReadLabelCapability>() );
+
+    loadGlobalLabels();
 
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
@@ -1469,18 +1474,41 @@ TagDialog::loadLabels( Meta::TrackPtr track )
         debug() << "No Read Label Capability found, no labels available.";
         return;
     }
-    connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(labelsFetched(QStringList)));
+    connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(trackLabelsFetched(QStringList)));
+    ric->fetchLabels();
+}
+
+void
+TagDialog::loadGlobalLabels()
+{
+    Meta::ReadLabelCapability *ric = m_currentTrack->create<Meta::ReadLabelCapability>();
+    if( !ric )
+    {
+        debug() << "No Read Label Capability found, no labels available.";
+        return;
+    }
+    connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(globalLabelsFetched(QStringList)));
+    ric->fetchGlobalLabels();
 }
 
 
 void
-TagDialog::labelsFetched( QStringList labels )
+TagDialog::trackLabelsFetched( QStringList labels )
 {
-    DEBUG_BLOCK
     sender()->deleteLater();
     m_labels = labels;
     m_labelModel->setLabels( labels );
     ui->labelsList->update();
+}
+
+void
+TagDialog::globalLabelsFetched( QStringList labels )
+{
+    sender()->deleteLater();
+    ui->kComboBox_label->addItems( labels );
+    ui->kComboBox_label->completionObject()->insertItems( labels );
+    ui->kComboBox_label->update();
+    ui->kComboBox_label->setCurrentIndex( -1 );
 }
 
 

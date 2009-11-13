@@ -35,6 +35,7 @@ class AMAROK_EXPORT ReadLabelCapability : public Meta::Capability
 
         //Implementors
         virtual void fetchLabels() = 0;
+        virtual void fetchGlobalLabels() = 0;
         virtual QStringList labels() = 0;
 
     signals:

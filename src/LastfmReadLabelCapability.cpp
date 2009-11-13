@@ -40,6 +40,13 @@ LastfmReadLabelCapability::LastfmReadLabelCapability( Meta::Track *track )
 }
 
 void
+LastfmReadLabelCapability::fetchGlobalLabels()
+{
+    DEBUG_BLOCK
+    AMAROK_NOTIMPLEMENTED
+}
+
+void
 LastfmReadLabelCapability::fetchLabels()
 {
     DEBUG_BLOCK

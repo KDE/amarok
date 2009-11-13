@@ -119,7 +119,8 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         */
         void labelSelected();
 
-        void labelsFetched(QStringList labels);
+        void trackLabelsFetched( QStringList labels );
+        void globalLabelsFetched( QStringList labels );
 
     private:
         void init();
@@ -149,6 +150,11 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         * @arg track Track to load labels for
         */
         void loadLabels( Meta::TrackPtr track );
+
+        /**
+        * Loads all labels to auto completion list
+        */
+        void loadGlobalLabels();
 
         void loadTags( const Meta::TrackPtr &track );
         void loadLyrics( const Meta::TrackPtr &track );
