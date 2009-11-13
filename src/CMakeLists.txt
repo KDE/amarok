@@ -66,7 +66,6 @@ include_directories(
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDES}
-    ${MYSQL_INCLUDE_DIR}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
@@ -584,7 +583,6 @@ set(amaroklib_LIB_SRCS
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
-    MySqlServerTester.cpp
     PluginManager.cpp
     SmartPointerList.cpp
     StarManager.cpp
@@ -720,7 +718,6 @@ target_link_libraries(amaroklib
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${LIBLASTFM_LIBRARY}
-    ${MYSQL_LIBRARIES}
     ${TAGLIB_LIBRARIES}
     ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
