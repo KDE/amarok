@@ -5,7 +5,6 @@ include_directories( ../..
 
 set( upcomingEvents_SRCS UpcomingEventsApplet.cpp LastFmEvent.cpp)
 
-kde4_add_ui_files( upcomingEvents_SRCS UpcomingEvents.ui)
 kde4_add_ui_files( upcomingEvents_SRCS upcomingEventsSettings.ui )
 kde4_add_plugin(amarok_context_applet_upcomingEvents ${upcomingEvents_SRCS})
 

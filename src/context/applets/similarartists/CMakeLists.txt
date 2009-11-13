@@ -3,7 +3,8 @@
 include_directories( ../..
 ../../.. )
 
-kde4_add_ui_files( similarArtists_SRCS similarArtistsSettings.ui )
+set( similarArtists_SRCS SimilarArtistsApplet.cpp)
+kde4_add_ui_files( similarArtists_SRCS similarArtistsSettings.ui)
 
 kde4_add_plugin(amarok_context_applet_similarArtists ${similarArtists_SRCS})
 if(APPLE)
