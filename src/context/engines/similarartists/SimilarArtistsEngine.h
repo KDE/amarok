@@ -1,5 +1,6 @@
 /****************************************************************************************
 * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
+* Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,19 +18,74 @@
 #ifndef SIMILARARTISTSENGINE_H
 #define SIMILARARTISTSENGINE_H
 
-#include <context/ContextObserver.h>
-#include <meta/Meta.h>
+#include "ContextObserver.h"
+#include "meta/Meta.h"
+
+#include <context/DataEngine.h>
+
+#include <KIO/Job>
+#include <QLocale>
 
 
-class SimilarArtistsEngine : public ContextObserver, public Meta::Observer
+
+/**
+    This class provide SimilarArtists data for use in Context applets.
+*/
+
+using namespace Context;
+
+class SimilarArtistsEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
+    Q_OBJECT
+    Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
+        
 public:
+    SimilarArtistsEngine( QObject* parent, const QList<QVariant>& args );
+    virtual ~SimilarArtistsEngine();
+    
+    QStringList sources() const;
+    
+    // reimplemented from Context::Observer
+    virtual void message( const ContextState& state );
+
+    // reimplemented from Meta::Observer
+    using Observer::metadataChanged;
+    void metadataChanged( Meta::TrackPtr track );
+
+    void setSelection( const QString& selection ) { m_currentSelection = selection; }
+    QString selection() { return m_currentSelection; }
+    
     /**
     * Fetches the similar artists for an artist thanks to the LastFm WebService
     * @param artist_name the name of the artist
     * @return a map with the names of the artists with their match rate
     */
     QMap<int, QString> similarArtists(const QString &artist_name);
+
+    
+protected:
+    bool sourceRequestEvent( const QString& name );
+    
+private:
+    void update();
+
+    int m_maxArtists;
+    
+    void reloadSimilarArtists();
+    
+    KJob* m_upcomingEventsJob;
+
+    Meta::TrackPtr m_currentTrack;
+        
+    QString m_currentSelection;
+    bool m_requested;
+    QStringList m_sources;
+    short m_triedRefinedSearch;
+
 };
 
+K_EXPORT_AMAROK_DATAENGINE( upcomingEvents, SimilarArtistsEngine )
+
 #endif // SIMILARARTISTSENGINE_H
+
+

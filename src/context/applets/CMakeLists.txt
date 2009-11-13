@@ -10,3 +10,4 @@ add_subdirectory( similarartists )
 #add_subdirectory( songkick )
 # disabled, soon to be replaced
 #add_subdirectory( mediadevices )
+
