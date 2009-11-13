@@ -32,16 +32,18 @@ public:
 
     void run();
 
+    static KUrl cachedImagePath( Meta::PodcastChannelPtr channel );
+
 signals:
     void imageReady( Meta::PodcastChannelPtr channel, QPixmap image );
     void imageReady( Meta::PodcastEpisodePtr episode, QPixmap image );
-    void done();
+    void done( PodcastImageFetcher * );
 
 private slots:
     void slotDownloadFinished( KJob *job );
 
 private:
-    Meta::PodcastChannelPtr m_channel;
+    Meta::PodcastChannelList m_channels;
     QMap<KJob *, Meta::PodcastChannelPtr> m_jobChannelMap;
     QMap<KJob *, Meta::PodcastEpisodePtr> m_jobEpisodeMap;
 };

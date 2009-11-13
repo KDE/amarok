@@ -37,7 +37,6 @@
 #include <KIO/DeleteJob>
 #include <KIO/Job>
 #include <KIO/NetAccess>
-#include <KMD5>
 #include <KStandardDirs>
 #include <KUrl>
 #include <Solid/Networking>
@@ -987,20 +986,12 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
     loadPodcasts();
 }
 
-QString
-SqlPodcastProvider::imagePath( SqlPodcastChannelPtr channel )
-{
-    KUrl imagePath = channel->saveLocation();
-    KMD5 md5( channel->url().url().toLocal8Bit() );
-    imagePath.addPath( md5.hexDigest() + "png" );
-    return imagePath.toLocalFile();
-}
-
 bool
 SqlPodcastProvider::hasCachedImage( SqlPodcastChannelPtr channel )
 {
     DEBUG_BLOCK
-    return QFile( imagePath( channel ) ).exists();
+    return QFile( PodcastImageFetcher::cachedImagePath(
+            PodcastChannelPtr::dynamicCast( channel ) ).toLocalFile() ).exists();
 }
 
 QPixmap
@@ -1010,7 +1001,8 @@ SqlPodcastProvider::loadImage( SqlPodcastChannelPtr channel )
     if( !hasCachedImage( channel ) )
         return QPixmap();
 
-    return QPixmap( imagePath( channel ) );
+    return QPixmap( PodcastImageFetcher::cachedImagePath(
+            PodcastChannelPtr::dynamicCast( channel ) ).toLocalFile() );
 }
 
 void
@@ -1019,11 +1011,38 @@ SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
     DEBUG_BLOCK
 
     if( m_podcastImageFetcher == 0 )
+    {
         m_podcastImageFetcher = new PodcastImageFetcher();
+        connect( m_podcastImageFetcher,
+                 SIGNAL( imageReady( Meta::PodcastChannelPtr, QPixmap ) ),
+                 SLOT( channelImageReady( Meta::PodcastChannelPtr, QPixmap ) )
+               );
+        connect( m_podcastImageFetcher,
+                 SIGNAL( done( PodcastImageFetcher * ) ),
+                 SLOT( podcastImageFetcherDone( PodcastImageFetcher * ) )
+               );
+    }
 
     m_podcastImageFetcher->addChannel( PodcastChannelPtr::dynamicCast( channel ) );
 
     m_podcastImageFetcher->run();
+}
+
+void
+SqlPodcastProvider::channelImageReady( Meta::PodcastChannelPtr channel, QPixmap pixmap )
+{
+    DEBUG_BLOCK
+    debug() << "channel: " << channel->title();
+    if( pixmap.isNull() )
+        return;
+
+    channel->setImage( pixmap );
+}
+
+void
+SqlPodcastProvider::podcastImageFetcherDone( PodcastImageFetcher *fetcher )
+{
+    fetcher->deleteLater();
 }
 
 #include "SqlPodcastProvider.moc"

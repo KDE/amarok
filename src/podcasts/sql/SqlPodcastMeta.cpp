@@ -421,7 +421,7 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     m_url = KUrl( *(iter++) );
     m_title = *(iter++);
     m_webLink = *(iter++);
-    QString imageUrl = *(iter++);
+    m_imageUrl = *(iter++);
     m_description = *(iter++);
     m_copyright = *(iter++);
     m_directory = KUrl( *(iter++) );
@@ -508,6 +508,14 @@ Meta::PodcastEpisodeList
 Meta::SqlPodcastChannel::episodes()
 {
     return sqlEpisodesToPodcastEpisodes( m_episodes );
+}
+
+void
+Meta::SqlPodcastChannel::setImage( const QPixmap &image )
+{
+    DEBUG_BLOCK
+
+    m_image = image;
 }
 
 void

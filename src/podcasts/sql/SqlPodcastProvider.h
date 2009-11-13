@@ -103,6 +103,10 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void updated();
         void totalPodcastDownloadProgress( int progress );
 
+    private slots:
+        void channelImageReady( Meta::PodcastChannelPtr, QPixmap );
+        void podcastImageFetcherDone( PodcastImageFetcher * );
+
     private:
         /** creates all the necessary tables, indexes etc. for the database */
         void createTables() const;
