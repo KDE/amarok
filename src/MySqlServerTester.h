@@ -1,5 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
  * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -15,37 +14,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
-#define AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
+#ifndef AMAROK_MYSQLSERVERTESTER_H
+#define AMAROK_MYSQLSERVERTESTER_H
 
-#include "mysql-shared/MySqlCollection.h"
-#include "Collection.h"
-#include "amarok_export.h"
+#include <QString>
 
-class MySqlServerCollectionFactory : public Amarok::CollectionFactory
+class MySqlServerTester
 {
-    Q_OBJECT
-
     public:
-        MySqlServerCollectionFactory() {}
-        virtual ~MySqlServerCollectionFactory() {}
-
-        virtual void init();
-};
-
-/**
- * Implements a MySqlCollection using a MySQL Server
- */
-class MySqlServerCollection: public MySqlCollection
-{
-    Q_OBJECT
-
-    public:
-        MySqlServerCollection( const QString &id, const QString &prettyName );
-        virtual ~MySqlServerCollection();
-
-        virtual QString type() const;
-        virtual QStringList query( const QString &query );
+        MySqlServerTester() { ; }
+        virtual ~MySqlServerTester();
+        
+        static bool testSettings( const QString &host, const QString &user, const QString &password, int port );
 };
 
 #endif

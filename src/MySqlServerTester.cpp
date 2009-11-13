@@ -1,5 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2008 Edward Toroshchin <edward.hades@gmail.com>                        *
  * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -15,37 +14,38 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
-#define AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
+#include "MySqlServerTester.h"
 
-#include "mysql-shared/MySqlCollection.h"
-#include "Collection.h"
-#include "amarok_export.h"
+#include "Debug.h"
+#include <mysql.h>
 
-class MySqlServerCollectionFactory : public Amarok::CollectionFactory
+bool MySqlServerTester::testSettings( const QString &host, const QString &user, const QString &password, int port )
 {
-    Q_OBJECT
+    DEBUG_BLOCK
+    if( mysql_library_init( 0, NULL, NULL ) )
+    {
+        error() << "MySQL library initialization failed!";
+        return false;
+    }
 
-    public:
-        MySqlServerCollectionFactory() {}
-        virtual ~MySqlServerCollectionFactory() {}
+    MYSQL* db = mysql_init( NULL );
 
-        virtual void init();
-};
+    if( !db )
+    {
+        error() << "MySQL initialization failed";
+        return false;
+    }
 
-/**
- * Implements a MySqlCollection using a MySQL Server
- */
-class MySqlServerCollection: public MySqlCollection
-{
-    Q_OBJECT
+    if( !mysql_real_connect( db, host.toUtf8(), user.toUtf8(), password.toUtf8(), NULL, port, NULL, CLIENT_COMPRESS ) )
+    {
+        mysql_close( db );
+        db = 0;
+        return false;
+    }
+    
+    mysql_close( db );
+    db = 0;
+    return true;
+}
 
-    public:
-        MySqlServerCollection( const QString &id, const QString &prettyName );
-        virtual ~MySqlServerCollection();
 
-        virtual QString type() const;
-        virtual QStringList query( const QString &query );
-};
-
-#endif

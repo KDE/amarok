@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "CollectionManager.h"
+#include "MySqlServerTester.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
 #include "dbus/CollectionDBusHandler.h"
@@ -60,6 +61,7 @@
 #include <KJob>
 #include <KJobUiDelegate>
 #include <KLocale>
+#include <KMessageBox>
 #include <KShortcutsDialog>              //slotConfigShortcuts()
 #include <KStandardDirs>
 
@@ -720,10 +722,28 @@ App::continueInit()
     }
 #endif
 
-    if(    !CollectionManager::instance()->haveEmbeddedMysql()
-        && !KGlobal::config()->group( "MySQL" ).readEntry( "UseServer", false ) )
+    if( !CollectionManager::instance()->haveEmbeddedMysql() )
     {
-        slotConfigAmarok( "DatabaseConfig" );
+        bool useServer = true;
+        if( !AmarokConfig::useServer() )
+        {
+            useServer = false;
+            AmarokConfig::setUseServer( true );
+        }
+        if( !MySqlServerTester::testSettings(
+                 AmarokConfig::host(),
+                 AmarokConfig::user(),
+                 AmarokConfig::password(),
+                 AmarokConfig::port()
+             )
+        )
+        {
+            KMessageBox::messageBox( 0, KMessageBox::Information,
+                    ( !useServer ? i18n( "The embedded database was not found; you must set up a database server connection.\nYou must restart Amarok after doing this." ) :
+                                  i18n( "The connection details for the database server were invalid.\nYou must enter correct settings and restart Amarok after doing this." ) ),
+                    i18n( "Database Error" ) );
+            slotConfigAmarok( "DatabaseConfig" );
+        }
     }
     else
     {
