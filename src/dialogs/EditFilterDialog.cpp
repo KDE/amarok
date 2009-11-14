@@ -189,6 +189,20 @@ QString EditFilterDialog::keywordConditionString( const QString& keyword ) const
     switch(m_ui.conditionCombo->currentIndex())
     {
         case 0:
+            // equal to...
+            //if (keyword == "length")
+                //result = m_strPrefixNOT + "length:" + QString::number( m_ui.minimum1->value() * 60
+                        //+ m_ui.minimum2->value() ) + unit;
+            //else
+            {
+                if( m_strPrefixNOT.isEmpty() )
+                    result = keyword + ":" + QString::number( m_ui.minimum1->value() ) + unit;
+                else
+                    result = keyword + ":<" + QString::number(m_ui.minimum1->value()) + unit +
+                        " OR " + keyword + ":>" + QString::number(m_ui.minimum1->value()) + unit;
+            }
+            break;
+        case 1:
             // less than...
             result = m_strPrefixNOT + keyword + ":<";
             //if (keyword == "length")
@@ -196,28 +210,13 @@ QString EditFilterDialog::keywordConditionString( const QString& keyword ) const
             //else
                 result += m_ui.minimum1->text() + unit;
             break;
-        case 1:
+        case 2:
             // greater than...
             result = m_strPrefixNOT + keyword + ":>";
             //if (keyword == "length")
                 //result += QString::number( m_ui.minimum1->value() * 60 + m_ui.minimum2->value() ) + unit;
             //else
                 result += m_ui.minimum1->text() + unit;
-            break;
-        case 2:
-            // equal to...
-            //if (keyword == "length")
-                //result = m_strPrefixNOT + "length:" + QString::number( m_ui.minimum1->value() * 60
-                        //+ m_ui.minimum2->value() ) + unit;
-            //else
-            {
-                if (m_strPrefixNOT.isEmpty())
-                    result = keyword + ":>" + QString::number(m_ui.minimum1->value() - 1) + unit +
-                        ' ' + keyword + ":<" + QString::number(m_ui.minimum1->value() + 1) + unit;
-                else
-                    result = keyword + ":<" + QString::number(m_ui.minimum1->value()) + unit +
-                        " OR " + keyword + ":>" + QString::number(m_ui.minimum1->value()) + unit;
-            }
             break;
         case 3:
             // between...

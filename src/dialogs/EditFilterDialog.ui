@@ -168,6 +168,14 @@
        </property>
        <item>
         <widget class="KComboBox" name="conditionCombo">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <item>
+          <property name="text">
+           <string>Equal To</string>
+          </property>
+         </item>
          <item>
           <property name="text">
            <string>Smaller Than</string>
@@ -176,11 +184,6 @@
          <item>
           <property name="text">
            <string>Larger Than</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Equal To</string>
           </property>
          </item>
          <item>
