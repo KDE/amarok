@@ -401,6 +401,10 @@ PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
     Q_UNUSED( job ); Q_UNUSED( fromUrl );
     debug() << "permanently redirected to: " << toUrl.url();
     m_url = toUrl;
+    /* change the url for existing feeds as well. Permanent redirection means the old one
+    might dissapear soon. */
+    if( m_channel )
+        m_channel->setUrl( m_url );
 }
 
 void
