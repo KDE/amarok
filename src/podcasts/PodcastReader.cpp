@@ -399,8 +399,8 @@ PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
 {
     DEBUG_BLOCK
     Q_UNUSED( job ); Q_UNUSED( fromUrl );
-    debug() << "premanently redirected to: " << toUrl.url();
-    //TODO: change url in database
+    debug() << "permanently redirected to: " << toUrl.url();
+    m_url = toUrl;
 }
 
 void
