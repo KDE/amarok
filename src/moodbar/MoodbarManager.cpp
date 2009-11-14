@@ -2,6 +2,7 @@
  * Copyright (c) 2005 by Gav Wood                                                       *
  * Copyright (c) 2006 by Joseph Rabinoff                                                *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -40,7 +41,8 @@ even porting to qtscript so it could be run, as needed, by Amarok.
 
 #define NUM_HUES 12
 
-namespace The {
+namespace The
+{
     static MoodbarManager* s_MoodbarManager_instance = 0;
 
     MoodbarManager* moodbarManager()
@@ -55,12 +57,10 @@ namespace The {
 MoodbarManager::MoodbarManager()
     : m_cache( new KPixmapCache( "Amarok-moodbars" ) )
     , m_lastPaintMode( 0 )
-{
-}
+{}
 
 MoodbarManager::~MoodbarManager()
-{
-}
+{}
 
 bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
 {
@@ -109,12 +109,10 @@ bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
     m_hasMoodMap.insert( track, true );
     
     return true;
-    
 }
 
 QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height )
 {
-
     //if we have already marked this track as
     //not having a moodbar, don't even bother...
     if ( m_hasMoodMap.contains( track ) )
@@ -126,14 +124,14 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
     //so, clear data and pixmap caches.
     if( m_lastPaintMode != AmarokConfig::moodbarPaintStyle() )
     {
-       m_lastPaintMode = AmarokConfig::moodbarPaintStyle();
-       m_cache->discard();
-       m_moodDataMap.clear();
+        m_lastPaintMode = AmarokConfig::moodbarPaintStyle();
+        m_cache->discard();
+        m_moodDataMap.clear();
     }
 
 
     //Do we alrady have this pixmap cached?
-    QString pixmapKey = QString( "mood:%1-%2x%3" ).arg( track->uidUrl(), width, height );
+    const QString pixmapKey = QString( "mood:%1-%2x%3" ).arg( track->uidUrl(), width, height );
     
     QPixmap moodbar( width, height );
     moodbar.fill( Qt::transparent );
@@ -175,17 +173,15 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
     m_cache->insert( pixmapKey, moodbar );
     
     return moodbar;
-    
 }
 
 MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 {
-
-     DEBUG_BLOCK
+    DEBUG_BLOCK
 
     MoodbarColorList data;
 
-    QString path = moodFileUrl.path();
+    const QString path = moodFileUrl.path();
     if( path.isEmpty() )
         return data;
 
@@ -195,7 +191,6 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 
     if( !moodFile.open( QIODevice::ReadOnly ) )
         return data;
-
 
     int r, g, b, samples = moodFile.size() / 3;
     debug() << "Moodbar::readFile: File " << path
@@ -275,9 +270,9 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     // value are scaled by sat and val, respectively, which are percentage
     // values.
 
-    int paintStyle = AmarokConfig::moodbarPaintStyle();
+    const int paintStyle = AmarokConfig::moodbarPaintStyle();
 
-    if( paintStyle != 0 )
+    if( paintStyle )
     {
         // Explanation of the parameters:
         //
@@ -355,7 +350,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
                               qBound( 0, s * sat / 100, 255 ),
                               qBound( 0, v * val / 100, 255 ) );
 
-                modalHue[qBound(0, huedist[h] * NUM_HUES / 360, NUM_HUES - 1)] += (v * val / 100);
+                modalHue[qBound( 0, huedist[h] * NUM_HUES / 360, NUM_HUES - 1 )] += ( v * val / 100 );
             }
         }
     }
@@ -392,12 +387,10 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     moodFile.close();
 
     return data;
-
 }
 
 QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, int height )
 {
-    
     QPixmap pixmap = QPixmap( width, height );
     QPainter paint( &pixmap );
 
@@ -468,10 +461,9 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
     }
 
     return pixmap;
-
 }
 
-QString MoodbarManager::moodPath( const QString &trackPath )
+QString MoodbarManager::moodPath( const QString &trackPath ) const
 {
     QStringList parts = trackPath.split( '.' );
     parts.takeLast();

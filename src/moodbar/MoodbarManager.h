@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,7 +14,6 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
-
 
 #ifndef MOODBARMANAGER_H
 #define MOODBARMANAGER_H
@@ -39,27 +39,25 @@ class MoodbarManager : public QObject
 {
     
 Q_OBJECT
+
 friend MoodbarManager* The::moodbarManager();
 
 public:
-
     ~MoodbarManager();
 
     bool hasMoodbar( Meta::TrackPtr track );
     QPixmap getMoodbar( Meta::TrackPtr track, int width, int height );
 
 signals:
-
     void moodbarReady( const QPixmap &pixmap );
     void moodbarCreationFailed( const QString &error );
 
 private:
-
     MoodbarManager();
 
     MoodbarColorList readMoodFile( const KUrl &moodFileUrl );
     QPixmap drawMoodbar( const MoodbarColorList &data, int width, int height );
-    QString moodPath( const QString &trackPath );
+    QString moodPath( const QString &trackPath ) const;
 
     //let this class take care of caching everything as needed, otherwise things get pretty complex pretty fast.
     QMap<Meta::TrackPtr, bool> m_hasMoodMap;
@@ -69,7 +67,6 @@ private:
     KPixmapCache * m_cache;
 
     int m_lastPaintMode;
-    
 };
 
 #endif // MOODBARMANAGER_H
