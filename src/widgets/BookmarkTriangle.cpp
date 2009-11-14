@@ -75,7 +75,10 @@ void BookmarkTriangle::paintEvent ( QPaintEvent* )
 
 void BookmarkTriangle::showEvent ( QShowEvent * event )
 {
-    if (m_showPopup){
+    Q_UNUSED( event );  //FIXME: event->accept() should probably be called
+
+    if ( m_showPopup )
+    {
         m_showPopup = false; // Force immediate Popup Display after editing
         initPopup();
     }
