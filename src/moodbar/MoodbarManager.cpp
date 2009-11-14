@@ -346,17 +346,16 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 
             // Now huedist is a hue mapper: huedist[h] is the new hue value
             // for a bar with hue h
-
-            for( uint i = 0; i < data.size(); i++ )
+            foreach( QColor color, data )
             {
-                data[i].getHsv( &h, &s, &v );
-                if( h < 0 ) h = 0;  else h = h % 360;
-                data[i].setHsv( qBound( 0, huedist[h], 359 ),
-                                  qBound( 0, s * sat / 100, 255 ),
-                                  qBound( 0, v * val / 100, 255 ) );
+                color.getHsv( &h, &s, &v );
+                h = h < 0 ? 0 : h % 360;
 
-                modalHue[qBound(0, huedist[h] * NUM_HUES / 360, NUM_HUES - 1)]
-                  += (v * val / 100);
+                color.setHsv( qBound( 0, huedist[h], 359 ),
+                              qBound( 0, s * sat / 100, 255 ),
+                              qBound( 0, v * val / 100, 255 ) );
+
+                modalHue[qBound(0, huedist[h] * NUM_HUES / 360, NUM_HUES - 1)] += (v * val / 100);
             }
         }
     }
