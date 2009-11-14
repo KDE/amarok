@@ -522,13 +522,16 @@ void
 Meta::SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
 {
     DEBUG_BLOCK
+    debug() << imageUrl;
+    m_imageUrl = imageUrl;
+
     if( imageUrl.isLocalFile() )
     {
         m_image = QPixmap( imageUrl.path() );
         return;
     }
 
-    debug() << "Image is remote, start a download job for " << imageUrl;
+    debug() << "Image is remote, handled by podcastImageFetcher.";
 }
 
 Meta::PodcastEpisodePtr
@@ -580,8 +583,7 @@ Meta::SqlPodcastChannel::updateInDb()
     command = command.arg( escape(m_url.url()) ); //%1
     command = command.arg( escape(m_title) ); //%2
     command = command.arg( escape(m_webLink.url()) ); //%3
-    //TODO:m_image.url()
-    command = command.arg( escape(QString("")) ); //image  //%4
+    command = command.arg( escape(m_imageUrl.url()) ); //image  //%4
     command = command.arg( escape(m_description) ); //%5
     command = command.arg( escape(m_copyright) ); //%6
     command = command.arg( escape(m_directory.url()) ); //%7

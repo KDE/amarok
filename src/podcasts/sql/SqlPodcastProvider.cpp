@@ -139,13 +139,13 @@ SqlPodcastProvider::loadPodcasts()
         QStringList channelResult = results.mid( i, rowLength );
         SqlPodcastChannelPtr channel =
                 SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
-        if( hasCachedImage( channel ) )
-            channel->setImage( loadImage( channel ) );
-        else
+        if( channel->image().isNull() )
             fetchImage( channel );
 
         m_channels << channel;
     }
+    if( m_podcastImageFetcher )
+        m_podcastImageFetcher->run();
     emit( updated() );
 }
 
@@ -764,18 +764,24 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
         debug() << podcastReader->errorString();
         The::statusBar()->longMessage( podcastReader->errorString(), StatusBar::Error );
     }
-    else
+    debug() << "Finished updating: " << podcastReader->url();
+    debug() << "Updating counter reached " << m_updatingChannels-1;
+    //decrement the counter and load podcasts if needed.
+    if( --m_updatingChannels == 0 )
     {
-        debug() << "Finished updating: " << podcastReader->url();
-        debug() << "Updating counter reached " << m_updatingChannels-1;
-        //decrement the counter and load podcasts if needed.
-        if( --m_updatingChannels == 0 )
-        {
-            //TODO: start downloading episodes here.
-        }
+        //TODO: start downloading episodes here.
     }
 
+    Meta::SqlPodcastChannelPtr channel =
+            Meta::SqlPodcastChannelPtr::dynamicCast( podcastReader->channel() );
+    if( !channel.isNull() && channel->image().isNull() )
+        fetchImage( channel );
+
+    if( m_podcastImageFetcher )
+        m_podcastImageFetcher->run();
+
     podcastReader->deleteLater();
+
     emit( updated() );
 }
 
@@ -986,25 +992,6 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
     loadPodcasts();
 }
 
-bool
-SqlPodcastProvider::hasCachedImage( SqlPodcastChannelPtr channel )
-{
-    DEBUG_BLOCK
-    return QFile( PodcastImageFetcher::cachedImagePath(
-            PodcastChannelPtr::dynamicCast( channel ) ).toLocalFile() ).exists();
-}
-
-QPixmap
-SqlPodcastProvider::loadImage( SqlPodcastChannelPtr channel )
-{
-    DEBUG_BLOCK
-    if( !hasCachedImage( channel ) )
-        return QPixmap();
-
-    return QPixmap( PodcastImageFetcher::cachedImagePath(
-            PodcastChannelPtr::dynamicCast( channel ) ).toLocalFile() );
-}
-
 void
 SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
 {
@@ -1024,8 +1011,6 @@ SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
     }
 
     m_podcastImageFetcher->addChannel( PodcastChannelPtr::dynamicCast( channel ) );
-
-    m_podcastImageFetcher->run();
 }
 
 void
@@ -1043,6 +1028,7 @@ void
 SqlPodcastProvider::podcastImageFetcherDone( PodcastImageFetcher *fetcher )
 {
     fetcher->deleteLater();
+    m_podcastImageFetcher = 0;
 }
 
 #include "SqlPodcastProvider.moc"

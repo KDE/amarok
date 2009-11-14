@@ -28,10 +28,22 @@ PodcastImageFetcher::PodcastImageFetcher()
 void
 PodcastImageFetcher::addChannel( Meta::PodcastChannelPtr channel )
 {
+    DEBUG_BLOCK
     if( channel->imageUrl().isEmpty() )
+    {
+        debug() << channel->title() << " does not have an imageUrl";
         return;
+    }
 
-    m_channels << channel;
+    if( hasCachedImage( channel ) )
+    {
+        debug() << "using cached image for " << channel->title();
+        channel->setImage( QPixmap( cachedImagePath( channel ).toLocalFile() ) );
+        return;
+    }
+
+    debug() << "Adding " << channel->title() << " to fetch queue";
+    m_channels.append( channel );
 }
 
 void
@@ -47,16 +59,25 @@ PodcastImageFetcher::cachedImagePath( Meta::PodcastChannelPtr channel )
     if( imagePath.isEmpty() )
         imagePath = Amarok::saveLocation( "podcasts" );
     KMD5 md5( channel->url().url().toLocal8Bit() );
-    imagePath.addPath( md5.hexDigest() + ".png" );
+    QString extension = Amarok::extension( channel->imageUrl().fileName() );
+    imagePath.addPath( md5.hexDigest() + "." + extension );
     debug() << "imagePath for " << channel->title() << " " << imagePath;
     return imagePath.toLocalFile();
+}
+
+bool
+PodcastImageFetcher::hasCachedImage( Meta::PodcastChannelPtr channel )
+{
+    DEBUG_BLOCK
+    return QFile( PodcastImageFetcher::cachedImagePath(
+            Meta::PodcastChannelPtr::dynamicCast( channel ) ).toLocalFile() ).exists();
 }
 
 void
 PodcastImageFetcher::run()
 {
     DEBUG_BLOCK
-    if( m_jobChannelMap.isEmpty() && m_jobEpisodeMap.isEmpty() )
+    if( m_channels.isEmpty() && m_episodes.isEmpty() )
     {
         //nothing to do
         emit( done( this ) );
@@ -66,8 +87,10 @@ PodcastImageFetcher::run()
     foreach( Meta::PodcastChannelPtr channel, m_channels )
     {
         debug() << "Download image from " << channel->imageUrl();
+        KUrl cachedPath = cachedImagePath( channel );
+        KIO::mkdir( cachedPath.directory() );
         KIO::FileCopyJob *job =
-                KIO::file_copy( channel->imageUrl(), cachedImagePath( channel ),
+                KIO::file_copy( channel->imageUrl(), cachedPath,
                                 -1, KIO::HideProgressInfo );
         m_jobChannelMap.insert( job, channel );
         connect( job, SIGNAL( finished( KJob * ) ), SLOT( slotDownloadFinished( KJob * ) ) );
@@ -81,16 +104,18 @@ PodcastImageFetcher::slotDownloadFinished( KJob *job )
 {
     DEBUG_BLOCK
 
+    //QMap::take() also removes the entry from the map.
+    Meta::PodcastChannelPtr channel = m_jobChannelMap.take( job );
+    if( channel.isNull() )
+        return;
+
+    m_channels.removeAll( channel );
     if( job->error() )
     {
         error() << "downloading podcast image " << job->errorString();
     }
-    else if( m_jobChannelMap.contains( job ) )
-    {
-        Meta::PodcastChannelPtr channel = m_jobChannelMap.value( job );
-        QPixmap pixmap( cachedImagePath( channel ).toLocalFile() );
-        channel->setImage( pixmap );
-    }
+
+    channel->setImage( QPixmap( cachedImagePath( channel ).toLocalFile() ) );
 
     //call run again to start the next batch of transfers.
     run();

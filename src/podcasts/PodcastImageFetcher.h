@@ -43,7 +43,10 @@ private slots:
     void slotDownloadFinished( KJob *job );
 
 private:
+    bool hasCachedImage( Meta::PodcastChannelPtr channel );
+
     Meta::PodcastChannelList m_channels;
+    Meta::PodcastEpisodeList m_episodes;
     QMap<KJob *, Meta::PodcastChannelPtr> m_jobChannelMap;
     QMap<KJob *, Meta::PodcastEpisodePtr> m_jobEpisodeMap;
 };

@@ -112,9 +112,6 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void createTables() const;
         void loadPodcasts();
         void updateDatabase( int fromVersion, int toVersion );
-        QString imagePath( Meta::SqlPodcastChannelPtr channel );
-        bool hasCachedImage( Meta::SqlPodcastChannelPtr channel );
-        QPixmap loadImage( Meta::SqlPodcastChannelPtr channel );
         void fetchImage( Meta::SqlPodcastChannelPtr channel );
 
         Meta::SqlPodcastChannelList m_channels;

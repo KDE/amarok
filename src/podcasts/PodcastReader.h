@@ -40,6 +40,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
     Q_OBJECT
     public:
         PodcastReader( PodcastProvider * podcastProvider );
+        ~PodcastReader();
 
         bool read( QIODevice *device );
         bool read( const KUrl &url );
@@ -47,7 +48,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
         bool update( Meta::PodcastChannelPtr channel );
         KUrl & url() { return m_url; }
 
-        ~PodcastReader();
+        Meta::PodcastChannelPtr channel() { return m_channel; }
 
     signals:
         void finished( PodcastReader *podcastReader );
