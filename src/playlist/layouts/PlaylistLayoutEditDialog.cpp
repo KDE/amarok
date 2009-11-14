@@ -440,7 +440,10 @@ void PlaylistLayoutEditDialog::reject()     //SLOT
     DEBUG_BLOCK
 
     debug() << "Applying initial layout: " << m_firstActiveLayout;
-    LayoutManager::instance()->setActiveLayout( m_firstActiveLayout );
+    if( layoutListWidget->findItems( m_firstActiveLayout, Qt::MatchExactly ).isEmpty() )
+        LayoutManager::instance()->setActiveLayout( "Default" );
+    else
+        LayoutManager::instance()->setActiveLayout( m_firstActiveLayout );
 
     QDialog::reject();
 }
