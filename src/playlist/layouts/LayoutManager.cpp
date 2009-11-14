@@ -55,6 +55,8 @@ LayoutManager::LayoutManager()
 
     KConfigGroup config = Amarok::config("Playlist Layout");
     m_activeLayout = config.readEntry( "CurrentLayout", "Default" );
+    if( !layouts().contains( m_activeLayout ) )
+        m_activeLayout = "Default";
     Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
 }
 
