@@ -376,7 +376,8 @@ public:
 
     QPixmap image( int size )
     {
-        return Meta::Album::image( size );
+        QPixmap image = episode->channel()->image();
+        return image.scaledToHeight( size );
     }
 
     bool operator==( const Meta::Album &other ) const
