@@ -70,7 +70,6 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     m_randomAlbumNavigatorAction->setCheckable( true );
 
     navigatorMenu->addActions( navigatorActions->actions() );
-    connect( navigatorMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( setActiveNavigator( QAction* ) ) );
         
     QMenu * favorMenu = navigatorMenu->addMenu( i18n( "Favor" ) );
     QActionGroup * favorActions = new QActionGroup( favorMenu );
@@ -88,7 +87,37 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     action->setCheckable( true );
 
     favorMenu->addActions( favorActions->actions() );
-    
+
+    //make sure the correct entry is selected from start:
+    switch( AmarokConfig::trackProgression() )
+    {
+        case AmarokConfig::EnumTrackProgression::RepeatTrack:
+            m_repeatTrackNavigatorAction->setChecked( true );
+            break;
+
+        case AmarokConfig::EnumTrackProgression::RepeatAlbum:
+            m_repeatAlbumNavigatorAction->setChecked( true );
+            break;
+
+        case AmarokConfig::EnumTrackProgression::RepeatPlaylist:
+            m_repeatPlaylistNavigatorAction->setChecked( true );
+            break;
+
+        case AmarokConfig::EnumTrackProgression::RandomTrack:
+            m_randomTrackNavigatorAction->setChecked( true );
+            break;
+
+        case AmarokConfig::EnumTrackProgression::RandomAlbum:
+            m_randomAlbumNavigatorAction->setChecked( true );
+            break;
+
+        case AmarokConfig::EnumTrackProgression::Normal:
+        default:
+            m_standardNavigatorAction->setChecked( true );
+            break;
+    }
+
+     connect( navigatorMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( setActiveNavigator( QAction* ) ) );
 }
 
 NavigatorConfigAction::~NavigatorConfigAction()
