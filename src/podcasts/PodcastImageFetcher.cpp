@@ -20,6 +20,7 @@
 
 #include <KIO/Job>
 #include <KMD5>
+#include <Solid/Networking>
 
 PodcastImageFetcher::PodcastImageFetcher()
 {
@@ -80,6 +81,13 @@ PodcastImageFetcher::run()
     if( m_channels.isEmpty() && m_episodes.isEmpty() )
     {
         //nothing to do
+        emit( done( this ) );
+        return;
+    }
+
+    if( Solid::Networking::status() != Solid::Networking::Connected )
+    {
+        debug() << "Solid reports we are not online, canceling podcast image download";
         emit( done( this ) );
         return;
     }
