@@ -156,27 +156,20 @@ void
 PodcastCategory::showInfo( const QModelIndex & index )
 {
     QString title = index.data( Qt::DisplayRole ).toString();
-    QString description = 
+    QString description = QString(
 		"<html>"
 		"    <head>"
-		"        <title>";
-	description += Qt::escape(title);
-	description += "</title>"
+		"        <title>%1</title>"
 		"        <style type=\"text/css\">h1 {text-align:center; font-size: 1em;}</style>"
 		"    </head>"
 		"    <body>"
-		"        <h1>";
-	description += Qt::escape(title);
-	description += "</h1>";
-	description += index.data( ShortDescriptionRole ).toString();
-	description +=
+		"        <h1>%1</h1>"
+		"        %2"
 		"    </body>"
-		"</html>";
+		"</html>")
+		.arg(Qt::escape(title))
+		.arg(index.data( ShortDescriptionRole ).toString());
 	
-	qDebug("\n");
-	qDebug() << description;
-	qDebug("\n");
-
     QVariantMap map;
     map["service_name"] = title;
     map["main_info"] = description;

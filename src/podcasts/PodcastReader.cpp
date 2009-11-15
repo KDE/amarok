@@ -34,6 +34,7 @@ PodcastReader::PodcastReader( PodcastProvider * podcastProvider )
         , m_feedType( UnknownFeedType )
         , m_podcastProvider( podcastProvider )
         , m_transferJob( 0 )
+		, m_channel( 0 )
 {}
 
 PodcastReader::~PodcastReader()
@@ -113,6 +114,9 @@ PodcastReader::downloadResult( KJob * job )
 {
     DEBUG_BLOCK
 
+    // parse data
+    read();
+
     KIO::TransferJob *transferJob = dynamic_cast<KIO::TransferJob *>( job );
     if ( transferJob && transferJob->isErrorPage() )
     {
@@ -142,9 +146,6 @@ PodcastReader::downloadResult( KJob * job )
 
         The::statusBar()->longMessage( errorMessage, StatusBar::Sorry );
     }
-
-    // parse data
-    read();
 }
 
 QString
@@ -192,35 +193,16 @@ PodcastReader::readInnerXml()
 }
 
 QXmlStreamReader::TokenType
-PodcastReader::nextRawToken()
-{
-	TokenType token = NoToken;
-	
-	for (int repeat = 0; repeat < 3; ++ repeat) {
-		token = readNext();
-
-		if ( error() != PrematureEndOfDocumentError )
-			break;
-
-		debug() << "recovering from PrematureEndOfDocumentError for "
-                << qxml::name().toString() << " at "
-                << qxml::lineNumber();
-	}
-
-	if( error() ) {
-		throw XmlParseError( errorString() );
-	}
-
-	return token;
-}
-
-QXmlStreamReader::TokenType
 PodcastReader::nextToken()
 {
 	TokenType token = NoToken;
 
 	do {
-		token = nextRawToken();
+		token = readNext();
+
+		if( error() ) {
+			throw XmlParseError( errorString() );
+		}
 
 		switch ( token ) {
 		case Invalid:
@@ -235,11 +217,11 @@ PodcastReader::nextToken()
 				return token;
 			break;
 		
-		case NoToken:
 		case Comment:
-		case DTD:
 		case EntityReference:
 		case ProcessingInstruction:
+		case DTD:
+		case NoToken:
 			// ignore
 			break;
 		}
@@ -389,13 +371,18 @@ PodcastReader::readChannel() {
 	expectStart("channel");
 
 	DescriptionType hasDescription = NoDescription;
-	m_channel = new Meta::PodcastChannel();
-   	m_channel->setUrl( m_url );
-    m_channel->setSubscribeDate( QDate::currentDate() );
-    /* add this new channel to the provider, we get a pointer to a
-     * PodcastChannelPtr of the correct type which we will use from now on.
-     */
-    m_channel = m_podcastProvider->addChannel( m_channel );
+
+	if (!m_channel) {
+		debug() << "new channel";
+
+		m_channel = new Meta::PodcastChannel();
+   		m_channel->setUrl( m_url );
+	    m_channel->setSubscribeDate( QDate::currentDate() );
+    	/* add this new channel to the provider, we get a pointer to a
+	     * PodcastChannelPtr of the correct type which we will use from now on.
+    	 */
+	    m_channel = m_podcastProvider->addChannel( m_channel );
+	}
 	
 	for (TokenType token = nextToken(); token != EndElement; token = nextToken()) {
 		// required elements: title, link, description
@@ -435,7 +422,11 @@ PodcastReader::readChannel() {
 		else if ( qxml::name() == "item" ) {
 			Meta::PodcastEpisodePtr item = readItem();
 
-			if ( !m_podcastProvider->possiblyContainsTrack( item->uidUrl() ) ) {
+			if ( !m_podcastProvider->possiblyContainsTrack( item->uidUrl() ) &&
+					// some feeds contain normal blogposts without enclosures alongside of podcasts:
+					!item->uidUrl().isEmpty() ) {
+				debug() << "new episode";
+
 				Meta::PodcastEpisodePtr episode = m_channel->addEpisode( item );
 				// also let the provider know an episode has been added
 				// TODO: change into a signal

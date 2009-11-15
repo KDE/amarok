@@ -84,11 +84,9 @@ class PodcastReader : public QObject, public QXmlStreamReader
 				: ParseError(message) {}
 		};
 
-		/** This method wraps readNext() and tries to fix the PrematureEndOfDocumentError. */
-		TokenType nextRawToken();
-
-		/** Like nextRawToken() but skips Comments, DTDs, EntityReferences,
-		 * ProcessingInstructions and ignorable whitespaces. */
+		/** This method wraps readNext() and tries to fix the PrematureEndOfDocumentError.
+		 * It also skips Comments, DTDs, EntityReferences, ProcessingInstructions and
+		 * ignorable whitespace. */
 		TokenType nextToken();
 
 		static void expect(TokenType expected, TokenType got);
