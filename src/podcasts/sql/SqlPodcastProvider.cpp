@@ -114,9 +114,7 @@ SqlPodcastProvider::~SqlPodcastProvider()
     {
         channel->updateInDb();
         foreach(Meta::SqlPodcastEpisodePtr episode, channel->sqlEpisodes())
-        {
             episode->updateInDb();
-        }
     }
     m_channels.clear();
 }
@@ -373,10 +371,7 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
                                                KIO::HideProgressInfo );
                 //wait until job is finished.
                 if( KIO::NetAccess::synchronousRun( moveJob, The::mainWindow() ) )
-                {
                     episode->setLocalUrl( newLocation );
-                    episode->updateInDb();
-                }
             }
         }
 
@@ -608,7 +603,6 @@ SqlPodcastProvider::deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode 
     KIO::del( episode->localUrl(), KIO::HideProgressInfo );
 
     episode->setLocalUrl( KUrl() );
-    episode->updateInDb();
     emit( updated() );
 }
 
@@ -774,11 +768,21 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
 
     Meta::SqlPodcastChannelPtr channel =
             Meta::SqlPodcastChannelPtr::dynamicCast( podcastReader->channel() );
-    if( !channel.isNull() && channel->image().isNull() )
-        fetchImage( channel );
 
-    if( m_podcastImageFetcher )
-        m_podcastImageFetcher->run();
+    if( channel.isNull() )
+    {
+        error() << "Could not cast to SqlPodcastChannel " << __FILE__ << ":" << __LINE__;
+        return;
+    }
+
+    if( channel->image().isNull() )
+    {
+        fetchImage( channel );
+        if( m_podcastImageFetcher )
+            m_podcastImageFetcher->run();
+    }
+
+    channel->updateInDb();
 
     podcastReader->deleteLater();
 

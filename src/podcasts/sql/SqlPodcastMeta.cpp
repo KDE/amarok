@@ -155,6 +155,7 @@ void
 Meta::SqlPodcastEpisode::setLocalUrl( const KUrl &url )
 {
     m_localUrl = url;
+    updateInDb();
 
     if( m_localUrl.isEmpty() && !m_localFile.isNull() )
     {
