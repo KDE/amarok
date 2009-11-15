@@ -46,7 +46,7 @@ class AmpacheServiceFactory: public ServiceFactory
 /**
 A service for displaying, previewing and downloading music from Ampache music servers
 
-	@author 
+	@author
 */
 class AmpacheService : public ServiceBase
 {
@@ -67,7 +67,7 @@ public:
 private slots:
     void authenticate(KJob *job);
     void authenticationComplete(  KJob *job );
-    void versionVerify( KJob *job); 
+    void versionVerify( KJob *job);
 
 private:
     KIO::StoredTransferJob *m_xmlDownloadJob;
@@ -79,6 +79,8 @@ private:
     QString m_password;
     QString m_sessionId;
     int m_version;
+
+    InfoParserBase *m_infoParser;
 
     AmpacheServiceCollection *  m_collection;
 

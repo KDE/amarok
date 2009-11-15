@@ -1,4 +1,4 @@
-        include_directories( 
+        include_directories(
             ../
             ../../
             ../../plugin
@@ -9,7 +9,10 @@
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}
             ${STRIGI_INCLUDE_DIR}
-            ${QT_INCLUDES} )
+            ${QT_INCLUDES}
+            ${LIBLASTFM_INCLUDE_DIR}/..
+            ${LIBLASTFM_INCLUDE_DIR}
+            )
 
 add_subdirectory( images )
 
@@ -21,6 +24,7 @@ add_subdirectory( images )
             AmpacheServiceQueryMaker.cpp
             AmpacheMeta.cpp
             AmpacheConfig.cpp
+            LastfmInfoParser.cpp
             sha256/sha256.cpp
         )
 
@@ -33,6 +37,7 @@ add_subdirectory( images )
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KIO_LIBS}
             ${KDE4_THREADWEAVER_LIBRARIES}
+            ${LIBLASTFM_LIBRARY}
         )
 
 

@@ -34,6 +34,7 @@
 
 #include <KMessageBox>
 #include <KPluginFactory>
+#include <Amarok.h>
 
 K_PLUGIN_FACTORY( LastFmServiceSettingsFactory, registerPlugin<LastFmServiceSettings>(); )
 K_EXPORT_PLUGIN( LastFmServiceSettingsFactory( "kcm_amarok_lastfm" ) )
@@ -76,7 +77,7 @@ LastFmServiceSettings::~LastFmServiceSettings()
 }
 
 
-void 
+void
 LastFmServiceSettings::save()
 {
     m_config.setUsername( m_configDialog->kcfg_ScrobblerUsername->text() );
@@ -96,21 +97,21 @@ LastFmServiceSettings::testLogin()
     m_configDialog->testLogin->setEnabled( false );
     m_configDialog->testLogin->setText( i18n( "Testing..." ) );
     // set the global static Lastfm::Ws stuff
-    lastfm::ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
+    lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
     lastfm::ws::Username = qstrdup( m_configDialog->kcfg_ScrobblerUsername->text().toLatin1().data() );
-    
+
     // set up proxy
     // NOTE yes we instantiate two KNAMs here, one in this kcm module and one in the servce itself.
     // but there is no way to share the class easily across the lib boundary as they are not guaranteed to
     // always exist at the same time... so 1 class seems to be a relatively minor penalty for a working Test button
     QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
     lastfm::setNetworkAccessManager( qnam );
-    
+
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
     QString authToken =  md5( ( m_configDialog->kcfg_ScrobblerUsername->text() + md5( m_configDialog->kcfg_ScrobblerPassword->text().toUtf8() ) ).toUtf8() );
-    
+
     // now authenticate w/ last.fm and get our session key
     QMap<QString, QString> query;
     query[ "method" ] = "auth.getMobileSession";
@@ -151,7 +152,7 @@ LastFmServiceSettings::onAuthenticated()
             m_configDialog->testLogin->setText( i18n( "Test Login" ) );
             m_configDialog->testLogin->setEnabled( true );
             break;
-            
+
         default:
             debug() << "Unhandled QNetworkReply state, probably not important";
             return;
@@ -159,7 +160,7 @@ LastFmServiceSettings::onAuthenticated()
     m_authQuery->deleteLater();
 }
 
-void 
+void
 LastFmServiceSettings::load()
 {
     m_config.load();

@@ -15,34 +15,32 @@
 ****************************************************************************************/
 
 
-#ifndef LASTFMREADLABELCAPABILITY_H
-#define LASTFMREADLABELCAPABILITY_H
+#ifndef LASTFMINFOPARSER_H
+#define LASTFMINFOPARSER_H
 
-#include "meta/Capability.h"
-#include "meta/capabilities/ReadLabelCapability.h"
+#include "amarok_export.h"
+#include "../InfoParserBase.h"
+
 class QNetworkReply;
 
-namespace Meta
-{
-    class Track;
-
-class LastfmReadLabelCapability : public ReadLabelCapability
+class AMAROK_EXPORT LastfmInfoParser : public InfoParserBase
 {
     Q_OBJECT
     public:
-        LastfmReadLabelCapability( Meta::Track *track );
-        virtual void fetchLabels();
-        virtual void fetchGlobalLabels();
-        virtual QStringList labels();
-
-    private:
-        QStringList m_labels;
-        Meta::TrackPtr m_track;
-        QNetworkReply *m_job;
+        LastfmInfoParser() : InfoParserBase() {}
+        ~LastfmInfoParser() {}
+        virtual void getInfo(Meta::TrackPtr track);
+        virtual void getInfo(Meta::AlbumPtr album);
+        virtual void getInfo(Meta::ArtistPtr artist);
 
     private slots:
-        void onTagsFetched();
-};
-}
+        void onGetTrackInfo();
+        void onGetAlbumInfo();
+        void onGetArtistInfo();
 
-#endif // LASTFMREADLABELCAPABILITY_H
+    private:
+        QMap< QString, QNetworkReply* > m_jobs;
+
+};
+
+#endif // LASTFMINFOPARSER_H

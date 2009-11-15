@@ -228,7 +228,7 @@ LastFmService::init()
     const QString password = config.password();
     const QString sessionKey = config.sessionKey();
     // set the global static Lastfm::Ws stuff
-    lastfm::ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
+    lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
     // testing w/ official keys
     //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
@@ -240,7 +240,7 @@ LastFmService::init()
     // set up proxy
     QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
     lastfm::setNetworkAccessManager( qnam );
-    
+
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
     QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
@@ -284,7 +284,7 @@ LastFmService::init()
     // disabled until I figure out how to get what I want from last.fm
     //Dynamic::WeeklyTopBiasFactory* weeklyF = new Dynamic::WeeklyTopBiasFactory();
     //Dynamic::CustomBias::registerNewBiasFactory( weeklyF );
-    
+
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
 

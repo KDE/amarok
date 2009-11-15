@@ -36,7 +36,7 @@ public:
     InfoParserBase();
 
      /**
-     * Fetches info about artist and emits infoReady( Qstring )
+     * Fetches info about artist and emits info( Qstring )
      * with a ready to show html page when the info is ready
      * @param artist The artist to get info about
      */
@@ -44,7 +44,7 @@ public:
 
     /**
      * Overloaded function
-     * Fetches info about album and emits infoReady( Qstring )
+     * Fetches info about album and emits info( Qstring )
      * with a ready to show html page when the info is ready
      * @param url The album to get info about
      */
@@ -52,7 +52,7 @@ public:
 
     /**
      * Overloaded function
-     * Fetches info about track and emits infoReady( Qstring )
+     * Fetches info about track and emits info( Qstring )
      * with a ready to show html page when the info is ready
      * @param url The track to get info about
      */
