@@ -22,6 +22,8 @@
 #include "context/DataEngine.h"
 #include "context/Svg.h"
 
+#include <ui_lyricsSettings.h>
+
 class TextScrollingWidget;
 class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
@@ -62,6 +64,9 @@ private slots:
     void saveLyrics();
     void changeLyricsFont();
 
+protected:
+    void createConfigurationInterface(KConfigDialog *parent);
+
 private:
     void setEditing( const bool isEditing );
     void collapseToMin();
@@ -71,7 +76,6 @@ private:
 
     Plasma::IconWidget*  m_saveIcon;
     Plasma::IconWidget*  m_editIcon;
-    Plasma::IconWidget*  m_fontIcon;
     Plasma::IconWidget*  m_reloadIcon;
     Plasma::IconWidget*  m_closeIcon;
 
@@ -79,6 +83,8 @@ private:
     QGraphicsProxyWidget *m_lyricsProxy;
     QTextBrowser* m_lyrics;
     QGraphicsTextItem* m_suggested;
+
+    Ui::lyricsSettings    ui_Settings;
 
     QString m_lyricsTmpContent;
     bool m_hasLyrics;

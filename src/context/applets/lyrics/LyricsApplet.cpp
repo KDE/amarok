@@ -27,10 +27,11 @@
 #include "PaletteHandler.h"
 #include "Theme.h"
 
-#include <KFontDialog>
+#include <KConfigDialog>
 #include <KGlobalSettings>
 #include <KStandardDirs>
 #include <KMessageBox>
+#include <KTabWidget>
 
 #include <Plasma/IconWidget>
 
@@ -49,14 +50,13 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     , m_titleLabel( 0 )
     , m_saveIcon( 0 )
     , m_editIcon( 0 )
-    , m_fontIcon( 0 )
     , m_reloadIcon( 0 )
     , m_closeIcon( 0 )
     , m_lyrics( 0 )
     , m_suggested( 0 )
     , m_hasLyrics( false )
 {
-    setHasConfigurationInterface( false );
+    setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
 
 }
@@ -107,15 +107,6 @@ void LyricsApplet::init()
     m_saveIcon = addAction( saveAction );
 
     connect( m_saveIcon, SIGNAL( activated() ), this, SLOT( saveLyrics() ) );
-
-    QAction* fontAction = new QAction( this );
-    fontAction->setIcon( KIcon( "preferences-desktop-font" ) );
-    fontAction->setVisible( true );
-    fontAction->setEnabled( true );
-    m_fontIcon = addAction( fontAction );
-    m_fontIcon->setToolTip( i18n( "Change lyrics font" ) );
-
-    connect( m_fontIcon, SIGNAL( activated() ), this, SLOT( changeLyricsFont() ) );
 
     QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
@@ -196,11 +187,7 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_reloadIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
     m_reloadIcon->show();
 
-    QPoint fontIconPos( m_reloadIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
-    m_fontIcon->setPos( fontIconPos );
-    m_fontIcon->show();
-
-    QPoint editIconPos( m_fontIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
+    QPoint editIconPos( m_reloadIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
     m_editIcon->setPos( editIconPos );
     m_closeIcon->setPos( editIconPos );
 
@@ -407,18 +394,28 @@ LyricsApplet::refreshLyrics()
 void
 LyricsApplet::changeLyricsFont()
 {
-    QFont font = m_lyrics->currentFont();
-    int ret = KFontDialog::getFont( font, KFontChooser::NoDisplayFlags, static_cast<QWidget*>( parent() ) );
+    QFont font = ui_Settings.fontChooser->font();
 
-    if( ret == QDialog::Accepted ) {
-        m_lyrics->setFont( font );
+    m_lyrics->setFont( font );
 
-        KConfigGroup config = Amarok::config("Lyrics Applet");
-        config.writeEntry( "Font", font.family() );
-        config.writeEntry( "Size", font.pointSize() );
+    KConfigGroup config = Amarok::config("Lyrics Applet");
+    config.writeEntry( "Font", font.family() );
+    config.writeEntry( "Size", font.pointSize() );
 
-        debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
-    }
+    debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
+}
+
+void
+LyricsApplet::createConfigurationInterface( KConfigDialog *parent )
+{
+    KConfigGroup configuration = config();
+    QWidget *settings = new QWidget;
+    ui_Settings.setupUi( settings );
+    ui_Settings.fontChooser->setFont( m_lyrics->currentFont() );
+
+    parent->addPage( settings, i18n( "Lyrics Settings" ), "preferences-system");
+
+    connect( parent, SIGNAL( accepted() ), this, SLOT( changeLyricsFont() ) );
 }
 
 void
