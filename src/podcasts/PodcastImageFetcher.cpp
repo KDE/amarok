@@ -83,7 +83,8 @@ void
 PodcastImageFetcher::run()
 {
     DEBUG_BLOCK
-    if( m_channels.isEmpty() && m_episodes.isEmpty() )
+    if( m_channels.isEmpty() && m_episodes.isEmpty()
+        && m_jobChannelMap.isEmpty() && m_jobEpisodeMap.isEmpty() )
     {
         //nothing to do
         emit( done( this ) );
