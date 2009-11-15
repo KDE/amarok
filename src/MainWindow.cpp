@@ -887,9 +887,6 @@ MainWindow::createActions()
     new Amarok::StopAction( ac, this );
     new Amarok::StopPlayingAfterCurrentTrackAction( ac, this );
     new Amarok::PlayPauseAction( ac, this );
-    new Amarok::RepeatAction( ac, this );
-    new Amarok::RandomAction( ac, this );
-    new Amarok::FavorAction( ac, this );
     new Amarok::ReplayGainModeAction( ac, this );
     new Amarok::EqualizerAction( ac, this);
 
@@ -964,15 +961,6 @@ MainWindow::createMenus()
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_remove_dead_and_duplicates") );
     playlistMenu->addSeparator();
 
-    QAction *repeat = Amarok::actionCollection()->action("repeat");
-    playlistMenu->addAction( repeat );
-
-    KSelectAction *random = static_cast<KSelectAction*>( Amarok::actionCollection()->action("random_mode") );
-    playlistMenu->addAction( random );
-    random->menu()->addSeparator();
-    random->menu()->addAction( Amarok::actionCollection()->action("favor_tracks") );
-
-    playlistMenu->addSeparator();
     //END Playlist menu
 
     //BEGIN Tools menu

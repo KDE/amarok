@@ -43,21 +43,21 @@ extern OcsData ocsData;
 
 namespace Amarok
 {
-    bool repeatNone()     { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Off; }
-    bool repeatTrack()    { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Track; }
-    bool repeatAlbum()    { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Album; }
-    bool repeatPlaylist() { return AmarokConfig::repeat() == AmarokConfig::EnumRepeat::Playlist; }
-    bool randomOff()      { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Off; }
-    bool randomTracks()   { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Tracks; }
-    bool randomAlbums()   { return AmarokConfig::randomMode() == AmarokConfig::EnumRandomMode::Albums; }
     bool favorNone()      { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::Off; }
     bool favorScores()    { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::HigherScores; }
     bool favorRatings()   { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::HigherRatings; }
     bool favorLastPlay()  { return AmarokConfig::favorTracks() == AmarokConfig::EnumFavorTracks::LessRecentlyPlayed; }
 
-    bool entireAlbums()   { return repeatAlbum()  || randomAlbums(); }
-    bool repeatEnabled()  { return repeatTrack()  || repeatAlbum() || repeatPlaylist(); }
-    bool randomEnabled()  { return randomTracks() || randomAlbums(); }
+
+    bool entireAlbums()   { return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatAlbum ||
+                                   AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum; }
+                                   
+    bool repeatEnabled()  { return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatTrack ||
+                                   AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatAlbum  ||
+                                   AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist; }
+                                   
+    bool randomEnabled()  { return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
+                                   AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum; }
 }
 
 using namespace Amarok;
@@ -306,28 +306,6 @@ QString SelectAction::currentText() const {
     return KSelectAction::currentText() + "<br /><br />" + i18n("Click to change");
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// RandomAction
-//////////////////////////////////////////////////////////////////////////////////////////
-RandomAction::RandomAction( KActionCollection *ac, QObject *parent ) :
-    SelectAction( i18n( "Ra&ndom" ), &AmarokConfig::setRandomMode, ac, "random_mode", parent )
-{
-    QStringList items;
-    items << i18nc( "State, as in disabled", "&Off" )
-          << i18nc( "Items, as in music"   , "&Tracks" )
-          << i18n( "&Albums" );
-    setItems( items );
-
-    setCurrentItem( AmarokConfig::randomMode() );
-
-    QStringList icons;
-    icons << "media-playlist-shuffle-off-amarok"
-          << "media-playlist-shuffle-amarok"
-          << "media-album-shuffle-amarok";
-    setIcons( icons );
-
-    connect( this, SIGNAL( triggered( int ) ), The::playlistActions(), SLOT( playlistModeChanged() ) );
-}
 
 void
 RandomAction::setCurrentItem( int n )
@@ -336,37 +314,6 @@ RandomAction::setCurrentItem( int n )
     //if( KAction *a = parentCollection()->action( "favor_tracks" ) )
     //    a->setEnabled( n );
     SelectAction::setCurrentItem( n );
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// FavorAction
-//////////////////////////////////////////////////////////////////////////////////////////
-FavorAction::FavorAction( KActionCollection *ac, QObject *parent ) :
-    SelectAction( i18n( "&Favor" ), &AmarokConfig::setFavorTracks, ac, "favor_tracks", parent )
-{
-    setItems( QStringList() << i18nc( "State, as in disabled", "Off" )
-                            << i18n( "Higher &Scores" )
-                            << i18n( "Higher &Ratings" )
-                            << i18n( "Not Recently &Played" ) );
-
-    setCurrentItem( AmarokConfig::favorTracks() );
-    setEnabled( true );
-    connect( this, SIGNAL( triggered( int ) ), The::playlistActions(), SLOT( playlistModeChanged() ) );
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// RepeatAction
-//////////////////////////////////////////////////////////////////////////////////////////
-RepeatAction::RepeatAction( KActionCollection *ac, QObject *parent ) :
-    SelectAction( i18n( "&Repeat" ), &AmarokConfig::setRepeat, ac, "repeat", parent )
-{
-    setItems( QStringList() << i18nc( "State, as in, disabled", "&Off" ) << i18nc( "Item, as in, music", "&Track" )
-                            << i18n( "&Album" ) << i18n( "&Playlist" ) );
-    setIcons( QStringList() << "media-playlist-repeat-off-amarok" << "media-track-repeat-amarok" << "media-album-repeat-amarok" << "media-playlist-repeat-amarok" );
-    setCurrentItem( AmarokConfig::repeat() );
-
-    connect( this, SIGNAL( triggered( int ) ), The::playlistActions(), SLOT( playlistModeChanged() ) );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

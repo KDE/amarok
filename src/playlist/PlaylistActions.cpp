@@ -26,6 +26,7 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
+#include "dbus/PlayerDBusHandler.h"
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "EngineController.h"
@@ -251,10 +252,6 @@ Playlist::Actions::playlistModeChanged()
     }
 
     debug() << "Dynamic mode:   " << AmarokConfig::dynamicMode();
-    debug() << "Repeat enabled: " << Amarok::repeatEnabled();
-    debug() << "Random enabled: " << Amarok::randomEnabled();
-    debug() << "Track mode:     " << ( Amarok::repeatTrack() || Amarok::randomTracks() );
-    debug() << "Album mode:     " << ( Amarok::repeatAlbum() || Amarok::randomAlbums() );
 
     if ( AmarokConfig::dynamicMode() )
     {
@@ -301,6 +298,7 @@ Playlist::Actions::playlistModeChanged()
     }
 
     m_navigator->queueIds( currentQueue );
+    The::playerDBusHandler()->updateStatus();
 }
 
 void

@@ -19,25 +19,6 @@
         <whatsthis>Set this to display remaining track time instead of past track time in the player window.</whatsthis>
         <default>false</default>
     </entry>
-    <entry key="Repeat" type="Enum">
-        <label>Which track(s) to play repeatedly</label>
-        <whatsthis>Whether to repeat the current track, the current album, or the current playlist indefinitely, or neither.</whatsthis>
-        <choices>
-            <choice name="Off">
-                <label>Do not Repeat</label>
-            </choice>
-            <choice name="Track">
-                <label>Repeat Track</label>
-            </choice>
-            <choice name="Album">
-                <label>Repeat Album</label>
-            </choice>
-            <choice name="Playlist">
-                <label>Repeat Playlist</label>
-            </choice>
-        </choices>
-        <default>Off</default>
-    </entry>
     <entry key="Favor Tracks" type="Enum">
         <label>Which tracks or albums to favor in Random Mode</label>
         <whatsthis>Tracks or albums with the chosen property will be more likely to be chosen in Random Mode.</whatsthis>
@@ -46,16 +27,6 @@
             <choice name="HigherScores"></choice>
             <choice name="HigherRatings"></choice>
             <choice name="LessRecentlyPlayed"></choice>
-        </choices>
-        <default>Off</default>
-    </entry>
-    <entry key="Random Mode" type="Enum">
-        <label>Whether to play tracks or albums in random order</label>
-        <whatsthis>If set, Amarok plays the tracks or albums in the playlist in a random order.</whatsthis>
-        <choices>
-            <choice name="Off"></choice>
-            <choice name="Tracks"></choice>
-            <choice name="Albums"></choice>
         </choices>
         <default>Off</default>
     </entry>

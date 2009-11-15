@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "collection/CollectionManager.h"
+#include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "dbus/PlayerDBusHandler.h"
@@ -77,16 +78,32 @@ namespace Amarok
         return The::playerDBusHandler()->GetTrackMetadata( The::playlist()->trackAt( position ) );
     }
 
-    void TracklistDBusHandler::SetLoop(bool enable)
+    void TracklistDBusHandler::SetLoop( bool enable )
     {
-        static_cast<SelectAction*>( Amarok::actionCollection()->action( "repeat" ) )
-        ->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
+        if( enable )
+        {
+            AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatPlaylist );
+            The::playlistActions()->playlistModeChanged();
+        }
+        else if( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist )
+        {
+             AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::Normal );
+            The::playlistActions()->playlistModeChanged();
+        }  
     }
 
     void TracklistDBusHandler::SetRandom( bool enable )
     {
-        static_cast<SelectAction*>( Amarok::actionCollection()->action( "random_mode" ) )
-        ->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
+        if( enable )
+        {
+            AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RandomTrack );
+            The::playlistActions()->playlistModeChanged();
+        }
+        else if( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack )
+        {
+             AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::Normal );
+            The::playlistActions()->playlistModeChanged();
+        }  
     }
 
     void TracklistDBusHandler::slotTrackListChange()

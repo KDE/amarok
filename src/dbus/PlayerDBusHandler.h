@@ -100,13 +100,12 @@ namespace Amarok
             void Forward( int time );
             void Backward( int time );
 
+                        void updateStatus();
+
         signals:
             void CapsChange( int );
             void TrackChange( QVariantMap );
             void StatusChange( DBusStatus );
-
-        private slots:
-            void updateStatus();
 
         public:
             QVariantMap GetTrackMetadata( Meta::TrackPtr track );

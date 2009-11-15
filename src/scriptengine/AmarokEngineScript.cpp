@@ -165,7 +165,8 @@ namespace AmarokScript
 
     bool AmarokEngineScript::randomMode() const
     {
-        return AmarokConfig::randomMode();
+        return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
+               AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum;
     }
 
     bool AmarokEngineScript::dynamicMode() const
@@ -175,17 +176,26 @@ namespace AmarokScript
 
     bool AmarokEngineScript::repeatPlaylist() const
     {
-        return Amarok::repeatPlaylist();
+        return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist;
     }
 
     bool AmarokEngineScript::repeatTrack() const
     {
-        return Amarok::repeatTrack();
+        return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatTrack;
     }
 
     void AmarokEngineScript::setRandomMode( bool enable )
     {
-        static_cast<KSelectAction*>(Amarok::actionCollection()->action( "random_mode" ) )->setCurrentItem( enable ? AmarokConfig::EnumRandomMode::Tracks : AmarokConfig::EnumRandomMode::Off );
+        if( enable )
+        {
+            AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RandomTrack );
+            The::playlistActions()->playlistModeChanged();
+        }
+        else if( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack )
+        {
+             AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::Normal );
+            The::playlistActions()->playlistModeChanged();
+        }  
     }
 
     void AmarokEngineScript::setDynamicMode( bool enable )
@@ -195,12 +205,30 @@ namespace AmarokScript
 
     void AmarokEngineScript::setRepeatPlaylist( bool enable )
     {
-        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Playlist : AmarokConfig::EnumRepeat::Off );
+        if( enable )
+        {
+            AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatPlaylist );
+            The::playlistActions()->playlistModeChanged();
+        }
+        else if( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist )
+        {
+             AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::Normal );
+            The::playlistActions()->playlistModeChanged();
+        }  
     }
 
     void AmarokEngineScript::setRepeatTrack( bool enable )
     {
-        static_cast<KSelectAction*>( Amarok::actionCollection()->action( "repeat" ) )->setCurrentItem( enable ? AmarokConfig::EnumRepeat::Track : AmarokConfig::EnumRepeat::Off );
+       if( enable )
+        {
+            AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatTrack );
+            The::playlistActions()->playlistModeChanged();
+        }
+        else if( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatTrack )
+        {
+             AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::Normal );
+            The::playlistActions()->playlistModeChanged();
+        }  
     }
 
     int AmarokEngineScript::volume() const
