@@ -275,12 +275,16 @@ PodcastReader::read()
                 }
                 else if( QXmlStreamReader::name() == "guid" )
                 {
-                    static_cast<PodcastEpisode *>(m_current)->setGuid( m_guidString );
+                    PodcastEpisode * episode = dynamic_cast<PodcastEpisode *>(m_current);
+                    if( episode )
+                        episode->setGuid( m_guidString );
                     m_guidString.clear();
                 }
                 else if( QXmlStreamReader::name() == "enclosure" )
                 {
-                    static_cast<PodcastEpisode *>(m_current)->setUidUrl( KUrl( m_urlString ) );
+                    PodcastEpisode * episode = dynamic_cast<PodcastEpisode *>(m_current);
+                    if( episode )
+                        episode->setUidUrl( KUrl( m_urlString ) );
                     m_urlString.clear();
                 }
                 else if( QXmlStreamReader::name() == "link" )
