@@ -115,17 +115,18 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( const QString& name )
     Dynamic::DynamicPlaylistPtr p = m_playlistHash[ name ];
     if( p == Dynamic::DynamicPlaylistPtr() )
         debug() << "Failed to retrieve biased playlist: " << name;
+
     m_activePlaylist = m_playlistList.indexOf( p );
     m_playlistList[ m_activePlaylist ]->setActive( true );
-    
-    for(int i = 0; i < m_playlistList.size(); i++)
+
+    for( int i = 0; i < m_playlistList.size(); i++ )
     {
-        if(i != m_activePlaylist)
+        if( i != m_activePlaylist )
         {
             m_playlistList[ i ]->setActive( false) ;
         }
     }
-    
+
     emit activeChanged();
 
     return p;
@@ -312,7 +313,6 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
     }
 
     for( int i = 0; i < m_savedPlaylistsRoot.childNodes().size(); ++ i )
-
     {
         if( !m_savedPlaylistsRoot.childNodes().at(i).isElement() )
             continue;
@@ -336,14 +336,14 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
     }
 
     QDomElement lastOpen = m_savedPlaylistsRoot.lastChildElement( "current" );
-    if( ! lastOpen.isNull() && m_playlistHash.contains( lastOpen.attribute( "title" ) ) )
+    if( !lastOpen.isNull() && m_playlistHash.contains( lastOpen.attribute( "title" ) ) )
     {
         setActivePlaylist( lastOpen.attribute( "title" ) );
-    } else
+    }
+    else
     {
         debug() << "got null last saved node";
     }
-        
 }
 
 
