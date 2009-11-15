@@ -20,6 +20,7 @@
 
 #include "TrackNavigator.h"
 #include "Amarok.h"
+#include "amarokconfig.h"
 #include "playlist/PlaylistModelStack.h"
 
 #include <QQueue>
@@ -27,7 +28,7 @@
 Playlist::TrackNavigator::TrackNavigator()
 {
     m_model = Playlist::ModelStack::instance()->top();
-    m_repeatPlaylist = Amarok::repeatPlaylist();
+    m_repeatPlaylist = ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist );
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
              this, SLOT( dequeueIds( const QList<quint64>& ) ) );
 }

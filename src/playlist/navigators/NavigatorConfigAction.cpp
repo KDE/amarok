@@ -16,6 +16,10 @@
 
 #include "NavigatorConfigAction.h"
 
+#include "amarokconfig.h"
+#include "Debug.h"
+#include "playlist/PlaylistActions.h"
+
 #include <KMenu>
 #include <KLocale>
 #include <KStandardDirs>
@@ -32,41 +36,41 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     QActionGroup * navigatorActions = new QActionGroup( navigatorMenu );
     navigatorActions->setExclusive( true );
 
-    QAction * action;
-    action = navigatorActions->addAction( i18n( "Standard" ) );
-    action->setIcon( KIcon( "media-playlist-repeat-off-amarok" ) );
-    action->setCheckable( true );
+    m_standardNavigatorAction = navigatorActions->addAction( i18n( "Standard" ) );
+    m_standardNavigatorAction->setIcon( KIcon( "media-playlist-repeat-off-amarok" ) );
+    m_standardNavigatorAction->setCheckable( true );
     //action->setIcon( true );
 
+    QAction * action = new QAction( parent );
+    action->setSeparator( true );
+    navigatorActions->addAction( action );
+    
+    m_repeatTrackNavigatorAction = navigatorActions->addAction( i18n( "Repeat Track" ) );
+    m_repeatTrackNavigatorAction->setIcon( KIcon( "media-track-repeat-amarok" ) );
+    m_repeatTrackNavigatorAction->setCheckable( true );
+        
+    m_repeatAlbumNavigatorAction = navigatorActions->addAction( i18n( "Repeat Album" ) );
+    m_repeatAlbumNavigatorAction->setIcon( KIcon( "media-album-repeat-amarok" ) );
+    m_repeatAlbumNavigatorAction->setCheckable( true );
+        
+    m_repeatPlaylistNavigatorAction = navigatorActions->addAction( i18n( "Repeat Playlist" ) );
+    m_repeatPlaylistNavigatorAction->setIcon( KIcon( "media-playlist-repeat-amarok" ) );
+    m_repeatPlaylistNavigatorAction->setCheckable( true );
+        
     action = new QAction( parent );
     action->setSeparator( true );
     navigatorActions->addAction( action );
     
-    action = navigatorActions->addAction( i18n( "Repeat Track" ) );
-    action->setIcon( KIcon( "media-track-repeat-amarok" ) );
-    action->setCheckable( true );
+    m_randomTrackNavigatorAction = navigatorActions->addAction( i18n( "Random Tracks" ) );
+    m_randomTrackNavigatorAction->setIcon( KIcon( "amarok_track" ) );
+    m_randomTrackNavigatorAction->setCheckable( true );
         
-    action = navigatorActions->addAction( i18n( "Repeat Album" ) );
-    action->setIcon( KIcon( "media-album-repeat-amarok" ) );
-    action->setCheckable( true );
-        
-    action = navigatorActions->addAction( i18n( "Repeat Playlist" ) );
-    action->setIcon( KIcon( "media-playlist-repeat-amarok" ) );
-    action->setCheckable( true );
-        
-    action = new QAction( parent );
-    action->setSeparator( true );
-    navigatorActions->addAction( action );
-    
-    action = navigatorActions->addAction( i18n( "Random Tracks" ) );
-    action->setIcon( KIcon( "amarok_track" ) );
-    action->setCheckable( true );
-        
-    action = navigatorActions->addAction( i18n( "Random Albums" ) );
-    action->setIcon( KIcon( "media-album-shuffle-amarok" ) );
-    action->setCheckable( true );
+    m_randomAlbumNavigatorAction = navigatorActions->addAction( i18n( "Random Albums" ) );
+    m_randomAlbumNavigatorAction->setIcon( KIcon( "media-album-shuffle-amarok" ) );
+    m_randomAlbumNavigatorAction->setCheckable( true );
 
     navigatorMenu->addActions( navigatorActions->actions() );
+    connect( navigatorMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( setActiveNavigator( QAction* ) ) );
         
     QMenu * favorMenu = navigatorMenu->addMenu( i18n( "Favor" ) );
     QActionGroup * favorActions = new QActionGroup( favorMenu );
@@ -93,7 +97,21 @@ NavigatorConfigAction::~NavigatorConfigAction()
 
 void NavigatorConfigAction::setActiveNavigator( QAction *navigatorAction )
 {
+    DEBUG_BLOCK
+    if( navigatorAction == m_standardNavigatorAction )
+        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::Normal );
+    else if ( navigatorAction == m_repeatTrackNavigatorAction )
+        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatTrack );
+    else if ( navigatorAction == m_repeatAlbumNavigatorAction )
+        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatAlbum );
+    else if ( navigatorAction == m_repeatPlaylistNavigatorAction )
+        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatPlaylist );  
+    else if ( navigatorAction == m_randomTrackNavigatorAction )
+        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RandomTrack );  
+    else if ( navigatorAction == m_randomAlbumNavigatorAction )
+        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RandomAlbum );
 
+    The::playlistActions()->playlistModeChanged();
 }
 
 #include "NavigatorConfigAction.moc"

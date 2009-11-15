@@ -43,6 +43,15 @@ protected slots:
     * @param layoutAction The action triggered.
     */
     void setActiveNavigator( QAction *navigatorAction );
+
+private:
+
+    QAction * m_standardNavigatorAction;
+    QAction * m_repeatTrackNavigatorAction;
+    QAction * m_repeatAlbumNavigatorAction;
+    QAction * m_repeatPlaylistNavigatorAction;
+    QAction * m_randomTrackNavigatorAction;
+    QAction * m_randomAlbumNavigatorAction;
 };
 
 #endif // NAVIGATORCONFIGACTION_H

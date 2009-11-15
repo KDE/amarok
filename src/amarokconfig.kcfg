@@ -59,6 +59,19 @@
         </choices>
         <default>Off</default>
     </entry>
+     <entry key="Track Progression" type="Enum">
+        <label>How to progress through tracks in the playlist</label>
+        <whatsthis>Determines how amarok will progress through the tracks in the playlist</whatsthis>
+        <choices>
+            <choice name="Normal"></choice>
+            <choice name="RepeatTrack"></choice>
+            <choice name="RepeatAlbum"></choice>
+            <choice name="RepeatPlaylist"></choice>
+            <choice name="RandomTrack"></choice>
+            <choice name="RandomAlbum"></choice>
+        </choices>
+        <default>Normal</default>
+    </entry>
     <entry key="Dynamic Mode" type="Bool">
         <label>The status of dynamic mode.</label>
         <whatsthis>If set, dynamic mode will be on, and tracks will be added according to the dynamic playlist specified.</whatsthis>

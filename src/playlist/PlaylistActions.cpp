@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007-2008 Ian Monroe <ian@monroe.nu>                                   *
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
@@ -272,32 +272,32 @@ Playlist::Actions::playlistModeChanged()
 
     m_navigator = 0;
 
-    if ( Amarok::randomEnabled() ) // random track navigators need to deal with repeat
+
+    switch( AmarokConfig::trackProgression() )
     {
-        if ( Amarok::randomTracks() )
-        {
-            if( Amarok::favorNone() )
-                m_navigator = new RandomTrackNavigator();
-            else
-                m_navigator = new FavoredRandomTrackNavigator();
-        }
-        else if ( Amarok::randomAlbums() )
-            m_navigator = new RandomAlbumNavigator();
-        else
-            m_navigator = new StandardTrackNavigator(); // crap -- something went wrong
-    }
-    else if ( Amarok::repeatEnabled() )
-    {
-        if ( Amarok::repeatTrack() )
+
+        case AmarokConfig::EnumTrackProgression::RepeatTrack:
             m_navigator = new RepeatTrackNavigator();
-        else if ( Amarok::repeatAlbum() )
+            break;
+            
+        case AmarokConfig::EnumTrackProgression::RepeatAlbum:
             m_navigator = new RepeatAlbumNavigator();
-        else
-            m_navigator = new StandardTrackNavigator(); // this navigator handles playlist repeat
-    }
-    else
-    {
-        m_navigator = new StandardTrackNavigator();
+            break;
+
+        case AmarokConfig::EnumTrackProgression::RandomTrack:
+            m_navigator = new RandomTrackNavigator();
+            break;
+            
+        case AmarokConfig::EnumTrackProgression::RandomAlbum:
+            m_navigator = new RandomAlbumNavigator();
+            break;
+
+        //repeat playlist, standard and fallback are all the normal navigator.
+        case AmarokConfig::EnumTrackProgression::RepeatPlaylist:
+        case AmarokConfig::EnumTrackProgression::Normal:
+        default:
+            m_navigator = new StandardTrackNavigator();
+            break;
     }
 
     m_navigator->queueIds( currentQueue );
