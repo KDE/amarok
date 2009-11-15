@@ -6,6 +6,7 @@ include_directories( ../..
                     ../../..
 		    ../../../meta/capabilities)
 
+kde4_add_ui_files( currenttrack_SRCS currentTrackSettings.ui )
 kde4_add_plugin(amarok_context_applet_currenttrack ${currenttrack_SRCS})
 if(APPLE)
    SET_TARGET_PROPERTIES(amarok_context_applet_currenttrack PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")

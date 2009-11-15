@@ -36,6 +36,7 @@
 #include <plasma/widgets/tabbar.h>
 
 #include <KColorScheme>
+#include <KConfigDialog>
 
 #include <QFont>
 #include <QGraphicsLinearLayout>
@@ -93,16 +94,32 @@ CurrentTrack::init()
     m_byText->setBrush( brush );
     m_onText->setBrush( brush );
 
-    QFont bigFont;
-    bigFont.setPointSize( bigFont.pointSize() +  3 );
+    // Read config
+    KConfigGroup config = Amarok::config("Current Track Applet");
+    QFont configFont( config.readEntry( "Font", QString() ),
+                config.readEntry( "Size", -1 ) );
+
+    if( configFont.family().isEmpty() )
+    {
+        QFont bigFont;
+        bigFont.setPointSize( bigFont.pointSize() +  3 );
+
+        m_noTrack->setFont( bigFont );
+        m_title->setFont( bigFont );
+        m_artist->setFont( bigFont );
+        m_album->setFont( bigFont );
+    }
+    else
+    {
+        m_noTrack->setFont( configFont );
+        m_title->setFont( configFont );
+        m_artist->setFont( configFont );
+        m_album->setFont( configFont );
+    }
 
     QFont tinyFont;
     //tinyFont.setPointSize( tinyFont.pointSize() - 2 );
 
-    m_noTrack->setFont( bigFont );
-    m_title->setFont( bigFont );
-    m_artist->setFont( bigFont );
-    m_album->setFont( bigFont );
     m_byText->setFont( tinyFont );
     m_onText->setFont( tinyFont );
 
@@ -654,6 +671,38 @@ CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
         return true;
     }
     return false;
+}
+
+void
+CurrentTrack::changeTitleFont()
+{
+    QFont font = ui_Settings.fontChooser->font();
+
+    m_noTrack->setFont( font );
+    m_title->setFont( font );
+    m_artist->setFont( font );
+    m_album->setFont( font );
+
+    KConfigGroup config = Amarok::config("Current Track Applet");
+    config.writeEntry( "Font", font.family() );
+    config.writeEntry( "Size", font.pointSize() );
+
+    constraintsEvent();
+
+    debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
+}
+
+void
+CurrentTrack::createConfigurationInterface( KConfigDialog *parent )
+{
+    KConfigGroup configuration = config();
+    QWidget *settings = new QWidget;
+    ui_Settings.setupUi( settings );
+    ui_Settings.fontChooser->setFont( m_title->font() );
+
+    parent->addPage( settings, i18n( "Current Track Settings" ), "preferences-system");
+
+    connect( parent, SIGNAL( accepted() ), this, SLOT( changeTitleFont() ) );
 }
 
 void
