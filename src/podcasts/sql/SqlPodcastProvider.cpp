@@ -679,7 +679,8 @@ void
 SqlPodcastProvider::autoUpdate()
 {
     DEBUG_BLOCK
-    if( Solid::Networking::status() != Solid::Networking::Connected )
+    if( Solid::Networking::status() != Solid::Networking::Connected
+        && Solid::Networking::status() != Solid::Networking::Unknown )
     {
         debug() << "Solid reports we are not online, canceling podcast auto-update";
         return;
