@@ -39,7 +39,12 @@ PodcastImageFetcher::addChannel( Meta::PodcastChannelPtr channel )
     if( hasCachedImage( channel ) )
     {
         debug() << "using cached image for " << channel->title();
-        channel->setImage( QPixmap( cachedImagePath( channel ).toLocalFile() ) );
+        QString imagePath = cachedImagePath( channel ).toLocalFile();
+        QPixmap pixmap( imagePath );
+        if( pixmap.isNull() )
+            error() << "could not load pixmap from " << imagePath;
+        else
+            channel->setImage( pixmap );
         return;
     }
 
@@ -97,9 +102,8 @@ PodcastImageFetcher::run()
         debug() << "Download image from " << channel->imageUrl();
         KUrl cachedPath = cachedImagePath( channel );
         KIO::mkdir( cachedPath.directory() );
-        KIO::FileCopyJob *job =
-                KIO::file_copy( channel->imageUrl(), cachedPath,
-                                -1, KIO::HideProgressInfo );
+        KIO::FileCopyJob *job = KIO::file_copy( channel->imageUrl(), cachedPath,
+                                -1, KIO::HideProgressInfo | KIO::Overwrite );
         //remove channel from the todo list
         m_channels.removeAll( channel );
         m_jobChannelMap.insert( job, channel );
@@ -117,12 +121,24 @@ PodcastImageFetcher::slotDownloadFinished( KJob *job )
     //QMap::take() also removes the entry from the map.
     Meta::PodcastChannelPtr channel = m_jobChannelMap.take( job );
     if( channel.isNull() )
+    {
+        error() << "got null PodcastChannelPtr " << __FILE__ << ":" << __LINE__;
         return;
+    }
 
     if( job->error() )
+    {
         error() << "downloading podcast image " << job->errorString();
+    }
     else
-        channel->setImage( QPixmap( cachedImagePath( channel ).toLocalFile() ) );
+    {
+        QString imagePath = cachedImagePath( channel ).toLocalFile();
+        QPixmap pixmap( imagePath );
+        if( pixmap.isNull() )
+            error() << "could not load pixmap from " << imagePath;
+        else
+            channel->setImage( pixmap );
+    }
 
     //call run again to start the next batch of transfers.
     run();
