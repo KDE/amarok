@@ -759,12 +759,8 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
         The::statusBar()->longMessage( podcastReader->errorString(), StatusBar::Error );
     }
     debug() << "Finished updating: " << podcastReader->url();
-    debug() << "Updating counter reached " << m_updatingChannels-1;
-    //decrement the counter and load podcasts if needed.
-    if( --m_updatingChannels == 0 )
-    {
-        //TODO: start downloading episodes here.
-    }
+    --m_updatingChannels;
+    debug() << "Updating counter reached " << m_updatingChannels;
 
     Meta::SqlPodcastChannelPtr channel =
             Meta::SqlPodcastChannelPtr::dynamicCast( podcastReader->channel() );
@@ -778,6 +774,11 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
     if( channel->image().isNull() )
     {
         fetchImage( channel );
+    }
+
+    if( m_updatingChannels == 0 )
+    {
+        //TODO: start downloading episodes here.
         if( m_podcastImageFetcher )
             m_podcastImageFetcher->run();
     }
