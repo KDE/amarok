@@ -28,7 +28,6 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     : KAction( parent )
 {
 
-    setIcon( KIcon( "media-playlist-repeat-amarok" ) );
     KMenu * navigatorMenu = new KMenu( parent );
     setMenu( navigatorMenu );
     setText( i18n( "Track Progression" ) );
@@ -93,27 +92,33 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     {
         case AmarokConfig::EnumTrackProgression::RepeatTrack:
             m_repeatTrackNavigatorAction->setChecked( true );
+            setIcon( KIcon( "media-track-repeat-amarok" ) );
             break;
 
         case AmarokConfig::EnumTrackProgression::RepeatAlbum:
             m_repeatAlbumNavigatorAction->setChecked( true );
+            setIcon( KIcon( "media-album-repeat-amarok" ) );
             break;
 
         case AmarokConfig::EnumTrackProgression::RepeatPlaylist:
             m_repeatPlaylistNavigatorAction->setChecked( true );
+            setIcon( KIcon( "media-playlist-repeat-amarok" ) );
             break;
 
         case AmarokConfig::EnumTrackProgression::RandomTrack:
             m_randomTrackNavigatorAction->setChecked( true );
+            setIcon( KIcon( "amarok_track" ) );
             break;
 
         case AmarokConfig::EnumTrackProgression::RandomAlbum:
             m_randomAlbumNavigatorAction->setChecked( true );
+            setIcon( KIcon( "media-album-shuffle-amarok" ) );
             break;
 
         case AmarokConfig::EnumTrackProgression::Normal:
         default:
             m_standardNavigatorAction->setChecked( true );
+            setIcon( KIcon( "media-playlist-repeat-amarok" ) );
             break;
     }
 
@@ -128,17 +133,35 @@ void NavigatorConfigAction::setActiveNavigator( QAction *navigatorAction )
 {
     DEBUG_BLOCK
     if( navigatorAction == m_standardNavigatorAction )
+    {
         AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::Normal );
+        setIcon( KIcon( "media-playlist-repeat-amarok" ) );
+    }
     else if ( navigatorAction == m_repeatTrackNavigatorAction )
+    {
         AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatTrack );
+        setIcon( KIcon( "media-track-repeat-amarok" ) );
+    }
     else if ( navigatorAction == m_repeatAlbumNavigatorAction )
+    {
         AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatAlbum );
+        setIcon( KIcon( "media-album-repeat-amarok" ) );
+    }
     else if ( navigatorAction == m_repeatPlaylistNavigatorAction )
-        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatPlaylist );  
+    {
+        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RepeatPlaylist );
+        setIcon( KIcon( "media-playlist-repeat-amarok" ) );
+    }
     else if ( navigatorAction == m_randomTrackNavigatorAction )
-        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RandomTrack );  
+    {
+        AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RandomTrack );
+        setIcon( KIcon( "amarok_track" ) );
+    }
     else if ( navigatorAction == m_randomAlbumNavigatorAction )
+    {
         AmarokConfig::setTrackProgression( AmarokConfig::EnumTrackProgression::RandomAlbum );
+        setIcon( KIcon( "media-album-shuffle-amarok" ) );
+    }
 
     The::playlistActions()->playlistModeChanged();
 }
