@@ -20,6 +20,7 @@
 
 #include <KIO/Job>
 #include <KMD5>
+#include <Solid/Networking>
 
 PodcastImageFetcher::PodcastImageFetcher()
 {
@@ -84,6 +85,13 @@ PodcastImageFetcher::run()
         return;
     }
 
+    if( Solid::Networking::status() != Solid::Networking::Connected )
+    {
+        debug() << "Solid reports we are not online, canceling podcast image download";
+        emit( done( this ) );
+        return;
+    }
+
     foreach( Meta::PodcastChannelPtr channel, m_channels )
     {
         debug() << "Download image from " << channel->imageUrl();
@@ -92,6 +100,8 @@ PodcastImageFetcher::run()
         KIO::FileCopyJob *job =
                 KIO::file_copy( channel->imageUrl(), cachedPath,
                                 -1, KIO::HideProgressInfo );
+        //remove channel from the todo list
+        m_channels.removeAll( channel );
         m_jobChannelMap.insert( job, channel );
         connect( job, SIGNAL( finished( KJob * ) ), SLOT( slotDownloadFinished( KJob * ) ) );
     }
@@ -109,13 +119,10 @@ PodcastImageFetcher::slotDownloadFinished( KJob *job )
     if( channel.isNull() )
         return;
 
-    m_channels.removeAll( channel );
     if( job->error() )
-    {
         error() << "downloading podcast image " << job->errorString();
-    }
-
-    channel->setImage( QPixmap( cachedImagePath( channel ).toLocalFile() ) );
+    else
+        channel->setImage( QPixmap( cachedImagePath( channel ).toLocalFile() ) );
 
     //call run again to start the next batch of transfers.
     run();
