@@ -162,7 +162,11 @@ Playlist::Widget::Widget( QWidget* parent )
         if( tbutton )
             tbutton->setPopupMode( QToolButton::InstantPopup );
 
-        plBar->addAction( new NavigatorConfigAction( this ) );
+        NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( this );
+        plBar->addAction( navigatorConfig );
+        tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( navigatorConfig ) );
+        if( tbutton )
+            tbutton->setPopupMode( QToolButton::InstantPopup );
         
 
         plBar->addAction( new KToolBarSpacerAction( this ) );
