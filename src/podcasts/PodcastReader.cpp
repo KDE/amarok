@@ -191,7 +191,7 @@ PodcastReader::read()
                 else if( QXmlStreamReader::name() == "html" )
                 {
                     m_feedType = ErrorPageType;
-                    raiseError( i18n( "An HTML page was received. Expected an RSS 2.0 feed" ) );
+                    raiseError( i18n( "A HTML page was received. Expected a RSS 2.0 feed" ) );
                     result = false;
                     break;
                 }
