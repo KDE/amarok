@@ -487,15 +487,18 @@ PlaylistBrowserNS::DynamicModel::savePlaylists( bool final )
 
     if( final )
     {
+        QDomElement old = m_savedPlaylistsRoot.lastChildElement( "current" );
         QDomElement cur = m_savedPlaylists.createElement( "current" );
+
         cur.setAttribute( "title", m_playlistList.at( m_activePlaylist )->title() );
-        m_savedPlaylistsRoot.appendChild( cur );
 
-        m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
-        m_savedPlaylistsRoot.removeChild( cur );
-    } else
-        m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
+        if( old.isNull() )
+            m_savedPlaylistsRoot.appendChild( cur );
+        else
+            m_savedPlaylistsRoot.replaceChild( cur, old );
+    }
 
+    m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
 }
 
 void
