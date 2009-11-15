@@ -56,7 +56,7 @@ PodcastReader::read( const KUrl &url )
 
     m_url = url;
 
-    KIO::TransferJob *m_transferJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
+    m_transferJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
 
     connect( m_transferJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
              SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );
@@ -156,26 +156,12 @@ PodcastReader::read()
     DEBUG_BLOCK
     bool result = true;
 
-    while ( !atEnd() )
+    while( !atEnd() )
     {
-        if( !error() )
-        {
+        if( !error() || error() == PrematureEndOfDocumentError )
             readNext();
-        }
-        else if ( error() == PrematureEndOfDocumentError )
-        {
-            debug() << "recovering from PrematureEndOfDocumentError for "
-                    << QXmlStreamReader::name().toString() << " at "
-                    << QXmlStreamReader::lineNumber();
-            readNext();
-        }
         else
-        {
-            debug() << "some other error occurred: " << errorString();
-            m_transferJob->kill();
-            m_transferJob = 0;
-            emit finished( this );
-        }
+            break; //error handling after while loop.
 
         if( m_feedType == UnknownFeedType )
         {
@@ -191,14 +177,14 @@ PodcastReader::read()
                 else if( QXmlStreamReader::name() == "html" )
                 {
                     m_feedType = ErrorPageType;
-                    raiseError( i18n( "A HTML page was received. Expected a RSS 2.0 feed" ) );
+                    raiseError( i18n( "A HTML page was received. Expected a RSS 2.0 feed." ) );
                     result = false;
                     break;
                 }
                 else
                 {
                     //TODO: change this string once we support more
-                    raiseError( i18n( "%1 is not an RSS version 2.0 feed.", m_url.url() ) );
+                    raiseError( i18n( "%1 is not a RSS version 2.0 feed.", m_url.url() ) );
                     result = false;
                     break;
                 }
@@ -215,22 +201,9 @@ PodcastReader::read()
         {
             if( isStartElement() )
             {
-                if( QXmlStreamReader::name() == "item" )
+                if( !m_current )
                 {
-                    debug() << "new episode";
-                    m_current = new Meta::PodcastEpisode( m_channel );
-                }
-                else if( QXmlStreamReader::name() == "enclosure" )
-                {
-                    m_urlString = QXmlStreamReader::attributes().value( QString(), QString("url") ).toString();
-                }
-                else if( QXmlStreamReader::name() == "image" )
-                {
-                    m_parsingImage = true;
-                }
-                else if( QXmlStreamReader::name() == "channel" )
-                {
-                    if( !m_current )
+                    if( QXmlStreamReader::name() == "channel" )
                     {
                         debug() << "new channel";
                         m_channel = new Meta::PodcastChannel();
@@ -243,7 +216,27 @@ PodcastReader::read()
 
                         m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
                     }
+                    else
+                    {
+                        raiseError( i18n( "Feed %1 didn't start with a valid channel tag.", m_url.url() ) );
+                        result = false;
+                        break;
+                    }
                 }
+                else if( QXmlStreamReader::name() == "item" )
+                {
+                    debug() << "new episode";
+                    m_current = new Meta::PodcastEpisode( m_channel );
+                }
+                else if( QXmlStreamReader::name() == "enclosure" )
+                {
+                    m_urlString = QXmlStreamReader::attributes().value( QString(), QString("url") ).toString();
+                }
+                else if( QXmlStreamReader::name() == "image" )
+                {
+                    m_parsingImage = true;
+                }
+
                 m_currentTag = QXmlStreamReader::name().toString();
             }
             else if( isEndElement() )
@@ -265,7 +258,6 @@ PodcastReader::read()
                         // Remove redundant whitespace from the title.
                         m_current->setTitle( m_titleString.simplified() );
                     }
-                    //TODO save image data
                     m_titleString.clear();
                 }
                 else if( QXmlStreamReader::name() == "description" )
@@ -330,22 +322,26 @@ PodcastReader::read()
         }
     }
 
-    if ( error() )
+    if( error() )
     {
-        if ( error() == QXmlStreamReader::PrematureEndOfDocumentError)
+        if( error() == QXmlStreamReader::PrematureEndOfDocumentError)
         {
             debug() << "waiting for data at line " << lineNumber();
         }
         else
         {
-            debug() << "XML ERROR: " << error() << " at line: " << lineNumber()
-                    << ": " << columnNumber()
-                    << "\n\t" << errorString();
-            debug() << "\tname = " << QXmlStreamReader::name().toString()
-                    << " tokenType = " << tokenString();
-
-            if( m_channel )
-                commitChannel();
+            debug() << "XML ERROR at line: " << lineNumber()
+                    << " column: " << columnNumber();
+            debug() << "\t" << errorString();
+            debug() << "\ttoken name = " << QXmlStreamReader::name().toString();
+            debug() << "\ttokenType = " << tokenString();
+            /*FIXME: KJob->kill() with EmitResult doesn't seem to work. If result is not
+              emitted the progress won't disappear from the statusbar.
+              can be hacked around by directly emitting result and percent from
+              PodcastReader.
+            */
+            m_transferJob->kill( /*KJob::EmitResult*/ );
+            m_transferJob = 0;
             emit finished( this );
         }
     }
