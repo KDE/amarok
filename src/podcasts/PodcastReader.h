@@ -24,6 +24,7 @@
 #include <QXmlStreamReader>
 #include <QObject>
 
+
 namespace KIO
 {
     class Job;
@@ -63,26 +64,64 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void downloadResult( KJob * );
 
     private:
+		typedef QXmlStreamReader qxml;
+
+		/** internally used exception class */
+		class ParseError {
+		public:
+			ParseError(const QString& message)
+				: m_message(message) {}
+
+			const QString& message() const { return m_message; }
+
+		private:
+			QString m_message;
+		};
+
+		class XmlParseError : public ParseError {
+		public:
+			XmlParseError(const QString& message)
+				: ParseError(message) {}
+		};
+
+		/** This method wraps readNext() and tries to fix the PrematureEndOfDocumentError. */
+		TokenType nextRawToken();
+
+		/** Like nextRawToken() but skips Comments, DTDs, EntityReferences,
+		 * ProcessingInstructions and ignorable whitespaces. */
+		TokenType nextToken();
+
+		static void expect(TokenType expected, TokenType got);
+
+		void expect(TokenType token);
+		void expectName(const QString& name);
+		void expectStart(const QString& name);
+		void expectEnd(const QString& name);
+
+		/** Read the inner xml of an element as a string. This is used to read the
+		 * contents of a &lt;body&gt; element, which contains xhtml data. */
+		QString readInnerXml();
+
+		/** Read text content of an element. Raises error if non text content (elements) is read. */
+		QString readTextContent();
+
+		void readChannel();
+		Meta::PodcastEpisodePtr readItem();
+		KUrl readImage();
+
+		/** There usually are 3 kinds of descriptions. Usually a &lt;body&gt; element contains
+		 * the most detailed description followed by &lt;itunes:summary&gt; and the standard
+		 * &lt;description&gt;. */
+		enum DescriptionType { NoDescription = 0, RssDescription = 1, ItunesSummary = 2, HtmlBody = 3 };
         enum FeedType { UnknownFeedType, ErrorPageType, Rss20FeedType };
 
         FeedType m_feedType;
         KUrl m_url;
         PodcastProvider * m_podcastProvider;
         KIO::TransferJob *m_transferJob;
-        Meta::PodcastMetaCommon *m_current;
         Meta::PodcastChannelPtr m_channel;
 
-        QString m_currentTag;
-        QString m_titleString;
-        QString m_linkString;
-        QString m_descriptionString;
-        QString m_urlString;
-        QString m_guidString;
-        QString m_pubDateString;
-
-        bool m_parsingImage;
-
-        void readUnknownElement();
+        void skipElement();
 
         QDateTime parsePubDate( const QString &datestring );
 
@@ -92,9 +131,6 @@ class PodcastReader : public QObject, public QXmlStreamReader
         *   same pointer as the argument.
         */
         Meta::PodcastEpisodePtr podcastEpisodeCheck( Meta::PodcastEpisodePtr episode );
-
-        void commitChannel();
-        void commitEpisode();
 };
 
 #endif

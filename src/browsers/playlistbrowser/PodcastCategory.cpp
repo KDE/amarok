@@ -40,6 +40,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QWebFrame>
+#include <QTextDocument>
 #include <qnamespace.h>
 
 #include <KAction>
@@ -154,12 +155,30 @@ PodcastCategory::~PodcastCategory()
 void
 PodcastCategory::showInfo( const QModelIndex & index )
 {
-    QString description = index.data( ShortDescriptionRole ).toString();
-    description.replace( QRegExp("\n "), "\n" );
-    description.replace( QRegExp("\n+"), "\n" );
+    QString title = index.data( Qt::DisplayRole ).toString();
+    QString description = 
+		"<html>"
+		"    <head>"
+		"        <title>";
+	description += Qt::escape(title);
+	description += "</title>"
+		"        <style type=\"text/css\">h1 {text-align:center; font-size: 1em;}</style>"
+		"    </head>"
+		"    <body>"
+		"        <h1>";
+	description += Qt::escape(title);
+	description += "</h1>";
+	description += index.data( ShortDescriptionRole ).toString();
+	description +=
+		"    </body>"
+		"</html>";
+	
+	qDebug("\n");
+	qDebug() << description;
+	qDebug("\n");
 
     QVariantMap map;
-    map["service_name"] = "Podcasts";
+    map["service_name"] = title;
     map["main_info"] = description;
     The::infoProxy()->setInfo( map );
 }
