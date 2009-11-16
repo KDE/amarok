@@ -27,7 +27,7 @@
 #include <KStandardDirs>
 
 #include <QPainter>
-
+#include <QDesktopServices>
 
 QString InfoApplet::s_defaultHtml = "<html>"
                                     "    <head>"
@@ -152,6 +152,8 @@ void InfoApplet::linkClicked( const QUrl & url )
     {
         new Meta::XSPFPlaylist( url, true );
     }
+    else
+        QDesktopServices::openUrl( url.toString() );
 }
 
 #include "InfoApplet.moc"
