@@ -120,6 +120,8 @@ void
 UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     Q_UNUSED( name )
+    m_artist = data[ "artist" ].toString();
+    
 }
 
 void
@@ -133,7 +135,7 @@ UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     addGradientToAppletBackground( p );
 
     // draw rounded rect around title
-    drawRoundedRectAroundText( p, m_headerLabel );
+    p->drawText( 1,50, m_artist );
 
     //draw background of wiki text
     p->save();

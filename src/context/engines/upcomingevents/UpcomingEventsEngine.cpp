@@ -121,7 +121,7 @@ void UpcomingEventsEngine::update()
                 artistName = currentTrack->artist()->prettyName();
         }
     }
-
+    setData( "upcomingEvents", "artist", artistName );
 }
 
 void UpcomingEventsEngine::reloadUpcomingEvents()
@@ -161,7 +161,5 @@ QList< LastFmEvent > UpcomingEventsEngine::upcomingEvents(const QString& artist_
     }
     return events;
 }
-
-
 #include "UpcomingEventsEngine.moc"
 

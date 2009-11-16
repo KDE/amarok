@@ -1,7 +1,7 @@
 
 include_directories( ../../..
                      ../../../context
-                     ${CMAKE_CURRENT_BINARY_DIR}/../../.. # for amarok_config.h
+                     ${CMAKE_CURRENT_BINARY_DIR} # for amarok_config.h
 )
 
 set( similarArtists_engine_SRCS
