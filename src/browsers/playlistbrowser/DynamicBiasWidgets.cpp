@@ -443,12 +443,8 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, Q
     }
 
 
-    connect( combo, SIGNAL(currentIndexChanged( const QString& )),
-            SLOT(valueChanged(const QString&)) );
     connect( combo, SIGNAL(editTextChanged( const QString& ) ),
             SLOT(valueChanged(const QString&)) );
-
-    combo->setEditText( m_gbias->filter().value );
 
     combo->setCompletionMode( KGlobalSettings::CompletionPopup );
     setValueSelection( combo );
@@ -475,6 +471,13 @@ PlaylistBrowserNS::BiasGlobalWidget::populateComboBox( QString collectionId, QSt
 
     KCompletion* comp = combo->completionObject();
     comp->setItems( dataList );
+
+    const QString fieldValue = m_gbias->filter().value;
+    combo->setCurrentIndex( combo->findText( fieldValue ) );
+
+    connect( combo,
+             SIGNAL( currentIndexChanged( const QString& ) ),
+             SLOT( valueChanged( const QString& ) ) );
 }
 
 
