@@ -26,13 +26,13 @@ check_cxx_source_compiles("#include <asftag.h>
 int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
 if( NOT TAGLIB_ASF_FOUND )
     message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
-endif( NOT TAGLIB_ASF_FOUND ) 
+endif( NOT TAGLIB_ASF_FOUND )
 
 check_cxx_source_compiles("#include <mp4tag.h>
 int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
 if( NOT TAGLIB_MP4_FOUND )
     message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
-endif( NOT TAGLIB_MP4_FOUND ) 
+endif( NOT TAGLIB_MP4_FOUND )
 
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
@@ -95,7 +95,7 @@ if( WITH_PLAYER )
     # zlib is required for mysql embedded
     find_package(ZLIB REQUIRED)
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
-    
+
     # QCA2 is required for the Script Updater
     find_package(QCA2 REQUIRED)
     macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" TRUE "" "" )
@@ -105,9 +105,9 @@ if( WITH_PLAYER )
 
     macro_optional_find_package(LibLastFm)
     macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2" FALSE "0.3" "" )
-    
+    macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
-		
+
     if( WITH_IPOD )
         find_package(Ipod)
         if( IPOD_FOUND )
@@ -117,7 +117,7 @@ if( WITH_PLAYER )
 	macro_optional_find_package(Gdk)
 	macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
     endif( WITH_IPOD )
- 
+
     macro_optional_find_package(Mtp)
     macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.3.0" "")
 

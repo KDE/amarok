@@ -832,7 +832,6 @@ TagDialog::showCoverMenu( const QPoint &pos )
 
 const QStringList TagDialog::statisticsData()
 {
-
     QStringList data;
     QueryMaker *qm = 0;
     Amarok::Collection *coll = m_currentTrack->collection();

@@ -20,6 +20,7 @@
 #include "AmpacheConfig.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "collection/CollectionManager.h"
+#include <config-amarok.h>
 #include "Debug.h"
 #include "sha256/sha256.h"
 #include "statusbar/StatusBar.h"
@@ -32,13 +33,17 @@
 
 #include <QDomDocument>
 
+#if HAVE_LIBLASTFM
+  #include "LastfmInfoParser.h"
+#endif
+
 AMAROK_EXPORT_PLUGIN( AmpacheServiceFactory )
 
 QString sha256( QString in )
 {
     unsigned char digest[ SHA512_DIGEST_SIZE];
     unsigned char* toHash = (unsigned char*)in.toUtf8().data();
-    
+
     sha256( toHash , qstrlen( ( char* )toHash ), digest );
 
     // this part copied from main() in sha256.cpp
@@ -50,7 +55,7 @@ QString sha256( QString in )
     for (i = 0; i < SHA256_DIGEST_SIZE ; i++) {
        sprintf((char *) output + 2*i, "%02x", digest[i]);
     }
-    
+
     return QString::fromAscii( (const char*)output );
 }
 
@@ -111,6 +116,7 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
     , m_authenticated( false )
     , m_server ( QString() )
     , m_sessionId ( QString() )
+    , m_infoParser( 0 )
     , m_collection( 0 )
 {
     DEBUG_BLOCK
@@ -152,6 +158,9 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
 
     m_xmlVersionJob = KIO::storedGet( versionString, KIO::Reload, KIO::HideProgressInfo );
     connect( m_xmlVersionJob, SIGNAL(result(KJob *)), this, SLOT( authenticate(KJob *) ) );
+#if HAVE_LIBLASTFM
+    m_infoParser = new LastfmInfoParser();
+#endif
 }
 
 AmpacheService::~AmpacheService()
@@ -164,6 +173,7 @@ void
 AmpacheService::polish()
 {
     m_bottomPanel->hide();
+    setInfoParser( m_infoParser );
 
     /*if ( !m_authenticated )
         authenticate( );*/
@@ -174,7 +184,7 @@ AmpacheService::reauthenticate()
 {
     DEBUG_BLOCK
 
-    debug() << " I am trying to re-authenticate"; 
+    debug() << " I am trying to re-authenticate";
 
     // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
     QString versionString = "<server>/server/xml.server.php?action=ping";
@@ -192,7 +202,7 @@ AmpacheService::authenticate(KJob * job)
 {
     DEBUG_BLOCK
 
-    versionVerify(job); 
+    versionVerify(job);
 
     //lets keep this around for now if we want to allow people to add a service that prompts for stuff
     if ( m_server.isEmpty() || m_password.isEmpty() )
@@ -229,7 +239,7 @@ AmpacheService::authenticate(KJob * job)
     // We need to use different authentication strings depending on the version of ampache
     if ( m_version > 350000 )
     {
-	debug() << "New Password Scheme " << m_version; 
+	debug() << "New Password Scheme " << m_version;
         authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>&version=350001";
 
         rawHandshake = timestamp + sha256( m_password );
@@ -237,7 +247,7 @@ AmpacheService::authenticate(KJob * job)
         passPhrase = sha256( rawHandshake );
 	debug() << "Version Greater then 35001 Generating new SHA256 Auth" << authenticationString << passPhrase;
     }
-    else { 
+    else {
         debug() << "Version Older then 35001 Generated MD5 Auth " << m_version;
         authenticationString = "<server>/server/xml.server.php?action=handshake<username>&auth=<passphrase>&timestamp=<timestamp>";
         rawHandshake = timestamp + m_password;
@@ -337,7 +347,7 @@ void AmpacheService::versionVerify(KJob * job)
     // It's OK if we get a null response from the version, that just means we're dealing with an older version
     if ( !error.isNull() )
     {
-	// Default the Version down if it didn't work 
+	// Default the Version down if it didn't work
 	m_version = 100000;
 	debug() << "AmpacheService::versionVerify Error: " << error.text();
     }

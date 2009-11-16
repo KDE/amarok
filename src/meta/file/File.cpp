@@ -20,7 +20,7 @@
 
 #include "Amarok.h"
 #include "BookmarkMetaActions.h"
-#include "LastfmReadLabelCapability.h"
+#include <config-amarok.h>
 #include "Meta.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
@@ -36,6 +36,9 @@
 #include <QPointer>
 #include <QString>
 
+#ifdef HAVE_LIBLASTFM
+  #include "LastfmReadLabelCapability.h"
+#endif
 using namespace MetaFile;
 
 class EditCapabilityImpl : public Meta::EditCapability
@@ -585,12 +588,16 @@ Track::collection() const
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
+    bool readlabel = false;
+#ifdef HAVE_LIBLASTFM
+    readlabel = true;
+#endif
     return type == Meta::Capability::Editable ||
            type == Meta::Capability::Importable ||
            type == Meta::Capability::CurrentTrackActions ||
            type == Meta::Capability::WriteTimecode ||
            type == Meta::Capability::LoadTimecode ||
-           type == Meta::Capability::ReadLabel;
+           ( type == Meta::Capability::ReadLabel && readlabel );
 }
 
 Meta::Capability*
@@ -614,10 +621,12 @@ Track::createCapabilityInterface( Meta::Capability::Type type )
             return new TimecodeWriteCapabilityImpl( this );
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityImpl( this );
-        case Meta::Capability::ReadLabel:
-            if( !d->readLabelCapability )
-                d->readLabelCapability = new Meta::LastfmReadLabelCapability( this );
-            return d->readLabelCapability;
+#if HAVE_LIBLASTFM
+       case Meta::Capability::ReadLabel:
+           if( !d->readLabelCapability )
+               d->readLabelCapability = new Meta::LastfmReadLabelCapability( this );
+           return d->readLabelCapability;
+#endif
         default:
             return 0;
     }

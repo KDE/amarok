@@ -185,14 +185,14 @@ void MagnatuneStore::purchase( Meta::MagnatuneAlbum * album )
 
     m_purchaseInProgress = true;
     m_purchaseAlbumButton->setEnabled( false );
-    
+
     if ( !m_purchaseHandler )
     {
         m_purchaseHandler = new MagnatunePurchaseHandler();
         m_purchaseHandler->setParent( this );
         connect( m_purchaseHandler, SIGNAL( purchaseCompleted( bool ) ), this, SLOT( purchaseCompleted( bool ) ) );
     }
-    
+
     m_purchaseHandler->purchaseAlbum( album );
 }
 
@@ -201,7 +201,7 @@ void MagnatuneStore::initTopPanel( )
 {
 
     QMenu *filterMenu = new QMenu( 0 );
-    
+
     QAction *action = filterMenu->addAction( i18n("Artist") );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtist() ) );
 
@@ -237,7 +237,7 @@ void MagnatuneStore::initTopPanel( )
 
     KAction *actionsMenuAction = new KAction( KIcon( "list-add" ), i18n( "Tools" ), this );
     actionsMenuAction->setMenu( actionsMenu );
-    
+
     m_searchWidget->toolBar()->addAction( actionsMenuAction );
 
     tbutton = qobject_cast<QToolButton*>( m_searchWidget->toolBar()->widgetForAction( actionsMenuAction ) );
@@ -258,7 +258,7 @@ void MagnatuneStore::initBottomPanel()
         m_purchaseAlbumButton->setText( i18n( "Download Album" ) );
     else
         m_purchaseAlbumButton->setText( i18n( "Purchase Album" ) );
-    
+
     m_purchaseAlbumButton->setObjectName( "purchaseButton" );
     m_purchaseAlbumButton->setIcon( KIcon( "download-amarok" ) );
     m_purchaseAlbumButton->setEnabled( false );
@@ -296,7 +296,7 @@ bool MagnatuneStore::updateMagnatuneList()
     m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
     The::statusBar()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com Database" ) )
     ->setAbortSlot( this, SLOT( listDownloadCancelled() ) );
-            
+
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
@@ -338,7 +338,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
 void MagnatuneStore::listDownloadCancelled( )
 {
     DEBUG_BLOCK
-    
+
     //The::statusBar()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     delete m_listDownloadJob;
@@ -362,7 +362,7 @@ void MagnatuneStore::doneParsing()
         config.setLastUpdateTimestamp( QDateTime::currentDateTime().toTime_t() );
     else
         config.setLastUpdateTimestamp( m_magnatuneTimestamp );
-    
+
     config.save();
 }
 
@@ -428,7 +428,7 @@ void MagnatuneStore::addMoodyTracksToPlaylist( const QString &mood, int count )
     MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
     databaseWorker->fetchTrackswithMood( mood, count, m_registry );
     connect( databaseWorker, SIGNAL( gotMoodyTracks( Meta::TrackList ) ), this, SLOT( moodyTracksReady(Meta::TrackList ) ) );
-    
+
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 }
 
@@ -447,7 +447,7 @@ void MagnatuneStore::polish()
         levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
 
         m_magnatuneInfoParser = new MagnatuneInfoParser();
-        
+
         setInfoParser( m_magnatuneInfoParser );
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
@@ -462,7 +462,7 @@ void MagnatuneStore::polish()
         connect( runner, SIGNAL( showRecommendations() ), this, SLOT( showRecommendationsPage() ) );
         connect( runner, SIGNAL( buyOrDownload( const QString & ) ), this, SLOT( purchase( const QString & ) ) );
         connect( runner, SIGNAL( removeFromFavorites( const QString & ) ), this, SLOT( removeFromFavorites( const QString & ) ) );
-        
+
         The::amarokUrlHandler()->registerRunner( runner, "service_magnatune" );
     }
 
@@ -502,7 +502,7 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
     QVariantMap dbusActions;
 
     foreach( const QString &key, map.keys() ) {
-    
+
         strings << key;
         weights << map.value( key );
 
@@ -522,7 +522,7 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
     variantMap["cloud_strings"] = QVariant( strings );
     variantMap["cloud_weights"] = QVariant( weights );
     variantMap["cloud_actions"] = QVariant( dbusActions );
-    
+
     The::infoProxy()->setCloud( variantMap );
 }
 
@@ -587,7 +587,7 @@ void MagnatuneStore::checkForUpdates()
 void MagnatuneStore::timestampDownloadComplete( KJob *  job )
 {
     DEBUG_BLOCK
-    
+
     if ( !job->error() == 0 )
     {
         //TODO: error handling here
@@ -685,7 +685,7 @@ void MagnatuneStore::purchase( const QString &sku )
     MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
     databaseWorker->fetchAlbumBySku( sku, m_registry );
     connect( databaseWorker, SIGNAL( gotAlbumBySku( Meta::MagnatuneAlbum * ) ), this, SLOT( purchase( Meta::MagnatuneAlbum * ) ) );
-    
+
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 }
 

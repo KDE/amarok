@@ -616,7 +616,6 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
-    LastfmReadLabelCapability.cpp
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
@@ -690,6 +689,12 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/TestSmartPointerList.cpp
     )
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+if( LIBLASTFM_FOUND )
+    set(amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        LastfmReadLabelCapability.cpp
+    )
+endif( LIBLASTFM_FOUND )
 
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.player.xml PlayerDBusHandler.h Amarok::PlayerDBusHandler PlayerAdaptor PlayerAdaptor)
