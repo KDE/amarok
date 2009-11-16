@@ -7,6 +7,7 @@ include_directories( ../..
     ${KDE4_INCLUDE_DIR}
     ${QT_INCLUDES} )
 
+remove_definitions(-DQT_NO_HTTP)
 
 ########### next target ###############
 
