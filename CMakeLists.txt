@@ -49,7 +49,6 @@ if(GIT_OUTPUT_VALUE EQUAL 0)
     message(STATUS "Building git version ${CURRENT_GIT_VERSION}")
 endif(GIT_OUTPUT_VALUE EQUAL 0)
 
-configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
 # Needed to conditionally build tests and gui
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
@@ -159,6 +158,8 @@ if( WITH_PLAYER )
     #macro_log_feature( NEPOMUK_FOUND "nepomuk" "Nepomuk Libraries required by Nepomuk Collection (part of kdelibs)" "http://www.kde.org" FALSE "4.1" "")
 
     macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
+
+    configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 

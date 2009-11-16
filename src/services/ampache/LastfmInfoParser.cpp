@@ -106,9 +106,11 @@ void LastfmInfoParser::onGetAlbumInfo()
             const QString contentText = wiki["content"].text();
             const QString publishedDate = wiki["published"].text();
 
+            const QString albumUrl = lfm["image size=large"].text();
+
             QString html;
             if( !contentText.isEmpty() )
-                html = QString("<p><font size=3><i>%1<i></font></p> <p align='right'><font size=1>Updated: %2</font></p>").arg( contentText, publishedDate );
+                html = QString("<div align='center'><img src=%1></div><div align='center'><p><font size=3><i>%2<i></font></p> <p align='right'><font size=1>Updated: %3</font></p></div>").arg( albumUrl, contentText, publishedDate );
             else
                 html = i18n( "<p>Sorry, no information Found for this album</p>" );
             emit info( html );
@@ -156,9 +158,11 @@ void LastfmInfoParser::onGetArtistInfo()
             const QString contentText = bio["content"].text();
             const QString publishedDate = bio["published"].text();
 
+            const QString imageUrl = lfm["image size=large"].text();
+
             QString html;
             if( !contentText.isEmpty() )
-                html = QString("<p><font size=3><i>%1<i></font></p> <p align='right'><font size=1>Updated: %2</font></p>").arg( contentText, publishedDate );
+                html = QString("<div align='left'><img src=%1></div><div align='center'><p><font size=3><i>%2<i></font></p> <p align='right'><font size=1>Updated: %3</font></p></div>").arg( imageUrl, contentText, publishedDate );
             else
                 html = i18n( "<p>Sorry, no information Found for this artist</p>" );
             emit info( html );

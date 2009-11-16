@@ -27,6 +27,11 @@ add_subdirectory( images )
             LastfmInfoParser.cpp
             sha256/sha256.cpp
         )
+        if( LIBLASTFM_FOUND )
+            set(amarok_service_ampache_PART_SRCS
+                ${amarok_service_ampache_PART_SRCS}
+                LastfmInfoParser.cpp )
+        endif( LIBLASTFM_FOUND )
 
 
 

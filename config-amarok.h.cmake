@@ -22,7 +22,7 @@
 /* #undef HAVE_SYSTEMS_H */
 
 /* have TagLib */
-#define HAVE_TAGLIB 1
+#cmakedefine HAVE_TAGLIB 1
 
 /* MySql database support enabled */
 #cmakedefine USE_MYSQL 1
@@ -37,4 +37,4 @@
 #cmakedefine CURRENT_GIT_VERSION ${CURRENT_GIT_VERSION}
 
 /* If liblastfm is found */
-#define HAVE_LIBLASTFM 1
+#cmakedefine HAVE_LIBLASTFM 1
