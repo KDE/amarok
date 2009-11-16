@@ -33,7 +33,7 @@ This document explains how to install Amarok 2 from SVN in your home directory -
     mkdir $HOME/kde/src
     mkdir -p $HOME/kde/build/amarok
 
-* Check out Amarok from SVN:
+* Check out Amarok:
     cd $HOME/kde/src
     git pull git://gitorious.org/amarok/amarok.git
 
