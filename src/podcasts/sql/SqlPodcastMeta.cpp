@@ -133,31 +133,31 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
         debug() <<  episode->channel()->title();
     }
 
-	// PodcastMetaCommon
+    // PodcastMetaCommon
     m_title = episode->title();
-	m_description = episode->description();
-	m_keywords = episode->keywords();
-	m_subtitle = episode->subtitle();
-	m_summary = episode->summary();
-	m_author = episode->author();
-	
-	// PodcastEpisode
+    m_description = episode->description();
+    m_keywords = episode->keywords();
+    m_subtitle = episode->subtitle();
+    m_summary = episode->summary();
+    m_author = episode->author();
+    
+    // PodcastEpisode
     m_guid = episode->guid();
-	m_url = KUrl( episode->uidUrl() );
-	m_localUrl = episode->localUrl();
-//	m_mimeType = episode->mimeType();
+    m_url = KUrl( episode->uidUrl() );
+    m_localUrl = episode->localUrl();
+//    m_mimeType = episode->mimeType();
     m_pubDate = episode->pubDate();
-	m_duration = episode->duration();
-	m_fileSize = episode->filesize();
-	m_sequenceNumber = episode->sequenceNumber();
-	m_isNew = episode->isNew();
+    m_duration = episode->duration();
+    m_fileSize = episode->filesize();
+    m_sequenceNumber = episode->sequenceNumber();
+    m_isNew = episode->isNew();
 
-	// I'm not sure about this:
-	m_albumPtr = episode->album();
-	m_artistPtr = episode->artist();
-	m_composerPtr = episode->composer();
-	m_genrePtr = episode->genre();
-	m_yearPtr = episode->year();
+    // I'm not sure about this:
+    m_albumPtr = episode->album();
+    m_artistPtr = episode->artist();
+    m_composerPtr = episode->composer();
+    m_genrePtr = episode->genre();
+    m_yearPtr = episode->year();
 
     //commit to the database
     updateInDb();

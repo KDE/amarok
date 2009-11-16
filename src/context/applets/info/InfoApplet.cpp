@@ -90,7 +90,7 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 
     if  ( m_initialized )
     {
-		QString currentHtml = data[ "main_info" ].toString();
+        QString currentHtml = data[ "main_info" ].toString();
         if ( !currentHtml.isEmpty() )
         {
             QColor highlight( App::instance()->palette().highlight().color() );

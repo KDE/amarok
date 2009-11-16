@@ -64,60 +64,62 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void downloadResult( KJob * );
 
     private:
-		typedef QXmlStreamReader qxml;
+        typedef QXmlStreamReader qxml;
 
-		/** internally used exception class */
-		class ParseError {
-		public:
-			ParseError(const QString& message)
-				: m_message(message) {}
+        /** internally used exception class */
+        class ParseError {
+        public:
+            ParseError(const QString& message)
+                : m_message(message) {}
 
-			const QString& message() const { return m_message; }
+            const QString& message() const { return m_message; }
 
-		private:
-			QString m_message;
-		};
+        private:
+            QString m_message;
+        };
 
-		class XmlParseError : public ParseError {
-		public:
-			XmlParseError(const QString& message)
-				: ParseError(message) {}
-		};
+        class XmlParseError : public ParseError {
+        public:
+            XmlParseError(const QString& message)
+                : ParseError(message) {}
+        };
 
-		/** This method wraps readNext() and tries to fix the PrematureEndOfDocumentError.
-		 * It also skips Comments, DTDs, EntityReferences, ProcessingInstructions and
-		 * ignorable whitespace. */
-		TokenType nextToken();
+        /** This method wraps readNext() and tries to fix the PrematureEndOfDocumentError.
+         * It also skips Comments, DTDs, EntityReferences, ProcessingInstructions and
+         * ignorable whitespace. */
+        TokenType nextToken();
 
-		static void expect(TokenType expected, TokenType got);
+        static void expect(TokenType expected, TokenType got);
 
-		void expect(TokenType token);
-		void expectName(const QString& name);
-		void expectStart(const QString& name);
-		void expectEnd(const QString& name);
+        void expect(TokenType token);
+        void expectName(const QString& name);
+        void expectStart(const QString& name);
+        void expectEnd(const QString& name);
+        void waitForData();
 
-		/** Read the inner xml of an element as a string. This is used to read the
-		 * contents of a &lt;body&gt; element, which contains xhtml data. */
-		QString readInnerXml();
+        static const char* tokenToString(TokenType token);
 
-		/** Read text content of an element. Raises error if non text content (elements) is read. */
-		QString readTextContent();
+        /** Read the inner xml of an element as a string. This is used to read the
+         * contents of a &lt;body&gt; element, which contains xhtml data. */
+        QString readInnerXml();
 
-		void readChannel();
-		Meta::PodcastEpisodePtr readItem();
-		KUrl readImage();
+        /** Read text content of an element. Raises error if non text content (elements) is read. */
+        QString readTextContent();
 
-		/** There usually are 3 kinds of descriptions. Usually a &lt;body&gt; element contains
-		 * the most detailed description followed by &lt;itunes:summary&gt; and the standard
-		 * &lt;description&gt;. */
-		enum DescriptionType { NoDescription = 0, RssDescription = 1, ItunesSummary = 2, HtmlBody = 3 };
-        enum FeedType { UnknownFeedType, ErrorPageType, Rss20FeedType };
+        void readChannel();
+        Meta::PodcastEpisodePtr readItem();
+        KUrl readImage();
 
-        FeedType m_feedType;
+        /** There usually are 3 kinds of descriptions. Usually a &lt;body&gt; element contains
+         * the most detailed description followed by &lt;itunes:summary&gt; and the standard
+         * &lt;description&gt;. */
+        enum DescriptionType { NoDescription = 0, RssDescription = 1, ItunesSummary = 2, HtmlBody = 3 };
+
         KUrl m_url;
         PodcastProvider * m_podcastProvider;
         KIO::TransferJob *m_transferJob;
         Meta::PodcastChannelPtr m_channel;
+        int m_downloadedBytes;
 
         void skipElement();
 
