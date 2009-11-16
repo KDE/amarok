@@ -20,9 +20,9 @@
 
 #include "amarok_export.h"
 #include "ui_FilenameLayoutDialog.h"
+#include "TagGuesser.h"
 
 #include <QWidget>
-
 
 static const QStringList typeElements = ( QStringList()
 << ""
@@ -83,8 +83,8 @@ class FilenameLayoutDialog
         AMAROK_EXPORT explicit FilenameLayoutDialog( QWidget *parent = 0, bool isOrganizeCollection = 0 ); // Could I have exported the whole class? I don't see how
         AMAROK_EXPORT QString getParsableScheme();
         int getCaseOptions();
-        int getWhitespaceOptions();
-        int getUnderscoreOptions();
+        bool getWhitespaceOptions();
+        bool getUnderscoreOptions();
         void setFileName( QString FileName );
 
     public slots:

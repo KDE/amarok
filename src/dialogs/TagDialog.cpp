@@ -594,45 +594,61 @@ TagDialog::guessFromFilename() //SLOT
     }
     else
     {
-        TagGuesser::setSchemeStrings( schemes );
-        debug() << "Sent scheme to TagGuesser, let's see what he does with it...";
-
     //here starts the old guessFromFilename() code
         int cur = 0;
 
-        TagGuesser guesser( m_currentTrack->playableUrl().path(), widget );
-        if( !guesser.title().isNull() )
-            ui->kLineEdit_title->setText( guesser.title() );
+        QFileInfo fi( m_currentTrack->playableUrl().path() );
 
-        if( !guesser.artist().isNull() )
+        TagGuesser guesser;
+        guesser.setFilename( fi.fileName() );
+        guesser.setSchema( schemeFromDialog );
+        guesser.setCaseType( widget->getCaseOptions() );
+        guesser.setConvertUnderscores( widget->getUnderscoreOptions() );
+        guesser.setCutTrailingSpaces( widget->getWhitespaceOptions() );
+
+        if( guesser.guess() )
         {
-            cur = ui->kComboBox_artist->currentIndex();
-            ui->kComboBox_artist->setItemText( cur, guesser.artist() );
+            QMap<QString,QString> Tags = guesser.tags();
+            
+            if( Tags.contains("title") )
+                ui->kLineEdit_title->setText( Tags["title"] );
+
+            if( Tags.contains("artist") )
+            {
+                cur = ui->kComboBox_artist->currentIndex();
+                ui->kComboBox_artist->setItemText( cur, Tags["artist"] );
+            }
+
+            if( Tags.contains("album") )
+            {
+                cur = ui->kComboBox_album->currentIndex();
+                ui->kComboBox_album->setItemText( cur, Tags["album"] );
+            }
+
+            if( Tags.contains("track") )
+                ui->qSpinBox_track->setValue( Tags["track"].toInt() );
+            
+            if( Tags.contains("comment") )
+                ui->qPlainTextEdit_comment->setPlainText( Tags["comment"] );
+            
+            if( Tags.contains("year") )
+                ui->qSpinBox_year->setValue( Tags["year"].toInt() );
+
+            if( Tags.contains("composer") )
+            {
+                cur = ui->kComboBox_composer->currentIndex();
+                ui->kComboBox_composer->setItemText( cur, Tags["composer"] );
+            }
+
+            if( Tags.contains("genre") )
+            {
+                cur = ui->kComboBox_genre->currentIndex();
+                ui->kComboBox_genre->setItemText( cur, Tags["genre"] );
+            }
         }
-
-        if( !guesser.album().isNull() )
+        else
         {
-            cur = ui->kComboBox_album->currentIndex();
-            ui->kComboBox_album->setItemText( cur, guesser.album() );
-        }
-
-        if( !guesser.track().isNull() )
-            ui->qSpinBox_track->setValue( guesser.track().toInt() );
-        if( !guesser.comment().isNull() )
-            ui->qPlainTextEdit_comment->setPlainText( guesser.comment() );
-        if( !guesser.year().isNull() )
-            ui->qSpinBox_year->setValue( guesser.year().toInt() );
-
-        if( !guesser.composer().isNull() )
-        {
-            cur = ui->kComboBox_composer->currentIndex();
-            ui->kComboBox_composer->setItemText( cur, guesser.composer() );
-        }
-
-        if( !guesser.genre().isNull() )
-        {
-            cur = ui->kComboBox_genre->currentIndex();
-            ui->kComboBox_genre->setItemText( cur, guesser.genre() );
+            debug() << "guessing tags from filename failed" << endl;
         }
     }
     widget->deleteLater();

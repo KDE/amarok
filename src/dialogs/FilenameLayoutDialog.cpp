@@ -21,7 +21,6 @@
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "TagGuesser.h"
 
 #include <KConfig>
 #include <KColorScheme>
@@ -50,12 +49,28 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
 
     connect( cbCase, SIGNAL( toggled( bool ) ),
              this, SLOT( editStateEnable( bool ) ) );
+    connect( cbCase, SIGNAL( toggled( bool ) ),
+             this, SLOT( updatePreview() ) );
+    connect( rbTitleCase, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( rbFirstLetter, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( rbAllLower, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( rbAllUpper, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( cbEliminateSpaces, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
+    connect( cbReplaceUnderscores, SIGNAL( toggled(bool) ),
+             this, SLOT( updatePreview() ) );
     connect( tokenPool, SIGNAL( onDoubleClick( Token * ) ),
              m_dropTarget, SLOT( insertToken( Token* ) ) );
     connect( kpbAdvanced, SIGNAL( clicked() ),
              this, SLOT( toggleAdvancedMode() ) );
     connect( m_dropTarget, SIGNAL( changed() ),
              this, SIGNAL( schemeChanged() ) );
+    connect( m_dropTarget, SIGNAL( changed() ),
+             this, SLOT( updatePreview() ) );
     connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
              this, SIGNAL( schemeChanged() ) );
     connect( filenameLayoutEdit, SIGNAL( textChanged( const QString & ) ),
@@ -128,14 +143,14 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
 
     if( !m_isOrganizeCollection )
     {
-        m_color_Album = Qt::red;
-        m_color_Artist = Qt::blue;
-        m_color_Comment = Qt::gray;
-        m_color_Composer = Qt::magenta;
-        m_color_Genre = Qt::cyan;
-        m_color_Title = Qt::green;
-        m_color_Track = Qt::yellow;
-        m_color_Year = Qt::darkRed;
+        m_color_Album = QColor( album_color );
+        m_color_Artist = QColor( artist_color );
+        m_color_Comment = QColor( comment_color );
+        m_color_Composer = QColor( composer_color );
+        m_color_Genre = QColor( genre_color );
+        m_color_Title = QColor( title_color );
+        m_color_Track = QColor( track_color );
+        m_color_Year = QColor( year_color );
     }
     else
     {
@@ -165,7 +180,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     tokenPool->addToken( nToken );
 
     nToken = new Token( i18n( "Album" ), "filename-album-amarok", Album );
-    nToken->setTextColor(m_color_Album);
+    nToken->setTextColor( m_color_Album );
     tokenPool->addToken( nToken );
 
     nToken = new Token( i18n( "Comment" ), "filename-comment-amarok", Comment );
@@ -255,104 +270,77 @@ FilenameLayoutDialog::getParsableScheme()
 }
 
 //Sets Filename for Preview
-void FilenameLayoutDialog::setFileName( QString FileName )
+void
+FilenameLayoutDialog::setFileName( QString FileName )
 {
     m_filename = FileName;
     updatePreview();
 }
 
 //Updates the Filename Preview
-void FilenameLayoutDialog::updatePreview()                 //SLOT
+void
+FilenameLayoutDialog::updatePreview()                 //SLOT
 {
-    if ( m_isOrganizeCollection )
+    if( m_isOrganizeCollection )
        return;
     
-    QString Scheme = this->getParsableScheme();
+    QString scheme = this->getParsableScheme();
     QFileInfo fi( m_filename );
  
-    if ( !Scheme.isEmpty() )
+    if( !scheme.isEmpty() )
     {
-        QStringList schemes;                              //See TagDialog.cpp Line 509 (Should be changed)
-        schemes += Scheme;
-
-        TagGuesser::setSchemeStrings( schemes );
-
-        TagGuesser guesser( m_filename, this );
-
-        if ( !guesser.sorted().isEmpty() )
+        TagGuesser guesser;
+        guesser.setFilename( fi.fileName() );
+        guesser.setCaseType( this->getCaseOptions() );
+        guesser.setConvertUnderscores( this->getUnderscoreOptions() );
+        guesser.setCutTrailingSpaces( this->getWhitespaceOptions() );
+        guesser.setSchema( scheme );
+        
+        if( guesser.guess() )
         {
-            QMap<int,QString>::const_iterator start = guesser.sorted().constBegin();
-            QMap<int,QString>::const_iterator end = guesser.sorted().constEnd();
-            int Pos = 0;
-            QString colored = fi.baseName()+"."+fi.completeSuffix();
+            QMap<QString,QString> tags = guesser.tags();
 
-            for ( ; start != end; ++start )
-            {
-                Pos = colored.indexOf( start.value(),Pos,Qt::CaseInsensitive );
+            if( tags.contains( "album" ) )
+                Album_result->setText( "<font color='" + QColor( album_color ).name() + "'>" + tags["album"] + "</font>" );
+            else
+                Album_result->setText( i18n("<empty>") );
 
-                if ( start.value() == guesser.album() )
-                {
-                    colored.insert( Pos,QString( "<font color=\"" + m_color_Album.name() + "\">" ) );
-                    Pos += guesser.album().length()+22;
-                    colored.insert( Pos,QString( "</font>" ) );
-                    Pos += 7;
-                }
-                else if ( start.value() == guesser.artist() )
-                {
-                    colored.insert( Pos,QString( "<font color=\"" + m_color_Artist.name() + "\">" ) );
-                    Pos += guesser.artist().length()+22;
-                    colored.insert( Pos,QString( "</font>" ) );
-                    Pos += 7;
-                }
-                else if ( start.value() == guesser.comment() )
-                {
-                    colored.insert( Pos,QString( "<font color=\"" + m_color_Comment.name() + "\">" ) );
-                    Pos += guesser.comment().length()+22;
-                    colored.insert( Pos,QString( "</font>" ) );
-                    Pos += 7;
-                }
-                else if ( start.value() == guesser.composer() )
-                {
-                    colored.insert( Pos,QString( "<font color=\"" + m_color_Composer.name() + "\">" ) );
-                    Pos += guesser.composer().length()+22;
-                    colored.insert( Pos,QString( "</font>" ) );
-                    Pos += 7;
-                }
-                else if ( start.value() == guesser.genre() )
-                {
-                    colored.insert( Pos,QString( "<font color=\"" + m_color_Genre.name() + "\">" ) );
-                    Pos += guesser.genre().length()+22;
-                    colored.insert( Pos,QString( "</font>" ) );
-                    Pos += 7;
-                }
-                else if ( start.value() == guesser.title() )
-                {
-                    colored.insert( Pos,QString( "<font color=\"" + m_color_Title.name() + "\">" ) );
-                    Pos += guesser.title().length()+22;
-                    colored.insert( Pos,QString( "</font>" ) );
-                    Pos += 7;
-                }
-                else if ( start.value() == guesser.track() )
-                {
-                    colored.insert( Pos,QString( "<font color=\"" + m_color_Track.name() + "\">" ) );
-                    Pos += guesser.track().length()+22;
-                    colored.insert( Pos,QString( "</font>" ) );
-                    Pos += 7;
-                }
-                else if ( start.value() == guesser.year() )
-                {
-                    colored.insert( Pos,QString( "<font color=\"" + m_color_Year.name() + "\">" ) );
-                    Pos += guesser.year().length()+22;
-                    colored.insert( Pos,QString( "</font>" ) );
-                    Pos += 7;
-                }
-                else
-                {
-                    debug() << "Unknown Tag in Tag List";
-                }
-            }
+            if( tags.contains( "title" ) )
+                Title_result->setText( "<font color='" + QColor( title_color ).name() + "'>" + tags["title"] + "</font>" );
+            else
+                Title_result->setText( i18n("<empty>") );
 
-            filenamePreview->setText(colored);
+            if( tags.contains( "artist" ) )
+                Artist_result->setText( "<font color='" + QColor( artist_color ).name() + "'>" + tags["artist"] + "</font>" );
+            else
+                Artist_result->setText( i18n("<empty>") );
+
+            if( tags.contains( "comment" ) )
+                Comment_result->setText( "<font color='" + QColor( comment_color ).name() + "'>" + tags["comment"] + "</font>" );
+            else
+                Comment_result->setText( i18n("<empty>") );
+
+            if( tags.contains( "composer" ) )
+                Composer_result->setText( "<font color='" + QColor( composer_color ).name() + "'>" + tags["composer"] + "</font>" );
+            else
+                Composer_result->setText( i18n("<empty>") );
+
+            if( tags.contains( "genre" ) )
+                Genre_result->setText( "<font color='" + QColor( genre_color ).name() + "'>" + tags["genre"] + "</font>" );
+            else
+                Genre_result->setText( i18n("<empty>") );
+
+            if( tags.contains( "track" ) )
+                Track_result->setText( "<font color='" + QColor( track_color ).name() + "'>" + QString( tags["track"].toInt() ) + "</font>" );
+            else
+                Track_result->setText( i18n("<empty>") );
+
+            if( tags.contains( "year" ) )
+                Year_result->setText( "<font color='" + QColor( year_color ).name() + "'>" + QString( tags["year"].toInt() ) + "</font>" );
+            else
+                Year_result->setText( i18n("<empty>") );
+            
+            filenamePreview->setText(guesser.coloredFileName());
         }
         else
         {
@@ -383,37 +371,37 @@ FilenameLayoutDialog::getCaseOptions()
     else
     {
         if( rbAllLower->isChecked() )
-            return 1;
-        else if( rbAllUpper->isChecked() )
-            return 2;
-        else if( rbFirstLetter->isChecked() )
-            return 3;
-        else if( rbTitleCase->isChecked() )
             return 4;
+        else if( rbAllUpper->isChecked() )
+            return 3;
+        else if( rbFirstLetter->isChecked() )
+            return 2;
+        else if( rbTitleCase->isChecked() )
+            return 1;
         else
         {
             debug() << "OUCH!";
-            return 99;
+            return 0;
         }
     }
 }
 
 //As above
-int
+bool
 FilenameLayoutDialog::getWhitespaceOptions()
 {
     if( !cbEliminateSpaces->isChecked() )
-        return 0;
-    return 1;
+        return false;
+    return true;
 }
 
 //As above
-int
+bool
 FilenameLayoutDialog::getUnderscoreOptions()
 {
     if( !cbReplaceUnderscores->isChecked() )
-        return 0;
-    return 1;
+        return false;
+    return true;
 }
 
 //Handles the modifications to the dialog to toggle between advanced and basic editing mode.
