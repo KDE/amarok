@@ -85,18 +85,18 @@ class TagGuesser
 
         struct TagStruct
         {
-            QString type;
-            QString tag;
+            QString type;                   //! Type of the Tag (e.g. "artist")
+            QString tag;                    //! Tag itself
         };
         
-        QMap<QString,QString> m_tags;
-        QMap<int,TagStruct> m_sortedTags;
-        bool m_guessed;
-        QString m_fileName;
-        QString m_schema;
-        int m_caseOptions;
-        bool m_cutTrailingSpaces;
-        bool m_convertUnderscores;
+        QMap<QString,QString> m_tags;       //! Taglist (e.g. <"artist","some artist">
+        QMap<int,TagStruct> m_sortedTags;   //! Taglist sorted after their occurence in the filename
+        bool m_guessed;                     //! Is true when guessing was done
+        QString m_fileName;                 //! Filename to be guessed from
+        QString m_schema;                   //! Schema after which should be guessed
+        int m_caseOptions;                  //! Case options to change tags after
+        bool m_cutTrailingSpaces;           //! Whether trailing spaces should be cut from tags
+        bool m_convertUnderscores;          //! Whether underscores should be converted to spaces
 
         /**
         *   Converts a tag to specific case type

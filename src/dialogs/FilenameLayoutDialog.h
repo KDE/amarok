@@ -85,6 +85,10 @@ class FilenameLayoutDialog
         int getCaseOptions();
         bool getWhitespaceOptions();
         bool getUnderscoreOptions();
+
+        /**
+        *   Sets the filename to show colored preview from
+        */
         void setFileName( QString FileName );
 
     public slots:
@@ -103,7 +107,7 @@ class FilenameLayoutDialog
         QString parsableScheme() const;
         void inferScheme( const QString &scheme );
         
-        QString m_filename;
+        QString m_filename;                         //! Filename to guess from
         bool m_isOrganizeCollection;
         bool m_advancedMode;
         TokenDropTarget *m_dropTarget;
