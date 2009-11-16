@@ -344,7 +344,7 @@ PodcastReader::read()
             readChannel();
         }
         else if ( qxml::name() == "html" || qxml::name() == "HTML" ) {
-            throw ParseError( i18n( "An HTML page was received. Expected an RSS 2.0 feed" ) );
+            throw ParseError( i18n( "A HTML page was received. Expected an RSS 2.0 feed" ) );
         }
         else {
             // TODO: change this string once we support more
