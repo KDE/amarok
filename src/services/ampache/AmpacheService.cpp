@@ -147,9 +147,10 @@ AmpacheService::AmpacheService( AmpacheServiceFactory* parent, const QString & n
 
     // We need to check the version of Ampache we are attempting to authenticate against, as this changes how we deal with it
 
-    QString versionString = "<server>/server/xml.server.php?action=ping";
+    QString versionString = "<server>/server/xml.server.php?action=ping&user=<user>";
 
     versionString.replace(QString("<server>"), m_server);
+    versionString.replace(QString("<user>"), username);
 
     debug() << "Verifying Ampache Version Using: " << versionString;
 
