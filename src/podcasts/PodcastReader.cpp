@@ -218,7 +218,7 @@ PodcastReader::read()
                     }
                     else
                     {
-                        raiseError( i18n( "Feed %1 didn't start with a valid channel tag.", m_url.url() ) );
+                        raiseError( i18n( "Feed %1 did not start with a valid channel tag.", m_url.url() ) );
                         result = false;
                         break;
                     }
