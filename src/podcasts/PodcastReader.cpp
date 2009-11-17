@@ -85,8 +85,8 @@ PodcastReader::read( const KUrl &url )
         ->setAbortSlot( this, SLOT( slotAbort() ) );
 
     // parse data
-    // XXX: Maybe make this asynchrone by imediately returnig
-    //      and calling read() in the first addData() call.
+    // XXX: Maybe make this asynchrone by imediately returnig and doing
+    //      something like QTimer::singleShot(0, this, SLOT(read()));
     return read();
 }
 
@@ -316,7 +316,7 @@ PodcastReader::readTextContent() {
         case EndElement: return text;
         default:
             throw ParseError(
-				QString("unexpected token while parsing text content: %s")
+                QString("unexpected token while parsing text content: %s")
                 .arg( tokenToString(tokenType()) ) );
         }
     }
