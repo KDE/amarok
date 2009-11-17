@@ -56,7 +56,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
         void setUniqueInstance( bool isUnique ) { m_isUniqueInstance = isUnique; }
         bool isNonUniqueInstance() const { return m_isUniqueInstance; }
 
-        Amarok::TrayIcon* trayIcon() { return m_tray; }
+        Amarok::TrayIcon* trayIcon() const { return m_tray; }
         static void handleCliArgs();
         static void initCliArgs( int argc, char *argv[] );
         static void initCliArgs();
