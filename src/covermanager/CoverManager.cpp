@@ -436,15 +436,12 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
         CoverViewItem *item = new CoverViewItem( m_coverView, album );
         m_coverItems.append( item );
 
-        if ( ++x % 50 == 0 )
-        {
-            m_progressDialog->setValue( x );
-            kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
+        m_progressDialog->setValue( ++x );
+        kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
 
-            //only worth testing for after processEvents() is called
-            if( m_progressDialog->wasCanceled() )
-               break;
-        }
+        //only worth testing for after processEvents() is called
+        if( m_progressDialog->wasCanceled() )
+            break;
     }
 
     updateStatusBar();
