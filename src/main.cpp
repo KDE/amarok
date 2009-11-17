@@ -83,6 +83,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "leinir", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Daniel Caleb Jones"), ki18n("Biased playlists"), "danielcjones@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Daniel Dewald"), ki18n("Tag Guesser, Labels"), "Daniel.Dewald@time-shift.de" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Daniel Winter"), ki18n("Nepomuk integration"), "dw@danielwinter.de" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Edward \"Hades\" Toroshchin"), ki18n("Developer"), "edward.hades@gmail.com" );
@@ -194,8 +196,6 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Stanislav Karchebny"), ki18n("Developer"), "berkus@madfire.net" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Stefan Bogner"), ki18n("Loads of stuff"), "bochi@online.ms" );
-        ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Daniel Dewald"), ki18n("Bugfixes, Label Support"), "Daniel.Dewald@time-shift.de" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
     KCmdLineArgs::reset();
