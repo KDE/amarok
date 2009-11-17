@@ -1,7 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2003 Frerich Raabe <raabe@kde.org>                                     *
- * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
- * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -20,105 +17,115 @@
 #ifndef TAGGUESSER_H
 #define TAGGUESSER_H
 
-#include "FilenameLayoutDialog.h"
-
+#include <QMap>
+#include <QString>
 #include <QRegExp>
-#include <QList>
 
-class FileNameScheme
-{
-    public:
-        typedef QList<FileNameScheme> List;
-
-        FileNameScheme()
-            : m_cod()
-            , m_titleField( 0 )
-            , m_artistField( 0 )
-            , m_albumField( 0 )
-            , m_trackField( 0 )
-            , m_commentField( 0 )
-            , m_yearField( 0 )
-            , m_composerField( 0 )
-            , m_genreField( 0 )
-        { }
-
-        FileNameScheme( const QString &s );
-
-        bool matches( const QString &s ) const;
-
-        QString title() const;
-        int     titlePos() const;
-        QString artist() const;
-        int     artistPos() const;
-        QString album() const;
-        int     albumPos() const;
-        QString track() const;
-        int     trackPos() const;
-        QString comment() const;
-        int     commentPos() const;
-        QString year() const;
-        int     yearPos() const;
-        QString composer() const;
-        int     composerPos() const;
-        QString genre() const;
-        int     genrePos() const;
-
-        QString pattern() const { return m_cod; }
-
-    private:
-        QString composeRegExp( const QString &s ) const;
-        QString m_cod;
-
-        mutable QRegExp m_regExp;
-
-        int m_titleField;
-        int m_artistField;
-        int m_albumField;
-        int m_trackField;
-        int m_commentField;
-        int m_yearField;
-        int m_composerField;
-        int m_genreField;
-};
+#define album_color Qt::red
+#define artist_color Qt::blue
+#define comment_color Qt::gray
+#define composer_color Qt::magenta
+#define genre_color Qt::cyan
+#define title_color Qt::green
+#define track_color Qt::yellow
+#define year_color Qt::darkRed
 
 class TagGuesser
 {
     public:
 
-        enum Type { FileName = 0, MusicBrainz = 1 };
-
-        static QStringList schemeStrings();
-        static void setSchemeStrings( const QStringList &schemes );
-
         TagGuesser();
-        TagGuesser( const QString &absFileName, FilenameLayoutDialog *dialog );
 
-        void guess( const QString &absFileName, FilenameLayoutDialog *dialog );
+        /**
+        *   Sets the Filename to guess from
+        *   @arg fileName Filename to guess from
+        */
+        void setFilename( const QString fileName );
 
-        QString title() const { return m_title; }
-        QString artist() const { return m_artist; }
-        QString album() const { return m_album; }
-        QString track() const { return m_track; }
-        QString comment() const { return m_comment; }
-        QString year() const { return m_year; }
-        QString composer() const { return m_composer; }
-        QString genre() const { return m_genre; }
-        QMap<int,QString> sorted() const { return m_sorted; }
+        /**
+        *   Sets the schema to guess from
+        *   @arg schema schema to guess from
+        */
+        void setSchema( const QString schema );
+
+        /**
+        *   Sets the case type
+        *   @arg caseOptions the case type to use
+        **/
+        void setCaseType( const int caseOptions );
+
+        /**
+        *   Sets wether trailing spaces are cut from tags
+        *   @arg cutSpaces should trailing spaces be cut from tags
+        **/
+        void setCutTrailingSpaces( const bool cutTrailingSpaces );
+
+        /**
+        *   Sets wether underscores should be converted to spaces
+        *   @arg convertUnderscores should underscores be converted
+        */
+        void setConvertUnderscores( const bool convertUnderscores );
+        
+        /**
+        *   tries guessing tags from filename and options
+        */
+        bool guess();
+
+        /**
+        *   @Returns a list of guessed Tags
+        */
+        QMap<QString,QString> tags() { return m_tags; };
+
+        /**
+        *   @Returns a colored version of the filename
+        */
+        QString coloredFileName();
 
     private:
-        void loadSchemes();
-        QString capitalizeWords( const QString &s, const int &caseOptions );
 
-        FileNameScheme::List m_schemes;
-        QString m_title;
-        QString m_artist;
-        QString m_album;
-        QString m_track;
-        QString m_comment;
-        QString m_year;
-        QString m_composer;
-        QString m_genre;
-        QMap<int,QString> m_sorted;
+        struct TagStruct
+        {
+            QString type;                   //! Type of the Tag (e.g. "artist")
+            QString tag;                    //! Tag itself
+        };
+        
+        QMap<QString,QString> m_tags;       //! Taglist (e.g. <"artist","some artist">
+        QMap<int,TagStruct> m_sortedTags;   //! Taglist sorted after their occurence in the filename
+        bool m_guessed;                     //! Is true when guessing was done
+        QString m_fileName;                 //! Filename to be guessed from
+        QString m_schema;                   //! Schema after which should be guessed
+        int m_caseOptions;                  //! Case options to change tags after
+        bool m_cutTrailingSpaces;           //! Whether trailing spaces should be cut from tags
+        bool m_convertUnderscores;          //! Whether underscores should be converted to spaces
+
+        /**
+        *   Converts a tag to specific case type
+        *   @arg tag    tag to convert
+        *   @arg type   case type to convert tag to
+        *   @returns    the converted tag
+        */
+        QString convertTagCaseType( QString tag, int type );
+
+        /**
+        *   Converts all underscores in a filename to spaces
+        *   @arg filename the filename to be converted
+        *   @returns the converted filename
+        */
+        QString convertUnderscores( QString tag );
+
+        /**
+        *   Cuts trailing spaces from a tag
+        *   @arg tag    tag to be used
+        *   @returns    the tag without trailing spaces
+        */
+        QString cutTagTrailingSpaces( QString tag );
+
+        /**
+        *   Generates a regular expression from a given schema
+        *   @arg schema schema to generate expression from
+        *   @returns a regular expression
+        */
+        QString getRegExpFromSchema( QString schema );
 };
 
 #endif /* TAGGUESSER_H */

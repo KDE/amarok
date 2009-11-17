@@ -80,12 +80,22 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void perTrack();
         void checkModified();
 
+        /**
+        *   removes selected label from list
+        */
         void removeLabelPressed();
+
+        /**
+        *   adds label to list
+        */
         void addLabelPressed();
 
         void showCoverMenu( const QPoint &pos );
         void loadCover();
 
+        /**
+        *   Shows FileNameLayoutDialog to guess tags from filename
+        */
         void guessFromFilename();
 
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
@@ -119,7 +129,14 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         */
         void labelSelected();
 
+        /**
+        *   Updates track label list
+        */
         void trackLabelsFetched( QStringList labels );
+
+        /**
+        *   Updates global label list
+        */
         void globalLabelsFetched( QStringList labels );
 
     private:
@@ -167,6 +184,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         * @arg track Track to load labels for
         */
         QStringList labelsForTrack( Meta::TrackPtr track );
+        
         QString lyricsForTrack( const Meta::TrackPtr &track );
         void saveTags();
         /**
@@ -189,10 +207,10 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QMap<Meta::TrackPtr, QString> m_storedLyrics;
         QString m_path;
         QString m_currentCover;
-        LabelListModel *m_labelModel;
-        QStringList m_newLabels;
-        QStringList m_removedLabels;
-        QStringList m_labels;
+        LabelListModel *m_labelModel;               //! Model MVC Class for Track label list
+        QStringList m_newLabels;                    //! List of added labels
+        QStringList m_removedLabels;                //! List of removed labels
+        QStringList m_labels;                       //! List of track labels
 
         //2.0 stuff
         Meta::TrackList m_tracks;
