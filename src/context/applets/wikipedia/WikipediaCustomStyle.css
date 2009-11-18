@@ -316,7 +316,7 @@ div.thumb
   font-size: 94%;
   text-align: center;
   word-wrap: normal;
-  background-color: white;
+  background-color: {table_background_color};
 }
 
 div.tright
