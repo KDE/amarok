@@ -253,21 +253,25 @@ TagDialog::dataQueryDone()
     QString saveText( ui->kComboBox_artist->lineEdit()->text() );
     ui->kComboBox_artist->clear();
     ui->kComboBox_artist->insertItems( 0, m_artists );
+    ui->kComboBox_artist->completionObject()->setItems( m_artists );
     ui->kComboBox_artist->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_album->lineEdit()->text();
     ui->kComboBox_album->clear();
     ui->kComboBox_album->insertItems( 0, m_albums );
+    ui->kComboBox_album->completionObject()->setItems( m_albums );
     ui->kComboBox_album->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_composer->lineEdit()->text();
     ui->kComboBox_composer->clear();
     ui->kComboBox_composer->insertItems( 0, m_composers );
+    ui->kComboBox_composer->completionObject()->setItems( m_composers );
     ui->kComboBox_composer->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_genre->lineEdit()->text();
     ui->kComboBox_genre->clear();
     ui->kComboBox_genre->insertItems( 0, m_genres );
+    ui->kComboBox_genre->completionObject()->setItems( m_genres );
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
 
