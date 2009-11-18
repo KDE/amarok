@@ -51,7 +51,7 @@ public:
      * Returns the highlight color which should be used instead of the color from KDE.
      * @return Highlight color, which is the KDE highlight color, with reduced saturation (less contrast).
      */
-    static QColor highlightColor();  //defined in App.cpp
+    static QColor highlightColor();
 
     /**
      * Returns the highlight color which should be used instead of the color from KDE.
@@ -59,7 +59,7 @@ public:
      * @param  Decimal percentage to multiply the value of the HSV color with.
      * @return Highlight color, which is the KDE highlight color, with reduced saturation (less contrast).
      */
-    static QColor highlightColor( qreal percentSaturation, qreal percentValue );  //defined in App.cpp
+    static QColor highlightColor( qreal percentSaturation, qreal percentValue );
 
     /**
      * Returns the background color used for context applets.
