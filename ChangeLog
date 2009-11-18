@@ -15,6 +15,7 @@ VERSION 2.2.2
     * Fetch labels from last.fm for some tracks [UPDATE THIS ONCE WE FIGURE OUT WHEN TO DO SO]
 
   CHANGES:
+    * Added tooltips for all icons in the Context View's applets.
     * Usability improvements for the Ampache service settings dialog.
 
   BUGFIXES:
