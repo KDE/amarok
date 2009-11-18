@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
+ * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -119,9 +120,11 @@ void UpcomingEventsEngine::update()
                 artistName = currentTrack->artist()->name();
             else
                 artistName = currentTrack->artist()->prettyName();
+            setData( "upcomingEvents", "artist", artistName );
         }
+        else
+            setData( "upcomingEvents", "artist", "Unknown artist" );
     }
-    setData( "upcomingEvents", "artist", artistName );
 }
 
 void UpcomingEventsEngine::reloadUpcomingEvents()

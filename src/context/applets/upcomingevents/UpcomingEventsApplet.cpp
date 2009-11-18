@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -53,6 +54,7 @@ void
 UpcomingEventsApplet::init()
 {
     m_headerLabel = new QGraphicsSimpleTextItem( this );
+    m_artist = new QGraphicsSimpleTextItem( this );
 
     // ask for all the CV height
     resize( 500, -1 );
@@ -85,7 +87,10 @@ void
 UpcomingEventsApplet::connectSource( const QString &source )
 {
     if( source == "upcomingEvents" )
+    {
         dataEngine( "amarok-upcomingEvents" )->connectSource( "upcomingEvents", this );
+        dataUpdated( source, dataEngine( "amarok-upcomingEvents" )->query( "upcomingEvents" ) );
+    }
 }
 
 void
@@ -101,6 +106,7 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     // Icon positionning
     m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+    m_artist->setPos( ( boundingRect().width() - m_artist->boundingRect().width() ) / 2, standardPadding() + 20 );
     
 }
 
@@ -120,8 +126,10 @@ void
 UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     Q_UNUSED( name )
-    m_artist = data[ "artist" ].toString();
-    
+    m_artist->setText( data[ "artist" ].toString() );
+
+    updateConstraints();
+    update();
 }
 
 void
@@ -133,9 +141,6 @@ UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     p->setRenderHint( QPainter::Antialiasing );
 
     addGradientToAppletBackground( p );
-
-    // draw rounded rect around title
-    p->drawText( 1,50, m_artist );
 
     //draw background of wiki text
     p->save();

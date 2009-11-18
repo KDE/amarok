@@ -77,7 +77,7 @@ private:
 
     QString m_timeSpan;
     bool m_enabledLinks;
-    QString m_artist;
+    QGraphicsSimpleTextItem* m_artist;
     
 private slots:
     void connectSource( const QString &source );

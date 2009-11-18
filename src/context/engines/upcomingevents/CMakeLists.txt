@@ -5,6 +5,7 @@ include_directories( ../../..
 
 set( upcomingEvents_engine_SRCS
     UpcomingEventsEngine.cpp
+    ../../applets/upcomingevents/LastFmEvent.cpp
 )
 
 kde4_add_plugin(amarok_data_engine_upcomingEvents ${upcomingEvents_engine_SRCS})
