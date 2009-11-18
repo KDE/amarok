@@ -83,8 +83,8 @@ void LyricsApplet::init()
     editAction->setIcon( KIcon( "document-edit" ) );
     editAction->setVisible( true );
     editAction->setEnabled( false );
+    editAction->setText( i18n( "Edit Lyrics" ) );
     m_editIcon = addAction( editAction );
-    m_editIcon->setToolTip( i18n( "Edit Lyrics" ) );
 
     connect( m_editIcon, SIGNAL( activated() ), this, SLOT( editLyrics() ) );
 
@@ -92,8 +92,8 @@ void LyricsApplet::init()
     closeAction->setIcon( KIcon( "document-close" ) );
     closeAction->setVisible( false );
     closeAction->setEnabled( false );
+    closeAction->setText( i18n( "Close" ) );
     m_closeIcon = addAction( closeAction );
-    m_closeIcon->setToolTip( i18n( "Close" ) );
 
     connect( m_closeIcon, SIGNAL( activated() ), this, SLOT( closeLyrics() ) );
 
@@ -101,8 +101,8 @@ void LyricsApplet::init()
     saveAction->setIcon( KIcon( "document-save" ) );
     saveAction->setVisible( false );
     saveAction->setEnabled( false );
+    saveAction->setText( i18n( "Save Lyrics" ) );
     m_saveIcon = addAction( saveAction );
-    m_saveIcon->setToolTip( i18n( "Save Lyrics" ) );
 
     connect( m_saveIcon, SIGNAL( activated() ), this, SLOT( saveLyrics() ) );
     
@@ -110,8 +110,8 @@ void LyricsApplet::init()
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
+    reloadAction->setText( i18n( "Reload Lyrics" ) );
     m_reloadIcon = addAction( reloadAction );
-    m_reloadIcon->setToolTip( i18n( "Reload Lyrics" ) );
 
     connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( refreshLyrics() ) );
 

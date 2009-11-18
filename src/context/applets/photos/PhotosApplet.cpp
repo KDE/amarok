@@ -75,8 +75,8 @@ PhotosApplet::init()
     settingsAction->setIcon( KIcon( "preferences-system" ) );
     settingsAction->setVisible( true );
     settingsAction->setEnabled( true );
+    settingsAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( settingsAction );
-    m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
 
     m_widget = new PhotosScrollWidget( this );
