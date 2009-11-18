@@ -146,7 +146,7 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     m_guid = episode->guid();
     m_url = KUrl( episode->uidUrl() );
     m_localUrl = episode->localUrl();
-//    m_mimeType = episode->mimeType();
+    m_mimeType = episode->mimeType();
     m_pubDate = episode->pubDate();
     m_duration = episode->duration();
     m_fileSize = episode->filesize();

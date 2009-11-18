@@ -117,6 +117,11 @@ PodcastReader::StaticData::StaticData()
             &PodcastReader::beginText,
             &PodcastReader::endImageUrl,
             &PodcastReader::readCharacters )
+        , authorAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endAuthor,
+            &PodcastReader::readCharacters )
         , enclosureAction(
             skipMap,
             &PodcastReader::beginEnclosure )
@@ -164,12 +169,15 @@ PodcastReader::StaticData::StaticData()
 
     // parse <item>
     itemMap.insert( Title, &titleAction );
+    itemMap.insert( Author, &authorAction );
     itemMap.insert( Description, &descriptionAction );
     itemMap.insert( Summary, &summaryAction );
     itemMap.insert( Body, &bodyAction );
     itemMap.insert( Enclosure, &enclosureAction );
     itemMap.insert( Guid, &guidAction );
     itemMap.insert( PubDate, &pubDateAction );
+    // TODO: move the link field from PodcastChannel to PodcastMetaCommon
+    // itemMap.insert( Link, &linkAction );
 
     // parse arbitrary xml
     xmlMap.insert( Any, &xmlAction );
@@ -334,6 +342,10 @@ PodcastReader::elementType() const
     else if( name == "title" )
     {
         return Title;
+    }
+    else if( name == "author" )
+    {
+        return Author;
     }
     else if( name == "enclosure" )
     {
@@ -524,6 +536,8 @@ PodcastReader::endBody()
 void
 PodcastReader::endLink()
 {
+    // TODO: change to m_current->... when the field
+    //       is moved to the PodcastMetaCommon class.
     m_channel->setWebLink( KUrl( m_buffer ) );
 }
 
@@ -610,6 +624,8 @@ void
 PodcastReader::beginEnclosure()
 {
     m_item->setUidUrl( KUrl( attributes().value( "url" ).toString() ) );
+    m_item->setFilesize( attributes().value( "length" ).toString().toInt() );
+    m_item->setMimeType( attributes().value( "type" ).toString().trimmed() );
 }
 
 void
@@ -629,6 +645,12 @@ PodcastReader::endImageUrl()
 {
     // TODO save image data
     m_channel->setImageUrl( KUrl( m_buffer ) );
+}
+
+void
+PodcastReader::endAuthor()
+{
+    m_current->setAuthor( m_buffer.trimmed() );
 }
 
 void

@@ -72,6 +72,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
             Item,
             Image,
             Link,
+            Author,
             Url,
             Title,
             Enclosure,
@@ -111,7 +112,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
                     , m_characters( 0 ) {}
 
                 Action(ActionMap &actionMap, ActionCallback begin,
-						ActionCallback end, ActionCallback characters)
+                        ActionCallback end, ActionCallback characters)
                     : m_actionMap( actionMap )
                     , m_begin( begin )
                     , m_end( end )
@@ -156,6 +157,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void endPubDate();
         void endItem();
         void endImageUrl();
+        void endAuthor();
         void endXml();
 
         void readCharacters();
@@ -211,6 +213,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
                 Action imageAction;
                 Action itemAction;
                 Action urlAction;
+                Action authorAction;
                 Action enclosureAction;
                 Action guidAction;
                 Action pubDateAction;

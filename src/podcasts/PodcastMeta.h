@@ -137,6 +137,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ); }
         virtual uint lastPlayed() const { return 0; }
         virtual int playCount() const { return 0; }
+        virtual QString mimeType() const { return m_mimeType; }
 
         virtual QString type() const
         {
@@ -161,6 +162,8 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual QString guid() const { return m_guid; }
         virtual bool isNew() const { return m_isNew; }
 
+        void setFilesize( int fileSize ) { m_fileSize = fileSize; }
+        void setMimeType( const QString &mimeType ) { m_mimeType = mimeType; }
         void setUidUrl( const KUrl &url ) { m_url = url; }
         void setPubDate( const QDateTime &pubDate ) { m_pubDate = pubDate; }
         void setDuration( int duration ) { m_duration = duration; }
