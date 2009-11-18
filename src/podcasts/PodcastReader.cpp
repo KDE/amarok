@@ -23,27 +23,167 @@
 #include <kurl.h>
 #include <KDateTime>
 
-#include <QAbstractEventDispatcher>
 #include <QTextDocument>
 #include <QDate>
 #include <time.h>
 
 using namespace Meta;
 
+const PodcastReader::StaticData PodcastReader::sd;
+
 PodcastReader::PodcastReader( PodcastProvider * podcastProvider )
         : QXmlStreamReader()
         , m_podcastProvider( podcastProvider )
         , m_transferJob( 0 )
         , m_channel( 0 )
-        , m_downloadedBytes( 0 )
+        , m_actionStack()
+        , m_descriptionType( NoDescription )
+        , m_channelDescriptionType( NoDescription )
+        , m_buffer()
+        , m_current( 0 )
 {}
+
+void
+PodcastReader::Action::begin(PodcastReader *podcastReader) const
+{
+    if( m_begin )
+        ((*podcastReader).*m_begin)();
+}
+
+void
+PodcastReader::Action::end(PodcastReader *podcastReader) const
+{
+    if( m_end )
+        ((*podcastReader).*m_end)();
+}
+
+void
+PodcastReader::Action::characters(PodcastReader *podcastReader) const
+{
+    if( m_characters )
+        ((*podcastReader).*m_characters)();
+}
+
+// initialization of the feed parser automata:
+PodcastReader::StaticData::StaticData()
+        : startAction( rootMap )
+        , titleAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endTitle,
+            &PodcastReader::readCharacters )
+        , descriptionAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endDescription,
+            &PodcastReader::readCharacters )
+        , summaryAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endItunesSummary,
+            &PodcastReader::readCharacters )
+        , bodyAction(
+            xmlMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endBody,
+            &PodcastReader::readCharacters )
+        , linkAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endLink,
+            &PodcastReader::readCharacters )
+        , skipAction( skipMap )
+        , docAction( docMap )
+        , rssAction(
+            rssMap,
+            &PodcastReader::beginRss,
+            &PodcastReader::endRss )
+        , htmlAction(
+            skipMap,
+            &PodcastReader::beginHtml )
+        , unknownFeedTypeAction(
+            skipMap,
+            &PodcastReader::beginUnknownFeedType )
+        , channelAction(
+            channelMap,
+            &PodcastReader::beginChannel)
+        , imageAction( imageMap )
+        , itemAction(
+            itemMap,
+            &PodcastReader::beginItem,
+            &PodcastReader::endItem )
+        , urlAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endImageUrl,
+            &PodcastReader::readCharacters )
+        , enclosureAction(
+            skipMap,
+            &PodcastReader::beginEnclosure )
+        , guidAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endGuid,
+            &PodcastReader::readCharacters )
+        , pubDateAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endPubDate,
+            &PodcastReader::readCharacters )
+        , xmlAction(
+            xmlMap,
+            &PodcastReader::beginXml,
+            &PodcastReader::endXml,
+            &PodcastReader::readCharacters )
+{
+
+    // before start document/after end document
+    rootMap.insert( Document, &docAction );
+
+    // parse document
+    docMap.insert( Rss, &rssAction );
+    docMap.insert( Html, &htmlAction );
+    docMap.insert( Any, &unknownFeedTypeAction );
+
+    // parse <rss>
+    rssMap.insert( Channel, &channelAction );
+
+    // parse <channel>
+    channelMap.insert( Title, &titleAction );
+    channelMap.insert( Description, &descriptionAction );
+    channelMap.insert( Summary, &summaryAction );
+    channelMap.insert( Body, &bodyAction );
+    channelMap.insert( Link, &linkAction );
+    channelMap.insert( Image, &imageAction );
+    channelMap.insert( Item, &itemAction );
+    
+    // parse <image>
+    imageMap.insert( Title, &skipAction );
+    imageMap.insert( Link, &skipAction );
+    imageMap.insert( Url, &urlAction );
+
+    // parse <item>
+    itemMap.insert( Title, &titleAction );
+    itemMap.insert( Description, &descriptionAction );
+    itemMap.insert( Summary, &summaryAction );
+    itemMap.insert( Body, &bodyAction );
+    itemMap.insert( Enclosure, &enclosureAction );
+    itemMap.insert( Guid, &guidAction );
+    itemMap.insert( PubDate, &pubDateAction );
+
+    // parse arbitrary xml
+    xmlMap.insert( Any, &xmlAction );
+
+    // skip elements
+    skipMap.insert( Any, &skipAction );
+}
 
 PodcastReader::~PodcastReader()
 {
     DEBUG_BLOCK
 }
 
-bool PodcastReader::read ( QIODevice *device )
+bool PodcastReader::read( QIODevice *device )
 {
     DEBUG_BLOCK
     setDevice( device );
@@ -85,8 +225,6 @@ PodcastReader::read( const KUrl &url )
         ->setAbortSlot( this, SLOT( slotAbort() ) );
 
     // parse data
-    // XXX: Maybe make this asynchrone by imediately returnig and doing
-    //      something like QTimer::singleShot(0, this, SLOT(read()));
     return read();
 }
 
@@ -111,8 +249,10 @@ PodcastReader::slotAddData( KIO::Job *job, const QByteArray &data )
     DEBUG_BLOCK
     Q_UNUSED( job )
 
-    m_downloadedBytes += data.size();
-    qxml::addData( data );
+    QXmlStreamReader::addData( data );
+
+    // parse more data
+    continueRead();
 }
 
 void
@@ -120,8 +260,11 @@ PodcastReader::downloadResult( KJob * job )
 {
     DEBUG_BLOCK
 
+    // parse more data
+    continueRead();
+
     KIO::TransferJob *transferJob = dynamic_cast<KIO::TransferJob *>( job );
-    if ( transferJob && transferJob->isErrorPage() )
+    if( transferJob && transferJob->isErrorPage() )
     {
         QString errorMessage =
                 i18n( "Importing podcast from %1 failed with error:\n", m_url.url() );
@@ -150,101 +293,380 @@ PodcastReader::downloadResult( KJob * job )
         The::statusBar()->longMessage( errorMessage, StatusBar::Sorry );
     }
 
-    // XXX: I think I have to do this in order for making shure that nextToken() returns:
     m_transferJob = 0;
 }
 
-QString
-PodcastReader::readInnerXml()
+PodcastReader::ElementType
+PodcastReader::elementType() const
 {
-    QString xml;
-    int level = 1;
+    if( isEndDocument() || isStartDocument() )
+        return Document;
 
-    while ( !atEnd() )
+    if( isCDATA() || isCharacters() )
+        return TextContent;
+
+    const QStringRef name = QXmlStreamReader::name();
+
+    if( name == "rss" )
     {
-        switch ( nextToken() ) {
-        case Invalid:
-            // this should not happen
-            debug() << "*** Invalid *** " << errorString();
-            return xml;
+        return Rss;
+    }
+    else if( name == "channel" )
+    {
+        return Channel;
+    }
+    else if( name == "item" )
+    {
+        return Item;
+    }
+    else if( name == "image" )
+    {
+        return Image;
+    }
+    else if( name == "link" )
+    {
+        return Link;
+    }
+    else if( name == "url" )
+    {
+        return Url;
+    }
+    else if( name == "title" )
+    {
+        return Title;
+    }
+    else if( name == "enclosure" )
+    {
+        return Enclosure;
+    }
+    else if( name == "guid" )
+    {
+        return Guid;
+    }
+    else if( name == "pubDate" )
+    {
+        return PubDate;
+    }
+    else if( name == "description" )
+    {
+        return Description;
+    }
+    else if( name == "summary" &&
+        namespaceUri() == "http://www.itunes.com/dtds/podcast-1.0.dtd" )
+    {
+        return Summary;
+    }
+    else if( name == "body" )
+    {
+        return Body;
+    }
+    else if( name.toString().toLower() == "html" )
+    {
+        return Html;
+    }
+    else
+    {
+        return Unknown;
+    }
+}
 
-        case StartElement:
-            ++ level;
-            xml += QString("<%1").arg(qxml::name().toString());
-            
-            foreach( const QXmlStreamAttribute& attr, attributes() ) {
-                xml += QString(" %1=\"%2\"")
-                    .arg(attr.name().toString())
-                    .arg(Qt::escape(attr.value().toString()));
-            }
-            xml += '>';
-            break;
+bool
+PodcastReader::read()
+{
+    DEBUG_BLOCK
 
-        case EndElement:
-            -- level;
-            if (level == 0)
-                return xml;
-            xml += QString("</%1>").arg(qxml::name().toString());
-            break;
+    m_current = 0;
+    m_item    = 0;
+    m_descriptionType        = NoDescription;
+    m_channelDescriptionType = NoDescription;
+    m_buffer.clear();
+    m_actionStack.clear();
+    m_actionStack.push( &( PodcastReader::sd.startAction ) );
 
-        case Characters:
-            xml += text();
+    return continueRead();
+}
 
-        default:
-            break;
+bool
+PodcastReader::continueRead()
+{
+    // this is some kind of pushdown automata
+    // with this it should be possible to parse feeds in parallel
+    // woithout using threads
+    DEBUG_BLOCK
+
+    while( !atEnd() && error() != CustomError )
+    {
+        TokenType token = readNext();
+
+        if( error() == PrematureEndOfDocumentError && m_transferJob )
+        {
+            return true;
+        }
+
+        if( hasError() )
+        {
+            emit finished( this );
+            return false;
+        }
+
+        if( m_actionStack.isEmpty() )
+        {
+            debug() << "expected element on stack!";
+            return false;
+        }
+
+        const Action* action = m_actionStack.top();
+        const Action* subAction = 0;
+
+        switch( token )
+        {
+            case Invalid:
+                return false;
+
+            case StartDocument:
+            case StartElement:
+                subAction = action->actionMap()[ elementType() ];
+
+                if( !subAction )
+                    subAction = action->actionMap()[ Any ];
+
+                if( !subAction )
+                    subAction = PodcastReader::sd.skipMap[ Any ];
+                
+                m_actionStack.push( subAction );
+
+                subAction->begin( this );
+                break;
+
+            case EndDocument:
+            case EndElement:
+                action->end( this );
+
+                if( m_actionStack.pop() != action )
+                {
+                    debug() << "popped other element than expected!";
+                }
+                break;
+
+            case Characters:
+                if( !isWhitespace() || isCDATA() )
+                {
+                    action->characters( this );
+                }
+
+                // ignoreable whitespaces
+            case Comment:
+            case EntityReference:
+            case ProcessingInstruction:
+            case DTD:
+            case NoToken:
+                // ignore
+                break;
         }
     }
 
-    return xml;
+    return !hasError();
 }
 
-QXmlStreamReader::TokenType
-PodcastReader::nextToken()
+void
+PodcastReader::stopWithError( const QString &message )
 {
-    TokenType token = NoToken;
+    raiseError( message );
 
-    do {
-        token = readNext();
+    if( m_transferJob )
+    {
+        m_transferJob->kill();
+        m_transferJob = 0;
+    }
 
-        if( error() == PrematureEndOfDocumentError ) {
-            waitForData();
-            // now that we have more data we can retry the read:
-            continue;
-        }
+    emit finished( this );
+}
 
-        if( token == Invalid || hasError() ) {
-            throw XmlParseError( errorString() );
-        }
+void
+PodcastReader::beginText()
+{
+    m_buffer.clear();
+}
 
-        switch ( token ) {
-        case Invalid:
-        case StartDocument:
-        case EndDocument:
-        case StartElement:
-        case EndElement:
-            return token;
+void
+PodcastReader::endTitle()
+{
+    m_current->setTitle( m_buffer );
+}
 
-        case Characters:
-            if ( !isWhitespace() )
-                return token;
-            break;
-        
-        case Comment:
-        case EntityReference:
-        case ProcessingInstruction:
-        case DTD:
-        case NoToken:
-            // ignore
-            break;
-        }
-    } while ( !atEnd() );
+void
+PodcastReader::endDescription()
+{
+    if( m_descriptionType <= RssDescription )
+    {
+        m_current->setDescription( m_buffer );
+        m_descriptionType = RssDescription;
+    }
+}
 
-    return token;
+void
+PodcastReader::endItunesSummary()
+{
+    if( m_descriptionType <= ItunesSummary )
+    {
+        m_current->setDescription( m_buffer );
+        m_descriptionType = ItunesSummary;
+    }
+}
+
+void
+PodcastReader::endBody()
+{
+    m_current->setDescription( m_buffer );
+    m_descriptionType = HtmlBody;
+}
+
+void
+PodcastReader::endLink()
+{
+    m_channel->setWebLink( KUrl( m_buffer ) );
+}
+
+void
+PodcastReader::beginHtml()
+{
+    stopWithError( i18n( "A HTML page was received. Expected an RSS 2.0 feed" ) );
+}
+
+void
+PodcastReader::beginUnknownFeedType()
+{
+    stopWithError( i18n( "Feed has unknown type: %1", m_url.url() ) );
+}
+
+void
+PodcastReader::beginRss()
+{
+    if( attributes().value( "version" ) != "2.0" )
+    {
+        // TODO: change this string once we support more
+        stopWithError( i18n( "%1 is not an RSS version 2.0 feed.", m_url.url() ) );
+    }
+}
+
+void
+PodcastReader::endRss()
+{
+    debug() << "successfuly parsed feed: " << m_url.url();
+    emit finished( this );
+}
+
+void
+PodcastReader::beginChannel()
+{
+    if( !m_channel )
+    {
+        debug() << "new channel";
+
+        m_channel = new Meta::PodcastChannel();
+           m_channel->setUrl( m_url );
+        m_channel->setSubscribeDate( QDate::currentDate() );
+        /* add this new channel to the provider, we get a pointer to a
+         * PodcastChannelPtr of the correct type which we will use from now on.
+         */
+        m_channel = m_podcastProvider->addChannel( m_channel );
+    }
+
+    m_descriptionType = m_channelDescriptionType = NoDescription;
+    m_current = m_channel.data();
+}
+
+void 
+PodcastReader::beginItem()
+{
+    m_item = new Meta::PodcastEpisode( m_channel );
+    m_current = m_item.data();
+    m_channelDescriptionType = m_descriptionType;
+    m_descriptionType = NoDescription;
+}
+
+void 
+PodcastReader::endItem()
+{
+    if( !m_podcastProvider->possiblyContainsTrack( m_item->uidUrl() ) &&
+        // some feeds contain normal blogposts without
+        // enclosures alongside of podcasts:
+        !m_item->uidUrl().isEmpty() )
+    {
+        debug() << "new episode: " << m_item->title();
+
+        Meta::PodcastEpisodePtr episode = m_channel->addEpisode( m_item );
+        // also let the provider know an episode has been added
+        // TODO: change into a signal
+        m_podcastProvider->addEpisode( episode );
+    }
+
+    m_descriptionType = m_channelDescriptionType;
+    m_current = m_channel.data();
+    m_item = 0;
+}
+
+void
+PodcastReader::beginEnclosure()
+{
+    m_item->setUidUrl( KUrl( attributes().value( "url" ).toString() ) );
+}
+
+void
+PodcastReader::endGuid()
+{
+    m_item->setGuid( m_buffer );
+}
+
+void
+PodcastReader::endPubDate()
+{
+    m_item->setPubDate( parsePubDate( m_buffer ) );
+}
+
+void
+PodcastReader::endImageUrl()
+{
+    // TODO save image data
+    m_channel->setImageUrl( KUrl( m_buffer ) );
+}
+
+void
+PodcastReader::beginXml()
+{
+    m_buffer += '<';
+    m_buffer += QXmlStreamReader::name().toString();
+
+    foreach( const QXmlStreamAttribute &attr, attributes() )
+    {
+        m_buffer += QString( " %1=\"%2\"" )
+            .arg( attr.name().toString() )
+            .arg( Qt::escape( attr.value().toString() ) );
+    }
+
+    m_buffer += '>';
+}
+
+void
+PodcastReader::endXml()
+{
+
+    m_buffer += "</";
+    m_buffer += QXmlStreamReader::name().toString();
+    m_buffer += '>';
+}
+
+void
+PodcastReader::readCharacters()
+{
+    m_buffer += text();
 }
 
 const char*
-PodcastReader::tokenToString(TokenType token) {
-    switch (token) {
+PodcastReader::tokenToString(TokenType token)
+{
+    switch (token)
+    {
         case NoToken: return "NoToken";
         case Invalid: return "Invalid";
         case StartDocument: return "StartDocument";
@@ -261,311 +683,6 @@ PodcastReader::tokenToString(TokenType token) {
     return "<Invalid-Enum-Value>";
 }
 
-void
-PodcastReader::expect(TokenType expected, TokenType got) {
-    if ( got != expected )
-        throw ParseError( i18n( "expected token %1, but got token %2",
-            tokenToString(expected),
-            tokenToString(got) ) );
-}
-
-void
-PodcastReader::expect(TokenType expected) {
-    expect( expected, nextToken() );
-}
-
-void
-PodcastReader::expectName(const QString& name) {
-    if ( qxml::name() != name )
-        throw ParseError( i18n( "expected element name %1, but got element name %2",
-            name, qxml::name().toString() ) );
-}
-
-void
-PodcastReader::expectStart(const QString& name) {
-    expect(StartElement);
-    expectName(name);
-}
-
-void
-PodcastReader::expectEnd(const QString& name) {
-    expect(EndElement);
-    expectName(name);
-}
-
-void
-PodcastReader::waitForData() {
-    const int bytes = m_downloadedBytes;
-
-    while ( m_downloadedBytes <= bytes && m_transferJob ) {
-        QAbstractEventDispatcher::instance()->processEvents(QEventLoop::WaitForMoreEvents);
-    }
-
-    if (m_downloadedBytes <= bytes && !m_transferJob) {
-        throw XmlParseError( errorString() );
-    }
-}
-
-QString
-PodcastReader::readTextContent() {
-    QString text;
-
-    for (;;) {
-        switch ( nextToken() ) {
-        case Characters: text += this->text(); break;
-        case EndElement: return text;
-        default:
-            throw ParseError(
-                QString("unexpected token while parsing text content: %s")
-                .arg( tokenToString(tokenType()) ) );
-        }
-    }
-
-    return text;
-}
-
-bool
-PodcastReader::read()
-{
-    DEBUG_BLOCK
-    m_downloadedBytes = 0;
-
-    try {
-        expect(StartDocument);
-        expect(StartElement);
-
-        QStringRef version = attributes().value( "version" );
-
-        debug() << "Initial StartElement: " << qxml::name().toString();
-        debug() << "version: " << version.toString();
-
-        if ( qxml::name() == "rss" && version == "2.0" ) {
-            // rss 2.0 specifies exactly one channel element per feed
-            readChannel();
-        }
-        else if ( qxml::name() == "html" || qxml::name() == "HTML" ) {
-            throw ParseError( i18n( "A HTML page was received. Expected an RSS 2.0 feed" ) );
-        }
-        else {
-            // TODO: change this string once we support more
-            throw ParseError( i18n( "%1 is not an RSS version 2.0 feed.", m_url.url() ) );
-        }
-        
-        expect(EndElement);
-        expect(EndDocument);
-    }
-    catch (XmlParseError& e) {
-        debug() << "XML ERROR: " << error() << " at line: " << lineNumber()
-                << ": " << columnNumber()
-                << "\n\t" << errorString();
-        debug() << "\tname = " << qxml::name().toString()
-                << " tokenType = " << tokenString();
-
-        if (m_transferJob) {
-            m_transferJob->kill();
-            m_transferJob = 0;
-        }
-
-        emit finished( this );
-        return false;
-    }
-    catch (ParseError& e) {
-        debug() << "error parsing podcast feed: " << e.message();
-
-        raiseError( e.message() );
-
-        if (m_transferJob) {
-            m_transferJob->kill();
-            m_transferJob = 0;
-        }
-
-        emit finished( this );
-        return false;
-    }
-    
-    emit finished( this );
-    return true;
-}
-
-KUrl
-PodcastReader::readImage() {
-    expectName("image");
-
-    KUrl url;
-    
-    for (TokenType token = nextToken(); token != EndElement; token = nextToken()) {
-        // elements: url, title, link
-        expect( token, StartElement );
-
-        if ( qxml::name() == "url" ) {
-            url = KUrl( readTextContent() );
-        }
-        else if ( qxml::name() == "link" || qxml::name() == "title" ) {
-            // not supported but well known
-            skipElement();
-        }
-        else {
-            debug() << "skipping unsupported image element: " << qxml::name().toString();
-            skipElement();
-        }
-    }
-    expectName("image");
-
-    return url;
-}
-
-void
-PodcastReader::readChannel() {
-    DEBUG_BLOCK
-
-    expectStart("channel");
-
-    DescriptionType hasDescription = NoDescription;
-
-    if (!m_channel) {
-        debug() << "new channel";
-
-        m_channel = new Meta::PodcastChannel();
-           m_channel->setUrl( m_url );
-        m_channel->setSubscribeDate( QDate::currentDate() );
-        /* add this new channel to the provider, we get a pointer to a
-         * PodcastChannelPtr of the correct type which we will use from now on.
-         */
-        m_channel = m_podcastProvider->addChannel( m_channel );
-    }
-    
-    for (TokenType token = nextToken(); token != EndElement; token = nextToken()) {
-        // required elements: title, link, description
-        // optional elements: language, copyright, pubDate, category, image, ...
-
-        expect( token, StartElement );
-
-        if ( qxml::name() == "title" ) {
-            // Remove redundant whitespace from the title.
-            m_channel->setTitle( readTextContent().simplified() );
-        }
-        else if ( qxml::name() == "description" ) {
-            if ( hasDescription <= RssDescription ) {
-                m_channel->setDescription( readTextContent() );
-                hasDescription = RssDescription;
-            }
-            else {
-                skipElement();
-            }
-        }
-        else if ( qxml::name() == "summary" && namespaceUri() == "http://www.itunes.com/dtds/podcast-1.0.dtd" ) {
-            if ( hasDescription <= ItunesSummary ) {
-                m_channel->setDescription( readTextContent() );
-                hasDescription = ItunesSummary;
-            }
-            else {
-                skipElement();
-            }
-        }
-        else if ( qxml::name() == "body" ) {
-            if ( hasDescription <= HtmlBody ) {
-                m_channel->setDescription( readInnerXml() );
-                hasDescription = HtmlBody;
-            }
-            else {
-                skipElement();
-            }
-        }
-        else if ( qxml::name() == "link" ) {
-            m_channel->setWebLink( KUrl( readTextContent() ) );
-        }
-        else if ( qxml::name() == "image" ) {
-            // TODO save image data
-            m_channel->setImageUrl( readImage() );
-        }
-        else if ( qxml::name() == "item" ) {
-            Meta::PodcastEpisodePtr item = readItem();
-
-            if ( !m_podcastProvider->possiblyContainsTrack( item->uidUrl() ) &&
-                    // some feeds contain normal blogposts without enclosures alongside of podcasts:
-                    !item->uidUrl().isEmpty() ) {
-                debug() << "new episode";
-
-                Meta::PodcastEpisodePtr episode = m_channel->addEpisode( item );
-                // also let the provider know an episode has been added
-                // TODO: change into a signal
-                m_podcastProvider->addEpisode( episode );
-            }
-        }
-        else {
-            debug() << "skipping unsupported channel element: " << qxml::name().toString();
-            skipElement();
-        }
-    }
-
-    expectName("channel");
-}
-
-Meta::PodcastEpisodePtr
-PodcastReader::readItem() {
-    DEBUG_BLOCK
-
-    expectName("item");
-
-    Meta::PodcastEpisodePtr item( new Meta::PodcastEpisode( m_channel ) );
-    DescriptionType hasDescription = NoDescription;
-
-    for (TokenType token = nextToken(); token != EndElement; token = nextToken()) {
-        // elements: title, link, description, author, category,
-        //           comments, enclosure, guid, pubDate, source
-        // extension elements: body, itunes:summary
-        
-        if ( qxml::name() == "title" ) {
-            item->setTitle( readTextContent().simplified() );
-        }
-        else if ( qxml::name() == "description" ) {
-            if ( hasDescription <= RssDescription ) {
-                item->setDescription( readTextContent() );
-                hasDescription = RssDescription;
-            }
-            else {
-                skipElement();
-            }
-        }
-        else if ( qxml::name() == "summary" && namespaceUri() == "http://www.itunes.com/dtds/podcast-1.0.dtd" ) {
-            if ( hasDescription <= ItunesSummary ) {
-                item->setDescription( readTextContent() );
-                hasDescription = ItunesSummary;
-            }
-            else {
-                skipElement();
-            }
-        }
-        else if ( qxml::name() == "body" ) {
-            if ( hasDescription <= HtmlBody ) {
-                item->setDescription( readInnerXml() );
-                hasDescription = HtmlBody;
-            }
-            else {
-                skipElement();
-            }
-        }
-        else if ( qxml::name() == "enclosure" ) {
-            item->setUidUrl( KUrl( attributes().value( "url" ).toString() ) );
-            skipElement();
-        }
-        else if ( qxml::name() == "guid" ) {
-            item->setGuid( readTextContent() );
-        }
-        else if ( qxml::name() == "pubDate" ) {
-            item->setPubDate( parsePubDate( readTextContent() ) );
-        }
-        else {
-            debug() << "skipping unsupported item element: " << qxml::name().toString();
-            skipElement();
-        }
-    }
-
-    expectName("item");
-
-    return item;
-}
-
 QDateTime
 PodcastReader::parsePubDate( const QString &dateString )
 {
@@ -580,23 +697,6 @@ PodcastReader::parsePubDate( const QString &dateString )
 
     debug() << "result: " << pubDate.toString();
     return pubDate;
-}
-
-void
-PodcastReader::skipElement()
-{
-    DEBUG_BLOCK
-    Q_ASSERT ( isStartElement() );
-
-    int level = 1;
-
-    while (level > 0) {
-        switch ( nextToken() ) {
-        case StartElement: ++ level; break;
-        case EndElement:   -- level; break;
-        default: break;
-        }
-    }
 }
 
 void

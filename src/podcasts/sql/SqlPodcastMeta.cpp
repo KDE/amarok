@@ -128,7 +128,8 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
 {
     m_channel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
 
-    if ( !m_channel && episode->channel()) {
+    if( !m_channel && episode->channel() )
+    {
         debug() << "BUG: creating SqlEpisode but not an sqlChannel!!!";
         debug() <<  episode->channel()->title();
     }
