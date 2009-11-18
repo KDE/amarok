@@ -157,19 +157,19 @@ PodcastCategory::showInfo( const QModelIndex & index )
 {
     QString title = index.data( Qt::DisplayRole ).toString();
     QString description = QString(
-		"<html>"
-		"    <head>"
-		"        <title>%1</title>"
-		"        <style type=\"text/css\">h1 {text-align:center; font-size: 1em;}</style>"
-		"    </head>"
-		"    <body>"
-		"        <h1>%1</h1>"
-		"        %2"
-		"    </body>"
-		"</html>")
-		.arg(Qt::escape(title))
-		.arg(index.data( ShortDescriptionRole ).toString());
-	
+        "<html>"
+        "    <head>"
+        "        <title>%1</title>"
+        "        <style type=\"text/css\">h1 {text-align:center; font-size: 1em;}</style>"
+        "    </head>"
+        "    <body>"
+        "        <h1>%1</h1>"
+        "        %2"
+        "    </body>"
+        "</html>")
+        .arg( Qt::escape( title ) )
+        .arg( index.data( ShortDescriptionRole ).toString() );
+    
     QVariantMap map;
     map["service_name"] = title;
     map["main_info"] = description;
@@ -315,7 +315,7 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
         height = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000,
                                    Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap ,
                                    description ).height() + 40;
-	    debug() << "Option is selected, height = " << height;*/
+        debug() << "Option is selected, height = " << height;*/
 
     }
 

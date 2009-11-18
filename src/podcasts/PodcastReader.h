@@ -94,21 +94,21 @@ class PodcastReader : public QObject, public QXmlStreamReader
             public:
                 Action( ActionMap &actionMap )
                     : m_actionMap( actionMap )
-                    , m_begin( NULL )
-                    , m_end( NULL )
-                    , m_characters( NULL ) {}
+                    , m_begin( 0 )
+                    , m_end( 0 )
+                    , m_characters( 0 ) {}
 
                 Action(ActionMap &actionMap, ActionCallback begin)
                     : m_actionMap( actionMap )
                     , m_begin( begin )
-                    , m_end( NULL )
-                    , m_characters( NULL ) {}
+                    , m_end( 0 )
+                    , m_characters( 0 ) {}
 
                 Action(ActionMap &actionMap, ActionCallback begin, ActionCallback end)
                     : m_actionMap( actionMap )
                     , m_begin( begin )
                     , m_end( end )
-                    , m_characters( NULL ) {}
+                    , m_characters( 0 ) {}
 
                 Action(ActionMap &actionMap, ActionCallback begin,
 						ActionCallback end, ActionCallback characters)

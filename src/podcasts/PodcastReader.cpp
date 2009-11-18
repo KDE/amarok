@@ -491,7 +491,7 @@ PodcastReader::beginText()
 void
 PodcastReader::endTitle()
 {
-    m_current->setTitle( m_buffer );
+    m_current->setTitle( m_buffer.trimmed() );
 }
 
 void
@@ -499,7 +499,7 @@ PodcastReader::endDescription()
 {
     if( m_descriptionType <= RssDescription )
     {
-        m_current->setDescription( m_buffer );
+        m_current->setDescription( m_buffer.trimmed() );
         m_descriptionType = RssDescription;
     }
 }
@@ -509,7 +509,7 @@ PodcastReader::endItunesSummary()
 {
     if( m_descriptionType <= ItunesSummary )
     {
-        m_current->setDescription( m_buffer );
+        m_current->setDescription( m_buffer.trimmed() );
         m_descriptionType = ItunesSummary;
     }
 }
@@ -517,7 +517,7 @@ PodcastReader::endItunesSummary()
 void
 PodcastReader::endBody()
 {
-    m_current->setDescription( m_buffer );
+    m_current->setDescription( m_buffer.trimmed() );
     m_descriptionType = HtmlBody;
 }
 
