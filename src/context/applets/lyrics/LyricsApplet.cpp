@@ -332,7 +332,7 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     else
     {
         // different background color when we're in edit mode
-        background = App::instance()->palette().alternateBase().color();
+        background = The::paletteHandler()->alternateBackgroundColor();
     }
 
     p->save();

@@ -104,29 +104,23 @@ PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
 QColor
 PaletteHandler::backgroundColor()
 {
-    QColor bg = App::instance()->palette().highlight().color();
-    qreal value = bg.valueF();
-    value = value > 0.50 ? value * 1.5 : value * 0.5;
-    value = value > 0.99 ? 1.0         : value;
-    value = value < 0.10 ? 0.1         : value;
-    bg.setHsvF( bg.hueF(), 0.10, value, bg.alphaF() );
-
-    return bg;
+    return App::instance()->palette().base().color();
 }
 
 QColor
-PaletteHandler::backgroundColor( qreal percentSaturation, qreal percentValue )
+PaletteHandler::alternateBackgroundColor()
 {
-    QColor bg = backgroundColor();
-    qreal saturation = bg.saturationF() * percentSaturation / 100.0;
-    qreal value = bg.valueF() * percentValue / 100.0;
-    saturation = saturation > 0.99 ? 1.0 : saturation;
-    saturation = saturation < 0.10 ? 0.1 : saturation;
-    value      = value      > 0.99 ? 1.0 : value;
-    value      = value      < 0.10 ? 0.1 : value;
-    bg.setHsvF( bg.hueF(), saturation, value, bg.alphaF() );
+    const QColor alternate = App::instance()->palette().alternateBase().color();
+    const QColor window    = App::instance()->palette().window().color();
+    const QColor base      = backgroundColor();
 
-    return bg;
+    const int alternateDist = abs( alternate.value() - base.value() );
+    const int windowDist    = abs( window.value()    - base.value() );
+
+    if( alternateDist > windowDist )
+        return alternate;
+    else
+        return window;
 }
 
 #include "PaletteHandler.moc"

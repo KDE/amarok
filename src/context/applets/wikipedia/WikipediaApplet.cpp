@@ -445,19 +445,19 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
     QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        QColor highlight( The::paletteHandler()->backgroundColor() );
-
         QString contents = QString( file.readAll() );
-        //debug() << "setting background:" << Amarok::highlightColor().lighter( 130 ).name();
-        contents.replace( "{text_background_color}", highlight.name() );
-        contents.replace( "{border_color}", highlight.name() );
+
+        const QColor bg = The::paletteHandler()->backgroundColor();
+        contents.replace( "{text_background_color}", bg.name() );
         contents.replace( "{text_color}", palette.text().color().name() );
         contents.replace( "{link_color}", palette.link().color().name() );
-        contents.replace( "{link_hover_color}", palette.light().color().name() );
-        highlight = The::paletteHandler()->backgroundColor( 300, 300 );
-        contents.replace( "{shaded_text_background_color}", highlight.name() );
-        contents.replace( "{table_background_color}", highlight.name() );
-        contents.replace( "{headings_background_color}", highlight.name() );
+        contents.replace( "{link_hover_color}", palette.linkVisited().color().name() );
+
+        const QString abgName = The::paletteHandler()->alternateBackgroundColor().name();
+        contents.replace( "{shaded_text_background_color}", abgName );
+        contents.replace( "{table_background_color}", abgName );
+        contents.replace( "{border_color}", abgName );
+        contents.replace( "{headings_background_color}", abgName );
 
         delete m_css;
         m_css = new KTemporaryFile();
