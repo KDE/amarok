@@ -22,6 +22,8 @@ VERSION 2.2.2
     * Support for "title:" token in the collection search. Patch by Roberto
       Bertolusso <rbertolusso@yahoo.com>. (BR 211249)
     * Fixed lots of memory leaks reported by Valgrind.
+    * Make lyrics applet colours presentable with bright and dark colour
+      styles (BR 214930)
 
 
 
