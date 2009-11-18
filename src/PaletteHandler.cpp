@@ -104,7 +104,9 @@ PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
 QColor
 PaletteHandler::backgroundColor()
 {
-    return App::instance()->palette().base().color();
+    QColor base = App::instance()->palette().base().color();
+    base.setHsvF( highlightColor().hueF(), base.saturationF(), base.valueF() );
+    return base;
 }
 
 QColor
@@ -117,10 +119,9 @@ PaletteHandler::alternateBackgroundColor()
     const int alternateDist = abs( alternate.value() - base.value() );
     const int windowDist    = abs( window.value()    - base.value() );
 
-    if( alternateDist > windowDist )
-        return alternate;
-    else
-        return window;
+    QColor result = alternateDist > windowDist ? alternate : window;
+    result.setHsvF( highlightColor().hueF(), highlightColor().saturationF(), result.valueF() );
+    return result;
 }
 
 #include "PaletteHandler.moc"
