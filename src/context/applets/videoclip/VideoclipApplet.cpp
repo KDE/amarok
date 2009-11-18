@@ -102,8 +102,8 @@ VideoclipApplet::init()
     langAction->setIcon( KIcon( "preferences-system" ) );
     langAction->setVisible( true );
     langAction->setEnabled( true );
+    langAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( langAction );
-    m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
 
     
