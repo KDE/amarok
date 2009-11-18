@@ -647,8 +647,6 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 void
 CollectionTreeItemModelBase::queryDone()
 {
-    DEBUG_BLOCK
-
     QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
     if( !qm )
         return;
@@ -1055,8 +1053,6 @@ void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 
 void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item )
 {
-    DEBUG_BLOCK
-
     if( !d->m_runningQueries.contains( item ) )
         return;
     //replace this hack with QWeakPointer as soon as we depend on Qt 4.6

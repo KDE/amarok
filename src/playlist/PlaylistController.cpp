@@ -264,9 +264,7 @@ Playlist::Controller::removeRows( int row, int count )
     DEBUG_BLOCK
     QList<int> rl;
     for ( int i = 0; i < count; ++i )
-    {
         rl.append( row++ );
-    }
     removeRows( rl );
 }
 
@@ -277,7 +275,6 @@ Playlist::Controller::removeRows( QList<int>& rows )
     RemoveCmdList cmds;
     foreach( int r, rows )
     {
-        debug() << "Removing row " << r;
         if (( r >= 0 ) && ( r < m_topmostModel->rowCount() ) )
             cmds.append( RemoveCmd( m_topmostModel->trackAt( r ), m_topmostModel->rowToBottomModel( r ) ) );
         else

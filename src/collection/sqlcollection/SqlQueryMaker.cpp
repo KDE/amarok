@@ -1065,7 +1065,6 @@ SqlQueryMaker::handleArtists( const QStringList &result )
 void
 SqlQueryMaker::handleAlbums( const QStringList &result )
 {
-    DEBUG_BLOCK
     AlbumList albums;
     SqlRegistry* reg = m_collection->registry();
     for( QStringListIterator iter( result ); iter.hasNext(); )
