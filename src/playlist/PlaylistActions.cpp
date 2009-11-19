@@ -272,16 +272,7 @@ Playlist::Actions::playlistModeChanged()
 
     m_navigator = 0;
 
-    if ( Amarok::repeatEnabled() )
-    {
-        if ( Amarok::repeatTrack() )
-            m_navigator = new RepeatTrackNavigator();
-        else if ( Amarok::repeatAlbum() )
-            m_navigator = new RepeatAlbumNavigator();
-        else
-            m_navigator = new StandardTrackNavigator(); // this navigator handles playlist repeat
-    }
-    else if ( Amarok::randomEnabled() )
+    if ( Amarok::randomEnabled() ) // random track navigators need to deal with repeat
     {
         if ( Amarok::randomTracks() )
         {
@@ -295,12 +286,21 @@ Playlist::Actions::playlistModeChanged()
         else
             m_navigator = new StandardTrackNavigator(); // crap -- something went wrong
     }
+    else if ( Amarok::repeatEnabled() )
+    {
+        if ( Amarok::repeatTrack() )
+            m_navigator = new RepeatTrackNavigator();
+        else if ( Amarok::repeatAlbum() )
+            m_navigator = new RepeatAlbumNavigator();
+        else
+            m_navigator = new StandardTrackNavigator(); // this navigator handles playlist repeat
+    }
     else
+    {
         m_navigator = new StandardTrackNavigator();
-
+    }
 
     m_navigator->queueIds( currentQueue );
-
 }
 
 void
