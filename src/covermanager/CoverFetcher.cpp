@@ -297,6 +297,7 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
             {
                 //yay! images found :)
                 //lets see if the user wants one of it
+		m_processedCovers = 9999; //prevents to popup a 2nd window
                 showCover();
             }
             else
@@ -434,17 +435,17 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &cover
 //SLOT
 void CoverFoundDialog::nextPix()
 {
-    if( m_curCover < m_covers.length() )
+    if( m_curCover < m_covers.length()-1 )
     {
         m_curCover++;
         m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
         m_prev->setEnabled( true );
-
-        if( m_curCover == m_covers.length()-1 )
-            m_next->setEnabled( false );
-        else
-            m_next->setEnabled( true );
     }
+        
+    if( m_curCover >= m_covers.length()-1 )
+        m_next->setEnabled( false );
+    else
+        m_next->setEnabled( true );
 }
 
 //SLOT
@@ -455,12 +456,12 @@ void CoverFoundDialog::prevPix()
         m_curCover--;
         m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
         m_next->setEnabled( true );
-
-        if( m_curCover == 0 )
-            m_prev->setEnabled( false );
-        else
-            m_prev->setEnabled( true );
     }
+        
+    if( m_curCover == 0 )
+        m_prev->setEnabled( false );
+    else
+        m_prev->setEnabled( true );
 }
 
 
