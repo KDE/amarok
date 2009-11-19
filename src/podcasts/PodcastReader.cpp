@@ -602,10 +602,14 @@ PodcastReader::beginItem()
 void 
 PodcastReader::endItem()
 {
-    if( !m_podcastProvider->possiblyContainsTrack( m_item->uidUrl() ) &&
-        // some feeds contain normal blogposts without
-        // enclosures alongside of podcasts:
-        !m_item->uidUrl().isEmpty() )
+    /*  some feeds contain normal blogposts without
+        enclosures alongside of podcasts */
+
+    if( !m_item->uidUrl().isEmpty()
+        && !m_podcastProvider->possiblyContainsTrack(
+                m_item->guid().isEmpty() ? m_item->uidUrl() : m_item->guid()
+            )
+      )
     {
         debug() << "new episode: " << m_item->title();
 

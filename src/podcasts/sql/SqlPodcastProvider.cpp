@@ -154,7 +154,8 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
     if( !sqlStorage )
         return false;
 
-    QString command = "SELECT title FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
+    QString command = "SELECT title FROM podcastepisodes WHERE guid='%1' OR url='%1' "
+                      "OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
 
     QStringList dbResult = sqlStorage->query( command );
@@ -170,7 +171,8 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
     if( !sqlStorage )
         return TrackPtr();
 
-    QString command = "SELECT id,channel FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
+    QString command = "SELECT id,channel FROM podcastepisodes WHERE guid='%1' OR url='%1'"
+                      " OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
     QStringList dbResult = sqlStorage->query( command );
 
