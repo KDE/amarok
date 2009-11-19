@@ -64,10 +64,15 @@ class PodcastReader : public QObject, public QXmlStreamReader
 
     private:
         /** these are the keys used by the automata */
-        typedef enum {
+        enum ElementType
+        {
+            Unknown = 0,
+            Any,
             Document,
-            TextContent,
+            CharacterData,
             Rss,
+            Rdf,
+            Feed,
             Channel,
             Item,
             Image,
@@ -79,12 +84,21 @@ class PodcastReader : public QObject, public QXmlStreamReader
             Guid,
             PubDate,
             Description,
-            Summary,
+            ItunesSummary,
             Body,
             Html,
-            Unknown,
-            Any
-        } ElementType;
+            Entry,
+            Subtitle,
+            Updated,
+            Published,
+            Summary,
+            Content,
+            SupportedContent,
+            Name,
+            Id,
+            Logo,
+            Icon
+        };
 
         class Action;
         typedef void (PodcastReader::*ActionCallback)();
@@ -118,8 +132,6 @@ class PodcastReader : public QObject, public QXmlStreamReader
                     , m_end( end )
                     , m_characters( characters ) {}
 
-                virtual ~Action() {}
-
                 void begin(PodcastReader *podcastReader) const;
                 void end(PodcastReader *podcastReader) const;
                 void characters(PodcastReader *podcastReader) const;
@@ -136,9 +148,12 @@ class PodcastReader : public QObject, public QXmlStreamReader
         ElementType elementType() const;
         bool read();
         bool continueRead();
+        void createChannel();
         
         // callback methods for feed parsing:
         void beginRss();
+        void beginRdf();
+        void beginFeed();
         void beginHtml();
         void beginUnknownFeedType();
         void beginEnclosure();
@@ -146,8 +161,13 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void beginChannel();
         void beginItem();
         void beginXml();
+        void beginNoElement();
+        void beginAtomText();
+        void beginAtomFeedLink();
+        void beginAtomEntryLink();
+        void beginAtomTextChild();
 
-        void endRss();
+        void endDocument();
         void endTitle();
         void endDescription();
         void endItunesSummary();
@@ -159,20 +179,53 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void endImageUrl();
         void endAuthor();
         void endXml();
+        void endAtomLogo();
+        void endAtomIcon();
+        void endAtomTitle();
+        void endAtomSubtitle();
+        void endAtomPublished();
+        void endAtomUpdated();
+        void endAtomSummary();
+        void endAtomContent();
+        void endAtomTextChild();
 
+        // TODO: maybe I can remove readCharacters() and readEscapedCharacters()
+        //       and use readAtomTextCharacters() plus setting m_contentType even
+        //       in Rss 1.0/2.0 parsers instead.
         void readCharacters();
+        void readNoCharacters();
+        void readEscapedCharacters();
+        void readAtomTextCharacters();
 
         void stopWithError(const QString &message);
-        static const char* tokenToString(TokenType token);
+
+        static QString unescape( const QString &text );
+
+        QString atomTextAsText();
+        QString atomTextAsHtml();
+
+        QStringRef attribute(const char *namespaceUri, const char *name) const;
+        bool hasAttribute(const char *namespaceUri, const char *name) const;
+
+        void moveDescription(const QString &description);
+        void moveItunesSummary(const QString &summary);
 
         /** There usually are 3 kinds of descriptions. Usually a &lt;body&gt; element contains
          * the most detailed description followed by &lt;itunes:summary&gt; and the standard
          * &lt;description&gt;. */
-        enum DescriptionType {
-            NoDescription  = 0,
-            RssDescription = 1,
-            ItunesSummary  = 2,
-            HtmlBody       = 3
+        enum DescriptionType
+        {
+            NoDescription             = 0,
+            RssDescription            = 1,
+            ItunesSummaryDescription  = 2,
+            HtmlBodyDescription       = 3
+        };
+
+        enum ContentType
+        {
+            TextContent,
+            HtmlContent,
+            XHtmlContent
         };
 
         KUrl m_url;
@@ -186,6 +239,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
         
         DescriptionType m_descriptionType;
         DescriptionType m_channelDescriptionType;
+        ContentType m_contentType;
         QString m_buffer;
         Meta::PodcastMetaCommon *m_current;
 
@@ -193,23 +247,36 @@ class PodcastReader : public QObject, public QXmlStreamReader
             public:
                 StaticData();
 
-                // This here basically builds a automata.
-                // This way feed paraing can be paused after any token,
+                // This here basically builds an automata.
+                // This way feed parsing can be paused after any token,
                 // thus enabling paralell download and parsing of multiple
                 // feeds without the need for threads.
 
+                QHash<QString, ElementType> knownElements;
+                
+                // Actions
                 Action startAction;
+                
+                Action docAction;
+                Action xmlAction;
+                Action skipAction;
+                Action noContentAction;
+
+                Action rdfAction;  // RSS 1.0
+                Action rssAction;  // RSS 2.0
+                Action feedAction; // Atom
+                Action htmlAction;
+                Action unknownFeedTypeAction;
+
+                // RSS 1.0+2.0
+                Action rss10ChannelAction;
+                Action rss20ChannelAction;
+
                 Action titleAction;
                 Action descriptionAction;
                 Action summaryAction;
                 Action bodyAction;
                 Action linkAction;
-                Action skipAction;
-                Action docAction;
-                Action rssAction;
-                Action htmlAction;
-                Action unknownFeedTypeAction;
-                Action channelAction;
                 Action imageAction;
                 Action itemAction;
                 Action urlAction;
@@ -217,17 +284,43 @@ class PodcastReader : public QObject, public QXmlStreamReader
                 Action enclosureAction;
                 Action guidAction;
                 Action pubDateAction;
-                Action xmlAction;
 
+                // Atom
+                Action atomLogoAction;
+                Action atomIconAction;
+                Action atomEntryAction;
+                Action atomTitleAction;
+                Action atomSubtitleAction;
+                Action atomAuthorAction;
+                Action atomFeedLinkAction;
+                Action atomEntryLinkAction;
+                Action atomIdAction;
+                Action atomPublishedAction;
+                Action atomUpdatedAction;
+                Action atomSummaryAction;
+                Action atomContentAction;
+                Action atomTextAction;
+                
+                // ActionMaps
                 ActionMap rootMap;
+                ActionMap skipMap;
+                ActionMap noContentMap;
+                ActionMap xmlMap;
+
                 ActionMap docMap;
                 ActionMap rssMap;
-                ActionMap channelMap;
+                ActionMap rdfMap;
+                ActionMap feedMap;
+
+                ActionMap rss10ChannelMap;
+                ActionMap rss20ChannelMap;
                 ActionMap imageMap;
                 ActionMap itemMap;
-                ActionMap skipMap;
-                ActionMap xmlMap;
                 ActionMap textMap;
+
+                ActionMap atomEntryMap;
+                ActionMap atomAuthorMap;
+                ActionMap atomTextMap;
         };
 
         static const StaticData sd;
