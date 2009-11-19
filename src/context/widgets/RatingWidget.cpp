@@ -59,10 +59,11 @@ public:
 
 
 RatingWidget::RatingWidget( QGraphicsItem* parent )
-    : QGraphicsWidget( parent ),
-      d( new Private() )
+    : QGraphicsWidget( parent )
+    , d( new Private() )
 {
     setAcceptHoverEvents( true );
+    setToolTip( i18n( "Track rating: %1", d->rating ) );
 }
 
 
@@ -213,6 +214,7 @@ RatingWidget::mousePressEvent( QGraphicsSceneMouseEvent* e )
         if ( ratingFromPos >= 0 )
         {
             d->hoverRating = d->rating = ratingFromPos;
+            setToolTip( i18n( "Track rating: %1", d->rating ) );
             update();
             emit ratingChanged( d->rating );
         }
