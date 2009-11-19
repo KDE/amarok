@@ -205,6 +205,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     //debug() << "got lyrics data: " << data;
 
+    m_titleText = i18n( "Lyrics" );
     m_titleLabel->show();
 
     setBusy( false );
@@ -218,7 +219,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     else if( data.contains( "stopped" ) )
     {
         m_lyrics->clear();
-        m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
     }
     else if( data.contains( "fetching" ) )
     {
@@ -226,14 +226,13 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         
         m_suggested->hide();
         m_lyrics->show();
-        m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
+        m_titleText = i18n( "Lyrics" ) + QString( " : " ) + i18n( "Fetching ..." );
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
     }
     else if( data.contains( "error" ) )
     {
         m_suggested->hide();
         m_lyrics->show();
-        m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
         m_lyrics->setPlainText( i18n( "Could not download lyrics.\nPlease check your Internet connection.\nError message:\n%1", data["error"].toString() ) );
     }
     else if( data.contains( "suggested" ) )
@@ -292,7 +291,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     {
         m_suggested->hide();
         m_lyrics->show();
-        m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
     }
 
