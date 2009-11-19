@@ -13,6 +13,7 @@ include_directories(
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES}
+	${OPENSSL_INCLUDE_DIR}
         ${MYSQL_INCLUDE_DIR}
         ${TAGLIB_INCLUDES}
         ${TAGLIB-EXTRAS_INCLUDES}
@@ -65,6 +66,7 @@ target_link_libraries(amarok_collection-mysqlecollection
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
+    ${OPENSSL_LIBRARIES}
     ${MYSQL_EMBEDDED_LIBRARIES}
     ${MYSQL_LIBRARIES}
     ${CMAKE_DL_LIBS}
