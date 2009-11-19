@@ -10,9 +10,13 @@
             ${KDE4_INCLUDE_DIR}
             ${STRIGI_INCLUDE_DIR}
             ${QT_INCLUDES}
-            ${LIBLASTFM_INCLUDE_DIR}/..
-            ${LIBLASTFM_INCLUDE_DIR}
             )
+
+if( LIBLASTFM_FOUND )
+    include_directories(
+        ${LIBLASTFM_INCLUDE_DIR}
+    )
+endif( LIBLASTFM_FOUND )
 
 add_subdirectory( images )
 
@@ -24,7 +28,6 @@ add_subdirectory( images )
             AmpacheServiceQueryMaker.cpp
             AmpacheMeta.cpp
             AmpacheConfig.cpp
-            LastfmInfoParser.cpp
             sha256/sha256.cpp
         )
         if( LIBLASTFM_FOUND )
@@ -44,6 +47,11 @@ add_subdirectory( images )
             ${KDE4_THREADWEAVER_LIBRARIES}
             ${LIBLASTFM_LIBRARY}
         )
+        if( LIBLASTFM_FOUND )
+            target_link_libraries(amarok_service_ampache
+                ${LIBLASTFM_LIBRARY}
+            )
+        endif( LIBLASTFM_FOUND )
 
 
         install(TARGETS amarok_service_ampache DESTINATION ${PLUGIN_INSTALL_DIR} )
