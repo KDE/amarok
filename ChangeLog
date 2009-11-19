@@ -25,7 +25,9 @@ VERSION 2.2.2
     * Fixed lots of memory leaks reported by Valgrind.
     * Made lyrics applet colours presentable with bright and dark colour
       styles. (BR 214930)
-
+    * Made sure random mode works if repeat is on. (BR 214559)
+    * Fixed random mode behaviour when "going back". (BR 208892)
+    * Made random mode work. (BR 212910)
 
 
 VERSION 2.2.1
