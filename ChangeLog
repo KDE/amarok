@@ -17,7 +17,7 @@ VERSION 2.2.2
   CHANGES:
     * Usability: Added tooltips all over the place, improved existing ones.
     * Usability improvements for the Ampache service settings dialog.
-    * Length of queued tracks are now shown in the statusbar tooltip. (BR 144471)
+    * Length and size of queued tracks are now shown in the statusbar tooltip. (BR 144471)
 
   BUGFIXES:
     * Support for "title:" token in the collection search. Patch by Roberto
