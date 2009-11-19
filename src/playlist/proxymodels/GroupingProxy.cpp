@@ -48,6 +48,7 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
 
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
+    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
     connect( sourceModel(), SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
 
     connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );

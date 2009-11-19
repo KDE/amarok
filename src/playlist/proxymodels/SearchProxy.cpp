@@ -35,6 +35,7 @@ SearchProxy::SearchProxy( AbstractModel *belowModel, QObject *parent )
 
     //needed by GroupingProxy:
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
+    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
     connect( sourceModel(), SIGNAL( modelReset() ), this, SIGNAL( modelReset() ) );
 }
 

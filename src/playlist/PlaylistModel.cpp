@@ -517,6 +517,7 @@ Playlist::Model::setRowQueued( int row )
         else
             state = (Item::State) ( state | Item::Queued );
         setStateOfRow( row, state );
+        emit queueChanged();
     }
 }
 
@@ -531,6 +532,7 @@ Playlist::Model::setRowDequeued( int row )
         else
             state = (Item::State) ( stateOfRow(row) & ~Item::Queued );
         setStateOfRow( row, state );
+        emit queueChanged();
     }
 }
 

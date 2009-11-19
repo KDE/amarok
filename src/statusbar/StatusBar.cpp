@@ -23,6 +23,7 @@
 #include "LongMessageWidget.h"
 #include "meta/MetaUtility.h"
 #include "meta/capabilities/SourceInfoCapability.h"
+#include "playlist/PlaylistItem.h"
 #include "playlist/PlaylistModelStack.h"
 
 #include "KJobProgressBar.h"
@@ -90,6 +91,7 @@ StatusBar::StatusBar( QWidget * parent )
     connect( The::playlist(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlist(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
     connect( The::playlist(), SIGNAL( layoutChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlist(), SIGNAL( queueChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();
 }
@@ -290,7 +292,7 @@ void StatusBar::hideLongMessage()
 void
 StatusBar::updateTotalPlaylistLength() //SLOT
 {
-    const int totalLength = The::playlist()->totalLength();
+    const quint64 totalLength = The::playlist()->totalLength();
     const quint64 totalSize = The::playlist()->totalSize();
     const int trackCount = The::playlist()->rowCount();
     const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
@@ -300,7 +302,37 @@ StatusBar::updateTotalPlaylistLength() //SLOT
     {
         m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, prettyTotalLength ) );
         m_playlistLengthLabel->show();
-        m_playlistLengthLabel->setToolTip( i18n( "Total playlist size: %1", prettyTotalSize ) );
+
+        quint64 queuedTotalLength( 0 );
+        quint64 queuedTotalSize( 0 );
+        int queuedCount( 0 );
+
+        for( int i = 0; i < trackCount; ++i )
+        {
+            if( The::playlist()->stateOfRow( i ) & Playlist::Item::Queued )
+            {
+                queuedTotalLength += The::playlist()->trackAt( i )->length();
+                queuedTotalSize += The::playlist()->trackAt( i )->filesize();
+                queuedCount++;
+            }
+        }
+
+        const QString prettyQueuedTotalLength = Meta::msToPrettyTime( queuedTotalLength );
+        const QString prettyQueuedTotalSize   = Meta::prettyFilesize( queuedTotalSize );
+
+        QString tooltipLabel;
+        if( queuedCount > 0 && queuedTotalLength > 0 )
+        {
+            tooltipLabel = i18n( "Total playlist size: %1", prettyTotalSize )       + '\n'
+                         + i18n( "Queue size: %1",          prettyQueuedTotalSize ) + '\n'
+                         + i18n( "Queue length: %1",        prettyQueuedTotalLength );
+        }
+        else
+        {
+            tooltipLabel = i18n( "Total playlist size: %1", prettyTotalSize );
+        }
+
+        m_playlistLengthLabel->setToolTip( tooltipLabel );
         m_separator->show();
     }
     else if( ( totalLength == 0 ) && ( trackCount > 0 ) )

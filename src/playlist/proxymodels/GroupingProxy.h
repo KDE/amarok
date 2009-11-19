@@ -101,6 +101,11 @@ signals:
      */
     void rowsRemoved( const QModelIndex& parent, int start, int end );
 
+    /**
+     * This signal is emitted when tracks are (de)queued from the playlist.
+     */
+    void queueChanged();
+
 private slots:
     void modelDataChanged( const QModelIndex&, const QModelIndex& );
     void modelRowsInserted( const QModelIndex&, int, int );
