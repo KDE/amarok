@@ -120,15 +120,8 @@ ScanManager::startFullScan()
         if( AmarokConfig::useCharsetDetector() )
             *m_scanner << "-c";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
-        debug() << "GOING TO SCAN:";
+
         QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
-        if( collectionFolders.size() > 30 )
-            debug() << "(a *lot*)";
-        else
-        {
-            foreach( const QString &dir, MountPointManager::instance()->collectionFolders() )
-                debug() << "    " << dir;
-        }
         *m_scanner << collectionFolders;
         m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
         connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -576,7 +569,7 @@ ScanManager::checkTables( bool full )
         debug() << "WOAH, why is there no DB updater?";
         return;
     }
-    
+
     dbUpdater->checkTables( checkCount == 0 );
 
     Amarok::config( "MySQL" ).writeEntry( "CheckCount", 1 );

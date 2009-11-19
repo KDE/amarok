@@ -27,7 +27,7 @@
 #include <KStandardDirs>
 
 #include <QPainter>
-
+#include <QDesktopServices>
 
 QString InfoApplet::s_defaultHtml = "<html>"
                                     "    <head>"
@@ -90,11 +90,9 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 
     if  ( m_initialized )
     {
-        if ( !data[ "main_info" ].toString().isEmpty() )
+        QString currentHtml = data[ "main_info" ].toString();
+        if ( !currentHtml.isEmpty() )
         {
-
-            QString currentHtml = data[ "main_info" ].toString();
-            
             QColor highlight( App::instance()->palette().highlight().color() );
             highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
             currentHtml = currentHtml.replace( "{text_color}", App::instance()->palette().brush( QPalette::Text ).color().name() );
@@ -106,9 +104,9 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         }
         else
         {
-            QString html = s_defaultHtml;
-            html = html.replace( "%%SUBJECT_NAME%%", data[ "subject_name" ].toString() );
-            m_webView->setHtml( html );
+            currentHtml = s_defaultHtml;
+            currentHtml = currentHtml.replace( "%%SUBJECT_NAME%%", data[ "subject_name" ].toString() );
+            m_webView->setHtml( currentHtml );
         }
 
         m_webView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
@@ -154,6 +152,8 @@ void InfoApplet::linkClicked( const QUrl & url )
     {
         new Meta::XSPFPlaylist( url, true );
     }
+    else
+        QDesktopServices::openUrl( url.toString() );
 }
 
 #include "InfoApplet.moc"

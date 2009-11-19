@@ -121,22 +121,44 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::Sql
     }
 }
 
+// XXX: why do PodcastMetaCommon and PodcastEpisode not have an apropriate copy constructor?
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     : Meta::PodcastEpisode()
     , m_dbId( 0 )
 {
-    m_url = KUrl( episode->uidUrl() );
     m_channel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
 
-    if ( !m_channel && episode->channel()) {
+    if( !m_channel && episode->channel() )
+    {
         debug() << "BUG: creating SqlEpisode but not an sqlChannel!!!";
         debug() <<  episode->channel()->title();
     }
 
-    m_localUrl = episode->localUrl();
+    // PodcastMetaCommon
     m_title = episode->title();
+    m_description = episode->description();
+    m_keywords = episode->keywords();
+    m_subtitle = episode->subtitle();
+    m_summary = episode->summary();
+    m_author = episode->author();
+    
+    // PodcastEpisode
     m_guid = episode->guid();
+    m_url = KUrl( episode->uidUrl() );
+    m_localUrl = episode->localUrl();
+    m_mimeType = episode->mimeType();
     m_pubDate = episode->pubDate();
+    m_duration = episode->duration();
+    m_fileSize = episode->filesize();
+    m_sequenceNumber = episode->sequenceNumber();
+    m_isNew = episode->isNew();
+
+    // I'm not sure about this:
+    m_albumPtr = episode->album();
+    m_artistPtr = episode->artist();
+    m_composerPtr = episode->composer();
+    m_genrePtr = episode->genre();
+    m_yearPtr = episode->year();
 
     //commit to the database
     updateInDb();

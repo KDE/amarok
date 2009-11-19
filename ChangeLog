@@ -15,12 +15,15 @@ VERSION 2.2.2
     * Fetch labels from last.fm for some tracks [UPDATE THIS ONCE WE FIGURE OUT WHEN TO DO SO]
 
   CHANGES:
+    * Added tooltips for all icons in the Context View's applets.
     * Usability improvements for the Ampache service settings dialog.
 
   BUGFIXES:
     * Support for "title:" token in the collection search. Patch by Roberto
       Bertolusso <rbertolusso@yahoo.com>. (BR 211249)
     * Fixed lots of memory leaks reported by Valgrind.
+    * Make lyrics applet colours presentable with bright and dark colour
+      styles (BR 214930)
 
 
 

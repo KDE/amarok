@@ -36,14 +36,11 @@ ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     , m_type( FullScan )
     , m_aftPermanentTablesUrlString()
 {
-    DEBUG_BLOCK
-
     m_aftPermanentTablesUrlString << "playlist_tracks";
 }
 
 ScanResultProcessor::~ScanResultProcessor()
 {
-    DEBUG_BLOCK
     //everything has a URL, so enough to just delete from here
     foreach( QStringList *list, m_urlsHashByUid )
         delete list;
@@ -249,7 +246,7 @@ ScanResultProcessor::rollback()
 void
 ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     setupDatabase();
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
@@ -682,7 +679,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     {
         //we found an existing entry with this uniqueid, update the deviceid and path
         //Note that we ignore the situation where both a UID and path was found; UID takes precedence
-        
+
         if( m_urlsHashByUid.contains( uid ) && m_urlsHashByUid[uid] != 0 )
         {
             QStringList *list = m_urlsHashByUid[uid];
@@ -706,7 +703,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
             list->replace( 4, uid );
             //debug() << "Hash updated path-based values for uid " << uid;
         }
- 
+
         m_permanentTablesUidUpdates.insert( url, uid );
         m_changedUids.insert( currUrlIdValues[4], uid );
         return currUrlIdValues[0].toInt();
@@ -799,7 +796,7 @@ ScanResultProcessor::directoryId( const QString &dir )
 int
 ScanResultProcessor::checkExistingAlbums( const QString &album )
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     // "Unknown" albums shouldn't be handled as compilations
     if( album.isEmpty() )
         return 0;
@@ -825,7 +822,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
         foreach( QStringList* slist, *m_tracksHashByAlbum[albumInt] )
             trackIntList.append( (*slist)[0].toInt() ); //list of tracks matching those album IDs
     }
-    
+
     //note that there will be a 1:1 mapping between tracks and urls, although the id is not necessarily the same
     //and there may be more urls than tracks -- this means that this track list is all we need
     //the big mama
@@ -884,7 +881,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
 void
 ScanResultProcessor::setupDatabase()
 {
-    DEBUG_BLOCK
+//     DEBUG_BLOCK
     if( !m_setupComplete )
     {
         debug() << "Setting up database";
@@ -956,7 +953,7 @@ ScanResultProcessor::populateCacheHashes()
         m_urlsHashByLocation.insert( QPair<int, QString>( currList->at( 1 ).toInt(), currList->at( 2 ) ), currList );
     }
     m_nextUrlNum = lastNum + 1;
-    m_collection->query( "DELETE FROM urls_temp;" ); 
+    m_collection->query( "DELETE FROM urls_temp;" );
 
     //albums
     res = m_collection->query( "SELECT * FROM albums_temp ORDER BY id ASC;" );
@@ -1128,7 +1125,7 @@ ScanResultProcessor::copyHashesToTempTables()
             m_collection->insert( query );
             query = queryStart;
             valueReady = false;
-        }   
+        }
 
         if( !valueReady )
         {
@@ -1225,7 +1222,7 @@ ScanResultProcessor::copyHashesToTempTables()
             m_collection->insert( query );
             query = queryStart;
             valueReady = false;
-        }   
+        }
 
         if( !valueReady )
         {
@@ -1276,7 +1273,7 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
             m_collection->insert( query );
             query = queryStart;
             valueReady = false;
-        }   
+        }
 
         if( !valueReady )
         {

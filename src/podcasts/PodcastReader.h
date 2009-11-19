@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include <QXmlStreamReader>
 #include <QObject>
+#include <QStack>
 
 namespace KIO
 {
@@ -44,7 +45,6 @@ class PodcastReader : public QObject, public QXmlStreamReader
 
         bool read( QIODevice *device );
         bool read( const KUrl &url );
-        bool read();
         bool update( Meta::PodcastChannelPtr channel );
         KUrl & url() { return m_url; }
 
@@ -63,26 +63,174 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void downloadResult( KJob * );
 
     private:
-        enum FeedType { UnknownFeedType, ErrorPageType, Rss20FeedType };
+        /** these are the keys used by the automata */
+        typedef enum {
+            Document,
+            TextContent,
+            Rss,
+            Channel,
+            Item,
+            Image,
+            Link,
+            Author,
+            Url,
+            Title,
+            Enclosure,
+            Guid,
+            PubDate,
+            Description,
+            Summary,
+            Body,
+            Html,
+            Unknown,
+            Any
+        } ElementType;
 
-        FeedType m_feedType;
+        class Action;
+        typedef void (PodcastReader::*ActionCallback)();
+        typedef QHash<ElementType, Action*> ActionMap;
+
+        class Action
+        {
+            public:
+                Action( ActionMap &actionMap )
+                    : m_actionMap( actionMap )
+                    , m_begin( 0 )
+                    , m_end( 0 )
+                    , m_characters( 0 ) {}
+
+                Action(ActionMap &actionMap, ActionCallback begin)
+                    : m_actionMap( actionMap )
+                    , m_begin( begin )
+                    , m_end( 0 )
+                    , m_characters( 0 ) {}
+
+                Action(ActionMap &actionMap, ActionCallback begin, ActionCallback end)
+                    : m_actionMap( actionMap )
+                    , m_begin( begin )
+                    , m_end( end )
+                    , m_characters( 0 ) {}
+
+                Action(ActionMap &actionMap, ActionCallback begin,
+                        ActionCallback end, ActionCallback characters)
+                    : m_actionMap( actionMap )
+                    , m_begin( begin )
+                    , m_end( end )
+                    , m_characters( characters ) {}
+
+                virtual ~Action() {}
+
+                void begin(PodcastReader *podcastReader) const;
+                void end(PodcastReader *podcastReader) const;
+                void characters(PodcastReader *podcastReader) const;
+
+                const ActionMap &actionMap() const { return m_actionMap; }
+
+            private:
+                ActionMap      &m_actionMap;
+                ActionCallback  m_begin;
+                ActionCallback  m_end;
+                ActionCallback  m_characters;
+        };
+
+        ElementType elementType() const;
+        bool read();
+        bool continueRead();
+        
+        // callback methods for feed parsing:
+        void beginRss();
+        void beginHtml();
+        void beginUnknownFeedType();
+        void beginEnclosure();
+        void beginText();
+        void beginChannel();
+        void beginItem();
+        void beginXml();
+
+        void endRss();
+        void endTitle();
+        void endDescription();
+        void endItunesSummary();
+        void endBody();
+        void endLink();
+        void endGuid();
+        void endPubDate();
+        void endItem();
+        void endImageUrl();
+        void endAuthor();
+        void endXml();
+
+        void readCharacters();
+
+        void stopWithError(const QString &message);
+        static const char* tokenToString(TokenType token);
+
+        /** There usually are 3 kinds of descriptions. Usually a &lt;body&gt; element contains
+         * the most detailed description followed by &lt;itunes:summary&gt; and the standard
+         * &lt;description&gt;. */
+        enum DescriptionType {
+            NoDescription  = 0,
+            RssDescription = 1,
+            ItunesSummary  = 2,
+            HtmlBody       = 3
+        };
+
         KUrl m_url;
-        PodcastProvider * m_podcastProvider;
+        PodcastProvider *m_podcastProvider;
         KIO::TransferJob *m_transferJob;
-        Meta::PodcastMetaCommon *m_current;
         Meta::PodcastChannelPtr m_channel;
+        Meta::PodcastEpisodePtr m_item;
+        
+        // this somewhat emulates a callstack (whithout local variables):
+        QStack<const Action*> m_actionStack;
+        
+        DescriptionType m_descriptionType;
+        DescriptionType m_channelDescriptionType;
+        QString m_buffer;
+        Meta::PodcastMetaCommon *m_current;
 
-        QString m_currentTag;
-        QString m_titleString;
-        QString m_linkString;
-        QString m_descriptionString;
-        QString m_urlString;
-        QString m_guidString;
-        QString m_pubDateString;
+        class StaticData {
+            public:
+                StaticData();
 
-        bool m_parsingImage;
+                // This here basically builds a automata.
+                // This way feed paraing can be paused after any token,
+                // thus enabling paralell download and parsing of multiple
+                // feeds without the need for threads.
 
-        void readUnknownElement();
+                Action startAction;
+                Action titleAction;
+                Action descriptionAction;
+                Action summaryAction;
+                Action bodyAction;
+                Action linkAction;
+                Action skipAction;
+                Action docAction;
+                Action rssAction;
+                Action htmlAction;
+                Action unknownFeedTypeAction;
+                Action channelAction;
+                Action imageAction;
+                Action itemAction;
+                Action urlAction;
+                Action authorAction;
+                Action enclosureAction;
+                Action guidAction;
+                Action pubDateAction;
+                Action xmlAction;
+
+                ActionMap rootMap;
+                ActionMap docMap;
+                ActionMap rssMap;
+                ActionMap channelMap;
+                ActionMap imageMap;
+                ActionMap itemMap;
+                ActionMap skipMap;
+                ActionMap xmlMap;
+                ActionMap textMap;
+        };
+
+        static const StaticData sd;
 
         QDateTime parsePubDate( const QString &datestring );
 
@@ -92,9 +240,6 @@ class PodcastReader : public QObject, public QXmlStreamReader
         *   same pointer as the argument.
         */
         Meta::PodcastEpisodePtr podcastEpisodeCheck( Meta::PodcastEpisodePtr episode );
-
-        void commitChannel();
-        void commitEpisode();
 };
 
 #endif
