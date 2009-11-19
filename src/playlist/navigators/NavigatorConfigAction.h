@@ -44,6 +44,8 @@ protected slots:
     */
     void setActiveNavigator( QAction *navigatorAction );
 
+    void setFavored( QAction *favorAction );
+
 private:
 
     QAction * m_standardNavigatorAction;
@@ -52,6 +54,11 @@ private:
     QAction * m_repeatPlaylistNavigatorAction;
     QAction * m_randomTrackNavigatorAction;
     QAction * m_randomAlbumNavigatorAction;
+
+    QAction * m_favorNoneAction;
+    QAction * m_favorScoresAction;
+    QAction * m_favorRatingsAction;
+    QAction * m_favorLastPlayedAction;
 };
 
 #endif // NAVIGATORCONFIGACTION_H

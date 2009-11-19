@@ -73,17 +73,17 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     QMenu * favorMenu = navigatorMenu->addMenu( i18n( "Favor" ) );
     QActionGroup * favorActions = new QActionGroup( favorMenu );
 
-    action = favorActions->addAction( i18n( "None" ) );
-    action->setCheckable( true );
+    m_favorNoneAction = favorActions->addAction( i18n( "None" ) );
+    m_favorNoneAction->setCheckable( true );
     
-    action = favorActions->addAction( i18n( "Higher Scores" ) );
-    action->setCheckable( true );
+    m_favorScoresAction = favorActions->addAction( i18n( "Higher Scores" ) );
+    m_favorScoresAction->setCheckable( true );
     
-    action = favorActions->addAction( i18n( "Higher Ratings" ) );
-    action->setCheckable( true );
+    m_favorRatingsAction = favorActions->addAction( i18n( "Higher Ratings" ) );
+    m_favorRatingsAction->setCheckable( true );
     
-    action = favorActions->addAction( i18n( "Not Recently Played" ) );
-    action->setCheckable( true );
+    m_favorLastPlayedAction = favorActions->addAction( i18n( "Not Recently Played" ) );
+    m_favorLastPlayedAction->setCheckable( true );
 
     favorMenu->addActions( favorActions->actions() );
 
@@ -122,7 +122,29 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
             break;
     }
 
+    switch( AmarokConfig::favorTracks() )
+    {
+        case AmarokConfig::EnumFavorTracks::HigherScores:
+            m_favorNoneAction->setChecked( true );
+            break;
+
+        case AmarokConfig::EnumFavorTracks::HigherRatings:
+            m_favorScoresAction->setChecked( true );
+            break;
+
+        case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
+            m_favorRatingsAction->setChecked( true );
+            break;
+
+
+        case AmarokConfig::EnumFavorTracks::Off:
+        default:
+            m_favorNoneAction->setChecked( true );
+            break;
+    }
+
      connect( navigatorMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( setActiveNavigator( QAction* ) ) );
+     connect( favorMenu, SIGNAL( triggered( QAction* ) ), this, SLOT( setFavored( QAction* ) ) );
 }
 
 NavigatorConfigAction::~NavigatorConfigAction()
@@ -164,6 +186,27 @@ void NavigatorConfigAction::setActiveNavigator( QAction *navigatorAction )
     }
 
     The::playlistActions()->playlistModeChanged();
+}
+
+void NavigatorConfigAction::setFavored( QAction *favorAction )
+{
+    DEBUG_BLOCK
+    if( favorAction == m_favorNoneAction )
+    {
+        AmarokConfig::setFavorTracks( AmarokConfig::EnumFavorTracks::Off );
+    }
+    else if( favorAction == m_favorScoresAction )
+    {
+        AmarokConfig::setFavorTracks( AmarokConfig::EnumFavorTracks::HigherScores );
+    }
+    else if( favorAction == m_favorRatingsAction )
+    {
+        AmarokConfig::setFavorTracks( AmarokConfig::EnumFavorTracks::HigherRatings );
+    }
+    else if( favorAction == m_favorLastPlayedAction )
+    {
+        AmarokConfig::setFavorTracks( AmarokConfig::EnumFavorTracks::LessRecentlyPlayed );
+    } 
 }
 
 #include "NavigatorConfigAction.moc"
