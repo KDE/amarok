@@ -18,6 +18,9 @@ VERSION 2.2.2
     * Usability: Added tooltips all over the place, improved existing ones.
     * Usability improvements for the Ampache service settings dialog.
     * Length and size of queued tracks are now shown in the statusbar tooltip. (BR 144471)
+    * Improved Cover fetching. Changed Dialog so the user can select from
+      possible covers.
+    * Improved guessing tags from filename. Added preview to Dialog.
 
   BUGFIXES:
     * Support for "title:" token in the collection search. Patch by Roberto
