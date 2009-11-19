@@ -27,13 +27,10 @@
 #include "statusbar/StatusBar.h"
 #include "ui_EditCoverSearchDialog.h"
 
-#include <KDialog>
-#include <KHBox>
 #include <KIO/Job>
 #include <KLocale>
-#include <KPushButton>
 #include <KUrl>
-#include <KVBox>
+
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -181,12 +178,9 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
-    url.addQueryItem( "method", "album.getinfo" );
+    url.addQueryItem( "method", "album.search" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "album", album->name().toLocal8Bit() );
-
-    if ( album->hasAlbumArtist() )
-        url.addQueryItem( "artist", album->albumArtist()->name().toLocal8Bit() );
 
     debug() << url;
 
@@ -223,116 +217,115 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
         return;
     }
 
-    const QDomNodeList list = doc.documentElement().namedItem( "album" ).childNodes();
+    m_pixmaps.clear();
+    m_processedCovers = 0;
+    m_numURLS = 0;
 
-    QString size;
-    switch( m_size )
+    const QDomNodeList foundAlbums = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
+
+    debug() << "Found " << QString( "%1" ).arg( foundAlbums.length() ) << " Albums";
+    
+    for( uint x = 0; x < foundAlbums.length(); x++ )
     {
-        case 0:  size = "small";  break;
-        case 1:  size = "medium"; break;
-        case 2:  size = "large"; break;
-        default: size = "extralarge";  break;
-    }
-    QString coverUrl;
-    for( int i = 0; i < list.count(); i++ )
-    {
-        QDomNode n = list.item( i );
-        if( n.nodeName() == "image" )
+        const QDomNodeList list = foundAlbums.item( x ).childNodes();
+
+        QString size;
+        switch( m_size )
         {
-            const QDomNode node = list.item( i );
+            case 0:  size = "small";  break;
+            case 1:  size = "medium"; break;
+            case 2:  size = "large"; break;
+            default: size = "extralarge";  break;
+        }
+        QString coverUrl;
+        for( int i = 0; i < list.count(); i++ )
+        {
+            QDomNode n = list.item( i );
+            if( n.nodeName() == "image" )
+            {
+                const QDomNode node = list.item( i );
 
-            if ( node.hasAttributes() ) {
-                const QString imageSize = node.attributes().namedItem( "size" ).nodeValue();
-                if ( imageSize == size && node.isElement() ) {
-                    coverUrl = node.toElement().text();
+                if( node.hasAttributes() )
+                {
+                    const QString imageSize = node.attributes().namedItem( "size" ).nodeValue();
+                    if( imageSize == size && node.isElement() )
+                    {
+                        coverUrl = node.toElement().text();
+                    }
                 }
             }
         }
+
+        if( coverUrl.isEmpty() )
+        {
+            continue;
+        }
+
+        m_numURLS++;
+
+        KJob* getJob = KIO::storedGet( KUrl(coverUrl), KIO::NoReload, KIO::HideProgressInfo );
+        connect( getJob, SIGNAL( result( KJob* ) ), SLOT( finishedImageFetch( KJob* ) ) );
     }
 
-    if ( coverUrl.isEmpty() ) {
+    if ( m_numURLS == 0 )
         finishNotFound();
-        return;
-    }
-
-    KJob* getJob = KIO::storedGet( KUrl(coverUrl), KIO::NoReload, KIO::HideProgressInfo );
-    connect( getJob, SIGNAL( result( KJob* ) ), SLOT( finishedImageFetch( KJob* ) ) );
 }
 
 void
 CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
 {
-    if( job->error() || !m_pixmap.loadFromData( static_cast<KIO::StoredTransferJob*>( job )->data() ) )
+    QPixmap pixmap;
+    
+    if( job->error() || !pixmap.loadFromData( static_cast<KIO::StoredTransferJob*>( job )->data() ) )
     {
         debug() << "finishedImageFetch(): KIO::error(): " << job->error();
         m_errors += i18n( "The cover could not be retrieved." );
         finishWithError( i18n( "The cover could not be retrieved." ), job );
         return;
     }
-
-    else if( m_interactive )
-    {
-        //yay! image found :)
-        //lets see if the user wants it
-        showCover();
-    }
     else
-        //image loaded successfully yay!
-        finish();
+    {
+        m_pixmaps.append( pixmap );
+    }
+
+    m_processedCovers++;
+    
+    if( m_processedCovers == m_numURLS )
+    {
+        if( m_pixmaps.length() > 0 )
+        {
+            if( m_interactive )
+            {
+                //yay! images found :)
+                //lets see if the user wants one of it
+                showCover();
+            }
+            else
+            {
+                m_selPixmap = m_pixmaps.takeFirst();
+                //image loaded successfully yay!
+                finish();
+            }
+        }
+        else if( m_processedCovers == m_numURLS )
+        {
+            debug() << "No cover could be retrieved!";
+            finishNotFound();
+        }
+    }
 
     The::statusBar()->endProgressOperation( job ); //just to be safe...
 }
 
-    class CoverFoundDialog : public KDialog
-    {
-    public:
-        CoverFoundDialog( QWidget *parent, const QPixmap &cover, const QString &productname )
-                : KDialog( parent )
-        {
-            setButtons( None );
-            showButtonSeparator( false );
-            KVBox *box = new KVBox( this );
-            setMainWidget(box);
-
-            QLabel      *labelPix  = new QLabel( box );
-            QLabel      *labelName = new QLabel( box );
-            KHBox       *buttons   = new KHBox( box );
-            KPushButton *save      = new KPushButton( KStandardGuiItem::save(), buttons );
-            KPushButton *cancel    = new KPushButton( KStandardGuiItem::cancel(), buttons );
-
-            labelPix ->setAlignment( Qt::AlignHCenter );
-            labelName->setAlignment( Qt::AlignHCenter );
-            labelPix ->setPixmap( cover );
-            labelName->setText( productname );
-
-            save->setDefault( true );
-            this->setFixedSize( sizeHint() );
-            this->setCaption( i18n("Cover Found") );
-
-            connect( save,   SIGNAL(clicked()), SLOT(accept()) );
-            connect( cancel, SIGNAL(clicked()), SLOT(reject()) );
-        }
-
-        virtual void accept()
-        {
-            if( qstrcmp( sender()->objectName().toAscii(), "NewSearch" ) == 0 )
-                done( 1000 );
-            else if( qstrcmp( sender()->objectName().toAscii(), "NextCover" ) == 0 )
-                done( 1001 );
-            else
-                KDialog::accept();
-        }
-    };
-
-
 void
 CoverFetcher::showCover()
 {
-    CoverFoundDialog dialog( static_cast<QWidget*>( parent() ), m_pixmap, m_currentCoverName );
+    CoverFoundDialog dialog( static_cast<QWidget*>( parent() ), m_pixmaps, m_currentCoverName );
 
     switch( dialog.exec() )
     {
     case KDialog::Accepted:
+        m_selPixmap = QPixmap( dialog.image() );
         finish();
         break;
     case KDialog::Rejected: //make sure we do not show any more dialogs
@@ -394,6 +387,81 @@ CoverFetcher::finishNotFound()
         startFetch( m_albums.takeFirst() );
     }
 }
+
+CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers, const QString &productname ) : KDialog( parent )
+{
+    m_curCover = 0;
+    m_covers.clear();
+    m_covers = covers;
+    this->setButtons( None );
+    this->showButtonSeparator( false );
+    KVBox *box = new KVBox( this );
+    this->setMainWidget(box);
+
+    m_labelPix  = new QLabel( box );
+    m_labelName = new QLabel( box );
+    m_buttons   = new KHBox( box );
+    m_prev      = new KPushButton( KStandardGuiItem::back(), m_buttons );
+    m_save      = new KPushButton( KStandardGuiItem::save(), m_buttons );
+    m_cancel    = new KPushButton( KStandardGuiItem::cancel(), m_buttons );
+    m_next      = new KPushButton( KStandardGuiItem::forward(), m_buttons );
+
+    if( m_curCover == m_covers.length() )
+        m_next->setEnabled( false );
+    else
+        m_next->setEnabled( true );
+
+    m_prev->setEnabled( false );
+
+    m_labelPix ->setMinimumHeight( 300 );
+    m_labelPix ->setMinimumWidth( 300 );
+    m_labelPix ->setAlignment( Qt::AlignHCenter );
+    m_labelName->setAlignment( Qt::AlignHCenter );
+    m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
+    m_labelName->setText( productname );
+
+    m_save->setDefault( true );
+    this->setFixedSize( sizeHint() );
+    this->setCaption( i18n( "Cover Found" ) );
+
+    connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
+    connect( m_save,   SIGNAL(clicked()), SLOT(accept()) );
+    connect( m_cancel, SIGNAL(clicked()), SLOT(reject()) );
+    connect( m_next, SIGNAL(clicked()), SLOT(nextPix()) );
+}
+
+//SLOT
+void CoverFoundDialog::nextPix()
+{
+    if( m_curCover < m_covers.length() )
+    {
+        m_curCover++;
+        m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
+        m_prev->setEnabled( true );
+
+        if( m_curCover == m_covers.length()-1 )
+            m_next->setEnabled( false );
+        else
+            m_next->setEnabled( true );
+    }
+}
+
+//SLOT
+void CoverFoundDialog::prevPix()
+{
+    if( m_curCover > 0 )
+    {
+        m_curCover--;
+        m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
+        m_next->setEnabled( true );
+
+        if( m_curCover == 0 )
+            m_prev->setEnabled( false );
+        else
+            m_prev->setEnabled( true );
+    }
+}
+
 
 #include "CoverFetcher.moc"
 

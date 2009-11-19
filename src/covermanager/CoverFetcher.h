@@ -28,6 +28,10 @@
 #include <QMutex>
 #include <QObject>      //baseclass
 #include <QStringList>  //stack allocated
+#include <KDialog>
+#include <KHBox>
+#include <KPushButton>
+#include <KVBox>
 
 class KJob;
 class KLineEdit;
@@ -72,7 +76,7 @@ public:
     /// Main Fetch loop
     AMAROK_EXPORT void manualFetch( Meta::AlbumPtr album );
 
-    QPixmap image() const { return m_pixmap; }
+    QPixmap image() const { return m_selPixmap; }
 
     AMAROK_EXPORT void queueAlbum( Meta::AlbumPtr album );
     AMAROK_EXPORT void queueAlbums( Meta::AlbumList albums );
@@ -99,7 +103,10 @@ private:
     bool    m_interactive; /// whether we should consult the user
     QString m_userQuery; /// the query from the query edit dialog
     QString m_xml;
-    QPixmap  m_pixmap;
+    QList<QPixmap> m_pixmaps; //!List of found covers
+    QPixmap m_selPixmap;          //!Cover of choice
+    int     m_processedCovers;    //!number of covers that have been processed
+    int     m_numURLS;            //!number of URLS to process
     QString m_asin;
     int     m_size;
 
@@ -125,6 +132,43 @@ private:
 
     /// Show the cover that has been found
     void showCover();
+};
+
+
+class CoverFoundDialog : public KDialog
+{
+    Q_OBJECT
+    
+    public:
+        CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers, const QString &productname );
+
+        const QPixmap image() { return *m_labelPix->pixmap(); }
+
+        virtual void accept()
+        {
+            if( qstrcmp( sender()->objectName().toAscii(), "NewSearch" ) == 0 )
+                done( 1000 );
+            else if( qstrcmp( sender()->objectName().toAscii(), "NextCover" ) == 0 )
+                done( 1001 );
+            else
+                KDialog::accept();
+        }
+
+        private slots:
+            void nextPix();
+            void prevPix();
+
+        private:
+
+            QLabel      *m_labelPix;
+            QLabel      *m_labelName;
+            KHBox       *m_buttons;
+            KPushButton *m_next;
+            KPushButton *m_prev;
+            KPushButton *m_save;
+            KPushButton *m_cancel;
+            QList<QPixmap> m_covers;
+            int         m_curCover;
 };
 
 namespace The
