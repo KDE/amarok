@@ -445,10 +445,11 @@ bool Amarok::TimeSlider::event( QEvent * event )
             long trackLength = The::engineController()->trackLength();
             int trackPosition = trackLength * percentage;
 
-            setToolTip( Meta::msToPrettyTime( trackPosition ) );
+            setToolTip( i18n( "Time position: %1", Meta::msToPrettyTime( trackPosition ) ) );
         }
             
     }
+
     return QWidget::event( event );
 }
 
