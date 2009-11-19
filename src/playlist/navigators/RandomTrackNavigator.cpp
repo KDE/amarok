@@ -33,13 +33,15 @@
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {
     m_model = Playlist::ModelStack::instance()->top();
+
+    reset();
+
     connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ),
              this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
              this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( modelLayoutChanged() ) );
-
-    reset();
+    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
+             this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 }
 
 void
@@ -47,15 +49,10 @@ Playlist::RandomTrackNavigator::recvInsertedIds( const QList<quint64>& list )
 {
     foreach( quint64 t, list )
     {
-        if ( ( m_model->stateOfId( t ) == Item::Unplayed ) || ( m_model->stateOfId( t ) == Item::NewlyAdded ) )
+        if ( ( m_model->stateOfId( t ) == Item::Unplayed   ) ||
+             ( m_model->stateOfId( t ) == Item::NewlyAdded ) )
         {
             m_unplayedRows.append( t );
-        }
-        else
-        {
-            // insert a new, but played, track at a random position
-            int pos = KRandom::random() % m_playedRows.size();
-            m_playedRows.insert( pos, t );
         }
     }
 
@@ -94,8 +91,8 @@ Playlist::RandomTrackNavigator::requestNextTrack()
     {
         if ( m_unplayedRows.isEmpty() )
         {
-            m_unplayedRows = m_playedRows;
-            m_playedRows.clear();
+            // reset when playlist finishes
+            reset();
         }
 
         quint64 requestedTrack = 0;
@@ -158,23 +155,11 @@ void Playlist::RandomTrackNavigator::reset()
     m_playedRows.clear();
 
     const int max = m_model->rowCount();
-    for ( int i = 0; i < max; i++ )
+    for( int i = 0; i < max; i++ )
     {
-        if (( m_model->stateOfRow( i ) == Item::Unplayed ) || ( m_model->stateOfRow( i ) == Item::NewlyAdded ) )
-        {
-            m_unplayedRows.append( m_model->idAt( i ) );
-        }
-        else
-        {
-            m_playedRows.append( m_model->idAt( i ) );
-        }
+        // everything is unplayed upon reset
+        m_unplayedRows.append( m_model->idAt( i ) );
     }
 
     std::random_shuffle( m_unplayedRows.begin(), m_unplayedRows.end() );
-    std::random_shuffle( m_playedRows.begin(), m_playedRows.end() );
-}
-
-void Playlist::RandomTrackNavigator::modelLayoutChanged()
-{
-    reset();
 }
