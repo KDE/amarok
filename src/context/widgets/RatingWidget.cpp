@@ -240,6 +240,8 @@ RatingWidget::hoverEnterEvent( QGraphicsSceneHoverEvent* e )
                     contentsRect().width(), contentsRect().height() );
     d->hoverRating = d->ratingPainter.ratingFromPosition( rect, QPoint( e->pos().x(), e->pos().y() ) );
 
+    setToolTip( i18n( "Track rating: %1", d->rating ) );
+
     update();
 }
 
