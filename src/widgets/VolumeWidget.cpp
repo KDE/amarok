@@ -50,7 +50,7 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_slider = new Amarok::VolumeSlider( Amarok::VOLUME_MAX, this );
     m_slider->setObjectName( "ToolBarVolume" );
     m_slider->setValue( AmarokConfig::masterVolume() );
-    m_slider->setToolTip( i18n( "Volume Control" ) );
+    m_slider->setToolTip( i18n( "Volume: %1%", AmarokConfig::masterVolume() ) );
     m_slider->setMaximumSize( 600000, 20 );
 
     addAction( m_action );
@@ -76,6 +76,8 @@ VolumeWidget::toggleMute( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifi
 void
 VolumeWidget::engineVolumeChanged( int value )
 {
+    m_slider->setToolTip( i18n( "Volume: %1%", value ) );
+
     if( value != m_slider->value() )
         m_slider->setValue( value );
 }
@@ -83,6 +85,12 @@ VolumeWidget::engineVolumeChanged( int value )
 void
 VolumeWidget::engineMuteStateChanged( bool mute )
 {
+    if( mute )
+        m_slider->setToolTip( i18n( "Volume: <i>Muted</i>" ) );
+    else
+        m_slider->setToolTip( i18n( "Volume: %1%", m_slider->value() ) );
+
+
     m_action->setIcon( KIcon( m_icons[ (bool)mute ] ) );
 }
 
