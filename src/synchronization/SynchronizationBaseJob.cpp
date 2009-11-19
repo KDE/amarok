@@ -63,6 +63,7 @@ SynchronizationBaseJob::setCollectionB( Amarok::Collection *collection )
 void
 SynchronizationBaseJob::setFilter( const QString &filter )
 {
+    Q_UNUSED( filter )
 }
 
 QueryMaker*

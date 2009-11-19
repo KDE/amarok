@@ -206,7 +206,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
         return data;
     }
 
-    int huedist[360], mx = 0; // For alterMood
+    int huedist[360];         // For alterMood
     int modalHue[NUM_HUES];   // For m_hueSort
     int h, s, v;
 
