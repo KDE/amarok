@@ -29,14 +29,14 @@
 using namespace Context;
 
 UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
-    : DataEngine( parent )
-    , ContextObserver( ContextView::self() )
-    , m_upcomingEventsJob( 0 )
-    , m_currentSelection( "artist" )
-    , m_requested( true )
-    , m_sources( "current" )
-    , m_timeSpan( "AllEvents" )
-    , m_triedRefinedSearch( 0 )
+        : DataEngine( parent )
+        , ContextObserver( ContextView::self() )
+        , m_upcomingEventsJob( 0 )
+        , m_currentSelection( "artist" )
+        , m_requested( true )
+        , m_sources( "current" )
+        , m_timeSpan( "AllEvents" )
+        , m_triedRefinedSearch( 0 )
 {
     update();
 }
@@ -67,7 +67,7 @@ bool UpcomingEventsEngine::sourceRequestEvent( const QString& name )
     if ( tokens.contains( "enabledLinks" ) && tokens.size() > 1 )
         if ( ( tokens.at( 1 ) == QString( "enabledLinks" ) )  && ( tokens.size() > 2 ) )
             m_enabledLinks = (tokens.at( 2 ) == QString(Qt::Checked));
-    
+
     // otherwise, it comes from the engine, a new track is playing.
     removeAllData( name );
     setData( name, QVariant());
@@ -78,7 +78,7 @@ bool UpcomingEventsEngine::sourceRequestEvent( const QString& name )
 
 void UpcomingEventsEngine::message( const ContextState& state )
 {
-    if( state == Current && m_requested )
+    if ( state == Current && m_requested )
         update();
 }
 
@@ -86,7 +86,7 @@ void UpcomingEventsEngine::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
     DEBUG_BLOCK
-    
+
     update();
 }
 
@@ -97,7 +97,7 @@ void UpcomingEventsEngine::update()
     // We've got a new track, great, let's fetch some info from UpcomingEvents !
     m_triedRefinedSearch = 0;
     QString artistName;
-    
+
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
 
@@ -107,24 +107,32 @@ void UpcomingEventsEngine::update()
 
     if ( !currentTrack )
         return;
-    
+
     DataEngine::Data data;
     // default, or applet told us to fetch artist
-    if( selection() == "artist" ) 
+    if ( selection() == "artist" )
     {
-        if( currentTrack->artist() )
+        if ( currentTrack->artist() )
         {
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
-                ( currentTrack->playableUrl().protocol() == "daap" ) ||
-                !The::engineController()->isStream() )
+                    ( currentTrack->playableUrl().protocol() == "daap" ) ||
+                    !The::engineController()->isStream() )
                 artistName = currentTrack->artist()->name();
             else
                 artistName = currentTrack->artist()->prettyName();
-            setData( "upcomingEvents", "artist", artistName );
         }
-        else
+        if (artistName.compare( "") == 0)
             setData( "upcomingEvents", "artist", "Unknown artist" );
+        else
+            setData( "upcomingEvents", "artist", artistName );
     }
+    QPixmap cover = m_currentTrack->album()->image( 156 );
+    setData( "upcomingEvents", "cover",  QVariant( cover ) );
+    setData( "upcomingEvents", "eventName", "Concert de Noël" );
+    setData( "upcomingEvents", "eventDate", "2009-12-25" );
+    setData( "upcomingEvents", "eventUrl", "<a href='http://www.google.com'>"
+                                           "<font size='2' family='Arial, Helvetica, sans-serif' color='blue'><b>http://www.google.fr</b></font>"
+                                           "</a>" );
 }
 
 void UpcomingEventsEngine::reloadUpcomingEvents()
@@ -134,7 +142,7 @@ void UpcomingEventsEngine::reloadUpcomingEvents()
 
 
 QList< LastFmEvent > UpcomingEventsEngine::upcomingEvents(const QString& artist_name)
-{       
+{
     //QMutexLocker locker(m_mutex);
 
     //Initialize the query parameters

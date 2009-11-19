@@ -30,7 +30,8 @@
 
 #include <KConfigDialog>
 #include <KStandardDirs>
-
+#include "context/widgets/TextScrollingWidget.h"
+#include "context/widgets/DropPixmapItem.h"
 
 #include <QDesktopServices>
 #include <QGraphicsSimpleTextItem>
@@ -54,15 +55,15 @@ void
 UpcomingEventsApplet::init()
 {
     m_headerLabel = new QGraphicsSimpleTextItem( this );
-    m_artist = new QGraphicsSimpleTextItem( this );
+    m_eventParticipants = new TextScrollingWidget( this );
+    m_bigImage = new DropPixmapItem( this );
+    m_eventName = new QGraphicsSimpleTextItem( this );
+    m_eventDate = new QGraphicsSimpleTextItem( this );
+    m_url = new QGraphicsTextItem( this );
 
     // ask for all the CV height
     resize( 500, -1 );
 
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
-    m_headerLabel->setFont( labelFont );
     m_headerLabel->setText( i18n( "Upcoming Events" ) );
 
     QAction* settingsAction = new QAction( this );
@@ -102,12 +103,24 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     const float textWidth = m_headerLabel->boundingRect().width();
     const float offsetX =  ( boundingRect().width() - textWidth ) / 2;
 
+    QFont labelFont;
+    labelFont.setPointSize( labelFont.pointSize() + 2 );
+    m_headerLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
+    m_headerLabel->setFont( labelFont );
     m_headerLabel->setPos( offsetX, standardPadding() + 2 );
 
     // Icon positionning
     m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
-    m_artist->setPos( ( boundingRect().width() - m_artist->boundingRect().width() ) / 2, standardPadding() + 20 );
-    
+
+    m_bigImage->setPos( standardPadding() + 5, standardPadding() + 30 );
+    if (!m_bigImage->pixmap().isNull())
+    {
+        m_eventName->setPos( m_bigImage->boundingRect().width() + standardPadding() + 30, standardPadding() + 30 );
+        m_eventParticipants->setPos( m_bigImage->boundingRect().width() + standardPadding() + 30, standardPadding() + 60 );
+        m_eventParticipants->setScrollingText( "Muse - Depeche Mode - The Cure - The Police", QRectF( ( boundingRect().width() - m_eventParticipants->boundingRect().width() ) * 2 / 3, standardPadding() + 30, 200, 100 ) );
+        m_eventDate->setPos( m_bigImage->boundingRect().width() + standardPadding() + 30, standardPadding() + 90 );
+        m_url->setPos( m_bigImage->boundingRect().width() + standardPadding() + 30, standardPadding() + 120 );
+    }
 }
 
 bool
@@ -126,7 +139,15 @@ void
 UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     Q_UNUSED( name )
-    m_artist->setText( data[ "artist" ].toString() );
+    QString artistName = data[ "artist" ].toString();
+    if (artistName.compare( "" ) != 0)
+        m_headerLabel->setText( "Upcoming events for " + artistName );
+    else
+        m_headerLabel->setText( "Upcoming events" );
+    m_bigImage->setPixmap( data[ "cover" ].value<QPixmap>() );
+    m_eventName->setText( data[ "eventName" ].toString() );
+    m_eventDate->setText( data[ "eventDate" ].toString() );
+    m_url->setHtml( data[ "eventUrl" ].toString() );
 
     updateConstraints();
     update();

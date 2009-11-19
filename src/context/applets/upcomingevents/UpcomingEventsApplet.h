@@ -28,7 +28,10 @@
 
 class QAction;
 class QGraphicsSimpleTextItem;
+class QGraphicsTextItem;
+class TextScrollingWidget;
 class KConfigDialog;
+class DropPixmapItem;
 
 namespace Plasma
 {    
@@ -77,7 +80,11 @@ private:
 
     QString m_timeSpan;
     bool m_enabledLinks;
-    QGraphicsSimpleTextItem* m_artist;
+    TextScrollingWidget* m_eventParticipants;
+    DropPixmapItem* m_bigImage;
+    QGraphicsSimpleTextItem* m_eventName;
+    QGraphicsSimpleTextItem* m_eventDate;
+    QGraphicsTextItem* m_url;
     
 private slots:
     void connectSource( const QString &source );
