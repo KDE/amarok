@@ -103,7 +103,7 @@ private:
     bool    m_interactive; /// whether we should consult the user
     QString m_userQuery; /// the query from the query edit dialog
     QString m_xml;
-    QList<QPixmap> m_pixmaps; //!List of found covers
+    QList<QPixmap> m_pixmaps;     //!List of found covers
     QPixmap m_selPixmap;          //!Cover of choice
     int     m_processedCovers;    //!number of covers that have been processed
     int     m_numURLS;            //!number of URLS to process
@@ -142,6 +142,9 @@ class CoverFoundDialog : public KDialog
     public:
         CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers, const QString &productname );
 
+        /**
+        *   @returns the currently selected cover image
+        */
         const QPixmap image() { return *m_labelPix->pixmap(); }
 
         virtual void accept()
@@ -155,20 +158,27 @@ class CoverFoundDialog : public KDialog
         }
 
         private slots:
+            /**
+            *   Switch picture label and current index to next cover
+            */
             void nextPix();
+
+            /**
+            *   Switch picture label and current index to previous cover
+            */
             void prevPix();
 
         private:
 
-            QLabel      *m_labelPix;
-            QLabel      *m_labelName;
-            KHBox       *m_buttons;
-            KPushButton *m_next;
-            KPushButton *m_prev;
-            KPushButton *m_save;
-            KPushButton *m_cancel;
-            QList<QPixmap> m_covers;
-            int         m_curCover;
+            QLabel      *m_labelPix;        //! Picture Label
+            QLabel      *m_labelName;       //! Name Label
+            KHBox       *m_buttons;         //! Button Box
+            KPushButton *m_next;            //! Next Button
+            KPushButton *m_prev;            //! Back Button
+            KPushButton *m_save;            //! Save Button
+            KPushButton *m_cancel;          //! Cancel Button
+            QList<QPixmap> m_covers;        //! Retrieved Covers
+            int         m_curCover;         //! Currently selected Cover
 };
 
 namespace The

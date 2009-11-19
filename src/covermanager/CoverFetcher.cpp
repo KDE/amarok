@@ -223,8 +223,6 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
 
     const QDomNodeList foundAlbums = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
 
-    debug() << "Found " << QString( "%1" ).arg( foundAlbums.length() ) << " Albums";
-    
     for( uint x = 0; x < foundAlbums.length(); x++ )
     {
         const QDomNodeList list = foundAlbums.item( x ).childNodes();
@@ -263,6 +261,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
 
         m_numURLS++;
 
+        //FIXME: Asyncronous behaviour without informing the user is bad in this case
         KJob* getJob = KIO::storedGet( KUrl(coverUrl), KIO::NoReload, KIO::HideProgressInfo );
         connect( getJob, SIGNAL( result( KJob* ) ), SLOT( finishedImageFetch( KJob* ) ) );
     }
@@ -375,8 +374,10 @@ void
 CoverFetcher::finishNotFound()
 {
     if( m_interactive )
+        //FIXME: Not visible behind cover manager
         The::statusBar()->longMessage( i18n( "Unable to find a cover for the specified song." ), StatusBar::Sorry );
     else
+        //FIXME: Not visible behind cover manager
         The::statusBar()->shortMessage( i18n( "Unable to find a cover for %1.", m_albumPtr->name() ) );
     
     m_isFetching = false;
