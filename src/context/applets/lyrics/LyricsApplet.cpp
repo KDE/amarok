@@ -226,7 +226,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         
         m_suggested->hide();
         m_lyrics->show();
-        m_titleText = i18n( "Lyrics" ) + QString( " : " ) + i18n( "Fetching ..." );
+        m_titleText = i18n( "Lyrics : Fetching ..." );
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
     }
     else if( data.contains( "error" ) )
