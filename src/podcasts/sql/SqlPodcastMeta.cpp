@@ -153,12 +153,10 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     m_sequenceNumber = episode->sequenceNumber();
     m_isNew = episode->isNew();
 
-    // I'm not sure about this:
-    m_albumPtr = episode->album();
-    m_artistPtr = episode->artist();
-    m_composerPtr = episode->composer();
-    m_genrePtr = episode->genre();
-    m_yearPtr = episode->year();
+    // The album, artist, composer, genre and year fields
+    // contain proxy objects with internal references to this.
+    // These proxies are created by Meta::PodcastEpisode(), so
+    // these fields don't have to be set here.
 
     //commit to the database
     updateInDb();
