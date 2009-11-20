@@ -21,6 +21,7 @@ VERSION 2.2.2
     * Improved Cover fetching. Changed Dialog so the user can select from
       possible covers.
     * Improved guessing tags from filename. Added preview to Dialog.
+    * Made font of the lyrics applet's text configurable.
 
   BUGFIXES:
     * Support for "title:" token in the collection search. Patch by Roberto
@@ -31,6 +32,7 @@ VERSION 2.2.2
     * Made sure random mode works if repeat is on. (BR 214559)
     * Fixed random mode behaviour when "going back". (BR 208892)
     * Made random mode work. (BR 212910)
+    * Fixed lyrics applet logic when saving, closing, and editing lyrics.
 
 
 VERSION 2.2.1
