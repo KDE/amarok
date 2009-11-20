@@ -160,21 +160,36 @@ SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
     
     parent->addPage( settings, i18n( "Similar Artists Settings" ), "preferences-system");
 
-    connect( ui_Settings.spinBox, SIGNAL( valueChanged( int ) ), this, SLOT( maxArtistsChanged( int ) ) );
+    connect( ui_Settings.spinBox, SIGNAL( valueChanged( int ) ), this, SLOT( changeMaxArtists( int ) ) );
+    connect( parent, SIGNAL( okClicked( ) ), this, SLOT( saveSettings( ) ) );
 }
 
 void
-SimilarArtistsApplet::maxArtistsChanged( int value )
+SimilarArtistsApplet::changeMaxArtists( int value )
 {
 DEBUG_BLOCK
 
-    m_maxArtists = value;
+    m_temp_maxArtists = value;
+}
+
+void
+SimilarArtistsApplet::saveMaxArtists()
+{
+DEBUG_BLOCK
+
+    m_maxArtists = m_temp_maxArtists;
 
     dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:" ) + m_maxArtists );
 
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
     config.writeEntry( "maxArtists", m_maxArtists );
     dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:maxArtists:" ) + m_maxArtists );
+}
+
+void
+SimilarArtistsApplet::saveSettings()
+{
+    saveMaxArtists();
 }
 
 #include "SimilarArtistsApplet.moc"
