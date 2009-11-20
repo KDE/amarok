@@ -80,6 +80,10 @@ private:
 
     QString m_timeSpan;
     bool m_enabledLinks;
+    QString m_temp_timeSpan;
+    bool m_temp_enabledLinks;
+
+    
     TextScrollingWidget* m_eventParticipants;
     DropPixmapItem* m_bigImage;
     QGraphicsSimpleTextItem* m_eventName;
@@ -95,6 +99,12 @@ private slots:
     void configure();
     void changeTimeSpan(QString span);
     void setAddressAsLink(int state);
+    void saveTimeSpan();
+    void saveAddressAsLink();
+
+    void saveSettings();
+    void cancelSettings();
+    void defaultSettings();
 
 };
 
