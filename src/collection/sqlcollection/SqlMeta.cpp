@@ -1782,17 +1782,41 @@ SqlAlbum::setCompilation( bool compilation )
     {
         if( compilation )
         {
+            // A compilation is an album where artist is NULL. Set the album's artist to NULL when the album is set to compilation.
             debug() << "User selected album as compilation";
+            /* Old behavior, potentially caused multiple entries of the same album under compilations.
             m_artistId = 0;
             m_artist = Meta::ArtistPtr();
 
             QString update = "UPDATE albums SET artist = NULL WHERE id = %1;";
             m_collection->query( update.arg( m_id ) );
+            */
+            m_artistId = 0;
+            m_artist = Meta::ArtistPtr();
+
+            // Check to see if another album with the same name is already an collection?
+            QString select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist IS NULL";
+            QStringList albumId = m_collection->query( select.arg( name() ).arg( m_id ) );
+            if( !albumId.empty() ) {
+                // Another album with the same name is already a collection, move all the tracks from the old album to the existing one and
+                // delete the current one. This avoids duplicate entries in the compilation list.
+                int otherId = albumId[0].toInt();
+                QString update = "UPDATE tracks SET album = %1 WHERE album = %2";
+                m_collection->query( update.arg( otherId ).arg( m_id ) );
+                
+                QString delete_album = "DELETE FROM albums WHERE id = %1";
+                m_collection->query( delete_album.arg( m_id ) );
+
+                m_id = otherId;
+            } else {
+                QString update = "UPDATE albums SET artist = NULL WHERE id = %1;";
+                m_collection->query( update.arg( m_id ) );
+            }
         }
         else
         {
             debug() << "User selected album as non-compilation";
-
+            /*  Old behavior - UPDATE-query potentially causes an duplicate key error from mysql, if another album with the same title and artist exists.
             QString select = "SELECT artist FROM tracks WHERE album = %1";
             QStringList artistid = m_collection->query( select.arg( m_id ) );
 
@@ -1803,6 +1827,64 @@ SqlAlbum::setCompilation( bool compilation )
             QString update = "UPDATE albums SET artist = %1 WHERE id = %2;";
             update = update.arg( m_artistId ).arg( m_id );
             m_collection->query( update );
+            */
+
+            // The artists for all the tracks in this album
+            QString select = "SELECT GROUP_CONCAT( CONCAT( artist ) ) FROM tracks WHERE album = %1";
+            QStringList artists = m_collection->query( select.arg( m_id ) );
+
+            QSet< int > artistIds;
+            foreach ( const QString & artist, artists[0].split( ",", QString::SkipEmptyParts ) ) {
+                artistIds.insert( artist.toInt( ) );
+            }
+
+            debug() << "Found these artists" << artistIds;
+
+            bool done = false;
+            if( artistIds.size( ) == 1 ) {
+                // All the tracks have the same artist, see it there is another album with the same name for this artist.
+                select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist = %3";
+                QStringList albumId = m_collection->query( select.arg( name() ).arg( m_id ).arg( *artistIds.begin() ) );
+                if( albumId.empty( ) ) {
+                    m_artistId = *artistIds.begin();
+
+                    // There isn't another album with the same name and artist, just change the artist on the album
+                    QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
+                    m_collection->query( update.arg( m_artistId ).arg( m_id ) );
+                    done = true;
+                }
+            }
+
+            if( !done ) {
+                foreach( const int artistId, artistIds ) {
+                    debug() << "Look for album '" << name() << "' for artist " << artistId;
+                    // Does there exist another album with the same name and the same artist as some of the tracks in this album?
+                    select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist = %3";
+                    QStringList otherAlbumIdStr = m_collection->query( select.arg( name() ).arg( m_id ).arg( artistId ) );
+                    int otherAlbumId = 0;
+                    if( otherAlbumIdStr.empty( ) ) {
+                        debug() << "Didn't find an album";
+                        // Create new album for the tracks for this artist.
+                        QString insert = "INSERT INTO albums( artist, name ) VALUES ( %1, '%2');";
+                        otherAlbumId = m_collection->insert( insert.arg( artistId ).arg( m_collection->escape( name() ) ), "albums" );
+                    } else {
+                        debug() << "Found album " << otherAlbumIdStr;
+                        // We found an album with the same name as the compilation album and the same artist as some of the tracks.
+                        // Move all the tracks for this artist from the compilation album to the existing album.
+                        otherAlbumId = otherAlbumIdStr[0].toInt();
+                    }
+
+                    if ( otherAlbumId > 0 ) {
+                        QString update = "UPDATE tracks SET album = %1 WHERE album = %2 AND artist = %3";
+                        m_collection->query( update.arg( otherAlbumId ).arg( m_id ).arg( artistId ) );
+                    }
+                }
+
+                // Remove the existing compilation album, since we have move all tracks to a new album.
+                QString delete_album = "DELETE FROM albums WHERE id = %1";
+                m_collection->query( delete_album.arg( m_id ) );
+                m_id = 0;
+            }
         }
         notifyObservers();
         m_collection->sendChangedSignal();
