@@ -1,5 +1,6 @@
 /****************************************************************************************
 * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
+* Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,6 +16,43 @@
 ****************************************************************************************/
 
 #include "LastFmEvent.h"
+
+/**
+ * Creates an empty LastFmEvent
+ */
+LastFmEvent::LastFmEvent()
+{
+    //Q_DECLARE_METATYPE(LastFmEvent)
+}
+
+/**
+ * Creates a new LastFmEvent with the 'event' attributes
+ */
+LastFmEvent::LastFmEvent( const LastFmEvent& event)
+{
+   // Q_DECLARE_METATYPE(LastFmEvent)
+
+    foreach( QString currentArtist, event.m_artists )
+    {
+        m_artists.append(currentArtist);    
+    }
+    m_name = event.m_name;
+    m_date = event.m_date;
+    m_smallImageUrl = event.m_smallImageUrl;
+    m_url = event.m_url;
+}
+
+/**
+ * Destroys a LastFmEvent instance
+ */
+LastFmEvent::~LastFmEvent() {}
+
+LastFmEvent::LastFmEvent(QStringList artists, QString name, QDate date, KUrl smallImageUrl, KUrl url)
+    : m_artists(artists), m_name(name), m_date(date), m_smallImageUrl(smallImageUrl), m_url(url)
+{
+    //Q_DECLARE_METATYPE(LastFmEvent)
+    qRegisterMetaType<LastFmEvent>("LastFmEvent");
+}
 
 QStringList LastFmEvent::artists() const
 {

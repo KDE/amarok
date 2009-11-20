@@ -1,5 +1,6 @@
 /****************************************************************************************
 * Copyright (c) 2009   Nathan Sala <sala.nathan@gmail.com>                             *
+* Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -33,8 +34,10 @@ private:
     KUrl m_url;
 
 public:
-    LastFmEvent(QStringList artists, QString name, QDate date, KUrl smallImageUrl, KUrl url)
-    : m_artists(artists), m_name(name), m_date(date), m_smallImageUrl(smallImageUrl), m_url(url) {}
+    LastFmEvent();
+    LastFmEvent( const LastFmEvent& );
+    ~LastFmEvent();
+    LastFmEvent(QStringList artists, QString name, QDate date, KUrl smallImageUrl, KUrl url);
     QStringList artists() const;
     QString name() const;
     QDate date() const;
@@ -43,3 +46,5 @@ public:
 };
 
 #endif // LASTFMEVENT_H
+
+Q_DECLARE_METATYPE(LastFmEvent)

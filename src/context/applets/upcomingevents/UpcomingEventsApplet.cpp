@@ -32,6 +32,7 @@
 #include <KStandardDirs>
 #include "context/widgets/TextScrollingWidget.h"
 #include "context/widgets/DropPixmapItem.h"
+#include "context/applets/upcomingevents/LastFmEvent.h"
 
 #include <QDesktopServices>
 #include <QGraphicsSimpleTextItem>
@@ -154,6 +155,10 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     }
     else
         m_url->hide();
+
+    LastFmEvent event = data[ "LastFmEvent" ].value<LastFmEvent>();
+    // The event name has to be "Test"
+    debug() << "The event name is " << event.name();
 
     updateConstraints();
     update();

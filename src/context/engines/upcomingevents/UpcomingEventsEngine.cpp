@@ -133,6 +133,9 @@ void UpcomingEventsEngine::update()
     setData( "upcomingEvents", "eventUrl", "<a href='http://www.google.com'>"
                                            "<font size='2' family='Arial, Helvetica, sans-serif' color='blue'><b>http://www.google.fr</b></font>"
                                            "</a>" );
+   LastFmEvent event( QStringList(), "Test", QDate(), KUrl(), KUrl() );
+   QVariant variant (QMetaType::type( "LastFmEvent" ), &event);
+   setData ( "upcomingEvents", "LastFmEvent", variant );
 }
 
 void UpcomingEventsEngine::reloadUpcomingEvents()
