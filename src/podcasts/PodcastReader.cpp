@@ -1128,6 +1128,7 @@ PodcastReader::beginAtomText()
         }
         else
         {
+            // this should not happen, see elementType()
             debug() << "unsupported atom:content type: " << type.toString();
             m_contentType = TextContent;
         }
@@ -1151,6 +1152,7 @@ PodcastReader::beginAtomTextChild()
 
         case HtmlContent:
         case TextContent:
+            // stripping illegal tags
             debug() << "read unexpected open tag in atom text: " << QXmlStreamReader::name();
 
         default:
@@ -1232,8 +1234,7 @@ PodcastReader::endAtomIcon()
 {
     if( !m_channel->hasImage() )
     {
-        // TODO save image data
-        m_channel->setImageUrl( KUrl( m_buffer ) );
+        endImageUrl();
     }
 }
 
@@ -1330,6 +1331,9 @@ PodcastReader::readEscapedCharacters()
 QStringRef
 PodcastReader::attribute(const char *namespaceUri, const char *name) const
 {
+    // workaround, because Qt seems to have a bug:
+    // when the default namespace is used attributes
+    // aren't inside this namespace for some reason
     if( attributes().hasAttribute( namespaceUri, name ) )
         return attributes().value( namespaceUri, name );
     else
@@ -1339,6 +1343,7 @@ PodcastReader::attribute(const char *namespaceUri, const char *name) const
 bool
 PodcastReader::hasAttribute(const char *namespaceUri, const char *name) const
 {
+    // see PodcastReader::attribute()
     if( attributes().hasAttribute( namespaceUri, name ) )
         return true;
     else
