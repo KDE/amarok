@@ -681,6 +681,8 @@ CurrentTrack::paletteChanged( const QPalette & palette )
     m_artist->setBrush( palette.text() );
     m_album->setBrush( palette.text() );
     m_noTrack->setBrush( palette.text() );
+    m_byText->setBrush( palette.text() );
+    m_onText->setBrush( palette.text() );
 }
 
 void
