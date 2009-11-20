@@ -147,7 +147,7 @@ QList< LastFmEvent > UpcomingEventsEngine::upcomingEvents(const QString& artist_
 
     //Initialize the query parameters
     QMap< QString, QString > params;
-    params["method"] = "getEvents";
+    params["method"] = "artist.getEvents";
     params["artist"] = artist_name;
 
     //Send the request
