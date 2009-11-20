@@ -73,6 +73,7 @@ private:
     Ui::similarArtistsSettings ui_Settings;
 
     int m_maxArtists;
+    int m_temp_maxArtists;
 
 private slots:
     void connectSource( const QString &source );
@@ -81,7 +82,9 @@ private slots:
      * Show the settings windows
      */
     void configure();
-    void maxArtistsChanged(int value);
+    void changeMaxArtists(int value);
+    void saveMaxArtists();
+    void saveSettings();
 
 };
 

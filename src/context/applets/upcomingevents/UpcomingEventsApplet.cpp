@@ -204,7 +204,7 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
     m_temp_timeSpan = m_timeSpan;
     m_temp_enabledLinks = m_enabledLinks;
 
-       // TODO bad, it's done manually ...
+    // TODO bad, it's done manually ...
     if ( m_timeSpan == "AllEvents" )
         ui_Settings.comboBox->setCurrentIndex( 0 );
     else if ( m_timeSpan == "ThisWeek" )
@@ -216,11 +216,13 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
 
     if ( m_enabledLinks )
         ui_Settings.checkBox->setCheckState ( Qt::Checked );
+
+    
     
     parent->addPage( settings, i18n( "Upcoming Events Settings" ), "preferences-system");
-     connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( changeTimeSpan( QString ) ) );
-     connect( ui_Settings.checkBox, SIGNAL( stateChanged( int ) ), this, SLOT( setAddressAsLink( int ) ) );
-     connect( parent, SIGNAL( okClicked( ) ), this, SLOT( saveSettings( ) ) );
+    connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( changeTimeSpan( QString ) ) );
+    connect( ui_Settings.checkBox, SIGNAL( stateChanged( int ) ), this, SLOT( setAddressAsLink( int ) ) );
+    connect( parent, SIGNAL( okClicked( ) ), this, SLOT( saveSettings( ) ) );    
 }
 
 void
@@ -284,21 +286,6 @@ UpcomingEventsApplet::saveSettings()
 {
     saveTimeSpan();
     saveAddressAsLink();
-}
-
-void
-UpcomingEventsApplet::cancelSettings()
-{ 
-}
-
-void
-UpcomingEventsApplet::defaultSettings()
-{
-    changeTimeSpan(i18n("Automatic"));
-    setAddressAsLink(2);
-
-    ui_Settings.comboBox->setCurrentIndex( 0 );
-    ui_Settings.checkBox->setCheckState ( Qt::Checked );
 }
 
 #include "UpcomingEventsApplet.moc"
