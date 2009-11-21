@@ -18,6 +18,8 @@
 #define MAINTOOLBAR3G_H
 
 class AnimatedLabelStack;
+class PlayPauseButton;
+class VolumeDial;
 
 #include "EngineObserver.h" //baseclass
 #include <QToolBar>
@@ -26,17 +28,18 @@ class Toolbar_3 : public QToolBar, public EngineObserver
 {
 public:
     Toolbar_3( QWidget *parent = 0 );
-    void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-    void engineVolumeChanged( int percent );
     void engineMuteStateChanged( bool mute );
     void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
     void engineTrackChanged( Meta::TrackPtr track );
+    void engineVolumeChanged( int percent );
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
+private slots:
+    void setPlaying( bool on );
 private:
-    AnimatedLabelStack *current, *next, *prev;
-    VolumeDial *m_volume;
+    AnimatedLabelStack *m_current, *m_next, *m_prev;
     PlayPauseButton *m_playPause;
+    VolumeDial *m_volume;
 };
 
 #endif

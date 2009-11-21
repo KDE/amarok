@@ -5,13 +5,13 @@
 #include <QPainter>
 #include <QToolBar>
 
+#include "SvgHandler.h"
+
 #include <QtDebug>
 
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
 , m_muted( false )
 {
-    m_icon = QImage("volume.png");
-    m_mutedIcon = QImage("muted.png");
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
 }
 
@@ -42,21 +42,14 @@ void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
 
     m_isClick = false;
 
+//     setMute( !m_muted );
     emit muteToggled( !m_muted );
-    
-    if ( m_muted )
-        setValue( m_unmutedValue );
-    else
-    {
-        m_unmutedValue = value();
-        setValue( minimum() );
-    }
 }
 
 void VolumeDial::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    p.drawPixmap(0,0, m_iconBuffer);
+    p.drawPixmap(0,0, m_icon[ m_muted ]);
     QColor c = palette().color( QPalette::Highlight );
     c.setAlpha( 160 );
     p.setPen( QPen( c, 3, Qt::SolidLine, Qt::RoundCap ) );
@@ -71,8 +64,25 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
         resize( height(), height() );
     else
         QDial::resizeEvent( re );
-    if (size() != m_iconBuffer.size())
-        updateIconBuffer();
+
+    m_icon[0] =  The::svgHandler()->renderSvg( "Volume", width(), height(), "Volume" );
+    m_icon[1] = The::svgHandler()->renderSvg( "Muted", width(), height(), "Muted" );
+    update();
+}
+
+void VolumeDial::setMute( bool mute )
+{
+    qDebug() << "setMute" << mute << m_muted;
+    if ( mute == m_muted )
+        return;
+
+    if ( mute )
+    {
+        m_unmutedValue = value();
+        setValue( minimum() );
+    }
+    else
+        setValue( m_unmutedValue );
 }
 
 QSize VolumeDial::sizeHint() const
@@ -83,20 +93,12 @@ QSize VolumeDial::sizeHint() const
     return QDial::sizeHint();
 }
 
-void VolumeDial::updateIconBuffer()
-{
-    if ( m_muted )
-        m_iconBuffer = QPixmap::fromImage( m_mutedIcon.scaled( size(), Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
-    else
-        m_iconBuffer = QPixmap::fromImage( m_icon.scaled( size(), Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
-}
-
 void VolumeDial::valueChangedSlot( int v )
 {
+    qDebug() << "Volume changed" << value() << v;
     m_isClick = false;
     if ( m_muted == ( v == minimum() ) )
         return;
     m_muted = ( v == minimum() );
-    updateIconBuffer();
     update();
 }

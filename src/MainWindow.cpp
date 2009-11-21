@@ -61,6 +61,7 @@
 #include "statusbar/StatusBar.h"
 #include "toolbar/MainToolbar.h"
 #include "toolbar/SlimToolbar.h"
+#include "toolbar/Toolbar_3.h"
 #include "SvgHandler.h"
 #include "widgets/Splitter.h"
 #include "widgets/AmarokDockWidget.h"
@@ -248,6 +249,13 @@ MainWindow::init()
     connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), m_slimToolbar, SLOT( repaint() ) );
     addToolBar( Qt::TopToolBarArea, m_slimToolbar );
     m_slimToolbar->hide();
+
+    //create 3G toolbar
+    m_toolbar3 = new Toolbar_3( 0 );
+    m_toolbar3->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
+    m_toolbar3->setMovable ( true );
+    addToolBar( Qt::TopToolBarArea, m_toolbar3 );
+    m_toolbar3->hide();
 
     //BEGIN Creating Widgets
     PERF_LOG( "Create sidebar" )

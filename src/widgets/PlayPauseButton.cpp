@@ -1,6 +1,8 @@
 
 #include "PlayPauseButton.h"
 
+#include "SvgHandler.h"
+
 #include <QMouseEvent>
 #include <QPainter>
 #include <QSizePolicy>
@@ -13,11 +15,8 @@ PlayPauseButton::PlayPauseButton( QWidget *parent ) : QWidget( parent )
 , m_animStep( 0 )
 , m_animTimer( 0 )
 {
-    m_iconPlay[0] = QImage("play.png");
-    m_iconPlay[1] = QImage("play_h.png");
-    m_iconPause[0] = QImage("pause.png");
-    m_iconPause[1] = QImage("pause_h.png");
-    updateIconBuffer();
+    QResizeEvent re( size(), QSize() );
+    resizeEvent( &re );
 }
 
 void PlayPauseButton::enterEvent( QEvent * )
@@ -40,12 +39,11 @@ void PlayPauseButton::mousePressEvent( QMouseEvent *me )
 void PlayPauseButton::mouseReleaseEvent( QMouseEvent *me )
 {
     me->accept();
-    if ( !( m_isClick && underMouse() ) )
+    if ( !m_isClick && underMouse() )
     {
         m_isClick = false;
-        return;
+        emit toggled( !m_isPlaying );
     }
-    emit toggled( !m_isPlaying );
 }
 
 
@@ -62,6 +60,12 @@ void PlayPauseButton::resizeEvent( QResizeEvent *re )
         resize( height(), height() );
     else
         QWidget::resizeEvent( re );
+    //NOTICE this is a bit cumbersome, as Qt renders faster to images than to pixmaps
+    // However we need the Image and generate the pixmap ourself - maybe extend the SvgHandler API
+    m_iconPlay[0] =  The::svgHandler()->renderSvg( "PLAYpause", width(), height(), "PLAYpause" ).toImage();
+    m_iconPlay[1] =  The::svgHandler()->renderSvg( "PLAYpause_active", width(), height(), "PLAYpause_active" ).toImage();
+    m_iconPause[0] =  The::svgHandler()->renderSvg( "playPAUSE", width(), height(), "playPAUSE" ).toImage();
+    m_iconPause[1] =  The::svgHandler()->renderSvg( "playPAUSE_active", width(), height(), "playPAUSE_active" ).toImage();
     updateIconBuffer();
 }
 
@@ -119,7 +123,7 @@ void PlayPauseButton::timerEvent( QTimerEvent *te )
     }
     repaint();
 }
-#include <QtDebug>
+
 static QImage
 interpolated( const QImage &img1, const QImage &img2, int a1, int a2 )
 {
