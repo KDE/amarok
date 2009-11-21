@@ -630,8 +630,10 @@ set(amaroklib_LIB_SRCS
     toolbar/MainToolbar.cpp
     toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
+    toolbar/Toolbar_3.cpp
     TrayIcon.cpp
     widgets/AmarokDockWidget.cpp
+    widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/CoverLabel.cpp
     widgets/hintlineedit.cpp
@@ -650,6 +652,7 @@ set(amaroklib_LIB_SRCS
     widgets/MainControlsWidget.cpp
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
+    widgets/PlayPauseButton.cpp
     widgets/PrettyTreeView.cpp
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
@@ -658,6 +661,7 @@ set(amaroklib_LIB_SRCS
     widgets/Token.cpp
     widgets/TokenWithLayout.cpp
     widgets/VolumeWidget.cpp
+    widgets/VolumeDial.cpp
     widgets/Splitter.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
