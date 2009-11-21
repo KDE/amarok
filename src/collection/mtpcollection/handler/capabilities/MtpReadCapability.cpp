@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,16 +20,17 @@
 
 using namespace Handler;
 
+
 MtpReadCapability::MtpReadCapability( Meta::MtpHandler *handler )
-        : Handler::ReadCapability()
-        , m_handler( handler )
-{
-}
+    : Handler::ReadCapability()
+    , m_handler( handler )
+{}
 
 void
 MtpReadCapability::prepareToParseTracks()
 {
-    m_handler->prepareToParseTracks();
+    if( m_handler )
+        m_handler->prepareToParseTracks();
 }
 
 bool
@@ -40,19 +42,22 @@ MtpReadCapability::isEndOfParseTracksList()
 void
 MtpReadCapability::prepareToParseNextTrack()
 {
-    m_handler->prepareToParseNextTrack();
+    if( m_handler )
+        m_handler->prepareToParseNextTrack();
 }
 
 void
 MtpReadCapability::nextTrackToParse()
 {
-    m_handler->nextTrackToParse();
+    if( m_handler )
+        m_handler->nextTrackToParse();
 }
 
 void
 MtpReadCapability::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
-    m_handler->setAssociateTrack( track );
+    if( m_handler )
+        m_handler->setAssociateTrack( track );
 }
 
 QString

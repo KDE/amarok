@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,6 +21,9 @@
 #include "mediadevicecollection_export.h"
 #include "ReadCapability.h"
 
+#include <QPointer>
+
+
 namespace Meta {
     class MtpHandler;
 }
@@ -30,6 +34,7 @@ namespace Handler
 class MtpReadCapability : public ReadCapability
 {
     Q_OBJECT
+
     public:
         MtpReadCapability( Meta::MtpHandler *handler );
 
@@ -66,8 +71,8 @@ class MtpReadCapability : public ReadCapability
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;
 
-        private:
-            Meta::MtpHandler *m_handler;
+    private:
+        QPointer<Meta::MtpHandler> m_handler;
 };
 
 }
