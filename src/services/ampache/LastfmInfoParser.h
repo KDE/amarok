@@ -18,12 +18,11 @@
 #ifndef LASTFMINFOPARSER_H
 #define LASTFMINFOPARSER_H
 
-#include "amarok_export.h"
 #include "../InfoParserBase.h"
 
 class QNetworkReply;
 
-class AMAROK_EXPORT LastfmInfoParser : public InfoParserBase
+class LastfmInfoParser : public InfoParserBase
 {
     Q_OBJECT
     public:
