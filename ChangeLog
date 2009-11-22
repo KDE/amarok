@@ -29,6 +29,8 @@ VERSION 2.2.2
     * Improved guessing tags from filename. Added preview to Dialog.
 
   BUGFIXES:
+    * Made dragging from the Last.fm service directly to the playlist work.
+      (BR 215494)
     * Fixed crash during copying to collection with custom file naming schemes
       where a component would be empty. (BR 211518)
     * Magnatune.com store: Fixed incorrect download urls for non english 
