@@ -142,11 +142,13 @@ public:
             {
                 if( result.at( rightMatchPos ) == '}' )
                     result.remove( rightMatchPos, 1 );
+                if( result.at( leftMatchPos ) == '{' )
+                {
+                    result.remove( leftMatchPos, 1 );
+                    pos--;
+                }
 
                 result.replace( pos, len, args[ rxOptArg.capturedTexts()[0].mid( 1, len-1 ) ] );
-
-                if( result.at( leftMatchPos ) == '{' )
-                    result.remove( leftMatchPos, 1 );
             }
         }
         return result;

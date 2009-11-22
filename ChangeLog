@@ -29,6 +29,8 @@ VERSION 2.2.2
     * Improved guessing tags from filename. Added preview to Dialog.
 
   BUGFIXES:
+    * Fixed crash during copying to collection with custom file naming schemes
+      where a component would be empty. (BR 211518)
     * Magnatune.com store: Fixed membership type not remembered when running 
       a non english Amarok. (BR 195427)
     * Support for "title:" token in the collection search. Patch by Roberto
