@@ -27,6 +27,8 @@
 
 #include <QTextDocument>
 #include <QDate>
+#include <QSet>
+
 #include <time.h>
 
 using namespace Meta;
@@ -1018,6 +1020,7 @@ PodcastReader::beginChannel()
     // the feed's description/summary I set it here to the empty string:
     m_channel->setDescription( "" );
     m_channel->setSummary( "" );
+    m_channel->setKeywords( QStringList() );
 }
 
 void 
@@ -1091,6 +1094,7 @@ PodcastReader::endItem()
             episode->setFilesize( m_item->filesize() );
             episode->setMimeType( m_item->mimeType() );
             episode->setPubDate( m_item->pubDate() );
+            episode->setKeywords( m_item->keywords() );
 
             // set the guid in case it was empty (for some buggy reason):
             episode->setGuid( m_item->guid() );
@@ -1183,14 +1187,15 @@ PodcastReader::endImageUrl()
 void
 PodcastReader::endKeywords()
 {
-    QStringList keywords( m_buffer.split(',') );
+    QSet<QString> keywords( QSet<QString>::fromList( m_current->keywords() ) );
 
-    m_current->keywords().clear();
-
-    foreach( const QString &keyword, keywords )
+    foreach( const QString &keyword, m_buffer.split(',') )
     {
-        m_current->addKeyword( keyword.simplified() );
+        keywords.insert( keyword.simplified() );
     }
+    
+    m_current->setKeywords( keywords.toList() );
+
 }
 
 void
