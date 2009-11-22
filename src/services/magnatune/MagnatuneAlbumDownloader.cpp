@@ -66,8 +66,10 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( albumDownloadComplete( KJob* ) ) );
 
-    The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Downloading album" ) )
-    ->setAbortSlot( this, SLOT( albumDownloadAborted() ) );
+    if( info.album() && info.album()->albumArtist() )
+        The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Downloading '%1' by %2 from Magnatune.com", info.album()->prettyName(), info.album()->albumArtist()->prettyName() ) )->setAbortSlot( this, SLOT( albumDownloadAborted() ) );
+    else
+        The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Downloading album from Magnatune.com" ) )->setAbortSlot( this, SLOT( albumDownloadAborted() ) );
 }
 
 
