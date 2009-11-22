@@ -114,6 +114,8 @@ public:
     void sortTags ( WeightedStringList tagsToSort, Qt::SortOrder sortOrder );
     void sortTags ( Qt::SortOrder sortOrder );
 
+    virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
+
 private slots:
     void onAvatarDownloaded ( QPixmap );
     void slotAddNeighbors ();

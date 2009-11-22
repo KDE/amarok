@@ -418,6 +418,7 @@ Playlist::Model::mimeData( const QModelIndexList &indexes ) const
 bool
 Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int, const QModelIndex& parent )
 {
+    DEBUG_BLOCK
     if ( action == Qt::IgnoreAction )
         return true;
 
@@ -431,6 +432,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
 
     if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
+        debug() << "this is a track";
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
@@ -444,6 +446,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     }
     else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
+        debug() << "this is a playlist";
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
             Controller::instance()->insertPlaylists( beginRow, dragList->playlists() );
@@ -451,6 +454,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     }
     else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
     {
+        debug() << "this is a podcast episode";
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
         {
@@ -463,6 +467,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     }
     else if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
     {
+        debug() << "this is a podcast channel";
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
         {
@@ -476,11 +481,14 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     }
     else if( data->hasUrls() )
     {
+        debug() << "this is _something_ with a url....";
         DirectoryLoader* dl = new DirectoryLoader(); //this deletes itself
         dl->insertAtRow( beginRow );
         dl->init( data->urls() );
         return true;
     }
+
+    debug() << "I have no idea what the hell this is...";
     return false;
 }
 

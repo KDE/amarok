@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,6 +21,7 @@
 
 #include "AvatarDownloader.h"
 #include "CollectionManager.h"
+#include "AmarokMimeData.h"
 
 #include <lastfm/ws.h>
 #include <lastfm/Tag>
@@ -719,4 +721,23 @@ int LastFmTreeItem::row() const
         return parentItem->childItems.indexOf ( const_cast<LastFmTreeItem*> ( this ) );
 
     return 0;
+}
+
+QMimeData*
+LastFmTreeModel::mimeData( const QModelIndexList &indices ) const
+{
+    debug() << "LASTFM drag items : " << indices.size();
+    Meta::TrackList list;
+    foreach ( const QModelIndex &item, indices )
+    {
+        Meta::TrackPtr track = data( item, LastFm::TrackRole ).value< Meta::TrackPtr >();
+        if ( track )
+            list << track;
+    }
+    qStableSort ( list.begin(), list.end(), Meta::Track::lessThan );
+
+    AmarokMimeData *mimeData = new AmarokMimeData();
+    mimeData->setTracks( list );
+    return mimeData;
+    
 }
