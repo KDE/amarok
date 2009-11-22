@@ -29,6 +29,7 @@
 
 OpmlOutline::OpmlOutline( OpmlOutline *parent )
         : m_parent( parent )
+        , m_hasChildren( false )
 {
     DEBUG_BLOCK
 }
@@ -120,6 +121,21 @@ OpmlDirectoryXmlParser::readConfigFile( const QString &filename )
     //completeJob is called by ThreadManager
 }
 
+void
+OpmlDirectoryXmlParser::parseBody( const QDomElement &e )
+{
+    if( !e.isDocument() )
+        return;
+    QDomElement node = e.firstChildElement( "outline" );
+    while( !node.isNull() )
+    {
+        OpmlOutline *outline = parseOutlineElement( node );
+        m_rootOutlines << outline;
+        emit( outlineParsed( outline ) );
+        node = node.nextSiblingElement( "outline" );
+    }
+}
+
 OpmlOutline*
 OpmlDirectoryXmlParser::parseOutlineElement( const QDomElement &e )
 {
@@ -134,6 +150,9 @@ OpmlDirectoryXmlParser::parseOutlineElement( const QDomElement &e )
         QDomAttr attribute = attributes.item( i ).toAttr();
         outline->addAttribute( attribute.name(), attribute.value() );
     }
+    outline->setHasChildren( e.hasChildNodes() );
+
+    emit( outlineParsed( outline ) );
 
     QDomNodeList childNodes = e.childNodes();
     for( int i = 0; i < childNodes.count(); i++ )

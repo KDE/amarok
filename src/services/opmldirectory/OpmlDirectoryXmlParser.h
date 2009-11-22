@@ -41,7 +41,8 @@ class OpmlOutline
                 { m_attributes.insert( key, value ); }
 
         QList<OpmlOutline *> children() const { return m_children; }
-        bool hasChildren() const { return !m_children.isEmpty(); }
+        void setHasChildren( bool hasChildren ) { m_hasChildren = hasChildren; }
+        bool hasChildren() const { return m_hasChildren; }
         void addChild( OpmlOutline *outline ) { m_children << outline; }
         void addChildren( QList<OpmlOutline *> outlineList )
                 { m_children << outlineList; }
@@ -50,6 +51,7 @@ class OpmlOutline
         OpmlOutline *m_parent;
         QMap<QString,QString> m_attributes;
 
+        bool m_hasChildren;
         QList<OpmlOutline *> m_children;
 };
 
@@ -103,6 +105,14 @@ signals:
      */
     void doneParsing();
 
+    /**
+     * Emitted when a new outline item is available.
+     * Emitted after the attributes have been read but before any of the children is
+     * available. The
+     * Each child will be reported seperatly in an element.
+     */
+    void outlineParsed( OpmlOutline *outline );
+
     private slots:
         /**
          * Called when the job has completed. Is executed in the GUI thread
@@ -122,6 +132,8 @@ private:
 
     int m_nNumberOfFeeds;
     int m_nNumberOfCategories;
+
+    void parseBody( const QDomElement &e );
 
     OpmlOutline *parseOutlineElement( const QDomElement &e );
 
