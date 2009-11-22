@@ -724,7 +724,7 @@ PodcastReader::atomTextAsHtml()
 
         case TextContent:
         default:
-            return Qt::convertFromPlainText( m_buffer, Qt::WhiteSpaceNormal );
+            return Qt::escape( m_buffer );
     }
 }
 
@@ -856,7 +856,7 @@ PodcastReader::endDescription()
     if( !Qt::mightBeRichText( description ) )
     {
         // content type is plain text
-        description = Qt::convertFromPlainText( description, Qt::WhiteSpaceNormal );
+        description = Qt::escape( description );
     }
     // else: content type is html
     setDescription( description );
