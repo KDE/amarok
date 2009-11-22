@@ -87,7 +87,7 @@ Dynamic::BiasedPlaylist::~BiasedPlaylist()
         m_solver->requestAbort();
 
         while( !m_solver->isFinished() )
-            usleep( 100000 ); // Sleep 100 msec
+            usleep( 20000 ); // Sleep 20 msec
 
         delete m_solver;
     }
