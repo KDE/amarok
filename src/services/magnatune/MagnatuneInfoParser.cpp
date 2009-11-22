@@ -172,7 +172,12 @@ void MagnatuneInfoParser::getFavoritesPage()
     
     showLoading( i18n( "Loading your Magnatune.com favorites page..." ) );
 
-    QString type = config.membershipType();
+    QString type;
+    if( config.membershipType() == MagnatuneConfig::STREAM )
+        type = "stream";
+    else
+         type = "download";
+    
     QString user = config.username();
     QString password = config.password();
 
@@ -196,7 +201,12 @@ void MagnatuneInfoParser::getRecommendationsPage()
 
     showLoading( i18n( "Loading your personal Magnatune.com recommendations page..." ) );
 
-    QString type = config.membershipType();
+    QString type;
+    if( config.membershipType() == MagnatuneConfig::STREAM )
+        type = "stream";
+    else
+         type = "download";
+    
     QString user = config.username();
     QString password = config.password();
 

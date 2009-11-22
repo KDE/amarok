@@ -60,9 +60,9 @@ void MagnatunePurchaseHandler:: purchaseAlbum( MagnatuneAlbum * album )
 
     MagnatuneConfig config;
 
-    if ( config.isMember() && config.membershipType() == "Download") {
+    if ( config.isMember() && config.membershipType() == MagnatuneConfig::DOWNLOAD ) {
         debug() << "membership download...";
-        membershipDownload( config.membershipType().toLower(), config.username(), config.password() );
+        membershipDownload( config.membershipType(), config.username(), config.password() );
     } else {
         showPurchaseDialog( QString() );
     }
@@ -71,10 +71,17 @@ void MagnatunePurchaseHandler:: purchaseAlbum( MagnatuneAlbum * album )
 
 
 
-void MagnatunePurchaseHandler::membershipDownload( const QString &membershipType, const QString &username, const QString &password )
+void MagnatunePurchaseHandler::membershipDownload( int membershipType, const QString &username, const QString &password )
 {
     DEBUG_BLOCK
-    QString purchaseURL = "http://" + username + ":" + password + "@" + membershipType + ".magnatune.com/buy/membership_free_dl_xml?sku=" + m_currentAlbum->albumCode() + "&id=amarok";
+
+    QString type;
+    if( membershipType == MagnatuneConfig::STREAM )
+        type = "stream";
+    else
+         type = "download";
+    
+    QString purchaseURL = "http://" + username + ":" + password + "@" + type + ".magnatune.com/buy/membership_free_dl_xml?sku=" + m_currentAlbum->albumCode() + "&id=amarok";
 
     m_giftCardPurchase = false;
     m_membershipDownload = true;

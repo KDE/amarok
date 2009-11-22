@@ -43,7 +43,23 @@ MagnatuneConfig::load()
     KConfigGroup config = KGlobal::config()->group( "Service_Magnatune" );
 
     m_isMember = config.readEntry( "isMember", false );
-    m_membershipType = config.readEntry( "membershipType", QString() );
+
+
+    m_membershipType = config.readEntry( "membershipType", -1 );
+
+    if( m_membershipType == -1 )
+    {
+        //try to read the old style string version if that is present and valid.
+        QString oldMEmbershipType = config.readEntry( "membershipType", QString() );
+        if( oldMEmbershipType.toLower() == "stream" )
+            m_membershipType == MagnatuneConfig::STREAM;
+        else if ( oldMEmbershipType.toLower() == "download" )
+            m_membershipType == MagnatuneConfig::DOWNLOAD;
+        else
+            m_membershipType == MagnatuneConfig::DOWNLOAD;
+            //default to download for now.   
+    }
+
     m_username = config.readEntry( "username", QString() );
     m_password = config.readEntry( "password", QString() );
     m_email = config.readEntry( "email", QString() );
@@ -105,17 +121,29 @@ MagnatuneConfig::setIsMember( bool isMember )
     m_isMember = isMember;
 }
 
-QString
+int
 MagnatuneConfig::membershipType()
 {
     return m_membershipType;
 }
 
 void
-MagnatuneConfig::setMembershipType( const QString &membershipType )
+MagnatuneConfig::setMembershipType( int membershipType )
 {
     m_hasChanged = true;
     m_membershipType = membershipType;
+}
+
+QString
+MagnatuneConfig::membershipPrefix()
+{
+    QString prefix;
+    if( m_membershipType == MagnatuneConfig::STREAM )
+        prefix = "stream";
+    else
+        prefix = "download";
+
+    return prefix;
 }
 
 QString

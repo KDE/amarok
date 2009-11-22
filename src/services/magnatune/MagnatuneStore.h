@@ -77,7 +77,7 @@ public:
      */
     ~MagnatuneStore();
 
-    void setMembership( const QString &type, const QString &username,  const QString &password );
+    void setMembership( int type, const QString &username,  const QString &password );
 
     /**
      * OGG, MP3 or LOFI
@@ -226,7 +226,7 @@ private:
     QString m_tempFileName;
 
     bool m_isMember;
-    QString m_membershipType;
+    int m_membershipType;
     QString m_username;
     QString m_password;
 

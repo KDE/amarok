@@ -116,11 +116,11 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     //do this stuff now to make us function properly as a track provider on startup. The expensive stuff will
     //not happen untill the model is added to the view anyway.
     MagnatuneMetaFactory * metaFactory = new MagnatuneMetaFactory( "magnatune", this );
-
+    
     MagnatuneConfig config;
     if ( config.isMember() ) {
         setMembership( config.membershipType(), config.username(), config.password() );
-        metaFactory->setMembershipInfo( m_membershipType.toLower(), m_username, m_password );
+        metaFactory->setMembershipInfo( config.membershipPrefix(), m_username, m_password );
     }
 
     setStreamType( config.streamType() );
@@ -254,7 +254,7 @@ void MagnatuneStore::initBottomPanel()
     m_purchaseAlbumButton->setParent( m_bottomPanel );
 
     MagnatuneConfig config;
-    if ( config.isMember() && config.membershipType() == "Download" )
+    if ( config.isMember() && config.membershipType() == MagnatuneConfig::DOWNLOAD )
         m_purchaseAlbumButton->setText( i18n( "Download Album" ) );
     else
         m_purchaseAlbumButton->setText( i18n( "Purchase Album" ) );
@@ -485,7 +485,7 @@ void MagnatuneStore::polish()
 
 
 
-void MagnatuneStore::setMembership(const QString & type, const QString & username, const QString & password)
+void MagnatuneStore::setMembership( int type, const QString & username, const QString & password)
 {
     m_isMember = true;
     m_membershipType = type;
@@ -698,7 +698,7 @@ void MagnatuneStore::addToFavorites( const QString &sku )
         return;
 
     QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=add_api&sku=%4";
-    url = url.arg( config.username(), config.password(), config.membershipType(), sku );
+    url = url.arg( config.username(), config.password(), config.membershipPrefix(), sku );
 
     debug() << "favorites url: " << url;
 
@@ -715,7 +715,7 @@ void MagnatuneStore::removeFromFavorites( const QString &sku )
         return;
 
     QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=remove_api&sku=%4";
-    url = url.arg( config.username(), config.password(), config.membershipType(), sku );
+    url = url.arg( config.username(), config.password(), config.membershipPrefix(), sku );
 
     debug() << "favorites url: " << url;
 

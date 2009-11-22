@@ -21,6 +21,7 @@
 
 #include <QString>
 
+
 /**
 Wrapper class for configuration options for the MagnatuneStore plugin
 
@@ -28,6 +29,14 @@ Wrapper class for configuration options for the MagnatuneStore plugin
 */
 class MagnatuneConfig{
 public:
+
+    enum
+    {
+        STREAM = 0,
+        DOWNLOAD = 1
+    };
+
+    
     MagnatuneConfig();
 
     ~MagnatuneConfig();
@@ -38,8 +47,9 @@ public:
     bool isMember();
     void setIsMember( bool isMember );
 
-    QString membershipType();
-    void setMembershipType( const QString &membershipType );
+    int membershipType();
+    void setMembershipType( int membershipType );
+    QString membershipPrefix();
 
     QString email();
     void setEmail( const QString &email );
@@ -62,7 +72,7 @@ private:
     bool m_hasChanged;
     QString m_username;
     QString m_password;
-    QString m_membershipType;
+    int m_membershipType;
     bool m_isMember;
     int m_streamType;
     QString m_email;

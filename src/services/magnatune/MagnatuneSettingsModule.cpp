@@ -63,7 +63,14 @@ MagnatuneSettingsModule::~MagnatuneSettingsModule()
 void MagnatuneSettingsModule::save()
 {
     m_config.setIsMember( m_configDialog->isMemberCheckbox->checkState() == Qt::Checked );
-    m_config.setMembershipType( m_configDialog->typeComboBox->currentText() );
+
+
+    int typeIndex = m_configDialog->typeComboBox->currentIndex();
+    if( typeIndex == 0 )
+        m_config.setMembershipType( MagnatuneConfig::STREAM );
+    else
+        m_config.setMembershipType( MagnatuneConfig::DOWNLOAD );
+    
     m_config.setUsername( m_configDialog->usernameEdit->text() );
     m_config.setPassword( m_configDialog->passwordEdit->text() );
     m_config.setEmail( m_configDialog->emailEdit->text() );
@@ -85,8 +92,8 @@ void MagnatuneSettingsModule::load()
         m_configDialog->isMemberCheckbox->setCheckState( Qt::Unchecked );
 
     int index = 0;
-    if ( m_config.membershipType() == "Stream" ) index = 0;
-    else if ( m_config.membershipType() == "Download" ) index = 1;
+    if ( m_config.membershipType() == MagnatuneConfig::STREAM ) index = 0;
+    else if ( m_config.membershipType() == MagnatuneConfig::DOWNLOAD ) index = 1;
     
     m_configDialog->typeComboBox->setCurrentIndex( index );
     m_configDialog->usernameEdit->setText( m_config.username() );
