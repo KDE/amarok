@@ -65,6 +65,7 @@ KConfigGroup OpmlDirectoryServiceFactory::config()
 OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent, const QString &name, const QString &prettyName )
  : ServiceBase( name, parent, true, prettyName )
  , m_currentFeed( 0 )
+ , n_maxNumberOfTransactions ( 5000 )
 {
     setShortDescription( i18n( "A large listing of podcasts" ) );
     setIcon( KIcon( "view-services-opml-amarok" ) );
@@ -178,9 +179,21 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
 
     The::statusBar()->shortMessage( i18n( "Updating the local Podcast database."  ) );
     debug() << "OpmlDirectoryService: create xml parser";
-    OpmlDirectoryXmlParser * parser = new OpmlDirectoryXmlParser( m_tempFileName );
-    connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
+    //reset counters
+    n_numberOfTransactions = m_numberOfCategories = m_numberOfFeeds = 0;
 
+    m_dbHandler->destroyDatabase();
+    m_dbHandler->createDatabase();
+
+    OpmlDirectoryXmlParser * parser = new OpmlDirectoryXmlParser( m_tempFileName );
+    connect( parser, SIGNAL( doneParsing() ),
+            SLOT( doneParsing() )
+           );
+    connect( parser, SIGNAL( outlineParsed( OpmlOutline* ) ),
+            SLOT( outlineParsed( OpmlOutline* ) )
+           );
+
+    m_dbHandler->begin(); //start transaction (MAJOR speedup!!)
     ThreadWeaver::Weaver::instance()->enqueue( parser );
     downloadJob->deleteLater();
     m_listDownloadJob = 0;
@@ -202,11 +215,79 @@ void OpmlDirectoryService::listDownloadCancelled()
 void OpmlDirectoryService::doneParsing()
 {
     debug() << "OpmlDirectoryService: done parsing";
+    m_dbHandler->commit(); //complete transaction
+
+    The::statusBar()->longMessage(
+            i18ncp( "This string is the first part of the following example phrase: "
+                "Podcast Directory update complete. Added 4 feeds in 6 categories.",
+                "Podcast Directory update complete. Added 1 feed in ",
+                "Podcast Directory update complete. Added %1 feeds in ", m_numberOfFeeds
+              )
+            + i18ncp( "This string is the second part of the following example phrase: "
+                  "Podcast Directory update complete. Added 4 feeds in 6 categories.",
+                  "1 category.", "%1 categories.", m_numberOfCategories
+                ),
+            StatusBar::Information
+        );
+
+
+    debug() << "OpmlDirectoryXmlParser: total number of albums: " << m_numberOfCategories;
+    debug() << "OpmlDirectoryXmlParser: total number of tracks: " << m_numberOfFeeds;
+
     m_updateListButton->setEnabled( true );
     // model->setGenre("All");
     //delete sender
     sender()->deleteLater();
     m_collection->emitUpdated();
+}
+
+void
+OpmlDirectoryService::outlineParsed( OpmlOutline *outline )
+{
+    if( !outline )
+    {
+        error() << "NULL outline in " << __FILE__ << ":"<<__LINE__;
+        return;
+    }
+
+    if( outline->hasChildren() )
+    {
+        QString name = outline->attributes().value( "text", "Unknown" );
+        ServiceAlbumPtr currentCategory =
+                ServiceAlbumPtr( new OpmlDirectoryCategory( name ) );
+        m_numberOfCategories++;
+
+        m_currentCategoryId = m_dbHandler->insertAlbum( currentCategory );
+        countTransaction();
+    }
+    else if( outline->attributes().contains( "text" )
+             && outline->attributes().contains( "url" )
+    )
+    {
+        QString name = outline->attributes().value( "text" );
+        QString url = outline->attributes().value( "url" );
+
+        OpmlDirectoryFeedPtr currentFeed =
+                OpmlDirectoryFeedPtr( new OpmlDirectoryFeed( name ) );
+        currentFeed->setAlbumId( m_currentCategoryId );
+        currentFeed->setUidUrl( url );
+        m_numberOfFeeds++;
+
+        m_dbHandler->insertTrack( ServiceTrackPtr::dynamicCast( currentFeed ) );
+        countTransaction();
+    }
+}
+
+void
+OpmlDirectoryService::countTransaction()
+{
+    n_numberOfTransactions++;
+    if ( n_numberOfTransactions >= n_maxNumberOfTransactions )
+    {
+        m_dbHandler->commit();
+        m_dbHandler->begin();
+        n_numberOfTransactions = 0;
+    }
 }
 
 void OpmlDirectoryService::itemSelected( CollectionTreeItem * selectedItem ){

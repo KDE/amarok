@@ -113,59 +113,13 @@ signals:
      */
     void outlineParsed( OpmlOutline *outline );
 
-    private slots:
-        /**
-         * Called when the job has completed. Is executed in the GUI thread
-         */
-        void completeJob();
-
 private:
     QList<OpmlOutline *> m_rootOutlines;
-
-    int m_currentCategoryId;
-    
-    OpmlDirectoryDatabaseHandler * m_dbHandler;
-
     QString m_sFileName;
 
-    QMap<int, QStringList> albumTags; //used for applying genres to individual tracks
-
-    int m_nNumberOfFeeds;
-    int m_nNumberOfCategories;
-
-    void parseBody( const QDomElement &e );
+    void parseOpmlBody( const QDomElement &e );
 
     OpmlOutline *parseOutlineElement( const QDomElement &e );
-
-    /**
-     * Parses a DOM element
-     * @param e The element to parse
-     */
-    void parseElement( const  QDomElement &e );
-
-    /**
-     * Parses all children of a DOM element
-     * @param e The element whose children is to be parsed
-     */
-    void parseChildren( const  QDomElement &e );
-
-    /**
-     * Parse a DOM element representing an album
-     * @param e The album element to parse
-     */
-    void parseCategory( const  QDomElement &e );
-
-    /**
-     * Parse a DOM element representing a track
-     * @param e The track element to parse
-     */
-    void parseFeed( const  QDomElement &e );
-
-    void countTransaction();
-
-    int n_numberOfTransactions;
-    int n_maxNumberOfTransactions;
-    QMap<int, int> m_albumArtistMap;
 };
 
 #endif
