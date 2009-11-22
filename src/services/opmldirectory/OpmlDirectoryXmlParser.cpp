@@ -26,6 +26,13 @@
 #include <KLocale>
 #include <threadweaver/Job.h>
 
+
+OpmlOutline::OpmlOutline( OpmlOutline *parent )
+        : m_parent( parent )
+{
+    DEBUG_BLOCK
+}
+
 using namespace Meta;
 
 OpmlDirectoryXmlParser::OpmlDirectoryXmlParser( const QString &filename )
@@ -111,6 +118,34 @@ OpmlDirectoryXmlParser::readConfigFile( const QString &filename )
     m_dbHandler->commit(); //complete transaction
 
     //completeJob is called by ThreadManager
+}
+
+OpmlOutline*
+OpmlDirectoryXmlParser::parseOutlineElement( const QDomElement &e )
+{
+    if( e.tagName() != "outline" )
+        return 0;
+
+    OpmlOutline *outline = new OpmlOutline();
+
+    QDomNamedNodeMap attributes = e.attributes();
+    for( int i = 0; i< attributes.length(); i++ )
+    {
+        QDomAttr attribute = attributes.item( i ).toAttr();
+        outline->addAttribute( attribute.name(), attribute.value() );
+    }
+
+    QDomNodeList childNodes = e.childNodes();
+    for( int i = 0; i < childNodes.count(); i++ )
+    {
+        QDomNode node = childNodes.item( i );
+        if( !node.isElement() )
+            continue;
+        const QDomElement &element = node.toElement();
+        outline->addChild( parseOutlineElement( element ) );
+    }
+
+    return outline;
 }
 
 void

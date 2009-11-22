@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,6 +26,32 @@
 #include <QStringList>
 
 #include <threadweaver/Job.h>
+
+class OpmlOutline
+{
+    public:
+        OpmlOutline( OpmlOutline *parent = 0 );
+        ~OpmlOutline();
+
+        OpmlOutline *parent() const { return m_parent; }
+        bool isRootItem() const { return m_parent == 0; }
+
+        QMap<QString,QString> attributes() const { return m_attributes; }
+        void addAttribute( const QString &key, const QString &value )
+                { m_attributes.insert( key, value ); }
+
+        QList<OpmlOutline *> children() const { return m_children; }
+        bool hasChildren() const { return !m_children.isEmpty(); }
+        void addChild( OpmlOutline *outline ) { m_children << outline; }
+        void addChildren( QList<OpmlOutline *> outlineList )
+                { m_children << outlineList; }
+
+    private:
+        OpmlOutline *m_parent;
+        QMap<QString,QString> m_attributes;
+
+        QList<OpmlOutline *> m_children;
+};
 
 /**
 * Parser for the XML file from http://img.jamendo.com/data/dbdump.en.xml.gz
@@ -63,9 +90,14 @@ public:
      */
     void readConfigFile( const QString &filename );
 
+    /**
+     * Get the result of the parsing as a list of OpmlOutlines.
+     * This list contains only root outlines that can be found in the <body> of the OPML.
+     * The rest are children of these root items.
+     */
+    QList<OpmlOutline *> results() const { return m_rootOutlines; }
 
 signals:
-
     /**
      * Signal emmited when parsing is complete.
      */
@@ -78,6 +110,7 @@ signals:
         void completeJob();
 
 private:
+    QList<OpmlOutline *> m_rootOutlines;
 
     int m_currentCategoryId;
     
@@ -89,6 +122,8 @@ private:
 
     int m_nNumberOfFeeds;
     int m_nNumberOfCategories;
+
+    OpmlOutline *parseOutlineElement( const QDomElement &e );
 
     /**
      * Parses a DOM element
