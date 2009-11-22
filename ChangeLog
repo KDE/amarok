@@ -17,6 +17,9 @@ VERSION 2.2.2
   CHANGES:
     * Moved the "Playlist Layout" button into the main menu, as the playlist
       toolbar was becoming too crowded.
+    * New interface for repeat and random playback modes. Interface now correctly
+      represents the actual behaviour (ony one mode can be active at any time)
+      and is accessible directly from the playlist toolbar.
     * Usability: Added tooltips all over the place, improved existing ones.
     * Usability improvements for the Ampache service settings dialog.
     * Length and size of queued tracks are now shown in the statusbar tooltip. (BR 144471)
