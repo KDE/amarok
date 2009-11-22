@@ -266,36 +266,37 @@ PodcastReader::StaticData::StaticData()
             &PodcastReader::readAtomTextCharacters )
 {
     // known elements:
-    knownElements[ "rss"         ] = Rss;
-    knownElements[ "RDF"         ] = Rdf;
-    knownElements[ "feed"        ] = Feed;
-    knownElements[ "channel"     ] = Channel;
-    knownElements[ "item"        ] = Item;
-    knownElements[ "image"       ] = Image;
-    knownElements[ "link"        ] = Link;
-    knownElements[ "url"         ] = Url;
-    knownElements[ "title"       ] = Title;
-    knownElements[ "author"      ] = Author;
-    knownElements[ "enclosure"   ] = EnclosureElement;
-    knownElements[ "guid"        ] = Guid;
-    knownElements[ "pubDate"     ] = PubDate;
-    knownElements[ "description" ] = Description;
-    knownElements[ "summary"     ] = Summary;
-    knownElements[ "body"        ] = Body;
-    knownElements[ "entry"       ] = Entry;
-    knownElements[ "content"     ] = Content;
-    knownElements[ "name"        ] = Name;
-    knownElements[ "id"          ] = Id;
-    knownElements[ "subtitle"    ] = Subtitle;
-    knownElements[ "updated"     ] = Updated;
-    knownElements[ "published"   ] = Published;
-    knownElements[ "logo"        ] = Logo;
-    knownElements[ "icon"        ] = Icon;
-    knownElements[ "encoded"     ] = Encoded;
-    knownElements[ "creator"     ] = Creator;
-    knownElements[ "keywords"    ] = Keywords;
-    knownElements[ "html"        ] = Html;
-    knownElements[ "HTML"        ] = Html;
+    knownElements[ "rss"          ] = Rss;
+    knownElements[ "RDF"          ] = Rdf;
+    knownElements[ "feed"         ] = Feed;
+    knownElements[ "channel"      ] = Channel;
+    knownElements[ "item"         ] = Item;
+    knownElements[ "image"        ] = Image;
+    knownElements[ "link"         ] = Link;
+    knownElements[ "url"          ] = Url;
+    knownElements[ "title"        ] = Title;
+    knownElements[ "author"       ] = Author;
+    knownElements[ "enclosure"    ] = EnclosureElement;
+    knownElements[ "guid"         ] = Guid;
+    knownElements[ "pubDate"      ] = PubDate;
+    knownElements[ "description"  ] = Description;
+    knownElements[ "summary"      ] = Summary;
+    knownElements[ "body"         ] = Body;
+    knownElements[ "entry"        ] = Entry;
+    knownElements[ "content"      ] = Content;
+    knownElements[ "name"         ] = Name;
+    knownElements[ "id"           ] = Id;
+    knownElements[ "subtitle"     ] = Subtitle;
+    knownElements[ "updated"      ] = Updated;
+    knownElements[ "published"    ] = Published;
+    knownElements[ "logo"         ] = Logo;
+    knownElements[ "icon"         ] = Icon;
+    knownElements[ "encoded"      ] = Encoded;
+    knownElements[ "creator"      ] = Creator;
+    knownElements[ "keywords"     ] = Keywords;
+    knownElements[ "new-feed-url" ] = NewFeedUrl;
+    knownElements[ "html"         ] = Html;
+    knownElements[ "HTML"         ] = Html;
 
     // before start document/after end document
     rootMap.insert( Document, &docAction );
@@ -325,8 +326,9 @@ PodcastReader::StaticData::StaticData()
     rss20ChannelMap.insert( Body, &bodyAction );
     rss20ChannelMap.insert( Link, &linkAction );
     rss20ChannelMap.insert( Image, &imageAction );
-    rss20ChannelMap.insert( Item, &itemAction );
     rss20ChannelMap.insert( ItunesKeywords, &keywordsAction );
+    rss20ChannelMap.insert( NewFeedUrl, &newFeedUrlAction );
+    rss20ChannelMap.insert( Item, &itemAction );
     
     // parse <channel> "RSS 1.0"
     rss10ChannelMap.insert( Title, &titleAction );
@@ -340,6 +342,7 @@ PodcastReader::StaticData::StaticData()
     rss10ChannelMap.insert( Link, &linkAction );
     rss10ChannelMap.insert( Image, &imageAction );
     rss10ChannelMap.insert( ItunesKeywords, &keywordsAction );
+    rss10ChannelMap.insert( NewFeedUrl, &newFeedUrlAction );
 
     // parse <image>
     imageMap.insert( Title, &skipAction );

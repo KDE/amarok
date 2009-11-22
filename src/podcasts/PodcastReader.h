@@ -78,6 +78,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
             Feed,
             Channel,
             Item,
+            NewFeedUrl,
             Image,
             Link,
             Author,
