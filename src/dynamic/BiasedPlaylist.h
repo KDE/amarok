@@ -26,6 +26,8 @@
 
 #include <QDomElement>
 #include <QObject>
+#include <QPointer>
+
 
 namespace Dynamic
 {
@@ -38,7 +40,6 @@ namespace Dynamic
             static QString nameFromXml( QDomElement );
 
             BiasedPlaylist( QString title, QList<Bias*>, Amarok::Collection* m_collection = 0 );
-
             ~BiasedPlaylist();
 
             QDomElement xml() const;
@@ -76,7 +77,7 @@ namespace Dynamic
 
             QList<Bias*> m_biases;
 
-            BiasSolver* m_solver;
+            QPointer<BiasSolver> m_solver;
 
             static const int BUFFER_SIZE;
     };

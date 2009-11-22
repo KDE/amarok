@@ -33,7 +33,6 @@
 #include <QThread>
 
 
-
 // The bigger this is, the more accurate the result will be. Big is good.
 const int Dynamic::BiasedPlaylist::BUFFER_SIZE = 100;
 
@@ -66,22 +65,32 @@ Dynamic::BiasedPlaylist::nameFromXml( QDomElement e )
     if( e.tagName() != "playlist" )
         return 0;
 
-    QString title = e.attribute( "title" );
-
-    return title;
+    return e.attribute( "title" );
 }
 
 
-Dynamic::BiasedPlaylist::BiasedPlaylist(
-        QString title,
-        QList<Bias*> biases,
-        Amarok::Collection* collection )
+Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases, Amarok::Collection* collection )
     : DynamicPlaylist(collection)
-    , m_numRequested(0)
-    , m_biases(biases)
-    , m_solver(0)
+    , m_numRequested( 0 )
+    , m_biases( biases )
 {
     setTitle( title );
+}
+
+
+Dynamic::BiasedPlaylist::~BiasedPlaylist()
+{
+    DEBUG_BLOCK
+
+    if( m_solver )
+    {
+        m_solver->requestAbort();
+
+        while( !m_solver->isFinished() )
+            usleep( 100000 ); // Sleep 100 msec
+
+        delete m_solver;
+    }
 }
 
 QDomElement
@@ -107,7 +116,6 @@ Dynamic::BiasedPlaylist::requestAbort()
         m_solver->requestAbort();
 }
 
-
 void
 Dynamic::BiasedPlaylist::setContext( Meta::TrackList context )
 {
@@ -126,11 +134,11 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
         debug() << "assigning new m_solver";
 
         m_solver = new BiasSolver( BUFFER_SIZE, m_biases, m_context );
-        connect( m_solver, SIGNAL( done(ThreadWeaver::Job*) ), SLOT( solverFinished(ThreadWeaver::Job*) ) );
+        connect( m_solver, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( solverFinished(ThreadWeaver::Job* ) ) );
 
         if( withStatusBar )
         {
-            The::statusBar()->newProgressOperation( m_solver,  i18n("Generating playlist...") );
+            The::statusBar()->newProgressOperation( m_solver,  i18n( "Generating playlist..." ) );
 
             connect( m_solver, SIGNAL(statusUpdate(int)), SLOT(updateStatus(int)) );
         }
@@ -138,10 +146,9 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
         connect( m_solver, SIGNAL(readyToRun()), SLOT(solverReady()) );
         m_solver->prepareToRun();
         debug() << "called prepareToRun";
-    } else
-    {
-        debug() << "solver already running!";
     }
+    else
+        debug() << "solver already running!";
 }
 
 void
@@ -157,22 +164,6 @@ void
 Dynamic::BiasedPlaylist::updateStatus( int progress )
 {
     The::statusBar()->setProgress( m_solver, progress );
-}
-
-
-Dynamic::BiasedPlaylist::~BiasedPlaylist()
-{
-    DEBUG_BLOCK
-
-    if( m_solver )
-    {
-        m_solver->requestAbort();
-
-        while( !m_solver->isFinished() )
-            usleep( 100000 ); // Sleep 100 msec
-
-        delete m_solver;
-    }
 }
 
 void
@@ -206,7 +197,6 @@ Dynamic::BiasedPlaylist::recalculate()
     }
 }
 
-
 void
 Dynamic::BiasedPlaylist::invalidate()
 {
@@ -235,6 +225,7 @@ void
 Dynamic::BiasedPlaylist::handleRequest()
 {
     DEBUG_BLOCK
+
     if( m_buffer.isEmpty() )
     {
         m_backbufferMutex.lock();
