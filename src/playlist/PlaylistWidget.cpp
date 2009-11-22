@@ -153,6 +153,8 @@ Playlist::Widget::Widget( QWidget* parent )
         connect( action, SIGNAL( triggered( bool ) ), m_playlistView, SLOT( scrollToActiveTrack() ) );
         plBar->addAction( action );
 
+        plBar->addSeparator();
+
         NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( this );
         plBar->addAction( navigatorConfig );
         plBar->addAction( new KToolBarSpacerAction( this ) );
