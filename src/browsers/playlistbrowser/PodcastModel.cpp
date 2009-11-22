@@ -146,8 +146,6 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
 QVariant
 PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 {
-    DEBUG_BLOCK
-    
     if( !index.isValid() )
         return QVariant();
     
