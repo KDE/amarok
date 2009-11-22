@@ -124,10 +124,9 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
     {
         BiasSolver::setUniverseCollection( m_collection );
         debug() << "assigning new m_solver";
-        m_solver = new BiasSolver(
-                BUFFER_SIZE, m_biases, m_context );
-        connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
-                 SLOT(solverFinished(ThreadWeaver::Job*)) );
+
+        m_solver = new BiasSolver( BUFFER_SIZE, m_biases, m_context );
+        connect( m_solver, SIGNAL( done(ThreadWeaver::Job*) ), SLOT( solverFinished(ThreadWeaver::Job*) ) );
 
         if( withStatusBar )
         {
@@ -163,12 +162,18 @@ Dynamic::BiasedPlaylist::updateStatus( int progress )
 
 Dynamic::BiasedPlaylist::~BiasedPlaylist()
 {
-    
     DEBUG_BLOCK
-    if( m_solver )
-        delete m_solver;
-}
 
+    if( m_solver )
+    {
+        m_solver->requestAbort();
+
+        while( !m_solver->isFinished() )
+            usleep( 100000 ); // Sleep 100 msec
+
+        delete m_solver;
+    }
+}
 
 void
 Dynamic::BiasedPlaylist::requestTracks( int n )
