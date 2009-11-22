@@ -316,8 +316,11 @@ public:
 
     QString name() const
     {
-        const QString artist = episode->channel()->author();
-        return artist;
+        QString author;
+        if( episode && episode->channel() )
+            author = episode->channel()->author();
+
+        return author;
     }
 
     QString prettyName() const
