@@ -298,7 +298,7 @@ PodcastReader::StaticData::StaticData()
 
     // parse <channel> "RSS 2.0"
     rss20ChannelMap.insert( Title, &titleAction );
-    rss20ChannelMap.insert( Subtitle, &subtitleAction );
+    rss20ChannelMap.insert( ItunesSubtitle, &subtitleAction );
     rss20ChannelMap.insert( ItunesAuthor, &authorAction );
     rss20ChannelMap.insert( Creator, &creatorAction );
     rss20ChannelMap.insert( Description, &descriptionAction );
@@ -311,7 +311,7 @@ PodcastReader::StaticData::StaticData()
     
     // parse <channel> "RSS 1.0"
     rss10ChannelMap.insert( Title, &titleAction );
-    rss10ChannelMap.insert( Subtitle, &subtitleAction );
+    rss10ChannelMap.insert( ItunesSubtitle, &subtitleAction );
     rss10ChannelMap.insert( ItunesAuthor, &authorAction );
     rss10ChannelMap.insert( Creator, &creatorAction );
     rss10ChannelMap.insert( Description, &descriptionAction );
@@ -328,7 +328,7 @@ PodcastReader::StaticData::StaticData()
 
     // parse <item>
     itemMap.insert( Title, &titleAction );
-    itemMap.insert( Subtitle, &subtitleAction );
+    itemMap.insert( ItunesSubtitle, &subtitleAction );
     itemMap.insert( Author, &authorAction );
     itemMap.insert( ItunesAuthor, &authorAction );
     itemMap.insert( Creator, &creatorAction );
