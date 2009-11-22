@@ -32,7 +32,8 @@ namespace Context
 {
     
 AmarokToolBoxMenu::AmarokToolBoxMenu( QGraphicsItem *parent, bool runningAppletsOnly )
-    : QGraphicsItem( parent )
+    : QObject()
+    , QGraphicsItem( parent )
     , m_containment( 0 )
     , m_removeApplets( false )
     , m_menuSize( 4 )

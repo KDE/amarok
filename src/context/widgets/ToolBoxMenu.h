@@ -30,9 +30,10 @@
 namespace Context
 {
     
-class AMAROK_EXPORT AmarokToolBoxMenu: public QObject, public QGraphicsItem
+class AMAROK_EXPORT AmarokToolBoxMenu : public QObject, public QGraphicsItem
 {
     Q_OBJECT
+
 public:
     enum ScrollDirection
     {
