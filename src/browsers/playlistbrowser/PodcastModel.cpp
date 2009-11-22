@@ -76,109 +76,118 @@ PlaylistBrowserNS::PodcastModel::~PodcastModel()
 {
 }
 
-QVariant
-PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
+bool
+PlaylistBrowserNS::PodcastModel::isOnDisk( Meta::PodcastMetaCommon *pmc ) const
 {
-    if ( !index.isValid() ||
-         ( role != Qt::DisplayRole && role != Qt::DecorationRole
-           && role != Qt::ToolTipRole
-           && role != ShortDescriptionRole && role != OnDiskRole
-           && role != PodcastMetaCommonRole ) )
-    {
-        return QVariant();
-    }
-
-    Meta::PodcastMetaCommon* pmc =
-            static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
-    if( !pmc )
-        return QVariant();
-
-    if( role == PodcastMetaCommonRole )
-        return qVariantFromValue( pmc );
-
-    bool isChannel = false;
-    QString title;
-    QString description;
-    QPixmap icon;
     bool isOnDisk = false;
-    if ( pmc->podcastType() == Meta::ChannelType )
+    if( pmc->podcastType() == Meta::EpisodeType )
     {
-        Meta::PodcastChannel *channel =
-                static_cast<Meta::PodcastChannel *>(index.internalPointer());
-        if( !channel )
-            return QVariant();
+        Meta::PodcastEpisode *episode = static_cast<Meta::PodcastEpisode *>( pmc );
+        KUrl episodeFile( episode->localUrl() );
 
-        title = channel->title();
-        description = channel->description();
-        isChannel = true;
-        QStringList emblems;
-        //TODO: only check visible episodes. For now those are all returned by episodes().
-        foreach( const Meta::PodcastEpisodePtr ep, channel->episodes() )
-        {
-            if( ep->isNew() )
-            {
-                emblems << "rating";
-                break;
-            }
-        }
-        if( channel->hasImage() )
-        {
-            icon = channel->image().scaledToHeight( 32 );
-        }
-        else
-        {
-            icon = KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
-        }
-    }
-    else if ( pmc->podcastType() == Meta::EpisodeType )
-    {
-        Meta::PodcastEpisode *episode =
-                static_cast<Meta::PodcastEpisode *>( index.internalPointer() );
-        if( !episode )
-            return QVariant();
-
-        title = episode->title();
-        description = episode->description();
-        isChannel = false;
-        KUrl episodeFile = episode->localUrl();
-        if( episodeFile.isEmpty() )
-        {
-            isOnDisk = false;
-        }
-        else
+        if( !episodeFile.isEmpty() )
         {
             isOnDisk = QFileInfo( episodeFile.toLocalFile() ).exists();
             //reset localUrl because the file is not there.
             if( !isOnDisk )
                 episode->setLocalUrl( KUrl() );
-        }
-
-        QStringList emblems;
-        if( isOnDisk )
-            emblems << "go-down";
-
-        if( episode->isNew() )
-            icon = KIcon( "rating", 0, emblems ).pixmap( 32, 32 );
-        else
-            icon = KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
+        }            
     }
-    else
+
+    return isOnDisk;
+}
+
+QVariant
+PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
+{
+    Meta::PodcastChannel *channel = 0;
+    Meta::PodcastEpisode *episode = 0;
+    QStringList emblems;
+    
+    switch( pmc->podcastType() )
     {
-        debug() << "Model index was neither Channel nor Episode";
-        return QVariant();
+        case Meta::ChannelType:
+            channel = static_cast<Meta::PodcastChannel *>( pmc );
+
+            if( channel->hasImage() )
+            {
+                return channel->image().scaledToHeight( 32 );
+            }
+            else
+            {
+                //TODO: only check visible episodes. For now those are all returned by episodes().
+                foreach( const Meta::PodcastEpisodePtr ep, channel->episodes() )
+                {
+                    if( ep->isNew() )
+                    {
+                        emblems << "rating";
+                        break;
+                    }
+                }
+
+                return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
+            }
+
+        case Meta::EpisodeType:
+            episode = static_cast<Meta::PodcastEpisode *>( pmc );
+
+            if( isOnDisk( pmc ) )
+                emblems << "go-down";
+
+            if( episode->isNew() )
+                return KIcon( "rating", 0, emblems ).pixmap( 32, 32 );
+            else
+                return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );        
     }
 
-    if( role == Qt::DisplayRole )
-        return title.simplified(); //whitespace removed from start and end + extra whitespace in between
-    else if( role == Qt::DecorationRole )
-        return QVariant( icon );
-    else if( role == OnDiskRole )
-        return QVariant( isOnDisk );
-    else if( role == Qt::ToolTipRole )
-        return title;
+    return QVariant();
+}
 
-    // At this point role can only be ShortDescriptionRole
-    return description;
+QVariant
+PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
+{
+    DEBUG_BLOCK
+    
+    if( !index.isValid() )
+        return QVariant();
+    
+    Meta::PodcastMetaCommon* pmc =
+            static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
+
+    if( !pmc )
+        return QVariant();
+
+    switch( role )
+    {
+        case Qt::DisplayRole:
+        case Qt::ToolTipRole:
+            switch( index.column() )
+            {
+                case TitleColumn:
+                    return pmc->title();
+
+                case SubtitleColumn:
+                    return pmc->subtitle();
+
+                case AuthorColumn:
+                    return pmc->author();
+
+                case KeywordsColumn:
+                    return pmc->keywords();
+            }
+            break;
+
+        case ShortDescriptionRole:
+            return pmc->description();
+
+        case Qt::DecorationRole:
+            return icon( pmc );
+
+        case OnDiskRole:
+            return isOnDisk( pmc );
+    }
+
+    return QVariant();
 }
 
 QModelIndex
@@ -321,7 +330,7 @@ PlaylistBrowserNS::PodcastModel::rowCount(const QModelIndex & parent) const
 int
 PlaylistBrowserNS::PodcastModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    return 1;
+    return ColumnCount;
 }
 
 Qt::ItemFlags

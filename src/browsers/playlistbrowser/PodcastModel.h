@@ -33,10 +33,18 @@ namespace PlaylistBrowserNS {
 enum {
     ShortDescriptionRole = Qt::UserRole + 1,
     LongDescriptionRole,
-    PodcastMetaCommonRole,
     //Where is this Playlist from (collection, service, device)
     OriginRole = Qt::UserRole,
     OnDiskRole = Qt::UserRole //Is the PodcastEpisode downloaded to disk?
+};
+
+enum
+{
+    TitleColumn,
+    SubtitleColumn,
+    AuthorColumn,
+    KeywordsColumn,
+    ColumnCount
 };
 
 /**
@@ -122,6 +130,9 @@ class PodcastModel : public QAbstractItemModel
         Meta::PodcastChannelList m_channels;
         void removeSubscription( Meta::PodcastChannelPtr channel );
         void configureChannel( Meta::PodcastChannelPtr channel );
+
+        bool isOnDisk( Meta::PodcastMetaCommon *pmc ) const;
+        QVariant icon( Meta::PodcastMetaCommon *pmc ) const;
 };
 
 }

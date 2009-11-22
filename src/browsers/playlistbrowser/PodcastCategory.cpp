@@ -125,6 +125,11 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
     m_podcastTreeView->setDragEnabled(true);
 
+    for( int column = 1; column < podcastModel->columnCount(); ++ column )
+    {
+        m_podcastTreeView->hideColumn( column );
+    }
+
     //transparency
     QPalette p = m_podcastTreeView->palette();
     QColor c = p.color( QPalette::Base );
@@ -157,62 +162,56 @@ void
 PodcastCategory::showInfo( const QModelIndex & index )
 {
     QVariantMap map;
-    Meta::PodcastMetaCommon *pmc = qvariant_cast<Meta::PodcastMetaCommon*>(
-        index.data( PodcastMetaCommonRole )
-    );
-
-    if( pmc )
+    const int row = index.row();
+    QString description;
+    QString title( index.data( Qt::DisplayRole ).toString() );
+    QString subtitle( index.sibling( row, SubtitleColumn ).data( Qt::DisplayRole ).toString() );
+    QString author( index.sibling( row, AuthorColumn ).data( Qt::DisplayRole ).toString() );
+    QStringList keywords( qvariant_cast<QStringList>(
+        index.sibling( row, KeywordsColumn ).data( Qt::DisplayRole )
+    ) );
+    
+    if( !subtitle.isEmpty() )
     {
-        QString description;
-    
-        if( !pmc->subtitle().isEmpty() )
-        {
-            description += QString( "<h1 class=\"subtitle\">%1</h1>" )
-                .arg( Qt::escape( pmc->subtitle() ) );
-        }
-    
-        if( !pmc->author().isEmpty() )
-        {
-            description += QString( "<p><b>%1</b> %2</p>" )
-                .arg( i18n( "Author:" ) )
-                .arg( Qt::escape( pmc->author() ) );
-        }
-    
-        if( !pmc->keywords().isEmpty() )
-        {
-            description += QString( "<p><b>%1</b> %2</p>" )
-                .arg( i18n( "Keywords:" ) )
-                .arg( Qt::escape( pmc->keywords().join( ", " ) ) );
-        }
-    
-        description += pmc->description();
-        
-        description = QString(
-            "<html>"
-            "    <head>"
-            "        <title>%1</title>"
-            "        <style type=\"text/css\">"
-            "h1 {text-align:center; font-size: 1em;}"
-            "h1.subtitle {text-align:center; font-size: 1em; font-weight: normal;}"
-            "        </style>"
-            "    </head>"
-            "    <body>"
-            "        <h1>%1</h1>"
-            "        %2"
-            "    </body>"
-            "</html>")
-            .arg( Qt::escape( pmc->title() ) )
-            .arg( description );
-        
-        map["service_name"] = pmc->title();
-        map["main_info"] = description;
-    }
-    else
-    {
-        map["service_name"] = index.data( Qt::ToolTipRole );
-        map["main_info"] = index.data( ShortDescriptionRole );
+        description += QString( "<h1 class=\"subtitle\">%1</h1>" )
+            .arg( Qt::escape( subtitle ) );
     }
 
+    if( !author.isEmpty() )
+    {
+        description += QString( "<p><b>%1</b> %2</p>" )
+            .arg( i18n( "Author:" ) )
+            .arg( Qt::escape( author ) );
+    }
+
+    if( !keywords.isEmpty() )
+    {
+        description += QString( "<p><b>%1</b> %2</p>" )
+            .arg( i18n( "Keywords:" ) )
+            .arg( Qt::escape( keywords.join( ", " ) ) );
+    }
+
+    description += index.data( ShortDescriptionRole ).toString();
+    
+    description = QString(
+        "<html>"
+        "    <head>"
+        "        <title>%1</title>"
+        "        <style type=\"text/css\">"
+        "h1 {text-align:center; font-size: 1em;}"
+        "h1.subtitle {text-align:center; font-size: 1em; font-weight: normal;}"
+        "        </style>"
+        "    </head>"
+        "    <body>"
+        "        <h1>%1</h1>"
+        "        %2"
+        "    </body>"
+        "</html>")
+        .arg( Qt::escape( title ) )
+        .arg( description );
+    
+    map["service_name"] = title;
+    map["main_info"] = description;
     The::infoProxy()->setInfo( map );
 }
 
