@@ -24,6 +24,7 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
 #include "PodcastModel.h"
+#include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
 #include "browsers/InfoProxy.h"
 #include "SvgTinter.h"
@@ -155,24 +156,63 @@ PodcastCategory::~PodcastCategory()
 void
 PodcastCategory::showInfo( const QModelIndex & index )
 {
-    QString title = index.data( Qt::DisplayRole ).toString();
-    QString description = QString(
-        "<html>"
-        "    <head>"
-        "        <title>%1</title>"
-        "        <style type=\"text/css\">h1 {text-align:center; font-size: 1em;}</style>"
-        "    </head>"
-        "    <body>"
-        "        <h1>%1</h1>"
-        "        %2"
-        "    </body>"
-        "</html>")
-        .arg( Qt::escape( title ) )
-        .arg( index.data( ShortDescriptionRole ).toString() );
-    
     QVariantMap map;
-    map["service_name"] = title;
-    map["main_info"] = description;
+    Meta::PodcastMetaCommon *pmc = qvariant_cast<Meta::PodcastMetaCommon*>(
+        index.data( PodcastMetaCommonRole )
+    );
+
+    if( pmc )
+    {
+        QString description;
+    
+        if( !pmc->subtitle().isEmpty() )
+        {
+            description += QString( "<h1 class=\"subtitle\">%1</h1>" )
+                .arg( Qt::escape( pmc->subtitle() ) );
+        }
+    
+        if( !pmc->author().isEmpty() )
+        {
+            description += QString( "<p><b>%1</b> %2</p>" )
+                .arg( i18n( "Author:" ) )
+                .arg( Qt::escape( pmc->author() ) );
+        }
+    
+        if( !pmc->keywords().isEmpty() )
+        {
+            description += QString( "<p><b>%1</b> %2</p>" )
+                .arg( i18n( "Keywords:" ) )
+                .arg( Qt::escape( pmc->keywords().join( ", " ) ) );
+        }
+    
+        description += pmc->description();
+        
+        description = QString(
+            "<html>"
+            "    <head>"
+            "        <title>%1</title>"
+            "        <style type=\"text/css\">"
+            "h1 {text-align:center; font-size: 1em;}"
+            "h1.subtitle {text-align:center; font-size: 1em; font-weight: normal;}"
+            "        </style>"
+            "    </head>"
+            "    <body>"
+            "        <h1>%1</h1>"
+            "        %2"
+            "    </body>"
+            "</html>")
+            .arg( Qt::escape( pmc->title() ) )
+            .arg( description );
+        
+        map["service_name"] = pmc->title();
+        map["main_info"] = description;
+    }
+    else
+    {
+        map["service_name"] = index.data( Qt::ToolTipRole );
+        map["main_info"] = index.data( ShortDescriptionRole );
+    }
+
     The::infoProxy()->setInfo( map );
 }
 

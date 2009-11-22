@@ -87,11 +87,11 @@ class PodcastMetaCommon
 
     protected:
         QString m_title; //the title
-        QString m_description; //a longer description, possibly with HTML markup
-        QStringList m_keywords;
+        QString m_description; //a longer description, with HTML markup
+        QStringList m_keywords; // TODO: save to DB
         QString m_subtitle; //a short description
         QString m_summary;
-        QString m_author;
+        QString m_author; // TODO: save to DB
 };
 
 class PodcastEpisode : public PodcastMetaCommon, public Track
@@ -503,6 +503,7 @@ public:
 
 }
 
+Q_DECLARE_METATYPE( Meta::PodcastMetaCommon* )
 Q_DECLARE_METATYPE( Meta::PodcastEpisodePtr )
 Q_DECLARE_METATYPE( Meta::PodcastEpisodeList )
 Q_DECLARE_METATYPE( Meta::PodcastChannelPtr )

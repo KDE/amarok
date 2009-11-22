@@ -33,13 +33,14 @@ namespace PlaylistBrowserNS {
 enum {
     ShortDescriptionRole = Qt::UserRole + 1,
     LongDescriptionRole,
+    PodcastMetaCommonRole,
     //Where is this Playlist from (collection, service, device)
     OriginRole = Qt::UserRole,
     OnDiskRole = Qt::UserRole //Is the PodcastEpisode downloaded to disk?
 };
 
 /**
-	@author Bart Cerneels
+    @author Bart Cerneels
 */
 class PodcastModel : public QAbstractItemModel
 {

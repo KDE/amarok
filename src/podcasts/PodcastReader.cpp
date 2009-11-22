@@ -1189,7 +1189,7 @@ PodcastReader::endKeywords()
 
     foreach( const QString &keyword, keywords )
     {
-        m_current->keywords().append( keyword.trimmed() );
+        m_current->addKeyword( keyword.simplified() );
     }
 }
 

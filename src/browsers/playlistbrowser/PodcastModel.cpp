@@ -82,7 +82,8 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
     if ( !index.isValid() ||
          ( role != Qt::DisplayRole && role != Qt::DecorationRole
            && role != Qt::ToolTipRole
-           && role != ShortDescriptionRole && role != OnDiskRole ) )
+           && role != ShortDescriptionRole && role != OnDiskRole
+           && role != PodcastMetaCommonRole ) )
     {
         return QVariant();
     }
@@ -91,6 +92,9 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
     if( !pmc )
         return QVariant();
+
+    if( role == PodcastMetaCommonRole )
+        return qVariantFromValue( pmc );
 
     bool isChannel = false;
     QString title;
