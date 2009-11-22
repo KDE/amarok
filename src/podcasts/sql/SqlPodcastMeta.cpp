@@ -460,13 +460,22 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     : Meta::PodcastChannel()
     , m_dbId( 0 )
 {
-    m_url = channel->url();
+    // PodcastMetaCommon
     m_title = channel->title();
-    m_webLink = channel->webLink();
     m_description = channel->description();
-    m_copyright = channel->copyright();
+    m_keywords = channel->keywords();
+    m_subtitle = channel->subtitle();
+    m_summary = channel->summary();
+    m_author = channel->author();
+    
+    // PodcastChannel
+    m_url = channel->url();
+    m_webLink = channel->webLink();
+    m_imageUrl = channel->imageUrl();
     m_labels = channel->labels();
     m_subscribeDate = channel->subscribeDate();
+    m_copyright = channel->copyright();
+    
     if( channel->hasImage() )
         m_image = channel->image();
 

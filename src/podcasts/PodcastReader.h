@@ -78,26 +78,30 @@ class PodcastReader : public QObject, public QXmlStreamReader
             Image,
             Link,
             Author,
+            ItunesAuthor,
             Url,
             Title,
             Enclosure,
             Guid,
             PubDate,
             Description,
-            ItunesSummary,
             Body,
             Html,
             Entry,
             Subtitle,
+            ItunesSubtitle,
             Updated,
             Published,
             Summary,
+            ItunesSummary,
             Content,
             SupportedContent,
             Name,
             Id,
             Logo,
-            Icon
+            Icon,
+            Creator,
+            Encoded
         };
 
         class Action;
@@ -139,10 +143,10 @@ class PodcastReader : public QObject, public QXmlStreamReader
                 const ActionMap &actionMap() const { return m_actionMap; }
 
             private:
-                ActionMap      &m_actionMap;
-                ActionCallback  m_begin;
-                ActionCallback  m_end;
-                ActionCallback  m_characters;
+                ActionMap        &m_actionMap;
+                ActionCallback    m_begin;
+                ActionCallback    m_end;
+                ActionCallback    m_characters;
         };
 
         ElementType elementType() const;
@@ -169,8 +173,9 @@ class PodcastReader : public QObject, public QXmlStreamReader
 
         void endDocument();
         void endTitle();
+        void endSubtitle();
         void endDescription();
-        void endItunesSummary();
+        void endEncoded();
         void endBody();
         void endLink();
         void endGuid();
@@ -178,6 +183,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void endItem();
         void endImageUrl();
         void endAuthor();
+        void endCreator();
         void endXml();
         void endAtomLogo();
         void endAtomIcon();
@@ -207,20 +213,11 @@ class PodcastReader : public QObject, public QXmlStreamReader
         QStringRef attribute(const char *namespaceUri, const char *name) const;
         bool hasAttribute(const char *namespaceUri, const char *name) const;
 
-        void moveDescription(const QString &description);
-        void moveItunesSummary(const QString &summary);
+        void setDescription(const QString &description);
+        void setSummary(const QString &description);
 
-        /** There usually are 3 kinds of descriptions. Usually a &lt;body&gt; element contains
-         * the most detailed description followed by &lt;itunes:summary&gt; and the standard
-         * &lt;description&gt;. */
-        enum DescriptionType
-        {
-            NoDescription             = 0,
-            RssDescription            = 1,
-            ItunesSummaryDescription  = 2,
-            HtmlBodyDescription       = 3
-        };
-
+        // TODO: move this to PodcastMeta and add a field
+        //       descriptionType to PodcastCommonMeta.
         enum ContentType
         {
             TextContent,
@@ -237,8 +234,6 @@ class PodcastReader : public QObject, public QXmlStreamReader
         // this somewhat emulates a callstack (whithout local variables):
         QStack<const Action*> m_actionStack;
         
-        DescriptionType m_descriptionType;
-        DescriptionType m_channelDescriptionType;
         ContentType m_contentType;
         QString m_buffer;
         Meta::PodcastMetaCommon *m_current;
@@ -273,14 +268,16 @@ class PodcastReader : public QObject, public QXmlStreamReader
                 Action rss20ChannelAction;
 
                 Action titleAction;
+                Action subtitleAction;
                 Action descriptionAction;
-                Action summaryAction;
+                Action encodedAction;
                 Action bodyAction;
                 Action linkAction;
                 Action imageAction;
                 Action itemAction;
                 Action urlAction;
                 Action authorAction;
+                Action creatorAction;
                 Action enclosureAction;
                 Action guidAction;
                 Action pubDateAction;

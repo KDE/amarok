@@ -175,15 +175,22 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
                       " OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
     QStringList dbResult = sqlStorage->query( command );
+    
+    if( dbResult.isEmpty() )
+        return TrackPtr();
 
     int episodeId = dbResult[0].toInt();
     int channelId = dbResult[1].toInt();
+    bool found = false;
     Meta::SqlPodcastChannelPtr channel;
     foreach( channel, m_channels )
         if( channel->dbId() == channelId )
+        {
+            found = true;
             break;
+        }
 
-    if( channel.isNull() )
+    if( !found )
         return TrackPtr();
 
     Meta::SqlPodcastEpisodePtr episode;
@@ -192,11 +199,11 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
         if( episode->dbId() == episodeId )
         {
             debug() << "found it!";
-            break;
+            return Meta::TrackPtr::dynamicCast( episode );
         }
     }
 
-    return Meta::TrackPtr::dynamicCast( episode );
+    return TrackPtr();
 }
 
 Meta::PlaylistList

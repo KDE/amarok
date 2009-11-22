@@ -29,12 +29,14 @@
 
 using namespace Meta;
 
-#define ITUNES_NS "http://www.itunes.com/dtds/podcast-1.0.dtd"
-#define RDF_NS    "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-#define RSS10_NS  "http://purl.org/rss/1.0/"
-#define RSS20_NS  ""
-#define ATOM_NS   "http://www.w3.org/2005/Atom"
-#define ENC_NS    "http://purl.oclc.org/net/rss_2.0/enc#"
+#define ITUNES_NS  "http://www.itunes.com/dtds/podcast-1.0.dtd"
+#define RDF_NS     "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+#define RSS10_NS   "http://purl.org/rss/1.0/"
+#define RSS20_NS   ""
+#define ATOM_NS    "http://www.w3.org/2005/Atom"
+#define ENC_NS     "http://purl.oclc.org/net/rss_2.0/enc#"
+#define CONTENT_NS "http://purl.org/rss/1.0/modules/content"
+#define DC_NS      "http://purl.org/dc/elements/1.1/"
 
 const PodcastReader::StaticData PodcastReader::sd;
 
@@ -44,8 +46,6 @@ PodcastReader::PodcastReader( PodcastProvider * podcastProvider )
         , m_transferJob( 0 )
         , m_channel( 0 )
         , m_actionStack()
-        , m_descriptionType( NoDescription )
-        , m_channelDescriptionType( NoDescription )
         , m_contentType( TextContent )
         , m_buffer()
         , m_current( 0 )
@@ -121,15 +121,20 @@ PodcastReader::StaticData::StaticData()
             &PodcastReader::beginText,
             &PodcastReader::endTitle,
             &PodcastReader::readCharacters )
+        , subtitleAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endSubtitle,
+            &PodcastReader::readCharacters )
         , descriptionAction(
             textMap,
             &PodcastReader::beginText,
             &PodcastReader::endDescription,
             &PodcastReader::readCharacters )
-        , summaryAction(
+        , encodedAction(
             textMap,
             &PodcastReader::beginText,
-            &PodcastReader::endItunesSummary,
+            &PodcastReader::endEncoded,
             &PodcastReader::readCharacters )
         , bodyAction(
             xmlMap,
@@ -155,6 +160,11 @@ PodcastReader::StaticData::StaticData()
             textMap,
             &PodcastReader::beginText,
             &PodcastReader::endAuthor,
+            &PodcastReader::readCharacters )
+        , creatorAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endCreator,
             &PodcastReader::readCharacters )
         , enclosureAction(
             noContentMap,
@@ -264,6 +274,8 @@ PodcastReader::StaticData::StaticData()
     knownElements[ "published"   ] = Published;
     knownElements[ "logo"        ] = Logo;
     knownElements[ "icon"        ] = Icon;
+    knownElements[ "encoded"     ] = Encoded;
+    knownElements[ "creator"     ] = Creator;
     knownElements[ "html"        ] = Html;
     knownElements[ "HTML"        ] = Html;
 
@@ -286,8 +298,12 @@ PodcastReader::StaticData::StaticData()
 
     // parse <channel> "RSS 2.0"
     rss20ChannelMap.insert( Title, &titleAction );
+    rss20ChannelMap.insert( Subtitle, &subtitleAction );
+    rss20ChannelMap.insert( ItunesAuthor, &authorAction );
+    rss20ChannelMap.insert( Creator, &creatorAction );
     rss20ChannelMap.insert( Description, &descriptionAction );
-    rss20ChannelMap.insert( ItunesSummary, &summaryAction );
+    rss20ChannelMap.insert( Encoded, &encodedAction );
+    rss20ChannelMap.insert( ItunesSummary, &descriptionAction );
     rss20ChannelMap.insert( Body, &bodyAction );
     rss20ChannelMap.insert( Link, &linkAction );
     rss20ChannelMap.insert( Image, &imageAction );
@@ -295,8 +311,12 @@ PodcastReader::StaticData::StaticData()
     
     // parse <channel> "RSS 1.0"
     rss10ChannelMap.insert( Title, &titleAction );
+    rss10ChannelMap.insert( Subtitle, &subtitleAction );
+    rss10ChannelMap.insert( ItunesAuthor, &authorAction );
+    rss10ChannelMap.insert( Creator, &creatorAction );
     rss10ChannelMap.insert( Description, &descriptionAction );
-    rss10ChannelMap.insert( ItunesSummary, &summaryAction );
+    rss10ChannelMap.insert( Encoded, &encodedAction );
+    rss10ChannelMap.insert( ItunesSummary, &descriptionAction );
     rss10ChannelMap.insert( Body, &bodyAction );
     rss10ChannelMap.insert( Link, &linkAction );
     rss10ChannelMap.insert( Image, &imageAction );
@@ -308,9 +328,13 @@ PodcastReader::StaticData::StaticData()
 
     // parse <item>
     itemMap.insert( Title, &titleAction );
+    itemMap.insert( Subtitle, &subtitleAction );
     itemMap.insert( Author, &authorAction );
+    itemMap.insert( ItunesAuthor, &authorAction );
+    itemMap.insert( Creator, &creatorAction );
     itemMap.insert( Description, &descriptionAction );
-    itemMap.insert( ItunesSummary, &summaryAction );
+    itemMap.insert( Encoded, &encodedAction );
+    itemMap.insert( ItunesSummary, &descriptionAction );
     itemMap.insert( Body, &bodyAction );
     itemMap.insert( Enclosure, &enclosureAction );
     itemMap.insert( Guid, &guidAction );
@@ -490,6 +514,20 @@ PodcastReader::elementType() const
             }
             break;
 
+        case Subtitle:
+            if( namespaceUri() == ITUNES_NS )
+            {
+                elementType = ItunesSubtitle;
+            }
+            break;
+
+        case Author:
+            if( namespaceUri() == ITUNES_NS )
+            {
+                elementType = ItunesAuthor;
+            }
+            break;
+
         case Content:
             if( namespaceUri() == ATOM_NS &&
                 // ignore atom:content elements that do not
@@ -531,8 +569,6 @@ PodcastReader::read()
 
     m_current = 0;
     m_item    = 0;
-    m_descriptionType        = NoDescription;
-    m_channelDescriptionType = NoDescription;
     m_contentType = TextContent;
     m_buffer.clear();
     m_actionStack.clear();
@@ -587,7 +623,7 @@ PodcastReader::continueRead()
                     subAction = action->actionMap()[ Any ];
 
                 if( !subAction )
-                    subAction = PodcastReader::sd.skipMap[ Any ];
+                    subAction = &( PodcastReader::sd.skipAction );
                 
                 m_actionStack.push( subAction );
 
@@ -650,6 +686,12 @@ PodcastReader::endTitle()
     m_current->setTitle( m_buffer.trimmed() );
 }
 
+void
+PodcastReader::endSubtitle()
+{
+    m_current->setSubtitle( m_buffer.trimmed() );
+}
+
 QString
 PodcastReader::atomTextAsText()
 {
@@ -682,7 +724,7 @@ PodcastReader::atomTextAsHtml()
 
         case TextContent:
         default:
-            return Qt::escape( m_buffer );
+            return Qt::convertFromPlainText( m_buffer, Qt::WhiteSpaceNormal );
     }
 }
 
@@ -776,103 +818,65 @@ PodcastReader::unescape( const QString &text )
 }
 
 void
-PodcastReader::moveDescription( const QString &description )
+PodcastReader::setSummary( const QString &description )
 {
-    if( !description.isEmpty() )
+    if( m_current->summary().size() < description.size() )
     {
-        if( m_current->summary().isEmpty() )
-        {
-            m_current->setSummary( description );
-        }
-        else if( m_current->subtitle().isEmpty() )
-        {
-            m_current->setSubtitle( description );
-        }
+        m_current->setSummary( description );
     }
 }
 
 void
-PodcastReader::moveItunesSummary( const QString &summary )
+PodcastReader::setDescription( const QString &description )
 {
-    if( !summary.isEmpty() )
+    // The content of the <description>, <itunes:summary> or <body>
+    // elements might be assigned to the field description, unless
+    // there is already longer data in it. Then it will be assigned
+    // to summary, unless summary depending on whether there
+    // already is some (longer) information in the description
+    // field.
+    // If there is already data in the description fiueld, instead of
+    // overwriting it, it will be moved to the summary field, unless
+    // there is already longer data there.
+    if( m_current->description().size() < description.size() )
     {
-        if( !m_current->summary().isEmpty() )
-        {
-            if( m_current->subtitle().isEmpty() )
-            {
-                m_current->setSubtitle( m_current->summary() );
-            }
-        }
-
-        m_current->setSummary( summary );
+        setSummary( m_current->description() );
+        m_current->setDescription( description );
+    }
+    else {
+        setSummary( description );
     }
 }
 
 void
 PodcastReader::endDescription()
 {
-    // The content of <description> might be assigned to the
-    // fields description, summary or subtitle, depending on whether
-    // there already is some (higher priority) information in the
-    // description field.
-    if( m_descriptionType <= RssDescription )
+    QString description( m_buffer.trimmed() );
+
+    if( !Qt::mightBeRichText( description ) )
     {
-        m_current->setDescription( m_buffer.trimmed() );
-        m_descriptionType = RssDescription;
+        // content type is plain text
+        description = Qt::convertFromPlainText( description, Qt::WhiteSpaceNormal );
     }
-    else {
-        moveDescription( m_buffer.trimmed() );
-    }
+    // else: content type is html
+    setDescription( description );
 }
 
 void
-PodcastReader::endItunesSummary()
+PodcastReader::endEncoded()
 {
-    // The content of <itunes:summary> might be assigned to the
-    // fields description or summary, depending on whether there
-    // already is some (higher priority) information in the
-    // description field.
-    // If the summary field is already set, its content will
-    // be moved to the subtitle field (unless this is already set).
-    if( m_descriptionType <= ItunesSummaryDescription )
-    {
-        moveItunesSummary( m_current->description() );
-
-        m_current->setDescription( m_buffer.trimmed() );
-        m_descriptionType = ItunesSummaryDescription;
-    }
-    else if( m_current->summary().isEmpty() )
-    {
-        m_current->setSummary( m_buffer.trimmed() );
-    }
+    // content type is html
+    setDescription( m_buffer.trimmed() );
 }
 
 void
 PodcastReader::endBody()
 {
-    // The content of <body> will be assigned to the description
-    // field.
-    // If there already is something assigned to this field, its
-    // data is moved as described in the endItunesSummary() and
-    // endDescription() methods.
-    QString oldDescription = m_current->description();
-
-    switch( m_descriptionType )
-    {
-        case ItunesSummaryDescription:
-            moveItunesSummary( oldDescription );
-            break;
-
-        case RssDescription:
-            moveDescription( oldDescription );
-            break;
-
-        default:
-            break;
-    }
-
+    // content type is xhtml
+    // always prefer <body>, because it's likely to
+    // contain nice html formatted infos
+    setSummary( m_current->description() );
     m_current->setDescription( m_buffer.trimmed() );
-    m_descriptionType = HtmlBodyDescription;
 }
 
 void
@@ -976,7 +980,6 @@ PodcastReader::beginChannel()
 {
     createChannel();
 
-    m_descriptionType = m_channelDescriptionType = NoDescription;
     m_current = m_channel.data();
 }
 
@@ -989,8 +992,6 @@ PodcastReader::beginItem()
 
     m_item = new Meta::PodcastEpisode( m_channel );
     m_current = m_item.data();
-    m_channelDescriptionType = m_descriptionType;
-    m_descriptionType = NoDescription;
 }
 
 void 
@@ -999,21 +1000,40 @@ PodcastReader::endItem()
     /*  some feeds contain normal blogposts without
         enclosures alongside of podcasts */
 
-    if( !m_item->uidUrl().isEmpty()
-        && !m_podcastProvider->possiblyContainsTrack(
-                m_item->guid().isEmpty() ? m_item->uidUrl() : m_item->guid()
-            )
-      )
-    {
-        debug() << "new episode: " << m_item->title();
+    if( !m_item->uidUrl().isEmpty() ) {
+        const KUrl trackId( m_item->guid().isEmpty() ? m_item->uidUrl() : m_item->guid() );
+        Meta::PodcastEpisodePtr episode = Meta::PodcastEpisodePtr::dynamicCast(
+            m_podcastProvider->trackForUrl( trackId )
+        );
 
-        Meta::PodcastEpisodePtr episode = m_channel->addEpisode( m_item );
-        // also let the provider know an episode has been added
-        // TODO: change into a signal
-        m_podcastProvider->addEpisode( episode );
+        if( episode && (episode->guid().isEmpty() || episode->guid() == m_item->guid()) )
+        {
+            debug() << "updating episode: " << m_item->title();
+
+            episode->setTitle( m_item->title() );
+            episode->setSubtitle( m_item->subtitle() );
+            episode->setSummary( m_item->summary() );
+            episode->setDescription( m_item->description() );
+            episode->setAuthor( m_item->author() );
+            episode->setUidUrl( m_item->uidUrl() );
+            episode->setFilesize( m_item->filesize() );
+            episode->setMimeType( m_item->mimeType() );
+            episode->setPubDate( m_item->pubDate() );
+
+            // set the guid in case it was empty (for some buggy reason):
+            episode->setGuid( m_item->guid() );
+        }
+        else
+        {
+            debug() << "new episode: " << m_item->title();
+            
+            episode = m_channel->addEpisode( m_item );
+            // also let the provider know an episode has been added
+            // TODO: change into a signal
+            m_podcastProvider->addEpisode( episode );
+        }
     }
 
-    m_descriptionType = m_channelDescriptionType;
     m_current = m_channel.data();
     m_item = 0;
 }
@@ -1081,6 +1101,16 @@ void
 PodcastReader::endAuthor()
 {
     m_current->setAuthor( m_buffer.trimmed() );
+}
+
+void
+PodcastReader::endCreator()
+{
+    // there are funny people that do not use <author> but <dc:creator>
+    if( namespaceUri() == DC_NS )
+    {
+        endAuthor();
+    }
 }
 
 void
@@ -1256,7 +1286,7 @@ void
 PodcastReader::endAtomSummary()
 {
     // TODO: don't convert text but store m_contentType
-    m_current->setSummary( atomTextAsText().trimmed() );
+    m_current->setSummary( atomTextAsHtml().trimmed() );
 }
 
 void
