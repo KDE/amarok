@@ -76,7 +76,11 @@ PodcastReader::Action::characters(PodcastReader *podcastReader) const
 
 // initialization of the feed parser automata:
 PodcastReader::StaticData::StaticData()
-        : startAction( rootMap )
+        : removeScripts(
+            "<script[^<]*</script>|<script[^>]*>",
+            Qt::CaseInsensitive )
+
+        , startAction( rootMap )
         
         , docAction(
             docMap,
@@ -722,9 +726,6 @@ PodcastReader::atomTextAsText()
     switch( m_contentType )
     {
         case HtmlContent:
-            // TODO: strip tags and resolve predefined html entities
-            return unescape( m_buffer );
-
         case XHtmlContent:
             // TODO: strip tags (there should not be any non-xml entities here)
             return unescape( m_buffer );
@@ -741,10 +742,11 @@ PodcastReader::atomTextAsHtml()
     switch( m_contentType )
     {
         case HtmlContent:
-            return m_buffer;
-
         case XHtmlContent:
-            return m_buffer;
+            // strip <script> elements
+            // This will work because there aren't <![CDATA[ ]]> sections
+            // in m_buffer, because we have (re)escape the code manually.
+            return m_buffer.replace( sd.removeScripts, "" );
 
         case TextContent:
         default:
@@ -755,6 +757,7 @@ PodcastReader::atomTextAsHtml()
 QString
 PodcastReader::unescape( const QString &text )
 {
+    // TODO: resolve predefined html entities
     QString buf;
     
     for( int i = 0; i < text.size(); ++ i )

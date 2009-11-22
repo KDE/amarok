@@ -25,6 +25,7 @@
 #include <QXmlStreamReader>
 #include <QObject>
 #include <QStack>
+#include <QRegExp>
 
 namespace KIO
 {
@@ -267,6 +268,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
                 // feeds without the need for threads.
 
                 QHash<QString, ElementType> knownElements;
+                QRegExp removeScripts;
                 
                 // Actions
                 Action startAction;
