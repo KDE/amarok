@@ -39,7 +39,7 @@ void PlayPauseButton::mousePressEvent( QMouseEvent *me )
 void PlayPauseButton::mouseReleaseEvent( QMouseEvent *me )
 {
     me->accept();
-    if ( !m_isClick && underMouse() )
+    if ( m_isClick && underMouse() )
     {
         m_isClick = false;
         emit toggled( !m_isPlaying );

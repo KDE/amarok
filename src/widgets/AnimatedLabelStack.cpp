@@ -151,10 +151,14 @@ void AnimatedLabelStack::setData( const QStringList &data  )
     m_time = 0;
     m_index = 0;
     ensureAnimationStatus();
+    update();
 }
 
 void AnimatedLabelStack::setPulsating( bool on )
 {
+    if ( m_pulseRequested == on && m_pulsating == on )
+        return;
+    
     m_pulseRequested = on;
     m_pulsating = on;
     if ( m_pulsating )
@@ -213,6 +217,8 @@ void AnimatedLabelStack::wheelEvent( QWheelEvent * we )
 {
     if ( m_data.count() < 2 )
         return;
+
+    setPulsating( false );
     
     if ( we->delta() < 0 )
     {

@@ -48,9 +48,21 @@ namespace Playlist
             TrackNavigator();
             virtual ~TrackNavigator() { }
 
+
+            /**
+             * non-destructive variants of requestNextTrack, i.e. this must NOT update any internal
+             * counter */
+            virtual quint64 nextTrack() = 0;
+
+            /**
+             * non-destructive variants of requestLastTrack, i.e. this must NOT update any internal
+             * counter */
+            virtual quint64 lastTrack() = 0;
+
             /**
              * The engine will finish the current track in a couple of seconds,
              * and would like to know what the next track should be.
+             * The default just calls nextTrack()
              */
             virtual quint64 requestNextTrack() = 0;
 
@@ -61,6 +73,7 @@ namespace Playlist
 
             /**
              * The user triggers the previous-track action.
+             * The default just calls lastTrack()
              */
             virtual quint64 requestLastTrack() = 0;
 
