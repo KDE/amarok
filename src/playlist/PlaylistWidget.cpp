@@ -24,7 +24,6 @@
 #include "App.h"
 #include "Debug.h"
 #include "DynamicModel.h"
-#include "layouts/LayoutConfigAction.h"
 #include "layouts/LayoutManager.h"
 #include "MainWindow.h"
 #include "navigators/NavigatorConfigAction.h"
@@ -154,22 +153,13 @@ Playlist::Widget::Widget( QWidget* parent )
         connect( action, SIGNAL( triggered( bool ) ), m_playlistView, SLOT( scrollToActiveTrack() ) );
         plBar->addAction( action );
 
-        plBar->addSeparator();
-
-        Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
-        plBar->addAction( layoutConfigAction );
-        QToolButton *tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( layoutConfigAction ) );
-        if( tbutton )
-            tbutton->setPopupMode( QToolButton::InstantPopup );
-
         NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( this );
         plBar->addAction( navigatorConfig );
-        tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( navigatorConfig ) );
-        if( tbutton )
-            tbutton->setPopupMode( QToolButton::InstantPopup );
-        
-
         plBar->addAction( new KToolBarSpacerAction( this ) );
+
+        QToolButton *toolButton = qobject_cast<QToolButton*>(plBar->widgetForAction( navigatorConfig ) );
+        if( toolButton )
+            toolButton->setPopupMode( QToolButton::InstantPopup );
     } // END Playlist Toolbar
 
     setFrameShape( QFrame::NoFrame );

@@ -46,6 +46,7 @@
 #include "context/ContextView.h"
 #include "context/ToolbarView.h"
 #include "covermanager/CoverManager.h" // for actions
+#include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
@@ -715,6 +716,9 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( removeDeadAndDuplicates() ) );
     ac->addAction( "playlist_remove_dead_and_duplicates", action );
 
+    action = new Playlist::LayoutConfigAction( this );
+    ac->addAction( "playlist_layout", action );
+
     action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Stream..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
     ac->addAction( "stream_add", action );
@@ -959,8 +963,7 @@ MainWindow::createMenus()
     playlistMenu->addSeparator();
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_clear") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_remove_dead_and_duplicates") );
-    playlistMenu->addSeparator();
-
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_layout") );
     //END Playlist menu
 
     //BEGIN Tools menu
