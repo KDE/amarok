@@ -27,7 +27,7 @@
 #include <QString>
 #include <QWidget> //baseclass
 
-#define OSD_WINDOW_OPACITY 0.8
+#define OSD_WINDOW_OPACITY 0.7
 
 namespace Plasma
 {
