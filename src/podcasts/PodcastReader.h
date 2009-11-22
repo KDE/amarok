@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *               2009 Mathias Panzenböck <grosser.meister.morti@gmx.net>                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -35,6 +36,7 @@ class KUrl;
 
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
+            Mathias Panzenböck <grooser.meister.morti@gmx.net>
 */
 class PodcastReader : public QObject, public QXmlStreamReader
 {
@@ -81,7 +83,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
             ItunesAuthor,
             Url,
             Title,
-            Enclosure,
+            EnclosureElement,
             Guid,
             PubDate,
             Description,
@@ -94,6 +96,8 @@ class PodcastReader : public QObject, public QXmlStreamReader
             Published,
             Summary,
             ItunesSummary,
+            Keywords,
+            ItunesKeywords,
             Content,
             SupportedContent,
             Name,
@@ -164,6 +168,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void beginText();
         void beginChannel();
         void beginItem();
+        void beginImage();
         void beginXml();
         void beginNoElement();
         void beginAtomText();
@@ -182,6 +187,8 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void endPubDate();
         void endItem();
         void endImageUrl();
+        void endKeywords();
+        void endNewFeedUrl();
         void endAuthor();
         void endCreator();
         void endXml();
@@ -203,6 +210,8 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void readEscapedCharacters();
         void readAtomTextCharacters();
 
+        QDateTime parsePubDate( const QString &datestring );
+
         void stopWithError(const QString &message);
 
         static QString unescape( const QString &text );
@@ -216,6 +225,13 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void setDescription(const QString &description);
         void setSummary(const QString &description);
 
+        /** podcastEpisodeCheck
+        * Check if this PodcastEpisode has been fetched before. Uses a scoring algorithm.
+        * @return A pointer to a PodcastEpisode that has been fetched before or the \
+        *   same pointer as the argument.
+        */
+        Meta::PodcastEpisodePtr podcastEpisodeCheck( Meta::PodcastEpisodePtr episode );
+
         // TODO: move this to PodcastMeta and add a field
         //       descriptionType to PodcastCommonMeta.
         enum ContentType
@@ -225,18 +241,21 @@ class PodcastReader : public QObject, public QXmlStreamReader
             XHtmlContent
         };
 
-        KUrl m_url;
-        PodcastProvider *m_podcastProvider;
-        KIO::TransferJob *m_transferJob;
-        Meta::PodcastChannelPtr m_channel;
-        Meta::PodcastEpisodePtr m_item;
-        
-        // this somewhat emulates a callstack (whithout local variables):
-        QStack<const Action*> m_actionStack;
-        
-        ContentType m_contentType;
-        QString m_buffer;
-        Meta::PodcastMetaCommon *m_current;
+        class Enclosure
+        {
+            public:
+                Enclosure(const KUrl& url, int filesize, const QString& mimeType)
+                    : m_url( url ), m_filesize( filesize ), m_mimeType( mimeType ) {}
+
+                const KUrl &url() const { return m_url; }
+                int fileSize() const { return m_filesize; }
+                const QString &mimeType() const { return m_mimeType; }
+
+            private:
+                KUrl    m_url;
+                int     m_filesize;
+                QString m_mimeType;
+        };
 
         class StaticData {
             public:
@@ -281,6 +300,8 @@ class PodcastReader : public QObject, public QXmlStreamReader
                 Action enclosureAction;
                 Action guidAction;
                 Action pubDateAction;
+                Action keywordsAction;
+                Action newFeedUrlAction;
 
                 // Atom
                 Action atomLogoAction;
@@ -322,14 +343,19 @@ class PodcastReader : public QObject, public QXmlStreamReader
 
         static const StaticData sd;
 
-        QDateTime parsePubDate( const QString &datestring );
-
-        /** podcastEpisodeCheck
-        * Check if this PodcastEpisode has been fetched before. Uses a scoring algorithm.
-        * @return A pointer to a PodcastEpisode that has been fetched before or the \
-        *   same pointer as the argument.
-        */
-        Meta::PodcastEpisodePtr podcastEpisodeCheck( Meta::PodcastEpisodePtr episode );
+        KUrl m_url;
+        PodcastProvider *m_podcastProvider;
+        KIO::TransferJob *m_transferJob;
+        Meta::PodcastChannelPtr m_channel;
+        Meta::PodcastEpisodePtr m_item;
+        
+        // this somewhat emulates a callstack (whithout local variables):
+        QStack<const Action*> m_actionStack;
+        
+        ContentType m_contentType;
+        QString m_buffer;
+        QList<Enclosure> m_enclosures;
+        Meta::PodcastMetaCommon *m_current;
 };
 
 #endif

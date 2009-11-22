@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *               2009 Mathias Panzenböck <grosser.meister.morti@gmx.net>                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,6 +19,7 @@
 
 #include "Debug.h"
 #include "statusbar/StatusBar.h"
+#include "MetaUtility.h"
 
 #include <kio/job.h>
 #include <kurl.h>
@@ -146,7 +148,8 @@ PodcastReader::StaticData::StaticData()
             &PodcastReader::beginText,
             &PodcastReader::endLink,
             &PodcastReader::readCharacters )
-        , imageAction( imageMap )
+        , imageAction( imageMap,
+            &PodcastReader::beginImage )
         , itemAction(
             itemMap,
             &PodcastReader::beginItem,
@@ -178,6 +181,16 @@ PodcastReader::StaticData::StaticData()
             textMap,
             &PodcastReader::beginText,
             &PodcastReader::endPubDate,
+            &PodcastReader::readCharacters )
+        , keywordsAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endKeywords,
+            &PodcastReader::readCharacters )
+        , newFeedUrlAction(
+            textMap,
+            &PodcastReader::beginText,
+            &PodcastReader::endNewFeedUrl,
             &PodcastReader::readCharacters )
 
         // Atom
@@ -259,7 +272,7 @@ PodcastReader::StaticData::StaticData()
     knownElements[ "url"         ] = Url;
     knownElements[ "title"       ] = Title;
     knownElements[ "author"      ] = Author;
-    knownElements[ "enclosure"   ] = Enclosure;
+    knownElements[ "enclosure"   ] = EnclosureElement;
     knownElements[ "guid"        ] = Guid;
     knownElements[ "pubDate"     ] = PubDate;
     knownElements[ "description" ] = Description;
@@ -276,6 +289,7 @@ PodcastReader::StaticData::StaticData()
     knownElements[ "icon"        ] = Icon;
     knownElements[ "encoded"     ] = Encoded;
     knownElements[ "creator"     ] = Creator;
+    knownElements[ "keywords"    ] = Keywords;
     knownElements[ "html"        ] = Html;
     knownElements[ "HTML"        ] = Html;
 
@@ -308,6 +322,7 @@ PodcastReader::StaticData::StaticData()
     rss20ChannelMap.insert( Link, &linkAction );
     rss20ChannelMap.insert( Image, &imageAction );
     rss20ChannelMap.insert( Item, &itemAction );
+    rss20ChannelMap.insert( ItunesKeywords, &keywordsAction );
     
     // parse <channel> "RSS 1.0"
     rss10ChannelMap.insert( Title, &titleAction );
@@ -320,6 +335,7 @@ PodcastReader::StaticData::StaticData()
     rss10ChannelMap.insert( Body, &bodyAction );
     rss10ChannelMap.insert( Link, &linkAction );
     rss10ChannelMap.insert( Image, &imageAction );
+    rss10ChannelMap.insert( ItunesKeywords, &keywordsAction );
 
     // parse <image>
     imageMap.insert( Title, &skipAction );
@@ -336,9 +352,10 @@ PodcastReader::StaticData::StaticData()
     itemMap.insert( Encoded, &encodedAction );
     itemMap.insert( ItunesSummary, &descriptionAction );
     itemMap.insert( Body, &bodyAction );
-    itemMap.insert( Enclosure, &enclosureAction );
+    itemMap.insert( EnclosureElement, &enclosureAction );
     itemMap.insert( Guid, &guidAction );
     itemMap.insert( PubDate, &pubDateAction );
+    itemMap.insert( ItunesKeywords, &keywordsAction );
     // TODO: move the link field from PodcastChannel to PodcastMetaCommon
     // itemMap.insert( Link, &linkAction );
 
@@ -525,6 +542,13 @@ PodcastReader::elementType() const
             if( namespaceUri() == ITUNES_NS )
             {
                 elementType = ItunesAuthor;
+            }
+            break;
+
+        case Keywords:
+            if( namespaceUri() == ITUNES_NS )
+            {
+                elementType = ItunesKeywords;
             }
             break;
 
@@ -981,6 +1005,13 @@ PodcastReader::beginChannel()
     createChannel();
 
     m_current = m_channel.data();
+    
+    // Because the summary and description fields are read from several elements
+    // they only get changed when longer information is read as there is stored in
+    // the apropriate field already. In order to still be able to correctly update
+    // the feed's description/summary I set it here to the empty string:
+    m_channel->setDescription( "" );
+    m_channel->setSummary( "" );
 }
 
 void 
@@ -992,15 +1023,50 @@ PodcastReader::beginItem()
 
     m_item = new Meta::PodcastEpisode( m_channel );
     m_current = m_item.data();
+
+    m_enclosures.clear();
 }
 
 void 
 PodcastReader::endItem()
 {
+    // TODO: change superclass of PodcastEpisode to MultiTrack
+    
     /*  some feeds contain normal blogposts without
         enclosures alongside of podcasts */
 
-    if( !m_item->uidUrl().isEmpty() ) {
+    if( !m_enclosures.isEmpty() )
+    {
+        // just take the first enclosure on multi
+        m_item->setUidUrl( m_enclosures[ 0 ].url() );
+        m_item->setFilesize( m_enclosures[ 0 ].fileSize() );
+        m_item->setMimeType( m_enclosures[ 0 ].mimeType() );
+
+        m_enclosures.removeAt( 0 );
+
+        // append alternative enclosures to description
+        if( !m_enclosures.isEmpty() )
+        {
+            QString description( m_item->description() );
+            description += "\n<p><b>";
+            description += i18n( "Alternative Enclosures:" );
+            description += "</b><br/>\n<ul>";
+
+            foreach( const Enclosure& enclosure, m_enclosures )
+            {
+                description += QString( "<li><a href=\"%1\">%2</a> (%3, %4)</li>" )
+                    .arg( Qt::escape( enclosure.url().url() ) )
+                    .arg( Qt::escape( enclosure.url().fileName() ) )
+                    .arg( Meta::prettyFilesize( enclosure.fileSize() ) )
+                    .arg( enclosure.mimeType().isEmpty() ?
+                        i18n( "unknown type" ) :
+                        Qt::escape( enclosure.mimeType() ) );
+            }
+
+            description += "</ul></p>";
+            m_item->setDescription( description );
+        }
+
         const KUrl trackId( m_item->guid().isEmpty() ? m_item->uidUrl() : m_item->guid() );
         Meta::PodcastEpisodePtr episode = Meta::PodcastEpisodePtr::dynamicCast(
             m_podcastProvider->trackForUrl( trackId )
@@ -1053,21 +1119,23 @@ PodcastReader::beginEnclosure()
     if( str.isEmpty() )
         str = attribute( RDF_NS, "about" );
 
-    m_item->setUidUrl( KUrl( str.toString() ) );
+    KUrl url( str.toString() );
 
     str = attributes().value( "length" );
 
     if( str.isEmpty() )
         str = attribute( ENC_NS, "length" );
 
-    m_item->setFilesize( str.toString().toInt() );
+    int length = str.toString().toInt();
 
     str = attributes().value( "type" );
 
     if( str.isEmpty() )
         str = attribute( ENC_NS, "type" );
 
-    m_item->setMimeType( str.toString().trimmed() );
+    QString mimeType( str.toString().trimmed() );
+
+    m_enclosures.append( Enclosure( url, length, mimeType ) );
 }
 
 void
@@ -1091,10 +1159,47 @@ PodcastReader::endPubDate()
 }
 
 void
+PodcastReader::beginImage()
+{
+    if( namespaceUri() == ITUNES_NS )
+    {
+        m_channel->setImageUrl( KUrl( attributes().value( "src" ).toString() ) );
+    }
+}
+
+void
 PodcastReader::endImageUrl()
 {
     // TODO save image data
     m_channel->setImageUrl( KUrl( m_buffer ) );
+}
+
+void
+PodcastReader::endKeywords()
+{
+    QStringList keywords( m_buffer.split(',') );
+
+    m_current->keywords().clear();
+
+    foreach( const QString &keyword, keywords )
+    {
+        m_current->keywords().append( keyword.trimmed() );
+    }
+}
+
+void
+PodcastReader::endNewFeedUrl()
+{
+    if( namespaceUri() == ITUNES_NS )
+    {
+        m_url = KUrl( m_buffer.trimmed() );
+
+        if( m_channel && m_channel->url() != m_url )
+        {
+            debug() << "feed url changed to: " << m_url.url();
+            m_channel->setUrl( m_url );
+        }
+    }
 }
 
 void
@@ -1238,6 +1343,16 @@ PodcastReader::beginAtomFeedLink()
     {
         m_channel->setWebLink( KUrl( attribute( ATOM_NS, "href" ).toString() ) );
     }
+    else if( attribute( ATOM_NS, "rel" ) == "self" )
+    {
+        m_url = KUrl( attribute( ATOM_NS, "href" ).toString() );
+
+        if( m_channel && m_channel->url() != m_url )
+        {
+            debug() << "feed url changed to: " << m_url.url();
+            m_channel->setUrl( m_url );
+        }
+    }
 }
 
 void
@@ -1245,17 +1360,21 @@ PodcastReader::beginAtomEntryLink()
 {
     if( attribute( ATOM_NS, "rel" ) == "enclosure" )
     {
-        m_item->setUidUrl( KUrl( attribute( ATOM_NS, "href" ).toString() ) );
+        KUrl url( attribute( ATOM_NS, "href" ).toString() );
+        int filesize = 0;
+        QString mimeType;
 
         if( hasAttribute( ATOM_NS, "length" ) )
         {
-            m_item->setFilesize( attribute( ATOM_NS, "length" ).toString().toInt() );
+            filesize = attribute( ATOM_NS, "length" ).toString().toInt();
         }
 
         if( hasAttribute( ATOM_NS, "type" ) )
         {
-            m_item->setMimeType( attribute( ATOM_NS, "type" ).toString() );
+            mimeType = attribute( ATOM_NS, "type" ).toString();
         }
+
+        m_enclosures.append( Enclosure( url, filesize, mimeType ) );
     }
 }
 
@@ -1402,7 +1521,6 @@ PodcastReader::slotRedirection( KIO::Job * job, const KUrl & url )
     DEBUG_BLOCK
     Q_UNUSED( job );
     debug() << "redirected to: " << url.url();
-
 }
 
 void
@@ -1410,7 +1528,8 @@ PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
         const KUrl & toUrl )
 {
     DEBUG_BLOCK
-    Q_UNUSED( job ); Q_UNUSED( fromUrl );
+    Q_UNUSED( job );
+    Q_UNUSED( fromUrl );
     debug() << "permanently redirected to: " << toUrl.url();
     m_url = toUrl;
     /* change the url for existing feeds as well. Permanent redirection means the old one
