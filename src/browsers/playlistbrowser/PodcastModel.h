@@ -26,6 +26,7 @@
 #include <QPersistentModelIndex>
 #include <QVariant>
 
+class OpmlOutline;
 class QAction;
 
 namespace PlaylistBrowserNS {
@@ -89,6 +90,8 @@ class PodcastModel : public QAbstractItemModel
         **/
         Meta::PodcastEpisodeList selectedEpisodes() { return m_selectedEpisodes; }
 
+        void importOpml( const KUrl &url );
+
     public slots:
         void slotUpdate();
         void addPodcast();
@@ -100,6 +103,8 @@ class PodcastModel : public QAbstractItemModel
         void slotAppend();
         void slotLoad();
         void slotSetNew( bool newState );
+        void slotOpmlOutlineParsed( OpmlOutline* );
+        void slotOpmlParsingDone();
 
     private:
         static PodcastModel* s_instance;

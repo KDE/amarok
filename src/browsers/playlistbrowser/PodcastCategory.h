@@ -63,6 +63,7 @@ class PodcastCategory : public BrowserCategory
 
     private slots:
         void showInfo( const QModelIndex & index );
+        void slotImportOpml();
 };
 
 class ViewKicker : public QObject

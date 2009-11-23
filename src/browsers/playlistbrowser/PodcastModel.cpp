@@ -18,6 +18,7 @@
 
 #include "AmarokMimeData.h"
 #include "Debug.h"
+#include "OpmlParser.h"
 #include "PodcastMeta.h"
 #include "PodcastProvider.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
@@ -25,6 +26,8 @@
 #include "PodcastCategory.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "SvgHandler.h"
+
+#include <ThreadWeaver/Weaver>
 
 #include <QInputDialog>
 #include <KIcon>
@@ -449,6 +452,13 @@ PlaylistBrowserNS::PodcastModel::dropMimeData ( const QMimeData * data, Qt::Drop
     {
         debug() << "Found podcast episode mime type";
         debug() << "We don't support podcast episode drags yet.";
+        return false;
+    }
+
+    if( data->hasFormat( OpmlParser::OPML_MIME ) )
+    {
+        importOpml( KUrl( data->data( OpmlParser::OPML_MIME ) ) );
+        return true;
     }
 
     return false;
@@ -750,6 +760,55 @@ PlaylistBrowserNS::PodcastModel::configureChannel( Meta::PodcastChannelPtr chann
     {
         debug() << "PodcastChannel provider is null";
     }
+}
+
+void
+PlaylistBrowserNS::PodcastModel::importOpml( const KUrl &url )
+{
+    if( !url.isValid() )
+        return;
+
+    debug() << "Importing OPML file from " << url;
+
+    OpmlParser *parser = new OpmlParser( url.toLocalFile() );
+    connect( parser, SIGNAL( outlineParsed( OpmlOutline * ) ),
+             SLOT( slotOpmlOutlineParsed( OpmlOutline * ) ) );
+    connect( parser, SIGNAL( doneParsing() ), SLOT( slotOpmlParsingDone() ) );
+
+    ThreadWeaver::Weaver::instance()->enqueue( parser );
+}
+
+void
+PlaylistBrowserNS::PodcastModel::slotOpmlOutlineParsed( OpmlOutline *outline )
+{
+    if( !outline )
+        return;
+
+    if( outline->hasChildren() )
+        return; //TODO grouping handling once PodcastCategory has it.
+
+    if( outline->attributes().contains( "url" ) )
+    {
+        KUrl url( outline->attributes().value( "url" ) );
+        if( !url.isValid() )
+        {
+            debug() << "OPML outline contained an invalid url: " << url;
+            return; //TODO signal invalid feed to user
+        }
+
+        //TODO: handle multiple providers
+        PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
+        if( podcastProvider )
+            podcastProvider->addPodcast( url );
+    }
+}
+
+void
+PlaylistBrowserNS::PodcastModel::slotOpmlParsingDone()
+{
+    debug() << "Done parsing OPML file";
+    //TODO: print number of imported channels
+    sender()->deleteLater();
 }
 
 void

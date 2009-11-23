@@ -48,6 +48,7 @@
 #include <KMenu>
 #include <KIcon>
 #include <KStandardDirs>
+#include <KUrlRequesterDialog>
 
 #include <typeinfo>
 
@@ -113,6 +114,13 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     connect( updateAllAction, SIGNAL(triggered( bool )),
              m_podcastModel, SLOT(refreshPodcasts()) );
 
+    QAction *importOpmlAction = new QAction( KIcon("document-import")
+                                             , i18n( "Import OPML File" )
+                                             , toolBar
+                                         );
+    toolBar->addAction( importOpmlAction );
+    connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
+
     m_podcastTreeView = new PodcastView( podcastModel, this );
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
     m_podcastTreeView->setContentsMargins(0,0,0,0);
@@ -123,7 +131,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setAlternatingRowColors( true );
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
-    m_podcastTreeView->setDragEnabled(true);
+    m_podcastTreeView->setDragEnabled( true );
 
     for( int column = 1; column < podcastModel->columnCount(); ++ column )
     {
@@ -213,6 +221,25 @@ PodcastCategory::showInfo( const QModelIndex & index )
     map["service_name"] = title;
     map["main_info"] = description;
     The::infoProxy()->setInfo( map );
+}
+
+void
+PodcastCategory::slotImportOpml()
+{
+    DEBUG_BLOCK
+    KUrl url = KUrlRequesterDialog::getUrl( QString(), this
+                                            , i18n( "Select OPML file to import" )
+                                            );
+    if( !url.isEmpty() )
+    {
+        // user entered something and pressed OK
+        m_podcastModel->importOpml( url );
+    }
+    else
+    {
+        // user entered nothing or pressed Cancel
+        debug() << "invalid input or cancel";
+    }
 }
 
 ViewKicker::ViewKicker( QTreeView * treeView )
