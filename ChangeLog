@@ -7,7 +7,7 @@ VERSION 2.2.2
   FEATURES
     * Import podcast subscriptions from OPML.
     * Show HTML info for podcast channels that support this. Patches by Mathias Panzenböck.
-      (BR 193357).
+      (BR 193357)
     * Ampache Service now shows Service info from last.fm
     * Moodbar support is back. Can be shown in prgress bar or in the playlist.
       The 4 visual styles from Amarok 1 (normal, angry, frozen and happy) are 
