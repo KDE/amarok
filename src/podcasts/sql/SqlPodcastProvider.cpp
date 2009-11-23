@@ -54,6 +54,7 @@ static const QString key("AMAROK_PODCAST");
 SqlPodcastProvider::SqlPodcastProvider()
     : m_updateTimer( new QTimer(this) )
     , m_updatingChannels( 0 )
+    , m_maxConcurrentDownloads( 4 )
     , m_completedDownloads( 0 )
     , m_configureAction( 0 )
     , m_deleteAction( 0 )
@@ -730,18 +731,34 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
         return;
     }
 
+    if( m_downloadJobMap.size() >= m_maxConcurrentDownloads )
+    {
+        debug() << QString( "Maximum concurrent downloads (%1) reached. "
+                            "Queueing \"%2\" for download." )
+                            .arg( m_maxConcurrentDownloads )
+                            .arg( sqlEpisode->title() );
+        //put into a FIFO which is used in downloadResult() to start a new download
+        m_downloadQueue << sqlEpisode;
+        return;
+    }
+
     KIO::StoredTransferJob *storedTransferJob =
             KIO::storedGet( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
 
     m_downloadJobMap[storedTransferJob] = sqlEpisode.data();
     m_fileNameMap[storedTransferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
 
-    debug() << "starting download for " << sqlEpisode->title() << " url: " << sqlEpisode->prettyUrl();
-    The::statusBar()->newProgressOperation( storedTransferJob, sqlEpisode->title().isEmpty()
-            ? i18n("Downloading Podcast Media") : i18n("Downloading Podcast \"%1\"", sqlEpisode->title()) )
-            ->setAbortSlot( this, SLOT( abortDownload()) );
+    debug() << "starting download for " << sqlEpisode->title()
+            << " url: " << sqlEpisode->prettyUrl();
+    The::statusBar()->newProgressOperation( storedTransferJob
+                                            , sqlEpisode->title().isEmpty()
+                                                ? i18n("Downloading Podcast Media")
+                                                : i18n("Downloading Podcast \"%1\""
+                                            , sqlEpisode->title())
+                                        )->setAbortSlot( this, SLOT( abortDownload()) );
 
-    connect( storedTransferJob, SIGNAL(  finished( KJob * ) ), SLOT( downloadResult( KJob * ) ) );
+    connect( storedTransferJob, SIGNAL( finished( KJob * ) ),
+             SLOT( downloadResult( KJob * ) ) );
     connect( storedTransferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ),
              SLOT( redirected( KIO::Job *,const KUrl& ) ) );
 }
@@ -813,14 +830,14 @@ SqlPodcastProvider::slotUpdated()
 }
 
 void
-SqlPodcastProvider::downloadResult( KJob * job )
+SqlPodcastProvider::downloadResult( KJob *job )
 {
     if( job->error() )
     {
         The::statusBar()->longMessage( job->errorText() );
         debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
     }
-    else if( ! m_downloadJobMap.contains( job ) )
+    else if( !m_downloadJobMap.contains( job ) )
     {
         warning() << "Download is finished for a job that was not added to m_downloadJobMap. Waah?";
     }
@@ -868,6 +885,10 @@ SqlPodcastProvider::downloadResult( KJob * job )
     m_completedDownloads++;
     m_downloadJobMap.remove( job );
     m_fileNameMap.remove( job );
+
+    //start a new download. We just finished one so there is at least one slot free.
+    if( !m_downloadQueue.isEmpty() )
+        downloadEpisode( m_downloadQueue.takeFirst() );
 }
 
 void

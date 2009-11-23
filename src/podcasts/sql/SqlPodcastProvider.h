@@ -116,10 +116,14 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
 
         Meta::SqlPodcastChannelList m_channels;
 
-        QHash<KJob *, Meta::SqlPodcastEpisode *> m_downloadJobMap;
-        QHash<KJob *, QString> m_fileNameMap;
         QTimer *m_updateTimer;
         int m_updatingChannels;
+
+        QHash<KJob *, Meta::SqlPodcastEpisode *> m_downloadJobMap;
+        QHash<KJob *, QString> m_fileNameMap;
+
+        Meta::SqlPodcastEpisodeList m_downloadQueue;
+        unsigned int m_maxConcurrentDownloads;
         unsigned int m_completedDownloads;
 
         QAction * m_configureAction; //Configure a Channel
