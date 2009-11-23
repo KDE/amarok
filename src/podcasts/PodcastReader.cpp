@@ -29,8 +29,6 @@
 #include <QDate>
 #include <QSet>
 
-#include <time.h>
-
 using namespace Meta;
 
 #define ITUNES_NS  "http://www.itunes.com/dtds/podcast-1.0.dtd"
@@ -44,7 +42,7 @@ using namespace Meta;
 
 const PodcastReader::StaticData PodcastReader::sd;
 
-PodcastReader::PodcastReader( PodcastProvider * podcastProvider )
+PodcastReader::PodcastReader( PodcastProvider *podcastProvider )
         : QXmlStreamReader()
         , m_podcastProvider( podcastProvider )
         , m_transferJob( 0 )
@@ -56,34 +54,32 @@ PodcastReader::PodcastReader( PodcastProvider * podcastProvider )
 {}
 
 void
-PodcastReader::Action::begin(PodcastReader *podcastReader) const
+PodcastReader::Action::begin( PodcastReader *podcastReader ) const
 {
     if( m_begin )
-        ((*podcastReader).*m_begin)();
+        (( *podcastReader ).*m_begin )();
 }
 
 void
-PodcastReader::Action::end(PodcastReader *podcastReader) const
+PodcastReader::Action::end( PodcastReader *podcastReader ) const
 {
     if( m_end )
-        ((*podcastReader).*m_end)();
+        (( *podcastReader ).*m_end )();
 }
 
 void
-PodcastReader::Action::characters(PodcastReader *podcastReader) const
+PodcastReader::Action::characters( PodcastReader *podcastReader ) const
 {
     if( m_characters )
-        ((*podcastReader).*m_characters)();
+        (( *podcastReader ).*m_characters )();
 }
 
 // initialization of the feed parser automata:
 PodcastReader::StaticData::StaticData()
-        : removeScripts(
-            "<script[^<]*</script>|<script[^>]*>",
-            Qt::CaseInsensitive )
+        : removeScripts( "<script[^<]*</script>|<script[^>]*>", Qt::CaseInsensitive )
 
         , startAction( rootMap )
-        
+
         , docAction(
             docMap,
             0,
@@ -99,7 +95,7 @@ PodcastReader::StaticData::StaticData()
             &PodcastReader::beginNoElement,
             0,
             &PodcastReader::readNoCharacters )
-        
+
         , rdfAction(
             rdfMap,
             &PodcastReader::beginRdf )
@@ -155,7 +151,7 @@ PodcastReader::StaticData::StaticData()
             &PodcastReader::endLink,
             &PodcastReader::readCharacters )
         , imageAction( imageMap,
-            &PodcastReader::beginImage )
+                       &PodcastReader::beginImage )
         , itemAction(
             itemMap,
             &PodcastReader::beginItem,
@@ -331,7 +327,7 @@ PodcastReader::StaticData::StaticData()
     rss20ChannelMap.insert( ItunesKeywords, &keywordsAction );
     rss20ChannelMap.insert( NewFeedUrl, &newFeedUrlAction );
     rss20ChannelMap.insert( Item, &itemAction );
-    
+
     // parse <channel> "RSS 1.0"
     rss10ChannelMap.insert( Title, &titleAction );
     rss10ChannelMap.insert( ItunesSubtitle, &subtitleAction );
@@ -430,20 +426,20 @@ PodcastReader::read( const KUrl &url )
              SLOT( slotRedirection( KIO::Job *, const KUrl & ) ) );
 
     connect( m_transferJob, SIGNAL( permanentRedirection( KIO::Job *,
-             const KUrl &, const KUrl &) ),
+                                    const KUrl &, const KUrl & ) ),
              SLOT( slotPermanentRedirection( KIO::Job *, const KUrl &,
-             const KUrl &) ) );
+                                             const KUrl & ) ) );
 
-    QString description = i18n("Importing podcast channel from %1", url.url());
+    QString description = i18n( "Importing podcast channel from %1", url.url() );
     if( m_channel )
     {
         description = m_channel->title().isEmpty()
-            ? i18n("Updating podcast channel")
-            : i18n("Updating \"%1\"", m_channel->title());
+                      ? i18n( "Updating podcast channel" )
+                      : i18n( "Updating \"%1\"", m_channel->title() );
     }
 
     The::statusBar()->newProgressOperation( m_transferJob, description )
-        ->setAbortSlot( this, SLOT( slotAbort() ) );
+    ->setAbortSlot( this, SLOT( slotAbort() ) );
 
     // parse data
     return read();
@@ -488,12 +484,12 @@ PodcastReader::downloadResult( KJob * job )
     if( transferJob && transferJob->isErrorPage() )
     {
         QString errorMessage =
-                i18n( "Importing podcast from %1 failed with error:\n", m_url.url() );
+            i18n( "Importing podcast from %1 failed with error:\n", m_url.url() );
         if( m_channel )
         {
             errorMessage = m_channel->title().isEmpty()
-                  ? i18n( "Updating podcast from %1 failed with error:\n", m_url.url() )
-                  : i18n( "Updating \"%1\" failed with error:\n", m_channel->title() );
+                           ? i18n( "Updating podcast from %1 failed with error:\n", m_url.url() )
+                           : i18n( "Updating \"%1\" failed with error:\n", m_channel->title() );
         }
         errorMessage = errorMessage.append( job->errorString() );
 
@@ -502,12 +498,12 @@ PodcastReader::downloadResult( KJob * job )
     else if( job->error() )
     {
         QString errorMessage =
-                i18n( "Importing podcast from %1 failed with error:\n", m_url.url() );
+            i18n( "Importing podcast from %1 failed with error:\n", m_url.url() );
         if( m_channel )
         {
             errorMessage = m_channel->title().isEmpty()
-                  ? i18n( "Updating podcast from %1 failed with error:\n", m_url.url() )
-                  : i18n( "Updating \"%1\" failed with error:\n", m_channel->title() );
+                           ? i18n( "Updating podcast from %1 failed with error:\n", m_url.url() )
+                           : i18n( "Updating \"%1\" failed with error:\n", m_channel->title() );
         }
         errorMessage = errorMessage.append( job->errorString() );
 
@@ -526,7 +522,7 @@ PodcastReader::elementType() const
     if( isCDATA() || isCharacters() )
         return CharacterData;
 
-    ElementType elementType = sd.knownElements[ QXmlStreamReader::name().toString() ];
+    ElementType elementType = sd.knownElements[ QXmlStreamReader::name().toString()];
 
     // This is a bit hacky because my automata does not support conditions.
     // Therefore I put the decision logic in here and declare some pseudo elements.
@@ -563,9 +559,9 @@ PodcastReader::elementType() const
 
         case Content:
             if( namespaceUri() == ATOM_NS &&
-                // ignore atom:content elements that do not
-                // have content but only refer to some url:
-                !hasAttribute( ATOM_NS, "src" ) )
+                    // ignore atom:content elements that do not
+                    // have content but only refer to some url:
+                    !hasAttribute( ATOM_NS, "src" ) )
             {
                 // Atom supports arbitrary Base64 encoded content.
                 // Because we can only something with text/html/xhtml I ignore
@@ -650,14 +646,14 @@ PodcastReader::continueRead()
 
             case StartDocument:
             case StartElement:
-                subAction = action->actionMap()[ elementType() ];
+                subAction = action->actionMap()[ elementType()];
 
                 if( !subAction )
                     subAction = action->actionMap()[ Any ];
 
                 if( !subAction )
                     subAction = &( PodcastReader::sd.skipAction );
-                
+
                 m_actionStack.push( subAction );
 
                 subAction->begin( this );
@@ -764,8 +760,8 @@ PodcastReader::unescape( const QString &text )
 {
     // TODO: resolve predefined html entities
     QString buf;
-    
-    for( int i = 0; i < text.size(); ++ i )
+
+    for ( int i = 0; i < text.size(); ++ i )
     {
         QChar c( text[ i ] );
 
@@ -875,7 +871,8 @@ PodcastReader::setDescription( const QString &description )
         setSummary( m_current->description() );
         m_current->setDescription( description );
     }
-    else {
+    else
+    {
         setSummary( description );
     }
 }
@@ -966,7 +963,7 @@ PodcastReader::beginRdf()
         if( !found )
             ok = false;
     }
-    
+
     if( !ok )
         stopWithError( i18n( "%1 is not a valid RSS version 1.0 feed.", m_url.url() ) );
 }
@@ -1014,7 +1011,7 @@ PodcastReader::beginChannel()
     createChannel();
 
     m_current = m_channel.data();
-    
+
     // Because the summary and description fields are read from several elements
     // they only get changed when longer information is read as there is stored in
     // the apropriate field already. In order to still be able to correctly update
@@ -1024,7 +1021,7 @@ PodcastReader::beginChannel()
     m_channel->setKeywords( QStringList() );
 }
 
-void 
+void
 PodcastReader::beginItem()
 {
     // theoretically it is possible that an ugly RSS 1.0 feed has
@@ -1037,11 +1034,11 @@ PodcastReader::beginItem()
     m_enclosures.clear();
 }
 
-void 
+void
 PodcastReader::endItem()
 {
     // TODO: change superclass of PodcastEpisode to MultiTrack
-    
+
     /*  some feeds contain normal blogposts without
         enclosures alongside of podcasts */
 
@@ -1065,12 +1062,12 @@ PodcastReader::endItem()
             foreach( const Enclosure& enclosure, m_enclosures )
             {
                 description += QString( "<li><a href=\"%1\">%2</a> (%3, %4)</li>" )
-                    .arg( Qt::escape( enclosure.url().url() ) )
-                    .arg( Qt::escape( enclosure.url().fileName() ) )
-                    .arg( Meta::prettyFilesize( enclosure.fileSize() ) )
-                    .arg( enclosure.mimeType().isEmpty() ?
-                        i18n( "unknown type" ) :
-                        Qt::escape( enclosure.mimeType() ) );
+                               .arg( Qt::escape( enclosure.url().url() ) )
+                               .arg( Qt::escape( enclosure.url().fileName() ) )
+                               .arg( Meta::prettyFilesize( enclosure.fileSize() ) )
+                               .arg( enclosure.mimeType().isEmpty() ?
+                                     i18n( "unknown type" ) :
+                                     Qt::escape( enclosure.mimeType() ) );
             }
 
             description += "</ul></p>";
@@ -1079,10 +1076,10 @@ PodcastReader::endItem()
 
         const KUrl trackId( m_item->guid().isEmpty() ? m_item->uidUrl() : m_item->guid() );
         Meta::PodcastEpisodePtr episode = Meta::PodcastEpisodePtr::dynamicCast(
-            m_podcastProvider->trackForUrl( trackId )
-        );
+                                              m_podcastProvider->trackForUrl( trackId )
+                                          );
 
-        if( episode && (episode->guid().isEmpty() || episode->guid() == m_item->guid()) )
+        if( episode && ( episode->guid().isEmpty() || episode->guid() == m_item->guid() ) )
         {
             debug() << "updating episode: " << m_item->title();
 
@@ -1103,7 +1100,7 @@ PodcastReader::endItem()
         else
         {
             debug() << "new episode: " << m_item->title();
-            
+
             episode = m_channel->addEpisode( m_item );
             // also let the provider know an episode has been added
             // TODO: change into a signal
@@ -1190,11 +1187,11 @@ PodcastReader::endKeywords()
 {
     QSet<QString> keywords( QSet<QString>::fromList( m_current->keywords() ) );
 
-    foreach( const QString &keyword, m_buffer.split(',') )
+    foreach( const QString &keyword, m_buffer.split( ',' ) )
     {
         keywords.insert( keyword.simplified() );
     }
-    
+
     m_current->setKeywords( keywords.toList() );
 
 }
@@ -1239,8 +1236,8 @@ PodcastReader::beginXml()
     foreach( const QXmlStreamAttribute &attr, attributes() )
     {
         m_buffer += QString( " %1=\"%2\"" )
-            .arg( attr.name().toString() )
-            .arg( Qt::escape( attr.value().toString() ) );
+                    .arg( attr.name().toString() )
+                    .arg( Qt::escape( attr.value().toString() ) );
     }
 
     m_buffer += '>';
@@ -1251,7 +1248,7 @@ PodcastReader::beginNoElement()
 {
     DEBUG_BLOCK
     debug() << "no element expected here, but got element: "
-        << QXmlStreamReader::name();
+    << QXmlStreamReader::name();
 }
 
 void
@@ -1331,19 +1328,19 @@ PodcastReader::readAtomTextCharacters()
 {
     switch( m_contentType )
     {
-        case XHtmlContent:
-            m_buffer += Qt::escape( text().toString() );
-            break;
+    case XHtmlContent:
+        m_buffer += Qt::escape( text().toString() );
+        break;
 
-        case HtmlContent:
-            m_buffer += text();
-            break;
+    case HtmlContent:
+        m_buffer += text();
+        break;
 
-        case TextContent:
-            m_buffer += text();
+    case TextContent:
+        m_buffer += text();
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -1351,7 +1348,7 @@ void
 PodcastReader::beginAtomFeedLink()
 {
     if( !hasAttribute( ATOM_NS, "rel" ) ||
-        attribute( ATOM_NS, "rel" ) == "alternate" )
+            attribute( ATOM_NS, "rel" ) == "alternate" )
     {
         m_channel->setWebLink( KUrl( attribute( ATOM_NS, "href" ).toString() ) );
     }
@@ -1490,7 +1487,7 @@ PodcastReader::readEscapedCharacters()
 }
 
 QStringRef
-PodcastReader::attribute(const char *namespaceUri, const char *name) const
+PodcastReader::attribute( const char *namespaceUri, const char *name ) const
 {
     // workaround, because Qt seems to have a bug:
     // when the default namespace is used attributes
@@ -1502,7 +1499,7 @@ PodcastReader::attribute(const char *namespaceUri, const char *name) const
 }
 
 bool
-PodcastReader::hasAttribute(const char *namespaceUri, const char *name) const
+PodcastReader::hasAttribute( const char *namespaceUri, const char *name ) const
 {
     // see PodcastReader::attribute()
     if( attributes().hasAttribute( namespaceUri, name ) )
