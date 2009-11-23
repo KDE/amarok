@@ -18,6 +18,8 @@ VERSION 2.2.2
     * Fetch labels from last.fm for some tracks [UPDATE THIS ONCE WE FIGURE OUT WHEN TO DO SO]
 
   CHANGES:
+    * Podcast auto-update interval is now configurable in the rc-file. Default is 30
+      minutes. (BR 212467)
     * Magnatune.com store: Better status message when downloading albums.
     * Moved the "Playlist Layout" button into the main menu, as the playlist
       toolbar was becoming too crowded.

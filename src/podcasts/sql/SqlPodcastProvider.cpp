@@ -74,10 +74,12 @@ SqlPodcastProvider::SqlPodcastProvider()
         return;
     }
 
+    m_autoUpdateInterval = Amarok::config( "Podcasts" )
+                               .readEntry( "AutoUpdate Interval", 30 );
     m_maxConcurrentDownloads = Amarok::config( "Podcasts" )
-                               .readEntry( "MaximumConcurrentDownloads", 4 );
+                               .readEntry( "Maximum Simultaneous Downloads", 4 );
     m_maxConcurrentUpdates = Amarok::config( "Podcasts" )
-                               .readEntry( "MaximumConcurrentUpdates", 4 );
+                               .readEntry( "Maximum Simultaneous Updates", 4 );
 
     QStringList values;
 
@@ -108,7 +110,7 @@ SqlPodcastProvider::SqlPodcastProvider()
         if( startAutoRefreshTimer )
         {
             float interval = 1.0;
-            m_updateTimer->start( interval * 1000 * 60 * 30 );
+            m_updateTimer->start( interval * 1000 * 60 * m_autoUpdateInterval );
         }
 
     }
@@ -125,9 +127,11 @@ SqlPodcastProvider::~SqlPodcastProvider()
     m_channels.clear();
 
     Amarok::config( "Podcasts" )
-            .writeEntry( "MaximumConcurrentDownloads", m_maxConcurrentDownloads );
+            .writeEntry( "AutoUpdate Interval", m_autoUpdateInterval );
     Amarok::config( "Podcasts" )
-            .writeEntry( "MaximumConcurrentUpdates", m_maxConcurrentUpdates );
+            .writeEntry( "Maximum Simultaneous Downloads", m_maxConcurrentDownloads );
+    Amarok::config( "Podcasts" )
+            .writeEntry( "Maximum Simultaneous Updates", m_maxConcurrentUpdates );
 }
 
 void

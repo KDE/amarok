@@ -119,6 +119,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         Meta::SqlPodcastChannelList m_channels;
 
         QTimer *m_updateTimer;
+        unsigned int m_autoUpdateInterval; //interval between autoupdate attempts in minutes
         unsigned int m_updatingChannels;
         unsigned int m_maxConcurrentUpdates;
         Meta::PodcastChannelList m_updateQueue;
