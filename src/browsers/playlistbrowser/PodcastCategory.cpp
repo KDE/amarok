@@ -114,10 +114,17 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     connect( updateAllAction, SIGNAL(triggered( bool )),
              m_podcastModel, SLOT(refreshPodcasts()) );
 
+    //a QWidget with minimumExpanding makes the next button right aligned.
+    QWidget *spacerWidget = new QWidget( this );
+    spacerWidget->setSizePolicy( QSizePolicy::MinimumExpanding,
+                                 QSizePolicy::MinimumExpanding );
+    toolBar->addWidget( spacerWidget );
+
     QAction *importOpmlAction = new QAction( KIcon("document-import")
-                                             , i18n( "Import OPML File" )
+                                             , QString()
                                              , toolBar
                                          );
+    importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
     toolBar->addAction( importOpmlAction );
     connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
 
