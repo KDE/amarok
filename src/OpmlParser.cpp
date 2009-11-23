@@ -37,6 +37,8 @@ OpmlOutline::OpmlOutline( OpmlOutline *parent )
 
 using namespace Meta;
 
+const QString OpmlParser::OPML_MIME = "text/x-opml+xml";
+
 OpmlParser::OpmlParser( const QString &filename )
         : ThreadWeaver::Job()
 {
@@ -81,8 +83,6 @@ OpmlParser::readConfigFile( const QString &filename )
         return ;
     }
     file.close();
-
-    QFile::remove( filename );
 
     //run through all the elements
     QDomElement docElem = doc.documentElement();

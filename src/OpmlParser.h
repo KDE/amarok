@@ -63,7 +63,7 @@ class AMAROK_EXPORT OpmlParser : public ThreadWeaver::Job
     Q_OBJECT
 
 public:
-
+    static const QString OPML_MIME;
     /**
      * Constructor
      * @param fileName The file to parse 

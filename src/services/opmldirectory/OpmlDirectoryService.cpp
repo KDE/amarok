@@ -233,7 +233,9 @@ void OpmlDirectoryService::doneParsing()
     debug() << "OpmlParser: total number of tracks: " << m_numberOfFeeds;
 
     m_updateListButton->setEnabled( true );
-    // model->setGenre("All");
+
+    QFile::remove( m_tempFileName );
+
     //delete sender
     sender()->deleteLater();
     m_collection->emitUpdated();
