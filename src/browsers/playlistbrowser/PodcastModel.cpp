@@ -408,6 +408,12 @@ PlaylistBrowserNS::PodcastModel::mimeData( const QModelIndexList &indexes ) cons
 
     mime->setPodcastChannels( channels );
     mime->setPodcastEpisodes( episodes );
+    QList<QUrl> urls;
+    foreach( const Meta::PodcastChannelPtr channel, channels )
+        urls << channel->url();
+    foreach( const Meta::PodcastEpisodePtr episode, episodes )
+        urls << episode->playableUrl();
+    mime->setUrls( urls );
 
     return mime;
 }
