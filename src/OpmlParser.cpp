@@ -109,7 +109,6 @@ OpmlParser::parseOpmlBody( const QDomElement &e )
     {
         OpmlOutline *outline = parseOutlineElement( node );
         m_rootOutlines << outline;
-        emit( outlineParsed( outline ) );
         node = node.nextSiblingElement( "outline" );
     }
 }
