@@ -54,7 +54,6 @@ static const QString key("AMAROK_PODCAST");
 SqlPodcastProvider::SqlPodcastProvider()
     : m_updateTimer( new QTimer(this) )
     , m_updatingChannels( 0 )
-    , m_maxConcurrentDownloads( 4 )
     , m_completedDownloads( 0 )
     , m_configureAction( 0 )
     , m_deleteAction( 0 )
@@ -74,6 +73,10 @@ SqlPodcastProvider::SqlPodcastProvider()
         error() << "Could not get a SqlStorage instance";
         return;
     }
+
+    m_maxConcurrentDownloads = Amarok::config( "Podcasts" )
+                               .readEntry( "MaximumConcurrentDownloads", 4 );
+
     QStringList values;
 
     values = sqlStorage->query(
@@ -118,6 +121,9 @@ SqlPodcastProvider::~SqlPodcastProvider()
             episode->updateInDb();
     }
     m_channels.clear();
+
+    Amarok::config( "Podcasts" )
+            .writeEntry( "MaximumConcurrentDownloads", m_maxConcurrentDownloads );
 }
 
 void
