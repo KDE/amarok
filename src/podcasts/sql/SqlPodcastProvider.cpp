@@ -364,6 +364,7 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
     if( !sqlChannel )
         return;
 
+    KUrl oldUrl = sqlChannel->url();
     KUrl oldSaveLocation = sqlChannel->saveLocation();
     bool oldHasPurge = sqlChannel->hasPurge();
     int oldPurgeCount = sqlChannel->purgeCount();
@@ -425,6 +426,10 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
         if( !QDir().rmdir( oldSaveLocation.toLocalFile() ) )
             debug() << "Could not remove old directory "<< oldSaveLocation.toLocalFile();
     }
+
+    //if the url changed force an update.
+    if( oldUrl != channel->url() )
+        update( channel );
 }
 
 QList<QAction *>

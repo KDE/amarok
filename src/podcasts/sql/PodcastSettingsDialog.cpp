@@ -45,15 +45,7 @@ void
 PodcastSettingsDialog::init()
 {
     QString url = m_channel->url().url();
-    //TODO:use calculated width based on size of m_ps->m_leftClickLabel
-    QString feedUrlText = QWidget::fontMetrics().elidedText(
-                    url,
-                    Qt::ElideMiddle,
-                    275 ); //experimentally determined value. i18n might break this.
-    m_ps->m_feedLabel->setText( feedUrlText );
-    m_ps->m_feedLabel->setUrl( url );
-    connect( m_ps->m_feedLabel, SIGNAL(leftClickedUrl( const QString& )),
-                  SLOT(slotFeedUrlClicked( const QString& ) ) );
+    m_ps->m_urlLineEdit->setText( url );
 
     m_ps->m_saveLocation->setMode( KFile::Directory | KFile::ExistingOnly );
     m_ps->m_saveLocation->setUrl( m_channel->saveLocation() );
@@ -85,7 +77,10 @@ PodcastSettingsDialog::init()
     enableButtonApply( false );
 
     // Connects for modification check
-    connect( m_ps->m_saveLocation, SIGNAL(textChanged( const QString& )), SLOT(checkModified()) );
+    connect( m_ps->m_urlLineEdit, SIGNAL(textChanged( const QString& )),
+             SLOT(checkModified()) );
+    connect( m_ps->m_saveLocation, SIGNAL(textChanged( const QString& )),
+             SLOT(checkModified()) );
     connect( m_ps->m_autoFetchCheck, SIGNAL(clicked()), SLOT(checkModified()) );
     connect( m_ps->m_streamRadio, SIGNAL(clicked()), SLOT(checkModified()) );
     connect( m_ps->m_downloadRadio, SIGNAL(clicked()), SLOT(checkModified()) );
@@ -115,7 +110,8 @@ PodcastSettingsDialog::hasChanged()
         fetchTypeChanged = false;
     }
 
-    return( m_channel->saveLocation() != m_ps->m_saveLocation->url() ||
+    return( m_channel->url() != m_ps->m_urlLineEdit->text() ||
+            m_channel->saveLocation() != m_ps->m_saveLocation->url() ||
             m_channel->autoScan() != m_ps->m_autoFetchCheck->isChecked() ||
             m_channel->hasPurge() != m_ps->m_purgeCheck->isChecked()     ||
             m_channel->purgeCount() != m_ps->m_purgeCountSpinBox->value() ||
@@ -133,6 +129,7 @@ PodcastSettingsDialog::checkModified() //slot
 void
 PodcastSettingsDialog::slotApply()       //slot
 {
+    m_channel->setUrl( KUrl( m_ps->m_urlLineEdit->text() ) );
     m_channel->setAutoScan( m_ps->m_autoFetchCheck->isChecked() );
     m_channel->setFetchType(
         m_ps->m_downloadRadio->isChecked() ?
