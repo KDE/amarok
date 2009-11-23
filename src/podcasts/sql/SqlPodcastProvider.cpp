@@ -76,6 +76,8 @@ SqlPodcastProvider::SqlPodcastProvider()
 
     m_maxConcurrentDownloads = Amarok::config( "Podcasts" )
                                .readEntry( "MaximumConcurrentDownloads", 4 );
+    m_maxConcurrentUpdates = Amarok::config( "Podcasts" )
+                               .readEntry( "MaximumConcurrentUpdates", 4 );
 
     QStringList values;
 
@@ -124,6 +126,8 @@ SqlPodcastProvider::~SqlPodcastProvider()
 
     Amarok::config( "Podcasts" )
             .writeEntry( "MaximumConcurrentDownloads", m_maxConcurrentDownloads );
+    Amarok::config( "Podcasts" )
+            .writeEntry( "MaximumConcurrentUpdates", m_maxConcurrentUpdates );
 }
 
 void
@@ -712,14 +716,32 @@ SqlPodcastProvider::autoUpdate()
 void
 SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 {
-    m_updatingChannels++;
-    PodcastReader * podcastReader = new PodcastReader( this );
+    if( channel.isNull() )
+        return;
+    if( m_updatingChannels >= m_maxConcurrentUpdates )
+    {
+        debug() << QString( "Maximum concurrent updates (%1) reached. "
+                            "Queueing \"%2\" for download." )
+                            .arg( m_maxConcurrentUpdates )
+                            .arg( channel->title() );
+        m_updateQueue << channel;
+        return;
+    }
+
+    PodcastReader *podcastReader = new PodcastReader( this );
 
     connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
              SLOT( slotReadResult( PodcastReader * ) ) );
     //PodcastReader will create a progress bar in The StatusBar.
 
+    m_updatingChannels++;
     podcastReader->update( channel );
+}
+
+void
+SqlPodcastProvider::update( Meta::SqlPodcastChannelPtr channel )
+{
+    update( PodcastChannelPtr::dynamicCast( channel ) );
 }
 
 void
@@ -809,24 +831,21 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
         fetchImage( channel );
     }
 
+    channel->updateInDb();
+
+    podcastReader->deleteLater();
+
+    emit( updated() );
+
+    if( !m_updateQueue.isEmpty() )
+        update( m_updateQueue.takeFirst() );
+
     if( m_updatingChannels == 0 )
     {
         //TODO: start downloading episodes here.
         if( m_podcastImageFetcher )
             m_podcastImageFetcher->run();
     }
-
-    channel->updateInDb();
-
-    podcastReader->deleteLater();
-
-    emit( updated() );
-}
-
-void
-SqlPodcastProvider::update( Meta::SqlPodcastChannelPtr channel )
-{
-    update( PodcastChannelPtr::dynamicCast( channel ) );
 }
 
 void
