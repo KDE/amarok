@@ -745,6 +745,50 @@ SqlPodcastProvider::update( Meta::SqlPodcastChannelPtr channel )
 }
 
 void
+SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
+{
+    DEBUG_BLOCK
+    if( podcastReader->error() != QXmlStreamReader::NoError )
+    {
+        debug() << podcastReader->errorString();
+        The::statusBar()->longMessage( podcastReader->errorString(), StatusBar::Error );
+    }
+    debug() << "Finished updating: " << podcastReader->url();
+    --m_updatingChannels;
+    debug() << "Updating counter reached " << m_updatingChannels;
+
+    Meta::SqlPodcastChannelPtr channel =
+            Meta::SqlPodcastChannelPtr::dynamicCast( podcastReader->channel() );
+
+    if( channel.isNull() )
+    {
+        error() << "Could not cast to SqlPodcastChannel " << __FILE__ << ":" << __LINE__;
+        return;
+    }
+
+    if( channel->image().isNull() )
+    {
+        fetchImage( channel );
+    }
+
+    channel->updateInDb();
+
+    podcastReader->deleteLater();
+
+    emit( updated() );
+
+    if( !m_updateQueue.isEmpty() )
+        update( m_updateQueue.takeFirst() );
+
+    if( m_updatingChannels == 0 )
+    {
+        //TODO: start downloading episodes here.
+        if( m_podcastImageFetcher )
+            m_podcastImageFetcher->run();
+    }
+}
+
+void
 SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
 {
     if( sqlEpisode.isNull() )
@@ -802,50 +846,6 @@ SqlPodcastProvider::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
     deleteDownloadedEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
-}
-
-void
-SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
-{
-    DEBUG_BLOCK
-    if( podcastReader->error() != QXmlStreamReader::NoError )
-    {
-        debug() << podcastReader->errorString();
-        The::statusBar()->longMessage( podcastReader->errorString(), StatusBar::Error );
-    }
-    debug() << "Finished updating: " << podcastReader->url();
-    --m_updatingChannels;
-    debug() << "Updating counter reached " << m_updatingChannels;
-
-    Meta::SqlPodcastChannelPtr channel =
-            Meta::SqlPodcastChannelPtr::dynamicCast( podcastReader->channel() );
-
-    if( channel.isNull() )
-    {
-        error() << "Could not cast to SqlPodcastChannel " << __FILE__ << ":" << __LINE__;
-        return;
-    }
-
-    if( channel->image().isNull() )
-    {
-        fetchImage( channel );
-    }
-
-    channel->updateInDb();
-
-    podcastReader->deleteLater();
-
-    emit( updated() );
-
-    if( !m_updateQueue.isEmpty() )
-        update( m_updateQueue.takeFirst() );
-
-    if( m_updatingChannels == 0 )
-    {
-        //TODO: start downloading episodes here.
-        if( m_podcastImageFetcher )
-            m_podcastImageFetcher->run();
-    }
 }
 
 void
