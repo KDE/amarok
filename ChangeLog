@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2.2
   FEATURES
+    * Show HTML info for podcast channels that support this. Patches by Mathias Panzenböck.
     * Ampache Service now shows Service info from last.fm
     * Moodbar support is back. Can be shown in prgress bar or in the playlist.
       The 4 visual styles from Amarok 1 (normal, angry, frozen and happy) are 
