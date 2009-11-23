@@ -52,11 +52,11 @@ MagnatuneConfig::load()
         //try to read the old style string version if that is present and valid.
         QString oldMEmbershipType = config.readEntry( "membershipType", QString() );
         if( oldMEmbershipType.toLower() == "stream" )
-            m_membershipType == MagnatuneConfig::STREAM;
+            m_membershipType = MagnatuneConfig::STREAM;
         else if ( oldMEmbershipType.toLower() == "download" )
-            m_membershipType == MagnatuneConfig::DOWNLOAD;
+            m_membershipType = MagnatuneConfig::DOWNLOAD;
         else
-            m_membershipType == MagnatuneConfig::DOWNLOAD;
+            m_membershipType = MagnatuneConfig::DOWNLOAD;
             //default to download for now.   
     }
 
