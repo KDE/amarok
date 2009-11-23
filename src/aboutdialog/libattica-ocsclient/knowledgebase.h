@@ -26,7 +26,7 @@
 #include <QDateTime>
 #include <KUrl>
 
-namespace Attica
+namespace AmarokAttica
 {
 
 class ATTICA_EXPORT KnowledgeBase

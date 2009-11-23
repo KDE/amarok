@@ -24,7 +24,7 @@
 #include <QtCore/QString>
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 class Category::Private : public QSharedData {
     public:
@@ -37,12 +37,12 @@ Category::Category() : d(new Private)
 {
 }
 
-Category::Category(const Attica::Category& other)
+Category::Category(const AmarokAttica::Category& other)
     : d(other.d)
 {
 }
 
-Category& Category::operator=(const Attica::Category & other)
+Category& Category::operator=(const AmarokAttica::Category & other)
 {
     d = other.d;
     return *this;

@@ -50,7 +50,7 @@ public:
 
     QString name();
 
-    void switchToOcs( const Attica::Provider &provider );
+    void switchToOcs( const AmarokAttica::Provider &provider );
 
 signals:
     void ocsFetchStarted();
@@ -62,7 +62,7 @@ private slots:
 
 private:
     void init();
-    void fillOcsData( const Attica::Person &ocsPerson );
+    void fillOcsData( const AmarokAttica::Person &ocsPerson );
     const KAboutPerson *m_person;
     QString m_ocsUsername;
     QString m_aboutText;

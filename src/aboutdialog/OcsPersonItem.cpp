@@ -127,7 +127,7 @@ OcsPersonItem::launchUrl( QAction *action ) //SLOT
 }
 
 void
-OcsPersonItem::switchToOcs( const Attica::Provider &provider )
+OcsPersonItem::switchToOcs( const AmarokAttica::Provider &provider )
 {
     if( m_state == Online )
         return;
@@ -138,7 +138,7 @@ OcsPersonItem::switchToOcs( const Attica::Provider &provider )
 
     if( !m_ocsUsername.isEmpty() )
     {
-        Attica::PersonJob *personJob;
+        AmarokAttica::PersonJob *personJob;
         if( m_ocsUsername == QString( "%%category%%" ) )   //TODO: handle grouping
             return;
 
@@ -152,7 +152,7 @@ OcsPersonItem::switchToOcs( const Attica::Provider &provider )
 void
 OcsPersonItem::onJobFinished( KJob *job )
 {
-    Attica::PersonJob *personJob = qobject_cast< Attica::PersonJob * >( job );
+    AmarokAttica::PersonJob *personJob = qobject_cast< AmarokAttica::PersonJob * >( job );
     if( personJob->error() == 0 )
     {
         fillOcsData( personJob->person() );
@@ -161,7 +161,7 @@ OcsPersonItem::onJobFinished( KJob *job )
 }
 
 void
-OcsPersonItem::fillOcsData( const Attica::Person &ocsPerson )
+OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
 {
     if( !( ocsPerson.avatar().isNull() ) )
     {

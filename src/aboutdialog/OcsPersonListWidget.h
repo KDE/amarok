@@ -32,7 +32,7 @@ public:
                          QWidget *parent = 0 );
 
 public slots:
-    void switchToOcs( const Attica::Provider &provider );
+    void switchToOcs( const AmarokAttica::Provider &provider );
     void onOcsFetchStarted();
     void onOcsDataFetched( int err );
 

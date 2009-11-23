@@ -21,7 +21,7 @@
 
 #include "person.h"
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 Person::Person()
   : m_latitude( 0 ), m_longitude( 0 )

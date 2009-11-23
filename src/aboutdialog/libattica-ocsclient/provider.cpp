@@ -40,7 +40,7 @@
 #include "providerinitjob.h"
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 
 class Provider::Private : public QSharedData {
@@ -82,7 +82,7 @@ Provider::Provider(const QString& id, const KUrl& baseUrl, const QString& name)
 {
 }
 
-Provider& Provider::operator=(const Attica::Provider & other)
+Provider& Provider::operator=(const AmarokAttica::Provider & other)
 {
     d = other.d;
     return *this;

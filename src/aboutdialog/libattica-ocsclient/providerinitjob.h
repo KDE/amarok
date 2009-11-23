@@ -27,7 +27,7 @@
 #include "atticaclient_export.h"
 #include "provider.h"
 
-namespace Attica {
+namespace AmarokAttica {
 
 class ATTICA_EXPORT ProviderInitJob : public KJob
 {

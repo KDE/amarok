@@ -29,7 +29,7 @@
 #include <QDebug>
 #include <QTimer>
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 KnowledgeBaseListJob::KnowledgeBaseListJob()
   : m_job( 0 )

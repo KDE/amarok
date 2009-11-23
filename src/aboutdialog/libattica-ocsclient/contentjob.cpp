@@ -30,7 +30,7 @@
 #include <klocale.h>
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 ContentJob::ContentJob()
   : m_job( 0 )

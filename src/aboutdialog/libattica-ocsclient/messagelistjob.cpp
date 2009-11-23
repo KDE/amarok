@@ -30,7 +30,7 @@
 #include <klocale.h>
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 MessageListJob::MessageListJob()
   : m_job( 0 )

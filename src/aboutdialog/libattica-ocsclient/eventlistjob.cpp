@@ -28,7 +28,7 @@
 #include "eventparser.h"
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 
 EventListJob::EventListJob()

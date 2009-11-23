@@ -22,7 +22,7 @@
 
 #include "knowledgebase.h"
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 KnowledgeBase::KnowledgeBase()
     : m_id(0),

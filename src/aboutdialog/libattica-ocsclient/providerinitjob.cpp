@@ -5,7 +5,7 @@
 #include <KUrl>
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 
 ProviderInitJob::ProviderInitJob(const QString& id, QObject* parent)

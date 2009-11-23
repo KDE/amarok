@@ -22,7 +22,7 @@
 #include "event.h"
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 
 Event::Event()

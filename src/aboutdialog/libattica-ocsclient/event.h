@@ -29,7 +29,7 @@
 #include <QtCore/QMap>
 
 
-namespace Attica {
+namespace AmarokAttica {
 
 class ATTICA_EXPORT Event
 {

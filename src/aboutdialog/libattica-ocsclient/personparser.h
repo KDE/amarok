@@ -25,7 +25,7 @@
 
 #include <QtXml/QXmlStreamReader>
 
-namespace Attica {
+namespace AmarokAttica {
 
 class PersonParser
 {

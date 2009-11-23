@@ -30,7 +30,7 @@
 #include <klocale.h>
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 PersonJob::PersonJob()
   : m_job( 0 )

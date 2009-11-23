@@ -24,7 +24,7 @@
 #include "folder.h"
 
 
-namespace Attica {
+namespace AmarokAttica {
 
 class FolderParser
 {

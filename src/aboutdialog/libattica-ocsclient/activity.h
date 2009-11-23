@@ -29,7 +29,7 @@
 
 class QDateTime;
 
-namespace Attica {
+namespace AmarokAttica {
 
 
 class ATTICA_EXPORT Activity

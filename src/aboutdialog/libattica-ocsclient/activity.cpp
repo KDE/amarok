@@ -24,7 +24,7 @@
 #include <QDateTime>
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 class Activity::Private : public QSharedData {
     public:
@@ -39,12 +39,12 @@ Activity::Activity() : d(new Private)
 {
 }
 
-Activity::Activity(const Attica::Activity& other)
+Activity::Activity(const AmarokAttica::Activity& other)
     : d(other.d)
 {
 }
 
-Activity& Activity::operator=(const Attica::Activity & other)
+Activity& Activity::operator=(const AmarokAttica::Activity & other)
 {
     d = other.d;
     return *this;

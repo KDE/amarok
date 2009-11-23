@@ -24,7 +24,7 @@
 
 #include <QXmlStreamReader>
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 KnowledgeBaseParser::KnowledgeBaseParser()
 {

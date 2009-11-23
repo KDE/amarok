@@ -28,7 +28,7 @@
 #include <QTimer>
 #include <QDebug>
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 FolderListJob::FolderListJob()
   : m_job( 0 )

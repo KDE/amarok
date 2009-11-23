@@ -27,7 +27,7 @@
 #include "atticaclient_export.h"
 
 
-namespace Attica {
+namespace AmarokAttica {
 
 
 class ATTICA_EXPORT Category

@@ -21,7 +21,7 @@
 
 #include "message.h"
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 Message::Message()
   : m_status( Unread )

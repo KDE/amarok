@@ -24,7 +24,7 @@
 #include <QtCore/QDateTime>
 #include <QXmlStreamReader>
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 ContentParser::ContentParser()
 {

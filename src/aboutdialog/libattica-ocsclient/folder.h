@@ -24,7 +24,7 @@
 #include "atticaclient_export.h"
 #include <QList>
 #include <QString>
-namespace Attica {
+namespace AmarokAttica {
 
 class ATTICA_EXPORT Folder
 {

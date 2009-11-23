@@ -26,7 +26,7 @@
 #include <QXmlStreamReader>
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 ActivityParser::ActivityParser()
 {

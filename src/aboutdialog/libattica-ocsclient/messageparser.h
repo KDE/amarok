@@ -24,7 +24,7 @@
 #include "message.h"
 
 
-namespace Attica {
+namespace AmarokAttica {
 
 class MessageParser
 {

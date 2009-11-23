@@ -23,7 +23,7 @@
 
 #include <QXmlStreamReader>
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 MessageParser::MessageParser()
 {

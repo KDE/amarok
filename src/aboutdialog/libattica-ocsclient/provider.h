@@ -31,7 +31,7 @@
 class KUrl;
 class QDate;
 
-namespace Attica {
+namespace AmarokAttica {
 
 class ActivityListJob;
 class CategoryListJob;

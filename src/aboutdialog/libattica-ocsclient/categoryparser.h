@@ -24,7 +24,7 @@
 #include "category.h"
 
 
-namespace Attica {
+namespace AmarokAttica {
 
 class CategoryParser
 {

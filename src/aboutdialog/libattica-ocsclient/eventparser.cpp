@@ -25,7 +25,7 @@
 #include <QtXml/QXmlStreamReader>
 
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 EventParser::EventParser()
 {
@@ -50,7 +50,7 @@ Event EventParser::parse(const QString& xmlString)
 }
 
 
-Event::List Attica::EventParser::parseList(const QString& xmlString)
+Event::List AmarokAttica::EventParser::parseList(const QString& xmlString)
 {
     Event::List eventList;
     

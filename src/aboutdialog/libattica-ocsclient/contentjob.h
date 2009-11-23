@@ -30,7 +30,7 @@ namespace KIO {
 class Job;
 }
 
-namespace Attica {
+namespace AmarokAttica {
 
 class ATTICA_EXPORT ContentJob : public KJob
 {

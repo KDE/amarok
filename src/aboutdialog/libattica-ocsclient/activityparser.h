@@ -24,7 +24,7 @@
 #include "activity.h"
 
 
-namespace Attica {
+namespace AmarokAttica {
 
 class ActivityParser
 {

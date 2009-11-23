@@ -27,7 +27,7 @@
 #include <QXmlStreamReader>
 #include <QDebug>
 #include <QTimer>
-using namespace Attica;
+using namespace AmarokAttica;
 
 PostJob::PostJob()
   : m_job( 0 )

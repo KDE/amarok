@@ -342,13 +342,14 @@ ExtendedAboutDialog::switchToOcsWidgets()
 
     m_showOcsAuthorButton->animate();
     m_showOcsCreditButton->animate();
-    Attica::ProviderInitJob *providerJob = Attica::Provider::byId( m_ocsData.providerId() );
+    AmarokAttica::ProviderInitJob *providerJob = AmarokAttica::Provider::byId( m_ocsData.providerId() );
     connect( providerJob, SIGNAL( result( KJob * ) ), this, SLOT( onProviderFetched( KJob * ) ) );
 }
+
 void
 ExtendedAboutDialog::onProviderFetched( KJob *job )
 {
-    Attica::ProviderInitJob *providerJob = qobject_cast< Attica::ProviderInitJob * >( job );
+    AmarokAttica::ProviderInitJob *providerJob = qobject_cast< AmarokAttica::ProviderInitJob * >( job );
     if( providerJob->error() == 0 )
     {
         debug()<<"Successfully fetched OCS provider"<< providerJob->provider().name();

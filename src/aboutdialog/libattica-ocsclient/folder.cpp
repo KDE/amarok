@@ -21,7 +21,7 @@
 
 #include "folder.h"
 
-using namespace Attica;
+using namespace AmarokAttica;
 
 Folder::Folder()
   : m_messageCount( 0 )
