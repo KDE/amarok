@@ -27,6 +27,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
+class OpmlOutline;
 
 class OpmlDirectoryServiceFactory: public ServiceFactory
 {
@@ -67,6 +68,8 @@ private slots:
     void listDownloadComplete( KJob* downloadJob);
     void listDownloadCancelled();
     void doneParsing();
+    void outlineParsed( OpmlOutline *outline );
+    void countTransaction();
 
     /**
     * Checks if subscribe button should be enabled
@@ -84,6 +87,13 @@ private:
     ServiceSqlCollection * m_collection;
     Meta::OpmlDirectoryFeed * m_currentFeed;
     QString m_tempFileName;
+    int m_currentCategoryId;
+
+    int m_numberOfFeeds;
+    int m_numberOfCategories;
+
+    int n_numberOfTransactions;
+    int n_maxNumberOfTransactions;
 };
 
 #endif

@@ -618,6 +618,7 @@ set(amaroklib_LIB_SRCS
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
     MountPointManager.cpp
+    OpmlParser.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     toolbar/CurrentTrackToolbar.cpp
