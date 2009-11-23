@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.2.2
   FEATURES
+    * Also support feed:// urls for subscribing to podcasts.
+    * Limiting the number of simultaneous podcast updates and downloads to 4. Can be
+      configured separately in the rc-file.
     * Import podcast subscriptions from OPML.
     * Show HTML info for podcast channels that support this. Patches by Mathias Panzenböck.
       (BR 193357)
