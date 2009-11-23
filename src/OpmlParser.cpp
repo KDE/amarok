@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "OpmlDirectoryXmlParser.h"
+#include "OpmlParser.h"
 
 #include "Amarok.h"
 #include "Debug.h"
@@ -36,7 +37,7 @@ OpmlOutline::OpmlOutline( OpmlOutline *parent )
 
 using namespace Meta;
 
-OpmlDirectoryXmlParser::OpmlDirectoryXmlParser( const QString &filename )
+OpmlParser::OpmlParser( const QString &filename )
         : ThreadWeaver::Job()
 {
     DEBUG_BLOCK
@@ -44,19 +45,19 @@ OpmlDirectoryXmlParser::OpmlDirectoryXmlParser( const QString &filename )
     connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), SIGNAL( doneParsing() ) );
 }
 
-OpmlDirectoryXmlParser::~OpmlDirectoryXmlParser()
+OpmlParser::~OpmlParser()
 {
     DEBUG_BLOCK
 }
 
 void
-OpmlDirectoryXmlParser::run()
+OpmlParser::run()
 {
     readConfigFile( m_sFileName );
 }
 
 void
-OpmlDirectoryXmlParser::readConfigFile( const QString &filename )
+OpmlParser::readConfigFile( const QString &filename )
 {
     DEBUG_BLOCK
 
@@ -70,12 +71,12 @@ OpmlDirectoryXmlParser::readConfigFile( const QString &filename )
 
     QFile file( filename );
     if ( !file.open( QIODevice::ReadOnly ) ) {
-        debug() << "OpmlDirectoryXmlParser::readConfigFile error reading file";
+        debug() << "OpmlParser::readConfigFile error reading file";
         return ;
     }
     if ( !doc.setContent( &file ) )
     {
-        debug() << "OpmlDirectoryXmlParser::readConfigFile error parsing file";
+        debug() << "OpmlParser::readConfigFile error parsing file";
         file.close();
         return ;
     }
@@ -98,7 +99,7 @@ OpmlDirectoryXmlParser::readConfigFile( const QString &filename )
 }
 
 void
-OpmlDirectoryXmlParser::parseOpmlBody( const QDomElement &e )
+OpmlParser::parseOpmlBody( const QDomElement &e )
 {
     if( e.tagName() != "body" )
         return; //TODO: emit parsing element
@@ -114,7 +115,7 @@ OpmlDirectoryXmlParser::parseOpmlBody( const QDomElement &e )
 }
 
 OpmlOutline*
-OpmlDirectoryXmlParser::parseOutlineElement( const QDomElement &e )
+OpmlParser::parseOutlineElement( const QDomElement &e )
 {
     if( e.tagName() != "outline" )
         return 0;
@@ -122,7 +123,7 @@ OpmlDirectoryXmlParser::parseOutlineElement( const QDomElement &e )
     OpmlOutline *outline = new OpmlOutline();
 
     QDomNamedNodeMap attributes = e.attributes();
-    for( int i = 0; i< attributes.length(); i++ )
+    for( unsigned int i = 0; i < attributes.length(); i++ )
     {
         QDomAttr attribute = attributes.item( i ).toAttr();
         outline->addAttribute( attribute.name(), attribute.value() );
@@ -143,6 +144,3 @@ OpmlDirectoryXmlParser::parseOutlineElement( const QDomElement &e )
 
     return outline;
 }
-
-#include "OpmlDirectoryXmlParser.moc"
-

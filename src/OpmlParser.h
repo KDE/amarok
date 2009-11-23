@@ -15,19 +15,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef OPMLDIRECTORYXMLPARSER_H
-#define OPMLDIRECTORYXMLPARSER_H
+#ifndef OPMLPARSER_H
+#define OPMLPARSER_H
 
-#include "OpmlDirectoryDatabaseHandler.h"
+#include "amarok_export.h"
+
+#include <threadweaver/Job.h>
 
 #include <QDomElement>
 #include <QMap>
 #include <QString>
 #include <QStringList>
 
-#include <threadweaver/Job.h>
-
-class OpmlOutline
+class AMAROK_EXPORT OpmlOutline
 {
     public:
         OpmlOutline( OpmlOutline *parent = 0 );
@@ -56,11 +56,9 @@ class OpmlOutline
 };
 
 /**
-* Parser for the XML file from http://img.jamendo.com/data/dbdump.en.xml.gz
-*
-* @author Nikolaj Hald Nielsen
+* Parser for OPML files.
 */
-class OpmlDirectoryXmlParser : public ThreadWeaver::Job
+class AMAROK_EXPORT OpmlParser : public ThreadWeaver::Job
 {
     Q_OBJECT
 
@@ -71,7 +69,7 @@ public:
      * @param fileName The file to parse 
      * @return Pointer to new object
      */
-    OpmlDirectoryXmlParser( const QString &fileName );
+    OpmlParser( const QString &fileName );
 
     /**
      * The function that starts the actual work. Inherited from ThreadWeaver::Job 
@@ -84,7 +82,7 @@ public:
      * Destructor
      * @return none
      */
-    ~OpmlDirectoryXmlParser();
+    ~OpmlParser();
 
     /**
      * Reads, and starts parsing, file. Should not be used directly.

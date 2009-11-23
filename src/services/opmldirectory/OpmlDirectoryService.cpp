@@ -20,7 +20,7 @@
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "OpmlDirectoryInfoParser.h"
-#include "OpmlDirectoryXmlParser.h"
+#include "OpmlParser.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "podcasts/PodcastProvider.h"
 #include "ServiceSqlRegistry.h"
@@ -140,7 +140,7 @@ void OpmlDirectoryService::updateButtonClicked()
 
     KTemporaryFile tempFile;
     tempFile.setSuffix( ".gz" );
-    tempFile.setAutoRemove( false );  //file will be removed in OpmlDirectoryXmlParser
+    tempFile.setAutoRemove( false );  //file will be removed in OpmlParser
     if( !tempFile.open() )
     {
         return; //error
@@ -185,10 +185,8 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
 
-    OpmlDirectoryXmlParser * parser = new OpmlDirectoryXmlParser( m_tempFileName );
-    connect( parser, SIGNAL( doneParsing() ),
-            SLOT( doneParsing() )
-           );
+    OpmlParser *parser = new OpmlParser( m_tempFileName );
+    connect( parser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
     connect( parser, SIGNAL( outlineParsed( OpmlOutline* ) ),
             SLOT( outlineParsed( OpmlOutline* ) )
            );
@@ -231,8 +229,8 @@ void OpmlDirectoryService::doneParsing()
         );
 
 
-    debug() << "OpmlDirectoryXmlParser: total number of albums: " << m_numberOfCategories;
-    debug() << "OpmlDirectoryXmlParser: total number of tracks: " << m_numberOfFeeds;
+    debug() << "OpmlParser: total number of albums: " << m_numberOfCategories;
+    debug() << "OpmlParser: total number of tracks: " << m_numberOfFeeds;
 
     m_updateListButton->setEnabled( true );
     // model->setGenre("All");

@@ -17,7 +17,6 @@
             OpmlDirectoryService.cpp
             OpmlDirectoryMeta.cpp
             OpmlDirectoryDatabaseHandler.cpp
-            OpmlDirectoryXmlParser.cpp
             OpmlDirectoryInfoParser.cpp
         )
 
