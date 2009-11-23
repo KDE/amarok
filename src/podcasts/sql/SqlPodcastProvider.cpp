@@ -920,9 +920,9 @@ SqlPodcastProvider::downloadResult( KJob *job )
         KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
         localUrl.addPath( m_fileNameMap[job] );
 
-        QFile *localFile = new QFile( localUrl.path() );
-        if( localFile->open( QIODevice::WriteOnly ) &&
-            localFile->write( (static_cast<KIO::StoredTransferJob *>(job))->data() ) != -1 )
+        QFile localFile( localUrl.path() );
+        if( localFile.open( QIODevice::WriteOnly ) &&
+            localFile.write( (static_cast<KIO::StoredTransferJob *>(job))->data() ) != -1 )
         {
             debug() << "successfully written Podcast Episode " << sqlEpisode->title() << " to " << localUrl.path();
             sqlEpisode->setLocalUrl( localUrl );
@@ -937,7 +937,7 @@ SqlPodcastProvider::downloadResult( KJob *job )
             The::statusBar()->longMessage( i18n("Unable to save podcast episode file to %1",
                             localUrl.prettyUrl()) );
         }
-        localFile->close();
+        localFile.close();
     }
     //remove it from the jobmap
     m_completedDownloads++;
