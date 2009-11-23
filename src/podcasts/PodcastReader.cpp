@@ -867,8 +867,8 @@ PodcastReader::setDescription( const QString &description )
     // to summary, unless summary depending on whether there
     // already is some (longer) information in the description
     // field.
-    // If there is already data in the description fiueld, instead of
-    // overwriting it, it will be moved to the summary field, unless
+    // If there is already data in the description field, instead of
+    // overwriting, it will be moved to the summary field, unless
     // there is already longer data there.
     if( m_current->description().size() < description.size() )
     {
@@ -922,13 +922,14 @@ PodcastReader::endLink()
 void
 PodcastReader::beginHtml()
 {
-    stopWithError( i18n( "A HTML page was received. Expected a RSS 2.0 feed" ) );
+    stopWithError( i18n( "An HTML page was received but expected a feed."
+                         "\nDid you enter the corrent URL?" ) );
 }
 
 void
 PodcastReader::beginUnknownFeedType()
 {
-    stopWithError( i18n( "Feed has unknown type: %1", m_url.url() ) );
+    stopWithError( i18n( "Feed has an unknown type: %1", m_url.url() ) );
 }
 
 void
@@ -937,7 +938,7 @@ PodcastReader::beginRss()
     if( attributes().value( "version" ) != "2.0" )
     {
         // TODO: change this string once we support more
-        stopWithError( i18n( "%1 is not a RSS version 2.0 feed.", m_url.url() ) );
+        stopWithError( i18n( "%1 is not an RSS version 2.0 feed.", m_url.url() ) );
     }
 }
 
