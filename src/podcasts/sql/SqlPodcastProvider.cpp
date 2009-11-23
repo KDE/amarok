@@ -259,15 +259,32 @@ SqlPodcastProvider::addPodcast( const KUrl &url )
     }
     else
     {
-        bool result = false;
-        m_updatingChannels++;
-        PodcastReader * podcastReader = new PodcastReader( this );
-
-        connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
-                SLOT( slotReadResult( PodcastReader * ) ) );
-
-        result = podcastReader->read( kurl );
+        subscribe( kurl );
     }
+}
+
+void
+SqlPodcastProvider::subscribe( const KUrl &url )
+{
+    if( !url.isValid() )
+        return;
+
+    if( m_updatingChannels >= m_maxConcurrentUpdates )
+    {
+        debug() << QString( "Maximum concurrent updates (%1) reached. "
+                        "Queueing \"%2\" for subscribing." )
+                        .arg( m_maxConcurrentUpdates )
+                        .arg( url.url() );
+        m_subscribeQueue << url;
+        return;
+    }
+
+    PodcastReader * podcastReader = new PodcastReader( this );
+    connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
+            SLOT( slotReadResult( PodcastReader * ) ) );
+
+    m_updatingChannels++;
+    podcastReader->read( url );
 }
 
 Meta::PodcastChannelPtr
@@ -777,10 +794,16 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
 
     emit( updated() );
 
-    if( !m_updateQueue.isEmpty() )
+    //first we work through the list of new subscriptions
+    if( !m_subscribeQueue.isEmpty() )
+    {
+        subscribe( m_subscribeQueue.takeFirst() );
+    }
+    else if( !m_updateQueue.isEmpty() )
+    {
         update( m_updateQueue.takeFirst() );
-
-    if( m_updatingChannels == 0 )
+    }
+    else if( m_updatingChannels == 0 )
     {
         //TODO: start downloading episodes here.
         if( m_podcastImageFetcher )

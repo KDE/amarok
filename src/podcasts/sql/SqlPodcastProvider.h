@@ -114,12 +114,15 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void updateDatabase( int fromVersion, int toVersion );
         void fetchImage( Meta::SqlPodcastChannelPtr channel );
 
+        void subscribe( const KUrl &url );
+
         Meta::SqlPodcastChannelList m_channels;
 
         QTimer *m_updateTimer;
         unsigned int m_updatingChannels;
         unsigned int m_maxConcurrentUpdates;
         Meta::PodcastChannelList m_updateQueue;
+        QList<KUrl> m_subscribeQueue;
 
         QHash<KJob *, Meta::SqlPodcastEpisode *> m_downloadJobMap;
         QHash<KJob *, QString> m_fileNameMap;
