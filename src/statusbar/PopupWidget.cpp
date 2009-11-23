@@ -53,7 +53,7 @@ void PopupWidget::reposition()
     // p is no longer in the anchor's coordinates
     QPoint p;
 
-    p.setX( m_anchor->x() );
-    p.setY( m_anchor->y() - ( height() + 4 ) );
+    p.setX( m_anchor->x() + ( m_anchor->width() - width() ) );
+    p.setY( m_anchor->y() - height() );
     move( p );
 }

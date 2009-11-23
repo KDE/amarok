@@ -30,7 +30,7 @@ CompoundProgressBar::CompoundProgressBar( QWidget * parent )
     m_showDetailsButton = new QToolButton( extrabuttonSpace() );
     m_showDetailsButton->setIcon( KIcon( "arrow-up-double-amarok" ) );
 
-    m_progressDetailsWidget = new PopupWidget( this );
+    m_progressDetailsWidget = new PopupWidget( parent );
     m_progressDetailsWidget->hide();
     
     connect( m_showDetailsButton, SIGNAL( clicked() ), this, SLOT( toggleDetails() ) );
@@ -213,13 +213,14 @@ void CompoundProgressBar::cancelAll()
 
 void CompoundProgressBar::showDetails()
 {
-
+    DEBUG_BLOCK
     m_progressDetailsWidget->raise();
 
     //Hack to make sure it has the right heigh first time it is shown...
     m_progressDetailsWidget->setFixedHeight( m_progressMap.values().at( 0 )->height() * m_progressMap.count() + 8 );
     m_progressDetailsWidget->reposition();
     m_progressDetailsWidget->show();
+
     m_showDetailsButton->setIcon( KIcon( "arrow-down-double-amarok" ) );
 }
 
