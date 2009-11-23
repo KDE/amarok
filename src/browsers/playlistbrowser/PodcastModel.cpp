@@ -795,7 +795,7 @@ PlaylistBrowserNS::PodcastModel::slotOpmlOutlineParsed( OpmlOutline *outline )
 
     if( outline->attributes().contains( "url" ) )
     {
-        KUrl url( outline->attributes().value( "url" ) );
+        KUrl url( outline->attributes().value( "url" ).trimmed() );
         if( !url.isValid() )
         {
             debug() << "OPML outline contained an invalid url: " << url;
