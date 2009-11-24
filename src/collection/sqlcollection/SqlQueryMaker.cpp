@@ -954,6 +954,9 @@ SqlQueryMaker::nameForValue( qint64 value )
         case valYear:
             d->linkedTables |= Private::YEAR_TAB;
             return "years.name";
+        case valBpm:
+            d->linkedTables |= Private::TAGS_TAB;
+            return "tracks.bpm";
         case valComment:
             d->linkedTables |= Private::TAGS_TAB;
             return "tracks.comment";

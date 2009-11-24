@@ -106,6 +106,9 @@ namespace FilterFactory
             case Meta::valYear:
                 result = new YearNumberFilter();
                 break;
+            case Meta::valBpm:
+                result = new BpmNumberFilter();
+                break;
         }
         Q_ASSERT_X( result, "FilterFactory::numberFilter", "called numberFilter with an illegal value, value was " + value );
         if (result)
@@ -619,3 +622,20 @@ YearNumberFilter::value( const Meta::TrackPtr &track ) const
     return track->year()->name().toInt();
 }
 
+BpmNumberFilter::BpmNumberFilter()
+    : NumberMemoryFilter()
+{
+}
+
+BpmNumberFilter::~BpmNumberFilter()
+{
+}
+
+qint64
+BpmNumberFilter::value( const Meta::TrackPtr &track ) const
+{
+    if( track->bpm() < 0 )
+        return 0;
+
+    return track->bpm();
+}

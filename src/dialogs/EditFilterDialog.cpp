@@ -83,6 +83,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     m_vector.push_back( "title" );
     m_vector.push_back( "track" );
     m_vector.push_back( "year" );
+    m_vector.push_back( "bpm" );
 
     // the "Simple Search" text is selected in the comboKeyword
     m_selectedIndex = 0;
@@ -286,6 +287,13 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         // year: set useful values for the spinboxes
         m_ui.minimum1->setValue( 1900 );
         m_ui.maximum1->setValue( QDate::currentDate().year() );
+        valueWanted();
+    }
+    else if( key == "bpm" )
+    {
+        // bpm: set useful values for the spinboxes
+        m_ui.minimum1->setValue( 60 );
+        m_ui.maximum1->setValue( 120 );
         valueWanted();
     }
     else if( key == "track" || key == "disc" || key == "discnumber" )
@@ -495,7 +503,8 @@ void EditFilterDialog::slotDefault() // SLOT
             || key=="score"
             || key=="filesize" || key=="size"
             || key=="track"
-            || key=="year" )
+            || key=="year" 
+            || key=="bpm" )
     {
         m_filterText += keywordConditionString( m_vector[m_selectedIndex] );
     }

@@ -559,6 +559,10 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                     if ( ( validFilters & QueryMaker::YearFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valYear, elem.text.toInt(), compare );
                 }
+                else if ( lcField.compare( "bpm", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "bpm" ), Qt::CaseInsensitive ) == 0)
+                {
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBpm, elem.text.toInt(), compare );
+                }
                 else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "comment" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_FILTER( Meta::valYear, elem.text, false, false );
