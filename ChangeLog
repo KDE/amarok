@@ -5,15 +5,15 @@ Amarok ChangeLog
 
 VERSION 2.2.2
   FEATURES
-    * BPM editing, sorting and filtering implemented. (BR 214056)
+    * BPM editing, sorting, and filtering have been implemented. (BR 214056)
       Patch by Pierre Dumuid <pmdumuid@gmail.com>.
     * Made it possible to change a podcast channel's URL. (BR 195204)
     * Also support feed:// urls for subscribing to podcasts.
-    * Limiting the number of simultaneous podcast updates and downloads to 4. Can be
-      configured separately in the rc-file.
+    * Limited the number of simultaneous podcast updates and downloads to four.
+      This can be configured separately in the "amarokrc" configuration file.
     * Import podcast subscriptions from OPML.
-    * Show HTML info for podcast channels that support this. Patches by Mathias Panzenböck.
-      (BR 193357)
+    * Show HTML info for podcast channels that support this. Patches by
+      Mathias Panzenböck. (BR 193357)
     * Ampache Service now shows Service info from last.fm
     * Moodbar support is back. Can be shown in prgress bar or in the playlist.
       The 4 visual styles from Amarok 1 (normal, angry, frozen and happy) are 
