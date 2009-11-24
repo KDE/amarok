@@ -238,17 +238,6 @@ void
 SqlPodcastProvider::addPodcast( const KUrl &url )
 {
     KUrl kurl = KUrl( url );
-    if( kurl.protocol() == "itpc" )
-    {
-        debug() << "Subscribing to podcast using an itpc:// url.";
-        kurl.setProtocol( "http" );
-    }
-    else if( kurl.protocol() == "feed" )
-    {
-        //TODO: also handle the case feed:https://example.com/entries.atom
-        debug() << "Subscribing to podcast using a feed:// url.";
-        kurl.setProtocol( "http" );
-    }
     debug() << "importing " << kurl.url();
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();

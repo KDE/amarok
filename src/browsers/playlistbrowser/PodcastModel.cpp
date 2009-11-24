@@ -501,12 +501,15 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
     {
         bool ok;
         QString url = QInputDialog::getText( 0,
-                            i18n("Add Podcast"), i18n("Enter RSS 2.0 feed URL:"), QLineEdit::Normal,
-                            QString(), &ok );
-        if ( ok && !url.isEmpty() )
+                            i18n("Add Podcast"),
+                            i18n("Enter RSS 2.0 feed URL:"),
+                            QLineEdit::Normal,
+                            QString(),
+                            &ok );
+        if( ok && !url.isEmpty() )
         {
             // user entered something and pressed OK
-            podcastProvider->addPodcast( url.trimmed() );
+            podcastProvider->addPodcast( PodcastProvider::toFeedUrl( url.trimmed() ) );
         }
         else
         {

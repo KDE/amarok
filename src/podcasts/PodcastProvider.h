@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2007-2009 Bart Cerneels <bart.cerneels@kde.org>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -34,6 +34,9 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
 {
     //Q_OBJECT
     public:
+        static bool couldBeFeed( const QString &urlString );
+        static KUrl toFeedUrl( const QString &urlString );
+
         virtual ~PodcastProvider() {};
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const = 0;
