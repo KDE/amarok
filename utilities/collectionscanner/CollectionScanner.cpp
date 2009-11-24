@@ -610,7 +610,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).trimmed();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TBPM"].isEmpty() )
-                    attributes["bpm"] = TStringToQString( file->ID3v2Tag()->frameListMap()["TBPM"].front()->toString() ).trimmed().toFloat();
+                    attributes["bpm"] = TStringToQString( file->ID3v2Tag()->frameListMap()[ "TBPM" ].front()->toString() ).trimmed();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
                     attributes["composer"] = TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).trimmed();
@@ -678,7 +678,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                     attributes["composer"] = TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).trimmed();
 
                 if ( !file->tag()->fieldListMap()[ "BPM" ].isEmpty() )
-                    attributes["bpm"] = TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).trimmed().toFloat();
+                    attributes["bpm"] = TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).trimmed();
 
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).trimmed();
