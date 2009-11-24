@@ -81,7 +81,7 @@ PodcastCategory::destroy()
 }
 
 PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
-    : BrowserCategory( "podcast category", 0 )
+    : BrowserCategory( "podcasts", 0 )
     , m_podcastModel( podcastModel )
 {
     setPrettyName( i18n( "Podcasts" ) );
