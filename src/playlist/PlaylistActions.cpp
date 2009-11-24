@@ -89,13 +89,13 @@ Playlist::Actions::~Actions()
     delete m_navigator;
 }
 
-Meta::Track
+Meta::TrackPtr
 Playlist::Actions::nextTrack()
 {
     return m_topmostModel->trackForId( m_navigator->nextTrack() );
 }
 
-Meta::Track
+Meta::TrackPtr
 Playlist::Actions::prevTrack()
 {
     return m_topmostModel->trackForId( m_navigator->lastTrack() );

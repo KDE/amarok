@@ -9,6 +9,8 @@
 #include <QTimerEvent>
 #include <QToolBar>
 
+#include <QtDebug>
+
 PlayPauseButton::PlayPauseButton( QWidget *parent ) : QWidget( parent )
 , m_isPlaying( false )
 , m_isClick( false )
@@ -110,16 +112,16 @@ void PlayPauseButton::timerEvent( QTimerEvent *te )
     if ( underMouse() ) // fade in
     {
         m_animStep += 2;
-        updateIconBuffer();
         if ( m_animStep > 5 )
             stopFade();
+        updateIconBuffer();
     }
     else // fade out
     {
         --m_animStep;
-        updateIconBuffer();
         if ( m_animStep < 1 )
             stopFade();
+        updateIconBuffer();
     }
     repaint();
 }
@@ -127,12 +129,13 @@ void PlayPauseButton::timerEvent( QTimerEvent *te )
 static QImage
 interpolated( const QImage &img1, const QImage &img2, int a1, int a2 )
 {
-//     QImage *wider, *higher;
-//     QImage img( qMax( img1.width(), img2.width() ), qMax( img1.height(), img2.height() ), QImage::Format_RGB32 );
-    QImage img( img1.size(), QImage::Format_ARGB32 );
     const int a = a1 + a2;
     if (!a)
-        return img;
+        return img1.copy();
+    
+//     QImage *wider, *higher;
+//     QImage img( qMax( img1.width(), img2.width() ), qMax( img1.height(), img2.height() ), QImage::Format_RGB32 );
+    QImage img( img1.size(), img1.format() );
 
     const uchar *src[2] = { img1.bits(), img2.bits() };
     uchar *dst = img.bits();
@@ -148,7 +151,7 @@ interpolated( const QImage &img1, const QImage &img2, int a1, int a2 )
 void PlayPauseButton::updateIconBuffer()
 {
     QImage img;
-    QImage (*base)[2] = m_isPlaying ? &m_iconPlay : &m_iconPause;
+    QImage (*base)[2] = m_isPlaying ? &m_iconPause : &m_iconPlay;
 
     if (m_animStep < 1)
         img = (*base)[0];
@@ -157,5 +160,6 @@ void PlayPauseButton::updateIconBuffer()
     else
         img = interpolated( (*base)[0], (*base)[1], 6 - m_animStep, m_animStep );
 
-    m_iconBuffer = QPixmap::fromImage( img.scaled( size(), Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
+    m_iconBuffer = QPixmap::fromImage( img );
+//     m_iconBuffer = QPixmap::fromImage( img.scaled( size(), Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
 }

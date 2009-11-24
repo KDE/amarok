@@ -6,6 +6,7 @@
 #include "EngineController.h"
 
 #include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistController.h"
 
 #include "widgets/AnimatedLabelStack.h"
 #include "widgets/PlayPauseButton.h"
@@ -13,9 +14,13 @@
 #include "widgets/VolumeDial.h"
 
 #include <QEvent>
-#include <QSlider>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QResizeEvent>
+#include <QSlider>
+#include <QTimer>
+#include <QVBoxLayout>
+
+#include <QtDebug>
 
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
@@ -28,7 +33,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     setContentsMargins( 4, 0, 4, 0 );
 
     m_playPause = new PlayPauseButton;
-    m_playPause->setPlaying( !engine->isPaused() );
+    m_playPause->setPlaying( engine->state() == Phonon::PlayingState );
     m_playPause->setFixedSize( 48, 48 );
     addWidget( m_playPause );
     connect ( m_playPause, SIGNAL( toggled(bool) ), this, SLOT( setPlaying(bool) ) );
@@ -41,7 +46,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_prev->setAnimated( false );
     m_prev->setOpacity( 128 );
     m_prev->installEventFilter( this );
-//     m_prev->setAlign( Qt::AlignLeft );
+    m_prev->setAlign( Qt::AlignLeft );
     connect ( m_prev, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
 
     m_current = new AnimatedLabelStack(QStringList() << "AmaroK 2.3", info);
@@ -52,7 +57,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_next->setAnimated( false );
     m_next->setOpacity( 160 );
     m_next->installEventFilter( this );
-//     m_next->setAlign( Qt::AlignRight );
+    m_next->setAlign( Qt::AlignRight );
     connect ( m_next, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( next() ) );
 
     hl->addWidget( m_prev );
@@ -63,13 +68,13 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     connect ( m_prev, SIGNAL( pulsing(bool) ), m_current, SLOT( setStill(bool) ) );
     connect ( m_next, SIGNAL( pulsing(bool) ), m_current, SLOT( setStill(bool) ) );
 
-    hl = new QHBoxLayout;
-    ProgressWidget *progressWidget = new ProgressWidget( 0 );
-    hl->addStretch( 3 );
-    hl->addWidget( progressWidget );
-    hl->setStretchFactor( progressWidget, 10 );
-    hl->addStretch( 3 );
-    vl->addLayout( hl );
+    m_progressLayout = new QHBoxLayout;
+    m_progress = new ProgressWidget( 0 );
+    m_progressLayout->addStretch( 3 );
+    m_progressLayout->addWidget( m_progress  );
+    m_progressLayout->setStretchFactor( m_progress , 10 );
+    m_progressLayout->addStretch( 3 );
+    vl->addLayout( m_progressLayout );
     
 
     addWidget( info );
@@ -82,6 +87,8 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     addWidget( m_volume );
     connect( m_volume, SIGNAL( valueChanged(int) ), engine, SLOT( setVolume(int) ) );
     connect( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
+
+    connect( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
 }
 
 void
@@ -107,23 +114,26 @@ Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldStat
         m_playPause->setPlaying( false );
 }
 
-static QStringList data( Meta::TrackPtr track )
+#define STRINGS(_TAG_) track->_TAG_()->prettyName().split( rx, QString::SkipEmptyParts )
+
+static QStringList metadata( Meta::TrackPtr track )
 {
     QStringList list;
+    QRegExp rx("(\\s+-\\s+|\\s*;\\s*|\\s*:\\s*)"); // this will split "all-in-one" filename tags
     if ( track )
     {
         if ( !track->name().isEmpty() )
-            list << track->prettyName();
+            list << track->prettyName().split( rx, QString::SkipEmptyParts );
         if ( !track->composer()->name().isEmpty() )
-            list << track->composer()->prettyName();
+            list << STRINGS(composer);
         if ( !track->album()->name().isEmpty() )
-            list << track->album()->prettyName();
+            list << STRINGS(album);
         if ( !track->artist()->name().isEmpty() )
-            list << track->artist()->prettyName();
+            list << STRINGS(artist);
         if ( !track->year()->name().isEmpty() )
-            list << track->year()->prettyName();
+            list << STRINGS(year);
         if ( !track->genre()->name().isEmpty() )
-            list << track->genre()->prettyName();
+            list << STRINGS(genre);
         #if 0
         virtual double score() const = 0;
         virtual int rating() const = 0;
@@ -143,19 +153,40 @@ static QStringList data( Meta::TrackPtr track )
     return list;
 }
 
+#undef STRINGS
+
+void
+Toolbar_3::updatePrevAndNext()
+{
+    Meta::TrackPtr track = The::playlistActions()->prevTrack();
+    m_prev->setData( metadata( track ) );
+    m_prev->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
+    
+    track = The::playlistActions()->nextTrack();
+    m_next->setData( metadata( The::playlistActions()->nextTrack() ) );
+    m_next->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
+}
+
 void
 Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
 {
-    m_current->setData( data( track ) );
+    m_current->setData( metadata( track ) );
     m_current->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
-    
-    track = The::PlaylistActions()->prevTrack();
-    m_prev->setData( data( track ) );
-    m_prev->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
-    
-    track = The::PlaylistActions()->nextTrack();
-    m_next->setData( data( The::PlaylistActions()->nextTrack() ) );
-    m_next->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
+    QTimer::singleShot( 0, this, SLOT( updatePrevAndNext() ) );
+}
+
+void
+Toolbar_3::resizeEvent( QResizeEvent *ev )
+{
+    if ( ev->size().width() > 0 )
+    {
+        const int limit = 640;
+        if ( ev->size().width() > limit )
+            m_progressLayout->setStretchFactor( m_progress, 10 );
+        int s = limit/ev->size().width();
+        s *= s*s*10;
+        m_progressLayout->setStretchFactor( m_progress, qMax( 10, s ) );
+    }
 }
 
 void

@@ -1223,6 +1223,9 @@ void MainWindow::setLayoutLocked( bool locked )
 
         m_slimToolbar->setFloatable( false );
         m_slimToolbar->setMovable( false );
+
+        m_toolbar3->setFloatable( false );
+        m_toolbar3->setMovable( false );
     }
     else
     {
@@ -1243,6 +1246,9 @@ void MainWindow::setLayoutLocked( bool locked )
 
         m_slimToolbar->setFloatable( true );
         m_slimToolbar->setMovable( true );
+
+        m_toolbar3->setFloatable( true );
+        m_toolbar3->setMovable( true );
     }
 
     AmarokConfig::setLockLayout( locked );

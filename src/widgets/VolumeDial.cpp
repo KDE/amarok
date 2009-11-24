@@ -51,7 +51,7 @@ void VolumeDial::paintEvent( QPaintEvent * )
     QPainter p( this );
     p.drawPixmap(0,0, m_icon[ m_muted ]);
     QColor c = palette().color( QPalette::Highlight );
-    c.setAlpha( 160 );
+    c.setAlpha( 196 );
     p.setPen( QPen( c, 3, Qt::SolidLine, Qt::RoundCap ) );
     p.setRenderHint(QPainter::Antialiasing);
     p.drawArc( rect().adjusted(4,4,-4,-4), -110*16, - value()*320*16 / (maximum() - minimum()) );
@@ -72,7 +72,6 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
 
 void VolumeDial::setMute( bool mute )
 {
-    qDebug() << "setMute" << mute << m_muted;
     if ( mute == m_muted )
         return;
 
@@ -95,7 +94,6 @@ QSize VolumeDial::sizeHint() const
 
 void VolumeDial::valueChangedSlot( int v )
 {
-    qDebug() << "Volume changed" << value() << v;
     m_isClick = false;
     if ( m_muted == ( v == minimum() ) )
         return;

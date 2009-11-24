@@ -45,8 +45,11 @@ protected:
     void timerEvent( QTimerEvent * );
     void wheelEvent( QWheelEvent * );
 private:
+    QFont adjustedFont( const QString &text );
     void ensureAnimationStatus();
     void setPulsating( bool on );
+private slots:
+    void activateOnEnter();
 private:
     Qt::Alignment m_align;
     int m_time, m_index, m_animTimer, m_fadeTime, m_displayTime, m_opacity, m_targetOpacity;

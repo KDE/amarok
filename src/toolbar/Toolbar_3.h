@@ -19,6 +19,8 @@
 
 class AnimatedLabelStack;
 class PlayPauseButton;
+class ProgressWidget;
+class QBoxLayout;
 class VolumeDial;
 
 #include "EngineObserver.h" //baseclass
@@ -26,6 +28,7 @@ class VolumeDial;
 
 class Toolbar_3 : public QToolBar, public EngineObserver
 {
+    Q_OBJECT
 public:
     Toolbar_3( QWidget *parent = 0 );
     void engineMuteStateChanged( bool mute );
@@ -34,11 +37,15 @@ public:
     void engineVolumeChanged( int percent );
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
+    void resizeEvent( QResizeEvent *ev );
 private slots:
     void setPlaying( bool on );
+    void updatePrevAndNext();
 private:
     AnimatedLabelStack *m_current, *m_next, *m_prev;
     PlayPauseButton *m_playPause;
+    ProgressWidget *m_progress;
+    QBoxLayout *m_progressLayout;
     VolumeDial *m_volume;
 };
 

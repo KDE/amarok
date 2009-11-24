@@ -64,7 +64,7 @@ namespace Playlist
              * and would like to know what the next track should be.
              * The default just calls nextTrack()
              */
-            virtual quint64 requestNextTrack() = 0;
+            virtual quint64 requestNextTrack();
 
             /**
              * The user triggers the next-track action.
@@ -75,7 +75,7 @@ namespace Playlist
              * The user triggers the previous-track action.
              * The default just calls lastTrack()
              */
-            virtual quint64 requestLastTrack() = 0;
+            virtual quint64 requestLastTrack();
 
             /**
              * Reset this navigator. Called when the end of a playlist is reached.

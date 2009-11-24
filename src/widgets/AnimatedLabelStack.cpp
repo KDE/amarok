@@ -3,6 +3,7 @@
 
 #include <QPainter>
 #include <QPaintEvent>
+#include <QTimer>
 
 #include <QtDebug>
 
@@ -26,7 +27,53 @@ AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt:
     setData( data );
 }
 
-void AnimatedLabelStack::ensureAnimationStatus()
+void
+AnimatedLabelStack::activateOnEnter()
+{
+    if ( !underMouse() || m_pulsating )
+        return;
+    if ( m_animated )
+    {
+        m_pulseRequested = true;
+        if ( m_time > m_fadeTime && m_time < (m_displayTime - m_fadeTime) )
+            m_time = m_displayTime - m_fadeTime;
+    }
+    else
+        setPulsating( true );
+}
+
+QFont
+AnimatedLabelStack::adjustedFont( const QString &text )
+{
+    QFont fnt = font();
+    int w = QFontMetrics( fnt ).width( text );
+
+    if ( w <= width() )
+        return fnt; // no problem
+
+    float ratio = width() / (float)w;
+
+    if ( ratio > 0.84 ) // we'll squeeze until here
+        fnt.setStretch( qRound( fnt.stretch()*(ratio-0.02) ) );
+    else if ( fnt.pointSize() > 0 ) // ignore pixel fonts due to debatable results
+    {   // shrink the font as much as "sensible", compensate by squeezing
+        // NOTICE: i don't quite like this - the outcome is too arbitrary, but the only "valid"
+        // approach would be to loop on some point sizes and check for the best value
+        // (the reason in the "interesting" point size impact on font widths...) :-(
+        ratio = qMax(0.70, ratio/0.93);
+        fnt.setPointSize( qRound( fnt.pointSize() * ratio ) );
+        w = QFontMetrics( fnt ).width( text );
+        if ( w > width() )
+        {
+            ratio = qMax( 0.85f, width() / (float)w );
+            fnt.setStretch( qRound( fnt.stretch()*(ratio-0.02) ) );
+        }
+    }
+    return fnt;
+}
+
+void
+AnimatedLabelStack::ensureAnimationStatus()
 {
     if ( m_data.count() > 1 && ( m_animated || m_pulsating ) )
     {
@@ -42,32 +89,28 @@ void AnimatedLabelStack::ensureAnimationStatus()
     }
 }
 
-void AnimatedLabelStack::enterEvent( QEvent * )
+void
+AnimatedLabelStack::enterEvent( QEvent * )
 {
-    if ( m_pulsating )
-        return;
-    if ( m_animated )
-    {
-        m_pulseRequested = true;
-        if ( m_time > m_fadeTime && m_time < (m_displayTime - m_fadeTime) )
-            m_time = m_displayTime - m_fadeTime;
-    }
-    else
-        setPulsating( true );
+    // wait a short time, then pulse through entries
+    QTimer::singleShot(300, this, SLOT( activateOnEnter() ) );
 }
 
-void AnimatedLabelStack::leaveEvent( QEvent * )
+void
+AnimatedLabelStack::leaveEvent( QEvent * )
 {
     m_pulseRequested = false;
 }
 
-void AnimatedLabelStack::mousePressEvent( QMouseEvent *me )
+void
+AnimatedLabelStack::mousePressEvent( QMouseEvent *me )
 {
     m_isClick = true;
     me->accept();
 }
 
-void AnimatedLabelStack::mouseReleaseEvent( QMouseEvent *me )
+void
+AnimatedLabelStack::mouseReleaseEvent( QMouseEvent *me )
 {
     me->accept();
     if ( m_isClick && underMouse() )
@@ -78,7 +121,8 @@ void AnimatedLabelStack::mouseReleaseEvent( QMouseEvent *me )
     }
 }
 
-void AnimatedLabelStack::paintEvent( QPaintEvent * pe )
+void
+AnimatedLabelStack::paintEvent( QPaintEvent * pe )
 {
     if ( m_data.isEmpty() )
         return;
@@ -100,6 +144,8 @@ void AnimatedLabelStack::paintEvent( QPaintEvent * pe )
                 int index = m_index - 1;
                 if (index < 0)
                     index = m_data.count() - 1;
+
+                p.setFont( adjustedFont( m_data.at( index ) ) );
                 p.drawText( rect(), m_align | Qt::TextSingleLine, m_data.at( index ) );
             }
             
@@ -108,16 +154,19 @@ void AnimatedLabelStack::paintEvent( QPaintEvent * pe )
     }
     
     p.setPen( c );
+    p.setFont( adjustedFont( m_data.at( m_index ) ) );
     p.drawText( rect(), m_align | Qt::TextSingleLine, m_data.at( m_index ) );
     p.end();
 }
 
-void AnimatedLabelStack::pulse( int cycles, int minimum )
+void
+AnimatedLabelStack::pulse( int cycles, int minimum )
 {
     enterEvent(0);
 }
 
-void AnimatedLabelStack::setAlign( Qt::Alignment align )
+void
+AnimatedLabelStack::setAlign( Qt::Alignment align )
 {
     m_align = Qt::AlignVCenter;
     if ( align & Qt::AlignLeft )
@@ -129,13 +178,15 @@ void AnimatedLabelStack::setAlign( Qt::Alignment align )
 }
 
 
-void AnimatedLabelStack::setAnimated( bool on )
+void
+AnimatedLabelStack::setAnimated( bool on )
 {
     m_animated = on;
     ensureAnimationStatus();
 }
 
-void AnimatedLabelStack::setBold( bool bold )
+void
+AnimatedLabelStack::setBold( bool bold )
 {
     QFont fnt = font();
     fnt.setBold(bold);
@@ -143,7 +194,8 @@ void AnimatedLabelStack::setBold( bool bold )
     setMinimumHeight( QFontMetrics(fnt).height() + 4 );
 }
 
-void AnimatedLabelStack::setData( const QStringList &data  )
+void
+AnimatedLabelStack::setData( const QStringList &data  )
 {
     if ( data == m_data )
         return;
@@ -154,7 +206,8 @@ void AnimatedLabelStack::setData( const QStringList &data  )
     update();
 }
 
-void AnimatedLabelStack::setPulsating( bool on )
+void
+AnimatedLabelStack::setPulsating( bool on )
 {
     if ( m_pulseRequested == on && m_pulsating == on )
         return;
@@ -179,10 +232,14 @@ void AnimatedLabelStack::setPulsating( bool on )
     emit pulsing( on );
 }
 
-void AnimatedLabelStack::timerEvent( QTimerEvent * te )
+void
+AnimatedLabelStack::timerEvent( QTimerEvent * te )
 {
     if ( !isVisible() || te->timerId() != m_animTimer )
         return;
+
+    if ( !m_pulsating && underMouse() )
+        return; // the user explicitly altered content by wheeling, don't take it away
     
     if ( m_time < m_fadeTime || m_time > (m_displayTime - m_fadeTime) )
         update();
@@ -213,7 +270,8 @@ void AnimatedLabelStack::timerEvent( QTimerEvent * te )
     }
 }
 
-void AnimatedLabelStack::wheelEvent( QWheelEvent * we )
+void
+AnimatedLabelStack::wheelEvent( QWheelEvent * we )
 {
     if ( m_data.count() < 2 )
         return;
