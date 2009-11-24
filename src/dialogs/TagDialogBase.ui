@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>666</width>
-    <height>410</height>
+    <width>672</width>
+    <height>419</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -28,7 +28,7 @@
      <item>
       <widget class="KTabWidget" name="kTabWidget">
        <property name="currentIndex">
-        <number>4</number>
+        <number>1</number>
        </property>
        <property name="currentPage" stdset="0">
         <number>4</number>
@@ -154,42 +154,97 @@
         <attribute name="title">
          <string>Ta&amp;gs</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_6">
-         <item>
-          <layout class="QGridLayout" name="gridLayout_3">
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="textLabel1">
+           <property name="text">
+            <string>T&amp;itle:</string>
+           </property>
+           <property name="wordWrap">
+            <bool>false</bool>
+           </property>
+           <property name="buddy">
+            <cstring>kLineEdit_title</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="KLineEdit" name="kLineEdit_title"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="textLabel1_2">
+           <property name="text">
+            <string>&amp;Artist:</string>
+           </property>
+           <property name="wordWrap">
+            <bool>false</bool>
+           </property>
+           <property name="buddy">
+            <cstring>kComboBox_artist</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="KComboBox" name="kComboBox_artist">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="editable">
+            <bool>true</bool>
+           </property>
+           <property name="autoCompletion">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="textLabel1_3_2">
+           <property name="text">
+            <string>&amp;Composer:</string>
+           </property>
+           <property name="wordWrap">
+            <bool>false</bool>
+           </property>
+           <property name="buddy">
+            <cstring>kComboBox_composer</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="KComboBox" name="kComboBox_composer">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="editable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="textLabel1_3">
+           <property name="text">
+            <string>Al&amp;bum:</string>
+           </property>
+           <property name="wordWrap">
+            <bool>false</bool>
+           </property>
+           <property name="buddy">
+            <cstring>kComboBox_album</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" rowspan="2">
+          <layout class="QGridLayout" name="gridLayout_3" columnstretch="15,0,4">
            <item row="0" column="0">
-            <widget class="QLabel" name="textLabel1">
-             <property name="text">
-              <string>T&amp;itle:</string>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
-             <property name="buddy">
-              <cstring>kLineEdit_title</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="KLineEdit" name="kLineEdit_title"/>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="textLabel1_2">
-             <property name="text">
-              <string>&amp;Artist:</string>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
-             <property name="buddy">
-              <cstring>kComboBox_artist</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="KComboBox" name="kComboBox_artist">
+            <widget class="KComboBox" name="kComboBox_album">
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -202,67 +257,24 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="textLabel1_3_2">
-             <property name="text">
-              <string>&amp;Composer:</string>
+           <item row="0" column="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_7">
+             <property name="spacing">
+              <number>-1</number>
              </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
-             <property name="buddy">
-              <cstring>kComboBox_composer</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2">
-            <widget class="KComboBox" name="kComboBox_composer">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="textLabel1_3">
-             <property name="text">
-              <string>Al&amp;bum:</string>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
-             <property name="buddy">
-              <cstring>kComboBox_album</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="2">
-            <layout class="QHBoxLayout">
              <item>
-              <widget class="KComboBox" name="kComboBox_album">
+              <widget class="QLabel" name="textLabel1_3_2_2">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
-               <property name="editable">
-                <bool>true</bool>
-               </property>
-               <property name="autoCompletion">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="textLabel1_3_2_2">
                <property name="text">
                 <string>&amp;Disc Number:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
                <property name="wordWrap">
                 <bool>false</bool>
@@ -273,9 +285,22 @@
               </widget>
              </item>
              <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QSpinBox" name="qSpinBox_discNumber">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -288,93 +313,12 @@
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>100</width>
+                 <width>50</width>
                  <height>32767</height>
                 </size>
                </property>
-               <property name="specialValueText">
-                <string/>
-               </property>
-               <property name="maximum">
-                <number>3000</number>
-               </property>
-               <property name="value">
-                <number>0</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="textLabel1_4">
-             <property name="text">
-              <string>&amp;Genre:</string>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
-             <property name="buddy">
-              <cstring>kComboBox_genre</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0">
-            <widget class="QLabel" name="textLabel1_6_6">
-             <property name="text">
-              <string>Trac&amp;k:</string>
-             </property>
-             <property name="textFormat">
-              <enum>Qt::PlainText</enum>
-             </property>
-             <property name="wordWrap">
-              <bool>false</bool>
-             </property>
-             <property name="buddy">
-              <cstring>qSpinBox_track</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="2">
-            <layout class="QHBoxLayout">
-             <item>
-              <widget class="QSpinBox" name="qSpinBox_track">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="specialValueText">
-                <string/>
-               </property>
-               <property name="maximum">
-                <number>3000</number>
-               </property>
-               <property name="value">
-                <number>0</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="textLabel1_5">
-               <property name="text">
-                <string>&amp;Year:</string>
-               </property>
-               <property name="wordWrap">
-                <bool>false</bool>
-               </property>
-               <property name="buddy">
-                <cstring>qSpinBox_year</cstring>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="qSpinBox_year">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
                <property name="specialValueText">
                 <string/>
@@ -389,59 +333,32 @@
              </item>
             </layout>
            </item>
-           <item row="6" column="0">
-            <widget class="QLabel" name="textLabel_comment">
-             <property name="text">
-              <string>Co&amp;mment:</string>
+           <item row="1" column="0">
+            <widget class="KComboBox" name="kComboBox_genre">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <property name="textFormat">
-              <enum>Qt::PlainText</enum>
+             <property name="editable">
+              <bool>true</bool>
              </property>
-             <property name="wordWrap">
+             <property name="autoCompletion">
               <bool>false</bool>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::TextSelectableByKeyboard</set>
-             </property>
-             <property name="buddy">
-              <cstring>qPlainTextEdit_comment</cstring>
              </property>
             </widget>
            </item>
-           <item row="8" column="2">
-            <layout class="QHBoxLayout">
-             <item>
-              <widget class="QPushButton" name="pushButton_guessTags">
-               <property name="text">
-                <string>Guess Tags From &amp;Filename</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="6" column="1" colspan="2">
-            <widget class="QPlainTextEdit" name="qPlainTextEdit_comment"/>
-           </item>
-           <item row="4" column="2">
-            <layout class="QHBoxLayout">
-             <item>
-              <widget class="KComboBox" name="kComboBox_genre">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="editable">
-                <bool>true</bool>
-               </property>
-               <property name="autoCompletion">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
+           <item row="1" column="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
              <item>
               <widget class="QLabel" name="textLabel_BPM">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>B&amp;eats Per Minutes:</string>
                </property>
@@ -449,6 +366,22 @@
                 <cstring>kLineEdit_Bpm</cstring>
                </property>
               </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Expanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
              </item>
              <item>
               <widget class="KLineEdit" name="kLineEdit_Bpm">
@@ -461,9 +394,154 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>16777215</height>
+                </size>
+               </property>
               </widget>
              </item>
             </layout>
+           </item>
+           <item row="0" column="1">
+            <spacer name="horizontalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Minimum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>2</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="textLabel1_4">
+           <property name="text">
+            <string>&amp;Genre:</string>
+           </property>
+           <property name="wordWrap">
+            <bool>false</bool>
+           </property>
+           <property name="buddy">
+            <cstring>kComboBox_genre</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="textLabel1_6_6">
+           <property name="text">
+            <string>Trac&amp;k:</string>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::PlainText</enum>
+           </property>
+           <property name="wordWrap">
+            <bool>false</bool>
+           </property>
+           <property name="buddy">
+            <cstring>qSpinBox_track</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <layout class="QHBoxLayout">
+           <item>
+            <widget class="QSpinBox" name="qSpinBox_track">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="specialValueText">
+              <string/>
+             </property>
+             <property name="maximum">
+              <number>3000</number>
+             </property>
+             <property name="value">
+              <number>0</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="textLabel1_5">
+             <property name="text">
+              <string>&amp;Year:</string>
+             </property>
+             <property name="wordWrap">
+              <bool>false</bool>
+             </property>
+             <property name="buddy">
+              <cstring>qSpinBox_year</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="qSpinBox_year">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="specialValueText">
+              <string/>
+             </property>
+             <property name="maximum">
+              <number>3000</number>
+             </property>
+             <property name="value">
+              <number>0</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="textLabel_comment">
+           <property name="text">
+            <string>Co&amp;mment:</string>
+           </property>
+           <property name="textFormat">
+            <enum>Qt::PlainText</enum>
+           </property>
+           <property name="wordWrap">
+            <bool>false</bool>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::TextSelectableByKeyboard</set>
+           </property>
+           <property name="buddy">
+            <cstring>qPlainTextEdit_comment</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1">
+          <widget class="QPlainTextEdit" name="qPlainTextEdit_comment"/>
+         </item>
+         <item row="7" column="1">
+          <layout class="QHBoxLayout">
+           <item>
+            <widget class="QPushButton" name="pushButton_guessTags">
+             <property name="text">
+              <string>Guess Tags From &amp;Filename</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
