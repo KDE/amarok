@@ -304,4 +304,13 @@ class AMAROK_EXPORT YearNumberFilter : public NumberMemoryFilter
         virtual qint64 value( const Meta::TrackPtr &track ) const;
 };
 
+class AMAROK_EXPORT BpmNumberFilter : public NumberMemoryFilter
+{
+    public:
+        BpmNumberFilter();
+        virtual ~BpmNumberFilter();
+    protected:
+        virtual qint64 value( const Meta::TrackPtr &track ) const;
+};
+
 #endif

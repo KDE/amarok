@@ -100,7 +100,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual void setSamplerate( int newSamplerate );
 
         virtual float bpm() const;
-        virtual void setBpm( float newBpm );
+        virtual void setBpm( const float newBpm );
 
         virtual int trackNumber() const;
         virtual void setTrackNumber ( int newTrackNumber );

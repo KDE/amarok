@@ -78,7 +78,8 @@ static const QList<int> editableColumns = ( QList<int>() )
         << Title
         << TitleWithTrackNum
         << TrackNumber
-        << Year;
+        << Year
+        << Bpm;
 
 //this is the list of user visible token names and hence needs to be translated
 static const QList<const char *> columnNames = ( QList<const char *>()
@@ -87,7 +88,7 @@ static const QList<const char *> columnNames = ( QList<const char *>()
         << I18N_NOOP2( "'Album artist' playlist column name and token for playlist layouts", "Album artist" )
         << I18N_NOOP2( "'Artist' playlist column name and token for playlist layouts", "Artist" )
         << I18N_NOOP2( "'Bitrate' playlist column name and token for playlist layouts", "Bitrate" )
-        << I18N_NOOP2( "'Beats per minute' playlist column name and token for playlist layouts, if in doubt, dont expand as it needs to be short!!", "Bpm" )
+        << I18N_NOOP2( "'Beats per minute' playlist column name and token for playlist layouts", "BPM" )
         << I18N_NOOP2( "'Comment' playlist column name and token for playlist layouts", "Comment" )
         << I18N_NOOP2( "'Composer' playlist column name and token for playlist layouts", "Composer" )
         << I18N_NOOP2( "'Cover image' playlist column name and token for playlist layouts", "Cover image" )
@@ -163,6 +164,7 @@ static const QStringList sortableCategories = ( QStringList()
         << "Album artist"
         << "Artist"
         << "Bitrate"
+        << "Bpm"
         << "Comment"
         << "Composer"
         << "Directory"
@@ -196,7 +198,7 @@ static const QStringList iconNames = ( QStringList()
         << "filename-artist-amarok"
         << "filename-artist-amarok"
         << "application-octet-stream"
-        << ""
+        << "filename-bpm-amarok"
         << "filename-comment-amarok"
         << "filename-composer-amarok"
         << ""

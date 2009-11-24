@@ -54,6 +54,7 @@ namespace ProxyCollection
             Meta::YearPtr year() const;
 
             QString comment() const;
+            float   bpm() const;
 
             double score() const;
             void setScore( double newScore );

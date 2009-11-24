@@ -5,6 +5,7 @@
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
  * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
+ * Copyright (c) 2009 Pierre Dumuid <pmdumuid@gmail.com>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -486,6 +487,13 @@ TagDialog::genreModified()
 }
 
 inline void
+TagDialog::bpmModified()
+{
+    m_fieldEdited[ "bpm" ] = true;
+    checkModified();
+}
+
+inline void
 TagDialog::ratingModified()
 {
     m_fieldEdited[ "rating" ] = true;
@@ -750,6 +758,7 @@ void TagDialog::init()
     connect( ui->kComboBox_album,     SIGNAL( editTextChanged( const QString& ) ), SLOT(albumModified()) );
     connect( ui->kComboBox_genre,     SIGNAL( activated( int ) ),                  SLOT(checkModified()) );
     connect( ui->kComboBox_genre,     SIGNAL( editTextChanged( const QString& ) ), SLOT(genreModified()) );
+    connect( ui->kLineEdit_Bpm,       SIGNAL( textChanged( const QString& ) )    , SLOT(bpmModified()) );
     connect( ui->ratingWidget,        SIGNAL( ratingChanged( int ) ),              SLOT(ratingModified()) );
     connect( ui->qSpinBox_track,      SIGNAL( valueChanged( int ) ),               SLOT(checkModified()) );
     connect( ui->qSpinBox_year,       SIGNAL( valueChanged( int ) ),               SLOT(yearModified()) );
@@ -980,6 +989,10 @@ void TagDialog::readTags()
         selectOrInsertText( m_currentData.value( Meta::Field::GENRE ).toString(), ui->kComboBox_genre );
     else
         selectOrInsertText( QString(), ui->kComboBox_genre );
+    if( m_currentData.contains( Meta::Field::BPM ) )
+        ui->kLineEdit_Bpm->setText( m_currentData.value( Meta::Field::BPM ).toString() );
+    else
+        ui->kLineEdit_Bpm->setText( "" );
     if( m_currentData.contains( Meta::Field::COMPOSER ) )
         selectOrInsertText( m_currentData.value( Meta::Field::COMPOSER ).toString(), ui->kComboBox_composer );
     else
@@ -1055,6 +1068,10 @@ void TagDialog::readTags()
     enableOrDisable( kComboBox_composer );
     enableOrDisable( kComboBox_album );
     enableOrDisable( kComboBox_genre );
+
+    ui->kLineEdit_Bpm->setEnabled( editable );
+    ui->kLineEdit_Bpm->setClearButtonShown( editable );
+
 #undef enableOrDisable
     ui->qSpinBox_track->setEnabled( editable );
     ui->qSpinBox_discNumber->setEnabled( editable );
@@ -1311,6 +1328,7 @@ TagDialog::changes()
     modified |= !equalString( ui->kComboBox_album->lineEdit()->text(), m_currentData.value( Meta::Field::ALBUM ).toString() );
     modified |= !equalString( ui->kComboBox_genre->lineEdit()->text(), m_currentData.value( Meta::Field::GENRE ).toString() );
     modified |= ui->qSpinBox_year->value()  != m_currentData.value( Meta::Field::YEAR ).toInt();
+    modified |= !equalString( ui->kLineEdit_Bpm->text() , m_currentData.value( Meta::Field::BPM ).toString() );
     modified |= ui->qSpinBox_discNumber->value()  != m_currentData.value( Meta::Field::DISCNUMBER ).toInt();
     modified |= !equalString( ui->kComboBox_composer->lineEdit()->text(), m_currentData.value( Meta::Field::COMPOSER ).toString() );
 
@@ -1379,6 +1397,8 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
             map.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
         if ( ui->qSpinBox_discNumber->value() != track->discNumber() )
             map.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
+        if ( ui->kLineEdit_Bpm->text().toDouble() != track->bpm() )
+            map.insert( Meta::Field::BPM, ui->kLineEdit_Bpm->text() );
 
         m_storedTags.remove( track );
         m_storedTags.insert( track, map );
@@ -1624,7 +1644,9 @@ TagDialog::saveTags()
              data.contains( Meta::Field::ARTIST ) || data.contains( Meta::Field::ALBUM ) ||
              data.contains( Meta::Field::GENRE ) || data.contains( Meta::Field::COMPOSER ) ||
              data.contains( Meta::Field::YEAR ) || data.contains( Meta::Field::TRACKNUMBER ) ||
-             data.contains( Meta::Field::TRACKNUMBER ) || data.contains( Meta::Field::DISCNUMBER ) )
+             data.contains( Meta::Field::TRACKNUMBER ) || data.contains( Meta::Field::DISCNUMBER ) ||
+             data.contains( Meta::Field::BPM )
+             )
         {
 
             debug() << "File info changed....";
@@ -1648,6 +1670,8 @@ TagDialog::saveTags()
                 ec->setTrackNumber( data.value( Meta::Field::TRACKNUMBER ).toInt() );
             if( data.contains( Meta::Field::DISCNUMBER ) )
                 ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
+            if( data.contains( Meta::Field::BPM ) )
+                ec->setBpm( data.value( Meta::Field::BPM ).toDouble() );
             ec->endMetaDataUpdate();
         }
     }
@@ -1750,6 +1774,12 @@ TagDialog::applyToAllTracks()
         {
             data.insert( Meta::Field::RATING, ui->ratingWidget->rating() );
             changed |= TagDialog::RATINGCHANGED;
+        }
+
+        if( m_fieldEdited.contains( "bpm" ) && m_fieldEdited[ "bpm" ] )
+        {
+            data.insert( Meta::Field::BPM, ui->kLineEdit_Bpm->text() );
+            changed |= TagDialog::TAGSCHANGED;
         }
 
         storeTags( track, changed, data );

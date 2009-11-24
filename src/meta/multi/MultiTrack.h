@@ -62,6 +62,7 @@ public:
     virtual GenrePtr genre() const { return m_currentTrack->genre(); }
     virtual YearPtr year() const { return m_currentTrack->year(); }
 
+    virtual float bpm() const { return m_currentTrack->bpm(); }
     virtual QString comment() const { return m_currentTrack->comment(); }
     virtual double score() const { return m_currentTrack->score(); }
     virtual void setScore( double newScore ) { m_currentTrack->setScore( newScore ); }

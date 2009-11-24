@@ -60,6 +60,8 @@ namespace MetaStream
 
             virtual void setTitle( const QString &newTitle );
 
+            virtual float bpm() const;
+
             virtual QString comment() const;
             virtual void setComment( const QString &newComment );
 

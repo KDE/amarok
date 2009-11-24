@@ -51,6 +51,7 @@ class EditCapabilityProxy : public Meta::EditCapability
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
         virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setBpm( const float newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ); /*m_track->setComment( newComment );*/ } // Do we want to support this?
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
@@ -246,6 +247,21 @@ void
 MetaProxy::Track::setYear( const QString &year )
 {
     d->cachedYear = year;
+}
+
+float
+MetaProxy::Track::bpm() const
+{
+    if( d->realTrack )
+        return d->realTrack->bpm();
+    else
+        return d->cachedBpm;
+}
+
+void
+MetaProxy::Track::setBpm( const float bpm )
+{
+    d->cachedBpm = bpm;
 }
 
 QString

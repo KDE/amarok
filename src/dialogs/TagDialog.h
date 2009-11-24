@@ -113,6 +113,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void artistModified();
         void albumModified();
         void genreModified();
+        void bpmModified();
         void ratingModified();
         void yearModified();
         void scoreModified();

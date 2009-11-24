@@ -76,6 +76,12 @@ TimecodeEditCapabilityImpl::setYear( const QString &newYear )
 }
 
 void
+TimecodeEditCapabilityImpl::setBpm( const float newBpm )
+{
+     m_track->setBpm( newBpm );
+}
+
+void
 TimecodeEditCapabilityImpl::setTitle( const QString &newTitle )
 {
      m_track->setTitle( newTitle );
@@ -214,6 +220,12 @@ TimecodeTrack::year() const
     return YearPtr::staticCast( m_year );;
 }
 
+float 
+TimecodeTrack::bpm() const
+{
+    return m_bpm;
+}
+
 QString
 TimecodeTrack::comment() const
 {
@@ -334,6 +346,13 @@ TimecodeTrack::setYear( const QString &newYear )
 }
 
 void
+TimecodeTrack::setBpm( const float newBpm )
+{
+    m_updatedFields |= BPM_UPDATED;
+    m_fields.insert( BPM_UPDATED, QString::number( (float) newBpm ) );
+}
+
+void
 TimecodeTrack::setTitle( const QString &newTitle )
 {
     m_updatedFields |= TITLE_UPDATED;
@@ -413,6 +432,11 @@ void TimecodeTrack::endMetaDataUpdate()
         m_year = TimecodeYearPtr( new TimecodeYear( m_fields.value( YEAR_UPDATED ) ) );
         m_year->addTrack( TimecodeTrackPtr( this ) );
         setYear( m_year );
+    }
+
+    if ( m_updatedFields & BPM_UPDATED )
+    {
+        m_bpm = m_fields.value( BPM_UPDATED ).toDouble();
     }
 
     if ( m_updatedFields & TITLE_UPDATED )

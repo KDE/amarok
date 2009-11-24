@@ -205,7 +205,9 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Bpm:
             {
-                return 0;
+                if ( m_items.at( row )->track()->bpm() > 0.0 )
+                    return QString::number( m_items.at( row )->track()->bpm() );
+                return QString();
             }
             case Comment:
             {

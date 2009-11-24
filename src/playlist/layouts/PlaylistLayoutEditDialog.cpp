@@ -41,6 +41,8 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     
     tokenPool->addToken( new Token( i18nc( "'Bitrate' playlist column name and token for playlist layouts", columnNames[Bitrate] ), iconNames[Bitrate], Bitrate ) );
     
+    tokenPool->addToken( new Token( i18nc( "'BPM' playlist column name and token for playlist layouts", columnNames[Bpm] ), iconNames[Bpm], Bpm ) );
+
     tokenPool->addToken( new Token( i18nc( "'Comment' playlist column name and token for playlist layouts", columnNames[Comment] ), iconNames[Comment], Comment ) );
     
     tokenPool->addToken( new Token(  i18nc( "'Composer' playlist column name and token for playlist layouts", columnNames[Composer] ), iconNames[Composer], Composer ) );

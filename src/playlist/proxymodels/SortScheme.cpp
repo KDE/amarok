@@ -74,6 +74,16 @@ SortLevel::isString()
     return false;
 }
 
+bool
+SortLevel::isFloat()
+{
+    QList< int > strCategories;
+    strCategories << Bpm;
+    if( isComparable() && strCategories.contains( category() ) )
+        return true;
+    return false;
+}
+
 QString
 SortLevel::prettyName()
 {
