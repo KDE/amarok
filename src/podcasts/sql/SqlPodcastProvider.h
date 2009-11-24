@@ -129,8 +129,8 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         QHash<KJob *, QString> m_fileNameMap;
 
         Meta::SqlPodcastEpisodeList m_downloadQueue;
-        unsigned int m_maxConcurrentDownloads;
-        unsigned int m_completedDownloads;
+        int m_maxConcurrentDownloads;
+        int m_completedDownloads;
 
         QAction * m_configureAction; //Configure a Channel
         QAction * m_deleteAction; //delete a downloaded Episode
