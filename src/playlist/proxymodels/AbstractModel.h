@@ -82,7 +82,7 @@ public:
      */
     virtual void clearSearchTerm() {}    //dummy, needed by Playlist::Model
 
-   /**
+    /**
      * Returns the number of columns exposed by the current model.
      * @param parent the parent of the columns to count.
      * @return the number of columns.
