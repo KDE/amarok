@@ -78,7 +78,8 @@ static const QList<int> editableColumns = ( QList<int>() )
         << Title
         << TitleWithTrackNum
         << TrackNumber
-        << Year;
+        << Year
+        << Bpm;
 
 //this is the list of user visible token names and hence needs to be translated
 static const QList<const char *> columnNames = ( QList<const char *>()
