@@ -71,6 +71,7 @@ class EditCapabilityImpl : public Meta::EditCapability
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
         virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setBpm( const float newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
@@ -559,6 +560,25 @@ SqlTrack::setYear( const QString &newYear )
 }
 
 void
+SqlTrack::setBpm( const float newBpm )
+{
+    if ( m_bpm && m_bpm == newBpm )
+        return;
+
+    if( m_batchUpdate )
+        m_cache.insert( Meta::Field::BPM, newBpm );
+    else
+    {
+        m_bpm = newBpm;
+        m_cache.clear();
+        m_cache.insert( Meta::Field::BPM, newBpm );
+        writeMetaDataToFile();
+        writeMetaDataToDb( Meta::Field::BPM );
+        notifyObservers();
+    }
+}
+
+void
 SqlTrack::setAlbum( const QString &newAlbum )
 {
     if ( m_album && m_album->name() == newAlbum )
@@ -841,6 +861,9 @@ SqlTrack::commitMetaDataChanges()
             KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
         }
 
+        if( m_cache.contains( Meta::Field::BPM ) )
+            m_bpm = m_cache.value( Meta::Field::BPM ).toDouble();
+
         //updating the tags of the file might change the filesize
         //therefore write the tag to the file first, and update the db
         //with the new filesize
@@ -889,6 +912,8 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
             tags += QString( ",composer=%1" ).arg( QString::number( KSharedPtr<SqlComposer>::staticCast( m_composer )->id() ) );
         if( fields.contains( Meta::Field::YEAR ) )
             tags += QString( ",year=%1" ).arg( QString::number( KSharedPtr<SqlYear>::staticCast( m_year )->id() ) );
+        if( fields.contains( Meta::Field::BPM ) )
+            tags += QString( ",bpm=%1" ).arg( QString::number( m_bpm ) );
         updateFileSize();
         tags += QString( ",filesize=%1" ).arg( m_filesize );
         update = update.arg( tags, QString::number( id ) );

@@ -90,6 +90,7 @@ class SqlTrack : public Meta::Track
         virtual void setUrl( const int deviceid, const QString &rpath );
 
         virtual float bpm() const { return m_bpm; }
+        virtual void setBpm( const float newBpm );
 
         virtual QString comment() const { return m_comment; }
         virtual void setComment( const QString &newComment );

@@ -52,6 +52,8 @@ namespace Meta
 
             virtual void setDiscNumber( int newDiscNumber ) = 0;
 
+            virtual void setBpm( const float newBpm ) = 0;
+
             /** The track object should not store changed meta data immediately but cache the
             changes until endMetaDataUpdate() or abortMetaDataUpdate() is called */
             virtual void beginMetaDataUpdate() = 0;

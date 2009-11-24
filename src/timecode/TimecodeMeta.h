@@ -71,6 +71,7 @@ public:
     virtual void setComposer( const QString &newComposer );
     virtual void setGenre( const QString &newGenre );
     virtual void setYear( const QString &newYear );
+    virtual void setBpm( const float Bpm );
     virtual void setTitle( const QString &newTitle );
     virtual void setComment( const QString &newComment );
     virtual void setTrackNumber( int newTrackNumber );
@@ -115,6 +116,7 @@ public:
     virtual void setTitle( const QString &newTitle );
 
     virtual float bpm() const;
+    virtual void setBpm ( const float newBpm );
 
     virtual QString comment() const;
     virtual void setComment ( const QString &newComment );
@@ -194,7 +196,8 @@ private:
         TITLE_UPDATED       = 1 << 5,
         COMMENT_UPDATED     = 1 << 6,
         TRACKNUMBER_UPDATED = 1 << 7,
-        DISCNUMBER_UPDATED  = 1 << 8
+        DISCNUMBER_UPDATED  = 1 << 8,
+        BPM_UPDATED         = 1 << 9
     };
 };
 
