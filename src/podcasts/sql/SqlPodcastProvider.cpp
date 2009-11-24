@@ -887,7 +887,7 @@ SqlPodcastProvider::cleanupDownload( KJob* job, bool downloadFailed )
 {
     DEBUG_BLOCK
 
-    QFile * tmpFile = m_tmpFileMap[job];
+    QFile * tmpFile = m_tmpFileMap.value( job );
 
     if ( downloadFailed && tmpFile )
     {
@@ -906,7 +906,6 @@ SqlPodcastProvider::createTmpFile ( KJob* job )
 {
     DEBUG_BLOCK
 
-    // FIXME: not sure if we really have to check these two pointers
     Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
     if( sqlEpisode == 0 )
     {
@@ -925,7 +924,7 @@ SqlPodcastProvider::createTmpFile ( KJob* job )
     dir.mkpath( "." );  // ensure that the path is there
 
     KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
-    QString tmpFileName = m_fileNameMap[job];
+    QString tmpFileName = m_fileNameMap.value( job );
     localUrl.addPath( tmpFileName + PODCAST_TMP_POSTFIX );
 
     QFile *tmpFile = new QFile( localUrl.path() );
@@ -990,7 +989,7 @@ SqlPodcastProvider::slotUpdated()
 void
 SqlPodcastProvider::downloadResult( KJob *job )
 {
-    QFile * tmpFile = m_tmpFileMap[job];
+    QFile * tmpFile = m_tmpFileMap.value( job );
     bool downloadFailed = false;
 
     if( job->error() )
@@ -1006,7 +1005,6 @@ SqlPodcastProvider::downloadResult( KJob *job )
     }
     else
     {
-        // FIXME: not sure if we really have to check these two pointers
         Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
         if( sqlEpisode == 0 )
         {
