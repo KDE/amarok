@@ -81,7 +81,7 @@
 QVariantMap
 Meta::Field::mapFromTrack( const Meta::TrackPtr track )
 {
-    //note: track does not support bpm, first_played yet
+    //note: track does not support first_played yet
     QVariantMap map;
     if( !track )
         return map;
@@ -323,6 +323,19 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
                 file->ID3v2Tag(true)->addFrame( frame );
             }
         }
+        if( changes.contains( Meta::Field::BPM ) )
+        {
+            shouldSave = true;
+            if( file->ID3v2Tag() )
+                file->ID3v2Tag()->removeFrames( "TBPM" );
+            if (changes.value( Meta::Field::BPM ).toDouble() > 0) {
+                const QString bpm = changes.value( Meta::Field::BPM ).toString();
+                TagLib::ID3v2::TextIdentificationFrame *frame =
+                        new TagLib::ID3v2::TextIdentificationFrame( "TBPM" );
+                frame->setText( Qt4QStringToTString( bpm ) );
+                file->ID3v2Tag(true)->addFrame( frame );
+            }
+        }
     }
     else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
     {
@@ -337,6 +350,16 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             shouldSave = true;
             const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
             file->tag()->addField("DISCNUMBER", disc);
+        }
+        if( changes.contains( Meta::Field::BPM ) )
+        {
+            shouldSave = true;
+            if (changes.value( Meta::Field::BPM ).toDouble() > 0) {
+                const TagLib::String bpm = Qt4QStringToTString( changes.value( Meta::Field::BPM ).toString() );
+                file->tag()->addField("BPM", bpm);
+            } else {
+                file->tag()->removeField("BPM");
+            }
         }
     }
     else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
@@ -353,6 +376,16 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
             file->tag()->addField("DISCNUMBER", disc);
         }
+        if( changes.contains( Meta::Field::BPM ) )
+        {
+            shouldSave = true;
+            if (changes.value( Meta::Field::BPM ).toDouble() > 0) {
+                const TagLib::String bpm = Qt4QStringToTString( changes.value( Meta::Field::BPM ).toString() );
+                file->tag()->addField("BPM", bpm);
+            } else {
+                file->tag()->removeField("BPM");
+            }
+        }
     }
     else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
     {
@@ -367,6 +400,16 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             shouldSave = true;
             const TagLib::String disc = Qt4QStringToTString( changes.value( Meta::Field::DISCNUMBER ).toString() );
             file->xiphComment()->addField("DISCNUMBER", disc);
+        }
+        if( changes.contains( Meta::Field::BPM ) )
+        {
+            shouldSave = true;
+            if (changes.value( Meta::Field::BPM ).toDouble() > 0) {
+                const TagLib::String bpm = Qt4QStringToTString( changes.value( Meta::Field::BPM ).toString() );
+                file->xiphComment()->addField("BPM", bpm);
+            } else {
+                file->xiphComment()->removeField("BPM");
+            }
         }
     }
     else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
@@ -384,6 +427,13 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             int discnumber = changes.value( Meta::Field::DISCNUMBER ).toInt();
             mp4tag->itemListMap()["disk"] = TagLib::MP4::Item( discnumber, 0 );
+        }
+        if( changes.contains( Meta::Field::BPM ) )
+        {
+            shouldSave = true;
+            TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
+            int bpm = changes.value( Meta::Field::BPM ).toInt();
+            mp4tag->itemListMap()["bpm"] = TagLib::MP4::Item( bpm, 0 );
         }
     }
     if( shouldSave )
