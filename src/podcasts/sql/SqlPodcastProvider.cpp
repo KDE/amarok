@@ -50,6 +50,7 @@ using namespace Meta;
 
 static const int PODCAST_DB_VERSION = 4;
 static const QString key("AMAROK_PODCAST");
+static const QString PODCAST_TMP_POSTFIX(".tmp");
 
 SqlPodcastProvider::SqlPodcastProvider()
     : m_updateTimer( new QTimer(this) )
@@ -701,8 +702,11 @@ SqlPodcastProvider::completePodcastDownloads()
         {
             foreach( KJob *job, m_downloadJobMap.keys() )
             {
-                debug() << "Stopping download of " << m_downloadJobMap[ job ]->title();
-                job->kill();
+                // FIXME: prevent an endless loop when job->kill signals downloadResult.
+                // AFAIK this shouldn't happen as i call job->kill(KJob::Quietly).
+                disconnect( job, SIGNAL( finished( KJob * ) ),
+                    this, SLOT( downloadResult( KJob * ) ) );
+                cleanupDownload( job, true );
             }
         }
     }
@@ -852,31 +856,128 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
         return;
     }
 
-    KIO::StoredTransferJob *storedTransferJob =
-            KIO::storedGet( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
+    KIO::TransferJob *transferJob =
+        KIO::get( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
 
-    m_downloadJobMap[storedTransferJob] = sqlEpisode.data();
-    m_fileNameMap[storedTransferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
+    m_downloadJobMap[transferJob] = sqlEpisode.data();
+    m_fileNameMap[transferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
 
     debug() << "starting download for " << sqlEpisode->title()
             << " url: " << sqlEpisode->prettyUrl();
-    The::statusBar()->newProgressOperation( storedTransferJob
+    The::statusBar()->newProgressOperation( transferJob
                                             , sqlEpisode->title().isEmpty()
                                                 ? i18n("Downloading Podcast Media")
                                                 : i18n("Downloading Podcast \"%1\""
                                             , sqlEpisode->title())
                                         )->setAbortSlot( this, SLOT( abortDownload()) );
 
-    connect( storedTransferJob, SIGNAL( finished( KJob * ) ),
+    connect( transferJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
+             SLOT( addData( KIO::Job *, const QByteArray & ) ) );
+    connect( transferJob, SIGNAL( finished( KJob * ) ),
              SLOT( downloadResult( KJob * ) ) );
-    connect( storedTransferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ),
-             SLOT( redirected( KIO::Job *,const KUrl& ) ) );
+    connect( transferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ),
+             SLOT( redirected( KIO::Job *, const KUrl& ) ) );
 }
 
 void
 SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
 {
     downloadEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
+}
+
+void
+SqlPodcastProvider::cleanupDownload( KJob* job, bool downloadFailed )
+{
+    DEBUG_BLOCK
+
+    QFile * tmpFile = m_tmpFileMap[job];
+
+    if ( downloadFailed )
+    {
+        debug() << "Stopping download of " << m_downloadJobMap[ job ]->title();
+        job->kill(KJob::Quietly);
+        if ( tmpFile )
+        {
+            debug() << "deleting temporary podcast file: " << tmpFile->fileName();
+            tmpFile->remove();
+        }
+    }
+    m_downloadJobMap.remove( job );
+    m_fileNameMap.remove( job );
+    m_tmpFileMap.remove( job );
+
+    delete tmpFile;
+}
+
+QFile*
+SqlPodcastProvider::createTmpFile ( KJob* job )
+{
+    DEBUG_BLOCK
+
+    // FIXME: not sure if we really have to check these two pointers
+    Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
+    if( sqlEpisode == 0 )
+    {
+        error() << "sqlEpisodePtr is NULL after download";
+        return 0;
+    }
+    Meta::SqlPodcastChannelPtr sqlChannel =
+        Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
+    if( !sqlChannel )
+    {
+        error() << "sqlChannelPtr is NULL after download";
+        return 0;
+    }
+
+    QDir dir( sqlChannel->saveLocation().path() );
+    dir.mkpath( "." );  // ensure that the path is there
+
+    KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
+    QString tmpFileName = m_fileNameMap[job];
+    localUrl.addPath( tmpFileName + PODCAST_TMP_POSTFIX );
+
+    QFile *tmpFile = new QFile( localUrl.path() );
+    if ( tmpFile->open( QIODevice::WriteOnly ) )
+    {
+        debug() << "podcast tmpfile created: " << localUrl.path();
+        return tmpFile;
+    }
+    else
+    {
+        The::statusBar()->longMessage( i18n("Unable to save podcast episode file to %1",
+                                            localUrl.prettyUrl()) );
+        delete tmpFile;
+        return 0;
+    }
+}
+
+void
+SqlPodcastProvider::addData( KIO::Job * job, const QByteArray & data )
+{
+    if ( !data.size() )
+    {
+        return; // EOF
+    }
+
+    QFile* tmpFile = m_tmpFileMap.value( job );
+    if ( !tmpFile )
+    {
+        tmpFile = createTmpFile( job );
+        if ( !tmpFile )
+        {
+            debug() << "failed to create tmpfile for podcast download";
+            cleanupDownload( job, true );
+            return;
+        }
+        m_tmpFileMap[job] = tmpFile;
+    }
+
+    if ( tmpFile->write( data ) == -1 )
+    {
+        error() << "write error for " << tmpFile->fileName() << ": " <<
+            tmpFile->errorString();
+        cleanupDownload( job, true );
+    }
 }
 
 void
@@ -895,21 +996,28 @@ SqlPodcastProvider::slotUpdated()
 void
 SqlPodcastProvider::downloadResult( KJob *job )
 {
+    QFile * tmpFile = m_tmpFileMap[job];
+    bool downloadFailed = false;
+
     if( job->error() )
     {
         The::statusBar()->longMessage( job->errorText() );
         debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
+        downloadFailed = true;
     }
     else if( !m_downloadJobMap.contains( job ) )
     {
         warning() << "Download is finished for a job that was not added to m_downloadJobMap. Waah?";
+        downloadFailed = true;
     }
     else
     {
+        // FIXME: not sure if we really have to check these two pointers
         Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
         if( sqlEpisode == 0 )
         {
             error() << "sqlEpisodePtr is NULL after download";
+            cleanupDownload( job, true );
             return;
         }
         Meta::SqlPodcastChannelPtr sqlChannel =
@@ -917,20 +1025,16 @@ SqlPodcastProvider::downloadResult( KJob *job )
         if( !sqlChannel )
         {
             error() << "sqlChannelPtr is NULL after download";
+            cleanupDownload( job, true );
             return;
         }
 
-        QDir dir( sqlChannel->saveLocation().path() );
-        dir.mkpath( "." );
-        KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
-        localUrl.addPath( m_fileNameMap[job] );
-
-        QFile *localFile = new QFile( localUrl.path() );
-        if( localFile->open( QIODevice::WriteOnly ) &&
-            localFile->write( (static_cast<KIO::StoredTransferJob *>(job))->data() ) != -1 )
+        QString finalName = tmpFile->fileName();
+        finalName.chop(PODCAST_TMP_POSTFIX.length());
+        if ( tmpFile->rename(finalName) )
         {
-            debug() << "successfully written Podcast Episode " << sqlEpisode->title() << " to " << localUrl.path();
-            sqlEpisode->setLocalUrl( localUrl );
+            debug() << "successfully written Podcast Episode " << sqlEpisode->title() << " to " << finalName;
+            sqlEpisode->setLocalUrl( finalName );
 
             if( sqlChannel->writeTags() )
                 sqlEpisode->writeTagsToFile();
@@ -940,15 +1044,15 @@ SqlPodcastProvider::downloadResult( KJob *job )
         else
         {
             The::statusBar()->longMessage( i18n("Unable to save podcast episode file to %1",
-                            localUrl.prettyUrl()) );
+                            finalName) );
+            downloadFailed = true;
         }
-        localFile->close();
     }
+
     //remove it from the jobmap
     m_completedDownloads++;
-    m_downloadJobMap.remove( job );
-    m_fileNameMap.remove( job );
-
+    cleanupDownload( job, downloadFailed );
+    
     //start a new download. We just finished one so there is at least one slot free.
     if( !m_downloadQueue.isEmpty() )
         downloadEpisode( m_downloadQueue.takeFirst() );
