@@ -60,6 +60,9 @@ namespace MetaFile
 
             virtual void setTitle( const QString &newTitle );
 
+            /* Likely need to implement setBpm() here */
+            virtual float bpm() const;
+
             virtual QString comment() const;
             virtual void setComment( const QString &newComment );
 

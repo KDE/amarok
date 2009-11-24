@@ -209,7 +209,8 @@ namespace Meta
             virtual GenrePtr genre() const = 0;
             /** Returns the year of this track */
             virtual YearPtr year() const = 0;
-
+            /** Returns the BPM of this track */
+            virtual float bpm() const = 0;
             /** Returns the comment of this track */
             virtual QString comment() const = 0;
             /** Returns the score of this track */

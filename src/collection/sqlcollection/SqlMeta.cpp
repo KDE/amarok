@@ -322,7 +322,7 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
     m_lastPlayed = (*(iter++)).toUInt();
     m_playCount = (*(iter++)).toInt();
     ++iter; //file type
-    ++iter; //BPM
+    m_bpm = (*(iter++)).toFloat();
     m_createDate = QDateTime::fromTime_t( (*(iter++)).toUInt() );
 
     // if there is no track gain, we assume a gain of 0

@@ -248,6 +248,15 @@ MetaProxy::Track::setYear( const QString &year )
     d->cachedYear = year;
 }
 
+float
+MetaProxy::Track::bpm() const
+{
+    if( d->realTrack )
+        return d->realTrack->bpm();
+    else
+        return d->cachedBpm;
+}
+
 QString
 MetaProxy::Track::comment() const
 {

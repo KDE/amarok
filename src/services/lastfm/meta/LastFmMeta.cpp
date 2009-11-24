@@ -216,6 +216,12 @@ Track::year() const
     return d->yearPtr;
 }
 
+float
+Track::bpm() const
+{
+    return -1.0;
+}
+
 QString
 Track::comment() const
 {

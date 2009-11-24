@@ -114,6 +114,8 @@ Meta::Field::mapFromTrack( const Meta::TrackPtr track )
         map.insert( Meta::Field::LENGTH, QVariant( track->length() ) );
     if( track->sampleRate() )
         map.insert( Meta::Field::SAMPLERATE, QVariant( track->sampleRate() ) );
+    if( track->bpm() >= 0.0)
+        map.insert( Meta::Field::BPM, QVariant( track->bpm() ) );
 
     map.insert( Meta::Field::UNIQUEID, QVariant( track->uidUrl() ) );
     map.insert( Meta::Field::URL, QVariant( track->prettyUrl() ) );

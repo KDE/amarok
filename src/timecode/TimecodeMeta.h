@@ -114,6 +114,8 @@ public:
 
     virtual void setTitle( const QString &newTitle );
 
+    virtual float bpm() const;
+
     virtual QString comment() const;
     virtual void setComment ( const QString &newComment );
 
@@ -172,6 +174,7 @@ private:
     qint64 m_start;
     qint64 m_end;
     qint64 m_length;
+    float m_bpm;
     int m_trackNumber;
     int m_discNumber;
     QString m_comment;

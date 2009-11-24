@@ -344,6 +344,13 @@ Track::setTitle( const QString &newTitle )
     }
 }
 
+float
+Track::bpm() const
+{
+    const float bpm = d->m_data.bpm;
+    return bpm;
+}
+
 QString
 Track::comment() const
 {

@@ -184,6 +184,26 @@ ProxyCollection::Track::comment() const
     return comment;
 }
 
+float
+ProxyCollection::Track::bpm() const
+{
+    //Similar to comment(), try to return something sensible here...
+    //do not show a common bpm value if the internal tracks disagree about the bpm
+    float bpm = -1.0;
+    if( !m_tracks.isEmpty() )
+        bpm = m_tracks.first()->bpm();
+
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        if( track->bpm() != bpm )
+        {
+            bpm = -1.0;
+            break;
+        }
+    }
+    return bpm;
+}
+
 double
 ProxyCollection::Track::score() const
 {

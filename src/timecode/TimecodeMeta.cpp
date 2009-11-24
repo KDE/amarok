@@ -214,6 +214,12 @@ TimecodeTrack::year() const
     return YearPtr::staticCast( m_year );;
 }
 
+float 
+TimecodeTrack::bpm() const
+{
+    return m_bpm;
+}
+
 QString
 TimecodeTrack::comment() const
 {

@@ -72,6 +72,7 @@ struct MetaData
         , sampleRate( 0 )
         , bitRate( 0 )
         , year( 0 )
+        , bpm( 0.0 )
         , trackGain( 0.0 )
         , trackPeak( 0.0 )
         , albumGain( 0.0 )
@@ -91,6 +92,7 @@ struct MetaData
     int sampleRate;
     int bitRate;
     int year;
+    float bpm;
     qreal trackGain;
     qreal trackPeak;
     qreal albumGain;
@@ -125,6 +127,7 @@ public:
 
     void readMetaData();
     QVariantMap changes;
+
     void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( getFileRef(), changes ); changes.clear(); readMetaData(); }
     MetaData m_data;
 
@@ -208,7 +211,7 @@ void Track::Private::readMetaData()
     }
     //This is pretty messy...
     QString disc;
-
+    m_data.bpm = -1.0;
     if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileRef.file() ) )
     {
         if( file->ID3v2Tag() )
@@ -222,6 +225,11 @@ void Track::Private::readMetaData()
 
             if( !flm[ "TPE2" ].isEmpty() )
                 m_data.artist = strip( flm[ "TPE2" ].front()->toString() );
+
+            if( !flm[ "TBPM" ].isEmpty() )
+                m_data.bpm = TStringToQString( flm[ "TBPM" ].front()->toString() ).toFloat();
+
+
 
         }
         if( tag )
@@ -273,6 +281,8 @@ void Track::Private::readMetaData()
                 m_data.composer = strip( flm[ "COMPOSER" ].front() );
             if( !flm[ "DISCNUMBER" ].isEmpty() )
                 disc = strip( flm[ "DISCNUMBER" ].front() );
+            if( !flm[ "BPM" ].isEmpty() )
+                m_data.bpm = TStringToQString( flm[ "BPM" ].front() ).toFloat();
         }
     }
 
@@ -285,6 +295,8 @@ void Track::Private::readMetaData()
                 m_data.composer = strip( flm[ "COMPOSER" ].front() );
             if( !flm[ "DISCNUMBER" ].isEmpty() )
                 disc = strip( flm[ "DISCNUMBER" ].front() );
+            if( !flm[ "BPM" ].isEmpty() )
+                m_data.bpm = TStringToQString( flm[ "BPM" ].front() ).toFloat();
         }
     }
     else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileRef.file() ) )
@@ -297,6 +309,9 @@ void Track::Private::readMetaData()
 
             if ( mp4tag->itemListMap().contains( "disk" ) )
                 disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
+
+            if ( mp4tag->itemListMap().contains( "tmpo" ) )
+                m_data.bpm = mp4tag->itemListMap()["tmpo"].toIntPair().first;
         }
     }
     if( !disc.isEmpty() )
