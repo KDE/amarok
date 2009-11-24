@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2.2
   FEATURES
-    * Make it possible to change a podcast channel's URL. (BR 195204)
+    * Made it possible to change a podcast channel's URL. (BR 195204)
     * Also support feed:// urls for subscribing to podcasts.
     * Limiting the number of simultaneous podcast updates and downloads to 4. Can be
       configured separately in the rc-file.
