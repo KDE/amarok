@@ -360,7 +360,7 @@
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>B&amp;eats Per Minutes:</string>
+                <string>B&amp;eats Per Minute:</string>
                </property>
                <property name="buddy">
                 <cstring>kLineEdit_Bpm</cstring>
