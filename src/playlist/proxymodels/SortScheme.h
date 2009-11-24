@@ -40,6 +40,7 @@ class SortLevel
         void setOrder( Qt::SortOrder sortOrder );
         bool isComparable();
         bool isString();
+        bool isFloat();
         QString prettyName();
     private:
         int m_category;     //Column from PlaylistDefines.h

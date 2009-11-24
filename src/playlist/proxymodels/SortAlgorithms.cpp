@@ -41,6 +41,15 @@ multilevelLessThan::operator()( int rowA, int rowB)
             else
                 verdict = 2;
         }
+        else if( m_scheme.level( i ).isFloat() )
+        {
+            if( dataA.toDouble() < dataB.toDouble() )
+                verdict = 1;
+            else if( dataA.toDouble() > dataB.toDouble() )
+                verdict = 0;
+            else
+                verdict = 2;
+        }
         else //if it's not a string ==> it's a number
         {
             if( dataA.toInt() < dataB.toInt() )

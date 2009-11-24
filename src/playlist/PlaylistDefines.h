@@ -163,6 +163,7 @@ static const QStringList sortableCategories = ( QStringList()
         << "Album artist"
         << "Artist"
         << "Bitrate"
+        << "Bpm"
         << "Comment"
         << "Composer"
         << "Directory"
