@@ -39,6 +39,7 @@ protected:
     bool eventFilter( QObject *o, QEvent *ev );
     void resizeEvent( QResizeEvent *ev );
 private slots:
+    void filter( const QString &string );
     void setPlaying( bool on );
     void updatePrevAndNext();
 private:

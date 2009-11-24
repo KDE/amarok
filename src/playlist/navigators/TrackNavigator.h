@@ -52,12 +52,12 @@ namespace Playlist
             /**
              * non-destructive variants of requestNextTrack, i.e. this must NOT update any internal
              * counter */
-            virtual quint64 nextTrack() = 0;
+            virtual quint64 nextTrack() const = 0;
 
             /**
              * non-destructive variants of requestLastTrack, i.e. this must NOT update any internal
              * counter */
-            virtual quint64 lastTrack() = 0;
+            virtual quint64 lastTrack() const = 0;
 
             /**
              * The engine will finish the current track in a couple of seconds,

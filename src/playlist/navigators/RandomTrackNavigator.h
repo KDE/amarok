@@ -33,8 +33,8 @@ namespace Playlist
 
     public:
         RandomTrackNavigator();
-        quint64 nextTrack()  { return 0; }
-        quint64 lastTrack()  { return 0; }
+        quint64 nextTrack() const { return 0; }
+        quint64 lastTrack() const { return 0; }
         quint64 requestNextTrack();
         quint64 requestUserNextTrack() { return requestNextTrack(); }
         quint64 requestLastTrack();

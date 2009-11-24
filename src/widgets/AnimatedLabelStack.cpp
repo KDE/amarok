@@ -238,7 +238,7 @@ AnimatedLabelStack::timerEvent( QTimerEvent * te )
     if ( !isVisible() || te->timerId() != m_animTimer )
         return;
 
-    if ( !m_pulsating && underMouse() )
+    if ( !(m_pulsating || m_pulseRequested) && underMouse() )
         return; // the user explicitly altered content by wheeling, don't take it away
     
     if ( m_time < m_fadeTime || m_time > (m_displayTime - m_fadeTime) )

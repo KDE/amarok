@@ -5,6 +5,8 @@
 #include "Amarok.h"
 #include "EngineController.h"
 
+#include "browsers/collectionbrowser/CollectionWidget.h"
+
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 
@@ -21,6 +23,9 @@
 #include <QVBoxLayout>
 
 #include <QtDebug>
+
+// NOTICE shall be 10, but there're the time labels :-(
+static const int progressStretch = 12;
 
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
@@ -49,9 +54,9 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_prev->setAlign( Qt::AlignLeft );
     connect ( m_prev, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
 
-    m_current = new AnimatedLabelStack(QStringList() << "AmaroK 2.3", info);
+    m_current = new AnimatedLabelStack(QStringList() << "Amarok your Music", info);
     m_current->setBold( true );
-//     connect ( m_prev, SIGNAL( clicked(const QString&), The::playlistActions(), SLOT( back() ) );
+    connect ( m_current, SIGNAL( clicked(const QString&) ), this, SLOT( filter(const QString&) ) );
 
     m_next = new AnimatedLabelStack(QStringList(), info);
     m_next->setAnimated( false );
@@ -72,7 +77,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_progress = new ProgressWidget( 0 );
     m_progressLayout->addStretch( 3 );
     m_progressLayout->addWidget( m_progress  );
-    m_progressLayout->setStretchFactor( m_progress , 10 );
+    m_progressLayout->setStretchFactor( m_progress , progressStretch );
     m_progressLayout->addStretch( 3 );
     vl->addLayout( m_progressLayout );
     
@@ -85,10 +90,10 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_volume->setMute( engine->isMuted() );
     m_volume->setFixedSize( 48, 48 );
     addWidget( m_volume );
-    connect( m_volume, SIGNAL( valueChanged(int) ), engine, SLOT( setVolume(int) ) );
-    connect( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
+    connect ( m_volume, SIGNAL( valueChanged(int) ), engine, SLOT( setVolume(int) ) );
+    connect ( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
 
-    connect( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
+    connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
 }
 
 void
@@ -114,6 +119,14 @@ Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldStat
         m_playPause->setPlaying( false );
 }
 
+void
+Toolbar_3::filter( const QString &string )
+{
+    qDebug() << "filter by" << string << CollectionWidget::instance();
+    if ( CollectionWidget::instance() )
+        CollectionWidget::instance()->setFilter( string );
+}
+
 #define STRINGS(_TAG_) track->_TAG_()->prettyName().split( rx, QString::SkipEmptyParts )
 
 static QStringList metadata( Meta::TrackPtr track )
@@ -124,12 +137,12 @@ static QStringList metadata( Meta::TrackPtr track )
     {
         if ( !track->name().isEmpty() )
             list << track->prettyName().split( rx, QString::SkipEmptyParts );
-        if ( !track->composer()->name().isEmpty() )
+        if ( !track->artist()->name().isEmpty() )
+            list << STRINGS(artist);
+        else if ( !track->composer()->name().isEmpty() )
             list << STRINGS(composer);
         if ( !track->album()->name().isEmpty() )
             list << STRINGS(album);
-        if ( !track->artist()->name().isEmpty() )
-            list << STRINGS(artist);
         if ( !track->year()->name().isEmpty() )
             list << STRINGS(year);
         if ( !track->genre()->name().isEmpty() )
@@ -182,10 +195,10 @@ Toolbar_3::resizeEvent( QResizeEvent *ev )
     {
         const int limit = 640;
         if ( ev->size().width() > limit )
-            m_progressLayout->setStretchFactor( m_progress, 10 );
+            m_progressLayout->setStretchFactor( m_progress, progressStretch );
         int s = limit/ev->size().width();
-        s *= s*s*10;
-        m_progressLayout->setStretchFactor( m_progress, qMax( 10, s ) );
+        s *= s*s*progressStretch;
+        m_progressLayout->setStretchFactor( m_progress, qMax( progressStretch, s ) );
     }
 }
 

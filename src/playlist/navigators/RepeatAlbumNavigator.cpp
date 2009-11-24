@@ -136,7 +136,7 @@ Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
 }
 
 quint64
-Playlist::RepeatAlbumNavigator::nextTrack()
+Playlist::RepeatAlbumNavigator::nextTrack() const
 {
     if ( m_currentAlbum != Meta::AlbumPtr() )
     {
@@ -161,7 +161,7 @@ Playlist::RepeatAlbumNavigator::requestNextTrack()
 }
 
 quint64
-Playlist::RepeatAlbumNavigator::lastTrack()
+Playlist::RepeatAlbumNavigator::lastTrack() const
 {
     if ( m_currentAlbum != Meta::AlbumPtr() )
     {
