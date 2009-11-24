@@ -702,10 +702,7 @@ SqlPodcastProvider::completePodcastDownloads()
         {
             foreach( KJob *job, m_downloadJobMap.keys() )
             {
-                // FIXME: prevent an endless loop when job->kill signals downloadResult.
-                // AFAIK this shouldn't happen as i call job->kill(KJob::Quietly).
-                disconnect( job, SIGNAL( finished( KJob * ) ),
-                    this, SLOT( downloadResult( KJob * ) ) );
+                job->kill();
                 cleanupDownload( job, true );
             }
         }
@@ -892,15 +889,10 @@ SqlPodcastProvider::cleanupDownload( KJob* job, bool downloadFailed )
 
     QFile * tmpFile = m_tmpFileMap[job];
 
-    if ( downloadFailed )
+    if ( downloadFailed && tmpFile )
     {
-        debug() << "Stopping download of " << m_downloadJobMap[ job ]->title();
-        job->kill(KJob::Quietly);
-        if ( tmpFile )
-        {
-            debug() << "deleting temporary podcast file: " << tmpFile->fileName();
-            tmpFile->remove();
-        }
+        debug() << "deleting temporary podcast file: " << tmpFile->fileName();
+        tmpFile->remove();
     }
     m_downloadJobMap.remove( job );
     m_fileNameMap.remove( job );
@@ -966,6 +958,7 @@ SqlPodcastProvider::addData( KIO::Job * job, const QByteArray & data )
         if ( !tmpFile )
         {
             debug() << "failed to create tmpfile for podcast download";
+            job->kill();
             cleanupDownload( job, true );
             return;
         }
@@ -976,6 +969,7 @@ SqlPodcastProvider::addData( KIO::Job * job, const QByteArray & data )
     {
         error() << "write error for " << tmpFile->fileName() << ": " <<
             tmpFile->errorString();
+        job->kill();
         cleanupDownload( job, true );
     }
 }
