@@ -318,22 +318,6 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="2">
-            <widget class="KComboBox" name="kComboBox_genre">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="editable">
-              <bool>true</bool>
-             </property>
-             <property name="autoCompletion">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
            <item row="5" column="0">
             <widget class="QLabel" name="textLabel1_6_6">
              <property name="text">
@@ -437,6 +421,49 @@
            </item>
            <item row="6" column="1" colspan="2">
             <widget class="QPlainTextEdit" name="qPlainTextEdit_comment"/>
+           </item>
+           <item row="4" column="2">
+            <layout class="QHBoxLayout">
+             <item>
+              <widget class="KComboBox" name="kComboBox_genre">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="editable">
+                <bool>true</bool>
+               </property>
+               <property name="autoCompletion">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="textLabel_BPM">
+               <property name="text">
+                <string>B&amp;eats Per Minutes:</string>
+               </property>
+               <property name="buddy">
+                <cstring>kLineEdit_Bpm</cstring>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="KLineEdit" name="kLineEdit_Bpm">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>
@@ -898,6 +925,7 @@
   <tabstop>kComboBox_album</tabstop>
   <tabstop>qSpinBox_discNumber</tabstop>
   <tabstop>kComboBox_genre</tabstop>
+  <tabstop>kLineEdit_Bpm</tabstop>
   <tabstop>qSpinBox_track</tabstop>
   <tabstop>qSpinBox_year</tabstop>
   <tabstop>pushButton_guessTags</tabstop>
