@@ -33,6 +33,8 @@ private:
     KUrl m_smallImageUrl;
     KUrl m_url;
 
+    static int metaTypeRegistered;
+
 public:
     LastFmEvent();
     LastFmEvent( const LastFmEvent& );

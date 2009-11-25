@@ -17,21 +17,18 @@
 
 #include "LastFmEvent.h"
 
+int LastFmEvent::metaTypeRegistered = 0;
+
 /**
  * Creates an empty LastFmEvent
  */
-LastFmEvent::LastFmEvent()
-{
-    //Q_DECLARE_METATYPE(LastFmEvent)
-}
+LastFmEvent::LastFmEvent() {}
 
 /**
  * Creates a new LastFmEvent with the 'event' attributes
  */
 LastFmEvent::LastFmEvent( const LastFmEvent& event)
 {
-   // Q_DECLARE_METATYPE(LastFmEvent)
-
     foreach( QString currentArtist, event.m_artists )
     {
         m_artists.append(currentArtist);    
@@ -50,8 +47,11 @@ LastFmEvent::~LastFmEvent() {}
 LastFmEvent::LastFmEvent(QStringList artists, QString name, QDate date, KUrl smallImageUrl, KUrl url)
     : m_artists(artists), m_name(name), m_date(date), m_smallImageUrl(smallImageUrl), m_url(url)
 {
-    //Q_DECLARE_METATYPE(LastFmEvent)
-    qRegisterMetaType<LastFmEvent>("LastFmEvent");
+    if (!LastFmEvent::metaTypeRegistered)
+    {
+        qRegisterMetaType<LastFmEvent>("LastFmEvent");
+        LastFmEvent::metaTypeRegistered++;
+    }
 }
 
 QStringList LastFmEvent::artists() const
