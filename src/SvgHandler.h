@@ -104,7 +104,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
          * Calculate the visual slider knob rect from its value, use it instead the QStyle functions
          * QStyle::sliderPositionFromValue() and QStyle::subControlRect();
          */
-        QRect sliderKnobRect( const QRect &slider, qreal percent );
+        QRect sliderKnobRect( const QRect &slider, qreal percent ) const;
 
         /**
          * Get the path of the currently used svg theme file.

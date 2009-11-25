@@ -363,12 +363,13 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 }
 #endif
 
-QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent )
+QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent ) const
 {
     //NOTICE Vertical sliders are atm not supported by the API at all, neither is rtl
     const int knobSize = slider.height() - 4;
     QRect ret( 0, 0, knobSize, knobSize );
     ret.moveTo( slider.x() + qRound( ( slider.width() - knobSize ) * percent ), slider.y() + 1 );
+
     return ret;
 }
 
