@@ -40,6 +40,8 @@ VERSION 2.2.2
     * Improved guessing tags from filename. Added preview to Dialog.
 
   BUGFIXES:
+    * The volume slider in the Slim Toolbar would sometimes work incorrectly
+      after startup. (BR 215185)
     * Fixed popup for showing the progress of multiple taks not working.
     * Made dragging from podcast list to external program work. (BR 212343)
     * Made dragging from the Last.fm service directly to the playlist work.
