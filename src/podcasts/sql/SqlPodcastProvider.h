@@ -89,6 +89,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
 
     private slots:
         void downloadResult( KJob * );
+        void addData( KIO::Job * job, const QByteArray & data );
         void redirected( KIO::Job *, const KUrl& );
         void autoUpdate();
         void slotDeleteEpisodes();
@@ -115,6 +116,8 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void fetchImage( Meta::SqlPodcastChannelPtr channel );
 
         void subscribe( const KUrl &url );
+        QFile* createTmpFile ( KJob* job );
+        void cleanupDownload( KJob* job, bool downloadFailed );
 
         Meta::SqlPodcastChannelList m_channels;
 
@@ -127,6 +130,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
 
         QHash<KJob *, Meta::SqlPodcastEpisode *> m_downloadJobMap;
         QHash<KJob *, QString> m_fileNameMap;
+        QHash<KJob *, QFile*> m_tmpFileMap;
 
         Meta::SqlPodcastEpisodeList m_downloadQueue;
         int m_maxConcurrentDownloads;
