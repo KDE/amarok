@@ -919,8 +919,8 @@ PodcastReader::endLink()
 void
 PodcastReader::beginHtml()
 {
-    stopWithError( i18n( "An HTML page was received but expected a feed while parsing %1."
-                         "\nDid you enter the corrent URL?" ).arg( m_url.url() ) );
+    stopWithError( i18n( "While parsing %1, a feed was expected but an HTML page was received."
+                         "\nDid you enter the correct URL?" ).arg( m_url.url() ) );
 }
 
 void
