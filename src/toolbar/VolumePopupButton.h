@@ -26,8 +26,9 @@ class QAction;
 class QLabel;
 class QMenu;
 class QMouseEvent;
-class QSlider;
 class QWheelEvent;
+
+namespace Amarok { class VolumeSlider; }
 
 
 class VolumePopupButton : public QToolButton, public EngineObserver
@@ -48,7 +49,7 @@ private:
     QLabel * m_volumeLabel;
     QToolButton * m_volumeToolButton;
     QMenu * m_volumeMenu;
-    QSlider * m_volumeSlider;
+    Amarok::VolumeSlider * m_volumeSlider;
     QAction * m_muteAction;
 };
 

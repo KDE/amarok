@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2003-2008 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2003-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2005 Gabor Lehel <illissius@gmail.com>                                 *
  * Copyright (c) 2008 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
  *                                                                                      *
@@ -64,6 +64,7 @@ namespace Amarok
             void paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double pos = -1.0, bool paintMoodbar = false );
 
             bool m_sliding;
+            bool m_usingCustomStyle;
 
             /// we flip the value for vertical sliders
             int adjustValue( int v ) const
@@ -79,6 +80,8 @@ namespace Amarok
             static const int m_sliderInsertY = 5;
 
         private:
+            QRect sliderHandleRect( const QRect &slider, qreal percent ) const;
+
             bool m_outside;
             int  m_prevValue;
             bool m_needsResize;
@@ -103,7 +106,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            explicit VolumeSlider( uint max, QWidget *parent = 0 );
+            explicit VolumeSlider( uint max, QWidget *parent, bool customStyle = true );
 
         protected:
             virtual void paintEvent( QPaintEvent* );

@@ -21,13 +21,13 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "SliderWidget.h"
 
 #include <KVBox>
 
 #include <QAction>
 #include <QLabel>
 #include <QMenu>
-#include <QSlider>
 #include <QToolBar>
 #include <QWheelEvent>
 #include <QWidgetAction>
@@ -45,8 +45,7 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     m_volumeLabel->setAlignment( Qt::AlignHCenter );
 
     KHBox * sliderBox = new KHBox( mainBox );
-    m_volumeSlider = new QSlider( Qt::Vertical, sliderBox );
-    m_volumeSlider->setMaximum( 100 );
+    m_volumeSlider = new Amarok::VolumeSlider( Amarok::VOLUME_MAX, sliderBox, false );
     m_volumeSlider->setFixedHeight( 170 );
     mainBox->setMargin( 0 );
     mainBox->setSpacing( 0 );
@@ -60,7 +59,8 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     QWidgetAction * sliderActionWidget = new QWidgetAction( this );
     sliderActionWidget->setDefaultWidget( mainBox );
 
-    connect( m_volumeSlider, SIGNAL( valueChanged( int ) ), ec, SLOT( setVolume( int ) ) );
+    connect( m_volumeSlider, SIGNAL( sliderMoved( int ) ), ec, SLOT( setVolume( int ) ) );
+    connect( m_volumeSlider, SIGNAL( sliderReleased( int ) ), ec, SLOT( setVolume( int ) ) );
 
     QToolBar *muteBar = new QToolBar( QString(), mainBox );
     muteBar->setContentsMargins( 0, 0, 0, 0 );
@@ -89,7 +89,9 @@ VolumePopupButton::engineVolumeChanged( int newVolume )
         setIcon( KIcon( "audio-volume-high" ) );
 
     m_volumeLabel->setText( QString::number( newVolume ) + '%' );
-    m_volumeSlider->setValue( newVolume );
+
+    if( newVolume != m_volumeSlider->value() )
+        m_volumeSlider->setValue( newVolume );
 
     //make sure to uncheck mute toolbar when moving slider
     m_muteAction->setChecked( false );

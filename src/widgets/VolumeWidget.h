@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2004-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
  * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                                 *
  *                                                                                      *
