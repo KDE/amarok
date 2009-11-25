@@ -26,18 +26,6 @@
 #include <QQueue>
 
 
-quint64
-Playlist::TrackNavigator::requestNextTrack()
-{
-    return nextTrack();
-}
-
-quint64
-Playlist::TrackNavigator::requestLastTrack()
-{
-    return lastTrack();
-}
-
 Playlist::TrackNavigator::TrackNavigator()
 {
     m_model = Playlist::ModelStack::instance()->top();

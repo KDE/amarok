@@ -83,7 +83,7 @@ Playlist::RandomTrackNavigator::recvActiveTrackChanged( const quint64 id )
 }
 
 quint64
-Playlist::RandomTrackNavigator::requestNextTrack()
+Playlist::RandomTrackNavigator::requestNextTrack( bool update )
 {
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
@@ -133,7 +133,7 @@ Playlist::RandomTrackNavigator::requestNextTrack()
 }
 
 quint64
-Playlist::RandomTrackNavigator::requestLastTrack()
+Playlist::RandomTrackNavigator::requestLastTrack( bool update )
 {
     if ( m_model->tracks().isEmpty() )
         return 0;

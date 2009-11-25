@@ -22,10 +22,10 @@
 #include "StandardTrackNavigator.h"
 
 quint64
-Playlist::StandardTrackNavigator::nextTrack() const
+Playlist::StandardTrackNavigator::requestNextTrack( bool update )
 {
     if( !m_queue.isEmpty() )
-        return m_queue.first();
+        return update ? m_queue.takeFirst() : m_queue.first();
     int updateRow = m_model->activeRow() + 1;
     if ( m_repeatPlaylist )
         updateRow = ( updateRow >= m_model->rowCount() ) ? 0 : updateRow;
@@ -33,19 +33,10 @@ Playlist::StandardTrackNavigator::nextTrack() const
 }
 
 quint64
-Playlist::StandardTrackNavigator::lastTrack() const
+Playlist::StandardTrackNavigator::requestLastTrack( bool update )
 {
     int updateRow = m_model->activeRow() - 1;
     if ( m_repeatPlaylist )
         updateRow = ( updateRow < 0 ) ? m_model->rowCount() - 1 : updateRow;
     return m_model->idAt( updateRow );
-}
-
-quint64
-Playlist::StandardTrackNavigator::requestNextTrack()
-{
-    if( !m_queue.isEmpty() )
-        return m_queue.takeFirst();
-    else
-        return nextTrack();
 }

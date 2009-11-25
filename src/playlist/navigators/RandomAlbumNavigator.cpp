@@ -145,7 +145,7 @@ Playlist::RandomAlbumNavigator::recvActiveTrackChanged( const quint64 id )
 }
 
 quint64
-Playlist::RandomAlbumNavigator::requestNextTrack()
+Playlist::RandomAlbumNavigator::requestNextTrack( bool update )
 {
     if( !m_queue.isEmpty() )
         return m_queue.takeFirst();
@@ -192,7 +192,7 @@ Playlist::RandomAlbumNavigator::requestNextTrack()
 }
 
 quint64
-Playlist::RandomAlbumNavigator::requestLastTrack()
+Playlist::RandomAlbumNavigator::requestLastTrack( bool update )
 {
     if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
         return 0;

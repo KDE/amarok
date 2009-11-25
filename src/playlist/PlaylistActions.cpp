@@ -92,13 +92,13 @@ Playlist::Actions::~Actions()
 Meta::TrackPtr
 Playlist::Actions::nextTrack()
 {
-    return m_topmostModel->trackForId( m_navigator->nextTrack() );
+    return m_topmostModel->trackForId( m_navigator->requestNextTrack( false ) );
 }
 
 Meta::TrackPtr
 Playlist::Actions::prevTrack()
 {
-    return m_topmostModel->trackForId( m_navigator->lastTrack() );
+    return m_topmostModel->trackForId( m_navigator->requestLastTrack( false ) );
 }
 
 void

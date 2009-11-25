@@ -32,8 +32,8 @@ namespace Playlist
         public:
             RepeatTrackNavigator();
 
-            quint64 nextTrack() const { return m_trackid; }
-            quint64 lastTrack() const { return m_trackid; }
+            quint64 requestNextTrack( bool ) { return m_trackid; }
+            quint64 requestLastTrack( bool ) { return m_trackid; }
 
             virtual void reset() {};
             

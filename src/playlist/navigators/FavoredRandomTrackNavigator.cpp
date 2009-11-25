@@ -27,7 +27,7 @@
 #include <KRandom>
 
 quint64
-Playlist::FavoredRandomTrackNavigator::requestNextTrack()
+Playlist::FavoredRandomTrackNavigator::requestNextTrack( bool update )
 {
     DEBUG_BLOCK
 
@@ -89,7 +89,7 @@ Playlist::FavoredRandomTrackNavigator::requestNextTrack()
 }
 
 quint64
-Playlist::FavoredRandomTrackNavigator::requestLastTrack()
+Playlist::FavoredRandomTrackNavigator::requestLastTrack( bool update )
 {
     if( m_history.isEmpty() )
         return requestNextTrack();

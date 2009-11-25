@@ -48,23 +48,12 @@ namespace Playlist
             TrackNavigator();
             virtual ~TrackNavigator() { }
 
-
-            /**
-             * non-destructive variants of requestNextTrack, i.e. this must NOT update any internal
-             * counter */
-            virtual quint64 nextTrack() const = 0;
-
-            /**
-             * non-destructive variants of requestLastTrack, i.e. this must NOT update any internal
-             * counter */
-            virtual quint64 lastTrack() const = 0;
-
             /**
              * The engine will finish the current track in a couple of seconds,
              * and would like to know what the next track should be.
-             * The default just calls nextTrack()
+             * @p update whether the playlist will be updated (i.e. the next call will have a different result)
              */
-            virtual quint64 requestNextTrack();
+            virtual quint64 requestNextTrack( bool update = true ) = 0;
 
             /**
              * The user triggers the next-track action.
@@ -73,9 +62,9 @@ namespace Playlist
 
             /**
              * The user triggers the previous-track action.
-             * The default just calls lastTrack()
+             * @p update whether the playlist will be updated (i.e. the next call will have a different result)
              */
-            virtual quint64 requestLastTrack();
+            virtual quint64 requestLastTrack( bool update = true ) = 0;
 
             /**
              * Reset this navigator. Called when the end of a playlist is reached.

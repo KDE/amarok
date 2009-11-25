@@ -30,7 +30,7 @@ AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt:
 void
 AnimatedLabelStack::activateOnEnter()
 {
-    if ( !underMouse() || m_pulsating )
+    if ( m_data.isEmpty() || !underMouse() || m_pulsating )
         return;
     if ( m_animated )
     {
@@ -105,6 +105,8 @@ AnimatedLabelStack::leaveEvent( QEvent * )
 void
 AnimatedLabelStack::mousePressEvent( QMouseEvent *me )
 {
+    if ( m_data.isEmpty() )
+        return;
     m_isClick = true;
     me->accept();
 }
@@ -112,6 +114,8 @@ AnimatedLabelStack::mousePressEvent( QMouseEvent *me )
 void
 AnimatedLabelStack::mouseReleaseEvent( QMouseEvent *me )
 {
+    if ( m_data.isEmpty() )
+        return;
     me->accept();
     if ( m_isClick && underMouse() )
     {
@@ -160,9 +164,10 @@ AnimatedLabelStack::paintEvent( QPaintEvent * pe )
 }
 
 void
-AnimatedLabelStack::pulse( int cycles, int minimum )
+AnimatedLabelStack::pulse( int /*cycles*/, int /*minimum*/ )
 {
-    enterEvent(0);
+    //TODO: handle parameters...
+    activateOnEnter();
 }
 
 void

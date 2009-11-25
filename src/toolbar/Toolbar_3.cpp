@@ -127,7 +127,8 @@ Toolbar_3::filter( const QString &string )
         CollectionWidget::instance()->setFilter( string );
 }
 
-#define STRINGS(_TAG_) track->_TAG_()->prettyName().split( rx, QString::SkipEmptyParts )
+#define HAS_TAG(_TAG_) !track->_TAG_()->name().isEmpty()
+#define TAG(_TAG_) track->_TAG_()->prettyName()
 
 static QStringList metadata( Meta::TrackPtr track )
 {
@@ -136,37 +137,52 @@ static QStringList metadata( Meta::TrackPtr track )
     if ( track )
     {
         if ( !track->name().isEmpty() )
-            list << track->prettyName().split( rx, QString::SkipEmptyParts );
-        if ( !track->artist()->name().isEmpty() )
-            list << STRINGS(artist);
-        else if ( !track->composer()->name().isEmpty() )
-            list << STRINGS(composer);
-        if ( !track->album()->name().isEmpty() )
-            list << STRINGS(album);
-        if ( !track->year()->name().isEmpty() )
-            list << STRINGS(year);
-        if ( !track->genre()->name().isEmpty() )
-            list << STRINGS(genre);
+        {
+            QString title = track->prettyName();
+//             qDebug() << track->prettyUrl();
+            if ( title.length() > 50 ||
+                 HAS_TAG(artist) && title.contains( TAG(artist), Qt::CaseInsensitive ) ||
+                 HAS_TAG(composer) && title.contains( TAG(artist), Qt::CaseInsensitive ) ||
+                 HAS_TAG(album) && title.contains( TAG(album) ), Qt::CaseInsensitive )
+            {
+                list << title.split( rx, QString::SkipEmptyParts );
+            }
+            else
+            {
+                list << title;
+            }
+        }
+
+        if ( HAS_TAG(artist) )
+            list << TAG(artist);
+        else if ( HAS_TAG(composer) )
+            list << TAG(composer);
+        if ( HAS_TAG(album) )
+            list << TAG(album);
+        if ( HAS_TAG(year) )
+            list << TAG(year);
+        if ( HAS_TAG(genre) )
+            list << TAG(genre);
         #if 0
-        virtual double score() const = 0;
-        virtual int rating() const = 0;
-        /** Returns the length of this track in milliseconds, or 0 if unknown */
-        virtual qint64 length() const = 0;
-        virtual int sampleRate() const = 0;
-        virtual int bitrate() const = 0;
-        virtual int trackNumber() const = 0;
-        virtual int discNumber() const = 0;
-        virtual uint lastPlayed() const = 0;
-        virtual uint firstPlayed() const;
-        virtual int playCount() const = 0;
-        virtual QString type() const = 0;
-        virtual bool inCollection() const;
+        double score
+        int rating()
+        qint64 length // ms
+        int sampleRate
+        int bitrate
+        int trackNumber
+        int discNumber
+        uint lastPlayed
+        uint firstPlayed
+        int playCount
+        QString type
+        bool inCollection
         #endif
     }
     return list;
 }
 
-#undef STRINGS
+#undef HAS_TAG
+#undef TAG
 
 void
 Toolbar_3::updatePrevAndNext()
@@ -176,7 +192,7 @@ Toolbar_3::updatePrevAndNext()
     m_prev->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
     
     track = The::playlistActions()->nextTrack();
-    m_next->setData( metadata( The::playlistActions()->nextTrack() ) );
+    m_next->setData( metadata( track ) );
     m_next->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
 }
 
