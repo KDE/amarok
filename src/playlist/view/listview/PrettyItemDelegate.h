@@ -25,12 +25,14 @@
 #include <QModelIndex>
 #include <QStyledItemDelegate>
 
+class InlineEditorWidget;
 class QPainter;
 
 namespace Playlist
 {
 class PrettyItemDelegate : public QStyledItemDelegate
 {
+    Q_OBJECT
 public:
     PrettyItemDelegate( QObject* parent = 0 );
     ~PrettyItemDelegate();
@@ -55,6 +57,11 @@ public:
     void updateEditorGeometry ( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
     void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
+
+
+protected slots:
+
+    void editorDone( InlineEditorWidget * editor );
 
 private:
     void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const;

@@ -37,6 +37,10 @@ public:
 
     QMap<int, QString> changedValues();
 
+signals:
+
+    void editingDone( InlineEditorWidget * editor );
+
 protected:
     void paintEvent( QPaintEvent * event );
 
@@ -48,6 +52,7 @@ protected slots:
 private:
     void createChildWidgets();
     QPoint centerImage( const QPixmap&, const QRectF& ) const;
+    bool eventFilter( QObject *obj, QEvent *event );
 
     QModelIndex m_index;
     Playlist::PlaylistLayout m_layout;

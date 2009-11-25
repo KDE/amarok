@@ -27,6 +27,8 @@
 #include <KHBox>
 #include <KVBox>
 
+#include <QEvent>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPainter>
@@ -91,7 +93,6 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
         m_headerHeight = ( height * layout.head().rows() ) / rowCount - 1;
 
     //prevent editor closing when cliking a rating widget or pressing return in a line edit.
-    
     setFocusPolicy( Qt::StrongFocus );
 
     createChildWidgets();
@@ -302,6 +303,7 @@ void InlineEditorWidget::createChildWidgets()
                      rowWidget->addWidget( edit );
                      rowWidget->setStretchFactor( itemIndex, itemWidth );
                      edit->setAlignment( element.alignment() );
+                     edit->installEventFilter(this);
 
                      connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
 
@@ -370,6 +372,7 @@ void InlineEditorWidget::editValueChanged()
 
     int role = m_editorRoleMap.value( edit );
     m_changedValues.insert( role, edit->text() );
+    
 }
 
 void InlineEditorWidget::ratingValueChanged()
@@ -480,3 +483,41 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
             break;
     }
 }
+
+bool
+InlineEditorWidget::eventFilter( QObject *obj, QEvent *event )
+{
+    QList<QWidget *> editWidgets = m_editorRoleMap.keys();
+
+    QWidget * widget = qobject_cast<QWidget *>( obj );
+
+    if( editWidgets.contains( widget ) )
+    {
+        if( event->type() == QEvent::KeyPress )
+        {
+            QKeyEvent * keyEvent = dynamic_cast<QKeyEvent *>( event );
+            if( keyEvent && keyEvent->key() == Qt::Key_Return )
+            {
+                debug() << "InlineEditorWidget ate a return press for a child widget";
+                if( widget )
+                {
+                    widget->clearFocus ();
+                    debug() << "emitting editingDone!";
+                    emit editingDone( this );
+                }
+                
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
+
+    }
+    else
+        return KVBox::eventFilter( obj, event );
+}
+
+#include "InlineEditorWidget.moc"
+

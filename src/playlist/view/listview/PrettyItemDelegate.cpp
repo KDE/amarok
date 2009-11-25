@@ -665,7 +665,9 @@ QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const Q
 
     DEBUG_BLOCK
     const int groupMode = getGroupMode(index);
-    return new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
+    InlineEditorWidget * editor = new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
+    connect( editor, SIGNAL( editingDone( InlineEditorWidget *) ), this, SLOT( editorDone(  InlineEditorWidget *) ) );
+    return editor;
 }
 
 void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &index ) const
@@ -771,6 +773,13 @@ Playlist::PrettyItemDelegate::updateEditorGeometry( QWidget * editor, const QSty
 
     editor->setFixedSize( option.rect.size() );
     editor->setGeometry( option.rect );
+}
+
+void
+Playlist::PrettyItemDelegate::editorDone( InlineEditorWidget * editor )
+{
+    DEBUG_BLOCK;
+    emit commitData( editor );
 }
 
 
