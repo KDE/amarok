@@ -42,6 +42,8 @@ VERSION 2.2.2
     * Improved guessing tags from filename. Added preview to Dialog.
 
   BUGFIXES:
+    * Fixed copies of default layouts getting created even if just using the
+      inline editor to change track metadata.
     * Fixed inline playlist editor saving values that had been edited but
       where the value had not actually changed.
     * Pressing enter now correctly applies changes in the playlist inline
