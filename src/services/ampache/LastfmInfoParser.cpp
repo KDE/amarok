@@ -22,7 +22,7 @@
 
 #include <QNetworkReply>
 #include <lastfm/XmlQuery>
-#include <ws.h>
+#include <lastfm/ws.h>
 
 
 void LastfmInfoParser::getInfo(Meta::TrackPtr track)

@@ -14,7 +14,7 @@
 
 if( LIBLASTFM_FOUND )
     include_directories(
-        ${LIBLASTFM_INCLUDE_DIR}
+        ${LIBLASTFM_INCLUDE_DIR}/..
     )
 endif( LIBLASTFM_FOUND )
 
