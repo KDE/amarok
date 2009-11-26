@@ -86,7 +86,7 @@ quint64
 Playlist::RandomTrackNavigator::requestNextTrack( bool update )
 {
     if( !m_queue.isEmpty() )
-        return m_queue.takeFirst();
+        return update ? m_queue.takeFirst() : m_queue.first();
 
     if( m_unplayedRows.isEmpty() && m_playedRows.isEmpty() )
         return 0;
@@ -104,29 +104,39 @@ Playlist::RandomTrackNavigator::requestNextTrack( bool update )
         // Respect queue priority over random track
         if( !m_queue.isEmpty() )
         {
-            requestedTrack = m_queue.takeFirst();
-            // remove the id from the unplayed rows list
-            m_unplayedRows.removeAll( requestedTrack );
+            requestedTrack = m_queue.first();
+            if ( update || requestedTrack == m_model->activeId() )
+            {
+                m_queue.removeFirst();
+                if ( update ) // remove the id from the unplayed rows list
+                    m_unplayedRows.removeAll( requestedTrack );
+            }
         }
         else if( !m_replayedRows.isEmpty() )
         {
-            requestedTrack = m_replayedRows.takeFirst();
+            requestedTrack = m_replayedRows.first();
+            if ( update || requestedTrack == m_model->activeId() )
+                m_replayedRows.removeFirst();
         }
         else if( !m_unplayedRows.isEmpty() )
         {
-            requestedTrack = m_unplayedRows.takeFirst();
+            requestedTrack = m_unplayedRows.first();
+            if ( update || requestedTrack == m_model->activeId() )
+                m_unplayedRows.removeFirst();
         }
 
         if( requestedTrack == m_model->activeId() )
         {
-            m_playedRows.prepend( requestedTrack );
+            if ( update )
+                m_playedRows.prepend( requestedTrack );
 
             if( !m_replayedRows.isEmpty() )
-                requestedTrack = m_replayedRows.takeFirst();
+                requestedTrack = update ? m_replayedRows.takeFirst() : m_replayedRows.first();
             else if( !m_unplayedRows.isEmpty() )
-                requestedTrack = m_unplayedRows.takeFirst();
+                requestedTrack = update ? m_unplayedRows.takeFirst() : m_unplayedRows.first();
         }
-        m_playedRows.prepend( requestedTrack );
+        if ( update )
+            m_playedRows.prepend( requestedTrack );
 
         return requestedTrack;
     }
@@ -148,15 +158,19 @@ Playlist::RandomTrackNavigator::requestLastTrack( bool update )
             m_unplayedRows.clear();
         }
 
-        quint64 requestedTrack =  !m_playedRows.isEmpty() ? m_playedRows.takeFirst() : 0;
+        quint64 requestedTrack = 0;
+        if ( !m_playedRows.isEmpty() )
+            requestedTrack = m_playedRows.first();
 
-        if( requestedTrack == m_model->activeId() )
+        if( update || requestedTrack == m_model->activeId() )
         {
+            m_playedRows.removeFirst();
             m_replayedRows.prepend( requestedTrack );
             if ( !m_playedRows.isEmpty() )
-                requestedTrack = m_playedRows.takeFirst();
+                requestedTrack = update ? m_playedRows.takeFirst() : m_playedRows.first();
         }
-        m_replayedRows.prepend( requestedTrack );
+        if ( update )
+            m_replayedRows.prepend( requestedTrack );
 
         return requestedTrack;
     }

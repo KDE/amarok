@@ -159,13 +159,14 @@ static QStringList metadata( Meta::TrackPtr track )
             list << TAG(composer);
         if ( HAS_TAG(album) )
             list << TAG(album);
-        if ( HAS_TAG(year) )
+        if ( HAS_TAG(year) && TAG(year) != "0" ) // "0" years be empty?!
             list << TAG(year);
         if ( HAS_TAG(genre) )
             list << TAG(genre);
-        #if 0
+
+        /* other tags
         double score
-        int rating()
+        int rating
         qint64 length // ms
         int sampleRate
         int bitrate
@@ -176,7 +177,7 @@ static QStringList metadata( Meta::TrackPtr track )
         int playCount
         QString type
         bool inCollection
-        #endif
+        */
     }
     return list;
 }
