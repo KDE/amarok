@@ -92,7 +92,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void addData( KIO::Job * job, const QByteArray & data );
         void redirected( KIO::Job *, const KUrl& );
         void autoUpdate();
-        void slotDeleteEpisodes();
+        void slotDeleteSelectedEpisodes();
         void slotDownloadEpisodes();
         void slotConfigureChannel();
         void slotRemoveChannels();
@@ -114,6 +114,8 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void loadPodcasts();
         void updateDatabase( int fromVersion, int toVersion );
         void fetchImage( Meta::SqlPodcastChannelPtr channel );
+
+        void deleteEpisodes( Meta::PodcastEpisodeList & episodes );
 
         void subscribe( const KUrl &url );
         QFile* createTmpFile ( KJob* job );

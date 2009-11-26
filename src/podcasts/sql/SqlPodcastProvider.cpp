@@ -46,6 +46,7 @@
 #include <QFile>
 #include <QDir>
 #include <QTimer>
+#include <QCheckBox>
 
 using namespace Meta;
 
@@ -442,7 +443,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
             this
         );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteEpisodes() ) );
+        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteSelectedEpisodes() ) );
     }
 
     if( m_writeTagsAction == 0 )
@@ -539,10 +540,8 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
 }
 
 void
-SqlPodcastProvider::slotDeleteEpisodes()
+SqlPodcastProvider::deleteEpisodes( Meta::PodcastEpisodeList & episodes )
 {
-    DEBUG_BLOCK
-    Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
     foreach( Meta::PodcastEpisodePtr episode, episodes )
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode =
@@ -552,6 +551,14 @@ SqlPodcastProvider::slotDeleteEpisodes()
 
         deleteDownloadedEpisode( sqlEpisode );
     }
+}
+
+void
+SqlPodcastProvider::slotDeleteSelectedEpisodes()
+{
+    DEBUG_BLOCK
+    Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
+    deleteEpisodes(episodes);
 }
 
 void
@@ -580,8 +587,34 @@ SqlPodcastProvider::slotRemoveChannels()
         Meta::SqlPodcastChannelPtr sqlChannel =
             Meta::SqlPodcastChannelPtr::dynamicCast( channel );
 
-        //TODO:request confirmation and ask if the files have to be deleted as well
-        removeSubscription( channel );
+        KDialog unsubscribeDialog;
+        unsubscribeDialog.setCaption( i18n( "Unsubscribe channel?" ) );
+
+        KVBox *vbox = new KVBox( &unsubscribeDialog );
+        
+        QString question( "Do you really want to unsubscribe from \"" );
+        question += channel->title();
+        question += "\"?";
+        QLabel *label = new QLabel( question, vbox );
+        label->setWordWrap(true);
+        label->setMaximumWidth(400);
+
+        QCheckBox *deleteMediaCheckBox = new QCheckBox( "Delete Media?", vbox );
+
+        unsubscribeDialog.setMainWidget( vbox );
+        
+        unsubscribeDialog.setButtons( KDialog::Ok | KDialog::Cancel );
+        int result = unsubscribeDialog.exec();
+        if ( result == QDialog::Accepted )
+        {
+            debug() << "unsubscribing " << channel->title();
+            if ( deleteMediaCheckBox->isChecked() )
+            {
+                PodcastEpisodeList episodes = channel->episodes();
+                deleteEpisodes(episodes);
+            }
+            removeSubscription( channel );
+        }
     }
 }
 
