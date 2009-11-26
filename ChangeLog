@@ -15,9 +15,9 @@ VERSION 2.2.2
     * Show HTML info for podcast channels that support this. Patches by
       Mathias Panzenböck. (BR 193357)
     * Ampache Service now shows Service info from last.fm
-    * Moodbar support is back. Can be shown in prgress bar or in the playlist.
+    * Moodbar support is back. Can be shown in progress bar or in the playlist.
       The 4 visual styles from Amarok 1 (normal, angry, frozen and happy) are 
-      all supported.
+      all supported. This feature requires that moodbars files are already present.
     * Cover images can now be fetched via HTTP. (BR 176899)
     * Custom Labels has returned.  Assign labels from the tag dialog, and
       see them in the tag dialog or in the playlist.
