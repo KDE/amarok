@@ -48,6 +48,7 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
     , m_index( index )
     , m_layout( layout )
     , m_groupMode( groupMode )
+    , m_layoutChanged( false )
 {
     setContentsMargins( 0, 0, 0, 0 );
     setSpacing( 0 );
@@ -400,7 +401,8 @@ void InlineEditorWidget::ratingValueChanged()
 QMap<int, QString> InlineEditorWidget::changedValues()
 {
     DEBUG_BLOCK
-    LayoutManager::instance()->updateCurrentLayout( m_layout );
+    if( m_layoutChanged )
+        LayoutManager::instance()->updateCurrentLayout( m_layout );
     return m_changedValues;
 }
 
@@ -490,6 +492,8 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
             m_layout.setSingle( newItemConfig );
             break;
     }
+    
+    m_layoutChanged = true;
 }
 
 bool

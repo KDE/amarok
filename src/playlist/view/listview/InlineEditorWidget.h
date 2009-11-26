@@ -65,6 +65,7 @@ private:
     int m_headerHeight;
 
     QMap<QSplitter *, int> m_splitterRowMap;
+    bool m_layoutChanged;
 
 };
 
