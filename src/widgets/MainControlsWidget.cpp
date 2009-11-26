@@ -22,6 +22,7 @@
 #include "MainControlsButton.h"
 #include "SvgHandler.h"
 
+#include <KLocale>
 #include <KStandardDirs>
 
 #include <QGraphicsSvgItem>
@@ -58,6 +59,7 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     const float startY = 0.0;
 
     MainControlsButton * backButton = new MainControlsButton( 0 );
+    backButton->setToolTip( i18n( "Previous Track" ) );
     backButton->setSvgPrefix( "back_button" );
     backButton->setAction( Amarok::actionCollection()->action( "prev" ) );
     backButton->moveBy( startX + gapX * 0, startY );
@@ -65,6 +67,7 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     scene->addItem( backButton );
 
     m_playPauseButton = new MainControlsButton( 0 );
+    m_playPauseButton->setToolTip( i18n( "Play/Pause" ) );
     m_playPauseButton->setSvgPrefix( "play_button" );
     m_playPauseButton->setAction( Amarok::actionCollection()->action( "play_pause" ) );
     m_playPauseButton->moveBy( startX + gapX * 1, startY );
@@ -72,6 +75,7 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     scene->addItem( m_playPauseButton );
 
     MainControlsButton * stopButton = new MainControlsButton( 0 );
+    stopButton->setToolTip( i18n( "Stop" ) );
     stopButton->setSvgPrefix( "stop_button" );
     stopButton->setAction( Amarok::actionCollection()->action( "stop" ) );
     stopButton->moveBy( startX + gapX * 2, startY );
@@ -79,6 +83,7 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     scene->addItem( stopButton );
 
     MainControlsButton * nextButton = new MainControlsButton( 0 );
+    nextButton->setToolTip( i18n( "Next Track" ) );
     nextButton->setSvgPrefix( "next_button" );
     nextButton->setAction( Amarok::actionCollection()->action( "next" ) );
     nextButton->moveBy( startX + gapX * 3, startY );
