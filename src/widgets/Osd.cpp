@@ -67,10 +67,12 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
     // The best of both worlds.  On Windows, setting the widget as a popup avoids a task manager entry.  On linux, a popup steals focus.
     // Therefore we go need to do it platform specific :(
+
+    //This is no longer true. Qt::Window steals focus on X11, Qt:Tool does not. Not sure if we even need the ifdefs any more...
     #ifdef Q_OS_WIN
     flags |= Qt::Tool;
     #else
-    flags |= Qt::Window | Qt::X11BypassWindowManagerHint;
+    flags |= Qt::Tool | Qt::X11BypassWindowManagerHint;
     #endif
     setWindowFlags( flags );
     setObjectName( name );
