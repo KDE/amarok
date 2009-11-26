@@ -578,6 +578,31 @@ SqlPodcastProvider::slotDownloadEpisodes()
     }
 }
 
+QPair<bool, bool>
+SqlPodcastProvider::confirmUnsubscribe(Meta::PodcastChannelPtr channel)
+{
+    KDialog unsubscribeDialog;
+    unsubscribeDialog.setCaption( i18n( "Unsubscribe" ) );
+
+    KVBox *vbox = new KVBox( &unsubscribeDialog );
+
+    QString question( i18n("Do you really want to unsubscribe from ") + "\"" );
+    question += channel->title();
+    question += "\"?";
+    QLabel *label = new QLabel( question, vbox );
+    label->setWordWrap(true);
+    label->setMaximumWidth(400);
+
+    QCheckBox *deleteMediaCheckBox = new QCheckBox( i18n("Delete media"), vbox );
+    unsubscribeDialog.setMainWidget( vbox );
+    unsubscribeDialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    
+    QPair<bool, bool> result;
+    result.first = unsubscribeDialog.exec() == QDialog::Accepted;
+    result.second = deleteMediaCheckBox->isChecked();
+    return result;
+}
+
 void
 SqlPodcastProvider::slotRemoveChannels()
 {
@@ -587,29 +612,13 @@ SqlPodcastProvider::slotRemoveChannels()
         Meta::SqlPodcastChannelPtr sqlChannel =
             Meta::SqlPodcastChannelPtr::dynamicCast( channel );
 
-        KDialog unsubscribeDialog;
-        unsubscribeDialog.setCaption( i18n( "Unsubscribe channel?" ) );
-
-        KVBox *vbox = new KVBox( &unsubscribeDialog );
-        
-        QString question( "Do you really want to unsubscribe from \"" );
-        question += channel->title();
-        question += "\"?";
-        QLabel *label = new QLabel( question, vbox );
-        label->setWordWrap(true);
-        label->setMaximumWidth(400);
-
-        QCheckBox *deleteMediaCheckBox = new QCheckBox( "Delete Media?", vbox );
-
-        unsubscribeDialog.setMainWidget( vbox );
-        
-        unsubscribeDialog.setButtons( KDialog::Ok | KDialog::Cancel );
-        int result = unsubscribeDialog.exec();
-        if ( result == QDialog::Accepted )
+        QPair<bool, bool> result = confirmUnsubscribe( channel );        
+        if ( result.first )
         {
             debug() << "unsubscribing " << channel->title();
-            if ( deleteMediaCheckBox->isChecked() )
+            if ( result.second )
             {
+                debug() << "removing all episodes";
                 PodcastEpisodeList episodes = channel->episodes();
                 deleteEpisodes(episodes);
             }

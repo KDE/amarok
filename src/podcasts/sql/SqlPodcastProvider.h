@@ -115,6 +115,11 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void updateDatabase( int fromVersion, int toVersion );
         void fetchImage( Meta::SqlPodcastChannelPtr channel );
 
+        /** shows a modal dialog asking the user if he really wants to unsubscribe
+            and if he wants to keep the podcast media */
+        QPair<bool, bool> confirmUnsubscribe(Meta::PodcastChannelPtr channel);
+
+        /** remove the episodes in the list from the filesystem */
         void deleteEpisodes( Meta::PodcastEpisodeList & episodes );
 
         void subscribe( const KUrl &url );
