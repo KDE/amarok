@@ -42,6 +42,8 @@ VERSION 2.2.2
     * Improved guessing tags from filename. Added preview to Dialog.
 
   BUGFIXES:
+    * Pressing enter now correctly applies changes in the playlist inline
+      editor. (BR 215924)
     * The volume slider in the Slim Toolbar would sometimes work incorrectly
       after startup. (BR 215185)
     * Fixed popup for showing the progress of multiple taks not working.
