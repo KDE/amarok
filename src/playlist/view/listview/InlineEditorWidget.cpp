@@ -218,6 +218,7 @@ void InlineEditorWidget::createChildWidgets()
 
             QModelIndex textIndex = m_index.model()->index( m_index.row(), value );
             QString text = textIndex.data( Qt::DisplayRole ).toString();
+            m_orgValues.insert( value, text );
 
             qreal itemWidth = 0.0;
 
@@ -371,7 +372,14 @@ void InlineEditorWidget::editValueChanged()
         return;
 
     int role = m_editorRoleMap.value( edit );
-    m_changedValues.insert( role, edit->text() );
+
+    //only save values if something has actually changed.
+    if( m_orgValues.value( role ) != edit->text() )
+    {
+        debug() << "Storing changed value: " << edit->text();
+        m_changedValues.insert( role, edit->text() );
+    }
+    
     
 }
 

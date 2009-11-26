@@ -60,6 +60,7 @@ private:
 
     QMap<QWidget *, int> m_editorRoleMap;
     QMap<int, QString> m_changedValues;
+    QMap<int, QString> m_orgValues;
 
     int m_headerHeight;
 
