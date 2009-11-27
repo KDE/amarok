@@ -17,8 +17,6 @@
 
 #include "LastFmEvent.h"
 
-int LastFmEvent::metaTypeRegistered = 0;
-
 /**
  * Creates an empty LastFmEvent
  */
@@ -47,10 +45,11 @@ LastFmEvent::~LastFmEvent() {}
 LastFmEvent::LastFmEvent(QStringList artists, QString name, QDate date, KUrl smallImageUrl, KUrl url)
     : m_artists(artists), m_name(name), m_date(date), m_smallImageUrl(smallImageUrl), m_url(url)
 {
-    if (!LastFmEvent::metaTypeRegistered)
+    static bool metaTypeRegistered = FALSE;
+    if (!metaTypeRegistered)
     {
         qRegisterMetaType<LastFmEvent>("LastFmEvent");
-        LastFmEvent::metaTypeRegistered++;
+        metaTypeRegistered = TRUE;
     }
 }
 
