@@ -199,7 +199,7 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_reloadIcon->setPos( m_settingsIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
     m_reloadIcon->show();
 
-    QPoint editIconPos( m_saveIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
+    QPoint editIconPos( m_reloadIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
     m_editIcon->setPos( editIconPos );
     m_closeIcon->setPos( editIconPos );
 
