@@ -77,6 +77,8 @@ PodcastReader::Action::characters( PodcastReader *podcastReader ) const
 // initialization of the feed parser automata:
 PodcastReader::StaticData::StaticData()
         : removeScripts( "<script[^<]*</script>|<script[^>]*>", Qt::CaseInsensitive )
+        , mightBeHtml( "<?xml[^>]*>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
+            "<([-:\\w\\d]+)[^>]*>.*</\\1>|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", Qt::CaseInsensitive )
 
         , startAction( rootMap )
 
@@ -398,6 +400,11 @@ PodcastReader::StaticData::StaticData()
 PodcastReader::~PodcastReader()
 {
     DEBUG_BLOCK
+}
+
+bool
+PodcastReader::mightBeHtml(const QString& text) {
+    return sd.mightBeHtml.indexIn( text ) != -1;
 }
 
 bool PodcastReader::read( QIODevice *device )
@@ -882,7 +889,7 @@ PodcastReader::endDescription()
 {
     QString description( m_buffer.trimmed() );
 
-    if( !Qt::mightBeRichText( description ) )
+    if( !mightBeHtml( description ) )
     {
         // content type is plain text
         description = Qt::escape( description );

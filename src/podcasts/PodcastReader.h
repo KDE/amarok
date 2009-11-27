@@ -155,6 +155,8 @@ class PodcastReader : public QObject, public QXmlStreamReader
                 ActionCallback    m_characters;
         };
 
+        static bool mightBeHtml(const QString& text);
+
         ElementType elementType() const;
         bool read();
         bool continueRead();
@@ -270,6 +272,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
 
                 QHash<QString, ElementType> knownElements;
                 QRegExp removeScripts;
+                QRegExp mightBeHtml;
                 
                 // Actions
                 Action startAction;
