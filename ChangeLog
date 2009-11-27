@@ -71,6 +71,7 @@ VERSION 2.2.2
     * Fixed random mode behaviour when "going back". (BR 208892)
     * Made random mode work. (BR 212910)
     * Fixed lyrics applet logic when saving, closing, and editing lyrics.
+    * Fixed graphic artifacts in the video applet.
 
 
 VERSION 2.2.1

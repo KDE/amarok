@@ -288,19 +288,22 @@ VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     // draw rounded rect around title
     drawRoundedRectAroundText( p, m_headerText );
 
-    p->save();
+    if( m_widget->isVisible() )
+    {
+        p->save();
 
-    const QScrollBar *scrollBar = m_scroll->horizontalScrollBar();
-    const qreal scrollBarHeight = scrollBar->isVisible() ? scrollBar->height() + 2 : 0;
-    const QSizeF proxySize = m_widget->size();
-    const QSizeF widgetSize( proxySize.width(), proxySize.height() - scrollBarHeight );
-    const QRectF widgetRect( m_widget->pos(), widgetSize );
+        const QScrollBar *scrollBar = m_scroll->horizontalScrollBar();
+        const qreal scrollBarHeight = scrollBar->isVisible() ? scrollBar->height() + 2 : 0;
+        const QSizeF proxySize = m_widget->size();
+        const QSizeF widgetSize( proxySize.width(), proxySize.height() - scrollBarHeight );
+        const QRectF widgetRect( m_widget->pos(), widgetSize );
 
-    QPainterPath path;
-    path.addRoundedRect( widgetRect, 5, 5 );
-    p->fillPath( path, The::paletteHandler()->backgroundColor() );
+        QPainterPath path;
+        path.addRoundedRect( widgetRect, 5, 5 );
+        p->fillPath( path, The::paletteHandler()->backgroundColor() );
 
-    p->restore();
+        p->restore();
+    }
 }
 
 void
