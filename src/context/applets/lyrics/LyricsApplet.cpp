@@ -364,8 +364,8 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     const QScrollBar *vScrollBar = m_lyrics->verticalScrollBar();
     const qreal hScrollBarHeight = hScrollBar->isVisible() ? hScrollBar->height() + 2 : 0;
     const qreal vScrollBarWidth  = vScrollBar->isVisible() ? vScrollBar->width()  + 2 : 0;
-    const QSizeF lyricsSize( m_lyrics->width() - vScrollBarWidth,
-                             m_lyricsProxy->boundingRect().height() - hScrollBarHeight );
+    const QSizeF lyricsSize( m_lyricsProxy->size().width()  - vScrollBarWidth,
+                             m_lyricsProxy->size().height() - hScrollBarHeight );
     const QRectF lyricsRect( m_lyricsProxy->pos(), lyricsSize );
 
     QPainterPath path;
