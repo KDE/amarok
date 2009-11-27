@@ -453,21 +453,14 @@ bool Amarok::TimeSlider::event( QEvent * event )
 {
     if( event->type() == QEvent::ToolTip )
     {
-
-        //make a QHelpEvent out of this
+        // Make a QHelpEvent out of this
         QHelpEvent * helpEvent = dynamic_cast<QHelpEvent *>( event );
         if( helpEvent )
         {
-            //update tooltip to show track position of mouse.
-
-            //figure out "percentage" of mouse position
-            qreal percentage = (qreal) helpEvent->x() / (qreal) width();
-            long trackLength = The::engineController()->trackLength();
-            int trackPosition = trackLength * percentage;
-
-            setToolTip( i18n( "Time position: %1", Meta::msToPrettyTime( trackPosition ) ) );
+            // Update tooltip to show the current track time position
+            const int trackPosition = The::engineController()->trackPosition();
+            setToolTip( i18n( "Time position: %1", Meta::secToPrettyTime( trackPosition ) ) );
         }
-            
     }
 
     return QWidget::event( event );
