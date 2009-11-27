@@ -78,6 +78,7 @@ private:
     Plasma::IconWidget*  m_editIcon;
     Plasma::IconWidget*  m_reloadIcon;
     Plasma::IconWidget*  m_closeIcon;
+    Plasma::IconWidget*  m_settingsIcon;
 
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;

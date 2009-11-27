@@ -117,6 +117,16 @@ void LyricsApplet::init()
 
     connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( refreshLyrics() ) );
 
+    QAction* settingsAction = new QAction( this );
+    settingsAction->setIcon( KIcon( "preferences-system" ) );
+    settingsAction->setVisible( true );
+    settingsAction->setEnabled( true );
+    settingsAction->setText( i18n( "Settings" ) );
+    m_settingsIcon = addAction( settingsAction );
+
+    connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
+
+
     m_lyricsProxy = new QGraphicsProxyWidget( this );
     m_lyricsProxy->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics = new QTextBrowser;
@@ -176,7 +186,7 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_suggested->setPos( standardPadding(), m_suggested->pos().y() );
 
     // Assumes all icons are of equal width
-    const int iconWidth = m_reloadIcon->size().width();
+    const float iconWidth = m_settingsIcon->size().width();
 
     qreal widmax = boundingRect().width() - 2 * iconWidth * 4 - 6 * standardPadding();
     QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
@@ -184,10 +194,12 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_titleLabel->setScrollingText( m_titleText, rect );
     m_titleLabel->setPos( ( size().width() - m_titleLabel->boundingRect().width() ) / 2 , standardPadding() + 3 );
    
-    m_reloadIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
+    m_settingsIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
+
+    m_reloadIcon->setPos( m_settingsIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
     m_reloadIcon->show();
 
-    QPoint editIconPos( m_reloadIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
+    QPoint editIconPos( m_saveIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
     m_editIcon->setPos( editIconPos );
     m_closeIcon->setPos( editIconPos );
 
