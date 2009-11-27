@@ -41,7 +41,6 @@ VERSION 2.2.2
     * Improved Cover fetching. Changed Dialog so the user can select from
       possible covers.
     * Improved guessing tags from filename. Added preview to Dialog.
-    * Made font of the lyrics applet's text configurable.
 
   BUGFIXES:
     * Fixed any open menus or popus getting closed when the OSD is shown.
