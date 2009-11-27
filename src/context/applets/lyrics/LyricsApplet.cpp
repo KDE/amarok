@@ -251,10 +251,15 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         }
         m_suggested->setHtml( html );
         m_suggested->show();
-        // adjust to required size
-        setCollapseHeight( m_suggested->boundingRect().height() );
+        // copy it here as we use the suggested height rather than m_lyrics
+        QGraphicsTextItem testItem;
+        testItem.setHtml( m_suggested->toHtml() );
+        testItem.setTextWidth( m_lyrics->size().width() );
+
+        qreal contentHeight = testItem.boundingRect().height();
+        contentHeight += 40;
+        setCollapseHeight( contentHeight );
         setCollapseOn();
-        // from end of func, want to avoid call to minumum height as that uses m_lyrics rather t han m_suggested
         setEditing( false );
 
         updateConstraints();
