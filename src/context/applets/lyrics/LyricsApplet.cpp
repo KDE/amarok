@@ -27,9 +27,11 @@
 #include "PaletteHandler.h"
 #include "Theme.h"
 
+#include <KConfigDialog>
 #include <KGlobalSettings>
 #include <KStandardDirs>
 #include <KMessageBox>
+#include <KTabWidget>
 
 #include <Plasma/IconWidget>
 
@@ -54,7 +56,7 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     , m_suggested( 0 )
     , m_hasLyrics( false )
 {
-    setHasConfigurationInterface( false );
+    setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
 
 }
@@ -105,7 +107,7 @@ void LyricsApplet::init()
     m_saveIcon = addAction( saveAction );
 
     connect( m_saveIcon, SIGNAL( activated() ), this, SLOT( saveLyrics() ) );
-    
+
     QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
@@ -128,6 +130,12 @@ void LyricsApplet::init()
     setEditing( false );
 
     m_lyricsProxy->setWidget( m_lyrics );
+
+    // Read config
+    KConfigGroup config = Amarok::config("Lyrics Applet");
+    QFont font( config.readEntry( "Font", QString() ),
+                config.readEntry( "Size", -1 ) );
+    m_lyrics->setFont( font );
 
     // only show when we need to let the user
     // choose between suggestions
@@ -170,7 +178,7 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     // Assumes all icons are of equal width
     const int iconWidth = m_reloadIcon->size().width();
 
-    qreal widmax = boundingRect().width() - 2 * iconWidth * 3 - 6 * standardPadding();
+    qreal widmax = boundingRect().width() - 2 * iconWidth * 4 - 6 * standardPadding();
     QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
     
     m_titleLabel->setScrollingText( m_titleText, rect );
@@ -184,7 +192,7 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_closeIcon->setPos( editIconPos );
 
     m_saveIcon->setPos( m_editIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
-    
+
     m_lyricsProxy->setPos( standardPadding(), m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding() );
     
     QSize lyricsSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_lyricsProxy->pos().y() - standardPadding() );
@@ -387,15 +395,44 @@ LyricsApplet::refreshLyrics()
 }
 
 void
+LyricsApplet::changeLyricsFont()
+{
+    QFont font = ui_Settings.fontChooser->font();
+
+    m_lyrics->setFont( font );
+
+    KConfigGroup config = Amarok::config("Lyrics Applet");
+    config.writeEntry( "Font", font.family() );
+    config.writeEntry( "Size", font.pointSize() );
+
+    debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
+}
+
+void
+LyricsApplet::createConfigurationInterface( KConfigDialog *parent )
+{
+    KConfigGroup configuration = config();
+    QWidget *settings = new QWidget;
+    ui_Settings.setupUi( settings );
+    ui_Settings.fontChooser->setFont( m_lyrics->currentFont() );
+
+    parent->addPage( settings, i18n( "Lyrics Settings" ), "preferences-system");
+
+    connect( parent, SIGNAL( accepted() ), this, SLOT( changeLyricsFont() ) );
+}
+
+void
 LyricsApplet::editLyrics()
 {
     if( !m_hasLyrics )
     {
+        // TODO: m_lyricsTmpContent was used by saveLyrics, but now it is unused
         m_lyricsTmpContent = m_lyrics->toPlainText();
         m_lyrics->clear();
     }
 
     setEditing( true );
+    setCollapseOff();
 }
 
 void
@@ -403,10 +440,19 @@ LyricsApplet::closeLyrics()
 {
     if( m_hasLyrics )
     {
+        QScrollBar *vbar = m_lyrics->verticalScrollBar();
+        int savedPosition = vbar->isVisible() ? vbar->value() : vbar->minimum();
+
         m_lyrics->setPlainText( The::engineController()->currentTrack()->cachedLyrics() );
         m_lyrics->show();
+
+        vbar->setSliderPosition( savedPosition );
         setCollapseOff();
         emit sizeHintChanged(Qt::MaximumSize);
+    }
+    else
+    {
+        m_lyrics->clear();
     }
 
     setEditing( false );
@@ -415,15 +461,24 @@ LyricsApplet::closeLyrics()
 void
 LyricsApplet::saveLyrics()
 {
-    if( m_lyrics->toPlainText().isEmpty() )
-        m_lyrics->setPlainText( m_lyricsTmpContent );
-    else
+    Meta::TrackPtr curtrack = The::engineController()->currentTrack();
+
+    if( curtrack )
     {
-        Meta::TrackPtr curtrack = The::engineController()->currentTrack();
-        if( curtrack )
+        if( !m_lyrics->toPlainText().isEmpty() )
+        {
             curtrack->setCachedLyrics( m_lyrics->toPlainText() );
+            setCollapseOff();
+            m_hasLyrics = true;
+        }
+        else
+        {
+            curtrack->setCachedLyrics( QString() );
+            m_hasLyrics = false;
+        }
+        emit sizeHintChanged(Qt::MaximumSize);
     }
-    
+
     setEditing( false );
 }
 
@@ -436,7 +491,7 @@ LyricsApplet::setEditing( const bool isEditing )
     m_editIcon->action()->setEnabled( !isEditing );
     m_editIcon->action()->setVisible( !isEditing );
 
-    // If we're editing, show and enable the save icon
+    // If we're editing, show and enable the close icon
     m_closeIcon->action()->setEnabled( isEditing );
     m_closeIcon->action()->setVisible( isEditing );
 
