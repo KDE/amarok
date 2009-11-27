@@ -32,6 +32,7 @@
 #include <QInputDialog>
 #include <KIcon>
 #include <QListIterator>
+#include <QtAlgorithms>
 #include <typeinfo>
 
 namespace The
@@ -59,6 +60,13 @@ PlaylistBrowserNS::PodcastModel::destroy()
     }
 }
 
+// to be used with qSort
+static bool
+lessThanChannelTitles(const Meta::PodcastChannelPtr & lhs, const Meta::PodcastChannelPtr & rhs)
+{
+    return lhs->title().toLower() < rhs->title().toLower();
+}
+
 PlaylistBrowserNS::PodcastModel::PodcastModel()
  : QAbstractItemModel()
  , m_appendAction( 0 )
@@ -71,6 +79,8 @@ PlaylistBrowserNS::PodcastModel::PodcastModel()
     QListIterator<Meta::PlaylistPtr> i(playlists);
     while (i.hasNext())
         m_channels << Meta::PodcastChannelPtr::staticCast( i.next() );
+
+    qSort(m_channels.begin(), m_channels.end(), lessThanChannelTitles);
 
     connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()));
 }
@@ -484,6 +494,8 @@ PlaylistBrowserNS::PodcastModel::slotUpdate()
         Meta::PodcastChannelPtr channel = Meta::PodcastChannelPtr::staticCast( i.next() );
         m_channels << channel;
     }
+
+    qSort(m_channels.begin(), m_channels.end(), lessThanChannelTitles);
 
     emit layoutAboutToBeChanged();
     emit layoutChanged();
