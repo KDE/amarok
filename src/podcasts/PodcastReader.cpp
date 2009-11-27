@@ -77,7 +77,7 @@ PodcastReader::Action::characters( PodcastReader *podcastReader ) const
 // initialization of the feed parser automata:
 PodcastReader::StaticData::StaticData()
         : removeScripts( "<script[^<]*</script>|<script[^>]*>", Qt::CaseInsensitive )
-        , mightBeHtml( "<?xml[^>]*>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
+        , mightBeHtml( "<\\?xml[^>]*\\?>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
             "<([-:\\w\\d]+)[^>]*>.*</\\1>|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", Qt::CaseInsensitive )
 
         , startAction( rootMap )
