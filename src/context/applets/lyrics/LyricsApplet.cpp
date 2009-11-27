@@ -406,6 +406,8 @@ LyricsApplet::changeLyricsFont()
     config.writeEntry( "Size", font.pointSize() );
 
     debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
+    // resize with new font
+    collapseToMin();
 }
 
 void
