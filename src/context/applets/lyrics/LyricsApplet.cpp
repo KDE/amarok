@@ -449,9 +449,12 @@ LyricsApplet::closeLyrics()
         m_lyrics->show();
 
         vbar->setSliderPosition( savedPosition );
-
         setCollapseOff();
         emit sizeHintChanged(Qt::MaximumSize);
+    }
+    else
+    {
+        m_lyrics->clear();
     }
 
     setEditing( false );
