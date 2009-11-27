@@ -133,7 +133,6 @@ void LyricsApplet::init()
     m_lyrics->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics->setOpenExternalLinks( true );
     m_lyrics->setAutoFillBackground( false );
-    m_lyrics->setFrameShape( QFrame::NoFrame );
     m_lyrics->setWordWrapMode( QTextOption::WordWrap );
     m_lyrics->viewport()->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
@@ -360,16 +359,19 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
 
     p->save();
 
+    const int frameWidth         = m_lyrics->frameWidth();
     const QScrollBar *hScrollBar = m_lyrics->horizontalScrollBar();
     const QScrollBar *vScrollBar = m_lyrics->verticalScrollBar();
     const qreal hScrollBarHeight = hScrollBar->isVisible() ? hScrollBar->height() + 2 : 0;
     const qreal vScrollBarWidth  = vScrollBar->isVisible() ? vScrollBar->width()  + 2 : 0;
-    const QSizeF lyricsSize( m_lyricsProxy->size().width()  - vScrollBarWidth,
-                             m_lyricsProxy->size().height() - hScrollBarHeight );
-    const QRectF lyricsRect( m_lyricsProxy->pos(), lyricsSize );
+    const QSizeF lyricsSize( m_lyricsProxy->size().width()  - vScrollBarWidth  - frameWidth * 2,
+                             m_lyricsProxy->size().height() - hScrollBarHeight - frameWidth * 2 );
+    const QPointF lyricsPos( m_lyricsProxy->pos().x() + frameWidth,
+                             m_lyricsProxy->pos().y() + frameWidth );
+    const QRectF lyricsRect( lyricsPos, lyricsSize );
 
     QPainterPath path;
-    path.addRoundedRect( lyricsRect, 5, 5 );
+    path.addRoundedRect( lyricsRect, 2, 2 );
     p->fillPath( path, background );
     p->restore();
 }

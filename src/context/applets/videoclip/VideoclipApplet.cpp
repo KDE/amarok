@@ -133,7 +133,6 @@ VideoclipApplet::init()
     m_scroll = new QScrollArea();
     m_scroll->setMaximumHeight( m_height - m_headerText->boundingRect().height() - 4*standardPadding() );
     m_scroll->setWidget( window );
-    m_scroll->setFrameShape( QFrame::NoFrame );
     m_scroll->setAttribute( Qt::WA_NoSystemBackground );
     m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
 
@@ -292,14 +291,18 @@ VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     {
         p->save();
 
+        const int frameWidth        = m_scroll->frameWidth();
         const QScrollBar *scrollBar = m_scroll->horizontalScrollBar();
         const qreal scrollBarHeight = scrollBar->isVisible() ? scrollBar->height() + 2 : 0;
         const QSizeF proxySize = m_widget->size();
-        const QSizeF widgetSize( proxySize.width(), proxySize.height() - scrollBarHeight );
-        const QRectF widgetRect( m_widget->pos(), widgetSize );
+        const QSizeF widgetSize( proxySize.width()  - frameWidth * 2,
+                                 proxySize.height() - frameWidth * 2 - scrollBarHeight );
+        const QPointF widgetPos( m_widget->pos().x() + frameWidth,
+                                 m_widget->pos().y() + frameWidth );
+        const QRectF widgetRect( widgetPos, widgetSize );
 
         QPainterPath path;
-        path.addRoundedRect( widgetRect, 5, 5 );
+        path.addRoundedRect( widgetRect, 2, 2 );
         p->fillPath( path, The::paletteHandler()->backgroundColor() );
 
         p->restore();
