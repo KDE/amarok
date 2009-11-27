@@ -306,7 +306,7 @@ MainWindow::init()
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browsersDock );
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock, Qt::Horizontal );
-    addDockWidget( Qt::RightDockWidgetArea, m_playlistDock );
+    addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock, Qt::Horizontal );
 
     setLayoutLocked( AmarokConfig::lockLayout() );
 
