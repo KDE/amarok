@@ -131,10 +131,35 @@ void TestQStringx::testNamedOptArgs()
     m_testString = "{%test {%artist}}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "" ) );
 
+    m_testString = "{%artist {%test}}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults " ) );
+
     testArgs[ "track" ] = "Some track";
     m_testString = "{%test {%artist}}%track";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "Some track" ) );
 
     m_testString = "{%artist {%track}} %test";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults Some track " ) );
+
+    testArgs[ "test" ] = "";
+    m_testString = "{%test}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "" ) );
+
+    m_testString = "before{%test}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "before" ) );
+
+    m_testString = "{%test}after";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "after" ) );
+
+    m_testString = "before{%test}after";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "beforeafter" ) );
+
+    m_testString = "{%test }{%artist}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( " All:My:Faults" ) );
+
+    m_testString = "{%test {%artist}}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( " All:My:Faults" ) );
+
+    m_testString = "{%artist {%test}}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults " ) );
 }
