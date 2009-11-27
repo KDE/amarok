@@ -32,7 +32,7 @@ Playlist::FavoredRandomTrackNavigator::requestNextTrack( bool update )
     DEBUG_BLOCK
 
     if( !m_queue.isEmpty() )
-        return m_queue.takeFirst();
+        return update ? m_queue.takeFirst() : m_queue.first();
 
     QList< qreal > weights;
     qreal totalWeight = 0.0;
@@ -78,12 +78,15 @@ Playlist::FavoredRandomTrackNavigator::requestNextTrack( bool update )
 
     debug() << "Total weight is" << totalWeight;
 
-    qreal point = ( KRandom::random() / qreal( RAND_MAX ) ) * totalWeight - weights[0];
+    if ( !random || update )
+        random = KRandom::random();
+    qreal point = ( random / qreal( RAND_MAX ) ) * totalWeight - weights[0];
     int row = 0;
     for(; point > 0.0; row++, point -= weights[row]) ;
 
     quint64 next = model->idAt( row );
-    m_history.prepend( next );
+    if ( update )
+        m_history.prepend( next );
 
     return next;
 }
@@ -94,12 +97,13 @@ Playlist::FavoredRandomTrackNavigator::requestLastTrack( bool update )
     if( m_history.isEmpty() )
         return requestNextTrack();
 
-    return m_history.takeFirst();
+    return update ? m_history.takeFirst() : m_history.first();
 }
 
 void
 Playlist::FavoredRandomTrackNavigator::reset()
 {
     m_history.clear();
+    random = 0;
 }
 
