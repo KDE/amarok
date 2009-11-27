@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2.2
   FEATURES
+    * Font of lyrics applet is configurable in the lyrics applet setting page.
     * BPM editing, sorting, and filtering have been implemented. (BR 214056)
       Patch by Pierre Dumuid <pmdumuid@gmail.com>.
     * Made it possible to change a podcast channel's URL. (BR 195204)
