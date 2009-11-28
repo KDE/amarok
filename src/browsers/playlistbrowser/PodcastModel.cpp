@@ -21,6 +21,7 @@
 #include "OpmlParser.h"
 #include "PodcastMeta.h"
 #include "PodcastProvider.h"
+#include "PodcastImageFetcher.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "PodcastCategory.h"
@@ -185,17 +186,43 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 
                 case KeywordsColumn:
                     return pmc->keywords();
+
+                case FilesizeColumn:
+                    if( pmc->podcastType() == Meta::EpisodeType )
+                        return static_cast<Meta::PodcastEpisode *>( pmc )
+                            ->filesize();
+                    break;
+
+                case ImageColumn:
+                    if( pmc->podcastType() == Meta::ChannelType )
+                    {
+                        Meta::PodcastChannel *pc = static_cast<Meta::PodcastChannel *>( pmc );
+                        KUrl imageUrl( PodcastImageFetcher::cachedImagePath( pc ) );
+
+                        if( !QFile( imageUrl.toLocalFile() ).exists() )
+                        {
+                            imageUrl = pc->imageUrl();
+                        }
+                        return imageUrl;
+                    }
+                    break;
             }
             break;
 
         case ShortDescriptionRole:
-            return pmc->description();
+            if( index.column() == TitleColumn )
+                return pmc->description();
+            break;
 
         case Qt::DecorationRole:
-            return icon( pmc );
+            if( index.column() == TitleColumn )
+                return icon( pmc );
+            break;
 
         case OnDiskRole:
-            return isOnDisk( pmc );
+            if( index.column() == TitleColumn )
+                return isOnDisk( pmc );
+            break;
     }
 
     return QVariant();

@@ -61,6 +61,12 @@ PodcastImageFetcher::addEpisode( Meta::PodcastEpisodePtr episode )
 KUrl
 PodcastImageFetcher::cachedImagePath( Meta::PodcastChannelPtr channel )
 {
+    return cachedImagePath( channel.data() );
+}
+
+KUrl
+PodcastImageFetcher::cachedImagePath( Meta::PodcastChannel *channel )
+{
     KUrl imagePath = channel->saveLocation();
     if( imagePath.isEmpty() )
         imagePath = Amarok::saveLocation( "podcasts" );

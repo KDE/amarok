@@ -33,6 +33,7 @@ public:
     void run();
 
     static KUrl cachedImagePath( Meta::PodcastChannelPtr channel );
+    static KUrl cachedImagePath( Meta::PodcastChannel *channel );
 
 signals:
     void imageReady( Meta::PodcastChannelPtr channel, QPixmap image );
@@ -43,7 +44,7 @@ private slots:
     void slotDownloadFinished( KJob *job );
 
 private:
-    bool hasCachedImage( Meta::PodcastChannelPtr channel );
+    static bool hasCachedImage( Meta::PodcastChannelPtr channel );
 
     Meta::PodcastChannelList m_channels;
     Meta::PodcastEpisodeList m_episodes;

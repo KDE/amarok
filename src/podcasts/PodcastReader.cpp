@@ -1178,7 +1178,7 @@ PodcastReader::beginImage()
 {
     if( namespaceUri() == ITUNES_NS )
     {
-        m_channel->setImageUrl( KUrl( attributes().value( "src" ).toString() ) );
+        m_channel->setImageUrl( KUrl( attributes().value( "href" ).toString() ) );
     }
 }
 
@@ -1192,14 +1192,17 @@ PodcastReader::endImageUrl()
 void
 PodcastReader::endKeywords()
 {
-    QSet<QString> keywords( QSet<QString>::fromList( m_current->keywords() ) );
+    QList<QString> keywords( m_current->keywords() );
 
     foreach( const QString &keyword, m_buffer.split( ',' ) )
     {
-        keywords.insert( keyword.simplified() );
+        QString kwd( keyword.simplified() );
+        if( !keywords.contains( kwd ) )
+            keywords.append( kwd );
     }
 
-    m_current->setKeywords( keywords.toList() );
+    qSort( keywords );
+    m_current->setKeywords( keywords );
 
 }
 

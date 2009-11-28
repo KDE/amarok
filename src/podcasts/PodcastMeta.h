@@ -249,7 +249,7 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
         virtual void setUrl( const KUrl &url ) { m_url = url; }
         virtual void setWebLink( const KUrl &link ) { m_webLink = link; }
         virtual void setImage( const QPixmap &image ) { m_image = image; }
-        virtual void setImageUrl( const KUrl &imageUrl ) { Q_UNUSED( imageUrl ); }
+        virtual void setImageUrl( const KUrl &imageUrl ) { m_imageUrl = imageUrl; }
         virtual void setCopyright( const QString &copyright ) { m_copyright = copyright; }
         virtual void setLabels( const QStringList &labels ) { m_labels = labels; }
         virtual void addLabel( const QString &label ) { m_labels << label; }

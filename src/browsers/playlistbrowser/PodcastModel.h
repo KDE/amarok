@@ -45,6 +45,8 @@ enum
     SubtitleColumn,
     AuthorColumn,
     KeywordsColumn,
+    FilesizeColumn, // episode only
+    ImageColumn,    // channel only (for now)
     ColumnCount
 };
 

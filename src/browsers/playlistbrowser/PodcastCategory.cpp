@@ -23,6 +23,7 @@
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
+#include "MetaUtility.h"
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
@@ -181,15 +182,43 @@ PodcastCategory::showInfo( const QModelIndex & index )
     QString description;
     QString title( index.data( Qt::DisplayRole ).toString() );
     QString subtitle( index.sibling( row, SubtitleColumn ).data( Qt::DisplayRole ).toString() );
+    KUrl imageUrl( qvariant_cast<KUrl>(
+        index.sibling( row, ImageColumn ).data( Qt::DisplayRole )
+    ) );
     QString author( index.sibling( row, AuthorColumn ).data( Qt::DisplayRole ).toString() );
     QStringList keywords( qvariant_cast<QStringList>(
         index.sibling( row, KeywordsColumn ).data( Qt::DisplayRole )
     ) );
+    int fileSize = index.sibling( row, FilesizeColumn ).data( Qt::DisplayRole ).toInt();
     
     if( !subtitle.isEmpty() )
     {
         description += QString( "<h1 class=\"subtitle\">%1</h1>" )
             .arg( Qt::escape( subtitle ) );
+    }
+
+    if( !imageUrl.isEmpty() )
+    {
+        description += QString( "<p style=\"float:right;\"><img src=\"%1\" onclick=\""
+            "if (this.style.width=='150px') {"
+                "this.style.width='auto';"
+                "this.style.height='auto';"
+                "this.style.marginLeft='0em';"
+                "this.style.cursor='-webkit-zoom-in';"
+                "this.parentNode.style.float='inherit';"
+                "this.parentNode.style.textAlign='center';"
+            "} else {"
+                "this.style.width='150px';"
+                "this.style.height='150px';"
+                "this.style.marginLeft='1em';"
+                "this.style.cursor='-webkit-zoom-out';"
+                "this.parentNode.style.float='right';"
+                "this.parentNode.style.textAlign='inherit';"
+            "}\""
+            " style=\"width: 150px; height: 150px; margin-left: 1em;"
+            " margin-right: 0em; cursor: -webkit-zoom-in;\""
+            "/></p>" )
+            .arg( Qt::escape( imageUrl.url() ) );
     }
 
     if( !author.isEmpty() )
@@ -204,6 +233,13 @@ PodcastCategory::showInfo( const QModelIndex & index )
         description += QString( "<p><b>%1</b> %2</p>" )
             .arg( i18n( "Keywords:" ) )
             .arg( Qt::escape( keywords.join( ", " ) ) );
+    }
+
+    if( fileSize != 0 )
+    {
+        description += QString( "<p><b>%1</b> %2</p>" )
+            .arg( i18n( "File Size:" ) )
+            .arg( Meta::prettyFilesize( fileSize ) );
     }
 
     description += index.data( ShortDescriptionRole ).toString();
