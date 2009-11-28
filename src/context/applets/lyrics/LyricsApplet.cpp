@@ -474,6 +474,7 @@ LyricsApplet::editLyrics()
     }
 
     setEditing( true );
+    m_lyrics->ensureCursorVisible();
     setCollapseOff();
 }
 
