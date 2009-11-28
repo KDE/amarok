@@ -17,6 +17,9 @@
 #include "CustomVideoWidget.h"
 #include "Debug.h"
 
+#include <KAction>
+#include <KMenu>
+
 #include <QKeyEvent>
 
 #define DEBUG_PREFIX "CustomVideoWidget"
@@ -50,6 +53,44 @@ CustomVideoWidget::keyPressEvent( QKeyEvent *e )
             disableFullscreen();
         }
     }
+}
+
+void
+CustomVideoWidget::mousePressEvent( QMouseEvent* e )
+{
+    switch( e->button() )
+    {
+    case Qt::RightButton :
+            videoMenu( e->globalPos() );
+            break;
+
+    case Qt::LeftButton :
+    case Qt::MidButton :
+    case Qt::MouseButtonMask :
+    case Qt::NoButton :
+    case Qt::XButton1 :
+    case Qt::XButton2 :
+            break;
+    }
+}
+
+void
+CustomVideoWidget::videoMenu( QPoint point )
+{
+    KMenu *men = new KMenu( this );
+    if ( !isFullScreen() )
+    {
+        KAction *toggle = new KAction( KIcon( "view-fullscreen" ), i18n( "Enter &fullscreen" ), this );
+        men->addAction( toggle );
+        connect( toggle, SIGNAL( triggered(bool) ), this, SLOT( enableFullscreen() ) );
+    }
+    else
+    {
+        KAction *toggle = new KAction( KIcon( "edit-undo" ), i18n( "E&xit fullscreen" ), this );
+        men->addAction( toggle );
+        connect( toggle, SIGNAL( triggered(bool) ), this, SLOT( disableFullscreen() ) );
+    }
+    men->exec( point );
 }
 
 void

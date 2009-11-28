@@ -87,7 +87,6 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
         void    queueVideoClip( VideoInfo *info );
         void    appendPlayVideoClip( VideoInfo *info );
 
-        void    videoMenu( QPoint );
         void    saveSettings();
     protected:
         void    createConfigurationInterface(KConfigDialog *parent);

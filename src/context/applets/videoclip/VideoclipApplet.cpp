@@ -35,10 +35,8 @@
 #include "widgets/kratingwidget.h"
 
 // KDE
-#include <KAction>
 #include <KColorScheme>
 #include <KConfigDialog>
-#include <KMenu>
 #include <KStandardDirs>
 #include <KVBox>
 #include <Plasma/Theme>
@@ -507,25 +505,6 @@ VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
         //append to the playlist the newly retrieved
         The::playlistController()->insertOptioned(track , Playlist::AppendAndPlay);
     }
-}
-
-void
-VideoclipApplet::videoMenu( QPoint point )
-{
-    KMenu *men = new KMenu(m_videoWidget);
-    if ( !m_videoWidget->isFullScreen() )
-    {
-        KAction *toggle = new KAction( KIcon( "view-fullscreen" ), i18n( "Enter &fullscreen" ), this );
-        men->addAction( toggle );
-        connect( toggle, SIGNAL( triggered(bool) ), m_videoWidget, SLOT( exitFullScreen() ) );
-    }
-    else
-    {
-        KAction *toggle = new KAction( KIcon( "edit-undo" ), i18n( "E&xit fullscreen" ), this );
-        men->addAction( toggle );
-        connect( toggle, SIGNAL( triggered(bool) ), m_videoWidget, SLOT( exitFullScreen() ) );
-    }   
-    men->exec( m_videoWidget->mapToGlobal( point ) );
 }
 
 void
