@@ -70,9 +70,8 @@ include_directories(
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
-    ${LIBLASTFM_INCLUDE_DIR}/..
-    ${LIBLASTFM_INCLUDE_DIR}
 )
+
 
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
@@ -697,6 +696,8 @@ if( LIBLASTFM_FOUND )
         ${amaroklib_LIB_SRCS}
         LastfmReadLabelCapability.cpp
     )
+    include_directories( ${LIBLASTFM_INCLUDE_DIR}/..  ${LIBLASTFM_INCLUDE_DIR})
+    target_link_libraries( amaroklib ${LIBLASTFM_LIBRARY} )
 endif( LIBLASTFM_FOUND )
 
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
@@ -735,7 +736,6 @@ target_link_libraries(amaroklib
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
-    ${LIBLASTFM_LIBRARY}
     ${TAGLIB_LIBRARIES}
     ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}

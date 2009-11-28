@@ -45,7 +45,6 @@ add_subdirectory( images )
             ${KDE4_KDEUI_LIBS}
             ${KDE4_KIO_LIBS}
             ${KDE4_THREADWEAVER_LIBRARIES}
-            ${LIBLASTFM_LIBRARY}
         )
         if( LIBLASTFM_FOUND )
             target_link_libraries(amarok_service_ampache
