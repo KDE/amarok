@@ -74,15 +74,14 @@ void DragPixmapItem::mouseMoveEvent( QGraphicsSceneMouseEvent* event )
     if ( ( event->pos().toPoint() - m_dragPos ).manhattanLength() < QApplication::startDragDistance() )
         return;
 
-    
     QMimeData *data = new QMimeData;
     data->setImageData( this->pixmap().toImage() );
 
-    QDrag *drag = new QDrag(event->widget());
+    QDrag *drag = new QDrag( event->widget() );
     drag->setMimeData( data );
     drag->setPixmap( pixmap().scaledToWidth( 140 ) );
     drag->setDragCursor( KIcon( "insert-image" ).pixmap( 24, 24 ), Qt::CopyAction );
-    drag->start();
+    drag->exec( Qt::CopyAction );
 }
 
 #include "DragPixmapItem.moc"
