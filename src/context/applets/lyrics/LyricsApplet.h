@@ -65,7 +65,8 @@ private slots:
     void changeLyricsFont();
 
 protected:
-    void createConfigurationInterface(KConfigDialog *parent);
+    void createConfigurationInterface( KConfigDialog *parent );
+    void keyPressEvent( QKeyEvent *e );
 
 private:
     void setEditing( const bool isEditing );

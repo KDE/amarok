@@ -132,6 +132,7 @@ void LyricsApplet::init()
     m_lyrics = new QTextBrowser;
     m_lyrics->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics->setOpenExternalLinks( true );
+    m_lyrics->setUndoRedoEnabled( true );
     m_lyrics->setAutoFillBackground( false );
     m_lyrics->setWordWrapMode( QTextOption::WordWrap );
     m_lyrics->viewport()->setAttribute( Qt::WA_NoSystemBackground );
@@ -435,6 +436,30 @@ LyricsApplet::createConfigurationInterface( KConfigDialog *parent )
     parent->addPage( settings, i18n( "Lyrics Settings" ), "preferences-system");
 
     connect( parent, SIGNAL( accepted() ), this, SLOT( changeLyricsFont() ) );
+}
+
+void
+LyricsApplet::keyPressEvent( QKeyEvent *e )
+{
+    if( m_lyrics->isVisible() )
+    {
+        switch( e->key() )
+        {
+        case Qt::Key_Escape :
+            closeLyrics();
+            break;
+
+        case Qt::Key_Return :
+        case Qt::Key_Enter :
+            editLyrics();
+            break;
+        }
+
+        if( e->matches( QKeySequence::Save ) )
+            saveLyrics();
+
+        e->accept();
+    }
 }
 
 void
