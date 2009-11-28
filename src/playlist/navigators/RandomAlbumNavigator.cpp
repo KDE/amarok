@@ -148,47 +148,60 @@ quint64
 Playlist::RandomAlbumNavigator::requestNextTrack( bool update )
 {
     if( !m_queue.isEmpty() )
-        return m_queue.takeFirst();
+        return update ? m_queue.takeFirst() : m_queue.first();
     if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
         return 0;
+
+    QList<Meta::AlbumPtr> *unplayedAlbums = &m_unplayedAlbums;
     if ( m_unplayedAlbums.isEmpty() && m_repeatPlaylist )
     {
-        m_unplayedAlbums = m_playedAlbums;
-        m_playedAlbums.clear();
+        if ( update )
+        {
+            m_unplayedAlbums = m_playedAlbums;
+            m_playedAlbums.clear();
+        }
+        else
+            unplayedAlbums = &m_playedAlbums;
     }
 
+    quint64 requestedTrack = 0;
     if ( m_albumGroups.contains( m_currentAlbum ) )
     {
         ItemList atl = m_albumGroups.value( m_currentAlbum );
         int idx = atl.indexOf( m_currentTrack );
         if ( idx < ( atl.size() - 1 ) )
         {
-            m_currentTrack = atl.at( idx + 1 );
+            requestedTrack = atl.at( idx + 1 );
+            if ( update )
+                m_currentTrack = requestedTrack;
+            return requestedTrack;
         }
-        else
+        else if ( update )
         {
             m_playedAlbums.prepend( m_currentAlbum );
-            if ( !m_unplayedAlbums.isEmpty() )
-            {
-                m_currentAlbum = m_unplayedAlbums.takeFirst();
-                m_currentTrack = m_albumGroups.value( m_currentAlbum ).first();
-            }
-            else
+            if ( m_unplayedAlbums.isEmpty() ) // safe, unplayedAlbums points here due to "update"
             {
                 m_currentAlbum = Meta::AlbumPtr();
                 m_currentTrack = 0;
+                return 0;
             }
         }
     }
-    else
+
+    if ( !unplayedAlbums->isEmpty() )
     {
-        if ( !m_unplayedAlbums.isEmpty() )
+        Meta::AlbumPtr album = unplayedAlbums->first();
+        requestedTrack = m_albumGroups.value( album ).first();
+        if ( update )
         {
-            m_currentAlbum = m_unplayedAlbums.takeFirst();
-            m_currentTrack = m_albumGroups.value( m_currentAlbum ).first();
+            m_unplayedAlbums.removeFirst(); // safe, unplayedAlbums points here due to "update"
+            m_currentAlbum = album;
         }
     }
-    return m_currentTrack;
+
+    if ( update )
+        m_currentTrack = requestedTrack;
+    return requestedTrack;
 }
 
 quint64
@@ -197,44 +210,56 @@ Playlist::RandomAlbumNavigator::requestLastTrack( bool update )
     if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
         return 0;
 
+    QList<Meta::AlbumPtr> *playedAlbums = &m_playedAlbums;
     if ( m_playedAlbums.isEmpty() && m_repeatPlaylist )
     {
-        m_playedAlbums = m_unplayedAlbums;
-        m_unplayedAlbums.clear();
+        if ( update )
+        {
+            m_playedAlbums = m_unplayedAlbums;
+            m_unplayedAlbums.clear();
+        }
+        else
+            playedAlbums = &m_unplayedAlbums;
     }
 
+    quint64 requestedTrack = 0;
     if ( m_albumGroups.contains( m_currentAlbum ) )
     {
         ItemList atl = m_albumGroups.value( m_currentAlbum );
         int idx = atl.indexOf( m_currentTrack );
         if ( idx > 0 )
         {
-            m_currentTrack = atl.at( idx - 1 );
+            requestedTrack = atl.at( idx - 1 );
+            if ( update )
+                m_currentTrack = requestedTrack;
+            return requestedTrack;
         }
-        else
+        else if ( update )
         {
             m_unplayedAlbums.prepend( m_currentAlbum );
-            if ( !m_playedAlbums.isEmpty() )
-            {
-                m_currentAlbum = m_playedAlbums.takeFirst();
-                m_currentTrack = m_albumGroups.value( m_currentAlbum ).last();
-            }
-            else
+            if ( m_playedAlbums.isEmpty() ) // safe, playedAlbums points here due to "update"
             {
                 m_currentAlbum = Meta::AlbumPtr();
                 m_currentTrack = 0;
+                return 0;
             }
         }
     }
-    else
+    
+    if ( !playedAlbums->isEmpty() )
     {
-        if ( !m_playedAlbums.isEmpty() )
+        Meta::AlbumPtr album = playedAlbums->first();
+        requestedTrack = m_albumGroups.value( album ).last();
+        if ( update )
         {
-            m_currentAlbum = m_playedAlbums.takeFirst();
-            m_currentTrack = m_albumGroups.value( m_currentAlbum ).last();
+            m_playedAlbums.removeFirst(); // safe, playedAlbums points here due to "update"
+            m_currentAlbum = album;
         }
     }
-    return m_currentTrack;
+    
+    if ( update )
+        m_currentTrack = requestedTrack;
+    return requestedTrack;
 }
 
 bool
