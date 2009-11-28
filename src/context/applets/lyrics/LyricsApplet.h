@@ -88,7 +88,6 @@ private:
 
     Ui::lyricsSettings    ui_Settings;
 
-    QString m_lyricsTmpContent;
     bool m_hasLyrics;
 };
 

@@ -467,8 +467,6 @@ LyricsApplet::editLyrics()
 {
     if( !m_hasLyrics )
     {
-        // TODO: m_lyricsTmpContent was used by saveLyrics, but now it is unused
-        m_lyricsTmpContent = m_lyrics->toPlainText();
         m_lyrics->clear();
     }
 
