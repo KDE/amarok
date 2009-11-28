@@ -189,8 +189,16 @@ PodcastCategory::showInfo( const QModelIndex & index )
     QStringList keywords( qvariant_cast<QStringList>(
         index.sibling( row, KeywordsColumn ).data( Qt::DisplayRole )
     ) );
-    int fileSize = index.sibling( row, FilesizeColumn ).data( Qt::DisplayRole ).toInt();
+    bool isEpisode = index.sibling( row, IsEpisodeColumn ).data( Qt::DisplayRole ).toBool();
+    QString authorAndPubDate;
     
+    if( !author.isEmpty() )
+    {
+        authorAndPubDate = QString( "<b>%1</b> %2 " )
+            .arg( i18n( "By" ) )
+            .arg( Qt::escape( author ) );
+    }
+
     if( !subtitle.isEmpty() )
     {
         description += QString( "<h1 class=\"subtitle\">%1</h1>" )
@@ -221,11 +229,46 @@ PodcastCategory::showInfo( const QModelIndex & index )
             .arg( Qt::escape( imageUrl.url() ) );
     }
 
-    if( !author.isEmpty() )
+    if( isEpisode )
     {
-        description += QString( "<p><b>%1</b> %2</p>" )
-            .arg( i18n( "Author:" ) )
-            .arg( Qt::escape( author ) );
+        QDateTime pubDate( index.sibling( row, DateColumn ).data( Qt::DisplayRole ).toDateTime() );
+        
+        if( pubDate.isValid() )
+        {
+            authorAndPubDate += QString( "<b>%1</b> %2" )
+                .arg( i18n( "On" ) )
+                .arg( pubDate.toString( Qt::SystemLocaleShortDate ) );
+        }
+    }
+
+    if( !authorAndPubDate.isEmpty() )
+    {
+        description += QString( "<p>%1</p>" )
+            .arg( authorAndPubDate );
+    }
+
+    if( isEpisode )
+    {
+        int fileSize = index.sibling( row, FilesizeColumn ).data( Qt::DisplayRole ).toInt();
+
+        if( fileSize != 0 )
+        {
+            description += QString( "<p><b>%1</b> %2</p>" )
+                .arg( i18n( "File Size:" ) )
+                .arg( Meta::prettyFilesize( fileSize ) );
+        }
+
+    }
+    else
+    {
+        QDate subsDate( index.sibling( row, DateColumn ).data( Qt::DisplayRole ).toDate() );
+        
+        if( subsDate.isValid() )
+        {
+            description += QString( "<p><b>%1</b> %2</p>" )
+                .arg( i18n( "Subscription Date:" ) )
+                .arg( subsDate.toString( Qt::SystemLocaleShortDate ) );
+        }
     }
 
     if( !keywords.isEmpty() )
@@ -235,13 +278,6 @@ PodcastCategory::showInfo( const QModelIndex & index )
             .arg( Qt::escape( keywords.join( ", " ) ) );
     }
 
-    if( fileSize != 0 )
-    {
-        description += QString( "<p><b>%1</b> %2</p>" )
-            .arg( i18n( "File Size:" ) )
-            .arg( Meta::prettyFilesize( fileSize ) );
-    }
-
     description += index.data( ShortDescriptionRole ).toString();
     
     description = QString(
@@ -249,7 +285,7 @@ PodcastCategory::showInfo( const QModelIndex & index )
         "    <head>"
         "        <title>%1</title>"
         "        <style type=\"text/css\">"
-        "h1 {text-align:center; font-size: 1em;}"
+        "h1 {text-align:center; font-size: 1.2em;}"
         "h1.subtitle {text-align:center; font-size: 1em; font-weight: normal;}"
         "        </style>"
         "    </head>"

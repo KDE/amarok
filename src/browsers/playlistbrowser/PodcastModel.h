@@ -47,6 +47,8 @@ enum
     KeywordsColumn,
     FilesizeColumn, // episode only
     ImageColumn,    // channel only (for now)
+    DateColumn,
+    IsEpisodeColumn,
     ColumnCount
 };
 

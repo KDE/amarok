@@ -206,6 +206,17 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
                         return imageUrl;
                     }
                     break;
+
+                case DateColumn:
+                    if( pmc->podcastType() == Meta::EpisodeType )
+                        return static_cast<Meta::PodcastEpisode *>( pmc )
+                            ->pubDate();
+                    else
+                        return static_cast<Meta::PodcastChannel *>( pmc )
+                            ->subscribeDate();
+
+                case IsEpisodeColumn:
+                    return bool( pmc->podcastType() == Meta::EpisodeType );
             }
             break;
 
