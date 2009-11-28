@@ -697,7 +697,7 @@ if( LIBLASTFM_FOUND )
         LastfmReadLabelCapability.cpp
     )
     include_directories( ${LIBLASTFM_INCLUDE_DIR}/..  ${LIBLASTFM_INCLUDE_DIR})
-    target_link_libraries( amaroklib ${LIBLASTFM_LIBRARY} )
+    set( EXTRA_LIBS ${LIBLASTFM_LIBRARY} )
 endif( LIBLASTFM_FOUND )
 
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
