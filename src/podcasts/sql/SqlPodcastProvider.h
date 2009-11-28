@@ -125,6 +125,8 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void subscribe( const KUrl &url );
         QFile* createTmpFile ( KJob* job );
         void cleanupDownload( KJob* job, bool downloadFailed );
+
+        /** returns true if the file that is downloaded by 'job' is already locally available */
         bool checkEnclosureLocallyAvailable( KIO::Job *job );
 
         Meta::SqlPodcastChannelList m_channels;
