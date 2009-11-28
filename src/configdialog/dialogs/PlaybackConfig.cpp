@@ -158,7 +158,7 @@ PlaybackConfig::eqSetupUI()
     mBandsLabels.first()->setText( mBandsLabels.first()->text() + QString( "\ndB" ) );
     // Set initial preset to current with signal blocking to prevent circular loops
     eqPresets->blockSignals( true );
-    eqPresets->addItem( i18nc( "State, as in, disabled", "Off" ) );
+    eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );
     eqPresets->addItems( eqGlobalList() );
     eqPresets->blockSignals( false );
     eqUpdateUI( AmarokConfig::equalizerMode() );
@@ -248,7 +248,7 @@ PlaybackConfig::eqDeletePreset() //SLOT
     {
         eqPresets->blockSignals( true );
         eqPresets->clear();
-        eqPresets->addItem( i18nc( "State, as in, disabled", "Off" ) );
+        eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );
         eqPresets->addItems( eqGlobalList() );
         eqPresets->blockSignals( false );
         static_cast<Amarok::EqualizerAction*>( Amarok::actionCollection()->action( "equalizer_mode") )->newList();
@@ -300,7 +300,7 @@ PlaybackConfig::eqSavePreset() //SLOT
     eqCfgSetPresetVal( mPresetSelected, eqGains );
     eqPresets->blockSignals( true );
     eqPresets->clear();
-    eqPresets->addItem( i18nc( "State, as in, disabled", "Off" ) );
+    eqPresets->addItem( i18nc( "Equalizer state, as in, disabled", "Off" ) );
     eqPresets->addItems( eqGlobalList() );
     ( (Amarok::EqualizerAction*) Amarok::actionCollection()->action( "equalizer_mode") )->newList();
     eqPresets->blockSignals( false );
