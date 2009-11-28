@@ -89,6 +89,7 @@ private:
     Ui::lyricsSettings    ui_Settings;
 
     bool m_hasLyrics;
+    bool m_isRichText;
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )

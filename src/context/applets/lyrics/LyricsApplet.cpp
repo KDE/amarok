@@ -55,6 +55,7 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     , m_lyrics( 0 )
     , m_suggested( 0 )
     , m_hasLyrics( false )
+    , m_isRichText( true )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
@@ -243,7 +244,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     else if( data.contains( "fetching" ) )
     {
         setBusy( true );
-        
+
         m_suggested->hide();
         m_lyrics->show();
         m_titleText = i18n( "Lyrics : Fetching ..." );
@@ -290,6 +291,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     else if( data.contains( "html" ) )
     {
         m_hasLyrics = true;
+        m_isRichText = true;
         // show pure html in the text area
         m_suggested->hide();
         m_lyrics->setHtml( data[ "html" ].toString() );
@@ -300,6 +302,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     else if( data.contains( "lyrics" ) )
     {
         m_hasLyrics = true;
+        m_isRichText = false;
         m_suggested->hide();
         m_lyrics->show();
         QVariantList lyrics  = data[ "lyrics" ].toList();
@@ -482,7 +485,10 @@ LyricsApplet::closeLyrics()
         QScrollBar *vbar = m_lyrics->verticalScrollBar();
         int savedPosition = vbar->isVisible() ? vbar->value() : vbar->minimum();
 
-        m_lyrics->setPlainText( The::engineController()->currentTrack()->cachedLyrics() );
+        if( m_isRichText )
+            m_lyrics->setHtml( The::engineController()->currentTrack()->cachedLyrics() );
+        else
+            m_lyrics->setPlainText( The::engineController()->currentTrack()->cachedLyrics() );
         m_lyrics->show();
 
         vbar->setSliderPosition( savedPosition );
@@ -506,7 +512,8 @@ LyricsApplet::saveLyrics()
     {
         if( !m_lyrics->toPlainText().isEmpty() )
         {
-            curtrack->setCachedLyrics( m_lyrics->toPlainText() );
+            const QString lyrics = m_isRichText ? m_lyrics->toHtml() : m_lyrics->toPlainText();
+            curtrack->setCachedLyrics( lyrics );
             setCollapseOff();
             m_hasLyrics = true;
         }
