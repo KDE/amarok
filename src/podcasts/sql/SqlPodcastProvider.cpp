@@ -750,7 +750,7 @@ SqlPodcastProvider::completePodcastDownloads()
         {
             foreach( KJob *job, m_downloadJobMap.keys() )
             {
-                job->kill();
+                job->kill(KJob::EmitResult);
                 cleanupDownload( job, true );
             }
         }
@@ -993,6 +993,40 @@ SqlPodcastProvider::createTmpFile( KJob *job )
     }
 }
 
+bool
+SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
+{
+    Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
+    if( sqlEpisode == 0 )
+    {
+        error() << "sqlEpisodePtr is NULL after download";
+        return false;
+    }
+    Meta::SqlPodcastChannelPtr sqlChannel =
+            Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
+    if( !sqlChannel )
+    {
+        error() << "sqlChannelPtr is NULL after download";
+        return false;
+    }
+
+    QString fileName = sqlChannel->saveLocation().path(KUrl::AddTrailingSlash);
+    fileName += m_fileNameMap.value( job );
+    debug() << "checking " << fileName;
+    QFileInfo fileInfo( fileName );
+    if ( !fileInfo.exists() )
+    {
+        return false;
+    }
+
+    debug() << fileName << " already exists, no need to redownload";
+    job->kill(KJob::EmitResult);
+    cleanupDownload( job, true );
+    sqlEpisode->setLocalUrl( fileName );
+    emit( updated() );  // repaint icons
+    return true;
+}
+
 void
 SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
 {
@@ -1002,6 +1036,14 @@ SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
     }
 
     QFile *tmpFile = m_tmpFileMap.value( job );
+
+    // NOTE: if there is a tmpfile we are already downloading, no need to
+    // checkEnclosureLocallyAvailable() on every data chunk. performance optimization.
+    if ( !tmpFile && checkEnclosureLocallyAvailable( job ) )
+    {
+        return;
+    }
+
     if( !tmpFile )
     {
         tmpFile = createTmpFile( job );

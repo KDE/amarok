@@ -125,6 +125,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void subscribe( const KUrl &url );
         QFile* createTmpFile ( KJob* job );
         void cleanupDownload( KJob* job, bool downloadFailed );
+        bool checkEnclosureLocallyAvailable( KIO::Job *job );
 
         Meta::SqlPodcastChannelList m_channels;
 
