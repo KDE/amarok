@@ -78,7 +78,7 @@ PodcastReader::Action::characters( PodcastReader *podcastReader ) const
 PodcastReader::StaticData::StaticData()
         : removeScripts( "<script[^<]*</script>|<script[^>]*>", Qt::CaseInsensitive )
         , mightBeHtml( "<\\?xml[^>]*\\?>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
-            "<([-:\\w\\d]+)[^>]*>.*</\\1>|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", Qt::CaseInsensitive )
+                       "<([-:\\w\\d]+)[^>]*>.*</\\1>|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", Qt::CaseInsensitive )
 
         , startAction( rootMap )
 
@@ -403,13 +403,15 @@ PodcastReader::~PodcastReader()
 }
 
 bool
-PodcastReader::mightBeHtml(const QString& text) {
+PodcastReader::mightBeHtml( const QString& text ) //Static
+{
     return sd.mightBeHtml.indexIn( text ) != -1;
 }
 
 bool PodcastReader::read( QIODevice *device )
 {
     DEBUG_BLOCK
+
     setDevice( device );
     return read();
 }

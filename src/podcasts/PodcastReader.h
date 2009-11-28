@@ -155,7 +155,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
                 ActionCallback    m_characters;
         };
 
-        static bool mightBeHtml(const QString& text);
+        static bool mightBeHtml( const QString& text );
 
         ElementType elementType() const;
         bool read();
