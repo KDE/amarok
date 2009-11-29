@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.2
   FEATURES
+    * When removing a podcast subscription, ask for confirmation and offer to delete the
+      downloaded episodes. Patch by Frank Meerkötter.
     * Font of lyrics applet is configurable in the lyrics applet setting page.
     * BPM editing, sorting, and filtering have been implemented. (BR 214056)
       Patch by Pierre Dumuid <pmdumuid@gmail.com>.

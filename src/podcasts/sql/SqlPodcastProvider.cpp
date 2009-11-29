@@ -579,21 +579,21 @@ SqlPodcastProvider::slotDownloadEpisodes()
 }
 
 QPair<bool, bool>
-SqlPodcastProvider::confirmUnsubscribe(Meta::PodcastChannelPtr channel)
+SqlPodcastProvider::confirmUnsubscribe( Meta::PodcastChannelPtr channel )
 {
     KDialog unsubscribeDialog;
     unsubscribeDialog.setCaption( i18n( "Unsubscribe" ) );
 
     KVBox *vbox = new KVBox( &unsubscribeDialog );
 
-    QString question( i18n("Do you really want to unsubscribe from ") + "\"" );
+    QString question( i18n( "Do you really want to unsubscribe from ") + "\"" );
     question += channel->title();
     question += "\"?";
     QLabel *label = new QLabel( question, vbox );
-    label->setWordWrap(true);
-    label->setMaximumWidth(400);
+    label->setWordWrap( true );
+    label->setMaximumWidth( 400 );
 
-    QCheckBox *deleteMediaCheckBox = new QCheckBox( i18n("Delete media"), vbox );
+    QCheckBox *deleteMediaCheckBox = new QCheckBox( i18n( "Delete downloaded episodes" ), vbox );
     unsubscribeDialog.setMainWidget( vbox );
     unsubscribeDialog.setButtons( KDialog::Ok | KDialog::Cancel );
     
@@ -613,10 +613,10 @@ SqlPodcastProvider::slotRemoveChannels()
             Meta::SqlPodcastChannelPtr::dynamicCast( channel );
 
         QPair<bool, bool> result = confirmUnsubscribe( channel );        
-        if ( result.first )
+        if( result.first )
         {
             debug() << "unsubscribing " << channel->title();
-            if ( result.second )
+            if( result.second )
             {
                 debug() << "removing all episodes";
                 PodcastEpisodeList episodes = channel->episodes();
