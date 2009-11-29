@@ -750,7 +750,7 @@ SqlPodcastProvider::completePodcastDownloads()
         {
             foreach( KJob *job, m_downloadJobMap.keys() )
             {
-                job->kill(KJob::EmitResult);
+                job->kill();
                 cleanupDownload( job, true );
             }
         }
@@ -1020,8 +1020,7 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
     }
 
     debug() << fileName << " already exists, no need to redownload";
-    job->kill(KJob::EmitResult);
-    cleanupDownload( job, true );
+    job->kill();
     sqlEpisode->setLocalUrl( fileName );
     emit( updated() );  // repaint icons
     return true;
