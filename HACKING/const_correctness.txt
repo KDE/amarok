@@ -6,7 +6,7 @@ What is const correctness?
 
 It's a programming paradigm that helps writing correct code. In C++, const
 correctness comprises a set of different techniques, you can read up about them
-here. In this article however I only want to focus on one form of const
+here [1]. In this article however I only want to focus on one form of const
 correctness, that is object constness.
 
 Why should I care about const correctness?
@@ -42,3 +42,5 @@ is not meant to be changed. So you see, writing that "const" before it is a
 little bit of work, but it has a big pay-off. I think it's worth it, so I try to
 use it always in my code.
 
+
+[1] http://www.parashift.com/c++-faq-lite/const-correctness.html
