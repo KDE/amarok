@@ -66,26 +66,34 @@ void
 LastFmTreeModel::slotAddNeighbors ()
 {
     DEBUG_BLOCK
-    // iterate through each neighbour
+
     QMap<QString, QString> avatarlist;
     
     try
     {
+        // Iterate over each neighbor, in two passes: 1) Get data 2) Sort data, store in model
+
         lastfm::XmlQuery lfm( m_jobs[ "getNeighbours" ]->readAll() );
         foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children ( "user" ) )
         {
             QString name = e[ "name" ].text();
             m_neighbors << name;
-            LastFmTreeItem* neighbor = new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborsChild, name ), LastFm::NeighborsChild, name, m_myNeighbors );
-            m_myNeighbors->appendChild ( neighbor );
-            appendUserStations ( neighbor, name );
             if ( !e[ "image size=large" ].text().isEmpty() )
             {
                 avatarlist.insert ( name, e[ "image size=large" ].text() );
             }
         }
 
-    } catch( lastfm::ws::ParseError e )
+        m_neighbors.sort();
+
+        foreach( const QString& name, m_neighbors )
+        {
+            LastFmTreeItem* neighbor = new LastFmTreeItem( mapTypeToUrl( LastFm::NeighborsChild, name ), LastFm::NeighborsChild, name, m_myNeighbors );
+            m_myNeighbors->appendChild( neighbor );
+            appendUserStations( neighbor, name );
+        }
+    }
+    catch( lastfm::ws::ParseError e )
     {
         debug() << "Got exception in parsing from last.fm:" << e.what();
     }
