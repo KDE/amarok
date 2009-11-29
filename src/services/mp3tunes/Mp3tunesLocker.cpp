@@ -509,7 +509,7 @@ Mp3tunesLocker::search ( Mp3tunesSearchResult &container, const QString &query )
 bool
 Mp3tunesLocker::uploadTrack ( const QString &path )
 {
-    QByteArray track_path = path.toLatin1();
+    QByteArray track_path = path.toUtf8();
 
     int res = mp3tunes_locker_upload_track ( m_locker, track_path.constData() );
 
