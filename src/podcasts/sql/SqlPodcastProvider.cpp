@@ -751,7 +751,6 @@ SqlPodcastProvider::completePodcastDownloads()
             foreach( KJob *job, m_downloadJobMap.keys() )
             {
                 job->kill();
-                cleanupDownload( job, true );
             }
         }
     }
