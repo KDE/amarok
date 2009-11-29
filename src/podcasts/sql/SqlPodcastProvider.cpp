@@ -861,7 +861,7 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
                                             ? i18n( "Downloading Podcast Media" )
                                             : i18n( "Downloading Podcast \"%1\""
                                                     , sqlEpisode->title() )
-                                          )->setAbortSlot( this, SLOT( abortDownload() ) );
+                                          )->setAbortSlot( transferJob, SLOT( kill() ) );
 
     connect( transferJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
              SLOT( addData( KIO::Job *, const QByteArray & ) ) );
@@ -989,7 +989,12 @@ SqlPodcastProvider::downloadResult( KJob *job )
 
     if( job->error() )
     {
-        The::statusBar()->longMessage( job->errorText() );
+        // NOTE: prevents empty error notifications from popping up
+        // in the statusbar when the user cancels a download
+        if( job->error() != KJob::KilledJobError )
+        {
+            The::statusBar()->longMessage( job->errorText() );
+        }
         debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
         downloadFailed = true;
     }
