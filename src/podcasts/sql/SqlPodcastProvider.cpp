@@ -865,6 +865,9 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
 
     connect( transferJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
              SLOT( addData( KIO::Job *, const QByteArray & ) ) );
+    //need to connect to finished instead of result because it's always emited.
+    //We need to cleanup after a download is cancled regardless of the argument in
+    //KJob::kil()
     connect( transferJob, SIGNAL( finished( KJob * ) ),
              SLOT( downloadResult( KJob * ) ) );
     connect( transferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ),
@@ -953,7 +956,6 @@ SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
         {
             debug() << "failed to create tmpfile for podcast download";
             job->kill();
-            cleanupDownload( job, true );
             return;
         }
         m_tmpFileMap[job] = tmpFile;
@@ -964,7 +966,6 @@ SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
         error() << "write error for " << tmpFile->fileName() << ": " <<
         tmpFile->errorString();
         job->kill();
-        cleanupDownload( job, true );
     }
 }
 
