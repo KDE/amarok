@@ -1019,7 +1019,8 @@ SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
     }
 
     debug() << fileName << " already exists, no need to redownload";
-    job->kill();
+    // NOTE: we need to emit because the KJobProgressBar relies on it to clean up
+    job->kill(KJob::EmitResult);
     sqlEpisode->setLocalUrl( fileName );
     emit( updated() );  // repaint icons
     return true;
