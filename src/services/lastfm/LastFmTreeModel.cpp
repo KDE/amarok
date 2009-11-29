@@ -38,28 +38,28 @@
 using namespace LastFm;
 
 LastFmTreeModel::LastFmTreeModel ( const QString &username, QObject *parent )
-        : QAbstractItemModel ( parent ), mUserName ( username ), mUser(), m_avatarSize( 32 )
+        : QAbstractItemModel ( parent ), m_userName ( username ), m_user(), m_avatarSize( 32 )
 {
 //     rootData << "Title" << "Summary";
-    rootItem = new LastFmTreeItem ( LastFm::Root, "Hello" );
-    setupModelData ( rootItem );
-    m_jobs[ "getNeighbours" ] = mUser.getNeighbours();
+    m_rootItem = new LastFmTreeItem ( LastFm::Root, "Hello" );
+    setupModelData ( m_rootItem );
+    m_jobs[ "getNeighbours" ] = m_user.getNeighbours();
     connect ( m_jobs[ "getNeighbours" ], SIGNAL ( finished () ), this, SLOT ( slotAddNeighbors () ) );
     
-    m_jobs[ "getFriends" ] = mUser.getFriends();
+    m_jobs[ "getFriends" ] = m_user.getFriends();
     connect ( m_jobs[ "getFriends" ], SIGNAL ( finished () ), this, SLOT ( slotAddFriends () ) );
     
-    m_jobs[ "getTopTags" ] = mUser.getTopTags();
+    m_jobs[ "getTopTags" ] = m_user.getTopTags();
     connect ( m_jobs[ "getTopTags" ], SIGNAL ( finished () ), this, SLOT ( slotAddTags () ) );
     
-    m_jobs[ "getTopArtists" ] = mUser.getTopArtists(); 
+    m_jobs[ "getTopArtists" ] = m_user.getTopArtists();
     connect ( m_jobs[ "getTopArtists" ], SIGNAL ( finished () ), this, SLOT ( slotAddTopArtists () ) );
 
 }
 
 LastFmTreeModel::~LastFmTreeModel()
 {
-    delete rootItem;
+    delete m_rootItem;
 }
 
 void
@@ -75,9 +75,9 @@ LastFmTreeModel::slotAddNeighbors ()
         foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children ( "user" ) )
         {
             QString name = e[ "name" ].text();
-            mNeighbors << name;
-            LastFmTreeItem* neighbor = new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborsChild, name ), LastFm::NeighborsChild, name, mMyNeighbors );
-            mMyNeighbors->appendChild ( neighbor );
+            m_neighbors << name;
+            LastFmTreeItem* neighbor = new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborsChild, name ), LastFm::NeighborsChild, name, m_myNeighbors );
+            m_myNeighbors->appendChild ( neighbor );
             appendUserStations ( neighbor, name );
             if ( !e[ "image size=large" ].text().isEmpty() )
             {
@@ -108,19 +108,19 @@ LastFmTreeModel::slotAddFriends ()
         foreach( lastfm::XmlQuery e, lfm[ "friends" ].children ( "user" ) )
         {
             QString name = e[ "name" ].text();
-            mFriends << name;
+            m_friends << name;
             if( !e[ "image size=large" ].text().isEmpty() )
             {
                 avatarlist.insert( name, e[ "image size=large" ].text() );
             }
         }
 
-        mFriends.sort();
+        m_friends.sort();
 
-        foreach( const QString& name, mFriends )
+        foreach( const QString& name, m_friends )
         {
-            LastFmTreeItem* afriend = new LastFmTreeItem( mapTypeToUrl ( LastFm::FriendsChild, name ), LastFm::FriendsChild, name, mMyFriends );
-            mMyFriends->appendChild ( afriend );
+            LastFmTreeItem* afriend = new LastFmTreeItem( mapTypeToUrl ( LastFm::FriendsChild, name ), LastFm::FriendsChild, name, m_myFriends );
+            m_myFriends->appendChild ( afriend );
             appendUserStations ( afriend, name );
         }
     }
@@ -157,8 +157,8 @@ LastFmTreeModel::slotAddTopArtists ()
             list[i] += " (" + QVariant ( list.at ( i ).weighting() ).toString() + " plays)";
             QString actual = list[i];
             actual = actual.remove ( actual.lastIndexOf ( " (" ), actual.length() );
-            LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, actual ), LastFm::ArtistsChild, list[i], mMyTopArtists );
-            mMyTopArtists->appendChild ( artist );
+            LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, actual ), LastFm::ArtistsChild, list[i], m_myTopArtists );
+            m_myTopArtists->appendChild ( artist );
         }
 
     } catch( lastfm::ws::ParseError e )
@@ -183,7 +183,7 @@ void
 LastFmTreeModel::slotAddTags ()
 {
     DEBUG_BLOCK
-    mTags.clear();
+    m_tags.clear();
     QMap< int, QString > listWithWeights = lastfm::Tag::list ( m_jobs[ "getTopTags" ] );
     WeightedStringList weighted;
     foreach( int w, listWithWeights.keys() )
@@ -199,20 +199,20 @@ LastFmTreeModel::sortTags ( WeightedStringList tagsToSort, Qt::SortOrder sortOrd
     for ( int i = 0; i < tagsToSort.count(); i++ )
         tagsToSort[i] += " (" + QVariant ( tagsToSort.at ( i ).weighting() ).toString() + ')';
     tagsToSort.weightedSort ( sortOrder );
-//     mTags = tagsToSort;
+//     m_tags = tagsToSort;
     for ( int i = 0; i < tagsToSort.count(); i++ )
     {
         QString actual = tagsToSort[i];
         actual = actual.remove ( actual.lastIndexOf ( " (" ), actual.length() );
-        LastFmTreeItem* tag = new LastFmTreeItem ( mapTypeToUrl ( LastFm::MyTagsChild, actual ), LastFm::MyTagsChild, tagsToSort[i], mMyTags );
-        mMyTags->appendChild ( tag );
+        LastFmTreeItem* tag = new LastFmTreeItem ( mapTypeToUrl ( LastFm::MyTagsChild, actual ), LastFm::MyTagsChild, tagsToSort[i], m_myTags );
+        m_myTags->appendChild ( tag );
     }
 }
 
 void
 LastFmTreeModel::sortTags ( Qt::SortOrder sortOrder )
 {
-    sortTags ( mTags, sortOrder );
+    sortTags ( m_tags, sortOrder );
 }
 /*
 template <class T> void
@@ -316,7 +316,7 @@ LastFmTreeModel::onAvatarDownloaded ( QPixmap avatar )
     {
         int m = m_avatarSize;
 
-        if ( username.toLower() == mUserName.toLower() )
+        if ( username.toLower() == m_userName.toLower() )
         {
             mAvatar = avatar.scaled ( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
             //             emitRowChanged( LastFm::MyProfile );
@@ -545,7 +545,7 @@ QVariant LastFmTreeModel::headerData ( int section, Qt::Orientation orientation,
     Q_UNUSED( role )
     Q_UNUSED( orientation )
 //     if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
-//         return rootItem->data ( section );
+//         return m_rootItem->data ( section );
 
     return QVariant();
 }
@@ -559,7 +559,7 @@ const
     LastFmTreeItem *parentItem;
 
     if ( !parent.isValid() )
-        parentItem = rootItem;
+        parentItem = m_rootItem;
     else
         parentItem = static_cast<LastFmTreeItem*> ( parent.internalPointer() );
 
@@ -578,7 +578,7 @@ QModelIndex LastFmTreeModel::parent ( const QModelIndex &index ) const
     LastFmTreeItem *childItem = static_cast<LastFmTreeItem*> ( index.internalPointer() );
     LastFmTreeItem *parentItem = childItem->parent();
 
-    if ( parentItem == rootItem )
+    if ( parentItem == m_rootItem )
         return QModelIndex();
 
     return createIndex ( parentItem->row(), 0, parentItem );
@@ -591,7 +591,7 @@ int LastFmTreeModel::rowCount ( const QModelIndex &parent ) const
         return 0;
 
     if ( !parent.isValid() )
-        parentItem = rootItem;
+        parentItem = m_rootItem;
     else
         parentItem = static_cast<LastFmTreeItem*> ( parent.internalPointer() );
 
@@ -609,24 +609,24 @@ void LastFmTreeModel::setupModelData ( LastFmTreeItem *parent )
     parents.last()->appendChild ( new LastFmTreeItem ( mapTypeToUrl ( LastFm::LovedTracksRadio ), LastFm::LovedTracksRadio, parents.last() ) );
     parents.last()->appendChild ( new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborhoodRadio ), LastFm::NeighborhoodRadio, parents.last() ) );
 
-    mMyTopArtists = new LastFmTreeItem ( LastFm::TopArtists, parents.last() );
-    parents.last()->appendChild ( mMyTopArtists );
+    m_myTopArtists = new LastFmTreeItem ( LastFm::TopArtists, parents.last() );
+    parents.last()->appendChild ( m_myTopArtists );
 
-    mMyTags = new LastFmTreeItem ( LastFm::MyTags, parents.last() );
-    parents.last()->appendChild ( mMyTags );
+    m_myTags = new LastFmTreeItem ( LastFm::MyTags, parents.last() );
+    parents.last()->appendChild ( m_myTags );
 
-    mMyFriends = new LastFmTreeItem ( LastFm::Friends, parents.last() );
-    parents.last()->appendChild ( mMyFriends );
+    m_myFriends = new LastFmTreeItem ( LastFm::Friends, parents.last() );
+    parents.last()->appendChild ( m_myFriends );
 
-    mMyNeighbors = new LastFmTreeItem ( LastFm::Neighbors, parents.last() );
-    parents.last()->appendChild ( mMyNeighbors );
+    m_myNeighbors = new LastFmTreeItem ( LastFm::Neighbors, parents.last() );
+    parents.last()->appendChild ( m_myNeighbors );
 
 
 }
 
 QString LastFmTreeModel::mapTypeToUrl ( LastFm::Type type, const QString &key )
 {
-    QString const encoded_username = KUrl::toPercentEncoding ( mUserName );
+    QString const encoded_username = KUrl::toPercentEncoding ( m_userName );
     switch ( type )
     {
     case MyRecommendations:
@@ -748,5 +748,4 @@ LastFmTreeModel::mimeData( const QModelIndexList &indices ) const
     AmarokMimeData *mimeData = new AmarokMimeData();
     mimeData->setTracks( list );
     return mimeData;
-    
 }
