@@ -190,8 +190,10 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
     if( !sqlStorage )
         return TrackPtr();
 
-    QString command = "SELECT id,channel FROM podcastepisodes WHERE guid='%1' OR url='%1'"
-                      " OR localurl='%1';";
+    QString command = "SELECT id, url, channel, localurl, guid, "
+            "title, subtitle, sequencenumber, description, mimetype, pubdate, "
+            "duration, filesize, isnew FROM podcastepisodes "
+            "WHERE guid='%1' OR url='%1' OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
     QStringList dbResult = sqlStorage->query( command );
 
@@ -199,7 +201,7 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
         return TrackPtr();
 
     int episodeId = dbResult[0].toInt();
-    int channelId = dbResult[1].toInt();
+    int channelId = dbResult[2].toInt();
     bool found = false;
     Meta::SqlPodcastChannelPtr channel;
     foreach( channel, m_channels )
@@ -212,7 +214,12 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
     }
 
     if( !found )
+    {
+        error() << QString( "There is a track in the database with url/guid=%1 (%2) "
+                            "but there is no channel with dbId=%3 in our list!" )
+                .arg( url.url() ).arg( episodeId ).arg( channelId );
         return TrackPtr();
+    }
 
     Meta::SqlPodcastEpisodePtr episode;
     foreach( episode, channel->sqlEpisodes() )
@@ -224,7 +231,11 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
         }
     }
 
-    return TrackPtr();
+    //The episode was found in the database but it's channel didn't have it in it's list.
+    //That probably is because it's beyond the purgecount limit.
+    episode = new Meta::SqlPodcastEpisode( dbResult.mid( 0, 14 ), channel );
+
+    return Meta::TrackPtr::dynamicCast( episode );
 }
 
 Meta::PlaylistList

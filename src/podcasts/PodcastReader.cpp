@@ -1093,7 +1093,7 @@ PodcastReader::endItem()
                                               m_podcastProvider->trackForUrl( trackId )
                                           );
 
-        if( episode && ( episode->guid().isEmpty() || episode->guid() == m_item->guid() ) )
+        if( !episode.isNull() )
         {
             debug() << "updating episode: " << m_item->title();
 
