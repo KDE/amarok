@@ -1,0 +1,44 @@
+
+=== Const Correctness ===
+
+
+What is const correctness?
+
+It's a programming paradigm that helps writing correct code. In C++, const
+correctness comprises a set of different techniques, you can read up about them
+here. In this article however I only want to focus on one form of const
+correctness, that is object constness.
+
+Why should I care about const correctness?
+
+Because it increases type safety, makes your code more easy to understand, and
+it helps making your code correct. Const objects can be seen as invariants in
+mathematical terms, that is, objects that do not change, that do not vary. 
+
+An example in code:
+
+
+
+const int myNumber = 41;
+
+int result;
+
+
+result = myNumber + 1;
+
+KMessageBox::information( 0, "The meaning of life is: " + QString::number(
+result ) );
+
+
+
+In this example, myNumber is a const object (an int is really a POD type, but
+let that not distract us). This indicates that I cannot change the object. And
+indeed, if I were to try that, the compiler would complain about it, which is a
+good thing. It helps preventing mistakes by accidentally changing this object
+later on.
+
+Additionally, it helps readability, because anyone can clearly see that myNumber
+is not meant to be changed. So you see, writing that "const" before it is a
+little bit of work, but it has a big pay-off. I think it's worth it, so I try to
+use it always in my code.
+
