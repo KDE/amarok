@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Casey Link <unnamedrambler@gmail.com>                             *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -97,25 +98,33 @@ void
 LastFmTreeModel::slotAddFriends ()
 {
     DEBUG_BLOCK
-    // iterate through each friend
+
     QMap<QString, QString> avatarlist;
     try
     {
+        // Iterate over each friend, in two passes: 1) Get data 2) Sort data, store in model
+
         lastfm::XmlQuery lfm( m_jobs[ "getFriends" ]->readAll() );
         foreach( lastfm::XmlQuery e, lfm[ "friends" ].children ( "user" ) )
         {
             QString name = e[ "name" ].text();
             mFriends << name;
-            LastFmTreeItem* afriend = new LastFmTreeItem ( mapTypeToUrl ( LastFm::FriendsChild, name ), LastFm::FriendsChild, name, mMyFriends );
-            mMyFriends->appendChild ( afriend );
-            appendUserStations ( afriend, name );
-            if ( !e[ "image size=large" ].text().isEmpty() )
+            if( !e[ "image size=large" ].text().isEmpty() )
             {
-                avatarlist.insert ( name, e[ "image size=large" ].text() );
+                avatarlist.insert( name, e[ "image size=large" ].text() );
             }
         }
 
-    } catch( lastfm::ws::ParseError e )
+        mFriends.sort();
+
+        foreach( const QString& name, mFriends )
+        {
+            LastFmTreeItem* afriend = new LastFmTreeItem( mapTypeToUrl ( LastFm::FriendsChild, name ), LastFm::FriendsChild, name, mMyFriends );
+            mMyFriends->appendChild ( afriend );
+            appendUserStations ( afriend, name );
+        }
+    }
+    catch( lastfm::ws::ParseError e )
     {
         debug() << "Got exception in parsing from last.fm:" << e.what();
     }
