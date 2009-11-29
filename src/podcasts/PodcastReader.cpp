@@ -1529,13 +1529,15 @@ QDateTime
 PodcastReader::parsePubDate( const QString &dateString )
 {
     DEBUG_BLOCK
-    QDateTime pubDate;
+    QString parseInput = dateString;
+    debug() << "Parsing pubdate: " << parseInput;
 
-    debug() << "Parsing pubdate: " << dateString;
-    if( dateString.contains( ',' ) )
-        pubDate = KDateTime::fromString( dateString, KDateTime::RFCDateDay ).dateTime();
-    else
-        pubDate = KDateTime::fromString( dateString, KDateTime::RFCDate ).dateTime();
+    QRegExp rfcDateDayRegex("^[A-Z]{1}[a-z]{2}\\s*,\\s*(.*)");
+    if ( rfcDateDayRegex.indexIn(parseInput) != -1 )
+    {
+        parseInput = rfcDateDayRegex.cap(1);
+    }
+    QDateTime pubDate = KDateTime::fromString( parseInput, KDateTime::RFCDate ).dateTime();
 
     debug() << "result: " << pubDate.toString();
     return pubDate;
