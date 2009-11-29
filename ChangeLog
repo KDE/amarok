@@ -27,6 +27,8 @@ VERSION 2.2.2
     * Fetch labels from last.fm for some tracks [UPDATE THIS ONCE WE FIGURE OUT WHEN TO DO SO]
 
   CHANGES:
+    * When downloading a podcast make sure the file is not on disk already. If it is the
+      download is stopped and the existing file is used instead.
     * Last.fm friends and neighbors are now sorted alphabetically.
     * Radically reduced memory consumption while downloading podcasts by writing direct to
       disk. Patches by Frank Meerkoetter. (BR 209937)
