@@ -46,12 +46,21 @@ void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
     emit muteToggled( !m_muted );
 }
 
+static QColor mix( const QColor &c1, const QColor &c2 )
+{
+    QColor c;
+    c.setRgb( ( c1.red() + c2.red() ) / 2, ( c1.green() + c2.green() ) / 2,
+              ( c1.blue() + c2.blue() ) / 2, ( c1.alpha() + c2.alpha() ) / 2 );
+    return c;
+}
+
+
 void VolumeDial::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
     p.drawPixmap(0,0, m_icon[ m_muted ]);
-    QColor c = palette().color( QPalette::Highlight );
-    c.setAlpha( 196 );
+    QColor c = mix( palette().color( foregroundRole() ), palette().color( QPalette::Highlight ) );
+    c.setAlpha( 160 );
     p.setPen( QPen( c, 3, Qt::SolidLine, Qt::RoundCap ) );
     p.setRenderHint(QPainter::Antialiasing);
     p.drawArc( rect().adjusted(4,4,-4,-4), -110*16, - value()*320*16 / (maximum() - minimum()) );

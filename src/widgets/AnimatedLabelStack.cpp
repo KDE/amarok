@@ -13,6 +13,7 @@ AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt:
 , m_align(Qt::AlignCenter)
 , m_time(0)
 , m_index(0)
+, m_visibleIndex(0)
 , m_animTimer(0)
 , m_fadeTime(300)
 , m_displayTime(4000)
@@ -121,7 +122,7 @@ AnimatedLabelStack::mouseReleaseEvent( QMouseEvent *me )
     {
         m_isClick = false;
         if ( !m_data.isEmpty() )
-            emit clicked ( m_data.at( m_index ) );
+            emit clicked ( m_data.at( m_visibleIndex ) );
     }
 }
 
@@ -145,7 +146,7 @@ AnimatedLabelStack::paintEvent( QPaintEvent * pe )
             {
                 c.setAlpha( qAbs(m_targetOpacity - m_opacity) );
                 p.setPen( c );
-                int index = m_index - 1;
+                int index = m_visibleIndex - 1;
                 if (index < 0)
                     index = m_data.count() - 1;
 
@@ -158,8 +159,8 @@ AnimatedLabelStack::paintEvent( QPaintEvent * pe )
     }
     
     p.setPen( c );
-    p.setFont( adjustedFont( m_data.at( m_index ) ) );
-    p.drawText( rect(), m_align | Qt::TextSingleLine, m_data.at( m_index ) );
+    p.setFont( adjustedFont( m_data.at( m_visibleIndex ) ) );
+    p.drawText( rect(), m_align | Qt::TextSingleLine, m_data.at( m_visibleIndex ) );
     p.end();
 }
 
@@ -207,6 +208,7 @@ AnimatedLabelStack::setData( const QStringList &data  )
     m_data = data;
     m_time = 0;
     m_index = 0;
+    m_visibleIndex = 0;
     ensureAnimationStatus();
     update();
 }
@@ -252,9 +254,16 @@ AnimatedLabelStack::timerEvent( QTimerEvent * te )
     if ( m_time > m_displayTime )
     {
         m_time = 0;
-        ++m_index;
-        if ( m_index >= m_data.count() )
-            m_index = 0;
+        if ( m_pulsating && !m_pulseRequested )
+            m_visibleIndex = m_index;
+        else
+        {
+            ++m_visibleIndex;
+            if ( m_visibleIndex >= m_data.count() )
+                m_visibleIndex = 0;
+        }
+        if ( !m_pulsating )
+            m_index = m_visibleIndex;
     }
 
     if ( m_time < m_fadeTime ) // fade in
@@ -269,7 +278,7 @@ AnimatedLabelStack::timerEvent( QTimerEvent * te )
     }
     else // (ensure) no fade
     {
-        if ( m_pulsating && !m_pulseRequested )
+        if ( m_pulsating && !m_pulseRequested && m_index == m_visibleIndex )
             setPulsating( false );
         m_opacity = m_targetOpacity; // to be sure
     }
@@ -285,15 +294,16 @@ AnimatedLabelStack::wheelEvent( QWheelEvent * we )
     
     if ( we->delta() < 0 )
     {
-        ++m_index;
-        if ( m_index >= m_data.count() )
-            m_index = 0;
+        ++m_visibleIndex;
+        if ( m_visibleIndex >= m_data.count() )
+            m_visibleIndex = 0;
     }
     else
     {
-        --m_index;
-        if ( m_index < 0 )
-            m_index = m_data.count() - 1;
+        --m_visibleIndex;
+        if ( m_visibleIndex < 0 )
+            m_visibleIndex = m_data.count() - 1;
     }
+    m_index = m_visibleIndex;
     update();
 }
