@@ -239,7 +239,7 @@ void Track::Private::readMetaData()
             size_t len = strlen( buf );
             KEncodingProber prober;
             KEncodingProber::ProberState result = prober.feed( buf, len );
-            QString track_encoding( prober.encodingName() );
+            QString track_encoding( prober.encoding() );
             if ( result != KEncodingProber::NotMe )
             {
                 /*  for further information please refer to:

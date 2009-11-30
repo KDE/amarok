@@ -213,9 +213,9 @@ bool Track::load ( qint64 mediaLength )
             file.seek( 0 );
 
             if( result != KEncodingProber::NotMe )
-                stream.setCodec( QTextCodec::codecForName( prober.encodingName() ) );
+                stream.setCodec( QTextCodec::codecForName( prober.encoding() ) );
 
-            debug() << "Encoding: " << prober.encodingName();
+            debug() << "Encoding: " << prober.encoding();
 
             while ( !stream.atEnd() )
             {

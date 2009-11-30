@@ -111,9 +111,9 @@ AudioCdCollection::infoFetchComplete( KJob *job )
         KEncodingProber prober;
         KEncodingProber::ProberState result = prober.feed( m_cdInfoJob->data() );
         if( result != KEncodingProber::NotMe )
-           cddbInfo = QTextCodec::codecForName( prober.encodingName() )->toUnicode( m_cdInfoJob->data() );
+           cddbInfo = QTextCodec::codecForName( prober.encoding() )->toUnicode( m_cdInfoJob->data() );
 
-        debug() << "Encoding: " << prober.encodingName();
+        debug() << "Encoding: " << prober.encoding();
         debug() << "got cddb info: " << cddbInfo;
 
         int startIndex;
