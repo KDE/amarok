@@ -17,22 +17,29 @@
 
 #include "SimilarArtistsApplet.h"
 
+//Amarok
 #include "Amarok.h"
 #include "App.h"
 #include "Debug.h"
 #include "context/Svg.h"
 #include "context/ContextView.h"
+#include "context/widgets/DropPixmapItem.h"
 #include "PaletteHandler.h"
 
+//Kde
 #include <Plasma/Theme>
 #include <plasma/widgets/iconwidget.h>
-
 #include <KConfigDialog>
 #include <KStandardDirs>
 
-
+//Qt
 #include <QDesktopServices>
 #include <QGraphicsSimpleTextItem>
+#include <QTextEdit>
+#include <qgraphicsproxywidget.h>
+#include <QLabel>
+ #include <QGraphicsGridLayout>
+ #include <QGraphicsScene>
 
 
 SimilarArtistsApplet::SimilarArtistsApplet( QObject* parent, const QVariantList& args )
@@ -44,11 +51,41 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject* parent, const QVariantList&
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
+
+    m_layout=new QGraphicsGridLayout;
+    m_scene=new QGraphicsScene;
+    
+    m_artistImage = new QLabel;
+    m_artistImage->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
+    m_artistImage->setScaledContents(true);                           // The QLabel scale is content
+    
+    m_artistName = new QLabel;
+    m_artistName->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
+    
+    m_artistGenre =new QLabel;
+    m_artistGenre->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
+
+    
+    QGraphicsProxyWidget *img = m_scene->addWidget(m_artistImage);
+    QGraphicsProxyWidget *art = m_scene->addWidget(m_artistName);
+    QGraphicsProxyWidget *genre = m_scene->addWidget(m_artistGenre);
+    
+    m_layout->setRowPreferredHeight(1,80);
+    m_layout->setRowPreferredHeight(2,80);
+    m_layout->setRowMaximumHeight(1,80);
+    m_layout->setRowMaximumHeight(2,80);
+    
+    m_layout->addItem(img,1,0,2,1);
+    m_layout->addItem(art,1,1);
+    m_layout->addItem(genre,2,1);
+    
+    setLayout(m_layout);    
 }
 
 void
 SimilarArtistsApplet::init()
 {
+    
     m_headerLabel = new QGraphicsSimpleTextItem( this );
 
     // ask for all the CV height
@@ -75,13 +112,16 @@ SimilarArtistsApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
     m_maxArtists = config.readEntry( "maxArtists", "20" ).toInt();
+
 }
 
 void
 SimilarArtistsApplet::connectSource( const QString &source )
 {
-    if( source == "similarArtists" )
+    if( source == "similarArtists" ) {
         dataEngine( "amarok-similarArtists" )->connectSource( "similarArtists", this );
+        dataUpdated( source, dataEngine( "amarok-similarArtists" )->query( "similarArtists" ) );
+    }
 }
 
 void
@@ -112,10 +152,34 @@ SimilarArtistsApplet::heightForWidth( qreal width ) const
     return width * m_aspectRatio;
 }
 
+
 void
 SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     Q_UNUSED( name )
+
+    // the layout begin at the bottom of the applet's title
+    m_layout->setRowMinimumHeight(0,m_headerLabel->boundingRect().height());
+    m_layout->setRowMaximumHeight(0,m_headerLabel->boundingRect().height());
+
+    
+    QString artistName = data[ "artist" ].toString();
+
+    // we see if the artist name is valid
+    if (artistName.compare( "" ) != 0) {
+        m_headerLabel->setText( i18n( "Similar artists of " ) + artistName );
+        m_artistName->setText("<a href='http://amarok.kde.org'>" + artistName +"</a>");
+    } else { // the artist name is invalid
+        m_headerLabel->setText( i18n( "Similar Artists" ) );
+        m_artistName->setText("Non dispo");
+    }
+
+    m_artistImage->setPixmap( data[ "cover" ].value<QPixmap>() );
+    m_artistGenre->setText(i18n( "Genre") + " : Pop, Jazz");
+    
+    updateConstraints();
+    update();
+
 }
 
 void
@@ -130,13 +194,6 @@ SimilarArtistsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 
     // draw rounded rect around title
     drawRoundedRectAroundText( p, m_headerLabel );
-
-    //draw background of wiki text
-    p->save();
-    QColor bg( App::instance()->palette().highlight().color() );
-    bg.setHsvF( bg.hueF(), 0.07, 1, bg.alphaF() );
-
-    p->restore();
 }
 
 
@@ -145,7 +202,6 @@ SimilarArtistsApplet::configure()
 {
     DEBUG_BLOCK
     showConfigurationInterface();
-
 }
 
 

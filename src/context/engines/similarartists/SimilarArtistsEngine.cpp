@@ -1,6 +1,7 @@
 /****************************************************************************************
 * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
 * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+* Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -123,7 +124,16 @@ void SimilarArtistsEngine::update()
             else
                 artistName = currentTrack->artist()->prettyName();
         }
+        
+        if (artistName.compare( "") == 0) {
+            setData( "similarArtists", "artist", "Unknown artist" );
+        } else {
+            setData( "similarArtists", "artist", artistName );
+        }
     }
+
+     QPixmap cover = m_currentTrack->album()->image( 156 );
+     setData( "similarArtists", "cover",  QVariant( cover ) );
 
 }
 
