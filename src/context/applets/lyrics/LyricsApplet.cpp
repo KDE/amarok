@@ -553,14 +553,16 @@ LyricsApplet::setEditing( const bool isEditing )
 
 void LyricsApplet::collapseToMin()
 {
+    // use a dummy item to get the lyrics layout being displayed
     QGraphicsTextItem testItem;
+    testItem.setTextWidth( m_lyrics->document()->size().width() );
+    testItem.setFont( m_lyrics->currentFont() );
     testItem.setHtml( m_lyrics->toHtml() );
 
-    const QFontMetrics fm( m_lyrics->currentFont() );
-    const qreal contentHeight = m_titleLabel->boundingRect().height()
-                              + testItem.boundingRect().height()
-                              + standardPadding()
-                              + fm.height();
+    const qreal frameWidth     = m_lyrics->frameWidth();
+    const qreal testItemHeight = testItem.boundingRect().height();
+    const qreal headerHeight   = m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding();
+    const qreal contentHeight  = headerHeight + frameWidth + testItemHeight + frameWidth + standardPadding();
 
     // only show vertical scrollbar if there are lyrics and is needed
     m_lyrics->setVerticalScrollBarPolicy( m_hasLyrics ? Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff );
