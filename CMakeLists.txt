@@ -2,8 +2,7 @@ project(Amarok)
 
 cmake_minimum_required(VERSION 2.6.2)
 
-set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
-                          ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
+set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
@@ -66,7 +65,6 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/shared )
 
 if( WITH_PLAYER )
-#We depend on kde4.3 now.. I believe this is the easiest way to do it.
     set(KDE_MIN_VERSION "4.3.0")
     find_package( KDE4 REQUIRED )
     include (KDE4Defaults)
@@ -190,4 +188,3 @@ if( WITH_UTILITIES )
     set(BIN_INSTALL_DIR          "${EXEC_INSTALL_PREFIX}/bin"    CACHE PATH "The subdirectory to the binaries prefix (default prefix/bin)" FORCE)
     add_subdirectory( utilities )
 endif( WITH_UTILITIES )
-
