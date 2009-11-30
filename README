@@ -35,10 +35,10 @@ interface that really makes playlist handling easy.
 ==============
 
 Required
-    * KDE-Libs 4.2 + KDE-Base-runtime 4.2 (or newer)
+    * KDE-Libs 4.3 + KDE-Base-runtime 4.3 (or newer)
       http://www.kde.org
 
-    * Qt 4.4 (or newer)
+    * Qt 4.5 (or newer)
       http://qt.nokia.com/
 
     * TagLib 1.6 (or newer)
