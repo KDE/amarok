@@ -107,6 +107,11 @@
        </item>
        <item>
         <property name="text">
+         <string>Rating</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Sample Rate</string>
         </property>
        </item>

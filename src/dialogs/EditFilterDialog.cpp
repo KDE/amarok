@@ -80,6 +80,7 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     m_vector.push_back( "composer" );
     m_vector.push_back( "genre" );
     m_vector.push_back( "playcount" );
+    m_vector.push_back( "rating" );
     m_vector.push_back( "samplerate" );
     m_vector.push_back( "score" );
     m_vector.push_back( "title" );
@@ -310,9 +311,13 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         m_ui.maximum1->setValue( 100 );
         valueWanted();
     }
-    else if(   key == "lastplayed"
-            || key == "rating"
-            || key == "bpm" )
+    else if( key == "rating" )
+    {
+        m_ui.minimum1->setValue( 0 );
+        m_ui.maximum1->setValue( 10 );
+        valueWanted();
+    }
+    else if( key == "lastplayed" || key == "bpm" )
     {
         valueWanted();
     }
