@@ -567,6 +567,10 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 {
                     ADD_OR_EXCLUDE_FILTER( Meta::valYear, elem.text, false, false );
                 }
+                else if( lcField.compare( "bitrate", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "bitrate" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBitrate, elem.text.toInt(), compare );
+                }
                 else if( lcField.compare( "rating", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "rating" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valRating, elem.text.toInt(), compare );
@@ -578,6 +582,10 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 else if( lcField.compare( "playcount", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "playcount" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valPlaycount, elem.text.toInt(), compare );
+                }
+                else if( lcField.compare( "samplerate", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "samplerate" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valSamplerate, elem.text.toInt(), compare );
                 }
                 else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "length" ), Qt::CaseInsensitive ) == 0 )
                 {

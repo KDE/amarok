@@ -76,9 +76,11 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     m_vector.push_back( "Simple Search" );
     m_vector.push_back( "album" );
     m_vector.push_back( "artist" );
+    m_vector.push_back( "bitrate" );
     m_vector.push_back( "composer" );
     m_vector.push_back( "genre" );
     m_vector.push_back( "playcount" );
+    m_vector.push_back( "samplerate" );
     m_vector.push_back( "score" );
     m_vector.push_back( "title" );
     m_vector.push_back( "track" );

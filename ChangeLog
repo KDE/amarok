@@ -28,6 +28,7 @@ VERSION 2.2.2
     * Pressing F2 when focused in the lyrics applet jumps into editing mode.
 
   CHANGES:
+    * Added bitrate and sample rate filters to collection browser's text input area.
     * Amarok now depends on KDElibs 4.3, and Qt 4.5.
     * When downloading a podcast make sure the file is not on disk already. If it is the
       download is stopped and the existing file is used instead.

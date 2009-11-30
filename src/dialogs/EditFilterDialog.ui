@@ -87,6 +87,11 @@
        </item>
        <item>
         <property name="text">
+         <string>Bit Rate</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Composer</string>
         </property>
        </item>
@@ -98,6 +103,11 @@
        <item>
         <property name="text">
          <string>Playcount</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Sample Rate</string>
         </property>
        </item>
        <item>
