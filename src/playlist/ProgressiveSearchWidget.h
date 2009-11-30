@@ -183,6 +183,12 @@ protected slots:
     void slotSearchComposers( bool search );
 
     /**
+      * toggle rating matching when searching
+      * @param search On/off.
+      */
+    void slotSearchRating( bool search );
+
+    /**
      * Toggle year matching when searching.
      * @param search On/off.
      */

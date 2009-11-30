@@ -236,7 +236,8 @@ enum SearchFields
     MatchAlbum = 4,
     MatchGenre = 8,
     MatchComposer = 16,
-    MatchYear = 32
+    MatchYear = 32,
+    MatchRating = 64
 };
 
 enum DataRoles

@@ -108,6 +108,13 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
         searchComposersAction->setChecked( true );
     m_menu->addAction( searchComposersAction );
 
+    KAction * searchRatingAction = new KAction( i18n( "Rating" ), this );
+    searchRatingAction->setCheckable( true );
+    connect( searchRatingAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchRating( bool ) ) );
+    if( m_searchFieldsMask & Playlist::MatchRating )
+        searchRatingAction->setChecked( true );
+    m_menu->addAction( searchRatingAction );
+
     KAction * searchYearsAction = new KAction( i18n( "Years" ), this );
     searchYearsAction->setCheckable( true );
     connect( searchYearsAction, SIGNAL( toggled( bool ) ), this, SLOT( slotSearchYears( bool ) ) );
@@ -293,6 +300,19 @@ void ProgressiveSearchWidget::slotSearchComposers( bool search )
         emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
+void ProgressiveSearchWidget::slotSearchRating( bool search )
+{
+    if( search )
+        m_searchFieldsMask |= Playlist::MatchRating;
+    else
+        m_searchFieldsMask ^= Playlist::MatchRating;
+
+    Amarok::config( "Playlist Search" ).writeEntry( "MatchRating", search );
+
+    if( !m_searchEdit->text().isEmpty() )
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
+}
+
 void ProgressiveSearchWidget::slotSearchYears( bool search )
 {
     if( search )
@@ -322,6 +342,8 @@ void ProgressiveSearchWidget::readConfig()
         m_searchFieldsMask |= Playlist::MatchGenre;
     if( config.readEntry( "MatchComposer", false ) )
         m_searchFieldsMask |= Playlist::MatchComposer;
+    if( config.readEntry( "MatchRating", false ) )
+        m_searchFieldsMask |= Playlist::MatchRating;
     if( config.readEntry( "MatchYear", false ) )
         m_searchFieldsMask |= Playlist::MatchYear;
 
