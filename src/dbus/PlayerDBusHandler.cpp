@@ -75,7 +75,7 @@ namespace Amarok
 
     DBusStatus PlayerDBusHandler::GetStatus()
     {
-        DBusStatus status;
+        DBusStatus status = { 0, 0, 0, 0 };
         switch( The::engineController()->state() )
         {
             case Phonon::PlayingState:
@@ -96,7 +96,7 @@ namespace Amarok
         else
             status.Random = 0;
         
-         if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatTrack  )
+        if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatTrack  )
             status.Repeat = 1;
         else
             status.Repeat = 0;
