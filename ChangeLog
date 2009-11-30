@@ -52,6 +52,8 @@ VERSION 2.2.2
     * Improved automatic resizing of the lyrics applet.
 
   BUGFIXES:
+    * Fixed crash when copying tracks to MP3tunes music locker. (BR 214686)
+      Patch by Nicolas Lécureuil <nlecureuil@mandriva.com>.
     * Podcast downloads can now be properly canceled. Patch by Frank Meerkötter.
     * Fixed any open menus or popus getting closed when the OSD is shown.
     * Fixed copies of default layouts getting created even if just using the
