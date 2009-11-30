@@ -452,8 +452,7 @@ LyricsApplet::keyPressEvent( QKeyEvent *e )
             closeLyrics();
             break;
 
-        case Qt::Key_Return :
-        case Qt::Key_Enter :
+        case Qt::Key_F2 :
             editLyrics();
             break;
         }

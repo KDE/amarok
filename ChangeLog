@@ -25,6 +25,7 @@ VERSION 2.2.2
     * Custom Labels has returned.  Assign labels from the tag dialog, and
       see them in the tag dialog or in the playlist.
     * Fetch labels from last.fm for some tracks [UPDATE THIS ONCE WE FIGURE OUT WHEN TO DO SO]
+    * Pressing F2 when focused in the lyrics applet jumps into editing mode.
 
   CHANGES:
     * When downloading a podcast make sure the file is not on disk already. If it is the
