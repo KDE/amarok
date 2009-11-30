@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2.2
   FEATURES
+    * Rating of playlist items can now be filtered, using "rating:#" notation.
     * When removing a podcast subscription, ask for confirmation and offer to delete the
       downloaded episodes. Patch by Frank Meerkötter.
     * Font of lyrics applet is configurable in the lyrics applet setting page.
