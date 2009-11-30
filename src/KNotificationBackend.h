@@ -35,8 +35,6 @@ public:
     static KNotificationBackend* instance();
     static void destroy();
 
-public Q_SLOTS:
-
 protected:
     // Reimplemented from engineobserver
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
@@ -52,7 +50,6 @@ private:
     static KNotificationBackend* s_instance;
     
     QTimer *m_timer;
-
 };
 
 }

@@ -22,8 +22,6 @@
 #include "EngineController.h"
 #include "meta/Meta.h"
 
-#include <kdeversion.h> // REMIND
-
 #include <QTimer>
 
 
@@ -99,9 +97,7 @@ Amarok::KNotificationBackend::slotShowCurrentTrack()
         if( track->album() )
             notify->setPixmap( track->album()->imageWithBorder( 80 ) );
 
-        #if KDE_IS_VERSION(4,3,0)
         notify->setTitle( i18n( "Now playing" ) );
-        #endif
 
         notify->setText( Amarok::prettyNowPlaying() );
         notify->sendEvent();
