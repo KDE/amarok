@@ -330,7 +330,7 @@ Playlist::Controller::moveRow( int from, int to )
     QList<int> source;
     QList<int> target;
     source.append( from );
-    target.append( to );
+    source.append( to );
 
     // shift all the rows between
     if ( from < to )
