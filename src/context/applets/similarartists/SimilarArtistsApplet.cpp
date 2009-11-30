@@ -61,10 +61,11 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject* parent, const QVariantList&
     
     m_artistName = new QLabel;
     m_artistName->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
+    m_artistName->setAlignment(Qt::AlignCenter);
     
     m_artistGenre =new QLabel;
     m_artistGenre->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
-
+    m_artistGenre->setAlignment(Qt::AlignCenter);
     
     QGraphicsProxyWidget *img = m_scene->addWidget(m_artistImage);
     QGraphicsProxyWidget *art = m_scene->addWidget(m_artistName);
@@ -74,6 +75,10 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject* parent, const QVariantList&
     m_layout->setRowPreferredHeight(2,80);
     m_layout->setRowMaximumHeight(1,80);
     m_layout->setRowMaximumHeight(2,80);
+    m_layout->setColumnPreferredWidth(0,160);
+    m_layout->setColumnMaximumWidth(0,160);
+
+    m_layout->setColumnAlignment(1,Qt::AlignCenter);
     
     m_layout->addItem(img,1,0,2,1);
     m_layout->addItem(art,1,1);
@@ -159,8 +164,8 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     Q_UNUSED( name )
 
     // the layout begin at the bottom of the applet's title
-    m_layout->setRowMinimumHeight(0,m_headerLabel->boundingRect().height());
-    m_layout->setRowMaximumHeight(0,m_headerLabel->boundingRect().height());
+    m_layout->setRowMinimumHeight(0,m_headerLabel->boundingRect().height()+7);
+    m_layout->setRowMaximumHeight(0,m_headerLabel->boundingRect().height()+7);
 
     
     QString artistName = data[ "artist" ].toString();
