@@ -305,5 +305,6 @@ AnimatedLabelStack::wheelEvent( QWheelEvent * we )
             m_visibleIndex = m_data.count() - 1;
     }
     m_index = m_visibleIndex;
+    m_time = m_fadeTime + 1;
     update();
 }
