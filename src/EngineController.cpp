@@ -1077,7 +1077,7 @@ EngineController::slotTrackLengthChanged( qint64 milliseconds )
 {
     DEBUG_BLOCK
 
-    trackLengthChangedNotify( m_multiPlayback ? trackLength() : milliseconds );
+    trackLengthChangedNotify( ( m_multiPlayback || m_boundedPlayback ) ? trackLength() : milliseconds );
 }
 
 void
