@@ -105,6 +105,11 @@ CollectionManager::init()
 {
     DEBUG_BLOCK
 
+    //register the timceode track provider now, as it needs to get added before loading
+    //the stored playlist... Since it can have playable urls that migh talso match other providers, it needs to get added first.
+    m_timecodeTrackProvider = new TimecodeTrackProvider();
+    addTrackProvider( m_timecodeTrackProvider );
+
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
 
@@ -191,10 +196,7 @@ CollectionManager::init()
         }
     }
 
-    //register the timceode track provider now, as it needs to get added before loading
-    //the stored playlist...
-    m_timecodeTrackProvider = new TimecodeTrackProvider();
-    addTrackProvider( m_timecodeTrackProvider );
+
 }
 
 void

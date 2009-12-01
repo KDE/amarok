@@ -185,11 +185,12 @@ Meta::SqlPlaylist::saveTracks()
 
     foreach( Meta::TrackPtr trackPtr, m_tracks )
     {
+        debug() << "saving track with url " << trackPtr->uidUrl();
         if ( trackPtr && trackPtr->album() && trackPtr->artist() )
         {
             QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, album, artist, length, uniqueid ) VALUES ( %1, %2, '%3', '%4', '%5', '%6', %7, '%8' );";
             query = query.arg( QString::number( m_dbId ), QString::number( trackNum ),
-                        sql->escape( trackPtr->playableUrl().url() ),
+                        sql->escape( trackPtr->uidUrl() ),
                         sql->escape( trackPtr->prettyName() ),
                         sql->escape( trackPtr->album()->prettyName() ),
                         sql->escape( trackPtr->artist()->prettyName() ),
