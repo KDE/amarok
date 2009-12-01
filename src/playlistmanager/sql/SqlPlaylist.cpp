@@ -20,6 +20,7 @@
 #include "Debug.h"
 #include "meta/stream/Stream.h"
 #include "SqlStorage.h"
+#include "timecode/TimecodeMeta.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
@@ -256,18 +257,34 @@ Meta::SqlPlaylist::loadTracks()
 
         if ( trackPtr ) {
 
-            if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )  {
+            if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )
+            {
 
                 debug() << "got stream from trackForUrl, setting album to " << row[4];
 
                 MetaStream::Track * streamTrack = dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
+                
 
                 if ( streamTrack ) {
                     streamTrack->setTitle( row[3] );
                     streamTrack->setAlbum( row[4] );
                     streamTrack->setArtist( row[5] );
                 }
+            }
+            else if ( typeid( * trackPtr.data() ) == typeid( Meta::TimecodeTrack ) )
+            {
 
+                Meta::TimecodeTrack * timecodeTrack = dynamic_cast<Meta::TimecodeTrack *> ( trackPtr.data() );
+
+                if ( timecodeTrack )
+                {
+                    debug() << "setting stored meta values on timecode track";
+                    timecodeTrack->beginMetaDataUpdate();
+                    timecodeTrack->setTitle( row[3] );
+                    timecodeTrack->setAlbum( row[4] );
+                    timecodeTrack->setArtist( row[5] );
+                    timecodeTrack->endMetaDataUpdate();
+                }
             }
 
             m_tracks << trackPtr;
