@@ -123,21 +123,47 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
         case Meta::ChannelType:
             channel = static_cast<Meta::PodcastChannel *>( pmc );
 
+            //TODO: only check visible episodes. For now those are all returned by episodes().
+            foreach( const Meta::PodcastEpisodePtr ep, channel->episodes() )
+            {
+                if( ep->isNew() )
+                {
+                    emblems << "rating";
+                    break;
+                }
+            }
+
             if( channel->hasImage() )
             {
-                return channel->image().scaledToHeight( 32 );
+                QSize size( channel->image().size() );
+                QPixmap pixmap( 32, 32 );
+                int x = 0, y = 0;
+
+                size.scale( 32, 32, Qt::KeepAspectRatio );
+
+                if( size.width() < 32 || size.height() < 32 )
+                {
+                    pixmap.fill( Qt::transparent );
+                    x =  32 / 2 - size.width()  / 2;
+                    y =  32 / 2 - size.height() / 2;
+                }
+
+                QPainter p( &pixmap );
+                p.drawPixmap( x, y, channel->image().scaled( size ) );
+                
+                // if it's a new episode draw the overlay:
+                if( !emblems.isEmpty() )
+                {
+                    // draw the overlay the same way KIconLoader does:
+                    p.drawPixmap( 2, 32 - 16 - 2, KIcon( "rating" ).pixmap( 16, 16 ) );
+                }
+
+                p.end();
+
+                return pixmap;
             }
             else
             {
-                //TODO: only check visible episodes. For now those are all returned by episodes().
-                foreach( const Meta::PodcastEpisodePtr ep, channel->episodes() )
-                {
-                    if( ep->isNew() )
-                    {
-                        emblems << "rating";
-                        break;
-                    }
-                }
 
                 return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
             }
