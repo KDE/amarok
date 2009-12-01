@@ -51,7 +51,6 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
     , m_needsResize( true )
 {
     setRange( 0, max );
-    setFixedHeight( 20 );
     setAttribute( Qt::WA_NoMousePropagation, true );
 
     m_moodbarManager = The::moodbarManager();
