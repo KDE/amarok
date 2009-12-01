@@ -31,6 +31,7 @@
 #include <QSizeF>
 #include <QStyleOptionGraphicsItem>
 
+#define MARGIN           10
 #define TOOLBAR_X_OFFSET  5
 #define TOOLBAR_Y_OFFSET  5
 
@@ -72,7 +73,7 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
 
     m_addMenu = new Context::AppletsExplorer( cont );
     m_addMenu->setContainment( cont );
-    m_addMenu->resize( Context::ContextView::self()->size().width() - 20, m_addMenu->geometry().height() );
+    m_addMenu->resize( Context::ContextView::self()->size().width() - MARGIN, m_addMenu->geometry().height() );
     m_addMenu->hide();
     
     m_addMenu->setZValue( zValue() + 10000 );
@@ -88,6 +89,13 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
 
 Context::AppletToolbarAddItem::~AppletToolbarAddItem()
 {
+    //HACK: m_addMenu should be deleted manually since its parent is the containment, but deleting it manually is crashing amarok on exit,
+    //probably because its being deleted before the containmnet.
+    //For now we just hide the menu to prevent it to stay visible after we toggle the tool icon.
+    m_addMenu->hide();
+//     m_addMenu->containment()->disconnect( m_addMenu );
+//     m_addMenu->setContainment( 0 );
+//     delete m_addMenu;
 }
 
 void 
@@ -173,7 +181,7 @@ Context::AppletToolbarAddItem::showAddAppletsMenu( QPointF pos )
     const qreal xpos = TOOLBAR_X_OFFSET;
     const qreal ypos = Context::ContextView::self()->size().height() - m_addMenu->geometry().height() - TOOLBAR_Y_OFFSET;
 
-    m_addMenu->resize( Context::ContextView::self()->size().width() - ( 2 * TOOLBAR_X_OFFSET ), m_addMenu->geometry().height() );
+    m_addMenu->resize( Context::ContextView::self()->size().width() - MARGIN, m_addMenu->geometry().height() );
     m_addMenu->setPos( xpos, ypos );
     m_addMenu->show();
    

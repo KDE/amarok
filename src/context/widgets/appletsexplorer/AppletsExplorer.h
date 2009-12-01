@@ -48,7 +48,7 @@ class AMAROK_EXPORT AppletsExplorer: public QGraphicsWidget
 
     public:
 
-        AppletsExplorer( QGraphicsItem *parent );
+        AppletsExplorer( QGraphicsItem *parent = 0 );
         ~AppletsExplorer();
 
         void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );

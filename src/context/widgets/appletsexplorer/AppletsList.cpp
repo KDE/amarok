@@ -49,8 +49,8 @@ AppletsListWidget::init()
 {    
     m_mainLayout = new QGraphicsLinearLayout( Qt::Horizontal );
 
-    m_leftArrow = new Plasma::IconWidget();
-    m_rightArrow = new Plasma::IconWidget();
+    m_leftArrow = new Plasma::IconWidget( this );
+    m_rightArrow = new Plasma::IconWidget( this );
 
     m_leftArrow->setIcon( KIcon( "go-previous" ) );
     m_rightArrow->setIcon( KIcon( "go-next" ) );

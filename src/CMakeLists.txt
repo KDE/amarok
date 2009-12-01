@@ -368,8 +368,8 @@ set( libcontextview_SRCS
     context/widgets/ContainmentArrow.cpp
     context/widgets/ContainmentSelectionLayer.cpp
     context/widgets/appletsexplorer/AppletsExplorer.cpp
-    context/widgets/appletsexplorer/AppletsIcon.cpp
-    context/widgets/appletsexplorer/AppletsItemModel.cpp
+    context/widgets/appletsexplorer/AppletIcon.cpp
+    context/widgets/appletsexplorer/AppletItemModel.cpp
     context/widgets/appletsexplorer/AppletsList.cpp
     context/widgets/TrackWidget.cpp
 )
