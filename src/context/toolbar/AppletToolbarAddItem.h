@@ -19,6 +19,7 @@
 
 
 #include "amarok_export.h"
+#include "widgets/appletsexplorer/AppletsExplorer.h"
 
 #include <plasma/widgets/iconwidget.h>
 
@@ -33,9 +34,9 @@ class QStyleOptionGraphicsItem;
 
 namespace Context
 {
-    
-class AmarokToolBoxMenu;
+
 class Containment;
+class WidgetExplorer;
 
 class AppletToolbarAddItem : public AppletToolbarBase
 {
@@ -68,7 +69,7 @@ class AppletToolbarAddItem : public AppletToolbarBase
         Containment* m_cont;
         Plasma::IconWidget* m_icon;
         QGraphicsSimpleTextItem* m_label;
-        AmarokToolBoxMenu* m_addMenu;
+        AppletsExplorer *m_addMenu;
 };
 
 }
