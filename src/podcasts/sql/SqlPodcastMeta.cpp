@@ -172,6 +172,13 @@ Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 }
 
 void
+Meta::SqlPodcastEpisode::setNew( bool isNew )
+{
+    m_isNew = isNew;
+    updateInDb();
+}
+
+void
 Meta::SqlPodcastEpisode::setLocalUrl( const KUrl &url )
 {
     m_localUrl = url;

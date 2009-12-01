@@ -164,19 +164,19 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual QString guid() const { return m_guid; }
         virtual bool isNew() const { return m_isNew; }
 
-        void setFilesize( int fileSize ) { m_fileSize = fileSize; }
-        void setMimeType( const QString &mimeType ) { m_mimeType = mimeType; }
-        void setUidUrl( const KUrl &url ) { m_url = url; }
-        void setPubDate( const QDateTime &pubDate ) { m_pubDate = pubDate; }
-        void setDuration( int duration ) { m_duration = duration; }
-        void setGuid( const QString &guid ) { m_guid = guid; }
-        void setNew( bool isNew ) { m_isNew = isNew; }
+        virtual void setFilesize( int fileSize ) { m_fileSize = fileSize; }
+        virtual void setMimeType( const QString &mimeType ) { m_mimeType = mimeType; }
+        virtual void setUidUrl( const KUrl &url ) { m_url = url; }
+        virtual void setPubDate( const QDateTime &pubDate ) { m_pubDate = pubDate; }
+        virtual void setDuration( int duration ) { m_duration = duration; }
+        virtual void setGuid( const QString &guid ) { m_guid = guid; }
+        virtual void setNew( bool isNew ) { m_isNew = isNew; }
 
         virtual int sequenceNumber() const { return m_sequenceNumber; }
-        void setSequenceNumber( int sequenceNumber ) { m_sequenceNumber = sequenceNumber; }
+        virtual void setSequenceNumber( int sequenceNumber ) { m_sequenceNumber = sequenceNumber; }
 
         virtual PodcastChannelPtr channel() const { return m_channel; }
-        void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; }
+        virtual void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; }
 
     protected:
         PodcastChannelPtr m_channel;

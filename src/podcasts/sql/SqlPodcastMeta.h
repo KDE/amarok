@@ -46,6 +46,7 @@ class SqlPodcastEpisode : public PodcastEpisode
         //PodcastEpisode methods
         PodcastChannelPtr channel() const { return PodcastChannelPtr::dynamicCast( m_channel ); }
         virtual bool isNew() const { return m_isNew; }
+        virtual void setNew( bool isNew );
         virtual void setLocalUrl( const KUrl &url );
 
         //Track Methods
