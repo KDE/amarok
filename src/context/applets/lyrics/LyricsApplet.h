@@ -25,7 +25,6 @@
 #include <ui_lyricsSettings.h>
 
 class TextScrollingWidget;
-class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
 class QTextBrowser;
 
@@ -54,7 +53,7 @@ public:
 public slots:
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-    void suggestionChosen( const QString& link );
+    void suggestionChosen( const QUrl& link );
     void refreshLyrics();
     
 private slots:
@@ -83,8 +82,9 @@ private:
 
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
-    QTextBrowser* m_lyrics;
-    QGraphicsTextItem* m_suggested;
+    QTextBrowser         *m_lyrics;
+    QGraphicsProxyWidget *m_suggestedProxy;
+    QTextBrowser         *m_suggested;
 
     Ui::lyricsSettings    ui_Settings;
 

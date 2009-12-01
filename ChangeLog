@@ -53,7 +53,7 @@ VERSION 2.2.2
     * Improved guessing tags from filename. Added preview to Dialog.
     * Display frames around lyrics/video applets for indicating focus.
     * Improved keyboard functions when editing lyrics from the applet.
-    * Improved automatic resizing of the lyrics applet.
+    * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
     * Fixed crash when copying tracks to MP3tunes music locker. (BR 214686)
