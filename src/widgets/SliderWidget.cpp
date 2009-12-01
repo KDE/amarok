@@ -148,7 +148,7 @@ Amarok::Slider::slideEvent( QMouseEvent *e )
     }
 
     const int val = QStyle::sliderValueFromPosition( minimum(), maximum(), position, span );
-    QSlider::setValue( adjustValue( val ) );
+    QSlider::setValue( val );
 }
 
 void
@@ -278,6 +278,12 @@ Amarok::VolumeSlider::VolumeSlider( uint max, QWidget *parent, bool customStyle 
 {
     m_usingCustomStyle = customStyle;
     setFocusPolicy( Qt::NoFocus );
+
+    if( !customStyle )
+    {
+        setInvertedAppearance( true );
+        setInvertedControls( true );
+    }
 }
 
 void
