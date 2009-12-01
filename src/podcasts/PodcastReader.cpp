@@ -371,6 +371,8 @@ PodcastReader::StaticData::StaticData()
     // parse <feed> "Atom"
     feedMap.insert( Title, &atomTitleAction );
     feedMap.insert( Subtitle, &atomSubtitleAction );
+    feedMap.insert( Icon, &atomIconAction );
+    feedMap.insert( Logo, &atomLogoAction );
     feedMap.insert( Author, &atomAuthorAction );
     feedMap.insert( Link, &atomFeedLinkAction );
     feedMap.insert( Entry, &atomEntryAction );
