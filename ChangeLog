@@ -63,7 +63,7 @@ VERSION 2.2.2
   BUGFIXES:
     * Fixed videoclip applet going blank when switching from one video to 
       another. (BR 210332)
-    * Fixed dailymotion video file direct link retrieving not working.
+    * Fixed dailymotion video file direct link retrieving not working. (BR 214168)
     * Fixed wikipedia engine not parsing correctly URL containing ":". (BR 209397)
     * Fixed several issues with loading and saving timecode tracks to and from
       playlists.
