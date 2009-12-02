@@ -444,6 +444,26 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
             }
         }
     }
+
+    // FIXME This should be in engineStateChanged(), but for now it help fixing the bug 210332
+    else if ( The::engineController()->phononMediaObject()->hasVideo()
+        && The::engineController()->phononMediaObject()->state() != Phonon::BufferingState
+        && The::engineController()->phononMediaObject()->state() != Phonon::LoadingState )
+    {
+        setBusy( false );
+        debug() << " VideoclipApplet | Show VideoWidget";
+        m_widget->hide();
+        m_videoWidget->show();
+        m_videoWidget->activateWindow();
+        if ( m_videoWidget->inputPaths().isEmpty() )
+            Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget );
+        if( m_videoWidget->isActiveWindow() )
+        {
+            QContextMenuEvent e( QContextMenuEvent::Other, QPoint() );
+            QApplication::sendEvent( m_videoWidget, &e );
+        }
+    }
+    
     updateConstraints();
 }
 

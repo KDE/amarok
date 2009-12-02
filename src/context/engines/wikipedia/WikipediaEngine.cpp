@@ -54,7 +54,7 @@ bool WikipediaEngine::sourceRequestEvent( const QString& name )
     DEBUG_BLOCK
 
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
-    QStringList tokens = name.split( ':' );
+    QStringList tokens = name.split( ":AMAROK_TOKEN:" );
 
     // User has requested a reload
     if( tokens.contains( "reload" ) && tokens.size() > 1 )
@@ -69,9 +69,9 @@ bool WikipediaEngine::sourceRequestEvent( const QString& name )
     // User has clicked on a link, let's fetch the page
     if( tokens.contains( "get" ) && tokens.size() > 1 )
     {
-        if ( ( tokens.at( 1 ) == QString( "get" ) ) && ( tokens.size() > 3 ) )
-        {            
-            m_wikiCurrentUrl = tokens.at( 2 ) + QString( ":" ) + tokens.at( 3 );
+        if ( ( tokens.at( 1 ) == QString( "get" ) ) && ( tokens.size() > 2 ) )
+        {
+            m_wikiCurrentUrl = tokens.at( 2 ) ;
         
             removeSource( "wikipedia" );
             setData( "wikipedia", "busy", "busy" );

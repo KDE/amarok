@@ -157,7 +157,7 @@ WikipediaApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Wikipedia Applet");
     m_wikiPreferredLang = config.readEntry( "PreferredLang", "aut" );
-    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + m_wikiPreferredLang );
 }
 
 void
@@ -344,21 +344,21 @@ void
 WikipediaApplet::gotoArtist()
 {
     DEBUG_BLOCK
-    dataEngine( "amarok-wikipedia" )->query( "wikipedia:goto:artist" );
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:goto:AMAROK_TOKEN:artist" );
 }
 
 void
 WikipediaApplet::gotoAlbum()
 {
     DEBUG_BLOCK
-    dataEngine( "amarok-wikipedia" )->query( "wikipedia:goto:album" );
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:goto:AMAROK_TOKEN:album" );
 }
 
 void
 WikipediaApplet::gotoTrack()
 {
     DEBUG_BLOCK
-    dataEngine( "amarok-wikipedia" )->query( "wikipedia:goto:track" );
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:goto:AMAROK_TOKEN:track" );
 }
 
 void
@@ -367,7 +367,7 @@ WikipediaApplet::linkClicked( const QUrl &url )
     DEBUG_BLOCK
     if ( url.toString().contains( "wikipedia.org/" ) )
     {
-        dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:get:" ) + url.toString() );
+        dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:get:AMAROK_TOKEN:" ) + url.toString() );
         if( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
             m_backwardIcon->action()->setEnabled( true );
 
@@ -383,7 +383,7 @@ void
 WikipediaApplet::reloadWikipedia()
 {
     DEBUG_BLOCK
-    dataEngine( "amarok-wikipedia" )->query( "wikipedia:reload" );
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:reload" );
 }
 
 void
@@ -410,11 +410,11 @@ WikipediaApplet::switchToLang(QString lang)
     else if (lang == i18n("German") )
         m_wikiPreferredLang = "de";
 
-    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + m_wikiPreferredLang );
 
     KConfigGroup config = Amarok::config("Wikipedia Applet");
     config.writeEntry( "PreferredLang", m_wikiPreferredLang );
-    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + m_wikiPreferredLang );
 }
 
 void

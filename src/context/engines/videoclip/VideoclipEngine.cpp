@@ -113,7 +113,6 @@ void VideoclipEngine::update()
         return;
     else
     {
-
         if ( !currentTrack )
             return;
 
@@ -121,12 +120,9 @@ void VideoclipEngine::update()
         if ( currentTrack->prettyUrl().contains( "http://www.youtube.com/" ) || currentTrack->prettyUrl().contains( "http://www.dailymotion.com/" ) )
             return;
 
-
         unsubscribeFrom( m_currentTrack );
         m_currentTrack = currentTrack;
         subscribeTo( currentTrack );
-
-
 
         // Save artist and title
         m_title = currentTrack->name();
@@ -196,7 +192,7 @@ bool VideoclipEngine::isVideoInfoValid( VideoInfo *item )
     // init to false;
     item->isHQ = false;
 
-    // time to remove bad choices. If we don't have artist nor thant title in the name of the vid,
+    // time to remove bad choices. If we don't have artist nor than title in the name of the vid,
     // and no artist in the desc, simply remove this item.
     if ( !bArtistDesc && item->relevancy==-20 )
         return false;
@@ -346,7 +342,7 @@ void VideoclipEngine::resultYoutubeGetLink( KJob* job )
         if ( !t.isEmpty() && !sk.isEmpty() )
         {
             vidlink = jobUrl + "&sk=" + sk + "&t=" + t ;
-         //   debug() << vidlink;
+
             // enable youtube HQ if user as request and HQ is available
             if ( m_youtubeHQ && isHQ18 )
                 vidlink+="&fmt=18";
@@ -409,9 +405,6 @@ void VideoclipEngine::resultDailymotion( KJob* job )
         item->desc = xmlNode.firstChildElement( "itunes:summary" ).text();
         item->rating = xmlNode.firstChildElement( "dm:videorating" ).text().toFloat();
         item->source = QString( "dailymotion" );
-        // remove one line makes it easier
-        xmlNode.firstChildElement( "media:group" ).removeChild( xmlNode.firstChildElement( "media:group" ).firstChildElement( "media:content" ) );
-        item->videolink = QString (xmlNode.firstChildElement( "media:group" ).firstChildElement( "media:content" ).attribute( "url" ) ).replace( "80x60" , "320x240" );
 
         // only add if it's valid (no useless jobs)
         if ( isVideoInfoValid(item) )
@@ -419,6 +412,13 @@ void VideoclipEngine::resultDailymotion( KJob* job )
             // Push the VideoInfo in the main list
             m_video << item;
 
+            // Send a job to get the downloadable link
+            KJob *jobu = KIO::storedGet( KUrl( item->url ), KIO::Reload, KIO::HideProgressInfo );
+
+            m_listJob << item->url;
+            connect( jobu, SIGNAL( result( KJob* ) ), SLOT( resultDailymotionGetLink( KJob* ) ) );
+
+            
             // Send a job to get the pixmap
             KJob* jober = KIO::storedGet( KUrl( item->coverurl ), KIO::Reload, KIO::HideProgressInfo );
             m_listJob << item->coverurl;
@@ -429,7 +429,6 @@ void VideoclipEngine::resultDailymotion( KJob* job )
             delete item;
             m_nbDailymotion--;
         }
-
     }
 
     // Check how many clip we've find and send message if all the job are finished but no clip were find
@@ -438,6 +437,91 @@ void VideoclipEngine::resultDailymotion( KJob* job )
     m_jobDailymotion = 0;
     resultFinalize();
 }
+
+
+
+void VideoclipEngine::resultDailymotionGetLink( KJob* job )
+{
+    DEBUG_BLOCK
+    QString jobUrl = static_cast< KIO::StoredTransferJob* >( job )->url().toMimeDataString();
+
+    if ( m_listJob.contains( jobUrl ) )
+    {
+        if ( job->error() != KJob::NoError )
+        {
+            debug() << "VideoclipEngine | Unable to retrieve Youtube direct videolink: " ;
+            m_listJob.removeOne( jobUrl );
+            job = 0;
+            resultFinalize();
+            return;
+        }
+
+        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+
+        QString page = storedJob->data();
+        QStringList vidlink;
+        QString vidFLV;
+        QString vidH264;
+        bool isHQ = false ;
+       
+        // Focus on the line which contain .addVariable("video", "
+        QString regex( ".addVariable(\"video\", \"" );
+        if ( page.indexOf( regex ) != -1 )
+        {
+            page = page.mid( page.indexOf( regex ) + regex.size() );
+            regex = "\");";
+            if ( page.indexOf( regex ) != -1 )
+                page = page.mid( 0, page.indexOf( regex ) );
+
+            // replace strange caracter by correct ones, and split into different url
+            page.replace( "%3A", ":");
+            page.replace( "%2F", "/");
+            page.replace( "%3F", "?");
+            page.replace( "%3D", "=");
+            page.replace( "%40", "@");
+
+            regex = "%7C%7C";
+
+            // now vidlink contain all the url (320x240xflv, 80x60flv, and HQ)
+            vidlink = page.split( regex );
+         //   debug() << vidlink ;
+
+
+            foreach ( QString urlstring , vidlink )
+            {
+                if ( urlstring.contains( "@@h264" ) )
+                {
+                    isHQ = true ;
+                    vidH264 = urlstring ;
+                }
+                if ( urlstring.contains( "FLV-320x240" ) )
+                    vidFLV = urlstring ;
+            }
+                 
+            foreach (VideoInfo *item, m_video )
+            {
+                if ( item->url == jobUrl )
+                {
+                    if ( isHQ )
+                        item->isHQ = true;
+
+                    if ( isHQ && m_youtubeHQ )
+                        item->videolink = vidH264;
+
+                    else if ( vidFLV.size() != 0 )
+                        item->videolink = vidFLV;
+                    else
+                        item->videolink = "bad_link" ;
+                }
+            }
+        }
+        m_listJob.removeOne( jobUrl );
+        resultFinalize();
+
+        job = 0;
+    }
+}
+
 
 void VideoclipEngine::resultVimeo( KJob* job )
 {
