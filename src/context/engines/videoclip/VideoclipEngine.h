@@ -81,7 +81,19 @@ private slots:
    */
     void resultDailymotion( KJob* );
 
-    //TODO Find a simplier way to get vimeo info, maybe going through the API
+ /**
+   *   This method will fetch the required key for the video downloading.For this we retrieve
+   *   the page "http://www.dailymotion.com/video/x3s8t7_mia-paper-planes_music" and then parse the source code
+   *   looking for the line which contain : addVariable("video", "
+   *   The finals url will look like :
+   *   http://www.dailymotion.com/cdn/FLV-320x240/video/x3s8t7?auth=1259934815-259cd35baca824ed5962e9601dd4eabd@@spark // for 320x240 flv file
+   *   http://www.dailymotion.com/cdn/H264-512x384/video/x3s8t7?auth=1259934815-f414eda6498a9d1597bc8c85148658be@@h264  // for mp4 HQ file
+   *   
+   *   \warning : Not legal, and this will probably change like every 6 month whenever dailymotion decides this :/
+   */
+    void resultDailymotionGetLink( KJob* );
+    
+    //TODO Fix the vimeo query
   /**
    *   Vimeo is not fun, we need 3 jobs for one complete Video item :/
    *   http://vimeo.com/videos/search:ARTIST TITLE
