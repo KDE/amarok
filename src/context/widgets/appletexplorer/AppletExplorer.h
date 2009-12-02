@@ -40,13 +40,13 @@ class QSizePolicy;
 namespace Context
 {
 
-class AMAROK_EXPORT AppletsExplorer: public QGraphicsWidget
+class AMAROK_EXPORT AppletExplorer: public QGraphicsWidget
 {
     Q_OBJECT
 
     public:
-        AppletsExplorer( QGraphicsItem *parent = 0 );
-        virtual ~AppletsExplorer();
+        AppletExplorer( QGraphicsItem *parent = 0 );
+        virtual ~AppletExplorer();
 
         void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 

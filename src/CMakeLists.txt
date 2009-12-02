@@ -42,7 +42,7 @@ include_directories(
     configdialog/dialogs
     context
     context/widgets
-    context/widgets/appletsexplorer/
+    context/widgets/appletexplorer/
     dbus
     dialogs
     dynamic
@@ -367,10 +367,10 @@ set( libcontextview_SRCS
     context/widgets/ToolBoxIcon.cpp
     context/widgets/ContainmentArrow.cpp
     context/widgets/ContainmentSelectionLayer.cpp
-    context/widgets/appletsexplorer/AppletsExplorer.cpp
-    context/widgets/appletsexplorer/AppletIcon.cpp
-    context/widgets/appletsexplorer/AppletItemModel.cpp
-    context/widgets/appletsexplorer/AppletsList.cpp
+    context/widgets/appletexplorer/AppletExplorer.cpp
+    context/widgets/appletexplorer/AppletIcon.cpp
+    context/widgets/appletexplorer/AppletItemModel.cpp
+    context/widgets/appletexplorer/AppletsList.cpp
     context/widgets/TrackWidget.cpp
 )
 

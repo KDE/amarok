@@ -19,7 +19,7 @@
 
 
 #include "amarok_export.h"
-#include "widgets/appletsexplorer/AppletsExplorer.h"
+#include "widgets/appletexplorer/AppletExplorer.h"
 
 #include <plasma/widgets/iconwidget.h>
 
@@ -69,7 +69,7 @@ class AppletToolbarAddItem : public AppletToolbarBase
         Containment* m_cont;
         Plasma::IconWidget* m_icon;
         QGraphicsSimpleTextItem* m_label;
-        AppletsExplorer *m_addMenu;
+        AppletExplorer *m_addMenu;
 };
 
 }

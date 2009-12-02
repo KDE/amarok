@@ -71,7 +71,7 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     m_label = new QGraphicsSimpleTextItem( i18n( "Add Applet..." ), this );
     m_label->hide();
 
-    m_addMenu = new Context::AppletsExplorer( cont );
+    m_addMenu = new Context::AppletExplorer( cont );
     m_addMenu->setContainment( cont );
     m_addMenu->resize( Context::ContextView::self()->size().width() - MARGIN, m_addMenu->geometry().height() );
     m_addMenu->hide();

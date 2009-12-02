@@ -22,7 +22,7 @@
  ****************************************************************************************/
 
 
-#include "AppletsExplorer.h"
+#include "AppletExplorer.h"
 
 #include "AppletIcon.h"
 #include "Debug.h"
@@ -45,7 +45,7 @@
 namespace Context
 {
     
-AppletsExplorer::AppletsExplorer( QGraphicsItem *parent )
+AppletExplorer::AppletExplorer( QGraphicsItem *parent )
     : QGraphicsWidget( parent )
     , m_containment( 0 )
     , m_mainLayout( 0 )
@@ -53,24 +53,24 @@ AppletsExplorer::AppletsExplorer( QGraphicsItem *parent )
     init();
 }
 
-AppletsExplorer::~AppletsExplorer()
+AppletExplorer::~AppletExplorer()
 {}
 
 void
-AppletsExplorer::addApplet( AppletItem *appletItem )
+AppletExplorer::addApplet( AppletItem *appletItem )
 {
     if( appletItem && !appletItem->pluginName().isEmpty() && containment() )
         emit( addAppletToContainment( appletItem->pluginName() ) );
 }
 
 void
-AppletsExplorer::hideMenu()
+AppletExplorer::hideMenu()
 {
     hide();
 }
 
 void
-AppletsExplorer::init()
+AppletExplorer::init()
 {
     m_mainLayout = new QGraphicsLinearLayout( Qt::Vertical );
 
@@ -103,7 +103,7 @@ AppletsExplorer::init()
 }
 
 void
-AppletsExplorer::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
+AppletExplorer::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
     Q_UNUSED( option )
     Q_UNUSED( widget )
@@ -122,19 +122,19 @@ AppletsExplorer::paint( QPainter *painter, const QStyleOptionGraphicsItem *optio
 }
 
 void
-AppletsExplorer::setContainment( Containment *containment )
+AppletExplorer::setContainment( Containment *containment )
 {
     m_containment = containment;
 }
 
 Containment *
-AppletsExplorer::containment() const
+AppletExplorer::containment() const
 {
     return m_containment;
 }
 
 void
-AppletsExplorer::resizeEvent( QGraphicsSceneResizeEvent *event )
+AppletExplorer::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
     DEBUG_BLOCK
 
@@ -143,4 +143,4 @@ AppletsExplorer::resizeEvent( QGraphicsSceneResizeEvent *event )
 
 }//namespace Context
 
-#include "AppletsExplorer.moc"
+#include "AppletExplorer.moc"
