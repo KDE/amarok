@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.2
   FEATURES
+    * Rewrote podcast feed parser to correctly parse XML. Now even RSS 1.0 and
+      Atom feeds are supported. Patches by Mathias Panzenböck.
     * Rating of playlist items can now be filtered, using "rating:#" notation.
     * When removing a podcast subscription, ask for confirmation and offer to delete the
       downloaded episodes. Patch by Frank Meerkötter.
