@@ -28,15 +28,18 @@
 #include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "collection/QueryMaker.h"
+#include "meta/cue/CueFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PlaylistFileSupport.h"
 #include "meta/multi/MultiTrack.h"
+#include "meta/file/File.h"
 
 
 #include <algorithm> // STL
 #include <QAction>
+#include <typeinfo>
 
 Playlist::Controller* Playlist::Controller::s_instance = 0;
 
@@ -529,24 +532,53 @@ Playlist::Controller::slotFinishDirectoryLoader( const Meta::TrackList& tracks )
 void
 Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 {
-    // expand any tracks that are actually playlists
+    //expand any tracks that are actually playlists into multisource tracks
+    //and any tracks with an associated cue file
+
+    Meta::TrackList modifiedList;
+    
     QMutableListIterator<Meta::TrackPtr> i( tl );
     while ( i.hasNext() )
     {
         i.next();
         Meta::TrackPtr track = i.value();
         if ( track == Meta::TrackPtr() )
-            i.remove();
+        {
+            //ignore
+        }
         else if( Meta::canExpand( track ) )
         {
             Meta::PlaylistPtr playlist = Meta::expand( track ); //expand() can return 0 if the KIO job times out
             if ( playlist )
             {
                 //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:
-                i.remove();
                 if ( playlist->tracks().count() > 0 )
-                    i.insert( Meta::TrackPtr( new Meta::MultiTrack( playlist ) ) );
+                    modifiedList << Meta::TrackPtr( new Meta::MultiTrack( playlist ) );
             }
+        }
+        else if( typeid( *track.data() ) == typeid( MetaFile::Track  ) )
+        {
+            KUrl cuesheet = MetaCue::CueFileSupport::locateCueSheet( track->playableUrl() );
+            if( !cuesheet.isEmpty() )
+            {
+                MetaCue::CueFileItemMap cueMap = MetaCue::CueFileSupport::loadCueFile( track );
+                if( !cueMap.isEmpty() )
+                {
+                    Meta::TrackList cueTracks = MetaCue::CueFileSupport::generateTimeCodeTracks( track, cueMap );
+                    if( !cueTracks.isEmpty() )
+                      modifiedList <<  cueTracks;
+                    else
+                        modifiedList << track;
+                }
+                else
+                    modifiedList << track;
+            }
+            else
+                modifiedList << track;
+        }
+        else
+        {
+           modifiedList << track;
         }
     }
 
@@ -554,7 +586,7 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 
     row = qBound( 0, m_topmostModel->rowToBottomModel( row ), Playlist::ModelStack::instance()->source()->rowCount() );
 
-    foreach( Meta::TrackPtr t, tl )
+    foreach( Meta::TrackPtr t, modifiedList )
         cmds.append( InsertCmd( t, row++ ) );
 
     if ( cmds.size() > 0 )

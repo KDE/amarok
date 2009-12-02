@@ -21,9 +21,9 @@
 #include "Debug.h"
 
 #include "Collection.h"
+#include "EngineController.h"
 #include "MetaQueryMaker.h"
 #include "meta/file/File.h"
-#include "meta/cue/Cue.h"
 #include "meta/stream/Stream.h"
 #include "PluginManager.h"
 #include "SmartPointerList.h"
@@ -490,13 +490,8 @@ CollectionManager::trackForUrl( const KUrl &url )
     if( url.protocol() == "http" || url.protocol() == "mms" || url.protocol() == "smb" )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    if( url.protocol() == "file" && EngineController::canDecode( url ) )
-    {
-        KUrl cuesheet = MetaCue::Track::locateCueSheet( url );
-        if( !cuesheet.isEmpty() )
-            return Meta::TrackPtr( new MetaCue::Track( url, cuesheet ) );
+    if( url.protocol() == "file" && EngineController::canDecode( url ) )       
         return Meta::TrackPtr( new MetaFile::Track( url ) );
-    }
 
     return Meta::TrackPtr( 0 );
 }

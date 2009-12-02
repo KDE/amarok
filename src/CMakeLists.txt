@@ -313,7 +313,7 @@ set(meta_SRCS
     meta/file/File.cpp
     meta/multi/MultiTrack.cpp
     meta/multi/MultiSourceCapabilityImpl.cpp
-    meta/cue/Cue.cpp
+    meta/cue/CueFileSupport.cpp
     meta/proxy/MetaProxy.cpp
     meta/stream/Stream.cpp
     meta/support/PermanentUrlStatisticsProvider.cpp
@@ -688,7 +688,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/meta/TestPlaylistFileSupport.cpp
         ../tests/meta/TestXSPFPlaylist.cpp
         ../tests/meta/cue/TestMetaCueCueFileItem.cpp
-        ../tests/meta/cue/TestMetaCueTrack.cpp
+        #../tests/meta/cue/TestMetaCueTrack.cpp
         ../tests/meta/file/TestMetaFileTrack.cpp
         ../tests/meta/multi/TestMetaMultiTrack.cpp
         ../tests/playlistmanager/file/TestPlaylistFileProvider.cpp
