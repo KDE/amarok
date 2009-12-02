@@ -136,6 +136,8 @@ AppletExplorer::containment() const
 void
 AppletExplorer::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
+    //FIXME This method is never actually called
+
     DEBUG_BLOCK
 
     m_mainLayout->setGeometry( QRectF( QPointF( 0, 0 ), event->newSize() ) );

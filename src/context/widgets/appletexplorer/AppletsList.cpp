@@ -128,6 +128,8 @@ AppletsListWidget::maximumVisibleAppletsOnList()
 void
 AppletsListWidget::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
+    //FIXME This method is never actually called
+
     DEBUG_BLOCK
     Q_UNUSED( event );
 
