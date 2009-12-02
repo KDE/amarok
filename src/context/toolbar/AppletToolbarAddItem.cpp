@@ -90,7 +90,7 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
 Context::AppletToolbarAddItem::~AppletToolbarAddItem()
 {
     //HACK: m_addMenu should be deleted manually since its parent is the containment, but deleting it manually is crashing amarok on exit,
-    //probably because its being deleted before the containmnet.
+    //probably because its being deleted before the containment.
     //For now we just hide the menu to prevent it to stay visible after we toggle the tool icon.
     m_addMenu->hide();
 //     m_addMenu->containment()->disconnect( m_addMenu );
