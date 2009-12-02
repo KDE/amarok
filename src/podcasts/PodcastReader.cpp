@@ -1206,7 +1206,7 @@ PodcastReader::endKeywords()
     foreach( const QString &keyword, m_buffer.split( ',' ) )
     {
         QString kwd( keyword.simplified() );
-        if( !keywords.contains( kwd ) )
+        if( !kwd.isEmpty() && !keywords.contains( kwd ) )
             keywords.append( kwd );
     }
 
