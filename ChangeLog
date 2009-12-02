@@ -59,6 +59,8 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Fixed several issues with loading and saving timecode tracks to and from
+      playlists.
     * Fixed crash when copying tracks to MP3tunes music locker. (BR 214686)
       Patch by Nicolas Lécureuil <nlecureuil@mandriva.com>.
     * Podcast downloads can now be properly canceled. Patch by Frank Meerkötter.
