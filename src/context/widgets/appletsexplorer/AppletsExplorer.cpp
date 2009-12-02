@@ -25,6 +25,7 @@
 #include "AppletsExplorer.h"
 
 #include "AppletIcon.h"
+#include "Debug.h"
 #include "PaletteHandler.h"
 
 #include <plasma/containment.h>
@@ -39,6 +40,7 @@
 
 #define HEIGHT 140
 #define ICON_SIZE 16
+
 
 namespace Context
 {
@@ -58,9 +60,7 @@ void
 AppletsExplorer::addApplet( AppletItem *appletItem )
 {
     if( appletItem && !appletItem->pluginName().isEmpty() && containment() )
-    {
         emit( addAppletToContainment( appletItem->pluginName() ) );
-    }
 }
 
 void
@@ -100,7 +100,6 @@ AppletsExplorer::init()
     setMinimumHeight( HEIGHT );
 
     setLayout( m_mainLayout );
-   
 }
 
 void
@@ -137,6 +136,8 @@ AppletsExplorer::containment() const
 void
 AppletsExplorer::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
+    DEBUG_BLOCK
+
     m_mainLayout->setGeometry( QRectF( QPointF( 0, 0 ), event->newSize() ) );
 }
 

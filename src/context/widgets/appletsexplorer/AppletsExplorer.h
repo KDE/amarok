@@ -21,7 +21,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-
 #ifndef WIDGET_EXPLORER_H
 #define WIDGET_EXPLORER_H
 
@@ -43,13 +42,11 @@ namespace Context
 
 class AMAROK_EXPORT AppletsExplorer: public QGraphicsWidget
 {
-
     Q_OBJECT
 
     public:
-
         AppletsExplorer( QGraphicsItem *parent = 0 );
-        ~AppletsExplorer();
+        virtual ~AppletsExplorer();
 
         void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
@@ -67,12 +64,9 @@ class AMAROK_EXPORT AppletsExplorer: public QGraphicsWidget
         void hideMenu();
         
     protected:
-
         virtual void resizeEvent( QGraphicsSceneResizeEvent *event );
 
-
     private:
-
         void init();
         
         Containment *m_containment;
@@ -81,7 +75,6 @@ class AMAROK_EXPORT AppletsExplorer: public QGraphicsWidget
         AppletItemModel m_model;
         AppletsListWidget *m_appletsListWidget;
         Plasma::IconWidget *m_hideIcon;
-        
 };
 
 }// namespace Context

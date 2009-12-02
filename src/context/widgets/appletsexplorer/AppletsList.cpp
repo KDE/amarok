@@ -81,7 +81,6 @@ AppletsListWidget::init()
     m_mainLayout->setAlignment( m_rightArrow, Qt::AlignVCenter | Qt::AlignHCenter );
     m_mainLayout->setAlignment( m_appletsListWindow, Qt::AlignVCenter | Qt::AlignHCenter );
     setLayout( m_mainLayout );
-    
 }
 
 void
@@ -121,6 +120,7 @@ AppletsListWidget::maximumVisibleAppletsOnList()
     debug() << "icon average size: " << iconAverageSize;
     debug() << "visible rect size: " << visibleRectSize;
     debug() << "listTotalSize: " << listTotalSize;
+    
     return floor( visibleRectSize / iconAverageSize );
 }
 
@@ -150,7 +150,6 @@ AppletsListWidget::setModel( QStandardItemModel *model )
         m_applets->insert( appletItem->pluginName(), createAppletIcon( appletItem ) );
     }
     updateList();
-
 }
 
 

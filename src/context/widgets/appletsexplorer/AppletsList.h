@@ -42,7 +42,7 @@ class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
     Q_OBJECT
     public:
         AppletsListWidget( QGraphicsItem *parent = 0 );
-        ~AppletsListWidget();
+        virtual ~AppletsListWidget();
 
         void setModel( QStandardItemModel *model );
 
@@ -61,8 +61,7 @@ class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
         int maximumVisibleAppletsOnList();
 
     protected:
-        void resizeEvent( QGraphicsSceneResizeEvent *event );
-
+        virtual void resizeEvent( QGraphicsSceneResizeEvent *event );
 
     private:
         QGraphicsLinearLayout *m_mainLayout;
@@ -74,8 +73,8 @@ class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
 
         Plasma::IconWidget *m_leftArrow;
         Plasma::IconWidget *m_rightArrow;
-
 };
 
 }//namespace Context
+
 #endif
