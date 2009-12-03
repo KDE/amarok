@@ -378,7 +378,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                 if( !( item->url.isEmpty() ) ) // prevent some weird stuff ...
                 {
 
-                    VideoItemButton *vidButton = new VideoItemButton();
+                    VideoItemButton *vidButton = new VideoItemButton( this );
                     vidButton->setVideoInfo( item ); 
                     
                     connect ( vidButton, SIGNAL( appendRequested( VideoInfo * ) ), this, SLOT ( appendVideoClip( VideoInfo * ) ) );

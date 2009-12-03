@@ -34,7 +34,8 @@ public:
     Q_OBJECT
     
 public:
-    VideoItemButton( QWidget* parent = 0 );
+    VideoItemButton( QObject* parent );
+    virtual ~VideoItemButton();
     
     void setVideoInfo( VideoInfo * );
     VideoInfo * getVideoInfo();
