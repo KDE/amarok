@@ -34,6 +34,7 @@ CompoundProgressBar::CompoundProgressBar( QWidget * parent )
     m_progressDetailsWidget->hide();
     
     connect( m_showDetailsButton, SIGNAL( clicked() ), this, SLOT( toggleDetails() ) );
+    connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancelAll() ) );
 }
 
 CompoundProgressBar::~CompoundProgressBar()
@@ -72,7 +73,6 @@ void CompoundProgressBar::addProgressBar( ProgressBar * childBar, QObject *owner
         cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
     }
 
-    connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancelAll() ) );
     cancelButton()->setEnabled( true );
 
     handleDetailsButton();
@@ -146,6 +146,7 @@ void CompoundProgressBar::childBarCancelled( ProgressBar * childBar )
 
     if ( m_progressMap.count() == 0 )
     {
+        progressBar()->setValue( 0 );
         m_progressDetailsWidget->setMinimumWidth( 0 );
         cancelButton()->setEnabled( false );
         hideDetails();
@@ -181,6 +182,7 @@ void CompoundProgressBar::childBarComplete( ProgressBar * childBar )
 
     if ( m_progressMap.count() == 0 )
     {
+        progressBar()->setValue( 0 );
         hideDetails();
         emit( allDone() );
         m_progressDetailsWidget->hide();
@@ -200,7 +202,7 @@ int CompoundProgressBar::calcCompoundPercentage()
     foreach( ProgressBar * currentBar, m_progressMap )
         total += currentBar->percentage();
 
-    return total / count;
+    return count == 0 ? 0 : total / count;
 }
 
 void CompoundProgressBar::cancelAll()
