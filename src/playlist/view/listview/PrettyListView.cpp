@@ -60,6 +60,7 @@
 #include <QPainter>
 #include <QPalette>
 #include <QPersistentModelIndex>
+#include <QScrollBar>
 #include <QTimer>
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
@@ -116,6 +117,15 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
 Playlist::PrettyListView::~PrettyListView()
 {}
+
+int
+Playlist::PrettyListView::verticalOffset() const
+{
+    int ret = QListView::verticalOffset();
+    if ( verticalScrollBar() && verticalScrollBar()->maximum() )
+        ret += verticalScrollBar()->value() * 10 / verticalScrollBar()->maximum();
+    return ret;
+}
 
 void
 Playlist::PrettyListView::editTrackInformation()
