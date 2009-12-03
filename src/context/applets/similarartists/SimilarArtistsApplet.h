@@ -18,14 +18,19 @@
 #ifndef SIMILAR_ARTISTS_APPLET_H
 #define SIMILAR_ARTISTS_APPLET_H
 
+//Amarok
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 
 #include <ui_similarArtistsSettings.h>
 
+
 class QAction;
 class QGraphicsSimpleTextItem;
 class KConfigDialog;
+class QLabel;
+class QGraphicsScene;
+class QGraphicsGridLayout;
 
 namespace Plasma
 {    
@@ -36,6 +41,7 @@ namespace Plasma
  /**
   * SimilarArtists will display similar artists from the Internet, relative to the current playing artist.
   * @author Joffrey Clavel
+  * @author Oleksandr Khayrullin
   * @version 0.1
   */
 class SimilarArtistsApplet : public Context::Applet
@@ -65,12 +71,25 @@ private:
     QSizeF m_size;
 
     /**
+     * Layout for the formatting of the applet contents
+     */
+    QGraphicsGridLayout *m_layout;
+
+    QGraphicsScene *m_scene;
+
+    /**
      * Title of the applet (in the top bar)
      */
     QGraphicsSimpleTextItem* m_headerLabel; 
 
+    //Icons on the title right
     Plasma::IconWidget *m_settingsIcon;
     Ui::similarArtistsSettings ui_Settings;
+
+    //elements of the applet
+    QLabel *m_artistImage;
+    QLabel *m_artistName;
+    QLabel *m_artistGenre;
 
     int m_maxArtists;
     int m_temp_maxArtists;
