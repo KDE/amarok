@@ -137,16 +137,12 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
             {
                 QSize size( channel->image().size() );
                 QPixmap pixmap( 32, 32 );
-                int x = 0, y = 0;
+                pixmap.fill( Qt::transparent );
 
                 size.scale( 32, 32, Qt::KeepAspectRatio );
 
-                if( size.width() < 32 || size.height() < 32 )
-                {
-                    pixmap.fill( Qt::transparent );
-                    x =  32 / 2 - size.width()  / 2;
-                    y =  32 / 2 - size.height() / 2;
-                }
+                int x = 32 / 2 - size.width()  / 2;
+                int y = 32 / 2 - size.height() / 2;
 
                 QPainter p( &pixmap );
                 p.drawPixmap( x, y, channel->image().scaled( size ) );
