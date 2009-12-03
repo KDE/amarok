@@ -287,7 +287,7 @@ echo
 echo -e "SVN server:\t\t\t\t\t$SVN_SERVER"
 echo -e "Language for localization and documentation:\t$GET_LANG"
 if [ "$CONF_HELP" != "true" -a "`echo $CONF_FLAGS`" ]; then
-  echo -e "Extra configuration options:\t\t\t`echo $CONF_FLAGS`" #`echo ...` strips the preceeding space.
+  echo -e "Extra configuration options:\t\t\t`echo $CONF_FLAGS`" #`echo ...` strips the preceding space.
 fi
 echo -e "Command for getting root privileges:\t\t$HOW_ROOT"
 echo -en "Build ID:\t\t\t\t\t"

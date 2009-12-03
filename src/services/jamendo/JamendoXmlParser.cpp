@@ -106,7 +106,7 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
     m_id3GenreHash.insert( 64, "Native American"   );
     m_id3GenreHash.insert( 65, "Cabaret"           );
     m_id3GenreHash.insert( 66, "New Wave"          );
-    m_id3GenreHash.insert( 67, "Psychadelic"       );
+    m_id3GenreHash.insert( 67, "Psychedelic"       );
     m_id3GenreHash.insert( 68, "Rave"              );
     m_id3GenreHash.insert( 69, "Showtunes"         );
     m_id3GenreHash.insert( 70, "Trailer"           );
