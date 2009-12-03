@@ -23,16 +23,17 @@
 #include "context/DataEngine.h"
 
 
-
 // for use when gui created
 #include <ui_upcomingEventsSettings.h>
 
 class QAction;
 class QGraphicsSimpleTextItem;
 class QGraphicsTextItem;
+class QGraphicsGridLayout;
 class TextScrollingWidget;
 class KConfigDialog;
 class DropPixmapItem;
+class QLabel;
 
 namespace Plasma
 {    
@@ -74,7 +75,7 @@ private:
     /**
      * Title of the applet (in the top bar)
      */
-    QGraphicsSimpleTextItem* m_headerLabel; 
+    QLabel* m_headerLabel;
 
     Plasma::IconWidget *m_settingsIcon;
     Ui::upcomingEventsSettings ui_Settings;
@@ -83,13 +84,14 @@ private:
     bool m_enabledLinks;
     QString m_temp_timeSpan;
     bool m_temp_enabledLinks;
-
     
-    TextScrollingWidget* m_eventParticipants;
-    DropPixmapItem* m_bigImage;
-    QGraphicsSimpleTextItem* m_eventName;
-    QGraphicsSimpleTextItem* m_eventDate;
-    QGraphicsTextItem* m_url;
+    QLabel* m_eventParticipants;
+    QLabel* m_bigImage;
+    QLabel* m_eventName;
+    QLabel* m_eventDate;
+    QLabel* m_eventUrl;
+
+    QGraphicsGridLayout* mainLayout;
     
 private slots:
     void connectSource( const QString &source );
