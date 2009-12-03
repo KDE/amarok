@@ -167,9 +167,9 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     Q_UNUSED( name )
     QString artistName = data[ "artist" ].toString();
     if (artistName.compare( "" ) != 0)
-        m_headerLabel->setText( "Upcoming events for " + artistName );
+        m_headerLabel->setText( i18n( "Upcoming events for " ) + artistName );
     else
-        m_headerLabel->setText( "Upcoming events" );
+        m_headerLabel->setText( i18n( "Upcoming events" ) );
 
     m_bigImage->setPixmap( data[ "cover" ].value<QPixmap>() );
     m_eventName->setText( data[ "eventName" ].toString() );
