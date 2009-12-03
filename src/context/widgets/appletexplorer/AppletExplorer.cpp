@@ -78,7 +78,7 @@ AppletExplorer::init()
 
     m_appletsListWidget->setPreferredSize( -1, -1 );
 
-    connect( m_appletsListWidget, SIGNAL( appletDoubleClicked( AppletItem * ) ), this, SLOT( addApplet( AppletItem * ) ) );
+    connect( m_appletsListWidget, SIGNAL( appletClicked( AppletItem * ) ), SLOT( addApplet( AppletItem * ) ) );
 
     m_appletsListWidget->setModel( &m_model );
 

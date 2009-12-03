@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 William Viana Soares <vianasw@gmail.com>                          *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
  *                       Significant parts of this code is inspired                     *
  *                       and/or copied from KDE Plasma sources, available               *
  *                       at kdebase/workspace/libs/plasmagenericshell                   *
@@ -47,10 +49,10 @@ class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
         void setModel( QStandardItemModel *model );
 
     signals:
-        void appletDoubleClicked( AppletItem *appletItem );
+        void appletClicked( AppletItem *appletItem );
 
     private slots:
-        void appletIconDoubleClicked( AppletIconWidget *applet );
+        void appletIconClicked();
 
     private:
         void init();

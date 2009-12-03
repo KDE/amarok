@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 William Viana Soares <vianasw@gmail.com>                          *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
  *                       Significant parts of this code is inspired                     *
  *                       and/or copied from KDE Plasma sources, available               *
  *                       at kdebase/workspace/libs/plasmagenericshell                   *
@@ -55,13 +57,6 @@ AppletIconWidget::appletItem() const
 {
     return m_appletItem;
 }
-
-void
-AppletIconWidget::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )
-{
-    emit( doubleClicked( this ) );
-}
-
 
 void
 AppletIconWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )

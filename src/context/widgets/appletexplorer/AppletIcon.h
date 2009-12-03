@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 William Viana Soares <vianasw@gmail.com>                          *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
  *                       Significant parts of this code is inspired                     *
  *                       and/or copied from KDE Plasma sources, available               *
  *                       at kdebase/workspace/libs/plasmagenericshell                   *
@@ -48,12 +50,8 @@ class AMAROK_EXPORT AppletIconWidget: public Plasma::IconWidget
 
         AppletItem *appletItem() const;
         
-    signals:
-        void doubleClicked( AppletIconWidget *applet );
-        
     protected:
         void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
-        void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
 
     private:
         AppletItem *m_appletItem;

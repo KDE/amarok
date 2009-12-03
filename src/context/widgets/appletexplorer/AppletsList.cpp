@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 William Viana Soares <vianasw@gmail.com>                          *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
  *                       Significant parts of this code is inspired                     *
  *                       and/or copied from KDE Plasma sources, available               *
  *                       at kdebase/workspace/libs/plasmagenericshell                   *
@@ -84,9 +86,14 @@ AppletsListWidget::init()
 }
 
 void
-AppletsListWidget::appletIconDoubleClicked( AppletIconWidget *applet )
+AppletsListWidget::appletIconClicked()
 {
-    emit( appletDoubleClicked( applet->appletItem() ) );
+    DEBUG_BLOCK
+
+    AppletIconWidget* applet = dynamic_cast<AppletIconWidget*>( sender() );
+
+    if( applet )
+        emit( appletClicked( applet->appletItem() ) );
 }
 
 AppletIconWidget *
@@ -96,7 +103,7 @@ AppletsListWidget::createAppletIcon( AppletItem *appletItem )
     applet->setMinimumSize( applet->sizeFromIconSize( ICON_SIZE ) );
     applet->setMaximumSize( applet->sizeFromIconSize( ICON_SIZE ) );
     
-    connect( applet, SIGNAL( doubleClicked( AppletIconWidget * ) ), this, SLOT( appletIconDoubleClicked( AppletIconWidget * ) ) );
+    connect( applet, SIGNAL( clicked() ), SLOT( appletIconClicked() ) );
     return applet;
 }
 
