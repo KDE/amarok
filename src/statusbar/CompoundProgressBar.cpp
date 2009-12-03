@@ -34,6 +34,7 @@ CompoundProgressBar::CompoundProgressBar( QWidget * parent )
     m_progressDetailsWidget->hide();
     
     connect( m_showDetailsButton, SIGNAL( clicked() ), this, SLOT( toggleDetails() ) );
+    connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancelAll() ) );
 }
 
 CompoundProgressBar::~CompoundProgressBar()
@@ -72,7 +73,6 @@ void CompoundProgressBar::addProgressBar( ProgressBar * childBar, QObject *owner
         cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
     }
 
-    connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancelAll() ) );
     cancelButton()->setEnabled( true );
 
     handleDetailsButton();
