@@ -51,6 +51,9 @@ public:
     PrettyListView( QWidget* parent = 0 );
     ~PrettyListView();
 
+protected:
+    int verticalOffset() const;
+    
 signals:
     void found();
     void notFound();
