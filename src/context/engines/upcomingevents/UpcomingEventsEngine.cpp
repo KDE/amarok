@@ -127,17 +127,17 @@ void UpcomingEventsEngine::update()
             setData( "upcomingEvents", "artist", artistName );
     }
     QPixmap cover = m_currentTrack->album()->image( 156 );
+    
     setData( "upcomingEvents", "cover",  QVariant( cover ) );
-    setData( "upcomingEvents", "eventName", "Concert de Noël" );
+    /*setData( "upcomingEvents", "eventName", "Concert de Noël" );
     setData( "upcomingEvents", "eventDate", "2009-12-25" );
     setData( "upcomingEvents", "eventUrl", "<a href='http://www.google.com'>"
                                            "<font size='2' family='Arial, Helvetica, sans-serif' color='blue'><b>http://www.google.fr</b></font>"
-                                           "</a>" );
-   LastFmEvent event( QStringList(), "Test", "", KUrl(), KUrl() );
-   QVariant variant (QMetaType::type( "LastFmEvent" ), &event);
+                                           "</a>" );*/
+   upcomingEventsRequest( artistName );
+   QVariant variant ( QMetaType::type( "LastFmEvent::LastFmEventList" ), &m_upcomingEvents );
+   
    setData ( "upcomingEvents", "LastFmEvent", variant );
-
-   upcomingEventsRequest( "Muse" );
 }
 
 void UpcomingEventsEngine::reloadUpcomingEvents()
@@ -242,7 +242,9 @@ UpcomingEventsEngine::upcomingEventsParse( KJob* job ) // SLOT
         m_upcomingEvents.append( LastFmEvent( artists, title, startDate, imageUrl, url ) );
         
         n = n.nextSibling();
-    }    
+    }
+
+    update();
 }
 
 #include "UpcomingEventsEngine.moc"

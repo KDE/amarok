@@ -172,13 +172,6 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         m_headerLabel->setText( i18n( "Upcoming events" ) );
 
     m_bigImage->setPixmap( data[ "cover" ].value<QPixmap>() );
-    m_eventName->setText( data[ "eventName" ].toString() );
-    m_eventDate->setText( data[ "eventDate" ].toString() );
-
-    if( m_eventName->text().compare("") != 0 )
-        m_eventParticipants->setText( "Muse - Depeche Mode - The Cure - The Police" );
-    else
-        m_eventParticipants->setText( "" );
 
     if ( m_enabledLinks ) {
         m_eventUrl->setText( data[ "eventUrl" ].toString() );
@@ -187,8 +180,34 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     else
         m_eventUrl->hide();
 
-    LastFmEvent event = data[ "LastFmEvent" ].value<LastFmEvent>();
+    LastFmEvent::LastFmEventList event = data[ "LastFmEvent" ].value< LastFmEvent::LastFmEventList >();
+    if ( !event.isEmpty() )
+    {
+        m_eventName->setText( event.at(0).name() );
+        m_eventDate->setText( event.at(0).date() );
 
+        QString artistList;
+        for( int i = 0; i < event.at(0).artists().size(); i++ )
+        {
+            if( i == event.at(0).artists().size() - 1 )
+            {
+                artistList.append( event.at(0).artists().at( i ) + " - " );
+            }
+            else
+            {
+               artistList.append( event.at(0).artists().at( i ) );
+            }
+        }
+        m_eventParticipants->setText( artistList );        
+    }
+    else
+    {
+        m_eventName->setText( "" );
+        m_eventDate->setText( "" );
+        m_eventParticipants->setText( "" );
+        m_eventUrl->setText( "" );
+    }
+    
     updateConstraints();
     update();
 }

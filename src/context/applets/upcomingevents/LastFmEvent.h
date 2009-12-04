@@ -34,6 +34,7 @@ private:
     KUrl m_url;
 
 public:
+    typedef QList< LastFmEvent > LastFmEventList ;
     LastFmEvent();
     LastFmEvent( const LastFmEvent& );
     ~LastFmEvent();
@@ -48,3 +49,4 @@ public:
 #endif // LASTFMEVENT_H
 
 Q_DECLARE_METATYPE(LastFmEvent)
+Q_DECLARE_METATYPE(LastFmEvent::LastFmEventList)
