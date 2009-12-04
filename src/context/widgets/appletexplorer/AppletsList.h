@@ -53,6 +53,9 @@ class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
 
     private slots:
         void appletIconClicked();
+        void scrollLeft();
+        void scrollRight();        
+ 
 
     private:
         void init();
@@ -60,7 +63,11 @@ class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
         AppletIconWidget *createAppletIcon( AppletItem *appletItem );
         void insertAppletIcon( AppletIconWidget *appletIcon );
         void updateList();
-        int maximumVisibleAppletsOnList();
+        int maximumVisibleAppletsOnList() const;
+        QRectF visibleListRect() const;
+        int findFirstVisibleAppletIdx() const;
+        int findLastVisibleAppletIdx() const;
+        
 
     protected:
         virtual void resizeEvent( QGraphicsSceneResizeEvent *event );
@@ -75,6 +82,7 @@ class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
 
         Plasma::IconWidget *m_leftArrow;
         Plasma::IconWidget *m_rightArrow;
+
 };
 
 }//namespace Context

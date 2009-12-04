@@ -45,7 +45,6 @@ AppletsListWidget::AppletsListWidget( QGraphicsItem *parent )
 AppletsListWidget::~AppletsListWidget()
 {}
 
-
 void
 AppletsListWidget::init()
 {    
@@ -64,6 +63,11 @@ AppletsListWidget::init()
     m_leftArrow->setMaximumSize( m_leftArrow->sizeFromIconSize( ARROW_SIZE ) );
     m_rightArrow->setMinimumSize( m_rightArrow->sizeFromIconSize( ARROW_SIZE ) );
     m_rightArrow->setMaximumSize( m_rightArrow->sizeFromIconSize( ARROW_SIZE ) );
+
+    m_leftArrow->setEnabled( false );
+
+    connect( m_rightArrow, SIGNAL( clicked() ), this, SLOT( scrollRight() ) );
+    connect( m_leftArrow, SIGNAL( clicked() ), this, SLOT( scrollLeft() ) );
     
     m_appletsListWidget = new QGraphicsWidget();
     m_appletsListWindow = new QGraphicsWidget();
@@ -107,6 +111,28 @@ AppletsListWidget::createAppletIcon( AppletItem *appletItem )
     return applet;
 }
 
+
+int
+AppletsListWidget::findLastVisibleAppletIdx() const
+{
+    DEBUG_BLOCK
+    qreal listTotalSize = m_appletsListLayout->preferredSize().width();
+    qreal iconAverageSize = listTotalSize / m_model->rowCount() + m_appletsListLayout->spacing();
+    qreal width = visibleListRect().right();
+    return floor( width / iconAverageSize );
+}
+
+int
+AppletsListWidget::findFirstVisibleAppletIdx() const
+{
+    DEBUG_BLOCK
+    qreal listTotalSize = m_appletsListLayout->preferredSize().width();
+    qreal iconAverageSize = listTotalSize / m_model->rowCount() + m_appletsListLayout->spacing();
+    qreal width = visibleListRect().left();
+
+    return ceil( width / iconAverageSize );
+}
+
 void
 AppletsListWidget::insertAppletIcon( AppletIconWidget *appletIcon )
 {
@@ -117,7 +143,7 @@ AppletsListWidget::insertAppletIcon( AppletIconWidget *appletIcon )
 }
 
 int
-AppletsListWidget::maximumVisibleAppletsOnList()
+AppletsListWidget::maximumVisibleAppletsOnList() const
 {
     DEBUG_BLOCK
     qreal listTotalSize = m_appletsListLayout->preferredSize().width();
@@ -141,7 +167,14 @@ AppletsListWidget::resizeEvent( QGraphicsSceneResizeEvent *event )
     Q_UNUSED( event );
 
     updateGeometry();
-    debug() << "visible icons:" << maximumVisibleAppletsOnList();
+    if( maximumVisibleAppletsOnList() >= m_applets->count() )
+    {
+        m_rightArrow->setEnabled( false );
+    }
+    else
+    {
+        m_rightArrow->setEnabled( true );
+    }
 }
 
 
@@ -160,6 +193,58 @@ AppletsListWidget::setModel( QStandardItemModel *model )
     }
     updateList();
 }
+
+void
+AppletsListWidget::scrollLeft()
+{
+    DEBUG_BLOCK
+    int firstAppletIdx = findFirstVisibleAppletIdx();
+    int newFirstAppletIdx = qMax( 0, firstAppletIdx - ( maximumVisibleAppletsOnList() ) );
+    debug() << "first: " << firstAppletIdx;
+    debug() << "new first: " << newFirstAppletIdx;
+    AppletIconWidget *applet = dynamic_cast< AppletIconWidget * >( m_appletsListLayout->itemAt( newFirstAppletIdx ) );
+    if( applet )
+    {
+        int xPos = - applet->mapToItem( m_appletsListWidget, 0 , 0 ).x();
+        debug() << "x pos: " << xPos;
+        Plasma::Animator::self()->moveItem( m_appletsListWidget, Plasma::Animator::SlideInMovement,
+                                            QPoint( xPos, m_appletsListWidget->geometry().top() ) );
+                                            
+        if( !m_rightArrow->isEnabled() && maximumVisibleAppletsOnList() < m_applets->count() )
+            m_rightArrow->setEnabled( true );
+
+        if( newFirstAppletIdx <= 0 )
+            m_leftArrow->setEnabled( false );
+    }
+    
+}
+
+
+void
+AppletsListWidget::scrollRight()
+{
+    DEBUG_BLOCK
+
+    int lastAppletIdx = findLastVisibleAppletIdx();
+    AppletIconWidget *applet = dynamic_cast< AppletIconWidget * >( m_appletsListLayout->itemAt( lastAppletIdx ) );
+    if( applet )
+    {
+        qreal lastAppletXPos = applet->mapToItem( m_appletsListWidget, 0, 0 ).x();
+
+        int scrollAmount = lastAppletXPos - visibleListRect().x();
+        int xPos = m_appletsListWidget->geometry().x() - scrollAmount;
+        debug() << "x pos: " << xPos;
+        Plasma::Animator::self()->moveItem( m_appletsListWidget, Plasma::Animator::SlideInMovement,
+                                        QPoint( xPos, m_appletsListWidget->geometry().top() ) );
+        if( !m_leftArrow->isEnabled() )
+            m_leftArrow->setEnabled( true );
+        int newLastAppletIdx = qMin( lastAppletIdx + maximumVisibleAppletsOnList() - 1, m_applets->count() - 1 );
+        debug() << "new last idx: " << newLastAppletIdx;
+        if( newLastAppletIdx >= ( m_applets->count() - 1 ) )
+            m_rightArrow->setEnabled( false );
+    }
+}
+
 
 
 void
@@ -187,6 +272,13 @@ AppletsListWidget::updateList()
     debug() << "visible icons:" << maximumVisibleAppletsOnList();
 }
 
+QRectF
+AppletsListWidget::visibleListRect() const
+{
+    return m_appletsListWindow->mapRectToItem( m_appletsListWidget, 0, 0,
+                                               m_appletsListWindow->geometry().width(),
+                                               m_appletsListWindow->geometry().height() );
+}
 
 }
 
