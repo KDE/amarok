@@ -50,6 +50,8 @@
 #include <KIcon>
 #include <KStandardDirs>
 #include <KUrlRequesterDialog>
+#include <KGlobal>
+#include <KLocale>
 
 #include <typeinfo>
 
@@ -237,7 +239,7 @@ PodcastCategory::showInfo( const QModelIndex & index )
         {
             authorAndPubDate += QString( "<b>%1</b> %2" )
                 .arg( i18n( "On" ) )
-                .arg( pubDate.toString( Qt::SystemLocaleShortDate ) );
+                .arg( KGlobal::locale()->formatDateTime( pubDate, KLocale::FancyShortDate ) );
         }
     }
 
@@ -267,7 +269,7 @@ PodcastCategory::showInfo( const QModelIndex & index )
         {
             description += QString( "<p><b>%1</b> %2</p>" )
                 .arg( i18n( "Subscription Date:" ) )
-                .arg( subsDate.toString( Qt::SystemLocaleShortDate ) );
+                .arg( KGlobal::locale()->formatDate( subsDate, KLocale::FancyShortDate ) );
         }
     }
 
