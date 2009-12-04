@@ -61,6 +61,7 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Fixed layout resizing bug with Qt 4.6. (BR 213990)
     * Fixed corrupted track lengths when copying to iPod. Patch by Christophe 
       Fergeau <teuf@gnome.org> (BR: 215124)
     * Fixed videoclip applet going blank when switching from one video to 
