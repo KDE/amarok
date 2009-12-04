@@ -365,6 +365,22 @@ MainWindow::init()
 
     The::amarokUrlHandler(); //Instantiate
 
+
+    // Runtime check for Qt 4.6 here.
+    // We delete the layout file once, because of binary incompatibility with older Qt version.
+    // @see: https://bugs.kde.org/show_bug.cgi?id=213990
+    const QChar major = qVersion()[0];
+    const QChar minor = qVersion()[2];
+    if( major.digitValue() >= 4 && minor.digitValue() > 5 )
+    {
+        KConfigGroup config = Amarok::config();
+        if( !config.readEntry( "LayoutFileDeleted", false ) )
+        {
+            QFile::remove( Amarok::saveLocation() + "layout" );
+            config.writeEntry( "LayoutFileDeleted", true );
+        }
+    }
+
     //restore the layout
     restoreLayout();
 
