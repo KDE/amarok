@@ -29,7 +29,7 @@ class LastFmEvent
 private:
     QStringList m_artists;
     QString m_name;
-    QDate m_date;
+    QString m_date;
     KUrl m_smallImageUrl;
     KUrl m_url;
 
@@ -37,10 +37,10 @@ public:
     LastFmEvent();
     LastFmEvent( const LastFmEvent& );
     ~LastFmEvent();
-    LastFmEvent(QStringList artists, QString name, QDate date, KUrl smallImageUrl, KUrl url);
+    LastFmEvent(QStringList artists, QString name, QString date, KUrl smallImageUrl, KUrl url);
     QStringList artists() const;
     QString name() const;
-    QDate date() const;
+    QString date() const;
     KUrl smallImageUrl() const;
     KUrl url() const;
 };
