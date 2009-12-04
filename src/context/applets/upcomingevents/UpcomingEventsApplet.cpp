@@ -173,8 +173,7 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
     m_bigImage->setPixmap( data[ "cover" ].value<QPixmap>() );
 
-    if ( m_enabledLinks ) {
-        m_eventUrl->setText( data[ "eventUrl" ].toString() );
+    if ( m_enabledLinks ) {        
         m_eventUrl->show();
     }
     else
@@ -198,7 +197,9 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
                artistList.append( event.at(0).artists().at( i ) );
             }
         }
-        m_eventParticipants->setText( artistList );        
+        m_eventParticipants->setText( artistList );
+
+        m_eventUrl->setText( event.at(0).url().path() );
     }
     else
     {
