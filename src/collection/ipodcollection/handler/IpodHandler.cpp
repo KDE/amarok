@@ -1602,7 +1602,7 @@ IpodHandler::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )
 void
 IpodHandler::libSetLength( Meta::MediaDeviceTrackPtr &track, int length )
 {
-    m_itdbtrackhash[ track ]->tracklen = length*1000;
+    m_itdbtrackhash[ track ]->tracklen = length;
     setDatabaseChanged();
 }
 void
