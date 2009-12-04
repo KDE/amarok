@@ -378,6 +378,7 @@ MainWindow::init()
         {
             QFile::remove( Amarok::saveLocation() + "layout" );
             config.writeEntry( "LayoutFileDeleted", true );
+            config.sync();
         }
     }
 
