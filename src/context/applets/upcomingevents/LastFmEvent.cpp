@@ -45,11 +45,11 @@ LastFmEvent::~LastFmEvent() {}
 LastFmEvent::LastFmEvent(QStringList artists, QString name, QString date, KUrl smallImageUrl, KUrl url)
     : m_artists(artists), m_name(name), m_date(date), m_smallImageUrl(smallImageUrl), m_url(url)
 {
-    static bool metaTypeRegistered = FALSE;
+    static bool metaTypeRegistered = false;
     if (!metaTypeRegistered)
     {
         qRegisterMetaType<LastFmEvent>("LastFmEvent");
-        metaTypeRegistered = TRUE;
+        metaTypeRegistered = true;
     }
 }
 
