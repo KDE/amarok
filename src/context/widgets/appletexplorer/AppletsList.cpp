@@ -253,7 +253,6 @@ AppletsListWidget::updateList()
     DEBUG_BLOCK
     AppletItem *appletItem;
     AppletIconWidget *appletIcon;
-    m_appletsListLayout = new QGraphicsLinearLayout( Qt::Horizontal );
  
     m_appletsListWidget->setLayout( NULL );
     m_appletsListLayout = new QGraphicsLinearLayout( Qt::Horizontal );
