@@ -44,6 +44,7 @@ BookmarkManager::BookmarkManager()
     QHBoxLayout *layout = new QHBoxLayout();
     m_widget = new BookmarkManagerWidget( 0 );
     layout->addWidget( m_widget );
+    layout->setContentsMargins( 0, 0, 0, 0 );
     setLayout( layout );
 
     resize( 600, 400 );
