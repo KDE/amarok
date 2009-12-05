@@ -886,6 +886,10 @@ const QStringList TagDialog::statisticsData()
         data += i18n( "Albums by this Artist" );
         data += QString::number( ret.count() );
         
+
+#if 0
+        // FIXME Code disabled because of crash with media devices.
+        // @see: https://bugs.kde.org/show_bug.cgi?id=217143
         if( qm )
         {
             // favorite track by this artist
@@ -898,6 +902,8 @@ const QStringList TagDialog::statisticsData()
 //            data += i18n( "Favorite by this Artist" );
 //            data += "Lorem ipsum";
         }
+#endif
+
     }
     Meta::AlbumPtr trackAlbum = m_currentTrack->album();
     if( trackAlbum )
