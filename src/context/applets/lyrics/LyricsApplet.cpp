@@ -151,6 +151,7 @@ void LyricsApplet::init()
     m_suggested->setAutoFillBackground( false );
     m_suggested->setWordWrapMode( QTextOption::WordWrap );
     m_suggested->viewport()->setAttribute( Qt::WA_NoSystemBackground );
+    m_suggested->viewport()->setCursor( Qt::PointingHandCursor );
 
     setEditing( false );
 
