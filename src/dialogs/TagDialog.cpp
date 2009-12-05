@@ -901,8 +901,9 @@ const QStringList TagDialog::statisticsData()
 //            data += i18n( "Favorite by this Artist" );
 //            data += "Lorem ipsum";
         }
-
+*/
     }
+/*
     Meta::AlbumPtr trackAlbum = m_currentTrack->album();
     if( trackAlbum )
     {
@@ -930,7 +931,8 @@ const QStringList TagDialog::statisticsData()
             data += i18n( "Related Artists" );
             data += sArtists;
         }
-    }*/
+    }
+    */
     return data;
 }
 
