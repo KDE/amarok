@@ -42,7 +42,7 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
     menu->addActions(trackActionsFor(parent, index));
     menu->addSeparator();
     if (coverActions) {
-        KMenu *menuCover = new KMenu( i18n( "Cover" ), menu );
+        KMenu *menuCover = new KMenu( i18n("Album"), menu );
         menuCover->addActions(coverActionsFor(index));
         menu->addMenu(menuCover);
         menu->addSeparator();
