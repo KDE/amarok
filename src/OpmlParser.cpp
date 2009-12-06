@@ -32,7 +32,6 @@ OpmlOutline::OpmlOutline( OpmlOutline *parent )
         : m_parent( parent )
         , m_hasChildren( false )
 {
-    DEBUG_BLOCK
 }
 
 using namespace Meta;
