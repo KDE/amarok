@@ -200,8 +200,8 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
 
 void OpmlDirectoryService::listDownloadCancelled()
 {
+    DEBUG_BLOCK
 
-    The::statusBar()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
     m_listDownloadJob = 0;
     debug() << "Aborted xml download";
