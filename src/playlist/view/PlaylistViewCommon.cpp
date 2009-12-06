@@ -41,12 +41,15 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
 
     menu->addActions(trackActionsFor(parent, index));
     menu->addSeparator();
-    if (coverActions) {
-        KMenu *menuCover = new KMenu( i18n("Album"), menu );
-        menuCover->addActions(coverActionsFor(index));
+
+    if( coverActions )
+    {
+        KMenu *menuCover = new KMenu( i18n(" Album" ), menu );
+        menuCover->addActions(coverActionsFor( index ) );
         menu->addMenu(menuCover);
         menu->addSeparator();
     }
+
     menu->addActions(multiSourceActionsFor(parent, index));
     menu->addSeparator();
     menu->addActions(editActionsFor(parent, index));
@@ -65,10 +68,13 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
 
     actions << trackActionsFor(parent, index);
     actions << separator;
-    if (coverActions) {
+
+    if( coverActions )
+    {
         actions << coverActionsFor(index);
         actions << separator;
     }
+
     actions << multiSourceActionsFor(parent, index);
     actions << separator;
     actions << editActionsFor(parent, index);
@@ -120,7 +126,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         foreach( QAction *action, globalCurrentTrackActions )
             actions << action;
 
-        if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+        if( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
         {
             Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
             if ( cac )
@@ -145,7 +151,7 @@ Playlist::ViewCommon::coverActionsFor( const QModelIndex *index )
     Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
     Meta::AlbumPtr album = track->album();
-    if ( album )
+    if( album )
     {
         Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
         if ( cac )
@@ -165,10 +171,10 @@ QList<QAction*>
 Playlist::ViewCommon::multiSourceActionsFor( QWidget *parent, const QModelIndex *index )
 {
     QList<QAction*> actions;
-
     Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
     const bool isMultiSource = index->data( Playlist::MultiSourceRole ).toBool();
+
     if( isMultiSource )
     {
         QAction *selectSourceAction = new QAction( KIcon( "media-playlist-repeat" ), i18n( "Select Source" ), parent );
@@ -187,7 +193,6 @@ Playlist::ViewCommon::editActionsFor( QWidget *parent, const QModelIndex *index 
     QList<QAction*> actions;
 
     Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
-
 
     QAction *editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), parent );
     QObject::connect( editAction, SIGNAL( triggered() ), parent, SLOT( editTrackInformation() ) );
