@@ -224,7 +224,6 @@ JamendoService::listDownloadCancelled()
     DEBUG_BLOCK
     //The::statusBarNg()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
-    delete m_listDownloadJob;
     m_listDownloadJob = 0;
     debug() << "Aborted xml download";
 
