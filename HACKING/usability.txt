@@ -1,0 +1,96 @@
+=== USABILITY ===
+
+This article was originally published here:
+
+http://amarok.kde.org/blog/archives/1132-Micro-Options,-Many-Options,-No-Options-A-practical-guide-to-help-you-decide..html
+
+
+
+Not very long ago, Aaron wrote an article about improving our user experience, stating that
+"Micro-Options Suck". Coincidentally, an article appeared on dot.kde.org only a few hours later, stating the
+following: "Choice Is Not A Usability Problem".
+
+Ardent readers will notice that there is possibly a contradiction here. In this
+article I would like to explain why this is not really a contradiction, but
+rather a misunderstanding. To get us started, let's make a jump back in time
+(using Flux Capacitor technology):
+
+The year is 2004. It's cold. You are alone. There is a house in the north
+(called "KDE"), and a house in the south ("GNOME"). Press "n" or "s".
+
+> n
+
+You have entered the house of KDE. It's a big house, full of obscure items. The
+sheer number of items is highly impressive, but you get confused. It is too
+much. What is your next step? Press "n" or "s".
+
+> s
+
+You have entered the house of GNOME. This house is neat, clean, but also kind of
+empty. There are very few things to play with. You get confused. What is your
+next step?
+
+> I give up. User reboots into Windows.
+
+
+The gist of this little analogy:
+
+KDE was wrong. GNOME was wrong. Also - they both were right!
+
+
+This is quite obviously another contradiction. Obviously this means that Mark is
+not quite right in the head! Well, you're possibly right on both accounts, but
+let me explain why it actually makes sense: The truth is somewhere in
+between.
+
+KDE has historically been known for being "the nerd's desktop". Basically, we
+were so proud of having our own desktop that we quickly determined that giving
+everyone as much freedom as possible is ideal. After all, the competition
+(Windows) did not offer this. Developer A came along, going "Hey, I have this
+fancy idea. It's a bit weird, but let me show you!". Developer B was quick to
+reply: "Hell yeah, why not? After all this is our own desktop. We can make all
+of our dreams come true. Let's do it!"
+
+GNOME has historically been known for being very sparse with options. They did
+this for a good reason: Someone smart realized that KDE was totally going
+overboard with options. Too much is too much. Let me show you a classical
+example:
+
+http://amarok.kde.org/blog/uploads/crypto_ssl.jpg
+
+
+Now let me show you an example of the Dolphin settings dialog:
+
+http://amarok.kde.org/blog/uploads/dolphin_settings.png
+
+
+Dolphin has won 2009's Akademy Award for "Best Application". The above
+screenshot demonstrates one of our reasons for choosing it: Peter Penz realized
+what generations of GUI developers (both in KDE and GNOME) got wrong: The true
+secret to getting your settings right is choosing the essential ones, while
+making good choices for defaults that don't need micro-options.
+
+Unfortunately, this is not easy, and it separates the good GUI designer from the
+bad one. In fact making these choices is bloody damn hard, I kid you not. It
+requires a lot of thought, experience, and taste. But in the end, you, as a
+developer, are responsible for making these choices. Creating software is not
+about giving the user a LEGO blocks game. If options get too complex, the users
+might as well learn programming and do it all by themselves. That's because, if
+you think about it, choosing an option is programming: You make the
+program use one code path, or a different one. This is essentially the same as
+an "if() {}; else() {};" block wrapped in GUI sugar.
+
+To sum it up:
+
+Before adding an option, think hard about it. Could the same be achieved with a
+smarter algorithm? Often options are bad excuses for deciding between one bad
+implementation and another bad one. Find a good one!
+
+Don't try to solve the problem by removing all options. Some options are very
+useful, and they are actually needed. Finding out which of these are needed is
+the developer's task. It's a hard task, but it can be done.
+
+Consider asking professionals. We have a KDE Usability team, comprised of real
+experts on this topic. Among them is Celeste, a member of the KDE board. She
+knows what she's talking about, and she's generally very helpful. Don't be shy,
+ask them!
