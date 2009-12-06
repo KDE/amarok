@@ -85,7 +85,7 @@ VERSION 2.2.2
       editor. (BR 215924)
     * The volume slider in the Slim Toolbar would sometimes work incorrectly
       after startup. (BR 215185)
-    * Fixed popup for showing the progress of multiple taks not working.
+    * Fixed popup for showing the progress of multiple tasks not working.
     * Made dragging from podcast list to external program work. (BR 212343)
     * Made dragging from the Last.fm service directly to the playlist work.
       (BR 215494)
