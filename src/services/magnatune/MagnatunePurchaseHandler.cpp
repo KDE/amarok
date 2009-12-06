@@ -206,7 +206,10 @@ void MagnatunePurchaseHandler::xmlDownloadComplete( KJob * downloadJob )
     if ( downloadInfo.initFromString( resultXml, m_membershipDownload ) )
     {
 
-        downloadInfo.setAlbum( m_currentAlbum );
+        downloadInfo.setAlbumCode( m_currentAlbum->albumCode() );
+        downloadInfo.setCoverUrl( m_currentAlbum->coverUrl() );
+        downloadInfo.setAlbumName( m_currentAlbum->prettyName() );
+        downloadInfo.setArtistName( m_currentAlbum->albumArtist()->prettyName() );
         
         if ( m_membershipDownload ) {
             MagnatuneConfig config;

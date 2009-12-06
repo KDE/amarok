@@ -18,6 +18,7 @@
 #define MAGNATUNEALBUMDOWNLOADER_H
 
 #include "MagnatuneDownloadInfo.h"
+#include "MagnatuneMeta.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -44,7 +45,7 @@ signals:
      * This signal is emitted when a download is finished or cancelled
      * @param success true is download completed, false if download was cancelled.
      */
-    void downloadComplete(bool success);
+    void downloadComplete( bool success );
 
 public slots:
     /**
@@ -58,7 +59,7 @@ protected:
     KIO::FileCopyJob * m_albumDownloadJob;
     QString m_currentAlbumUnpackLocation;
     QString m_currentAlbumFileName;
-    Meta::MagnatuneAlbum * m_currentAlbum;
+    MagnatuneDownloadInfo m_currentAlbumInfo;
     KTempDir * m_tempDir;
 
 protected slots:

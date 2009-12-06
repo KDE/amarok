@@ -66,7 +66,6 @@ protected:
 
 protected slots:
 
-    void redownload( const QString &storedInfoFileName );
     void redownload( MagnatuneDownloadInfo info );
     void selectionDialogCancelled();
     void albumDownloadComplete( bool success );

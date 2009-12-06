@@ -17,8 +17,6 @@
 #ifndef MAGNATUNE_DOWNLOAD_INFO_H
 #define MAGNATUNE_DOWNLOAD_INFO_H
 
-#include "MagnatuneMeta.h"
-
 #include <kurl.h>
 
 #include <QDomElement>
@@ -39,7 +37,6 @@ public:
     ~MagnatuneDownloadInfo();
 
     bool initFromString( const QString &downloadInfoString, bool membershipDownload );
-    bool initFromFile( const QString &downloadInfoFileName, bool membershipDownload );
     bool initFromRedownloadXml( const QDomElement &element );
 
     void setMembershipInfo( const QString &username, const QString &password );
@@ -49,15 +46,18 @@ public:
     QString userName();
     QString password();
     QString downloadMessage();
-    Meta::MagnatuneAlbum * album();
+    QString albumCode();
 
     QString albumName();
     QString artistName();
+    QString coverUrl();
 
-
+    void setAlbumName( const QString  &albumName );
+    void setArtistName( const QString  &artistName );
+    void setCoverUrl( const QString &coverUrl );
     void setFormatSelection( const QString &selectedFormat );
     void setUnpackUrl( const QString &unpackUrl );
-    void setAlbum( Meta::MagnatuneAlbum * album );
+    void setAlbumCode( const QString & albumCode );
     bool isReadyForDownload();
     KUrl completeDownloadUrl();
     QString unpackLocation();
@@ -73,8 +73,9 @@ protected:
 
     QString m_artistName;
     QString m_albumName;
-
-    Meta::MagnatuneAlbum * m_album;
+    QString m_albumCode;
+    QString m_coverUrl;
+    
     bool m_membershipDownload;
 
     //the following members are for storing the user selections regarding a download

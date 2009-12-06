@@ -28,7 +28,6 @@ MagnatuneAlbumDownloader::MagnatuneAlbumDownloader()
     : QObject()
     , m_albumDownloadJob( 0 )
     , m_currentAlbumFileName()
-    , m_currentAlbum( 0 )
 {
     m_tempDir = new KTempDir();
     m_tempDir->setAutoRemove( false );
@@ -46,19 +45,14 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 {
     DEBUG_BLOCK
 
-    m_currentAlbum = info.album();
+    m_currentAlbumInfo = info;
+
 
     KUrl downloadUrl = info.completeDownloadUrl();
     m_currentAlbumUnpackLocation = info.unpackLocation();
     debug() << "Download: " << downloadUrl.url() << " to: " << m_currentAlbumUnpackLocation;
 
-
-    //m_currentAlbumFileName = downloadUrl.fileName();
-    if ( m_currentAlbum )
-        m_currentAlbumFileName = m_currentAlbum->albumCode() + ".zip";
-    else
-        m_currentAlbumFileName = "temp_album.zip";
-
+    m_currentAlbumFileName = info.albumCode() + ".zip";
 
     debug() << "Using temporary location: " << m_tempDir->name() + m_currentAlbumFileName;
 
@@ -66,8 +60,8 @@ MagnatuneAlbumDownloader::downloadAlbum( MagnatuneDownloadInfo info )
 
     connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( albumDownloadComplete( KJob* ) ) );
 
-    if( info.album() && info.album()->albumArtist() )
-        The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Downloading '%1' by %2 from Magnatune.com", info.album()->prettyName(), info.album()->albumArtist()->prettyName() ) )->setAbortSlot( this, SLOT( albumDownloadAborted() ) );
+    if( !info.albumName().isEmpty() && !info.artistName().isEmpty() )
+        The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Downloading '%1' by %2 from Magnatune.com", info.albumName(), info.artistName() ) )->setAbortSlot( this, SLOT( albumDownloadAborted() ) );
     else
         The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Downloading album from Magnatune.com" ) )->setAbortSlot( this, SLOT( albumDownloadAborted() ) );
 }
@@ -90,7 +84,7 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
     if ( downloadJob != m_albumDownloadJob )
         return ; //not the right job, so let's ignore it
 
-    const QString finalAlbumPath = m_currentAlbumUnpackLocation + '/' + m_currentAlbum->albumArtist()->name() + '/' + m_currentAlbum->name();
+    const QString finalAlbumPath = m_currentAlbumUnpackLocation + '/' + m_currentAlbumInfo.artistName() + '/' + m_currentAlbumInfo.albumName();
 
     //ok, now we have the .zip file downloaded. All we need is to unpack it to the desired location and add it to the collection.
 
@@ -117,31 +111,25 @@ MagnatuneAlbumDownloader::albumDownloadComplete( KJob * downloadJob )
     debug() <<  "done!";
     
 
-    if ( m_currentAlbum ) {
 
-        //now I really want to add the album cover to the same folder where I just unzipped the album... The
-        //only way of getting the actual location where the album was unpacked is using the artist and album names
-        
-        QString coverUrlString = m_currentAlbum->coverUrl();
+    //now I really want to add the album cover to the same folder where I just unzipped the album... The
+    //only way of getting the actual location where the album was unpacked is using the artist and album names
 
-        KUrl downloadUrl( coverUrlString.replace( "_200.jpg", "_1400.jpg") );
+    QString coverUrlString = m_currentAlbumInfo.coverUrl();
 
-        debug() << "Adding cover " << downloadUrl.url() << " to collection at " << finalAlbumPath;
+    KUrl downloadUrl( coverUrlString.replace( "_200.jpg", ".jpg") );
 
-        m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( finalAlbumPath + "/cover.jpg" ), -1, KIO::Overwrite | KIO::HideProgressInfo );
+    debug() << "Adding cover " << downloadUrl.url() << " to collection at " << finalAlbumPath;
 
-        connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverAddComplete( KJob* ) ) );
+    m_albumDownloadJob = KIO::file_copy( downloadUrl, KUrl( finalAlbumPath + "/cover.jpg" ), -1, KIO::Overwrite | KIO::HideProgressInfo );
 
-        The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Adding album cover to collection" ) )
-        ->setAbortSlot( this, SLOT( coverAddAborted() ) );
+    connect( m_albumDownloadJob, SIGNAL( result( KJob* ) ), SLOT( coverAddComplete( KJob* ) ) );
 
-        emit( downloadComplete( true ) );
+    The::statusBar()->newProgressOperation( m_albumDownloadJob, i18n( "Adding album cover to collection" ) )
+    ->setAbortSlot( this, SLOT( coverAddAborted() ) );
 
-    } else {
+    emit( downloadComplete( true ) );
 
-        //we do not know exactly what album this is (we are most likely using the redownload manager)
-        emit( downloadComplete( true ) );
-    }
 
 }
 

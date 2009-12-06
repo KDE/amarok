@@ -16,6 +16,7 @@
 
 #include "MagnatuneDownloadDialog.h"
 
+#include "Amarok.h"
 #include "Debug.h"
 
 #include <kfiledialog.h>
@@ -46,7 +47,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
     QString path = downloadTargetURLRequester->url().url();;
 
     //store to config for next download:
-    KConfigGroup config = Amarok::config("Service_Magnatune");
+    KConfigGroup config = Amarok::config( "Service_Magnatune" );
     config.writeEntry( "Download Format", format );
     config.writeEntry( "Download Path", path );
     

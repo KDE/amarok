@@ -46,32 +46,8 @@ MagnatuneRedownloadHandler::~MagnatuneRedownloadHandler()
 void
 MagnatuneRedownloadHandler::showRedownloadDialog( )
 {
-
     fetchServerSideRedownloadList();
     return;
-     debug() << "Show redownload dialog";
-
-    QStringList previousDownloads = GetPurchaseList();
-
-    if (previousDownloads.isEmpty()) {
-
-        //No previously purchased track information found. No more to do here...
-        KMessageBox::information( m_parent, i18n( "No purchases found." ) ,
-                                  i18n( "No previous purchases have been found. Nothing to re-download...." ) + '\n' );
-        return;
-    }
-
-    if (m_redownloadDialog == 0) {
-        m_redownloadDialog = new MagnatuneRedownloadDialog( m_parent );
-        connect( m_redownloadDialog, SIGNAL( redownload( const QString &) ), this, SLOT( redownload( const QString &) ) );
-        connect( m_redownloadDialog, SIGNAL(cancelled() ), this, SLOT( selectionDialogCancelled() ));
-    }
-
-
-    m_redownloadDialog->setRedownloadItems( previousDownloads );
-
-    m_redownloadDialog->show();
-
 }
 
 QStringList
@@ -101,46 +77,6 @@ MagnatuneRedownloadHandler::GetPurchaseList( )
     }
      debug() << "Done parsing previous purchases!";
     return returnList;
-
-}
-
-void
-MagnatuneRedownloadHandler::redownload( const QString &storedInfoFileName )
-{
-
-    QDir purchaseInfoDir( Amarok::saveLocation( "magnatune.com/purchases/" ) );
-    QString absFileName = purchaseInfoDir.absolutePath() + '/' + storedInfoFileName;
-
-   debug() << "Redownload file: " << absFileName;
-
-    if ( m_albumDownloader == 0 )
-    {
-        m_albumDownloader = new MagnatuneAlbumDownloader();
-        connect( m_albumDownloader, SIGNAL( downloadComplete( bool ) ), this, SLOT( albumDownloadComplete( bool ) ) );
-    }
-
-
-    if (m_downloadDialog == 0) {
-        m_downloadDialog = new MagnatuneDownloadDialog(m_parent);
-         connect( m_downloadDialog, SIGNAL( downloadAlbum( MagnatuneDownloadInfo ) ), m_albumDownloader, SLOT( downloadAlbum( MagnatuneDownloadInfo ) ) );
-    }
-
-
-    MagnatuneDownloadInfo downloadInfo;
-    if ( downloadInfo.initFromFile( absFileName, false ) )
-    {
-
-        debug() << "Showing download dialog";
-        m_downloadDialog->setDownloadInfo( downloadInfo );
-        m_downloadDialog->show();
-    }
-    else
-    {
-
-        KMessageBox::information( m_parent, i18n( "Could not re-download album" ),
-                                  i18n( "There seems to be a problem with the selected re-download info file." ) + '\n' );
-
-    }
 
 }
 

@@ -22,42 +22,18 @@
 #include <QFile>
 #include <QTextStream>
 
-using namespace Meta;
 
 MagnatuneDownloadInfo::MagnatuneDownloadInfo()
 {
     m_selectedDownloadFormat.clear();
-    m_album = 0;
 }
 
 
 MagnatuneDownloadInfo::~MagnatuneDownloadInfo()
 {}
 
-bool MagnatuneDownloadInfo::initFromFile( const QString &downloadInfoFileName, bool membershipDownload  )
-{
-    QString xml;
-
-    QFile file( downloadInfoFileName );
-    if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-        QTextStream stream( &file );
-        while ( !stream.atEnd() )
-        {
-            xml += (stream.readLine() + '\n');
-        }
-        file.close();
-    } else {
-        debug() << "Error opening file: '" << downloadInfoFileName << "'";
-        return false;
-    }
-
-
-    //debug() << "XML from file: '" << xml << "'";
-    return initFromString( xml, membershipDownload );
-}
-
-bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool membershipDownload  )
+bool
+MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, bool membershipDownload  )
 {
 
     m_membershipDownload = membershipDownload;
@@ -203,7 +179,8 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, b
     return true;
 }
 
-bool MagnatuneDownloadInfo::initFromRedownloadXml( const QDomElement &element )
+bool
+MagnatuneDownloadInfo::initFromRedownloadXml( const QDomElement &element )
 {
 
 
@@ -211,6 +188,8 @@ bool MagnatuneDownloadInfo::initFromRedownloadXml( const QDomElement &element )
     m_albumName = element.firstChildElement( "album" ).text();
     m_userName = element.firstChildElement( "username" ).text();
     m_password = element.firstChildElement( "password" ).text();
+    m_albumCode = element.firstChildElement( "sku" ).text();
+    m_coverUrl = element.firstChildElement( "cover" ).text();
 
     //get formats
     QDomNode formats = element.firstChildElement( "formats" );
@@ -233,37 +212,44 @@ bool MagnatuneDownloadInfo::initFromRedownloadXml( const QDomElement &element )
 
 }
 
-QString MagnatuneDownloadInfo::userName( )
+QString
+MagnatuneDownloadInfo::userName( )
 {
     return m_userName;
 }
 
-QString MagnatuneDownloadInfo::password( )
+QString
+MagnatuneDownloadInfo::password( )
 {
     return m_password;
 }
 
-QString MagnatuneDownloadInfo::downloadMessage( )
+QString
+MagnatuneDownloadInfo::downloadMessage( )
 {
     return m_downloadMessage;
 }
 
-DownloadFormatMap MagnatuneDownloadInfo::formatMap()
+DownloadFormatMap
+MagnatuneDownloadInfo::formatMap()
 {
     return m_downloadFormats;
 }
 
-void MagnatuneDownloadInfo::setFormatSelection( const QString &selectedFormat )
+void
+MagnatuneDownloadInfo::setFormatSelection( const QString &selectedFormat )
 {
     m_selectedDownloadFormat = selectedFormat;
 }
 
-bool MagnatuneDownloadInfo::isReadyForDownload( )
+bool
+MagnatuneDownloadInfo::isReadyForDownload( )
 {
     return !m_selectedDownloadFormat.isEmpty();
 }
 
-KUrl MagnatuneDownloadInfo::completeDownloadUrl( )
+KUrl
+MagnatuneDownloadInfo::completeDownloadUrl( )
 {
    QString url =  m_downloadFormats[ m_selectedDownloadFormat ];
    KUrl downloadUrl(url);
@@ -273,48 +259,80 @@ KUrl MagnatuneDownloadInfo::completeDownloadUrl( )
    return downloadUrl;
 }
 
-void MagnatuneDownloadInfo::setUnpackUrl( const QString &unpackUrl )
+void
+MagnatuneDownloadInfo::setUnpackUrl( const QString &unpackUrl )
 {
     m_unpackUrl = unpackUrl;
 }
 
-QString MagnatuneDownloadInfo::unpackLocation( )
+QString
+MagnatuneDownloadInfo::unpackLocation( )
 {
     return m_unpackUrl;
 }
 
 
 
-MagnatuneAlbum * MagnatuneDownloadInfo::album()
+QString
+MagnatuneDownloadInfo::albumCode()
 {
-    return m_album;
+    return m_albumCode;
 }
 
 
 
-void MagnatuneDownloadInfo::setAlbum(MagnatuneAlbum * album )
+void
+MagnatuneDownloadInfo::setAlbumCode( const QString &albumCode )
 {
-    m_album = album;
+    m_albumCode = albumCode;
 }
 
-bool MagnatuneDownloadInfo::isMembershipDownload()
+bool
+MagnatuneDownloadInfo::isMembershipDownload()
 {
     return m_membershipDownload;
 }
 
-void MagnatuneDownloadInfo::setMembershipInfo( const QString &username, const QString &password )
+void
+MagnatuneDownloadInfo::setMembershipInfo( const QString &username, const QString &password )
 {
     m_userName = username;
     m_password = password;
 }
 
-QString MagnatuneDownloadInfo::albumName()
+QString
+MagnatuneDownloadInfo::albumName()
 {
     return m_albumName; 
 }
 
-QString MagnatuneDownloadInfo::artistName()
+QString
+MagnatuneDownloadInfo::artistName()
 {
     return m_artistName;
+}
+
+QString
+MagnatuneDownloadInfo::coverUrl()
+{
+    return m_coverUrl;
+}
+
+void
+MagnatuneDownloadInfo::setAlbumName( const QString  &albumName )
+{
+    m_albumName = albumName;
+}
+
+void
+MagnatuneDownloadInfo::setArtistName( const QString  &artistName )
+{
+    m_artistName = artistName;
+}
+
+void
+MagnatuneDownloadInfo::setCoverUrl( const QString &coverUrl )
+{
+    m_coverUrl = coverUrl;
 }
 
