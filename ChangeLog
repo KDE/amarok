@@ -61,6 +61,8 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Magnatune.com store: Album cover is now correctly fetched when redownloading.
+    * Magnatune.com store: Fixed crash when redownloading album: (BR 217148)
     * Fixed crash when doing "Edit Track Details" on media device. (BR 217143)
     * Fixed layout resizing bug with Qt 4.6. (BR 213990)
     * Fixed corrupted track lengths when copying to iPod. Patch by Christophe 
