@@ -152,7 +152,6 @@ MagnatuneAlbumDownloader::albumDownloadAborted( )
     
     The::statusBar()->endProgressOperation( m_albumDownloadJob );
     m_albumDownloadJob->kill();
-    delete m_albumDownloadJob;
     m_albumDownloadJob = 0;
     debug() << "Aborted album download";
 

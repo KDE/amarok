@@ -341,7 +341,6 @@ void MagnatuneStore::listDownloadCancelled( )
 
     //The::statusBar()->endProgressOperation( m_listDownloadJob );
     m_listDownloadJob->kill();
-    delete m_listDownloadJob;
     m_listDownloadJob = 0;
     debug() << "Aborted xml download";
 
