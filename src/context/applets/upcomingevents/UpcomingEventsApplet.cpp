@@ -190,11 +190,11 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         {
             if( i == event.at(0).artists().size() - 1 )
             {
-                artistList.append( event.at(0).artists().at( i ) + " - " );
+                artistList.append( event.at(0).artists().at( i ) );
             }
             else
             {
-               artistList.append( event.at(0).artists().at( i ) );
+               artistList.append( event.at(0).artists().at( i ) + " - " );
             }
         }
         m_eventParticipants->setText( artistList );
