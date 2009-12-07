@@ -52,6 +52,7 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
 
     setDragEnabled( true );
     setAcceptDrops( true );
+    setAlternatingRowColors( true );
     setDropIndicatorShown( true );
 }
 
