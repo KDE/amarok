@@ -161,7 +161,7 @@ FastForwardWorker::run()
 
         uint firstPlayed = query.value( index++ ).toUInt();
         uint lastPlayed  = query.value( index++ ).toUInt();
-        uint score       = query.value( index++ ).toInt();
+        uint score       = query.value( index++ ).toDouble();
         int rating       = query.value( index++ ).toInt();
         int playCount    = query.value( index++ ).toInt();
         QString lyrics   = query.value( index++ ).toString();
