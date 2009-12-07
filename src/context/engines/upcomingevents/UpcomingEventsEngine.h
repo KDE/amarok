@@ -61,7 +61,7 @@ public:
     * @param artist_name the name of the artist
     * @return a list of events
     */
-    QList<LastFmEvent> upcomingEvents(const QString &artist_name);
+    void upcomingEventsRequest(const QString &artist_name);
     
 protected:
     bool sourceRequestEvent( const QString& name );
@@ -82,6 +82,12 @@ private:
     bool m_requested;
     QStringList m_sources;
     short m_triedRefinedSearch;
+
+    QList< LastFmEvent > m_upcomingEvents;
+    QString m_xml;
+
+private slots:
+    void upcomingEventsParse( KJob* );
 
 };
 

@@ -127,14 +127,16 @@ void UpcomingEventsEngine::update()
             setData( "upcomingEvents", "artist", artistName );
     }
     QPixmap cover = m_currentTrack->album()->image( 156 );
+    
     setData( "upcomingEvents", "cover",  QVariant( cover ) );
-    setData( "upcomingEvents", "eventName", "Concert de Noël" );
+    /*setData( "upcomingEvents", "eventName", "Concert de Noël" );
     setData( "upcomingEvents", "eventDate", "2009-12-25" );
     setData( "upcomingEvents", "eventUrl", "<a href='http://www.google.com'>"
                                            "<font size='2' family='Arial, Helvetica, sans-serif' color='blue'><b>http://www.google.fr</b></font>"
-                                           "</a>" );
-   LastFmEvent event( QStringList(), "Test", QDate(), KUrl(), KUrl() );
-   QVariant variant (QMetaType::type( "LastFmEvent" ), &event);
+                                           "</a>" );*/
+   upcomingEventsRequest( artistName );
+   QVariant variant ( QMetaType::type( "LastFmEvent::LastFmEventList" ), &m_upcomingEvents );
+   
    setData ( "upcomingEvents", "LastFmEvent", variant );
 }
 
@@ -144,36 +146,108 @@ void UpcomingEventsEngine::reloadUpcomingEvents()
 }
 
 
-QList< LastFmEvent > UpcomingEventsEngine::upcomingEvents(const QString& artist_name)
+void
+UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
 {
-    //QMutexLocker locker(m_mutex);
+    QUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/2.0/" );
+    url.addQueryItem( "method", "artist.getEvents" );
+    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
+    url.addQueryItem( "artist", artist_name.toLocal8Bit() );
 
-    //Initialize the query parameters
-    QMap< QString, QString > params;
-    params["method"] = "artist.getEvents";
-    params["artist"] = artist_name;
-
-    //Send the request
-    QNetworkReply* reply = lastfm::ws::get(params);
-
-    //Parse the XML reply
-    lastfm::XmlQuery xml = lastfm::ws::parse(reply);
-    QList<LastFmEvent> events;
-    foreach (lastfm::XmlQuery xmlEvent, xml.children("event"))
-    {
-        QStringList artists;
-        foreach (lastfm::XmlQuery xmlArtists, xmlEvent.children("artists"))
-        {
-            artists.append(xmlArtists["artist"].text());
-        }
-        QString title = xmlEvent["title"].text();
-        QDate date = QDate::fromString(xmlEvent["startDate"].text(), "ddd, dd MMM yyyy");
-        KUrl smallImageUrl(xmlEvent["image"]["image size=small"].text());
-        KUrl url(xmlEvent["url"].text());
-        LastFmEvent event(artists, title, date,smallImageUrl, url);
-        events.append(event);
-    }
-    return events;
+    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
+    connect( job, SIGNAL(result( KJob* )), SLOT(upcomingEventsParse( KJob* )) );
 }
+
+
+void
+UpcomingEventsEngine::upcomingEventsParse( KJob* job ) // SLOT
+{
+    m_upcomingEvents.clear();
+
+    if( job )
+    {
+        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+        m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
+    }
+    else
+        return;
+
+    QDomDocument doc;
+    doc.setContent( m_xml );
+    
+    const QDomNode events = doc.documentElement().namedItem( "events" );
+
+    QDomNode n = events.firstChild();
+    while( !n.isNull() )
+    {
+        // Event name
+        QDomNode titleNode = n.namedItem( "title" );
+        QDomElement e = titleNode.toElement();
+        QString title;
+        if( !e.isNull() )
+        {            
+            title = e.text();
+        }
+
+        // Event participants
+        QDomNode artistsNode = n.namedItem( "artists" );
+        QDomNode currentArtistNode = artistsNode.firstChild();
+        QStringList artists;
+        while( !currentArtistNode.isNull() )
+        {
+            QDomElement currentArtistElement = currentArtistNode.toElement();
+            if( currentArtistElement.tagName() == "artist" )
+            {
+                if( !currentArtistElement.isNull() )
+                {
+                    artists.append( currentArtistElement.text() );
+                }
+            }
+            currentArtistNode = currentArtistNode.nextSibling();
+        }
+
+        // Event date
+        QDomNode startDateNode = n.namedItem( "startDate" );
+        QDomElement startDateElement = startDateNode.toElement();
+        QDateTime startDate;
+        if( !startDateElement.isNull() )
+        {
+            QString startDateString = startDateElement.text();            
+            startDate.setDate( QDate::fromString( startDateString.section( "", 0, 16 ), "ddd, dd MMM yyyy" ) );
+            startDate.setTime( QTime::fromString( startDateString.section( "", 18 ), "HH:mm:ss" ) );
+        }
+
+        // Event url
+        QDomNode urlNode = n.namedItem( "url" );
+        QDomElement urlElement = urlNode.toElement();
+        KUrl url;
+        if( !urlElement.isNull() )
+        {
+            url = KUrl( urlElement.text() );
+        }
+
+        // Small image url
+        QDomNode imageUrlNode = n.namedItem( "image" );
+        QDomElement imageUrlElement = imageUrlNode.toElement();
+        KUrl imageUrl;
+        if( !imageUrlElement.isNull() )
+        {
+            while ( imageUrlElement.attributeNode( "size" ).value() != "large" )
+            {
+                imageUrlElement = imageUrlElement.nextSiblingElement();
+            }
+            imageUrl = KUrl( imageUrlElement.text() );
+        }
+        m_upcomingEvents.append( LastFmEvent( artists, title, startDate, imageUrl, url ) );
+        
+        n = n.nextSibling();
+    }
+
+    update();
+}
+
 #include "UpcomingEventsEngine.moc"
 
