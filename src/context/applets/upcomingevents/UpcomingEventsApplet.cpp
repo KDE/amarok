@@ -198,8 +198,7 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
             }
         }
         m_eventParticipants->setText( artistList );
-
-        m_eventUrl->setText( event.at(0).url().path() );
+        m_eventUrl->setText( "<html><body><a href=\"" + event.at(0).url().prettyUrl() + "\"><u>" + i18n( "Event website" ) + "</u></a></body></html>" );
     }
     else
     {
