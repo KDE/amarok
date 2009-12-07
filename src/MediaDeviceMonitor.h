@@ -33,14 +33,13 @@ IpodCollectionFactory.
 
 //#include "MediaDeviceInfo.h"
 
-#include "Debug.h"
-
 #include "amarok_export.h"
+#include "ConnectionAssistant.h"
+#include "Debug.h"
 
 #include <QHash>
 #include <QList>
 #include <QObject>
-#include <ConnectionAssistant.h>
 
 class ConnectionAssistant;
 class MediaDeviceInfo;
