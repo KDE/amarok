@@ -28,7 +28,7 @@
 #include "MediaDeviceMeta.h"
 #include "MemoryCollection.h"
 #include "Meta.h"
-#include "../../../statusbar/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include "mediadevicecollection_export.h"
 
