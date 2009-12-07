@@ -32,10 +32,12 @@
 
 #include <QFrame>
 #include <QHeaderView>
+#include <QHelpEvent>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QModelIndex>
 #include <QPoint>
+#include <QToolTip>
 
 #include <typeinfo>
 
@@ -218,6 +220,31 @@ void BookmarkTreeView::resizeEvent( QResizeEvent *event )
              this, SLOT( slotSectionResized( int, int, int ) ) );
 
     QWidget::resizeEvent( event );
+}
+
+bool BookmarkTreeView::viewportEvent( QEvent *event )
+{
+   if( event->type() == QEvent::ToolTip )
+   {
+       QHelpEvent *he  = static_cast<QHelpEvent*>( event );
+       QModelIndex idx = indexAt( he->pos() );
+
+       if( idx.isValid() )
+       {
+           QRect vr  = visualRect( idx );
+           QSize shr = itemDelegate( idx )->sizeHint( viewOptions(), idx );
+
+           if( shr.width() > vr.width() )
+               QToolTip::showText( he->globalPos(), idx.data( Qt::DisplayRole ).toString() );
+       }
+       else
+       {
+           QToolTip::hideText();
+           event->ignore();
+       }
+       return true;
+   }
+   return QTreeView::viewportEvent( event );
 }
 
 QSet<BookmarkViewItemPtr>

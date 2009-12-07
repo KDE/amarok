@@ -49,6 +49,7 @@ protected:
     void mouseDoubleClickEvent( QMouseEvent *event );
     void contextMenuEvent( QContextMenuEvent *event );
     void resizeEvent( QResizeEvent *event );
+    bool viewportEvent( QEvent *event );
 
 protected slots:
     void slotLoad();
