@@ -47,7 +47,8 @@ public:
 protected:
     void keyPressEvent( QKeyEvent *event );
     void mouseDoubleClickEvent( QMouseEvent *event );
-    void contextMenuEvent( QContextMenuEvent * event );
+    void contextMenuEvent( QContextMenuEvent *event );
+    void resizeEvent( QResizeEvent *event );
 
 protected slots:
     void slotLoad();
@@ -58,6 +59,9 @@ protected slots:
 
     //for testing...
     void slotCreateTimecodeTrack() const;
+
+    void slotSectionResized( int logicalIndex, int oldSize, int newSize );
+    void slotSectionCountChanged( int oldCount, int newCount );
 
     void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
 
@@ -76,6 +80,8 @@ private:
     KAction *m_createTimecodeTrackAction;
 
     KAction *m_addGroupAction;
+
+    QMap<int, qreal> m_columnsSize;
 
     QSortFilterProxyModel * m_proxyModel;
 };

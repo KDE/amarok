@@ -54,6 +54,9 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
     setAcceptDrops( true );
     setAlternatingRowColors( true );
     setDropIndicatorShown( true );
+
+    connect( header(), SIGNAL( sectionCountChanged( int, int ) ),
+             this, SLOT( slotSectionCountChanged( int, int ) ) );
 }
 
 
@@ -189,6 +192,32 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
         menu->addAction( m_addGroupAction );
 
     menu->exec( event->globalPos() );
+}
+
+void BookmarkTreeView::resizeEvent( QResizeEvent *event )
+{
+    QHeaderView *headerView = header();
+
+    const int oldWidth = event->oldSize().width();
+    const int newWidth = event->size().width();
+
+    if( oldWidth == newWidth )
+        return;
+
+    disconnect( headerView, SIGNAL( sectionResized( int, int, int ) ),
+                this, SLOT( slotSectionResized( int, int, int ) ) );
+
+    QMap<int, qreal>::const_iterator i = m_columnsSize.constBegin();
+    while( i != m_columnsSize.constEnd() )
+    {
+        headerView->resizeSection( i.key(), static_cast<int>( i.value() * newWidth ) );
+        ++i;
+    }
+
+    connect( headerView, SIGNAL( sectionResized( int, int, int ) ),
+             this, SLOT( slotSectionResized( int, int, int ) ) );
+
+    QWidget::resizeEvent( event );
 }
 
 QSet<BookmarkViewItemPtr>
@@ -359,6 +388,29 @@ void BookmarkTreeView::slotEdit( const QModelIndex &index )
     //translate to proxy terms
     edit( m_proxyModel->mapFromSource( index ) );
 }
+
+void BookmarkTreeView::slotSectionResized( int logicalIndex, int oldSize, int newSize )
+{
+    if( oldSize == newSize )
+        return;
+
+    m_columnsSize[ logicalIndex ] = static_cast<qreal>( newSize ) / header()->length();
+}
+
+void BookmarkTreeView::slotSectionCountChanged( int oldCount, int newCount )
+{
+    Q_UNUSED( oldCount )
+
+    const QHeaderView *headerView = header();
+    for( int i = 0; i < newCount; ++i )
+    {
+        const int index        = headerView->logicalIndex( i );
+        const int columnWidth  = headerView->sectionSize( index );
+        const qreal ratio      = static_cast<qreal>( columnWidth ) / headerView->length();
+        m_columnsSize[ index ] = ratio;
+    }
+}
+
 
 #include "BookmarkTreeView.moc"
 
