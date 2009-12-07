@@ -183,7 +183,7 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     if ( !event.isEmpty() )
     {
         m_eventName->setText( event.at(0).name() );
-        m_eventDate->setText( event.at(0).date() );
+        m_eventDate->setText( event.at(0).date().toString( Qt::DefaultLocaleLongDate ) );
 
         QString artistList;
         for( int i = 0; i < event.at(0).artists().size(); i++ )

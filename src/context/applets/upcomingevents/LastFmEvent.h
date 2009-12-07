@@ -19,7 +19,7 @@
 #define LASTFMEVENT_H
 
 #include <QString>
-#include <QDate>
+#include <QDateTime>
 #include <QStringList>
 #include <KUrl>
 
@@ -29,7 +29,7 @@ class LastFmEvent
 private:
     QStringList m_artists;
     QString m_name;
-    QString m_date;
+    QDateTime m_date;
     KUrl m_smallImageUrl;
     KUrl m_url;
 
@@ -38,10 +38,10 @@ public:
     LastFmEvent();
     LastFmEvent( const LastFmEvent& );
     ~LastFmEvent();
-    LastFmEvent(QStringList artists, QString name, QString date, KUrl smallImageUrl, KUrl url);
+    LastFmEvent(QStringList artists, QString name, QDateTime date, KUrl smallImageUrl, KUrl url);
     QStringList artists() const;
     QString name() const;
-    QString date() const;
+    QDateTime date() const;
     KUrl smallImageUrl() const;
     KUrl url() const;
 };

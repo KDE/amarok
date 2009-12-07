@@ -42,7 +42,7 @@ LastFmEvent::LastFmEvent( const LastFmEvent& event)
  */
 LastFmEvent::~LastFmEvent() {}
 
-LastFmEvent::LastFmEvent(QStringList artists, QString name, QString date, KUrl smallImageUrl, KUrl url)
+LastFmEvent::LastFmEvent(QStringList artists, QString name, QDateTime date, KUrl smallImageUrl, KUrl url)
     : m_artists(artists), m_name(name), m_date(date), m_smallImageUrl(smallImageUrl), m_url(url)
 {
     static bool metaTypeRegistered = false;
@@ -58,7 +58,7 @@ QStringList LastFmEvent::artists() const
     return m_artists;
 }
 
-QString LastFmEvent::date() const
+QDateTime LastFmEvent::date() const
 {
     return m_date;
 }

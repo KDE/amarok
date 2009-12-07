@@ -212,10 +212,12 @@ UpcomingEventsEngine::upcomingEventsParse( KJob* job ) // SLOT
         // Event date
         QDomNode startDateNode = n.namedItem( "startDate" );
         QDomElement startDateElement = startDateNode.toElement();
-        QString startDate;
+        QDateTime startDate;
         if( !startDateElement.isNull() )
         {
-            startDate = startDateElement.text();
+            QString startDateString = startDateElement.text();            
+            startDate.setDate( QDate::fromString( startDateString.section( "", 0, 16 ), "ddd, dd MMM yyyy" ) );
+            startDate.setTime( QTime::fromString( startDateString.section( "", 18 ), "HH:mm:ss" ) );
         }
 
         // Event url
