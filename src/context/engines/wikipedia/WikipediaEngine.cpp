@@ -137,6 +137,13 @@ void WikipediaEngine::update()
     {
         if( currentTrack->artist() )
         {
+            if ( currentTrack->artist()->prettyName().isEmpty() )
+            {
+                debug() << "Requesting an empty string, skipping !";
+                removeAllData( "wikipedia" );
+                setData( "wikipedia", "message", i18n( "No information found..." ) );
+                return;
+            }
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                 ( currentTrack->playableUrl().protocol() == "daap" ) ||
                 !The::engineController()->isStream() )
@@ -149,6 +156,13 @@ void WikipediaEngine::update()
     {
         if ( currentTrack->album() )
         {
+            if ( currentTrack->album()->prettyName().isEmpty() )
+            {
+                debug() << "Requesting an empty string, skipping !";
+                removeAllData( "wikipedia" );
+                setData( "wikipedia", "message", i18n( "No information found..." ) );
+                return;
+            }
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                 ( currentTrack->playableUrl().protocol() == "daap" ) ||
                 !The::engineController()->isStream() )
@@ -158,6 +172,13 @@ void WikipediaEngine::update()
     }
     else if ( selection() == "track" )
     {
+        if ( currentTrack->prettyName().isEmpty() )
+        {
+            debug() << "Requesting an empty string, skipping !";
+            removeAllData( "wikipedia" );
+            setData( "wikipedia", "message", i18n( "No information found..." ) );
+            return;
+        }
         tmpWikiStr = currentTrack->prettyName() + wikiTrackPostfix();
     }
     //Hack to make wiki searches work with magnatune preview tracks
@@ -175,7 +196,6 @@ void WikipediaEngine::update()
         debug() << "Same entry requested again. Ignoring.";
         return;
     }
-
     
     removeAllData( "wikipedia" );
 
