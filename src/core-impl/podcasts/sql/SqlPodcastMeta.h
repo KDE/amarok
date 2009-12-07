@@ -104,6 +104,7 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         virtual Playlists::PlaylistProvider *provider() const;
 
         //Podcasts::PodcastChannel methods
+        virtual KUrl uidUrl() const;
         virtual void setTitle( const QString &title );
         virtual Podcasts::PodcastEpisodeList episodes();
         virtual bool hasImage() const { return !m_image.isNull(); }

@@ -562,6 +562,12 @@ SqlPodcastChannel::provider() const
     return dynamic_cast<Playlists::PlaylistProvider *>( m_provider );
 }
 
+KUrl
+SqlPodcastChannel::uidUrl() const
+{
+    return KUrl( QString( "amarok-sqlpodcastuid://%1").arg( m_dbId ) );
+}
+
 SqlPodcastChannel::~SqlPodcastChannel()
 {
     m_episodes.clear();

@@ -68,6 +68,12 @@ SqlPlaylist::parent() const
     return m_parent;
 }
 
+KUrl
+SqlPlaylist::uidUrl() const
+{
+    return KUrl( QString( "amarok-sqlplaylistuid://%1").arg( m_dbId ) );
+}
+
 QStringList
 SqlPlaylist::groups()
 {

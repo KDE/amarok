@@ -19,8 +19,11 @@
 
 #include "core/support/Amarok.h"
 #include "amarok_export.h"
+
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistProvider.h"
+
+#include "SyncedPlaylist.h"
 
 #include <QMultiMap>
 #include <QList>
@@ -153,15 +156,20 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void downloadComplete( KJob *job );
 
     private:
-        static PlaylistManager* s_instance;
+        static PlaylistManager *s_instance;
         PlaylistManager();
         ~PlaylistManager();
+
+        bool shouldBeSynced( Playlists::PlaylistPtr playlist );
+        SyncedPlaylistPtr asSyncedPlaylist( Playlists::PlaylistPtr playlist );
 
         Podcasts::PodcastProvider *m_defaultPodcastProvider;
         Playlists::UserPlaylistProvider *m_defaultUserPlaylistProvider;
         Playlists::PlaylistFileProvider *m_playlistFileProvider;
 
         QMultiMap<int, Playlists::PlaylistProvider*> m_providerMap; //Map PlaylistCategories to providers
+        QMultiMap<int, Playlists::PlaylistPtr> m_playlistMap;
+        SyncedPlaylistList m_syncedPlaylists;
         QMap<int, QString> m_customCategories;
 
         QMap<KJob *, Playlists::PlaylistFilePtr> m_downloadJobMap;

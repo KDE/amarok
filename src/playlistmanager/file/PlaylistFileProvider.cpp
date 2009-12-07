@@ -63,7 +63,7 @@ PlaylistFileProvider::~PlaylistFileProvider()
     debug() << m_playlists.size()  << " Playlists loaded";
     foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
     {
-        KUrl url = playlistFile->retrievableUrl();
+        KUrl url = playlistFile->uidUrl();
         //only save files NOT in "playlists", those are automatically loaded.
         if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
             continue;
@@ -266,7 +266,13 @@ PlaylistFileProvider::import( const KUrl &path )
 
     foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
     {
-        if( playlistFile->retrievableUrl() == path )
+        if( !playlistFile )
+        {
+            error() << "Could not cast down.";
+            error() << "m_playlists got corrupted! " << __FILE__ << ":" << __LINE__;
+            continue;
+        }
+        if( playlistFile->uidUrl() == path )
         {
             debug() << "Playlist " << path.path() << " was already imported";
             return false;
@@ -331,9 +337,10 @@ PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistF
 
     foreach( Playlists::PlaylistFilePtr playlistFile, playlistFiles )
     {
+
         m_playlists.removeAll( playlistFile );
-        loadedPlaylistsConfig().deleteEntry( playlistFile->retrievableUrl().url() );
-        QFile::remove( playlistFile->retrievableUrl().path() );
+        loadedPlaylistsConfig().deleteEntry( playlistFile->uidUrl().url() );
+        QFile::remove( playlistFile->uidUrl().path() );
     }
     loadedPlaylistsConfig().sync();
     emit updated();
@@ -365,6 +372,8 @@ PlaylistFileProvider::loadPlaylists()
                 );
             continue;
         }
+
+        //since class PlaylistFile can be used without a collection we set it manually
         playlist->setProvider( this );
 
         if( !groups.isEmpty() && playlist->isWritable() )

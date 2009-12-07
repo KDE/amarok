@@ -57,8 +57,8 @@ namespace Playlists
             /** This method is called when a track has been added to the playlist.
              */
             virtual void trackAdded( PlaylistPtr playlist, Meta::TrackPtr track, int position ) = 0;
-            /** This method is called when a track is removed from to the playlist.
-             */
+
+            /** This method is called after a track is removed from to the playlist. */
             virtual void trackRemoved( PlaylistPtr playlist, int position ) = 0;
 
             virtual ~PlaylistObserver();
@@ -71,14 +71,20 @@ namespace Playlists
     {
         public:
             virtual ~Playlist() {}
+            /**
+             * @returns a unique identifier for a playlist. Should be similar to
+             * Meta::Track::uidUrl
+             */
+            virtual KUrl uidUrl() const = 0;
+
             virtual QString name() const = 0;
-            virtual QString prettyName() const = 0;
+            virtual QString prettyName() const { return name(); }
             virtual QString description() const { return QString(); }
 
             virtual PlaylistProvider *provider() const { return 0; }
 
             /**override showing just the filename */
-            virtual void setName( const QString &name ) { m_name = name; }
+            virtual void setName( const QString &name ) { Q_UNUSED( name ); }
 
             /** @returns the number of tracks this playlist contains. -1 if this can not
               * be determined before loading them all.
@@ -86,8 +92,16 @@ namespace Playlists
             virtual int trackCount() const { return -1; }
             /** returns all tracks in this playlist */
             virtual Meta::TrackList tracks() = 0;
+
+            /** Add the track to a certain position in the playlist
+             *  @arg position: place to add this track. The default value -1 appends to
+             *  the end.
+             * @note if the position is larger then the size of the playlist append to the
+             * end without generating an error.
+             */
             virtual void addTrack( Meta::TrackPtr track, int position = -1 )
                     { Q_UNUSED(track); Q_UNUSED(position); }
+            /** Remove track at the specified position */
             virtual void removeTrack( int position ) { Q_UNUSED(position); }
 
             virtual void subscribe( PlaylistObserver *observer )
@@ -95,6 +109,11 @@ namespace Playlists
             virtual void unsubscribe( PlaylistObserver *observer )
                     { m_observers.remove( observer ); }
 
+            /** A list of groups or labels this playlist belongs to.
+              *
+              * Can be used for grouping in folders (use ex. '/' as seperator) or for
+              * labels.
+              */
             virtual QStringList groups() { return QStringList(); }
 
             /**
@@ -103,40 +122,6 @@ namespace Playlists
             * If groups is empty that means removing all groups from the playlist.
             */
             virtual void setGroups( const QStringList &groups ) { Q_UNUSED(groups) }
-
-            /* the following has been copied from Meta.h
-            * it is my hope that we can integrate Playlists
-            * better into the rest of the Meta framework someday ~Bart Cerneels
-            * TODO: Playlist : public MetaBase
-            */
-            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const = 0;
-
-            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) = 0;
-
-            /**
-             * Retrieves a specialized interface which represents a capability of this
-             * MetaBase object.
-             *
-             * @returns a pointer to the capability interface if it exists, 0 otherwise
-             */
-            template <class CapIface> CapIface *create()
-            {
-                Capabilities::Capability::Type type = CapIface::capabilityInterfaceType();
-                Capabilities::Capability *iface = createCapabilityInterface(type);
-                return qobject_cast<CapIface *>(iface);
-            }
-
-            /**
-             * Tests if a MetaBase object provides a given capability interface.
-             *
-             * @returns true if the interface is available, false otherwise
-             */
-            template <class CapIface> bool is() const
-            {
-                return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
-            }
-
-            virtual KUrl retrievableUrl() { return KUrl(); }
 
         protected:
             inline void notifyObserversTrackAdded( Meta::TrackPtr track, int position )
@@ -158,7 +143,6 @@ namespace Playlists
             }
 
             QSet<Playlists::PlaylistObserver*> m_observers;
-            QString m_name;
     };
 
 }

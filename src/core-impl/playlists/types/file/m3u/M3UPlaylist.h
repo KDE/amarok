@@ -43,6 +43,7 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         ~M3UPlaylist();
 
         /* Playlist virtual functions */
+        virtual KUrl uidUrl() const { return m_url; }
         virtual QString name() const { return prettyName(); }
         virtual QString prettyName() const { return m_url.fileName(); }
         virtual QString description() const;
@@ -60,7 +61,7 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
 
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
-        KUrl retrievableUrl() { return m_url; }
+        virtual QStringList groups() { return m_groups; }
 
         /* PlaylistFile methods */
         bool isWritable();
@@ -76,6 +77,8 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
 
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
+        QString m_name;
+        QStringList m_groups;
 };
 
 }

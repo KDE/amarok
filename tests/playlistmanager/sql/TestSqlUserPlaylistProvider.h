@@ -36,8 +36,18 @@ public:
 
 private slots:
     void initTestCase();
+<<<<<<< HEAD:tests/playlistmanager/sql/TestSqlUserPlaylistProvider.h
     void cleanupTestCase();
     void testPlaylists();
+=======
+
+    void testSetAndGetName();
+    void testPrettyName();
+    void testTracks();
+    void testUidUrl();
+    void testSetAndGetGroups();
+    void testIsWritable();
+>>>>>>> Add basic synchronization class and fuctions.:tests/meta/TestM3UPlaylist.h
     void testSave();
     void testImportAndDeletePlaylists();
     void testRename();

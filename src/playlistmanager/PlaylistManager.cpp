@@ -42,6 +42,10 @@
 
 #include <QFileInfo>
 
+#include <typeinfo>
+
+using namespace Meta;
+
 PlaylistManager *PlaylistManager::s_instance = 0;
 
 namespace The
@@ -86,6 +90,39 @@ PlaylistManager::~PlaylistManager()
     delete m_playlistFileProvider;
 }
 
+bool
+PlaylistManager::shouldBeSynced( Playlists::PlaylistPtr playlist )
+{
+    DEBUG_BLOCK
+    debug() << playlist->uidUrl();
+
+    return false;
+}
+
+SyncedPlaylistPtr
+PlaylistManager::asSyncedPlaylist( Playlists::PlaylistPtr playlist )
+{
+    DEBUG_BLOCK
+    debug() << playlist->uidUrl();
+    SyncedPlaylistPtr syncedPlaylist;
+    //HACK: sync all playlists to each other for testing. Figure out proper way to store sync pairs.
+    if( m_syncedPlaylists.isEmpty() )
+    {
+        syncedPlaylist = new SyncedPlaylist( playlist );
+        m_syncedPlaylists << syncedPlaylist;
+    }
+    else
+    {
+        syncedPlaylist = m_syncedPlaylists.first();
+        syncedPlaylist->addPlaylist( playlist );
+    }
+
+    if( syncedPlaylist->syncNeeded() )
+        syncedPlaylist->doSync();
+
+    return syncedPlaylist;
+}
+
 void
 PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int category )
 {
@@ -101,26 +138,57 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int catego
 
     emit( providerAdded( provider, category ) );
     emit( updated() );
+
+    foreach( Playlists::PlaylistPtr playlist, provider->playlists() )
+    {
+        if( shouldBeSynced( playlist ) )
+        {
+            SyncedPlaylistPtr syncedPlaylist = asSyncedPlaylist( playlist );
+            if( !m_playlistMap.values( category ).contains(
+                    Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) ) )
+            {
+                m_playlistMap.insert( category,
+                                      Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) );
+            }
+        }
+        else
+        {
+            m_playlistMap.insert( category, playlist );
+        }
+    }
 }
 
 void
 PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
 {
+    DEBUG_BLOCK
+
     if( !provider )
         return;
 
-    if( m_providerMap.values( provider->category() ).contains( provider ) )
+    if( !m_providerMap.values( provider->category() ).contains( provider ) )
     {
-        debug() << "Providers of this category: " << providersForCategory( provider->category() ).count();
-        debug() << "Removing provider from map";
-        int removed = m_providerMap.remove( provider->category(), provider );
-        debug() << "Removed provider from map:" << ( m_providerMap.contains( provider->category(), provider ) ? "false" : "true" );
-        debug() << "Providers removed: " << removed;
-
-        emit( providerRemoved( provider, provider->category() ) );
-
-        slotUpdated();
+        return;
     }
+
+    foreach( Playlists::PlaylistPtr playlist, m_playlistMap.values( provider->category() ) )
+    {
+        if( typeid( * playlist.data() ) == typeid( SyncedPlaylist ) )
+        {
+            SyncedPlaylistPtr syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist );
+            syncedPlaylist->removePlaylistsFrom( provider );
+            if( syncedPlaylist->isEmpty() )
+                m_playlistMap.remove( provider->category(), playlist );
+        }
+        else if( playlist->provider() == provider )
+        {
+            m_playlistMap.remove( provider->category(), playlist );
+        }
+    }
+
+    emit( providerRemoved( provider, provider->category() ) );
+
+    slotUpdated();
 }
 
 void
@@ -132,14 +200,7 @@ PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
 Playlists::PlaylistList
 PlaylistManager::playlistsOfCategory( int playlistCategory )
 {
-    QList<Playlists::PlaylistProvider *> providers = m_providerMap.values( playlistCategory );
-    QListIterator<Playlists::PlaylistProvider *> i( providers );
-
-    Playlists::PlaylistList list;
-    while( i.hasNext() )
-        list << i.next()->playlists();
-
-    return list;
+    return m_playlistMap.values( playlistCategory );
 }
 
 PlaylistProviderList

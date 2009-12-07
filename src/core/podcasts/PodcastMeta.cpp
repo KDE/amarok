@@ -89,7 +89,6 @@ PodcastChannel::PodcastChannel( PodcastChannelPtr channel )
     m_imageUrl = channel->m_imageUrl;
     m_keywords = channel->keywords();
     m_labels = channel->labels();
-    m_name = channel->name();
     m_purge = channel->hasPurge();
     m_purgeCount = channel->purgeCount();
     m_subscribeDate = channel->subscribeDate();

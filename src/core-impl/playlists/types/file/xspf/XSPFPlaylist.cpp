@@ -274,6 +274,8 @@ XSPFPlaylist::addTrack( Meta::TrackPtr track, int position )
     m_tracks.insert( trackPos, track );
     //set in case no track was in the playlist before
     m_tracksLoaded = true;
+
+    notifyObserversTrackAdded( track, position );
 }
 
 void
@@ -287,6 +289,8 @@ XSPFPlaylist::removeTrack( int position )
     setTrackList( trackList );
     //also remove from cache
     m_tracks.removeAt( position );
+
+    notifyObserversTrackRemoved( position );
 }
 
 QString

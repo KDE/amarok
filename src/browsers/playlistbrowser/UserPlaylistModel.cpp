@@ -69,9 +69,6 @@ PlaylistBrowserNS::UserModel::UserModel()
     : MetaPlaylistModel( PlaylistManager::UserPlaylist )
 {
     s_instance = this;
-
-    connect( The::playlistManager(), SIGNAL(renamePlaylist( Playlists::PlaylistPtr )),
-             SLOT(slotRenamePlaylist( Playlists::PlaylistPtr )) );
 }
 
 PlaylistBrowserNS::UserModel::~UserModel()
@@ -154,11 +151,11 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
 
     beginRemoveRows( parent, row, row + count - 1 );
     //ignore notifications while removing tracks
-    playlist->unsubscribe( this );
+    unsubscribeFrom( playlist );
     for( int i = row; i < row + count; i++ )
         //deleting a track moves the next track up, so use the same row number each time
         playlist->removeTrack( row );
-    playlist->subscribe( this );
+    subscribeTo( playlist );
     endRemoveRows();
 
     return true;

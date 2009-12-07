@@ -94,10 +94,16 @@ void TestPLSPlaylist::testTracks()
     QCOMPARE( tracklist.at( 3 ).data()->name(), QString( "Stream (http://85.214.44.27:8200)" ) );
 }
 
+<<<<<<< HEAD:tests/core-impl/playlists/types/file/pls/TestPLSPlaylist.cpp
 void TestPLSPlaylist::testRetrievableUrl()
 {
     m_testPlaylist1->setName( "test.pls" );
     QCOMPARE( m_testPlaylist1->retrievableUrl().pathOrUrl(), dataPath( "data/playlists/test.pls" ) );
+=======
+void TestPLSPlaylist::uidUrl()
+{
+    QCOMPARE( m_testPlaylist1.uidUrl().pathOrUrl(), dataPath( "amarok/testdata/playlists/test.pls" ) );
+>>>>>>> Add basic synchronization class and fuctions.:tests/meta/TestPLSPlaylist.cpp
 }
 
 void TestPLSPlaylist::testIsWritable()

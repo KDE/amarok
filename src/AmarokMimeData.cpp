@@ -316,7 +316,7 @@ AmarokMimeData::retrieveData( const QString &mimeType, QVariant::Type type ) con
             }
             foreach( Playlists::PlaylistPtr playlist, playlists )
             {
-                list.append( QVariant( QUrl( playlist->retrievableUrl() ) ) );
+                list.append( QVariant( QUrl( playlist->uidUrl() ) ) );
             }
             foreach( Podcasts::PodcastChannelPtr channel, channels )
             {

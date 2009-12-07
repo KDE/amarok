@@ -42,6 +42,7 @@ class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
         ~PLSPlaylist();
 
         /* Playlist virtual functions */
+        virtual KUrl uidUrl() const { return m_url; }
         virtual QString name() const { return prettyName(); }
         virtual QString prettyName() const { return m_url.fileName(); }
         virtual QString description() const;
@@ -52,8 +53,6 @@ class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
-
-        KUrl retrievableUrl() { return m_url; }
 
         /* PlaylistFile methods */
         bool isWritable();
@@ -67,6 +66,7 @@ class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
 
         Meta::TrackList m_tracks;
         KUrl m_url;
+        QString m_name;
 };
 
 }

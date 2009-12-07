@@ -224,13 +224,12 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual ~PodcastChannel() {}
 
         //Playlist virtual methods
+        virtual KUrl uidUrl() const { return m_url; }
         virtual QString name() const { return title(); }
         virtual QString prettyName() const { return title(); }
 
         virtual Meta::TrackList tracks();
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
-
-        virtual KUrl retrievableUrl() { return KUrl(); }
 
         //PodcastMetaCommon methods
         int podcastType() { return ChannelType; }
