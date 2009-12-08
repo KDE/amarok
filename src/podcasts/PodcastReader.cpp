@@ -80,7 +80,7 @@ PodcastReader::StaticData::StaticData()
         , mightBeHtml( "<\\?xml[^>]*\\?>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
                        "<([-:\\w\\d]+)[^>]*>.*</\\1>|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", Qt::CaseInsensitive )
         , convertUrl( "(\\b[a-zA-Z]+://[^\\s<>\\(\\)\"]+)" )
-        , convertMail( "($|[^:/]\\b)([-\\.\\w]+@[-\\.\\w]+)(?!/)" )
+        , convertMail( "($|[^:/]\\b)([-\\.\\w]+@[-\\.\\w]+)\\b(?!/)" )
 
         , startAction( rootMap )
 
