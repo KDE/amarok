@@ -61,6 +61,8 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Fix several bugs handling changing compilations. Patch by Morten Sjøgren
+      <m_abs@mabs.dk> -- thanks!
     * Fixed bug with panel header icon size. (BR 208616)
     * Fixed bug with OSD not being shown by dbus call. (BR 208424)
     * Fixed bug with importing scores from Amarok 1.4. Patch by Michal Ziabkowski
