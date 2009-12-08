@@ -209,7 +209,7 @@ void BookmarkTreeView::resizeEvent( QResizeEvent *event )
     disconnect( headerView, SIGNAL( sectionResized( int, int, int ) ),
                 this, SLOT( slotSectionResized( int, int, int ) ) );
 
-    QMap<int, qreal>::const_iterator i = m_columnsSize.constBegin();
+    QMap<BookmarkModel::Column, qreal>::const_iterator i = m_columnsSize.constBegin();
     while( i != m_columnsSize.constEnd() )
     {
         headerView->resizeSection( i.key(), static_cast<int>( i.value() * newWidth ) );
@@ -421,7 +421,8 @@ void BookmarkTreeView::slotSectionResized( int logicalIndex, int oldSize, int ne
     if( oldSize == newSize )
         return;
 
-    m_columnsSize[ logicalIndex ] = static_cast<qreal>( newSize ) / header()->length();
+    BookmarkModel::Column col = BookmarkModel::Column( logicalIndex );
+    m_columnsSize[ col ] = static_cast<qreal>( newSize ) / header()->length();
 }
 
 void BookmarkTreeView::slotSectionCountChanged( int oldCount, int newCount )
@@ -432,9 +433,10 @@ void BookmarkTreeView::slotSectionCountChanged( int oldCount, int newCount )
     for( int i = 0; i < newCount; ++i )
     {
         const int index        = headerView->logicalIndex( i );
-        const int columnWidth  = headerView->sectionSize( index );
-        const qreal ratio      = static_cast<qreal>( columnWidth ) / headerView->length();
-        m_columnsSize[ index ] = ratio;
+        const int width        = columnWidth( index );
+        const qreal ratio      = static_cast<qreal>( width ) / headerView->length();
+
+        m_columnsSize[ BookmarkModel::Column( index ) ] = ratio;
     }
 }
 

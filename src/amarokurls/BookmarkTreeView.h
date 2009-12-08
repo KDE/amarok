@@ -19,6 +19,7 @@
 
 #include "amarok_export.h"
 #include "AmarokUrl.h"
+#include "BookmarkModel.h"
 #include "BookmarkViewItem.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -82,7 +83,7 @@ private:
 
     KAction *m_addGroupAction;
 
-    QMap<int, qreal> m_columnsSize;
+    QMap<BookmarkModel::Column, qreal> m_columnsSize;
 
     QSortFilterProxyModel * m_proxyModel;
 };
