@@ -31,7 +31,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     //any of the _sibling_ items. (yes, I know, this is different from how Dolphin
     //does it, but I find the Dolphin way amazingly unintuitive and I always get it
     //wrong when using it...)
-    
+
     BrowserCategoryList * parentList = category->parentList();
     if ( parentList )
     {
@@ -52,7 +52,6 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
             
             QAction * action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
             connect( action, SIGNAL( triggered() ), siblingMap.value( siblingName ), SLOT( activate() ) );
-            
         }
 
         m_menuButton->setMenu( menu );
@@ -64,9 +63,11 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     }
 
     m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
-    if( category->prettyName().isEmpty() )   // root item
-        m_mainButton->setToolTip( i18n( "Media Sources Home" ) );
-    
+
+    // REMIND: Uncomment after string freeze
+    //if( category->prettyName().isEmpty() )   // root item
+    //    m_mainButton->setToolTip( i18n( "Media Sources Home" ) ); 
+
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 
     //if this is a list, make cliking on this item cause us
