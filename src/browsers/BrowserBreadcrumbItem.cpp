@@ -27,7 +27,6 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     , m_category( category )
     , m_menuButton( 0 )
 {
-
     //figure out if we want to add a menu to this item. A menu allows you to select
     //any of the _sibling_ items. (yes, I know, this is different from how Dolphin
     //does it, but I find the Dolphin way amazingly unintuitive and I always get it
@@ -65,8 +64,8 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     }
 
     m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
-    if( category->prettyName().isEmpty() )   //if it's a root item
-        m_mainButton->setFixedWidth( 20 );
+    if( category->prettyName().isEmpty() )   // root item
+        m_mainButton->setToolTip( i18n( "Media Sources Home" ) );
     
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 

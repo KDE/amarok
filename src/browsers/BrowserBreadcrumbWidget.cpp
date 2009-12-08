@@ -16,9 +16,8 @@
 
 #include "BrowserBreadcrumbWidget.h"
 
-#include "widgets/BreadcrumbItemButton.h"
-
 #include "Debug.h"
+#include "widgets/BreadcrumbItemButton.h"
 
 #include <KLocale>
 

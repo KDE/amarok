@@ -40,7 +40,6 @@ SortWidget::SortWidget( QWidget *parent )
     BreadcrumbItemButton *rootItem = new BreadcrumbItemButton(
             KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-sorting-16.png" ) ) ),
             QString(), this );
-    rootItem->setFixedWidth( 20 );
     rootItem->setToolTip( i18n( "Clear the playlist sorting configuration." ) );
     m_layout->addWidget( rootItem );
     connect( rootItem, SIGNAL( clicked() ), this, SLOT( trimToLevel() ) );

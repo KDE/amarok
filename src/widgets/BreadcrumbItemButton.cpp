@@ -200,7 +200,6 @@ BreadcrumbUrlMenuButton::BreadcrumbUrlMenuButton( const QString &urlsCommand, QW
     : BreadcrumbItemButton( KIcon( "bookmark-new-list" ), QString(), parent )
     , m_urlsCommand( urlsCommand )
 {
-    setFixedWidth( 20 );
     setToolTip( i18n( "List and run bookmarks, or create new ones" ) );
 
     connect( this, SIGNAL( clicked ( bool ) ), this, SLOT( showMenu() ) );
