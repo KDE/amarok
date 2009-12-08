@@ -204,7 +204,7 @@ namespace Amarok
 
     void PlayerDBusHandler::ShowOSD() const
     {
-        Amarok::OSD::instance()->show();
+        Amarok::OSD::instance()->forceToggleOSD();
     }
 
     void PlayerDBusHandler::LoadThemeFile( const QString &path ) const
