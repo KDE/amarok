@@ -198,6 +198,7 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/PlaybackConfig.cpp
     configdialog/dialogs/ServiceConfig.cpp
     configdialog/dialogs/DatabaseConfig.cpp
+    configdialog/dialogs/ToolTipConfig.cpp
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
@@ -206,6 +207,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
     configdialog/dialogs/DatabaseConfig.ui
+    configdialog/dialogs/ToolTipConfig.ui
 )
 
 set(libbrowserframework_SRCS
@@ -416,6 +418,18 @@ set(libplaylistmanager_SRCS
 )
 
 #####################################################################
+# TOOLTIPS
+#####################################################################
+set(libtooltip_SRCS
+    tooltips/amaroktooltip.cpp
+    tooltips/ktooltip.cpp
+    tooltips/ktooltipdelegate.cpp
+    tooltips/ktooltipitem.cpp
+    tooltips/kformattedballoontipdelegate.cpp
+    tooltips/tooltipmanager.cpp
+)
+
+#####################################################################
 # PLAYLIST
 #####################################################################
 set(libplaylist_SRCS
@@ -547,6 +561,7 @@ set(amaroklib_LIB_SRCS
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
     ${libplaylist_SRCS}
+    ${libtooltip_SRCS}
     ${libplugin_SRCS}
     ${libproxycollection_SRCS}
     ${libpodcasts_SRCS}
