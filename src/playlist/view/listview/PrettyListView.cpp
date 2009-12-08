@@ -53,7 +53,6 @@
 
 #include <QClipboard>
 #include <QContextMenuEvent>
-#include <QCursor>
 #include <QDropEvent>
 #include <QItemSelection>
 #include <QKeyEvent>
@@ -82,7 +81,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setDropIndicatorShown( false ); // we draw our own drop indicator
     setEditTriggers ( SelectedClicked | EditKeyPressed );
     setAutoScroll( true );
-    setMouseTracking(true);
+    setMouseTracking( true );
 
     setVerticalScrollMode( ScrollPerPixel );
 
