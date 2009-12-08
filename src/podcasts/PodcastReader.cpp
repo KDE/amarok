@@ -79,8 +79,8 @@ PodcastReader::StaticData::StaticData()
         : removeScripts( "<script[^<]*</script>|<script[^>]*>", Qt::CaseInsensitive )
         , mightBeHtml( "<\\?xml[^>]*\\?>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
                        "<([-:\\w\\d]+)[^>]*>.*</\\1>|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", Qt::CaseInsensitive )
-        , convertUrl( "(\\b(?:https?|s?ftp|ssh|feed)://[^\\s<>]+)" )
-        , convertMail( "($|[\\s;])([-\\.\\w]+@[-\\.\\w]+)" )
+        , convertUrl( "(\\b[a-zA-Z]+://[^\\s<>\\(\\)\"]+)" )
+        , convertMail( "($|[^:/]\\b)([-\\.\\w]+@[-\\.\\w]+)(?!/)" )
 
         , startAction( rootMap )
 
@@ -760,11 +760,13 @@ PodcastReader::atomTextAsHtml()
             // strip <script> elements
             // This will work because there aren't <![CDATA[ ]]> sections
             // in m_buffer, because we have (re)escape the code manually.
+            // But it does not remove event handlers lice onclick="..."
+            // and JavaScript links like href="javascript:..."
             return m_buffer.replace( sd.removeScripts, "" );
 
         case TextContent:
         default:
-            return Qt::escape( m_buffer );
+            return textToHtml( m_buffer );
     }
 }
 
@@ -898,13 +900,19 @@ PodcastReader::endDescription()
     if( !mightBeHtml( description ) )
     {
         // content type is plain text
-        description = Qt::escape( description )
-            .replace( sd.convertMail, "\\1<a href=\"mailto:\\2\">\\2</a>" )
-            .replace( sd.convertUrl, "<a href=\"\\1\">\\1</a>" )
-            .replace( '\n', "<br/>\n" );
+        description = textToHtml( description );
     }
     // else: content type is html
     setDescription( description );
+}
+
+QString
+PodcastReader::textToHtml( const QString &text )
+{
+    return Qt::escape( text )
+        .replace( sd.convertMail, "\\1<a href=\"mailto:\\2\">\\2</a>" )
+        .replace( sd.convertUrl, "<a href=\"\\1\">\\1</a>" )
+        .replace( '\n', "<br/>\n" );
 }
 
 void

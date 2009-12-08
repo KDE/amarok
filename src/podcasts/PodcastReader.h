@@ -219,6 +219,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
         void stopWithError(const QString &message);
 
         static QString unescape( const QString &text );
+        static QString textToHtml( const QString &text );
 
         QString atomTextAsText();
         QString atomTextAsHtml();
