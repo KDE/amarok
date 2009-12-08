@@ -203,7 +203,7 @@ void BookmarkTreeView::resizeEvent( QResizeEvent *event )
     const int oldWidth = event->oldSize().width();
     const int newWidth = event->size().width();
 
-    if( oldWidth == newWidth )
+    if( oldWidth == newWidth || oldWidth < 0 || newWidth < 0 )
         return;
 
     disconnect( headerView, SIGNAL( sectionResized( int, int, int ) ),
@@ -212,7 +212,9 @@ void BookmarkTreeView::resizeEvent( QResizeEvent *event )
     QMap<BookmarkModel::Column, qreal>::const_iterator i = m_columnsSize.constBegin();
     while( i != m_columnsSize.constEnd() )
     {
-        headerView->resizeSection( i.key(), static_cast<int>( i.value() * newWidth ) );
+        const BookmarkModel::Column col = i.key();
+        if( col != BookmarkModel::Command && col != BookmarkModel::Description )
+            headerView->resizeSection( col, static_cast<int>( i.value() * newWidth ) );
         ++i;
     }
 
@@ -418,9 +420,7 @@ void BookmarkTreeView::slotEdit( const QModelIndex &index )
 
 void BookmarkTreeView::slotSectionResized( int logicalIndex, int oldSize, int newSize )
 {
-    if( oldSize == newSize )
-        return;
-
+    Q_UNUSED( oldSize )
     BookmarkModel::Column col = BookmarkModel::Column( logicalIndex );
     m_columnsSize[ col ] = static_cast<qreal>( newSize ) / header()->length();
 }
@@ -432,11 +432,16 @@ void BookmarkTreeView::slotSectionCountChanged( int oldCount, int newCount )
     const QHeaderView *headerView = header();
     for( int i = 0; i < newCount; ++i )
     {
-        const int index        = headerView->logicalIndex( i );
-        const int width        = columnWidth( index );
-        const qreal ratio      = static_cast<qreal>( width ) / headerView->length();
+        const int index   = headerView->logicalIndex( i );
+        const int width   = columnWidth( index );
+        const qreal ratio = static_cast<qreal>( width ) / headerView->length();
 
-        m_columnsSize[ BookmarkModel::Column( index ) ] = ratio;
+        const BookmarkModel::Column col = BookmarkModel::Column( index );
+
+        if( col == BookmarkModel::Command )
+            header()->setResizeMode( index, QHeaderView::ResizeToContents );
+
+        m_columnsSize[ col ] = ratio;
     }
 }
 
