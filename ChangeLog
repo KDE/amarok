@@ -63,6 +63,7 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Fixed two bookmark actions having the same text description. (BR 214716)
     * Remove broken right click menu from the Info applet. (BR 206642)
     * Fix several bugs handling changing compilations. Patch by Morten Sjøgren
       <m_abs@mabs.dk> -- thanks!
