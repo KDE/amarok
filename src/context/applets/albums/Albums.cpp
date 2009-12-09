@@ -169,7 +169,11 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
         int discNumber = 0;
 
         int childRow = 0;
-        foreach( Meta::TrackPtr trackPtr, albumPtr->tracks() )
+
+        Meta::TrackList tracks=albumPtr->tracks();
+        qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan);
+
+        foreach( Meta::TrackPtr trackPtr,  tracks)
         {
             if( trackPtr->discNumber() != discNumber )
             {
