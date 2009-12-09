@@ -34,7 +34,7 @@ TimecodeTrackProvider::~TimecodeTrackProvider()
 
 bool TimecodeTrackProvider::possiblyContainsTrack( const KUrl & url ) const
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
     return url.url().contains( QRegExp(":\\d+-\\d+$") );
 }
 
