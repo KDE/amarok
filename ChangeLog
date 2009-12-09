@@ -33,6 +33,8 @@ VERSION 2.2.2
     * Pressing F2 when focused in the lyrics applet jumps into editing mode.
 
   CHANGES:
+    * Tracks in Albums applet are now sorted by track number. Patch by Lorenz
+      Röhrl <sheepshit@gmx.de>.
     * New menu to add applets to the context view.
     * Added rating filter to collection browser's edit filter dialog.
     * Added bitrate and sample rate filters to collection browser's text input area.
