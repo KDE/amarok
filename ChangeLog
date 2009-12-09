@@ -63,6 +63,7 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Remove broken right click menu from the Info applet. (BR 206642)
     * Fix several bugs handling changing compilations. Patch by Morten Sjøgren
       <m_abs@mabs.dk> -- thanks!
     * Fixed bug with panel header icon size. (BR 208616)
