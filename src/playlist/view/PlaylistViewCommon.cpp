@@ -46,11 +46,12 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
     if( coverActions )
     {
         QList<QAction*> coverActionsList = coverActionsFor( index );
-        if (!coverActionsList.isEmpty()) {
+        if ( !coverActionsList.isEmpty() )
+        {
             // there are no cover actions if the song/album is not in the collection
             KMenu *menuCover = new KMenu( i18n( "Album" ), menu );
             menuCover->addActions( coverActionsList );
-            menu->addMenu(menuCover);
+            menu->addMenu( menuCover );
             menu->addSeparator();
         }
     }
