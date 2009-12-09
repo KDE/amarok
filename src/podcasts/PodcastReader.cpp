@@ -40,6 +40,15 @@ using namespace Meta;
 #define CONTENT_NS "http://purl.org/rss/1.0/modules/content"
 #define DC_NS      "http://purl.org/dc/elements/1.1/"
 
+// regular expressions for linkification:
+#define RE_USER   "[-+_%\\.\\w]+"
+#define RE_PASSWD RE_USER
+#define RE_DOMAIN "[-a-zA-Z0-9]+(?:\\.[-a-zA-Z0-9]+)*"
+#define RE_PROT   "[a-zA-Z]+://"
+#define RE_URL    RE_PROT "(?:" RE_USER "(?::" RE_PASSWD ")?@)?" RE_DOMAIN \
+    "(?::\\d+)?(?:/[-\\w\\?&=%+.,;:_#~/!@]*)?"
+#define RE_MAIL   RE_USER "@" RE_DOMAIN
+
 const PodcastReader::StaticData PodcastReader::sd;
 
 PodcastReader::PodcastReader( PodcastProvider *podcastProvider )
@@ -79,8 +88,7 @@ PodcastReader::StaticData::StaticData()
         : removeScripts( "<script[^<]*</script>|<script[^>]*>", Qt::CaseInsensitive )
         , mightBeHtml( "<\\?xml[^>]*\\?>|<br[^>]*>|<p[^>]*>|&lt;|&gt;|&amp;|&quot;|"
                        "<([-:\\w\\d]+)[^>]*>.*</\\1>|<hr[>]*>|&#\\d+;|&#x[a-fA-F\\d]+;", Qt::CaseInsensitive )
-        , convertUrl( "(\\b[a-zA-Z]+://[^\\s<>\\(\\)\"]+)" )
-        , convertMail( "($|[^:/]\\b)([-\\.\\w]+@[-\\.\\w]+)\\b(?!/)" )
+        , linkify( "\\b(" RE_URL ")|\\b(" RE_MAIL ")|(\n)" )
 
         , startAction( rootMap )
 
@@ -909,10 +917,53 @@ PodcastReader::endDescription()
 QString
 PodcastReader::textToHtml( const QString &text )
 {
-    return Qt::escape( text )
-        .replace( sd.convertMail, "\\1<a href=\"mailto:\\2\">\\2</a>" )
-        .replace( sd.convertUrl, "<a href=\"\\1\">\\1</a>" )
-        .replace( '\n', "<br/>\n" );
+    QString buf;
+    QRegExp re( sd.linkify );
+    int index = 0;
+
+    for(;;)
+    {
+        int next = re.indexIn( text, index );
+
+        if( next == -1 )
+            break;
+
+        if( next != index )
+        {
+            buf += Qt::escape( text.mid( index, next - index ) );
+        }
+
+        QString s;
+
+        if( !(s = re.cap( 1 )).isEmpty() )
+        {
+            if( s.startsWith( QLatin1String( "javascript:" ), Qt::CaseInsensitive ) ||
+                s.startsWith( QLatin1String( "exec:" ), Qt::CaseInsensitive ) )
+            {
+                buf += Qt::escape( s );
+            }
+            else
+            {
+                buf += QString( "<a href=\"%1\">%1</a>" )
+                    .arg( Qt::escape( s ) );
+            }
+        }
+        else if( !(s = re.cap( 2 )).isEmpty() )
+        {
+            buf += QString( "<a href=\"mailto:%1\">%1</a>" )
+                .arg( Qt::escape( s ) );
+        }
+        else if( !re.cap( 3 ).isEmpty() )
+        {
+            buf += "<br/>\n";
+        }
+
+        index = re.pos() + re.matchedLength();
+    }
+
+    buf += Qt::escape( text.mid( index ) );
+
+    return buf;
 }
 
 void

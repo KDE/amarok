@@ -274,8 +274,7 @@ class PodcastReader : public QObject, public QXmlStreamReader
                 QHash<QString, ElementType> knownElements;
                 QRegExp removeScripts;
                 QRegExp mightBeHtml;
-                QRegExp convertUrl;
-                QRegExp convertMail;
+                QRegExp linkify;
                 
                 // Actions
                 Action startAction;
