@@ -17,6 +17,8 @@
 #ifndef SERVICE_INFO_APPLET_H
 #define SERVICE_INFO_APPLET_H
 
+#include "context/widgets/AmarokWebView.h"
+
 #include <context/Applet.h>
 #include <context/DataEngine.h>
 #include <context/Svg.h>
@@ -25,7 +27,6 @@
 #include "meta/Playlist.h"
 
 #include <Plasma/FrameSvg>
-#include <Plasma/WebView>
  
 #include <KDialog>
 
@@ -57,7 +58,7 @@ private slots:
     void linkClicked( const QUrl & url );
 
 private:
-    Plasma::WebView * m_webView;
+    AmarokWebView * m_webView;
     bool m_initialized;
     Meta::XSPFPlaylist * m_currentPlaylist;
 

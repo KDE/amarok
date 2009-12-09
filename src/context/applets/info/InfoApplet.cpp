@@ -48,7 +48,7 @@ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
 
     dataEngine( "amarok-info" )->connectSource( "info", this );
 
-    m_webView = new Plasma::WebView( this );
+    m_webView = new AmarokWebView( this );
 
     resize( 500, -1 );
     
