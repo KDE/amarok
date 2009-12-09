@@ -25,6 +25,7 @@
 #include "context/ContextView.h"
 #include "context/widgets/DropPixmapItem.h"
 #include "PaletteHandler.h"
+#include "context/widgets/TextScrollingWidget.h"
 
 //Kde
 #include <Plasma/Theme>
@@ -34,64 +35,55 @@
 
 //Qt
 #include <QDesktopServices>
-#include <QGraphicsSimpleTextItem>
 #include <QTextEdit>
 #include <qgraphicsproxywidget.h>
 #include <QLabel>
- #include <QGraphicsGridLayout>
- #include <QGraphicsScene>
+#include <QGraphicsGridLayout>
+#include <QGraphicsScene>
 
 
-SimilarArtistsApplet::SimilarArtistsApplet( QObject* parent, const QVariantList& args )
+SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_aspectRatio( 0 )
     , m_headerAspectRatio( 0.0 )
     , m_headerLabel( 0 )
     , m_settingsIcon( 0 )    
 {
+    DEBUG_BLOCK
+
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
 
     m_layout=new QGraphicsGridLayout;
+    m_tmp=new QGraphicsGridLayout;
     m_scene=new QGraphicsScene;
-    
-    m_artistImage = new QLabel;
-    m_artistImage->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
-    m_artistImage->setScaledContents(true);                           // The QLabel scale is content
-    
-    m_artistName = new QLabel;
-    m_artistName->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
-    m_artistName->setAlignment(Qt::AlignCenter);
-    
-    m_artistGenre =new QLabel;
-    m_artistGenre->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
-    m_artistGenre->setAlignment(Qt::AlignCenter);
-    
-    QGraphicsProxyWidget *img = m_scene->addWidget(m_artistImage);
-    QGraphicsProxyWidget *art = m_scene->addWidget(m_artistName);
-    QGraphicsProxyWidget *genre = m_scene->addWidget(m_artistGenre);
-    
-    m_layout->setRowPreferredHeight(1,80);
-    m_layout->setRowPreferredHeight(2,80);
-    m_layout->setRowMaximumHeight(1,80);
-    m_layout->setRowMaximumHeight(2,80);
-    m_layout->setColumnPreferredWidth(0,160);
-    m_layout->setColumnMaximumWidth(0,160);
 
-    m_layout->setColumnAlignment(1,Qt::AlignCenter);
-    
-    m_layout->addItem(img,1,0,2,1);
-    m_layout->addItem(art,1,1);
-    m_layout->addItem(genre,2,1);
-    
-    setLayout(m_layout);    
+    m_stoppedState=true;
+
+    // temporary code
+    ArtistWidget *art1=new ArtistWidget;
+    ArtistWidget *art2=new ArtistWidget;
+
+    m_artists.append(art1);
+    m_artists.append(art2);
+
+    int cpt=1; // the first row (0) is dedicated for the applet title
+    foreach(ArtistWidget* art, m_artists)
+    {
+
+        QGraphicsProxyWidget *tmp = m_scene->addWidget(art);
+        m_layout->addItem(tmp,cpt,0);
+        cpt++;
+    }
+
+    setLayout(m_layout);
 }
 
 void
 SimilarArtistsApplet::init()
 {
     
-    m_headerLabel = new QGraphicsSimpleTextItem( this );
+    m_headerLabel = new TextScrollingWidget( this );
 
     // ask for all the CV height
     resize( 500, -1 );
@@ -101,6 +93,8 @@ SimilarArtistsApplet::init()
     m_headerLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerLabel->setFont( labelFont );
     m_headerLabel->setText( i18n( "Similar Artists" ) );
+
+    setCollapseHeight( m_headerLabel->boundingRect().height() + 3 * standardPadding() );
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
@@ -135,10 +129,11 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
     Q_UNUSED( constraints );
 
     prepareGeometryChange();
-    const float textWidth = m_headerLabel->boundingRect().width();
-    const float offsetX =  ( boundingRect().width() - textWidth ) / 2;
+    qreal widmax = boundingRect().width() - 2 * m_settingsIcon->size().width() - 6 * standardPadding();
+    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
 
-    m_headerLabel->setPos( offsetX, standardPadding() + 2 );
+    m_headerLabel->setScrollingText( m_headerLabel->text(), rect );
+    m_headerLabel->setPos( ( size().width() - m_headerLabel->boundingRect().width() ) / 2 , standardPadding() + 3 );
 
     // Icon positionning
     m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
@@ -157,33 +152,85 @@ SimilarArtistsApplet::heightForWidth( qreal width ) const
     return width * m_aspectRatio;
 }
 
+/**
+ * This method was launch when amarok play a new track
+ */
+void
+SimilarArtistsApplet::engineNewTrackPlaying( )
+{
+    DEBUG_BLOCK
+
+    m_stoppedState = false;
+    setCollapseOff();
+}
+
+/**
+ * This method was launch when amarok stop is playback (ex: The user has clicked on the stop button)
+ */
+void
+SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason )
+{
+    Q_UNUSED( finalPosition )
+    Q_UNUSED( trackLength )
+    DEBUG_BLOCK
+
+
+    // we clear all artists
+    int cpt=0;
+    foreach(ArtistWidget* art, m_artists)
+    {
+      m_layout->removeAt(cpt);
+      //delete art;
+    }
+
+    //m_artists.clear();
+    
+    
+    m_stoppedState = true;
+    m_headerLabel->setText( i18n( "Similar artist" ) + QString( " : " ) + i18n( "No track playing" ) );
+    setCollapseOn();
+}
+
 
 void
 SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     Q_UNUSED( name )
+    DEBUG_BLOCK
 
-    // the layout begin at the bottom of the applet's title
-    m_layout->setRowMinimumHeight(0,m_headerLabel->boundingRect().height()+7);
-    m_layout->setRowMaximumHeight(0,m_headerLabel->boundingRect().height()+7);
 
-    
-    QString artistName = data[ "artist" ].toString();
+    if ( m_stoppedState )
+    {
+        //TODO
+    } else {
 
-    // we see if the artist name is valid
-    if (artistName.compare( "" ) != 0) {
-        m_headerLabel->setText( i18n( "Similar artists of " ) + artistName );
-        m_artistName->setText("<a href='http://amarok.kde.org'>" + artistName +"</a>");
-    } else { // the artist name is invalid
-        m_headerLabel->setText( i18n( "Similar Artists" ) );
-        m_artistName->setText("Non dispo");
+        // the layout begin at the bottom of the applet's title
+        m_layout->setRowMinimumHeight(0,m_headerLabel->boundingRect().height()+7);
+        m_layout->setRowMaximumHeight(0,m_headerLabel->boundingRect().height()+7);
+
+
+        QString artistName = data[ "artist" ].toString();
+
+        // we see if the artist name is valid
+        if (artistName.compare( "" ) != 0) {
+           m_headerLabel->setText( i18n( "Similar artists of " ) + artistName );
+
+           m_artists[0]->setArtist(artistName,"http://amarok.kde.org");
+           m_artists[1]->setArtist(artistName, "http://kde.org");
+            
+           m_artists[0]->setPhoto(data[ "cover" ].value<QPixmap>());
+           m_artists[1]->setPhoto(data[ "cover" ].value<QPixmap>());
+
+           m_artists[0]->setGenres("art1");
+           m_artists[1]->setGenres("art2");
+
+        } else { // the artist name is invalid
+            m_headerLabel->setText( i18n( "Similar Artists" ) );
+        }
+
+        updateConstraints();
+        update();
     }
-
-    m_artistImage->setPixmap( data[ "cover" ].value<QPixmap>() );
-    m_artistGenre->setText(i18n( "Genre") + " : Pop, Jazz");
-    
-    updateConstraints();
-    update();
 
 }
 
@@ -197,8 +244,9 @@ SimilarArtistsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 
     addGradientToAppletBackground( p );
 
-    // draw rounded rect around title
-    drawRoundedRectAroundText( p, m_headerLabel );
+    // draw rounded rect around title (only if not animating )
+    if ( !m_headerLabel->isAnimating() )
+        drawRoundedRectAroundText( p, m_headerLabel );
 }
 
 

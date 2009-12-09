@@ -18,15 +18,19 @@
 #ifndef SIMILAR_ARTISTS_APPLET_H
 #define SIMILAR_ARTISTS_APPLET_H
 
+
+#include "./ArtistWidget.h"
+
 //Amarok
 #include "context/Applet.h"
 #include "context/DataEngine.h"
+#include "EngineObserver.h"
 
 #include <ui_similarArtistsSettings.h>
 
 
 class QAction;
-class QGraphicsSimpleTextItem;
+class TextScrollingWidget;
 class KConfigDialog;
 class QLabel;
 class QGraphicsScene;
@@ -44,7 +48,7 @@ namespace Plasma
   * @author Oleksandr Khayrullin
   * @version 0.1
   */
-class SimilarArtistsApplet : public Context::Applet
+class SimilarArtistsApplet : public Context::Applet, public EngineObserver
 {
     Q_OBJECT
 
@@ -58,6 +62,10 @@ public:
 
     bool hasHeightForWidth() const;
     qreal heightForWidth( qreal width ) const;
+
+    // inherited from EngineObserver
+    virtual void engineNewTrackPlaying();
+    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
 
 protected:
     void createConfigurationInterface(KConfigDialog *parent);
@@ -74,22 +82,28 @@ private:
      * Layout for the formatting of the applet contents
      */
     QGraphicsGridLayout *m_layout;
+    QGraphicsGridLayout *m_tmp;
 
     QGraphicsScene *m_scene;
+
+
+    /**
+     * Indicates if a track is playing.
+     */
+    bool  m_stoppedState;
+        
 
     /**
      * Title of the applet (in the top bar)
      */
-    QGraphicsSimpleTextItem* m_headerLabel; 
+    TextScrollingWidget *m_headerLabel;
 
     //Icons on the title right
     Plasma::IconWidget *m_settingsIcon;
     Ui::similarArtistsSettings ui_Settings;
 
     //elements of the applet
-    QLabel *m_artistImage;
-    QLabel *m_artistName;
-    QLabel *m_artistGenre;
+    QList<ArtistWidget*> m_artists;
 
     int m_maxArtists;
     int m_temp_maxArtists;
