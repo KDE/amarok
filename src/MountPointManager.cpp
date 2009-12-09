@@ -351,30 +351,26 @@ MountPointManager::collectionFolders()
 
     //TODO max: cache data
     QStringList result;
-    KConfigGroup folders = Amarok::config( "Collection Folders" );
-    IdList ids = getMountedDeviceIds();
+    const KConfigGroup folders = Amarok::config( "Collection Folders" );
+    const IdList ids = getMountedDeviceIds();
+
     foreach( int id, ids )
     {
         const QStringList rpaths = folders.readEntry( QString::number( id ), QStringList() );
         foreach( const QString &strIt, rpaths )
         {
-            QString absPath;
-            if ( strIt == "./" )
-            {
-                absPath = getMountPointForId( id );
-            }
-            else
-            {
-                absPath = getAbsolutePath( id, strIt );
-            }
+            const KUrl url = ( strIt == "./" ) ? getMountPointForId( id ) : getAbsolutePath( id, strIt );
+            const QString absPath = url.toLocalFile( KUrl::RemoveTrailingSlash );
             if ( !result.contains( absPath ) )
                 result.append( absPath );
         }
     }
+
     if( result.isEmpty() )
     {
-        const QString musicDir = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-        debug() << "QDesktopServices::MusicLocation: " << musicDir; 
+        const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+        const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
+        debug() << "QDesktopServices::MusicLocation:" << musicDir;
 
         if( !musicDir.isEmpty() )
         {
