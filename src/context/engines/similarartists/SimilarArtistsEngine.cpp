@@ -136,11 +136,10 @@ void SimilarArtistsEngine::update()
      QPixmap cover = m_currentTrack->album()->image( 156 );
      setData( "similarArtists", "cover",  QVariant( cover ) );
 
-   debug()<<"SMengine artiste : " <<artistName;
-   similarArtistsRequest( artistName );
-   QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+    similarArtistsRequest( artistName );
+    QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
 
-   setData ( "similarArtists", "SimilarArtists", variant );
+    setData ( "similarArtists", "SimilarArtists", variant );
 }
 
 void
@@ -156,7 +155,6 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
 
-    debug()<<"SMengine rqt url: "<<url.toString();
     m_artist=artist_name;
 
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
@@ -169,22 +167,17 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
 {
     DEBUG_BLOCK
     m_similarArtists.clear();
-    debug()<<"Xml_parse";
 
     if( job )
     {
-        debug()<<"Xml_Job Valide";
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
         m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
     }
     else
     {
-        debug()<<"Xml_Job NULL";
         return;
     }
 
-    debug()<< "Xml_cont";
-    debug()<< m_xml;
     QDomDocument doc;
     doc.setContent( m_xml );
 
