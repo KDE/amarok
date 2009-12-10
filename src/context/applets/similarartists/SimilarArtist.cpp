@@ -16,6 +16,7 @@
 
 #include "SimilarArtist.h"
 
+SimilarArtist::SimilarArtist(){}
 
 SimilarArtist::SimilarArtist(const QString name, const int match, const KUrl url,
                              const KUrl urlImage, const QString similarTo)
@@ -25,6 +26,13 @@ SimilarArtist::SimilarArtist(const QString name, const int match, const KUrl url
     m_url=url;
     m_urlImage=urlImage;
     m_similarTo=similarTo;
+
+    static bool metaTypeRegistered = false;
+    if (!metaTypeRegistered)
+    {
+        qRegisterMetaType<SimilarArtist>("SimilarArtists");
+        metaTypeRegistered = true;
+    }
 }
 
 

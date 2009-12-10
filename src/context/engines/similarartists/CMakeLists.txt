@@ -6,6 +6,7 @@ include_directories( ../../..
 
 set( similarArtists_engine_SRCS
     SimilarArtistsEngine.cpp
+     ../../applets/similarartists/SimilarArtist.cpp
 )
 
 kde4_add_plugin(amarok_data_engine_similarArtists ${similarArtists_engine_SRCS})

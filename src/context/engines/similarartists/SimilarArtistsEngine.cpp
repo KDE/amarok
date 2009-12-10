@@ -24,6 +24,7 @@
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "EngineController.h"
+#include <QDomElement>
 
 using namespace Context;
 
@@ -33,7 +34,7 @@ using namespace Context;
 SimilarArtistsEngine::SimilarArtistsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
-    , m_upcomingEventsJob( 0 )
+    , m_similarArtistsJob( 0 )
     , m_currentSelection( "artist" )
     , m_requested( true )
     , m_sources( "current" )
@@ -135,7 +136,113 @@ void SimilarArtistsEngine::update()
      QPixmap cover = m_currentTrack->album()->image( 156 );
      setData( "similarArtists", "cover",  QVariant( cover ) );
 
+   debug()<<"SMengine artiste : " <<artistName;
+   similarArtistsRequest( artistName );
+   QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+
+   setData ( "similarArtists", "SimilarArtists", variant );
 }
+
+void
+SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
+{
+    DEBUG_BLOCK
+    
+    QUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/2.0/" );
+    url.addQueryItem( "method", "artist.getSimilar" );
+    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
+    url.addQueryItem( "artist", artist_name.toLocal8Bit() );
+
+    debug()<<"SMengine rqt url: "<<url.toString();
+    m_artist=artist_name;
+
+    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
+    connect( job, SIGNAL(result( KJob* )), SLOT(similarArtistsParse( KJob* )) );
+}
+
+
+void
+SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
+{
+    DEBUG_BLOCK
+    m_similarArtists.clear();
+    debug()<<"Xml_parse";
+
+    if( job )
+    {
+        debug()<<"Xml_Job Valide";
+        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+        m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
+    }
+    else
+    {
+        debug()<<"Xml_Job NULL";
+        return;
+    }
+
+    debug()<< "Xml_cont";
+    debug()<< m_xml;
+    QDomDocument doc;
+    doc.setContent( m_xml );
+
+    const QDomNode events = doc.documentElement().namedItem( "similarartists" );
+
+    QDomNode n = events.firstChild();
+    while( !n.isNull() )
+    {
+        // Similar artist name
+        QDomNode nameNode = n.namedItem( "name" );
+        QDomElement eName = nameNode.toElement();
+        QString name;
+        if( !eName.isNull() )
+        {
+            name = eName.text();
+        }
+
+        // Match of the similar artist
+        QDomNode matchNode = n.namedItem( "match" );
+        QDomElement eMatch = matchNode.toElement();
+        int match;
+        if( !eMatch.isNull() )
+        {
+            match = eMatch.text().toInt();
+        }
+
+        // Url of the similar artist on last.fm
+        QDomNode urlNode = n.namedItem( "url" );
+        QDomElement eUrl = urlNode.toElement();
+        KUrl url;
+        if( !eUrl.isNull() )
+        {
+            url = KUrl(eUrl.text());
+        }
+  
+
+        // Url of the large similar artist image
+        QDomNode imageUrlNode = n.namedItem( "image" );
+        QDomElement imageUrlElement = imageUrlNode.toElement();
+        KUrl imageUrl;
+        if( !imageUrlElement.isNull() )
+        {
+            while ( imageUrlElement.attributeNode( "size" ).value() != "large" )
+            {
+                imageUrlElement = imageUrlElement.nextSiblingElement();
+            }
+            imageUrl = KUrl( imageUrlElement.text() );
+        }
+
+        
+        m_similarArtists.append( SimilarArtist(name,match,url,imageUrl, m_artist ));
+
+        n = n.nextSibling();
+    }
+
+    update();
+}
+
 
 void
 SimilarArtistsEngine::reloadSimilarArtists()

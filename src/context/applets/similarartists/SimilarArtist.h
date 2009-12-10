@@ -31,10 +31,12 @@
 class SimilarArtist
 {
     public:
+        SimilarArtist();
         SimilarArtist(const QString name, const int match, const KUrl url,
                       const KUrl urlImage, const QString similarTo);
 
         QString getName() const;
+        typedef QList<SimilarArtist> SimilarArtistsList ;
         
     private:
         QString m_name;
@@ -45,4 +47,7 @@ class SimilarArtist
         
 };
 
-#endif // SIMILARARTIST_H
+#endif // SIMILAR_ARTIST_H
+
+Q_DECLARE_METATYPE(SimilarArtist)
+Q_DECLARE_METATYPE(SimilarArtist::SimilarArtistsList)

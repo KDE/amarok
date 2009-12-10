@@ -26,6 +26,7 @@
 #include "context/widgets/DropPixmapItem.h"
 #include "PaletteHandler.h"
 #include "context/widgets/TextScrollingWidget.h"
+#include "./SimilarArtist.h"
 
 //Kde
 #include <Plasma/Theme>
@@ -215,7 +216,7 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         if (artistName.compare( "" ) != 0) {
            m_headerLabel->setText( i18n( "Similar artists of " ) + artistName );
 
-           m_artists[0]->setArtist(artistName,"http://amarok.kde.org");
+           //m_artists[0]->setArtist(artistName,"http://amarok.kde.org");
            m_artists[1]->setArtist(artistName, "http://kde.org");
             
            m_artists[0]->setPhoto(data[ "cover" ].value<QPixmap>());
@@ -223,6 +224,35 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
            m_artists[0]->setGenres("art1");
            m_artists[1]->setGenres("art2");
+
+           SimilarArtist::SimilarArtistsList similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
+
+           debug()<< "Taille similars : " << similars.size();
+           if ( !similars.isEmpty() )
+            {
+                m_artists[0]->setArtist(similars.at(0).getName(),"http://amarok.kde.org");
+//                 m_eventName->setText( event.at(0).name() );
+//                 m_eventDate->setText( event.at(0).date().toString( Qt::DefaultLocaleLongDate ) );
+// 
+//                 QString artistList;
+//                 for( int i = 0; i < event.at(0).artists().size(); i++ )
+//                 {
+//                     if( i == event.at(0).artists().size() - 1 )
+//                     {
+//                         artistList.append( event.at(0).artists().at( i ) );
+//                     }
+//                     else
+//                     {
+//                     artistList.append( event.at(0).artists().at( i ) + " - " );
+//                     }
+//                 }
+//                 m_eventParticipants->setText( artistList );
+//                 m_eventUrl->setText( "<html><body><a href=\"" + event.at(0).url().prettyUrl() + "\"><u>" + i18n( "Event website" ) + "</u></a></body></html>" );
+            }
+            else
+            {
+                m_artists[0]->clear();
+            }
 
         } else { // the artist name is invalid
             m_headerLabel->setText( i18n( "Similar Artists" ) );

@@ -1,6 +1,7 @@
 /****************************************************************************************
 * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
 * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+* Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,12 +21,12 @@
 
 #include "ContextObserver.h"
 #include "meta/Meta.h"
-
+#include <applets/similarartists/SimilarArtist.h>
 #include <context/DataEngine.h>
 
-#include <KIO/Job>
 #include <QLocale>
 
+#include <KIO/Job>
 
 
 /**
@@ -62,6 +63,13 @@ public:
     */
     QMap<int, QString> similarArtists(const QString &artist_name);
 
+    /**
+     * Fetches the similar artists for an artist thanks to the LastFm WebService
+     * Store this in the similar artist list of this class
+     * @param artist_name the name of the artist
+     */
+    void similarArtistsRequest(const QString &artist_name);
+
     
 protected:
     bool sourceRequestEvent( const QString& name );
@@ -73,7 +81,7 @@ private:
     
     void reloadSimilarArtists();
     
-    KJob* m_upcomingEventsJob;
+    KJob *m_similarArtistsJob;
 
     Meta::TrackPtr m_currentTrack;
         
@@ -82,9 +90,17 @@ private:
     QStringList m_sources;
     short m_triedRefinedSearch;
 
+    QList<SimilarArtist> m_similarArtists;
+    QString m_xml;
+
+    QString m_artist; 
+    
+private slots:
+    void similarArtistsParse( KJob* );
+
 };
 
-K_EXPORT_AMAROK_DATAENGINE( upcomingEvents, SimilarArtistsEngine )
+K_EXPORT_AMAROK_DATAENGINE( similarArtists, SimilarArtistsEngine )
 
 #endif // SIMILARARTISTSENGINE_H
 
