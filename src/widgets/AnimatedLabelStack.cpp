@@ -23,6 +23,7 @@ AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt:
 , m_pulsating(false)
 , m_pulseRequested(false)
 , m_isClick(false)
+, m_explicit(false)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
     setData( data );
@@ -31,7 +32,7 @@ AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt:
 void
 AnimatedLabelStack::activateOnEnter()
 {
-    if ( m_data.isEmpty() || !underMouse() || m_pulsating )
+    if ( m_data.isEmpty() || !underMouse() || m_pulsating || m_explicit )
         return;
     if ( m_animated )
     {
@@ -94,12 +95,14 @@ void
 AnimatedLabelStack::enterEvent( QEvent * )
 {
     // wait a short time, then pulse through entries
+    m_explicit = false;
     QTimer::singleShot(300, this, SLOT( activateOnEnter() ) );
 }
 
 void
 AnimatedLabelStack::leaveEvent( QEvent * )
 {
+    m_explicit = false;
     m_pulseRequested = false;
 }
 
@@ -245,7 +248,7 @@ AnimatedLabelStack::timerEvent( QTimerEvent * te )
     if ( !isVisible() || te->timerId() != m_animTimer )
         return;
 
-    if ( !(m_pulsating || m_pulseRequested) && underMouse() )
+    if ( m_explicit )
         return; // the user explicitly altered content by wheeling, don't take it away
     
     if ( m_time < m_fadeTime || m_time > (m_displayTime - m_fadeTime) )
@@ -306,5 +309,6 @@ AnimatedLabelStack::wheelEvent( QWheelEvent * we )
     }
     m_index = m_visibleIndex;
     m_time = m_fadeTime + 1;
+    m_explicit = true;
     update();
 }

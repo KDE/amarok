@@ -25,7 +25,7 @@
 #include <QtDebug>
 
 // NOTICE shall be 10, but there're the time labels :-(
-static const int progressStretch = 12;
+static const int progressStretch = 16;
 
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )

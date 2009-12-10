@@ -53,7 +53,7 @@ private slots:
 private:
     Qt::Alignment m_align;
     int m_time, m_index, m_visibleIndex, m_animTimer, m_fadeTime, m_displayTime, m_opacity, m_targetOpacity;
-    bool m_animated, m_pulsating, m_pulseRequested, m_isClick;
+    bool m_animated, m_pulsating, m_pulseRequested, m_isClick, m_explicit;
     QStringList m_data;
 };
 
