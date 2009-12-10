@@ -190,8 +190,8 @@ WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
     m_albumIcon->setPos( size().width() - 4 * iconWidth - 4 * standardPadding(), standardPadding() );
     m_trackIcon->setPos( size().width() - 3 * iconWidth - 4 * standardPadding(), standardPadding() );
 
-    m_settingsIcon->setPos( size().width() - 2 * iconWidth - 2 * standardPadding(), standardPadding() );
-    m_reloadIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
+    m_reloadIcon->setPos( size().width() - 2 * iconWidth - 2 * standardPadding(), standardPadding() );
+    m_settingsIcon->setPos( size().width() - iconWidth - standardPadding(), standardPadding() );
 }
 
 bool
