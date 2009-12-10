@@ -18,7 +18,7 @@
 #define GLOBALCURRENTTRACKACTIONS_H
 
 #include "amarok_export.h"
-#include "Meta.h"
+#include "meta/Meta.h"
 #include "SmartPointerList.h"
 
 #include <QAction>
