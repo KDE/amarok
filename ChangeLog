@@ -63,6 +63,8 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Made "Last.fm Love" (and potentially other global actions avaiable for all 
+      tracks) correctly show up in the Current Track applet.
     * Fixed two bookmark actions having the same text description. (BR 214716)
     * Remove broken right click menu from the Info applet. (BR 206642)
     * Fix several bugs handling changing compilations. Patch by Morten Sjøgren
