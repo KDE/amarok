@@ -349,6 +349,13 @@ WikipediaEngine::wikiParse()
     QString protecend = "</a></div>" ;
     while ( m_wiki.indexOf( protec ) != -1 )
         m_wiki.remove( m_wiki.indexOf( protec ), m_wiki.mid( m_wiki.indexOf( protec ) ).indexOf( protecend ) + protecend.size() );
+
+    // lets also remove the "lock" image
+    QString topicon = "<div class=\"metadata topicon\" " ;
+    QString topiconend = "</a></div>";
+     while ( m_wiki.indexOf( topicon ) != -1 )
+        m_wiki.remove( m_wiki.indexOf( topicon ), m_wiki.mid( m_wiki.indexOf( topicon ) ).indexOf( topiconend ) + topiconend.size() );
+    
     
     // Adding back style and license information
     m_wiki = "<div id=\"bodyContent\"" + m_wiki;
