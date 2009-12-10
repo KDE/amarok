@@ -108,6 +108,8 @@ private:
     int m_maxArtists;
     int m_temp_maxArtists;
 
+    QString m_currentArtist;
+
 private slots:
     void connectSource( const QString &source );
 

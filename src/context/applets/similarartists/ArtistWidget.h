@@ -14,13 +14,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#ifndef ARTIST_WIDGET_H
+#define ARTIST_WIDGET_H
+
 
 //Qt
 #include <QWidget>
 #include <QString>
 
-#ifndef ARTIST_WIDGET_H
-#define ARTIST_WIDGET_H
+//Kde
+#include<KUrl>
+#include <KIO/Job>
 
 class QLabel;
 class QGraphicsScene;
@@ -40,10 +44,16 @@ class ArtistWidget : public QWidget
         ~ArtistWidget();
 
         /**
-         * Change the photo of the artist
+         * Change the photo of the artist with a QPixmap
          * @param photo The new artist photo 
          */
         void setPhoto( const QPixmap &photo);
+
+        /**
+         * Change the photo of the artist with a photo load from an Url
+         * @param photo The url of the new artist photo
+         */
+        void setPhoto( const KUrl &urlPhoto);
 
         /**
          * Change the artist name and the url which permit to display a page
@@ -75,7 +85,9 @@ class ArtistWidget : public QWidget
         QLabel *m_image;
         QLabel *m_name;
         QLabel *m_genre;
-        
+
+     private slots:
+        void setImageFromInternet( KJob* job);
 };
 
 #endif // ARTIST_WIDGET_H

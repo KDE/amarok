@@ -41,3 +41,8 @@ QString SimilarArtist::getName() const
     return m_name;
 }
 
+
+KUrl SimilarArtist::getUrlImage() const
+{
+    return m_urlImage;
+}

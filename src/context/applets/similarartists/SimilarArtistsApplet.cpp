@@ -214,12 +214,13 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
         // we see if the artist name is valid
         if (artistName.compare( "" ) != 0) {
+           
            m_headerLabel->setText( i18n( "Similar artists of " ) + artistName );
 
            //m_artists[0]->setArtist(artistName,"http://amarok.kde.org");
            m_artists[1]->setArtist(artistName, "http://kde.org");
             
-           m_artists[0]->setPhoto(data[ "cover" ].value<QPixmap>());
+           //m_artists[0]->setPhoto(data[ "cover" ].value<QPixmap>());
            m_artists[1]->setPhoto(data[ "cover" ].value<QPixmap>());
 
            m_artists[0]->setGenres("art1");
@@ -231,6 +232,7 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
            if ( !similars.isEmpty() )
             {
                 m_artists[0]->setArtist(similars.at(0).getName(),"http://amarok.kde.org");
+                m_artists[0]->setPhoto(similars.at(0).getUrlImage());
 //                 m_eventName->setText( event.at(0).name() );
 //                 m_eventDate->setText( event.at(0).date().toString( Qt::DefaultLocaleLongDate ) );
 // 

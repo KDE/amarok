@@ -70,6 +70,35 @@ ArtistWidget::setPhoto( const QPixmap & photo) {
     m_image->setPixmap(photo);
 }
 
+ /**
+  * Change the photo of the artist with a photo load from an Url
+  * @param photo The url of the new artist photo
+  */
+void ArtistWidget::setPhoto(const KUrl& urlPhoto)
+{
+    KJob* job = KIO::storedGet( urlPhoto, KIO::NoReload, KIO::HideProgressInfo );
+    connect( job, SIGNAL(result( KJob* )), SLOT(setImageFromInternet( KJob* ) ));
+}
+
+
+void ArtistWidget::setImageFromInternet(KJob* job)
+{
+    if( job )
+    {
+        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+        //m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
+        QPixmap image;
+        image.loadFromData(storedJob->data());
+        m_image->setPixmap(image);
+    }
+    else
+    {
+        m_image->clear();
+        m_image->setText(i18n("No image"));
+    }
+}
+
+
 /**
  * Change the artist name and the url which permit to display a page
  * which contains informations about this artist
