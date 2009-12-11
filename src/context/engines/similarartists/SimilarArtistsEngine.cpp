@@ -133,8 +133,8 @@ void SimilarArtistsEngine::update()
         }
     }
 
-     QPixmap cover = m_currentTrack->album()->image( 156 );
-     setData( "similarArtists", "cover",  QVariant( cover ) );
+    QPixmap cover = m_currentTrack->album()->image( 156 );
+    setData( "similarArtists", "cover",  QVariant( cover ) );
 
     similarArtistsRequest( artistName );
     QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
@@ -146,7 +146,7 @@ void
 SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
 {
     DEBUG_BLOCK
-    
+
     QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
@@ -154,13 +154,13 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
     url.addQueryItem( "method", "artist.getSimilar" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
+    url.addQueryItem( "limit", m_maxArtists );
 
     m_artist=artist_name;
 
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL(result( KJob* )), SLOT(similarArtistsParse( KJob* )) );
 }
-
 
 void
 SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
