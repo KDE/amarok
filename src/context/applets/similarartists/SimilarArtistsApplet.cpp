@@ -54,46 +54,20 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
 
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
-    m_tmp=new QGraphicsGridLayout;
     m_scene=new QGraphicsScene;
 
     m_stoppedState=true;
-
-    // temporary code
-//     ArtistWidget *art1=new ArtistWidget;
-//     ArtistWidget *art2=new ArtistWidget;
-// 
-//     m_artists.append(art1);
-//     m_artists.append(art2);
-    
-//     for(int cptArt=0;cptArt<m_maxArtists;cpt++) {
-//         ArtistWidget *art=new ArtistWidget;
-//         m_artists.append(art);
-//     }
-// 
-//     int cpt=1; // the first row (0) is dedicated for the applet title
-//     foreach(ArtistWidget* art, m_artists)
-//     {
-// 
-//         QGraphicsProxyWidget *tmp = m_scene->addWidget(art);
-//         m_layout->addItem(tmp,cpt,0);
-//         cpt++;
-//     }
-//              for(int cpt=1;cpt<4;cpt++) {
-//                     debug()<<"SAA1";
-//                     ArtistWidget *art=new ArtistWidget;
-//                     debug()<<"SAA2";
-//                     m_artists.append(art);
-//                     debug()<<"SAA3";
-//                     QGraphicsProxyWidget *tmp = m_scene->addWidget(art);
-//                     debug()<<"SAA4";
-//                     m_layout->addItem(tmp,cpt,0);
-//                     debug()<<"SAA5";
-//                     
-//                 }
-
-    //setLayout(m_layout);
 }
+
+
+SimilarArtistsApplet::~SimilarArtistsApplet()
+{
+    delete m_layout;
+    delete m_scene;
+    delete m_headerLabel;
+    delete m_settingsIcon;
+}
+
 
 void
 SimilarArtistsApplet::init()
@@ -215,7 +189,6 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 {
     Q_UNUSED( name )
     DEBUG_BLOCK
-    //QGraphicsLayout tmpLayout=layout();
 
     if ( m_stoppedState )
     {
@@ -233,15 +206,6 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         if (artistName.compare( "" ) != 0) {
            
            m_headerLabel->setText( i18n( "Similar artists of %1", artistName ) );
-
-           //m_artists[0]->setArtist(artistName,"http://amarok.kde.org");
-//            m_artists[1]->setArtist(artistName, "http://kde.org");
-//             
-//            //m_artists[0]->setPhoto(data[ "cover" ].value<QPixmap>());
-//            m_artists[1]->setPhoto(data[ "cover" ].value<QPixmap>());
-// 
-//            m_artists[0]->setGenres("art1");
-//            m_artists[1]->setGenres("art2");
 
            SimilarArtist::SimilarArtistsList similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
 
@@ -289,30 +253,21 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
                     cpt++;
                 }
                 debug()<<"SAA modif contenu ok";
-
-//                 m_eventName->setText( event.at(0).name() );
-//                 m_eventDate->setText( event.at(0).date().toString( Qt::DefaultLocaleLongDate ) );
-// 
-//                 QString artistList;
-//                 for( int i = 0; i < event.at(0).artists().size(); i++ )
-//                 {
-//                     if( i == event.at(0).artists().size() - 1 )
-//                     {
-//                         artistList.append( event.at(0).artists().at( i ) );
-//                     }
-//                     else
-//                     {
-//                     artistList.append( event.at(0).artists().at( i ) + " - " );
-//                     }
-//                 }
-//                 m_eventParticipants->setText( artistList );
-//                 m_eventUrl->setText( "<html><body><a href=\"" + event.at(0).url().prettyUrl() + "\"><u>" + i18n( "Event website" ) + "</u></a></body></html>" );
-
                 
             }
-            else
+            else // No similar artist found
             {
-                // TODO delete all widget and add info in the header title
+                // we clear all artists
+                for(int cpt=0;cpt<m_artists.size();cpt++)
+                {
+                    m_layout->removeAt(cpt);
+                    delete m_artists.at(cpt);
+                }
+
+                m_artists.clear();
+
+                m_headerLabel->setText( i18n( "Similar artist" ) + QString( " : " ) + i18n( "No similar artist found" ) );
+                
             }
 
         } else { // the artist name is invalid

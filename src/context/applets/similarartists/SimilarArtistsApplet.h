@@ -54,6 +54,7 @@ class SimilarArtistsApplet : public Context::Applet, public EngineObserver
 
 public:
     SimilarArtistsApplet( QObject* parent, const QVariantList& args );
+    ~SimilarArtistsApplet();
     
     void init();
 
@@ -82,7 +83,6 @@ private:
      * Layout for the formatting of the applet contents
      */
     QGraphicsGridLayout *m_layout;
-    QGraphicsGridLayout *m_tmp;
 
     QGraphicsScene *m_scene;
 
