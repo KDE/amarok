@@ -86,7 +86,6 @@ void ArtistWidget::setImageFromInternet(KJob* job)
     if( job )
     {
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-        //m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
         QPixmap image;
         image.loadFromData(storedJob->data());
         m_image->setPixmap(image);

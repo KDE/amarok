@@ -54,36 +54,51 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
 
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
-
-    m_layout=new QGraphicsGridLayout;
     m_tmp=new QGraphicsGridLayout;
     m_scene=new QGraphicsScene;
 
     m_stoppedState=true;
 
     // temporary code
-    ArtistWidget *art1=new ArtistWidget;
-    ArtistWidget *art2=new ArtistWidget;
+//     ArtistWidget *art1=new ArtistWidget;
+//     ArtistWidget *art2=new ArtistWidget;
+// 
+//     m_artists.append(art1);
+//     m_artists.append(art2);
+    
+//     for(int cptArt=0;cptArt<m_maxArtists;cpt++) {
+//         ArtistWidget *art=new ArtistWidget;
+//         m_artists.append(art);
+//     }
+// 
+//     int cpt=1; // the first row (0) is dedicated for the applet title
+//     foreach(ArtistWidget* art, m_artists)
+//     {
+// 
+//         QGraphicsProxyWidget *tmp = m_scene->addWidget(art);
+//         m_layout->addItem(tmp,cpt,0);
+//         cpt++;
+//     }
+//              for(int cpt=1;cpt<4;cpt++) {
+//                     debug()<<"SAA1";
+//                     ArtistWidget *art=new ArtistWidget;
+//                     debug()<<"SAA2";
+//                     m_artists.append(art);
+//                     debug()<<"SAA3";
+//                     QGraphicsProxyWidget *tmp = m_scene->addWidget(art);
+//                     debug()<<"SAA4";
+//                     m_layout->addItem(tmp,cpt,0);
+//                     debug()<<"SAA5";
+//                     
+//                 }
 
-    m_artists.append(art1);
-    m_artists.append(art2);
-
-    int cpt=1; // the first row (0) is dedicated for the applet title
-    foreach(ArtistWidget* art, m_artists)
-    {
-
-        QGraphicsProxyWidget *tmp = m_scene->addWidget(art);
-        m_layout->addItem(tmp,cpt,0);
-        cpt++;
-    }
-
-    setLayout(m_layout);
+    //setLayout(m_layout);
 }
 
 void
 SimilarArtistsApplet::init()
 {
-    
+    m_layout=new QGraphicsGridLayout;
     m_headerLabel = new TextScrollingWidget( this );
 
     // ask for all the CV height
@@ -112,6 +127,8 @@ SimilarArtistsApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
     m_maxArtists = config.readEntry( "maxArtists", "20" ).toInt();
+
+    setLayout(m_layout);
 
 }
 
@@ -181,10 +198,10 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
     foreach(ArtistWidget* art, m_artists)
     {
       m_layout->removeAt(cpt);
-      //delete art;
+      delete art;
     }
 
-    //m_artists.clear();
+    m_artists.clear();
     
     
     m_stoppedState = true;
@@ -198,7 +215,7 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 {
     Q_UNUSED( name )
     DEBUG_BLOCK
-
+    //QGraphicsLayout tmpLayout=layout();
 
     if ( m_stoppedState )
     {
@@ -215,24 +232,64 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         // we see if the artist name is valid
         if (artistName.compare( "" ) != 0) {
            
-           m_headerLabel->setText( i18n( "Similar artists of " ) + artistName );
+           m_headerLabel->setText( i18n( "Similar artists of %1", artistName ) );
 
            //m_artists[0]->setArtist(artistName,"http://amarok.kde.org");
-           m_artists[1]->setArtist(artistName, "http://kde.org");
-            
-           //m_artists[0]->setPhoto(data[ "cover" ].value<QPixmap>());
-           m_artists[1]->setPhoto(data[ "cover" ].value<QPixmap>());
-
-           m_artists[0]->setGenres("art1");
-           m_artists[1]->setGenres("art2");
+//            m_artists[1]->setArtist(artistName, "http://kde.org");
+//             
+//            //m_artists[0]->setPhoto(data[ "cover" ].value<QPixmap>());
+//            m_artists[1]->setPhoto(data[ "cover" ].value<QPixmap>());
+// 
+//            m_artists[0]->setGenres("art1");
+//            m_artists[1]->setGenres("art2");
 
            SimilarArtist::SimilarArtistsList similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
 
-           debug()<< "Taille similars : " << similars.size();
            if ( !similars.isEmpty() )
             {
-                m_artists[0]->setArtist(similars.at(0).getName(),"http://amarok.kde.org");
-                m_artists[0]->setPhoto(similars.at(0).getUrlImage());
+                debug()<<"similars";
+                // we see the number of artist we need display
+                int sizeArtistsDisplay=m_maxArtists>similars.size()?similars.size():m_maxArtists;
+
+                debug()<<"SAA taille a afficher "<<sizeArtistsDisplay;
+                // we adapt the list size
+                int cpt=m_artists.size()+1; // the first row (0) is dedicated for the applet title
+                debug()<<"SAA taille cpt:" <<cpt;
+                debug()<<"SAA taille size :" << sizeArtistsDisplay;
+                while(sizeArtistsDisplay>=cpt) {
+                    debug()<<"SAA1";
+                    ArtistWidget *art=new ArtistWidget;
+                    debug()<<"SAA2";
+                    m_artists.append(art);
+                    debug()<<"SAA3";
+                    QGraphicsProxyWidget *tmp = new QGraphicsProxyWidget(this);
+                    tmp->setWidget(m_artists.last());
+                    //m_scene->addWidget(art);
+                    debug()<<"SAA4";
+                    m_layout->addItem(tmp,cpt,0,1,1);
+                    debug()<<"SAA5";
+                    cpt++;
+                }
+
+                debug()<<"SAA Agrandissement de la liste ok";
+                cpt=sizeArtistsDisplay;
+                while(cpt<m_artists.size()) {
+                    m_layout->removeAt(cpt);
+                    delete m_artists.last();
+                    m_artists.removeLast();
+                    cpt--;
+                }
+                debug()<<"SAA reduction de la liste ok";
+
+
+                cpt=0; 
+                foreach(ArtistWidget* art, m_artists) {
+                    art->setArtist(similars.at(cpt).getName(),"http://amarok.kde.org");
+                    art->setPhoto(similars.at(cpt).getUrlImage());
+                    cpt++;
+                }
+                debug()<<"SAA modif contenu ok";
+
 //                 m_eventName->setText( event.at(0).name() );
 //                 m_eventDate->setText( event.at(0).date().toString( Qt::DefaultLocaleLongDate ) );
 // 
@@ -250,10 +307,12 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 //                 }
 //                 m_eventParticipants->setText( artistList );
 //                 m_eventUrl->setText( "<html><body><a href=\"" + event.at(0).url().prettyUrl() + "\"><u>" + i18n( "Event website" ) + "</u></a></body></html>" );
+
+                
             }
             else
             {
-                m_artists[0]->clear();
+                // TODO delete all widget and add info in the header title
             }
 
         } else { // the artist name is invalid
