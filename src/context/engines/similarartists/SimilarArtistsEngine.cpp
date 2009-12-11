@@ -201,7 +201,7 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
         int match;
         if( !eMatch.isNull() )
         {
-            match = eMatch.text().toInt();
+            match = eMatch.text().toFloat(); //implicite cast
         }
 
         // Url of the similar artist on last.fm

@@ -36,6 +36,8 @@ class SimilarArtist
                       const KUrl urlImage, const QString similarTo);
 
         QString getName() const;
+        int getMatch() const;
+        KUrl getUrl() const;
         KUrl getUrlImage() const;
         
         typedef QList<SimilarArtist> SimilarArtistsList ;

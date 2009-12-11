@@ -61,13 +61,13 @@ class ArtistWidget : public QWidget
          * @param nom The name of this artist
          * @param url The url of the artist about page
          */
-        void setArtist( const QString &nom, const QString &url);
+        void setArtist( const QString &nom, const KUrl &url);
 
         /**
-         * Change the genre of the artist
-         * @param genre The new artist genres
+         * Change the match pourcentage of the artist
+         * @param match The match of this artist
          */
-        void setGenres( const QString &genres);
+        void setMatch( const int match);
 
         /**
          * Clean the widget => the content of the QLabel are empty

@@ -248,8 +248,9 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
                 cpt=0; 
                 foreach(ArtistWidget* art, m_artists) {
-                    art->setArtist(similars.at(cpt).getName(),"http://amarok.kde.org");
+                    art->setArtist(similars.at(cpt).getName(), similars.at(cpt).getUrl());
                     art->setPhoto(similars.at(cpt).getUrlImage());
+                    art->setMatch(similars.at(cpt).getMatch());
                     cpt++;
                 }
                 debug()<<"SAA modif contenu ok";

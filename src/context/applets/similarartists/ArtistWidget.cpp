@@ -105,18 +105,18 @@ void ArtistWidget::setImageFromInternet(KJob* job)
  * @param url The url of the artist about page
  */
 void
-ArtistWidget::setArtist( const QString & nom, const QString & url) {
+ArtistWidget::setArtist( const QString &nom, const KUrl &url) {
     DEBUG_BLOCK
-    m_name->setText("<a href='" + url + "'>" + nom +"</a>");    
+    m_name->setText("<a href='" + url.url() + "'>" + nom +"</a>");
 }
 
-/**
- * Change the genre of the artist
- * @param genre The new artist genres
- */
+ /**
+  * Change the match pourcentage of the artist
+  * @param match The match of this artist
+  */
 void
-ArtistWidget::setGenres( const QString & genres) {
-    m_genre->setText(i18n( "Genres") + " : " +genres);
+ArtistWidget::setMatch( const int match) {
+    m_genre->setText(i18n( "Match") + " : " + QString::number(match) + "%");
 }
 
 /**
