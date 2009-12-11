@@ -65,6 +65,9 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Fixed crash if user clicks rating widget on the current track applet while no
+      track is playing (which is possible since there is a slight delay before the 
+      applet switches "mode"). (BR 215471)
     * Made "Last.fm Love" (and potentially other global actions avaiable for all 
       tracks) correctly show up in the Current Track applet.
     * Fixed two bookmark actions having the same text description. (BR 214716)

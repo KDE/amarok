@@ -155,6 +155,9 @@ CurrentTrack::changeTrackRating( int rating )
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
+    if( !track )
+        return;
+
     // Inform collections of end of a metadata update
     Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
     if( !uc )
