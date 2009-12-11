@@ -65,6 +65,8 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Playback of Audio CD track now correctly stops if track is the last in the
+      playlist. (BR 216175)
     * Fixed crash if user clicks rating widget on the current track applet while no
       track is playing (which is possible since there is a slight delay before the 
       applet switches "mode"). (BR 215471)

@@ -125,6 +125,10 @@ Playlist::Actions::requestNextTrack()
         //played and will thus be stuck at the last track (or refuse to play any at all) if the playlist is restarted
         m_navigator->reset();
 
+        //if what is currently playing is a cd track, we need to stop playback as the cd will otherwise continue playing
+        if( The::engineController()->isPlayingAudioCd() )
+            The::engineController()->stop();
+
         return;
     }
 

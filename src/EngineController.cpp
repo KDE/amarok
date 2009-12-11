@@ -76,6 +76,7 @@ EngineController::EngineController()
     : m_playWhenFetched( true )
     , m_fadeoutTimer( new QTimer( this ) )
     , m_volume( 0 )
+    , m_currentIsAudioCd( false )
 {
     DEBUG_BLOCK
 
@@ -325,6 +326,7 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
         return;
 
     m_currentTrack = track;
+    m_currentIsAudioCd = false;
     delete m_boundedPlayback;
     delete m_multiPlayback;
     delete m_multiSource;
@@ -376,6 +378,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
     if ( url.url().startsWith( "audiocd:/" ) )
     {
+
+        m_currentIsAudioCd = true;
         //disconnect this signal for now or it will cause a loop that will cause a mutex lockup
         disconnect( m_controller, SIGNAL( titleChanged( int ) ), this, SLOT( slotTitleChanged( int ) ) );
 
@@ -448,6 +452,7 @@ EngineController::stop( bool forceInstant ) //SLOT
 {
     DEBUG_BLOCK
 
+    m_currentIsAudioCd = false;
     // need to get a new instance of multi if played again
     delete m_multiPlayback;
     delete m_multiSource;
@@ -872,7 +877,7 @@ EngineController::slotAboutToFinish()
     else if ( m_currentTrack && m_currentTrack->playableUrl().url().startsWith( "audiocd:/" ) )
     {
         debug() << "finished a CD track, don't care if queue is not empty, just get new track...";
-        //m_media->stop();
+
         The::playlistActions()->requestNextTrack();
         slotQueueEnded();
     }
@@ -1155,6 +1160,11 @@ void EngineController::slotTitleChanged( int titleNumber )
     Q_UNUSED( titleNumber );
 
     slotAboutToFinish();
+}
+
+bool EngineController::isPlayingAudioCd()
+{
+    return m_currentIsAudioCd;
 }
 
 #include "EngineController.moc"

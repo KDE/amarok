@@ -167,6 +167,11 @@ public:
      */
     QStringList eqBandsFreq() const;
 
+    /**
+    * @return whether the currently playing track is from an audiocd
+    */
+    bool isPlayingAudioCd();
+
 public slots:
     /**
      * Plays the current track, if there is one
@@ -350,6 +355,7 @@ private:
     bool m_playWhenFetched;
     QTimer* m_fadeoutTimer;
     int m_volume;
+    bool m_currentIsAudioCd;
 
     QMutex m_mutex;
 };
