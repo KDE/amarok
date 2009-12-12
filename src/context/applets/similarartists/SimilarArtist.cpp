@@ -36,25 +36,25 @@ SimilarArtist::SimilarArtist(const QString name, const int match, const KUrl url
 }
 
 
-QString SimilarArtist::getName() const
+QString SimilarArtist::name() const
 {
     return m_name;
 }
 
 
-int SimilarArtist::getMatch() const
+int SimilarArtist::match() const
 {
     return m_match;
 }
 
 
-KUrl SimilarArtist::getUrl() const
+KUrl SimilarArtist::url() const
 {
     return m_url;
 }
 
 
-KUrl SimilarArtist::getUrlImage() const
+KUrl SimilarArtist::urlImage() const
 {
     return m_urlImage;
 }

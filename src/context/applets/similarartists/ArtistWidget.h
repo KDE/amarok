@@ -85,6 +85,7 @@ class ArtistWidget : public QWidget
         QLabel *m_image;
         QLabel *m_name;
         QLabel *m_genre;
+        
 
      private slots:
         void setImageFromInternet( KJob* job);

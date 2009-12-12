@@ -62,10 +62,15 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
 
 SimilarArtistsApplet::~SimilarArtistsApplet()
 {
-    delete m_layout;
-    delete m_scene;
-    delete m_headerLabel;
+    DEBUG_BLOCK
+    debug()<<"1";
+    //delete m_headerLabel;
+    debug()<<"2";
     delete m_settingsIcon;
+    debug()<<"3";
+    delete m_scene;
+    debug()<<"4";
+    //delete m_layout;
 }
 
 
@@ -248,9 +253,9 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
                 cpt=0; 
                 foreach(ArtistWidget* art, m_artists) {
-                    art->setArtist(similars.at(cpt).getName(), similars.at(cpt).getUrl());
-                    art->setPhoto(similars.at(cpt).getUrlImage());
-                    art->setMatch(similars.at(cpt).getMatch());
+                    art->setArtist(similars.at(cpt).name(), similars.at(cpt).url());
+                    art->setPhoto(similars.at(cpt).urlImage());
+                    art->setMatch(similars.at(cpt).match());
                     cpt++;
                 }
                 debug()<<"SAA modif contenu ok";

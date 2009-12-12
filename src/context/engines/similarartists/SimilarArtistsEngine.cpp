@@ -46,6 +46,8 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject* parent, const QList<QVarian
 SimilarArtistsEngine::~SimilarArtistsEngine()
 {
     DEBUG_BLOCK
+    delete m_similarArtistsJob;
+    
 }
 
 QMap<int, QString> SimilarArtistsEngine::similarArtists(const QString &artist_name)

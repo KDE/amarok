@@ -55,6 +55,7 @@ ArtistWidget::ArtistWidget(QWidget *parent) : QWidget(parent)
 
 ArtistWidget::~ArtistWidget()
 {
+     delete m_layout;
      delete m_image;
      delete m_name;
      delete m_genre;
@@ -93,7 +94,7 @@ void ArtistWidget::setImageFromInternet(KJob* job)
     else
     {
         m_image->clear();
-        m_image->setText(i18n("No image"));
+        m_image->setText(i18n("No picture"));
     }
 }
 

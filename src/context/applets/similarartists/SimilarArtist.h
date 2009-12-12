@@ -35,10 +35,10 @@ class SimilarArtist
         SimilarArtist(const QString name, const int match, const KUrl url,
                       const KUrl urlImage, const QString similarTo);
 
-        QString getName() const;
-        int getMatch() const;
-        KUrl getUrl() const;
-        KUrl getUrlImage() const;
+        QString name() const;
+        int match() const;
+        KUrl url() const;
+        KUrl urlImage() const;
         
         typedef QList<SimilarArtist> SimilarArtistsList ;
         
