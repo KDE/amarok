@@ -35,6 +35,7 @@
 
 // NOTICE shall be 10, but there're the time labels :-(
 static const int sliderStretch = 16;
+static const QString promoString = i18n( "Amarok your Music" );
 
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
@@ -63,7 +64,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_prev->setAlign( Qt::AlignLeft );
     connect ( m_prev, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
 
-    m_current = new AnimatedLabelStack(QStringList() << "Amarok your Music", info);
+    m_current = new AnimatedLabelStack( QStringList( promoString ), info );
     m_current->setBold( true );
     connect ( m_current, SIGNAL( clicked(const QString&) ), this, SLOT( filter(const QString&) ) );
 
@@ -86,8 +87,8 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_progressLayout = new QHBoxLayout;
     m_progressLayout->addStretch( 3 );
     m_progressLayout->addWidget( m_timeLabel = new QLabel( this ) );
+    m_progressLayout->setAlignment( m_timeLabel, Qt::AlignVCenter | Qt::AlignRight );
     m_timeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
-    m_timeLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
     m_timeLabel->setMinimumWidth( QFontMetrics( m_timeLabel->font() ).width( "33:33:33" ) );
 
     m_progressLayout->addWidget( m_slider = new Amarok::TimeSlider( this ) );
@@ -173,13 +174,13 @@ Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldStat
 void
 Toolbar_3::filter( const QString &string )
 {
-    qDebug() << "filter by" << string << CollectionWidget::instance();
     if ( CollectionWidget::instance() )
         CollectionWidget::instance()->setFilter( string );
 }
 
 #define HAS_TAG(_TAG_) !track->_TAG_()->name().isEmpty()
 #define TAG(_TAG_) track->_TAG_()->prettyName()
+#define CONTAINS_TAG(_TAG_) contains( TAG(_TAG_), Qt::CaseInsensitive )
 
 static QStringList metadata( Meta::TrackPtr track )
 {
@@ -192,9 +193,9 @@ static QStringList metadata( Meta::TrackPtr track )
             QString title = track->prettyName();
 //             qDebug() << track->prettyUrl();
             if ( title.length() > 50 ||
-                 HAS_TAG(artist) && title.contains( TAG(artist), Qt::CaseInsensitive ) ||
-                 HAS_TAG(composer) && title.contains( TAG(artist), Qt::CaseInsensitive ) ||
-                 HAS_TAG(album) && title.contains( TAG(album) ), Qt::CaseInsensitive )
+                 HAS_TAG(artist) && title.CONTAINS_TAG(artist) ||
+                 HAS_TAG(composer) && title.CONTAINS_TAG(composer) ||
+                 HAS_TAG(album) && title.CONTAINS_TAG(album) )
             {
                 list << title.split( rx, QString::SkipEmptyParts );
             }
@@ -204,15 +205,15 @@ static QStringList metadata( Meta::TrackPtr track )
             }
         }
 
-        if ( HAS_TAG(artist) )
+        if ( HAS_TAG(artist) && !list.CONTAINS_TAG(artist) )
             list << TAG(artist);
-        else if ( HAS_TAG(composer) )
+        else if ( HAS_TAG(composer) && !list.CONTAINS_TAG(composer) )
             list << TAG(composer);
-        if ( HAS_TAG(album) )
+        if ( HAS_TAG(album) && !list.CONTAINS_TAG(album) )
             list << TAG(album);
         if ( HAS_TAG(year) && TAG(year) != "0" ) // "0" years be empty?!
             list << TAG(year);
-        if ( HAS_TAG(genre) )
+        if ( HAS_TAG(genre) && !list.CONTAINS_TAG(genre) )
             list << TAG(genre);
 
         /* other tags
@@ -239,6 +240,13 @@ static QStringList metadata( Meta::TrackPtr track )
 void
 Toolbar_3::updatePrevAndNext()
 {
+    if ( !The::engineController()->currentTrack() )
+    {
+        m_prev->setData( QStringList() );
+        m_next->setData( QStringList() );
+        return;
+    }
+    
     Meta::TrackPtr track = The::playlistActions()->prevTrack();
     m_prev->setData( metadata( track ) );
     m_prev->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
@@ -281,8 +289,16 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
         m_currentUrlId.clear();
     m_timeLabel->setText( QString() );
     setActionsFrom( track );
-    m_current->setData( metadata( track ) );
-    m_current->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
+    if ( track )
+    {
+        m_current->setData( metadata( track ) );
+        m_current->setCursor( Qt::PointingHandCursor );
+    }
+    else
+    {
+        m_current->setData( QStringList( promoString ) );
+        m_current->setCursor( Qt::ArrowCursor );
+    }
     QTimer::singleShot( 0, this, SLOT( updatePrevAndNext() ) );
 }
 
