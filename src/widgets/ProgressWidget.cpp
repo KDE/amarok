@@ -73,12 +73,16 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 
     setBackgroundRole( QPalette::BrightText );
 
-    The::amarokUrlHandler()->registerForTimecodes( this );
+    connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
+              this, SLOT( redrawBookmarks(const QString*) ) );
+    connect ( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),
+              this, SLOT( addBookmark(const QString&, int) ) );
 }
 
-ProgressWidget::~ProgressWidget()
+void
+ProgressWidget::addBookmark( const QString &name, int milliSeconds )
 {
-    The::amarokUrlHandler()->unregisterForTimecodes( this );
+    addBookmark( name, milliSeconds, false );
 }
 
 void

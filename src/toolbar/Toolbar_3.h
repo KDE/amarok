@@ -19,9 +19,11 @@
 
 class AnimatedLabelStack;
 class PlayPauseButton;
-class ProgressWidget;
 class QBoxLayout;
+class QLabel;
 class VolumeDial;
+
+namespace Amarok { class TimeSlider; }
 
 #include "EngineObserver.h" //baseclass
 #include <QToolBar>
@@ -34,20 +36,30 @@ public:
     void engineMuteStateChanged( bool mute );
     void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
     void engineTrackChanged( Meta::TrackPtr track );
+    void engineTrackLengthChanged( qint64 ms );
+    void engineTrackPositionChanged( qint64 position, bool userSeek );
     void engineVolumeChanged( int percent );
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
     void resizeEvent( QResizeEvent *ev );
 private slots:
+    void addBookmark( const QString &name, int milliSeconds );
     void filter( const QString &string );
+    void setLabelTime( int ms );
     void setPlaying( bool on );
+    void setActionsFrom( Meta::TrackPtr track );
+    void updateBookmarks( const QString *BookmarkName );
     void updatePrevAndNext();
+
 private:
     AnimatedLabelStack *m_current, *m_next, *m_prev;
     PlayPauseButton *m_playPause;
-    ProgressWidget *m_progress;
+    QLabel *m_timeLabel;
+    Amarok::TimeSlider *m_slider;
+    QToolBar *m_trackActionBar;
     QBoxLayout *m_progressLayout;
     VolumeDial *m_volume;
+    QString m_currentUrlId;
 };
 
 #endif

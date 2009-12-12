@@ -4,19 +4,28 @@
 #include "ActionClasses.h"
 #include "Amarok.h"
 #include "EngineController.h"
+#include "GlobalCurrentTrackActions.h"
+
+#include "amarokurls/AmarokUrl.h"
+#include "amarokurls/AmarokUrlHandler.h"
 
 #include "browsers/collectionbrowser/CollectionWidget.h"
+
+#include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "meta/MetaUtility.h"
+#include "meta/capabilities/TimecodeLoadCapability.h"
 
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 
 #include "widgets/AnimatedLabelStack.h"
 #include "widgets/PlayPauseButton.h"
-#include "widgets/ProgressWidget.h"
+#include "widgets/SliderWidget.h"
 #include "widgets/VolumeDial.h"
 
 #include <QEvent>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QResizeEvent>
 #include <QSlider>
 #include <QTimer>
@@ -25,7 +34,7 @@
 #include <QtDebug>
 
 // NOTICE shall be 10, but there're the time labels :-(
-static const int progressStretch = 16;
+static const int sliderStretch = 16;
 
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
@@ -73,15 +82,28 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     connect ( m_prev, SIGNAL( pulsing(bool) ), m_current, SLOT( setStill(bool) ) );
     connect ( m_next, SIGNAL( pulsing(bool) ), m_current, SLOT( setStill(bool) ) );
 
+    
     m_progressLayout = new QHBoxLayout;
-    m_progress = new ProgressWidget( 0 );
     m_progressLayout->addStretch( 3 );
-    m_progressLayout->addWidget( m_progress  );
-    m_progressLayout->setStretchFactor( m_progress , progressStretch );
+    m_progressLayout->addWidget( m_timeLabel = new QLabel( this ) );
+    m_timeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
+    m_timeLabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+    m_timeLabel->setMinimumWidth( QFontMetrics( m_timeLabel->font() ).width( "33:33:33" ) );
+
+    m_progressLayout->addWidget( m_slider = new Amarok::TimeSlider( this ) );
+    m_progressLayout->setStretchFactor( m_slider , sliderStretch );
+    connect( m_slider, SIGNAL( sliderReleased( int ) ), The::engineController(), SLOT( seek( int ) ) );
+    connect( m_slider, SIGNAL( valueChanged( int ) ), SLOT( setLabelTime( int ) ) );
+
+    m_progressLayout->addWidget( m_trackActionBar = new QToolBar( this ) );
+    m_trackActionBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
+    m_trackActionBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
+    m_trackActionBar->setIconSize( QSize( 16,16 ) );
+
     m_progressLayout->addStretch( 3 );
     vl->addLayout( m_progressLayout );
-    
 
+    
     addWidget( info );
 
     m_volume = new VolumeDial( this );
@@ -94,6 +116,17 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     connect ( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
 
     connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
+    connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
+              this, SLOT( updateBookmarks(const QString*) ) );
+    connect ( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),
+              this, SLOT( addBookmark(const QString&, int) ) );
+}
+
+void
+Toolbar_3::addBookmark( const QString &name, int milliSeconds )
+{
+    if ( m_slider )
+        m_slider->drawTriangle( name, milliSeconds, false );
 }
 
 void
@@ -113,10 +146,28 @@ Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldStat
 {
     if ( currentState == oldState )
         return;
-    if ( currentState == Phonon::PlayingState )
+
+    switch ( currentState )
+    {
+    case Phonon::PlayingState:
         m_playPause->setPlaying( true );
-    else if ( currentState == Phonon::StoppedState || currentState == Phonon::PausedState )
+        break;
+    case Phonon::StoppedState:
+        m_timeLabel->setText( QString() );
+    case Phonon::PausedState:
         m_playPause->setPlaying( false );
+        break;
+    case Phonon::LoadingState:
+        if ( !The::engineController()->currentTrack() ||
+             ( m_currentUrlId != The::engineController()->currentTrack()->uidUrl() ) )
+        {
+            m_timeLabel->setText( QString() );
+            m_slider->setEnabled( false );
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 void
@@ -198,11 +249,63 @@ Toolbar_3::updatePrevAndNext()
 }
 
 void
+Toolbar_3::updateBookmarks( const QString *BookmarkName )
+{
+    DEBUG_BLOCK
+    m_slider->clearTriangles();
+    if ( Meta::TrackPtr track = The::engineController()->currentTrack() )
+    {
+        if ( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
+        {
+            Meta::TimecodeLoadCapability *tcl = track->create<Meta::TimecodeLoadCapability>();
+            BookmarkList list = tcl->loadTimecodes();
+            debug() << "found " << list.count() << " timecodes on this track";
+            foreach( AmarokUrlPtr url, list )
+            {
+                if ( url->command() == "play" && url->args().keys().contains( "pos" ) )
+                {
+                    int pos = url->args().value( "pos" ).toInt() * 1000;
+                    debug() << "showing timecode: " << url->name() << " at " << pos ;
+                    m_slider->drawTriangle( url->name(), pos, ( BookmarkName && BookmarkName == url->name() ) );
+                }
+            }
+            delete tcl;
+        }
+    }
+}
+
+void
 Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
 {
+    if ( !track )
+        m_currentUrlId.clear();
+    m_timeLabel->setText( QString() );
+    setActionsFrom( track );
     m_current->setData( metadata( track ) );
     m_current->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
     QTimer::singleShot( 0, this, SLOT( updatePrevAndNext() ) );
+}
+
+void
+Toolbar_3::engineTrackLengthChanged( qint64 ms )
+{
+    m_slider->setRange( 0, ms );
+    m_slider->setEnabled( ms > 0 );
+
+    // get the urlid of the current track as the engine might stop and start several times
+    // when skipping last.fm tracks, so we need to know if we are still on the same track...
+    if ( The::engineController()->currentTrack() )
+        m_currentUrlId = The::engineController()->currentTrack()->uidUrl();
+
+    updateBookmarks( 0 );
+}
+
+void
+Toolbar_3::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
+{
+    m_slider->setSliderValue( position );
+//     if ( !m_slider->isEnabled() )
+//         setLabelTime( position )
 }
 
 void
@@ -212,11 +315,37 @@ Toolbar_3::resizeEvent( QResizeEvent *ev )
     {
         const int limit = 640;
         if ( ev->size().width() > limit )
-            m_progressLayout->setStretchFactor( m_progress, progressStretch );
+            m_progressLayout->setStretchFactor( m_slider, sliderStretch );
         int s = limit/ev->size().width();
-        s *= s*s*progressStretch;
-        m_progressLayout->setStretchFactor( m_progress, qMax( progressStretch, s ) );
+        s *= s*s*sliderStretch;
+        m_progressLayout->setStretchFactor( m_slider, qMax( sliderStretch, s ) );
     }
+}
+
+void
+Toolbar_3::setActionsFrom( Meta::TrackPtr track )
+{
+    m_trackActionBar->clear();
+
+    foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
+        m_trackActionBar->addAction( action );
+    
+    if( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    {
+        Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+        if( cac )
+        {
+            QList<QAction *> currentTrackActions = cac->customActions();
+            foreach( QAction *action, currentTrackActions )
+                m_trackActionBar->addAction( action );
+        }
+        delete cac;
+    }
+}
+
+void Toolbar_3::setLabelTime( int ms )
+{
+    m_timeLabel->setText( Meta::secToPrettyTime( ms/1000 ) );
 }
 
 void
