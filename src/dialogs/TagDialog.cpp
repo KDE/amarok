@@ -1521,14 +1521,17 @@ TagDialog::labelsForTrack( Meta::TrackPtr track )
 void
 TagDialog::loadLabels( Meta::TrackPtr track )
 {
-    Meta::ReadLabelCapability *ric = track->create<Meta::ReadLabelCapability>();
-    if( !ric )
+    if( track )
     {
-        debug() << "No Read Label Capability found, no labels available.";
-        return;
+        Meta::ReadLabelCapability *ric = track->create<Meta::ReadLabelCapability>();
+        if( !ric )
+        {
+            debug() << "No Read Label Capability found, no labels available.";
+            return;
+        }
+        connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(trackLabelsFetched(QStringList)));
+        ric->fetchLabels();
     }
-    connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(trackLabelsFetched(QStringList)));
-    ric->fetchLabels();
 }
 
 void
