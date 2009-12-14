@@ -18,8 +18,8 @@
 
 SimilarArtist::SimilarArtist(){}
 
-SimilarArtist::SimilarArtist(const QString name, const int match, const KUrl url,
-                             const KUrl urlImage, const QString similarTo)
+SimilarArtist::SimilarArtist(const QString &name, const int match, const KUrl &url,
+                             const KUrl &urlImage, const QString &similarTo)
 {
     m_name=name;
     m_match=match;

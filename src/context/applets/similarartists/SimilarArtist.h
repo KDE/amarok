@@ -32,8 +32,8 @@ class SimilarArtist
 {
     public:
         SimilarArtist();
-        SimilarArtist(const QString name, const int match, const KUrl url,
-                      const KUrl urlImage, const QString similarTo);
+        SimilarArtist(const QString &name, const int match, const KUrl &url,
+                      const KUrl &urlImage, const QString &similarTo);
 
         QString name() const;
         int match() const;
