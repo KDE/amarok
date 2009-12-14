@@ -21,6 +21,7 @@
 #include "BiasedPlaylist.h"
 
 #include "amarokconfig.h"
+#include "App.h"
 #include "Collection.h"
 #include "CollectionManager.h"
 #include "Debug.h"
@@ -75,6 +76,9 @@ Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases, Ama
     , m_biases( biases )
 {
     setTitle( title );
+
+    // Make sure that the BiasedPlaylist instance gets destroyed when App destroys
+    setParent( App::instance() );
 }
 
 
