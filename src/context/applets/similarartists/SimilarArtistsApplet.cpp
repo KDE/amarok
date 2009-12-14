@@ -64,7 +64,7 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
 {
     DEBUG_BLOCK
     debug()<<"1";
-    //delete m_headerLabel;
+    delete m_headerLabel;
     debug()<<"2";
     delete m_settingsIcon;
     debug()<<"3";

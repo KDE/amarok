@@ -59,6 +59,7 @@ ArtistWidget::~ArtistWidget()
      delete m_image;
      delete m_name;
      delete m_genre;
+     delete m_imageJob;
 }
 
 
@@ -77,18 +78,34 @@ ArtistWidget::setPhoto( const QPixmap & photo) {
   */
 void ArtistWidget::setPhoto(const KUrl& urlPhoto)
 {
-    KJob* job = KIO::storedGet( urlPhoto, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL(result( KJob* )), SLOT(setImageFromInternet( KJob* ) ));
+    m_imageJob = KIO::storedGet( urlPhoto, KIO::NoReload, KIO::HideProgressInfo );
+    connect( m_imageJob, SIGNAL(result( KJob* )), SLOT(setImageFromInternet( KJob* ) ));
 }
 
 
 void ArtistWidget::setImageFromInternet(KJob* job)
 {
+    if( !m_imageJob ) return; //track changed while we were fetching
+
+    // It's the correct job but it errored out
+    if( job->error() != KJob::NoError && job == m_imageJob )
+    {
+        m_image->clear();
+        m_image->setText(i18n("Unable to fetch the picture"));
+        m_imageJob = 0; // clear job
+        return;
+    }
+        
+    // not the right job, so let's ignore it
+    if( job != m_imageJob )
+        return;
+    
     if( job )
     {
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
         QPixmap image;
         image.loadFromData(storedJob->data());
+        m_image->clear();
         m_image->setPixmap(image);
     }
     else
@@ -96,6 +113,8 @@ void ArtistWidget::setImageFromInternet(KJob* job)
         m_image->clear();
         m_image->setText(i18n("No picture"));
     }
+
+    m_imageJob=0;
 }
 
 

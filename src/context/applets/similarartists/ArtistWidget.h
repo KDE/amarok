@@ -85,6 +85,8 @@ class ArtistWidget : public QWidget
         QLabel *m_image;
         QLabel *m_name;
         QLabel *m_genre;
+
+        KJob *m_imageJob;
         
 
      private slots:

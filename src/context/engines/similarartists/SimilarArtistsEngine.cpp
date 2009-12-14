@@ -159,8 +159,8 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
 
     m_artist=artist_name;
 
-    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL(result( KJob* )), SLOT(similarArtistsParse( KJob* )) );
+    m_similarArtistsJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
+    connect( m_similarArtistsJob, SIGNAL(result( KJob* )), SLOT(similarArtistsParse( KJob* )) );
 }
 
 
@@ -170,6 +170,21 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
     DEBUG_BLOCK
     m_similarArtists.clear();
 
+    if( !m_similarArtistsJob ) return; //track changed while we were fetching
+
+    // It's the correct job but it errored out
+    if( job->error() != KJob::NoError && job == m_similarArtistsJob )
+    {
+        //TODO display a error message
+        //setData( "similarArtists", "message", i18n( "Unable to retrieve SimilarArtists information: %1", job->errorString() ) );
+        m_similarArtistsJob = 0; // clear job
+        return;
+    }    
+        
+    // not the right job, so let's ignore it
+    if( job != m_similarArtistsJob)
+        return;
+        
     if( job )
     {
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
@@ -235,6 +250,7 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
         n = n.nextSibling();
     }
 
+    m_similarArtistsJob=0;
     update();
 }
 
