@@ -2,6 +2,14 @@ Amarok ChangeLog
 ================
 (C) 2002-2010 the Amarok authors.
 
+VERSION 2.2.3
+  FEATURES:
+
+  CHANGES:
+
+  BUGFIXES:
+    * Lyrics applet: Fixed a bug where sometimes suggested URLs are not
+      cleared when switching tracks.
 
 VERSION 2.2.2
   CHANGES:
