@@ -29,7 +29,7 @@
 ArtistWidget::ArtistWidget(QWidget *parent) : QWidget(parent)
 {
     //TODO not use a fixed size
-    setFixedSize(420, 240);
+    //setFixedSize(420, 240);
 
     m_layout=new QGridLayout(this);
     
