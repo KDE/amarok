@@ -57,7 +57,8 @@ class AMAROK_EXPORT AppletExplorer: public QGraphicsWidget
         Containment *containment() const;
 
     signals:
-        void addAppletToContainment( const QString &pluginName );
+        void addAppletToContainment( const QString &pluginName, const int loc );
+        void appletExplorerHid();
         
     private slots:
         void addApplet( AppletItem *appletItem );

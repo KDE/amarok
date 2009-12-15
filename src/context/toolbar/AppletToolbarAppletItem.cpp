@@ -76,7 +76,7 @@ Context::AppletToolbarAppletItem::setConfigEnabled( bool config )
     if( config && !m_configEnabled ) // switching to config mode
     {
         // center over top-right corner
-        m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1);
+        m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1 );
     }
     else
         m_deleteIcon->hide();
@@ -103,7 +103,7 @@ Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent *event 
     QFontMetrics fm( m_label->font() );
     if( m_configEnabled )
     {
-        m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1);
+        m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1 );
 
         if( fm.width( m_applet->name() ) + m_deleteIcon->boundingRect().width() > boundingRect().width() )
             m_label->setText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() - m_deleteIcon->boundingRect().width() ) );
@@ -130,7 +130,6 @@ Context::AppletToolbarAppletItem::itemChange( GraphicsItemChange change, const Q
     
     if( change == ItemPositionHasChanged )
         emit geometryChanged();
-        
     return ret;
 }
 

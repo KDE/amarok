@@ -45,6 +45,11 @@ class ToolbarView : public QGraphicsView
         
         virtual QSize sizeHint() const;
         int heightForWidth ( int w ) const;
+
+    signals:
+        void hideAppletExplorer();
+        void showAppletExplorer();
+        
     protected:
         void resizeEvent( QResizeEvent * event );
         void dragEnterEvent(QDragEnterEvent *event);

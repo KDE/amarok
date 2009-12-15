@@ -50,6 +50,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     , EngineObserver( The::engineController() )
     , m_curState( Home )
     , m_firstPlayingState( true )
+    , m_appletExplorer( 0 )
 {
     Q_UNUSED( corona )
     DEBUG_BLOCK
@@ -90,6 +91,17 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
         amarokContainment->setView( this );
     //    amarokContainment->addCurrentTrack();
     }
+
+    m_appletExplorer = new AppletExplorer( cont );
+    m_appletExplorer->setContainment( amarokContainment );
+    m_appletExplorer->setPos( 0, cont->size().height() - m_appletExplorer->size().height() );
+    m_appletExplorer->setZValue( m_appletExplorer->zValue() + 1000 );
+    m_appletExplorer->hide();
+
+    connect( m_appletExplorer, SIGNAL( addAppletToContainment( const QString&, const int ) ),
+             amarokContainment, SLOT( addApplet( const QString&, const int ) ) );
+
+    connect( m_appletExplorer, SIGNAL( appletExplorerHid() ), this, SIGNAL( appletExplorerHid() ) );
 
     m_urlRunner = new ContextUrlRunner();
     The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
@@ -228,6 +240,19 @@ ContextView::addApplet( const QString& name, const QStringList& args )
     return containment()->addApplet( name, argList );
 }
 
+void
+ContextView::hideAppletExplorer()
+{
+    m_appletExplorer->hide();
+}
+
+void
+ContextView::showAppletExplorer()
+{
+    m_appletExplorer->show();
+}
+
+
 ContextScene*
 ContextView::contextScene()
 {
@@ -251,6 +276,8 @@ ContextView::updateContainmentsGeometry()
 {
     containment()->resize( rect().size() );
     containment()->setPos( rect().topLeft() );
+    m_appletExplorer->resize( rect().width(), m_appletExplorer->size().height() );
+    m_appletExplorer->setPos( 0, rect().height() - m_appletExplorer->size().height() - 5 );
 }
 
 void

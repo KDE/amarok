@@ -68,16 +68,17 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
 
    connect( m_toolbar, SIGNAL( configModeToggled() ), this, SLOT( toggleConfigMode() ) );
    connect( m_toolbar, SIGNAL( installApplets() ), this, SLOT( installApplets() ) );
+   connect( m_toolbar, SIGNAL( hideAppletExplorer() ), this, SIGNAL( hideAppletExplorer() ) );
+   connect( m_toolbar, SIGNAL( showAppletExplorer() ), this, SIGNAL( showAppletExplorer() ) );
 
    Context::Containment* cont = dynamic_cast< Context::Containment* >( containment );
    if( cont )
    {
-       connect( cont, SIGNAL( appletAdded( Plasma::Applet*, int) ), m_toolbar, SLOT( appletAdded( Plasma::Applet*, int) ) );
-       connect( m_toolbar, SIGNAL( appletAddedToToolbar( Plasma::Applet*, int) ), this, SLOT( appletAdded( Plasma::Applet*, int) ) );
+       connect( cont, SIGNAL( appletAdded( Plasma::Applet*, int) ), m_toolbar, SLOT( appletAdded( Plasma::Applet*, int ) ) );
+       connect( m_toolbar, SIGNAL( appletAddedToToolbar( Plasma::Applet*, int ) ), this, SLOT( appletAdded( Plasma::Applet*, int ) ) );
        connect( cont, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
        connect( m_toolbar, SIGNAL( showApplet( Plasma::Applet* ) ), cont, SLOT( showApplet( Plasma::Applet* ) ) );
        connect( m_toolbar, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
-       connect( m_toolbar, SIGNAL( addAppletToContainment( const QString&, int ) ), cont, SLOT( addApplet( const QString&, int ) ) );
    }
 
    //make background transparent

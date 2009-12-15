@@ -19,7 +19,6 @@
 
 
 #include "amarok_export.h"
-#include "widgets/appletexplorer/AppletExplorer.h"
 
 #include <plasma/widgets/iconwidget.h>
 
@@ -48,28 +47,26 @@ class AppletToolbarAddItem : public AppletToolbarBase
     signals:
         void addApplet( const QString&, AppletToolbarAddItem*  );
         void installApplets();
+        void hideAppletExplorer();
+        void showAppletExplorer();
         
     public slots:
-        void updatedContainment( Containment* cont );
+        void appletExplorerHid();
         void iconClicked();
-        void addApplet( const QString& pluginName );
-        
-        void hideMenu();
+
     protected:    
          virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
          virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
     
          void mousePressEvent( QGraphicsSceneMouseEvent * event );
     private: 
-        void showAddAppletsMenu( QPointF pos = QPointF() );
-        
         int m_iconPadding;
         bool m_fixedAdd;
-        
+        bool m_showingAppletExplorer;
+
         Containment* m_cont;
         Plasma::IconWidget* m_icon;
         QGraphicsSimpleTextItem* m_label;
-        AppletExplorer *m_addMenu;
 };
 
 }

@@ -30,6 +30,7 @@
 #include "Svg.h"
 #include "amarok_export.h"
 #include "widgets/ContainmentArrow.h"
+#include "widgets/appletexplorer/AppletExplorer.h"
 
 #include <plasma/containment.h>
 #include <plasma/view.h>
@@ -91,7 +92,12 @@ public:
 public slots:
 
     Plasma::Applet* addApplet(const QString& name, const QStringList& args = QStringList());
+    void hideAppletExplorer();
+    void showAppletExplorer();
 
+signals:
+    void appletExplorerHid();
+        
 protected:
     
     virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
@@ -125,6 +131,8 @@ private:
     bool m_firstPlayingState;
 
     ContextUrlRunner * m_urlRunner;
+
+    AppletExplorer* m_appletExplorer;
 };
 
 } // Context namespace

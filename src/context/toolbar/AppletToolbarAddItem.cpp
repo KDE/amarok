@@ -39,10 +39,10 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     : AppletToolbarBase( parent )
     , m_iconPadding( 0 )
     , m_fixedAdd( fixedAdd )
+    , m_showingAppletExplorer( false )
     , m_cont( cont )
     , m_icon( 0 )
     , m_label( 0 )
-    , m_addMenu( 0 )
 {
     QAction* listAdd = new QAction( i18n( "Add Applets..." ), this );
     listAdd->setIcon( KIcon( "list-add" ) );
@@ -70,15 +70,9 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
     
     m_label = new QGraphicsSimpleTextItem( i18n( "Add Applet..." ), this );
     m_label->hide();
-
-    m_addMenu = new Context::AppletExplorer( cont );
-    m_addMenu->setContainment( cont );
-    m_addMenu->resize( Context::ContextView::self()->size().width() - MARGIN, m_addMenu->geometry().height() );
-    m_addMenu->hide();
     
-    m_addMenu->setZValue( zValue() + 10000 );
-
-    connect( m_addMenu, SIGNAL( addAppletToContainment( const QString& ) ), this, SLOT( addApplet( const QString & ) ) );
+    if( m_cont )
+        connect( m_cont->view(), SIGNAL( appletExplorerHid() ), this, SLOT( appletExplorerHid() ) );
 
     if( m_fixedAdd )
         setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -88,40 +82,26 @@ Context::AppletToolbarAddItem::AppletToolbarAddItem( QGraphicsItem* parent, Cont
 }
 
 Context::AppletToolbarAddItem::~AppletToolbarAddItem()
-{
-    //HACK: m_addMenu should be deleted manually since its parent is the containment, but deleting it manually is crashing amarok on exit,
-    //probably because its being deleted before the containment.
-    //For now we just hide the menu to prevent it to stay visible after we toggle the tool icon.
-    m_addMenu->hide();
-//     m_addMenu->containment()->disconnect( m_addMenu );
-//     m_addMenu->setContainment( 0 );
-//     delete m_addMenu;
-}
+{}
 
-void 
-Context::AppletToolbarAddItem::hideMenu()
+void
+Context::AppletToolbarAddItem::appletExplorerHid() // SLOT
 {
-    m_addMenu->hide();
+    m_showingAppletExplorer = false;
 }
-
-void 
-Context::AppletToolbarAddItem::updatedContainment( Containment* cont )
-{
-    m_addMenu->setContainment( cont );
-}
-
 void 
 Context::AppletToolbarAddItem::iconClicked() // SLOT
 {
-    showAddAppletsMenu( m_icon->pos() );
-}
-
-void 
-Context::AppletToolbarAddItem::addApplet( const QString& pluginName ) // SLOT
-{
-    DEBUG_BLOCK
-    m_addMenu->hide();
-    emit addApplet( pluginName, this );
+    if( m_showingAppletExplorer )
+    {
+        m_showingAppletExplorer = false;
+        emit hideAppletExplorer();
+    }
+    else
+    {
+        m_showingAppletExplorer = true;
+        emit showAppletExplorer();
+    }
 }
 
 void 
@@ -163,28 +143,10 @@ Context::AppletToolbarAddItem::sizeHint( Qt::SizeHint which, const QSizeF & cons
 
 void 
 Context::AppletToolbarAddItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
-{    
-    showAddAppletsMenu( event->pos() );
-    event->accept();
-}
-
-void
-Context::AppletToolbarAddItem::showAddAppletsMenu( QPointF pos )
 {
     DEBUG_BLOCK
-    Q_UNUSED( pos )
-    if( m_addMenu->isVisible() )
-    {   // hide again on double-click
-        m_addMenu->hide();
-        return;
-    }
-    const qreal xpos = TOOLBAR_X_OFFSET;
-    const qreal ypos = Context::ContextView::self()->size().height() - m_addMenu->geometry().height() - TOOLBAR_Y_OFFSET;
-
-    m_addMenu->resize( Context::ContextView::self()->size().width() - MARGIN, m_addMenu->geometry().height() );
-    m_addMenu->setPos( xpos, ypos );
-    m_addMenu->show();
-   
+    emit showAppletExplorer();
+    event->accept();
 }
 
 #include "AppletToolbarAddItem.moc"

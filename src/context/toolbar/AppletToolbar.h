@@ -66,7 +66,8 @@ class AppletToolbar : public QGraphicsWidget
         void moveApplet( Plasma::Applet*, int, int );
         void configModeToggled();
         void installApplets();
-        
+        void hideAppletExplorer();
+        void showAppletExplorer();
         
     protected:
         // reimplemented dfrom QGraphicsWidget
@@ -81,7 +82,6 @@ class AppletToolbar : public QGraphicsWidget
         virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
         */
     private slots:
-        void addApplet( const QString& pluginName, AppletToolbarAddItem* item  );
         void appletAdded( Plasma::Applet*, int );
         void toggleConfigMode();
         

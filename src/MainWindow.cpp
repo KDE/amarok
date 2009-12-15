@@ -399,6 +399,9 @@ MainWindow::createContextView( Plasma::Containment *containment )
     m_contextView->setFrameShape( QFrame::NoFrame );
     m_contextToolbarView = new Context::ToolbarView( containment, m_corona, m_contextWidget );
     m_contextToolbarView->setFrameShape( QFrame::NoFrame );
+
+    connect( m_contextToolbarView, SIGNAL( hideAppletExplorer() ), m_contextView, SLOT( hideAppletExplorer() ) );
+    connect( m_contextToolbarView, SIGNAL( showAppletExplorer() ), m_contextView, SLOT( showAppletExplorer() ) );
     m_contextView->showHome();
     PERF_LOG( "ContexView created" )
 

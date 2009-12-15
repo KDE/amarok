@@ -59,14 +59,16 @@ AppletExplorer::~AppletExplorer()
 void
 AppletExplorer::addApplet( AppletItem *appletItem )
 {
+    DEBUG_BLOCK
     if( appletItem && !appletItem->pluginName().isEmpty() && containment() )
-        emit( addAppletToContainment( appletItem->pluginName() ) );
+        emit  addAppletToContainment( appletItem->pluginName(), -1 ); //always add the applet at the end
 }
 
 void
 AppletExplorer::hideMenu()
 {
     hide();
+    emit appletExplorerHid();
 }
 
 void
@@ -136,8 +138,6 @@ AppletExplorer::containment() const
 void
 AppletExplorer::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
-    //FIXME This method is never actually called
-
     DEBUG_BLOCK
 
     m_mainLayout->setGeometry( QRectF( QPointF( 0, 0 ), event->newSize() ) );

@@ -55,8 +55,9 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     m_appletLayout = new QGraphicsLinearLayout( Qt::Horizontal, this );
     
     m_addItem = new AppletToolbarAddItem( this, m_cont, true );
-    connect( cont, SIGNAL( updatedContainment( Containment* ) ), m_addItem, SLOT( updatedContainment( Containment* ) ) );
-    connect( m_addItem, SIGNAL( addApplet( const QString&, AppletToolbarAddItem* ) ), this, SLOT( addApplet( const QString&, AppletToolbarAddItem* ) ) );
+    connect( m_addItem, SIGNAL( hideAppletExplorer() ), this, SIGNAL( hideAppletExplorer() ) );
+    connect( m_addItem, SIGNAL( showAppletExplorer() ), this, SIGNAL( showAppletExplorer() ) );
+ 
     
     m_appletLayout->addItem( m_addItem );
     m_appletLayout->setAlignment( m_addItem, Qt::AlignRight );
@@ -154,33 +155,6 @@ Context::AppletToolbar::mousePressEvent( QGraphicsSceneMouseEvent *event )
     Q_UNUSED( event )
 }
 
-// user clicked on one of the add applet buttons, figure out which one he selected and tell the containment to
-// actually add the applet. appletAdded is called by the containment when it has been created.
-void 
-Context::AppletToolbar::addApplet( const QString& pluginName, Context::AppletToolbarAddItem* item ) // SLOT
-{
-    DEBUG_BLOCK
-    
-    int loc = -1; // -1  means at end
-    
-    if( m_configMode )
-    {
-        for( int i = 0; i < m_appletLayout->count(); i++ )
-        {
-            if( item == m_appletLayout->itemAt( i ) )
-                loc = i;
-        }
-        if( loc == -1 )
-        {
-            warning() << "HELP GOT ADD REQUEST FROM NON-EXISTENT LOCATION";
-            return;
-        }
-    }
-    
-    debug() << "ADDING APPLET AT LOC:" << loc;
-    emit addAppletToContainment( pluginName, loc );
-}
-
 // called when the containment is done successfully adding the applet, updates the toolbar
 void 
 Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
@@ -267,6 +241,8 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
         m_configAddIcons.clear();
         
         m_configMode = false;
+        
+        emit hideAppletExplorer();
     }
     emit configModeToggled();
 }
@@ -299,8 +275,8 @@ Context::AppletToolbar::newAddItem( int loc )
 {
     DEBUG_BLOCK
     Context::AppletToolbarAddItem* additem = new Context::AppletToolbarAddItem( this, m_cont, false );
-    connect( additem, SIGNAL( addApplet( const QString&, AppletToolbarAddItem* ) ), this, SLOT( addApplet( const QString&, AppletToolbarAddItem* ) ) );
-    connect( additem, SIGNAL( installApplets() ), this, SIGNAL( installApplets() ) );
+    connect( additem, SIGNAL( hideAppletExplorer() ), this, SIGNAL( hideAppletExplorer() ) );
+    connect( additem, SIGNAL( showAppletExplorer() ), this, SIGNAL( showAppletExplorer() ) );
     m_appletLayout->insertItem( loc, additem );
     m_configAddIcons << additem;
 }
