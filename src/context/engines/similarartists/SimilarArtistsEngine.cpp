@@ -71,9 +71,10 @@ bool SimilarArtistsEngine::sourceRequestEvent( const QString& name )
 
     // user has changed the maximum artists returned.
     if ( tokens.contains( "maxArtists" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )
+        if ( ( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )            
             m_maxArtists = tokens.at( 2 ).toInt();
-    
+
+            
     // otherwise, it comes from the engine, a new track is playing.
     removeAllData( name );
     setData( name, QVariant());
@@ -99,14 +100,14 @@ void SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 void SimilarArtistsEngine::update()
 {
     DEBUG_BLOCK
+    
 
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    
     // We've got a new track, great, let's fetch some info from SimilarArtists !
     m_triedRefinedSearch = 0;
     QString artistName;
     
-
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-
     unsubscribeFrom( m_currentTrack );
     m_currentTrack = currentTrack;
     subscribeTo( currentTrack );
@@ -139,9 +140,7 @@ void SimilarArtistsEngine::update()
      setData( "similarArtists", "cover",  QVariant( cover ) );
 
     similarArtistsRequest( artistName );
-    QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
 
-    setData ( "similarArtists", "SimilarArtists", variant );
 }
 
 void
@@ -158,10 +157,7 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
 
     m_artist=artist_name;
-
-    // for test when i haven't network
-    //m_similarArtists.append( SimilarArtist(m_artist,1,url,url, m_artist ));
-
+    
     m_similarArtistsJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_similarArtistsJob, SIGNAL(result( KJob* )), SLOT(similarArtistsParse( KJob* )) );
 }
@@ -254,7 +250,9 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
     }
 
     m_similarArtistsJob=0;
-    update();
+
+    QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+    setData ( "similarArtists", "SimilarArtists", variant );
 }
 
 

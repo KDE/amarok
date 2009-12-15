@@ -79,6 +79,10 @@ ArtistWidget::setPhoto( const QPixmap & photo) {
   */
 void ArtistWidget::setPhoto(const KUrl& urlPhoto)
 {
+    // display a message for the user while the fetch of the picture
+    m_image->clear();
+    m_image->setText(i18n("Loading the picture..."));
+    
     m_imageJob = KIO::storedGet( urlPhoto, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_imageJob, SIGNAL(result( KJob* )), SLOT(setImageFromInternet( KJob* ) ));
 }
