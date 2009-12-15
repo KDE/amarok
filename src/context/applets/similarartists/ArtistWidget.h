@@ -91,6 +91,7 @@ class ArtistWidget : public QWidget
 
      private slots:
         void setImageFromInternet( KJob* job);
+        void openUrl(QString);
 };
 
 #endif // ARTIST_WIDGET_H

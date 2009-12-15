@@ -241,9 +241,10 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
                 }
 
                 debug()<<"SAA Agrandissement de la liste ok";
+                //TODO Bug when the number of artist to display decrease
                 cpt=sizeArtistsDisplay;
-                while(cpt<m_artists.size()) {
-                    m_layout->removeAt(cpt);
+                while(cpt>m_artists.size()) {
+                    m_layout->removeAt(cpt-1);
                     delete m_artists.last();
                     m_artists.removeLast();
                     cpt--;

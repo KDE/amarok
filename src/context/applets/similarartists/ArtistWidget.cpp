@@ -25,17 +25,16 @@
 #include <QGraphicsProxyWidget>
 #include <QPushButton>
 #include <QLabel>
+#include <QDesktopServices>
 
 ArtistWidget::ArtistWidget(QWidget *parent) : QWidget(parent)
 {
-    //TODO not use a fixed size
-    //setFixedSize(420, 240);
-
     m_layout=new QGridLayout(this);
+
+    this->setAttribute(Qt::WA_TranslucentBackground, true); // The background og this widget is transparent
     
     m_image=new QLabel( this );
     m_image->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
-    m_image->setScaledContents(true);                           // The QLabel scale is content
     
     m_name=new QLabel( this );
     m_name->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
@@ -50,6 +49,8 @@ ArtistWidget::ArtistWidget(QWidget *parent) : QWidget(parent)
     m_layout->addWidget(m_name,0,1);
     m_layout->addWidget(m_genre,1,1);
 
+    // open the url of the similar artist when his name is clicked
+    connect(m_name,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
 }
 
 
@@ -147,4 +148,10 @@ ArtistWidget::clear() {
     m_image->clear();
     m_name->clear();
     m_genre->clear();
+}
+
+
+void ArtistWidget::openUrl(QString url)
+{
+    QDesktopServices::openUrl(KUrl("http://" +url));
 }

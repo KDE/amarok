@@ -159,6 +159,9 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
 
     m_artist=artist_name;
 
+    // for test when i haven't network
+    //m_similarArtists.append( SimilarArtist(m_artist,1,url,url, m_artist ));
+
     m_similarArtistsJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( m_similarArtistsJob, SIGNAL(result( KJob* )), SLOT(similarArtistsParse( KJob* )) );
 }
