@@ -105,7 +105,7 @@ SimilarArtistsApplet::init()
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
-    m_maxArtists = config.readEntry( "maxArtists", "20" ).toInt();
+    m_maxArtists = config.readEntry( "maxArtists", "3" ).toInt();
 
     setLayout(m_layout);
 
