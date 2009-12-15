@@ -72,6 +72,7 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Fixed relative links in wikipedia work. (BR 218512)
     * Fixed multilevel playlist sorting by time since last played so it sorts
       numerically rather than alphabetically. (BR 214761)
     * Fixed crash with "Edit Track Details" dialog. (BR 217625)

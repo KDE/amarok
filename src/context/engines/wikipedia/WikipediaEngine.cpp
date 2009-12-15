@@ -278,6 +278,7 @@ WikipediaEngine::wikiResult( KJob* job )
     // We've find a page
     removeAllData( "wikipedia" );
     setData( "wikipedia", "page", wikiParse() );
+    setData( "wikipedia", "url", m_wikiCurrentUrl );
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( currentTrack )
@@ -387,10 +388,6 @@ WikipediaEngine::wikiParse()
     m_wiki.remove( "</option>\n"  );
     m_wiki.remove( QRegExp( "<textarea[^>]*>" ) );
     m_wiki.remove( "</textarea>" );
-    
-    // Make sure that the relative links inside the wikipedia HTML is forcibly made into absolute links (yes, this is deep linking, but we're showing wikipedia data as wikipedia data, not stealing any credz here)
-    m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" + wikiSiteUrl() );
-    m_wiki.replace( QRegExp( "src= *\"/" ), "src=\"" + wikiSiteUrl() );
     
     QString m_wikiHTMLSource = "<html><body>\n";
     m_wikiHTMLSource.append( m_wiki );

@@ -228,11 +228,11 @@ WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
     
     if( data.contains( "page" ) )
     {
-        if ( m_current == data[ "page" ].toString() && !m_gotMessage)
+        if ( m_current.page == data[ "page" ].toString() && !m_gotMessage)
             return;
         
         // save last page, useful when you are reading but the song changes
-        if ( !m_current.isEmpty() )
+        if ( !m_current.page.isEmpty() )
         {
             m_historyBack.push_front( m_current );
             while ( m_historyBack.size() > 20 )
@@ -242,8 +242,9 @@ WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                 m_backwardIcon->action()->setEnabled( true );
 
         }
-        m_current = data[ "page" ].toString();
-        m_webView->setHtml( m_current, KUrl( QString() ) );
+        m_current.page = data[ "page" ].toString();
+        m_current.url = KUrl( data[ "url" ].toString() );
+        m_webView->setHtml( m_current.page, m_current.url );
         m_gotMessage = false;
         m_historyForward.clear();
 
@@ -310,7 +311,7 @@ WikipediaApplet::goBackward()
         m_historyForward.push_front( m_current );
         m_current =  m_historyBack.front();
         m_historyBack.pop_front();
-        m_webView->setHtml( m_current , KUrl( QString() ) );
+        m_webView->setHtml( m_current.page, m_current.url );
 
         if( m_forwardIcon->action() && !m_forwardIcon->action()->isEnabled() )
             m_forwardIcon->action()->setEnabled( true );
@@ -330,7 +331,7 @@ WikipediaApplet::goForward()
         m_historyBack.push_front( m_current );
         m_current = m_historyForward.front();
         m_historyForward.pop_front();
-        m_webView->setHtml( m_current , KUrl( QString() ) );
+        m_webView->setHtml( m_current.page , m_current.url );
         
         if( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
             m_backwardIcon->action()->setEnabled( true );

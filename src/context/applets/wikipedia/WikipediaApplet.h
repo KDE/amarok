@@ -88,9 +88,14 @@ private:
     
     KTemporaryFile* m_css;
 
-    QList <QString> m_historyBack;
-    QList <QString> m_historyForward;
-    QString m_current;
+    struct HistoryItem
+    {
+        KUrl url;
+        QString page;
+    };
+    QList <HistoryItem> m_historyBack;
+    QList <HistoryItem> m_historyForward;
+    HistoryItem m_current;
 
     QString m_wikiPreferredLang;
 
