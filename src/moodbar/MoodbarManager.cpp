@@ -122,6 +122,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
 
     //first of all... Check if rendering settings have changed. If
     //so, clear data and pixmap caches.
+
     if( m_lastPaintMode != AmarokConfig::moodbarPaintStyle() )
     {
         m_lastPaintMode = AmarokConfig::moodbarPaintStyle();
@@ -269,11 +270,13 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     // After the hue redistribution is calculated, the saturation and
     // value are scaled by sat and val, respectively, which are percentage
     // values.
+    moodFile.close();
 
     const int paintStyle = AmarokConfig::moodbarPaintStyle();
 
-    if( paintStyle )
+    if( paintStyle != 0 )
     {
+        MoodbarColorList modifiedData;
         // Explanation of the parameters:
         //
         //   threshold: A hue value is considered to be a "spike" in the
@@ -351,8 +354,10 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
                               qBound( 0, v * val / 100, 255 ) );
 
                 modalHue[qBound( 0, huedist[h] * NUM_HUES / 360, NUM_HUES - 1 )] += ( v * val / 100 );
+                modifiedData.append( color );
             }
         }
+        return modifiedData;
     }
 
     // Calculate m_hueSort.  This is a 3-digit number in base NUM_HUES,
@@ -384,7 +389,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 */
     //debug() << "Moodbar::readFile: All done." << endl;
 
-    moodFile.close();
+
 
     return data;
 }

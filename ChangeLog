@@ -65,6 +65,7 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Fixed regression causing non default moodbar styles to not work.
     * Jamendo.com service: Fixed track lengths not getting shown for most tracks.
       For existing installs, this requires a redownload of the Jamendo database.
       (BR 200531)
