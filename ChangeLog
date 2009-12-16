@@ -65,6 +65,13 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Jamendo.com service: Fixed track lengths not getting shown for most tracks.
+      For existing installs, this requires a redownload of the Jamendo database.
+      (BR 200531)
+    * Jamendo.com service: Fixed searches not working because of Sql errors.
+    * Jamendo.com service: Removed broken "Unknown" genre which would freeze
+      Amarok if expanded. For existing installs, this requires a redownload of the 
+      Jamendo database. (BR 213165)
     * Playback of Audio CD track now correctly stops if track is the last in the
       playlist. (BR 216175)
     * Fixed crash if user clicks rating widget on the current track applet while no
