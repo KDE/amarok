@@ -244,7 +244,7 @@ WikipediaEngine::wikiResult( KJob* job )
 
     // FIXME: For now we test if we got an article or not with a test on this string "wgArticleId=0"
     // This is bad
-    if( m_wiki.contains( "wgArticleId=0" ) ) // The article does not exist
+    if( m_wiki.contains( "wgArticleId=0" ) && m_wiki.contains( "wgNamespaceNumber=0" ) ) // The article does not exist
     {
         // Refined search is done here 
         if ( m_triedRefinedSearch == -1 )
