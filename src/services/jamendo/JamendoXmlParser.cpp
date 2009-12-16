@@ -378,7 +378,7 @@ JamendoXmlParser::readTrack()
             else if( localname == "id" )
                 id = m_reader.readElementText();
             else if( localname == "duration" )
-                length = m_reader.readElementText().toInt() * 1000;
+                length = m_reader.readElementText().toFloat() * 1000;
             else if ( localname == "numalbum" )
                 trackNumber = m_reader.readElementText();
             else if ( localname == "id3genre" )
