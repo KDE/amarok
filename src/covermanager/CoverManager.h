@@ -34,7 +34,6 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class KPushButton;
 class KMenu;
-class QToolButton;
 class QLabel;
 class CoverView;
 class KHBox;
@@ -77,6 +76,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         void slotArtistSelected();
         void slotArtistSelectedContinue();
         void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums );
+        void slotAlbumFilterTriggered( QAction *action );
         void slotArtistSelectedContinueAgain();
         void coverItemExecuted( QListWidgetItem *item );
         void slotSetFilter();
@@ -108,8 +108,8 @@ class CoverManager : public QSplitter, public Meta::Observer
         CoverView        *m_coverViewSpacer;
         Amarok::LineEdit *m_searchEdit;
         KPushButton      *m_fetchButton;
+        KPushButton      *m_viewButton;
         KMenu            *m_viewMenu;
-        QToolButton      *m_viewButton;
         int               m_currentView;
 
         Meta::ArtistList m_artistList;

@@ -181,17 +181,23 @@ CoverManager::slotContinueConstruction() //SLOT
     } //</Search LineEdit>
 
     // view menu
-    m_viewMenu = new KMenu( this );
+    m_viewButton = new KPushButton( hbox );
+
+    m_viewMenu = new KMenu( m_viewButton );
     m_selectAllAlbums          = m_viewMenu->addAction( i18n("All Albums"),           this, SLOT( slotShowAllAlbums() ) );
     m_selectAlbumsWithCover    = m_viewMenu->addAction( i18n("Albums With Cover"),    this, SLOT( slotShowAlbumsWithCover() ) );
     m_selectAlbumsWithoutCover = m_viewMenu->addAction( i18n("Albums Without Cover"), this, SLOT( slotShowAlbumsWithoutCover() ) );
 
-    QActionGroup *viewGroup = new QActionGroup( this );
+    QActionGroup *viewGroup = new QActionGroup( m_viewButton );
     viewGroup->setExclusive( true );
     viewGroup->addAction( m_selectAllAlbums );
     viewGroup->addAction( m_selectAlbumsWithCover );
     viewGroup->addAction( m_selectAlbumsWithoutCover );
     m_selectAllAlbums->setChecked( true );
+
+    m_viewButton->setMenu( m_viewMenu );
+    m_viewButton->setIcon( KIcon( "filename-album-amarok" ) );
+    connect( m_viewMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotAlbumFilterTriggered(QAction*)) );
 
     //fetch missing covers button
     m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "get-hot-new-stuff-amarok" ), hbox );
@@ -413,6 +419,13 @@ CoverManager::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums
     DEBUG_BLOCK
     Q_UNUSED( collectionId );
     m_albumList += albums;
+}
+
+
+void
+CoverManager::slotAlbumFilterTriggered( QAction *action ) //SLOT
+{
+    m_viewButton->setText( action->text() );
 }
 
 void CoverManager::slotArtistSelectedContinueAgain() //SLOT
