@@ -201,14 +201,14 @@ CoverManager::slotContinueConstruction() //SLOT
     m_coverViewSpacer->hide();
 
     //status bar
-    KStatusBar *m_statusBar = new KStatusBar( vbox );
+    KStatusBar *statusBar = new KStatusBar( vbox );
 
-    m_statusLabel = new KSqueezedTextLabel( m_statusBar );
+    m_statusLabel = new KSqueezedTextLabel( statusBar );
     m_statusLabel->setIndent( 3 );
-    m_progressBox = new KHBox( m_statusBar );
+    m_progressBox = new KHBox( statusBar );
 
-    m_statusBar->addWidget( m_statusLabel, 4 );
-    m_statusBar->addPermanentWidget( m_progressBox, 1 );
+    statusBar->addWidget( m_statusLabel, 4 );
+    statusBar->addPermanentWidget( m_progressBox, 1 );
 
     KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "stop"), m_progressBox );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
