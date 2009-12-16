@@ -90,6 +90,7 @@ class ServiceSqlQueryMaker : public QueryMaker
         void linkTables();
         void buildQuery();
 
+        bool isValidValue( qint64 value );
         QString nameForValue( qint64 value );
         QString andOr() const;
 

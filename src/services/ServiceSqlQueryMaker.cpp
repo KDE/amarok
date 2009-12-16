@@ -410,7 +410,7 @@ ServiceSqlQueryMaker::addMatch( const DataPtr &data )
 QueryMaker*
 ServiceSqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
-    if( value == Meta::valAlbumArtist )
+    if( !isValidValue( value ) )
     {
         return this;
     }
@@ -432,7 +432,7 @@ QueryMaker*
 ServiceSqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
 
-    if( value != Meta::valAlbumArtist )
+    if( isValidValue( value ) )
     {
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
         d->queryFilter += QString( " %1 NOT %2 %3 " ).arg( andOr(), nameForValue( value ), like );
@@ -644,9 +644,20 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
     //queryDone will be emitted in done(Job*)
 }
 
-QString
-ServiceSqlQueryMaker::nameForValue(qint64 value)
+bool
+ServiceSqlQueryMaker::isValidValue( qint64 value )
 {
+    return value == Meta::valTitle ||
+           value == Meta::valArtist ||
+           value == Meta::valAlbum ||
+           value == Meta::valGenre;
+}
+
+QString
+ServiceSqlQueryMaker::nameForValue( qint64 value )
+{
+    DEBUG_BLOCK
+    debug() << "got value "  << value;
     QString prefix = m_metaFactory->tablePrefix();
 
     switch( value )
@@ -666,7 +677,8 @@ ServiceSqlQueryMaker::nameForValue(qint64 value)
             d->linkedTables |= Private::GENRE_TABLE;
             return prefix + "_genre.name";
         default:
-            return "ERROR: unknown value in ServiceSqlQueryMaker::nameForValue(qint64): value=" + value;
+            debug() << "ERROR: unknown value in ServiceSqlQueryMaker::nameForValue( qint64 ): value=" + QString::number( value );
+            return QString();
     }
 }
 
