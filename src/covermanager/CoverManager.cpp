@@ -106,8 +106,6 @@ CoverManager::CoverManager()
     m_artistView->setMinimumWidth( 140 );
     m_artistView->setColumnCount( 1 );
 
-    setSizes( QList<int>() << 120 << width() - 120 );
-
     ArtistItem *item = 0;
     item = new ArtistItem( i18n( "All Artists" ) );
     item->setIcon(0, SmallIcon( "media-optical-audio-amarok" ) );
@@ -236,6 +234,9 @@ CoverManager::slotContinueConstruction() //SLOT
     QSize size = QApplication::desktop()->screenGeometry( this ).size() / 1.5;
     QSize sz = Amarok::config( "Cover Manager" ).readEntry( "Window Size", size );
     resize( sz.width(), sz.height() );
+
+    setStretchFactor( indexOf( m_artistView ), 1 );
+    setStretchFactor( indexOf( vbox ), 4 );
 
     show();
 
