@@ -48,6 +48,7 @@
 #include <QProgressDialog>
 #include <QStringList>
 #include <QTimer>    //search filter timer
+#include <QToolButton>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 
@@ -208,7 +209,9 @@ CoverManager::slotContinueConstruction() //SLOT
     m_statusBar->addWidget( m_statusLabel, 4 );
     m_statusBar->addPermanentWidget( m_progressBox, 1 );
 
-    KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "stop"), m_progressBox );
+    QToolButton *stopButton = new QToolButton( m_progressBox );
+    stopButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
+    stopButton->setToolTip( i18n( "Abort" ) );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
     m_progress = new QProgressBar( m_progressBox );
     m_progress->setTextVisible( true );
