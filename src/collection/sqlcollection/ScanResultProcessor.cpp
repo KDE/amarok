@@ -120,11 +120,11 @@ ScanResultProcessor::doneWithImages()
     if( path.isEmpty() )
         return;
 
-    QList< QPair<QString,QString> > covers = m_imageMap[path];
-    QList< QPair<QString,QString> >::ConstIterator it = covers.begin();
-    for( ; it != covers.end(); ++it )
+    typedef QPair<QString, QString> StringPair;
+    QList< StringPair > covers = m_imageMap[path];
+
+    foreach( const StringPair &key, covers )
     {
-        QPair<QString,QString> key = (*it);
         if( key.first.isEmpty() || key.second.isEmpty() )
             continue;
 
