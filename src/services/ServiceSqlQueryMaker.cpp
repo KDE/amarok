@@ -564,12 +564,9 @@ ServiceSqlQueryMaker::query()
 QStringList
 ServiceSqlQueryMaker::runQuery( const QString &query )
 {
-   DEBUG_BLOCK
    if( d->albumMode == OnlyCompilations )
        return QStringList();
 
-   
-   debug() << "query: " << query;
    return m_collection->query( query );
 }
 
@@ -656,8 +653,6 @@ ServiceSqlQueryMaker::isValidValue( qint64 value )
 QString
 ServiceSqlQueryMaker::nameForValue( qint64 value )
 {
-    DEBUG_BLOCK
-    debug() << "got value "  << value;
     QString prefix = m_metaFactory->tablePrefix();
 
     switch( value )
