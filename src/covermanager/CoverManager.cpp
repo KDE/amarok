@@ -538,7 +538,7 @@ void CoverManager::slotSetFilterTimeout() //SLOT
     m_timer->start( 180 );
 }
 
-void CoverManager::changeView( int id  ) //SLOT
+void CoverManager::changeView( CoverManager::View id  ) //SLOT
 {
     DEBUG_BLOCK
 

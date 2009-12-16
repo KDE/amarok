@@ -68,6 +68,9 @@ class CoverManager : public QSplitter, public Meta::Observer
     public slots:
         void updateStatusBar();
 
+    private:
+        enum View { AllAlbums = 0, AlbumsWithCover, AlbumsWithoutCover };
+
     private slots:
         void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );
         void slotContinueConstruction();
@@ -85,8 +88,8 @@ class CoverManager : public QSplitter, public Meta::Observer
         void slotShowAllAlbums()          { changeView( AllAlbums );          }
         void slotShowAlbumsWithCover()    { changeView( AlbumsWithCover );    }
         void slotShowAlbumsWithoutCover() { changeView( AlbumsWithoutCover ); }
-        void changeView( int id );
-        
+        void changeView( View id );
+
         void fetchMissingCovers();
         void coverFetched( const QString&, const QString& );
         void coverRemoved( const QString&, const QString& );
@@ -96,8 +99,6 @@ class CoverManager : public QSplitter, public Meta::Observer
         void playSelectedAlbums();
 
     private:
-        enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
-
         void loadCover( const QString &, const QString & );
         QList<CoverViewItem*> selectedItems();
 
@@ -110,7 +111,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         KPushButton      *m_fetchButton;
         KPushButton      *m_viewButton;
         KMenu            *m_viewMenu;
-        int               m_currentView;
+        View              m_currentView;
 
         Meta::ArtistList m_artistList;
         QList< QTreeWidgetItem* > m_items;
