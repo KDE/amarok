@@ -564,10 +564,13 @@ ServiceSqlQueryMaker::query()
 QStringList
 ServiceSqlQueryMaker::runQuery( const QString &query )
 {
+   DEBUG_BLOCK
    if( d->albumMode == OnlyCompilations )
        return QStringList();
 
-    return m_collection->query( query );
+   
+   debug() << "query: " << query;
+   return m_collection->query( query );
 }
 
 void

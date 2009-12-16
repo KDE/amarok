@@ -281,7 +281,7 @@ JamendoXmlParser::readAlbum()
     Q_ASSERT( m_reader.isStartElement() && m_reader.name() == "album" );
 
     //debug() << "Found album: ";
-    m_nNumberOfAlbums++;
+    
 
     QString name;
     QString genre;
@@ -322,25 +322,30 @@ JamendoXmlParser::readAlbum()
         }
     }
 
-    JamendoAlbum currentAlbum( name );
-    currentAlbum.setGenre( genre );
-    currentAlbum.setDescription( description );
-    currentAlbum.setId( m_currentAlbumId );
-    currentAlbum.setArtistId( m_currentArtistId );
-    currentAlbum.setLaunchYear( releaseDate.left( 4 ).toInt() );
-    currentAlbum.setCoverUrl( COVERURL_BASE.arg( m_currentAlbumId ) );
-    currentAlbum.setMp3TorrentUrl( TORRENTURL_BASE.arg( QString::number( m_currentAlbumId ), "mp32" ) );
-    currentAlbum.setOggTorrentUrl( TORRENTURL_BASE.arg( QString::number( m_currentAlbumId ), "ogg3" ) );
-    m_albumArtistMap.insert( currentAlbum.id(), currentAlbum.artistId() );
+    //We really do not like albums with no genres, makes the service freeze, so simply ignore this.
+    if( !genre.isEmpty() && genre != "Unknown" )
+    {
+        m_nNumberOfAlbums++;
+        JamendoAlbum currentAlbum( name );
+        currentAlbum.setGenre( genre );
+        currentAlbum.setDescription( description );
+        currentAlbum.setId( m_currentAlbumId );
+        currentAlbum.setArtistId( m_currentArtistId );
+        currentAlbum.setLaunchYear( releaseDate.left( 4 ).toInt() );
+        currentAlbum.setCoverUrl( COVERURL_BASE.arg( m_currentAlbumId ) );
+        currentAlbum.setMp3TorrentUrl( TORRENTURL_BASE.arg( QString::number( m_currentAlbumId ), "mp32" ) );
+        currentAlbum.setOggTorrentUrl( TORRENTURL_BASE.arg( QString::number( m_currentAlbumId ), "ogg3" ) );
+        m_albumArtistMap.insert( currentAlbum.id(), currentAlbum.artistId() );
 
-    int newId = m_dbHandler->insertAlbum( &currentAlbum );
-    countTransaction();
+        int newId = m_dbHandler->insertAlbum( &currentAlbum );
+        countTransaction();
 
-    //debug() << "inserting genre with album_id = " << newId << " and name = " << genreName;
-    ServiceGenre currentGenre( genre );
-    currentGenre.setAlbumId( newId );
-    m_dbHandler->insertGenre( &currentGenre );
-    countTransaction();
+        //debug() << "inserting genre with album_id = " << newId << " and name = " << genreName;
+        ServiceGenre currentGenre( genre );
+        currentGenre.setAlbumId( newId );
+        m_dbHandler->insertGenre( &currentGenre );
+        countTransaction();
+    }
 }
 
 void
