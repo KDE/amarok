@@ -57,7 +57,6 @@ BrowserCategoryListDelegate::paint( QPainter * painter, const QStyleOptionViewIt
     const int iconWidth = 32;
     const int iconHeight = 32;
     const int iconPadX = 4;
-    const int iconPadY = 4;
 
     painter->save();
 
