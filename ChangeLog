@@ -65,6 +65,9 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Fixed a number of cases where markers such as "current track", "stop after 
+      this track" and others would get shown in both group header and the first 
+      track in the group. (BR 197842)
     * Fixed regression causing non default moodbar styles to not work.
     * Jamendo.com service: Fixed track lengths not getting shown for most tracks.
       For existing installs, this requires a redownload of the Jamendo database.
