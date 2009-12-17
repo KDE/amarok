@@ -36,6 +36,7 @@
 
 
 #include <algorithm> // STL
+#include <QAction>
 
 Playlist::Controller* Playlist::Controller::s_instance = 0;
 
@@ -105,9 +106,14 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 
         m_undoStack->beginMacro( "Replace playlist" ); // TODO: does this need to be internationalized?
         clear();
+        
+        //make sure that we turn off dynamic mode.
+        Amarok::actionCollection()->action( "disable_dynamic" )->trigger();
+        
         insertionHelper( -1, list );
         m_undoStack->endMacro();
         firstItemAdded = 0;
+
     }
     else if ( options & Queue )
     {

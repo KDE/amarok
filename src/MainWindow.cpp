@@ -806,6 +806,12 @@ MainWindow::createActions()
     connect( action, SIGNAL(triggered(bool)), pa, SLOT( repopulateDynamicPlaylist() ) );
 
     action = new KAction( this );
+    ac->addAction( "disable_dynamic", action );
+    action->setText( QString() ); //TODO; Give a propper string if we want to use it for anything user visible
+    action->setIcon( KIcon("edit-delete-amarok") );
+    //this is connected inside the dynamic playlist category
+
+    action = new KAction( this );
     ac->addAction( "next", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
     action->setIcon( KIcon("media-skip-forward-amarok") );

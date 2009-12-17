@@ -106,6 +106,8 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
 
     QObject::connect( (const QObject*)Amarok::actionCollection()->action( "playlist_clear" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ) );
+    QObject::connect( (const QObject*)Amarok::actionCollection()->action( "disable_dynamic" ),  SIGNAL( triggered( bool ) ),  this, SLOT( playlistCleared() ), Qt::DirectConnection );
+    
 
 
     KHBox* presetLayout = new KHBox( this );
