@@ -159,7 +159,7 @@ VolumePopupButton::eventFilter( QObject *object, QEvent *event )
     if( event->type() == QEvent::Wheel )
     {
         QWheelEvent* mackintosh = static_cast<QWheelEvent*>( event );
-        Amarok::VolumeSlider* slider = dynamic_cast<Amarok::VolumeSlider*>( object );
+        Amarok::VolumeSlider* slider = qobject_cast<Amarok::VolumeSlider*>( object );
         if( slider )
         {
             // TODO:
