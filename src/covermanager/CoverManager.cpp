@@ -743,7 +743,8 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setWrapping( true );
     setSpacing( 4 );
     setWordWrap( true );
-    setIconSize( QSize(100,100) );
+    setIconSize( QSize(100, 100) );
+    setGridSize( QSize(120, 160) );
     setTextElideMode( Qt::ElideRight );
     setMouseTracking( true );
     setContextMenuPolicy( Qt::DefaultContextMenu );
