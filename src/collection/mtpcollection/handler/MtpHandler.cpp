@@ -270,6 +270,8 @@ MtpHandler::iterateRawDevices( int numrawdevices, LIBMTP_raw_device_t* rawdevice
 void
 MtpHandler::getDeviceInfo()
 {
+    DEBUG_BLOCK
+
     // Get information for device
 
     // Get Battery level and print to debug
@@ -760,6 +762,8 @@ MtpHandler::setDatabaseChanged()
 void
 MtpHandler::prepareToParseTracks()
 {
+    DEBUG_BLOCK
+
     m_currtracklist = LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this );
 }
 
