@@ -507,8 +507,8 @@ InlineEditorWidget::eventFilter( QObject *obj, QEvent *event )
     {
         if( event->type() == QEvent::KeyPress )
         {
-            QKeyEvent * keyEvent = dynamic_cast<QKeyEvent *>( event );
-            if( keyEvent && keyEvent->key() == Qt::Key_Return )
+            QKeyEvent * keyEvent = static_cast<QKeyEvent *>( event );
+            if( keyEvent->key() == Qt::Key_Return )
             {
                 debug() << "InlineEditorWidget ate a return press for a child widget";
                 if( widget )
