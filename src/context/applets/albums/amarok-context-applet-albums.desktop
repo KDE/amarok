@@ -51,6 +51,7 @@ Name[x-test]=xxAlbumsxx
 Name[zh_CN]=专辑
 Name[zh_TW]=專輯
 Type=Service
+Icon=media-album-cover-manager-amarok
 ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_albums

@@ -30,6 +30,7 @@ Name[uk]=Інформація
 Name[x-test]=xxInfoxx
 Name[zh_CN]=信息
 Type=Service
+Icon=info-amarok
 ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_info

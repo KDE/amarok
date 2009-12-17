@@ -31,6 +31,7 @@ Name[uk]=Фотографії
 Name[x-test]=xxPhotosxx
 Name[zh_CN]=照片
 Type=Service
+Icon=photos-amarok
 ServiceTypes=Plasma/Applet
 X-KDE-Library=amarok_context_applet_photos
 X-KDE-PluginInfo-Author=Simon Esneault
