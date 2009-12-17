@@ -33,6 +33,9 @@ VERSION 2.2.2
     * Pressing F2 when focused in the lyrics applet jumps into editing mode.
 
   CHANGES:
+    * The automatic character set detection for tags has been disabled; it
+      caused too many problems with legitimate UTF-8 tags. It can be
+      re-enabled from Settings->Collection. (Many BRs)
     * Dynamic mode is now automatically disabled when replacing the playlist.
       (BR 214759)
     * The collection search filter now also searches for file names as a
