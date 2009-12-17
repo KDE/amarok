@@ -30,6 +30,7 @@ class QPalette;
 class QTimer;
 class BookmarkTriangle;
 
+
 namespace Amarok
 {
     class Slider : public QSlider
@@ -108,12 +109,13 @@ namespace Amarok
         public:
             explicit VolumeSlider( uint max, QWidget *parent, bool customStyle = true );
 
+            // VolumePopupButton needs to access this
+            virtual void wheelEvent( QWheelEvent *e );
+
         protected:
             virtual void paintEvent( QPaintEvent* );
-
             virtual void mousePressEvent( QMouseEvent* );
             virtual void contextMenuEvent( QContextMenuEvent* );
-            virtual void wheelEvent( QWheelEvent *e );
 
         private:
             Q_DISABLE_COPY( VolumeSlider )
