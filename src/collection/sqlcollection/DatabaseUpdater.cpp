@@ -30,7 +30,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 11;
+static const int DB_VERSION = 12;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -124,6 +124,11 @@ DatabaseUpdater::update()
         {
             upgradeVersion10to11();
             dbVersion = 11;
+        }
+        if( dbVersion == 11 && dbVersion < DB_VERSION )
+        {
+            upgradeVersion11to12();
+            dbVersion = 12;
         }
         /*
         if( dbVersion == X && dbVersion < DB_VERSION )
@@ -575,6 +580,14 @@ DatabaseUpdater::upgradeVersion10to11()
     //New default is for the charset detector not to run; but those that have existing collection
     //won't like it if suddenly that changes their behavior, so set to true for existing collections
     AmarokConfig::setUseCharsetDetector( true );
+}
+
+void
+DatabaseUpdater::upgradeVersion11to12()
+{
+    DEBUG_BLOCK
+    //Counteract the above -- force it off for everyone except those explicitly enabling it.
+    AmarokConfig::setUseCharsetDetector( false );
 }
 
 void
