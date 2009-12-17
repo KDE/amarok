@@ -32,6 +32,7 @@
 /**
     This class provide UpcomingEvents data for use in Context applets.
 */
+#include <QDomDocument>
 
 using namespace Context;
 
@@ -55,6 +56,8 @@ public:
 
     void setSelection( const QString& selection ) { m_currentSelection = selection; }
     QString selection() { return m_currentSelection; }
+
+    QList<LastFmEvent> getUpcomingEvents();
     
     /**
     * Fetches the upcoming events for an artist thanks to the LastFm WebService
@@ -62,6 +65,7 @@ public:
     * @return a list of events
     */
     void upcomingEventsRequest(const QString &artist_name);
+    void upcomingEventsParseResult(QDomDocument xml);
     
 protected:
     bool sourceRequestEvent( const QString& name );
@@ -87,8 +91,7 @@ private:
     QString m_xml;
 
 private slots:
-    void upcomingEventsParse( KJob* );
-
+    void upcomingEventsResultFetched( KJob* );
 };
 
 K_EXPORT_AMAROK_DATAENGINE( upcomingEvents, UpcomingEventsEngine )

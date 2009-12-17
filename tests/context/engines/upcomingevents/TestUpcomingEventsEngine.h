@@ -14,36 +14,23 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#include "TestUpcomingEventsEngine.h"
+#ifndef TESTUPCOMINGEVENTSENGINE_H
+#define TESTUPCOMINGEVENTSENGINE_H
 
-#include <context/engines/upcomingevents/UpcomingEventsEngine.h>
-#include <KStandardDirs>
-#include <QtTest/QTest>
-#include <QFile>
-#include <QDomDocument>
+#include <QtCore/QStringList>
 
-
-
-TestUpcomingEventsEngine::TestUpcomingEventsEngine( QStringList testArgumentList, bool stdout )
+class TestUpcomingEventsEngine : public QObject
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "UpcomingEventsEngine.xml" );
-    QTest::qExec( this, testArgumentList );
-}
-
-
-void TestUpcomingEventsEngine::testUpcomingEventsParseResults()
-{    
-    QFile file("response_ok.xml");
-    QDomDocument doc;
-    if (!file.open(QIODevice::ReadOnly))
-        return;
-    if (!doc.setContent(&file)) {
-        file.close();
-        return;
-    }
-    file.close();
+    Q_OBJECT
     
-    m_engine.upcomingEventsParseResult(doc);
-    QCOMPARE(engine.getUpcomingEvents().size(), 2);
-}
+    public:
+        TestUpcomingEventsEngine( QStringList testArgumentList, bool stdout );
+        
+    private slots:
+        void testUpcomingEventsParseResults();
+
+    private:
+        UpcomingEventsEngine m_engine;
+};
+
+#endif // TESTUPCOMINGEVENTSENGINE_H

@@ -146,6 +146,14 @@ void UpcomingEventsEngine::reloadUpcomingEvents()
 }
 
 
+QList< LastFmEvent >
+UpcomingEventsEngine::getUpcomingEvents()
+{
+    return m_upcomingEvents;
+}
+
+
+
 void
 UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
 {
@@ -158,25 +166,32 @@ UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
 
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL(result( KJob* )), SLOT(upcomingEventsParse( KJob* )) );
+    connect( job, SIGNAL(result( KJob* )), SLOT(upcomingEventsResultFetched( KJob* )) );
+    //job->start();
 }
 
-
 void
-UpcomingEventsEngine::upcomingEventsParse( KJob* job ) // SLOT
+UpcomingEventsEngine::upcomingEventsResultFetched (KJob* job) // SLOT
 {
     m_upcomingEvents.clear();
-
-    if( job )
+    
+    if( !job->error() )
     {
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
         m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
     }
     else
         return;
-
+    
     QDomDocument doc;
     doc.setContent( m_xml );
+    upcomingEventsParseResult(doc);
+}
+
+
+void
+UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
+{
     
     const QDomNode events = doc.documentElement().namedItem( "events" );
 
@@ -245,7 +260,6 @@ UpcomingEventsEngine::upcomingEventsParse( KJob* job ) // SLOT
         
         n = n.nextSibling();
     }
-
     update();
 }
 

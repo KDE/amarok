@@ -154,7 +154,7 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
     url.addQueryItem( "method", "artist.getSimilar" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
-    url.addQueryItem( "limit", m_maxArtists );
+    url.addQueryItem( "limit", QString(m_maxArtists) );
 
     m_artist=artist_name;
 
