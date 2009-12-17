@@ -93,7 +93,7 @@ private:
     QList<SimilarArtist> m_similarArtists;
     QString m_xml;
 
-    QString m_artist; 
+    QString m_artist;
     
 private slots:
     void similarArtistsParse( KJob* );

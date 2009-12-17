@@ -46,6 +46,8 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject* parent, const QList<QVarian
 SimilarArtistsEngine::~SimilarArtistsEngine()
 {
     DEBUG_BLOCK
+    delete m_similarArtistsJob;
+    
 }
 
 QMap<int, QString> SimilarArtistsEngine::similarArtists(const QString &artist_name)
@@ -69,9 +71,10 @@ bool SimilarArtistsEngine::sourceRequestEvent( const QString& name )
 
     // user has changed the maximum artists returned.
     if ( tokens.contains( "maxArtists" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )
+        if ( ( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )            
             m_maxArtists = tokens.at( 2 ).toInt();
-    
+
+            
     // otherwise, it comes from the engine, a new track is playing.
     removeAllData( name );
     setData( name, QVariant());
@@ -97,14 +100,14 @@ void SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 void SimilarArtistsEngine::update()
 {
     DEBUG_BLOCK
+    
 
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    
     // We've got a new track, great, let's fetch some info from SimilarArtists !
     m_triedRefinedSearch = 0;
     QString artistName;
     
-
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-
     unsubscribeFrom( m_currentTrack );
     m_currentTrack = currentTrack;
     subscribeTo( currentTrack );
@@ -137,9 +140,7 @@ void SimilarArtistsEngine::update()
     setData( "similarArtists", "cover",  QVariant( cover ) );
 
     similarArtistsRequest( artistName );
-    QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
 
-    setData ( "similarArtists", "SimilarArtists", variant );
 }
 
 void
@@ -157,9 +158,9 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
     url.addQueryItem( "limit", QString(m_maxArtists) );
 
     m_artist=artist_name;
-
-    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL(result( KJob* )), SLOT(similarArtistsParse( KJob* )) );
+    
+    m_similarArtistsJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
+    connect( m_similarArtistsJob, SIGNAL(result( KJob* )), SLOT(similarArtistsParse( KJob* )) );
 }
 
 void
@@ -168,6 +169,21 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
     DEBUG_BLOCK
     m_similarArtists.clear();
 
+    if( !m_similarArtistsJob ) return; //track changed while we were fetching
+
+    // It's the correct job but it errored out
+    if( job->error() != KJob::NoError && job == m_similarArtistsJob )
+    {
+        //TODO display a error message
+        //setData( "similarArtists", "message", i18n( "Unable to retrieve SimilarArtists information: %1", job->errorString() ) );
+        m_similarArtistsJob = 0; // clear job
+        return;
+    }    
+        
+    // not the right job, so let's ignore it
+    if( job != m_similarArtistsJob)
+        return;
+        
     if( job )
     {
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
@@ -201,7 +217,7 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
         int match;
         if( !eMatch.isNull() )
         {
-            match = eMatch.text().toInt();
+            match = eMatch.text().toFloat(); //implicite cast
         }
 
         // Url of the similar artist on last.fm
@@ -233,7 +249,10 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
         n = n.nextSibling();
     }
 
-    update();
+    m_similarArtistsJob=0;
+
+    QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+    setData ( "similarArtists", "SimilarArtists", variant );
 }
 
 

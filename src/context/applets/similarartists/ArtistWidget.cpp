@@ -25,17 +25,16 @@
 #include <QGraphicsProxyWidget>
 #include <QPushButton>
 #include <QLabel>
+#include <QDesktopServices>
 
 ArtistWidget::ArtistWidget(QWidget *parent) : QWidget(parent)
 {
-    //TODO not use a fixed size
-    setFixedSize(420, 240);
-
     m_layout=new QGridLayout(this);
+
+    this->setAttribute(Qt::WA_TranslucentBackground, true); // The background og this widget is transparent
     
     m_image=new QLabel( this );
     m_image->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
-    m_image->setScaledContents(true);                           // The QLabel scale is content
     
     m_name=new QLabel( this );
     m_name->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
@@ -50,14 +49,18 @@ ArtistWidget::ArtistWidget(QWidget *parent) : QWidget(parent)
     m_layout->addWidget(m_name,0,1);
     m_layout->addWidget(m_genre,1,1);
 
+    // open the url of the similar artist when his name is clicked
+    connect(m_name,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
 }
 
 
 ArtistWidget::~ArtistWidget()
 {
+     delete m_layout;
      delete m_image;
      delete m_name;
      delete m_genre;
+     delete m_imageJob;
 }
 
 
@@ -76,26 +79,47 @@ ArtistWidget::setPhoto( const QPixmap & photo) {
   */
 void ArtistWidget::setPhoto(const KUrl& urlPhoto)
 {
-    KJob* job = KIO::storedGet( urlPhoto, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL(result( KJob* )), SLOT(setImageFromInternet( KJob* ) ));
+    // display a message for the user while the fetch of the picture
+    m_image->clear();
+    m_image->setText(i18n("Loading the picture..."));
+    
+    m_imageJob = KIO::storedGet( urlPhoto, KIO::NoReload, KIO::HideProgressInfo );
+    connect( m_imageJob, SIGNAL(result( KJob* )), SLOT(setImageFromInternet( KJob* ) ));
 }
 
 
 void ArtistWidget::setImageFromInternet(KJob* job)
 {
+    if( !m_imageJob ) return; //track changed while we were fetching
+
+    // It's the correct job but it errored out
+    if( job->error() != KJob::NoError && job == m_imageJob )
+    {
+        m_image->clear();
+        m_image->setText(i18n("Unable to fetch the picture"));
+        m_imageJob = 0; // clear job
+        return;
+    }
+        
+    // not the right job, so let's ignore it
+    if( job != m_imageJob )
+        return;
+    
     if( job )
     {
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-        //m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
         QPixmap image;
         image.loadFromData(storedJob->data());
+        m_image->clear();
         m_image->setPixmap(image);
     }
     else
     {
         m_image->clear();
-        m_image->setText(i18n("No image"));
+        m_image->setText(i18n("No picture"));
     }
+
+    m_imageJob=0;
 }
 
 
@@ -106,18 +130,18 @@ void ArtistWidget::setImageFromInternet(KJob* job)
  * @param url The url of the artist about page
  */
 void
-ArtistWidget::setArtist( const QString & nom, const QString & url) {
+ArtistWidget::setArtist( const QString &nom, const KUrl &url) {
     DEBUG_BLOCK
-    m_name->setText("<a href='" + url + "'>" + nom +"</a>");    
+    m_name->setText("<a href='" + url.url() + "'>" + nom +"</a>");
 }
 
-/**
- * Change the genre of the artist
- * @param genre The new artist genres
- */
+ /**
+  * Change the match pourcentage of the artist
+  * @param match The match of this artist
+  */
 void
-ArtistWidget::setGenres( const QString & genres) {
-    m_genre->setText(i18n( "Genres") + " : " +genres);
+ArtistWidget::setMatch( const int match) {
+    m_genre->setText(i18n( "Match") + " : " + QString::number(match) + "%");
 }
 
 /**
@@ -128,4 +152,10 @@ ArtistWidget::clear() {
     m_image->clear();
     m_name->clear();
     m_genre->clear();
+}
+
+
+void ArtistWidget::openUrl(QString url)
+{
+    QDesktopServices::openUrl(KUrl("http://" +url));
 }
