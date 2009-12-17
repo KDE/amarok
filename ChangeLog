@@ -33,6 +33,8 @@ VERSION 2.2.2
     * Pressing F2 when focused in the lyrics applet jumps into editing mode.
 
   CHANGES:
+    * Dynamic mode is now automatically disabled when replacing the playlist.
+      (BR 214759)
     * The collection search filter now also searches for file names as a
       fallback. Patch by Andreas Hartmetz <ahartmetz@gmail.com>.
     * Tracks in Albums applet are now sorted by track number. Patch by Lorenz
