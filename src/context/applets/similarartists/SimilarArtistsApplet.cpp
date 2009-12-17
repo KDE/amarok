@@ -209,9 +209,10 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
         // we see if the artist name is valid
         if (artistName.compare( "" ) != 0) {
-           
-           m_headerLabel->setText( i18n( "Similar artists of %1", artistName ) );
 
+           m_headerLabel->setText( i18n( "Similar artists of %1", artistName ) );
+           
+           
            SimilarArtist::SimilarArtistsList similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
 
            if ( !similars.isEmpty() )
