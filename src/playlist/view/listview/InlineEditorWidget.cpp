@@ -356,7 +356,7 @@ InlineEditorWidget::paintEvent( QPaintEvent * event )
         PrettyItemDelegate delegate;
         QStyleOptionViewItem option;
         option.rect = QRect( 0, 0, width(), m_headerHeight );
-        delegate.paintItem( m_layout.head(), &painter, option, m_index );
+        delegate.paintItem( m_layout.head(), &painter, option, m_index, true );
     }
 
     event->accept();

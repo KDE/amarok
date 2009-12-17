@@ -250,7 +250,7 @@ PrettyItemDelegate::centerImage( const QPixmap& pixmap, const QRectF& rect ) con
 }
 
 
-void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker ) const
+void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreMarkers ) const
 {
     int rowCount = config.rows();
 
@@ -281,7 +281,8 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
         qreal rowWidth = option.rect.width() - ( rowOffsetX + MARGINH );
 
-        if ( i == config.activeIndicatorRow() && index.data( ActiveTrackRole ).toBool() )
+        //We do not want to paint this for head items.
+        if ( !ignoreMarkers && i == config.activeIndicatorRow() && index.data( ActiveTrackRole ).toBool() )
         {
 
             //paint this in 3 parts to solve stretching issues with wide playlists
@@ -461,7 +462,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
             painter->drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
     }
 
-    if( index.data( StateRole ).toInt() & Item::Queued && !ignoreQueueMarker )
+    if( !ignoreMarkers && index.data( StateRole ).toInt() & Item::Queued )
     {
         // Check that the queue position is actually valid
         const int queuePosition = index.data( QueuePositionRole ).toInt();
@@ -483,7 +484,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
             warning() << "discrepancy: Item::Queued but queuePosition == 0";
     }
 
-    if( index.data( MultiSourceRole ).toBool() && !ignoreQueueMarker )
+    if( !ignoreMarkers && index.data( MultiSourceRole ).toBool() )
     {
         const int w = 16, h = 16;
         const int x = markerOffsetX;
@@ -497,7 +498,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
             rowOffsetX += ( 16 + PADDING );
     }
 
-    if( index.data( StopAfterTrackRole ).toBool() )
+    if( !ignoreMarkers && index.data( StopAfterTrackRole ).toBool() )
     {
         const int w = 16, h = 16;
         const int x = markerOffsetX;

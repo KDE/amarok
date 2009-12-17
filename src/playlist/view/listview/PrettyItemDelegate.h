@@ -56,7 +56,20 @@ public:
     void setModelData ( QWidget * editor, QAbstractItemModel * model, const QModelIndex & index ) const;
     void updateEditorGeometry ( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
-    void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreQueueMarker = false ) const;
+
+    /**
+    * Paint a playlist item based on a LayoutItemConfig
+    *
+    * @param config The LayoutItemConfig that defines how the item should look and which info it should include.
+    * @param painter The QPainter used to paint the item.
+    * @param option Additional state options used to paint the item..
+    * @param index The model index of the track in the playlist that we are painting.
+    * @param ignoreMarkers A boolean value specifying wheter we should ignore any "markers" when painting this item.
+    *                      Markers can be such things as the "now playing" background, queue markers, multi track markers and the likes.
+    *                      The main reason for wanting to ignore these is that when painting the head part of the first track in the group, these
+    *                      things should not be shown as they will be hown in the track part of the item.
+    */
+    void paintItem( LayoutItemConfig config, QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index, bool ignoreMarkers = false ) const;
 
 
 protected slots:
