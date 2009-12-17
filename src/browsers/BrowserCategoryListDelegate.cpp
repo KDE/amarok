@@ -98,13 +98,14 @@ BrowserCategoryListDelegate::paint( QPainter * painter, const QStyleOptionViewIt
     textRect.setLeft( QApplication::isRightToLeft() ? 0 : iconRight );
     textRect.setTop( option.rect.top() + iconYPadding + bigFm.boundingRect( collectionName ).height() );
     textRect.setWidth( width - iconRight );
-    textRect.setHeight( height - ( iconHeight + iconPadY ) );
+    textRect.setHeight( textRect.top() + smallFm.height() );
 
     painter->setFont( m_smallFont );
 
     QString shortDescription = index.data( CustomCategoryRoles::ShortDescriptionRole ).toString();
     shortDescription = smallFm.elidedText( shortDescription, Qt::ElideRight, textRect.width() );
 
+    
     painter->drawText( textRect, shortDescription );
     painter->restore();
 }
