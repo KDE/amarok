@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QAction>
 
 namespace Amarok { class LineEdit; }
 
@@ -179,6 +180,28 @@ class CoverViewItem : public QListWidgetItem
         QString m_coverImagePath;
         bool    m_embedded;
         QListWidget *m_parent;
+};
+
+/**
+*   Wrapper class to connect multiple actions to a single entry
+*/
+class MultipleAction : public QAction
+{
+    Q_OBJECT
+    public:
+        MultipleAction( QObject *parent, QList<QAction *> actions )
+            : QAction( parent )
+        {
+            foreach( QAction *action, actions )
+                connect( this, SIGNAL( triggered( bool ) ), action, SLOT( trigger() ) );
+
+            if ( actions.count() > 0 )
+            {
+                setText( actions.value(0)->text() );
+                setIcon( actions.value(0)->icon() );
+                setToolTip( actions.value(0)->toolTip() );
+            }
+        }
 };
 
 #endif

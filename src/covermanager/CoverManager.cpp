@@ -736,23 +736,41 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
 
 void CoverView::contextMenuEvent( QContextMenuEvent *event )
 {
-    CoverViewItem* item = dynamic_cast<CoverViewItem*>( itemAt( event->pos() ) );
-    if( item )
+    QList<QListWidgetItem*> items = selectedItems();
+
+    if( items.count() > 0 )
     {
+        QMap<QString,QList<QAction *> >  cacs;
         KMenu menu;
         menu.addTitle( i18n( "Cover Image" ) );
-
-        Meta::AlbumPtr album = item->albumPtr();
-        if( album )
+        
+        for (int x = 0; x < items.count(); ++x)
         {
-            Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
-            if( cac )
+            CoverViewItem *item = dynamic_cast<CoverViewItem*>(items.value(x));
+            Meta::AlbumPtr album = item->albumPtr();
+            if( album )
             {
-                QList<QAction *> actions = cac->customActions();
+                Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
+                if( cac )
+                {
+                    QList<QAction *> actions = cac->customActions();
 
-                menu.addSeparator();
-                foreach( QAction *action, actions )
-                    menu.addAction( action );
+                    foreach( QAction *action, actions )
+                    {
+                        cacs[action->text()].append(action);
+                    }
+                }
+            }
+        }
+
+        if( cacs.count() > 0 )
+        {
+            menu.addSeparator();
+
+            foreach ( QList<QAction *> actionList, cacs )
+            {
+                MultipleAction *maction = new MultipleAction( this, actionList );
+                menu.addAction( maction );
             }
         }
         menu.exec( event->globalPos() );
@@ -760,7 +778,6 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
     else
         QListView::contextMenuEvent( event );
     // TODO
-    // Multiple selections
     // Play, Load and Append to playlist actions
     // Set custom cover action
 }
