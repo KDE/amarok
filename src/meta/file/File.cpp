@@ -627,28 +627,37 @@ Track::createCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::Editable:
             return new EditCapabilityImpl( this );
+
         case Meta::Capability::Importable:
             return new StatisticsCapabilityImpl( this );
+
         case Meta::Capability::CurrentTrackActions:
             {
-            QList< QAction * > actions;
-            QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
-            actions << flag;
-            debug() << "returning bookmarkcurrenttrack action";
-            return new Meta::CurrentTrackActionsCapability( actions );
+                QList< QAction * > actions;
+                QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
+                actions << flag;
+                debug() << "returning bookmarkcurrenttrack action";
+                return new Meta::CurrentTrackActionsCapability( actions );
             }
+
         case Meta::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityImpl( this );
+
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityImpl( this );
+
 #if HAVE_LIBLASTFM
        case Meta::Capability::ReadLabel:
            if( !d->readLabelCapability )
                d->readLabelCapability = new Meta::LastfmReadLabelCapability( this );
+
            return d->readLabelCapability;
 #endif
-        default:
-            return 0;
+
+        default: // fall-through
+
+
+        return 0;
     }
 }
 

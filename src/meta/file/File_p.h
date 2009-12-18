@@ -111,7 +111,6 @@ public:
         , album()
         , artist()
         , provider( 0 )
-        , readLabelCapability( 0 )
         , track( t )
     {}
 
@@ -124,7 +123,7 @@ public:
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
     Meta::StatisticsProvider *provider;
-    Meta::LastfmReadLabelCapability *readLabelCapability;
+    QPointer<Meta::LastfmReadLabelCapability> readLabelCapability;
 
     void readMetaData();
     QVariantMap changes;

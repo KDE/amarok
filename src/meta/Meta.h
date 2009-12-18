@@ -119,7 +119,7 @@ namespace Meta
         {
             Meta::Capability::Type type = CapIface::capabilityInterfaceType();
             Meta::Capability *iface = createCapabilityInterface( type );
-            return dynamic_cast<CapIface *>( iface );
+            return qobject_cast<CapIface *>( iface );
         }
 
         /**
