@@ -21,8 +21,8 @@
 
 #include "amarokconfig.h"
 #include "Debug.h"
-#include "Meta.h"
-#include "MetaUtility.h"
+#include "meta/Meta.h"
+#include "meta/MetaUtility.h"
 #include "MetaReplayGain.h"
 #include "meta/StatisticsProvider.h"
 
