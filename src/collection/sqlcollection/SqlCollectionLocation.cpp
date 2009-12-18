@@ -209,7 +209,10 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
     m_sources = sources;
 
     if( !startNextJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
+    {
+        m_collection->scanManager()->setBlockScan( false ); //unblock scanning if we encountered an error while copying as well
         slotCopyOperationFinished();
+    }
 }
 
 void
