@@ -19,7 +19,7 @@
 #define AMAROK_COLLECTIONLOCATION_H
 
 #include "amarok_export.h"
-#include "Meta.h"
+#include "meta/Meta.h"
 
 #include <QList>
 #include <QObject>
