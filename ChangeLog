@@ -70,6 +70,7 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Fixed crash with "Edit Track Details" dialog. (BR 217625)
     * Fixed a number of cases where markers such as "current track", "stop after 
       this track" and others would get shown in both group header and the first 
       track in the group. (BR 197842)
