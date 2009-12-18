@@ -118,8 +118,8 @@ namespace Meta
         template <class CapIface> CapIface *create()
         {
             Meta::Capability::Type type = CapIface::capabilityInterfaceType();
-            Meta::Capability *iface = createCapabilityInterface(type);
-            return qobject_cast<CapIface *>(iface);
+            Meta::Capability *iface = createCapabilityInterface( type );
+            return dynamic_cast<CapIface *>( iface );
         }
 
         /**
