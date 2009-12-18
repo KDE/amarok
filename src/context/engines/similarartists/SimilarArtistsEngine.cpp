@@ -129,17 +129,15 @@ void SimilarArtistsEngine::update()
                 artistName = currentTrack->artist()->prettyName();
         }
         
-        if (artistName.compare( "") == 0) {
+        if (artistName.compare("") == 0) {
             setData( "similarArtists", "artist", "Unknown artist" );
-        } else {
+        } else if(artistName!=m_artist) { // we update the data only
+                                          // if the artist has changed
             setData( "similarArtists", "artist", artistName );
+            similarArtistsRequest( artistName );
         }
     }
 
-    QPixmap cover = m_currentTrack->album()->image( 156 );
-    setData( "similarArtists", "cover",  QVariant( cover ) );
-
-    similarArtistsRequest( artistName );
 
 }
 
