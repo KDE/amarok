@@ -36,6 +36,7 @@ Name[x-test]=xxVideoclipxx
 Name[zh_CN]=视频剪辑
 Name[zh_TW]=影片剪輯
 Type=Service
+Icon=videoclip-amarok
 ServiceTypes=Plasma/Applet
 X-KDE-Library=amarok_context_applet_videoclip
 X-KDE-PluginInfo-Author=Simon Esneault

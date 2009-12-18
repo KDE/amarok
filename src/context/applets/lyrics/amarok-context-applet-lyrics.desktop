@@ -41,6 +41,7 @@ Name[x-test]=xxLyricsxx
 Name[zh_CN]=歌词
 Name[zh_TW]=歌詞
 Type=Service
+Icon=amarok_lyrics
 ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_lyrics
