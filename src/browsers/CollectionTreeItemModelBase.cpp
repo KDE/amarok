@@ -638,15 +638,15 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                                 tmp += c;
                             else if( c == 'm' )
                             {
-                                months = 0 - QString( tmp ).toInt();
-                                tmp = "";
+                                months = 0 - tmp.toInt();
+                                tmp.clear();
                             } else if( c == 'w' )
                             {
-                                weeks = 0 - 7 * QString( tmp ).toInt();
-                                tmp = "";
+                                weeks = 0 - 7 * tmp.toInt();
+                                tmp.clear();
                             } else if( c == 'd' )
                             {
-                                days = 0 - QString( tmp ).toInt();
+                                days = 0 - tmp.toInt();
                                 break;
                             }
                         }
