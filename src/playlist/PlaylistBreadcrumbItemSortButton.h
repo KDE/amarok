@@ -79,9 +79,36 @@ signals:
     void arrowToggled( Qt::SortOrder );
 
 protected:
+    /**
+     * Repaints the widget.
+     * @param event the triggered QPaintEvent as provided by Qt.
+     */
     virtual void paintEvent( QPaintEvent *event );
+
+    /**
+     * Checks if the mouse is hovering the arrow rectangle.
+     * @param e the triggered QMouseEvent as provided by Qt.
+     */
+    virtual void mouseMoveEvent( QMouseEvent *e );
+
+    /**
+     * Handles the beginning of a mouse click.
+     * @param e the triggered QMouseEvent as provided by Qt.
+     */
     virtual void mousePressEvent( QMouseEvent *e );
+
+    /**
+     * Handles the release of the mouse button which completes a click action.
+     * @param e the triggered QMouseEvent as provided by Qt.
+     */
     virtual void mouseReleaseEvent( QMouseEvent *e );
+
+    /**
+     * Reimplemented from BreadcrumbItemButton, handles the painting of the widget's
+     * background, used by paintEvent().
+     * @param painter the QPainter object used by paintEvent().
+     */
+    virtual void drawHoverBackground( QPainter *painter );
 
 private:
     /**
@@ -90,9 +117,10 @@ private:
     void init();
     Qt::SortOrder m_order;
     bool m_noArrows;
-    QRect m_arrowRect;
-    QPoint m_pressedPos;
+    QRect m_arrowRect;      //! the QRect that contains the order inversion arrow primitive.
+    QPoint m_pressedPos;    //! the position of the last mousePressEvent, for handling clicks.
     bool m_arrowPressed;
+    bool m_arrowHovered;    //! is the arrow rect hovered?
 };
 
 }   //namespace Playlist

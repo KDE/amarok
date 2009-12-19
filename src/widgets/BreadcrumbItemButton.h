@@ -60,7 +60,7 @@ class BreadcrumbItemButton : public Amarok::ElidingButton
         virtual void leaveEvent(QEvent* event);
 
         virtual void paintEvent(QPaintEvent* event);
-        void drawHoverBackground(QPainter* painter);
+        virtual void drawHoverBackground(QPainter* painter);
 
         /** Returns the foreground color by respecting the current display hint. */
         QColor foregroundColor() const;
