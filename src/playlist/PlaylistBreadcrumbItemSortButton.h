@@ -121,6 +121,8 @@ private:
     QPoint m_pressedPos;    //! the position of the last mousePressEvent, for handling clicks.
     bool m_arrowPressed;
     bool m_arrowHovered;    //! is the arrow rect hovered?
+    int m_arrowWidth;
+    int m_arrowHeight;
 };
 
 }   //namespace Playlist

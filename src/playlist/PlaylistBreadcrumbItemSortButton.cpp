@@ -31,6 +31,8 @@ BreadcrumbItemSortButton::BreadcrumbItemSortButton( QWidget *parent )
     , m_noArrows( false )
     , m_arrowPressed( false )
     , m_arrowHovered( false )
+    , m_arrowWidth( 11 )
+    , m_arrowHeight( 13 )
 {
     init();
 }
@@ -40,6 +42,9 @@ BreadcrumbItemSortButton::BreadcrumbItemSortButton( const QIcon &icon, const QSt
     , m_order( Qt::AscendingOrder )
     , m_noArrows( noArrows )
     , m_arrowPressed( false )
+    , m_arrowHovered( false )
+    , m_arrowWidth( 11 )
+    , m_arrowHeight( 13 )
 {
     init();
 }
@@ -74,11 +79,9 @@ BreadcrumbItemSortButton::paintEvent( QPaintEvent *event )
         getContentsMargins ( &left, &top, &right, &bottom );
         const int padding = 2;
 
-        const int arrowWidth = 11;
-        const int arrowHeight = 13;
-        const int arrowLeft = buttonWidth - arrowWidth - padding;
-        const int arrowTop = ( ( buttonHeight - top - bottom) - arrowHeight )/2;
-        m_arrowRect = QRect( arrowLeft, arrowTop, arrowWidth, arrowHeight );
+        const int arrowLeft = buttonWidth - m_arrowWidth - padding;
+        const int arrowTop = ( ( buttonHeight - top - bottom) - m_arrowHeight )/2;
+        m_arrowRect = QRect( arrowLeft, arrowTop, m_arrowWidth, m_arrowHeight );
 
         drawHoverBackground( &painter );
 
@@ -96,7 +99,7 @@ BreadcrumbItemSortButton::paintEvent( QPaintEvent *event )
         else
             style()->drawPrimitive( QStyle::PE_IndicatorArrowUp, &option, &painter, this );
 
-        QRect newPaintRect( 0, 0, buttonWidth - arrowWidth - padding, buttonHeight );
+        QRect newPaintRect( 0, 0, buttonWidth - m_arrowWidth - padding, buttonHeight );
         QPaintEvent *newEvent = new QPaintEvent( newPaintRect );
         BreadcrumbItemButton::paintEvent( newEvent );
     }
@@ -173,7 +176,7 @@ BreadcrumbItemSortButton::sizeHint() const
     if( !m_noArrows )
     {
         QSize size = BreadcrumbItemButton::sizeHint();
-        size.setWidth( size.width() + 10 ); //+arrow width
+        size.setWidth( size.width() + m_arrowWidth );
         return size;
     }
     else
