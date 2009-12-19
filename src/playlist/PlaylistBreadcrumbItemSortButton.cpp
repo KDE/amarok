@@ -74,8 +74,8 @@ BreadcrumbItemSortButton::paintEvent( QPaintEvent *event )
         getContentsMargins ( &left, &top, &right, &bottom );
         const int padding = 2;
 
-        const int arrowWidth = 10;
-        const int arrowHeight = 10;
+        const int arrowWidth = 11;
+        const int arrowHeight = 13;
         const int arrowLeft = buttonWidth - arrowWidth - padding;
         const int arrowTop = ( ( buttonHeight - top - bottom) - arrowHeight )/2;
         m_arrowRect = QRect( arrowLeft, arrowTop, arrowWidth, arrowHeight );
