@@ -111,7 +111,7 @@
     <entry key="Group Artists" type="Bool">
         <label>Whether organize files will group artists whose names start with the same character.</label>
         <whatsthis>If set, Organize files will group artists whose names start with the same character.</whatsthis>
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry key="Ignore The" type="Bool">
         <label>Whether organize files will ignore The in artist names.</label>
