@@ -95,6 +95,13 @@ class AMAROK_EXPORT CollectionLocation : public QObject
 {
     Q_OBJECT
 
+    //testing only do not use these properties in anything but tests
+    Q_PROPERTY( bool removeSources
+                READ getRemoveSources
+                WRITE setRemoveSources
+                DESIGNABLE false
+                SCRIPTABLE false )
+
     public:
         CollectionLocation();
         CollectionLocation( const Amarok::Collection* parentCollection );
@@ -313,10 +320,15 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         CollectionLocation * m_destination;
         //only used in destination CollectionLocation
         CollectionLocation *m_source;
+
+        Meta::TrackList getSourceTracks() const { return m_sourceTracks; }
+        void setSourceTracks( Meta::TrackList tracks ) { m_sourceTracks = tracks; }
         Meta::TrackList m_sourceTracks;
 
         const Amarok::Collection* m_parentCollection;
-        
+
+        bool getRemoveSources() const { return m_removeSources; }
+        void setRemoveSources( bool removeSources ) { m_removeSources = removeSources; }
         bool m_removeSources;
         bool m_isRemoveAction;
         //used by the source collection to store the tracks that were successfully
