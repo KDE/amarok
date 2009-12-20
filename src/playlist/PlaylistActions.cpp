@@ -400,7 +400,8 @@ Playlist::Actions::engineNewTrackPlaying()
 
     m_nextTrackCandidate = 0;
 
-    if( AmarokConfig::autoScrollPlaylist() )
+    // mainWindow() can be 0 on startup, so we have to check for it
+    if( The::mainWindow() && AmarokConfig::autoScrollPlaylist() )
         The::mainWindow()->playlistWidget()->currentView()->scrollToActiveTrack();
 }
 
