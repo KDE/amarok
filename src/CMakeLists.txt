@@ -282,6 +282,7 @@ set(meta_SRCS
     meta/M3UPlaylist.cpp
     meta/Meta.cpp
     meta/MetaUtility.cpp
+    meta/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
     meta/Playlist.cpp
     meta/PLSPlaylist.cpp

@@ -23,6 +23,7 @@
 #include "Debug.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
+#include "meta/TagLibUtils.h"
 #include "MetaReplayGain.h"
 #include "meta/StatisticsProvider.h"
 

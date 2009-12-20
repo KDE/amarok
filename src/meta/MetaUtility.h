@@ -25,11 +25,6 @@
 #include <QString>
 #include <QVariant>
 
-namespace TagLib
-{
-    class FileRef;
-}
-
 class AMAROK_EXPORT AlbumKey
 {
 public:
@@ -70,8 +65,6 @@ namespace Meta
         //this method will return a map with keys that are compatible to the fdo MPRIS specification
         AMAROK_EXPORT QVariantMap mprisMapFromTrack( const Meta::TrackPtr track );
         AMAROK_EXPORT void updateTrack( Meta::TrackPtr track, const QVariantMap &metadata );
-        AMAROK_EXPORT void writeFields( const QString &filename, const QVariantMap &changes );
-        AMAROK_EXPORT void writeFields( TagLib::FileRef fileref, const QVariantMap &changes );
         AMAROK_EXPORT QString xesamPrettyToFullFieldName( const QString &name );
         AMAROK_EXPORT QString xesamFullToPrettyFieldName( const QString &name );
     }
