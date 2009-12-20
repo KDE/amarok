@@ -20,9 +20,9 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "Collection.h"
+#include "collection/Collection.h"
 #include "Debug.h"
-#include "QueryMaker.h"
+#include "collection/QueryMaker.h"
 #include "SvgHandler.h"
 
 #include <QDir>
