@@ -16,7 +16,7 @@
 
 #include "SortAlgorithms.h"
 
-#include "Debug.h"
+#include "AbstractModel.h"
 
 namespace Playlist
 {
@@ -32,7 +32,26 @@ multilevelLessThan::operator()( int rowA, int rowB)
             return static_cast<bool>( qrand() % 2 );
         QVariant dataA = m_sourceProxy->index( rowA, currentCategory ).data();  //FIXME: are you sure you need to do comparisons on sourceProxy indexes?
         QVariant dataB = m_sourceProxy->index( rowB, currentCategory ).data();  //or better, are you sure those rowA and rowB don't need a rowToSource around them?
-        if( m_scheme.level( i ).isString() )
+
+        //Handle "Last Played" as a special case because the time since last played is not
+        //reported as an int in the data columns.
+        //Also, the verdicts are inverted because I answer to the question about the time
+        //since the track was played by comparing the absolute time when the track was last
+        //played.
+        if( m_scheme.level( i ).category() == Playlist::LastPlayed )
+        {
+            Meta::TrackPtr trackA = dynamic_cast< AbstractModel * >( m_sourceProxy )->trackAt( rowA );
+            Meta::TrackPtr trackB = dynamic_cast< AbstractModel * >( m_sourceProxy )->trackAt( rowB );
+            if( trackA->lastPlayed() < trackB->lastPlayed() )
+                verdict = 0;
+            else if( trackA->lastPlayed() > trackB->lastPlayed() )
+                verdict = 1;
+            else
+                verdict = 2;
+        }
+
+        //And now the comparison logic for ordinary columns.
+        else if( m_scheme.level( i ).isString() )
         {
             if( dataA.toString().toLower() < dataB.toString().toLower() )
                 verdict = 1;

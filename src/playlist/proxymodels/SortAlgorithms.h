@@ -35,7 +35,7 @@ struct multilevelLessThan
 {
     /**
      * Constructor.
-     * @param sourceProxy a pointer to the FilteProxy instance.
+     * @param sourceProxy a pointer to the underlying proxy instance.
      * @param scheme the sorting scheme that needs to be applied.
      */
     multilevelLessThan( QAbstractItemModel *sourceProxy, const SortScheme &scheme )
