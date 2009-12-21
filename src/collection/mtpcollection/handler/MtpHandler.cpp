@@ -52,10 +52,10 @@ MtpHandler::MtpHandler( MtpCollection *mc )
     , m_isCanceled( false )
     , m_wait( false )
     , m_dbChanged( false )
-    , m_currtracklist( 0 )
-    , m_currtrack( 0 )
-    , m_currplaylistlist( 0 )
-    , m_currplaylist( 0 )
+    , m_currentTrackList( 0 )
+    , m_currentTrack( 0 )
+    , m_currentPlaylistList( 0 )
+    , m_currentPlaylist( 0 )
     , m_trackcounter( 0 )
     , m_copyParentId( 0 )
     , m_tempDir( new KTempDir() )
@@ -764,25 +764,25 @@ MtpHandler::prepareToParseTracks()
 {
     DEBUG_BLOCK
 
-    m_currtracklist = QSharedPointer<LIBMTP_track_t>( LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this ) );
+    m_currentTrackList = QSharedPointer<LIBMTP_track_t>( LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this ) );
 }
 
 bool
 MtpHandler::isEndOfParseTracksList()
 {
-    return m_currtracklist ? false : true;
+    return m_currentTrackList ? false : true;
 }
 
 void
 MtpHandler::prepareToParseNextTrack()
 {
-    m_currtracklist = QSharedPointer<LIBMTP_track_t>( m_currtracklist->next );
+    m_currentTrackList = QSharedPointer<LIBMTP_track_t>( m_currentTrackList->next );
 }
 
 void
 MtpHandler::nextTrackToParse()
 {
-    m_currtrack = QSharedPointer<LIBMTP_track_t>( m_currtracklist );
+    m_currentTrack = QSharedPointer<LIBMTP_track_t>( m_currentTrackList );
 }
 
 /// Playlist Parsing
@@ -790,28 +790,28 @@ MtpHandler::nextTrackToParse()
 void
 MtpHandler::prepareToParsePlaylists()
 {
-    m_currplaylistlist = QSharedPointer<LIBMTP_playlist_t>( LIBMTP_Get_Playlist_List( m_device ) );
+    m_currentPlaylistList = QSharedPointer<LIBMTP_playlist_t>( LIBMTP_Get_Playlist_List( m_device ) );
 }
 
 
 bool
 MtpHandler::isEndOfParsePlaylistsList()
 {
-    return (m_currplaylistlist == 0);
+    return (m_currentPlaylistList == 0);
 }
 
 
 void
 MtpHandler::prepareToParseNextPlaylist()
 {
-    m_currplaylistlist = QSharedPointer<LIBMTP_playlist_t>( m_currplaylistlist->next );
+    m_currentPlaylistList = QSharedPointer<LIBMTP_playlist_t>( m_currentPlaylistList->next );
 }
 
 
 void
 MtpHandler::nextPlaylistToParse()
 {
-    m_currplaylist = QSharedPointer<LIBMTP_playlist_t>( m_currplaylistlist );
+    m_currentPlaylist = QSharedPointer<LIBMTP_playlist_t>( m_currentPlaylistList );
 }
 
 bool
@@ -832,7 +832,7 @@ MtpHandler::prepareToParsePlaylistTracks()
 bool
 MtpHandler::isEndOfParsePlaylist()
 {
-    return (m_trackcounter >= m_currplaylist->no_tracks);
+    return (m_trackcounter >= m_currentPlaylist->no_tracks);
 }
 
 
@@ -846,26 +846,26 @@ MtpHandler::prepareToParseNextPlaylistTrack()
 void
 MtpHandler::nextPlaylistTrackToParse()
 {
-    m_currtrack = QSharedPointer<LIBMTP_track_t>( m_idTrackHash.value( m_currplaylist->tracks[ m_trackcounter ] ) );
+    m_currentTrack = QSharedPointer<LIBMTP_track_t>( m_idTrackHash.value( m_currentPlaylist->tracks[ m_trackcounter ] ) );
 }
 
 
 Meta::MediaDeviceTrackPtr
 MtpHandler::libGetTrackPtrForTrackStruct()
 {
-    return m_mtpTrackHash.key( m_currtrack.data() );
+    return m_mtpTrackHash.key( m_currentTrack.data() );
 }
 
 QString
 MtpHandler::libGetPlaylistName()
 {
-    return QString::fromUtf8( m_currplaylist->name );
+    return QString::fromUtf8( m_currentPlaylist->name );
 }
 
 void
 MtpHandler::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
-    m_mtpPlaylisthash[ playlist ] = m_currplaylist.data();
+    m_mtpPlaylisthash[ playlist ] = m_currentPlaylist.data();
 }
 
 void
@@ -960,8 +960,8 @@ MtpHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 void
 MtpHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
-    m_mtpTrackHash[ track ] = m_currtrack.data();
-    m_idTrackHash[ m_currtrack->item_id ] = m_currtrack.data();
+    m_mtpTrackHash[ track ] = m_currentTrack.data();
+    m_idTrackHash[ m_currentTrack->item_id ] = m_currentTrack.data();
 }
 
 QStringList

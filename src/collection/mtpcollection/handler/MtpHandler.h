@@ -219,10 +219,10 @@ class MtpHandler : public MediaDeviceHandler
         bool m_wait;
         bool m_dbChanged;
 
-        QSharedPointer<LIBMTP_track_t> m_currtracklist;
-        QSharedPointer<LIBMTP_track_t> m_currtrack;
-        QSharedPointer<LIBMTP_playlist_t> m_currplaylistlist;
-        QSharedPointer<LIBMTP_playlist_t> m_currplaylist;
+        QSharedPointer<LIBMTP_track_t> m_currentTrackList;
+        QSharedPointer<LIBMTP_track_t> m_currentTrack;
+        QSharedPointer<LIBMTP_playlist_t> m_currentPlaylistList;
+        QSharedPointer<LIBMTP_playlist_t> m_currentPlaylist;
 
         QHash<Meta::MediaDevicePlaylistPtr, LIBMTP_playlist_t*> m_mtpPlaylisthash;
 
