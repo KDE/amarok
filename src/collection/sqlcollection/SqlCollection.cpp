@@ -18,6 +18,7 @@
 
 #include "SqlCollection.h"
 
+#include "CapabilityDelegate.h"
 #include "DatabaseUpdater.h"
 #include "Debug.h"
 #include "ScanManager.h"
@@ -44,16 +45,20 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
     , m_registry( new SqlRegistry( this ) )
     , m_updater( new DatabaseUpdater( this ) )
+    , m_capabilityDelegate( new CollectionCapabilityDelegate() )
     , m_scanManager( new ScanManager( this ) )
     , m_collectionId( id )
     , m_prettyName( prettyName )
     , m_xesamBuilder( 0 )
 {
+    qRegisterMetaType<TrackUrls>( "TrackUrls" );
+    qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
 }
 
 SqlCollection::~SqlCollection()
 {
     delete m_registry;
+    delete m_capabilityDelegate;
 }
 
 void
@@ -314,23 +319,13 @@ SqlCollection::initXesam() //SLOT
 bool
 SqlCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    DEBUG_BLOCK
-    switch( type )
-    {
-        default:
-            return false;
-    }
+    return ( m_capabilityDelegate ? m_capabilityDelegate->hasCapabilityInterface( type, this ) : false );
 }
 
 Meta::Capability*
 SqlCollection::createCapabilityInterface( Meta::Capability::Type type )
 {
-    DEBUG_BLOCK
-    switch( type )
-    {
-        default:
-            return 0;
-    }
+    return ( m_capabilityDelegate ? m_capabilityDelegate->createCapabilityInterface( type, this ) : 0 );
 }
 
 void

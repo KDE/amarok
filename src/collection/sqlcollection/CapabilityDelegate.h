@@ -21,6 +21,8 @@
 
 #include <QAction>
 
+class SqlCollection;
+
 namespace Meta
 {
     class SqlTrack;
@@ -62,5 +64,15 @@ public:
 private:
     QAction * m_bookmarkAction;
 };
+
+class CollectionCapabilityDelegate
+{
+public:
+    CollectionCapabilityDelegate();
+
+    bool hasCapabilityInterface( Meta::Capability::Type type, const SqlCollection *collection ) const;
+    Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, SqlCollection *collection );
+};
+
 
 #endif // CAPABILITYDELEGATE_H

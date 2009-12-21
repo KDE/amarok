@@ -425,3 +425,35 @@ AlbumCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type,
             return 0;
     }
 }
+
+CollectionCapabilityDelegate::CollectionCapabilityDelegate()
+{
+}
+
+bool CollectionCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, const SqlCollection *collection ) const
+{
+    if( !collection )
+        return 0;
+
+    switch( type )
+    {
+        default:
+            return false;
+    }
+}
+
+Meta::Capability*
+CollectionCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type, SqlCollection *collection )
+{
+    if( !collection )
+        return 0;
+
+    switch( type )
+    {
+        default:
+            return 0;
+    }
+}
+
+#include "CapabilityDelegate.moc"
+
