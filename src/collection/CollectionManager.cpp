@@ -45,11 +45,39 @@
 
 typedef QPair<Amarok::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
+class SqlStorageWrapper : public SqlStorage
+{
+public:
+    SqlStorageWrapper()
+        : SqlStorage()
+        , m_sqlStorage( 0 )
+    {}
+
+    virtual int sqlDatabasePriority() const { return ( m_sqlStorage ? m_sqlStorage->sqlDatabasePriority() : 0 ); }
+    virtual QString type() const  { return ( m_sqlStorage ? m_sqlStorage->type() : "SqlStorageWrapper" ); }
+    virtual QString escape( QString text ) const  { return ( m_sqlStorage ? m_sqlStorage->escape( text ) : text ); }
+    virtual QStringList query( const QString &query )  { return ( m_sqlStorage ? m_sqlStorage->query( query ) : QStringList() ); }
+    virtual int insert( const QString &statement, const QString &table )  { return ( m_sqlStorage ? m_sqlStorage->insert( statement, table ) : 0 ); }
+    virtual QString boolTrue() const  { return ( m_sqlStorage ? m_sqlStorage->boolTrue() : "1" ); }
+    virtual QString boolFalse() const  { return ( m_sqlStorage ? m_sqlStorage->boolFalse() : "0" ); }
+    virtual QString idType() const  { return ( m_sqlStorage ? m_sqlStorage->idType() : "WRAPPER_NOT_IMPLEMENTED" ); }
+    virtual QString textColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->textColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); }
+    virtual QString exactTextColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->exactTextColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); }
+    virtual QString exactIndexableTextColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->exactIndexableTextColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); };
+    virtual QString longTextColumnType() const { return ( m_sqlStorage ? m_sqlStorage->longTextColumnType() : "WRAPPER_NOT_IMPLEMENTED" ); }
+    virtual QString randomFunc() const { return ( m_sqlStorage ? m_sqlStorage->randomFunc() : "WRAPPER_NOT_IMPLEMENTED" ); }
+
+    void setSqlStorage( SqlStorage *sqlStorage ) { m_sqlStorage = sqlStorage; }
+private:
+    SqlStorage *m_sqlStorage;
+};
+
 struct CollectionManager::Private
 {
     QList<CollectionPair> collections;
     SmartPointerList<Amarok::CollectionFactory> factories;
     SqlStorage *sqlDatabase;
+    SqlStorageWrapper *sqlStorageWrapper;
     QList<Amarok::Collection*> unmanagedCollections;
     SmartPointerList<Amarok::Collection> managedCollections;
     QList<Amarok::TrackProvider*> trackProviders;
@@ -79,6 +107,7 @@ CollectionManager::CollectionManager()
 {
     d->sqlDatabase = 0;
     d->primaryCollection = 0;
+    d->sqlStorageWrapper = new SqlStorageWrapper();
     s_instance = this;
     m_haveEmbeddedMysql = false;
 
@@ -91,12 +120,16 @@ CollectionManager::~CollectionManager()
 {
     DEBUG_BLOCK
 
+    //not deleting SqlStorageWrapper here as somebody might be caching it
+    //Amarok really needs a proper state management...
+    d->sqlStorageWrapper->setSqlStorage( 0 );
     delete m_timecodeTrackProvider;
     d->collections.clear();
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
     qDeleteAll( d->managedCollections );
     qDeleteAll( d->factories );
+
 
     delete d;
 }
@@ -284,12 +317,14 @@ CollectionManager::slotNewCollection( Amarok::Collection* newCollection )
             {
                 d->sqlDatabase = sqlCollection;
                 d->primaryCollection = newCollection;
+                d->sqlStorageWrapper->setSqlStorage( sqlCollection );
             }
         }
         else
         {
             d->sqlDatabase = sqlCollection;
             d->primaryCollection = newCollection;
+            d->sqlStorageWrapper->setSqlStorage( sqlCollection );
         }
     }
     if( status & CollectionViewable )
@@ -328,6 +363,7 @@ CollectionManager::slotRemoveCollection()
                 }
             }
             d->sqlDatabase = newSqlDatabase;
+            d->sqlStorageWrapper->setSqlStorage( newSqlDatabase );
         }
         emit collectionRemoved( collection->collectionId() );
         QTimer::singleShot( 0, collection, SLOT( deleteLater() ) );
@@ -382,7 +418,7 @@ CollectionManager::primaryCollection() const
 SqlStorage*
 CollectionManager::sqlStorage() const
 {
-    return d->sqlDatabase;
+    return d->sqlStorageWrapper;
 }
 
 Meta::TrackList

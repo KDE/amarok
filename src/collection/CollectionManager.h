@@ -82,7 +82,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         /**
             retrieve an interface which allows client-code to store/load data in a relational database.
-            Note: code using this method does NOT take ownership of the pointer.
+            Note: code using this method does NOT take ownership of the pointer, but may cache the pointer
         */
         SqlStorage* sqlStorage() const;
 
