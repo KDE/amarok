@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2006 Andy Kelk <andy@mopoke.co.uk>                                     *
  * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -52,10 +53,6 @@ MtpHandler::MtpHandler( MtpCollection *mc )
     , m_isCanceled( false )
     , m_wait( false )
     , m_dbChanged( false )
-    , m_currentTrackList( 0 )
-    , m_currentTrack( 0 )
-    , m_currentPlaylistList( 0 )
-    , m_currentPlaylist( 0 )
     , m_trackcounter( 0 )
     , m_copyParentId( 0 )
     , m_tempDir( new KTempDir() )
