@@ -39,6 +39,8 @@
 #include <QMultiMap>
 #include <QMutex>
 #include <QSet>
+#include <QSharedPointer>
+
 
 class QString;
 class QMutex;
@@ -216,12 +218,12 @@ class MtpHandler : public MediaDeviceHandler
         bool m_isCanceled;
         bool m_wait;
         bool m_dbChanged;
-        LIBMTP_track_t *m_currtracklist;
 
-        LIBMTP_track_t *m_currtrack;
+        QSharedPointer<LIBMTP_track_t> m_currtracklist;
+        QSharedPointer<LIBMTP_track_t> m_currtrack;
+        QSharedPointer<LIBMTP_playlist_t> m_currplaylistlist;
+        QSharedPointer<LIBMTP_playlist_t> m_currplaylist;
 
-        LIBMTP_playlist_t *m_currplaylistlist;
-        LIBMTP_playlist_t *m_currplaylist;
         QHash<Meta::MediaDevicePlaylistPtr, LIBMTP_playlist_t*> m_mtpPlaylisthash;
 
         uint32_t m_trackcounter;
