@@ -89,15 +89,7 @@ SortProxy::updateSortMap( SortScheme scheme )
 {
     resetSorting();
     m_scheme = scheme;
-    sort( 0 );  //0 is a dummy column
-    //HACK: sort() inverts the sortOrder on each call, this keeps the order ascending.
-    //      This should be fixed properly. Right now, this whole operation takes rougly
-    //      2 * O( n log n ) and it could be O( n log n ) if we eliminate the second sort().
-    //      This is needed because QSFPM is used improperly on a dummy column, and every
-    //      time the column is "clicked" the sort order is inverted. This is done by
-    //      QSortFilterProxyModelPrivate::sort_source_rows(), hidden behind the d-pointer
-    //      in QSFPM.
-    sort( 0 );
+    sort( 0, Qt::AscendingOrder );  //0 is a dummy column
     //NOTE: sort() also emits QSFPM::layoutChanged()
 }
 
