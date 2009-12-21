@@ -927,7 +927,12 @@ void
 EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 {
     DEBUG_BLOCK
-    Q_UNUSED( source );
+
+    if( source.type() == Phonon::MediaSource::Empty )
+    {
+        debug() << "Empty MediaSource (engine stop)";
+        return;
+    }
 
     // the new track was taken from the queue, so clear these fields
     if( m_nextTrack )
