@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2005 Max Howell <max.howell@methylblue.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

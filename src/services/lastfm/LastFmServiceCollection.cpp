@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Shane King <kde@dontletsstart.com>                                *
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Leo Franchi <lfranchi@gmail.com>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -61,7 +61,7 @@ class MagnatuneServiceFactory : public ServiceFactory
 Amarok browser that displays all the music available at magnatune.com and makes it available for previewing and purchasing.
 Implemented as a singleton
 
-@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class MagnatuneStore: public ServiceBase
 {

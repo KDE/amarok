@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
- * Copyright (c) 2008-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2008-2009 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *

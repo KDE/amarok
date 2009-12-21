@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
  * Copyright (c) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -54,7 +54,7 @@ enum {
 
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 {

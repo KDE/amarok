@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -30,7 +30,7 @@ namespace Meta
      * or anywhere else where the actions are shown. This is useful for purchasing from stores, downloading from services
      * banning a genre or whatever we can think of in the future
      *
-     *         @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+     *         @author Nikolaj Hald Nielsen <nhn@kde.org>
      */
 
     class AMAROK_EXPORT CustomActionsCapability : public Meta::Capability

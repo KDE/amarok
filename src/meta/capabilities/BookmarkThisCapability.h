@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -27,7 +27,7 @@ namespace Meta {
 /**
 This capability determines whether a meta item in a collection can be directly bookmarked. Not all collections/services supports bookmarks on all levels, and some might not support Item level bookmarks at all as they have no query field and some might only support simple queries.
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class AMAROK_EXPORT BookmarkThisCapability : public Capability {
     Q_OBJECT

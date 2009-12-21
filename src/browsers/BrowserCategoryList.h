@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -34,7 +34,7 @@ class SearchWidget;
  * A list for selecting and displaying a category. When a category is selected, this list
  * is replaces by the category widget. A back button allows the user to go back to this list.
  *
- * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class BrowserCategoryList : public BrowserCategory
 {

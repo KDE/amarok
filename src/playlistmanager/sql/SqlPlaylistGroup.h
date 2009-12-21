@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -33,7 +33,7 @@ namespace Meta
     /**
     A class for allowing a "folder structure" in the playlist browser and the database. Takes care of reading and writing  itself to the database.
 
-        @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+        @author Nikolaj Hald Nielsen <nhn@kde.org>
     */
     class SqlPlaylistGroup : public virtual QSharedData
     {

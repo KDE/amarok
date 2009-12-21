@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,7 +26,7 @@
  * to add last.fm skip, ban and love actions. This class is based on the CustomActionsCapability class as their
  * function is very similar although they are used in different places.
  *
- *         @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *         @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 
 namespace Meta {

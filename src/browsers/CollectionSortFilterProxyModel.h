@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -24,7 +24,7 @@
 
 /**
     This is a custom QSortFilterProxyModel that solves some issues with sorting a model that usses lazy loading
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 
 class CollectionTreeItem;

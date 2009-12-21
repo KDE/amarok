@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -31,7 +31,7 @@ namespace The {
 /**
 A small singleton class to handle propagating palette change notifications and hold some utility functions for updating certain widgets
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class AMAROK_EXPORT PaletteHandler : public QObject
 {

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,7 +22,7 @@
 /**
  *  A specialized QListView class needed for detecting mouse clicks on the "buttons"
  *  on the items in the popup.
- *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *  @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class EditDeleteComboBoxView : public QListView
 {

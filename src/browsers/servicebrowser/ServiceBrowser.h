@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -36,7 +36,7 @@
  *  many services to be shown as a single category.
  *  Implemented as a singleton.
  *
- *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *  @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class ServiceBrowser : public BrowserCategoryList
 {

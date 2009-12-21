@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -42,7 +42,7 @@ AMAROK_EXPORT AmarokUrlHandler* amarokUrlHandler();
 /**
 A singleton class for handling and delegating all amarok:// urls
 
- @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class AMAROK_EXPORT AmarokUrlHandler : public QObject
 {

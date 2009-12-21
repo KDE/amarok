@@ -4,7 +4,7 @@
  * Copyright (c) 2004-2008 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2006,2008 Ian Monroe <ian@monroe.nu>                                   *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

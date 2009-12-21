@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -39,7 +39,7 @@ typedef KSharedPtr<ServiceAlbumWithCover> ServiceAlbumWithCoverPtr;
 A specialized ServiceAlbum that supports fetching its cover from a known url.
 Takes care of caching covers.
 
-    @author  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author  Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class AMAROK_EXPORT ServiceAlbumWithCover : public ServiceAlbum
 {
@@ -122,7 +122,7 @@ protected:
 /**
 A helper class for fetching covers from online services, used by ServiceAlbumWithCover
 
-    @author  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author  Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class ServiceAlbumCoverDownloader : public QObject
 {

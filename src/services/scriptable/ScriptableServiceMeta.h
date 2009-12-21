@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,7 +26,7 @@
     pass to the script to fetch child items for Genres, Artists and Albums 
     and a level specifier
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 
 

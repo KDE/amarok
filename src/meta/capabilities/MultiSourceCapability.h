@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,7 +26,7 @@ namespace Meta {
 /**
 A capability for tracks that can have several different source urls, such as multiple fallback streams for a radio station. If one source url fails or finishes, the track will automatically use the next one. It is also possbile to get a list of all urls that can be presented to the user so he can choose.
 
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+    @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class MultiSourceCapability : public Capability
 {
