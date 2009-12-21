@@ -18,21 +18,26 @@
 #ifndef AMAROK_COLLECTION_SQLCOLLECTION_H
 #define AMAROK_COLLECTION_SQLCOLLECTION_H
 
-#include "Collection.h"
-#include "CollectionManager.h"
+#include "amarok_sqlcollection_export.h"
+#include "collection/Collection.h"
+#include "collection/CollectionManager.h"
 #include "DatabaseUpdater.h"
 #include "SqlRegistry.h"
-#include "SqlStorage.h"
+#include "collection/SqlStorage.h"
 
 #include <QPointer>
 
 #include <KIcon>
 
+typedef QHash<QString, QString> TrackUrls;
+typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
+
+class CollectionCapabilityDelegate;
 class CollectionLocation;
 class XesamCollectionBuilder;
 class ScanManager;
 
-class SqlCollection : public Amarok::Collection, public SqlStorage
+class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection, public SqlStorage
 {
     Q_OBJECT
 
@@ -113,6 +118,7 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
     private:
         SqlRegistry* const m_registry;
         DatabaseUpdater * const m_updater;
+        CollectionCapabilityDelegate * const m_capabilityDelegate;
         QPointer<ScanManager> m_scanManager;
 
         QString m_collectionId;
@@ -120,6 +126,9 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
 
         XesamCollectionBuilder *m_xesamBuilder;
 };
+
+Q_DECLARE_METATYPE( TrackUrls )
+Q_DECLARE_METATYPE( ChangedTrackUrls )
 
 #endif /* AMAROK_COLLECTION_SQLCOLLECTION_H */
 
