@@ -72,6 +72,9 @@ VERSION 2.2.2
     * Display frames around lyrics/video applets for indicating focus.
     * Improved keyboard functions when editing lyrics from the applet.
     * Improved automatic resizing of lyrics and suggestions in the context applet.
+    * The audio device is now closed when playback stops. This saves power in several ways
+      and frees it up for other applications. This also fixes the 100+ idle wakeups in
+      PowerTOP when using the Xine backend.
 
   BUGFIXES:
     * Fixed crash when using the inline playlist editor to resize items containing
