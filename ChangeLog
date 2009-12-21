@@ -33,6 +33,8 @@ VERSION 2.2.2
     * Pressing F2 when focused in the lyrics applet jumps into editing mode.
 
   CHANGES:
+    * The inline playlist editor now also allows resizing of auto sized items that 
+      are invisible because fixed sized items already use up 100% width.
     * Enhanced the playlist sorting breadcrumb items to separately highlight
       the order inversion arrow on hover. (BR 209011)
     * The automatic character set detection for tags has been disabled; it
@@ -72,6 +74,9 @@ VERSION 2.2.2
     * Improved automatic resizing of lyrics and suggestions in the context applet.
 
   BUGFIXES:
+    * Fixed crash when using the inline playlist editor to resize items containing
+      auto sized elements not shown becuase of all space already being used.
+      (BR 218167)
     * Fixed relative links in wikipedia work. (BR 218512)
     * Fixed multilevel playlist sorting by time since last played so it sorts
       numerically rather than alphabetically. (BR 214761)
