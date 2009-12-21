@@ -18,7 +18,7 @@
 #ifndef AMAROK_SQL_SCANRESULTPROCESSOR_H
 #define AMAROK_SQL_SCANRESULTPROCESSOR_H
 
-#include "CollectionManager.h"
+#include "SqlCollection.h"
 
 #include <QFileInfo>
 #include <QList>
@@ -27,8 +27,6 @@
 #include <QString>
 #include <QStringList>
 #include <QVariant>
-
-class SqlCollection;
 
 class ScanResultProcessor : public QObject
 {

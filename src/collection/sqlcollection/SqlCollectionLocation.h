@@ -18,7 +18,7 @@
 #ifndef AMAROK_SQLCOLLECTIONLOCATION_H
 #define AMAROK_SQLCOLLECTIONLOCATION_H
 
-#include "CollectionLocation.h"
+#include "collection/CollectionLocation.h"
 
 #include <QSet>
 #include <QMap>

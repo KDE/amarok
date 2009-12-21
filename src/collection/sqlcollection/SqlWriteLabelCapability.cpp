@@ -19,9 +19,9 @@
 
 #include "SqlWriteLabelCapability.h"
 
-#include "CollectionManager.h"
+#include "collection/CollectionManager.h"
 #include "Debug.h"
-#include "SqlStorage.h"
+#include "collection/SqlStorage.h"
 
 namespace Meta
 {

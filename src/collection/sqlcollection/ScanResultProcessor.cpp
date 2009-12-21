@@ -21,7 +21,6 @@
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
 #include "MountPointManager.h"
-#include "SqlCollection.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -240,7 +239,7 @@ ScanResultProcessor::commit()
     updateAftPermanentTablesUidString();
 
     connect( this, SIGNAL( changedTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ),
-             CollectionManager::instance()->primaryCollection(), SLOT( updateTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ) );
+             m_collection, SLOT( updateTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ) );
 
     emit changedTrackUrlsUids( m_changedUrls, m_changedUids );
 }

@@ -18,7 +18,7 @@
 #ifndef SQLMETA_H
 #define SQLMETA_H
 
-#include "Meta.h"
+#include "meta/Meta.h"
 
 #include <QByteArray>
 #include <QDateTime>

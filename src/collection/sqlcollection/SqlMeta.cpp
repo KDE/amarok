@@ -30,7 +30,7 @@
 #include "MountPointManager.h"
 //#include "mediadevice/CopyToDeviceAction.h"
 
-#include "AFTUtility.h"
+#include "collectionscanner/AFTUtility.h"
 
 #include <QAction>
 #include <QDateTime>

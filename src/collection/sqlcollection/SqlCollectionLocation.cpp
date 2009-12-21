@@ -17,17 +17,17 @@
 
 #include "SqlCollectionLocation.h"
 
-#include "AFTUtility.h"
+#include "collectionscanner/AFTUtility.h"
 #include "Debug.h"
-#include "Meta.h"
-#include "MetaUtility.h"
+#include "meta/Meta.h"
+#include "meta/MetaUtility.h"
 #include "MountPointManager.h"
 #include "dialogs/OrganizeCollectionDialog.h"
 #include "ScanManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
-#include "../../statusbar/StatusBar.h"
+#include "statusbar/StatusBar.h"
 
 #include <QDir>
 #include <QFile>
