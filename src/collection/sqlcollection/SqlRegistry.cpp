@@ -20,6 +20,7 @@
 
 #include "Debug.h"
 
+#include "CapabilityDelegate.h"
 #include "MountPointManager.h"
 #include "SqlCollection.h"
 
@@ -82,11 +83,14 @@ SqlRegistry::getTrack( const QStringList &rowData )
         return m_uidMap.value( uid );
     else
     {
-        TrackPtr track( new SqlTrack( m_collection, rowData ) );
+        SqlTrack *sqlTrack =  new SqlTrack( m_collection, rowData );
+        sqlTrack->setCapabilityDelegate( new TrackCapabilityDelegate() );
+        TrackPtr track( sqlTrack );
         if( track )
         {
             m_trackMap.insert( id, track );
             m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uidUrl(), track );
+
         }
         return track;
     }
@@ -185,7 +189,9 @@ SqlRegistry::getArtist( const QString &name, int id, bool refresh )
             return m_artistMap.value( id );
         }
 
-        ArtistPtr artist( new SqlArtist( m_collection, id, name ) );
+        SqlArtist *sqlArtist = new SqlArtist( m_collection, id, name );
+        sqlArtist->setCapabilityDelegate( new ArtistCapabilityDelegate() );
+        ArtistPtr artist( sqlArtist );
         m_artistMap.insert( id, artist );
         return artist;
     }
@@ -337,7 +343,9 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
             return m_albumMap.value( id );
         }
 
-        AlbumPtr album( new SqlAlbum( m_collection, id, name, artist ) );
+        SqlAlbum *sqlAlbum = new SqlAlbum( m_collection, id, name, artist );
+        sqlAlbum->setCapabilityDelegate( new AlbumCapabilityDelegate() );
+        AlbumPtr album( sqlAlbum );
         m_albumMap.insert( id, album );
         return album;
     }

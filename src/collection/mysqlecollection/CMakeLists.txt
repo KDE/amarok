@@ -28,6 +28,7 @@ endif (NOT WIN32)
 ########### mysqle ###############
 
 set(amarok_collection-mysqlecollection_PART_SRCS
+    ../sqlcollection/CapabilityDelegate.cpp
     ../sqlcollection/DatabaseUpdater.cpp
     ../sqlcollection/ScanManager.cpp
     ../sqlcollection/ScanResultProcessor.cpp

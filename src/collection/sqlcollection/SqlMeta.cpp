@@ -19,27 +19,14 @@
 
 #include "amarokconfig.h"
 #include "Amarok.h"
-#include "amarokurls/BookmarkMetaActions.h"
+#include "CapabilityDelegate.h"
 #include "Debug.h"
 #include "meta/MetaUtility.h"
 #include "meta/TagLibUtils.h"
-#include "SqlBookmarkThisCapability.h"
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
-#include "SqlReadLabelCapability.h"
 #include "SqlRegistry.h"
-#include "SqlWriteLabelCapability.h"
 #include "covermanager/CoverFetcher.h"
-#include "covermanager/CoverFetchingActions.h"
-#include "meta/capabilities/CustomActionsCapability.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "meta/capabilities/EditCapability.h"
-#include "meta/capabilities/StatisticsCapability.h"
-#include "meta/capabilities/TimecodeLoadCapability.h"
-#include "meta/capabilities/TimecodeWriteCapability.h"
-#include "meta/capabilities/OrganiseCapability.h"
-#include "meta/capabilities/UpdateCapability.h"
-#include "amarokurls/PlayUrlRunner.h"
 #include "MountPointManager.h"
 //#include "mediadevice/CopyToDeviceAction.h"
 
@@ -57,167 +44,6 @@
 #include <KSharedPtr>
 
 using namespace Meta;
-
-class EditCapabilityImpl : public Meta::EditCapability
-{
-    Q_OBJECT
-    public:
-        EditCapabilityImpl( SqlTrack *track )
-            : Meta::EditCapability()
-            , m_track( track ) {}
-
-        virtual bool isEditable() const { return m_track->isEditable(); }
-        virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
-        virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
-        virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
-        virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
-        virtual void setBpm( const float newBpm ) { m_track->setBpm( newBpm ); }
-        virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
-        virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
-        virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
-        virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-        virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
-        virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
-        virtual void abortMetaDataUpdate() { m_track->abortMetaDataUpdate(); }
-
-    private:
-        KSharedPtr<SqlTrack> m_track;
-};
-
-class StatisticsCapabilityImpl : public Meta::StatisticsCapability
-{
-    public:
-        StatisticsCapabilityImpl( SqlTrack *track )
-            : Meta::StatisticsCapability()
-            , m_track( track ) {}
-
-        virtual void setScore( const int score ) {
-            if( score > 0 ) // don't reset it
-                m_track->setScore( score );
-        }
-        virtual void setRating( const int rating ) {
-            if( rating > 0 ) // don't reset it
-                m_track->setRating( rating );
-        }
-        virtual void setFirstPlayed( const uint time ) {
-            if( time < m_track->firstPlayed() ) // only update if older
-                m_track->setFirstPlayed( time );
-        }
-        virtual void setLastPlayed( const uint time ) {
-            if( time > m_track->lastPlayed() ) // only update if newer
-                m_track->setLastPlayed( time );
-        }
-        virtual void setPlayCount( const int playcount ) {
-            if( playcount > 0 ) // don't reset it
-                m_track->setPlayCount( playcount );
-        }
-        virtual void beginStatisticsUpdate()
-        {
-            m_track->setWriteAllStatisticsFields( true );
-            m_track->beginMetaDataUpdate();
-        }
-        virtual void endStatisticsUpdate()
-        {
-            m_track->endMetaDataUpdate();
-            m_track->setWriteAllStatisticsFields( false );
-        }
-        virtual void abortStatisticsUpdate()
-        {
-            m_track->abortMetaDataUpdate();
-            m_track->setWriteAllStatisticsFields( false );
-        }
-
-    private:
-        KSharedPtr<SqlTrack> m_track;
-};
-
-class OrganiseCapabilityImpl : public Meta::OrganiseCapability
-{
-    Q_OBJECT
-    public:
-        OrganiseCapabilityImpl( SqlTrack *track )
-            : Meta::OrganiseCapability()
-            , m_track( track ) {}
-
-        virtual void deleteTrack()
-        {
-            if( QFile::remove( m_track->playableUrl().path() ) )
-            {
-                QString sql = QString( "DELETE FROM tracks WHERE id = %1;" ).arg( m_track->trackId() );
-                m_track->sqlCollection()->query( sql );
-            }
-        }
-
-    private:
-        KSharedPtr<SqlTrack> m_track;
-};
-
-class UpdateCapabilityImpl : public Meta::UpdateCapability
-{
-    Q_OBJECT
-    public:
-        UpdateCapabilityImpl( SqlTrack *track )
-            : Meta::UpdateCapability()
-            , m_track( track ) {}
-
-        virtual void collectionUpdated() const { m_track->collection()->collectionUpdated(); }
-
-
-    private:
-        KSharedPtr<SqlTrack> m_track;
-};
-
-class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
-{
-    Q_OBJECT
-    public:
-        TimecodeWriteCapabilityImpl( SqlTrack *track )
-        : Meta::TimecodeWriteCapability()
-        , m_track( track )
-        {}
-
-        virtual bool writeTimecode ( int seconds )
-        {
-            DEBUG_BLOCK
-            return Meta::TimecodeWriteCapability::writeTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
-        }
-
-        virtual bool writeAutoTimecode ( int seconds )
-        {
-            DEBUG_BLOCK
-            return Meta::TimecodeWriteCapability::writeAutoTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
-        }
-
-    private:
-        KSharedPtr<SqlTrack> m_track;
-};
-
-class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
-{
-    Q_OBJECT
-    public:
-        TimecodeLoadCapabilityImpl( SqlTrack *track )
-        : Meta::TimecodeLoadCapability()
-        , m_track( track )
-        {}
-
-        virtual bool hasTimecodes()
-        {
-            if ( loadTimecodes().size() > 0 )
-                return true;
-            return false;
-        }
-
-        virtual QList<KSharedPtr<AmarokUrl> > loadTimecodes()
-        {
-            QList<KSharedPtr<AmarokUrl> > list = PlayUrlRunner::bookmarksFromUrl( m_track->playableUrl() );
-            return list;
-        }
-
-    private:
-        KSharedPtr<SqlTrack> m_track;
-};
 
 QString
 SqlTrack::getTrackReturnValues()
@@ -366,10 +192,16 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
 SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     : Track()
     , m_collection( QPointer<SqlCollection>( collection ) )
+    , m_capabilityDelegate( 0 )
     , m_batchUpdate( false )
     , m_writeAllStatisticsFields( false )
 {
     updateData( result, false );
+}
+
+SqlTrack::~SqlTrack()
+{
+    delete m_capabilityDelegate;
 }
 
 bool
@@ -1056,93 +888,38 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
 bool
 SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    switch( type )
-    {
-        case Meta::Capability::CustomActions:
-        case Meta::Capability::Importable:
-        case Meta::Capability::Organisable:
-        case Meta::Capability::Updatable:
-        case Meta::Capability::CurrentTrackActions:
-        case Meta::Capability::WriteTimecode:
-        case Meta::Capability::LoadTimecode:
-        case Meta::Capability::ReadLabel:
-        case Meta::Capability::WriteLabel:
-            return true;
-
-        case Meta::Capability::Editable:
-            return isEditable();
-
-        default:
-            return false;
-    }
+    return ( m_capabilityDelegate ? m_capabilityDelegate->hasCapabilityInterface( type, this ) : false );
 }
 
 Meta::Capability*
 SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
 {
-    switch( type )
-    {
-        case Meta::Capability::Editable:
-            return new EditCapabilityImpl( this );
+    return ( m_capabilityDelegate ? m_capabilityDelegate->createCapabilityInterface( type, this) : 0 );
+}
 
-        case Meta::Capability::Importable:
-            return new StatisticsCapabilityImpl( this );
-
-        case Meta::Capability::CustomActions:
-        {
-            QList<QAction*> actions;
-            //TODO These actions will hang around until m_collection is destructed.
-            // Find a better parent to avoid this memory leak.
-            //actions.append( new CopyToDeviceAction( m_collection, this ) );
-
-            return new CustomActionsCapability( actions );
-        }
-
-        case Meta::Capability::Organisable:
-            return new OrganiseCapabilityImpl( this );
-
-        case Meta::Capability::Updatable:
-            return new UpdateCapabilityImpl( this );
-
-        case Meta::Capability::CurrentTrackActions:
-        {
-            QList< QAction * > actions;
-            QAction* flag = new BookmarkCurrentTrackPositionAction( m_collection );
-            actions << flag;
-            debug() << "returning bookmarkcurrenttrack action";
-            return new Meta::CurrentTrackActionsCapability( actions );
-        }
-        case Meta::Capability::WriteTimecode:
-            return new TimecodeWriteCapabilityImpl( this );
-        case Meta::Capability::LoadTimecode:
-            return new TimecodeLoadCapabilityImpl( this );
-        case Meta::Capability::ReadLabel:
-            return new SqlReadLabelCapability( this, m_collection );
-        case Meta::Capability::WriteLabel:
-            return new SqlWriteLabelCapability( this, m_collection );
-
-        default:
-            return 0;
-    }
+void
+SqlTrack::setCapabilityDelegate( TrackCapabilityDelegate *delegate )
+{
+    m_capabilityDelegate = delegate;
 }
 
 //---------------------- class Artist --------------------------
 
 SqlArtist::SqlArtist( SqlCollection* collection, int id, const QString &name ) : Artist()
     ,m_collection( QPointer<SqlCollection>( collection ) )
+    ,m_delegate( 0 )
     ,m_name( name )
     ,m_id( id )
     ,m_tracksLoaded( false )
     ,m_albumsLoaded( false )
     ,m_mutex( QMutex::Recursive )
-    ,m_bookmarkAction( 0 )
 {
     //nothing to do (yet)
 }
 
 Meta::SqlArtist::~SqlArtist()
 {
-    delete m_bookmarkAction;
+    delete m_delegate;
 }
 
 void
@@ -1228,58 +1005,14 @@ SqlArtist::sortableName() const
 bool
 SqlArtist::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    switch( type )
-    {
-        case Meta::Capability::BookmarkThis:
-            return true;
-        default:
-            return false;
-    }
+    return ( m_delegate ? m_delegate->hasCapabilityInterface( type, this ) : 0 );
 }
 
 Meta::Capability*
 SqlArtist::createCapabilityInterface( Meta::Capability::Type type )
 {
-    switch( type )
-    {
-        case Meta::Capability::BookmarkThis:
-        {
-            if ( !m_bookmarkAction )
-                m_bookmarkAction = new BookmarkArtistAction( 0, ArtistPtr( this ) );
-            return new SqlBookmarkThisCapability( m_bookmarkAction );
-        }
-        default:
-            return 0;
-    }
+    return ( m_delegate ? m_delegate->createCapabilityInterface( type, this ) : 0 );
 }
-
-//---------------Album compilation management actions-----
-
-class CompilationAction : public QAction
-{
-    Q_OBJECT
-    public:
-        CompilationAction( QObject* parent, SqlAlbum *album )
-            : QAction( parent )
-                , m_album( album )
-                , m_isCompilation( album->isCompilation() )
-            {
-                connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
-                if( m_isCompilation )
-                    setText( i18n( "Do not show under Various Artists" ) );
-                else
-                    setText( i18n( "Show under Various Artists" ) );
-            }
-
-    private slots:
-        void slotTriggered()
-        {
-            m_album->setCompilation( !m_isCompilation );
-        }
-    private:
-        KSharedPtr<SqlAlbum> m_album;
-        bool m_isCompilation;
-};
 
 
 //---------------SqlAlbum---------------------------------
@@ -1287,6 +1020,7 @@ const QString SqlAlbum::AMAROK_UNSET_MAGIC = QString( "AMAROK_UNSET_MAGIC" );
 
 SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int artist ) : Album()
     , m_collection( QPointer<SqlCollection>( collection ) )
+    , m_delegate( 0 )
     , m_name( name )
     , m_id( id )
     , m_artistId( artist )
@@ -1297,14 +1031,13 @@ SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int 
     , m_suppressAutoFetch( false )
     , m_artist()
     , m_mutex( QMutex::Recursive )
-    , m_bookmarkAction( 0 )
 {
     //nothing to do
 }
 
 Meta::SqlAlbum::~SqlAlbum()
 {
-    delete m_bookmarkAction;
+    delete m_delegate;
 }
 
 void
@@ -1895,54 +1628,13 @@ SqlAlbum::setCompilation( bool compilation )
 bool
 SqlAlbum::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    switch( type )
-    {
-        case Meta::Capability::CustomActions:
-            return true;
-        case Meta::Capability::BookmarkThis:
-            return true;
-        default:
-            return false;
-    }
+    return ( m_delegate ? m_delegate->hasCapabilityInterface( type, this ) : false );
 }
 
 Meta::Capability*
 SqlAlbum::createCapabilityInterface( Meta::Capability::Type type )
 {
-    switch( type )
-    {
-        case Meta::Capability::CustomActions:
-        {
-            QList<QAction*> actions;
-            actions.append( new CompilationAction( m_collection, this ) );
-
-            QAction *separator          = new QAction( m_collection );
-            QAction *displayCoverAction = new DisplayCoverAction( m_collection, Meta::AlbumPtr(this) );
-            QAction *unsetCoverAction   = new UnsetCoverAction( m_collection, Meta::AlbumPtr(this) );
-
-            separator->setSeparator( true );
-            actions.append( separator );
-            actions.append( displayCoverAction );
-            actions.append( new FetchCoverAction( m_collection, Meta::AlbumPtr(this) ) );
-            actions.append( new SetCustomCoverAction( m_collection, Meta::AlbumPtr(this) ) );
-            if( !hasImage() )
-            {
-                displayCoverAction->setEnabled( false );
-                unsetCoverAction->setEnabled( false );
-            }
-            actions.append( unsetCoverAction );
-            return new CustomActionsCapability( actions );
-        }
-        case Meta::Capability::BookmarkThis:
-        {
-            if ( !m_bookmarkAction )
-                m_bookmarkAction = new BookmarkAlbumAction( 0, AlbumPtr( this ) );
-            return new SqlBookmarkThisCapability( m_bookmarkAction );
-        }
-
-        default:
-            return 0;
-    }
+    return ( m_delegate ? m_delegate->createCapabilityInterface( type, this ) : 0 );
 }
 
 //---------------SqlComposer---------------------------------
@@ -2110,7 +1802,4 @@ SqlYear::tracks()
         return TrackList();
 }
 
-
-
-#include "sqlmeta.moc"
 
