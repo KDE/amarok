@@ -493,7 +493,10 @@ EngineController::stop( bool forceInstant ) //SLOT
         stateChangedNotify( Phonon::StoppedState, m_media->state() ); //immediately disable Stop action
     }
     else
+    {
         m_media->stop();
+        m_media->setCurrentSource( Phonon::MediaSource() );
+    }
 
     m_currentTrack = 0;
 }
@@ -892,6 +895,7 @@ EngineController::slotQueueEnded()
 
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
+        m_media->setCurrentSource( Phonon::MediaSource() );
         playbackEnded( trackPositionMs(), m_currentTrack->length(), EngineObserver::EndedStopped );
         m_currentTrack = 0;
         trackChangedNotify( m_currentTrack );
@@ -1140,6 +1144,7 @@ EngineController::slotStopFadeout() //SLOT
     DEBUG_BLOCK
 
     m_media->stop();
+    m_media->setCurrentSource( Phonon::MediaSource() );
     resetFadeout();
 }
 
