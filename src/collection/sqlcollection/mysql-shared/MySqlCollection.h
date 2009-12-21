@@ -18,7 +18,7 @@
 #ifndef AMAROK_COLLECTION_MYSQLCOLLECTION_H
 #define AMAROK_COLLECTION_MYSQLCOLLECTION_H
 
-#include "sqlcollection/SqlCollection.h"
+#include "SqlCollection.h"
 
 #include <QMutex>
 
