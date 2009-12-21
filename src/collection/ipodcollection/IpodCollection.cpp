@@ -26,11 +26,13 @@
 
 #include <KUrl>
 
-AMAROK_EXPORT_PLUGIN( IpodCollectionFactory )
+AMAROK_EXPORT_Collection( IpodCollectionFactory, ipodcollection )
 
-IpodCollectionFactory::IpodCollectionFactory()
+IpodCollectionFactory::IpodCollectionFactory( QObject *parent, const QVariantList &args )
     : MediaDeviceCollectionFactory<IpodCollection> ( new IpodConnectionAssistant() )
 {
+    setParent( parent );
+    Q_UNUSED( args )
 }
 
 IpodCollectionFactory::~IpodCollectionFactory()

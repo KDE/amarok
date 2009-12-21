@@ -19,7 +19,7 @@
 #define AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
 
 #include "mysql-shared/MySqlCollection.h"
-#include "Collection.h"
+#include "collection/Collection.h"
 #include "amarok_export.h"
 
 class MySqlServerCollectionFactory : public Amarok::CollectionFactory
@@ -27,7 +27,7 @@ class MySqlServerCollectionFactory : public Amarok::CollectionFactory
     Q_OBJECT
 
     public:
-        MySqlServerCollectionFactory() {}
+        MySqlServerCollectionFactory( QObject *parent, const QVariantList &args ) { setParent( parent ); }
         virtual ~MySqlServerCollectionFactory() {}
 
         virtual void init();

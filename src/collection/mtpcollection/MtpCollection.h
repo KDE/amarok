@@ -35,7 +35,7 @@ class MtpCollectionFactory : public MediaDeviceCollectionFactory<MtpCollection>
 {
     Q_OBJECT
     public:
-        MtpCollectionFactory();
+        MtpCollectionFactory( QObject *parent, const QVariantList &args );
         virtual ~MtpCollectionFactory();
 
 };

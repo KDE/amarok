@@ -40,6 +40,8 @@
 #include <KGlobal>
 #include <KMessageBox>
 #include <KService>
+#include <KPluginLoader>
+#include <KPluginFactory>
 
 #include <cstdlib>
 
@@ -111,8 +113,6 @@ CollectionManager::CollectionManager()
     s_instance = this;
     m_haveEmbeddedMysql = false;
 
-    qRegisterMetaType<TrackUrls>( "TrackUrls" );
-    qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
     init();
 }
 
@@ -182,10 +182,11 @@ CollectionManager::init()
                 continue;
         if( name == "mysqle-collection" || name == "mysqlserver-collection" )
         {
-            Amarok::Plugin *plugin = PluginManager::createFromService( service );
-            if ( plugin )
+            KPluginLoader loader( *( service.constData() ) );
+            KPluginFactory *pluginFactory = loader.factory();
+            if ( pluginFactory )
             {
-                Amarok::CollectionFactory* factory = dynamic_cast<Amarok::CollectionFactory*>( plugin );
+                Amarok::CollectionFactory* factory = pluginFactory->create<Amarok::CollectionFactory>( this );
                 if ( factory )
                 {
                     debug() << "Initialising sqlcollection";
@@ -197,8 +198,12 @@ CollectionManager::init()
                 }
                 else
                 {
-                    debug() << "SqlCollection Plugin has wrong factory class";
+                    debug() << "SqlCollection Plugin has wrong factory class: " << loader.errorString();
                 }
+            }
+            else
+            {
+                warning() << "Failed to get factory from KPluginLoader: " << loader.errorString();
             }
             break;
         }
@@ -212,10 +217,11 @@ CollectionManager::init()
         if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqle-collection" )
                 continue;
 
-        Amarok::Plugin *plugin = PluginManager::createFromService( service );
-        if ( plugin )
+        KPluginLoader loader( *( service.constData() ) );
+        KPluginFactory *pluginFactory = loader.factory();
+        if ( pluginFactory )
         {
-            Amarok::CollectionFactory* factory = dynamic_cast<Amarok::CollectionFactory*>( plugin );
+            Amarok::CollectionFactory* factory = pluginFactory->create<Amarok::CollectionFactory>( this );
             if ( factory )
             {
                 connect( factory, SIGNAL( newCollection( Amarok::Collection* ) ), this, SLOT( slotNewCollection( Amarok::Collection* ) ) );
@@ -224,9 +230,13 @@ CollectionManager::init()
             }
             else
             {
-                debug() << "Plugin has wrong factory class";
+                debug() << "Plugin has wrong factory class: " << loader.errorString();
                 continue;
             }
+        }
+        else
+        {
+            warning() << "Failed to get factory from KPluginLoader: " << loader.errorString();
         }
     }
 

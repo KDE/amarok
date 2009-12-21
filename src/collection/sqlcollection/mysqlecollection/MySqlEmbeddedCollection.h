@@ -19,15 +19,16 @@
 #define AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 
 #include "mysql-shared/MySqlCollection.h"
-#include "Collection.h"
+#include "collection/Collection.h"
 #include "amarok_export.h"
+#include "amarok_sqlcollection_export.h"
 
 class MySqlEmbeddedCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
 
     public:
-        MySqlEmbeddedCollectionFactory() {}
+        MySqlEmbeddedCollectionFactory( QObject *parent, const QVariantList &args ) { setParent( parent ); }
         virtual ~MySqlEmbeddedCollectionFactory() {}
 
         virtual void init();

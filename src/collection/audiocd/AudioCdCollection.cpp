@@ -46,14 +46,15 @@
 #include <QDir>
 #include <QTextCodec>
 
-AMAROK_EXPORT_PLUGIN( AudioCdCollectionFactory )
+AMAROK_EXPORT_COLLECTION( AudioCdCollectionFactory, audiocdcollection )
 
 using namespace Meta;
 
-AudioCdCollectionFactory::AudioCdCollectionFactory()
+AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVariantList &args )
     : MediaDeviceCollectionFactory<AudioCdCollection>( new AudioCdConnectionAssistant() )
 {
-    DEBUG_BLOCK
+    setParent( parent );
+    Q_UNUSED( args );
 }
 
 

@@ -26,12 +26,13 @@
 
 #include <KUrl>
 
-AMAROK_EXPORT_PLUGIN( MtpCollectionFactory )
+AMAROK_EXPORT_COLLECTION( MtpCollectionFactory, mtpcollection )
 
-MtpCollectionFactory::MtpCollectionFactory()
+MtpCollectionFactory::MtpCollectionFactory( QObject *parent, const QVariantList &args )
     : MediaDeviceCollectionFactory<MtpCollection> ( new MtpConnectionAssistant() )
 {
-    // nothing to do
+    setParent( parent );
+    Q_UNUSED( args )
 }
 
 MtpCollectionFactory::~MtpCollectionFactory()

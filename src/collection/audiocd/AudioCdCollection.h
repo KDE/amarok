@@ -35,7 +35,7 @@ class AudioCdCollectionFactory : public MediaDeviceCollectionFactory<AudioCdColl
 {
     Q_OBJECT
 public:
-    AudioCdCollectionFactory();
+    AudioCdCollectionFactory( QObject *parent, const QVariantList &args );
     virtual ~AudioCdCollectionFactory() {};
 
 /*    virtual void init();

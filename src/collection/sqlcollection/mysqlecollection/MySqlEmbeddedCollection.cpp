@@ -27,7 +27,7 @@
 
 #include <mysql.h>
 
-AMAROK_EXPORT_PLUGIN( MySqlEmbeddedCollectionFactory )
+AMAROK_EXPORT_COLLECTION( MySqlEmbeddedCollectionFactory, mysqlecollection )
 
 void
 MySqlEmbeddedCollectionFactory::init()

@@ -36,13 +36,14 @@
 #include <dnssd/servicebase.h>
 #include <dnssd/servicebrowser.h>
 
-AMAROK_EXPORT_PLUGIN( DaapCollectionFactory )
+AMAROK_EXPORT_COLLECTION( DaapCollectionFactory, daapcollection )
 
-DaapCollectionFactory::DaapCollectionFactory()
+DaapCollectionFactory::DaapCollectionFactory( QObject *parent, const QVariantList &args )
     : Amarok::CollectionFactory()
     , m_browser( 0 )
 {
-    //nothing to do
+    setParent( parent );
+    Q_UNUSED( args );
 }
 
 DaapCollectionFactory::~DaapCollectionFactory()

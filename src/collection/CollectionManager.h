@@ -25,10 +25,6 @@
 #include <QList>
 #include <QObject>
 
-
-typedef QHash<QString, QString> TrackUrls;
-typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
-
 class SqlStorage;
 class CollectionManagerSingleton;
 class TimecodeTrackProvider;
@@ -171,8 +167,5 @@ class AMAROK_EXPORT CollectionManager : public QObject
         struct Private;
         Private * const d;
 };
-
-Q_DECLARE_METATYPE( TrackUrls )
-Q_DECLARE_METATYPE( ChangedTrackUrls )
 
 #endif /* AMAROK_COLLECTIONMANAGER_H */
