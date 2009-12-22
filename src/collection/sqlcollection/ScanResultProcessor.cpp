@@ -477,9 +477,10 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
         m_nextTrackNum--;
     }
     else
+    {
         m_tracksHashByUrl.insert( url, trackList );
-
-    m_tracksHashById.insert( id, trackList );
+        m_tracksHashById.insert( id, trackList );
+    }
 
     if( m_tracksHashByAlbum.contains( album ) && m_tracksHashByAlbum[album] != 0 )
         m_tracksHashByAlbum[album]->append( trackList );
@@ -636,7 +637,17 @@ ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
 int
 ScanResultProcessor::urlId( const QString &url, const QString &uid )
 {
-    //DEBUG_BLOCK
+    /*
+    DEBUG_BLOCK
+    foreach( QString key, m_urlsHashByUid.keys() )
+    debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
+    foreach( int key, m_urlsHashById.keys() )
+    debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
+    typedef QPair<int, QString> blahType; //QFOREACH is stupid when it comes to QPairs
+    foreach( blahType key, m_urlsHashByLocation.keys() )
+    debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
+    */
+ 
     QFileInfo fileInfo( url );
     const QString dir = fileInfo.absoluteDir().absolutePath();
     int dirId = directoryId( dir );
@@ -644,6 +655,17 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
 
     QPair<int, QString> locationPair( deviceId, rpath );
+    //debug() << "in urlId with url = " << url << " and uid = " << uid;
+    //debug() << "checking locationPair " << locationPair;
+    if( m_urlsHashByLocation.contains( locationPair ) )
+    {
+        QStringList values;
+        if( m_urlsHashByLocation[locationPair] != 0 )
+            values = *m_urlsHashByLocation[locationPair];
+        else
+            values << "zero";
+        //debug() << "m_urlsHashByLocation contains it! It is " << values;
+    }
     QStringList currUrlIdValues;
     if( m_urlsHashByUid.contains( uid ) && m_urlsHashByUid[uid] != 0 )
         currUrlIdValues = *m_urlsHashByUid[uid];
@@ -652,6 +674,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
 
     if( currUrlIdValues.isEmpty() )  //fresh -- insert
     {
+        //debug() << "locationPair did not match!";
         int returnedNum = m_nextUrlNum++;
         QStringList *list = new QStringList();
         list->append( QString::number( returnedNum ) );
@@ -661,7 +684,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         list->append( uid );
         m_urlsHashByUid[uid] = list;
         m_urlsHashById[returnedNum] = list;
-        m_urlsHashByLocation[QPair<int, QString>( deviceId, rpath )] = list;
+        m_urlsHashByLocation[locationPair] = list;
         return returnedNum;
     }
 
@@ -672,6 +695,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
       )
     {
         //everything matches, don't need to do anything, just return the ID
+        //debug() << "Everything matches, just returning id";
         return currUrlIdValues[0].toInt();
     }
 
@@ -679,14 +703,32 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     {
         //we found an existing entry with this uniqueid, update the deviceid and path
         //Note that we ignore the situation where both a UID and path was found; UID takes precedence
-
+        //debug() << "found entry with this UID";
         if( m_urlsHashByUid.contains( uid ) && m_urlsHashByUid[uid] != 0 )
         {
+            //debug() << "m_urlsHashByUid contains this UID, updating deviceId and path";
             QStringList *list = m_urlsHashByUid[uid];
+            //debug() << "list from UID hash is " << list << " with values " << *list;
             list->replace( 1, QString::number( deviceId ) );
             list->replace( 2, rpath );
             list->replace( 3, QString::number( dirId ) );
             //debug() << "Hash updated UID-based values for uid " << uid;
+            //Now remove original locations if they exist
+            if( m_urlsHashByLocation.contains( locationPair )
+                && m_urlsHashByLocation[locationPair] != 0
+                && m_urlsHashByLocation[locationPair] != list )
+            {
+                //debug() << "If condition checked out; removing old stuff";
+                //Have existing entries for both location and UID, so to prevent conflicts remove the old
+                //entry. This can happen if for instance a track with a changed UID is added in
+                //two places to the collection.
+                QStringList *oldList = m_urlsHashByLocation[locationPair];
+                //debug() << "old list is " << oldList << " with contents " << *oldList;
+                m_urlsHashById.remove( oldList->at( 0 ).toInt() );
+                m_urlsHashByUid.remove( oldList->at( 4 ) );
+                delete oldList;
+            }
+            m_urlsHashByLocation[locationPair] = list;
         }
         m_permanentTablesUrlUpdates.insert( uid, url );
         m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( currUrlIdValues[1].toInt(), currUrlIdValues[2] ), url ) );
@@ -696,14 +738,23 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     if( currUrlIdValues[1] == QString::number( deviceId ) && currUrlIdValues[2] == rpath )
     {
         //We found an existing path; give it the most recent UID value
-        int urlId = currUrlIdValues[0].toInt();
-        if( m_urlsHashById.contains( urlId ) && m_urlsHashById[urlId] != 0 )
+        //debug() << "In urlId, found deviceid " << QString::number( deviceId ) << " and rpath " << rpath;
+        if( m_urlsHashByLocation.contains( locationPair ) && m_urlsHashByLocation[locationPair] != 0 )
         {
-            QStringList *list = m_urlsHashById[urlId];
+            QStringList *list = m_urlsHashByLocation[locationPair];
+            //debug() << "Replacing hash " << list->at( 4 ) << " with " << uid;
             list->replace( 4, uid );
-            //debug() << "Hash updated path-based values for uid " << uid;
+            if( m_urlsHashByUid.contains( uid )
+                && m_urlsHashByUid[uid] != 0 
+                && m_urlsHashByUid[uid] != list )
+            {
+                QStringList *oldList = m_urlsHashByUid[uid];
+                m_urlsHashById.remove( oldList->at( 0 ).toInt() );
+                m_urlsHashByLocation.remove( QPair<int, QString>( oldList->at( 1 ).toInt(), oldList->at( 2 ) ) );
+                delete oldList;
+            }
+            m_urlsHashByUid[uid] = list;
         }
-
         m_permanentTablesUidUpdates.insert( url, uid );
         m_changedUids.insert( currUrlIdValues[4], uid );
         return currUrlIdValues[0].toInt();
@@ -896,14 +947,15 @@ ScanResultProcessor::setupDatabase()
         }
         m_setupComplete = true;
         populateCacheHashes();
-        // /*
+        /*
         debug() << "Next URL num: " << m_nextUrlNum;
-        //foreach( QString key, m_urlsHashByUid.keys() )
-        //    debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
-        //foreach( int key, m_urlsHashById.keys() )
-        //    debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
-        //foreach( QPair<int, QString> key, m_urlsHashByLocation.keys() )
-        //    debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
+        foreach( QString key, m_urlsHashByUid.keys() )
+            debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
+        foreach( int key, m_urlsHashById.keys() )
+            debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
+        typedef QPair<int, QString> blahType; //QFOREACH is stupid when it comes to QPairs
+        foreach( blahType key, m_urlsHashByLocation.keys() )
+            debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
         debug() << "Next album num: " << m_nextAlbumNum;
         //foreach( int key, m_albumsHashById.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_albumsHashById[key];
@@ -944,13 +996,24 @@ ScanResultProcessor::populateCacheHashes()
     int lastNum = 0;
     while( index < res.size() )
     {
-        currList = new QStringList();
-        lastNum = res.at( index ).toInt();
-        for( int i = 0; i < 5; i++ )
-            currList->append( res.at(index++) );
-        m_urlsHashByUid.insert( currList->last(), currList );
-        m_urlsHashById.insert( lastNum, currList );
-        m_urlsHashByLocation.insert( QPair<int, QString>( currList->at( 1 ).toInt(), currList->at( 2 ) ), currList );
+        if( !res.at( index + 4 ).startsWith( "amarok-sqltrackuid" ) )
+        {
+            debug() << "UHOH: Found track with invalid uid of " << res.at( index + 4 );
+            index += 5;
+            continue;
+        }
+        else
+        {
+            currList = new QStringList();
+            lastNum = res.at( index ).toInt();
+            for( int i = 0; i < 5; i++ )
+                currList->append( res.at(index++) );
+            m_urlsHashByUid.insert( currList->last(), currList );
+            m_urlsHashById.insert( lastNum, currList );
+            QPair<int, QString> locationPair( currList->at( 1 ).toInt(), currList->at( 2 ) );
+            //debug() << "inserting locationPair " << locationPair;
+            m_urlsHashByLocation.insert( locationPair, currList );
+        }
     }
     m_nextUrlNum = lastNum + 1;
     m_collection->query( "DELETE FROM urls_temp;" );
@@ -1086,6 +1149,18 @@ ScanResultProcessor::populateCacheHashes()
 void
 ScanResultProcessor::copyHashesToTempTables()
 {
+    /*
+    debug() << "Next URL num: " << m_nextUrlNum;
+    foreach( QString key, m_urlsHashByUid.keys() )
+        debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
+    foreach( int key, m_urlsHashById.keys() )
+        debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
+    typedef QPair<int, QString> blahType; //QFOREACH is stupid when it comes to QPairs
+    foreach( blahType key, m_urlsHashByLocation.keys() )
+        debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
+    debug() << "Next album num: " << m_nextAlbumNum;
+    */
+ 
     DEBUG_BLOCK
     QString query;
     QString queryStart;
@@ -1110,9 +1185,17 @@ ScanResultProcessor::copyHashesToTempTables()
     valueReady = false;
     QList<int> keys = m_urlsHashById.keys();
     qSort( keys );
+    QSet<int> invalidUrls;
     foreach( int key, keys )
     {
         currList = m_urlsHashById[key];
+        if( !currList->at( 4 ).startsWith( "amarok-sqltrackuid" ) )
+        {
+            debug() << "UHOH: Trying to insert invalid entry into urls with id of " << currList->at( 0 ) << " and uid of " << currList->at( 4 );
+            invalidUrls << currList->at( 0 ).toInt();
+            continue;
+        }
+        //debug() << "inserting following list: " << currList;
         currQuery =   "(" + currList->at( 0 ) + ","
                           + ( currList->at( 1 ).isEmpty() ? "NULL" : currList->at( 1 ) ) + ","
                           + "'" + m_collection->escape( currList->at( 2 ) ) + "',"
@@ -1130,10 +1213,14 @@ ScanResultProcessor::copyHashesToTempTables()
         if( !valueReady )
         {
             query += currQuery;
+            //debug() << "appending " << currQuery;
             valueReady = true;
         }
         else
+        {
+            //debug() << "appending , + " << currQuery;
             query += "," + currQuery;
+        }
     }
     if( query != queryStart )
     {
@@ -1192,6 +1279,11 @@ ScanResultProcessor::copyHashesToTempTables()
     {
         //debug() << "key = " << key << ", id = " << m_tracksHashById[key]->at( 0 );
         currList = m_tracksHashById[key];
+        if( invalidUrls.contains( currList->at( 1 ).toInt() ) )
+        {
+            debug() << "UHOH: Skipping track with url id " << currList->at( 1 ) << " because it's in the invalidUrls set";
+            continue;
+        }
         currQuery =   "(" + currList->at( 0 ) + ","                                               //id
                           + ( currList->at( 1 ).isEmpty() ? "NULL" : currList->at( 1 ) ) + ","    //url
                           + ( currList->at( 2 ).isEmpty() ? "NULL" : currList->at( 2 ) ) + ","    //artist

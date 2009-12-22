@@ -77,6 +77,9 @@ VERSION 2.2.2
       PowerTOP when using the Xine backend.
 
   BUGFIXES:
+    * Fixed corner case that could prevent scans from being completed,
+      manifesting as a regression in 2.2.1. Huge thanks to Christian
+      Kreibichfor his patience and time in helping to debug this.
     * Fixed removing multiple tracks from a saved playlist only removing the first track.
       (BR 218527)
     * Fixed cancel button not responding when loading thumbnails in the cover 
