@@ -42,10 +42,11 @@ bool
 PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &parent )
 {
     DEBUG_BLOCK
+    bool result;
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
     if( !parent.isValid() )
     {
-        QModelIndex folderIdx = index( row, 0, parent );
+        QModelIndex folderIdx = index( row, 0, QModelIndex() );
         if( isGroup( folderIdx ) )
         {
             deleteFolder( folderIdx );
@@ -53,27 +54,35 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
         }
 
         //is a playlist not in a folder
-        QModelIndex childIdx = mapToSource( index( row, 0, parent ) );
-        return m_model->removeRow( childIdx.row(), QModelIndex() );
+        //FIXME: before confirming deletion of a playlist it already dissapears from the
+        //view. The beginRemoveRows should not be called here but in the source model.
+        QModelIndex childIdx = mapToSource( index( row, 0, QModelIndex() ) );
+        beginRemoveRows( QModelIndex(), row, row + count );
+        result = m_model->removeRows( childIdx.row(), count, QModelIndex() );
+        endRemoveRows();
+        return result;
     }
 
     if( isGroup( parent ) )
     {
-        bool success = true;
+        result = true;
         for( int i = row; i < row + count; i++ )
         {
             //individually remove all children of this group in the source model
             QModelIndex childIdx = mapToSource( index( i, 0, parent ) );
             //set success to false if removeRows returns false
-            success =
-                m_model->removeRow( childIdx.row(), QModelIndex() ) ? success : false;
+            result =
+                m_model->removeRow( childIdx.row(), QModelIndex() ) ? result : false;
         }
-        return success;
+        return result;
     }
 
     //removing a track from a playlist
+    beginRemoveRows( parent, row, row + count );
     QModelIndex originalIdx = mapToSource( parent );
-    return m_model->removeRows( row, count, originalIdx );
+    result = m_model->removeRows( row, count, originalIdx );
+    endRemoveRows();
+    return result;
 }
 
 QStringList

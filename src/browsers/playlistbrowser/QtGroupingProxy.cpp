@@ -85,8 +85,10 @@ QtGroupingProxy::belongsTo( const QModelIndex &idx )
 }
 
 /* m_groupHash layout
-*  group index in m_groupMaps: originalRow in m_model of child Playlists (no sub-groups yet)
-*  group index = -1  for non-grouped playlists
+*  key : index of the group in m_groupMaps
+*  values : original row in m_model of children of this group
+*
+*  key = -1  contains non-grouped indexes
 *
 * TODO: sub-groups
 */
@@ -548,7 +550,9 @@ QtGroupingProxy::modelRowsRemoved( const QModelIndex& index, int start, int end 
     Q_UNUSED( index )
     Q_UNUSED( start )
     Q_UNUSED( end )
-    buildTree();
+    //don't call buildTree() because it will mess up with removing multiple rows
+    //individually using removeRow().
+    //TODO: this breaks the view when rows are not deleted manually.
 }
 
 void

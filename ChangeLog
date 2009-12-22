@@ -77,6 +77,8 @@ VERSION 2.2.2
       PowerTOP when using the Xine backend.
 
   BUGFIXES:
+    * Fixed removing multiple tracks from a saved playlist only removing the first track.
+      (BR 218527)
     * Fixed cancel button not responding when loading thumbnails in the cover 
       manager. (BR 204882)
     * Fixed crash when using the inline playlist editor to resize items containing
