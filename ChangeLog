@@ -77,6 +77,8 @@ VERSION 2.2.2
       PowerTOP when using the Xine backend.
 
   BUGFIXES:
+    * Fixed regression causing many scripted services, including the, shipped by
+      default, LibriVox service to not work at all.
     * Fixed corner case that could prevent scans from being completed,
       manifesting as a regression in 2.2.1. Huge thanks to Christian
       Kreibichfor his patience and time in helping to debug this.
