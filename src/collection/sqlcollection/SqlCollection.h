@@ -53,7 +53,7 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
         SqlRegistry* registry() const;
         DatabaseUpdater* dbUpdater() const;
         ScanManager* scanManager() const;
-        
+
         void removeCollection();    //testing, remove later
 
         virtual bool isDirInCollection( QString path );

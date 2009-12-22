@@ -45,23 +45,27 @@ class SqlCollectionLocation : public CollectionLocation
     protected:
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
-	virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
+        virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
     private slots:
         void slotDialogAccepted();
         void slotDialogRejected();
         void slotJobFinished( KJob *job );
+        void slotRemoveJobFinished( KJob *job );
 
     private:
         bool startNextJob();
-        
+        bool startNextRemoveJob();
+
         QMap<QString, uint> updatedMtime( const QStringList &urls );
 
         SqlCollection *m_collection;
         QMap<Meta::TrackPtr, QString> m_destinations;
         QMap<Meta::TrackPtr, KUrl> m_sources;
+        Meta::TrackList m_removetracks;
         bool m_overwriteFiles;
         QMap<KJob*, Meta::TrackPtr> m_jobs;
+        QMap<KJob*, Meta::TrackPtr> m_removejobs;
 };
 
 #endif

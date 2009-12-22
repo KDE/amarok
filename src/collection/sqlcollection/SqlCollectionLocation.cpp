@@ -38,12 +38,13 @@
 #include <KSharedPtr>
 #include <kio/job.h>
 #include <kio/jobclasses.h>
+#include <kio/deletejob.h>
 
 
 using namespace Meta;
 
 SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
-    : CollectionLocation()
+    : CollectionLocation( collection )
     , m_collection( const_cast<SqlCollection*>( collection ) )
     , m_overwriteFiles( false )
 {
@@ -94,14 +95,10 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
         //If the destination location is another collection, remove the file as we expect
         //the destination to tell us if it is really really sure that it has copied a file.
         //If we are not copying/moving files destination() will be 0.
-        if( destination() && destination()->collection() == collection() )
-        {
-            removed = !QFile::exists( sqlTrack->playableUrl().path() );
-        }
-        else
-        {
-            removed = QFile::remove( sqlTrack->playableUrl().path() );
-        }
+//         if( destination() && destination()->collection() == collection() )
+//         {
+        removed = !QFile::exists( sqlTrack->playableUrl().path() );
+//         }
         if( removed )
         {
 
@@ -202,6 +199,31 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
 }
 
 void
+SqlCollectionLocation::slotRemoveJobFinished( KJob *job )
+{
+    DEBUG_BLOCK
+    if( job->error() )
+    {
+        //TODO: proper error handling
+        warning() << "An error occurred when removing a file: " << job->errorString();
+        transferError(m_removejobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
+    }
+    //we  assume that KIO works correctly...
+    transferSuccessful( m_removejobs.value( job ) );
+
+    m_removejobs.remove( job );
+    job->deleteLater();
+
+    if( !startNextRemoveJob() )
+    {
+        m_collection->scanManager()->setBlockScan( false );
+//         collection()->collectionUpdated();
+        slotRemoveOperationFinished();
+    }
+
+}
+
+void
 SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
     m_collection->scanManager()->setBlockScan( true );  //make sure the collection scanner does not run while we are coyping stuff
@@ -215,8 +237,18 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 void
 SqlCollectionLocation::removeUrlsFromCollection(  const Meta::TrackList &sources )
 {
-    m_collection->deleteTracksSlot( sources );
-    slotRemoveOperationFinished();
+    DEBUG_BLOCK
+
+    m_collection->scanManager()->setBlockScan( true );  //make sure the collection scanner does not run while we are deleting stuff
+
+    m_removetracks = sources;
+
+    if( !startNextRemoveJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
+    {
+//         collection()->collectionUpdated();
+        m_collection->scanManager()->setBlockScan( false );
+        slotRemoveOperationFinished();
+    }
 }
 
 void
@@ -375,6 +407,36 @@ bool SqlCollectionLocation::startNextJob()
 
             The::statusBar()->newProgressOperation( job, i18n( "Transferring: %1", name ) );
             m_jobs.insert( job, track );
+            return true;
+        }
+        break;
+    }
+    return false;
+}
+
+bool SqlCollectionLocation::startNextRemoveJob()
+{
+    DEBUG_BLOCK
+    while ( !m_removetracks.isEmpty() )
+    {
+        Meta::TrackPtr track = m_removetracks.takeFirst();
+        KUrl src = track->playableUrl();
+
+        KIO::DeleteJob *job = 0;
+
+        src.cleanPath();
+        debug() << "deleting  " << src;
+        KIO::JobFlags flags = KIO::HideProgressInfo;
+        job = KIO::del(src, flags);
+        if( job )   //just to be safe
+        {
+            connect( job, SIGNAL( result(KJob*) ), SLOT( slotRemoveJobFinished(KJob*) ) );
+            QString name = track->prettyName();
+            if( track->artist() )
+                name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
+
+            The::statusBar()->newProgressOperation( job, i18n( "Removing: %1", name ) );
+            m_removejobs.insert( job, track );
             return true;
         }
         break;
