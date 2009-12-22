@@ -20,6 +20,7 @@
 #include "Collection.h"
 #include "Debug.h"
 #include "QueryMaker.h"
+#include "UpdateCapability.h"
 
 #include <KMessageBox> // TODO put the delete confirmation code somewhere else?
 
@@ -400,9 +401,21 @@ CollectionLocation::slotFinishRemove()
         m_tracksWithError.clear();
     }
 
+    debug() << "remove finished updating";
+    foreach( Meta::TrackPtr track, m_tracksSuccessfullyTransferred )
+    {
+        if(!track)
+            continue;
+
+        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        if(!uc)
+            continue;
+
+        uc->collectionUpdated();
+    }
+
     m_tracksSuccessfullyTransferred.clear();
     m_sourceTracks.clear();
-    const_cast<Amarok::Collection*>( m_parentCollection ) ->collectionUpdated();
     this->deleteLater();
 }
 
