@@ -210,13 +210,13 @@ bool
 CollectionLocation::remove( const Meta::TrackList &tracks )
 {
     bool success = true;
-    
+
     foreach( const Meta::TrackPtr &track, tracks )
         if( !remove( track ) )
             success = false;
 
     return success;
-        
+
 }
 
 void
@@ -279,11 +279,11 @@ void
 CollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    
+
     QStringList files;
     foreach( Meta::TrackPtr track, tracks )
         files << track->prettyUrl();
-    
+
     // NOTE: taken from SqlCollection
     // TODO put the delete confirmation code somewhere else?
     const QString text( i18ncp( "@info", "Do you really want to delete this track? It will be removed from disk as well as your collection.",
@@ -379,7 +379,30 @@ void
 CollectionLocation::slotFinishRemove()
 {
     DEBUG_BLOCK
+    removeSourceTracks( m_tracksSuccessfullyTransferred );
+    if( m_tracksWithError.size() > 0 )
+    {
+        QStringList files;
+        QMapIterator<Meta::TrackPtr, QString> it( m_tracksWithError );
+        while(it.hasNext())
+        {
+            it.next();
+            if(it.key())
+                files << it.key()->prettyUrl();
+        }
+
+        const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writeable.",
+                                    "There was a problem and %1 tracks could not be removed. Make sure the directory is writeable.", files.count() ) );
+        KMessageBox::informationList(0,
+                                    text,
+                                    files,
+                                    i18n("Unable to be removed tracks") );
+        m_tracksWithError.clear();
+    }
+
+    m_tracksSuccessfullyTransferred.clear();
     m_sourceTracks.clear();
+    const_cast<Amarok::Collection*>( m_parentCollection ) ->collectionUpdated();
     this->deleteLater();
 }
 
@@ -464,8 +487,6 @@ void
 CollectionLocation::startRemoveWorkflow( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    // TODO: add a dialog warning that tracks are to be deleted
-
     m_sourceTracks = tracks;
     setupRemoveConnections();
     if( tracks.size() <= 0 )
@@ -477,6 +498,7 @@ CollectionLocation::startRemoveWorkflow( const Meta::TrackList &tracks )
 void
 CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
 {
+    DEBUG_BLOCK
     Meta::TrackList notDeletableTracks;
     int count = m_tracksWithError.count();
     debug() << "Transfer errors: " << count;
@@ -489,9 +511,28 @@ CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
         }
 
         if( !remove( track ) )
+        {
+            debug() << "remove failed";
             notDeletableTracks.append( track );
+        }
     }
-    //TODO inform user about tracks which were not deleted
+
+    if( notDeletableTracks.size() > 0 )
+    {
+        QStringList files;
+        foreach( Meta::TrackPtr track, notDeletableTracks )
+        {
+            if(track)
+                files << track->prettyUrl();
+        }
+
+        const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writeable.",
+                                    "There was a problem and %1 tracks could not be removed. Make sure the directory is writeable.", notDeletableTracks.count() ) );
+        KMessageBox::informationList(0,
+                                    text,
+                                    files,
+                                    i18n("Unable to be removed tracks") );
+    }
 }
 
 CollectionLocation*
