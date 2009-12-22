@@ -77,6 +77,8 @@ VERSION 2.2.2
       PowerTOP when using the Xine backend.
 
   BUGFIXES:
+    * Fixed cancel button not responding when loading thumbnails in the cover 
+      manager. (BR 204882)
     * Fixed crash when using the inline playlist editor to resize items containing
       auto sized elements not shown becuase of all space already being used.
       (BR 218167)
