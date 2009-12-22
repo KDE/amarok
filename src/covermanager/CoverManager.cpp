@@ -197,6 +197,8 @@ CoverManager::slotContinueConstruction() //SLOT
 
     //cover view
     m_coverView = new CoverView( vbox );
+    m_coverViewSpacer = new CoverView( vbox );
+    m_coverViewSpacer->hide();
 
     //status bar
     KStatusBar *m_statusBar = new KStatusBar( vbox );
@@ -431,22 +433,33 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
     m_progressDialog->setMaximum( m_albumList.count() );
 
     uint x = 0;
+
+    //the process events calls below causes massive flickering in the m_albumList
+    //so we hide this view and only show it when all items has been inserted. This
+    //also provides quite a massive speed improvement when loading covers.
+    m_coverView->hide();
+    m_coverViewSpacer->show();
     foreach( Meta::AlbumPtr album, m_albumList )
     {
         CoverViewItem *item = new CoverViewItem( m_coverView, album );
         m_coverItems.append( item );
 
-        if ( ++x % 50 == 0 )
+        kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
+
+         //only worth testing for after processEvents() is called
+        if( m_progressDialog->wasCanceled() )
+        {
+            break;
+        }
+        
+        if ( ++x % 10 == 0 )
         {
             m_progressDialog->setValue( x );
-            kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
-
-            //only worth testing for after processEvents() is called
-            if( m_progressDialog->wasCanceled() )
-               break;
         }
     }
 
+    m_coverViewSpacer->hide();
+    m_coverView->show();
     updateStatusBar();
     delete m_progressDialog;
 }

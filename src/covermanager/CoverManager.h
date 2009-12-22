@@ -103,6 +103,9 @@ class CoverManager : public QSplitter, public Meta::Observer
 
         QTreeWidget      *m_artistView;
         CoverView        *m_coverView;
+
+        //hack to have something to show while the real list is hidden when loading thumbnails
+        CoverView        *m_coverViewSpacer;
         Amarok::LineEdit *m_searchEdit;
         KPushButton      *m_fetchButton;
         KMenu            *m_viewMenu;
