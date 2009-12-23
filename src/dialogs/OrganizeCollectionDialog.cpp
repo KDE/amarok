@@ -229,9 +229,8 @@ OrganizeCollectionDialog::buildFormatTip() const
 QString
 OrganizeCollectionDialog::buildFormatString() const
 {
-    //TODO: this is where I need to query m_filenameLayoutDialog
     if( ui->customschemeCheck->isChecked() )
-        return "%folder/" + m_filenameLayoutDialog->getParsableScheme();
+        return "%folder/" + m_filenameLayoutDialog->getParsableScheme() + ".%filetype";
     QString format = "%folder/";
     if( ui->filetypeCheck->isChecked() )
         format += "%filetype/";
@@ -360,7 +359,7 @@ OrganizeCollectionDialog::toggleCustomScheme( bool state )  //SLOT
     }
 }
 
-//The Ok button should be disabled when there's no collection root selected.
+//The Ok button should be disabled when there's no collection root selected, and when there is no .%filetype in format string
 void
 OrganizeCollectionDialog::slotEnableOk( const QString & currentCollectionRoot )
 {

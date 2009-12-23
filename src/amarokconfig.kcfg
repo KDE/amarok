@@ -98,6 +98,29 @@
         <whatsthis>If set, Amarok's manually saved playlists will contain a relative path to each track, not an absolute path.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="External Browser" type="String">
+        <label>Filename of the external web browser to be invoked by Amarok.</label>
+        <default>xdg-open</default>
+    </entry>
+    <entry key="AutoGetCoverArt" type="Bool">
+        <label>Whether to automatically attempt to fetch cover art as needed</label>
+        <default>false</default>
+    </entry>
+    <entry key="AutoScrollPlaylist" type="Bool">
+        <label>Automatically scroll the playlist to make the currently playing song visible</label>
+        <default>true</default>
+    </entry>
+    <entry key="Show Album Art" type="Bool">
+        <label>Show Album art in the Collection Browser</label>
+        <default>true</default>
+    </entry>
+    <entry key="Lock Layout" type="Bool">
+        <label>Show the Context View</label>
+        <default>true</default>
+    </entry>
+</group>
+
+<group name="OrganizeCollectionDialog">
     <entry key="Overwrite Files" type="Bool">
         <label>Whether organize files will overwrite existing files.</label>
         <whatsthis>If set, Organize files will overwrite any existing destination.</whatsthis>
@@ -151,7 +174,7 @@
     <entry key="Custom Scheme" type="String">
         <label>Format string for Organize files, if a custom naming scheme is used.</label>
         <whatsthis>If the custom filename scheme is enabled, then Organize files will rename files according to this format string.</whatsthis>
-        <default>%folder/%filetype/%theartist/%album/%track_-_%title.%filetype</default>
+        <default>%theartist/%album/%track_-_%title</default>
     </entry>
     <entry key="Replacement Regexp" type="String">
         <label>Regular expression that is to be replaced.</label>
@@ -163,25 +186,10 @@
         <whatsthis>Organize files will replace matching substrings with this string.</whatsthis>
         <default></default>
     </entry>
-    <entry key="External Browser" type="String">
-        <label>Filename of the external web browser to be invoked by Amarok.</label>
-        <default>xdg-open</default>
-    </entry>
-    <entry key="AutoGetCoverArt" type="Bool">
-        <label>Whether to automatically attempt to fetch cover art as needed</label>
-        <default>false</default>
-    </entry>
-    <entry key="AutoScrollPlaylist" type="Bool">
-        <label>Automatically scroll the playlist to make the currently playing song visible</label>
-        <default>true</default>
-    </entry>
-    <entry key="Show Album Art" type="Bool">
-        <label>Show Album art in the Collection Browser</label>
-        <default>true</default>
-    </entry>
-    <entry key="Lock Layout" type="Bool">
-        <label>Show the Context View</label>
-        <default>true</default>
+    <entry key="Mode" type="String">
+        <label>Basic or Advanced Mode</label>
+        <whatsthis>In basic mode graphical drag/droppable tokens are used to create a filename scheme, in advanced mode the images are replaced with text.</whatsthis>
+        <default>Basic</default>
     </entry>
 </group>
 
@@ -246,7 +254,7 @@
     </entry>
     <entry key="DefEqualizerPresetsNames" type="StringList">
         <label>List with user equalizer preset names</label>
-        <default>Manual,Classical,Club,Dance,Full Bass,Full Treble,Full Bass +  Treble,Laptop/Headphones,Large Hall,Live,Party,Pop,Reggae,Rock,Soft,Ska,Soft Rock,Techno,Zero</default>  
+        <default>Manual,Classical,Club,Dance,Full Bass,Full Treble,Full Bass +  Treble,Laptop/Headphones,Large Hall,Live,Party,Pop,Reggae,Rock,Soft,Ska,Soft Rock,Techno,Zero</default>
     </entry>
     <entry key="DefEqualizerPresestValues" type="IntList">
         <default>
@@ -272,7 +280,7 @@
         </default>
         <label>List with user presets values</label>
     </entry>
-    
+
     <entry key="Replay Gain Mode" type="Enum">
         <label>The mode for adjusting playback volume.</label>
         <whatsthis>Whether to adjust the volume of tracks to make them sound the same volume, and if so whether to make the adjustments per-track or per-album.</whatsthis>
