@@ -219,11 +219,20 @@ EngineController::canDecode( const KUrl &url ) //static
     mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
     //mimeTable << "?/?"; //Add comment
 
-    const QString mimeType = item.mimetype();
-    const bool valid = mimeTable.contains( mimeType, Qt::CaseInsensitive );
+    const KMimeType::Ptr mimeType = item.mimeTypePtr();
+    
+    bool valid = false;
+    foreach( const QString &type, mimeTable )
+    {
+        if( mimeType->is( type ) )
+        {
+            valid = true;
+            break;
+        }
+    }
 
-    //we special case this as otherwise users hate us
-    if ( !valid && ( mimeType == "audio/mp3" || mimeType == "audio/x-mp3" ) && !installDistroCodec() )
+    // We special case this, as otherwise the users would hate us
+    if ( !valid && ( mimeType->is( "audio/mp3" ) || mimeType->is( "audio/x-mp3" ) ) && !installDistroCodec() )
         The::statusBar()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                       "the installation of the backend that phonon uses.</p>"
