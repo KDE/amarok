@@ -2,35 +2,8 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
-
 VERSION 2.2.2
-  FEATURES
-    * Dailymotion video can now be rendered within the applet in HQ if HQ is selected 
-      in the video applet settings.
-    * Rewrote podcast feed parser to correctly parse XML. Now even RSS 1.0 and
-      Atom feeds are supported. Patches by Mathias Panzenböck.
-    * Rating of playlist items can now be filtered, using "rating:#" notation.
-    * When removing a podcast subscription, ask for confirmation and offer to delete the
-      downloaded episodes. Patch by Frank Meerkötter.
-    * Font of lyrics applet is configurable in the lyrics applet setting page.
-    * BPM editing, sorting, and filtering have been implemented. (BR 214056)
-      Patch by Pierre Dumuid <pmdumuid@gmail.com>.
-    * Made it possible to change a podcast channel's URL. (BR 195204)
-    * Also support feed:// urls for subscribing to podcasts.
-    * Limited the number of simultaneous podcast updates and downloads to four.
-      This can be configured separately in the "amarokrc" configuration file.
-    * Import podcast subscriptions from OPML.
-    * Show HTML info for podcast channels that support this. Patches by
-      Mathias Panzenböck. (BR 193357)
-    * Ampache Service now shows Service info from last.fm
-    * Moodbar support is back. Can be shown in progress bar or in the playlist.
-      The 4 visual styles from Amarok 1 (normal, angry, frozen and happy) are 
-      all supported. This feature requires that moodbars files are already present.
-    * Cover images can now be fetched via HTTP. (BR 176899)
-    * Custom Labels has returned.  Assign labels from the tag dialog, and
-      see them in the tag dialog or in the playlist.
-    * Fetch labels from last.fm for some tracks [UPDATE THIS ONCE WE FIGURE OUT WHEN TO DO SO]
-    * Pressing F2 when focused in the lyrics applet jumps into editing mode.
+  FEATURES:
 
   CHANGES:
     * The inline playlist editor now also allows resizing of auto sized items that 
@@ -44,37 +17,6 @@ VERSION 2.2.2
       (BR 214759)
     * The collection search filter now also searches for file names as a
       fallback. Patch by Andreas Hartmetz <ahartmetz@gmail.com>.
-    * Tracks in Albums applet are now sorted by track number. Patch by Lorenz
-      Röhrl <sheepshit@gmx.de>.
-    * New menu to add applets to the context view.
-    * Added rating filter to collection browser's edit filter dialog.
-    * Added bitrate and sample rate filters to collection browser's text input area.
-    * Amarok now depends on KDElibs 4.3, and Qt 4.5.
-    * When downloading a podcast make sure the file is not on disk already. If it is the
-      download is stopped and the existing file is used instead.
-    * Last.fm friends and neighbors are now sorted alphabetically.
-    * Radically reduced memory consumption while downloading podcasts by writing direct to
-      disk. Patches by Frank Meerkoetter. (BR 209937)
-    * Podcast auto-update interval is now configurable in the rc-file. Default is 30
-      minutes. (BR 212467)
-    * Magnatune.com store: Better status message when downloading albums.
-    * Moved the "Playlist Layout" button into the main menu, as the playlist
-      toolbar was becoming too crowded.
-    * New interface for repeat and random playback modes. Interface now correctly
-      represents the actual behaviour (ony one mode can be active at any time)
-      and is accessible directly from the playlist toolbar.
-    * Usability: Added tooltips all over the place, improved existing ones.
-    * Usability improvements for the Ampache service settings dialog.
-    * Length and size of queued tracks are now shown in the statusbar tooltip. (BR 144471)
-    * Improved Cover fetching. Changed Dialog so the user can select from
-      possible covers.
-    * Improved guessing tags from filename. Added preview to Dialog.
-    * Display frames around lyrics/video applets for indicating focus.
-    * Improved keyboard functions when editing lyrics from the applet.
-    * Improved automatic resizing of lyrics and suggestions in the context applet.
-    * The audio device is now closed when playback stops. This saves power in several ways
-      and frees it up for other applications. This also fixes the 100+ idle wakeups in
-      PowerTOP when using the Xine backend.
 
   BUGFIXES:
     * More reliable MimeType detection for music formats. Patch by Rafał
@@ -113,6 +55,70 @@ VERSION 2.2.2
       applet switches "mode"). (BR 215471)
     * Made "Last.fm Love" (and potentially other global actions avaiable for all 
       tracks) correctly show up in the Current Track applet.
+
+VERSION 2.2.2-beta1
+  FEATURES
+    * Dailymotion video can now be rendered within the applet in HQ if HQ is selected 
+      in the video applet settings.
+    * Rewrote podcast feed parser to correctly parse XML. Now even RSS 1.0 and
+      Atom feeds are supported. Patches by Mathias Panzenböck.
+    * Rating of playlist items can now be filtered, using "rating:#" notation.
+    * When removing a podcast subscription, ask for confirmation and offer to delete the
+      downloaded episodes. Patch by Frank Meerkötter.
+    * Font of lyrics applet is configurable in the lyrics applet setting page.
+    * BPM editing, sorting, and filtering have been implemented. (BR 214056)
+      Patch by Pierre Dumuid <pmdumuid@gmail.com>.
+    * Made it possible to change a podcast channel's URL. (BR 195204)
+    * Also support feed:// urls for subscribing to podcasts.
+    * Limited the number of simultaneous podcast updates and downloads to four.
+      This can be configured separately in the "amarokrc" configuration file.
+    * Import podcast subscriptions from OPML.
+    * Show HTML info for podcast channels that support this. Patches by
+      Mathias Panzenböck. (BR 193357)
+    * Ampache Service now shows Service info from last.fm
+    * Moodbar support is back. Can be shown in progress bar or in the playlist.
+      The 4 visual styles from Amarok 1 (normal, angry, frozen and happy) are 
+      all supported. This feature requires that moodbars files are already present.
+    * Cover images can now be fetched via HTTP. (BR 176899)
+    * Custom Labels has returned.  Assign labels from the tag dialog, and
+      see them in the tag dialog or in the playlist.
+    * Fetch labels from last.fm for some tracks [UPDATE THIS ONCE WE FIGURE OUT WHEN TO DO SO]
+    * Pressing F2 when focused in the lyrics applet jumps into editing mode.
+
+  CHANGES:
+    * Tracks in Albums applet are now sorted by track number. Patch by Lorenz
+      Röhrl <sheepshit@gmx.de>.
+    * New menu to add applets to the context view.
+    * Added rating filter to collection browser's edit filter dialog.
+    * Added bitrate and sample rate filters to collection browser's text input area.
+    * Amarok now depends on KDElibs 4.3, and Qt 4.5.
+    * When downloading a podcast make sure the file is not on disk already. If it is the
+      download is stopped and the existing file is used instead.
+    * Last.fm friends and neighbors are now sorted alphabetically.
+    * Radically reduced memory consumption while downloading podcasts by writing direct to
+      disk. Patches by Frank Meerkoetter. (BR 209937)
+    * Podcast auto-update interval is now configurable in the rc-file. Default is 30
+      minutes. (BR 212467)
+    * Magnatune.com store: Better status message when downloading albums.
+    * Moved the "Playlist Layout" button into the main menu, as the playlist
+      toolbar was becoming too crowded.
+    * New interface for repeat and random playback modes. Interface now correctly
+      represents the actual behaviour (ony one mode can be active at any time)
+      and is accessible directly from the playlist toolbar.
+    * Usability: Added tooltips all over the place, improved existing ones.
+    * Usability improvements for the Ampache service settings dialog.
+    * Length and size of queued tracks are now shown in the statusbar tooltip. (BR 144471)
+    * Improved Cover fetching. Changed Dialog so the user can select from
+      possible covers.
+    * Improved guessing tags from filename. Added preview to Dialog.
+    * Display frames around lyrics/video applets for indicating focus.
+    * Improved keyboard functions when editing lyrics from the applet.
+    * Improved automatic resizing of lyrics and suggestions in the context applet.
+    * The audio device is now closed when playback stops. This saves power in several ways
+      and frees it up for other applications. This also fixes the 100+ idle wakeups in
+      PowerTOP when using the Xine backend.
+
+  BUGFIXES:
     * Fixed two bookmark actions having the same text description. (BR 214716)
     * Remove broken right click menu from the Info applet. (BR 206642)
     * Fix several bugs handling changing compilations. Patch by Morten Sjøgren
