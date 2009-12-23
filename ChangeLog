@@ -19,6 +19,7 @@ VERSION 2.2.2
       fallback. Patch by Andreas Hartmetz <ahartmetz@gmail.com>.
 
   BUGFIXES:
+    * Fixed missing icons in the drag overlay menu.
     * More reliable MimeType detection for music formats. Patch by Rafał
       Rzepecki <divided.mind@gmail.com>. (BR 219792)
     * Fixed regression causing many scripted services, including the, shipped by
