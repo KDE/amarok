@@ -45,7 +45,7 @@ VERSION 2.2.2
     * Jamendo.com service: Fixed track lengths not getting shown for most tracks.
       For existing installs, this requires a redownload of the Jamendo database.
       (BR 200531)
-    * Jamendo.com service: Fixed searches not working because of Sql errors.
+    * Jamendo.com service: Fixed searches not working because of SQL errors.
     * Jamendo.com service: Removed broken "Unknown" genre which would freeze
       Amarok if expanded. For existing installs, this requires a redownload of the 
       Jamendo database. (BR 213165)
@@ -131,11 +131,11 @@ VERSION 2.2.2-beta1
     * Fixed wikipedia applet poorly showing wikipedia main page when a track 
       tag is empty.
     * Magnatune.com store: Album cover is now correctly fetched when redownloading.
-    * Magnatune.com store: Fixed crash when redownloading album: (BR 217148)
+    * Magnatune.com store: Fixed crash when redownloading album. (BR 217148)
     * Fixed crash when doing "Edit Track Details" on media device. (BR 217143)
     * Fixed layout resizing bug with Qt 4.6. (BR 213990)
     * Fixed corrupted track lengths when copying to iPod. Patch by Christophe 
-      Fergeau <teuf@gnome.org> (BR: 215124)
+      Fergeau <teuf@gnome.org>. (BR: 215124)
     * Fixed videoclip applet going blank when switching from one video to 
       another. (BR 210332)
     * Fixed dailymotion video file direct link retrieving not working. (BR 214168)
@@ -163,7 +163,7 @@ VERSION 2.2.2-beta1
     * Magnatune.com store: Fixed incorrect download urls for non english 
       languages. (BR 212126)
     * Magnatune.com store: Fixed membership type not remembered when running 
-      a non english Amarok. (BR 195427)
+      a non-English Amarok. (BR 195427)
     * Support for "title:" token in the collection search. Patch by Roberto
       Bertolusso <rbertolusso@yahoo.com>. (BR 211249)
     * Fixed lots of memory leaks reported by Valgrind.
