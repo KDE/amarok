@@ -17,9 +17,10 @@
 //Plasma applet for showing videoclip in the context view
 
 #include "VideoclipApplet.h" 
-#include "VideoItemButton.h"
+
 #include "CustomVideoWidget.h"
 #include "PaletteHandler.h"
+#include "VideoItemButton.h"
 
 // Amarok
 #include "Amarok.h"
@@ -59,6 +60,9 @@
 #include <QScrollBar>
 
 #define DEBUG_PREFIX "VideoclipApplet"
+
+
+
 
 Q_DECLARE_METATYPE ( VideoInfo *)
 K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
@@ -164,6 +168,7 @@ VideoclipApplet::~VideoclipApplet()
     DEBUG_BLOCK
    
     delete m_videoWidget;
+    qDeleteAll( m_videoItemButtons );
 }
 
 void 
@@ -377,10 +382,10 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                 VideoInfo *item = data[ QString ("item:" )+QString().setNum(i) ].value<VideoInfo *>() ;
                 if( !( item->url.isEmpty() ) ) // prevent some weird stuff ...
                 {
+                    VideoItemButton *vidButton = new VideoItemButton();
+                    vidButton->setVideoInfo( item );
+                    m_videoItemButtons.append( vidButton );
 
-                    VideoItemButton *vidButton = new VideoItemButton( this );
-                    vidButton->setVideoInfo( item ); 
-                    
                     connect ( vidButton, SIGNAL( appendRequested( VideoInfo * ) ), this, SLOT ( appendVideoClip( VideoInfo * ) ) );
                     connect ( vidButton, SIGNAL( queueRequested( VideoInfo* ) ), this, SLOT ( queueVideoClip( VideoInfo * ) ) );
                     connect ( vidButton, SIGNAL( appendPlayRequested( VideoInfo * ) ), this, SLOT ( appendPlayVideoClip( VideoInfo * ) ) );
@@ -555,4 +560,4 @@ VideoclipApplet::saveSettings()
 }
 
 #include "VideoclipApplet.moc"
-
+#include "../../../SmartPointerList.moc"
