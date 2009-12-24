@@ -566,21 +566,22 @@ LastFmService::love()
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
     LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
-    if( track )
-        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
 
     if( lastfmTrack )
+    {
         lastfmTrack->love();
+        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
+    }
     else
+    {
         m_scrobbler->loveTrack( track );
+    }
 
 }
 
 void LastFmService::love( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    if( track )
-        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
     m_scrobbler->loveTrack( track );
 }
 
