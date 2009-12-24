@@ -25,46 +25,18 @@
   <property name="windowTitle">
    <string>Current Track Settings</string>
   </property>
-  <widget class="QTabWidget" name="configTabWidget">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>521</width>
-     <height>351</height>
-    </rect>
-   </property>
-   <property name="accessibleName">
-    <string/>
-   </property>
-   <widget class="QWidget" name="fontConfig">
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <attribute name="title">
-     <string>Font</string>
-    </attribute>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <widget class="KFontChooser" name="fontChooser">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>511</width>
-       <height>317</height>
-      </rect>
-     </property>
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
     </widget>
-   </widget>
-  </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>
