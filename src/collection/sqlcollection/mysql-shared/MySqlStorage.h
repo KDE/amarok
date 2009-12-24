@@ -15,10 +15,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTION_MYSQLCOLLECTION_H
-#define AMAROK_COLLECTION_MYSQLCOLLECTION_H
+#ifndef AMAROK_COLLECTION_MYSQLSTORAGE_H
+#define AMAROK_COLLECTION_MYSQLSTORAGE_H
 
-#include "SqlCollection.h"
+#include "SqlStorage.h"
 
 #include <QMutex>
 
@@ -28,19 +28,26 @@ typedef struct st_mysql MYSQL;
 /**
  * Implements a SqlCollection using a MySQL backend
  */
-class MySqlCollection: public SqlCollection
+class MySqlStorage: public SqlStorage
 {
-    Q_OBJECT
-
     public:
-        MySqlCollection( const QString &id, const QString &prettyName );
-        virtual ~MySqlCollection();
+        MySqlStorage();
+        virtual ~MySqlStorage();
 
         virtual QStringList query( const QString &query );
         virtual int insert( const QString &statement, const QString &table = QString() );
 
         virtual QString escape( QString text ) const;
         virtual QString randomFunc() const;
+
+        virtual QString boolTrue() const;
+        virtual QString boolFalse() const;
+        virtual QString idType() const;
+        virtual QString textColumnType( int length ) const;
+        virtual QString exactTextColumnType( int length ) const;
+        //the below value may have to be decreased even more for different indexes; only time will tell
+        virtual QString exactIndexableTextColumnType( int length ) const;
+        virtual QString longTextColumnType() const;
 
         virtual QString type() const = 0;
 

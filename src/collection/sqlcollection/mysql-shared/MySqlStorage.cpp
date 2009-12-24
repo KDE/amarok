@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MySqlCollection.h"
+#include "MySqlStorage.h"
 
 #include "Amarok.h"
 #include "Debug.h"
@@ -29,7 +29,7 @@
 #include <mysql.h>
 
 /**
- * This class is used by MySqlCollection to fulfill mysql's thread
+ * This class is used by MySqlStorage to fulfill mysql's thread
  * requirements. In every function that calls mysql_*, an init() method of
  * this class must be invoked.
  */
@@ -83,8 +83,8 @@ QMutex ThreadInitializer::countMutex;
 QThreadStorage< ThreadInitializer* > ThreadInitializer::storage;
 
 
-MySqlCollection::MySqlCollection( const QString &id, const QString &prettyName )
-    : SqlCollection( id, prettyName )
+MySqlStorage::MySqlStorage()
+    : SqlStorage()
     , m_db( 0 )
     , m_mutex( QMutex::Recursive )
     , m_debugIdent( "MySQL-none" )
@@ -92,7 +92,7 @@ MySqlCollection::MySqlCollection( const QString &id, const QString &prettyName )
     //Relevant code must be implemented in subclasses
 }
 
-MySqlCollection::~MySqlCollection()
+MySqlStorage::~MySqlStorage()
 {
     DEBUG_BLOCK
 
@@ -103,7 +103,7 @@ MySqlCollection::~MySqlCollection()
     }
 }
 
-QStringList MySqlCollection::query( const QString& statement )
+QStringList MySqlStorage::query( const QString& statement )
 {
     //DEBUG_BLOCK
     //debug() << "[ATTN!] MySql::query( " << statement << " )";
@@ -156,7 +156,7 @@ QStringList MySqlCollection::query( const QString& statement )
     return values;
 }
 
-int MySqlCollection::insert( const QString& statement, const QString& /* table */ )
+int MySqlStorage::insert( const QString& statement, const QString& /* table */ )
 {
     //DEBUG_BLOCK
     //debug() << "[ATTN!] MySql::insert( " << statement << " )";
@@ -190,7 +190,7 @@ int MySqlCollection::insert( const QString& statement, const QString& /* table *
 }
 
 QString
-MySqlCollection::escape( QString text ) const
+MySqlStorage::escape( QString text ) const
 {
     if( !m_db )
     {
@@ -208,13 +208,13 @@ MySqlCollection::escape( QString text ) const
 }
 
 QString
-MySqlCollection::randomFunc() const
+MySqlStorage::randomFunc() const
 {
     return "RAND()";
 }
 
 void
-MySqlCollection::reportError( const QString& message )
+MySqlStorage::reportError( const QString& message )
 {
     QString errorMessage( "GREPME " + m_debugIdent + " query failed! " + mysql_error( m_db ) + " on " + message );
     error() << errorMessage;
@@ -222,13 +222,13 @@ MySqlCollection::reportError( const QString& message )
 
 
 void
-MySqlCollection::initThreadInitializer()
+MySqlStorage::initThreadInitializer()
 {
     ThreadInitializer::init();
 }
 
 void
-MySqlCollection::sharedInit( const QString &databaseName )
+MySqlStorage::sharedInit( const QString &databaseName )
 {
     if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
         reportError( "SET NAMES 'utf8' died" );
@@ -242,5 +242,5 @@ MySqlCollection::sharedInit( const QString &databaseName )
     debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
 }
 
-#include "MySqlCollection.moc"
+#include "MySqlStorage.moc"
 

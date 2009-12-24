@@ -107,6 +107,7 @@ CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )
 {
+    qRegisterMetaType<SqlStorage *>( "SqlStorage*" );
     d->sqlDatabase = 0;
     d->primaryCollection = 0;
     d->sqlStorageWrapper = new SqlStorageWrapper();
@@ -316,25 +317,34 @@ CollectionManager::slotNewCollection( Amarok::Collection* newCollection )
     d->trackProviders.append( newCollection );
     connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
     connect( newCollection, SIGNAL( updated() ), SLOT( slotCollectionChanged() ), Qt::QueuedConnection );
-    SqlStorage *sqlCollection = dynamic_cast<SqlStorage*>( newCollection );
-    if( sqlCollection )
+    //by convention, collections that provide a SQL database have a Qt property called "sqlStorage"
+    int propertyIndex = newCollection->metaObject()->indexOfProperty( "sqlStorage" );
+    if( propertyIndex != -1 )
     {
-        //let's cheat a bit and assume that sqlStorage and the primaryCollection are always the same
-        //it is true for now anyway
-        if( d->sqlDatabase )
+        SqlStorage *sqlStorage = newCollection->property( "sqlStorage" ).value<SqlStorage*>();
+        if( sqlStorage )
         {
-            if( d->sqlDatabase->sqlDatabasePriority() < sqlCollection->sqlDatabasePriority() )
+            //let's cheat a bit and assume that sqlStorage and the primaryCollection are always the same
+            //it is true for now anyway
+            if( d->sqlDatabase )
             {
-                d->sqlDatabase = sqlCollection;
+                if( d->sqlDatabase->sqlDatabasePriority() < sqlStorage->sqlDatabasePriority() )
+                {
+                    d->sqlDatabase = sqlStorage;
+                    d->primaryCollection = newCollection;
+                    d->sqlStorageWrapper->setSqlStorage( sqlStorage );
+                }
+            }
+            else
+            {
+                d->sqlDatabase = sqlStorage;
                 d->primaryCollection = newCollection;
-                d->sqlStorageWrapper->setSqlStorage( sqlCollection );
+                d->sqlStorageWrapper->setSqlStorage( sqlStorage );
             }
         }
         else
         {
-            d->sqlDatabase = sqlCollection;
-            d->primaryCollection = newCollection;
-            d->sqlStorageWrapper->setSqlStorage( sqlCollection );
+            warning() << "Collection " << newCollection->collectionId() << " has sqlStorage property but did not provide a SqlStorage pointer";
         }
     }
     if( status & CollectionViewable )
@@ -355,25 +365,33 @@ CollectionManager::slotRemoveCollection()
         d->managedCollections.removeAll( collection );
         d->trackProviders.removeAll( collection );
         SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( collection );
-        if( sqlDb && sqlDb == d->sqlDatabase )
+        QVariant v = collection->property( "sqlStorage" );
+        if( v.isValid() )
         {
-            SqlStorage *newSqlDatabase = 0;
-            foreach( const CollectionPair &pair, d->collections )
+            SqlStorage *sqlDb = v.value<SqlStorage*>();
+            if( sqlDb && sqlDb == d->sqlDatabase )
             {
-                SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( pair.first );
-                if( sqlDb )
+                SqlStorage *newSqlDatabase = 0;
+                foreach( const CollectionPair &pair, d->collections )
                 {
-                    if( newSqlDatabase )
+                    QVariant variant = pair.first->property( "sqlStorage" );
+                    if( !variant.isValid() )
+                        continue;
+                    SqlStorage *sqlDb = variant.value<SqlStorage*>();
+                    if( sqlDb )
                     {
-                        if( newSqlDatabase->sqlDatabasePriority() < sqlDb->sqlDatabasePriority() )
+                        if( newSqlDatabase )
+                        {
+                            if( newSqlDatabase->sqlDatabasePriority() < sqlDb->sqlDatabasePriority() )
+                                newSqlDatabase = sqlDb;
+                        }
+                        else
                             newSqlDatabase = sqlDb;
                     }
-                    else
-                        newSqlDatabase = sqlDb;
                 }
+                d->sqlDatabase = newSqlDatabase;
+                d->sqlStorageWrapper->setSqlStorage( newSqlDatabase );
             }
-            d->sqlDatabase = newSqlDatabase;
-            d->sqlStorageWrapper->setSqlStorage( newSqlDatabase );
         }
         emit collectionRemoved( collection->collectionId() );
         QTimer::singleShot( 0, collection, SLOT( deleteLater() ) );

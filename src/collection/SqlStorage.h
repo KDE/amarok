@@ -19,6 +19,7 @@
 
 #include "amarok_export.h"
 
+#include <QMetaType>
 #include <QString>
 #include <QStringList>
 
@@ -53,5 +54,7 @@ public:
     virtual QString randomFunc() const = 0;
 
 };
+
+Q_DECLARE_METATYPE( SqlStorage * )
 
 #endif
