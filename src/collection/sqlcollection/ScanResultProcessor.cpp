@@ -31,6 +31,7 @@ using namespace Meta;
 
 ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     : m_collection( collection )
+    , m_storage( 0 )
     , m_setupComplete( false )
     , m_type( FullScan )
     , m_aftPermanentTablesUrlString()
@@ -80,13 +81,13 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
                              "FROM           directories_temp             "
                              "WHERE          deviceid = %1 AND dir = '%2';" )
                         .arg( QString::number( deviceId ), m_collection->escape( rdir ) );
-    QStringList res = m_collection->query( query );
+    QStringList res = m_storage->query( query );
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO directories_temp(deviceid,changedate,dir) VALUES (%1,%2,'%3');" )
                         .arg( QString::number( deviceId ), QString::number( mtime ),
-                                m_collection->escape( rdir ) );
-        int id = m_collection->insert( insert, "directories_temp" );
+                                m_storage->escape( rdir ) );
+        int id = m_storage->insert( insert, "directories_temp" );
         m_directories.insert( dir, id );
     }
     else
@@ -95,7 +96,7 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
         {
             QString update = QString( "UPDATE directories_temp SET changedate = %1 WHERE id = %2;" )
                                 .arg( QString::number( mtime ), res[0] );
-            m_collection->query( update );
+            m_storage->query( update );
         }
         m_directories.insert( dir, res[0].toInt() );
         m_collection->dbUpdater()->removeFilesInDirFromTemporaryTables( deviceId, rdir );
@@ -220,10 +221,10 @@ ScanResultProcessor::commit()
 
     copyHashesToTempTables();
 
-    debug() << "temp_tracks: " << m_collection->query("select count(*) from tracks_temp");
-    debug() << "tracks before commit: " << m_collection->query("select count(*) from tracks");
+    debug() << "temp_tracks: " << m_storage->query("select count(*) from tracks_temp");
+    debug() << "tracks before commit: " << m_storage->query("select count(*) from tracks");
     m_collection->dbUpdater()->copyToPermanentTables();
-    debug() << "tracks after commit: " << m_collection->query("select count(*) from tracks");
+    debug() << "tracks after commit: " << m_storage->query("select count(*) from tracks");
     m_collection->dbUpdater()->removeTemporaryTables();
 
     m_collection->dbUpdater()->deleteAllRedundant( "album" );
@@ -794,7 +795,7 @@ ScanResultProcessor::updateAftPermanentTablesUrlString()
         }
         query += QString( " END WHERE uniqueid IN(%1);" ).arg( query2 );
 
-        m_collection->query( query );
+        m_storage->query( query );
     }
 }
 
@@ -821,7 +822,7 @@ ScanResultProcessor::updateAftPermanentTablesUidString()
         }
         query += QString( " END WHERE url IN(%1);" ).arg( query2 );
 
-        m_collection->query( query );
+        m_storage->query( query );
     }
 }
 
@@ -839,7 +840,7 @@ ScanResultProcessor::directoryId( const QString &dir )
     }
     QString query = QString( "SELECT id, changedate FROM directories_temp WHERE deviceid = %1 AND dir = '%2';" )
                         .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
-    QStringList result = m_collection->query( query );
+    QStringList result = m_storage->query( query );
     if( result.isEmpty() )
     {
         return 0;
@@ -992,7 +993,7 @@ ScanResultProcessor::populateCacheHashes()
     DEBUG_BLOCK
 
     //urls
-    QStringList res = m_collection->query( "SELECT * FROM urls_temp ORDER BY id ASC;" );
+    QStringList res = m_storage->query( "SELECT * FROM urls_temp ORDER BY id ASC;" );
     int reserveSize = ( res.size() / 5 ) * 2; //Reserve plenty of space to bring insertion and lookup close to O(1)
     m_urlsHashByUid.reserve( reserveSize );
     m_urlsHashById.reserve( reserveSize );
@@ -1023,10 +1024,10 @@ ScanResultProcessor::populateCacheHashes()
         }
     }
     m_nextUrlNum = lastNum + 1;
-    m_collection->query( "DELETE FROM urls_temp;" );
+    m_storage->query( "DELETE FROM urls_temp;" );
 
     //albums
-    res = m_collection->query( "SELECT * FROM albums_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM albums_temp ORDER BY id ASC;" );
     reserveSize = ( res.size() / 4 ) * 2;
     m_albumsHashByName.reserve( reserveSize );
     m_albumsHashById.reserve( reserveSize );
@@ -1053,10 +1054,10 @@ ScanResultProcessor::populateCacheHashes()
         }
     }
     m_nextAlbumNum = lastNum + 1;
-    m_collection->query( "DELETE FROM albums_temp;" );
+    m_storage->query( "DELETE FROM albums_temp;" );
 
     //tracks
-    res = m_collection->query( "SELECT * FROM tracks_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM tracks_temp ORDER BY id ASC;" );
     reserveSize = ( res.size() / 22 ) * 2;
     m_tracksHashById.reserve( reserveSize );
     index = 0;
@@ -1084,10 +1085,10 @@ ScanResultProcessor::populateCacheHashes()
         }
     }
     m_nextTrackNum = lastNum + 1;
-    m_collection->query( "DELETE FROM tracks_temp;" );
+    m_storage->query( "DELETE FROM tracks_temp;" );
 
     //artists
-    res = m_collection->query( "SELECT * FROM artists_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM artists_temp ORDER BY id ASC;" );
     m_artists.reserve( res.size() );
     index = 0;
     lastNum = 0;
@@ -1097,10 +1098,10 @@ ScanResultProcessor::populateCacheHashes()
         m_artists.insert( res.at( index++ ), lastNum );
     }
     m_nextArtistNum = lastNum + 1;
-    m_collection->query( "DELETE FROM artists_temp;" );
+    m_storage->query( "DELETE FROM artists_temp;" );
 
     //composers
-    res = m_collection->query( "SELECT * FROM composers_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM composers_temp ORDER BY id ASC;" );
     m_composers.reserve( res.size() );
     index = 0;
     lastNum = 0;
@@ -1110,10 +1111,10 @@ ScanResultProcessor::populateCacheHashes()
         m_composers.insert( res.at( index++ ), lastNum );
     }
     m_nextComposerNum = lastNum + 1;
-    m_collection->query( "DELETE FROM composers_temp;" );
+    m_storage->query( "DELETE FROM composers_temp;" );
 
     //genres
-    res = m_collection->query( "SELECT * FROM genres_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM genres_temp ORDER BY id ASC;" );
     m_genres.reserve( res.size() );
     index = 0;
     lastNum = 0;
@@ -1123,10 +1124,10 @@ ScanResultProcessor::populateCacheHashes()
         m_genres.insert( res.at( index++ ), lastNum );
     }
     m_nextGenreNum = lastNum + 1;
-    m_collection->query( "DELETE FROM genres_temp;" );
+    m_storage->query( "DELETE FROM genres_temp;" );
 
     //images
-    res = m_collection->query( "SELECT * FROM images_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM images_temp ORDER BY id ASC;" );
     m_imagesFlat.reserve( res.size() );
     index = 0;
     lastNum = 0;
@@ -1136,10 +1137,10 @@ ScanResultProcessor::populateCacheHashes()
         m_imagesFlat.insert( res.at( index++ ), lastNum );
     }
     m_nextImageNum = lastNum + 1;
-    m_collection->query( "DELETE FROM images_temp;" );
+    m_storage->query( "DELETE FROM images_temp;" );
 
     //years
-    res = m_collection->query( "SELECT * FROM years_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM years_temp ORDER BY id ASC;" );
     m_years.reserve( res.size() );
     index = 0;
     lastNum = 0;
@@ -1149,7 +1150,7 @@ ScanResultProcessor::populateCacheHashes()
         m_years.insert( res.at( index++ ), lastNum );
     }
     m_nextYearNum = lastNum + 1;
-    m_collection->query( "DELETE FROM years_temp;" );
+    m_storage->query( "DELETE FROM years_temp;" );
 
 }
 
@@ -1176,7 +1177,7 @@ ScanResultProcessor::copyHashesToTempTables()
     QStringList res;
     bool valueReady;
 
-    res = m_collection->query( "SHOW VARIABLES LIKE 'max_allowed_packet';" );
+    res = m_storage->query( "SHOW VARIABLES LIKE 'max_allowed_packet';" );
     if( res.size() < 2 || res[1].toInt() == 0 )
     {
         debug() << "Uh oh! For some reason MySQL thinks there isn't a max allowed size!";
@@ -1212,7 +1213,7 @@ ScanResultProcessor::copyHashesToTempTables()
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query );
+            m_collection->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1233,7 +1234,7 @@ ScanResultProcessor::copyHashesToTempTables()
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
-        m_collection->insert( query );
+        m_storage->insert( query, QString() );
     }
     keys.clear();
 
@@ -1254,7 +1255,7 @@ ScanResultProcessor::copyHashesToTempTables()
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query );
+            m_collection->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1271,7 +1272,7 @@ ScanResultProcessor::copyHashesToTempTables()
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
-        m_collection->insert( query );
+        m_storage->insert( query, QString() );
     }
     keys.clear();
 
@@ -1318,7 +1319,7 @@ ScanResultProcessor::copyHashesToTempTables()
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query );
+            m_collection->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1335,7 +1336,7 @@ ScanResultProcessor::copyHashesToTempTables()
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
-        m_collection->insert( query );
+        m_storage->insert( query, QString() );
     }
 
     genericCopyHash( "artists", &m_artists, maxSize );
@@ -1369,7 +1370,7 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query );
+            m_collection->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1386,7 +1387,7 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
-        m_collection->insert( query );
+        m_storage->insert( query, QString() );
     }
 }
 

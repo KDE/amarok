@@ -650,6 +650,7 @@ XmlParseJob::run()
     QString currentDir;
 
     ScanResultProcessor processor( m_collection );
+    processor.setSqlStorage( m_collection );
     if( m_isIncremental )
         processor.setScanType( ScanResultProcessor::IncrementalScan );
     else

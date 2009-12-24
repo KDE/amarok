@@ -238,6 +238,7 @@ SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackM
         urls.append( trackMap[ track ] );
     }
     ScanResultProcessor processor( m_collection );
+    processor.setSqlStorage( m_collection );
     processor.setScanType( ScanResultProcessor::IncrementalScan );
     QMap<QString, uint> mtime = updatedMtime( urls );
     foreach( const QString &dir, mtime.keys() )

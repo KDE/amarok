@@ -28,6 +28,8 @@
 #include <QStringList>
 #include <QVariant>
 
+class SqlStorage;
+
 class ScanResultProcessor : public QObject
 {
     Q_OBJECT
@@ -49,6 +51,8 @@ class ScanResultProcessor : public QObject
         void processDirectory( const QList<QVariantMap > &data );
         void commit();
         void rollback();
+
+        void setSqlStorage( SqlStorage *storage ) { m_storage = storage; }
 
     signals:
         void changedTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ); //not really track urls
@@ -80,6 +84,7 @@ class ScanResultProcessor : public QObject
 
     private:
         SqlCollection *m_collection;
+        SqlStorage *m_storage;
         bool m_setupComplete;
 
         QHash<QString, int> m_artists;
