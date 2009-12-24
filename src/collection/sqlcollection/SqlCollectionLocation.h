@@ -64,4 +64,10 @@ class SqlCollectionLocation : public CollectionLocation
         QMap<KJob*, Meta::TrackPtr> m_jobs;
 };
 
+class SqlCollectionLocationFactory
+{
+public:
+    virtual SqlCollectionLocation* createSqlCollectionLocation( const SqlCollection *collection ) const = 0;
+};
+
 #endif

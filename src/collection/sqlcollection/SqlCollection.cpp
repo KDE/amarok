@@ -43,9 +43,10 @@ public:
 
 SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
-    , m_registry( new SqlRegistry( this ) )
-    , m_updater( new DatabaseUpdater( this ) )
-    , m_capabilityDelegate( new CollectionCapabilityDelegate() )
+    , m_registry( 0 )
+    , m_updater( 0 )
+    , m_capabilityDelegate( 0 )
+    , m_collectionLocationFactory( 0 )
     , m_scanManager( new ScanManager( this ) )
     , m_collectionId( id )
     , m_prettyName( prettyName )
@@ -59,6 +60,8 @@ SqlCollection::~SqlCollection()
 {
     delete m_registry;
     delete m_capabilityDelegate;
+    delete m_updater;
+    delete m_collectionLocationFactory;
 }
 
 void
@@ -151,6 +154,12 @@ SqlCollection::scanManager() const
     return m_scanManager;
 }
 
+SqlStorage*
+SqlCollection::sqlStorage() const
+{
+    return m_sqlStorage;
+}
+
 void
 SqlCollection::removeCollection()
 {
@@ -186,7 +195,7 @@ SqlCollection::trackForUrl( const KUrl &url )
 CollectionLocation*
 SqlCollection::location() const
 {
-    return new SqlCollectionLocation( this );
+    return m_collectionLocationFactory->createSqlCollectionLocation( this );
 }
 
 bool
@@ -205,79 +214,6 @@ void
 SqlCollection::sendChangedSignal()
 {
     emit updated();
-}
-
-QString
-SqlCollection::escape( QString text ) const           //krazy:exclude=constref
-{
-    return text.replace( '\'', "''" );;
-}
-
-
-int
-SqlCollection::sqlDatabasePriority() const
-{
-    return 1;
-}
-
-QString
-SqlCollection::type() const
-{
-    return "sql";
-}
-
-QString
-SqlCollection::boolTrue() const
-{
-    return "1";
-}
-
-QString
-SqlCollection::boolFalse() const
-{
-    return "0";
-}
-
-QString
-SqlCollection::idType() const
-{
-    return "INTEGER PRIMARY KEY AUTO_INCREMENT";
-}
-
-QString
-SqlCollection::textColumnType( int length ) const
-{
-    return QString( "VARCHAR(%1)" ).arg( length );
-}
-
-QString
-SqlCollection::exactTextColumnType( int length ) const
-{
-    return textColumnType( length );
-}
-
-QString
-SqlCollection::exactIndexableTextColumnType( int length ) const
-{
-    return textColumnType( length );
-}
-
-QString
-SqlCollection::longTextColumnType() const
-{
-    return "TEXT";
-}
-
-QString
-SqlCollection::randomFunc() const
-{
-    return "RANDOM()";
-}
-
-void
-SqlCollection::vacuum() const
-{
-    //implement in subclasses if necessary
 }
 
 void

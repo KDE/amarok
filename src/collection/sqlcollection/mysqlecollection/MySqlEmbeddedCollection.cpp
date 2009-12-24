@@ -20,6 +20,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "amarokconfig.h"
+#include "SqlCollectionFactory.h"
 
 #include <QMutexLocker>
 #include <QThreadStorage>
@@ -34,7 +35,9 @@ MySqlEmbeddedCollectionFactory::init()
 {
     Amarok::Collection* collection;
 
-    collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
+    //collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
+    SqlCollectionFactory fac;
+    collection = fac.createSqlCollection( "localCollection", i18n( "Local Collection" ) );
 
     emit newCollection( collection );
 }

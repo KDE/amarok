@@ -34,12 +34,18 @@ typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
 
 class CollectionCapabilityDelegate;
 class CollectionLocation;
+class SqlCollectionLocationFactory;
 class XesamCollectionBuilder;
 class ScanManager;
 
-class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection, public SqlStorage
+class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
 {
     Q_OBJECT
+
+    Q_PROPERTY( SqlStorage* sqlStorage
+                READ sqlStorage
+                SCRIPTABLE false
+                DESIGNABLE false )
 
     public:
         SqlCollection( const QString &id, const QString &prettyName );
@@ -58,6 +64,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection, pub
         SqlRegistry* registry() const;
         DatabaseUpdater* dbUpdater() const;
         ScanManager* scanManager() const;
+        SqlStorage* sqlStorage() const;
         
         void removeCollection();    //testing, remove later
 
@@ -73,31 +80,14 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection, pub
         //sqlcollection internal methods
         void sendChangedSignal();
 
-        //methods defined in SqlStorage
-        virtual int sqlDatabasePriority() const;
-        virtual QString type() const;
-
-        virtual QStringList query( const QString &query ) = 0;
-        virtual int insert( const QString &statement, const QString &table ) = 0;
-
-        virtual QString escape( QString text ) const;
-
-        virtual QString boolTrue() const;
-        virtual QString boolFalse() const;
-
-        virtual QString idType() const;
-        virtual QString textColumnType( int length = 255 ) const;
-        virtual QString exactTextColumnType( int length = 1000 ) const;
-        //the below value may have to be decreased even more for other indexes; only time will tell
-        //in that case bump the db version and alter the affected columns
-        virtual QString exactIndexableTextColumnType( int length = 324 ) const;
-        virtual QString longTextColumnType() const;
-        virtual QString randomFunc() const;
-
-        virtual void vacuum() const;
-
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+
+        void setSqlStorage( SqlStorage *storage ) { m_sqlStorage = storage; }
+        void setRegistry( SqlRegistry *registry ) { m_registry = registry; }
+        void setUpdater( DatabaseUpdater *updater ) { m_updater = updater; }
+        void setCapabilityDelegate( CollectionCapabilityDelegate *delegate ) { m_capabilityDelegate = delegate; }
+        void setCollectionLocationFactory( SqlCollectionLocationFactory *factory ) { m_collectionLocationFactory = factory; }
 
     public slots:
         void updateTrackUrlsUids( const ChangedTrackUrls &changedUrls, const TrackUrls & ); //they're not actually track urls
@@ -116,9 +106,11 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection, pub
         void initXesam();
 
     private:
-        SqlRegistry* const m_registry;
-        DatabaseUpdater * const m_updater;
-        CollectionCapabilityDelegate * const m_capabilityDelegate;
+        SqlRegistry* m_registry;
+        DatabaseUpdater * m_updater;
+        CollectionCapabilityDelegate * m_capabilityDelegate;
+        SqlStorage * m_sqlStorage;
+        SqlCollectionLocationFactory *m_collectionLocationFactory;
         QPointer<ScanManager> m_scanManager;
 
         QString m_collectionId;

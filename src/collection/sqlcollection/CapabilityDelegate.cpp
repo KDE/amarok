@@ -124,7 +124,7 @@ class OrganiseCapabilityImpl : public Meta::OrganiseCapability
             if( QFile::remove( m_track->playableUrl().path() ) )
             {
                 QString sql = QString( "DELETE FROM tracks WHERE id = %1;" ).arg( m_track->trackId() );
-                m_track->sqlCollection()->query( sql );
+                m_track->sqlCollection()->sqlStorage()->query( sql );
             }
         }
 
@@ -272,9 +272,9 @@ TrackCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type,
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityImpl( track );
         case Meta::Capability::ReadLabel:
-            return new Meta::SqlReadLabelCapability( track, track->sqlCollection() );
+            return new Meta::SqlReadLabelCapability( track, track->sqlCollection()->sqlStorage() );
         case Meta::Capability::WriteLabel:
-            return new Meta::SqlWriteLabelCapability( track, track->sqlCollection() );
+            return new Meta::SqlWriteLabelCapability( track, track->sqlCollection()->sqlStorage() );
 
         default:
             return 0;
