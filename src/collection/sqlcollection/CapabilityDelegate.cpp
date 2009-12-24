@@ -283,6 +283,7 @@ TrackCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type,
 
 
 ArtistCapabilityDelegate::ArtistCapabilityDelegate()
+    : m_bookmarkAction( 0 )
 {
 }
 
@@ -357,6 +358,7 @@ class CompilationAction : public QAction
 };
 
 AlbumCapabilityDelegate::AlbumCapabilityDelegate()
+    : m_bookmarkAction( 0 )
 {
 }
 
