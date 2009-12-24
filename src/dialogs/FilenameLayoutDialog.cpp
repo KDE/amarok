@@ -111,7 +111,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         //INIT for collection root
         unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
         collectionRootFrame->setStyleSheet( "\
-            color: palette( Base );\
+            color: palette( Text );\
             border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
             border-radius: 4px;\
             padding: 2px;\
@@ -132,7 +132,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         collectionRootIconLabel->setPixmap( collectionIcon );
 
         collectionSlashFrame->setStyleSheet( "\
-            color: palette( Base );\
+            color: palette( Text );\
             border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
             border-radius: 4px;\
             padding: 2px;\
@@ -145,7 +145,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
         collectionSlashLabel->setContentsMargins( 0, 0, 0, 0 );
 
         dotFrame->setStyleSheet( "\
-            color: palette( Base );\
+            color: palette( Text );\
             border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
             border-radius: 4px;\
             padding: 2px;\
@@ -168,7 +168,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
 
 
         extensionFrame->setStyleSheet( "\
-            color: palette( Base );\
+            color: palette( Text );\
             border: 2px solid #" + QString::number( borderColor, 16 ).remove( 0, 2 ) + ";\
             border-radius: 4px;\
             padding: 2px;\
