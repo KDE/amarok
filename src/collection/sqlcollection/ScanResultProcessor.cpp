@@ -80,7 +80,7 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
     QString query = QString( "SELECT         id, changedate               "
                              "FROM           directories_temp             "
                              "WHERE          deviceid = %1 AND dir = '%2';" )
-                        .arg( QString::number( deviceId ), m_collection->escape( rdir ) );
+                        .arg( QString::number( deviceId ), m_storage->escape( rdir ) );
     QStringList res = m_storage->query( query );
     if( res.isEmpty() )
     {
@@ -785,12 +785,12 @@ ScanResultProcessor::updateAftPermanentTablesUrlString()
         bool first = true;
         foreach( const QString key, m_permanentTablesUrlUpdates.keys() )
         {
-            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_collection->escape( key ),
-                                                       m_collection->escape( m_permanentTablesUrlUpdates[key] ) );
+            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_storage->escape( key ),
+                                                       m_storage->escape( m_permanentTablesUrlUpdates[key] ) );
             if( first )
-                query2 += QString( "'%1'" ).arg( m_collection->escape( key ) );
+                query2 += QString( "'%1'" ).arg( m_storage->escape( key ) );
             else
-                query2 += QString( ", '%1'" ).arg( m_collection->escape( key ) );
+                query2 += QString( ", '%1'" ).arg( m_storage->escape( key ) );
             first = false;
         }
         query += QString( " END WHERE uniqueid IN(%1);" ).arg( query2 );
@@ -812,12 +812,12 @@ ScanResultProcessor::updateAftPermanentTablesUidString()
         bool first = true;
         foreach( const QString key, m_permanentTablesUidUpdates.keys() )
         {
-            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_collection->escape( key ),
-                                                       m_collection->escape( m_permanentTablesUidUpdates[key] ) );
+            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_storage->escape( key ),
+                                                       m_storage->escape( m_permanentTablesUidUpdates[key] ) );
             if( first )
-                query2 += QString( "'%1'" ).arg( m_collection->escape( key ) );
+                query2 += QString( "'%1'" ).arg( m_storage->escape( key ) );
             else
-                query2 += QString( ", '%1'" ).arg( m_collection->escape( key ) );
+                query2 += QString( ", '%1'" ).arg( m_storage->escape( key ) );
             first = false;
         }
         query += QString( " END WHERE url IN(%1);" ).arg( query2 );
@@ -839,7 +839,7 @@ ScanResultProcessor::directoryId( const QString &dir )
         rpath += '/';
     }
     QString query = QString( "SELECT id, changedate FROM directories_temp WHERE deviceid = %1 AND dir = '%2';" )
-                        .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
+                        .arg( QString::number( deviceId ), m_storage->escape( rpath ) );
     QStringList result = m_storage->query( query );
     if( result.isEmpty() )
     {
@@ -1206,14 +1206,14 @@ ScanResultProcessor::copyHashesToTempTables()
         //debug() << "inserting following list: " << currList;
         currQuery =   "(" + currList->at( 0 ) + ","
                           + ( currList->at( 1 ).isEmpty() ? "NULL" : currList->at( 1 ) ) + ","
-                          + "'" + m_collection->escape( currList->at( 2 ) ) + "',"
+                          + "'" + m_storage->escape( currList->at( 2 ) ) + "',"
                           + ( currList->at( 3 ).isEmpty() ? "NULL" : currList->at( 3 ) ) + ","
-                          + "'" + m_collection->escape( currList->at( 4 ) ) + "')"; //technically allowed to be NULL but it's the primary key so won't get far
+                          + "'" + m_storage->escape( currList->at( 4 ) ) + "')"; //technically allowed to be NULL but it's the primary key so won't get far
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query, QString() );
+            m_storage->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1248,14 +1248,14 @@ ScanResultProcessor::copyHashesToTempTables()
     {
         currList = m_albumsHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","
-                          + "'" + m_collection->escape( currList->at( 1 ) ) + "',"
+                          + "'" + m_storage->escape( currList->at( 1 ) ) + "',"
                           + ( currList->at( 2 ).isEmpty() ? "NULL" : currList->at( 2 ) ) + ","
                           + ( currList->at( 3 ).isEmpty() ? "NULL" : currList->at( 3 ) ) + ")";
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query, QString() );
+            m_storage->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1299,8 +1299,8 @@ ScanResultProcessor::copyHashesToTempTables()
                           + ( currList->at( 4 ).isEmpty() ? "NULL" : currList->at( 4 ) ) + ","    //genre
                           + ( currList->at( 5 ).isEmpty() ? "NULL" : currList->at( 5 ) ) + ","    //composer
                           + ( currList->at( 6 ).isEmpty() ? "NULL" : currList->at( 6 ) ) + ","    //year
-                          + "'" + m_collection->escape( currList->at( 7 ) ) + "',"                //title
-                          + "'" + m_collection->escape( currList->at( 8 ) ) + "',"                //text
+                          + "'" + m_storage->escape( currList->at( 7 ) ) + "',"                //title
+                          + "'" + m_storage->escape( currList->at( 8 ) ) + "',"                //text
                           + ( currList->at( 9 ).isEmpty() ? "NULL" : currList->at( 9 ) ) + ","    //tracknumber
                           + ( currList->at( 10 ).isEmpty() ? "NULL" : currList->at( 10 ) ) + ","  //discnumber
                           + ( currList->at( 11 ).isEmpty() ? "NULL" : currList->at( 11 ) ) + ","  //bitrate
@@ -1319,7 +1319,7 @@ ScanResultProcessor::copyHashesToTempTables()
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query, QString() );
+            m_storage->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1364,13 +1364,13 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
     {
 
         currString = sortedHash[key];
-        //currQuery =   "(" + QString::number( hash->value( key ) ) + ",'" + m_collection->escape( key ) + "')";
-        currQuery =   "(" + QString::number( key ) + ",'" + m_collection->escape( sortedHash[key] ) + "')";
+        //currQuery =   "(" + QString::number( hash->value( key ) ) + ",'" + m_storage->escape( key ) + "')";
+        currQuery =   "(" + QString::number( key ) + ",'" + m_storage->escape( sortedHash[key] ) + "')";
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query, QString() );
+            m_storage->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }

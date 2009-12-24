@@ -35,6 +35,7 @@ typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
 class CollectionCapabilityDelegate;
 class CollectionLocation;
 class SqlCollectionLocationFactory;
+class SqlQueryMakerFactory;
 class XesamCollectionBuilder;
 class ScanManager;
 
@@ -42,7 +43,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
 {
     Q_OBJECT
 
-    Q_PROPERTY( SqlStorage* sqlStorage
+    Q_PROPERTY( SqlStorage *sqlStorage
                 READ sqlStorage
                 SCRIPTABLE false
                 DESIGNABLE false )
@@ -88,6 +89,10 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
         void setUpdater( DatabaseUpdater *updater ) { m_updater = updater; }
         void setCapabilityDelegate( CollectionCapabilityDelegate *delegate ) { m_capabilityDelegate = delegate; }
         void setCollectionLocationFactory( SqlCollectionLocationFactory *factory ) { m_collectionLocationFactory = factory; }
+        void setQueryMakerFactory( SqlQueryMakerFactory *factory ) { m_queryMakerFactory = factory; }
+        void setScanManager( ScanManager *scanMgr );
+        //this method MUST be called before using the collection
+        void init();
 
     public slots:
         void updateTrackUrlsUids( const ChangedTrackUrls &changedUrls, const TrackUrls & ); //they're not actually track urls
@@ -98,10 +103,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
     signals:
         void scanFinished();
 
-    protected:
-        //this method MUST be called from subclass constructors
-        void init();
-
     private slots:
         void initXesam();
 
@@ -111,6 +112,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
         CollectionCapabilityDelegate * m_capabilityDelegate;
         SqlStorage * m_sqlStorage;
         SqlCollectionLocationFactory *m_collectionLocationFactory;
+        SqlQueryMakerFactory *m_queryMakerFactory;
         QPointer<ScanManager> m_scanManager;
 
         QString m_collectionId;

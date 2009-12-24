@@ -20,11 +20,12 @@
 #include <QHash>
 #include <QString>
 
+class SqlStorage;
 class SqlCollection;
 
 class DatabaseUpdater {
 public:
-    DatabaseUpdater( SqlCollection *collection );
+    DatabaseUpdater();
     ~DatabaseUpdater();
 
     bool needsUpdate() const;
@@ -60,6 +61,8 @@ public:
 
     void writeCSVFile( const QString &table, const QString &filename, bool forceDebug = false );
 
+    void setStorage( SqlStorage *storage );
+    void setCollection( SqlCollection *collection) { m_collection = collection; }
 
 private:
     /** creates all the necessary tables, indexes etc. for the database */
@@ -68,6 +71,7 @@ private:
     int adminValue( const QString &key ) const;
 
     SqlCollection *m_collection;
+    SqlStorage *m_storage;
     bool m_debugDatabaseContent;
     bool m_rescanNeeded;
 

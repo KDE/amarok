@@ -27,6 +27,7 @@
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
 #include "covermanager/CoverFetcher.h"
+#include "collection/SqlStorage.h"
 #include "MountPointManager.h"
 //#include "mediadevice/CopyToDeviceAction.h"
 
@@ -91,8 +92,8 @@ SqlTrack::getTrack( int deviceid, const QString &rpath, SqlCollection *collectio
     QString query = "SELECT %1 FROM urls %2 "
                     "WHERE urls.deviceid = %3 AND urls.rpath = '%4';";
     query = query.arg( getTrackReturnValues(), getTrackJoinConditions(),
-                       QString::number( deviceid ), collection->escape( rpath ) );
-    QStringList result = collection->query( query );
+                       QString::number( deviceid ), collection->sqlStorage()->escape( rpath ) );
+    QStringList result = collection->sqlStorage()->query( query );
     if( result.isEmpty() )
         return TrackPtr();
     return TrackPtr( new SqlTrack( collection, result ) );
@@ -104,8 +105,8 @@ SqlTrack::getTrackFromUid( const QString &uid, SqlCollection* collection )
     QString query = "SELECT %1 FROM urls %2 "
                     "WHERE urls.uniqueid = '%3';";
     query = query.arg( getTrackReturnValues(), getTrackJoinConditions(),
-                       collection->escape( uid ) );
-    QStringList result = collection->query( query );
+                       collection->sqlStorage()->escape( uid ) );
+    QStringList result = collection->sqlStorage()->query( query );
     if( result.isEmpty() )
         return TrackPtr();
     return TrackPtr( new SqlTrack( collection, result ) );
@@ -117,8 +118,8 @@ SqlTrack::refreshFromDatabase( const QString &uid, SqlCollection* collection, bo
     QString query = "SELECT %1 FROM urls %2 "
                     "WHERE urls.uniqueid = '%3';";
     query = query.arg( getTrackReturnValues(), getTrackJoinConditions(),
-                       collection->escape( uid ) );
-    QStringList result = collection->query( query );
+                       collection->sqlStorage()->escape( uid ) );
+    QStringList result = collection->sqlStorage()->query( query );
     if( result.isEmpty() )
         return;
 
@@ -715,8 +716,8 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
     {
         debug() << "looking for UID " << m_uid;
         QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.uniqueid = '%1';";
-        query = query.arg( m_collection->escape( m_uid ) );
-        QStringList res = m_collection->query( query );
+        query = query.arg( m_collection->sqlStorage()->escape( m_uid ) );
+        QStringList res = m_collection->sqlStorage()->query( query );
         if( res.isEmpty() )
         {
             debug() << "Could not perform update in writeMetaDataToDb";
@@ -728,9 +729,9 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
         //whether or not commas are needed
         QString tags = QString( "id=%1" ).arg( id );
         if( fields.contains( Meta::Field::TITLE ) )
-            tags += QString( ",title='%1'" ).arg( m_collection->escape( m_title ) );
+            tags += QString( ",title='%1'" ).arg( m_collection->sqlStorage()->escape( m_title ) );
         if( fields.contains( Meta::Field::COMMENT ) )
-            tags += QString( ",comment='%1'" ).arg( m_collection->escape( m_comment ) );
+            tags += QString( ",comment='%1'" ).arg( m_collection->sqlStorage()->escape( m_comment ) );
         if( fields.contains( Meta::Field::TRACKNUMBER ) )
             tags += QString( ",tracknumber=%1" ).arg( QString::number( m_trackNumber ) );
         if( fields.contains( Meta::Field::DISCNUMBER ) )
@@ -751,7 +752,7 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
         tags += QString( ",filesize=%1" ).arg( m_filesize );
         update = update.arg( tags, QString::number( id ) );
         debug() << "Running following update query: " << update;
-        m_collection->query( update );
+        m_collection->sqlStorage()->query( update );
     }
 
     if( !m_newUid.isEmpty() )
@@ -759,7 +760,7 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
         QString update = "UPDATE urls SET uniqueid='%1' WHERE uniqueid='%2';";
         update = update.arg( m_newUid, m_uid );
         debug() << "Updating uid from " << m_uid << " to " << m_newUid;
-        m_collection->query( update );
+        m_collection->sqlStorage()->query( update );
         m_uid = m_newUid;
         m_newUid.clear();
     }
@@ -769,12 +770,12 @@ void
 SqlTrack::updateStatisticsInDb( const QStringList &fields )
 {
     QString query = "SELECT urls.id FROM urls WHERE urls.deviceid = %1 AND urls.rpath = '%2';";
-    query = query.arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
-    QStringList res = m_collection->query( query );
+    query = query.arg( QString::number( m_deviceid ), m_collection->sqlStorage()->escape( m_rpath ) );
+    QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
         return; // No idea why this happens.. but it does
     int urlId = res[0].toInt();
-    QStringList count = m_collection->query( QString( "SELECT count(*) FROM statistics WHERE url = %1;" ).arg( urlId ) );
+    QStringList count = m_collection->sqlStorage()->query( QString( "SELECT count(*) FROM statistics WHERE url = %1;" ).arg( urlId ) );
     if( count[0].toInt() == 0 )
     {
         m_firstPlayed = QDateTime::currentDateTime().toTime_t();
@@ -787,7 +788,7 @@ SqlTrack::updateStatisticsInDb( const QStringList &fields )
                 , QString::number( m_lastPlayed )
                 , QString::number( m_firstPlayed ) );
         insert = insert.arg( data );
-        m_collection->insert( insert, "statistics" );
+        m_collection->sqlStorage()->insert( insert, "statistics" );
     }
     else
     {
@@ -807,7 +808,7 @@ SqlTrack::updateStatisticsInDb( const QStringList &fields )
 
         update = update.arg( stats, QString::number( urlId ) );
 
-        m_collection->query( update );
+        m_collection->sqlStorage()->query( update );
     }
 }
 
@@ -851,8 +852,8 @@ QString
 SqlTrack::cachedLyrics() const
 {
     QString query = QString( "SELECT lyrics FROM lyrics WHERE url = '%1'" )
-                        .arg( m_collection->escape( m_rpath ) );
-    QStringList result = m_collection->query( query );
+                        .arg( m_collection->sqlStorage()->escape( m_rpath ) );
+    QStringList result = m_collection->sqlStorage()->query( query );
     if( result.isEmpty() )
         return QString();
     return result[0];
@@ -862,9 +863,9 @@ void
 SqlTrack::setCachedLyrics( const QString &lyrics )
 {
     QString query = QString( "SELECT count(*) FROM lyrics WHERE url = '%1'")
-                        .arg( m_collection->escape(m_rpath) );
+                        .arg( m_collection->sqlStorage()->escape(m_rpath) );
 
-    const QStringList queryResult = m_collection->query( query );
+    const QStringList queryResult = m_collection->sqlStorage()->query( query );
 
     if( queryResult.isEmpty() )
         return;
@@ -872,16 +873,16 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
     if( queryResult[0].toInt() == 0 )
     {
         QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( '%1', '%2' );" )
-                            .arg( m_collection->escape( m_rpath ),
-                                  m_collection->escape( lyrics ) );
-        m_collection->insert( insert, "lyrics" );
+                            .arg( m_collection->sqlStorage()->escape( m_rpath ),
+                                  m_collection->sqlStorage()->escape( lyrics ) );
+        m_collection->sqlStorage()->insert( insert, "lyrics" );
     }
     else
     {
         QString update = QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" )
-                            .arg( m_collection->escape( lyrics ),
-                                  m_collection->escape( m_rpath ) );
-        m_collection->query( update );
+                            .arg( m_collection->sqlStorage()->escape( lyrics ),
+                                  m_collection->sqlStorage()->escape( m_rpath ) );
+        m_collection->sqlStorage()->query( update );
     }
 }
 
@@ -1254,7 +1255,7 @@ SqlAlbum::removeImage()
     QString query = "SELECT images.id, count( images.id ) FROM images, albums "
                     "WHERE albums.image = images.id AND albums.id = %1 "
                     "GROUP BY images.id";
-    QStringList res = m_collection->query( query.arg( QString::number( m_id ) ) );
+    QStringList res = m_collection->sqlStorage()->query( query.arg( QString::number( m_id ) ) );
     if( !res.isEmpty() )
     {
         int imageId    = res[0].toInt();
@@ -1264,7 +1265,7 @@ SqlAlbum::removeImage()
         const int unsetId = unsetImageId();
 
         query = "UPDATE albums SET image = %1 WHERE id = %2";
-        m_collection->query( query.arg( QString::number( unsetId ), QString::number( m_id ) ) );
+        m_collection->sqlStorage()->query( query.arg( QString::number( unsetId ), QString::number( m_id ) ) );
 
         // We've just removed a references to that imageid
         references--;
@@ -1281,7 +1282,7 @@ SqlAlbum::removeImage()
         if( references <= 0 )
         {
             query = "DELETE FROM images WHERE id = %1";
-            m_collection->query( query.arg( QString::number( imageId ) ) );
+            m_collection->sqlStorage()->query( query.arg( QString::number( imageId ) ) );
         }
     }
 
@@ -1299,7 +1300,7 @@ SqlAlbum::unsetImageId() const
         return m_unsetImageId;
 
     QString query = "SELECT id FROM images WHERE path = '%1'";
-    QStringList res = m_collection->query( query.arg( AMAROK_UNSET_MAGIC ) );
+    QStringList res = m_collection->sqlStorage()->query( query.arg( AMAROK_UNSET_MAGIC ) );
 
     // We already have the AMAROK_UNSET_MAGIC variable in the database
     if( !res.isEmpty() )
@@ -1310,8 +1311,8 @@ SqlAlbum::unsetImageId() const
     {
         // We need to create this value
         query = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
-                         .arg( m_collection->escape( AMAROK_UNSET_MAGIC ) );
-        m_unsetImageId = m_collection->insert( query, "images" );
+                         .arg( m_collection->sqlStorage()->escape( AMAROK_UNSET_MAGIC ) );
+        m_unsetImageId = m_collection->sqlStorage()->insert( query, "images" );
     }
     return m_unsetImageId;
 }
@@ -1334,7 +1335,7 @@ SqlAlbum::albumArtist() const
     if( m_artistId != 0 && !m_artist )
     {
         QString query = QString( "SELECT artists.name FROM artists WHERE artists.id = %1;" ).arg( m_artistId );
-        QStringList result = m_collection->query( query );
+        QStringList result = m_collection->sqlStorage()->query( query );
         if( result.isEmpty() )
             return Meta::ArtistPtr(); //FIXME BORKED LOGIC: can return 0, although m_artistId != 0
         const_cast<SqlAlbum*>( this )->m_artist =
@@ -1447,7 +1448,7 @@ SqlAlbum::findImage( int size )
     else
     {
         QString query = "SELECT path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;";
-        QStringList res = m_collection->query( query.arg( m_id ) );
+        QStringList res = m_collection->sqlStorage()->query( query.arg( m_id ) );
         if( !res.isEmpty() )
         {
             fullsize = res.first();
@@ -1474,16 +1475,16 @@ SqlAlbum::updateImage( const QString path ) const
 {
     DEBUG_BLOCK
     QString query = "SELECT id FROM images WHERE path = '%1'";
-    query = query.arg( m_collection->escape( path ) );
-    QStringList res = m_collection->query( query );
+    query = query.arg( m_collection->sqlStorage()->escape( path ) );
+    QStringList res = m_collection->sqlStorage()->query( query );
 
     int imageid = -1;
 
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
-                            .arg( m_collection->escape( path ) );
-        imageid = m_collection->insert( insert, "images" );
+                            .arg( m_collection->sqlStorage()->escape( path ) );
+        imageid = m_collection->sqlStorage()->insert( insert, "images" );
     }
     else
         imageid = res[0].toInt();
@@ -1499,7 +1500,7 @@ SqlAlbum::updateImage( const QString path ) const
         m_images.clear();
 
         m_images.insert( 0, path );
-        m_collection->query( query );
+        m_collection->sqlStorage()->query( query );
     }
 }
 
@@ -1523,28 +1524,28 @@ SqlAlbum::setCompilation( bool compilation )
             m_artist = Meta::ArtistPtr();
 
             QString update = "UPDATE albums SET artist = NULL WHERE id = %1;";
-            m_collection->query( update.arg( m_id ) );
+            m_collection->sqlStorage()->query( update.arg( m_id ) );
             */
             m_artistId = 0;
             m_artist = Meta::ArtistPtr();
 
             // Check to see if another album with the same name is already an collection?
             QString select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist IS NULL";
-            QStringList albumId = m_collection->query( select.arg( name() ).arg( m_id ) );
+            QStringList albumId = m_collection->sqlStorage()->query( select.arg( name() ).arg( m_id ) );
             if( !albumId.empty() ) {
                 // Another album with the same name is already a collection, move all the tracks from the old album to the existing one and
                 // delete the current one. This avoids duplicate entries in the compilation list.
                 int otherId = albumId[0].toInt();
                 QString update = "UPDATE tracks SET album = %1 WHERE album = %2";
-                m_collection->query( update.arg( otherId ).arg( m_id ) );
+                m_collection->sqlStorage()->query( update.arg( otherId ).arg( m_id ) );
                 
                 QString delete_album = "DELETE FROM albums WHERE id = %1";
-                m_collection->query( delete_album.arg( m_id ) );
+                m_collection->sqlStorage()->query( delete_album.arg( m_id ) );
 
                 m_id = otherId;
             } else {
                 QString update = "UPDATE albums SET artist = NULL WHERE id = %1;";
-                m_collection->query( update.arg( m_id ) );
+                m_collection->sqlStorage()->query( update.arg( m_id ) );
             }
         }
         else
@@ -1552,7 +1553,7 @@ SqlAlbum::setCompilation( bool compilation )
             debug() << "User selected album as non-compilation";
             /*  Old behavior - UPDATE-query potentially causes an duplicate key error from mysql, if another album with the same title and artist exists.
             QString select = "SELECT artist FROM tracks WHERE album = %1";
-            QStringList artistid = m_collection->query( select.arg( m_id ) );
+            QStringList artistid = m_collection->sqlStorage()->query( select.arg( m_id ) );
 
             m_artistId = artistid[0].toInt();
             if( tracks().size() > 0 )
@@ -1560,12 +1561,12 @@ SqlAlbum::setCompilation( bool compilation )
 
             QString update = "UPDATE albums SET artist = %1 WHERE id = %2;";
             update = update.arg( m_artistId ).arg( m_id );
-            m_collection->query( update );
+            m_collection->sqlStorage()->query( update );
             */
 
             // The artists for all the tracks in this album
             QString select = "SELECT GROUP_CONCAT( CONCAT( artist ) ) FROM tracks WHERE album = %1";
-            QStringList artists = m_collection->query( select.arg( m_id ) );
+            QStringList artists = m_collection->sqlStorage()->query( select.arg( m_id ) );
 
             QSet< int > artistIds;
             foreach ( const QString & artist, artists[0].split( ",", QString::SkipEmptyParts ) ) {
@@ -1578,13 +1579,13 @@ SqlAlbum::setCompilation( bool compilation )
             if( artistIds.size( ) == 1 ) {
                 // All the tracks have the same artist, see it there is another album with the same name for this artist.
                 select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist = %3";
-                QStringList albumId = m_collection->query( select.arg( name() ).arg( m_id ).arg( *artistIds.begin() ) );
+                QStringList albumId = m_collection->sqlStorage()->query( select.arg( name() ).arg( m_id ).arg( *artistIds.begin() ) );
                 if( albumId.empty( ) ) {
                     m_artistId = *artistIds.begin();
 
                     // There isn't another album with the same name and artist, just change the artist on the album
                     QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
-                    m_collection->query( update.arg( m_artistId ).arg( m_id ) );
+                    m_collection->sqlStorage()->query( update.arg( m_artistId ).arg( m_id ) );
                     done = true;
                 }
             }
@@ -1594,13 +1595,13 @@ SqlAlbum::setCompilation( bool compilation )
                     debug() << "Look for album '" << name() << "' for artist " << artistId;
                     // Does there exist another album with the same name and the same artist as some of the tracks in this album?
                     select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist = %3";
-                    QStringList otherAlbumIdStr = m_collection->query( select.arg( name() ).arg( m_id ).arg( artistId ) );
+                    QStringList otherAlbumIdStr = m_collection->sqlStorage()->query( select.arg( name() ).arg( m_id ).arg( artistId ) );
                     int otherAlbumId = 0;
                     if( otherAlbumIdStr.empty( ) ) {
                         debug() << "Didn't find an album";
                         // Create new album for the tracks for this artist.
                         QString insert = "INSERT INTO albums( artist, name ) VALUES ( %1, '%2');";
-                        otherAlbumId = m_collection->insert( insert.arg( artistId ).arg( m_collection->escape( name() ) ), "albums" );
+                        otherAlbumId = m_collection->sqlStorage()->insert( insert.arg( artistId ).arg( m_collection->sqlStorage()->escape( name() ) ), "albums" );
                     } else {
                         debug() << "Found album " << otherAlbumIdStr;
                         // We found an album with the same name as the compilation album and the same artist as some of the tracks.
@@ -1610,13 +1611,13 @@ SqlAlbum::setCompilation( bool compilation )
 
                     if ( otherAlbumId > 0 ) {
                         QString update = "UPDATE tracks SET album = %1 WHERE album = %2 AND artist = %3";
-                        m_collection->query( update.arg( otherAlbumId ).arg( m_id ).arg( artistId ) );
+                        m_collection->sqlStorage()->query( update.arg( otherAlbumId ).arg( m_id ).arg( artistId ) );
                     }
                 }
 
                 // Remove the existing compilation album, since we have move all tracks to a new album.
                 QString delete_album = "DELETE FROM albums WHERE id = %1";
-                m_collection->query( delete_album.arg( m_id ) );
+                m_collection->sqlStorage()->query( delete_album.arg( m_id ) );
                 m_id = 0;
             }
         }

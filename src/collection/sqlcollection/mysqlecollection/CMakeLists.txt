@@ -13,7 +13,7 @@ include_directories(
 ########### mysqle ###############
 
 set(amarok_collection-mysqlecollection_PART_SRCS
-    ../mysql-shared/MySqlCollection.cpp
+    ../mysql-shared/MySqlStorage.cpp
     MySqlEmbeddedCollection.cpp
  )
 

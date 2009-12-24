@@ -19,6 +19,7 @@
 #include "amarokconfig.h"
 #include "Debug.h"
 #include "MountPointManager.h"
+#include "collection/SqlStorage.h"
 #include "SqlCollection.h"
 
 #include <QDateTime>
@@ -32,8 +33,9 @@
 
 static const int DB_VERSION = 13;
 
-DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
-    : m_collection( collection )
+DatabaseUpdater::DatabaseUpdater()
+    : m_collection( 0 )
+    , m_storage( 0 )
     , m_debugDatabaseContent( false )
     , m_rescanNeeded( false )
 {
@@ -43,6 +45,12 @@ DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
 DatabaseUpdater::~DatabaseUpdater()
 {
     //nothing to do
+}
+
+void
+DatabaseUpdater::setStorage( SqlStorage *storage )
+{
+    m_storage = storage;
 }
 
 bool
@@ -61,7 +69,7 @@ DatabaseUpdater::update()
     {
         createTables();
         QString query = QString( "INSERT INTO admin(component, version) VALUES ('DB_VERSION', %1);" ).arg( DB_VERSION );
-        m_collection->query( query );
+        m_storage->query( query );
     }
     else if( dbVersion < DB_VERSION )
     {
@@ -144,7 +152,7 @@ DatabaseUpdater::update()
         }
         */
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
-        m_collection->query( query );
+        m_storage->query( query );
 
         //NOTE: A rescan will be triggered automatically as a result of an upgrade.  Don't trigger it here, as the
         //collection isn't fully initialized and this will trigger a crash/assert.
@@ -166,7 +174,7 @@ DatabaseUpdater::upgradeVersion1to2()
 {
     DEBUG_BLOCK
 
-    m_collection->query( "ALTER TABLE tracks "
+    m_storage->query( "ALTER TABLE tracks "
                          "ADD COLUMN albumgain FLOAT, "
                          "ADD COLUMN albumpeakgain FLOAT, "
                          "ADD COLUMN trackgain FLOAT,"
@@ -178,46 +186,46 @@ DatabaseUpdater::upgradeVersion2to3()
 {
     DEBUG_BLOCK
 
-    m_collection->query( "DROP TABLE devices;" );
+    m_storage->query( "DROP TABLE devices;" );
 
     QString create = "CREATE TABLE devices "
-                     "(id " + m_collection->idType() +
-                     ",type " + m_collection->textColumnType() +
-                     ",label " + m_collection->textColumnType() +
-                     ",lastmountpoint " + m_collection->textColumnType() +
-                     ",uuid " + m_collection->textColumnType() +
-                     ",servername " + m_collection->textColumnType() +
-                     ",sharename " + m_collection->textColumnType() + ");";
-    m_collection->query( create );
-    m_collection->query( "CREATE INDEX devices_type ON devices( type );" );
-    m_collection->query( "CREATE UNIQUE INDEX devices_uuid ON devices( uuid );" );
-    m_collection->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
+                     "(id " + m_storage->idType() +
+                     ",type " + m_storage->textColumnType() +
+                     ",label " + m_storage->textColumnType() +
+                     ",lastmountpoint " + m_storage->textColumnType() +
+                     ",uuid " + m_storage->textColumnType() +
+                     ",servername " + m_storage->textColumnType() +
+                     ",sharename " + m_storage->textColumnType() + ");";
+    m_storage->query( create );
+    m_storage->query( "CREATE INDEX devices_type ON devices( type );" );
+    m_storage->query( "CREATE UNIQUE INDEX devices_uuid ON devices( uuid );" );
+    m_storage->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
 
 }
 
 void
 DatabaseUpdater::upgradeVersion3to4()
 {
-    m_collection->query( "CREATE TABLE statistics_permanent "
-                         "(url " + m_collection->exactTextColumnType() +
+    m_storage->query( "CREATE TABLE statistics_permanent "
+                         "(url " + m_storage->exactTextColumnType() +
                          ",firstplayed DATETIME"
                          ",lastplayed DATETIME"
                          ",score FLOAT"
                          ",rating INTEGER DEFAULT 0"
                          ",playcount INTEGER)" );
-    m_collection->query( "CREATE UNIQUE INDEX ON statistics_permanent(url)" );
+    m_storage->query( "CREATE UNIQUE INDEX ON statistics_permanent(url)" );
     //Note: the above index query is invalid, but kept here for posterity
 
-    m_collection->query( "CREATE TABLE statistics_tag "
-                         "(name " + m_collection->textColumnType() +
-                         ",artist " + m_collection->textColumnType() +
-                         ",album " + m_collection->textColumnType() +
+    m_storage->query( "CREATE TABLE statistics_tag "
+                         "(name " + m_storage->textColumnType() +
+                         ",artist " + m_storage->textColumnType() +
+                         ",album " + m_storage->textColumnType() +
                          ",firstplayed DATETIME"
                          ",lastplayed DATETIME"
                          ",score FLOAT"
                          ",rating INTEGER DEFAULT 0"
                          ",playcount INTEGER)" );
-    m_collection->query( "CREATE UNIQUE INDEX ON statistics_tag(name,artist,album)" );
+    m_storage->query( "CREATE UNIQUE INDEX ON statistics_tag(name,artist,album)" );
     //Note: the above index query is invalid, but kept here for posterity
 }
 
@@ -226,7 +234,7 @@ DatabaseUpdater::upgradeVersion4to5()
 {
     DEBUG_BLOCK
     //first the database
-    m_collection->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" );
+    m_storage->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" );
 
     //now the tables
 
@@ -237,7 +245,7 @@ DatabaseUpdater::upgradeVersion4to5()
     dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
 
     foreach( QString table, dropTables )
-        m_collection->query( "DROP TABLE " + table );
+        m_storage->query( "DROP TABLE " + table );
 
     //now, the rest of them
     QStringList tables;
@@ -249,7 +257,7 @@ DatabaseUpdater::upgradeVersion4to5()
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
     foreach( QString table, tables )
-        m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci" );
+        m_storage->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci" );
 
     //now the columns (ugh)
     //first, varchar
@@ -309,8 +317,8 @@ DatabaseUpdater::upgradeVersion4to5()
 
     for( i = columns.begin(); i != columns.end(); ++i )
     {
-        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ')' );
-        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
+        m_storage->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ')' );
+        m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
             " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL" );
     }
 
@@ -330,17 +338,17 @@ DatabaseUpdater::upgradeVersion4to5()
     columns.insert( "podcastepisodes", vcpair( "description", 0 ) );
     columns.insert( "tracks", vcpair( "comment", 0 ) );
 
-    m_collection->query( "DROP INDEX url_podchannel ON podcastchannels" );
-    m_collection->query( "DROP INDEX url_podepisode ON podcastepisodes" );
-    m_collection->query( "DROP INDEX localurl_podepisode ON podcastepisodes" );
+    m_storage->query( "DROP INDEX url_podchannel ON podcastchannels" );
+    m_storage->query( "DROP INDEX url_podepisode ON podcastepisodes" );
+    m_storage->query( "DROP INDEX localurl_podepisode ON podcastepisodes" );
     for( i = columns.begin(); i != columns.end(); ++i )
     {
-        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " BLOB" );
-        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET utf8 NOT NULL" );
+        m_storage->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " BLOB" );
+        m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET utf8 NOT NULL" );
     }
-    m_collection->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url )" );
-    m_collection->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url )" );
-    m_collection->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )" );
+    m_storage->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url )" );
+    m_storage->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url )" );
+    m_storage->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )" );
 }
 
 void
@@ -354,7 +362,7 @@ DatabaseUpdater::upgradeVersion5to6()
     dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
 
     foreach( QString table, dropTables )
-        m_collection->query( "DROP TABLE " + table );
+        m_storage->query( "DROP TABLE " + table );
 
     //now, the rest of them
     QStringList tables;
@@ -366,7 +374,7 @@ DatabaseUpdater::upgradeVersion5to6()
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
     foreach( QString table, tables )
-        m_collection->query( "ALTER TABLE " + table + " ENGINE = MyISAM" );
+        m_storage->query( "ALTER TABLE " + table + " ENGINE = MyISAM" );
 
     typedef QPair<QString, int> vcpair;
     QMultiMap<QString, vcpair> columns;
@@ -388,12 +396,12 @@ DatabaseUpdater::upgradeVersion5to6()
     QMultiMap<QString, vcpair>::const_iterator i;
 
     for( i = columns.begin(); i != columns.end(); ++i )
-        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " VARCHAR(" + QString::number( i.value().second ) + ") " );
+        m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " VARCHAR(" + QString::number( i.value().second ) + ") " );
 
-    m_collection->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
-    m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
-    m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
-    m_collection->query( "CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)" );
+    m_storage->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
+    m_storage->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
+    m_storage->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
+    m_storage->query( "CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)" );
 }
 
 void
@@ -410,7 +418,7 @@ DatabaseUpdater::upgradeVersion6to7()
 
     for( i = columns.begin(); i != columns.end(); ++i )
     {
-        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
+        m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
             " VARCHAR(" + QString::number( i.value().second ) + ") COLLATE utf8_bin NOT NULL" );
     }
 
@@ -426,7 +434,7 @@ DatabaseUpdater::upgradeVersion7to8()
     QHash< int, int > trackLengthHash;
 
     // First, get the lengths from the db and insert them into a hash
-    const QStringList result = m_collection->query( "SELECT id, length FROM tracks" );
+    const QStringList result = m_storage->query( "SELECT id, length FROM tracks" );
 
     QListIterator<QString> iter(result);
     while( iter.hasNext() )
@@ -439,7 +447,7 @@ DatabaseUpdater::upgradeVersion7to8()
     {
         iter2.next();
         debug() << "Running the following query: " << updateString.arg( QString::number( iter2.value() * 1000 ), QString::number( iter2.key() ) );
-        m_collection->query( updateString.arg( QString::number( iter2.value() * 1000 ), QString::number( iter2.key() ) ) );
+        m_storage->query( updateString.arg( QString::number( iter2.value() * 1000 ), QString::number( iter2.key() ) ) );
     }
 }
 
@@ -454,7 +462,7 @@ DatabaseUpdater::upgradeVersion9to10()
 {
     DEBUG_BLOCK
     //first the database
-    m_collection->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" );
+    m_storage->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" );
 
     //now the tables
 
@@ -465,7 +473,7 @@ DatabaseUpdater::upgradeVersion9to10()
     dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
 
     foreach( QString table, dropTables )
-        m_collection->query( "DROP TABLE " + table );
+        m_storage->query( "DROP TABLE " + table );
 
     //now, the rest of them
     QStringList tables;
@@ -477,7 +485,7 @@ DatabaseUpdater::upgradeVersion9to10()
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
     foreach( QString table, tables )
-        m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin COLLATE utf8_bin ENGINE = MyISAM" );
+        m_storage->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin COLLATE utf8_bin ENGINE = MyISAM" );
 
     //now the columns (ugh)
     //first, varchar
@@ -538,15 +546,15 @@ DatabaseUpdater::upgradeVersion9to10()
 
     for( i = columns.begin(); i != columns.end(); ++i )
     {
-        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ')' );
-        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
+        m_storage->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ')' );
+        m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
             " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 COLLATE utf8_bin NOT NULL" );
     }
 
-    m_collection->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
-    m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
-    m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
-    m_collection->query( "CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)" );
+    m_storage->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
+    m_storage->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
+    m_storage->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
+    m_storage->query( "CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)" );
 
     columns.clear();
 
@@ -564,17 +572,17 @@ DatabaseUpdater::upgradeVersion9to10()
     columns.insert( "podcastepisodes", vcpair( "description", 0 ) );
     columns.insert( "tracks", vcpair( "comment", 0 ) );
 
-    m_collection->query( "DROP INDEX url_podchannel ON podcastchannels" );
-    m_collection->query( "DROP INDEX url_podepisode ON podcastepisodes" );
-    m_collection->query( "DROP INDEX localurl_podepisode ON podcastepisodes" );
+    m_storage->query( "DROP INDEX url_podchannel ON podcastchannels" );
+    m_storage->query( "DROP INDEX url_podepisode ON podcastepisodes" );
+    m_storage->query( "DROP INDEX localurl_podepisode ON podcastepisodes" );
     for( i = columns.begin(); i != columns.end(); ++i )
     {
-        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " BLOB" );
-        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL" );
+        m_storage->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " BLOB" );
+        m_storage->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET utf8 COLLATE utf8_bin NOT NULL" );
     }
-    m_collection->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url )" );
-    m_collection->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url )" );
-    m_collection->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )" );
+    m_storage->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url )" );
+    m_storage->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url )" );
+    m_storage->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )" );
 }
 
 void
@@ -614,83 +622,83 @@ DatabaseUpdater::createTemporaryTables()
     //TODO refactor this to make it easier to keep the tables created by those methods in sync
     {
         QString create = "CREATE TEMPORARY TABLE urls_temp "
-                         "(id " + m_collection->idType() +
+                         "(id " + m_storage->idType() +
                          ",deviceid INTEGER"
-                         ",rpath " + m_collection->exactIndexableTextColumnType() + " NOT NULL" +
+                         ",rpath " + m_storage->exactIndexableTextColumnType() + " NOT NULL" +
                          ",directory INTEGER"
-                         ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath_temp ON urls_temp(deviceid, rpath);" );
-        m_collection->query( "CREATE INDEX urls_temp_uniqueid ON urls_temp(uniqueid);" );
+                         ",uniqueid " + m_storage->exactTextColumnType(128) + " UNIQUE) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX urls_id_rpath_temp ON urls_temp(deviceid, rpath);" );
+        m_storage->query( "CREATE INDEX urls_temp_uniqueid ON urls_temp(uniqueid);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE directories_temp "
-                         "(id " + m_collection->idType() +
+                         "(id " + m_storage->idType() +
                          ",deviceid INTEGER"
-                         ",dir " + m_collection->exactTextColumnType() + " NOT NULL" +
+                         ",dir " + m_storage->exactTextColumnType() + " NOT NULL" +
                          ",changedate INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
+        m_storage->query( create );
     }
     {
         QString create = "CREATE TEMPORARY TABLE artists_temp "
-                         "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX artists_temp_name ON artists_temp(name);" );
+                         "(id " + m_storage->idType() +
+                         ",name " + m_storage->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX artists_temp_name ON artists_temp(name);" );
     }
     {
         QString c = "CREATE TEMPORARY TABLE albums_temp "
-                    "(id " + m_collection->idType() +
-                    ",name " + m_collection->textColumnType() + " NOT NULL"
+                    "(id " + m_storage->idType() +
+                    ",name " + m_storage->textColumnType() + " NOT NULL"
                     ",artist INTEGER" +
                     ",image INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( c );
-        m_collection->query( "CREATE INDEX albums_temp_name ON albums_temp(name);" );
-        m_collection->query( "CREATE INDEX albums_temp_artist ON albums_temp(artist);" );
-        m_collection->query( "CREATE INDEX albums_temp_image ON albums_temp(image);" );
-        m_collection->query( "CREATE UNIQUE INDEX albums_temp_name_artist ON albums_temp(name,artist);" );
+        m_storage->query( c );
+        m_storage->query( "CREATE INDEX albums_temp_name ON albums_temp(name);" );
+        m_storage->query( "CREATE INDEX albums_temp_artist ON albums_temp(artist);" );
+        m_storage->query( "CREATE INDEX albums_temp_image ON albums_temp(image);" );
+        m_storage->query( "CREATE UNIQUE INDEX albums_temp_name_artist ON albums_temp(name,artist);" );
         //the index below should not be necessary. uncomment if a query plan shows it is
-        //m_collection->query( "CREATE UNIQUE INDEX albums_artist_name ON albums(artist,name);" );
+        //m_storage->query( "CREATE UNIQUE INDEX albums_artist_name ON albums(artist,name);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE genres_temp "
-                         "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX genres_temp_name ON genres_temp(name);" );
+                         "(id " + m_storage->idType() +
+                         ",name " + m_storage->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX genres_temp_name ON genres_temp(name);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE composers_temp "
-                         "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX composers_temp_name ON composers_temp(name);" );
+                         "(id " + m_storage->idType() +
+                         ",name " + m_storage->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX composers_temp_name ON composers_temp(name);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE years_temp "
-                         "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX years_temp_name ON years_temp(name);" );
+                         "(id " + m_storage->idType() +
+                         ",name " + m_storage->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX years_temp_name ON years_temp(name);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE images_temp "
-                         "(id " + m_collection->idType() +
-                         ",path " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX images_temp_name ON images_temp(path);" );
+                         "(id " + m_storage->idType() +
+                         ",path " + m_storage->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX images_temp_name ON images_temp(path);" );
     }
     {
         QString c = "CREATE TEMPORARY TABLE tracks_temp "
-                    "(id " + m_collection->idType() +
+                    "(id " + m_storage->idType() +
                     ",url INTEGER"
                     ",artist INTEGER"
                     ",album INTEGER"
                     ",genre INTEGER"
                     ",composer INTEGER"
                     ",year INTEGER"
-                    ",title " + m_collection->textColumnType() +
-                    ",comment " + m_collection->longTextColumnType() +
+                    ",title " + m_storage->textColumnType() +
+                    ",comment " + m_storage->longTextColumnType() +
                     ",tracknumber INTEGER"
                     ",discnumber INTEGER"
                     ",bitrate INTEGER"
@@ -707,8 +715,8 @@ DatabaseUpdater::createTemporaryTables()
                     ",trackpeakgain FLOAT"
                     ") COLLATE = utf8_bin ENGINE = MyISAM;";
 
-        m_collection->query( c );
-        m_collection->query( "CREATE UNIQUE INDEX tracks_temp_url ON tracks_temp(url);" );
+        m_storage->query( c );
+        m_storage->query( "CREATE UNIQUE INDEX tracks_temp_url ON tracks_temp(url);" );
     }
 }
 
@@ -716,58 +724,58 @@ void
 DatabaseUpdater::prepareTemporaryTables()
 {
     DEBUG_BLOCK
-    m_collection->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
-    m_collection->query( "INSERT INTO urls_temp SELECT * FROM urls;" );
-    m_collection->query( "INSERT INTO artists_temp SELECT * FROM artists;" );
-    m_collection->query( "INSERT INTO years_temp SELECT * FROM years;" );
-    m_collection->query( "INSERT INTO albums_temp SELECT * FROM albums;" );
-    m_collection->query( "INSERT INTO images_temp SELECT * FROM images;" );
-    m_collection->query( "INSERT INTO genres_temp SELECT * FROM genres;" );
-    m_collection->query( "INSERT INTO composers_temp SELECT * FROM composers;" );
-    m_collection->query( "INSERT INTO tracks_temp SELECT * FROM tracks;" );
+    m_storage->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
+    m_storage->query( "INSERT INTO urls_temp SELECT * FROM urls;" );
+    m_storage->query( "INSERT INTO artists_temp SELECT * FROM artists;" );
+    m_storage->query( "INSERT INTO years_temp SELECT * FROM years;" );
+    m_storage->query( "INSERT INTO albums_temp SELECT * FROM albums;" );
+    m_storage->query( "INSERT INTO images_temp SELECT * FROM images;" );
+    m_storage->query( "INSERT INTO genres_temp SELECT * FROM genres;" );
+    m_storage->query( "INSERT INTO composers_temp SELECT * FROM composers;" );
+    m_storage->query( "INSERT INTO tracks_temp SELECT * FROM tracks;" );
 }
 
 void
 DatabaseUpdater::prepareTemporaryTablesForFullScan()
 {
-    m_collection->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
-    m_collection->query( "INSERT INTO urls_temp SELECT * FROM urls;" );
+    m_storage->query( "INSERT INTO directories_temp SELECT * FROM directories;" );
+    m_storage->query( "INSERT INTO urls_temp SELECT * FROM urls;" );
 }
 
 void
 DatabaseUpdater::cleanPermanentTables()
 {
     DEBUG_BLOCK
-    m_collection->query( "DELETE FROM composers;" );
-    m_collection->query( "DELETE FROM genres;" );
-    m_collection->query( "DELETE FROM images;" );
-    m_collection->query( "DELETE FROM albums;" );
-    m_collection->query( "DELETE FROM years;" );
-    m_collection->query( "DELETE FROM artists;" );
-    m_collection->query( "DELETE FROM tracks;" );
-    m_collection->query( "DELETE FROM urls;" );
-    m_collection->query( "DELETE FROM directories" );
+    m_storage->query( "DELETE FROM composers;" );
+    m_storage->query( "DELETE FROM genres;" );
+    m_storage->query( "DELETE FROM images;" );
+    m_storage->query( "DELETE FROM albums;" );
+    m_storage->query( "DELETE FROM years;" );
+    m_storage->query( "DELETE FROM artists;" );
+    m_storage->query( "DELETE FROM tracks;" );
+    m_storage->query( "DELETE FROM urls;" );
+    m_storage->query( "DELETE FROM directories" );
 }
 
 void
 DatabaseUpdater::removeTemporaryTables()
 {
     DEBUG_BLOCK
-    m_collection->query( "DROP TABLE tracks_temp;" );
-    m_collection->query( "DROP TABLE images_temp;" );
-    m_collection->query( "DROP TABLE albums_temp;" );
-    m_collection->query( "DROP TABLE genres_temp;" );
-    m_collection->query( "DROP TABLE years_temp;" );
-    m_collection->query( "DROP TABLE composers_temp;" );
-    m_collection->query( "DROP TABLE artists_temp;" );
-    m_collection->query( "DROP TABLE urls_temp;" );
-    m_collection->query( "DROP TABLE directories_temp" );
+    m_storage->query( "DROP TABLE tracks_temp;" );
+    m_storage->query( "DROP TABLE images_temp;" );
+    m_storage->query( "DROP TABLE albums_temp;" );
+    m_storage->query( "DROP TABLE genres_temp;" );
+    m_storage->query( "DROP TABLE years_temp;" );
+    m_storage->query( "DROP TABLE composers_temp;" );
+    m_storage->query( "DROP TABLE artists_temp;" );
+    m_storage->query( "DROP TABLE urls_temp;" );
+    m_storage->query( "DROP TABLE directories_temp" );
 }
 
 void
 DatabaseUpdater::cleanupDatabase()
 {
-    QStringList result = m_collection->query( "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE table_name like '%_temp';" );
+    QStringList result = m_storage->query( "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE table_name like '%_temp';" );
     if( result.count() > 0 && result.first().toInt() > 0 )
     {
         //looks like the temporary tables were not removed, probably because of a crash
@@ -779,11 +787,11 @@ void
 DatabaseUpdater::checkTables( bool full )
 {
     DEBUG_BLOCK
-    QStringList res = m_collection->query( "SHOW TABLES" );
+    QStringList res = m_storage->query( "SHOW TABLES" );
     if( res.count() > 0 )
     {
         foreach( QString table, res )
-            m_collection->query( "CHECK TABLE " + table + ( full ? " EXTENDED;" : " MEDIUM;" ) );
+            m_storage->query( "CHECK TABLE " + table + ( full ? " EXTENDED;" : " MEDIUM;" ) );
     }
 }
 
@@ -810,39 +818,39 @@ DatabaseUpdater::copyToPermanentTables()
 
 
     //handle artists before albums
-    m_collection->insert( QString ( "INSERT INTO artists SELECT * FROM artists_temp WHERE artists_temp.id NOT IN"
+    m_storage->insert( QString ( "INSERT INTO artists SELECT * FROM artists_temp WHERE artists_temp.id NOT IN"
                    " (SELECT DISTINCT id FROM artists);" ), QString() );
 
     //handle images before albums
-    m_collection->query( "DELETE FROM images;" );
-    m_collection->insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
+    m_storage->query( "DELETE FROM images;" );
+    m_storage->insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
 
-    m_collection->insert( QString ( "INSERT INTO albums SELECT * FROM albums_temp WHERE albums_temp.id NOT IN"
+    m_storage->insert( QString ( "INSERT INTO albums SELECT * FROM albums_temp WHERE albums_temp.id NOT IN"
                    " ( SELECT DISTINCT id FROM albums );" ), QString() );
 
-    m_collection->insert( QString ( "INSERT INTO composers SELECT * FROM composers_temp WHERE composers_temp.id NOT IN"
+    m_storage->insert( QString ( "INSERT INTO composers SELECT * FROM composers_temp WHERE composers_temp.id NOT IN"
                    " ( SELECT DISTINCT id FROM composers );" ), QString() );
 
-    m_collection->insert( QString ( "INSERT INTO genres SELECT * FROM genres_temp WHERE genres_temp.id NOT IN"
+    m_storage->insert( QString ( "INSERT INTO genres SELECT * FROM genres_temp WHERE genres_temp.id NOT IN"
                    " ( SELECT DISTINCT id FROM genres );" ), QString() );
 
-    m_collection->insert( QString ( "INSERT INTO years SELECT * FROM years_temp WHERE years_temp.id NOT IN"
+    m_storage->insert( QString ( "INSERT INTO years SELECT * FROM years_temp WHERE years_temp.id NOT IN"
                    " ( SELECT DISTINCT id FROM years );" ), QString() );
 
     //insert( "INSERT INTO embed SELECT * FROM embed_temp;", NULL );
-    //m_collection->insert( "INSERT INTO directories SELECT * FROM directories_temp;", QString() );
+    //m_storage->insert( "INSERT INTO directories SELECT * FROM directories_temp;", QString() );
 
-    m_collection->insert( QString( "REPLACE INTO urls SELECT * FROM urls_temp;" ), QString() );
+    m_storage->insert( QString( "REPLACE INTO urls SELECT * FROM urls_temp;" ), QString() );
 
     //update the directories table
     //we don't know in which rows the changedate was updated, so we simply copy the whole
     //temporary table. We need a transaction here if we start to use foreign keys
 
     //why does this fail?
-    m_collection->query( "DELETE FROM directories;" );
-    m_collection->query( "INSERT INTO directories SELECT * FROM directories_temp;" );
+    m_storage->query( "DELETE FROM directories;" );
+    m_storage->query( "INSERT INTO directories SELECT * FROM directories_temp;" );
 
-    m_collection->insert( QString( "REPLACE INTO tracks SELECT * FROM tracks_temp;" ), QString() );
+    m_storage->insert( QString( "REPLACE INTO tracks SELECT * FROM tracks_temp;" ), QString() );
 
     writeCSVFile( "artists", "artists_after" );
     writeCSVFile( "albums", "albums_after" );
@@ -861,103 +869,103 @@ DatabaseUpdater::createTables() const
     DEBUG_BLOCK
     // see docs/database/amarokTables.svg for documentation about database layout
     {
-        QString c = "CREATE TABLE admin (component " + m_collection->textColumnType() + ", version INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( c );
+        QString c = "CREATE TABLE admin (component " + m_storage->textColumnType() + ", version INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( c );
     }
     {
         QString create = "CREATE TABLE devices "
-                         "(id " + m_collection->idType() +
-                         ",type " + m_collection->textColumnType() +
-                         ",label " + m_collection->textColumnType() +
-                         ",lastmountpoint " + m_collection->textColumnType() +
-                         ",uuid " + m_collection->textColumnType() +
-                         ",servername " + m_collection->textColumnType(80) +
-                         ",sharename " + m_collection->textColumnType(240) + ") COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE INDEX devices_type ON devices( type );" );
-        m_collection->query( "CREATE UNIQUE INDEX devices_uuid ON devices( uuid );" );
-        m_collection->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
+                         "(id " + m_storage->idType() +
+                         ",type " + m_storage->textColumnType() +
+                         ",label " + m_storage->textColumnType() +
+                         ",lastmountpoint " + m_storage->textColumnType() +
+                         ",uuid " + m_storage->textColumnType() +
+                         ",servername " + m_storage->textColumnType(80) +
+                         ",sharename " + m_storage->textColumnType(240) + ") COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE INDEX devices_type ON devices( type );" );
+        m_storage->query( "CREATE UNIQUE INDEX devices_uuid ON devices( uuid );" );
+        m_storage->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
     }
     {
         QString create = "CREATE TABLE urls "
-                         "(id " + m_collection->idType() +
+                         "(id " + m_storage->idType() +
                          ",deviceid INTEGER"
-                         ",rpath " + m_collection->exactIndexableTextColumnType() + " NOT NULL" +
+                         ",rpath " + m_storage->exactIndexableTextColumnType() + " NOT NULL" +
                          ",directory INTEGER"
-                         ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
-        m_collection->query( "CREATE INDEX urls_uniqueid ON urls(uniqueid);" );
+                         ",uniqueid " + m_storage->exactTextColumnType(128) + " UNIQUE) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
+        m_storage->query( "CREATE INDEX urls_uniqueid ON urls(uniqueid);" );
     }
     {
         QString create = "CREATE TABLE directories "
-                         "(id " + m_collection->idType() +
+                         "(id " + m_storage->idType() +
                          ",deviceid INTEGER"
-                         ",dir " + m_collection->exactTextColumnType() + " NOT NULL" +
+                         ",dir " + m_storage->exactTextColumnType() + " NOT NULL" +
                          ",changedate INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE INDEX directories_deviceid ON directories(deviceid);" );
+        m_storage->query( create );
+        m_storage->query( "CREATE INDEX directories_deviceid ON directories(deviceid);" );
     }
     {
         QString create = "CREATE TABLE artists "
-                         "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX artists_name ON artists(name);" );
+                         "(id " + m_storage->idType() +
+                         ",name " + m_storage->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX artists_name ON artists(name);" );
     }
     {
         QString create = "CREATE TABLE images "
-                         "(id " + m_collection->idType() +
-                         ",path " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX images_name ON images(path);" );
+                         "(id " + m_storage->idType() +
+                         ",path " + m_storage->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX images_name ON images(path);" );
     }
     {
         QString c = "CREATE TABLE albums "
-                    "(id " + m_collection->idType() +
-                    ",name " + m_collection->textColumnType() + " NOT NULL"
+                    "(id " + m_storage->idType() +
+                    ",name " + m_storage->textColumnType() + " NOT NULL"
                     ",artist INTEGER" +
                     ",image INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( c );
-        m_collection->query( "CREATE INDEX albums_name ON albums(name);" );
-        m_collection->query( "CREATE INDEX albums_artist ON albums(artist);" );
-        m_collection->query( "CREATE INDEX albums_image ON albums(image);" );
-        m_collection->query( "CREATE UNIQUE INDEX albums_name_artist ON albums(name,artist);" );
+        m_storage->query( c );
+        m_storage->query( "CREATE INDEX albums_name ON albums(name);" );
+        m_storage->query( "CREATE INDEX albums_artist ON albums(artist);" );
+        m_storage->query( "CREATE INDEX albums_image ON albums(image);" );
+        m_storage->query( "CREATE UNIQUE INDEX albums_name_artist ON albums(name,artist);" );
         //the index below should not be necessary. uncomment if a query plan shows it is
-        //m_collection->query( "CREATE UNIQUE INDEX albums_artist_name ON albums(artist,name);" );
+        //m_storage->query( "CREATE UNIQUE INDEX albums_artist_name ON albums(artist,name);" );
     }
     {
         QString create = "CREATE TABLE genres "
-                         "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX genres_name ON genres(name);" );
+                         "(id " + m_storage->idType() +
+                         ",name " + m_storage->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX genres_name ON genres(name);" );
     }
     {
         QString create = "CREATE TABLE composers "
-                         "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX composers_name ON composers(name);" );
+                         "(id " + m_storage->idType() +
+                         ",name " + m_storage->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX composers_name ON composers(name);" );
     }
     {
         QString create = "CREATE TABLE years "
-                         "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( create );
-        m_collection->query( "CREATE UNIQUE INDEX years_name ON years(name);" );
+                         "(id " + m_storage->idType() +
+                         ",name " + m_storage->textColumnType() + " NOT NULL) COLLATE = utf8_bin ENGINE = MyISAM;";
+        m_storage->query( create );
+        m_storage->query( "CREATE UNIQUE INDEX years_name ON years(name);" );
     }
     {
         QString c = "CREATE TABLE tracks "
-                    "(id " + m_collection->idType() +
+                    "(id " + m_storage->idType() +
                     ",url INTEGER"
                     ",artist INTEGER"
                     ",album INTEGER"
                     ",genre INTEGER"
                     ",composer INTEGER"
                     ",year INTEGER"
-                    ",title " + m_collection->textColumnType() +
-                    ",comment " + m_collection->longTextColumnType() +
+                    ",title " + m_storage->textColumnType() +
+                    ",comment " + m_storage->longTextColumnType() +
                     ",tracknumber INTEGER"
                     ",discnumber INTEGER"
                     ",bitrate INTEGER"
@@ -974,8 +982,8 @@ DatabaseUpdater::createTables() const
                     ",trackpeakgain FLOAT" // decibels, relative to trackgain
                     ") COLLATE = utf8_bin ENGINE = MyISAM;";
 
-        m_collection->query( c );
-        m_collection->query( "CREATE UNIQUE INDEX tracks_url ON tracks(url);" );
+        m_storage->query( c );
+        m_storage->query( "CREATE UNIQUE INDEX tracks_url ON tracks(url);" );
 
         QStringList indices;
         indices << "artist" << "album" << "genre" << "composer" << "year" << "title";
@@ -983,66 +991,66 @@ DatabaseUpdater::createTables() const
         foreach( const QString &index, indices )
         {
             QString query = QString( "CREATE INDEX tracks_%1 ON tracks(%2);" ).arg( index, index );
-            m_collection->query( query );
+            m_storage->query( query );
         }
     }
     {
         QString c = "CREATE TABLE statistics "
-                    "(id " + m_collection->idType() +
+                    "(id " + m_storage->idType() +
                     ",url INTEGER"
                     ",createdate INTEGER"
                     ",accessdate INTEGER"
                     ",score FLOAT"
                     ",rating INTEGER DEFAULT 0"
                     ",playcount INTEGER"
-                    ",deleted BOOL DEFAULT " + m_collection->boolFalse() +
+                    ",deleted BOOL DEFAULT " + m_storage->boolFalse() +
                     ") COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( c );
-        m_collection->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );
+        m_storage->query( c );
+        m_storage->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );
         QStringList indices;
         indices << "createdate" << "accessdate" << "score" << "rating" << "playcount";
         foreach( const QString &index, indices )
         {
             QString q = QString( "CREATE INDEX statistics_%1 ON statistics(%2);" ).arg( index, index );
-            m_collection->query( q );
+            m_storage->query( q );
         }
     }
     {
         QString q = "CREATE TABLE labels "
-                    "(id " + m_collection->idType() +
-                    ",label " + m_collection->textColumnType() +
+                    "(id " + m_storage->idType() +
+                    ",label " + m_storage->textColumnType() +
                     ") COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( q );
-        m_collection->query( "CREATE UNIQUE INDEX labels_label ON labels(label);" );
+        m_storage->query( q );
+        m_storage->query( "CREATE UNIQUE INDEX labels_label ON labels(label);" );
 
         QString r = "CREATE TABLE urls_labels(url INTEGER, label INTEGER);";
-        m_collection->query( r );
-        m_collection->query( "CREATE INDEX urlslabels_url ON urls_labels(url);" );
-        m_collection->query( "CREATE INDEX urlslabels_label ON urls_labels(label);" );
+        m_storage->query( r );
+        m_storage->query( "CREATE INDEX urlslabels_url ON urls_labels(url);" );
+        m_storage->query( "CREATE INDEX urlslabels_label ON urls_labels(label);" );
     }
     {
         QString q = "CREATE TABLE amazon ("
-                    "asin " + m_collection->textColumnType( 20 ) +
-                    ",locale " + m_collection->textColumnType( 2 ) +
-                    ",filename " + m_collection->textColumnType( 33 ) +
+                    "asin " + m_storage->textColumnType( 20 ) +
+                    ",locale " + m_storage->textColumnType( 2 ) +
+                    ",filename " + m_storage->textColumnType( 33 ) +
                     ",refetchdate INTEGER ) COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( q );
-        m_collection->query( "CREATE INDEX amazon_date ON amazon(refetchdate);" );
+        m_storage->query( q );
+        m_storage->query( "CREATE INDEX amazon_date ON amazon(refetchdate);" );
     }
     {
         QString q = "CREATE TABLE lyrics ("
-                    "id " + m_collection->idType() +
-                    ",url " + m_collection->exactIndexableTextColumnType() +
-                    ",lyrics " + m_collection->longTextColumnType() +
+                    "id " + m_storage->idType() +
+                    ",url " + m_storage->exactIndexableTextColumnType() +
+                    ",lyrics " + m_storage->longTextColumnType() +
                     ") COLLATE = utf8_bin ENGINE = MyISAM;";
-        m_collection->query( q );
-        m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
+        m_storage->query( q );
+        m_storage->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
     }
-    m_collection->query( "INSERT INTO admin(component,version) "
+    m_storage->query( "INSERT INTO admin(component,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );
     {
-         m_collection->query( "CREATE TABLE statistics_permanent "
-                            "(url " + m_collection->exactIndexableTextColumnType() + " NOT NULL" +
+         m_storage->query( "CREATE TABLE statistics_permanent "
+                            "(url " + m_storage->exactIndexableTextColumnType() + " NOT NULL" +
                             ",firstplayed DATETIME"
                             ",lastplayed DATETIME"
                             ",score FLOAT"
@@ -1050,12 +1058,12 @@ DatabaseUpdater::createTables() const
                             ",playcount INTEGER) COLLATE = utf8_bin ENGINE = MyISAM;" );
 
         //Below query is invalid!  Fix it, and then put the proper query in an upgrade function!
-        m_collection->query( "CREATE UNIQUE INDEX stats_perm_url ON statistics_permanent(url)" );
+        m_storage->query( "CREATE UNIQUE INDEX stats_perm_url ON statistics_permanent(url)" );
 
-        m_collection->query( "CREATE TABLE statistics_tag "
-                             "(name " + m_collection->textColumnType(108) +
-                             ",artist " + m_collection->textColumnType(108) +
-                             ",album " + m_collection->textColumnType(108) +
+        m_storage->query( "CREATE TABLE statistics_tag "
+                             "(name " + m_storage->textColumnType(108) +
+                             ",artist " + m_storage->textColumnType(108) +
+                             ",album " + m_storage->textColumnType(108) +
                              ",firstplayed DATETIME"
                              ",lastplayed DATETIME"
                              ",score FLOAT"
@@ -1063,7 +1071,7 @@ DatabaseUpdater::createTables() const
                              ",playcount INTEGER) COLLATE = utf8_bin ENGINE = MyISAM" );
 
         //Below query is invalid!  Fix it, and then put the proper query in an upgrade function!
-        m_collection->query( "CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)" );
+        m_storage->query( "CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)" );
     }
 }
 
@@ -1071,7 +1079,7 @@ int
 DatabaseUpdater::adminValue( const QString &key ) const
 {
     QStringList values;
-    values = m_collection->query( QString( "SELECT version FROM admin WHERE component = '%1';").arg(m_collection->escape( key ) ) );
+    values = m_storage->query( QString( "SELECT version FROM admin WHERE component = '%1';").arg(m_storage->escape( key ) ) );
     return values.isEmpty() ? 0 : values.first().toInt();
 }
 
@@ -1079,7 +1087,7 @@ void
 DatabaseUpdater::deleteAllRedundant( const QString &type )
 {
     const QString tablename = type + 's';
-    m_collection->query( QString( "DELETE FROM %1 WHERE id NOT IN ( SELECT %2 FROM tracks )" ).arg( tablename, type ) );
+    m_storage->query( QString( "DELETE FROM %1 WHERE id NOT IN ( SELECT %2 FROM tracks )" ).arg( tablename, type ) );
 }
 
 void
@@ -1087,8 +1095,8 @@ DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
 {
     QString select = QString( "SELECT urls.id FROM urls LEFT JOIN directories ON urls.directory = directories.id "
                               "WHERE directories.deviceid = %1 AND directories.dir = '%2';" )
-                                .arg( QString::number( deviceid ), m_collection->escape( rdir ) );
-    QStringList idResult = m_collection->query( select );
+                                .arg( QString::number( deviceid ), m_storage->escape( rdir ) );
+    QStringList idResult = m_storage->query( select );
     if( !idResult.isEmpty() )
     {
         QString id;
@@ -1102,7 +1110,7 @@ DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
             ids += id;
         }
         QString drop = QString( "DELETE FROM tracks WHERE url IN (%1);" ).arg( ids );
-        m_collection->query( drop );
+        m_storage->query( drop );
     }
 }
 
@@ -1111,8 +1119,8 @@ DatabaseUpdater::removeFilesInDirFromTemporaryTables( int deviceid, const QStrin
 {
     QString select = QString( "SELECT urls.id FROM urls_temp AS urls LEFT JOIN directories_temp AS directories ON urls.directory = directories.id "
                               "WHERE directories.deviceid = %1 AND directories.dir = '%2';" )
-                                .arg( QString::number( deviceid ), m_collection->escape( rdir ) );
-    QStringList idResult = m_collection->query( select );
+                                .arg( QString::number( deviceid ), m_storage->escape( rdir ) );
+    QStringList idResult = m_storage->query( select );
     if( !idResult.isEmpty() )
     {
         QString ids;
@@ -1123,7 +1131,7 @@ DatabaseUpdater::removeFilesInDirFromTemporaryTables( int deviceid, const QStrin
             ids += id;
         }
         QString drop = QString( "DELETE FROM tracks_temp WHERE url IN (%1);" ).arg( ids );
-        m_collection->query( drop );
+        m_storage->query( drop );
     }
 }
 
@@ -1139,9 +1147,9 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
        ctable.remove("_temp");
     }
 
-    QStringList columns = m_collection->query(
+    QStringList columns = m_storage->query(
             QString( "SELECT column_name FROM INFORMATION_SCHEMA.columns WHERE table_name='%1'" )
-            .arg( m_collection->escape( ctable ) ) );
+            .arg( m_storage->escape( ctable ) ) );
 
     if( columns.isEmpty() )
         return; //no table with that name
@@ -1156,7 +1164,7 @@ DatabaseUpdater::writeCSVFile( const QString &table, const QString &filename, bo
 
     QString query = "SELECT %1 FROM %2";
 
-    QStringList result = m_collection->query( query.arg( select, m_collection->escape( table ) ) );
+    QStringList result = m_storage->query( query.arg( select, m_storage->escape( table ) ) );
     QString filePath =
             QDir::home().absoluteFilePath( filename + '-' + QDateTime::currentDateTime().toString( Qt::ISODate ) + ".csv" );
     QFile::remove( filePath );

@@ -67,7 +67,7 @@ class SqlCollectionLocation : public CollectionLocation
 class SqlCollectionLocationFactory
 {
 public:
-    virtual SqlCollectionLocation* createSqlCollectionLocation( const SqlCollection *collection ) const = 0;
+    virtual SqlCollectionLocation* createSqlCollectionLocation() const = 0;
 };
 
 #endif

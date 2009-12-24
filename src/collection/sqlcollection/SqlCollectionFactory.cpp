@@ -18,17 +18,43 @@
 
 #include "CapabilityDelegate.h"
 #include "DatabaseUpdater.h"
+#include "ScanManager.h"
 #include "SqlCollection.h"
 #include "SqlCollectionLocation.h"
+#include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
+#include "MountPointManager.h"
 
 class SqlCollectionLocationFactoryImpl : public SqlCollectionLocationFactory
 {
 public:
-    SqlCollectionLocation *createSqlCollectionLocation( const SqlCollection *collection ) const
+    SqlCollectionLocationFactoryImpl()
+        : SqlCollectionLocationFactory()
+        , m_collection( 0 ) {}
+
+    SqlCollectionLocation *createSqlCollectionLocation() const
     {
-        return new SqlCollectionLocation( collection );
+        Q_ASSERT( m_collection );
+        return new SqlCollectionLocation( m_collection );
     }
+
+    SqlCollection *m_collection;
+};
+
+class SqlQueryMakerFactoryImpl : public SqlQueryMakerFactory
+{
+public:
+    SqlQueryMakerFactoryImpl()
+        : SqlQueryMakerFactory()
+        , m_collection( 0 ) {}
+
+    SqlQueryMaker *createQueryMaker() const
+    {
+        Q_ASSERT( m_collection );
+        return new SqlQueryMaker( m_collection );
+    }
+
+    SqlCollection *m_collection;
 };
 
 SqlCollectionFactory::SqlCollectionFactory()
@@ -36,10 +62,33 @@ SqlCollectionFactory::SqlCollectionFactory()
 }
 
 SqlCollection*
-SqlCollectionFactory::createSqlCollection( const QString &id, const QString &prettyName ) const
+SqlCollectionFactory::createSqlCollection( const QString &id, const QString &prettyName, SqlStorage *storage ) const
 {
     SqlCollection *coll = new SqlCollection( id, prettyName );
     coll->setCapabilityDelegate( new CollectionCapabilityDelegate() );
-    coll->setUpdater( new DatabaseUpdater() );
-    coll->setRegistry( new SqlRegistry() );
+    DatabaseUpdater *updater = new DatabaseUpdater();
+    updater->setStorage( storage );
+    updater->setCollection( coll );
+    coll->setUpdater( updater );
+    ScanManager *scanMgr = new ScanManager( coll );
+    scanMgr->setCollection( coll );
+    scanMgr->setStorage( storage );
+    scanMgr->setMountPointManager( MountPointManager::instance() );
+    coll->setScanManager( scanMgr );
+    coll->setSqlStorage( storage );
+    SqlRegistry *registry = new SqlRegistry( coll );
+    registry->setMountPointManager( MountPointManager::instance() );
+    registry->setStorage( storage );
+    coll->setRegistry( registry );
+
+    SqlCollectionLocationFactoryImpl *clFactory = new SqlCollectionLocationFactoryImpl();
+    clFactory->m_collection = coll;
+    coll->setCollectionLocationFactory( clFactory );
+    SqlQueryMakerFactoryImpl *qmFactory = new SqlQueryMakerFactoryImpl();
+    qmFactory->m_collection = coll;
+    coll->setQueryMakerFactory( qmFactory );
+
+    //everything has been set up
+    coll->init();
+    return coll;
 }

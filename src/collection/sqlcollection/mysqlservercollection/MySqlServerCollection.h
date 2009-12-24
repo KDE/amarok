@@ -18,7 +18,7 @@
 #ifndef AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
 #define AMAROK_COLLECTION_MYSQLSERVERCOLLECTION_H
 
-#include "mysql-shared/MySqlCollection.h"
+#include "mysql-shared/MySqlStorage.h"
 #include "collection/Collection.h"
 #include "amarok_export.h"
 
@@ -34,15 +34,13 @@ class MySqlServerCollectionFactory : public Amarok::CollectionFactory
 };
 
 /**
- * Implements a MySqlCollection using a MySQL Server
+ * Implements a MySqlStorage using a MySQL Server
  */
-class MySqlServerCollection: public MySqlCollection
+class MySqlServerStorage: public MySqlStorage
 {
-    Q_OBJECT
-
     public:
-        MySqlServerCollection( const QString &id, const QString &prettyName );
-        virtual ~MySqlServerCollection();
+        MySqlServerStorage();
+        virtual ~MySqlServerStorage();
 
         virtual QString type() const;
         virtual QStringList query( const QString &query );

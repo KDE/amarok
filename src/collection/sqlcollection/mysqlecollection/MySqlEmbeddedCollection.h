@@ -18,10 +18,12 @@
 #ifndef AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 #define AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
 
-#include "mysql-shared/MySqlCollection.h"
+#include "mysql-shared/MySqlStorage.h"
 #include "collection/Collection.h"
 #include "amarok_export.h"
 #include "amarok_sqlcollection_export.h"
+
+#include <QString>
 
 class MySqlEmbeddedCollectionFactory : public Amarok::CollectionFactory
 {
@@ -37,13 +39,14 @@ class MySqlEmbeddedCollectionFactory : public Amarok::CollectionFactory
 /**
  * Implements a MySqlCollection using a MySQL Embedded Server
  */
-class MySqlEmbeddedCollection : public MySqlCollection
+class MySqlEmbeddedStorage : public MySqlStorage
 {
-    Q_OBJECT
-
     public:
-        MySqlEmbeddedCollection( const QString &id, const QString &prettyName );
-        virtual ~MySqlEmbeddedCollection();
+        /*
+         * Set the directory for storing the mysql database, will use the default defined by Amarok/KDE if not set
+         */
+        MySqlEmbeddedStorage( const QString &storageLocation = QString() );
+        virtual ~MySqlEmbeddedStorage();
 
         virtual QString type() const;
 };

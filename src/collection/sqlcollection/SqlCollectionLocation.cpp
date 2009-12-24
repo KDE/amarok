@@ -19,6 +19,7 @@
 
 #include "collectionscanner/AFTUtility.h"
 #include "Debug.h"
+#include "collection/SqlStorage.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "MountPointManager.h"
@@ -106,8 +107,8 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
         {
 
             QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
-                                .arg( QString::number( sqlTrack->deviceid() ), m_collection->escape( sqlTrack->rpath() ) );
-            QStringList res = m_collection->query( query );
+                                .arg( QString::number( sqlTrack->deviceid() ), m_collection->sqlStorage()->escape( sqlTrack->rpath() ) );
+            QStringList res = m_collection->sqlStorage()->query( query );
             if( res.isEmpty() )
             {
                 warning() << "Tried to remove a track from SqlCollection which is not in the collection";
@@ -116,7 +117,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
             {
                 int id = res[0].toInt();
                 QString query = QString( "DELETE FROM tracks where id = %1;" ).arg( id );
-                m_collection->query( query );
+                m_collection->sqlStorage()->query( query );
             }
         }
         if( removed )
@@ -238,7 +239,7 @@ SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackM
         urls.append( trackMap[ track ] );
     }
     ScanResultProcessor processor( m_collection );
-    processor.setSqlStorage( m_collection );
+    processor.setSqlStorage( m_collection->sqlStorage() );
     processor.setScanType( ScanResultProcessor::IncrementalScan );
     QMap<QString, uint> mtime = updatedMtime( urls );
     foreach( const QString &dir, mtime.keys() )
@@ -302,15 +303,15 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
         int deviceid = mpm->getIdForUrl( url );
         QString rpath = mpm->getRelativePath( deviceid, url );
         QString sql = QString( "SELECT COUNT(*) FROM statistics LEFT JOIN urls ON statistics.url = urls.id "
-                               "WHERE urls.deviceid = %1 AND urls.rpath = '%2';" ).arg( QString::number( deviceid ), m_collection->escape( rpath ) );
-        QStringList count = m_collection->query( sql );
+                               "WHERE urls.deviceid = %1 AND urls.rpath = '%2';" ).arg( QString::number( deviceid ), m_collection->sqlStorage()->escape( rpath ) );
+        QStringList count = m_collection->sqlStorage()->query( sql );
         if( count.isEmpty() || count.first().toInt() != 0 )    //crash if the sql is bad
         {
             continue;   //a statistics row already exists for that url, and we cannot merge the statistics
         }
         //the row will exist because this method is called after insertTracks
-        QString select = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" ).arg( QString::number( deviceid ), m_collection->escape( rpath ) );
-        QStringList result = m_collection->query( select );
+        QString select = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" ).arg( QString::number( deviceid ), m_collection->sqlStorage()->escape( rpath ) );
+        QStringList result = m_collection->sqlStorage()->query( select );
         if( result.isEmpty() )
         {
             warning() << "SQL Query returned no results:" << select;
@@ -322,7 +323,7 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
         QString data = "%1,%2,%3,%4,%5,%6";
         data = data.arg( id, QString::number( track->rating() ), QString::number( track->score() ),
                     QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ) );
-        m_collection->insert( insert.arg( data ), "statistics" );
+        m_collection->sqlStorage()->insert( insert.arg( data ), "statistics" );
     }
 }
 

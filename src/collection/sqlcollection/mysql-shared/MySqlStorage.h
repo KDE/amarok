@@ -18,9 +18,10 @@
 #ifndef AMAROK_COLLECTION_MYSQLSTORAGE_H
 #define AMAROK_COLLECTION_MYSQLSTORAGE_H
 
-#include "SqlStorage.h"
+#include "collection/SqlStorage.h"
 
 #include <QMutex>
+#include <QString>
 
 struct st_mysql;
 typedef struct st_mysql MYSQL;
@@ -50,17 +51,24 @@ class MySqlStorage: public SqlStorage
         virtual QString longTextColumnType() const;
 
         virtual QString type() const = 0;
+        virtual int sqlDatabasePriority() const;
+
+        void setDatabasePriority( int priority ) { m_priority = priority; }
 
     protected:
-        void reportError( const QString& message );
+        void reportError( const QString &message );
 
         void initThreadInitializer();
         void sharedInit( const QString &databaseName );
 
         MYSQL* m_db;
+
         QMutex m_mutex;
 
         QString m_debugIdent;
+
+    private:
+        int m_priority;
 };
 
 #endif

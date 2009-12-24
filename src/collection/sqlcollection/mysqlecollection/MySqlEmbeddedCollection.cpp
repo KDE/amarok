@@ -20,8 +20,10 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "amarokconfig.h"
+#include "SqlCollection.h"
 #include "SqlCollectionFactory.h"
 
+#include <QDir>
 #include <QMutexLocker>
 #include <QThreadStorage>
 #include <QVarLengthArray>
@@ -33,24 +35,34 @@ AMAROK_EXPORT_COLLECTION( MySqlEmbeddedCollectionFactory, mysqlecollection )
 void
 MySqlEmbeddedCollectionFactory::init()
 {
-    Amarok::Collection* collection;
-
-    //collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
     SqlCollectionFactory fac;
-    collection = fac.createSqlCollection( "localCollection", i18n( "Local Collection" ) );
+    SqlStorage *storage = new MySqlEmbeddedStorage();
+    SqlCollection *collection = fac.createSqlCollection( "localCollection", i18n( "Local Collection" ), storage );
 
     emit newCollection( collection );
 }
 
-MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QString &prettyName )
-    : MySqlCollection( id, prettyName )
+MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
+    : MySqlStorage()
 {
     DEBUG_BLOCK
 
     m_debugIdent = "MySQLe";
 
-    const QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" ); 
-    const QString databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", Amarok::saveLocation() + "mysqle" );
+    QString defaultsFile;
+    QString databaseDir;
+    if( storageLocation.isEmpty() )
+    {
+        defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" );
+        databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", Amarok::saveLocation() + "mysqle" );
+    }
+    else
+    {
+        QDir dir( storageLocation );
+        dir.mkpath( "." );  //ensure directory exists
+        defaultsFile = QDir::cleanPath( dir.absoluteFilePath( "my.cnf" ) );
+        databaseDir = dir.absolutePath() + "mysqle";
+    }
 
     char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( defaultsFile ).toAscii().data() );
     char* databaseLine = qstrdup( QString( "--datadir=%1" ).arg( databaseDir ).toAscii().data() );
@@ -128,17 +140,16 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
         debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
     }
 
-    MySqlCollection::initThreadInitializer();
-    init();
+    MySqlStorage::initThreadInitializer();
 }
 
-MySqlEmbeddedCollection::~MySqlEmbeddedCollection()
+MySqlEmbeddedStorage::~MySqlEmbeddedStorage()
 {
     DEBUG_BLOCK
 }
 
 QString
-MySqlEmbeddedCollection::type() const
+MySqlEmbeddedStorage::type() const
 {
     return "MySQLe";
 }

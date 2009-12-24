@@ -20,6 +20,8 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "amarokconfig.h"
+#include "SqlCollection.h"
+#include "SqlCollectionFactory.h"
 
 #include <QMutexLocker>
 #include <QThreadStorage>
@@ -32,15 +34,15 @@ AMAROK_EXPORT_COLLECTION( MySqlServerCollectionFactory, mysqlservercollection )
 void
 MySqlServerCollectionFactory::init()
 {
-    Amarok::Collection* collection;
-
-    collection = new MySqlServerCollection( "serverCollection", i18n( "Local Collection (on %1)").arg( Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ) ) );
+    SqlCollectionFactory fac;
+    SqlStorage *storage = new MySqlServerStorage();
+    SqlCollection *collection = fac.createSqlCollection( "localCollection", i18n( "Local Collection" ), storage );
 
     emit newCollection( collection );
 }
 
-MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &prettyName )
-    : MySqlCollection( id, prettyName )
+MySqlServerStorage::MySqlServerStorage()
+    : MySqlStorage()
 {
     DEBUG_BLOCK
 
@@ -98,25 +100,24 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
         debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
     }
 
-    MySqlCollection::initThreadInitializer();
-    init();
+    MySqlServerStorage::initThreadInitializer();
 }
 
-MySqlServerCollection::~MySqlServerCollection()
+MySqlServerStorage::~MySqlServerStorage()
 {
     DEBUG_BLOCK
 }
 
 QString
-MySqlServerCollection::type() const
+MySqlServerStorage::type() const
 {
     return "MySQL";
 }
 
 QStringList
-MySqlServerCollection::query( const QString &query )
+MySqlServerStorage::query( const QString &query )
 {
-    MySqlCollection::initThreadInitializer();
+    MySqlStorage::initThreadInitializer();
     QMutexLocker locker( &m_mutex );
     if( !m_db )
     {
@@ -144,7 +145,7 @@ MySqlServerCollection::query( const QString &query )
     }
 
 
-    return MySqlCollection::query( query );
+    return MySqlServerStorage::query( query );
 }
 
 #include "MySqlServerCollection.moc"

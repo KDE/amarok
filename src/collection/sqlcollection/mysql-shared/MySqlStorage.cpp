@@ -88,6 +88,7 @@ MySqlStorage::MySqlStorage()
     , m_db( 0 )
     , m_mutex( QMutex::Recursive )
     , m_debugIdent( "MySQL-none" )
+    , m_priority( 1 )
 {
     //Relevant code must be implemented in subclasses
 }
@@ -213,6 +214,54 @@ MySqlStorage::randomFunc() const
     return "RAND()";
 }
 
+int
+MySqlStorage::sqlDatabasePriority() const
+{
+    return m_priority;
+}
+
+QString
+MySqlStorage::boolTrue() const
+{
+    return "1";
+}
+
+QString
+MySqlStorage::boolFalse() const
+{
+    return "0";
+}
+
+QString
+MySqlStorage::idType() const
+{
+    return "INTEGER PRIMARY KEY AUTO_INCREMENT";
+}
+
+QString
+MySqlStorage::textColumnType( int length ) const
+{
+    return QString( "VARCHAR(%1)" ).arg( length );
+}
+
+QString
+MySqlStorage::exactTextColumnType( int length ) const
+{
+    return textColumnType( length );
+}
+
+QString
+MySqlStorage::exactIndexableTextColumnType( int length ) const
+{
+    return textColumnType( length );
+}
+
+QString
+MySqlStorage::longTextColumnType() const
+{
+    return "TEXT";
+}
+
 void
 MySqlStorage::reportError( const QString& message )
 {
@@ -241,6 +290,3 @@ MySqlStorage::sharedInit( const QString &databaseName )
 
     debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
 }
-
-#include "MySqlStorage.moc"
-

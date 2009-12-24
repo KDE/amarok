@@ -46,8 +46,10 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     , m_registry( 0 )
     , m_updater( 0 )
     , m_capabilityDelegate( 0 )
+    , m_sqlStorage( 0 )
     , m_collectionLocationFactory( 0 )
-    , m_scanManager( new ScanManager( this ) )
+    , m_queryMakerFactory( 0 )
+    , m_scanManager( 0 )
     , m_collectionId( id )
     , m_prettyName( prettyName )
     , m_xesamBuilder( 0 )
@@ -62,6 +64,8 @@ SqlCollection::~SqlCollection()
     delete m_capabilityDelegate;
     delete m_updater;
     delete m_collectionLocationFactory;
+    delete m_queryMakerFactory;
+    delete m_sqlStorage;
 }
 
 void
@@ -77,7 +81,7 @@ SqlCollection::init()
     if( m_updater->needsUpdate() )
         m_updater->update();
 
-    QStringList result = query( "SELECT count(*) FROM tracks" );
+    QStringList result = m_sqlStorage->query( "SELECT count(*) FROM tracks" );
     // If database version is updated, the collection needs to be rescanned.
     // Works also if the collection is empty for some other reason
     // (e.g. deleted collection.db)
@@ -133,30 +137,41 @@ SqlCollection::prettyName() const
 QueryMaker*
 SqlCollection::queryMaker()
 {
-    return new SqlQueryMaker( this );
+    Q_ASSERT( m_queryMakerFactory );
+    return m_queryMakerFactory->createQueryMaker();
 }
 
 SqlRegistry*
 SqlCollection::registry() const
 {
+    Q_ASSERT( m_registry );
     return m_registry;
 }
 
 DatabaseUpdater*
 SqlCollection::dbUpdater() const
 {
+    Q_ASSERT( m_updater );
     return m_updater;
 }
 
 ScanManager*
 SqlCollection::scanManager() const
 {
+    Q_ASSERT( m_scanManager );
     return m_scanManager;
+}
+
+void
+SqlCollection::setScanManager( ScanManager *manager )
+{
+    m_scanManager = manager;
 }
 
 SqlStorage*
 SqlCollection::sqlStorage() const
 {
+    Q_ASSERT( m_sqlStorage );
     return m_sqlStorage;
 }
 
@@ -195,7 +210,8 @@ SqlCollection::trackForUrl( const KUrl &url )
 CollectionLocation*
 SqlCollection::location() const
 {
-    return m_collectionLocationFactory->createSqlCollectionLocation( this );
+    Q_ASSERT( m_collectionLocationFactory );
+    return m_collectionLocationFactory->createSqlCollectionLocation();
 }
 
 bool
@@ -286,7 +302,7 @@ SqlCollection::deleteTracksSlot( Meta::TrackList tracklist )
 void
 SqlCollection::dumpDatabaseContent()
 {
-    QStringList tables = query( "select table_name from INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" );
+    QStringList tables = m_sqlStorage->query( "select table_name from INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" );
     foreach( const QString &table, tables )
     {
         m_updater->writeCSVFile( table, table, true );

@@ -136,5 +136,4 @@ private:
     virtual ~SqlQueryMakerFactory() {};
 };
 
-
 #endif /* AMAROK_COLLECTION_SQLQUERYMAKER_H */

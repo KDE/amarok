@@ -259,7 +259,7 @@ XesamCollectionBuilder::addTrack( const QList<QVariant> &trackData, int albumArt
                      "createdate,modifydate,albumgain,albumpeakgain,trackgain,trackpeakgain) "
                      "VALUES ( %1,%2,%3,%4,%5,%6,'%7','%8'"; //goes up to comment
     insert = insert.arg( url ).arg( artist ).arg( album ).arg( genre ).arg( composer ).arg( year );
-    insert = insert.arg( m_collection->escape( trackData[1].toString() ), m_collection->escape( trackData[7].toString() ) );
+    insert = insert.arg( m_collection->sqlStorage()->escape( trackData[1].toString() ), m_collection->sqlStorage()->escape( trackData[7].toString() ) );
 
     QString insert2 = ",%1,%2,%3,%4,%5,%6,%7,%8,%9,%10,%11,%12,%13,%14);";
     // tracknumber, discnumber, bitrate
@@ -276,7 +276,7 @@ XesamCollectionBuilder::addTrack( const QList<QVariant> &trackData, int albumArt
     insert2 = insert2.arg( trackData[18].toDouble() ).arg( trackData[19].toDouble() );
     insert += insert2;
 
-    m_collection->insert( insert, "tracks" );
+    m_collection->sqlStorage()->insert( insert, "tracks" );
 }
 
 int
@@ -284,12 +284,12 @@ XesamCollectionBuilder::artistId( const QString &artist )
 {
     if( m_artists.contains( artist ) )
         return m_artists.value( artist );
-    QString query = QString( "SELECT id FROM artists WHERE name = '%1';" ).arg( m_collection->escape( artist ) );
-    QStringList res = m_collection->query( query );
+    QString query = QString( "SELECT id FROM artists WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( artist ) );
+    QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO albums( name ) VALUES ('%1');" ).arg( m_collection->escape( artist ) );
-        int id = m_collection->insert( insert, "albums" );
+        QString insert = QString( "INSERT INTO albums( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( artist ) );
+        int id = m_collection->sqlStorage()->insert( insert, "albums" );
         m_artists.insert( artist, id );
         return id;
     }
@@ -306,12 +306,12 @@ XesamCollectionBuilder::genreId( const QString &genre )
 {
     if( m_genre.contains( genre ) )
         return m_genre.value( genre );
-    QString query = QString( "SELECT id FROM genres WHERE name = '%1';" ).arg( m_collection->escape( genre ) );
-    QStringList res = m_collection->query( query );
+    QString query = QString( "SELECT id FROM genres WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( genre ) );
+    QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO genres( name ) VALUES ('%1');" ).arg( m_collection->escape( genre ) );
-        int id = m_collection->insert( insert, "genre" );
+        QString insert = QString( "INSERT INTO genres( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( genre ) );
+        int id = m_collection->sqlStorage()->insert( insert, "genre" );
         m_genre.insert( genre, id );
         return id;
     }
@@ -328,12 +328,12 @@ XesamCollectionBuilder::composerId( const QString &composer )
 {
     if( m_composer.contains( composer ) )
         return m_composer.value( composer );
-    QString query = QString( "SELECT id FROM composers WHERE name = '%1';" ).arg( m_collection->escape( composer ) );
-    QStringList res = m_collection->query( query );
+    QString query = QString( "SELECT id FROM composers WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( composer ) );
+    QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO composers( name ) VALUES ('%1');" ).arg( m_collection->escape( composer ) );
-        int id = m_collection->insert( insert, "composers" );
+        QString insert = QString( "INSERT INTO composers( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( composer ) );
+        int id = m_collection->sqlStorage()->insert( insert, "composers" );
         m_composer.insert( composer, id );
         return id;
     }
@@ -350,12 +350,12 @@ XesamCollectionBuilder::yearId( const QString &year )
 {
     if( m_year.contains( year ) )
         return m_year.value( year );
-    QString query = QString( "SELECT id FROM years WHERE name = '%1';" ).arg( m_collection->escape( year ) );
-    QStringList res = m_collection->query( query );
+    QString query = QString( "SELECT id FROM years WHERE name = '%1';" ).arg( m_collection->sqlStorage()->escape( year ) );
+    QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
-        QString insert = QString( "INSERT INTO years( name ) VALUES ('%1');" ).arg( m_collection->escape( year ) );
-        int id = m_collection->insert( insert, "years" );
+        QString insert = QString( "INSERT INTO years( name ) VALUES ('%1');" ).arg( m_collection->sqlStorage()->escape( year ) );
+        int id = m_collection->sqlStorage()->insert( insert, "years" );
         m_year.insert( year, id );
         return id;
     }
@@ -375,13 +375,13 @@ XesamCollectionBuilder::albumId( const QString &album, int artistId )
         return m_albums.value( key );
 
     QString query = QString( "SELECT id FROM albums WHERE artist = %1 AND name = '%2';" )
-                        .arg( QString::number( artistId ), m_collection->escape( album ) );
-    QStringList res = m_collection->query( query );
+                        .arg( QString::number( artistId ), m_collection->sqlStorage()->escape( album ) );
+    QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO albums(artist, name) VALUES( %1, '%2' );" )
-                    .arg( QString::number( artistId ), m_collection->escape( album ) );
-        int id = m_collection->insert( insert, "albums" );
+                    .arg( QString::number( artistId ), m_collection->sqlStorage()->escape( album ) );
+        int id = m_collection->sqlStorage()->insert( insert, "albums" );
         m_albums.insert( key, id );
         return id;
     }
@@ -400,13 +400,13 @@ XesamCollectionBuilder::urlId( const QString &url )
     QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
     //don't bother caching the data, we only call this method for each url once
     QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
-                        .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
-    QStringList res = m_collection->query( query );
+                        .arg( QString::number( deviceId ), m_collection->sqlStorage()->escape( rpath ) );
+    QStringList res = m_collection->sqlStorage()->query( query );
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO urls(deviceid, rpath) VALUES ( %1, '%2' );" )
-                            .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
-        return m_collection->insert( insert, "urls" );
+                            .arg( QString::number( deviceId ), m_collection->sqlStorage()->escape( rpath ) );
+        return m_collection->sqlStorage()->insert( insert, "urls" );
     }
     else
     {

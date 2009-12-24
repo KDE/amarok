@@ -26,7 +26,9 @@
 #include <QTimer>
 #include <QList>
 
+class MountPointManager;
 class SqlCollection;
+class SqlStorage;
 
 typedef QPair<int, QString> TrackId;
 
@@ -51,6 +53,9 @@ class SqlRegistry : public QObject
         Meta::YearPtr getYear( const QString &year, int id = -1, bool refresh = false );
         Meta::AlbumPtr getAlbum( const QString &album, int id = -1, int artist = -1, bool refresh = false ); //TODO fix this (Fix what?)
 
+        //DI setter
+        void setStorage( SqlStorage *storage ) { m_storage = storage; }
+        void setMountPointManager( MountPointManager *mpm ) { m_mpm = mpm; }
 
     private slots:
         void emptyCache();
@@ -77,6 +82,8 @@ class SqlRegistry : public QObject
         QTimer *m_timer;
 
         SqlCollection *m_collection;
+        SqlStorage *m_storage;
+        MountPointManager *m_mpm;
 };
 
 #endif /* SQLREGISTRY_H */
