@@ -71,7 +71,7 @@ class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
 
     protected:
         virtual void resizeEvent( QGraphicsSceneResizeEvent *event );
-
+        
     private:
         QGraphicsLinearLayout *m_mainLayout;
         QGraphicsLinearLayout *m_appletsListLayout;

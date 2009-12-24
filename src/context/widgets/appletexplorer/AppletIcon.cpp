@@ -40,6 +40,7 @@ AppletIconWidget::AppletIconWidget( AppletItem *appletItem, QGraphicsItem *paren
     {
         setText( appletItem->name() );
         setIcon( appletItem->icon() );
+        setToolTip( appletItem->name() );
     }
     else
     {
