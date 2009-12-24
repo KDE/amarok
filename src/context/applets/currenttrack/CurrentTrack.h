@@ -24,6 +24,8 @@
 #include <context/widgets/TrackWidget.h>
 #include <meta/Meta.h>
 
+#include <ui_currentTrackSettings.h>
+
 #include <QAction>
 #include <QList>
 
@@ -59,13 +61,15 @@ public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
 protected:
-    virtual void constraintsEvent( Plasma::Constraints constraints );
+    virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+    void createConfigurationInterface(KConfigDialog *parent);
 
 private slots:
     void changeTrackRating( int rating );
     void connectSource( const QString &source );
     void paletteChanged( const QPalette & palette );
     void tabChanged( int index );
+    void changeTitleFont();
     void coverDropped( QPixmap cover );
 
 private:
@@ -109,6 +113,8 @@ private:
     Meta::TrackList m_lastTracks;
     Meta::TrackList m_favoriteTracks;
     int m_tracksToShow;
+
+    Ui::currentTrackSettings ui_Settings;
 
     QList<Plasma::IconWidget*> m_trackActions;
 
