@@ -31,7 +31,10 @@
 #include <Phonon/Path>
 #include <Phonon/MediaObject>
 
-// forward
+#include <QPointer>
+
+
+// Forward declarations
 namespace Phonon
 {
     class MediaObject;
@@ -95,7 +98,7 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
 
     private:
-        CustomVideoWidget       *m_videoWidget;
+        QPointer<CustomVideoWidget> m_videoWidget;
      //   Phonon::VideoWidget       *m_videoWidget;
 
         // The two big container, only one who need a resize
