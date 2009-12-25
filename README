@@ -68,7 +68,7 @@ Optional
       (iPod support)
       http://www.gtkpod.org/libgpod/
 
-    * libmtp 0.3.x
+    * libmtp 1.0.0
       (MTP device support)
       http://libmtp.sourceforge.net/
 
