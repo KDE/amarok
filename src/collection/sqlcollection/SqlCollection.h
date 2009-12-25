@@ -34,6 +34,7 @@ typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
 
 class CollectionCapabilityDelegate;
 class CollectionLocation;
+class SqlMountPointManager;
 class SqlCollectionLocationFactory;
 class SqlQueryMakerFactory;
 class XesamCollectionBuilder;
@@ -66,6 +67,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
         DatabaseUpdater* dbUpdater() const;
         ScanManager* scanManager() const;
         SqlStorage* sqlStorage() const;
+        SqlMountPointManager* mountPointManager() const;
         
         void removeCollection();    //testing, remove later
 
@@ -91,6 +93,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
         void setCollectionLocationFactory( SqlCollectionLocationFactory *factory ) { m_collectionLocationFactory = factory; }
         void setQueryMakerFactory( SqlQueryMakerFactory *factory ) { m_queryMakerFactory = factory; }
         void setScanManager( ScanManager *scanMgr );
+        void setMountPointManager( SqlMountPointManager *mpm ) { m_mpm = mpm; }
         //this method MUST be called before using the collection
         void init();
 
@@ -114,11 +117,24 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
         SqlCollectionLocationFactory *m_collectionLocationFactory;
         SqlQueryMakerFactory *m_queryMakerFactory;
         QPointer<ScanManager> m_scanManager;
+        SqlMountPointManager *m_mpm;
 
         QString m_collectionId;
         QString m_prettyName;
 
         XesamCollectionBuilder *m_xesamBuilder;
+};
+
+typedef QList<int> IdList;
+
+class SqlMountPointManager
+{
+public:
+    virtual int getIdForUrl( const KUrl &url ) = 0;
+    virtual QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const = 0;
+    virtual QString getRelativePath( const int deviceId, const QString& absolutePath ) const = 0;
+    virtual IdList getMountedDeviceIds() const = 0;
+    virtual QStringList collectionFolders() = 0;
 };
 
 Q_DECLARE_METATYPE( TrackUrls )

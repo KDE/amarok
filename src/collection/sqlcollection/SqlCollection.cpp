@@ -50,6 +50,7 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     , m_collectionLocationFactory( 0 )
     , m_queryMakerFactory( 0 )
     , m_scanManager( 0 )
+    , m_mpm( 0 )
     , m_collectionId( id )
     , m_prettyName( prettyName )
     , m_xesamBuilder( 0 )
@@ -66,6 +67,7 @@ SqlCollection::~SqlCollection()
     delete m_collectionLocationFactory;
     delete m_queryMakerFactory;
     delete m_sqlStorage;
+    //do not delete m_mpm (yet)
 }
 
 void
@@ -173,6 +175,13 @@ SqlCollection::sqlStorage() const
 {
     Q_ASSERT( m_sqlStorage );
     return m_sqlStorage;
+}
+
+SqlMountPointManager*
+SqlCollection::mountPointManager() const
+{
+    Q_ASSERT( m_mpm );
+    return m_mpm;
 }
 
 void
