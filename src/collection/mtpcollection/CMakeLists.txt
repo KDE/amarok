@@ -1,8 +1,5 @@
 macro_optional_find_package(Mtp)
 
-# Old MTP stuff, which might be reverted to or reused to accompany old libmtp cmake madness
-#INCLUDE(FindPkgConfig)
-#pkg_check_modules(Mtp libmtp>=0.3.0)
 
 if (MTP_FOUND)
    include_directories(
