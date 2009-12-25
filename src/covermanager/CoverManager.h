@@ -88,7 +88,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         void slotShowAllAlbums()          { changeView( AllAlbums );          }
         void slotShowAlbumsWithCover()    { changeView( AlbumsWithCover );    }
         void slotShowAlbumsWithoutCover() { changeView( AlbumsWithoutCover ); }
-        void changeView( View id );
+        void changeView( View id, bool force = false );
 
         void fetchMissingCovers();
         void coverFetched( const QString&, const QString& );

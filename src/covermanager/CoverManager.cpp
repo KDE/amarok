@@ -483,6 +483,9 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
         }
     }
 
+    // makes sure View is retained when artist selection changes
+    changeView( m_currentView, true );
+
     m_coverViewSpacer->hide();
     m_coverView->show();
     updateStatusBar();
@@ -527,6 +530,8 @@ void CoverManager::slotSetFilter() //SLOT
             m_coverView->insertItem( m_coverView->count() -  1, item );
     }
 
+    // makes sure View is retained when filter text has changed
+    changeView( m_currentView, true );
     updateStatusBar();
 }
 
@@ -538,11 +543,11 @@ void CoverManager::slotSetFilterTimeout() //SLOT
     m_timer->start( 180 );
 }
 
-void CoverManager::changeView( CoverManager::View id  ) //SLOT
+void CoverManager::changeView( CoverManager::View id, bool force ) //SLOT
 {
     DEBUG_BLOCK
 
-    if( m_currentView == id )
+    if( !force && m_currentView == id )
         return;
 
     //clear the iconview without deleting items
