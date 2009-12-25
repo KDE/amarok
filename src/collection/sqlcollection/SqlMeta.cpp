@@ -988,21 +988,6 @@ SqlArtist::albums()
     return AlbumList();
 }
 
-QString
-SqlArtist::sortableName() const
-{
-    if ( m_modifiedName.isEmpty() && !m_name.isEmpty() ) {
-        if ( m_name.startsWith( "the ", Qt::CaseInsensitive ) ) {
-            QString begin = m_name.left( 3 );
-            m_modifiedName = QString( "%1, %2" ).arg( m_name, begin );
-            m_modifiedName = m_modifiedName.mid( 4 );
-        }
-        else
-            m_modifiedName = m_name;
-    }
-    return m_modifiedName;
-}
-
 bool
 SqlArtist::hasCapabilityInterface( Meta::Capability::Type type ) const
 {

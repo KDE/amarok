@@ -223,7 +223,6 @@ class SqlArtist : public Meta::Artist
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; } //change if necessary
-        virtual QString sortableName() const;
 
         void updateData( SqlCollection* collection, int id, const QString &name );
 
@@ -247,7 +246,6 @@ class SqlArtist : public Meta::Artist
         ArtistCapabilityDelegate *m_delegate;
         QString m_name;
         int m_id;
-        mutable QString m_modifiedName;
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
         bool m_albumsLoaded;
