@@ -5,24 +5,26 @@ macro_optional_find_package(Mtp)
 #pkg_check_modules(Mtp libmtp>=0.3.0)
 
 if (MTP_FOUND)
-   include_directories( ../..
-   ../../plugin
-   ../../meta
-   ../../meta/file
-   ../../collection
-   ../mediadevicecollection
-   ../mediadevicecollection/support
-   ../mediadevicecollection/handler
-   ../mediadevicecollection/handler/capabilities
-   handler
-   handler/capabilities
-   support
-   ${GLIB2_INCLUDE_DIR}
-   ${MTP_INCLUDE_DIR}
-   ${CMAKE_CURRENT_BINARY_DIR}/../..
-   ${AMAROK_COLLECTION_SUPPORT_DIR}
-   ${KDE4_INCLUDE_DIR}
-   ${QT_INCLUDES} )
+   include_directories(
+       ${Amarok_SOURCE_DIR}/src
+       ${Amarok_SOURCE_DIR}/src/plugin
+       ${Amarok_SOURCE_DIR}/src/meta
+       ${Amarok_SOURCE_DIR}/src/meta/file
+       ${Amarok_SOURCE_DIR}/src/collection
+       ${Amarok_SOURCE_DIR}/src/collection/mediadevicecollection
+       ${Amarok_SOURCE_DIR}/src/collection/mediadevicecollection/support
+       ${Amarok_SOURCE_DIR}/src/collection/mediadevicecollection/handler
+       ${Amarok_SOURCE_DIR}/src/collection/mediadevicecollection/handler/capabilities
+       ${Amarok_SOURCE_DIR}/src/collection/mtpcollection/handler
+       ${Amarok_SOURCE_DIR}/src/collection/mtpcollection/handler/capabilities
+       ${Amarok_SOURCE_DIR}/src/collection/mtpcollection/support
+       ${GLIB2_INCLUDE_DIR}
+       ${MTP_INCLUDE_DIR}
+       ${CMAKE_CURRENT_BINARY_DIR}/../..
+       ${AMAROK_COLLECTION_SUPPORT_DIR}
+       ${KDE4_INCLUDE_DIR}
+       ${QT_INCLUDES}
+)
 
 
 ########### next target ###############
@@ -48,7 +50,7 @@ if (MTP_FOUND)
         ${QT_QTGUI_LIBRARY}
         ${GLIB2_LIBRARIES}
         ${MTP_LIBRARIES}
-        )
+    )
 
 	install(TARGETS amarok_collection-mtpcollection DESTINATION ${PLUGIN_INSTALL_DIR} )
 
