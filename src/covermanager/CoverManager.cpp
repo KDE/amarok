@@ -766,7 +766,6 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setResizeMode( QListView::Adjust );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setWrapping( true );
-    setSpacing( 4 );
     setWordWrap( true );
     setIconSize( QSize(100, 100) );
     setGridSize( QSize(120, 160) );
