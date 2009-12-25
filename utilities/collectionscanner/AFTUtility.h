@@ -32,7 +32,7 @@ class AFTUtility
         AFTUtility();
         ~AFTUtility() {};
         const QString readEmbeddedUniqueId( const TagLib::FileRef &fileref );
-        const TagLib::ByteVector generatedUniqueIdHelper( const TagLib::FileRef &fileref );
+
         const QString randomUniqueId( QCryptographicHash &md5 );
         const QString readUniqueId( const QString &path );
 };
