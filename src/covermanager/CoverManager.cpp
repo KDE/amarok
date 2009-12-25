@@ -106,6 +106,7 @@ CoverManager::CoverManager()
     m_artistView->setTextElideMode( Qt::ElideRight );
     m_artistView->setMinimumWidth( 140 );
     m_artistView->setColumnCount( 1 );
+    m_artistView->setAlternatingRowColors( true );
 
     ArtistItem *item = 0;
     item = new ArtistItem( i18n( "All Artists" ) );
