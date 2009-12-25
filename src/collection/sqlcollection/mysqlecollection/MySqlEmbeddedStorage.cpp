@@ -15,33 +15,24 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "MySqlEmbeddedCollection.h"
-
 #include "MySqlEmbeddedStorage.h"
-#include "SqlCollection.h"
-#include "SqlCollectionFactory.h"
 
-#include <KLocale>
+#include "Amarok.h"
+#include "Debug.h"
+#include "amarokconfig.h"
 
-AMAROK_EXPORT_COLLECTION( MySqlEmbeddedCollectionFactory, mysqlecollection )
+#include <QDir>
+#include <QString>
+#include <QMutexLocker>
+#include <QThreadStorage>
+#include <QVarLengthArray>
 
-void
-MySqlEmbeddedCollectionFactory::init()
-{
-    SqlCollectionFactory fac;
-    SqlStorage *storage = new MySqlEmbeddedStorage();
-    SqlCollection *collection = fac.createSqlCollection( "localCollection", i18n( "Local Collection" ), storage );
-
-    emit newCollection( collection );
-}
+#include <mysql.h>
 
 MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     : MySqlStorage()
 {
     DEBUG_BLOCK
-
-    m_debugIdent = "MySQLe";
-
     QString defaultsFile;
     QString databaseDir;
     if( storageLocation.isEmpty() )
@@ -55,6 +46,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         dir.mkpath( "." );  //ensure directory exists
         defaultsFile = QDir::cleanPath( dir.absoluteFilePath( "my.cnf" ) );
         databaseDir = dir.absolutePath() + "mysqle";
+        qDebug() << "Using database in " << dir.absolutePath();
     }
 
     char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( defaultsFile ).toAscii().data() );
@@ -146,6 +138,3 @@ MySqlEmbeddedStorage::type() const
 {
     return "MySQLe";
 }
-
-#include "MySqlEmbeddedCollection.moc"
-

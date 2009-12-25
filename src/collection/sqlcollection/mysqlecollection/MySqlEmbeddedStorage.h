@@ -15,24 +15,25 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
-#define AMAROK_COLLECTION_MYSQLEMBEDDEDCOLLECTION_H
+#ifndef MYSQLEMBEDDEDSTORAGE_H
+#define MYSQLEMBEDDEDSTORAGE_H
 
-#include "collection/Collection.h"
-#include "amarok_export.h"
-#include "amarok_sqlcollection_export.h"
+#include "collection/SqlStorage.h"
+#include "mysql-shared/MySqlStorage.h"
 
-#include <QString>
-
-class MySqlEmbeddedCollectionFactory : public Amarok::CollectionFactory
+/**
+ * Implements a MySqlCollection using a MySQL Embedded Server
+ */
+class MySqlEmbeddedStorage : public MySqlStorage
 {
-    Q_OBJECT
-
     public:
-        MySqlEmbeddedCollectionFactory( QObject *parent, const QVariantList &args ) { setParent( parent ); }
-        virtual ~MySqlEmbeddedCollectionFactory() {}
+        /*
+         * Set the directory for storing the mysql database, will use the default defined by Amarok/KDE if not set
+         */
+        MySqlEmbeddedStorage( const QString &storageLocation = QString() );
+        virtual ~MySqlEmbeddedStorage();
 
-        virtual void init();
+        virtual QString type() const;
 };
 
-#endif
+#endif // MYSQLEMBEDDEDSTORAGE_H

@@ -15,6 +15,7 @@ include_directories(
 set(amarok_collection-mysqlecollection_PART_SRCS
     ../mysql-shared/MySqlStorage.cpp
     MySqlEmbeddedCollection.cpp
+    MySqlEmbeddedStorage.cpp
  )
 
 kde4_add_plugin(amarok_collection-mysqlecollection ${amarok_collection-mysqlecollection_PART_SRCS})
