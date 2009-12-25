@@ -1,16 +1,20 @@
 project(context-videoclip)
 
-set( videoclip_applet_SRCS
-VideoclipApplet.cpp
-VideoItemButton.cpp
-CustomVideoWidget.cpp
-../../../widgets/kratingwidget.cpp
-../../../widgets/kratingpainter.cpp
+set(videoclip_applet_SRCS
+    VideoclipApplet.cpp
+    VideoItemButton.cpp
+    CustomVideoWidget.cpp
+    ${Amarok_SOURCE_DIR}/src/widgets/kratingwidget.cpp
+    ${Amarok_SOURCE_DIR}/src/widgets/kratingpainter.cpp
 )
 
-include_directories( ../..
-					 ../../..
-					 ../../../meta
+include_directories(
+    ${Amarok_SOURCE_DIR}/src
+    ${Amarok_SOURCE_DIR}/src/meta
+    ${Amarok_SOURCE_DIR}/src/context
+    ${Amarok_SOURCE_DIR}/src/context/applets
+    ${Amarok_SOURCE_DIR}/src/context/applets/videoclip
+    ${Amarok_SOURCE_DIR}/src/context/engines/videoclip
 )
 
 kde4_add_ui_files( videoclip_applet_SRCS videoclipSettings.ui )

@@ -24,7 +24,7 @@
 #include "EngineObserver.h"
 #include "SmartPointerList.h"
 
-#include "../../engines/videoclip/VideoclipInfo.h"
+#include "VideoclipInfo.h"
 
 #include "ui_videoclipSettings.h"
 
