@@ -20,7 +20,6 @@
 #include "Amarok.h"
 #include "amarok_export.h"
 #include "meta/Capability.h"
-#include "plugin/plugin.h"
 #include "QueryMaker.h"
 #include "playlistmanager/UserPlaylistProvider.h"
 
@@ -40,7 +39,7 @@ namespace Amarok
 
 class Collection;
 
-class AMAROK_EXPORT CollectionFactory : public QObject, public Amarok::Plugin
+class AMAROK_EXPORT CollectionFactory : public QObject
 {
     Q_OBJECT
     public:
