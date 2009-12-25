@@ -847,6 +847,7 @@ bool App::notify( QObject *receiver, QEvent *event )
     catch(...)
     {
         error() << "Caught an exception, probably from LibLastfm. Ignoring.";
+        return false;
     }
 }
 
