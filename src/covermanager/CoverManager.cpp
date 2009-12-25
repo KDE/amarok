@@ -104,9 +104,10 @@ CoverManager::CoverManager()
     m_artistView->setHeaderLabel( i18n( "Albums By" ) );
     m_artistView->setSortingEnabled( false );
     m_artistView->setTextElideMode( Qt::ElideRight );
-    m_artistView->setMinimumWidth( 140 );
+    m_artistView->setMinimumWidth( 200 );
     m_artistView->setColumnCount( 1 );
     m_artistView->setAlternatingRowColors( true );
+    m_artistView->setUniformRowHeights( true );
 
     ArtistItem *item = 0;
     item = new ArtistItem( i18n( "All Artists" ) );
