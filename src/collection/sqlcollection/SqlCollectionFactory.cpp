@@ -25,6 +25,35 @@
 #include "SqlRegistry.h"
 #include "MountPointManager.h"
 
+class SqlMountPointManagerImpl : public SqlMountPointManager
+{
+public:
+    int getIdForUrl( const KUrl &url )
+    {
+        return MountPointManager::instance()->getIdForUrl( url );
+    }
+
+    QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const
+    {
+        return MountPointManager::instance()->getAbsolutePath( deviceId, relativePath );
+    }
+
+    QString getRelativePath( const int deviceId, const QString& absolutePath ) const
+    {
+        return MountPointManager::instance()->getRelativePath( deviceId, absolutePath );
+    }
+
+    IdList getMountedDeviceIds() const
+    {
+        return MountPointManager::instance()->getMountedDeviceIds();
+    }
+
+    QStringList collectionFolders()
+    {
+        return MountPointManager::instance()->collectionFolders();
+    }
+};
+
 class SqlCollectionLocationFactoryImpl : public SqlCollectionLocationFactory
 {
 public:
@@ -57,6 +86,16 @@ public:
     SqlCollection *m_collection;
 };
 
+class DelegateSqlRegistry : public SqlRegistry
+{
+public:
+    DelegateSqlRegistry( SqlCollection *coll ) : SqlRegistry( coll ) {}
+protected:
+    AlbumCapabilityDelegate *createAlbumDelegate() const { return new AlbumCapabilityDelegate(); }
+    ArtistCapabilityDelegate *createArtistDelegate() const { return new ArtistCapabilityDelegate(); }
+    TrackCapabilityDelegate *createTrackDelegate() const { return new TrackCapabilityDelegate(); }
+};
+
 SqlCollectionFactory::SqlCollectionFactory()
 {
 }
@@ -66,6 +105,7 @@ SqlCollectionFactory::createSqlCollection( const QString &id, const QString &pre
 {
     SqlCollection *coll = new SqlCollection( id, prettyName );
     coll->setCapabilityDelegate( new CollectionCapabilityDelegate() );
+    coll->setMountPointManager( new SqlMountPointManagerImpl() );
     DatabaseUpdater *updater = new DatabaseUpdater();
     updater->setStorage( storage );
     updater->setCollection( coll );
@@ -73,11 +113,9 @@ SqlCollectionFactory::createSqlCollection( const QString &id, const QString &pre
     ScanManager *scanMgr = new ScanManager( coll );
     scanMgr->setCollection( coll );
     scanMgr->setStorage( storage );
-    scanMgr->setMountPointManager( MountPointManager::instance() );
     coll->setScanManager( scanMgr );
     coll->setSqlStorage( storage );
-    SqlRegistry *registry = new SqlRegistry( coll );
-    registry->setMountPointManager( MountPointManager::instance() );
+    SqlRegistry *registry = new DelegateSqlRegistry( coll );
     registry->setStorage( storage );
     coll->setRegistry( registry );
 
