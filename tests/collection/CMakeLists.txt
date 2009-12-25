@@ -23,3 +23,6 @@ if(APPLE)
 endif(APPLE)
 
 target_link_libraries(testcollectionlocation ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
+
+
+add_subdirectory( sqlcollection )
