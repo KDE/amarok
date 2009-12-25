@@ -39,10 +39,12 @@ private slots:
     void cleanup();
 
     void testSetCompilationWithoutExistingCompilation();
-    //void testSetCompilationWithExistingCompilation();
-    //void testUnsetCompilationWithoutExistingAlbum();
-    //void testUnsetCompilationWithExistingAlbum();
-    //void testUnsetCompilationWithMultipleExistingAlbums();
+    void testSetCompilationWithExistingCompilation();
+    void testUnsetCompilationWithoutExistingAlbum();
+    void testUnsetCompilationWithExistingAlbum();
+    void testUnsetCompilationWithMultipleExistingAlbums();
+
+    void testUnsetCompilationWithArtistAFeaturingB();
 
     //void testSetCompilationWithoutExistingCompilationWithMultipleTracks();
     //void testSetCompilationWithExistingComiplationWithMultipleTracks();
