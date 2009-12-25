@@ -20,8 +20,6 @@
 
 #include "Debug.h"
 
-#include "CapabilityDelegate.h"
-#include "MountPointManager.h"
 #include "SqlCollection.h"
 
 #include <QMutableHashIterator>
@@ -32,6 +30,7 @@ using namespace Meta;
 SqlRegistry::SqlRegistry( SqlCollection* collection )
     : QObject( 0 )
     , m_collection( collection )
+    , m_storage( 0 )
 {
     setObjectName( "SqlRegistry" );
 
@@ -51,8 +50,8 @@ SqlRegistry::~SqlRegistry()
 TrackPtr
 SqlRegistry::getTrack( const QString &url )
 {
-    int deviceid = m_mpm->getIdForUrl( url );
-    QString rpath = m_mpm->getRelativePath( deviceid, url );
+    int deviceid = m_collection->mountPointManager()->getIdForUrl( url );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, url );
     TrackId id(deviceid, rpath);
     QMutexLocker locker( &m_trackMutex );
     QMutexLocker locker2( &m_uidMutex );
@@ -84,7 +83,7 @@ SqlRegistry::getTrack( const QStringList &rowData )
     else
     {
         SqlTrack *sqlTrack =  new SqlTrack( m_collection, rowData );
-        sqlTrack->setCapabilityDelegate( new TrackCapabilityDelegate() );
+        sqlTrack->setCapabilityDelegate( createTrackDelegate() );
         TrackPtr track( sqlTrack );
         if( track )
         {
@@ -101,15 +100,15 @@ SqlRegistry::updateCachedUrl( const QPair<QString, QString> &oldnew )
 {
     QMutexLocker locker( &m_trackMutex );
     QMutexLocker locker2( &m_uidMutex );
-    int deviceid = m_mpm->getIdForUrl( oldnew.first );
-    QString rpath = m_mpm->getRelativePath( deviceid, oldnew.first );
+    int deviceid = m_collection->mountPointManager()->getIdForUrl( oldnew.first );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, oldnew.first );
     TrackId id(deviceid, rpath);
     if( m_trackMap.contains( id ) )
     {
         TrackPtr track = m_trackMap[id];
         m_trackMap.remove( id );
-        int newdeviceid = m_mpm->getIdForUrl( oldnew.second );
-        QString newrpath = m_mpm->getRelativePath( newdeviceid, oldnew.second );
+        int newdeviceid = m_collection->mountPointManager()->getIdForUrl( oldnew.second );
+        QString newrpath = m_collection->mountPointManager()->getRelativePath( newdeviceid, oldnew.second );
         TrackId newid( newdeviceid, newrpath );
         m_trackMap.insert( newid, track );
     }
@@ -140,8 +139,8 @@ SqlRegistry::getTrackFromUid( const QString &uid )
         TrackPtr track( SqlTrack::getTrackFromUid( uid, m_collection ) );
         if( track )
         {
-            int deviceid = m_mpm->getIdForUrl( track->playableUrl().path() );
-            QString rpath = m_mpm->getRelativePath( deviceid, track->playableUrl().path() );
+            int deviceid = m_collection->mountPointManager()->getIdForUrl( track->playableUrl().path() );
+            QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, track->playableUrl().path() );
             TrackId id(deviceid, rpath);
             m_trackMap.insert( id, track );
             m_uidMap.insert( uid, track );
@@ -190,7 +189,7 @@ SqlRegistry::getArtist( const QString &name, int id, bool refresh )
         }
 
         SqlArtist *sqlArtist = new SqlArtist( m_collection, id, name );
-        sqlArtist->setCapabilityDelegate( new ArtistCapabilityDelegate() );
+        sqlArtist->setCapabilityDelegate( createArtistDelegate() );
         ArtistPtr artist( sqlArtist );
         m_artistMap.insert( id, artist );
         return artist;
@@ -344,7 +343,7 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
         }
 
         SqlAlbum *sqlAlbum = new SqlAlbum( m_collection, id, name, artist );
-        sqlAlbum->setCapabilityDelegate( new AlbumCapabilityDelegate() );
+        sqlAlbum->setCapabilityDelegate( createAlbumDelegate() );
         AlbumPtr album( sqlAlbum );
         m_albumMap.insert( id, album );
         return album;
@@ -410,6 +409,24 @@ SqlRegistry::emptyCache()
     if( hasGenre ) m_genreMutex.unlock();
     if( hasComposer ) m_composerMutex.unlock();
     if( hasUid ) m_uidMutex.unlock();
+}
+
+AlbumCapabilityDelegate*
+SqlRegistry::createAlbumDelegate() const
+{
+    return 0;
+}
+
+ArtistCapabilityDelegate*
+SqlRegistry::createArtistDelegate() const
+{
+    return 0;
+}
+
+TrackCapabilityDelegate*
+SqlRegistry::createTrackDelegate() const
+{
+    return 0;
 }
 
 #include "SqlRegistry.moc"

@@ -26,9 +26,11 @@
 #include <QTimer>
 #include <QList>
 
-class MountPointManager;
 class SqlCollection;
 class SqlStorage;
+class AlbumCapabilityDelegate;
+class ArtistCapabilityDelegate;
+class TrackCapabilityDelegate;
 
 typedef QPair<int, QString> TrackId;
 
@@ -55,7 +57,11 @@ class SqlRegistry : public QObject
 
         //DI setter
         void setStorage( SqlStorage *storage ) { m_storage = storage; }
-        void setMountPointManager( MountPointManager *mpm ) { m_mpm = mpm; }
+
+    protected:
+        virtual AlbumCapabilityDelegate *createAlbumDelegate() const;
+        virtual ArtistCapabilityDelegate *createArtistDelegate() const;
+        virtual TrackCapabilityDelegate *createTrackDelegate() const;
 
     private slots:
         void emptyCache();
@@ -83,7 +89,6 @@ class SqlRegistry : public QObject
 
         SqlCollection *m_collection;
         SqlStorage *m_storage;
-        MountPointManager *m_mpm;
 };
 
 #endif /* SQLREGISTRY_H */
