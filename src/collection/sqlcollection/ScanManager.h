@@ -30,7 +30,6 @@
 
 #include <threadweaver/Job.h>
 
-class MountPointManager;
 class SqlCollection;
 class SqlCollectionDBusHandler;
 class SqlStorage;
@@ -52,7 +51,6 @@ class ScanManager : public QObject
         //DI setters
         void setCollection( SqlCollection * collection ) { m_collection = collection; }
         void setStorage( SqlStorage *storage ) { m_storage = storage; }
-        void setMountPointManager( MountPointManager *mpm ) { m_mpm = mpm; }
 
     public slots:
         void startFullScan();
@@ -80,7 +78,6 @@ class ScanManager : public QObject
         SqlCollection *m_collection;
         SqlCollectionDBusHandler *m_dbusHandler;
         SqlStorage *m_storage;
-        MountPointManager *m_mpm;
 
         AmarokProcess *m_scanner;
 

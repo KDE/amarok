@@ -22,7 +22,6 @@
 
 #include "App.h"
 #include "Debug.h"
-#include "MountPointManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlCollectionDBusHandler.h"
@@ -57,7 +56,6 @@ ScanManager::ScanManager( QObject *parent )
     , m_collection( 0 )
     , m_dbusHandler( 0 )
     , m_storage( 0 )
-    , m_mpm( 0 )
     , m_scanner( 0 )
     , m_parser( 0 )
     , m_restartCount( 0 )
@@ -123,7 +121,7 @@ ScanManager::startFullScan()
             *m_scanner << "-c";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
 
-        QStringList collectionFolders = m_mpm->collectionFolders();
+        QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
         *m_scanner << collectionFolders;
         m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
         connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -219,8 +217,8 @@ ScanManager::isDirInCollection( QString path )
     if( !path.endsWith( '/' ) )
         path += '/';
 
-    const int deviceid = m_mpm->getIdForUrl( path );
-    const QString rpath = m_mpm->getRelativePath( deviceid, path );
+    const int deviceid = m_collection->mountPointManager()->getIdForUrl( path );
+    const QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, path );
 
     const QStringList values =
             m_storage->query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
@@ -233,8 +231,8 @@ ScanManager::isDirInCollection( QString path )
 bool
 ScanManager::isFileInCollection( const QString &url  )
 {
-    const int deviceid = m_mpm->getIdForUrl( url );
-    const QString rpath = m_mpm->getRelativePath( deviceid, url );
+    const int deviceid = m_collection->mountPointManager()->getIdForUrl( url );
+    const QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, url );
 
     QString sql = QString( "SELECT id FROM urls WHERE rpath = '%2' AND deviceid = %1" )
             .arg( QString::number( deviceid ),  m_storage->escape( rpath ) );
@@ -397,7 +395,7 @@ ScanManager::getDirsToScan()
     DEBUG_BLOCK
 
     m_incrementalDirs.clear();
-    const IdList list = m_mpm->getMountedDeviceIds();
+    const IdList list = m_collection->mountPointManager()->getMountedDeviceIds();
     QString deviceIds;
     foreach( int id, list )
     {
@@ -417,7 +415,7 @@ ScanManager::getDirsToScan()
     {
         int id = iter.next().toInt();
         int deviceid = iter.next().toInt();
-        const QString folder = m_mpm->getAbsolutePath( deviceid, iter.next() );
+        const QString folder = m_collection->mountPointManager()->getAbsolutePath( deviceid, iter.next() );
         const uint mtime = iter.next().toUInt();
 
         QFileInfo info( folder );

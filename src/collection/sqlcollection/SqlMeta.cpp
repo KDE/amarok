@@ -135,7 +135,7 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
     m_deviceid = (*(iter++)).toInt();
     m_rpath = *(iter++);
     m_uid = *(iter++);
-    m_url = KUrl( MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
+    m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
     m_trackId = (*(iter++)).toInt();
     m_title = *(iter++);
     m_comment = *(iter++);
@@ -276,12 +276,12 @@ void
 SqlTrack::setUrl( const QString &url )
 {
     DEBUG_BLOCK
-    m_deviceid = MountPointManager::instance()->getIdForUrl( url );
-    m_rpath = MountPointManager::instance()->getRelativePath( m_deviceid, url );
+    m_deviceid = m_collection->mountPointManager()->getIdForUrl( url );
+    m_rpath = m_collection->mountPointManager()->getRelativePath( m_deviceid, url );
     if( m_batchUpdate )
     {
         debug() << "Inserting track into cache";
-        m_cache.insert( Meta::Field::URL, MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
+        m_cache.insert( Meta::Field::URL, m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
     }
     else
     {
@@ -298,10 +298,10 @@ SqlTrack::setUrl( const int deviceid, const QString &rpath )
     m_deviceid = deviceid;
     m_rpath = rpath;
     if( m_batchUpdate )
-        m_cache.insert( Meta::Field::URL, KUrl( MountPointManager::instance()->getAbsolutePath( deviceid, rpath ) ) );
+        m_cache.insert( Meta::Field::URL, KUrl( m_collection->mountPointManager()->getAbsolutePath( deviceid, rpath ) ) );
     else
     {
-        m_url = KUrl( MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
+        m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
         writeMetaDataToDb( Meta::Field::URL );
         notifyObservers();
     }
