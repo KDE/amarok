@@ -18,6 +18,7 @@
 
 #include "CapabilityDelegate.h"
 #include "DatabaseUpdater.h"
+#include "DefaultSqlQueryMakerFactory.h"
 #include "ScanManager.h"
 #include "SqlCollection.h"
 #include "SqlCollectionLocation.h"
@@ -70,22 +71,6 @@ public:
     SqlCollection *m_collection;
 };
 
-class SqlQueryMakerFactoryImpl : public SqlQueryMakerFactory
-{
-public:
-    SqlQueryMakerFactoryImpl()
-        : SqlQueryMakerFactory()
-        , m_collection( 0 ) {}
-
-    SqlQueryMaker *createQueryMaker() const
-    {
-        Q_ASSERT( m_collection );
-        return new SqlQueryMaker( m_collection );
-    }
-
-    SqlCollection *m_collection;
-};
-
 class DelegateSqlRegistry : public SqlRegistry
 {
 public:
@@ -122,9 +107,7 @@ SqlCollectionFactory::createSqlCollection( const QString &id, const QString &pre
     SqlCollectionLocationFactoryImpl *clFactory = new SqlCollectionLocationFactoryImpl();
     clFactory->m_collection = coll;
     coll->setCollectionLocationFactory( clFactory );
-    SqlQueryMakerFactoryImpl *qmFactory = new SqlQueryMakerFactoryImpl();
-    qmFactory->m_collection = coll;
-    coll->setQueryMakerFactory( qmFactory );
+    coll->setQueryMakerFactory( new DefaultSqlQueryMakerFactory( coll ) );
 
     //everything has been set up
     coll->init();
