@@ -67,7 +67,7 @@ SqlCollection::~SqlCollection()
     delete m_collectionLocationFactory;
     delete m_queryMakerFactory;
     delete m_sqlStorage;
-    //do not delete m_mpm (yet)
+    delete m_mpm;
 }
 
 void
