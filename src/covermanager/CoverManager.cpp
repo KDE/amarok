@@ -108,6 +108,7 @@ CoverManager::CoverManager()
     m_artistView->setColumnCount( 1 );
     m_artistView->setAlternatingRowColors( true );
     m_artistView->setUniformRowHeights( true );
+    m_artistView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
     ArtistItem *item = 0;
     item = new ArtistItem( i18n( "All Artists" ) );
@@ -369,9 +370,6 @@ void CoverManager::slotArtistSelected() //SLOT
 void CoverManager::slotArtistSelectedContinue() //SLOT
 {
     DEBUG_BLOCK
-    QTreeWidgetItem *item = m_artistView->selectedItems().first();
-    ArtistItem *artistItem = static_cast< ArtistItem* >(item);
-    Meta::ArtistPtr artist = artistItem->artist();
 
     m_progressDialog = new QProgressDialog( this );
     m_progressDialog->setLabelText( i18n("Loading Thumbnails...") );
@@ -386,10 +384,18 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Album );
     qm->orderBy( Meta::valAlbum );
-    if( item != m_artistView->invisibleRootItem()->child( 0 ) )
-        qm->addMatch( artist );
-    else
-        qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+
+    qm->beginOr();
+    const QList< QTreeWidgetItem* > items = m_artistView->selectedItems();
+    foreach( const QTreeWidgetItem *item, items )
+    {
+        const ArtistItem *artistItem = static_cast< const ArtistItem* >( item );
+        if( artistItem != m_artistView->invisibleRootItem()->child( 0 ) )
+            qm->addFilter( Meta::valArtist, artistItem->artist()->name(), true, true );
+        else
+            qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+    }
+    qm->endAndOr();
 
     m_albumList.clear();
 
