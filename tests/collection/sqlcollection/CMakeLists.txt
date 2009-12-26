@@ -62,3 +62,52 @@ target_link_libraries(testalbumcompilationchange
     ${MYSQL_EMBEDDED_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES})
+
+
+
+#-------------------------------- Test SqlTrack Editing -----------------------
+
+set( testsqltrackediting_SRCS
+        TestSqlTrackEditing.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
+        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
+        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
+    )
+
+
+kde4_add_unit_test( testsqltrackediting ${testsqltrackediting_SRCS} )
+
+target_link_libraries(testsqltrackediting
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${QT_QTTEST_LIBRARY}
+    ${QT_QTCORE_LIBRARY}
+    ${OPENSSL_LIBRARIES}
+    ${MYSQL_EMBEDDED_LIBRARIES}
+    ${CMAKE_DL_LIBS}
+    ${ZLIB_LIBRARIES})
+
+#-------------------------------- Test SqlArtist -----------------------
+
+set( testsqlartist_SRCS
+        TestSqlArtist.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
+        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
+    )
+
+
+kde4_add_unit_test( testsqlartist ${testsqlartist_SRCS} )
+
+target_link_libraries(testsqlartist
+    ${KDE4_KDECORE_LIBS}
+    ${QT_QTTEST_LIBRARY}
+    ${QT_QTCORE_LIBRARY})
