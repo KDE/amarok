@@ -208,6 +208,10 @@ public slots:
 
     void updateStatisticsURLs( bool changed = true );
 
+signals:
+    void deviceAdded( int id );
+    void deviceRemoved( int id );
+
 private slots:
     void migrateStatistics();
     void checkDeviceAvailability();
