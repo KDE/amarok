@@ -761,7 +761,7 @@ MtpHandler::prepareToParseTracks()
 {
     DEBUG_BLOCK
 
-    m_currentTrackList = QSharedPointer<LIBMTP_track_t>( LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this ) );
+    m_currentTrackList = LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this );
 }
 
 bool
@@ -773,13 +773,13 @@ MtpHandler::isEndOfParseTracksList()
 void
 MtpHandler::prepareToParseNextTrack()
 {
-    m_currentTrackList = QSharedPointer<LIBMTP_track_t>( m_currentTrackList->next );
+    m_currentTrackList = m_currentTrackList->next;
 }
 
 void
 MtpHandler::nextTrackToParse()
 {
-    m_currentTrack = QSharedPointer<LIBMTP_track_t>( m_currentTrackList );
+    m_currentTrack = m_currentTrackList;
 }
 
 /// Playlist Parsing
@@ -787,7 +787,7 @@ MtpHandler::nextTrackToParse()
 void
 MtpHandler::prepareToParsePlaylists()
 {
-    m_currentPlaylistList = QSharedPointer<LIBMTP_playlist_t>( LIBMTP_Get_Playlist_List( m_device ) );
+    m_currentPlaylistList = LIBMTP_Get_Playlist_List( m_device );
 }
 
 
@@ -801,14 +801,14 @@ MtpHandler::isEndOfParsePlaylistsList()
 void
 MtpHandler::prepareToParseNextPlaylist()
 {
-    m_currentPlaylistList = QSharedPointer<LIBMTP_playlist_t>( m_currentPlaylistList->next );
+    m_currentPlaylistList = m_currentPlaylistList->next;
 }
 
 
 void
 MtpHandler::nextPlaylistToParse()
 {
-    m_currentPlaylist = QSharedPointer<LIBMTP_playlist_t>( m_currentPlaylistList );
+    m_currentPlaylist = m_currentPlaylistList;
 }
 
 bool
@@ -843,14 +843,14 @@ MtpHandler::prepareToParseNextPlaylistTrack()
 void
 MtpHandler::nextPlaylistTrackToParse()
 {
-    m_currentTrack = QSharedPointer<LIBMTP_track_t>( m_idTrackHash.value( m_currentPlaylist->tracks[ m_trackcounter ] ) );
+    m_currentTrack = m_idTrackHash.value( m_currentPlaylist->tracks[ m_trackcounter ] );
 }
 
 
 Meta::MediaDeviceTrackPtr
 MtpHandler::libGetTrackPtrForTrackStruct()
 {
-    return m_mtpTrackHash.key( m_currentTrack.data() );
+    return m_mtpTrackHash.key( m_currentTrack );
 }
 
 QString
@@ -862,7 +862,7 @@ MtpHandler::libGetPlaylistName()
 void
 MtpHandler::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
-    m_mtpPlaylisthash[ playlist ] = m_currentPlaylist.data();
+    m_mtpPlaylisthash[ playlist ] = m_currentPlaylist;
 }
 
 void
@@ -957,8 +957,8 @@ MtpHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 void
 MtpHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
-    m_mtpTrackHash[ track ] = m_currentTrack.data();
-    m_idTrackHash[ m_currentTrack->item_id ] = m_currentTrack.data();
+    m_mtpTrackHash[ track ] = m_currentTrack;
+    m_idTrackHash[ m_currentTrack->item_id ] = m_currentTrack;
 }
 
 QStringList
