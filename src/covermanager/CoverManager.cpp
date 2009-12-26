@@ -403,6 +403,11 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     }
     qm->endAndOr();
 
+    // do not show albums with no name, i.e. tracks not belonging to any album
+    qm->beginAnd();
+    qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+    qm->endAndOr();
+
     m_albumList.clear();
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
