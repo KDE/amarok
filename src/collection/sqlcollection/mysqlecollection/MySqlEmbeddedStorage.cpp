@@ -45,7 +45,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         QDir dir( storageLocation );
         dir.mkpath( "." );  //ensure directory exists
         defaultsFile = QDir::cleanPath( dir.absoluteFilePath( "my.cnf" ) );
-        databaseDir = dir.absolutePath() + "mysqle";
+        databaseDir = dir.absolutePath() + QDir::separator() + "mysqle";
         qDebug() << "Using database in " << dir.absolutePath();
     }
 
