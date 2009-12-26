@@ -111,3 +111,28 @@ target_link_libraries(testsqlartist
     ${KDE4_KDECORE_LIBS}
     ${QT_QTTEST_LIBRARY}
     ${QT_QTCORE_LIBRARY})
+
+#-------------------------------- Test SqlCollection -----------------------
+
+set( testsqlcollection_SRCS
+        TestSqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
+        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
+        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
+    )
+
+
+kde4_add_unit_test( testsqlcollection ${testsqlcollection_SRCS} )
+
+target_link_libraries(testsqlcollection
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${QT_QTTEST_LIBRARY}
+    ${QT_QTCORE_LIBRARY}
+    ${OPENSSL_LIBRARIES}
+    ${MYSQL_EMBEDDED_LIBRARIES}
+    ${CMAKE_DL_LIBS}
+    ${ZLIB_LIBRARIES})
