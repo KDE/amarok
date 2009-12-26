@@ -32,11 +32,15 @@ int main(int argc, char **argv)
     QScriptEngine engine;
     foreach( QString binding, allowedBindings )
     {
-        if( !engine.importExtension( binding ).isUndefined() )
+        QScriptValue error = engine.importExtension( binding );
+        if( error.isUndefined() )
         { // undefined indiciates success
-            qDebug() << binding <<  " not found";
-            return FAIL;
+            continue;
         }
+
+        qDebug() << "Extension" << binding <<  "not found:" << error.toString();
+        qDebug() << "Available extensions:" << engine.availableExtensions();
+        return FAIL;
     }
     return 0;
 }
