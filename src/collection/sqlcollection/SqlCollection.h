@@ -93,7 +93,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
         void setCollectionLocationFactory( SqlCollectionLocationFactory *factory ) { m_collectionLocationFactory = factory; }
         void setQueryMakerFactory( SqlQueryMakerFactory *factory ) { m_queryMakerFactory = factory; }
         void setScanManager( ScanManager *scanMgr );
-        void setMountPointManager( SqlMountPointManager *mpm ) { m_mpm = mpm; }
+        void setMountPointManager( SqlMountPointManager *mpm );
         //this method MUST be called before using the collection
         void init();
 
@@ -108,6 +108,8 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
 
     private slots:
         void initXesam();
+        void slotDeviceAdded( int id );
+        void slotDeviceRemoved( int id );
 
     private:
         SqlRegistry* m_registry;
@@ -127,14 +129,19 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
 
 typedef QList<int> IdList;
 
-class SqlMountPointManager
+class SqlMountPointManager : public QObject
 {
+    Q_OBJECT
 public:
     virtual int getIdForUrl( const KUrl &url ) = 0;
     virtual QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const = 0;
     virtual QString getRelativePath( const int deviceId, const QString& absolutePath ) const = 0;
     virtual IdList getMountedDeviceIds() const = 0;
     virtual QStringList collectionFolders() = 0;
+
+signals:
+        void deviceAdded( int id );
+        void deviceRemoved( int id );
 };
 
 Q_DECLARE_METATYPE( TrackUrls )

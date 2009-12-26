@@ -29,6 +29,13 @@
 class SqlMountPointManagerImpl : public SqlMountPointManager
 {
 public:
+    SqlMountPointManagerImpl()
+        : SqlMountPointManager()
+    {
+        connect( MountPointManager::instance(), SIGNAL( deviceAdded(int) ), SIGNAL( deviceAdded(int) ) );
+        connect( MountPointManager::instance(), SIGNAL( deviceRemoved(int) ), SIGNAL( deviceRemoved(int) ) );
+    }
+
     int getIdForUrl( const KUrl &url )
     {
         return MountPointManager::instance()->getIdForUrl( url );

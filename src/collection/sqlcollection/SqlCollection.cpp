@@ -185,6 +185,15 @@ SqlCollection::mountPointManager() const
 }
 
 void
+SqlCollection::setMountPointManager( SqlMountPointManager *mpm )
+{
+    Q_ASSERT( mpm );
+    connect( mpm, SIGNAL( deviceAdded(int) ), SLOT( slotDeviceAdded(int) ) );
+    connect( mpm, SIGNAL( deviceRemoved(int) ), SLOT( slotDeviceRemoved(int) ) );
+    m_mpm = mpm;
+}
+
+void
 SqlCollection::removeCollection()
 {
     emit remove();
@@ -275,6 +284,44 @@ void
 SqlCollection::initXesam() //SLOT
 {
     m_xesamBuilder = new XesamCollectionBuilder( this );
+}
+
+void
+SqlCollection::slotDeviceAdded( int id )
+{
+    QString query = "select count(*) from tracks inner join urls on tracks.url = urls.id where urls.deviceid = %1";
+    QStringList rs = m_sqlStorage->query( query.arg( id ) );
+    if( !rs.isEmpty() )
+    {
+        int count = rs.first().toInt();
+        if( count > 0 )
+        {
+            emit updated();
+        }
+    }
+    else
+    {
+        warning() << "Query " << query << "did not return a result! Is the database available?";
+    }
+}
+
+void
+SqlCollection::slotDeviceRemoved( int id )
+{
+    QString query = "select count(*) from tracks inner join urls on tracks.url = urls.id where urls.deviceid = %1";
+    QStringList rs = m_sqlStorage->query( query.arg( id ) );
+    if( !rs.isEmpty() )
+    {
+        int count = rs.first().toInt();
+        if( count > 0 )
+        {
+            emit updated();
+        }
+    }
+    else
+    {
+        warning() << "Query " << query << "did not return a result! Is the database available?";
+    }
 }
 
 bool
