@@ -77,7 +77,7 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
             }
         }
         if( !storedMBId.isEmpty() && ( storedMBId != mbDefaultUUID ) )
-            return QString( "MB_" ) + storedMBId;
+            return QString( "mb-" ) + storedMBId;
     }
     //from here below assumes a file with a XiphComment; put non-conforming formats up above...
     TagLib::Ogg::XiphComment *comment = 0;
@@ -107,7 +107,7 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     {
         QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
         if( !identifier.isEmpty() && ( identifier != mbDefaultUUID ) )
-            return QString( "MB_" ) + identifier;
+            return QString( "mb-" ) + identifier;
     }
 
     return QString();
