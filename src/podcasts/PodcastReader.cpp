@@ -460,7 +460,7 @@ PodcastReader::read( const KUrl &url )
     }
 
     The::statusBar()->newProgressOperation( m_transferJob, description )
-    ->setAbortSlot( this, SLOT( slotAbort() ) );
+        ->setAbortSlot( this, SLOT( slotAbort() ) );
 
     // parse data
     return read();
@@ -717,7 +717,7 @@ PodcastReader::stopWithError( const QString &message )
 
     if( m_transferJob )
     {
-        m_transferJob->kill();
+        m_transferJob->kill(KJob::EmitResult);
         m_transferJob = 0;
     }
 
