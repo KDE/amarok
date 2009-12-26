@@ -56,8 +56,12 @@ OrderedSqlStorageMock::insert(const QString &statement, const QString &table)
 
 RandomSqlStorageMock::RandomSqlStorageMock( const QVariantMap &queries )
     : SqlStorage()
-    , m_queries( queries )
+    , m_queries()
 {
+    foreach( QString key, queries.keys() )
+    {
+        m_queries.insert( key.toLower(), queries.value( key ) );
+    }
 }
 
 RandomSqlStorageMock::~RandomSqlStorageMock()
@@ -73,7 +77,7 @@ RandomSqlStorageMock::allQueriesRun() const
 QStringList
 RandomSqlStorageMock::query( const QString &query )
 {
-    QVERIFY2( m_queries.contains( query ), "Received an unknown query in query()" );
+    QVERIFY2( m_queries.contains( query.toLower() ), "Received an unknown query in query()" );
     QVariant value = m_queries.value( query );
     QVERIFY(value.canConvert(QVariant::StringList));
     return value.toStringList();
@@ -82,7 +86,7 @@ RandomSqlStorageMock::query( const QString &query )
 int
 RandomSqlStorageMock::insert(const QString &statement, const QString &table)
 {
-    QVERIFY2( m_queries.contains( statement ), "Received an unknown query in insert()" );
+    QVERIFY2( m_queries.contains( statement.toLower() ), "Received an unknown query in insert()" );
     QVariant value = m_queries.value( statement );
     QVERIFY(value.canConvert(QVariant::Int));
     return value.toInt();
