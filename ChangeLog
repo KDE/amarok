@@ -2,10 +2,10 @@ Amarok ChangeLog
 ================
 (C) 2002-2009 the Amarok authors.
 
-
 VERSION 2.2.2
+  FEATURES:
+
   CHANGES:
-    * Bumped libMTP dependency to version 1.0.0.
     * The inline playlist editor now also allows resizing of auto sized items that 
       are invisible because fixed sized items already use up 100% width.
     * Enhanced the playlist sorting breadcrumb items to separately highlight
@@ -56,7 +56,6 @@ VERSION 2.2.2
       applet switches "mode"). (BR 215471)
     * Made "Last.fm Love" (and potentially other global actions avaiable for all 
       tracks) correctly show up in the Current Track applet.
-
 
 VERSION 2.2.2-beta1
   FEATURES
