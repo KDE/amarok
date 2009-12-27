@@ -86,7 +86,10 @@ void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
     m_interactive = true;
-    m_albums << album;
+    if( m_albums.contains( album ) )
+    {
+        m_albums.removeAll( album );
+    }
     startFetch( album );
 }
 
