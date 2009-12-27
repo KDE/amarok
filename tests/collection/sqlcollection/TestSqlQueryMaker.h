@@ -44,12 +44,19 @@ private slots:
 
     void testDeleteQueryMakerWithRunningQuery();
 
+    void testAsyncTrackQuery();
+    void testAsyncArtistQuery();
+    void testAsyncGenreQuery();
+    void testAsyncComposerQuery();
+    void testAsyncAlbumQuery();
+    void testAsyncYearQuery();
+    void testAsyncTrackDataQuery();
+    void testAsyncCustomQuery();
+
 private:
     SqlCollection *m_collection;
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;
 };
-
-QTEST_MAIN( TestSqlQueryMaker )
 
 #endif // TESTSQLQUERYMAKER_H
