@@ -416,7 +416,7 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &cover
     m_cancel    = new KPushButton( KStandardGuiItem::cancel(), m_buttons );
     m_next      = new KPushButton( KStandardGuiItem::forward(), m_buttons );
 
-    if( m_curCover == m_covers.length() )
+    if( m_covers.length() == 1 )
         m_next->setEnabled( false );
     else
         m_next->setEnabled( true );
