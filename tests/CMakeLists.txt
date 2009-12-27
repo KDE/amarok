@@ -5,6 +5,8 @@ set( AMAROK_SOURCE_TREE ${CMAKE_SOURCE_DIR}/src )
 set( AMAROK_TEST_TREE ${CMAKE_SOURCE_DIR}/tests )
 set( AMAROK_UTILITY_TREE ${CMAKE_SOURCE_DIR}/utilities )
 
+configure_file(config-amarok-test.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok-test.h )
+
 include_directories( .
                      ../src/
 )
