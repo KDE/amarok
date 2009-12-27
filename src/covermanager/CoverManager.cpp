@@ -770,7 +770,10 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
 
                     foreach( QAction *action, actions )
                     {
-                        cacs[action->text()].append(action);
+                        if( !action->text().isEmpty() )
+                        {
+                            cacs[action->text()].append(action);
+                        }
                     }
                 }
             }
@@ -782,8 +785,11 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
 
             foreach ( QList<QAction *> actionList, cacs )
             {
-                MultipleAction *maction = new MultipleAction( this, actionList );
-                menu.addAction( maction );
+                if( actionList.count() == items.count() )
+                {
+                    MultipleAction *maction = new MultipleAction( this, actionList );
+                    menu.addAction( maction );
+                }
             }
         }
         menu.exec( event->globalPos() );

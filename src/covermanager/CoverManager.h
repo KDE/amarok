@@ -200,9 +200,9 @@ class MultipleAction : public QAction
 
             if ( actions.count() > 0 )
             {
-                setText( actions.value(0)->text() );
-                setIcon( actions.value(0)->icon() );
-                setToolTip( actions.value(0)->toolTip() );
+                setText( actions.first()->text() );
+                setIcon( actions.first()->icon() );
+                setToolTip( actions.first()->toolTip() );
             }
         }
 };
