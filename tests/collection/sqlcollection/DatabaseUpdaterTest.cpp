@@ -26,6 +26,10 @@
 #include <QString>
 #include <QStringList>
 
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( DatabaseUpdaterTest )
+
 //required for Debug.h
 QMutex Debug::mutex;
 

@@ -24,6 +24,10 @@
 #include <QMutex>
 #include <QVariantMap>
 
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( CollectionLocationTest )
+
 //required for Debug.h
 QMutex Debug::mutex;
 

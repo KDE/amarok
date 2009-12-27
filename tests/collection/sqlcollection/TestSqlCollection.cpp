@@ -26,6 +26,10 @@
 
 #include <QSignalSpy>
 
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestSqlCollection )
+
 //required for Debug.h
 QMutex Debug::mutex;
 

@@ -21,6 +21,10 @@
 #include "meta/TagLibUtils.h"
 #include "SqlMeta.h"
 
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestSqlArtist )
+
 //required for Debug.h
 QMutex Debug::mutex;
 

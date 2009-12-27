@@ -30,6 +30,4 @@ private slots:
     void testSortableName();
 };
 
-QTEST_MAIN( TestSqlArtist )
-
 #endif // TESTSQLARTIST_H

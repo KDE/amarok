@@ -25,6 +25,10 @@
 #include "SqlRegistry.h"
 #include "SqlMountPointManagerMock.h"
 
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestAlbumCompilationChange )
+
 //required for Debug.h
 QMutex Debug::mutex;
 

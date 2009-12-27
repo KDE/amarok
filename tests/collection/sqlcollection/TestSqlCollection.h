@@ -48,6 +48,4 @@ private:
     KTempDir *m_tmpDir;
 };
 
-QTEST_MAIN( TestSqlCollection )
-
 #endif // TESTSQLCOLLECTION_H

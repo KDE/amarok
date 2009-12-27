@@ -33,6 +33,4 @@ private slots:
     //void testCopyTemporaryToPermanentTables();
 };
 
-QTEST_MAIN( DatabaseUpdaterTest )
-
 #endif // DATABASEUPDATERTEST_H

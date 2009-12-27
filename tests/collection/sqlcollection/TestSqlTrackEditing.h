@@ -52,6 +52,4 @@ private:
     SqlRegistry *m_registry;
 };
 
-QTEST_MAIN( TestSqlTrackEditing )
-
 #endif // TESTSQLTRACKEDITING_H

@@ -32,6 +32,10 @@
 
 #include <QSignalSpy>
 
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestSqlTrackEditing )
+
 //required for Debug.h
 QMutex Debug::mutex;
 

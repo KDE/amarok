@@ -34,6 +34,4 @@ private slots:
 
 };
 
-QTEST_MAIN( CollectionLocationTest )
-
 #endif // COLLECTIONLOCATIONTEST_H

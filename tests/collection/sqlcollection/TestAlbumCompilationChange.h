@@ -60,6 +60,4 @@ private:
 
 };
 
-QTEST_MAIN( TestAlbumCompilationChange )
-
 #endif // TESTALBUMCOMPILATIONCHANGE_H
