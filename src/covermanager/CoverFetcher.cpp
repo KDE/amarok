@@ -375,6 +375,7 @@ CoverFetcher::finish( CoverFetcher::FinishState state, const QString &message, K
         }
     }
 
+    emit finishedSingle( static_cast< int >( state ) );
 
     if( !m_interactive /*manual fetch*/ && !m_albums.isEmpty() )
     {

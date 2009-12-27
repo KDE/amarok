@@ -84,6 +84,11 @@ public:
     bool wasError() const { return !m_success; }
     QStringList errors() const { return m_errors; }
 
+    enum FinishState { Success, Error, NotFound };
+
+signals:
+    void finishedSingle( int state );
+
 private slots:
     void finishedXmlFetch( KJob * job );
     void finishedImageFetch( KJob * job );
@@ -122,7 +127,6 @@ private:
     void startFetch( Meta::AlbumPtr album );
 
     /// cleanup depending on the fetch result
-    enum FinishState { Success, Error, NotFound };
     void finish( FinishState state = Success, const QString &message = QString(), KJob *job = 0 );
 
     /// Show the cover that has been found

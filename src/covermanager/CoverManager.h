@@ -88,6 +88,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         void changeView( int id );
         
         void fetchMissingCovers();
+        void updateFetchingProgress( int state );
         void coverFetched( const QString&, const QString& );
         void coverRemoved( const QString&, const QString& );
         void coverFetcherError();
@@ -139,7 +140,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         Meta::AlbumList m_fetchCovers;
 
         //used to display information about cover fetching in the status bar
-        int m_fetchingCovers;
+        bool m_fetchingCovers;
         int m_coversFetched;
         int m_coverErrors;
 };

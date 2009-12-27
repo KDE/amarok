@@ -82,7 +82,7 @@ class ArtistItem : public QTreeWidgetItem
 CoverManager::CoverManager()
         : QSplitter( 0 )
         , m_timer( new QTimer( this ) )    //search filter timer
-        , m_fetchingCovers( 0 )
+        , m_fetchingCovers( false )
         , m_coversFetched( 0 )
         , m_coverErrors( 0 )
 {
@@ -313,21 +313,23 @@ void CoverManager::fetchMissingCovers() //SLOT
 {
     DEBUG_BLOCK
 
-    int i = 0;
-    for ( QListWidgetItem *item = m_coverView->item( i );
-          i < m_coverView->count();
-          item =  m_coverView->item( i++ ) )
+    m_fetchCovers.clear();
+    for( int i = 0, coverCount = m_coverView->count(); i < coverCount; ++i )
     {
+        QListWidgetItem *item = m_coverView->item( i );
         CoverViewItem *coverItem = static_cast<CoverViewItem*>( item );
         if( !coverItem->hasCover() ) {
             m_fetchCovers += coverItem->albumPtr();
         }
     }
 
+    m_progress->setMaximum( m_fetchCovers.size() );
     m_fetcher->queueAlbums( m_fetchCovers );
+    m_fetchingCovers = true;
 
     updateStatusBar();
     m_fetchButton->setEnabled( false );
+    connect( m_fetcher, SIGNAL(finishedSingle(int)), SLOT(updateFetchingProgress(int)) );
 
 }
 
@@ -574,11 +576,29 @@ void CoverManager::coverFetcherError()
     updateStatusBar();
 }
 
+void CoverManager::updateFetchingProgress( int state )
+{
+    switch( static_cast< CoverFetcher::FinishState >( state ) )
+    {
+    case CoverFetcher::Success:
+        m_coversFetched++;
+        break;
+
+    case CoverFetcher::Error:
+    case CoverFetcher::NotFound:
+    default:
+        m_coverErrors++;
+        break;
+    }
+    m_progress->setValue( m_coversFetched + m_coverErrors );
+}
 
 void CoverManager::stopFetching()
 {
     DEBUG_FUNC_INFO
 
+    m_fetchCovers.clear();
+    m_fetchingCovers = false;
     updateStatusBar();
 }
 
@@ -626,25 +646,27 @@ void CoverManager::updateStatusBar()
     if( m_fetchingCovers )
     {
         //update the progress bar
-        m_progress->setMaximum( m_fetchingCovers );
-        m_progress->setValue( m_coversFetched + m_coverErrors );
         if( m_progressBox->isHidden() )
             m_progressBox->show();
 
         //update the status text
-        if( m_coversFetched + m_coverErrors >= m_progress->value() ) {
+        if( m_coversFetched + m_coverErrors >= m_fetchCovers.size() )
+        {
             //fetching finished
             text = i18nc( "The fetching is done.", "Finished." );
             if( m_coverErrors )
                 text += i18np( " Cover not found", " <b>%1</b> covers not found", m_coverErrors );
             //reset counters
-            m_fetchingCovers = 0;
             m_coversFetched = 0;
             m_coverErrors = 0;
+            m_fetchCovers.clear();
+            m_fetchingCovers = false;
+
+            disconnect( m_fetcher, SIGNAL(finishedSingle(int)), this, SLOT(updateFetchingProgress(int)) );
             QTimer::singleShot( 2000, this, SLOT( updateStatusBar() ) );
         }
 
-        if( m_fetchingCovers == 1 )
+        if( m_fetchCovers.size() == 1 )
         {
             foreach( Meta::AlbumPtr album, m_fetchCovers )
             {
@@ -656,9 +678,9 @@ void CoverManager::updateStatusBar()
                                  album->prettyName() );
             }
         }
-        else if( m_fetchingCovers )
+        else
         {
-            text = i18np( "Fetching 1 cover: ", "Fetching <b>%1</b> covers... : ", m_fetchingCovers );
+            text = i18np( "Fetching 1 cover: ", "Fetching <b>%1</b> covers... : ", m_fetchCovers.size() );
             if( m_coversFetched )
                 text += i18np( "1 fetched", "%1 fetched", m_coversFetched );
             if( m_coverErrors )
@@ -682,12 +704,10 @@ void CoverManager::updateStatusBar()
             m_progressBox->hide();
 
         //album info
-        int i = 0;
-        for( QListWidgetItem *item = m_coverView->item( i );
-             i < m_coverView->count();
-             item = m_coverView->item( i++ ) )
+        for( int i = 0, coverCount = m_coverView->count(); i < coverCount; ++i )
         {
             totalCounter++;
+            QListWidgetItem *item = m_coverView->item( i );
             if( !static_cast<CoverViewItem*>( item )->hasCover() )
                 missingCounter++;    //counter for albums without cover
         }
