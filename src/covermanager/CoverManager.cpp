@@ -727,17 +727,27 @@ void CoverManager::updateStatusBar()
                 missingCounter++;    //counter for albums without cover
         }
 
+        const QList< QTreeWidgetItem* > selected = m_artistView->selectedItems();
+
         if( !m_filter.isEmpty() )
+        {
             text = i18np( "1 result for \"%2\"", "%1 results for \"%2\"", totalCounter, m_filter );
-        else if( m_artistView->selectedItems().count() > 0 )
+        }
+        else if( selected.count() > 0 )
         {
             text = i18np( "1 album", "%1 albums", totalCounter );
-            if( m_artistView->selectedItems().first() != m_artistView->invisibleRootItem()->child( 0 ) ) //showing albums by an artist
+
+            // showing albums by selected artist(s)
+            if( selected.first() != m_artistView->invisibleRootItem()->child( 0 ) )
             {
-                QString artist = m_artistView->selectedItems().first()->text(0);
-                if( artist.endsWith( ", The" ) )
+                QStringList artists;
+                foreach( const QTreeWidgetItem *item, selected )
+                {
+                    QString artist = item->text( 0 );
                     Amarok::manipulateThe( artist, false );
-                text += i18n( " by " ) + artist;
+                    artists.append( artist );
+                }
+                text += i18n( " by " ) + artists.join( ", " );
             }
         }
 
