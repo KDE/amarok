@@ -32,6 +32,7 @@ namespace Amarok { class LineEdit; }
 class CoverViewItem;
 class QTreeWidget;
 class QTreeWidgetItem;
+class KSqueezedTextLabel;
 class KPushButton;
 class KMenu;
 class QLabel;
@@ -126,7 +127,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         QAction        *m_selectAlbumsWithoutCover;
 
         //status bar widgets
-        QLabel         *m_statusLabel;
+        KSqueezedTextLabel *m_statusLabel;
         KHBox          *m_progressBox;
         QProgressBar   *m_progress;
         QString         m_oldStatusText;
