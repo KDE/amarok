@@ -197,7 +197,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     // NOTE: job can become 0 when this method is called from attemptAnotherFetch()
     if( job && job->error() )
     {
-        finishWithError( i18n( "There was an error communicating with last.fm." ), job );
+        finish( Error, i18n( "There was an error communicating with last.fm." ), job );
         return;
     }
 
@@ -210,10 +210,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     QDomDocument doc;
     if( !doc.setContent( m_xml ) )
     {
-        m_errors += i18n( "The XML obtained from Last.fm is invalid." );
-        if( m_albums.size() > 0 )
-            startFetch( m_albums.takeFirst() );
-
+        finish( Error, i18n( "The XML obtained from Last.fm is invalid." ), job );
         return;
     }
 
@@ -267,7 +264,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     }
 
     if ( m_numURLS == 0 )
-        finishNotFound();
+        finish( NotFound );
 }
 
 void
@@ -279,9 +276,8 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
     
     if( job->error() || data.isNull() || !pixmap.loadFromData( data ) )
     {
-        debug() << "finishedImageFetch(): KIO::error(): " << storedJob->error();
-        m_errors += i18n( "The cover could not be retrieved." );
-        finishWithError( i18n( "The cover could not be retrieved." ), job );
+        debug() << "finishedImageFetch(): KIO::error(): " << job->error();
+        finish( Error, i18n( "The cover could not be retrieved." ), job );
         return;
     }
     else
@@ -311,8 +307,7 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
         }
         else if( m_processedCovers == m_numURLS )
         {
-            debug() << "No cover could be retrieved!";
-            finishNotFound();
+            finish( NotFound );
         }
     }
 
@@ -334,62 +329,59 @@ CoverFetcher::showCover()
         debug() << "cover rejected";
         break;
     default:
-        finishWithError( i18n( "Aborted." ) );
+        finish( Error, i18n( "Aborted." ) );
         break;
     }
 }
 
-
 void
-CoverFetcher::finish()
+CoverFetcher::finish( CoverFetcher::FinishState state, const QString &message, KJob *job )
 {
-    The::statusBar()->shortMessage( i18n( "Retrieved cover successfully" ) );
-    m_albumPtr->setImage( image() );
-    m_isFetching = false;
-    if( !m_interactive /*manual fetch*/ && !m_albums.isEmpty() )
-        startFetch( m_albums.takeFirst() );
-
-}
-
-void
-CoverFetcher::finishWithError( const QString &message, KJob *job )
-{
-    if( job )
-        warning() << message << " KIO::error(): " << job->errorText();
-
-    m_errors += message;
-    m_success = false;
-
-    debug() << "Album name" << m_albumPtr->name();
-
-    m_isFetching = false;
-
-    // Time to move on.
-    if( !m_albums.isEmpty() )
+    DEBUG_BLOCK
+    switch( state )
     {
-        debug() << "next album" << m_albums[0]->name();
-        startFetch( m_albums.takeFirst() );
+        case Success:
+        {
+            The::statusBar()->shortMessage( i18n( "Retrieved cover successfully" ) );
+            m_albumPtr->setImage( image() );
+            m_success = true;
+            break;
+        }
+
+        case Error:
+        {
+            if( job )
+                warning() << message << "KIO::error(): " << job->errorText();
+
+            m_errors += message;
+            m_success = false;
+
+            debug() << "Album name" << m_albumPtr->name();
+            break;
+        }
+
+        case NotFound:
+        {
+            const QString text = i18n( "Unable to find a cover for %1.", m_albumPtr->name() );
+            //FIXME: Not visible behind cover manager
+            if( m_interactive )
+                The::statusBar()->longMessage( text, StatusBar::Sorry );
+            else
+                The::statusBar()->shortMessage( text );
+
+            m_errors += text;
+            m_success = false;
+            break;
+        }
     }
 
-}
-
-void 
-CoverFetcher::finishNotFound()
-{
-    if( m_interactive )
-        //FIXME: Not visible behind cover manager
-        The::statusBar()->longMessage( i18n( "Unable to find a cover for the specified song." ), StatusBar::Sorry );
-    else
-        //FIXME: Not visible behind cover manager
-        The::statusBar()->shortMessage( i18n( "Unable to find a cover for %1.", m_albumPtr->name() ) );
-    
-    m_isFetching = false;
 
     if( !m_interactive /*manual fetch*/ && !m_albums.isEmpty() )
     {
-				debug() << "album not found, size of m_albums: " << m_albums.size();
+        debug() << "CoverFetcher::finish() next album:" << m_albums[0]->name();
         startFetch( m_albums.takeFirst() );
     }
+    m_isFetching = false;
 }
 
 CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers, const QString &productname ) : KDialog( parent )

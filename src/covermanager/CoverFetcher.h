@@ -121,14 +121,9 @@ private:
     /// Fetch a cover
     void startFetch( Meta::AlbumPtr album );
 
-    /// The fetch was successful!
-    void finish();
-
-    /// The fetch failed, finish up and log an error message
-    void finishWithError( const QString &message, KJob *job = 0 );
-
-    /// The fetch was successful, but there was no cover found
-    void finishNotFound();
+    /// cleanup depending on the fetch result
+    enum FinishState { Success, Error, NotFound };
+    void finish( FinishState state = Success, const QString &message = QString(), KJob *job = 0 );
 
     /// Show the cover that has been found
     void showCover();
