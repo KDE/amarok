@@ -43,7 +43,7 @@ SqlQueryMakerInternal::run()
     Q_ASSERT( !m_query.isEmpty() );
     if( m_collection )
     {
-        QStringList result = m_collection->query( m_query );
+        QStringList result = m_collection->sqlStorage()->query( m_query );
         handleResult( result );
     }
     else

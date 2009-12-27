@@ -28,6 +28,7 @@ set(amarok_collection-sqlcollection_SRCS
     SqlCollectionDBusHandler.cpp
     SqlCollectionLocation.cpp
     SqlQueryMaker.cpp
+    SqlQueryMakerInternal.cpp
     SqlReadLabelCapability.cpp
     SqlRegistry.cpp
     SqlMeta.cpp
