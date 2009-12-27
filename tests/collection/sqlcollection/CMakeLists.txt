@@ -74,6 +74,7 @@ set( testsqltrackediting_SRCS
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMakerInternal.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
         ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
@@ -135,4 +136,36 @@ target_link_libraries(testsqlcollection
     ${OPENSSL_LIBRARIES}
     ${MYSQL_EMBEDDED_LIBRARIES}
     ${CMAKE_DL_LIBS}
+    ${ZLIB_LIBRARIES})
+
+#-------------------------------- Test SqlQueryMaker -----------------------
+
+set( testsqlquerymaker_SRCS
+        TestSqlQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMakerInternal.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
+        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
+        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
+    )
+
+
+kde4_add_unit_test( testsqlquerymaker ${testsqlquerymaker_SRCS} )
+
+target_link_libraries(testsqlquerymaker
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${QT_QTTEST_LIBRARY}
+    ${QT_QTCORE_LIBRARY}
+    ${OPENSSL_LIBRARIES}
+    ${MYSQL_EMBEDDED_LIBRARIES}
+    ${CMAKE_DL_LIBS}
+    ${CMAKE_THREAD_LIBS_INIT}
     ${ZLIB_LIBRARIES})
