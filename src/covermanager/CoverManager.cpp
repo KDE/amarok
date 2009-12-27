@@ -319,9 +319,8 @@ void CoverManager::fetchMissingCovers() //SLOT
           item =  m_coverView->item( i++ ) )
     {
         CoverViewItem *coverItem = static_cast<CoverViewItem*>( item );
-        if( !coverItem->hasCover() ) {
+        if( !coverItem->hasCover() )
             m_fetchCovers += coverItem->albumPtr();
-        }
     }
 
     m_fetcher->queueAlbums( m_fetchCovers );

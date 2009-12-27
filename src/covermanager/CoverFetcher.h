@@ -157,28 +157,28 @@ class CoverFoundDialog : public KDialog
                 KDialog::accept();
         }
 
-        private slots:
-            /**
-            *   Switch picture label and current index to next cover
-            */
-            void nextPix();
+    private slots:
+        /**
+        *   Switch picture label and current index to next cover
+        */
+        void nextPix();
 
-            /**
-            *   Switch picture label and current index to previous cover
-            */
-            void prevPix();
+        /**
+        *   Switch picture label and current index to previous cover
+        */
+        void prevPix();
 
-        private:
+    private:
 
-            QLabel      *m_labelPix;        //! Picture Label
-            QLabel      *m_labelName;       //! Name Label
-            KHBox       *m_buttons;         //! Button Box
-            KPushButton *m_next;            //! Next Button
-            KPushButton *m_prev;            //! Back Button
-            KPushButton *m_save;            //! Save Button
-            KPushButton *m_cancel;          //! Cancel Button
-            QList<QPixmap> m_covers;        //! Retrieved Covers
-            int         m_curCover;         //! Currently selected Cover
+        QLabel      *m_labelPix;        //! Picture Label
+        QLabel      *m_labelName;       //! Name Label
+        KHBox       *m_buttons;         //! Button Box
+        KPushButton *m_next;            //! Next Button
+        KPushButton *m_prev;            //! Back Button
+        KPushButton *m_save;            //! Save Button
+        KPushButton *m_cancel;          //! Cancel Button
+        QList<QPixmap> m_covers;        //! Retrieved Covers
+        int         m_curCover;         //! Currently selected Cover
 };
 
 namespace The

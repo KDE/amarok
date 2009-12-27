@@ -117,7 +117,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         Meta::AlbumList m_albumList;
 
         QProgressDialog* m_progressDialog;
-        
+
         CoverFetcher   *m_fetcher;
 
         QAction        *m_selectAllAlbums;
