@@ -28,6 +28,8 @@
 #include "SqlRegistry.h"
 #include "SqlMountPointManagerMock.h"
 
+#include "MetaNotificationSpy.h"
+
 #include <QSignalSpy>
 
 //required for Debug.h
@@ -161,7 +163,12 @@ TestSqlTrackEditing::testChangeComposerToExisting()
     QCOMPARE( targetComposer->name(), QString( "composer2" ) );
     QCOMPARE( targetComposer->tracks().count(), 0 );
 
+    MetaNotificationSpy metaSpy;
+    metaSpy.subscribeTo( track );
+
     sqlTrack->setComposer( "composer2" );
+
+    QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 );
 
     //check data was written to db
     QStringList rs = m_storage->query( "select composer from tracks where id = 1" );
@@ -186,7 +193,12 @@ TestSqlTrackEditing::testChangeComposerToNew()
     QCOMPARE( track->composer()->name(), QString( "composer1" ) );
     QCOMPARE( track->composer()->tracks().count(), 3 );
 
+    MetaNotificationSpy metaSpy;
+    metaSpy.subscribeTo( track );
+
     sqlTrack->setComposer( "new composer" );
+
+    QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 );
 
     QCOMPARE( track->composer()->name(), QString( "new composer" ) );
     QCOMPARE( originalComposer->tracks().count(), 2 );
@@ -223,7 +235,12 @@ TestSqlTrackEditing::testChangeGenreToExisting()
     QCOMPARE( targetGenre->name(), QString( "genre2" ) );
     QCOMPARE( targetGenre->tracks().count(), 0 );
 
+    MetaNotificationSpy metaSpy;
+    metaSpy.subscribeTo( track );
+
     sqlTrack->setGenre( "genre2" );
+
+    QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 );
 
     //check data was written to db
     QStringList rs = m_storage->query( "select genre from tracks where id = 1" );
@@ -248,7 +265,12 @@ TestSqlTrackEditing::testChangeGenreToNew()
     QCOMPARE( track->genre()->name(), QString( "genre1" ) );
     QCOMPARE( track->genre()->tracks().count(), 3 );
 
+    MetaNotificationSpy metaSpy;
+    metaSpy.subscribeTo( track );
+
     sqlTrack->setGenre( "new genre" );
+
+    QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 );
 
     QCOMPARE( track->genre()->name(), QString( "new genre" ) );
     QCOMPARE( originalGenre->tracks().count(), 2 );
@@ -285,7 +307,12 @@ TestSqlTrackEditing::testChangeYearToExisting()
     QCOMPARE( targetYear->name(), QString( "2" ) );
     QCOMPARE( targetYear->tracks().count(), 0 );
 
+    MetaNotificationSpy metaSpy;
+    metaSpy.subscribeTo( track );
+
     sqlTrack->setYear( "2" );
+
+    QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 );
 
     //check data was written to db
     QStringList rs = m_storage->query( "select year from tracks where id = 1" );
@@ -310,7 +337,12 @@ TestSqlTrackEditing::testChangeYearToNew()
     QCOMPARE( track->year()->name(), QString( "1" ) );
     QCOMPARE( track->year()->tracks().count(), 3 );
 
+    MetaNotificationSpy metaSpy;
+    metaSpy.subscribeTo( track );
+
     sqlTrack->setYear( "2000" );
+
+    QCOMPARE( metaSpy.notificationsFromTracks().count(), 1 );
 
     QCOMPARE( track->year()->name(), QString( "2000" ) );
     QCOMPARE( originalYear->tracks().count(), 2 );

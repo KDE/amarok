@@ -81,6 +81,7 @@ set( testsqltrackediting_SRCS
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
         ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
+        ${AMAROK_TEST_TREE}/MetaNotificationSpy.cpp
     )
 
 
