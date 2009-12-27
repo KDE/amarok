@@ -291,22 +291,13 @@ CoverManager::metadataChanged( Meta::AlbumPtr album )
 {
     DEBUG_BLOCK
 
-    ArtistItem *selectedItem = static_cast<ArtistItem*>(m_artistView->selectedItems().first());
-    if( selectedItem->text( 0 ) != i18n( "All Artists" ) )
+    const QString albumName = album->name();
+    foreach( CoverViewItem *item, m_coverItems )
     {
-        if ( album->albumArtist() != selectedItem->artist() )
-            return;
+        if( albumName == item->albumPtr()->name() )
+            item->loadCover();
     }
-    else
-    {
-        foreach( CoverViewItem *item, m_coverItems )
-        {
-            if( album->name() == item->albumPtr()->name() )
-                item->loadCover();
-        }
-        // Update have/missing count.
-        updateStatusBar();
-    }
+    updateStatusBar();
 }
 
 void CoverManager::fetchMissingCovers() //SLOT
