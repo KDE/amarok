@@ -432,7 +432,7 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &cover
     m_labelName->setText( productname );
 
     m_save->setDefault( true );
-    this->setCaption( i18n( "Cover Found" ) );
+    this->setTitle();
 
     connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
     connect( m_save,   SIGNAL(clicked()), SLOT(accept()) );
@@ -458,6 +458,17 @@ void CoverFoundDialog::updatePixmapSize()
                                                              Qt::SmoothTransformation) );
 }
 
+void CoverFoundDialog::setTitle()
+{
+    QString caption = i18n( "Cover Found" );
+    if( m_covers.size() > 1 )
+    {
+        const QString position = i18n( "%1/%2", m_curCover + 1, m_covers.size() );
+        caption +=  ": " + position;
+    }
+    this->setCaption( caption );
+}
+
 //SLOT
 void CoverFoundDialog::nextPix()
 {
@@ -473,6 +484,7 @@ void CoverFoundDialog::nextPix()
     else
         m_next->setEnabled( true );
 
+    this->setTitle();
     updatePixmapSize();
 }
 
@@ -491,6 +503,7 @@ void CoverFoundDialog::prevPix()
     else
         m_prev->setEnabled( true );
 
+    this->setTitle();
     updatePixmapSize();
 }
 

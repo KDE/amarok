@@ -173,6 +173,7 @@ class CoverFoundDialog : public KDialog
 
         private:
         void updatePixmapSize();
+        void setTitle();
 
             QLabel      *m_labelPix;        //! Picture Label
             QLabel      *m_labelName;       //! Name Label
