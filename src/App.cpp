@@ -98,7 +98,6 @@ extern void setupEventHandler_mac(long);
 #include "TestAmarok.h"
 #include "TestCaseConverter.h"
 #include "TestDirectoryLoader.h"
-#include "TestExpression.h"
 #include "TestM3UPlaylist.h"
 #include "TestMetaCueCueFileItem.h"
 #include "TestMetaCueTrack.h"
@@ -108,8 +107,6 @@ extern void setupEventHandler_mac(long);
 #include "TestPlaylistFileProvider.h"
 #include "TestPlaylistFileSupport.h"
 #include "TestPLSPlaylist.h"
-#include "TestQStringx.h"
-#include "TestSmartPointerList.h"
 #include "TestSqlUserPlaylistProvider.h"
 #include "TestTimecodeTrackProvider.h"
 #include "TestXSPFPlaylist.h"
@@ -619,7 +616,6 @@ App::runUnitTests( bool stdout )
     PERF_LOG( "Running Unit Tests" )
     TestAmarok                  testAmarok( testArgumentList, stdout );
     TestCaseConverter           testCaseConverter( testArgumentList, stdout );
-    TestExpression              testExpression( testArgumentList, stdout );
     TestM3UPlaylist             testM3UPlaylist( testArgumentList, stdout );
     TestMetaCueCueFileItem      testMetaCueCueFileItem( testArgumentList, stdout );
     TestMetaCueTrack            testMetaCueTrack( testArgumentList, stdout );
@@ -629,8 +625,6 @@ App::runUnitTests( bool stdout )
     TestPlaylistFileProvider    testPlaylistFileProvider( testArgumentList, stdout );
     TestPlaylistFileSupport     testPlaylistFileSupport( testArgumentList, stdout );
     TestPLSPlaylist             testPLSPlaylist( testArgumentList, stdout );
-    TestQStringx                testQStringx( testArgumentList, stdout );
-    TestSmartPointerList        testSmartPointerList( testArgumentList, stdout );
     TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList, stdout );
     TestTimecodeTrackProvider   testTimecodeTrackProvider( testArgumentList, stdout );
     TestXSPFPlaylist            testXSPFPlaylist( testArgumentList, stdout);

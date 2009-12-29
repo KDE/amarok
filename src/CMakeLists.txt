@@ -693,9 +693,6 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/TestAmarok.cpp
         ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp
-        ../tests/TestExpression.cpp
-        ../tests/TestQStringx.cpp
-        ../tests/TestSmartPointerList.cpp
     )
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)
 if( LIBLASTFM_FOUND )

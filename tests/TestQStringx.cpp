@@ -19,15 +19,21 @@
 
 #include "TestQStringx.h"
 
+#include "Debug.h"
+
 #include <QtTest/QTest>
 #include <QtCore/QString>
 #include <QtCore/QMap>
 
-TestQStringx::TestQStringx( QStringList testArgumentList, bool stdout )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestQStringx )
+
+//required for Debug.h
+QMutex Debug::mutex;
+
+TestQStringx::TestQStringx()
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "QStringx.xml" );
-    QTest::qExec( this, testArgumentList );
 }
 
 void TestQStringx::testArgs()

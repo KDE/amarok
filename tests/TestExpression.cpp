@@ -18,15 +18,21 @@
  ***************************************************************************/
 
 #include "TestExpression.h"
+
+#include "Debug.h"
 #include "Expression.h"
 
 #include <QtTest/QTest>
 
-TestExpression::TestExpression( QStringList testArgumentList, bool stdout )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestExpression )
+
+//required for Debug.h
+QMutex Debug::mutex;
+
+TestExpression::TestExpression()
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Expression.xml" );
-    QTest::qExec( this, testArgumentList );
 }
 
 void TestExpression::testParse()
