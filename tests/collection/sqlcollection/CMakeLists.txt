@@ -5,6 +5,7 @@ include_directories(
   ${AMAROK_SOURCE_TREE}/collection/sqlcollection
   ${AMAROK_UTILITY_TREE}
   ${CMAKE_BINARY_DIR}/src
+  ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
   ${KDE4_INCLUDE_DIR}
   ${QT_INCLUDES}
@@ -169,4 +170,29 @@ target_link_libraries(testsqlquerymaker
     ${MYSQL_EMBEDDED_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${CMAKE_THREAD_LIBS_INIT}
+    ${ZLIB_LIBRARIES})
+
+#-------------------------------- Test ScanResultProcessor Full scan mode -----------------------
+
+set( testscanresultprocessorfull_SRCS
+        TestScanResultProcessorFull.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ScanResultProcessor.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
+        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
+    )
+
+
+kde4_add_unit_test( testscanresultprocessorfull ${testscanresultprocessorfull_SRCS} )
+
+target_link_libraries(testscanresultprocessorfull
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${QT_QTTEST_LIBRARY}
+    ${QT_QTCORE_LIBRARY}
+    ${OPENSSL_LIBRARIES}
+    ${MYSQL_EMBEDDED_LIBRARIES}
+    ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES})
