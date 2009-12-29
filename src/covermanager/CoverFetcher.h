@@ -119,6 +119,8 @@ private:
     QString     m_currentCoverName;
     QStringList m_errors;
 
+    QHash< QUrl, Meta::AlbumPtr > m_urlMap;
+
     bool m_success;
     bool m_isFetching;
 

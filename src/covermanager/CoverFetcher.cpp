@@ -185,6 +185,7 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "album", album->name().toLocal8Bit() );
 
+    m_urlMap.insert( url, album );
     debug() << url;
 
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
@@ -221,12 +222,13 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     m_processedCovers = 0;
     m_numURLS = 0;
 
+    const QUrl jobUrl              = dynamic_cast< KIO::TransferJob* >( job )->url();
+    const Meta::AlbumPtr album     = m_urlMap[ jobUrl ];
+    const QString albumArtist      = album->hasAlbumArtist() ? album->albumArtist()->name() : QString();
     const QDomNodeList foundAlbums = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
 
-    for( uint x = 0; x < foundAlbums.length(); x++ )
+    for( uint x = 0, len = foundAlbums.length(); x < len; x++ )
     {
-        const QDomNodeList list = foundAlbums.item( x ).childNodes();
-
         QString size;
         switch( m_size )
         {
@@ -235,21 +237,24 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
             case 2:  size = "large"; break;
             default: size = "extralarge";  break;
         }
-        QString coverUrl;
-        for( int i = 0; i < list.count(); i++ )
-        {
-            QDomNode n = list.item( i );
-            if( n.nodeName() == "image" )
-            {
-                const QDomNode node = list.item( i );
 
-                if( node.hasAttributes() )
+        const QDomNode albumNode = foundAlbums.item( x );
+        const QString artist = albumNode.namedItem( "artist" ).toElement().text();
+
+        if( artist != albumArtist )
+            continue;
+
+        QString coverUrl;
+        const QDomNodeList list = albumNode.childNodes();
+        for( int i = 0, count = list.count(); i < count; ++i )
+        {
+            const QDomNode &node = list.item( i );
+            if( node.nodeName() == "image" && node.hasAttributes() )
+            {
+                const QString imageSize = node.attributes().namedItem( "size" ).nodeValue();
+                if( imageSize == size && node.isElement() )
                 {
-                    const QString imageSize = node.attributes().namedItem( "size" ).nodeValue();
-                    if( imageSize == size && node.isElement() )
-                    {
-                        coverUrl = node.toElement().text();
-                    }
+                    coverUrl = node.toElement().text();
                 }
             }
         }
@@ -265,6 +270,8 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
         KJob* getJob = KIO::storedGet( KUrl(coverUrl), KIO::NoReload, KIO::HideProgressInfo );
         connect( getJob, SIGNAL( result( KJob* ) ), SLOT( finishedImageFetch( KJob* ) ) );
     }
+
+    m_urlMap.remove( jobUrl );
 
     if ( m_numURLS == 0 )
         finish( NotFound );
