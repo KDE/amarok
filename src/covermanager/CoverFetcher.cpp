@@ -229,17 +229,31 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     m_numURLS = 0;
 
     const QUrl jobUrl          = dynamic_cast< KIO::TransferJob* >( job )->url();
-    const Meta::AlbumPtr album = m_urlMap[ jobUrl ];
+    Meta::AlbumPtr album       = m_urlMap[ jobUrl ];
     const QString albumArtist  = album->hasAlbumArtist() ? album->albumArtist()->name() : QString();
     const QString queryMethod  = jobUrl.queryItemValue( "method" );
 
     QDomNodeList results;
+    QSet< QString > artistSet;
     if( queryMethod == "album.getinfo" )
+    {
         results = doc.documentElement().childNodes();
+    }
     else if( queryMethod == "album.search" )
+    {
         results = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
-    else
-        return;
+
+        const Meta::TrackList tracks = album->tracks();
+        QStringList artistNames;
+        foreach( const Meta::TrackPtr &track, tracks )
+        {
+            artistNames << track->artist()->name();
+        }
+        artistNames << "Various Artists";
+        artistSet = artistNames.toSet();
+    }
+    else return;
+
 
     for( uint x = 0, len = results.length(); x < len; x++ )
     {
@@ -247,6 +261,8 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
         const QString artist = albumNode.namedItem( "artist" ).toElement().text();
 
         if( queryMethod == "album.getinfo" && artist != albumArtist )
+            continue;
+        else if( queryMethod == "album.search" && !artistSet.contains( artist ) )
             continue;
 
         QString coverUrl;
