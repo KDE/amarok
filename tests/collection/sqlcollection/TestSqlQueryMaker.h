@@ -53,6 +53,9 @@ private slots:
     void testAsyncTrackDataQuery();
     void testAsyncCustomQuery();
 
+    void testFilter();
+    void testFilter_data();
+
 private:
     SqlCollection *m_collection;
     SqlStorage *m_storage;
