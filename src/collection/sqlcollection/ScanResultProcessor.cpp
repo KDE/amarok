@@ -20,7 +20,6 @@
 #include "Debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
-#include "MountPointManager.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -75,8 +74,8 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
         return;
     }
     setupDatabase();
-    int deviceId = MountPointManager::instance()->getIdForUrl( dir );
-    QString rdir = MountPointManager::instance()->getRelativePath( deviceId, dir );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( dir );
+    QString rdir = m_collection->mountPointManager()->getRelativePath( deviceId, dir );
     QString query = QString( "SELECT         id, changedate               "
                              "FROM           directories_temp             "
                              "WHERE          deviceid = %1 AND dir = '%2';" )
@@ -209,8 +208,8 @@ ScanResultProcessor::commit()
     {
         foreach( const QString &dir, m_directories.keys() )
         {
-            int deviceid = MountPointManager::instance()->getIdForUrl( dir );
-            const QString rpath = MountPointManager::instance()->getRelativePath( deviceid, dir );
+            int deviceid = m_collection->mountPointManager()->getIdForUrl( dir );
+            const QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, dir );
             m_collection->dbUpdater()->removeFilesInDir( deviceid, rpath );
         }
     }
@@ -659,8 +658,8 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     QFileInfo fileInfo( url );
     const QString dir = fileInfo.absoluteDir().absolutePath();
     int dirId = directoryId( dir );
-    int deviceId = MountPointManager::instance()->getIdForUrl( url );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( url );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, url );
 
     QPair<int, QString> locationPair( deviceId, rpath );
     //debug() << "in urlId with url = " << url << " and uid = " << uid;
@@ -739,7 +738,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
             m_urlsHashByLocation[locationPair] = list;
         }
         m_permanentTablesUrlUpdates.insert( uid, url );
-        m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( currUrlIdValues[1].toInt(), currUrlIdValues[2] ), url ) );
+        m_changedUrls.insert( uid, QPair<QString, QString>( m_collection->mountPointManager()->getAbsolutePath( currUrlIdValues[1].toInt(), currUrlIdValues[2] ), url ) );
         return currUrlIdValues[0].toInt();
     }
 
@@ -832,8 +831,8 @@ ScanResultProcessor::directoryId( const QString &dir )
     if( m_directories.contains( dir ) )
         return m_directories.value( dir );
 
-    int deviceId = MountPointManager::instance()->getIdForUrl( dir );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceId, dir );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( dir );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, dir );
     if( !rpath.endsWith( '/' ) )
     {
         rpath += '/';
@@ -906,7 +905,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
         l_trackId = QString::number( track );
         l_albumId = trackList[3];
         l_albumArtistId = albumList[2];
-        l_currentPath = MountPointManager::instance()->getAbsolutePath( l_deviceid, l_rpath );
+        l_currentPath = m_collection->mountPointManager()->getAbsolutePath( l_deviceid, l_rpath );
         QFileInfo info( l_currentPath );
         uint dirCount = m_filesInDirs.value( info.dir().absolutePath() );
         if( dirCount == 1 )
