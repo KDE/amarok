@@ -161,7 +161,7 @@ MediaDeviceCollection::startFullScanDevice()
     // If handler successfully connected to device
 
     m_handler->parseTracks();
-    emit collectionReady( this );
+    //emit collectionReady( this );
 }
 
 Meta::MediaDeviceHandler*

@@ -810,14 +810,14 @@ MediaDeviceHandler::setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap& year
     track->setYear( yearPtr );
 }
 
-void
-MediaDeviceHandler::parseTracks()
+bool
+MediaDeviceHandler::privateParseTracks()
 {
     DEBUG_BLOCK
 
     setupReadCapability();
     if ( !m_rcb )
-        return;
+        return false;
 
     TrackMap trackMap;
     ArtistMap artistMap;
@@ -941,6 +941,8 @@ MediaDeviceHandler::parseTracks()
     m_memColl->releaseLock();
 
     m_memColl->collectionUpdated();
+
+    return true;
 }
 
 void
@@ -1226,6 +1228,47 @@ MediaDeviceHandler::metadataChanged( YearPtr year )
 {
     Q_UNUSED( year );
 }
+
+void
+MediaDeviceHandler::parseTracks()
+{
+    ThreadWeaver::Weaver::instance()->enqueue( new ParseWorkerThread( this ) );
+}
+
+// ParseWorkerThread
+
+ParseWorkerThread::ParseWorkerThread( MediaDeviceHandler* handler )
+        : ThreadWeaver::Job()
+        , m_success( false )
+        , m_handler( handler )
+{
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( slotDoneSuccess(ThreadWeaver::Job*)) );
+}
+
+ParseWorkerThread::~ParseWorkerThread()
+{
+    //nothing to do
+}
+
+bool
+ParseWorkerThread::success() const
+{
+    return m_success;
+}
+
+void
+ParseWorkerThread::run()
+{
+    m_success = m_handler->privateParseTracks();
+}
+
+void
+ParseWorkerThread::slotDoneSuccess( ThreadWeaver::Job* )
+{
+    m_handler->m_memColl->emitCollectionReady();
+}
+
+// CopyWorkerThread
 
 CopyWorkerThread::CopyWorkerThread( const Meta::TrackPtr &track, MediaDeviceHandler* handler )
         : ThreadWeaver::Job()
