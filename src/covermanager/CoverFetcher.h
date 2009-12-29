@@ -145,6 +145,12 @@ private:
 
     /// convert CoverSize enum to string
     QString coverSizeString( enum CoverSize size ) const;
+    
+    /// lower, remove whitespace, and do Unicode normalization on a QString
+    QString normalizeString( const QString &raw );
+
+    /// lower, remove whitespace, and do Unicode normalization on a QStringList
+    QStringList normalizeStrings( const QStringList &rawList );
 };
 
 

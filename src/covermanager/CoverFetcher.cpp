@@ -229,28 +229,28 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     m_numURLS = 0;
 
     const QUrl jobUrl          = dynamic_cast< KIO::TransferJob* >( job )->url();
-    Meta::AlbumPtr album       = m_urlMap[ jobUrl ];
-    const QString albumArtist  = album->hasAlbumArtist() ? album->albumArtist()->name() : QString();
     const QString queryMethod  = jobUrl.queryItemValue( "method" );
+    Meta::AlbumPtr album       = m_urlMap[ jobUrl ];
 
+    QString albumArtist;
     QDomNodeList results;
     QSet< QString > artistSet;
     if( queryMethod == "album.getinfo" )
     {
         results = doc.documentElement().childNodes();
+        albumArtist = normalizeString( album->albumArtist()->name() );
     }
     else if( queryMethod == "album.search" )
     {
         results = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
 
         const Meta::TrackList tracks = album->tracks();
-        QStringList artistNames;
+        QStringList artistNames( "Various Artists" );
         foreach( const Meta::TrackPtr &track, tracks )
         {
             artistNames << track->artist()->name();
         }
-        artistNames << "Various Artists";
-        artistSet = artistNames.toSet();
+        artistSet = normalizeStrings( artistNames ).toSet();
     }
     else return;
 
@@ -258,7 +258,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     for( uint x = 0, len = results.length(); x < len; x++ )
     {
         const QDomNode albumNode = results.item( x );
-        const QString artist = albumNode.namedItem( "artist" ).toElement().text();
+        const QString artist = normalizeString( albumNode.namedItem( "artist" ).toElement().text() );
 
         if( queryMethod == "album.getinfo" && artist != albumArtist )
             continue;
@@ -377,6 +377,24 @@ CoverFetcher::coverSizeString( enum CoverSize size ) const
         default:     str = "extralarge"; break;
     }
     return str;
+}
+
+QString
+CoverFetcher::normalizeString( const QString &raw )
+{
+    const QRegExp spaceRegExp  = QRegExp( "\\s" );
+    return raw.toLower().remove( spaceRegExp ).normalized( QString::NormalizationForm_KC );
+}
+
+QStringList
+CoverFetcher::normalizeStrings( const QStringList &rawList )
+{
+    QStringList cooked;
+    foreach( const QString &raw, rawList )
+    {
+        cooked << normalizeString( raw );
+    }
+    return cooked;
 }
 
 void
