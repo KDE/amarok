@@ -179,9 +179,17 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
-    url.addQueryItem( "method", "album.search" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
-    url.addQueryItem( "album", album->name().toLocal8Bit() );
+    if( album->hasAlbumArtist() )
+    {
+        url.addQueryItem( "method", "album.getinfo" );
+        url.addQueryItem( "artist", album->albumArtist()->name() );
+    }
+    else
+    {
+        url.addQueryItem( "method", "album.search" );
+    }
+    url.addQueryItem( "album", album->name() );
 
     m_urlMap.insert( url, album );
     debug() << url;
@@ -220,17 +228,25 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
     m_processedCovers = 0;
     m_numURLS = 0;
 
-    const QUrl jobUrl              = dynamic_cast< KIO::TransferJob* >( job )->url();
-    const Meta::AlbumPtr album     = m_urlMap[ jobUrl ];
-    const QString albumArtist      = album->hasAlbumArtist() ? album->albumArtist()->name() : QString();
-    const QDomNodeList foundAlbums = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
+    const QUrl jobUrl          = dynamic_cast< KIO::TransferJob* >( job )->url();
+    const Meta::AlbumPtr album = m_urlMap[ jobUrl ];
+    const QString albumArtist  = album->hasAlbumArtist() ? album->albumArtist()->name() : QString();
+    const QString queryMethod  = jobUrl.queryItemValue( "method" );
 
-    for( uint x = 0, len = foundAlbums.length(); x < len; x++ )
+    QDomNodeList results;
+    if( queryMethod == "album.getinfo" )
+        results = doc.documentElement().childNodes();
+    else if( queryMethod == "album.search" )
+        results = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
+    else
+        return;
+
+    for( uint x = 0, len = results.length(); x < len; x++ )
     {
-        const QDomNode albumNode = foundAlbums.item( x );
+        const QDomNode albumNode = results.item( x );
         const QString artist = albumNode.namedItem( "artist" ).toElement().text();
 
-        if( artist != albumArtist )
+        if( queryMethod == "album.getinfo" && artist != albumArtist )
             continue;
 
         QString coverUrl;
