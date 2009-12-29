@@ -1202,6 +1202,12 @@ PodcastReader::beginEnclosure()
     if( str.isEmpty() )
         str = attribute( RDF_NS, "about" );
 
+    if( str.isEmpty() )
+    {
+        debug() << "invalid enclosure containing no/empty url";
+        return;
+    }
+
     KUrl url( str.toString() );
 
     str = attributes().value( "length" );

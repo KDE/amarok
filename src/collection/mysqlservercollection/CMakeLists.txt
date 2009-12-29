@@ -36,6 +36,8 @@ set(amarok_collection-mysqlservercollection_PART_SRCS
     ../sqlcollection/SqlCollectionDBusHandler.cpp
     ../sqlcollection/SqlCollectionLocation.cpp
     ../sqlcollection/SqlQueryMaker.cpp
+    ../sqlcollection/SqlQueryMakerInternal.cpp
+    ../sqlcollection/SqlReadLabelCapability.cpp
     ../sqlcollection/SqlReadLabelCapability.cpp
     ../sqlcollection/SqlRegistry.cpp
     ../sqlcollection/SqlMeta.cpp

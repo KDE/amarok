@@ -17,7 +17,7 @@
 #ifndef AMAROK_COLLECTION_SQLQUERYMAKER_H
 #define AMAROK_COLLECTION_SQLQUERYMAKER_H
 
-#include "QueryMaker.h"
+#include "collection/QueryMaker.h"
 
 #include "amarok_export.h"
 
@@ -103,6 +103,14 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
 
     public slots:
         void done( ThreadWeaver::Job * job );
+        void blockingNewResultReady( const QString &id, const QStringList &customData );
+        void blockingNewResultReady( const QString &id, const Meta::AlbumList &albums );
+        void blockingNewResultReady( const QString &id, const Meta::ArtistList &artists );
+        void blockingNewResultReady( const QString &id, const Meta::GenreList &genres );
+        void blockingNewResultReady( const QString &id, const Meta::ComposerList &composers );
+        void blockingNewResultReady( const QString &id, const Meta::YearList &years );
+        void blockingNewResultReady( const QString &id, const Meta::TrackList &tracks );
+        void blockingNewResultReady( const QString &id, const Meta::DataList &data );
 
     private:
 
@@ -112,18 +120,21 @@ class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
         QString nameForValue( qint64 value );
         QString andOr() const;
 
-        void handleTracks( const QStringList &result );
-        void handleArtists( const QStringList &result );
-        void handleAlbums( const QStringList &result );
-        void handleGenres( const QStringList &result );
-        void handleComposers( const QStringList &result );
-        void handleYears( const QStringList &result );
-
         SqlCollection *m_collection;
 
         struct Private;
         Private * const d;
 
 };
+
+class SqlQueryMakerFactory
+{
+public:
+    virtual SqlQueryMaker* createQueryMaker() const = 0;
+
+private:
+    virtual ~SqlQueryMakerFactory() {};
+};
+
 
 #endif /* AMAROK_COLLECTION_SQLQUERYMAKER_H */
