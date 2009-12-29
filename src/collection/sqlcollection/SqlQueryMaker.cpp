@@ -446,6 +446,7 @@ SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, 
     if( value == Meta::valAlbumArtist && filter.isEmpty() )
     {
         d->linkedTables |= Private::ALBUMARTIST_TAB;
+        d->linkedTables |= Private::ALBUM_TAB;
         d->queryFilter += QString( " %1 ( albums.artist IS NULL or albumartists.name = '') " ).arg( andOr() );
     }
     else
@@ -939,6 +940,9 @@ SqlQueryMaker::nameForValue( qint64 value )
             return "urls.uniqueid";
         case valAlbumArtist:
             d->linkedTables |= Private::ALBUMARTIST_TAB;
+            //albumartist_tab means that the artist table is joined to the albums table
+            //so add albums as well
+            d->linkedTables |= Private::ALBUM_TAB;
             return "albumartists.name";
         default:
             return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
