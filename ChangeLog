@@ -21,6 +21,7 @@ VERSION 2.2.2
   BUGFIXES:
     * Fixed GUI freezing after mounting and during parse of media devices
       (BR 180520)
+    * Fixed occasional crash when custom biases go awry. (BR 219888)
     * Fixed missing icons in the drag overlay menu.
     * More reliable MimeType detection for music formats. Patch by Rafał
       Rzepecki <divided.mind@gmail.com>. (BR 219792)
