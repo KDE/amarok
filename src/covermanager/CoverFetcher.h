@@ -86,6 +86,17 @@ public:
 
     enum FinishState { Success, Error, NotFound };
 
+    /**
+     * Available album cover sizes in Last.fm's api.
+     */
+    enum CoverSize
+    {
+        Small = 0,  //! 34px
+        Medium,     //! 64px
+        Large,      //! 128px
+        ExtraLarge  //! 300px
+    };
+
 signals:
     void finishedSingle( int state );
 
@@ -113,7 +124,6 @@ private:
     int     m_processedCovers;    //!number of covers that have been processed
     int     m_numURLS;            //!number of URLS to process
     QString m_asin;
-    int     m_size;
 
     QStringList m_queries;
     QString     m_currentCoverName;
@@ -124,7 +134,6 @@ private:
     bool m_success;
     bool m_isFetching;
 
-private:
     /// Fetch a cover
     void startFetch( Meta::AlbumPtr album );
 
@@ -133,6 +142,9 @@ private:
 
     /// Show the cover that has been found
     void showCover();
+
+    /// convert CoverSize enum to string
+    QString coverSizeString( enum CoverSize size ) const;
 };
 
 

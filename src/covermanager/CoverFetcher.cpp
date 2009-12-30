@@ -67,7 +67,6 @@ void CoverFetcher::destroy() {
 
 CoverFetcher::CoverFetcher()
         : QObject()
-        , m_size( 2 )
         , m_success( true )
         , m_isFetching( false )
 {
@@ -175,7 +174,6 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
 
     // reset all values
     m_xml.clear();
-    m_size = 3;
 
     QUrl url;
     url.setScheme( "http" );
@@ -229,15 +227,6 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
 
     for( uint x = 0, len = foundAlbums.length(); x < len; x++ )
     {
-        QString size;
-        switch( m_size )
-        {
-            case 0:  size = "small";  break;
-            case 1:  size = "medium"; break;
-            case 2:  size = "large"; break;
-            default: size = "extralarge";  break;
-        }
-
         const QDomNode albumNode = foundAlbums.item( x );
         const QString artist = albumNode.namedItem( "artist" ).toElement().text();
 
@@ -252,7 +241,7 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
             if( node.nodeName() == "image" && node.hasAttributes() )
             {
                 const QString imageSize = node.attributes().namedItem( "size" ).nodeValue();
-                if( imageSize == size && node.isElement() )
+                if( imageSize == coverSizeString( ExtraLarge ) && node.isElement() )
                 {
                     coverUrl = node.toElement().text();
                 }
@@ -342,6 +331,20 @@ CoverFetcher::showCover()
         finish( Error, i18n( "Aborted." ) );
         break;
     }
+}
+
+QString
+CoverFetcher::coverSizeString( enum CoverSize size ) const
+{
+    QString str;
+    switch( size )
+    {
+        case Small:  str = "small";      break;
+        case Medium: str = "medium";     break;
+        case Large:  str = "large";      break;
+        default:     str = "extralarge"; break;
+    }
+    return str;
 }
 
 void
