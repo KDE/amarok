@@ -406,6 +406,7 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &cover
     this->showButtonSeparator( false );
     KVBox *box = new KVBox( this );
     this->setMainWidget(box);
+    box->setSpacing( 4 );
 
     m_labelPix  = new QLabel( box );
     m_labelName = new QLabel( box );
@@ -427,16 +428,34 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &cover
     m_labelPix ->setAlignment( Qt::AlignHCenter );
     m_labelName->setAlignment( Qt::AlignHCenter );
     m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
+    m_labelPix ->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_labelName->setText( productname );
 
     m_save->setDefault( true );
-    this->setFixedSize( sizeHint() );
     this->setCaption( i18n( "Cover Found" ) );
 
     connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
     connect( m_save,   SIGNAL(clicked()), SLOT(accept()) );
     connect( m_cancel, SIGNAL(clicked()), SLOT(reject()) );
     connect( m_next, SIGNAL(clicked()), SLOT(nextPix()) );
+}
+
+void CoverFoundDialog::resizeEvent( QResizeEvent *event )
+{
+    Q_UNUSED( event )
+
+    QSize scaledSize = m_labelPix->pixmap()->size();
+    scaledSize.scale( m_labelPix->size(), Qt::KeepAspectRatio );
+
+    if( !m_labelPix->pixmap() || scaledSize != m_labelPix->pixmap()->size() )
+        updatePixmapSize();
+}
+
+void CoverFoundDialog::updatePixmapSize()
+{
+    m_labelPix->setPixmap( m_covers.at( m_curCover ).scaled( m_labelPix->size(),
+                                                             Qt::KeepAspectRatio,
+                                                             Qt::SmoothTransformation) );
 }
 
 //SLOT
@@ -448,11 +467,13 @@ void CoverFoundDialog::nextPix()
         m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
         m_prev->setEnabled( true );
     }
-        
+
     if( m_curCover >= m_covers.length()-1 )
         m_next->setEnabled( false );
     else
         m_next->setEnabled( true );
+
+    updatePixmapSize();
 }
 
 //SLOT
@@ -464,11 +485,13 @@ void CoverFoundDialog::prevPix()
         m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
         m_next->setEnabled( true );
     }
-        
+
     if( m_curCover == 0 )
         m_prev->setEnabled( false );
     else
         m_prev->setEnabled( true );
+
+    updatePixmapSize();
 }
 
 

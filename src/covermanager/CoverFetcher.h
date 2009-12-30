@@ -157,6 +157,9 @@ class CoverFoundDialog : public KDialog
                 KDialog::accept();
         }
 
+    protected:
+        void resizeEvent( QResizeEvent *event );
+
         private slots:
             /**
             *   Switch picture label and current index to next cover
@@ -169,6 +172,7 @@ class CoverFoundDialog : public KDialog
             void prevPix();
 
         private:
+        void updatePixmapSize();
 
             QLabel      *m_labelPix;        //! Picture Label
             QLabel      *m_labelName;       //! Name Label
