@@ -85,10 +85,12 @@ void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
     m_interactive = true;
+    m_albumsMutex.lock();
     if( m_albums.contains( album ) )
     {
         m_albums.removeAll( album );
     }
+    m_albumsMutex.unlock();
     startFetch( album );
 }
 
@@ -109,20 +111,12 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
         m_albumsMutex.lock();
         if( !m_albums.isEmpty() )
         {
-            m_isFetching = true;
             Meta::AlbumPtr firstAlbum = m_albums.takeFirst();
-            m_albumsMutex.unlock();
             startFetch( album );
         }
-        else
-        {
-            m_albumsMutex.unlock();
-        }
+        m_albumsMutex.unlock();
     }
-    else
-    {
-        m_fetchMutex.unlock();
-    }
+    m_fetchMutex.unlock();
 }
 void
 CoverFetcher::queueAlbums( Meta::AlbumList albums )
@@ -140,24 +134,16 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
     if( !m_isFetching )
     {
         m_fetchMutex.unlock();
-        m_albumsMutex.lock();
 
+        m_albumsMutex.lock();
         if( !m_albums.isEmpty() )
         {
             Meta::AlbumPtr album = m_albums.takeFirst();
-            m_albumsMutex.unlock();
             startFetch( album );
         }
-        else
-        {
-            m_albumsMutex.unlock();
-        }
-
+        m_albumsMutex.unlock();
     }
-    else
-    {
-        m_fetchMutex.unlock();
-    }
+    m_fetchMutex.unlock();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -440,12 +426,17 @@ CoverFetcher::finish( CoverFetcher::FinishState state, const QString &message, K
 
     emit finishedSingle( static_cast< int >( state ) );
 
+    m_albumsMutex.lock();
     if( !m_interactive /*manual fetch*/ && !m_albums.isEmpty() )
     {
         debug() << "CoverFetcher::finish() next album:" << m_albums[0]->name();
         startFetch( m_albums.takeFirst() );
     }
+    m_albumsMutex.unlock();
+
+    m_fetchMutex.lock();
     m_isFetching = false;
+    m_fetchMutex.unlock();
 }
 
 CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers, const QString &productname ) : KDialog( parent )
