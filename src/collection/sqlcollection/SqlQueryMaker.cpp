@@ -21,7 +21,6 @@
 
 #include "Debug.h"
 
-#include "MountPointManager.h"
 #include "SqlCollection.h"
 #include "SqlQueryMakerInternal.h"
 #include "collection/SqlStorage.h"
@@ -373,8 +372,8 @@ SqlQueryMaker::addMatch( const TrackPtr &track )
         {
             path = track->playableUrl().path();
         }
-        int deviceid = MountPointManager::instance()->getIdForUrl( path );
-        QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
+        int deviceid = m_collection->mountPointManager()->getIdForUrl( path );
+        QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, path );
         d->queryMatch += QString( " AND urls.deviceid = %1 AND urls.rpath = '%2'" )
                         .arg( QString::number( deviceid ), escape( rpath ) );
     }
@@ -591,11 +590,7 @@ SqlQueryMaker::orderBy( qint64 value, bool descending )
 QueryMaker*
 SqlQueryMaker::orderByRandom()
 {
-<<<<<<< HEAD:src/collection/sqlcollection/SqlQueryMaker.cpp
-    d->queryOrderBy = " ORDER BY " + CollectionManager::instance()->sqlStorage()->randomFunc();
-=======
     d->queryOrderBy = " ORDER BY " + m_collection->sqlStorage()->randomFunc();
->>>>>>> major improvement to test flexibility of sqlcollection by moving almost all the construction of new objects into a single factory class:src/collection/sqlcollection/SqlQueryMaker.cpp
     return this;
 }
 
@@ -785,11 +780,7 @@ SqlQueryMaker::query()
 QStringList
 SqlQueryMaker::runQuery( const QString &query )
 {
-<<<<<<< HEAD:src/collection/sqlcollection/SqlQueryMaker.cpp
-    return CollectionManager::instance()->sqlStorage()->query( query );
-=======
     return m_collection->sqlStorage()->query( query );
->>>>>>> major improvement to test flexibility of sqlcollection by moving almost all the construction of new objects into a single factory class:src/collection/sqlcollection/SqlQueryMaker.cpp
 }
 
 
@@ -958,11 +949,7 @@ SqlQueryMaker::andOr() const
 QString
 SqlQueryMaker::escape( QString text ) const           //krazy:exclude=constref
 {
-<<<<<<< HEAD:src/collection/sqlcollection/SqlQueryMaker.cpp
-    return CollectionManager::instance()->sqlStorage()->escape( text );
-=======
     return m_collection->sqlStorage()->escape( text );
->>>>>>> major improvement to test flexibility of sqlcollection by moving almost all the construction of new objects into a single factory class:src/collection/sqlcollection/SqlQueryMaker.cpp
 }
 
 QString

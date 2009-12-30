@@ -56,6 +56,7 @@ SqlQueryMakerInternal::run()
 void
 SqlQueryMakerInternal::setQuery( const QString &query )
 {
+    //qDebug() << query;
     m_query = query;
 }
 
