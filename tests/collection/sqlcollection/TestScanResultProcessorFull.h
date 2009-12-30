@@ -44,6 +44,7 @@ private slots:
 
     void testLargeInsert();
     void testIdentifyCompilationInMultipleDirectories();
+    void testAFeatBDetectionInSingleDirectory();
 
 private:
 

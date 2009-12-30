@@ -94,7 +94,7 @@ TestScanResultProcessorFull::testLargeInsert()
     QSKIP( "test uses unix commands to create files", QTest::SkipAll );
 #endif
 
-    const int TRACK_COUNT = 100000;
+    const int TRACK_COUNT = AMAROK_SQLCOLLECTION_STRESS_TEST_TRACK_COUNT;
 
 
     qDebug() << "Please be patient, this test simulates the scan of " << TRACK_COUNT << " files and might take a while";
@@ -334,4 +334,81 @@ TestScanResultProcessorFull::setupFileSystem( const QList<QVariantMap> &trackDat
     }
 
     return result;
+}
+
+void
+TestScanResultProcessorFull::testAFeatBDetectionInSingleDirectory()
+{
+    //test whether tracks with the same album name and with artists
+    //similar to A featuring B are detected as belonging to one album
+    //with the album artist A.
+
+    //Please note: this does not check all variants that Amarok supports
+    //like A ft. B or A feat. C. This detection should be extracted into
+    //a strategy and tested separately.
+
+#ifdef Q_OS_WIN32
+    QSKIP( "test uses unix commands to create files", QTest::SkipAll );
+#endif
+
+    KTempDir collection;
+
+    QVariantMap dataTemplate;
+    dataTemplate.insert( Meta::Field::COMPOSER, "composer" );
+    dataTemplate.insert( Meta::Field::GENRE, "genre" );
+    dataTemplate.insert( Meta::Field::YEAR, "year" );
+    dataTemplate.insert( Meta::Field::ALBUM, "album" );
+
+    QList<QVariantMap> tracks;
+
+    QVariantMap track1 = dataTemplate;
+    track1.insert( Meta::Field::TITLE, "track1" );
+    track1.insert( Meta::Field::ARTIST, "artistA feat. artistB" );
+    track1.insert( Meta::Field::URL, collection.name() + "dir/track1.mp3" );
+    track1.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://1" );
+    tracks << track1;
+
+    QVariantMap track2 = dataTemplate;
+    track2.insert( Meta::Field::TITLE, "track2" );
+    track2.insert( Meta::Field::ARTIST, "artistA" );
+    track2.insert( Meta::Field::URL, collection.name() + "dir/track2.mp3" );
+    track2.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://2" );
+    tracks << track2;
+
+    QVariantMap track3 = dataTemplate;
+    track3.insert( Meta::Field::TITLE, "track3" );
+    track3.insert( Meta::Field::ARTIST, "artistA featuring artistC" );
+    track3.insert( Meta::Field::URL, collection.name() + "dir/track3.mp3" );
+    track3.insert( Meta::Field::UNIQUEID, "amarok-sqltrackuid://3" );
+    tracks << track3;
+
+    QList<DirMtime> mtimes = setupFileSystem( tracks );
+
+    ScanResultProcessor scp( m_collection );
+    scp.setSqlStorage( m_storage );
+    scp.setScanType( ScanResultProcessor::FullScan );
+
+    foreach( const DirMtime &mtime, mtimes )
+    {
+        scp.addDirectory( mtime.first, mtime.second );
+    }
+    scp.processDirectory( tracks );
+    scp.commit();
+
+    //there should be three artists (A feat. B, A, A featuring B) in the artists table
+    //and one entry (album) with artistA as albumartist in the albums table
+
+    QStringList artists = m_storage->query( "select name from artists" );
+    QCOMPARE( artists.count(), 3 );
+    QVERIFY( artists.contains( track1.value( Meta::Field::ARTIST ).toString() ) );
+    QVERIFY( artists.contains( track2.value( Meta::Field::ARTIST ).toString() ) );
+    QVERIFY( artists.contains( track3.value( Meta::Field::ARTIST ).toString() ) );
+
+    QStringList albums = m_storage->query( "select albums.name, albums.artist, artists.name "
+                                           "from albums inner join artists on albums.artist = artists.id" );
+
+    QCOMPARE( albums.count(), 3 );
+    QCOMPARE( albums.value( 0 ), QString( "album" ) );
+    QCOMPARE( albums.value( 2 ), QString( "artistA" ) );
+    QVERIFY( albums.value( 1 ).toInt() != 0 ); //not NULL and not 0; both values result in QString::toInt == 0
 }
