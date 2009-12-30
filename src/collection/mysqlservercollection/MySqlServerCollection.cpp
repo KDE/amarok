@@ -43,6 +43,9 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
     : MySqlCollection( id, prettyName )
 {
     DEBUG_BLOCK
+
+    m_debugIdent = "MySQL-server";
+
     if( mysql_library_init( 0, NULL, NULL ) )
     {
         error() << "MySQL library initialization failed!";

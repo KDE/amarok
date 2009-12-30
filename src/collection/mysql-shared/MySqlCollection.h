@@ -52,6 +52,8 @@ class MySqlCollection: public SqlCollection
 
         MYSQL* m_db;
         QMutex m_mutex;
+
+        QString m_debugIdent;
 };
 
 #endif

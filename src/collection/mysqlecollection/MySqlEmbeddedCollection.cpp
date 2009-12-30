@@ -43,6 +43,9 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
     : MySqlCollection( id, prettyName )
 {
     DEBUG_BLOCK
+
+    m_debugIdent = "MySQLe";
+
     const QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" ); 
     const QString databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", Amarok::saveLocation() + "mysqle" );
 

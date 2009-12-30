@@ -87,6 +87,7 @@ MySqlCollection::MySqlCollection( const QString &id, const QString &prettyName )
     : SqlCollection( id, prettyName )
     , m_db( 0 )
     , m_mutex( QMutex::Recursive )
+    , m_debugIdent( "MySQL-none" )
 {
     //Relevant code must be implemented in subclasses
 }
@@ -215,8 +216,10 @@ MySqlCollection::randomFunc() const
 void
 MySqlCollection::reportError( const QString& message )
 {
-    error() << "GREPME MySQL query failed!" << mysql_error( m_db ) << " on " << message;
+    QString errorMessage( "GREPME " + m_debugIdent + " query failed! " + mysql_error( m_db ) + " on " + message );
+    error() << errorMessage;
 }
+
 
 void
 MySqlCollection::initThreadInitializer()
