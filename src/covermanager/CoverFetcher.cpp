@@ -58,8 +58,10 @@ CoverFetcher::instance()
     return s_instance ? s_instance : new CoverFetcher();
 }
 
-void CoverFetcher::destroy() {
-    if (s_instance) {
+void CoverFetcher::destroy()
+{
+    if( s_instance )
+    {
         delete s_instance;
         s_instance = 0;
     }
