@@ -61,8 +61,6 @@ class CoverFetcher : public QObject
     friend class EditSearchDialog;
     Q_OBJECT
 
-    static const uint MAX_COVERS_CHOICE = 10;
-
 public:
     AMAROK_EXPORT static CoverFetcher* instance();
     AMAROK_EXPORT static void destroy();
