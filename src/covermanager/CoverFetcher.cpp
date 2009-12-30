@@ -22,6 +22,7 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
+#include "CoverFoundDialog.h"
 #include "CoverManager.h"
 #include "Debug.h"
 #include "statusbar/StatusBar.h"
@@ -391,81 +392,6 @@ CoverFetcher::finishNotFound()
         startFetch( m_albums.takeFirst() );
     }
 }
-
-CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers, const QString &productname ) : KDialog( parent )
-{
-    m_curCover = 0;
-    m_covers.clear();
-    m_covers = covers;
-    this->setButtons( None );
-    this->showButtonSeparator( false );
-    KVBox *box = new KVBox( this );
-    this->setMainWidget(box);
-
-    m_labelPix  = new QLabel( box );
-    m_labelName = new QLabel( box );
-    m_buttons   = new KHBox( box );
-    m_prev      = new KPushButton( KStandardGuiItem::back(), m_buttons );
-    m_save      = new KPushButton( KStandardGuiItem::save(), m_buttons );
-    m_cancel    = new KPushButton( KStandardGuiItem::cancel(), m_buttons );
-    m_next      = new KPushButton( KStandardGuiItem::forward(), m_buttons );
-
-    if( m_curCover == m_covers.length() )
-        m_next->setEnabled( false );
-    else
-        m_next->setEnabled( true );
-
-    m_prev->setEnabled( false );
-
-    m_labelPix ->setMinimumHeight( 300 );
-    m_labelPix ->setMinimumWidth( 300 );
-    m_labelPix ->setAlignment( Qt::AlignHCenter );
-    m_labelName->setAlignment( Qt::AlignHCenter );
-    m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
-    m_labelName->setText( productname );
-
-    m_save->setDefault( true );
-    this->setFixedSize( sizeHint() );
-    this->setCaption( i18n( "Cover Found" ) );
-
-    connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
-    connect( m_save,   SIGNAL(clicked()), SLOT(accept()) );
-    connect( m_cancel, SIGNAL(clicked()), SLOT(reject()) );
-    connect( m_next, SIGNAL(clicked()), SLOT(nextPix()) );
-}
-
-//SLOT
-void CoverFoundDialog::nextPix()
-{
-    if( m_curCover < m_covers.length()-1 )
-    {
-        m_curCover++;
-        m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
-        m_prev->setEnabled( true );
-    }
-        
-    if( m_curCover >= m_covers.length()-1 )
-        m_next->setEnabled( false );
-    else
-        m_next->setEnabled( true );
-}
-
-//SLOT
-void CoverFoundDialog::prevPix()
-{
-    if( m_curCover > 0 )
-    {
-        m_curCover--;
-        m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
-        m_next->setEnabled( true );
-    }
-        
-    if( m_curCover == 0 )
-        m_prev->setEnabled( false );
-    else
-        m_prev->setEnabled( true );
-}
-
 
 #include "CoverFetcher.moc"
 

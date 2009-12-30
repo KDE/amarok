@@ -23,15 +23,10 @@
 #include "meta/Meta.h"
 
 #include <QDomNode>
-#include <QImage>       //stack allocated
 #include <QLabel>       //baseclass
 #include <QMutex>
 #include <QObject>      //baseclass
 #include <QStringList>  //stack allocated
-#include <KDialog>
-#include <KHBox>
-#include <KPushButton>
-#include <KVBox>
 
 class KJob;
 class KLineEdit;
@@ -132,53 +127,6 @@ private:
 
     /// Show the cover that has been found
     void showCover();
-};
-
-
-class CoverFoundDialog : public KDialog
-{
-    Q_OBJECT
-    
-    public:
-        CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers, const QString &productname );
-
-        /**
-        *   @returns the currently selected cover image
-        */
-        const QPixmap image() { return *m_labelPix->pixmap(); }
-
-        virtual void accept()
-        {
-            if( qstrcmp( sender()->objectName().toAscii(), "NewSearch" ) == 0 )
-                done( 1000 );
-            else if( qstrcmp( sender()->objectName().toAscii(), "NextCover" ) == 0 )
-                done( 1001 );
-            else
-                KDialog::accept();
-        }
-
-        private slots:
-            /**
-            *   Switch picture label and current index to next cover
-            */
-            void nextPix();
-
-            /**
-            *   Switch picture label and current index to previous cover
-            */
-            void prevPix();
-
-        private:
-
-            QLabel      *m_labelPix;        //! Picture Label
-            QLabel      *m_labelName;       //! Name Label
-            KHBox       *m_buttons;         //! Button Box
-            KPushButton *m_next;            //! Next Button
-            KPushButton *m_prev;            //! Back Button
-            KPushButton *m_save;            //! Save Button
-            KPushButton *m_cancel;          //! Cancel Button
-            QList<QPixmap> m_covers;        //! Retrieved Covers
-            int         m_curCover;         //! Currently selected Cover
 };
 
 namespace The
