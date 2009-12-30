@@ -4404,4 +4404,4 @@ VERSION 0.1 - 0.11:
   tried no less then 4 different sound interfaces:
     mpg123, smpeg, alsaplayer, and finally aRts
 
-# vim: expandtab ts=2 sw=2 ft=text
+# vim: expandtab ts=2 sw=2
