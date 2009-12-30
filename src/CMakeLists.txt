@@ -636,6 +636,7 @@ set(amaroklib_LIB_SRCS
     TrayIcon.cpp
     widgets/AmarokDockWidget.cpp
     widgets/BreadcrumbItemButton.cpp
+    widgets/CoverLabel.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp

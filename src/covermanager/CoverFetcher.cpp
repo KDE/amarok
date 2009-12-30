@@ -35,21 +35,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
-#include <QImageReader>
-#include <QLabel>
 #include <QRegExp>
 
-
-CoverLabel::CoverLabel ( QWidget * parent, Qt::WindowFlags f )
-        : QLabel( parent, f)
-{}
-
-void CoverLabel::mouseReleaseEvent(QMouseEvent *pEvent) {
-    if (pEvent->button() == Qt::LeftButton || pEvent->button() == Qt::RightButton)
-    {
-//         Amarok::coverContextMenu( this, pEvent->globalPos(), m_albumPtr, false );
-    }
-}
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 

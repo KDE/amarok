@@ -23,32 +23,12 @@
 #include "meta/Meta.h"
 
 #include <QDomNode>
-#include <QLabel>       //baseclass
 #include <QMutex>
 #include <QObject>      //baseclass
 #include <QStringList>  //stack allocated
 
 class KJob;
 class KLineEdit;
-
-class CoverLabel : public QLabel
-{
-    public:
-    explicit CoverLabel( QWidget * parent, Qt::WindowFlags f = 0 );
-
-    void setInformation( const QString artist, const QString album )
-    {
-        m_artist = artist;
-        m_album = album;
-    }
-
-    protected:
-        virtual void mouseReleaseEvent(QMouseEvent *pEvent);
-
-    private:
-        QString m_artist;
-        QString m_album;
-};
 
 class CoverFetcherSingleton;
 
