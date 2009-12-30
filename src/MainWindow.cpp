@@ -767,9 +767,10 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-    action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
-    connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
+    action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );    
     ac->addAction( "playlist_playmedia", action );
+    action->setShortcut( Qt::CTRL + Qt::Key_O );
+    connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
 
     action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));

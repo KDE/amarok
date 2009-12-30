@@ -62,6 +62,7 @@ VERSION 2.2.2
 
 VERSION 2.2.2-beta1
   FEATURES
+    * Added Ctrl+O shortcut to open media files. (BR 219337)
     * Dailymotion video can now be rendered within the applet in HQ if HQ is selected 
       in the video applet settings.
     * Rewrote podcast feed parser to correctly parse XML. Now even RSS 1.0 and
