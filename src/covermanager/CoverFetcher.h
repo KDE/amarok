@@ -58,7 +58,6 @@ namespace KIO { class Job; }
 
 class CoverFetcher : public QObject
 {
-    friend class EditSearchDialog;
     Q_OBJECT
 
 public:
