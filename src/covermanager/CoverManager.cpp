@@ -194,7 +194,6 @@ CoverManager::slotContinueConstruction() //SLOT
     viewGroup->addAction( m_selectAllAlbums );
     viewGroup->addAction( m_selectAlbumsWithCover );
     viewGroup->addAction( m_selectAlbumsWithoutCover );
-    m_selectAllAlbums->setChecked( true );
 
     m_viewButton->setMenu( m_viewMenu );
     m_viewButton->setIcon( KIcon( "filename-album-amarok" ) );
@@ -203,6 +202,9 @@ CoverManager::slotContinueConstruction() //SLOT
     //fetch missing covers button
     m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "get-hot-new-stuff-amarok" ), hbox );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
+
+    m_selectAllAlbums->setChecked( true );
+    m_selectAllAlbums->trigger();
 
     //cover view
     m_coverView = new CoverView( vbox );
