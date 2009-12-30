@@ -93,8 +93,6 @@ private:
     CoverFetcher();
     ~CoverFetcher();
 
-    void parseItemNode( const QDomNode &node );
-
     Meta::AlbumList m_albums;
     Meta::AlbumPtr m_albumPtr;
     QMutex m_albumsMutex;

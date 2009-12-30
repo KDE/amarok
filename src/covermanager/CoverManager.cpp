@@ -549,30 +549,6 @@ void CoverManager::changeView( int id  ) //SLOT
     m_currentView = id;
 }
 
-void CoverManager::coverFetched( const QString &artist, const QString &album ) //SLOT
-{
-    loadCover( artist, album );
-    m_coversFetched++;
-    updateStatusBar();
-}
-
-
-void CoverManager::coverRemoved( const QString &artist, const QString &album ) //SLOT
-{
-    loadCover( artist, album );
-    m_coversFetched--;
-    updateStatusBar();
-}
-
-
-void CoverManager::coverFetcherError()
-{
-    DEBUG_FUNC_INFO
-
-    m_coverErrors++;
-    updateStatusBar();
-}
-
 
 void CoverManager::stopFetching()
 {

@@ -88,9 +88,6 @@ class CoverManager : public QSplitter, public Meta::Observer
         void changeView( int id );
         
         void fetchMissingCovers();
-        void coverFetched( const QString&, const QString& );
-        void coverRemoved( const QString&, const QString& );
-        void coverFetcherError();
         void stopFetching();
 
         void playSelectedAlbums();
