@@ -82,6 +82,7 @@ class ArtistItem : public QTreeWidgetItem
 
 CoverManager::CoverManager()
         : QSplitter( 0 )
+        , m_currentView( AllAlbums )
         , m_timer( new QTimer( this ) )    //search filter timer
         , m_fetchingCovers( 0 )
         , m_coversFetched( 0 )
@@ -241,8 +242,6 @@ CoverManager::slotContinueConstruction() //SLOT
     connect( m_searchEdit, SIGNAL(textChanged( const QString& )),
                            SLOT(slotSetFilterTimeout()) );
 
-    m_currentView = AllAlbums;
-
     QSize size = QApplication::desktop()->screenGeometry( this ).size() / 1.5;
     QSize sz = Amarok::config( "Cover Manager" ).readEntry( "Window Size", size );
     resize( sz.width(), sz.height() );
@@ -362,11 +361,6 @@ void CoverManager::slotArtistSelected() //SLOT
 {
     m_coverView->clear();
     m_coverItems.clear();
-
-    // reset current view mode state to "AllAlbum" which is the default on artist change in left panel
-    m_currentView = AllAlbums;
-    m_selectAllAlbums->trigger();
-    m_selectAllAlbums->setChecked( true );
 
     //Extra time for the sake of init() and aesthetics
     QTimer::singleShot( 0, this, SLOT( slotArtistSelectedContinue() ) );
