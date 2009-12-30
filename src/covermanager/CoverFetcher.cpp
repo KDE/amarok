@@ -392,7 +392,7 @@ CoverFetcher::finish( CoverFetcher::FinishState state, const QString &message, K
         case Success:
         {
             The::statusBar()->shortMessage( i18n( "Retrieved cover successfully" ) );
-            m_albumPtr->setImage( image() );
+            m_albumPtr->setImage( m_selPixmap );
             m_success = true;
             break;
         }

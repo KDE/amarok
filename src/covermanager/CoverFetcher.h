@@ -75,9 +75,6 @@ public:
 
     /// Main Fetch loop
     AMAROK_EXPORT void manualFetch( Meta::AlbumPtr album );
-
-    QPixmap image() const { return m_selPixmap; }
-
     AMAROK_EXPORT void queueAlbum( Meta::AlbumPtr album );
     AMAROK_EXPORT void queueAlbums( Meta::AlbumList albums );
 
