@@ -96,16 +96,13 @@ private:
     QMutex m_fetchMutex;
 
     bool    m_interactive; /// whether we should consult the user
-    QString m_userQuery; /// the query from the query edit dialog
     QString m_xml;
     QList<QPixmap> m_pixmaps;     //!List of found covers
     QPixmap m_selPixmap;          //!Cover of choice
     int     m_processedCovers;    //!number of covers that have been processed
     int     m_numURLS;            //!number of URLS to process
-    QString m_asin;
     int     m_size;
 
-    QStringList m_queries;
     QString     m_currentCoverName;
     QStringList m_errors;
 
