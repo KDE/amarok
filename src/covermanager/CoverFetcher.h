@@ -34,7 +34,6 @@
 #include <KVBox>
 
 class KJob;
-class KLineEdit;
 
 class CoverLabel : public QLabel
 {
@@ -54,8 +53,6 @@ class CoverLabel : public QLabel
         QString m_artist;
         QString m_album;
 };
-
-class CoverFetcherSingleton;
 
 namespace KIO { class Job; }
 
