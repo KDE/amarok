@@ -87,6 +87,11 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
     m_interactive = true;
     m_albums << album;
+
+    m_currentCoverName = album->hasAlbumArtist()
+                       ? album->albumArtist()->prettyName() + ": " + album->prettyName()
+                       : album->prettyName();
+
     startFetch( album );
 }
 
