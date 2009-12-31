@@ -152,9 +152,6 @@ CoverFetcher::startFetch( Meta::AlbumPtr album )
     m_fetchMutex.unlock();
     m_albumPtr = album;
 
-    // reset all values
-    m_xml.clear();
-
     QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
@@ -191,14 +188,11 @@ CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
         return;
     }
 
-    if( job )
-    {
-        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-        m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
-    }
+    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    const QString xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
 
     QDomDocument doc;
-    if( !doc.setContent( m_xml ) )
+    if( !doc.setContent( xml ) )
     {
         finish( Error, i18n( "The XML obtained from Last.fm is invalid." ), job );
         return;

@@ -81,7 +81,6 @@ private:
     QMutex m_fetchMutex;
 
     bool    m_interactive; /// whether we should consult the user
-    QString m_xml;
     QList<QPixmap> m_pixmaps;     //!List of found covers
     QPixmap m_selPixmap;          //!Cover of choice
     int     m_processedCovers;    //!number of covers that have been processed
