@@ -106,11 +106,7 @@ Playlist::Widget::Widget( QWidget* parent )
     plBar->setFixedHeight( 30 );
     plBar->setObjectName( "PlaylistToolBar" );
 
-    ModelStack::instance();
-
-    // the Controller ctor creates the undo/redo actions that we use below, so we want
-    // to make sure that it's been constructed and the the actions registered
-    Controller::instance();
+    ModelStack::instance(); //This also creates the Controller.
 
     { // START Playlist toolbar
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );

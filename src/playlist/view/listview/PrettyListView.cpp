@@ -39,7 +39,6 @@
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/view/PlaylistViewCommon.h"
 #include "PopupDropperFactory.h"
@@ -161,7 +160,7 @@ Playlist::PrettyListView::removeSelection()
     {
         // Now that we have the list of selected rows in the topmost proxy, we can perform the
         // removal.
-        Controller::instance()->removeRows( sr );
+        The::playlistController()->removeRows( sr );
 
         // Next, we look for the first row.
         int firstRow = sr.first();
@@ -375,7 +374,7 @@ Playlist::PrettyListView::dropEvent( QDropEvent* event )
         int targetRow = indexAt( event->pos() ).row();
         targetRow = ( targetRow < 0 ) ? plModel->rowCount() : targetRow; // target of < 0 means we dropped on the end of the playlist
         QList<int> sr = selectedRows();
-        int realtarget = Controller::instance()->moveRows( sr, targetRow );
+        int realtarget = The::playlistController()->moveRows( sr, targetRow );
         QItemSelection selItems;
         foreach( int row, sr )
         {

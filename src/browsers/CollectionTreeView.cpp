@@ -34,7 +34,7 @@
 #include "meta/capabilities/CollectionCapability.h"
 #include "meta/capabilities/CustomActionsCapability.h"
 #include "PaletteHandler.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"

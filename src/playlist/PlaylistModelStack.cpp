@@ -27,6 +27,11 @@ namespace The
     {
         return Playlist::ModelStack::instance()->top();
     }
+
+    AMAROK_EXPORT Playlist::Controller* playlistController()
+    {
+        return Playlist::ModelStack::instance()->controller();
+    }
 }
 
 namespace Playlist
@@ -55,6 +60,7 @@ ModelStack::destroy()
 ModelStack::ModelStack()
     : QObject()
 {
+    m_controller = new Controller( this );
     m_model = new Model( this );
     m_filter = new FilterProxy( m_model, this );
     m_sort = new SortProxy( m_filter, this );
@@ -87,6 +93,12 @@ SortProxy *
 ModelStack::sortProxy()
 {
     return m_sort;
+}
+
+Controller *
+ModelStack::controller()
+{
+    return m_controller;
 }
 
 }   //namespace Playlist

@@ -41,28 +41,10 @@
 #include <QAction>
 #include <typeinfo>
 
-Playlist::Controller* Playlist::Controller::s_instance = 0;
-
-Playlist::Controller* Playlist::Controller::instance()
-{
-    return ( s_instance ) ? s_instance : new Controller();
-}
-
-void
-Playlist::Controller::destroy()
-{
-    if ( s_instance )
-    {
-        delete s_instance;
-        s_instance = 0;
-    }
-}
-
 Playlist::Controller::Controller( QObject* parent )
         : QObject( parent )
         , m_undoStack( new QUndoStack( this ) )
 {
-    s_instance = this;
     m_topmostModel = Playlist::ModelStack::instance()->top();
 
     m_undoStack->setUndoLimit( 20 );
@@ -605,12 +587,3 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 
     emit changed();
 }
-
-namespace The
-{
-AMAROK_EXPORT Playlist::Controller* playlistController()
-{
-    return Playlist::Controller::instance();
-}
-}
-

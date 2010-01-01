@@ -30,7 +30,7 @@
 #include "collection/CollectionManager.h"
 #include "context/ContextView.h"
 #include "context/Svg.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "SvgHandler.h"
 #include "widgets/kratingpainter.h"
 #include "widgets/kratingwidget.h"

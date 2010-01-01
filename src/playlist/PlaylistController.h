@@ -35,15 +35,7 @@ namespace Playlist
 {
 class Controller;
 class AbstractModel;
-}
 
-namespace The
-{
-AMAROK_EXPORT Playlist::Controller* playlistController();
-}
-
-namespace Playlist
-{
 enum AddOptions
 {
     Append     = 1,     /// inserts media after the last item in the playlist
@@ -63,8 +55,8 @@ class AMAROK_EXPORT Controller : public QObject
     Q_OBJECT
 
 public:
-    static Controller* instance();
-    static void destroy();
+    Controller( QObject* parent = 0 );
+    ~Controller();
 
 public slots:
     void insertOptioned( Meta::TrackPtr track, int options );
@@ -110,9 +102,6 @@ private slots:
     void slotFinishDirectoryLoader( const Meta::TrackList& );
 
 private:
-    Controller( QObject* parent = 0 );
-    ~Controller();
-
     void insertionHelper( int row, Meta::TrackList& );
 
     AbstractModel* m_topmostModel;
@@ -122,8 +111,6 @@ private:
     QHash<QueryMaker*, int> m_queryMap;         //! maps queries to the row where the results should be inserted
     QHash<QueryMaker*, int> m_optionedQueryMap; //! maps queries to the options to be used when inserting the result
     QHash<QueryMaker*, Meta::TrackList> m_queryMakerTrackResults;
-
-    static Controller* s_instance;
 };
 }
 

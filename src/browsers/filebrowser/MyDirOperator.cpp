@@ -24,7 +24,7 @@
 #include "collection/support/FileCollectionLocation.h"
 #include "collection/CollectionManager.h"
 #include "dialogs/TagDialog.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KActionMenu>
 #include <KLocale>

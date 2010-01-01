@@ -18,7 +18,7 @@
 #define AMAROK_METAPLAYLISTMODEL_H
 
 #include "meta/Playlist.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <QAbstractItemModel>
 

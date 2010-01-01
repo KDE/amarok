@@ -18,10 +18,10 @@
 #define PLAYLISTBROWSERNSPODCASTMODEL_H
 
 #include "PodcastMeta.h"
+<<<<<<< HEAD
 
 #include "MetaPlaylistModel.h"
-#include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
