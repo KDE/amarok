@@ -30,12 +30,6 @@ CoverFetchQueue::~CoverFetchQueue()
 {
 }
 
-const CoverFetchPayload *
-CoverFetchQueue::fetchUrl( Meta::AlbumPtr album ) const
-{
-    return m_queue.at( index( album ) )->url();
-}
-
 bool
 CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 {

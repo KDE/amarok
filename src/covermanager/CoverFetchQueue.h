@@ -40,8 +40,6 @@ public:
     CoverFetchQueue( QObject *parent = 0 );
     ~CoverFetchQueue();
 
-    const CoverFetchPayload *fetchUrl( Meta::AlbumPtr album ) const;
-
     bool add( const Meta::AlbumPtr album,
               bool interactive = false,
               const QByteArray &xml = QByteArray() );
