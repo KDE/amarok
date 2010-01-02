@@ -108,7 +108,14 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
         m_jobs.insert( job, unit );
 
         if( unit->isInteractive() )
+        {
             The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
+        }
+        else if( payload->type() == CoverFetchPayload::ART )
+        {
+            // only one is needed when the fetch is non-interactive
+            return;
+        }
     }
 }
 
