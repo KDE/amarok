@@ -21,12 +21,16 @@
 #define AMAROK_COVERFETCHER_H
 
 #include "meta/Meta.h"
+#include "CoverFetchUnit.h"
 
+#include <QByteArray>
 #include <QDomNode>
+#include <QHash>
 #include <QMutex>
 #include <QObject>      //baseclass
 #include <QStringList>  //stack allocated
 
+class CoverFetchQueue;
 class KJob;
 
 namespace KIO { class Job; }
@@ -39,78 +43,44 @@ public:
     AMAROK_EXPORT static CoverFetcher* instance();
     AMAROK_EXPORT static void destroy();
 
-    /// allow the user to edit the query?
-    void setInteractive( bool b ) { m_interactive = b; }
-
-    /// Main Fetch loop
+    /// Main fetch methods
     AMAROK_EXPORT void manualFetch( Meta::AlbumPtr album );
     AMAROK_EXPORT void queueAlbum( Meta::AlbumPtr album );
     AMAROK_EXPORT void queueAlbums( Meta::AlbumList albums );
 
-    bool wasError() const { return !m_success; }
     QStringList errors() const { return m_errors; }
 
     enum FinishState { Success, Error, NotFound };
-
-    /**
-     * Available album cover sizes in Last.fm's api.
-     */
-    enum CoverSize
-    {
-        Small = 0,  //! 34px
-        Medium,     //! 64px
-        Large,      //! 128px
-        ExtraLarge  //! 300px
-    };
 
 signals:
     void finishedSingle( int state );
 
 private slots:
-    void finishedXmlFetch( KJob * job );
-    void finishedImageFetch( KJob * job );
+
+    /// Fetch a cover
+    void slotFetch( const CoverFetchUnit::Ptr unit );
+    void slotResult( KJob *job );
 
 private:
     static CoverFetcher* s_instance;
     CoverFetcher();
     ~CoverFetcher();
 
-    Meta::AlbumList m_albums;
-    Meta::AlbumPtr m_albumPtr;
-    QMutex m_albumsMutex;
-    QMutex m_fetchMutex;
+    CoverFetchQueue  *m_queue;
 
-    bool    m_interactive; /// whether we should consult the user
-    QList<QPixmap> m_pixmaps;     //!List of found covers
-    QPixmap m_selPixmap;          //!Cover of choice
-    int     m_processedCovers;    //!number of covers that have been processed
-    int     m_numURLS;            //!number of URLS to process
+    QHash< const KJob*, CoverFetchUnit::Ptr > m_jobs;
+    QHash< const CoverFetchUnit::Ptr, QList< QPixmap > > m_pixmaps;
 
     QString     m_currentCoverName;
     QStringList m_errors;
 
-    QHash< QUrl, Meta::AlbumPtr > m_urlMap;
-
-    bool m_success;
-    bool m_isFetching;
-
-    /// Fetch a cover
-    void startFetch( Meta::AlbumPtr album );
-
     /// cleanup depending on the fetch result
-    void finish( FinishState state = Success, const QString &message = QString(), KJob *job = 0 );
+    void finish( const CoverFetchUnit::Ptr unit,
+                 FinishState state = Success,
+                 const QString &message = QString() );
 
     /// Show the cover that has been found
-    void showCover();
-
-    /// convert CoverSize enum to string
-    QString coverSizeString( enum CoverSize size ) const;
-    
-    /// lower, remove whitespace, and do Unicode normalization on a QString
-    QString normalizeString( const QString &raw );
-
-    /// lower, remove whitespace, and do Unicode normalization on a QStringList
-    QStringList normalizeStrings( const QStringList &rawList );
+    void showCover( const CoverFetchUnit::Ptr unit );
 };
 
 namespace The

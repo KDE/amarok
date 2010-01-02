@@ -22,6 +22,7 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
+#include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
 #include "CoverManager.h"
 #include "Debug.h"
@@ -55,16 +56,14 @@ void CoverFetcher::destroy()
     }
 }
 
-CoverFetcher::CoverFetcher()
-        : QObject()
-        , m_interactive( false )
-        , m_processedCovers( 0 )
-        , m_numURLS( 0 )
-        , m_success( true )
-        , m_isFetching( false )
+CoverFetcher::CoverFetcher() : QObject()
 {
     DEBUG_FUNC_INFO
     setObjectName( "CoverFetcher" );
+
+    m_queue = new CoverFetchQueue( this );
+    connect( m_queue, SIGNAL(fetchUnitAdded(const CoverFetchUnit::Ptr)),
+                      SLOT(slotFetch(const CoverFetchUnit::Ptr)) );
 
     s_instance = this;
 }
@@ -77,354 +76,161 @@ CoverFetcher::~CoverFetcher()
 void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
-    m_interactive = true;
-    m_albumsMutex.lock();
-    if( m_albums.contains( album ) )
-    {
-        m_albums.removeAll( album );
-    }
-    m_albumsMutex.unlock();
-
-    m_currentCoverName = album->hasAlbumArtist()
-                       ? album->albumArtist()->prettyName() + ": " + album->prettyName()
-                       : album->prettyName();
-
-    startFetch( album );
+    DEBUG_BLOCK
+    m_queue->add( album, true );
 }
 
 void
 CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 {
-    if( m_albumPtr == album || m_albums.contains( album ) )
-        return;
-    m_interactive = false;
-    m_albumsMutex.lock();
-    m_albums << album;
-    m_albumsMutex.unlock();
-    m_fetchMutex.lock();
-    if( !m_isFetching )
-    {
-        m_fetchMutex.unlock();
-
-        m_albumsMutex.lock();
-        if( !m_albums.isEmpty() )
-        {
-            Meta::AlbumPtr firstAlbum = m_albums.takeFirst();
-            startFetch( album );
-        }
-        m_albumsMutex.unlock();
-    }
-    m_fetchMutex.unlock();
+    m_queue->add( album, false );
 }
+
 void
 CoverFetcher::queueAlbums( Meta::AlbumList albums )
 {
-    m_interactive = false;
-    m_albumsMutex.lock();
     foreach( Meta::AlbumPtr album, albums )
     {
-        if( m_albumPtr == album || m_albums.contains( album ) )
-            continue;
-        m_albums << album;
+        m_queue->add( album, false );
     }
-    m_albumsMutex.unlock();
-    m_fetchMutex.lock();
-    if( !m_isFetching )
-    {
-        m_fetchMutex.unlock();
-
-        m_albumsMutex.lock();
-        if( !m_albums.isEmpty() )
-        {
-            Meta::AlbumPtr album = m_albums.takeFirst();
-            startFetch( album );
-        }
-        m_albumsMutex.unlock();
-    }
-    m_fetchMutex.unlock();
 }
 
 void
-CoverFetcher::startFetch( Meta::AlbumPtr album )
+CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 {
-    m_fetchMutex.lock();
-    m_isFetching = true;
-    m_fetchMutex.unlock();
-    m_albumPtr = album;
+    DEBUG_BLOCK
+    const CoverFetchPayload *payload = unit->url();
+    const KUrl::List urls = payload->urls();
 
-    QUrl url;
-    url.setScheme( "http" );
-    url.setHost( "ws.audioscrobbler.com" );
-    url.setPath( "/2.0/" );
-    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
-    if( album->hasAlbumArtist() )
+    foreach( const KUrl &url, urls )
     {
-        url.addQueryItem( "method", "album.getinfo" );
-        url.addQueryItem( "artist", album->albumArtist()->name() );
+        KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
+        connect( job, SIGNAL(result( KJob* )), SLOT(slotResult( KJob* )) );
+        m_jobs.insert( job, unit );
+
+        if( unit->isInteractive() )
+            The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
     }
-    else
-    {
-        url.addQueryItem( "method", "album.search" );
-    }
-    url.addQueryItem( "album", album->name() );
-
-    m_urlMap.insert( url, album );
-    debug() << url;
-
-    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL(result( KJob* )), SLOT(finishedXmlFetch( KJob* )) );
-
-    if( m_interactive )
-        The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
 }
 
 void
-CoverFetcher::finishedXmlFetch( KJob *job ) //SLOT
+CoverFetcher::slotResult( KJob *job )
 {
-    // NOTE: job can become 0 when this method is called from attemptAnotherFetch()
+    DEBUG_BLOCK
+    const CoverFetchUnit::Ptr unit( m_jobs.take( job ) );
+
     if( job && job->error() )
     {
-        finish( Error, i18n( "There was an error communicating with last.fm." ), job );
+        finish( unit, Error, i18n( "There was an error communicating with last.fm." ) );
         return;
     }
 
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    const QString xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
-
-    QDomDocument doc;
-    if( !doc.setContent( xml ) )
-    {
-        finish( Error, i18n( "The XML obtained from Last.fm is invalid." ), job );
-        return;
-    }
-
-    m_pixmaps.clear();
-    m_processedCovers = 0;
-    m_numURLS = 0;
-
-    const QUrl jobUrl          = dynamic_cast< KIO::TransferJob* >( job )->url();
-    const QString queryMethod  = jobUrl.queryItemValue( "method" );
-    Meta::AlbumPtr album       = m_urlMap[ jobUrl ];
-
-    QString albumArtist;
-    QDomNodeList results;
-    QSet< QString > artistSet;
-    if( queryMethod == "album.getinfo" )
-    {
-        results = doc.documentElement().childNodes();
-        albumArtist = normalizeString( album->albumArtist()->name() );
-    }
-    else if( queryMethod == "album.search" )
-    {
-        results = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
-
-        const Meta::TrackList tracks = album->tracks();
-        QStringList artistNames( "Various Artists" );
-        foreach( const Meta::TrackPtr &track, tracks )
-        {
-            artistNames << track->artist()->name();
-        }
-        artistSet = normalizeStrings( artistNames ).toSet();
-    }
-    else return;
-
-
-    for( uint x = 0, len = results.length(); x < len; x++ )
-    {
-        const QDomNode albumNode = results.item( x );
-        const QString artist = normalizeString( albumNode.namedItem( "artist" ).toElement().text() );
-
-        if( queryMethod == "album.getinfo" && artist != albumArtist )
-            continue;
-        else if( queryMethod == "album.search" && !artistSet.contains( artist ) )
-            continue;
-
-        QString coverUrl;
-        const QDomNodeList list = albumNode.childNodes();
-        for( int i = 0, count = list.count(); i < count; ++i )
-        {
-            const QDomNode &node = list.item( i );
-            if( node.nodeName() == "image" && node.hasAttributes() )
-            {
-                const QString imageSize = node.attributes().namedItem( "size" ).nodeValue();
-                if( imageSize == coverSizeString( ExtraLarge ) && node.isElement() )
-                {
-                    coverUrl = node.toElement().text();
-                }
-            }
-        }
-
-        if( coverUrl.isEmpty() )
-        {
-            continue;
-        }
-
-        m_numURLS++;
-
-        //FIXME: Asyncronous behaviour without informing the user is bad in this case
-        KJob* getJob = KIO::storedGet( KUrl(coverUrl), KIO::NoReload, KIO::HideProgressInfo );
-        connect( getJob, SIGNAL( result( KJob* ) ), SLOT( finishedImageFetch( KJob* ) ) );
-    }
-
-    m_urlMap.remove( jobUrl );
-
-    if ( m_numURLS == 0 )
-        finish( NotFound );
-}
-
-void
-CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
-{
-    QPixmap pixmap;
-    KIO::StoredTransferJob* storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     const QByteArray data = storedJob->data();
-    
-    if( job->error() || data.isNull() || !pixmap.loadFromData( data ) )
-    {
-        debug() << "finishedImageFetch(): KIO::error(): " << job->error();
-        finish( Error, i18n( "The cover could not be retrieved." ), job );
-        return;
-    }
-    else
-    {
-        m_pixmaps.append( pixmap );
-    }
 
-    m_processedCovers++;
+    const CoverFetchPayload *payload = unit->url();
 
-    if( m_processedCovers == m_numURLS )
+    switch( payload->type() )
     {
-        if( !m_pixmaps.isEmpty() )
+    case CoverFetchPayload::INFO:
+        m_queue->add( unit->album(), unit->isInteractive(), data );
+        break;
+
+    case CoverFetchPayload::ART:
+        QPixmap pixmap;
+        if( pixmap.loadFromData( data ) )
         {
-            if( m_interactive )
+            QList< QPixmap > list;
+            if( m_pixmaps.contains( unit ) )
             {
-                //yay! images found :)
-                //lets see if the user wants one of it
-                m_processedCovers = 9999; //prevents to popup a 2nd window
-                showCover();
+                list = m_pixmaps.take( unit );
+            }
+            m_pixmaps.insert( unit, list << pixmap );
+
+            if( unit->isInteractive() )
+            {
+                showCover( unit );
             }
             else
             {
-                m_selPixmap = m_pixmaps.takeFirst();
-                //image loaded successfully yay!
-                finish();
+                finish( unit );
             }
         }
         else
         {
-            finish( NotFound );
+            finish( unit, NotFound );
         }
+        break;
     }
-
     The::statusBar()->endProgressOperation( job ); //just to be safe...
 }
 
 void
-CoverFetcher::showCover()
+CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
 {
-    CoverFoundDialog dialog( static_cast<QWidget*>( parent() ), m_pixmaps, m_currentCoverName );
+    DEBUG_BLOCK
+    QList< QPixmap > pixmaps = m_pixmaps.value( unit );
+
+    Meta::AlbumPtr album = unit->album();
+    const QString text = album->hasAlbumArtist()
+                       ? album->albumArtist()->prettyName() + ": " + album->prettyName()
+                       : album->prettyName();
+
+    CoverFoundDialog dialog( static_cast<QWidget*>( parent() ), pixmaps, text );
 
     switch( dialog.exec() )
     {
     case KDialog::Accepted:
-        m_selPixmap = QPixmap( dialog.image() );
-        finish();
+        finish( unit );
         break;
     case KDialog::Rejected: //make sure we do not show any more dialogs
-        debug() << "cover rejected";
+        finish( unit, Error, i18n( "Rejected." ) );
         break;
     default:
-        finish( Error, i18n( "Aborted." ) );
+        finish( unit, Error, i18n( "Aborted." ) );
         break;
     }
-}
-
-QString
-CoverFetcher::coverSizeString( enum CoverSize size ) const
-{
-    QString str;
-    switch( size )
-    {
-        case Small:  str = "small";      break;
-        case Medium: str = "medium";     break;
-        case Large:  str = "large";      break;
-        default:     str = "extralarge"; break;
-    }
-    return str;
-}
-
-QString
-CoverFetcher::normalizeString( const QString &raw )
-{
-    const QRegExp spaceRegExp  = QRegExp( "\\s" );
-    return raw.toLower().remove( spaceRegExp ).normalized( QString::NormalizationForm_KC );
-}
-
-QStringList
-CoverFetcher::normalizeStrings( const QStringList &rawList )
-{
-    QStringList cooked;
-    foreach( const QString &raw, rawList )
-    {
-        cooked << normalizeString( raw );
-    }
-    return cooked;
 }
 
 void
-CoverFetcher::finish( CoverFetcher::FinishState state, const QString &message, KJob *job )
+CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
+                      CoverFetcher::FinishState state,
+                      const QString &message )
 {
     DEBUG_BLOCK
+
+    Meta::AlbumPtr album = unit->album();
     switch( state )
     {
         case Success:
         {
             The::statusBar()->shortMessage( i18n( "Retrieved cover successfully" ) );
-            m_albumPtr->setImage( m_selPixmap );
-            m_success = true;
+            // album->setImage( unit->selectedPixmap() );
             break;
         }
 
         case Error:
         {
-            if( job )
-                warning() << message << "KIO::error(): " << job->errorText();
-
             m_errors += message;
-            m_success = false;
-
-            debug() << "Album name" << m_albumPtr->name();
+            debug() << "Album name" << album->name();
             break;
         }
 
         case NotFound:
         {
-            const QString text = i18n( "Unable to find a cover for %1.", m_albumPtr->name() );
+            const QString text = i18n( "Unable to find a cover for %1.", album->name() );
             //FIXME: Not visible behind cover manager
-            if( m_interactive )
+            if( unit->isInteractive() )
                 The::statusBar()->longMessage( text, StatusBar::Sorry );
             else
                 The::statusBar()->shortMessage( text );
 
             m_errors += text;
-            m_success = false;
             break;
         }
     }
 
     emit finishedSingle( static_cast< int >( state ) );
-
-    m_albumsMutex.lock();
-    if( !m_interactive /*manual fetch*/ && !m_albums.isEmpty() )
-    {
-        debug() << "CoverFetcher::finish() next album:" << m_albums[0]->name();
-        startFetch( m_albums.takeFirst() );
-    }
-    m_albumsMutex.unlock();
-
-    m_fetchMutex.lock();
-    m_isFetching = false;
-    m_fetchMutex.unlock();
 }
 
 #include "CoverFetcher.moc"
