@@ -95,6 +95,12 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
     const CoverFetchPayload *payload = unit->payload();
     const KUrl::List urls = payload->urls();
 
+    if( urls.isEmpty() )
+    {
+        finish( unit, NotFound );
+        return;
+    }
+
     foreach( const KUrl &url, urls )
     {
         KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
@@ -149,10 +155,6 @@ CoverFetcher::slotResult( KJob *job )
                 m_selectedPixmaps.insert( unit, pixmap );
                 finish( unit );
             }
-        }
-        else
-        {
-            finish( unit, NotFound );
         }
         break;
     }
