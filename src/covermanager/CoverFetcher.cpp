@@ -192,32 +192,36 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
 {
     DEBUG_BLOCK
 
-    Meta::AlbumPtr album = unit->album();
+    const QString albumName = unit->album()->name();
+
     switch( state )
     {
         case Success:
         {
-            The::statusBar()->shortMessage( i18n( "Retrieved cover successfully" ) );
+            const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
+            The::statusBar()->shortMessage( text );
             // album->setImage( unit->selectedPixmap() );
             break;
         }
 
         case Error:
         {
+            const QString text = i18n( "Fetching cover for '%1' failed.", albumName );
+            The::statusBar()->shortMessage( text );
             m_errors += message;
-            debug() << "Album name" << album->name();
+            break;
         }
 
         case Cancelled:
         {
-            const QString text = i18n( "Cancelled fetching cover for '%1'.", album->name() );
+            const QString text = i18n( "Cancelled fetching cover for '%1'.", albumName );
             The::statusBar()->shortMessage( text );
             break;
         }
 
         case NotFound:
         {
-            const QString text = i18n( "Unable to find a cover for %1.", album->name() );
+            const QString text = i18n( "Unable to find a cover for '%1'.", albumName );
             //FIXME: Not visible behind cover manager
             if( unit->isInteractive() )
                 The::statusBar()->longMessage( text, StatusBar::Sorry );
