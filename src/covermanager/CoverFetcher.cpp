@@ -275,12 +275,9 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
 {
     QPixmap pixmap;
     KIO::StoredTransferJob* storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    QImageReader imageReader( storedJob->data() );
-
-    // NOTE: Using QImageReader here is a workaround for a bug in Qt 4.6.0,
-    // in QPixmap::loadFromData(), which crashes.
-    // @see: https://bugs.kde.org/show_bug.cgi?id=215392
-    if( job->error() || !imageReader.canRead() )
+    const QByteArray data = storedJob->data();
+    
+    if( job->error() || data.isNull() || !pixmap.loadFromData( data ) )
     {
         debug() << "finishedImageFetch(): KIO::error(): " << storedJob->error();
         m_errors += i18n( "The cover could not be retrieved." );
@@ -289,7 +286,6 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
     }
     else
     {
-        pixmap.fromImage( imageReader.read() );
         m_pixmaps.append( pixmap );
     }
 
