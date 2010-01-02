@@ -67,6 +67,7 @@ private:
 
     QHash< const KJob*, CoverFetchUnit::Ptr > m_jobs;
     QHash< const CoverFetchUnit::Ptr, QList< QPixmap > > m_pixmaps;
+    QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;
 
     QStringList m_errors;
 

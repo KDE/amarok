@@ -146,6 +146,7 @@ CoverFetcher::slotResult( KJob *job )
             }
             else
             {
+                m_selectedPixmaps.insert( unit, pixmap );
                 finish( unit );
             }
         }
@@ -174,6 +175,7 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
     switch( dialog.exec() )
     {
     case KDialog::Accepted:
+        m_selectedPixmaps.insert( unit, dialog.image() );
         finish( unit );
         break;
     case KDialog::Rejected: //make sure we do not show any more dialogs
@@ -200,7 +202,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
             The::statusBar()->shortMessage( text );
-            // album->setImage( unit->selectedPixmap() );
+            unit->album()->setImage( m_selectedPixmaps.take( unit ) );
             break;
         }
 
