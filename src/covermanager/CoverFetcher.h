@@ -68,7 +68,6 @@ private:
     QHash< const KJob*, CoverFetchUnit::Ptr > m_jobs;
     QHash< const CoverFetchUnit::Ptr, QList< QPixmap > > m_pixmaps;
 
-    QString     m_currentCoverName;
     QStringList m_errors;
 
     /// cleanup depending on the fetch result
