@@ -23,10 +23,7 @@
 #include "meta/Meta.h"
 #include "CoverFetchUnit.h"
 
-#include <QByteArray>
-#include <QDomNode>
 #include <QHash>
-#include <QMutex>
 #include <QObject>      //baseclass
 #include <QStringList>  //stack allocated
 

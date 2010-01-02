@@ -24,7 +24,6 @@
 #include "amarokconfig.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
-#include "CoverManager.h"
 #include "Debug.h"
 #include "statusbar/StatusBar.h"
 #include "ui_EditCoverSearchDialog.h"
@@ -32,12 +31,6 @@
 #include <KIO/Job>
 #include <KLocale>
 #include <KUrl>
-
-#include <QDomDocument>
-#include <QDomElement>
-#include <QDomNode>
-#include <QRegExp>
-
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 
