@@ -72,7 +72,7 @@ CoverFetchUnit::errors() const
 }
 
 const CoverFetchPayload *
-CoverFetchUnit::url() const
+CoverFetchUnit::payload() const
 {
     return m_url;
 }

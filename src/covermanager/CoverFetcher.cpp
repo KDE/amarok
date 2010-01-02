@@ -92,7 +92,7 @@ void
 CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 {
     DEBUG_BLOCK
-    const CoverFetchPayload *payload = unit->url();
+    const CoverFetchPayload *payload = unit->payload();
     const KUrl::List urls = payload->urls();
 
     foreach( const KUrl &url, urls )
@@ -121,7 +121,7 @@ CoverFetcher::slotResult( KJob *job )
     KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     const QByteArray data = storedJob->data();
 
-    const CoverFetchPayload *payload = unit->url();
+    const CoverFetchPayload *payload = unit->payload();
 
     switch( payload->type() )
     {

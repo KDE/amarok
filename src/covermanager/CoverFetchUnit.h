@@ -38,7 +38,7 @@ public:
 
     Meta::AlbumPtr album() const;
     const QStringList &errors() const;
-    const CoverFetchPayload *url() const;
+    const CoverFetchPayload *payload() const;
 
     bool isInteractive() const;
 
