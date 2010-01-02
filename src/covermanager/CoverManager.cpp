@@ -667,12 +667,16 @@ void CoverManager::updateStatusBar()
         {
             foreach( Meta::AlbumPtr album, m_fetchCovers )
             {
-                if( album->albumArtist()->prettyName().isEmpty() )
-                    text = i18n( "Fetching cover for %1..." , album->prettyName() );
-                else
+                if( album->hasAlbumArtist() && !album->albumArtist()->prettyName().isEmpty() )
+                {
                     text = i18n( "Fetching cover for %1 - %2...",
                                  album->albumArtist()->prettyName(),
                                  album->prettyName() );
+                }
+                else
+                {
+                    text = i18n( "Fetching cover for %1..." , album->prettyName() );
+                }
             }
         }
         else
@@ -857,7 +861,7 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     , m_parent( parent )
 {
     m_album = album->prettyName();
-    if( album->albumArtist() )
+    if( album->hasAlbumArtist() )
         m_artist = album->albumArtist()->prettyName();
     else
         m_artist = i18n( "No Artist" );
