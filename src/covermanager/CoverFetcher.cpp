@@ -237,6 +237,8 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         }
     }
 
+    m_queue->remove( unit );
+
     emit finishedSingle( static_cast< int >( state ) );
 }
 
