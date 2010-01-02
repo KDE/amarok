@@ -177,10 +177,10 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
         finish( unit );
         break;
     case KDialog::Rejected: //make sure we do not show any more dialogs
-        finish( unit, Error, i18n( "Rejected." ) );
+        finish( unit, Cancelled );
         break;
     default:
-        finish( unit, Error, i18n( "Aborted." ) );
+        finish( unit, Cancelled );
         break;
     }
 }
@@ -206,6 +206,12 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         {
             m_errors += message;
             debug() << "Album name" << album->name();
+        }
+
+        case Cancelled:
+        {
+            const QString text = i18n( "Cancelled fetching cover for '%1'.", album->name() );
+            The::statusBar()->shortMessage( text );
             break;
         }
 

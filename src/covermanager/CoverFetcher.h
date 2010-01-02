@@ -47,7 +47,7 @@ public:
 
     QStringList errors() const { return m_errors; }
 
-    enum FinishState { Success, Error, NotFound };
+    enum FinishState { Success, Error, NotFound, Cancelled };
 
 signals:
     void finishedSingle( int state );
