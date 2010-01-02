@@ -125,17 +125,16 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     switch( AmarokConfig::favorTracks() )
     {
         case AmarokConfig::EnumFavorTracks::HigherScores:
-            m_favorNoneAction->setChecked( true );
-            break;
-
-        case AmarokConfig::EnumFavorTracks::HigherRatings:
             m_favorScoresAction->setChecked( true );
             break;
 
-        case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
+        case AmarokConfig::EnumFavorTracks::HigherRatings:
             m_favorRatingsAction->setChecked( true );
             break;
 
+        case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
+            m_favorLastPlayedAction->setChecked( true );
+            break;
 
         case AmarokConfig::EnumFavorTracks::Off:
         default:
