@@ -581,6 +581,7 @@ void CoverManager::updateFetchingProgress( int state )
         m_coversFetched++;
         break;
 
+    case CoverFetcher::Cancelled:
     case CoverFetcher::Error:
     case CoverFetcher::NotFound:
     default:
