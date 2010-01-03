@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009,2010 Téo Mrnjavac <teo@getamarok.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -24,8 +25,6 @@
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 #include "UndoCommands.h"
-#include "playlist/proxymodels/GroupingProxy.h" //FIXME: this needs to go away
-                                                // in favor of a The:: call.
 
 #include <QObject>
 
@@ -33,7 +32,6 @@ class QUndoStack;
 
 namespace Playlist
 {
-class Controller;
 class AbstractModel;
 
 enum AddOptions
@@ -55,17 +53,38 @@ class AMAROK_EXPORT Controller : public QObject
     Q_OBJECT
 
 public:
-    Controller( QObject* parent = 0 );
+    Controller( AbstractModel* sourceModel, AbstractModel* topmostModel, QObject* parent = 0 );
     ~Controller();
 
 public slots:
+    /**
+     * Handles the insertion of one single track into the playlist, considering a set of
+     * options that handle the specifics of the operation.
+     * @param track the track to be inserted.
+     * @param options the set of options to be applied to the operation.
+     * @see enum AddOptions.
+     */
     void insertOptioned( Meta::TrackPtr track, int options );
+
+    /**
+     * Handles the insertion of one or more tracks into the playlist, considering a set of
+     * options that handle the specifics of the operation.
+     * @param list the list of tracks to be inserted.
+     * @param options the set of options to be applied to the operation.
+     * @see enum AddOptions.
+     */
     void insertOptioned( Meta::TrackList list, int options );
     void insertOptioned( Meta::PlaylistPtr playlist, int options );
     void insertOptioned( Meta::PlaylistList list, int options );
     void insertOptioned( QueryMaker *qm, int options );
     void insertOptioned( QList<KUrl>& urls, int options );
 
+    /**
+     * Handles the insertion of one or more tracks into the playlist on a specific row.
+     * The rows are always considered as topmost playlist model rows.
+     * @param row the insertion row in the topmost model.
+     * @param track the track to be inserted.
+     */
     void insertTrack( int row, Meta::TrackPtr track );
     void insertTracks( int row, Meta::TrackList list );
     void insertPlaylist( int row, Meta::PlaylistPtr playlist );
@@ -73,15 +92,64 @@ public slots:
     void insertTracks( int row, QueryMaker *qm );
     void insertUrls( int row, const QList<KUrl>& urls );
 
+    /**
+     * Handles the removal of a single track from the playlist.
+     * The rows are considered as topmost playlist model rows.
+     * @param row the row to remove in the topmost model.
+     */
     void removeRow( int row );
+
+    /**
+     * Handles the removal of tracks from the playlist.
+     * The rows are considered as topmost playlist model rows.
+     * @param row the row to remove in the topmost model.
+     * @param count the number of rows to remove.
+     */
     void removeRows( int row, int count );
+
+    /**
+     * Handles the removal of a list of tracks from the playlist.
+     * The rows are considered as topmost playlist model rows.
+     * @param rows the list of row numbers to remove.
+     */
     void removeRows( QList<int>& rows );
 
-    void removeDeadAndDuplicates(); // Removes unplayable and duplicate entries in the topmost playlist
-                                    //  model only (i.e. Respects filtering via "Show only matches" etc)
+    /**
+     * Removes unplayable and duplicate entries in the topmost playlist model, i.e.
+     * respects playlist filters.
+     */
+    void removeDeadAndDuplicates();
 
+    /**
+     * Moves a track from one row to another in the playlist.
+     * @param from the row containing the track that is about to be moved.
+     * @param to the target row where the track should be moved.
+     */
     void moveRow( int from, int to );
-    int  moveRows( QList<int>& from, int to ); // see function definition for info abt return value
+
+    /**
+     * Moves a list of tracks to a specified row in the playlist.
+     * This function returns the real starting location where the rows ended up.
+     * For example, if you start with the following playlist:
+     *   1 Alpha
+     *   2 Bravo
+     *   2 Charlie
+     *   4 Delta
+     *   5 Echo
+     *   6 Foxtrot
+     * and you call moveRows( [1,2,3], 5 ) then the playlist will end up with
+     *   1 Delta
+     *   2 Echo
+     *   3 Alpha
+     *   4 Bravo
+     *   5 Charlie
+     *   6 Foxtrot
+     * and the function will return 3, because that's where the rows really ended up.
+     * @param from the list of rows containing the tracks that are about to be moved.
+     * @param to the target row where the tracks should be moved.
+     * @return the first row where the tracks ended up in the new list.
+     */
+    int  moveRows( QList<int>& from, int to );
     void moveRows( QList<int>& from, QList<int>& to );
 
     void undo();
@@ -102,9 +170,16 @@ private slots:
     void slotFinishDirectoryLoader( const Meta::TrackList& );
 
 private:
-    void insertionHelper( int row, Meta::TrackList& );
+    /**
+     * Handles the insertion of a list of tracks into the playlist on a specific row.
+     * The rows are always considered as topmost playlist model rows.
+     * @param row the insertion row in the topmost model.
+     * @param tl the Meta::TrackList to be inserted.
+     */
+    void insertionHelper( int row, Meta::TrackList& tl );
 
     AbstractModel* m_topmostModel;
+    AbstractModel* m_sourceModel;
 
     QUndoStack* m_undoStack;
 

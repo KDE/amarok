@@ -24,7 +24,7 @@
 #include "dialogs/TagDialog.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 

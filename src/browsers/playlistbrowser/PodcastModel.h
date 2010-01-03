@@ -18,7 +18,6 @@
 #define PLAYLISTBROWSERNSPODCASTMODEL_H
 
 #include "PodcastMeta.h"
-<<<<<<< HEAD
 
 #include "MetaPlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"

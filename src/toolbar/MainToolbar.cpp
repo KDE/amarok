@@ -34,7 +34,7 @@
 #include "meta/capabilities/TimecodeLoadCapability.h"
 
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include "widgets/AnimatedLabelStack.h"
 #include "widgets/PlayPauseButton.h"

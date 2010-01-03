@@ -22,7 +22,7 @@
 #include "EngineController.h"
 #include "FileView.h"
 #include "MimeTypeFilterProxyModel.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 
 
 #include <KLineEdit>

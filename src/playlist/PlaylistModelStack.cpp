@@ -60,21 +60,24 @@ ModelStack::destroy()
 ModelStack::ModelStack()
     : QObject()
 {
-    m_controller = new Controller( this );
     m_model = new Model( this );
     m_filter = new FilterProxy( m_model, this );
     m_sort = new SortProxy( m_filter, this );
     m_search = new SearchProxy( m_sort, this );
     m_grouping = new GroupingProxy( m_search, this );
+
+    m_controller = new Controller( m_model, m_grouping, this );
 }
 
 ModelStack::~ModelStack()
 {
-    delete m_model;
-    delete m_filter;
-    delete m_sort;
-    delete m_search;
+    delete m_controller;  //destroyed first because it points to models
+
     delete m_grouping;
+    delete m_search;
+    delete m_sort;
+    delete m_filter;
+    delete m_model;
 }
 
 GroupingProxy *
