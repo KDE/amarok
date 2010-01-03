@@ -7,7 +7,7 @@ TargetDir=amarok/scripts
 
 [KNewStuff3]
 ProvidersUrl=http://download.kde.org/ocs/providers.xml
-Categories=Amarok Script
+Categories=Amarok 2.0 Script
 Uncompress=always
 TargetDir=amarok/scripts
 
