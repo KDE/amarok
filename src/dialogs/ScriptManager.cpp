@@ -63,7 +63,7 @@
 
 #include <kdeversion.h>
 
-#if KDE_VERSION > KDE_MAKE_VERSION(4, 3, 80)
+#if KDE_IS_VERSION(4, 3, 80)
 #define HAVE_KNEWSTUFF3
 #endif
 
