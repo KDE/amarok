@@ -50,6 +50,9 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_prev = button( KDialog::User2 );
     m_save = button( KDialog::Ok );
 
+    m_prev->hide();
+    m_next->hide();
+
     m_labelPixmap = new QLabel( this );
     m_labelPixmap->setMinimumHeight( 300 );
     m_labelPixmap->setMinimumWidth( 300 );
@@ -128,7 +131,19 @@ void CoverFoundDialog::updatePixmap()
 
 void CoverFoundDialog::updateButtons()
 {
-    if( m_index < m_covers.length() - 1 )
+    const int count = m_covers.length();
+
+    if( count > 1 )
+    {
+        m_prev->show();
+        m_next->show();
+    }
+    else
+    {
+        return;
+    }
+
+    if( m_index < count - 1 )
         m_next->setEnabled( true );
     else
         m_next->setEnabled( false );
