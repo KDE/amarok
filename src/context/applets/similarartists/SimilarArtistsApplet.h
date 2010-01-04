@@ -34,7 +34,9 @@ class TextScrollingWidget;
 class KConfigDialog;
 class QLabel;
 class QGraphicsScene;
-class QGraphicsGridLayout;
+class QVBoxLayout;
+class QGraphicsProxyWidget;
+class QScrollArea;
 
 namespace Plasma
 {    
@@ -82,10 +84,12 @@ private:
     /**
      * Layout for the formatting of the applet contents
      */
-    QGraphicsGridLayout *m_layout;
+    QVBoxLayout *m_layout;
 
     QGraphicsScene *m_scene;
 
+    QGraphicsProxyWidget *m_scrollProxy;
+    QScrollArea             *m_scroll;
 
     /**
      * Indicates if a track is playing.

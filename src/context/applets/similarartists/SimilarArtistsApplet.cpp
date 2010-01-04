@@ -41,6 +41,10 @@
 #include <QLabel>
 #include <QGraphicsGridLayout>
 #include <QGraphicsScene>
+#include <QScrollArea>
+#include <QVBoxLayout>
+#include <QScrollBar>
+
 
 
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
@@ -77,7 +81,11 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
 void
 SimilarArtistsApplet::init()
 {
-    m_layout=new QGraphicsGridLayout;
+    m_layout=new QVBoxLayout;
+    m_layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
+    m_layout->setContentsMargins( 5, 5, 5, 5 );
+    m_layout->setSpacing( 2 );
+    
     m_headerLabel = new TextScrollingWidget( this );
 
     // ask for all the CV height
@@ -98,16 +106,35 @@ SimilarArtistsApplet::init()
     m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( configure() ) );
 
+    m_scrollProxy = new QGraphicsProxyWidget( this );
+    m_scrollProxy->setAttribute( Qt::WA_NoSystemBackground );
+    
+    QWidget *scrollContent = new QWidget;
+    scrollContent->setAttribute( Qt::WA_NoSystemBackground );
+    scrollContent->setLayout( m_layout );
+    scrollContent->show();
+    
+    // create a scroll Area
+    m_scroll = new QScrollArea();
+    //m_scroll->setMaximumHeight( m_height - m_headerText->boundingRect().height() - 4*standardPadding() );
+    m_scroll->setWidget( scrollContent );
+    m_scroll->setFrameShape( QFrame::NoFrame );
+    m_scroll->setAttribute( Qt::WA_NoSystemBackground );
+    m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
+    
+    m_scrollProxy->setWidget( m_scroll );
+
     connectSource( "similarArtists" );
     connect( dataEngine( "amarok-similarArtists" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );
 
     constraintsEvent();
+    updateConstraints();
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
     m_maxArtists = config.readEntry( "maxArtists", "3" ).toInt();
 
-    setLayout(m_layout);
+    //setLayout(m_layout);
 
 }
 
@@ -134,6 +161,17 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     // Icon positionning
     m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+
+    m_scrollProxy->setPos( standardPadding(), m_headerLabel->pos().y() + m_headerLabel->boundingRect().height() + standardPadding() );
+
+    QSize artistsSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_scrollProxy->pos().y() - standardPadding() );
+
+    m_scrollProxy->setMinimumSize( artistsSize );
+    m_scrollProxy->setMaximumSize( artistsSize );
+
+    QSize artistSize( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width(), artistsSize.height() - 2 * standardPadding() );
+    m_scroll->widget()->setMinimumSize( artistSize );
+    m_scroll->widget()->setMaximumSize( artistSize );
     
 }
 
@@ -176,7 +214,7 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
     int cpt=0;
     foreach(ArtistWidget* art, m_artists)
     {
-      m_layout->removeAt(cpt);
+      m_layout->removeWidget(art);
       delete art;
     }
 
@@ -201,8 +239,8 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     } else {
 
         // the layout begin at the bottom of the applet's title
-        m_layout->setRowMinimumHeight(0,m_headerLabel->boundingRect().height()+7);
-        m_layout->setRowMaximumHeight(0,m_headerLabel->boundingRect().height()+7);
+        //m_layout->setRowMinimumHeight(0,m_headerLabel->boundingRect().height()+7);
+        //m_layout->setRowMaximumHeight(0,m_headerLabel->boundingRect().height()+7);
 
 
         QString artistName = data[ "artist" ].toString();
@@ -232,20 +270,24 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
                     debug()<<"SAA2";
                     m_artists.append(art);
                     debug()<<"SAA3";
-                    QGraphicsProxyWidget *tmp = new QGraphicsProxyWidget(this);
-                    tmp->setWidget(m_artists.last());
+                    //QGraphicsProxyWidget *tmp = new QGraphicsProxyWidget(this);
+                    //tmp->setWidget(m_artists.last());
                     //m_scene->addWidget(art);
                     debug()<<"SAA4";
-                    m_layout->addItem(tmp,cpt,0,1,1);
+                    m_layout->addWidget(m_artists.last());//Item(tmp,cpt,0,1,1);
+                    //m_artists.last()->setMinimumWidth(size().width() - 2 * standardPadding());
                     debug()<<"SAA5";
                     cpt++;
+                    m_artists.last()->show();
                 }
+                m_scroll->widget()->show();
 
                 debug()<<"SAA Agrandissement de la liste ok";
                 //TODO Bug when the number of artist to display decrease
                 cpt=sizeArtistsDisplay;
                 while(cpt>m_artists.size()) {
-                    m_layout->removeAt(cpt-1);
+                    //m_layout->removeAt(cpt-1);
+                    m_layout->removeWidget(m_artists.last());
                     delete m_artists.last();
                     m_artists.removeLast();
                     cpt--;
@@ -268,7 +310,8 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
                 // we clear all artists
                 for(int cpt=0;cpt<m_artists.size();cpt++)
                 {
-                    m_layout->removeAt(cpt);
+                    //m_layout->removeAt(cpt);
+                    m_layout->removeWidget(m_artists.at(cpt));
                     delete m_artists.at(cpt);
                 }
 
