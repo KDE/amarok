@@ -26,13 +26,18 @@
 #include <KPushButton>
 
 #include <QCloseEvent>
+#include <QGridLayout>
 
-CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers )
+CoverFoundDialog::CoverFoundDialog( QWidget *parent,
+                                    Meta::AlbumPtr album,
+                                    const QList<QPixmap> &covers )
     : KDialog( parent )
+    , m_album( album )
     , m_covers( covers )
     , m_index( 0 )
 {
     setButtons( KDialog::Ok     |
+                KDialog::Details |
                 KDialog::Cancel |
                 KDialog::User1  | // next
                 KDialog::User2 ); // prev
@@ -44,14 +49,28 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &cover
     m_prev = button( KDialog::User2 );
     m_save = button( KDialog::Ok );
 
-    m_label = new QLabel( this );
-    m_label->setMinimumHeight( 300 );
-    m_label->setMinimumWidth( 300 );
-    m_label->setAlignment( Qt::AlignCenter );
-    m_label->setPixmap( covers.first() );
-    m_label->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+    m_labelPixmap = new QLabel( this );
+    m_labelPixmap->setMinimumHeight( 300 );
+    m_labelPixmap->setMinimumWidth( 300 );
+    m_labelPixmap->setAlignment( Qt::AlignCenter );
+    m_labelPixmap->setPixmap( covers.first() );
+    m_labelPixmap->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-    setMainWidget( m_label );
+    QLabel *artistLabel = new QLabel( i18n( "Artist" ), this );
+    QLabel *albumLabel  = new QLabel( i18n( "Album"  ), this );
+    QLabel *sizeLabel   = new QLabel( i18n( "Cover size" ), this );
+
+    QWidget *m_details = new QWidget( this );
+    m_detailsLayout = new QGridLayout( m_details );
+    m_detailsLayout->addWidget( artistLabel, 0, 0 );
+    m_detailsLayout->addWidget( albumLabel,  1, 0 );
+    m_detailsLayout->addWidget( sizeLabel,   2, 0 );
+    m_detailsLayout->addWidget( new QLabel( m_details ), 0, 1 );
+    m_detailsLayout->addWidget( new QLabel( m_details ), 1, 1 );
+    m_detailsLayout->addWidget( new QLabel( m_details ), 2, 1 );
+
+    setMainWidget( m_labelPixmap );
+    setDetailsWidget( m_details );
 
     connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
     connect( m_save, SIGNAL(clicked()), SLOT(accept())  );
@@ -65,11 +84,11 @@ void CoverFoundDialog::resizeEvent( QResizeEvent *event )
 {
     Q_UNUSED( event )
 
-    if( m_label && !m_label->pixmap()->isNull() )
+    if( m_labelPixmap && !m_labelPixmap->pixmap()->isNull() )
     {
-        const QSize pixmapSize = m_label->pixmap()->size();
+        const QSize pixmapSize = m_labelPixmap->pixmap()->size();
         QSize scaledSize = pixmapSize;
-        scaledSize.scale( m_label->size(), Qt::KeepAspectRatio );
+        scaledSize.scale( m_labelPixmap->size(), Qt::KeepAspectRatio );
 
         if( scaledSize != pixmapSize )
             updatePixmap();
@@ -88,14 +107,15 @@ void CoverFoundDialog::updateGui()
 {
     setTitle();
     updateButtons();
-    m_label->setPixmap( m_covers.at( m_index ) );
+    updateDetails();
+    m_labelPixmap->setPixmap( m_covers.at( m_index ) );
 }
 
 void CoverFoundDialog::updatePixmap()
 {
-    m_label->setPixmap( m_covers.at( m_index ).scaled( m_label->size(),
-                                                       Qt::KeepAspectRatio,
-                                                       Qt::SmoothTransformation) );
+    m_labelPixmap->setPixmap( m_covers.at( m_index ).scaled( m_labelPixmap->size(),
+                                                             Qt::KeepAspectRatio,
+                                                             Qt::SmoothTransformation) );
 }
 
 void CoverFoundDialog::updateButtons()
@@ -109,6 +129,23 @@ void CoverFoundDialog::updateButtons()
         m_prev->setEnabled( false );
     else
         m_prev->setEnabled( true );
+}
+
+void CoverFoundDialog::updateDetails()
+{
+    const QString artist = m_album->hasAlbumArtist()
+                         ? m_album->albumArtist()->prettyName()
+                         : i18n( "Various Artists" );
+
+    const QPixmap pixmap = m_covers.at( m_index );
+
+    QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
+    QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
+    QLabel *coverSize  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
+
+    artistName->setText( artist );
+    albumName->setText( m_album->prettyName() );
+    coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
 }
 
 void CoverFoundDialog::setTitle()

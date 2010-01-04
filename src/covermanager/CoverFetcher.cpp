@@ -176,7 +176,7 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
 
     if( !m_dialog )
     {
-        m_dialog = new CoverFoundDialog( static_cast<QWidget*>( parent() ), pixmaps );
+        m_dialog = new CoverFoundDialog( static_cast<QWidget*>( parent() ), unit->album(), pixmaps );
 
         switch( m_dialog->exec() )
         {

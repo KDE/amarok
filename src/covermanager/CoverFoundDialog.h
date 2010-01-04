@@ -33,18 +33,19 @@
 
 class KHBox;
 class KPushButton;
+class QGridLayout;
 
 class CoverFoundDialog : public KDialog
 {
     Q_OBJECT
 
 public:
-    CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers );
+    CoverFoundDialog( QWidget *parent, Meta::AlbumPtr album, const QList<QPixmap> &covers );
 
     /**
     *   @returns the currently selected cover image
     */
-    const QPixmap image() { return *m_label->pixmap(); }
+    const QPixmap image() { return *m_labelPixmap->pixmap(); }
 
 public slots:
     virtual void accept();
@@ -71,12 +72,18 @@ private:
     void updateGui();
     void updatePixmap();
     void updateButtons();
+    void updateDetails();
     void setTitle();
 
-    QLabel         *m_label;         //! For displaying pixmap
+    QLabel         *m_labelPixmap;   //! Pixmap container
+    QWidget        *m_details;       //! Details widget
+    QGridLayout    *m_detailsLayout; //! Details widget layout
     KPushButton    *m_next;          //! Next Button
     KPushButton    *m_prev;          //! Back Button
     KPushButton    *m_save;          //! Save Button
+
+    //! Album associated with the covers
+    Meta::AlbumPtr m_album;
 
     //! Retrieved covers for the album
     QList< QPixmap > m_covers;
