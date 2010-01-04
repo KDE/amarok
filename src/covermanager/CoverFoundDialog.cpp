@@ -20,6 +20,7 @@
 
 #include "CoverFoundDialog.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <KLocale>
 #include <KVBox>
@@ -56,11 +57,18 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_labelPixmap->setPixmap( covers.first() );
     m_labelPixmap->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-    QLabel *artistLabel = new QLabel( i18n( "Artist" ), this );
-    QLabel *albumLabel  = new QLabel( i18n( "Album"  ), this );
-    QLabel *sizeLabel   = new QLabel( i18n( "Cover size" ), this );
+    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" )     + "</b>", this );
+    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  )     + "</b>", this );
+    QLabel *sizeLabel   = new QLabel( "<b>" + i18n( "Cover size" ) + "</b>", this );
 
-    QWidget *m_details = new QWidget( this );
+    artistLabel->setAlignment( Qt::AlignRight );
+    albumLabel->setAlignment( Qt::AlignRight );
+    sizeLabel->setAlignment( Qt::AlignRight );
+
+    QFrame *m_details = new QFrame( this );
+    m_details->setFrameShadow( QFrame::Plain );
+    m_details->setFrameShape( QFrame::Box );
+
     m_detailsLayout = new QGridLayout( m_details );
     m_detailsLayout->addWidget( artistLabel, 0, 0 );
     m_detailsLayout->addWidget( albumLabel,  1, 0 );

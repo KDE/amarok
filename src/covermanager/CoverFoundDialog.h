@@ -76,7 +76,7 @@ private:
     void setTitle();
 
     QLabel         *m_labelPixmap;   //! Pixmap container
-    QWidget        *m_details;       //! Details widget
+    QFrame         *m_details;       //! Details widget
     QGridLayout    *m_detailsLayout; //! Details widget layout
     KPushButton    *m_next;          //! Next Button
     KPushButton    *m_prev;          //! Back Button
