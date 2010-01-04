@@ -28,6 +28,7 @@
 #include <QStringList>  //stack allocated
 
 class CoverFetchQueue;
+class CoverFoundDialog;
 class KJob;
 
 namespace KIO { class Job; }
@@ -70,6 +71,8 @@ private:
     QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;
 
     QStringList m_errors;
+
+    CoverFoundDialog *m_dialog;
 
     /// cleanup depending on the fetch result
     void finish( const CoverFetchUnit::Ptr unit,

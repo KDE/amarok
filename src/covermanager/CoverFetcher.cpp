@@ -49,7 +49,7 @@ void CoverFetcher::destroy()
     }
 }
 
-CoverFetcher::CoverFetcher() : QObject()
+CoverFetcher::CoverFetcher() : QObject(), m_dialog( 0 )
 {
     DEBUG_FUNC_INFO
     setObjectName( "CoverFetcher" );
@@ -172,27 +172,31 @@ void
 CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
 {
     DEBUG_BLOCK
-    QList< QPixmap > pixmaps = m_pixmaps.value( unit );
+    QList< QPixmap > pixmaps = m_pixmaps.take( unit );
 
-    Meta::AlbumPtr album = unit->album();
-    const QString text = album->hasAlbumArtist()
-                       ? album->albumArtist()->prettyName() + ": " + album->prettyName()
-                       : album->prettyName();
-
-    CoverFoundDialog dialog( static_cast<QWidget*>( parent() ), pixmaps, text );
-
-    switch( dialog.exec() )
+    if( !m_dialog )
     {
-    case KDialog::Accepted:
-        m_selectedPixmaps.insert( unit, dialog.image() );
-        finish( unit );
-        break;
-    case KDialog::Rejected: //make sure we do not show any more dialogs
-        finish( unit, Cancelled );
-        break;
-    default:
-        finish( unit, Cancelled );
-        break;
+        m_dialog = new CoverFoundDialog( static_cast<QWidget*>( parent() ), pixmaps );
+
+        switch( m_dialog->exec() )
+        {
+        case KDialog::Accepted:
+            m_selectedPixmaps.insert( unit, m_dialog->image() );
+            finish( unit );
+            break;
+
+        case KDialog::Rejected: //make sure we do not show any more dialogs
+        default:
+            finish( unit, Cancelled );
+            break;
+        }
+
+        delete m_dialog;
+        m_dialog = 0;
+    }
+    else
+    {
+        m_dialog->add( pixmaps );
     }
 }
 

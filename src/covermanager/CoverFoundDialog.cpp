@@ -19,83 +19,122 @@
  ****************************************************************************************/
 
 #include "CoverFoundDialog.h"
+#include "Debug.h"
 
 #include <KLocale>
 #include <KVBox>
 #include <KPushButton>
 
-CoverFoundDialog::CoverFoundDialog( QWidget *parent,
-                                    const QList<QPixmap> &covers,
-                                    const QString &productname ) : KDialog( parent )
+#include <QCloseEvent>
+
+CoverFoundDialog::CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers )
+    : KDialog( parent )
+    , m_covers( covers )
+    , m_index( 0 )
 {
-    m_curCover = 0;
-    m_covers.clear();
-    m_covers = covers;
-    this->setButtons( None );
-    this->showButtonSeparator( false );
-    KVBox *box = new KVBox( this );
-    this->setMainWidget(box);
-    box->setSpacing( 4 );
+    setButtons( KDialog::Ok     |
+                KDialog::Cancel |
+                KDialog::User1  | // next
+                KDialog::User2 ); // prev
 
-    m_labelPix  = new QLabel( box );
-    m_labelName = new QLabel( box );
-    m_buttons   = new KHBox( box );
-    m_prev      = new KPushButton( KStandardGuiItem::back(), m_buttons );
-    m_save      = new KPushButton( KStandardGuiItem::save(), m_buttons );
-    m_cancel    = new KPushButton( KStandardGuiItem::cancel(), m_buttons );
-    m_next      = new KPushButton( KStandardGuiItem::forward(), m_buttons );
+    setButtonGuiItem( KDialog::User1, KStandardGuiItem::forward() );
+    setButtonGuiItem( KDialog::User2, KStandardGuiItem::back() );
 
-    if( m_covers.length() == 1 )
-        m_next->setEnabled( false );
-    else
-        m_next->setEnabled( true );
+    m_next = button( KDialog::User1 );
+    m_prev = button( KDialog::User2 );
+    m_save = button( KDialog::Ok );
 
-    m_prev->setEnabled( false );
+    m_label = new QLabel( this );
+    m_label->setMinimumHeight( 300 );
+    m_label->setMinimumWidth( 300 );
+    m_label->setAlignment( Qt::AlignCenter );
+    m_label->setPixmap( covers.first() );
+    m_label->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-    m_labelPix ->setMinimumHeight( 300 );
-    m_labelPix ->setMinimumWidth( 300 );
-    m_labelPix ->setAlignment( Qt::AlignHCenter );
-    m_labelName->setAlignment( Qt::AlignHCenter );
-    m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
-    m_labelPix ->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_labelName->setText( productname );
+    setMainWidget( m_label );
 
-    m_save->setDefault( true );
-    this->setTitle();
+    connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
+    connect( m_save, SIGNAL(clicked()), SLOT(accept())  );
+    connect( m_next, SIGNAL(clicked()), SLOT(nextPix()) );
 
-    connect( m_prev   ,SIGNAL(clicked()) ,SLOT(prevPix()) );
-    connect( m_save   ,SIGNAL(clicked()) ,SLOT(accept())  );
-    connect( m_cancel ,SIGNAL(clicked()) ,SLOT(reject())  );
-    connect( m_next   ,SIGNAL(clicked()) ,SLOT(nextPix()) );
+    updateGui();
+    updatePixmap();
 }
 
 void CoverFoundDialog::resizeEvent( QResizeEvent *event )
 {
     Q_UNUSED( event )
 
-    QSize scaledSize = m_labelPix->pixmap()->size();
-    scaledSize.scale( m_labelPix->size(), Qt::KeepAspectRatio );
+    if( m_label && !m_label->pixmap()->isNull() )
+    {
+        const QSize pixmapSize = m_label->pixmap()->size();
+        QSize scaledSize = pixmapSize;
+        scaledSize.scale( m_label->size(), Qt::KeepAspectRatio );
 
-    if( !m_labelPix->pixmap() || scaledSize != m_labelPix->pixmap()->size() )
-        updatePixmapSize();
+        if( scaledSize != pixmapSize )
+            updatePixmap();
+    }
+    QWidget::resizeEvent(event);
 }
 
-void CoverFoundDialog::updatePixmapSize()
+void CoverFoundDialog::closeEvent( QCloseEvent *event )
 {
-    m_labelPix->setPixmap( m_covers.at( m_curCover ).scaled( m_labelPix->size(),
-                                                             Qt::KeepAspectRatio,
-                                                             Qt::SmoothTransformation) );
+    m_index = 0;
+    m_covers.clear();
+    event->accept();
+}
+
+void CoverFoundDialog::updateGui()
+{
+    setTitle();
+    updateButtons();
+    m_label->setPixmap( m_covers.at( m_index ) );
+}
+
+void CoverFoundDialog::updatePixmap()
+{
+    m_label->setPixmap( m_covers.at( m_index ).scaled( m_label->size(),
+                                                       Qt::KeepAspectRatio,
+                                                       Qt::SmoothTransformation) );
+}
+
+void CoverFoundDialog::updateButtons()
+{
+    if( m_index < m_covers.length() - 1 )
+        m_next->setEnabled( true );
+    else
+        m_next->setEnabled( false );
+
+    if( m_index == 0 )
+        m_prev->setEnabled( false );
+    else
+        m_prev->setEnabled( true );
 }
 
 void CoverFoundDialog::setTitle()
 {
     QString caption = i18n( "Cover Found" );
+
     if( m_covers.size() > 1 )
     {
-        const QString position = i18n( "%1/%2", m_curCover + 1, m_covers.size() );
+        const QString position = i18n( "%1/%2", m_index + 1, m_covers.size() );
         caption +=  ": " + position;
     }
     this->setCaption( caption );
+}
+
+//SLOT
+void CoverFoundDialog::add( QPixmap cover )
+{
+    m_covers << cover;
+    updateGui();
+}
+
+//SLOT
+void CoverFoundDialog::add( QList< QPixmap > covers )
+{
+    m_covers << covers;
+    updateGui();
 }
 
 //SLOT
@@ -112,39 +151,23 @@ void CoverFoundDialog::accept()
 //SLOT
 void CoverFoundDialog::nextPix()
 {
-    if( m_curCover < m_covers.length()-1 )
+    if( m_index < m_covers.length() - 1 )
     {
-        m_curCover++;
-        m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
-        m_prev->setEnabled( true );
+        m_index++;
+        updateGui();
+        updatePixmap();
     }
-
-    if( m_curCover >= m_covers.length()-1 )
-        m_next->setEnabled( false );
-    else
-        m_next->setEnabled( true );
-
-    this->setTitle();
-    updatePixmapSize();
 }
 
 //SLOT
 void CoverFoundDialog::prevPix()
 {
-    if( m_curCover > 0 )
+    if( m_index >= 1 )
     {
-        m_curCover--;
-        m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
-        m_next->setEnabled( true );
+        m_index--;
+        updateGui();
+        updatePixmap();
     }
-
-    if( m_curCover == 0 )
-        m_prev->setEnabled( false );
-    else
-        m_prev->setEnabled( true );
-
-    this->setTitle();
-    updatePixmapSize();
 }
 
 #include "CoverFoundDialog.moc"
