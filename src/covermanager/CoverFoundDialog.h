@@ -56,6 +56,7 @@ public slots:
 protected:
     void resizeEvent( QResizeEvent *event );
     void closeEvent( QCloseEvent *event );
+    void wheelEvent( QWheelEvent *event );
 
 private slots:
     /**

@@ -114,6 +114,16 @@ void CoverFoundDialog::closeEvent( QCloseEvent *event )
     event->accept();
 }
 
+void CoverFoundDialog::wheelEvent( QWheelEvent *event )
+{
+    if( event->delta() > 0 )
+        prevPix();
+    else
+        nextPix();
+
+    event->accept();
+}
+
 void CoverFoundDialog::updateGui()
 {
     setTitle();
