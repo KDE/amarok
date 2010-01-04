@@ -96,8 +96,6 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
 
 void CoverFoundDialog::resizeEvent( QResizeEvent *event )
 {
-    Q_UNUSED( event )
-
     if( m_labelPixmap && !m_labelPixmap->pixmap()->isNull() )
     {
         const QSize pixmapSize = m_labelPixmap->pixmap()->size();
@@ -107,7 +105,7 @@ void CoverFoundDialog::resizeEvent( QResizeEvent *event )
         if( scaledSize != pixmapSize )
             updatePixmap();
     }
-    QWidget::resizeEvent(event);
+    QWidget::resizeEvent( event );
 }
 
 void CoverFoundDialog::closeEvent( QCloseEvent *event )
