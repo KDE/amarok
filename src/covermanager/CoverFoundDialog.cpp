@@ -63,17 +63,17 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_labelPixmap->setPixmap( covers.first() );
     m_labelPixmap->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" )     + "</b>", this );
-    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  )     + "</b>", this );
-    QLabel *sizeLabel   = new QLabel( "<b>" + i18n( "Cover size" ) + "</b>", this );
+    QFrame *m_details = new QFrame( this );
+    m_details->setFrameShadow( QFrame::Plain );
+    m_details->setFrameShape( QFrame::Box );
+
+    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" )     + "</b>", m_details );
+    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  )     + "</b>", m_details );
+    QLabel *sizeLabel   = new QLabel( "<b>" + i18n( "Cover size" ) + "</b>", m_details );
 
     artistLabel->setAlignment( Qt::AlignRight );
     albumLabel->setAlignment( Qt::AlignRight );
     sizeLabel->setAlignment( Qt::AlignRight );
-
-    QFrame *m_details = new QFrame( this );
-    m_details->setFrameShadow( QFrame::Plain );
-    m_details->setFrameShape( QFrame::Box );
 
     m_detailsLayout = new QGridLayout( m_details );
     m_detailsLayout->addWidget( artistLabel, 0, 0 );
