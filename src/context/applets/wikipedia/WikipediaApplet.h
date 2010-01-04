@@ -31,10 +31,9 @@
 #include <ui_wikipediaSettings.h>
 
 class QAction;
-class QGraphicsSimpleTextItem;
-class QGraphicsTextItem;
 class KDialog;
 class KConfigDialog;
+class TextScrollingWidget;
 
 namespace Plasma
 {
@@ -69,7 +68,7 @@ private:
     qreal m_headerAspectRatio;
     QSizeF m_size;
 
-    QGraphicsSimpleTextItem* m_wikipediaLabel;
+    TextScrollingWidget* m_wikipediaLabel;
 
     Plasma::WebView * m_webView;
 

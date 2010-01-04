@@ -34,6 +34,7 @@
 #include "SvgHandler.h"
 #include "widgets/kratingpainter.h"
 #include "widgets/kratingwidget.h"
+#include "widgets/TextScrollingWidget.h"
 
 // KDE
 #include <KColorScheme>
@@ -50,7 +51,6 @@
 // Qt
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
-#include <QGraphicsTextItem>
 #include <QGraphicsWidget>
 #include <QGridLayout>
 #include <QLabel>
@@ -112,7 +112,7 @@ VideoclipApplet::init()
     // Create label
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerText = new QGraphicsSimpleTextItem( this );
+    m_headerText = new TextScrollingWidget( this );
     m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Video Clip" ) );
@@ -267,6 +267,11 @@ VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
     prepareGeometryChange();
+
+    qreal widmax = boundingRect().width() - 4 * standardPadding();
+    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
+
+    m_headerText->setScrollingText( m_headerText->text(), rect );
 
     // tint the applet size
     m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, standardPadding() + 3 );

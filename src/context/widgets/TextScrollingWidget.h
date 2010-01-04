@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 
-#include <QGraphicsSimpleTextItem>
+#include <QGraphicsTextItem>
 
 //forward
 class QFontMetrics;
@@ -30,28 +30,34 @@ namespace Plasma
 }
 
 /**
-* \brief An animated QGrahicsSimpleTextItem on hovering
+* \brief An animated QGrahicsTextItem on hovering
 *
 * The text will be automatically truncate to a QrectF and will be animated when hovering
 *
-* \sa QGraphicsSimpleTextItem
+* \sa QGraphicsTextItem
 *
 * \author Simon Esneault <simon.esneault@gmail.com>
 */
 
-class AMAROK_EXPORT TextScrollingWidget : public QObject, public QGraphicsSimpleTextItem
+class AMAROK_EXPORT TextScrollingWidget : public QGraphicsTextItem
 {
     Q_OBJECT
     public:
 
         TextScrollingWidget( QGraphicsItem* parent = 0 );
 
+        void setBrush( const QBrush &brush );
+
         /**
         * Set the Text and more important the QRectF which will define the scrolling area
         */
         void setScrollingText( const QString, QRectF );
 
-        bool isAnimating( );
+        void setText( const QString &text );
+
+        QString text() const;
+
+        bool isAnimating();
 
     public slots:
         void animateFor( qreal anim );

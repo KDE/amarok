@@ -24,6 +24,7 @@
 #include "context/ContextView.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"
+#include "widgets/TextScrollingWidget.h"
 
 #include <Plasma/Theme>
 #include <plasma/widgets/webview.h>
@@ -38,7 +39,6 @@
 
 #include <QAction>
 #include <QDesktopServices>
-#include <QGraphicsSimpleTextItem>
 #include <QPainter>
 #include <QMenu>
 #include <QWebHistory>
@@ -74,7 +74,7 @@ WikipediaApplet::~ WikipediaApplet()
 void
 WikipediaApplet::init()
 {   
-    m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
+    m_wikipediaLabel = new TextScrollingWidget( this );
 
     m_webView = new Plasma::WebView( this );
     m_webView->setAttribute( Qt::WA_NoSystemBackground );
@@ -171,11 +171,15 @@ void
 WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
-    
+
     prepareGeometryChange();
     const float textWidth = m_wikipediaLabel->boundingRect().width();
     const float offsetX =  ( boundingRect().width() - textWidth ) / 2;
 
+    const qreal widmax = boundingRect().width() - 4 * standardPadding();
+    const QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
+
+    m_wikipediaLabel->setScrollingText( m_wikipediaLabel->text(), rect );
     m_wikipediaLabel->setPos( offsetX, standardPadding() + 2 );
 
     m_webView->setPos( standardPadding(), m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + standardPadding() );

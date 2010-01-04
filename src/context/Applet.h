@@ -47,7 +47,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
         QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
 
-        void drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem* t );
+        void drawRoundedRectAroundText( QPainter* p, QGraphicsTextItem* t );
         void addGradientToAppletBackground( QPainter* p );
 
         /**

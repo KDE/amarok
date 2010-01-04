@@ -58,6 +58,7 @@ class QHBoxLayout;
 class QScrollArea;
 
 class CustomVideoWidget;
+class TextScrollingWidget;
 class VideoItemButton;
 
 
@@ -102,7 +103,7 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
      //   Phonon::VideoWidget       *m_videoWidget;
 
         // The two big container, only one who need a resize
-        QGraphicsSimpleTextItem *m_headerText;
+        TextScrollingWidget     *m_headerText;
         QGraphicsProxyWidget    *m_widget;
         QScrollArea             *m_scroll;
         QHBoxLayout             *m_layout;
