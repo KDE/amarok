@@ -50,6 +50,9 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_prev = button( KDialog::User2 );
     m_save = button( KDialog::Ok );
 
+    setButtonText( KDialog::User1, QString() );
+    setButtonText( KDialog::User2, QString() );
+
     m_prev->hide();
     m_next->hide();
 
