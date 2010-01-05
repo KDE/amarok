@@ -79,6 +79,11 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
         m_albums.removeAll( album );
     }
     m_albumsMutex.unlock();
+
+    m_currentCoverName = album->hasAlbumArtist()
+                       ? album->albumArtist()->prettyName() + ": " + album->prettyName()
+                       : album->prettyName();
+
     startFetch( album );
 }
 

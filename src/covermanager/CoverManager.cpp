@@ -48,6 +48,7 @@
 #include <QProgressDialog>
 #include <QStringList>
 #include <QTimer>    //search filter timer
+#include <QToolButton>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 
@@ -81,6 +82,7 @@ class ArtistItem : public QTreeWidgetItem
 
 CoverManager::CoverManager()
         : QSplitter( 0 )
+        , m_currentView( AllAlbums )
         , m_timer( new QTimer( this ) )    //search filter timer
         , m_fetchingCovers( false )
         , m_coversFetched( 0 )
@@ -103,10 +105,11 @@ CoverManager::CoverManager()
     m_artistView->setHeaderLabel( i18n( "Albums By" ) );
     m_artistView->setSortingEnabled( false );
     m_artistView->setTextElideMode( Qt::ElideRight );
-    m_artistView->setMinimumWidth( 140 );
+    m_artistView->setMinimumWidth( 200 );
     m_artistView->setColumnCount( 1 );
-
-    setSizes( QList<int>() << 120 << width() - 120 );
+    m_artistView->setAlternatingRowColors( true );
+    m_artistView->setUniformRowHeights( true );
+    m_artistView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
     ArtistItem *item = 0;
     item = new ArtistItem( i18n( "All Artists" ) );
@@ -179,21 +182,29 @@ CoverManager::slotContinueConstruction() //SLOT
     } //</Search LineEdit>
 
     // view menu
-    m_viewMenu = new KMenu( this );
+    m_viewButton = new KPushButton( hbox );
+
+    m_viewMenu = new KMenu( m_viewButton );
     m_selectAllAlbums          = m_viewMenu->addAction( i18n("All Albums"),           this, SLOT( slotShowAllAlbums() ) );
     m_selectAlbumsWithCover    = m_viewMenu->addAction( i18n("Albums With Cover"),    this, SLOT( slotShowAlbumsWithCover() ) );
     m_selectAlbumsWithoutCover = m_viewMenu->addAction( i18n("Albums Without Cover"), this, SLOT( slotShowAlbumsWithoutCover() ) );
 
-    QActionGroup *viewGroup = new QActionGroup( this );
+    QActionGroup *viewGroup = new QActionGroup( m_viewButton );
     viewGroup->setExclusive( true );
     viewGroup->addAction( m_selectAllAlbums );
     viewGroup->addAction( m_selectAlbumsWithCover );
     viewGroup->addAction( m_selectAlbumsWithoutCover );
-    m_selectAllAlbums->setChecked( true );
+
+    m_viewButton->setMenu( m_viewMenu );
+    m_viewButton->setIcon( KIcon( "filename-album-amarok" ) );
+    connect( m_viewMenu, SIGNAL(triggered(QAction*)), this, SLOT(slotAlbumFilterTriggered(QAction*)) );
 
     //fetch missing covers button
     m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "get-hot-new-stuff-amarok" ), hbox );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
+
+    m_selectAllAlbums->setChecked( true );
+    m_selectAllAlbums->trigger();
 
     //cover view
     m_coverView = new CoverView( vbox );
@@ -210,7 +221,9 @@ CoverManager::slotContinueConstruction() //SLOT
     m_statusBar->addWidget( m_statusLabel, 4 );
     m_statusBar->addPermanentWidget( m_progressBox, 1 );
 
-    KPushButton *stopButton = new KPushButton( KGuiItem(i18n("Abort"), "stop"), m_progressBox );
+    QToolButton *stopButton = new QToolButton( m_progressBox );
+    stopButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
+    stopButton->setToolTip( i18n( "Abort" ) );
     connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
     m_progress = new QProgressBar( m_progressBox );
     m_progress->setTextVisible( true );
@@ -231,11 +244,12 @@ CoverManager::slotContinueConstruction() //SLOT
     connect( m_searchEdit, SIGNAL(textChanged( const QString& )),
                            SLOT(slotSetFilterTimeout()) );
 
-    m_currentView = AllAlbums;
-
     QSize size = QApplication::desktop()->screenGeometry( this ).size() / 1.5;
     QSize sz = Amarok::config( "Cover Manager" ).readEntry( "Window Size", size );
     resize( sz.width(), sz.height() );
+
+    setStretchFactor( indexOf( m_artistView ), 1 );
+    setStretchFactor( indexOf( vbox ), 4 );
 
     show();
 
@@ -343,11 +357,6 @@ void CoverManager::slotArtistSelected() //SLOT
     m_coverView->clear();
     m_coverItems.clear();
 
-    // reset current view mode state to "AllAlbum" which is the default on artist change in left panel
-    m_currentView = AllAlbums;
-    m_selectAllAlbums->trigger();
-    m_selectAllAlbums->setChecked( true );
-
     //Extra time for the sake of init() and aesthetics
     QTimer::singleShot( 0, this, SLOT( slotArtistSelectedContinue() ) );
 }
@@ -356,9 +365,6 @@ void CoverManager::slotArtistSelected() //SLOT
 void CoverManager::slotArtistSelectedContinue() //SLOT
 {
     DEBUG_BLOCK
-    QTreeWidgetItem *item = m_artistView->selectedItems().first();
-    ArtistItem *artistItem = static_cast< ArtistItem* >(item);
-    Meta::ArtistPtr artist = artistItem->artist();
 
     m_progressDialog = new QProgressDialog( this );
     m_progressDialog->setLabelText( i18n("Loading Thumbnails...") );
@@ -373,10 +379,23 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Album );
     qm->orderBy( Meta::valAlbum );
-    if( item != m_artistView->invisibleRootItem()->child( 0 ) )
-        qm->addMatch( artist );
-    else
-        qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+
+    qm->beginOr();
+    const QList< QTreeWidgetItem* > items = m_artistView->selectedItems();
+    foreach( const QTreeWidgetItem *item, items )
+    {
+        const ArtistItem *artistItem = static_cast< const ArtistItem* >( item );
+        if( artistItem != m_artistView->invisibleRootItem()->child( 0 ) )
+            qm->addFilter( Meta::valArtist, artistItem->artist()->name(), true, true );
+        else
+            qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+    }
+    qm->endAndOr();
+
+    // do not show albums with no name, i.e. tracks not belonging to any album
+    qm->beginAnd();
+    qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+    qm->endAndOr();
 
     m_albumList.clear();
 
@@ -394,6 +413,13 @@ CoverManager::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums
     DEBUG_BLOCK
     Q_UNUSED( collectionId );
     m_albumList += albums;
+}
+
+
+void
+CoverManager::slotAlbumFilterTriggered( QAction *action ) //SLOT
+{
+    m_viewButton->setText( action->text() );
 }
 
 void CoverManager::slotArtistSelectedContinueAgain() //SLOT
@@ -451,6 +477,9 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
         }
     }
 
+    // makes sure View is retained when artist selection changes
+    changeView( m_currentView, true );
+
     m_coverViewSpacer->hide();
     m_coverView->show();
     updateStatusBar();
@@ -495,6 +524,8 @@ void CoverManager::slotSetFilter() //SLOT
             m_coverView->insertItem( m_coverView->count() -  1, item );
     }
 
+    // makes sure View is retained when filter text has changed
+    changeView( m_currentView, true );
     updateStatusBar();
 }
 
@@ -506,11 +537,11 @@ void CoverManager::slotSetFilterTimeout() //SLOT
     m_timer->start( 180 );
 }
 
-void CoverManager::changeView( int id  ) //SLOT
+void CoverManager::changeView( CoverManager::View id, bool force ) //SLOT
 {
     DEBUG_BLOCK
 
-    if( m_currentView == id )
+    if( !force && m_currentView == id )
         return;
 
     //clear the iconview without deleting items
@@ -703,17 +734,27 @@ void CoverManager::updateStatusBar()
                 missingCounter++;    //counter for albums without cover
         }
 
+        const QList< QTreeWidgetItem* > selected = m_artistView->selectedItems();
+
         if( !m_filter.isEmpty() )
+        {
             text = i18np( "1 result for \"%2\"", "%1 results for \"%2\"", totalCounter, m_filter );
-        else if( m_artistView->selectedItems().count() > 0 )
+        }
+        else if( selected.count() > 0 )
         {
             text = i18np( "1 album", "%1 albums", totalCounter );
-            if( m_artistView->selectedItems().first() != m_artistView->invisibleRootItem()->child( 0 ) ) //showing albums by an artist
+
+            // showing albums by selected artist(s)
+            if( selected.first() != m_artistView->invisibleRootItem()->child( 0 ) )
             {
-                QString artist = m_artistView->selectedItems().first()->text(0);
-                if( artist.endsWith( ", The" ) )
+                QStringList artists;
+                foreach( const QTreeWidgetItem *item, selected )
+                {
+                    QString artist = item->text( 0 );
                     Amarok::manipulateThe( artist, false );
-                text += i18n( " by " ) + artist;
+                    artists.append( artist );
+                }
+                text += i18n( " by " ) + artists.join( ", " );
             }
         }
 
@@ -747,9 +788,9 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setResizeMode( QListView::Adjust );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setWrapping( true );
-    setSpacing( 4 );
     setWordWrap( true );
-    setIconSize( QSize(100,100) );
+    setIconSize( QSize(100, 100) );
+    setGridSize( QSize(120, 160) );
     setTextElideMode( Qt::ElideRight );
     setMouseTracking( true );
     setContextMenuPolicy( Qt::DefaultContextMenu );
