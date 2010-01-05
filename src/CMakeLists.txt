@@ -600,6 +600,8 @@ set(amaroklib_LIB_SRCS
     SvgTinter.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
+    covermanager/CoverFetchQueue.cpp
+    covermanager/CoverFetchUnit.cpp
     covermanager/CoverFoundDialog.cpp
     covermanager/CoverManager.cpp
     databaseimporter/DatabaseImporter.cpp
