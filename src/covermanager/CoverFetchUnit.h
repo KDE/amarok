@@ -88,7 +88,7 @@ private:
 };
 
 /**
- * Prepares URL suitable for getting an album's info as an CoverFetchInfoPayload from Last.fm.
+ * Prepares URL suitable for getting an album's info from Last.fm.
  */
 class CoverFetchInfoPayload : public CoverFetchPayload
 {
@@ -120,7 +120,7 @@ protected:
 private:
     QString m_xml;
 
-    /// Available album cover sizes in Last.fm's api
+    /// Available album cover sizes from Last.fm
     enum CoverSize
     {
         Small = 0,  //! 34px
