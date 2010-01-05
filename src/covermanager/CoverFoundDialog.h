@@ -20,9 +20,12 @@
 #ifndef AMAROK_COVERFOUNDDIALOG_H
 #define AMAROK_COVERFOUNDDIALOG_H
 
+#include "meta/Meta.h"
+
 #include <KDialog>
 #include <KPushButton>
 
+#include <QHash>
 #include <QLabel>
 #include <QList>
 #include <QObject>
@@ -30,24 +33,30 @@
 
 class KHBox;
 class KPushButton;
+class QGridLayout;
 
 class CoverFoundDialog : public KDialog
 {
     Q_OBJECT
 
 public:
-    CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers, const QString &productname );
+    CoverFoundDialog( QWidget *parent, Meta::AlbumPtr album, const QList<QPixmap> &covers );
 
     /**
     *   @returns the currently selected cover image
     */
-    const QPixmap image() { return *m_labelPix->pixmap(); }
+    const QPixmap image() { return *m_labelPixmap->pixmap(); }
 
 public slots:
     virtual void accept();
 
+    void add( QPixmap cover );
+    void add( QList< QPixmap > covers );
+
 protected:
     void resizeEvent( QResizeEvent *event );
+    void closeEvent( QCloseEvent *event );
+    void wheelEvent( QWheelEvent *event );
 
 private slots:
     /**
@@ -61,18 +70,27 @@ private slots:
     void prevPix();
 
 private:
-    void updatePixmapSize();
-    void setTitle();
+    void updateGui();
+    void updatePixmap();
+    void updateButtons();
+    void updateDetails();
+    void updateTitle();
 
-    QLabel         *m_labelPix;      //! Picture Label
-    QLabel         *m_labelName;     //! Name Label
-    KHBox          *m_buttons;       //! Button Box
+    QLabel         *m_labelPixmap;   //! Pixmap container
+    QFrame         *m_details;       //! Details widget
+    QGridLayout    *m_detailsLayout; //! Details widget layout
     KPushButton    *m_next;          //! Next Button
     KPushButton    *m_prev;          //! Back Button
     KPushButton    *m_save;          //! Save Button
-    KPushButton    *m_cancel;        //! Cancel Button
-    QList<QPixmap>  m_covers;        //! Retrieved Covers
-    int             m_curCover;      //! Currently selected Cover
+
+    //! Album associated with the covers
+    Meta::AlbumPtr m_album;
+
+    //! Retrieved covers for the album
+    QList< QPixmap > m_covers;
+
+    //! Current position indices for m_covers
+    int m_index;
 
     Q_DISABLE_COPY( CoverFoundDialog );
 };

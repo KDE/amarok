@@ -19,83 +19,195 @@
  ****************************************************************************************/
 
 #include "CoverFoundDialog.h"
+#include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <KLocale>
 #include <KVBox>
 #include <KPushButton>
 
+#include <QCloseEvent>
+#include <QGridLayout>
+
 CoverFoundDialog::CoverFoundDialog( QWidget *parent,
-                                    const QList<QPixmap> &covers,
-                                    const QString &productname ) : KDialog( parent )
+                                    Meta::AlbumPtr album,
+                                    const QList<QPixmap> &covers )
+    : KDialog( parent )
+    , m_album( album )
+    , m_covers( covers )
+    , m_index( 0 )
 {
-    m_curCover = 0;
-    m_covers.clear();
-    m_covers = covers;
-    this->setButtons( None );
-    this->showButtonSeparator( false );
-    KVBox *box = new KVBox( this );
-    this->setMainWidget(box);
-    box->setSpacing( 4 );
+    setButtons( KDialog::Ok     |
+                KDialog::Details |
+                KDialog::Cancel |
+                KDialog::User1  | // next
+                KDialog::User2 ); // prev
 
-    m_labelPix  = new QLabel( box );
-    m_labelName = new QLabel( box );
-    m_buttons   = new KHBox( box );
-    m_prev      = new KPushButton( KStandardGuiItem::back(), m_buttons );
-    m_save      = new KPushButton( KStandardGuiItem::save(), m_buttons );
-    m_cancel    = new KPushButton( KStandardGuiItem::cancel(), m_buttons );
-    m_next      = new KPushButton( KStandardGuiItem::forward(), m_buttons );
+    setButtonGuiItem( KDialog::User1, KStandardGuiItem::forward() );
+    setButtonGuiItem( KDialog::User2, KStandardGuiItem::back() );
 
-    if( m_covers.length() == 1 )
-        m_next->setEnabled( false );
-    else
-        m_next->setEnabled( true );
+    m_next = button( KDialog::User1 );
+    m_prev = button( KDialog::User2 );
+    m_save = button( KDialog::Ok );
 
-    m_prev->setEnabled( false );
+    setButtonText( KDialog::User1, QString() );
+    setButtonText( KDialog::User2, QString() );
 
-    m_labelPix ->setMinimumHeight( 300 );
-    m_labelPix ->setMinimumWidth( 300 );
-    m_labelPix ->setAlignment( Qt::AlignHCenter );
-    m_labelName->setAlignment( Qt::AlignHCenter );
-    m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
-    m_labelPix ->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_labelName->setText( productname );
+    m_prev->hide();
+    m_next->hide();
 
-    m_save->setDefault( true );
-    this->setTitle();
+    m_labelPixmap = new QLabel( this );
+    m_labelPixmap->setMinimumHeight( 300 );
+    m_labelPixmap->setMinimumWidth( 300 );
+    m_labelPixmap->setAlignment( Qt::AlignCenter );
+    m_labelPixmap->setPixmap( covers.first() );
+    m_labelPixmap->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
-    connect( m_prev   ,SIGNAL(clicked()) ,SLOT(prevPix()) );
-    connect( m_save   ,SIGNAL(clicked()) ,SLOT(accept())  );
-    connect( m_cancel ,SIGNAL(clicked()) ,SLOT(reject())  );
-    connect( m_next   ,SIGNAL(clicked()) ,SLOT(nextPix()) );
+    QFrame *m_details = new QFrame( this );
+    m_details->setFrameShadow( QFrame::Plain );
+    m_details->setFrameShape( QFrame::Box );
+
+    QLabel *artistLabel = new QLabel( "<b>" + i18n( "Artist" )     + "</b>", m_details );
+    QLabel *albumLabel  = new QLabel( "<b>" + i18n( "Album"  )     + "</b>", m_details );
+    QLabel *sizeLabel   = new QLabel( "<b>" + i18n( "Cover size" ) + "</b>", m_details );
+
+    artistLabel->setAlignment( Qt::AlignRight );
+    albumLabel->setAlignment( Qt::AlignRight );
+    sizeLabel->setAlignment( Qt::AlignRight );
+
+    m_detailsLayout = new QGridLayout( m_details );
+    m_detailsLayout->addWidget( artistLabel, 0, 0 );
+    m_detailsLayout->addWidget( albumLabel,  1, 0 );
+    m_detailsLayout->addWidget( sizeLabel,   2, 0 );
+    m_detailsLayout->addWidget( new QLabel( m_details ), 0, 1 );
+    m_detailsLayout->addWidget( new QLabel( m_details ), 1, 1 );
+    m_detailsLayout->addWidget( new QLabel( m_details ), 2, 1 );
+
+    setMainWidget( m_labelPixmap );
+    setDetailsWidget( m_details );
+
+    connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
+    connect( m_save, SIGNAL(clicked()), SLOT(accept())  );
+    connect( m_next, SIGNAL(clicked()), SLOT(nextPix()) );
+
+    updateGui();
+    updatePixmap();
 }
 
 void CoverFoundDialog::resizeEvent( QResizeEvent *event )
 {
-    Q_UNUSED( event )
+    if( m_labelPixmap && !m_labelPixmap->pixmap()->isNull() )
+    {
+        const QSize pixmapSize = m_labelPixmap->pixmap()->size();
+        QSize scaledSize = pixmapSize;
+        scaledSize.scale( m_labelPixmap->size(), Qt::KeepAspectRatio );
 
-    QSize scaledSize = m_labelPix->pixmap()->size();
-    scaledSize.scale( m_labelPix->size(), Qt::KeepAspectRatio );
-
-    if( !m_labelPix->pixmap() || scaledSize != m_labelPix->pixmap()->size() )
-        updatePixmapSize();
+        if( scaledSize != pixmapSize )
+            updatePixmap();
+    }
+    QWidget::resizeEvent( event );
 }
 
-void CoverFoundDialog::updatePixmapSize()
+void CoverFoundDialog::closeEvent( QCloseEvent *event )
 {
-    m_labelPix->setPixmap( m_covers.at( m_curCover ).scaled( m_labelPix->size(),
+    m_index = 0;
+    m_covers.clear();
+    event->accept();
+}
+
+void CoverFoundDialog::wheelEvent( QWheelEvent *event )
+{
+    if( event->delta() > 0 )
+        prevPix();
+    else
+        nextPix();
+
+    event->accept();
+}
+
+void CoverFoundDialog::updateGui()
+{
+    updateTitle();
+    updateDetails();
+    updateButtons();
+
+    setButtonFocus( KDialog::Ok );
+    update();
+}
+
+void CoverFoundDialog::updatePixmap()
+{
+    m_labelPixmap->setPixmap( m_covers.at( m_index ).scaled( m_labelPixmap->size(),
                                                              Qt::KeepAspectRatio,
                                                              Qt::SmoothTransformation) );
 }
 
-void CoverFoundDialog::setTitle()
+void CoverFoundDialog::updateButtons()
+{
+    const int count = m_covers.length();
+
+    if( count > 1 )
+    {
+        m_prev->show();
+        m_next->show();
+    }
+    else
+    {
+        return;
+    }
+
+    if( m_index < count - 1 )
+        m_next->setEnabled( true );
+    else
+        m_next->setEnabled( false );
+
+    if( m_index == 0 )
+        m_prev->setEnabled( false );
+    else
+        m_prev->setEnabled( true );
+}
+
+void CoverFoundDialog::updateDetails()
+{
+    const QString artist = m_album->hasAlbumArtist()
+                         ? m_album->albumArtist()->prettyName()
+                         : i18n( "Various Artists" );
+
+    const QPixmap pixmap = m_covers.at( m_index );
+
+    QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
+    QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
+    QLabel *coverSize  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
+
+    artistName->setText( artist );
+    albumName->setText( m_album->prettyName() );
+    coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
+}
+
+void CoverFoundDialog::updateTitle()
 {
     QString caption = i18n( "Cover Found" );
+
     if( m_covers.size() > 1 )
     {
-        const QString position = i18n( "%1/%2", m_curCover + 1, m_covers.size() );
+        const QString position = i18n( "%1/%2", m_index + 1, m_covers.size() );
         caption +=  ": " + position;
     }
     this->setCaption( caption );
+}
+
+//SLOT
+void CoverFoundDialog::add( QPixmap cover )
+{
+    m_covers << cover;
+    updateGui();
+}
+
+//SLOT
+void CoverFoundDialog::add( QList< QPixmap > covers )
+{
+    m_covers << covers;
+    updateGui();
 }
 
 //SLOT
@@ -112,39 +224,23 @@ void CoverFoundDialog::accept()
 //SLOT
 void CoverFoundDialog::nextPix()
 {
-    if( m_curCover < m_covers.length()-1 )
+    if( m_index < m_covers.length() - 1 )
     {
-        m_curCover++;
-        m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
-        m_prev->setEnabled( true );
+        m_index++;
+        updateGui();
+        updatePixmap();
     }
-
-    if( m_curCover >= m_covers.length()-1 )
-        m_next->setEnabled( false );
-    else
-        m_next->setEnabled( true );
-
-    this->setTitle();
-    updatePixmapSize();
 }
 
 //SLOT
 void CoverFoundDialog::prevPix()
 {
-    if( m_curCover > 0 )
+    if( m_index >= 1 )
     {
-        m_curCover--;
-        m_labelPix ->setPixmap( m_covers.at( m_curCover ) );
-        m_next->setEnabled( true );
+        m_index--;
+        updateGui();
+        updatePixmap();
     }
-
-    if( m_curCover == 0 )
-        m_prev->setEnabled( false );
-    else
-        m_prev->setEnabled( true );
-
-    this->setTitle();
-    updatePixmapSize();
 }
 
 #include "CoverFoundDialog.moc"
