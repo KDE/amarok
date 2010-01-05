@@ -218,6 +218,33 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 void
 LyricsManager::lyricsError( const QString &error )
 {
+    if( !showCached() )
+    {
+        sendLyricsMessage( "error", error );
+    }
+}
+
+
+void
+LyricsManager::lyricsNotFound( const QString& notfound )
+{
+    if( !showCached() )
+    {
+        //if we have cached lyrics there is absolutely no point in not showing these..
+        Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+        const QString title = currentTrack->prettyName();
+
+        QStringList lyricsData;
+        lyricsData << title
+        << currentTrack->artist()->name()
+        << QString() // TODO lyrics site
+        << notfound;
+    }
+}
+
+
+bool LyricsManager::showCached()
+{
     //if we have cached lyrics there is absolutely no point in not showing these..
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( currentTrack && !currentTrack->cachedLyrics().isEmpty() )
@@ -232,7 +259,7 @@ LyricsManager::lyricsError( const QString &error )
         {
             //we have stored html lyrics, so use that directly
             sendNewLyricsHtml( currentTrack->cachedLyrics() );
-            return;
+            return true;
         }
         else
         {
@@ -245,10 +272,8 @@ LyricsManager::lyricsError( const QString &error )
                 << currentTrack->cachedLyrics();
 
             sendNewLyrics( lyricsData );
-            return;
+            return true;
         }
     }
-
-    sendLyricsMessage( "error", error );
+    return false;
 }
-

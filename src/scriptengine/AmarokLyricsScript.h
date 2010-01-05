@@ -39,6 +39,7 @@ public slots:
     
     void showLyricsHtml( const QString& lyrics ) const;
     void showLyricsError( const QString& error ) const;
+    void showLyricsNotFound( const QString& msg ) const;
 
     QString escape( const QString& str );
 
