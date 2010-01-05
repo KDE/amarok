@@ -74,7 +74,7 @@ private:
     void updatePixmap();
     void updateButtons();
     void updateDetails();
-    void setTitle();
+    void updateTitle();
 
     QLabel         *m_labelPixmap;   //! Pixmap container
     QFrame         *m_details;       //! Details widget

@@ -126,7 +126,7 @@ void CoverFoundDialog::wheelEvent( QWheelEvent *event )
 
 void CoverFoundDialog::updateGui()
 {
-    setTitle();
+    updateTitle();
     updateButtons();
     updateDetails();
     m_labelPixmap->setPixmap( m_covers.at( m_index ) );
@@ -181,7 +181,7 @@ void CoverFoundDialog::updateDetails()
     coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
 }
 
-void CoverFoundDialog::setTitle()
+void CoverFoundDialog::updateTitle()
 {
     QString caption = i18n( "Cover Found" );
 
