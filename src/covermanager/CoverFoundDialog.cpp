@@ -127,9 +127,11 @@ void CoverFoundDialog::wheelEvent( QWheelEvent *event )
 void CoverFoundDialog::updateGui()
 {
     updateTitle();
-    updateButtons();
     updateDetails();
-    m_labelPixmap->setPixmap( m_covers.at( m_index ) );
+    updateButtons();
+
+    setButtonFocus( KDialog::Ok );
+    update();
 }
 
 void CoverFoundDialog::updatePixmap()
