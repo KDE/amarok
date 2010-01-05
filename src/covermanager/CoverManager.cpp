@@ -212,14 +212,14 @@ CoverManager::slotContinueConstruction() //SLOT
     m_coverViewSpacer->hide();
 
     //status bar
-    KStatusBar *m_statusBar = new KStatusBar( vbox );
+    KStatusBar *statusBar = new KStatusBar( vbox );
 
-    m_statusLabel = new KSqueezedTextLabel( m_statusBar );
+    m_statusLabel = new KSqueezedTextLabel( statusBar );
     m_statusLabel->setIndent( 3 );
-    m_progressBox = new KHBox( m_statusBar );
+    m_progressBox = new KHBox( statusBar );
 
-    m_statusBar->addWidget( m_statusLabel, 4 );
-    m_statusBar->addPermanentWidget( m_progressBox, 1 );
+    statusBar->addWidget( m_statusLabel, 4 );
+    statusBar->addPermanentWidget( m_progressBox, 1 );
 
     QToolButton *stopButton = new QToolButton( m_progressBox );
     stopButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
@@ -323,9 +323,8 @@ void CoverManager::fetchMissingCovers() //SLOT
     {
         QListWidgetItem *item = m_coverView->item( i );
         CoverViewItem *coverItem = static_cast<CoverViewItem*>( item );
-        if( !coverItem->hasCover() ) {
+        if( !coverItem->hasCover() )
             m_fetchCovers += coverItem->albumPtr();
-        }
     }
 
     m_progress->setMaximum( m_fetchCovers.size() );
@@ -572,30 +571,6 @@ void CoverManager::changeView( CoverManager::View id, bool force ) //SLOT
             m_coverView->insertItem( m_coverView->count() - 1, item );
     }
     m_currentView = id;
-}
-
-void CoverManager::coverFetched( const QString &artist, const QString &album ) //SLOT
-{
-    loadCover( artist, album );
-    m_coversFetched++;
-    updateStatusBar();
-}
-
-
-void CoverManager::coverRemoved( const QString &artist, const QString &album ) //SLOT
-{
-    loadCover( artist, album );
-    m_coversFetched--;
-    updateStatusBar();
-}
-
-
-void CoverManager::coverFetcherError()
-{
-    DEBUG_FUNC_INFO
-
-    m_coverErrors++;
-    updateStatusBar();
 }
 
 void CoverManager::updateFetchingProgress( int state )

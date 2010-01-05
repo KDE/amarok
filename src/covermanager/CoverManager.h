@@ -93,9 +93,6 @@ class CoverManager : public QSplitter, public Meta::Observer
 
         void fetchMissingCovers();
         void updateFetchingProgress( int state );
-        void coverFetched( const QString&, const QString& );
-        void coverRemoved( const QString&, const QString& );
-        void coverFetcherError();
         void stopFetching();
 
         void playSelectedAlbums();
@@ -120,7 +117,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         Meta::AlbumList m_albumList;
 
         QProgressDialog* m_progressDialog;
-        
+
         CoverFetcher   *m_fetcher;
 
         QAction        *m_selectAllAlbums;

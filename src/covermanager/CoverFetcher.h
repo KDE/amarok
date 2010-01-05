@@ -28,18 +28,12 @@
 #include <QStringList>  //stack allocated
 
 class KJob;
-class KLineEdit;
-
-class CoverFetcherSingleton;
 
 namespace KIO { class Job; }
 
 class CoverFetcher : public QObject
 {
-    friend class EditSearchDialog;
     Q_OBJECT
-
-    static const uint MAX_COVERS_CHOICE = 10;
 
 public:
     AMAROK_EXPORT static CoverFetcher* instance();
@@ -81,23 +75,18 @@ private:
     CoverFetcher();
     ~CoverFetcher();
 
-    void parseItemNode( const QDomNode &node );
-
     Meta::AlbumList m_albums;
     Meta::AlbumPtr m_albumPtr;
     QMutex m_albumsMutex;
     QMutex m_fetchMutex;
 
     bool    m_interactive; /// whether we should consult the user
-    QString m_userQuery; /// the query from the query edit dialog
     QString m_xml;
     QList<QPixmap> m_pixmaps;     //!List of found covers
     QPixmap m_selPixmap;          //!Cover of choice
     int     m_processedCovers;    //!number of covers that have been processed
     int     m_numURLS;            //!number of URLS to process
-    QString m_asin;
 
-    QStringList m_queries;
     QString     m_currentCoverName;
     QStringList m_errors;
 

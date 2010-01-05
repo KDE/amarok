@@ -46,8 +46,10 @@ CoverFetcher::instance()
     return s_instance ? s_instance : new CoverFetcher();
 }
 
-void CoverFetcher::destroy() {
-    if (s_instance) {
+void CoverFetcher::destroy()
+{
+    if( s_instance )
+    {
         delete s_instance;
         s_instance = 0;
     }
@@ -55,6 +57,9 @@ void CoverFetcher::destroy() {
 
 CoverFetcher::CoverFetcher()
         : QObject()
+        , m_interactive( false )
+        , m_processedCovers( 0 )
+        , m_numURLS( 0 )
         , m_success( true )
         , m_isFetching( false )
 {
@@ -138,10 +143,6 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
     }
     m_fetchMutex.unlock();
 }
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// PRIVATE SLOTS
-//////////////////////////////////////////////////////////////////////////////////////////
 
 void
 CoverFetcher::startFetch( Meta::AlbumPtr album )
@@ -296,10 +297,10 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
     }
 
     m_processedCovers++;
-    
+
     if( m_processedCovers == m_numURLS )
     {
-        if( m_pixmaps.length() > 0 )
+        if( !m_pixmaps.isEmpty() )
         {
             if( m_interactive )
             {
@@ -315,7 +316,7 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
                 finish();
             }
         }
-        else if( m_processedCovers == m_numURLS )
+        else
         {
             finish( NotFound );
         }
