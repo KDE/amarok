@@ -19,6 +19,8 @@ VERSION 2.2.2
       fallback. Patch by Andreas Hartmetz <ahartmetz@gmail.com>.
 
   BUGFIXES:
+    * Fixed crash with dangling pointer on trying to play a media device track whose collection no longer exists.
+      (BR 210477)
     * Fixed loading MusicBrainz-tagged tracks in dynamic playlists. (BR 219902)
     * Fixed MusicBrainz-tagged tracks not being restored in the playlist
       upon restart.
