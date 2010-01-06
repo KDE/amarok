@@ -54,11 +54,19 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
         m_url = new CoverFetchInfoPayload( cpy.m_album );
         break;
     case CoverFetchPayload::SEARCH:
-        m_url = new CoverFetchSearchPayload();
-        break;
+        {
+            const CoverFetchSearchPayload *payload =
+                dynamic_cast< const CoverFetchSearchPayload * >( cpy.payload() );
+            m_url = new CoverFetchSearchPayload( payload->query() );
+            break;
+        }
     case CoverFetchPayload::ART:
-        m_url = new CoverFetchArtPayload( cpy.m_album );
-        break;
+        {
+            const CoverFetchArtPayload *payload =
+                dynamic_cast< const CoverFetchArtPayload * >( cpy.payload() );
+            m_url = new CoverFetchArtPayload( cpy.m_album, payload->isWild() );
+            break;
+        }
     default:
         m_url = 0;
     }
@@ -111,11 +119,18 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
         m_url = new CoverFetchInfoPayload( rhs.m_album );
         break;
     case CoverFetchPayload::SEARCH:
-        m_url = new CoverFetchSearchPayload();
-        break;
+        {
+            const CoverFetchSearchPayload *payload =
+                dynamic_cast< const CoverFetchSearchPayload * >( rhs.payload() );
+            m_url = new CoverFetchSearchPayload( payload->query() );
+            break;
+        }
     case CoverFetchPayload::ART:
-        m_url = new CoverFetchArtPayload( rhs.m_album );
-        break;
+        {
+            const CoverFetchArtPayload *payload =
+                dynamic_cast< const CoverFetchArtPayload * >( rhs.payload() );
+            m_url = new CoverFetchArtPayload( rhs.m_album, payload->isWild() );
+        }
     default:
         m_url = 0;
     }
@@ -142,8 +157,8 @@ bool CoverFetchUnit::operator!=( const CoverFetchUnit &other ) const
 CoverFetchPayload::CoverFetchPayload( const Meta::AlbumPtr album, CoverFetchPayload::Type type )
     : m_album( album )
     , m_method( ( type == SEARCH ) ? QString( "album.search" )
-                                   : album->hasAlbumArtist() ? QString( "album.getinfo" )
-                                                             : QString( "album.search" ) )
+                                   : album && album->hasAlbumArtist() ? QString( "album.getinfo" )
+                                                                      : QString( "album.search" ) )
     , m_type( type )
 {
 }
@@ -218,6 +233,12 @@ CoverFetchSearchPayload::~CoverFetchSearchPayload()
 {
 }
 
+QString
+CoverFetchSearchPayload::query() const
+{
+    return m_query;
+}
+
 void
 CoverFetchSearchPayload::setQuery( const QString &query )
 {
@@ -241,13 +262,20 @@ CoverFetchSearchPayload::prepareUrls()
  * CoverFetchArtPayload
  */
 
-CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album )
+CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album, bool wild )
     : CoverFetchPayload( album, CoverFetchPayload::ART )
+    , m_wild( wild )
 {
 }
 
 CoverFetchArtPayload::~CoverFetchArtPayload()
 {
+}
+
+bool
+CoverFetchArtPayload::isWild() const
+{
+    return m_wild;
 }
 
 void
@@ -282,13 +310,16 @@ CoverFetchArtPayload::prepareUrls()
     {
         results = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
 
-        const Meta::TrackList tracks = album()->tracks();
-        QStringList artistNames( "Various Artists" );
-        foreach( const Meta::TrackPtr &track, tracks )
+        if( !m_wild && album() )
         {
-            artistNames << track->artist()->name();
+            const Meta::TrackList tracks = album()->tracks();
+            QStringList artistNames( "Various Artists" );
+            foreach( const Meta::TrackPtr &track, tracks )
+            {
+                artistNames << track->artist()->name();
+            }
+            artistSet = normalize( artistNames ).toSet();
         }
-        artistSet = normalize( artistNames ).toSet();
     }
     else return;
 
@@ -299,7 +330,7 @@ CoverFetchArtPayload::prepareUrls()
 
         if( searchMethod == "album.getinfo" && artist != albumArtist )
             continue;
-        else if( searchMethod == "album.search" && !artistSet.contains( artist ) )
+        else if( searchMethod == "album.search" && !m_wild && !artistSet.contains( artist ) )
             continue;
 
         const QDomNodeList list = albumNode.childNodes();

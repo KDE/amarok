@@ -149,7 +149,7 @@ CoverFetcher::slotResult( KJob *job )
         break;
 
     case CoverFetchPayload::SEARCH:
-        m_queue->add( Meta::AlbumPtr( 0 ), unit->isInteractive(), data );
+        m_queue->add( Meta::AlbumPtr( 0 ), unit->isInteractive(), data, true );
         break;
 
     case CoverFetchPayload::ART:
@@ -188,6 +188,9 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
     {
         m_dialog = new CoverFoundDialog( static_cast<QWidget*>( parent() ), unit->album(), pixmaps );
 
+        connect( m_dialog, SIGNAL(newCustomQuery(const QString&)),
+                 this,     SLOT(queueQuery(const QString&)) );
+
         switch( m_dialog->exec() )
         {
         case KDialog::Accepted:
@@ -217,7 +220,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
 {
     DEBUG_BLOCK
 
-    const QString albumName = unit->album()->name();
+    const QString albumName = unit->album() ? unit->album()->name() : QString();
 
     switch( state )
     {

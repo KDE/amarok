@@ -114,6 +114,8 @@ public:
     explicit CoverFetchSearchPayload( const QString &query = QString() );
     ~CoverFetchSearchPayload();
 
+    QString query() const;
+
     void setQuery( const QString &query );
 
 protected:
@@ -131,8 +133,10 @@ private:
 class CoverFetchArtPayload : public CoverFetchPayload
 {
 public:
-    explicit CoverFetchArtPayload( const Meta::AlbumPtr album );
+    explicit CoverFetchArtPayload( const Meta::AlbumPtr album, bool wild = false );
     ~CoverFetchArtPayload();
+
+    bool isWild() const;
 
     void setXml( const QByteArray &xml );
 
@@ -150,6 +154,9 @@ private:
         Large,      //! 128px
         ExtraLarge  //! 300px
     };
+
+    /// search is wild mode?
+    bool m_wild;
 
     /// convert CoverSize enum to string
     QString coverSize( enum CoverSize size ) const;
