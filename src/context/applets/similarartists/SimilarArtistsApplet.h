@@ -32,8 +32,6 @@
 class QAction;
 class TextScrollingWidget;
 class KConfigDialog;
-class QLabel;
-class QGraphicsScene;
 class QVBoxLayout;
 class QGraphicsProxyWidget;
 class QScrollArea;
@@ -86,9 +84,14 @@ private:
      */
     QVBoxLayout *m_layout;
 
-    QGraphicsScene *m_scene;
-
+    /**
+     * This proxy widget contents the scrollArea 
+     */
     QGraphicsProxyWidget *m_scrollProxy;
+
+    /**
+     * This scrollArea contents the artists widgets
+     */
     QScrollArea             *m_scroll;
 
     /**

@@ -37,10 +37,7 @@
 //Qt
 #include <QDesktopServices>
 #include <QTextEdit>
-#include <qgraphicsproxywidget.h>
-#include <QLabel>
-#include <QGraphicsGridLayout>
-#include <QGraphicsScene>
+#include <QGraphicsProxyWidget>
 #include <QScrollArea>
 #include <QVBoxLayout>
 #include <QScrollBar>
@@ -54,11 +51,8 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
     , m_headerLabel( 0 )
     , m_settingsIcon( 0 )    
 {
-    DEBUG_BLOCK
-
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
-    m_scene=new QGraphicsScene;
 
     m_stoppedState=true;
 }
@@ -72,7 +66,7 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
     debug()<<"2";
     delete m_settingsIcon;
     debug()<<"3";
-    delete m_scene;
+    
     debug()<<"4";
     //delete m_layout;
 }
@@ -81,6 +75,7 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
 void
 SimilarArtistsApplet::init()
 {
+    // create the layout for dispose the artists widgets in the scrollarea via a widget
     m_layout=new QVBoxLayout;
     m_layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
     m_layout->setContentsMargins( 5, 5, 5, 5 );
@@ -106,22 +101,24 @@ SimilarArtistsApplet::init()
     m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( configure() ) );
 
+    // permit to add the scrollarea in this applet
     m_scrollProxy = new QGraphicsProxyWidget( this );
     m_scrollProxy->setAttribute( Qt::WA_NoSystemBackground );
-    
+
+    // this widget contents the artists widgets and it is added on the scrollarea
     QWidget *scrollContent = new QWidget;
     scrollContent->setAttribute( Qt::WA_NoSystemBackground );
     scrollContent->setLayout( m_layout );
     scrollContent->show();
     
-    // create a scroll Area
+    // create a scrollarea
     m_scroll = new QScrollArea();
-    //m_scroll->setMaximumHeight( m_height - m_headerText->boundingRect().height() - 4*standardPadding() );
     m_scroll->setWidget( scrollContent );
     m_scroll->setFrameShape( QFrame::NoFrame );
     m_scroll->setAttribute( Qt::WA_NoSystemBackground );
     m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
-    
+
+    // add the scrollarea in the applet
     m_scrollProxy->setWidget( m_scroll );
 
     connectSource( "similarArtists" );
@@ -133,9 +130,7 @@ SimilarArtistsApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
     m_maxArtists = config.readEntry( "maxArtists", "3" ).toInt();
-
-    //setLayout(m_layout);
-
+    
 }
 
 void
@@ -162,13 +157,15 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
     // Icon positionning
     m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
 
+
+    // ScrollArea positionning via the proxyWidget
     m_scrollProxy->setPos( standardPadding(), m_headerLabel->pos().y() + m_headerLabel->boundingRect().height() + standardPadding() );
 
     QSize artistsSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_scrollProxy->pos().y() - standardPadding() );
-
     m_scrollProxy->setMinimumSize( artistsSize );
     m_scrollProxy->setMaximumSize( artistsSize );
 
+    // set the size of the widget embedded in the scrollarea
     QSize artistSize( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width(), artistsSize.height() - 2 * standardPadding() );
     m_scroll->widget()->setMinimumSize( artistSize );
     m_scroll->widget()->setMaximumSize( artistSize );
@@ -207,11 +204,8 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
 {
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )
-    DEBUG_BLOCK
-
 
     // we clear all artists
-    int cpt=0;
     foreach(ArtistWidget* art, m_artists)
     {
       m_layout->removeWidget(art);
@@ -285,12 +279,13 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
                 debug()<<"SAA Agrandissement de la liste ok";
                 //TODO Bug when the number of artist to display decrease
                 cpt=sizeArtistsDisplay;
-                while(cpt>m_artists.size()) {
+                debug()<<"SAA Nb artist a afficher :" << cpt;
+                while(cpt<m_artists.size()) {
                     //m_layout->removeAt(cpt-1);
                     m_layout->removeWidget(m_artists.last());
                     delete m_artists.last();
                     m_artists.removeLast();
-                    cpt--;
+                    //cpt--;
                 }
                 debug()<<"SAA reduction de la liste ok";
 
@@ -396,6 +391,9 @@ void
 SimilarArtistsApplet::saveSettings()
 {
     saveMaxArtists();
+
+    //simulate a update of data to update the content of the applet accordingly to the new settings
+    dataUpdated( NULL, dataEngine( "amarok-similarArtists" )->query( "similarArtists" ) );
 }
 
 #include "SimilarArtistsApplet.moc"
