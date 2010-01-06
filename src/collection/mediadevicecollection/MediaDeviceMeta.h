@@ -22,8 +22,8 @@
 #include "mediadevicecollection_export.h"
 
 #include <QList>
-#include <QPointer>
 #include <QMultiMap>
+#include <QPointer>
 
 class MediaDeviceCollection;
 class QAction;
