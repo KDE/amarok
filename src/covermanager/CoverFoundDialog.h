@@ -32,6 +32,7 @@
 #include <QPixmap>
 
 class KHBox;
+class KLineEdit;
 class KPushButton;
 class QGridLayout;
 
@@ -46,6 +47,9 @@ public:
     *   @returns the currently selected cover image
     */
     const QPixmap image() { return *m_labelPixmap->pixmap(); }
+
+signals:
+    void newCustomQuery( const QString & );
 
 public slots:
     virtual void accept();
@@ -79,6 +83,7 @@ private:
     QLabel         *m_labelPixmap;   //! Pixmap container
     QFrame         *m_details;       //! Details widget
     QGridLayout    *m_detailsLayout; //! Details widget layout
+    KLineEdit      *m_search;        //! Custom search input
     KPushButton    *m_next;          //! Next Button
     KPushButton    *m_prev;          //! Back Button
     KPushButton    *m_save;          //! Save Button

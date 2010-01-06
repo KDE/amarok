@@ -23,8 +23,9 @@
 #include "PaletteHandler.h"
 
 #include <KLocale>
-#include <KVBox>
+#include <KLineEdit>
 #include <KPushButton>
+#include <KVBox>
 
 #include <QCloseEvent>
 #include <QGridLayout>
@@ -56,12 +57,22 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_prev->hide();
     m_next->hide();
 
-    m_labelPixmap = new QLabel( this );
+    KVBox *box = new KVBox( this );
+    box->setSpacing( 4 );
+
+    m_labelPixmap = new QLabel( box );
     m_labelPixmap->setMinimumHeight( 300 );
     m_labelPixmap->setMinimumWidth( 300 );
     m_labelPixmap->setAlignment( Qt::AlignCenter );
     m_labelPixmap->setPixmap( covers.first() );
     m_labelPixmap->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+
+    m_search = new KLineEdit( box );
+    m_search->setClearButtonShown( true );
+    m_search->setClickMessage( i18n( "Enter Custom Search" ) );
+
+    connect( m_search, SIGNAL(returnPressed(const QString&)),
+             this,     SIGNAL(newCustomQuery(const QString&)) );
 
     QFrame *m_details = new QFrame( this );
     m_details->setFrameShadow( QFrame::Plain );
@@ -83,7 +94,7 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_detailsLayout->addWidget( new QLabel( m_details ), 1, 1 );
     m_detailsLayout->addWidget( new QLabel( m_details ), 2, 1 );
 
-    setMainWidget( m_labelPixmap );
+    setMainWidget( box );
     setDetailsWidget( m_details );
 
     connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
