@@ -22,6 +22,7 @@
 #include <KSharedPtr>
 
 class CoverFetchPayload;
+class CoverFetchSearchPayload;
 
 /**
  * A work unit for the cover fetcher queue.
@@ -32,6 +33,7 @@ public:
     typedef KSharedPtr< CoverFetchUnit > Ptr;
 
     CoverFetchUnit( Meta::AlbumPtr album, const CoverFetchPayload *url, bool interactive = false );
+    CoverFetchUnit( const CoverFetchSearchPayload *url );
     CoverFetchUnit( const CoverFetchUnit &cpy );
     explicit CoverFetchUnit() {}
     ~CoverFetchUnit();
@@ -63,7 +65,7 @@ private:
 class CoverFetchPayload
 {
 public:
-    enum Type { INFO, ART };
+    enum Type { INFO, SEARCH, ART };
     CoverFetchPayload( const Meta::AlbumPtr album, enum Type type );
     virtual ~CoverFetchPayload();
 
@@ -101,6 +103,26 @@ protected:
 
 private:
     Q_DISABLE_COPY( CoverFetchInfoPayload );
+};
+
+/**
+ * Prepares URL for searching albums on Last.fm.
+ */
+class CoverFetchSearchPayload : public CoverFetchPayload
+{
+public:
+    explicit CoverFetchSearchPayload( const QString &query = QString() );
+    ~CoverFetchSearchPayload();
+
+    void setQuery( const QString &query );
+
+protected:
+    void prepareUrls();
+
+private:
+    QString m_query;
+
+    Q_DISABLE_COPY( CoverFetchSearchPayload );
 };
 
 /**

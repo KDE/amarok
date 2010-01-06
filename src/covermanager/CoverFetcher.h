@@ -50,6 +50,9 @@ public:
 
     enum FinishState { Success, Error, NotFound, Cancelled };
 
+public slots:
+    AMAROK_EXPORT void queueQuery( const QString &query );
+
 signals:
     void finishedSingle( int state );
 

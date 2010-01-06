@@ -43,6 +43,7 @@ public:
     bool add( const Meta::AlbumPtr album,
               bool interactive = false,
               const QByteArray &xml = QByteArray() );
+    bool addSearch( const QString &query );
 
     bool contains( const Meta::AlbumPtr album ) const;
     int index( const Meta::AlbumPtr album ) const;

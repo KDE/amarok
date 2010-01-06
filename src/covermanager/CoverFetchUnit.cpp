@@ -35,6 +35,13 @@ CoverFetchUnit::CoverFetchUnit( Meta::AlbumPtr album,
 {
 }
 
+CoverFetchUnit::CoverFetchUnit( const CoverFetchSearchPayload *url )
+    : QSharedData()
+    , m_interactive( true )
+    , m_url( url )
+{
+}
+
 CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
     : QSharedData( cpy )
 {
@@ -45,6 +52,9 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
     {
     case CoverFetchPayload::INFO:
         m_url = new CoverFetchInfoPayload( cpy.m_album );
+        break;
+    case CoverFetchPayload::SEARCH:
+        m_url = new CoverFetchSearchPayload();
         break;
     case CoverFetchPayload::ART:
         m_url = new CoverFetchArtPayload( cpy.m_album );
@@ -100,6 +110,9 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
     case CoverFetchPayload::INFO:
         m_url = new CoverFetchInfoPayload( rhs.m_album );
         break;
+    case CoverFetchPayload::SEARCH:
+        m_url = new CoverFetchSearchPayload();
+        break;
     case CoverFetchPayload::ART:
         m_url = new CoverFetchArtPayload( rhs.m_album );
         break;
@@ -128,7 +141,9 @@ bool CoverFetchUnit::operator!=( const CoverFetchUnit &other ) const
 
 CoverFetchPayload::CoverFetchPayload( const Meta::AlbumPtr album, CoverFetchPayload::Type type )
     : m_album( album )
-    , m_method( album->hasAlbumArtist() ? QString( "album.getinfo" ) : QString( "album.search" ) )
+    , m_method( ( type == SEARCH ) ? QString( "album.search" )
+                                   : album->hasAlbumArtist() ? QString( "album.getinfo" )
+                                                             : QString( "album.search" ) )
     , m_type( type )
 {
 }
@@ -159,7 +174,6 @@ CoverFetchPayload::isPrepared() const
  * CoverFetchInfoPayload
  */
 
-
 CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr album )
     : CoverFetchPayload( album, CoverFetchPayload::INFO )
 {
@@ -186,6 +200,40 @@ CoverFetchInfoPayload::prepareUrls()
     }
     url.addQueryItem( "method", method() );
 
+    m_urls.append( url );
+}
+
+/*
+ * CoverFetchSearchPayload
+ */
+
+CoverFetchSearchPayload::CoverFetchSearchPayload( const QString &query )
+    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::SEARCH )
+    , m_query( query )
+{
+    prepareUrls();
+}
+
+CoverFetchSearchPayload::~CoverFetchSearchPayload()
+{
+}
+
+void
+CoverFetchSearchPayload::setQuery( const QString &query )
+{
+    m_query = query;
+}
+
+void
+CoverFetchSearchPayload::prepareUrls()
+{
+    KUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/2.0/" );
+    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
+    url.addQueryItem( "album", m_query );
+    url.addQueryItem( "method", method() );
     m_urls.append( url );
 }
 

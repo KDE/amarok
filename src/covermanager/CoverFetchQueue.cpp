@@ -56,6 +56,13 @@ CoverFetchQueue::add( const Meta::AlbumPtr album, bool interactive, const QByteA
     return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, interactive ) ) );
 }
 
+bool
+CoverFetchQueue::addSearch( const QString &query )
+{
+    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query );
+    return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
+}
+
 int
 CoverFetchQueue::size() const
 {
