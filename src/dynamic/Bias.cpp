@@ -524,6 +524,8 @@ Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 double
 Dynamic::NormalBias::relevantField( Meta::TrackPtr track )
 {
+    if( !track )
+        return m_mu;
     if( m_field == Meta::valYear && track->year() )
         return (double)track->year()->name().toInt();
     if( m_field == Meta::valPlaycount )
