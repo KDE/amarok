@@ -32,6 +32,9 @@
 MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     : MySqlStorage()
 {
+
+    m_debugIdent = "MySQLe";
+
     QString defaultsFile;
     QString databaseDir;
     if( storageLocation.isEmpty() )
