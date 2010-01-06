@@ -19,8 +19,11 @@ VERSION 2.2.2
       fallback. Patch by Andreas Hartmetz <ahartmetz@gmail.com>.
 
   BUGFIXES:
+    * Fixed loading MusicBrainz-tagged tracks in dynamic playlists. (BR 219902)
+    * Fixed MusicBrainz-tagged tracks not being restored in the playlist
+      upon restart.
     * Fixed incorrect display of rich text in applet header text. (BR 220714)
-    * Fixed GUI freezing after mounting and during parse of media devices
+    * Fixed GUI freezing after mounting and during parse of media devices.
       (BR 180520)
     * Fixed occasional crash when custom biases go awry. (BR 219888)
     * Fixed missing icons in the drag overlay menu.
