@@ -105,6 +105,12 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     updatePixmap();
 }
 
+void CoverFoundDialog::keyPressEvent( QKeyEvent *event )
+{
+    if( !m_search->hasFocus() )
+        KDialog::keyPressEvent( event );
+}
+
 void CoverFoundDialog::resizeEvent( QResizeEvent *event )
 {
     if( m_labelPixmap && !m_labelPixmap->pixmap()->isNull() )

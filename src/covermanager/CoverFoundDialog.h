@@ -58,6 +58,7 @@ public slots:
     void add( QList< QPixmap > covers );
 
 protected:
+    void keyPressEvent( QKeyEvent *event );
     void resizeEvent( QResizeEvent *event );
     void closeEvent( QCloseEvent *event );
     void wheelEvent( QWheelEvent *event );
