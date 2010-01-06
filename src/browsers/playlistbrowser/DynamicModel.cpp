@@ -135,6 +135,7 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( const QString& name )
 Dynamic::DynamicPlaylistPtr
 PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
 {
+    DEBUG_BLOCK
     // The modified playlist is always the last one in the list,
     // so remove it if there is one.
     if( m_activeUnsaved && index !=  m_playlistList.size()-1 )
@@ -350,6 +351,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 void
 PlaylistBrowserNS::DynamicModel::playlistModified( Dynamic::BiasedPlaylistPtr p )
 {
+    DEBUG_BLOCK
     // this shouldn't happen
     if( p != m_playlistList[m_activePlaylist] )
     {

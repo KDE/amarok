@@ -92,6 +92,7 @@ Dynamic::WeeklyTopBias::WeeklyTopBias( double weight, uint from, uint to )
     , m_rangeJob( 0 )
     , m_dataJob( 0 )
 {
+    debug() << "CREATING WEEKLY TOP BIAS with dates:" << m_fromDate << m_toDate;
     QFile file( Amarok::saveLocation() + "dynamic_lastfm_topweeklyartists.xml" );
     file.open( QIODevice::ReadOnly | QIODevice::Text );
     QTextStream in( &file );
@@ -103,10 +104,6 @@ Dynamic::WeeklyTopBias::WeeklyTopBias( double weight, uint from, uint to )
     file.close();
    
     getPossibleRange();
-    
-    if( from != 0 && to != 0 )
-        fetchWeeklyData( from, to );
-
 }
 
 Dynamic::WeeklyTopBias::~WeeklyTopBias()
@@ -217,6 +214,7 @@ Dynamic::WeeklyTopBias::fromDateChanged( const QDateTime& d ) // SLOT
     m_fromDate = d.toTime_t();
 
     update();
+    emit biasChanged();
 }
 
 void
@@ -227,7 +225,7 @@ Dynamic::WeeklyTopBias::toDateChanged( const QDateTime& d ) // SLOT
     m_toDate = d.toTime_t();
 
     update();
-
+    emit biasChanged();
 }
 
 void
@@ -265,6 +263,8 @@ Dynamic::WeeklyTopBias::rangeJobFinished() // SLOT
         m_fromEdit->setMinimumDate( QDateTime::fromTime_t( m_earliestDate ).date() );
 
     m_rangeJob->deleteLater();
+
+    update();
 }
 
 void
@@ -309,9 +309,6 @@ void
 Dynamic::WeeklyTopBias::update()
 {
     DEBUG_BLOCK
-
-    debug() << "EMITTING WeeklyTopBias::biasChanged()";
-    emit biasChanged();
     
     debug() << m_fromDate << m_toDate;
     if( m_fromDate >= m_toDate )

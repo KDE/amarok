@@ -54,7 +54,8 @@ PlaylistBrowserNS::BiasWidget*
 Dynamic::CustomBias::widget( QWidget* parent )
 {
     DEBUG_BLOCK
-
+    if( m_currentEntry )
+        debug() << "type:" << m_currentEntry->pluginName();
     debug() << "custombias with weight: " << m_weight << "returning new widget";
     Dynamic::CustomBiasEntryWidget* w = new Dynamic::CustomBiasEntryWidget( this, parent );
     connect( w, SIGNAL( weightChangedInt( int ) ), m_currentEntry, SLOT( setWeight( int ) ) );
@@ -153,6 +154,7 @@ void
 Dynamic::CustomBias::registerNewBiasFactory( Dynamic::CustomBiasFactory* entry )
 {
     DEBUG_BLOCK
+    debug() << "new factory of type:" << entry->name() << entry->pluginName();
     if( !s_biasFactories.contains( entry ) )
         s_biasFactories.append( entry );
 
@@ -250,7 +252,6 @@ Dynamic::CustomBias::createBias( Dynamic::CustomBiasEntry* entry, double weight 
 
 void Dynamic::CustomBias::customBiasChanged()
 {
-    debug() << "custom bias emitting changed";
     emit biasChanged( this );
 }
 
@@ -260,6 +261,7 @@ Dynamic::CustomBias::setCurrentEntry( Dynamic::CustomBiasEntry* entry )
 {
     if( m_currentEntry )
         delete m_currentEntry;
+    connect( entry, SIGNAL( biasChanged() ), this, SLOT( customBiasChanged() ) );
     m_currentEntry = entry;
 }
 

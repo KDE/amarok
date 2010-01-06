@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009, 2010 Leo Franchi <lfranchi@kde.org>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -31,7 +31,7 @@ class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
 {
     Q_OBJECT
     public:
-        explicit CustomBiasEntryWidget( CustomBias*, QWidget* parent = 0 );
+        explicit CustomBiasEntryWidget( CustomBias* bias, QWidget* parent = 0 );
 
     signals:
         void weightChangedInt( int );
@@ -44,6 +44,8 @@ class AMAROK_EXPORT CustomBiasEntryWidget : public PlaylistBrowserNS::BiasWidget
         void weightChanged( int amount );
 
     private:
+        void setCurrentLoadedBiasWidget();
+
         CustomBias* m_cbias;
         QWidget* m_currentConfig;
 

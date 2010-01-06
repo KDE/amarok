@@ -186,7 +186,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_sessionKey( sessionKey ),
       m_userNameArray( 0 ),
       m_sessionKeyArray( 0 ),
-      m_lastFmBiasFactory( 0 )
+      m_lastFmBiasFactory( 0 ),
       m_weeklyTopBiasFactory( 0 )
 {
     DEBUG_BLOCK

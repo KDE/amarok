@@ -14,27 +14,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef WEEKLY_TOP_BIAS_H
-#define WEEKLY_TOP_BIAS_H
+#ifndef SIMILAR_ARTISTS_BIAS_H
+#define SIMILAR_ARTISTS_BIAS_H
 
 #include "CustomBiasEntry.h"
 #include "CustomBiasFactory.h"
-
-#include <QQueue>
-
-class QSignalMapper;
-class QByteArray;
-class QDate;
-class QDateTimeEdit;
-class QVBoxLayout;
-class QNetworkReply;
+#include <QNetworkReply>
+#include "EngineObserver.h"
 
 /**
- *  This is a bias which allows the user to select a range of dates, and then
- *  adds to the playlist tracks/artists/albums that were on their last.fm top
- *  tracks during that time
+ *  This is a bias which adds the suggested songs to the playlist.
  *
  */
+
+class KComboBox;
 
 namespace Amarok
 {
@@ -44,25 +37,25 @@ class Collection;
 namespace Dynamic
 {
 
-class WeeklyTopBiasFactory : public CustomBiasFactory
+class LastFmBiasFactory : public CustomBiasFactory
 {
     public:
-        WeeklyTopBiasFactory();
-        ~WeeklyTopBiasFactory();
-
+        LastFmBiasFactory();
+        ~LastFmBiasFactory();
+        
         virtual QString name() const;
         virtual QString pluginName() const;
         virtual CustomBiasEntry* newCustomBias( double weight );
         virtual CustomBiasEntry* newCustomBias( QDomElement e, double weight );
 };
 
-class WeeklyTopBias : public CustomBiasEntry
+// this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
+class LastFmBias : public CustomBiasEntry, public EngineObserver
 {
     Q_OBJECT
 public:
-    WeeklyTopBias( double weight, uint from = 0, uint to = 0 );
-    ~WeeklyTopBias();
-
+    LastFmBias( bool similarArtists, double weight );
+    ~LastFmBias();
 
     // reimplemented from CustomBiasEntry
     virtual QString pluginName() const;
@@ -72,73 +65,64 @@ public:
     virtual double numTracksThatSatisfy ( const Meta::TrackList& tracks );
 
     virtual QDomElement xml( QDomDocument doc ) const;
-
+    
     virtual bool hasCollectionFilterCapability();
     virtual CollectionFilterCapability* collectionFilterCapability();
+
+    // reimplemented from EngineObserver
+    virtual void engineNewTrackPlaying();
+
+    void update();
 
 Q_SIGNALS:
     void doneFetching();
     
 private Q_SLOTS:
-    void fromDateChanged( const QDateTime& );
-    void toDateChanged( const QDateTime& );
-
-    void updateDB();
+    void artistQueryDone();
+    void trackQueryDone();
+    void updateBias();
+    void artistUpdateReady ( QString collectionId, QStringList );
+    void trackUpdateReady ( QString collectionId, QStringList );
+    void updateFinished();
+    void collectionUpdated();
+    void activated( int index );
     void saveDataToFile();
-    void rangeJobFinished();
 
-    void weeklyFetch( QObject* );
-    void fetchWeeklyData(uint from = 0, uint to = 0);
-
-    // querymaker
-    void updateReady( QString, QStringList );
-    
 private:
-    void getPossibleRange();
-    void update();
-    void fetchNextWeeks( int num = 5 );
+    void addData( QString collectionId, QStringList uids, const QString& index, QMap< QString, QSet< QByteArray > >& storage );
+    void loadFromFile();
+    bool m_similarArtists;
+    QString m_currentArtist;
+    QString m_currentTrack;
+    QNetworkReply* m_artistQuery;
+    QNetworkReply* m_trackQuery;
+    QueryMaker* m_qm; // stored so it can be refreshed
+    // if the collection changes
+    Amarok::Collection* m_collection; // null => all queryable collections
+    bool m_needsUpdating;
+    QMutex m_mutex;
 
-    QSet< QByteArray > m_trackList;
-    
-    QueryMaker* m_qm;
-
-    QVBoxLayout* m_layout;
-    QDateTimeEdit* m_fromEdit;
-    QDateTimeEdit* m_toEdit;
-
-    QList< uint > m_weeklyCharts;
-    QList< uint > m_weeklyChartsTo;
-    QHash< uint, QStringList > m_weeklyChartData;
-    QStringList m_currentArtistList;
-    
-    uint m_fromDate;
-    uint m_toDate;
-
-    // be able to warn the user
-    uint m_earliestDate;
-    QQueue< QMap<QString,QString> > m_fetchQueue;
-    QSignalMapper* m_fetching;
-    
-    QNetworkReply* m_rangeJob;
-    QNetworkReply* m_dataJob;
-    Amarok::Collection* m_collection;
-
-    friend class WeeklyTopBiasCollectionFilterCapability; // so it can report the property and weight
+    KComboBox* m_combo;
+    QMap< QString, QSet< QByteArray > > m_savedArtists; // populated as queries come in
+    QMap< QString, QSet< QByteArray > > m_savedTracks; // populated as queries come in
+    // we do some caching here so multiple
+    // queries of the same artist are cheap
+    friend class LastFmBiasCollectionFilterCapability; // so it can report the property and weight
 };
 
 
-class WeeklyTopBiasCollectionFilterCapability : public Dynamic::CollectionFilterCapability
+class LastFmBiasCollectionFilterCapability : public Dynamic::CollectionFilterCapability
 {
 public:
-    WeeklyTopBiasCollectionFilterCapability ( WeeklyTopBias* bias ) : m_bias ( bias ) {}
+    LastFmBiasCollectionFilterCapability ( LastFmBias* bias ) : m_bias ( bias ) {}
 
     // re-implemented
-    virtual const QSet< QByteArray >& propertySet();
+    virtual const QSet<QByteArray>& propertySet();
     virtual double weight() const;
 
 
 private:
-    WeeklyTopBias* m_bias;
+    LastFmBias* m_bias;
 
 };
 

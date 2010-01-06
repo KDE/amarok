@@ -44,7 +44,6 @@ void
 PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr playlist )
 {
     DEBUG_BLOCK
-
     if( playlist.data() == m_playlist.data() )
         return;
 
@@ -53,13 +52,15 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
     Dynamic::BiasedPlaylist* bp = 
         dynamic_cast<Dynamic::BiasedPlaylist*>( playlist.data() );
 
+    debug() << "Setting active playlist:" <<bp->title() << bp->xml().text();
+
     if( bp )
     {
         beginInsertRows( QModelIndex(), 0, bp->biases().size() );
         m_playlist = bp;
         foreach( Dynamic::Bias* b, bp->biases() )
         {
-            debug() << "BIAS ADDED";
+            debug() << "BIAS ADDED" << b->description();
             PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView->viewport() );
 
             connect( widget, SIGNAL(widgetChanged(QWidget*)),
