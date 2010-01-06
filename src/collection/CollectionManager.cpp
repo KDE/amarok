@@ -26,6 +26,7 @@
 #include "meta/cue/Cue.h"
 #include "meta/stream/Stream.h"
 #include "PluginManager.h"
+#include "SmartPointerList.h"
 #include "SqlStorage.h"
 #include "timecode/TimecodeTrackProvider.h"
 
@@ -47,10 +48,10 @@ typedef QPair<Amarok::Collection*, CollectionManager::CollectionStatus> Collecti
 struct CollectionManager::Private
 {
     QList<CollectionPair> collections;
-    QList<Amarok::CollectionFactory*> factories;
+    SmartPointerList<Amarok::CollectionFactory> factories;
     SqlStorage *sqlDatabase;
     QList<Amarok::Collection*> unmanagedCollections;
-    QList<Amarok::Collection*> managedCollections;
+    SmartPointerList<Amarok::Collection> managedCollections;
     QList<Amarok::TrackProvider*> trackProviders;
     Amarok::Collection *primaryCollection;
 };
