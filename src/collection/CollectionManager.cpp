@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #define DEBUG_PREFIX "CollectionManager"
 
 #include "CollectionManager.h"
@@ -246,11 +246,21 @@ CollectionManager::queryMaker() const
 void
 CollectionManager::slotNewCollection( Amarok::Collection* newCollection )
 {
+    DEBUG_BLOCK
     if( !newCollection )
     {
         debug() << "Warning, newCollection in slotNewCollection is 0";
         return;
     }
+    foreach( CollectionPair p, d->collections )
+    {
+        if( p.first == newCollection )
+        {
+            debug() << "Warning, newCollection is already being managed";
+            return;
+        }
+    }
+
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "CollectionStatus" ) );
     const QString &value = KGlobal::config()->group( "CollectionManager" ).readEntry( newCollection->collectionId() );
