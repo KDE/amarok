@@ -354,9 +354,9 @@ bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t )
 {
     QMutexLocker locker( &m_mutex );
 
-    // we only wan't the uid part:
-    QString uidString = t->uidUrl().mid( t->uidUrl().lastIndexOf( '/' ) );
-    QByteArray uid = QByteArray::fromHex( uidString.toAscii() );
+    // we only want the uid part:
+    const QString uidString = t->uidUrl().mid( t->uidUrl().lastIndexOf( '/' ) );
+    const QByteArray uid = uidString.toAscii();
 
     return m_property.contains( uid );
 }
@@ -388,7 +388,7 @@ Dynamic::GlobalBias::updateReady( QString collectionId, QStringList uids )
     QByteArray uid;
     foreach( const QString &uidString, uids )
     {
-        uid = QByteArray::fromHex( uidString.mid(protocolLength).toAscii() );
+        uid = uidString.mid( protocolLength ).toAscii();
         m_property.insert( uid );
     }
 }

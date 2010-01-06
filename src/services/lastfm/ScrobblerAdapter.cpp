@@ -81,9 +81,9 @@ ScrobblerAdapter::engineNewTrackPlaying()
             m_current.setAlbum( track->album()->name() );
 
         QString uid = track->uidUrl();
-        if( uid.startsWith( "amarok-sqltrackuid://MB_" ) )
+        if( uid.startsWith( "amarok-sqltrackuid://mb-" ) )
         {
-            uid.remove( "amarok-sqltrackuid://MB_" );
+            uid.remove( "amarok-sqltrackuid://mb-" );
             m_current.setMbid( lastfm::Mbid( uid ) );
         }
 
