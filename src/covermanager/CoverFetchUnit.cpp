@@ -50,17 +50,17 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
 
     switch( cpy.m_url->type() )
     {
-    case CoverFetchPayload::INFO:
+    case CoverFetchPayload::Info:
         m_url = new CoverFetchInfoPayload( cpy.m_album );
         break;
-    case CoverFetchPayload::SEARCH:
+    case CoverFetchPayload::Search:
         {
             const CoverFetchSearchPayload *payload =
                 dynamic_cast< const CoverFetchSearchPayload * >( cpy.payload() );
             m_url = new CoverFetchSearchPayload( payload->query() );
             break;
         }
-    case CoverFetchPayload::ART:
+    case CoverFetchPayload::Art:
         {
             const CoverFetchArtPayload *payload =
                 dynamic_cast< const CoverFetchArtPayload * >( cpy.payload() );
@@ -115,17 +115,17 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
 
     switch( rhs.m_url->type() )
     {
-    case CoverFetchPayload::INFO:
+    case CoverFetchPayload::Info:
         m_url = new CoverFetchInfoPayload( rhs.m_album );
         break;
-    case CoverFetchPayload::SEARCH:
+    case CoverFetchPayload::Search:
         {
             const CoverFetchSearchPayload *payload =
                 dynamic_cast< const CoverFetchSearchPayload * >( rhs.payload() );
             m_url = new CoverFetchSearchPayload( payload->query() );
             break;
         }
-    case CoverFetchPayload::ART:
+    case CoverFetchPayload::Art:
         {
             const CoverFetchArtPayload *payload =
                 dynamic_cast< const CoverFetchArtPayload * >( rhs.payload() );
@@ -156,7 +156,7 @@ bool CoverFetchUnit::operator!=( const CoverFetchUnit &other ) const
 
 CoverFetchPayload::CoverFetchPayload( const Meta::AlbumPtr album, CoverFetchPayload::Type type )
     : m_album( album )
-    , m_method( ( type == SEARCH ) ? QString( "album.search" )
+    , m_method( ( type == Search ) ? QString( "album.search" )
                                    : album && album->hasAlbumArtist() ? QString( "album.getinfo" )
                                                                       : QString( "album.search" ) )
     , m_type( type )
@@ -190,7 +190,7 @@ CoverFetchPayload::isPrepared() const
  */
 
 CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr album )
-    : CoverFetchPayload( album, CoverFetchPayload::INFO )
+    : CoverFetchPayload( album, CoverFetchPayload::Info )
 {
     prepareUrls();
 }
@@ -223,7 +223,7 @@ CoverFetchInfoPayload::prepareUrls()
  */
 
 CoverFetchSearchPayload::CoverFetchSearchPayload( const QString &query )
-    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::SEARCH )
+    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Search )
     , m_query( query )
 {
     prepareUrls();
@@ -263,7 +263,7 @@ CoverFetchSearchPayload::prepareUrls()
  */
 
 CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album, bool wild )
-    : CoverFetchPayload( album, CoverFetchPayload::ART )
+    : CoverFetchPayload( album, CoverFetchPayload::Art )
     , m_wild( wild )
 {
 }

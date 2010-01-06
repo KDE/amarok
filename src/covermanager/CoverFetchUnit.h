@@ -65,7 +65,7 @@ private:
 class CoverFetchPayload
 {
 public:
-    enum Type { INFO, SEARCH, ART };
+    enum Type { Info, Search, Art };
     CoverFetchPayload( const Meta::AlbumPtr album, enum Type type );
     virtual ~CoverFetchPayload();
 

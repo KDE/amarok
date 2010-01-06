@@ -117,7 +117,7 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
         {
             The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
         }
-        else if( payload->type() == CoverFetchPayload::ART )
+        else if( payload->type() == CoverFetchPayload::Art )
         {
             // only one is needed when the fetch is non-interactive
             return;
@@ -144,15 +144,15 @@ CoverFetcher::slotResult( KJob *job )
 
     switch( payload->type() )
     {
-    case CoverFetchPayload::INFO:
+    case CoverFetchPayload::Info:
         m_queue->add( unit->album(), unit->isInteractive(), data );
         break;
 
-    case CoverFetchPayload::SEARCH:
+    case CoverFetchPayload::Search:
         m_queue->add( Meta::AlbumPtr( 0 ), unit->isInteractive(), data, true );
         break;
 
-    case CoverFetchPayload::ART:
+    case CoverFetchPayload::Art:
         QPixmap pixmap;
         if( pixmap.loadFromData( data ) )
         {
