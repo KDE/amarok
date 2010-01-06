@@ -45,9 +45,17 @@ ScanResultProcessor::~ScanResultProcessor()
     foreach( QStringList *list, m_urlsHashByUid )
         delete list;
     foreach( QLinkedList<QStringList*> *list, m_albumsHashByName )
+    {
+        foreach( QStringList *slist, *list )
+            delete slist;
         delete list;
+    }
     foreach( QLinkedList<QStringList*> *list, m_tracksHashByAlbum )
+    {
+        foreach( QStringList *slist, *list )
+            delete slist;
         delete list;
+    }
 }
 
 void
