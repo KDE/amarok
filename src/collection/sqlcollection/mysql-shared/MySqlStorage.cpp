@@ -265,7 +265,7 @@ MySqlStorage::longTextColumnType() const
 void
 MySqlStorage::reportError( const QString& message )
 {
-    QString errorMessage( "GREPME " + m_debugIdent + " query failed! " + mysql_error( m_db ) + " on " + message );
+    QString errorMessage( "GREPME " + m_debugIdent + " query failed! (" + QString::number( mysql_errno( m_db ) ) + ") " + mysql_error( m_db ) + " on " + message );
     error() << errorMessage;
 }
 
