@@ -30,7 +30,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 12;
+static const int DB_VERSION = 13;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -129,6 +129,11 @@ DatabaseUpdater::update()
         {
             upgradeVersion11to12();
             dbVersion = 12;
+        }
+        if( dbVersion == 12 && dbVersion < DB_VERSION )
+        {
+            upgradeVersion12to13();
+            dbVersion = 13;
         }
         /*
         if( dbVersion == X && dbVersion < DB_VERSION )
@@ -588,6 +593,13 @@ DatabaseUpdater::upgradeVersion11to12()
     DEBUG_BLOCK
     //Counteract the above -- force it off for everyone except those explicitly enabling it.
     AmarokConfig::setUseCharsetDetector( false );
+}
+
+void
+DatabaseUpdater::upgradeVersion12to13()
+{
+    DEBUG_BLOCK
+    m_collection->query( "UPDATE urls SET uniqueid = REPLACE(uniqueid, 'MB_', 'mb-');" ); 
 }
 
 void
