@@ -22,6 +22,7 @@
 #include "mediadevicecollection_export.h"
 
 #include <QList>
+#include <QPointer>
 #include <QMultiMap>
 
 class MediaDeviceCollection;
@@ -145,7 +146,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         void setPlayableUrl( const KUrl &url) { m_playableUrl = url; }
 
     private:
-        MediaDeviceCollection *m_collection;
+        QPointer<MediaDeviceCollection> m_collection;
 
         MediaDeviceArtistPtr m_artist;
         MediaDeviceAlbumPtr m_album;
