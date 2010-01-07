@@ -69,7 +69,7 @@ void Albums::init()
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
     
-    m_model = new AlbumsModel();
+    m_model = new AlbumsModel( this );
     m_model->setColumnCount( 1 );
     m_albumsView->setModel( m_model );
     m_albumsView->show();

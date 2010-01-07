@@ -20,6 +20,11 @@
 #include "core/support/Debug.h"
 #include "TrackItem.h"
 
+AlbumsModel::AlbumsModel( QObject *parent )
+    : QStandardItemModel( parent )
+{
+}
+
 QMimeData*
 AlbumsModel::mimeData(const QModelIndexList & indices) const
 {
