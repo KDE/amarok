@@ -32,6 +32,8 @@
 #include <KLocale>
 #include <KUrl>
 
+#define DEBUG_PREFIX "CoverFetcher"
+
 CoverFetcher* CoverFetcher::s_instance = 0;
 
 CoverFetcher*

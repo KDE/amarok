@@ -21,6 +21,8 @@
 #include <QRegExp>
 #include <QSet>
 
+#define DEBUG_PREFIX "CoverFetchUnit"
+
 /*
  * CoverFetchUnit
  */
@@ -121,6 +123,11 @@ bool CoverFetchUnit::operator!=( const CoverFetchUnit &other ) const
 {
     return !( *this == other );
 }
+
+#ifdef  DEBUG_PREFIX
+# undef DEBUG_PREFIX
+#endif
+#define DEBUG_PREFIX "CoverFetchPayload"
 
 /*
  * CoverFetchPayload

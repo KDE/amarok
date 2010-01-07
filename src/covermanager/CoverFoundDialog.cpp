@@ -29,6 +29,8 @@
 #include <QCloseEvent>
 #include <QGridLayout>
 
+#define DEBUG_PREFIX "CoverFoundDialog"
+
 CoverFoundDialog::CoverFoundDialog( QWidget *parent,
                                     Meta::AlbumPtr album,
                                     const QList<QPixmap> &covers )

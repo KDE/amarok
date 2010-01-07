@@ -52,6 +52,7 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 
+#define DEBUG_PREFIX "CoverManager"
 
 static QString artistToSelectInInitFunction;
 CoverManager *CoverManager::s_instance = 0;

@@ -17,6 +17,8 @@
 #include "CoverFetchQueue.h"
 #include "Debug.h"
 
+#define DEBUG_PREFIX "CoverFetchQueue"
+
 CoverFetchQueue::CoverFetchQueue( QObject *parent )
     : QObject( parent )
 {
