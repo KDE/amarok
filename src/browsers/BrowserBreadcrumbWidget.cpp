@@ -168,15 +168,14 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
     }
     else
     {
-        item->setActive( true );
-
         //if this item has children, add a menu button for selecting these.
         BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( list );
         if( childList )
         {
             m_childMenuButton = new BreadcrumbItemMenuButton( m_breadcrumbArea );
 
-            QMenu *menu = new QMenu( 0 );
+            QMenu *menu = new QMenu( item );
+            menu->hide();
 
             QMap<QString,BrowserCategory *> childMap =  childList->categories();
 
@@ -195,14 +194,14 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
 
             }
 
-        m_childMenuButton->setMenu( menu );
-        
-        //do a little magic to line up items in the menu with the current item
-        int offset = 6;
-        menu->setContentsMargins( offset, 1, 1, 2 );
+            m_childMenuButton->setMenu( menu );
+
+            //do a little magic to line up items in the menu with the current item
+            int offset = 6;
+            menu->setContentsMargins( offset, 1, 1, 2 );
 
         }
-        
+        item->setActive( true );
     }
 
     hideAsNeeded( width() );
