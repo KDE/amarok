@@ -93,7 +93,7 @@ CoverFetchQueue::remove( const Meta::AlbumPtr album )
 bool
 CoverFetchQueue::contains( const Meta::AlbumPtr album ) const
 {
-    typedef QList< CoverFetchUnit::Ptr >::const_iterator ListIter;
+    typedef CoverFetchUnitList::const_iterator ListIter;
     ListIter it   = m_queue.constBegin();
     ListIter last = m_queue.constEnd();
     while( it != last )

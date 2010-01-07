@@ -29,6 +29,8 @@
 
 class CoverFetchPayload;
 
+typedef QList< CoverFetchUnit::Ptr > CoverFetchUnitList;
+
 /**
  * A queue that keeps track of albums to fetch covers for.
  */
@@ -62,7 +64,7 @@ private:
     bool add( const CoverFetchUnit::Ptr unit );
     void remove( const Meta::AlbumPtr album );
 
-    QList< CoverFetchUnit::Ptr > m_queue;
+    CoverFetchUnitList m_queue;
     Q_DISABLE_COPY( CoverFetchQueue );
 };
 
