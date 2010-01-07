@@ -46,10 +46,14 @@ qt4_add_dbus_adaptor( amarok_collection-sqlcollection_SRCS
 kde4_add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
 
 target_link_libraries(amarok-sqlcollection
-    ${KDE4_CORE_LIBS}
-    ${QT_QTCORE_LIBS}
-    ${TAGLIB_LIBRARIES}
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_KIO_LIBS}
+    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${QT_QTCORE_LIBRARY}
+    ${QT_QTGUI_LIBRARY}
     ${TAGLIB-EXTRAS_LIBRARIES}
+    ${TAGLIB_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     amaroklib
 )
