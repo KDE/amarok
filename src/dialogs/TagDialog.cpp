@@ -1433,7 +1433,11 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
     {
         debug() << "TagDialog::LYRICSCHANGED";
 
-        if ( ui->kRichTextEdit_lyrics->textOrHtml().isEmpty() )
+        // check if the plaintext lyrics are empty
+        // (checking against HTML lyrics does not work as the HTML lyrics
+        // contain invisibble stuff (like the <title> tag) - thus there is nothing
+        // visible anymore, but isEmpty() would still return false)
+        if ( ui->kRichTextEdit_lyrics->toPlainText().isEmpty() )
         {
             m_storedLyrics.remove( track );
             m_storedLyrics.insert( track, QString() );
