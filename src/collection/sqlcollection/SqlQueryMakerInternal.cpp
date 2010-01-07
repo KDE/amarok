@@ -249,3 +249,5 @@ SqlQueryMakerInternal::handleYears( const QStringList &result )
     }
     emitOrStoreProperResult( Meta::YearPtr, years );
 }
+
+#include "SqlQueryMakerInternal.moc"
