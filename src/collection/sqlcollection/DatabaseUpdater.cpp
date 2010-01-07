@@ -607,7 +607,7 @@ void
 DatabaseUpdater::upgradeVersion12to13()
 {
     DEBUG_BLOCK
-    m_collection->query( "UPDATE urls SET uniqueid = REPLACE(uniqueid, 'MB_', 'mb-');" ); 
+    m_storage->query( "UPDATE urls SET uniqueid = REPLACE(uniqueid, 'MB_', 'mb-');" );
 }
 
 void
