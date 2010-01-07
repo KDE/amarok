@@ -100,7 +100,8 @@ void SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 void SimilarArtistsEngine::update()
 {
     DEBUG_BLOCK
-    
+
+    debug() << "SAE update";
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     
@@ -131,7 +132,7 @@ void SimilarArtistsEngine::update()
         
         if (artistName.compare("") == 0) {
             setData( "similarArtists", "artist", "Unknown artist" );
-        } else if(artistName!=m_artist) { // we update the data only
+        } else { // if(artistName!=m_artist) { // we update the data only
                                           // if the artist has changed
             setData( "similarArtists", "artist", artistName );
             similarArtistsRequest( artistName );
@@ -145,6 +146,7 @@ void
 SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
 {
     DEBUG_BLOCK
+    debug() << "SAE request";
 
     QUrl url;
     url.setScheme( "http" );
@@ -153,6 +155,10 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
     url.addQueryItem( "method", "artist.getSimilar" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
+
+    // Read config and inform the engine.
+    KConfigGroup config = Amarok::config("SimilarArtists Applet");
+    m_maxArtists = config.readEntry( "maxArtists", "3" ).toInt(); //the default is already fixed by the applet
     url.addQueryItem( "limit", QString(m_maxArtists) );
 
     m_artist=artist_name;
@@ -165,6 +171,8 @@ void
 SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
 {
     DEBUG_BLOCK
+    debug() << "SAE parse";
+    
     m_similarArtists.clear();
 
     if( !m_similarArtistsJob ) return; //track changed while we were fetching
@@ -253,12 +261,6 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
     setData ( "similarArtists", "SimilarArtists", variant );
 }
 
-
-void
-SimilarArtistsEngine::reloadSimilarArtists()
-{
-
-}
 
 #include "SimilarArtistsEngine.moc"
 

@@ -79,8 +79,6 @@ private:
 
     int m_maxArtists;
     
-    void reloadSimilarArtists();
-    
     KJob *m_similarArtistsJob;
 
     Meta::TrackPtr m_currentTrack;

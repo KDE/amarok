@@ -54,7 +54,7 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
 
-    m_stoppedState=true;
+    m_stoppedState=false;
 }
 
 
@@ -75,6 +75,10 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
 void
 SimilarArtistsApplet::init()
 {
+    DEBUG_BLOCK
+
+    debug()<< "SAA deb init";
+    
     // create the layout for dispose the artists widgets in the scrollarea via a widget
     m_layout=new QVBoxLayout;
     m_layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
@@ -121,16 +125,18 @@ SimilarArtistsApplet::init()
     // add the scrollarea in the applet
     m_scrollProxy->setWidget( m_scroll );
 
+    // Read config and inform the engine.
+    KConfigGroup config = Amarok::config("SimilarArtists Applet");
+    m_maxArtists = config.readEntry( "maxArtists", "3" ).toInt();
+
     connectSource( "similarArtists" );
     connect( dataEngine( "amarok-similarArtists" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );
 
     constraintsEvent();
     updateConstraints();
-
-    // Read config and inform the engine.
-    KConfigGroup config = Amarok::config("SimilarArtists Applet");
-    m_maxArtists = config.readEntry( "maxArtists", "3" ).toInt();
     
+
+    debug()<< "SAA fin init";
 }
 
 void
@@ -146,6 +152,10 @@ void
 SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
+
+    DEBUG_BLOCK
+
+    debug()<< "SAA deb const";
 
     prepareGeometryChange();
     qreal widmax = boundingRect().width() - 2 * m_settingsIcon->size().width() - 6 * standardPadding();
@@ -169,6 +179,9 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
     QSize artistSize( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width(), artistsSize.height() - 2 * standardPadding() );
     m_scroll->widget()->setMinimumSize( artistSize );
     m_scroll->widget()->setMaximumSize( artistSize );
+
+
+    debug()<< "SAA fin const";
     
 }
 
@@ -293,6 +306,8 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
                 cpt=0; 
                 foreach(ArtistWidget* art, m_artists) {
                     art->setArtist(similars.at(cpt).name(), similars.at(cpt).url());
+
+                    debug()<< "SAA artist: " << similars.at(cpt).name();
                     art->setPhoto(similars.at(cpt).urlImage());
                     art->setMatch(similars.at(cpt).match());
                     cpt++;
