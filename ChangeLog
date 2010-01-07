@@ -7,6 +7,7 @@ VERSION 2.3.2
   FEATURES:
 
   CHANGES:
+    * Bumped libMTP dependency to version 1.0.0.
     * Improved response of current track and albums applet on data updates.
     * Use system date/time format for default name when saving user playlists.
 
@@ -476,7 +477,6 @@ VERSION 2.3-Beta 1
     * Fixed behaviour when clearing the bookmark manager filter.
     * Fixed track not being added to the playlist when playing a track from
       the bookmark manager.
-
 
 VERSION 2.2.2
   CHANGES:
