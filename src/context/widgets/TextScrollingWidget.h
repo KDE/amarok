@@ -45,6 +45,7 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsTextItem
     public:
 
         TextScrollingWidget( QGraphicsItem* parent = 0 );
+        virtual ~TextScrollingWidget();
 
         void setBrush( const QBrush &brush );
 

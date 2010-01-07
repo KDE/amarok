@@ -47,6 +47,11 @@ TextScrollingWidget::TextScrollingWidget( QGraphicsItem* parent )
     document()->setDocumentMargin( 0 );
 }
 
+TextScrollingWidget::~TextScrollingWidget()
+{
+    delete m_fm;
+}
+
 void
 TextScrollingWidget::setBrush( const QBrush &brush )
 {
