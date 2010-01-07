@@ -142,6 +142,7 @@ CoverFetcher::slotResult( KJob *job )
     {
     case CoverFetchPayload::INFO:
         m_queue->add( unit->album(), unit->options(), data );
+        m_queue->remove( unit );
         break;
 
     case CoverFetchPayload::ART:
