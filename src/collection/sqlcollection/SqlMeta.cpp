@@ -327,6 +327,7 @@ SqlTrack::setArtist( const QString &newArtist )
         writeMetaDataToFile();
         writeMetaDataToDb( Meta::Field::ARTIST );
         notifyObservers();
+        m_collection->sendChangedSignal();
     }
 }
 
@@ -348,6 +349,7 @@ SqlTrack::setGenre( const QString &newGenre )
         writeMetaDataToFile();
         writeMetaDataToDb( Meta::Field::GENRE );
         notifyObservers();
+        m_collection->sendChangedSignal();
     }
 }
 
@@ -369,6 +371,7 @@ SqlTrack::setComposer( const QString &newComposer )
         writeMetaDataToFile();
         writeMetaDataToDb( Meta::Field::COMPOSER );
         notifyObservers();
+        m_collection->sendChangedSignal();
     }
 }
 
@@ -390,6 +393,7 @@ SqlTrack::setYear( const QString &newYear )
         writeMetaDataToFile();
         writeMetaDataToDb( Meta::Field::YEAR );
         notifyObservers();
+        m_collection->sendChangedSignal();
     }
 }
 
@@ -434,6 +438,7 @@ SqlTrack::setAlbum( const QString &newAlbum )
         writeMetaDataToFile();
         writeMetaDataToDb( Meta::Field::ALBUM );
         notifyObservers();
+        m_collection->sendChangedSignal();
     }
 }
 
@@ -519,6 +524,7 @@ SqlTrack::setTitle( const QString &newTitle )
         m_cache.insert( Meta::Field::TITLE, newTitle );
     else
     {
+        debug() << "setting title in non batch mode " << m_batchUpdate;
         m_title = newTitle;
         m_cache.clear();
         m_cache.insert( Meta::Field::TITLE, newTitle );
@@ -633,7 +639,6 @@ SqlTrack::updateFileSize()
 void
 SqlTrack::commitMetaDataChanges()
 {
-    DEBUG_BLOCK
     if( m_batchUpdate )
     {
         if( m_cache.contains( Meta::Field::TITLE ) )
