@@ -10,6 +10,7 @@ VERSION 2.2.3
     * Bumped libMTP dependency to version 1.0.0.
     * Loving a track for Last.fm via the global keyboard action also show a
       message in the status bar.
+    * Improved usability of the playlist layout editor dialog.
 
   BUGFIXES:
     * Fixed behaviour when clearing the bookmark manager filter.
