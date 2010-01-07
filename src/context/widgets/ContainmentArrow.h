@@ -49,6 +49,8 @@ class SvgRenderJob;
 class AMAROK_EXPORT ContainmentArrow : public QObject, public QGraphicsItem
 {
     Q_OBJECT
+    Q_INTERFACES( QGraphicsItem )
+
 public:
     explicit ContainmentArrow( QGraphicsItem *parent  = 0, int direction = RIGHT );
     ~ContainmentArrow();
