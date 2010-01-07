@@ -65,7 +65,7 @@ class PlaylistFileProvider : public UserPlaylistProvider
         virtual void loadPlaylists();
 
     signals:
-            virtual void updated();
+            void updated();
 
     private slots:
             void slotRemove();
