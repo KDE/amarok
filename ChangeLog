@@ -7,9 +7,9 @@ VERSION 2.2.3
   FEATURES
  
   CHANGES:
+    * Bumped libMTP dependency to version 1.0.0.
 
   BUGFIXES:
-
 
 
 VERSION 2.2.2
