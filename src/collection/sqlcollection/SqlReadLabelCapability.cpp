@@ -92,3 +92,4 @@ SqlReadLabelCapability::labels()
 
 }
 
+#include "SqlReadLabelCapability.moc"
