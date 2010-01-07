@@ -19,6 +19,7 @@
 
 #include "amarok_export.h"
 #include "AmarokUrl.h"
+#include "BookmarkModel.h"
 #include "BookmarkViewItem.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -47,7 +48,9 @@ public:
 protected:
     void keyPressEvent( QKeyEvent *event );
     void mouseDoubleClickEvent( QMouseEvent *event );
-    void contextMenuEvent( QContextMenuEvent * event );
+    void contextMenuEvent( QContextMenuEvent *event );
+    void resizeEvent( QResizeEvent *event );
+    bool viewportEvent( QEvent *event );
 
 protected slots:
     void slotLoad();
@@ -58,6 +61,9 @@ protected slots:
 
     //for testing...
     void slotCreateTimecodeTrack() const;
+
+    void slotSectionResized( int logicalIndex, int oldSize, int newSize );
+    void slotSectionCountChanged( int oldCount, int newCount );
 
     void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
 
@@ -76,6 +82,8 @@ private:
     KAction *m_createTimecodeTrackAction;
 
     KAction *m_addGroupAction;
+
+    QMap<BookmarkModel::Column, qreal> m_columnsSize;
 
     QSortFilterProxyModel * m_proxyModel;
 };
