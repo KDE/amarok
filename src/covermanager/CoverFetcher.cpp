@@ -158,6 +158,7 @@ CoverFetcher::slotResult( KJob *job )
 
     KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     const QByteArray data = storedJob->data();
+    storedJob->deleteLater();
 
     const CoverFetchPayload *payload = unit->payload();
 
