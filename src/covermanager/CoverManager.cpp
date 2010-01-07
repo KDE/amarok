@@ -265,6 +265,8 @@ CoverManager::~CoverManager()
     DEBUG_BLOCK
 
     Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );    s_instance = 0;
+
+    qDeleteAll( m_coverItems );
 }
 
 
@@ -354,8 +356,10 @@ void CoverManager::showOnce( const QString &artist )
 
 void CoverManager::slotArtistSelected() //SLOT
 {
-    m_coverView->clear();
+    // delete cover items before clearing cover view
+    qDeleteAll( m_coverItems );
     m_coverItems.clear();
+    m_coverView->clear();
 
     //Extra time for the sake of init() and aesthetics
     QTimer::singleShot( 0, this, SLOT( slotArtistSelectedContinue() ) );
