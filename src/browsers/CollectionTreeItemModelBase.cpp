@@ -70,11 +70,11 @@ CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 
 Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) const
 {
-    if ( !index.isValid() )
-        return Qt::ItemIsEnabled;
-
     Qt::ItemFlags flags;
-    flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEditable;
+    if( index.isValid() )
+    {
+        flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEditable;
+    }
     return flags;
 
 }
@@ -200,6 +200,11 @@ CollectionTreeItemModelBase::headerData(int section, Qt::Orientation orientation
 QModelIndex
 CollectionTreeItemModelBase::index(int row, int column, const QModelIndex & parent) const
 {
+    //ensure sanity of parameters
+    //we are a tree model, there are no columns
+    if( row < 0 || column != 0 )
+        return QModelIndex();
+
     CollectionTreeItem *parentItem;
 
     if (!parent.isValid())
