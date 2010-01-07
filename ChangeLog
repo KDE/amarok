@@ -8,6 +8,8 @@ VERSION 2.2.3
  
   CHANGES:
     * Bumped libMTP dependency to version 1.0.0.
+    * Loving a track for Last.fm via the global keyboard action also show a
+      message in the status bar.
 
   BUGFIXES:
 
