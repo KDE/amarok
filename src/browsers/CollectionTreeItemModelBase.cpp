@@ -70,7 +70,7 @@ CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 
 Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) const
 {
-    Qt::ItemFlags flags;
+    Qt::ItemFlags flags = 0;
     if( index.isValid() )
     {
         flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEditable;
