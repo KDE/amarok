@@ -202,6 +202,7 @@ set(libconfigdialog_SRCS
 
 kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/CollectionConfig.ui
+    configdialog/dialogs/EqualizerConfig.ui
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui

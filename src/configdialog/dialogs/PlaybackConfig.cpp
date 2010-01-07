@@ -34,9 +34,7 @@ PlaybackConfig::PlaybackConfig( QWidget* parent )
     kcfg_FadeoutOnExit->setHidden( true );
 
     connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL( clicked() ), SLOT( configurePhonon() ) );
-
-    // Set up equalizer items :
-    eqSetupUI();
+    connect( findChild<QPushButton*>( "equalizerButton" ), SIGNAL( clicked() ), SLOT( configureEqualizer() ) );
 }
 
 PlaybackConfig::~PlaybackConfig()
@@ -81,12 +79,45 @@ PlaybackConfig::configurePhonon() //SLOT
     KCM->deleteLater();
 }
 
+void
+PlaybackConfig::configureEqualizer() //SLOT
+{
+    DEBUG_BLOCK
+    
+    EqualizerConfig* equalizer = new EqualizerConfig( 0 );
+    equalizer->exec();
+    
+    equalizer->deleteLater();
+}
+
+
 ///////////////////////////////////////////////////////////////
 // EQUALIZER METHODS
 ///////////////////////////////////////////////////////////////
-void
-PlaybackConfig::eqSetupUI()
+
+EqualizerConfig::EqualizerConfig( QWidget* parent )
+    : KDialog( parent )
 {
+    DEBUG_BLOCK
+
+    setCaption( i18n( "Configure Equalizer" ) );
+
+    setupUi( this );
+    
+    // Set up equalizer items :
+    eqSetupUI();
+
+    adjustSize();
+}
+
+void
+EqualizerConfig::eqSetupUI()
+{
+    QGridLayout* layout = new QGridLayout( this );
+    layout->addWidget( EqualizerGroupBox );
+
+    setMainWidget( EqualizerGroupBox );
+    
     // Check if equalizer is supported - disable controls if not
     if( !The::engineController()->isEqSupported() )
     {
@@ -165,7 +196,7 @@ PlaybackConfig::eqSetupUI()
 }
 
 void
-PlaybackConfig::eqPresetChanged( int index ) //SLOT
+EqualizerConfig::eqPresetChanged( int index ) //SLOT
 {
     if( index < 0 )
         return;
@@ -178,7 +209,7 @@ PlaybackConfig::eqPresetChanged( int index ) //SLOT
 }
 
 void
-PlaybackConfig::eqBandsChanged() //SLOT
+EqualizerConfig::eqBandsChanged() //SLOT
 {
     // update values from sliders
     QList<int> eqGains;
@@ -196,14 +227,14 @@ PlaybackConfig::eqBandsChanged() //SLOT
 }
 
 void
-PlaybackConfig::eqUpdateToolTips()
+EqualizerConfig::eqUpdateToolTips()
 {
     foreach( QSlider* mSlider, mBands )
         mSlider->setToolTip( QString::number( mSlider->value()*mValueScale/100.0, 'f', 1 ) );
 }
 
 void
-PlaybackConfig::eqUpdateLabels( QList<int> & mEqGains )
+EqualizerConfig::eqUpdateLabels( QList<int> & mEqGains )
 {
     QListIterator<int> i( mEqGains );
     foreach( QLabel* mLabel, mBandsValues )
@@ -213,7 +244,7 @@ PlaybackConfig::eqUpdateLabels( QList<int> & mEqGains )
 // SLOTS
 
 void
-PlaybackConfig::eqUpdateUI( int index ) // SLOT
+EqualizerConfig::eqUpdateUI( int index ) // SLOT
 {
     if( index < 0 )
         return;
@@ -241,7 +272,7 @@ PlaybackConfig::eqUpdateUI( int index ) // SLOT
 }
 
 void
-PlaybackConfig::eqDeletePreset() //SLOT
+EqualizerConfig::eqDeletePreset() //SLOT
 {
     QString mPresetSelected = eqPresets->currentText();
     if( eqCfgDeletePreset( mPresetSelected ) )
@@ -256,21 +287,21 @@ PlaybackConfig::eqDeletePreset() //SLOT
     }
     else
     {
-        KMessageBox::detailedSorry( this, i18n( "Cannot delete this preset" ),
-                                          i18n( "Default presets can not be deleted" ),
-                                          i18n( "Error deleting preset" ) );
+        KMessageBox::detailedSorry( 0, i18n( "Cannot delete this preset" ),
+                                       i18n( "Default presets can not be deleted" ),
+                                       i18n( "Error deleting preset" ) );
     }
 }
 
 void
-PlaybackConfig::eqRestorePreset() //SLOT
+EqualizerConfig::eqRestorePreset() //SLOT
 {
     const QString mPresetSelected = eqPresets->currentText();
     if( !eqCfgRestorePreset( mPresetSelected ) )
     {    
-        KMessageBox::detailedSorry( this, i18n( "Cannot restore this preset" ),
-                                        i18n( "Only default presets can be restored" ),
-                                        i18n( "Error restoring preset" ) );
+        KMessageBox::detailedSorry( 0, i18n( "Cannot restore this preset" ),
+                                       i18n( "Only default presets can be restored" ),
+                                       i18n( "Error restoring preset" ) );
         return;
     }
     // new settings
@@ -282,15 +313,15 @@ PlaybackConfig::eqRestorePreset() //SLOT
 }
 
 void
-PlaybackConfig::eqSavePreset() //SLOT
+EqualizerConfig::eqSavePreset() //SLOT
 {
     QString mPresetSelected = eqPresets->currentText();
     if( mPresetSelected == QLatin1String( "Manual" ) )
     {
-        KMessageBox::detailedSorry( this, i18n( "Cannot save this preset" ),
-                                        i18n( "Preset 'Manual' is reserved for momentary settings.\n\
-                                               Please choose different name and try again." ),
-                                        i18n( "Error saving preset" ) );
+        KMessageBox::detailedSorry( 0, i18n( "Cannot save this preset" ),
+                                       i18n( "Preset 'Manual' is reserved for momentary settings.\n\
+                                              Please choose different name and try again." ),
+                                       i18n( "Error saving preset" ) );
         return;
     }
 
@@ -309,7 +340,7 @@ PlaybackConfig::eqSavePreset() //SLOT
 
 // Equalizer preset management helper functions
 bool
-PlaybackConfig::eqCfgDeletePreset( QString & mPresetName )
+EqualizerConfig::eqCfgDeletePreset( QString & mPresetName )
 {
       // Idea is to delete the preset only if it is user preset:
       // present on user list & absent on default list
@@ -334,7 +365,7 @@ PlaybackConfig::eqCfgDeletePreset( QString & mPresetName )
 }
 
 bool
-PlaybackConfig::eqCfgRestorePreset( QString mPresetName )
+EqualizerConfig::eqCfgRestorePreset( QString mPresetName )
 {
       // Idea is to delete the preset if it found on both
       // user list and default list - delete from the latter if so
@@ -359,7 +390,7 @@ PlaybackConfig::eqCfgRestorePreset( QString mPresetName )
 }
 
 void
-PlaybackConfig::eqCfgSetPresetVal( QString & mPresetName, QList<int> & mPresetValues)
+EqualizerConfig::eqCfgSetPresetVal( QString & mPresetName, QList<int> & mPresetValues)
 {
     // Idea is to insert new values into user list
     // if preset exist on the list - replace it values
@@ -382,7 +413,7 @@ PlaybackConfig::eqCfgSetPresetVal( QString & mPresetName, QList<int> & mPresetVa
 }
 
 QList<int>
-PlaybackConfig::eqCfgGetPresetVal( QString mPresetName )
+EqualizerConfig::eqCfgGetPresetVal( QString mPresetName )
 {
       // Idea is to return user preset with request name first
       // if not look into into default preset names
@@ -400,7 +431,7 @@ PlaybackConfig::eqCfgGetPresetVal( QString mPresetName )
 
 
 QStringList
-PlaybackConfig::eqGlobalList()
+EqualizerConfig::eqGlobalList()
 {
     // This function will build up a global list
     // first a default preset will comes
@@ -414,4 +445,5 @@ PlaybackConfig::eqGlobalList()
     }
     return mGlobalList;
 }
+
 #include "PlaybackConfig.moc"
