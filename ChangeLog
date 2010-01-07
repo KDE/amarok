@@ -10,6 +10,8 @@ VERSION 2.2.3
 
   BUGFIXES:
     * Fixed behaviour when clearing the bookmark manager filter.
+    * Fixed track not being added to the playlist when playing a track from
+      the bookmark manager.
 
 
 
