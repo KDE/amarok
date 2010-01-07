@@ -13,6 +13,7 @@ VERSION 2.2.3
     * Improved usability of the playlist layout editor dialog.
 
   BUGFIXES:
+    * Sort artists named like "The Foo" correctly in all cases. (BR 176670)
     * Fixed behaviour when clearing the bookmark manager filter.
     * Fixed track not being added to the playlist when playing a track from
       the bookmark manager.
