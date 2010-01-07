@@ -145,7 +145,7 @@ MySqlServerStorage::query( const QString &query )
     }
 
 
-    return MySqlServerStorage::query( query );
+    return MySqlStorage::query( query );
 }
 
 #include "MySqlServerCollection.moc"
