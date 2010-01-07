@@ -106,6 +106,11 @@ namespace Amarok
         }  
     }
 
+    void TracklistDBusHandler::PlayTrack( int index )
+    {
+        The::playlistActions()->play( index );
+    }
+
     void TracklistDBusHandler::slotTrackListChange()
     {
         emit TrackListChange( The::playlist()->rowCount() );
