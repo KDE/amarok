@@ -72,13 +72,13 @@ void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
     DEBUG_BLOCK
-    m_queue->add( album, true );
+    m_queue->add( album, CoverFetch::Interactive );
 }
 
 void
 CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 {
-    m_queue->add( album, false );
+    m_queue->add( album, CoverFetch::Automatic );
 }
 
 void
@@ -86,7 +86,7 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 {
     foreach( Meta::AlbumPtr album, albums )
     {
-        m_queue->add( album, false );
+        m_queue->add( album, CoverFetch::Automatic );
     }
 }
 
@@ -141,7 +141,7 @@ CoverFetcher::slotResult( KJob *job )
     switch( payload->type() )
     {
     case CoverFetchPayload::INFO:
-        m_queue->add( unit->album(), unit->isInteractive(), data );
+        m_queue->add( unit->album(), unit->options(), data );
         break;
 
     case CoverFetchPayload::ART:

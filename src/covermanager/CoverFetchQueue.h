@@ -41,7 +41,7 @@ public:
     ~CoverFetchQueue();
 
     bool add( const Meta::AlbumPtr album,
-              bool interactive = false,
+              CoverFetch::Options opt = CoverFetch::Automatic,
               const QByteArray &xml = QByteArray() );
 
     bool contains( const Meta::AlbumPtr album ) const;

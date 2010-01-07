@@ -29,10 +29,10 @@
 
 CoverFetchUnit::CoverFetchUnit( Meta::AlbumPtr album,
                                 const CoverFetchPayload *url,
-                                bool interactive )
+                                CoverFetch::Options opt )
     : QSharedData()
     , m_album( album )
-    , m_interactive( interactive )
+    , m_options( opt )
     , m_url( url )
 {
 }
@@ -41,7 +41,7 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
     : QSharedData( cpy )
 {
     m_album = cpy.m_album;
-    m_interactive = cpy.m_interactive;
+    m_options = cpy.m_options;
 
     switch( cpy.m_url->type() )
     {
@@ -73,6 +73,12 @@ CoverFetchUnit::errors() const
     return m_errors;
 }
 
+CoverFetch::Options
+CoverFetchUnit::options() const
+{
+    return m_options;
+}
+
 const CoverFetchPayload *
 CoverFetchUnit::payload() const
 {
@@ -82,7 +88,17 @@ CoverFetchUnit::payload() const
 bool
 CoverFetchUnit::isInteractive() const
 {
-    return m_interactive;
+    bool interactive;
+    switch( m_options )
+    {
+    case CoverFetch::Automatic:
+        interactive = false;
+        break;
+    case CoverFetch::Interactive:
+        interactive = true;
+        break;
+    }
+    return interactive;
 }
 
 template< typename T >
@@ -110,7 +126,7 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
     }
 
     m_album = rhs.m_album;
-    m_interactive = rhs.m_interactive;
+    m_options = rhs.m_options;
     return *this;
 }
 

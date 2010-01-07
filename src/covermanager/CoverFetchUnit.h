@@ -23,6 +23,11 @@
 
 class CoverFetchPayload;
 
+namespace CoverFetch
+{
+    enum Options { Automatic, Interactive };
+}
+
 /**
  * A work unit for the cover fetcher queue.
  */
@@ -31,13 +36,16 @@ class CoverFetchUnit : public QSharedData
 public:
     typedef KSharedPtr< CoverFetchUnit > Ptr;
 
-    CoverFetchUnit( Meta::AlbumPtr album, const CoverFetchPayload *url, bool interactive = false );
+    CoverFetchUnit( Meta::AlbumPtr album,
+                    const CoverFetchPayload *url,
+                    CoverFetch::Options opt = CoverFetch::Automatic );
     CoverFetchUnit( const CoverFetchUnit &cpy );
     explicit CoverFetchUnit() {}
     ~CoverFetchUnit();
 
     Meta::AlbumPtr album() const;
     const QStringList &errors() const;
+    CoverFetch::Options options() const;
     const CoverFetchPayload *payload() const;
 
     bool isInteractive() const;
@@ -52,7 +60,7 @@ public:
 private:
     Meta::AlbumPtr m_album;
     QStringList m_errors;
-    bool m_interactive;
+    CoverFetch::Options m_options;
     const CoverFetchPayload *m_url;
 };
 

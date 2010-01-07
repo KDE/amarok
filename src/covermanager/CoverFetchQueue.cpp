@@ -42,7 +42,9 @@ CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 }
 
 bool
-CoverFetchQueue::add( const Meta::AlbumPtr album, bool interactive, const QByteArray &xml )
+CoverFetchQueue::add( const Meta::AlbumPtr album,
+                      CoverFetch::Options opt,
+                      const QByteArray &xml )
 {
     CoverFetchPayload *payload;
     if( xml.isEmpty() )
@@ -55,7 +57,7 @@ CoverFetchQueue::add( const Meta::AlbumPtr album, bool interactive, const QByteA
         art->setXml( xml );
         payload = art;
     }
-    return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, interactive ) ) );
+    return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, opt ) ) );
 }
 
 int
