@@ -51,7 +51,10 @@ void CoverFetcher::destroy()
     }
 }
 
-CoverFetcher::CoverFetcher() : QObject(), m_dialog( 0 )
+CoverFetcher::CoverFetcher()
+    : QObject()
+    , m_limit( 10 )
+    , m_dialog( 0 )
 {
     DEBUG_FUNC_INFO
     setObjectName( "CoverFetcher" );
@@ -78,7 +81,10 @@ CoverFetcher::manualFetch( Meta::AlbumPtr album )
 void
 CoverFetcher::queueAlbum( Meta::AlbumPtr album )
 {
-    m_queue->add( album, CoverFetch::Automatic );
+    if( m_queue->size() > m_limit )
+        m_queueLater.append( album );
+    else
+        m_queue->add( album, CoverFetch::Automatic );
 }
 
 void
@@ -86,7 +92,10 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 {
     foreach( Meta::AlbumPtr album, albums )
     {
-        m_queue->add( album, CoverFetch::Automatic );
+        if( m_queue->size() > m_limit )
+            m_queueLater.append( album );
+        else
+            m_queue->add( album, CoverFetch::Automatic );
     }
 }
 
@@ -252,6 +261,19 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
     }
 
     m_queue->remove( unit );
+
+    if( !m_queueLater.isEmpty() )
+    {
+        const int diff = m_limit - m_queue->size();
+        if( diff > 0 )
+        {
+            for( int i = 0; i < diff; ++i )
+            {
+                Meta::AlbumPtr album = m_queueLater.takeFirst();
+                m_queue->add( album, CoverFetch::Automatic );
+            }
+        }
+    }
 
     emit finishedSingle( static_cast< int >( state ) );
 }

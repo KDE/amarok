@@ -64,7 +64,9 @@ private:
     CoverFetcher();
     ~CoverFetcher();
 
-    CoverFetchQueue  *m_queue;
+    const int        m_limit;      /// maximum number of concurrent fetches
+    CoverFetchQueue *m_queue;      /// current fetch queue
+    Meta::AlbumList  m_queueLater; /// put here if m_queue exceeds m_limit
 
     QHash< const KJob*, CoverFetchUnit::Ptr > m_jobs;
     QHash< const CoverFetchUnit::Ptr, QList< QPixmap > > m_pixmaps;
