@@ -76,11 +76,7 @@ class VerticalToolbarContainment : public Containment
         QGraphicsTextItem* m_noAppletText;
 };
 
-//K_EXPORT_PLASMA_APPLET( amarok_containment_vertical, VerticalToolbarContainment )
-
-K_PLUGIN_FACTORY( factory, registerPlugin<VerticalToolbarContainment>(); )
-K_EXPORT_PLUGIN( factory( "amarok-containment-vertical" ) )
-
+K_EXPORT_PLASMA_APPLET( amarok_containment_vertical, VerticalToolbarContainment )
 
 }
 
