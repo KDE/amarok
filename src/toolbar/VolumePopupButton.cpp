@@ -38,9 +38,9 @@ VolumePopupButton::VolumePopupButton( QWidget * parent )
     , Engine::EngineObserver( The::engineController() )
 {
     //create the volume popup
-    m_volumeMenu = new QMenu( 0 );
+    m_volumeMenu = new QMenu( this );
 
-    KVBox * mainBox = new KVBox( 0 );
+    KVBox * mainBox = new KVBox( this );
 
     m_volumeLabel= new QLabel( mainBox );
     m_volumeLabel->setAlignment( Qt::AlignHCenter );
