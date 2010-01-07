@@ -9,6 +9,7 @@ VERSION 2.2.3
   CHANGES:
 
   BUGFIXES:
+    * Fixed behaviour when clearing the bookmark manager filter.
 
 
 
