@@ -32,10 +32,6 @@ bool
 CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 {
     DEBUG_BLOCK
-    if( m_queue.contains( unit ) )
-    {
-        m_queue.removeAll( unit );
-    }
     m_queue.append( unit );
     emit fetchUnitAdded( unit );
     return true;
