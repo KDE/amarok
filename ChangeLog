@@ -15,6 +15,8 @@ VERSION 2.2.3
     * Improved usability of the playlist layout editor dialog.
 
   BUGFIXES:
+    * Fixed moodbar in progress slider not correctly updating after moodbar
+      style change (BR 220695)
     * Fixed progress slider not moving for many streams (and possible other
       types of tracks) (BR 221747)
     * Sort artists named like "The Foo" correctly in all cases. (BR 176670)

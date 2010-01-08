@@ -46,6 +46,7 @@
 #include "context/ContextView.h"
 #include "context/ToolbarView.h"
 #include "covermanager/CoverManager.h" // for actions
+#include "moodbar/MoodbarManager.h"
 #include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
@@ -237,12 +238,14 @@ MainWindow::init()
     m_mainToolbar = new MainToolbar( 0 );
     m_mainToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_mainToolbar->setMovable ( true );
+    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), m_mainToolbar, SLOT( repaint() ) );
     addToolBar( Qt::TopToolBarArea, m_mainToolbar );
 
     //create slim toolbar
     m_slimToolbar = new SlimToolbar( 0 );
     m_slimToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_slimToolbar->setMovable ( true );
+    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), m_slimToolbar, SLOT( repaint() ) );
     addToolBar( Qt::TopToolBarArea, m_slimToolbar );
     m_slimToolbar->hide();
 
