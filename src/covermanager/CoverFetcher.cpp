@@ -104,9 +104,14 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
     if( urls.isEmpty() )
     {
         if( unit->isInteractive() )
+        {
+            The::statusBar()->shortMessage( i18n( "No covers found." ) );
             showCover( unit );
+        }
         else
+        {
             finish( unit, NotFound );
+        }
         return;
     }
 
@@ -254,11 +259,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         {
             const QString text = i18n( "Unable to find a cover for '%1'.", albumName );
             //FIXME: Not visible behind cover manager
-            if( unit->isInteractive() )
-                The::statusBar()->longMessage( text, StatusBar::Sorry );
-            else
-                The::statusBar()->shortMessage( text );
-
+            The::statusBar()->shortMessage( text );
             m_errors += text;
             break;
         }
