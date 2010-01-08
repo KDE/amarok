@@ -675,8 +675,8 @@ ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
 int
 ScanResultProcessor::urlId( const QString &url, const QString &uid )
 {
-    DEBUG_BLOCK
 /*
+    DEBUG_BLOCK
     foreach( QString key, m_urlsHashByUid.keys() )
     debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
     foreach( int key, m_urlsHashById.keys() )
