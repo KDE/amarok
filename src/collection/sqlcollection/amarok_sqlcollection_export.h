@@ -21,7 +21,7 @@
 #include <kdemacros.h>
 
 #ifndef AMAROK_SQLCOLLECTION_EXPORT
-# if defined(MAKE_AMAROKLIB_LIB)
+# if defined(MAKE_AMAROK_SQLCOLLECTION_LIB)
    /* We are building this library */
 #  define AMAROK_SQLCOLLECTION_EXPORT KDE_EXPORT
 # else
