@@ -103,7 +103,10 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 
     if( urls.isEmpty() )
     {
-        finish( unit, NotFound );
+        if( unit->isInteractive() )
+            showCover( unit );
+        else
+            finish( unit, NotFound );
         return;
     }
 
