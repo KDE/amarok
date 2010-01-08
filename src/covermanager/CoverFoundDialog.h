@@ -81,6 +81,8 @@ private:
     void updateDetails();
     void updateTitle();
 
+    QPixmap noCover( int size = 300 );
+
     QLabel         *m_labelPixmap;   //! Pixmap container
     QFrame         *m_details;       //! Details widget
     QGridLayout    *m_detailsLayout; //! Details widget layout

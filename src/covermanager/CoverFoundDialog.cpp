@@ -18,6 +18,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "Amarok.h"
 #include "CoverFoundDialog.h"
 #include "Debug.h"
 #include "PaletteHandler.h"
@@ -25,9 +26,11 @@
 #include <KLocale>
 #include <KLineEdit>
 #include <KPushButton>
+#include <KStandardDirs>
 #include <KVBox>
 
 #include <QCloseEvent>
+#include <QDir>
 #include <QGridLayout>
 
 CoverFoundDialog::CoverFoundDialog( QWidget *parent,
@@ -60,11 +63,13 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     KVBox *box = new KVBox( this );
     box->setSpacing( 4 );
 
+    QPixmap pixmap = covers.isEmpty() ? noCover() : covers.first();
+
     m_labelPixmap = new QLabel( box );
     m_labelPixmap->setMinimumHeight( 300 );
     m_labelPixmap->setMinimumWidth( 300 );
     m_labelPixmap->setAlignment( Qt::AlignCenter );
-    m_labelPixmap->setPixmap( covers.first() );
+    m_labelPixmap->setPixmap( pixmap );
     m_labelPixmap->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
 
     m_search = new KLineEdit( box );
@@ -154,9 +159,10 @@ void CoverFoundDialog::updateGui()
 
 void CoverFoundDialog::updatePixmap()
 {
-    m_labelPixmap->setPixmap( m_covers.at( m_index ).scaled( m_labelPixmap->size(),
-                                                             Qt::KeepAspectRatio,
-                                                             Qt::SmoothTransformation) );
+    QPixmap pixmap = m_covers.isEmpty() ? noCover() : m_covers.at( m_index );
+    m_labelPixmap->setPixmap( pixmap.scaled( m_labelPixmap->size(),
+                                             Qt::KeepAspectRatio,
+                                             Qt::SmoothTransformation) );
 }
 
 void CoverFoundDialog::updateButtons()
@@ -190,7 +196,7 @@ void CoverFoundDialog::updateDetails()
                          ? m_album->albumArtist()->prettyName()
                          : i18n( "Various Artists" );
 
-    const QPixmap pixmap = m_covers.at( m_index );
+    const QPixmap pixmap = m_covers.isEmpty() ? noCover() : m_covers.at( m_index );
 
     QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
     QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
@@ -211,6 +217,28 @@ void CoverFoundDialog::updateTitle()
         caption +=  ": " + position;
     }
     this->setCaption( caption );
+}
+
+QPixmap CoverFoundDialog::noCover( int size )
+{
+    // code from Meta::Album::image( int size )
+
+    QPixmap pixmap( size, size );
+    QString sizeKey = QString::number( size ) + '@';
+    QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+
+    if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
+    {
+        pixmap.load( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
+    }
+    else
+    {
+        QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
+        //scaled() does not change the original image but returns a scaled copy
+        pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
+    }
+    return pixmap;
 }
 
 //SLOT
