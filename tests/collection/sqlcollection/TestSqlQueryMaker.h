@@ -56,6 +56,9 @@ private slots:
     void testFilter();
     void testFilter_data();
 
+    void testMatch();
+    void testMatch_data();
+
 private:
     SqlCollection *m_collection;
     SqlStorage *m_storage;

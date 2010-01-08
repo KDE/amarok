@@ -669,4 +669,84 @@ TestSqlQueryMaker::testFilter()
     QCOMPARE( qm.data( "testId" ).count(), count );
 }
 
+#define PointerToDataList( t ) { \
+    Meta::DataList data; \
+    data.append( Meta::DataPtr::staticCast( t ) ); \
+    return data; \
+}
+
+Meta::DataList asList( const Meta::TrackPtr &track )
+{
+    PointerToDataList( track );
+}
+
+Meta::DataList asList( const Meta::ArtistPtr &artist )
+{
+    PointerToDataList( artist );
+}
+
+Meta::DataList asList( const Meta::AlbumPtr &album )
+{
+    PointerToDataList( album );
+}
+
+Meta::DataList asList( const Meta::GenrePtr &genre )
+{
+    PointerToDataList( genre );
+}
+
+Meta::DataList asList( const Meta::ComposerPtr &composer )
+{
+    PointerToDataList( composer );
+}
+
+Meta::DataList asList( const Meta::YearPtr &year )
+{
+    PointerToDataList( year );
+}
+
+#undef PointerToDataList
+
+void
+TestSqlQueryMaker::testMatch_data()
+{
+    QTest::addColumn<QueryMaker::QueryType>( "type" );
+    QTest::addColumn<Meta::DataList>( "dataList" );
+    QTest::addColumn<int>( "count" );
+
+    SqlRegistry *r = m_collection->registry();
+
+    QTest::newRow( "track matches artist" ) << QueryMaker::Track << asList( r->getArtist( "artist1" ) ) << 3;
+    QTest::newRow( "track matches album" ) << QueryMaker::Track << asList( r->getAlbum( "album1",1,1 ) ) << 1;
+    QTest::newRow( "track matches genre" ) << QueryMaker::Track << asList( r->getGenre( "genre1" ) ) << 3;
+    QTest::newRow( "track matches composer" ) << QueryMaker::Track << asList( r->getComposer( "composer1" ) ) << 3;
+    QTest::newRow( "track matches year" ) << QueryMaker::Track << asList( r->getYear("1")) << 3;
+    QTest::newRow( "artist matches album" ) << QueryMaker::Artist << asList(r->getAlbum("album1",1,1)) << 1;
+    QTest::newRow( "artist matches genre" ) << QueryMaker::Artist << asList(r->getGenre("genre1")) << 2;
+}
+
+void
+TestSqlQueryMaker::testMatch()
+{
+    QFETCH( QueryMaker::QueryType, type );
+    QFETCH( Meta::DataList, dataList );
+    QFETCH( int, count );
+
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( type );
+    qm.setReturnResultAsDataPtrs( true );
+
+    foreach( const Meta::DataPtr &data, dataList )
+    {
+        qm.addMatch( data );
+    }
+
+    qm.run();
+
+    QCOMPARE( qm.data( "testId" ).count(), count );
+}
+
+
+
 #include "TestSqlQueryMaker.moc"
