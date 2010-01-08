@@ -84,6 +84,7 @@ private:
     void updateTitle();
 
     QPixmap noCover( int size = 300 );
+    QPixmap m_noCover;               //! nocover.png cache
 
     QLabel         *m_labelPixmap;   //! Pixmap container
     QFrame         *m_details;       //! Details widget

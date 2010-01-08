@@ -63,7 +63,11 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     KVBox *box = new KVBox( this );
     box->setSpacing( 4 );
 
-    QPixmap pixmap = covers.isEmpty() ? noCover() : covers.first();
+    QPixmap pixmap;
+    if( covers.isEmpty() )
+        pixmap = m_noCover = noCover();
+    else
+        pixmap = covers.first();
 
     m_labelPixmap = new QLabel( box );
     m_labelPixmap->setMinimumHeight( 300 );
@@ -159,7 +163,7 @@ void CoverFoundDialog::updateGui()
 
 void CoverFoundDialog::updatePixmap()
 {
-    QPixmap pixmap = m_covers.isEmpty() ? noCover() : m_covers.at( m_index );
+    QPixmap pixmap = m_covers.isEmpty() ? m_noCover : m_covers.at( m_index );
     m_labelPixmap->setPixmap( pixmap.scaled( m_labelPixmap->size(),
                                              Qt::KeepAspectRatio,
                                              Qt::SmoothTransformation) );
@@ -195,7 +199,7 @@ void CoverFoundDialog::updateDetails()
     bool visible = false;
     if( m_album )
     {
-        const QPixmap pixmap = m_covers.isEmpty() ? noCover() : m_covers.at( m_index );
+        const QPixmap pixmap = m_covers.isEmpty() ? m_noCover : m_covers.at( m_index );
         const QString artist = m_album->hasAlbumArtist()
                              ? m_album->albumArtist()->prettyName()
                              : i18n( "Various Artists" );
