@@ -75,8 +75,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->regexpEdit->setText( AmarokConfig::replacementRegexp() );
     ui->replaceEdit->setText( AmarokConfig::replacementString() );
 
-    ui->vfatCheck->hide(); // this is no longer an option, vfat safe is always enabled.
-
     ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     ui->conflictLabel->hide();
     QPalette p = ui->conflictLabel->palette();
@@ -338,8 +336,8 @@ OrganizeCollectionDialog::cleanPath( const QString &component ) const
     if( ui->spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
 //     debug()<<"I'm about to do Amarok::vfatPath( result ), this is result: "<<result;
-//    if( ui->vfatCheck->isChecked() )
-    result = Amarok::vfatPath( result );
+    if( ui->vfatCheck->isChecked() )
+        result = Amarok::vfatPath( result );
 
     result.replace( '/', '-' );
 

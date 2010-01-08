@@ -178,8 +178,7 @@ SqlCollectionLocation::slotDialogAccepted()
         const bool del = KMessageBox::warningContinueCancelList(0,
                                                      text,
                                                      files,
-                                                     i18n("Move Files"),
-                                                     KStandardGuiItem::del() ) == KMessageBox::Continue;
+                                                     i18n("Move Files") ) == KMessageBox::Continue;
         if( !del )
             abort();
     }
