@@ -74,16 +74,11 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
 
 void
 SimilarArtistsApplet::init()
-{
-    DEBUG_BLOCK
-
-    debug()<< "SAA deb init";
-    
+{    
     // create the layout for dispose the artists widgets in the scrollarea via a widget
     m_layout=new QVBoxLayout;
     m_layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
-    m_layout->setContentsMargins( 5, 5, 5, 5 );
-    m_layout->setSpacing( 2 );
+    //m_layout->setAlignment(Qt::AlignHCenter);
     
     m_headerLabel = new TextScrollingWidget( this );
 
@@ -132,9 +127,10 @@ SimilarArtistsApplet::init()
     connectSource( "similarArtists" );
     connect( dataEngine( "amarok-similarArtists" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );
 
-    constraintsEvent();
-    updateConstraints();
+    // we connect the geometry changed wit(h a setGeom function which will update the video widget geometry
+    connect ( this, SIGNAL(geometryChanged()), SLOT( setGeom() ) );
     
+    constraintsEvent();    
 
     debug()<< "SAA fin init";
 }
@@ -175,26 +171,8 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_scrollProxy->setMinimumSize( artistsSize );
     m_scrollProxy->setMaximumSize( artistsSize );
 
-    // set the size of the widget embedded in the scrollarea
-    QSize artistSize( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width(), artistsSize.height() - 2 * standardPadding() );
-    m_scroll->widget()->setMinimumSize( artistSize );
-    m_scroll->widget()->setMaximumSize( artistSize );
-
-
     debug()<< "SAA fin const";
     
-}
-
-bool
-SimilarArtistsApplet::hasHeightForWidth() const
-{
-    return true;
-}
-
-qreal
-SimilarArtistsApplet::heightForWidth( qreal width ) const
-{
-    return width * m_aspectRatio;
 }
 
 /**
@@ -231,6 +209,12 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
     m_stoppedState = true;
     m_headerLabel->setText( i18n( "Similar artist" ) + QString( " : " ) + i18n( "No track playing" ) );
     setCollapseOn();
+
+    for( int i = 0; i < m_artists.size(); i++ )
+    {
+        //debug() << "ENTREE DANS LA BOUCLE CONSTRAINTSEVENT";
+        m_layout->addWidget( m_artists.at( i ) );
+    }
 }
 
 
@@ -410,6 +394,21 @@ SimilarArtistsApplet::saveSettings()
     //simulate a update of data to update the content of the applet accordingly to the new settings
     dataUpdated( NULL, dataEngine( "amarok-similarArtists" )->query( "similarArtists" ) );
 }
+
+void
+SimilarArtistsApplet::setGeom( )
+{
+    //updateConstraints();
+//     constraintsEvent();
+//     updateConstraints();
+//     update();
+//      foreach(ArtistWidget* art, m_artists)
+//     {
+//       art->adjustSize();
+//       delete art;
+//     }
+}
+
 
 #include "SimilarArtistsApplet.moc"
 

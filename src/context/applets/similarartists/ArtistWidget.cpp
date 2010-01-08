@@ -112,6 +112,7 @@ void ArtistWidget::setImageFromInternet(KJob* job)
         image.loadFromData(storedJob->data());
         m_image->clear();
         m_image->setPixmap(image);
+        //setMinimumHeight(m_image->size().height());
     }
     else
     {

@@ -61,9 +61,6 @@ public:
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
-    bool hasHeightForWidth() const;
-    qreal heightForWidth( qreal width ) const;
-
     // inherited from EngineObserver
     virtual void engineNewTrackPlaying();
     virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
@@ -73,6 +70,7 @@ protected:
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+    void setGeom();
 
 private:
     qreal m_aspectRatio;
