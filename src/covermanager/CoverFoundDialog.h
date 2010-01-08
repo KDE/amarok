@@ -41,7 +41,9 @@ class CoverFoundDialog : public KDialog
     Q_OBJECT
 
 public:
-    CoverFoundDialog( QWidget *parent, Meta::AlbumPtr album, const QList<QPixmap> &covers );
+    CoverFoundDialog( QWidget *parent,
+                      Meta::AlbumPtr album = KSharedPtr< Meta::Album >(),
+                      const QList< QPixmap > &covers = QList< QPixmap >() );
 
     /**
     *   @returns the currently selected cover image

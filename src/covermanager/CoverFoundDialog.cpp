@@ -192,19 +192,25 @@ void CoverFoundDialog::updateButtons()
 
 void CoverFoundDialog::updateDetails()
 {
-    const QString artist = m_album->hasAlbumArtist()
-                         ? m_album->albumArtist()->prettyName()
-                         : i18n( "Various Artists" );
+    bool visible = false;
+    if( m_album )
+    {
+        const QPixmap pixmap = m_covers.isEmpty() ? noCover() : m_covers.at( m_index );
+        const QString artist = m_album->hasAlbumArtist()
+                             ? m_album->albumArtist()->prettyName()
+                             : i18n( "Various Artists" );
 
-    const QPixmap pixmap = m_covers.isEmpty() ? noCover() : m_covers.at( m_index );
+        QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
+        QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
+        QLabel *coverSize  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
 
-    QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
-    QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
-    QLabel *coverSize  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
+        artistName->setText( artist );
+        albumName->setText( m_album->prettyName() );
+        coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
 
-    artistName->setText( artist );
-    albumName->setText( m_album->prettyName() );
-    coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
+        visible = true;
+    }
+    showButton( KDialog::Details, visible );
 }
 
 void CoverFoundDialog::updateTitle()
