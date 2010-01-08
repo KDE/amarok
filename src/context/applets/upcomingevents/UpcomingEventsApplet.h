@@ -25,11 +25,13 @@
 
 // for use when gui created
 #include <ui_upcomingEventsSettings.h>
+#include "UpcomingEventsWidget.h"
 
 class QAction;
 class QGraphicsSimpleTextItem;
 class QGraphicsTextItem;
-class QGraphicsGridLayout;
+class QVBoxLayout;
+class QGraphicsLayoutItem;
 class TextScrollingWidget;
 class KConfigDialog;
 class DropPixmapItem;
@@ -75,7 +77,7 @@ private:
     /**
      * Title of the applet (in the top bar)
      */
-    QLabel* m_headerLabel;
+    TextScrollingWidget* m_headerLabel;
 
     Plasma::IconWidget *m_settingsIcon;
     Ui::upcomingEventsSettings ui_Settings;
@@ -84,14 +86,11 @@ private:
     bool m_enabledLinks;
     QString m_temp_timeSpan;
     bool m_temp_enabledLinks;
-    
-    QLabel* m_eventParticipants;
-    QLabel* m_bigImage;
-    QLabel* m_eventName;
-    QLabel* m_eventDate;
-    QLabel* m_eventUrl;
 
-    QGraphicsGridLayout* mainLayout;
+    QList< UpcomingEventsWidget * > m_widgets;
+    QVBoxLayout * m_mainLayout;
+    QGraphicsProxyWidget * m_scrollProxy;
+    QScrollArea * m_scroll;
     
 private slots:
     void connectSource( const QString &source );

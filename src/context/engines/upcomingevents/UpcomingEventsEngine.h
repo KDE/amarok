@@ -57,7 +57,7 @@ public:
     void setSelection( const QString& selection ) { m_currentSelection = selection; }
     QString selection() { return m_currentSelection; }
 
-    QList<LastFmEvent> getUpcomingEvents();
+    QList< LastFmEvent > upcomingEvents();
     
     /**
     * Fetches the upcoming events for an artist thanks to the LastFm WebService
