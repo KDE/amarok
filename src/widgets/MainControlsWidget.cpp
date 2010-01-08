@@ -52,7 +52,7 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     p.setColor( QPalette::Base, c );
     setPalette( p );
 
-    QGraphicsScene *scene  = new QGraphicsScene();
+    QGraphicsScene *scene  = new QGraphicsScene( this );
 
     const float startX = 0.0;
     const float gapX = 34.5;
