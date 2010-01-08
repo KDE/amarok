@@ -40,6 +40,7 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <kio/deletejob.h>
+#include <KMessageBox>
 
 
 using namespace Meta;
@@ -162,6 +163,26 @@ SqlCollectionLocation::slotDialogAccepted()
     OrganizeCollectionDialog *dialog = qobject_cast<OrganizeCollectionDialog*>( sender() );
     m_destinations = dialog->getDestinations();
     m_overwriteFiles = dialog->overwriteDestinations();
+    if( isGoingToRemoveSources() )
+    {
+        QStringList files;
+        QMapIterator<Meta::TrackPtr, QString> it( m_destinations );
+        while( it.hasNext() )
+        {
+            it.next();
+            if(it.key())
+                files << it.key()->prettyUrl();
+        }
+        const QString text( i18ncp( "@info", "Do you really want to move this track? It will be renamed and the original deleted.",
+                                    "Do you really want to move these %1 tracks? They will be renamed and the originals deleted", m_destinations.count() ) );
+        const bool del = KMessageBox::warningContinueCancelList(0,
+                                                     text,
+                                                     files,
+                                                     i18n("Move Files"),
+                                                     KStandardGuiItem::del() ) == KMessageBox::Continue;
+        if( !del )
+            abort();
+    }
     slotShowDestinationDialogDone();
 }
 
