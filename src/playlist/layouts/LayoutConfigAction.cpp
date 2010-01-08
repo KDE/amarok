@@ -35,6 +35,7 @@ namespace Playlist
 
 LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     : KAction( parent )
+    , m_layoutDialog( 0 )
 {
     KIcon actionIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-layouts-22.png") ) );    //TEMPORARY ICON
     setIcon( actionIcon );
@@ -84,9 +85,13 @@ void LayoutConfigAction::setActiveLayout( QAction *layoutAction )
 
 void LayoutConfigAction::configureLayouts()
 {
-    PlaylistLayoutEditDialog layoutEditor( The::mainWindow() );
-    layoutEditor.exec();
-    layoutListChanged();
+    if( m_layoutDialog == 0 )
+        m_layoutDialog = new PlaylistLayoutEditDialog( The::mainWindow() );
+
+    m_layoutDialog->setModal( false );
+    connect( m_layoutDialog, SIGNAL( accepted() ), this, SLOT( layoutListChanged() ) );
+
+    m_layoutDialog->show();
 }
 
 void Playlist::LayoutConfigAction::layoutListChanged()

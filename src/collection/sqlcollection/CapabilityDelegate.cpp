@@ -156,14 +156,14 @@ class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
         , m_track( track )
         {}
 
-        virtual bool writeTimecode ( int seconds )
+        virtual bool writeTimecode ( qint64 miliseconds )
         {
-            return Meta::TimecodeWriteCapability::writeTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
+            return Meta::TimecodeWriteCapability::writeTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
         }
 
-        virtual bool writeAutoTimecode ( int seconds )
+        virtual bool writeAutoTimecode ( qint64 miliseconds )
         {
-            return Meta::TimecodeWriteCapability::writeAutoTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
+            return Meta::TimecodeWriteCapability::writeAutoTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
         }
 
     private:
@@ -203,6 +203,7 @@ TrackCapabilityDelegate::TrackCapabilityDelegate()
 bool
 TrackCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlTrack *track ) const
 {
+    DEBUG_BLOCK
     if( !track )
         return false;
 
@@ -230,10 +231,13 @@ TrackCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, co
 Meta::Capability*
 TrackCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlTrack *track )
 {
+    DEBUG_BLOCK
     if( !track )
     {
         return 0;
     }
+
+
 
     switch( type )
     {
@@ -270,6 +274,7 @@ TrackCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type,
         case Meta::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityImpl( track );
         case Meta::Capability::LoadTimecode:
+            debug() << "creating load timecode capability";
             return new TimecodeLoadCapabilityImpl( track );
         case Meta::Capability::ReadLabel:
             return new Meta::SqlReadLabelCapability( track, track->sqlCollection()->sqlStorage() );

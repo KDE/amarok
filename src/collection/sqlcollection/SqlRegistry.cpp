@@ -136,9 +136,15 @@ SqlRegistry::getTrackFromUid( const QString &uid )
         return m_uidMap.value( uid );
     else
     {
+
         TrackPtr track( SqlTrack::getTrackFromUid( uid, m_collection ) );
         if( track )
         {
+            //we need to ensure that this track has a capability delegate or not much will work for tracks loaded from a playlist.
+            SqlTrack * sqlTrack = dynamic_cast<SqlTrack *>( track.data() );
+            if( sqlTrack )
+                sqlTrack->setCapabilityDelegate( createTrackDelegate() );
+
             int deviceid = m_collection->mountPointManager()->getIdForUrl( track->playableUrl().path() );
             QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, track->playableUrl().path() );
             TrackId id(deviceid, rpath);

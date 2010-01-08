@@ -46,10 +46,10 @@ bool PlayUrlRunner::run ( AmarokUrl url )
     debug() << "decoded track url: " << track_url.toString();
 
     //get the position
-    int pos = 0;
+    qint64 pos = 0;
     if ( url.args().keys().contains( "pos" ) )
     {
-        pos = url.args().value( "pos" ).toInt() * 1000;
+        pos = (qint64) ( url.args().value( "pos" ).toDouble() * 1000.0 );
     }
 
     debug() << "seek pos: " << pos;

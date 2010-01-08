@@ -194,6 +194,13 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
             break;
 
         case Phonon::PlayingState:
+
+            //in some cases (for streams mostly), we do not get an event for track length changes once
+            //loading is done, causing maximum() to return 0 at when playback starts. In this case we need
+            //to make sure that maximum is set correctly or the slider will not move.
+            if( m_slider->maximum() == 0 )
+                m_slider->setMaximum( The::engineController()->trackLength() );
+
             m_timeLabelLeft->setEnabled( true );
             m_timeLabelLeft->setEnabled( true );
             m_timeLabelLeft->setShowTime( true );
@@ -253,7 +260,7 @@ ProgressWidget::redrawBookmarks( const QString *BookmarkName )
 
                     if ( url->args().keys().contains( "pos" ) )
                     {
-                        int pos = url->args().value( "pos" ).toInt() * 1000;
+                        int pos = url->args().value( "pos" ).toDouble() * 1000;
                         debug() << "showing timecode: " << url->name() << " at " << pos ;
                         addBookmark( url->name(), pos, ( BookmarkName && BookmarkName == url->name() ));
                     }

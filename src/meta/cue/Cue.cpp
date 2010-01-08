@@ -61,8 +61,8 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
             BookmarkList list;
             while ( it.hasNext() ) {
                 it.next();
-                debug() << " seconds : " << it.key() / 1000;
-                AmarokUrl aurl = PlayUrlGenerator::instance()->createTrackBookmark( Meta::TrackPtr( m_track.data() ), it.key() / 1000, it.value().getTitle() );
+                debug() << " seconds : " << it.key();
+                AmarokUrl aurl = PlayUrlGenerator::instance()->createTrackBookmark( Meta::TrackPtr( m_track.data() ), it.key(), it.value().getTitle() );
                 AmarokUrlPtr url( new AmarokUrl( aurl.url() ) );
                 url->setName( aurl.name() ); // TODO AmarokUrl should really have a copy constructor
                 list << url;

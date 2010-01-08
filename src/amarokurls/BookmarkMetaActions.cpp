@@ -71,13 +71,13 @@ BookmarkCurrentTrackPositionAction::slotTriggered()
     DEBUG_BLOCK
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    const int seconds = The::engineController()->trackPosition();
+    const qint64 miliseconds = The::engineController()->trackPositionMs();
 
     if ( track && track->hasCapabilityInterface( Meta::Capability::WriteTimecode ) )
     {
         debug() << " has WriteTimecode  ";
         Meta::TimecodeWriteCapability *tcw = track->create<Meta::TimecodeWriteCapability>();
-        tcw->writeTimecode( seconds );
+        tcw->writeTimecode( miliseconds );
         delete tcw;
     }
 }

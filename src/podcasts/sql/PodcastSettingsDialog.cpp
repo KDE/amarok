@@ -65,6 +65,7 @@ PodcastSettingsDialog::init()
 
     m_ps->m_purgeCheck->setChecked( m_channel->hasPurge() );
     m_ps->m_purgeCountSpinBox->setValue( m_channel->purgeCount() );
+    m_ps->m_purgeCountSpinBox->setSuffix( ki18np( " Item", " Items" ) );
 
     if( !m_channel->hasPurge() )
     {

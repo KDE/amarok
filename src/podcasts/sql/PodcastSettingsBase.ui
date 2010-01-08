@@ -167,15 +167,12 @@
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="m_purgeCountSpinBox">
+      <widget class="KIntSpinBox" name="m_purgeCountSpinBox">
        <property name="toolTip">
         <string>The maximum number of podcast items to store</string>
        </property>
        <property name="whatsThis">
         <string>The maximum number of podcast items to store</string>
-       </property>
-       <property name="suffix">
-        <string> Items</string>
        </property>
        <property name="minimum">
         <number>1</number>
@@ -219,6 +216,12 @@
    <class>KButtonGroup</class>
    <extends>QGroupBox</extends>
    <header>kbuttongroup.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>KIntSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>knuminput.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

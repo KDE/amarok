@@ -38,17 +38,17 @@ class TimecodeWriteCapabilityPodcastImpl : public Meta::TimecodeWriteCapability
             , m_episode( episode )
         {}
 
-    virtual bool writeTimecode ( int seconds )
+    virtual bool writeTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeTimecode( seconds,
+        return Meta::TimecodeWriteCapability::writeTimecode( miliseconds,
                 Meta::TrackPtr::dynamicCast( m_episode ) );
     }
 
-    virtual bool writeAutoTimecode ( int seconds )
+    virtual bool writeAutoTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeAutoTimecode( seconds,
+        return Meta::TimecodeWriteCapability::writeAutoTimecode( miliseconds,
                 Meta::TrackPtr::dynamicCast( m_episode ) );
     }
 
