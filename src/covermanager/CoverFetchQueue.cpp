@@ -40,7 +40,7 @@ CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 bool
 CoverFetchQueue::add( const Meta::AlbumPtr album,
                       CoverFetch::Options opt,
-                      const QByteArray &xml )
+                      const QByteArray &xml, bool wild )
 {
     CoverFetchPayload *payload;
     if( xml.isEmpty() )
@@ -49,11 +49,18 @@ CoverFetchQueue::add( const Meta::AlbumPtr album,
     }
     else
     {
-        CoverFetchArtPayload *art = new CoverFetchArtPayload( album );
+        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, wild );
         art->setXml( xml );
         payload = art;
     }
     return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, opt ) ) );
+}
+
+bool
+CoverFetchQueue::addSearch( const QString &query )
+{
+    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query );
+    return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
 }
 
 int

@@ -37,6 +37,13 @@ CoverFetchUnit::CoverFetchUnit( Meta::AlbumPtr album,
 {
 }
 
+CoverFetchUnit::CoverFetchUnit( const CoverFetchSearchPayload *url )
+    : QSharedData()
+    , m_options( CoverFetch::Interactive )
+    , m_url( url )
+{
+}
+
 CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
     : QSharedData( cpy )
 {
@@ -45,12 +52,23 @@ CoverFetchUnit::CoverFetchUnit( const CoverFetchUnit &cpy )
 
     switch( cpy.m_url->type() )
     {
-    case CoverFetchPayload::INFO:
+    case CoverFetchPayload::Info:
         m_url = new CoverFetchInfoPayload( cpy.m_album );
         break;
-    case CoverFetchPayload::ART:
-        m_url = new CoverFetchArtPayload( cpy.m_album );
-        break;
+    case CoverFetchPayload::Search:
+        {
+            const CoverFetchSearchPayload *payload =
+                dynamic_cast< const CoverFetchSearchPayload * >( cpy.payload() );
+            m_url = new CoverFetchSearchPayload( payload->query() );
+            break;
+        }
+    case CoverFetchPayload::Art:
+        {
+            const CoverFetchArtPayload *payload =
+                dynamic_cast< const CoverFetchArtPayload * >( cpy.payload() );
+            m_url = new CoverFetchArtPayload( cpy.m_album, payload->isWild() );
+            break;
+        }
     default:
         m_url = 0;
     }
@@ -115,12 +133,22 @@ CoverFetchUnit &CoverFetchUnit::operator=( const CoverFetchUnit &rhs )
 
     switch( rhs.m_url->type() )
     {
-    case CoverFetchPayload::INFO:
+    case CoverFetchPayload::Info:
         m_url = new CoverFetchInfoPayload( rhs.m_album );
         break;
-    case CoverFetchPayload::ART:
-        m_url = new CoverFetchArtPayload( rhs.m_album );
-        break;
+    case CoverFetchPayload::Search:
+        {
+            const CoverFetchSearchPayload *payload =
+                dynamic_cast< const CoverFetchSearchPayload * >( rhs.payload() );
+            m_url = new CoverFetchSearchPayload( payload->query() );
+            break;
+        }
+    case CoverFetchPayload::Art:
+        {
+            const CoverFetchArtPayload *payload =
+                dynamic_cast< const CoverFetchArtPayload * >( rhs.payload() );
+            m_url = new CoverFetchArtPayload( rhs.m_album, payload->isWild() );
+        }
     default:
         m_url = 0;
     }
@@ -151,7 +179,9 @@ bool CoverFetchUnit::operator!=( const CoverFetchUnit &other ) const
 
 CoverFetchPayload::CoverFetchPayload( const Meta::AlbumPtr album, CoverFetchPayload::Type type )
     : m_album( album )
-    , m_method( album->hasAlbumArtist() ? QString( "album.getinfo" ) : QString( "album.search" ) )
+    , m_method( ( type == Search ) ? QString( "album.search" )
+                                   : album && album->hasAlbumArtist() ? QString( "album.getinfo" )
+                                                                      : QString( "album.search" ) )
     , m_type( type )
 {
 }
@@ -182,9 +212,8 @@ CoverFetchPayload::isPrepared() const
  * CoverFetchInfoPayload
  */
 
-
 CoverFetchInfoPayload::CoverFetchInfoPayload( const Meta::AlbumPtr album )
-    : CoverFetchPayload( album, CoverFetchPayload::INFO )
+    : CoverFetchPayload( album, CoverFetchPayload::Info )
 {
     prepareUrls();
 }
@@ -213,16 +242,63 @@ CoverFetchInfoPayload::prepareUrls()
 }
 
 /*
+ * CoverFetchSearchPayload
+ */
+
+CoverFetchSearchPayload::CoverFetchSearchPayload( const QString &query )
+    : CoverFetchPayload( Meta::AlbumPtr( 0 ), CoverFetchPayload::Search )
+    , m_query( query )
+{
+    prepareUrls();
+}
+
+CoverFetchSearchPayload::~CoverFetchSearchPayload()
+{
+}
+
+QString
+CoverFetchSearchPayload::query() const
+{
+    return m_query;
+}
+
+void
+CoverFetchSearchPayload::setQuery( const QString &query )
+{
+    m_query = query;
+}
+
+void
+CoverFetchSearchPayload::prepareUrls()
+{
+    KUrl url;
+    url.setScheme( "http" );
+    url.setHost( "ws.audioscrobbler.com" );
+    url.setPath( "/2.0/" );
+    url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
+    url.addQueryItem( "album", m_query );
+    url.addQueryItem( "method", method() );
+    m_urls.append( url );
+}
+
+/*
  * CoverFetchArtPayload
  */
 
-CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album )
-    : CoverFetchPayload( album, CoverFetchPayload::ART )
+CoverFetchArtPayload::CoverFetchArtPayload( const Meta::AlbumPtr album, bool wild )
+    : CoverFetchPayload( album, CoverFetchPayload::Art )
+    , m_wild( wild )
 {
 }
 
 CoverFetchArtPayload::~CoverFetchArtPayload()
 {
+}
+
+bool
+CoverFetchArtPayload::isWild() const
+{
+    return m_wild;
 }
 
 void
@@ -257,13 +333,16 @@ CoverFetchArtPayload::prepareUrls()
     {
         results = doc.documentElement().namedItem( "results" ).namedItem( "albummatches" ).childNodes();
 
-        const Meta::TrackList tracks = album()->tracks();
-        QStringList artistNames( "Various Artists" );
-        foreach( const Meta::TrackPtr &track, tracks )
+        if( !m_wild && album() )
         {
-            artistNames << track->artist()->name();
+            const Meta::TrackList tracks = album()->tracks();
+            QStringList artistNames( "Various Artists" );
+            foreach( const Meta::TrackPtr &track, tracks )
+            {
+                artistNames << track->artist()->name();
+            }
+            artistSet = normalize( artistNames ).toSet();
         }
-        artistSet = normalize( artistNames ).toSet();
     }
     else return;
 
@@ -274,7 +353,7 @@ CoverFetchArtPayload::prepareUrls()
 
         if( searchMethod == "album.getinfo" && artist != albumArtist )
             continue;
-        else if( searchMethod == "album.search" && !artistSet.contains( artist ) )
+        else if( searchMethod == "album.search" && !m_wild && !artistSet.contains( artist ) )
             continue;
 
         const QDomNodeList list = albumNode.childNodes();

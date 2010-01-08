@@ -32,6 +32,7 @@
 #include <QPixmap>
 
 class KHBox;
+class KLineEdit;
 class KPushButton;
 class QGridLayout;
 
@@ -40,12 +41,17 @@ class CoverFoundDialog : public KDialog
     Q_OBJECT
 
 public:
-    CoverFoundDialog( QWidget *parent, Meta::AlbumPtr album, const QList<QPixmap> &covers );
+    CoverFoundDialog( QWidget *parent,
+                      Meta::AlbumPtr album = KSharedPtr< Meta::Album >(),
+                      const QList< QPixmap > &covers = QList< QPixmap >() );
 
     /**
     *   @returns the currently selected cover image
     */
     const QPixmap image() { return *m_labelPixmap->pixmap(); }
+
+signals:
+    void newCustomQuery( const QString & );
 
 public slots:
     virtual void accept();
@@ -54,6 +60,7 @@ public slots:
     void add( QList< QPixmap > covers );
 
 protected:
+    void keyPressEvent( QKeyEvent *event );
     void resizeEvent( QResizeEvent *event );
     void closeEvent( QCloseEvent *event );
     void wheelEvent( QWheelEvent *event );
@@ -76,9 +83,13 @@ private:
     void updateDetails();
     void updateTitle();
 
+    QPixmap noCover( int size = 300 );
+    QPixmap m_noCover;               //! nocover.png cache
+
     QLabel         *m_labelPixmap;   //! Pixmap container
     QFrame         *m_details;       //! Details widget
     QGridLayout    *m_detailsLayout; //! Details widget layout
+    KLineEdit      *m_search;        //! Custom search input
     KPushButton    *m_next;          //! Next Button
     KPushButton    *m_prev;          //! Back Button
     KPushButton    *m_save;          //! Save Button

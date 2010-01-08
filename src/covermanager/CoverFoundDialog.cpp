@@ -18,15 +18,19 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "Amarok.h"
 #include "CoverFoundDialog.h"
 #include "Debug.h"
 #include "PaletteHandler.h"
 
 #include <KLocale>
-#include <KVBox>
+#include <KLineEdit>
 #include <KPushButton>
+#include <KStandardDirs>
+#include <KVBox>
 
 #include <QCloseEvent>
+#include <QDir>
 #include <QGridLayout>
 
 #define DEBUG_PREFIX "CoverFoundDialog"
@@ -58,12 +62,28 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_prev->hide();
     m_next->hide();
 
-    m_labelPixmap = new QLabel( this );
+    KVBox *box = new KVBox( this );
+    box->setSpacing( 4 );
+
+    QPixmap pixmap;
+    if( covers.isEmpty() )
+        pixmap = m_noCover = noCover();
+    else
+        pixmap = covers.first();
+
+    m_labelPixmap = new QLabel( box );
     m_labelPixmap->setMinimumHeight( 300 );
     m_labelPixmap->setMinimumWidth( 300 );
     m_labelPixmap->setAlignment( Qt::AlignCenter );
-    m_labelPixmap->setPixmap( covers.first() );
+    m_labelPixmap->setPixmap( pixmap );
     m_labelPixmap->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
+
+    m_search = new KLineEdit( box );
+    m_search->setClearButtonShown( true );
+    m_search->setClickMessage( i18n( "Enter Custom Search" ) );
+
+    connect( m_search, SIGNAL(returnPressed(const QString&)),
+             this,     SIGNAL(newCustomQuery(const QString&)) );
 
     QFrame *m_details = new QFrame( this );
     m_details->setFrameShadow( QFrame::Plain );
@@ -85,7 +105,7 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
     m_detailsLayout->addWidget( new QLabel( m_details ), 1, 1 );
     m_detailsLayout->addWidget( new QLabel( m_details ), 2, 1 );
 
-    setMainWidget( m_labelPixmap );
+    setMainWidget( box );
     setDetailsWidget( m_details );
 
     connect( m_prev, SIGNAL(clicked()), SLOT(prevPix()) );
@@ -94,6 +114,12 @@ CoverFoundDialog::CoverFoundDialog( QWidget *parent,
 
     updateGui();
     updatePixmap();
+}
+
+void CoverFoundDialog::keyPressEvent( QKeyEvent *event )
+{
+    if( !m_search->hasFocus() )
+        KDialog::keyPressEvent( event );
 }
 
 void CoverFoundDialog::resizeEvent( QResizeEvent *event )
@@ -139,9 +165,10 @@ void CoverFoundDialog::updateGui()
 
 void CoverFoundDialog::updatePixmap()
 {
-    m_labelPixmap->setPixmap( m_covers.at( m_index ).scaled( m_labelPixmap->size(),
-                                                             Qt::KeepAspectRatio,
-                                                             Qt::SmoothTransformation) );
+    QPixmap pixmap = m_covers.isEmpty() ? m_noCover : m_covers.at( m_index );
+    m_labelPixmap->setPixmap( pixmap.scaled( m_labelPixmap->size(),
+                                             Qt::KeepAspectRatio,
+                                             Qt::SmoothTransformation) );
 }
 
 void CoverFoundDialog::updateButtons()
@@ -171,31 +198,69 @@ void CoverFoundDialog::updateButtons()
 
 void CoverFoundDialog::updateDetails()
 {
-    const QString artist = m_album->hasAlbumArtist()
-                         ? m_album->albumArtist()->prettyName()
-                         : i18n( "Various Artists" );
+    bool visible = false;
+    if( m_album )
+    {
+        const QPixmap pixmap = m_covers.isEmpty() ? m_noCover : m_covers.at( m_index );
+        const QString artist = m_album->hasAlbumArtist()
+                             ? m_album->albumArtist()->prettyName()
+                             : i18n( "Various Artists" );
 
-    const QPixmap pixmap = m_covers.at( m_index );
+        QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
+        QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
+        QLabel *coverSize  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
 
-    QLabel *artistName = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 0, 1 )->widget() );
-    QLabel *albumName  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 1, 1 )->widget() );
-    QLabel *coverSize  = qobject_cast< QLabel * >( m_detailsLayout->itemAtPosition( 2, 1 )->widget() );
+        artistName->setText( artist );
+        albumName->setText( m_album->prettyName() );
+        coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
 
-    artistName->setText( artist );
-    albumName->setText( m_album->prettyName() );
-    coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
+        visible = true;
+    }
+    showButton( KDialog::Details, visible );
 }
 
 void CoverFoundDialog::updateTitle()
 {
-    QString caption = i18n( "Cover Found" );
+    QString caption;
 
-    if( m_covers.size() > 1 )
+    if( m_covers.isEmpty() )
     {
-        const QString position = i18n( "%1/%2", m_index + 1, m_covers.size() );
-        caption +=  ": " + position;
+        caption = i18n( "Cover Not Found" );
+    }
+    else
+    {
+        caption = i18n( "Cover Found" );
+        const int size = m_covers.size();
+        if( size > 1 )
+        {
+            const QString position = QString( "%1/%2" ).arg( QString::number( m_index + 1 ) )
+                                                       .arg( QString::number( size ) );
+            caption +=  ": " + position;
+        }
     }
     this->setCaption( caption );
+}
+
+QPixmap CoverFoundDialog::noCover( int size )
+{
+    // code from Meta::Album::image( int size )
+
+    QPixmap pixmap( size, size );
+    QString sizeKey = QString::number( size ) + '@';
+    QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+
+    if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
+    {
+        pixmap.load( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
+    }
+    else
+    {
+        QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
+        //scaled() does not change the original image but returns a scaled copy
+        pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
+    }
+    return pixmap;
 }
 
 //SLOT

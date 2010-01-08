@@ -44,7 +44,9 @@ public:
 
     bool add( const Meta::AlbumPtr album,
               CoverFetch::Options opt = CoverFetch::Automatic,
-              const QByteArray &xml = QByteArray() );
+              const QByteArray &xml = QByteArray(),
+              bool wild = false );
+    bool addSearch( const QString &query );
 
     bool contains( const Meta::AlbumPtr album ) const;
     int index( const Meta::AlbumPtr album ) const;

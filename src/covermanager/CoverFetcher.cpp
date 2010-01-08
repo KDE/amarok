@@ -100,6 +100,12 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 }
 
 void
+CoverFetcher::queueQuery( const QString &query )
+{
+    m_queue->addSearch( query );
+}
+
+void
 CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 {
     DEBUG_BLOCK
@@ -108,7 +114,15 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 
     if( urls.isEmpty() )
     {
-        finish( unit, NotFound );
+        if( unit->isInteractive() )
+        {
+            The::statusBar()->shortMessage( i18n( "No covers found." ) );
+            showCover( unit );
+        }
+        else
+        {
+            finish( unit, NotFound );
+        }
         return;
     }
 
@@ -122,7 +136,7 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
         {
             The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
         }
-        else if( payload->type() == CoverFetchPayload::ART )
+        else if( payload->type() == CoverFetchPayload::Art )
         {
             // only one is needed when the fetch is non-interactive
             return;
@@ -149,12 +163,16 @@ CoverFetcher::slotResult( KJob *job )
 
     switch( payload->type() )
     {
-    case CoverFetchPayload::INFO:
+    case CoverFetchPayload::Info:
         m_queue->add( unit->album(), unit->options(), data );
         m_queue->remove( unit );
         break;
 
-    case CoverFetchPayload::ART:
+    case CoverFetchPayload::Search:
+        m_queue->add( Meta::AlbumPtr( 0 ), unit->options(), data, true );
+        break;
+
+    case CoverFetchPayload::Art:
         QPixmap pixmap;
         if( pixmap.loadFromData( data ) )
         {
@@ -190,6 +208,9 @@ CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
     {
         m_dialog = new CoverFoundDialog( static_cast<QWidget*>( parent() ), unit->album(), pixmaps );
 
+        connect( m_dialog, SIGNAL(newCustomQuery(const QString&)),
+                 this,     SLOT(queueQuery(const QString&)) );
+
         switch( m_dialog->exec() )
         {
         case KDialog::Accepted:
@@ -219,7 +240,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
 {
     DEBUG_BLOCK
 
-    const QString albumName = unit->album()->name();
+    const QString albumName = unit->album() ? unit->album()->name() : QString();
 
     switch( state )
     {
@@ -250,11 +271,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         {
             const QString text = i18n( "Unable to find a cover for '%1'.", albumName );
             //FIXME: Not visible behind cover manager
-            if( unit->isInteractive() )
-                The::statusBar()->longMessage( text, StatusBar::Sorry );
-            else
-                The::statusBar()->shortMessage( text );
-
+            The::statusBar()->shortMessage( text );
             m_errors += text;
             break;
         }
