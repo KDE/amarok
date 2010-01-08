@@ -195,11 +195,12 @@ void CoverFoundDialog::updateButtons()
         m_prev->setEnabled( false );
     else
         m_prev->setEnabled( true );
+
+    showButton( KDialog::Details, m_album ? true : false );
 }
 
 void CoverFoundDialog::updateDetails()
 {
-    bool visible = false;
     if( m_album )
     {
         const QPixmap pixmap = m_covers.isEmpty() ? m_noCover : m_covers.at( m_index );
@@ -214,10 +215,7 @@ void CoverFoundDialog::updateDetails()
         artistName->setText( artist );
         albumName->setText( m_album->prettyName() );
         coverSize->setText( QString::number( pixmap.width() ) + 'x' + QString::number( pixmap.height() ) );
-
-        visible = true;
     }
-    showButton( KDialog::Details, visible );
 }
 
 void CoverFoundDialog::updateTitle()
