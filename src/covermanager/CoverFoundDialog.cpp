@@ -159,7 +159,8 @@ void CoverFoundDialog::updateGui()
     updateDetails();
     updateButtons();
 
-    setButtonFocus( KDialog::Ok );
+    if( !m_search->hasFocus() )
+        setButtonFocus( KDialog::Ok );
     update();
 }
 
