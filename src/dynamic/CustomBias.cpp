@@ -106,6 +106,11 @@ Dynamic::CustomBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPla
 {
     DEBUG_BLOCK
     Q_UNUSED( context )
+
+    if( !m_currentEntry ) // wtf it died under us, return oldEnergy
+    {
+        return oldEnergy;
+    }
     
     double offset = 1.0 / (double)oldPlaylist.size();
 

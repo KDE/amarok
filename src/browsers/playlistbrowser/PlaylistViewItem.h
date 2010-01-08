@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -24,7 +24,7 @@
 #include <KSharedPtr>
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 
 class PlaylistViewItem;

@@ -193,7 +193,7 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
     QString command = "SELECT id, url, channel, localurl, guid, "
             "title, subtitle, sequencenumber, description, mimetype, pubdate, "
             "duration, filesize, isnew FROM podcastepisodes "
-            "WHERE guid='%1' OR url='%1' OR localurl='%1';";
+            "WHERE guid='%1' OR url='%1' OR localurl='%1' ORDER BY id DESC;";
     command = command.arg( sqlStorage->escape( url.url() ) );
     QStringList dbResult = sqlStorage->query( command );
 

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -44,7 +44,7 @@ class KMenuBar;
 /**
 A virtual base class for factories for creating and handling the different types of service plugins
 
-@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+@author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, public Amarok::TrackProvider
 {
@@ -144,7 +144,7 @@ class AMAROK_EXPORT ServiceFactory : public QObject, public Amarok::Plugin, publ
 /**
 A composite widget used as a base for building service browsers. It contains a home button ( to return to the list of services ), a name label, a tree view, grouping and filtering widgets and other conviniences that handels much of the layout of a new service. Some of these items can be shown or hidden as needed.
 
-@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class AMAROK_EXPORT ServiceBase : public BrowserCategory
 {

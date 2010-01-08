@@ -95,6 +95,10 @@ public:
         return name();
     }
 
+    bool operator==( const Meta::Artist &other ) const {
+        return name() == other.name();
+    }
+
     MetaCue::Track::Private * const d;
 };
 
@@ -141,6 +145,10 @@ public:
     QPixmap image ( int size )
     {
         return Meta::Album::image ( size );
+    }
+
+    bool operator==( const Meta::Album &other ) const {
+        return name() == other.name();
     }
 
     MetaCue::Track::Private * const d;

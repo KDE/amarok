@@ -25,6 +25,7 @@
 #include "MainWindow.h"
 #include "MetaConstants.h"
 #include "meta/LastFmMeta.h"
+#include "StatusBar.h"
 
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
@@ -81,9 +82,9 @@ ScrobblerAdapter::engineNewTrackPlaying()
             m_current.setAlbum( track->album()->name() );
 
         QString uid = track->uidUrl();
-        if( uid.startsWith( "amarok-sqltrackuid://MB_" ) )
+        if( uid.startsWith( "amarok-sqltrackuid://mb-" ) )
         {
-            uid.remove( "amarok-sqltrackuid://MB_" );
+            uid.remove( "amarok-sqltrackuid://mb-" );
             m_current.setMbid( lastfm::Mbid( uid ) );
         }
 
@@ -214,6 +215,7 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
             trackInfo.setAlbum( track->album()->name() );
 
         trackInfo.love();
+        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
     }
 }
 

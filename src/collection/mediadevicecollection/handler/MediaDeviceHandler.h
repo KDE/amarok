@@ -101,6 +101,10 @@ public:
     */
     virtual ~MediaDeviceHandler();
 
+    // Declare thread as friend class
+
+    friend class ParseWorkerThread;
+
     /**
     * Begins an attempt to connect to the device, and emits
     * attemptConnectionDone when it finishes.
@@ -226,7 +230,8 @@ public slots:
     void renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist );
     void deletePlaylists( const Meta::MediaDevicePlaylistList &playlistlist );
 
-
+    bool privateParseTracks();
+    
     void copyNextTrackToDevice();
     bool privateCopyTrackToDevice( const Meta::TrackPtr& track );
 
@@ -376,6 +381,58 @@ private:
     Handler::WriteCapabilityBase *m_wcb;
     Handler::WriteCapability    *m_wc;
 
+};
+
+/**
+* The ParseWorkerThread is used to run a full parse of the device's database in
+* a separate thread. Once done, it informs the Collection it is done
+*/
+
+class ParseWorkerThread : public ThreadWeaver::Job
+{
+    Q_OBJECT
+public:
+    /**
+    * The constructor.
+    * @param handler The handler
+    */
+
+    ParseWorkerThread( MediaDeviceHandler* handler);
+
+    /**
+    * The destructor.
+    */
+
+    virtual ~ParseWorkerThread();
+
+    /**
+    * Sees the success variable, which says whether or not the copy completed
+successfully.
+    * @return Whether or not the copy was successful, i.e. m_success
+    */
+
+    virtual bool success() const;
+
+signals:
+
+private slots:
+    /**
+    * Is called when the job is done successfully, and simply
+    * calls Collection's emitCollectionReady()
+    * @param job The job that was done
+    */
+
+    void slotDoneSuccess( ThreadWeaver::Job* );
+
+protected:
+    /**
+    * Reimplemented, simply runs the parse method.
+    */
+    virtual void run();
+
+private:
+    bool m_success; /// Whether or not the parse was successful
+    MediaDeviceHandler *m_handler; /// The handler
 };
 
 /**

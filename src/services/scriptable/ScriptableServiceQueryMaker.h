@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -62,13 +62,14 @@ protected slots:
 
     void slotScriptComplete( );
 
-
-protected:
+private slots:
 
     void fetchGenre();
     void fetchArtists();
     void fetchAlbums();
     void fetchTracks();
+
+protected:
 
     void handleResult( const Meta::GenreList &genres );
     void handleResult( const Meta::ArtistList &artists );

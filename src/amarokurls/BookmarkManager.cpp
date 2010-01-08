@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,6 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "Amarok.h"
 #include "BookmarkManager.h"
 
 #include "Debug.h"
@@ -40,18 +41,22 @@ BookmarkManager::BookmarkManager()
     // Sets caption and icon correctly (needed e.g. for GNOME)
     kapp->setTopWidget( this );
     setWindowTitle( KDialog::makeStandardCaption( i18n("Bookmark Manager") ) );
+    setAttribute( Qt::WA_DeleteOnClose );
 
-    QHBoxLayout *layout = new QHBoxLayout();
-    m_widget = new BookmarkManagerWidget( 0 );
+    QHBoxLayout *layout = new QHBoxLayout( this );
+    m_widget = new BookmarkManagerWidget( this );
     layout->addWidget( m_widget );
+    layout->setContentsMargins( 0, 0, 0, 0 );
     setLayout( layout );
 
-    resize( 600, 400 );
-
+    const QSize winSize = Amarok::config( "Bookmark Manager" ).readEntry( "Window Size", QSize( 600, 400 ) );
+    resize( winSize );
 }
 
 BookmarkManager::~BookmarkManager()
 {
+    Amarok::config( "Bookmark Manager" ).writeEntry( "Window Size", size() );
+    s_instance = 0;
 }
 
 void BookmarkManager::showOnce()

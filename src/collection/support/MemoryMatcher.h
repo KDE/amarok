@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

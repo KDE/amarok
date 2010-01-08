@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,7 +18,7 @@
 #define BOOKMARKMETAACTIONS_H
 
 #include "amarok_export.h"
-#include "Meta.h"
+#include "meta/Meta.h"
 
 #include <QAction>
 

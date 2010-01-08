@@ -19,16 +19,16 @@
 #include "File_p.h"
 
 #include "Amarok.h"
-#include "BookmarkMetaActions.h"
+#include "amarokurls/BookmarkMetaActions.h"
 #include <config-amarok.h>
-#include "Meta.h"
+#include "meta/Meta.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/StatisticsCapability.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
 #include "meta/capabilities/TimecodeLoadCapability.h"
 #include "meta/support/PermanentUrlStatisticsProvider.h"
-#include "MetaUtility.h"
+#include "meta/MetaUtility.h"
 #include "amarokurls/PlayUrlRunner.h"
 
 #include <QAction>
@@ -650,8 +650,6 @@ Track::createCapabilityInterface( Meta::Capability::Type type )
        case Meta::Capability::ReadLabel:
            if( !d->readLabelCapability )
                d->readLabelCapability = new Meta::LastfmReadLabelCapability( this );
-
-           return d->readLabelCapability;
 #endif
 
         default: // fall-through

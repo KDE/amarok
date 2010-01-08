@@ -22,15 +22,19 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "EngineObserver.h"
+#include "SmartPointerList.h"
 
-#include "../../engines/videoclip/VideoclipInfo.h"
+#include "VideoclipInfo.h"
 
-#include <ui_videoclipSettings.h>
+#include "ui_videoclipSettings.h"
 
 #include <Phonon/Path>
 #include <Phonon/MediaObject>
 
-// forward
+#include <QPointer>
+
+
+// Forward declarations
 namespace Phonon
 {
     class MediaObject;
@@ -54,6 +58,8 @@ class QHBoxLayout;
 class QScrollArea;
 
 class CustomVideoWidget;
+class TextScrollingWidget;
+class VideoItemButton;
 
 
  /** VideoclipApplet will display videoclip from the Internet, relative to the current playing song
@@ -93,15 +99,16 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
 
 
     private:
-        CustomVideoWidget       *m_videoWidget;
+        QPointer<CustomVideoWidget> m_videoWidget;
      //   Phonon::VideoWidget       *m_videoWidget;
 
         // The two big container, only one who need a resize
-        QGraphicsSimpleTextItem *m_headerText;
+        TextScrollingWidget     *m_headerText;
         QGraphicsProxyWidget    *m_widget;
         QScrollArea             *m_scroll;
         QHBoxLayout             *m_layout;
         QList<QWidget *>        m_layoutWidgetList;
+        SmartPointerList<VideoItemButton> m_videoItemButtons;
 
         QPixmap                 *m_pixYoutube;
         QPixmap                 *m_pixDailymotion;

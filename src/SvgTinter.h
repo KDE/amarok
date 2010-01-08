@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2007 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -35,7 +35,7 @@ namespace The {
 /**
 This singleton class is used to tint the svg artwork to attempt to better match the users color scheme. 
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class SvgTinter
 {

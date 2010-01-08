@@ -57,7 +57,7 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
                                                   int trackIndex ) = 0;
 
     signals:
-        virtual void updated();
+        void updated();
 
 };
 

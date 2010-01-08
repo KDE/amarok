@@ -30,12 +30,13 @@
 Context::VerticalAppletLayout::VerticalAppletLayout( QGraphicsItem* parent )
     : QGraphicsWidget( parent )
     , m_showingIndex( -1 )
-{
-}
+{}
 
 Context::VerticalAppletLayout::~VerticalAppletLayout()
 {
+    DEBUG_BLOCK
 
+    qDeleteAll( m_appletList );
 }
 
 void

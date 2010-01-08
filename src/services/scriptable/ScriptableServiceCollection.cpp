@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -46,13 +46,11 @@ QString ScriptableServiceCollection::prettyName() const
     return collectionId();
 }
 
-void ScriptableServiceCollection::donePopulating(int parentId)
+void ScriptableServiceCollection::donePopulating( int parentId )
 {
     DEBUG_BLOCK
     Q_UNUSED( parentId );
     emit updateComplete();
-    collectionUpdated();
-    //emitUpdated();
 }
 
 void ScriptableServiceCollection::clear()

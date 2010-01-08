@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -62,7 +62,7 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
         virtual void deletePlaylists( Meta::PlaylistList playlistlist ) { Q_UNUSED( playlistlist ) }
 
     signals:
-            virtual void updated();
+            void updated();
 };
 
 #endif

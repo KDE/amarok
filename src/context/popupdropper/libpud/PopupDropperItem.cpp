@@ -589,6 +589,7 @@ void PopupDropperItem::setSharedRenderer( QSvgRenderer *renderer )
     if( renderer && d->svgItem )
     {
         d->svgItem->setSharedRenderer( renderer );
+        d->svgItem->setElementId( d->elementId );
         if( !d->svgItem->elementId().isEmpty() && d->svgItem->renderer()->elementExists( d->svgItem->elementId() ) )
         {
             d->svgItem->show();

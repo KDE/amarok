@@ -20,10 +20,11 @@
 
 #include <QFont>
 #include <QFontMetrics>
-#include <QGraphicsSimpleTextItem>
+#include <QGraphicsTextItem>
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsWidget>
 #include <QPainter>
+#include <QTextDocument>
 #include <QTimer>
 
 #include <Plasma/Animator>
@@ -32,7 +33,7 @@
 
 
 TextScrollingWidget::TextScrollingWidget( QGraphicsItem* parent )
-    : QGraphicsSimpleTextItem( parent )
+    : QGraphicsTextItem( parent )
     , m_fm( 0 )
     , m_text( 0 )
     , m_delta( 0 )
@@ -43,6 +44,13 @@ TextScrollingWidget::TextScrollingWidget( QGraphicsItem* parent )
 {
     setAcceptHoverEvents( true );
     connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animationFinished( int ) ) );
+    document()->setDocumentMargin( 0 );
+}
+
+void
+TextScrollingWidget::setBrush( const QBrush &brush )
+{
+    setDefaultTextColor( brush.color() );
 }
 
 void
@@ -59,9 +67,23 @@ TextScrollingWidget::setScrollingText( const QString text, QRectF rect )
     Plasma::Animator::self()->stopCustomAnimation( m_animback );
     Plasma::Animator::self()->stopCustomAnimation( m_animfor );
     m_animating = false ;
-        
-    m_delta = m_fm->boundingRect( m_text ).width() + 5 > m_rect.width() ? m_fm->boundingRect( m_text ).width() + 8 - m_rect.width() : 0;
+
+    const QRect textRect = m_fm->boundingRect( m_text );
+    m_delta = textRect.width() + 5 > m_rect.width()
+            ? textRect.width() + 8 - m_rect.width() : 0;
     setText( m_fm->elidedText ( m_text, Qt::ElideRight, (int)m_rect.width() ) );
+}
+
+void
+TextScrollingWidget::setText( const QString &text )
+{
+    setHtml( text );
+}
+
+QString
+TextScrollingWidget::text() const
+{
+    return toPlainText();
 }
 
 void
@@ -72,7 +94,7 @@ TextScrollingWidget::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     rec.setWidth( m_rect.width() );
     
     painter->setClipRegion( QRegion( rec ) );
-    QGraphicsSimpleTextItem::paint( painter, option, widget );
+    QGraphicsTextItem::paint( painter, option, widget );
 }
 
 void

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2009 Ian Monroe <imonroe@kde.org>                                      *
  *                                                                                      *

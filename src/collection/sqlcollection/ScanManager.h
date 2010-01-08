@@ -32,6 +32,7 @@
 
 class SqlCollection;
 class SqlCollectionDBusHandler;
+class SqlStorage;
 class XmlParseJob;
 
 class ScanManager : public QObject
@@ -39,13 +40,17 @@ class ScanManager : public QObject
     Q_OBJECT
 
     public:
-        ScanManager( SqlCollection *parent );
+        ScanManager( QObject *parent );
         ~ScanManager();
 
         bool isDirInCollection( QString path );
         bool isFileInCollection( const QString &url );
 
         void setBlockScan( bool blockScan );
+
+        //DI setters
+        void setCollection( SqlCollection * collection ) { m_collection = collection; }
+        void setStorage( SqlStorage *storage ) { m_storage = storage; }
 
     public slots:
         void startFullScan();
@@ -72,6 +77,7 @@ class ScanManager : public QObject
     private:
         SqlCollection *m_collection;
         SqlCollectionDBusHandler *m_dbusHandler;
+        SqlStorage *m_storage;
 
         AmarokProcess *m_scanner;
 

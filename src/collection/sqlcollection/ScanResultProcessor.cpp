@@ -20,8 +20,6 @@
 #include "Debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
-#include "MountPointManager.h"
-#include "SqlCollection.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -32,6 +30,7 @@ using namespace Meta;
 
 ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
     : m_collection( collection )
+    , m_storage( 0 )
     , m_setupComplete( false )
     , m_type( FullScan )
     , m_aftPermanentTablesUrlString()
@@ -45,9 +44,17 @@ ScanResultProcessor::~ScanResultProcessor()
     foreach( QStringList *list, m_urlsHashByUid )
         delete list;
     foreach( QLinkedList<QStringList*> *list, m_albumsHashByName )
+    {
+        foreach( QStringList *slist, *list )
+            delete slist;
         delete list;
+    }
     foreach( QLinkedList<QStringList*> *list, m_tracksHashByAlbum )
+    {
+        foreach( QStringList *slist, *list )
+            delete slist;
         delete list;
+    }
 }
 
 void
@@ -67,19 +74,19 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
         return;
     }
     setupDatabase();
-    int deviceId = MountPointManager::instance()->getIdForUrl( dir );
-    QString rdir = MountPointManager::instance()->getRelativePath( deviceId, dir );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( dir );
+    QString rdir = m_collection->mountPointManager()->getRelativePath( deviceId, dir );
     QString query = QString( "SELECT         id, changedate               "
                              "FROM           directories_temp             "
                              "WHERE          deviceid = %1 AND dir = '%2';" )
-                        .arg( QString::number( deviceId ), m_collection->escape( rdir ) );
-    QStringList res = m_collection->query( query );
+                        .arg( QString::number( deviceId ), m_storage->escape( rdir ) );
+    QStringList res = m_storage->query( query );
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO directories_temp(deviceid,changedate,dir) VALUES (%1,%2,'%3');" )
                         .arg( QString::number( deviceId ), QString::number( mtime ),
-                                m_collection->escape( rdir ) );
-        int id = m_collection->insert( insert, "directories_temp" );
+                                m_storage->escape( rdir ) );
+        int id = m_storage->insert( insert, "directories_temp" );
         m_directories.insert( dir, id );
     }
     else
@@ -88,7 +95,7 @@ ScanResultProcessor::addDirectory( const QString &dir, uint mtime )
         {
             QString update = QString( "UPDATE directories_temp SET changedate = %1 WHERE id = %2;" )
                                 .arg( QString::number( mtime ), res[0] );
-            m_collection->query( update );
+            m_storage->query( update );
         }
         m_directories.insert( dir, res[0].toInt() );
         m_collection->dbUpdater()->removeFilesInDirFromTemporaryTables( deviceId, rdir );
@@ -201,8 +208,8 @@ ScanResultProcessor::commit()
     {
         foreach( const QString &dir, m_directories.keys() )
         {
-            int deviceid = MountPointManager::instance()->getIdForUrl( dir );
-            const QString rpath = MountPointManager::instance()->getRelativePath( deviceid, dir );
+            int deviceid = m_collection->mountPointManager()->getIdForUrl( dir );
+            const QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, dir );
             m_collection->dbUpdater()->removeFilesInDir( deviceid, rpath );
         }
     }
@@ -213,10 +220,10 @@ ScanResultProcessor::commit()
 
     copyHashesToTempTables();
 
-    debug() << "temp_tracks: " << m_collection->query("select count(*) from tracks_temp");
-    debug() << "tracks before commit: " << m_collection->query("select count(*) from tracks");
+    debug() << "temp_tracks: " << m_storage->query("select count(*) from tracks_temp");
+    debug() << "tracks before commit: " << m_storage->query("select count(*) from tracks");
     m_collection->dbUpdater()->copyToPermanentTables();
-    debug() << "tracks after commit: " << m_collection->query("select count(*) from tracks");
+    debug() << "tracks after commit: " << m_storage->query("select count(*) from tracks");
     m_collection->dbUpdater()->removeTemporaryTables();
 
     m_collection->dbUpdater()->deleteAllRedundant( "album" );
@@ -232,7 +239,7 @@ ScanResultProcessor::commit()
     updateAftPermanentTablesUidString();
 
     connect( this, SIGNAL( changedTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ),
-             CollectionManager::instance()->primaryCollection(), SLOT( updateTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ) );
+             m_collection, SLOT( updateTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ) ) );
 
     emit changedTrackUrlsUids( m_changedUrls, m_changedUids );
 }
@@ -477,9 +484,10 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
         m_nextTrackNum--;
     }
     else
+    {
         m_tracksHashByUrl.insert( url, trackList );
-
-    m_tracksHashById.insert( id, trackList );
+        m_tracksHashById.insert( id, trackList );
+    }
 
     if( m_tracksHashByAlbum.contains( album ) && m_tracksHashByAlbum[album] != 0 )
         m_tracksHashByAlbum[album]->append( trackList );
@@ -636,14 +644,35 @@ ScanResultProcessor::albumInsert( const QString &album, int albumArtistId )
 int
 ScanResultProcessor::urlId( const QString &url, const QString &uid )
 {
-    //DEBUG_BLOCK
+    /*
+    DEBUG_BLOCK
+    foreach( QString key, m_urlsHashByUid.keys() )
+    debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
+    foreach( int key, m_urlsHashById.keys() )
+    debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
+    typedef QPair<int, QString> blahType; //QFOREACH is stupid when it comes to QPairs
+    foreach( blahType key, m_urlsHashByLocation.keys() )
+    debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
+    */
+ 
     QFileInfo fileInfo( url );
     const QString dir = fileInfo.absoluteDir().absolutePath();
     int dirId = directoryId( dir );
-    int deviceId = MountPointManager::instance()->getIdForUrl( url );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( url );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, url );
 
     QPair<int, QString> locationPair( deviceId, rpath );
+    //debug() << "in urlId with url = " << url << " and uid = " << uid;
+    //debug() << "checking locationPair " << locationPair;
+    if( m_urlsHashByLocation.contains( locationPair ) )
+    {
+        QStringList values;
+        if( m_urlsHashByLocation[locationPair] != 0 )
+            values = *m_urlsHashByLocation[locationPair];
+        else
+            values << "zero";
+        //debug() << "m_urlsHashByLocation contains it! It is " << values;
+    }
     QStringList currUrlIdValues;
     if( m_urlsHashByUid.contains( uid ) && m_urlsHashByUid[uid] != 0 )
         currUrlIdValues = *m_urlsHashByUid[uid];
@@ -652,6 +681,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
 
     if( currUrlIdValues.isEmpty() )  //fresh -- insert
     {
+        //debug() << "locationPair did not match!";
         int returnedNum = m_nextUrlNum++;
         QStringList *list = new QStringList();
         list->append( QString::number( returnedNum ) );
@@ -661,7 +691,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
         list->append( uid );
         m_urlsHashByUid[uid] = list;
         m_urlsHashById[returnedNum] = list;
-        m_urlsHashByLocation[QPair<int, QString>( deviceId, rpath )] = list;
+        m_urlsHashByLocation[locationPair] = list;
         return returnedNum;
     }
 
@@ -672,6 +702,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
       )
     {
         //everything matches, don't need to do anything, just return the ID
+        //debug() << "Everything matches, just returning id";
         return currUrlIdValues[0].toInt();
     }
 
@@ -679,31 +710,58 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     {
         //we found an existing entry with this uniqueid, update the deviceid and path
         //Note that we ignore the situation where both a UID and path was found; UID takes precedence
-
+        //debug() << "found entry with this UID";
         if( m_urlsHashByUid.contains( uid ) && m_urlsHashByUid[uid] != 0 )
         {
+            //debug() << "m_urlsHashByUid contains this UID, updating deviceId and path";
             QStringList *list = m_urlsHashByUid[uid];
+            //debug() << "list from UID hash is " << list << " with values " << *list;
             list->replace( 1, QString::number( deviceId ) );
             list->replace( 2, rpath );
             list->replace( 3, QString::number( dirId ) );
             //debug() << "Hash updated UID-based values for uid " << uid;
+            //Now remove original locations if they exist
+            if( m_urlsHashByLocation.contains( locationPair )
+                && m_urlsHashByLocation[locationPair] != 0
+                && m_urlsHashByLocation[locationPair] != list )
+            {
+                //debug() << "If condition checked out; removing old stuff";
+                //Have existing entries for both location and UID, so to prevent conflicts remove the old
+                //entry. This can happen if for instance a track with a changed UID is added in
+                //two places to the collection.
+                QStringList *oldList = m_urlsHashByLocation[locationPair];
+                //debug() << "old list is " << oldList << " with contents " << *oldList;
+                m_urlsHashById.remove( oldList->at( 0 ).toInt() );
+                m_urlsHashByUid.remove( oldList->at( 4 ) );
+                delete oldList;
+            }
+            m_urlsHashByLocation[locationPair] = list;
         }
         m_permanentTablesUrlUpdates.insert( uid, url );
-        m_changedUrls.insert( uid, QPair<QString, QString>( MountPointManager::instance()->getAbsolutePath( currUrlIdValues[1].toInt(), currUrlIdValues[2] ), url ) );
+        m_changedUrls.insert( uid, QPair<QString, QString>( m_collection->mountPointManager()->getAbsolutePath( currUrlIdValues[1].toInt(), currUrlIdValues[2] ), url ) );
         return currUrlIdValues[0].toInt();
     }
 
     if( currUrlIdValues[1] == QString::number( deviceId ) && currUrlIdValues[2] == rpath )
     {
         //We found an existing path; give it the most recent UID value
-        int urlId = currUrlIdValues[0].toInt();
-        if( m_urlsHashById.contains( urlId ) && m_urlsHashById[urlId] != 0 )
+        //debug() << "In urlId, found deviceid " << QString::number( deviceId ) << " and rpath " << rpath;
+        if( m_urlsHashByLocation.contains( locationPair ) && m_urlsHashByLocation[locationPair] != 0 )
         {
-            QStringList *list = m_urlsHashById[urlId];
+            QStringList *list = m_urlsHashByLocation[locationPair];
+            //debug() << "Replacing hash " << list->at( 4 ) << " with " << uid;
             list->replace( 4, uid );
-            //debug() << "Hash updated path-based values for uid " << uid;
+            if( m_urlsHashByUid.contains( uid )
+                && m_urlsHashByUid[uid] != 0 
+                && m_urlsHashByUid[uid] != list )
+            {
+                QStringList *oldList = m_urlsHashByUid[uid];
+                m_urlsHashById.remove( oldList->at( 0 ).toInt() );
+                m_urlsHashByLocation.remove( QPair<int, QString>( oldList->at( 1 ).toInt(), oldList->at( 2 ) ) );
+                delete oldList;
+            }
+            m_urlsHashByUid[uid] = list;
         }
-
         m_permanentTablesUidUpdates.insert( url, uid );
         m_changedUids.insert( currUrlIdValues[4], uid );
         return currUrlIdValues[0].toInt();
@@ -726,17 +784,17 @@ ScanResultProcessor::updateAftPermanentTablesUrlString()
         bool first = true;
         foreach( const QString key, m_permanentTablesUrlUpdates.keys() )
         {
-            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_collection->escape( key ),
-                                                       m_collection->escape( m_permanentTablesUrlUpdates[key] ) );
+            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_storage->escape( key ),
+                                                       m_storage->escape( m_permanentTablesUrlUpdates[key] ) );
             if( first )
-                query2 += QString( "'%1'" ).arg( m_collection->escape( key ) );
+                query2 += QString( "'%1'" ).arg( m_storage->escape( key ) );
             else
-                query2 += QString( ", '%1'" ).arg( m_collection->escape( key ) );
+                query2 += QString( ", '%1'" ).arg( m_storage->escape( key ) );
             first = false;
         }
         query += QString( " END WHERE uniqueid IN(%1);" ).arg( query2 );
 
-        m_collection->query( query );
+        m_storage->query( query );
     }
 }
 
@@ -753,17 +811,17 @@ ScanResultProcessor::updateAftPermanentTablesUidString()
         bool first = true;
         foreach( const QString key, m_permanentTablesUidUpdates.keys() )
         {
-            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_collection->escape( key ),
-                                                       m_collection->escape( m_permanentTablesUidUpdates[key] ) );
+            query += QString( " WHEN '%1' THEN '%2'" ).arg( m_storage->escape( key ),
+                                                       m_storage->escape( m_permanentTablesUidUpdates[key] ) );
             if( first )
-                query2 += QString( "'%1'" ).arg( m_collection->escape( key ) );
+                query2 += QString( "'%1'" ).arg( m_storage->escape( key ) );
             else
-                query2 += QString( ", '%1'" ).arg( m_collection->escape( key ) );
+                query2 += QString( ", '%1'" ).arg( m_storage->escape( key ) );
             first = false;
         }
         query += QString( " END WHERE url IN(%1);" ).arg( query2 );
 
-        m_collection->query( query );
+        m_storage->query( query );
     }
 }
 
@@ -773,15 +831,15 @@ ScanResultProcessor::directoryId( const QString &dir )
     if( m_directories.contains( dir ) )
         return m_directories.value( dir );
 
-    int deviceId = MountPointManager::instance()->getIdForUrl( dir );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceId, dir );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( dir );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, dir );
     if( !rpath.endsWith( '/' ) )
     {
         rpath += '/';
     }
     QString query = QString( "SELECT id, changedate FROM directories_temp WHERE deviceid = %1 AND dir = '%2';" )
-                        .arg( QString::number( deviceId ), m_collection->escape( rpath ) );
-    QStringList result = m_collection->query( query );
+                        .arg( QString::number( deviceId ), m_storage->escape( rpath ) );
+    QStringList result = m_storage->query( query );
     if( result.isEmpty() )
     {
         return 0;
@@ -847,7 +905,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
         l_trackId = QString::number( track );
         l_albumId = trackList[3];
         l_albumArtistId = albumList[2];
-        l_currentPath = MountPointManager::instance()->getAbsolutePath( l_deviceid, l_rpath );
+        l_currentPath = m_collection->mountPointManager()->getAbsolutePath( l_deviceid, l_rpath );
         QFileInfo info( l_currentPath );
         uint dirCount = m_filesInDirs.value( info.dir().absolutePath() );
         if( dirCount == 1 )
@@ -896,14 +954,15 @@ ScanResultProcessor::setupDatabase()
         }
         m_setupComplete = true;
         populateCacheHashes();
-        // /*
+        /*
         debug() << "Next URL num: " << m_nextUrlNum;
-        //foreach( QString key, m_urlsHashByUid.keys() )
-        //    debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
-        //foreach( int key, m_urlsHashById.keys() )
-        //    debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
-        //foreach( QPair<int, QString> key, m_urlsHashByLocation.keys() )
-        //    debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
+        foreach( QString key, m_urlsHashByUid.keys() )
+            debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
+        foreach( int key, m_urlsHashById.keys() )
+            debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
+        typedef QPair<int, QString> blahType; //QFOREACH is stupid when it comes to QPairs
+        foreach( blahType key, m_urlsHashByLocation.keys() )
+            debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
         debug() << "Next album num: " << m_nextAlbumNum;
         //foreach( int key, m_albumsHashById.keys() )
         //    debug() << "Key: " << key << ", list: " << *m_albumsHashById[key];
@@ -933,7 +992,7 @@ ScanResultProcessor::populateCacheHashes()
     DEBUG_BLOCK
 
     //urls
-    QStringList res = m_collection->query( "SELECT * FROM urls_temp ORDER BY id ASC;" );
+    QStringList res = m_storage->query( "SELECT * FROM urls_temp ORDER BY id ASC;" );
     int reserveSize = ( res.size() / 5 ) * 2; //Reserve plenty of space to bring insertion and lookup close to O(1)
     m_urlsHashByUid.reserve( reserveSize );
     m_urlsHashById.reserve( reserveSize );
@@ -944,19 +1003,30 @@ ScanResultProcessor::populateCacheHashes()
     int lastNum = 0;
     while( index < res.size() )
     {
-        currList = new QStringList();
-        lastNum = res.at( index ).toInt();
-        for( int i = 0; i < 5; i++ )
-            currList->append( res.at(index++) );
-        m_urlsHashByUid.insert( currList->last(), currList );
-        m_urlsHashById.insert( lastNum, currList );
-        m_urlsHashByLocation.insert( QPair<int, QString>( currList->at( 1 ).toInt(), currList->at( 2 ) ), currList );
+        if( !res.at( index + 4 ).startsWith( "amarok-sqltrackuid" ) )
+        {
+            debug() << "UHOH: Found track with invalid uid of " << res.at( index + 4 );
+            index += 5;
+            continue;
+        }
+        else
+        {
+            currList = new QStringList();
+            lastNum = res.at( index ).toInt();
+            for( int i = 0; i < 5; i++ )
+                currList->append( res.at(index++) );
+            m_urlsHashByUid.insert( currList->last(), currList );
+            m_urlsHashById.insert( lastNum, currList );
+            QPair<int, QString> locationPair( currList->at( 1 ).toInt(), currList->at( 2 ) );
+            //debug() << "inserting locationPair " << locationPair;
+            m_urlsHashByLocation.insert( locationPair, currList );
+        }
     }
     m_nextUrlNum = lastNum + 1;
-    m_collection->query( "DELETE FROM urls_temp;" );
+    m_storage->query( "DELETE FROM urls_temp;" );
 
     //albums
-    res = m_collection->query( "SELECT * FROM albums_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM albums_temp ORDER BY id ASC;" );
     reserveSize = ( res.size() / 4 ) * 2;
     m_albumsHashByName.reserve( reserveSize );
     m_albumsHashById.reserve( reserveSize );
@@ -983,10 +1053,10 @@ ScanResultProcessor::populateCacheHashes()
         }
     }
     m_nextAlbumNum = lastNum + 1;
-    m_collection->query( "DELETE FROM albums_temp;" );
+    m_storage->query( "DELETE FROM albums_temp;" );
 
     //tracks
-    res = m_collection->query( "SELECT * FROM tracks_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM tracks_temp ORDER BY id ASC;" );
     reserveSize = ( res.size() / 22 ) * 2;
     m_tracksHashById.reserve( reserveSize );
     index = 0;
@@ -1014,10 +1084,10 @@ ScanResultProcessor::populateCacheHashes()
         }
     }
     m_nextTrackNum = lastNum + 1;
-    m_collection->query( "DELETE FROM tracks_temp;" );
+    m_storage->query( "DELETE FROM tracks_temp;" );
 
     //artists
-    res = m_collection->query( "SELECT * FROM artists_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM artists_temp ORDER BY id ASC;" );
     m_artists.reserve( res.size() );
     index = 0;
     lastNum = 0;
@@ -1027,10 +1097,10 @@ ScanResultProcessor::populateCacheHashes()
         m_artists.insert( res.at( index++ ), lastNum );
     }
     m_nextArtistNum = lastNum + 1;
-    m_collection->query( "DELETE FROM artists_temp;" );
+    m_storage->query( "DELETE FROM artists_temp;" );
 
     //composers
-    res = m_collection->query( "SELECT * FROM composers_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM composers_temp ORDER BY id ASC;" );
     m_composers.reserve( res.size() );
     index = 0;
     lastNum = 0;
@@ -1040,10 +1110,10 @@ ScanResultProcessor::populateCacheHashes()
         m_composers.insert( res.at( index++ ), lastNum );
     }
     m_nextComposerNum = lastNum + 1;
-    m_collection->query( "DELETE FROM composers_temp;" );
+    m_storage->query( "DELETE FROM composers_temp;" );
 
     //genres
-    res = m_collection->query( "SELECT * FROM genres_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM genres_temp ORDER BY id ASC;" );
     m_genres.reserve( res.size() );
     index = 0;
     lastNum = 0;
@@ -1053,10 +1123,10 @@ ScanResultProcessor::populateCacheHashes()
         m_genres.insert( res.at( index++ ), lastNum );
     }
     m_nextGenreNum = lastNum + 1;
-    m_collection->query( "DELETE FROM genres_temp;" );
+    m_storage->query( "DELETE FROM genres_temp;" );
 
     //images
-    res = m_collection->query( "SELECT * FROM images_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM images_temp ORDER BY id ASC;" );
     m_imagesFlat.reserve( res.size() );
     index = 0;
     lastNum = 0;
@@ -1066,10 +1136,10 @@ ScanResultProcessor::populateCacheHashes()
         m_imagesFlat.insert( res.at( index++ ), lastNum );
     }
     m_nextImageNum = lastNum + 1;
-    m_collection->query( "DELETE FROM images_temp;" );
+    m_storage->query( "DELETE FROM images_temp;" );
 
     //years
-    res = m_collection->query( "SELECT * FROM years_temp ORDER BY id ASC;" );
+    res = m_storage->query( "SELECT * FROM years_temp ORDER BY id ASC;" );
     m_years.reserve( res.size() );
     index = 0;
     lastNum = 0;
@@ -1079,13 +1149,25 @@ ScanResultProcessor::populateCacheHashes()
         m_years.insert( res.at( index++ ), lastNum );
     }
     m_nextYearNum = lastNum + 1;
-    m_collection->query( "DELETE FROM years_temp;" );
+    m_storage->query( "DELETE FROM years_temp;" );
 
 }
 
 void
 ScanResultProcessor::copyHashesToTempTables()
 {
+    /*
+    debug() << "Next URL num: " << m_nextUrlNum;
+    foreach( QString key, m_urlsHashByUid.keys() )
+        debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
+    foreach( int key, m_urlsHashById.keys() )
+        debug() << "Key: " << key << ", list: " << *m_urlsHashById[key];
+    typedef QPair<int, QString> blahType; //QFOREACH is stupid when it comes to QPairs
+    foreach( blahType key, m_urlsHashByLocation.keys() )
+        debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
+    debug() << "Next album num: " << m_nextAlbumNum;
+    */
+ 
     DEBUG_BLOCK
     QString query;
     QString queryStart;
@@ -1094,7 +1176,7 @@ ScanResultProcessor::copyHashesToTempTables()
     QStringList res;
     bool valueReady;
 
-    res = m_collection->query( "SHOW VARIABLES LIKE 'max_allowed_packet';" );
+    res = m_storage->query( "SHOW VARIABLES LIKE 'max_allowed_packet';" );
     if( res.size() < 2 || res[1].toInt() == 0 )
     {
         debug() << "Uh oh! For some reason MySQL thinks there isn't a max allowed size!";
@@ -1110,19 +1192,27 @@ ScanResultProcessor::copyHashesToTempTables()
     valueReady = false;
     QList<int> keys = m_urlsHashById.keys();
     qSort( keys );
+    QSet<int> invalidUrls;
     foreach( int key, keys )
     {
         currList = m_urlsHashById[key];
+        if( !currList->at( 4 ).startsWith( "amarok-sqltrackuid" ) )
+        {
+            debug() << "UHOH: Trying to insert invalid entry into urls with id of " << currList->at( 0 ) << " and uid of " << currList->at( 4 );
+            invalidUrls << currList->at( 0 ).toInt();
+            continue;
+        }
+        //debug() << "inserting following list: " << currList;
         currQuery =   "(" + currList->at( 0 ) + ","
                           + ( currList->at( 1 ).isEmpty() ? "NULL" : currList->at( 1 ) ) + ","
-                          + "'" + m_collection->escape( currList->at( 2 ) ) + "',"
+                          + "'" + m_storage->escape( currList->at( 2 ) ) + "',"
                           + ( currList->at( 3 ).isEmpty() ? "NULL" : currList->at( 3 ) ) + ","
-                          + "'" + m_collection->escape( currList->at( 4 ) ) + "')"; //technically allowed to be NULL but it's the primary key so won't get far
+                          + "'" + m_storage->escape( currList->at( 4 ) ) + "')"; //technically allowed to be NULL but it's the primary key so won't get far
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query );
+            m_storage->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1130,16 +1220,20 @@ ScanResultProcessor::copyHashesToTempTables()
         if( !valueReady )
         {
             query += currQuery;
+            //debug() << "appending " << currQuery;
             valueReady = true;
         }
         else
+        {
+            //debug() << "appending , + " << currQuery;
             query += "," + currQuery;
+        }
     }
     if( query != queryStart )
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
-        m_collection->insert( query );
+        m_storage->insert( query, QString() );
     }
     keys.clear();
 
@@ -1153,14 +1247,14 @@ ScanResultProcessor::copyHashesToTempTables()
     {
         currList = m_albumsHashById[key];
         currQuery =   "(" + currList->at( 0 ) + ","
-                          + "'" + m_collection->escape( currList->at( 1 ) ) + "',"
+                          + "'" + m_storage->escape( currList->at( 1 ) ) + "',"
                           + ( currList->at( 2 ).isEmpty() ? "NULL" : currList->at( 2 ) ) + ","
                           + ( currList->at( 3 ).isEmpty() ? "NULL" : currList->at( 3 ) ) + ")";
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query );
+            m_storage->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1177,7 +1271,7 @@ ScanResultProcessor::copyHashesToTempTables()
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
-        m_collection->insert( query );
+        m_storage->insert( query, QString() );
     }
     keys.clear();
 
@@ -1192,6 +1286,11 @@ ScanResultProcessor::copyHashesToTempTables()
     {
         //debug() << "key = " << key << ", id = " << m_tracksHashById[key]->at( 0 );
         currList = m_tracksHashById[key];
+        if( invalidUrls.contains( currList->at( 1 ).toInt() ) )
+        {
+            debug() << "UHOH: Skipping track with url id " << currList->at( 1 ) << " because it's in the invalidUrls set";
+            continue;
+        }
         currQuery =   "(" + currList->at( 0 ) + ","                                               //id
                           + ( currList->at( 1 ).isEmpty() ? "NULL" : currList->at( 1 ) ) + ","    //url
                           + ( currList->at( 2 ).isEmpty() ? "NULL" : currList->at( 2 ) ) + ","    //artist
@@ -1199,8 +1298,8 @@ ScanResultProcessor::copyHashesToTempTables()
                           + ( currList->at( 4 ).isEmpty() ? "NULL" : currList->at( 4 ) ) + ","    //genre
                           + ( currList->at( 5 ).isEmpty() ? "NULL" : currList->at( 5 ) ) + ","    //composer
                           + ( currList->at( 6 ).isEmpty() ? "NULL" : currList->at( 6 ) ) + ","    //year
-                          + "'" + m_collection->escape( currList->at( 7 ) ) + "',"                //title
-                          + "'" + m_collection->escape( currList->at( 8 ) ) + "',"                //text
+                          + "'" + m_storage->escape( currList->at( 7 ) ) + "',"                //title
+                          + "'" + m_storage->escape( currList->at( 8 ) ) + "',"                //text
                           + ( currList->at( 9 ).isEmpty() ? "NULL" : currList->at( 9 ) ) + ","    //tracknumber
                           + ( currList->at( 10 ).isEmpty() ? "NULL" : currList->at( 10 ) ) + ","  //discnumber
                           + ( currList->at( 11 ).isEmpty() ? "NULL" : currList->at( 11 ) ) + ","  //bitrate
@@ -1219,7 +1318,7 @@ ScanResultProcessor::copyHashesToTempTables()
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query );
+            m_storage->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1236,7 +1335,7 @@ ScanResultProcessor::copyHashesToTempTables()
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
-        m_collection->insert( query );
+        m_storage->insert( query, QString() );
     }
 
     genericCopyHash( "artists", &m_artists, maxSize );
@@ -1264,13 +1363,13 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
     {
 
         currString = sortedHash[key];
-        //currQuery =   "(" + QString::number( hash->value( key ) ) + ",'" + m_collection->escape( key ) + "')";
-        currQuery =   "(" + QString::number( key ) + ",'" + m_collection->escape( sortedHash[key] ) + "')";
+        //currQuery =   "(" + QString::number( hash->value( key ) ) + ",'" + m_storage->escape( key ) + "')";
+        currQuery =   "(" + QString::number( key ) + ",'" + m_storage->escape( sortedHash[key] ) + "')";
         if( query.size() + currQuery.size() + 1 >= maxSize - 3 ) // ";"
         {
             query += ";";
             //debug() << "inserting " << query << ", size " << query.size();
-            m_collection->insert( query );
+            m_storage->insert( query, QString() );
             query = queryStart;
             valueReady = false;
         }
@@ -1287,7 +1386,7 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
     {
         query += ";";
         //debug() << "inserting " << query << ", size " << query.size();
-        m_collection->insert( query );
+        m_storage->insert( query, QString() );
     }
 }
 

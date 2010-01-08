@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2006 Andy Kelk <andy@mopoke.co.uk>                                     *
  * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -52,10 +53,6 @@ MtpHandler::MtpHandler( MtpCollection *mc )
     , m_isCanceled( false )
     , m_wait( false )
     , m_dbChanged( false )
-    , m_currtracklist( 0 )
-    , m_currtrack( 0 )
-    , m_currplaylistlist( 0 )
-    , m_currplaylist( 0 )
     , m_trackcounter( 0 )
     , m_copyParentId( 0 )
     , m_tempDir( new KTempDir() )
@@ -764,25 +761,25 @@ MtpHandler::prepareToParseTracks()
 {
     DEBUG_BLOCK
 
-    m_currtracklist = LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this );
+    m_currentTrackList = LIBMTP_Get_Tracklisting_With_Callback( m_device, 0, this );
 }
 
 bool
 MtpHandler::isEndOfParseTracksList()
 {
-    return m_currtracklist ? false : true;
+    return m_currentTrackList ? false : true;
 }
 
 void
 MtpHandler::prepareToParseNextTrack()
 {
-    m_currtracklist = m_currtracklist->next;
+    m_currentTrackList = m_currentTrackList->next;
 }
 
 void
 MtpHandler::nextTrackToParse()
 {
-    m_currtrack = m_currtracklist;
+    m_currentTrack = m_currentTrackList;
 }
 
 /// Playlist Parsing
@@ -790,28 +787,28 @@ MtpHandler::nextTrackToParse()
 void
 MtpHandler::prepareToParsePlaylists()
 {
-    m_currplaylistlist = LIBMTP_Get_Playlist_List( m_device );
+    m_currentPlaylistList = LIBMTP_Get_Playlist_List( m_device );
 }
 
 
 bool
 MtpHandler::isEndOfParsePlaylistsList()
 {
-    return (m_currplaylistlist == 0);
+    return (m_currentPlaylistList == 0);
 }
 
 
 void
 MtpHandler::prepareToParseNextPlaylist()
 {
-    m_currplaylistlist = m_currplaylistlist->next;
+    m_currentPlaylistList = m_currentPlaylistList->next;
 }
 
 
 void
 MtpHandler::nextPlaylistToParse()
 {
-    m_currplaylist = m_currplaylistlist;
+    m_currentPlaylist = m_currentPlaylistList;
 }
 
 bool
@@ -832,7 +829,7 @@ MtpHandler::prepareToParsePlaylistTracks()
 bool
 MtpHandler::isEndOfParsePlaylist()
 {
-    return (m_trackcounter >= m_currplaylist->no_tracks);
+    return (m_trackcounter >= m_currentPlaylist->no_tracks);
 }
 
 
@@ -846,26 +843,26 @@ MtpHandler::prepareToParseNextPlaylistTrack()
 void
 MtpHandler::nextPlaylistTrackToParse()
 {
-    m_currtrack = m_idTrackHash.value( m_currplaylist->tracks[ m_trackcounter ] );
+    m_currentTrack = m_idTrackHash.value( m_currentPlaylist->tracks[ m_trackcounter ] );
 }
 
 
 Meta::MediaDeviceTrackPtr
 MtpHandler::libGetTrackPtrForTrackStruct()
 {
-    return m_mtpTrackHash.key( m_currtrack );
+    return m_mtpTrackHash.key( m_currentTrack );
 }
 
 QString
 MtpHandler::libGetPlaylistName()
 {
-    return QString::fromUtf8( m_currplaylist->name );
+    return QString::fromUtf8( m_currentPlaylist->name );
 }
 
 void
 MtpHandler::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
-    m_mtpPlaylisthash[ playlist ] = m_currplaylist;
+    m_mtpPlaylisthash[ playlist ] = m_currentPlaylist;
 }
 
 void
@@ -960,8 +957,8 @@ MtpHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 void
 MtpHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
-    m_mtpTrackHash[ track ] = m_currtrack;
-    m_idTrackHash[ m_currtrack->item_id ] = m_currtrack;
+    m_mtpTrackHash[ track ] = m_currentTrack;
+    m_idTrackHash[ m_currentTrack->item_id ] = m_currentTrack;
 }
 
 QStringList

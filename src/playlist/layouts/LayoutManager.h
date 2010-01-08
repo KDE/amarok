@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2008-2009 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -32,7 +32,7 @@ namespace Playlist {
 /**
  * Class for keeping track of playlist layouts and loading/saving them to xml files. Also keeps track
  * Of the order in which these layouts are shown to the user and makes this persistant between sessions.
- * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class LayoutManager : public QObject
 {

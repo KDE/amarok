@@ -26,11 +26,13 @@
 
 #include <KUrl>
 
-AMAROK_EXPORT_PLUGIN( UmsCollectionFactory )
+AMAROK_EXPORT_COLLECTION( UmsCollectionFactory, umscollection )
 
-UmsCollectionFactory::UmsCollectionFactory()
+UmsCollectionFactory::UmsCollectionFactory( QObject *parent, const QVariantList &args )
     : MediaDeviceCollectionFactory<UmsCollection> ( new UmsConnectionAssistant() )
 {
+    setParent( parent );
+    Q_UNUSED( args );
 }
 
 UmsCollectionFactory::~UmsCollectionFactory()

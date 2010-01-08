@@ -19,15 +19,21 @@
 
 #include "TestQStringx.h"
 
+#include "Debug.h"
+
 #include <QtTest/QTest>
 #include <QtCore/QString>
 #include <QtCore/QMap>
 
-TestQStringx::TestQStringx( QStringList testArgumentList, bool stdout )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestQStringx )
+
+//required for Debug.h
+QMutex Debug::mutex;
+
+TestQStringx::TestQStringx()
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "QStringx.xml" );
-    QTest::qExec( this, testArgumentList );
 }
 
 void TestQStringx::testArgs()
@@ -131,10 +137,35 @@ void TestQStringx::testNamedOptArgs()
     m_testString = "{%test {%artist}}";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "" ) );
 
+    m_testString = "{%artist {%test}}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults " ) );
+
     testArgs[ "track" ] = "Some track";
     m_testString = "{%test {%artist}}%track";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "Some track" ) );
 
     m_testString = "{%artist {%track}} %test";
     QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults Some track " ) );
+
+    testArgs[ "test" ] = "";
+    m_testString = "{%test}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "" ) );
+
+    m_testString = "before{%test}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "before" ) );
+
+    m_testString = "{%test}after";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "after" ) );
+
+    m_testString = "before{%test}after";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "beforeafter" ) );
+
+    m_testString = "{%test }{%artist}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( " All:My:Faults" ) );
+
+    m_testString = "{%test {%artist}}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( " All:My:Faults" ) );
+
+    m_testString = "{%artist {%test}}";
+    QCOMPARE( m_testString.namedOptArgs( testArgs ) , QString( "All:My:Faults " ) );
 }

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -27,7 +27,7 @@ typedef KSharedPtr<BookmarkGroup> BookmarkGroupPtr;
 typedef QList<BookmarkGroupPtr> BookmarkGroupList;
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+	@author Nikolaj Hald Nielsen <nhn@kde.org> 
 */
 
 class BookmarkViewItem;

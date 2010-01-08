@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -29,7 +29,7 @@ namespace Playlist {
 /**
  * Action used to show a menu for selecting active playlist layout. Also contains an entry for showing the
  * playlist layout editor.
- * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class LayoutConfigAction : public KAction
 {

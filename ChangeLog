@@ -1,10 +1,90 @@
 Amarok ChangeLog
 ================
-(C) 2002-2009 the Amarok authors.
+(C) 2002-2010 the Amarok authors.
+
+
+VERSION 2.2.3
+  FEATURES
+ 
+  CHANGES:
+    * Bumped libMTP dependency to version 1.0.0.
+    * Loving a track for Last.fm via the global keyboard action also show a
+      message in the status bar.
+    * Improved usability of the playlist layout editor dialog.
+
+  BUGFIXES:
+    * Sort artists named like "The Foo" correctly in all cases. (BR 176670)
+    * Fixed behaviour when clearing the bookmark manager filter.
+    * Fixed track not being added to the playlist when playing a track from
+      the bookmark manager.
 
 
 VERSION 2.2.2
+  CHANGES:
+    * The inline playlist editor now also allows resizing of auto sized items that 
+      are invisible because fixed sized items already use up 100% width.
+    * Enhanced the playlist sorting breadcrumb items to separately highlight
+      the order inversion arrow on hover. (BR 209011)
+    * The automatic character set detection for tags has been disabled; it
+      caused too many problems with legitimate UTF-8 tags. It can be
+      re-enabled from Settings->Collection. (Many BRs)
+    * Dynamic mode is now automatically disabled when replacing the playlist.
+      (BR 214759)
+    * The collection search filter now also searches for file names as a
+      fallback. Patch by Andreas Hartmetz <ahartmetz@gmail.com>.
+
+  BUGFIXES:
+    * Fixed crash with dangling pointer on trying to play a media device track
+      whose collection no longer exists. (BR 210477)
+    * Fixed loading MusicBrainz-tagged tracks in dynamic playlists. (BR 219902)
+    * Fixed MusicBrainz-tagged tracks not being restored in the playlist
+      upon restart.
+    * Fixed incorrect display of rich text in applet header text. (BR 220714)
+    * Fixed GUI freezing after mounting and during parse of media devices.
+      (BR 180520)
+    * Fixed occasional crash when custom biases go awry. (BR 219888)
+    * Fixed missing icons in the drag overlay menu.
+    * More reliable MimeType detection for music formats. Patch by Rafał
+      Rzepecki <divided.mind@gmail.com>. (BR 219792)
+    * Fixed regression causing many scripted services, including the, shipped by
+      default, LibriVox service to not work at all.
+    * Fixed corner case that could prevent scans from being completed,
+      manifesting as a regression in 2.2.1. Huge thanks to Christian
+      Kreibichfor his patience and time in helping to debug this.
+    * Fixed removing multiple tracks from a saved playlist only removing the
+      first track. (BR 218527)
+    * Fixed cancel button not responding when loading thumbnails in the cover 
+      manager. (BR 204882)
+    * Fixed crash when using the inline playlist editor to resize items containing
+      auto sized elements not shown becuase of all space already being used.
+      (BR 218167)
+    * Fixed relative links in wikipedia work. (BR 218512)
+    * Fixed multilevel playlist sorting by time since last played so it sorts
+      numerically rather than alphabetically. (BR 214761)
+    * Fixed crash with "Edit Track Details" dialog. (BR 217625)
+    * Fixed a number of cases where markers such as "current track", "stop after 
+      this track" and others would get shown in both group header and the first 
+      track in the group. (BR 197842)
+    * Fixed regression causing non default moodbar styles to not work.
+    * Jamendo.com service: Fixed track lengths not getting shown for most tracks.
+      For existing installs, this requires a redownload of the Jamendo database.
+      (BR 200531)
+    * Jamendo.com service: Fixed searches not working because of SQL errors.
+    * Jamendo.com service: Removed broken "Unknown" genre which would freeze
+      Amarok if expanded. For existing installs, this requires a redownload of
+      the Jamendo database. (BR 213165)
+    * Playback of Audio CD track now correctly stops if track is the last in the
+      playlist. (BR 216175)
+    * Fixed crash if user clicks rating widget on the current track applet
+      while no track is playing (which is possible since there is a slight
+      delay before the applet switches "mode"). (BR 215471)
+    * Made "Last.fm Love" (and potentially other global actions avaiable for all 
+      tracks) correctly show up in the Current Track applet.
+
+
+VERSION 2.2.2-beta1
   FEATURES
+    * Added Ctrl+O shortcut to open media files. (BR 219337)
     * Dailymotion video can now be rendered within the applet in HQ if HQ is selected 
       in the video applet settings.
     * Rewrote podcast feed parser to correctly parse XML. Now even RSS 1.0 and
@@ -33,15 +113,6 @@ VERSION 2.2.2
     * Pressing F2 when focused in the lyrics applet jumps into editing mode.
 
   CHANGES:
-    * Enhanced the playlist sorting breadcrumb items to separately highlight
-      the order inversion arrow on hover. (BR 209011)
-    * The automatic character set detection for tags has been disabled; it
-      caused too many problems with legitimate UTF-8 tags. It can be
-      re-enabled from Settings->Collection. (Many BRs)
-    * Dynamic mode is now automatically disabled when replacing the playlist.
-      (BR 214759)
-    * The collection search filter now also searches for file names as a
-      fallback. Patch by Andreas Hartmetz <ahartmetz@gmail.com>.
     * Tracks in Albums applet are now sorted by track number. Patch by Lorenz
       Röhrl <sheepshit@gmx.de>.
     * New menu to add applets to the context view.
@@ -70,29 +141,11 @@ VERSION 2.2.2
     * Display frames around lyrics/video applets for indicating focus.
     * Improved keyboard functions when editing lyrics from the applet.
     * Improved automatic resizing of lyrics and suggestions in the context applet.
+    * The audio device is now closed when playback stops. This saves power in several ways
+      and frees it up for other applications. This also fixes the 100+ idle wakeups in
+      PowerTOP when using the Xine backend.
 
   BUGFIXES:
-    * Fixed multilevel playlist sorting by time since last played so it sorts
-      numerically rather than alphabetically. (BR 214761)
-    * Fixed crash with "Edit Track Details" dialog. (BR 217625)
-    * Fixed a number of cases where markers such as "current track", "stop after 
-      this track" and others would get shown in both group header and the first 
-      track in the group. (BR 197842)
-    * Fixed regression causing non default moodbar styles to not work.
-    * Jamendo.com service: Fixed track lengths not getting shown for most tracks.
-      For existing installs, this requires a redownload of the Jamendo database.
-      (BR 200531)
-    * Jamendo.com service: Fixed searches not working because of Sql errors.
-    * Jamendo.com service: Removed broken "Unknown" genre which would freeze
-      Amarok if expanded. For existing installs, this requires a redownload of the 
-      Jamendo database. (BR 213165)
-    * Playback of Audio CD track now correctly stops if track is the last in the
-      playlist. (BR 216175)
-    * Fixed crash if user clicks rating widget on the current track applet while no
-      track is playing (which is possible since there is a slight delay before the 
-      applet switches "mode"). (BR 215471)
-    * Made "Last.fm Love" (and potentially other global actions avaiable for all 
-      tracks) correctly show up in the Current Track applet.
     * Fixed two bookmark actions having the same text description. (BR 214716)
     * Remove broken right click menu from the Info applet. (BR 206642)
     * Fix several bugs handling changing compilations. Patch by Morten Sjøgren
@@ -104,11 +157,11 @@ VERSION 2.2.2
     * Fixed wikipedia applet poorly showing wikipedia main page when a track 
       tag is empty.
     * Magnatune.com store: Album cover is now correctly fetched when redownloading.
-    * Magnatune.com store: Fixed crash when redownloading album: (BR 217148)
+    * Magnatune.com store: Fixed crash when redownloading album. (BR 217148)
     * Fixed crash when doing "Edit Track Details" on media device. (BR 217143)
     * Fixed layout resizing bug with Qt 4.6. (BR 213990)
     * Fixed corrupted track lengths when copying to iPod. Patch by Christophe 
-      Fergeau <teuf@gnome.org> (BR: 215124)
+      Fergeau <teuf@gnome.org>. (BR: 215124)
     * Fixed videoclip applet going blank when switching from one video to 
       another. (BR 210332)
     * Fixed dailymotion video file direct link retrieving not working. (BR 214168)
@@ -136,7 +189,7 @@ VERSION 2.2.2
     * Magnatune.com store: Fixed incorrect download urls for non english 
       languages. (BR 212126)
     * Magnatune.com store: Fixed membership type not remembered when running 
-      a non english Amarok. (BR 195427)
+      a non-English Amarok. (BR 195427)
     * Support for "title:" token in the collection search. Patch by Roberto
       Bertolusso <rbertolusso@yahoo.com>. (BR 211249)
     * Fixed lots of memory leaks reported by Valgrind.

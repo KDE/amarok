@@ -18,7 +18,7 @@
 #ifndef SQLMETA_H
 #define SQLMETA_H
 
-#include "Meta.h"
+#include "meta/Meta.h"
 
 #include <QByteArray>
 #include <QDateTime>
@@ -29,6 +29,9 @@
 #include <QStringList>
 #include <QVariant>
 
+class AlbumCapabilityDelegate;
+class ArtistCapabilityDelegate;
+class TrackCapabilityDelegate;
 class SqlCollection;
 class QAction;
 
@@ -46,6 +49,7 @@ class SqlTrack : public Meta::Track
         static TrackPtr getTrackFromUid( const QString &uid, SqlCollection *collection );
 
         SqlTrack( SqlCollection *collection, const QStringList &queryResult );
+        ~ SqlTrack();
 
         /** returns the title of this track as stored in the database **/
         virtual QString name() const { return m_title; }
@@ -153,6 +157,7 @@ class SqlTrack : public Meta::Track
         SqlCollection* sqlCollection() const { return m_collection; }
         void refreshFromDatabase( const QString &uid, SqlCollection* collection, bool updateObservers = true );
         void updateData( const QStringList &result, bool forceUpdates = false );
+        void setCapabilityDelegate( TrackCapabilityDelegate *delegate );
 
     protected:
         void commitMetaDataChanges();
@@ -168,6 +173,7 @@ class SqlTrack : public Meta::Track
         void updateFileSize();
 
         SqlCollection* m_collection;
+        TrackCapabilityDelegate *m_capabilityDelegate;
 
         QString m_title;
         KUrl m_url;
@@ -217,7 +223,6 @@ class SqlArtist : public Meta::Artist
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; } //change if necessary
-        virtual QString sortableName() const;
 
         void updateData( SqlCollection* collection, int id, const QString &name );
 
@@ -233,12 +238,14 @@ class SqlArtist : public Meta::Artist
 
         //SQL specific methods
         int id() const { return m_id; }
+        void setCapabilityDelegate( ArtistCapabilityDelegate *delegate ) { m_delegate = delegate; }
+
 
     private:
         SqlCollection* m_collection;
+        ArtistCapabilityDelegate *m_delegate;
         QString m_name;
         int m_id;
-        mutable QString m_modifiedName;
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
         bool m_albumsLoaded;
@@ -247,7 +254,6 @@ class SqlArtist : public Meta::Artist
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
-        QAction * m_bookmarkAction;
 
 };
 
@@ -289,6 +295,8 @@ class SqlAlbum : public Meta::Album
         int id() const { return m_id; }
 
         void setCompilation( bool compilation );
+        void setCapabilityDelegate( AlbumCapabilityDelegate *delegate ) { m_delegate = delegate; }
+        SqlCollection *sqlCollection() const { return m_collection; }
 
     private:
         QByteArray md5sum( const QString& artist, const QString& album, const QString& file ) const;
@@ -303,6 +311,7 @@ class SqlAlbum : public Meta::Album
 
     private:
         SqlCollection* m_collection;
+        AlbumCapabilityDelegate *m_delegate;
         QString m_name;
         int m_id;
         int m_artistId;
@@ -319,8 +328,6 @@ class SqlAlbum : public Meta::Album
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
-
-        QAction * m_bookmarkAction;
 
         //TODO: add album artist
 };

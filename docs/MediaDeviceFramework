@@ -1,0 +1,142 @@
+Media Device Framework
+==
+
+1. Solid Interface
+
+Solid is KDE's hardware detection library, and Amarok uses it to detect
+all of the devices that it knows how to interface with.  It does this
+through two classes:
+
+MediaDeviceCache(singleton) - Talks directly to Solid, gets list of all
+present media devices and external hard drives, even if Amarok does not
+support them.
+
+MediaDeviceMonitor(singleton) - Talks to the MDC to see what devices are
+available.  Keeps track of the kind of devices that Amarok supports. 
+It does this by receiving and caching a single ConnectionAssistant
+object from the MediaDeviceCollectionFactory of the particular device
+type, so that as devices are detected, they can be tested for
+compatibility with Amarok.
+
+2. Collection/Metadata
+
+Music-related data in Amarok is handled in Collections, themselves
+consisting of metadata such as Tracks, Artists etc.  The base classes
+to set up collections are abstract, and several classes which provide
+more media-device-specific methods are available to be subclassed.  It
+is some of these classes that must be subclassed to add support in
+Amarok for a device.  The heart of it all is MediaDeviceHandler, and
+this class will be discussed in depth.
+
+NNTS = No Need To Subclass
+
+2.1 Connection
+
+ConnectionAssistant - Knows how to identify that a particular device
+matches the type of this CA.  Can also create MediaDeviceInfo.
+
+MediaDeviceInfo - Contains the device-specific information pertinent to
+connection, such as mountpoint.
+
+2.2 Factory/Collection
+
+MediaDeviceCollectionFactory(NNTS) - Creates
+MediaDeviceCollections. Provides ConnectionAssistant to register the
+appropriate device type with the MDM.
+
+MediaDeviceCollection - Given a MediaDeviceInfo object, connects to the
+device described by creating a MediaDeviceHandler.  Provides a few
+other rudimentary functions.
+
+MediaDeviceCollectionLocation(NNTS) - Receives/sends orders to add
+tracks to Collection, remove them, copy them. move them.  Forwards the
+low-level work (the actual copying/deleting etc.) to the
+MediaDeviceHandler.
+
+MediaDeviceMeta*(NNTS) - The actual metadata a Collection consists of:
+Track, Album, Artist, Genre, Composer.  No need to reimplement these,
+as they are standard across all devices, and the interactions
+concerning them are dealt with in the MediaDeviceHandler.
+
+2.3 Handler and Capabilities
+
+2.3.1 Handler
+
+MediaDeviceHandler - This is it.  This is the beast that knows how to
+do all the low-level tasks specific to a given device: connection,
+parsing metadata, copying, deletion, changing of metadata, battery%,
+device capacity, the whole lot of it.  Since it is responsible for so
+many pieces, and since these pieces vary greatly from device to device,
+it actually relies on Capability-based classes that each know how to do
+a particular job.
+
+  Capabilities are similar to Java interfaces, and provide a standard
+way for the MediaDeviceHandler class to ask the many subclasses of
+MediaDeviceHandler for what they are capable of, and depending on that,
+will make different requests.  For instance, AudioCDs cannot
+be written to, so they would have no use for WriteCapability, and don't
+have to implement it.
+
+  The MediaDeviceHandler has abstracted the logic so common to several
+device implementations.  The libraries libgpod and libmtp, for
+instance, are based on a struct that is a linked list of metadata, in
+particular tracks.  The common way to parse the devices with these
+libraries is to walk down this linked list until all metadata has been
+read into the appropriate MediaDeviceMeta classes.  This is exactly
+what the Handler does, and the only differences are the names of the
+linked list structs, and the functions called or member data read to
+retrieve this data.  It is these basic function calls that are then
+called in the subclasses of the Capability classes, with the
+top-level logic already standardized and done in the main
+MediaDeviceHandler class.
+
+Note: To see the logic hereto referred, check the MediaDeviceHandler's
+calls to the Capability classes, and the order of the function calls. 
+This helps to understand how best to map the functions of the
+Capability interface, to function calls or member-data access using the
+appropriate library.
+
+2.3.2 Capabilities
+
+ReadCapabilityBase - Maps the necessary functions to read the structs
+specific to the device, with the goal of parsing the entire device's
+metadata.  Can also read the device's capacity, used and total.  This
+is a good Capability to subclass to initially test that the parsing is
+being done correctly, before reading more information.
+
+ReadCapability - Maps further functions, and completes the reading of
+the metadata from the device.
+
+CustomReadCapability - Essentially, a hack.  This is used by the
+UMSHandler to "cheat" and just copy all the metadata it needs from
+another Meta::Track which is already created by File::Track.  Do not
+use this unless the device requires a similar quick hack, so as to
+avoid a lot of redundant calls.
+
+WriteCapabilityBase - Receives generic commands related to writing to
+the device: find where to copy a new track onto the device, copy the
+track, delete the track.  In case this device is not struct-based as
+described above, this is a good candidate for just subclassing this
+Capability for writing.
+
+WriteCapability - In case the device is struct-based, subclass this
+Capability to provide a full mapping onto the functions required to set
+the metadata on a newly created track struct, and the higher logic of
+in what order to do this is handled by the main Handler class.
+
+ArtworkCapability - Optional.  If the device supports artwork, this
+provides the interface for reading/writing that artwork.
+
+PlaylistCapability - Optional.  If the device supports playlists, this
+provides the interface for reading/writing playlists, parsing logic is
+based again on a linked-list struct that is traversed in a standard
+fashion.  The subclass of this just maps to the appropriate functions
+to walk the linked list.
+
+
+3. Appendix/Notes
+
+- At the time of writing, there isn't a full implementation of Solid on
+Windows or Mac, which limits support of devices mainly to Linux.  Also,
+libraries used to interface at the low level (libgpod, libmtp) are
+Linux-specific.

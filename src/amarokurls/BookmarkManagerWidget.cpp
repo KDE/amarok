@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008, 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>              *
+ * Copyright (c) 2008, 2009 Nikolaj Hald Nielsen <nhn@kde.org>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -51,7 +51,6 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
 
     m_toolBar->addWidget( new BookmarkCurrentButton( 0 ) );
 
-
     m_searchEdit = new Amarok::LineEdit( topLayout );
     m_searchEdit->setClickMessage( i18n( "Filter bookmarks" ) );
     m_searchEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
@@ -60,8 +59,6 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_searchEdit->setToolTip( i18n( "Start typing to progressively filter the bookmarks" ) );
     m_searchEdit->setFocusPolicy( Qt::ClickFocus ); // Without this, the widget goes into text input mode directly on startup
 
-    connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( slotFilterChanged(  const QString &  ) ) );
-    
     m_bookmarkView = new BookmarkTreeView( this );
 
     m_proxyModel = new QSortFilterProxyModel( this );
@@ -77,6 +74,7 @@ BookmarkManagerWidget::BookmarkManagerWidget( QWidget * parent )
     m_bookmarkView->resizeColumnToContents( 0 );
 
     connect( BookmarkModel::instance(), SIGNAL( editIndex( const QModelIndex & ) ), m_bookmarkView, SLOT( slotEdit( const QModelIndex & ) ) );
+    connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), m_proxyModel, SLOT( setFilterFixedString( const QString & ) ) );
 
     m_currentBookmarkId = -1;
 
@@ -91,19 +89,6 @@ BookmarkTreeView * BookmarkManagerWidget::treeView()
 {
     return m_bookmarkView;
 }
-
-void BookmarkManagerWidget::slotFilterChanged( const QString &filter )
-{
-
-    //when the clear button is pressed, we get 2 calls to this slot... filter this out  as it messes with
-    //resetting the view:
-    if ( filter == m_lastFilter )
-        return;
-
-    m_proxyModel->setFilterFixedString( filter );
-    
-}
-
 
 #include "BookmarkManagerWidget.moc"
 

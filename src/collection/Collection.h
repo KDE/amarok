@@ -20,7 +20,6 @@
 #include "Amarok.h"
 #include "amarok_export.h"
 #include "meta/Capability.h"
-#include "plugin/plugin.h"
 #include "QueryMaker.h"
 #include "playlistmanager/UserPlaylistProvider.h"
 
@@ -30,6 +29,8 @@
 
 #include <KIcon>
 #include <KUrl>
+#include <KPluginFactory>
+#include <KPluginLoader>
 
 class CollectionLocation;
 
@@ -38,7 +39,7 @@ namespace Amarok
 
 class Collection;
 
-class AMAROK_EXPORT CollectionFactory : public QObject, public Amarok::Plugin
+class AMAROK_EXPORT CollectionFactory : public QObject
 {
     Q_OBJECT
     public:
@@ -185,5 +186,9 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
 };
 
 }
+
+#define AMAROK_EXPORT_COLLECTION( classname, libname ) \
+    K_PLUGIN_FACTORY( factory, registerPlugin<classname>(); ) \
+            K_EXPORT_PLUGIN( factory( "amarok_collection-" #libname ) )
 
 #endif /* AMAROK_COLLECTION_H */

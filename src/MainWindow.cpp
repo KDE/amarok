@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2002 Gabor Lehel <illissius@gmail.com>                                 *
- * Copyright (c) 2002 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2002 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -767,9 +767,10 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-    action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
-    connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
+    action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );    
     ac->addAction( "playlist_playmedia", action );
+    action->setShortcut( Qt::CTRL + Qt::Key_O );
+    connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
 
     action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));

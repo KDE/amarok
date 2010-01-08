@@ -381,7 +381,7 @@ Dynamic::EchoNestBias::updateReady( QString collectionId, QStringList uids )
     QByteArray uid;
     foreach( const QString &uidString, uids )
     {
-        uid = QByteArray::fromHex( uidString.mid(protocolLength).toAscii() );
+        uid = uidString.mid( protocolLength ).toAscii();
         m_savedArtists[ key ].insert( uid );
     }
 }
@@ -394,8 +394,8 @@ Dynamic::EchoNestBias::trackSatisfies( const Meta::TrackPtr track )
     QMutexLocker locker( &m_mutex );
 
     //debug() << "checking if " << track->name() << "by" << track->artist()->name() << "is in suggested:" << m_savedArtists[ m_currentArtist ] << "of" << m_currentArtist;
-    QString uidString = track->uidUrl().mid( track->uidUrl().lastIndexOf( '/' ) );
-    QByteArray uid = QByteArray::fromHex( uidString.toAscii() );
+    const QString uidString = track->uidUrl().mid( track->uidUrl().lastIndexOf( '/' ) );
+    const QByteArray uid = uidString.toAscii();
 
     QString key;
     if( m_currentOnly )
@@ -429,10 +429,10 @@ Dynamic::EchoNestBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
     {
         foreach( const Meta::TrackPtr track, tracks )
         {
-            QString uidString = track->uidUrl().mid( track->uidUrl().lastIndexOf( '/' ) );
-            QByteArray uid = QByteArray::fromHex( uidString.toAscii() );
+            const QString uidString = track->uidUrl().mid( track->uidUrl().lastIndexOf( '/' ) );
+            const QByteArray uid = uidString.toAscii();
 
-            if( m_savedArtists[ key ].contains(uid ) )
+            if( m_savedArtists[ key ].contains( uid ) )
                 satisfy++;
 
         }

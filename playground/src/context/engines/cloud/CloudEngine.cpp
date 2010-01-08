@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhn@kde.org>                *
  *             (c) 2007  Leo Franchi <lfranchi@gmail.com>                  * 
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

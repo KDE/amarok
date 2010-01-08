@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
+ * Copyright (c) 2009  Nikolaj Hald Nielsen <nhn@kde.org>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -27,7 +27,7 @@
 /**
 A widget for displaying controls that should not always be visible. Displays a thin "expand" button by default and expands to show the controls and a similar "collapse" when this is pressed.
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class ExpandingControlsWidget : public KVBox
 {

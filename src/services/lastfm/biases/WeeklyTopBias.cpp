@@ -292,7 +292,7 @@ Dynamic::WeeklyTopBias::updateReady( QString collectionId, QStringList uids )
     QByteArray uid;
     foreach( const QString &uidString, uids )
     {
-        uid = QByteArray::fromHex( uidString.mid(protocolLength).toAscii() );
+        uid = uidString.mid( protocolLength ).toAscii();
         m_trackList.insert( uid );
     }
 

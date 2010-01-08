@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008, 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>              *
+ * Copyright (c) 2008, 2009 Nikolaj Hald Nielsen <nhn@kde.org>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -32,7 +32,7 @@
 /**
 A widget for managing amarok:// bookmark urls
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+	@author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 class AMAROK_EXPORT BookmarkManagerWidget : public KVBox
 {
@@ -42,18 +42,11 @@ public:
     ~BookmarkManagerWidget();
 
     BookmarkTreeView * treeView();
-protected slots:
-    
-     /**
-     * Notify widget that the text in the search edit has changed.
-     * @param filter The new text in the search widget.
-     */
-    void slotFilterChanged( const QString &filter );
-    
+
 private:
 
     QToolBar * m_toolBar;
-    Amarok::LineEdit * m_searchEdit; 
+    Amarok::LineEdit * m_searchEdit;
     BookmarkTreeView * m_bookmarkView;
 
     int m_currentBookmarkId;

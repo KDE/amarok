@@ -48,73 +48,8 @@ AFTUtility::AFTUtility()
     qsrand( QTime::currentTime().msec() );
 }
 
-const QString
-AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
-{
-    int currentVersion = 1; //TODO: Make this more global?
-    QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
-    QString mbId = QString( "http://musicbrainz.org" );
-    QString storedMBId;
-    QString mbDefaultUUID = QString( "[mb track uuid]" );
-    if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
-    {
-        if( !file->ID3v2Tag( false ) )
-            return QString();
-        if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
-            return QString();
-        TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
-        TagLib::ID3v2::FrameList::Iterator iter;
-        for( iter = frameList.begin(); iter != frameList.end(); ++iter )
-        {
-            TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
-            if( currFrame )
-            {
-                QString owner = TStringToQString( currFrame->owner() );
-                if( owner.compare( ourId, Qt::CaseInsensitive ) == 0 )
-                    return TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
-                else if( owner.compare( mbId, Qt::CaseInsensitive ) == 0 )
-                    storedMBId = TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
-            }
-        }
-        if( !storedMBId.isEmpty() && ( storedMBId != mbDefaultUUID ) )
-            return QString( "MB_" ) + storedMBId;
-    }
-    //from here below assumes a file with a XiphComment; put non-conforming formats up above...
-    TagLib::Ogg::XiphComment *comment = 0;
-    if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
-        comment = file->xiphComment( false );
-    else if( TagLib::Ogg::File *file = dynamic_cast<TagLib::Ogg::File *>( fileref.file() ) )
-    {
-        if( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )
-            comment = ( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )->tag();
-        else if( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )
-            comment = ( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )->tag();
-        else if( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )
-            comment = ( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )->tag();
-    }
-
-    if( !comment )
-        return QString();
-
-    mbId = QString( "musicbrainz_trackid" );
-
-    if( comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
-    {
-        QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(ourId.toUpper())].front()).toLower();
-        return identifier;
-    }
-    else if( comment->contains( Qt4QStringToTString( mbId.toUpper() ) ) )
-    {
-        QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
-        if( !identifier.isEmpty() && ( identifier != mbDefaultUUID ) )
-            return QString( "MB_" ) + identifier;
-    }
-
-    return QString();
-}
-
 const TagLib::ByteVector
-AFTUtility::generatedUniqueIdHelper( const TagLib::FileRef &fileref )
+generatedUniqueIdHelper( const TagLib::FileRef &fileref )
 {
     if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
     {
@@ -159,6 +94,73 @@ AFTUtility::generatedUniqueIdHelper( const TagLib::FileRef &fileref )
     TagLib::ByteVector bv;
     return bv;
 }
+
+const QString
+AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
+{
+    int currentVersion = 1; //TODO: Make this more global?
+    QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
+    QString mbId = QString( "http://musicbrainz.org" );
+    QString storedMBId;
+    QString mbDefaultUUID = QString( "[mb track uuid]" );
+    if( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    {
+        if( !file->ID3v2Tag( false ) )
+            return QString();
+        if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
+            return QString();
+        TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
+        TagLib::ID3v2::FrameList::Iterator iter;
+        for( iter = frameList.begin(); iter != frameList.end(); ++iter )
+        {
+            TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
+            if( currFrame )
+            {
+                QString owner = TStringToQString( currFrame->owner() );
+                if( owner.compare( ourId, Qt::CaseInsensitive ) == 0 )
+                    return TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
+                else if( owner.compare( mbId, Qt::CaseInsensitive ) == 0 )
+                    storedMBId = TStringToQString( TagLib::String( currFrame->identifier() ) ).toLower();
+            }
+        }
+        if( !storedMBId.isEmpty() && ( storedMBId != mbDefaultUUID ) )
+            return QString( "mb-" ) + storedMBId;
+    }
+    //from here below assumes a file with a XiphComment; put non-conforming formats up above...
+    TagLib::Ogg::XiphComment *comment = 0;
+    if( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+        comment = file->xiphComment( false );
+    else if( TagLib::Ogg::File *file = dynamic_cast<TagLib::Ogg::File *>( fileref.file() ) )
+    {
+        if( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )
+            comment = ( dynamic_cast<TagLib::Ogg::FLAC::File*>(file) )->tag();
+        else if( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )
+            comment = ( dynamic_cast<TagLib::Ogg::Speex::File*>(file) )->tag();
+        else if( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )
+            comment = ( dynamic_cast<TagLib::Ogg::Vorbis::File*>(file) )->tag();
+    }
+
+    if( !comment )
+        return QString();
+
+    mbId = QString( "musicbrainz_trackid" );
+
+    if( comment->contains( Qt4QStringToTString( ourId.toUpper() ) ) )
+    {
+        QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(ourId.toUpper())].front()).toLower();
+        return identifier;
+    }
+    else if( comment->contains( Qt4QStringToTString( mbId.toUpper() ) ) )
+    {
+        QString identifier = TStringToQString( comment->fieldListMap()[Qt4QStringToTString(mbId.toUpper())].front()).toLower();
+        if( !identifier.isEmpty() && ( identifier != mbDefaultUUID ) )
+            return QString( "mb-" ) + identifier;
+    }
+
+    return QString();
+}
+
+
 
 const QString
 AFTUtility::randomUniqueId( QCryptographicHash &md5 )

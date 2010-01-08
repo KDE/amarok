@@ -30,7 +30,7 @@
 
 #include <cmath>
 
-#define ICON_SIZE 70
+#define ICON_SIZE 48 
 #define ARROW_SIZE 15
 
 namespace Context
@@ -74,7 +74,6 @@ AppletsListWidget::init()
     
     m_appletsListLayout = new QGraphicsLinearLayout( Qt::Horizontal );
     m_appletsListWidget->setLayout( m_appletsListLayout );
-    
 
     m_appletsListWindow->setFlag( QGraphicsItem::ItemClipsChildrenToShape, true );
     m_appletsListWidget->setParentItem( m_appletsListWindow );
@@ -103,14 +102,12 @@ AppletsListWidget::appletIconClicked()
 AppletIconWidget *
 AppletsListWidget::createAppletIcon( AppletItem *appletItem )
 {
-    AppletIconWidget *applet = new AppletIconWidget( appletItem );
+    AppletIconWidget *applet = new AppletIconWidget( appletItem, m_appletsListWidget );
     applet->setMinimumSize( applet->sizeFromIconSize( ICON_SIZE ) );
     applet->setMaximumSize( applet->sizeFromIconSize( ICON_SIZE ) );
-    
     connect( applet, SIGNAL( clicked() ), SLOT( appletIconClicked() ) );
     return applet;
 }
-
 
 int
 AppletsListWidget::findLastVisibleAppletIdx() const
@@ -161,8 +158,6 @@ AppletsListWidget::maximumVisibleAppletsOnList() const
 void
 AppletsListWidget::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
-    //FIXME This method is never actually called
-
     DEBUG_BLOCK
     Q_UNUSED( event );
 
@@ -176,7 +171,6 @@ AppletsListWidget::resizeEvent( QGraphicsSceneResizeEvent *event )
         m_rightArrow->setEnabled( true );
     }
 }
-
 
 void
 AppletsListWidget::setModel( QStandardItemModel *model )

@@ -5,6 +5,7 @@ Icon=view-services-opml-amarok
 Name=Podcast Directory
 Name[bg]=Подкастове
 Name[ca]=Directori de podcasts
+Name[csb]=Katalog pòdcastów
 Name[da]=Podcast-liste
 Name[de]=Podcast-Verzeichnis
 Name[en_GB]=Podcast Directory
@@ -92,7 +93,7 @@ X-KDE-Library=amarok_service_opmldirectory
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=51
+X-KDE-Amarok-framework-version=52
 X-KDE-Amarok-name=JamendoService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2006 Andy Kelk <andy@mopoke.co.uk>                                     *
  * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -39,6 +40,7 @@
 #include <QMultiMap>
 #include <QMutex>
 #include <QSet>
+
 
 class QString;
 class QMutex;
@@ -216,12 +218,12 @@ class MtpHandler : public MediaDeviceHandler
         bool m_isCanceled;
         bool m_wait;
         bool m_dbChanged;
-        LIBMTP_track_t *m_currtracklist;
 
-        LIBMTP_track_t *m_currtrack;
+        LIBMTP_track_t* m_currentTrackList;
+        LIBMTP_track_t* m_currentTrack;
+        LIBMTP_playlist_t* m_currentPlaylistList;
+        LIBMTP_playlist_t* m_currentPlaylist;
 
-        LIBMTP_playlist_t *m_currplaylistlist;
-        LIBMTP_playlist_t *m_currplaylist;
         QHash<Meta::MediaDevicePlaylistPtr, LIBMTP_playlist_t*> m_mtpPlaylisthash;
 
         uint32_t m_trackcounter;

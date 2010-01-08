@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -27,7 +27,7 @@
 /**
  *  Dialog for adding, deleting, copying and editing playlist layouts. The order in which the layouts are
  *  shown can also be changed.
- *  @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ *  @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditDialog
 {

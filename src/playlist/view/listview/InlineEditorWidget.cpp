@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -231,97 +231,97 @@ void InlineEditorWidget::createChildWidgets()
             else
                 size = spacePerAutoSizeElem;
 
-            if ( size > 0.0001 )
+            if( size < 0.01 )
+                size = 0.01;
+
+            itemWidth = 100 * size;
+
+            //special case for painting the rating...
+            if ( value == Rating )
             {
-                itemWidth = 100 * size;
+                int rating = textIndex.data( Qt::DisplayRole ).toInt();
 
-                //special case for painting the rating...
-                if ( value == Rating )
-                {
-                    int rating = textIndex.data( Qt::DisplayRole ).toInt();
+                KRatingWidget * ratingWidget = new KRatingWidget( 0 );
+                rowWidget->addWidget( ratingWidget );
+                rowWidget->setStretchFactor( itemIndex, itemWidth );
+                ratingWidget->setRating( rating );
+                ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
 
-                    KRatingWidget * ratingWidget = new KRatingWidget( 0 );
-                    rowWidget->addWidget( ratingWidget );
-                    rowWidget->setStretchFactor( itemIndex, itemWidth );
-                    ratingWidget->setRating( rating );
-                    ratingWidget->setAttribute( Qt::WA_NoMousePropagation, true );
+                connect( ratingWidget, SIGNAL( ratingChanged( uint ) ), this, SLOT( ratingValueChanged() ) );
 
-                    connect( ratingWidget, SIGNAL( ratingChanged( uint ) ), this, SLOT( ratingValueChanged() ) );
+                m_editorRoleMap.insert( ratingWidget, value );
 
-                    m_editorRoleMap.insert( ratingWidget, value );
-
-                }
-                else if ( value == Divider )
-                {
-                    debug() << "painting divider...";
-                    QPixmap left = The::svgHandler()->renderSvg(
-                            "divider_left",
-                            1, rowHeight ,
-                            "divider_left" );
-
-                    QPixmap right = The::svgHandler()->renderSvg(
-                            "divider_right",
-                            1, rowHeight,
-                            "divider_right" );
-
-                    QPixmap dividerPixmap( 2, rowHeight );
-                    dividerPixmap.fill( Qt::transparent );
-
-                    QPainter painter( &dividerPixmap );
-                    painter.drawPixmap( 0, 0, left );
-                    painter.drawPixmap( 1, 0, right );
-
-                    QLabel * dividerLabel = new QLabel( 0 );
-                    rowWidget->addWidget( dividerLabel );
-                    dividerLabel->setPixmap( dividerPixmap );
-                    dividerLabel->setAlignment( element.alignment() );
-                    rowWidget->setStretchFactor( itemIndex, itemWidth );
-                }
-                else if( value == Moodbar )
-                {
-                    //we cannot ask the model for the moodbar directly as we have no
-                    //way of asking for a specific size. Instead just get the track from
-                    //the model and ask the moodbar manager ourselves.
-
-
-                    debug() << "painting moodbar in PrettyItemDelegate::paintItem";
-
-                    Meta::TrackPtr track = m_index.data( TrackRole ).value<Meta::TrackPtr>();
-
-                    if( The::moodbarManager()->hasMoodbar( track ) )
-                    {
-                        QPixmap moodbar = The::moodbarManager()->getMoodbar( track, itemWidth, rowHeight - 8 );
-
-                        QLabel * moodbarLabel = new QLabel( 0 );
-                        moodbarLabel->setScaledContents( true );
-                        rowWidget->addWidget( moodbarLabel );
-                        moodbarLabel->setPixmap( moodbar );
-                        rowWidget->setStretchFactor( itemIndex, itemWidth );
-                    }
-                }
-                else          
-                {
-                     QLineEdit * edit = new QLineEdit( text, 0 );
-                     rowWidget->addWidget( edit );
-                     rowWidget->setStretchFactor( itemIndex, itemWidth );
-                     edit->setAlignment( element.alignment() );
-                     edit->installEventFilter(this);
-
-                     connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
-
-                     //check if this is a column that is editable. If not, make the
-                     //line edit read only.
-                     if ( !editableColumns.contains( value ) )
-                     {
-                         edit->setReadOnly( true );
-                         edit->setDisabled( true );
-                     }
-
-                     m_editorRoleMap.insert( edit, value );
-                }
-
-                itemIndex++;
             }
+            else if ( value == Divider )
+            {
+                debug() << "painting divider...";
+                QPixmap left = The::svgHandler()->renderSvg(
+                        "divider_left",
+                        1, rowHeight ,
+                        "divider_left" );
+
+                QPixmap right = The::svgHandler()->renderSvg(
+                        "divider_right",
+                        1, rowHeight,
+                        "divider_right" );
+
+                QPixmap dividerPixmap( 2, rowHeight );
+                dividerPixmap.fill( Qt::transparent );
+
+                QPainter painter( &dividerPixmap );
+                painter.drawPixmap( 0, 0, left );
+                painter.drawPixmap( 1, 0, right );
+
+                QLabel * dividerLabel = new QLabel( 0 );
+                rowWidget->addWidget( dividerLabel );
+                dividerLabel->setPixmap( dividerPixmap );
+                dividerLabel->setAlignment( element.alignment() );
+                rowWidget->setStretchFactor( itemIndex, itemWidth );
+            }
+            else if( value == Moodbar )
+            {
+                //we cannot ask the model for the moodbar directly as we have no
+                //way of asking for a specific size. Instead just get the track from
+                //the model and ask the moodbar manager ourselves.
+
+
+                debug() << "painting moodbar in PrettyItemDelegate::paintItem";
+
+                Meta::TrackPtr track = m_index.data( TrackRole ).value<Meta::TrackPtr>();
+
+                if( The::moodbarManager()->hasMoodbar( track ) )
+                {
+                    QPixmap moodbar = The::moodbarManager()->getMoodbar( track, itemWidth, rowHeight - 8 );
+
+                    QLabel * moodbarLabel = new QLabel( 0 );
+                    moodbarLabel->setScaledContents( true );
+                    rowWidget->addWidget( moodbarLabel );
+                    moodbarLabel->setPixmap( moodbar );
+                    rowWidget->setStretchFactor( itemIndex, itemWidth );
+                }
+            }
+            else
+            {
+                    QLineEdit * edit = new QLineEdit( text, 0 );
+                    rowWidget->addWidget( edit );
+                    rowWidget->setStretchFactor( itemIndex, itemWidth );
+                    edit->setAlignment( element.alignment() );
+                    edit->installEventFilter(this);
+
+                    connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
+
+                    //check if this is a column that is editable. If not, make the
+                    //line edit read only.
+                    if ( !editableColumns.contains( value ) )
+                    {
+                        edit->setReadOnly( true );
+                        edit->setDisabled( true );
+                    }
+
+                    m_editorRoleMap.insert( edit, value );
+            }
+
+            itemIndex++;
         }
     }
 }
@@ -459,13 +459,12 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
     LayoutItemConfigRow newRowConfig;
 
     for( int i = 0; i<rowConfig.count(); i++ )
-    {
+    {  
         LayoutItemConfigRowElement element = rowConfig.element( i );
         debug() << "item " << i << " old/new: " << element.size() << "/" << newSizes.at( i );
         element.setSize( newSizes.at( i ) );
         newRowConfig.addElement( element );
     }
-
 
     LayoutItemConfig newItemConfig;
     newItemConfig.setActiveIndicatorRow( itemConfig.activeIndicatorRow() );

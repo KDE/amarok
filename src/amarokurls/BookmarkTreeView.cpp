@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -32,10 +32,12 @@
 
 #include <QFrame>
 #include <QHeaderView>
+#include <QHelpEvent>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QModelIndex>
 #include <QPoint>
+#include <QToolTip>
 
 #include <typeinfo>
 
@@ -52,7 +54,11 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
 
     setDragEnabled( true );
     setAcceptDrops( true );
+    setAlternatingRowColors( true );
     setDropIndicatorShown( true );
+
+    connect( header(), SIGNAL( sectionCountChanged( int, int ) ),
+             this, SLOT( slotSectionCountChanged( int, int ) ) );
 }
 
 
@@ -188,6 +194,59 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
         menu->addAction( m_addGroupAction );
 
     menu->exec( event->globalPos() );
+}
+
+void BookmarkTreeView::resizeEvent( QResizeEvent *event )
+{
+    QHeaderView *headerView = header();
+
+    const int oldWidth = event->oldSize().width();
+    const int newWidth = event->size().width();
+
+    if( oldWidth == newWidth || oldWidth < 0 || newWidth < 0 )
+        return;
+
+    disconnect( headerView, SIGNAL( sectionResized( int, int, int ) ),
+                this, SLOT( slotSectionResized( int, int, int ) ) );
+
+    QMap<BookmarkModel::Column, qreal>::const_iterator i = m_columnsSize.constBegin();
+    while( i != m_columnsSize.constEnd() )
+    {
+        const BookmarkModel::Column col = i.key();
+        if( col != BookmarkModel::Command && col != BookmarkModel::Description )
+            headerView->resizeSection( col, static_cast<int>( i.value() * newWidth ) );
+        ++i;
+    }
+
+    connect( headerView, SIGNAL( sectionResized( int, int, int ) ),
+             this, SLOT( slotSectionResized( int, int, int ) ) );
+
+    QWidget::resizeEvent( event );
+}
+
+bool BookmarkTreeView::viewportEvent( QEvent *event )
+{
+   if( event->type() == QEvent::ToolTip )
+   {
+       QHelpEvent *he  = static_cast<QHelpEvent*>( event );
+       QModelIndex idx = indexAt( he->pos() );
+
+       if( idx.isValid() )
+       {
+           QRect vr  = visualRect( idx );
+           QSize shr = itemDelegate( idx )->sizeHint( viewOptions(), idx );
+
+           if( shr.width() > vr.width() )
+               QToolTip::showText( he->globalPos(), idx.data( Qt::DisplayRole ).toString() );
+       }
+       else
+       {
+           QToolTip::hideText();
+           event->ignore();
+       }
+       return true;
+   }
+   return QTreeView::viewportEvent( event );
 }
 
 QSet<BookmarkViewItemPtr>
@@ -358,6 +417,34 @@ void BookmarkTreeView::slotEdit( const QModelIndex &index )
     //translate to proxy terms
     edit( m_proxyModel->mapFromSource( index ) );
 }
+
+void BookmarkTreeView::slotSectionResized( int logicalIndex, int oldSize, int newSize )
+{
+    Q_UNUSED( oldSize )
+    BookmarkModel::Column col = BookmarkModel::Column( logicalIndex );
+    m_columnsSize[ col ] = static_cast<qreal>( newSize ) / header()->length();
+}
+
+void BookmarkTreeView::slotSectionCountChanged( int oldCount, int newCount )
+{
+    Q_UNUSED( oldCount )
+
+    const QHeaderView *headerView = header();
+    for( int i = 0; i < newCount; ++i )
+    {
+        const int index   = headerView->logicalIndex( i );
+        const int width   = columnWidth( index );
+        const qreal ratio = static_cast<qreal>( width ) / headerView->length();
+
+        const BookmarkModel::Column col = BookmarkModel::Column( index );
+
+        if( col == BookmarkModel::Command )
+            header()->setResizeMode( index, QHeaderView::ResizeToContents );
+
+        m_columnsSize[ col ] = ratio;
+    }
+}
+
 
 #include "BookmarkTreeView.moc"
 

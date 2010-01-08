@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
- * Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2007 Henry de Valence <hdevalence@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -212,20 +212,18 @@ PodcastCategory::showInfo( const QModelIndex & index )
         description += QString( "<p style=\"float:right;\"><img src=\"%1\" onclick=\""
             "if (this.style.width=='150px') {"
                 "this.style.width='auto';"
-                "this.style.height='auto';"
                 "this.style.marginLeft='0em';"
                 "this.style.cursor='-webkit-zoom-in';"
                 "this.parentNode.style.float='inherit';"
                 "this.parentNode.style.textAlign='center';"
             "} else {"
                 "this.style.width='150px';"
-                "this.style.height='150px';"
                 "this.style.marginLeft='1em';"
                 "this.style.cursor='-webkit-zoom-out';"
                 "this.parentNode.style.float='right';"
                 "this.parentNode.style.textAlign='inherit';"
             "}\""
-            " style=\"width: 150px; height: 150px; margin-left: 1em;"
+            " style=\"width: 150px; margin-left: 1em;"
             " margin-right: 0em; cursor: -webkit-zoom-in;\""
             "/></p>" )
             .arg( Qt::escape( imageUrl.url() ) );

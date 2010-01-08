@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -31,7 +31,7 @@ enum
 
 /**
  * This class corresponds to a single element in a single row in a playlist layout
- * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class LayoutItemConfigRowElement
 {
@@ -121,7 +121,7 @@ class LayoutItemConfigRowElement
 
 /**
  * This class corrosponds to a  row in a playlist layout
- * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class LayoutItemConfigRow
 {
@@ -152,7 +152,7 @@ class LayoutItemConfigRow
 /**
  * This class wraps the data needed to paint a LayoutItemDelegate. It knows how many vertical
  * rows there should be, how many items in each row, whether an image should be displayed and so on.
- * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class LayoutItemConfig
 {
@@ -220,7 +220,7 @@ class LayoutItemConfig
 /**
  * This class wraps the data that makes up a playlist layout. A layout consists of 3 LayoutItemConfigs one used for
  * painting single tracks, one used for painting group headers and one used for painting group members.
- * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class PlaylistLayout
 {

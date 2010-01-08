@@ -364,7 +364,8 @@ CollectionLocation::slotFinishCopy()
         removeSourceTracks( m_tracksSuccessfullyTransferred );
     m_sourceTracks.clear();
     m_tracksSuccessfullyTransferred.clear();
-    m_destination->deleteLater();
+    if( m_destination )
+        m_destination->deleteLater();
     m_destination = 0;
     this->deleteLater();
 }

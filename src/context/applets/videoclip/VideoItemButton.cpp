@@ -29,12 +29,10 @@
 
 #define DEBUG_PREFIX "VideoItemButton"
 
-VideoItemButton::VideoItemButton( QObject* parent )
+VideoItemButton::VideoItemButton()
     : QToolButton()
     , m_videoInfo ( 0 )
-{
-    QObject::setParent( parent );
-}
+{}
 
 VideoItemButton::~VideoItemButton()
 {

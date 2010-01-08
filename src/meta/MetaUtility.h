@@ -19,15 +19,11 @@
 
 #include "amarok_export.h"
 #include "Meta.h"
+#include "meta/MetaConstants.h"
 
 #include <QMap>
 #include <QString>
 #include <QVariant>
-
-namespace TagLib
-{
-    class FileRef;
-}
 
 class AMAROK_EXPORT AlbumKey
 {
@@ -63,44 +59,12 @@ namespace Meta
 
     namespace Field
     {
-        //actual string values are not final yet
-        static const QString ALBUM          = "xesam:album";
-        static const QString ARTIST         = "xesam:author";
-        static const QString BITRATE        = "xesam:audioBitrate";
-        static const QString BPM            = "xesam:audioBPM";
-        static const QString CODEC          = "xesam:audioCodec";
-        static const QString COMMENT        = "xesam:comment";
-        static const QString COMPOSER       = "xesam:composer";
-        static const QString DISCNUMBER     = "xesam:discNumber";
-        static const QString FILESIZE       = "xesam:size";
-        static const QString GENRE          = "xesam:genre";
-        static const QString LENGTH         = "xesam:mediaDuration";
-        static const QString RATING         = "xesam:userRating";
-        static const QString SAMPLERATE     = "xesam:audioSampleRate";
-        static const QString TITLE          = "xesam:title";
-        static const QString TRACKNUMBER    = "xesam:trackNumber";
-        static const QString URL            = "xesam:url";
-        static const QString YEAR           = "xesam:contentCreated";
-        static const QString ALBUMGAIN      = "xesam:albumGain";
-        static const QString ALBUMPEAKGAIN  = "xesam:albumPeakGain";
-        static const QString TRACKGAIN      = "xesam:trackGain";
-        static const QString TRACKPEAKGAIN  = "xesam:trackPeakGain";
-
-        static const QString SCORE          = "xesam:autoRating";
-        static const QString PLAYCOUNT      = "xesam:useCount";
-        static const QString FIRST_PLAYED   = "xesam:firstUsed";
-        static const QString LAST_PLAYED    = "xesam:lastUsed";
-
-        static const QString UNIQUEID       = "xesam:id";
-
 
         //deprecated
         AMAROK_EXPORT QVariantMap mapFromTrack( const Meta::TrackPtr track );
         //this method will return a map with keys that are compatible to the fdo MPRIS specification
         AMAROK_EXPORT QVariantMap mprisMapFromTrack( const Meta::TrackPtr track );
         AMAROK_EXPORT void updateTrack( Meta::TrackPtr track, const QVariantMap &metadata );
-        AMAROK_EXPORT void writeFields( const QString &filename, const QVariantMap &changes );
-        AMAROK_EXPORT void writeFields( TagLib::FileRef fileref, const QVariantMap &changes );
         AMAROK_EXPORT QString xesamPrettyToFullFieldName( const QString &name );
         AMAROK_EXPORT QString xesamFullToPrettyFieldName( const QString &name );
     }

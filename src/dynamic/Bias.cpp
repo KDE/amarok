@@ -149,7 +149,7 @@ Dynamic::Bias::widget( QWidget* parent )
 void
 Dynamic::Bias::setActive( bool active )
 {
-    m_active = active;    
+    m_active = active;
 }
 
 bool
@@ -354,9 +354,9 @@ bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t )
 {
     QMutexLocker locker( &m_mutex );
 
-    // we only wan't the uid part:
-    QString uidString = t->uidUrl().mid( t->uidUrl().lastIndexOf( '/' ) );
-    QByteArray uid = QByteArray::fromHex( uidString.toAscii() );
+    // we only want the uid part:
+    const QString uidString = t->uidUrl().mid( t->uidUrl().lastIndexOf( '/' ) );
+    const QByteArray uid = uidString.toAscii();
 
     return m_property.contains( uid );
 }
@@ -371,7 +371,7 @@ void Dynamic::GlobalBias::update()
     m_qm->run();
 }
 
-void 
+void
 Dynamic::GlobalBias::updateReady( QString collectionId, QStringList uids )
 {
     DEBUG_BLOCK
@@ -380,7 +380,7 @@ Dynamic::GlobalBias::updateReady( QString collectionId, QStringList uids )
 
     QMutexLocker locker( &m_mutex );
 
-    int protocolLength = 
+    int protocolLength =
         (QString(m_collection->uidUrlProtocol()) + "://").length();
 
     m_property.clear();
@@ -388,7 +388,7 @@ Dynamic::GlobalBias::updateReady( QString collectionId, QStringList uids )
     QByteArray uid;
     foreach( const QString &uidString, uids )
     {
-        uid = QByteArray::fromHex( uidString.mid(protocolLength).toAscii() );
+        uid = uidString.mid( protocolLength ).toAscii();
         m_property.insert( uid );
     }
 }
@@ -499,7 +499,7 @@ Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
     QList<double> fields;
 
     foreach( Meta::TrackPtr t, playlist )
-        fields += releventField(t) - m_mu;
+        fields += relevantField(t) - m_mu;
 
     qSort( fields );
 
@@ -522,8 +522,10 @@ Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 }
 
 double
-Dynamic::NormalBias::releventField( Meta::TrackPtr track )
+Dynamic::NormalBias::relevantField( Meta::TrackPtr track )
 {
+    if( !track )
+        return m_mu;
     if( m_field == Meta::valYear && track->year() )
         return (double)track->year()->name().toInt();
     if( m_field == Meta::valPlaycount )
@@ -568,7 +570,7 @@ Dynamic::NormalBias::sigmaFromScale( double scale )
     else if( m_field == Meta::valPlaycount )
     {
         minStdDev = 0.5;
-        maxStdDev = 50.0; 
+        maxStdDev = 50.0;
     }
     else if( m_field == Meta::valRating )
     {

@@ -98,7 +98,6 @@ extern void setupEventHandler_mac(long);
 #include "TestAmarok.h"
 #include "TestCaseConverter.h"
 #include "TestDirectoryLoader.h"
-#include "TestExpression.h"
 #include "TestM3UPlaylist.h"
 #include "TestMetaCueCueFileItem.h"
 #include "TestMetaCueTrack.h"
@@ -108,8 +107,6 @@ extern void setupEventHandler_mac(long);
 #include "TestPlaylistFileProvider.h"
 #include "TestPlaylistFileSupport.h"
 #include "TestPLSPlaylist.h"
-#include "TestQStringx.h"
-#include "TestSmartPointerList.h"
 #include "TestSqlUserPlaylistProvider.h"
 #include "TestTimecodeTrackProvider.h"
 #include "TestXSPFPlaylist.h"
@@ -118,7 +115,7 @@ extern void setupEventHandler_mac(long);
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "Amarok" ), APP_VERSION,
     ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
-    ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2009, The Amarok Development Squad" ),
+    ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2010, The Amarok Development Squad" ),
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
              ( "http://amarok.kde.org" ) );
 
@@ -619,7 +616,6 @@ App::runUnitTests( bool stdout )
     PERF_LOG( "Running Unit Tests" )
     TestAmarok                  testAmarok( testArgumentList, stdout );
     TestCaseConverter           testCaseConverter( testArgumentList, stdout );
-    TestExpression              testExpression( testArgumentList, stdout );
     TestM3UPlaylist             testM3UPlaylist( testArgumentList, stdout );
     TestMetaCueCueFileItem      testMetaCueCueFileItem( testArgumentList, stdout );
     TestMetaCueTrack            testMetaCueTrack( testArgumentList, stdout );
@@ -629,8 +625,6 @@ App::runUnitTests( bool stdout )
     TestPlaylistFileProvider    testPlaylistFileProvider( testArgumentList, stdout );
     TestPlaylistFileSupport     testPlaylistFileSupport( testArgumentList, stdout );
     TestPLSPlaylist             testPLSPlaylist( testArgumentList, stdout );
-    TestQStringx                testQStringx( testArgumentList, stdout );
-    TestSmartPointerList        testSmartPointerList( testArgumentList, stdout );
     TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList, stdout );
     TestTimecodeTrackProvider   testTimecodeTrackProvider( testArgumentList, stdout );
     TestXSPFPlaylist            testXSPFPlaylist( testArgumentList, stdout);
@@ -809,7 +803,6 @@ void App::quit()
 
 bool App::event( QEvent *event )
 {
-
     switch( event->type() )
     {
         //allows Amarok to open files from the finder on OS X
@@ -835,6 +828,23 @@ bool App::event( QEvent *event )
             return KUniqueApplication::event( event );
     }
 }
+
+bool App::notify( QObject *receiver, QEvent *event )
+{
+    // Here we try to catch exceptions from LiblastFm, which Qt can't handle, except in this method.
+    // @see: https://bugs.kde.org/show_bug.cgi?id=212115
+
+    try
+    {
+        return QApplication::notify( receiver, event );
+    }
+    catch(...)
+    {
+        error() << "Caught an exception, probably from LibLastfm. Ignoring.";
+        return false;
+    }
+}
+
 
 namespace Amarok
 {

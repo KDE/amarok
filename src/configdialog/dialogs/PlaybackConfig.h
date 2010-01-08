@@ -19,6 +19,7 @@
 #define PLAYBACKCONFIG_H
 
 #include "ui_PlaybackConfig.h"
+#include "ui_EqualizerConfig.h"
 #include "ConfigDialogBase.h"
 
 
@@ -34,11 +35,21 @@ class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
         virtual bool isDefault();
         virtual void updateSettings();
 
-    public Q_SLOTS:
-        void eqUpdateUI( int index );
-
     private Q_SLOTS:
         void configurePhonon();
+        void configureEqualizer();
+};
+
+class EqualizerConfig : public KDialog, public Ui_EqualizerConfig
+{
+    Q_OBJECT
+
+    public:
+        EqualizerConfig( QWidget* parent );
+        virtual ~EqualizerConfig() {};
+
+    private Q_SLOTS:
+        void eqUpdateUI( int index );
         void eqPresetChanged( int index );
         void eqBandsChanged();
         void eqSavePreset();
@@ -60,5 +71,6 @@ class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
         QList<int> eqCfgGetPresetVal ( QString mPresetName );
         QStringList eqGlobalList();        
 };
+
 
 #endif

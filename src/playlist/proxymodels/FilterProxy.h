@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -25,7 +25,7 @@ namespace Playlist
 /**
  * A proxy model used by navigators to only operate on tracks that match the current
  * paylist search term.
- * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+ * @author Nikolaj Hald Nielsen <nhn@kde.org>
  */
 class FilterProxy : public ProxyBase
 {

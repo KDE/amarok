@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,6 +23,8 @@
 #include "collection/support/MemoryMatcher.h"
 
 #include "Debug.h"
+
+#include <QTimer>
 
 
 
@@ -96,20 +98,34 @@ void ScriptableServiceQueryMaker::run()
 
     if ( d->type == Private::GENRE ) {
         if ( ( m_collection->levels() == 4 ) && (  m_collection->lastFilter() != d->filter ) )
-               m_collection->clear();
-        fetchGenre();
-    } else if ( d->type == Private::ARTIST ) {
+        {
+            m_collection->clear();
+        }
+        QTimer::singleShot( 0, this, SLOT( fetchGenre() ) );;
+    }
+    else if ( d->type == Private::ARTIST )
+    {
         if ( ( m_collection->levels() == 3 ) && (  m_collection->lastFilter() != d->filter ) )
+        {
             m_collection->clear();
-        fetchArtists();
-    } else if ( d->type == Private::ALBUM ) {
+        }
+        QTimer::singleShot( 0, this, SLOT( fetchArtists() ) );
+    }
+    else if ( d->type == Private::ALBUM )
+    {
         if ( ( m_collection->levels() == 2 ) && (  m_collection->lastFilter() != d->filter ) )
+        {
             m_collection->clear();
-        fetchAlbums();
-    } else if ( d->type == Private::TRACK ) {
+        }
+        QTimer::singleShot( 0, this, SLOT( fetchAlbums() ) );
+    }
+    else if ( d->type == Private::TRACK )
+    {
         if ( ( m_collection->levels() == 1 ) && (  m_collection->lastFilter() != d->filter ) )
+        {
             m_collection->clear();
-        fetchTracks();
+        }
+        QTimer::singleShot( 0, this, SLOT( fetchTracks() ) );
     }
 
 }

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -32,7 +32,7 @@ namespace The {
 /**
 A proxy class for relaying information from the currently active service to the ServiceEngine so it can be displayed in a plasma applet in the context view. It is a singleton and included in the "The" namespace for easy access
 
-    Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+    @author Nikolaj Hald Nielsen <nhn@kde.org> 
 */
 class AMAROK_EXPORT InfoProxy
 {

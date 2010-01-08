@@ -2,6 +2,7 @@
 Name=Current Track
 Name[bg]=Текущ запис
 Name[ca]=Peça actual
+Name[cs]=Aktuální stopa
 Name[csb]=Biéżny sztëczk
 Name[da]=Aktuelt spor
 Name[de]=Aktuelles Stück
@@ -41,6 +42,7 @@ Name[x-test]=xxCurrent Trackxx
 Name[zh_CN]=当前音轨
 Name[zh_TW]=現在的曲目
 Type=Service
+Icon=current-track-amarok
 ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_currenttrack

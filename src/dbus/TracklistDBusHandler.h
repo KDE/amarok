@@ -39,6 +39,9 @@ namespace Amarok
             void SetLoop( bool enable );
             void SetRandom( bool enable );
 
+            // NB: Amarok extensions, not part of the mpris spec
+            void PlayTrack( int index );
+
         signals:
             void TrackListChange( int );
 

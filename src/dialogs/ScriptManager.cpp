@@ -56,12 +56,26 @@
 #include <KIO/NetAccess>
 #include <KLocale>
 #include <KMessageBox>
-#include <knewstuff2/engine.h>
-#include <knewstuff2/core/entry.h>
 #include <KProtocolManager>
 #include <KStandardDirs>
 #include <KTar>
 #include <KWindowSystem>
+
+#include <kdeversion.h>
+
+#if KDE_IS_VERSION(4, 3, 80)
+#define HAVE_KNEWSTUFF3
+#endif
+
+#ifdef HAVE_KNEWSTUFF3
+#include <knewstuff2/engine.h>
+#include <knewstuff2/core/entry.h>
+#include <KNS3/DownloadDialog>
+#else
+#include <knewstuff2/engine.h>
+#include <knewstuff2/core/entry.h>
+#endif
+
 
 #include <QFileInfo>
 #include <QTimer>
@@ -360,6 +374,19 @@ ScriptManager::recurseInstall( const KArchiveDirectory* archiveDir, const QStrin
 void
 ScriptManager::slotRetrieveScript()
 {
+#ifdef HAVE_KNEWSTUFF3
+    KNS3::DownloadDialog dialog("amarok.knsrc", this);
+    dialog.exec();
+
+    if (!dialog.installedEntries().isEmpty()) {
+        KMessageBox::information( 0, i18n( "<p>Script successfully installed.</p>"
+                                            "<p>Please restart Amarok to start the script.</p>" ) );
+    } else if (!dialog.changedEntries().isEmpty()) {
+        KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
+                                            "<p>Please restart Amarok to totally remove the script.</p>" ) );
+    }
+
+#else
     bool installed = false;
     bool deleted = false;
     KNS::Engine engine( this );
@@ -378,6 +405,7 @@ ScriptManager::slotRetrieveScript()
     else if (  deleted )
         KMessageBox::information( 0, i18n( "<p>Script successfully uninstalled.</p>"
                                             "<p>Please restart Amarok to totally remove the script.</p>" ) );
+#endif
 }
 
 void

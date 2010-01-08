@@ -4,7 +4,7 @@
  * Copyright (c) 2004-2008 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2006,2008 Ian Monroe <ian@monroe.nu>                                   *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -219,11 +219,20 @@ EngineController::canDecode( const KUrl &url ) //static
     mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
     //mimeTable << "?/?"; //Add comment
 
-    const QString mimeType = item.mimetype();
-    const bool valid = mimeTable.contains( mimeType, Qt::CaseInsensitive );
+    const KMimeType::Ptr mimeType = item.mimeTypePtr();
+    
+    bool valid = false;
+    foreach( const QString &type, mimeTable )
+    {
+        if( mimeType->is( type ) )
+        {
+            valid = true;
+            break;
+        }
+    }
 
-    //we special case this as otherwise users hate us
-    if ( !valid && ( mimeType == "audio/mp3" || mimeType == "audio/x-mp3" ) && !installDistroCodec() )
+    // We special case this, as otherwise the users would hate us
+    if ( !valid && ( mimeType->is( "audio/mp3" ) || mimeType->is( "audio/x-mp3" ) ) && !installDistroCodec() )
         The::statusBar()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                       "the installation of the backend that phonon uses.</p>"
@@ -493,7 +502,10 @@ EngineController::stop( bool forceInstant ) //SLOT
         stateChangedNotify( Phonon::StoppedState, m_media->state() ); //immediately disable Stop action
     }
     else
+    {
         m_media->stop();
+        m_media->setCurrentSource( Phonon::MediaSource() );
+    }
 
     m_currentTrack = 0;
 }
@@ -892,6 +904,7 @@ EngineController::slotQueueEnded()
 
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
+        m_media->setCurrentSource( Phonon::MediaSource() );
         playbackEnded( trackPositionMs(), m_currentTrack->length(), EngineObserver::EndedStopped );
         m_currentTrack = 0;
         trackChangedNotify( m_currentTrack );
@@ -923,7 +936,12 @@ void
 EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 {
     DEBUG_BLOCK
-    Q_UNUSED( source );
+
+    if( source.type() == Phonon::MediaSource::Empty )
+    {
+        debug() << "Empty MediaSource (engine stop)";
+        return;
+    }
 
     // the new track was taken from the queue, so clear these fields
     if( m_nextTrack )
@@ -1140,6 +1158,7 @@ EngineController::slotStopFadeout() //SLOT
     DEBUG_BLOCK
 
     m_media->stop();
+    m_media->setCurrentSource( Phonon::MediaSource() );
     resetFadeout();
 }
 

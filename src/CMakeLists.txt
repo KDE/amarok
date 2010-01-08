@@ -202,6 +202,7 @@ set(libconfigdialog_SRCS
 
 kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/CollectionConfig.ui
+    configdialog/dialogs/EqualizerConfig.ui
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
@@ -281,6 +282,7 @@ set(meta_SRCS
     meta/M3UPlaylist.cpp
     meta/Meta.cpp
     meta/MetaUtility.cpp
+    meta/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
     meta/Playlist.cpp
     meta/PLSPlaylist.cpp
@@ -691,9 +693,6 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/TestAmarok.cpp
         ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp
-        ../tests/TestExpression.cpp
-        ../tests/TestQStringx.cpp
-        ../tests/TestSmartPointerList.cpp
     )
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)
 if( LIBLASTFM_FOUND )
@@ -730,17 +729,17 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
 kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 
 target_link_libraries(amaroklib
-    ${KDE4_KUTILS_LIBS}
     ${KDE4_KDEUI_LIBS}
-    ${KDE4_KHTML_LIBS}
-    ${KDE4_KNEWSTUFF_LIBS}
     ${KDE4_KFILE_LIBS}
-    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${KDE4_KHTML_LIBS}
     ${KDE4_KNEWSTUFF2_LIBS}
+    ${KDE4_KNEWSTUFF_LIBS}
     ${KDE4_KNOTIFYCONFIG_LIBS}
+    ${KDE4_KUTILS_LIBS}
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
+    ${KDE4_THREADWEAVER_LIBRARIES}
     ${TAGLIB_LIBRARIES}
     ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
@@ -752,6 +751,10 @@ target_link_libraries(amaroklib
     amarokpud
     amarokocsclient
 )
+
+if (KDE_VERSION VERSION_GREATER "4.3.80")
+    target_link_libraries(amaroklib ${KDE4_KNEWSTUFF3_LIBS})
+endif (KDE_VERSION VERSION_GREATER "4.3.80")
 
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})

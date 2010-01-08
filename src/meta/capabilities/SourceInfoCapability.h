@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -28,7 +28,7 @@ namespace Meta
     /**
     This capability allows getting additional information about the source of a meta item. For now, it is intended for allowing the playlist to display a little emblem to let users know if a track is a Magnatune preview track, a lastfm stream or so on...
 
-        @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+        @author Nikolaj Hald Nielsen <nhn@kde.org>
     */
     class AMAROK_EXPORT SourceInfoCapability : public Meta::Capability{
     public:

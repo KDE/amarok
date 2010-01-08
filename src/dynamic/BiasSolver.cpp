@@ -765,7 +765,8 @@ Dynamic::BiasSolver::getMutation()
 Meta::TrackPtr
 Dynamic::BiasSolver::trackForUid( const QByteArray& uid )
 {
-    return s_universeCollection->trackForUrl(s_universeCollection->uidUrlProtocol() + "://" + QString(uid.toHex()) );
+    const KUrl url = s_universeCollection->uidUrlProtocol() + "://" + QString( uid );
+    return s_universeCollection->trackForUrl( url );
 }
 
 
@@ -881,10 +882,9 @@ Dynamic::BiasSolver::universeResults( QString collectionId, QStringList uids )
 
         // for some reason we sometimes get uids without the protocol part
         if( uidString.at( s_uidUrlProtocolPrefixLength - 1 ) != '/' )
-            uid = QByteArray::fromHex( uidString.toAscii() );
+            uid = uidString.toAscii();
         else
-            uid = QByteArray::fromHex( uidString.mid(s_uidUrlProtocolPrefixLength).toAscii() );
-            
+            uid = uidString.mid( s_uidUrlProtocolPrefixLength ).toAscii();
 
         if( !uid.isEmpty() )
             s_universe += uid;

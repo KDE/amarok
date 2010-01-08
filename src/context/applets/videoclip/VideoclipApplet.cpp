@@ -17,9 +17,10 @@
 //Plasma applet for showing videoclip in the context view
 
 #include "VideoclipApplet.h" 
-#include "VideoItemButton.h"
+
 #include "CustomVideoWidget.h"
 #include "PaletteHandler.h"
+#include "VideoItemButton.h"
 
 // Amarok
 #include "Amarok.h"
@@ -33,6 +34,7 @@
 #include "SvgHandler.h"
 #include "widgets/kratingpainter.h"
 #include "widgets/kratingwidget.h"
+#include "widgets/TextScrollingWidget.h"
 
 // KDE
 #include <KColorScheme>
@@ -49,7 +51,6 @@
 // Qt
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
-#include <QGraphicsTextItem>
 #include <QGraphicsWidget>
 #include <QGridLayout>
 #include <QLabel>
@@ -59,6 +60,9 @@
 #include <QScrollBar>
 
 #define DEBUG_PREFIX "VideoclipApplet"
+
+
+
 
 Q_DECLARE_METATYPE ( VideoInfo *)
 K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
@@ -108,7 +112,7 @@ VideoclipApplet::init()
     // Create label
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerText = new QGraphicsSimpleTextItem( this );
+    m_headerText = new TextScrollingWidget( this );
     m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Video Clip" ) );
@@ -164,6 +168,7 @@ VideoclipApplet::~VideoclipApplet()
     DEBUG_BLOCK
    
     delete m_videoWidget;
+    qDeleteAll( m_videoItemButtons );
 }
 
 void 
@@ -262,6 +267,11 @@ VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
     prepareGeometryChange();
+
+    qreal widmax = boundingRect().width() - 4 * standardPadding();
+    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
+
+    m_headerText->setScrollingText( m_headerText->text(), rect );
 
     // tint the applet size
     m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, standardPadding() + 3 );
@@ -377,10 +387,10 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                 VideoInfo *item = data[ QString ("item:" )+QString().setNum(i) ].value<VideoInfo *>() ;
                 if( !( item->url.isEmpty() ) ) // prevent some weird stuff ...
                 {
+                    VideoItemButton *vidButton = new VideoItemButton();
+                    vidButton->setVideoInfo( item );
+                    m_videoItemButtons.append( vidButton );
 
-                    VideoItemButton *vidButton = new VideoItemButton( this );
-                    vidButton->setVideoInfo( item ); 
-                    
                     connect ( vidButton, SIGNAL( appendRequested( VideoInfo * ) ), this, SLOT ( appendVideoClip( VideoInfo * ) ) );
                     connect ( vidButton, SIGNAL( queueRequested( VideoInfo* ) ), this, SLOT ( queueVideoClip( VideoInfo * ) ) );
                     connect ( vidButton, SIGNAL( appendPlayRequested( VideoInfo * ) ), this, SLOT ( appendPlayVideoClip( VideoInfo * ) ) );
@@ -555,4 +565,4 @@ VideoclipApplet::saveSettings()
 }
 
 #include "VideoclipApplet.moc"
-
+#include "../../../SmartPointerList.moc"

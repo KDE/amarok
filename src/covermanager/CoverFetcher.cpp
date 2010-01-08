@@ -31,10 +31,10 @@
 #include <KLocale>
 #include <KUrl>
 
-
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
+#include <QImageReader>
 #include <QLabel>
 #include <QRegExp>
 
@@ -274,10 +274,12 @@ void
 CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
 {
     QPixmap pixmap;
+    KIO::StoredTransferJob* storedJob = static_cast<KIO::StoredTransferJob*>( job );
+    const QByteArray data = storedJob->data();
     
-    if( job->error() || !pixmap.loadFromData( static_cast<KIO::StoredTransferJob*>( job )->data() ) )
+    if( job->error() || data.isNull() || !pixmap.loadFromData( data ) )
     {
-        debug() << "finishedImageFetch(): KIO::error(): " << job->error();
+        debug() << "finishedImageFetch(): KIO::error(): " << storedJob->error();
         m_errors += i18n( "The cover could not be retrieved." );
         finishWithError( i18n( "The cover could not be retrieved." ), job );
         return;
@@ -297,7 +299,7 @@ CoverFetcher::finishedImageFetch( KJob *job ) //SLOT
             {
                 //yay! images found :)
                 //lets see if the user wants one of it
-		m_processedCovers = 9999; //prevents to popup a 2nd window
+                m_processedCovers = 9999; //prevents to popup a 2nd window
                 showCover();
             }
             else
