@@ -219,12 +219,22 @@ void CoverFoundDialog::updateDetails()
 
 void CoverFoundDialog::updateTitle()
 {
-    QString caption = i18n( "Cover Found" );
+    QString caption;
 
-    if( m_covers.size() > 1 )
+    if( m_covers.isEmpty() )
     {
-        const QString position = i18n( "%1/%2", m_index + 1, m_covers.size() );
-        caption +=  ": " + position;
+        caption = i18n( "Cover Not Found" );
+    }
+    else
+    {
+        caption = i18n( "Cover Found" );
+        const int size = m_covers.size();
+        if( size > 1 )
+        {
+            const QString position = QString( "%1/%2" ).arg( QString::number( m_index + 1 ) )
+                                                       .arg( QString::number( size ) );
+            caption +=  ": " + position;
+        }
     }
     this->setCaption( caption );
 }
