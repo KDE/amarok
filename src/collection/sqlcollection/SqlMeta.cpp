@@ -894,6 +894,8 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
 bool
 SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
+    DEBUG_BLOCK
+    debug() << "delegate: " << m_capabilityDelegate;
     return ( m_capabilityDelegate ? m_capabilityDelegate->hasCapabilityInterface( type, this ) : false );
 }
 
@@ -906,6 +908,7 @@ SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
 void
 SqlTrack::setCapabilityDelegate( TrackCapabilityDelegate *delegate )
 {
+    DEBUG_BLOCK
     m_capabilityDelegate = delegate;
 }
 

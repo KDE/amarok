@@ -98,16 +98,16 @@ class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
             , m_track( track )
         {}
 
-    virtual bool writeTimecode ( int seconds )
+    virtual bool writeTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
+        return Meta::TimecodeWriteCapability::writeTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
     }
 
-    virtual bool writeAutoTimecode ( int seconds )
+    virtual bool writeAutoTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeAutoTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
+        return Meta::TimecodeWriteCapability::writeAutoTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
     }
 
     private:

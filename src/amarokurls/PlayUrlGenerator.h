@@ -38,7 +38,7 @@ public:
     static PlayUrlGenerator * instance();
 
     AmarokUrl createCurrentTrackBookmark();
-    AmarokUrl createTrackBookmark( Meta::TrackPtr track, int seconds, QString name = QString() );
+    AmarokUrl createTrackBookmark( Meta::TrackPtr track, qint64 miliseconds, QString name = QString() );
 
     QString description();
     KIcon icon();

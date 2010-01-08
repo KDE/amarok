@@ -31,10 +31,10 @@ namespace Meta
 TimecodeWriteCapability::~TimecodeWriteCapability()
 {}
 
-bool TimecodeWriteCapability::writeTimecode( int seconds, Meta::TrackPtr track )
+bool TimecodeWriteCapability::writeTimecode( qint64 miliseconds, Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    AmarokUrl url = PlayUrlGenerator::instance()->createTrackBookmark( track, seconds );
+    AmarokUrl url = PlayUrlGenerator::instance()->createTrackBookmark( track, miliseconds );
 
     // lets see if we are bookmarking the currently playing track, if so
     // we need to update the slider with another icon
@@ -42,8 +42,8 @@ bool TimecodeWriteCapability::writeTimecode( int seconds, Meta::TrackPtr track )
     if( currtrack  == track )
     {
         debug() << " current track";
-        debug() << "adding at seconds: " << seconds;
-        The::amarokUrlHandler()->paintNewTimecode( url.name(), seconds * 1000 );
+        debug() << "adding at seconds: " << miliseconds;
+        The::amarokUrlHandler()->paintNewTimecode( url.name(), miliseconds );
 
     }
 
@@ -52,7 +52,7 @@ bool TimecodeWriteCapability::writeTimecode( int seconds, Meta::TrackPtr track )
     return true;
 }
 
-bool Meta::TimecodeWriteCapability::writeAutoTimecode( int seconds, Meta::TrackPtr track )
+bool Meta::TimecodeWriteCapability::writeAutoTimecode( qint64 miliseconds, Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
@@ -75,7 +75,7 @@ bool Meta::TimecodeWriteCapability::writeAutoTimecode( int seconds, Meta::TrackP
     }
 
     //create url
-    AmarokUrl url = PlayUrlGenerator::instance()->createTrackBookmark( track, seconds );
+    AmarokUrl url = PlayUrlGenerator::instance()->createTrackBookmark( track, miliseconds );
 
     // lets see if we are bookmarking the currently playing track, if so
     // we need to update the slider with another icon

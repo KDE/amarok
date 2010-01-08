@@ -350,24 +350,24 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     //ok, so we actually have to timecodes from the same base url, not get the
     //minimum and maximum time:
 
-    int pos1 = 0;
-    int pos2 = 0;
+    qreal pos1 = 0;
+    qreal pos2 = 0;
 
     if ( url1->args().keys().contains( "pos" ) )
     {
-        pos1 = url1->args().value( "pos" ).toInt();
+        pos1 = url1->args().value( "pos" ).toDouble();
     }
 
     if ( url2->args().keys().contains( "pos" ) )
     {
-        pos2 = url2->args().value( "pos" ).toInt();
+        pos2 = url2->args().value( "pos" ).toDouble();
     }
 
     if ( pos1 == pos2 )
         return;
 
-    int start = qMin( pos1, pos2 ) * 1000;
-    int end = qMax( pos1, pos2 ) * 1000;
+    qint64 start = qMin( pos1, pos2 ) * 1000;
+    qint64 end = qMax( pos1, pos2 ) * 1000;
 
     //Now we really should pop up a menu to get the user to enter some info about this
     //new track, but for now, just fake it as this is just for testing anyway
