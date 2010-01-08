@@ -15,6 +15,7 @@ VERSION 2.2.3
     * Improved usability of the playlist layout editor dialog.
 
   BUGFIXES:
+    * Fixed playlist layout editor blocking control of Amarok. (BR 220825)
     * Fixed moodbar in progress slider not correctly updating after moodbar
       style change (BR 220695)
     * Fixed progress slider not moving for many streams (and possible other
