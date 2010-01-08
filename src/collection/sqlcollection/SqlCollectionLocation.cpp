@@ -34,6 +34,7 @@
 #include <QFile>
 #include <QFileInfo>
 
+#include <kdiskfreespaceinfo.h>
 #include <kjob.h>
 #include <KLocale>
 #include <KSharedPtr>
@@ -69,10 +70,32 @@ SqlCollectionLocation::actualLocation() const
 {
     return MountPointManager::instance()->collectionFolders();
 }
+
 bool
 SqlCollectionLocation::isWritable() const
 {
-    return true;
+    // The collection is writeable if there exists a path that has less than
+    // 95% free space.
+    bool path_exists_with_space = false;
+    bool path_exists_writeable = false;
+    QStringList folders = actualLocation();
+    foreach(QString path, folders)
+    {
+        float used = KDiskFreeSpaceInfo::freeSpaceInfo( path ).used();
+        float total = KDiskFreeSpaceInfo::freeSpaceInfo( path ).size();
+
+        if( total <= 0 ) // protect against div by zero
+            continue; //How did this happen?
+
+        float percentage_used = used / total;
+        if( percentage_used < 0.95 )
+            path_exists_with_space = true;
+
+        QFileInfo info( path );
+        if( info.isWritable() )
+            path_exists_writeable = true;
+    }
+    return path_exists_with_space && path_exists_writeable;
 }
 
 bool
@@ -143,9 +166,52 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
 void
 SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
 {
+    DEBUG_BLOCK
     setGoingToRemoveSources( removeSources );
+
+    int transfersize = 0;
+    foreach( Meta::TrackPtr track, tracks )
+        transfersize += track->filesize();
+
+    QStringList actual_folders = actualLocation(); // the folders in the collection
+    QStringList available_folders; // the folders which have freespace available
+    foreach(QString path, actual_folders)
+    {
+        if( path.isEmpty() )
+            continue;
+        debug() << "Path" << path;
+        float used = KDiskFreeSpaceInfo::freeSpaceInfo( path ).used();
+        float total = KDiskFreeSpaceInfo::freeSpaceInfo( path ).size();
+        float free_space = total - used;
+
+        debug() << "Free space" << free_space;
+        debug() << "transfersize" << transfersize;
+
+        if( total <= 0 ) // protect against div by zero
+            continue; //How did this happen?
+
+        float percentage_used = used / total;
+        debug() << "percentage_used" << percentage_used;
+
+        QFileInfo info( path );
+
+        // since bad things happen when drives become totally full, we define full as 95% capacity used
+        // also we make sure there is at least 5 megabytes free
+        // finally, ensure the path is writeable
+        if( ( free_space - transfersize ) > 1024*1024*5 && ( percentage_used + transfersize ) < 0.95 && info.isWritable())
+            available_folders << path;
+    }
+
+    if( available_folders.size() <= 0 )
+    {
+        debug() << "No space available or not writable";
+        The::statusBar()->longMessage( i18n( "The collection does not have enough free space available or is not writable." ), StatusBar::Error );
+        abort();
+        return;
+    }
+
     OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks,
-                MountPointManager::instance()->collectionFolders(),
+                available_folders,
                 The::mainWindow(), //parent
                 "", //name is unused
                 true, //modal
@@ -180,7 +246,10 @@ SqlCollectionLocation::slotDialogAccepted()
                                                      files,
                                                      i18n("Move Files") ) == KMessageBox::Continue;
         if( !del )
+        {
             abort();
+            return;
+        }
     }
     slotShowDestinationDialogDone();
 }
