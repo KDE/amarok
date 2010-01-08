@@ -126,18 +126,10 @@ void UpcomingEventsEngine::update()
         else
             setData( "upcomingEvents", "artist", artistName );
     }
+
     QPixmap cover = m_currentTrack->album()->image( 156 );
-    
-    setData( "upcomingEvents", "cover",  QVariant( cover ) );
-    /*setData( "upcomingEvents", "eventName", "Concert de Noël" );
-    setData( "upcomingEvents", "eventDate", "2009-12-25" );
-    setData( "upcomingEvents", "eventUrl", "<a href='http://www.google.com'>"
-                                           "<font size='2' family='Arial, Helvetica, sans-serif' color='blue'><b>http://www.google.fr</b></font>"
-                                           "</a>" );*/
-   upcomingEventsRequest( artistName );
-   QVariant variant ( QMetaType::type( "LastFmEvent::LastFmEventList" ), &m_upcomingEvents );
-   
-   setData ( "upcomingEvents", "LastFmEvent", variant );
+
+    upcomingEventsRequest( artistName );
 }
 
 void UpcomingEventsEngine::reloadUpcomingEvents()
@@ -145,14 +137,11 @@ void UpcomingEventsEngine::reloadUpcomingEvents()
 
 }
 
-
 QList< LastFmEvent >
-UpcomingEventsEngine::getUpcomingEvents()
+UpcomingEventsEngine::upcomingEvents()
 {
     return m_upcomingEvents;
 }
-
-
 
 void
 UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
@@ -166,8 +155,7 @@ UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
 
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL(result( KJob* )), SLOT(upcomingEventsResultFetched( KJob* )) );
-    //job->start();
+    connect( job, SIGNAL( result( KJob* ) ), SLOT( upcomingEventsResultFetched( KJob* ) ) );
 }
 
 void
@@ -196,6 +184,7 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
     const QDomNode events = doc.documentElement().namedItem( "events" );
 
     QDomNode n = events.firstChild();
+
     while( !n.isNull() )
     {
         // Event name
@@ -260,8 +249,10 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
         
         n = n.nextSibling();
     }
-    update();
+
+    QVariant variant ( QMetaType::type( "LastFmEvent::LastFmEventList" ), &m_upcomingEvents );
+    debug() << "setData";
+    setData ( "upcomingEvents", "LastFmEvent", variant );
 }
 
 #include "UpcomingEventsEngine.moc"
-

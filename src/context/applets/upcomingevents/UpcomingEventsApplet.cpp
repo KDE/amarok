@@ -37,8 +37,14 @@
 #include <QDesktopServices>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsGridLayout>
+#include <QGraphicsLayoutItem>
 #include <QGraphicsProxyWidget>
 #include <QLabel>
+#include <QVBoxLayout>
+#include <QScrollBar>
+
+#include <typeinfo>
+#include <QGridLayout>
 
 
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
@@ -55,53 +61,33 @@ UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList&
 void
 UpcomingEventsApplet::init()
 {
-    mainLayout = new QGraphicsGridLayout;
-    m_headerLabel = new QLabel;
-    m_eventParticipants = new QLabel;
-    m_bigImage = new QLabel;
-    m_eventName = new QLabel;
-    m_eventDate = new QLabel;
-    m_eventUrl = new QLabel;
-
-    QGraphicsProxyWidget* headerLabel = new QGraphicsProxyWidget( this );
-    headerLabel->setWidget( m_headerLabel );
-    m_headerLabel->setText( i18n( "Upcoming Events" ) );
-    m_headerLabel->setAttribute( Qt::WA_TranslucentBackground, true );
-    m_headerLabel->setAlignment( Qt::AlignCenter );
-
-    QGraphicsProxyWidget* bigImage = new QGraphicsProxyWidget( this );
-    bigImage->setWidget( m_bigImage );
-    m_bigImage->setAttribute( Qt::WA_TranslucentBackground, true );
-
-    QGraphicsProxyWidget* eventName = new QGraphicsProxyWidget( this );
-    eventName->setWidget( m_eventName );
-    m_eventName->setAttribute( Qt::WA_TranslucentBackground, true );
-
-    QGraphicsProxyWidget* eventParticipants = new QGraphicsProxyWidget( this );
-    eventParticipants->setWidget( m_eventParticipants );
-    m_eventParticipants->setAttribute( Qt::WA_TranslucentBackground, true );
-
-    QGraphicsProxyWidget* eventDate = new QGraphicsProxyWidget( this );
-    eventDate->setWidget( m_eventDate );
-    m_eventDate->setAttribute( Qt::WA_TranslucentBackground, true );
-
-    QGraphicsProxyWidget* eventUrl = new QGraphicsProxyWidget( this );
-    eventUrl->setWidget( m_eventUrl );
-    m_eventUrl->setAttribute( Qt::WA_TranslucentBackground, true );
-
-    mainLayout->addItem( headerLabel, 0, 0, 1, 2 );
-    mainLayout->addItem( bigImage, 1, 0, 4, 1 );
-    mainLayout->addItem( eventName, 1, 1, 1, 1 );
-    mainLayout->addItem( eventParticipants, 2, 1, 1, 1 );
-    mainLayout->addItem( eventDate, 3, 1, 1, 1 );
-    mainLayout->addItem( eventUrl, 4, 1, 1, 1 );
-
-    mainLayout->setColumnPreferredWidth( 0, this->boundingRect().width() / 2 );
-    mainLayout->setColumnPreferredWidth( 1, this->boundingRect().width() / 2 );
-
-    mainLayout->setRowFixedHeight( 0, m_headerLabel->height() );
+    m_mainLayout = new QVBoxLayout;
+    m_mainLayout->setSizeConstraint( QLayout::SetMinAndMaxSize );
+    m_headerLabel = new TextScrollingWidget( this );
     
-    setLayout( mainLayout );
+    setBackgroundHints( Plasma::Applet::NoBackground );
+
+    QFont labelFont;
+    labelFont.setPointSize( labelFont.pointSize() + 2 );
+    m_headerLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
+    m_headerLabel->setFont( labelFont );
+    m_headerLabel->setText( i18n( "Upcoming Events" ) );
+
+    m_scrollProxy = new QGraphicsProxyWidget( this );
+    m_scrollProxy->setAttribute( Qt::WA_NoSystemBackground );
+
+    QWidget * scrollContent = new QWidget;
+    scrollContent->setAttribute( Qt::WA_NoSystemBackground );
+    scrollContent->setLayout( m_mainLayout );
+    scrollContent->show();
+
+    m_scroll = new QScrollArea;
+    m_scroll->setWidget( scrollContent );
+    m_scroll->setFrameShape( QFrame::NoFrame );
+    m_scroll->setAttribute( Qt::WA_NoSystemBackground );
+    m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
+
+    m_scrollProxy->setWidget( m_scroll );
 
     // ask for all the CV height
     resize( 500, -1 );
@@ -121,8 +107,7 @@ UpcomingEventsApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("UpcomingEvents Applet");
     m_timeSpan = config.readEntry( "timeSpan", "AllEvents" );
-    m_enabledLinks = config.readEntry( "enabledLinks", 0 );
-    
+    m_enabledLinks = config.readEntry( "enabledLinks", 0 );    
 }
 
 void
@@ -138,15 +123,36 @@ UpcomingEventsApplet::connectSource( const QString &source )
 void
 UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
+    DEBUG_BLOCK
+    
     Q_UNUSED( constraints );
+
+    prepareGeometryChange();
+    qreal widmax = boundingRect().width() - 2 * m_settingsIcon->size().width() - 6 * standardPadding();
+    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
+
+    m_headerLabel->setScrollingText( m_headerLabel->text(), rect );
+    m_headerLabel->setPos( ( size().width() - m_headerLabel->boundingRect().width() ) / 2 , standardPadding() + 3 );
+
+    m_scrollProxy->setPos( standardPadding(), m_headerLabel->pos().y() + m_headerLabel->boundingRect().height() + standardPadding() );
+    QSize artistsSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_scrollProxy->pos().y() - standardPadding() );
+    
+    m_scrollProxy->setMinimumSize( artistsSize );
+    m_scrollProxy->setMaximumSize( artistsSize );
+    
+    QSize artistSize( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width(), artistsSize.height() - 2 * standardPadding() );
+    m_scroll->widget()->setMinimumSize( artistSize );
+    m_scroll->widget()->setMaximumSize( artistSize );
 
     // Icon positionning
     m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
 
-    for( int i = 1; i < 5; i++ )
+    debug() << "TAILLE DE M_WIDGETS = " << m_widgets.size();
+    for( int i = 0; i < m_widgets.size(); i++ )
     {
-        mainLayout->setRowFixedHeight( i, m_bigImage->pixmap()->height() / 4 );
-    }    
+        debug() << "ENTREE DANS LA BOUCLE CONSTRAINTSEVENT";
+        m_mainLayout->addWidget( m_widgets.at( i ) );
+    }
 }
 
 bool
@@ -164,6 +170,8 @@ UpcomingEventsApplet::heightForWidth( qreal width ) const
 void
 UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
+    DEBUG_BLOCK
+    
     Q_UNUSED( name )
     QString artistName = data[ "artist" ].toString();
     if (artistName.compare( "" ) != 0)
@@ -171,41 +179,32 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     else
         m_headerLabel->setText( i18n( "Upcoming events" ) );
 
-    m_bigImage->setPixmap( data[ "cover" ].value<QPixmap>() );
+    LastFmEvent::LastFmEventList events = data[ "LastFmEvent" ].value< LastFmEvent::LastFmEventList >();
+    m_widgets.clear();
 
-    if ( m_enabledLinks ) {        
-        m_eventUrl->show();
-    }
-    else
-        m_eventUrl->hide();
-
-    LastFmEvent::LastFmEventList event = data[ "LastFmEvent" ].value< LastFmEvent::LastFmEventList >();
-    if ( !event.isEmpty() )
+    debug() << "TAILLE DE EVENTS = " << events.size();
+    for( int i = 0; i < events.size(); i++ )
     {
-        m_eventName->setText( event.at(0).name() );
-        m_eventDate->setText( event.at(0).date().toString( Qt::DefaultLocaleLongDate ) );
+        debug() << "BOUCLE FOR DATAUPDATED";
 
         QString artistList;
-        for( int i = 0; i < event.at(0).artists().size(); i++ )
+        for( int j = 0; j < events.at( i ).artists().size(); j++ )
         {
-            if( i == event.at(0).artists().size() - 1 )
+            if( j == events.at( i ).artists().size() - 1 )
             {
-                artistList.append( event.at(0).artists().at( i ) );
+                artistList.append( events.at( i ).artists().at( j ) );
             }
             else
             {
-               artistList.append( event.at(0).artists().at( i ) + " - " );
+               artistList.append( events.at( i ).artists().at( j ) + " - " );
             }
         }
-        m_eventParticipants->setText( artistList );
-        m_eventUrl->setText( "<html><body><a href=\"" + event.at(0).url().prettyUrl() + "\"><u>" + i18n( "Event website" ) + "</u></a></body></html>" );
-    }
-    else
-    {
-        m_eventName->setText( "" );
-        m_eventDate->setText( "" );
-        m_eventParticipants->setText( "" );
-        m_eventUrl->setText( "" );
+
+        m_widgets.insert( i, new UpcomingEventsWidget( events.at( i ).name(),
+                                                       events.at( i ).date(),
+                                                       artistList,
+                                                       events.at( i ).url(),
+                                                       events.at( i ).smallImageUrl() ) );
     }
     
     updateConstraints();
@@ -226,6 +225,9 @@ UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     p->save();
     QColor bg( App::instance()->palette().highlight().color() );
     bg.setHsvF( bg.hueF(), 0.07, 1, bg.alphaF() );
+
+    if( !m_headerLabel->isAnimating() )
+        drawRoundedRectAroundText( p, m_headerLabel );
 
     p->restore();
 }
