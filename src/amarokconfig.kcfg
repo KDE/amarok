@@ -151,10 +151,10 @@
         <whatsthis>If set, Organize files will use cover art as folder icons.</whatsthis>
         <default>true</default>
     </entry>
-    <entry key="Organize Directory" type="Int">
-        <label>Index of collection folder destination for Organize files.</label>
-        <whatsthis>The ID of the collection folder destination for Organize files.</whatsthis>
-        <default>0</default>
+    <entry key="Organize Directory" type="String">
+        <label>Collection folder path destination for Organize files.</label>
+        <whatsthis>The path of the collection folder destination for Organize files.</whatsthis>
+        <default></default>
     </entry>
     <entry key="Vfat Compatible" type="Bool">
         <label>Whether organize files will rename files in a manner compatible with vfat filesystems.</label>

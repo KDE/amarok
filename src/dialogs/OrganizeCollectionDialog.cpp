@@ -66,7 +66,11 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->ignoreTheCheck->show();
 
     ui->folderCombo->insertItems( 0, folders );
-    ui->folderCombo->setCurrentIndex( AmarokConfig::organizeDirectory() );
+    if( ui->folderCombo->contains( AmarokConfig::organizeDirectory() ) )
+        ui->folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
+    else
+        ui->folderCombo->setCurrentIndex( 0 ); //TODO possible bug: assumes folder list is not empty.
+
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
     ui->spaceCheck->setChecked( AmarokConfig::replaceSpace() );
     ui->ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
@@ -108,7 +112,7 @@ OrganizeCollectionDialog::~OrganizeCollectionDialog()
 {
     DEBUG_BLOCK
 
-    AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentIndex() );
+    AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     delete ui;
 }
 
@@ -380,7 +384,7 @@ OrganizeCollectionDialog::slotUpdatePreview()
 void
 OrganizeCollectionDialog::slotDialogAccepted()
 {
-    AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentIndex() );
+    AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
     AmarokConfig::setReplaceSpace( ui->spaceCheck->isChecked() );
     AmarokConfig::setVfatCompatible( ui->vfatCheck->isChecked() );
