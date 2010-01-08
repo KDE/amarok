@@ -41,10 +41,19 @@ ScanResultProcessor::ScanResultProcessor( SqlCollection *collection )
 ScanResultProcessor::~ScanResultProcessor()
 {
     //everything has a URL, so enough to just delete from here
+    QSet<QStringList*> currSet; //prevent double deletes
     foreach( QStringList *list, m_urlsHashByUid )
     {
         if( list )
-            delete list;
+        {
+            if( !currSet.contains( list ) )
+            {
+                delete list;
+                currSet.insert( list );
+            }
+        }
+        else
+            debug() << "GAAH! Tried to double-delete a value in m_urlsHashByUid";
     }
     foreach( QLinkedList<QStringList*> *list, m_albumsHashByName )
     {
@@ -53,7 +62,15 @@ ScanResultProcessor::~ScanResultProcessor()
             foreach( QStringList *slist, *list )
             {
                 if( slist )
-                   delete slist;
+                {
+                    if( !currSet.contains( slist ) )
+                    {
+                        delete slist;
+                        currSet.insert( slist );
+                    }
+                    else
+                        debug() << "GAAH! Tried to double-delete a value in m_albumsHashByName";
+                }
             }
             delete list;
         }
@@ -65,7 +82,15 @@ ScanResultProcessor::~ScanResultProcessor()
             foreach( QStringList *slist, *list )
             {
                 if( slist )
-                    delete slist;
+                {
+                    if( !currSet.contains( slist ) )
+                    {
+                        delete slist;
+                        currSet.insert( slist );
+                    }
+                    else
+                        debug() << "GAAH! Tried to double-delete a value in m_tracksHashByAlbum";
+                }
             }
             delete list;
         }
@@ -268,7 +293,7 @@ ScanResultProcessor::rollback()
 void
 ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
 {
-//     DEBUG_BLOCK
+    DEBUG_BLOCK
     setupDatabase();
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
@@ -288,24 +313,54 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
         if( row.value( Field::ALBUM ).toString() != album )
             multipleAlbums = true;
     }
+
     if( multipleAlbums || album.isEmpty() || artists.size() == 1 )
     {
         foreach( const QVariantMap &row, data )
         {
-            int artist = genericId( &m_artists, row.value( Field::ARTIST ).toString(), &m_nextArtistNum );
-            addTrack( row, artist );
+            QString uid = row.value( Field::UNIQUEID ).toString();
+            if( m_uidsSeenThisScan.contains( uid ) )
+            {
+                QString originalLocation = ( ( m_urlsHashByUid.contains( uid ) &&
+                                             m_urlsHashByUid[uid] != 0 ) ?
+                                             MountPointManager::instance()->getAbsolutePath( m_urlsHashByUid[uid]->at( 1 ).toInt(), m_urlsHashByUid[uid]->at( 2 ) ) : "(unknown)" );
+                debug() << "Skipping file with uniqueid " << uid << " as it was already seen this scan," <<
+                           "file is at " << row.value( Field::URL ).toString() << ", original file is at " << originalLocation;
+            }
+            else
+            {
+                int artist = genericId( &m_artists, row.value( Field::ARTIST ).toString(), &m_nextArtistNum );
+                debug() << "artist found = " << artist;
+                addTrack( row, artist );
+                m_uidsSeenThisScan.insert( uid );
+            }
         }
     }
     else
     {
         QString albumArtist = findAlbumArtist( artists, data.count() );
+        debug() << "albumArtist found = " << albumArtist;
         //an empty string means that no albumartist was found
         int artist = albumArtist.isEmpty() ? 0 : genericId( &m_artists, albumArtist, &m_nextArtistNum );
+        debug() << "artist found = " << artist;
 
         //debug() << "albumartist " << albumArtist << "for artists" << artists;
         foreach( const QVariantMap &row, data )
         {
-            addTrack( row, artist );
+            QString uid = row.value( Field::UNIQUEID ).toString();
+            if( m_uidsSeenThisScan.contains( uid ) )
+            {
+                QString originalLocation = ( ( m_urlsHashByUid.contains( uid ) &&
+                                             m_urlsHashByUid[uid] != 0 ) ?
+                                             MountPointManager::instance()->getAbsolutePath( m_urlsHashByUid[uid]->at( 1 ).toInt(), m_urlsHashByUid[uid]->at( 2 ) ) : "(unknown)" );
+                debug() << "Skipping file with uniqueid " << uid << " as it was already seen this scan," <<
+                           "file is at " << row.value( Field::URL ).toString() << ", original file is at " << originalLocation;
+            }
+            else
+            {
+                addTrack( row, artist );
+                m_uidsSeenThisScan.insert( uid );
+            }
         }
     }
 }
@@ -313,6 +368,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
 QString
 ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCount ) const
 {
+    DEBUG_BLOCK
     QMap<QString, int> artistCount;
     bool featuring;
     QStringList trackArtists;
@@ -384,7 +440,8 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCou
 void
 ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 {
-    //DEBUG_BLOCK
+    DEBUG_BLOCK
+    debug() << "albumArtistId = " << albumArtistId;
     //amarok 1 stored all tracks of a compilation in different directories.
     //when using its "Organize Collection" feature
     //try to detect these cases
@@ -433,7 +490,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
 
     //urlId will take care of the urls table part of AFT
     int url = urlId( path, uid );
-/*
+///*
     foreach( QString key, m_urlsHashByUid.keys() )
     debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
     foreach( int key, m_urlsHashById.keys() )
@@ -441,7 +498,7 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
     typedef QPair<int, QString> blahType; //QFOREACH is stupid when it comes to QPairs
     foreach( blahType key, m_urlsHashByLocation.keys() )
     debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
-*/
+//*/
     QStringList *trackList = new QStringList();
     int id = m_nextTrackNum;
     //debug() << "Appending new track number with tracknum: " << id;
@@ -512,12 +569,21 @@ ScanResultProcessor::addTrack( const QVariantMap &trackData, int albumArtistId )
         m_tracksHashById.insert( id, trackList );
     }
 
+    debug() << "album = " << album;
+
     if( m_tracksHashByAlbum.contains( album ) && m_tracksHashByAlbum[album] != 0 )
     {
         //contains isn't the fastest on linked lists, but in reality this is on the order of maybe
         //ten quick pointer comparisons per track on average...probably lower
+        debug() << "trackList is " << trackList;
         if( !m_tracksHashByAlbum[album]->contains( trackList ) )
+        {
+            debug() << "appending trackList to m_tracksHashByAlbum";
             m_tracksHashByAlbum[album]->append( trackList );
+        }
+        else
+            debug() << "not appending trackList to m_tracksHashByAlbum";
+
     }
     else
     {
@@ -577,13 +643,13 @@ ScanResultProcessor::imageId( const QString &image, int albumId )
 int
 ScanResultProcessor::albumId( const QString &album, int albumArtistId )
 {
-    //DEBUG_BLOCK
-    //debug() << "Looking up album " << album;
+    DEBUG_BLOCK
+    debug() << "Looking up album " << album;
     //albumArtistId == 0 means no albumartist
     QPair<QString, int> key( album, albumArtistId );
     if( m_albums.contains( key ) )
     {
-        //debug() << "m_albums contains album/albumArtistId key";
+        debug() << "m_albums contains album/albumArtistId key";
         // if we already have the key but the artist == 0,
         // UPDATE the image field so that we won't forget the cover for a compilation
         int id = m_albums.value( key );
@@ -618,19 +684,21 @@ ScanResultProcessor::albumId( const QString &album, int albumArtistId )
     int id = 0;
     if( m_albumsHashByName.contains( album ) && m_albumsHashByName[album] != 0 )
     {
-        //debug() << "Hashes contain it";
+        debug() << "Hashes contain it";
         QLinkedList<QStringList*> *list = m_albumsHashByName[album];
         foreach( QStringList *slist, *list )
         {
+            debug() << "albumArtistId = " << albumArtistId;
+            debug() << "Checking list: " << *slist;
             if( slist->at( 2 ).isEmpty() && albumArtistId == 0 )
             {
-                //debug() << "artist is empty and albumArtistId = 0, returning " << slist->at( 0 );
+                debug() << "artist is empty and albumArtistId = 0, returning " << slist->at( 0 );
                 id = slist->at( 0 ).toInt();
                 break;
             }
             else if( slist->at( 2 ).toInt() == albumArtistId )
             {
-                //debug() << "artist == albumArtistId,  returning " << slist->at( 0 );
+                debug() << "artist == albumArtistId,  returning " << slist->at( 0 );
                 id = slist->at( 0 ).toInt();
                 break;
             }
@@ -638,11 +706,11 @@ ScanResultProcessor::albumId( const QString &album, int albumArtistId )
     }
     if( !id )
     {
-        //debug() << "Not found! Inserting...";
+        debug() << "Not found! Inserting...";
         id = albumInsert( album, albumArtistId );
     }
     m_albums.insert( key, id );
-    //debug() << "returning id = " << id;
+    debug() << "returning id = " << id;
     return id;
 }
 
@@ -677,6 +745,7 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
 {
 /*
     DEBUG_BLOCK
+*/
     foreach( QString key, m_urlsHashByUid.keys() )
     debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
     foreach( int key, m_urlsHashById.keys() )
@@ -684,7 +753,6 @@ ScanResultProcessor::urlId( const QString &url, const QString &uid )
     typedef QPair<int, QString> blahType; //QFOREACH is stupid when it comes to QPairs
     foreach( blahType key, m_urlsHashByLocation.keys() )
     debug() << "Key: " << key << ", list: " << *m_urlsHashByLocation[key];
-*/
 
     QFileInfo fileInfo( url );
     const QString dir = fileInfo.absoluteDir().absolutePath();
@@ -891,7 +959,8 @@ ScanResultProcessor::directoryId( const QString &dir )
 int
 ScanResultProcessor::checkExistingAlbums( const QString &album )
 {
-//     DEBUG_BLOCK
+    DEBUG_BLOCK
+    debug() << "looking for album " << album;
     // "Unknown" albums shouldn't be handled as compilations
     if( album.isEmpty() )
         return 0;
@@ -901,7 +970,10 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
     //it's probably a compilation.
     //this handles A1 compilations that were automatically organized by Amarok
     if( !m_albumsHashByName.contains( album ) || m_albumsHashByName[album] == 0 )
+    {
+        debug() << "hashByName doesn't contain album, or it's zero";
         return 0;
+    }
 
     QStringList trackIds;
     QLinkedList<QStringList*> *llist = m_albumsHashByName[album];
@@ -951,8 +1023,10 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
         }
     }
 
+    debug() << "trackIds = " << trackIds;
     if( trackIds.isEmpty() )
     {
+        debug() << "trackIds empty, returning zero";
         return 0;
     }
     else
@@ -969,6 +1043,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
                 list->replace( 3, compilationString );
             }
         }
+        debug() << "returning " << compilationId;
         return compilationId;
     }
 }
@@ -1193,7 +1268,7 @@ ScanResultProcessor::populateCacheHashes()
 void
 ScanResultProcessor::copyHashesToTempTables()
 {
-    /*
+    ///*
     debug() << "Next URL num: " << m_nextUrlNum;
     foreach( QString key, m_urlsHashByUid.keys() )
         debug() << "Key: " << key << ", list: " << *m_urlsHashByUid[key];
@@ -1208,14 +1283,13 @@ ScanResultProcessor::copyHashesToTempTables()
         debug() << "Key: " << key << ", list: " << *m_tracksHashById[key];
     foreach( int key, m_tracksHashByUrl.keys() )
         debug() << "Key: " << key << ", list: " << *m_tracksHashByUrl[key];
-    typedef QLinkedList<QStringList*> blahType; //QFOREACH is stupid when it comes to QPairs
     foreach( int key, m_tracksHashByAlbum.keys() )
     {
         debug() << "Key: " << key;
         foreach( QStringList* item, *m_tracksHashByAlbum[key] )
-            debug() << "list: " << *item;
+            debug() << "list: " << item << " is " << *item;
     }
-    */
+    //*/
  
     DEBUG_BLOCK
     QString query;

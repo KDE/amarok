@@ -97,6 +97,7 @@ class ScanResultProcessor : public QObject
         QMap<QString, int> m_directories;
         QMap<QString, QList< QPair< QString, QString > > > m_imageMap;
 
+        QSet<QString> m_uidsSeenThisScan;
         QHash<QString, uint> m_filesInDirs;
 
         TrackUrls m_changedUids; //not really track urls
