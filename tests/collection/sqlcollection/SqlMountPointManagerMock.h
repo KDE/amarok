@@ -19,6 +19,7 @@
 
 #include "SqlCollection.h"
 
+#include <QMap>
 #include <QString>
 
 //Note: this class will probably break horribly on win32
@@ -28,22 +29,45 @@ class SqlMountPointManagerMock : public SqlMountPointManager
 public:
     int getIdForUrl( const KUrl &url )
     {
+        QString path = url.path();
+        foreach( int id, mountPoints.keys() )
+        {
+            if( path.startsWith( mountPoints.value( id ) ) )
+            {
+                return id;
+            }
+        }
+
         return -1;
     }
 
     QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const
     {
-        return relativePath.right( relativePath.length() -1 );
+        if( deviceId == -1 )
+            return relativePath.right( relativePath.length() -1 );
+        else
+        {
+            return mountPoints.value( deviceId ) + relativePath.right( relativePath.length() -1 );
+        }
     }
 
     QString getRelativePath( const int deviceId, const QString& absolutePath ) const
     {
-        return '.' + absolutePath;
+        if( deviceId == -1 )
+            return '.' + absolutePath;
+        else
+        {
+            QString mp = mountPoints.value( deviceId );
+            return '.' + absolutePath.right( mp.length() );
+        }
     }
 
     IdList getMountedDeviceIds() const
     {
-        return IdList();
+        IdList result;
+        result << -1;
+        result << mountPoints.keys();
+        return result;
     }
 
     QStringList collectionFolders()
@@ -60,6 +84,8 @@ public:
     {
         emit deviceRemoved( id );
     }
+
+    QMap<int,QString> mountPoints;
 };
 
 #endif // SQLMOUNTPOINTMANAGERMOCK_H
