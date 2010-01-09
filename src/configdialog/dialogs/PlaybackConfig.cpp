@@ -122,7 +122,7 @@ EqualizerConfig::eqSetupUI()
     if( !The::engineController()->isEqSupported() )
     {
         EqualizerGroupBox->setDisabled( true );
-        EqualizerGroupBox->setTitle( i18n( "Equalizer not supported by Phonon") );
+        EqualizerGroupBox->setTitle( i18n( "Equalizer not supported by this Phonon version." ) );
         eqPresetsGroupBox->hide();
         eqBandsGroupBox->hide();
         return;
