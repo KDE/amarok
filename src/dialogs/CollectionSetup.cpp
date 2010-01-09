@@ -66,7 +66,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
     KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Statistics" ), buttonBox );
-    import->setToolTip( i18n( "Import collection statistics from older Amarok versions and other media players." ) );
+    import->setToolTip( i18n( "Import collection statistics from older Amarok versions, or from other media players." ) );
     connect( import, SIGNAL( clicked() ), this, SLOT( importCollection() ) );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
