@@ -23,6 +23,7 @@
 
 class SqlStorage;
 class SqlCollection;
+class SqlMountPointManagerMock;
 
 class TestSqlQueryMaker : public QObject
 {
@@ -33,6 +34,8 @@ public:
 private slots:
     void initTestCase();
     void cleanupTestCase();
+
+    void cleanup();
 
     void testQueryTracks();
     void testQueryAlbums();
@@ -59,8 +62,11 @@ private slots:
     void testMatch();
     void testMatch_data();
 
+    void testDynamicCollection();
+
 private:
     SqlCollection *m_collection;
+    SqlMountPointManagerMock *m_mpm;
     SqlStorage *m_storage;
     KTempDir *m_tmpDir;
 };

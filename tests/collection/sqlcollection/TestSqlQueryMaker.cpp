@@ -87,8 +87,15 @@ TestSqlQueryMaker::initTestCase()
     m_storage = new MySqlEmbeddedStorage( m_tmpDir->name() );
     m_collection = new SqlCollection( "testId", "testcollection" );
     m_collection->setSqlStorage( m_storage );
-    SqlMountPointManagerMock *mpm = new SqlMountPointManagerMock();
-    m_collection->setMountPointManager( mpm );
+
+    QMap<int,QString> mountPoints;
+    mountPoints.insert( 1, "/foo" );
+    mountPoints.insert( 2, "/bar" );
+
+    m_mpm = new SqlMountPointManagerMock();
+    m_mpm->mountPoints = mountPoints;
+
+    m_collection->setMountPointManager( m_mpm );
     SqlRegistry *registry = new SqlRegistry( m_collection );
     registry->setStorage( m_storage );
     m_collection->setRegistry( registry );
@@ -123,9 +130,9 @@ TestSqlQueryMaker::initTestCase()
     m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (1, -1, './IDoNotExist.mp3','1');" );
     m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (2, -1, './IDoNotExistAsWell.mp3','2');" );
     m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (3, -1, './MeNeither.mp3','3');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (4, -1, './NothingHere.mp3','4');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (5, -1, './GuessWhat.mp3','5');" );
-    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (6, -1, './LookItsA.flac','6');" );
+    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (4, 2, './NothingHere.mp3','4');" );
+    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (5, 1, './GuessWhat.mp3','5');" );
+    m_storage->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES (6, 2, './LookItsA.flac','6');" );
 
     m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
                       "VALUES(1,1,'track1','comment1',1,1,1,1,1);" );
@@ -150,6 +157,12 @@ TestSqlQueryMaker::cleanupTestCase()
     //m_registry is deleted by SqlCollection
     delete m_tmpDir;
 
+}
+
+void
+TestSqlQueryMaker::cleanup()
+{
+    m_collection->setMountPointManager( m_mpm );
 }
 
 void
@@ -747,6 +760,63 @@ TestSqlQueryMaker::testMatch()
     QCOMPARE( qm.data( "testId" ).count(), count );
 }
 
+void
+TestSqlQueryMaker::testDynamicCollection()
+{
+    //this will not crash as we reset the correct mock in cleanup()
+    SqlMountPointManagerMock mpm;
+
+    QMap<int, QString> mountPoints;
+
+    mpm.mountPoints = mountPoints;
+
+    m_collection->setMountPointManager( &mpm );
+
+    SqlQueryMaker trackQm( m_collection );
+    trackQm.setQueryType( QueryMaker::Track );
+    trackQm.setBlocking( true );
+    trackQm.run();
+    QCOMPARE( trackQm.tracks( "testId" ).count(), 3 );
+
+    mpm.mountPoints.insert( 1, "/foo" );
+
+    trackQm.reset();
+    trackQm.setQueryType( QueryMaker::Track );
+    trackQm.setBlocking( true );
+    trackQm.run();
+    QCOMPARE( trackQm.tracks( "testId" ).count(), 4 );
+
+    SqlQueryMaker artistQm( m_collection );
+    artistQm.setQueryType( QueryMaker::Artist );
+    artistQm.setBlocking( true );
+    artistQm.run();
+    QCOMPARE( artistQm.artists( "testId" ).count(), 2 );
+
+    SqlQueryMaker albumQm( m_collection );
+    albumQm.setQueryType( QueryMaker::Album );
+    albumQm.setBlocking( true );
+    albumQm.run();
+    QCOMPARE( albumQm.albums( "testId" ).count(), 4 );
+
+    SqlQueryMaker genreQm( m_collection );
+    genreQm.setQueryType( QueryMaker::Genre );
+    genreQm.setBlocking( true );
+    genreQm.run();
+    QCOMPARE( genreQm.genres( "testId" ).count(), 2 );
+
+    SqlQueryMaker composerQm( m_collection );
+    composerQm.setQueryType( QueryMaker::Composer );
+    composerQm.setBlocking( true );
+    composerQm.run();
+    QCOMPARE( composerQm.composers( "testId" ).count(), 2 );
+
+    SqlQueryMaker yearQm( m_collection );
+    yearQm.setQueryType( QueryMaker::Year );
+    yearQm.setBlocking( true );
+    yearQm.run();
+    QCOMPARE( yearQm.years( "testId" ).count(), 2 );
+
+}
 
 
 #include "TestSqlQueryMaker.moc"

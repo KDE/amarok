@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * Dynamic Collection is back. (BR 171213)
     * Searching covers from Last.fm using custom query in interactive mode.
  
   CHANGES:

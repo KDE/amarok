@@ -735,6 +735,8 @@ SqlQueryMaker::linkTables()
 void
 SqlQueryMaker::buildQuery()
 {
+    //URLS is always required for dynamic collection
+    d->linkedTables |= Private::URLS_TAB;
     linkTables();
     QString query = "SELECT ";
     if ( d->withoutDuplicates )
@@ -743,6 +745,22 @@ SqlQueryMaker::buildQuery()
     query += " FROM ";
     query += d->queryFrom;
     query += " WHERE 1 ";
+
+    //dynamic collection
+    Q_ASSERT( m_collection->mountPointManager() );
+    IdList list = m_collection->mountPointManager()->getMountedDeviceIds();
+    QString commaSeparatedIds;
+    foreach( int id, list )
+    {
+        if( !commaSeparatedIds.isEmpty() )
+            commaSeparatedIds += ',';
+        commaSeparatedIds += QString::number( id );
+    }
+    if( !commaSeparatedIds.isEmpty() )
+    {
+        query += QString( " AND urls.deviceid in (%1)" ).arg( commaSeparatedIds );
+    }
+
     switch( d->albumMode )
     {
         case OnlyNormalAlbums:
