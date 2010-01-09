@@ -186,7 +186,7 @@ Dynamic::SimilarArtistsBias::artistQueryDone() // slot
   //  debug() << "got similar artists:" << similar.values();
 
     m_qm->beginOr();
-    foreach( QString artist, similar.values() )
+    foreach( const QString &artist, similar.values() )
     {
         m_qm->addFilter( Meta::valArtist, artist, true, true );
     }

@@ -202,7 +202,7 @@ UmsHandler::slotCheckDirty()
         return;
     }
 
-    foreach( QString path, m_dirtylist )
+    foreach( const QString &path, m_dirtylist )
     {
         // Skip dupes.  Can happen when new file is
         // being added outside of Amarok, and
@@ -323,7 +323,7 @@ UmsHandler::addPath( const QString &path )
         if( m_currtracklist.contains( path ) )
             return 0;
 
-        foreach( QString mimetype, m_mimetypes )
+        foreach( const QString &mimetype, m_mimetypes )
         {
             if( mime->is( mimetype ) )
             {

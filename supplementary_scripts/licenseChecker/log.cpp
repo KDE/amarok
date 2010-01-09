@@ -436,7 +436,7 @@ void Log::writeShellScript( QString filename )
   
   int count = 1; 
 
-  foreach( QString i, problemFiles )
+  foreach( const QString &i, problemFiles )
   {
     output << "echo \"Next file: " << i << "\"" << "\n";
     output << "echo \"Press enter to edit, type 'exit' to end script\"" << "\n";

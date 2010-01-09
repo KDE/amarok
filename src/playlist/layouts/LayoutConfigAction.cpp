@@ -50,7 +50,7 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     m_layoutActions->setExclusive( true );
 
     QStringList layoutsList( LayoutManager::instance()->layouts() );
-    foreach( QString iterator, layoutsList )
+    foreach( const QString &iterator, layoutsList )
     {
         m_layoutActions->addAction( iterator )->setCheckable( true );
     }
@@ -105,7 +105,7 @@ void Playlist::LayoutConfigAction::layoutListChanged()
         delete action;
     
     QStringList layoutsList( LayoutManager::instance()->layouts() );
-    foreach( QString iterator, layoutsList )
+    foreach( const QString &iterator, layoutsList )
         m_layoutActions->addAction( iterator )->setCheckable( true );
     
     m_layoutMenu->addActions( m_layoutActions->actions() );

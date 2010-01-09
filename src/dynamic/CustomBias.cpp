@@ -154,7 +154,7 @@ Dynamic::CustomBias::registerNewBiasFactory( Dynamic::CustomBiasFactory* entry )
     if( !s_biasFactories.contains( entry ) )
         s_biasFactories.append( entry );
 
-    foreach( QString name, s_failedMap.keys() )
+    foreach( const QString &name, s_failedMap.keys() )
     {
         if( name == entry->pluginName() ) // lazy loading!
         {

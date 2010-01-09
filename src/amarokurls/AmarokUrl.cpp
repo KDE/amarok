@@ -70,7 +70,7 @@ void AmarokUrl::initFromString( const QString & urlString )
     {
         parts = argumentsString.split( '&' );
         
-        foreach( QString argument, parts )
+        foreach( const QString &argument, parts )
         {
             
             QStringList argParts = argument.split( '=' );
@@ -130,7 +130,7 @@ QString AmarokUrl::url() const
     {
     
         url += '?';
-        foreach( QString argName, m_arguments.keys() )
+        foreach( const QString &argName, m_arguments.keys() )
         {
             url += argName;
             url += '=';

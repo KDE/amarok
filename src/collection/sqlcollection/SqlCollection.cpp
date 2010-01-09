@@ -276,7 +276,7 @@ SqlCollection::updateTrackUrlsUids( const ChangedTrackUrls &changedUrls, const Q
                 trackList.insert( changedUids[key], KSharedPtr<Meta::SqlTrack>::staticCast( track ) );
         }
     }
-    foreach( QString key, trackList.keys() )
+    foreach( const QString &key, trackList.keys() )
         trackList[key]->refreshFromDatabase( key, this, true );
 }
 

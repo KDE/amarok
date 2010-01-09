@@ -51,6 +51,9 @@ public:
     QString albumName();
     QString artistName();
     QString coverUrl();
+    const QString albumName() const;
+    const QString artistName() const;
+    const QString coverUrl() const;
 
     void setAlbumName( const QString  &albumName );
     void setArtistName( const QString  &artistName );

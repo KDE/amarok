@@ -133,9 +133,9 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
 void
 Dynamic::CustomBiasEntryWidget::weightChanged( int amount )
 {
-    double fval = (double)amount;
-    m_weightLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
+    m_weightLabel->setText( QString().sprintf( "%d%%", amount ) );
 
+    double fval = (double)amount;
     m_cbias->setWeight( fval / 100 );
 
     emit biasChanged( m_bias );

@@ -183,7 +183,7 @@ Dynamic::EchoNestBias::engineNewTrackPlaying()
                     }
                 }
                 // also go through it to remove any tracks that we don't have
-                foreach( QString name, m_artistIds.keys() )
+                foreach( const QString &name, m_artistIds.keys() )
                 {
                     if( !m_currentPlaylist.contains( name ) )
                         m_artistIds.remove( name );
@@ -248,7 +248,7 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
         if( ! m_currentOnly )
         {
             // check our map, see if there are any we are still waiting for. if not, do the query
-            foreach( QString result, m_artistIds.values() )
+            foreach( const QString &result, m_artistIds.values() )
             {
                 if( result == "-1" ) // still waiting
                 {
@@ -258,7 +258,7 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
                     return;
                 }
             }
-            foreach( QString key, m_artistIds.keys() )
+            foreach( const QString &key, m_artistIds.keys() )
                 toQuery << key;
             // ok we're not, update our list and do it!
         } else
@@ -269,7 +269,7 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
 
     // now do our second query
     QMultiMap< QString, QString > params;
-    foreach( QString name, toQuery )
+    foreach( const QString &name, toQuery )
     {
         params.insert("id", m_artistIds[ name ] );
     }

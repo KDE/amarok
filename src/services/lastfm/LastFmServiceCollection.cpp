@@ -156,9 +156,9 @@ void LastFmServiceCollection::slotAddNeighboursLoved()
             {
                 lastfm::XmlQuery lfm( m_jobs[ "user.getNeighbours" ]->readAll() );
 
-                foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+                foreach( const lastfm::XmlQuery &e, lfm[ "neighbours" ].children( "user" ) )
                 {
-                    QString name = e[ "name" ].text();
+                    const QString name = e[ "name" ].text();
                     //debug() << "got neighbour!!! - " << name;
                     LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
                     Meta::TrackPtr trackPtr( track );
@@ -203,9 +203,9 @@ void LastFmServiceCollection::slotAddNeighboursPersonal()
                 lastfm::XmlQuery lfm( m_jobs[ "user.getNeighbours" ]->readAll() );
 
                 // iterate through each neighbour
-                foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+                foreach( const lastfm::XmlQuery &e, lfm[ "neighbours" ].children( "user" ) )
                 {
-                    QString name = e[ "name" ].text();
+                    const QString name = e[ "name" ].text();
                     debug() << "got neighbour!!! - " << name;
                     LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
                     Meta::TrackPtr trackPtr( track );
@@ -250,9 +250,9 @@ void LastFmServiceCollection::slotAddFriendsLoved()
             {
                 lastfm::XmlQuery lfm( m_jobs[ "user.getFriends" ]->readAll() );
 
-                foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+                foreach( const lastfm::XmlQuery &e, lfm[ "friends" ].children( "user" ) )
                 {
-                    QString name = e[ "name" ].text();
+                    const QString name = e[ "name" ].text();
                     LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
                     Meta::TrackPtr trackPtr( track );
                     m_friendsLoved->addTrack( trackPtr );
@@ -295,9 +295,9 @@ void LastFmServiceCollection::slotAddFriendsPersonal()
             {
                 lastfm::XmlQuery lfm( m_jobs[ "user.getFriends" ]->readAll() );
 
-                foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+                foreach( const lastfm::XmlQuery &e, lfm[ "friends" ].children( "user" ) )
                 {
-                    QString name = e[ "name" ].text();
+                    const QString name = e[ "name" ].text();
                     LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
                     Meta::TrackPtr trackPtr( track );
                     m_friendsPersonal->addTrack( trackPtr );

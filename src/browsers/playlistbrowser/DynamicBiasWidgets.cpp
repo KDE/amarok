@@ -266,9 +266,9 @@ PlaylistBrowserNS::BiasGlobalWidget::popuplateFieldSection()
 void
 PlaylistBrowserNS::BiasGlobalWidget::weightChanged( int ival )
 {
-    double fval = (double)ival;
-    m_weightLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
+    m_weightLabel->setText( QString().sprintf( "%d%%", ival ) );
 
+    double fval = (double)ival;
     m_gbias->setWeight( fval / 100.0 );
 
     emit biasChanged( m_bias );
@@ -718,9 +718,9 @@ PlaylistBrowserNS::BiasNormalWidget::setValueSelection( QWidget* w )
 void
 PlaylistBrowserNS::BiasNormalWidget::scaleChanged( int ival )
 {
-    double fval = (double)ival;
-    m_scaleLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
+    m_scaleLabel->setText( QString().sprintf( "%d%%", ival ) );
 
+    double fval = (double)ival;
     if( fval / 100.0 != m_nbias->scale() )
     {
         m_nbias->setScale( fval / 100.0 );

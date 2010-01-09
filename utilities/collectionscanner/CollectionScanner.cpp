@@ -252,21 +252,23 @@ CollectionScanner::doJob() //SLOT
     }
     else
     {
-        foreach( QString dir, m_folders ) // krazy:exclude=foreach
+        foreach( const QString &dir, m_folders ) // krazy:exclude=foreach
         {
             if( dir.isEmpty() )
                 //apparently somewhere empty strings get into the mix
                 //which results in a full-system scan! Which we can't allow
                 continue;
 
+            QString newdir( dir );
+
             // Make sure that all paths are absolute, not relative
             if( QDir::isRelativePath( dir ) )
-                dir = QDir::cleanPath( QDir::currentPath() + '/' + dir );
+                newdir = QDir::cleanPath( QDir::currentPath() + '/' + dir );
 
             if( !dir.endsWith( '/' ) )
-                dir += '/';
+                newdir += '/';
 
-            readDir( dir, entries );
+            readDir( newdir, entries );
         }
 
         QFile folderFile;
@@ -367,13 +369,12 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     QFileInfoList list = d.entryInfoList();
 
     QStringList recurseDirs;
-    foreach( QFileInfo f, list )
+    foreach( const QFileInfo &fi, list )
     {
-        if( !f.exists() )
+        if( !fi.exists() )
             break;
 
-        if( f.isSymLink() )
-            f = QFileInfo( f.symLinkTarget() );
+        const QFileInfo &f = fi.isSymLink() ? QFileInfo( fi.symLinkTarget() ) : fi;
 
         if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
         {
@@ -397,7 +398,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         else if( f.isFile() )
             entries.append( f.absoluteFilePath() );
     }
-    foreach( QString dir, recurseDirs )
+    foreach( const QString &dir, recurseDirs )
         readDir( dir, entries );
 }
 
@@ -888,7 +889,7 @@ CollectionScanner::readArgs()
     bool mtimearg = false;
     bool savelocationarg = false;
     bool collectionidarg = false;
-    foreach( QString arg, argslist )
+    foreach( const QString &arg, argslist )
     {
         ++argnum;
         if( arg.isEmpty() || argnum == 1 )
@@ -924,7 +925,7 @@ CollectionScanner::readArgs()
             }
             else
             {
-                QString myarg = arg.remove( 0, 2 );
+                QString myarg = QString( arg ).remove( 0, 2 );
                 if( myarg == "rpath" )
                 {
                     rpatharg = true;
@@ -969,7 +970,7 @@ CollectionScanner::readArgs()
         }
         else if( arg.startsWith( '-' ) )
         {
-            QString myarg = arg.remove( 0, 1 );
+            QString myarg = QString( arg ).remove( 0, 1 );
             int pos = 0;
             while( pos < myarg.length() )
             {

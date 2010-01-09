@@ -277,12 +277,12 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     Q_UNUSED( deselected )
     QModelIndexList indexes = selected.indexes();
     debug() << indexes.size() << " items selected";
-    foreach( QModelIndex index, indexes )
+    foreach( const QModelIndex &index, indexes )
     {
-        index = m_proxyModel->mapToSource( index );
-        if( index.column() == 0 )
+        const QModelIndex sourceIndex = m_proxyModel->mapToSource( index );
+        if( sourceIndex.column() == 0 )
         {
-            BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
+            BookmarkViewItemPtr item = BookmarkModel::instance()->data( sourceIndex, 0xf00d ).value<BookmarkViewItemPtr>();
 
             if ( typeid( * item ) == typeid( AmarokUrl ) ) {
                 debug() << "a url was selected...";

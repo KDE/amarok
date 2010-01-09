@@ -75,13 +75,13 @@ MediaDeviceCache::refreshCache()
         m_name[device.udi()] = device.vendor() + " - " + device.product();
     }
     deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess );
-    foreach( Solid::Device device, deviceList )
+    foreach( const Solid::Device &device, deviceList )
     {
         debug() << "Found Solid::DeviceInterface::StorageAccess with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
 
-        Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
-        Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+        const Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
+        const Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
 
         if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
         {

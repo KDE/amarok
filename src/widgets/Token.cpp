@@ -67,10 +67,6 @@ Token::Token( const QString &name, const QString &iconName, int value, QWidget *
     hlayout->addWidget( m_iconContainer );
     hlayout->addWidget( m_label );
     
-    QFontMetrics metric( font() );
-    QSizePolicy sizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
-    m_label->setSizePolicy( sizePolicy );
-    
     m_iconContainer->setSizePolicy( QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
 }
 

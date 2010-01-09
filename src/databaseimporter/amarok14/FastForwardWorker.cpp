@@ -333,7 +333,7 @@ FastForwardWorker::run()
         debug() << "new covers:" << newCoverPath;
         debug() << "old covers:" << m_importArtworkDir;
 
-        foreach( QFileInfo image, oldCoverDir.entryInfoList() )
+        foreach( const QFileInfo &image, oldCoverDir.entryInfoList() )
         {
             if( m_aborted )
                 return;

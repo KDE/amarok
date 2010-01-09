@@ -384,7 +384,7 @@ EqualizerAction::eqGlobalList()
     // Prepare a global list with duplicates removed
     QStringList mGlobalList;
     mGlobalList += AmarokConfig::defEqualizerPresetsNames();
-    foreach( QString mUsrName, AmarokConfig::equalizerPresetsNames() )
+    foreach( const QString &mUsrName, AmarokConfig::equalizerPresetsNames() )
     {
         if( mGlobalList.indexOf( mUsrName ) < 0 )
             mGlobalList.append( mUsrName );
