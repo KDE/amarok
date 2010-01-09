@@ -20,6 +20,7 @@
 #include "Debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
+#include "MountPointManager.h"
 
 #include <QDir>
 #include <QFileInfo>
