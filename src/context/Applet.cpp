@@ -211,7 +211,7 @@ Context::Applet::resize( qreal wid, qreal hei)
 {
     m_heightCollapseOff = hei;
     m_heightCurrent = hei;
-    QGraphicsWidget::resize( wid, hei );
+    Plasma::Applet::resize( wid, hei );
 }
 
 Plasma::IconWidget*
