@@ -5,8 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * Searching covers from Last.fm using custom query in interactive mode.
  
   CHANGES:
+    * Improved cover fetching accuracy and speed.
     * Usability: Better design of playback configuration dialog.
     * Use millisecond accuracy for track bookmarks. Backwards compatible
       with bookmarks stored in previos versions (BR 215145)
