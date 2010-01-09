@@ -16,6 +16,10 @@ VERSION 2.2.3
     * Loving a track for Last.fm via the global keyboard action also show a
       message in the status bar.
     * Improved usability of the playlist layout editor dialog.
+    * Duplicate unique file identifiers are now indicated in debug output,
+      along with the paths of the files, when found instead of being silently
+      ignored. This can help discover multiple copies of the same file or
+      files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
     * Fixed playlist layout editor blocking control of Amarok. (BR 220825)
