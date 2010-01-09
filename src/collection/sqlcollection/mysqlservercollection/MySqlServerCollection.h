@@ -27,7 +27,7 @@ class MySqlServerCollectionFactory : public Amarok::CollectionFactory
     Q_OBJECT
 
     public:
-        MySqlServerCollectionFactory( QObject *parent, const QVariantList &args ) { setParent( parent ); }
+        MySqlServerCollectionFactory( QObject *parent, const QVariantList & /*args*/ ) { setParent( parent ); }
         virtual ~MySqlServerCollectionFactory() {}
 
         virtual void init();
