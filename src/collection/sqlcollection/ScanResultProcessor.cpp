@@ -20,7 +20,6 @@
 #include "Debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
-#include "MountPointManager.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -324,7 +323,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
             {
                 QString originalLocation = ( ( m_urlsHashByUid.contains( uid ) &&
                                              m_urlsHashByUid[uid] != 0 ) ?
-                                             MountPointManager::instance()->getAbsolutePath( m_urlsHashByUid[uid]->at( 1 ).toInt(), m_urlsHashByUid[uid]->at( 2 ) ) : "(unknown)" );
+                                             m_collection->mountPointManager()->getAbsolutePath( m_urlsHashByUid[uid]->at( 1 ).toInt(), m_urlsHashByUid[uid]->at( 2 ) ) : "(unknown)" );
                 debug() << "Skipping file with uniqueid " << uid << " as it was already seen this scan," <<
                            "file is at " << row.value( Field::URL ).toString() << ", original file is at " << originalLocation;
             }
@@ -353,7 +352,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
             {
                 QString originalLocation = ( ( m_urlsHashByUid.contains( uid ) &&
                                              m_urlsHashByUid[uid] != 0 ) ?
-                                             MountPointManager::instance()->getAbsolutePath( m_urlsHashByUid[uid]->at( 1 ).toInt(), m_urlsHashByUid[uid]->at( 2 ) ) : "(unknown)" );
+                                             m_collection->mountPointManager()->getAbsolutePath( m_urlsHashByUid[uid]->at( 1 ).toInt(), m_urlsHashByUid[uid]->at( 2 ) ) : "(unknown)" );
                 debug() << "Skipping file with uniqueid " << uid << " as it was already seen this scan," <<
                            "file is at " << row.value( Field::URL ).toString() << ", original file is at " << originalLocation;
             }
