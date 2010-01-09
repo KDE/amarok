@@ -33,14 +33,14 @@ MemoryQueryMakerHelper::orderListByName( const QList<PointerType> &list, bool de
 {
     QList<PointerType> resultList = list;
     KSortableList<PointerType, QString> sortList;
-    foreach( PointerType pointer, list )
+    foreach( const PointerType &pointer, list )
     {
         sortList.insert( pointer->name(), pointer );
     }
     sortList.sort();
     QList<PointerType> tmpList;
     typedef KSortableItem<PointerType,QString> SortItem;
-    foreach( SortItem item, sortList )
+    foreach( const SortItem &item, sortList )
     {
        tmpList.append( item.second );
     }
@@ -67,7 +67,7 @@ MemoryQueryMakerHelper::orderListByYear( const Meta::YearList &list, bool descen
     sortList.sort();
     QList<Meta::YearPtr> tmpList;
     typedef KSortableItem<Meta::YearPtr,double> SortItem;
-    foreach( SortItem item, sortList )
+    foreach( const SortItem &item, sortList )
     {
         tmpList.append( item.second );
     }
@@ -107,7 +107,7 @@ MemoryQueryMakerHelper::orderListByString( const Meta::TrackList &tracks, qint64
         sortList.sort();
         Meta::TrackList tmpList;
         typedef KSortableItem<Meta::TrackPtr,QString> SortItem;
-        foreach( SortItem item, sortList )
+        foreach( const SortItem &item, sortList )
         {
            tmpList.append( item.second );
         }
@@ -140,7 +140,7 @@ MemoryQueryMakerHelper::orderListByNumber( const Meta::TrackList &tracks, qint64
         sortList.sort();
         Meta::TrackList tmpList;
         typedef KSortableItem<Meta::TrackPtr,double> SortItem;
-        foreach( SortItem item, sortList )
+        foreach( const SortItem &item, sortList )
         {
            tmpList.append( item.second );
         }

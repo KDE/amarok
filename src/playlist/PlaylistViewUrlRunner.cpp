@@ -67,7 +67,7 @@ ViewUrlRunner::run( AmarokUrl url )
         QString sortPath = args.value( "sort" );
 
         QStringList levels = sortPath.split( '-' );
-        foreach( QString level, levels )
+        foreach( const QString &level, levels )
         {
             if( level == QString( "Random" ) )
             {

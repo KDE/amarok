@@ -535,25 +535,25 @@ AudioCdCollection::trackForUrl( const KUrl & url )
 void
 AudioCdCollection::updateProxyTracks()
 {
-    foreach( KUrl url, m_proxyMap.keys() )
+    foreach( const KUrl &url, m_proxyMap.keys() )
     {
 
-        QString urlString = url.url().remove( "audiocd:/" );
-        QStringList parts = urlString.split( '/' );
+        const QString &urlString = url.url().remove( "audiocd:/" );
+        const QStringList &parts = urlString.split( '/' );
 
-        if ( parts.count() != 2 )
+        if( parts.count() != 2 )
             continue;
 
-        QString discId = parts.at( 0 );
+        const QString &discId = parts.at( 0 );
 
-        if ( discId != m_discCddbId )
+        if( discId != m_discCddbId )
             continue;
 
-        int trackNumber = parts.at( 1 ).toInt();
+        const int trackNumber = parts.at( 1 ).toInt();
 
-        foreach( TrackPtr track, trackMap().values() )
+        foreach( const TrackPtr &track, trackMap().values() )
         {
-            if ( track->trackNumber() == trackNumber )
+            if( track->trackNumber() == trackNumber )
             {
                 m_proxyMap.value( url )->updateTrack( track );
             }

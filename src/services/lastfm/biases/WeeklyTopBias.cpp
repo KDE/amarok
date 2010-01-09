@@ -245,7 +245,7 @@ Dynamic::WeeklyTopBias::dataJobFinished()
         m_qm->beginOr();
 
         int count = 0;
-        foreach( lastfm::XmlQuery e, lfm.children( "track" ) )
+        foreach( const lastfm::XmlQuery &e, lfm.children( "track" ) )
         {
             m_qm->beginAnd();
             m_qm->addFilter( Meta::valTitle, e[ "name" ].text(), true, true );

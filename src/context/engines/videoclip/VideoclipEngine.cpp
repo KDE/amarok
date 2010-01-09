@@ -487,7 +487,7 @@ void VideoclipEngine::resultDailymotionGetLink( KJob* job )
          //   debug() << vidlink ;
 
 
-            foreach ( QString urlstring , vidlink )
+            foreach( const QString &urlstring, vidlink )
             {
                 if ( urlstring.contains( "@@h264" ) )
                 {
@@ -498,7 +498,7 @@ void VideoclipEngine::resultDailymotionGetLink( KJob* job )
                     vidFLV = urlstring ;
             }
                  
-            foreach (VideoInfo *item, m_video )
+            foreach( VideoInfo *item, m_video )
             {
                 if ( item->url == jobUrl )
                 {

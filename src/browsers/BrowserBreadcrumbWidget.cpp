@@ -135,7 +135,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
 
             QStringList childNames = childMap.keys();
 
-            foreach( QString siblingName, childNames )
+            foreach( const QString &siblingName, childNames )
             {
                 //no point in adding ourselves to this menu
                 if ( siblingName == list->name() )

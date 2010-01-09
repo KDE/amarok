@@ -108,7 +108,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     elementTabs->removeTab( 0 );
 
     QStringList layoutNames = LayoutManager::instance()->layouts();
-    foreach( QString layoutName, layoutNames )
+    foreach( const QString &layoutName, layoutNames )
     {
         PlaylistLayout layout = LayoutManager::instance()->layout( layoutName );
         layout.setDirty( false );
@@ -495,7 +495,7 @@ void PlaylistLayoutEditDialog::setEnabledTabs()
 void PlaylistLayoutEditDialog::setupGroupByCombo()
 {
     QStringList groupingList( groupableCategories );
-    foreach ( QString it, groupingList )
+    foreach ( const QString &it, groupingList )
     {
         QString prettyCategoryName = columnNames.at( internalColumnNames.indexOf( it ) );
         QString iconName = iconNames.at( internalColumnNames.indexOf( it ) );

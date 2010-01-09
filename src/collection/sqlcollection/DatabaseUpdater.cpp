@@ -236,7 +236,7 @@ DatabaseUpdater::upgradeVersion4to5()
     dropTables << "magnatune_albums" << "magnatune_artists" << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
     dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
 
-    foreach( QString table, dropTables )
+    foreach( const QString &table, dropTables )
         m_collection->query( "DROP TABLE " + table );
 
     //now, the rest of them
@@ -248,7 +248,7 @@ DatabaseUpdater::upgradeVersion4to5()
     tables << "statistics" << "statistics_permanent" << "statistics_tag";
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
-    foreach( QString table, tables )
+    foreach( const QString &table, tables )
         m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci" );
 
     //now the columns (ugh)
@@ -353,7 +353,7 @@ DatabaseUpdater::upgradeVersion5to6()
     dropTables << "magnatune_albums" << "magnatune_artists" << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
     dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
 
-    foreach( QString table, dropTables )
+    foreach( const QString &table, dropTables )
         m_collection->query( "DROP TABLE " + table );
 
     //now, the rest of them
@@ -365,7 +365,7 @@ DatabaseUpdater::upgradeVersion5to6()
     tables << "statistics" << "statistics_permanent" << "statistics_tag";
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
-    foreach( QString table, tables )
+    foreach( const QString &table, tables )
         m_collection->query( "ALTER TABLE " + table + " ENGINE = MyISAM" );
 
     typedef QPair<QString, int> vcpair;
@@ -464,7 +464,7 @@ DatabaseUpdater::upgradeVersion9to10()
     dropTables << "magnatune_albums" << "magnatune_artists" << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
     dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
 
-    foreach( QString table, dropTables )
+    foreach( const QString &table, dropTables )
         m_collection->query( "DROP TABLE " + table );
 
     //now, the rest of them
@@ -476,7 +476,7 @@ DatabaseUpdater::upgradeVersion9to10()
     tables << "statistics" << "statistics_permanent" << "statistics_tag";
     tables << "tracks" << "urls" << "urls_labels" << "years";
 
-    foreach( QString table, tables )
+    foreach( const QString &table, tables )
         m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin COLLATE utf8_bin ENGINE = MyISAM" );
 
     //now the columns (ugh)
@@ -782,7 +782,7 @@ DatabaseUpdater::checkTables( bool full )
     QStringList res = m_collection->query( "SHOW TABLES" );
     if( res.count() > 0 )
     {
-        foreach( QString table, res )
+        foreach( const QString &table, res )
             m_collection->query( "CHECK TABLE " + table + ( full ? " EXTENDED;" : " MEDIUM;" ) );
     }
 }

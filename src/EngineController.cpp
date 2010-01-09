@@ -133,7 +133,7 @@ EngineController::initializePhonon()
 
     //Add an equalizer effect if available
     QList<Phonon::EffectDescription> mEffectDescriptions = Phonon::BackendCapabilities::availableAudioEffects();
-    foreach ( Phonon::EffectDescription mDescr, mEffectDescriptions ) {
+    foreach ( const Phonon::EffectDescription &mDescr, mEffectDescriptions ) {
         if ( mDescr.name() == QLatin1String( "KEqualizer" ) ) {
             m_equalizer = new Phonon::Effect( mDescr );
             eqUpdate();
@@ -753,9 +753,9 @@ EngineController::eqBandsFreq() const
     if( mEqPar.isEmpty() )
        return mBandsFreq;
     QRegExp rx( "\\d+(?=Hz)" );
-    foreach( Phonon::EffectParameter mParam, mEqPar )
+    foreach( const Phonon::EffectParameter &mParam, mEqPar )
     {
-    if( mParam.name().contains( QString( "pre-amp" ) ) )
+        if( mParam.name().contains( QString( "pre-amp" ) ) )
         {
             mBandsFreq << i18n( "Preamp" );
         }
@@ -795,7 +795,7 @@ EngineController::eqUpdate() //SLOT
 
         QListIterator<int> mEqParNewIt( mEqParCfg );
         double scaledVal; // Scaled value to set from universal -100 - 100 range to plugin scale
-        foreach( Phonon::EffectParameter mParam, mEqPar )
+        foreach( const Phonon::EffectParameter &mParam, mEqPar )
         {
             scaledVal = mEqParNewIt.hasNext() ? mEqParNewIt.next() : 0;
             scaledVal *= ( fabs(mParam.maximumValue().toDouble() ) +  fabs( mParam.minimumValue().toDouble() ) );

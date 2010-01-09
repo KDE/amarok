@@ -407,7 +407,7 @@ PlaybackConfig::eqGlobalList()
     // then user list is filtered to omit duplicates from default preset list
     QStringList mGlobalList;
     mGlobalList += AmarokConfig::defEqualizerPresetsNames();
-    foreach( QString mUsrName, AmarokConfig::equalizerPresetsNames() )
+    foreach( const QString &mUsrName, AmarokConfig::equalizerPresetsNames() )
     {
         if( mGlobalList.indexOf( mUsrName ) < 0 ) 
             mGlobalList.append( mUsrName );

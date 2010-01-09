@@ -74,9 +74,9 @@ LastFmTreeModel::slotAddNeighbors ()
         // Iterate over each neighbor, in two passes: 1) Get data 2) Sort data, store in model
 
         lastfm::XmlQuery lfm( m_jobs[ "getNeighbours" ]->readAll() );
-        foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children ( "user" ) )
+        foreach( const lastfm::XmlQuery &e, lfm[ "neighbours" ].children ( "user" ) )
         {
-            QString name = e[ "name" ].text();
+            const QString name = e[ "name" ].text();
             m_neighbors << name;
             if ( !e[ "image size=large" ].text().isEmpty() )
             {
@@ -113,9 +113,9 @@ LastFmTreeModel::slotAddFriends ()
         // Iterate over each friend, in two passes: 1) Get data 2) Sort data, store in model
 
         lastfm::XmlQuery lfm( m_jobs[ "getFriends" ]->readAll() );
-        foreach( lastfm::XmlQuery e, lfm[ "friends" ].children ( "user" ) )
+        foreach( const lastfm::XmlQuery &e, lfm[ "friends" ].children ( "user" ) )
         {
-            QString name = e[ "name" ].text();
+            const QString name = e[ "name" ].text();
             m_friends << name;
             if( !e[ "image size=large" ].text().isEmpty() )
             {
@@ -152,10 +152,10 @@ LastFmTreeModel::slotAddTopArtists ()
     {
         lastfm::XmlQuery lfm( m_jobs[ "getTopArtists" ]->readAll() );
 
-        foreach( lastfm::XmlQuery e, lfm[ "topartists" ].children ( "artist" ) )
+        foreach( const lastfm::XmlQuery &e, lfm[ "topartists" ].children ( "artist" ) )
         {
-            QString name = e[ "name" ].text();
-            QString weight = e[ "playcount" ].text();
+            const QString name = e[ "name" ].text();
+            const QString weight = e[ "playcount" ].text();
             WeightedString s(name, weight.toFloat() );
             list << s;
         }

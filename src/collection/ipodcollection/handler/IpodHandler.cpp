@@ -501,7 +501,7 @@ IpodHandler::syncArtwork()
 
     Meta::AlbumMap albumMap = m_memColl->albumMap();
 
-    foreach( Meta::AlbumPtr album, albumMap.values() )
+    foreach( const Meta::AlbumPtr album, albumMap.values() )
     {
         debug() << "Updating artwork for" << (album->albumArtist() ? album->albumArtist()->name() : "unknown") << "-" << album->name();
     }
@@ -1156,7 +1156,7 @@ IpodHandler::staleTracks()
 
     Meta::TrackMap trackMap = m_memColl->trackMap();
 
-    foreach( Meta::TrackPtr trk, trackMap.values() )
+    foreach( const Meta::TrackPtr trk, trackMap.values() )
     {
         Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::staticCast( trk );
         Itdb_Track *ipodtrack =  m_itdbtrackhash.value( track );
@@ -2068,7 +2068,7 @@ IpodHandler::slotStaleSucceeded( ThreadWeaver::Job* job )
         if( m_staletracks.count() > 0 )
         {
 
-            foreach( Meta::TrackPtr track, m_staletracks )
+            foreach( const Meta::TrackPtr track, m_staletracks )
             {
                 QString ent;
                 QTextStream entry( &ent );
@@ -2088,7 +2088,7 @@ IpodHandler::slotStaleSucceeded( ThreadWeaver::Job* job )
             if( ok )
             {
                 Meta::TrackList staleToDelete;
-                foreach( QString item, itemList )
+                foreach( const QString &item, itemList )
                 {
                     staleToDelete << m_staletracks[ itemList.indexOf( item ) ];
                 }

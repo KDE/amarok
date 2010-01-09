@@ -190,10 +190,9 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
 
             m_aboutText.append( "<br/>" + i18n("IRC channels: ") );
             QString link;
-            foreach( QString channel, channels )
+            foreach( const QString &channel, channels )
             {
-                QString channelName = channel;
-                channelName.remove( '#' );
+                const QString channelName = QString( channel ).remove( '#' );
                 link = QString( "irc://irc.freenode.org/%1" ).arg( channelName );
                 m_aboutText.append( QString( "<a href=\"%1\">%2</a>" ).arg( link, channel ) + "  " );
             }

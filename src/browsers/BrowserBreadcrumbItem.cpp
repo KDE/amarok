@@ -42,7 +42,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
 
         QStringList siblingNames = siblingMap.keys();
 
-        foreach( QString siblingName, siblingNames )
+        foreach( const QString &siblingName, siblingNames )
         {
             //no point in adding ourselves to this menu
             if ( siblingName == m_category->name() )

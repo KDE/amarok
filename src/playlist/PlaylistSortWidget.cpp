@@ -64,7 +64,7 @@ SortWidget::SortWidget( QWidget *parent )
     if( !sortPath.isEmpty() )
     {
         QStringList levels = sortPath.split( '-' );
-        foreach( QString level, levels )
+        foreach( const QString &level, levels )
         {
             if( level == QString( "Random" ) )
             {

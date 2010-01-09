@@ -538,7 +538,7 @@ void readFile( QString filename ) {
     {
       QTextStream outStream( &file );
 
-      foreach( QString i, newFile )
+      foreach( const QString &i, newFile )
         outStream << i << "\n";
 
       log.append( LogEntry( filename, "Some warnings autofixed", LogEntry::information ) );
@@ -681,14 +681,14 @@ void iterateFolder( QString folder )
   if( cliArgs.recursive )
   {
     QStringList folders = dir.entryList( QStringList(), QDir::Dirs | QDir::NoDotAndDotDot );
-    foreach( QString i, folders )
+    foreach( const QString &i, folders )
     {
       iterateFolder( appendTrailingForwardSlash( folder ) + i );
     }
 
   }
 
-  foreach( QString i, files )
+  foreach( const QString &i, files )
   {
     readFile( appendTrailingForwardSlash( folder ) + i );
   }
@@ -717,7 +717,7 @@ int main( int argc, char** argv )
   if( cliArgs.folders.count() == 0 )
     cliArgs.folders.append( QString() );
 
-  foreach( QString i, cliArgs.folders )
+  foreach( const QString &i, cliArgs.folders )
   {
     iterateFolder( i );
   }

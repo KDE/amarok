@@ -146,7 +146,7 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
 
     //prioritize "front"
     QString front;
-    foreach( QString path, paths )
+    foreach( const QString &path, paths )
     {
         QString file = QFileInfo( path ).fileName();
         if( file.contains( "front", Qt::CaseInsensitive ) ||
@@ -158,7 +158,7 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
 
     //then: try "cover"
     QString cover;
-    foreach( QString path, paths )
+    foreach( const QString &path, paths )
     {
         QString file = QFileInfo( path ).fileName();
         if( file.contains( "cover", Qt::CaseInsensitive ) ||
@@ -170,7 +170,7 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
 
     //last: try "large"
     QString large;
-    foreach( const QString path, paths )
+    foreach( const QString &path, paths )
     {
         QString file = QFileInfo( path ).fileName();
         if( file.contains( "large", Qt::CaseInsensitive ) ||
@@ -184,7 +184,7 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
     //so that people can print it out
     qint64 size = 0;
     QString current;
-    foreach( QString path, paths )
+    foreach( const QString &path, paths )
     {
         QFileInfo info( path );
         if( info.size() > size )
@@ -783,7 +783,7 @@ ScanResultProcessor::updateAftPermanentTablesUrlString()
         QString query = QString( "UPDATE %1 SET url = CASE uniqueid" ).arg( table );
         QString query2;
         bool first = true;
-        foreach( const QString key, m_permanentTablesUrlUpdates.keys() )
+        foreach( const QString &key, m_permanentTablesUrlUpdates.keys() )
         {
             query += QString( " WHEN '%1' THEN '%2'" ).arg( m_collection->escape( key ),
                                                        m_collection->escape( m_permanentTablesUrlUpdates[key] ) );
@@ -810,7 +810,7 @@ ScanResultProcessor::updateAftPermanentTablesUidString()
         QString query = QString( "UPDATE %1 SET uniqueid = CASE url" ).arg( table );
         QString query2;
         bool first = true;
-        foreach( const QString key, m_permanentTablesUidUpdates.keys() )
+        foreach( const QString &key, m_permanentTablesUidUpdates.keys() )
         {
             query += QString( " WHEN '%1' THEN '%2'" ).arg( m_collection->escape( key ),
                                                        m_collection->escape( m_permanentTablesUidUpdates[key] ) );
@@ -924,7 +924,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
         trackIds << QString::number( -1 );
         int compilationId = albumId( album, 0 );
         QString compilationString = QString::number( compilationId );
-        foreach( QString trackId, trackIds )
+        foreach( const QString &trackId, trackIds )
         {
             int value = trackId.toInt();
             if( m_tracksHashById.contains( value ) && m_tracksHashById[value] != 0 )
@@ -1356,7 +1356,7 @@ ScanResultProcessor::genericCopyHash( const QString &tableName, const QHash<QStr
     bool valueReady = false;
     QStringList keys = hash->keys();
     QHash<int, QString> sortedHash;
-    foreach( QString key, keys )
+    foreach( const QString &key, keys )
         sortedHash.insert( hash->value( key ), key );
     QList<int> intKeys = sortedHash.keys();
     qSort( intKeys );
