@@ -69,6 +69,7 @@ class SqlCollectionLocationFactory
 {
     public:
         virtual SqlCollectionLocation* createSqlCollectionLocation() const = 0;
+        virtual ~SqlCollectionLocationFactory() {};
 };
 
 #endif
