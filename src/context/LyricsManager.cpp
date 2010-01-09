@@ -239,6 +239,7 @@ LyricsManager::lyricsNotFound( const QString& notfound )
         << currentTrack->artist()->name()
         << QString() // TODO lyrics site
         << notfound;
+        sendNewLyrics( lyricsData );
     }
 }
 
