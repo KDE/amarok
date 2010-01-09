@@ -5,8 +5,10 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES
+    * Searching covers from Last.fm using custom query in interactive mode.
  
   CHANGES:
+    * Improved cover fetching accuracy and speed.
     * Bumped libMTP dependency to version 1.0.0.
     * Loving a track for Last.fm via the global keyboard action also show a
       message in the status bar.
