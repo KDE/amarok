@@ -596,7 +596,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     int rowCount = rowsForItem( index );
     int modifiedRowCount = rowCount + 1;
 
-    int height = itemRect.height();;
+    int height = itemRect.height();
 
     int baseHeight = ( height * rowCount ) / modifiedRowCount + 3;
     int extrasHeight = height - baseHeight;

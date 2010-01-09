@@ -44,7 +44,7 @@ void MagnatuneDownloadDialog::downloadButtonClicked( )
     if ( m_currentDownloadInfo.password().isEmpty() ) return;
 
     QString format = formatComboBox->currentText();
-    QString path = downloadTargetURLRequester->url().url();;
+    QString path = downloadTargetURLRequester->url().url();
 
     //store to config for next download:
     KConfigGroup config = Amarok::config( "Service_Magnatune" );

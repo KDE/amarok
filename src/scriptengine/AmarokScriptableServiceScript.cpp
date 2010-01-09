@@ -87,7 +87,7 @@ int StreamItem::year() const
 
 QString StreamItem::coverUrl()
 {
-    return m_coverUrl;;
+    return m_coverUrl;
 }
 
 

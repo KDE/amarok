@@ -101,7 +101,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT( fetchGenre() ) );;
+        QTimer::singleShot( 0, this, SLOT( fetchGenre() ) );
     }
     else if ( d->type == Private::ARTIST )
     {

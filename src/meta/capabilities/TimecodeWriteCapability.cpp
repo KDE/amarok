@@ -95,7 +95,7 @@ bool Meta::TimecodeWriteCapability::writeAutoTimecode( qint64 miliseconds, Meta:
     //change the name a little bit
     url.setCustomValue( "auto timecode" );
 
-    QString date = QDateTime::currentDateTime().toString( "dd.MM.yyyy" );;
+    QString date = QDateTime::currentDateTime().toString( "dd.MM.yyyy" );
     url.setName( i18n( "%1 - Stopped %2", track->prettyName(), date ) );
 
     debug() << "creating new auto timecode: " << url.name();
