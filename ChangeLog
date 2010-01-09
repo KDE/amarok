@@ -4,9 +4,10 @@ Amarok ChangeLog
 
 
 VERSION 2.2.3
-  FEATURES
+  FEATURES:
  
   CHANGES:
+    * Usability: Better design of playback configuration dialog.
     * Use millisecond accuracy for track bookmarks. Backwards compatible
       with bookmarks stored in previos versions (BR 215145)
     * Bumped libMTP dependency to version 1.0.0.
