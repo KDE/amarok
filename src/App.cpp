@@ -646,6 +646,13 @@ App::runUnitTests( const QStringList options, bool stdout )
 
         QFile::remove( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
         QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+
+        QFile logArgs( logPath + "test_options" );
+        if( logArgs.open( QIODevice::WriteOnly ) )
+        {
+            logArgs.write( options.join( " " ).toLatin1() );
+            logArgs.close();
+        }
     }
 
     PERF_LOG( "Running Unit Tests" )
