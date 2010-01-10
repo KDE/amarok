@@ -21,10 +21,11 @@
 #define TESTPLSPLAYLIST_H
 
 #include "meta/PLSPlaylist.h"
+#include "TestBase.h"
 
 #include <QtCore/QStringList>
 
-class TestPLSPlaylist : public QObject
+class TestPLSPlaylist : public TestBase
 {
 Q_OBJECT
 

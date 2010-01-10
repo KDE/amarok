@@ -27,10 +27,10 @@
 
 
 TestMetaCueTrack::TestMetaCueTrack( const QStringList args, const QString &logPath )
+    : TestBase( "MetaCueTrack" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "MetaCueTrack.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

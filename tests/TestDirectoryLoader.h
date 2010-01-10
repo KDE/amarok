@@ -21,11 +21,12 @@
 #define TESTDIRECTORYLOADER_H
 
 #include "DirectoryLoader.h"
+#include "TestBase.h"
 
 #include <QtCore/QStringList>
 #include <QtCore/QMutex>
 
-class TestDirectoryLoader : public QObject
+class TestDirectoryLoader : public TestBase
 {
 Q_OBJECT
 

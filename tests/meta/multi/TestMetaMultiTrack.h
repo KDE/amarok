@@ -20,13 +20,15 @@
 #ifndef TESTMETAMULTITRACK_H
 #define TESTMETAMULTITRACK_H
 
+#include "TestBase.h"
+
 #include <QtCore/QStringList>
 
 namespace Meta {
     class MultiTrack;
 }
 
-class TestMetaMultiTrack : public QObject
+class TestMetaMultiTrack : public TestBase
 {
 Q_OBJECT
 

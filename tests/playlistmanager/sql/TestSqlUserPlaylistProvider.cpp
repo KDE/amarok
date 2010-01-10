@@ -26,10 +26,10 @@
 #include <QtCore/QDir>
 
 TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider( const QStringList args, const QString &logPath )
+    : TestBase( "SqlUserPlaylistProvider" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "SqlUserPlaylistProvider.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

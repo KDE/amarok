@@ -20,13 +20,15 @@
 #ifndef TESTMETAFILETRACK_H
 #define TESTMETAFILETRACK_H
 
+#include "TestBase.h"
+
 #include <QtCore/QStringList>
 
 namespace MetaFile {
     class Track;
 }
 
-class TestMetaFileTrack : public QObject
+class TestMetaFileTrack : public TestBase
 {
 Q_OBJECT
 

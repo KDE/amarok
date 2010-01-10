@@ -20,10 +20,12 @@
 #ifndef TESTPLAYLISTFILESUPPORT_H
 #define TESTPLAYLISTFILESUPPORT_H
 
+#include "TestBase.h"
+
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
-class TestPlaylistFileSupport : public QObject
+class TestPlaylistFileSupport : public TestBase
 {
 Q_OBJECT
 

@@ -28,11 +28,11 @@
 #include <QtCore/QDir>
 
 TestMetaMultiTrack::TestMetaMultiTrack( const QStringList args, const QString &logPath )
-    : m_testMultiTrack( 0 )
+    : TestBase( "MetaMultiTrack" )
+    , m_testMultiTrack( 0 )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "MetaMultiTrack.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

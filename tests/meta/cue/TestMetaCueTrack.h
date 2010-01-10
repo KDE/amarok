@@ -21,12 +21,13 @@
 #define TESTMETACUETRACK_H
 
 #include "meta/cue/Cue.h"
+#include "TestBase.h"
 
 #include <QtCore/QStringList>
 
 class QString;
 
-class TestMetaCueTrack : public QObject
+class TestMetaCueTrack : public TestBase
 {
 Q_OBJECT
 

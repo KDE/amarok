@@ -27,10 +27,10 @@
 
 
 TestPlaylistFileSupport::TestPlaylistFileSupport( const QStringList args, const QString &logPath )
+    : TestBase( "PlaylistFileSupport" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "PlaylistFileSupport.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

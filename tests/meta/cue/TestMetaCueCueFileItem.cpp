@@ -28,10 +28,10 @@ MetaCue::CueFileItem testItem3( " title ", " artist ", " album ", 100, 100 );
 MetaCue::CueFileItem testItem4( "ti tle", "ar tist", "al bum", 1000, 1000 );
 
 TestMetaCueCueFileItem::TestMetaCueCueFileItem( const QStringList args, const QString &logPath )
+    : TestBase( "MetaCueCueFileItem" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "MetaCueCueFileItem.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

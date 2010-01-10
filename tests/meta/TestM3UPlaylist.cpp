@@ -27,10 +27,10 @@
 #include <QtCore/QString>
 
 TestM3UPlaylist::TestM3UPlaylist( const QStringList args, const QString &logPath )
+    : TestBase( "M3UPlaylist" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "M3UPlaylist.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

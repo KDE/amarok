@@ -20,9 +20,11 @@
 #ifndef TESTAMAROK_H
 #define TESTAMAROK_H
 
+#include "TestBase.h"
+
 #include <QtCore/QStringList>
 
-class TestAmarok : public QObject
+class TestAmarok : public TestBase
 {
 Q_OBJECT
 

@@ -27,10 +27,10 @@
 #include <QtCore/QFile>
 
 TestPlaylistFileProvider::TestPlaylistFileProvider( const QStringList args, const QString &logPath )
+    : TestBase( "PlaylistFileProvider" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "PlaylistFileProvider.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

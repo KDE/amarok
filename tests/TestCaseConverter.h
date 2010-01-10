@@ -20,9 +20,11 @@
 #ifndef TESTCASECONVERTER_H
 #define TESTCASECONVERTER_H
 
+#include "TestBase.h"
+
 #include <QtCore/QObject>
 
-class TestCaseConverter : public QObject
+class TestCaseConverter : public TestBase
 {
 Q_OBJECT
 

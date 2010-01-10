@@ -28,10 +28,10 @@
 #include <QtCore/QDateTime>
 
 TestAmarok::TestAmarok( const QStringList args, const QString &logPath )
+    : TestBase( "Amarok" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "Amarok.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

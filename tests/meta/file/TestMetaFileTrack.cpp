@@ -30,10 +30,10 @@
 #include <QtCore/QFileInfo>
 
 TestMetaFileTrack::TestMetaFileTrack( const QStringList args, const QString &logPath )
+    : TestBase( "MetaFileTrack" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "MetaFileTrack.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

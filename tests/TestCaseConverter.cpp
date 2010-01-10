@@ -23,10 +23,10 @@
 #include <QtTest/QTest>
 
 TestCaseConverter::TestCaseConverter( const QStringList args, const QString &logPath )
+    : TestBase( "CaseCoverter" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "CaseConverter.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

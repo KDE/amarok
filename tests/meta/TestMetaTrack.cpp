@@ -26,10 +26,10 @@
 #include <QtTest/QTest>
 
 TestMetaTrack::TestMetaTrack( const QStringList args, const QString &logPath )
+    : TestBase( "MetaTrack" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "MetaTrack.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 

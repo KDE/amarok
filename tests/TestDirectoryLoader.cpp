@@ -30,10 +30,10 @@
  * be checked directly there but only in the playlist.                            */
 
 TestDirectoryLoader::TestDirectoryLoader( const QStringList args, const QString &logPath )
+    : TestBase( "DirectoryLoader" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "DirectoryLoader.xml" );
+    addLogging( combinedArgs, logPath );
 
     m_testArgumentList = combinedArgs;
     m_finishedLoaders = 0;

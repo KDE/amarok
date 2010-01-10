@@ -21,10 +21,11 @@
 #define TESTMETATRACK_H
 
 #include "meta/Meta.h"
+#include "TestBase.h"
 
 #include <QtCore/QStringList>
 
-class TestMetaTrack : public QObject
+class TestMetaTrack : public TestBase
 {
 Q_OBJECT
 

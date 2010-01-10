@@ -27,10 +27,10 @@
 #include <QtCore/QFile>
 
 TestXSPFPlaylist::TestXSPFPlaylist( const QStringList args, const QString &logPath )
+    : TestBase( "XSPFPlaylist" )
 {
     QStringList combinedArgs = args;
-    if( !logPath.isEmpty() )
-        combinedArgs << QString( "-o" ) << QString( logPath + "XSPFPlaylist.xml" );
+    addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );
 }
 
