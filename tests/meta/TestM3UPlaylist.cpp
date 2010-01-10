@@ -19,8 +19,6 @@
 
 #include "TestM3UPlaylist.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -36,8 +34,7 @@ TestM3UPlaylist::TestM3UPlaylist( const QStringList args, const QString &logPath
 
 void TestM3UPlaylist::initTestCase()
 {
-    const QString testM3u = "amarok/testdata/playlists/test.m3u";
-    const KUrl url        = KStandardDirs::locate( "data", QDir::toNativeSeparators( testM3u ) );
+    const KUrl url = dataPath( "amarok/testdata/playlists/test.m3u" );
     QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream1;
 
@@ -83,7 +80,7 @@ void TestM3UPlaylist::testTracks()
 
 void TestM3UPlaylist::testRetrievableUrl()
 {
-    QCOMPARE( m_testPlaylist1.retrievableUrl().pathOrUrl(), KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.m3u" ) );
+    QCOMPARE( m_testPlaylist1.retrievableUrl().pathOrUrl(), dataPath( "amarok/testdata/playlists/test.m3u" ) );
 }
 
 void TestM3UPlaylist::testSetAndGetGroups()

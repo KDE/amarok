@@ -33,6 +33,7 @@ public:
 
 protected:
     bool addLogging( QStringList &args, const QString &logPath );
+    QString dataPath( const QString &relPath );
 
 private:
     const QString m_name;

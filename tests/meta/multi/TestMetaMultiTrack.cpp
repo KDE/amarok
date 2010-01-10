@@ -22,8 +22,6 @@
 #include "meta/multi/MultiTrack.h"
 #include "meta/PlaylistFileSupport.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 
@@ -38,8 +36,7 @@ TestMetaMultiTrack::TestMetaMultiTrack( const QStringList args, const QString &l
 
 void TestMetaMultiTrack::initTestCase()
 {
-    const QString testPls      = "amarok/testdata/playlists/test.pls";
-    const KUrl url             = KStandardDirs::locate( "data", QDir::toNativeSeparators( testPls ) );
+    const KUrl url = dataPath( "amarok/testdata/playlists/test.pls" );
     Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( url.toLocalFile() ) );
 
     if( !playlist )

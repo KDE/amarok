@@ -19,6 +19,9 @@
 
 #include "TestBase.h"
 
+#include <KStandardDirs>
+
+#include <QDir>
 #include <QStringList>
 
 TestBase::TestBase( const QString &name, QObject *parent )
@@ -40,6 +43,12 @@ TestBase::addLogging( QStringList &args, const QString &logPath )
     const QString ext = args.contains( "-xml" ) ? ".xml" : ".log";
     args << QString( "-o" ) << QString( logPath + m_name + ext );
     return true;
+}
+
+QString
+TestBase::dataPath( const QString &relPath )
+{
+    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
 }
 
 #include "TestBase.moc"

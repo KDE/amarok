@@ -19,8 +19,6 @@
 
 #include "TestTimecodeTrackProvider.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 
 TestTimecodeTrackProvider::TestTimecodeTrackProvider( const QStringList args, const QString &logPath )
@@ -44,11 +42,11 @@ void TestTimecodeTrackProvider::testPossiblyContainsTrack()
 void TestTimecodeTrackProvider::testTrackForUrl()
 {
     KUrl testUrl;
-    testUrl = KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/album/Track01.ogg:23-42" );
+    testUrl = dataPath( "amarok/testdata/album/Track01.ogg:23-42" );
 
     Meta::TrackPtr resultTrack = m_testProvider.trackForUrl( testUrl );
 
     QVERIFY( resultTrack );
 
-    QCOMPARE( resultTrack->playableUrl().pathOrUrl(), KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/album/Track01.ogg" ) );
+    QCOMPARE( resultTrack->playableUrl().pathOrUrl(), dataPath( "amarok/testdata/album/Track01.ogg" ) );
 }

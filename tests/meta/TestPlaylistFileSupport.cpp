@@ -20,8 +20,6 @@
 #include "TestPlaylistFileSupport.h"
 #include "meta/PlaylistFileSupport.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 
@@ -34,10 +32,9 @@ TestPlaylistFileSupport::TestPlaylistFileSupport( const QStringList args, const 
     QTest::qExec( this, combinedArgs );
 }
 
-
 void TestPlaylistFileSupport::initTestCase()
 {
-    m_testPlaylistPath = KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators(  "amarok/testdata/playlists/" );
+    m_testPlaylistPath = dataPath( "amarok/testdata/playlists/" );
 }
 
 void TestPlaylistFileSupport::testGetFormat()

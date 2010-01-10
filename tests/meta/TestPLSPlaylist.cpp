@@ -19,8 +19,6 @@
 
 #include "TestPLSPlaylist.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -35,7 +33,7 @@ TestPLSPlaylist::TestPLSPlaylist( const QStringList args, const QString &logPath
 
 void TestPLSPlaylist::initTestCase()
 {
-    QFile playlistFile1( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.pls" ) );
+    QFile playlistFile1( dataPath( "amarok/testdata/playlists/test.pls" ) );
     QTextStream playlistStream1;
 
     if( !playlistFile1.open( QFile::ReadOnly ) )
@@ -79,7 +77,7 @@ void TestPLSPlaylist::tracks()
 
 void TestPLSPlaylist::retrievableUrl()
 {
-    QCOMPARE( m_testPlaylist1.retrievableUrl().pathOrUrl(), KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.pls" ) );
+    QCOMPARE( m_testPlaylist1.retrievableUrl().pathOrUrl(), dataPath( "amarok/testdata/playlists/test.pls" ) );
 }
 
 void TestPLSPlaylist::isWritable()

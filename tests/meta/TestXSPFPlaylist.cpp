@@ -20,8 +20,6 @@
 #include "TestXSPFPlaylist.h"
 #include "meta/XSPFPlaylist.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
@@ -37,7 +35,7 @@ TestXSPFPlaylist::TestXSPFPlaylist( const QStringList args, const QString &logPa
 void TestXSPFPlaylist::initTestCase()
 {
     const QString testXspf = "amarok/testdata/playlists/test.xspf";
-    const KUrl url         = KStandardDirs::locate( "data", QDir::toNativeSeparators( testXspf ) );
+    const KUrl url         = dataPath( testXspf );
     m_testPlaylist1        = new Meta::XSPFPlaylist( url.toLocalFile(), false );
 }
 
@@ -277,7 +275,7 @@ void TestXSPFPlaylist::testHasCapabilityInterface()
 
 void TestXSPFPlaylist::testRetrievableUrl()
 {
-    QCOMPARE( m_testPlaylist1->retrievableUrl().pathOrUrl(), KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.xspf" ) );
+    QCOMPARE( m_testPlaylist1->retrievableUrl().pathOrUrl(), dataPath( "amarok/testdata/playlists/test.xspf" ) );
 }
 
 void TestXSPFPlaylist::testIsWritable()

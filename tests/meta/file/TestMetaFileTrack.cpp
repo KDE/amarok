@@ -21,8 +21,6 @@
 
 #include "meta/file/File.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -40,7 +38,7 @@ TestMetaFileTrack::TestMetaFileTrack( const QStringList args, const QString &log
 void TestMetaFileTrack::initTestCase()
 {
     QFile::remove ( QDir::tempPath() + QDir::separator() + "tempfile.mp3" );
-    QVERIFY( QFile::copy( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/Platz 01.mp3" ), QDir::tempPath() + QDir::separator() + "tempfile.mp3" ) );
+    QVERIFY( QFile::copy( dataPath( "amarok/testdata/audio/Platz 01.mp3" ), QDir::tempPath() + QDir::separator() + "tempfile.mp3" ) );
 
     track = new MetaFile::Track( QDir::tempPath() + QDir::separator() + "tempfile.mp3" );
 }

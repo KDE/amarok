@@ -22,8 +22,6 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 
 /* This one is a bit ugly, as the results of the methods in DirectoryLoader can't *
@@ -45,7 +43,7 @@ TestDirectoryLoader::TestDirectoryLoader( const QStringList args, const QString 
     QList<QUrl> testList;
     QUrl testUrl;
 
-    testUrl = QUrl::fromLocalFile( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/" ) );
+    testUrl = QUrl::fromLocalFile( dataPath( "amarok/testdata/audio/" ) );
     testList.append( testUrl );
 
     connect( loader1, SIGNAL( finished( Meta::TrackList ) ), this, SLOT( loadersFinished() ) );
