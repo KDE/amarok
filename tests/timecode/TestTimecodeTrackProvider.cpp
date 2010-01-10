@@ -19,15 +19,14 @@
 
 #include "TestTimecodeTrackProvider.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 
-TestTimecodeTrackProvider::TestTimecodeTrackProvider( QStringList testArgumentList, bool stdout )
+TestTimecodeTrackProvider::TestTimecodeTrackProvider( const QStringList args, const QString &logPath )
+    : TestBase( "TimecodeTrackProvider" )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "TimecodeTrackProvider.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
+    QTest::qExec( this, combinedArgs );
 }
 
 
@@ -43,11 +42,11 @@ void TestTimecodeTrackProvider::testPossiblyContainsTrack()
 void TestTimecodeTrackProvider::testTrackForUrl()
 {
     KUrl testUrl;
-    testUrl = KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/album/Track01.ogg:23-42" );
+    testUrl = dataPath( "amarok/testdata/album/Track01.ogg:23-42" );
 
     Meta::TrackPtr resultTrack = m_testProvider.trackForUrl( testUrl );
 
     QVERIFY( resultTrack );
 
-    QCOMPARE( resultTrack->playableUrl().pathOrUrl(), KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/album/Track01.ogg" ) );
+    QCOMPARE( resultTrack->playableUrl().pathOrUrl(), dataPath( "amarok/testdata/album/Track01.ogg" ) );
 }

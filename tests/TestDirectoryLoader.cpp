@@ -22,19 +22,18 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 
 /* This one is a bit ugly, as the results of the methods in DirectoryLoader can't *
  * be checked directly there but only in the playlist.                            */
 
-TestDirectoryLoader::TestDirectoryLoader( QStringList testArgumentList, bool stdout )
+TestDirectoryLoader::TestDirectoryLoader( const QStringList args, const QString &logPath )
+    : TestBase( "DirectoryLoader" )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "DirectoryLoader.xml" );
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
 
-    m_testArgumentList = testArgumentList;
+    m_testArgumentList = combinedArgs;
     m_finishedLoaders = 0;
 
     The::playlistController()->clear(); // we need a clear playlist for those tests
@@ -44,7 +43,7 @@ TestDirectoryLoader::TestDirectoryLoader( QStringList testArgumentList, bool std
     QList<QUrl> testList;
     QUrl testUrl;
 
-    testUrl = QUrl::fromLocalFile( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/" ) );
+    testUrl = QUrl::fromLocalFile( dataPath( "amarok/testdata/audio/" ) );
     testList.append( testUrl );
 
     connect( loader1, SIGNAL( finished( Meta::TrackList ) ), this, SLOT( loadersFinished() ) );

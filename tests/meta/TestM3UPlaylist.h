@@ -21,15 +21,16 @@
 #define TESTM3UPLAYLIST_H
 
 #include "meta/M3UPlaylist.h"
+#include "TestBase.h"
 
 #include <QtCore/QStringList>
 
-class TestM3UPlaylist : public QObject
+class TestM3UPlaylist : public TestBase
 {
 Q_OBJECT
 
 public:
-    TestM3UPlaylist( QStringList testArgumentList, bool stdout );
+    TestM3UPlaylist( const QStringList args, const QString &logPath );
 
 private slots:
     void initTestCase();

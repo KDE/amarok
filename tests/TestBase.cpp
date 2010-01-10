@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,29 +17,38 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef TESTSQLUSERPLAYLISTPROVIDER_H
-#define TESTSQLUSERPLAYLISTPROVIDER_H
-
-#include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 #include "TestBase.h"
 
-#include <QtCore/QStringList>
+#include <KStandardDirs>
 
-class TestSqlUserPlaylistProvider : public TestBase
+#include <QDir>
+#include <QStringList>
+
+TestBase::TestBase( const QString &name, QObject *parent )
+    : QObject( parent )
+    , m_name( name )
 {
-Q_OBJECT
+}
 
-public:
-    TestSqlUserPlaylistProvider( const QStringList args, const QString &logPath );
+TestBase::~TestBase()
+{
+}
 
-private slots:
-    void testPlaylists();
-    void testSave();
-    void testImportAndDeletePlaylists();
-    void testRename();
+bool
+TestBase::addLogging( QStringList &args, const QString &logPath )
+{
+    if( logPath.isEmpty() )
+        return false;
 
-private:
-    SqlUserPlaylistProvider m_testSqlUserPlaylistProvider;
-};
+    const QString ext = args.contains( "-xml" ) ? ".xml" : ".log";
+    args << QString( "-o" ) << QString( logPath + m_name + ext );
+    return true;
+}
 
-#endif // TESTSQLUSERPLAYLISTPROVIDER_H
+QString
+TestBase::dataPath( const QString &relPath )
+{
+    return KStandardDirs::locate( "data", QDir::toNativeSeparators( relPath ) );
+}
+
+#include "TestBase.moc"

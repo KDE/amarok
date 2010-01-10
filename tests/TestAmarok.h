@@ -20,14 +20,16 @@
 #ifndef TESTAMAROK_H
 #define TESTAMAROK_H
 
+#include "TestBase.h"
+
 #include <QtCore/QStringList>
 
-class TestAmarok : public QObject
+class TestAmarok : public TestBase
 {
 Q_OBJECT
 
 public:
-    TestAmarok( QStringList testArgumentList, bool stdout );
+    TestAmarok( const QStringList args, const QString &logPath );
 
 private slots:
     void testAsciiPath();

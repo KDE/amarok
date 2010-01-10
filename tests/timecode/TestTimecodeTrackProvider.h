@@ -20,16 +20,17 @@
 #ifndef TESTTIMECODETRACKPROVIDER_H
 #define TESTTIMECODETRACKPROVIDER_H
 
+#include "TestBase.h"
 #include "timecode/TimecodeTrackProvider.h"
 
 #include <QtCore/QStringList>
 
-class TestTimecodeTrackProvider : public QObject
+class TestTimecodeTrackProvider : public TestBase
 {
 Q_OBJECT
 
 public:
-    TestTimecodeTrackProvider( QStringList testArgumentList, bool stdout );
+    TestTimecodeTrackProvider( const QStringList args, const QString &logPath );
 
 private slots:
     void testPossiblyContainsTrack();

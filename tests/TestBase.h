@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>            *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,29 +17,26 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#ifndef TESTSQLUSERPLAYLISTPROVIDER_H
-#define TESTSQLUSERPLAYLISTPROVIDER_H
+#ifndef AMAROK_TESTBASE_H
+#define AMAROK_TESTBASE_H
 
-#include "playlistmanager/sql/SqlUserPlaylistProvider.h"
-#include "TestBase.h"
+#include <QObject>
+#include <QString>
 
-#include <QtCore/QStringList>
-
-class TestSqlUserPlaylistProvider : public TestBase
+class TestBase : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    TestSqlUserPlaylistProvider( const QStringList args, const QString &logPath );
+    TestBase( const QString &name, QObject *parent = 0 );
+    ~TestBase() = 0;
 
-private slots:
-    void testPlaylists();
-    void testSave();
-    void testImportAndDeletePlaylists();
-    void testRename();
+protected:
+    bool addLogging( QStringList &args, const QString &logPath );
+    QString dataPath( const QString &relPath );
 
 private:
-    SqlUserPlaylistProvider m_testSqlUserPlaylistProvider;
+    const QString m_name;
 };
 
-#endif // TESTSQLUSERPLAYLISTPROVIDER_H
+#endif /* AMAROK_TESTBASE_H */

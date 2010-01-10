@@ -426,10 +426,40 @@ App::handleCliArgs() //static
     firstTime = false;
 
 #ifdef DEBUG
-    if( args->getOption( "test" ) == "log" )
-        runUnitTests( false );
-    else if( args->getOption( "test" ) == "stdout" )
-        runUnitTests( true );
+    if( args->isSet( "test" ) )
+    {
+        bool ok;
+        int verboseInt = args->getOption( "verbose" ).toInt( &ok );
+        verboseInt     = ok ? verboseInt : 2;
+
+        QStringList testOpt( "amarok" );
+
+        QString verbosity;
+        switch( verboseInt )
+        {
+        case 0:
+            verbosity = "-silent";
+            break;
+        case 1:
+            verbosity = "-v1";
+            break;
+        default:
+        case 2:
+            verbosity = "-v2";
+            break;
+        case 3:
+            verbosity = "-vs";
+            break;
+        }
+        testOpt << verbosity;
+
+        const QString format = args->getOption( "format" );
+        if( format == "xml" || format == "lightxml" )
+            testOpt << QString( '-' + format );
+
+        const bool stdout = ( args->getOption( "output" ) == "log" ) ? false : true;
+        runUnitTests( testOpt, stdout );
+    }
 #endif // DEBUG
 
     args->clear();    //free up memory
@@ -478,7 +508,11 @@ App::initCliArgs() //static
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
 #ifdef DEBUG
-    options.add("test <output>", ki18n( "Run integrated unit tests. Output can be 'log' for logfiles, 'stdout' for stdout." ) );
+    options.add(":", ki18n("Unit test options:"));
+    options.add("test", ki18n( "Run integrated unit tests" ) );
+    options.add("output <dest>", ki18n( "Destination of test output: 'stdout', 'log'" ), "log" );
+    options.add("format <type>", ki18n( "Format of test output: 'xml', 'lightxml', 'plaintext'" ), "xml" );
+    options.add("verbose <level>", ki18n( "Verbosity from 0-3 (highest)" ), "2" );
 #endif // DEBUG
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
@@ -595,45 +629,53 @@ void App::applySettings( bool firstTime )
 #ifdef DEBUG
 //SLOT
 void
-App::runUnitTests( bool stdout )
+App::runUnitTests( const QStringList options, bool stdout )
 {
     DEBUG_BLOCK
-    QStringList testArgumentList;
-    QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + "/" );
 
+    QString logPath;
     if( !stdout )
-        testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v2";
-    else
-        testArgumentList << "amarok" << "-xml" << "-v2";
+    {
+        const QString location = Amarok::saveLocation( "testresults/" );
+        const QString stamp    = QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" );
+        logPath                = QDir::toNativeSeparators( location + stamp + "/" );
 
-    // create log folder for this run:
-    QDir logDir( logPath );
-    logDir.mkpath( logPath );
+        // create log folder for this run:
+        QDir logDir( logPath );
+        logDir.mkpath( logPath );
 
-    QFile::remove( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
-    QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+        QFile::remove( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+        QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+
+        QFile logArgs( logPath + "test_options" );
+        if( logArgs.open( QIODevice::WriteOnly ) )
+        {
+            logArgs.write( options.join( " " ).toLatin1() );
+            logArgs.close();
+        }
+    }
 
     PERF_LOG( "Running Unit Tests" )
-    TestAmarok                  testAmarok( testArgumentList, stdout );
-    TestCaseConverter           testCaseConverter( testArgumentList, stdout );
-    TestM3UPlaylist             testM3UPlaylist( testArgumentList, stdout );
-    TestMetaCueCueFileItem      testMetaCueCueFileItem( testArgumentList, stdout );
-    //TestMetaCueTrack            testMetaCueTrack( testArgumentList, stdout );
-    TestMetaFileTrack           testMetaFileTrack( testArgumentList, stdout );
-    TestMetaMultiTrack          testMetaMultiTrack( testArgumentList, stdout );
-    TestMetaTrack               testMetaTrack( testArgumentList, stdout );
-    TestPlaylistFileProvider    testPlaylistFileProvider( testArgumentList, stdout );
-    TestPlaylistFileSupport     testPlaylistFileSupport( testArgumentList, stdout );
-    TestPLSPlaylist             testPLSPlaylist( testArgumentList, stdout );
-    TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList, stdout );
-    TestTimecodeTrackProvider   testTimecodeTrackProvider( testArgumentList, stdout );
-    TestXSPFPlaylist            testXSPFPlaylist( testArgumentList, stdout);
+    TestAmarok                  test001( options, logPath );
+    TestCaseConverter           test002( options, logPath );
+    TestM3UPlaylist             test003( options, logPath );
+    TestMetaCueCueFileItem      test004( options, logPath );
+    //TestMetaCueTrack            test005( options, logPath );
+    TestMetaFileTrack           test006( options, logPath );
+    TestMetaMultiTrack          test007( options, logPath );
+    TestMetaTrack               test008( options, logPath );
+    TestPlaylistFileProvider    test009( options, logPath );
+    TestPlaylistFileSupport     test010( options, logPath );
+    TestPLSPlaylist             test011( options, logPath );
+    TestSqlUserPlaylistProvider test012( options, logPath );
+    TestTimecodeTrackProvider   test013( options, logPath );
+    TestXSPFPlaylist            test014( options, logPath );
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
-    TestDirectoryLoader        *testDirectoryLoader = new TestDirectoryLoader( testArgumentList, stdout );
+    TestDirectoryLoader        *test015 = new TestDirectoryLoader( options, logPath );
 
     PERF_LOG( "Done Running Unit Tests" )
-    Q_UNUSED( testDirectoryLoader )
+    Q_UNUSED( test015 )
 }
 #endif // DEBUG
 

@@ -21,15 +21,16 @@
 #define TESTPLSPLAYLIST_H
 
 #include "meta/PLSPlaylist.h"
+#include "TestBase.h"
 
 #include <QtCore/QStringList>
 
-class TestPLSPlaylist : public QObject
+class TestPLSPlaylist : public TestBase
 {
 Q_OBJECT
 
 public:
-    TestPLSPlaylist( QStringList testArgumentList, bool stdout );
+    TestPLSPlaylist( const QStringList args, const QString &logPath );
 
 private slots:
     void initTestCase();

@@ -21,15 +21,16 @@
 #define TESTPLAYLISTFILEPROVIDER_H
 
 #include "playlistmanager/file/PlaylistFileProvider.h"
+#include "TestBase.h"
 
 #include <QtCore/QStringList>
 
-class TestPlaylistFileProvider : public QObject
+class TestPlaylistFileProvider : public TestBase
 {
 Q_OBJECT
 
 public:
-    TestPlaylistFileProvider( QStringList testArgumentList, bool stdout );
+    TestPlaylistFileProvider( const QStringList args, const QString &logPath );
 
 private slots:
     void testPlaylists();

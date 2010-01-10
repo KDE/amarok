@@ -20,18 +20,17 @@
 #include "TestAmarok.h"
 #include "Amarok.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 #include <QtCore/QString>
 #include <QtCore/QDateTime>
 
-TestAmarok::TestAmarok( QStringList testArgumentList, bool stdout )
+TestAmarok::TestAmarok( const QStringList args, const QString &logPath )
+    : TestBase( "Amarok" )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Amarok.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestAmarok::testAsciiPath()
@@ -210,12 +209,12 @@ void TestAmarok::testRecursiveUrlExpand()
     resultList = Amarok::recursiveUrlExpand( urlList );
     QCOMPARE( resultList.isEmpty(), true );
 
-    url = KStandardDirs::installPath( "data" ) + "amarok/testdata/playlists/";
+    url = dataPath( "amarok/testdata/playlists/" );
     resultList = Amarok::recursiveUrlExpand( url );
     QCOMPARE( resultList.size(), 1 );
     QCOMPARE( resultList.at( 0 ).pathOrUrl(), url.pathOrUrl() + QString( "no-playlist.png" ) ); // only non-playlist file in that dir
 
-    url = KStandardDirs::installPath( "data" ) + "amarok/testdata/";
+    url = dataPath( "amarok/testdata/" );
     resultList = Amarok::recursiveUrlExpand( url );
     QCOMPARE( resultList.size(), 17 );
     QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "cue/test_silence.ogg" ) ) ) );

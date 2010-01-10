@@ -26,18 +26,19 @@
 #include <QtCore/QString>
 
 
-TestMetaCueTrack::TestMetaCueTrack( QStringList testArgumentList, bool stdout )
+TestMetaCueTrack::TestMetaCueTrack( const QStringList args, const QString &logPath )
+    : TestBase( "MetaCueTrack" )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueTrack.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestMetaCueTrack::initTestCase()
 {
-    m_isoCuePath = new QString( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/testsheet01-iso8859-1.cue" ) );
-    m_utfCuePath = new QString( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/testsheet01-utf8.cue" ) );
-    m_testSongPath = new QString( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/test_silence.ogg" ) );
+    m_isoCuePath = new QString( dataPath( "amarok/testdata/cue/testsheet01-iso8859-1.cue" ) );
+    m_utfCuePath = new QString( dataPath( "amarok/testdata/cue/testsheet01-utf8.cue" ) );
+    m_testSongPath = new QString( dataPath( "amarok/testdata/cue/test_silence.ogg" ) );
 
     m_testTrack1 = new MetaCue::Track( *m_testSongPath, *m_isoCuePath );
     m_testTrack2 = new MetaCue::Track( *m_testSongPath, *m_utfCuePath );
@@ -85,8 +86,8 @@ void TestMetaCueTrack::testLocateCueSheet()
     QCOMPARE( MetaCue::Track::locateCueSheet( QString( "" ) ).toLocalFile(), QString( "" ) );
     QCOMPARE( MetaCue::Track::locateCueSheet( KStandardDirs::installPath( "data" ) ).toLocalFile(), QString( "" ) );
 
-    QCOMPARE( MetaCue::Track::locateCueSheet( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/testsheet01-utf8.ogg" ) ).toLocalFile(), *m_utfCuePath );
-    QCOMPARE( MetaCue::Track::locateCueSheet( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/testsheet01-iso8859-1.ogg" ) ).toLocalFile(), *m_isoCuePath );
+    QCOMPARE( MetaCue::Track::locateCueSheet( dataPath( "amarok/testdata/cue/testsheet01-utf8.ogg" ) ).toLocalFile(), *m_utfCuePath );
+    QCOMPARE( MetaCue::Track::locateCueSheet( dataPath( "amarok/testdata/cue/testsheet01-iso8859-1.ogg" ) ).toLocalFile(), *m_isoCuePath );
 }
 
 void TestMetaCueTrack::testValidateCueSheet()

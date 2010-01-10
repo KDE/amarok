@@ -695,6 +695,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/playlistmanager/sql/TestSqlUserPlaylistProvider.cpp
         ../tests/timecode/TestTimecodeTrackProvider.cpp
         ../tests/TestAmarok.cpp
+        ../tests/TestBase.cpp
         ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp
     )

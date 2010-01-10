@@ -20,16 +20,15 @@
 #include "TestSqlUserPlaylistProvider.h"
 #include "collection/CollectionManager.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 
-TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider( QStringList testArgumentList, bool stdout )
+TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider( const QStringList args, const QString &logPath )
+    : TestBase( "SqlUserPlaylistProvider" )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SqlUserPlaylistProvider.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
+    QTest::qExec( this, combinedArgs );
 }
 
 
@@ -43,7 +42,7 @@ void TestSqlUserPlaylistProvider::testSave()
 {
     Meta::TrackList tempTrackList;
     KUrl trackUrl;
-    trackUrl = KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/Platz 01.mp3" );
+    trackUrl = dataPath( "amarok/testdata/audio/Platz 01.mp3" );
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
 
     Meta::PlaylistPtr testPlaylist = m_testSqlUserPlaylistProvider.save( tempTrackList, "Amarok Test Playlist" );
@@ -54,7 +53,7 @@ void TestSqlUserPlaylistProvider::testSave()
 
 void TestSqlUserPlaylistProvider::testImportAndDeletePlaylists()
 {
-    QVERIFY( m_testSqlUserPlaylistProvider.import( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.m3u" ) ) );
+    QVERIFY( m_testSqlUserPlaylistProvider.import( dataPath( "amarok/testdata/playlists/test.m3u" ) ) );
 
     Meta::PlaylistList tempList = m_testSqlUserPlaylistProvider.playlists();
     QCOMPARE( tempList.size(), 1 ); // iow: use it with a clean profile
@@ -66,7 +65,7 @@ void TestSqlUserPlaylistProvider::testImportAndDeletePlaylists()
 
 void TestSqlUserPlaylistProvider::testRename()
 {
-    QVERIFY( m_testSqlUserPlaylistProvider.import( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.m3u" ) ) );
+    QVERIFY( m_testSqlUserPlaylistProvider.import( dataPath( "amarok/testdata/playlists/test.m3u" ) ) );
 
     Meta::PlaylistList tempList = m_testSqlUserPlaylistProvider.playlists();
     QCOMPARE( tempList.size(), 1 );

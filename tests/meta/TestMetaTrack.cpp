@@ -21,20 +21,19 @@
 
 #include "CollectionManager.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 
-TestMetaTrack::TestMetaTrack( QStringList testArgumentList, bool stdout )
+TestMetaTrack::TestMetaTrack( const QStringList args, const QString &logPath )
+    : TestBase( "MetaTrack" )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaTrack.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestMetaTrack::initTestCase()
 {
-    m_testTrack1 = CollectionManager::instance()->trackForUrl( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/test_silence.ogg" ) );
+    m_testTrack1 = CollectionManager::instance()->trackForUrl( dataPath( "amarok/testdata/cue/test_silence.ogg" ) );
 
     // If the pointer is 0, it makes no sense to continue. We would crash with a qFatal().
     QVERIFY2( m_testTrack1, "The pointer to the test track is 0." );
@@ -52,17 +51,17 @@ void TestMetaTrack::testPrettyName()
 
 void TestMetaTrack::testPlayableUrl()
 {
-    QCOMPARE( m_testTrack1->playableUrl().pathOrUrl(), KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/test_silence.ogg" ) );
+    QCOMPARE( m_testTrack1->playableUrl().pathOrUrl(), dataPath( "amarok/testdata/cue/test_silence.ogg" ) );
 }
 
 void TestMetaTrack::testPrettyUrl()
 {
-    QCOMPARE( m_testTrack1->prettyUrl(), QUrl::fromLocalFile( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/test_silence.ogg" ) ).path() );
+    QCOMPARE( m_testTrack1->prettyUrl(), QUrl::fromLocalFile( dataPath( "amarok/testdata/cue/test_silence.ogg" ) ).path() );
 }
 
 void TestMetaTrack::testUidUrl()
 {
-    QCOMPARE( m_testTrack1->uidUrl(), QUrl::fromLocalFile( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/test_silence.ogg" ) ).toString() );
+    QCOMPARE( m_testTrack1->uidUrl(), QUrl::fromLocalFile( dataPath( "amarok/testdata/cue/test_silence.ogg" ) ).toString() );
 }
 
 
@@ -235,9 +234,9 @@ void TestMetaTrack::testLessThan()
 {
     Meta::TrackPtr albumTrack1, albumTrack2, albumTrack3;
 
-    albumTrack1 = CollectionManager::instance()->trackForUrl( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/album/Track01.ogg" ) );
-    albumTrack2 = CollectionManager::instance()->trackForUrl( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/album/Track02.ogg" ) );
-    albumTrack2 = CollectionManager::instance()->trackForUrl( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/album/Track02.ogg" ) );
+    albumTrack1 = CollectionManager::instance()->trackForUrl( dataPath( "amarok/testdata/audio/album/Track01.ogg" ) );
+    albumTrack2 = CollectionManager::instance()->trackForUrl( dataPath( "amarok/testdata/audio/album/Track02.ogg" ) );
+    albumTrack2 = CollectionManager::instance()->trackForUrl( dataPath( "amarok/testdata/audio/album/Track02.ogg" ) );
 
     QVERIFY( !Meta::Track::lessThan( m_testTrack1, m_testTrack1 ) );
 
