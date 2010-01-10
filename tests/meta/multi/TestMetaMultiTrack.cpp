@@ -28,6 +28,7 @@
 #include <QtCore/QDir>
 
 TestMetaMultiTrack::TestMetaMultiTrack( QStringList testArgumentList, bool stdout )
+    : m_testMultiTrack( 0 )
 {
     if( !stdout )
         testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaMultiTrack.xml" );
