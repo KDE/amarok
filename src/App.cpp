@@ -510,7 +510,7 @@ App::initCliArgs() //static
 #ifdef DEBUG
     options.add(":", ki18n("Unit test options:"));
     options.add("test", ki18n( "Run integrated unit tests" ) );
-    options.add("output <dest>", ki18n( "Destination of test output: 'stdout', 'log'" ), "stdout" );
+    options.add("output <dest>", ki18n( "Destination of test output: 'stdout', 'log'" ), "log" );
     options.add("format <type>", ki18n( "Format of test output: 'xml', 'lightxml', 'plaintext'" ), "xml" );
     options.add("verbose <level>", ki18n( "Verbosity from 0-3 (highest)" ), "2" );
 #endif // DEBUG
