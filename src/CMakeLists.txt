@@ -55,15 +55,6 @@ include_directories(
     synchronization
     timecode
     widgets
-    ../tests/
-    ../tests/meta/
-    ../tests/meta/cue/
-    ../tests/meta/file/
-    ../tests/meta/multi/
-    ../tests/playlistmanager/
-    ../tests/playlistmanager/file/
-    ../tests/playlistmanager/sql/
-    ../tests/timecode/
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDES}
@@ -699,7 +690,19 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp
     )
+    include_directories(
+        ../tests/
+        ../tests/meta/
+        ../tests/meta/cue/
+        ../tests/meta/file/
+        ../tests/meta/multi/
+        ../tests/playlistmanager/
+        ../tests/playlistmanager/file/
+        ../tests/playlistmanager/sql/
+        ../tests/timecode/
+    )
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+
 if( LIBLASTFM_FOUND )
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
