@@ -384,6 +384,7 @@ EngineController::playUrl( const KUrl &url, uint offset )
     resetFadeout();
 
     debug() << "URL: " << url.url();
+    debug() << "offset: " << offset;
 
     if ( url.url().startsWith( "audiocd:/" ) )
     {
@@ -444,10 +445,15 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
     if( offset )
     {
+        debug() << "seeking to " << offset;
         m_media->pause();
         m_media->seek( offset );
     }
     m_media->play();
+
+    debug() << "track pos after play: " << trackPositionMs();
+
+
 }
 
 void
@@ -549,7 +555,13 @@ EngineController::seek( int ms ) //SLOT
         int seekTo;
 
         if ( m_boundedPlayback )
+        {
             seekTo = m_boundedPlayback->startPosition() + ms;
+            if( seekTo < m_boundedPlayback->startPosition() )
+                seekTo = m_boundedPlayback->startPosition();
+            else if( seekTo > m_boundedPlayback->startPosition() + trackLength() )
+                seekTo = m_boundedPlayback->startPosition() + trackLength();
+        }
         else
             seekTo = ms;
 
