@@ -210,12 +210,12 @@ void TestAmarok::testRecursiveUrlExpand()
     resultList = Amarok::recursiveUrlExpand( urlList );
     QCOMPARE( resultList.isEmpty(), true );
 
-    url = KStandardDirs::installPath( "data" ) + "amarok/testdata/playlists/";
+    url = KStandardDirs::locate( "data", QDir::toNativeSeparators( "amarok/testdata/playlists/" ) );
     resultList = Amarok::recursiveUrlExpand( url );
     QCOMPARE( resultList.size(), 1 );
     QCOMPARE( resultList.at( 0 ).pathOrUrl(), url.pathOrUrl() + QString( "no-playlist.png" ) ); // only non-playlist file in that dir
 
-    url = KStandardDirs::installPath( "data" ) + "amarok/testdata/";
+    url = KStandardDirs::locate( "data", QDir::toNativeSeparators( "amarok/testdata/" ) );
     resultList = Amarok::recursiveUrlExpand( url );
     QCOMPARE( resultList.size(), 17 );
     QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "cue/test_silence.ogg" ) ) ) );
