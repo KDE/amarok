@@ -37,7 +37,9 @@ TestMetaMultiTrack::TestMetaMultiTrack( QStringList testArgumentList, bool stdou
 
 void TestMetaMultiTrack::initTestCase()
 {
-    Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.pls" ) ) );
+    const QString testPls      = "amarok/testdata/playlists/test.pls";
+    const KUrl url             = KStandardDirs::locate( "data", QDir::toNativeSeparators( testPls ) );
+    Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( url.toLocalFile() ) );
 
     if( !playlist )
         QVERIFY( false ); // no playlist -> no test. that's life ;)

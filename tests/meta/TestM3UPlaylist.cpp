@@ -35,7 +35,9 @@ TestM3UPlaylist::TestM3UPlaylist( QStringList testArgumentList, bool stdout )
 
 void TestM3UPlaylist::initTestCase()
 {
-    QFile playlistFile1( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.m3u" ) );
+    const QString testM3u = "amarok/testdata/playlists/test.m3u";
+    const KUrl url        = KStandardDirs::locate( "data", QDir::toNativeSeparators( testM3u ) );
+    QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream1;
 
     if( !playlistFile1.open( QFile::ReadOnly ) )

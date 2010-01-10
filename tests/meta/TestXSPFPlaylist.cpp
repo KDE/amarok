@@ -35,7 +35,9 @@ TestXSPFPlaylist::TestXSPFPlaylist( QStringList testArgumentList, bool stdout )
 
 void TestXSPFPlaylist::initTestCase()
 {
-    m_testPlaylist1 = new Meta::XSPFPlaylist( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.xspf" ), false );
+    const QString testXspf = "amarok/testdata/playlists/test.xspf";
+    const KUrl url         = KStandardDirs::locate( "data", QDir::toNativeSeparators( testXspf ) );
+    m_testPlaylist1        = new Meta::XSPFPlaylist( url.toLocalFile(), false );
 }
 
 void TestXSPFPlaylist::cleanupTestCase()
