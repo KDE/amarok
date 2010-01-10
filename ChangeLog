@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * Non collection files with a cue sheet will now load their tracks as
+      individual tracks in the playlist instead of as one big track with
+      bookmark markers.
     * Dynamic Collection is back. (BR 171213)
     * Searching covers from Last.fm using custom query in interactive mode.
  
