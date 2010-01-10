@@ -78,7 +78,6 @@ SimilarArtistsApplet::init()
     // create the layout for dispose the artists widgets in the scrollarea via a widget
     m_layout=new QVBoxLayout;
     m_layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
-    //m_layout->setAlignment(Qt::AlignHCenter);
     
     m_headerLabel = new TextScrollingWidget( this );
 
@@ -115,6 +114,7 @@ SimilarArtistsApplet::init()
     m_scroll->setWidget( scrollContent );
     m_scroll->setFrameShape( QFrame::NoFrame );
     m_scroll->setAttribute( Qt::WA_NoSystemBackground );
+    m_scroll->setAlignment( Qt::AlignHCenter ); // for the widget in the scrollarea
     m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
 
     // add the scrollarea in the applet
@@ -126,13 +126,8 @@ SimilarArtistsApplet::init()
 
     connectSource( "similarArtists" );
     connect( dataEngine( "amarok-similarArtists" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );
-
-    // we connect the geometry changed wit(h a setGeom function which will update the video widget geometry
-    connect ( this, SIGNAL(geometryChanged()), SLOT( setGeom() ) );
     
     constraintsEvent();    
-
-    debug()<< "SAA fin init";
 }
 
 void
@@ -148,10 +143,6 @@ void
 SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints );
-
-    DEBUG_BLOCK
-
-    debug()<< "SAA deb const";
 
     prepareGeometryChange();
     qreal widmax = boundingRect().width() - 2 * m_settingsIcon->size().width() - 6 * standardPadding();
@@ -171,8 +162,6 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
     m_scrollProxy->setMinimumSize( artistsSize );
     m_scrollProxy->setMaximumSize( artistsSize );
 
-    debug()<< "SAA fin const";
-    
 }
 
 /**
@@ -204,17 +193,10 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
     }
 
     m_artists.clear();
-    
-    
+        
     m_stoppedState = true;
     m_headerLabel->setText( i18n( "Similar artist" ) + QString( " : " ) + i18n( "No track playing" ) );
     setCollapseOn();
-
-    for( int i = 0; i < m_artists.size(); i++ )
-    {
-        //debug() << "ENTREE DANS LA BOUCLE CONSTRAINTSEVENT";
-        m_layout->addWidget( m_artists.at( i ) );
-    }
 }
 
 
@@ -229,11 +211,6 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         //TODO
     } else {
 
-        // the layout begin at the bottom of the applet's title
-        //m_layout->setRowMinimumHeight(0,m_headerLabel->boundingRect().height()+7);
-        //m_layout->setRowMaximumHeight(0,m_headerLabel->boundingRect().height()+7);
-
-
         QString artistName = data[ "artist" ].toString();
 
         // we see if the artist name is valid
@@ -246,67 +223,45 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
            if ( !similars.isEmpty() )
             {
-                debug()<<"similars";
                 // we see the number of artist we need display
                 int sizeArtistsDisplay=m_maxArtists>similars.size()?similars.size():m_maxArtists;
 
-                debug()<<"SAA taille a afficher "<<sizeArtistsDisplay;
                 // we adapt the list size
                 int cpt=m_artists.size()+1; // the first row (0) is dedicated for the applet title
-                debug()<<"SAA taille cpt:" <<cpt;
-                debug()<<"SAA taille size :" << sizeArtistsDisplay;
-                while(sizeArtistsDisplay>=cpt) {
-                    debug()<<"SAA1";
-                    ArtistWidget *art=new ArtistWidget;
-                    debug()<<"SAA2";
-                    m_artists.append(art);
-                    debug()<<"SAA3";
-                    //QGraphicsProxyWidget *tmp = new QGraphicsProxyWidget(this);
-                    //tmp->setWidget(m_artists.last());
-                    //m_scene->addWidget(art);
-                    debug()<<"SAA4";
-                    m_layout->addWidget(m_artists.last());//Item(tmp,cpt,0,1,1);
-                    //m_artists.last()->setMinimumWidth(size().width() - 2 * standardPadding());
-                    debug()<<"SAA5";
-                    cpt++;
-                    m_artists.last()->show();
-                }
-                m_scroll->widget()->show();
 
-                debug()<<"SAA Agrandissement de la liste ok";
-                //TODO Bug when the number of artist to display decrease
+                //if necessary, we increase the number of artists to display
+                while(sizeArtistsDisplay>=cpt) {
+                    ArtistWidget *art=new ArtistWidget;
+                    m_artists.append(art);
+                    m_layout->addWidget(m_artists.last());
+                    cpt++;
+                }
+
+                //if necessary, we reduce the number of artists to display
                 cpt=sizeArtistsDisplay;
-                debug()<<"SAA Nb artist a afficher :" << cpt;
                 while(cpt<m_artists.size()) {
-                    //m_layout->removeAt(cpt-1);
                     m_layout->removeWidget(m_artists.last());
                     delete m_artists.last();
                     m_artists.removeLast();
-                    //cpt--;
                 }
-                debug()<<"SAA reduction de la liste ok";
 
-
+                // we set the display of the artists widgets
                 cpt=0; 
                 foreach(ArtistWidget* art, m_artists) {
                     art->setArtist(similars.at(cpt).name(), similars.at(cpt).url());
-
-                    debug()<< "SAA artist: " << similars.at(cpt).name();
                     art->setPhoto(similars.at(cpt).urlImage());
                     art->setMatch(similars.at(cpt).match());
                     cpt++;
                 }
-                debug()<<"SAA modif contenu ok";
                 
             }
             else // No similar artist found
             {
                 // we clear all artists
-                for(int cpt=0;cpt<m_artists.size();cpt++)
+                foreach(ArtistWidget* art, m_artists)
                 {
-                    //m_layout->removeAt(cpt);
-                    m_layout->removeWidget(m_artists.at(cpt));
-                    delete m_artists.at(cpt);
+                    m_layout->removeWidget(art);
+                    delete art;
                 }
 
                 m_artists.clear();
@@ -375,7 +330,6 @@ DEBUG_BLOCK
 void
 SimilarArtistsApplet::saveMaxArtists()
 {
-DEBUG_BLOCK
 
     m_maxArtists = m_temp_maxArtists;
 
@@ -392,21 +346,7 @@ SimilarArtistsApplet::saveSettings()
     saveMaxArtists();
 
     //simulate a update of data to update the content of the applet accordingly to the new settings
-    dataUpdated( NULL, dataEngine( "amarok-similarArtists" )->query( "similarArtists" ) );
-}
-
-void
-SimilarArtistsApplet::setGeom( )
-{
-    //updateConstraints();
-//     constraintsEvent();
-//     updateConstraints();
-//     update();
-//      foreach(ArtistWidget* art, m_artists)
-//     {
-//       art->adjustSize();
-//       delete art;
-//     }
+    dataUpdated( NULL, dataEngine( "amarok-similarArtists" )->query( "similarArtists" ) );    
 }
 
 

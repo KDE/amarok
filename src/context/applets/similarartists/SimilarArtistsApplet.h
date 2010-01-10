@@ -70,7 +70,6 @@ protected:
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-    void setGeom();
 
 private:
     qreal m_aspectRatio;
