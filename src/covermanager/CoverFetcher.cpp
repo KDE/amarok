@@ -263,7 +263,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
 
         case Cancelled:
         {
-            const QString text = i18n( "Cancelled fetching cover for '%1'.", albumName );
+            const QString text = i18n( "Canceled fetching cover for '%1'.", albumName );
             The::statusBar()->shortMessage( text );
             break;
         }

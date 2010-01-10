@@ -133,7 +133,7 @@
            </sizepolicy>
           </property>
           <property name="toolTip">
-           <string>The equalizer allows to alter the sound of your music.</string>
+           <string>The equalizer allows you to alter the sound of your music.</string>
           </property>
           <property name="text">
            <string>Configure Equalizer</string>
