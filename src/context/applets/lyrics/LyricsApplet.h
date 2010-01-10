@@ -70,6 +70,9 @@ protected:
 private:
     void setEditing( const bool isEditing );
     void collapseToMin();
+    void determineActionIconsState();
+    void showLyrics();
+    void showSuggested();
 
     QString m_titleText;
     TextScrollingWidget* m_titleLabel;
@@ -81,9 +84,8 @@ private:
     Plasma::IconWidget*  m_settingsIcon;
 
     // holds main body
-    QGraphicsProxyWidget *m_lyricsProxy;
+    QGraphicsProxyWidget *m_proxy;
     QTextBrowser         *m_lyrics;
-    QGraphicsProxyWidget *m_suggestedProxy;
     QTextBrowser         *m_suggested;
 
     Ui::lyricsSettings    ui_Settings;
