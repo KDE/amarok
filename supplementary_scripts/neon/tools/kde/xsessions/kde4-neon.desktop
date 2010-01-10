@@ -6,6 +6,7 @@ TryExec=/usr/bin/startneonkde
 Name=KDE Nightly (Neon)
 Name[bg]=KDE Nightly (Neon)
 Name[ca]=KDE Nightly (Neon)
+Name[ca@valencia]=KDE Nightly (Neon)
 Name[cs]=KDE Nightly (Neon)
 Name[csb]=KDE Nightly (Neon)
 Name[da]=KDE Nightly (Neon)
@@ -51,6 +52,7 @@ Name[zh_CN]=KDE Nightly (Neon)
 Comment=The K Desktop Environment. A powerful Open Source graphical desktop environment
 Comment[bg]=KDE - мощна графична среда
 Comment[ca]=L'entorn d'escriptori K. Un potent entorn d'escriptori gràfic de codi obert
+Comment[ca@valencia]=L'entorn d'escriptori K. Un potent entorn d'escriptori gràfic de codi obert
 Comment[cs]=K Desktop Environment. Výkonné Open Source grafické desktopové prostředí
 Comment[da]=K Desktop Environment (KDE). Et kraftfuldt, grafisk open source  skrivebordsmiljø
 Comment[de]=Das K Desktop Environment. Eine mächtige grafische Open-Source-Arbeitsumgebung.

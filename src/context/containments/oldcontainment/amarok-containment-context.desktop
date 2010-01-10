@@ -2,6 +2,7 @@
 Name=Context
 Name[bg]=Контекст
 Name[ca]=Context
+Name[ca@valencia]=Context
 Name[cs]=Kontext
 Name[csb]=Kòntekst
 Name[da]=Kontekst
@@ -55,6 +56,7 @@ Name[zh_CN]=上下文
 Comment=A containment for the Amarok Context
 Comment[bg]=Контекст на Amarok
 Comment[ca]=Un contenidor per a l'Amarok Context
+Comment[ca@valencia]=Un contenidor per a l'Amarok Context
 Comment[da]=En beholder til Amarok-kontekst
 Comment[de]=Ein Behältnis für Amarok-Kontext
 Comment[el]=Ένας υποδοχέας για το περιεχόμενο Amarok

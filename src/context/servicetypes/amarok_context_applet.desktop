@@ -6,6 +6,7 @@ X-KDE-ServiceType=Plasma/Applet
 Comment=Amarok Context applet
 Comment[bg]=Аплет за контекст (Amarok)
 Comment[ca]=Miniaplicació Amarok Context 
+Comment[ca@valencia]=Miniaplicació Amarok Context 
 Comment[cs]=Applet Amarok Kontext
 Comment[csb]=Aplet kòntekstu Amaroka
 Comment[da]=Amarok kontekst-applet

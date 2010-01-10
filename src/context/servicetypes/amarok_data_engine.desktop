@@ -2,6 +2,7 @@
 Name=Amarok Data Engine
 Name[bg]=Ядро Amarok
 Name[ca]=Motor de dades de l'Amarok
+Name[ca@valencia]=Motor de dades de l'Amarok
 Name[cs]=Datový nástroj Amarok
 Name[csb]=Mòtór pòdôwków Amaroka
 Name[da]=Datamotor til Amarok
@@ -54,6 +55,7 @@ X-KDE-ServiceType=Plasma/DataEngine
 Comment=Amarok Data Engine
 Comment[bg]=Ядро Amarok
 Comment[ca]=Motor de dades de l'Amarok
+Comment[ca@valencia]=Motor de dades de l'Amarok
 Comment[cs]=Datový nástroj Amarok
 Comment[csb]=Mòtór pòdôwków Amaroka
 Comment[da]=Datamotor til Amarok
