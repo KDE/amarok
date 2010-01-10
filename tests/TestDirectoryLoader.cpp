@@ -29,12 +29,13 @@
 /* This one is a bit ugly, as the results of the methods in DirectoryLoader can't *
  * be checked directly there but only in the playlist.                            */
 
-TestDirectoryLoader::TestDirectoryLoader( QStringList testArgumentList, bool stdout )
+TestDirectoryLoader::TestDirectoryLoader( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "DirectoryLoader.xml" );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "DirectoryLoader.xml" );
 
-    m_testArgumentList = testArgumentList;
+    m_testArgumentList = combinedArgs;
     m_finishedLoaders = 0;
 
     The::playlistController()->clear(); // we need a clear playlist for those tests

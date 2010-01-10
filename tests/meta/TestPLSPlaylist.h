@@ -29,7 +29,7 @@ class TestPLSPlaylist : public QObject
 Q_OBJECT
 
 public:
-    TestPLSPlaylist( QStringList testArgumentList, bool stdout );
+    TestPLSPlaylist( const QStringList args, const QString &logPath );
 
 private slots:
     void initTestCase();

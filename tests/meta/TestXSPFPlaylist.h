@@ -31,7 +31,7 @@ class TestXSPFPlaylist : public QObject
 Q_OBJECT
 
 public:
-    TestXSPFPlaylist( QStringList testArgumentList, bool stdout );
+    TestXSPFPlaylist( const QStringList args, const QString &logPath );
 
 private slots:
     void initTestCase();

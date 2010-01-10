@@ -29,7 +29,7 @@ class TestTimecodeTrackProvider : public QObject
 Q_OBJECT
 
 public:
-    TestTimecodeTrackProvider( QStringList testArgumentList, bool stdout );
+    TestTimecodeTrackProvider( const QStringList args, const QString &logPath );
 
 private slots:
     void testPossiblyContainsTrack();

@@ -26,11 +26,12 @@
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 
-TestXSPFPlaylist::TestXSPFPlaylist( QStringList testArgumentList, bool stdout )
+TestXSPFPlaylist::TestXSPFPlaylist( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "XSPFPlaylist.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "XSPFPlaylist.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestXSPFPlaylist::initTestCase()

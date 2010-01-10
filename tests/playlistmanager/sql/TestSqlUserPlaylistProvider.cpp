@@ -25,11 +25,12 @@
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 
-TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider( QStringList testArgumentList, bool stdout )
+TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "SqlUserPlaylistProvider.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "SqlUserPlaylistProvider.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 

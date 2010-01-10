@@ -31,7 +31,7 @@ class TestMetaFileTrack : public QObject
 Q_OBJECT
 
 public:
-    TestMetaFileTrack( QStringList testArgumentList, bool stdout );
+    TestMetaFileTrack( const QStringList args, const QString &logPath );
 
 private slots:
     void initTestCase();

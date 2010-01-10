@@ -25,11 +25,12 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 
-TestPLSPlaylist::TestPLSPlaylist( QStringList testArgumentList, bool stdout )
+TestPLSPlaylist::TestPLSPlaylist( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PLSPlaylist.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "PLSPlaylist.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestPLSPlaylist::initTestCase()

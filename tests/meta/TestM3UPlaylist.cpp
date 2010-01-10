@@ -26,11 +26,12 @@
 #include <QtCore/QDir>
 #include <QtCore/QString>
 
-TestM3UPlaylist::TestM3UPlaylist( QStringList testArgumentList, bool stdout )
+TestM3UPlaylist::TestM3UPlaylist( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "M3UPlaylist.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "M3UPlaylist.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestM3UPlaylist::initTestCase()

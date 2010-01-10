@@ -29,7 +29,7 @@ class TestPlaylistFileProvider : public QObject
 Q_OBJECT
 
 public:
-    TestPlaylistFileProvider( QStringList testArgumentList, bool stdout );
+    TestPlaylistFileProvider( const QStringList args, const QString &logPath );
 
 private slots:
     void testPlaylists();

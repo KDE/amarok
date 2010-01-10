@@ -27,7 +27,7 @@ class TestCaseConverter : public QObject
 Q_OBJECT
 
 public:
-    TestCaseConverter( QStringList testArgumentList, bool stdout );
+    TestCaseConverter( const QStringList args, const QString &logPath );
 
 private slots:
     void testToCapitalizedCase();

@@ -27,11 +27,12 @@ MetaCue::CueFileItem testItem2( "title", "artist", "album", 10, 10 );
 MetaCue::CueFileItem testItem3( " title ", " artist ", " album ", 100, 100 );
 MetaCue::CueFileItem testItem4( "ti tle", "ar tist", "al bum", 1000, 1000 );
 
-TestMetaCueCueFileItem::TestMetaCueCueFileItem( QStringList testArgumentList, bool stdout )
+TestMetaCueCueFileItem::TestMetaCueCueFileItem( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueCueFileItem.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "MetaCueCueFileItem.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestMetaCueCueFileItem::testSetAndGetLength()

@@ -27,12 +27,13 @@
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 
-TestMetaMultiTrack::TestMetaMultiTrack( QStringList testArgumentList, bool stdout )
+TestMetaMultiTrack::TestMetaMultiTrack( const QStringList args, const QString &logPath )
     : m_testMultiTrack( 0 )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaMultiTrack.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "MetaMultiTrack.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestMetaMultiTrack::initTestCase()

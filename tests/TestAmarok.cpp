@@ -27,11 +27,12 @@
 #include <QtCore/QString>
 #include <QtCore/QDateTime>
 
-TestAmarok::TestAmarok( QStringList testArgumentList, bool stdout )
+TestAmarok::TestAmarok( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Amarok.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "Amarok.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestAmarok::testAsciiPath()

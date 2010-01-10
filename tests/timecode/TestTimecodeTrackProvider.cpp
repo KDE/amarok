@@ -23,11 +23,12 @@
 
 #include <QtTest/QTest>
 
-TestTimecodeTrackProvider::TestTimecodeTrackProvider( QStringList testArgumentList, bool stdout )
+TestTimecodeTrackProvider::TestTimecodeTrackProvider( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "TimecodeTrackProvider.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "TimecodeTrackProvider.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 

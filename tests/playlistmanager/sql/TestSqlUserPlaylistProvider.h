@@ -29,7 +29,7 @@ class TestSqlUserPlaylistProvider : public QObject
 Q_OBJECT
 
 public:
-    TestSqlUserPlaylistProvider( QStringList testArgumentList, bool stdout );
+    TestSqlUserPlaylistProvider( const QStringList args, const QString &logPath );
 
 private slots:
     void testPlaylists();

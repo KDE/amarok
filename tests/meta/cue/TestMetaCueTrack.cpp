@@ -26,11 +26,12 @@
 #include <QtCore/QString>
 
 
-TestMetaCueTrack::TestMetaCueTrack( QStringList testArgumentList, bool stdout )
+TestMetaCueTrack::TestMetaCueTrack( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueTrack.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "MetaCueTrack.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestMetaCueTrack::initTestCase()

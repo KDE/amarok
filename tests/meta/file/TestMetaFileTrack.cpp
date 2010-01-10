@@ -29,11 +29,12 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QFileInfo>
 
-TestMetaFileTrack::TestMetaFileTrack( QStringList testArgumentList, bool stdout )
+TestMetaFileTrack::TestMetaFileTrack( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaFileTrack.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "MetaFileTrack.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestMetaFileTrack::initTestCase()

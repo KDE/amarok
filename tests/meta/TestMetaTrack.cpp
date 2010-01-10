@@ -25,11 +25,12 @@
 
 #include <QtTest/QTest>
 
-TestMetaTrack::TestMetaTrack( QStringList testArgumentList, bool stdout )
+TestMetaTrack::TestMetaTrack( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaTrack.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "MetaTrack.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestMetaTrack::initTestCase()

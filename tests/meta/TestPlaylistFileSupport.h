@@ -28,7 +28,7 @@ class TestPlaylistFileSupport : public QObject
 Q_OBJECT
 
 public:
-    TestPlaylistFileSupport( QStringList testArgumentList, bool stdout );
+    TestPlaylistFileSupport( const QStringList args, const QString &logPath );
 
 private slots:
     void initTestCase();

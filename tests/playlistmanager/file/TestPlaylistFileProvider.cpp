@@ -26,11 +26,12 @@
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 
-TestPlaylistFileProvider::TestPlaylistFileProvider( QStringList testArgumentList, bool stdout )
+TestPlaylistFileProvider::TestPlaylistFileProvider( const QStringList args, const QString &logPath )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PlaylistFileProvider.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    if( !logPath.isEmpty() )
+        combinedArgs << QString( "-o" ) << QString( logPath + "PlaylistFileProvider.xml" );
+    QTest::qExec( this, combinedArgs );
 }
 
 
