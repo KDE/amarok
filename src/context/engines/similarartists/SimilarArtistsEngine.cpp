@@ -180,8 +180,10 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
     // It's the correct job but it errored out
     if( job->error() != KJob::NoError && job == m_similarArtistsJob )
     {
-        //TODO display a error message
-        //setData( "similarArtists", "message", i18n( "Unable to retrieve SimilarArtists information: %1", job->errorString() ) );
+        // probably we haven't access to internet
+        // sent a empty list
+        QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+        setData ( "similarArtists", "SimilarArtists", variant );
         m_similarArtistsJob = 0; // clear job
         return;
     }    

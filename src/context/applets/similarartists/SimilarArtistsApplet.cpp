@@ -223,6 +223,9 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
            if ( !similars.isEmpty() )
             {
+                //if the applet are collapsed, decollapse it
+                setCollapseOff();
+                
                 // we see the number of artist we need display
                 int sizeArtistsDisplay=m_maxArtists>similars.size()?similars.size():m_maxArtists;
 
@@ -266,12 +269,12 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
                 m_artists.clear();
 
-                m_headerLabel->setText( i18n( "Similar artist" ) + QString( " : " ) + i18n( "No similar artist found" ) );
-                
+                m_headerLabel->setText( i18n( "Similar artists" ) + QString( " : " ) + i18n( "no similar artists found" ) );
+                setCollapseOn();
             }
 
         } else { // the artist name is invalid
-            m_headerLabel->setText( i18n( "Similar Artists" ) );
+            m_headerLabel->setText( i18n( "Similar artists" ) );
         }
 
         updateConstraints();
