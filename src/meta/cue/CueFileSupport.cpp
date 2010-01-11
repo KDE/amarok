@@ -51,8 +51,6 @@ CueFileItemMap CueFileSupport::loadCueFile( Meta::TrackPtr track )
 
     qint64 mediaLength = track->length();
     
-    
-    int lastSeekPos = -1;
 
     debug() << "CUEFILE: " << cuefile.pathOrUrl();
     if ( QFile::exists ( cuefile.pathOrUrl() ) )
@@ -423,8 +421,6 @@ Meta::TrackList
 CueFileSupport::generateTimeCodeTracks( Meta::TrackPtr baseTrack, CueFileItemMap itemMap )
 {
     Meta::TrackList trackList;
-
-    int trackNumber = 1;
 
     foreach( CueFileItem item, itemMap )
     {
