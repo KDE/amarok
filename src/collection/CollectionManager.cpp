@@ -364,7 +364,6 @@ CollectionManager::slotRemoveCollection()
         d->collections.removeAll( pair );
         d->managedCollections.removeAll( collection );
         d->trackProviders.removeAll( collection );
-        SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( collection );
         QVariant v = collection->property( "sqlStorage" );
         if( v.isValid() )
         {
