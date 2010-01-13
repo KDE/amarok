@@ -25,6 +25,7 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Lyrics applet: Fixed saving and restoring font styles. (BR 222277)
     * Lyrics applet: Fixed a bug where sometimes suggested URLs are not
       cleared when switching tracks.
     * Fixed playlist layout editor blocking control of Amarok. (BR 220825)
