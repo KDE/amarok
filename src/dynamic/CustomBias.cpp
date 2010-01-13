@@ -39,6 +39,8 @@ Dynamic::CustomBias::CustomBias( Dynamic::CustomBiasEntry* entry, double weight 
     : m_currentEntry( entry )
     , m_weight( weight )
 {
+
+    connect( m_currentEntry, SIGNAL( biasChanged()), this, SLOT( customBiasChanged() ) );
     debug() << "CREATING NEW CUSTOM BIAS!!! with:" << entry << weight;
 }
 
@@ -90,6 +92,7 @@ Dynamic::CustomBias::xml() const
         QDomElement e = doc.createElement( "bias" );
         e.setAttribute( "type", "custom" );
         QDomElement child = doc.createElement( "custombias" );
+        debug() << "saving custom bias entry of type:" << m_currentEntry->pluginName();
         child.setAttribute( "name", m_currentEntry->pluginName() );
         child.setAttribute( "weight", m_weight );
 
@@ -104,7 +107,6 @@ Dynamic::CustomBias::xml() const
 double
 Dynamic::CustomBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist, Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context )
 {
-    DEBUG_BLOCK
     Q_UNUSED( context )
 
     if( !m_currentEntry ) // wtf it died under us, return oldEnergy
@@ -118,15 +120,15 @@ Dynamic::CustomBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPla
     
     if( m_currentEntry->trackSatisfies( newTrack ) && !prevSatisfied )
     {
-        debug() << "new satisfies and old doesn't:" << oldEnergy - offset;
+//         debug() << "new satisfies and old doesn't:" << oldEnergy - offset;
         return oldEnergy - offset;
     } else if( !m_currentEntry->trackSatisfies( newTrack ) && prevSatisfied )
     {
-        debug() << "new doesn't satisfy and old did:" << oldEnergy + offset;
+//         debug() << "new doesn't satisfy and old did:" << oldEnergy + offset;
         return oldEnergy + offset;
     } else
     {
-        debug() << "no change:" << oldEnergy;
+//         debug() << "no change:" << oldEnergy;
         return oldEnergy;
     }
 }
@@ -203,7 +205,8 @@ Dynamic::CustomBias::fromXml(QDomElement e)
                 if( factory->pluginName() == pluginName )
                 {
                     debug() << "found matching bias type! creating :D";
-                    return createBias(  factory->newCustomBias( biasNode.firstChild().toElement(), weight ), weight );
+                    CustomBiasEntry* cbias = factory->newCustomBias( biasNode.firstChild().toElement() , weight );
+                    return createBias( cbias, weight );
                 }
             }
             // didn't find a factory for the bias, but we at leasst get a weight, so set that and remember
@@ -243,6 +246,14 @@ Dynamic::CustomBias::createBias( Dynamic::CustomBiasEntry* entry, double weight 
     s_biases.append( newBias );
     return newBias;
 }
+
+
+void Dynamic::CustomBias::customBiasChanged()
+{
+    debug() << "custom bias emitting changed";
+    emit biasChanged( this );
+}
+
 
 void
 Dynamic::CustomBias::setCurrentEntry( Dynamic::CustomBiasEntry* entry )

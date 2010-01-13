@@ -77,8 +77,9 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
        
     }
     
-    connect( m_cbias, SIGNAL( biasFactoriesChanged() ), this, SLOT( reloadBiases() ) );
+    connect( m_cbias, SIGNAL( biasFactoriesChanged() ), this, SLOT( refreshBiasFactories() ) );
     connect( m_fieldSelection, SIGNAL( activated( int ) ), this, SLOT( selectionChanged( int ) ) );
+    connect( m_cbias, SIGNAL( biasChanged( Dynamic::Bias* ) ), this, SIGNAL( biasChanged( Dynamic::Bias* ) ) );
 
     m_fieldSelection->setCurrentIndex( currentEntry );
     m_weightSelection->setValue( m_cbias->weight() * 100 );

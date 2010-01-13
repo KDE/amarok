@@ -19,6 +19,7 @@
 
 #include "amarok_export.h"
 #include "CustomBiasEntry.h"
+#include "CustomBiasFactory.h"
 #include "DynamicBiasWidgets.h"
 #include "Bias.h"
 
@@ -86,6 +87,10 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
     signals:
         void weightChanged( double );
         void biasFactoriesChanged();
+        void biasChanged( Dynamic::Bias* );
+
+    private slots:
+        void customBiasChanged();
         
     private:
         CustomBias();

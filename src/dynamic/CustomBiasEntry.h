@@ -24,42 +24,6 @@
 namespace Dynamic
 {
 
-class CustomBiasEntry;
-
-/**
- * The factory which creates custom bias entries on demand. As the user can create any number
- * of biases from from the bias addition widget, new custom biass types need to be able to be
- * generated on command and at runtime.
- **/
-class AMAROK_EXPORT CustomBiasFactory
-{
-    public:
-        CustomBiasFactory() {}
-        virtual ~CustomBiasFactory() {}
-
-        /**
-         *   Returns the name of the type of bias. eg. "Last.fm Similar Artists"
-         */
-        virtual QString name() const = 0;
-
-        /**
-         * Returns an internal non-translatable name for this custom bias type.
-         */
-        virtual QString pluginName() const = 0;
-
-        /**
-         * Create the custom bias. The caller takes owner of the pointer
-         */
-        virtual CustomBiasEntry* newCustomBias( double weight ) = 0;
-
-        /**
-         * Creates a new custom bias from the saved settings in the xml doc.
-         * The XML should be saved in CustomBiasEntry::xml().
-         */
-        virtual CustomBiasEntry* newCustomBias( QDomElement e , double weight ) = 0;
-
-};
-
 /**
  *  This is the object that the singleton CustomBias can register. A service, or anything
  *  else, can register a new CustomBiasEntry for the user to select as a type of Custom Bias.
@@ -119,6 +83,9 @@ class AMAROK_EXPORT CustomBiasEntry : public QObject
 
         double weight();
 
+    signals:
+        void biasChanged();
+        
     public slots:
         // takes an int 0-100 as it is connected to the slider
         void setWeight( int weight );
@@ -131,7 +98,6 @@ class AMAROK_EXPORT CustomBiasEntry : public QObject
 }
 
 
-Q_DECLARE_METATYPE( Dynamic::CustomBiasFactory* )
 Q_DECLARE_METATYPE( Dynamic::CustomBiasEntry* )
 
 #endif

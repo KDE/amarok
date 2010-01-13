@@ -18,6 +18,7 @@
 #define ECHO_NEST_BIAS_H
 
 #include "CustomBiasEntry.h"
+#include "CustomBiasFactory.h"
 #include <QNetworkReply>
 #include "EngineObserver.h"
 
