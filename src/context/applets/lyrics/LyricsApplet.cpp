@@ -148,9 +148,10 @@ void LyricsApplet::init()
 
     // Read config
     KConfigGroup config = Amarok::config("Lyrics Applet");
-    QFont font( config.readEntry( "Font", QString() ),
-                config.readEntry( "Size", -1 ) );
-    m_lyrics->setFont( font );
+    QFont font;
+    bool fontGood = font.fromString( config.readEntry( "Font", QString() ) );
+    if( fontGood )
+        m_lyrics->setFont( font );
 
     connect( m_suggested, SIGNAL( anchorClicked( const QUrl& ) ), this, SLOT( suggestionChosen( const QUrl& ) ) );
     connect( dataEngine( "amarok-lyrics" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
@@ -401,8 +402,7 @@ LyricsApplet::changeLyricsFont()
     m_lyrics->setFont( font );
 
     KConfigGroup config = Amarok::config("Lyrics Applet");
-    config.writeEntry( "Font", font.family() );
-    config.writeEntry( "Size", font.pointSize() );
+    config.writeEntry( "Font", font.toString() );
 
     debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
     // resize with new font
