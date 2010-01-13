@@ -2,6 +2,7 @@ Amarok ChangeLog
 ================
 (C) 2002-2010 the Amarok authors.
 
+
 VERSION 2.2.3
   FEATURES:
     * Non collection files with a cue sheet will now load their tracks as
@@ -27,6 +28,8 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Fixed bug in Photos applet that made it break with translated versions
+      of Amarok. Patch by Bellegarde Cédric <gnumdk@gmail.com>. (BR 222566)
     * Lyrics applet: Fixed saving and restoring font styles. (BR 222277)
     * Lyrics applet: Fixed a bug where sometimes suggested URLs are not
       cleared when switching tracks.
