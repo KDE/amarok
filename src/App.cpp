@@ -69,6 +69,7 @@
 #include <KStandardDirs>
 
 #include <QByteArray>
+#include <QDesktopServices>
 #include <QFile>
 #include <KPixmapCache>
 #include <QStringList>
@@ -737,7 +738,33 @@ App::continueInit()
     {
         if( config.readEntry( "First Run", true ) )
         {
-            slotConfigAmarok( "CollectionConfig" );
+            const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+            const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
+            const QDir dir( musicDir );
+
+            int result = KMessageBox::No;
+            if( dir.exists() && dir.isReadable() )
+            {
+                result = KMessageBox::questionYesNoCancel(
+                    mainWindow(),
+                    i18n( "A music path, %1, is set in System Settings.\nWould you like to use that as a collection folder?", musicDir )
+                    );
+            }
+
+            switch( result )
+            {
+            case KMessageBox::Yes:
+                MountPointManager::instance()->setCollectionFolders( QStringList() << musicDir );
+                CollectionManager::instance()->startFullScan();
+                break;
+
+            case KMessageBox::No:
+                slotConfigAmarok( "CollectionConfig" );
+                break;
+
+            default:
+                break;
+            }
             config.writeEntry( "First Run", false );
         }
     }

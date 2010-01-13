@@ -365,35 +365,12 @@ MountPointManager::collectionFolders()
                 result.append( absPath );
         }
     }
-
-    if( result.isEmpty() )
-    {
-        const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-        const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
-        debug() << "QDesktopServices::MusicLocation:" << musicDir;
-
-        if( !musicDir.isEmpty() )
-        {
-            const QDir dir( musicDir );
-            if( dir != QDir::home() && dir.exists() )
-            {
-                result << musicDir;
-            }
-        }
-    }
     return result;
 }
 
 void
 MountPointManager::setCollectionFolders( const QStringList &folders )
 {
-    if( folders.size() == 1 )
-    {
-        if( folders[0] == QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) )
-        {
-            return;
-        }
-    }
     typedef QMap<int, QStringList> FolderMap;
     KConfigGroup folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
