@@ -1,7 +1,7 @@
 /****************************************************************************************
 * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
 * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
-* Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+* Copyright (c) 2009-2010 Joffrey Clavel <jclavel@clabert.info>                        *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -29,15 +29,12 @@
 using namespace Context;
 
 
-
-
 SimilarArtistsEngine::SimilarArtistsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
     , m_similarArtistsJob( 0 )
     , m_currentSelection( "artist" )
     , m_requested( true )
-    , m_sources( "current" )
     , m_triedRefinedSearch( 0 )
 {
     update();
@@ -45,42 +42,7 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject* parent, const QList<QVarian
 
 SimilarArtistsEngine::~SimilarArtistsEngine()
 {
-    DEBUG_BLOCK
-    delete m_similarArtistsJob;
-    
-}
-
-QMap<int, QString> SimilarArtistsEngine::similarArtists(const QString &artist_name)
-{
-    lastfm::Artist artist(artist_name);
-    return artist.getSimilar(artist.getSimilar());
-}
-
-
-QStringList SimilarArtistsEngine::sources() const
-{
-    return m_sources;
-}
-
-bool SimilarArtistsEngine::sourceRequestEvent( const QString& name )
-{
-    DEBUG_BLOCK
-
-    m_requested = true; // someone is asking for data, so we turn ourselves on :)
-    QStringList tokens = name.split( ':' );
-
-    // user has changed the maximum artists returned.
-    if ( tokens.contains( "maxArtists" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )            
-            m_maxArtists = tokens.at( 2 ).toInt();
-
-            
-    // otherwise, it comes from the engine, a new track is playing.
-    removeAllData( name );
-    setData( name, QVariant());
-    update();
-
-    return true;
+    delete m_similarArtistsJob;    
 }
 
 void SimilarArtistsEngine::message( const ContextState& state )
@@ -91,17 +53,18 @@ void SimilarArtistsEngine::message( const ContextState& state )
 
 void SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( track )
-    DEBUG_BLOCK
-    
+    Q_UNUSED( track )    
     update();
 }
 
 void SimilarArtistsEngine::update()
 {
-    DEBUG_BLOCK
-
-    debug() << "SAE update";
+    
+    //new update, if a job is not terminated, we kill it
+    if(m_similarArtistsJob) {
+        m_similarArtistsJob->kill();
+        m_similarArtistsJob= 0;
+    }
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     
@@ -130,8 +93,13 @@ void SimilarArtistsEngine::update()
                 artistName = currentTrack->artist()->prettyName();
         }
         
-        if (artistName.compare("") == 0) {
+        if (artistName.compare("") == 0) { // Unknown artist
             setData( "similarArtists", "artist", "Unknown artist" );
+
+            // we send an empty list
+            m_similarArtists.clear();
+            QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+            setData ( "similarArtists", "SimilarArtists", variant );                
         } else { // if(artistName!=m_artist) { // we update the data only
                                           // if the artist has changed
             setData( "similarArtists", "artist", artistName );
@@ -158,13 +126,20 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
-    m_maxArtists = config.readEntry( "maxArtists", "3" ).toInt(); //the default is already fixed by the applet
-    url.addQueryItem( "limit", QString(m_maxArtists) );
 
-    m_artist=artist_name;
+    //fix the limit of the request, the default is already fixed by the applet
+    url.addQueryItem( "limit", config.readEntry( "maxArtists", "3" ) );
     
-    m_similarArtistsJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_similarArtistsJob, SIGNAL(result( KJob* )), SLOT(similarArtistsParse( KJob* )) );
+    m_artist=artist_name;
+
+    debug()<< "SAE request detail : " << url.toString();
+    m_similarArtistsJob = KIO::storedGet( url,
+                                          KIO::NoReload,
+                                          KIO::HideProgressInfo );
+                                          
+    connect( m_similarArtistsJob,
+             SIGNAL(result( KJob* )),
+             SLOT(similarArtistsParse( KJob* )) );
 }
 
 void
@@ -255,6 +230,7 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
         m_similarArtists.append( SimilarArtist(name,match,url,imageUrl, m_artist ));
 
         n = n.nextSibling();
+        debug()<< "SAE Taille de la liste : " << m_similarArtists.size();
     }
 
     m_similarArtistsJob=0;
