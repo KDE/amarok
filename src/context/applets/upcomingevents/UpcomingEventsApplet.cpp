@@ -171,7 +171,6 @@ void
 UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     DEBUG_BLOCK
-    
     Q_UNUSED( name )
     QString artistName = data[ "artist" ].toString();
     if (artistName.compare( "" ) != 0)
@@ -180,6 +179,12 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         m_headerLabel->setText( i18n( "Upcoming events" ) );
 
     LastFmEvent::LastFmEventList events = data[ "LastFmEvent" ].value< LastFmEvent::LastFmEventList >();
+
+    foreach( UpcomingEventsWidget *u, m_widgets)
+    {
+     delete u;
+    }
+
     m_widgets.clear();
 
     debug() << "TAILLE DE EVENTS = " << events.size();
@@ -204,9 +209,9 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
                                                        events.at( i ).date(),
                                                        artistList,
                                                        events.at( i ).url(),
-                                                       events.at( i ).smallImageUrl() ) );
+                                                       events.at( i ).smallImageUrl()) );
+
     }
-    
     updateConstraints();
     update();
 }

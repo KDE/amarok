@@ -38,6 +38,9 @@ UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString
     m_name = new QLabel( this );
     m_url = new QLabel( this );
 
+    m_participants->setWordWrap( true );
+    m_name->setWordWrap( true );
+
     setName( name );
     setDate( date );
     setParticipants( participants );
@@ -145,5 +148,7 @@ UpcomingEventsWidget::setUrl( const KUrl &url )
     m_url->setText( "<html><body><a href=\"" + url.prettyUrl() + "\"><u>" + i18n( "Event website" ) + "</u></a></body></html>" );
     m_url->setAttribute( Qt::WA_TranslucentBackground );
 }
+
+
 
 #include "UpcomingEventsWidget.moc"
