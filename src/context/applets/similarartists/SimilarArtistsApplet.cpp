@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2010 Alexandre Mendes <alex.mendes1988@gmail.com>                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -61,14 +62,17 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
 SimilarArtistsApplet::~SimilarArtistsApplet()
 {
     DEBUG_BLOCK
+    debug() << "SAA Destructeur";
     debug()<<"1";
     delete m_headerLabel;
     debug()<<"2";
     delete m_settingsIcon;
     debug()<<"3";
-    
+    delete m_layout;
     debug()<<"4";
-    //delete m_layout;
+    delete m_scroll; // Destroy automatically his child widget
+    debug()<<"5";
+//    delete m_scrollProxy;
 }
 
 
@@ -220,6 +224,8 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
            
            
            SimilarArtist::SimilarArtistsList similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
+
+           debug()<<"SAA.tailleListe " << similars.size();
 
            if ( !similars.isEmpty() )
             {
