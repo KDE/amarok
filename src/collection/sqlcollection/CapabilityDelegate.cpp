@@ -203,7 +203,6 @@ TrackCapabilityDelegate::TrackCapabilityDelegate()
 bool
 TrackCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlTrack *track ) const
 {
-    DEBUG_BLOCK
     if( !track )
         return false;
 
@@ -231,7 +230,6 @@ TrackCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, co
 Meta::Capability*
 TrackCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlTrack *track )
 {
-    DEBUG_BLOCK
     if( !track )
     {
         return 0;
