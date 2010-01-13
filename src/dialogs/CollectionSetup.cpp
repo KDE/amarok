@@ -199,6 +199,10 @@ namespace CollectionFolder {
                 m_checked.insert( path );
             else
                 m_checked.remove( path );
+
+            const QModelIndex &parentIndex = parent( index );
+            const int lastRow = rowCount( parentIndex );
+            emit dataChanged( sibling( 0, 0, parentIndex), sibling( lastRow, 0, parentIndex ) );
             return true;
         }
         return QFileSystemModel::setData( index, value, role );

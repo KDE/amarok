@@ -11,6 +11,8 @@ VERSION 2.2.3
     * Searching covers from Last.fm using custom query in interactive mode.
  
   CHANGES:
+    * First run: Let users decided on how to handle music location set
+      in standard desktop services.
     * Improved cover fetching accuracy and speed.
     * Usability: Better design of playback configuration dialog.
     * Use millisecond accuracy for track bookmarks. Backwards compatible
