@@ -28,6 +28,8 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Lyrics applet: Fixed scrollbar incorrectly displayed (and sometimes not
+      at all) for long lyrics under KDE 4.4. (BR 222260)
     * Fixed bug in Photos applet that made it break with translated versions
       of Amarok. Patch by Bellegarde Cédric <gnumdk@gmail.com>. (BR 222566)
     * Lyrics applet: Fixed saving and restoring font styles. (BR 222277)

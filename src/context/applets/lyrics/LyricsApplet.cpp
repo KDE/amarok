@@ -34,6 +34,7 @@
 #include <KTabWidget>
 
 #include <Plasma/IconWidget>
+#include <Plasma/Containment>
 
 #include <QAction>
 #include <QGraphicsProxyWidget>
@@ -542,7 +543,9 @@ void LyricsApplet::collapseToMin()
     // only show vertical scrollbar if there are lyrics and is needed
     browser->setVerticalScrollBarPolicy( m_hasLyrics ? Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff );
 
-    setCollapseHeight( contentHeight );
+    const qreal containerHeight = containment()->size().height() - 1.0;
+    const qreal collapsedHeight = ( contentHeight > containerHeight ) ? containerHeight : contentHeight;
+    setCollapseHeight( collapsedHeight );
     setCollapseOn();
 }
 
