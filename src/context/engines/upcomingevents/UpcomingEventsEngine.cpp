@@ -97,6 +97,7 @@ void UpcomingEventsEngine::update()
     // We've got a new track, great, let's fetch some info from UpcomingEvents !
     m_triedRefinedSearch = 0;
     QString artistName;
+    static QString lastArtistName;
 
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
@@ -129,7 +130,11 @@ void UpcomingEventsEngine::update()
 
     QPixmap cover = m_currentTrack->album()->image( 156 );
 
-    upcomingEventsRequest( artistName );
+    if( artistName != lastArtistName )
+    {
+        upcomingEventsRequest( artistName );
+        lastArtistName = artistName;
+    }
 }
 
 void UpcomingEventsEngine::reloadUpcomingEvents()
@@ -214,14 +219,15 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
         }
 
         // Event date
+        QLocale::setDefault(QLocale::English);
         QDomNode startDateNode = n.namedItem( "startDate" );
         QDomElement startDateElement = startDateNode.toElement();
         QDateTime startDate;
         if( !startDateElement.isNull() )
         {
-            QString startDateString = startDateElement.text();            
-            startDate.setDate( QDate::fromString( startDateString.section( "", 0, 16 ), "ddd, dd MMM yyyy" ) );
-            startDate.setTime( QTime::fromString( startDateString.section( "", 18 ), "HH:mm:ss" ) );
+            QString startDateString = startDateElement.text();
+            startDate = QLocale().toDateTime( startDateString, "ddd, dd MMM yyyy HH:mm:ss" );
+
         }
 
         // Event url
@@ -251,7 +257,6 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
     }
 
     QVariant variant ( QMetaType::type( "LastFmEvent::LastFmEventList" ), &m_upcomingEvents );
-    debug() << "setData";
     removeData("upcomingEvents", "LastFmEvent");
     setData ( "upcomingEvents", "LastFmEvent", variant );
 }

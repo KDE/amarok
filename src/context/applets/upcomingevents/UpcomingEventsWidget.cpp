@@ -16,7 +16,6 @@
 
 #include "UpcomingEventsWidget.h"
 
-#include "Debug.h"
 
 #include <QDateTime>
 #include <QGridLayout>
@@ -29,6 +28,7 @@
 #include <QGridLayout>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
+#include <QDesktopServices>
 
 UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString participants, KUrl url, KUrl image, QWidget* parent): QWidget( parent )
 {
@@ -40,6 +40,7 @@ UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString
 
     m_participants->setWordWrap( true );
     m_name->setWordWrap( true );
+
 
     setName( name );
     setDate( date );
@@ -55,6 +56,7 @@ UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString
     m_layout->addWidget( m_url, 3, 1, 1, 1 );
 
     setLayout( m_layout );
+    connect(m_url,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
 }
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
@@ -149,6 +151,10 @@ UpcomingEventsWidget::setUrl( const KUrl &url )
     m_url->setAttribute( Qt::WA_TranslucentBackground );
 }
 
-
+void
+UpcomingEventsWidget::openUrl(QString url)
+{
+    QDesktopServices::openUrl(KUrl(url));
+}
 
 #include "UpcomingEventsWidget.moc"
