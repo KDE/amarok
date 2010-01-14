@@ -1157,7 +1157,7 @@ MtpHandler::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )
 void
 MtpHandler::libSetLength( Meta::MediaDeviceTrackPtr &track, int length )
 {
-    m_mtpTrackHash.value( track )->duration = ( length > 0 ? length*1000 : 0 );
+    m_mtpTrackHash.value( track )->duration = ( length > 0 ? length : 0 );
 }
 void
 MtpHandler::libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum )
