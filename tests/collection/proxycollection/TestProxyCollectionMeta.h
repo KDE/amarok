@@ -26,6 +26,9 @@ public:
     TestProxyCollectionMeta();
 
 private slots:
+    void testHasCapabilityOnSingleTrack();
+    void testCreateCapabilityOnSingleTrack();
+
     void testHasCapabilityOnSingleAlbum();
     void testCreateCapabilityOnSingleAlbum();
 

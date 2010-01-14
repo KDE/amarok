@@ -37,6 +37,30 @@ TestProxyCollectionMeta::TestProxyCollectionMeta()
 {
 }
 
+class MyTrackMock : public MetaMock
+{
+public:
+    MyTrackMock() : MetaMock( QVariantMap() ) {}
+
+    bool hasCapabilityInterface( Meta::Capability::Type type ) const
+    {
+        bool result = results.value( type );
+        results.remove( type );
+        return result;
+    }
+
+    Meta::Capability* createCapabilityInterface(Meta::Capability::Type type)
+    {
+        Meta::Capability* cap = capabilities.value( type );
+        capabilities.remove( type );
+        return cap;
+    }
+
+
+    mutable QMap<Meta::Capability::Type, bool> results;
+    mutable QMap<Meta::Capability::Type, Meta::Capability*> capabilities;
+};
+
 class MyAlbumMock : public MockAlbum
 {
 public:
@@ -162,6 +186,45 @@ class MyOrganiseCapability : public Meta::OrganiseCapability
 public:
     void deleteTrack() {}
 };
+
+void
+TestProxyCollectionMeta::testHasCapabilityOnSingleTrack()
+{
+    MyTrackMock *mock = new MyTrackMock();
+    QMap<Meta::Capability::Type, bool> results;
+    results.insert( Meta::Capability::Buyable, false );
+    results.insert( Meta::Capability::BookmarkThis, true );
+    mock->results = results;
+
+    Meta::TrackPtr ptr( mock );
+
+    ProxyCollection::Track cut( 0, ptr );
+
+    QVERIFY( cut.hasCapabilityInterface( Meta::Capability::BookmarkThis ) );
+    QVERIFY( !cut.hasCapabilityInterface( Meta::Capability::Buyable ) );
+    QCOMPARE( mock->results.count(), 0 );
+}
+
+void
+TestProxyCollectionMeta::testCreateCapabilityOnSingleTrack()
+{
+    MyTrackMock *mock = new MyTrackMock();
+    QMap<Meta::Capability::Type, Meta::Capability*>  capabilities;
+    capabilities.insert( Meta::Capability::Buyable, 0 );
+    Meta::Capability *cap = new MyOrganiseCapability();
+    capabilities.insert( Meta::Capability::Organisable, cap );
+
+    mock->capabilities = capabilities;
+
+    Meta::TrackPtr ptr( mock );
+
+    ProxyCollection::Track cut( 0, ptr );
+
+    QVERIFY( ! cut.createCapabilityInterface( Meta::Capability::Buyable ) );
+    QCOMPARE( cut.createCapabilityInterface( Meta::Capability::Organisable ), cap );
+    QCOMPARE( mock->capabilities.count(), 0 );
+    delete cap;
+}
 
 void
 TestProxyCollectionMeta::testHasCapabilityOnSingleAlbum()
