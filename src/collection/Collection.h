@@ -132,13 +132,14 @@ class AMAROK_EXPORT Collection : public QObject, public TrackProvider, public Co
         */
         virtual UserPlaylistProvider* userPlaylistProvider() { return 0; }
         /**
-            Begin a full scan on the collection.  This is not valid for all collections
+            Begin a full scan on the collection.  This is not valid for all collections.
         */
         virtual void startFullScan() {}
         /**
             Begin an incremental scan on the collection.  This is not valid for all collections.
+            @p directory An optional specification of which directory to scan.
         */
-        virtual void startIncrementalScan() {}
+        virtual void startIncrementalScan( const QString &directory = QString() ) { Q_UNUSED( directory ) }
         /**
             Stop a scan on this collection.  This is not valid for all collections
         */

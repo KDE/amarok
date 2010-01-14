@@ -32,6 +32,24 @@ class QTreeView;
 
 namespace CollectionFolder { class Model; }
 
+class CollectionSetupTreeView : public QTreeView
+{
+    Q_OBJECT
+
+    public:
+        CollectionSetupTreeView( QWidget* );
+        ~CollectionSetupTreeView();
+
+    protected slots:
+        void slotPressed( const QModelIndex &index );
+        void slotRescanDirTriggered();
+
+    private:
+        QAction *m_rescanDirAction;
+        QString m_currDir;
+
+};
+
 class CollectionSetup : public KVBox
 {
     Q_OBJECT
@@ -51,6 +69,8 @@ class CollectionSetup : public KVBox
         bool monitor() const { return m_monitor && m_monitor->isChecked(); }
         bool charset() const { return m_charset && m_charset->isChecked(); }
 
+        const QString modelFilePath( const QModelIndex &index ) const;
+
     signals:
         void changed();
 
@@ -60,7 +80,7 @@ class CollectionSetup : public KVBox
     private:
         static CollectionSetup* s_instance;
 
-        QTreeView *m_view;
+        CollectionSetupTreeView *m_view;
         CollectionFolder::Model *m_model;
         QStringList m_dirs;
         QCheckBox *m_recursive;

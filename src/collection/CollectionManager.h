@@ -121,6 +121,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
     public slots:
         void startFullScan();
+        void startIncrementalScan( const QString &directory = QString() );
         void stopScan();
         void checkCollectionChanges();
 

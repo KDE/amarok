@@ -54,7 +54,7 @@ class ScanManager : public QObject
 
     public slots:
         void startFullScan();
-        void startIncrementalScan();
+        void startIncrementalScan( const QString &directory = QString() );
         void abort( const QString &reason = QString() );
 
     private slots:

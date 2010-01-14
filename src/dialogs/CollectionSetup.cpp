@@ -36,6 +36,45 @@
 #include <QLabel>
 
 
+CollectionSetupTreeView::CollectionSetupTreeView( QWidget *parent )
+        : QTreeView( parent )
+{
+    DEBUG_BLOCK
+    m_rescanDirAction = new QAction( this );
+    connect( this, SIGNAL( pressed(const QModelIndex &) ), this, SLOT( slotPressed(const QModelIndex&) ) );
+    connect( m_rescanDirAction, SIGNAL( triggered() ), this, SLOT( slotRescanDirTriggered() ) );
+}
+
+CollectionSetupTreeView::~CollectionSetupTreeView()
+{
+    this->disconnect();
+    delete m_rescanDirAction;
+}
+
+void
+CollectionSetupTreeView::slotPressed( const QModelIndex &index )
+{
+    DEBUG_BLOCK
+    if( ( QApplication::mouseButtons() |= Qt::RightButton ) && parent() )
+    {
+        m_currDir = qobject_cast<CollectionSetup*>(parent())->modelFilePath( index );        
+        debug() << "Setting current dir to " << m_currDir;
+        m_rescanDirAction->setText( i18n( "Rescan" ) + " '" + m_currDir + "'" );
+        QMenu menu;
+        menu.addAction( m_rescanDirAction );
+        menu.exec( QCursor::pos() );
+    }
+    else
+        QAbstractItemView::pressed( index );
+}
+
+void
+CollectionSetupTreeView::slotRescanDirTriggered()
+{
+    DEBUG_BLOCK
+    CollectionManager::instance()->startIncrementalScan( m_currDir );
+}
+
 CollectionSetup* CollectionSetup::s_instance;
 
 
@@ -51,9 +90,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     (new QLabel( i18n(
         "These folders will be scanned for "
-        "media to make up your collection:"), this ))->setAlignment( Qt::AlignJustify );
+        "media to make up your collection.\n"
+        "You can right-click on a folder to "
+        "individually rescan it:"), this ))->setAlignment( Qt::AlignJustify );
 
-    m_view  = new QTreeView( this );
+    m_view  = new CollectionSetupTreeView( this );
     m_view->setHeaderHidden( true );
     m_view->setRootIsDecorated( true );
     m_view->setAnimated( true );
@@ -143,6 +184,12 @@ CollectionSetup::importCollection()
 {
     DatabaseImporterDialog *dlg = new DatabaseImporterDialog( this );
     dlg->exec(); // be modal to avoid messing about by the user in the application
+}
+
+const QString
+CollectionSetup::modelFilePath( const QModelIndex &index ) const
+{
+    return m_model->filePath( index );
 }
 
 

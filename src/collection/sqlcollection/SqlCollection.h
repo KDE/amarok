@@ -54,7 +54,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
         virtual ~SqlCollection();
 
         virtual void startFullScan();
-        virtual void startIncrementalScan();
+        virtual void startIncrementalScan( const QString &directory = QString() );
         virtual void stopScan();
         virtual QueryMaker* queryMaker();
 

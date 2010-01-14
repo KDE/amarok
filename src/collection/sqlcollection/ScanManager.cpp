@@ -131,7 +131,7 @@ ScanManager::startFullScan()
     }
 }
 
-void ScanManager::startIncrementalScan()
+void ScanManager::startIncrementalScan( const QString &directory )
 {
     DEBUG_BLOCK
     if( m_parser )
@@ -147,33 +147,48 @@ void ScanManager::startIncrementalScan()
 
     checkTables( false );
 
-    QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchincrementalscan.xml" );
-    bool batchfileExists = QFile::exists( batchfileLocation );
-    if( batchfileExists )
-        debug() << "Found batchfile in " << batchfileLocation;
-
     QStringList dirs;
+    QString batchfileLocation;
+    bool batchfileExists = false;
 
-    if( !batchfileExists )
+    if( !directory.isEmpty() )
     {
-        dirs = getDirsToScan();
-
-        debug() << "GOING TO SCAN:";
-        if( dirs.size() > 30 )
-            debug() << "(a *lot*)";
+        debug() << "Scanning directory " << directory;
+        if( isDirInCollection( directory ) )
+            dirs << directory;
         else
         {
-            foreach( const QString &dir, dirs )
-                debug() << "    " << dir;
-        }
-
-        writeBatchIncrementalInfoFile();
-        if( dirs.isEmpty() )
-        {
-            debug() << "Scanning nothing, return.";
+            debug() << "Directory not in collection!";
             return;
         }
+    }
+    else
+    {
+        batchfileLocation = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchincrementalscan.xml";
+        batchfileExists = QFile::exists( batchfileLocation );
+        if( batchfileExists )
+            debug() << "Found batchfile in " << batchfileLocation;
 
+        if( !batchfileExists )
+        {
+            dirs = getDirsToScan();
+
+            debug() << "GOING TO SCAN:";
+            if( dirs.size() > 30 )
+                debug() << "(a *lot*)";
+            else
+            {
+                foreach( const QString &dir, dirs )
+                    debug() << "    " << dir;
+            }
+
+            writeBatchIncrementalInfoFile();
+            if( dirs.isEmpty() )
+            {
+                debug() << "Scanning nothing, return.";
+                return;
+            }
+        }
     }
 
     if( m_parser )

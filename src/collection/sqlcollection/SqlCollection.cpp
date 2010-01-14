@@ -103,10 +103,10 @@ SqlCollection::startFullScan()
 }
 
 void
-SqlCollection::startIncrementalScan()
+SqlCollection::startIncrementalScan( const QString &directory )
 {
     if( m_scanManager )
-        m_scanManager->startIncrementalScan();
+        m_scanManager->startIncrementalScan( directory );
 }
 
 void

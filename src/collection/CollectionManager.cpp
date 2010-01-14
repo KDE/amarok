@@ -254,6 +254,15 @@ CollectionManager::startFullScan()
 }
 
 void
+CollectionManager::startIncrementalScan( const QString &directory )
+{
+    foreach( const CollectionPair &pair, d->collections )
+    {
+        pair.first->startIncrementalScan( directory );
+    }
+}
+
+void
 CollectionManager::stopScan()
 {
     foreach( const CollectionPair &pair, d->collections )
