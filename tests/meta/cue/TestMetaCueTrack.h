@@ -41,23 +41,9 @@ private slots:
     void testCueItems();
     void testLocateCueSheet();
     void testValidateCueSheet();
-    //methods inherited from Meta::MetaBase
-    void testName();
-    void testPrettyName();
-    void testFullPrettyName();
-    void testSortableName();
-
-    void testTrackNumber();
-    void testLength();
-
-    void testAlbum();
-    void testArtist();
-
-    void testHasCapabilityInterface();
 
 private:
     QString *m_isoCuePath, *m_utfCuePath, *m_testSongPath;
-    MetaCue::Track *m_testTrack1, *m_testTrack2;
 };
 
 #endif // TESTMETACUETRACK_H

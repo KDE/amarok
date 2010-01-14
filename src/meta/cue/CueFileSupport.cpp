@@ -34,24 +34,29 @@ using namespace MetaCue;
 *         the map is empty.
 * @author (C) 2005 by Martin Ehmke <ehmke@gmx.de>
 */
+
 CueFileItemMap CueFileSupport::loadCueFile( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
-    CueFileItemMap cueItems;
 
     //attempt to find cue file, return empty map if not found or invalid
     KUrl cuefile = locateCueSheet( track->playableUrl() );
     if( cuefile.isEmpty() )
     {
         debug() << "No cue file found for track " << track->playableUrl();
-        return cueItems;
+        return CueFileItemMap();
     }
-    
 
-    qint64 mediaLength = track->length();
-    
+    return loadCueFile( cuefile, track->length() );
+}
 
+
+CueFileItemMap CueFileSupport::loadCueFile( const KUrl &cuefile, qint64 mediaLength  )
+{
+
+    DEBUG_BLOCK
+
+    CueFileItemMap cueItems;
+    
     debug() << "CUEFILE: " << cuefile.pathOrUrl();
     if ( QFile::exists ( cuefile.pathOrUrl() ) )
     {
