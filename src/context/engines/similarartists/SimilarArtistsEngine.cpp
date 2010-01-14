@@ -135,10 +135,21 @@ void SimilarArtistsEngine::update()
             m_similarArtists.clear();
             QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
             setData ( "similarArtists", "SimilarArtists", variant );
-        } else { // if(artistName!=m_artist) { // we update the data only
+        } else { //valid artist 
+             // Read config and inform the engine.
+             KConfigGroup config = Amarok::config("SimilarArtists Applet");
+            
+             //fix the limit of the request, the default is already fixed by the applet
+            int nbArt=config.readEntry( "maxArtists", "3" ).toInt();
+            
+            // wee make a request only if the artist is different
+            // or if the number of artist to display is bigger
+            if(artistName!=m_artist || nbArt>m_maxArtists) { // we update the data only
                                           // if the artist has changed
-            setData( "similarArtists", "artist", artistName );
-            similarArtistsRequest( artistName );
+                m_maxArtists=nbArt;
+                setData( "similarArtists", "artist", artistName );
+                similarArtistsRequest( artistName );
+            }
         }
     }
 
@@ -147,10 +158,7 @@ void SimilarArtistsEngine::update()
 
 void
 SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
-{
-    DEBUG_BLOCK
-    debug() << "SAE request";
-    
+{    
     QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
@@ -158,18 +166,8 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
     url.addQueryItem( "method", "artist.getSimilar" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
+    url.addQueryItem( "limit",  QString::number(m_maxArtists));
 
-    // Read config and inform the engine.
-    KConfigGroup config = Amarok::config("SimilarArtists Applet");
-
-    //fix the limit of the request, the default is already fixed by the applet
-    QString nbArt=config.readEntry( "maxArtists", "3" );
-    url.addQueryItem( "limit",  nbArt);
-
-    debug()<< "SAE request : " << url.toString();
-    m_maxArtists=nbArt.toInt();
-
-    debug()<< "SAE maxArtists : " << m_maxArtists;
     m_artist=artist_name;
 
     m_similarArtistsJob = KIO::storedGet( url,
