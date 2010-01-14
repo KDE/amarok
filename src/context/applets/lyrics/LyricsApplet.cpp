@@ -543,10 +543,12 @@ void LyricsApplet::collapseToMin()
     // only show vertical scrollbar if there are lyrics and is needed
     browser->setVerticalScrollBarPolicy( m_hasLyrics ? Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff );
 
-    const qreal containerHeight = containment()->size().height() - 1.0;
+    const qreal containerOffset = mapToView( containment()->view(), boundingRect() ).topLeft().y();
+    const qreal containerHeight = containment()->size().height() - containerOffset;
     const qreal collapsedHeight = ( contentHeight > containerHeight ) ? containerHeight : contentHeight;
     setCollapseHeight( collapsedHeight );
     setCollapseOn();
+    updateConstraints();
 }
 
 void LyricsApplet::determineActionIconsState()
@@ -571,6 +573,7 @@ void LyricsApplet::showLyrics()
     determineActionIconsState();
     m_proxy->setWidget( m_lyrics );
     m_lyrics->show();
+    collapseToMin();
 }
 
 void LyricsApplet::showSuggested()
