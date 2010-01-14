@@ -33,6 +33,7 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Allow fetching of album covers in the unified view. (BR 220873)
     * Lyrics applet: Fixed scrollbar incorrectly displayed (and sometimes not
       at all) for long lyrics under KDE 4.4. (BR 222260)
     * Fixed bug in Photos applet that made it break with translated versions

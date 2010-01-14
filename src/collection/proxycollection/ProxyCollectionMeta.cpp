@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>
+ *  Copyright (c) 2009,2010 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -630,6 +630,33 @@ ProxyCollection::Album::hasAlbumArtist() const
     return !m_albumArtist.isNull();
 }
 
+bool
+ProxyCollection::Album::hasCapabilityInterface(Meta::Capability::Type type ) const
+{
+
+    if( m_albums.count() == 1 )
+    {
+        return m_albums.first()->hasCapabilityInterface( type );
+    }
+    else
+    {
+        return false;
+    }
+}
+
+Meta::Capability*
+ProxyCollection::Album::createCapabilityInterface( Meta::Capability::Type type )
+{
+    if( m_albums.count() == 1 )
+    {
+        return m_albums.first()->createCapabilityInterface( type );
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 void
 ProxyCollection::Album::add( Meta::AlbumPtr album )
 {
@@ -859,6 +886,33 @@ ProxyCollection::Artist::albums()
     return result;
 }
 
+bool
+ProxyCollection::Artist::hasCapabilityInterface(Meta::Capability::Type type ) const
+{
+
+    if( m_artists.count() == 1 )
+    {
+        return m_artists.first()->hasCapabilityInterface( type );
+    }
+    else
+    {
+        return false;
+    }
+}
+
+Meta::Capability*
+ProxyCollection::Artist::createCapabilityInterface( Meta::Capability::Type type )
+{
+    if( m_artists.count() == 1 )
+    {
+        return m_artists.first()->createCapabilityInterface( type );
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 void
 ProxyCollection::Artist::add( Meta::ArtistPtr artist )
 {
@@ -958,6 +1012,33 @@ ProxyCollection::Genre::tracks()
     return result;
 }
 
+bool
+ProxyCollection::Genre::hasCapabilityInterface(Meta::Capability::Type type ) const
+{
+
+    if( m_genres.count() == 1 )
+    {
+        return m_genres.first()->hasCapabilityInterface( type );
+    }
+    else
+    {
+        return false;
+    }
+}
+
+Meta::Capability*
+ProxyCollection::Genre::createCapabilityInterface( Meta::Capability::Type type )
+{
+    if( m_genres.count() == 1 )
+    {
+        return m_genres.first()->createCapabilityInterface( type );
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 void
 ProxyCollection::Genre::add( Meta::GenrePtr genre )
 {
@@ -1049,6 +1130,33 @@ ProxyCollection::Composer::tracks()
         result.append( Meta::TrackPtr( track ) );
     }
     return result;
+}
+
+bool
+ProxyCollection::Composer::hasCapabilityInterface(Meta::Capability::Type type ) const
+{
+
+    if( m_composers.count() == 1 )
+    {
+        return m_composers.first()->hasCapabilityInterface( type );
+    }
+    else
+    {
+        return false;
+    }
+}
+
+Meta::Capability*
+ProxyCollection::Composer::createCapabilityInterface( Meta::Capability::Type type )
+{
+    if( m_composers.count() == 1 )
+    {
+        return m_composers.first()->createCapabilityInterface( type );
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 void
@@ -1143,6 +1251,33 @@ ProxyCollection::Year::tracks()
         result.append( Meta::TrackPtr( track ) );
     }
     return result;
+}
+
+bool
+ProxyCollection::Year::hasCapabilityInterface(Meta::Capability::Type type ) const
+{
+
+    if( m_years.count() == 1 )
+    {
+        return m_years.first()->hasCapabilityInterface( type );
+    }
+    else
+    {
+        return false;
+    }
+}
+
+Meta::Capability*
+ProxyCollection::Year::createCapabilityInterface( Meta::Capability::Type type )
+{
+    if( m_years.count() == 1 )
+    {
+        return m_years.first()->createCapabilityInterface( type );
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 void
