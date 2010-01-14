@@ -62,7 +62,7 @@ PlaylistFileProvider::~PlaylistFileProvider()
         if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
             continue;
 
-        debug() << "storing to rc-file: " << url.url();
+        //debug() << "storing to rc-file: " << url.url();
 
         loadedPlaylistsConfig().writeEntry( url.url(), playlist->groups() );
     }
