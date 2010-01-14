@@ -180,11 +180,10 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
 
     LastFmEvent::LastFmEventList events = data[ "LastFmEvent" ].value< LastFmEvent::LastFmEventList >();
 
-    foreach( UpcomingEventsWidget *u, m_widgets)
+    foreach( UpcomingEventsWidget *u, m_widgets )
     {
-     delete u;
+        delete u;
     }
-
     m_widgets.clear();
 
     debug() << "TAILLE DE EVENTS = " << events.size();

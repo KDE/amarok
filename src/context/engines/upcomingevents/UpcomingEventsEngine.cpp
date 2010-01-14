@@ -214,14 +214,15 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
         }
 
         // Event date
+        QLocale::setDefault(QLocale::English);
         QDomNode startDateNode = n.namedItem( "startDate" );
         QDomElement startDateElement = startDateNode.toElement();
         QDateTime startDate;
         if( !startDateElement.isNull() )
         {
-            QString startDateString = startDateElement.text();            
-            startDate.setDate( QDate::fromString( startDateString.section( "", 0, 16 ), "ddd, dd MMM yyyy" ) );
-            startDate.setTime( QTime::fromString( startDateString.section( "", 18 ), "HH:mm:ss" ) );
+            QString startDateString = startDateElement.text();
+            startDate = QLocale().toDateTime( startDateString, "ddd, dd MMM yyyy HH:mm:ss" );
+
         }
 
         // Event url

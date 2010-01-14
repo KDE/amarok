@@ -17,10 +17,14 @@
 #ifndef UPCOMING_EVENTS_WIDGET_H
 #define UPCOMING_EVENTS_WIDGET_H
 
+//Qt
 #include <QWidget>
 #include <QDate>
 #include <QPixmap>
 #include <QScrollArea>
+
+//Kde
+#include<KUrl>
 
 class QLabel;
 class KUrl;
@@ -61,6 +65,7 @@ class UpcomingEventsWidget : public QWidget
 
     private slots:
         void loadImage( KJob * job );
+        void openUrl(QString);
 };
 
 #endif // UPCOMINGEVENTSWIDGET_H
