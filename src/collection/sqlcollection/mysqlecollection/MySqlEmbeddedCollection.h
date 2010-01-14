@@ -29,7 +29,7 @@ class MySqlEmbeddedCollectionFactory : public Amarok::CollectionFactory
     Q_OBJECT
 
     public:
-        MySqlEmbeddedCollectionFactory( QObject *parent, const QVariantList &args ) { setParent( parent ); }
+        MySqlEmbeddedCollectionFactory( QObject *parent, const QVariantList & /*args*/ ) { setParent( parent ); }
         virtual ~MySqlEmbeddedCollectionFactory() {}
 
         virtual void init();
