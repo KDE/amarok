@@ -308,7 +308,6 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
 
     update();
     constraintsEvent();
-    collapseToMin();
 }
 
 bool LyricsApplet::hasHeightForWidth() const
@@ -573,7 +572,6 @@ void LyricsApplet::showLyrics()
     determineActionIconsState();
     m_proxy->setWidget( m_lyrics );
     m_lyrics->show();
-    collapseToMin();
 }
 
 void LyricsApplet::showSuggested()
