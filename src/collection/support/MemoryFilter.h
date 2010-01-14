@@ -18,8 +18,8 @@
 #define MEMORYFILTER_H
 
 #include "amarok_export.h"
-#include "Meta.h"
-#include "QueryMaker.h"
+#include "meta/Meta.h"
+#include "collection/QueryMaker.h"
 
 #include <QList>
 #include <QString>

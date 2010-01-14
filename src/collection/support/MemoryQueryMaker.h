@@ -21,7 +21,7 @@
 #include "amarok_export.h"
 
 #include "MemoryCollection.h"
-#include "QueryMaker.h"
+#include "collection/QueryMaker.h"
 
 
 namespace ThreadWeaver
