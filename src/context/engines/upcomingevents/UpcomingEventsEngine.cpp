@@ -257,7 +257,6 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
     }
 
     QVariant variant ( QMetaType::type( "LastFmEvent::LastFmEventList" ), &m_upcomingEvents );
-    debug() << "setData";
     removeData("upcomingEvents", "LastFmEvent");
     setData ( "upcomingEvents", "LastFmEvent", variant );
 }

@@ -16,7 +16,6 @@
 
 #include "UpcomingEventsWidget.h"
 
-#include "Debug.h"
 
 #include <QDateTime>
 #include <QGridLayout>
