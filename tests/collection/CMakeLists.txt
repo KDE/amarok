@@ -11,7 +11,6 @@ include_directories(
 set( testcollectionlocation_SRCS
         CollectionLocationTest.cpp
         ${AMAROK_SOURCE_TREE}/collection/CollectionLocation.cpp
-        ../mocks/MetaMock.cpp
         ${AMAROK_SOURCE_TREE}/meta/Capability.cpp
         ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
     )
