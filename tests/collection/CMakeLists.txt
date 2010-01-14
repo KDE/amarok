@@ -25,4 +25,6 @@ endif(APPLE)
 target_link_libraries(testcollectionlocation ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
 
 
+add_subdirectory( proxycollection )
 add_subdirectory( sqlcollection )
+add_subdirectory( support )
