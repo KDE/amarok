@@ -96,7 +96,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     (new QLabel( i18n(
         "These folders will be scanned for "
         "media to make up your collection. You can\n"
-        "right-click on a folder to individually"
+        "right-click on a folder to individually "
         "rescan it, if it was previously selected:"), this ))->setAlignment( Qt::AlignJustify );
 
     m_view  = new CollectionSetupTreeView( this );
