@@ -87,16 +87,18 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
         bool removed;
         //SqlCollectionLocation uses KIO::move for moving files internally
         //therefore we check whether the destination CollectionLocation
-        //represents the same collection, and check the existence of the
-        //file. If it does not exist, we assume that it has been moved, and remove it from the database.
-        //at worst we get a warning about a file not in the database. If it still exists, and
-        //this method has been called, do not do anything, as something is wrong.
+        //represents the same collection. We use ScanResultProcessor in ::insertTracks
+        //so we get the AFT update code for free. This means that sqlTrack and the database
+        //will ahve been updated with the new file location already, so we do not have
+        //to do anything here.
         //If the destination location is another collection, remove the file as we expect
         //the destination to tell us if it is really really sure that it has copied a file.
         //If we are not copying/moving files destination() will be 0.
         if( destination() && destination()->collection() == collection() )
         {
-            removed = !QFile::exists( sqlTrack->playableUrl().path() );
+            //the AFT update code in ScanResultProcessor will have updated
+            //the database already, so do nothing here
+            removed = false;
         }
         else
         {
