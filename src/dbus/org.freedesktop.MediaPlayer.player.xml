@@ -11,6 +11,9 @@
     <method name="Stop">
     </method>
 
+    <method name="StopAfterCurrent">
+    </method>
+
     <method name="Play">
     </method>
 

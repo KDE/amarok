@@ -177,6 +177,11 @@ namespace Amarok
         The::engineController()->stop();
     }
 
+    void PlayerDBusHandler::StopAfterCurrent()
+    {
+        The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
+    }
+
     int PlayerDBusHandler::VolumeGet()
     {
         return The::engineController()->volume();

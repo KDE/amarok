@@ -5,6 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * dbus: Added StopAfterCurrent method for /Player.
     * You can now elect to rescan specific folders. Right-click on a folder in
       the collection setup dialog to rescan just that folder. This will only
       work for folders that have previously been added to the collection, i.e.
