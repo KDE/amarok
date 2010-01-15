@@ -84,7 +84,7 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
     m_fieldSelection->setCurrentIndex( currentEntry );
     m_weightSelection->setValue( m_cbias->weight() * 100 );
     weightChanged( m_cbias->weight() * 100 );
-    selectionChanged( currentEntry );
+    setCurrentLoadedBiasWidget();
 
     //debug() << "CustomBiasEntryWidget created with weight:" << m_cbias->weight() * 100 ;
 
@@ -108,27 +108,9 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
     }
 
     Dynamic::CustomBiasEntry* chosen = chosenFactory->newCustomBias( m_cbias->weight() );
-    
-    QWidget* config  = chosen->configWidget( this );
-    if( !config )
-    {
-        debug() << "got an invalid config widget from bias type!";
-        return;
-    }
-
-    // remove last item (old config widget) and old bias and add new one
-    if( m_layout->rowCount() == 3 )
-    {
-        // remove old widget
-        m_layout->removeWidget( m_currentConfig );
-        delete m_currentConfig;
-    }
-
-    config->setParent( this );
-
-    m_currentConfig = config;
-    m_layout->addWidget( config, 2, 0, 1, 3, 0 );
     m_cbias->setCurrentEntry( chosen );
+    
+    setCurrentLoadedBiasWidget();
 }
 
 // called when we need to change the selection (like selectionChanged()), but we don' want to re-create the bias--it already exists
