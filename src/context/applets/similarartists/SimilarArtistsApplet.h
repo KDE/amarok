@@ -107,6 +107,11 @@ private:
      * The list of similar artists to display
      */
     SimilarArtist::SimilarArtistsList m_similars;
+
+    /**
+     * Artist which you want to see artists like
+     */
+    QString m_artist;
         
 
     /**

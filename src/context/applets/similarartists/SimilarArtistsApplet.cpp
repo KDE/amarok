@@ -200,29 +200,26 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
 void
 SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
-    Q_UNUSED( name )
+    Q_UNUSED( name )   
 
-    if ( !m_stoppedState ) {
+    m_artist = data[ "artist" ].toString();
 
-        QString artistName = data[ "artist" ].toString();
+    // we see if the artist name is valid
+    if (m_artist.compare( "" ) != 0) {
 
-        // we see if the artist name is valid
-        if (artistName.compare( "" ) != 0) {
+        m_similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
 
-           m_headerLabel->setText( i18n( "Similar artists of %1", artistName ) );
-           
-           
-           m_similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
-
-           artistsUpdate();
-
-        } else { // the artist name is invalid
-            m_headerLabel->setText( i18n( "Similar artists" ) );
+        if (!m_stoppedState) {
+            artistsUpdate();
         }
 
-        updateConstraints();
-        update();
+    } else { // the artist name is invalid
+        m_headerLabel->setText( i18n( "Similar artists" ) );
     }
+
+    updateConstraints();
+    update();
+    
 
 }
 
@@ -296,6 +293,8 @@ SimilarArtistsApplet::artistsUpdate() {
 
     if ( !m_similars.isEmpty() )
     {
+        m_headerLabel->setText( i18n( "Similar artists of %1", m_artist ) );
+        
         //if the applet are collapsed, decollapse it
         setCollapseOff();
 

@@ -128,7 +128,8 @@ void SimilarArtistsEngine::update()
         }
 
         if (artistName.compare("") == 0) { // Unknown artist
-            setData( "similarArtists", "artist", "Unknown artist" );
+            m_artist="Unknown artist";
+            setData( "similarArtists", "artist", m_artist );
 
             // we send an empty list
             m_similarArtists.clear();
