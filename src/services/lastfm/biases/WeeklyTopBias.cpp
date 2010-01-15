@@ -424,7 +424,7 @@ void Dynamic::WeeklyTopBias::weeklyFetch( QObject* reply )
         QStringList artists;
         for( int i = 0; i < lfm[ "weeklyartistchart" ].children( "artist" ).size(); i++ )
         {
-            if( i == 5 )
+            if( i == 12 )
                 break;
             lastfm::XmlQuery artist = lfm[ "weeklyartistchart" ].children( "artist" ).at( i );
             artists.append( artist[ "name" ].text() );
