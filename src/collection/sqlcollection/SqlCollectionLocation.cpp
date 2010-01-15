@@ -115,7 +115,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
             else
             {
                 int id = res[0].toInt();
-                QString query = QString( "DELETE FROM tracks where id = %1;" ).arg( id );
+                QString query = QString( "DELETE FROM tracks where url = %1;" ).arg( id );
                 m_collection->sqlStorage()->query( query );
             }
         }
