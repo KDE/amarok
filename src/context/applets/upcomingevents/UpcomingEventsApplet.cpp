@@ -204,11 +204,25 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
             }
         }
 
-        m_widgets.insert( i, new UpcomingEventsWidget( events.at( i ).name(),
-                                                       events.at( i ).date(),
-                                                       artistList,
-                                                       events.at( i ).url(),
-                                                       events.at( i ).smallImageUrl()) );
+        QDateTime limite(QDateTime::currentDateTime());
+        bool timeSpanDisabled = false;
+
+        if ( this->m_timeSpan == "ThisWeek")
+            limite = limite.addDays( 7 );
+        else if( this->m_timeSpan == "ThisMonth" )
+            limite = limite.addMonths( 1 );
+        else if( this->m_timeSpan == "ThisYear" )
+            limite = limite.addYears( 1 );
+        else
+            timeSpanDisabled = true;
+
+        if ( timeSpanDisabled || events.at( i ).date() < limite )
+            m_widgets.insert( i, new UpcomingEventsWidget( events.at( i ).name(),
+                                                           events.at( i ).date(),
+                                                           artistList,
+                                                           events.at( i ).url(),
+                                                           events.at( i ).smallImageUrl()) );
+
 
     }
     updateConstraints();
