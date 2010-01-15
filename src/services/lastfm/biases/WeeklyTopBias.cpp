@@ -352,12 +352,14 @@ void Dynamic::WeeklyTopBias::fetchWeeklyData(uint from, uint to)
     debug() << "fetching charts with these ranges:" << QDateTime::fromTime_t( earliest ) << QDateTime::fromTime_t( last );
 
 
+    bool validFetch = false;
     for( int i = m_weeklyCharts.indexOf( earliest ); i < m_weeklyCharts.indexOf( last ); i++ )
     {
+        validFetch = true;
         if( m_weeklyChartData.keys().contains( m_weeklyCharts[ i ] ) )
         {
             m_currentArtistList.append( m_weeklyChartData[ m_weeklyCharts[ i ] ] );
-            
+            debug() << "found already-saved data for week:" << m_weeklyCharts[ i ] << m_weeklyChartData[ m_weeklyCharts[ i ] ];
         } else
         {
             QMap< QString, QString > params;
@@ -375,8 +377,15 @@ void Dynamic::WeeklyTopBias::fetchWeeklyData(uint from, uint to)
     connect( m_fetching, SIGNAL( mapped(QObject*) ), this, SLOT( weeklyFetch( QObject* ) ) );
     connect( this, SIGNAL( doneFetching() ), this, SLOT( updateDB() ) );
     connect( this, SIGNAL( doneFetching() ), this, SLOT( saveDataToFile() ) );
-    
-    fetchNextWeeks();
+
+    // everything is stored, so we have all the data, finish immediately
+    if( m_fetchQueue.isEmpty() && validFetch )
+    {
+        updateDB();
+    } else
+    {
+        fetchNextWeeks();
+    }
 }
 
 void Dynamic::WeeklyTopBias::fetchNextWeeks( int num )
