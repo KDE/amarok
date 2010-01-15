@@ -231,14 +231,22 @@ Dynamic::LastFmBias::artistQueryDone() // slot
     QMutexLocker locker( &m_mutex );
     
     QMap< int, QString > similar;
-    try
+    QByteArray data = m_artistQuery->readAll();
+//     debug() << "artistQuery has data:" << data;
+    QDomDocument d;
+    if( !d.setContent( data ) )
     {
-        similar =  lastfm::Artist::getSimilar( m_artistQuery );
-    } catch( lastfm::ws::ParseError e )
-    {
-        debug() << "Got exception in parsing similar artists from last.fm custom bias:" << e.what();
-	return;
+        debug() << "Got invalid XML data from last.fm!";
+        return;
     }
+    QDomNodeList nodes = d.elementsByTagName( "artist" );
+    for( int i =0; i < nodes.size(); ++i )
+    {
+        QDomElement n = nodes.at( i ).toElement();
+        similar.insert( n.firstChildElement( "match" ).text().toFloat() * 100,
+                        n.firstChildElement( "name" ).text() );
+    }
+
 
     // ok we have the list, now figure out what we've got in the collection
 
