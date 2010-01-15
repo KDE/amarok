@@ -31,6 +31,7 @@
 #include <KAction>
 #include <QAbstractItemView>
 #include <QMenu>
+#include <QSet>
 
 
 MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
@@ -127,10 +128,31 @@ MyDirOperator::slotCopyTracks( const Meta::TrackList& tracks )
     if( !m_copyAction || !m_copyActivated )
         return;
 
-    CollectionLocation *source      = new FileCollectionLocation();
-    CollectionLocation *destination = m_copyAction->collection()->location();
+    QSet<Amarok::Collection*> collections;
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        collections.insert( track->collection() );
+    }
+    if( collections.count() == 1 )
+    {
+        Amarok::Collection *sourceCollection = collections.values().first();
+        CollectionLocation *source;
+        if( sourceCollection )
+        {
+            source = sourceCollection->location();
+        }
+        else
+        {
+            source = new FileCollectionLocation();
+        }
+        CollectionLocation *destination = m_copyAction->collection()->location();
 
-    source->prepareCopy( tracks, destination );
+        source->prepareCopy( tracks, destination );
+    }
+    else
+    {
+        warning() << "Cannot handle copying tracks from multiple collections, doing nothing to be safe";
+    }
     m_copyActivated = false;
     m_copyAction = 0;
 }
@@ -141,10 +163,31 @@ MyDirOperator::slotMoveTracks( const Meta::TrackList& tracks )
     if( !m_moveAction || !m_moveActivated )
         return;
 
-    CollectionLocation *source      = new FileCollectionLocation();
-    CollectionLocation *destination = m_moveAction->collection()->location();
+    QSet<Amarok::Collection*> collections;
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        collections.insert( track->collection() );
+    }
+    if( collections.count() == 1 )
+    {
+        Amarok::Collection *sourceCollection = collections.values().first();
+        CollectionLocation *source;
+        if( sourceCollection )
+        {
+            source = sourceCollection->location();
+        }
+        else
+        {
+            source = new FileCollectionLocation();
+        }
+        CollectionLocation *destination = m_moveAction->collection()->location();
 
-    source->prepareMove( tracks, destination );
+        source->prepareMove( tracks, destination );
+    }
+    else
+    {
+        warning() << "Cannot handle moving tracks from multipe collections, doing nothing to be safe";
+    }
     m_moveActivated = false;
     m_moveAction = 0;
 
