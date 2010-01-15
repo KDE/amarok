@@ -349,6 +349,7 @@ void Dynamic::WeeklyTopBias::fetchWeeklyData(uint from, uint to)
         last = m_weeklyCharts[ m_weeklyCharts.size() - 1 ];
 
     m_currentArtistList.clear();
+    m_trackList.clear();
     debug() << "fetching charts with these ranges:" << QDateTime::fromTime_t( earliest ) << QDateTime::fromTime_t( last );
 
 
@@ -420,7 +421,6 @@ void Dynamic::WeeklyTopBias::weeklyFetch( QObject* reply )
         lastfm::XmlQuery lfm( r->readAll() );
 
 //         debug() << "got response:" << lfm;
-        // take just to 5 artists in that week
         QStringList artists;
         for( int i = 0; i < lfm[ "weeklyartistchart" ].children( "artist" ).size(); i++ )
         {
