@@ -365,6 +365,20 @@ MountPointManager::collectionFolders()
                 result.append( absPath );
         }
     }
+
+    // For users who were using QDesktopServices::MusicLocation exclusively up
+    // to v2.2.2, which did not store the location into config.
+    if( result.isEmpty() && folders.readEntry( "Use MusicLocation", false )  )
+    {
+        const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+        const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
+        const QDir dir( musicDir );
+        if( dir.exists() && dir.isReadable() )
+        {
+            result << musicDir;
+            setCollectionFolders( result );
+        }
+    }
     return result;
 }
 

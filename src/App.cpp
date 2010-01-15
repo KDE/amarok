@@ -793,11 +793,14 @@ App::continueInit()
                     );
             }
 
+            KConfigGroup folderConf = Amarok::config( "Collection Folders" );
+            bool useMusicLocation( false );
             switch( result )
             {
             case KMessageBox::Yes:
                 MountPointManager::instance()->setCollectionFolders( QStringList() << musicDir );
                 CollectionManager::instance()->startFullScan();
+                useMusicLocation = true;
                 break;
 
             case KMessageBox::No:
@@ -807,6 +810,7 @@ App::continueInit()
             default:
                 break;
             }
+            folderConf.writeEntry( "Use MusicLocation", useMusicLocation );
             config.writeEntry( "First Run", false );
         }
     }
