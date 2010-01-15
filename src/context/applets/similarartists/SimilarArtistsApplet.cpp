@@ -27,7 +27,6 @@
 #include "context/widgets/DropPixmapItem.h"
 #include "PaletteHandler.h"
 #include "context/widgets/TextScrollingWidget.h"
-#include "./SimilarArtist.h"
 
 //Kde
 #include <Plasma/Theme>
@@ -170,6 +169,8 @@ SimilarArtistsApplet::engineNewTrackPlaying( )
 
     m_stoppedState = false;
     setCollapseOff();
+    
+    artistsUpdate();
 }
 
 /**
@@ -211,59 +212,9 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
            m_headerLabel->setText( i18n( "Similar artists of %1", artistName ) );
            
            
-           SimilarArtist::SimilarArtistsList similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
+           m_similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
 
-           if ( !similars.isEmpty() )
-            {
-                //if the applet are collapsed, decollapse it
-                setCollapseOff();
-                
-                // we see the number of artist we need display
-                int sizeArtistsDisplay=m_maxArtists>similars.size()?similars.size():m_maxArtists;
-
-                // we adapt the list size
-                int cpt=m_artists.size()+1; // the first row (0) is dedicated for the applet title
-
-                //if necessary, we increase the number of artists to display
-                while(sizeArtistsDisplay>=cpt) {
-                    ArtistWidget *art=new ArtistWidget;
-                    m_artists.append(art);
-                    m_layout->addWidget(m_artists.last());
-                    cpt++;
-                }
-
-                //if necessary, we reduce the number of artists to display
-                cpt=sizeArtistsDisplay;
-                while(cpt<m_artists.size()) {
-                    m_layout->removeWidget(m_artists.last());
-                    delete m_artists.last();
-                    m_artists.removeLast();
-                }
-
-                // we set the display of the artists widgets
-                cpt=0; 
-                foreach(ArtistWidget* art, m_artists) {
-                    art->setArtist(similars.at(cpt).name(), similars.at(cpt).url());
-                    art->setPhoto(similars.at(cpt).urlImage());
-                    art->setMatch(similars.at(cpt).match());
-                    cpt++;
-                }
-                
-            }
-            else // No similar artist found
-            {
-                // we clear all artists
-                foreach(ArtistWidget* art, m_artists)
-                {
-                    m_layout->removeWidget(art);
-                    delete art;
-                }
-
-                m_artists.clear();
-
-                m_headerLabel->setText( i18n( "Similar artists" ) + QString( " : " ) + i18n( "no similar artists found" ) );
-                setCollapseOn();
-            }
+           artistsUpdate();
 
         } else { // the artist name is invalid
             m_headerLabel->setText( i18n( "Similar artists" ) );
@@ -337,10 +288,64 @@ SimilarArtistsApplet::saveSettings()
 {
     saveMaxArtists();
 
-    //simulate a update of data to update the content of the applet accordingly to the new settings
-    dataUpdated( NULL, dataEngine( "amarok-similarArtists" )->query( "similarArtists" ) );    
+    artistsUpdate();
 }
 
+void
+SimilarArtistsApplet::artistsUpdate() {
+
+    if ( !m_similars.isEmpty() )
+    {
+        //if the applet are collapsed, decollapse it
+        setCollapseOff();
+
+        // we see the number of artist we need display
+        int sizeArtistsDisplay=m_maxArtists>m_similars.size()?m_similars.size():m_maxArtists;
+
+        // we adapt the list size
+        int cpt=m_artists.size()+1; // the first row (0) is dedicated for the applet title
+
+        //if necessary, we increase the number of artists to display
+        while(sizeArtistsDisplay>=cpt) {
+            ArtistWidget *art=new ArtistWidget;
+            m_artists.append(art);
+            m_layout->addWidget(m_artists.last());
+            cpt++;
+        }
+
+        //if necessary, we reduce the number of artists to display
+        cpt=sizeArtistsDisplay;
+        while(cpt<m_artists.size()) {
+            m_layout->removeWidget(m_artists.last());
+            delete m_artists.last();
+            m_artists.removeLast();
+        }
+
+        // we set the display of the artists widgets
+        cpt=0;
+        foreach(ArtistWidget* art, m_artists) {
+            art->setArtist(m_similars.at(cpt).name(), m_similars.at(cpt).url());
+            art->setPhoto(m_similars.at(cpt).urlImage());
+            art->setMatch(m_similars.at(cpt).match());
+            cpt++;
+        }
+
+    }
+    else // No similar artist found
+    {
+        // we clear all artists
+        foreach(ArtistWidget* art, m_artists)
+        {
+            m_layout->removeWidget(art);
+            delete art;
+        }
+
+        m_artists.clear();
+
+        m_headerLabel->setText( i18n( "Similar artists" ) + QString( " : " ) + i18n( "no similar artists found" ) );
+        setCollapseOn();
+    }
+}
 
 #include "SimilarArtistsApplet.moc"
 

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+ * Copyright (c) 2009-2010 Joffrey Clavel <jclavel@clabert.info>                        *
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -20,6 +20,7 @@
 
 
 #include "./ArtistWidget.h"
+#include "./SimilarArtist.h"
 
 //Amarok
 #include "context/Applet.h"
@@ -72,6 +73,12 @@ public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
 private:
+
+    /**
+     * update the display of the artists according to the lists m_similars
+     */
+    void artistsUpdate();
+    
     qreal m_aspectRatio;
     qreal m_headerAspectRatio;
     QSizeF m_size;
@@ -95,6 +102,11 @@ private:
      * Indicates if a track is playing.
      */
     bool  m_stoppedState;
+
+    /**
+     * The list of similar artists to display
+     */
+    SimilarArtist::SimilarArtistsList m_similars;
         
 
     /**
