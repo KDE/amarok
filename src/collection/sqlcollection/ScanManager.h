@@ -49,7 +49,7 @@ class ScanManager : public QObject
         void setBlockScan( bool blockScan );
 
         //DI setters
-        void setCollection( SqlCollection * collection ) { m_collection = collection; }
+        void setCollection( SqlCollection * collection );
         void setStorage( SqlStorage *storage ) { m_storage = storage; }
 
     public slots:

@@ -31,6 +31,8 @@
 #include <KPushButton>
 #include <KVBox>
 
+#include <QDBusInterface>
+#include <QDBusReply>
 #include <QDir>
 #include <QFile>
 #include <QLabel>
@@ -59,13 +61,16 @@ CollectionSetupTreeView::slotPressed( const QModelIndex &index )
     {
         m_currDir = qobject_cast<CollectionSetup*>(parent())->modelFilePath( index );        
         debug() << "Setting current dir to " << m_currDir;
-        m_rescanDirAction->setText( i18n( "Rescan" ) + " '" + m_currDir + "'" );
-        QMenu menu;
-        menu.addAction( m_rescanDirAction );
-        menu.exec( QCursor::pos() );
+        QDBusInterface interface( "org.kde.amarok", "/SqlCollection" );
+        QDBusReply<bool> reply = interface.call( "isDirInCollection", m_currDir );
+        if( reply.isValid() && reply.value() )
+        {
+            m_rescanDirAction->setText( i18n( "Rescan" ) + " '" + m_currDir + "'" );
+            QMenu menu;
+            menu.addAction( m_rescanDirAction );
+            menu.exec( QCursor::pos() );
+        }
     }
-    else
-        QAbstractItemView::pressed( index );
 }
 
 void
@@ -90,9 +95,9 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     (new QLabel( i18n(
         "These folders will be scanned for "
-        "media to make up your collection.\n"
-        "You can right-click on a folder to "
-        "individually rescan it:"), this ))->setAlignment( Qt::AlignJustify );
+        "media to make up your collection. You can\n"
+        "right-click on a folder to individually"
+        "rescan it, if it was previously selected:"), this ))->setAlignment( Qt::AlignJustify );
 
     m_view  = new CollectionSetupTreeView( this );
     m_view->setHeaderHidden( true );

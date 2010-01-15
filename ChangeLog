@@ -5,6 +5,11 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * You can now elect to rescan specific folders. Right-click on a folder in
+      the collection setup dialog to rescan just that folder. This will only
+      work for folders that have previously been added to the collection, i.e.
+      you cannot check a folder and immediately rescan it. This will never be
+      recursive (as that defeats the point of scanning a specific folder!)
     * Non collection files with a cue sheet will now load their tracks as
       individual tracks in the playlist instead of as one big track with
       bookmark markers.

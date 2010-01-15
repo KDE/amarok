@@ -67,6 +67,8 @@ ScanManager::ScanManager( QObject *parent )
     // If Amarok is not installed in standard directory
     m_amarokCollectionScanDir = App::instance()->applicationDirPath() + QDir::separator();
 
+    m_dbusHandler = new SqlCollectionDBusHandler( this );
+
     QTimer *watchFoldersTimer = new QTimer( this );
     connect( watchFoldersTimer, SIGNAL( timeout() ), SLOT( slotWatchFolders() ) );
     watchFoldersTimer->start( WATCH_INTERVAL );
@@ -77,6 +79,12 @@ ScanManager::~ScanManager()
     DEBUG_BLOCK
 
     stopParser();
+
+    if( m_dbusHandler )
+    {
+        m_dbusHandler->deleteLater();
+        m_dbusHandler = 0;
+    }
 }
 
 
@@ -203,12 +211,10 @@ void ScanManager::startIncrementalScan( const QString &directory )
 
     if( !batchfileExists || !readBatchFile( batchfileLocation )  )
     {
-        if( !m_dbusHandler )
-            m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
         m_scanner = new AmarokProcess( this );
         *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-i"
                 << "--collectionid" << m_collection->collectionId() << "-p";
-        if( AmarokConfig::scanRecursively() )
+        if( AmarokConfig::scanRecursively() && directory.isEmpty() )
             *m_scanner << "-r";
         if( AmarokConfig::useCharsetDetector() )
             *m_scanner << "-c";
@@ -281,6 +287,13 @@ ScanManager::setBlockScan( bool blockScan )
 }
 
 void
+ScanManager::setCollection( SqlCollection *collection )
+{
+    m_collection = collection;
+    m_dbusHandler->setCollection( collection );
+}
+
+void
 ScanManager::slotWatchFolders()
 {
     if( AmarokConfig::monitorChanges() )
@@ -318,11 +331,6 @@ ScanManager::slotFinished( )
     m_scanner->deleteLater();
     m_scanner = 0;
     m_restartCount = 0;
-    if( m_dbusHandler )
-    {
-        m_dbusHandler->deleteLater();
-        m_dbusHandler = 0;
-    }
 }
 
 void
