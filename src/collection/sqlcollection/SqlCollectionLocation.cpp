@@ -22,7 +22,6 @@
 #include "collection/SqlStorage.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
-#include "MountPointManager.h"
 #include "dialogs/OrganizeCollectionDialog.h"
 #include "ScanManager.h"
 #include "ScanResultProcessor.h"
@@ -65,7 +64,7 @@ SqlCollectionLocation::prettyLocation() const
 QStringList
 SqlCollectionLocation::actualLocation() const
 {
-    return MountPointManager::instance()->collectionFolders();
+    return m_collection->mountPointManager()->collectionFolders();
 }
 bool
 SqlCollectionLocation::isWritable() const
@@ -124,7 +123,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
         {
             QFileInfo file( sqlTrack->playableUrl().path() );
             QDir dir = file.dir();
-            const QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
+            const QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
             while( !collectionFolders.contains( dir.absolutePath() ) && !dir.isRoot() && dir.count() == 0 )
             {
                 const QString name = dir.dirName();
@@ -147,7 +146,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
 {
     setGoingToRemoveSources( removeSources );
     OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks,
-                MountPointManager::instance()->collectionFolders(),
+                m_collection->mountPointManager()->collectionFolders(),
                 The::mainWindow(), //parent
                 "", //name is unused
                 true, //modal
@@ -296,7 +295,7 @@ SqlCollectionLocation::updatedMtime( const QStringList &urls )
 void
 SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap )
 {
-    MountPointManager *mpm = MountPointManager::instance();
+    SqlMountPointManager *mpm = m_collection->mountPointManager();
     foreach( const Meta::TrackPtr &track, trackMap.keys() )
     {
         QString url = trackMap[ track ];
