@@ -167,11 +167,12 @@ SimilarArtistsApplet::engineNewTrackPlaying( )
 {
     DEBUG_BLOCK
 
-    m_stoppedState = false;
-    setCollapseOff();
-    
-    artistsUpdate();
-}
+    if(m_stoppedState) {
+        m_stoppedState = false;
+        setCollapseOff();
+        artistsUpdate();
+    }
+}   
 
 /**
  * This method was launch when amarok stop is playback (ex: The user has clicked on the stop button)
