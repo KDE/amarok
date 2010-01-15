@@ -39,13 +39,13 @@ class SimilarArtistsEngine : public DataEngine, public ContextObserver, Meta::Ob
 {
     Q_OBJECT
     Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
-        
+
 public:
     SimilarArtistsEngine( QObject* parent, const QList<QVariant>& args );
     virtual ~SimilarArtistsEngine();
-    
+
     QStringList sources() const;
-    
+
     // reimplemented from Context::Observer
     virtual void message( const ContextState& state );
 
@@ -55,7 +55,7 @@ public:
 
     void setSelection( const QString& selection ) { m_currentSelection = selection; }
     QString selection() { return m_currentSelection; }
-    
+
     /**
     * Fetches the similar artists for an artist thanks to the LastFm WebService
     * @param artist_name the name of the artist
@@ -70,19 +70,19 @@ public:
      */
     void similarArtistsRequest(const QString &artist_name);
 
-    
+
 protected:
     bool sourceRequestEvent( const QString& name );
-    
+
 private:
     void update();
 
     int m_maxArtists;
-    
+
     KJob *m_similarArtistsJob;
 
     Meta::TrackPtr m_currentTrack;
-        
+
     QString m_currentSelection;
     bool m_requested;
     QStringList m_sources;
@@ -92,7 +92,7 @@ private:
     QString m_xml;
 
     QString m_artist;
-    
+
 private slots:
     void similarArtistsParse( KJob* );
 

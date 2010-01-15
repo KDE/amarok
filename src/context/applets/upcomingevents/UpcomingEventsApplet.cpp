@@ -147,10 +147,8 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     // Icon positionning
     m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
 
-    debug() << "TAILLE DE M_WIDGETS = " << m_widgets.size();
     for( int i = 0; i < m_widgets.size(); i++ )
     {
-        debug() << "ENTREE DANS LA BOUCLE CONSTRAINTSEVENT";
         m_mainLayout->addWidget( m_widgets.at( i ) );
     }
 }
@@ -186,11 +184,8 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     }
     m_widgets.clear();
 
-    debug() << "TAILLE DE EVENTS = " << events.size();
     for( int i = 0; i < events.size(); i++ )
     {
-        debug() << "BOUCLE FOR DATAUPDATED";
-
         QString artistList;
         for( int j = 0; j < events.at( i ).artists().size(); j++ )
         {

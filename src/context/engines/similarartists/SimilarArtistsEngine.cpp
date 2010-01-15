@@ -1,7 +1,7 @@
 /****************************************************************************************
 * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
 * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
-* Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+* Copyright (c) 2009-2010 Joffrey Clavel <jclavel@clabert.info>                        *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -45,9 +45,7 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject* parent, const QList<QVarian
 
 SimilarArtistsEngine::~SimilarArtistsEngine()
 {
-    DEBUG_BLOCK
     delete m_similarArtistsJob;
-    
 }
 
 QMap<int, QString> SimilarArtistsEngine::similarArtists(const QString &artist_name)
@@ -64,17 +62,15 @@ QStringList SimilarArtistsEngine::sources() const
 
 bool SimilarArtistsEngine::sourceRequestEvent( const QString& name )
 {
-    DEBUG_BLOCK
-
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
     QStringList tokens = name.split( ':' );
 
     // user has changed the maximum artists returned.
     if ( tokens.contains( "maxArtists" ) && tokens.size() > 1 )
-        if ( ( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )            
+        if ( ( tokens.at( 1 ) == QString( "maxArtists" ) )  && ( tokens.size() > 2 ) )
             m_maxArtists = tokens.at( 2 ).toInt();
 
-            
+
     // otherwise, it comes from the engine, a new track is playing.
     removeAllData( name );
     setData( name, QVariant());
@@ -93,32 +89,34 @@ void SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
     DEBUG_BLOCK
-    
+
     update();
 }
 
 void SimilarArtistsEngine::update()
 {
-    DEBUG_BLOCK
-
-    debug() << "SAE update";
+    //new update, if a job is not terminated, we kill it
+    if(m_similarArtistsJob) {
+        m_similarArtistsJob->kill();
+        m_similarArtistsJob= 0;
+    }
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    
+
     // We've got a new track, great, let's fetch some info from SimilarArtists !
     m_triedRefinedSearch = 0;
     QString artistName;
-    
+
     unsubscribeFrom( m_currentTrack );
     m_currentTrack = currentTrack;
     subscribeTo( currentTrack );
 
     if ( !currentTrack )
         return;
-    
+
     DataEngine::Data data;
     // default, or applet told us to fetch artist
-    if( selection() == "artist" ) 
+    if( selection() == "artist" )
     {
         if( currentTrack->artist() )
         {
@@ -129,13 +127,29 @@ void SimilarArtistsEngine::update()
             else
                 artistName = currentTrack->artist()->prettyName();
         }
-        
-        if (artistName.compare("") == 0) {
+
+        if (artistName.compare("") == 0) { // Unknown artist
             setData( "similarArtists", "artist", "Unknown artist" );
-        } else { // if(artistName!=m_artist) { // we update the data only
+
+            // we send an empty list
+            m_similarArtists.clear();
+            QVariant variant ( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+            setData ( "similarArtists", "SimilarArtists", variant );
+        } else { //valid artist 
+             // Read config and inform the engine.
+             KConfigGroup config = Amarok::config("SimilarArtists Applet");
+            
+             //fix the limit of the request, the default is already fixed by the applet
+            int nbArt=config.readEntry( "maxArtists", "3" ).toInt();
+            
+            // wee make a request only if the artist is different
+            // or if the number of artist to display is bigger
+            if(artistName!=m_artist || nbArt>m_maxArtists) { // we update the data only
                                           // if the artist has changed
-            setData( "similarArtists", "artist", artistName );
-            similarArtistsRequest( artistName );
+                m_maxArtists=nbArt;
+                setData( "similarArtists", "artist", artistName );
+                similarArtistsRequest( artistName );
+            }
         }
     }
 
@@ -144,10 +158,7 @@ void SimilarArtistsEngine::update()
 
 void
 SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
-{
-    DEBUG_BLOCK
-    debug() << "SAE request";
-
+{    
     QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
@@ -155,24 +166,22 @@ SimilarArtistsEngine::similarArtistsRequest(const QString& artist_name)
     url.addQueryItem( "method", "artist.getSimilar" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
-
-    // Read config and inform the engine.
-    KConfigGroup config = Amarok::config("SimilarArtists Applet");
-    m_maxArtists = config.readEntry( "maxArtists", "3" ).toInt(); //the default is already fixed by the applet
-    url.addQueryItem( "limit", QString(m_maxArtists) );
+    url.addQueryItem( "limit",  QString::number(m_maxArtists));
 
     m_artist=artist_name;
-    
-    m_similarArtistsJob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_similarArtistsJob, SIGNAL(result( KJob* )), SLOT(similarArtistsParse( KJob* )) );
+
+    m_similarArtistsJob = KIO::storedGet( url,
+                                          KIO::NoReload,
+                                          KIO::HideProgressInfo );
+
+    connect( m_similarArtistsJob,
+             SIGNAL(result( KJob* )),
+             SLOT(similarArtistsParse( KJob* )) );    
 }
 
 void
 SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
 {
-    DEBUG_BLOCK
-    debug() << "SAE parse";
-    
     m_similarArtists.clear();
 
     if( !m_similarArtistsJob ) return; //track changed while we were fetching
@@ -186,12 +195,12 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
         setData ( "similarArtists", "SimilarArtists", variant );
         m_similarArtistsJob = 0; // clear job
         return;
-    }    
-        
+    }
+
     // not the right job, so let's ignore it
     if( job != m_similarArtistsJob)
         return;
-        
+
     if( job )
     {
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
@@ -236,7 +245,7 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
         {
             url = KUrl(eUrl.text());
         }
-  
+
 
         // Url of the large similar artist image
         QDomNode imageUrlNode = n.namedItem( "image" );
@@ -251,7 +260,7 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
             imageUrl = KUrl( imageUrlElement.text() );
         }
 
-        
+
         m_similarArtists.append( SimilarArtist(name,match,url,imageUrl, m_artist ));
 
         n = n.nextSibling();
@@ -265,5 +274,3 @@ SimilarArtistsEngine::similarArtistsParse( KJob* job ) // SLOT
 
 
 #include "SimilarArtistsEngine.moc"
-
-
