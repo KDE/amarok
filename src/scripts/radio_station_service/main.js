@@ -48,7 +48,7 @@ var stationArray = new Array (
     new Station( "Nectarine Demoscene Radio [Computer-Music]",          "http://demovibes.de:8000/necta128.ogg" ),
     new Station( "Philosomatika [Psytrance]",                           "http://yp.shoutcast.com/sbin/tunein-station.pls?id=5628" ),
     new Station( "Proton Radio [House/Dance]",                          "http://protonradio.com/proton.m3u" ),
-    new Station( "Pure DJ [Trance]",                                    "http://www.puredj.com/etc/pls/128K.pls" ),
+    new Station( "Pure DJ [Trance]",                                    "http://www.puredj.com/etc/pls/192K.pls" ),
     new Station( "Radio Paradise [Rock/Pop/Alternative]",               "http://www.radioparadise.com/musiclinks/rp_128.m3u" ),
     new Station( "Raggakings [Reggae]",                                 "http://www.raggakings.net/listen.m3u" ),
     new Station( "SLAY Radio [C64 Remixes]",                            "http://www.slayradio.org/tune_in.php/128kbps/listen.m3u" ),
