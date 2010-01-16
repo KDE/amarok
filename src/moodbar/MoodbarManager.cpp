@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2005 by Gav Wood                                                       *
- * Copyright (c) 2006 by Joseph Rabinoff                                                *
+ * Copyright (c) 2005 Gav Wood <gav@kde.org>                                            *
+ * Copyright (c) 2006 Joseph Rabinoff <rabinoff@post.harvard.edu>                       *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
