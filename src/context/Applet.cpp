@@ -15,12 +15,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "App.h"
 #include "Applet.h"
-#include "Containment.h"
-#include "Debug.h"
 
+#include "App.h"
+#include "Containment.h"
+#include "ContextView.h"
+#include "Debug.h"
 #include "PaletteHandler.h"
+
 #include <Plasma/Animator>
 #include <Plasma/FrameSvg>
 #include <Plasma/IconWidget>
@@ -30,7 +32,6 @@
 #include <QGraphicsScene>
 #include <QFontMetrics>
 #include <QPainter>
-#include "ContextView.h"
 
 namespace Context
 {

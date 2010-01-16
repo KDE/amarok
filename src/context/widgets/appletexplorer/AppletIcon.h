@@ -31,14 +31,13 @@
 
 #include <plasma/widgets/iconwidget.h>
 
-
 #include <QtGui>
 
 class QGraphicsSceneMouseEvent;
 
 namespace Context
 {
-    
+
 class AMAROK_EXPORT AppletIconWidget: public Plasma::IconWidget
 {
     Q_OBJECT
@@ -49,7 +48,7 @@ class AMAROK_EXPORT AppletIconWidget: public Plasma::IconWidget
         virtual ~AppletIconWidget();
 
         AppletItem *appletItem() const;
-        
+
     protected:
         void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
