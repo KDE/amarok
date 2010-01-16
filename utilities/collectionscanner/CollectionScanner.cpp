@@ -1015,9 +1015,10 @@ CollectionScanner::displayHelp()
     s_textStream << qPrintable( tr( "-p, --importplaylists : Import playlists" ) ) << endl;
     s_textStream << qPrintable( tr( "-s, --restart         : After a crash, restart the scanner in its last position" ) ) << endl;
     s_textStream << qPrintable( tr( "-b, --batch           : Run in batch mode" ) ) << endl;
-    s_textStream << qPrintable( tr( "-c, --nocharset       : Use the charset detector on ID3 tags" ) ) << endl;
     s_textStream << qPrintable( tr( "--rpath=\"<path>\"      : In full-scan batch mode, specifies a path to prepend to entries (default is the current directory)" ) ) << endl;
+    s_textStream << qPrintable( tr( "--savelocation        : Internal command used by Amarok" ) ) << endl;
     s_textStream.flush();
+
     ::exit(0);
 }
 
