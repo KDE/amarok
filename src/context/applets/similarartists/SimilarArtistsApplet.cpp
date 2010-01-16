@@ -105,7 +105,7 @@ SimilarArtistsApplet::init()
     scrollContent->show();
     
     // create a scrollarea
-    m_scroll = new QScrollArea();
+    m_scroll = new QScrollArea;
     m_scroll->setWidget( scrollContent );
     m_scroll->setFrameShape( QFrame::NoFrame );
     m_scroll->setAttribute( Qt::WA_NoSystemBackground );
@@ -155,8 +155,19 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     QSize artistsSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_scrollProxy->pos().y() - standardPadding() );
     m_scrollProxy->setMinimumSize( artistsSize );
-    m_scrollProxy->setMaximumSize( artistsSize );
+    m_scrollProxy->setMaximumSize( artistsSize );    
+    
+    QSize artistSize( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width(), artistsSize.height() - 2 * standardPadding() );
+    m_scroll->widget()->setMinimumSize( artistSize );
+    m_scroll->widget()->setMaximumSize( artistSize );
 
+    // Icon positionning
+    m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+
+    for( int i = 0; i < m_artists.size(); i++ )
+    {
+        m_layout->addWidget( m_artists.at( i ) );
+    }
 }
 
 /**
