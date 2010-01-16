@@ -433,7 +433,6 @@ MainWindow::createPopupMenu()
 
     foreach( QDockWidget* dockWidget, dockwidgets )
     {
-        debug() << "RM: " << dockWidget->accessibleName();
         if( dockWidget->parentWidget() == this )
             menu->addAction( dockWidget->toggleViewAction());
     }
