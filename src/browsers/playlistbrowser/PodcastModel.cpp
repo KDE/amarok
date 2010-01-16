@@ -868,9 +868,9 @@ PlaylistBrowserNS::PodcastModel::slotOpmlOutlineParsed( OpmlOutline *outline )
     if( outline->hasChildren() )
         return; //TODO grouping handling once PodcastCategory has it.
 
-    if( outline->attributes().contains( "url" ) )
+    if( outline->attributes().contains( "xmlUrl" ) )
     {
-        KUrl url( outline->attributes().value( "url" ).trimmed() );
+        KUrl url( outline->attributes().value( "xmlUrl" ).trimmed() );
         if( !url.isValid() )
         {
             debug() << "OPML outline contained an invalid url: " << url;
