@@ -145,7 +145,9 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
                 int y = 32 / 2 - size.height() / 2;
 
                 QPainter p( &pixmap );
-                p.drawPixmap( x, y, channel->image().scaled( size ) );
+                p.drawPixmap( x, y, channel->image().scaled( size,
+                                                             Qt::KeepAspectRatio,
+                                                             Qt::SmoothTransformation ) );
                 
                 // if it's a new episode draw the overlay:
                 if( !emblems.isEmpty() )
