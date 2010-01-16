@@ -143,7 +143,7 @@ class PlaylistManager : public QObject
          *  Saves a playlist from a file to the database.
          *  @arg fromLocation Saved playlist file to load
          */
-        AMAROK_EXPORT bool import( const QString& fromLocation );
+        AMAROK_EXPORT bool import( const QString &fromLocation );
 
         bool exportPlaylist( Meta::TrackList tracks, const QString &location );
 
@@ -157,8 +157,8 @@ class PlaylistManager : public QObject
          */
         bool moveTrack( Meta::PlaylistPtr playlist, int from, int to );
 
-        PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; };
-        UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; };
+        PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; }
+        UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; }
 
         /**
          *  Retrieves the provider owning the given playlist
