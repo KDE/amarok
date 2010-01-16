@@ -351,7 +351,7 @@ MountPointManager::collectionFolders()
 
     //TODO max: cache data
     QStringList result;
-    const KConfigGroup folders = Amarok::config( "Collection Folders" );
+    KConfigGroup folders = Amarok::config( "Collection Folders" );
     const IdList ids = getMountedDeviceIds();
 
     foreach( int id, ids )
@@ -368,16 +368,21 @@ MountPointManager::collectionFolders()
 
     // For users who were using QDesktopServices::MusicLocation exclusively up
     // to v2.2.2, which did not store the location into config.
-    if( result.isEmpty() && folders.readEntry( "Use MusicLocation", false )  )
+    const KConfigGroup generalConfig = KGlobal::config()->group( "General" );
+    if( result.isEmpty() && folders.readEntry( "Use MusicLocation", true )
+                         && !generalConfig.readEntry( "First Run", true ) )
     {
         const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
         const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
         const QDir dir( musicDir );
+        bool useMusicLocation( false );
         if( dir.exists() && dir.isReadable() )
         {
             result << musicDir;
             setCollectionFolders( result );
+            useMusicLocation = true;
         }
+        folders.writeEntry( "Use MusicLocation", useMusicLocation );
     }
     return result;
 }
