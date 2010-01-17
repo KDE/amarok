@@ -57,7 +57,7 @@ void
 CollectionSetupTreeView::slotPressed( const QModelIndex &index )
 {
     DEBUG_BLOCK
-    if( ( QApplication::mouseButtons() |= Qt::RightButton ) && parent() )
+    if( ( QApplication::mouseButtons() & Qt::RightButton ) && parent() )
     {
         m_currDir = qobject_cast<CollectionSetup*>(parent())->modelFilePath( index );        
         debug() << "Setting current dir to " << m_currDir;
