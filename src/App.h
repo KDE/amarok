@@ -96,6 +96,8 @@ class AMAROK_EXPORT App : public KUniqueApplication
         void slotTrashResult( KJob *job );
 
     private:
+        QString getScannerVersion();
+
         // ATTRIBUTES
         bool                    m_isUniqueInstance;
         QPointer<MainWindow>    m_mainWindow;

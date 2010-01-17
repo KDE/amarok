@@ -814,6 +814,34 @@ App::continueInit()
             config.writeEntry( "First Run", false );
         }
     }
+
+#if 0
+    if( getScannerVersion() != APP_VERSION  )
+    {
+        KMessageBox::error( 0, i18n( "<p>The version of the 'amarokcollectionscanner' tool\n"
+                                     "does not match your Amarok version.</p>"
+                                     "<p>Please note that Collection Scanning may not work correctly.</p>" ) );
+    }
+#endif
+}
+
+QString App::getScannerVersion()
+{
+    DEBUG_BLOCK
+
+    QProcess scanner;
+
+    QStringList args;
+    args << "--version";
+
+    scanner.execute( QString( "amarokcollectionscanner" ), args );
+
+    // FIXME: somehow the version mismatches although it's the same.
+    // Probably some characters too many at the end (endline foo)
+    QString version = scanner.readAllStandardOutput();
+    version.truncate( version.length() - 2 );  // Remove endline
+
+    return version;
 }
 
 void App::slotConfigEqualizer() //SLOT
