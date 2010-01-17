@@ -825,7 +825,7 @@ App::continueInit()
 #endif
 }
 
-QString App::getScannerVersion()
+QString App::collectionScannerVersion()
 {
     DEBUG_BLOCK
 

@@ -101,7 +101,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
          *
          * @returns String with the scanner's version.
          */
-        QString getScannerVersion();
+        QString collectionScannerVersion();
 
         // ATTRIBUTES
         bool                    m_isUniqueInstance;
