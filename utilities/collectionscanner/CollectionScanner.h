@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2003-2008 Mark Kretschmann <kretschmann@kde.org>        *
+ *   Copyright (C) 2003-2010 Mark Kretschmann <kretschmann@kde.org>        *
  *             (C) 2008 Dan Meltzer <parallelgrapefruit@gmail.com>         *
  *             (C) 2008-2009 Jeff Mitchell <mitchell@kde.org>              *
  *                                                                         *
@@ -105,6 +105,7 @@ private:
 
     QString escape( const QString &plain );
     void readArgs();
+    void printVersionAndExit();
     void displayHelp();
 
     QString                     m_collectionId;
