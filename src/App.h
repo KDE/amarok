@@ -96,6 +96,11 @@ class AMAROK_EXPORT App : public KUniqueApplication
         void slotTrashResult( KJob *job );
 
     private:
+        /**
+         * Retrieves the version of the "amarokcollectionscanner" tool.
+         *
+         * @returns String with the scanner's version.
+         */
         QString getScannerVersion();
 
         // ATTRIBUTES
