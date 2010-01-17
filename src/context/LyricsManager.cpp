@@ -232,6 +232,11 @@ LyricsManager::lyricsNotFound( const QString& notfound )
     {
         //if we have cached lyrics there is absolutely no point in not showing these..
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+	if( !currentTrack ) 
+	{
+		return;
+	}
+
         const QString title = currentTrack->prettyName();
 
         QStringList lyricsData;
