@@ -108,7 +108,7 @@ AudioCdTrackProvider::Private::isPathOnCd( const QString &path ) const
         //path can be entered by the user, therefore we cannot make any assumptions about the case
         //of the path on windows -> d:/ and D:/ are equivalent
 #ifdef Q_WS_WIN
-        if( path.startsWith( mountPoint, Qt::CaseInsensitive );
+        if( path.startsWith( mountPoint, Qt::CaseInsensitive ) );
 #else
         if( path.startsWith( mountPoint ) )
 #endif
