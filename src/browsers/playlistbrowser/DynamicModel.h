@@ -52,7 +52,7 @@ class DynamicModel : public QAbstractItemModel
 
         QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 
-        Dynamic::DynamicPlaylistPtr defaultPlaylist();
+        QString defaultPlaylistName();
         Dynamic::DynamicPlaylistPtr activePlaylist();
         int activePlaylistIndex();
 
@@ -94,7 +94,6 @@ class DynamicModel : public QAbstractItemModel
 
     private:
         Dynamic::DynamicPlaylistPtr createDefaultPlaylist();
-        void insertPlaylist( Dynamic::DynamicPlaylistPtr );
         void computeUniverseSet();
         void loadAutoSavedPlaylist();
         
@@ -102,6 +101,7 @@ class DynamicModel : public QAbstractItemModel
         static DynamicModel* s_instance;
 
         int m_activePlaylist;
+        Dynamic::DynamicPlaylistPtr m_activePlaylistPtr;
         int m_defaultPlaylist;
 
         bool m_activeUnsaved;
@@ -109,8 +109,7 @@ class DynamicModel : public QAbstractItemModel
         QDomDocument m_savedPlaylists;
         QDomElement m_savedPlaylistsRoot;
 
-        QHash< QString, Dynamic::DynamicPlaylistPtr >    m_playlistHash;
-        Dynamic::DynamicPlaylistList                     m_playlistList;
+        QHash< QString, QDomElement >                    m_playlistHash;
         QList<QDomElement>                               m_playlistElements;
 
 };

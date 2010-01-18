@@ -264,11 +264,12 @@ Playlist::Actions::playlistModeChanged()
         Dynamic::DynamicPlaylistPtr playlist = dm->activePlaylist();
 
         if ( !playlist )
-            playlist = dm->defaultPlaylist();
-
-        m_navigator = new DynamicTrackNavigator( playlist );
-
-        return;
+        {
+            debug() << "HELP! Playlist::Actions::PlaylistModeChanged got a null dynamic mode... there should always be one, a least the default!";
+        } else
+        {
+            m_navigator = new DynamicTrackNavigator( playlist );
+        }
     }
 
     m_navigator = 0;

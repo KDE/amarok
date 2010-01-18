@@ -100,8 +100,7 @@ Dynamic::BiasedPlaylist::~BiasedPlaylist()
 QDomElement
 Dynamic::BiasedPlaylist::xml() const
 {
-    QDomDocument doc =
-        PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc();
+    QDomDocument doc;
     QDomElement e = doc.createElement( "playlist" );
     e.setAttribute( "title", m_title );
 
