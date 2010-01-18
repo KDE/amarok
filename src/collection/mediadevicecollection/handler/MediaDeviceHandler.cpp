@@ -930,6 +930,11 @@ MediaDeviceHandler::privateParseTracks()
 
     }
 
+    if( !m_podcastCapability && hasCapabilityInterface( Handler::Capability::Podcast ) )
+    {
+
+    }
+
     // Finally, assign the created maps to the collection
     m_memColl->acquireWriteLock();
     m_memColl->setTrackMap( trackMap );

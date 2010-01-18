@@ -38,6 +38,7 @@ include_directories(
     collection/mediadevicecollection/handler  # for Handler
     collection/mediadevicecollection/support  # for MediaDeviceInfo
     collection/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
+    collection/mediadevicecollection/podcast
     configdialog
     configdialog/dialogs
     context
@@ -106,6 +107,7 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
   collection/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
   collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
+  collection/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp
   collection/mediadevicecollection/support/ConnectionAssistant.cpp
   collection/mediadevicecollection/support/MediaDeviceInfo.cpp
 )

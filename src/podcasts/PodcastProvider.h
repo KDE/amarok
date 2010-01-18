@@ -37,7 +37,7 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         static bool couldBeFeed( const QString &urlString );
         static KUrl toFeedUrl( const QString &urlString );
 
-        virtual ~PodcastProvider() {};
+        virtual ~PodcastProvider() {}
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const = 0;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url ) = 0;
