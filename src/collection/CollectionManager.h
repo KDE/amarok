@@ -127,7 +127,10 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
     signals:
         void scanFinished();
+        //deprecated, use collectionAdded( Amarok::Collection*, CollectionStatus ) instead
         void collectionAdded( Amarok::Collection *newCollection );
+
+        void collectionAdded( Amarok::Collection *newCollection, CollectionStatus status );
         void collectionRemoved( QString collectionId );
         void trackProviderAdded( Amarok::TrackProvider *provider );
         //this signal will be emitted after major changes to the collection

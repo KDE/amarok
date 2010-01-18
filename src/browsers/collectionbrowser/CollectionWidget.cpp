@@ -23,6 +23,7 @@
 #include "CollectionTreeItemModelBase.h"
 #include "CollectionTreeItemDelegate.h"
 #include "CollectionBrowserTreeView.h"
+#include "collection/CollectionManager.h"
 #include "collection/proxycollection/ProxyCollection.h"
 #include "Debug.h"
 #include "SearchWidget.h"
@@ -82,7 +83,16 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
         m_levels << CategoryId::Artist << CategoryId::Album;
 
     m_multiModel = new CollectionTreeItemModel( m_levels );
-    m_singleModel = new SingleCollectionTreeItemModel( new ProxyCollection::Collection(), m_levels );
+
+    ProxyCollection::Collection *proxyColl = new ProxyCollection::Collection();
+    connect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionManager::CollectionStatus)), proxyColl, SLOT(addCollection(Amarok::Collection*,CollectionManager::CollectionStatus)));
+    connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)), proxyColl, SLOT(removeCollection(QString)));
+    foreach( Amarok::Collection* coll, CollectionManager::instance()->viewableCollections() )
+    {
+        proxyColl->addCollection( coll, CollectionManager::CollectionViewable );
+    }
+
+    m_singleModel = new SingleCollectionTreeItemModel( proxyColl, m_levels );
     m_treeView->setModel( m_multiModel );
     m_singleTreeView->setModel( m_singleModel );
 

@@ -359,6 +359,7 @@ CollectionManager::slotNewCollection( Amarok::Collection* newCollection )
     if( status & CollectionViewable )
     {
         emit collectionAdded( newCollection );
+        emit collectionAdded( newCollection, status );
     }
 }
 
@@ -602,6 +603,7 @@ CollectionManager::addUnmanagedCollection( Amarok::Collection *newCollection, Co
         if( status & CollectionViewable )
         {
             emit collectionAdded( newCollection );
+            emit collectionAdded( newCollection, status );
         }
         emit trackProviderAdded( newCollection );
     }
@@ -636,6 +638,7 @@ CollectionManager::setCollectionStatus( const QString &collectionId, CollectionS
                     !( status & CollectionViewable ) )
             {
                 emit collectionAdded( pair.first );
+                emit collectionAdded( pair.first, pair.second );
             }
             CollectionPair &pair2 = const_cast<CollectionPair&>( pair );
             pair2.second = status;
