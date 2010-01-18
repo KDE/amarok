@@ -815,14 +815,12 @@ App::continueInit()
         }
     }
 
-#if 0
     if( collectionScannerVersion() != APP_VERSION  )
     {
         KMessageBox::error( 0, i18n( "<p>The version of the 'amarokcollectionscanner' tool\n"
                                      "does not match your Amarok version.</p>"
                                      "<p>Please note that Collection Scanning may not work correctly.</p>" ) );
     }
-#endif
 }
 
 QString App::collectionScannerVersion()
@@ -834,19 +832,10 @@ QString App::collectionScannerVersion()
     QStringList args;
     args << "--version";
 
-    scanner.execute( QString( "amarokcollectionscanner" ), args );
+    scanner.start( QString( "amarokcollectionscanner" ), args );
+    scanner.waitForFinished();
 
-    // FIXME: somehow the version mismatches although it's the same.
-    // Probably some characters too many at the end (endline foo)
-    QString version = scanner.readAllStandardOutput().trimmed();
-
-
-    // REMOVE ME LATER: For debugging purposes, we write the output into a file
-    QFile file;
-    file.setFileName( QDir::homePath() + "/scanner_version.txt" );
-    file.open( QIODevice::WriteOnly | QIODevice::Truncate );
-    file.write( version.toUtf8() );
-    file.flush();
+    const QString version = scanner.readAllStandardOutput().trimmed();
 
 
     return version;

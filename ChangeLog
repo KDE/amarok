@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * Amarok now checks if the version of the "amarokcollectionscanner" tool
+      is correct. Some users had issues with having mutiple versions of it
+      installed, causing scanning to fail.
     * dbus: Added StopAfterCurrent method for /Player.
     * You can now elect to rescan specific folders. Right-click on a folder in
       the collection setup dialog to rescan just that folder. This will only
