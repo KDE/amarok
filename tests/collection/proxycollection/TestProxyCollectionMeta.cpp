@@ -16,6 +16,7 @@
 
 #include "TestProxyCollectionMeta.h"
 
+#include "ProxyCollection.h"
 #include "ProxyCollectionMeta.h"
 #include "Debug.h"
 #include "meta/Capability.h"
@@ -26,6 +27,7 @@
 #include "mocks/MetaMock.h"
 
 #include <QMap>
+#include <QSignalSpy>
 
 #include <qtest_kde.h>
 
@@ -466,7 +468,12 @@ TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
     Meta::TrackPtr ptr1( mock1 );
     Meta::TrackPtr ptr2( mock2 );
 
-    ProxyCollection::Track cut( 0, ptr1 );
+    ProxyCollection::Collection *proxyCollection = new ProxyCollection::Collection();
+
+    QSignalSpy spy( proxyCollection, SIGNAL(updated()));
+    QVERIFY( spy.isValid() );
+
+    ProxyCollection::Track cut( proxyCollection, ptr1 );
     cut.add( ptr2 );
 
     QVERIFY( cut.hasCapabilityInterface( Meta::Capability::Editable ) );
@@ -486,6 +493,9 @@ TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
     editCap->endMetaDataUpdate();
     QCOMPARE( cap1->endCallcount, 1 );
     QCOMPARE( cap2->endCallcount, 1 );
+
+    //required so that the colleection browser refreshes itself
+    QCOMPARE( spy.count(), 1 );
 
     QCOMPARE( cap1->abortCallcount, 0 );
     QCOMPARE( cap2->abortCallcount, 0 );

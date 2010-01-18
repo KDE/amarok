@@ -14,6 +14,8 @@ include_directories(
 
 set( testproxycollectionmeta_SRCS
         TestProxyCollectionMeta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/proxycollection/ProxyCollection.cpp
         ${AMAROK_SOURCE_TREE}/collection/proxycollection/ProxyCollectionMeta.cpp
         ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/meta/Capability.cpp
