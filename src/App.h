@@ -95,14 +95,13 @@ class AMAROK_EXPORT App : public KUniqueApplication
     private slots:
         void slotTrashResult( KJob *job );
 
-    private:
         /**
-         * Retrieves the version of the "amarokcollectionscanner" tool.
-         *
-         * @returns String with the scanner's version.
+         * Checks version of the "amarokcollectionscanner" tool.
+         * If the version does not match, it shows an error dialog.
          */
-        QString collectionScannerVersion();
+        void checkCollectionScannerVersion();
 
+    private:
         // ATTRIBUTES
         bool                    m_isUniqueInstance;
         QPointer<MainWindow>    m_mainWindow;

@@ -815,15 +815,11 @@ App::continueInit()
         }
     }
 
-    if( collectionScannerVersion() != APP_VERSION  )
-    {
-        KMessageBox::error( 0, i18n( "<p>The version of the 'amarokcollectionscanner' tool\n"
-                                     "does not match your Amarok version.</p>"
-                                     "<p>Please note that Collection Scanning may not work correctly.</p>" ) );
-    }
+    // Using QTimer, so that we won't block the GUI
+    QTimer::singleShot( 0, this, SLOT( checkCollectionScannerVersion() ) );
 }
 
-QString App::collectionScannerVersion()
+void App::checkCollectionScannerVersion()  // SLOT
 {
     DEBUG_BLOCK
 
@@ -837,8 +833,12 @@ QString App::collectionScannerVersion()
 
     const QString version = scanner.readAllStandardOutput().trimmed();
 
-
-    return version;
+    if( version != APP_VERSION  )
+    {
+        KMessageBox::error( 0, i18n( "<p>The version of the 'amarokcollectionscanner' tool\n"
+                                     "does not match your Amarok version.</p>"
+                                     "<p>Please note that Collection Scanning may not work correctly.</p>" ) );
+    }
 }
 
 void App::slotConfigEqualizer() //SLOT
