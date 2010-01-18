@@ -33,6 +33,7 @@
 #include "MetaUtility.h"
 #include "MountPointManager.h"
 #include "Osd.h"
+#include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
 #include "Playlist.h"
 #include "PlaylistFileSupport.h"
@@ -843,9 +844,15 @@ void App::checkCollectionScannerVersion()  // SLOT
 
 void App::slotConfigEqualizer() //SLOT
 {
-//    PORT 2.0
-//    EqualizerSetup::instance()->show();
-//    EqualizerSetup::instance()->raise();
+    // FIXME where is the action for this? There is an EqualizerAction in ActionClasses,
+    // but I can't figure out what that is supposed to do. Who wrote this stuff? --markey
+
+    DEBUG_BLOCK
+
+    EqualizerConfig* equalizer = new EqualizerConfig( 0 );
+    equalizer->exec();
+
+    equalizer->deleteLater();
 }
 
 void App::slotConfigAmarok( const QString& page )
