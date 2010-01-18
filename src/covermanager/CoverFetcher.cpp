@@ -33,6 +33,7 @@
 #include <KUrl>
 
 #define DEBUG_PREFIX "CoverFetcher"
+#include <QDomDocument>
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 
@@ -160,6 +161,15 @@ CoverFetcher::slotResult( KJob *job )
     const QByteArray data = storedJob->data();
     storedJob->deleteLater();
 
+    QDomDocument testDoc;
+    // if it is valid XML, then it's not an image but an error returned instead, which crashes
+    // QPixmap::loadFromData
+    if( testDoc.setContent( data ) )
+    {
+        debug() << "Assuming we're erroring out as we got xml from lastfm image fetch!";
+        return;
+    }
+        
     const CoverFetchPayload *payload = unit->payload();
 
     switch( payload->type() )
