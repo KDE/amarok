@@ -17,6 +17,7 @@ set( testproxycollectionmeta_SRCS
         ${AMAROK_SOURCE_TREE}/collection/proxycollection/ProxyCollectionMeta.cpp
         ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/meta/Capability.cpp
+        ${AMAROK_SOURCE_TREE}/meta/capabilities/EditCapability.cpp
         ${AMAROK_SOURCE_TREE}/meta/capabilities/OrganiseCapability.cpp
     )
 

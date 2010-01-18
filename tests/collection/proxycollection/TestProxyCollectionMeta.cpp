@@ -20,6 +20,7 @@
 #include "Debug.h"
 #include "meta/Capability.h"
 #include "meta/Meta.h"
+#include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/OrganiseCapability.h"
 
 #include "mocks/MetaMock.h"
@@ -419,4 +420,84 @@ TestProxyCollectionMeta::testCreateCapabilityOnSingleYear()
     QCOMPARE( cut.createCapabilityInterface( Meta::Capability::Organisable ), cap );
     QCOMPARE( mock->capabilities.count(), 0 );
     delete cap;
+}
+
+class MyEditCapability : public Meta::EditCapability
+{
+public:
+    MyEditCapability() : Meta::EditCapability()
+            , beginCallCount(0)
+            , endCallcount(0)
+            , abortCallcount(0) {}
+    virtual bool isEditable() const { return true; }
+    virtual void setAlbum( const QString &newAlbum ) {}
+    virtual void setArtist( const QString &newArtist ) {}
+    virtual void setComposer( const QString &newComposer ) {};
+    virtual void setGenre( const QString &newGenre ) {};
+    virtual void setYear( const QString &newYear ) {};
+    virtual void setTitle( const QString &newTitle ) {};
+    virtual void setComment( const QString &newComment ) {};
+    virtual void setTrackNumber( int newTrackNumber ) {};
+    virtual void setDiscNumber( int newDiscNumber ) {};
+    virtual void setBpm( const float newBpm ) {};
+    virtual void beginMetaDataUpdate() { beginCallCount++; };
+    virtual void endMetaDataUpdate() { endCallcount++; };
+    virtual void abortMetaDataUpdate() { abortCallcount++; };
+
+    int beginCallCount;
+    int endCallcount;
+    int abortCallcount;
+};
+
+void
+TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
+{
+    MyTrackMock *mock1 = new MyTrackMock();
+    MyTrackMock *mock2 = new MyTrackMock();
+    QMap<Meta::Capability::Type, bool> result;
+    result.insert( Meta::Capability::Editable, true );
+    MyEditCapability *cap1 = new MyEditCapability();
+    MyEditCapability *cap2 = new MyEditCapability();
+    mock1->capabilities.insert( Meta::Capability::Editable, cap1 );
+    mock2->capabilities.insert( Meta::Capability::Editable, cap2 );
+    mock1->results = result;
+    mock2->results = result;
+
+    Meta::TrackPtr ptr1( mock1 );
+    Meta::TrackPtr ptr2( mock2 );
+
+    ProxyCollection::Track cut( 0, ptr1 );
+    cut.add( ptr2 );
+
+    QVERIFY( cut.hasCapabilityInterface( Meta::Capability::Editable ) );
+
+    Meta::EditCapability *editCap = cut.create<Meta::EditCapability>();
+    QVERIFY( editCap );
+    QVERIFY( editCap->isEditable() );
+
+    QCOMPARE( cap1->beginCallCount, 0 );
+    QCOMPARE( cap1->beginCallCount, 0 );
+    editCap->beginMetaDataUpdate();
+    QCOMPARE( cap1->beginCallCount, 1 );
+    QCOMPARE( cap1->beginCallCount, 1 );
+
+    QCOMPARE( cap1->endCallcount, 0 );
+    QCOMPARE( cap2->endCallcount, 0 );
+    editCap->endMetaDataUpdate();
+    QCOMPARE( cap1->endCallcount, 1 );
+    QCOMPARE( cap2->endCallcount, 1 );
+
+    QCOMPARE( cap1->abortCallcount, 0 );
+    QCOMPARE( cap2->abortCallcount, 0 );
+    editCap->abortMetaDataUpdate();
+    QCOMPARE( cap1->abortCallcount, 1 );
+    QCOMPARE( cap2->abortCallcount, 1 );
+
+    QPointer<MyEditCapability> qpointer1( cap1 );
+    QPointer<MyEditCapability> qpointer2( cap2 );
+    QVERIFY( qpointer1 );
+    QVERIFY( qpointer2 );
+    delete editCap;
+    QVERIFY( !qpointer2 );
+    QVERIFY( !qpointer2 );
 }
