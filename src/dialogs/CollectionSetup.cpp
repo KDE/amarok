@@ -109,6 +109,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     KHBox* buttonBox = new KHBox( this );
 
     KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Fully Rescan Entire Collection" ), buttonBox );
+    rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
     connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
     KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Statistics" ), buttonBox );
