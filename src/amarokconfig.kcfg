@@ -278,7 +278,7 @@
         <whatsthis>Whether to adjust the volume of tracks to make them sound the same volume, and if so whether to make the adjustments per-track or per-album.</whatsthis>
         <choices>
             <choice name="Off">
-                <label>Disable replay gain</label>
+                <label>Disable Replay Gain</label>
             </choice>
             <choice name="Track">
                 <label>Make each track the same volume</label>

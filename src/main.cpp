@@ -71,7 +71,7 @@ int main( int argc, char *argv[] )
     ocsData.addAuthor( "teom", aboutData.authors().at( 11 ) );
 
     //Contributors
-    aboutData.addCredit( ki18n("Alex Merry"), ki18n("Developer, Replay gain support"), "kde@randomguy3.me.uk" );
+    aboutData.addCredit( ki18n("Alex Merry"), ki18n("Developer, Replay Gain support"), "kde@randomguy3.me.uk" );
         ocsData.addCredit( "randomguy3", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Casey Link"), ki18n("MP3tunes integration"), "unnamedrambler@gmail.com" );
         ocsData.addCredit( "Ramblurr", aboutData.credits().last() );
