@@ -17,12 +17,16 @@
 #ifndef UMSPODCASTMETA_H
 #define UMSPODCASTMETA_H
 
+#include "meta/PlaylistFile.h"
 #include "podcasts/PodcastMeta.h"
 
 #include "meta/file/File.h"
 
 class UmsPodcastEpisode;
 class UmsPodcastChannel;
+class UmsPodcastProvider;
+
+class KUrl;
 
 typedef KSharedPtr<UmsPodcastEpisode> UmsPodcastEpisodePtr;
 typedef KSharedPtr<UmsPodcastChannel> UmsPodcastChannelPtr;
@@ -33,7 +37,9 @@ typedef QList<UmsPodcastChannelPtr> UmsPodcastChannelList;
 class UmsPodcastEpisode : public Meta::PodcastEpisode
 {
     public:
-        UmsPodcastEpisode();
+        static inline UmsPodcastEpisodePtr fromPodcastEpisodePtr( Meta::PodcastEpisodePtr episode );
+        static inline Meta::PodcastEpisodePtr toPodcastEpisodePtr( UmsPodcastEpisodePtr episode );
+        UmsPodcastEpisode( UmsPodcastChannelPtr channel );
         ~UmsPodcastEpisode();
 
         void setLocalUrl( KUrl localUrl );
@@ -53,11 +59,28 @@ class UmsPodcastEpisode : public Meta::PodcastEpisode
 
     private:
         MetaFile::TrackPtr m_localFile;
+        UmsPodcastChannelPtr m_umsChannel;
 };
 
 class UmsPodcastChannel : public Meta::PodcastChannel
 {
+    public:
+        static inline UmsPodcastChannelPtr fromPodcastChannelPtr( Meta::PodcastChannelPtr channel );
+        static inline Meta::PodcastChannelPtr toPodcastChannelPtr( UmsPodcastChannelPtr channel );
 
+        UmsPodcastChannel( UmsPodcastProvider *provider );
+        ~UmsPodcastChannel();
+
+        UmsPodcastEpisodeList umsEpisodes() { return m_umsEpisodes; }
+        void setPlaylistFileSource( const KUrl &playlistFilePath );
+        KUrl playlistFilePath() const { return m_playlistFilePath; }
+
+    private:
+        UmsPodcastProvider *m_provider;
+        KUrl m_playlistFilePath;
+        Meta::PlaylistFilePtr m_playlistFile; //used to keep track of episodes.
+
+        UmsPodcastEpisodeList m_umsEpisodes;
 };
 
 Q_DECLARE_METATYPE( UmsPodcastEpisodePtr )

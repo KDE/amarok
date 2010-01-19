@@ -14,6 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 #include "UmsPodcastProvider.h"
+#include "Debug.h"
 
 #include <KMimeType>
 
@@ -172,9 +173,10 @@ UmsPodcastProvider::scan()
     if( m_scanDirectory.isEmpty() )
         return;
     m_dirList.clear();
+    debug() << "scan directory for podcasts: " << m_scanDirectory;
     QDirIterator it( m_scanDirectory, QDirIterator::Subdirectories );
     while( it.hasNext() )
-        addPath( it.next() );
+        this->addPath( it.next() );
 }
 
 int
@@ -182,6 +184,7 @@ UmsPodcastProvider::addPath( const QString &path )
 {
     DEBUG_BLOCK
     int acc = 0;
+    debug() << path;
     KMimeType::Ptr mime = KMimeType::findByFileContent( path, &acc );
     if( !mime || mime->name() == KMimeType::defaultMimeType() )
     {
@@ -190,7 +193,7 @@ UmsPodcastProvider::addPath( const QString &path )
         if( mime->name() == KMimeType::defaultMimeType() )
             return 0;
     }
-    debug() << "Got type: " << mime->name() << "For file: " << path << ", with accuracy: " << acc;
+    debug() << "Got type: " << mime->name() << ", with accuracy: " << acc;
 
     QFileInfo info( path );
     if( info.isDir() )
@@ -219,5 +222,45 @@ UmsPodcastProvider::addPath( const QString &path )
 void
 UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
 {
-    //wrap the track into a proxy and parse it's album to use as channel title
+    DEBUG_BLOCK
+    debug() << metafileTrack->playableUrl().url();
+    //see if there is already a UmsPodcastEpisode for this track
+    UmsPodcastChannelPtr channel;
+    UmsPodcastEpisodePtr episode;
+
+    foreach( UmsPodcastChannelPtr c, m_umsChannels )
+    {
+        if( c->name() == metafileTrack->album()->name() )
+        {
+            channel = c;
+            break;
+        }
+    }
+
+    if( channel )
+    {
+        foreach( UmsPodcastEpisodePtr e, channel->umsEpisodes() )
+        {
+            if( e->title() == metafileTrack->name() )
+            {
+                episode = e;
+                break;
+            }
+        }
+    }
+    else
+    {
+        debug() << "there is no channel for this episode yet";
+        channel = UmsPodcastChannelPtr( new UmsPodcastChannel( this ) );
+        channel->setTitle( metafileTrack->album()->name() );
+        m_umsChannels << channel;
+    }
+
+    if( episode.isNull() )
+    {
+        debug() << "this episode was not found in an existing channel";
+        episode = UmsPodcastEpisodePtr( new UmsPodcastEpisode( channel ) );
+    }
+
+    episode->setLocalFile( metafileTrack );
 }

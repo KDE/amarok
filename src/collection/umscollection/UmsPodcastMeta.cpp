@@ -15,10 +15,24 @@
  ****************************************************************************************/
 
 #include "UmsPodcastMeta.h"
+#include "meta/PlaylistFileSupport.h"
 
 using namespace Meta;
 
-UmsPodcastEpisode::UmsPodcastEpisode()
+UmsPodcastEpisodePtr
+UmsPodcastEpisode::fromPodcastEpisodePtr( PodcastEpisodePtr episode )
+{
+    return UmsPodcastEpisodePtr::dynamicCast( episode );
+}
+
+PodcastEpisodePtr
+UmsPodcastEpisode::toPodcastEpisodePtr( UmsPodcastEpisodePtr episode )
+{
+    return PodcastEpisodePtr::dynamicCast( episode );
+}
+
+UmsPodcastEpisode::UmsPodcastEpisode( UmsPodcastChannelPtr channel )
+        : Meta::PodcastEpisode( UmsPodcastChannel::toPodcastChannelPtr( channel ) )
 {
 }
 
@@ -119,4 +133,37 @@ UmsPodcastEpisode::year() const
         return m_yearPtr;
 
     return m_localFile->year();
+}
+
+UmsPodcastChannelPtr
+UmsPodcastChannel::fromPodcastChannelPtr( PodcastChannelPtr channel )
+{
+    return UmsPodcastChannelPtr::dynamicCast( channel );
+}
+
+PodcastChannelPtr
+UmsPodcastChannel::toPodcastChannelPtr( UmsPodcastChannelPtr channel )
+{
+    return PodcastChannelPtr::dynamicCast( channel );
+}
+
+UmsPodcastChannel::UmsPodcastChannel( UmsPodcastProvider *provider )
+        : Meta::PodcastChannel()
+        , m_provider( provider )
+{
+
+}
+
+UmsPodcastChannel::~UmsPodcastChannel()
+{
+
+}
+
+void
+UmsPodcastChannel::setPlaylistFileSource( const KUrl &playlistFilePath )
+{
+    m_playlistFilePath = playlistFilePath;
+    m_playlistFile = Meta::loadPlaylistFile( playlistFilePath );
+
+    //now parse the playlist and use it to create out episode list
 }

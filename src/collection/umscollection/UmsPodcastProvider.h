@@ -76,6 +76,8 @@ class UmsPodcastProvider : public PodcastProvider
         Meta::UmsHandler *m_handler;
         QString m_scanDirectory;
         QStringList m_dirList;
+
+        UmsPodcastChannelList m_umsChannels;
 };
 
 #endif // UMSPODCASTPROVIDER_H

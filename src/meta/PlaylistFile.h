@@ -31,7 +31,7 @@ namespace Meta
      * Base class for all playlist files
      *
      **/
-    class PlaylistFile : public Playlist
+    class AMAROK_EXPORT PlaylistFile : public Playlist
     {
         public:
             PlaylistFile() {}
