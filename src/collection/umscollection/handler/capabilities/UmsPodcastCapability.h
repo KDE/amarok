@@ -23,20 +23,20 @@ class UmsPodcastCapability : public Handler::PodcastCapability
 {
 public:
     UmsPodcastCapability();
-    ~UmsPodcastCapability() {}
+    ~UmsPodcastCapability();
 
-    virtual void prepareToParsePodcasts() {}
-    virtual bool isEndOfParsePodcastsList() { return true; }
-    virtual void prepareToParseNextPodcast() {}
-    virtual void nextPodcastToParse() {}
-    virtual bool shouldNotParseNextPodcast() { return true; }
+    virtual void prepareToParsePodcasts();
+    virtual bool isEndOfParsePodcastsList();
+    virtual void prepareToParseNextPodcast();
+    virtual void nextPodcastToParse();
+    virtual bool shouldNotParseNextPodcast();
 
-    virtual void prepareToParsePodcastEpisode() {}
-    virtual bool isEndOfParsePodcast() { return true; }
-    virtual void prepareToParseNextPodcastEpisode() {}
-    virtual void nextPodcastEpisodeToParse() {}
-    virtual Handler::MediaDevicePodcastEpisodePtr libGetEpisodePtrForEpisodeStruct() { return Handler::MediaDevicePodcastEpisodePtr(); }
-    virtual QString libGetPodcastName() { return QString( "UMS Podcast" ); }
+    virtual void prepareToParsePodcastEpisode();
+    virtual bool isEndOfParsePodcast();
+    virtual void prepareToParseNextPodcastEpisode();
+    virtual void nextPodcastEpisodeToParse();
+    virtual Handler::MediaDevicePodcastEpisodePtr libGetEpisodePtrForEpisodeStruct();
+    virtual QString libGetPodcastName();
     
     virtual void addPodcast( const Meta::PodcastChannelPtr &channel ) { Q_UNUSED( channel ); }
     virtual void removePodcast( const Handler::MediaDevicePodcastChannelPtr &channel ) { Q_UNUSED( channel ); }
