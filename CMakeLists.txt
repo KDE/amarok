@@ -117,7 +117,7 @@ if( WITH_PLAYER )
     endif( WITH_IPOD )
 
     macro_optional_find_package(Mtp)
-    macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "1.0.0" "")
+    macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.3.0" "")
 
     if( WITH_MP3Tunes )
         find_package(CURL)
