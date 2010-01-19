@@ -26,7 +26,7 @@ VERSION 2.2.3
     * Improved cover fetching accuracy and speed.
     * Usability: Better design of playback configuration dialog.
     * Use millisecond accuracy for track bookmarks. Backwards compatible
-      with bookmarks stored in previos versions (BR 215145)
+      with bookmarks stored in previos versions. (BR 215145)
     * Loving a track for Last.fm via the global keyboard action also show a
       message in the status bar.
     * Improved usability of the playlist layout editor dialog.
