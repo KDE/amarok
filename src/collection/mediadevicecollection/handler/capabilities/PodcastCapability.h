@@ -22,19 +22,12 @@
 #include "../MediaDeviceHandlerCapability.h"
 #include "../../MediaDeviceMeta.h"
 
-#include <podcasts/PodcastMeta.h>
+#include "mediadevicecollection/podcast/MediaDevicePodcastMeta.h"
 
 namespace Handler
 {
-    class MediaDevicePodcastChannel;
-    typedef KSharedPtr<MediaDevicePodcastChannel> MediaDevicePodcastChannelPtr;
-    class MediaDevicePodcastEpisode;
-    typedef KSharedPtr<MediaDevicePodcastEpisode> MediaDevicePodcastEpisodePtr;
-
     class MEDIADEVICECOLLECTION_EXPORT PodcastCapability : public Handler::Capability
     {
-        Q_OBJECT
-
         public:
             virtual ~PodcastCapability();
 
@@ -80,14 +73,13 @@ namespace Handler
              * e.g. with libgpod, this initializes a GList to the beginning of
              * the list of tracks
              */
-            virtual void prepareToParsePodcastTracks() = 0;
+            virtual void prepareToParsePodcastEpisode() = 0;
 
             /**
              * This method runs a test to see if we have reached the end of
-             * the list of tracks in the Podcast to be parsed on the device, e.g. in libgpod
+             * the list of episode in the Podcast to be parsed on the device, e.g. in libgpod
              * this tests if cur != NULL, i.e. if(cur)
              */
-
             virtual bool isEndOfParsePodcast() = 0;
 
             /**
@@ -95,21 +87,20 @@ namespace Handler
              * track structs, e.g. with libgpod, cur = cur->next where cur
              * is a GList*
              */
-
-            virtual void prepareToParseNextPodcastTrack() = 0;
+            virtual void prepareToParseNextPodcastEpisode() = 0;
 
             /**
              * This method attempts to access the special struct of the
              * next track on the Podcast, so that information can then be parsed from it.
              * For libgpod, this is m_currtrack = (Itdb_Track*) cur->data
              */
-            virtual void nextPodcastTrackToParse() = 0;
+            virtual void nextPodcastEpisodeToParse() = 0;
 
             /**
              * Returns a MediaDeviceTrackPtr that is associated with the currently parsed track struct.
              * @return A MediaDeviceTrackPtr to currently parsed track struct
              */
-            virtual Meta::MediaDeviceTrackPtr libGetTrackPtrForTrackStruct() = 0;
+            virtual MediaDevicePodcastEpisodePtr libGetEpisodePtrForEpisodeStruct() = 0;
 
             /**
              * Returns a string containing the Podcast name of the currently parsed Podcast struct, if available.

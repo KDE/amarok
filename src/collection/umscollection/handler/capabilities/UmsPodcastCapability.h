@@ -1,5 +1,4 @@
 /****************************************************************************************
- * Copyright (c) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
  * Copyright (c) 2010 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -15,9 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#ifndef UMSPODCASTCAPABILITY_H
+#define UMSPODCASTCAPABILITY_H
+
 #include "PodcastCapability.h"
 
-Handler::PodcastCapability::~PodcastCapability()
+class UmsPodcastCapability : public Handler::PodcastCapability
 {
-    // nothing to do here
-}
+public:
+    UmsPodcastCapability();
+    ~UmsPodcastCapability() {}
+
+    virtual void prepareToParsePodcasts() {}
+    virtual bool isEndOfParsePodcastsList() { return true; }
+    virtual void prepareToParseNextPodcast() {}
+    virtual void nextPodcastToParse() {}
+    virtual bool shouldNotParseNextPodcast() { return true; }
+
+    virtual void prepareToParsePodcastEpisode() {}
+    virtual bool isEndOfParsePodcast() { return true; }
+    virtual void prepareToParseNextPodcastEpisode() {}
+    virtual void nextPodcastEpisodeToParse() {}
+    virtual Handler::MediaDevicePodcastEpisodePtr libGetEpisodePtrForEpisodeStruct() { return Handler::MediaDevicePodcastEpisodePtr(); }
+    virtual QString libGetPodcastName() { return QString( "UMS Podcast" ); }
+    
+    virtual void addPodcast( const Meta::PodcastChannelPtr &channel ) { Q_UNUSED( channel ); }
+    virtual void removePodcast( const Handler::MediaDevicePodcastChannelPtr &channel ) { Q_UNUSED( channel ); }
+    virtual void removePodcastEpisode( const Handler::MediaDevicePodcastEpisodePtr &episode ) { Q_UNUSED( episode ); }
+
+};
+
+#endif // UMSPODCASTCAPABILITY_H
