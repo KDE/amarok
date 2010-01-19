@@ -22,6 +22,7 @@
 #include "MediaDeviceHandlerCapability.h"
 #include "capabilities/CustomReadCapability.h"
 #include "capabilities/PlaylistCapability.h"
+#include "capabilities/PodcastCapability.h"
 #include "capabilities/ReadCapability.h"
 #include "capabilities/WriteCapability.h"
 
@@ -375,6 +376,7 @@ private:
     /// Capability-related variables
 
     Handler::PlaylistCapability *m_pc;
+    Handler::PodcastCapability *m_podcastCapability;
     Handler::ReadCapabilityBase *m_rcb;
     Handler::CustomReadCapability *m_crc;
     Handler::ReadCapability *m_rc;

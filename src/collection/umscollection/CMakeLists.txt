@@ -21,11 +21,14 @@ include_directories( ../..
 
 set(amarok_collection-umscollection_PART_SRCS
   UmsCollection.cpp
+  UmsPodcastProvider.cpp
+  UmsPodcastMeta.cpp
   handler/UmsHandler.cpp
 #  handler/capabilities/UmsArtworkCapability.cpp
 #  handler/capabilities/UmsPlaylistCapability.cpp
+   handler/capabilities/UmsPodcastCapability.cpp
   handler/capabilities/UmsReadCapability.cpp
-  handler/capabilities/UmsWriteCapability.cpp	
+  handler/capabilities/UmsWriteCapability.cpp
   support/UmsDeviceInfo.cpp
   support/UmsConnectionAssistant.cpp)
 
