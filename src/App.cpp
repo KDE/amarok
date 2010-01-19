@@ -826,10 +826,13 @@ void App::checkCollectionScannerVersion()  // SLOT
 
     QProcess scanner;
 
+    // If the scanner tool is not in $PATH, let's try to find it in PREFIX
+    const QString scannerPath = applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
+
     QStringList args;
     args << "--version";
 
-    scanner.start( QString( "amarokcollectionscanner" ), args );
+    scanner.start( scannerPath, args );
     scanner.waitForFinished();
 
     const QString version = scanner.readAllStandardOutput().trimmed();
