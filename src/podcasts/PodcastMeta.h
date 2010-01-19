@@ -18,6 +18,7 @@
 #define PODCASTMETA_H
 
 #include "Amarok.h"
+#include "amarok_export.h"
 #include "meta/Meta.h"
 #include "meta/Playlist.h"
 
@@ -62,10 +63,10 @@ enum Type
 
 
 
-class PodcastMetaCommon
+class AMAROK_EXPORT PodcastMetaCommon
 {
     public:
-        PodcastMetaCommon() {};
+        PodcastMetaCommon() {}
         virtual ~PodcastMetaCommon() {}
 
         virtual QString title() const { return m_title;}
@@ -94,7 +95,7 @@ class PodcastMetaCommon
         QString m_author; // TODO: save to DB
 };
 
-class PodcastEpisode : public PodcastMetaCommon, public Track
+class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Track
 {
     public:
         PodcastEpisode();
@@ -199,7 +200,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         Meta::YearPtr m_yearPtr;
 };
 
-class PodcastChannel : public PodcastMetaCommon, public Playlist
+class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlist
 {
     public:
 
@@ -266,7 +267,7 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
         bool load( QTextStream &stream ) { Q_UNUSED( stream ); return false; }
 
         //Settings
-        KUrl saveLocation() const { return m_directory; };
+        KUrl saveLocation() const { return m_directory; }
         bool autoScan() { return m_autoScan; }
         FetchType fetchType() { return m_fetchType; }
         bool hasPurge() { return m_purge; }
@@ -298,7 +299,7 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
 
 // internal helper classes
 
-class PodcastArtist : public Meta::Artist
+class AMAROK_EXPORT PodcastArtist : public Meta::Artist
 {
 public:
     PodcastArtist( PodcastEpisode *episode )
@@ -338,7 +339,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class PodcastAlbum : public Meta::Album
+class AMAROK_EXPORT PodcastAlbum : public Meta::Album
 {
 public:
     PodcastAlbum( PodcastEpisode *episode )
@@ -396,7 +397,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class PodcastGenre : public Meta::Genre
+class AMAROK_EXPORT PodcastGenre : public Meta::Genre
 {
 public:
     PodcastGenre( PodcastEpisode *episode )
@@ -428,7 +429,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class PodcastComposer : public Meta::Composer
+class AMAROK_EXPORT PodcastComposer : public Meta::Composer
 {
 public:
     PodcastComposer( PodcastEpisode *episode )
@@ -466,7 +467,7 @@ public:
     PodcastEpisode const *episode;
 };
 
-class PodcastYear : public Meta::Year
+class AMAROK_EXPORT PodcastYear : public Meta::Year
 {
 public:
     PodcastYear( PodcastEpisode *episode )
