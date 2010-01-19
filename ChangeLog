@@ -20,6 +20,8 @@ VERSION 2.2.3
     * Searching covers from Last.fm using custom query in interactive mode.
  
   CHANGES:
+    * The search/filter edit in the playlist is now cleared when pressing 
+      enter. (BR 217159)
     * Amarok now checks if the version of the "amarokcollectionscanner" tool
       is correct. Some users had issues with having mutiple versions of it
       installed, causing scanning to fail.
