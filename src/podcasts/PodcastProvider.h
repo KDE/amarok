@@ -56,6 +56,8 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
 
         // PlaylistProvider methods
         virtual QString prettyName() const = 0;
+        virtual KIcon icon() const = 0;
+
         virtual int category() const { return (int)PlaylistManager::PodcastChannel; }
 
         virtual Meta::PlaylistList playlists() = 0;
@@ -71,6 +73,8 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
                                                   int trackIndex )
                 { Q_UNUSED( playlist) Q_UNUSED( trackIndex ) return QList<QAction *>(); }
 
+        //TODO: need to move this to SqlPodcastProvider since it's provider specific.
+        //perhaps use a more general transferprogress for playlists
         virtual void completePodcastDownloads() = 0;
 
     public slots:
