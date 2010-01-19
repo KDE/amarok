@@ -462,9 +462,14 @@ bool Amarok::TimeSlider::event( QEvent * event )
         QHelpEvent * helpEvent = dynamic_cast<QHelpEvent *>( event );
         if( helpEvent )
         {
-            // Update tooltip to show the current track time position
-            const int trackPosition = The::engineController()->trackPosition();
-            setToolTip( i18n( "Time position: %1", Meta::secToPrettyTime( trackPosition ) ) );
+
+            //figure out "percentage" of the track length that the mouse is hovering over the slider
+            qreal percentage = (qreal) helpEvent->x() / (qreal) width();
+            long trackLength = The::engineController()->trackLength();
+            int trackPosition = trackLength * percentage;
+
+            // Update tooltip to show the track position under the cursor
+            setToolTip( i18nc( "Tooltip shown when the mouse is over the progress slider, representing the position in the currently playing track that amarok will seek to if you click the mouse. Keep it short and consice.", "Track position under cursor: %1", Meta::msToPrettyTime( trackPosition ) ) );
         }
     }
 
