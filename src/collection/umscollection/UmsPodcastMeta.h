@@ -37,8 +37,8 @@ typedef QList<UmsPodcastChannelPtr> UmsPodcastChannelList;
 class UmsPodcastEpisode : public Meta::PodcastEpisode
 {
     public:
-        static inline UmsPodcastEpisodePtr fromPodcastEpisodePtr( Meta::PodcastEpisodePtr episode );
-        static inline Meta::PodcastEpisodePtr toPodcastEpisodePtr( UmsPodcastEpisodePtr episode );
+        static UmsPodcastEpisodePtr fromPodcastEpisodePtr( Meta::PodcastEpisodePtr episode );
+        static Meta::PodcastEpisodePtr toPodcastEpisodePtr( UmsPodcastEpisodePtr episode );
         UmsPodcastEpisode( UmsPodcastChannelPtr channel );
         ~UmsPodcastEpisode();
 
@@ -65,8 +65,9 @@ class UmsPodcastEpisode : public Meta::PodcastEpisode
 class UmsPodcastChannel : public Meta::PodcastChannel
 {
     public:
-        static inline UmsPodcastChannelPtr fromPodcastChannelPtr( Meta::PodcastChannelPtr channel );
-        static inline Meta::PodcastChannelPtr toPodcastChannelPtr( UmsPodcastChannelPtr channel );
+        static UmsPodcastChannelPtr fromPodcastChannelPtr( Meta::PodcastChannelPtr channel );
+        static Meta::PodcastChannelPtr toPodcastChannelPtr( UmsPodcastChannelPtr channel );
+        static Meta::PodcastChannelList toPodcastChannelList( UmsPodcastChannelList umsChannels );
 
         UmsPodcastChannel( UmsPodcastProvider *provider );
         ~UmsPodcastChannel();

@@ -147,6 +147,15 @@ UmsPodcastChannel::toPodcastChannelPtr( UmsPodcastChannelPtr channel )
     return PodcastChannelPtr::dynamicCast( channel );
 }
 
+PodcastChannelList
+UmsPodcastChannel::toPodcastChannelList( UmsPodcastChannelList umsChannels )
+{
+    PodcastChannelList channels;
+    foreach( UmsPodcastChannelPtr umsChannel, umsChannels )
+        channels << UmsPodcastChannel::toPodcastChannelPtr(  umsChannel );
+    return channels;
+}
+
 UmsPodcastChannel::UmsPodcastChannel( UmsPodcastProvider *provider )
         : Meta::PodcastChannel()
         , m_provider( provider )

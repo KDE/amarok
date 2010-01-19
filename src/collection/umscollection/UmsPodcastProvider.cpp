@@ -66,7 +66,7 @@ UmsPodcastProvider::addEpisode( Meta::PodcastEpisodePtr episode )
 PodcastChannelList
 UmsPodcastProvider::channels()
 {
-    return PodcastChannelList();
+    return UmsPodcastChannel::toPodcastChannelList( m_umsChannels );
 }
 
 void
@@ -101,8 +101,10 @@ PlaylistList
 UmsPodcastProvider::playlists()
 {
     PlaylistList playlists;
-    foreach( PodcastChannelPtr channel, channels() )
+    foreach( UmsPodcastChannelPtr channel, m_umsChannels )
         playlists << PlaylistPtr::dynamicCast( channel );
+    debug() << "there are " << playlists.count() << " channels";
+    return playlists;
 }
 
 QList<QAction *>
@@ -176,7 +178,7 @@ UmsPodcastProvider::scan()
     debug() << "scan directory for podcasts: " << m_scanDirectory;
     QDirIterator it( m_scanDirectory, QDirIterator::Subdirectories );
     while( it.hasNext() )
-        this->addPath( it.next() );
+        addPath( it.next() );
 }
 
 int
@@ -254,12 +256,14 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
         channel = UmsPodcastChannelPtr( new UmsPodcastChannel( this ) );
         channel->setTitle( metafileTrack->album()->name() );
         m_umsChannels << channel;
+        emit( updated() );
     }
 
     if( episode.isNull() )
     {
         debug() << "this episode was not found in an existing channel";
         episode = UmsPodcastEpisodePtr( new UmsPodcastEpisode( channel ) );
+        channel->addEpisode( UmsPodcastEpisode::toPodcastEpisodePtr( episode ) );
     }
 
     episode->setLocalFile( metafileTrack );
