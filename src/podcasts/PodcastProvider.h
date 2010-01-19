@@ -47,7 +47,7 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         virtual Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel ) = 0;
         virtual Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode ) = 0;
 
-        virtual Meta::PodcastChannelList channels()= 0;
+        virtual Meta::PodcastChannelList channels() = 0;
 
         virtual void removeSubscription( Meta::PodcastChannelPtr channel ) = 0;
 
@@ -56,7 +56,7 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
 
         // PlaylistProvider methods
         virtual QString prettyName() const = 0;
-        virtual int category() const = 0;
+        virtual int category() const { return (int)PlaylistManager::PodcastChannel; }
 
         virtual Meta::PlaylistList playlists() = 0;
 
