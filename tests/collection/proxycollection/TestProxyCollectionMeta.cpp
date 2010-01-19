@@ -508,6 +508,6 @@ TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
     QVERIFY( qpointer1 );
     QVERIFY( qpointer2 );
     delete editCap;
-    QVERIFY( !qpointer2 );
+    QVERIFY( !qpointer1 );
     QVERIFY( !qpointer2 );
 }
