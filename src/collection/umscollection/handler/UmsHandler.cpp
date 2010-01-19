@@ -120,6 +120,7 @@ UmsHandler::init()
 
     QFile playerFile( m_mountPoint + "/.is_audio_player" );
 
+    QString mountPoint = m_mountPoint; //save for podcast path
     if (playerFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         debug() << "Got .is_audio_player file";
@@ -142,8 +143,10 @@ UmsHandler::init()
             if( line.startsWith( "podcast_folder=" ) )
             {
                 debug() << "Found podcast_folder, initializing UMS podcast provider";
+                m_podcastPath = mountPoint + '/' + line.section( '=', 1, 1 );
+                debug() << "scan for podcasts in " << m_podcastPath;
                 //HACK initialize a real PodcastProvider since I failed to add it to the MD framework
-                m_podcastProvider = new UmsPodcastProvider( this );
+                m_podcastProvider = new UmsPodcastProvider( this, m_podcastPath );
                 The::playlistManager()->addProvider( m_podcastProvider,
                                                      PlaylistManager::PodcastChannel );
             }
@@ -699,6 +702,9 @@ UmsHandler::prepareToParseTracks()
     {
         addPath( it.next() );
     }
+
+    if( m_podcastProvider )
+        m_podcastProvider->scan();
 
     m_parsed = true;
     m_listpos = 0;

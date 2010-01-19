@@ -102,6 +102,8 @@ class UmsHandler : public Meta::MediaDeviceHandler
         QString mountPoint() const { return m_mountPoint; }
         void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
 
+        QStringList mimetypes() { return m_mimetypes; }
+
     public slots:
 
     protected:
@@ -259,6 +261,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
 
         //direct implementation of a podcast provider NOT using the MD::Capabilities
         UmsPodcastProvider *m_podcastProvider;
+        QString m_podcastPath;
 
     private slots:
         void slotCreateEntry( const QString &path );
