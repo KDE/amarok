@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * The progress bar tooltip now shows the position in the track that the
+      cursor is hovering, making it simple to jump to a specific position.
     * D-Bus: Added StopAfterCurrent method for /Player.
     * You can now elect to rescan specific folders. Right-click on a folder in
       the collection setup dialog to rescan just that folder. This will only
