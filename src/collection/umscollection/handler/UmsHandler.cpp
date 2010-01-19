@@ -19,6 +19,7 @@
 #include "UmsHandler.h"
 
 #include "UmsCollection.h"
+#include "../UmsPodcastProvider.h"
 #include "Debug.h"
 
 #include "SvgHandler.h"
@@ -86,6 +87,7 @@ UmsHandler::UmsHandler( UmsCollection *mc, const QString& mountPoint )
     , m_isCanceled( false )
     , m_wait( false )
     , m_tempdir( new KTempDir() )
+    , m_podcastProvider( 0 )
 {
     DEBUG_BLOCK
 
@@ -98,6 +100,11 @@ UmsHandler::~UmsHandler()
 {
     DEBUG_BLOCK
     delete m_tempdir;
+    if( m_podcastProvider )
+    {
+        The::playlistManager()->removeProvider( m_podcastProvider );
+        delete m_podcastProvider;
+    }
 }
 
 void
@@ -117,7 +124,8 @@ UmsHandler::init()
     {
         debug() << "Got .is_audio_player file";
         QTextStream in(&playerFile);
-        while (!in.atEnd()) {
+        while( !in.atEnd() )
+        {
             QString line = in.readLine();
             if( line.startsWith( "audio_folder=" ) )
             {
@@ -130,6 +138,14 @@ UmsHandler::init()
                     debug() << "Custom audio folder now set to: " << path;
                     m_mountPoint = path;
                 }
+            }
+            if( line.startsWith( "podcast_folder=" ) )
+            {
+                debug() << "Found podcast_folder, initializing UMS podcast provider";
+                //HACK initialize a real PodcastProvider since I failed to add it to the MD framework
+                m_podcastProvider = new UmsPodcastProvider( this );
+                The::playlistManager()->addProvider( m_podcastProvider,
+                                                     PlaylistManager::PodcastChannel );
             }
         }
 

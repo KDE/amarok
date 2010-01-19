@@ -58,6 +58,8 @@ class KDirLister;
 class KFileItem;
 class KUrl;
 
+class UmsPodcastProvider;
+
 class QAction;
 class QString;
 class QMutex;
@@ -254,6 +256,9 @@ class UmsHandler : public Meta::MediaDeviceHandler
         // tempdir for covers
         KTempDir *m_tempdir;
         QSet<QString> m_coverArt;
+
+        //direct implementation of a podcast provider NOT using the MD::Capabilities
+        UmsPodcastProvider *m_podcastProvider;
 
     private slots:
         void slotCreateEntry( const QString &path );
