@@ -240,7 +240,7 @@ PodcastCategory::showInfo( const QModelIndex & index )
         if( pubDate.isValid() )
         {
             authorAndPubDate += QString( "<b>%1</b> %2" )
-                .arg( i18n( "On" ) )
+                .arg( i18nc( "Podcast published on", "On" ) )
                 .arg( KGlobal::locale()->formatDateTime( pubDate, KLocale::FancyShortDate ) );
         }
     }
