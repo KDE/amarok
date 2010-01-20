@@ -1,0 +1,100 @@
+/****************************************************************************************
+ * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
+ * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+
+#ifndef AMAROK_UPCOMINGEVENTS_ENGINE
+#define AMAROK_UPCOMINGEVENTS_ENGINE
+
+#include "ContextObserver.h"
+#include "meta/Meta.h"
+
+#include <context/DataEngine.h>
+#include <applets/upcomingevents/LastFmEvent.h>
+
+#include <KIO/Job>
+#include <QLocale>
+
+
+/**
+    This class provide UpcomingEvents data for use in Context applets.
+*/
+#include <QDomDocument>
+
+using namespace Context;
+
+class UpcomingEventsEngine : public DataEngine, public ContextObserver, Meta::Observer
+{
+    Q_OBJECT
+    Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
+        
+public:
+    UpcomingEventsEngine( QObject* parent, const QList<QVariant>& args );
+    virtual ~UpcomingEventsEngine();
+    
+    QStringList sources() const;
+    
+    // reimplemented from Context::Observer
+    virtual void message( const ContextState& state );
+
+    // reimplemented from Meta::Observer
+    using Observer::metadataChanged;
+    void metadataChanged( Meta::TrackPtr track );
+
+    void setSelection( const QString& selection ) { m_currentSelection = selection; }
+    QString selection() { return m_currentSelection; }
+
+    QList< LastFmEvent > upcomingEvents();
+    
+    /**
+    * Fetches the upcoming events for an artist thanks to the LastFm WebService
+    * @param artist_name the name of the artist
+    * @return a list of events
+    */
+    void upcomingEventsRequest(const QString &artist_name);
+    void upcomingEventsParseResult(QDomDocument xml);
+    
+protected:
+    bool sourceRequestEvent( const QString& name );
+    
+private:
+    void update();
+
+    QString m_timeSpan;
+    bool m_enabledLinks;
+    
+    void reloadUpcomingEvents();
+    
+    KJob* m_upcomingEventsJob;
+
+    Meta::TrackPtr m_currentTrack;
+        
+    QString m_currentSelection;
+    bool m_requested;
+    QStringList m_sources;
+    short m_triedRefinedSearch;
+
+    QList< LastFmEvent > m_upcomingEvents;
+    QString m_xml;
+
+private slots:
+    void upcomingEventsResultFetched( KJob* );
+};
+
+K_EXPORT_AMAROK_DATAENGINE( upcomingEvents, UpcomingEventsEngine )
+
+#endif
+

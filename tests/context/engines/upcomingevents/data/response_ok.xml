@@ -1,0 +1,110 @@
+<lfm status="ok">
+    <events artist="Muse" total="51">
+        <event>
+            <id>1285206</id>
+            <title>Live 105's Not So Silent Night</title>
+            <artists>
+                <artist>Muse</artist>
+                <artist>30 Seconds to Mars</artist>
+                <artist>AFI</artist>
+                <artist>Metric</artist>
+                <artist>Vampire Weekend</artist>
+                <headliner>Muse</headliner>
+            </artists>
+            <venue>
+                <id>8956524</id>
+                <name>Oracle Arena</name>
+                <location>
+                    <city>OAKLAND, CA</city>
+                    <country>United States</country>
+                    <street>7000 Coliseum Way</street>
+                    <postalcode>94621</postalcode>
+                    <geo:point>
+                        <geo:lat>37.750414</geo:lat>
+                        <geo:long>-122.204498</geo:long>
+                    </geo:point>
+                </location>
+                    <url>http://www.last.fm/venue/8956524+Oracle+Arena</url>
+                <website/>
+                <phonenumber/>
+                <image size="small">http://userserve-ak.last.fm/serve/34/19546721.jpg</image>
+                <image size="medium">http://userserve-ak.last.fm/serve/64/19546721.jpg</image>
+                <image size="large">http://userserve-ak.last.fm/serve/126/19546721.jpg</image>
+                <image size="extralarge">http://userserve-ak.last.fm/serve/252/19546721.jpg</image>
+                <image size="mega">http://userserve-ak.last.fm/serve/_/19546721/Oracle+Arena+goldenstatearena3.jpg</image>
+            </venue>
+            <startDate>Fri, 11 Dec 2009 16:05:01</startDate>
+            <description/>
+            <image size="small">http://userserve-ak.last.fm/serve/34/37215285.jpg</image>
+            <image size="medium">http://userserve-ak.last.fm/serve/64/37215285.jpg</image>
+            <image size="large">http://userserve-ak.last.fm/serve/126/37215285.jpg</image>
+            <image size="extralarge">http://userserve-ak.last.fm/serve/252/37215285.jpg</image>
+            <attendance>27</attendance>
+            <reviews>0</reviews>
+            <tag>lastfm:event=1285206</tag>
+            <url>http://www.last.fm/event/1285206+Live+105%27s+Not+So+Silent+Night</url>
+            <website>http://www.live105.com/pages/5547224.php</website>
+            <tickets></tickets>
+            <cancelled>0</cancelled>
+            <tags>
+                <tag>rock</tag>
+                <tag>alternative</tag>
+            </tags>
+        </event>
+        <event>
+            <id>1285310</id>
+            <title>Not So Silent Night 2009</title>
+            <artists>
+                <artist>Muse</artist>
+                <artist>30 Seconds to Mars</artist>
+                <artist>AFI</artist>
+                <artist>Metric</artist>
+                <artist>Vampire Weekend</artist>
+                <artist>DJ Miles</artist>
+                <artist>Scene of Action</artist>
+                <headliner>Muse</headliner>
+            </artists>
+            <venue>
+                <id>8791838</id>
+                <name>Oracle Arena</name>
+                <location>
+                    <city>Oakland</city>
+                    <country>United States</country>
+                    <street>7000 Coliseum Way</street>
+                    <postalcode>94621</postalcode>
+                    <geo:point>
+                        <geo:lat>37.750414</geo:lat>
+                        <geo:long>-122.204498</geo:long>
+                    </geo:point>
+                </location>
+                <url>http://www.last.fm/venue/8791838+Oracle+Arena</url>
+                <website>http://www.coliseum.com/index.php</website>
+                <phonenumber/>
+                <image size="small">http://userserve-ak.last.fm/serve/34/7534395.jpg</image>
+                <image size="medium">http://userserve-ak.last.fm/serve/64/7534395.jpg</image>
+                <image size="large">http://userserve-ak.last.fm/serve/126/7534395.jpg</image>
+                <image size="extralarge">http://userserve-ak.last.fm/serve/252/7534395.jpg</image>
+                <image size="mega">http://userserve-ak.last.fm/serve/_/7534395/Oracle+Arena+goldenstatearena31.jpg</image>
+            </venue>
+            <startDate>Fri, 11 Dec 2009 17:33:01</startDate>
+            <description><div class="bbcode">Live 105's annual holiday show!</div></description>
+            <image size="small">http://userserve-ak.last.fm/serve/34/347209.jpg</image>
+            <image size="medium">http://userserve-ak.last.fm/serve/64/347209.jpg</image>
+            <image size="large">http://userserve-ak.last.fm/serve/126/347209.jpg</image>
+            <image size="extralarge">http://userserve-ak.last.fm/serve/252/347209.jpg</image>
+            <attendance>72</attendance>
+            <reviews>0</reviews>
+            <tag>lastfm:event=1285310</tag>
+            <url>http://www.last.fm/event/1285310+Not+So+Silent+Night+2009</url>
+            <website>http://www.live105.com/</website>
+            <tickets>
+                <ticket supplier="LiveNation">http://www.last.fm/affiliate/byid/29/1285310/19/</ticket>
+            </tickets>
+            <cancelled>0</cancelled>
+            <tags>
+                <tag>rock</tag>
+                <tag>alternative</tag>
+            </tags>
+        </event>
+    </events>
+</lfm>

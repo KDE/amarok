@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=Upcoming Events
+Name[en_GB]=Upcoming events
+Name[fr]=Événements associés
+Type=Service
+ServiceTypes=Plasma/Applet
+
+X-KDE-Library=amarok_context_applet_upcomingEvents
+X-KDE-PluginInfo-Author=Joffrey Clavel
+X-KDE-PluginInfo-Email=jclavel@clabert.info
+X-KDE-PluginInfo-Name=upcomingEvents
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-Website=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ParentApp=amarok
+X-KDE-PluginInfo-Category=Current
+

@@ -246,7 +246,7 @@
     </entry>
     <entry key="DefEqualizerPresetsNames" type="StringList">
         <label>List with user equalizer preset names</label>
-        <default>Manual,Classical,Club,Dance,Full Bass,Full Treble,Full Bass +  Treble,Laptop/Headphones,Large Hall,Live,Party,Pop,Reggae,Rock,Soft,Ska,Soft Rock,Techno,Zero</default>  
+        <default>Manual,Classical,Club,Dance,Full Bass,Full Treble,Full Bass +  Treble,Laptop/Headphones,Large Hall,Live,Party,Pop,Reggae,Rock,Soft,Ska,Soft Rock,Techno,Zero</default>
     </entry>
     <entry key="DefEqualizerPresestValues" type="IntList">
         <default>
@@ -272,7 +272,7 @@
         </default>
         <label>List with user presets values</label>
     </entry>
-    
+
     <entry key="Replay Gain Mode" type="Enum">
         <label>The mode for adjusting playback volume.</label>
         <whatsthis>Whether to adjust the volume of tracks to make them sound the same volume, and if so whether to make the adjustments per-track or per-album.</whatsthis>
@@ -321,9 +321,9 @@
         <default>true</default>
     </entry>
     <entry key="Growl Enabled" type="Bool">
-	<label>Use Growl for notifications</label>
-	<whatsthis>Enable/Disable use of Growl for notifications.</whatsthis>
-	<default>false</default>
+    <label>Use Growl for notifications</label>
+    <whatsthis>Enable/Disable use of Growl for notifications.</whatsthis>
+    <default>false</default>
     </entry>
     <entry key="Osd Use Playlist Columns" type="Bool">
         <label>Display the same information in the OSD as in the playlist columns.</label>
@@ -593,6 +593,33 @@
     <entry key="MoodbarPaintStyle" type="Int">
         <label>The style to use when painting the moodbar</label>
         <default>0</default>
+    </entry>
+</group>
+
+<group name="UpcomingEvents">
+    <entry key="enabledLinks" type="Bool">
+        <label>Clickable locations' names</label>
+        <whatsthis>Enable/Disable links to Google Map</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="timeSpan" type="Enum">
+        <label>Timespan for upcoming events</label>
+        <whatsthis>Set the timespan for the upcoming events.</whatsthis>
+        <choices>
+            <choice name="AllEvents"/>
+            <choice name="ThisWeek"/>
+            <choice name="ThisMonth"/>
+            <choice name="ThisYear"/>
+        </choices>
+        <default>AllEvents</default>
+    </entry>
+</group>
+
+<group name="SimilarArtists">
+    <entry key="maxArtists" type="Int">
+        <label>Maximum similar artists</label>
+        <whatsthis>Maximum similar artists to be shown</whatsthis>
+        <default>20</default>
     </entry>
 </group>
 
