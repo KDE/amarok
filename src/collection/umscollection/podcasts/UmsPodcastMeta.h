@@ -39,17 +39,20 @@ class UmsPodcastEpisode : public Meta::PodcastEpisode
     public:
         static UmsPodcastEpisodePtr fromPodcastEpisodePtr( Meta::PodcastEpisodePtr episode );
         static Meta::PodcastEpisodePtr toPodcastEpisodePtr( UmsPodcastEpisodePtr episode );
+        static Meta::PodcastEpisodeList toPodcastEpisodeList( UmsPodcastEpisodeList episodes );
+
         UmsPodcastEpisode( UmsPodcastChannelPtr channel );
         ~UmsPodcastEpisode();
 
         void setLocalFile( MetaFile::TrackPtr localFile );
 
         //PodcastEpisode methods
-        void setLocalUrl( const KUrl &localUrl );
+        virtual QString title() const;
+        virtual void setLocalUrl( const KUrl &localUrl );
 
         //Track Methods
-        virtual QString name() const;
-        virtual QString prettyName() const;
+        virtual QString name() const { return title(); }
+        virtual QString prettyName() const { return name(); }
         virtual void setTitle( const QString &title );
         virtual bool isEditable() const;
 
@@ -67,16 +70,23 @@ class UmsPodcastEpisode : public Meta::PodcastEpisode
 class UmsPodcastChannel : public Meta::PodcastChannel
 {
     public:
-        static UmsPodcastChannelPtr fromPodcastChannelPtr( Meta::PodcastChannelPtr channel );
+        static UmsPodcastChannelPtr fromPodcastChannelPtr(
+                Meta::PodcastChannelPtr channel );
         static Meta::PodcastChannelPtr toPodcastChannelPtr( UmsPodcastChannelPtr channel );
-        static Meta::PodcastChannelList toPodcastChannelList( UmsPodcastChannelList umsChannels );
+        static Meta::PodcastChannelList toPodcastChannelList(
+                UmsPodcastChannelList umsChannels );
 
         UmsPodcastChannel( UmsPodcastProvider *provider );
         ~UmsPodcastChannel();
 
         UmsPodcastEpisodeList umsEpisodes() { return m_umsEpisodes; }
+        void addUmsEpisode( UmsPodcastEpisodePtr episode ) { m_umsEpisodes << episode; }
+
         void setPlaylistFileSource( const KUrl &playlistFilePath );
         KUrl playlistFilePath() const { return m_playlistFilePath; }
+
+        virtual Meta::PodcastEpisodeList episodes()
+                { return UmsPodcastEpisode::toPodcastEpisodeList( m_umsEpisodes ); }
 
     private:
         UmsPodcastProvider *m_provider;

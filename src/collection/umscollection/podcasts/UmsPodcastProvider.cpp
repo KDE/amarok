@@ -226,6 +226,20 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
 {
     DEBUG_BLOCK
     debug() << metafileTrack->playableUrl().url();
+    debug() << "album: " << metafileTrack->album()->name();
+    debug() << "title: " << metafileTrack->name();
+    if( metafileTrack->album()->name().isEmpty() )
+    {
+        debug() << "Can't figure out channel without album tag.";
+        return;
+    }
+
+    if( metafileTrack->name().isEmpty() )
+    {
+        debug() << "Can not use a track without a title.";
+        return;
+    }
+
     //see if there is already a UmsPodcastEpisode for this track
     UmsPodcastChannelPtr channel;
     UmsPodcastEpisodePtr episode;
@@ -263,7 +277,9 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
     {
         debug() << "this episode was not found in an existing channel";
         episode = UmsPodcastEpisodePtr( new UmsPodcastEpisode( channel ) );
-        channel->addEpisode( UmsPodcastEpisode::toPodcastEpisodePtr( episode ) );
+        episode->setLocalFile( metafileTrack );
+
+        channel->addUmsEpisode( episode );
     }
 
     episode->setLocalFile( metafileTrack );

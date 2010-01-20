@@ -31,6 +31,15 @@ UmsPodcastEpisode::toPodcastEpisodePtr( UmsPodcastEpisodePtr episode )
     return PodcastEpisodePtr::dynamicCast( episode );
 }
 
+PodcastEpisodeList
+UmsPodcastEpisode::toPodcastEpisodeList( UmsPodcastEpisodeList episodes )
+{
+    PodcastEpisodeList list;
+    foreach( UmsPodcastEpisodePtr e, episodes )
+        list << toPodcastEpisodePtr( e );
+    return list;
+}
+
 UmsPodcastEpisode::UmsPodcastEpisode( UmsPodcastChannelPtr channel )
         : Meta::PodcastEpisode( UmsPodcastChannel::toPodcastChannelPtr( channel ) )
 {
@@ -54,21 +63,12 @@ UmsPodcastEpisode::setLocalFile( MetaFile::TrackPtr localFile )
 }
 
 QString
-UmsPodcastEpisode::name() const
+UmsPodcastEpisode::title() const
 {
     if( m_localFile.isNull() )
         return m_title;
 
     return m_localFile->name();
-}
-
-QString
-UmsPodcastEpisode::prettyName() const
-{
-    /*for now just do the same as name, but in the future we might want to used a cleaned
-      up string using some sort of regex tag rewrite for podcasts. decapitateString on
-      steroides. */
-    return name();
 }
 
 bool
