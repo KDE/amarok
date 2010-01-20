@@ -1997,7 +1997,7 @@ IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 QStringList
 IpodHandler::supportedFormats()
 {
-    return ( QStringList() ) << "mp3" << "aac" << "mp4" << "m4a" << "aiff";
+    return ( QStringList() ) << "mp3" << "aac" << "mp4" << "m4a" << "aiff" << "m4b" << "wav" << "mpeg" << "m4v" << "mpv4" << "mov";
 }
 
 
