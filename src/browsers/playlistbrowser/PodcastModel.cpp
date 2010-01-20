@@ -173,9 +173,9 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
                 emblems << "go-down";
 
             if( episode->isNew() )
-                return KIcon( "rating", 0, emblems ).pixmap( 32, 32 );
+                return KIcon( "rating", 0, emblems ).pixmap( 24, 24 );
             else
-                return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );        
+                return KIcon( "podcast-amarok", 0, emblems ).pixmap( 24, 24 );
     }
 
     return QVariant();
@@ -258,6 +258,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             if( index.column() == TitleColumn )
                 return isOnDisk( pmc );
             break;
+
     }
 
     return QVariant();
