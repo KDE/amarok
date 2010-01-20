@@ -19,7 +19,7 @@
 #include "UmsHandler.h"
 
 #include "UmsCollection.h"
-#include "../UmsPodcastProvider.h"
+#include "UmsPodcastProvider.h"
 #include "Debug.h"
 
 #include "SvgHandler.h"
