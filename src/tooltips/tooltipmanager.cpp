@@ -131,35 +131,68 @@ void ToolTipManager::hideToolTip()
 {
     m_timer->stop();
     m_previewTimer->stop();
-    m_waitOnPreviewTimer->stop();
+    //m_waitOnPreviewTimer->stop();
     KToolTip::hideTip();
 }
 
 void ToolTipManager::prepareToolTip()
 {
-    if (m_generatingPreview) {
+/*    if (m_generatingPreview) {
         m_waitOnPreviewTimer->start(250);
-    }
+    }*/
 
     QPixmap image;
-    if (AmarokConfig::toolTips_Artwork())
+    if (m_track->album()->hasImage())
         image = m_track->album()->image();
     else
         image = QPixmap();
 
-    QString text = QString("<table>");
-    if (AmarokConfig::toolTips_Title()) text += "<tr><td align=\"right\"><b>"+i18n("Title")+"</b>:</td><td align=\"left\">"+m_track->prettyName()+"</td></tr>";
-    if (AmarokConfig::toolTips_Artist()) text += "<tr><td align=\"right\"><b>"+i18n("Artist")+"</b>:</td><td align=\"left\">"+m_track->artist()->prettyName()+"</td></tr>";
-    if (AmarokConfig::toolTips_Composer()) text += "<tr><td align=\"right\"><b>"+i18n("Composer")+"</b>:</td><td align=\"left\">"+m_track->composer()->prettyName()+"</td></tr>";
-    if (AmarokConfig::toolTips_Album()) text += "<tr><td align=\"right\"><b>"+i18n("Album")+"</b>:</td><td align=\"left\">"+m_track->album()->prettyName()+"</td></tr>";
-    if (AmarokConfig::toolTips_DiskNumber()) text += "<tr><td align=\"right\"><b>"+i18n("Disk Number")+"</b>:</td><td align=\"left\">"+QString::number(m_track->discNumber())+"</td></tr>";
-    if (AmarokConfig::toolTips_Genre()) text += "<tr><td align=\"right\"><b>"+i18n("Genre")+"</b>:</td><td align=\"left\">"+m_track->genre()->prettyName()+"</td></tr>";
-    if (AmarokConfig::toolTips_Track()) text += "<tr><td align=\"right\"><b>"+i18n("Track")+"</b>:</td><td align=\"left\">"+QString::number(m_track->trackNumber())+"</td></tr>";
-    if (AmarokConfig::toolTips_Year()) text += "<tr><td align=\"right\"><b>"+i18n("Year")+"</b>:</td><td align=\"left\">"+m_track->year()->prettyName()+"</td></tr>";
-    if (AmarokConfig::toolTips_Comment()) text += "<tr><td align=\"right\"><b>"+i18n("Comment")+"</b>:</td><td align=\"left\">"+m_track->comment()+"</td></tr>";
-    if (AmarokConfig::toolTips_Location()) text += "<tr><td align=\"right\"><b>"+i18n("Location")+"</b>:</td><td align=\"left\"><a href=\""+m_track->prettyUrl()+"\">"+m_track->prettyUrl()+"</a></td></tr>";
-    text += "</table>";
-    
+    QString text = QString();
+    if (m_track->name() != "")
+    {
+        text += "<tr><td align=\"right\"><b>"+i18n("Title")+"</b>:</td><td align=\"left\">"+m_track->prettyName()+"</td></tr>";
+    }
+    if (m_track->artist()->name() != "")
+    {
+        text += "<tr><td align=\"right\"><b>"+i18n("Artist")+"</b>:</td><td align=\"left\">"+m_track->artist()->prettyName()+"</td></tr>";
+    }
+    if (m_track->composer()->name() != "")
+    {
+        text += "<tr><td align=\"right\"><b>"+i18n("Composer")+"</b>:</td><td align=\"left\">"+m_track->composer()->prettyName()+"</td></tr>";
+    }
+    if (m_track->album()->name() != "")
+    {
+        text += "<tr><td align=\"right\"><b>"+i18n("Album")+"</b>:</td><td align=\"left\">"+m_track->album()->prettyName()+"</td></tr>";
+    }
+    if (m_track->discNumber() != 0)
+    {
+        text += "<tr><td align=\"right\"><b>"+i18n("Disk Number")+"</b>:</td><td align=\"left\">"+QString::number(m_track->discNumber())+"</td></tr>";
+    }
+    if (m_track->genre()->name() != "")
+    {
+        text += "<tr><td align=\"right\"><b>"+i18n("Genre")+"</b>:</td><td align=\"left\">"+m_track->genre()->prettyName()+"</td></tr>";
+    }
+    if (m_track->trackNumber() != 0)
+    {
+        text += "<tr><td align=\"right\"><b>"+i18n("Track")+"</b>:</td><td align=\"left\">"+QString::number(m_track->trackNumber())+"</td></tr>";
+    }
+    if (m_track->year()->name() != "0")
+    {
+        text += "<tr><td align=\"right\"><b>"+i18n("Year")+"</b>:</td><td align=\"left\">"+m_track->year()->prettyName()+"</td></tr>";
+    }
+    if ((m_track->comment() != ""))
+    {
+        text += "<tr><td align=\"right\"><b>"+i18n("Comment")+"</b>:</td><td align=\"left\">"+m_track->comment()+"</td></tr>";
+    }
+    //text += "<tr><td align=\"right\"><b>"+i18n("Location")+"</b>:</td><td align=\"left\"><a href=\""+m_track->prettyUrl()+"\">"+m_track->prettyUrl()+"</a></td></tr>";
+    if (text == "")
+    {
+        text = QString(i18n("No information available"));
+    }
+    else
+    {       
+        text = QString("<table>"+ text +"</table>");
+    }
     showToolTip(image, text);
     
 }

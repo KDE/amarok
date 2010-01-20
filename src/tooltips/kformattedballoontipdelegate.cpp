@@ -1,6 +1,7 @@
 /*******************************************************************************
  *   Copyright (C) 2008 by Fredrik Höglund <fredrik@kde.org>                   *
  *   Copyright (C) 2008 by Konstantin Heil <konst.heil@stud.uni-heidelberg.de> *
+ *   Copyright (C) 2009 Oleksandr Khayrullin <saniokh@gmail.com>               *
  *                                                                             *
  *   This program is free software; you can redistribute it and/or modify      *
  *   it under the terms of the GNU General Public License as published by      *
@@ -24,6 +25,7 @@
 #include <QBitmap>
 #include <QIcon>
 #include <QLinearGradient>
+#include <QSize>
 #include <QTextDocument>
 #include <kcolorscheme.h>
 
@@ -39,14 +41,13 @@ QSize KFormattedBalloonTipDelegate::sizeHint(const KStyleOptionToolTip &option, 
 {
     QTextDocument doc;
     doc.setHtml(item.text());
-    const QIcon icon = item.icon();
-
-    const QSize iconSize = icon.isNull() ? QSize(0, 0) : icon.actualSize(option.decorationSize);
     const QSize docSize = doc.size().toSize();
+
+    QSize iconSize = iconResize(item, docSize);
     QSize contentSize = iconSize + docSize;
 
     // assure that the content height is large enough for the icon and the document
-    contentSize.setHeight(iconSize.height() > doc.size().height() ? iconSize.height() : doc.size().height());
+    contentSize.setHeight(doc.size().height());
     return contentSize + QSize(Border * 3, Border * 2);
 }
 
@@ -54,38 +55,35 @@ void KFormattedBalloonTipDelegate::paint(QPainter *painter,
                                          const KStyleOptionToolTip &option,
                                          const KToolTipItem &item) const
 {
-    QColor toColor = option.palette.brush(QPalette::ToolTipBase).color();
-    QColor fromColor = KColorScheme::shade(toColor, KColorScheme::LightShade, 0.2);
+    QColor color = option.palette.brush(QPalette::ToolTipBase).color();
 
-    QPainterPath path = createPath(option);
     if (haveAlphaChannel()) {
         painter->setRenderHint(QPainter::Antialiasing);
         painter->translate(.5, .5);
-        toColor.setAlpha(220);
-        fromColor.setAlpha(220);
     }
 
-    QLinearGradient gradient(option.rect.topLeft(), option.rect.bottomLeft());
-    gradient.setColorAt(0.0, fromColor);
-    gradient.setColorAt(1.0, toColor);
-    painter->setPen(Qt::NoPen);
-    painter->setBrush(gradient);
+    painter->setBrush(color);
+    QRect rect = option.rect;
+    rect.setWidth(rect.width() - 1);
+    rect.setHeight(rect.height() - 1);
 
-    painter->drawPath(path);
+    painter->drawRect(rect);
+
+    QTextDocument doc;
+    doc.setHtml(item.text());
+    QSize docSize = doc.size().toSize();
 
     const QIcon icon = item.icon();
     int x = Border;
     const int y = Border;
     if (!icon.isNull()) {
-        const QSize iconSize = icon.actualSize(option.decorationSize);
+        QSize iconSize = iconResize(item, docSize);
         const QPoint pos(x + option.rect.x(), y + option.rect.y());
         painter->drawPixmap(pos, icon.pixmap(iconSize));
         x += iconSize.width() + Border;
     }
-
-    QTextDocument doc;
-    doc.setHtml(item.text());
-    QPixmap bitmap(doc.size().toSize());
+    
+    QPixmap bitmap(docSize);
     bitmap.fill(Qt::transparent);
     QPainter p(&bitmap);
     doc.drawContents(&p);
@@ -97,12 +95,12 @@ void KFormattedBalloonTipDelegate::paint(QPainter *painter,
 QRegion KFormattedBalloonTipDelegate::inputShape(const KStyleOptionToolTip &option) const
 {
     QBitmap bitmap(option.rect.size());
-    bitmap.fill(Qt::color0);
+    bitmap.fill(Qt::color0);    
 
     QPainter p(&bitmap);
     p.setPen(QPen(Qt::color1, 1));
     p.setBrush(Qt::color1);
-    p.drawPath(createPath(option));
+    p.drawRect(option.rect);
 
     return QRegion(bitmap);
 }
@@ -112,23 +110,23 @@ QRegion KFormattedBalloonTipDelegate::shapeMask(const KStyleOptionToolTip &optio
     return inputShape(option);
 }
 
-static inline void arc(QPainterPath &path, qreal cx, qreal cy, qreal radius, qreal angle, qreal sweeplength)
+QSize KFormattedBalloonTipDelegate::iconResize(const KToolTipItem &item, const QSize &docSize) const
 {
-    path.arcTo(cx-radius, cy-radius, radius * 2, radius * 2, angle, sweeplength);
-}
-
-QPainterPath KFormattedBalloonTipDelegate::createPath(const KStyleOptionToolTip& option) const
-{
-    const QRect rect = option.rect;
-    const qreal radius = 5;
-
-    QPainterPath path;
-    path.moveTo(rect.left(), rect.top() + radius);
-    arc(path, rect.left()  + radius, rect.top()    + radius, radius, 180, -90);
-    arc(path, rect.right() - radius, rect.top()    + radius, radius,  90, -90);
-    arc(path, rect.right() - radius, rect.bottom() - radius, radius,   0, -90);
-    arc(path, rect.left()  + radius, rect.bottom() - radius, radius, 270, -90);
-    path.closeSubpath();
-
-    return path;
+    // If there is a chance for the icon to streth the tooltip, shrink the icon so that only the width changes
+    QIcon icon = item.icon();
+    QSize iconSize;
+    if (!icon.isNull())
+    {
+        iconSize = icon.actualSize(docSize);
+        if (iconSize.height() > docSize.height())
+        {
+            iconSize.rheight() = docSize.height();
+            iconSize.rwidth() *= docSize.height()/iconSize.height();
+        }
+    }
+    else
+    {
+        iconSize = QSize(0, 0);
+    }
+    return iconSize;
 }

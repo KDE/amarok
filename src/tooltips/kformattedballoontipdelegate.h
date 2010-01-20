@@ -1,6 +1,7 @@
 /*******************************************************************************
  *   Copyright (C) 2008 by Fredrik Höglund <fredrik@kde.org>                   *
  *   Copyright (C) 2008 by Konstantin Heil <konst.heil@stud.uni-heidelberg.de> *
+ *   Copyright (C) 2009 Oleksandr Khayrullin <saniokh@gmail.com>               *
  *                                                                             *
  *   This program is free software; you can redistribute it and/or modify      *
  *   it under the terms of the GNU General Public License as published by      *
@@ -36,7 +37,7 @@ public:
     virtual QRegion shapeMask(const KStyleOptionToolTip &option) const;
 
 private:
-    QPainterPath createPath(const KStyleOptionToolTip& option) const;
+    QSize iconResize(const KToolTipItem &item, const QSize &docSize) const;
 
 private:
     enum { Border = 8 };

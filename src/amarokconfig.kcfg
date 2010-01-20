@@ -175,6 +175,10 @@
         <label>Automatically scroll the playlist to make the currently playing song visible</label>
         <default>true</default>
     </entry>
+    <entry key="EnableToolTips" type="Bool">
+        <label>Whether to display tooltips for the song in the playlist</label>
+        <default>true</default>
+    </entry>
     <entry key="Show Album Art" type="Bool">
         <label>Show Album art in the Collection Browser</label>
         <default>true</default>
@@ -288,69 +292,6 @@
             </choice>
         </choices>
         <default>Track</default>
-    </entry>
-</group>
-
-<group name="ToolTip">
-    <entry key="enableToolTips" type="Bool">
-        <label>Enable playlist tooltips</label>
-        <whatsthis>Enable/disable playlist tooltips.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="ToolTips_Title" type="Bool">
-        <label>Enable song title display on the playlist tooltips</label>
-        <whatsthis>Enable/disable song titles on playlist tooltips.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="ToolTips_Artist" type="Bool">
-        <label>Enable artist name display on the playlist tooltips</label>
-        <whatsthis>Enable/disable artist names on playlist tooltips.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="ToolTips_Composer" type="Bool">
-        <label>Enable composer name display on the playlist tooltips</label>
-        <whatsthis>Enable/disable composer names on playlist tooltips.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="ToolTips_Album" type="Bool">
-        <label>Enable album title display on the playlist tooltips</label>
-        <whatsthis>Enable/disable album titles on playlist tooltips.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="ToolTips_DiskNumber" type="Bool">
-        <label>Enable disk number display on the playlist tooltips</label>
-        <whatsthis>Enable/disable disk numbers on playlist tooltips.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="ToolTips_Genre" type="Bool">
-        <label>Enable genre name display on the playlist tooltips</label>
-        <whatsthis>Enable/disable genre names on playlist tooltips.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="ToolTips_Track" type="Bool">
-        <label>Enable track number display on the playlist tooltips</label>
-        <whatsthis>Enable/disable track numbers on playlist tooltips.</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="ToolTips_Year" type="Bool">
-        <label>Enable year display on the playlist tooltips</label>
-        <whatsthis>Enable/disable years on playlist tooltips.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="ToolTips_Comment" type="Bool">
-        <label>Enable comment display on the playlist tooltips</label>
-        <whatsthis>Enable/disable comments on playlist tooltips.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="ToolTips_Location" type="Bool">
-        <label>Enable location on the playlist tooltips</label>
-        <whatsthis>Enable/disable locations on playlist tooltips.</whatsthis>
-        <default>false</default>
-    </entry>
-    <entry key="ToolTips_Artwork" type="Bool">
-        <label>Enable album artwork on the playlist tooltips</label>
-        <whatsthis>Enable/disable album artworks on playlist tooltips.</whatsthis>
-        <default>true</default>
     </entry>
 </group>
 
@@ -658,5 +599,34 @@
         <default>0</default>
     </entry>
 </group>
+
+<group name="UpcomingEvents">
+    <entry key="enabledLinks" type="Bool">
+        <label>Clickable locations' names</label>
+        <whatsthis>Enable/Disable links to Google Map</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="timeSpan" type="Enum">
+        <label>Timespan for upcoming events</label>
+        <whatsthis>Set the timespan for the upcoming events.</whatsthis>
+        <choices>
+            <choice name="AllEvents"/>
+            <choice name="ThisWeek"/>
+            <choice name="ThisMonth"/>
+            <choice name="ThisYear"/>
+        </choices>
+        <default>AllEvents</default>
+    </entry>
+</group>
+
+<group name="SimilarArtists">
+    <entry key="maxArtists" type="Int">
+        <label>Maximum similar artists</label>
+        <whatsthis>Maximum similar artists to be shown</whatsthis>
+        <default>20</default>
+    </entry>
+</group>
+
+
 
 </kcfg>

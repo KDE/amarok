@@ -28,7 +28,6 @@
 #include "NotificationsConfig.h"
 #include "PlaybackConfig.h"
 #include "ServiceConfig.h"
-#include "ToolTipConfig.h"
 
 #include <KLocale>
 
@@ -50,7 +49,6 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     ConfigDialogBase* playback    = new PlaybackConfig( this );
     ConfigDialogBase* notify      = new NotificationsConfig( this );
     ConfigDialogBase* database    = new DatabaseConfig( this );
-    ConfigDialogBase* tooltip    = new ToolTipConfig( this );
 
     //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
@@ -61,8 +59,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     addPage( notify,         i18n( "Notifications" ), "preferences-indicator-amarok", i18n( "Configure Notifications" ) );
     addPage( database,    i18n( "Database" ), "server-database", i18n( "Configure Database" ) );
     //addPage( mediadevice, i18n( "Media Devices" ), "preferences-multimedia-player-amarok", i18n( "Configure Portable Player Support" ) );
-    addPage( tooltip,    i18n( "Playlist Tooltip" ), "preferences-other-amarok", i18n( "Playlist Tooltip" ) );
-    
+
     setButtons( Help | Ok | Apply | Cancel );
 }
 
