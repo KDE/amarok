@@ -882,7 +882,7 @@ UmsHandler::supportedFormats()
 {
     QStringList formats;
 
-    formats << "mp3" << "aac" << "mp4" << "m4a" << "m4b";
+    formats << "mp3" << "aac" << "mp4" << "m4a" << "m4b" << "flac" << "ogg";
 
     return formats;
 }
