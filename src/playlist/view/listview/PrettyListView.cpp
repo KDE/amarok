@@ -3,6 +3,7 @@
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                              *
+ * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -44,6 +45,7 @@
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
+#include "tooltips/tooltipmanager.h"
 
 #include <KApplication>
 #include <KMenu>
@@ -70,6 +72,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_skipAutoScroll( false )
         , m_pd( 0 )
         , m_topmostProxy( Playlist::ModelStack::instance()->top() )
+        , m_toolTipManager(0)
 {
     setModel( Playlist::ModelStack::instance()->top() );
     m_prettyDelegate = new PrettyItemDelegate( this );
@@ -79,6 +82,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setDropIndicatorShown( false ); // we draw our own drop indicator
     setEditTriggers ( SelectedClicked | EditKeyPressed );
     setAutoScroll( true );
+    setMouseTracking( true );
 
     setVerticalScrollMode( ScrollPerPixel );
 
@@ -113,6 +117,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
+
+    m_toolTipManager = new ToolTipManager(this);
 }
 
 Playlist::PrettyListView::~PrettyListView()
@@ -536,7 +542,7 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         QList<QAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
 
         foreach( QAction * action, actions )
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
 
         m_pd->show();
     }

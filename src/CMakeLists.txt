@@ -421,6 +421,18 @@ set(libplaylistmanager_SRCS
 )
 
 #####################################################################
+# TOOLTIPS
+#####################################################################
+set(libtooltip_SRCS
+    tooltips/amaroktooltip.cpp
+    tooltips/ktooltip.cpp
+    tooltips/ktooltipdelegate.cpp
+    tooltips/ktooltipitem.cpp
+    tooltips/kformattedballoontipdelegate.cpp
+    tooltips/tooltipmanager.cpp
+)
+
+#####################################################################
 # PLAYLIST
 #####################################################################
 set(libplaylist_SRCS
@@ -552,6 +564,7 @@ set(amaroklib_LIB_SRCS
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
     ${libplaylist_SRCS}
+    ${libtooltip_SRCS}
     ${libplugin_SRCS}
     ${libproxycollection_SRCS}
     ${libpodcasts_SRCS}
