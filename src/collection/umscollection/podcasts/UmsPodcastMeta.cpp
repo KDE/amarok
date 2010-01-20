@@ -15,7 +15,9 @@
  ****************************************************************************************/
 
 #include "UmsPodcastMeta.h"
+
 #include "meta/PlaylistFileSupport.h"
+#include "UmsPodcastProvider.h"
 
 using namespace Meta;
 
@@ -176,4 +178,10 @@ UmsPodcastChannel::setPlaylistFileSource( const KUrl &playlistFilePath )
     m_playlistFile = Meta::loadPlaylistFile( playlistFilePath );
 
     //now parse the playlist and use it to create out episode list
+}
+
+PlaylistProvider *
+UmsPodcastChannel::provider() const
+{
+     return dynamic_cast<PlaylistProvider *>( m_provider );
 }

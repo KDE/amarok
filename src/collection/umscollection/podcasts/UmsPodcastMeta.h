@@ -87,6 +87,7 @@ class UmsPodcastChannel : public Meta::PodcastChannel
 
         virtual Meta::PodcastEpisodeList episodes()
                 { return UmsPodcastEpisode::toPodcastEpisodeList( m_umsEpisodes ); }
+        virtual PlaylistProvider *provider() const;
 
     private:
         UmsPodcastProvider *m_provider;

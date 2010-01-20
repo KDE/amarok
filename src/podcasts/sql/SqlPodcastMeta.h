@@ -94,7 +94,8 @@ class SqlPodcastChannel : public PodcastChannel
 
         ~SqlPodcastChannel();
         // Meta::Playlist methods
-        TrackList tracks() { return sqlEpisodesToTracks( m_episodes ); }
+        virtual TrackList tracks() { return sqlEpisodesToTracks( m_episodes ); }
+        virtual PlaylistProvider *provider() const { return m_provider; }
 
         //Meta::PodcastChannel methods
         virtual void setTitle( const QString &title );
@@ -120,11 +121,14 @@ class SqlPodcastChannel : public PodcastChannel
 
         void loadEpisodes();
 
+        void setProvider( PlaylistProvider *provider ) { m_provider = provider; }
+
     private:
         bool m_writeTags;
         int m_dbId; //database ID
 
         SqlPodcastEpisodeList m_episodes;
+        PlaylistProvider *m_provider;
 };
 
 }

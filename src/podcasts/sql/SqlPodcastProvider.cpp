@@ -156,6 +156,7 @@ SqlPodcastProvider::loadPodcasts()
         QStringList channelResult = results.mid( i, rowLength );
         SqlPodcastChannelPtr channel =
                 SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
+        channel->setProvider( this );
         if( channel->image().isNull() )
             fetchImage( channel );
 
