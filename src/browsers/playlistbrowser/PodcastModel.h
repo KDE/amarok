@@ -18,6 +18,8 @@
 #define PLAYLISTBROWSERNSPODCASTMODEL_H
 
 #include "PodcastMeta.h"
+
+#include "MetaPlaylistModel.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistController.h"
 
@@ -49,13 +51,14 @@ enum
     ImageColumn,    // channel only (for now)
     DateColumn,
     IsEpisodeColumn,
+    ProviderColumn,
     ColumnCount
 };
 
 /**
     @author Bart Cerneels
 */
-class PodcastModel : public QAbstractItemModel
+class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel
 {
     Q_OBJECT
     public:
@@ -73,12 +76,15 @@ class PodcastModel : public QAbstractItemModel
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
         virtual QStringList mimeTypes() const;
-        QMimeData* mimeData( const QModelIndexList &indexes ) const;
-        bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
+        virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
+        virtual bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row,
+                                   int column, const QModelIndex & parent );
 
-        QList<QAction *> actionsFor( const QModelIndexList &indexes );
+        //MetaPlaylistModel methods
+        virtual QList<QAction *> actionsFor( const QModelIndexList &indexes );
+        virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
-        void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
+        //Own methods
         void downloadItems(  QModelIndexList list );
         void deleteItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );

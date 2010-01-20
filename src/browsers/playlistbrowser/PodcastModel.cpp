@@ -220,7 +220,8 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
                 case ImageColumn:
                     if( pmc->podcastType() == Meta::ChannelType )
                     {
-                        Meta::PodcastChannel *pc = static_cast<Meta::PodcastChannel *>( pmc );
+                        Meta::PodcastChannel *pc =
+                                static_cast<Meta::PodcastChannel *>( pmc );
                         KUrl imageUrl( PodcastImageFetcher::cachedImagePath( pc ) );
 
                         if( !QFile( imageUrl.toLocalFile() ).exists() )
@@ -241,6 +242,29 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 
                 case IsEpisodeColumn:
                     return bool( pmc->podcastType() == Meta::EpisodeType );
+
+                case ProviderColumn:
+                {
+                    PlaylistProvider *provider;
+                    if( pmc->podcastType() == Meta::ChannelType )
+                    {
+                        Meta::PodcastChannel *pc =
+                                static_cast<Meta::PodcastChannel *>( pmc );
+                        provider = pc->provider();
+                    }
+                    else if( pmc->podcastType() == Meta::EpisodeType )
+                    {
+                        Meta::PodcastEpisode *pe =
+                                static_cast<Meta::PodcastEpisode *>( pmc );
+                        if( pe->channel().isNull() )
+                            break;
+                        provider = pe->channel()->provider();
+                    }
+                    if( !provider )
+                        break;
+
+                    return provider->prettyName();
+                }
             }
             break;
 
