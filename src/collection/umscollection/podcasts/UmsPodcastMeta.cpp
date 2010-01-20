@@ -58,6 +58,15 @@ UmsPodcastEpisode::setLocalUrl( const KUrl &localUrl )
     //TODO: load local file
 }
 
+KUrl
+UmsPodcastEpisode::playableUrl() const
+{
+    if( m_localFile.isNull() )
+        return m_url;
+
+    return m_localFile->playableUrl();
+}
+
 void
 UmsPodcastEpisode::setLocalFile( MetaFile::TrackPtr localFile )
 {

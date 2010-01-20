@@ -52,6 +52,7 @@ class UmsPodcastEpisode : public Meta::PodcastEpisode
 
         //Track Methods
         virtual QString name() const { return title(); }
+        virtual KUrl playableUrl() const;
         virtual QString prettyName() const { return name(); }
         virtual void setTitle( const QString &title );
         virtual bool isEditable() const;
