@@ -20,6 +20,7 @@ VERSION 2.2.3
     * Searching covers from Last.fm using custom query in interactive mode.
  
   CHANGES:
+    * Files with ogg and flac extensions can now be copied to UMS devices.
     * The search/filter edit in the playlist is now cleared when pressing 
       enter. (BR 217159)
     * Amarok now checks if the version of the "amarokcollectionscanner" tool
