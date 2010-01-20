@@ -119,6 +119,7 @@ UmsHandler::init()
     }
 
     QFile playerFile( m_mountPoint + "/.is_audio_player" );
+    bool use_automatically = false;
 
     QString mountPoint = m_mountPoint; //save for podcast path
     if (playerFile.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -140,7 +141,7 @@ UmsHandler::init()
                     m_mountPoint = path;
                 }
             }
-            if( line.startsWith( "podcast_folder=" ) )
+            else if( line.startsWith( "podcast_folder=" ) )
             {
                 debug() << "Found podcast_folder, initializing UMS podcast provider";
                 m_podcastPath = mountPoint + '/' + line.section( '=', 1, 1 );
@@ -149,6 +150,11 @@ UmsHandler::init()
                 m_podcastProvider = new UmsPodcastProvider( this, m_podcastPath );
                 The::playlistManager()->addProvider( m_podcastProvider,
                                                      PlaylistManager::PodcastChannel );
+            }
+            else if( line.startsWith( "use_automatically=" ) )
+            {
+                debug() << "Use automatically: " << line.section( '=', 1, 1 );
+                use_automatically = ( line.section( '=', 1, 1 ) == "true" );
             }
         }
 
@@ -184,6 +190,12 @@ UmsHandler::init()
     debug() << "Succeeded: true";
     m_memColl->emitCollectionReady();
     //m_memColl->slotAttemptConnectionDone( true );
+    if( use_automatically )
+    {
+        debug() << "Automatically start to parse for tracks";
+        m_parsed = true;
+        parseTracks();
+    }
 }
 
 void
