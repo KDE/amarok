@@ -150,19 +150,19 @@ void ToolTipManager::prepareToolTip()
     QString text = QString();
     if (m_track->name() != "")
     {
-        text += "<tr><td align=\"right\"><b>"+i18n("Title")+"</b>:</td><td align=\"left\">"+m_track->prettyName()+"</td></tr>";
+        text += "<tr><td align=\"right\"><b>"+i18n("Title")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->prettyName())+"</td></tr>";
     }
     if (m_track->artist()->name() != "")
     {
-        text += "<tr><td align=\"right\"><b>"+i18n("Artist")+"</b>:</td><td align=\"left\">"+m_track->artist()->prettyName()+"</td></tr>";
+        text += "<tr><td align=\"right\"><b>"+i18n("Artist")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->artist()->prettyName())+"</td></tr>";
     }
     if (m_track->composer()->name() != "")
     {
-        text += "<tr><td align=\"right\"><b>"+i18n("Composer")+"</b>:</td><td align=\"left\">"+m_track->composer()->prettyName()+"</td></tr>";
+        text += "<tr><td align=\"right\"><b>"+i18n("Composer")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->composer()->prettyName())+"</td></tr>";
     }
     if (m_track->album()->name() != "")
     {
-        text += "<tr><td align=\"right\"><b>"+i18n("Album")+"</b>:</td><td align=\"left\">"+m_track->album()->prettyName()+"</td></tr>";
+        text += "<tr><td align=\"right\"><b>"+i18n("Album")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->album()->prettyName())+"</td></tr>";
     }
     if (m_track->discNumber() != 0)
     {
@@ -170,7 +170,7 @@ void ToolTipManager::prepareToolTip()
     }
     if (m_track->genre()->name() != "")
     {
-        text += "<tr><td align=\"right\"><b>"+i18n("Genre")+"</b>:</td><td align=\"left\">"+m_track->genre()->prettyName()+"</td></tr>";
+        text += "<tr><td align=\"right\"><b>"+i18n("Genre")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->genre()->prettyName())+"</td></tr>";
     }
     if (m_track->trackNumber() != 0)
     {
@@ -178,11 +178,11 @@ void ToolTipManager::prepareToolTip()
     }
     if (m_track->year()->name() != "0")
     {
-        text += "<tr><td align=\"right\"><b>"+i18n("Year")+"</b>:</td><td align=\"left\">"+m_track->year()->prettyName()+"</td></tr>";
+        text += "<tr><td align=\"right\"><b>"+i18n("Year")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->year()->prettyName())+"</td></tr>";
     }
     if ((m_track->comment() != ""))
     {
-        text += "<tr><td align=\"right\"><b>"+i18n("Comment")+"</b>:</td><td align=\"left\">"+m_track->comment()+"</td></tr>";
+        text += "<tr><td align=\"right\"><b>"+i18n("Comment")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->comment())+"</td></tr>";
     }
     //text += "<tr><td align=\"right\"><b>"+i18n("Location")+"</b>:</td><td align=\"left\"><a href=\""+m_track->prettyUrl()+"\">"+m_track->prettyUrl()+"</a></td></tr>";
     if (text == "")
@@ -253,5 +253,51 @@ void ToolTipManager::showToolTip(const QIcon& icon, const QString& text)
 
     // the ownership of tip is transferred to KToolTip
     KToolTip::showTip(QPoint(x, y), tip);
+}
+
+QString ToolTipManager::breakLongLinesHTML(const QString& text)
+{
+    // Now let's break up long lines so that the tooltip doesn't become hideously large
+
+    // The size of the normal, standard line
+    const int lnSize = 50;
+    if (text.size() <= lnSize)
+    {
+        // If the text is not too long, return it as it is
+        return text;
+    }
+    else
+    {
+        QString textInLines;
+        
+        QStringList words = text.trimmed().split(' ');
+        int lineLength = 0;
+        while(words.size() > 0)
+        {
+            QString word = words.first();
+            // Let's check if the next word makes the current line too long.
+            if (lineLength + word.size() + 1 > lnSize)
+            {
+                if (lineLength > 0)
+                {
+                    textInLines += "<br/>";
+                }
+                lineLength = 0;
+                // Let's check if the next word is not too long for the new line to contain
+                // If it is, cut it
+                while (word.size() > lnSize)
+                {
+                    QString wordPart = word;
+                    wordPart.resize(lnSize);
+                    word.remove(0,lnSize);
+                    textInLines += wordPart + "<br/>";
+                }
+            }
+            textInLines += word + " ";
+            lineLength += word.size() + 1;
+            words.removeFirst();
+        }
+        return textInLines.trimmed();
+    }
 }
 #include "tooltipmanager.moc"
