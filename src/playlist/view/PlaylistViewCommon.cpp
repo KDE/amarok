@@ -57,9 +57,9 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
         }
     }
 
-    menu->addActions(multiSourceActionsFor(parent, index));
+    menu->addActions( multiSourceActionsFor( parent, index ) );
     menu->addSeparator();
-    menu->addActions(editActionsFor(parent, index));
+    menu->addActions( editActionsFor( parent, index ) );
 
     menu->exec( pos );
 }
@@ -73,18 +73,18 @@ Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, boo
     QAction *separator = new QAction( parent );
     separator->setSeparator( true );
 
-    actions << trackActionsFor(parent, index);
+    actions << trackActionsFor( parent, index );
     actions << separator;
 
     if( coverActions )
     {
-        actions << coverActionsFor(index);
+        actions << coverActionsFor( index );
         actions << separator;
     }
 
-    actions << multiSourceActionsFor(parent, index);
+    actions << multiSourceActionsFor( parent, index );
     actions << separator;
-    actions << editActionsFor(parent, index);
+    actions << editActionsFor( parent, index );
 
     return actions;
 }
