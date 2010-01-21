@@ -292,6 +292,7 @@ set(meta_SRCS
     meta/capabilities/DecoratorCapability.cpp
     meta/capabilities/EditCapability.cpp
     meta/capabilities/EditablePlaylistCapability.cpp
+    meta/capabilities/FindInSourceCapability.cpp
     meta/capabilities/LastFmCapability.cpp
     meta/capabilities/MultiPlayableCapability.cpp
     meta/capabilities/MultiSourceCapability.cpp
