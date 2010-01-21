@@ -134,3 +134,33 @@ ServiceSourceInfoCapability::scalableEmblem()
 }
 
 
+////////////////////////////////////////////////////////////
+
+
+ServiceFindInSourceCapability::ServiceFindInSourceCapability( Meta::ServiceTrack *track )
+    : Meta::FindInSourceCapability()
+    , m_track( track )
+{}
+
+void ServiceFindInSourceCapability::findInSource()
+{
+    DEBUG_BLOCK
+    if( m_track->artist() && m_track->album() && !m_track->collectionName().isEmpty() )
+    {
+        QString collection =m_track->collectionName();
+        QString artist = m_track->artist()->prettyName();
+        QString album = m_track->album()->prettyName();
+
+        AmarokUrl url;
+        url.setCommand( "navigate" );
+        url.setPath( "internet/" + collection );
+        if( !m_track->simpleFiltering() )
+        {
+            url.appendArg( "filter", "artist:\"" + artist + "\" AND album:\"" + album + "\"" );
+            url.appendArg( "levels", "artist-album" );
+        }
+
+        debug() << "running url: " << url.url();
+        url.run();
+    }
+}

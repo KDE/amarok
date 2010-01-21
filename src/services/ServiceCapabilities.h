@@ -20,9 +20,12 @@
 
 
 #include "amarok_export.h"
+#include "amarokurls/AmarokUrl.h"
+
 #include "meta/capabilities/BookmarkThisCapability.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/CustomActionsCapability.h"
+#include "meta/capabilities/FindInSourceCapability.h"
 #include "meta/capabilities/SourceInfoCapability.h"
 
 
@@ -30,6 +33,11 @@ class BookmarkThisProvider;
 class CurrentTrackActionsProvider;
 class CustomActionsProvider;
 class SourceInfoProvider;
+
+namespace Meta
+{
+    class ServiceTrack;
+}
 
 
 /**
@@ -101,6 +109,18 @@ private:
 
 };
 
+
+
+class AMAROK_EXPORT ServiceFindInSourceCapability : public Meta::FindInSourceCapability
+{
+    Q_OBJECT
+    public:
+        ServiceFindInSourceCapability( Meta::ServiceTrack *track );
+        virtual void findInSource();
+
+    private:
+        Meta::ServiceTrack * m_track;
+};
 
 
 

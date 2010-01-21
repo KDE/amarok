@@ -232,7 +232,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
             return ( type == Meta::Capability::CustomActions ) ||
                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
                    ( type == Meta::Capability::CurrentTrackActions ) ||
-                   ( type == Meta::Capability::BookmarkThis );
+                   ( type == Meta::Capability::BookmarkThis ) ||
+                   ( type == Meta::Capability::FindInSource );
         }
 
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
@@ -245,6 +246,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
                 return new ServiceCurrentTrackActionsCapability( this );
             else if ( type == Meta::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
+            else if ( type == Meta::Capability::FindInSource )
+                return new ServiceFindInSourceCapability( this );
             return 0;
         }
 
