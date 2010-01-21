@@ -67,7 +67,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_onOffCheckbox = new QCheckBox( controls1Layout );
     m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
-    m_onOffCheckbox->setText( i18n( "On" ) );
+    m_onOffCheckbox->setText( i18nc( "Turn dynamic mode on", "On" ) );
     m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
     m_onOffCheckbox->setCheckable( true );
     m_onOffCheckbox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
