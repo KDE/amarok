@@ -110,10 +110,10 @@ class AMAROK_EXPORT BookmarkThisProvider : public QObject
         BookmarkThisProvider() : QObject(), m_bookmarkAction( 0 ) {}
         virtual ~BookmarkThisProvider() {}
 
-        virtual bool isBookmarkable() { return false; }
-        virtual QString browserName() { return "internet"; }
-        virtual QString collectionName() { return ""; }
-        virtual bool simpleFiltering() { return true; }
+        virtual bool isBookmarkable() const { return false; }
+        virtual QString browserName() const { return "internet"; }
+        virtual QString collectionName() const { return QString(); }
+        virtual bool simpleFiltering() const { return true; }
         virtual QAction * bookmarkAction() { return 0; };
 
     protected:
@@ -233,7 +233,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
                    ( type == Meta::Capability::CurrentTrackActions ) ||
                    ( type == Meta::Capability::BookmarkThis ) ||
-                   ( type == Meta::Capability::FindInSource );
+                   ( type == Meta::Capability::FindInSource && isBookmarkable() );
         }
 
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
@@ -246,7 +246,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
                 return new ServiceCurrentTrackActionsCapability( this );
             else if ( type == Meta::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
-            else if ( type == Meta::Capability::FindInSource )
+            else if ( type == Meta::Capability::FindInSource && isBookmarkable() )
                 return new ServiceFindInSourceCapability( this );
             return 0;
         }

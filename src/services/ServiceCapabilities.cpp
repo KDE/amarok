@@ -158,9 +158,10 @@ void ServiceFindInSourceCapability::findInSource()
         {
             url.appendArg( "filter", "artist:\"" + artist + "\" AND album:\"" + album + "\"" );
             url.appendArg( "levels", "artist-album" );
+            debug() << "running url: " << url.url();
+            url.run();
         }
 
-        debug() << "running url: " << url.url();
-        url.run();
+
     }
 }
