@@ -21,7 +21,7 @@ if(APPLE)
     SET_TARGET_PROPERTIES(testcollectionlocation PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
-target_link_libraries(testcollectionlocation ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries(testcollectionlocation ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY})
 
 
 add_subdirectory( proxycollection )
