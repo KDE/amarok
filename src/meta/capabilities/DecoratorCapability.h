@@ -36,7 +36,7 @@ namespace Meta
             virtual ~DecoratorCapability();
 
             static Type capabilityInterfaceType() { return Meta::Capability::Decorator; }
-            virtual QAction* decoratorAction() = 0;
+            virtual QList<QAction*> decoratorActions() = 0;
     };
 }
 

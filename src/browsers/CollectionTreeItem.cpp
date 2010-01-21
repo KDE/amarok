@@ -26,6 +26,7 @@
 #include <KLocale>
 
 Q_DECLARE_METATYPE( QAction* )
+Q_DECLARE_METATYPE( QList<QAction*> )
 
 CollectionTreeItem::CollectionTreeItem( CollectionTreeItemModelBase *model )
 : m_data( 0 )
@@ -37,8 +38,7 @@ CollectionTreeItem::CollectionTreeItem( CollectionTreeItemModelBase *model )
     , m_type( Root )
     //, m_name( "Root" )
     , m_isCounting( false )
-    , m_decoratorAction( 0 )
-    , m_decoratorActionLoaded( false )
+    , m_decoratorActionsLoaded( false )
 {
 }
 
@@ -52,8 +52,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
     , m_type( Data )
     //, m_name( data ? data->name() : "NullData" )
     , m_isCounting( false )
-    , m_decoratorAction( 0 )
-    , m_decoratorActionLoaded( false )
+    , m_decoratorActionsLoaded( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -69,8 +68,7 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
     , m_type( Collection )
     //, m_name( parentCollection ? parentCollection->collectionId() : "NullColl" )
     , m_isCounting( false )
-    , m_decoratorAction( 0 )
-    , m_decoratorActionLoaded( false )
+    , m_decoratorActionsLoaded( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -88,8 +86,7 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
     , m_type( VariousArtist )
     //, m_name("VA")
     , m_isCounting( false )
-    , m_decoratorAction( 0 )
-    , m_decoratorActionLoaded( false )
+    , m_decoratorActionsLoaded( false )
 {
     DEBUG_BLOCK
     if( m_parent )
@@ -238,14 +235,14 @@ CollectionTreeItem::data( int role ) const
             if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
                 return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();
         }
-        else if( role == CustomRoles::HasDecoratorRole )
+        else if( role == CustomRoles::DecoratorRoleCount )
         {
-            return !!decoratorAction();
+            return decoratorActions().size();
         }
         else if( role == CustomRoles::DecoratorRole )
         {
             QVariant v;
-            v.setValue( decoratorAction() );
+            v.setValue( decoratorActions() );
             return v;
         }
     }
@@ -253,21 +250,21 @@ CollectionTreeItem::data( int role ) const
     return QVariant();
 }
 
-QAction*
-CollectionTreeItem::decoratorAction() const
+QList<QAction*>
+CollectionTreeItem::decoratorActions() const
 {
-    if( m_decoratorActionLoaded )
-        return m_decoratorAction;
+    if( m_decoratorActionsLoaded )
+        return m_decoratorActions;
 
     Meta::DecoratorCapability *dc = m_parentCollection->create<Meta::DecoratorCapability>();
     if( dc )
     {
-        m_decoratorAction = dc->decoratorAction();
+        m_decoratorActions = dc->decoratorActions();
         delete dc;
     }
 
-    m_decoratorActionLoaded = true;
-    return m_decoratorAction;
+    m_decoratorActionsLoaded = true;
+    return m_decoratorActions;
 }
 
 void

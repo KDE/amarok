@@ -33,6 +33,7 @@
 #include <kcapacitybar.h>
 
 Q_DECLARE_METATYPE( QAction* )
+Q_DECLARE_METATYPE( QList<QAction*> )
 
 #define CAPACITYRECT_HEIGHT 6
 #define ACTIONICON_SIZE 16
@@ -69,7 +70,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     const int iconHeight = 32;
     const int iconPadX = 4;
     const bool hasCapacity = index.data( CustomRoles::HasCapacityRole ).toBool();
-    const bool hasAction = index.data( CustomRoles::HasDecoratorRole ).toBool();
+    const int actionCount = index.data( CustomRoles::DecoratorRoleCount ).toInt();
 
     painter->save();
 
@@ -95,7 +96,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
 
-    const int actionsRectWidth = hasAction ? (ACTIONICON_SIZE + 2*2/*margin*/) : 0;
+    const int actionsRectWidth = actionCount > 0 ? (ACTIONICON_SIZE * actionCount + 2*2/*margin*/) : 0;
 
     const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
     const int infoRectLeft = isRTL ? actionsRectWidth : iconRight;
@@ -144,24 +145,31 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         capacityBar.drawCapacityBar( painter, capacityRect );
     }
 
-    if( hasAction )
+    if( actionCount > 0 )
     {
-        const QAction* action = index.data( CustomRoles::DecoratorRole ).value<QAction*>();
+        const QList<QAction*> actions = index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
         QRect decoratorRect;
-        decoratorRect.setLeft( (width - ACTIONICON_SIZE) - 2 );
+        decoratorRect.setLeft( (width - actionCount * ACTIONICON_SIZE) - 2 );
         decoratorRect.setTop( option.rect.top() + (height - ACTIONICON_SIZE) / 2 );
         decoratorRect.setWidth( actionsRectWidth );
         decoratorRect.setHeight( ACTIONICON_SIZE );
 
-        QPoint actionTopLeft = decoratorRect.topLeft();
+        QPoint actionTopLeftBase = decoratorRect.topLeft();
         const QSize iconSize = QSize( ACTIONICON_SIZE, ACTIONICON_SIZE );
 
-        QIcon icon = action->icon();
-        QRect iconRect( actionTopLeft, iconSize );
+        int i = 0;
+        foreach(QAction * action, actions)
+        {
+            QIcon icon = action->icon();
+            int x = actionTopLeftBase.x() + i * ACTIONICON_SIZE;
+            QPoint actionTopLeft = QPoint( x, actionTopLeftBase.y() );
+            QRect iconRect( actionTopLeft, iconSize );
 
-        const bool isOver = isHover && iconRect.contains( cursorPos );
+            const bool isOver = isHover && iconRect.contains( cursorPos );
 
-        icon.paint( painter, iconRect, Qt::AlignCenter, isOver ? QIcon::Active : QIcon::Normal, isOver ? QIcon::On : QIcon::Off );
+            icon.paint( painter, iconRect, Qt::AlignCenter, isOver ? QIcon::Active : QIcon::Normal, isOver ? QIcon::On : QIcon::Off );
+            i++;
+        }
 
         // Store the Model index for lookups for clicks. FAIL.
         QPersistentModelIndex persistentIndex( index );
