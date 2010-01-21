@@ -613,13 +613,12 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     if( row != -1 )
     {
         //select this track
-
+        QModelIndex index = model()->index( row, 0 );
+        QItemSelection selItems( index, index );
+        selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
+        
         if ( !filter )
         {
-            QModelIndex index = model()->index( row, 0 );
-            QItemSelection selItems( index, index );
-            selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
-
             QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
             setCurrentIndex( foundIndex );
             if ( foundIndex.isValid() )
