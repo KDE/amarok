@@ -93,6 +93,7 @@ private slots:
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
     void redrawActive();
     void playlistLayoutChanged();
+    void findInSource();
 
 private:
     void showEvent( QShowEvent* );

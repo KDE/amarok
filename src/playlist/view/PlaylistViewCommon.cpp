@@ -25,6 +25,7 @@
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/FindInSourceCapability.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "TagDialog.h"
 
@@ -40,7 +41,7 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
 
     KMenu *menu = new KMenu( parent );
 
-    menu->addActions(trackActionsFor(parent, index));
+    menu->addActions( trackActionsFor( parent, index ) );
     menu->addSeparator();
 
     if( coverActions )
@@ -146,6 +147,13 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         }
     }
 
+    if( track->hasCapabilityInterface( Meta::Capability::FindInSource ) )
+    {
+            QAction *findInSourceAction = new QAction( KIcon( "edit-find" ), i18n( "Find in Source" ), parent );
+            QObject::connect( findInSourceAction, SIGNAL( triggered() ), parent, SLOT( findInSource() ) );
+            actions << findInSourceAction;
+    }
+    
     return actions;
 }
 

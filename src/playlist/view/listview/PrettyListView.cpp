@@ -32,6 +32,7 @@
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/FindInSourceCapability.h"
 #include "meta/capabilities/MultiSourceCapability.h"
 #include "meta/Meta.h"
 #include "PaletteHandler.h"
@@ -319,6 +320,27 @@ Playlist::PrettyListView::stopAfterTrack()
     {
         Actions::instance()->setStopAfterMode( StopAfterQueue );
         Actions::instance()->setTrackToBeLast( id );
+    }
+}
+
+void
+Playlist::PrettyListView::findInSource()
+{
+    DEBUG_BLOCK
+    const qint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
+    if( id != -1 )
+    {
+        Meta::TrackPtr track = m_topmostProxy->trackForId( id );
+
+        if( track->hasCapabilityInterface( Meta::Capability::FindInSource ) )
+        {
+            Meta::FindInSourceCapability *fis = track->create<Meta::FindInSourceCapability>();
+            if ( fis )
+            {
+                fis->findInSource();
+            }
+            delete fis;
+        }
     }
 }
 
