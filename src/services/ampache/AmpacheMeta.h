@@ -18,10 +18,9 @@
 #ifndef AMPACHEMETA_H
 #define AMPACHEMETA_H
 
-
+#include "../ServiceBase.h"
 #include "../ServiceMetaBase.h"
 #include "../ServiceAlbumCoverDownloader.h"
-#include "../ShowInServiceAction.h"
 
 #include <KStandardDirs>
 
@@ -43,7 +42,6 @@ public:
     explicit AmpacheTrack( const QString& title, ServiceBase * service = 0 )
     : ServiceTrack( title )
     , m_service( service )
-    , m_showInServiceAction( 0 )
     { }
 
     virtual QString sourceName() { return "Ampache"; }
@@ -55,7 +53,6 @@ public:
 
 private:
     ServiceBase * m_service;
-    ShowInServiceAction * m_showInServiceAction;
 
 };
 

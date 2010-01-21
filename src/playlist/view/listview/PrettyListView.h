@@ -22,6 +22,7 @@
 
 #include "PrettyItemDelegate.h"
 #include "playlist/proxymodels/GroupingProxy.h"
+#include "playlist/view/PlaylistViewCommon.h"
 
 #include <QListView>
 #include <QModelIndex>
@@ -43,7 +44,7 @@ class QTimer;
 
 namespace Playlist
 {
-class PrettyListView : public QListView
+class PrettyListView : public QListView, public ViewCommon
 {
     Q_OBJECT
 
@@ -93,6 +94,7 @@ private slots:
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
     void redrawActive();
     void playlistLayoutChanged();
+    void findInSource();
 
 private:
     void showEvent( QShowEvent* );

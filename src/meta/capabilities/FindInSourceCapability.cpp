@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,34 +14,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef SERVICESOURCEINFOCAPABILITY_H
-#define SERVICESOURCEINFOCAPABILITY_H
+#include "FindInSourceCapability.h"
 
-#include "amarok_export.h"
-#include "meta/capabilities/SourceInfoCapability.h"
+using namespace Meta;
 
-
-class SourceInfoProvider;
-
-/**
-    @author Nikolaj Hald Nielsen <nhn@kde.org>
-*/
-
-class AMAROK_EXPORT ServiceSourceInfoCapability : public Meta::SourceInfoCapability
+FindInSourceCapability::~FindInSourceCapability()
 {
-public:
-    ServiceSourceInfoCapability( SourceInfoProvider * sourceInfoProvider );
+}
 
-    ~ServiceSourceInfoCapability();
-
-    QString sourceName();
-    QString sourceDescription();
-    QPixmap emblem();
-    QString scalableEmblem();
-    
-private:
-    SourceInfoProvider * m_sourceInfoProvider;
-
-};
-
-#endif

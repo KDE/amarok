@@ -24,12 +24,7 @@
 #include "InfoParserBase.h"
 #include "meta/proxy/MetaProxy.h"
 #include "meta/StatisticsProvider.h"
-#include "meta/capabilities/CustomActionsCapability.h"
-#include "meta/capabilities/SourceInfoCapability.h"
-#include "ServiceBookmarkThisCapability.h"
-#include "ServiceCustomActionsCapability.h"
-#include "ServiceSourceInfoCapability.h"
-#include "ServiceCurrentTrackActionsCapability.h"
+#include "ServiceCapabilities.h"
 
 #include <QAction>
 #include <QStringList>
@@ -115,10 +110,10 @@ class AMAROK_EXPORT BookmarkThisProvider : public QObject
         BookmarkThisProvider() : QObject(), m_bookmarkAction( 0 ) {}
         virtual ~BookmarkThisProvider() {}
 
-        virtual bool isBookmarkable() { return false; }
-        virtual QString browserName() { return "internet"; }
-        virtual QString collectionName() { return ""; }
-        virtual bool simpleFiltering() { return true; }
+        virtual bool isBookmarkable() const { return false; }
+        virtual QString browserName() const { return "internet"; }
+        virtual QString collectionName() const { return QString(); }
+        virtual bool simpleFiltering() const { return true; }
         virtual QAction * bookmarkAction() { return 0; };
 
     protected:
@@ -237,7 +232,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
             return ( type == Meta::Capability::CustomActions ) ||
                    ( type == Meta::Capability::SourceInfo && hasSourceInfo() ) ||
                    ( type == Meta::Capability::CurrentTrackActions ) ||
-                   ( type == Meta::Capability::BookmarkThis );
+                   ( type == Meta::Capability::BookmarkThis ) ||
+                   ( type == Meta::Capability::FindInSource && isBookmarkable() );
         }
 
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type )
@@ -250,6 +246,8 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
                 return new ServiceCurrentTrackActionsCapability( this );
             else if ( type == Meta::Capability::BookmarkThis )
                 return new ServiceBookmarkThisCapability( this );
+            else if ( type == Meta::Capability::FindInSource && isBookmarkable() )
+                return new ServiceFindInSourceCapability( this );
             return 0;
         }
 

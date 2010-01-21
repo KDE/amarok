@@ -32,6 +32,7 @@
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/FindInSourceCapability.h"
 #include "meta/capabilities/MultiSourceCapability.h"
 #include "meta/Meta.h"
 #include "PaletteHandler.h"
@@ -65,6 +66,7 @@
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
+        , ViewCommon()
         , m_headerPressIndex( QModelIndex() )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
@@ -293,7 +295,7 @@ Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
     if( event->modifiers() & Qt::ControlModifier )
         return;
 
-    ViewCommon::trackMenu( this, &index, event->globalPos(), true );
+    trackMenu( this, &index, event->globalPos(), true );
     event->accept();
 }
 
@@ -319,6 +321,27 @@ Playlist::PrettyListView::stopAfterTrack()
     {
         Actions::instance()->setStopAfterMode( StopAfterQueue );
         Actions::instance()->setTrackToBeLast( id );
+    }
+}
+
+void
+Playlist::PrettyListView::findInSource()
+{
+    DEBUG_BLOCK
+    const qint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
+    if( id != -1 )
+    {
+        Meta::TrackPtr track = m_topmostProxy->trackForId( id );
+
+        if( track->hasCapabilityInterface( Meta::Capability::FindInSource ) )
+        {
+            Meta::FindInSourceCapability *fis = track->create<Meta::FindInSourceCapability>();
+            if ( fis )
+            {
+                fis->findInSource();
+            }
+            delete fis;
+        }
     }
 }
 
@@ -533,7 +556,7 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
         QModelIndexList indices = selectedIndexes();
 
-        QList<QAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
+        QList<QAction*> actions =  actionsFor( this, &indices.first(), true );
 
         foreach( QAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
@@ -613,13 +636,12 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     if( row != -1 )
     {
         //select this track
-
+        QModelIndex index = model()->index( row, 0 );
+        QItemSelection selItems( index, index );
+        selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
+        
         if ( !filter )
         {
-            QModelIndex index = model()->index( row, 0 );
-            QItemSelection selItems( index, index );
-            selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
-
             QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
             setCurrentIndex( foundIndex );
             if ( foundIndex.isValid() )

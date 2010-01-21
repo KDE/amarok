@@ -52,6 +52,7 @@ namespace Meta
                         , Decorator = 19
                         , ReadLabel = 20
                         , WriteLabel = 21
+                        , FindInSource = 22
                       };
 
             virtual ~Capability();

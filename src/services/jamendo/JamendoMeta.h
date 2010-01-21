@@ -20,7 +20,6 @@
 
 #include "../ServiceMetaBase.h"
 #include "../ServiceAlbumCoverDownloader.h"
-#include "../ShowInServiceAction.h"
 
 #include <QDateTime>
 #include <QString>
@@ -84,9 +83,9 @@ public:
     */
     virtual QString type() const;
 
-    virtual bool isBookmarkable() { return true; }
-    virtual QString collectionName() { return "Jamendo.com"; }
-    virtual bool simpleFiltering() { return false; }
+    virtual bool isBookmarkable() const { return true; }
+    virtual QString collectionName() const { return "Jamendo.com"; }
+    virtual bool simpleFiltering() const { return false; }
 
     virtual QList< QAction *> customActions();
     virtual QList< QAction * > currentTrackActions();
@@ -98,7 +97,6 @@ private:
     
     QAction * m_downloadCustomAction;
     QAction * m_downloadCurrentTrackAction;
-    ShowInServiceAction * m_showInServiceAction;
 
 };
 
@@ -129,9 +127,9 @@ public:
     void setJamendoURL( const QString &jamendoURL );
     QString jamendoURL() const;
 
-    virtual bool isBookmarkable() { return true; }
-    virtual QString collectionName() { return "Jamendo.com"; }
-    virtual bool simpleFiltering() { return false; }
+    virtual bool isBookmarkable() const { return true; }
+    virtual QString collectionName() const { return "Jamendo.com"; }
+    virtual bool simpleFiltering() const { return false; }
 };
 
 
@@ -176,9 +174,9 @@ public:
     void setService( JamendoService * store );
     JamendoService * service();
 
-    virtual bool isBookmarkable() { return true; }
-    virtual QString collectionName() { return "Jamendo.com"; }
-    virtual bool simpleFiltering() { return false; }
+    virtual bool isBookmarkable() const { return true; }
+    virtual QString collectionName() const { return "Jamendo.com"; }
+    virtual bool simpleFiltering() const { return false; }
 
 private:
     JamendoService * m_service;
@@ -193,9 +191,9 @@ public:
     JamendoGenre( const QString &name );
     JamendoGenre( const QStringList &resultRow );
 
-    virtual bool isBookmarkable() { return true; }
-    virtual QString collectionName() { return "Jamendo.com"; }
-    virtual bool simpleFiltering() { return false; }
+    virtual bool isBookmarkable() const { return true; }
+    virtual QString collectionName() const { return "Jamendo.com"; }
+    virtual bool simpleFiltering() const { return false; }
 
 };
 

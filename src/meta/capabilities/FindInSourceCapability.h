@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,41 +14,35 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "ShowInServiceAction.h"
+#ifndef FINDINSOURCECAPABILITY_H
+#define FINDINSOURCECAPABILITY_H
 
-#include "amarokurls/AmarokUrl.h"
+#include "amarok_export.h"
+#include "meta/Capability.h"
 
-ShowInServiceAction::ShowInServiceAction( ServiceBase * service, Meta::ServiceTrack *track )
-    : QAction( service )
-    , m_track( track )
-    , m_service( service )
+namespace Meta {
+
+/**
+This capability exposes a method that shows this track (or the closest possible parent, such as album) in the source where it was added from.
+
+    @author Nikolaj Hald Nielsen <nhn@kde.org>
+*/
+
+class AMAROK_EXPORT FindInSourceCapability : public Meta::Capability
 {
-    setIcon ( KIcon( "system-search" ) );
-    setText( i18n( "Go to artist in %1 service", service->name() ) );
+    Q_OBJECT
+public: 
+    virtual ~FindInSourceCapability();
 
-    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
-}
+    virtual void findInSource() = 0;
 
-ShowInServiceAction::~ShowInServiceAction()
-{
-}
+    /**
+     * Get the capabilityInterfaceType of this capability
+     * @return The capabilityInterfaceType ( always Meta::Capability::FindInSource; )
+     */
+    static Type capabilityInterfaceType() { return Meta::Capability::FindInSource; }
+};
 
-void ShowInServiceAction::slotTriggered()
-{
-    DEBUG_BLOCK
+};
 
-    //artist or album?
-
-    if ( m_service == 0 || !m_track || !m_track->artist() )
-        return;
-
-    QString urlString = QString( "amarok://navigate/internet/%1?levels=artist-album&filter=artist:\"%2\"" )
-                        .arg( m_service->name() )
-                        .arg( m_track->artist()->prettyName() );
-
-    AmarokUrl url( urlString );
-    url.run();
-}
-
-#include "ShowInServiceAction.moc"
-
+#endif // FINDINSOURCECAPABILITY_H

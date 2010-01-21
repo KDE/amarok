@@ -92,6 +92,8 @@ class ScriptableServiceTrack : public Meta::ServiceTrack, public ScriptableServi
 
         void setCustomAlbumCoverUrl( const QString &coverurl );
 
+        virtual QString collectionName() const { return m_serviceName; }
+
     private:
 
         
@@ -113,9 +115,9 @@ class ScriptableServiceAlbum : public Meta::ServiceAlbumWithCover, public Script
         virtual QPixmap emblem();
         virtual QString scalableEmblem();
 
-        virtual bool isBookmarkable();
-        virtual QString collectionName() { return m_serviceName; }
-        virtual bool simpleFiltering() { return true; }
+        virtual bool isBookmarkable() const;
+        virtual QString collectionName() const { return m_serviceName; }
+        virtual bool simpleFiltering() const  { return true; }
 
     private:
         QString m_coverUrl;
@@ -136,9 +138,9 @@ class ScriptableServiceArtist : public Meta::ServiceArtist, public ScriptableSer
         virtual QPixmap emblem();
         virtual QString scalableEmblem();
 
-        virtual bool isBookmarkable();
-        virtual QString collectionName() { return m_serviceName; }
-        virtual bool simpleFiltering() { return true; }
+        virtual bool isBookmarkable() const;
+        virtual QString collectionName() const { return m_serviceName; }
+        virtual bool simpleFiltering() const { return true; }
 
     private:
         int m_genreId;

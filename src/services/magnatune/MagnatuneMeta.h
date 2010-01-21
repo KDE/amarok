@@ -20,7 +20,6 @@
 
 #include "../ServiceMetaBase.h"
 #include "../ServiceAlbumCoverDownloader.h"
-#include "../ShowInServiceAction.h"
 
 #include <QDateTime>
 #include <QList>
@@ -55,9 +54,9 @@ public:
     virtual QString sourceDescription();
     virtual QPixmap emblem();
 
-    virtual bool isBookmarkable() { return true; }
-    virtual QString collectionName() { return "Magnatune.com"; }
-    virtual bool simpleFiltering() { return false; }
+    virtual bool isBookmarkable() const { return true; }
+    virtual QString collectionName() const { return "Magnatune.com"; }
+    virtual bool simpleFiltering() const { return false; }
 
     void setOggUrl( const QString& url );
     QString oggUrl() const;
@@ -73,7 +72,6 @@ private:
     bool m_downloadMembership;
     QList<QString> m_moods;
     QAction * m_purchaseAction;
-    ShowInServiceAction * m_showInServiceAction;
 
 };
 
@@ -95,9 +93,9 @@ public:
     void setMagnatuneUrl( const QString &url );
     QString magnatuneUrl() const;
 
-    virtual bool isBookmarkable() { return true; }
-    virtual QString collectionName() { return "Magnatune.com"; }
-    virtual bool simpleFiltering() { return false; }
+    virtual bool isBookmarkable() const { return true; }
+    virtual QString collectionName() const { return "Magnatune.com"; }
+    virtual bool simpleFiltering() const { return false; }
 };
 
 class MagnatuneAlbum : public ServiceAlbumWithCover
@@ -135,9 +133,9 @@ public:
 
     void setDownloadMembership();
 
-    virtual bool isBookmarkable() { return true; }
-    virtual QString collectionName() { return "Magnatune.com"; }
-    virtual bool simpleFiltering() { return false; }
+    virtual bool isBookmarkable() const { return true; }
+    virtual QString collectionName() const { return "Magnatune.com"; }
+    virtual bool simpleFiltering() const { return false; }
 
 public slots:
     void purchase();
@@ -154,9 +152,9 @@ public:
     MagnatuneGenre( const QString &name );
     MagnatuneGenre( const QStringList &resultRow );
 
-    virtual bool isBookmarkable() { return true; }
-    virtual QString collectionName() { return "Magnatune.com"; }
-    virtual bool simpleFiltering() { return false; }
+    virtual bool isBookmarkable() const { return true; }
+    virtual QString collectionName() const { return "Magnatune.com"; }
+    virtual bool simpleFiltering() const { return false; }
 };
 
 }

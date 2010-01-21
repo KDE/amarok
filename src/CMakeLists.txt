@@ -121,19 +121,15 @@ set(libserviceframework_SRCS
     services/InfoParserBase.cpp
     services/ServiceAlbumCoverDownloader.cpp
     services/ServiceBase.cpp
-    services/ServiceBookmarkThisCapability.cpp
+    services/ServiceCapabilities.cpp
     services/ServiceCollection.cpp
     services/ServiceCollectionLocation.cpp
     services/ServiceCollectionTreeView.cpp
-    services/ServiceCurrentTrackActionsCapability.cpp
-    services/ServiceCustomActionsCapability.cpp
     services/ServiceMetaBase.cpp
     services/ServicePluginManager.cpp
-    services/ServiceSourceInfoCapability.cpp
     services/ServiceSqlCollection.cpp
     services/ServiceSqlQueryMaker.cpp
     services/ServiceSqlRegistry.cpp
-    services/ShowInServiceAction.cpp
 )
 
 #####################################################################
@@ -292,6 +288,7 @@ set(meta_SRCS
     meta/capabilities/DecoratorCapability.cpp
     meta/capabilities/EditCapability.cpp
     meta/capabilities/EditablePlaylistCapability.cpp
+    meta/capabilities/FindInSourceCapability.cpp
     meta/capabilities/LastFmCapability.cpp
     meta/capabilities/MultiPlayableCapability.cpp
     meta/capabilities/MultiSourceCapability.cpp
