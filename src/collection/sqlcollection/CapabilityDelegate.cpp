@@ -16,6 +16,7 @@
 
 #include "CapabilityDelegate.h"
 
+#include "Debug.h"
 #include "SqlBookmarkThisCapability.h"
 #include "SqlCollection.h"
 #include "SqlMeta.h"
@@ -26,6 +27,7 @@
 #include "meta/capabilities/CustomActionsCapability.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
+#include "meta/capabilities/FindInSourceCapability.h"
 #include "meta/capabilities/StatisticsCapability.h"
 #include "meta/capabilities/TimecodeLoadCapability.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
@@ -196,6 +198,39 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
         KSharedPtr<Meta::SqlTrack> m_track;
 };
 
+
+class FindInSourceCapabilityImpl : public Meta::FindInSourceCapability
+{
+    Q_OBJECT
+    public:
+        FindInSourceCapabilityImpl( Meta::SqlTrack *track )
+            : Meta::FindInSourceCapability()
+            , m_track( track ) {}
+
+        virtual void findInSource()
+        {
+            DEBUG_BLOCK
+            if( m_track->artist() && m_track->album() )
+            {
+                QString artist = m_track->artist()->prettyName();
+                QString album = m_track->album()->prettyName();
+
+                AmarokUrl url;
+                url.setCommand( "navigate" );
+                url.setPath( "collection" );
+                url.appendArg( "filter", "artist:\"" + artist + "\" AND album:\"" + album + "\"" );
+                url.appendArg( "levels", "artist-album" );
+
+                debug() << "running url: " << url.url();
+                url.run();
+            }
+        }
+
+    private:
+        KSharedPtr<Meta::SqlTrack> m_track;
+};
+
+
 TrackCapabilityDelegate::TrackCapabilityDelegate()
 {
 }
@@ -217,6 +252,7 @@ TrackCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, co
         case Meta::Capability::LoadTimecode:
         case Meta::Capability::ReadLabel:
         case Meta::Capability::WriteLabel:
+        case Meta::Capability::FindInSource:
             return true;
 
         case Meta::Capability::Editable:
@@ -278,6 +314,8 @@ TrackCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type,
             return new Meta::SqlReadLabelCapability( track, track->sqlCollection()->sqlStorage() );
         case Meta::Capability::WriteLabel:
             return new Meta::SqlWriteLabelCapability( track, track->sqlCollection()->sqlStorage() );
+        case Meta::Capability::FindInSource:
+            return new FindInSourceCapabilityImpl( track );
 
         default:
             return 0;
