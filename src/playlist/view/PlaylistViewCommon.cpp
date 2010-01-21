@@ -34,6 +34,18 @@
 
 #include <KMenu>
 
+
+Playlist::ViewCommon::ViewCommon()
+    : m_stopAfterTrackAction( 0 )
+    , m_cueTrackAction( 0 )
+    , m_removeTracTrackAction( 0 )
+    , m_findInSourceAction( 0 )
+{}
+
+Playlist::ViewCommon::~ViewCommon()
+{}
+
+
 void
 Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, const QPoint &pos, bool coverActions )
 {
@@ -102,27 +114,42 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
 
     const bool isCurrentTrack = index->data( Playlist::ActiveTrackRole ).toBool();
 
-    QAction *stopAction = new QAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), parent );
-    QObject::connect( stopAction, SIGNAL( triggered() ), parent, SLOT( stopAfterTrack() ) );
-    actions << stopAction;
+    if( m_stopAfterTrackAction == 0 )
+    {
+        m_stopAfterTrackAction = new QAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), parent );
+        QObject::connect( m_stopAfterTrackAction, SIGNAL( triggered() ), parent, SLOT( stopAfterTrack() ) );
+    }
+    actions << m_stopAfterTrackAction;
 
     //actions << separator;
 
     const bool isQueued = index->data( Playlist::StateRole ).toInt() & Item::Queued;
     const QString queueText = !isQueued ? i18n( "Queue Track" ) : i18n( "Dequeue Track" );
-    QAction *queueAction = new QAction( KIcon( "media-track-queue-amarok" ), queueText, parent );
-    if( isQueued )
-        QObject::connect( queueAction, SIGNAL( triggered() ), parent, SLOT( dequeueSelection() ) );
-    else
-        QObject::connect( queueAction, SIGNAL( triggered() ), parent, SLOT( queueSelection() ) );
 
-    actions << queueAction;
+    if( m_cueTrackAction == 0 )
+    {
+        m_cueTrackAction = new QAction( KIcon( "media-track-queue-amarok" ), queueText, parent );
+    }
+    else
+    {
+        m_cueTrackAction->disconnect();
+    }
+    
+    if( isQueued )
+        QObject::connect( m_cueTrackAction, SIGNAL( triggered() ), parent, SLOT( dequeueSelection() ) );
+    else
+        QObject::connect( m_cueTrackAction, SIGNAL( triggered() ), parent, SLOT( queueSelection() ) );
+
+    actions << m_cueTrackAction;
 
     //actions << separator;
 
-    QAction *removeAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), parent );
-    QObject::connect( removeAction, SIGNAL( triggered() ), parent, SLOT( removeSelection() ) );
-    actions << removeAction;
+    if( m_removeTracTrackAction == 0 )
+    {
+        m_removeTracTrackAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), parent );
+        QObject::connect( m_removeTracTrackAction, SIGNAL( triggered() ), parent, SLOT( removeSelection() ) );
+    }
+    actions << m_removeTracTrackAction;
 
     //lets see if parent is the currently playing tracks, and if it has CurrentTrackActionsCapability
     if( isCurrentTrack )
@@ -149,9 +176,12 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
 
     if( track->hasCapabilityInterface( Meta::Capability::FindInSource ) )
     {
-            QAction *findInSourceAction = new QAction( KIcon( "edit-find" ), i18n( "Find in Source" ), parent );
-            QObject::connect( findInSourceAction, SIGNAL( triggered() ), parent, SLOT( findInSource() ) );
-            actions << findInSourceAction;
+        if( m_findInSourceAction == 0 )
+        {
+            m_findInSourceAction = new QAction( KIcon( "edit-find" ), i18n( "Find in Source" ), parent );
+            QObject::connect( m_findInSourceAction, SIGNAL( triggered() ), parent, SLOT( findInSource() ) );
+        }
+        actions << m_findInSourceAction;
     }
     
     return actions;

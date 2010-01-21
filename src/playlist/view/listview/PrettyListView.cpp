@@ -66,6 +66,7 @@
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
+        , ViewCommon()
         , m_headerPressIndex( QModelIndex() )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
@@ -294,7 +295,7 @@ Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
     if( event->modifiers() & Qt::ControlModifier )
         return;
 
-    ViewCommon::trackMenu( this, &index, event->globalPos(), true );
+    trackMenu( this, &index, event->globalPos(), true );
     event->accept();
 }
 
@@ -555,7 +556,7 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
         QModelIndexList indices = selectedIndexes();
 
-        QList<QAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
+        QList<QAction*> actions =  actionsFor( this, &indices.first(), true );
 
         foreach( QAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );

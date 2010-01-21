@@ -27,17 +27,32 @@
 
 namespace Playlist
 {
-    namespace ViewCommon
+    class ViewCommon
     {
-        void editTrackInformation();
-        void trackMenu( QWidget *, const QModelIndex *, const QPoint &pos, bool coverActions = false );
-        QList<QAction*> actionsFor( QWidget *parent, const QModelIndex *index, bool coverActions );
+        public:
 
-        QList<QAction*> trackActionsFor( QWidget *parent, const QModelIndex *index );
-        QList<QAction*> coverActionsFor( const QModelIndex *index );
-        QList<QAction*> multiSourceActionsFor( QWidget *parent, const QModelIndex *index );
-        QList<QAction*> editActionsFor( QWidget *parent, const QModelIndex *index );
-    }
+            ViewCommon();
+            ~ViewCommon();
+
+            void editTrackInformation();
+            void trackMenu( QWidget *, const QModelIndex *, const QPoint &pos, bool coverActions = false );
+            QList<QAction*> actionsFor( QWidget *parent, const QModelIndex *index, bool coverActions );
+
+            QList<QAction*> trackActionsFor( QWidget *parent, const QModelIndex *index );
+            QList<QAction*> coverActionsFor( const QModelIndex *index );
+            QList<QAction*> multiSourceActionsFor( QWidget *parent, const QModelIndex *index );
+            QList<QAction*> editActionsFor( QWidget *parent, const QModelIndex *index );
+
+        private:
+
+            QAction* m_stopAfterTrackAction;
+            QAction* m_cueTrackAction;
+            QAction* m_removeTracTrackAction;
+            QAction* m_findInSourceAction;
+            
+            
+    };
+
 }
 
 #endif
