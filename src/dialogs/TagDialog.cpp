@@ -1013,7 +1013,7 @@ void TagDialog::readTags()
         ui->qSpinBox_year->setValue( 0 );
     ui->qSpinBox_score->setValue( m_currentData.value( Meta::Field::SCORE ).toInt() );
     ui->qSpinBox_discNumber->setValue( m_currentData.value( Meta::Field::DISCNUMBER ).toInt() );
-    ui->qPlainTextEdit_comment->setPlainText( Qt::escape( m_currentData.value( Meta::Field::COMMENT ).toString() ) );
+    ui->qPlainTextEdit_comment->setPlainText( m_currentData.value( Meta::Field::COMMENT ).toString() );
 
     QString summaryText, statisticsText;
     const QString body2cols = "<tr><td><nobr>%1</nobr></td><td><b>%2</b></td></tr>";
