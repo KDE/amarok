@@ -24,12 +24,7 @@
 #include "InfoParserBase.h"
 #include "meta/proxy/MetaProxy.h"
 #include "meta/StatisticsProvider.h"
-#include "meta/capabilities/CustomActionsCapability.h"
-#include "meta/capabilities/SourceInfoCapability.h"
-#include "ServiceBookmarkThisCapability.h"
-#include "ServiceCustomActionsCapability.h"
-#include "ServiceSourceInfoCapability.h"
-#include "ServiceCurrentTrackActionsCapability.h"
+#include "ServiceCapabilities.h"
 
 #include <QAction>
 #include <QStringList>

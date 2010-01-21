@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,9 +13,89 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#include "ServiceSourceInfoCapability.h"
+
+#include "ServiceCapabilities.h"
 #include "ServiceMetaBase.h"
+
+
+ServiceBookmarkThisCapability::ServiceBookmarkThisCapability( BookmarkThisProvider * provider )
+    : Meta::BookmarkThisCapability()
+    , m_provider( provider )
+{
+}
+
+
+ServiceBookmarkThisCapability::~ServiceBookmarkThisCapability()
+{
+}
+
+bool ServiceBookmarkThisCapability::isBookmarkable()
+{
+    return m_provider->isBookmarkable();
+}
+
+QString ServiceBookmarkThisCapability::browserName()
+{
+    return m_provider->browserName();
+}
+
+QString ServiceBookmarkThisCapability::collectionName()
+{
+    return m_provider->collectionName();
+}
+
+bool ServiceBookmarkThisCapability::simpleFiltering()
+{
+    return m_provider->simpleFiltering();
+}
+
+QAction * ServiceBookmarkThisCapability::bookmarkAction()
+{
+    return m_provider->bookmarkAction();
+}
+
+
+
+///////////////////////////////////////////////////////
+
+
+ServiceCurrentTrackActionsCapability::ServiceCurrentTrackActionsCapability( CurrentTrackActionsProvider * currentTrackActionsProvider )
+    : Meta::CurrentTrackActionsCapability( )
+    , m_currentTrackActionsProvider( currentTrackActionsProvider )
+{
+}
+
+
+ServiceCurrentTrackActionsCapability::~ServiceCurrentTrackActionsCapability()
+{
+}
+
+QList< QAction * >
+ServiceCurrentTrackActionsCapability::customActions() const
+{
+    return m_currentTrackActionsProvider->currentTrackActions();
+}
+
+
+///////////////////////////////////////////////////////
+
+
+ServiceCustomActionsCapability::ServiceCustomActionsCapability(CustomActionsProvider * customActionsProvider)
+    : Meta::CustomActionsCapability( )
+    , m_customActionsProvider( customActionsProvider )
+{
+}
+
+ServiceCustomActionsCapability::~ServiceCustomActionsCapability()
+{
+}
+
+QList< QAction * > ServiceCustomActionsCapability::customActions() const
+{
+    return m_customActionsProvider->customActions();
+}
+
+///////////////////////////////////////////////////////
 
 
 ServiceSourceInfoCapability::ServiceSourceInfoCapability(SourceInfoProvider * sourceInfoProvider)
@@ -52,4 +132,5 @@ ServiceSourceInfoCapability::scalableEmblem()
 {
     return m_sourceInfoProvider->scalableEmblem();
 }
+
 
