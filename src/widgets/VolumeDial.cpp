@@ -4,10 +4,11 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QToolBar>
+#include <QToolTip>
+
+#include <KLocale>
 
 #include "SvgHandler.h"
-
-#include <QtDebug>
 
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
 , m_muted( false )
@@ -17,15 +18,20 @@ VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
 
 void VolumeDial::mousePressEvent( QMouseEvent *me )
 {
+    m_isDown = true;
+    setCursor( Qt::PointingHandCursor );
     const int dx = width()/4;
     const int dy = height()/4;
     m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
-    if (!m_isClick)
+    if ( !m_isClick )
         QDial::mousePressEvent( me );
 }
 
 void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
 {
+    m_isDown = false;
+    QToolTip::hideText();
+    setCursor( Qt::ArrowCursor );
     if ( !m_isClick )
     {
         QDial::mouseReleaseEvent( me );
@@ -58,7 +64,10 @@ static QColor mix( const QColor &c1, const QColor &c2 )
 void VolumeDial::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    p.drawPixmap(0,0, m_icon[ m_muted ]);
+    int icon = m_muted ? 0 : 3;
+    if (icon && value() < 66)
+        icon = value() < 33 ? 1 : 2;
+    p.drawPixmap(0,0, m_icon[ icon ]);
     QColor c = mix( palette().color( foregroundRole() ), palette().color( QPalette::Highlight ) );
     c.setAlpha( 160 );
     p.setPen( QPen( c, 3, Qt::SolidLine, Qt::RoundCap ) );
@@ -74,8 +83,11 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
     else
         QDial::resizeEvent( re );
 
-    m_icon[0] =  The::svgHandler()->renderSvg( "Volume", width(), height(), "Volume" );
-    m_icon[1] = The::svgHandler()->renderSvg( "Muted", width(), height(), "Muted" );
+    m_icon[0] = The::svgHandler()->renderSvg( "Muted", width(), height(), "Muted" );
+    m_icon[1] =  The::svgHandler()->renderSvg( "Volume_low", width(), height(), "Volume_low" );
+    m_icon[2] =  The::svgHandler()->renderSvg( "Volume_mid", width(), height(), "Volume_mid" );
+    m_icon[3] =  The::svgHandler()->renderSvg( "Volume", width(), height(), "Volume" );
+    
     update();
 }
 
@@ -103,9 +115,14 @@ QSize VolumeDial::sizeHint() const
 
 void VolumeDial::valueChangedSlot( int v )
 {
+    if ( m_isDown )
+        QToolTip::showText( mapToGlobal( rect().bottomLeft() - QPoint( 0, 12 ) ), QString( "%1 %" ).arg( value() ), this );
+
     m_isClick = false;
+
     if ( m_muted == ( v == minimum() ) )
         return;
     m_muted = ( v == minimum() );
+
     update();
 }

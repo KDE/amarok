@@ -37,9 +37,9 @@ protected:
 private slots:
     void valueChangedSlot( int );
 private:
-    QPixmap m_icon[2];
+    QPixmap m_icon[4];
     int m_unmutedValue;
-    bool m_isClick, m_muted;
+    bool m_isClick, m_isDown, m_muted;
 };
 
 #endif

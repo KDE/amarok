@@ -45,7 +45,10 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     
     EngineController *engine = The::engineController();
     setIconSize( QSize( 48, 48 ) );
-    setContentsMargins( 4, 0, 4, 0 );
+
+    QWidget *spacerWidget = new QWidget(this);
+    spacerWidget->setFixedWidth( 9 );
+    addWidget( spacerWidget );
 
     m_playPause = new PlayPauseButton;
     m_playPause->setPlaying( engine->state() == Phonon::PlayingState );
@@ -115,6 +118,10 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     addWidget( m_volume );
     connect ( m_volume, SIGNAL( valueChanged(int) ), engine, SLOT( setVolume(int) ) );
     connect ( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
+
+    spacerWidget = new QWidget(this);
+    spacerWidget->setFixedWidth( 9 );
+    addWidget( spacerWidget );
 
     connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
     connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
