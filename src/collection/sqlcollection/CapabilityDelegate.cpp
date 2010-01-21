@@ -217,7 +217,7 @@ class FindInSourceCapabilityImpl : public Meta::FindInSourceCapability
 
                 AmarokUrl url;
                 url.setCommand( "navigate" );
-                url.setPath( "collection" );
+                url.setPath( "collections" );
                 url.appendArg( "filter", "artist:\"" + artist + "\" AND album:\"" + album + "\"" );
                 url.appendArg( "levels", "artist-album" );
 
