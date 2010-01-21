@@ -23,7 +23,13 @@ namespace Amarok
 {
     class Collection;
 }
-
+/**
+ * @class OneWaySynchronizationJob
+ * Ensures that all tracks that are in the
+ * source collection are present in the target collection as well, i.e.
+ * it adds tracks that are in source but not in target to target. It does
+ * not remove any tracks from target. It is one half of UnionJob.
+*/
 class OneWaySynchronizationJob : public SynchronizationBaseJob
 {
     Q_OBJECT

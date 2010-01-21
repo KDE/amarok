@@ -24,6 +24,13 @@ namespace Amarok
     class Collection;
 }
 
+/**
+ * @class MasterSlaveSynchronizationJob
+ * Ensures that the slave collection
+ * contains exactly the same tracks as the master collection, i.e. it
+ * adds tracks that are in master but not in slave to slave and removes
+ * tracks that are in slave but not in master from slave.
+ */
 class MasterSlaveSynchronizationJob : public SynchronizationBaseJob
 {
     Q_OBJECT
