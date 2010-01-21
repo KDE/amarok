@@ -130,7 +130,6 @@ set(libserviceframework_SRCS
     services/ServiceSqlCollection.cpp
     services/ServiceSqlQueryMaker.cpp
     services/ServiceSqlRegistry.cpp
-    services/ShowInServiceAction.cpp
 )
 
 #####################################################################

@@ -20,7 +20,6 @@
 
 #include "../ServiceMetaBase.h"
 #include "../ServiceAlbumCoverDownloader.h"
-#include "../ShowInServiceAction.h"
 
 #include <QDateTime>
 #include <QList>
@@ -73,7 +72,6 @@ private:
     bool m_downloadMembership;
     QList<QString> m_moods;
     QAction * m_purchaseAction;
-    ShowInServiceAction * m_showInServiceAction;
 
 };
 

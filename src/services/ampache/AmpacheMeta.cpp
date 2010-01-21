@@ -49,13 +49,6 @@ QString AmpacheAlbum::coverUrl( ) const
 QList< QAction * > Meta::AmpacheTrack::currentTrackActions()
 {
     QList< QAction * > actions;
-
-    if ( !m_showInServiceAction )
-    {
-        m_showInServiceAction = new ShowInServiceAction( m_service, this );
-    }
-
-    actions.append( m_showInServiceAction );
     return actions;
 
 }

@@ -20,7 +20,6 @@
 
 #include "../ServiceMetaBase.h"
 #include "../ServiceAlbumCoverDownloader.h"
-#include "../ShowInServiceAction.h"
 
 #include <QDateTime>
 #include <QString>
@@ -98,7 +97,6 @@ private:
     
     QAction * m_downloadCustomAction;
     QAction * m_downloadCurrentTrackAction;
-    ShowInServiceAction * m_showInServiceAction;
 
 };
 
