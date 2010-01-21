@@ -138,9 +138,9 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
             Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
             if ( cac )
             {
-                QList<QAction *> actions = cac->customActions();
+                QList<QAction *> cActions = cac->customActions();
 
-                foreach( QAction *action, actions )
+                foreach( QAction *action, cActions )
                     actions << action;
             }
             delete cac;
