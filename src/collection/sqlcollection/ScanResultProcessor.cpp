@@ -207,6 +207,18 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
     if( !cover.isEmpty() )
         return cover;
 
+    //next: try "folder" (some applications apparently use this)
+    QString folder;
+    foreach( const QString &path, paths )
+    {
+        QString file = QFileInfo( path ).fileName();
+        if( file.contains( "folder", Qt::CaseInsensitive ) ||
+                file.contains( i18nc( "folder", "(Front) Cover of an album" ), Qt::CaseInsensitive ) )
+            folder = path;
+    }
+    if( !folder.isEmpty() )
+        return folder;
+
     //last: try "large"
     QString large;
     foreach( const QString &path, paths )
