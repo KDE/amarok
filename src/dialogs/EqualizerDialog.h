@@ -15,68 +15,56 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "PlaybackConfig.h"
+#ifndef EQUALIZERDIALOG_H
+#define EQUALIZERDIALOG_H
 
-#include "amarokconfig.h"
-#include "Amarok.h"
-#include "ActionClasses.h"
-#include "EngineController.h"
-#include "Debug.h"
+#include "ui_EqualizerDialog.h"
 
-#include <KCMultiDialog>
-#include <kmessagebox.h>
+#include <KDialog>
 
+class EqualizerDialog;
 
-PlaybackConfig::PlaybackConfig( QWidget* parent )
-    : ConfigDialogBase( parent )
-{
-    setupUi( this );
-    kcfg_FadeoutOnExit->setHidden( true );
-
-    connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL( clicked() ), SLOT( configurePhonon() ) );
-    connect( findChild<QPushButton*>( "equalizerButton" ), SIGNAL( clicked() ), SLOT( configureEqualizer() ) );
+namespace The {
+    EqualizerDialog* equalizer();
 }
 
-PlaybackConfig::~PlaybackConfig()
-{}
-
-
-///////////////////////////////////////////////////////////////
-// REIMPLEMENTED METHODS from ConfigDialogBase
-///////////////////////////////////////////////////////////////
-
-bool
-PlaybackConfig::hasChanged()
+class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
 {
-    return false;
-}
+    Q_OBJECT
+    friend EqualizerDialog* The::equalizer();
 
-bool
-PlaybackConfig::isDefault()
-{
-    return false;
-}
+    public:
+        static EqualizerDialog * instance();
+        ~EqualizerDialog();
 
-void
-PlaybackConfig::updateSettings()
-{}
+         static void showOnce();
+
+    private Q_SLOTS:
+        void eqUpdateUI( int index );
+        void eqPresetChanged( int index );
+        void eqBandsChanged();
+        void eqSavePreset();
+        void eqDeletePreset();
+        void eqRestorePreset();
+
+    private:
+        EqualizerDialog();
+        double mValueScale;
+        QVector<QSlider*> mBands;
+        QVector<QLabel*> mBandsValues;
+        QVector<QLabel*> mBandsLabels;
+
+        void eqSetupUI();
+        void eqUpdateToolTips();
+        void eqUpdateLabels( QList<int> & mEqGains );
+        bool eqCfgDeletePreset( QString & mPresetName );
+        bool eqCfgRestorePreset( QString mPresetName );
+        void eqCfgSetPresetVal( QString & mPresetName, QList<int> & mPresetValues);
+        QList<int> eqCfgGetPresetVal ( QString mPresetName );
+        QStringList eqGlobalList();
+
+        static EqualizerDialog *s_instance;
+};
 
 
-///////////////////////////////////////////////////////////////
-// PRIVATE METHODS 
-///////////////////////////////////////////////////////////////
-
-void
-PlaybackConfig::configurePhonon() //SLOT
-{
-    DEBUG_BLOCK
-
-    KCMultiDialog* KCM = new KCMultiDialog();
-    KCM->setWindowTitle( i18n( "Sound System - Amarok" ) );
-    KCM->addModule( "kcm_phonon" );
-    KCM->exec();
-
-    KCM->deleteLater();
-}
-
-#include "PlaybackConfig.moc"
+#endif // EQUALIZERDIALOG_H

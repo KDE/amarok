@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>279</width>
+    <width>304</width>
     <height>252</height>
    </rect>
   </property>
@@ -121,22 +121,6 @@
           </property>
           <property name="text">
            <string>Configure Phonon</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="equalizerButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>The equalizer allows you to alter the sound of your music.</string>
-          </property>
-          <property name="text">
-           <string>Configure Equalizer</string>
           </property>
          </widget>
         </item>

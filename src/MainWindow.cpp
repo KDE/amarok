@@ -46,6 +46,7 @@
 #include "context/ContextView.h"
 #include "context/ToolbarView.h"
 #include "covermanager/CoverManager.h" // for actions
+#include "dialogs/EqualizerDialog.h"
 #include "moodbar/MoodbarManager.h"
 #include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
@@ -586,6 +587,11 @@ void MainWindow::slotShowBookmarkManager() const
     The::bookmarkManager()->showOnce();
 }
 
+void MainWindow::slotShowEqualizer() const
+{
+    The::equalizer()->showOnce();
+}
+
 void
 MainWindow::slotPlayMedia() //SLOT
 {
@@ -756,6 +762,10 @@ MainWindow::createActions()
     action = new KAction( KIcon( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
     ac->addAction( "bookmark_manager", action );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
+
+    action = new KAction( /*KIcon( "bookmarks-organize" ),*/ i18n( "Equalizer" ), this );
+    ac->addAction( "equalizer_dialog", action );
+    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowEqualizer() ) );
 
     action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Playlist Setup" ), this );
     ac->addAction( "bookmark_playlistview", action );
@@ -1001,6 +1011,7 @@ MainWindow::createMenus()
 
     m_toolsMenu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("cover_manager") );
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("equalizer_dialog") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("script_manager") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( Amarok::actionCollection()->action("update_collection") );
@@ -1021,10 +1032,6 @@ MainWindow::createMenus()
     m_settingsMenu->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
     m_settingsMenu->addSeparator();
 #endif
-
-    // Add equalizer action - a list with all equalizer presets available
-    m_settingsMenu->addAction( Amarok::actionCollection()->action("equalizer_mode") );
-    m_settingsMenu->addSeparator();
 
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );

@@ -192,7 +192,6 @@ set(libconfigdialog_SRCS
 
 kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/CollectionConfig.ui
-    configdialog/dialogs/EqualizerConfig.ui
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
@@ -606,6 +605,7 @@ set(amaroklib_LIB_SRCS
     dialogs/CollectionSetup.cpp
     dialogs/DatabaseImporterDialog.cpp
     dialogs/EditFilterDialog.cpp
+    dialogs/EqualizerDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
     dialogs/OrganizeCollectionDialog.cpp
     dialogs/ScriptSelector.cpp
@@ -726,6 +726,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui
     dialogs/EditCoverSearchDialog.ui
     dialogs/EditFilterDialog.ui
+    dialogs/EqualizerDialog.ui
     dialogs/ScriptManagerBase.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui

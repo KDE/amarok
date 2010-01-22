@@ -22,6 +22,7 @@
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
+#include "dialogs/EqualizerDialog.h"
 #include "dbus/CollectionDBusHandler.h"
 #include "Debug.h"
 #include "EngineController.h"
@@ -843,19 +844,6 @@ void App::checkCollectionScannerVersion()  // SLOT
                                      "does not match your Amarok version.</p>"
                                      "<p>Please note that Collection Scanning may not work correctly.</p>" ) );
     }
-}
-
-void App::slotConfigEqualizer() //SLOT
-{
-    // FIXME where is the action for this? There is an EqualizerAction in ActionClasses,
-    // but I can't figure out what that is supposed to do. Who wrote this stuff? --markey
-
-    DEBUG_BLOCK
-
-    EqualizerConfig* equalizer = new EqualizerConfig( 0 );
-    equalizer->exec();
-
-    equalizer->deleteLater();
 }
 
 void App::slotConfigAmarok( const QString& page )
