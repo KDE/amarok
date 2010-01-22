@@ -191,7 +191,7 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
         
         //prioritize "front"
         if( file.contains( "front", Qt::CaseInsensitive ) ||
-                file.contains( i18nc( "front", "Front cover of an album" ), Qt::CaseInsensitive ) )
+                file.contains( i18nc( "Front cover of an album", "front" ), Qt::CaseInsensitive ) )
         {
             goodnessPriority = 0;
             goodPath = path;
@@ -199,7 +199,7 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
 
         //then: try "cover"
         if( file.contains( "cover", Qt::CaseInsensitive ) ||
-                file.contains( i18nc( "cover", "(Front) Cover of an album" ), Qt::CaseInsensitive ) )
+                file.contains( i18nc( "(Front) Cover of an album", "cover" ), Qt::CaseInsensitive ) )
         {
             if( goodnessPriority > 1 )
             {
@@ -210,7 +210,7 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
 
         //next: try "large"
         if( file.contains( "large", Qt::CaseInsensitive ) ||
-                file.contains( i18nc( "large", "(Large front) Cover of an album" ), Qt::CaseInsensitive ) )
+                file.contains( i18nc( "(Large front) Cover of an album", "large" ), Qt::CaseInsensitive ) )
         {
             if( goodnessPriority > 2 )
             {
@@ -221,7 +221,7 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
 
         //next: try "folder" (some applications apparently use this)
         if( file.contains( "folder", Qt::CaseInsensitive ) ||
-                file.contains( i18nc( "folder", "(Front) Cover of an album" ), Qt::CaseInsensitive ) )
+                file.contains( i18nc( "(Front) Cover of an album", "folder" ), Qt::CaseInsensitive ) )
         {
             if( goodnessPriority > 3 )
             {
