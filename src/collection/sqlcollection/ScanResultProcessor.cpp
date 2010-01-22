@@ -183,53 +183,55 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
     //DEBUG_BLOCK
     QStringList files;
 
-    //prioritize "front"
-    QString front;
+    int goodnessPriority = 4;
+    QString goodPath;
     foreach( const QString &path, paths )
     {
         QString file = QFileInfo( path ).fileName();
+        
+        //prioritize "front"
         if( file.contains( "front", Qt::CaseInsensitive ) ||
                 file.contains( i18nc( "front", "Front cover of an album" ), Qt::CaseInsensitive ) )
-            front = path;
-    }
-    if( !front.isEmpty() )
-        return front;
+        {
+            goodnessPriority = 0;
+            goodPath = path;
+        }
 
-    //then: try "cover"
-    QString cover;
-    foreach( const QString &path, paths )
-    {
-        QString file = QFileInfo( path ).fileName();
+        //then: try "cover"
         if( file.contains( "cover", Qt::CaseInsensitive ) ||
                 file.contains( i18nc( "cover", "(Front) Cover of an album" ), Qt::CaseInsensitive ) )
-            cover = path;
-    }
-    if( !cover.isEmpty() )
-        return cover;
+        {
+            if( goodnessPriority > 1 )
+            {
+                goodnessPriority = 1;
+                goodPath = path;
+            }
+        }
 
-    //next: try "folder" (some applications apparently use this)
-    QString folder;
-    foreach( const QString &path, paths )
-    {
-        QString file = QFileInfo( path ).fileName();
-        if( file.contains( "folder", Qt::CaseInsensitive ) ||
-                file.contains( i18nc( "folder", "(Front) Cover of an album" ), Qt::CaseInsensitive ) )
-            folder = path;
-    }
-    if( !folder.isEmpty() )
-        return folder;
-
-    //last: try "large"
-    QString large;
-    foreach( const QString &path, paths )
-    {
-        QString file = QFileInfo( path ).fileName();
+        //next: try "large"
         if( file.contains( "large", Qt::CaseInsensitive ) ||
                 file.contains( i18nc( "large", "(Large front) Cover of an album" ), Qt::CaseInsensitive ) )
-            large = path;
+        {
+            if( goodnessPriority > 2 )
+            {
+                goodnessPriority = 2;
+                goodPath = path;
+            }
+        }
+
+        //next: try "folder" (some applications apparently use this)
+        if( file.contains( "folder", Qt::CaseInsensitive ) ||
+                file.contains( i18nc( "folder", "(Front) Cover of an album" ), Qt::CaseInsensitive ) )
+        {
+            if( goodnessPriority > 3 )
+            {
+                goodnessPriority = 3;
+                goodPath = path;
+            }
+        }
     }
-    if( !large.isEmpty() )
-        return large;
+    if( !goodPath.isEmpty() )
+        return goodPath;
 
     //finally: pick largest image -- often a high-quality blowup of the front
     //so that people can print it out
