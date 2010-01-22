@@ -30,6 +30,8 @@
 #include <QGraphicsScene>
 #include <QDesktopServices>
 
+#define NBR_MAX_PARTICIPANT 5
+
 UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString participants, KUrl url, KUrl image, QWidget* parent): QWidget( parent )
 {
     m_image = new QLabel( this );
@@ -40,7 +42,6 @@ UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString
 
     m_participants->setWordWrap( true );
     m_name->setWordWrap( true );
-
 
     setName( name );
     setDate( date );
@@ -126,7 +127,15 @@ UpcomingEventsWidget::loadImage( KJob * job ) // SLOT
 void
 UpcomingEventsWidget::setParticipants( const QString &participants )
 {
-    m_participants->setText( participants );
+    QStringList listbuff = participants.split(" - ");
+    QString buffer("");
+    for( int i = 0; i < NBR_MAX_PARTICIPANT && i < listbuff.size(); i++ )
+    {
+        buffer += listbuff.at( i );
+        if( i < NBR_MAX_PARTICIPANT - 1 && i < listbuff.size()-1 ) buffer += " - ";
+    }
+    if( listbuff.size() > NBR_MAX_PARTICIPANT ) buffer += "...";
+    m_participants->setText( buffer );
     m_participants->setAttribute( Qt::WA_TranslucentBackground );
 }
 
