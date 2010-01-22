@@ -23,7 +23,7 @@
          <string>Check to enable the On-Screen-Display. The OSD briefly displays track data when a new track is played.</string>
         </property>
         <property name="title">
-         <string>&amp;Use On-Screen-Display</string>
+         <string>Use &amp;On-Screen-Display</string>
         </property>
         <property name="flat">
          <bool>true</bool>
@@ -212,7 +212,7 @@
       <item row="1" column="0">
        <widget class="QCheckBox" name="kcfg_KNotifyEnabled">
         <property name="text">
-         <string>Use KNotify</string>
+         <string>Use &amp;KNotify</string>
         </property>
        </widget>
       </item>
