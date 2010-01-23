@@ -30,15 +30,13 @@ SECTION   = "multimedia"
 def custom
     # Change version
     src_dir
-    Dir.chdir("src")
-    file = File.new( "Amarok.h", File::RDWR )
+    file = File.new( "Version.h", File::RDWR )
     str = file.read
     file.rewind
     file.truncate( 0 )
     str.sub!( /APP_VERSION \".*\"/, "APP_VERSION \"#{@version}\"" )
     file << str
     file.close
-    Dir.chdir("..") #amarok
 
     remover([
         "Amarok.kdev4","release_scripts","supplementary_scripts","HACKING",
