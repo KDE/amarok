@@ -372,7 +372,7 @@ if [ "$?" != "0" ]; then #If the command didn't finish successfully
 fi
 if [ "$USE_ID" = "1" ]; then
   #Append build ID (date and time with no punctuation) to version
-  sed -re "s/^#define APP_VERSION \"(.*)-SVN.*\"/#define APP_VERSION \"\1-SVN-`date +%y%m%d%H%M`\"/" -i amarok/src/amarok.h
+  sed -re "s/^#define AMAROK_VERSION \"(.*)-SVN.*\"/#define AMAROK_VERSION \"\1-SVN-`date +%y%m%d%H%M`\"/" -i amarok/src/amarok.h
   echo "Appended build ID to version number."
 fi
 

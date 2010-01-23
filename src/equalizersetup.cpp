@@ -307,7 +307,7 @@ EqualizerSetup::savePresets()
     QDomDocument doc;
     QDomElement e = doc.createElement("equalizerpresets");
     e.setAttribute( "product", "Amarok" );
-    e.setAttribute( "version", APP_VERSION );
+    e.setAttribute( "version", AMAROK_VERSION );
     e.setAttribute( "formatversion", "1.1" );
 
     doc.appendChild( e );

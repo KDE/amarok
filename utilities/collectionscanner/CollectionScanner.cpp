@@ -21,7 +21,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "Version.h"  // for APP_VERSION
+#include "Version.h"  // for AMAROK_VERSION
 #include "CollectionScanner.h"
 #include "AFTUtility.h"
 
@@ -1009,7 +1009,7 @@ CollectionScanner::readArgs()
 void
 CollectionScanner::printVersionAndExit()
 {
-    std::cout << APP_VERSION << endl;
+    std::cout << AMAROK_VERSION << endl;
 
     // Nothing else to do, so we exit directly
     ::exit( 0 );

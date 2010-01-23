@@ -34,7 +34,7 @@ def custom
     str = file.read
     file.rewind
     file.truncate( 0 )
-    str.sub!( /APP_VERSION \".*\"/, "APP_VERSION \"#{@version}\"" )
+    str.sub!( /AMAROK_VERSION \".*\"/, "AMAROK_VERSION \"#{@version}\"" )
     file << str
     file.close
 

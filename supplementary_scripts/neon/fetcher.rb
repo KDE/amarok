@@ -104,7 +104,7 @@ def fetchAmarok()
     str = file.read()
     file.rewind()
     file.truncate( 0 )
-    str.sub!( /APP_VERSION \".*\"/, "APP_VERSION \"#{AMAROKVERSION}\"" )
+    str.sub!( /AMAROK_VERSION \".*\"/, "AMAROK_VERSION \"#{AMAROKVERSION}\"" )
     file << str
     file.close()
 

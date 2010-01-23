@@ -116,7 +116,7 @@ extern void setupEventHandler_mac(long);
 #endif // DEBUG
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
-    ki18n( "Amarok" ), APP_VERSION,
+    ki18n( "Amarok" ), AMAROK_VERSION,
     ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
     ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2010, The Amarok Development Squad" ),
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
@@ -131,7 +131,7 @@ App::App()
     PERF_LOG( "Begin Application ctor" )
 
     // required for last.fm plugin to grab app version
-    setApplicationVersion( APP_VERSION );
+    setApplicationVersion( AMAROK_VERSION );
 
     if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
     {
@@ -838,7 +838,7 @@ void App::checkCollectionScannerVersion()  // SLOT
 
     const QString version = scanner.readAllStandardOutput().trimmed();
 
-    if( version != APP_VERSION  )
+    if( version != AMAROK_VERSION  )
     {
         KMessageBox::error( 0, i18n( "<p>The version of the 'amarokcollectionscanner' tool\n"
                                      "does not match your Amarok version.</p>"
