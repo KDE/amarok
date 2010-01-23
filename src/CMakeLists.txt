@@ -25,6 +25,7 @@ if( STRIGI_FOUND )
 endif( STRIGI_FOUND )
 
 include_directories(
+    ${CMAKE_SOURCE_DIR}
     aboutdialog
     aboutdialog/libattica-ocsclient
     amarokurls

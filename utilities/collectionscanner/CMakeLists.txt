@@ -1,6 +1,6 @@
 
 include_directories( ../
-                     ../../src/
+                     ${CMAKE_SOURCE_DIR}
                      charset-detector/include
                      charset-detector/src
                      charset-detector/src/tables

@@ -21,7 +21,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "Amarok.h"  // for APP_VERSION
+#include "Version.h"  // for APP_VERSION
 #include "CollectionScanner.h"
 #include "AFTUtility.h"
 
