@@ -1,6 +1,5 @@
 
 include_directories( ../
-                     ../../src/
                      charset-detector/include
                      charset-detector/src
                      charset-detector/src/tables
