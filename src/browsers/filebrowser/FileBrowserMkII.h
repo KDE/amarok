@@ -19,8 +19,11 @@
 
 #include "BrowserCategory.h"
 #include "DirectoryLoader.h"
+#include "widgets/SearchWidget.h"
 
 #include <QFileSystemModel>
+#include <QSortFilterProxyModel>
+#include <QTimer>
 
 class FileBrowserMkII : public BrowserCategory
 {
@@ -30,10 +33,18 @@ public:
 
 protected slots:
     void itemActivated( const QModelIndex &index );
+    
+    void  slotSetFilterTimeout();
+    void slotFilterNow();
 
 private:
-    QFileSystemModel * m_fileSystemModel;
-    DirectoryLoader * m_directoryLoader;
+    SearchWidget             *m_searchWidget;
+    QFileSystemModel         *m_fileSystemModel;
+    QSortFilterProxyModel    *m_proxyModel;
+    DirectoryLoader          *m_directoryLoader;
+
+    QTimer                    m_filterTimer;
+    QString                   m_currentFilter;
         
 };
 

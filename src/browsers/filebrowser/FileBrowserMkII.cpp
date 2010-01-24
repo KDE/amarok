@@ -21,6 +21,8 @@
 #include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
+#include <KLineEdit>
+
 #include <QDir>
 #include <QFileSystemModel>
 
@@ -28,16 +30,35 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
     : BrowserCategory( name, parent )
     , m_directoryLoader( 0 )
 {
+
+    DEBUG_BLOCK;
+
+    m_searchWidget = new SearchWidget( this, this, false );
+    m_searchWidget->setClickMessage( i18n( "Filter Music Sources" ) );
+
+    m_filterTimer.setSingleShot( true );
+    connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
+    
     m_fileSystemModel = new QFileSystemModel( this );
-    m_fileSystemModel->setRootPath( QDir::rootPath() );
+    m_fileSystemModel->setRootPath( QDir::homePath() );
+    m_fileSystemModel->setNameFilterDisables( false );
+
+    debug() << "home path: " <<  QDir::homePath();
 
     Amarok::PrettyTreeView * treeView = new Amarok::PrettyTreeView( this );
+
+    debug() << "root index: " << m_fileSystemModel->index( QDir::homePath() ).row();
+    
+
     treeView->setSortingEnabled( true );
+    treeView->sortByColumn ( 0, Qt::AscendingOrder );
     treeView->setFrameStyle( QFrame::NoFrame );
     treeView->setModel( m_fileSystemModel );
     treeView->hideColumn( 1 );
     treeView->hideColumn( 2 );
     treeView->hideColumn( 3 );
+
+    treeView->setRootIndex( m_fileSystemModel->index( QDir::homePath() ) );
 
     connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
 }
@@ -66,7 +87,26 @@ void FileBrowserMkII::itemActivated( const QModelIndex &index )
         {
             The::playlistController()->insertOptioned( urls, Playlist::AppendAndPlay );
         }
-
     }
+}
+
+void FileBrowserMkII::slotSetFilterTimeout()
+{
+    KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
+    if( lineEdit )
+    {
+        m_currentFilter = lineEdit->text();
+        m_filterTimer.stop();
+        m_filterTimer.start( 500 );
+    }
+}
+
+void FileBrowserMkII::slotFilterNow()
+{
+    m_proxyModel->setFilterFixedString( m_currentFilter );
+
+    QStringList filters;
+    filters << m_currentFilter;
     
+    m_fileSystemModel->setNameFilters( filters );
 }
