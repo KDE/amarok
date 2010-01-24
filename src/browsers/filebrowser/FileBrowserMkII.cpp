@@ -16,21 +16,25 @@
 
 #include "FileBrowserMkII.h"
 
+#include "Debug.h"
 #include "EngineController.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
- #include <QFileSystemModel>
+#include <QDir>
+#include <QFileSystemModel>
 
 FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
     : BrowserCategory( name, parent )
+    , m_directoryLoader( 0 )
 {
     m_fileSystemModel = new QFileSystemModel( this );
-    //m_fileSystemModel->setRootPath( "/home/nhn/" );
+    m_fileSystemModel->setRootPath( QDir::rootPath() );
 
     Amarok::PrettyTreeView * treeView = new Amarok::PrettyTreeView( this );
+    treeView->setSortingEnabled( true );
+    treeView->setFrameStyle( QFrame::NoFrame );
     treeView->setModel( m_fileSystemModel );
-    treeView->setHeaderHidden( true );
     treeView->hideColumn( 1 );
     treeView->hideColumn( 2 );
     treeView->hideColumn( 3 );
@@ -41,13 +45,28 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 
 void FileBrowserMkII::itemActivated( const QModelIndex &index )
 {
+    DEBUG_BLOCK
     KUrl filePath = KUrl( m_fileSystemModel->filePath( index ) );
 
-    if( EngineController::canDecode( filePath ) )
+    debug() << "activated url: " << filePath.url();
+    debug() << "filename: " << filePath.fileName();
+
+    QList<KUrl> urls;
+    urls << filePath;
+    if( m_fileSystemModel->isDir( index ) ) {
+        if( m_directoryLoader == 0 )
+            m_directoryLoader = new DirectoryLoader();
+
+        m_directoryLoader->insertAtRow( 99999999 ); //lazy way of saying last one...
+        m_directoryLoader->init( urls );
+    }
+    else
     {
-        QList<KUrl> urls;
-        urls << filePath;
-        The::playlistController()->insertOptioned( urls, Playlist::AppendAndPlay );
+        if( EngineController::canDecode( filePath ) )
+        {
+            The::playlistController()->insertOptioned( urls, Playlist::AppendAndPlay );
+        }
+
     }
     
 }

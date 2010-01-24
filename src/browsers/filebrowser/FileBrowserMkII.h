@@ -18,6 +18,7 @@
 #define FILEBROWSERMKII_H
 
 #include "BrowserCategory.h"
+#include "DirectoryLoader.h"
 
 #include <QFileSystemModel>
 
@@ -32,6 +33,7 @@ protected slots:
 
 private:
     QFileSystemModel * m_fileSystemModel;
+    DirectoryLoader * m_directoryLoader;
         
 };
 
