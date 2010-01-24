@@ -33,13 +33,14 @@
 
 #include <QtDebug>
 
-// NOTICE shall be 10, but there're the time labels :-(
-static const int sliderStretch = 16;
+// NOTICE shall be 10, but there's the time label :-(
+static const int sliderStretch = 17;
 static const QString promoString = i18n( "Amarok your Music" );
 
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
     , EngineObserver( The::engineController() )
+    , m_lastTime( -1 )
 {
     setObjectName( "Toolbar_3G" );
     
@@ -64,7 +65,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_prev->setAnimated( false );
     m_prev->setOpacity( 128 );
     m_prev->installEventFilter( this );
-    m_prev->setAlign( Qt::AlignLeft );
+    m_prev->setAlign( Qt::AlignCenter );
     connect ( m_prev, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
 
     m_current = new AnimatedLabelStack( QStringList( promoString ), info );
@@ -75,7 +76,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_next->setAnimated( false );
     m_next->setOpacity( 160 );
     m_next->installEventFilter( this );
-    m_next->setAlign( Qt::AlignRight );
+    m_next->setAlign( Qt::AlignCenter );
     connect ( m_next, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( next() ) );
 
     hl->addWidget( m_prev );
@@ -92,7 +93,6 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_progressLayout->addWidget( m_timeLabel = new QLabel( this ) );
     m_progressLayout->setAlignment( m_timeLabel, Qt::AlignVCenter | Qt::AlignRight );
     m_timeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
-    m_timeLabel->setMinimumWidth( QFontMetrics( m_timeLabel->font() ).width( "33:33:33" ) );
 
     m_progressLayout->addWidget( m_slider = new Amarok::TimeSlider( this ) );
     m_progressLayout->setStretchFactor( m_slider , sliderStretch );
@@ -161,7 +161,8 @@ Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldStat
         m_playPause->setPlaying( true );
         break;
     case Phonon::StoppedState:
-        m_timeLabel->setText( QString() );
+        setLabelTime( -1 );
+        // fall through
     case Phonon::PausedState:
         m_playPause->setPlaying( false );
         break;
@@ -169,7 +170,7 @@ Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldStat
         if ( !The::engineController()->currentTrack() ||
              ( m_currentUrlId != The::engineController()->currentTrack()->uidUrl() ) )
         {
-            m_timeLabel->setText( QString() );
+            setLabelTime( -1 );
             m_slider->setEnabled( false );
         }
         break;
@@ -200,9 +201,9 @@ static QStringList metadata( Meta::TrackPtr track )
             QString title = track->prettyName();
 //             qDebug() << track->prettyUrl();
             if ( title.length() > 50 ||
-                 HAS_TAG(artist) && title.CONTAINS_TAG(artist) ||
-                 HAS_TAG(composer) && title.CONTAINS_TAG(composer) ||
-                 HAS_TAG(album) && title.CONTAINS_TAG(album) )
+                 (HAS_TAG(artist) && title.CONTAINS_TAG(artist)) ||
+                 (HAS_TAG(composer) && title.CONTAINS_TAG(composer)) ||
+                 (HAS_TAG(album) && title.CONTAINS_TAG(album)) )
             {
                 list << title.split( rx, QString::SkipEmptyParts );
             }
@@ -294,7 +295,7 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
 {
     if ( !track )
         m_currentUrlId.clear();
-    m_timeLabel->setText( QString() );
+    setLabelTime( -1 );
     setActionsFrom( track );
     if ( track )
     {
@@ -339,9 +340,12 @@ Toolbar_3::resizeEvent( QResizeEvent *ev )
         const int limit = 640;
         if ( ev->size().width() > limit )
             m_progressLayout->setStretchFactor( m_slider, sliderStretch );
-        int s = limit/ev->size().width();
-        s *= s*s*sliderStretch;
-        m_progressLayout->setStretchFactor( m_slider, qMax( sliderStretch, s ) );
+        else
+        {
+            int s = qRound(float(limit)/ev->size().width());
+            s *= s*s*sliderStretch;
+            m_progressLayout->setStretchFactor( m_slider, qMax( sliderStretch, s ) );
+        }
     }
 }
 
@@ -350,13 +354,13 @@ Toolbar_3::setActionsFrom( Meta::TrackPtr track )
 {
     m_trackActionBar->clear();
 
-    foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
+    foreach ( QAction* action, The::globalCurrentTrackActions()->actions() )
         m_trackActionBar->addAction( action );
     
-    if( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    if ( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
     {
         Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
-        if( cac )
+        if ( cac )
         {
             QList<QAction *> currentTrackActions = cac->customActions();
             foreach( QAction *action, currentTrackActions )
@@ -366,9 +370,46 @@ Toolbar_3::setActionsFrom( Meta::TrackPtr track )
     }
 }
 
+const char * timeString[4] = { "3:33", "33:33", "3:33:33", "33:33:33" };
+
+static inline int
+timeFrame( int secs )
+{
+    if ( secs < 10*60 ) // 9:59
+        return 0;
+    if ( secs < 60*60 ) // 59:59
+        return 1;
+    if ( secs < 10*60*60 ) // 9:59:59
+        return 2;
+    return 3; // 99:59:59
+}
+
 void Toolbar_3::setLabelTime( int ms )
 {
-    m_timeLabel->setText( Meta::secToPrettyTime( ms/1000 ) );
+    if ( ms < 0 ) // clear
+    {
+        m_timeLabel->setText( QString() );
+        m_timeLabel->setMinimumWidth( 0 );
+        m_trackActionBar->setMinimumWidth( 0 );
+        m_lastTime = -1;
+    }
+    else
+    {
+        const int secs = ms/1000;
+        if ( secs == m_lastTime )
+            return;
+
+        const int tf = timeFrame( secs );
+        if ( tf != timeFrame( m_lastTime ) )
+        {
+            const int w = QFontMetrics( m_timeLabel->font() ).width( timeString[tf] );
+            m_timeLabel->setMinimumWidth( w );
+            m_trackActionBar->setMinimumWidth( w );
+        }
+        
+        m_lastTime = secs;
+        m_timeLabel->setText( Meta::secToPrettyTime( secs ) );
+    }
 }
 
 void

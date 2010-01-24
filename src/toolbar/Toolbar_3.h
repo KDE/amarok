@@ -60,6 +60,7 @@ private:
     QBoxLayout *m_progressLayout;
     VolumeDial *m_volume;
     QString m_currentUrlId;
+    int m_lastTime;
 };
 
 #endif

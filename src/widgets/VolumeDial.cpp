@@ -11,6 +11,7 @@
 #include "SvgHandler.h"
 
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
+, m_isDown( false )
 , m_muted( false )
 {
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
