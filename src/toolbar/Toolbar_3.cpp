@@ -26,6 +26,7 @@
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMouseEvent>
 #include <QResizeEvent>
 #include <QSlider>
 #include <QTimer>
@@ -58,7 +59,6 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     connect ( m_playPause, SIGNAL( toggled(bool) ), this, SLOT( setPlaying(bool) ) );
 
     QWidget *info = new QWidget(this);
-    QHBoxLayout *hl = new QHBoxLayout;
     QVBoxLayout *vl = new QVBoxLayout( info );
     
     m_prev = new AnimatedLabelStack(QStringList(), info);
@@ -70,6 +70,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
 
     m_current = new AnimatedLabelStack( QStringList( promoString ), info );
     m_current->setBold( true );
+    m_current->installEventFilter( this );
     connect ( m_current, SIGNAL( clicked(const QString&) ), this, SLOT( filter(const QString&) ) );
 
     m_next = new AnimatedLabelStack(QStringList(), info);
@@ -79,10 +80,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_next->setAlign( Qt::AlignCenter );
     connect ( m_next, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( next() ) );
 
-    hl->addWidget( m_prev );
-    hl->addWidget( m_current );
-    hl->addWidget( m_next );
-    vl->addLayout( hl );
+    vl->addItem( m_trackBarSpacer = new QSpacerItem(0, m_current->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
 
     connect ( m_prev, SIGNAL( pulsing(bool) ), m_current, SLOT( setStill(bool) ) );
     connect ( m_next, SIGNAL( pulsing(bool) ), m_current, SLOT( setStill(bool) ) );
@@ -297,6 +295,7 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
         m_currentUrlId.clear();
     setLabelTime( -1 );
     setActionsFrom( track );
+    m_trackBarSpacer->changeSize(0, m_current->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     if ( track )
     {
         m_current->setData( metadata( track ) );
@@ -337,9 +336,18 @@ Toolbar_3::resizeEvent( QResizeEvent *ev )
 {
     if ( ev->size().width() > 0 )
     {
+        QRect r = m_trackBarSpacer->geometry();
+        r.setWidth( r.width() / 3);
+        m_prev->setGeometry( r );
+        r.moveLeft( r.right() );
+        m_current->setGeometry( r );
+        r.moveLeft( r.right() );
+        m_next->setGeometry( r );
         const int limit = 640;
         if ( ev->size().width() > limit )
+        {
             m_progressLayout->setStretchFactor( m_slider, sliderStretch );
+        }
         else
         {
             int s = qRound(float(limit)/ev->size().width());
@@ -424,6 +432,82 @@ Toolbar_3::setPlaying( bool on )
 bool
 Toolbar_3::eventFilter( QObject *o, QEvent *ev )
 {
+    if ( ev->type() == QEvent::MouseMove )
+    {
+        QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
+        if ( mev->buttons() & Qt::LeftButton )
+        if ( o == m_current || o == m_prev || o == m_next )
+        {
+            const int x = mev->globalPos().x();
+            int d = x - m_lastDragX;
+            m_lastDragX = x;
+            const int globalDist = qAbs( x - m_dragStartX );
+            if ( globalDist > m_prev->width() )
+                return false; // constrain to one item width
+
+            m_current->setGeometry( m_current->geometry().translated( d, 0 ) );
+            m_prev->setGeometry( m_prev->geometry().translated( d, 0 ) );
+            m_next->setGeometry( m_next->geometry().translated( d, 0 ) );
+        }
+        return false;
+    }
+    if ( ev->type() == QEvent::MouseButtonPress )
+    {
+        QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
+        if ( mev->button() == Qt::LeftButton )
+        if ( o == m_current || o == m_prev || o == m_next )
+        {
+            static_cast<QWidget*>(o)->setCursor( Qt::SizeHorCursor );
+            m_lastDragX = m_dragStartX = mev->globalPos().x();
+        }
+        return false;
+    }
+    if ( ev->type() == QEvent::MouseButtonRelease )
+    {
+        QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
+        if ( mev->button() == Qt::LeftButton )
+        if ( o == m_current || o == m_prev || o == m_next )
+        {
+            const int x = mev->globalPos().x();
+            const int d = m_dragStartX - x;
+            const int limit = m_prev->width()/2; // snap on half item width
+
+            // reset positions
+            QRect r = m_trackBarSpacer->geometry();
+            r.setWidth( r.width() / 3);
+            m_prev->setGeometry( r );
+            r.moveLeft( r.right() );
+            m_current->setGeometry( r );
+            r.moveLeft( r.right() );
+            m_next->setGeometry( r );
+
+            // reset cursor
+            AnimatedLabelStack *l = static_cast<AnimatedLabelStack*>(o);
+            l->setCursor( l->data().isEmpty() ? Qt::ArrowCursor : Qt::PointingHandCursor );
+
+            // if this was a _real_ drag, silently release the mouse
+            const bool silentRelease = qAbs(d) > 25;
+            if ( silentRelease )
+            {   // this is a drag, release secretly
+                o->blockSignals( true );
+                o->removeEventFilter( this );
+                QMouseEvent mre( QEvent::MouseButtonRelease, mev->pos(), mev->globalPos(),
+                                 Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+                                 QCoreApplication::sendEvent( o, &mre );
+                o->installEventFilter( this );
+                o->blockSignals( false );
+            }
+
+            // if moved "far enough" jump to prev/next track
+            if ( d > limit )
+                The::playlistActions()->next();
+            else if ( d < -limit )
+                The::playlistActions()->back();
+
+            return silentRelease;
+        }
+        return false;
+    }
     if ( ev->type() == QEvent::Enter )
     {
         if (o == m_next)

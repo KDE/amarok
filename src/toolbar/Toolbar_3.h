@@ -21,6 +21,7 @@ class AnimatedLabelStack;
 class PlayPauseButton;
 class QBoxLayout;
 class QLabel;
+class QSpacerItem;
 class VolumeDial;
 
 namespace Amarok { class TimeSlider; }
@@ -53,6 +54,7 @@ private slots:
 
 private:
     AnimatedLabelStack *m_current, *m_next, *m_prev;
+    QSpacerItem *m_trackBarSpacer;
     PlayPauseButton *m_playPause;
     QLabel *m_timeLabel;
     Amarok::TimeSlider *m_slider;
@@ -60,7 +62,7 @@ private:
     QBoxLayout *m_progressLayout;
     VolumeDial *m_volume;
     QString m_currentUrlId;
-    int m_lastTime;
+    int m_lastTime, m_dragStartX, m_lastDragX;
 };
 
 #endif
