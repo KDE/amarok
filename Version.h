@@ -20,7 +20,7 @@
 
 /// Update this when necessary
 //#ifdef CURRENT_GIT_VERSION
-//#define APP_VERSION #CURRENT_GIT_VERSION
+//#define AMAROK_VERSION #CURRENT_GIT_VERSION
 //#else
 #define AMAROK_VERSION "2.2-GIT"
 //#endif
