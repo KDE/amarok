@@ -61,6 +61,7 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
     treeView->setRootIndex( m_fileSystemModel->index( QDir::homePath() ) );
 
     treeView->setDragEnabled( true );
+    treeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
     connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
 }
