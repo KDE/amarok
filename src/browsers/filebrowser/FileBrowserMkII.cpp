@@ -34,7 +34,7 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
     DEBUG_BLOCK;
 
     m_searchWidget = new SearchWidget( this, this, false );
-    m_searchWidget->setClickMessage( i18n( "Filter Music Sources" ) );
+    m_searchWidget->setClickMessage( i18n( "Filter Files" ) );
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
