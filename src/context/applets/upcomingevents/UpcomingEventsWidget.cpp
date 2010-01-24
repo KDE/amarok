@@ -16,7 +16,6 @@
 
 #include "UpcomingEventsWidget.h"
 
-
 #include <QDateTime>
 #include <QGridLayout>
 #include <QLabel>
@@ -31,8 +30,8 @@
 #include <QDesktopServices>
 
 #define NBR_MAX_PARTICIPANT 5
-UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString location, QString participants, KUrl url, KUrl image, QWidget* parent): QWidget( parent )
 
+UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString location, QString participants, KUrl url, KUrl image, QWidget* parent): QWidget( parent )
 {
     m_image = new QLabel( this );
     m_participants = new QLabel( this );
@@ -165,6 +164,10 @@ UpcomingEventsWidget::setLocation( const QString &location )
 void
 UpcomingEventsWidget::setName( const QString &name )
 {
+    QFont nameFont;
+    nameFont.setBold( true );
+    nameFont.setPointSize( m_name->font().pointSize() + 2 );
+    m_name->setFont( nameFont );
     m_name->setText( name );
     m_name->setAttribute( Qt::WA_TranslucentBackground );
 }
