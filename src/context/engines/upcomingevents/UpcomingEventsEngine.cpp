@@ -97,9 +97,9 @@ void UpcomingEventsEngine::update()
 
     // We've got a new track, great, let's fetch some info from UpcomingEvents !
     m_triedRefinedSearch = 0;
-    QString artistName;
-    static QString lastArtistName;
 
+    static QString lastArtistName;
+    m_artistName = "";
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
 
@@ -119,22 +119,22 @@ void UpcomingEventsEngine::update()
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                     ( currentTrack->playableUrl().protocol() == "daap" ) ||
                     !The::engineController()->isStream() )
-                artistName = currentTrack->artist()->name();
+                m_artistName = currentTrack->artist()->name();
             else
-                artistName = currentTrack->artist()->prettyName();
+                m_artistName = currentTrack->artist()->prettyName();
         }
-        if (artistName.compare( "") == 0)
+        if (m_artistName.compare( "") == 0)
             setData( "upcomingEvents", "artist", "Unknown artist" );
         else
-            setData( "upcomingEvents", "artist", artistName );
+            setData( "upcomingEvents", "artist", m_artistName );
     }
 
     QPixmap cover = m_currentTrack->album()->image( 156 );
 
-    if( artistName != lastArtistName )
+    if( m_artistName != lastArtistName )
     {
-        upcomingEventsRequest( artistName );
-        lastArtistName = artistName;
+        upcomingEventsRequest( m_artistName );
+        lastArtistName = m_artistName;
     }
 }
 
@@ -211,7 +211,7 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
             QDomElement currentArtistElement = currentArtistNode.toElement();
             if( currentArtistElement.tagName() == "artist" )
             {
-                if( !currentArtistElement.isNull() )
+                if( !currentArtistElement.isNull() && currentArtistElement.text() != m_artistName )
                 {
                     artists.append( currentArtistElement.text() );
                 }
