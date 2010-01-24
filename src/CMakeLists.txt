@@ -616,6 +616,7 @@ set(amaroklib_LIB_SRCS
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
     browsers/filebrowser/FileBrowser.cpp
+    browsers/filebrowser/FileBrowserMkII.cpp
     browsers/filebrowser/MyDirOperator.cpp
     browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp

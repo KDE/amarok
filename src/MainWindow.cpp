@@ -39,6 +39,7 @@
 #include "amarokurls/BookmarkManager.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
+#include "browsers/filebrowser/FileBrowserMkII.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 #include "collection/CollectionManager.h"
@@ -351,6 +352,18 @@ MainWindow::init()
         fileBrowser->setIcon( KIcon( "folder-amarok" ) );
         fileBrowser->setShortDescription( i18n( "Browse local hard drive for content" ) );
         m_browsers->list()->addCategory( fileBrowser );
+
+
+
+        //new experimental and _very_ simple file browser
+        FileBrowserMkII * fileBrowserMkII = new FileBrowserMkII( "filesmkii", 0 );
+        fileBrowserMkII->setPrettyName( i18n("Files MkII") );
+        fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
+        fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
+        m_browsers->list()->addCategory( fileBrowserMkII );
+
+
+        
         PERF_LOG( "Created FileBrowser" )
 
         PERF_LOG( "Initialising ServicePluginManager" )
