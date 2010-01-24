@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
+ * Copyright (c) 2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -30,13 +30,14 @@
 #include <QGraphicsScene>
 #include <QDesktopServices>
 
-UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString participants, KUrl url, KUrl image, QWidget* parent): QWidget( parent )
+UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString location, QString participants, KUrl url, KUrl image, QWidget* parent): QWidget( parent )
 {
     m_image = new QLabel( this );
     m_participants = new QLabel( this );
     m_date = new QLabel( this );
     m_name = new QLabel( this );
     m_url = new QLabel( this );
+    m_location = new QLabel( this );
 
     m_participants->setWordWrap( true );
     m_name->setWordWrap( true );
@@ -47,16 +48,18 @@ UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString
     setParticipants( participants );
     setUrl( url );
     setImage( image );
+    setLocation( location );
 
     m_layout = new QGridLayout;
-    m_layout->addWidget( m_image, 0, 0, 4, 1 );
+    m_layout->addWidget( m_image, 0, 0, 5, 1 );
     m_layout->addWidget( m_name, 0, 1, 1, 1 );
     m_layout->addWidget( m_participants, 1, 1, 1, 1 );
-    m_layout->addWidget( m_date, 2, 1, 1, 1 );
-    m_layout->addWidget( m_url, 3, 1, 1, 1 );
+    m_layout->addWidget( m_location, 2, 1, 1, 1 );
+    m_layout->addWidget( m_date, 3, 1, 1, 1 );
+    m_layout->addWidget( m_url, 4, 1, 1, 1 );
 
     setLayout( m_layout );
-    connect(m_url,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
+    connect( m_url, SIGNAL( linkActivated( QString ) ), this, SLOT( openUrl( QString ) ) );
 }
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
@@ -85,6 +88,12 @@ QLabel *
 UpcomingEventsWidget::name() const
 {
     return m_name;
+}
+
+QLabel *
+UpcomingEventsWidget::location() const
+{
+    return m_location;
 }
 
 QLabel *
@@ -135,6 +144,13 @@ UpcomingEventsWidget::setDate( const QDateTime &date )
 {
     m_date->setText( date.toString( Qt::DefaultLocaleLongDate ) );
     m_date->setAttribute( Qt::WA_TranslucentBackground );
+}
+
+void
+UpcomingEventsWidget::setLocation( const QString &location )
+{
+    m_location->setText( location );
+    m_location->setAttribute( Qt::WA_TranslucentBackground );
 }
 
 void

@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
- * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
+ * Copyright (c) 2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -35,6 +35,7 @@ LastFmEvent::LastFmEvent( const LastFmEvent& event)
     m_date = event.m_date;
     m_smallImageUrl = event.m_smallImageUrl;
     m_url = event.m_url;
+    m_location = event.m_location;
 }
 
 /**
@@ -42,8 +43,8 @@ LastFmEvent::LastFmEvent( const LastFmEvent& event)
  */
 LastFmEvent::~LastFmEvent() {}
 
-LastFmEvent::LastFmEvent(QStringList artists, QString name, QDateTime date, KUrl smallImageUrl, KUrl url)
-    : m_artists(artists), m_name(name), m_date(date), m_smallImageUrl(smallImageUrl), m_url(url)
+LastFmEvent::LastFmEvent(QStringList artists, QString name, QString location, QDateTime date, KUrl smallImageUrl, KUrl url)
+    : m_artists(artists), m_name(name), m_date(date), m_location(location), m_smallImageUrl(smallImageUrl), m_url(url)
 {
     static bool metaTypeRegistered = false;
     if (!metaTypeRegistered)
@@ -66,6 +67,11 @@ QDateTime LastFmEvent::date() const
 QString LastFmEvent::name() const
 {
     return m_name;
+}
+
+QString LastFmEvent::location() const
+{
+    return m_location;
 }
 
 KUrl LastFmEvent::smallImageUrl() const

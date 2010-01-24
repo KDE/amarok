@@ -215,10 +215,10 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         if ( timeSpanDisabled || events.at( i ).date() < limite )
             m_widgets.insert( i, new UpcomingEventsWidget( events.at( i ).name(),
                                                            events.at( i ).date(),
+                                                           events.at( i ).location(),
                                                            artistList,
                                                            events.at( i ).url(),
                                                            events.at( i ).smallImageUrl()) );
-
 
     }
     updateConstraints();

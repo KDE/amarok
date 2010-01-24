@@ -91,7 +91,6 @@ private:
     QVBoxLayout * m_mainLayout;
     QGraphicsProxyWidget * m_scrollProxy;
     QScrollArea * m_scroll;
-
     
 private slots:
     void connectSource( const QString &source );
@@ -106,7 +105,6 @@ private slots:
     void saveAddressAsLink();
 
     void saveSettings();
-
 };
 
 K_EXPORT_AMAROK_APPLET( upcomingEvents, UpcomingEventsApplet )

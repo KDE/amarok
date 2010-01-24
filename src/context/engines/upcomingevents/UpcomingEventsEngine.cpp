@@ -231,6 +231,40 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
 
         }
 
+        // Event location
+        QDomNode venueNode = n.namedItem( "venue" );        
+        QString location;
+        if( !venueNode.isNull() )
+        {
+            QDomNodeList venueNodes = venueNode.childNodes();
+            QDomNode locationNode;
+            for( int i = 0; i < venueNodes.size(); i++ )
+            {
+                if( venueNodes.at( i ).nodeName() == "location" )
+                {
+                    locationNode = venueNodes.at( i );
+                    QDomNodeList locationNodes = locationNode.childNodes();
+                    QString cityText, countryText;
+                    for( int j = 0; j < locationNodes.size(); j++ )
+                    {
+                        QDomElement locationElement;
+                        debug() << locationNodes.at( j ).nodeName();
+                        if( locationNodes.at( j ).nodeName() == "city" )
+                        {
+                            locationElement = locationNodes.at( j ).toElement();
+                            cityText = locationElement.text();
+                        }
+                        if( locationNodes.at( j ).nodeName() == "country" )
+                        {
+                            locationElement = locationNodes.at( j ).toElement();
+                            countryText = locationElement.text();
+                        }
+                    }
+                    location = cityText + ", " + countryText;
+                }
+            }
+        }
+
         // Event url
         QDomNode urlNode = n.namedItem( "url" );
         QDomElement urlElement = urlNode.toElement();
@@ -252,7 +286,8 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
             }
             imageUrl = KUrl( imageUrlElement.text() );
         }
-        m_upcomingEvents.append( LastFmEvent( artists, title, startDate, imageUrl, url ) );
+        m_upcomingEvents.append( LastFmEvent( artists, title, location, startDate, imageUrl, url ) );
+        debug() << "UpcomingEventsEngine::location = " << location;
         
         n = n.nextSibling();
     }
