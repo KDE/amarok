@@ -89,6 +89,7 @@ private:
 
     QList< LastFmEvent > m_upcomingEvents;
     QString m_xml;
+    QString m_artistName;
 
 private slots:
     void upcomingEventsResultFetched( KJob* );
