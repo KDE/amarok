@@ -574,6 +574,7 @@ CoverManager::updateFetchingProgress( int state )
         break;
     }
     m_progress->incrementProgress( m_fetcher );
+    updateStatusBar();
 }
 
 void
