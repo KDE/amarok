@@ -227,18 +227,18 @@ CoverManager::slotContinueConstruction() //SLOT
     QTimer::singleShot( 0, this, SLOT(init()) );
 }
 
-
 CoverManager::~CoverManager()
 {
     DEBUG_BLOCK
 
-    Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );    s_instance = 0;
+    Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );
+    s_instance = 0;
 
     qDeleteAll( m_coverItems );
 }
 
-
-void CoverManager::init()
+void
+CoverManager::init()
 {
     DEBUG_BLOCK
 
@@ -273,7 +273,8 @@ void CoverManager::init()
 }
 
 
-void CoverManager::viewCover( Meta::AlbumPtr album, QWidget *parent ) //static
+void
+CoverManager::viewCover( Meta::AlbumPtr album, QWidget *parent ) //static
 {
     //QDialog means "escape" works as expected
     QDialog *dialog = new CoverViewDialog( album, parent );
@@ -294,7 +295,8 @@ CoverManager::metadataChanged( Meta::AlbumPtr album )
     updateStatusBar();
 }
 
-void CoverManager::fetchMissingCovers() //SLOT
+void
+CoverManager::fetchMissingCovers() //SLOT
 {
     DEBUG_BLOCK
 
@@ -322,7 +324,8 @@ void CoverManager::fetchMissingCovers() //SLOT
 
 }
 
-void CoverManager::showOnce( const QString &artist )
+void
+CoverManager::showOnce( const QString &artist )
 {
     if( !s_instance )
     {
@@ -336,7 +339,8 @@ void CoverManager::showOnce( const QString &artist )
     }
 }
 
-void CoverManager::slotArtistSelected() //SLOT
+void
+CoverManager::slotArtistSelected() //SLOT
 {
     DEBUG_BLOCK
 
@@ -397,7 +401,8 @@ CoverManager::slotAlbumFilterTriggered( QAction *action ) //SLOT
     m_viewButton->setText( action->text() );
 }
 
-void CoverManager::slotArtistQueryDone() //SLOT
+void
+CoverManager::slotArtistQueryDone() //SLOT
 {
     DEBUG_BLOCK
 
@@ -447,13 +452,15 @@ void CoverManager::slotArtistQueryDone() //SLOT
     updateStatusBar();
 }
 
-void CoverManager::cancelCoverViewLoading()
+void
+CoverManager::cancelCoverViewLoading()
 {
     m_isLoadingCancelled = true;
 }
 
 // called when a cover item is clicked
-void CoverManager::coverItemClicked( QListWidgetItem *item ) //SLOT
+void
+CoverManager::coverItemClicked( QListWidgetItem *item ) //SLOT
 {
     #define item static_cast<CoverViewItem*>(item)
 
@@ -469,7 +476,8 @@ void CoverManager::coverItemClicked( QListWidgetItem *item ) //SLOT
 }
 
 
-void CoverManager::slotSetFilter() //SLOT
+void
+CoverManager::slotSetFilter() //SLOT
 {
     m_filter = m_searchEdit->text();
 
@@ -496,14 +504,16 @@ void CoverManager::slotSetFilter() //SLOT
 }
 
 
-void CoverManager::slotSetFilterTimeout() //SLOT
+void
+CoverManager::slotSetFilterTimeout() //SLOT
 {
     if ( m_timer->isActive() ) m_timer->stop();
     m_timer->setSingleShot( true );
     m_timer->start( 180 );
 }
 
-void CoverManager::changeView( CoverManager::View id, bool force ) //SLOT
+void
+CoverManager::changeView( CoverManager::View id, bool force ) //SLOT
 {
     DEBUG_BLOCK
 
@@ -540,7 +550,8 @@ void CoverManager::changeView( CoverManager::View id, bool force ) //SLOT
     m_currentView = id;
 }
 
-void CoverManager::updateFetchingProgress( int state )
+void
+CoverManager::updateFetchingProgress( int state )
 {
     switch( static_cast< CoverFetcher::FinishState >( state ) )
     {
@@ -558,7 +569,8 @@ void CoverManager::updateFetchingProgress( int state )
     m_progress->incrementProgress( m_fetcher );
 }
 
-void CoverManager::stopFetching()
+void
+CoverManager::stopFetching()
 {
     DEBUG_FUNC_INFO
 
@@ -568,9 +580,8 @@ void CoverManager::stopFetching()
     updateStatusBar();
 }
 
-// PRIVATE
-
-void CoverManager::loadCover( const QString &artist, const QString &album )
+void
+CoverManager::loadCover( const QString &artist, const QString &album )
 {
     foreach( QListWidgetItem *item, m_coverItems )
     {
@@ -583,7 +594,8 @@ void CoverManager::loadCover( const QString &artist, const QString &album )
     }
 }
 
-void CoverManager::playSelectedAlbums()
+void
+CoverManager::playSelectedAlbums()
 {
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
@@ -594,7 +606,8 @@ void CoverManager::playSelectedAlbums()
     The::playlistController()->insertOptioned( qm, Playlist::AppendAndPlay );
 }
 
-QList<CoverViewItem*> CoverManager::selectedItems()
+QList<CoverViewItem*>
+CoverManager::selectedItems()
 {
     QList<CoverViewItem*> selectedItems;
     foreach( QListWidgetItem *item, m_coverView->selectedItems() )
@@ -603,12 +616,14 @@ QList<CoverViewItem*> CoverManager::selectedItems()
     return selectedItems;
 }
 
-void CoverManager::progressAllDone()
+void
+CoverManager::progressAllDone()
 {
     m_progress->hide();
 }
 
-void CoverManager::updateStatusBar()
+void
+CoverManager::updateStatusBar()
 {
     QString text;
 
@@ -713,11 +728,13 @@ void CoverManager::updateStatusBar()
     m_statusLabel->setText( text );
 }
 
-void CoverManager::setStatusText( QString text )
+void
+CoverManager::setStatusText( QString text )
 {
     m_oldStatusText = m_statusLabel->text();
     m_statusLabel->setText( text );
 }
+
 //////////////////////////////////////////////////////////////////////
 //    CLASS CoverView
 /////////////////////////////////////////////////////////////////////
@@ -745,7 +762,8 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     connect( this, SIGNAL( viewportEntered() ), CoverManager::instance(), SLOT( updateStatusBar() ) );
 }
 
-void CoverView::contextMenuEvent( QContextMenuEvent *event )
+void
+CoverView::contextMenuEvent( QContextMenuEvent *event )
 {
     QList<QListWidgetItem*> items = selectedItems();
 
@@ -754,7 +772,7 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
         QMap<QString,QList<QAction *> >  cacs;
         KMenu menu;
         menu.addTitle( i18n( "Cover Image" ) );
-        
+
         for (int x = 0; x < items.count(); ++x)
         {
             CoverViewItem *item = dynamic_cast<CoverViewItem*>(items.value(x));
@@ -799,7 +817,8 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
     // Set custom cover action
 }
 
-void CoverView::setStatusText( QListWidgetItem *item )
+void
+CoverView::setStatusText( QListWidgetItem *item )
 {
     #define item static_cast<CoverViewItem *>( item )
     if ( !item )
@@ -845,12 +864,14 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
 CoverViewItem::~CoverViewItem()
 {}
 
-bool CoverViewItem::hasCover() const
+bool
+CoverViewItem::hasCover() const
 {
     return albumPtr()->hasImage();
 }
 
-void CoverViewItem::loadCover()
+void
+CoverViewItem::loadCover()
 {
     const bool isSuppressing = m_albumPtr->suppressImageAutoFetch();
     m_albumPtr->setSuppressImageAutoFetch( true );
@@ -858,13 +879,15 @@ void CoverViewItem::loadCover()
     m_albumPtr->setSuppressImageAutoFetch( isSuppressing );
 }
 
-void CoverViewItem::dragEntered()
+void
+CoverViewItem::dragEntered()
 {
     setSelected( true );
 }
 
 
-void CoverViewItem::dragLeft()
+void
+CoverViewItem::dragLeft()
 {
     setSelected( false );
 }
