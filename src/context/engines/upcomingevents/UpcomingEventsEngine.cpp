@@ -286,8 +286,16 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
             }
             imageUrl = KUrl( imageUrlElement.text() );
         }
-        m_upcomingEvents.append( LastFmEvent( artists, title, location, startDate, imageUrl, url ) );
-        debug() << "UpcomingEventsEngine::location = " << location;
+
+        // LastFm event creation
+        LastFmEvent event;
+        event.setArtists( artists );
+        event.setName( title );
+        event.setLocation( location );
+        event.setDate( startDate );
+        event.setUrl( url );
+        event.setSmallImageUrl( imageUrl );
+        m_upcomingEvents.append( event );
         
         n = n.nextSibling();
     }

@@ -20,7 +20,15 @@
 /**
  * Creates an empty LastFmEvent
  */
-LastFmEvent::LastFmEvent() {}
+LastFmEvent::LastFmEvent()
+{
+    static bool metaTypeRegistered = false;
+    if (!metaTypeRegistered)
+    {
+        qRegisterMetaType<LastFmEvent>("LastFmEvent");
+        metaTypeRegistered = true;
+    }
+}
 
 /**
  * Creates a new LastFmEvent with the 'event' attributes
@@ -42,17 +50,6 @@ LastFmEvent::LastFmEvent( const LastFmEvent& event)
  * Destroys a LastFmEvent instance
  */
 LastFmEvent::~LastFmEvent() {}
-
-LastFmEvent::LastFmEvent(QStringList artists, QString name, QString location, QDateTime date, KUrl smallImageUrl, KUrl url)
-    : m_artists(artists), m_name(name), m_date(date), m_location(location), m_smallImageUrl(smallImageUrl), m_url(url)
-{
-    static bool metaTypeRegistered = false;
-    if (!metaTypeRegistered)
-    {
-        qRegisterMetaType<LastFmEvent>("LastFmEvent");
-        metaTypeRegistered = true;
-    }
-}
 
 QStringList LastFmEvent::artists() const
 {
@@ -82,4 +79,34 @@ KUrl LastFmEvent::smallImageUrl() const
 KUrl LastFmEvent::url() const
 {
     return m_url;
+}
+
+void LastFmEvent::setArtists( QStringList artists )
+{
+    m_artists = artists;
+}
+
+void LastFmEvent::setDate( QDateTime date )
+{
+    m_date = date;
+}
+
+void LastFmEvent::setName( QString name )
+{
+    m_name = name;
+}
+
+void LastFmEvent::setLocation( QString location )
+{
+    m_location = location;
+}
+
+void LastFmEvent::setSmallImageUrl( KUrl smallImageUrl )
+{
+    m_smallImageUrl = smallImageUrl;
+}
+
+void LastFmEvent::setUrl( KUrl url )
+{
+    m_url = url;
 }

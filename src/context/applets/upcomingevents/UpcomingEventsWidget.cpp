@@ -31,7 +31,7 @@
 
 #define NBR_MAX_PARTICIPANT 5
 
-UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString location, QString participants, KUrl url, KUrl image, QWidget* parent): QWidget( parent )
+UpcomingEventsWidget::UpcomingEventsWidget( QWidget* parent ): QWidget( parent )
 {
     m_image = new QLabel( this );
     m_participants = new QLabel( this );
@@ -42,13 +42,6 @@ UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString
 
     m_participants->setWordWrap( true );
     m_name->setWordWrap( true );
-
-    setName( name );
-    setDate( date );
-    setParticipants( participants );
-    setUrl( url );
-    setImage( image );
-    setLocation( location );
 
     m_layout = new QGridLayout;
     m_layout->addWidget( m_image, 0, 0, 5, 1 );

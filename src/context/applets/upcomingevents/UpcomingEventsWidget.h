@@ -37,7 +37,7 @@ class UpcomingEventsWidget : public QWidget
     Q_OBJECT
     
     public:
-        UpcomingEventsWidget( QString name, QDateTime date, QString location, QString participants, KUrl url, KUrl image, QWidget * parent = 0 );
+        UpcomingEventsWidget( QWidget * parent = 0 );
         ~UpcomingEventsWidget();
 
         // Getters

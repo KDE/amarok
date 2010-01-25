@@ -39,13 +39,22 @@ public:
     LastFmEvent();
     LastFmEvent( const LastFmEvent& );
     ~LastFmEvent();
-    LastFmEvent(QStringList artists, QString name, QString location, QDateTime date, KUrl smallImageUrl, KUrl url);
+
+    // Getters
     QStringList artists() const;
     QString name() const;
     QDateTime date() const;
     QString location() const;
     KUrl smallImageUrl() const;
     KUrl url() const;
+
+    // Setters
+    void setArtists( QStringList );
+    void setName( QString );
+    void setDate( QDateTime );
+    void setLocation( QString );
+    void setUrl( KUrl );
+    void setSmallImageUrl( KUrl );
 };
 
 #endif // LASTFMEVENT_H
