@@ -153,18 +153,6 @@ CoverManager::slotContinueConstruction() //SLOT
     }
     m_artistView->insertTopLevelItems( 0, m_items );
 
-    //TODO: Port Compilation listing
-//     ArtistItem *last = static_cast<ArtistItem *>(m_artistView->item( m_artistView->count() - 1));
-//     QueryBuilder qb;
-//     qb.addReturnValue( QueryBuilder::tabAlbum, QueryBuilder::valName );
-//     qb.groupBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-//     qb.setOptions( QueryBuilder::optOnlyCompilations );
-//     qb.setLimit( 0, 1 );
-//     if ( qb.run().count() ) {
-//         item = new ArtistItem( m_artistView, last, i18n( "Various Artists" ) );
-//         item->setPixmap( 0, SmallIcon("personal") );
-//     }
-
     KVBox *vbox = new KVBox( this );
     KHBox *hbox = new KHBox( vbox );
 
@@ -411,27 +399,6 @@ CoverManager::slotAlbumFilterTriggered( QAction *action ) //SLOT
 void CoverManager::slotArtistSelectedContinueAgain() //SLOT
 {
     DEBUG_BLOCK
-    //TODO: Port 2.0
-    //also retrieve compilations when we're showing all items (first treenode) or
-    //"Various Artists" (last treenode)
-//     if ( item == m_artistView->firstChild() || item == m_artistView->lastChild() )
-//     {
-//         QStringList cl;
-//
-//         qb.clear();
-//         qb.addReturnValue( QueryBuilder::tabAlbum,  QueryBuilder::valName );
-//
-//         qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-//         qb.sortBy( QueryBuilder::tabAlbum, QueryBuilder::valName );
-//         qb.setOptions( QueryBuilder::optRemoveDuplicates );
-//         qb.setOptions( QueryBuilder::optOnlyCompilations );
-//         cl = qb.run();
-//
-//         for( int i = 0; i < cl.count(); i++ ) {
-//             albums.append( i18n( "Various Artists" ) );
-//             albums.append( cl[ i ] );
-//         }
-//     }
 
     QApplication::restoreOverrideCursor();
 
