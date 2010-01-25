@@ -68,7 +68,7 @@ ScriptUpdater::updateScript()
         return;
     }
     KPluginInfo pInfo( specPath );
-    if ( !pInfo.isValid() || pInfo.name().isEmpty() || pInfo.version() == "" )
+    if ( !pInfo.isValid() || pInfo.name().isEmpty() || pInfo.version().isEmpty() )
     {
         // invalid or unusable .spec file, can't continue
         emit finished( m_scriptPath );
