@@ -234,17 +234,6 @@ CoverManager::slotContinueConstruction() //SLOT
     m_progressBox->setFixedHeight( h );
     m_progressBox->hide();
 
-
-    // signals and slots connections
-    connect( m_artistView, SIGNAL(itemSelectionChanged() ),
-                           SLOT( slotArtistSelected() ) );
-    connect( m_coverView,  SIGNAL(itemActivated( QListWidgetItem* )),
-                           SLOT(coverItemExecuted( QListWidgetItem* )) );
-    connect( m_timer,      SIGNAL(timeout()),
-                           SLOT(slotSetFilter()) );
-    connect( m_searchEdit, SIGNAL(textChanged( const QString& )),
-                           SLOT(slotSetFilterTimeout()) );
-
     QSize size = QApplication::desktop()->screenGeometry( this ).size() / 1.5;
     QSize sz = Amarok::config( "Cover Manager" ).readEntry( "Window Size", size );
     resize( sz.width(), sz.height() );
@@ -288,11 +277,20 @@ void CoverManager::init()
         }
     }
 
-    if ( item == 0 )
+    // signals and slots connections
+    connect( m_artistView, SIGNAL(itemSelectionChanged() ),
+                           SLOT( slotArtistSelected() ) );
+    connect( m_coverView,  SIGNAL(itemActivated( QListWidgetItem* )),
+                           SLOT(coverItemExecuted( QListWidgetItem* )) );
+    connect( m_timer,      SIGNAL(timeout()),
+                           SLOT(slotSetFilter()) );
+    connect( m_searchEdit, SIGNAL(textChanged( const QString& )),
+                           SLOT(slotSetFilterTimeout()) );
+
+    if( item == 0 )
         item = m_artistView->invisibleRootItem()->child( 0 );
 
     item->setSelected( true );
-
 }
 
 
@@ -361,8 +359,7 @@ void CoverManager::slotArtistSelected() //SLOT
     m_coverItems.clear();
     m_coverView->clear();
 
-    //Extra time for the sake of init() and aesthetics
-    QTimer::singleShot( 0, this, SLOT( slotArtistSelectedContinue() ) );
+    slotArtistSelectedContinue();
 }
 
 
