@@ -80,8 +80,8 @@ class CoverManager : public QSplitter, public Meta::Observer
         void slotArtistSelected();
         void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums );
         void slotAlbumFilterTriggered( QAction *action );
-        void slotArtistSelectedContinueAgain();
-        void coverItemExecuted( QListWidgetItem *item );
+        void slotArtistQueryDone();
+        void coverItemClicked( QListWidgetItem *item );
         void slotSetFilter();
         void slotSetFilterTimeout();
 

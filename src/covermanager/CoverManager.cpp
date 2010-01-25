@@ -259,7 +259,7 @@ void CoverManager::init()
     connect( m_artistView, SIGNAL(itemSelectionChanged() ),
                            SLOT( slotArtistSelected() ) );
     connect( m_coverView,  SIGNAL(itemActivated( QListWidgetItem* )),
-                           SLOT(coverItemExecuted( QListWidgetItem* )) );
+                           SLOT(coverItemClicked( QListWidgetItem* )) );
     connect( m_timer,      SIGNAL(timeout()),
                            SLOT(slotSetFilter()) );
     connect( m_searchEdit, SIGNAL(textChanged( const QString& )),
@@ -376,7 +376,7 @@ void CoverManager::slotArtistSelected() //SLOT
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
              this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
 
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotArtistSelectedContinueAgain() ) );
+    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotArtistQueryDone() ) );
 
     qm->run();
 }
@@ -396,7 +396,7 @@ CoverManager::slotAlbumFilterTriggered( QAction *action ) //SLOT
     m_viewButton->setText( action->text() );
 }
 
-void CoverManager::slotArtistSelectedContinueAgain() //SLOT
+void CoverManager::slotArtistQueryDone() //SLOT
 {
     DEBUG_BLOCK
 
@@ -439,7 +439,7 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
 }
 
 // called when a cover item is clicked
-void CoverManager::coverItemExecuted( QListWidgetItem *item ) //SLOT
+void CoverManager::coverItemClicked( QListWidgetItem *item ) //SLOT
 {
     #define item static_cast<CoverViewItem*>(item)
 
