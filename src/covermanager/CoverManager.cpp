@@ -88,6 +88,7 @@ CoverManager::CoverManager()
         , m_fetchingCovers( false )
         , m_coversFetched( 0 )
         , m_coverErrors( 0 )
+        , m_isLoadingCancelled( false )
 {
     DEBUG_BLOCK
 
@@ -405,6 +406,8 @@ void CoverManager::slotArtistQueryDone() //SLOT
     ProgressBar *coverLoadProgressBar = new ProgressBar( this );
     coverLoadProgressBar->setDescription( i18n( "Loading" ) );
     coverLoadProgressBar->setMaximum( m_albumList.count() );
+    connect( coverLoadProgressBar, SIGNAL(cancelled()), this, SLOT(cancelCoverViewLoading()) );
+
     m_progress->addProgressBar( coverLoadProgressBar, m_coverView );
     m_progress->show();
 
@@ -420,7 +423,13 @@ void CoverManager::slotArtistQueryDone() //SLOT
         CoverViewItem *item = new CoverViewItem( m_coverView, album );
         m_coverItems.append( item );
 
-        // kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
+        kapp->processEvents();
+
+        if( m_isLoadingCancelled )
+        {
+            m_isLoadingCancelled = false;
+            break;
+        }
 
         if( ++x % 10 == 0 )
         {
@@ -436,6 +445,11 @@ void CoverManager::slotArtistQueryDone() //SLOT
     m_coverViewSpacer->hide();
     m_coverView->show();
     updateStatusBar();
+}
+
+void CoverManager::cancelCoverViewLoading()
+{
+    m_isLoadingCancelled = true;
 }
 
 // called when a cover item is clicked

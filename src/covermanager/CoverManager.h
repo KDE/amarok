@@ -96,6 +96,7 @@ class CoverManager : public QSplitter, public Meta::Observer
 
         void playSelectedAlbums();
         void progressAllDone();
+        void cancelCoverViewLoading();
 
     private:
         void loadCover( const QString &, const QString & );
@@ -139,6 +140,8 @@ class CoverManager : public QSplitter, public Meta::Observer
         bool m_fetchingCovers;
         int m_coversFetched;
         int m_coverErrors;
+
+        bool m_isLoadingCancelled;
 };
 
 class CoverView : public QListWidget
