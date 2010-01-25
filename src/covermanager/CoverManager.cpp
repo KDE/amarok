@@ -24,6 +24,7 @@
 #include "amarokconfig.h"
 #include "collection/Collection.h"
 #include "CollectionManager.h"
+#include "CompoundProgressBar.h"
 #include "Debug.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/Meta.h"
@@ -45,7 +46,6 @@
 #include <QAction>
 #include <QDesktopWidget>
 #include <QProgressBar>
-#include <QProgressDialog>
 #include <QStringList>
 #include <QTimer>    //search filter timer
 #include <QToolButton>
@@ -217,22 +217,12 @@ CoverManager::slotContinueConstruction() //SLOT
 
     m_statusLabel = new KSqueezedTextLabel( statusBar );
     m_statusLabel->setIndent( 3 );
-    m_progressBox = new KHBox( statusBar );
+    m_progress = new CompoundProgressBar( statusBar );
 
     statusBar->addWidget( m_statusLabel, 4 );
-    statusBar->addPermanentWidget( m_progressBox, 1 );
+    statusBar->addPermanentWidget( m_progress, 1 );
 
-    QToolButton *stopButton = new QToolButton( m_progressBox );
-    stopButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
-    stopButton->setToolTip( i18n( "Abort" ) );
-    connect( stopButton, SIGNAL(clicked()), SLOT(stopFetching()) );
-    m_progress = new QProgressBar( m_progressBox );
-    m_progress->setTextVisible( true );
-
-    const int h = m_statusLabel->height() + 3;
-    m_statusLabel->setFixedHeight( h );
-    m_progressBox->setFixedHeight( h );
-    m_progressBox->hide();
+    connect( m_progress, SIGNAL(allDone()), this, SLOT(progressAllDone()) );
 
     QSize size = QApplication::desktop()->screenGeometry( this ).size() / 1.5;
     QSize sz = Amarok::config( "Cover Manager" ).readEntry( "Window Size", size );
@@ -328,7 +318,12 @@ void CoverManager::fetchMissingCovers() //SLOT
             m_fetchCovers += coverItem->albumPtr();
     }
 
-    m_progress->setMaximum( m_fetchCovers.size() );
+    ProgressBar *fetchProgressBar = new ProgressBar( this );
+    fetchProgressBar->setDescription( i18n( "Fetching" ) );
+    fetchProgressBar->setMaximum( m_fetchCovers.size() );
+    m_progress->addProgressBar( fetchProgressBar, m_fetcher );
+    m_progress->show();
+
     m_fetcher->queueAlbums( m_fetchCovers );
     m_fetchingCovers = true;
 
@@ -360,10 +355,6 @@ void CoverManager::slotArtistSelected() //SLOT
     qDeleteAll( m_coverItems );
     m_coverItems.clear();
     m_coverView->clear();
-
-    m_progressDialog = new QProgressDialog( this );
-    m_progressDialog->setLabelText( i18n("Loading Thumbnails...") );
-    m_progressDialog->setWindowModality( Qt::WindowModal );
 
     //this can be a bit slow
     QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -444,7 +435,11 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
 
     QApplication::restoreOverrideCursor();
 
-    m_progressDialog->setMaximum( m_albumList.count() );
+    ProgressBar *coverLoadProgressBar = new ProgressBar( this );
+    coverLoadProgressBar->setDescription( i18n( "Loading" ) );
+    coverLoadProgressBar->setMaximum( m_albumList.count() );
+    m_progress->addProgressBar( coverLoadProgressBar, m_coverView );
+    m_progress->show();
 
     uint x = 0;
 
@@ -458,19 +453,15 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
         CoverViewItem *item = new CoverViewItem( m_coverView, album );
         m_coverItems.append( item );
 
-        kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
+        // kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
 
-         //only worth testing for after processEvents() is called
-        if( m_progressDialog->wasCanceled() )
+        if( ++x % 10 == 0 )
         {
-            break;
-        }
-        
-        if ( ++x % 10 == 0 )
-        {
-            m_progressDialog->setValue( x );
+            m_progress->setProgress( m_coverView, x );
         }
     }
+
+    m_progress->endProgressOperation( m_coverView );
 
     // makes sure View is retained when artist selection changes
     changeView( m_currentView, true );
@@ -478,7 +469,6 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
     m_coverViewSpacer->hide();
     m_coverView->show();
     updateStatusBar();
-    delete m_progressDialog;
 }
 
 // called when a cover item is clicked
@@ -584,7 +574,7 @@ void CoverManager::updateFetchingProgress( int state )
         m_coverErrors++;
         break;
     }
-    m_progress->setValue( m_coversFetched + m_coverErrors );
+    m_progress->setProgress( m_fetcher, m_coversFetched + m_coverErrors );
 }
 
 void CoverManager::stopFetching()
@@ -593,6 +583,7 @@ void CoverManager::stopFetching()
 
     m_fetchCovers.clear();
     m_fetchingCovers = false;
+    m_progress->endProgressOperation( m_fetcher );
     updateStatusBar();
 }
 
@@ -631,6 +622,10 @@ QList<CoverViewItem*> CoverManager::selectedItems()
     return selectedItems;
 }
 
+void CoverManager::progressAllDone()
+{
+    m_progress->hide();
+}
 
 void CoverManager::updateStatusBar()
 {
@@ -639,10 +634,6 @@ void CoverManager::updateStatusBar()
     //cover fetching info
     if( m_fetchingCovers )
     {
-        //update the progress bar
-        if( m_progressBox->isHidden() )
-            m_progressBox->show();
-
         //update the status text
         if( m_coversFetched + m_coverErrors >= m_fetchCovers.size() )
         {
@@ -655,6 +646,7 @@ void CoverManager::updateStatusBar()
             m_coverErrors = 0;
             m_fetchCovers.clear();
             m_fetchingCovers = false;
+            m_progress->endProgressOperation( m_fetcher );
 
             disconnect( m_fetcher, SIGNAL(finishedSingle(int)), this, SLOT(updateFetchingProgress(int)) );
             QTimer::singleShot( 2000, this, SLOT( updateStatusBar() ) );
@@ -697,9 +689,6 @@ void CoverManager::updateStatusBar()
         m_coverErrors = 0;
 
         uint totalCounter = 0, missingCounter = 0;
-
-        if( m_progressBox->isVisible() )
-            m_progressBox->hide();
 
         //album info
         for( int i = 0, coverCount = m_coverView->count(); i < coverCount; ++i )

@@ -29,6 +29,7 @@
 
 namespace Amarok { class LineEdit; }
 
+class CompoundProgressBar;
 class CoverViewItem;
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -41,7 +42,6 @@ class KHBox;
 class QProgressBar;
 class QHBoxLayout;
 class QColorGroup;
-class QProgressDialog;
 
 class CoverManager : public QSplitter, public Meta::Observer
 {
@@ -95,6 +95,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         void stopFetching();
 
         void playSelectedAlbums();
+        void progressAllDone();
 
     private:
         void loadCover( const QString &, const QString & );
@@ -115,8 +116,6 @@ class CoverManager : public QSplitter, public Meta::Observer
         QList< QTreeWidgetItem* > m_items;
         Meta::AlbumList m_albumList;
 
-        QProgressDialog* m_progressDialog;
-
         CoverFetcher   *m_fetcher;
 
         QAction        *m_selectAllAlbums;
@@ -124,9 +123,8 @@ class CoverManager : public QSplitter, public Meta::Observer
         QAction        *m_selectAlbumsWithoutCover;
 
         //status bar widgets
+        CompoundProgressBar *m_progress;
         KSqueezedTextLabel *m_statusLabel;
-        KHBox          *m_progressBox;
-        QProgressBar   *m_progress;
         QString         m_oldStatusText;
 
         QTimer         *m_timer;              //search filter timer
