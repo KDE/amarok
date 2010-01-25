@@ -413,9 +413,11 @@ CoverManager::slotArtistQueryDone() //SLOT
 
     QApplication::restoreOverrideCursor();
 
+    const int albumCount = m_albumList.count();
+
     ProgressBar *coverLoadProgressBar = new ProgressBar( this );
     coverLoadProgressBar->setDescription( i18n( "Loading" ) );
-    coverLoadProgressBar->setMaximum( m_albumList.count() );
+    coverLoadProgressBar->setMaximum( albumCount );
     connect( coverLoadProgressBar, SIGNAL(cancelled()), this, SLOT(cancelCoverViewLoading()) );
 
     m_progress->addProgressBar( coverLoadProgressBar, m_coverView );
@@ -431,7 +433,11 @@ CoverManager::slotArtistQueryDone() //SLOT
     foreach( Meta::AlbumPtr album, m_albumList )
     {
         kapp->processEvents();
-        if( m_isLoadingCancelled )
+        /*
+         * Loading is stopped if cancelled by the user, or the number of albums
+         * has changed. The latter occurs when the artist selection changes.
+         */
+        if( m_isLoadingCancelled || albumCount != m_albumList.count() )
         {
             m_isLoadingCancelled = false;
             break;
