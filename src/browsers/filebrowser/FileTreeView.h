@@ -21,6 +21,9 @@
 
 #include <QAction>
 #include <QList>
+#include <QMutex>
+
+class PopupDropper;
 
 class FileTreeView : public Amarok::PrettyTreeView
 {
@@ -40,10 +43,15 @@ protected:
     void addSelectionToPlaylist( bool replace );
     
     virtual void contextMenuEvent ( QContextMenuEvent * e );
+    void startDrag( Qt::DropActions supportedActions );
 
 private:
     QAction * m_appendAction;
     QAction * m_loadAction;
+
+    PopupDropper* m_pd;
+    QMutex m_dragMutex;
+    bool m_ongoingDrag;
 };
 
 #endif // FILETREEVIEW_H

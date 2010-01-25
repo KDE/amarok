@@ -19,6 +19,10 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "playlist/PlaylistController.h"
+#include "PopupDropperFactory.h"
+#include "context/ContextView.h"
+#include "context/popupdropper/libpud/PopupDropper.h"
+#include "context/popupdropper/libpud/PopupDropperItem.h"
 
 #include <KIcon>
 #include <KLocale>
@@ -32,6 +36,8 @@ FileTreeView::FileTreeView( QWidget * parent )
     : Amarok::PrettyTreeView( parent )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
+    , m_pd( 0 )
+    , m_ongoingDrag( false )
 {
 }
 
@@ -126,6 +132,57 @@ void FileTreeView::addSelectionToPlaylist( bool replace )
 
         The::playlistController()->insertOptioned( urls, replace ? Playlist::Replace : Playlist::AppendAndPlay );
     }
+}
+
+
+void
+FileTreeView::startDrag( Qt::DropActions supportedActions )
+{
+    DEBUG_BLOCK
+
+    //setSelectionMode( QAbstractItemView::NoSelection );
+    // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
+    m_dragMutex.lock();
+    if( m_ongoingDrag )
+    {
+        m_dragMutex.unlock();
+        return;
+    }
+    m_ongoingDrag = true;
+    m_dragMutex.unlock();
+
+    if( !m_pd )
+        m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
+
+    if( m_pd && m_pd->isHidden() )
+    {
+        QModelIndexList indices = selectedIndexes();
+
+        QList<QAction *> actions = actionsForIndices( indices );
+
+        QFont font;
+        font.setPointSize( 16 );
+        font.setBold( true );
+
+        foreach( QAction * action, actions )
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
+
+        m_pd->show();
+    }
+
+    QTreeView::startDrag( supportedActions );
+    debug() << "After the drag!";
+
+    if( m_pd )
+    {
+        debug() << "clearing PUD";
+        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
+        m_pd->hide();
+    }
+
+    m_dragMutex.lock();
+    m_ongoingDrag = false;
+    m_dragMutex.unlock();
 }
 
 #include "FileTreeView.moc"
