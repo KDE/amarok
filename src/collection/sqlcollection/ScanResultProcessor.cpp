@@ -183,7 +183,7 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
     //DEBUG_BLOCK
     QStringList files;
 
-    int goodnessPriority = 4;
+    int goodnessPriority = 3;
     QString goodPath;
     foreach( const QString &path, paths )
     {
@@ -215,17 +215,6 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
             if( goodnessPriority > 2 )
             {
                 goodnessPriority = 2;
-                goodPath = path;
-            }
-        }
-
-        //next: try "folder" (some applications apparently use this)
-        if( file.contains( "folder", Qt::CaseInsensitive ) ||
-                file.contains( i18nc( "(Front) Cover of an album", "folder" ), Qt::CaseInsensitive ) )
-        {
-            if( goodnessPriority > 3 )
-            {
-                goodnessPriority = 3;
                 goodPath = path;
             }
         }
