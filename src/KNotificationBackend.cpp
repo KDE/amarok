@@ -16,7 +16,6 @@
 
 #include "KNotificationBackend.h"
 
-#include "amarokconfig.h"
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h"
@@ -45,13 +44,14 @@ namespace Amarok
 
 Amarok::KNotificationBackend::KNotificationBackend()
     : EngineObserver( The::engineController() )
-    , m_notify(0)
+    , m_notify( 0 )
+    , m_enabled( false )
 {
     DEBUG_BLOCK
 
     m_timer = new QTimer( this );
     m_timer->setSingleShot( true );
-    connect( m_timer, SIGNAL( timeout() ), this, SLOT( slotShowCurrentTrack() ) );
+    connect( m_timer, SIGNAL( timeout() ), this, SLOT( showCurrentTrack() ) );
 }
 
 Amarok::KNotificationBackend::~KNotificationBackend()
@@ -89,9 +89,12 @@ Amarok::KNotificationBackend::engineNewTrackPlaying()
 }
 
 void
-Amarok::KNotificationBackend::slotShowCurrentTrack()
+Amarok::KNotificationBackend::showCurrentTrack() // slot
 {
     DEBUG_BLOCK
+
+    if( !m_enabled )
+        return;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
