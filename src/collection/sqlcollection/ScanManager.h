@@ -86,7 +86,6 @@ class ScanManager : public QObject
         int m_restartCount;
         bool m_isIncremental;
         bool m_blockScan;
-        QString m_amarokCollectionScanDir;
         QStringList m_incrementalDirs;
 };
 

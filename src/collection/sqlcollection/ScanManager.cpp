@@ -64,9 +64,6 @@ ScanManager::ScanManager( QObject *parent )
 {
     DEBUG_BLOCK
 
-    // If Amarok is not installed in standard directory
-    m_amarokCollectionScanDir = App::collectionScannerLocation();
-
     m_dbusHandler = new SqlCollectionDBusHandler( this );
 
     QTimer *watchFoldersTimer = new QTimer( this );
@@ -121,7 +118,7 @@ ScanManager::startFullScan()
     if( !QFile::exists( batchfileLocation ) || !readBatchFile( batchfileLocation )  )
     {
         m_scanner = new AmarokProcess( this );
-        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-p";
+        *m_scanner <<  App::collectionScannerLocation() << "-p";
         if( AmarokConfig::scanRecursively() )
             *m_scanner << "-r";
         if( AmarokConfig::useCharsetDetector() )
@@ -211,8 +208,8 @@ void ScanManager::startIncrementalScan( const QString &directory )
     if( !batchfileExists || !readBatchFile( batchfileLocation )  )
     {
         m_scanner = new AmarokProcess( this );
-        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-i"
-                << "--collectionid" << m_collection->collectionId() << "-p";
+        *m_scanner << App::collectionScannerLocation() << "-i" << "--collectionid" << m_collection->collectionId() << "-p";
+
         if( AmarokConfig::scanRecursively() && directory.isEmpty() )
             *m_scanner << "-r";
         if( AmarokConfig::useCharsetDetector() )
@@ -538,7 +535,8 @@ ScanManager::restartScanner()
     DEBUG_BLOCK
 
     m_scanner = new AmarokProcess( this );
-    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner";
+    *m_scanner << App::collectionScannerLocation();
+
     if( m_isIncremental )
     {
         *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
