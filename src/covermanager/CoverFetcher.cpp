@@ -286,7 +286,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
         const int diff = m_limit - m_queue->size();
         if( diff > 0 )
         {
-            for( int i = 0; i < diff; ++i )
+            for( int i = 0; i < diff && !m_queueLater.isEmpty(); ++i )
             {
                 Meta::AlbumPtr album = m_queueLater.takeFirst();
                 m_queue->add( album, CoverFetch::Automatic );
