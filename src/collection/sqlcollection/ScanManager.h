@@ -93,6 +93,7 @@ class ScanManager : public QObject
 class XmlParseJob : public ThreadWeaver::Job
 {
     Q_OBJECT
+
     public:
         XmlParseJob( ScanManager *parent, SqlCollection *collection );
         ~XmlParseJob();

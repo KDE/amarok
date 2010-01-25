@@ -827,13 +827,7 @@ void App::checkCollectionScannerVersion()  // SLOT
 
     QProcess scanner;
 
-    // If the scanner tool is not in $PATH, let's try to find it in PREFIX
-    const QString scannerPath = applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
-
-    QStringList args;
-    args << "--version";
-
-    scanner.start( scannerPath, args );
+    scanner.start( collectionScannerLocation(), QStringList( "--version" ) );
     scanner.waitForFinished();
 
     const QString version = scanner.readAllStandardOutput().trimmed();
@@ -844,6 +838,17 @@ void App::checkCollectionScannerVersion()  // SLOT
                                      "does not match your Amarok version.</p>"
                                      "<p>Please note that Collection Scanning may not work correctly.</p>" ) );
     }
+}
+
+QString App::collectionScannerLocation()  // static
+{
+    QString scannerPath = "amarokcollectionscanner";
+
+    // If the binary is not in $PATH, then search in the application folder too
+    if( QProcess::execute( scannerPath, QStringList( "--version" ) ) != 0 )
+        scannerPath = App::instance()->applicationDirPath() + QDir::separator();
+
+    return scannerPath;
 }
 
 void App::slotConfigAmarok( const QString& page )

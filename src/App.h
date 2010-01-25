@@ -68,6 +68,13 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
         inline MainWindow *mainWindow() const { return m_mainWindow; }
 
+        /**
+         * Determines location of the "amarokcollectionscanner" tool.
+         *
+         * @Returns path of the collection scanner binary.
+         */
+        static QString collectionScannerLocation();
+
         // FRIENDS
         friend class MainWindow; //requires access to applySettings()
 

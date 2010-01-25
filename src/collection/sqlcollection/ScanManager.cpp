@@ -65,7 +65,7 @@ ScanManager::ScanManager( QObject *parent )
     DEBUG_BLOCK
 
     // If Amarok is not installed in standard directory
-    m_amarokCollectionScanDir = App::instance()->applicationDirPath() + QDir::separator();
+    m_amarokCollectionScanDir = App::collectionScannerLocation();
 
     m_dbusHandler = new SqlCollectionDBusHandler( this );
 
@@ -86,7 +86,6 @@ ScanManager::~ScanManager()
         m_dbusHandler = 0;
     }
 }
-
 
 void
 ScanManager::startFullScan()
