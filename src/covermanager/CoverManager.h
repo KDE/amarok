@@ -29,6 +29,7 @@
 
 namespace Amarok { class LineEdit; }
 
+class CompoundProgressBar;
 class CoverViewItem;
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -41,7 +42,6 @@ class KHBox;
 class QProgressBar;
 class QHBoxLayout;
 class QColorGroup;
-class QProgressDialog;
 
 class CoverManager : public QSplitter, public Meta::Observer
 {
@@ -78,11 +78,10 @@ class CoverManager : public QSplitter, public Meta::Observer
         void init();
 
         void slotArtistSelected();
-        void slotArtistSelectedContinue();
         void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums );
         void slotAlbumFilterTriggered( QAction *action );
-        void slotArtistSelectedContinueAgain();
-        void coverItemExecuted( QListWidgetItem *item );
+        void slotArtistQueryDone();
+        void coverItemClicked( QListWidgetItem *item );
         void slotSetFilter();
         void slotSetFilterTimeout();
 
@@ -96,6 +95,8 @@ class CoverManager : public QSplitter, public Meta::Observer
         void stopFetching();
 
         void playSelectedAlbums();
+        void progressAllDone();
+        void cancelCoverViewLoading();
 
     private:
         void loadCover( const QString &, const QString & );
@@ -116,8 +117,6 @@ class CoverManager : public QSplitter, public Meta::Observer
         QList< QTreeWidgetItem* > m_items;
         Meta::AlbumList m_albumList;
 
-        QProgressDialog* m_progressDialog;
-
         CoverFetcher   *m_fetcher;
 
         QAction        *m_selectAllAlbums;
@@ -125,9 +124,8 @@ class CoverManager : public QSplitter, public Meta::Observer
         QAction        *m_selectAlbumsWithoutCover;
 
         //status bar widgets
+        CompoundProgressBar *m_progress;
         KSqueezedTextLabel *m_statusLabel;
-        KHBox          *m_progressBox;
-        QProgressBar   *m_progress;
         QString         m_oldStatusText;
 
         QTimer         *m_timer;              //search filter timer
@@ -142,6 +140,9 @@ class CoverManager : public QSplitter, public Meta::Observer
         bool m_fetchingCovers;
         int m_coversFetched;
         int m_coverErrors;
+
+        bool m_isClosing;
+        bool m_isLoadingCancelled;
 };
 
 class CoverView : public QListWidget
