@@ -846,7 +846,7 @@ QString App::collectionScannerLocation()  // static
 
     // If the binary is not in $PATH, then search in the application folder too
     if( scannerPath.isEmpty() )
-        scannerPath = applicationDirPath() + QDir::separator();
+        scannerPath = applicationDirPath() + QDir::separator() + "amarokcollectionScanner";
 
     return scannerPath;
 }
