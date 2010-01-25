@@ -29,6 +29,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h" //for actions in ctor
+#include "KNotificationBackend.h"
 #include "Osd.h"
 #include "PaletteHandler.h"
 #include "ScriptManager.h"
@@ -695,6 +696,16 @@ MainWindow::showHide() //SLOT
 }
 
 void
+MainWindow::showNotificationPopup() // slot
+{
+    if ( Amarok::KNotificationBackend::instance()->isEnabled()
+            && !Amarok::OSD::instance()->isEnabled() )
+        Amarok::KNotificationBackend::instance()->showCurrentTrack();
+    else
+        Amarok::OSD::instance()->forceToggleOSD();
+}
+
+void
 MainWindow::slotFullScreen() // slot
 {
     setWindowState( windowState() ^ Qt::WindowFullScreen );
@@ -871,10 +882,10 @@ MainWindow::createActions()
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_J ) );
     connect( action, SIGNAL( triggered() ), SLOT( slotJumpTo() ) );
 
-    action = new KAction( i18n( "Show On Screen Display" ), this );
-    ac->addAction( "showOsd", action );
+    action = new KAction( i18n( "Show Notification Popup" ), this );
+    ac->addAction( "showNotificationPopup", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
-    connect( action, SIGNAL( triggered() ), Amarok::OSD::instance(), SLOT( forceToggleOSD() ) );
+    connect( action, SIGNAL( triggered() ), SLOT( showNotificationPopup() ) );
 
     action = new KAction( i18n( "Mute Volume" ), this );
     ac->addAction( "mute", action );
