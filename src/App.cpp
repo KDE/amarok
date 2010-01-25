@@ -842,11 +842,11 @@ void App::checkCollectionScannerVersion()  // SLOT
 
 QString App::collectionScannerLocation()  // static
 {
-    QString scannerPath = "amarokcollectionscanner";
+    QString scannerPath = KStandardDirs::findExe( "amarokcollectionscanner" );
 
     // If the binary is not in $PATH, then search in the application folder too
-    if( QProcess::execute( scannerPath, QStringList( "--version" ) ) != 0 )
-        scannerPath = App::instance()->applicationDirPath() + QDir::separator();
+    if( scannerPath.isEmpty() )
+        scannerPath = applicationDirPath() + QDir::separator();
 
     return scannerPath;
 }
