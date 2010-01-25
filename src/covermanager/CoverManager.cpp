@@ -88,6 +88,7 @@ CoverManager::CoverManager()
         , m_fetchingCovers( false )
         , m_coversFetched( 0 )
         , m_coverErrors( 0 )
+        , m_isClosing( false )
         , m_isLoadingCancelled( false )
 {
     DEBUG_BLOCK
@@ -234,7 +235,11 @@ CoverManager::~CoverManager()
     Amarok::config( "Cover Manager" ).writeEntry( "Window Size", size() );
     s_instance = 0;
 
+    m_isClosing = true;
+    m_isLoadingCancelled = true;
     qDeleteAll( m_coverItems );
+    delete m_coverView;
+    m_coverView = 0;
 }
 
 void
@@ -425,16 +430,15 @@ CoverManager::slotArtistQueryDone() //SLOT
     m_coverViewSpacer->show();
     foreach( Meta::AlbumPtr album, m_albumList )
     {
-        CoverViewItem *item = new CoverViewItem( m_coverView, album );
-        m_coverItems.append( item );
-
         kapp->processEvents();
-
         if( m_isLoadingCancelled )
         {
             m_isLoadingCancelled = false;
             break;
         }
+
+        CoverViewItem *item = new CoverViewItem( m_coverView, album );
+        m_coverItems.append( item );
 
         if( ++x % 10 == 0 )
         {
@@ -443,6 +447,9 @@ CoverManager::slotArtistQueryDone() //SLOT
     }
 
     m_progress->endProgressOperation( m_coverView );
+
+    if( m_isClosing )
+        return;
 
     // makes sure View is retained when artist selection changes
     changeView( m_currentView, true );

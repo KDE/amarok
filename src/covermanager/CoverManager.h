@@ -141,6 +141,7 @@ class CoverManager : public QSplitter, public Meta::Observer
         int m_coversFetched;
         int m_coverErrors;
 
+        bool m_isClosing;
         bool m_isLoadingCancelled;
 };
 
