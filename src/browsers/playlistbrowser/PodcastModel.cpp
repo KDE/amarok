@@ -601,7 +601,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
         bool ok;
         QString url = QInputDialog::getText( 0,
                             i18n("Add Podcast"),
-                            i18n("Enter RSS 2.0 feed URL:"),
+                            i18n("Enter RSS 1.0/2.0 or Atom feed URL:"),
                             QLineEdit::Normal,
                             QString(),
                             &ok );

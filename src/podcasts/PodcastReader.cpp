@@ -768,9 +768,9 @@ PodcastReader::atomTextAsHtml()
             // strip <script> elements
             // This will work because there aren't <![CDATA[ ]]> sections
             // in m_buffer, because we have (re)escape the code manually.
-            // But it does not remove event handlers lice onclick="..."
+            // XXX: But it does not remove event handlers like onclick="..."
             // and JavaScript links like href="javascript:..."
-            return m_buffer.replace( sd.removeScripts, "" );
+            return m_buffer.remove( sd.removeScripts );
 
         case TextContent:
         default:
@@ -978,7 +978,7 @@ PodcastReader::endBody()
 {
     // content type is xhtml
     // always prefer <body>, because it's likely to
-    // contain nice html formatted infos
+    // contain nice html formatted information
     setSummary( m_current->description() );
     m_current->setDescription( m_buffer.trimmed() );
 }
@@ -995,7 +995,7 @@ void
 PodcastReader::beginHtml()
 {
     stopWithError( i18n( "While parsing %1, a feed was expected but an HTML page was received."
-                         "\nDid you enter the correct URL?" ).arg( m_url.url() ) );
+                         "\nDid you enter the correct URL?", m_url.url() ) );
 }
 
 void
@@ -1089,7 +1089,7 @@ PodcastReader::beginChannel()
 
     // Because the summary and description fields are read from several elements
     // they only get changed when longer information is read as there is stored in
-    // the apropriate field already. In order to still be able to correctly update
+    // the appropriate field already. In order to still be able to correctly update
     // the feed's description/summary I set it here to the empty string:
     m_channel->setDescription( "" );
     m_channel->setSummary( "" );
