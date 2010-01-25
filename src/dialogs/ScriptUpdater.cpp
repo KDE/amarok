@@ -86,7 +86,7 @@ ScriptUpdater::updateScript()
     // 2. check if there are updates: get 'version' file from server
     KUrl versionUrl( updateBaseUrl );
     versionUrl.addPath( m_scriptname );
-    versionUrl.addPath( "/" + versionFilename );
+    versionUrl.addPath( '/' + versionFilename );
     m_versionFile.open();
     debug() << m_scriptname << ": Accessing " << versionUrl.prettyUrl() << " ...";
     KUrl versionDest( m_versionFile.fileName() );
@@ -124,7 +124,7 @@ ScriptUpdater::phase2( KJob * job )
     // 3. get the update archive, download it to a temporary file
     KUrl archiveSrc( updateBaseUrl );
     archiveSrc.addPath( m_scriptname );
-    archiveSrc.addPath( "/" + archiveFilename );
+    archiveSrc.addPath( '/' + archiveFilename );
     m_archiveFile.open(); // temporary files only have a fileName() after they've been opened
     KUrl archiveDest( m_archiveFile.fileName() );
     KIO::FileCopyJob *archiveJob = KIO::file_copy( archiveSrc, archiveDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
@@ -143,7 +143,7 @@ void ScriptUpdater::phase3( KJob * job )
     // 4. get the archive's signature, download it to a temporary file as well
     KUrl sigSrc( updateBaseUrl );
     sigSrc.addPath( m_scriptname );
-    sigSrc.addPath( "/" + signatureFilename );
+    sigSrc.addPath( '/' + signatureFilename );
     m_sigFile.open();
     KUrl sigDest( m_sigFile.fileName() );
     KIO::FileCopyJob *sigJob = KIO::file_copy( sigSrc, sigDest, -1, KIO::Overwrite | KIO::HideProgressInfo );
@@ -243,14 +243,14 @@ ScriptUpdater::isNewer( const QString & update, const QString & installed )
 {
     // only dots are supported as separators, and only integers are supported
     // between the dots (so no fancy stuff like 2.1-1 or 2.1.beta2)
-    QStringList uList = update.split( "." );
-    QStringList iList = installed.split( "." );
+    QStringList uList = update.split( '.' );
+    QStringList iList = installed.split( '.' );
     int i = 0;
     // stop working if the end of both lists is reached
     while ( i < uList.length() || i < iList.length() ) {
         // read current number, or use 0 if it isn't present (so that "2" == "2.0" == "2.0.0.0.0.0" == "2...0")
-        int up = ( ( uList.length() > i && uList[i] != "" ) ? uList[i].toInt() : 0 );
-        int in = ( ( iList.length() > i && iList[i] != "" ) ? iList[i].toInt() : 0 );
+        int up = ( ( uList.length() > i && ( !uList[i].isEmpty() ) ) ? uList[i].toInt() : 0 );
+        int in = ( ( iList.length() > i && ( !iList[i].isEmpty() ) ) ? iList[i].toInt() : 0 );
         if ( up > in ) 
 	{
             return true;
