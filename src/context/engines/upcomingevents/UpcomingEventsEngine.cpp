@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
- * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
+ * Copyright (c) 2009-2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                *
  * Copyright (c) 2010 Hormiere Guillaume <hormiere.guillaume@gmail.com>                 * 
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *

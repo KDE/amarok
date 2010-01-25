@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
- * Copyright (c) 2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
+ * Copyright (c) 2009-2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
