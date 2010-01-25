@@ -555,7 +555,7 @@ void CoverManager::updateFetchingProgress( int state )
         m_coverErrors++;
         break;
     }
-    m_progress->setProgress( m_fetcher, m_coversFetched + m_coverErrors );
+    m_progress->incrementProgress( m_fetcher );
 }
 
 void CoverManager::stopFetching()
