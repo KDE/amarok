@@ -148,19 +148,19 @@ void CompoundProgressBar::childBarFinished( ProgressBar *bar )
         setDescription( m_progressMap.values().at( 0 )->descriptionLabel()->text() );
         cancelButton()->setToolTip( i18n( "Abort" ) );
     }
-    else
-    {
-        setDescription( i18n( "Multiple background tasks running" ) );
-        cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
-    }
 
-    if( m_progressMap.count() == 0 )
+    if( m_progressMap.empty() )
     {
         progressBar()->setValue( 0 );
         hideDetails();
         emit( allDone() );
         m_progressDetailsWidget->hide();
         return;
+    }
+    else
+    {
+        setDescription( i18n( "Multiple background tasks running" ) );
+        cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
     }
 
     progressBar()->setValue( calcCompoundPercentage() );
