@@ -126,50 +126,24 @@ void CompoundProgressBar::childPercentageChanged()
 void CompoundProgressBar::childBarCancelled( ProgressBar * childBar )
 {
     DEBUG_BLOCK
-
-    m_progressMap.remove( m_progressMap.key( childBar ) );
-    m_progressDetailsWidget->layout()->removeWidget( childBar );
-    m_progressDetailsWidget->setFixedHeight( childBar->height() * m_progressMap.count() + 8 );
-    m_progressDetailsWidget->reposition();
-    delete childBar;
-
-    if ( m_progressMap.count() == 1 )
-    {
-        setDescription( m_progressMap.values().at( 0 )->descriptionLabel()->text() );
-        cancelButton()->setToolTip( i18n( "Abort" ) );
-    }
-    else
-    {
-        setDescription( i18n( "Multiple background tasks running" ) );
-        cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
-    }
-
-    if ( m_progressMap.count() == 0 )
-    {
-        progressBar()->setValue( 0 );
-        m_progressDetailsWidget->setMinimumWidth( 0 );
-        cancelButton()->setEnabled( false );
-        hideDetails();
-        emit( allDone() );
-        return;
-    }
-
-    progressBar()->setValue( calcCompoundPercentage() );
-
-    handleDetailsButton();
+    childBarFinished( childBar );
 }
 
 void CompoundProgressBar::childBarComplete( ProgressBar * childBar )
 {
     DEBUG_BLOCK
+    childBarFinished( childBar );
+}
 
-    m_progressMap.remove( m_progressMap.key( childBar ) );
-    m_progressDetailsWidget->layout()->removeWidget( childBar );
-    m_progressDetailsWidget->setFixedHeight( childBar->height()  * m_progressMap.count() + 8 );
+void CompoundProgressBar::childBarFinished( ProgressBar *bar )
+{
+    m_progressMap.remove( m_progressMap.key( bar ) );
+    m_progressDetailsWidget->layout()->removeWidget( bar );
+    m_progressDetailsWidget->setFixedHeight( bar->height()  * m_progressMap.count() + 8 );
     m_progressDetailsWidget->reposition();
-    delete childBar;
+    delete bar;
 
-    if ( m_progressMap.count() == 1 )
+    if( m_progressMap.count() == 1 )
     {
         setDescription( m_progressMap.values().at( 0 )->descriptionLabel()->text() );
         cancelButton()->setToolTip( i18n( "Abort" ) );
@@ -180,7 +154,7 @@ void CompoundProgressBar::childBarComplete( ProgressBar * childBar )
         cancelButton()->setToolTip( i18n( "Abort all background tasks" ) );
     }
 
-    if ( m_progressMap.count() == 0 )
+    if( m_progressMap.count() == 0 )
     {
         progressBar()->setValue( 0 );
         hideDetails();
