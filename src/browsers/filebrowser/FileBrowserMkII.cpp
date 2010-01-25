@@ -18,8 +18,9 @@
 
 #include "Debug.h"
 #include "EngineController.h"
+#include "FileTreeView.h"
 #include "playlist/PlaylistController.h"
-#include "widgets/PrettyTreeView.h"
+
 
 #include <KLineEdit>
 
@@ -45,7 +46,7 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 
     debug() << "home path: " <<  QDir::homePath();
 
-    Amarok::PrettyTreeView * treeView = new Amarok::PrettyTreeView( this );
+    FileTreeView * treeView = new FileTreeView( this );
 
     debug() << "root index: " << m_fileSystemModel->index( QDir::homePath() ).row();
     
