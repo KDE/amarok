@@ -48,7 +48,9 @@ private:
     ~KNotificationBackend();
 
     static KNotificationBackend* s_instance;
-    
+
+    KNotification* m_notify;
+
     QTimer *m_timer;
 };
 

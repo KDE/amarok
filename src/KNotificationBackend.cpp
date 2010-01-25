@@ -45,6 +45,7 @@ namespace Amarok
 
 Amarok::KNotificationBackend::KNotificationBackend()
     : EngineObserver( The::engineController() )
+    , m_notify(0)
 {
     DEBUG_BLOCK
 
@@ -56,6 +57,9 @@ Amarok::KNotificationBackend::KNotificationBackend()
 Amarok::KNotificationBackend::~KNotificationBackend()
 {
     DEBUG_BLOCK
+
+    if (m_notify)
+        delete m_notify;
 }
 
 void
@@ -92,15 +96,18 @@ Amarok::KNotificationBackend::slotShowCurrentTrack()
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
-        KNotification* notify = new KNotification( "trackChange" );
+        if( m_notify )
+            m_notify->close(); // Close old notification when switching quickly between tracks
+
+        m_notify = new KNotification( "trackChange" );
 
         if( track->album() )
-            notify->setPixmap( track->album()->imageWithBorder( 80 ) );
+            m_notify->setPixmap( track->album()->imageWithBorder( 80 ) );
 
-        notify->setTitle( i18n( "Now playing" ) );
+        m_notify->setTitle( i18n( "Now playing" ) );
 
-        notify->setText( Amarok::prettyNowPlaying() );
-        notify->sendEvent();
+        m_notify->setText( Amarok::prettyNowPlaying() );
+        m_notify->sendEvent();
     }
 }
 
