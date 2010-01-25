@@ -354,18 +354,12 @@ void CoverManager::showOnce( const QString &artist )
 
 void CoverManager::slotArtistSelected() //SLOT
 {
+    DEBUG_BLOCK
+
     // delete cover items before clearing cover view
     qDeleteAll( m_coverItems );
     m_coverItems.clear();
     m_coverView->clear();
-
-    slotArtistSelectedContinue();
-}
-
-
-void CoverManager::slotArtistSelectedContinue() //SLOT
-{
-    DEBUG_BLOCK
 
     m_progressDialog = new QProgressDialog( this );
     m_progressDialog->setLabelText( i18n("Loading Thumbnails...") );
