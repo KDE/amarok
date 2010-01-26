@@ -55,11 +55,7 @@ void InfoParserBase::showLoading( const QString &message )
             return;
         }
 
-        QString html;
-        while ( !file.atEnd() )
-            html += file.readLine();
-
-        s_loadingBaseHtml = html;
+        s_loadingBaseHtml = file.readAll();
     }
 
     QString currentHtml = s_loadingBaseHtml;
