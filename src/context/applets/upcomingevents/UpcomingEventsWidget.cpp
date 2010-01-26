@@ -130,15 +130,27 @@ UpcomingEventsWidget::loadImage( KJob * job ) // SLOT
 void
 UpcomingEventsWidget::setParticipants( const QString &participants )
 {
-    QStringList listbuff = participants.split(" - ");
-    QString buffer("");
-    for( int i = 0; i < NBR_MAX_PARTICIPANT && i < listbuff.size(); i++ )
+    QFont font;
+    if( participants == "No other participants" )
     {
-        buffer += listbuff.at( i );
-        if( i < NBR_MAX_PARTICIPANT - 1 && i < listbuff.size()-1 ) buffer += " - ";
+        m_participants->setText( participants );
+        font.setItalic( true );
+        m_participants->setFont( font );
     }
-    if( listbuff.size() > NBR_MAX_PARTICIPANT ) buffer += "...";
-    m_participants->setText( buffer );
+    else
+    {
+        QStringList listbuff = participants.split(" - ");
+        QString buffer("");
+        for( int i = 0; i < NBR_MAX_PARTICIPANT && i < listbuff.size(); i++ )
+        {
+            buffer += listbuff.at( i );
+            if( i < NBR_MAX_PARTICIPANT - 1 && i < listbuff.size()-1 ) buffer += " - ";
+        }
+        if( listbuff.size() > NBR_MAX_PARTICIPANT ) buffer += "...";
+        m_participants->setText( buffer );
+        font.setItalic( false );
+        m_participants->setFont( font );
+    }
     m_participants->setAttribute( Qt::WA_TranslucentBackground );
 }
 

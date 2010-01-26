@@ -218,7 +218,7 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
             widget->setName( events.at( i ).name() );
             widget->setDate( events.at( i ).date() );
             widget->setLocation( events.at( i ).location() );
-            widget->setParticipants( artistList );
+            !artistList.isEmpty() ? widget->setParticipants( artistList ) : widget->setParticipants( "No other participants" );
             widget->setUrl( events.at( i ).url() );
             widget->setImage( events.at( i ).smallImageUrl() );
             m_widgets.insert( i, widget );
