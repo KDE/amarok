@@ -23,16 +23,13 @@
 #include <QObject>
 
 /**
-Abstract base class for info parsers
-
-    @author  Nikolaj Hald Nielsen <nhn@kde.org>
+  Abstract base class for info parsers
 */
 class AMAROK_EXPORT InfoParserBase  : public QObject
 {
     Q_OBJECT
 
 public:
-
     InfoParserBase();
 
      /**
@@ -58,7 +55,6 @@ public:
      */
     virtual void getInfo( Meta::TrackPtr track ) = 0;
 
-
     void showLoading( const QString &message );
 
 signals:
@@ -69,7 +65,6 @@ signals:
     void info( QString info );
 
 private:
-
     static QString s_loadingBaseHtml;
 };
 
