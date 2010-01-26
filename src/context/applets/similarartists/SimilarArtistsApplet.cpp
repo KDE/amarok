@@ -164,9 +164,27 @@ SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
     // Icon positionning
     m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
 
+    //we must clear the list to not have a bug with the separators
+    while ( !m_layoutWidgetList.empty() )
+    {
+        m_layoutWidgetList.front()->hide();
+        m_layout->removeWidget( m_layoutWidgetList.front() );
+        delete m_layoutWidgetList.front();
+        m_layoutWidgetList.pop_front();
+    }
+
     for( int i = 0; i < m_artists.size(); i++ )
     {
         m_layout->addWidget( m_artists.at( i ) );
+        if ( i < m_artists.size() - 1 )
+        {
+            QFrame *line = new QFrame();
+            line->setFrameStyle( QFrame::HLine );
+            line->setAutoFillBackground( false );
+            line->setMaximumWidth( artistsSize.width() - 2 * standardPadding() - m_scroll->verticalScrollBar()->size().width() );
+            m_layout->addWidget( line, Qt::AlignHCenter );
+            m_layoutWidgetList.push_back( line );
+        }
     }
 }
 
@@ -199,6 +217,15 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
     {
       m_layout->removeWidget(art);
       delete art;
+    }
+
+    // we clear all separators
+    while ( !m_layoutWidgetList.empty() )
+    {
+        m_layoutWidgetList.front()->hide();
+        m_layout->removeWidget( m_layoutWidgetList.front() );
+        delete m_layoutWidgetList.front();
+        m_layoutWidgetList.pop_front();
     }
 
     m_artists.clear();
@@ -317,7 +344,7 @@ SimilarArtistsApplet::artistsUpdate() {
         int cpt=m_artists.size()+1; // the first row (0) is dedicated for the applet title
 
         //if necessary, we increase the number of artists to display
-        while(sizeArtistsDisplay>=cpt) {
+        while(cpt<=sizeArtistsDisplay) {
             ArtistWidget *art=new ArtistWidget;
             m_artists.append(art);
             m_layout->addWidget(m_artists.last());
@@ -330,6 +357,15 @@ SimilarArtistsApplet::artistsUpdate() {
             m_layout->removeWidget(m_artists.last());
             delete m_artists.last();
             m_artists.removeLast();
+        }
+
+        //if necessary, we reduce the number of separators to display
+        while ( cpt<m_layoutWidgetList.size() )
+        {
+            m_layoutWidgetList.front()->hide();
+            m_layout->removeWidget( m_layoutWidgetList.front() );
+            delete m_layoutWidgetList.front();
+            m_layoutWidgetList.pop_front();
         }
 
         // we set the display of the artists widgets
@@ -349,6 +385,15 @@ SimilarArtistsApplet::artistsUpdate() {
         {
             m_layout->removeWidget(art);
             delete art;
+        }
+
+        // we clear all separators
+        while ( !m_layoutWidgetList.empty() )
+        {
+            m_layoutWidgetList.front()->hide();
+            m_layout->removeWidget( m_layoutWidgetList.front() );
+            delete m_layoutWidgetList.front();
+            m_layoutWidgetList.pop_front();
         }
 
         m_artists.clear();

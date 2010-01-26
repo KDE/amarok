@@ -126,6 +126,9 @@ private:
     //elements of the applet
     QList<ArtistWidget*> m_artists;
 
+    //list of the separators
+    QList<QWidget *> m_layoutWidgetList;
+
     int m_maxArtists;
     int m_temp_maxArtists;
 
