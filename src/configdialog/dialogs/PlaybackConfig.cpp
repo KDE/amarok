@@ -71,12 +71,11 @@ PlaybackConfig::configurePhonon() //SLOT
 {
     DEBUG_BLOCK
 
-    KCMultiDialog* KCM = new KCMultiDialog();
-    KCM->setWindowTitle( i18n( "Sound System - Amarok" ) );
-    KCM->addModule( "kcm_phonon" );
-    KCM->exec();
+    KCMultiDialog KCM;
 
-    KCM->deleteLater();
+    KCM.setWindowTitle( i18n( "Sound System - Amarok" ) );
+    KCM.addModule( "kcm_phonon" );
+    KCM.exec();
 }
 
 #include "PlaybackConfig.moc"
