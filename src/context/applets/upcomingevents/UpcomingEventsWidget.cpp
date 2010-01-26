@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009-2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                *
+ * Copyright (c) 2010 Hormiere Guillaume <hormiere.guillaume@gmail.com>                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -51,6 +52,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( QWidget* parent ): QWidget( parent )
     m_layout->addWidget( m_date, 3, 1, 1, 1 );
     m_layout->addWidget( m_url, 4, 1, 1, 1 );
 
+    m_layout->setAlignment( Qt::AlignLeft );
     setLayout( m_layout );
     connect( m_url, SIGNAL( linkActivated( QString ) ), this, SLOT( openUrl( QString ) ) );
 }
