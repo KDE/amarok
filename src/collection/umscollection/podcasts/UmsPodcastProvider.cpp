@@ -54,11 +54,14 @@ UmsPodcastProvider::addPodcast( const KUrl &url )
 PodcastChannelPtr
 UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
 {
-    return PodcastChannelPtr();
+    UmsPodcastChannelPtr umsChannel = UmsPodcastChannelPtr(
+            new UmsPodcastChannel( channel, this ) );
+    m_umsChannels << umsChannel;
+    return PodcastChannelPtr::dynamicCast( umsChannel );
 }
 
 PodcastEpisodePtr
-UmsPodcastProvider::addEpisode( Meta::PodcastEpisodePtr episode )
+UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
 {
     return PodcastEpisodePtr();
 }
@@ -70,8 +73,22 @@ UmsPodcastProvider::channels()
 }
 
 void
-UmsPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
+UmsPodcastProvider::removeSubscription( PodcastChannelPtr channel )
 {
+    UmsPodcastChannelPtr umsChannel = UmsPodcastChannelPtr::dynamicCast( channel );
+    if( umsChannel.isNull() )
+    {
+        error() << "trying to remove a podcast channel of the wrong type";
+        return;
+    }
+
+    if( !m_umsChannels.contains( umsChannel ) )
+    {
+        error() << "trying to remove a podcast channel that is not in the list";
+        return;
+    }
+
+    m_umsChannels.removeAll( umsChannel );
 }
 
 void
@@ -80,7 +97,7 @@ UmsPodcastProvider::configureProvider()
 }
 
 void
-UmsPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
+UmsPodcastProvider::configureChannel( PodcastChannelPtr channel )
 {
 }
 

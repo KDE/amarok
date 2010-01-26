@@ -175,6 +175,14 @@ UmsPodcastChannel::UmsPodcastChannel( UmsPodcastProvider *provider )
 
 }
 
+UmsPodcastChannel::UmsPodcastChannel( PodcastChannelPtr channel,
+                                      UmsPodcastProvider *provider )
+        : Meta::PodcastChannel( channel )
+        , m_provider( provider )
+{
+
+}
+
 UmsPodcastChannel::~UmsPodcastChannel()
 {
 

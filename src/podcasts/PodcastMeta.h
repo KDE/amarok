@@ -100,6 +100,7 @@ class AMAROK_EXPORT PodcastEpisode : public PodcastMetaCommon, public Track
     public:
         PodcastEpisode();
         PodcastEpisode( PodcastChannelPtr channel );
+        PodcastEpisode( PodcastEpisodePtr episode, PodcastChannelPtr channel );
 
         virtual ~PodcastEpisode() {}
 
@@ -222,6 +223,7 @@ class AMAROK_EXPORT PodcastChannel : public PodcastMetaCommon, public Playlist
             , m_purgeCount( 0 )
         { }
 
+        PodcastChannel( Meta::PodcastChannelPtr channel );
         virtual ~PodcastChannel() {}
 
         //Playlist virtual methods
