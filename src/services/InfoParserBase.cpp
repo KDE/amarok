@@ -25,7 +25,7 @@
 #include <QFile>
 #include <QPalette>
 
-QString InfoParserBase::s_loadingBaseHtml = QString();
+QString InfoParserBase::s_loadingBaseHtml;
 
 InfoParserBase::InfoParserBase()
   : QObject()
