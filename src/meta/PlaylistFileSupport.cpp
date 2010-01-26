@@ -62,6 +62,12 @@ loadPlaylistFile( const KUrl &url )
     QFile file;
     KUrl fileToLoad;
 
+    if( !url.isValid() )
+    {
+        error() << "url is not valid!";
+        return PlaylistFilePtr();
+    }
+
     if( url.isLocalFile() )
     {
         if( !QFileInfo( url.toLocalFile() ).exists() )

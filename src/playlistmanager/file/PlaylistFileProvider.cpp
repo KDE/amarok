@@ -205,6 +205,12 @@ bool
 PlaylistFileProvider::import( const KUrl &path )
 {
     DEBUG_BLOCK
+    if( !path.isValid() )
+    {
+        error() << "path is not valid!";
+        return false;
+    }
+
     foreach( const Meta::PlaylistPtr playlist, m_playlists )
     {
         Meta::PlaylistFilePtr playlistFile =
