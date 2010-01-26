@@ -84,7 +84,12 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
     m_fieldSelection->setCurrentIndex( currentEntry );
     m_weightSelection->setValue( m_cbias->weight() * 100 );
     weightChanged( m_cbias->weight() * 100 );
-    setCurrentLoadedBiasWidget();
+    // if the custom bias has an entry already loaded, don't reset it.
+    // but if not, we create one for ourselves
+    if( m_cbias->currentEntry() )
+        setCurrentLoadedBiasWidget();
+    else
+        selectionChanged( 0 );
 
     //debug() << "CustomBiasEntryWidget created with weight:" << m_cbias->weight() * 100 ;
 

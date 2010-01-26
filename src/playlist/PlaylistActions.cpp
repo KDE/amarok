@@ -265,11 +265,13 @@ Playlist::Actions::playlistModeChanged()
 
         if ( !playlist )
         {
-            debug() << "HELP! Playlist::Actions::PlaylistModeChanged got a null dynamic mode... there should always be one, a least the default!";
-        } else
-        {
-            m_navigator = new DynamicTrackNavigator( playlist );
+            debug() << "No dynamic playlist current loaded! Creating dynamic track navigator with null playlist!";
         }
+         
+        m_navigator = new DynamicTrackNavigator( playlist );
+
+        return;
+
     }
 
     m_navigator = 0;
