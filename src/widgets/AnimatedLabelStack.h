@@ -30,6 +30,7 @@ public:
     void setBold( bool bold );
     void setData( const QStringList &data );
     inline void setOpacity( int alpha ) { m_targetOpacity = qMin(qMax(0, alpha), 255); }
+    inline int opacity() { return m_targetOpacity; }
 public slots:
     void setAnimated( bool on = true );
     inline void setStill( bool off = true ) { setAnimated( !off ); }

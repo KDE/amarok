@@ -43,9 +43,14 @@ public:
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
     void resizeEvent( QResizeEvent *ev );
+    void showEvent( QShowEvent *ev );
+    void timerEvent( QTimerEvent *ev );
+private:
+    void animateTrackLabels();
 private slots:
     void addBookmark( const QString &name, int milliSeconds );
     void filter( const QString &string );
+    void layoutTrackBar();
     void setLabelTime( int ms );
     void setPlaying( bool on );
     void setActionsFrom( Meta::TrackPtr track );
@@ -53,16 +58,35 @@ private slots:
     void updatePrevAndNext();
 
 private:
-    AnimatedLabelStack *m_current, *m_next, *m_prev;
-    QSpacerItem *m_trackBarSpacer;
     PlayPauseButton *m_playPause;
+
+    QSpacerItem *m_trackBarSpacer;
+    struct {
+        AnimatedLabelStack *label;
+        QString key;
+    } m_current;
+    struct {
+        AnimatedLabelStack *label;
+        QString key;
+    } m_next;
+    struct {
+        AnimatedLabelStack *label;
+        QString key;
+    } m_prev;
+    struct {
+        AnimatedLabelStack *label;
+        int targetX;
+    } m_dummy;
+    
+
+    QBoxLayout *m_progressLayout;
     QLabel *m_timeLabel;
     Amarok::TimeSlider *m_slider;
     QToolBar *m_trackActionBar;
-    QBoxLayout *m_progressLayout;
+    
     VolumeDial *m_volume;
-    QString m_currentUrlId;
-    int m_lastTime, m_dragStartX, m_lastDragX;
+    
+    int m_lastTime, m_dragStartX, m_dragLastX, m_trackBarAnimationTimer;
 };
 
 #endif

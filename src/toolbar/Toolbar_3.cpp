@@ -34,9 +34,10 @@
 
 #include <QtDebug>
 
-// NOTICE shall be 10, but there's the time label :-(
-static const int sliderStretch = 17;
+static const int sliderStretch = 18;
 static const QString promoString = i18n( "Amarok your Music" );
+static const int prevOpacity = 128;
+static const int nextOpacity = 160;
 
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
@@ -61,29 +62,32 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     QWidget *info = new QWidget(this);
     QVBoxLayout *vl = new QVBoxLayout( info );
     
-    m_prev = new AnimatedLabelStack(QStringList(), info);
-    m_prev->setAnimated( false );
-    m_prev->setOpacity( 128 );
-    m_prev->installEventFilter( this );
-    m_prev->setAlign( Qt::AlignCenter );
-    connect ( m_prev, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
+    m_prev.label = new AnimatedLabelStack(QStringList(), info);
+    m_prev.label->setAnimated( false );
+    m_prev.label->setOpacity( prevOpacity );
+    m_prev.label->installEventFilter( this );
+    m_prev.label->setAlign( Qt::AlignCenter );
+    connect ( m_prev.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
 
-    m_current = new AnimatedLabelStack( QStringList( promoString ), info );
-    m_current->setBold( true );
-    m_current->installEventFilter( this );
-    connect ( m_current, SIGNAL( clicked(const QString&) ), this, SLOT( filter(const QString&) ) );
+    m_current.label = new AnimatedLabelStack( QStringList( promoString ), info );
+    m_current.label->setBold( true );
+    m_current.label->installEventFilter( this );
+    connect ( m_current.label, SIGNAL( clicked(const QString&) ), this, SLOT( filter(const QString&) ) );
 
-    m_next = new AnimatedLabelStack(QStringList(), info);
-    m_next->setAnimated( false );
-    m_next->setOpacity( 160 );
-    m_next->installEventFilter( this );
-    m_next->setAlign( Qt::AlignCenter );
-    connect ( m_next, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( next() ) );
+    m_next.label = new AnimatedLabelStack(QStringList(), info);
+    m_next.label->setAnimated( false );
+    m_next.label->setOpacity( nextOpacity );
+    m_next.label->installEventFilter( this );
+    m_next.label->setAlign( Qt::AlignCenter );
+    connect ( m_next.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( next() ) );
 
-    vl->addItem( m_trackBarSpacer = new QSpacerItem(0, m_current->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
+    m_dummy.label = new AnimatedLabelStack(QStringList(), info);
+    m_dummy.label->hide();
 
-    connect ( m_prev, SIGNAL( pulsing(bool) ), m_current, SLOT( setStill(bool) ) );
-    connect ( m_next, SIGNAL( pulsing(bool) ), m_current, SLOT( setStill(bool) ) );
+    vl->addItem( m_trackBarSpacer = new QSpacerItem(0, m_current.label->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
+
+    connect ( m_prev.label, SIGNAL( pulsing(bool) ), m_current.label, SLOT( setStill(bool) ) );
+    connect ( m_next.label, SIGNAL( pulsing(bool) ), m_current.label, SLOT( setStill(bool) ) );
 
     
     m_progressLayout = new QHBoxLayout;
@@ -135,6 +139,55 @@ Toolbar_3::addBookmark( const QString &name, int milliSeconds )
         m_slider->drawTriangle( name, milliSeconds, false );
 }
 
+// Moves the label towards its target position by 2/3rds of the remaining distance
+static void adjustLabelPos( QWidget *label, int targetX )
+{
+    QRect r = label->geometry();
+    int d = targetX - r.x();
+    if ( d )
+    {
+        d += (d>0) ? 1 : -1; // increase the distance abs value by one to force a ceil of the below fraction
+        d = (2*d)/3;
+        r.translate( d, 0 );
+        label->setGeometry( r );
+    }
+}
+
+void
+Toolbar_3::animateTrackLabels()
+{
+    bool done = true;
+    int x = m_trackBarSpacer->geometry().x();
+    const int dx = m_trackBarSpacer->geometry().width() / 3;
+    adjustLabelPos( m_prev.label, x );
+    m_prev.label->setOpacity( prevOpacity );
+    if (done)
+        done = m_prev.label->geometry().x() == x;
+    
+    x += dx;
+    adjustLabelPos( m_current.label, x );
+    if (done)
+        done = m_current.label->geometry().x() == x;
+    
+    x += dx;
+    adjustLabelPos( m_next.label, x );
+    m_next.label->setOpacity( nextOpacity );
+    if (done)
+        done = m_next.label->geometry().x() == x;
+
+    adjustLabelPos( m_dummy.label, m_dummy.targetX );
+    if ( m_dummy.label->geometry().x() == m_dummy.targetX )
+        m_dummy.label->hide();
+    else
+        done = false;
+    
+    if ( done )
+    {
+        killTimer( m_trackBarAnimationTimer );
+        m_trackBarAnimationTimer = 0;
+    }
+}
+
 void
 Toolbar_3::engineVolumeChanged( int percent )
 {
@@ -165,13 +218,15 @@ Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldStat
         m_playPause->setPlaying( false );
         break;
     case Phonon::LoadingState:
-        if ( !The::engineController()->currentTrack() ||
-             ( m_currentUrlId != The::engineController()->currentTrack()->uidUrl() ) )
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+        if ( !( track && m_current.key == track->uidUrl() ) )
         {
             setLabelTime( -1 );
             m_slider->setEnabled( false );
         }
         break;
+    }
     default:
         break;
     }
@@ -182,6 +237,20 @@ Toolbar_3::filter( const QString &string )
 {
     if ( CollectionWidget::instance() )
         CollectionWidget::instance()->setFilter( string );
+}
+
+void
+Toolbar_3::layoutTrackBar()
+{
+    QRect r = m_trackBarSpacer->geometry();
+    r.setWidth( r.width() / 3);
+    m_prev.label->setGeometry( r );
+    m_prev.label->setOpacity( prevOpacity );
+    r.moveLeft( r.right() + 1 );
+    m_current.label->setGeometry( r );
+    r.moveLeft( r.right() + 1 );
+    m_next.label->setGeometry( r );
+    m_next.label->setOpacity( nextOpacity );
 }
 
 #define HAS_TAG(_TAG_) !track->_TAG_()->name().isEmpty()
@@ -197,7 +266,7 @@ static QStringList metadata( Meta::TrackPtr track )
         if ( !track->name().isEmpty() )
         {
             QString title = track->prettyName();
-//             qDebug() << track->prettyUrl();
+            
             if ( title.length() > 50 ||
                  (HAS_TAG(artist) && title.CONTAINS_TAG(artist)) ||
                  (HAS_TAG(composer) && title.CONTAINS_TAG(composer)) ||
@@ -248,18 +317,25 @@ Toolbar_3::updatePrevAndNext()
 {
     if ( !The::engineController()->currentTrack() )
     {
-        m_prev->setData( QStringList() );
-        m_next->setData( QStringList() );
+        m_prev.label->setData( QStringList() );
+        m_next.label->setData( QStringList() );
+        m_current.label->setUpdatesEnabled( true );
         return;
     }
     
     Meta::TrackPtr track = The::playlistActions()->prevTrack();
-    m_prev->setData( metadata( track ) );
-    m_prev->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
+    m_prev.key = track ? track->uidUrl() : QString();
+    m_prev.label->setData( metadata( track ) );
+    m_prev.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
     
     track = The::playlistActions()->nextTrack();
-    m_next->setData( metadata( track ) );
-    m_next->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
+    m_next.key = track ? track->uidUrl() : QString();
+    m_next.label->setData( metadata( track ) );
+    m_next.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
+
+    // we may have disbaled it as otherwise the current label gets updated one eventcycle before prev & next
+    // see ::engineTrackChanged()
+    m_current.label->setUpdatesEnabled( true );
 }
 
 void
@@ -291,20 +367,80 @@ Toolbar_3::updateBookmarks( const QString *BookmarkName )
 void
 Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
 {
-    if ( !track )
-        m_currentUrlId.clear();
+    if ( m_trackBarAnimationTimer )
+    {
+        killTimer( m_trackBarAnimationTimer );
+        m_trackBarAnimationTimer = 0;
+    }
     setLabelTime( -1 );
     setActionsFrom( track );
-    m_trackBarSpacer->changeSize(0, m_current->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    m_trackBarSpacer->changeSize(0, m_current.label->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     if ( track )
     {
-        m_current->setData( metadata( track ) );
-        m_current->setCursor( Qt::PointingHandCursor );
+        m_current.key = track->uidUrl();
+        m_current.label->setUpdatesEnabled( false );
+        m_current.label->setData( metadata( track ) );
+        m_current.label->setCursor( Qt::PointingHandCursor );
+
+        // If all labels are in position and this is a single step for or back, we perform a slide
+        // on the other two labels, i.e. e.g. move the prev to current label position and current
+        // to the next and the animate the move into their target positions
+        QRect r = m_trackBarSpacer->geometry();
+        r.setWidth( r.width() / 3);
+        if ( isVisible() && m_current.label->geometry().x() == r.x() + r.width() )
+        {
+            if ( m_current.key == m_next.key )
+            {
+                // left
+                m_dummy.targetX = r.x() - r.width()/2;
+                m_dummy.label->setGeometry( r );
+                m_dummy.label->setData( m_prev.label->data() );
+                m_dummy.label->show();
+                // center
+                r.moveLeft( r.right() + 1 );
+                m_prev.label->setGeometry( r );
+                // right
+                r.moveLeft( r.right() + 1 );
+                m_current.label->setGeometry( r );
+                m_next.label->setGeometry( r );
+
+                m_next.label->setOpacity( 0 );
+                m_next.label->raise();
+
+                animateTrackLabels();
+                m_trackBarAnimationTimer = startTimer( 40 );
+            }
+            else if ( m_current.key == m_prev.key )
+            {
+                // left
+                m_prev.label->setGeometry( r );
+                m_current.label->setGeometry( r );
+                // center
+                r.moveLeft( r.right() + 1 );
+                m_next.label->setGeometry( r );
+
+                // right
+                r.moveLeft( r.right() + 1 );
+                m_dummy.targetX = r.x() + r.width()/2;
+                m_dummy.label->setGeometry( r );
+                m_dummy.label->setData( m_next.label->data() );
+                m_dummy.label->show();
+
+                m_prev.label->setOpacity( 0 );
+                m_prev.label->raise();
+
+                animateTrackLabels();
+                m_trackBarAnimationTimer = startTimer( 40 );
+            }
+        }
+        else
+            layoutTrackBar();
     }
     else
     {
-        m_current->setData( QStringList( promoString ) );
-        m_current->setCursor( Qt::ArrowCursor );
+        m_current.key.clear();
+        m_current.label->setData( QStringList( promoString ) );
+        m_current.label->setCursor( Qt::ArrowCursor );
     }
     QTimer::singleShot( 0, this, SLOT( updatePrevAndNext() ) );
 }
@@ -317,8 +453,8 @@ Toolbar_3::engineTrackLengthChanged( qint64 ms )
 
     // get the urlid of the current track as the engine might stop and start several times
     // when skipping last.fm tracks, so we need to know if we are still on the same track...
-    if ( The::engineController()->currentTrack() )
-        m_currentUrlId = The::engineController()->currentTrack()->uidUrl();
+    if ( Meta::TrackPtr track = The::engineController()->currentTrack() )
+        m_current.key = track->uidUrl();
 
     updateBookmarks( 0 );
 }
@@ -336,13 +472,6 @@ Toolbar_3::resizeEvent( QResizeEvent *ev )
 {
     if ( ev->size().width() > 0 )
     {
-        QRect r = m_trackBarSpacer->geometry();
-        r.setWidth( r.width() / 3);
-        m_prev->setGeometry( r );
-        r.moveLeft( r.right() );
-        m_current->setGeometry( r );
-        r.moveLeft( r.right() );
-        m_next->setGeometry( r );
         const int limit = 640;
         if ( ev->size().width() > limit )
         {
@@ -354,6 +483,7 @@ Toolbar_3::resizeEvent( QResizeEvent *ev )
             s *= s*s*sliderStretch;
             m_progressLayout->setStretchFactor( m_slider, qMax( sliderStretch, s ) );
         }
+        layoutTrackBar();
     }
 }
 
@@ -429,6 +559,22 @@ Toolbar_3::setPlaying( bool on )
         The::engineController()->pause();
 }
 
+void
+Toolbar_3::showEvent( QShowEvent *ev )
+{
+    QToolBar::showEvent( ev );
+    layoutTrackBar();
+}
+
+void
+Toolbar_3::timerEvent( QTimerEvent *ev )
+{
+    if ( ev->timerId() == m_trackBarAnimationTimer )
+        animateTrackLabels();
+    else
+        QToolBar::timerEvent( ev );
+}
+
 bool
 Toolbar_3::eventFilter( QObject *o, QEvent *ev )
 {
@@ -436,18 +582,18 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
     {
         QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
         if ( mev->buttons() & Qt::LeftButton )
-        if ( o == m_current || o == m_prev || o == m_next )
+        if ( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
             const int x = mev->globalPos().x();
-            int d = x - m_lastDragX;
-            m_lastDragX = x;
+            int d = x - m_dragLastX;
+            m_dragLastX = x;
             const int globalDist = qAbs( x - m_dragStartX );
-            if ( globalDist > m_prev->width() )
+            if ( globalDist > m_prev.label->width() )
                 return false; // constrain to one item width
 
-            m_current->setGeometry( m_current->geometry().translated( d, 0 ) );
-            m_prev->setGeometry( m_prev->geometry().translated( d, 0 ) );
-            m_next->setGeometry( m_next->geometry().translated( d, 0 ) );
+            m_current.label->setGeometry( m_current.label->geometry().translated( d, 0 ) );
+            m_prev.label->setGeometry( m_prev.label->geometry().translated( d, 0 ) );
+            m_next.label->setGeometry( m_next.label->geometry().translated( d, 0 ) );
         }
         return false;
     }
@@ -455,10 +601,10 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
     {
         QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
         if ( mev->button() == Qt::LeftButton )
-        if ( o == m_current || o == m_prev || o == m_next )
+        if ( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
             static_cast<QWidget*>(o)->setCursor( Qt::SizeHorCursor );
-            m_lastDragX = m_dragStartX = mev->globalPos().x();
+            m_dragLastX = m_dragStartX = mev->globalPos().x();
         }
         return false;
     }
@@ -466,20 +612,12 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
     {
         QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
         if ( mev->button() == Qt::LeftButton )
-        if ( o == m_current || o == m_prev || o == m_next )
+        if ( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
             const int x = mev->globalPos().x();
             const int d = m_dragStartX - x;
-            const int limit = m_prev->width()/2; // snap on half item width
-
-            // reset positions
             QRect r = m_trackBarSpacer->geometry();
-            r.setWidth( r.width() / 3);
-            m_prev->setGeometry( r );
-            r.moveLeft( r.right() );
-            m_current->setGeometry( r );
-            r.moveLeft( r.right() );
-            m_next->setGeometry( r );
+            const int limit = r.width()/5; // 1/3 is too much, 1/6 to few
 
             // reset cursor
             AnimatedLabelStack *l = static_cast<AnimatedLabelStack*>(o);
@@ -499,10 +637,20 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
             }
 
             // if moved "far enough" jump to prev/next track
+            // NOTICE the labels shall snap back _after_ the track has changed (in case)
+            // as this is not reliable, we force a timered snapback sa well
             if ( d > limit )
+            {
                 The::playlistActions()->next();
+                QTimer::singleShot(500, this, SLOT( layoutTrackBar() ) );
+            }
             else if ( d < -limit )
+            {
                 The::playlistActions()->back();
+                QTimer::singleShot(500, this, SLOT( layoutTrackBar() ) );
+            }
+            else
+                layoutTrackBar();
 
             return silentRelease;
         }
@@ -510,18 +658,18 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
     }
     if ( ev->type() == QEvent::Enter )
     {
-        if (o == m_next)
-            m_next->setOpacity( 255 );
-        else if (o == m_prev)
-            m_prev->setOpacity( 255 );
+        if (o == m_next.label)
+            m_next.label->setOpacity( 255 );
+        else if (o == m_prev.label)
+            m_prev.label->setOpacity( 255 );
         return false;
     }
     if ( ev->type() == QEvent::Leave )
     {
-        if (o == m_next)
-            m_next->setOpacity( 160 );
-        else if (o == m_prev)
-            m_prev->setOpacity( 128 );
+        if (o == m_next.label)
+            m_next.label->setOpacity( 160 );
+        else if (o == m_prev.label)
+            m_prev.label->setOpacity( 128 );
         return false;
     }
     return false;
