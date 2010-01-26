@@ -47,6 +47,7 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Prevent a crash when loading PLS playlists with invalid filepaths.
     * Fixed scrolling crashes with the cover manager. (BR 224000)
     * Fixed a bug that was deleting files when using "Move to collection"
       from the file browser. (BR 217002)

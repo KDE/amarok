@@ -174,6 +174,11 @@ PLSPlaylist::loadPls( QTextStream &stream )
                 continue;
             tmp = (*i).section('=', 1).trimmed();
             currentTrack = CollectionManager::instance()->trackForUrl( tmp );
+            if( currentTrack.isNull() )
+            {
+                debug() << "track could not be loaded: " << tmp;
+                continue;
+            }
             m_tracks.append( currentTrack );
             continue;
         }
