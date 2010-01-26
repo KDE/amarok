@@ -31,10 +31,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="12.656389"
-     inkscape:cx="902.94709"
+     inkscape:cx="731.98489"
      inkscape:cy="74.358956"
      inkscape:document-units="px"
-     inkscape:current-layer="slider_knob_200911_active"
+     inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1440"
      inkscape:window-height="846"
@@ -5372,11 +5372,11 @@
        gradientTransform="matrix(-0.33333333,0,0,0.33333289,94.013493,750.21423)"
        gradientUnits="userSpaceOnUse"
        id="linearGradient11854"
-       xlink:href="#linearGradient9636"
+       xlink:href="#linearGradient5851-1"
        inkscape:collect="always" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient9636"
+       xlink:href="#linearGradient5851-1"
        id="linearGradient11884"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.33333333,0,0,0.33333289,-82.993253,750.21083)"
@@ -5402,7 +5402,7 @@
        gradientTransform="matrix(23.5,0,0,0.6666667,-17149.49,-1901.7773)"
        gradientUnits="userSpaceOnUse"
        id="linearGradient11921"
-       xlink:href="#linearGradient9636"
+       xlink:href="#linearGradient5851-1"
        inkscape:collect="always" />
     <radialGradient
        inkscape:collect="always"
@@ -10871,7 +10871,7 @@
          id="title11745">progress_slider_right</title>
     </path>
     <path
-       style="opacity:1;fill:url(#linearGradient11884);fill-opacity:1;fill-rule:nonzero"
+       style="opacity:0.7;fill:url(#linearGradient11884);fill-opacity:1;fill-rule:nonzero"
        d="m -116.98988,1077.8258 c -2.77,0 -5,2.23 -5,5 0,2.77 2.23,5 5,5 l 5,0 0,-10 -5,0 z m 0,1.6667 c 1.84095,0 3.33333,1.4924 3.33333,3.3333 0,1.8409 -1.49238,3.3333 -3.33333,3.3333 -1.84095,0 -3.33333,-1.4924 -3.33333,-3.3333 0,-1.8409 1.49238,-3.3333 3.33333,-3.3333 z"
        id="progress_slider_played_left">
       <title
@@ -10879,7 +10879,7 @@
          style="fill-opacity:1.0">progress_slider_played_left</title>
     </path>
     <path
-       style="opacity:1;fill:url(#linearGradient11854);fill-opacity:1;fill-rule:nonzero"
+       style="opacity:0.7;fill:url(#linearGradient11854);fill-opacity:1;fill-rule:nonzero"
        d="m 128.01012,1077.8258 c 2.77,0 5,2.23 5,5 0,2.77 -2.23,5 -5,5 l -5,0 0,-10 5,0 z"
        id="progress_slider_played_right">
       <title
@@ -10897,7 +10897,7 @@
          id="title11900">progress_slider_mid</title>
     </rect>
     <rect
-       style="opacity:1;fill:url(#linearGradient11921);fill-opacity:1;fill-rule:nonzero"
+       style="opacity:0.7;fill:url(#linearGradient11921);fill-opacity:1;fill-rule:nonzero"
        id="progress_slider_played_mid"
        width="235"
        height="10"
@@ -10913,7 +10913,7 @@
        id="slider_knob_200911">
       <path
          transform="matrix(0.4931701,0,0,0.4931701,-219.22524,-52.876797)"
-         d="m 904,124 a 19,19 0 1 1 -38,0 19,19 0 1 1 38,0 z"
+         d="m 904,124 c 0,10.49341 -8.50659,19 -19,19 -10.49341,0 -19,-8.50659 -19,-19 0,-10.49341 8.50659,-19 19,-19 10.49341,0 19,8.50659 19,19 z"
          sodipodi:ry="19"
          sodipodi:rx="19"
          sodipodi:cy="124"
