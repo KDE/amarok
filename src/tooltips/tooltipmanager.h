@@ -80,6 +80,8 @@ private:
     Meta::TrackPtr m_track;
 
     AmarokBalloonTooltipDelegate * g_delegate;
+
+    QString breakLongLinesHTML(const QString& text);
 };
 
 #endif
