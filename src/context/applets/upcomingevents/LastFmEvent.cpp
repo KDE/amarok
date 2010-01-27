@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
- * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
+ * Copyright (c) 2009-2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,7 +20,15 @@
 /**
  * Creates an empty LastFmEvent
  */
-LastFmEvent::LastFmEvent() {}
+LastFmEvent::LastFmEvent()
+{
+    static bool metaTypeRegistered = false;
+    if (!metaTypeRegistered)
+    {
+        qRegisterMetaType<LastFmEvent>("LastFmEvent");
+        metaTypeRegistered = true;
+    }
+}
 
 /**
  * Creates a new LastFmEvent with the 'event' attributes
@@ -35,23 +43,13 @@ LastFmEvent::LastFmEvent( const LastFmEvent& event)
     m_date = event.m_date;
     m_smallImageUrl = event.m_smallImageUrl;
     m_url = event.m_url;
+    m_location = event.m_location;
 }
 
 /**
  * Destroys a LastFmEvent instance
  */
 LastFmEvent::~LastFmEvent() {}
-
-LastFmEvent::LastFmEvent(QStringList artists, QString name, QDateTime date, KUrl smallImageUrl, KUrl url)
-    : m_artists(artists), m_name(name), m_date(date), m_smallImageUrl(smallImageUrl), m_url(url)
-{
-    static bool metaTypeRegistered = false;
-    if (!metaTypeRegistered)
-    {
-        qRegisterMetaType<LastFmEvent>("LastFmEvent");
-        metaTypeRegistered = true;
-    }
-}
 
 QStringList LastFmEvent::artists() const
 {
@@ -68,6 +66,11 @@ QString LastFmEvent::name() const
     return m_name;
 }
 
+QString LastFmEvent::location() const
+{
+    return m_location;
+}
+
 KUrl LastFmEvent::smallImageUrl() const
 {
     return m_smallImageUrl;
@@ -76,4 +79,34 @@ KUrl LastFmEvent::smallImageUrl() const
 KUrl LastFmEvent::url() const
 {
     return m_url;
+}
+
+void LastFmEvent::setArtists( QStringList artists )
+{
+    m_artists = artists;
+}
+
+void LastFmEvent::setDate( QDateTime date )
+{
+    m_date = date;
+}
+
+void LastFmEvent::setName( QString name )
+{
+    m_name = name;
+}
+
+void LastFmEvent::setLocation( QString location )
+{
+    m_location = location;
+}
+
+void LastFmEvent::setSmallImageUrl( KUrl smallImageUrl )
+{
+    m_smallImageUrl = smallImageUrl;
+}
+
+void LastFmEvent::setUrl( KUrl url )
+{
+    m_url = url;
 }

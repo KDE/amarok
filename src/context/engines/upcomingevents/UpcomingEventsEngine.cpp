@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
- * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
+ * Copyright (c) 2009-2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                *
  * Copyright (c) 2010 Hormiere Guillaume <hormiere.guillaume@gmail.com>                 * 
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -97,9 +97,9 @@ void UpcomingEventsEngine::update()
 
     // We've got a new track, great, let's fetch some info from UpcomingEvents !
     m_triedRefinedSearch = 0;
-    QString artistName;
-    static QString lastArtistName;
 
+    static QString lastArtistName;
+    m_artistName = "";
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
 
@@ -119,22 +119,22 @@ void UpcomingEventsEngine::update()
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                     ( currentTrack->playableUrl().protocol() == "daap" ) ||
                     !The::engineController()->isStream() )
-                artistName = currentTrack->artist()->name();
+                m_artistName = currentTrack->artist()->name();
             else
-                artistName = currentTrack->artist()->prettyName();
+                m_artistName = currentTrack->artist()->prettyName();
         }
-        if (artistName.compare( "") == 0)
+        if (m_artistName.compare( "") == 0)
             setData( "upcomingEvents", "artist", "Unknown artist" );
         else
-            setData( "upcomingEvents", "artist", artistName );
+            setData( "upcomingEvents", "artist", m_artistName );
     }
 
     QPixmap cover = m_currentTrack->album()->image( 156 );
 
-    if( artistName != lastArtistName )
+    if( m_artistName != lastArtistName )
     {
-        upcomingEventsRequest( artistName );
-        lastArtistName = artistName;
+        upcomingEventsRequest( m_artistName );
+        lastArtistName = m_artistName;
     }
 }
 
@@ -211,7 +211,7 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
             QDomElement currentArtistElement = currentArtistNode.toElement();
             if( currentArtistElement.tagName() == "artist" )
             {
-                if( !currentArtistElement.isNull() )
+                if( !currentArtistElement.isNull() && currentArtistElement.text() != m_artistName )
                 {
                     artists.append( currentArtistElement.text() );
                 }
@@ -229,6 +229,40 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
             QString startDateString = startDateElement.text();
             startDate = QLocale().toDateTime( startDateString, "ddd, dd MMM yyyy HH:mm:ss" );
 
+        }
+
+        // Event location
+        QDomNode venueNode = n.namedItem( "venue" );        
+        QString location;
+        if( !venueNode.isNull() )
+        {
+            QDomNodeList venueNodes = venueNode.childNodes();
+            QDomNode locationNode;
+            for( int i = 0; i < venueNodes.size(); i++ )
+            {
+                if( venueNodes.at( i ).nodeName() == "location" )
+                {
+                    locationNode = venueNodes.at( i );
+                    QDomNodeList locationNodes = locationNode.childNodes();
+                    QString cityText, countryText;
+                    for( int j = 0; j < locationNodes.size(); j++ )
+                    {
+                        QDomElement locationElement;
+                        debug() << locationNodes.at( j ).nodeName();
+                        if( locationNodes.at( j ).nodeName() == "city" )
+                        {
+                            locationElement = locationNodes.at( j ).toElement();
+                            cityText = locationElement.text();
+                        }
+                        if( locationNodes.at( j ).nodeName() == "country" )
+                        {
+                            locationElement = locationNodes.at( j ).toElement();
+                            countryText = locationElement.text();
+                        }
+                    }
+                    location = cityText + ", " + countryText;
+                }
+            }
         }
 
         // Event url
@@ -252,7 +286,16 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
             }
             imageUrl = KUrl( imageUrlElement.text() );
         }
-        m_upcomingEvents.append( LastFmEvent( artists, title, startDate, imageUrl, url ) );
+
+        // LastFm event creation
+        LastFmEvent event;
+        event.setArtists( artists );
+        event.setName( title );
+        event.setLocation( location );
+        event.setDate( startDate );
+        event.setUrl( url );
+        event.setSmallImageUrl( imageUrl );
+        m_upcomingEvents.append( event );
         
         n = n.nextSibling();
     }

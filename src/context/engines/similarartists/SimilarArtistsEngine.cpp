@@ -140,7 +140,7 @@ void SimilarArtistsEngine::update()
              KConfigGroup config = Amarok::config("SimilarArtists Applet");
             
              //fix the limit of the request, the default is already fixed by the applet
-            int nbArt=config.readEntry( "maxArtists", "3" ).toInt();
+            int nbArt=config.readEntry( "maxArtists", "5" ).toInt();
             
             // wee make a request only if the artist is different
             // or if the number of artist to display is bigger

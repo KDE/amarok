@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
+ * Copyright (c) 2009-2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                *
+ * Copyright (c) 2010 Hormiere Guillaume <hormiere.guillaume@gmail.com>                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,7 +17,6 @@
 
 #include "UpcomingEventsWidget.h"
 
-
 #include <QDateTime>
 #include <QGridLayout>
 #include <QLabel>
@@ -30,38 +30,43 @@
 #include <QGraphicsScene>
 #include <QDesktopServices>
 
-UpcomingEventsWidget::UpcomingEventsWidget(QString name, QDateTime date, QString participants, KUrl url, KUrl image, QWidget* parent): QWidget( parent )
+#define NBR_MAX_PARTICIPANT 5
+
+UpcomingEventsWidget::UpcomingEventsWidget( QWidget* parent ): QWidget( parent )
 {
     m_image = new QLabel( this );
     m_participants = new QLabel( this );
     m_date = new QLabel( this );
     m_name = new QLabel( this );
     m_url = new QLabel( this );
+    m_location = new QLabel( this );
+    m_frame = new QFrame( this );
+
+    m_frame->setFrameStyle( QFrame::HLine );
+    m_frame->setAutoFillBackground( false );
+    m_frame->setMaximumWidth( size().width() );
 
     m_participants->setWordWrap( true );
     m_name->setWordWrap( true );
 
-
-    setName( name );
-    setDate( date );
-    setParticipants( participants );
-    setUrl( url );
-    setImage( image );
-
     m_layout = new QGridLayout;
-    m_layout->addWidget( m_image, 0, 0, 4, 1 );
+    m_layout->addWidget( m_image, 0, 0, 5, 1 );
     m_layout->addWidget( m_name, 0, 1, 1, 1 );
     m_layout->addWidget( m_participants, 1, 1, 1, 1 );
-    m_layout->addWidget( m_date, 2, 1, 1, 1 );
-    m_layout->addWidget( m_url, 3, 1, 1, 1 );
+    m_layout->addWidget( m_location, 2, 1, 1, 1 );
+    m_layout->addWidget( m_date, 3, 1, 1, 1 );
+    m_layout->addWidget( m_url, 4, 1, 1, 1 );
+    m_layout->addWidget( m_frame, 6, 0, 1, 2 );
 
+    m_layout->setAlignment( Qt::AlignLeft );
     setLayout( m_layout );
-    connect(m_url,SIGNAL(linkActivated(QString)),this,SLOT(openUrl(QString)));
+    connect( m_url, SIGNAL( linkActivated( QString ) ), this, SLOT( openUrl( QString ) ) );
 }
 
 UpcomingEventsWidget::~UpcomingEventsWidget()
 {
     delete m_layout;
+    delete m_frame;
     delete m_image;
     delete m_participants;
     delete m_date;
@@ -85,6 +90,12 @@ QLabel *
 UpcomingEventsWidget::name() const
 {
     return m_name;
+}
+
+QLabel *
+UpcomingEventsWidget::location() const
+{
+    return m_location;
 }
 
 QLabel *
@@ -126,7 +137,27 @@ UpcomingEventsWidget::loadImage( KJob * job ) // SLOT
 void
 UpcomingEventsWidget::setParticipants( const QString &participants )
 {
-    m_participants->setText( participants );
+    QFont font;
+    if( participants == "No other participants" )
+    {
+        m_participants->setText( participants );
+        font.setItalic( true );
+        m_participants->setFont( font );
+    }
+    else
+    {
+        QStringList listbuff = participants.split(" - ");
+        QString buffer("");
+        for( int i = 0; i < NBR_MAX_PARTICIPANT && i < listbuff.size(); i++ )
+        {
+            buffer += listbuff.at( i );
+            if( i < NBR_MAX_PARTICIPANT - 1 && i < listbuff.size()-1 ) buffer += " - ";
+        }
+        if( listbuff.size() > NBR_MAX_PARTICIPANT ) buffer += "...";
+        m_participants->setText( buffer );
+        font.setItalic( false );
+        m_participants->setFont( font );
+    }
     m_participants->setAttribute( Qt::WA_TranslucentBackground );
 }
 
@@ -138,8 +169,19 @@ UpcomingEventsWidget::setDate( const QDateTime &date )
 }
 
 void
+UpcomingEventsWidget::setLocation( const QString &location )
+{
+    m_location->setText( location );
+    m_location->setAttribute( Qt::WA_TranslucentBackground );
+}
+
+void
 UpcomingEventsWidget::setName( const QString &name )
 {
+    QFont nameFont;
+    nameFont.setBold( true );
+    nameFont.setPointSize( m_name->font().pointSize() + 2 );
+    m_name->setFont( nameFont );
     m_name->setText( name );
     m_name->setAttribute( Qt::WA_TranslucentBackground );
 }

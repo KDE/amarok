@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
- * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
+ * Copyright (c) 2009-2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                *
  * Copyright (c) 2010 Hormiere Guillaume <hormiere.guillaume@gmail.com>                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -183,7 +183,7 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     {
         delete u;
     }
-    m_widgets.clear();
+    m_widgets.clear();    
 
     for( int i = 0; i < events.size(); i++ )
     {
@@ -213,13 +213,16 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
             timeSpanDisabled = true;
 
         if ( timeSpanDisabled || events.at( i ).date() < limite )
-            m_widgets.insert( i, new UpcomingEventsWidget( events.at( i ).name(),
-                                                           events.at( i ).date(),
-                                                           artistList,
-                                                           events.at( i ).url(),
-                                                           events.at( i ).smallImageUrl()) );
-
-
+        {
+            UpcomingEventsWidget * widget = new UpcomingEventsWidget;
+            widget->setName( events.at( i ).name() );
+            widget->setDate( events.at( i ).date() );
+            widget->setLocation( events.at( i ).location() );
+            !artistList.isEmpty() ? widget->setParticipants( artistList ) : widget->setParticipants( "No other participants" );
+            widget->setUrl( events.at( i ).url() );
+            widget->setImage( events.at( i ).smallImageUrl() );
+            m_widgets.insert( i, widget );
+        }
     }
     updateConstraints();
     update();

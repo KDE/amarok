@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+ * Copyright (c) 2010 Alexandre Mendes <alex.mendes1988@gmail.com>                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -29,13 +30,17 @@
 
 ArtistWidget::ArtistWidget(QWidget *parent) : QWidget(parent)
 {
+
+    this->setMinimumHeight(105);
+    this->setMaximumHeight(105);
     m_layout=new QGridLayout(this);
 
     this->setAttribute(Qt::WA_TranslucentBackground, true); // The background og this widget is transparent
     
     m_image=new QLabel( this );
     m_image->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
-    
+    m_image->setAlignment(Qt::AlignCenter);
+
     m_name=new QLabel( this );
     m_name->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
     m_name->setAlignment(Qt::AlignCenter);
@@ -110,9 +115,19 @@ void ArtistWidget::setImageFromInternet(KJob* job)
         KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
         QPixmap image;
         image.loadFromData(storedJob->data());
+        if(image.width() > 100)
+        {
+            image = image.scaledToWidth(100);
+        }
+
+        if(image.height() > 100)
+        {
+            image = image.scaledToHeight(100);
+        }
+
         m_image->clear();
         m_image->setPixmap(image);
-        setMaximumHeight(image.height()); //the height of the widget depends on the height of the artist picture
+        //setMaximumHeight(image.height()); //the height of the widget depends on the height of the artist picture
     }
     else
     {

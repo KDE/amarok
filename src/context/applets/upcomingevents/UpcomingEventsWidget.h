@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                     *
+ * Copyright (c) 2009-2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -37,7 +37,7 @@ class UpcomingEventsWidget : public QWidget
     Q_OBJECT
     
     public:
-        UpcomingEventsWidget( QString name, QDateTime date, QString participants, KUrl url, KUrl image, QWidget * parent = 0 );
+        UpcomingEventsWidget( QWidget * parent = 0 );
         ~UpcomingEventsWidget();
 
         // Getters
@@ -45,6 +45,7 @@ class UpcomingEventsWidget : public QWidget
         QLabel * participants() const;
         QLabel * date() const;
         QLabel * name() const;
+        QLabel * location() const;
         QLabel * url() const;
 
         // Setters
@@ -52,6 +53,7 @@ class UpcomingEventsWidget : public QWidget
         void setParticipants( const QString &participants );
         void setDate( const QDateTime &date );
         void setName( const QString &name );
+        void setLocation( const QString &location );
         void setUrl( const KUrl &url );
 
     private:
@@ -60,8 +62,10 @@ class UpcomingEventsWidget : public QWidget
         QLabel * m_image;
         QLabel * m_participants;
         QLabel * m_date;
+        QLabel * m_location;
         QLabel * m_name;
         QLabel * m_url;
+        QFrame * m_frame;
 
     private slots:
         void loadImage( KJob * job );
