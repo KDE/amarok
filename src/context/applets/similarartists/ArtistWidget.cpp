@@ -127,12 +127,12 @@ void ArtistWidget::setImageFromInternet(KJob* job)
         image.loadFromData(storedJob->data());
         if(image.width() > 100)
         {
-            image = image.scaledToWidth(100);
+            image = image.scaledToWidth(100,Qt::SmoothTransformation);
         }
 
         if(image.height() > 100)
         {
-            image = image.scaledToHeight(100);
+            image = image.scaledToHeight(100,Qt::SmoothTransformation);
         }
 
         m_image->clear();
