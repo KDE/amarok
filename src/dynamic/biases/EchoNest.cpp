@@ -273,7 +273,7 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
     {
         params.insert("id", m_artistIds[ name ] );
     }
-    params.insert( "rows", 30 );
+    params.insert( "rows", "30" );
     m_artistSuggestedQuery = KIO::storedGet( createUrl( "get_similar", params ), KIO::NoReload, KIO::HideProgressInfo );
     connect( m_artistSuggestedQuery, SIGNAL( result( KJob* ) ), this, SLOT( artistSuggestedQueryDone( KJob* ) ) );
     job->deleteLater();

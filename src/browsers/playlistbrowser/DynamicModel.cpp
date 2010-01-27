@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
+ * Copyright (c) 2009-2010 Leo Franchi <lfranchi@kde.org>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -215,8 +216,6 @@ PlaylistBrowserNS::DynamicModel::data ( const QModelIndex & i, int role ) const
 
     switch( role )
     {
-//         case Qt::UserRole:
-//             return QVariant::fromValue( item );
         case Qt::DisplayRole:
         case Qt::EditRole:
             if( i.row() == m_activePlaylist && m_activeUnsaved )
@@ -381,22 +380,18 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
 {
     DEBUG_BLOCK
 
-//     m_activePlaylistPtr->setTitle( newTitle );
-//     QDomElement e = m_activePlaylistPtr->xml();
-//     m_playlistElements[ m_activePlaylist ] = e;
-
     // user has made modifications
     if( m_activeUnsaved )
     {
         m_activePlaylistPtr->setTitle( newTitle );
         QDomElement e = m_activePlaylistPtr->xml();
-        m_playlistElements[ m_activePlaylist ] = e;
         // replace or add new playlist
         if( m_playlistHash.contains( newTitle ) )
         {
             m_savedPlaylistsRoot.replaceChild( m_playlistHash[ newTitle ],e );
             m_playlistHash[ newTitle ] = e;
-            
+
+            m_playlistElements[ m_activePlaylist ] = e;
             m_activeUnsaved = false;
         } else
         {
