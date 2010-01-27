@@ -67,7 +67,7 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
     int currentEntry = 0;
     for( int i = 0; i <  m_cbias->currentFactories().size(); i++ )
     {
-        Dynamic::CustomBiasFactory* entry = m_cbias->currentFactories().at( i );
+        Dynamic::CustomBiasEntryFactory* entry = m_cbias->currentFactories().at( i );
         QVariant data;
         data.setValue( entry );
         m_fieldSelection->addItem( entry->name(), data );
@@ -104,15 +104,15 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
         return;
 
     debug() << "selection changed to index: " << index;
-    Dynamic::CustomBiasFactory* chosenFactory = m_fieldSelection->itemData( index ).value<  Dynamic::CustomBiasFactory* >();
+    Dynamic::CustomBiasEntryFactory* chosenFactory = m_fieldSelection->itemData( index ).value<  Dynamic::CustomBiasEntryFactory* >();
 
     if( !chosenFactory )
     {
-        debug() << "found a non-CustomBiasFactory in the drop-down..something bad just happened";
+        debug() << "found a non-CustomBiasEntryFactory in the drop-down..something bad just happened";
         return;
     }
 
-    Dynamic::CustomBiasEntry* chosen = chosenFactory->newCustomBias( m_cbias->weight() );
+    Dynamic::CustomBiasEntry* chosen = chosenFactory->newCustomBiasEntry();
     m_cbias->setCurrentEntry( chosen );
     
     setCurrentLoadedBiasWidget();
@@ -164,7 +164,7 @@ void Dynamic::CustomBiasEntryWidget::refreshBiasFactories()
 {
     DEBUG_BLOCK;
     // add any new ones
-    foreach( Dynamic::CustomBiasFactory* entry, Dynamic::CustomBias::currentFactories() )
+    foreach( Dynamic::CustomBiasEntryFactory* entry, Dynamic::CustomBias::currentFactories() )
     {
         QVariant data;
         data.setValue( entry );
@@ -185,7 +185,7 @@ void Dynamic::CustomBiasEntryWidget::refreshBiasFactories()
     for( int i = 0; i < m_fieldSelection->count(); i++ )
     {
         if( !Dynamic::CustomBias::currentFactories().contains(
-                m_fieldSelection->itemData( i ).value<  Dynamic::CustomBiasFactory* >() ) )
+                m_fieldSelection->itemData( i ).value<  Dynamic::CustomBiasEntryFactory* >() ) )
         {
             // ok, we lost one. not sure why. try to clean up sanely.
             debug() << "a bias factory was removed, updating list to reflect!";

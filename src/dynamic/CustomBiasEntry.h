@@ -32,7 +32,7 @@ class AMAROK_EXPORT CustomBiasEntry : public QObject
 {
     Q_OBJECT
     public:
-        CustomBiasEntry( double wieght );
+        CustomBiasEntry();
         virtual ~CustomBiasEntry() {}
 
         /**
@@ -77,22 +77,16 @@ class AMAROK_EXPORT CustomBiasEntry : public QObject
         /**
         * Returns a QSet< QByteArray > of track uids that match this bias. Used when building the
         * initial playlists, this must be implemented if your bias returns true for filterFromCollection.
-        * See APIDOX for Bias.h for more explanation.
+        * See APIDOX of Bias.h for more explanation.
+        *
+        * As the currently set weight of the bias is stored in the parent CustomBias, the individual CustomBiasEntries
+        * don't know the value, so can't return it. Use the passed in value to construct your CollectionFilterCapability
+        * that you return to the BiasSolver.
         */
-        virtual CollectionFilterCapability* collectionFilterCapability() { return 0; }
-
-        double weight();
+        virtual CollectionFilterCapability* collectionFilterCapability( double weight ) { Q_UNUSED( weight ); return 0; }
 
     signals:
         void biasChanged();
-        
-    public slots:
-        // takes an int 0-100 as it is connected to the slider
-        void setWeight( int weight );
-
-    private:
-        double m_weight;
-
 };
 
 }

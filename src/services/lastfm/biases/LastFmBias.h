@@ -18,7 +18,7 @@
 #define SIMILAR_ARTISTS_BIAS_H
 
 #include "CustomBiasEntry.h"
-#include "CustomBiasFactory.h"
+#include "CustomBiasEntryFactory.h"
 #include <QNetworkReply>
 #include "EngineObserver.h"
 
@@ -37,7 +37,7 @@ class Collection;
 namespace Dynamic
 {
 
-class LastFmBiasFactory : public CustomBiasFactory
+class LastFmBiasFactory : public CustomBiasEntryFactory
 {
     public:
         LastFmBiasFactory();
@@ -45,8 +45,8 @@ class LastFmBiasFactory : public CustomBiasFactory
         
         virtual QString name() const;
         virtual QString pluginName() const;
-        virtual CustomBiasEntry* newCustomBias( double weight );
-        virtual CustomBiasEntry* newCustomBias( QDomElement e, double weight );
+        virtual CustomBiasEntry* newCustomBiasEntry();
+        virtual CustomBiasEntry* newCustomBiasEntry( QDomElement e );
 };
 
 // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
@@ -54,8 +54,8 @@ class LastFmBias : public CustomBiasEntry, public EngineObserver
 {
     Q_OBJECT
 public:
-    LastFmBias( bool similarArtists, double weight );
-    ~LastFmBias();
+    LastFmBias( bool similarArtists );
+    virtual ~LastFmBias();
 
     // reimplemented from CustomBiasEntry
     virtual QString pluginName() const;
@@ -67,7 +67,7 @@ public:
     virtual QDomElement xml( QDomDocument doc ) const;
     
     virtual bool hasCollectionFilterCapability();
-    virtual CollectionFilterCapability* collectionFilterCapability();
+    virtual CollectionFilterCapability* collectionFilterCapability( double weight );
 
     // reimplemented from EngineObserver
     virtual void engineNewTrackPlaying();
@@ -114,7 +114,7 @@ private:
 class LastFmBiasCollectionFilterCapability : public Dynamic::CollectionFilterCapability
 {
 public:
-    LastFmBiasCollectionFilterCapability ( LastFmBias* bias ) : m_bias ( bias ) {}
+    LastFmBiasCollectionFilterCapability ( LastFmBias* bias, double weight ) : m_bias ( bias ), m_weight( weight ) {}
 
     // re-implemented
     virtual const QSet<QByteArray>& propertySet();
@@ -123,6 +123,7 @@ public:
 
 private:
     LastFmBias* m_bias;
+    double m_weight;
 
 };
 

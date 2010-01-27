@@ -38,7 +38,7 @@
 #include <KComboBox>
 
 Dynamic::LastFmBiasFactory::LastFmBiasFactory()
-    : CustomBiasFactory()
+    : CustomBiasEntryFactory()
 {
 
 }
@@ -64,26 +64,26 @@ Dynamic::LastFmBiasFactory::pluginName() const
 
 
 Dynamic::CustomBiasEntry*
-Dynamic::LastFmBiasFactory::newCustomBias( double weight )
+Dynamic::LastFmBiasFactory::newCustomBiasEntry()
 {
     debug() << "CREATING SIMILAR BIAS";
-    return new LastFmBias( true, weight );
+    return new LastFmBias( true );
 }
 
 Dynamic::CustomBiasEntry*
-Dynamic::LastFmBiasFactory::newCustomBias( QDomElement e, double weight )
+Dynamic::LastFmBiasFactory::newCustomBiasEntry( QDomElement e )
 {
     DEBUG_BLOCK
     debug() << "lastfm bias created with:" << e.attribute("value");
     bool sim = e.attribute( "value" ).toInt() == 0;
-    return new LastFmBias( sim, weight );
+    return new LastFmBias( sim );
 }
 
 
 /// class LastFmBias
 
-Dynamic::LastFmBias::LastFmBias( bool similarArtists, double weight )
-    : Dynamic::CustomBiasEntry( weight )
+Dynamic::LastFmBias::LastFmBias( bool similarArtists )
+    : Dynamic::CustomBiasEntry()
     , EngineObserver( The::engineController() )
     , m_similarArtists( similarArtists )
     , m_artistQuery( 0 )
@@ -559,11 +559,11 @@ Dynamic::LastFmBias::hasCollectionFilterCapability()
 }
 
 Dynamic::CollectionFilterCapability*
-Dynamic::LastFmBias::collectionFilterCapability()
+Dynamic::LastFmBias::collectionFilterCapability( double weight )
 {
     DEBUG_BLOCK
-    debug() << "returning new cfb with weight:" << weight();
-    return new Dynamic::LastFmBiasCollectionFilterCapability( this );
+    debug() << "returning new cfb with weight:" << weight;
+    return new Dynamic::LastFmBiasCollectionFilterCapability( this, weight );
 }
 
 const QSet< QByteArray >&
@@ -582,7 +582,7 @@ Dynamic::LastFmBiasCollectionFilterCapability::propertySet()
 
 double Dynamic::LastFmBiasCollectionFilterCapability::weight() const
 {
-    return m_bias->weight();
+    return m_weight;
 }
 
 #include "LastFmBias.moc"

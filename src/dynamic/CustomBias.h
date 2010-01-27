@@ -19,7 +19,7 @@
 
 #include "amarok_export.h"
 #include "CustomBiasEntry.h"
-#include "CustomBiasFactory.h"
+#include "CustomBiasEntryFactory.h"
 #include "DynamicBiasWidgets.h"
 #include "Bias.h"
 
@@ -47,12 +47,12 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         /**
          * Add a new CustomBiasEntry to the registry. It will show up for users when then select the type of bias they want.
          */
-        static void registerNewBiasFactory( CustomBiasFactory* );
+        static void registerNewBiasFactory( CustomBiasEntryFactory* );
 
         /**
          * Remove CustomBiasEntry from the list of bias types that the user can select.
          */
-        static void removeBiasFactory( CustomBiasFactory* );
+        static void removeBiasFactory( CustomBiasEntryFactory* );
 
         /**
          * Tries to create a new CustomBias from given XML. Will search to see if any of the loaded biases can handle this bias type.
@@ -62,7 +62,7 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         /**
          * Returns all the current registered factories for this CustomBias
          */
-        static QList< CustomBiasFactory* > currentFactories();
+        static QList< CustomBiasEntryFactory* > currentFactories();
 
         /// These are used to create new biases. They register the new bias with the static class
         static CustomBias* createBias(); /// so they can send it messages. 
@@ -85,7 +85,6 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         void setWeight( double );
 
     signals:
-        void weightChanged( double );
         void biasFactoriesChanged();
         void biasChanged( Dynamic::Bias* );
 
@@ -98,7 +97,7 @@ class AMAROK_EXPORT CustomBias : public QObject, public Bias
         void refreshWidgets();
 
         // the static members deal with all currently managed biases
-        static QList< CustomBiasFactory* > s_biasFactories;
+        static QList< CustomBiasEntryFactory* > s_biasFactories;
         /// if we are told to load a bias but don't yet have that factory registered e.g. on startup,
         /// remember that, so when we do get that factory we can set the proper bias type
         static QMap< QString, CustomBias* > s_failedMap;

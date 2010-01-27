@@ -35,7 +35,7 @@
 // CUSTOM BIAS FACTORY
 
 Dynamic::EchoNestBiasFactory::EchoNestBiasFactory()
-: CustomBiasFactory()
+: CustomBiasEntryFactory()
 {
 
 }
@@ -61,30 +61,30 @@ Dynamic::EchoNestBiasFactory::pluginName() const
 
 
 Dynamic::CustomBiasEntry*
-Dynamic::EchoNestBiasFactory::newCustomBias( double weight )
+Dynamic::EchoNestBiasFactory::newCustomBiasEntry()
 {
     debug() << "CREATING ECHONEST BIAS";
-    return new EchoNestBias( weight );
+    return new EchoNestBias();
 }
 
 Dynamic::CustomBiasEntry*
-Dynamic::EchoNestBiasFactory::newCustomBias( QDomElement e, double weight )
+Dynamic::EchoNestBiasFactory::newCustomBiasEntry( QDomElement e )
 {
     // we don't save anything, so just load a fresh one
     Q_UNUSED( e )
     debug() << "CREATING ECHONEST BIAS 2";
-    return new EchoNestBias( weight );
+    return new EchoNestBias();
 }
 
 
 /// class SimilarArtistsBias
 
-Dynamic::EchoNestBias::EchoNestBias( double weight )
-: Dynamic::CustomBiasEntry( weight )
-, EngineObserver( The::engineController() )
-, m_artistSuggestedQuery( 0 )
-, m_qm( 0 )
-, m_currentOnly( true )
+Dynamic::EchoNestBias::EchoNestBias()
+    : Dynamic::CustomBiasEntry()
+    , EngineObserver( The::engineController() )
+    , m_artistSuggestedQuery( 0 )
+    , m_qm( 0 )
+    , m_currentOnly( true )
 {
     DEBUG_BLOCK
     engineNewTrackPlaying(); // kick it into gear if a track is already playnig. if not, it's harmless
@@ -490,11 +490,11 @@ Dynamic::EchoNestBias::hasCollectionFilterCapability()
 }
 
 Dynamic::CollectionFilterCapability*
-Dynamic::EchoNestBias::collectionFilterCapability()
+Dynamic::EchoNestBias::collectionFilterCapability( double weight )
 {
     DEBUG_BLOCK
-    debug() << "returning new cfb with weight:" << weight();
-    return new Dynamic::EchoNestBiasCollectionFilterCapability( this );
+    debug() << "returning new cfb with weight:" << weight;
+    return new Dynamic::EchoNestBiasCollectionFilterCapability( this, weight );
 }
 
 const QSet< QByteArray >&
@@ -511,7 +511,7 @@ Dynamic::EchoNestBiasCollectionFilterCapability::propertySet()
 
 double Dynamic::EchoNestBiasCollectionFilterCapability::weight() const
 {
-    return m_bias->weight();
+    return m_weight;
 }
 
 void

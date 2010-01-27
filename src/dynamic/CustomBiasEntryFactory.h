@@ -32,11 +32,11 @@ class CustomBiasEntry;
  * of biases from from the bias addition widget, new custom biass types need to be able to be
  * generated on command and at runtime.
  **/
-class AMAROK_EXPORT CustomBiasFactory
+class AMAROK_EXPORT CustomBiasEntryFactory
 {
     public:
-        CustomBiasFactory() {}
-        virtual ~CustomBiasFactory() {}
+        CustomBiasEntryFactory() {}
+        virtual ~CustomBiasEntryFactory() {}
 
         /**
          *   Returns the name of the type of bias. eg. "Last.fm Similar Artists"
@@ -51,18 +51,18 @@ class AMAROK_EXPORT CustomBiasFactory
         /**
          * Create the custom bias. The caller takes owner of the pointer
          */
-        virtual CustomBiasEntry* newCustomBias( double weight ) = 0;
+        virtual CustomBiasEntry* newCustomBiasEntry() = 0;
 
         /**
          * Creates a new custom bias from the saved settings in the xml doc.
          * The XML should be saved in CustomBiasEntry::xml().
          */
-        virtual CustomBiasEntry* newCustomBias( QDomElement e , double weight ) = 0;
+        virtual CustomBiasEntry* newCustomBiasEntry( QDomElement e ) = 0;
 
 };
 
 }
 
-Q_DECLARE_METATYPE( Dynamic::CustomBiasFactory* )
+Q_DECLARE_METATYPE( Dynamic::CustomBiasEntryFactory* )
 
 #endif

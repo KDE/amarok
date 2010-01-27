@@ -16,23 +16,10 @@
 
 #include "CustomBiasEntry.h"
 
+#include "Debug.h"
 
 // CLASS CustomBiasEntry
-Dynamic::CustomBiasEntry::CustomBiasEntry( double wieght )
-    : m_weight( wieght )
+Dynamic::CustomBiasEntry::CustomBiasEntry()
 {
 
 }
-
-void
-Dynamic::CustomBiasEntry::setWeight(int weight)
-{
-    m_weight = (double)weight / 100;
-}
-
-double
-Dynamic::CustomBiasEntry::weight()
-{
-    return m_weight;
-}
-

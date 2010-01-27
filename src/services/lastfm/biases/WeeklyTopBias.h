@@ -18,7 +18,7 @@
 #define WEEKLY_TOP_BIAS_H
 
 #include "CustomBiasEntry.h"
-#include "CustomBiasFactory.h"
+#include "CustomBiasEntryFactory.h"
 
 #include <QQueue>
 
@@ -44,7 +44,7 @@ class Collection;
 namespace Dynamic
 {
 
-class WeeklyTopBiasFactory : public CustomBiasFactory
+class WeeklyTopBiasFactory : public CustomBiasEntryFactory
 {
     public:
         WeeklyTopBiasFactory();
@@ -52,15 +52,15 @@ class WeeklyTopBiasFactory : public CustomBiasFactory
 
         virtual QString name() const;
         virtual QString pluginName() const;
-        virtual CustomBiasEntry* newCustomBias( double weight );
-        virtual CustomBiasEntry* newCustomBias( QDomElement e, double weight );
+        virtual CustomBiasEntry* newCustomBiasEntry();
+        virtual CustomBiasEntry* newCustomBiasEntry( QDomElement e );
 };
 
 class WeeklyTopBias : public CustomBiasEntry
 {
     Q_OBJECT
 public:
-    WeeklyTopBias( double weight, uint from = 0, uint to = 0 );
+    WeeklyTopBias( uint from = 0, uint to = 0 );
     ~WeeklyTopBias();
 
 
@@ -74,7 +74,7 @@ public:
     virtual QDomElement xml( QDomDocument doc ) const;
 
     virtual bool hasCollectionFilterCapability();
-    virtual CollectionFilterCapability* collectionFilterCapability();
+    virtual CollectionFilterCapability* collectionFilterCapability( double weight );
 
 Q_SIGNALS:
     void doneFetching();
@@ -130,7 +130,7 @@ private:
 class WeeklyTopBiasCollectionFilterCapability : public Dynamic::CollectionFilterCapability
 {
 public:
-    WeeklyTopBiasCollectionFilterCapability ( WeeklyTopBias* bias ) : m_bias ( bias ) {}
+    WeeklyTopBiasCollectionFilterCapability ( WeeklyTopBias* bias, double weight ) : m_bias ( bias ), m_weight( weight ) {}
 
     // re-implemented
     virtual const QSet< QByteArray >& propertySet();
@@ -139,6 +139,7 @@ public:
 
 private:
     WeeklyTopBias* m_bias;
+    double m_weight;
 
 };
 

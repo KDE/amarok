@@ -63,25 +63,25 @@ Dynamic::WeeklyTopBiasFactory::pluginName() const
 }
 
 Dynamic::CustomBiasEntry*
-Dynamic::WeeklyTopBiasFactory::newCustomBias( double weight )
+Dynamic::WeeklyTopBiasFactory::newCustomBiasEntry()
 {
-    return new Dynamic::WeeklyTopBias( weight );
+    return new Dynamic::WeeklyTopBias();
 }
 
 Dynamic::CustomBiasEntry*
-Dynamic::WeeklyTopBiasFactory::newCustomBias( QDomElement e, double weight )
+Dynamic::WeeklyTopBiasFactory::newCustomBiasEntry( QDomElement e )
 {
 
     debug() << "weekly top created with:" << e;
     uint from = e.firstChildElement( "from" ).attribute( "value" ).toUInt();
     uint to = e.firstChildElement( "to" ).attribute( "value" ).toUInt();
-    return new Dynamic::WeeklyTopBias( weight, from, to );
+    return new Dynamic::WeeklyTopBias( from, to );
 }
 
 // CLASS WeeklyTopBias
 
-Dynamic::WeeklyTopBias::WeeklyTopBias( double weight, uint from, uint to )
-    : Dynamic::CustomBiasEntry( weight )
+Dynamic::WeeklyTopBias::WeeklyTopBias( uint from, uint to )
+    : Dynamic::CustomBiasEntry()
     , m_qm( 0 )
     , m_layout( 0 )
     , m_fromEdit( 0 )
@@ -200,11 +200,11 @@ Dynamic::WeeklyTopBias::hasCollectionFilterCapability()
 }
 
 Dynamic::CollectionFilterCapability*
-Dynamic::WeeklyTopBias::collectionFilterCapability()
+Dynamic::WeeklyTopBias::collectionFilterCapability( double weight )
 {
 
-    debug() << "returning new cfb with weight:" << weight();
-    return new Dynamic::WeeklyTopBiasCollectionFilterCapability( this );
+    debug() << "returning new cfb with weight:" << weight;
+    return new Dynamic::WeeklyTopBiasCollectionFilterCapability( this, weight );
 }
 
 void
@@ -508,7 +508,7 @@ Dynamic::WeeklyTopBiasCollectionFilterCapability::propertySet()
 double
 Dynamic::WeeklyTopBiasCollectionFilterCapability::weight() const
 {
-    return m_bias->weight();
+    return m_weight;
 }
 
 

@@ -152,7 +152,7 @@ namespace Dynamic
     };
 
     /**
-     * This is a capability that biases have if they operate on and expects to filter the collection. It stores
+     * This is a capability that biases have if they operate on and expect to filter the collection. It stores
      * the currently matching tracks in a QSet of uids, and shares them with the BiasSolver
      * when asked in order to generate initial starting playlists.
      */
