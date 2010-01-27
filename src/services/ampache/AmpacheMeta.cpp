@@ -24,17 +24,14 @@ using namespace Meta;
 
 AmpacheAlbum::AmpacheAlbum( const QString &name )
     : ServiceAlbumWithCover( name )
-{
-}
+{}
 
 AmpacheAlbum::AmpacheAlbum(const QStringList & resultRow)
     : ServiceAlbumWithCover( resultRow )
-{
-}
+{}
 
 AmpacheAlbum::~ AmpacheAlbum()
-{
-}
+{}
 
 void AmpacheAlbum::setCoverUrl( const QString &coverURL )
 {
@@ -50,6 +47,5 @@ QList< QAction * > Meta::AmpacheTrack::currentTrackActions()
 {
     QList< QAction * > actions;
     return actions;
-
 }
 

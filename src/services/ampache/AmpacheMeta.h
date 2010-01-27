@@ -33,16 +33,14 @@
 namespace Meta
 {
 
-
 class AmpacheTrack  : public ServiceTrack
 {
 
 public:
-
     explicit AmpacheTrack( const QString& title, ServiceBase * service = 0 )
-    : ServiceTrack( title )
-    , m_service( service )
-    { }
+        : ServiceTrack( title )
+        , m_service( service )
+    {}
 
     virtual QString sourceName() { return "Ampache"; }
     virtual QString sourceDescription() { return "The Ampache music server project: http://Ampache.org"; }
@@ -53,7 +51,6 @@ public:
 
 private:
     ServiceBase * m_service;
-
 };
 
 
@@ -61,7 +58,6 @@ class AmpacheAlbum  : public ServiceAlbumWithCover
 {
 private:
     QString m_coverURL;
-
 
 public:
     AmpacheAlbum( const QString &name );
@@ -86,12 +82,11 @@ class AmpacheArtist : public ServiceArtist
     private:
         QString m_coverURL;
 
-
     public:
         AmpacheArtist( const QString &name, ServiceBase * service )
             : ServiceArtist( name )
             , m_service( service )
-             { }
+        {}
 
         virtual bool isBookmarkable() const { return true; }
         virtual QString collectionName() const { return m_service->name(); }
@@ -104,9 +99,8 @@ class AmpacheArtist : public ServiceArtist
 
     private:
         ServiceBase * m_service;
-
 };
 
 }
 
-#endif
+#endif  // End include guard
