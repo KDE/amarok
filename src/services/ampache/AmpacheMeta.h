@@ -93,9 +93,9 @@ class AmpacheArtist : public ServiceArtist
             , m_service( service )
              { }
 
-        virtual bool isBookmarkable() { return true; }
-        virtual QString collectionName() { return m_service->name(); }
-        virtual bool simpleFiltering() { return true; }
+        virtual bool isBookmarkable() const { return true; }
+        virtual QString collectionName() const { return m_service->name(); }
+        virtual bool simpleFiltering() const { return true; }
 
         bool operator==( const Meta::Artist &other ) const
         {
