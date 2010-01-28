@@ -440,8 +440,10 @@ Meta::SqlPodcastEpisode::deleteFromDb()
         QString( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
 }
 
-Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
+Meta::SqlPodcastChannel::SqlPodcastChannel( PlaylistProvider *provider,
+                                            const QStringList &result )
     : Meta::PodcastChannel()
+    , m_provider( provider )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
@@ -463,9 +465,11 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     loadEpisodes();
 }
 
-Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
+Meta::SqlPodcastChannel::SqlPodcastChannel( PlaylistProvider *provider,
+                                            PodcastChannelPtr channel )
     : Meta::PodcastChannel()
     , m_dbId( 0 )
+    , m_provider( provider )
 {
     // PodcastMetaCommon
     m_title = channel->title();

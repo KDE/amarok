@@ -66,7 +66,7 @@ class SqlPodcastEpisode : public PodcastEpisode
 
         //SqlPodcastEpisode specific methods
         bool writeTagsToFile();
-        int dbId() const { return m_dbId; };
+        int dbId() const { return m_dbId; }
 
         void updateInDb();
         void deleteFromDb();
@@ -86,11 +86,11 @@ class SqlPodcastChannel : public PodcastChannel
         static TrackList sqlEpisodesToTracks( SqlPodcastEpisodeList episodes );
         static PodcastEpisodeList sqlEpisodesToPodcastEpisodes( SqlPodcastEpisodeList episodes );
 
-        SqlPodcastChannel( const QStringList &queryResult );
+        SqlPodcastChannel( PlaylistProvider *provider, const QStringList &queryResult );
 
         /** Copy a PodcastChannel
         */
-        SqlPodcastChannel( PodcastChannelPtr channel );
+        SqlPodcastChannel( PlaylistProvider *provider, PodcastChannelPtr channel );
 
         ~SqlPodcastChannel();
         // Meta::Playlist methods
@@ -120,8 +120,6 @@ class SqlPodcastChannel : public PodcastChannel
         const SqlPodcastEpisodeList sqlEpisodes() { return m_episodes; }
 
         void loadEpisodes();
-
-        void setProvider( PlaylistProvider *provider ) { m_provider = provider; }
 
     private:
         bool m_writeTags;

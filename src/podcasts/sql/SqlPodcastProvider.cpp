@@ -155,8 +155,7 @@ SqlPodcastProvider::loadPodcasts()
     {
         QStringList channelResult = results.mid( i, rowLength );
         SqlPodcastChannelPtr channel =
-                SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
-        channel->setProvider( this );
+                SqlPodcastChannelPtr( new SqlPodcastChannel( this, channelResult ) );
         if( channel->image().isNull() )
             fetchImage( channel );
 
@@ -307,7 +306,7 @@ SqlPodcastProvider::subscribe( const KUrl &url )
 Meta::PodcastChannelPtr
 SqlPodcastProvider::addChannel( Meta::PodcastChannelPtr channel )
 {
-    Meta::SqlPodcastChannel * sqlChannel = new Meta::SqlPodcastChannel( channel );
+    Meta::SqlPodcastChannel *sqlChannel = new Meta::SqlPodcastChannel( this, channel );
     m_channels << SqlPodcastChannelPtr( sqlChannel );
     return Meta::PodcastChannelPtr( sqlChannel );
 }
