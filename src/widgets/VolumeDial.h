@@ -18,6 +18,7 @@
 #define VOLUMEDIAL_H
 
 #include <QDial>
+#include <QTimer>
 
 class VolumeDial : public QDial
 {
@@ -26,7 +27,7 @@ public:
     VolumeDial( QWidget *parent = 0 );
     QSize sizeHint() const;
 public slots:
-    void setMute( bool mute );
+    void setMuted( bool mute );
 signals:
     void muteToggled( bool mute );
 protected:
@@ -34,12 +35,18 @@ protected:
     void mousePressEvent( QMouseEvent * );
     void mouseReleaseEvent( QMouseEvent * );
     void resizeEvent(QResizeEvent *);
+    friend class Toolbar_3;
+    void wheelEvent( QWheelEvent * );
+private:
+    void showToolTip() const;
 private slots:
+    void hideToolTip();
     void valueChangedSlot( int );
 private:
     QPixmap m_icon[4];
     int m_unmutedValue;
     bool m_isClick, m_isDown, m_muted;
+    QTimer toolTipTimer;
 };
 
 #endif

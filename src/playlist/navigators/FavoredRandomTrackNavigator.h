@@ -27,17 +27,21 @@ namespace Playlist
 class FavoredRandomTrackNavigator : public TrackNavigator
 {
 public:
-    FavoredRandomTrackNavigator() : TrackNavigator(), random(0) { }
+    FavoredRandomTrackNavigator() : TrackNavigator(), m_random(0) { }
 
-    quint64 requestNextTrack( bool update = true );
+    quint64 likelyNextTrack();
+    quint64 likelyLastTrack();
+
+    quint64 requestNextTrack();
     quint64 requestUserNextTrack() { return requestNextTrack(); }
-    quint64 requestLastTrack( bool update = true );
+    quint64 requestLastTrack();
 
     void reset();
 
 private:
+    int randomRow();
     QList< quint64 > m_history;
-    int random;
+    int m_random;
 };
 
 }

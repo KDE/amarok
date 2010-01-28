@@ -27,19 +27,70 @@
 #include <KRandom>
 
 quint64
-Playlist::FavoredRandomTrackNavigator::requestNextTrack( bool update )
+Playlist::FavoredRandomTrackNavigator::likelyNextTrack()
+{
+    if( !m_queue.isEmpty() )
+        return m_queue.first();
+
+    if ( !m_random )
+        m_random = KRandom::random();
+
+    const int row = randomRow();
+    if ( row < 0 )
+        return 0;
+    AbstractModel* model = Playlist::ModelStack::instance()->top();
+    return model->idAt( row );
+}
+
+quint64
+Playlist::FavoredRandomTrackNavigator::likelyLastTrack()
+{
+    if( m_history.isEmpty() )
+        return requestNextTrack();
+    
+    return m_history.first();
+}
+
+quint64
+Playlist::FavoredRandomTrackNavigator::requestNextTrack()
 {
     DEBUG_BLOCK
 
     if( !m_queue.isEmpty() )
-        return update ? m_queue.takeFirst() : m_queue.first();
+        return m_queue.takeFirst();
+
+    m_random = KRandom::random();
+
+    const int row = randomRow();
+    if ( row < 0 )
+        return 0;
+
+    AbstractModel* model = Playlist::ModelStack::instance()->top();
+    quint64 next = model->idAt( row );
+    m_history.prepend( next );
+    return next;
+}
+
+quint64
+Playlist::FavoredRandomTrackNavigator::requestLastTrack()
+{
+    if( m_history.isEmpty() )
+        return requestNextTrack();
+
+    return m_history.takeFirst();
+}
+
+int
+Playlist::FavoredRandomTrackNavigator::randomRow()
+{
+    DEBUG_BLOCK
 
     QList< qreal > weights;
     qreal totalWeight = 0.0;
-
+    
     AbstractModel* model = Playlist::ModelStack::instance()->top();
     Meta::TrackList tracks = model->tracks();
-
+    
     switch( AmarokConfig::favorTracks() )
     {
     case AmarokConfig::EnumFavorTracks::HigherScores:
@@ -65,45 +116,29 @@ Playlist::FavoredRandomTrackNavigator::requestNextTrack( bool update )
         {
             int lastplayed = t->lastPlayed();
             qreal weight = lastplayed?
-                QDateTime::fromTime_t( lastplayed ).secsTo( QDateTime::currentDateTime() ) / 100.0
-                : 400.0;
+            QDateTime::fromTime_t( lastplayed ).secsTo( QDateTime::currentDateTime() ) / 100.0
+            : 400.0;
             totalWeight += weight;
             weights << weight;
         }
         break;
     }
-
+    
     if( weights.isEmpty() )
-        return 0;
-
+        return -1;
+    
     debug() << "Total weight is" << totalWeight;
-
-    if ( !random || update )
-        random = KRandom::random();
-    qreal point = ( random / qreal( RAND_MAX ) ) * totalWeight - weights[0];
+    
+    qreal point = ( m_random / qreal( RAND_MAX ) ) * totalWeight - weights[0];
     int row = 0;
     for(; point > 0.0; row++, point -= weights[row]) ;
 
-    quint64 next = model->idAt( row );
-    if ( update )
-        m_history.prepend( next );
-
-    return next;
-}
-
-quint64
-Playlist::FavoredRandomTrackNavigator::requestLastTrack( bool update )
-{
-    if( m_history.isEmpty() )
-        return requestNextTrack();
-
-    return update ? m_history.takeFirst() : m_history.first();
+    return row;
 }
 
 void
 Playlist::FavoredRandomTrackNavigator::reset()
 {
     m_history.clear();
-    random = 0;
+    m_random = 0;
 }
-

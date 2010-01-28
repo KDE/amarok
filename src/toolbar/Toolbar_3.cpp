@@ -38,6 +38,7 @@ static const int sliderStretch = 18;
 static const QString promoString = i18n( "Amarok your Music" );
 static const int prevOpacity = 128;
 static const int nextOpacity = 160;
+static const int icnSize = 48;
 
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
@@ -47,7 +48,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     setObjectName( "Toolbar_3G" );
     
     EngineController *engine = The::engineController();
-    setIconSize( QSize( 48, 48 ) );
+    setIconSize( QSize( icnSize, icnSize ) );
 
     QWidget *spacerWidget = new QWidget(this);
     spacerWidget->setFixedWidth( 9 );
@@ -55,7 +56,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
 
     m_playPause = new PlayPauseButton;
     m_playPause->setPlaying( engine->state() == Phonon::PlayingState );
-    m_playPause->setFixedSize( 48, 48 );
+    m_playPause->setFixedSize( icnSize, icnSize );
     addWidget( m_playPause );
     connect ( m_playPause, SIGNAL( toggled(bool) ), this, SLOT( setPlaying(bool) ) );
 
@@ -115,8 +116,8 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_volume = new VolumeDial( this );
     m_volume->setRange( 0, 100);
     m_volume->setValue( engine->volume() );
-    m_volume->setMute( engine->isMuted() );
-    m_volume->setFixedSize( 48, 48 );
+    m_volume->setMuted( engine->isMuted() );
+    m_volume->setFixedSize( icnSize, icnSize );
     addWidget( m_volume );
     connect ( m_volume, SIGNAL( valueChanged(int) ), engine, SLOT( setVolume(int) ) );
     connect ( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
@@ -197,7 +198,7 @@ Toolbar_3::engineVolumeChanged( int percent )
 void
 Toolbar_3::engineMuteStateChanged( bool mute )
 {
-    m_volume->setMute( mute );
+    m_volume->setMuted( mute );
 }
 
 void
@@ -242,6 +243,7 @@ Toolbar_3::filter( const QString &string )
 void
 Toolbar_3::layoutTrackBar()
 {
+    m_dummy.label->hide();
     QRect r = m_trackBarSpacer->geometry();
     r.setWidth( r.width() / 3);
     m_prev.label->setGeometry( r );
@@ -323,12 +325,12 @@ Toolbar_3::updatePrevAndNext()
         return;
     }
     
-    Meta::TrackPtr track = The::playlistActions()->prevTrack();
+    Meta::TrackPtr track = The::playlistActions()->likelyPrevTrack();
     m_prev.key = track ? track->uidUrl() : QString();
     m_prev.label->setData( metadata( track ) );
     m_prev.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
     
-    track = The::playlistActions()->nextTrack();
+    track = The::playlistActions()->likelyNextTrack();
     m_next.key = track ? track->uidUrl() : QString();
     m_next.label->setData( metadata( track ) );
     m_next.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
@@ -387,9 +389,10 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
         // to the next and the animate the move into their target positions
         QRect r = m_trackBarSpacer->geometry();
         r.setWidth( r.width() / 3);
-        if ( isVisible() && m_current.label->geometry().x() == r.x() + r.width() )
+        if ( isVisible() && !m_current.key.isEmpty() &&
+             m_current.label->geometry().x() == r.x() + r.width() )
         {
-            if ( m_current.key == m_next.key )
+            if ( m_current.key == m_next.key && m_current.key != m_prev.key )
             {
                 // left
                 m_dummy.targetX = r.x() - r.width()/2;
@@ -575,6 +578,15 @@ Toolbar_3::timerEvent( QTimerEvent *ev )
         QToolBar::timerEvent( ev );
 }
 
+void
+Toolbar_3::wheelEvent( QWheelEvent *wev )
+{
+    QPoint pos( 0, 0 ); // the event needs to be on the dial or nothing will happen
+    QWheelEvent nwev( pos, m_volume->mapToGlobal( pos ), wev->delta(),
+                      wev->buttons(), wev->modifiers() );
+    m_volume->wheelEvent( &nwev );
+}
+
 bool
 Toolbar_3::eventFilter( QObject *o, QEvent *ev )
 {
@@ -667,9 +679,9 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
     if ( ev->type() == QEvent::Leave )
     {
         if (o == m_next.label)
-            m_next.label->setOpacity( 160 );
+            m_next.label->setOpacity( nextOpacity );
         else if (o == m_prev.label)
-            m_prev.label->setOpacity( 128 );
+            m_prev.label->setOpacity( prevOpacity );
         return false;
     }
     return false;

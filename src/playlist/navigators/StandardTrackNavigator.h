@@ -31,9 +31,11 @@ class StandardTrackNavigator : public TrackNavigator
 public:
     StandardTrackNavigator() : TrackNavigator() { }
 
-    quint64 requestNextTrack( bool destructive = true );
+    quint64 likelyNextTrack();
+    quint64 likelyLastTrack();
+    quint64 requestNextTrack();
     quint64 requestUserNextTrack() { return requestNextTrack(); }
-    quint64 requestLastTrack( bool destructive = true );
+    quint64 requestLastTrack();
 
     void reset() {};
 };

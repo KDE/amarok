@@ -59,8 +59,8 @@ public:
     static void destroy();
 
 
-    Meta::TrackPtr nextTrack();
-    Meta::TrackPtr prevTrack();
+    Meta::TrackPtr likelyNextTrack();
+    Meta::TrackPtr likelyPrevTrack();
 
     /**
      * This is called by the engine before the current track ends. It

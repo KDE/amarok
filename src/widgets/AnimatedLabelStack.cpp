@@ -290,25 +290,31 @@ AnimatedLabelStack::timerEvent( QTimerEvent * te )
 void
 AnimatedLabelStack::wheelEvent( QWheelEvent * we )
 {
-    if ( m_data.count() < 2 )
-        return;
-
-    setPulsating( false );
-    
-    if ( we->delta() < 0 )
+    if ( we->modifiers() & Qt::ControlModifier )
     {
-        ++m_visibleIndex;
-        if ( m_visibleIndex >= m_data.count() )
-            m_visibleIndex = 0;
+        we->accept();
+        if ( m_data.count() < 2 )
+            return;
+
+        setPulsating( false );
+
+        if ( we->delta() < 0 )
+        {
+            ++m_visibleIndex;
+            if ( m_visibleIndex >= m_data.count() )
+                m_visibleIndex = 0;
+        }
+        else
+        {
+            --m_visibleIndex;
+            if ( m_visibleIndex < 0 )
+                m_visibleIndex = m_data.count() - 1;
+        }
+        m_index = m_visibleIndex;
+        m_time = m_fadeTime + 1;
+        m_explicit = true;
+        update();
     }
     else
-    {
-        --m_visibleIndex;
-        if ( m_visibleIndex < 0 )
-            m_visibleIndex = m_data.count() - 1;
-    }
-    m_index = m_visibleIndex;
-    m_time = m_fadeTime + 1;
-    m_explicit = true;
-    update();
+        we->ignore();
 }

@@ -49,11 +49,24 @@ namespace Playlist
             virtual ~TrackNavigator() { }
 
             /**
+             * what is the next track at this moment - could change before the track really plays
+             * (you need to catch playlist changes)
+             * does NOT affect the navigators queue
+             */
+            virtual quint64 likelyNextTrack() = 0;
+
+            /**
+             * what is the last track at this moment - could change before the track really plays
+             * (you need to catch playlist changes)
+             * does NOT affect the navigators queue
+            */
+            virtual quint64 likelyLastTrack() = 0;
+
+            /**
              * The engine will finish the current track in a couple of seconds,
              * and would like to know what the next track should be.
-             * @p update whether the playlist will be updated (i.e. the next call will have a different result)
              */
-            virtual quint64 requestNextTrack( bool update = true ) = 0;
+            virtual quint64 requestNextTrack() = 0;
 
             /**
              * The user triggers the next-track action.
@@ -62,9 +75,8 @@ namespace Playlist
 
             /**
              * The user triggers the previous-track action.
-             * @p update whether the playlist will be updated (i.e. the next call will have a different result)
              */
-            virtual quint64 requestLastTrack( bool update = true ) = 0;
+            virtual quint64 requestLastTrack() = 0;
 
             /**
              * Reset this navigator. Called when the end of a playlist is reached.

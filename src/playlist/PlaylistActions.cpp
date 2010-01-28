@@ -90,15 +90,15 @@ Playlist::Actions::~Actions()
 }
 
 Meta::TrackPtr
-Playlist::Actions::nextTrack()
+Playlist::Actions::likelyNextTrack()
 {
-    return m_topmostModel->trackForId( m_navigator->requestNextTrack( false ) );
+    return m_topmostModel->trackForId( m_navigator->likelyNextTrack() );
 }
 
 Meta::TrackPtr
-Playlist::Actions::prevTrack()
+Playlist::Actions::likelyPrevTrack()
 {
-    return m_topmostModel->trackForId( m_navigator->requestLastTrack( false ) );
+    return m_topmostModel->trackForId( m_navigator->likelyLastTrack() );
 }
 
 void

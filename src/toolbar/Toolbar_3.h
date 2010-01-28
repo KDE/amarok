@@ -45,6 +45,7 @@ protected:
     void resizeEvent( QResizeEvent *ev );
     void showEvent( QShowEvent *ev );
     void timerEvent( QTimerEvent *ev );
+    void wheelEvent( QWheelEvent *wev );
 private:
     void animateTrackLabels();
 private slots:

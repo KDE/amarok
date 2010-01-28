@@ -11,26 +11,27 @@
 #include "SvgHandler.h"
 
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
-, m_isDown( false )
 , m_muted( false )
 {
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
+    connect ( &toolTipTimer, SIGNAL( timeout() ), this, SLOT( hideToolTip() ) );
 }
 
 void VolumeDial::mousePressEvent( QMouseEvent *me )
 {
-    m_isDown = true;
     setCursor( Qt::PointingHandCursor );
     const int dx = width()/4;
     const int dy = height()/4;
     m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
-    if ( !m_isClick )
-        QDial::mousePressEvent( me );
+//     if ( !m_isClick )
+    QDial::mousePressEvent( me );
 }
 
 void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
 {
-    m_isDown = false;
+    if ( me->button() != Qt::LeftButton )
+        return;
+    
     QToolTip::hideText();
     setCursor( Qt::ArrowCursor );
     if ( !m_isClick )
@@ -49,7 +50,6 @@ void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
 
     m_isClick = false;
 
-//     setMute( !m_muted );
     emit muteToggled( !m_muted );
 }
 
@@ -92,7 +92,15 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
     update();
 }
 
-void VolumeDial::setMute( bool mute )
+void VolumeDial::wheelEvent( QWheelEvent *wev )
+{
+    QDial::wheelEvent( wev );
+    toolTipTimer.start( 1000 );
+    showToolTip();
+    wev->accept();
+}
+
+void VolumeDial::setMuted( bool mute )
 {
     if ( mute == m_muted )
         return;
@@ -106,6 +114,12 @@ void VolumeDial::setMute( bool mute )
         setValue( m_unmutedValue );
 }
 
+void VolumeDial::showToolTip() const
+{
+    const QPoint pos = mapToGlobal( rect().bottomLeft() - QPoint( 0, 12 ) );
+    QToolTip::showText( pos, QString( "Volume: %1 %" ).arg( value() ) );
+}
+
 QSize VolumeDial::sizeHint() const
 {
     if ( QToolBar *toolBar = qobject_cast<QToolBar*>( parentWidget() ) )
@@ -114,10 +128,16 @@ QSize VolumeDial::sizeHint() const
     return QDial::sizeHint();
 }
 
+void VolumeDial::hideToolTip()
+{
+    toolTipTimer.stop();
+    QToolTip::hideText();
+}
+
 void VolumeDial::valueChangedSlot( int v )
 {
-    if ( m_isDown )
-        QToolTip::showText( mapToGlobal( rect().bottomLeft() - QPoint( 0, 12 ) ), QString( "%1 %" ).arg( value() ), this );
+    if ( isSliderDown() )
+        showToolTip();
 
     m_isClick = false;
 
