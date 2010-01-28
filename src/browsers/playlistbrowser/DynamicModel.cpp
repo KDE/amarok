@@ -134,6 +134,11 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
 //         endRemoveRows();
 //     }
 
+    if( m_activePlaylist == index )
+    {
+        return m_activePlaylistPtr;
+    }
+    
     // delete old one
     m_activePlaylistPtr.clear();
 
