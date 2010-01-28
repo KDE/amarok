@@ -65,6 +65,7 @@ class UpcomingEventsWidget : public QWidget
         QLabel * m_location;
         QLabel * m_name;
         QLabel * m_url;
+        QFrame * m_frame;
 
     private slots:
         void loadImage( KJob * job );

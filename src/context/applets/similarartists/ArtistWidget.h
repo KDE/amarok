@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+ * Copyright (c) 2009-2010 Joffrey Clavel <jclavel@clabert.info>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,7 +16,6 @@
 
 #ifndef ARTIST_WIDGET_H
 #define ARTIST_WIDGET_H
-
 
 //Qt
 #include <QWidget>
@@ -85,12 +84,15 @@ class ArtistWidget : public QWidget
         QLabel *m_image;
         QLabel *m_name;
         QLabel *m_genre;
+        QLabel *m_topTrack;
 
         KJob *m_imageJob;
+        KJob *m_topTrackJob;
         
 
      private slots:
         void setImageFromInternet( KJob* job);
+        void setTopTrack( KJob* job );
         void openUrl(QString);
 };
 

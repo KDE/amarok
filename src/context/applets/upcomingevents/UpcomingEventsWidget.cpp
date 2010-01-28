@@ -40,6 +40,11 @@ UpcomingEventsWidget::UpcomingEventsWidget( QWidget* parent ): QWidget( parent )
     m_name = new QLabel( this );
     m_url = new QLabel( this );
     m_location = new QLabel( this );
+    m_frame = new QFrame( this );
+
+    m_frame->setFrameStyle( QFrame::HLine );
+    m_frame->setAutoFillBackground( false );
+    m_frame->setMaximumWidth( size().width() );
 
     m_participants->setWordWrap( true );
     m_name->setWordWrap( true );
@@ -51,6 +56,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( QWidget* parent ): QWidget( parent )
     m_layout->addWidget( m_location, 2, 1, 1, 1 );
     m_layout->addWidget( m_date, 3, 1, 1, 1 );
     m_layout->addWidget( m_url, 4, 1, 1, 1 );
+    m_layout->addWidget( m_frame, 6, 0, 1, 2 );
 
     m_layout->setAlignment( Qt::AlignLeft );
     setLayout( m_layout );
@@ -60,6 +66,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( QWidget* parent ): QWidget( parent )
 UpcomingEventsWidget::~UpcomingEventsWidget()
 {
     delete m_layout;
+    delete m_frame;
     delete m_image;
     delete m_participants;
     delete m_date;
