@@ -64,15 +64,16 @@ private:
     QSpacerItem *m_trackBarSpacer;
     struct {
         AnimatedLabelStack *label;
-        QString key;
+        quint64 key;
+        QString uidUrl;
     } m_current;
     struct {
         AnimatedLabelStack *label;
-        QString key;
+        quint64 key;
     } m_next;
     struct {
         AnimatedLabelStack *label;
-        QString key;
+        quint64 key;
     } m_prev;
     struct {
         AnimatedLabelStack *label;

@@ -221,7 +221,7 @@ Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldStat
     case Phonon::LoadingState:
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
-        if ( !( track && m_current.key == track->uidUrl() ) )
+        if ( !( track && m_current.uidUrl == track->uidUrl() ) )
         {
             setLabelTime( -1 );
             m_slider->setEnabled( false );
@@ -324,16 +324,23 @@ Toolbar_3::updatePrevAndNext()
         m_current.label->setUpdatesEnabled( true );
         return;
     }
-    
-    Meta::TrackPtr track = The::playlistActions()->likelyPrevTrack();
-    m_prev.key = track ? track->uidUrl() : QString();
-    m_prev.label->setData( metadata( track ) );
-    m_prev.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
-    
-    track = The::playlistActions()->likelyNextTrack();
-    m_next.key = track ? track->uidUrl() : QString();
+
+    // NOTICE: i don't like this, but the order is important.
+    // Reason is the (current) behaviour of the RandomTrackNavigator
+    // when the playlist is completed it will clear the history and reshuffle
+    // to be able to sneakpeak the next track, it's necessary to trigger this with this query
+    // if we'd query the previous track first, we'd get a track that's actually no more present after
+    // the next track query. by this order we'll get a 0L track, what's also the navigators opinion
+    // about its queue :-\ //
+    Meta::TrackPtr track = The::playlistActions()->likelyNextTrack();
+    m_next.key = track;
     m_next.label->setData( metadata( track ) );
     m_next.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
+
+    track = The::playlistActions()->likelyPrevTrack();
+    m_prev.key = track;
+    m_prev.label->setData( metadata( track ) );
+    m_prev.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
 
     // we may have disbaled it as otherwise the current label gets updated one eventcycle before prev & next
     // see ::engineTrackChanged()
@@ -379,7 +386,8 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
     m_trackBarSpacer->changeSize(0, m_current.label->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     if ( track )
     {
-        m_current.key = track->uidUrl();
+        m_current.key = track;
+        m_current.uidUrl = track->uidUrl();
         m_current.label->setUpdatesEnabled( false );
         m_current.label->setData( metadata( track ) );
         m_current.label->setCursor( Qt::PointingHandCursor );
@@ -389,8 +397,7 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
         // to the next and the animate the move into their target positions
         QRect r = m_trackBarSpacer->geometry();
         r.setWidth( r.width() / 3);
-        if ( isVisible() && !m_current.key.isEmpty() &&
-             m_current.label->geometry().x() == r.x() + r.width() )
+        if ( isVisible() &&  m_current.label->geometry().x() == r.x() + r.width() )
         {
             if ( m_current.key == m_next.key && m_current.key != m_prev.key )
             {
@@ -441,7 +448,8 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
     }
     else
     {
-        m_current.key.clear();
+        m_current.key = 0;
+        m_current.uidUrl.clear();
         m_current.label->setData( QStringList( promoString ) );
         m_current.label->setCursor( Qt::ArrowCursor );
     }
@@ -457,7 +465,7 @@ Toolbar_3::engineTrackLengthChanged( qint64 ms )
     // get the urlid of the current track as the engine might stop and start several times
     // when skipping last.fm tracks, so we need to know if we are still on the same track...
     if ( Meta::TrackPtr track = The::engineController()->currentTrack() )
-        m_current.key = track->uidUrl();
+        m_current.uidUrl = track->uidUrl();
 
     updateBookmarks( 0 );
 }

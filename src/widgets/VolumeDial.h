@@ -31,6 +31,7 @@ public slots:
 signals:
     void muteToggled( bool mute );
 protected:
+    bool eventFilter( QObject *o, QEvent *e );
     void paintEvent( QPaintEvent * );
     void mousePressEvent( QMouseEvent * );
     void mouseReleaseEvent( QMouseEvent * );

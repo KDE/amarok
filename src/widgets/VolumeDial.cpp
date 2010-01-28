@@ -1,10 +1,13 @@
 #include "VolumeDial.h"
 
+#include <QCoreApplication>
 // #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QToolBar>
 #include <QToolTip>
+
+#include <QDebug>
 
 #include <KLocale>
 
@@ -13,16 +16,33 @@
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
 , m_muted( false )
 {
-    connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
+    toolTipTimer.setSingleShot( true );
     connect ( &toolTipTimer, SIGNAL( timeout() ), this, SLOT( hideToolTip() ) );
+    connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
+}
+
+
+// NOTICE: we intercept wheelEvents for ourself to prevent the tooltip hiding on them,
+// see ::wheelEvent()
+bool VolumeDial::eventFilter( QObject *o, QEvent *e )
+{
+    if ( e->type() == QEvent::Wheel && o == this )
+    {
+        wheelEvent( static_cast<QWheelEvent*>(e) );
+        return true;
+    }
+    return false;
 }
 
 void VolumeDial::mousePressEvent( QMouseEvent *me )
 {
-    setCursor( Qt::PointingHandCursor );
-    const int dx = width()/4;
-    const int dy = height()/4;
-    m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
+    if ( me->button() == Qt::LeftButton )
+    {
+        setCursor( Qt::PointingHandCursor );
+        const int dx = width()/4;
+        const int dy = height()/4;
+        m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
+    }
 //     if ( !m_isClick )
     QDial::mousePressEvent( me );
 }
@@ -32,7 +52,7 @@ void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
     if ( me->button() != Qt::LeftButton )
         return;
     
-    QToolTip::hideText();
+//     QToolTip::hideText();
     setCursor( Qt::ArrowCursor );
     if ( !m_isClick )
     {
@@ -84,10 +104,10 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
     else
         QDial::resizeEvent( re );
 
-    m_icon[0] = The::svgHandler()->renderSvg( "Muted", width(), height(), "Muted" );
-    m_icon[1] =  The::svgHandler()->renderSvg( "Volume_low", width(), height(), "Volume_low" );
-    m_icon[2] =  The::svgHandler()->renderSvg( "Volume_mid", width(), height(), "Volume_mid" );
-    m_icon[3] =  The::svgHandler()->renderSvg( "Volume", width(), height(), "Volume" );
+    m_icon[0] = The::svgHandler()->renderSvg( "Muted",      width(), height(), "Muted" );
+    m_icon[1] = The::svgHandler()->renderSvg( "Volume_low", width(), height(), "Volume_low" );
+    m_icon[2] = The::svgHandler()->renderSvg( "Volume_mid", width(), height(), "Volume_mid" );
+    m_icon[3] = The::svgHandler()->renderSvg( "Volume",     width(), height(), "Volume" );
     
     update();
 }
@@ -95,9 +115,26 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
 void VolumeDial::wheelEvent( QWheelEvent *wev )
 {
     QDial::wheelEvent( wev );
+    wev->accept();
+    if ( wev->pos() == QPoint( 0, 0 ) )
+        return; // this is probably our synthetic event from the toolbar and there's really
+                // no simple way to keep the tooltip alive this way. "simple" as the eventfilter
+                // hack - see below
+        
     toolTipTimer.start( 1000 );
     showToolTip();
-    wev->accept();
+    
+    // NOTICE: this is a bit tricky.
+    // the ToolTip "QTipLabel" just installed a global eventfilter that intercepts various
+    // events and hides itself on them. Therefore every odd wheelevent will close the tip
+    // ("works - works not - works - works not - ...")
+    // so we post-install our own global eventfilter to handle wheel events meant for us bypassing
+    // the ToolTip eventfilter
+
+    // first remove to prevent multiple installations but ensure we're on top of the ToolTip filter
+    qApp->removeEventFilter( this );
+    // it's ultimately removed in the timer triggered ::hideToolTip() slot
+    qApp->installEventFilter( this );
 }
 
 void VolumeDial::setMuted( bool mute )
@@ -130,8 +167,9 @@ QSize VolumeDial::sizeHint() const
 
 void VolumeDial::hideToolTip()
 {
-    toolTipTimer.stop();
     QToolTip::hideText();
+    // ultimately remove wheelevent hack-a-round (global eventfilters can be expensive)
+    qApp->removeEventFilter( this );
 }
 
 void VolumeDial::valueChangedSlot( int v )
