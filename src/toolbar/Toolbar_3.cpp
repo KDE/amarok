@@ -333,12 +333,12 @@ Toolbar_3::updatePrevAndNext()
     // the next track query. by this order we'll get a 0L track, what's also the navigators opinion
     // about its queue :-\ //
     Meta::TrackPtr track = The::playlistActions()->likelyNextTrack();
-    m_next.key = track;
+    m_next.key = track ? track.data() : 0L;
     m_next.label->setData( metadata( track ) );
     m_next.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
 
     track = The::playlistActions()->likelyPrevTrack();
-    m_prev.key = track;
+    m_prev.key = track ? track.data() : 0L;
     m_prev.label->setData( metadata( track ) );
     m_prev.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
 
@@ -386,7 +386,7 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
     m_trackBarSpacer->changeSize(0, m_current.label->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     if ( track )
     {
-        m_current.key = track;
+        m_current.key = track.data();
         m_current.uidUrl = track->uidUrl();
         m_current.label->setUpdatesEnabled( false );
         m_current.label->setData( metadata( track ) );
@@ -448,7 +448,7 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
     }
     else
     {
-        m_current.key = 0;
+        m_current.key = 0L;
         m_current.uidUrl.clear();
         m_current.label->setData( QStringList( promoString ) );
         m_current.label->setCursor( Qt::ArrowCursor );
