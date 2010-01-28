@@ -193,7 +193,7 @@ Playlist::PrettyListView::dequeueSelection()
 }
 
 void
-Playlist::PrettyListView::switchQueueState()
+Playlist::PrettyListView::switchQueueState() // slot
 {
     DEBUG_BLOCK
 
@@ -425,12 +425,12 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
 {
+    //get the item that was clicked
+    QModelIndex index = indexAt( event->pos() );
+
     //first of all, if a left click, check if the delegate wants to do something about this click
     if( event->button() == Qt::LeftButton )
     {
-        //get the item that was clicked
-        QModelIndex index = indexAt( event->pos() );
-
         //we need to translate the position of the click into something relative to the item that was clicked.
         QRect itemRect = visualRect( index );
         QPoint relPos =  event->pos() - itemRect.topLeft();
@@ -442,7 +442,6 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
     if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) )
     {
         m_mousePressInHeader = true;
-        QModelIndex index = indexAt( event->pos() );
         m_headerPressIndex = QPersistentModelIndex( index );
         int rows = index.data( GroupedTracksRole ).toInt();
         QModelIndex bottomIndex = model()->index( index.row() + rows - 1, 0 );
@@ -477,7 +476,18 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
     // This must go after the call to the super class as the current index is not yet selected otherwise
     // Queueing support for Ctrl Right click
     if( event->button() == Qt::RightButton && event->modifiers() & Qt::ControlModifier )
-        queueSelection();
+    {
+        // HACK: Implement a nicer way in Actions class to queue just one row
+        // TODO: Make it possible to enqueue multiple rows. Tricky.
+        QList<int> list;
+        list.append( index.row() );
+
+        if( index.data( Playlist::StateRole ).toInt() & Item::Queued )
+            Actions::instance()->dequeue( list );
+        else
+            Actions::instance()->queue( list );
+        update();
+    }
 }
 
 void
