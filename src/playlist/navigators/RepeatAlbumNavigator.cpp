@@ -153,15 +153,6 @@ Playlist::RepeatAlbumNavigator::likelyNextTrack()
 quint64
 Playlist::RepeatAlbumNavigator::likelyLastTrack()
 {
-    quint64 ret = likelyNextTrack();
-    if ( m_currentAlbum != Meta::AlbumPtr() )
-        m_currentTrack = ret;
-    return ret;
-}
-
-quint64
-Playlist::RepeatAlbumNavigator::requestNextTrack()
-{
     DEBUG_BLOCK
     if ( m_currentAlbum != Meta::AlbumPtr() )
     {
@@ -174,12 +165,21 @@ Playlist::RepeatAlbumNavigator::requestNextTrack()
 }
 
 quint64
+Playlist::RepeatAlbumNavigator::requestNextTrack()
+{
+    quint64 track = likelyNextTrack();
+    if ( track )
+        m_currentTrack = track;
+    return track;
+}
+
+quint64
 Playlist::RepeatAlbumNavigator::requestLastTrack()
 {
-    quint64 ret = likelyLastTrack();
-    if ( m_currentAlbum != Meta::AlbumPtr() )
-        m_currentTrack = ret;
-    return ret;
+    quint64 track = likelyLastTrack();
+    if ( track )
+        m_currentTrack = track;
+    return track;
 }
 
 bool
