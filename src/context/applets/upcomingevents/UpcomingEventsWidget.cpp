@@ -141,12 +141,30 @@ UpcomingEventsWidget::setParticipants( const QString &participants )
     {
         QStringList listbuff = participants.split(" - ");
         QString buffer("");
-        for( int i = 0; i < NBR_MAX_PARTICIPANT && i < listbuff.size(); i++ )
+        QString toolTipText;
+        for( int i = 0; i < listbuff.size(); i++ )
         {
-            buffer += listbuff.at( i );
-            if( i < NBR_MAX_PARTICIPANT - 1 && i < listbuff.size()-1 ) buffer += " - ";
+            toolTipText += listbuff.at( i );
+            if( i % 3 == 0 && i )
+            {
+                toolTipText += "\n";
+            }
+            else
+            {
+                if( i < listbuff.size() - 1 ) toolTipText += " - ";
+            }
+                        
+            if( i < NBR_MAX_PARTICIPANT )
+            {
+                buffer += listbuff.at( i );
+                if( i < NBR_MAX_PARTICIPANT - 1 && i < listbuff.size()-1 ) buffer += " - ";
+            }
         }
-        if( listbuff.size() > NBR_MAX_PARTICIPANT ) buffer += "...";
+        if( listbuff.size() > NBR_MAX_PARTICIPANT )
+        {
+            buffer += "...";
+        }
+        m_participants->setToolTip( toolTipText );
         m_participants->setText( buffer );
         font.setItalic( false );
         m_participants->setFont( font );
