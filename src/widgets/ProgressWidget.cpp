@@ -97,71 +97,90 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 
     const qint64 trackLength = The::engineController()->trackLength();
 
-    // when the left label shows the remaining time and it's not a stream
-    if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+    QString s1;
+    QString s2;
+
+    //sometimes the engine gives negative position and track length values for streams
+    //which causes the time sliders to show 'interesting' values like -322:0-35:0-59
+    if( ( ms > 1 ) && ( trackLength > 1 ) )
     {
-        seconds2 = seconds;
-        seconds = ( trackLength / 1000 ) - seconds;
-    }
 
-    // when the left label shows the remaining time and it's a stream
-    else if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
-    {
-        seconds2 = seconds;
-        seconds = 0; // for streams
-    }
+        // when the left label shows the remaining time and it's not a stream
+        if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+        {
+            seconds2 = seconds;
+            seconds = ( trackLength / 1000 ) - seconds;
+        }
 
-    // when the right label shows the remaining time and it's not a stream
-    else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-    {
-        seconds2 = ( trackLength / 1000 ) - seconds;
-    }
+        // when the left label shows the remaining time and it's a stream
+        else if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+        {
+            seconds2 = seconds;
+            seconds = 0; // for streams
+        }
 
-    // when the right label shows the remaining time and it's a stream
-    else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
-    {
-        seconds2 = 0;
-    }
+        // when the right label shows the remaining time and it's not a stream
+        else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+        {
+            seconds2 = ( trackLength / 1000 ) - seconds;
+        }
 
-    //put Utility functions somewhere
-    QString s1 = Meta::secToPrettyTime( seconds );
-    QString s2 = Meta::secToPrettyTime( seconds2 );
+        // when the right label shows the remaining time and it's a stream
+        else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
+        {
+            seconds2 = 0;
+        }
 
-    // when the left label shows the remaining time and it's not a stream
-    if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-        s1.prepend( '-' );
+        //put Utility functions somewhere
+        s1 = Meta::secToPrettyTime( seconds );
+        s2 = Meta::secToPrettyTime( seconds2 );
 
-    // when the right label shows the remaining time and it's not a stream
-    else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-        s2.prepend( '-' );
+        // when the left label shows the remaining time and it's not a stream
+        if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+            s1.prepend( '-' );
 
-    if ( m_timeLength > s1.length() )
-        s1.prepend( QString( m_timeLength - s1.length(), ' ' ) );
+        // when the right label shows the remaining time and it's not a stream
+        else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
+            s2.prepend( '-' );
 
-    if ( m_timeLength > s2.length() )
-        s2.prepend( QString( m_timeLength - s2.length(), ' ' ) );
+        if ( m_timeLength > s1.length() )
+            s1.prepend( QString( m_timeLength - s1.length(), ' ' ) );
 
-    s1 += ' ';
-    s2 += ' ';
+        if ( m_timeLength > s2.length() )
+            s2.prepend( QString( m_timeLength - s2.length(), ' ' ) );
 
-    m_timeLabelLeft->setText( s1 );
-    m_timeLabelRight->setText( s2 );
+        s1 += ' ';
+        s2 += ' ';
 
-    if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
-    {
-        m_timeLabelLeft->setEnabled( false );
-        m_timeLabelRight->setEnabled( true );
-    }
-    else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength == 0 )
-    {
-        m_timeLabelLeft->setEnabled( true );
-        m_timeLabelRight->setEnabled( false );
+        m_timeLabelLeft->setText( s1 );
+        m_timeLabelRight->setText( s2 );
+
+
+        if ( AmarokConfig::leftTimeDisplayRemaining() && trackLength < 1 )
+        {
+            m_timeLabelLeft->setEnabled( false );
+            m_timeLabelRight->setEnabled( true );
+        }
+        else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength < 1 )
+        {
+            m_timeLabelLeft->setEnabled( true );
+            m_timeLabelRight->setEnabled( false );
+        }
+        else
+        {
+            m_timeLabelLeft->setEnabled( true );
+            m_timeLabelRight->setEnabled( true );
+        }
+    
     }
     else
     {
-        m_timeLabelLeft->setEnabled( true );
-        m_timeLabelRight->setEnabled( true );
+       m_timeLabelLeft->setEnabled( false );
+       m_timeLabelRight->setEnabled( false );
     }
+    
+
+
 }
 
 void
