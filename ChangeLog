@@ -47,7 +47,7 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
-    * Fixed queue management with mouse. (BR 197555)
+    * Fixed queue management with mouse. (BR 217153)
     * Fixed playback of some streams causing the progress slider to show 
       garbage track length and position values like -322:0-35:0-59.
     * Prevent a crash when loading PLS playlists with invalid filepaths.
