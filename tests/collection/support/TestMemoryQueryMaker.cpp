@@ -24,11 +24,16 @@
 #include "MemoryQueryMaker.h"
 
 #include "mocks/MetaMock.h"
+#include "mocks/MockTrack.h"
 
 #include <QVariantMap>
 #include <QSignalSpy>
 
+#include <KCmdLineArgs>
+
 #include <qtest_kde.h>
+
+#include <gmock/gmock.h>
 
 QTEST_KDEMAIN_CORE( TestMemoryQueryMaker )
 
@@ -37,6 +42,7 @@ QMutex Debug::mutex;
 
 TestMemoryQueryMaker::TestMemoryQueryMaker()
 {
+    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
 }
 
 void
@@ -45,6 +51,7 @@ TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
     MemoryCollection mc;
     mc.addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     mc.addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
+    mc.addTrack( Meta::TrackPtr( new Meta::MockTrack() ) );
 
     MemoryQueryMaker *qm = new MemoryQueryMaker( &mc, "test" );
     qm->setQueryType( QueryMaker::Track );

@@ -8,6 +8,7 @@ include_directories(
   ${AMAROK_COLLECTION_SUPPORT_DIR}
   ${KDE4_INCLUDE_DIR}
   ${QT_INCLUDES}
+  ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
 #------------------------------- TestMemoryQueryMaker -------------------------------
@@ -33,4 +34,5 @@ target_link_libraries(testmemoryquerymaker
     ${KDE4_KDECORE_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTTEST_LIBRARY}
-    ${QT_QTCORE_LIBRARY})
+    ${QT_QTCORE_LIBRARY}
+    ${GOOGLEMOCK_LIBRARIES})

@@ -1,5 +1,7 @@
 set( EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR} )
 
+find_package(Googlemock REQUIRED)
+
 set( AMAROK_SOURCE_TREE ${CMAKE_SOURCE_DIR}/src )
 set( AMAROK_TEST_TREE ${CMAKE_SOURCE_DIR}/tests )
 set( AMAROK_UTILITY_TREE ${CMAKE_SOURCE_DIR}/utilities )
@@ -17,6 +19,7 @@ add_subdirectory( collection )
 add_subdirectory( meta )
 add_subdirectory( playlistmanager )
 add_subdirectory( timecode )
+add_subdirectory( synchronization )
 
 #------------------------ Test Expression -----------------------------
 

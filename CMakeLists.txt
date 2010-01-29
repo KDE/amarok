@@ -162,8 +162,10 @@ if( WITH_PLAYER )
 
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 
-    ENABLE_TESTING()
-    add_subdirectory( tests )
+    if( KDE4_BUILD_TESTS )
+        ENABLE_TESTING()
+        add_subdirectory( tests )
+    endif( KDE4_BUILD_TESTS )
 
     add_subdirectory( src )
 

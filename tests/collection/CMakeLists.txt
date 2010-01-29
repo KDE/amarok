@@ -13,6 +13,7 @@ set( testcollectionlocation_SRCS
         ${AMAROK_SOURCE_TREE}/collection/CollectionLocation.cpp
         ${AMAROK_SOURCE_TREE}/meta/Capability.cpp
         ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/Components.cpp
     )
 
 kde4_add_unit_test( testcollectionlocation TESTNAME amarok-testcollectionlocation ${testcollectionlocation_SRCS} )
