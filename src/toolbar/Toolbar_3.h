@@ -50,6 +50,7 @@ private:
     void animateTrackLabels();
 private slots:
     void addBookmark( const QString &name, int milliSeconds );
+    void checkEngineState();
     void filter( const QString &string );
     void layoutTrackBar();
     void setLabelTime( int ms );
@@ -89,6 +90,7 @@ private:
     VolumeDial *m_volume;
     
     int m_lastTime, m_dragStartX, m_dragLastX, m_trackBarAnimationTimer;
+    Phonon::State m_currentEngineState;
 };
 
 #endif

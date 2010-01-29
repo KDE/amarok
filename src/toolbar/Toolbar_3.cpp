@@ -48,6 +48,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     setObjectName( "Toolbar_3G" );
     
     EngineController *engine = The::engineController();
+    m_currentEngineState = The::engineController()->state();
     setIconSize( QSize( icnSize, icnSize ) );
 
     QWidget *spacerWidget = new QWidget(this);
@@ -190,6 +191,40 @@ Toolbar_3::animateTrackLabels()
 }
 
 void
+Toolbar_3::checkEngineState()
+{
+    Phonon::State newState = The::engineController()->state();
+    if ( m_currentEngineState == newState )
+        return;
+
+    m_currentEngineState = newState;
+    switch ( m_currentEngineState )
+    {
+        case Phonon::PlayingState:
+            m_playPause->setPlaying( true );
+            break;
+        case Phonon::StoppedState:
+            setLabelTime( -1 );
+            // fall through
+        case Phonon::PausedState:
+            m_playPause->setPlaying( false );
+            break;
+        case Phonon::LoadingState:
+        {
+            Meta::TrackPtr track = The::engineController()->currentTrack();
+            if ( !( track && m_current.uidUrl == track->uidUrl() ) )
+            {
+                setLabelTime( -1 );
+                m_slider->setEnabled( false );
+            }
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+void
 Toolbar_3::engineVolumeChanged( int percent )
 {
     m_volume->setValue( percent );
@@ -206,31 +241,9 @@ Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldStat
 {
     if ( currentState == oldState )
         return;
-
-    switch ( currentState )
-    {
-    case Phonon::PlayingState:
-        m_playPause->setPlaying( true );
-        break;
-    case Phonon::StoppedState:
-        setLabelTime( -1 );
-        // fall through
-    case Phonon::PausedState:
-        m_playPause->setPlaying( false );
-        break;
-    case Phonon::LoadingState:
-    {
-        Meta::TrackPtr track = The::engineController()->currentTrack();
-        if ( !( track && m_current.uidUrl == track->uidUrl() ) )
-        {
-            setLabelTime( -1 );
-            m_slider->setEnabled( false );
-        }
-        break;
-    }
-    default:
-        break;
-    }
+    // when changing a track, we get an interm pause what leads to stupid flicker
+    // therefore we wait a few ms before we actually check the _then_ current state
+    QTimer::singleShot( 100, this, SLOT( checkEngineState() ) );
 }
 
 void
