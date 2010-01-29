@@ -190,3 +190,5 @@ if( WITH_UTILITIES )
     set(BIN_INSTALL_DIR          "${EXEC_INSTALL_PREFIX}/bin"    CACHE PATH "The subdirectory to the binaries prefix (default prefix/bin)" FORCE)
     add_subdirectory( utilities )
 endif( WITH_UTILITIES )
+
+include(CTest)
