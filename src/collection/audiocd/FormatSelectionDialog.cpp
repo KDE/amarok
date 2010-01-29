@@ -109,12 +109,11 @@ void FormatSelectionDialog::accept()
 
 void FormatSelectionDialog::showAdvancedSettings()
 {
-    KCMultiDialog* KCM = new KCMultiDialog();
-    KCM->setWindowTitle( i18n( "Audio CD settings - Amarok" ) );
-    KCM->addModule( "audiocd" );
-    KCM->exec();
+    KCMultiDialog KCM;
+    KCM.setWindowTitle( i18n( "Audio CD settings - Amarok" ) );
+    KCM.addModule( "audiocd" );
 
-    KCM->deleteLater();
+    KCM.exec();
 }
 
 
