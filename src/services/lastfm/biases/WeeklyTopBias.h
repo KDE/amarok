@@ -60,7 +60,7 @@ class WeeklyTopBias : public CustomBiasEntry
 {
     Q_OBJECT
 public:
-    WeeklyTopBias( uint from = 0, uint to = 0 );
+    explicit WeeklyTopBias( uint from = 0, uint to = 0 );
     ~WeeklyTopBias();
 
 

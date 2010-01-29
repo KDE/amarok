@@ -25,8 +25,9 @@
 class AmarokDockWidget : public QDockWidget
 {
     Q_OBJECT
+
 public:
-    AmarokDockWidget( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 );
+    explicit AmarokDockWidget( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 );
 
 signals:
     void layoutChanged();
