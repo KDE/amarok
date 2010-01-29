@@ -7,6 +7,8 @@ VERSION 2.2.3
   FEATURES:
     * The playlist context menu now has a "Find in Source" action for many
       types of track.
+    * The collection scanner now also looks for cover images named
+     "folder.*". Apparently some applications use this convention.
     * It's now possible to automatically use a USB Mass Storage device as a collection
       when it's connected.
     * The progress bar tooltip now shows the position in the track that the
