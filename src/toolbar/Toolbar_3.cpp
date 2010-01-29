@@ -35,7 +35,7 @@
 #include <QtDebug>
 
 static const int sliderStretch = 18;
-static const QString promoString = i18n( "Amarok your Music" );
+static const QString promoString = ""; //i18n( "Amarok your Music" );
 static const int prevOpacity = 128;
 static const int nextOpacity = 160;
 static const int icnSize = 48;
