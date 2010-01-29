@@ -53,6 +53,7 @@ ArtistWidget::ArtistWidget(QWidget *parent) : QWidget(parent)
     m_genre->setAlignment(Qt::AlignCenter);
 
     m_topTrack=new QLabel( this );
+    m_topTrack->setWordWrap(true);
     m_topTrack->setAttribute( Qt::WA_TranslucentBackground, true); // The background of the QLabel is transparent
     m_topTrack->setAlignment(Qt::AlignCenter);
 
