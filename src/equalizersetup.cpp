@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2005 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2005 Markus Brueffer <markus@brueffer.de>                              *
  *                                                                                      *
@@ -47,7 +47,7 @@ EqualizerSetup* EqualizerSetup::s_instance = 0;
 
 
 EqualizerSetup::EqualizerSetup()
-        : KDialog( Amarok::mainWindow() )
+    : KDialog( Amarok::mainWindow() )
 {
     setModal( false );
     setButtons( Ok );
@@ -135,13 +135,15 @@ EqualizerSetup::EqualizerSetup()
 
     int minWidth = 0;
     QFontMetrics fm = fontMetrics(); //apparently it's an expensive call
-    for ( int i = 0; i < 10; i++ ) {
+    for ( int i = 0; i < 10; i++ )
+    {
          int w = fm.width( bandLabels[i] );
          if ( w > minWidth )
              minWidth = w;
     }
 
-    for ( int i = 0; i < 10; i++ ) {
+    for ( int i = 0; i < 10; i++ )
+    {
         Slider *slider = new Slider( Qt::Vertical, slidersLayoutWidget );
         QLabel *label  = new QLabel( slidersLayoutWidget );
         label->setText( bandLabels[i] );
@@ -229,7 +231,8 @@ EqualizerSetup::setPreset( QString name )
         }
     }
 
-    if ( found ) {
+    if ( found )
+    {
         m_presetCombo->setCurrentIndex( i );
         presetChanged( name );
     }
@@ -265,7 +268,8 @@ EqualizerSetup::loadPresets()
 
     QDomDocument d;
 
-    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.readAll() ) ) {
+    if( !file.open( QIODevice::ReadOnly ) || !d.setContent( stream.readAll() ) )
+    {
         // Everything went wrong, so at least provide the two predefined presets
         updatePresets( AmarokConfig::equalizerPreset() );
         return;
@@ -390,7 +394,8 @@ EqualizerSetup::addPreset()
 
     if (ok) {
         // Check if the new preset title exists
-        if ( m_presets.find( title ) != m_presets.end() ) {
+        if ( m_presets.find( title ) != m_presets.end() )
+        {
             int button = KMessageBox::warningYesNo( this, i18n( "A preset with the name %1 already exists. Overwrite?", title ) );
 
             if ( button != KMessageBox::Yes )
@@ -431,7 +436,8 @@ EqualizerSetup::updatePresets(QString selectTitle)
     int newIndex = -1;
     m_presetCombo->clear();
     QStringList::ConstIterator titlesEnd = titles.constEnd();
-    for ( QStringList::ConstIterator it = titles.constBegin(); it != titlesEnd; ++it ) {
+    for ( QStringList::ConstIterator it = titles.constBegin(); it != titlesEnd; ++it )
+    {
         m_presetCombo->addItem( *it );
         if ( *it == selectTitle )
             newIndex = i;

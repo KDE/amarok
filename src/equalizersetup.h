@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2005 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2005 Markus Brueffer <markus@brueffer.de>                              *
  *                                                                                      *
