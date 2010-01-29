@@ -99,8 +99,10 @@ Amarok::KNotificationBackend::showCurrentTrack() // slot
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
-        if( m_notify )
-            m_notify->close(); // Close old notification when switching quickly between tracks
+        if( m_notify ) {
+            delete m_notify; // Close old notification when switching quickly between tracks
+            m_notify = 0;
+        }
 
         m_notify = new KNotification( "trackChange" );
 
