@@ -358,6 +358,10 @@ Toolbar_3::updatePrevAndNext()
     // we may have disbaled it as otherwise the current label gets updated one eventcycle before prev & next
     // see ::engineTrackChanged()
     m_current.label->setUpdatesEnabled( true );
+
+    // unanimated change, probably by sliding the bar - fix label positions
+    if ( !m_trackBarAnimationTimer )
+        layoutTrackBar();
 }
 
 void
@@ -456,8 +460,6 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
                 m_trackBarAnimationTimer = startTimer( 40 );
             }
         }
-        else
-            layoutTrackBar();
     }
     else
     {
