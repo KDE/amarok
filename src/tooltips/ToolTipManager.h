@@ -26,7 +26,7 @@
 #include <QIcon>
 #include <QModelIndex>
 #include "meta/Meta.h"
-#include "amaroktooltip.h"
+#include "AmarokToolTip.h"
 
 class QAbstractItemView;
 class QModelIndex;

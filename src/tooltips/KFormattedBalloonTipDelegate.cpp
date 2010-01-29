@@ -19,15 +19,14 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA                *
  *******************************************************************************/
 
-#include "kformattedballoontipdelegate.h"
-#include "ktooltipitem.h"
-#include "ktooltip.h"
+#include "KFormattedBalloonTipDelegate.h"
+#include "KToolTipItem.h"
+#include "KToolTip.h"
 #include <QBitmap>
 #include <QIcon>
 #include <QLinearGradient>
 #include <QSize>
 #include <QTextDocument>
-#include <kcolorscheme.h>
 
 KFormattedBalloonTipDelegate::KFormattedBalloonTipDelegate()
 {

@@ -23,7 +23,7 @@
 
 #include "PrettyItemDelegate.h"
 #include "playlist/proxymodels/GroupingProxy.h"
-#include "tooltips/tooltipmanager.h"
+#include "tooltips/ToolTipManager.h"
 
 #include <QListView>
 #include <QModelIndex>

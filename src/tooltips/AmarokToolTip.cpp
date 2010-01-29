@@ -1,5 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2008 by Fredrik Höglund <fredrik@kde.org>               *
+ *   Copyright (C) 2008 by Simon St James <kdedevel@etotheipiplusone.com>  *
+ *   Copyright (C) 2008 Oleksandr Khayrullin <saniokh@gmail.com>           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,38 +18,36 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA            *
  ***************************************************************************/
 
-#ifndef KTOOLTIP_H
-#define KTOOLTIP_H
+#include "AmarokToolTip.h"
 
-#include <tooltips/ktooltipitem.h>
+#include <kicon.h>
+#include <kio/previewjob.h>
+#include <kfileitem.h>
 
-#include <QStyle>
-#include <QFontMetrics>
-class KToolTipDelegate;
+#include <QtGui/QPixmap>
 
-/**
- * KToolTip provides customizable tooltips that can have animations as well as an alpha
- * channel, allowing for dynamic transparency effects.
- *
- * ARGB tooltips work on X11 even when the application isn't using the ARGB visual.
- */
-namespace KToolTip
+AmarokBalloonTooltipDelegate::AmarokBalloonTooltipDelegate()
 {
-    void showText(const QPoint &pos, const QString &text, QWidget *widget, const QRect &rect);
-    void showText(const QPoint &pos, const QString &text, QWidget *widget = 0);
-
-    /**
-     * Shows the tip @p item at the global position indicated by @p pos.
-     *
-     * Ownership of the item is transferred to KToolTip. The item will be deleted
-     * automatically when it is hidden.
-     *
-     * The tip is shown immediately when this function is called.
-     */
-    void showTip(const QPoint &pos, KToolTipItem *item);
-    void hideTip();
-
-    void setToolTipDelegate(KToolTipDelegate *delegate);
 }
 
-#endif
+AmarokBalloonTooltipDelegate::~AmarokBalloonTooltipDelegate()
+{
+}
+
+// Delegate everything to the base class, after re-setting the decorationSize
+// to the preview size.
+QSize AmarokBalloonTooltipDelegate::sizeHint(const KStyleOptionToolTip& option, const KToolTipItem& item) const
+{
+    KStyleOptionToolTip updatedStyleOption = option;
+    updatedStyleOption.decorationSize = QSize(PREVIEW_WIDTH, PREVIEW_HEIGHT);
+    return KFormattedBalloonTipDelegate::sizeHint(updatedStyleOption, item);
+}
+
+void AmarokBalloonTooltipDelegate::paint(QPainter* painter,
+                                          const KStyleOptionToolTip& option,
+                                          const KToolTipItem& item) const
+{
+    KStyleOptionToolTip updatedStyleOption = option;
+    updatedStyleOption.decorationSize = QSize(PREVIEW_WIDTH, PREVIEW_HEIGHT);
+    return KFormattedBalloonTipDelegate::paint(painter, updatedStyleOption, item);
+}

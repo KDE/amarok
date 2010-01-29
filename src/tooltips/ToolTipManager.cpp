@@ -19,13 +19,13 @@
  *******************************************************************************/
 
 #include "amarokconfig.h"
-#include "tooltipmanager.h"
+#include "ToolTipManager.h"
 
-#include "amaroktooltip.h"
+#include "AmarokToolTip.h"
 #include "meta/Meta.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 
-#include <tooltips/ktooltip.h>
+#include <tooltips/KToolTip.h>
 
 #include <QAbstractItemView>
 #include <QApplication>
@@ -300,4 +300,4 @@ QString ToolTipManager::breakLongLinesHTML(const QString& text)
         return textInLines.trimmed();
     }
 }
-#include "tooltipmanager.moc"
+#include "ToolTipManager.moc"
