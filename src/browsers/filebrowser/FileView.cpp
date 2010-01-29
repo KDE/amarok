@@ -23,6 +23,8 @@
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "PaletteHandler.h"
+#include "SvgHandler.h"
 
 #include <KIcon>
 #include <KLocale>
@@ -31,6 +33,46 @@
 
 #include <QContextMenuEvent>
 #include <QFileSystemModel>
+#include <QItemDelegate>
+#include <QPainter>
+
+
+
+class FileViewDelegate : public QItemDelegate
+{
+
+public:
+
+    FileViewDelegate( QObject *parent = 0 )
+        : QItemDelegate( parent )
+    {
+    }
+
+    
+    virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+    {
+        const int width = option.rect.width();
+        const int height = option.rect.height();
+
+        if( height > 0 )
+        {
+            painter->save();
+            QPixmap background;
+
+            background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
+
+            painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
+
+            painter->restore();
+        }
+
+        QItemDelegate::paint( painter, option, index );
+    }
+
+};
+
+
+
 
 FileView::FileView( QWidget * parent )
     : QListView( parent )
@@ -39,6 +81,15 @@ FileView::FileView( QWidget * parent )
     , m_pd( 0 )
     , m_ongoingDrag( false )
 {
+    setFrameStyle( QFrame::NoFrame );
+
+     setAlternatingRowColors( true );
+
+    The::paletteHandler()->updateItemView( this );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
+
+    setItemDelegate( new FileViewDelegate( this ) );
+    
 }
 
 void FileView::contextMenuEvent ( QContextMenuEvent * e )
@@ -183,6 +234,13 @@ FileView::startDrag( Qt::DropActions supportedActions )
     m_dragMutex.lock();
     m_ongoingDrag = false;
     m_dragMutex.unlock();
+}
+
+void FileView::newPalette( const QPalette & palette )
+{
+    Q_UNUSED( palette )
+    The::paletteHandler()->updateItemView( this );
+    reset(); // redraw all potential delegates
 }
 
 #include "FileView.moc"

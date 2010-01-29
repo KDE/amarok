@@ -35,9 +35,10 @@ protected slots:
 
     void slotAppendToPlaylist();
     void slotReplacePlaylist();
+    void newPalette( const QPalette & palette );
     
 protected:
-
+            
     QList<QAction *> actionsForIndices( const QModelIndexList &indices );
     void addSelectionToPlaylist( bool replace );
     
