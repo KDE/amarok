@@ -352,11 +352,12 @@ EqualizerSetup::savePresets()
 void
 EqualizerSetup::editPresets()
 {
-    EqualizerPresetManager * editor = new EqualizerPresetManager(this);
-    editor->setPresets(m_presets);
+    EqualizerPresetManager editor;
+    editor.setPresets( m_presets );
 
-    if ( editor->exec() ) {
-        QMap< QString, QList<int> > presets = editor->presets();
+    if( editor.exec() )
+    {
+        QMap< QString, QList<int> > presets = editor.presets();
 
         QString currentTitle = m_presetCombo->currentText();
         QList<int> currentGains= m_presets[ currentTitle ];
@@ -378,8 +379,6 @@ EqualizerSetup::editPresets()
         m_presets = presets;
         updatePresets( newTitle );
     }
-
-    delete editor;
 }
 
 void
