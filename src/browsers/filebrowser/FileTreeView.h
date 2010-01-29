@@ -17,15 +17,14 @@
 #ifndef FILETREEVIEW_H
 #define FILETREEVIEW_H
 
-#include "widgets/PrettyTreeView.h"
-
 #include <QAction>
 #include <QList>
+#include <QListView>
 #include <QMutex>
 
 class PopupDropper;
 
-class FileTreeView : public Amarok::PrettyTreeView
+class FileTreeView : public QListView
 {
     Q_OBJECT
 public:

@@ -33,7 +33,7 @@
 #include <QFileSystemModel>
 
 FileTreeView::FileTreeView( QWidget * parent )
-    : Amarok::PrettyTreeView( parent )
+    : QListView( parent )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
     , m_pd( 0 )
@@ -170,7 +170,7 @@ FileTreeView::startDrag( Qt::DropActions supportedActions )
         m_pd->show();
     }
 
-    QTreeView::startDrag( supportedActions );
+    QListView::startDrag( supportedActions );
     debug() << "After the drag!";
 
     if( m_pd )

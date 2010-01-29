@@ -33,7 +33,6 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 {
 
     DEBUG_BLOCK;
-
     m_searchWidget = new SearchWidget( this, this, false );
     m_searchWidget->setClickMessage( i18n( "Filter Files" ) );
 
@@ -43,28 +42,22 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
     m_fileSystemModel = new QFileSystemModel( this );
     m_fileSystemModel->setRootPath( QDir::homePath() );
     m_fileSystemModel->setNameFilterDisables( false );
+    m_fileSystemModel->setFilter( QDir::AllEntries );
 
     debug() << "home path: " <<  QDir::homePath();
 
-    FileTreeView * treeView = new FileTreeView( this );
+    m_fileView = new FileTreeView( this );
 
     debug() << "root index: " << m_fileSystemModel->index( QDir::homePath() ).row();
     
 
-    treeView->setSortingEnabled( true );
-    treeView->sortByColumn ( 0, Qt::AscendingOrder );
-    treeView->setFrameStyle( QFrame::NoFrame );
-    treeView->setModel( m_fileSystemModel );
-    treeView->hideColumn( 1 );
-    treeView->hideColumn( 2 );
-    treeView->hideColumn( 3 );
+    m_fileView->setModel( m_fileSystemModel );
+    m_fileView->setRootIndex( m_fileSystemModel->index( QDir::homePath() ) );
 
-    treeView->setRootIndex( m_fileSystemModel->index( QDir::homePath() ) );
+    m_fileView->setDragEnabled( true );
+    m_fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
-    treeView->setDragEnabled( true );
-    treeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-
-    connect( treeView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
+    connect( m_fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
 }
 
 
@@ -76,19 +69,17 @@ void FileBrowserMkII::itemActivated( const QModelIndex &index )
     debug() << "activated url: " << filePath.url();
     debug() << "filename: " << filePath.fileName();
 
-    QList<KUrl> urls;
-    urls << filePath;
     if( m_fileSystemModel->isDir( index ) ) {
-        if( m_directoryLoader == 0 )
-            m_directoryLoader = new DirectoryLoader();
-
-        m_directoryLoader->insertAtRow( 99999999 ); //lazy way of saying last one...
-        m_directoryLoader->init( urls );
+        debug() << "setting root path to: " << filePath.path();
+        m_fileSystemModel->setRootPath( filePath.path() );
+        m_fileView->setRootIndex( m_fileSystemModel->index( filePath.path() ) );
     }
     else
     {
         if( EngineController::canDecode( filePath ) )
         {
+            QList<KUrl> urls;
+            urls << filePath;
             The::playlistController()->insertOptioned( urls, Playlist::AppendAndPlay );
         }
     }
