@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "FileTreeView.h"
+#include "FileView.h"
 
 #include "Debug.h"
 #include "EngineController.h"
@@ -32,7 +32,7 @@
 #include <QContextMenuEvent>
 #include <QFileSystemModel>
 
-FileTreeView::FileTreeView( QWidget * parent )
+FileView::FileView( QWidget * parent )
     : QListView( parent )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
@@ -41,7 +41,7 @@ FileTreeView::FileTreeView( QWidget * parent )
 {
 }
 
-void FileTreeView::contextMenuEvent ( QContextMenuEvent * e )
+void FileView::contextMenuEvent ( QContextMenuEvent * e )
 {
 
     if( !model() )
@@ -66,18 +66,18 @@ void FileTreeView::contextMenuEvent ( QContextMenuEvent * e )
  
 }
 
-void FileTreeView::slotAppendToPlaylist()
+void FileView::slotAppendToPlaylist()
 {
     addSelectionToPlaylist( false );
 }
 
 
-void FileTreeView::slotReplacePlaylist()
+void FileView::slotReplacePlaylist()
 {
     addSelectionToPlaylist( true );
 }
 
-QList<QAction *> FileTreeView::actionsForIndices( const QModelIndexList &indices )
+QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
 {
 
     QList<QAction *> actions;
@@ -106,7 +106,7 @@ QList<QAction *> FileTreeView::actionsForIndices( const QModelIndexList &indices
     return actions;
 }
 
-void FileTreeView::addSelectionToPlaylist( bool replace )
+void FileView::addSelectionToPlaylist( bool replace )
 {
     DEBUG_BLOCK
     QModelIndexList indices = selectedIndexes();
@@ -136,7 +136,7 @@ void FileTreeView::addSelectionToPlaylist( bool replace )
 
 
 void
-FileTreeView::startDrag( Qt::DropActions supportedActions )
+FileView::startDrag( Qt::DropActions supportedActions )
 {
     DEBUG_BLOCK
 
@@ -185,4 +185,4 @@ FileTreeView::startDrag( Qt::DropActions supportedActions )
     m_dragMutex.unlock();
 }
 
-#include "FileTreeView.moc"
+#include "FileView.moc"

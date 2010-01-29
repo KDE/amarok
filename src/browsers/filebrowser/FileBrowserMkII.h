@@ -19,7 +19,7 @@
 
 #include "BrowserCategory.h"
 #include "DirectoryLoader.h"
-#include "FileTreeView.h"
+#include "FileView.h"
 
 #include "widgets/SearchWidget.h"
 
@@ -48,7 +48,7 @@ private:
     QTimer                    m_filterTimer;
     QString                   m_currentFilter;
 
-    FileTreeView             *m_fileView; 
+    FileView                 *m_fileView;
         
 };
 

@@ -18,7 +18,7 @@
 
 #include "Debug.h"
 #include "EngineController.h"
-#include "FileTreeView.h"
+#include "FileView.h"
 #include "playlist/PlaylistController.h"
 
 
@@ -46,7 +46,7 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 
     debug() << "home path: " <<  QDir::homePath();
 
-    m_fileView = new FileTreeView( this );
+    m_fileView = new FileView( this );
 
     debug() << "root index: " << m_fileSystemModel->index( QDir::homePath() ).row();
     

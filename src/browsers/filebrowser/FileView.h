@@ -24,11 +24,11 @@
 
 class PopupDropper;
 
-class FileTreeView : public QListView
+class FileView : public QListView
 {
     Q_OBJECT
 public:
-    FileTreeView( QWidget * parent );
+    FileView( QWidget * parent );
 
 
 protected slots:
