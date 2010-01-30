@@ -39,6 +39,8 @@ static const QString promoString = ""; //i18n( "Amarok your Music" );
 static const int prevOpacity = 128;
 static const int nextOpacity = 160;
 static const int icnSize = 48;
+static const int stretchAroundProgress = 1;
+static const int leftRightSpacer = 15;
 
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
@@ -52,7 +54,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     setIconSize( QSize( icnSize, icnSize ) );
 
     QWidget *spacerWidget = new QWidget(this);
-    spacerWidget->setFixedWidth( 9 );
+    spacerWidget->setFixedWidth( leftRightSpacer );
     addWidget( spacerWidget );
 
     m_playPause = new PlayPauseButton;
@@ -93,7 +95,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
 
     
     m_progressLayout = new QHBoxLayout;
-    m_progressLayout->addStretch( 3 );
+    m_progressLayout->addStretch( stretchAroundProgress );
     m_progressLayout->addWidget( m_timeLabel = new QLabel( this ) );
     m_progressLayout->setAlignment( m_timeLabel, Qt::AlignVCenter | Qt::AlignRight );
     m_timeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
@@ -103,12 +105,16 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     connect( m_slider, SIGNAL( sliderReleased( int ) ), The::engineController(), SLOT( seek( int ) ) );
     connect( m_slider, SIGNAL( valueChanged( int ) ), SLOT( setLabelTime( int ) ) );
 
+    m_progressLayout->addWidget( m_remainingTimeLabel = new QLabel( this ) );
+    m_progressLayout->setAlignment( m_remainingTimeLabel, Qt::AlignVCenter | Qt::AlignLeft );
+    m_remainingTimeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignLeft );
+
     m_progressLayout->addWidget( m_trackActionBar = new QToolBar( this ) );
     m_trackActionBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_trackActionBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
     m_trackActionBar->setIconSize( QSize( 16,16 ) );
 
-    m_progressLayout->addStretch( 3 );
+    m_progressLayout->addStretch( stretchAroundProgress );
     vl->addLayout( m_progressLayout );
 
     
@@ -124,7 +130,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     connect ( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
 
     spacerWidget = new QWidget(this);
-    spacerWidget->setFixedWidth( 9 );
+    spacerWidget->setFixedWidth( leftRightSpacer );
     addWidget( spacerWidget );
 
     connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
@@ -554,8 +560,11 @@ void Toolbar_3::setLabelTime( int ms )
     {
         m_timeLabel->setText( QString() );
         m_timeLabel->setMinimumWidth( 0 );
+        m_remainingTimeLabel->setText( QString() );
+        m_remainingTimeLabel->setMinimumWidth( 0 );
         m_trackActionBar->setMinimumWidth( 0 );
         m_lastTime = -1;
+        m_lastRemainingTime = -1;
     }
     else
     {
@@ -573,6 +582,17 @@ void Toolbar_3::setLabelTime( int ms )
         
         m_lastTime = secs;
         m_timeLabel->setText( Meta::secToPrettyTime( secs ) );
+
+        const int remainingSecs = (m_slider->maximum() - ms) / 1000;
+        const int remainingTF = timeFrame( remainingSecs );
+        if ( remainingTF != timeFrame( m_lastRemainingTime ) )
+        {
+            const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( '-' + timeString[remainingTF] );
+            m_remainingTimeLabel->setMinimumWidth( w );
+        }
+        m_lastRemainingTime = remainingSecs;
+        m_remainingTimeLabel->setText( '-' + Meta::secToPrettyTime( remainingSecs ) );
+
     }
 }
 
