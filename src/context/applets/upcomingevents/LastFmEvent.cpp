@@ -17,9 +17,7 @@
 
 #include "LastFmEvent.h"
 
-/**
- * Creates an empty LastFmEvent
- */
+
 LastFmEvent::LastFmEvent()
 {
     static bool metaTypeRegistered = false;
@@ -30,9 +28,6 @@ LastFmEvent::LastFmEvent()
     }
 }
 
-/**
- * Creates a new LastFmEvent with the 'event' attributes
- */
 LastFmEvent::LastFmEvent( const LastFmEvent& event)
 {
     foreach( QString currentArtist, event.m_artists )
@@ -46,9 +41,6 @@ LastFmEvent::LastFmEvent( const LastFmEvent& event)
     m_location = event.m_location;
 }
 
-/**
- * Destroys a LastFmEvent instance
- */
 LastFmEvent::~LastFmEvent() {}
 
 QStringList LastFmEvent::artists() const
@@ -81,32 +73,32 @@ KUrl LastFmEvent::url() const
     return m_url;
 }
 
-void LastFmEvent::setArtists( QStringList artists )
+void LastFmEvent::setArtists( const QStringList artists )
 {
     m_artists = artists;
 }
 
-void LastFmEvent::setDate( QDateTime date )
+void LastFmEvent::setDate( const QDateTime date )
 {
     m_date = date;
 }
 
-void LastFmEvent::setName( QString name )
+void LastFmEvent::setName( const QString name )
 {
     m_name = name;
 }
 
-void LastFmEvent::setLocation( QString location )
+void LastFmEvent::setLocation( const QString location )
 {
     m_location = location;
 }
 
-void LastFmEvent::setSmallImageUrl( KUrl smallImageUrl )
+void LastFmEvent::setSmallImageUrl( const KUrl smallImageUrl )
 {
     m_smallImageUrl = smallImageUrl;
 }
 
-void LastFmEvent::setUrl( KUrl url )
+void LastFmEvent::setUrl( const KUrl url )
 {
     m_url = url;
 }
