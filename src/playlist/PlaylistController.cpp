@@ -148,6 +148,8 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     }
     else if ( ( options & StartPlay ) && ( ( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) ) )
         Actions::instance()->play( firstItemAdded );
+
+    emit changed();
 }
 
 void
@@ -292,6 +294,8 @@ Playlist::Controller::removeRows( QList<int>& rows )
 
     if ( cmds.size() > 0 )
         m_undoStack->push( new RemoveTracksCmd( 0, cmds ) );
+
+    emit changed();
 }
 
 void
@@ -462,18 +466,22 @@ Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
 
     if ( cmds.size() > 0 )
         m_undoStack->push( new MoveTracksCmd( 0, cmds ) );
+
+    emit changed();
 }
 
 void
 Playlist::Controller::undo()
 {
     m_undoStack->undo();
+    emit changed();
 }
 
 void
 Playlist::Controller::redo()
 {
     m_undoStack->redo();
+    emit changed();
 }
 
 void
@@ -481,6 +489,7 @@ Playlist::Controller::clear()
 {
     DEBUG_BLOCK
     removeRows( 0, Playlist::ModelStack::instance()->source()->rowCount() );
+    emit changed();
 }
 
 /**************************************************
@@ -591,6 +600,8 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 
     if ( cmds.size() > 0 )
         m_undoStack->push( new InsertTracksCmd( 0, cmds ) );
+
+    emit changed();
 }
 
 namespace The
