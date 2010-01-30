@@ -25,6 +25,7 @@
 #include "MainWindow.h"
 #include "MetaConstants.h"
 #include "meta/LastFmMeta.h"
+#include "StatusBar.h"
 
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
@@ -214,6 +215,7 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
             trackInfo.setAlbum( track->album()->name() );
 
         trackInfo.love();
+        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
     }
 }
 

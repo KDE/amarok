@@ -2,6 +2,7 @@
 Name=Photos Data Engine
 Name[bg]=Ядро за снимки
 Name[ca]=Motor de dades de fotos
+Name[ca@valencia]=Motor de dades de fotos
 Name[cs]=Datový nástroj fotek
 Name[csb]=Mòtór pòdôwków òdjimków
 Name[da]=Datamotor til fotos
@@ -26,6 +27,8 @@ Name[ro]=Motor de date Fotografii
 Name[ru]=Источник данных фотографий
 Name[sl]=Podatkovni pogon za fotografije
 Name[sr]=Датомотор фотографија
+Name[sr@ijekavian]=Датомотор фотографија
+Name[sr@ijekavianlatin]=Datomotor fotografija
 Name[sr@latin]=Datomotor fotografija
 Name[sv]=Datagränssnitt för foton
 Name[tr]=Fotoğraflar Veri Motoru

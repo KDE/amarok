@@ -2,6 +2,7 @@
 Name=Cloud
 Name[bg]=Cloud
 Name[ca]=Cloud
+Name[ca@valencia]=Cloud
 Name[cs]=Cloud
 Name[csb]=Blóna
 Name[da]=Cloud
@@ -39,6 +40,8 @@ Name[ro]=Nor
 Name[ru]=Cloud
 Name[sl]=Oblak
 Name[sr]=Облак
+Name[sr@ijekavian]=Облак
+Name[sr@ijekavianlatin]=Oblak
 Name[sr@latin]=Oblak
 Name[sv]=Cloud
 Name[th]=กลุ่มเมฆ

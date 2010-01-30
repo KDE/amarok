@@ -20,10 +20,8 @@
 
 #include "Amarok.h"
 #include "Collection.h"
-#include "CollectionManager.h"
 #include "CollectionTreeItem.h"
 #include "Debug.h"
-#include "QueryMaker.h"
 
 #include <KLocale>
 

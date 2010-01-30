@@ -62,7 +62,7 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
         virtual void deletePlaylists( Meta::PlaylistList playlistlist ) { Q_UNUSED( playlistlist ) }
 
     signals:
-            virtual void updated();
+            void updated();
 };
 
 #endif

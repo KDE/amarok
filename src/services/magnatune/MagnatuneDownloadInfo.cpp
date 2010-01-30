@@ -306,14 +306,32 @@ MagnatuneDownloadInfo::albumName()
     return m_albumName; 
 }
 
+const QString
+MagnatuneDownloadInfo::albumName() const
+{
+    return m_albumName;
+}
+
 QString
 MagnatuneDownloadInfo::artistName()
 {
     return m_artistName;
 }
 
+const QString
+MagnatuneDownloadInfo::artistName() const
+{
+    return m_artistName;
+}
+
 QString
 MagnatuneDownloadInfo::coverUrl()
+{
+    return m_coverUrl;
+}
+
+const QString
+MagnatuneDownloadInfo::coverUrl() const
 {
     return m_coverUrl;
 }

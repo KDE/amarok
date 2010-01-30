@@ -2,6 +2,7 @@
  * Copyright (c) 2008 Bonne Eggleston <b.eggleston@gmail.com>                           *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2009 Louis Bayle <louis.bayle@gmail.com>                               *
+ * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -27,17 +28,32 @@
 
 namespace Playlist
 {
-    namespace ViewCommon
+    class ViewCommon
     {
-        void editTrackInformation();
-        void trackMenu( QWidget *, const QModelIndex *, const QPoint &pos, bool coverActions = false );
-        QList<QAction*> actionsFor( QWidget *parent, const QModelIndex *index, bool coverActions );
+        public:
 
-        QList<QAction*> trackActionsFor( QWidget *parent, const QModelIndex *index );
-        QList<QAction*> coverActionsFor( const QModelIndex *index );
-        QList<QAction*> multiSourceActionsFor( QWidget *parent, const QModelIndex *index );
-        QList<QAction*> editActionsFor( QWidget *parent, const QModelIndex *index );
-    }
+            ViewCommon();
+            ~ViewCommon();
+
+            void editTrackInformation();
+            void trackMenu( QWidget *, const QModelIndex *, const QPoint &pos, bool coverActions = false );
+            QList<QAction*> actionsFor( QWidget *parent, const QModelIndex *index, bool coverActions );
+
+            QList<QAction*> trackActionsFor( QWidget *parent, const QModelIndex *index );
+            QList<QAction*> coverActionsFor( const QModelIndex *index );
+            QList<QAction*> multiSourceActionsFor( QWidget *parent, const QModelIndex *index );
+            QList<QAction*> editActionsFor( QWidget *parent, const QModelIndex *index );
+
+        private:
+
+            QAction* m_stopAfterTrackAction;
+            QAction* m_cueTrackAction;
+            QAction* m_removeTracTrackAction;
+            QAction* m_findInSourceAction;
+            
+            
+    };
+
 }
 
 #endif

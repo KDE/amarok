@@ -27,8 +27,8 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "CollectionManager.h"
+#include "CoverLabel.h"
 #include "SqlStorage.h"
-#include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "Debug.h"
 #include "EditCapability.h"
@@ -569,22 +569,20 @@ TagDialog::loadCover()
 void
 TagDialog::guessFromFilename() //SLOT
 {
-    //was: setFilenameSchemes()
-    KDialog *dialog = new KDialog( this );
-    //FilenameLayoutDialog *dialog = new FilenameLayoutDialog(this);
-    dialog->setCaption( i18n( "Filename Layout Chooser" ) );
-    dialog->setButtons( KDialog::Ok | KDialog::Cancel );
-    FilenameLayoutDialog *widget = new FilenameLayoutDialog( dialog );
-    widget->setFileName( m_currentTrack->playableUrl().path() );
-    dialog->setMainWidget( widget );
-    connect( dialog, SIGNAL( accepted() ),
-             widget, SLOT( onAccept() ) );
+    KDialog dialog;
+    dialog.setCaption( i18n( "Filename Layout Chooser" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    FilenameLayoutDialog widget( &dialog );
+    widget.setFileName( m_currentTrack->playableUrl().path() );
+    dialog.setMainWidget( &widget );
+    connect( &dialog, SIGNAL( accepted() ), &widget, SLOT( onAccept() ) );
 
-    const int dcode = dialog->exec();
+    const int dcode = dialog.exec();
+
     QString schemeFromDialog; //note to self: see where to put it from an old revision
     debug() << "FilenameLayoutDialog finished.";
     if( dcode == KDialog::Accepted )
-        schemeFromDialog = widget->getParsableScheme();
+        schemeFromDialog = widget.getParsableScheme();
     else
         debug() << "WARNING: Have not received a new scheme from FilenameLayoutDialog";
 
@@ -614,9 +612,9 @@ TagDialog::guessFromFilename() //SLOT
         TagGuesser guesser;
         guesser.setFilename( fi.fileName() );
         guesser.setSchema( schemeFromDialog );
-        guesser.setCaseType( widget->getCaseOptions() );
-        guesser.setConvertUnderscores( widget->getUnderscoreOptions() );
-        guesser.setCutTrailingSpaces( widget->getWhitespaceOptions() );
+        guesser.setCaseType( widget.getCaseOptions() );
+        guesser.setConvertUnderscores( widget.getUnderscoreOptions() );
+        guesser.setCutTrailingSpaces( widget.getWhitespaceOptions() );
 
         if( guesser.guess() )
         {
@@ -663,8 +661,6 @@ TagDialog::guessFromFilename() //SLOT
             debug() << "guessing tags from filename failed" << endl;
         }
     }
-    widget->deleteLater();
-    dialog->deleteLater();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1013,7 +1009,7 @@ void TagDialog::readTags()
         ui->qSpinBox_year->setValue( 0 );
     ui->qSpinBox_score->setValue( m_currentData.value( Meta::Field::SCORE ).toInt() );
     ui->qSpinBox_discNumber->setValue( m_currentData.value( Meta::Field::DISCNUMBER ).toInt() );
-    ui->qPlainTextEdit_comment->setPlainText( Qt::escape( m_currentData.value( Meta::Field::COMMENT ).toString() ) );
+    ui->qPlainTextEdit_comment->setPlainText( m_currentData.value( Meta::Field::COMMENT ).toString() );
 
     QString summaryText, statisticsText;
     const QString body2cols = "<tr><td><nobr>%1</nobr></td><td><b>%2</b></td></tr>";
@@ -1433,7 +1429,11 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
     {
         debug() << "TagDialog::LYRICSCHANGED";
 
-        if ( ui->kRichTextEdit_lyrics->textOrHtml().isEmpty() )
+        // check if the plaintext lyrics are empty
+        // (checking against HTML lyrics does not work as the HTML lyrics
+        // contain invisibble stuff (like the <title> tag) - thus there is nothing
+        // visible anymore, but isEmpty() would still return false)
+        if ( ui->kRichTextEdit_lyrics->toPlainText().isEmpty() )
         {
             m_storedLyrics.remove( track );
             m_storedLyrics.insert( track, QString() );

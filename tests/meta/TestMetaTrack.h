@@ -21,15 +21,16 @@
 #define TESTMETATRACK_H
 
 #include "meta/Meta.h"
+#include "TestBase.h"
 
 #include <QtCore/QStringList>
 
-class TestMetaTrack : public QObject
+class TestMetaTrack : public TestBase
 {
 Q_OBJECT
 
 public:
-    TestMetaTrack( QStringList testArgumentList, bool stdout );
+    TestMetaTrack( const QStringList args, const QString &logPath );
 
 private slots:
     void initTestCase();

@@ -20,8 +20,8 @@
 
 #include "ProxyCollection.h"
 
-#include "collection/CollectionManager.h"
 #include "Debug.h"
+#include "collection/CollectionManager.h"
 #include "ProxyCollectionMeta.h"
 #include "ProxyCollectionQueryMaker.h"
 
@@ -39,12 +39,6 @@ ProxyCollection::Collection::Collection()
     timer->setInterval( 60000 ); //clean up every 60 seconds
     connect( timer, SIGNAL( timeout() ), this, SLOT( emptyCache() ) );
     timer->start();
-    connect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*)), SLOT(addCollection(Amarok::Collection*)));
-    connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)), SLOT(removeCollection(QString)));
-    foreach( Amarok::Collection* coll, CollectionManager::instance()->viewableCollections() )
-    {
-        addCollection( coll );
-    }
 }
 
 ProxyCollection::Collection::~Collection()
@@ -110,12 +104,12 @@ ProxyCollection::Collection::collectionId() const
 }
 
 void
-ProxyCollection::Collection::addCollection( Amarok::Collection *collection )
+ProxyCollection::Collection::addCollection( Amarok::Collection *collection, CollectionManager::CollectionStatus status )
 {
     if( !collection )
         return;
 
-    if( !( CollectionManager::instance()->collectionStatus( collection->collectionId() ) & CollectionManager::CollectionViewable ) )
+    if( !( status & CollectionManager::CollectionViewable ) )
         return;
 
     m_idCollectionMap.insert( collection->collectionId(), collection );

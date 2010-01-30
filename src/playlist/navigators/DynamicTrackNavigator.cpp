@@ -33,6 +33,7 @@
 Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylistPtr p )
         : m_playlist( p )
 {
+    DEBUG_BLOCK
     m_model = Playlist::ModelStack::instance()->top();
     connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
     connect( model(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
@@ -87,7 +88,9 @@ Playlist::DynamicTrackNavigator::activePlaylistChanged()
     if ( newPlaylist == m_playlist )
         return;
 
-    m_playlist->requestAbort();
+    if( m_playlist )
+        m_playlist->requestAbort();
+
     QMutexLocker locker( &m_mutex );
 
     m_playlist = newPlaylist;

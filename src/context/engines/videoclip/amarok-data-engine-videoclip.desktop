@@ -2,6 +2,7 @@
 Name=Video Clip Data Engine
 Name[bg]=Ядро за видеоклип
 Name[ca]=Motor de dades de video clip
+Name[ca@valencia]=Motor de dades de video clip
 Name[cs]=Datový nástroj videa
 Name[csb]=Mòtór pòdôwków teledisków
 Name[da]=Datamotor til videoklip
@@ -27,6 +28,8 @@ Name[ro]=Motor de date Videoclip
 Name[ru]=Источник данных для видеоклипов
 Name[sl]=Podatkovni pogon za video posnetke
 Name[sr]=Датомотор видео исечака
+Name[sr@ijekavian]=Датомотор видео исечака
+Name[sr@ijekavianlatin]=Datomotor video isečaka
 Name[sr@latin]=Datomotor video isečaka
 Name[sv]=Datagränssnitt för videoklipp
 Name[tr]=Video Klibi Veri Motoru

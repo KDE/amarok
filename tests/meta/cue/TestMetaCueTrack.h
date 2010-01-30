@@ -21,17 +21,18 @@
 #define TESTMETACUETRACK_H
 
 #include "meta/cue/Cue.h"
+#include "TestBase.h"
 
 #include <QtCore/QStringList>
 
 class QString;
 
-class TestMetaCueTrack : public QObject
+class TestMetaCueTrack : public TestBase
 {
 Q_OBJECT
 
 public:
-    TestMetaCueTrack( QStringList testArgumentList, bool stdout );
+    TestMetaCueTrack( const QStringList args, const QString &logPath );
 
 private slots:
     void initTestCase();
@@ -40,23 +41,9 @@ private slots:
     void testCueItems();
     void testLocateCueSheet();
     void testValidateCueSheet();
-    //methods inherited from Meta::MetaBase
-    void testName();
-    void testPrettyName();
-    void testFullPrettyName();
-    void testSortableName();
-
-    void testTrackNumber();
-    void testLength();
-
-    void testAlbum();
-    void testArtist();
-
-    void testHasCapabilityInterface();
 
 private:
     QString *m_isoCuePath, *m_utfCuePath, *m_testSongPath;
-    MetaCue::Track *m_testTrack1, *m_testTrack2;
 };
 
 #endif // TESTMETACUETRACK_H

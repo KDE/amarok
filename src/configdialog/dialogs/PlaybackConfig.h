@@ -34,31 +34,8 @@ class PlaybackConfig : public ConfigDialogBase, public Ui_PlaybackConfig
         virtual bool isDefault();
         virtual void updateSettings();
 
-    public Q_SLOTS:
-        void eqUpdateUI( int index );
-
     private Q_SLOTS:
         void configurePhonon();
-        void eqPresetChanged( int index );
-        void eqBandsChanged();
-        void eqSavePreset();
-        void eqDeletePreset();
-        void eqRestorePreset();
-
-    private:
-        double mValueScale;
-        QVector<QSlider*> mBands;
-        QVector<QLabel*> mBandsValues;
-        QVector<QLabel*> mBandsLabels;
-
-        void eqSetupUI();
-        void eqUpdateToolTips();
-        void eqUpdateLabels( QList<int> & mEqGains );
-        bool eqCfgDeletePreset( QString & mPresetName );
-        bool eqCfgRestorePreset( QString mPresetName );
-        void eqCfgSetPresetVal( QString & mPresetName, QList<int> & mPresetValues);
-        QList<int> eqCfgGetPresetVal ( QString mPresetName );
-        QStringList eqGlobalList();        
 };
 
 #endif

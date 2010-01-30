@@ -2,6 +2,7 @@
 Name=Photos
 Name[bg]=Снимки
 Name[ca]=Fotos
+Name[ca@valencia]=Fotos
 Name[cs]=Fotky
 Name[csb]=Òdjimczi
 Name[da]=Fotos
@@ -29,6 +30,8 @@ Name[ro]=Fotografii
 Name[ru]=Фотографии
 Name[sl]=Fotografije
 Name[sr]=Фотографије
+Name[sr@ijekavian]=Фотографије
+Name[sr@ijekavianlatin]=Fotografije
 Name[sr@latin]=Fotografije
 Name[sv]=Foton
 Name[tr]=Fotoğraflar

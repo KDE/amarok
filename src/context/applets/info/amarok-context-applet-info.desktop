@@ -2,6 +2,7 @@
 Name=Info
 Name[bg]=Данни
 Name[ca]=Informació
+Name[ca@valencia]=Informació
 Name[cs]=Informace
 Name[csb]=Wëdowiédzô
 Name[da]=Info
@@ -28,6 +29,8 @@ Name[ro]=Informații
 Name[ru]=Сведения
 Name[sl]=Podatki
 Name[sr]=Подаци
+Name[sr@ijekavian]=Подаци
+Name[sr@ijekavianlatin]=Podaci
 Name[sr@latin]=Podaci
 Name[sv]=Information
 Name[tr]=Bilgiler

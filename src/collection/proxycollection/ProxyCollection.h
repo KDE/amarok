@@ -20,6 +20,7 @@
 #define PROXYCOLLECTION_H
 
 #include "collection/Collection.h"
+#include "collection/CollectionManager.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 
@@ -94,7 +95,7 @@ namespace ProxyCollection
         public slots:
         void removeCollection( const QString &collectionId );
         void removeCollection( Amarok::Collection *collection );
-        void addCollection( Amarok::Collection *collection );
+        void addCollection( Amarok::Collection *collection, CollectionManager::CollectionStatus status );
 
         private slots:
         void slotUpdated();

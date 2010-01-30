@@ -24,7 +24,7 @@
 namespace Amarok {
 
 /**
- * A class for accessing knotify in KDE
+ * A class for accessing KNotify in KDE
  *
  **/
 class KNotificationBackend : public QObject, public EngineObserver
@@ -35,20 +35,27 @@ public:
     static KNotificationBackend* instance();
     static void destroy();
 
+    void setEnabled(bool enabled) { m_enabled = enabled; }
+    bool isEnabled() const { return m_enabled; }
+
+public Q_SLOTS:
+    void showCurrentTrack();
+
 protected:
     // Reimplemented from engineobserver
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewTrackPlaying();
-
-private Q_SLOTS:
-    void slotShowCurrentTrack();
 
 private:
     KNotificationBackend();
     ~KNotificationBackend();
 
     static KNotificationBackend* s_instance;
-    
+
+    KNotification* m_notify;
+
+    int m_enabled;
+
     QTimer *m_timer;
 };
 

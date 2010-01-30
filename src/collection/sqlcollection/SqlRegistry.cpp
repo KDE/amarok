@@ -20,7 +20,6 @@
 
 #include "Debug.h"
 
-#include "MountPointManager.h"
 #include "SqlCollection.h"
 
 #include <QMutableHashIterator>
@@ -31,6 +30,7 @@ using namespace Meta;
 SqlRegistry::SqlRegistry( SqlCollection* collection )
     : QObject( 0 )
     , m_collection( collection )
+    , m_storage( 0 )
 {
     setObjectName( "SqlRegistry" );
 
@@ -50,8 +50,8 @@ SqlRegistry::~SqlRegistry()
 TrackPtr
 SqlRegistry::getTrack( const QString &url )
 {
-    int deviceid = MountPointManager::instance()->getIdForUrl( url );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+    int deviceid = m_collection->mountPointManager()->getIdForUrl( url );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, url );
     TrackId id(deviceid, rpath);
     QMutexLocker locker( &m_trackMutex );
     QMutexLocker locker2( &m_uidMutex );
@@ -82,11 +82,14 @@ SqlRegistry::getTrack( const QStringList &rowData )
         return m_uidMap.value( uid );
     else
     {
-        TrackPtr track( new SqlTrack( m_collection, rowData ) );
+        SqlTrack *sqlTrack =  new SqlTrack( m_collection, rowData );
+        sqlTrack->setCapabilityDelegate( createTrackDelegate() );
+        TrackPtr track( sqlTrack );
         if( track )
         {
             m_trackMap.insert( id, track );
             m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uidUrl(), track );
+
         }
         return track;
     }
@@ -97,15 +100,15 @@ SqlRegistry::updateCachedUrl( const QPair<QString, QString> &oldnew )
 {
     QMutexLocker locker( &m_trackMutex );
     QMutexLocker locker2( &m_uidMutex );
-    int deviceid = MountPointManager::instance()->getIdForUrl( oldnew.first );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, oldnew.first );
+    int deviceid = m_collection->mountPointManager()->getIdForUrl( oldnew.first );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, oldnew.first );
     TrackId id(deviceid, rpath);
     if( m_trackMap.contains( id ) )
     {
         TrackPtr track = m_trackMap[id];
         m_trackMap.remove( id );
-        int newdeviceid = MountPointManager::instance()->getIdForUrl( oldnew.second );
-        QString newrpath = MountPointManager::instance()->getRelativePath( newdeviceid, oldnew.second );
+        int newdeviceid = m_collection->mountPointManager()->getIdForUrl( oldnew.second );
+        QString newrpath = m_collection->mountPointManager()->getRelativePath( newdeviceid, oldnew.second );
         TrackId newid( newdeviceid, newrpath );
         m_trackMap.insert( newid, track );
     }
@@ -133,11 +136,17 @@ SqlRegistry::getTrackFromUid( const QString &uid )
         return m_uidMap.value( uid );
     else
     {
+
         TrackPtr track( SqlTrack::getTrackFromUid( uid, m_collection ) );
         if( track )
         {
-            int deviceid = MountPointManager::instance()->getIdForUrl( track->playableUrl().path() );
-            QString rpath = MountPointManager::instance()->getRelativePath( deviceid, track->playableUrl().path() );
+            //we need to ensure that this track has a capability delegate or not much will work for tracks loaded from a playlist.
+            SqlTrack * sqlTrack = dynamic_cast<SqlTrack *>( track.data() );
+            if( sqlTrack )
+                sqlTrack->setCapabilityDelegate( createTrackDelegate() );
+
+            int deviceid = m_collection->mountPointManager()->getIdForUrl( track->playableUrl().path() );
+            QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, track->playableUrl().path() );
             TrackId id(deviceid, rpath);
             m_trackMap.insert( id, track );
             m_uidMap.insert( uid, track );
@@ -165,12 +174,12 @@ SqlRegistry::getArtist( const QString &name, int id, bool refresh )
     {
         if( id == -1 )
         {
-            QString query = QString( "SELECT id FROM artists WHERE name = '%1';" ).arg( m_collection->escape( name ) );
-            QStringList res = m_collection->query( query );
+            QString query = QString( "SELECT id FROM artists WHERE name = '%1';" ).arg( m_storage->escape( name ) );
+            QStringList res = m_storage->query( query );
             if( res.isEmpty() )
             {
-                QString insert = QString( "INSERT INTO artists( name ) VALUES ('%1');" ).arg( m_collection->escape( name ) );
-                id = m_collection->insert( insert, "artists" );
+                QString insert = QString( "INSERT INTO artists( name ) VALUES ('%1');" ).arg( m_storage->escape( name ) );
+                id = m_storage->insert( insert, "artists" );
             }
             else
             {
@@ -185,7 +194,9 @@ SqlRegistry::getArtist( const QString &name, int id, bool refresh )
             return m_artistMap.value( id );
         }
 
-        ArtistPtr artist( new SqlArtist( m_collection, id, name ) );
+        SqlArtist *sqlArtist = new SqlArtist( m_collection, id, name );
+        sqlArtist->setCapabilityDelegate( createArtistDelegate() );
+        ArtistPtr artist( sqlArtist );
         m_artistMap.insert( id, artist );
         return artist;
     }
@@ -201,12 +212,12 @@ SqlRegistry::getGenre( const QString &name, int id, bool refresh )
     {
         if( id == -1 )
         {
-            QString query = QString( "SELECT id FROM genres WHERE name = '%1';" ).arg( m_collection->escape( name ) );
-            QStringList res = m_collection->query( query );
+            QString query = QString( "SELECT id FROM genres WHERE name = '%1';" ).arg( m_storage->escape( name ) );
+            QStringList res = m_storage->query( query );
             if( res.isEmpty() )
             {
-                QString insert = QString( "INSERT INTO genres( name ) VALUES ('%1');" ).arg( m_collection->escape( name ) );
-                id = m_collection->insert( insert, "genres" );
+                QString insert = QString( "INSERT INTO genres( name ) VALUES ('%1');" ).arg( m_storage->escape( name ) );
+                id = m_storage->insert( insert, "genres" );
             }
             else
             {
@@ -237,12 +248,12 @@ SqlRegistry::getComposer( const QString &name, int id, bool refresh )
     {
         if( id == -1 )
         {
-            QString query = QString( "SELECT id FROM composers WHERE name = '%1';" ).arg( m_collection->escape( name ) );
-            QStringList res = m_collection->query( query );
+            QString query = QString( "SELECT id FROM composers WHERE name = '%1';" ).arg( m_storage->escape( name ) );
+            QStringList res = m_storage->query( query );
             if( res.isEmpty() )
             {
-                QString insert = QString( "INSERT INTO composers( name ) VALUES ('%1');" ).arg( m_collection->escape( name ) );
-                id = m_collection->insert( insert, "composers" );
+                QString insert = QString( "INSERT INTO composers( name ) VALUES ('%1');" ).arg( m_storage->escape( name ) );
+                id = m_storage->insert( insert, "composers" );
             }
             else
             {
@@ -273,12 +284,12 @@ SqlRegistry::getYear( const QString &name, int id, bool refresh )
     {
         if( id == -1 )
         {
-            QString query = QString( "SELECT id FROM years WHERE name = '%1';" ).arg( m_collection->escape( name ) );
-            QStringList res = m_collection->query( query );
+            QString query = QString( "SELECT id FROM years WHERE name = '%1';" ).arg( m_storage->escape( name ) );
+            QStringList res = m_storage->query( query );
             if( res.isEmpty() )
             {
-                QString insert = QString( "INSERT INTO years( name ) VALUES ('%1');" ).arg( m_collection->escape( name ) );
-                id = m_collection->insert( insert, "years" );
+                QString insert = QString( "INSERT INTO years( name ) VALUES ('%1');" ).arg( m_storage->escape( name ) );
+                id = m_storage->insert( insert, "years" );
             }
             else
             {
@@ -309,7 +320,7 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
     {
         if( id == -1 )
         {
-            QString query = QString( "SELECT id FROM albums WHERE name = '%1' AND " ).arg( m_collection->escape( name ) );
+            QString query = QString( "SELECT id FROM albums WHERE name = '%1' AND " ).arg( m_storage->escape( name ) );
             if( artist >= 1)
             {
                 query += QString( "artist = %1" ).arg( artist );
@@ -318,11 +329,11 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
             {
                 query += QString( "(artist = %1 OR artist IS NULL)" ).arg( artist );
             }
-            QStringList res = m_collection->query( query );
+            QStringList res = m_storage->query( query );
             if( res.isEmpty() )
             {
-                QString insert = QString( "INSERT INTO albums( name,artist ) VALUES ('%1',%2);" ).arg( m_collection->escape( name ), QString::number( artist ) );
-                id = m_collection->insert( insert, "albums" );
+                QString insert = QString( "INSERT INTO albums( name,artist ) VALUES ('%1',%2);" ).arg( m_storage->escape( name ), QString::number( artist ) );
+                id = m_storage->insert( insert, "albums" );
             }
             else
             {
@@ -337,7 +348,9 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
             return m_albumMap.value( id );
         }
 
-        AlbumPtr album( new SqlAlbum( m_collection, id, name, artist ) );
+        SqlAlbum *sqlAlbum = new SqlAlbum( m_collection, id, name, artist );
+        sqlAlbum->setCapabilityDelegate( createAlbumDelegate() );
+        AlbumPtr album( sqlAlbum );
         m_albumMap.insert( id, album );
         return album;
     }
@@ -402,6 +415,24 @@ SqlRegistry::emptyCache()
     if( hasGenre ) m_genreMutex.unlock();
     if( hasComposer ) m_composerMutex.unlock();
     if( hasUid ) m_uidMutex.unlock();
+}
+
+AlbumCapabilityDelegate*
+SqlRegistry::createAlbumDelegate() const
+{
+    return 0;
+}
+
+ArtistCapabilityDelegate*
+SqlRegistry::createArtistDelegate() const
+{
+    return 0;
+}
+
+TrackCapabilityDelegate*
+SqlRegistry::createTrackDelegate() const
+{
+    return 0;
 }
 
 #include "SqlRegistry.moc"

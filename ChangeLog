@@ -3,6 +3,80 @@ Amarok ChangeLog
 (C) 2002-2010 the Amarok authors.
 
 
+VERSION 2.2.3
+  FEATURES:
+    * The playlist context menu now has a "Find in Source" action for many
+      types of track.
+    * The collection scanner now also looks for cover images named
+     "folder.*". Apparently some applications use this convention. (BR 224692)
+    * It's now possible to automatically use a USB Mass Storage device as a collection
+      when it's connected.
+    * The progress bar tooltip now shows the position in the track that the
+      cursor is hovering, making it simple to jump to a specific position.
+    * D-Bus: Added StopAfterCurrent method for /Player.
+    * You can now elect to rescan specific folders. Right-click on a folder in
+      the collection setup dialog to rescan just that folder. This will only
+      work for folders that have previously been added to the collection, i.e.
+      you cannot check a folder and immediately rescan it. This will never be
+      recursive (as that defeats the point of scanning a specific folder!)
+    * Non collection files with a cue sheet will now load their tracks as
+      individual tracks in the playlist instead of as one big track with
+      bookmark markers.
+    * Dynamic Collection is back. (BR 171213)
+    * Searching covers from Last.fm using custom query in interactive mode.
+ 
+  CHANGES:
+    * The equalizer configuration is now a seperate tool window accessible 
+      from the tool menu.
+    * Files with ogg and flac extensions can now be copied to UMS devices.
+    * The search/filter edit in the playlist is now cleared when pressing 
+      enter. (BR 217159)
+    * Amarok now checks if the version of the "amarokcollectionscanner" tool
+      is correct. Some users had issues with having mutiple versions of it
+      installed, causing scanning to fail.
+    * First run: Let users decided on how to handle music location set
+      in standard desktop services.
+    * Improved cover fetching accuracy and speed.
+    * Usability: Better design of playback configuration dialog.
+    * Use millisecond accuracy for track bookmarks. Backwards compatible
+      with bookmarks stored in previos versions. (BR 215145)
+    * Loving a track for Last.fm via the global keyboard action also show a
+      message in the status bar.
+    * Improved usability of the playlist layout editor dialog.
+    * Duplicate unique file identifiers are now indicated in debug output,
+      along with the paths of the files, when found instead of being silently
+      ignored. This can help discover multiple copies of the same file or
+      files which incorrectly have the same MusicBrainz unique identifier.
+
+  BUGFIXES:
+    * Fixed crash with moving applets in the Context View. (BR 191918)
+    * Fixed crash in KNotify. (BR 224673)
+    * Fixed queue management with mouse. (BR 217153)
+    * Fixed playback of some streams causing the progress slider to show 
+      garbage track length and position values like -322:0-35:0-59.
+    * Prevent a crash when loading PLS playlists with invalid filepaths.
+    * Fixed scrolling crashes with the cover manager. (BR 224000)
+    * Fixed a bug that was deleting files when using "Move to collection"
+      from the file browser. (BR 217002)
+    * Allow fetching of album covers in the unified view. (BR 220873)
+    * Lyrics applet: Fixed scrollbar incorrectly displayed (and sometimes not
+      at all) for long lyrics under KDE 4.4. (BR 222260)
+    * Fixed bug in Photos applet that made it break with translated versions
+      of Amarok. Patch by Bellegarde Cédric <gnumdk@gmail.com>. (BR 222566)
+    * Lyrics applet: Fixed saving and restoring font styles. (BR 222277)
+    * Lyrics applet: Fixed a bug where sometimes suggested URLs are not
+      cleared when switching tracks.
+    * Fixed playlist layout editor blocking control of Amarok. (BR 220825)
+    * Fixed moodbar in progress slider not correctly updating after moodbar
+      style change (BR 220695)
+    * Fixed progress slider not moving for many streams (and possible other
+      types of tracks) (BR 221747)
+    * Sort artists named like "The Foo" correctly in all cases. (BR 176670)
+    * Fixed behaviour when clearing the bookmark manager filter.
+    * Fixed track not being added to the playlist when playing a track from
+      the bookmark manager.
+
+
 VERSION 2.2.2
   CHANGES:
     * The inline playlist editor now also allows resizing of auto sized items that 

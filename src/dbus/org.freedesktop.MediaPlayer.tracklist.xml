@@ -36,6 +36,10 @@
         <arg type="b" />
     </method>
 
+    <method name="PlayTrack">
+        <arg type="i" />
+    </method>
+
     <signal name="TrackListChange">
         <arg type="i" />
     </signal>

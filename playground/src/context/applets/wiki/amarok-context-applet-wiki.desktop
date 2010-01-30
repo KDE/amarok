@@ -2,6 +2,7 @@
 Name=Wiki-MetaApplet
 Name[bg]=Wiki-MetaApplet
 Name[ca]=Wiki-MetaApplet
+Name[ca@valencia]=Wiki-MetaApplet
 Name[csb]=Aplet meta Wiki
 Name[da]=Wiki-MetaApplet
 Name[de]=Wiki-MetaApplet
@@ -26,6 +27,8 @@ Name[ro]=Wiki-MetaApplet
 Name[ru]=Аплет Вики
 Name[sl]=Metagradnik Wiki
 Name[sr]=Википедијин метааплет
+Name[sr@ijekavian]=Википедијин метааплет
+Name[sr@ijekavianlatin]=Wikipedijin metaaplet
 Name[sr@latin]=Wikipedijin metaaplet
 Name[sv]=Metaminiprogram för webbjournal
 Name[tr]=Wiki-Meta Gereci

@@ -30,7 +30,7 @@ InfoScript::InfoScript( const KUrl& scriptUrl )
 QString
 InfoScript::version() const
 {
-    return APP_VERSION;
+    return AMAROK_VERSION;
 }
 
 QString

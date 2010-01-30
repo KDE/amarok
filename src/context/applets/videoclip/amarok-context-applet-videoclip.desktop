@@ -2,6 +2,7 @@
 Name=Videoclip
 Name[bg]=Видеоклип
 Name[ca]=Vídeoclip
+Name[ca@valencia]=Vídeoclip
 Name[cs]=Videoklip
 Name[csb]=Teledisk
 Name[da]=Videoklip
@@ -29,6 +30,8 @@ Name[ro]=Videoclip
 Name[ru]=Видеоклип
 Name[sl]=Video posnetek
 Name[sr]=Видео исечак
+Name[sr@ijekavian]=Видео исечак
+Name[sr@ijekavianlatin]=Video isečak
 Name[sr@latin]=Video isečak
 Name[sv]=Videoklipp
 Name[tr]=Video Klibi

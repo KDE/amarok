@@ -51,7 +51,7 @@ bool ContextUrlRunner::run( AmarokUrl url )
     Context::Containment* cont = dynamic_cast< Context::Containment* >( Context::ContextView::self()->containment() );
     if( cont )
     {
-        foreach( QString appletPluginName, appletList )
+        foreach( const QString &appletPluginName, appletList )
         {
             cont->addApplet( appletPluginName, -1 );
         }

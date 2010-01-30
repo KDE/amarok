@@ -31,10 +31,54 @@
 #include <KPushButton>
 #include <KVBox>
 
+#include <QDBusInterface>
+#include <QDBusReply>
 #include <QDir>
 #include <QFile>
 #include <QLabel>
 
+
+CollectionSetupTreeView::CollectionSetupTreeView( QWidget *parent )
+        : QTreeView( parent )
+{
+    DEBUG_BLOCK
+    m_rescanDirAction = new QAction( this );
+    connect( this, SIGNAL( pressed(const QModelIndex &) ), this, SLOT( slotPressed(const QModelIndex&) ) );
+    connect( m_rescanDirAction, SIGNAL( triggered() ), this, SLOT( slotRescanDirTriggered() ) );
+}
+
+CollectionSetupTreeView::~CollectionSetupTreeView()
+{
+    this->disconnect();
+    delete m_rescanDirAction;
+}
+
+void
+CollectionSetupTreeView::slotPressed( const QModelIndex &index )
+{
+    DEBUG_BLOCK
+    if( ( QApplication::mouseButtons() & Qt::RightButton ) && parent() )
+    {
+        m_currDir = qobject_cast<CollectionSetup*>(parent())->modelFilePath( index );        
+        debug() << "Setting current dir to " << m_currDir;
+        QDBusInterface interface( "org.kde.amarok", "/SqlCollection" );
+        QDBusReply<bool> reply = interface.call( "isDirInCollection", m_currDir );
+        if( reply.isValid() && reply.value() )
+        {
+            m_rescanDirAction->setText( i18n( "Rescan" ) + " '" + m_currDir + "'" );
+            QMenu menu;
+            menu.addAction( m_rescanDirAction );
+            menu.exec( QCursor::pos() );
+        }
+    }
+}
+
+void
+CollectionSetupTreeView::slotRescanDirTriggered()
+{
+    DEBUG_BLOCK
+    CollectionManager::instance()->startIncrementalScan( m_currDir );
+}
 
 CollectionSetup* CollectionSetup::s_instance;
 
@@ -51,9 +95,11 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     (new QLabel( i18n(
         "These folders will be scanned for "
-        "media to make up your collection:"), this ))->setAlignment( Qt::AlignJustify );
+        "media to make up your collection. You can\n"
+        "right-click on a folder to individually "
+        "rescan it, if it was previously selected:"), this ))->setAlignment( Qt::AlignJustify );
 
-    m_view  = new QTreeView( this );
+    m_view  = new CollectionSetupTreeView( this );
     m_view->setHeaderHidden( true );
     m_view->setRootIsDecorated( true );
     m_view->setAnimated( true );
@@ -62,10 +108,12 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     KHBox* buttonBox = new KHBox( this );
 
-    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Fully Rescan Collection" ), buttonBox );
+    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Fully Rescan Entire Collection" ), buttonBox );
+    rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
     connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
-    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Collection" ), buttonBox );
+    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Statistics" ), buttonBox );
+    import->setToolTip( i18n( "Import collection statistics from older Amarok versions, or from other media players." ) );
     connect( import, SIGNAL( clicked() ), this, SLOT( importCollection() ) );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
@@ -144,6 +192,12 @@ CollectionSetup::importCollection()
     dlg->exec(); // be modal to avoid messing about by the user in the application
 }
 
+const QString
+CollectionSetup::modelFilePath( const QModelIndex &index ) const
+{
+    return m_model->filePath( index );
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS Model
@@ -198,6 +252,10 @@ namespace CollectionFolder {
                 m_checked.insert( path );
             else
                 m_checked.remove( path );
+
+            const QModelIndex &parentIndex = parent( index );
+            const int lastRow = rowCount( parentIndex );
+            emit dataChanged( sibling( 0, 0, parentIndex), sibling( lastRow, 0, parentIndex ) );
             return true;
         }
         return QFileSystemModel::setData( index, value, role );

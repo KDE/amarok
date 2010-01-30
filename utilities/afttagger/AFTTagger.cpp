@@ -523,7 +523,7 @@ AFTTagger::readArgs()
         displayHelp();
     bool nomore = false;
     int argnum = 0;
-    foreach( QString arg, argslist )
+    foreach( const QString &arg, argslist )
     {
         ++argnum;
         if( arg.isEmpty() || argnum == 1 )
@@ -534,7 +534,7 @@ AFTTagger::readArgs()
         }
         else if( arg.startsWith( "--" ) )
         {
-            QString myarg = arg.remove( 0, 2 );
+            QString myarg = QString( arg ).remove( 0, 2 );
             if ( myarg == "recurse" || myarg == "recursively" )
                 m_recurse = true;
             else if( myarg == "verbose" )
@@ -550,7 +550,7 @@ AFTTagger::readArgs()
         }
         else if( arg.startsWith( '-' ) )
         {
-            QString myarg = arg.remove( 0, 1 );
+            QString myarg = QString( arg ).remove( 0, 1 );
             int pos = 0;
             while( pos < myarg.length() )
             {

@@ -336,7 +336,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                 {
                     QString source = sic->sourceName();
                     if ( !source.isEmpty() )
-                        emblem = sic->emblem();;
+                        emblem = sic->emblem();
                     delete sic;
                 }
                 return emblem;

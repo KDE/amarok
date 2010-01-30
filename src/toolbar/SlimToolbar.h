@@ -15,8 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
  
-#ifndef MAINTOOLBARNG_H
-#define MAINTOOLBARNG_H
+#ifndef SLIMTOOLBAR_H
+#define SLIMTOOLBAR_H
 
 #include "CurrentTrackToolbar.h"
 

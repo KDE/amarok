@@ -10,6 +10,7 @@ include_directories( ../..
   ../mediadevicecollection/handler/capabilities
   handler
   handler/capabilities
+  podcasts
   support
   ${CMAKE_CURRENT_BINARY_DIR}/../..
   ${AMAROK_COLLECTION_SUPPORT_DIR}
@@ -24,8 +25,11 @@ set(amarok_collection-umscollection_PART_SRCS
   handler/UmsHandler.cpp
 #  handler/capabilities/UmsArtworkCapability.cpp
 #  handler/capabilities/UmsPlaylistCapability.cpp
+   handler/capabilities/UmsPodcastCapability.cpp
   handler/capabilities/UmsReadCapability.cpp
-  handler/capabilities/UmsWriteCapability.cpp	
+  handler/capabilities/UmsWriteCapability.cpp
+  podcasts/UmsPodcastProvider.cpp
+  podcasts/UmsPodcastMeta.cpp
   support/UmsDeviceInfo.cpp
   support/UmsConnectionAssistant.cpp)
 

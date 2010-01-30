@@ -22,7 +22,6 @@
 
 #include "App.h"
 #include "Debug.h"
-#include "MountPointManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlCollectionDBusHandler.h"
@@ -52,10 +51,11 @@ static const int MAX_FAILURE_PERCENTAGE = 5;
 static const int WATCH_INTERVAL = 60 * 1000; // = 60 seconds
 
 
-ScanManager::ScanManager( SqlCollection *parent )
+ScanManager::ScanManager( QObject *parent )
     : QObject( parent )
-    , m_collection( parent )
+    , m_collection( 0 )
     , m_dbusHandler( 0 )
+    , m_storage( 0 )
     , m_scanner( 0 )
     , m_parser( 0 )
     , m_restartCount( 0 )
@@ -64,8 +64,7 @@ ScanManager::ScanManager( SqlCollection *parent )
 {
     DEBUG_BLOCK
 
-    // If Amarok is not installed in standard directory
-    m_amarokCollectionScanDir = App::instance()->applicationDirPath() + QDir::separator();
+    m_dbusHandler = new SqlCollectionDBusHandler( this );
 
     QTimer *watchFoldersTimer = new QTimer( this );
     connect( watchFoldersTimer, SIGNAL( timeout() ), SLOT( slotWatchFolders() ) );
@@ -77,8 +76,13 @@ ScanManager::~ScanManager()
     DEBUG_BLOCK
 
     stopParser();
-}
 
+    if( m_dbusHandler )
+    {
+        m_dbusHandler->deleteLater();
+        m_dbusHandler = 0;
+    }
+}
 
 void
 ScanManager::startFullScan()
@@ -114,14 +118,14 @@ ScanManager::startFullScan()
     if( !QFile::exists( batchfileLocation ) || !readBatchFile( batchfileLocation )  )
     {
         m_scanner = new AmarokProcess( this );
-        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-p";
+        *m_scanner <<  App::collectionScannerLocation() << "-p";
         if( AmarokConfig::scanRecursively() )
             *m_scanner << "-r";
         if( AmarokConfig::useCharsetDetector() )
             *m_scanner << "-c";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
 
-        QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
+        QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
         *m_scanner << collectionFolders;
         m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
         connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -131,7 +135,7 @@ ScanManager::startFullScan()
     }
 }
 
-void ScanManager::startIncrementalScan()
+void ScanManager::startIncrementalScan( const QString &directory )
 {
     DEBUG_BLOCK
     if( m_parser )
@@ -147,33 +151,48 @@ void ScanManager::startIncrementalScan()
 
     checkTables( false );
 
-    QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchincrementalscan.xml" );
-    bool batchfileExists = QFile::exists( batchfileLocation );
-    if( batchfileExists )
-        debug() << "Found batchfile in " << batchfileLocation;
-
     QStringList dirs;
+    QString batchfileLocation;
+    bool batchfileExists = false;
 
-    if( !batchfileExists )
+    if( !directory.isEmpty() )
     {
-        dirs = getDirsToScan();
-
-        debug() << "GOING TO SCAN:";
-        if( dirs.size() > 30 )
-            debug() << "(a *lot*)";
+        debug() << "Scanning directory " << directory;
+        if( isDirInCollection( directory ) )
+            dirs << directory;
         else
         {
-            foreach( const QString &dir, dirs )
-                debug() << "    " << dir;
-        }
-
-        writeBatchIncrementalInfoFile();
-        if( dirs.isEmpty() )
-        {
-            debug() << "Scanning nothing, return.";
+            debug() << "Directory not in collection!";
             return;
         }
+    }
+    else
+    {
+        batchfileLocation = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchincrementalscan.xml";
+        batchfileExists = QFile::exists( batchfileLocation );
+        if( batchfileExists )
+            debug() << "Found batchfile in " << batchfileLocation;
 
+        if( !batchfileExists )
+        {
+            dirs = getDirsToScan();
+
+            debug() << "GOING TO SCAN:";
+            if( dirs.size() > 30 )
+                debug() << "(a *lot*)";
+            else
+            {
+                foreach( const QString &dir, dirs )
+                    debug() << "    " << dir;
+            }
+
+            writeBatchIncrementalInfoFile();
+            if( dirs.isEmpty() )
+            {
+                debug() << "Scanning nothing, return.";
+                return;
+            }
+        }
     }
 
     if( m_parser )
@@ -188,12 +207,10 @@ void ScanManager::startIncrementalScan()
 
     if( !batchfileExists || !readBatchFile( batchfileLocation )  )
     {
-        if( !m_dbusHandler )
-            m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
         m_scanner = new AmarokProcess( this );
-        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-i"
-                << "--collectionid" << m_collection->collectionId() << "-p";
-        if( AmarokConfig::scanRecursively() )
+        *m_scanner << App::collectionScannerLocation() << "-i" << "--collectionid" << m_collection->collectionId() << "-p";
+
+        if( AmarokConfig::scanRecursively() && directory.isEmpty() )
             *m_scanner << "-r";
         if( AmarokConfig::useCharsetDetector() )
             *m_scanner << "-c";
@@ -217,12 +234,12 @@ ScanManager::isDirInCollection( QString path )
     if( !path.endsWith( '/' ) )
         path += '/';
 
-    const int deviceid = MountPointManager::instance()->getIdForUrl( path );
-    const QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
+    const int deviceid = m_collection->mountPointManager()->getIdForUrl( path );
+    const QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, path );
 
     const QStringList values =
-            m_collection->query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
-            .arg( QString::number( deviceid ), m_collection->escape( rpath ) ) );
+            m_storage->query( QString( "SELECT changedate FROM directories WHERE dir = '%2' AND deviceid = %1;" )
+            .arg( QString::number( deviceid ), m_storage->escape( rpath ) ) );
 
     //debug() << "dir " << rpath << " is in collection? " << !values.isEmpty();
     return !values.isEmpty();
@@ -231,11 +248,11 @@ ScanManager::isDirInCollection( QString path )
 bool
 ScanManager::isFileInCollection( const QString &url  )
 {
-    const int deviceid = MountPointManager::instance()->getIdForUrl( url );
-    const QString rpath = MountPointManager::instance()->getRelativePath( deviceid, url );
+    const int deviceid = m_collection->mountPointManager()->getIdForUrl( url );
+    const QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, url );
 
     QString sql = QString( "SELECT id FROM urls WHERE rpath = '%2' AND deviceid = %1" )
-            .arg( QString::number( deviceid ),  m_collection->escape( rpath ) );
+            .arg( QString::number( deviceid ),  m_storage->escape( rpath ) );
 
     if ( deviceid == -1 )
     {
@@ -245,10 +262,10 @@ ScanManager::isFileInCollection( const QString &url  )
     {
         QString rpath2 = '.' + url;
         sql += QString( " OR rpath = '%1' AND deviceid = -1;" )
-                .arg( m_collection->escape( rpath2 ) );
+                .arg( m_storage->escape( rpath2 ) );
     }
 
-    const QStringList values = m_collection->query( sql );
+    const QStringList values = m_storage->query( sql );
 
     //debug() << "File " << rpath << " is in collection? " << !values.isEmpty();
     return !values.isEmpty();
@@ -263,6 +280,13 @@ ScanManager::setBlockScan( bool blockScan )
         warning() << "Scanner is running while scan got blocked";
     }
     //TODO what happens if the collection scanner is currently running?
+}
+
+void
+ScanManager::setCollection( SqlCollection *collection )
+{
+    m_collection = collection;
+    m_dbusHandler->setCollection( collection );
 }
 
 void
@@ -303,11 +327,6 @@ ScanManager::slotFinished( )
     m_scanner->deleteLater();
     m_scanner = 0;
     m_restartCount = 0;
-    if( m_dbusHandler )
-    {
-        m_dbusHandler->deleteLater();
-        m_dbusHandler = 0;
-    }
 }
 
 void
@@ -395,7 +414,7 @@ ScanManager::getDirsToScan()
     DEBUG_BLOCK
 
     m_incrementalDirs.clear();
-    const IdList list = MountPointManager::instance()->getMountedDeviceIds();
+    const IdList list = m_collection->mountPointManager()->getMountedDeviceIds();
     QString deviceIds;
     foreach( int id, list )
     {
@@ -403,7 +422,7 @@ ScanManager::getDirsToScan()
         deviceIds += QString::number( id );
     }
 
-    const QStringList values = m_collection->query(
+    const QStringList values = m_storage->query(
             QString( "SELECT id, deviceid, dir, changedate FROM directories WHERE deviceid IN (%1);" )
             .arg( deviceIds ) );
 
@@ -415,7 +434,7 @@ ScanManager::getDirsToScan()
     {
         int id = iter.next().toInt();
         int deviceid = iter.next().toInt();
-        const QString folder = MountPointManager::instance()->getAbsolutePath( deviceid, iter.next() );
+        const QString folder = m_collection->mountPointManager()->getAbsolutePath( deviceid, iter.next() );
         const uint mtime = iter.next().toUInt();
 
         QFileInfo info( folder );
@@ -443,7 +462,7 @@ ScanManager::getDirsToScan()
         if( !ids.isEmpty() )
         {
             QString query = QString( "SELECT id FROM urls WHERE directory IN ( %1 );" ).arg( ids );
-            QStringList urlIds = m_collection->query( query );
+            QStringList urlIds = m_storage->query( query );
             ids.clear();
             foreach( const QString &id, urlIds )
             {
@@ -454,7 +473,7 @@ ScanManager::getDirsToScan()
             if( !ids.isEmpty() )
             {
                 QString sql = QString( "DELETE FROM tracks WHERE url IN ( %1 );" ).arg( ids );
-                m_collection->query( sql );
+                m_storage->query( sql );
             }
         }
     }
@@ -469,7 +488,7 @@ ScanManager::getDirsToScan()
         if( !ids.isEmpty() )
         {
             QString sql = QString( "DELETE FROM directories WHERE id IN ( %1 );" ).arg( ids );
-            m_collection->query( sql );
+            m_storage->query( sql );
         }
     }
     //debug() << "Scanning the following dirs: " << result;
@@ -516,7 +535,8 @@ ScanManager::restartScanner()
     DEBUG_BLOCK
 
     m_scanner = new AmarokProcess( this );
-    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner";
+    *m_scanner << App::collectionScannerLocation();
+
     if( m_isIncremental )
     {
         *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
@@ -536,12 +556,12 @@ void
 ScanManager::cleanTables()
 {
     DEBUG_BLOCK
-    m_collection->query( "DELETE FROM tracks;" );
-    m_collection->query( "DELETE FROM genres;" );
-    m_collection->query( "DELETE FROM years;" );
-    m_collection->query( "DELETE FROM composers;" );
-    m_collection->query( "DELETE FROM albums;" );
-    m_collection->query( "DELETE FROM artists;" );
+    m_storage->query( "DELETE FROM tracks;" );
+    m_storage->query( "DELETE FROM genres;" );
+    m_storage->query( "DELETE FROM years;" );
+    m_storage->query( "DELETE FROM composers;" );
+    m_storage->query( "DELETE FROM albums;" );
+    m_storage->query( "DELETE FROM artists;" );
     //images table is deleted in DatabaseUpdater::copyToPermanentTables
 }
 
@@ -650,6 +670,7 @@ XmlParseJob::run()
     QString currentDir;
 
     ScanResultProcessor processor( m_collection );
+    processor.setSqlStorage( m_collection->sqlStorage() );
     if( m_isIncremental )
         processor.setScanType( ScanResultProcessor::IncrementalScan );
     else

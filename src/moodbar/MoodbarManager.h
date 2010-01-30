@@ -51,6 +51,7 @@ public:
 signals:
     void moodbarReady( const QPixmap &pixmap );
     void moodbarCreationFailed( const QString &error );
+    void moodbarStyleChanged();
 
 private:
     MoodbarManager();

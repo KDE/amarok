@@ -54,6 +54,39 @@ namespace Meta
     static const qint64 valAlbumGainPeak= 1LL << 26;
 
     static const qint64 valAlbumArtist  = 1LL << 27;
+
+    namespace Field
+    {
+        //actual string values are not final yet
+        static const QString ALBUM          = "xesam:album";
+        static const QString ARTIST         = "xesam:author";
+        static const QString BITRATE        = "xesam:audioBitrate";
+        static const QString BPM            = "xesam:audioBPM";
+        static const QString CODEC          = "xesam:audioCodec";
+        static const QString COMMENT        = "xesam:comment";
+        static const QString COMPOSER       = "xesam:composer";
+        static const QString DISCNUMBER     = "xesam:discNumber";
+        static const QString FILESIZE       = "xesam:size";
+        static const QString GENRE          = "xesam:genre";
+        static const QString LENGTH         = "xesam:mediaDuration";
+        static const QString RATING         = "xesam:userRating";
+        static const QString SAMPLERATE     = "xesam:audioSampleRate";
+        static const QString TITLE          = "xesam:title";
+        static const QString TRACKNUMBER    = "xesam:trackNumber";
+        static const QString URL            = "xesam:url";
+        static const QString YEAR           = "xesam:contentCreated";
+        static const QString ALBUMGAIN      = "xesam:albumGain";
+        static const QString ALBUMPEAKGAIN  = "xesam:albumPeakGain";
+        static const QString TRACKGAIN      = "xesam:trackGain";
+        static const QString TRACKPEAKGAIN  = "xesam:trackPeakGain";
+
+        static const QString SCORE          = "xesam:autoRating";
+        static const QString PLAYCOUNT      = "xesam:useCount";
+        static const QString FIRST_PLAYED   = "xesam:firstUsed";
+        static const QString LAST_PLAYED    = "xesam:lastUsed";
+
+        static const QString UNIQUEID       = "xesam:id";
+    }
 }
 
 #endif

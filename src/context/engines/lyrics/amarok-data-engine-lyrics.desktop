@@ -2,6 +2,7 @@
 Name=Lyrics Data Engine
 Name[bg]=Ядро за текстове
 Name[ca]=Motor de dades de lletres
+Name[ca@valencia]=Motor de dades de lletres
 Name[cs]=Datový nástroj Lyrics
 Name[csb]=Mòtór tekstów
 Name[da]=Datamotor til sangtekst
@@ -37,6 +38,8 @@ Name[ro]=Motor de date Versuri
 Name[ru]=Источник данных для текстов песен
 Name[sl]=Podatkovni pogon za besedila
 Name[sr]=Датомотор стихова
+Name[sr@ijekavian]=Датомотор стихова
+Name[sr@ijekavianlatin]=Datomotor stihova
 Name[sr@latin]=Datomotor stihova
 Name[sv]=Datagränssnitt för sångtexter
 Name[th]=กลไกข้อมูลของเนื้อร้อง

@@ -27,6 +27,7 @@
 #include "PodcastModel.h"
 #include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
+#include "PlaylistsByProviderProxy.h"
 #include "browsers/InfoProxy.h"
 #include "SvgTinter.h"
 #include "SvgHandler.h"
@@ -131,10 +132,13 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     toolBar->addAction( importOpmlAction );
     connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
 
+    PlaylistsByProviderProxy *byProviderProxy = new PlaylistsByProviderProxy( podcastModel );
     m_podcastTreeView = new PodcastView( podcastModel, this );
+
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
     m_podcastTreeView->setContentsMargins(0,0,0,0);
-    m_podcastTreeView->setModel( podcastModel );
+//    m_podcastTreeView->setModel( podcastModel );
+    m_podcastTreeView->setModel( byProviderProxy );
     m_podcastTreeView->header()->hide();
     m_podcastTreeView->setIconSize( QSize( 32, 32 ) );
 
@@ -236,7 +240,7 @@ PodcastCategory::showInfo( const QModelIndex & index )
         if( pubDate.isValid() )
         {
             authorAndPubDate += QString( "<b>%1</b> %2" )
-                .arg( i18n( "On" ) )
+                .arg( i18nc( "Podcast published on date", "On" ) )
                 .arg( KGlobal::locale()->formatDateTime( pubDate, KLocale::FancyShortDate ) );
         }
     }
@@ -501,7 +505,9 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
     {
         QModelIndexList indices;
         indices << index;
-        m_podcastModel->loadItems( indices, Playlist::AppendAndPlay );
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
+        if( mpm )
+            mpm->loadItems( indices, Playlist::AppendAndPlay );
         event->accept();
     }
 
@@ -528,7 +534,10 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd && m_pd->isHidden() )
     {
-        QList<QAction*> actions = m_podcastModel->actionsFor( selectedIndexes() );
+        QList<QAction*> actions;
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
+        if( mpm )
+            actions = mpm->actionsFor( selectedIndexes() );
 
         foreach( QAction * action, actions )
         {
@@ -559,8 +568,10 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
 
     KMenu menu;
     QModelIndexList indices = selectedIndexes();
-    QList<QAction *> actions =
-            m_podcastModel->actionsFor( indices );
+    QList<QAction *> actions;
+    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
+    if( mpm )
+        actions = mpm->actionsFor( indices );
 
     if( actions.isEmpty() )
         return;

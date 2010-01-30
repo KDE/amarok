@@ -37,7 +37,7 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         static bool couldBeFeed( const QString &urlString );
         static KUrl toFeedUrl( const QString &urlString );
 
-        virtual ~PodcastProvider() {};
+        virtual ~PodcastProvider() {}
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const = 0;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url ) = 0;
@@ -47,7 +47,7 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
         virtual Meta::PodcastChannelPtr addChannel( Meta::PodcastChannelPtr channel ) = 0;
         virtual Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode ) = 0;
 
-        virtual Meta::PodcastChannelList channels()= 0;
+        virtual Meta::PodcastChannelList channels() = 0;
 
         virtual void removeSubscription( Meta::PodcastChannelPtr channel ) = 0;
 
@@ -56,7 +56,9 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
 
         // PlaylistProvider methods
         virtual QString prettyName() const = 0;
-        virtual int category() const = 0;
+        virtual KIcon icon() const = 0;
+
+        virtual int category() const { return (int)PlaylistManager::PodcastChannel; }
 
         virtual Meta::PlaylistList playlists() = 0;
 
@@ -71,6 +73,8 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
                                                   int trackIndex )
                 { Q_UNUSED( playlist) Q_UNUSED( trackIndex ) return QList<QAction *>(); }
 
+        //TODO: need to move this to SqlPodcastProvider since it's provider specific.
+        //perhaps use a more general transferprogress for playlists
         virtual void completePodcastDownloads() = 0;
 
     public slots:

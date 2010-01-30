@@ -60,7 +60,7 @@ APPENDIX A
 This is what the release_amarok script does:
 
  1. Checkout a fresh copy of amarok, its docs and po; cd into the root
- 2. Update APP_VERSION in amarok/src/amarok.h
+ 2. Update AMAROK_VERSION in amarok/Version.h
  3. $ `find -name .svn -exec rm {} \;`
  4. $ export WANT_AUTOMAKE=1.6
  5. $ make -f Makefile.cvs

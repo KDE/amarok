@@ -2,6 +2,7 @@
 Name=LastFM Data Engine
 Name[bg]=Ядро LastFM
 Name[ca]=Motor de dades LastFM
+Name[ca@valencia]=Motor de dades LastFM
 Name[cs]=Datový nástroj LastFM
 Name[csb]=Mòtór pòdôwków Last.fm
 Name[da]=Datamotor til LastFM
@@ -39,6 +40,8 @@ Name[ro]=Motor de date LastFM
 Name[ru]=Источник данных LastFM
 Name[sl]=Podatkovni pogon za Last.fm
 Name[sr]=Датомотор ЛастФМ‑а
+Name[sr@ijekavian]=Датомотор ЛастФМ‑а
+Name[sr@ijekavianlatin]=Datomotor last.fm‑a
 Name[sr@latin]=Datomotor last.fm‑a
 Name[sv]=Datagränssnitt för Last.FM
 Name[th]=กลไกข้อมูลของ LastFM

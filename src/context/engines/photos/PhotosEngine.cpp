@@ -156,7 +156,7 @@ void PhotosEngine::update()
         // Show the information
         if( !m_artist.isEmpty() )
         {
-            setData( "photos", "message", i18n( "Fetching" ) );
+            setData( "photos", "message", "Fetching");
             setData( "photos", "artist", m_artist );
         }
         else
@@ -273,7 +273,7 @@ void PhotosEngine::resultFinalize()
     {
         DEBUG_BLOCK
         debug() << "No Photos found";
-        setData( "photos", "message", i18n( "No information found ..." ) );
+        setData( "photos", "message", i18n( "No information found..." ) );
         return;
     }
 

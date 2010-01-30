@@ -131,7 +131,6 @@ void WikipediaEngine::update()
     if ( !currentTrack )
         return;
     
-    DataEngine::Data data;
     // default, or applet told us to fetch artist
     if( selection() == "artist" ) 
     {
@@ -199,8 +198,12 @@ void WikipediaEngine::update()
     
     removeAllData( "wikipedia" );
 
+    // FIXME: what's that supposed to do? nothing?
+    DataEngine::Data data;
     foreach( const QString &key, data.keys() )
+    {
         setData( key, data[key] );
+    }
 
     m_wikiCurrentLastEntry = tmpWikiStr;
     m_wikiCurrentEntry = tmpWikiStr;
@@ -277,8 +280,10 @@ WikipediaEngine::wikiResult( KJob* job )
 
     // We've find a page
     removeAllData( "wikipedia" );
-    setData( "wikipedia", "page", wikiParse() );
-    setData( "wikipedia", "url", m_wikiCurrentUrl );
+
+    Data data;
+    data["page"] = wikiParse();
+    data["url"] = m_wikiCurrentUrl;
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( currentTrack )
@@ -287,24 +292,26 @@ WikipediaEngine::wikiResult( KJob* job )
         {
             if( currentTrack->artist() )
             {
-                setData( "wikipedia", "label", "Artist" );
-                setData( "wikipedia", "title", currentTrack->artist()->prettyName() );
+                data["label"] =  "Artist";
+                data["title"] = currentTrack->artist()->prettyName();
             }
         }
         else if( selection() == "track" )
         {
-            setData( "wikipedia", "label", "Title" );
-            setData( "wikipedia", "title", currentTrack->prettyName() );
+            data["label"] = "Title";
+            data["title"] = currentTrack->prettyName();
         }
         else if( selection() == "album" )
         {
             if( currentTrack->album() )
             {
-                setData( "wikipedia", "label", "Album" );
-                setData( "wikipedia", "title", currentTrack->album()->prettyName() );
+                data["label"] = "Album";
+                data["title"] = currentTrack->album()->prettyName();
             }
         }
     }
+
+    setData( "wikipedia", data );
 
     m_wikiJob = 0;
 }

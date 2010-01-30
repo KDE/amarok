@@ -1,6 +1,5 @@
 /*
-    <one line to give the program's name and a brief idea of what it does.>
-    Copyright (C) <year>  <name of author>
+    Copyright (C) 2009 Dan Meltzer <parallelgrapefruit@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,9 +18,9 @@
 
 #include "SqlWriteLabelCapability.h"
 
-#include "CollectionManager.h"
+#include "collection/CollectionManager.h"
 #include "Debug.h"
-#include "SqlStorage.h"
+#include "collection/SqlStorage.h"
 
 namespace Meta
 {

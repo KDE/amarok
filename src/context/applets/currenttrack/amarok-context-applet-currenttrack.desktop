@@ -2,6 +2,7 @@
 Name=Current Track
 Name[bg]=Текущ запис
 Name[ca]=Peça actual
+Name[ca@valencia]=Peça actual
 Name[cs]=Aktuální stopa
 Name[csb]=Biéżny sztëczk
 Name[da]=Aktuelt spor
@@ -34,6 +35,8 @@ Name[ro]=Pista curentă
 Name[ru]=Текущая дорожка
 Name[sl]=Trenutna skladba
 Name[sr]=Тренутна нумера
+Name[sr@ijekavian]=Тренутна нумера
+Name[sr@ijekavianlatin]=Trenutna numera
 Name[sr@latin]=Trenutna numera
 Name[sv]=Aktuellt spår
 Name[tr]=Geçerli Parça

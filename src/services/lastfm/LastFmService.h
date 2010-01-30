@@ -39,7 +39,8 @@ namespace The
 }
 
 namespace Dynamic {
-    class SimilarArtistsBiasFactory;
+    class LastFmBiasFactory;
+    class WeeklyTopBiasFactory;
 }
 
 class LastFmServiceFactory : public ServiceFactory
@@ -129,7 +130,8 @@ private:
     char *m_userNameArray;
     char *m_sessionKeyArray;
 
-    Dynamic::SimilarArtistsBiasFactory* m_similarArtistsBiasFactory;
+    Dynamic::LastFmBiasFactory* m_lastFmBiasFactory;
+    Dynamic::WeeklyTopBiasFactory* m_weeklyTopBiasFactory;
 
     QMap< QString, QNetworkReply* > m_jobs;
     static LastFmService *ms_service;

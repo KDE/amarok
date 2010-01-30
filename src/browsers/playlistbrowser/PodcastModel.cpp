@@ -145,7 +145,9 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
                 int y = 32 / 2 - size.height() / 2;
 
                 QPainter p( &pixmap );
-                p.drawPixmap( x, y, channel->image().scaled( size ) );
+                p.drawPixmap( x, y, channel->image().scaled( size,
+                                                             Qt::KeepAspectRatio,
+                                                             Qt::SmoothTransformation ) );
                 
                 // if it's a new episode draw the overlay:
                 if( !emblems.isEmpty() )
@@ -171,9 +173,9 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
                 emblems << "go-down";
 
             if( episode->isNew() )
-                return KIcon( "rating", 0, emblems ).pixmap( 32, 32 );
+                return KIcon( "rating", 0, emblems ).pixmap( 24, 24 );
             else
-                return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );        
+                return KIcon( "podcast-amarok", 0, emblems ).pixmap( 24, 24 );
     }
 
     return QVariant();
@@ -218,7 +220,8 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
                 case ImageColumn:
                     if( pmc->podcastType() == Meta::ChannelType )
                     {
-                        Meta::PodcastChannel *pc = static_cast<Meta::PodcastChannel *>( pmc );
+                        Meta::PodcastChannel *pc =
+                                static_cast<Meta::PodcastChannel *>( pmc );
                         KUrl imageUrl( PodcastImageFetcher::cachedImagePath( pc ) );
 
                         if( !QFile( imageUrl.toLocalFile() ).exists() )
@@ -239,6 +242,29 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 
                 case IsEpisodeColumn:
                     return bool( pmc->podcastType() == Meta::EpisodeType );
+
+                case ProviderColumn:
+                {
+                    PlaylistProvider *provider;
+                    if( pmc->podcastType() == Meta::ChannelType )
+                    {
+                        Meta::PodcastChannel *pc =
+                                static_cast<Meta::PodcastChannel *>( pmc );
+                        provider = pc->provider();
+                    }
+                    else if( pmc->podcastType() == Meta::EpisodeType )
+                    {
+                        Meta::PodcastEpisode *pe =
+                                static_cast<Meta::PodcastEpisode *>( pmc );
+                        if( pe->channel().isNull() )
+                            break;
+                        provider = pe->channel()->provider();
+                    }
+                    if( !provider )
+                        break;
+
+                    return provider->prettyName();
+                }
             }
             break;
 
@@ -256,6 +282,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             if( index.column() == TitleColumn )
                 return isOnDisk( pmc );
             break;
+
     }
 
     return QVariant();
@@ -574,7 +601,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
         bool ok;
         QString url = QInputDialog::getText( 0,
                             i18n("Add Podcast"),
-                            i18n("Enter RSS 2.0 feed URL:"),
+                            i18n("Enter RSS 1.0/2.0 or Atom feed URL:"),
                             QLineEdit::Normal,
                             QString(),
                             &ok );
@@ -868,9 +895,9 @@ PlaylistBrowserNS::PodcastModel::slotOpmlOutlineParsed( OpmlOutline *outline )
     if( outline->hasChildren() )
         return; //TODO grouping handling once PodcastCategory has it.
 
-    if( outline->attributes().contains( "url" ) )
+    if( outline->attributes().contains( "xmlUrl" ) )
     {
-        KUrl url( outline->attributes().value( "url" ).trimmed() );
+        KUrl url( outline->attributes().value( "xmlUrl" ).trimmed() );
         if( !url.isValid() )
         {
             debug() << "OPML outline contained an invalid url: " << url;

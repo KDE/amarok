@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
- * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009-2010 Leo Franchi <lfranchi@kde.org>                               *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -67,7 +67,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
 
     m_onOffCheckbox = new QCheckBox( controls1Layout );
     m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
-    m_onOffCheckbox->setText( i18n( "On" ) );
+    m_onOffCheckbox->setText( i18nc( "Turn dynamic mode on", "On" ) );
     m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
     m_onOffCheckbox->setCheckable( true );
     m_onOffCheckbox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
@@ -290,6 +290,9 @@ DynamicCategory::playlistSelectionChanged( int index )
     Dynamic::DynamicPlaylistPtr playlist =
         DynamicModel::instance()->setActivePlaylist( index );
 
+    if( !playlist )
+        return;
+
     if( DynamicModel::instance()->isActiveDefault() )
         m_deleteButton->setEnabled( false );
     else
@@ -322,7 +325,7 @@ DynamicCategory::save()
 
     // TODO: write a custom dialog to prevent this from happening in the first
     // place
-    if( title == DynamicModel::instance()->defaultPlaylist()->title() )
+    if( title == DynamicModel::instance()->defaultPlaylistName() )
     {
         QMessageBox::warning( this, i18n( "Warning" ), i18n( "Cannot overwrite the random playlist." ) );
         return;

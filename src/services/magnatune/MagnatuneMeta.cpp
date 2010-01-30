@@ -170,14 +170,12 @@ MagnatuneTrack::MagnatuneTrack( const QString &name )
     : ServiceTrack( name )
     , m_downloadMembership ( false )
     , m_purchaseAction( 0 )
-    , m_showInServiceAction( 0 )
 {}
 
 MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
     : ServiceTrack( resultRow )
     , m_downloadMembership ( false )
     , m_purchaseAction( 0 )
-    , m_showInServiceAction( 0 )
 {
     m_lofiUrl = resultRow[7];
     m_oggUrl = resultRow[8];
@@ -254,15 +252,6 @@ QList< QAction * > Meta::MagnatuneTrack::currentTrackActions()
     if ( m_purchaseAction )
         actions.append( m_purchaseAction );
 
-    if ( !m_showInServiceAction ) {
-
-        MagnatuneAlbum * mAlbum = dynamic_cast<MagnatuneAlbum *> ( album().data() );
-
-        if ( mAlbum )
-            m_showInServiceAction = new ShowInServiceAction( mAlbum->store(), this );
-    }
-
-    actions.append( m_showInServiceAction );
     return actions;
 
 }

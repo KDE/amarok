@@ -111,6 +111,9 @@ namespace ProxyCollection
         bool isCompilation() const;
         bool hasAlbumArtist() const;
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+
         void add( Meta::AlbumPtr album );
 
         /** returns true if the album has a cover set */
@@ -156,6 +159,9 @@ namespace ProxyCollection
 
         Meta::AlbumList albums();
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+
         void add( Meta::ArtistPtr artist );
 
         protected:
@@ -179,6 +185,9 @@ namespace ProxyCollection
         virtual QString sortableName() const;
 
         Meta::TrackList tracks();
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         void add( Meta::GenrePtr genre );
 
@@ -204,6 +213,9 @@ namespace ProxyCollection
 
         Meta::TrackList tracks();
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+
         void add( Meta::ComposerPtr composer );
 
         protected:
@@ -227,6 +239,9 @@ namespace ProxyCollection
         virtual QString sortableName() const;
 
         Meta::TrackList tracks();
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         /**
           * adds another Meta::Year instance to be proxied.

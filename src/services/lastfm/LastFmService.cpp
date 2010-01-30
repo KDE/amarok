@@ -20,7 +20,7 @@
 
 #include "AvatarDownloader.h"
 #include "EngineController.h"
-#include "biases/SimilarArtistsBias.h"
+#include "biases/LastFmBias.h"
 #include "biases/WeeklyTopBias.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModelBase.h"
@@ -186,7 +186,8 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_sessionKey( sessionKey ),
       m_userNameArray( 0 ),
       m_sessionKeyArray( 0 ),
-      m_similarArtistsBiasFactory( 0 )
+      m_lastFmBiasFactory( 0 ),
+      m_weeklyTopBiasFactory( 0 )
 {
     DEBUG_BLOCK
 
@@ -208,7 +209,8 @@ LastFmService::~LastFmService()
 {
     DEBUG_BLOCK
 
-    delete m_similarArtistsBiasFactory;
+    delete m_lastFmBiasFactory;
+    delete m_weeklyTopBiasFactory;
     delete[] m_userNameArray;
     delete[] m_sessionKeyArray;
 
@@ -278,12 +280,11 @@ LastFmService::init()
     m_searchWidget->setVisible( false );
 
     // enable custom bias
-    m_similarArtistsBiasFactory = new Dynamic::SimilarArtistsBiasFactory();
-    Dynamic::CustomBias::registerNewBiasFactory( m_similarArtistsBiasFactory );
+    m_lastFmBiasFactory = new Dynamic::LastFmBiasFactory();
+    Dynamic::CustomBias::registerNewBiasFactory( m_lastFmBiasFactory );
 
-    // disabled until I figure out how to get what I want from last.fm
-    //Dynamic::WeeklyTopBiasFactory* weeklyF = new Dynamic::WeeklyTopBiasFactory();
-    //Dynamic::CustomBias::registerNewBiasFactory( weeklyF );
+    m_weeklyTopBiasFactory = new Dynamic::WeeklyTopBiasFactory();
+    Dynamic::CustomBias::registerNewBiasFactory( m_weeklyTopBiasFactory );
 
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
@@ -566,21 +567,22 @@ LastFmService::love()
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
     LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
-    if( track )
-        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
 
     if( lastfmTrack )
+    {
         lastfmTrack->love();
+        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
+    }
     else
+    {
         m_scrobbler->loveTrack( track );
+    }
 
 }
 
 void LastFmService::love( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    if( track )
-        The::statusBar()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
     m_scrobbler->loveTrack( track );
 }
 

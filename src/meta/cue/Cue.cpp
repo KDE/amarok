@@ -26,7 +26,6 @@
 #include "amarokurls/BookmarkMetaActions.h"
 
 #include <KEncodingProber>
-#include <KSharedPtr>
 
 #include <QAction>
 #include <QDir>
@@ -36,7 +35,9 @@
 #include <QTextCodec>
 
 using namespace MetaCue;
+
 namespace MetaCue {
+
 class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
 {
     public:
@@ -55,18 +56,25 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
         virtual BookmarkList loadTimecodes()
         {
             DEBUG_BLOCK
+
             CueFileItemMap map = m_track->cueItems();
             debug() << " cue has " << map.size() << " entries";
             QMapIterator<long, CueFileItem> it( map );
             BookmarkList list;
-            while ( it.hasNext() ) {
+
+            while ( it.hasNext() )
+            {
                 it.next();
-                debug() << " seconds : " << it.key() / 1000;
-                AmarokUrl aurl = PlayUrlGenerator::instance()->createTrackBookmark( Meta::TrackPtr( m_track.data() ), it.key() / 1000, it.value().getTitle() );
-                AmarokUrlPtr url( new AmarokUrl( aurl.url() ) );
-                url->setName( aurl.name() ); // TODO AmarokUrl should really have a copy constructor
+                debug() << " seconds : " << it.key();
+
+                AmarokUrl aUrl;
+                rUrl = PlayUrlGenerator::instance()->createTrackBookmark( Meta::TrackPtr( m_track.data() ), it.key(), it.value().getTitle() );
+                AmarokUrlPtr url( new AmarokUrl( aUrl.url() ) );
+                url->setName( aUrl.name() ); // TODO AmarokUrl should really have a copy constructor
+
                 list << url;
             }
+
             return list;
         }
 
@@ -75,12 +83,12 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
 };
 }
 Track::Track ( const KUrl &url, const KUrl &cuefile )
-        : MetaFile::Track ( url )
-        , EngineObserver ( The::engineController() )
-        , m_cuefile ( cuefile )
-        , m_lastSeekPos ( -1 )
-        , m_cueitems()
-        , d ( new Track::Private ( this ) )
+    : MetaFile::Track ( url )
+    , EngineObserver ( The::engineController() )
+    , m_cuefile ( cuefile )
+    , m_lastSeekPos ( -1 )
+    , m_cueitems()
+    , d ( new Track::Private ( this ) )
 {
     DEBUG_BLOCK
 
@@ -93,7 +101,7 @@ Track::Track ( const KUrl &url, const KUrl &cuefile )
     setAlbum ( MetaFile::Track::album()->name() );
     setTrackNumber ( MetaFile::Track::trackNumber() );
 
-    load ( MetaFile::Track::length() );
+    m_cueitems = CueFileSupport::loadCueFile( this );
 }
 
 Track::~Track()
@@ -176,380 +184,6 @@ void Track::engineTrackPositionChanged( qint64 position, bool userSeek )
     m_lastSeekPos = position;
 }
 
-/**
-* Parses a cue sheet file into CueFileItems and inserts them in a QMap
-* @return true if the cuefile could be successfully loaded
-* @author (C) 2005 by Martin Ehmke <ehmke@gmx.de>
-*/
-bool Track::load ( qint64 mediaLength )
-{
-    DEBUG_BLOCK
-    m_cueitems.clear();
-    m_lastSeekPos = -1;
-
-    debug() << "CUEFILE: " << m_cuefile.pathOrUrl();
-    if ( QFile::exists ( m_cuefile.pathOrUrl() ) )
-    {
-        debug() << "  EXISTS!";
-        QFile file ( m_cuefile.pathOrUrl() );
-        int track = 0;
-        QString defaultArtist;
-        QString defaultAlbum;
-        QString artist;
-        QString title;
-        long length = 0;
-        long prevIndex = -1;
-        bool index00Present = false;
-        long index = -1;
-
-        int mode = BEGIN;
-        if ( file.open ( QIODevice::ReadOnly ) )
-        {
-            QTextStream stream ( &file );
-            QString line;
-            KEncodingProber prober;
-
-            KEncodingProber::ProberState result = prober.feed( file.readAll() );
-            file.seek( 0 );
-
-            if( result != KEncodingProber::NotMe )
-                stream.setCodec( QTextCodec::codecForName( prober.encoding() ) );
-
-            debug() << "Encoding: " << prober.encoding();
-
-            while ( !stream.atEnd() )
-            {
-                line = stream.readLine().simplified();
-
-                if ( line.startsWith ( "title", Qt::CaseInsensitive ) )
-                {
-                    title = line.mid ( 6 ).remove ( '"' );
-                    if ( mode == BEGIN )
-                    {
-                        defaultAlbum = title;
-                        title.clear();
-                        debug() << "Album: " << defaultAlbum;
-                    }
-                    else
-                        debug() << "Title: " << title;
-                }
-
-                else if ( line.startsWith ( "performer", Qt::CaseInsensitive ) )
-                {
-                    artist = line.mid ( 10 ).remove ( '"' );
-                    if ( mode == BEGIN )
-                    {
-                        defaultArtist = artist;
-                        artist.clear();
-                        debug() << "Album Artist: " << defaultArtist;
-                    }
-                    else
-                        debug() << "Artist: " << artist;
-                }
-
-                else if ( line.startsWith ( "track", Qt::CaseInsensitive ) )
-                {
-                    if ( mode == TRACK_FOUND )
-                    {
-                        // not valid, because we have to have an index for the previous track
-                        file.close();
-                        debug() << "Mode is TRACK_FOUND, abort.";
-                        return false;
-                    }
-                    if ( mode == INDEX_FOUND )
-                    {
-                        if ( artist.isNull() )
-                            artist = defaultArtist;
-
-                        debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")";
-                        // add previous entry to map
-                        m_cueitems.insert ( index, CueFileItem ( title, artist, defaultAlbum, track, index ) );
-                        prevIndex = index;
-                        title.clear();
-                        artist.clear();
-                        track  = 0;
-                    }
-                    track = line.section ( ' ',1,1 ).toInt();
-                    debug() << "Track: " << track;
-                    mode = TRACK_FOUND;
-                }
-                else if ( line.startsWith ( "index", Qt::CaseInsensitive ) )
-                {
-                    if ( mode == TRACK_FOUND )
-                    {
-                        int indexNo = line.section ( ' ',1,1 ).toInt();
-
-                        if ( indexNo == 1 )
-                        {
-                            QStringList time = line.section ( ' ', -1, -1 ).split ( ':' );
-
-                            index = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
-
-                            if ( prevIndex != -1 && !index00Present ) // set the prev track's length if there is INDEX01 present, but no INDEX00
-                            {
-                                length = index - prevIndex;
-                                debug() << "Setting length of track " << m_cueitems[prevIndex].getTitle() << " to " << length << " msecs.";
-                                m_cueitems[prevIndex].setLength ( length );
-                            }
-
-                            index00Present = false;
-                            mode = INDEX_FOUND;
-                            length = 0;
-                        }
-
-                        else if ( indexNo == 0 ) // gap, use to calc prev track length
-                        {
-                            QStringList time = line.section ( ' ', -1, -1 ).split ( ':' );
-
-                            length = time[0].toLong() * 60 * 1000 + time[1].toLong() * 1000 + time[2].toLong() *1000/75; //75 frames per second
-
-                            if ( prevIndex != -1 )
-                            {
-                                length -= prevIndex; //this[prevIndex].getIndex();
-                                debug() << "Setting length of track " << m_cueitems[prevIndex].getTitle() << " to " << length << " msecs.";
-                                m_cueitems[prevIndex].setLength ( length );
-                                index00Present = true;
-                            }
-                            else
-                                length =  0;
-                        }
-                        else
-                        {
-                            debug() << "Skipping unsupported INDEX " << indexNo;
-                        }
-                    }
-                    else
-                    {
-                        // not valid, because we don't have an associated track
-                        file.close();
-                        debug() << "Mode is not TRACK_FOUND but encountered INDEX, abort.";
-                        return false;
-                    }
-                    debug() << "index: " << index;
-                }
-            }
-
-            if ( artist.isNull() )
-                artist = defaultArtist;
-
-            debug() << "Inserting item: " << title << " - " << artist << " on " << defaultAlbum << " (" << track << ")";
-            // add previous entry to map
-            m_cueitems.insert ( index, CueFileItem ( title, artist, defaultAlbum, track, index ) );
-            file.close();
-        }
-
-        /**
-        *  Because there is no way to set the length for the last track in a normal way,
-        *  we have to do some magic here. Having the total length of the media file given
-        *  we can set the lenth for the last track after all the cue file was loaded into array.
-        */
-
-        m_cueitems[index].setLength ( mediaLength - index );
-        debug() << "Setting length of track " << m_cueitems[index].getTitle() << " to " << mediaLength - index << " msecs.";
-
-        return true;
-    }
-    return false;
-}
-
-KUrl Track::locateCueSheet ( const KUrl &trackurl )
-{
-    if ( !trackurl.isValid() || !trackurl.isLocalFile() )
-        return KUrl();
-    // look for the cue file that matches the media file
-    QString path    = trackurl.path();
-    QString cueFile = path.left ( path.lastIndexOf ( '.' ) ) + ".cue";
-
-    if ( Track::validateCueSheet ( cueFile ) )
-    {
-        debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly, found and loaded. ";
-        return KUrl ( cueFile );
-    }
-    debug() << "[CUEFILE]: " << cueFile << " - Shoot blindly and missed, searching for other cue files.";
-
-    bool foundCueFile = false;
-    QDir dir ( trackurl.directory() );
-    QStringList filters;
-    filters << "*.cue" << "*.CUE";
-    dir.setNameFilters ( filters );
-
-    QStringList cueFilesList = dir.entryList();
-
-    if ( !cueFilesList.empty() )
-        for ( QStringList::Iterator it = cueFilesList.begin(); it != cueFilesList.end() && !foundCueFile; ++it )
-        {
-            QFile file ( dir.filePath ( *it ) );
-            if ( file.open ( QIODevice::ReadOnly ) )
-            {
-                debug() << "[CUEFILE]: " << *it << " - Opened, looking for the matching FILE stanza." << endl;
-                QTextStream stream ( &file );
-                QString line;
-
-                while ( !stream.atEnd() && !foundCueFile )
-                {
-                    line = stream.readLine().simplified();
-
-                    if ( line.startsWith ( "file", Qt::CaseInsensitive ) )
-                    {
-                        line = line.mid ( 5 ).remove ( '"' );
-
-                        if ( line.contains ( trackurl.fileName(), Qt::CaseInsensitive ) )
-                        {
-                            cueFile = dir.filePath ( *it );
-
-                            if ( Track::validateCueSheet ( cueFile ) )
-                            {
-                                debug() << "[CUEFILE]: " << cueFile << " - Looked inside cue files, found and loaded proper one" << endl;
-                                foundCueFile = true;
-                            }
-                        }
-                    }
-                }
-
-                file.close();
-            }
-        }
-
-    if ( foundCueFile )
-        return KUrl ( cueFile );
-    debug() << "[CUEFILE]: - Didn't find any matching cue file." << endl;
-    return KUrl();
-}
-
-bool Track::validateCueSheet ( const QString& cuefile )
-{
-    if ( !QFile::exists ( cuefile ) )
-        return false;
-
-    QFile file ( cuefile );
-    int track = 0;
-    QString defaultArtist;
-    QString defaultAlbum;
-    QString artist;
-    QString title;
-    long length = 0;
-    long prevIndex = -1;
-    bool index00Present = false;
-    long index = -1;
-
-    int mode = Track::BEGIN;
-    if ( file.open ( QIODevice::ReadOnly ) )
-    {
-        QTextStream stream ( &file );
-        QString line;
-
-        while ( !stream.atEnd() )
-        {
-            line = stream.readLine().simplified();
-
-            if ( line.startsWith ( "title", Qt::CaseInsensitive ) )
-            {
-                title = line.mid ( 6 ).remove ( '"' );
-                if ( mode == Track::BEGIN )
-                {
-                    defaultAlbum = title;
-                    title.clear();
-                    debug() << "Album: " << defaultAlbum;
-                }
-                else
-                    debug() << "Title: " << title;
-            }
-
-            else if ( line.startsWith ( "performer", Qt::CaseInsensitive ) )
-            {
-                artist = line.mid ( 10 ).remove ( '"' );
-                if ( mode == Track::BEGIN )
-                {
-                    defaultArtist = artist;
-                    artist.clear();
-                    debug() << "Album Artist: " << defaultArtist;
-                }
-                else
-                    debug() << "Artist: " << artist;
-            }
-
-            else if ( line.startsWith ( "track", Qt::CaseInsensitive ) )
-            {
-                if ( mode == Track::TRACK_FOUND )
-                {
-                    // not valid, because we have to have an index for the previous track
-                    file.close();
-                    debug() << "Mode is TRACK_FOUND, abort.";
-                    return false;
-                }
-                if ( mode == Track::INDEX_FOUND )
-                {
-                    if ( artist.isNull() )
-                        artist = defaultArtist;
-
-                    prevIndex = index;
-                    title.clear();
-                    artist.clear();
-                    track  = 0;
-                }
-                track = line.section ( ' ',1,1 ).toInt();
-                debug() << "Track: " << track;
-                mode = Track::TRACK_FOUND;
-            }
-            else if ( line.startsWith ( "index", Qt::CaseInsensitive ) )
-            {
-                if ( mode == Track::TRACK_FOUND )
-                {
-                    int indexNo = line.section ( ' ',1,1 ).toInt();
-
-                    if ( indexNo == 1 )
-                    {
-                        QStringList time = line.section ( ' ', -1, -1 ).split ( ':' );
-
-                        index = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
-
-                        if ( prevIndex != -1 && !index00Present ) // set the prev track's length if there is INDEX01 present, but no INDEX00
-                        {
-                            length = index - prevIndex;
-                        }
-
-                        index00Present = false;
-                        mode = Track::INDEX_FOUND;
-                        length = 0;
-                    }
-
-                    else if ( indexNo == 0 ) // gap, use to calc prev track length
-                    {
-                        QStringList time = line.section ( ' ', -1, -1 ).split ( ':' );
-
-                        length = time[0].toLong() *60*1000 + time[1].toLong() *1000 + time[2].toLong() *1000/75; //75 frames per second
-
-                        if ( prevIndex != -1 )
-                        {
-                            length -= prevIndex; //this[prevIndex].getIndex();
-                            index00Present = true;
-                        }
-                        else
-                            length =  0;
-                    }
-                    else
-                    {
-                        debug() << "Skipping unsupported INDEX " << indexNo;
-                    }
-                }
-                else
-                {
-                    // not valid, because we don't have an associated track
-                    file.close();
-                    debug() << "Mode is not TRACK_FOUND but encountered INDEX, abort.";
-                    return false;
-                }
-                debug() << "index: " << index;
-            }
-        }
-
-        if ( artist.isNull() )
-            artist = defaultArtist;
-
-        file.close();
-    }
-    return true;
-}
 
 QString
 Track::name() const

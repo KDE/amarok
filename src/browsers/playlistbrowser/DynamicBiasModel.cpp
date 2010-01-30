@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
- * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009-2010 Leo Franchi <lfranchi@kde.org>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -44,7 +44,6 @@ void
 PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr playlist )
 {
     DEBUG_BLOCK
-
     if( playlist.data() == m_playlist.data() )
         return;
 
@@ -53,13 +52,15 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
     Dynamic::BiasedPlaylist* bp = 
         dynamic_cast<Dynamic::BiasedPlaylist*>( playlist.data() );
 
+    debug() << "Setting active playlist:" <<bp->title() << bp->xml().text();
+
     if( bp )
     {
         beginInsertRows( QModelIndex(), 0, bp->biases().size() );
         m_playlist = bp;
         foreach( Dynamic::Bias* b, bp->biases() )
         {
-            debug() << "BIAS ADDED";
+            debug() << "BIAS ADDED" << b->description();
             PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView->viewport() );
 
             connect( widget, SIGNAL(widgetChanged(QWidget*)),

@@ -21,25 +21,24 @@
 
 #include "meta/file/File.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QDateTime>
 #include <QtCore/QFileInfo>
 
-TestMetaFileTrack::TestMetaFileTrack( QStringList testArgumentList, bool stdout )
+TestMetaFileTrack::TestMetaFileTrack( const QStringList args, const QString &logPath )
+    : TestBase( "MetaFileTrack" )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaFileTrack.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestMetaFileTrack::initTestCase()
 {
     QFile::remove ( QDir::tempPath() + QDir::separator() + "tempfile.mp3" );
-    QVERIFY( QFile::copy( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/Platz 01.mp3" ), QDir::tempPath() + QDir::separator() + "tempfile.mp3" ) );
+    QVERIFY( QFile::copy( dataPath( "amarok/testdata/audio/Platz 01.mp3" ), QDir::tempPath() + QDir::separator() + "tempfile.mp3" ) );
 
     track = new MetaFile::Track( QDir::tempPath() + QDir::separator() + "tempfile.mp3" );
 }

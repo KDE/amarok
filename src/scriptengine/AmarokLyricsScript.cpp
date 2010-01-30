@@ -70,6 +70,13 @@ AmarokLyricsScript::showLyricsError( const QString& error ) const
 }
 
 
+void
+AmarokLyricsScript::showLyricsNotFound( const QString& msg ) const
+{
+    LyricsManager::self()->lyricsNotFound( msg );
+}
+ 
+
 QString
 AmarokLyricsScript::escape( const QString& str )
 {

@@ -17,11 +17,10 @@
 
 #include "RootDBusHandler.h"
 
-#include "Amarok.h"
 #include "App.h"
 #include "Debug.h"
-
 #include "RootAdaptor.h"
+#include "Version.h"
 
 // Marshall the DBusVersion data into a D-BUS argument
 QDBusArgument &operator<<(QDBusArgument &argument, const Version &version)
@@ -56,7 +55,7 @@ namespace Amarok
 
     QString RootDBusHandler::Identity()
     {
-        return QString( "%1 %2" ).arg( "Amarok", APP_VERSION );
+        return QString( "%1 %2" ).arg( "Amarok", AMAROK_VERSION );
     }
 
     void RootDBusHandler::Quit()

@@ -32,6 +32,7 @@
 
 class SqlCollection;
 class SqlCollectionDBusHandler;
+class SqlStorage;
 class XmlParseJob;
 
 class ScanManager : public QObject
@@ -39,7 +40,7 @@ class ScanManager : public QObject
     Q_OBJECT
 
     public:
-        ScanManager( SqlCollection *parent );
+        ScanManager( QObject *parent );
         ~ScanManager();
 
         bool isDirInCollection( QString path );
@@ -47,9 +48,13 @@ class ScanManager : public QObject
 
         void setBlockScan( bool blockScan );
 
+        //DI setters
+        void setCollection( SqlCollection * collection );
+        void setStorage( SqlStorage *storage ) { m_storage = storage; }
+
     public slots:
         void startFullScan();
-        void startIncrementalScan();
+        void startIncrementalScan( const QString &directory = QString() );
         void abort( const QString &reason = QString() );
 
     private slots:
@@ -72,6 +77,7 @@ class ScanManager : public QObject
     private:
         SqlCollection *m_collection;
         SqlCollectionDBusHandler *m_dbusHandler;
+        SqlStorage *m_storage;
 
         AmarokProcess *m_scanner;
 
@@ -80,13 +86,13 @@ class ScanManager : public QObject
         int m_restartCount;
         bool m_isIncremental;
         bool m_blockScan;
-        QString m_amarokCollectionScanDir;
         QStringList m_incrementalDirs;
 };
 
 class XmlParseJob : public ThreadWeaver::Job
 {
     Q_OBJECT
+
     public:
         XmlParseJob( ScanManager *parent, SqlCollection *collection );
         ~XmlParseJob();

@@ -19,16 +19,19 @@
 #include "File_p.h"
 
 #include "Amarok.h"
-#include "BookmarkMetaActions.h"
+#include "amarokurls/BookmarkMetaActions.h"
 #include <config-amarok.h>
-#include "Meta.h"
+#include "browsers/filebrowser/FileBrowser.h"
+#include "MainWindow.h"
+#include "meta/Meta.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
+#include "meta/capabilities/FindInSourceCapability.h"
 #include "meta/capabilities/StatisticsCapability.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
 #include "meta/capabilities/TimecodeLoadCapability.h"
 #include "meta/support/PermanentUrlStatisticsProvider.h"
-#include "MetaUtility.h"
+#include "meta/MetaUtility.h"
 #include "amarokurls/PlayUrlRunner.h"
 
 #include <QAction>
@@ -98,16 +101,16 @@ class TimecodeWriteCapabilityImpl : public Meta::TimecodeWriteCapability
             , m_track( track )
         {}
 
-    virtual bool writeTimecode ( int seconds )
+    virtual bool writeTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
+        return Meta::TimecodeWriteCapability::writeTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
     }
 
-    virtual bool writeAutoTimecode ( int seconds )
+    virtual bool writeAutoTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeAutoTimecode( seconds, Meta::TrackPtr( m_track.data() ) );
+        return Meta::TimecodeWriteCapability::writeAutoTimecode( miliseconds, Meta::TrackPtr( m_track.data() ) );
     }
 
     private:
@@ -138,6 +141,43 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
     private:
         KSharedPtr<MetaFile::Track> m_track;
 };
+
+
+class FindInSourceCapabilityImpl : public Meta::FindInSourceCapability
+{
+public:
+    FindInSourceCapabilityImpl( MetaFile::Track *track )
+        : Meta::FindInSourceCapability()
+        , m_track( track )
+        {}
+        
+    virtual void findInSource()
+    {
+        //first show the filebrowser
+        AmarokUrl url;
+        url.setCommand( "navigate" );
+        url.setPath( "files" );
+        url.run();
+
+        //then navigate to the correct directory
+        BrowserCategory * fileCategory = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive();
+        if( fileCategory )
+        {
+            FileBrowser::Widget * fileBrowser = dynamic_cast<FileBrowser::Widget *>( fileCategory );
+            if( fileBrowser )
+            {
+                //get the path of the parent directory of the file
+                KUrl playableUrl = m_track->playableUrl();
+                fileBrowser->setDir( playableUrl.directory() );       
+            }
+        }
+
+    }
+
+private:
+    KSharedPtr<MetaFile::Track> m_track;
+};
+
 
 Track::Track( const KUrl &url )
     : Meta::Track()
@@ -617,7 +657,8 @@ Track::hasCapabilityInterface( Meta::Capability::Type type ) const
            type == Meta::Capability::CurrentTrackActions ||
            type == Meta::Capability::WriteTimecode ||
            type == Meta::Capability::LoadTimecode ||
-           ( type == Meta::Capability::ReadLabel && readlabel );
+           ( type == Meta::Capability::ReadLabel && readlabel ) ||
+           type == Meta::Capability::FindInSource;
 }
 
 Meta::Capability*
@@ -646,12 +687,13 @@ Track::createCapabilityInterface( Meta::Capability::Type type )
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityImpl( this );
 
+        case Meta::Capability::FindInSource:
+            return new FindInSourceCapabilityImpl( this );
+
 #if HAVE_LIBLASTFM
        case Meta::Capability::ReadLabel:
            if( !d->readLabelCapability )
                d->readLabelCapability = new Meta::LastfmReadLabelCapability( this );
-
-           return d->readLabelCapability;
 #endif
 
         default: // fall-through

@@ -30,7 +30,13 @@ namespace Amarok
     class Collection;
 }
 
-
+/**
+ * @class UnionJob
+ * As the result of this job both collections contain the union
+ * of the tracks in both collections, i.e. it adds tracks that are in
+ * collection A but not in collection B to B and tracks that are in B but
+ * not in A to A. It does not remove tracks from either A or B.
+ */
 class UnionJob : public SynchronizationBaseJob
 {
     Q_OBJECT

@@ -22,11 +22,12 @@
 
 #include <QtTest/QTest>
 
-TestCaseConverter::TestCaseConverter( QStringList testArgumentList, bool stdout )
+TestCaseConverter::TestCaseConverter( const QStringList args, const QString &logPath )
+    : TestBase( "CaseCoverter" )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "CaseConverter.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestCaseConverter::testToCapitalizedCase()

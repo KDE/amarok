@@ -79,14 +79,14 @@ class SynchronizationBaseJob : public QObject
         void setCollectionA( Amarok::Collection *collection );
         void setCollectionB( Amarok::Collection *collection );
 
+        virtual void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB ) = 0;
+
     private:
         QueryMaker* createQueryMaker( Amarok::Collection *collection );
 
         void handleAlbumResult();
         void handleArtistResult();
         void handleTrackResult();
-
-        virtual void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB ) = 0;
 
     private:
         QueryMaker* setupArtistQuery( Amarok::Collection *coll );

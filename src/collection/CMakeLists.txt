@@ -10,6 +10,7 @@ add_subdirectory( audiocd )
 add_subdirectory( ipodcollection )
 add_subdirectory( mtpcollection )
 add_subdirectory( umscollection )
+add_subdirectory( sqlcollection )
 
 add_subdirectory( device )
 
@@ -19,10 +20,4 @@ add_subdirectory( device )
 #    add_subdirectory(nepomukcollection)
 #endif (SOPRANO_FOUND AND NEPOMUK_FOUND)
 
-if( BUILD_MYSQLE_COLLECTION )
-    add_subdirectory( mysqlecollection )
-endif( BUILD_MYSQLE_COLLECTION )
-if( MYSQL_FOUND )
-    add_subdirectory( mysqlservercollection )
-endif( MYSQL_FOUND )
 #add_subdirectory( upnp )

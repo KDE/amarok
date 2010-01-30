@@ -43,7 +43,7 @@ SqlQueryMakerInternal::run()
     Q_ASSERT( !m_query.isEmpty() );
     if( m_collection )
     {
-        QStringList result = m_collection->query( m_query );
+        QStringList result = m_collection->sqlStorage()->query( m_query );
         handleResult( result );
     }
     else
@@ -56,6 +56,7 @@ SqlQueryMakerInternal::run()
 void
 SqlQueryMakerInternal::setQuery( const QString &query )
 {
+    //qDebug() << query;
     m_query = query;
 }
 
@@ -248,3 +249,5 @@ SqlQueryMakerInternal::handleYears( const QStringList &result )
     }
     emitOrStoreProperResult( Meta::YearPtr, years );
 }
+
+#include "SqlQueryMakerInternal.moc"

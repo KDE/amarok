@@ -18,6 +18,7 @@
 
 #include "SqlCollection.h"
 
+#include "CapabilityDelegate.h"
 #include "DatabaseUpdater.h"
 #include "Debug.h"
 #include "ScanManager.h"
@@ -42,18 +43,31 @@ public:
 
 SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
-    , m_registry( new SqlRegistry( this ) )
-    , m_updater( new DatabaseUpdater( this ) )
-    , m_scanManager( new ScanManager( this ) )
+    , m_registry( 0 )
+    , m_updater( 0 )
+    , m_capabilityDelegate( 0 )
+    , m_sqlStorage( 0 )
+    , m_collectionLocationFactory( 0 )
+    , m_queryMakerFactory( 0 )
+    , m_scanManager( 0 )
+    , m_mpm( 0 )
     , m_collectionId( id )
     , m_prettyName( prettyName )
     , m_xesamBuilder( 0 )
 {
+    qRegisterMetaType<TrackUrls>( "TrackUrls" );
+    qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
 }
 
 SqlCollection::~SqlCollection()
 {
     delete m_registry;
+    delete m_capabilityDelegate;
+    delete m_updater;
+    delete m_collectionLocationFactory;
+    delete m_queryMakerFactory;
+    delete m_sqlStorage;
+    delete m_mpm;
 }
 
 void
@@ -69,7 +83,7 @@ SqlCollection::init()
     if( m_updater->needsUpdate() )
         m_updater->update();
 
-    QStringList result = query( "SELECT count(*) FROM tracks" );
+    QStringList result = m_sqlStorage->query( "SELECT count(*) FROM tracks" );
     // If database version is updated, the collection needs to be rescanned.
     // Works also if the collection is empty for some other reason
     // (e.g. deleted collection.db)
@@ -89,10 +103,10 @@ SqlCollection::startFullScan()
 }
 
 void
-SqlCollection::startIncrementalScan()
+SqlCollection::startIncrementalScan( const QString &directory )
 {
     if( m_scanManager )
-        m_scanManager->startIncrementalScan();
+        m_scanManager->startIncrementalScan( directory );
 }
 
 void
@@ -125,25 +139,58 @@ SqlCollection::prettyName() const
 QueryMaker*
 SqlCollection::queryMaker()
 {
-    return new SqlQueryMaker( this );
+    Q_ASSERT( m_queryMakerFactory );
+    return m_queryMakerFactory->createQueryMaker();
 }
 
 SqlRegistry*
 SqlCollection::registry() const
 {
+    Q_ASSERT( m_registry );
     return m_registry;
 }
 
 DatabaseUpdater*
 SqlCollection::dbUpdater() const
 {
+    Q_ASSERT( m_updater );
     return m_updater;
 }
 
 ScanManager*
 SqlCollection::scanManager() const
 {
+    Q_ASSERT( m_scanManager );
     return m_scanManager;
+}
+
+void
+SqlCollection::setScanManager( ScanManager *manager )
+{
+    m_scanManager = manager;
+}
+
+SqlStorage*
+SqlCollection::sqlStorage() const
+{
+    Q_ASSERT( m_sqlStorage );
+    return m_sqlStorage;
+}
+
+SqlMountPointManager*
+SqlCollection::mountPointManager() const
+{
+    Q_ASSERT( m_mpm );
+    return m_mpm;
+}
+
+void
+SqlCollection::setMountPointManager( SqlMountPointManager *mpm )
+{
+    Q_ASSERT( mpm );
+    connect( mpm, SIGNAL( deviceAdded(int) ), SLOT( slotDeviceAdded(int) ) );
+    connect( mpm, SIGNAL( deviceRemoved(int) ), SLOT( slotDeviceRemoved(int) ) );
+    m_mpm = mpm;
 }
 
 void
@@ -181,7 +228,8 @@ SqlCollection::trackForUrl( const KUrl &url )
 CollectionLocation*
 SqlCollection::location() const
 {
-    return new SqlCollectionLocation( this );
+    Q_ASSERT( m_collectionLocationFactory );
+    return m_collectionLocationFactory->createSqlCollectionLocation();
 }
 
 bool
@@ -200,79 +248,6 @@ void
 SqlCollection::sendChangedSignal()
 {
     emit updated();
-}
-
-QString
-SqlCollection::escape( QString text ) const           //krazy:exclude=constref
-{
-    return text.replace( '\'', "''" );;
-}
-
-
-int
-SqlCollection::sqlDatabasePriority() const
-{
-    return 1;
-}
-
-QString
-SqlCollection::type() const
-{
-    return "sql";
-}
-
-QString
-SqlCollection::boolTrue() const
-{
-    return "1";
-}
-
-QString
-SqlCollection::boolFalse() const
-{
-    return "0";
-}
-
-QString
-SqlCollection::idType() const
-{
-    return "INTEGER PRIMARY KEY AUTO_INCREMENT";
-}
-
-QString
-SqlCollection::textColumnType( int length ) const
-{
-    return QString( "VARCHAR(%1)" ).arg( length );
-}
-
-QString
-SqlCollection::exactTextColumnType( int length ) const
-{
-    return textColumnType( length );
-}
-
-QString
-SqlCollection::exactIndexableTextColumnType( int length ) const
-{
-    return textColumnType( length );
-}
-
-QString
-SqlCollection::longTextColumnType() const
-{
-    return "TEXT";
-}
-
-QString
-SqlCollection::randomFunc() const
-{
-    return "RANDOM()";
-}
-
-void
-SqlCollection::vacuum() const
-{
-    //implement in subclasses if necessary
 }
 
 void
@@ -301,7 +276,7 @@ SqlCollection::updateTrackUrlsUids( const ChangedTrackUrls &changedUrls, const Q
                 trackList.insert( changedUids[key], KSharedPtr<Meta::SqlTrack>::staticCast( track ) );
         }
     }
-    foreach( QString key, trackList.keys() )
+    foreach( const QString &key, trackList.keys() )
         trackList[key]->refreshFromDatabase( key, this, true );
 }
 
@@ -311,26 +286,54 @@ SqlCollection::initXesam() //SLOT
     m_xesamBuilder = new XesamCollectionBuilder( this );
 }
 
+void
+SqlCollection::slotDeviceAdded( int id )
+{
+    QString query = "select count(*) from tracks inner join urls on tracks.url = urls.id where urls.deviceid = %1";
+    QStringList rs = m_sqlStorage->query( query.arg( id ) );
+    if( !rs.isEmpty() )
+    {
+        int count = rs.first().toInt();
+        if( count > 0 )
+        {
+            emit updated();
+        }
+    }
+    else
+    {
+        warning() << "Query " << query << "did not return a result! Is the database available?";
+    }
+}
+
+void
+SqlCollection::slotDeviceRemoved( int id )
+{
+    QString query = "select count(*) from tracks inner join urls on tracks.url = urls.id where urls.deviceid = %1";
+    QStringList rs = m_sqlStorage->query( query.arg( id ) );
+    if( !rs.isEmpty() )
+    {
+        int count = rs.first().toInt();
+        if( count > 0 )
+        {
+            emit updated();
+        }
+    }
+    else
+    {
+        warning() << "Query " << query << "did not return a result! Is the database available?";
+    }
+}
+
 bool
 SqlCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    DEBUG_BLOCK
-    switch( type )
-    {
-        default:
-            return false;
-    }
+    return ( m_capabilityDelegate ? m_capabilityDelegate->hasCapabilityInterface( type, this ) : false );
 }
 
 Meta::Capability*
 SqlCollection::createCapabilityInterface( Meta::Capability::Type type )
 {
-    DEBUG_BLOCK
-    switch( type )
-    {
-        default:
-            return 0;
-    }
+    return ( m_capabilityDelegate ? m_capabilityDelegate->createCapabilityInterface( type, this ) : 0 );
 }
 
 void
@@ -355,7 +358,7 @@ SqlCollection::deleteTracksSlot( Meta::TrackList tracklist )
 void
 SqlCollection::dumpDatabaseContent()
 {
-    QStringList tables = query( "select table_name from INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" );
+    QStringList tables = m_sqlStorage->query( "select table_name from INFORMATION_SCHEMA.tables WHERE table_schema='amarok'" );
     foreach( const QString &table, tables )
     {
         m_updater->writeCSVFile( table, table, true );

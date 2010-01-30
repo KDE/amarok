@@ -112,14 +112,28 @@ AppletExplorer::paint( QPainter *painter, const QStyleOptionGraphicsItem *option
 
     painter->setRenderHint( QPainter::Antialiasing );
     painter->save();
+    
+    painter->setOpacity( 0.9 );
+    
+    QLinearGradient gradient( boundingRect().topLeft().x(), boundingRect().topLeft().y(),
+                              boundingRect().bottomLeft().x(), boundingRect().bottomLeft().y() / 1.8 + 3 );
+                              
+    QColor highlight = PaletteHandler::highlightColor();
+    gradient.setSpread( QGradient::RepeatSpread );
+    gradient.setColorAt( 0, highlight.lighter( 100 ) );
+    gradient.setColorAt( 1, highlight.lighter( 140 ) ); 
+    QPainterPath path;
+    path.addRoundedRect( boundingRect(), 6, 6 );
+    painter->fillPath( path, gradient );
+    painter->restore();
 
-    QColor col = PaletteHandler::highlightColor();
-    qreal radius = 6;
-
-    QPainterPath outline;
-    outline.addRoundedRect( boundingRect(), radius, radius );
-    painter->fillPath( outline, QBrush( col ) );
-
+    // draw border
+    painter->save();
+    painter->translate( 0.5, 0.5 );
+    QPen pen( PaletteHandler::highlightColor().lighter( 140 ) );
+    pen.setWidth( 3 );
+    painter->setPen( pen );
+    painter->drawRoundedRect( boundingRect(), 6, 6 );
     painter->restore();
 }
 

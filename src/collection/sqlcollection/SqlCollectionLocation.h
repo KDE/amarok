@@ -18,7 +18,7 @@
 #ifndef AMAROK_SQLCOLLECTIONLOCATION_H
 #define AMAROK_SQLCOLLECTIONLOCATION_H
 
-#include "CollectionLocation.h"
+#include "collection/CollectionLocation.h"
 
 #include <QSet>
 #include <QMap>
@@ -30,6 +30,7 @@ class KJob;
 class SqlCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
+
     public:
         SqlCollectionLocation( SqlCollection const *collection );
         virtual ~SqlCollectionLocation();
@@ -45,7 +46,7 @@ class SqlCollectionLocation : public CollectionLocation
     protected:
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
-	virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
+        virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
     private slots:
         void slotDialogAccepted();
@@ -62,6 +63,13 @@ class SqlCollectionLocation : public CollectionLocation
         QMap<Meta::TrackPtr, KUrl> m_sources;
         bool m_overwriteFiles;
         QMap<KJob*, Meta::TrackPtr> m_jobs;
+};
+
+class SqlCollectionLocationFactory
+{
+    public:
+        virtual SqlCollectionLocation* createSqlCollectionLocation() const = 0;
+        virtual ~SqlCollectionLocationFactory() {};
 };
 
 #endif

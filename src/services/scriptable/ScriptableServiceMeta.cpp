@@ -258,7 +258,7 @@ QString Meta::ScriptableServiceAlbum::scalableEmblem()
     return  m_serviceScalableEmblem;
 }
 
-bool Meta::ScriptableServiceAlbum::isBookmarkable()
+bool Meta::ScriptableServiceAlbum::isBookmarkable() const
 {
     ScriptableService * service = The::scriptableServiceManager()->service( m_serviceName );
     if ( service )
@@ -314,7 +314,7 @@ QString Meta::ScriptableServiceArtist::scalableEmblem()
     return  m_serviceScalableEmblem;
 }
 
-bool Meta::ScriptableServiceArtist::isBookmarkable()
+bool Meta::ScriptableServiceArtist::isBookmarkable()  const
 {
     ScriptableService * service = The::scriptableServiceManager()->service( m_serviceName );
     if ( service )

@@ -19,7 +19,7 @@
 #include "CollectionLocation.h"
 #include "meta/Meta.h"
 
-Amarok::CollectionFactory::CollectionFactory() : Amarok::Plugin()
+Amarok::CollectionFactory::CollectionFactory() : QObject()
 {
 }
 

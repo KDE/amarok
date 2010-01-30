@@ -23,9 +23,7 @@
 #include "Amarok.h"
 #include "AmarokMimeData.h"
 #include "Collection.h"
-#include "CollectionManager.h"
 #include "CollectionTreeItem.h"
-#include "CollectionTreeView.h"
 #include "Debug.h"
 #include "Expression.h"
 #include "MetaConstants.h"
@@ -72,11 +70,11 @@ CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 
 Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) const
 {
-    if ( !index.isValid() )
-        return Qt::ItemIsEnabled;
-
-    Qt::ItemFlags flags;
-    flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEditable;
+    Qt::ItemFlags flags = 0;
+    if( index.isValid() )
+    {
+        flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsEditable;
+    }
     return flags;
 
 }
@@ -202,6 +200,11 @@ CollectionTreeItemModelBase::headerData(int section, Qt::Orientation orientation
 QModelIndex
 CollectionTreeItemModelBase::index(int row, int column, const QModelIndex & parent) const
 {
+    //ensure sanity of parameters
+    //we are a tree model, there are no columns
+    if( row < 0 || column != 0 )
+        return QModelIndex();
+
     CollectionTreeItem *parentItem;
 
     if (!parent.isValid())
@@ -638,15 +641,15 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                                 tmp += c;
                             else if( c == 'm' )
                             {
-                                months = 0 - QString( tmp ).toInt();
-                                tmp = "";
+                                months = 0 - tmp.toInt();
+                                tmp.clear();
                             } else if( c == 'w' )
                             {
-                                weeks = 0 - 7 * QString( tmp ).toInt();
-                                tmp = "";
+                                weeks = 0 - 7 * tmp.toInt();
+                                tmp.clear();
                             } else if( c == 'd' )
                             {
-                                days = 0 - QString( tmp ).toInt();
+                                days = 0 - tmp.toInt();
                                 break;
                             }
                         }

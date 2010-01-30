@@ -47,8 +47,6 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         QString prettyName() const { return i18n("Local Podcasts"); };
         KIcon icon() const { return KIcon( "server-database" ); }
 
-        int category() const { return (int)PlaylistManager::PodcastChannel; };
-
         Meta::PlaylistList playlists();
 
         //PodcastProvider methods

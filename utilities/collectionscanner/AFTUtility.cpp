@@ -48,6 +48,53 @@ AFTUtility::AFTUtility()
     qsrand( QTime::currentTime().msec() );
 }
 
+const TagLib::ByteVector
+generatedUniqueIdHelper( const TagLib::FileRef &fileref )
+{
+    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+    {
+        if( file->ID3v2Tag() )
+            return file->ID3v2Tag()->render();
+        else if( file->ID3v1Tag() )
+            return file->ID3v1Tag()->render();
+        else if( file->APETag() )
+            return file->APETag()->render();
+    }
+    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
+    {
+        if( file->tag() )
+            return file->tag()->render();
+    }
+    else if ( TagLib::Ogg::Speex::File *file = dynamic_cast<TagLib::Ogg::Speex::File *>( fileref.file() ) )
+    {
+        if( file->tag() )
+            return file->tag()->render();
+    }
+    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
+    {
+        if( file->tag() )
+            return file->tag()->render();
+    }
+    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
+    {
+        if( file->xiphComment() )
+            return file->xiphComment()->render();
+        else if( file->ID3v1Tag() )
+            return file->ID3v1Tag()->render();
+        else if( file->ID3v2Tag() )
+            return file->ID3v2Tag()->render();
+    }
+    else if ( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
+    {
+        if( file->ID3v1Tag() )
+            return file->ID3v1Tag()->render();
+        else if( file->APETag() )
+            return file->APETag()->render();
+    }
+    TagLib::ByteVector bv;
+    return bv;
+}
+
 const QString
 AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
 {
@@ -113,52 +160,7 @@ AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
     return QString();
 }
 
-const TagLib::ByteVector
-AFTUtility::generatedUniqueIdHelper( const TagLib::FileRef &fileref )
-{
-    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
-    {
-        if( file->ID3v2Tag() )
-            return file->ID3v2Tag()->render();
-        else if( file->ID3v1Tag() )
-            return file->ID3v1Tag()->render();
-        else if( file->APETag() )
-            return file->APETag()->render();
-    }
-    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
-    {
-        if( file->tag() )
-            return file->tag()->render();
-    }
-    else if ( TagLib::Ogg::Speex::File *file = dynamic_cast<TagLib::Ogg::Speex::File *>( fileref.file() ) )
-    {
-        if( file->tag() )
-            return file->tag()->render();
-    }
-    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
-    {
-        if( file->tag() )
-            return file->tag()->render();
-    }
-    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
-    {
-        if( file->xiphComment() )
-            return file->xiphComment()->render();
-        else if( file->ID3v1Tag() )
-            return file->ID3v1Tag()->render();
-        else if( file->ID3v2Tag() )
-            return file->ID3v2Tag()->render();
-    }
-    else if ( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
-    {
-        if( file->ID3v1Tag() )
-            return file->ID3v1Tag()->render();
-        else if( file->APETag() )
-            return file->APETag()->render();
-    }
-    TagLib::ByteVector bv;
-    return bv;
-}
+
 
 const QString
 AFTUtility::randomUniqueId( QCryptographicHash &md5 )

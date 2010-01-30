@@ -17,11 +17,14 @@
 #include "PlayUrlRunner.h"
 
 #include "Debug.h"
+#include "amarokconfig.h"
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
 #include "collection/CollectionManager.h"
 #include "EngineController.h"
 #include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
+#include "playlist/proxymodels/AbstractModel.h"
 #include "SqlStorage.h"
 
 PlayUrlRunner::PlayUrlRunner() : AmarokUrlRunnerBase()
@@ -43,10 +46,10 @@ bool PlayUrlRunner::run ( AmarokUrl url )
     debug() << "decoded track url: " << track_url.toString();
 
     //get the position
-    int pos = 0;
+    qint64 pos = 0;
     if ( url.args().keys().contains( "pos" ) )
     {
-        pos = url.args().value( "pos" ).toInt() * 1000;
+        pos = (qint64) ( url.args().value( "pos" ).toDouble() * 1000.0 );
     }
 
     debug() << "seek pos: " << pos;
@@ -54,9 +57,20 @@ bool PlayUrlRunner::run ( AmarokUrl url )
     if ( !track )
         return false;
 
-//     The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
     The::engineController()->play ( track, pos );
-//     The::engineController()->seek(pos);
+
+    Playlist::AbstractModel *model = Playlist::ModelStack::instance()->top();
+
+    if( model->containsTrack( track ) )
+    {
+        model->setActiveRow( model->firstRowForTrack( track ) );
+    }
+    else
+    {
+        const int row = AmarokConfig::dynamicMode() ? model->activeRow() + 1 : model->rowCount();
+        The::playlistController()->insertTrack( row, track );
+        model->setActiveRow( row );
+    }
     return true;
 }
 

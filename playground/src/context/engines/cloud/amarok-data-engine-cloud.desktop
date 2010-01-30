@@ -2,6 +2,7 @@
 Name=Cloud Data Engine
 Name[bg]=Ядро за Cloud
 Name[ca]=Motor de dades del Cloud
+Name[ca@valencia]=Motor de dades del Cloud
 Name[cs]=Datový nástroj Cloud
 Name[csb]=Mòtór pòdôwków Blóna
 Name[da]=Datamotor til Cloud
@@ -37,6 +38,8 @@ Name[ro]=Motor de date Nor
 Name[ru]=Источник данных Cloud
 Name[sl]=Podatkovni pogon za oblak
 Name[sr]=Датомотор облака
+Name[sr@ijekavian]=Датомотор облака
+Name[sr@ijekavianlatin]=Datomotor oblaka
 Name[sr@latin]=Datomotor oblaka
 Name[sv]=Datagränssnitt för Cloud
 Name[th]=กลไกข้อมูลแบบกลุ่มเมฆ

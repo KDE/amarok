@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009, 2010 Leo Franchi <lfranchi@kde.org>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -67,7 +67,7 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
     int currentEntry = 0;
     for( int i = 0; i <  m_cbias->currentFactories().size(); i++ )
     {
-        Dynamic::CustomBiasFactory* entry = m_cbias->currentFactories().at( i );
+        Dynamic::CustomBiasEntryFactory* entry = m_cbias->currentFactories().at( i );
         QVariant data;
         data.setValue( entry );
         m_fieldSelection->addItem( entry->name(), data );
@@ -77,13 +77,19 @@ Dynamic::CustomBiasEntryWidget::CustomBiasEntryWidget(Dynamic::CustomBias* bias,
        
     }
     
-    connect( m_cbias, SIGNAL( biasFactoriesChanged() ), this, SLOT( reloadBiases() ) );
+    connect( m_cbias, SIGNAL( biasFactoriesChanged() ), this, SLOT( refreshBiasFactories() ) );
     connect( m_fieldSelection, SIGNAL( activated( int ) ), this, SLOT( selectionChanged( int ) ) );
+    connect( m_cbias, SIGNAL( biasChanged( Dynamic::Bias* ) ), this, SIGNAL( biasChanged( Dynamic::Bias* ) ) );
 
     m_fieldSelection->setCurrentIndex( currentEntry );
     m_weightSelection->setValue( m_cbias->weight() * 100 );
     weightChanged( m_cbias->weight() * 100 );
-    selectionChanged( 0 );
+    // if the custom bias has an entry already loaded, don't reset it.
+    // but if not, we create one for ourselves
+    if( m_cbias->currentEntry() )
+        setCurrentLoadedBiasWidget();
+    else
+        selectionChanged( 0 );
 
     //debug() << "CustomBiasEntryWidget created with weight:" << m_cbias->weight() * 100 ;
 
@@ -98,17 +104,31 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
         return;
 
     debug() << "selection changed to index: " << index;
-    Dynamic::CustomBiasFactory* chosenFactory = m_fieldSelection->itemData( index ).value<  Dynamic::CustomBiasFactory* >();
+    Dynamic::CustomBiasEntryFactory* chosenFactory = m_fieldSelection->itemData( index ).value<  Dynamic::CustomBiasEntryFactory* >();
 
     if( !chosenFactory )
     {
-        debug() << "found a non-CustomBiasFactory in the drop-down..something bad just happened";
+        debug() << "found a non-CustomBiasEntryFactory in the drop-down..something bad just happened";
         return;
     }
 
-    Dynamic::CustomBiasEntry* chosen = chosenFactory->newCustomBias( m_cbias->weight() );
+    Dynamic::CustomBiasEntry* chosen = chosenFactory->newCustomBiasEntry();
+    m_cbias->setCurrentEntry( chosen );
+    
+    setCurrentLoadedBiasWidget();
+}
 
-    QWidget* config  = chosen->configWidget( this );
+// called when we need to change the selection (like selectionChanged()), but we don' want to re-create the bias--it already exists
+// so we just need to set the widget and stuff
+void
+Dynamic::CustomBiasEntryWidget::setCurrentLoadedBiasWidget()
+{
+    DEBUG_BLOCK
+    if( !m_cbias->currentEntry() ) {
+        debug() << "HELP! Assuming bias is properly loaded, but it isn't!";
+        return;
+    }
+    QWidget* config = m_cbias->currentEntry()->configWidget( this );
     if( !config )
     {
         debug() << "got an invalid config widget from bias type!";
@@ -127,15 +147,14 @@ Dynamic::CustomBiasEntryWidget::selectionChanged( int index ) // SLOT
 
     m_currentConfig = config;
     m_layout->addWidget( config, 2, 0, 1, 3, 0 );
-    m_cbias->setCurrentEntry( chosen );
 }
 
 void
 Dynamic::CustomBiasEntryWidget::weightChanged( int amount )
 {
-    double fval = (double)amount;
-    m_weightLabel->setText( QString().sprintf( "%2.0f%%", fval ) );
+    m_weightLabel->setText( QString().sprintf( "%d%%", amount ) );
 
+    double fval = (double)amount;
     m_cbias->setWeight( fval / 100 );
 
     emit biasChanged( m_bias );
@@ -143,10 +162,9 @@ Dynamic::CustomBiasEntryWidget::weightChanged( int amount )
 
 void Dynamic::CustomBiasEntryWidget::refreshBiasFactories()
 {
-    DEBUG_BLOCK
-
+    DEBUG_BLOCK;
     // add any new ones
-    foreach( Dynamic::CustomBiasFactory* entry, Dynamic::CustomBias::currentFactories() )
+    foreach( Dynamic::CustomBiasEntryFactory* entry, Dynamic::CustomBias::currentFactories() )
     {
         QVariant data;
         data.setValue( entry );
@@ -158,7 +176,8 @@ void Dynamic::CustomBiasEntryWidget::refreshBiasFactories()
             if( m_cbias->currentEntry() && m_cbias->currentEntry()->pluginName() == entry->pluginName() )
             {
                 m_fieldSelection->setCurrentItem( entry->name() );
-                selectionChanged( m_fieldSelection->currentIndex() );
+//                 selectionChanged( m_fieldSelection->currentIndex() );
+                setCurrentLoadedBiasWidget();
             }
         }
     }
@@ -166,7 +185,7 @@ void Dynamic::CustomBiasEntryWidget::refreshBiasFactories()
     for( int i = 0; i < m_fieldSelection->count(); i++ )
     {
         if( !Dynamic::CustomBias::currentFactories().contains(
-                m_fieldSelection->itemData( i ).value<  Dynamic::CustomBiasFactory* >() ) )
+                m_fieldSelection->itemData( i ).value<  Dynamic::CustomBiasEntryFactory* >() ) )
         {
             // ok, we lost one. not sure why. try to clean up sanely.
             debug() << "a bias factory was removed, updating list to reflect!";

@@ -35,7 +35,7 @@
 // CUSTOM BIAS FACTORY
 
 Dynamic::EchoNestBiasFactory::EchoNestBiasFactory()
-: CustomBiasFactory()
+: CustomBiasEntryFactory()
 {
 
 }
@@ -61,30 +61,30 @@ Dynamic::EchoNestBiasFactory::pluginName() const
 
 
 Dynamic::CustomBiasEntry*
-Dynamic::EchoNestBiasFactory::newCustomBias( double weight )
+Dynamic::EchoNestBiasFactory::newCustomBiasEntry()
 {
     debug() << "CREATING ECHONEST BIAS";
-    return new EchoNestBias( weight );
+    return new EchoNestBias();
 }
 
 Dynamic::CustomBiasEntry*
-Dynamic::EchoNestBiasFactory::newCustomBias( QDomElement e, double weight )
+Dynamic::EchoNestBiasFactory::newCustomBiasEntry( QDomElement e )
 {
     // we don't save anything, so just load a fresh one
     Q_UNUSED( e )
     debug() << "CREATING ECHONEST BIAS 2";
-    return new EchoNestBias( weight );
+    return new EchoNestBias();
 }
 
 
 /// class SimilarArtistsBias
 
-Dynamic::EchoNestBias::EchoNestBias( double weight )
-: Dynamic::CustomBiasEntry( weight )
-, EngineObserver( The::engineController() )
-, m_artistSuggestedQuery( 0 )
-, m_qm( 0 )
-, m_currentOnly( true )
+Dynamic::EchoNestBias::EchoNestBias()
+    : Dynamic::CustomBiasEntry()
+    , EngineObserver( The::engineController() )
+    , m_artistSuggestedQuery( 0 )
+    , m_qm( 0 )
+    , m_currentOnly( true )
 {
     DEBUG_BLOCK
     engineNewTrackPlaying(); // kick it into gear if a track is already playnig. if not, it's harmless
@@ -183,7 +183,7 @@ Dynamic::EchoNestBias::engineNewTrackPlaying()
                     }
                 }
                 // also go through it to remove any tracks that we don't have
-                foreach( QString name, m_artistIds.keys() )
+                foreach( const QString &name, m_artistIds.keys() )
                 {
                     if( !m_currentPlaylist.contains( name ) )
                         m_artistIds.remove( name );
@@ -248,7 +248,7 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
         if( ! m_currentOnly )
         {
             // check our map, see if there are any we are still waiting for. if not, do the query
-            foreach( QString result, m_artistIds.values() )
+            foreach( const QString &result, m_artistIds.values() )
             {
                 if( result == "-1" ) // still waiting
                 {
@@ -258,7 +258,7 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
                     return;
                 }
             }
-            foreach( QString key, m_artistIds.keys() )
+            foreach( const QString &key, m_artistIds.keys() )
                 toQuery << key;
             // ok we're not, update our list and do it!
         } else
@@ -269,10 +269,11 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
 
     // now do our second query
     QMultiMap< QString, QString > params;
-    foreach( QString name, toQuery )
+    foreach( const QString &name, toQuery )
     {
         params.insert("id", m_artistIds[ name ] );
     }
+    params.insert( "rows", "30" );
     m_artistSuggestedQuery = KIO::storedGet( createUrl( "get_similar", params ), KIO::NoReload, KIO::HideProgressInfo );
     connect( m_artistSuggestedQuery, SIGNAL( result( KJob* ) ), this, SLOT( artistSuggestedQueryDone( KJob* ) ) );
     job->deleteLater();
@@ -490,11 +491,11 @@ Dynamic::EchoNestBias::hasCollectionFilterCapability()
 }
 
 Dynamic::CollectionFilterCapability*
-Dynamic::EchoNestBias::collectionFilterCapability()
+Dynamic::EchoNestBias::collectionFilterCapability( double weight )
 {
     DEBUG_BLOCK
-    debug() << "returning new cfb with weight:" << weight();
-    return new Dynamic::EchoNestBiasCollectionFilterCapability( this );
+    debug() << "returning new cfb with weight:" << weight;
+    return new Dynamic::EchoNestBiasCollectionFilterCapability( this, weight );
 }
 
 const QSet< QByteArray >&
@@ -511,7 +512,7 @@ Dynamic::EchoNestBiasCollectionFilterCapability::propertySet()
 
 double Dynamic::EchoNestBiasCollectionFilterCapability::weight() const
 {
-    return m_bias->weight();
+    return m_weight;
 }
 
 void

@@ -24,42 +24,6 @@
 namespace Dynamic
 {
 
-class CustomBiasEntry;
-
-/**
- * The factory which creates custom bias entries on demand. As the user can create any number
- * of biases from from the bias addition widget, new custom biass types need to be able to be
- * generated on command and at runtime.
- **/
-class AMAROK_EXPORT CustomBiasFactory
-{
-    public:
-        CustomBiasFactory() {}
-        virtual ~CustomBiasFactory() {}
-
-        /**
-         *   Returns the name of the type of bias. eg. "Last.fm Similar Artists"
-         */
-        virtual QString name() const = 0;
-
-        /**
-         * Returns an internal non-translatable name for this custom bias type.
-         */
-        virtual QString pluginName() const = 0;
-
-        /**
-         * Create the custom bias. The caller takes owner of the pointer
-         */
-        virtual CustomBiasEntry* newCustomBias( double weight ) = 0;
-
-        /**
-         * Creates a new custom bias from the saved settings in the xml doc.
-         * The XML should be saved in CustomBiasEntry::xml().
-         */
-        virtual CustomBiasEntry* newCustomBias( QDomElement e , double weight ) = 0;
-
-};
-
 /**
  *  This is the object that the singleton CustomBias can register. A service, or anything
  *  else, can register a new CustomBiasEntry for the user to select as a type of Custom Bias.
@@ -68,7 +32,7 @@ class AMAROK_EXPORT CustomBiasEntry : public QObject
 {
     Q_OBJECT
     public:
-        CustomBiasEntry( double wieght );
+        CustomBiasEntry();
         virtual ~CustomBiasEntry() {}
 
         /**
@@ -113,25 +77,21 @@ class AMAROK_EXPORT CustomBiasEntry : public QObject
         /**
         * Returns a QSet< QByteArray > of track uids that match this bias. Used when building the
         * initial playlists, this must be implemented if your bias returns true for filterFromCollection.
-        * See APIDOX for Bias.h for more explanation.
+        * See APIDOX of Bias.h for more explanation.
+        *
+        * As the currently set weight of the bias is stored in the parent CustomBias, the individual CustomBiasEntries
+        * don't know the value, so can't return it. Use the passed in value to construct your CollectionFilterCapability
+        * that you return to the BiasSolver.
         */
-        virtual CollectionFilterCapability* collectionFilterCapability() { return 0; }
+        virtual CollectionFilterCapability* collectionFilterCapability( double weight ) { Q_UNUSED( weight ); return 0; }
 
-        double weight();
-
-    public slots:
-        // takes an int 0-100 as it is connected to the slider
-        void setWeight( int weight );
-
-    private:
-        double m_weight;
-
+    signals:
+        void biasChanged();
 };
 
 }
 
 
-Q_DECLARE_METATYPE( Dynamic::CustomBiasFactory* )
 Q_DECLARE_METATYPE( Dynamic::CustomBiasEntry* )
 
 #endif

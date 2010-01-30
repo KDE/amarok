@@ -118,6 +118,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void showHide();
         void slotFullScreen();
         void slotLoveTrack() { emit loveTrack( The::engineController()->currentTrack() ); }
+        void showNotificationPopup();
         void hideContextView( bool hide );
 
         void setLayoutLocked( bool locked );
@@ -136,6 +137,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
     private slots:
         void exportPlaylist() const;
         void slotShowBookmarkManager() const;
+        void slotShowEqualizer() const;
         void slotShowCoverManager() const;
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );

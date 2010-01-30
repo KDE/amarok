@@ -19,6 +19,7 @@
 #define AMAROK_H
 
 #include "amarok_export.h"
+#include "Version.h"
 
 #include <KActionCollection>
 #include <KConfig>
@@ -259,11 +260,5 @@ namespace Amarok
     Type::ConstIterator it = x.constBegin(), end = x.constEnd(), last = x.fromLast()
 
 
-/// Update this when necessary
-//#ifdef CURRENT_GIT_VERSION
-//#define APP_VERSION #CURRENT_GIT_VERSION
-//#else
-#define APP_VERSION "2.2-GIT"
-//#endif
 
 #endif

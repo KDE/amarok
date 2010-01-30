@@ -25,6 +25,7 @@ if( STRIGI_FOUND )
 endif( STRIGI_FOUND )
 
 include_directories(
+    ${CMAKE_SOURCE_DIR}
     aboutdialog
     aboutdialog/libattica-ocsclient
     amarokurls
@@ -38,6 +39,7 @@ include_directories(
     collection/mediadevicecollection/handler  # for Handler
     collection/mediadevicecollection/support  # for MediaDeviceInfo
     collection/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
+    collection/mediadevicecollection/podcast
     configdialog
     configdialog/dialogs
     context
@@ -55,15 +57,6 @@ include_directories(
     synchronization
     timecode
     widgets
-    ../tests/
-    ../tests/meta/
-    ../tests/meta/cue/
-    ../tests/meta/file/
-    ../tests/meta/multi/
-    ../tests/playlistmanager/
-    ../tests/playlistmanager/file/
-    ../tests/playlistmanager/sql/
-    ../tests/timecode/
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDES}
@@ -109,12 +102,14 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
   collection/mediadevicecollection/handler/capabilities/CustomReadCapability.cpp
   collection/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
+  collection/mediadevicecollection/handler/capabilities/PodcastCapability.cpp
   collection/mediadevicecollection/handler/capabilities/ReadCapability.cpp
   collection/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
   collection/mediadevicecollection/handler/capabilities/WriteCapability.cpp
   collection/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
   collection/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
   collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
+  collection/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp
   collection/mediadevicecollection/support/ConnectionAssistant.cpp
   collection/mediadevicecollection/support/MediaDeviceInfo.cpp
 )
@@ -127,19 +122,15 @@ set(libserviceframework_SRCS
     services/InfoParserBase.cpp
     services/ServiceAlbumCoverDownloader.cpp
     services/ServiceBase.cpp
-    services/ServiceBookmarkThisCapability.cpp
+    services/ServiceCapabilities.cpp
     services/ServiceCollection.cpp
     services/ServiceCollectionLocation.cpp
     services/ServiceCollectionTreeView.cpp
-    services/ServiceCurrentTrackActionsCapability.cpp
-    services/ServiceCustomActionsCapability.cpp
     services/ServiceMetaBase.cpp
     services/ServicePluginManager.cpp
-    services/ServiceSourceInfoCapability.cpp
     services/ServiceSqlCollection.cpp
     services/ServiceSqlQueryMaker.cpp
     services/ServiceSqlRegistry.cpp
-    services/ShowInServiceAction.cpp
 )
 
 #####################################################################
@@ -281,6 +272,7 @@ set(meta_SRCS
     meta/M3UPlaylist.cpp
     meta/Meta.cpp
     meta/MetaUtility.cpp
+    meta/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
     meta/Playlist.cpp
     meta/PLSPlaylist.cpp
@@ -296,6 +288,7 @@ set(meta_SRCS
     meta/capabilities/DecoratorCapability.cpp
     meta/capabilities/EditCapability.cpp
     meta/capabilities/EditablePlaylistCapability.cpp
+    meta/capabilities/FindInSourceCapability.cpp
     meta/capabilities/LastFmCapability.cpp
     meta/capabilities/MultiPlayableCapability.cpp
     meta/capabilities/MultiSourceCapability.cpp
@@ -311,7 +304,7 @@ set(meta_SRCS
     meta/file/File.cpp
     meta/multi/MultiTrack.cpp
     meta/multi/MultiSourceCapabilityImpl.cpp
-    meta/cue/Cue.cpp
+    meta/cue/CueFileSupport.cpp
     meta/proxy/MetaProxy.cpp
     meta/stream/Stream.cpp
     meta/support/PermanentUrlStatisticsProvider.cpp
@@ -403,6 +396,7 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/UserPlaylistTreeView.cpp
     browsers/playlistbrowser/PlaylistCategory.cpp
     browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp
+    browsers/playlistbrowser/PlaylistsByProviderProxy.cpp
     browsers/playlistbrowser/PodcastModel.cpp
     browsers/playlistbrowser/PodcastCategory.cpp
 )
@@ -611,6 +605,9 @@ set(amaroklib_LIB_SRCS
     SvgTinter.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
+    covermanager/CoverFetchQueue.cpp
+    covermanager/CoverFetchUnit.cpp
+    covermanager/CoverFoundDialog.cpp
     covermanager/CoverManager.cpp
     databaseimporter/DatabaseImporter.cpp
     databaseimporter/amarok14/FastForwardImporter.cpp
@@ -622,6 +619,7 @@ set(amaroklib_LIB_SRCS
     dialogs/CollectionSetup.cpp
     dialogs/DatabaseImporterDialog.cpp
     dialogs/EditFilterDialog.cpp
+    dialogs/EqualizerDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
     dialogs/OrganizeCollectionDialog.cpp
     dialogs/ScriptSelector.cpp
@@ -631,6 +629,8 @@ set(amaroklib_LIB_SRCS
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
     browsers/filebrowser/FileBrowser.cpp
+    browsers/filebrowser/FileBrowserMkII.cpp
+    browsers/filebrowser/FileView.cpp
     browsers/filebrowser/MyDirOperator.cpp
     browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
@@ -646,6 +646,7 @@ set(amaroklib_LIB_SRCS
     TrayIcon.cpp
     widgets/AmarokDockWidget.cpp
     widgets/BreadcrumbItemButton.cpp
+    widgets/CoverLabel.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp
@@ -702,13 +703,23 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/playlistmanager/sql/TestSqlUserPlaylistProvider.cpp
         ../tests/timecode/TestTimecodeTrackProvider.cpp
         ../tests/TestAmarok.cpp
+        ../tests/TestBase.cpp
         ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp
-        ../tests/TestExpression.cpp
-        ../tests/TestQStringx.cpp
-        ../tests/TestSmartPointerList.cpp
+    )
+    include_directories(
+        ../tests/
+        ../tests/meta/
+        ../tests/meta/cue/
+        ../tests/meta/file/
+        ../tests/meta/multi/
+        ../tests/playlistmanager/
+        ../tests/playlistmanager/file/
+        ../tests/playlistmanager/sql/
+        ../tests/timecode/
     )
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+
 if( LIBLASTFM_FOUND )
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
@@ -731,6 +742,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui
     dialogs/EditCoverSearchDialog.ui
     dialogs/EditFilterDialog.ui
+    dialogs/EqualizerDialog.ui
     dialogs/ScriptManagerBase.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
@@ -743,17 +755,17 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
 kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 
 target_link_libraries(amaroklib
-    ${KDE4_KUTILS_LIBS}
     ${KDE4_KDEUI_LIBS}
-    ${KDE4_KHTML_LIBS}
-    ${KDE4_KNEWSTUFF_LIBS}
     ${KDE4_KFILE_LIBS}
-    ${KDE4_THREADWEAVER_LIBRARIES}
+    ${KDE4_KHTML_LIBS}
     ${KDE4_KNEWSTUFF2_LIBS}
+    ${KDE4_KNEWSTUFF_LIBS}
     ${KDE4_KNOTIFYCONFIG_LIBS}
+    ${KDE4_KUTILS_LIBS}
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
+    ${KDE4_THREADWEAVER_LIBRARIES}
     ${TAGLIB_LIBRARIES}
     ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}

@@ -20,9 +20,9 @@
 #include "SqlCollection.h"
 #include "Debug.h"
 
-SqlCollectionDBusHandler::SqlCollectionDBusHandler( SqlCollection *coll )
-    : QObject( coll )
-    , m_collection( coll )
+SqlCollectionDBusHandler::SqlCollectionDBusHandler( QObject *parent )
+    : QObject( parent )
+    , m_collection( 0 )
 {
     DEBUG_BLOCK
 
@@ -37,7 +37,10 @@ SqlCollectionDBusHandler::SqlCollectionDBusHandler( SqlCollection *coll )
 bool
 SqlCollectionDBusHandler::isDirInCollection( const QString& path )
 {
-    return m_collection->isDirInCollection( path );
+    if( m_collection )
+        return m_collection->isDirInCollection( path );
+    else
+        return false;
 }
 
 #include "SqlCollectionDBusHandler.moc"

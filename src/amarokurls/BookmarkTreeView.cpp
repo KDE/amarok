@@ -32,10 +32,12 @@
 
 #include <QFrame>
 #include <QHeaderView>
+#include <QHelpEvent>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QModelIndex>
 #include <QPoint>
+#include <QToolTip>
 
 #include <typeinfo>
 
@@ -52,7 +54,11 @@ BookmarkTreeView::BookmarkTreeView( QWidget *parent )
 
     setDragEnabled( true );
     setAcceptDrops( true );
+    setAlternatingRowColors( true );
     setDropIndicatorShown( true );
+
+    connect( header(), SIGNAL( sectionCountChanged( int, int ) ),
+             this, SLOT( slotSectionCountChanged( int, int ) ) );
 }
 
 
@@ -190,6 +196,59 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
     menu->exec( event->globalPos() );
 }
 
+void BookmarkTreeView::resizeEvent( QResizeEvent *event )
+{
+    QHeaderView *headerView = header();
+
+    const int oldWidth = event->oldSize().width();
+    const int newWidth = event->size().width();
+
+    if( oldWidth == newWidth || oldWidth < 0 || newWidth < 0 )
+        return;
+
+    disconnect( headerView, SIGNAL( sectionResized( int, int, int ) ),
+                this, SLOT( slotSectionResized( int, int, int ) ) );
+
+    QMap<BookmarkModel::Column, qreal>::const_iterator i = m_columnsSize.constBegin();
+    while( i != m_columnsSize.constEnd() )
+    {
+        const BookmarkModel::Column col = i.key();
+        if( col != BookmarkModel::Command && col != BookmarkModel::Description )
+            headerView->resizeSection( col, static_cast<int>( i.value() * newWidth ) );
+        ++i;
+    }
+
+    connect( headerView, SIGNAL( sectionResized( int, int, int ) ),
+             this, SLOT( slotSectionResized( int, int, int ) ) );
+
+    QWidget::resizeEvent( event );
+}
+
+bool BookmarkTreeView::viewportEvent( QEvent *event )
+{
+   if( event->type() == QEvent::ToolTip )
+   {
+       QHelpEvent *he  = static_cast<QHelpEvent*>( event );
+       QModelIndex idx = indexAt( he->pos() );
+
+       if( idx.isValid() )
+       {
+           QRect vr  = visualRect( idx );
+           QSize shr = itemDelegate( idx )->sizeHint( viewOptions(), idx );
+
+           if( shr.width() > vr.width() )
+               QToolTip::showText( he->globalPos(), idx.data( Qt::DisplayRole ).toString() );
+       }
+       else
+       {
+           QToolTip::hideText();
+           event->ignore();
+       }
+       return true;
+   }
+   return QTreeView::viewportEvent( event );
+}
+
 QSet<BookmarkViewItemPtr>
 BookmarkTreeView::selectedItems() const
 {
@@ -218,12 +277,12 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     Q_UNUSED( deselected )
     QModelIndexList indexes = selected.indexes();
     debug() << indexes.size() << " items selected";
-    foreach( QModelIndex index, indexes )
+    foreach( const QModelIndex &index, indexes )
     {
-        index = m_proxyModel->mapToSource( index );
-        if( index.column() == 0 )
+        const QModelIndex sourceIndex = m_proxyModel->mapToSource( index );
+        if( sourceIndex.column() == 0 )
         {
-            BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
+            BookmarkViewItemPtr item = BookmarkModel::instance()->data( sourceIndex, 0xf00d ).value<BookmarkViewItemPtr>();
 
             if ( typeid( * item ) == typeid( AmarokUrl ) ) {
                 debug() << "a url was selected...";
@@ -291,24 +350,24 @@ void BookmarkTreeView::slotCreateTimecodeTrack() const
     //ok, so we actually have to timecodes from the same base url, not get the
     //minimum and maximum time:
 
-    int pos1 = 0;
-    int pos2 = 0;
+    qreal pos1 = 0;
+    qreal pos2 = 0;
 
     if ( url1->args().keys().contains( "pos" ) )
     {
-        pos1 = url1->args().value( "pos" ).toInt();
+        pos1 = url1->args().value( "pos" ).toDouble();
     }
 
     if ( url2->args().keys().contains( "pos" ) )
     {
-        pos2 = url2->args().value( "pos" ).toInt();
+        pos2 = url2->args().value( "pos" ).toDouble();
     }
 
     if ( pos1 == pos2 )
         return;
 
-    int start = qMin( pos1, pos2 ) * 1000;
-    int end = qMax( pos1, pos2 ) * 1000;
+    qint64 start = qMin( pos1, pos2 ) * 1000;
+    qint64 end = qMax( pos1, pos2 ) * 1000;
 
     //Now we really should pop up a menu to get the user to enter some info about this
     //new track, but for now, just fake it as this is just for testing anyway
@@ -358,6 +417,34 @@ void BookmarkTreeView::slotEdit( const QModelIndex &index )
     //translate to proxy terms
     edit( m_proxyModel->mapFromSource( index ) );
 }
+
+void BookmarkTreeView::slotSectionResized( int logicalIndex, int oldSize, int newSize )
+{
+    Q_UNUSED( oldSize )
+    BookmarkModel::Column col = BookmarkModel::Column( logicalIndex );
+    m_columnsSize[ col ] = static_cast<qreal>( newSize ) / header()->length();
+}
+
+void BookmarkTreeView::slotSectionCountChanged( int oldCount, int newCount )
+{
+    Q_UNUSED( oldCount )
+
+    const QHeaderView *headerView = header();
+    for( int i = 0; i < newCount; ++i )
+    {
+        const int index   = headerView->logicalIndex( i );
+        const int width   = columnWidth( index );
+        const qreal ratio = static_cast<qreal>( width ) / headerView->length();
+
+        const BookmarkModel::Column col = BookmarkModel::Column( index );
+
+        if( col == BookmarkModel::Command )
+            header()->setResizeMode( index, QHeaderView::ResizeToContents );
+
+        m_columnsSize[ col ] = ratio;
+    }
+}
+
 
 #include "BookmarkTreeView.moc"
 

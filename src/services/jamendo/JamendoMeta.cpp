@@ -113,7 +113,6 @@ JamendoTrack::JamendoTrack( const QString &name )
     , m_service ( 0 )
     , m_downloadCustomAction( 0 )
     , m_downloadCurrentTrackAction( 0 )
-    , m_showInServiceAction( 0 )
 {
 }
 
@@ -122,7 +121,6 @@ JamendoTrack::JamendoTrack( const QStringList & resultRow )
     , m_service ( 0 )
     , m_downloadCustomAction( 0 )
     , m_downloadCurrentTrackAction( 0 )
-    , m_showInServiceAction( 0 )
 {
 }
 
@@ -158,11 +156,7 @@ Meta::JamendoTrack::currentTrackActions()
         QObject::connect( m_downloadCurrentTrackAction, SIGNAL( activated() ), jAlbum->service(), SLOT( downloadCurrentTrackAlbum() ) );
     }
 
-    if ( !m_showInServiceAction )
-        m_showInServiceAction = new ShowInServiceAction( m_service, this );
-
     actions.append( m_downloadCurrentTrackAction );
-    actions.append( m_showInServiceAction );
     return actions;
 }
 

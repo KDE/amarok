@@ -2,6 +2,7 @@
 Name=Playlist Information
 Name[bg]=Информация за списъка
 Name[ca]=Informació de la llista de reproducció
+Name[ca@valencia]=Informació de la llista de reproducció
 Name[cs]=Informace o seznamu skladeb
 Name[csb]=Wëdowiédza ò lësce graniô
 Name[da]=Spillelisteinformation
@@ -39,6 +40,8 @@ Name[ro]=Informație listă de redare
 Name[ru]=Сведения списка воспроизведения
 Name[sl]=Podatki o predvajalnem seznamu
 Name[sr]=Подаци о листи нумера
+Name[sr@ijekavian]=Подаци о листи нумера
+Name[sr@ijekavianlatin]=Podaci o listi numera
 Name[sr@latin]=Podaci o listi numera
 Name[sv]=Information om spellista
 Name[th]=ข้อมูลรายละเอียดของรายการเล่น

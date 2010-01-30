@@ -23,6 +23,7 @@
 #include <KMenu>
 
 class QComboBox;
+class PlaylistLayoutEditDialog;
 
 namespace Playlist {
 
@@ -75,6 +76,7 @@ class LayoutConfigAction : public KAction
         KAction *m_configAction;
         QActionGroup *m_layoutActions;
         KMenu *m_layoutMenu;
+        PlaylistLayoutEditDialog * m_layoutDialog;
 };
 
 }

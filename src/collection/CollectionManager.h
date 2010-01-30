@@ -25,10 +25,6 @@
 #include <QList>
 #include <QObject>
 
-
-typedef QHash<QString, QString> TrackUrls;
-typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
-
 class SqlStorage;
 class CollectionManagerSingleton;
 class TimecodeTrackProvider;
@@ -82,7 +78,7 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         /**
             retrieve an interface which allows client-code to store/load data in a relational database.
-            Note: code using this method does NOT take ownership of the pointer.
+            Note: code using this method does NOT take ownership of the pointer, but may cache the pointer
         */
         SqlStorage* sqlStorage() const;
 
@@ -125,12 +121,16 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
     public slots:
         void startFullScan();
+        void startIncrementalScan( const QString &directory = QString() );
         void stopScan();
         void checkCollectionChanges();
 
     signals:
         void scanFinished();
+        //deprecated, use collectionAdded( Amarok::Collection*, CollectionStatus ) instead
         void collectionAdded( Amarok::Collection *newCollection );
+
+        void collectionAdded( Amarok::Collection *newCollection, CollectionStatus status );
         void collectionRemoved( QString collectionId );
         void trackProviderAdded( Amarok::TrackProvider *provider );
         //this signal will be emitted after major changes to the collection
@@ -171,8 +171,5 @@ class AMAROK_EXPORT CollectionManager : public QObject
         struct Private;
         Private * const d;
 };
-
-Q_DECLARE_METATYPE( TrackUrls )
-Q_DECLARE_METATYPE( ChangedTrackUrls )
 
 #endif /* AMAROK_COLLECTIONMANAGER_H */

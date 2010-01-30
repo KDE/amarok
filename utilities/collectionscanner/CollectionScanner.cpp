@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2003-2005 Max Howell <max.howell@methylblue.com>        *
- *             (C) 2003-2008 Mark Kretschmann <kretschmann@kde.org>        *
+ *             (C) 2003-2010 Mark Kretschmann <kretschmann@kde.org>        *
  *             (C) 2005-2007 Alexandre Oliveira <aleprj@gmail.com>         *
  *             (C) 2008 Dan Meltzer <parallelgrapefruit@gmail.com>         *
  *             (C) 2008-2009 Jeff Mitchell <mitchell@kde.org>              *
@@ -21,6 +21,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
+#include "Version.h"  // for AMAROK_VERSION
 #include "CollectionScanner.h"
 #include "AFTUtility.h"
 
@@ -126,8 +127,6 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
         if( !success )
             return;
     }
-
-    QTimer::singleShot( 0, this, SLOT( doJob() ) );
 }
 
 
@@ -252,21 +251,23 @@ CollectionScanner::doJob() //SLOT
     }
     else
     {
-        foreach( QString dir, m_folders ) // krazy:exclude=foreach
+        foreach( const QString &dir, m_folders ) // krazy:exclude=foreach
         {
             if( dir.isEmpty() )
                 //apparently somewhere empty strings get into the mix
                 //which results in a full-system scan! Which we can't allow
                 continue;
 
+            QString newdir( dir );
+
             // Make sure that all paths are absolute, not relative
             if( QDir::isRelativePath( dir ) )
-                dir = QDir::cleanPath( QDir::currentPath() + '/' + dir );
+                newdir = QDir::cleanPath( QDir::currentPath() + '/' + dir );
 
             if( !dir.endsWith( '/' ) )
-                dir += '/';
+                newdir += '/';
 
-            readDir( dir, entries );
+            readDir( newdir, entries );
         }
 
         QFile folderFile;
@@ -367,13 +368,12 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     QFileInfoList list = d.entryInfoList();
 
     QStringList recurseDirs;
-    foreach( QFileInfo f, list )
+    foreach( const QFileInfo &fi, list )
     {
-        if( !f.exists() )
+        if( !fi.exists() )
             break;
 
-        if( f.isSymLink() )
-            f = QFileInfo( f.symLinkTarget() );
+        const QFileInfo &f = fi.isSymLink() ? QFileInfo( fi.symLinkTarget() ) : fi;
 
         if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
         {
@@ -397,7 +397,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
         else if( f.isFile() )
             entries.append( f.absoluteFilePath() );
     }
-    foreach( QString dir, recurseDirs )
+    foreach( const QString &dir, recurseDirs )
         readDir( dir, entries );
 }
 
@@ -888,7 +888,7 @@ CollectionScanner::readArgs()
     bool mtimearg = false;
     bool savelocationarg = false;
     bool collectionidarg = false;
-    foreach( QString arg, argslist )
+    foreach( const QString &arg, argslist )
     {
         ++argnum;
         if( arg.isEmpty() || argnum == 1 )
@@ -924,7 +924,7 @@ CollectionScanner::readArgs()
             }
             else
             {
-                QString myarg = arg.remove( 0, 2 );
+                QString myarg = QString( arg ).remove( 0, 2 );
                 if( myarg == "rpath" )
                 {
                     rpatharg = true;
@@ -950,6 +950,8 @@ CollectionScanner::readArgs()
                     mtimearg = true;
                     longopt = true;
                 }
+                else if( myarg == "version" )
+                    printVersionAndExit();
                 else if( myarg == "recursive" )
                     m_recursively = true;
                 else if( myarg == "incremental" )
@@ -969,12 +971,14 @@ CollectionScanner::readArgs()
         }
         else if( arg.startsWith( '-' ) )
         {
-            QString myarg = arg.remove( 0, 1 );
+            QString myarg = QString( arg ).remove( 0, 1 );
             int pos = 0;
             while( pos < myarg.length() )
             {
                 if( myarg[pos] == 'r' )
                     m_recursively = true;
+                else if( myarg[pos] == 'v' )
+                    printVersionAndExit();
                 else if( myarg[pos] == 'i' )
                     m_incremental = true;
                 else if( myarg[pos] == 'p' )
@@ -997,6 +1001,18 @@ CollectionScanner::readArgs()
             m_folders.append( arg );
         }
     }
+
+    // Start the actual scanning job
+    QTimer::singleShot( 0, this, SLOT( doJob() ) );
+}
+
+void
+CollectionScanner::printVersionAndExit()
+{
+    std::cout << AMAROK_VERSION << endl;
+
+    // Nothing else to do, so we exit directly
+    ::exit( 0 );
 }
 
 void
@@ -1009,14 +1025,16 @@ CollectionScanner::displayHelp()
     s_textStream << qPrintable( tr( "User-modifiable Options:" ) ) << endl;
     s_textStream << qPrintable( tr( "Folder(s)             : Space-separated list of folders to scan; when using -b and -i, the path to the file generated by Amarok containing the list of folders" ) ) << endl;
     s_textStream << qPrintable( tr( "-h, --help            : This help text" ) ) << endl;
+    s_textStream << qPrintable( tr( "-v, --version         : Print the version of this tool" ) ) << endl;
     s_textStream << qPrintable( tr( "-r, --recursive       : Scan folders recursively" ) ) << endl;
     s_textStream << qPrintable( tr( "-i, --incremental     : Incremental scan (modified folders only)" ) ) << endl;
     s_textStream << qPrintable( tr( "-p, --importplaylists : Import playlists" ) ) << endl;
     s_textStream << qPrintable( tr( "-s, --restart         : After a crash, restart the scanner in its last position" ) ) << endl;
     s_textStream << qPrintable( tr( "-b, --batch           : Run in batch mode" ) ) << endl;
-    s_textStream << qPrintable( tr( "-c, --nocharset       : Use the charset detector on ID3 tags" ) ) << endl;
     s_textStream << qPrintable( tr( "--rpath=\"<path>\"      : In full-scan batch mode, specifies a path to prepend to entries (default is the current directory)" ) ) << endl;
+    s_textStream << qPrintable( tr( "--savelocation        : Internal command used by Amarok" ) ) << endl;
     s_textStream.flush();
+
     ::exit(0);
 }
 

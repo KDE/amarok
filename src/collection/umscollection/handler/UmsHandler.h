@@ -58,6 +58,8 @@ class KDirLister;
 class KFileItem;
 class KUrl;
 
+class UmsPodcastProvider;
+
 class QAction;
 class QString;
 class QMutex;
@@ -99,6 +101,8 @@ class UmsHandler : public Meta::MediaDeviceHandler
         QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
         QString mountPoint() const { return m_mountPoint; }
         void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
+
+        QStringList mimetypes() { return m_mimetypes; }
 
     public slots:
 
@@ -254,6 +258,10 @@ class UmsHandler : public Meta::MediaDeviceHandler
         // tempdir for covers
         KTempDir *m_tempdir;
         QSet<QString> m_coverArt;
+
+        //direct implementation of a podcast provider NOT using the MD::Capabilities
+        UmsPodcastProvider *m_podcastProvider;
+        QString m_podcastPath;
 
     private slots:
         void slotCreateEntry( const QString &path );

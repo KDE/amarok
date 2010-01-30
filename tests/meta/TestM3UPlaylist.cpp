@@ -19,23 +19,23 @@
 
 #include "TestM3UPlaylist.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QString>
 
-TestM3UPlaylist::TestM3UPlaylist( QStringList testArgumentList, bool stdout )
+TestM3UPlaylist::TestM3UPlaylist( const QStringList args, const QString &logPath )
+    : TestBase( "M3UPlaylist" )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "M3UPlaylist.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
+    QTest::qExec( this, combinedArgs );
 }
 
 void TestM3UPlaylist::initTestCase()
 {
-    QFile playlistFile1( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.m3u" ) );
+    const KUrl url = dataPath( "amarok/testdata/playlists/test.m3u" );
+    QFile playlistFile1( url.toLocalFile() );
     QTextStream playlistStream1;
 
     if( !playlistFile1.open( QFile::ReadOnly ) )
@@ -80,7 +80,7 @@ void TestM3UPlaylist::testTracks()
 
 void TestM3UPlaylist::testRetrievableUrl()
 {
-    QCOMPARE( m_testPlaylist1.retrievableUrl().pathOrUrl(), KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.m3u" ) );
+    QCOMPARE( m_testPlaylist1.retrievableUrl().pathOrUrl(), dataPath( "amarok/testdata/playlists/test.m3u" ) );
 }
 
 void TestM3UPlaylist::testSetAndGetGroups()

@@ -131,10 +131,7 @@ class SqlQueryMakerFactory
 {
 public:
     virtual SqlQueryMaker* createQueryMaker() const = 0;
-
-private:
     virtual ~SqlQueryMakerFactory() {};
 };
-
 
 #endif /* AMAROK_COLLECTION_SQLQUERYMAKER_H */

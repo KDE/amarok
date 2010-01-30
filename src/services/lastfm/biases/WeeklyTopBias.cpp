@@ -37,6 +37,7 @@
 #include <QVBoxLayout>
 
 // class WeeklyTopBiasFactory
+#include <QSignalMapper>
 
 Dynamic::WeeklyTopBiasFactory::WeeklyTopBiasFactory()
 {
@@ -62,36 +63,53 @@ Dynamic::WeeklyTopBiasFactory::pluginName() const
 }
 
 Dynamic::CustomBiasEntry*
-Dynamic::WeeklyTopBiasFactory::newCustomBias( double weight )
+Dynamic::WeeklyTopBiasFactory::newCustomBiasEntry()
 {
-    return new Dynamic::WeeklyTopBias( weight );
+    return new Dynamic::WeeklyTopBias();
 }
 
 Dynamic::CustomBiasEntry*
-Dynamic::WeeklyTopBiasFactory::newCustomBias( QDomElement e, double weight )
+Dynamic::WeeklyTopBiasFactory::newCustomBiasEntry( QDomElement e )
 {
-    AMAROK_NOTIMPLEMENTED
-    Q_UNUSED( e );
-    return new Dynamic::WeeklyTopBias( weight );
+
+    debug() << "weekly top created with:" << e;
+    uint from = e.firstChildElement( "from" ).attribute( "value" ).toUInt();
+    uint to = e.firstChildElement( "to" ).attribute( "value" ).toUInt();
+    return new Dynamic::WeeklyTopBias( from, to );
 }
 
 // CLASS WeeklyTopBias
 
-Dynamic::WeeklyTopBias::WeeklyTopBias( double weight )
-    : Dynamic::CustomBiasEntry( weight )
+Dynamic::WeeklyTopBias::WeeklyTopBias( uint from, uint to )
+    : Dynamic::CustomBiasEntry()
     , m_qm( 0 )
     , m_layout( 0 )
     , m_fromEdit( 0 )
     , m_toEdit( 0 )
+    , m_fromDate( from )
+    , m_toDate( to )
+    , m_fetching( 0 )
     , m_rangeJob( 0 )
     , m_dataJob( 0 )
 {
+    debug() << "CREATING WEEKLY TOP BIAS with dates:" << m_fromDate << m_toDate;
+    QFile file( Amarok::saveLocation() + "dynamic_lastfm_topweeklyartists.xml" );
+    file.open( QIODevice::ReadOnly | QIODevice::Text );
+    QTextStream in( &file );
+    while( !in.atEnd() )
+    {
+        QString line = in.readLine();
+        m_weeklyChartData.insert( line.split( "#" )[ 0 ].toUInt(), line.split( "#" )[ 1 ].split( "^" )  );
+    }
+    file.close();
+   
     getPossibleRange();
 }
 
 Dynamic::WeeklyTopBias::~WeeklyTopBias()
 {
     //delete m_qm;
+    delete m_fetching;
 }
 
 QString
@@ -108,7 +126,7 @@ Dynamic::WeeklyTopBias::configWidget( QWidget* parent )
     QFrame * frame = new QFrame( parent );
     m_layout = new QVBoxLayout( frame );
 
-    QLabel * label = new QLabel( i18n( "Play Top Tracks From" ), frame );
+    QLabel * label = new QLabel( i18n( "Play Top Artists From" ), frame );
     label->setWordWrap( true );
     label->setAlignment( Qt::AlignCenter );
     m_layout->addWidget( label, Qt::AlignCenter );
@@ -117,11 +135,14 @@ Dynamic::WeeklyTopBias::configWidget( QWidget* parent )
     m_fromEdit->setMinimumDate( QDate::currentDate().addYears( -10 ) ); // 10 years ago is minimum for now
     m_fromEdit->setMaximumDate( QDate::currentDate() );
     m_fromEdit->setCalendarPopup( true );
+    if( m_fromDate > 0 )
+        m_fromEdit->setDateTime( QDateTime::fromTime_t( m_fromDate ) );
+    
     m_layout->addWidget( m_fromEdit );
 
     connect( m_fromEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ), this, SLOT( fromDateChanged( const QDateTime& ) ) );
 
-    QLabel * to = new QLabel( i18nc( "From one date to another, this text is in between", "to" ), parent );
+    QLabel * to = new QLabel( i18nc( "From one date to another, this text is in between", "to (will round to nearest week)" ), parent );
 
     to->setAlignment( Qt::AlignCenter );
     m_layout->addWidget( to, Qt::AlignCenter );
@@ -130,6 +151,9 @@ Dynamic::WeeklyTopBias::configWidget( QWidget* parent )
     m_toEdit->setMinimumDate( QDate::currentDate().addYears( -10 ) ); // 10 years ago is minimum for now
     m_toEdit->setMaximumDate( QDate::currentDate() );
     m_toEdit->setCalendarPopup( true );
+    if( m_toDate > 0 )
+        m_toEdit->setDateTime( QDateTime::fromTime_t( m_toDate ) );
+    
     m_layout->addWidget( m_toEdit );
 
     connect( m_toEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ), this, SLOT( toDateChanged( const QDateTime& ) ) );
@@ -154,20 +178,33 @@ Dynamic::WeeklyTopBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
 QDomElement
 Dynamic::WeeklyTopBias::xml( QDomDocument doc ) const
 {
-    Q_UNUSED( doc )
-    return QDomElement();
+    QDomElement e = doc.createElement( "custombias" );
+    e.setAttribute( "type", "weeklytop" );
+
+    QDomElement from = doc.createElement( "from" );
+    from.setAttribute( "value", QString::number( m_fromDate ) );
+
+    QDomElement to = doc.createElement( "to" );
+    to.setAttribute( "value", QString::number( m_toDate ) );
+
+    e.appendChild( from );
+    e.appendChild( to );
+
+    return e;
 }
 
 bool
 Dynamic::WeeklyTopBias::hasCollectionFilterCapability()
 {
-    return false;
+    return true;
 }
 
 Dynamic::CollectionFilterCapability*
-Dynamic::WeeklyTopBias::collectionFilterCapability()
+Dynamic::WeeklyTopBias::collectionFilterCapability( double weight )
 {
-    return 0;
+
+    debug() << "returning new cfb with weight:" << weight;
+    return new Dynamic::WeeklyTopBiasCollectionFilterCapability( this, weight );
 }
 
 void
@@ -177,6 +214,7 @@ Dynamic::WeeklyTopBias::fromDateChanged( const QDateTime& d ) // SLOT
     m_fromDate = d.toTime_t();
 
     update();
+    emit biasChanged();
 }
 
 void
@@ -187,7 +225,7 @@ Dynamic::WeeklyTopBias::toDateChanged( const QDateTime& d ) // SLOT
     m_toDate = d.toTime_t();
 
     update();
-
+    emit biasChanged();
 }
 
 void
@@ -213,68 +251,20 @@ Dynamic::WeeklyTopBias::rangeJobFinished() // SLOT
 
     m_earliestDate = nodes.at( 0 ).attributes().namedItem( "from" ).nodeValue().toUInt();
 
+    for( int i = 0; i < nodes.size(); i++ )
+    {
+        QDomNode n = nodes.at( i );
+        m_weeklyCharts.append( n.attributes().namedItem( "from" ).nodeValue().toUInt() );
+        m_weeklyChartsTo.append( n.attributes().namedItem( "to" ).nodeValue().toUInt() );
+    }
+    
     debug() << "got earliest date:"  << QDateTime::fromTime_t( m_earliestDate ).toString();
-    m_fromEdit->setMinimumDate( QDateTime::fromTime_t( m_earliestDate ).date() );
+    if( m_fromEdit )
+        m_fromEdit->setMinimumDate( QDateTime::fromTime_t( m_earliestDate ).date() );
 
     m_rangeJob->deleteLater();
-}
 
-void
-Dynamic::WeeklyTopBias::dataJobFinished()
-{
-    DEBUG_BLOCK
-
-    if( !m_dataJob )
-        return;
-
-    try
-    {
-        lastfm::XmlQuery lfm( m_dataJob->readAll() );
-
-        debug() << "got response:" << lfm;
-        // now do the query
-        m_collection = CollectionManager::instance()->primaryCollection();
-        if( !m_collection )
-            return;
-        m_qm = m_collection->queryMaker();
-
-        if( !m_qm ) // maybe this is during startup and we don't have a QM for some reason yet
-            return;
-
-        debug() << "setting up query";
-        m_qm->beginOr();
-
-        int count = 0;
-        foreach( lastfm::XmlQuery e, lfm.children( "track" ) )
-        {
-            m_qm->beginAnd();
-            m_qm->addFilter( Meta::valTitle, e[ "name" ].text(), true, true );
-            m_qm->addFilter( Meta::valArtist, e[ "artist" ].text(), true, true );
-            m_qm->endAndOr();
-            if( count > 3 )
-                break; // just top 20
-            count++;
-
-        }
-        m_qm->endAndOr();
-
-        debug() << "done with query";
-
-        m_qm->setQueryType( QueryMaker::Custom );
-        m_qm->addReturnValue( Meta::valUniqueId );
-        m_qm->orderByRandom(); // as to not affect the amortized time
-
-        connect( m_qm, SIGNAL( newResultReady( QString, QStringList ) ),
-                 SLOT( updateReady( QString, QStringList ) ), Qt::DirectConnection );
-
-        m_qm->run();
-
-    } catch( lastfm::ws::ParseError& e )
-    {
-        debug() << "failed in parsing top tracks!";
-    }
-
-    m_dataJob->deleteLater();
+    update();
 }
 
 void
@@ -285,7 +275,7 @@ Dynamic::WeeklyTopBias::updateReady( QString collectionId, QStringList uids )
 
     int protocolLength = ( QString( m_collection->uidUrlProtocol() ) + "://" ).length();
 
-    debug() << "setting cache of top UIDs for selected date: to:" << uids;
+//     debug() << "setting cache of top UIDs for selected date: to:" << uids;
     m_trackList.clear();
     m_trackList.reserve( uids.size() );
 
@@ -319,7 +309,7 @@ void
 Dynamic::WeeklyTopBias::update()
 {
     DEBUG_BLOCK
-
+    
     debug() << m_fromDate << m_toDate;
     if( m_fromDate >= m_toDate )
     {
@@ -331,18 +321,180 @@ Dynamic::WeeklyTopBias::update()
         m_fromDate = m_earliestDate;
     }
 
-    QMap< QString, QString > params;
-    params[ "method" ] = "user.getWeeklyTrackChart";
-    params[ "user" ] = lastfm::ws::Username;
-    params[ "from" ] = QString::number( m_toDate );
-    params[ "to" ] = QString::number( m_toDate );
-
-    m_dataJob = lastfm::ws::get( params );
-
-    connect( m_dataJob, SIGNAL( finished() ), this, SLOT( dataJobFinished() ) );
-
+    fetchWeeklyData( m_fromDate, m_toDate );
 }
 
+
+void Dynamic::WeeklyTopBias::fetchWeeklyData(uint from, uint to)
+{
+    DEBUG_BLOCK
+    debug() << "getting top artist info from" << QDateTime::fromTime_t( from ) << "to" << QDateTime::fromTime_t( to );
+    // find first weekly chart that contains dateTime
+    int earliest = 0, last = 0;
+    debug() << "number of weekly charts:" << m_weeklyCharts.size();
+    for( int i = 0; i < m_weeklyCharts.size(); i++ )
+    {
+        if( earliest == 0 && m_weeklyCharts[ i ] > from )
+        {
+            earliest = m_weeklyCharts[ i - 1 ];
+//             debug() << "chose early boundary:" << i - 1;
+        }
+        if( last == 0 && m_weeklyCharts[ i ] > to )
+        {
+//             debug() << "chose late boundary:" << i - 1;
+            last = m_weeklyCharts[ i - 1];
+        }
+    }
+    if( last == 0 )
+        last = m_weeklyCharts[ m_weeklyCharts.size() - 1 ];
+
+    m_currentArtistList.clear();
+    m_trackList.clear();
+    debug() << "fetching charts with these ranges:" << QDateTime::fromTime_t( earliest ) << QDateTime::fromTime_t( last );
+
+
+    bool validFetch = false;
+    for( int i = m_weeklyCharts.indexOf( earliest ); i < m_weeklyCharts.indexOf( last ); i++ )
+    {
+        validFetch = true;
+        if( m_weeklyChartData.keys().contains( m_weeklyCharts[ i ] ) )
+        {
+            m_currentArtistList.append( m_weeklyChartData[ m_weeklyCharts[ i ] ] );
+            debug() << "found already-saved data for week:" << m_weeklyCharts[ i ] << m_weeklyChartData[ m_weeklyCharts[ i ] ];
+        } else
+        {
+            QMap< QString, QString > params;
+            params[ "method" ] = "user.getWeeklyArtistChart";
+            params[ "user" ] = lastfm::ws::Username;
+            params[ "from" ] = QString::number( m_weeklyCharts[ i ] );
+            params[ "to" ] = QString::number( m_weeklyChartsTo[ i ] );
+
+            m_fetchQueue.enqueue( params );
+        }
+
+    }
+
+    m_fetching = new QSignalMapper;
+    connect( m_fetching, SIGNAL( mapped(QObject*) ), this, SLOT( weeklyFetch( QObject* ) ) );
+    connect( this, SIGNAL( doneFetching() ), this, SLOT( updateDB() ) );
+    connect( this, SIGNAL( doneFetching() ), this, SLOT( saveDataToFile() ) );
+
+    // everything is stored, so we have all the data, finish immediately
+    if( m_fetchQueue.isEmpty() && validFetch )
+    {
+        updateDB();
+    } else
+    {
+        fetchNextWeeks();
+    }
+}
+
+void Dynamic::WeeklyTopBias::fetchNextWeeks( int num )
+{
+
+    // fetch 5 at a time, so as to conform to lastfm api requirements
+    for(int i = 0; i < num; i++)
+    {
+        if( m_fetchQueue.isEmpty() )
+        {
+            break;
+        }
+//         debug() << "queueing up weekly fetch job!";
+        QNetworkReply* res = lastfm::ws::get( m_fetchQueue.dequeue() );
+        connect( res, SIGNAL( finished() ), m_fetching, SLOT( map() ) );
+        m_fetching->setMapping( res, res );
+    }
+    
+}
+
+void Dynamic::WeeklyTopBias::weeklyFetch( QObject* reply )
+{
+    DEBUG_BLOCK
+    if( !reply || !dynamic_cast<QNetworkReply*>( reply ) ) {
+        debug() << "failed to get qnetwork reply in finished slot:" << reply;
+        return;
+    }
+    QNetworkReply* r = static_cast< QNetworkReply* >( reply );
+    
+    try
+    {
+        lastfm::XmlQuery lfm( r->readAll() );
+
+//         debug() << "got response:" << lfm;
+        QStringList artists;
+        for( int i = 0; i < lfm[ "weeklyartistchart" ].children( "artist" ).size(); i++ )
+        {
+            if( i == 12 )
+                break;
+            lastfm::XmlQuery artist = lfm[ "weeklyartistchart" ].children( "artist" ).at( i );
+            artists.append( artist[ "name" ].text() );
+        }
+        debug() << "got artists:" << artists << QDomElement( lfm[ "weeklyartistchart" ] ).attribute( "from" );
+        m_weeklyChartData.insert( QDomElement( lfm[ "weeklyartistchart" ] ).attribute( "from" ).toUInt(), artists );
+        m_currentArtistList.append( artists );
+    } catch( lastfm::ws::ParseError& e )
+    {
+        debug() << "caught exception parsing weekly artist chart.";
+    }
+
+    reply->deleteLater();
+    if( m_fetchQueue.isEmpty() )
+    {
+        emit doneFetching();
+    } else
+    {
+        fetchNextWeeks( 1 );
+    }
+    
+}
+
+
+void Dynamic::WeeklyTopBias::updateDB()
+{
+    m_collection = CollectionManager::instance()->primaryCollection();
+    if( !m_collection )
+        return;
+    m_qm = m_collection->queryMaker();
+
+    if( !m_qm ) // maybe this is during startup and we don't have a QM for some reason yet
+        return;
+
+    debug() << "setting up query";
+
+    m_qm->beginOr();
+    foreach( QString artist, m_currentArtistList )
+    {
+        m_qm->beginOr();
+        debug() << "adding artist to query:" << artist;
+        m_qm->addFilter( Meta::valArtist, artist, true, true );
+        m_qm->endAndOr();
+    }
+    m_qm->endAndOr();
+
+
+    m_qm->setQueryType( QueryMaker::Custom );
+    m_qm->addReturnValue( Meta::valUniqueId );
+    m_qm->orderByRandom(); // as to not affect the amortized time
+
+    connect( m_qm, SIGNAL( newResultReady( QString, QStringList ) ),
+             SLOT( updateReady( QString, QStringList ) ), Qt::DirectConnection );
+
+    m_qm->run();
+}
+
+
+void Dynamic::WeeklyTopBias::saveDataToFile()
+{
+    QFile file( Amarok::saveLocation() + "dynamic_lastfm_topweeklyartists.xml" );
+    file.open( QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text );
+    QTextStream out( &file );
+    foreach( uint key, m_weeklyChartData.keys() )
+    {
+        out << key << "#" << m_weeklyChartData[ key ].join( "^" ) << endl;
+    }
+    file.close();
+
+}
 
 
 // Class WeeklyTopBiasCollectionFilterCapability
@@ -356,7 +508,7 @@ Dynamic::WeeklyTopBiasCollectionFilterCapability::propertySet()
 double
 Dynamic::WeeklyTopBiasCollectionFilterCapability::weight() const
 {
-    return m_bias->weight();
+    return m_weight;
 }
 
 

@@ -179,9 +179,12 @@ M3UPlaylist::save( const KUrl &location, bool relative )
     QList<int> lengths;
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        urls << track->playableUrl();
-        titles << track->name();
-        lengths << track->length();
+        if( track )
+        {
+            urls << track->playableUrl();
+            titles << track->name();
+            lengths << track->length();
+        }
     }
 
     for( int i = 0, n = urls.count(); i < n; ++i )

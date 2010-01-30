@@ -47,7 +47,7 @@ namespace The {
  * Facility for managing PlaylistProviders registered by other
  * parts of the application, plugins and scripts.
  */
-class PlaylistManager : public QObject
+class AMAROK_EXPORT PlaylistManager : public QObject
 {
     Q_OBJECT
 
@@ -70,7 +70,7 @@ class PlaylistManager : public QObject
         /**
          * @returns all available categories registered at that moment
          */
-        QList<int> availableCategories() { return m_providerMap.uniqueKeys(); };
+        QList<int> availableCategories() { return m_providerMap.uniqueKeys(); }
 
         /**
          * @returns A translated string to identify the category of the Playlist. Always a plural form.
@@ -127,7 +127,7 @@ class PlaylistManager : public QObject
          */
         int registerCustomCategory( const QString &name );
 
-        AMAROK_EXPORT PlaylistProvider * playlistProvider( int category, QString name );
+        PlaylistProvider * playlistProvider( int category, QString name );
 
         void downloadPlaylist( const KUrl & path, const Meta::PlaylistFilePtr playlist );
 
@@ -143,7 +143,7 @@ class PlaylistManager : public QObject
          *  Saves a playlist from a file to the database.
          *  @arg fromLocation Saved playlist file to load
          */
-        AMAROK_EXPORT bool import( const QString& fromLocation );
+         bool import( const QString &fromLocation );
 
         bool exportPlaylist( Meta::TrackList tracks, const QString &location );
 
@@ -157,8 +157,8 @@ class PlaylistManager : public QObject
          */
         bool moveTrack( Meta::PlaylistPtr playlist, int from, int to );
 
-        PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; };
-        UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; };
+        PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; }
+        UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; }
 
         /**
          *  Retrieves the provider owning the given playlist

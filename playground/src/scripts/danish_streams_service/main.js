@@ -44,17 +44,15 @@ categories["Danmarks Radio"]= new Array (
     new Station( "P2", "http://wmscr1.dr.dk/e02ch02m?wmcontentbitrate=300000", "P2 er radiokanalen for dig som har musik og kultur som en vigtig del af dit liv, og som gerne vil opleve og følge med i alt det der sker.<p>P2 er for dig som elsker god musik, hvad enten den er klassisk, jazz, verdensmusik eller alt det spændende ind imellem.<p>På P2 bliver du hver eftermiddag i P2 Plus opdateret på alt det der sker i kulturen lige nu: film, litteratur, musik, teater, kunst og det du ikke anede eksisterede. I P2s magasinprogrammer i weekenden kan du gå mere i dybden med de dele af kulturen, der interesserer dig mest.<p>P2 kan du bruge både til fordybelse og som gå-til-og-fra-radio på din vej gennem dagen derhjemme eller på arbejdet, på pc'en, i bilen, i toget.." ),
     new Station( "P3", "http://wmscr1.dr.dk/e02ch03m?wmcontentbitrate=300000", "P3 er radiokanalen for moderne unge og voksne, der kan lide at blive udfordret - både musikalsk og indholdsmæssigt.<p>Musikken på P3 er et alsidigt og varierende mix af ny spændende musik, morgendagens stjerner, nutidens hits og banebrydende klassikere.<p>Journalistisk sender P3 både P3 Nyheder klokken hel og uddybende interviews morgen og eftermiddag, ofte med usædvanlige vinkler på nutidige og aktuelle emner.<p>Satiren på P3 er ikke kun sjov og fis. P3s satire har vid og bid, og kradser i både aktuelle og klassiske emner som optager danskerne.<p>Sporten byder på intens og direkte dækning af de store begivenheder i både ind- og udland, samtidig med at der informeres bredt om mange idrætsgrene. " ),
     new Station( "P4 Bornholm", "http://wmscr1.dr.dk/e04ch08m?wmcontentbitrate=300000", p4Desc ),
-    new Station( "P4 Danmark", "http://wmscr1.dr.dk/e06ch01m?wmcontentbitrate=300000", p4Desc ),
-    //new Station( "P4 Esbjerg", "", "" ),
     new Station( "P4 Fyn", "http://wmscr1.dr.dk/e04ch06m?wmcontentbitrate=300000", p4Desc ),
     new Station( "P4 København", "http://wmscr1.dr.dk/e04ch09m?wmcontentbitrate=300000", p4Desc ),
     new Station( "P4 Midt & Vest", "http://wmscr1.dr.dk/e04ch02m?wmcontentbitrate=300000", p4Desc ),
     new Station( "P4 Nordjylland", "http://wmscr1.dr.dk/e04ch01m?wmcontentbitrate=300000", p4Desc ),
-    //new Station( "P4 Nordvestsjælland", "", "" ),
     new Station( "P4 Sjælland", "http://wmscr1.dr.dk/e04ch07m?wmcontentbitrate=300000", p4Desc ),
     new Station( "P4 Syd", "http://wmscr1.dr.dk/e04ch05m?wmcontentbitrate=300000", p4Desc ),
     new Station( "P4 Trekanten", "http://wmscr1.dr.dk/e04ch04m?wmcontentbitrate=300000", p4Desc ),
     new Station( "P4 Østjyllands Radio", "http://wmscr1.dr.dk/e04ch03m?wmcontentbitrate=300000", p4Desc ),
+    new Station( "P5", "http://wmscr1.dr.dk/e06ch01m?wmcontentbitrate=300000", "P5 byder på folkekære værter som Nis Boesdal, Jørgen de Mylius, Hans Otto Bisgaard, Søren Dahl, Karlo Staunskjær og Margaret Lindhardt.<p>Der er plads til både viser, dansktop, populærmusik og mulighed for at genhøre det bedste fra DR’s arkiver. Det sker i programmer som Dansktoppen, Gyldne Genhør, Giro 413, Eldorado, Nis på DAB og Cafe Hack." ),
     new Station( "DR Allegro", "http://wmscr1.dr.dk/e06ch03m?wmcontentbitrate=300000", "På DR Allegro finder du velkendt og populær klassisk musik. Foruden orkestermusik, klavermusik og kendte operaarier finder du filmmusik, musicalmelodier og danske sange.<p>Danske komponister og danske musikere er også rigt repræsenteret på kanalen, som kan høres på enhver pc verden over." ),
     new Station( "DR Barometer", "http://wmscr1.dr.dk/e02ch09m?wmcontentbitrate=300000", "DR Barometer - hangout for musikalske soulmates og postcentral for folk med noget på hjerte.<p>Med fokus på indierock, indietronica, alternativ country og elektronica præsenterer kanalen en perlerække af danske og internationale bands hentet fra universet omkring det legendariske radioprogram Det Elektriske Barometer på P3.<p>Kanalen spiller aktuelle Barometerhits blandet op med klassikere fra programmets 20 årige historie - alt sammen krydret med lytternes stemmer, ønsker og tanker fra tankevæggen, samt genudsendelser af nye og gamle Barometerudsendelser." ),
     new Station( "DR MGP", "http://wmscr1.dr.dk/e06ch09m?wmcontentbitrate=300000", "DR MGP er kanalen hvor du kan høre alle sangene fra MGP - krydret med de andre sange som MGP stjernerne også har lavet. Mathias, Amalie, SEB, Nicolai og alle de andre på din egen MGP kanal." ),
@@ -94,7 +92,8 @@ categories["Diverse"]= new Array (
     new Station( "Radio Skive", "mms://media.xstream.dk/Radio_Skive", "" ),
     new Station( "Radio Mojn", "mms://media.xstream.dk/Radio_Mojn", "" ),
     new Station( "Radio 3", "mms://media.xstream.dk/Radio_3", "" ),
-    new Station( "Radio Sydhavsøerne", "mms://media.xstream.dk/Radio_Sydhavsoerene", "" )
+    new Station( "Radio Sydhavsøerne", "mms://media.xstream.dk/Radio_Sydhavsoerene", "" ),
+    new Station( "NOVAfm", "mms://stream.ventelo.dk/FM5", "" )
 );
 
 

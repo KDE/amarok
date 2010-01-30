@@ -29,19 +29,19 @@
 
 namespace Amarok { class LineEdit; }
 
+class CompoundProgressBar;
 class CoverViewItem;
 class QTreeWidget;
 class QTreeWidgetItem;
+class KSqueezedTextLabel;
 class KPushButton;
 class KMenu;
-class QToolButton;
 class QLabel;
 class CoverView;
 class KHBox;
 class QProgressBar;
 class QHBoxLayout;
 class QColorGroup;
-class QProgressDialog;
 
 class CoverManager : public QSplitter, public Meta::Observer
 {
@@ -69,35 +69,36 @@ class CoverManager : public QSplitter, public Meta::Observer
     public slots:
         void updateStatusBar();
 
+    private:
+        enum View { AllAlbums = 0, AlbumsWithCover, AlbumsWithoutCover };
+
     private slots:
         void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );
         void slotContinueConstruction();
         void init();
 
         void slotArtistSelected();
-        void slotArtistSelectedContinue();
         void slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums );
-        void slotArtistSelectedContinueAgain();
-        void coverItemExecuted( QListWidgetItem *item );
+        void slotAlbumFilterTriggered( QAction *action );
+        void slotArtistQueryDone();
+        void coverItemClicked( QListWidgetItem *item );
         void slotSetFilter();
         void slotSetFilterTimeout();
 
         void slotShowAllAlbums()          { changeView( AllAlbums );          }
         void slotShowAlbumsWithCover()    { changeView( AlbumsWithCover );    }
         void slotShowAlbumsWithoutCover() { changeView( AlbumsWithoutCover ); }
-        void changeView( int id );
-        
+        void changeView( View id, bool force = false );
+
         void fetchMissingCovers();
-        void coverFetched( const QString&, const QString& );
-        void coverRemoved( const QString&, const QString& );
-        void coverFetcherError();
+        void updateFetchingProgress( int state );
         void stopFetching();
 
         void playSelectedAlbums();
+        void progressAllDone();
+        void cancelCoverViewLoading();
 
     private:
-        enum View { AllAlbums=0, AlbumsWithCover, AlbumsWithoutCover };
-
         void loadCover( const QString &, const QString & );
         QList<CoverViewItem*> selectedItems();
 
@@ -108,16 +109,14 @@ class CoverManager : public QSplitter, public Meta::Observer
         CoverView        *m_coverViewSpacer;
         Amarok::LineEdit *m_searchEdit;
         KPushButton      *m_fetchButton;
+        KPushButton      *m_viewButton;
         KMenu            *m_viewMenu;
-        QToolButton      *m_viewButton;
-        int               m_currentView;
+        View              m_currentView;
 
         Meta::ArtistList m_artistList;
         QList< QTreeWidgetItem* > m_items;
         Meta::AlbumList m_albumList;
 
-        QProgressDialog* m_progressDialog;
-        
         CoverFetcher   *m_fetcher;
 
         QAction        *m_selectAllAlbums;
@@ -125,9 +124,8 @@ class CoverManager : public QSplitter, public Meta::Observer
         QAction        *m_selectAlbumsWithoutCover;
 
         //status bar widgets
-        QLabel         *m_statusLabel;
-        KHBox          *m_progressBox;
-        QProgressBar   *m_progress;
+        CompoundProgressBar *m_progress;
+        KSqueezedTextLabel *m_statusLabel;
         QString         m_oldStatusText;
 
         QTimer         *m_timer;              //search filter timer
@@ -139,9 +137,12 @@ class CoverManager : public QSplitter, public Meta::Observer
         Meta::AlbumList m_fetchCovers;
 
         //used to display information about cover fetching in the status bar
-        int m_fetchingCovers;
+        bool m_fetchingCovers;
         int m_coversFetched;
         int m_coverErrors;
+
+        bool m_isClosing;
+        bool m_isLoadingCancelled;
 };
 
 class CoverView : public QListWidget

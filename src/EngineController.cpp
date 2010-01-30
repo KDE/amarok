@@ -133,7 +133,7 @@ EngineController::initializePhonon()
 
     //Add an equalizer effect if available
     QList<Phonon::EffectDescription> mEffectDescriptions = Phonon::BackendCapabilities::availableAudioEffects();
-    foreach ( Phonon::EffectDescription mDescr, mEffectDescriptions ) {
+    foreach ( const Phonon::EffectDescription &mDescr, mEffectDescriptions ) {
         if ( mDescr.name() == QLatin1String( "KEqualizer" ) ) {
             m_equalizer = new Phonon::Effect( mDescr );
             eqUpdate();
@@ -384,6 +384,7 @@ EngineController::playUrl( const KUrl &url, uint offset )
     resetFadeout();
 
     debug() << "URL: " << url.url();
+    debug() << "offset: " << offset;
 
     if ( url.url().startsWith( "audiocd:/" ) )
     {
@@ -444,10 +445,15 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
     if( offset )
     {
+        debug() << "seeking to " << offset;
         m_media->pause();
         m_media->seek( offset );
     }
     m_media->play();
+
+    debug() << "track pos after play: " << trackPositionMs();
+
+
 }
 
 void
@@ -549,7 +555,13 @@ EngineController::seek( int ms ) //SLOT
         int seekTo;
 
         if ( m_boundedPlayback )
+        {
             seekTo = m_boundedPlayback->startPosition() + ms;
+            if( seekTo < m_boundedPlayback->startPosition() )
+                seekTo = m_boundedPlayback->startPosition();
+            else if( seekTo > m_boundedPlayback->startPosition() + trackLength() )
+                seekTo = m_boundedPlayback->startPosition() + trackLength();
+        }
         else
             seekTo = ms;
 
@@ -753,9 +765,9 @@ EngineController::eqBandsFreq() const
     if( mEqPar.isEmpty() )
        return mBandsFreq;
     QRegExp rx( "\\d+(?=Hz)" );
-    foreach( Phonon::EffectParameter mParam, mEqPar )
+    foreach( const Phonon::EffectParameter &mParam, mEqPar )
     {
-    if( mParam.name().contains( QString( "pre-amp" ) ) )
+        if( mParam.name().contains( QString( "pre-amp" ) ) )
         {
             mBandsFreq << i18n( "Preamp" );
         }
@@ -795,7 +807,7 @@ EngineController::eqUpdate() //SLOT
 
         QListIterator<int> mEqParNewIt( mEqParCfg );
         double scaledVal; // Scaled value to set from universal -100 - 100 range to plugin scale
-        foreach( Phonon::EffectParameter mParam, mEqPar )
+        foreach( const Phonon::EffectParameter &mParam, mEqPar )
         {
             scaledVal = mEqParNewIt.hasNext() ? mEqParNewIt.next() : 0;
             scaledVal *= ( fabs(mParam.maximumValue().toDouble() ) +  fabs( mParam.minimumValue().toDouble() ) );

@@ -2,6 +2,7 @@
 Name=Lyrics
 Name[bg]=Текстове
 Name[ca]=Lletres
+Name[ca@valencia]=Lletres
 Name[cs]=Texty písní
 Name[csb]=Tekstë
 Name[da]=Sangtekster
@@ -34,6 +35,8 @@ Name[ro]=Versuri
 Name[ru]=Текст песни
 Name[sl]=Besedilo
 Name[sr]=Стихови
+Name[sr@ijekavian]=Стихови
+Name[sr@ijekavianlatin]=Stihovi
 Name[sr@latin]=Stihovi
 Name[sv]=Sångtext
 Name[tr]=Şarkı Sözleri

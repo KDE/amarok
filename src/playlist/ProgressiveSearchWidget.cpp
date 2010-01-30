@@ -54,6 +54,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( slotFilterChanged(  const QString &  ) ) );
     connect( m_searchEdit, SIGNAL( returnPressed( const QString & ) ), this, SIGNAL( activateFilterResult() ) );
+    connect( m_searchEdit, SIGNAL( returnPressed( const QString & ) ), this, SLOT( slotFilterClear() ) );
     connect( m_searchEdit, SIGNAL( returnPressed() ), this, SLOT( defocus() ) );
     connect( m_searchEdit, SIGNAL( downPressed() ), this, SIGNAL( downPressed() ) );
 

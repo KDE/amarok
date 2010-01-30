@@ -28,10 +28,12 @@ MediaDeviceDecoratorCapability::MediaDeviceDecoratorCapability( MediaDeviceColle
 }
 
 
-QAction *
-MediaDeviceDecoratorCapability::decoratorAction()
+QList<QAction*>
+MediaDeviceDecoratorCapability::decoratorActions()
 {
-    return m_coll->ejectAction();
+    QList<QAction*> actions;
+    actions << m_coll->ejectAction();
+    return actions;
 }
 
 #include "MediaDeviceDecoratorCapability.moc"

@@ -388,16 +388,22 @@ void
 Context::AppletItemOverlay::swapWithPrevious()
 {
     DEBUG_BLOCK
+
     m_index -= 1;
 
     if( m_index > 1 ) 
     {
-        m_prevGeom = m_layout->itemAt( m_index - 1 )->geometry();
-    } else {
+        QGraphicsLayoutItem* layout = m_layout->itemAt( m_index - 1 );
+        m_prevGeom = layout ? layout->geometry() : QRectF();
+    }
+    else
+    {
         m_prevGeom = QRectF();
     }
 
-    m_nextGeom = m_layout->itemAt( m_index + 1 )->geometry();
+    QGraphicsLayoutItem* layout = m_layout->itemAt( m_index + 1 );
+    m_nextGeom = layout ? layout->geometry() : QRectF();
+
     m_layout->removeItem( m_spacer );
     m_layout->insertItem( m_index, m_spacer );
 }

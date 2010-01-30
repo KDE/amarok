@@ -19,6 +19,7 @@
 #include "UmsHandler.h"
 
 #include "UmsCollection.h"
+#include "UmsPodcastProvider.h"
 #include "Debug.h"
 
 #include "SvgHandler.h"
@@ -86,6 +87,7 @@ UmsHandler::UmsHandler( UmsCollection *mc, const QString& mountPoint )
     , m_isCanceled( false )
     , m_wait( false )
     , m_tempdir( new KTempDir() )
+    , m_podcastProvider( 0 )
 {
     DEBUG_BLOCK
 
@@ -98,6 +100,11 @@ UmsHandler::~UmsHandler()
 {
     DEBUG_BLOCK
     delete m_tempdir;
+    if( m_podcastProvider )
+    {
+        The::playlistManager()->removeProvider( m_podcastProvider );
+        delete m_podcastProvider;
+    }
 }
 
 void
@@ -112,12 +119,15 @@ UmsHandler::init()
     }
 
     QFile playerFile( m_mountPoint + "/.is_audio_player" );
+    bool use_automatically = false;
 
+    QString mountPoint = m_mountPoint; //save for podcast path
     if (playerFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         debug() << "Got .is_audio_player file";
         QTextStream in(&playerFile);
-        while (!in.atEnd()) {
+        while( !in.atEnd() )
+        {
             QString line = in.readLine();
             if( line.startsWith( "audio_folder=" ) )
             {
@@ -130,6 +140,21 @@ UmsHandler::init()
                     debug() << "Custom audio folder now set to: " << path;
                     m_mountPoint = path;
                 }
+            }
+            else if( line.startsWith( "podcast_folder=" ) )
+            {
+                debug() << "Found podcast_folder, initializing UMS podcast provider";
+                m_podcastPath = mountPoint + '/' + line.section( '=', 1, 1 );
+                debug() << "scan for podcasts in " << m_podcastPath;
+                //HACK initialize a real PodcastProvider since I failed to add it to the MD framework
+                m_podcastProvider = new UmsPodcastProvider( this, m_podcastPath );
+                The::playlistManager()->addProvider( m_podcastProvider,
+                                                     PlaylistManager::PodcastChannel );
+            }
+            else if( line.startsWith( "use_automatically=" ) )
+            {
+                debug() << "Use automatically: " << line.section( '=', 1, 1 );
+                use_automatically = ( line.section( '=', 1, 1 ) == "true" );
             }
         }
 
@@ -165,6 +190,12 @@ UmsHandler::init()
     debug() << "Succeeded: true";
     m_memColl->emitCollectionReady();
     //m_memColl->slotAttemptConnectionDone( true );
+    if( use_automatically )
+    {
+        debug() << "Automatically start to parse for tracks";
+        m_parsed = true;
+        parseTracks();
+    }
 }
 
 void
@@ -202,7 +233,7 @@ UmsHandler::slotCheckDirty()
         return;
     }
 
-    foreach( QString path, m_dirtylist )
+    foreach( const QString &path, m_dirtylist )
     {
         // Skip dupes.  Can happen when new file is
         // being added outside of Amarok, and
@@ -323,7 +354,7 @@ UmsHandler::addPath( const QString &path )
         if( m_currtracklist.contains( path ) )
             return 0;
 
-        foreach( QString mimetype, m_mimetypes )
+        foreach( const QString &mimetype, m_mimetypes )
         {
             if( mime->is( mimetype ) )
             {
@@ -684,6 +715,9 @@ UmsHandler::prepareToParseTracks()
         addPath( it.next() );
     }
 
+    if( m_podcastProvider )
+        m_podcastProvider->scan();
+
     m_parsed = true;
     m_listpos = 0;
     //m_currtrackurllist = m_dirLister->items().urlList();
@@ -860,7 +894,7 @@ UmsHandler::supportedFormats()
 {
     QStringList formats;
 
-    formats << "mp3" << "aac" << "mp4" << "m4a" << "m4b";
+    formats << "mp3" << "aac" << "mp4" << "m4a" << "m4b" << "flac" << "ogg" << "wma";
 
     return formats;
 }

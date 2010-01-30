@@ -21,9 +21,9 @@
 #include "Debug.h"
 
 #include "Collection.h"
+#include "EngineController.h"
 #include "MetaQueryMaker.h"
 #include "meta/file/File.h"
-#include "meta/cue/Cue.h"
 #include "meta/stream/Stream.h"
 #include "PluginManager.h"
 #include "SmartPointerList.h"
@@ -40,16 +40,46 @@
 #include <KGlobal>
 #include <KMessageBox>
 #include <KService>
+#include <KPluginLoader>
+#include <KPluginFactory>
 
 #include <cstdlib>
 
 typedef QPair<Amarok::Collection*, CollectionManager::CollectionStatus> CollectionPair;
+
+class SqlStorageWrapper : public SqlStorage
+{
+public:
+    SqlStorageWrapper()
+        : SqlStorage()
+        , m_sqlStorage( 0 )
+    {}
+
+    virtual int sqlDatabasePriority() const { return ( m_sqlStorage ? m_sqlStorage->sqlDatabasePriority() : 0 ); }
+    virtual QString type() const  { return ( m_sqlStorage ? m_sqlStorage->type() : "SqlStorageWrapper" ); }
+    virtual QString escape( QString text ) const  { return ( m_sqlStorage ? m_sqlStorage->escape( text ) : text ); }
+    virtual QStringList query( const QString &query )  { return ( m_sqlStorage ? m_sqlStorage->query( query ) : QStringList() ); }
+    virtual int insert( const QString &statement, const QString &table )  { return ( m_sqlStorage ? m_sqlStorage->insert( statement, table ) : 0 ); }
+    virtual QString boolTrue() const  { return ( m_sqlStorage ? m_sqlStorage->boolTrue() : "1" ); }
+    virtual QString boolFalse() const  { return ( m_sqlStorage ? m_sqlStorage->boolFalse() : "0" ); }
+    virtual QString idType() const  { return ( m_sqlStorage ? m_sqlStorage->idType() : "WRAPPER_NOT_IMPLEMENTED" ); }
+    virtual QString textColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->textColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); }
+    virtual QString exactTextColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->exactTextColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); }
+    virtual QString exactIndexableTextColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->exactIndexableTextColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); };
+    virtual QString longTextColumnType() const { return ( m_sqlStorage ? m_sqlStorage->longTextColumnType() : "WRAPPER_NOT_IMPLEMENTED" ); }
+    virtual QString randomFunc() const { return ( m_sqlStorage ? m_sqlStorage->randomFunc() : "WRAPPER_NOT_IMPLEMENTED" ); }
+
+    void setSqlStorage( SqlStorage *sqlStorage ) { m_sqlStorage = sqlStorage; }
+private:
+    SqlStorage *m_sqlStorage;
+};
 
 struct CollectionManager::Private
 {
     QList<CollectionPair> collections;
     SmartPointerList<Amarok::CollectionFactory> factories;
     SqlStorage *sqlDatabase;
+    SqlStorageWrapper *sqlStorageWrapper;
     QList<Amarok::Collection*> unmanagedCollections;
     SmartPointerList<Amarok::Collection> managedCollections;
     QList<Amarok::TrackProvider*> trackProviders;
@@ -77,13 +107,13 @@ CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )
 {
+    qRegisterMetaType<SqlStorage *>( "SqlStorage*" );
     d->sqlDatabase = 0;
     d->primaryCollection = 0;
+    d->sqlStorageWrapper = new SqlStorageWrapper();
     s_instance = this;
     m_haveEmbeddedMysql = false;
 
-    qRegisterMetaType<TrackUrls>( "TrackUrls" );
-    qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
     init();
 }
 
@@ -91,12 +121,16 @@ CollectionManager::~CollectionManager()
 {
     DEBUG_BLOCK
 
+    //not deleting SqlStorageWrapper here as somebody might be caching it
+    //Amarok really needs a proper state management...
+    d->sqlStorageWrapper->setSqlStorage( 0 );
     delete m_timecodeTrackProvider;
     d->collections.clear();
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
     qDeleteAll( d->managedCollections );
     qDeleteAll( d->factories );
+
 
     delete d;
 }
@@ -149,10 +183,11 @@ CollectionManager::init()
                 continue;
         if( name == "mysqle-collection" || name == "mysqlserver-collection" )
         {
-            Amarok::Plugin *plugin = PluginManager::createFromService( service );
-            if ( plugin )
+            KPluginLoader loader( *( service.constData() ) );
+            KPluginFactory *pluginFactory = loader.factory();
+            if ( pluginFactory )
             {
-                Amarok::CollectionFactory* factory = dynamic_cast<Amarok::CollectionFactory*>( plugin );
+                Amarok::CollectionFactory* factory = pluginFactory->create<Amarok::CollectionFactory>( this );
                 if ( factory )
                 {
                     debug() << "Initialising sqlcollection";
@@ -164,8 +199,12 @@ CollectionManager::init()
                 }
                 else
                 {
-                    debug() << "SqlCollection Plugin has wrong factory class";
+                    debug() << "SqlCollection Plugin has wrong factory class: " << loader.errorString();
                 }
+            }
+            else
+            {
+                warning() << "Failed to get factory from KPluginLoader: " << loader.errorString();
             }
             break;
         }
@@ -179,10 +218,11 @@ CollectionManager::init()
         if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqle-collection" )
                 continue;
 
-        Amarok::Plugin *plugin = PluginManager::createFromService( service );
-        if ( plugin )
+        KPluginLoader loader( *( service.constData() ) );
+        KPluginFactory *pluginFactory = loader.factory();
+        if ( pluginFactory )
         {
-            Amarok::CollectionFactory* factory = dynamic_cast<Amarok::CollectionFactory*>( plugin );
+            Amarok::CollectionFactory* factory = pluginFactory->create<Amarok::CollectionFactory>( this );
             if ( factory )
             {
                 connect( factory, SIGNAL( newCollection( Amarok::Collection* ) ), this, SLOT( slotNewCollection( Amarok::Collection* ) ) );
@@ -191,9 +231,13 @@ CollectionManager::init()
             }
             else
             {
-                debug() << "Plugin has wrong factory class";
+                debug() << "Plugin has wrong factory class: " << loader.errorString();
                 continue;
             }
+        }
+        else
+        {
+            warning() << "Failed to get factory from KPluginLoader: " << loader.errorString();
         }
     }
 
@@ -206,6 +250,15 @@ CollectionManager::startFullScan()
     foreach( const CollectionPair &pair, d->collections )
     {
         pair.first->startFullScan();
+    }
+}
+
+void
+CollectionManager::startIncrementalScan( const QString &directory )
+{
+    foreach( const CollectionPair &pair, d->collections )
+    {
+        pair.first->startIncrementalScan( directory );
     }
 }
 
@@ -273,28 +326,40 @@ CollectionManager::slotNewCollection( Amarok::Collection* newCollection )
     d->trackProviders.append( newCollection );
     connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
     connect( newCollection, SIGNAL( updated() ), SLOT( slotCollectionChanged() ), Qt::QueuedConnection );
-    SqlStorage *sqlCollection = dynamic_cast<SqlStorage*>( newCollection );
-    if( sqlCollection )
+    //by convention, collections that provide a SQL database have a Qt property called "sqlStorage"
+    int propertyIndex = newCollection->metaObject()->indexOfProperty( "sqlStorage" );
+    if( propertyIndex != -1 )
     {
-        //let's cheat a bit and assume that sqlStorage and the primaryCollection are always the same
-        //it is true for now anyway
-        if( d->sqlDatabase )
+        SqlStorage *sqlStorage = newCollection->property( "sqlStorage" ).value<SqlStorage*>();
+        if( sqlStorage )
         {
-            if( d->sqlDatabase->sqlDatabasePriority() < sqlCollection->sqlDatabasePriority() )
+            //let's cheat a bit and assume that sqlStorage and the primaryCollection are always the same
+            //it is true for now anyway
+            if( d->sqlDatabase )
             {
-                d->sqlDatabase = sqlCollection;
+                if( d->sqlDatabase->sqlDatabasePriority() < sqlStorage->sqlDatabasePriority() )
+                {
+                    d->sqlDatabase = sqlStorage;
+                    d->primaryCollection = newCollection;
+                    d->sqlStorageWrapper->setSqlStorage( sqlStorage );
+                }
+            }
+            else
+            {
+                d->sqlDatabase = sqlStorage;
                 d->primaryCollection = newCollection;
+                d->sqlStorageWrapper->setSqlStorage( sqlStorage );
             }
         }
         else
         {
-            d->sqlDatabase = sqlCollection;
-            d->primaryCollection = newCollection;
+            warning() << "Collection " << newCollection->collectionId() << " has sqlStorage property but did not provide a SqlStorage pointer";
         }
     }
     if( status & CollectionViewable )
     {
         emit collectionAdded( newCollection );
+        emit collectionAdded( newCollection, status );
     }
 }
 
@@ -309,25 +374,33 @@ CollectionManager::slotRemoveCollection()
         d->collections.removeAll( pair );
         d->managedCollections.removeAll( collection );
         d->trackProviders.removeAll( collection );
-        SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( collection );
-        if( sqlDb && sqlDb == d->sqlDatabase )
+        QVariant v = collection->property( "sqlStorage" );
+        if( v.isValid() )
         {
-            SqlStorage *newSqlDatabase = 0;
-            foreach( const CollectionPair &pair, d->collections )
+            SqlStorage *sqlDb = v.value<SqlStorage*>();
+            if( sqlDb && sqlDb == d->sqlDatabase )
             {
-                SqlStorage *sqlDb = dynamic_cast<SqlStorage*>( pair.first );
-                if( sqlDb )
+                SqlStorage *newSqlDatabase = 0;
+                foreach( const CollectionPair &pair, d->collections )
                 {
-                    if( newSqlDatabase )
+                    QVariant variant = pair.first->property( "sqlStorage" );
+                    if( !variant.isValid() )
+                        continue;
+                    SqlStorage *sqlDb = variant.value<SqlStorage*>();
+                    if( sqlDb )
                     {
-                        if( newSqlDatabase->sqlDatabasePriority() < sqlDb->sqlDatabasePriority() )
+                        if( newSqlDatabase )
+                        {
+                            if( newSqlDatabase->sqlDatabasePriority() < sqlDb->sqlDatabasePriority() )
+                                newSqlDatabase = sqlDb;
+                        }
+                        else
                             newSqlDatabase = sqlDb;
                     }
-                    else
-                        newSqlDatabase = sqlDb;
                 }
+                d->sqlDatabase = newSqlDatabase;
+                d->sqlStorageWrapper->setSqlStorage( newSqlDatabase );
             }
-            d->sqlDatabase = newSqlDatabase;
         }
         emit collectionRemoved( collection->collectionId() );
         QTimer::singleShot( 0, collection, SLOT( deleteLater() ) );
@@ -382,7 +455,7 @@ CollectionManager::primaryCollection() const
 SqlStorage*
 CollectionManager::sqlStorage() const
 {
-    return d->sqlDatabase;
+    return d->sqlStorageWrapper;
 }
 
 Meta::TrackList
@@ -426,13 +499,8 @@ CollectionManager::trackForUrl( const KUrl &url )
     if( url.protocol() == "http" || url.protocol() == "mms" || url.protocol() == "smb" )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    if( url.protocol() == "file" && EngineController::canDecode( url ) )
-    {
-        KUrl cuesheet = MetaCue::Track::locateCueSheet( url );
-        if( !cuesheet.isEmpty() )
-            return Meta::TrackPtr( new MetaCue::Track( url, cuesheet ) );
+    if( url.protocol() == "file" && EngineController::canDecode( url ) )       
         return Meta::TrackPtr( new MetaFile::Track( url ) );
-    }
 
     return Meta::TrackPtr( 0 );
 }
@@ -535,6 +603,7 @@ CollectionManager::addUnmanagedCollection( Amarok::Collection *newCollection, Co
         if( status & CollectionViewable )
         {
             emit collectionAdded( newCollection );
+            emit collectionAdded( newCollection, status );
         }
         emit trackProviderAdded( newCollection );
     }
@@ -569,6 +638,7 @@ CollectionManager::setCollectionStatus( const QString &collectionId, CollectionS
                     !( status & CollectionViewable ) )
             {
                 emit collectionAdded( pair.first );
+                emit collectionAdded( pair.first, pair.second );
             }
             CollectionPair &pair2 = const_cast<CollectionPair&>( pair );
             pair2.second = status;

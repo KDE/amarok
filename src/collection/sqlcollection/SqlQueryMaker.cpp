@@ -21,7 +21,6 @@
 
 #include "Debug.h"
 
-#include "MountPointManager.h"
 #include "SqlCollection.h"
 #include "SqlQueryMakerInternal.h"
 #include "collection/SqlStorage.h"
@@ -373,8 +372,8 @@ SqlQueryMaker::addMatch( const TrackPtr &track )
         {
             path = track->playableUrl().path();
         }
-        int deviceid = MountPointManager::instance()->getIdForUrl( path );
-        QString rpath = MountPointManager::instance()->getRelativePath( deviceid, path );
+        int deviceid = m_collection->mountPointManager()->getIdForUrl( path );
+        QString rpath = m_collection->mountPointManager()->getRelativePath( deviceid, path );
         d->queryMatch += QString( " AND urls.deviceid = %1 AND urls.rpath = '%2'" )
                         .arg( QString::number( deviceid ), escape( rpath ) );
     }
@@ -446,6 +445,7 @@ SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, 
     if( value == Meta::valAlbumArtist && filter.isEmpty() )
     {
         d->linkedTables |= Private::ALBUMARTIST_TAB;
+        d->linkedTables |= Private::ALBUM_TAB;
         d->queryFilter += QString( " %1 ( albums.artist IS NULL or albumartists.name = '') " ).arg( andOr() );
     }
     else
@@ -590,7 +590,7 @@ SqlQueryMaker::orderBy( qint64 value, bool descending )
 QueryMaker*
 SqlQueryMaker::orderByRandom()
 {
-    d->queryOrderBy = " ORDER BY " + CollectionManager::instance()->sqlStorage()->randomFunc();
+    d->queryOrderBy = " ORDER BY " + m_collection->sqlStorage()->randomFunc();
     return this;
 }
 
@@ -735,6 +735,8 @@ SqlQueryMaker::linkTables()
 void
 SqlQueryMaker::buildQuery()
 {
+    //URLS is always required for dynamic collection
+    d->linkedTables |= Private::URLS_TAB;
     linkTables();
     QString query = "SELECT ";
     if ( d->withoutDuplicates )
@@ -743,6 +745,22 @@ SqlQueryMaker::buildQuery()
     query += " FROM ";
     query += d->queryFrom;
     query += " WHERE 1 ";
+
+    //dynamic collection
+    Q_ASSERT( m_collection->mountPointManager() );
+    IdList list = m_collection->mountPointManager()->getMountedDeviceIds();
+    QString commaSeparatedIds;
+    foreach( int id, list )
+    {
+        if( !commaSeparatedIds.isEmpty() )
+            commaSeparatedIds += ',';
+        commaSeparatedIds += QString::number( id );
+    }
+    if( !commaSeparatedIds.isEmpty() )
+    {
+        query += QString( " AND urls.deviceid in (%1)" ).arg( commaSeparatedIds );
+    }
+
     switch( d->albumMode )
     {
         case OnlyNormalAlbums:
@@ -780,7 +798,7 @@ SqlQueryMaker::query()
 QStringList
 SqlQueryMaker::runQuery( const QString &query )
 {
-    return CollectionManager::instance()->sqlStorage()->query( query );
+    return m_collection->sqlStorage()->query( query );
 }
 
 
@@ -931,6 +949,9 @@ SqlQueryMaker::nameForValue( qint64 value )
             return "urls.uniqueid";
         case valAlbumArtist:
             d->linkedTables |= Private::ALBUMARTIST_TAB;
+            //albumartist_tab means that the artist table is joined to the albums table
+            //so add albums as well
+            d->linkedTables |= Private::ALBUM_TAB;
             return "albumartists.name";
         default:
             return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
@@ -946,7 +967,7 @@ SqlQueryMaker::andOr() const
 QString
 SqlQueryMaker::escape( QString text ) const           //krazy:exclude=constref
 {
-    return CollectionManager::instance()->sqlStorage()->escape( text );
+    return m_collection->sqlStorage()->escape( text );
 }
 
 QString

@@ -25,24 +25,24 @@
 #include <QFile>
 #include <QPalette>
 
-QString InfoParserBase::s_loadingBaseHtml = QString();
+
+QString InfoParserBase::s_loadingBaseHtml;
+
 
 InfoParserBase::InfoParserBase()
   : QObject()
-{
-
-}
+{}
 
 void InfoParserBase::showLoading( const QString &message )
 {
-
     DEBUG_BLOCK
-    if ( s_loadingBaseHtml.isEmpty() ) {
 
+    if( s_loadingBaseHtml.isEmpty() )
+    {
         const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
         QString htmlFile = url.path() + "InfoParserLoading.html";
 
-        if ( !QFile::exists( htmlFile ) )
+        if( !QFile::exists( htmlFile ) )
         {
             debug() << "file " << htmlFile << "does not exist";
             return;
@@ -55,12 +55,7 @@ void InfoParserBase::showLoading( const QString &message )
             return;
         }
 
-        QString html;
-        while (!file.atEnd()) {
-            html += file.readLine();
-        }
-
-        s_loadingBaseHtml = html;
+        s_loadingBaseHtml = file.readAll();
     }
 
     QString currentHtml = s_loadingBaseHtml;
@@ -71,7 +66,6 @@ void InfoParserBase::showLoading( const QString &message )
 
     debug() << "showing html: " << currentHtml;
     emit ( info( currentHtml ) );
-
 }
 
 #include "InfoParserBase.moc"

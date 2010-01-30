@@ -74,7 +74,7 @@ OneWaySynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSe
         CollectionLocation *locTarget = m_target->location();
         if( !locTarget->isWritable() )
         {
-            debug() << "target collection " << m_target->collectionId() << " is not writable, what ma I doing here?";
+            debug() << "target collection " << m_target->collectionId() << " is not writable, what am I doing here?";
             locSource->deleteLater();
             locTarget->deleteLater();
             deleteLater();

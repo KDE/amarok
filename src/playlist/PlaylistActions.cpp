@@ -264,11 +264,14 @@ Playlist::Actions::playlistModeChanged()
         Dynamic::DynamicPlaylistPtr playlist = dm->activePlaylist();
 
         if ( !playlist )
-            playlist = dm->defaultPlaylist();
-
+        {
+            debug() << "No dynamic playlist current loaded! Creating dynamic track navigator with null playlist!";
+        }
+         
         m_navigator = new DynamicTrackNavigator( playlist );
 
         return;
+
     }
 
     m_navigator = 0;
@@ -388,10 +391,12 @@ Playlist::Actions::engineNewTrackPlaying()
             warning() << "engineNewTrackPlaying:" << track->prettyName() << "does not match what the playlist controller thought it should be";
             if ( m_topmostModel->activeTrack() != track )
             {
-                if ( AmarokConfig::lastPlaying() > -1 )
-                    m_topmostModel->setActiveRow( AmarokConfig::lastPlaying() );
+                 // this will set active row to -1 if the track isn't in the playlist at all
+                qint64 row = m_topmostModel->firstRowForTrack( track );
+                if( row != -1 )
+                    m_topmostModel->setActiveRow( row );
                 else
-                    m_topmostModel->setActiveRow( m_topmostModel->firstRowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
+                    m_topmostModel->setActiveRow( AmarokConfig::lastPlaying() );
             }
         }
     }

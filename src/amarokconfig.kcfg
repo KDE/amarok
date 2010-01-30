@@ -260,7 +260,7 @@
         -10, 50, 35, 10, 0, 0, -30, -40, -40, 0, 0, <!-- Dance -->
         0, 29, 40, 23, 15, 0, 0, 0, 0, 0, 0, <!-- Full Bass -->
         -83, -50, -50, -50, -25, 15, 55, 80, 80, 80, 85, <!-- Full Treble -->
-        -41, 35, 30, 0, -40, -25, 10, 45, 55, 60, 60, <!-- Full Bass +  Treble -->
+        -41, 35, 30, 0, -40, -25, 10, 45, 55, 60, 60, <!-- Full Bass + Treble -->
         -16, 25, 50, 25, -20, 0, -30, -40, -40, 0, 0, <!-- Laptop/Headphones -->
         -25, 50, 50, 30, 30, 0, -25, -25, -25, 0, 0, <!-- Large Hall -->
         0, -25, 0, 20, 25, 30, 30, 20, 15, 15, 10, <!-- Live -->
@@ -282,7 +282,7 @@
         <whatsthis>Whether to adjust the volume of tracks to make them sound the same volume, and if so whether to make the adjustments per-track or per-album.</whatsthis>
         <choices>
             <choice name="Off">
-                <label>Disable replay gain</label>
+                <label>Disable Replay Gain</label>
             </choice>
             <choice name="Track">
                 <label>Make each track the same volume</label>
@@ -408,10 +408,10 @@
     <entry key="Visible Browsers" type="IntList">
         <label>List of bools describing which browsers are visible, from top to bottom.</label>
     </entry>
-    <entry key="LastPlaying" type="Int">
-        <label>Track playing on last exit. Value is -1 if no track was playing.</label>
-        <default>-1</default>
-    </entry>
+    <entry key="LastPlaying" type="Int">
+        <label>Track playing on last exit. Value is -1 if no track was playing.</label>
+        <default>-1</default>
+    </entry>
     <entry key="Active Browser" type="Int">
         <label>Number (from the top) of the last active browser.</label>
     </entry>

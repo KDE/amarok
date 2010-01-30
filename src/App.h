@@ -68,6 +68,13 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
         inline MainWindow *mainWindow() const { return m_mainWindow; }
 
+        /**
+         * Determines location of the "amarokcollectionscanner" tool.
+         *
+         * @Returns path of the collection scanner binary.
+         */
+        static QString collectionScannerLocation();
+
         // FRIENDS
         friend class MainWindow; //requires access to applySettings()
 
@@ -80,11 +87,10 @@ class AMAROK_EXPORT App : public KUniqueApplication
     public slots:
         void applySettings( bool firstTime = false );
 #ifdef DEBUG
-        static void runUnitTests( bool stdout );
+        static void runUnitTests( const QStringList options, bool stdout );
 #endif // DEBUG
         void slotConfigAmarok( const QString& page = QString() );
         void slotConfigShortcuts();
-        void slotConfigEqualizer();
         KIO::Job *trashFiles( const KUrl::List &files );
         void quit();
 
@@ -94,6 +100,12 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
     private slots:
         void slotTrashResult( KJob *job );
+
+        /**
+         * Checks version of the "amarokcollectionscanner" tool.
+         * If the version does not match, it shows an error dialog.
+         */
+        void checkCollectionScannerVersion();
 
     private:
         // ATTRIBUTES

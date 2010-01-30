@@ -314,6 +314,7 @@ SynchronizationBaseJob::handleAlbumResult()
     QSet<AlbumKey> albumsOnlyInA = m_albumsA - m_albumsB;
     QSet<AlbumKey> albumsOnlyInB = m_albumsB - m_albumsA;
     QSet<AlbumKey> albumsInBoth = m_albumsA & m_albumsB;
+
     foreach( const AlbumKey &album, albumsOnlyInA )
     {
         m_albumResult.insert( album, OnlyInA );
@@ -383,6 +384,21 @@ SynchronizationBaseJob::handleTrackResult()
     DEBUG_BLOCK
     QSet<TrackKey> tracksOnlyInA = m_tracksA - m_tracksB;
     QSet<TrackKey> tracksOnlyInB = m_tracksB - m_tracksA;
+
+    foreach( const TrackKey &key, tracksOnlyInA )
+    {
+        m_trackResultOnlyInA << m_keyToTrackA.value( key );
+    }
+    foreach( const TrackKey &key, tracksOnlyInB )
+    {
+        m_trackResultOnlyInB << m_keyToTrackB.value( key );
+    }
+
+    //we have to make sure that we do not start queries that will return *all* tracks of the collection
+    //because we did not add any filter to it
+    bool haveToStartQueryA = false;
+    bool haveToStartQueryB = false;
+
     //we do not care about tracks in both collections
     QueryMaker *qmA = createQueryMaker( m_collectionA );
     QueryMaker *qmB = createQueryMaker( m_collectionB );
@@ -400,10 +416,12 @@ SynchronizationBaseJob::handleTrackResult()
             if( currentStatus == OnlyInA )
             {
                 qmA->addFilter( Meta::valArtist, artist, true, true );
+                haveToStartQueryA = true;
             }
             if( currentStatus == OnlyInB )
             {
                 qmB->addFilter( Meta::valArtist, artist, true, true );
+                haveToStartQueryB = true;
             }
         }
     }
@@ -420,6 +438,7 @@ SynchronizationBaseJob::handleTrackResult()
                 qmA->addFilter( Meta::valAlbum, album.albumName, true, true );
                 qmA->addFilter( Meta::valAlbumArtist, album.artistName, true, true );
                 qmA->endAndOr();
+                haveToStartQueryA = true;
             }
             if( currentStatus == OnlyInB )
             {
@@ -427,16 +446,9 @@ SynchronizationBaseJob::handleTrackResult()
                 qmB->addFilter( Meta::valAlbum, album.albumName, true, true );
                 qmB->addFilter( Meta::valAlbumArtist, album.artistName, true, true );
                 qmB->endAndOr();
+                haveToStartQueryB = true;
             }
         }
-    }
-    foreach( const TrackKey &key, tracksOnlyInA )
-    {
-        m_trackResultOnlyInA << m_keyToTrackA.value( key );
-    }
-    foreach( const TrackKey &key, tracksOnlyInB )
-    {
-        m_trackResultOnlyInB << m_keyToTrackB.value( key );
     }
     qmA->endAndOr();
     qmB->endAndOr();
@@ -445,8 +457,28 @@ SynchronizationBaseJob::handleTrackResult()
     connect( qmA, SIGNAL( queryDone() ), this, SLOT( slotSyncQueryDone() ) );
     connect( qmB, SIGNAL( queryDone() ), this, SLOT( slotSyncQueryDone() ) );
     m_timer.start();
-    qmA->run();
-    qmB->run();
+    if( haveToStartQueryA )
+    {
+        qmA->run();
+    }
+    else
+    {
+        delete qmA;
+        m_currentResultCount += 1;
+    }
+    if( haveToStartQueryB )
+    {
+        qmB->run();
+    }
+    else
+    {
+        delete qmB;
+        m_currentResultCount += 1;
+    }
+    if( !( haveToStartQueryA || haveToStartQueryB ) )
+    {
+        slotSyncQueryDone();
+    }
 }
 
 void

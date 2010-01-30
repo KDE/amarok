@@ -18,30 +18,43 @@
 #ifndef AMAROK_COLLECTION_SQLCOLLECTION_H
 #define AMAROK_COLLECTION_SQLCOLLECTION_H
 
-#include "Collection.h"
-#include "CollectionManager.h"
+#include "amarok_sqlcollection_export.h"
+#include "collection/Collection.h"
+#include "collection/CollectionManager.h"
 #include "DatabaseUpdater.h"
 #include "SqlRegistry.h"
-#include "SqlStorage.h"
+#include "collection/SqlStorage.h"
 
 #include <QPointer>
 
 #include <KIcon>
 
+typedef QHash<QString, QString> TrackUrls;
+typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
+
+class CollectionCapabilityDelegate;
 class CollectionLocation;
+class SqlMountPointManager;
+class SqlCollectionLocationFactory;
+class SqlQueryMakerFactory;
 class XesamCollectionBuilder;
 class ScanManager;
 
-class SqlCollection : public Amarok::Collection, public SqlStorage
+class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
 {
     Q_OBJECT
+
+    Q_PROPERTY( SqlStorage *sqlStorage
+                READ sqlStorage
+                SCRIPTABLE false
+                DESIGNABLE false )
 
     public:
         SqlCollection( const QString &id, const QString &prettyName );
         virtual ~SqlCollection();
 
         virtual void startFullScan();
-        virtual void startIncrementalScan();
+        virtual void startIncrementalScan( const QString &directory = QString() );
         virtual void stopScan();
         virtual QueryMaker* queryMaker();
 
@@ -53,6 +66,8 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
         SqlRegistry* registry() const;
         DatabaseUpdater* dbUpdater() const;
         ScanManager* scanManager() const;
+        SqlStorage* sqlStorage() const;
+        SqlMountPointManager* mountPointManager() const;
         
         void removeCollection();    //testing, remove later
 
@@ -68,31 +83,19 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
         //sqlcollection internal methods
         void sendChangedSignal();
 
-        //methods defined in SqlStorage
-        virtual int sqlDatabasePriority() const;
-        virtual QString type() const;
-
-        virtual QStringList query( const QString &query ) = 0;
-        virtual int insert( const QString &statement, const QString &table = QString() ) = 0;
-
-        virtual QString escape( QString text ) const;
-
-        virtual QString boolTrue() const;
-        virtual QString boolFalse() const;
-
-        virtual QString idType() const;
-        virtual QString textColumnType( int length = 255 ) const;
-        virtual QString exactTextColumnType( int length = 1000 ) const;
-        //the below value may have to be decreased even more for other indexes; only time will tell
-        //in that case bump the db version and alter the affected columns
-        virtual QString exactIndexableTextColumnType( int length = 324 ) const;
-        virtual QString longTextColumnType() const;
-        virtual QString randomFunc() const;
-
-        virtual void vacuum() const;
-
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+
+        void setSqlStorage( SqlStorage *storage ) { m_sqlStorage = storage; }
+        void setRegistry( SqlRegistry *registry ) { m_registry = registry; }
+        void setUpdater( DatabaseUpdater *updater ) { m_updater = updater; }
+        void setCapabilityDelegate( CollectionCapabilityDelegate *delegate ) { m_capabilityDelegate = delegate; }
+        void setCollectionLocationFactory( SqlCollectionLocationFactory *factory ) { m_collectionLocationFactory = factory; }
+        void setQueryMakerFactory( SqlQueryMakerFactory *factory ) { m_queryMakerFactory = factory; }
+        void setScanManager( ScanManager *scanMgr );
+        void setMountPointManager( SqlMountPointManager *mpm );
+        //this method MUST be called before using the collection
+        void init();
 
     public slots:
         void updateTrackUrlsUids( const ChangedTrackUrls &changedUrls, const TrackUrls & ); //they're not actually track urls
@@ -103,23 +106,46 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
     signals:
         void scanFinished();
 
-    protected:
-        //this method MUST be called from subclass constructors
-        void init();
-
     private slots:
         void initXesam();
+        void slotDeviceAdded( int id );
+        void slotDeviceRemoved( int id );
 
     private:
-        SqlRegistry* const m_registry;
-        DatabaseUpdater * const m_updater;
+        SqlRegistry* m_registry;
+        DatabaseUpdater * m_updater;
+        CollectionCapabilityDelegate * m_capabilityDelegate;
+        SqlStorage * m_sqlStorage;
+        SqlCollectionLocationFactory *m_collectionLocationFactory;
+        SqlQueryMakerFactory *m_queryMakerFactory;
         QPointer<ScanManager> m_scanManager;
+        SqlMountPointManager *m_mpm;
 
         QString m_collectionId;
         QString m_prettyName;
 
         XesamCollectionBuilder *m_xesamBuilder;
 };
+
+typedef QList<int> IdList;
+
+class SqlMountPointManager : public QObject
+{
+    Q_OBJECT
+public:
+    virtual int getIdForUrl( const KUrl &url ) = 0;
+    virtual QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const = 0;
+    virtual QString getRelativePath( const int deviceId, const QString& absolutePath ) const = 0;
+    virtual IdList getMountedDeviceIds() const = 0;
+    virtual QStringList collectionFolders() = 0;
+
+signals:
+        void deviceAdded( int id );
+        void deviceRemoved( int id );
+};
+
+Q_DECLARE_METATYPE( TrackUrls )
+Q_DECLARE_METATYPE( ChangedTrackUrls )
 
 #endif /* AMAROK_COLLECTION_SQLCOLLECTION_H */
 

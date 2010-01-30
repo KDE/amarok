@@ -59,7 +59,7 @@ function onFinishedAPI( response )
             Amarok.debug( "request no. 3 URL: " + url2.toString() );
             // if we get redirected to the main page, then obviously no lyrics were found
             if( url == "http://lyrics.wikia.com" ) {
-                Amarok.Lyrics.showLyricsError( errormsg );
+                Amarok.Lyrics.showLyricsNotFound( errormsg );
                 Amarok.debug( "Redirected to main page for artist=" + triedArtist + ", song=" + triedSong );
                 return;
             }
@@ -98,7 +98,7 @@ function onFinished( response )
                     return;
                 }
                 // despite second attempt no lyrics were found. print an error message. 
-                Amarok.Lyrics.showLyricsError( errormsg );
+                Amarok.Lyrics.showLyricsNotFound( errormsg );
                 Amarok.debug( "No lyrics found for artist=" + triedArtist + ", song=" + triedSong );
                 return;
             }

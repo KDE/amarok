@@ -20,9 +20,9 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
-#include "Collection.h"
+#include "collection/Collection.h"
 #include "Debug.h"
-#include "QueryMaker.h"
+#include "collection/QueryMaker.h"
 #include "SvgHandler.h"
 
 #include <QDir>
@@ -379,6 +379,21 @@ bool
 Meta::Artist::operator==( const Meta::Artist &artist ) const
 {
     return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &artist );
+}
+
+QString
+Meta::Artist::sortableName() const
+{
+    if ( m_sortableName.isEmpty() && !name().isEmpty() ) {
+        if ( name().startsWith( "the ", Qt::CaseInsensitive ) ) {
+            QString begin = name().left( 3 );
+            m_sortableName = QString( "%1, %2" ).arg( name(), begin );
+            m_sortableName = m_sortableName.mid( 4 );
+        }
+        else
+            m_sortableName = name();
+    }
+    return m_sortableName;
 }
 
 //Meta::Album

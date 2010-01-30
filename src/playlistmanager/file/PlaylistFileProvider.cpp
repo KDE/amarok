@@ -62,7 +62,7 @@ PlaylistFileProvider::~PlaylistFileProvider()
         if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
             continue;
 
-        debug() << "storing to rc-file: " << url.url();
+        //debug() << "storing to rc-file: " << url.url();
 
         loadedPlaylistsConfig().writeEntry( url.url(), playlist->groups() );
     }
@@ -205,6 +205,12 @@ bool
 PlaylistFileProvider::import( const KUrl &path )
 {
     DEBUG_BLOCK
+    if( !path.isValid() )
+    {
+        error() << "path is not valid!";
+        return false;
+    }
+
     foreach( const Meta::PlaylistPtr playlist, m_playlists )
     {
         Meta::PlaylistFilePtr playlistFile =

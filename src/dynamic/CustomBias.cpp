@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009-2010 Leo Franchi <lfranchi@kde.org>                               *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,7 +22,7 @@
 #include "Debug.h"
 #include "DynamicModel.h"
 
-QList< Dynamic::CustomBiasFactory* > Dynamic::CustomBias::s_biasFactories = QList< Dynamic::CustomBiasFactory* >();
+QList< Dynamic::CustomBiasEntryFactory* > Dynamic::CustomBias::s_biasFactories = QList< Dynamic::CustomBiasEntryFactory* >();
 QList< Dynamic::CustomBias* > Dynamic::CustomBias::s_biases = QList< Dynamic::CustomBias* >();
 QMap< QString, Dynamic::CustomBias* > Dynamic::CustomBias::s_failedMap = QMap< QString, Dynamic::CustomBias* >();
 QMap< QString, QDomElement > Dynamic::CustomBias::s_failedMapXml = QMap< QString, QDomElement >();
@@ -39,6 +39,8 @@ Dynamic::CustomBias::CustomBias( Dynamic::CustomBiasEntry* entry, double weight 
     : m_currentEntry( entry )
     , m_weight( weight )
 {
+
+    connect( m_currentEntry, SIGNAL( biasChanged()), this, SLOT( customBiasChanged() ) );
     debug() << "CREATING NEW CUSTOM BIAS!!! with:" << entry << weight;
 }
 
@@ -52,10 +54,10 @@ PlaylistBrowserNS::BiasWidget*
 Dynamic::CustomBias::widget( QWidget* parent )
 {
     DEBUG_BLOCK
-
+    if( m_currentEntry )
+        debug() << "type:" << m_currentEntry->pluginName();
     debug() << "custombias with weight: " << m_weight << "returning new widget";
     Dynamic::CustomBiasEntryWidget* w = new Dynamic::CustomBiasEntryWidget( this, parent );
-    connect( w, SIGNAL( weightChangedInt( int ) ), m_currentEntry, SLOT( setWeight( int ) ) );
     connect( this, SIGNAL( biasFactoriesChanged() ), w, SLOT( refreshBiasFactories() ) );
     return w;
 }
@@ -90,6 +92,7 @@ Dynamic::CustomBias::xml() const
         QDomElement e = doc.createElement( "bias" );
         e.setAttribute( "type", "custom" );
         QDomElement child = doc.createElement( "custombias" );
+        debug() << "saving custom bias entry of type:" << m_currentEntry->pluginName();
         child.setAttribute( "name", m_currentEntry->pluginName() );
         child.setAttribute( "weight", m_weight );
 
@@ -104,7 +107,6 @@ Dynamic::CustomBias::xml() const
 double
 Dynamic::CustomBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist, Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context )
 {
-    DEBUG_BLOCK
     Q_UNUSED( context )
 
     if( !m_currentEntry ) // wtf it died under us, return oldEnergy
@@ -118,15 +120,15 @@ Dynamic::CustomBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPla
     
     if( m_currentEntry->trackSatisfies( newTrack ) && !prevSatisfied )
     {
-        debug() << "new satisfies and old doesn't:" << oldEnergy - offset;
+//         debug() << "new satisfies and old doesn't:" << oldEnergy - offset;
         return oldEnergy - offset;
     } else if( !m_currentEntry->trackSatisfies( newTrack ) && prevSatisfied )
     {
-        debug() << "new doesn't satisfy and old did:" << oldEnergy + offset;
+//         debug() << "new doesn't satisfy and old did:" << oldEnergy + offset;
         return oldEnergy + offset;
     } else
     {
-        debug() << "no change:" << oldEnergy;
+//         debug() << "no change:" << oldEnergy;
         return oldEnergy;
     }
 }
@@ -142,25 +144,26 @@ Dynamic::CollectionFilterCapability*
 Dynamic::CustomBias::collectionFilterCapability()
 {
     if( m_currentEntry )
-        return m_currentEntry->collectionFilterCapability();
+        return m_currentEntry->collectionFilterCapability( weight() );
     else
         return 0;
 }
 
 void
-Dynamic::CustomBias::registerNewBiasFactory( Dynamic::CustomBiasFactory* entry )
+Dynamic::CustomBias::registerNewBiasFactory( Dynamic::CustomBiasEntryFactory* entry )
 {
     DEBUG_BLOCK
+    debug() << "new factory of type:" << entry->name() << entry->pluginName();
     if( !s_biasFactories.contains( entry ) )
         s_biasFactories.append( entry );
 
-    foreach( QString name, s_failedMap.keys() )
+    foreach( const QString &name, s_failedMap.keys() )
     {
         if( name == entry->pluginName() ) // lazy loading!
         {
             debug() << "found entry loaded without proper custombiasentry. fixing now, with  old weight of" << s_failedMap[ name ]->weight() ;
             //  need to manually set the weight, as we set it on the old widget which is now being thrown away
-            Dynamic::CustomBiasEntry* cbe = entry->newCustomBias( s_failedMapXml[ name ], s_failedMap[ name ]->weight() );
+            Dynamic::CustomBiasEntry* cbe = entry->newCustomBiasEntry( s_failedMapXml[ name ] );
             s_failedMap[ name ]->setCurrentEntry( cbe );
             s_failedMap.remove( name );
             s_failedMapXml.remove( name );
@@ -173,7 +176,7 @@ Dynamic::CustomBias::registerNewBiasFactory( Dynamic::CustomBiasFactory* entry )
 
 
 void
-Dynamic::CustomBias::removeBiasFactory( Dynamic::CustomBiasFactory* entry )
+Dynamic::CustomBias::removeBiasFactory( Dynamic::CustomBiasEntryFactory* entry )
 {
     DEBUG_BLOCK
 
@@ -198,12 +201,13 @@ Dynamic::CustomBias::fromXml(QDomElement e)
         if( !pluginName.isEmpty() )
         {
             debug() << "got custom bias type:" << pluginName << "with weight:" << weight;
-            foreach( Dynamic::CustomBiasFactory* factory, s_biasFactories )
+            foreach( Dynamic::CustomBiasEntryFactory* factory, s_biasFactories )
             {
                 if( factory->pluginName() == pluginName )
                 {
                     debug() << "found matching bias type! creating :D";
-                    return createBias(  factory->newCustomBias( biasNode.firstChild().toElement(), weight ), weight );
+                    CustomBiasEntry* cbias = factory->newCustomBiasEntry( biasNode.firstChild().toElement() );
+                    return createBias( cbias, weight );
                 }
             }
             // didn't find a factory for the bias, but we at leasst get a weight, so set that and remember
@@ -219,7 +223,7 @@ Dynamic::CustomBias::fromXml(QDomElement e)
 }
 
 
-QList< Dynamic::CustomBiasFactory* >
+QList< Dynamic::CustomBiasEntryFactory* >
 Dynamic::CustomBias::currentFactories()
 {
     return s_biasFactories;
@@ -244,11 +248,19 @@ Dynamic::CustomBias::createBias( Dynamic::CustomBiasEntry* entry, double weight 
     return newBias;
 }
 
+
+void Dynamic::CustomBias::customBiasChanged()
+{
+    emit biasChanged( this );
+}
+
+
 void
 Dynamic::CustomBias::setCurrentEntry( Dynamic::CustomBiasEntry* entry )
 {
     if( m_currentEntry )
         delete m_currentEntry;
+    connect( entry, SIGNAL( biasChanged() ), this, SLOT( customBiasChanged() ) );
     m_currentEntry = entry;
 }
 
@@ -262,7 +274,6 @@ void
 Dynamic::CustomBias::setWeight( double weight )
 {
     m_weight = weight;
-    emit weightChanged( m_weight );
 }
 
 void Dynamic::CustomBias::refreshWidgets()

@@ -132,7 +132,7 @@ namespace AmarokScript
     {
         DEBUG_BLOCK
         Meta::TrackPtr track = The::playlist()->trackAt( row );
-        return QVariant::fromValue( track );;
+        return QVariant::fromValue( track );
     }
 
     QList<int> AmarokPlaylistScript::selectedIndexes()

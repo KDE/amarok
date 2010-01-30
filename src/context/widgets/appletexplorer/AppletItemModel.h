@@ -32,26 +32,26 @@
 
 namespace Context
 {
-    
+
 class AppletItemModel;
 
 class AMAROK_EXPORT AppletItem: public QObject, public QStandardItem
 {
     Q_OBJECT
-    
+
     public:
         AppletItem( AppletItemModel *model, const QMap< QString, QVariant>& info );
-        
+
         QString name() const;
         QString pluginName() const;
         int running() const;
-        
+
         void setRunning( int count );
-        
+
     private:
         AppletItemModel *m_model;
-    
-    
+
+
 };
 
 class AMAROK_EXPORT AppletItemModel: public QStandardItemModel

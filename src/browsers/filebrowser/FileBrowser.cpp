@@ -55,6 +55,7 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     setObjectName( name );
     m_actionCollection = new KActionCollection( this );
 
+    KHBox* filterBox = new KHBox( this );
     m_toolbar = new KToolBar( this );
     m_toolbar->setMovable( false );
 
@@ -67,7 +68,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     setStretchFactor( m_dirOperator, 2 );
     m_dirOperator->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding ) );
 
-    KHBox* filterBox = new KHBox( this );
     m_filterButton = new QToolButton( filterBox );
     m_filterButton->setIcon( KIcon( "view-filter" ) );
     m_filterButton->setCheckable( true );

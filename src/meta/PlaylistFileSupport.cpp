@@ -62,6 +62,12 @@ loadPlaylistFile( const KUrl &url )
     QFile file;
     KUrl fileToLoad;
 
+    if( !url.isValid() )
+    {
+        error() << "url is not valid!";
+        return PlaylistFilePtr();
+    }
+
     if( url.isLocalFile() )
     {
         if( !QFileInfo( url.toLocalFile() ).exists() )
@@ -80,7 +86,10 @@ loadPlaylistFile( const KUrl &url )
         if( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
         {
             debug() << "could not read file " << url.path();
-            The::statusBar()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
+
+            if( The::statusBar() )
+                The::statusBar()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
+
             return Meta::PlaylistFilePtr( 0 );
         }
         fileToLoad = url;
@@ -96,8 +105,9 @@ loadPlaylistFile( const KUrl &url )
         tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
         if( !tempFile.open() )
         {
-            The::statusBar()->longMessage(
-                    i18n( "Could not create a temporary file to download playlist.") );
+            if( The::statusBar() )
+                The::statusBar()->longMessage( i18n( "Could not create a temporary file to download playlist.") );
+
             return Meta::PlaylistFilePtr( 0 ); //error
         }
 
@@ -110,7 +120,8 @@ loadPlaylistFile( const KUrl &url )
         #endif
         KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
 
-        The::statusBar()->newProgressOperation( job, i18n( "Downloading remote playlist" ) );
+        if( The::statusBar() )
+            The::statusBar()->newProgressOperation( job, i18n( "Downloading remote playlist" ) );
 
         if( !job->exec() ) //Job deletes itself after execution
         {

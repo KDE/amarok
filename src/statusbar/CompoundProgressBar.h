@@ -60,6 +60,7 @@ private:
     void hideDetails();
 
     void handleDetailsButton();
+    void childBarFinished( ProgressBar *bar );
 
     int calcCompoundPercentage();
 

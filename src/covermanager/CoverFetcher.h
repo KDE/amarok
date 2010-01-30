@@ -21,164 +21,71 @@
 #define AMAROK_COVERFETCHER_H
 
 #include "meta/Meta.h"
+#include "CoverFetchUnit.h"
 
-#include <QDomNode>
-#include <QImage>       //stack allocated
-#include <QLabel>       //baseclass
-#include <QMutex>
+#include <QHash>
 #include <QObject>      //baseclass
 #include <QStringList>  //stack allocated
-#include <KDialog>
-#include <KHBox>
-#include <KPushButton>
-#include <KVBox>
 
+class CoverFetchQueue;
+class CoverFoundDialog;
 class KJob;
-class KLineEdit;
-
-class CoverLabel : public QLabel
-{
-    public:
-    explicit CoverLabel( QWidget * parent, Qt::WindowFlags f = 0 );
-
-    void setInformation( const QString artist, const QString album )
-    {
-        m_artist = artist;
-        m_album = album;
-    }
-
-    protected:
-        virtual void mouseReleaseEvent(QMouseEvent *pEvent);
-
-    private:
-        QString m_artist;
-        QString m_album;
-};
-
-class CoverFetcherSingleton;
 
 namespace KIO { class Job; }
 
 class CoverFetcher : public QObject
 {
-    friend class EditSearchDialog;
     Q_OBJECT
-
-    static const uint MAX_COVERS_CHOICE = 10;
 
 public:
     AMAROK_EXPORT static CoverFetcher* instance();
     AMAROK_EXPORT static void destroy();
 
-    /// allow the user to edit the query?
-    void setInteractive( bool b ) { m_interactive = b; }
-
-    /// Main Fetch loop
+    /// Main fetch methods
     AMAROK_EXPORT void manualFetch( Meta::AlbumPtr album );
-
-    QPixmap image() const { return m_selPixmap; }
-
     AMAROK_EXPORT void queueAlbum( Meta::AlbumPtr album );
     AMAROK_EXPORT void queueAlbums( Meta::AlbumList albums );
 
-    bool wasError() const { return !m_success; }
     QStringList errors() const { return m_errors; }
 
+    enum FinishState { Success, Error, NotFound, Cancelled };
+
+public slots:
+    AMAROK_EXPORT void queueQuery( const QString &query );
+
+signals:
+    void finishedSingle( int state );
+
 private slots:
-    void finishedXmlFetch( KJob * job );
-    void finishedImageFetch( KJob * job );
+
+    /// Fetch a cover
+    void slotFetch( const CoverFetchUnit::Ptr unit );
+    void slotResult( KJob *job );
 
 private:
     static CoverFetcher* s_instance;
     CoverFetcher();
     ~CoverFetcher();
 
-    void parseItemNode( const QDomNode &node );
+    const int        m_limit;      /// maximum number of concurrent fetches
+    CoverFetchQueue *m_queue;      /// current fetch queue
+    Meta::AlbumList  m_queueLater; /// put here if m_queue exceeds m_limit
 
-    Meta::AlbumList m_albums;
-    Meta::AlbumPtr m_albumPtr;
-    QMutex m_albumsMutex;
-    QMutex m_fetchMutex;
+    QHash< const KJob*, CoverFetchUnit::Ptr > m_jobs;
+    QHash< const CoverFetchUnit::Ptr, QList< QPixmap > > m_pixmaps;
+    QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;
 
-    bool    m_interactive; /// whether we should consult the user
-    QString m_userQuery; /// the query from the query edit dialog
-    QString m_xml;
-    QList<QPixmap> m_pixmaps;     //!List of found covers
-    QPixmap m_selPixmap;          //!Cover of choice
-    int     m_processedCovers;    //!number of covers that have been processed
-    int     m_numURLS;            //!number of URLS to process
-    QString m_asin;
-    int     m_size;
-
-    QStringList m_queries;
-    QString     m_currentCoverName;
     QStringList m_errors;
 
-    bool m_success;
-    bool m_isFetching;
+    CoverFoundDialog *m_dialog;
 
-private:
-    /// Fetch a cover
-    void startFetch( Meta::AlbumPtr album );
-
-    /// The fetch was successful!
-    void finish();
-
-    /// The fetch failed, finish up and log an error message
-    void finishWithError( const QString &message, KJob *job = 0 );
-
-    /// The fetch was successful, but there was no cover found
-    void finishNotFound();
+    /// cleanup depending on the fetch result
+    void finish( const CoverFetchUnit::Ptr unit,
+                 FinishState state = Success,
+                 const QString &message = QString() );
 
     /// Show the cover that has been found
-    void showCover();
-};
-
-
-class CoverFoundDialog : public KDialog
-{
-    Q_OBJECT
-    
-    public:
-        CoverFoundDialog( QWidget *parent, const QList<QPixmap> &covers, const QString &productname );
-
-        /**
-        *   @returns the currently selected cover image
-        */
-        const QPixmap image() { return *m_labelPix->pixmap(); }
-
-        virtual void accept()
-        {
-            if( qstrcmp( sender()->objectName().toAscii(), "NewSearch" ) == 0 )
-                done( 1000 );
-            else if( qstrcmp( sender()->objectName().toAscii(), "NextCover" ) == 0 )
-                done( 1001 );
-            else
-                KDialog::accept();
-        }
-
-        private slots:
-            /**
-            *   Switch picture label and current index to next cover
-            */
-            void nextPix();
-
-            /**
-            *   Switch picture label and current index to previous cover
-            */
-            void prevPix();
-
-        private:
-
-            QLabel      *m_labelPix;        //! Picture Label
-            QLabel      *m_labelName;       //! Name Label
-            KHBox       *m_buttons;         //! Button Box
-            KPushButton *m_next;            //! Next Button
-            KPushButton *m_prev;            //! Back Button
-            KPushButton *m_save;            //! Save Button
-            KPushButton *m_cancel;          //! Cancel Button
-            QList<QPixmap> m_covers;        //! Retrieved Covers
-            int         m_curCover;         //! Currently selected Cover
+    void showCover( const CoverFetchUnit::Ptr unit );
 };
 
 namespace The

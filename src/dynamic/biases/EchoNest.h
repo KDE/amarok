@@ -18,6 +18,7 @@
 #define ECHO_NEST_BIAS_H
 
 #include "CustomBiasEntry.h"
+#include "CustomBiasEntryFactory.h"
 #include <QNetworkReply>
 #include "EngineObserver.h"
 
@@ -40,7 +41,7 @@ class KJob;
 namespace Dynamic
 {
     
-    class EchoNestBiasFactory : public CustomBiasFactory
+    class EchoNestBiasFactory : public CustomBiasEntryFactory
     {
         public:
             EchoNestBiasFactory();
@@ -48,8 +49,8 @@ namespace Dynamic
             
             virtual QString name() const;
             virtual QString pluginName() const;
-            virtual CustomBiasEntry* newCustomBias( double weight );
-            virtual CustomBiasEntry* newCustomBias( QDomElement e, double weight );
+            virtual CustomBiasEntry* newCustomBiasEntry();
+            virtual CustomBiasEntry* newCustomBiasEntry( QDomElement e);
     };
     
     // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
@@ -57,7 +58,7 @@ namespace Dynamic
     {
         Q_OBJECT
         public:
-            EchoNestBias( double weight );
+            EchoNestBias();
             ~EchoNestBias();
             
             // reimplemented from CustomBiasEntry
@@ -70,7 +71,7 @@ namespace Dynamic
             virtual QDomElement xml( QDomDocument doc ) const;
             
             virtual bool hasCollectionFilterCapability();
-            virtual CollectionFilterCapability* collectionFilterCapability();
+            virtual CollectionFilterCapability* collectionFilterCapability( double weight );
             
             // reimplemented from EngineObserver
             virtual void engineNewTrackPlaying();
@@ -113,7 +114,7 @@ namespace Dynamic
     class EchoNestBiasCollectionFilterCapability : public Dynamic::CollectionFilterCapability
     {
         public:
-            EchoNestBiasCollectionFilterCapability ( EchoNestBias* bias ) : m_bias ( bias ) {}
+            EchoNestBiasCollectionFilterCapability ( EchoNestBias* bias, double weight ) : m_bias ( bias ), m_weight( weight ) {}
             
             // re-implemented
             virtual const QSet<QByteArray>& propertySet();
@@ -122,6 +123,7 @@ namespace Dynamic
             
         private:
             EchoNestBias* m_bias;
+            double m_weight;
             
     };
     

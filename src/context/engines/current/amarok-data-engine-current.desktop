@@ -2,6 +2,7 @@
 Name=Current Info Data Engine
 Name[bg]=Ядро за дата и време
 Name[ca]=Motor de dades d'informació actual
+Name[ca@valencia]=Motor de dades d'informació actual
 Name[cs]=Datový nástroj Aktuální informace
 Name[csb]=Mòtór aktualny wëdowiedzë ò pòdôwkach
 Name[da]=Datamotor til Aktuel info
@@ -37,6 +38,8 @@ Name[ro]=Motor de date Informație curentă
 Name[ru]=Источник данных для текущих сведений
 Name[sl]=Podatkovni pogon za podatke trenutni skladbi
 Name[sr]=Датомотор текућих података
+Name[sr@ijekavian]=Датомотор текућих података
+Name[sr@ijekavianlatin]=Datomotor tekućih podataka
 Name[sr@latin]=Datomotor tekućih podataka
 Name[sv]=Datagränssnitt för aktuell information
 Name[th]=กลไกข้อมูลของข้อมูลรายละเอียดปัจจุบัน

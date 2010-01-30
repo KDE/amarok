@@ -119,11 +119,7 @@ NotificationsConfig::updateSettings()
     AmarokConfig::setOsdYOffset( m_osdPreview->y() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
 
-    // Enable/disable knotify support
-    if( kcfg_KNotifyEnabled->isChecked() )
-        Amarok::KNotificationBackend::instance();
-    else
-        Amarok::KNotificationBackend::destroy();
+    Amarok::KNotificationBackend::instance()->setEnabled( kcfg_KNotifyEnabled->isChecked() );
 
     emit settingsChanged( QString() );
 }

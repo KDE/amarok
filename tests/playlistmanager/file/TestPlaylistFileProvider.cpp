@@ -20,17 +20,16 @@
 #include "TestPlaylistFileProvider.h"
 #include "collection/CollectionManager.h"
 
-#include <KStandardDirs>
-
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 
-TestPlaylistFileProvider::TestPlaylistFileProvider( QStringList testArgumentList, bool stdout )
+TestPlaylistFileProvider::TestPlaylistFileProvider( const QStringList args, const QString &logPath )
+    : TestBase( "PlaylistFileProvider" )
 {
-    if( !stdout )
-        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "PlaylistFileProvider.xml" );
-    QTest::qExec( this, testArgumentList );
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
+    QTest::qExec( this, combinedArgs );
 }
 
 
@@ -44,7 +43,7 @@ void TestPlaylistFileProvider::testSave()
 {
     Meta::TrackList tempTrackList;
     KUrl trackUrl;
-    trackUrl = KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/audio/Platz 01.mp3" );
+    trackUrl = dataPath( "amarok/testdata/audio/Platz 01.mp3" );
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
 
     if( QFile::exists( Amarok::saveLocation( "playlists" ) + "Amarok Test Playlist.m3u" ) )
@@ -59,7 +58,7 @@ void TestPlaylistFileProvider::testSave()
 
 void TestPlaylistFileProvider::testImportAndDeletePlaylists()
 {
-    QVERIFY( m_testPlaylistFileProvider.import( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.m3u" ) ) );
+    QVERIFY( m_testPlaylistFileProvider.import( dataPath( "amarok/testdata/playlists/test.m3u" ) ) );
 
     Meta::PlaylistList tempList = m_testPlaylistFileProvider.playlists();
     QCOMPARE( tempList.size(), 1 ); // iow: use it with a clean profile
@@ -71,7 +70,7 @@ void TestPlaylistFileProvider::testImportAndDeletePlaylists()
 
 void TestPlaylistFileProvider::testRename()
 {
-    QVERIFY( m_testPlaylistFileProvider.import( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/playlists/test.m3u" ) ) );
+    QVERIFY( m_testPlaylistFileProvider.import( dataPath( "amarok/testdata/playlists/test.m3u" ) ) );
 
     Meta::PlaylistList tempList = m_testPlaylistFileProvider.playlists();
     QCOMPARE( tempList.size(), 1 );

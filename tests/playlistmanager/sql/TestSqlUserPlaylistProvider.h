@@ -21,15 +21,16 @@
 #define TESTSQLUSERPLAYLISTPROVIDER_H
 
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
+#include "TestBase.h"
 
 #include <QtCore/QStringList>
 
-class TestSqlUserPlaylistProvider : public QObject
+class TestSqlUserPlaylistProvider : public TestBase
 {
 Q_OBJECT
 
 public:
-    TestSqlUserPlaylistProvider( QStringList testArgumentList, bool stdout );
+    TestSqlUserPlaylistProvider( const QStringList args, const QString &logPath );
 
 private slots:
     void testPlaylists();

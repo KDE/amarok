@@ -306,8 +306,13 @@ namespace Meta
 
             virtual bool operator==( const Meta::Artist &artist ) const;
 
+            virtual QString sortableName() const;
+
         protected:
             virtual void notifyObservers() const;
+
+        private:
+            mutable QString m_sortableName;
     };
 
     class AMAROK_EXPORT Album : public MetaBase

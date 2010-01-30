@@ -18,33 +18,29 @@
 #ifndef AMPACHEMETA_H
 #define AMPACHEMETA_H
 
-
-#include "../ServiceMetaBase.h"
-#include "../ServiceAlbumCoverDownloader.h"
-#include "../ShowInServiceAction.h"
+#include "ServiceBase.h"
+#include "ServiceMetaBase.h"
+#include "ServiceAlbumCoverDownloader.h"
 
 #include <KStandardDirs>
 
 #include <QDateTime>
+#include <QList>
 #include <QString>
 #include <QStringList>
-#include <QList>
 
 
 namespace Meta
 {
 
-
 class AmpacheTrack  : public ServiceTrack
 {
 
 public:
-
     explicit AmpacheTrack( const QString& title, ServiceBase * service = 0 )
-    : ServiceTrack( title )
-    , m_service( service )
-    , m_showInServiceAction( 0 )
-    { }
+        : ServiceTrack( title )
+        , m_service( service )
+    {}
 
     virtual QString sourceName() { return "Ampache"; }
     virtual QString sourceDescription() { return "The Ampache music server project: http://Ampache.org"; }
@@ -55,8 +51,6 @@ public:
 
 private:
     ServiceBase * m_service;
-    ShowInServiceAction * m_showInServiceAction;
-
 };
 
 
@@ -64,7 +58,6 @@ class AmpacheAlbum  : public ServiceAlbumWithCover
 {
 private:
     QString m_coverURL;
-
 
 public:
     AmpacheAlbum( const QString &name );
@@ -89,16 +82,15 @@ class AmpacheArtist : public ServiceArtist
     private:
         QString m_coverURL;
 
-
     public:
         AmpacheArtist( const QString &name, ServiceBase * service )
             : ServiceArtist( name )
             , m_service( service )
-             { }
+        {}
 
-        virtual bool isBookmarkable() { return true; }
-        virtual QString collectionName() { return m_service->name(); }
-        virtual bool simpleFiltering() { return true; }
+        virtual bool isBookmarkable() const { return true; }
+        virtual QString collectionName() const { return m_service->name(); }
+        virtual bool simpleFiltering() const { return true; }
 
         bool operator==( const Meta::Artist &other ) const
         {
@@ -107,9 +99,8 @@ class AmpacheArtist : public ServiceArtist
 
     private:
         ServiceBase * m_service;
-
 };
 
 }
 
-#endif
+#endif  // End include guard

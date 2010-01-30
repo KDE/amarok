@@ -2,6 +2,7 @@
 Name=Info Data Engine
 Name[bg]=Ядро за данни
 Name[ca]=Motor de dades d'informació
+Name[ca@valencia]=Motor de dades d'informació
 Name[csb]=Mòtór wëdowiedzë ò pòdôwkach
 Name[da]=Datamotor til info
 Name[de]=Info-Datenmodul
@@ -24,6 +25,8 @@ Name[ro]=Motor de date Informații
 Name[ru]=Источник данных для сведений
 Name[sl]=Podatkovni pogon za podatke
 Name[sr]=Датомотор података
+Name[sr@ijekavian]=Датомотор података
+Name[sr@ijekavianlatin]=Datomotor podataka
 Name[sr@latin]=Datomotor podataka
 Name[sv]=Datagränssnitt för information
 Name[tr]=Bilgi Veri Motoru

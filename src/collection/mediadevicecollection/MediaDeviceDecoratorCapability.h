@@ -33,7 +33,7 @@ namespace Meta
         public:
             MediaDeviceDecoratorCapability( MediaDeviceCollection *coll );
 
-            virtual QAction* decoratorAction();
+            virtual QList<QAction*> decoratorActions();
 
         private:
             MediaDeviceCollection *m_coll;

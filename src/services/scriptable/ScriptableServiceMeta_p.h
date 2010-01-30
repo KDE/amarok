@@ -105,7 +105,7 @@ class ScriptableServiceInternalArtist : public Meta::Artist, public ScriptableSe
             if( !m_name.isEmpty() )
                 return m_name;
             else
-                return i18nc( "The value is not known", "Unknown" );;
+                return i18nc( "The value is not known", "Unknown" );
         }
 
         QString prettyName() const

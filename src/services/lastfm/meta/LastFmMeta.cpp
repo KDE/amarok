@@ -25,7 +25,7 @@
 #include "MultiPlayableCapabilityImpl_p.moc"
 #include "CurrentTrackActionsCapabilityImpl_p.h"
 #include "CurrentTrackActionsCapabilityImpl_p.moc"
-#include "ServiceSourceInfoCapability.h"
+#include "ServiceCapabilities.h"
 
 #include "LastFmService.h"
 #include "LastFmStreamInfoCapability.h"

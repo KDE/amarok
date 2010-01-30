@@ -22,6 +22,7 @@
 #include "CollectionManager.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
+#include "dialogs/EqualizerDialog.h"
 #include "dbus/CollectionDBusHandler.h"
 #include "Debug.h"
 #include "EngineController.h"
@@ -33,6 +34,7 @@
 #include "MetaUtility.h"
 #include "MountPointManager.h"
 #include "Osd.h"
+#include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
 #include "Playlist.h"
 #include "PlaylistFileSupport.h"
@@ -69,6 +71,7 @@
 #include <KStandardDirs>
 
 #include <QByteArray>
+#include <QDesktopServices>
 #include <QFile>
 #include <KPixmapCache>
 #include <QStringList>
@@ -98,7 +101,6 @@ extern void setupEventHandler_mac(long);
 #include "TestAmarok.h"
 #include "TestCaseConverter.h"
 #include "TestDirectoryLoader.h"
-#include "TestExpression.h"
 #include "TestM3UPlaylist.h"
 #include "TestMetaCueCueFileItem.h"
 #include "TestMetaCueTrack.h"
@@ -108,17 +110,15 @@ extern void setupEventHandler_mac(long);
 #include "TestPlaylistFileProvider.h"
 #include "TestPlaylistFileSupport.h"
 #include "TestPLSPlaylist.h"
-#include "TestQStringx.h"
-#include "TestSmartPointerList.h"
 #include "TestSqlUserPlaylistProvider.h"
 #include "TestTimecodeTrackProvider.h"
 #include "TestXSPFPlaylist.h"
 #endif // DEBUG
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
-    ki18n( "Amarok" ), APP_VERSION,
+    ki18n( "Amarok" ), AMAROK_VERSION,
     ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
-    ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2009, The Amarok Development Squad" ),
+    ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2010, The Amarok Development Squad" ),
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
              ( "http://amarok.kde.org" ) );
 
@@ -131,7 +131,7 @@ App::App()
     PERF_LOG( "Begin Application ctor" )
 
     // required for last.fm plugin to grab app version
-    setApplicationVersion( APP_VERSION );
+    setApplicationVersion( AMAROK_VERSION );
 
     if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
     {
@@ -429,10 +429,40 @@ App::handleCliArgs() //static
     firstTime = false;
 
 #ifdef DEBUG
-    if( args->getOption( "test" ) == "log" )
-        runUnitTests( false );
-    else if( args->getOption( "test" ) == "stdout" )
-        runUnitTests( true );
+    if( args->isSet( "test" ) )
+    {
+        bool ok;
+        int verboseInt = args->getOption( "verbose" ).toInt( &ok );
+        verboseInt     = ok ? verboseInt : 2;
+
+        QStringList testOpt( "amarok" );
+
+        QString verbosity;
+        switch( verboseInt )
+        {
+        case 0:
+            verbosity = "-silent";
+            break;
+        case 1:
+            verbosity = "-v1";
+            break;
+        default:
+        case 2:
+            verbosity = "-v2";
+            break;
+        case 3:
+            verbosity = "-vs";
+            break;
+        }
+        testOpt << verbosity;
+
+        const QString format = args->getOption( "format" );
+        if( format == "xml" || format == "lightxml" )
+            testOpt << QString( '-' + format );
+
+        const bool stdout = ( args->getOption( "output" ) == "log" ) ? false : true;
+        runUnitTests( testOpt, stdout );
+    }
 #endif // DEBUG
 
     args->clear();    //free up memory
@@ -481,7 +511,11 @@ App::initCliArgs() //static
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
 #ifdef DEBUG
-    options.add("test <output>", ki18n( "Run integrated unit tests. Output can be 'log' for logfiles, 'stdout' for stdout." ) );
+    options.add(":", ki18n("Unit test options:"));
+    options.add("test", ki18n( "Run integrated unit tests" ) );
+    options.add("output <dest>", ki18n( "Destination of test output: 'stdout', 'log'" ), "log" );
+    options.add("format <type>", ki18n( "Format of test output: 'xml', 'lightxml', 'plaintext'" ), "xml" );
+    options.add("verbose <level>", ki18n( "Verbosity from 0-3 (highest)" ), "2" );
 #endif // DEBUG
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
@@ -598,48 +632,53 @@ void App::applySettings( bool firstTime )
 #ifdef DEBUG
 //SLOT
 void
-App::runUnitTests( bool stdout )
+App::runUnitTests( const QStringList options, bool stdout )
 {
     DEBUG_BLOCK
-    QStringList testArgumentList;
-    QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + "/" );
 
+    QString logPath;
     if( !stdout )
-        testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v2";
-    else
-        testArgumentList << "amarok" << "-xml" << "-v2";
+    {
+        const QString location = Amarok::saveLocation( "testresults/" );
+        const QString stamp    = QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" );
+        logPath                = QDir::toNativeSeparators( location + stamp + "/" );
 
-    // create log folder for this run:
-    QDir logDir( logPath );
-    logDir.mkpath( logPath );
+        // create log folder for this run:
+        QDir logDir( logPath );
+        logDir.mkpath( logPath );
 
-    QFile::remove( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
-    QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+        QFile::remove( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+        QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+
+        QFile logArgs( logPath + "test_options" );
+        if( logArgs.open( QIODevice::WriteOnly ) )
+        {
+            logArgs.write( options.join( " " ).toLatin1() );
+            logArgs.close();
+        }
+    }
 
     PERF_LOG( "Running Unit Tests" )
-    TestAmarok                  testAmarok( testArgumentList, stdout );
-    TestCaseConverter           testCaseConverter( testArgumentList, stdout );
-    TestExpression              testExpression( testArgumentList, stdout );
-    TestM3UPlaylist             testM3UPlaylist( testArgumentList, stdout );
-    TestMetaCueCueFileItem      testMetaCueCueFileItem( testArgumentList, stdout );
-    TestMetaCueTrack            testMetaCueTrack( testArgumentList, stdout );
-    TestMetaFileTrack           testMetaFileTrack( testArgumentList, stdout );
-    TestMetaMultiTrack          testMetaMultiTrack( testArgumentList, stdout );
-    TestMetaTrack               testMetaTrack( testArgumentList, stdout );
-    TestPlaylistFileProvider    testPlaylistFileProvider( testArgumentList, stdout );
-    TestPlaylistFileSupport     testPlaylistFileSupport( testArgumentList, stdout );
-    TestPLSPlaylist             testPLSPlaylist( testArgumentList, stdout );
-    TestQStringx                testQStringx( testArgumentList, stdout );
-    TestSmartPointerList        testSmartPointerList( testArgumentList, stdout );
-    TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList, stdout );
-    TestTimecodeTrackProvider   testTimecodeTrackProvider( testArgumentList, stdout );
-    TestXSPFPlaylist            testXSPFPlaylist( testArgumentList, stdout);
+    TestAmarok                  test001( options, logPath );
+    TestCaseConverter           test002( options, logPath );
+    TestM3UPlaylist             test003( options, logPath );
+    TestMetaCueCueFileItem      test004( options, logPath );
+    TestMetaCueTrack            test005( options, logPath );
+    TestMetaFileTrack           test006( options, logPath );
+    TestMetaMultiTrack          test007( options, logPath );
+    TestMetaTrack               test008( options, logPath );
+    TestPlaylistFileProvider    test009( options, logPath );
+    TestPlaylistFileSupport     test010( options, logPath );
+    TestPLSPlaylist             test011( options, logPath );
+    TestSqlUserPlaylistProvider test012( options, logPath );
+    TestTimecodeTrackProvider   test013( options, logPath );
+    TestXSPFPlaylist            test014( options, logPath );
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
-    TestDirectoryLoader        *testDirectoryLoader = new TestDirectoryLoader( testArgumentList, stdout );
+    TestDirectoryLoader        *test015 = new TestDirectoryLoader( options, logPath );
 
     PERF_LOG( "Done Running Unit Tests" )
-    Q_UNUSED( testDirectoryLoader )
+    Q_UNUSED( test015 )
 }
 #endif // DEBUG
 
@@ -684,8 +723,7 @@ App::continueInit()
     ScriptManager::instance();
     PERF_LOG( "ScriptManager started" )
 
-    if( AmarokConfig::kNotifyEnabled() )
-        Amarok::KNotificationBackend::instance();
+    Amarok::KNotificationBackend::instance()->setEnabled( AmarokConfig::kNotifyEnabled() );
 
     if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
@@ -743,17 +781,73 @@ App::continueInit()
     {
         if( config.readEntry( "First Run", true ) )
         {
-            slotConfigAmarok( "CollectionConfig" );
+            const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+            const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
+            const QDir dir( musicDir );
+
+            int result = KMessageBox::No;
+            if( dir.exists() && dir.isReadable() )
+            {
+                result = KMessageBox::questionYesNoCancel(
+                    mainWindow(),
+                    i18n( "A music path, %1, is set in System Settings.\nWould you like to use that as a collection folder?", musicDir )
+                    );
+            }
+
+            KConfigGroup folderConf = Amarok::config( "Collection Folders" );
+            bool useMusicLocation( false );
+            switch( result )
+            {
+            case KMessageBox::Yes:
+                MountPointManager::instance()->setCollectionFolders( QStringList() << musicDir );
+                CollectionManager::instance()->startFullScan();
+                useMusicLocation = true;
+                break;
+
+            case KMessageBox::No:
+                slotConfigAmarok( "CollectionConfig" );
+                break;
+
+            default:
+                break;
+            }
+            folderConf.writeEntry( "Use MusicLocation", useMusicLocation );
             config.writeEntry( "First Run", false );
         }
     }
+
+    // Using QTimer, so that we won't block the GUI
+    QTimer::singleShot( 0, this, SLOT( checkCollectionScannerVersion() ) );
 }
 
-void App::slotConfigEqualizer() //SLOT
+void App::checkCollectionScannerVersion()  // SLOT
 {
-//    PORT 2.0
-//    EqualizerSetup::instance()->show();
-//    EqualizerSetup::instance()->raise();
+    DEBUG_BLOCK
+
+    QProcess scanner;
+
+    scanner.start( collectionScannerLocation(), QStringList( "--version" ) );
+    scanner.waitForFinished();
+
+    const QString version = scanner.readAllStandardOutput().trimmed();
+
+    if( version != AMAROK_VERSION  )
+    {
+        KMessageBox::error( 0, i18n( "<p>The version of the 'amarokcollectionscanner' tool\n"
+                                     "does not match your Amarok version.</p>"
+                                     "<p>Please note that Collection Scanning may not work correctly.</p>" ) );
+    }
+}
+
+QString App::collectionScannerLocation()  // static
+{
+    QString scannerPath = KStandardDirs::findExe( "amarokcollectionscanner" );
+
+    // If the binary is not in $PATH, then search in the application folder too
+    if( scannerPath.isEmpty() )
+        scannerPath = applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
+
+    return scannerPath;
 }
 
 void App::slotConfigAmarok( const QString& page )

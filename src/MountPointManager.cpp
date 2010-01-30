@@ -352,38 +352,37 @@ MountPointManager::collectionFolders()
     //TODO max: cache data
     QStringList result;
     KConfigGroup folders = Amarok::config( "Collection Folders" );
-    IdList ids = getMountedDeviceIds();
+    const IdList ids = getMountedDeviceIds();
+
     foreach( int id, ids )
     {
         const QStringList rpaths = folders.readEntry( QString::number( id ), QStringList() );
         foreach( const QString &strIt, rpaths )
         {
-            QString absPath;
-            if ( strIt == "./" )
-            {
-                absPath = getMountPointForId( id );
-            }
-            else
-            {
-                absPath = getAbsolutePath( id, strIt );
-            }
+            const KUrl url = ( strIt == "./" ) ? getMountPointForId( id ) : getAbsolutePath( id, strIt );
+            const QString absPath = url.toLocalFile( KUrl::RemoveTrailingSlash );
             if ( !result.contains( absPath ) )
                 result.append( absPath );
         }
     }
-    if( result.isEmpty() )
-    {
-        const QString musicDir = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-        debug() << "QDesktopServices::MusicLocation: " << musicDir; 
 
-        if( !musicDir.isEmpty() )
+    // For users who were using QDesktopServices::MusicLocation exclusively up
+    // to v2.2.2, which did not store the location into config.
+    const KConfigGroup generalConfig = KGlobal::config()->group( "General" );
+    if( result.isEmpty() && folders.readEntry( "Use MusicLocation", true )
+                         && !generalConfig.readEntry( "First Run", true ) )
+    {
+        const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+        const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
+        const QDir dir( musicDir );
+        bool useMusicLocation( false );
+        if( dir.exists() && dir.isReadable() )
         {
-            const QDir dir( musicDir );
-            if( dir != QDir::home() && dir.exists() )
-            {
-                result << musicDir;
-            }
+            result << musicDir;
+            setCollectionFolders( result );
+            useMusicLocation = true;
         }
+        folders.writeEntry( "Use MusicLocation", useMusicLocation );
     }
     return result;
 }
@@ -391,13 +390,6 @@ MountPointManager::collectionFolders()
 void
 MountPointManager::setCollectionFolders( const QStringList &folders )
 {
-    if( folders.size() == 1 )
-    {
-        if( folders[0] == QDesktopServices::storageLocation( QDesktopServices::MusicLocation ) )
-        {
-            return;
-        }
-    }
     typedef QMap<int, QStringList> FolderMap;
     KConfigGroup folderConf = Amarok::config( "Collection Folders" );
     FolderMap folderMap;
@@ -483,7 +475,6 @@ MountPointManager::deviceAdded( const QString &udi )
     {
         Solid::Device device = devices[0];
         createHandlerFromDevice( device, udi );
-        CollectionManager::instance()->primaryCollection()->collectionUpdated();
     }
 }
 
@@ -501,8 +492,8 @@ MountPointManager::deviceRemoved( const QString &udi )
             delete dh;
             debug() << "removed device " << key;
             m_handlerMapMutex.unlock();
-            CollectionManager::instance()->primaryCollection()->collectionUpdated();
             //we found the medium which was removed, so we can abort the loop
+            emit deviceRemoved( key );
             return;
         }
     }
@@ -536,7 +527,7 @@ void MountPointManager::createHandlerFromDevice( const Solid::Device& device, co
                 m_handlerMap.insert( key, handler );
                 m_handlerMapMutex.unlock();
 //                 debug() << "added device " << key << " with mount point " << volumeAccess->mountPoint();
-//                 emit mediumConnected( key );
+                emit deviceAdded( key );
                 break;  //we found the added medium and don't have to check the other device handlers
             }
         }

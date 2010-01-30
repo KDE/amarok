@@ -128,7 +128,7 @@ PhotosApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, Pla
     Q_UNUSED( trackLength )
     DEBUG_BLOCK
 
-    m_stoppedstate = true;;
+    m_stoppedstate = true;
     m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + i18n( "No track playing" ) );
     m_widget->clear();
     m_widget->hide();

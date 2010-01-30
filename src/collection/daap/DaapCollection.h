@@ -43,7 +43,7 @@ class DaapCollectionFactory : public Amarok::CollectionFactory
 {
     Q_OBJECT
     public:
-        DaapCollectionFactory();
+        DaapCollectionFactory( QObject *parent, const QVariantList &args );
         virtual ~DaapCollectionFactory();
 
         virtual void init();

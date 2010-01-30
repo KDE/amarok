@@ -181,7 +181,7 @@ TimecodeTrack::prettyUrl() const
 AlbumPtr
 TimecodeTrack::album() const
 {
-    return AlbumPtr::staticCast( m_album );;
+    return AlbumPtr::staticCast( m_album );
 }
 
 bool
@@ -199,25 +199,25 @@ TimecodeTrack::isPlayable() const
 ArtistPtr
 TimecodeTrack::artist() const
 {
-    return ArtistPtr::staticCast( m_artist );;
+    return ArtistPtr::staticCast( m_artist );
 }
 
 GenrePtr
 TimecodeTrack::genre() const
 {
-    return GenrePtr::staticCast( m_genre );;
+    return GenrePtr::staticCast( m_genre );
 }
 
 ComposerPtr
 TimecodeTrack::composer() const
 {
-    return ComposerPtr::staticCast( m_composer );;
+    return ComposerPtr::staticCast( m_composer );
 }
 
 YearPtr
 TimecodeTrack::year() const
 {
-    return YearPtr::staticCast( m_year );;
+    return YearPtr::staticCast( m_year );
 }
 
 float 
