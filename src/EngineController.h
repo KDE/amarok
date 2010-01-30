@@ -78,6 +78,11 @@ public:
      */
     static bool canDecode( const KUrl& );
 
+    /**
+     * Returns a list of backend supported mime types.
+     */
+    static QStringList supportedMimeTypes();
+
     /** @return track position (elapsed time) in seconds */
     int trackPosition() const;
 
