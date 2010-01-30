@@ -17,60 +17,38 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA            *
  ***************************************************************************/
 
-#include "ktooltipitem.h"
-#include "ktooltip_p.h"
+#ifndef KTOOLTIP_H
+#define KTOOLTIP_H
 
-#include <QIcon>
+#include <tooltips/KToolTipItem.h>
 
-class KToolTipItemPrivate
+#include <QStyle>
+#include <QFontMetrics>
+class KToolTipDelegate;
+
+/**
+ * KToolTip provides customizable tooltips that can have animations as well as an alpha
+ * channel, allowing for dynamic transparency effects.
+ *
+ * ARGB tooltips work on X11 even when the application isn't using the ARGB visual.
+ */
+namespace KToolTip
 {
-public:
-    QMap<int, QVariant> map;
-    int type;
-};
+    void showText(const QPoint &pos, const QString &text, QWidget *widget, const QRect &rect);
+    void showText(const QPoint &pos, const QString &text, QWidget *widget = 0);
 
-KToolTipItem::KToolTipItem(const QString &text, int type)
-    : d(new KToolTipItemPrivate)
-{
-    d->map[Qt::DisplayRole] = text;
-    d->type = type;
+    /**
+     * Shows the tip @p item at the global position indicated by @p pos.
+     *
+     * Ownership of the item is transferred to KToolTip. The item will be deleted
+     * automatically when it is hidden.
+     *
+     * The tip is shown immediately when this function is called.
+     */
+    void showTip(const QPoint &pos, KToolTipItem *item);
+    void hideTip();
+
+    void setToolTipDelegate(KToolTipDelegate *delegate);
 }
 
-KToolTipItem::KToolTipItem(const QIcon &icon, const QString &text, int type)
-    : d(new KToolTipItemPrivate)
-{
-    d->map[Qt::DecorationRole] = icon;
-    d->map[Qt::DisplayRole]    = text;
-    d->type = type;
-}
-
-KToolTipItem::~KToolTipItem()
-{
-    delete d;
-}
-
-int KToolTipItem::type() const
-{
-    return d->type;
-}
-
-QString KToolTipItem::text() const
-{
-    return data(Qt::DisplayRole).toString();
-}
-
-QIcon KToolTipItem::icon() const
-{
-    return qvariant_cast<QIcon>(data(Qt::DecorationRole));
-}
-
-QVariant KToolTipItem::data(int role) const
-{
-    return d->map.value(role);
-}
-
-void KToolTipItem::setData(int role, const QVariant &data)
-{
-    d->map[role] = data;
-    KToolTipManager::instance()->update();
-}
+#endif

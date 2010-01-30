@@ -45,7 +45,7 @@
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
-#include "tooltips/tooltipmanager.h"
+#include "tooltips/ToolTipManager.h"
 
 #include <KApplication>
 #include <KMenu>

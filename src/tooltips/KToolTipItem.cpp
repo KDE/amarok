@@ -1,6 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2008 by Simon St James <kdedevel@etotheipiplusone.com>  *
- *   Copyright (C) 2008 Oleksandr Khayrullin <saniokh@gmail.com>           *
+ *   Copyright (C) 2008 by Fredrik Höglund <fredrik@kde.org>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,30 +17,60 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA            *
  ***************************************************************************/
 
-// NOTE: proper documentation will be added once the code is better developed.
+#include "KToolTipItem.h"
+#include "KToolTip_p.h"
 
-#ifndef AMAROKTOOLTIP_H
-#define AMAROKTOOLTIP_H
+#include <QIcon>
 
-#include <tooltips/ktooltip.h>
-#include <tooltips/kformattedballoontipdelegate.h>
-
-#include <QtCore/QObject>
-
-class KFileItem;
-class QPixmap;
-
-const int PREVIEW_WIDTH = 256;
-const int PREVIEW_HEIGHT = 256;
-
-
-class AmarokBalloonTooltipDelegate : public KFormattedBalloonTipDelegate
+class KToolTipItemPrivate
 {
 public:
-    AmarokBalloonTooltipDelegate();
-    virtual ~AmarokBalloonTooltipDelegate();
-
-    virtual QSize sizeHint(const KStyleOptionToolTip& option, const KToolTipItem& item) const;
-    virtual void paint(QPainter* painter, const KStyleOptionToolTip& option, const KToolTipItem& item) const;
+    QMap<int, QVariant> map;
+    int type;
 };
-#endif
+
+KToolTipItem::KToolTipItem(const QString &text, int type)
+    : d(new KToolTipItemPrivate)
+{
+    d->map[Qt::DisplayRole] = text;
+    d->type = type;
+}
+
+KToolTipItem::KToolTipItem(const QIcon &icon, const QString &text, int type)
+    : d(new KToolTipItemPrivate)
+{
+    d->map[Qt::DecorationRole] = icon;
+    d->map[Qt::DisplayRole]    = text;
+    d->type = type;
+}
+
+KToolTipItem::~KToolTipItem()
+{
+    delete d;
+}
+
+int KToolTipItem::type() const
+{
+    return d->type;
+}
+
+QString KToolTipItem::text() const
+{
+    return data(Qt::DisplayRole).toString();
+}
+
+QIcon KToolTipItem::icon() const
+{
+    return qvariant_cast<QIcon>(data(Qt::DecorationRole));
+}
+
+QVariant KToolTipItem::data(int role) const
+{
+    return d->map.value(role);
+}
+
+void KToolTipItem::setData(int role, const QVariant &data)
+{
+    d->map[role] = data;
+    KToolTipManager::instance()->update();
+}

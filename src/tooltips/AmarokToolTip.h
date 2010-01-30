@@ -18,36 +18,30 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA            *
  ***************************************************************************/
 
-#include "amaroktooltip.h"
+// NOTE: proper documentation will be added once the code is better developed.
 
-#include <kicon.h>
-#include <kio/previewjob.h>
-#include <kfileitem.h>
+#ifndef AMAROKTOOLTIP_H
+#define AMAROKTOOLTIP_H
 
-#include <QtGui/QPixmap>
+#include <tooltips/KToolTip.h>
+#include <tooltips/KFormattedBalloonTipDelegate.h>
 
-AmarokBalloonTooltipDelegate::AmarokBalloonTooltipDelegate()
+#include <QtCore/QObject>
+
+class KFileItem;
+class QPixmap;
+
+const int PREVIEW_WIDTH = 256;
+const int PREVIEW_HEIGHT = 256;
+
+
+class AmarokBalloonTooltipDelegate : public KFormattedBalloonTipDelegate
 {
-}
+public:
+    AmarokBalloonTooltipDelegate();
+    virtual ~AmarokBalloonTooltipDelegate();
 
-AmarokBalloonTooltipDelegate::~AmarokBalloonTooltipDelegate()
-{
-}
-
-// Delegate everything to the base class, after re-setting the decorationSize
-// to the preview size.
-QSize AmarokBalloonTooltipDelegate::sizeHint(const KStyleOptionToolTip& option, const KToolTipItem& item) const
-{
-    KStyleOptionToolTip updatedStyleOption = option;
-    updatedStyleOption.decorationSize = QSize(PREVIEW_WIDTH, PREVIEW_HEIGHT);
-    return KFormattedBalloonTipDelegate::sizeHint(updatedStyleOption, item);
-}
-
-void AmarokBalloonTooltipDelegate::paint(QPainter* painter,
-                                          const KStyleOptionToolTip& option,
-                                          const KToolTipItem& item) const
-{
-    KStyleOptionToolTip updatedStyleOption = option;
-    updatedStyleOption.decorationSize = QSize(PREVIEW_WIDTH, PREVIEW_HEIGHT);
-    return KFormattedBalloonTipDelegate::paint(painter, updatedStyleOption, item);
-}
+    virtual QSize sizeHint(const KStyleOptionToolTip& option, const KToolTipItem& item) const;
+    virtual void paint(QPainter* painter, const KStyleOptionToolTip& option, const KToolTipItem& item) const;
+};
+#endif

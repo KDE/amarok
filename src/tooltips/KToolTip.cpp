@@ -17,9 +17,9 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA            *
  ***************************************************************************/
 
-#include "ktooltip.h"
-#include "ktooltip_p.h"
-#include "ktooltipdelegate.h"
+#include "KToolTip.h"
+#include "KToolTip_p.h"
+#include "KToolTipDelegate.h"
 
 #include <QApplication>
 #include <QPainter>

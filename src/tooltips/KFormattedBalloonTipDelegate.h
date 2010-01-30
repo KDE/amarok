@@ -22,7 +22,7 @@
 #ifndef KFORMATTEDBALLOONTIPDELEGATE_H
 #define KFORMATTEDBALLOONTIPDELEGATE_H
 
-#include <tooltips/ktooltipdelegate.h>
+#include <tooltips/KToolTipDelegate.h>
 #include <QPainter>
 
 class KFormattedBalloonTipDelegate : public KToolTipDelegate
