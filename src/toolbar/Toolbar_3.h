@@ -83,13 +83,13 @@ private:
     
 
     QBoxLayout *m_progressLayout;
-    QLabel *m_timeLabel;
+    QLabel *m_timeLabel, *m_remainingTimeLabel;
     Amarok::TimeSlider *m_slider;
     QToolBar *m_trackActionBar;
     
     VolumeDial *m_volume;
     
-    int m_lastTime, m_dragStartX, m_dragLastX, m_trackBarAnimationTimer;
+    int m_lastTime, m_lastRemainingTime, m_dragStartX, m_dragLastX, m_trackBarAnimationTimer;
     Phonon::State m_currentEngineState;
 };
 
