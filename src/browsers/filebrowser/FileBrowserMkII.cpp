@@ -23,9 +23,9 @@
 
 
 #include <KLineEdit>
-
+#include <KDirModel>
+#include <KDirLister>
 #include <QDir>
-#include <QFileSystemModel>
 
 FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
     : BrowserCategory( name, parent )
@@ -38,21 +38,19 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
-    
-    m_fileSystemModel = new QFileSystemModel( this );
-    m_fileSystemModel->setRootPath( QDir::homePath() );
-    m_fileSystemModel->setNameFilterDisables( false );
-    m_fileSystemModel->setFilter( QDir::AllEntries );
+
+    QStringList namFilters;
+
+    m_kdirModel = new KDirModel( this );
+    m_kdirModel->dirLister()->openUrl( KUrl( QDir::homePath() ) );
 
     debug() << "home path: " <<  QDir::homePath();
 
     m_fileView = new FileView( this );
-
-    debug() << "root index: " << m_fileSystemModel->index( QDir::homePath() ).row();
     
 
-    m_fileView->setModel( m_fileSystemModel );
-    m_fileView->setRootIndex( m_fileSystemModel->index( QDir::homePath() ) );
+    m_fileView->setModel( m_kdirModel );
+    m_fileView->setRootIndex( m_kdirModel->indexForUrl( KUrl( QDir::homePath() ) ) );
 
     m_fileView->setDragEnabled( true );
     m_fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -64,15 +62,15 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 void FileBrowserMkII::itemActivated( const QModelIndex &index )
 {
     DEBUG_BLOCK
-    KUrl filePath = KUrl( m_fileSystemModel->filePath( index ) );
+    KUrl filePath = KUrl( m_kdirModel->itemForIndex( index ).url() );
 
     debug() << "activated url: " << filePath.url();
     debug() << "filename: " << filePath.fileName();
 
-    if( m_fileSystemModel->isDir( index ) ) {
+    if( m_kdirModel->itemForIndex( index ).isDir() ) {
         debug() << "setting root path to: " << filePath.path();
-        m_fileSystemModel->setRootPath( filePath.path() );
-        m_fileView->setRootIndex( m_fileSystemModel->index( filePath.path() ) );
+        m_kdirModel->dirLister()->openUrl( filePath );
+        m_fileView->setRootIndex( m_kdirModel->indexForUrl( filePath ) );
     }
     else
     {
@@ -102,6 +100,6 @@ void FileBrowserMkII::slotFilterNow()
 
     QStringList filters;
     filters << m_currentFilter;
-    
-    m_fileSystemModel->setNameFilters( filters );
+
+//     m_fileSystemModel->setNameFilters( filters );
 }

@@ -23,7 +23,7 @@
 
 #include "widgets/SearchWidget.h"
 
-#include <QFileSystemModel>
+#include <KDirModel>
 #include <QSortFilterProxyModel>
 #include <QTimer>
 
@@ -41,7 +41,7 @@ protected slots:
 
 private:
     SearchWidget             *m_searchWidget;
-    QFileSystemModel         *m_fileSystemModel;
+    KDirModel                *m_kdirModel;
     QSortFilterProxyModel    *m_proxyModel;
     DirectoryLoader          *m_directoryLoader;
 
