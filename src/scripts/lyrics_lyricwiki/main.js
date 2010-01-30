@@ -115,7 +115,7 @@ function onFinished( response )
                     stripend = response.indexOf( "</" + element + ">", stripend + 1 );
                     nextStart = response.indexOf( "<" + element, nextStart + 1 );
                 }
-                response = response.substring( 0, stripstart ) + response.substring( stripend + 4 + element.length );
+                response = response.substring( 0, stripstart ) + response.substring( stripend + 3 + element.length );
             }
             // parse the relevant part of the html source of the returned page
             var pos = response.indexOf( "lyricbox" );
