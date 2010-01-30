@@ -57,9 +57,15 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
     m_fileView->setDragEnabled( true );
     m_fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
+    readConfig();
+
     connect( m_fileView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
 }
 
+FileBrowserMkII::~FileBrowserMkII()
+{
+    writeConfig();
+}
 
 void FileBrowserMkII::itemActivated( const QModelIndex &index )
 {
@@ -103,4 +109,21 @@ void FileBrowserMkII::slotFilterNow()
 
     QStringList filters;
     filters << m_currentFilter;
+}
+
+void FileBrowserMkII::readConfig()
+{
+    DEBUG_BLOCK
+
+    KConfigGroup config = Amarok::config( "File Browser" );
+
+    m_kdirModel->dirLister()->openUrl( KUrl( config.readEntry( "Current Directory" ) ) );
+}
+
+void FileBrowserMkII::writeConfig()
+{
+    DEBUG_BLOCK
+    KConfigGroup config = Amarok::config( "File Browser" );
+    config.writeEntry( "Current Directory", m_kdirModel->dirLister()->url().toLocalFile() );
+    config.sync();
 }

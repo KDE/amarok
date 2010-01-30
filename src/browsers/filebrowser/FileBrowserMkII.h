@@ -33,6 +33,7 @@ class FileBrowserMkII : public BrowserCategory
     Q_OBJECT
 public:
     FileBrowserMkII( const char * name, QWidget *parent );
+    ~FileBrowserMkII();
 
 protected slots:
     void itemActivated( const QModelIndex &index );
@@ -41,6 +42,9 @@ protected slots:
     void slotFilterNow();
 
 private:
+    void readConfig();
+    void writeConfig();
+
     SearchWidget             *m_searchWidget;
     KDirModel                *m_kdirModel;
     QSortFilterProxyModel    *m_proxyModel;
