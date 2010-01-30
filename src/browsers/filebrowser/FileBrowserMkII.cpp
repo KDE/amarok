@@ -40,21 +40,19 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
 
-    QStringList namFilters;
-
     m_kdirModel = new KDirModel( this );
     m_kdirModel->dirLister()->openUrl( KUrl( QDir::homePath() ) );
 
     m_mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
     m_mimeFilterProxyModel->setSourceModel( m_kdirModel );
 
+    m_proxyModel = new QSortFilterProxyModel( this );
+    m_proxyModel->setSourceModel( m_mimeFilterProxyModel );
+
     debug() << "home path: " <<  QDir::homePath();
 
     m_fileView = new FileView( this );
-    m_fileView->setModel( m_mimeFilterProxyModel );
-
-    QModelIndex mimed_index = m_mimeFilterProxyModel->mapFromSource( m_kdirModel->indexForUrl( KUrl( QDir::homePath() ) ) );
-    m_fileView->setRootIndex( mimed_index );
+    m_fileView->setModel( m_proxyModel );
 
     m_fileView->setDragEnabled( true );
     m_fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -66,17 +64,16 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 void FileBrowserMkII::itemActivated( const QModelIndex &index )
 {
     DEBUG_BLOCK
-    QModelIndex model_index = m_mimeFilterProxyModel->mapToSource( index );
-    KUrl filePath = KUrl( m_kdirModel->itemForIndex( model_index ).url() );
+    KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+    KUrl filePath = file.url();
 
     debug() << "activated url: " << filePath.url();
     debug() << "filename: " << filePath.fileName();
 
-    if( m_kdirModel->itemForIndex( model_index ).isDir() ) {
+    if( file.isDir() ) {
         debug() << "setting root path to: " << filePath.path();
         m_kdirModel->dirLister()->openUrl( filePath );
-        QModelIndex mimed_index = m_mimeFilterProxyModel->mapFromSource( m_kdirModel->indexForUrl( filePath ) );
-        m_fileView->setRootIndex( mimed_index );
+        m_fileView->setRootIndex( index );
     }
     else
     {
@@ -106,6 +103,4 @@ void FileBrowserMkII::slotFilterNow()
 
     QStringList filters;
     filters << m_currentFilter;
-
-//     m_fileSystemModel->setNameFilters( filters );
 }
