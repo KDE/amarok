@@ -19,6 +19,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "FileView.h"
+#include "MimeTypeFilterProxyModel.h"
 #include "playlist/PlaylistController.h"
 
 
@@ -44,13 +45,16 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
     m_kdirModel = new KDirModel( this );
     m_kdirModel->dirLister()->openUrl( KUrl( QDir::homePath() ) );
 
+    m_mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
+    m_mimeFilterProxyModel->setSourceModel( m_kdirModel );
+
     debug() << "home path: " <<  QDir::homePath();
 
     m_fileView = new FileView( this );
-    
+    m_fileView->setModel( m_mimeFilterProxyModel );
 
-    m_fileView->setModel( m_kdirModel );
-    m_fileView->setRootIndex( m_kdirModel->indexForUrl( KUrl( QDir::homePath() ) ) );
+    QModelIndex mimed_index = m_mimeFilterProxyModel->mapFromSource( m_kdirModel->indexForUrl( KUrl( QDir::homePath() ) ) );
+    m_fileView->setRootIndex( mimed_index );
 
     m_fileView->setDragEnabled( true );
     m_fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -62,15 +66,17 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 void FileBrowserMkII::itemActivated( const QModelIndex &index )
 {
     DEBUG_BLOCK
-    KUrl filePath = KUrl( m_kdirModel->itemForIndex( index ).url() );
+    QModelIndex model_index = m_mimeFilterProxyModel->mapToSource( index );
+    KUrl filePath = KUrl( m_kdirModel->itemForIndex( model_index ).url() );
 
     debug() << "activated url: " << filePath.url();
     debug() << "filename: " << filePath.fileName();
 
-    if( m_kdirModel->itemForIndex( index ).isDir() ) {
+    if( m_kdirModel->itemForIndex( model_index ).isDir() ) {
         debug() << "setting root path to: " << filePath.path();
         m_kdirModel->dirLister()->openUrl( filePath );
-        m_fileView->setRootIndex( m_kdirModel->indexForUrl( filePath ) );
+        QModelIndex mimed_index = m_mimeFilterProxyModel->mapFromSource( m_kdirModel->indexForUrl( filePath ) );
+        m_fileView->setRootIndex( mimed_index );
     }
     else
     {

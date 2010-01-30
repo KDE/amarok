@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,44 +14,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef FILEBROWSERMKII_H
-#define FILEBROWSERMKII_H
-
-#include "BrowserCategory.h"
-#include "DirectoryLoader.h"
-#include "FileView.h"
 #include "MimeTypeFilterProxyModel.h"
 
-#include "widgets/SearchWidget.h"
-
 #include <KDirModel>
-#include <QSortFilterProxyModel>
-#include <QTimer>
+#include <KFileItem>
+#include <kfile.h>
 
-class FileBrowserMkII : public BrowserCategory
+MimeTypeFilterProxyModel::MimeTypeFilterProxyModel( QStringList mimeList, QObject *parent )
+    : QSortFilterProxyModel( parent )
+    , m_mimeList( mimeList )
 {
-    Q_OBJECT
-public:
-    FileBrowserMkII( const char * name, QWidget *parent );
+}
 
-protected slots:
-    void itemActivated( const QModelIndex &index );
-    
-    void  slotSetFilterTimeout();
-    void slotFilterNow();
+bool
+MimeTypeFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
+{
+    QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
 
-private:
-    SearchWidget             *m_searchWidget;
-    KDirModel                *m_kdirModel;
-    QSortFilterProxyModel    *m_proxyModel;
-    MimeTypeFilterProxyModel *m_mimeFilterProxyModel;
-    DirectoryLoader          *m_directoryLoader;
+    QVariant qvar = index.data( KDirModel::FileItemRole );
+    if( !qvar.canConvert<KFileItem>() )
+        return false;
 
-    QTimer                    m_filterTimer;
-    QString                   m_currentFilter;
+    KFileItem item = qvar.value<KFileItem>();
 
-    FileView                 *m_fileView;
-        
-};
+    if( item.isDir() || m_mimeList.contains( item.mimetype() ) )
+        return true;
+    return false;
+}
 
-#endif // FILEBROWSERMKII_H

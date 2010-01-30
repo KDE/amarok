@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,44 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef FILEBROWSERMKII_H
-#define FILEBROWSERMKII_H
+#ifndef MIMETYPEFILTERPROXYMODEL_H
+#define MIMETYPEFILTERPROXYMODEL_H
 
-#include "BrowserCategory.h"
-#include "DirectoryLoader.h"
-#include "FileView.h"
-#include "MimeTypeFilterProxyModel.h"
-
-#include "widgets/SearchWidget.h"
-
-#include <KDirModel>
 #include <QSortFilterProxyModel>
-#include <QTimer>
 
-class FileBrowserMkII : public BrowserCategory
+#include <QStringList>
+
+/**
+ * @class MimeTypeFilterProxyModel a proxy model to filter out KFileItem's that do not match a supplied set of mimetypes
+ * Designed to be used with KDirOperator as it uses KDirModel::FileItemRole to retrieve the KFileItem
+ */
+class MimeTypeFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
-public:
-    FileBrowserMkII( const char * name, QWidget *parent );
 
-protected slots:
-    void itemActivated( const QModelIndex &index );
-    
-    void  slotSetFilterTimeout();
-    void slotFilterNow();
+public:
+    /**
+     * MimeTypeFilterProxyModel
+     * @param mimeList the valid mimetypes
+     */
+     MimeTypeFilterProxyModel( QStringList mimeList, QObject *parent = 0 );
+
+
+protected:
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const;
 
 private:
-    SearchWidget             *m_searchWidget;
-    KDirModel                *m_kdirModel;
-    QSortFilterProxyModel    *m_proxyModel;
-    MimeTypeFilterProxyModel *m_mimeFilterProxyModel;
-    DirectoryLoader          *m_directoryLoader;
-
-    QTimer                    m_filterTimer;
-    QString                   m_currentFilter;
-
-    FileView                 *m_fileView;
-        
+    QStringList m_mimeList;
 };
 
-#endif // FILEBROWSERMKII_H
+#endif // MIMETYPEFILTERPROXYMODEL_H
