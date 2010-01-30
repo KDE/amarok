@@ -26,7 +26,6 @@
 #include "amarokurls/BookmarkMetaActions.h"
 
 #include <KEncodingProber>
-#include <KSharedPtr>
 
 #include <QAction>
 #include <QDir>
@@ -36,7 +35,9 @@
 #include <QTextCodec>
 
 using namespace MetaCue;
+
 namespace MetaCue {
+
 class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
 {
     public:
@@ -55,18 +56,25 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
         virtual BookmarkList loadTimecodes()
         {
             DEBUG_BLOCK
+
             CueFileItemMap map = m_track->cueItems();
             debug() << " cue has " << map.size() << " entries";
             QMapIterator<long, CueFileItem> it( map );
             BookmarkList list;
-            while ( it.hasNext() ) {
+
+            while ( it.hasNext() )
+            {
                 it.next();
                 debug() << " seconds : " << it.key();
-                AmarokUrl aurl = PlayUrlGenerator::instance()->createTrackBookmark( Meta::TrackPtr( m_track.data() ), it.key(), it.value().getTitle() );
-                AmarokUrlPtr url( new AmarokUrl( aurl.url() ) );
-                url->setName( aurl.name() ); // TODO AmarokUrl should really have a copy constructor
+
+                AmarokUrl aUrl;
+                rUrl = PlayUrlGenerator::instance()->createTrackBookmark( Meta::TrackPtr( m_track.data() ), it.key(), it.value().getTitle() );
+                AmarokUrlPtr url( new AmarokUrl( aUrl.url() ) );
+                url->setName( aUrl.name() ); // TODO AmarokUrl should really have a copy constructor
+
                 list << url;
             }
+
             return list;
         }
 
@@ -75,12 +83,12 @@ class TimecodeLoadCapabilityImpl : public Meta::TimecodeLoadCapability
 };
 }
 Track::Track ( const KUrl &url, const KUrl &cuefile )
-        : MetaFile::Track ( url )
-        , EngineObserver ( The::engineController() )
-        , m_cuefile ( cuefile )
-        , m_lastSeekPos ( -1 )
-        , m_cueitems()
-        , d ( new Track::Private ( this ) )
+    : MetaFile::Track ( url )
+    , EngineObserver ( The::engineController() )
+    , m_cuefile ( cuefile )
+    , m_lastSeekPos ( -1 )
+    , m_cueitems()
+    , d ( new Track::Private ( this ) )
 {
     DEBUG_BLOCK
 

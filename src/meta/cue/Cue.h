@@ -22,10 +22,8 @@
 #include "EngineController.h"
 #include "EngineObserver.h"
 
-#include <QObject>
 #include <QMap>
 #include <QSet>
-#include <QString>
 
 /*
 Method for locating cue files:
@@ -41,55 +39,55 @@ if ( track.url.isLocalFile() )
 namespace MetaCue
 {
 
-
 class AMAROK_EXPORT Track : public MetaFile::Track, public EngineObserver
 {
-public:
-    class Private;
+    public:
+        class Private;
 
-    Track ( const KUrl &url, const KUrl &cuefile );
-    ~Track();
+        Track ( const KUrl &url, const KUrl &cuefile );
+        virtual ~Track();
 
-    virtual CueFileItemMap cueItems() const;
+        virtual CueFileItemMap cueItems() const;
 
-    virtual void engineTrackPositionChanged ( qint64 /*position*/, bool /*userSeek*/ );
+        virtual void engineTrackPositionChanged ( qint64 /*position*/, bool /*userSeek*/ );
 
-    virtual void subscribe ( Meta::Observer *observer );
-    virtual void unsubscribe ( Meta::Observer *observer );
+        virtual void subscribe ( Meta::Observer *observer );
+        virtual void unsubscribe ( Meta::Observer *observer );
+
+        //methods inherited from Meta::MetaBase
+        virtual QString name() const;
+        virtual QString prettyName() const;
+        virtual QString fullPrettyName() const;
+        virtual QString sortableName() const;
+
+        virtual int trackNumber() const;
+        virtual qint64 length() const;
+
+        virtual Meta::AlbumPtr album() const;
+        virtual Meta::ArtistPtr artist() const;
 
 
-    //methods inherited from Meta::MetaBase
-    virtual QString name() const;
-    virtual QString prettyName() const;
-    virtual QString fullPrettyName() const;
-    virtual QString sortableName() const;
+        virtual void setAlbum ( const QString &newAlbum );
+        virtual void setArtist ( const QString &newArtist );
+        virtual void setTitle ( const QString &newTitle );
+        virtual void setTrackNumber ( int newTrackNumber );
 
-    virtual int trackNumber() const;
-    virtual qint64 length() const;
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
-    virtual Meta::AlbumPtr album() const;
-    virtual Meta::ArtistPtr artist() const;
+    private:
+        typedef KSharedPtr<Track> TrackPtr;
 
+        void notify() const;
 
-    virtual void setAlbum ( const QString &newAlbum );
-    virtual void setArtist ( const QString &newArtist );
-    virtual void setTitle ( const QString &newTitle );
-    virtual void setTrackNumber ( int newTrackNumber );
+        KUrl m_cuefile;
+        int m_lastSeekPos; // in seconds
+        CueFileItemMap m_cueitems;
+        QSet<Meta::Observer*> m_observers;
 
-    virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
-    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
-
-private:
-    typedef KSharedPtr<Track> TrackPtr;
-
-    void notify() const;
-
-    KUrl m_cuefile;
-    int m_lastSeekPos; // in seconds
-    CueFileItemMap m_cueitems;
-    QSet<Meta::Observer*> m_observers;
-
-    Private * const d;
+        Private * const d;
 };
+
 }
-#endif
+
+#endif  // end include guard
