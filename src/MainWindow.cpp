@@ -1333,10 +1333,13 @@ MainWindow::restoreLayout()
     else
         m_dockChangesIgnored = false;
 
-
     // Ensure that only one toolbar is visible
     if( !m_toolbar3->isHidden() && !m_slimToolbar->isHidden() )
         m_slimToolbar->hide();
+
+    // Ensure that we don't end up without any toolbar (can happen after upgrading)
+    if( m_toolbar3->isHidden() && m_slimToolbar->isHidden() )
+        m_toolbar3->show();
 }
 
 void MainWindow::layoutChanged()
