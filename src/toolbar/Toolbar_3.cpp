@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Thomas Luebking <thomas.luebking@web.de>                          *
+ * Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -124,11 +125,6 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     m_progressLayout->addWidget( m_remainingTimeLabel = new QLabel( this ) );
     m_progressLayout->setAlignment( m_remainingTimeLabel, Qt::AlignVCenter | Qt::AlignLeft );
     m_remainingTimeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignLeft );
-
-    m_progressLayout->addWidget( m_trackActionBar = new QToolBar( this ) );
-    m_trackActionBar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    m_trackActionBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
-    m_trackActionBar->setIconSize( QSize( 16,16 ) );
 
     m_progressLayout->addStretch( stretchAroundProgress );
     vl->addLayout( m_progressLayout );
@@ -421,8 +417,8 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
         m_trackBarAnimationTimer = 0;
     }
     setLabelTime( -1 );
-    setActionsFrom( track );
     m_trackBarSpacer->changeSize(0, m_current.label->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+
     if ( track )
     {
         m_current.key = track.data();
@@ -535,26 +531,6 @@ Toolbar_3::resizeEvent( QResizeEvent *ev )
     }
 }
 
-void
-Toolbar_3::setActionsFrom( Meta::TrackPtr track )
-{
-    m_trackActionBar->clear();
-
-    foreach ( QAction* action, The::globalCurrentTrackActions()->actions() )
-        m_trackActionBar->addAction( action );
-    
-    if ( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
-    {
-        Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
-        if ( cac )
-        {
-            QList<QAction *> currentTrackActions = cac->customActions();
-            foreach( QAction *action, currentTrackActions )
-                m_trackActionBar->addAction( action );
-        }
-        delete cac;
-    }
-}
 
 const char * timeString[4] = { "3:33", "33:33", "3:33:33", "33:33:33" };
 
@@ -578,7 +554,6 @@ void Toolbar_3::setLabelTime( int ms )
         m_timeLabel->setMinimumWidth( 0 );
         m_remainingTimeLabel->setText( QString() );
         m_remainingTimeLabel->setMinimumWidth( 0 );
-        m_trackActionBar->setMinimumWidth( 0 );
         m_lastTime = -1;
         m_lastRemainingTime = -1;
     }
@@ -593,7 +568,6 @@ void Toolbar_3::setLabelTime( int ms )
         {
             const int w = QFontMetrics( m_timeLabel->font() ).width( timeString[tf] );
             m_timeLabel->setMinimumWidth( w );
-            m_trackActionBar->setMinimumWidth( w );
         }
         
         m_lastTime = secs;
@@ -608,7 +582,6 @@ void Toolbar_3::setLabelTime( int ms )
         }
         m_lastRemainingTime = remainingSecs;
         m_remainingTimeLabel->setText( '-' + Meta::secToPrettyTime( remainingSecs ) );
-
     }
 }
 

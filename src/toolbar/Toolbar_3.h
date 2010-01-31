@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Thomas Luebking <thomas.luebking@web.de>                          *
+ * Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -60,7 +61,6 @@ private slots:
     void layoutTrackBar();
     void setLabelTime( int ms );
     void setPlaying( bool on );
-    void setActionsFrom( Meta::TrackPtr track );
     void updateBookmarks( const QString *BookmarkName );
     void updatePrevAndNext();
 
@@ -97,7 +97,6 @@ private:
     QBoxLayout *m_progressLayout;
     QLabel *m_timeLabel, *m_remainingTimeLabel;
     Amarok::TimeSlider *m_slider;
-    QToolBar *m_trackActionBar;
     
     VolumeDial *m_volume;
     
