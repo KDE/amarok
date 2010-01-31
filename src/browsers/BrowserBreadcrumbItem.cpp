@@ -105,6 +105,14 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
         {
             QAction * action = menu->addAction( KIcon(), siblingName );
             action->setProperty( "directory", siblingName );
+
+            // the current action should be bolded
+            if( siblingName == name )
+            {
+                QFont font = action->font();
+                font.setBold( true );
+                action->setFont( font );
+            }
             connect( action, SIGNAL( triggered() ), this, SLOT( activateSibling() ) );
         }
 

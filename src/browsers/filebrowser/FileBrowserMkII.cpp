@@ -208,7 +208,7 @@ void FileBrowserMkII::setupAddItems()
 
 QStringList FileBrowserMkII::siblingsForDir( const QString &path )
 {
-
+    // includes the dir itself
     DEBUG_BLOCK
     debug() << "path: " << path;
     QStringList siblings;
@@ -220,7 +220,6 @@ QStringList FileBrowserMkII::siblingsForDir( const QString &path )
         dir.cdUp();
         foreach( QString childDir, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
         {
-            if( childDir != currentName )
                 siblings << childDir;
         }
     }
