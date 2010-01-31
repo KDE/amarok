@@ -5,12 +5,12 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
-    * The playlist context menu now has a "Find in Source" action for many
-      types of track.
+    * The playlist context menu now has a "Show in Media Sources" action for
+      many types of track.
     * The collection scanner now also looks for cover images named
      "folder.*". Apparently some applications use this convention. (BR 224692)
-    * It's now possible to automatically use a USB Mass Storage device as a collection
-      when it's connected.
+    * It's now possible to automatically use a USB Mass Storage device as a
+      collection when it's connected.
     * The progress bar tooltip now shows the position in the track that the
       cursor is hovering, making it simple to jump to a specific position.
     * D-Bus: Added StopAfterCurrent method for /Player.
