@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -171,6 +172,27 @@ void FileBrowserMkII::setupAddItems()
     
     QStringList parts = m_currentPath.split( QDir::separator() );
     QString partialPath;
+    debug() << "current path" << m_currentPath;
+
+
+    /*
+     * A URL like /home/user/Music/Prince is shown as [Home] > [Music] > [Prince]
+     */
+    if( m_currentPath.startsWith( QDir::homePath() ) )
+    {
+        int idx = m_currentPath.indexOf( QDir::homePath() ) + QDir::homePath().size();
+        // everything after the homedir e.g., Music/Prince
+        QString everything_else = m_currentPath.mid( idx );
+        debug() << "everything else" << everything_else;
+        // replace parts with everything else
+        parts = everything_else.split( QDir::separator() ) ;
+        debug() << "parts" << parts;
+        partialPath = QDir::homePath();
+
+        // Add the [Home]
+        QStringList siblings = siblingsForDir( QDir::homePath() );
+        addAdditionalItem( new BrowserBreadcrumbItem( i18n( "Home" ), siblings, QDir::homePath(), this ) );
+    }
 
     foreach( QString part, parts )
     {
