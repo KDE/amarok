@@ -64,6 +64,9 @@ private slots:
 
     void testDynamicCollection();
 
+    void testSpecialCharacters_data();
+    void testSpecialCharacters();
+
 private:
     SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpm;
