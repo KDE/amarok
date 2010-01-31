@@ -20,6 +20,7 @@
 #include "BrowserCategoryList.h"
 #include "Debug.h"
 
+#include <QDir>
 #include <QMenu>
 
 BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
@@ -103,6 +104,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
         foreach( const QString &siblingName, childItems )
         {
             QAction * action = menu->addAction( KIcon(), siblingName );
+            action->setProperty( "directory", siblingName );
             connect( action, SIGNAL( triggered() ), this, SLOT( activateSibling() ) );
         }
 
@@ -124,6 +126,8 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
 
 
     connect( m_mainButton, SIGNAL( clicked( bool ) ), this, SLOT( activate() ) );
+    connect( this, SIGNAL( activated( const QString & ) ), handler, SLOT( addItemActivated( const QString & ) ) );
+
     connect( this, SIGNAL( activated( const QString & ) ), handler, SLOT( addItemActivated( const QString & ) ) );
 
     hide();
@@ -162,6 +166,17 @@ void BrowserBreadcrumbItem::activate()
 void BrowserBreadcrumbItem::activateSibling()
 {
 
+    QAction * action = dynamic_cast<QAction *>( sender() );
+
+    if( action )
+    {
+        QDir dir( m_callback );
+        dir.cdUp();
+
+        QString siblingCallback = dir.path() + QDir::separator() + action->property( "directory" ).toString();
+
+        emit activated( siblingCallback );
+    }
 }
 
 
