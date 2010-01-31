@@ -51,7 +51,7 @@
 #include <QtDebug>
 
 static const int sliderStretch = 18;
-static const QString promoString = ""; //i18n( "Amarok your Music" );
+static const QString promoString = i18n( "Rediscover Your Music" );
 static const int prevOpacity = 128;
 static const int nextOpacity = 160;
 static const int icnSize = 48;
@@ -286,7 +286,7 @@ Toolbar_3::layoutTrackBar()
     m_next.label->setOpacity( nextOpacity );
 }
 
-#define HAS_TAG(_TAG_) !track->_TAG_()->name().isEmpty()
+#define HAS_TAG(_TAG_) track->_TAG_() && !track->_TAG_()->name().isEmpty()
 #define TAG(_TAG_) track->_TAG_()->prettyName()
 #define CONTAINS_TAG(_TAG_) contains( TAG(_TAG_), Qt::CaseInsensitive )
 
@@ -577,7 +577,7 @@ void Toolbar_3::setLabelTime( int ms )
         const int remainingTF = timeFrame( remainingSecs );
         if ( remainingTF != timeFrame( m_lastRemainingTime ) )
         {
-            const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( '-' + timeString[remainingTF] );
+            const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( QString("-") + timeString[remainingTF] );
             m_remainingTimeLabel->setMinimumWidth( w );
         }
         m_lastRemainingTime = remainingSecs;
