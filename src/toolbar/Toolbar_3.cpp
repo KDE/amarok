@@ -286,7 +286,7 @@ Toolbar_3::layoutTrackBar()
     m_next.label->setOpacity( nextOpacity );
 }
 
-#define HAS_TAG(_TAG_) !track->_TAG_()->name().isEmpty()
+#define HAS_TAG(_TAG_) track->_TAG_() && !track->_TAG_()->name().isEmpty()
 #define TAG(_TAG_) track->_TAG_()->prettyName()
 #define CONTAINS_TAG(_TAG_) contains( TAG(_TAG_), Qt::CaseInsensitive )
 
