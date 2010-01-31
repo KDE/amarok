@@ -196,7 +196,6 @@ SqlQueryMaker::run()
     else
     {
         SqlQueryMakerInternal *qmi = new SqlQueryMakerInternal( m_collection );
-        debug() << "Running query : " << query();
         qmi->setQuery( query() );
         qmi->setQueryType( d->queryType );
         qmi->setResultAsDataPtrs( d->resultAsDataPtrs );
