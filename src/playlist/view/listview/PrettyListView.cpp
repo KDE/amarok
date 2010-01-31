@@ -179,7 +179,7 @@ Playlist::PrettyListView::removeSelection()
         //Select the track occupied by the first deleted track. Also move the current item to here as
         //button presses up or down wil otherwise not behave as expected.
         firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
-        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() ); 
+        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() );
         setCurrentIndex( newSelectionIndex );
         selectionModel()->select( newSelectionIndex, QItemSelectionModel::Select );
     }
@@ -654,7 +654,7 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
         QModelIndex index = model()->index( row, 0 );
         QItemSelection selItems( index, index );
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
-        
+
         if ( !filter )
         {
             QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );

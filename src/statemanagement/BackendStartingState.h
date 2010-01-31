@@ -24,9 +24,9 @@ namespace Amarok {
         Q_OBJECT
     public:
         BackendStartingState();
-        
+
         void activated();
-        
+
         virtual CollectionManager* collectionManager() const;
         virtual EngineController* engineController() const;
         virtual MountPointManager* mountPointManager() const;

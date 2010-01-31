@@ -279,7 +279,7 @@ Playlist::Actions::playlistModeChanged()
         {
             debug() << "No dynamic playlist current loaded! Creating dynamic track navigator with null playlist!";
         }
-         
+
         m_navigator = new DynamicTrackNavigator( playlist );
 
         return;
@@ -295,7 +295,7 @@ Playlist::Actions::playlistModeChanged()
         case AmarokConfig::EnumTrackProgression::RepeatTrack:
             m_navigator = new RepeatTrackNavigator();
             break;
-            
+
         case AmarokConfig::EnumTrackProgression::RepeatAlbum:
             m_navigator = new RepeatAlbumNavigator();
             break;
@@ -303,7 +303,7 @@ Playlist::Actions::playlistModeChanged()
         case AmarokConfig::EnumTrackProgression::RandomTrack:
             m_navigator = new RandomTrackNavigator();
             break;
-            
+
         case AmarokConfig::EnumTrackProgression::RandomAlbum:
             m_navigator = new RandomAlbumNavigator();
             break;

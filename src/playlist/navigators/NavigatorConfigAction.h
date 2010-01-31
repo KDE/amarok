@@ -24,7 +24,7 @@ class NavigatorConfigAction : public KAction
 {
     Q_OBJECT
 public:
-    
+
     /**
     * Constructor.
     * @param parent Parent widget.

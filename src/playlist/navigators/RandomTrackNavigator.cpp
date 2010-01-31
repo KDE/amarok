@@ -96,13 +96,13 @@ Playlist::RandomTrackNavigator::likelyNextTrack()
         return 0;
     else
     {
-        
+
         if ( noTracksLeft )
         {
             // reset when playlist finishes
             reset();
         }
-        
+
         quint64 requestedTrack = 0;
         QList<quint64> *list = 0;
         if( !m_replayedRows.isEmpty() )
@@ -115,12 +115,12 @@ Playlist::RandomTrackNavigator::likelyNextTrack()
             requestedTrack = m_unplayedRows.first();
             list = &m_unplayedRows;
         }
-        
+
         if( requestedTrack == m_model->activeId() )
         {
             list->removeFirst();
             m_playedRows.prepend( requestedTrack );
-            
+
             if( !m_replayedRows.isEmpty() )
                 requestedTrack = m_replayedRows.first();
             else if( !m_unplayedRows.isEmpty() )
@@ -128,7 +128,7 @@ Playlist::RandomTrackNavigator::likelyNextTrack()
             else
                 requestedTrack = 0;
         }
-        
+
         return requestedTrack;
     }
 }
@@ -197,7 +197,7 @@ Playlist::RandomTrackNavigator::requestNextTrack()
         if( requestedTrack == m_model->activeId() )
         {
             m_playedRows.prepend( requestedTrack );
-            
+
             if( !m_replayedRows.isEmpty() )
                 requestedTrack = m_replayedRows.takeFirst();
             else if( !m_unplayedRows.isEmpty() )

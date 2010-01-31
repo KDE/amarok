@@ -138,7 +138,7 @@ Playlist::Widget::Widget( QWidget* parent )
                  );
 
         plBar->addAction( m_savePlaylistMenu );
-        
+
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
