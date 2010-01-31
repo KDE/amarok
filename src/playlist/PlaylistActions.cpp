@@ -73,6 +73,7 @@ Playlist::Actions::Actions()
         , m_waitingForNextTrack( false )
 {
     DEBUG_BLOCK
+
     m_topmostModel = Playlist::ModelStack::instance()->top();
     playlistModeChanged(); // sets m_navigator.
     m_nextTrackCandidate = m_navigator->requestNextTrack();

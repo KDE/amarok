@@ -45,10 +45,9 @@
 #include <QStringList>
 #include <QTextDocument>
 
-
-
 #include <typeinfo>
 #include <ReadLabelCapability.h>
+
 
 Playlist::Model::Model( QObject *parent )
         : QAbstractListModel( parent )
@@ -723,6 +722,7 @@ Playlist::Model::prettyColumnName( Column index ) //static
 
 }
 
+
 ////////////
 //Private Methods
 ////////////
@@ -798,6 +798,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 }
+
 
 void
 Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
@@ -919,7 +920,6 @@ void Playlist::Model::clearCommand()
     m_activeRow = -1;
 
     emit removedIds( delIds );
-
 }
 
 
@@ -964,6 +964,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
 
     //update the active row
 }
+
 
 void Playlist::Model::setAllUnplayed()
 {
