@@ -179,7 +179,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     {
         if( m_findInSourceAction == 0 )
         {
-            m_findInSourceAction = new QAction( KIcon( "edit-find" ), i18n( "Find in Source" ), parent );
+            m_findInSourceAction = new QAction( KIcon( "edit-find" ), i18n( "Show in Media Sources" ), parent );
             QObject::connect( m_findInSourceAction, SIGNAL( triggered() ), parent, SLOT( findInSource() ) );
         }
         actions << m_findInSourceAction;
