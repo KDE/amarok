@@ -98,37 +98,37 @@ public:
      * Sets the event's artists
      * @param artists the list of the participants of the event
      */
-    void setArtists( const QStringList artists );
+    void setArtists( const QStringList &artists );
 
     /**
      * Sets the event's name
      * @param name the event's name
      */
-    void setName( const QString name );
+    void setName( const QString &name );
 
     /**
      * Sets the event's date
      * @param date the event's date
      */
-    void setDate( const QDateTime date );
+    void setDate( const QDateTime &date );
 
     /**
      * Sets the event's location
      * @param location the event's location
      */
-    void setLocation( const QString location );
+    void setLocation( const QString &location );
 
     /**
      * Sets the event's image
      * @param smallImageUrl the URL to the event's image
      */
-    void setSmallImageUrl( const KUrl smallImageUrl );
+    void setSmallImageUrl( const KUrl &smallImageUrl );
 
     /**
      * Sets the event's page
      * @param url the URL to the event's page
      */
-    void setUrl( const KUrl url );
+    void setUrl( const KUrl &url );
     
 };
 

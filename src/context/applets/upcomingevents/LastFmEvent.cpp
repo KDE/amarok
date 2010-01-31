@@ -73,32 +73,32 @@ KUrl LastFmEvent::url() const
     return m_url;
 }
 
-void LastFmEvent::setArtists( const QStringList artists )
+void LastFmEvent::setArtists( const QStringList &artists )
 {
     m_artists = artists;
 }
 
-void LastFmEvent::setDate( const QDateTime date )
+void LastFmEvent::setDate( const QDateTime &date )
 {
     m_date = date;
 }
 
-void LastFmEvent::setName( const QString name )
+void LastFmEvent::setName( const QString &name )
 {
     m_name = name;
 }
 
-void LastFmEvent::setLocation( const QString location )
+void LastFmEvent::setLocation( const QString &location )
 {
     m_location = location;
 }
 
-void LastFmEvent::setSmallImageUrl( const KUrl smallImageUrl )
+void LastFmEvent::setSmallImageUrl( const KUrl &smallImageUrl )
 {
     m_smallImageUrl = smallImageUrl;
 }
 
-void LastFmEvent::setUrl( const KUrl url )
+void LastFmEvent::setUrl( const KUrl &url )
 {
     m_url = url;
 }
