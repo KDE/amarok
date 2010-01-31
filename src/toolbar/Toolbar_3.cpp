@@ -577,7 +577,7 @@ void Toolbar_3::setLabelTime( int ms )
         const int remainingTF = timeFrame( remainingSecs );
         if ( remainingTF != timeFrame( m_lastRemainingTime ) )
         {
-            const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( '-' + timeString[remainingTF] );
+            const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( QString("-") + timeString[remainingTF] );
             m_remainingTimeLabel->setMinimumWidth( w );
         }
         m_lastRemainingTime = remainingSecs;
