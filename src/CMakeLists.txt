@@ -628,7 +628,6 @@ set(amaroklib_LIB_SRCS
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     toolbar/CurrentTrackToolbar.cpp
-    toolbar/MainToolbar.cpp
     toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
     toolbar/Toolbar_3.cpp
