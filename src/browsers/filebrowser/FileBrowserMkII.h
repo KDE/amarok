@@ -46,6 +46,8 @@ protected slots:
 
     void addItemActivated( const QString &callback );
 
+    virtual void reActivate();
+
 
 private:
     void readConfig();

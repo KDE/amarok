@@ -77,6 +77,10 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     {
         connect( m_mainButton, SIGNAL( clicked( bool ) ), list, SLOT( home() ) );
     }
+    else  
+    {
+        connect( m_mainButton, SIGNAL( clicked( bool ) ), category, SLOT( reActivate() ) );
+    }
 
     hide();
 

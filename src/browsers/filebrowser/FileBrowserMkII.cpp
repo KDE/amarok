@@ -204,3 +204,14 @@ QStringList FileBrowserMkII::siblingsForDir( const QString &path )
     }
     return siblings;
 }
+
+void FileBrowserMkII::reActivate()
+{
+    DEBUG_BLOCK
+    
+    //go to root:
+    m_kdirModel->dirLister()->openUrl( KUrl( QDir::rootPath() ) );
+    m_currentPath = QDir::rootPath();
+    setupAddItems();
+    activate();
+}

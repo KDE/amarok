@@ -118,6 +118,9 @@ public:
 public slots:
     void activate();
 
+    //Called if this category itself is re-clicked in the breadcrumb
+    virtual void reActivate() {}
+
 private:
     QString m_name;
     QString m_prettyName;
