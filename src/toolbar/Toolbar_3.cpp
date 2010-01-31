@@ -57,6 +57,7 @@ static const int icnSize = 48;
 static const int stretchAroundProgress = 1;
 static const int leftRightSpacer = 15;
 
+
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
     , EngineObserver( The::engineController() )

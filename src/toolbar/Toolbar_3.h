@@ -29,9 +29,11 @@ namespace Amarok { class TimeSlider; }
 #include "EngineObserver.h" //baseclass
 #include <QToolBar>
 
+
 class Toolbar_3 : public QToolBar, public EngineObserver
 {
     Q_OBJECT
+
 public:
     Toolbar_3( QWidget *parent = 0 );
     void engineMuteStateChanged( bool mute );
@@ -40,14 +42,17 @@ public:
     void engineTrackLengthChanged( qint64 ms );
     void engineTrackPositionChanged( qint64 position, bool userSeek );
     void engineVolumeChanged( int percent );
+
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
     void resizeEvent( QResizeEvent *ev );
     void showEvent( QShowEvent *ev );
     void timerEvent( QTimerEvent *ev );
     void wheelEvent( QWheelEvent *wev );
+
 private:
     void animateTrackLabels();
+
 private slots:
     void addBookmark( const QString &name, int milliSeconds );
     void checkEngineState();
@@ -63,24 +68,31 @@ private:
     PlayPauseButton *m_playPause;
 
     QSpacerItem *m_trackBarSpacer;
-    struct {
+
+    struct
+    {
         AnimatedLabelStack *label;
         void* key;
         QString uidUrl;
     } m_current;
-    struct {
+
+    struct
+    {
         AnimatedLabelStack *label;
         void* key;
     } m_next;
-    struct {
+
+    struct
+    {
         AnimatedLabelStack *label;
         void* key;
     } m_prev;
-    struct {
+
+    struct
+    {
         AnimatedLabelStack *label;
         int targetX;
     } m_dummy;
-    
 
     QBoxLayout *m_progressLayout;
     QLabel *m_timeLabel, *m_remainingTimeLabel;
@@ -89,7 +101,12 @@ private:
     
     VolumeDial *m_volume;
     
-    int m_lastTime, m_lastRemainingTime, m_dragStartX, m_dragLastX, m_trackBarAnimationTimer;
+    int m_lastTime;
+    int m_lastRemainingTime;
+    int m_dragStartX;
+    int m_dragLastX;
+    int m_trackBarAnimationTimer;
+
     Phonon::State m_currentEngineState;
 };
 
