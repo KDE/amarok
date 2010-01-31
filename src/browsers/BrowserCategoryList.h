@@ -23,6 +23,7 @@
 
 #include <KVBox>
 
+#include <QStack>
 #include <QTimer>
 #include <QTreeView>
 #include <QMap>

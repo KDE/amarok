@@ -16,6 +16,7 @@
 
 #include "FileBrowserMkII.h"
 
+#include "BrowserBreadcrumbItem.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "FileView.h"
@@ -65,6 +66,13 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 FileBrowserMkII::~FileBrowserMkII()
 {
     writeConfig();
+    connect( m_fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
+}
+
+void FileBrowserMkII::polish()
+{
+    DEBUG_BLOCK
+    setupAddItems();
 }
 
 void FileBrowserMkII::itemActivated( const QModelIndex &index )
@@ -72,6 +80,7 @@ void FileBrowserMkII::itemActivated( const QModelIndex &index )
     DEBUG_BLOCK
     KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
     KUrl filePath = file.url();
+    m_currentPath = filePath.path();
 
     debug() << "activated url: " << filePath.url();
     debug() << "filename: " << filePath.fileName();
@@ -80,6 +89,18 @@ void FileBrowserMkII::itemActivated( const QModelIndex &index )
         debug() << "setting root path to: " << filePath.path();
         m_kdirModel->dirLister()->openUrl( filePath );
         m_fileView->setRootIndex( index );
+
+        //get list of current sibling directories for breadcrumb:
+
+        QStringList siblings = siblingsForDir( m_currentPath );
+        
+        debug() << "setting root path to: " << filePath.path();
+        m_kdirModel->dirLister()->openUrl( filePath );
+
+        //add this dir to the breadcrumb
+        setupAddItems();
+        activate();
+      
     }
     else
     {
@@ -118,6 +139,8 @@ void FileBrowserMkII::readConfig()
     KConfigGroup config = Amarok::config( "File Browser" );
 
     m_kdirModel->dirLister()->openUrl( KUrl( config.readEntry( "Current Directory" ) ) );
+
+    m_currentPath = KUrl( config.readEntry( "Current Directory" ) ).path();
 }
 
 void FileBrowserMkII::writeConfig()
@@ -126,4 +149,58 @@ void FileBrowserMkII::writeConfig()
     KConfigGroup config = Amarok::config( "File Browser" );
     config.writeEntry( "Current Directory", m_kdirModel->dirLister()->url().toLocalFile() );
     config.sync();
+}
+
+
+void FileBrowserMkII::addItemActivated( const QString &callbackString )
+{
+    DEBUG_BLOCK
+    
+    debug() << "callback: " << callbackString;
+    
+    m_kdirModel->dirLister()->openUrl( KUrl( callbackString ) );
+    m_currentPath = callbackString;
+    setupAddItems();
+    activate();
+}
+
+void FileBrowserMkII::setupAddItems()
+{
+    DEBUG_BLOCK
+    clearAdditionalItems();
+    
+    QStringList parts = m_currentPath.split( QDir::separator() );
+    QString partialPath;
+
+    foreach( QString part, parts )
+    {
+        if( !part.isEmpty() )
+        {
+            partialPath += '/' + part;
+            QStringList siblings = siblingsForDir( partialPath );
+            addAdditionalItem( new BrowserBreadcrumbItem( part, siblings, partialPath, this ) );
+        }
+    }
+    
+}
+
+QStringList FileBrowserMkII::siblingsForDir( const QString &path )
+{
+
+    DEBUG_BLOCK
+    debug() << "path: " << path;
+    QStringList siblings;
+
+    QDir dir( path );
+    QString currentName = dir.dirName();
+    if( !dir.isRoot() )
+    {
+        dir.cdUp();
+        foreach( QString childDir, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+        {
+            if( childDir != currentName )
+                siblings << childDir;
+        }
+    }
+    return siblings;
 }

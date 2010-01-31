@@ -35,16 +35,24 @@ public:
     FileBrowserMkII( const char * name, QWidget *parent );
     ~FileBrowserMkII();
 
+    virtual void setupAddItems();
+    virtual void polish();
+
 protected slots:
     void itemActivated( const QModelIndex &index );
     
-    void  slotSetFilterTimeout();
+    void slotSetFilterTimeout();
     void slotFilterNow();
+
+    void addItemActivated( const QString &callback );
+
 
 private:
     void readConfig();
     void writeConfig();
 
+    QStringList siblingsForDir( const QString &path );
+    
     SearchWidget             *m_searchWidget;
     KDirModel                *m_kdirModel;
     QSortFilterProxyModel    *m_proxyModel;
@@ -53,7 +61,7 @@ private:
 
     QTimer                    m_filterTimer;
     QString                   m_currentFilter;
-
+    QString                   m_currentPath;
     FileView                 *m_fileView;
         
 };

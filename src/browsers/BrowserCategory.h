@@ -99,6 +99,7 @@ public:
     BrowserBreadcrumbItem * breadcrumb();
 
     virtual void polish() {};
+    virtual void setupAddItems() {};
 
     //These 2 functions are forwarded to simplifiy the creation of urls
     //even though they might not be needed in many cases.
@@ -107,6 +108,12 @@ public:
 
     virtual void setFilter( const QString &filter ) { Q_UNUSED( filter ) };
     virtual void setLevels( const QList<int> &levels ) { Q_UNUSED( levels ) };
+
+    void addAdditionalItem( BrowserBreadcrumbItem * item );
+    void clearAdditionalItems();
+
+    QList<BrowserBreadcrumbItem *> additionalItems();
+
 
 public slots:
     void activate();
@@ -121,6 +128,8 @@ private:
     BrowserCategoryList * m_parentList;
 
     BrowserBreadcrumbItem * m_breadcrumb;
+
+    QList<BrowserBreadcrumbItem *> m_additionalItems;
 
 };
 

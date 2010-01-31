@@ -83,6 +83,52 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     updateSizePolicy();
 }
 
+BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler )
+    : KHBox( 0 )
+    , m_category( 0 )
+    , m_menuButton( 0 )
+    , m_callback( callback )
+{
+
+    if ( !childItems.isEmpty() )
+    {
+        m_menuButton = new BreadcrumbItemMenuButton( this );
+        QMenu *menu = new QMenu( this );
+
+
+        foreach( const QString &siblingName, childItems )
+        {
+            QAction * action = menu->addAction( KIcon(), siblingName );
+            connect( action, SIGNAL( triggered() ), this, SLOT( activateSibling() ) );
+        }
+
+        m_menuButton->setMenu( menu );
+
+        //do a little magic to line up items in the menu with the current item
+        int offset = 6;
+
+        menu->setContentsMargins( offset, 1, 1, 2 );
+    }
+
+    m_mainButton = new BreadcrumbItemButton( KIcon( "folder-amarok" ), name, this );
+    
+    connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
+
+    // REMIND: Uncomment after string freeze
+    //if( category->prettyName().isEmpty() )   // root item
+    //    m_mainButton->setToolTip( i18n( "Media Sources Home" ) );
+
+
+    connect( m_mainButton, SIGNAL( clicked( bool ) ), this, SLOT( activate() ) );
+    connect( this, SIGNAL( activated( const QString & ) ), handler, SLOT( addItemActivated( const QString & ) ) );
+
+    hide();
+
+    updateSizePolicy(); 
+}
+
+
+
 BrowserBreadcrumbItem::~BrowserBreadcrumbItem()
 {
     DEBUG_BLOCK
@@ -104,5 +150,14 @@ void BrowserBreadcrumbItem::updateSizePolicy()
     setSizePolicy( m_mainButton->sizePolicy() );
 }
 
+void BrowserBreadcrumbItem::activate()
+{
+    emit activated( m_callback );
+}
+
+void BrowserBreadcrumbItem::activateSibling()
+{
+
+}
 
 

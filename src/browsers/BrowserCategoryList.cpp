@@ -108,6 +108,7 @@ BrowserCategoryList::addCategory( BrowserCategory * category )
         connect( childList, SIGNAL( viewChanged() ), this, SLOT( childViewChanged() ) );
 }
 
+
 void
 BrowserCategoryList::categoryActivated( const QModelIndex & index )
 {
@@ -139,7 +140,10 @@ BrowserCategoryList::showCategory( const QString &name )
     {
         //if a service is already shown, make damn sure to deactivate that one first...
         if ( m_currentCategory )
+        {
             m_currentCategory->setParent( 0 );
+            m_currentCategory->clearAdditionalItems();
+        }
 
         m_categoryListView->setParent( 0 );
         category->setParent ( this );
@@ -165,6 +169,7 @@ BrowserCategoryList::home()
             childList->home();
 
         m_currentCategory->setParent( 0 );
+        m_currentCategory->clearAdditionalItems();
         m_categoryListView->setParent( this );
         m_currentCategory = 0; // remove any context stuff we might have added
         m_searchWidget->show();

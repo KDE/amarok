@@ -35,19 +35,36 @@ class BrowserBreadcrumbItem : public KHBox
     Q_OBJECT
 public:
     BrowserBreadcrumbItem( BrowserCategory * category );
+
+    /**
+     * Overloaded constructor for creating breadcrumb items not bound to a particular BrowserCategory
+     */
+    BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler );
+
+    bool isAddItem() { return m_category == 0; }
+    
     ~BrowserBreadcrumbItem();
 
     void setActive( bool active );
 
     QSizePolicy sizePolicy () const;
 
+signals:
+
+    void activated( const QString &callback );
+    
 protected slots:
     void updateSizePolicy();
+    void activate();
+    void activateSibling();
 
 private:
     BrowserCategory          *m_category;
     BreadcrumbItemMenuButton *m_menuButton;
     BreadcrumbItemButton     *m_mainButton;
+
+    QString m_callback;
+    
 };
 
 #endif
