@@ -719,3 +719,5 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
     return false;
 }
 
+
+#include "Toolbar_3.moc"
