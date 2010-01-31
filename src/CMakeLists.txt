@@ -690,6 +690,8 @@ endif( BUILD_MYSQLE_COLLECTION )
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
+        ../tests/context/engines/TestDataEngine.cpp
+        ../tests/context/engines/upcomingevents/TestUpcomingEventsEngine.cpp
         ../tests/meta/TestM3UPlaylist.cpp
         ../tests/meta/TestMetaTrack.cpp
         ../tests/meta/TestPLSPlaylist.cpp
@@ -709,6 +711,9 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
     )
     include_directories(
         ../tests/
+        ../tests/context/
+        ../tests/context/engines/
+        ../tests/context/engines/upcomingevents/
         ../tests/meta/
         ../tests/meta/cue/
         ../tests/meta/file/

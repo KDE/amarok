@@ -112,6 +112,7 @@ extern void setupEventHandler_mac(long);
 #include "TestPLSPlaylist.h"
 #include "TestSqlUserPlaylistProvider.h"
 #include "TestTimecodeTrackProvider.h"
+#include "TestUpcomingEventsEngine.h"
 #include "TestXSPFPlaylist.h"
 #endif // DEBUG
 
@@ -672,13 +673,14 @@ App::runUnitTests( const QStringList options, bool stdout )
     TestPLSPlaylist             test011( options, logPath );
     TestSqlUserPlaylistProvider test012( options, logPath );
     TestTimecodeTrackProvider   test013( options, logPath );
-    TestXSPFPlaylist            test014( options, logPath );
+    TestUpcomingEventsEngine    test014( options, logPath );
+    TestXSPFPlaylist            test015( options, logPath );
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
-    TestDirectoryLoader        *test015 = new TestDirectoryLoader( options, logPath );
+    TestDirectoryLoader        *test016 = new TestDirectoryLoader( options, logPath );
 
     PERF_LOG( "Done Running Unit Tests" )
-    Q_UNUSED( test015 )
+    Q_UNUSED( test016 )
 }
 #endif // DEBUG
 

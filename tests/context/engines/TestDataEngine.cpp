@@ -1,5 +1,5 @@
 /****************************************************************************************
-* Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
+* Copyright (c) 2010 Nathan Sala <sala.nathan@gmail.com>                               *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,33 +14,32 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#include "TestUpcomingEventsEngine.h"
+#include "TestDataEngine.h"
+#include <KServiceTypeTrader>
 
-#include <KStandardDirs>
-#include <QtTest/QTest>
-#include <QFile>
-#include <QDomDocument>
-
-
-
-TestUpcomingEventsEngine::TestUpcomingEventsEngine( const QStringList args, const QString &logPath )
-    : TestBase("UpcomingEventsEngine"), TestDataEngine("amarok_data_engine_upcomingEvents")
+TestDataEngine::TestDataEngine(QString identifier)
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
-}
+    Plasma::DataEngine* engine = 0;
+    // load the engine, add it to the engines
+    QString constraint = QString("[X-KDE-PluginInfo-Name] == '"+ identifier +"'").arg(identifier);
+    KService::List offers = KServiceTypeTrader::self()->query("Plasma/DataEngine", constraint);
+    QString error;
 
-void TestUpcomingEventsEngine::initTestCase()
-{
-    //Write here initilizations
-}
-
-
-void TestUpcomingEventsEngine::testDataEngineMethod()
-{
-    //Verify if the engine has been found
-    QVERIFY(m_engine != 0);
+    if (!offers.isEmpty()) {
+        QVariantList allArgs;
+        allArgs << offers.first()->storageId();
+        QString api = offers.first()->property("X-Plasma-API").toString();
+        if (api.isEmpty()) {
+            if (offers.first()) {
+                KPluginLoader plugin(*offers.first());
+                if (Plasma::isPluginVersionCompatible(plugin.pluginVersion())) {
+                   engine = offers.first()->createInstance<Plasma::DataEngine>(0, allArgs, &error);
+               }
+            }
+        } else {
+            engine = new Plasma::DataEngine(0, offers.first());
+        }
+    }
     
-    //Tests on the engine
+    m_engine = engine;
 }

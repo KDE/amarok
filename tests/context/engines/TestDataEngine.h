@@ -1,5 +1,5 @@
 /****************************************************************************************
-* Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
+* Copyright (c) 2010 Nathan Sala <sala.nathan@gmail.com>                               *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,33 +14,18 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#include "TestUpcomingEventsEngine.h"
+#ifndef TESTDATAENGINE_H
+#define TESTDATAENGINE_H
+#include <QString>
+#include <Plasma/DataEngine>
 
-#include <KStandardDirs>
-#include <QtTest/QTest>
-#include <QFile>
-#include <QDomDocument>
-
-
-
-TestUpcomingEventsEngine::TestUpcomingEventsEngine( const QStringList args, const QString &logPath )
-    : TestBase("UpcomingEventsEngine"), TestDataEngine("amarok_data_engine_upcomingEvents")
+class TestDataEngine
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
-}
+    public:
+        TestDataEngine( const QString identifier);
+        
+    private:
+        Plasma::DataEngine* m_engine;
+};
 
-void TestUpcomingEventsEngine::initTestCase()
-{
-    //Write here initilizations
-}
-
-
-void TestUpcomingEventsEngine::testDataEngineMethod()
-{
-    //Verify if the engine has been found
-    QVERIFY(m_engine != 0);
-    
-    //Tests on the engine
-}
+#endif // TESTDATAENGINE_H
