@@ -31,7 +31,7 @@ AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt:
 , m_visibleIndex(0)
 , m_animTimer(0)
 , m_fadeTime(300)
-, m_displayTime(4000)
+, m_displayTime(6000)
 , m_opacity(255)
 , m_targetOpacity(255)
 , m_animated(true)
