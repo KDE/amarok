@@ -24,7 +24,6 @@
 #include <QTimerEvent>
 #include <QToolBar>
 
-//#include <QtDebug>
 
 PlayPauseButton::PlayPauseButton( QWidget *parent ) : QWidget( parent )
     , m_isPlaying( false )
