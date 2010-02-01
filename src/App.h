@@ -71,7 +71,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
         /**
          * Determines location of the "amarokcollectionscanner" tool.
          *
-         * @Returns path of the collection scanner binary.
+         * @return path of the collection scanner binary.
          */
         static QString collectionScannerLocation();
 
