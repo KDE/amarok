@@ -18,6 +18,8 @@
 
 #include "SvgHandler.h"
 
+#include <KLocale>
+
 #include <QMouseEvent>
 #include <QPainter>
 #include <QSizePolicy>
@@ -33,6 +35,8 @@ PlayPauseButton::PlayPauseButton( QWidget *parent ) : QWidget( parent )
 {
     QResizeEvent re( size(), QSize() );
     resizeEvent( &re );
+
+    setToolTip( i18n( "Play" ) );
 }
 
 void PlayPauseButton::enterEvent( QEvent * )
@@ -85,11 +89,14 @@ void PlayPauseButton::resizeEvent( QResizeEvent *re )
     updateIconBuffer();
 }
 
-void PlayPauseButton::setPlaying( bool b )
+void PlayPauseButton::setPlaying( bool playing )
 {
-    if ( m_isPlaying == b )
+    if ( m_isPlaying == playing )
         return;
-    m_isPlaying = b;
+
+    setToolTip( playing ? i18n( "Pause" ) : i18n( "Play" ) );
+
+    m_isPlaying = playing;
     updateIconBuffer();
     update();
 }

@@ -28,7 +28,7 @@ public:
     PlayPauseButton( QWidget *parent = 0 );
     QSize sizeHint() const;
     inline bool playing() const { return m_isPlaying; };
-    void setPlaying( bool b );
+    void setPlaying( bool playing );
 
 signals:
     void toggled(bool playing);
