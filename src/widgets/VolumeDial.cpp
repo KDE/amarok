@@ -31,8 +31,6 @@
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
     , m_muted( false )
 {
-    toolTipTimer.setSingleShot( true );
-    connect ( &toolTipTimer, SIGNAL( timeout() ), this, SLOT( hideToolTip() ) );
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
 }
 
@@ -67,7 +65,6 @@ void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
     if ( me->button() != Qt::LeftButton )
         return;
     
-//     QToolTip::hideText();
     setCursor( Qt::ArrowCursor );
     if ( !m_isClick )
     {
@@ -136,9 +133,6 @@ void VolumeDial::wheelEvent( QWheelEvent *wev )
                 // no simple way to keep the tooltip alive this way. "simple" as the eventfilter
                 // hack - see below
         
-    toolTipTimer.start( 1000 );
-    showToolTip();
-    
     // NOTICE: this is a bit tricky.
     // the ToolTip "QTipLabel" just installed a global eventfilter that intercepts various
     // events and hides itself on them. Therefore every odd wheelevent will close the tip
@@ -161,15 +155,13 @@ void VolumeDial::setMuted( bool mute )
     {
         m_unmutedValue = value();
         setValue( minimum() );
+        setToolTip( i18n( "Muted" ) );
     }
     else
+    {
         setValue( m_unmutedValue );
-}
-
-void VolumeDial::showToolTip() const
-{
-    const QPoint pos = mapToGlobal( rect().bottomLeft() - QPoint( 0, 12 ) );
-    QToolTip::showText( pos, QString( "Volume: %1 %" ).arg( value() ) );
+        setToolTip( QString( "Volume: %1 %" ).arg( value() ) );
+    }
 }
 
 QSize VolumeDial::sizeHint() const
@@ -180,17 +172,9 @@ QSize VolumeDial::sizeHint() const
     return QDial::sizeHint();
 }
 
-void VolumeDial::hideToolTip()
-{
-    QToolTip::hideText();
-    // ultimately remove wheelevent hack-a-round (global eventfilters can be expensive)
-    qApp->removeEventFilter( this );
-}
-
 void VolumeDial::valueChangedSlot( int v )
 {
-    if ( isSliderDown() )
-        showToolTip();
+    setToolTip( QString( "Volume: %1 %" ).arg( value() ) );
 
     m_isClick = false;
 

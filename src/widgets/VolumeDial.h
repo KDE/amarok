@@ -18,7 +18,6 @@
 #define VOLUMEDIAL_H
 
 #include <QDial>
-#include <QTimer>
 
 
 class VolumeDial : public QDial
@@ -44,18 +43,13 @@ protected:
     friend class Toolbar_3;
     void wheelEvent( QWheelEvent * );
 
-private:
-    void showToolTip() const;
-
 private slots:
-    void hideToolTip();
     void valueChangedSlot( int );
 
 private:
     QPixmap m_icon[4];
     int m_unmutedValue;
     bool m_isClick, m_isDown, m_muted;
-    QTimer toolTipTimer;
 };
 
 #endif  // end include guard
