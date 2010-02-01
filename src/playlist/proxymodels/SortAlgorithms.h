@@ -38,8 +38,8 @@ struct multilevelLessThan
      * @param sourceProxy a pointer to the underlying proxy instance.
      * @param scheme the sorting scheme that needs to be applied.
      */
-    multilevelLessThan( QAbstractItemModel *sourceProxy, const SortScheme &scheme )
-        : m_sourceProxy( sourceProxy )
+    multilevelLessThan( QAbstractItemModel *sourceModel, const SortScheme &scheme )
+        : m_sourceModel( sourceModel )
         , m_scheme( scheme )
     {}
 
@@ -53,7 +53,7 @@ struct multilevelLessThan
     bool operator()( int rowA, int rowB );
 
     private:
-        QAbstractItemModel *m_sourceProxy;     //! The proxy or model which holds the rows that need to be sorted.
+        QAbstractItemModel *m_sourceModel;     //! The underlying model which holds the rows that need to be sorted.
         SortScheme m_scheme;           //! The current sorting scheme.
 };
 

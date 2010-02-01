@@ -76,10 +76,10 @@ SortProxy::resetSorting()
 }
 
 bool
-SortProxy::lessThan( const QModelIndex & left, const QModelIndex & right ) const
+SortProxy::lessThan( const QModelIndex & sourceModelIndexA, const QModelIndex & sourceModelIndexB ) const
 {
-    int rowA = left.row();
-    int rowB = right.row();
+    int rowA = sourceModelIndexA.row();
+    int rowB = sourceModelIndexB.row();
     multilevelLessThan mlt = multilevelLessThan( sourceModel(), m_scheme );
     return mlt( rowA, rowB );
 }
