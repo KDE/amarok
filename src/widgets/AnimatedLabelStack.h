@@ -23,6 +23,7 @@
 class AnimatedLabelStack : public QWidget
 {
     Q_OBJECT
+
 public:
     AnimatedLabelStack( const QStringList &data, QWidget *parent = 0, Qt::WindowFlags f = 0 );
     inline const QStringList &data() const { return m_data; }
@@ -32,12 +33,15 @@ public:
     void setData( const QStringList &data );
     inline void setOpacity( int alpha ) { m_targetOpacity = qMin(qMax(0, alpha), 255); }
     inline int opacity() { return m_targetOpacity; }
+
 public slots:
     void setAnimated( bool on = true );
     inline void setStill( bool off = true ) { setAnimated( !off ); }
+
 signals:
     void pulsing( bool );
     void clicked( const QString &current );
+
 protected:
     void enterEvent( QEvent * );
     void leaveEvent( QEvent * );
@@ -46,11 +50,14 @@ protected:
     void mousePressEvent( QMouseEvent * );
     void timerEvent( QTimerEvent * );
     void wheelEvent( QWheelEvent * );
+
 private:
     void ensureAnimationStatus();
     void setPulsating( bool on );
+
 private slots:
     void activateOnEnter();
+
 private:
     /**
      * Creates an elided version of a string that fits in this widget.
@@ -65,4 +72,5 @@ private:
     QStringList m_data;
 };
 
-#endif
+
+#endif  // end include guard

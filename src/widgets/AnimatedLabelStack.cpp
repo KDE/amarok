@@ -26,20 +26,20 @@
 static const int frameTime = 50;
 
 AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt::WindowFlags f ): QWidget(p, f)
-, m_align(Qt::AlignCenter)
-, m_time(0)
-, m_index(0)
-, m_visibleIndex(0)
-, m_animTimer(0)
-, m_fadeTime(300)
-, m_displayTime(6000)
-, m_opacity(255)
-, m_targetOpacity(255)
-, m_animated(true)
-, m_pulsating(false)
-, m_pulseRequested(false)
-, m_isClick(false)
-, m_explicit(false)
+    , m_align(Qt::AlignCenter)
+    , m_time(0)
+    , m_index(0)
+    , m_visibleIndex(0)
+    , m_animTimer(0)
+    , m_fadeTime(300)
+    , m_displayTime(6000)
+    , m_opacity(255)
+    , m_targetOpacity(255)
+    , m_animated(true)
+    , m_pulsating(false)
+    , m_pulseRequested(false)
+    , m_isClick(false)
+    , m_explicit(false)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
     setData( data );
@@ -317,3 +317,5 @@ AnimatedLabelStack::wheelEvent( QWheelEvent * we )
     else
         we->ignore();
 }
+
+#include "AnimatedLabelStack.moc"
