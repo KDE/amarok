@@ -24,6 +24,7 @@
 #include <QtDebug>
 
 static const int frameTime = 50;
+static const int normalDisplayTime = 7000;
 
 AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt::WindowFlags f ): QWidget(p, f)
     , m_align(Qt::AlignCenter)
@@ -32,7 +33,7 @@ AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt:
     , m_visibleIndex(0)
     , m_animTimer(0)
     , m_fadeTime(300)
-    , m_displayTime(6000)
+    , m_displayTime(normalDisplayTime)
     , m_opacity(255)
     , m_targetOpacity(255)
     , m_animated(true)
@@ -232,7 +233,7 @@ AnimatedLabelStack::setPulsating( bool on )
     }
     else
     {
-        m_displayTime = 4000;
+        m_displayTime = normalDisplayTime;
         m_fadeTime = 300;
         if ( !m_animated )
             m_time = m_fadeTime + 1;
