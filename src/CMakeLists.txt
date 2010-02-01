@@ -728,6 +728,8 @@ qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.Collection.xml Coll
 set( amaroklib_DEPENDS "amarokpud" )
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
+add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfig.h)
+
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui

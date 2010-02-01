@@ -17,6 +17,8 @@ set( testcollectionlocation_SRCS
 
 kde4_add_unit_test( testcollectionlocation TESTNAME amarok-testcollectionlocation ${testcollectionlocation_SRCS} )
 
+add_dependencies( testcollectionlocation amarokconfig_h )
+
 if(APPLE)
     SET_TARGET_PROPERTIES(testcollectionlocation PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
