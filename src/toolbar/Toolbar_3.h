@@ -46,6 +46,7 @@ public:
 
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
+    void hideEvent( QHideEvent *ev );
     void mousePressEvent( QMouseEvent * );
     void paintEvent( QPaintEvent *ev );
     void resizeEvent( QResizeEvent *ev );

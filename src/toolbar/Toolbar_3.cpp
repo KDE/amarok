@@ -144,12 +144,6 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     spacerWidget = new QWidget(this);
     spacerWidget->setFixedWidth( leftRightSpacer );
     addWidget( spacerWidget );
-
-    connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
-    connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
-              this, SLOT( updateBookmarks(const QString*) ) );
-    connect ( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),
-              this, SLOT( addBookmark(const QString&, int) ) );
 }
 
 void
@@ -257,7 +251,7 @@ Toolbar_3::engineMuteStateChanged( bool mute )
 void
 Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
 {
-    if ( currentState == oldState )
+    if ( !isVisible() || currentState == oldState )
         return;
     // when changing a track, we get an interm pause what leads to stupid flicker
     // therefore we wait a few ms before we actually check the _then_ current state
@@ -446,6 +440,8 @@ Toolbar_3::updateBookmarks( const QString *BookmarkName )
 void
 Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
 {
+    if ( !isVisible() )
+        return;
     if ( m_trackBarAnimationTimer )
     {
         killTimer( m_trackBarAnimationTimer );
@@ -548,6 +544,20 @@ Toolbar_3::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
     m_slider->setSliderValue( position );
 //     if ( !m_slider->isEnabled() )
 //         setLabelTime( position )
+}
+
+void
+Toolbar_3::hideEvent( QHideEvent *ev )
+{
+    QToolBar::hideEvent( ev );
+    disconnect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
+    disconnect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
+    disconnect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
+                 this, SLOT( updateBookmarks(const QString*) ) );
+    disconnect ( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),
+                 this, SLOT( addBookmark(const QString&, int) ) );
+    layoutTrackBar();
+    layoutProgressBar();
 }
 
 void
@@ -664,7 +674,15 @@ Toolbar_3::setPlaying( bool on )
 void
 Toolbar_3::showEvent( QShowEvent *ev )
 {
+    connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
+    connect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
+    connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
+              this, SLOT( updateBookmarks(const QString*) ) );
+    connect ( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),
+              this, SLOT( addBookmark(const QString&, int) ) );
     QToolBar::showEvent( ev );
+    engineTrackChanged( The::engineController()->currentTrack() );
+    checkEngineState();
     layoutTrackBar();
     layoutProgressBar();
 }
