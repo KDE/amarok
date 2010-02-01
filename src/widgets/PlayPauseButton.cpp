@@ -1,3 +1,18 @@
+/****************************************************************************************
+* Copyright (c) 2009 Thomas Luebking <thomas.luebking@web.de>                          *
+*                                                                                      *
+* This program is free software; you can redistribute it and/or modify it under        *
+* the terms of the GNU General Public License as published by the Free Software        *
+* Foundation; either version 2 of the License, or (at your option) any later           *
+* version.                                                                             *
+*                                                                                      *
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+* PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+*                                                                                      *
+* You should have received a copy of the GNU General Public License along with         *
+* this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+****************************************************************************************/
 
 #include "PlayPauseButton.h"
 
@@ -9,13 +24,13 @@
 #include <QTimerEvent>
 #include <QToolBar>
 
-#include <QtDebug>
+//#include <QtDebug>
 
 PlayPauseButton::PlayPauseButton( QWidget *parent ) : QWidget( parent )
-, m_isPlaying( false )
-, m_isClick( false )
-, m_animStep( 0 )
-, m_animTimer( 0 )
+    , m_isPlaying( false )
+    , m_isClick( false )
+    , m_animStep( 0 )
+    , m_animTimer( 0 )
 {
     QResizeEvent re( size(), QSize() );
     resizeEvent( &re );
@@ -163,3 +178,6 @@ void PlayPauseButton::updateIconBuffer()
     m_iconBuffer = QPixmap::fromImage( img );
 //     m_iconBuffer = QPixmap::fromImage( img.scaled( size(), Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
 }
+
+
+#include "PlayPauseButton.moc"
