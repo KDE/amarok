@@ -146,7 +146,9 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     {
         Actions::instance()->play( firstItemAdded );
     }
-    else if ( ( options & StartPlay ) && ( ( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) ) )
+    else if ( ( options & StartPlay ) && ( ( engineState == Phonon::StoppedState ) ||
+                                           ( engineState == Phonon::LoadingState ) ||
+                                             engineState == Phonon::PausedState ) )
         Actions::instance()->play( firstItemAdded );
 
     emit changed();
