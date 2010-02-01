@@ -31,20 +31,40 @@
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
     , m_muted( false )
 {
+    m_anim.step = 0;
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
 }
 
 
+void VolumeDial::enterEvent( QEvent * )
+{
+    startFade();
+}
+
 // NOTICE: we intercept wheelEvents for ourself to prevent the tooltip hiding on them,
 // see ::wheelEvent()
+// this is _NOT_ redundant to the code in Toolbar_3.cpp
 bool VolumeDial::eventFilter( QObject *o, QEvent *e )
 {
-    if ( e->type() == QEvent::Wheel && o == this )
+    if ( e->type() == QEvent::Wheel && ( o == this || QToolTip::text() == m_toolTip ) )
     {
-        wheelEvent( static_cast<QWheelEvent*>(e) );
+        QWheelEvent *wev = static_cast<QWheelEvent*>(e);
+        if ( o != this )
+        {
+            QPoint pos( 0, 0 ); // the event needs to be on us or nothing will happen
+            QWheelEvent nwev( pos, mapToGlobal( pos ), wev->delta(), wev->buttons(), wev->modifiers() );
+            wheelEvent( &nwev );
+        }
+        else
+            wheelEvent( wev );
         return true;
     }
     return false;
+}
+
+void VolumeDial::leaveEvent( QEvent * )
+{
+    startFade();
 }
 
 void VolumeDial::mousePressEvent( QMouseEvent *me )
@@ -102,7 +122,7 @@ void VolumeDial::paintEvent( QPaintEvent * )
         icon = value() < 33 ? 1 : 2;
     p.drawPixmap(0,0, m_icon[ icon ]);
     QColor c = mix( palette().color( foregroundRole() ), palette().color( QPalette::Highlight ) );
-    c.setAlpha( 160 );
+    c.setAlpha( 82 + m_anim.step*78/6 );
     p.setPen( QPen( c, 3, Qt::SolidLine, Qt::RoundCap ) );
     p.setRenderHint(QPainter::Antialiasing);
     p.drawArc( rect().adjusted(4,4,-4,-4), -110*16, - value()*320*16 / (maximum() - minimum()) );
@@ -124,15 +144,47 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
     update();
 }
 
+void VolumeDial::startFade()
+{
+    if ( m_anim.timer )
+        killTimer( m_anim.timer );
+    m_anim.timer = startTimer( 40 );
+}
+
+void VolumeDial::stopFade()
+{
+    killTimer( m_anim.timer );
+    m_anim.timer = 0;
+    if ( m_anim.step < 0 )
+        m_anim.step = 0;
+    else if ( m_anim.step > 6 )
+        m_anim.step = 6;
+}
+
+void VolumeDial::timerEvent( QTimerEvent *te )
+{
+    if ( te->timerId() != m_anim.timer )
+        return;
+    if ( underMouse() ) // fade in
+    {
+        m_anim.step += 2;
+        if ( m_anim.step > 5 )
+            stopFade();
+    }
+    else // fade out
+    {
+        --m_anim.step;
+        if ( m_anim.step < 1 )
+            stopFade();
+    }
+    repaint();
+}
+
 void VolumeDial::wheelEvent( QWheelEvent *wev )
 {
     QDial::wheelEvent( wev );
     wev->accept();
-    if ( wev->pos() == QPoint( 0, 0 ) )
-        return; // this is probably our synthetic event from the toolbar and there's really
-                // no simple way to keep the tooltip alive this way. "simple" as the eventfilter
-                // hack - see below
-        
+
     // NOTICE: this is a bit tricky.
     // the ToolTip "QTipLabel" just installed a global eventfilter that intercepts various
     // events and hides itself on them. Therefore every odd wheelevent will close the tip
@@ -155,13 +207,14 @@ void VolumeDial::setMuted( bool mute )
     {
         m_unmutedValue = value();
         setValue( minimum() );
-        setToolTip( i18n( "Muted" ) );
+        m_toolTip = i18n( "Muted" );
     }
     else
     {
         setValue( m_unmutedValue );
-        setToolTip( QString( "Volume: %1 %" ).arg( value() ) );
+        m_toolTip = QString( "Volume: %1 %" ).arg( value() );
     }
+    setToolTip( m_toolTip );
 }
 
 QSize VolumeDial::sizeHint() const
@@ -174,8 +227,10 @@ QSize VolumeDial::sizeHint() const
 
 void VolumeDial::valueChangedSlot( int v )
 {
-    setToolTip( QString( "Volume: %1 %" ).arg( value() ) );
-
+    m_toolTip = QString( "Volume: %1 %" ).arg( value() );
+    setToolTip( m_toolTip );
+    QToolTip::showText( mapToGlobal( rect().bottomLeft() ), m_toolTip );
+    
     m_isClick = false;
 
     if ( m_muted == ( v == minimum() ) )

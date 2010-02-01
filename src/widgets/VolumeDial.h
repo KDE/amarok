@@ -35,13 +35,20 @@ signals:
     void muteToggled( bool mute );
 
 protected:
+    void enterEvent( QEvent * );
     bool eventFilter( QObject *o, QEvent *e );
+    void leaveEvent( QEvent * );
     void paintEvent( QPaintEvent * );
     void mousePressEvent( QMouseEvent * );
     void mouseReleaseEvent( QMouseEvent * );
     void resizeEvent(QResizeEvent *);
+    void timerEvent ( QTimerEvent * );
     friend class Toolbar_3;
     void wheelEvent( QWheelEvent * );
+
+private:
+    void startFade();
+    void stopFade();
 
 private slots:
     void valueChangedSlot( int );
@@ -49,6 +56,12 @@ private slots:
 private:
     QPixmap m_icon[4];
     int m_unmutedValue;
+    struct
+    {
+        int step;
+        int timer;
+    } m_anim;
+    QString m_toolTip;
     bool m_isClick, m_isDown, m_muted;
 };
 

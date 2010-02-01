@@ -21,7 +21,6 @@
 #include <QPaintEvent>
 #include <QTimer>
 
-#include <QtDebug>
 
 static const int frameTime = 50;
 static const int normalDisplayTime = 7000;

@@ -52,7 +52,6 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-
 static const QString promoString = i18n( "Rediscover Your Music" );
 static const int prevOpacity = 128;
 static const int nextOpacity = 160;
