@@ -20,16 +20,21 @@
 #include <QDial>
 #include <QTimer>
 
+
 class VolumeDial : public QDial
 {
     Q_OBJECT
+
 public:
     VolumeDial( QWidget *parent = 0 );
     QSize sizeHint() const;
+
 public slots:
     void setMuted( bool mute );
+
 signals:
     void muteToggled( bool mute );
+
 protected:
     bool eventFilter( QObject *o, QEvent *e );
     void paintEvent( QPaintEvent * );
@@ -38,11 +43,14 @@ protected:
     void resizeEvent(QResizeEvent *);
     friend class Toolbar_3;
     void wheelEvent( QWheelEvent * );
+
 private:
     void showToolTip() const;
+
 private slots:
     void hideToolTip();
     void valueChangedSlot( int );
+
 private:
     QPixmap m_icon[4];
     int m_unmutedValue;
@@ -50,4 +58,4 @@ private:
     QTimer toolTipTimer;
 };
 
-#endif
+#endif  // end include guard
