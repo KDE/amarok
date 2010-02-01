@@ -46,6 +46,8 @@ public:
 
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
+    void mousePressEvent( QMouseEvent * );
+    void paintEvent( QPaintEvent *ev );
     void resizeEvent( QResizeEvent *ev );
     void showEvent( QShowEvent *ev );
     void timerEvent( QTimerEvent *ev );
@@ -53,6 +55,8 @@ protected:
 
 private:
     void animateTrackLabels();
+    void layoutProgressBar();
+    void updateBgGradient();
 
 private slots:
     void addBookmark( const QString &name, int milliSeconds );
@@ -68,6 +72,8 @@ private:
     PlayPauseButton *m_playPause;
 
     QSpacerItem *m_trackBarSpacer;
+    QSpacerItem *m_progressBarSpacer;
+    QPixmap m_bgGradient;
 
     struct
     {
@@ -94,7 +100,6 @@ private:
         int targetX;
     } m_dummy;
 
-    QBoxLayout *m_progressLayout;
     QLabel *m_timeLabel, *m_remainingTimeLabel;
     Amarok::TimeSlider *m_slider;
     
@@ -105,8 +110,10 @@ private:
     int m_dragStartX;
     int m_dragLastX;
     int m_trackBarAnimationTimer;
+    int m_bgGradientMode;
 
     Phonon::State m_currentEngineState;
+    
 };
 
 #endif

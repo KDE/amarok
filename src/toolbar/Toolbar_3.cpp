@@ -17,6 +17,8 @@
 
 #include "Toolbar_3.h"
 
+#include "amarokconfig.h"
+
 #include "ActionClasses.h"
 #include "Amarok.h"
 #include "EngineController.h"
@@ -43,6 +45,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QPainter>
+#include <QPaintEvent>
 #include <QResizeEvent>
 #include <QSlider>
 #include <QTimer>
@@ -50,22 +54,25 @@
 
 #include <QtDebug>
 
-static const int sliderStretch = 18;
 static const QString promoString = i18n( "Rediscover Your Music" );
 static const int prevOpacity = 128;
 static const int nextOpacity = 160;
 static const int icnSize = 48;
-static const int stretchAroundProgress = 1;
 static const int leftRightSpacer = 15;
+static const int timeLabelMargin = 6;
+static const int constant_progress_ratio_minimum_width = 640;
 
 
 Toolbar_3::Toolbar_3( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
     , EngineObserver( The::engineController() )
     , m_lastTime( -1 )
+    , m_bgGradientMode( 0 )
 {
     setObjectName( "Toolbar_3G" );
-    
+    // prevents local from triggering updates on the parent, needs to be false in case of no m_bgGradient
+    setAttribute( Qt::WA_OpaquePaintEvent, true );
+
     EngineController *engine = The::engineController();
     m_currentEngineState = The::engineController()->state();
     setIconSize( QSize( icnSize, icnSize ) );
@@ -110,25 +117,18 @@ Toolbar_3::Toolbar_3( QWidget *parent )
     connect ( m_prev.label, SIGNAL( pulsing(bool) ), m_current.label, SLOT( setStill(bool) ) );
     connect ( m_next.label, SIGNAL( pulsing(bool) ), m_current.label, SLOT( setStill(bool) ) );
 
-    
-    m_progressLayout = new QHBoxLayout;
-    m_progressLayout->addStretch( stretchAroundProgress );
-    m_progressLayout->addWidget( m_timeLabel = new QLabel( this ) );
-    m_progressLayout->setAlignment( m_timeLabel, Qt::AlignVCenter | Qt::AlignRight );
+    m_timeLabel = new QLabel( info );
     m_timeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
-
-    m_progressLayout->addWidget( m_slider = new Amarok::TimeSlider( this ) );
-    m_progressLayout->setStretchFactor( m_slider , sliderStretch );
+    
+    m_slider = new Amarok::TimeSlider( info );
     connect( m_slider, SIGNAL( sliderReleased( int ) ), The::engineController(), SLOT( seek( int ) ) );
     connect( m_slider, SIGNAL( valueChanged( int ) ), SLOT( setLabelTime( int ) ) );
 
-    m_progressLayout->addWidget( m_remainingTimeLabel = new QLabel( this ) );
-    m_progressLayout->setAlignment( m_remainingTimeLabel, Qt::AlignVCenter | Qt::AlignLeft );
+    m_remainingTimeLabel = new QLabel( info );
     m_remainingTimeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignLeft );
 
-    m_progressLayout->addStretch( stretchAroundProgress );
-    vl->addLayout( m_progressLayout );
-
+    const int pbsH = qMax( m_timeLabel->sizeHint().height(), m_slider->sizeHint().height() );
+    vl->addItem( m_progressBarSpacer = new QSpacerItem(0, pbsH, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
     
     addWidget( info );
 
@@ -269,6 +269,41 @@ Toolbar_3::filter( const QString &string )
 {
     if ( CollectionWidget::instance() )
         CollectionWidget::instance()->setFilter( string );
+}
+
+void
+Toolbar_3::layoutProgressBar()
+{
+    const int limit = constant_progress_ratio_minimum_width;
+    QRect r = m_progressBarSpacer->geometry();
+
+    const int bw = AmarokConfig::showMoodbarInSlider() ? 10 : 6;
+    int w = bw;
+    if ( size().width() < limit )
+    {
+        w = (limit<<7)/size().width();
+        w = w*w*bw;
+        w /= (1<<14);
+    }
+
+    w = r.width() / w;
+    int tlW = m_timeLabel->minimumSizeHint().width();
+    if ( tlW + timeLabelMargin > w )
+        w = tlW;
+    int rtlW = m_remainingTimeLabel->minimumSizeHint().width();
+    if ( rtlW + timeLabelMargin > w )
+        w = rtlW;
+    
+    QRect pb = r.adjusted( w, 0, -w, 0 );
+    m_slider->setGeometry( pb );
+
+    QRect lr( 0, 0, tlW, r.height() );
+    lr.moveTopRight( pb.topLeft() - QPoint( timeLabelMargin, 0 ) );
+    m_timeLabel->setGeometry( lr );
+
+    lr = QRect( 0, 0, rtlW, r.height() );
+    lr.moveTopLeft( pb.topRight() + QPoint( timeLabelMargin, 0 )  );
+    m_remainingTimeLabel->setGeometry( lr );
 }
 
 void
@@ -416,8 +451,6 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
         killTimer( m_trackBarAnimationTimer );
         m_trackBarAnimationTimer = 0;
     }
-    setLabelTime( -1 );
-    m_trackBarSpacer->changeSize(0, m_current.label->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
 
     if ( track )
     {
@@ -481,11 +514,17 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
     }
     else
     {
+        setLabelTime( -1 );
         m_current.key = 0L;
         m_current.uidUrl.clear();
         m_current.label->setData( QStringList( promoString ) );
         m_current.label->setCursor( Qt::ArrowCursor );
     }
+
+    m_trackBarSpacer->changeSize(0, m_current.label->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+    const int pbsH = qMax( m_timeLabel->sizeHint().height(), m_slider->sizeHint().height() );
+    m_progressBarSpacer->changeSize(0, pbsH, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
+
     QTimer::singleShot( 0, this, SLOT( updatePrevAndNext() ) );
 }
 
@@ -512,21 +551,41 @@ Toolbar_3::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
 }
 
 void
+Toolbar_3::mousePressEvent( QMouseEvent *mev )
+{
+    if ( mev->button() == Qt::MidButton )
+    {
+        ++m_bgGradientMode;
+        m_bgGradientMode %= 4;
+        updateBgGradient();
+        update();
+        return;
+    }
+    QToolBar::mousePressEvent( mev );
+}
+
+void
+Toolbar_3::paintEvent( QPaintEvent *ev )
+{
+    if ( m_bgGradientMode )
+    {
+        QPainter p( this );
+        p.drawTiledPixmap( rect(), m_bgGradient );
+        p.end();
+    }
+    // by keeping this below, the style will have the last word on the toolbar look
+    QToolBar::paintEvent( ev );
+}
+
+
+void
 Toolbar_3::resizeEvent( QResizeEvent *ev )
 {
-    if ( ev->size().width() > 0 )
+    if ( ev->size().height() != ev->oldSize().height() )
+        updateBgGradient();
+    if ( ev->size().width() > 0 && ev->size().width() != ev->oldSize().width() )
     {
-        const int limit = 640;
-        if ( ev->size().width() > limit )
-        {
-            m_progressLayout->setStretchFactor( m_slider, sliderStretch );
-        }
-        else
-        {
-            int s = qRound(float(limit)/ev->size().width());
-            s *= s*s*sliderStretch;
-            m_progressLayout->setStretchFactor( m_slider, qMax( sliderStretch, s ) );
-        }
+        layoutProgressBar();
         layoutTrackBar();
     }
 }
@@ -548,40 +607,48 @@ timeFrame( int secs )
 
 void Toolbar_3::setLabelTime( int ms )
 {
+    bool relayout = false;
     if ( ms < 0 ) // clear
     {
         m_timeLabel->setText( QString() );
-        m_timeLabel->setMinimumWidth( 0 );
         m_remainingTimeLabel->setText( QString() );
-        m_remainingTimeLabel->setMinimumWidth( 0 );
         m_lastTime = -1;
         m_lastRemainingTime = -1;
+        relayout = true;
     }
     else
     {
         const int secs = ms/1000;
-        if ( secs == m_lastTime )
+        const int remainingSecs = (m_slider->maximum() - ms) / 1000;
+        
+        if ( secs == m_lastTime && remainingSecs == m_lastRemainingTime )
             return;
 
-        const int tf = timeFrame( secs );
-        if ( tf != timeFrame( m_lastTime ) )
-        {
-            const int w = QFontMetrics( m_timeLabel->font() ).width( timeString[tf] );
-            m_timeLabel->setMinimumWidth( w );
-        }
+        QFontMetrics fm( m_timeLabel->font() );
         
+        const int tf = timeFrame( secs );
+        if ( m_lastTime < 0 || tf != timeFrame( m_lastTime ) )
+        {
+            const int w = fm.width( timeString[tf] );
+            m_timeLabel->setMinimumWidth( w );
+            relayout = true;
+        }
         m_lastTime = secs;
         m_timeLabel->setText( Meta::secToPrettyTime( secs ) );
 
-        const int remainingSecs = (m_slider->maximum() - ms) / 1000;
         const int remainingTF = timeFrame( remainingSecs );
-        if ( remainingTF != timeFrame( m_lastRemainingTime ) )
+        if ( m_lastRemainingTime < 0 || remainingTF != timeFrame( m_lastRemainingTime ) )
         {
-            const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( QString("-") + timeString[remainingTF] );
+            const int w = fm.width( QString("-") + timeString[remainingTF] );
             m_remainingTimeLabel->setMinimumWidth( w );
+            relayout = true;
         }
         m_lastRemainingTime = remainingSecs;
         m_remainingTimeLabel->setText( '-' + Meta::secToPrettyTime( remainingSecs ) );
+    }
+    if (relayout)
+    {
+        layoutProgressBar();
     }
 }
 
@@ -599,6 +666,7 @@ Toolbar_3::showEvent( QShowEvent *ev )
 {
     QToolBar::showEvent( ev );
     layoutTrackBar();
+    layoutProgressBar();
 }
 
 void
@@ -608,6 +676,115 @@ Toolbar_3::timerEvent( QTimerEvent *ev )
         animateTrackLabels();
     else
         QToolBar::timerEvent( ev );
+}
+
+// magic gradient functions, taken from some UI style ;-P
+static inline QLinearGradient
+silkenGradient(const QColor &c, const QPoint &start, const QPoint &stop)
+{
+    int h,s,v,a, inc = 15, dec = 6;
+    c.getHsv( &h, &s, &v, &a );
+    
+    // calc difference
+    if ( v+inc > 255 )
+    {
+        inc = 255-v;
+        dec += ( 15-inc );
+    }
+    
+    QLinearGradient lg( start, stop );
+    QColor ic;
+    ic.setHsv( h, s, v+inc, a );
+    lg.setColorAt( 0, ic );
+    ic.setHsv( h, s, v-dec, a );
+    lg.setColorAt( 0.75, ic );
+    // this triggers a rebend (like on latest iTunes)
+    lg.setColorAt( 1.0, c );
+    return lg;
+}
+
+static inline QLinearGradient
+glassGradient(const QColor &c, const QPoint &start, const QPoint &stop)
+{
+    QColor bb,dd; // b = d = c;
+    
+    int h,s,v,a;
+    c.getHsv( &h, &s, &v, &a );
+    
+    // calculate the variation
+    int add = (180 - v ) / 1;
+    if ( add < 0 )
+        add = -add/2;
+    add /= 48;
+    
+    // the brightest color (top)
+    int cv = v + 27 + add, ch = h, cs = s;
+
+    if ( cv > 255 )
+    {
+        int delta = cv - 255;
+        cv = 255;
+        cs = s - 6*delta;
+        if ( cs < 0 )
+            cs = 0;
+        ch = h - 3*delta/2;
+        while ( ch < 0 )
+            ch += 360;
+    }
+    bb.setHsv( ch, cs, cv, a);
+    
+    // the darkest color (lower center)
+    cv = v - 14 - add;
+    if ( cv < 0 )
+        cv = 0;
+    cs = s*13/7;
+    if ( cs > 255 )
+        cs = 255;
+    dd.setHsv( h, cs, cv, a);
+    
+    QLinearGradient lg( start, stop );
+    lg.setColorAt( 0, bb );
+    lg.setColorAt( .35, c );
+    lg.setColorAt( .42, dd );
+    lg.setColorAt( 1, bb );
+    return lg;
+}
+
+void
+Toolbar_3::updateBgGradient()
+{
+    if ( !m_bgGradientMode )
+    {
+        setAttribute( Qt::WA_OpaquePaintEvent, false );
+        m_bgGradient = QPixmap();
+        return;
+    }
+    
+    setAttribute( Qt::WA_OpaquePaintEvent, false );
+    // please keep the 32px width
+    // X11/XRender is optimized to this and e.g. 1px would cause a tremendous slowdown on painting
+    m_bgGradient = QPixmap( 32, height() );
+    const QColor c = palette().color( QPalette::Active, QPalette::Window );
+    QPainter p( &m_bgGradient );
+    switch ( m_bgGradientMode )
+    {
+    case 1:
+    default:
+        p.fillRect( m_bgGradient.rect(), silkenGradient( c, m_bgGradient.rect().topLeft(), m_bgGradient.rect().bottomLeft() ) );
+        break;
+    case 2:
+        p.fillRect( m_bgGradient.rect(), glassGradient( c, m_bgGradient.rect().topLeft(), m_bgGradient.rect().bottomLeft() ) );
+        break;
+    case 3:
+    {
+        QLinearGradient lg( m_bgGradient.rect().topLeft(), m_bgGradient.rect().bottomLeft() );
+        lg.setColorAt( 0, c.darker( 115 ) );
+        lg.setColorAt( 1, c.lighter( 117 ) );
+        p.fillRect( m_bgGradient.rect(), lg );
+        break;
+    }
+    }
+    p.end();
 }
 
 void

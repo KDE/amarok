@@ -96,8 +96,9 @@ AnimatedLabelStack::leaveEvent( QEvent * )
 void
 AnimatedLabelStack::mousePressEvent( QMouseEvent *me )
 {
-    if ( m_data.isEmpty() )
+    if ( me->button() != Qt::LeftButton || m_data.isEmpty() )
         return;
+
     m_isClick = true;
     me->accept();
 }
@@ -105,8 +106,9 @@ AnimatedLabelStack::mousePressEvent( QMouseEvent *me )
 void
 AnimatedLabelStack::mouseReleaseEvent( QMouseEvent *me )
 {
-    if ( m_data.isEmpty() )
+    if ( me->button() != Qt::LeftButton || m_data.isEmpty() )
         return;
+
     me->accept();
     if ( m_isClick && underMouse() )
     {
