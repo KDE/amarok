@@ -624,7 +624,7 @@ void Toolbar_3::setLabelTime( int ms )
         m_lastRemainingTime = -1;
         relayout = true;
     }
-    else
+    else if ( isVisible() ) // no need to do expensive stuff - it's updated every second anyway
     {
         const int secs = ms/1000;
         const int remainingSecs = (m_slider->maximum() - ms) / 1000;

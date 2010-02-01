@@ -46,18 +46,23 @@ void VolumeDial::enterEvent( QEvent * )
 // this is _NOT_ redundant to the code in Toolbar_3.cpp
 bool VolumeDial::eventFilter( QObject *o, QEvent *e )
 {
-    if ( e->type() == QEvent::Wheel && ( o == this || QToolTip::text() == m_toolTip ) )
+    if ( e->type() == QEvent::Wheel )
     {
-        QWheelEvent *wev = static_cast<QWheelEvent*>(e);
-        if ( o != this )
+        if ( o == this || QToolTip::text() == m_toolTip )
         {
-            QPoint pos( 0, 0 ); // the event needs to be on us or nothing will happen
-            QWheelEvent nwev( pos, mapToGlobal( pos ), wev->delta(), wev->buttons(), wev->modifiers() );
-            wheelEvent( &nwev );
+            QWheelEvent *wev = static_cast<QWheelEvent*>(e);
+            if ( o != this )
+            {
+                QPoint pos( 0, 0 ); // the event needs to be on us or nothing will happen
+                QWheelEvent nwev( pos, mapToGlobal( pos ), wev->delta(), wev->buttons(), wev->modifiers() );
+                wheelEvent( &nwev );
+            }
+            else
+                wheelEvent( wev );
+            return true;
         }
-        else
-            wheelEvent( wev );
-        return true;
+        else // we're not needed anymore
+            qApp->removeEventFilter( this );
     }
     return false;
 }
@@ -122,7 +127,7 @@ void VolumeDial::paintEvent( QPaintEvent * )
         icon = value() < 33 ? 1 : 2;
     p.drawPixmap(0,0, m_icon[ icon ]);
     QColor c = mix( palette().color( foregroundRole() ), palette().color( QPalette::Highlight ) );
-    c.setAlpha( 82 + m_anim.step*78/6 );
+    c.setAlpha( 82 + m_anim.step*96/6 );
     p.setPen( QPen( c, 3, Qt::SolidLine, Qt::RoundCap ) );
     p.setRenderHint(QPainter::Antialiasing);
     p.drawArc( rect().adjusted(4,4,-4,-4), -110*16, - value()*320*16 / (maximum() - minimum()) );
