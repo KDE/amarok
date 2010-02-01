@@ -1,5 +1,6 @@
 /****************************************************************************************
 * Copyright (c) 2009 Thomas Luebking <thomas.luebking@web.de>                          *
+* Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -46,12 +47,18 @@ protected:
     void timerEvent( QTimerEvent * );
     void wheelEvent( QWheelEvent * );
 private:
-    QFont adjustedFont( const QString &text );
     void ensureAnimationStatus();
     void setPulsating( bool on );
 private slots:
     void activateOnEnter();
 private:
+    /**
+     * Creates an elided version of a string that fits in this widget.
+     *
+     * @return elided version of given string
+     */
+    QString elidedText( const QString& text ) const;
+
     Qt::Alignment m_align;
     int m_time, m_index, m_visibleIndex, m_animTimer, m_fadeTime, m_displayTime, m_opacity, m_targetOpacity;
     bool m_animated, m_pulsating, m_pulseRequested, m_isClick, m_explicit;

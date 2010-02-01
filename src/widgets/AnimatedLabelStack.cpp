@@ -1,5 +1,6 @@
 /****************************************************************************************
 * Copyright (c) 2009 Thomas Luebking <thomas.luebking@web.de>                          *
+* Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -57,36 +58,6 @@ AnimatedLabelStack::activateOnEnter()
     }
     else
         setPulsating( true );
-}
-
-QFont
-AnimatedLabelStack::adjustedFont( const QString &text )
-{
-    QFont fnt = font();
-    int w = QFontMetrics( fnt ).width( text );
-
-    if ( w <= width() )
-        return fnt; // no problem
-
-    float ratio = width() / (float)w;
-
-    if ( ratio > 0.84 ) // we'll squeeze until here
-        fnt.setStretch( qRound( fnt.stretch()*(ratio-0.02) ) );
-    else if ( fnt.pointSize() > 0 ) // ignore pixel fonts due to debatable results
-    {   // shrink the font as much as "sensible", compensate by squeezing
-        // NOTICE: i don't quite like this - the outcome is too arbitrary, but the only "valid"
-        // approach would be to loop on some point sizes and check for the best value
-        // (the reason in the "interesting" point size impact on font widths...) :-(
-        ratio = qMax(0.70, ratio/0.93);
-        fnt.setPointSize( qRound( fnt.pointSize() * ratio ) );
-        w = QFontMetrics( fnt ).width( text );
-        if ( w > width() )
-        {
-            ratio = qMax( 0.85f, width() / (float)w );
-            fnt.setStretch( qRound( fnt.stretch()*(ratio-0.02) ) );
-        }
-    }
-    return fnt;
 }
 
 void
@@ -168,8 +139,7 @@ AnimatedLabelStack::paintEvent( QPaintEvent * pe )
                 if (index < 0)
                     index = m_data.count() - 1;
 
-                p.setFont( adjustedFont( m_data.at( index ) ) );
-                p.drawText( rect(), m_align | Qt::TextSingleLine, m_data.at( index ) );
+                p.drawText( rect(), m_align | Qt::TextSingleLine, elidedText( m_data.at( index ) ) );
             }
             
             c.setAlpha( m_opacity );
@@ -177,9 +147,23 @@ AnimatedLabelStack::paintEvent( QPaintEvent * pe )
     }
     
     p.setPen( c );
-    p.setFont( adjustedFont( m_data.at( m_visibleIndex ) ) );
-    p.drawText( rect(), m_align | Qt::TextSingleLine, m_data.at( m_visibleIndex ) );
+    p.drawText( rect(), m_align | Qt::TextSingleLine, elidedText( m_data.at( m_visibleIndex ) ) );
     p.end();
+}
+
+QString
+AnimatedLabelStack::elidedText( const QString& text ) const
+{
+    const QFontMetrics fontMetrics( font() );
+
+    QString newText = fontMetrics.elidedText( text, Qt::ElideRight, width() / 1.7 );
+
+    // Insert a whitespace between text and "..." (looks nicer)
+    if( newText != text )
+        newText.insert( newText.length() -1, ' ' );
+
+
+    return newText;
 }
 
 void
