@@ -265,6 +265,9 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 
                     return provider->prettyName();
                 }
+
+                case OnDiskColumn:
+                    return isOnDisk( pmc );
             }
             break;
 
@@ -277,12 +280,6 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             if( index.column() == TitleColumn )
                 return icon( pmc );
             break;
-
-        case OnDiskRole:
-            if( index.column() == TitleColumn )
-                return isOnDisk( pmc );
-            break;
-
     }
 
     return QVariant();
