@@ -840,6 +840,10 @@ TestSqlQueryMaker::testSpecialCharacters_data()
     QTest::newRow( "\" in filter w like" ) << "Foo\"Bar" << true;
     QTest::newRow( "_ in filter w/o like" ) << "track_" << false;
     QTest::newRow( "_ in filter w/ like" ) << "track_" << true;
+    QTest::newRow( "filter with two consecutive backslashes w/o like" ) << "Foo\\\\Bar" << false;
+    QTest::newRow( "filter with two consecutive backslashes w like" ) << "Foo\\\\Bar" << true;
+    QTest::newRow( "filter with backslash% w/o like" ) << "FooBar\\%" << false;
+    QTest::newRow( "filter with backslash% w like" ) << "FooBar\\%" << true;
 }
 
 void
@@ -848,12 +852,8 @@ TestSqlQueryMaker::testSpecialCharacters()
     QFETCH( QString, filter );
     QFETCH( bool, like );
 
-    //qDebug() << filter;
-
     QString insertTrack = QString( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
                               "VALUES(999,999,'%1','',1,1,1,1,1);").arg( m_storage->escape( filter ) );
-
-    //qDebug() << insertTrack;
 
     //there is a unique index on TRACKS.URL
     m_storage ->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES(999,-1, './foobar.mp3','999');");
@@ -867,10 +867,6 @@ TestSqlQueryMaker::testSpecialCharacters()
     qm.setQueryType( QueryMaker::Track );
     qm.setReturnResultAsDataPtrs( true );
     qm.addFilter( Meta::valTitle, filter, !like, !like );
-
-    //qDebug() << qm.query();
-
-    //qDebug() << "Result is: " << m_storage->query( qm.query() );
 
     qm.run();
 
