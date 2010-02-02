@@ -66,6 +66,9 @@ namespace The
 
 using namespace PlaylistBrowserNS;
 
+QString PodcastCategory::s_byProviderKey( "Group By Provider" );
+QString PodcastCategory::s_configGroup( "Podcast View" );
+
 PodcastCategory* PodcastCategory::s_instance = 0;
 
 PodcastCategory*
@@ -124,21 +127,28 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
                                  QSizePolicy::MinimumExpanding );
     toolBar->addWidget( spacerWidget );
 
-    QAction *importOpmlAction = new QAction( KIcon("document-import")
-                                             , QString()
-                                             , toolBar
-                                         );
-    importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
-    toolBar->addAction( importOpmlAction );
-    connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
-
-    PlaylistsByProviderProxy *byProviderProxy = new PlaylistsByProviderProxy( podcastModel );
+    m_byProviderProxy = new PlaylistsByProviderProxy( podcastModel );
     m_podcastTreeView = new PodcastView( podcastModel, this );
 
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
     m_podcastTreeView->setContentsMargins(0,0,0,0);
-//    m_podcastTreeView->setModel( podcastModel );
-    m_podcastTreeView->setModel( byProviderProxy );
+
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ),
+                                         i18n( "Toggle unified view mode" ), toolBar );
+    toggleAction->setCheckable( true );
+    toolBar->addAction( toggleAction );
+    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
+    if( Amarok::config( s_configGroup ).readEntry( s_byProviderKey, false ) )
+    {
+        m_podcastTreeView->setModel( m_byProviderProxy );
+        toggleAction->setChecked( true );
+    }
+    else
+    {
+        m_podcastTreeView->setModel( podcastModel );
+        toggleAction->setChecked( false );
+    }
+
     m_podcastTreeView->header()->hide();
     m_podcastTreeView->setIconSize( QSize( 32, 32 ) );
 
@@ -173,6 +183,14 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_viewKicker = new ViewKicker( m_podcastTreeView );
 
     connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( showInfo( const QModelIndex & ) ) );
+
+    QAction *importOpmlAction = new QAction( KIcon("document-import")
+                                             , QString()
+                                             , toolBar
+                                         );
+    importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
+    toolBar->addAction( importOpmlAction );
+    connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
 }
 
 PodcastCategory::~PodcastCategory()
@@ -323,6 +341,17 @@ PodcastCategory::slotImportOpml()
         // user entered nothing or pressed Cancel
         debug() << "invalid input or cancel";
     }
+}
+
+void
+PodcastCategory::toggleView( bool enabled ) //SLOT
+{
+    if( enabled )
+        m_podcastTreeView->setModel( m_byProviderProxy );
+    else
+        m_podcastTreeView->setModel( m_podcastModel );
+
+    Amarok::config( s_configGroup ).writeEntry( s_byProviderKey, enabled );
 }
 
 ViewKicker::ViewKicker( QTreeView * treeView )

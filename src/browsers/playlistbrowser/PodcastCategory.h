@@ -32,7 +32,7 @@
 class PopupDropper;
 class QAction;
 
-// class Meta::PodcastMetaCommon;
+class PlaylistsByProviderProxy;
 
 namespace PlaylistBrowserNS {
 
@@ -53,17 +53,21 @@ class PodcastCategory : public BrowserCategory
 
     private:
         static PodcastCategory* s_instance;
+        static QString s_configGroup;
+        static QString s_byProviderKey;
 
         PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel );
         ~PodcastCategory();
 
         PodcastModel *m_podcastModel;
+        PlaylistsByProviderProxy *m_byProviderProxy;
         PodcastView *m_podcastTreeView;
         ViewKicker * m_viewKicker;
 
     private slots:
         void showInfo( const QModelIndex & index );
         void slotImportOpml();
+        void toggleView( bool );
 };
 
 class ViewKicker : public QObject

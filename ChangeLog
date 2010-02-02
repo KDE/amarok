@@ -5,6 +5,9 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * Podcasts can now be grouped per provider like iPod Podcasts, Local Podcasts,
+      USB Mass Storage, etc. This can be toggled using a button in the Podcast
+      Category.
     * The playlist context menu now has a "Show in Media Sources" action for
       many types of track.
     * The collection scanner now also looks for cover images named
