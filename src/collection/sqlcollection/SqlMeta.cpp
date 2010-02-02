@@ -560,7 +560,7 @@ SqlTrack::setFirstPlayed( const uint newTime )
         m_cache.insert( Meta::Field::FIRST_PLAYED, newTime );
     else
     {
-        m_lastPlayed = newTime;
+        m_firstPlayed = newTime;
         updateStatisticsInDb( Meta::Field::FIRST_PLAYED );
         notifyObservers();
     }
