@@ -830,25 +830,23 @@ SqlTrack::updateStatisticsInDb( const QStringList &fields )
 void
 SqlTrack::finishedPlaying( double playedFraction )
 {
-    // Only increment playcount if we've played more than half of the song... It seems like the sanest comprimise.
-    // and only update the other stats (if we did assume that is not played we should not update the last played date
+    DEBUG_BLOCK
+
+    beginMetaDataUpdate();    // Batch updates, so we only bother our observers once.
+
+    // Only increment playcount etc. if we've played more than half of the song...
+    // It seems like the sanest compromise.
     if ( playedFraction >= 0.5 )
     {
-        m_lastPlayed = QDateTime::currentDateTime().toTime_t();
-        m_playCount++;
-        if( !m_firstPlayed )
-        {
-            m_firstPlayed = m_lastPlayed;
-        }
+        setPlayCount( m_playCount + 1 );
+        setLastPlayed( QDateTime::currentDateTime().toTime_t() );
+        if( m_firstPlayed == 0 )
+            setFirstPlayed( m_lastPlayed );
     }
 
     setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );
-    QStringList fields;
-    if( !m_firstPlayed )
-        fields << Meta::Field::FIRST_PLAYED;
-    fields << Meta::Field::LAST_PLAYED << Meta::Field::PLAYCOUNT << Meta::Field::SCORE;
-    updateStatisticsInDb( fields );
-    notifyObservers();
+
+    endMetaDataUpdate();
 }
 
 bool
@@ -1531,7 +1529,7 @@ SqlAlbum::setCompilation( bool compilation )
                 int otherId = albumId[0].toInt();
                 QString update = "UPDATE tracks SET album = %1 WHERE album = %2";
                 m_collection->sqlStorage()->query( update.arg( otherId ).arg( m_id ) );
-                
+
                 QString delete_album = "DELETE FROM albums WHERE id = %1";
                 m_collection->sqlStorage()->query( delete_album.arg( m_id ) );
 
