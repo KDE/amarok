@@ -182,10 +182,11 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 
     m_viewKicker = new ViewKicker( m_podcastTreeView );
 
-    connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( showInfo( const QModelIndex & ) ) );
+    connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), this,
+             SLOT( showInfo( const QModelIndex & ) ) );
 
     QAction *importOpmlAction = new QAction( KIcon("document-import")
-                                             , QString()
+                                             , i18n( "Import OPML File" )
                                              , toolBar
                                          );
     importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
