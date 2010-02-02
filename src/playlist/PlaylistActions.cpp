@@ -431,7 +431,7 @@ Playlist::Actions::engineNewTrackPlaying()
 
 
 void
-Playlist::Actions::normalizeDynamicPlayist()
+Playlist::Actions::normalizeDynamicPlaylist()
 {
     if ( typeid( *m_navigator ) == typeid( DynamicTrackNavigator ) )
     {

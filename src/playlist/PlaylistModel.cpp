@@ -904,7 +904,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 
     //make sure that there are enough tracks if we just removed from a dynamic playlist.
-    Playlist::Actions::instance()->normalizeDynamicPlayist();
+    Playlist::Actions::instance()->normalizeDynamicPlaylist();
 }
 
 

@@ -94,7 +94,7 @@ public:
      * Make sure that there are enough tracks in the current playlist
      * if it is dynamic and the user removed tracks.
      */
-    void normalizeDynamicPlayist();
+    void normalizeDynamicPlaylist();
 
     /** returns the navigator currently in use, can be 0 */
     inline const TrackNavigator *navigator() const { return m_navigator; }
