@@ -108,8 +108,12 @@ private:
     
     int m_lastTime;
     int m_lastRemainingTime;
-    int m_dragStartX;
-    int m_dragLastX;
+    struct
+    {
+        int startX;
+        int lastX;
+        int max;
+    } m_drag;
     int m_trackBarAnimationTimer;
     int m_bgGradientMode;
 

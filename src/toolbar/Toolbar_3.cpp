@@ -822,9 +822,11 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
         if ( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
             const int x = mev->globalPos().x();
-            int d = x - m_dragLastX;
-            m_dragLastX = x;
-            const int globalDist = qAbs( x - m_dragStartX );
+            int d = x - m_drag.lastX;
+            m_drag.lastX = x;
+            const int globalDist = qAbs( x - m_drag.startX );
+            if ( globalDist > m_drag.max )
+                m_drag.max = globalDist;
             if ( globalDist > m_prev.label->width() )
                 return false; // constrain to one item width
 
@@ -841,7 +843,8 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
         if ( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
             static_cast<QWidget*>(o)->setCursor( Qt::SizeHorCursor );
-            m_dragLastX = m_dragStartX = mev->globalPos().x();
+            m_drag.max = 0;
+            m_drag.lastX = m_drag.startX = mev->globalPos().x();
         }
         return false;
     }
@@ -852,7 +855,7 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
         if ( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
             const int x = mev->globalPos().x();
-            const int d = m_dragStartX - x;
+            const int d = m_drag.startX - x;
             QRect r = m_trackBarSpacer->geometry();
             const int limit = r.width()/5; // 1/3 is too much, 1/6 to few
 
@@ -861,14 +864,14 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
             l->setCursor( l->data().isEmpty() ? Qt::ArrowCursor : Qt::PointingHandCursor );
 
             // if this was a _real_ drag, silently release the mouse
-            const bool silentRelease = qAbs(d) > 25;
+            const bool silentRelease = m_drag.max > 25;
             if ( silentRelease )
             {   // this is a drag, release secretly
                 o->blockSignals( true );
                 o->removeEventFilter( this );
                 QMouseEvent mre( QEvent::MouseButtonRelease, mev->pos(), mev->globalPos(),
                                  Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-                                 QCoreApplication::sendEvent( o, &mre );
+                QCoreApplication::sendEvent( o, &mre );
                 o->installEventFilter( this );
                 o->blockSignals( false );
             }
