@@ -732,7 +732,7 @@ bool
 MainWindow::isReallyShown() const
 {
 #ifdef Q_WS_X11
-    const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
+    const KWindowInfo info = KWindowSystem::windowInfo( winId(), NET::WMDesktop, 0 );
     return !isHidden() && !info.isMinimized() && info.isOnDesktop( KWindowSystem::currentDesktop() );
 #else
     return !isHidden();
