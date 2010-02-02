@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009-2010 Ludovic Deveaux <deveaux.ludovic31@gmail.com>                *
+ * Copyright (c) 2010 Hormiere Guillaume <hormiere.guillaume@gmail.com>                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,59 +18,116 @@
 #ifndef UPCOMING_EVENTS_WIDGET_H
 #define UPCOMING_EVENTS_WIDGET_H
 
-//Qt
+// Kde include
+#include<KUrl>
+
+// Qt include
 #include <QWidget>
 #include <QDate>
 #include <QPixmap>
 #include <QScrollArea>
 
-//Kde
-#include<KUrl>
+class KUrl;
+class KJob;
 
 class QLabel;
-class KUrl;
 class QDateTime;
 class QGridLayout;
-class KJob;
 
 class UpcomingEventsWidget : public QWidget
 {
     Q_OBJECT
     
     public:
+        /**
+         * UpcomingEventsWidget constructor
+         * @arg
+         */
         UpcomingEventsWidget( QWidget * parent = 0 );
-        ~UpcomingEventsWidget();
+        ~UpcomingEventsWidget ();
 
         // Getters
-        QLabel * image() const;
-        QLabel * participants() const;
-        QLabel * date() const;
-        QLabel * name() const;
-        QLabel * location() const;
-        QLabel * url() const;
+        /**
+         *@return the image QLabel pointer
+         */
+        QLabel  *image() const;
+        /**
+         *@return the participants QLabel pointer
+         */
+        QLabel  *participants() const;
+        /**
+         *@return the date QLabel pointer
+         */
+        QLabel  *date() const;
+        /**
+         *@return the name QLabel pointer
+         */
+        QLabel  *name() const;
+        /**
+         *@return the location QLabel pointer
+         */
+        QLabel  *location() const;
+        /**
+         *@return the url QLabel pointer
+         */
+        QLabel  *url() const;
 
         // Setters
-        void setImage( const KUrl &urlImage );
-        void setParticipants( const QString &participants );
-        void setDate( const QDateTime &date );
-        void setName( const QString &name );
-        void setLocation( const QString &location );
-        void setUrl( const KUrl &url );
+        /**
+         *Set the event's image in QLabel from an url
+         *@param KUrl, image's url to be displayed
+         */
+        void    setImage( const KUrl &urlImage );
+        /**
+         *Set the event's participants text in QLabel from a QString
+         *@param QString, participant's text to be displayed
+         */
+        void    setParticipants( const QString &participants );
+        /**
+         *Set the event's date in QLabel from a QDateTime
+         *@param QDateTime, date to be displayed
+         */
+        void    setDate( const QDateTime &date );
+        /**
+         *Set the event's name in QLabel from a QString
+         *@param QString, name's text to be displayed
+         */
+        void    setName( const QString &name );
+        /**
+         *Set the event's location in a QLabel from a QString
+         *@param QString, location's text to be displayed
+         */
+        void    setLocation( const QString &location );
+        /**
+         *Set the event's url in QLabel from a KUrl
+         *@param KUrl, url to be displayed
+         */
+        void    setUrl( const KUrl &url );
 
     private:
-        QGridLayout * m_layout;
-        
-        QLabel * m_image;
-        QLabel * m_participants;
-        QLabel * m_date;
-        QLabel * m_location;
-        QLabel * m_name;
-        QLabel * m_url;
-        QFrame * m_frame;
+
+        QGridLayout *m_layout;
+        QLabel *m_image;
+        QLabel *m_participants;
+        QLabel *m_date;
+        QLabel *m_location;
+        QLabel *m_name;
+        QLabel *m_url;
+        QFrame *m_frame;
 
     private slots:
-        void loadImage( KJob * job );
-        void openUrl(QString);
+        /**
+         *SLOTS
+         *Get pixmap from the KJob and set it into image's QLabel
+         *@param KJob*, pointer to the job which get the pixmap from the web
+         */
+        void    loadImage( KJob *job );
+        /**
+         *SLOTS
+         *Open the event's url
+         *@param QString, contain the Url
+         */
+        void    openUrl( QString );
 };
 
-#endif // UPCOMINGEVENTSWIDGET_H
+#endif /* UPCOMINGEVENTSWIDGET_H */

@@ -17,14 +17,15 @@
 
 #include "UpcomingEventsWidget.h"
 
-#include <QDateTime>
-#include <QGridLayout>
-#include <QLabel>
-#include <QString>
-
+// Kde include
 #include <KIO/Job>
 #include <KLocalizedString>
 #include <KUrl>
+
+// Qt include
+#include <QDateTime>
+#include <QLabel>
+#include <QString>
 #include <QGridLayout>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsScene>
@@ -32,7 +33,7 @@
 
 #define NBR_MAX_PARTICIPANT 5
 
-UpcomingEventsWidget::UpcomingEventsWidget( QWidget* parent ): QWidget( parent )
+UpcomingEventsWidget::UpcomingEventsWidget( QWidget *parent ): QWidget( parent )
 {
     m_image = new QLabel( this );
     m_participants = new QLabel( this );
@@ -115,15 +116,15 @@ UpcomingEventsWidget::setImage( const KUrl &url )
 {
     m_image->setText( "Loading picture..." );
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL( result( KJob* ) ), SLOT( loadImage( KJob* ) ) );
+    connect( job, SIGNAL( result( KJob * ) ), SLOT( loadImage( KJob * ) ) );
 }
 
 void
-UpcomingEventsWidget::loadImage( KJob * job ) // SLOT
+UpcomingEventsWidget::loadImage( KJob *job ) // SLOT
 {
     if( job )
     {
-        KIO::StoredTransferJob* const storedJob = static_cast< KIO::StoredTransferJob* >( job );
+        KIO::StoredTransferJob *const storedJob = static_cast< KIO::StoredTransferJob * >( job );
         QPixmap image;
         image.loadFromData( storedJob->data() );
         m_image->setPixmap( image );
@@ -147,7 +148,7 @@ UpcomingEventsWidget::setParticipants( const QString &participants )
     else
     {
         QStringList listbuff = participants.split(" - ");
-        QString buffer("");
+        QString buffer( "" );
         QString toolTipText;
         for( int i = 0; i < listbuff.size(); i++ )
         {
@@ -212,9 +213,9 @@ UpcomingEventsWidget::setUrl( const KUrl &url )
 }
 
 void
-UpcomingEventsWidget::openUrl(QString url)
+UpcomingEventsWidget::openUrl( QString url )
 {
-    QDesktopServices::openUrl(KUrl(url));
+    QDesktopServices::openUrl( KUrl( url ) );
 }
 
 #include "UpcomingEventsWidget.moc"

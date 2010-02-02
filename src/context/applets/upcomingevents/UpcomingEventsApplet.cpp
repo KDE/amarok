@@ -64,6 +64,7 @@ UpcomingEventsApplet::init()
 {
     m_mainLayout = new QVBoxLayout;
     m_mainLayout->setSizeConstraint( QLayout::SetMinAndMaxSize );
+    m_mainLayout->setAlignment( Qt::AlignJustify );
     m_headerLabel = new TextScrollingWidget( this );
     
     setBackgroundHints( Plasma::Applet::NoBackground );
@@ -183,7 +184,8 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     {
         delete u;
     }
-    m_widgets.clear();    
+
+    m_widgets.clear();
 
     for( int i = 0; i < events.size(); i++ )
     {
@@ -224,6 +226,14 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
             m_widgets.insert( i, widget );
         }
     }
+
+    if(  0 == m_widgets.size() )
+    {
+        UpcomingEventsWidget * widget = new UpcomingEventsWidget;
+        widget->setName( " No events " );
+        m_widgets.insert( 0, widget );
+    }
+
     updateConstraints();
     update();
 }
