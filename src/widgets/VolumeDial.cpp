@@ -16,16 +16,16 @@
 
 #include "VolumeDial.h"
 
+#include "MainWindow.h"
+#include "SvgHandler.h"
+
 #include <QCoreApplication>
-// #include <QPaintEvent>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QToolBar>
 #include <QToolTip>
 
 #include <KLocale>
-
-#include "SvgHandler.h"
 
 
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
@@ -234,7 +234,9 @@ void VolumeDial::valueChangedSlot( int v )
 {
     m_toolTip = QString( "Volume: %1 %" ).arg( value() );
     setToolTip( m_toolTip );
-    QToolTip::showText( mapToGlobal( rect().bottomLeft() ), m_toolTip );
+
+    if( The::mainWindow()->isReallyShown() )
+        QToolTip::showText( mapToGlobal( rect().bottomLeft() ), m_toolTip );
     
     m_isClick = false;
 
