@@ -227,23 +227,23 @@ App::~App()
     // Hiding the OSD before exit prevents crash
     Amarok::OSD::instance()->hide();
 
+    // This following can't go in the PlaylistModel destructor, because by the time that
+    // happens, the Config has already been written.
+
+    // Use the bottom model because that provides the most dependable/invariable row
+    // number to save in an external file.
+    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
+
     if ( AmarokConfig::resumePlayback() )
     {
-        if ( The::engineController()->state() != Phonon::StoppedState )
+        Meta::TrackPtr engineTrack = The::engineController()->currentTrack();
+        if( engineTrack )
         {
-            Meta::TrackPtr track = The::engineController()->currentTrack();
-            if( track )
-            {
-                AmarokConfig::setResumeTrack( track->playableUrl().prettyUrl() );
-                AmarokConfig::setResumeTime( The::engineController()->trackPositionMs() );
-                AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
-            }
+            AmarokConfig::setResumeTrack( engineTrack->playableUrl().prettyUrl() );
+            AmarokConfig::setResumeTime( The::engineController()->trackPositionMs() );
         }
         else
-        {
             AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
-            AmarokConfig::setLastPlaying( -1 );
-        }
     }
 
     The::engineController()->endSession(); //records final statistics
@@ -266,10 +266,6 @@ App::~App()
     // I asked Trolltech! *smug*
     Amarok::OSD::destroy();
     Amarok::KNotificationBackend::destroy();
-
-    // I tried this in the destructor for the Model but the object is destroyed after the
-    // Config is written. Go figure!
-    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
 
     AmarokConfig::self()->writeConfig();
 
