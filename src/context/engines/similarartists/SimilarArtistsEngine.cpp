@@ -46,7 +46,7 @@ SimilarArtistsEngine::SimilarArtistsEngine( QObject* parent, const QList<QVarian
 
 /**
  * Destroy the dataEngine
- s*/
+ */
 SimilarArtistsEngine::~SimilarArtistsEngine()
 {
     delete m_similarArtistsJob;
