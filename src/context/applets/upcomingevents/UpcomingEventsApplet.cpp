@@ -63,7 +63,7 @@ void
 UpcomingEventsApplet::init()
 {
     m_mainLayout = new QVBoxLayout;
-    m_mainLayout->setSizeConstraint( QLayout::SetMinAndMaxSize );
+    m_mainLayout->setSizeConstraint( QLayout::SetFixedSize);
     m_mainLayout->setAlignment( Qt::AlignJustify );
     m_headerLabel = new TextScrollingWidget( this );
     
@@ -227,11 +227,9 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
         }
     }
 
-    if(  0 == m_widgets.size() )
+    if(  0 == m_widgets.size() && artistName.compare( "" ) != 0 )
     {
-        UpcomingEventsWidget * widget = new UpcomingEventsWidget;
-        widget->setName( " No events " );
-        m_widgets.insert( 0, widget );
+        m_headerLabel->setText( i18n( "No upcoming events for %1", artistName ) );
     }
 
     updateConstraints();

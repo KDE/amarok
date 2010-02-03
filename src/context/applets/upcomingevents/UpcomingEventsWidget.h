@@ -41,7 +41,7 @@ class UpcomingEventsWidget : public QWidget
     public:
         /**
          * UpcomingEventsWidget constructor
-         * @arg
+         * @param QWidget*, like QWidget constructor
          */
         UpcomingEventsWidget( QWidget * parent = 0 );
         ~UpcomingEventsWidget ();
