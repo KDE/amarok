@@ -1,7 +1,7 @@
-/****************************************************************************************
+/***************************************************************************************
 * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
 * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
-* Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+* Copyright (c) 2009-2010 Joffrey Clavel <jclavel@clabert.info>                        *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,28 +20,36 @@
 #define SIMILARARTISTSENGINE_H
 
 #include "ContextObserver.h"
+#include <context/DataEngine.h>
 #include "meta/Meta.h"
 #include <applets/similarartists/SimilarArtist.h>
-#include <context/DataEngine.h>
-
-#include <QLocale>
 
 #include <KIO/Job>
 
-
-/**
-    This class provide SimilarArtists data for use in Context applets.
-*/
+#include <QLocale>
 
 using namespace Context;
 
+/**
+ *  This class provide SimilarArtists data for use in the SimilarArtists context applet.
+ *  It gets its information from the API lastfm.
+ */
 class SimilarArtistsEngine : public DataEngine, public ContextObserver, Meta::Observer
 {
     Q_OBJECT
     Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
 
 public:
+
+    /**
+     * Construct the engine
+     * @param parent The object parent to this engine     
+     */
     SimilarArtistsEngine( QObject* parent, const QList<QVariant>& args );
+
+    /**
+     * Destroy the dataEngine
+     */
     virtual ~SimilarArtistsEngine();
 
     QStringList sources() const;
@@ -51,50 +59,92 @@ public:
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
+    
     void metadataChanged( Meta::TrackPtr track );
 
-    void setSelection( const QString& selection ) { m_currentSelection = selection; }
-    QString selection() { return m_currentSelection; }
+    void setSelection( const QString& selection )
+    {
+        m_currentSelection = selection;
+    }
+    QString selection()
+    {
+        return m_currentSelection;
+    }
 
     /**
     * Fetches the similar artists for an artist thanks to the LastFm WebService
     * @param artist_name the name of the artist
     * @return a map with the names of the artists with their match rate
     */
-    QMap<int, QString> similarArtists(const QString &artist_name);
+    QMap<int, QString> similarArtists( const QString &artist_name );
 
     /**
      * Fetches the similar artists for an artist thanks to the LastFm WebService
      * Store this in the similar artist list of this class
      * @param artist_name the name of the artist
      */
-    void similarArtistsRequest(const QString &artist_name);
+    void similarArtistsRequest( const QString &artist_name );
 
 
 protected:
     bool sourceRequestEvent( const QString& name );
 
 private:
+
+    /**
+     * Prepare the calling of the similarArtistsRequest method.
+     * Launch when the track played on amarok has changed.
+     */
     void update();
 
+    /**
+     * The max number of similar artists to get
+     */
     int m_maxArtists;
 
+    /**
+     * The job for download the data from the lastFm API
+     */
     KJob *m_similarArtistsJob;
 
+    /**
+     * The current track played on amarok
+     */
     Meta::TrackPtr m_currentTrack;
 
     QString m_currentSelection;
+
+    /**
+     * Is true, if someone is asking for data
+     */
     bool m_requested;
+    
     QStringList m_sources;
     short m_triedRefinedSearch;
 
+    /**
+     * The list of similar artists fetched on the last fm API
+     */
     QList<SimilarArtist> m_similarArtists;
+
+    /**
+     * The xml downloaded on the last API. It contains the similar artists.
+     */
     QString m_xml;
 
+    /**
+     * The artist, whose research is similar artists.
+     */
     QString m_artist;
 
 private slots:
-    void similarArtistsParse( KJob* );
+
+    /**
+     * Parse the xml fetched on the lastFM API.
+     * Launched when the download of the data are finished.
+     * @param job The job, which have downloaded the data.
+     */
+    void similarArtistsParse( KJob* job);
 
 };
 
