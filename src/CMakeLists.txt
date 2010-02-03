@@ -631,7 +631,7 @@ set(amaroklib_LIB_SRCS
     toolbar/CurrentTrackToolbar.cpp
     toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
-    toolbar/Toolbar_3.cpp
+    toolbar/MainToolbar.cpp
     TrayIcon.cpp
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp

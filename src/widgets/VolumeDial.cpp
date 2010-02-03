@@ -43,7 +43,7 @@ void VolumeDial::enterEvent( QEvent * )
 
 // NOTICE: we intercept wheelEvents for ourself to prevent the tooltip hiding on them,
 // see ::wheelEvent()
-// this is _NOT_ redundant to the code in Toolbar_3.cpp
+// this is _NOT_ redundant to the code in MainToolbar.cpp
 bool VolumeDial::eventFilter( QObject *o, QEvent *e )
 {
     if ( e->type() == QEvent::Wheel )

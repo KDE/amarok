@@ -31,12 +31,12 @@ namespace Amarok { class TimeSlider; }
 #include <QToolBar>
 
 
-class Toolbar_3 : public QToolBar, public EngineObserver
+class MainToolbar : public QToolBar, public EngineObserver
 {
     Q_OBJECT
 
 public:
-    Toolbar_3( QWidget *parent = 0 );
+    MainToolbar( QWidget *parent = 0 );
     void engineMuteStateChanged( bool mute );
     void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
     void engineTrackChanged( Meta::TrackPtr track );

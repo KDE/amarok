@@ -43,7 +43,7 @@ protected:
     void mouseReleaseEvent( QMouseEvent * );
     void resizeEvent(QResizeEvent *);
     void timerEvent ( QTimerEvent * );
-    friend class Toolbar_3;
+    friend class MainToolbar;
     void wheelEvent( QWheelEvent * );
 
 private:

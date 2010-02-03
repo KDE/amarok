@@ -63,7 +63,7 @@
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
 #include "toolbar/SlimToolbar.h"
-#include "toolbar/Toolbar_3.h"
+#include "toolbar/MainToolbar.h"
 #include "SvgHandler.h"
 #include "widgets/Splitter.h"
 #include "widgets/AmarokDockWidget.h"
@@ -246,7 +246,7 @@ MainWindow::init()
     m_slimToolbar->hide();
 
     //create 3G toolbar
-    m_toolbar3 = new Toolbar_3( 0 );
+    m_toolbar3 = new MainToolbar( 0 );
     m_toolbar3->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_toolbar3->setMovable ( true );
     addToolBar( Qt::TopToolBarArea, m_toolbar3 );

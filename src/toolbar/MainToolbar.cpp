@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Toolbar_3.h"
+#include "MainToolbar.h"
 
 #include "amarokconfig.h"
 
@@ -61,13 +61,13 @@ static const int timeLabelMargin = 6;
 static const int constant_progress_ratio_minimum_width = 640;
 
 
-Toolbar_3::Toolbar_3( QWidget *parent )
+MainToolbar::MainToolbar( QWidget *parent )
     : QToolBar( i18n( "Toolbar 3G" ), parent )
     , EngineObserver( The::engineController() )
     , m_lastTime( -1 )
     , m_bgGradientMode( 0 )
 {
-    setObjectName( "Toolbar_3G" );
+    setObjectName( "MainToolbar" );
     // prevents local from triggering updates on the parent, needs to be false in case of no m_bgGradient
     setAttribute( Qt::WA_OpaquePaintEvent, true );
 
@@ -145,7 +145,7 @@ Toolbar_3::Toolbar_3( QWidget *parent )
 }
 
 void
-Toolbar_3::addBookmark( const QString &name, int milliSeconds )
+MainToolbar::addBookmark( const QString &name, int milliSeconds )
 {
     if ( m_slider )
         m_slider->drawTriangle( name, milliSeconds, false );
@@ -166,7 +166,7 @@ static void adjustLabelPos( QWidget *label, int targetX )
 }
 
 void
-Toolbar_3::animateTrackLabels()
+MainToolbar::animateTrackLabels()
 {
     bool done = true;
     int x = m_trackBarSpacer->geometry().x();
@@ -201,7 +201,7 @@ Toolbar_3::animateTrackLabels()
 }
 
 void
-Toolbar_3::checkEngineState()
+MainToolbar::checkEngineState()
 {
     Phonon::State newState = The::engineController()->state();
     if ( m_currentEngineState == newState )
@@ -235,19 +235,19 @@ Toolbar_3::checkEngineState()
 }
 
 void
-Toolbar_3::engineVolumeChanged( int percent )
+MainToolbar::engineVolumeChanged( int percent )
 {
     m_volume->setValue( percent );
 }
 
 void
-Toolbar_3::engineMuteStateChanged( bool mute )
+MainToolbar::engineMuteStateChanged( bool mute )
 {
     m_volume->setMuted( mute );
 }
 
 void
-Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
+MainToolbar::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
 {
     if ( !isVisible() || currentState == oldState )
         return;
@@ -257,14 +257,14 @@ Toolbar_3::engineStateChanged( Phonon::State currentState, Phonon::State oldStat
 }
 
 void
-Toolbar_3::filter( const QString &string )
+MainToolbar::filter( const QString &string )
 {
     if ( CollectionWidget::instance() )
         CollectionWidget::instance()->setFilter( string );
 }
 
 void
-Toolbar_3::layoutProgressBar()
+MainToolbar::layoutProgressBar()
 {
     const int limit = constant_progress_ratio_minimum_width;
     QRect r = m_progressBarSpacer->geometry();
@@ -299,7 +299,7 @@ Toolbar_3::layoutProgressBar()
 }
 
 void
-Toolbar_3::layoutTrackBar()
+MainToolbar::layoutTrackBar()
 {
     m_dummy.label->hide();
     QRect r = m_trackBarSpacer->geometry();
@@ -373,7 +373,7 @@ static QStringList metadata( Meta::TrackPtr track )
 #undef TAG
 
 void
-Toolbar_3::updatePrevAndNext()
+MainToolbar::updatePrevAndNext()
 {
     if ( !The::engineController()->currentTrack() )
     {
@@ -410,7 +410,7 @@ Toolbar_3::updatePrevAndNext()
 }
 
 void
-Toolbar_3::updateBookmarks( const QString *BookmarkName )
+MainToolbar::updateBookmarks( const QString *BookmarkName )
 {
     DEBUG_BLOCK
     m_slider->clearTriangles();
@@ -436,7 +436,7 @@ Toolbar_3::updateBookmarks( const QString *BookmarkName )
 }
 
 void
-Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
+MainToolbar::engineTrackChanged( Meta::TrackPtr track )
 {
     if ( !isVisible() )
         return;
@@ -523,7 +523,7 @@ Toolbar_3::engineTrackChanged( Meta::TrackPtr track )
 }
 
 void
-Toolbar_3::engineTrackLengthChanged( qint64 ms )
+MainToolbar::engineTrackLengthChanged( qint64 ms )
 {
     m_slider->setRange( 0, ms );
     m_slider->setEnabled( ms > 0 );
@@ -537,7 +537,7 @@ Toolbar_3::engineTrackLengthChanged( qint64 ms )
 }
 
 void
-Toolbar_3::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
+MainToolbar::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
 {
     m_slider->setSliderValue( position );
 //     if ( !m_slider->isEnabled() )
@@ -545,7 +545,7 @@ Toolbar_3::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
 }
 
 void
-Toolbar_3::hideEvent( QHideEvent *ev )
+MainToolbar::hideEvent( QHideEvent *ev )
 {
     QToolBar::hideEvent( ev );
     disconnect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
@@ -559,7 +559,7 @@ Toolbar_3::hideEvent( QHideEvent *ev )
 }
 
 void
-Toolbar_3::mousePressEvent( QMouseEvent *mev )
+MainToolbar::mousePressEvent( QMouseEvent *mev )
 {
     if ( mev->button() == Qt::MidButton )
     {
@@ -573,7 +573,7 @@ Toolbar_3::mousePressEvent( QMouseEvent *mev )
 }
 
 void
-Toolbar_3::paintEvent( QPaintEvent *ev )
+MainToolbar::paintEvent( QPaintEvent *ev )
 {
     if ( m_bgGradientMode )
     {
@@ -587,7 +587,7 @@ Toolbar_3::paintEvent( QPaintEvent *ev )
 
 
 void
-Toolbar_3::resizeEvent( QResizeEvent *ev )
+MainToolbar::resizeEvent( QResizeEvent *ev )
 {
     if ( ev->size().height() != ev->oldSize().height() )
         updateBgGradient();
@@ -613,7 +613,7 @@ timeFrame( int secs )
     return 3; // 99:59:59
 }
 
-void Toolbar_3::setLabelTime( int ms )
+void MainToolbar::setLabelTime( int ms )
 {
     bool relayout = false;
     if ( ms < 0 ) // clear
@@ -661,7 +661,7 @@ void Toolbar_3::setLabelTime( int ms )
 }
 
 void
-Toolbar_3::setPlaying( bool on )
+MainToolbar::setPlaying( bool on )
 {
     if ( on )
         The::engineController()->play();
@@ -670,7 +670,7 @@ Toolbar_3::setPlaying( bool on )
 }
 
 void
-Toolbar_3::showEvent( QShowEvent *ev )
+MainToolbar::showEvent( QShowEvent *ev )
 {
     connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
     connect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
@@ -686,7 +686,7 @@ Toolbar_3::showEvent( QShowEvent *ev )
 }
 
 void
-Toolbar_3::timerEvent( QTimerEvent *ev )
+MainToolbar::timerEvent( QTimerEvent *ev )
 {
     if ( ev->timerId() == m_trackBarAnimationTimer )
         animateTrackLabels();
@@ -767,7 +767,7 @@ glassGradient(const QColor &c, const QPoint &start, const QPoint &stop)
 }
 
 void
-Toolbar_3::updateBgGradient()
+MainToolbar::updateBgGradient()
 {
     if ( !m_bgGradientMode )
     {
@@ -804,7 +804,7 @@ Toolbar_3::updateBgGradient()
 }
 
 void
-Toolbar_3::wheelEvent( QWheelEvent *wev )
+MainToolbar::wheelEvent( QWheelEvent *wev )
 {
     QPoint pos( 0, 0 ); // the event needs to be on the dial or nothing will happen
     QWheelEvent nwev( pos, m_volume->mapToGlobal( pos ), wev->delta(),
@@ -813,7 +813,7 @@ Toolbar_3::wheelEvent( QWheelEvent *wev )
 }
 
 bool
-Toolbar_3::eventFilter( QObject *o, QEvent *ev )
+MainToolbar::eventFilter( QObject *o, QEvent *ev )
 {
     if ( ev->type() == QEvent::MouseMove )
     {
@@ -916,4 +916,4 @@ Toolbar_3::eventFilter( QObject *o, QEvent *ev )
 }
 
 
-#include "Toolbar_3.moc"
+#include "MainToolbar.moc"

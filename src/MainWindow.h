@@ -31,7 +31,7 @@
 class CollectionWidget;
 class ContextWidget;
 class SlimToolbar;
-class Toolbar_3;
+class MainToolbar;
 class MainWindow;
 class PlaylistFileProvider;
 class SearchWidget;
@@ -204,7 +204,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QDockWidget * m_playlistDock;
 
         QPointer<SlimToolbar> m_slimToolbar;
-        QPointer<Toolbar_3> m_toolbar3;
+        QPointer<MainToolbar> m_toolbar3;
 
         QWidget *     m_browserDummyTitleBarWidget;
         QWidget *     m_contextDummyTitleBarWidget;
