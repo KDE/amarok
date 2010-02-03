@@ -60,6 +60,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( QWidget *parent ): QWidget( parent )
     m_layout->addWidget( m_frame, 6, 0, 1, 2 );
 
     m_layout->setAlignment( Qt::AlignLeft );
+    m_layout->setSizeConstraint( QLayout::SetMinimumSize );
     setLayout( m_layout );
     connect( m_url, SIGNAL( linkActivated( QString ) ), this, SLOT( openUrl( QString ) ) );
 }
