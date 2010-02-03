@@ -41,8 +41,6 @@ public:
      */
     ~FilterProxy();
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-
     /**
      * Find the first track in the playlist that matches the search term in one of the
      * specified search fields. This function emits found() or notFound() depending on
