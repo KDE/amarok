@@ -62,7 +62,7 @@ static const int constant_progress_ratio_minimum_width = 640;
 
 
 MainToolbar::MainToolbar( QWidget *parent )
-    : QToolBar( i18n( "Toolbar 3G" ), parent )
+    : QToolBar( i18n( "Main Toolbar" ), parent )
     , EngineObserver( The::engineController() )
     , m_lastTime( -1 )
     , m_bgGradientMode( 0 )
