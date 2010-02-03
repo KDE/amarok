@@ -237,6 +237,13 @@ MainWindow::init()
     layout()->setContentsMargins( 0, 0, 0, 0 );
     layout()->setSpacing( 0 );
 
+    //create main toolbar
+    m_toolbar3 = new MainToolbar( 0 );
+    m_toolbar3->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
+    m_toolbar3->setMovable ( true );
+    addToolBar( Qt::TopToolBarArea, m_toolbar3 );
+    m_toolbar3->hide();
+
     //create slim toolbar
     m_slimToolbar = new SlimToolbar( 0 );
     m_slimToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
@@ -244,13 +251,6 @@ MainWindow::init()
     connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), m_slimToolbar, SLOT( repaint() ) );
     addToolBar( Qt::TopToolBarArea, m_slimToolbar );
     m_slimToolbar->hide();
-
-    //create 3G toolbar
-    m_toolbar3 = new MainToolbar( 0 );
-    m_toolbar3->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
-    m_toolbar3->setMovable ( true );
-    addToolBar( Qt::TopToolBarArea, m_toolbar3 );
-    m_toolbar3->hide();
 
     //BEGIN Creating Widgets
     PERF_LOG( "Create sidebar" )
