@@ -766,7 +766,7 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
     if ( ( m_topmostProxy->currentSearchFields() != fields ) || ( m_topmostProxy->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
 
-    int currentRow = m_topmostProxy->totalLength();
+    int currentRow = m_topmostProxy->rowCount();
     if( selected.size() > 0 )
         currentRow = selected.first();
 
