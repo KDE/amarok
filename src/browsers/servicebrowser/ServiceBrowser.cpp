@@ -38,7 +38,7 @@ ServiceBrowser * ServiceBrowser::instance()
 
 
 ServiceBrowser::ServiceBrowser( QWidget * parent, const QString& name )
-    : BrowserCategoryList( parent, name )
+    : BrowserCategoryList( parent, name, true )
     , m_usingContextView( false )
 {
     debug() << "ServiceBrowser starting...";

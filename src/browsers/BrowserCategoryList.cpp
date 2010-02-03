@@ -31,10 +31,11 @@
 #include <QFile>
 
 
-BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name )
+BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name, bool sort )
     : BrowserCategory( name, parent )
     , m_currentCategory( 0 )
     , m_categoryListModel( new BrowserCategoryListModel() )
+    , m_sorting( sort )
 {
     setObjectName( name );
     setParent( parent );
@@ -56,6 +57,8 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
     m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 #endif
 
+
+
     m_categoryListView->setFrameShape( QFrame::NoFrame );
 
     m_proxyModel = new BrowserCategoryListSortFilterProxyModel( this );
@@ -69,6 +72,14 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name 
     m_categoryListView->setAlternatingRowColors( true );
     m_categoryListView->setModel( m_proxyModel );
     m_categoryListView->setMouseTracking ( true );
+
+    if( sort )
+    {
+        debug() << "We are sorting!!";
+        m_proxyModel->setSortRole( Qt::DisplayRole );
+        m_categoryListView->setSortingEnabled( true );
+        m_categoryListView->sortByColumn( 0 );
+    }
 
     connect( m_categoryListView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( categoryActivated( const QModelIndex & ) ) );
 
@@ -106,6 +117,12 @@ BrowserCategoryList::addCategory( BrowserCategory * category )
     BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( category );
     if ( childList )
         connect( childList, SIGNAL( viewChanged() ), this, SLOT( childViewChanged() ) );
+
+    if( m_sorting )
+    {
+        m_proxyModel->sort( 0 );
+    }
+
 }
 
 

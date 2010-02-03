@@ -47,7 +47,7 @@ class BrowserCategoryList : public BrowserCategory
         * @param parent The parent widget.
         * @param name The name of this widget.
         */
-        BrowserCategoryList( QWidget *parent, const QString& name );
+        BrowserCategoryList( QWidget *parent, const QString& name, bool sort = false );
 
         /**
          * Destructor.
@@ -137,6 +137,8 @@ class BrowserCategoryList : public BrowserCategory
         QString m_currentFilter;
         
         QString m_infoHtmlTemplate;
+
+        bool    m_sorting;
 
     private slots:
         /**
