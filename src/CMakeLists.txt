@@ -586,6 +586,7 @@ set(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.cpp
     aboutdialog/OcsPersonListWidget.cpp
     ActionClasses.cpp
+    Amarok.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
     App.cpp
@@ -628,6 +629,7 @@ set(amaroklib_LIB_SRCS
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
+    browsers/filebrowser/MimeTypeFilterProxyModel.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/FileBrowserMkII.cpp
     browsers/filebrowser/FileView.cpp
@@ -640,11 +642,12 @@ set(amaroklib_LIB_SRCS
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     toolbar/CurrentTrackToolbar.cpp
-    toolbar/MainToolbar.cpp
     toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
+    toolbar/MainToolbar.cpp
     TrayIcon.cpp
     widgets/AmarokDockWidget.cpp
+    widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/CoverLabel.cpp
     widgets/hintlineedit.cpp
@@ -663,6 +666,7 @@ set(amaroklib_LIB_SRCS
     widgets/MainControlsWidget.cpp
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
+    widgets/PlayPauseButton.cpp
     widgets/PrettyTreeView.cpp
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
@@ -671,6 +675,7 @@ set(amaroklib_LIB_SRCS
     widgets/Token.cpp
     widgets/TokenWithLayout.cpp
     widgets/VolumeWidget.cpp
+    widgets/VolumeDial.cpp
     widgets/Splitter.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
@@ -742,6 +747,8 @@ qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.Collection.xml Coll
 set( amaroklib_DEPENDS "amarokpud" )
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
+add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfig.h)
+
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui

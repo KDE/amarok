@@ -32,7 +32,7 @@ typedef QList<PLSPlaylistPtr> PLSPlaylistList;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PLSPlaylist : public PlaylistFile
+class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
 {
     public:
         PLSPlaylist();

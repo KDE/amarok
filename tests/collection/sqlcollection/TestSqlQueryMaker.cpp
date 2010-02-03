@@ -818,5 +818,63 @@ TestSqlQueryMaker::testDynamicCollection()
 
 }
 
+void
+TestSqlQueryMaker::testSpecialCharacters_data()
+{
+    QTest::addColumn<QString>( "filter" );
+    QTest::addColumn<bool>( "like" );
+
+    QTest::newRow( "slash in filter w/o like" ) << "AC/DC" << false;
+    QTest::newRow( "slash in filter w/ like" ) << "AC/DC" << true;
+    QTest::newRow( "backslash in filter w/o like" ) << "AC\\DC" << false;
+    QTest::newRow( "backslash in filter w like" ) << "AC\\DC" << true;
+    QTest::newRow( "quote in filter w/o like" ) << "Foo'Bar" << false;
+    QTest::newRow( "quote in filter w like" ) << "Foo'Bar" << true;
+    QTest::newRow( "% in filter w/o like" ) << "Foo%Bar" << false;
+    QTest::newRow( "% in filter w/ like" ) << "Foo%Bar"  << true;
+    QTest::newRow( "filter ending with % w/o like" ) << "Foo%" << false;
+    QTest::newRow( "filter ending with % w like" ) << "Foo%" << true;
+    QTest::newRow( "filter beginning with % w/o like" ) << "%Foo" << false;
+    QTest::newRow( "filter beginning with % w/o like" ) << "%Foo" << true;
+    QTest::newRow( "\" in filter w/o like" ) << "Foo\"Bar" << false;
+    QTest::newRow( "\" in filter w like" ) << "Foo\"Bar" << true;
+    QTest::newRow( "_ in filter w/o like" ) << "track_" << false;
+    QTest::newRow( "_ in filter w/ like" ) << "track_" << true;
+    QTest::newRow( "filter with two consecutive backslashes w/o like" ) << "Foo\\\\Bar" << false;
+    QTest::newRow( "filter with two consecutive backslashes w like" ) << "Foo\\\\Bar" << true;
+    QTest::newRow( "filter with backslash% w/o like" ) << "FooBar\\%" << false;
+    QTest::newRow( "filter with backslash% w like" ) << "FooBar\\%" << true;
+}
+
+void
+TestSqlQueryMaker::testSpecialCharacters()
+{
+    QFETCH( QString, filter );
+    QFETCH( bool, like );
+
+    QString insertTrack = QString( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
+                              "VALUES(999,999,'%1','',1,1,1,1,1);").arg( m_storage->escape( filter ) );
+
+    //there is a unique index on TRACKS.URL
+    m_storage ->query( "INSERT INTO urls(id,deviceid,rpath,uniqueid) VALUES(999,-1, './foobar.mp3','999');");
+    m_storage->query( insertTrack );
+
+    QCOMPARE( m_storage->query( "select count(*) from urls where id = 999" ).first(), QString("1") );
+    QCOMPARE( m_storage->query( "select count(*) from tracks where id = 999" ).first(), QString("1") );
+
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( QueryMaker::Track );
+    qm.setReturnResultAsDataPtrs( true );
+    qm.addFilter( Meta::valTitle, filter, !like, !like );
+
+    qm.run();
+
+    m_storage->query( "DELETE FROM urls WHERE id = 999;" );
+    m_storage->query( "DELETE FROM tracks WHERE id = 999;" );
+
+    QCOMPARE( qm.data( "testId" ).count(), 1 );
+}
+
 
 #include "TestSqlQueryMaker.moc"

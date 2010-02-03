@@ -212,12 +212,7 @@ EngineController::canDecode( const KUrl &url ) //static
         return true;
 
     // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
-    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
-                                   Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
-
-    // Add whitelist hacks
-    mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
-    //mimeTable << "?/?"; //Add comment
+    static QStringList mimeTable = supportedMimeTypes();
 
     const KMimeType::Ptr mimeType = item.mimeTypePtr();
     
@@ -231,14 +226,31 @@ EngineController::canDecode( const KUrl &url ) //static
         }
     }
 
+    return valid;
+}
+
+QStringList
+EngineController::supportedMimeTypes()
+{
+    //NOTE this function must be thread-safe
+    // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
+    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
+                                   Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
+
+    // Add whitelist hacks
+    mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
+
     // We special case this, as otherwise the users would hate us
-    if ( !valid && ( mimeType->is( "audio/mp3" ) || mimeType->is( "audio/x-mp3" ) ) && !installDistroCodec() )
+    if( ( !mimeTable.contains( "audio/mp3" ) || !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
+    {
         The::statusBar()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                       "the installation of the backend that phonon uses.</p>"
                       "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), StatusBar::Error );
+        mimeTable << "audio/mp3" << "audio/x-mp3";
+    }
 
-    return valid;
+    return mimeTable;
 }
 
 bool

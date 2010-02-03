@@ -22,7 +22,6 @@
 #include "AmarokUrlRunnerBase.h"
 #include "Meta.h"
 #include "playlist/PlaylistViewUrlRunner.h"
-#include "widgets/ProgressWidget.h"
 
 #include <KIcon>
 
@@ -62,9 +61,6 @@ public:
     BookmarkList urlsByCommand( const QString &command );
     KIcon iconForCommand( const QString &command );
 
-    void registerForTimecodes( ProgressWidget * progressWidget );
-    void unregisterForTimecodes( ProgressWidget * progressWidget );
-
     void updateTimecodes( const QString * BookmarkName = 0 );
     void paintNewTimecode( const QString &name, int pos );
 
@@ -79,6 +75,10 @@ public slots:
     void bookmarkCurrentPlaylistView();
     void bookmarkCurrentContextView();
 
+signals:
+    void timecodesUpdated( const QString * BookmarkName );
+    void timecodeAdded( const QString &name, int pos );
+
 private:
 
     AmarokUrlHandler();
@@ -91,8 +91,6 @@ private:
     Playlist::ViewUrlRunner * m_playlistViewRunner;
     PlayUrlRunner * m_playRunner;
     TimecodeObserver * m_timecodeObserver;
-
-    QList<ProgressWidget *> m_progresWidgets;
 
 };
 

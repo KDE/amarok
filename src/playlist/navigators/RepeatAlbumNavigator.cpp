@@ -135,8 +135,9 @@ Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
     m_currentTrack = id;
 }
 
+
 quint64
-Playlist::RepeatAlbumNavigator::requestNextTrack()
+Playlist::RepeatAlbumNavigator::likelyNextTrack()
 {
     DEBUG_BLOCK
     if ( m_currentAlbum != Meta::AlbumPtr() )
@@ -144,14 +145,13 @@ Playlist::RepeatAlbumNavigator::requestNextTrack()
         ItemList atl = m_albumGroups.value( m_currentAlbum );
         int row = atl.indexOf( m_currentTrack ) + 1;
         row = ( row < atl.size() ) ? row : 0;
-        m_currentTrack = atl.at( row );
-        return m_currentTrack;
+        return atl.at( row );
     }
     return 0;
 }
 
 quint64
-Playlist::RepeatAlbumNavigator::requestLastTrack()
+Playlist::RepeatAlbumNavigator::likelyLastTrack()
 {
     DEBUG_BLOCK
     if ( m_currentAlbum != Meta::AlbumPtr() )
@@ -159,10 +159,27 @@ Playlist::RepeatAlbumNavigator::requestLastTrack()
         ItemList atl = m_albumGroups.value( m_currentAlbum );
         int row = atl.indexOf( m_currentTrack ) - 1;
         row = ( row >= 0 ) ? row : atl.size() - 1;
-        m_currentTrack = atl.at( row );
-        return m_currentTrack;
+        return atl.at( row );
     }
     return 0;
+}
+
+quint64
+Playlist::RepeatAlbumNavigator::requestNextTrack()
+{
+    quint64 track = likelyNextTrack();
+    if ( track )
+        m_currentTrack = track;
+    return track;
+}
+
+quint64
+Playlist::RepeatAlbumNavigator::requestLastTrack()
+{
+    quint64 track = likelyLastTrack();
+    if ( track )
+        m_currentTrack = track;
+    return track;
 }
 
 bool

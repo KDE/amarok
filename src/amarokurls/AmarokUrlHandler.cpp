@@ -184,34 +184,15 @@ AmarokUrlHandler::iconForCommand( const QString &command )
     return KIcon( "unknown" );
 }
 
-void
-AmarokUrlHandler::registerForTimecodes( ProgressWidget * progressWidget )
-{
-    if( !m_progresWidgets.contains( progressWidget ) )
-        m_progresWidgets.append( progressWidget );
-}
-
-void
-AmarokUrlHandler::unregisterForTimecodes( ProgressWidget * progressWidget )
-{
-    m_progresWidgets.removeAll( progressWidget );
-}
-
 void AmarokUrlHandler::updateTimecodes(const QString* BookmarkName)
 {
-    foreach( ProgressWidget * progressWidget, m_progresWidgets )
-    {
-        if (progressWidget->isVisible())  progressWidget->redrawBookmarks( BookmarkName );
-    }
+    emit timecodesUpdated( BookmarkName );
 }
 
 void
 AmarokUrlHandler::paintNewTimecode( const QString &name, int pos )
 {
-    foreach( ProgressWidget * progressWidget, m_progresWidgets )
-    {
-        progressWidget->addBookmark( name, pos );
-    }
+    emit timecodeAdded( name, pos );
 }
 
 

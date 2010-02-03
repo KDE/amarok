@@ -25,6 +25,7 @@
 
 #include <QQueue>
 
+
 Playlist::TrackNavigator::TrackNavigator()
 {
     m_model = Playlist::ModelStack::instance()->top();

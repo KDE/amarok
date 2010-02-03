@@ -23,10 +23,25 @@
 #ifndef AMAROK_SQLCOLLECTION_EXPORT
 # if defined(MAKE_AMAROK_SQLCOLLECTION_LIB)
    /* We are building this library */
-#  define AMAROK_SQLCOLLECTION_EXPORT KDE_EXPORT
+#   define AMAROK_SQLCOLLECTION_EXPORT KDE_EXPORT
+
+#   if defined(DEBUG)
+#       define AMAROK_SQLCOLLECTION_EXPORT_TESTS KDE_EXPORT
+#   else
+#       define AMAROK_SQLCOLLECTION_EXPORT_TESTS
+#   endif
+
+
 # else
    /* We are using this library */
-#  define AMAROK_SQLCOLLECTION_EXPORT KDE_IMPORT
+#   define AMAROK_SQLCOLLECTION_EXPORT KDE_IMPORT
+
+#   if defined(DEBUG)
+#       define AMAROK_SQLCOLLECTION_EXPORT_TESTS KDE_IMPORT
+#   else
+#       define AMAROK_SQLCOLLECTION_EXPORT_TESTS
+#   endif
+
 # endif
 #endif
 

@@ -1,6 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009 Thomas Luebking <thomas.luebking@web.de>                          *
+ * Copyright (c) 2010 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,50 +15,110 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef MainToolbarNNG_H
-#define MainToolbarNNG_H
+#ifndef MAINTOOLBAR3G_H
+#define MAINTOOLBAR3G_H
+
+class AnimatedLabelStack;
+class PlayPauseButton;
+class QBoxLayout;
+class QLabel;
+class QSpacerItem;
+class VolumeDial;
+
+namespace Amarok { class TimeSlider; }
 
 #include "EngineObserver.h" //baseclass
-#include "SmartPointerList.h"
-
-#include <KHBox>
-
 #include <QToolBar>
 
-class QAction;
-class KToolBar;
-class MainControlsWidget;
-class ProgressWidget;
-class VolumeWidget;
 
-/**
-    A KHBox based toolbar with a nice svg background and takes care of 
-    adding any additional controls needed by individual tracks
-*/
 class MainToolbar : public QToolBar, public EngineObserver
 {
+    Q_OBJECT
 
 public:
-    MainToolbar( QWidget * parent );
-    ~MainToolbar();
-
-    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-    virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
+    MainToolbar( QWidget *parent = 0 );
+    void engineMuteStateChanged( bool mute );
+    void engineStateChanged( Phonon::State currentState, Phonon::State oldState = Phonon::StoppedState );
+    void engineTrackChanged( Meta::TrackPtr track );
+    void engineTrackLengthChanged( qint64 ms );
+    void engineTrackPositionChanged( qint64 position, bool userSeek );
+    void engineVolumeChanged( int percent );
 
 protected:
-      virtual void resizeEvent( QResizeEvent * event );
-      void handleAddActions();
-      void centerAddActions();
-      virtual bool eventFilter( QObject* object, QEvent* event );
+    bool eventFilter( QObject *o, QEvent *ev );
+    void hideEvent( QHideEvent *ev );
+    void mousePressEvent( QMouseEvent * );
+    void paintEvent( QPaintEvent *ev );
+    void resizeEvent( QResizeEvent *ev );
+    void showEvent( QShowEvent *ev );
+    void timerEvent( QTimerEvent *ev );
+    void wheelEvent( QWheelEvent *wev );
 
 private:
-    QWidget            *m_insideBox;
-    KToolBar           *m_addControlsToolbar;
-    VolumeWidget       *m_volumeWidget;
-    MainControlsWidget *m_mainControlsWidget;
-    ProgressWidget     *m_progressWidget;
+    void animateTrackLabels();
+    void layoutProgressBar();
+    void updateBgGradient();
 
-    SmartPointerList<QAction> m_additionalActions;
+private slots:
+    void addBookmark( const QString &name, int milliSeconds );
+    void checkEngineState();
+    void filter( const QString &string );
+    void layoutTrackBar();
+    void setLabelTime( int ms );
+    void setPlaying( bool on );
+    void updateBookmarks( const QString *BookmarkName );
+    void updatePrevAndNext();
+
+private:
+    PlayPauseButton *m_playPause;
+
+    QSpacerItem *m_trackBarSpacer;
+    QSpacerItem *m_progressBarSpacer;
+    QPixmap m_bgGradient;
+
+    struct
+    {
+        AnimatedLabelStack *label;
+        void* key;
+        QString uidUrl;
+    } m_current;
+
+    struct
+    {
+        AnimatedLabelStack *label;
+        void* key;
+    } m_next;
+
+    struct
+    {
+        AnimatedLabelStack *label;
+        void* key;
+    } m_prev;
+
+    struct
+    {
+        AnimatedLabelStack *label;
+        int targetX;
+    } m_dummy;
+
+    QLabel *m_timeLabel, *m_remainingTimeLabel;
+    Amarok::TimeSlider *m_slider;
+    
+    VolumeDial *m_volume;
+    
+    int m_lastTime;
+    int m_lastRemainingTime;
+    struct
+    {
+        int startX;
+        int lastX;
+        int max;
+    } m_drag;
+    int m_trackBarAnimationTimer;
+    int m_bgGradientMode;
+
+    Phonon::State m_currentEngineState;
+    
 };
 
 #endif

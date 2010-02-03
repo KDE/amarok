@@ -70,6 +70,7 @@ namespace AmarokScript
         signals:
             void trackFinished(); // when playback stops altogether
             void trackChanged();
+            void newMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
             void trackSeeked( int ); //return relative time in million second
             void volumeChanged( int );
             void trackPlayPause( int );  //Playing: 0, Paused: 1
@@ -78,6 +79,7 @@ namespace AmarokScript
             void engineVolumeChanged( int value );
             void engineTrackPositionChanged( qint64 position, bool userSeek );
             void engineTrackChanged( Meta::TrackPtr track );
+            void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
             void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
 
             bool randomMode() const;

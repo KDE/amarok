@@ -89,6 +89,18 @@ Playlist::Actions::~Actions()
     delete m_navigator;
 }
 
+Meta::TrackPtr
+Playlist::Actions::likelyNextTrack()
+{
+    return m_topmostModel->trackForId( m_navigator->likelyNextTrack() );
+}
+
+Meta::TrackPtr
+Playlist::Actions::likelyPrevTrack()
+{
+    return m_topmostModel->trackForId( m_navigator->likelyLastTrack() );
+}
+
 void
 Playlist::Actions::requestNextTrack()
 {
@@ -305,7 +317,10 @@ Playlist::Actions::playlistModeChanged()
     }
 
     m_navigator->queueIds( currentQueue );
+
     The::playerDBusHandler()->updateStatus();
+
+    emit navigatorChanged();
 }
 
 void

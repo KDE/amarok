@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,58 +13,35 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef BROWSERBREADCRUMBITEM_H
-#define BROWSERBREADCRUMBITEM_H
 
-#include "widgets/ElidingButton.h"
+#ifndef MIMETYPEFILTERPROXYMODEL_H
+#define MIMETYPEFILTERPROXYMODEL_H
 
-#include <KHBox>
+#include <QSortFilterProxyModel>
 
-class BrowserCategory;
-class BreadcrumbItemButton;
-class BreadcrumbItemMenuButton;
+#include <QStringList>
 
 /**
- *  A widget representing a single "breadcrumb" item
- *  @author Nikolaj Hald Nielsen <nhn@kde.org>
+ * @class MimeTypeFilterProxyModel a proxy model to filter out KFileItem's that do not match a supplied set of mimetypes
+ * Designed to be used with KDirOperator as it uses KDirModel::FileItemRole to retrieve the KFileItem
  */
-
-class BrowserBreadcrumbItem : public KHBox
+class MimeTypeFilterProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+
 public:
-    BrowserBreadcrumbItem( BrowserCategory * category );
-
     /**
-     * Overloaded constructor for creating breadcrumb items not bound to a particular BrowserCategory
+     * MimeTypeFilterProxyModel
+     * @param mimeList the valid mimetypes
      */
-    BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler );
+     MimeTypeFilterProxyModel( QStringList mimeList, QObject *parent = 0 );
 
-    bool isAddItem() { return m_category == 0; }
-    
-    ~BrowserBreadcrumbItem();
 
-    void setActive( bool active );
-
-    QSizePolicy sizePolicy () const;
-
-signals:
-
-    void activated( const QString &callback );
-    
-protected slots:
-    void updateSizePolicy();
-    void activate();
-    void activateSibling();
+protected:
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const;
 
 private:
-    BrowserCategory          *m_category;
-    BreadcrumbItemMenuButton *m_menuButton;
-    BreadcrumbItemButton     *m_mainButton;
-
-    QString m_callback;
-    
+    QStringList m_mimeList;
 };
 
-#endif
+#endif // MIMETYPEFILTERPROXYMODEL_H

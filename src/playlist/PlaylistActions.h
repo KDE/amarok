@@ -58,6 +58,10 @@ public:
     static Actions* instance();
     static void destroy();
 
+
+    Meta::TrackPtr likelyNextTrack();
+    Meta::TrackPtr likelyPrevTrack();
+
     /**
      * This is called by the engine before the current track ends. It
      * will figure out the next track and enqueue it. This won't
@@ -92,6 +96,9 @@ public:
      */
     void normalizeDynamicPlayist();
 
+    /** returns the navigator currently in use, can be 0 */
+    inline const TrackNavigator *navigator() const { return m_navigator; }
+
     // This shouldn't be in Actions, it doesn't make sense
     int queuePosition( quint64 id );
 
@@ -106,6 +113,9 @@ public slots:
     void repopulateDynamicPlaylist();
     void queue( QList<int> rows );
     void dequeue( QList<int> rows );
+
+signals:
+    void navigatorChanged();
 
 private:
     Actions();

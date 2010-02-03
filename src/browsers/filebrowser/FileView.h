@@ -17,6 +17,10 @@
 #ifndef FILETREEVIEW_H
 #define FILETREEVIEW_H
 
+#include "collection/Collection.h"
+
+#include <KFileItem>
+
 #include <QAction>
 #include <QList>
 #include <QListView>
@@ -35,6 +39,8 @@ protected slots:
 
     void slotAppendToPlaylist();
     void slotReplacePlaylist();
+    void slotEditTracks();
+
     void newPalette( const QPalette & palette );
     
 protected:
@@ -46,8 +52,11 @@ protected:
     void startDrag( Qt::DropActions supportedActions );
 
 private:
+    Meta::TrackList tracksForEdit() const;
+    
     QAction * m_appendAction;
     QAction * m_loadAction;
+    QAction * m_editAction;
 
     PopupDropper* m_pd;
     QMutex m_dragMutex;

@@ -62,8 +62,8 @@
 #include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
-#include "toolbar/MainToolbar.h"
 #include "toolbar/SlimToolbar.h"
+#include "toolbar/MainToolbar.h"
 #include "SvgHandler.h"
 #include "widgets/Splitter.h"
 #include "widgets/AmarokDockWidget.h"
@@ -241,8 +241,8 @@ MainWindow::init()
     m_mainToolbar = new MainToolbar( 0 );
     m_mainToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_mainToolbar->setMovable ( true );
-    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), m_mainToolbar, SLOT( repaint() ) );
     addToolBar( Qt::TopToolBarArea, m_mainToolbar );
+    m_mainToolbar->hide();
 
     //create slim toolbar
     m_slimToolbar = new SlimToolbar( 0 );
@@ -732,7 +732,7 @@ bool
 MainWindow::isReallyShown() const
 {
 #ifdef Q_WS_X11
-    const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
+    const KWindowInfo info = KWindowSystem::windowInfo( winId(), NET::WMDesktop, 0 );
     return !isHidden() && !info.isMinimized() && info.isOnDesktop( KWindowSystem::currentDesktop() );
 #else
     return !isHidden();
@@ -1241,11 +1241,11 @@ void MainWindow::setLayoutLocked( bool locked )
         m_playlistDock->setFeatures( features );
         m_playlistDock->setTitleBarWidget( m_playlistDummyTitleBarWidget );
 
-        m_mainToolbar->setFloatable( false );
-        m_mainToolbar->setMovable( false );
-
         m_slimToolbar->setFloatable( false );
         m_slimToolbar->setMovable( false );
+
+        m_mainToolbar->setFloatable( false );
+        m_mainToolbar->setMovable( false );
     }
     else
     {
@@ -1261,11 +1261,11 @@ void MainWindow::setLayoutLocked( bool locked )
         m_contextDock->setTitleBarWidget( 0 );
         m_playlistDock->setTitleBarWidget( 0 );
 
-        m_mainToolbar->setFloatable( true );
-        m_mainToolbar->setMovable( true );
-
         m_slimToolbar->setFloatable( true );
         m_slimToolbar->setMovable( true );
+
+        m_mainToolbar->setFloatable( true );
+        m_mainToolbar->setMovable( true );
     }
 
     AmarokConfig::setLockLayout( locked );
@@ -1333,10 +1333,13 @@ MainWindow::restoreLayout()
     else
         m_dockChangesIgnored = false;
 
-
     // Ensure that only one toolbar is visible
     if( !m_mainToolbar->isHidden() && !m_slimToolbar->isHidden() )
         m_slimToolbar->hide();
+
+    // Ensure that we don't end up without any toolbar (can happen after upgrading)
+    if( m_mainToolbar->isHidden() && m_slimToolbar->isHidden() )
+        m_mainToolbar->show();
 }
 
 void MainWindow::layoutChanged()
