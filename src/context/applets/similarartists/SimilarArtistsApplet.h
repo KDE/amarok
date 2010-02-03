@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009-2010 Joffrey Clavel <jclavel@clabert.info>                        *
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2010 Alexandre Mendes <alex.mendes1988@gmail.com>                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -38,36 +39,44 @@ class QGraphicsProxyWidget;
 class QScrollArea;
 
 namespace Plasma
-{    
-    class IconWidget;
+{
+class IconWidget;
 }
 
 
- /**
-  * SimilarArtists will display similar artists from the Internet, relative to the current playing artist.
-  * @author Joffrey Clavel
-  * @author Oleksandr Khayrullin
-  * @version 0.1
-  */
+/**
+ * SimilarArtists will display similar artists from the Internet, relative to the current playing artist.
+ * @author Joffrey Clavel
+ * @author Oleksandr Khayrullin
+ * @version 0.1
+ */
 class SimilarArtistsApplet : public Context::Applet, public EngineObserver
 {
     Q_OBJECT
 
 public:
+
+    /**
+     * SimilarArtistsApplet constructor
+     * @param parent The widget parent
+     * @param args The widget parent
+     */
     SimilarArtistsApplet( QObject* parent, const QVariantList& args );
     ~SimilarArtistsApplet();
-    
+
     void init();
 
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option, const QRect& contentsRect );
+    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option
+                         , const QRect& contentsRect );
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     // inherited from EngineObserver
     virtual void engineNewTrackPlaying();
-    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
+    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength
+                                      , PlaybackEndedReason reason );
 
 protected:
-    void createConfigurationInterface(KConfigDialog *parent);
+    void createConfigurationInterface( KConfigDialog *parent );
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
@@ -78,7 +87,7 @@ private:
      * update the display of the artists according to the lists m_similars
      */
     void artistsUpdate();
-    
+
     qreal m_aspectRatio;
     qreal m_headerAspectRatio;
     QSizeF m_size;
@@ -89,7 +98,7 @@ private:
     QVBoxLayout *m_layout;
 
     /**
-     * This proxy widget contents the scrollArea 
+     * This proxy widget contents the scrollArea
      */
     QGraphicsProxyWidget *m_scrollProxy;
 
@@ -112,7 +121,6 @@ private:
      * Artist which you want to see artists like
      */
     QString m_artist;
-        
 
     /**
      * Title of the applet (in the top bar)
@@ -141,7 +149,7 @@ private slots:
      * Show the settings windows
      */
     void configure();
-    void changeMaxArtists(int value);
+    void changeMaxArtists( int value );
     void saveMaxArtists();
     void saveSettings();
 
