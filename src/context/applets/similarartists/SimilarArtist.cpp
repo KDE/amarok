@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+ * Copyright (c) 2009-2010 Joffrey Clavel <jclavel@clabert.info>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,44 +16,64 @@
 
 #include "SimilarArtist.h"
 
-SimilarArtist::SimilarArtist(){}
+/**
+ * Create an empty similar artist
+ */
+SimilarArtist::SimilarArtist() {}
 
-SimilarArtist::SimilarArtist(const QString &name, const int match, const KUrl &url,
-                             const KUrl &urlImage, const QString &similarTo)
+/**
+ * Create a similar artist with data
+ * @param name  The name of this similar artist
+ * @param match The match pourcent (between 0 and 100) of the similarity
+ * between this artist and the artist similarTo
+ * @param url   A url of this artist on the web, for example on last.fm
+ * @param urlImage  A url of an image of this artist, for example on last.fm
+ * @param similarTo The name of the artist similar to this artist
+ */
+SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &url,
+                              const KUrl &urlImage, const QString &similarTo )
 {
-    m_name=name;
-    m_match=match;
-    m_url=url;
-    m_urlImage=urlImage;
-    m_similarTo=similarTo;
+    m_name = name;
+    m_match = match;
+    m_url = url;
+    m_urlImage = urlImage;
+    m_similarTo = similarTo;
 
     static bool metaTypeRegistered = false;
-    if (!metaTypeRegistered)
+    if ( !metaTypeRegistered )
     {
-        qRegisterMetaType<SimilarArtist>("SimilarArtists");
+        qRegisterMetaType<SimilarArtist>( "SimilarArtists" );
         metaTypeRegistered = true;
     }
 }
 
-
+ /**
+  * @return The name of this artist
+  */
 QString SimilarArtist::name() const
 {
     return m_name;
 }
 
-
+/**
+ * @return the pourcent of match of this artist, betwwen 0 and 100
+ */
 int SimilarArtist::match() const
 {
     return m_match;
 }
 
-
+/**
+ * @return a url on the web for this artist, for example on last.fm
+ */
 KUrl SimilarArtist::url() const
 {
     return m_url;
 }
 
-
+ /**
+  * @return a url on the web for an image oh this artist, for example on last.fm
+  */
 KUrl SimilarArtist::urlImage() const
 {
     return m_urlImage;
