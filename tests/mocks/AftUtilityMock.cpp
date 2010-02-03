@@ -18,7 +18,7 @@
 
 */
 
-#include "collectionscanner/AftUtility.h"
+#include "collectionscanner/AFTUtility.h"
 
 AFTUtility::AFTUtility()
 {

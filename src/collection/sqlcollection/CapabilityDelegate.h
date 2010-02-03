@@ -17,6 +17,7 @@
 #ifndef CAPABILITYDELEGATE_H
 #define CAPABILITYDELEGATE_H
 
+#include "amarok_sqlcollection_export.h"
 #include "meta/Capability.h"
 
 #include <QAction>
@@ -30,7 +31,7 @@ namespace Meta
     class SqlAlbum;
 }
 
-class TrackCapabilityDelegate
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS TrackCapabilityDelegate
 {
 public:
     TrackCapabilityDelegate();
@@ -39,7 +40,7 @@ public:
     Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlTrack *track );
 };
 
-class ArtistCapabilityDelegate
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS ArtistCapabilityDelegate
 {
 public:
     ArtistCapabilityDelegate();
@@ -52,7 +53,7 @@ private:
     QAction * m_bookmarkAction;
 };
 
-class AlbumCapabilityDelegate
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS AlbumCapabilityDelegate
 {
 public:
     AlbumCapabilityDelegate();
@@ -65,7 +66,7 @@ private:
     QAction * m_bookmarkAction;
 };
 
-class CollectionCapabilityDelegate
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS CollectionCapabilityDelegate
 {
 public:
     CollectionCapabilityDelegate();
