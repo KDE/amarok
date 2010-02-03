@@ -238,11 +238,11 @@ MainWindow::init()
     layout()->setSpacing( 0 );
 
     //create main toolbar
-    m_toolbar3 = new MainToolbar( 0 );
-    m_toolbar3->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
-    m_toolbar3->setMovable ( true );
-    addToolBar( Qt::TopToolBarArea, m_toolbar3 );
-    m_toolbar3->hide();
+    m_mainToolbar = new MainToolbar( 0 );
+    m_mainToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
+    m_mainToolbar->setMovable ( true );
+    addToolBar( Qt::TopToolBarArea, m_mainToolbar );
+    m_mainToolbar->hide();
 
     //create slim toolbar
     m_slimToolbar = new SlimToolbar( 0 );
@@ -1244,8 +1244,8 @@ void MainWindow::setLayoutLocked( bool locked )
         m_slimToolbar->setFloatable( false );
         m_slimToolbar->setMovable( false );
 
-        m_toolbar3->setFloatable( false );
-        m_toolbar3->setMovable( false );
+        m_mainToolbar->setFloatable( false );
+        m_mainToolbar->setMovable( false );
     }
     else
     {
@@ -1264,8 +1264,8 @@ void MainWindow::setLayoutLocked( bool locked )
         m_slimToolbar->setFloatable( true );
         m_slimToolbar->setMovable( true );
 
-        m_toolbar3->setFloatable( true );
-        m_toolbar3->setMovable( true );
+        m_mainToolbar->setFloatable( true );
+        m_mainToolbar->setMovable( true );
     }
 
     AmarokConfig::setLockLayout( locked );
@@ -1334,12 +1334,12 @@ MainWindow::restoreLayout()
         m_dockChangesIgnored = false;
 
     // Ensure that only one toolbar is visible
-    if( !m_toolbar3->isHidden() && !m_slimToolbar->isHidden() )
+    if( !m_mainToolbar->isHidden() && !m_slimToolbar->isHidden() )
         m_slimToolbar->hide();
 
     // Ensure that we don't end up without any toolbar (can happen after upgrading)
-    if( m_toolbar3->isHidden() && m_slimToolbar->isHidden() )
-        m_toolbar3->show();
+    if( m_mainToolbar->isHidden() && m_slimToolbar->isHidden() )
+        m_mainToolbar->show();
 }
 
 void MainWindow::layoutChanged()

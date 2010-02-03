@@ -204,7 +204,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QDockWidget * m_playlistDock;
 
         QPointer<SlimToolbar> m_slimToolbar;
-        QPointer<MainToolbar> m_toolbar3;
+        QPointer<MainToolbar> m_mainToolbar;
 
         QWidget *     m_browserDummyTitleBarWidget;
         QWidget *     m_contextDummyTitleBarWidget;
