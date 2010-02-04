@@ -33,6 +33,7 @@ class PopupDropper;
 class QAction;
 
 class PlaylistsByProviderProxy;
+class PlaylistTreeItemDelegate;
 
 namespace PlaylistBrowserNS {
 
@@ -63,6 +64,9 @@ class PodcastCategory : public BrowserCategory
         PlaylistsByProviderProxy *m_byProviderProxy;
         PodcastView *m_podcastTreeView;
         ViewKicker * m_viewKicker;
+
+        PlaylistTreeItemDelegate *m_byProviderDelegate;
+        QAbstractItemDelegate *m_defaultItemView;
 
     private slots:
         void showInfo( const QModelIndex & index );

@@ -21,6 +21,7 @@
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "PlaylistsInGroupsProxy.h"
+#include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
@@ -83,6 +84,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
              m_playlistView, SLOT( createNewGroup() ) );
 
     m_playlistView->setNewGroupAction( m_addGroupAction );
+    PlaylistTreeItemDelegate *delegate = new PlaylistTreeItemDelegate( m_playlistView );
 }
 
 PlaylistBrowserNS::PlaylistCategory::~PlaylistCategory()

@@ -28,6 +28,7 @@
 #include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
 #include "PlaylistsByProviderProxy.h"
+#include "PlaylistTreeItemDelegate.h"
 #include "browsers/InfoProxy.h"
 #include "SvgTinter.h"
 #include "SvgHandler.h"
@@ -133,15 +134,20 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
     m_podcastTreeView->setContentsMargins(0,0,0,0);
 
+    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_podcastTreeView );
+    m_defaultItemView = m_podcastTreeView->itemDelegate();
+
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ),
                                          i18n( "Toggle unified view mode" ), toolBar );
     toggleAction->setCheckable( true );
     toolBar->addAction( toggleAction );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
-    if( Amarok::config( s_configGroup ).readEntry( s_byProviderKey, false ) )
+    if( Amarok::config( s_configGroup ).readEntry( s_byProviderKey, true ) )
     {
         m_podcastTreeView->setModel( m_byProviderProxy );
+        m_podcastTreeView->setItemDelegate( m_byProviderDelegate );
         toggleAction->setChecked( true );
+        m_podcastTreeView->setRootIsDecorated( false );
     }
     else
     {
@@ -348,9 +354,17 @@ void
 PodcastCategory::toggleView( bool enabled ) //SLOT
 {
     if( enabled )
+    {
         m_podcastTreeView->setModel( m_byProviderProxy );
+        m_podcastTreeView->setItemDelegate( m_byProviderDelegate );
+        m_podcastTreeView->setRootIsDecorated( false );
+    }
     else
+    {
         m_podcastTreeView->setModel( m_podcastModel );
+        m_podcastTreeView->setItemDelegate( m_defaultItemView );
+        m_podcastTreeView->setRootIsDecorated( true );
+    }
 
     Amarok::config( s_configGroup ).writeEntry( s_byProviderKey, enabled );
 }
