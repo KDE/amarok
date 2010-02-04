@@ -19,6 +19,8 @@
 
 #include "PlaylistTreeItemDelegate.h"
 
+#include "MetaPlaylistModel.h"
+
 #include "App.h"
 #include "Debug.h"
 
@@ -99,13 +101,14 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     painter->drawPixmap( expanderPos, expander );
 
     const QString collectionName = index.data( Qt::DisplayRole ).toString();
+    const QString bylineText = index.data(
+            PlaylistBrowserNS::MetaPlaylistModel::ByLineRole ).toString();
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
 
     const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
     const int infoRectLeft = iconRight;
     const int infoRectWidth = width - iconRight;
-
     const int titleRectWidth = infoRectWidth;
 
     QRectF titleRect;
@@ -116,6 +119,15 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
     painter->setFont( m_bigFont );
     painter->drawText( titleRect, Qt::AlignLeft, collectionName );
+
+    QRectF textRect;
+    textRect.setLeft( infoRectLeft );
+    textRect.setTop( titleRect.bottom() );
+    textRect.setWidth( titleRectWidth );
+    textRect.setHeight( smallFm.boundingRect( bylineText ).height() );
+
+    painter->setFont( m_smallFont );
+    painter->drawText( textRect, Qt::TextWordWrap, bylineText );
 
     const bool isHover = option.state & QStyle::State_MouseOver;
     QPoint cursorPos = m_view->mapFromGlobal( QCursor::pos() );

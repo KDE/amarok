@@ -24,6 +24,7 @@
 
 class QAction;
 
+
 namespace PlaylistBrowserNS {
 
 /**
@@ -32,14 +33,14 @@ namespace PlaylistBrowserNS {
 class MetaPlaylistModel
 {
     public:
-        virtual ~MetaPlaylistModel() {};
+        virtual ~MetaPlaylistModel() {}
         
-        enum {
+        enum
+        {
             DescriptionRole = Qt::UserRole + 1,
-            //Where is this Playlist from i.e. which PlaylistProvider
-            OriginRole = Qt::UserRole + 2,
             //What is the name of the group this Playlist is in.
-            GroupRole = Qt::UserRole + 3
+            GroupRole,
+            ByLineRole
         };
 
         virtual QList<QAction *> actionsFor( const QModelIndexList &indexes ) = 0;

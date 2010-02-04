@@ -280,6 +280,38 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             if( index.column() == TitleColumn )
                 return icon( pmc );
             break;
+        case PlaylistBrowserNS::MetaPlaylistModel::ByLineRole:
+            {
+                if( index.column() == ProviderColumn )
+                {
+                    PlaylistProvider *provider;
+                    if( pmc->podcastType() == Meta::ChannelType )
+                    {
+                        Meta::PodcastChannel *pc =
+                                static_cast<Meta::PodcastChannel *>( pmc );
+                        provider = pc->provider();
+                    }
+                    else if( pmc->podcastType() == Meta::EpisodeType )
+                    {
+                        Meta::PodcastEpisode *pe =
+                                static_cast<Meta::PodcastEpisode *>( pmc );
+                        if( pe->channel().isNull() )
+                            break;
+                        provider = pe->channel()->provider();
+                    }
+
+                    if( !provider )
+                        return QString();
+
+                    //TODO: first check playlistCount and show "loading"
+                    int playlistCount = provider->playlists().count();
+
+                    return i18ncp( "number of podcasts from one source", "One channel",
+                                   "%1 channels", playlistCount );
+                }
+                return QString();
+            }
+
     }
 
     return QVariant();
