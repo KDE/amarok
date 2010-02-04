@@ -22,10 +22,13 @@
 #include "PodcastModel.h"
 #include "widgets/PrettyTreeView.h"
 
+#include <KGlobalSettings>
+
 #include <QContextMenuEvent>
 #include <QItemDelegate>
 #include <QMutex>
 #include <QListView>
+#include <QTimer>
 #include <QToolButton>
 #include <QWebPage>
 
@@ -96,11 +99,16 @@ class PodcastView : public Amarok::PrettyTreeView
         ~PodcastView();
 
     protected:
-        void mouseReleaseEvent( QMouseEvent *event );
-        void mouseDoubleClickEvent( QMouseEvent *event );
-        void startDrag( Qt::DropActions supportedActions );
+        virtual void mousePressEvent( QMouseEvent *event );
+        virtual void mouseReleaseEvent( QMouseEvent *event );
+        virtual void mouseDoubleClickEvent( QMouseEvent *event );
+        virtual void mouseMoveEvent( QMouseEvent *event );
+        virtual void startDrag( Qt::DropActions supportedActions );
 
-        void contextMenuEvent( QContextMenuEvent* event );
+        virtual void contextMenuEvent( QContextMenuEvent* event );
+
+    private slots:
+        void slotClickTimeout();
 
     private:
         PodcastModel *m_podcastModel;
@@ -109,6 +117,11 @@ class PodcastView : public Amarok::PrettyTreeView
 
         bool m_ongoingDrag;
         QMutex m_dragMutex;
+
+        QPoint m_clickLocation;
+        QTimer m_clickTimer;
+        QModelIndex m_savedClickIndex;
+        bool m_justDoubleClicked;
 };
 
 /**

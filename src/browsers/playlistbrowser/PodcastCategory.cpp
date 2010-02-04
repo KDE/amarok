@@ -198,6 +198,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
     toolBar->addAction( importOpmlAction );
     connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
+
 }
 
 PodcastCategory::~PodcastCategory()
@@ -521,10 +522,22 @@ PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     , m_pd( 0 )
     , m_ongoingDrag( false )
     , m_dragMutex()
-{}
+    , m_justDoubleClicked( false )
+{
+    connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
+}
 
 PodcastView::~PodcastView()
 {}
+
+void PodcastView::mousePressEvent( QMouseEvent *event )
+{
+    QModelIndex index = indexAt( event->pos() );
+    if( KGlobalSettings::singleClick() )
+        setItemsExpandable( false );
+    update();
+    Amarok::PrettyTreeView::mousePressEvent( event );
+}
 
 void
 PodcastView::mouseReleaseEvent( QMouseEvent * event )
@@ -535,9 +548,45 @@ PodcastView::mouseReleaseEvent( QMouseEvent * event )
         m_pd->hide();
     }
     m_pd = 0;
-    event->accept();
 
-    Amarok::PrettyTreeView::mouseReleaseEvent( event );
+    setItemsExpandable( true );
+
+    if( m_clickTimer.isActive() || m_justDoubleClicked )
+    {
+        //it's a double-click...so ignore it
+        m_clickTimer.stop();
+        m_justDoubleClicked = false;
+        m_savedClickIndex = QModelIndex();
+        event->accept();
+        return;
+    }
+
+    m_savedClickIndex = indexAt( event->pos() );
+    KConfigGroup cg( KGlobal::config(), "KDE" );
+    m_clickTimer.start( cg.readEntry( "DoubleClickInterval", 400 ) );
+    m_clickLocation = event->pos();
+    event->accept();
+}
+
+void
+PodcastView::mouseMoveEvent( QMouseEvent *event )
+{
+    if( event->buttons() || event->modifiers() )
+    {
+        Amarok::PrettyTreeView::mouseMoveEvent( event );
+        update();
+        return;
+    }
+    QPoint point = event->pos() - m_clickLocation;
+    KConfigGroup cg( KGlobal::config(), "KDE" );
+    if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )
+    {
+        m_clickTimer.stop();
+        slotClickTimeout();
+        event->accept();
+    }
+    else
+        Amarok::PrettyTreeView::mouseMoveEvent( event );
 }
 
 void
@@ -555,7 +604,14 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
         event->accept();
     }
 
-    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
+    m_clickTimer.stop();
+    //m_justDoubleClicked is necessary because the mouseReleaseEvent still
+    //comes through, but after the mouseDoubleClickEvent, so we need to tell
+    //mouseReleaseEvent to ignore that one event
+    m_justDoubleClicked = true;
+    setExpanded( index, !isExpanded( index ) );
+
+    event->accept();
 }
 
 void
@@ -630,6 +686,17 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
     Q_UNUSED( result )
 
    debug() << indices.count() << " selectedIndexes";
+}
+
+void
+PodcastView::slotClickTimeout()
+{
+    m_clickTimer.stop();
+    if( m_savedClickIndex.isValid() && KGlobalSettings::singleClick() )
+    {
+        setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
+    }
+    m_savedClickIndex = QModelIndex();
 }
 
 #include "PodcastCategory.moc"
