@@ -97,7 +97,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
     Q_OBJECT
 
     public:
-        IpodHandler( IpodCollection *mc, const QString& mountPoint );
+        IpodHandler( IpodCollection *mc, const QString& mountPoint, bool wasMounted );
         virtual ~IpodHandler();
 
         virtual void init(); // collection
@@ -334,6 +334,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
         /* Ipod Connection */
         bool    m_autoConnect;
         QString m_mountPoint;
+        bool m_wasMounted;
         QString m_name;
 
         /* Ipod Model */

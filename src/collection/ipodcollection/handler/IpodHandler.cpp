@@ -69,7 +69,7 @@ using namespace Meta;
 
 /// IpodHandler
 
-IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
+IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, bool isMounted )
     : MediaDeviceHandler( mc )
     , m_itdb( 0 )
     , m_masterPlaylist( 0 )
@@ -85,6 +85,7 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
     , m_libtrack( 0 )
     , m_autoConnect( false )
     , m_mountPoint( mountPoint )
+    , m_wasMounted( isMounted )
     , m_name()
     , m_isShuffle( false )
     , m_isMobile( false )
@@ -117,11 +118,38 @@ IpodHandler::~IpodHandler()
     writeITunesDB( false );
     if ( m_itdb )
         itdb_free( m_itdb );
+
+    if( !m_wasMounted && !mountPoint().isEmpty())
+    {
+        int result = QProcess::execute("fusermount -u " + mountPoint());
+        if( result )
+        {
+            debug() << "Unmounting imobiledevice using ifuse from" << mountPoint() << "failed";
+        }
+        else
+        {
+            debug() << "Unmounted imobiledevice using ifuse from" << mountPoint();
+        }
+    }
 }
 
 void
 IpodHandler::init()
 {
+    if ( !m_wasMounted )
+    {
+        int result = QProcess::execute(QString("mount.fuse.ifuse iphone " + mountPoint()));
+        if (result)
+        {
+            debug() << "Mounting imobiledevice using ifuse on" << mountPoint() << "failed";
+            m_mountPoint.clear();
+        }
+        else
+        {
+            debug() << "Successfully mounted imobiledevice using ifuse on" << mountPoint();
+        }
+    }
+
     if( m_mountPoint.isEmpty() )
     {
         debug() << "Error: empty mountpoint, probably an unmounted iPod, aborting";
@@ -317,15 +345,22 @@ IpodHandler::init()
     Solid::Device device = Solid::Device( m_memColl->udi() );
     if( device.isValid() )
     {
-        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-        m_filepath = storage->filePath();
-        m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
+        if (Solid::StorageAccess *storage = device.as<Solid::StorageAccess>())
+            m_filepath = storage->filePath();
+        else if (!mountPoint().isEmpty())
+            m_filepath = mountPoint();
+        else
+            m_filepath.clear();
     }
     else
     {
-        m_filepath = "";
-        m_capacity = 0.0;
+        m_filepath.clear();
     }
+
+    if( m_filepath.isEmpty() )
+        m_capacity = 0.0;
+    else
+        m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
 
     debug() << "Succeeded: " << m_success;
 
@@ -336,7 +371,7 @@ bool
 IpodHandler::isWritable() const
 {
     // TODO: check if read-only
-    return true;
+    return m_wasMounted; // iphones/ipod touches have not been mounted - these are not writable for now
 }
 
 QString
