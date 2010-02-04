@@ -43,7 +43,7 @@ class UpcomingEventsEngine : public DataEngine, public ContextObserver, Meta::Ob
         
 public:
     UpcomingEventsEngine( QObject* parent, const QList<QVariant>& args );
-    virtual ~UpcomingEventsEngine();
+    ~UpcomingEventsEngine();
     
     QStringList sources() const;
     

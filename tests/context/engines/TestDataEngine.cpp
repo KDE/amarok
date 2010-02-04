@@ -43,3 +43,9 @@ TestDataEngine::TestDataEngine(QString identifier)
     
     m_engine = engine;
 }
+
+
+TestDataEngine::~TestDataEngine()
+{
+  delete m_engine;
+}

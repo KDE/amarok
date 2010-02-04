@@ -27,14 +27,12 @@ class TestUpcomingEventsEngine : public TestBase, public TestDataEngine
     Q_OBJECT
     
     public:
-        TestUpcomingEventsEngine( const QStringList args, const QString &logPath );
-        
+        TestUpcomingEventsEngine( const QStringList args, const QString &logPath );      
+	
     private slots:
         void initTestCase();
         void testDataEngineMethod();
 
-    private:
-        Plasma::DataEngine* m_engine;
 };
 
 #endif // TESTUPCOMINGEVENTSENGINE_H

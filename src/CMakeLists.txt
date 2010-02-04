@@ -692,6 +692,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ${amaroklib_LIB_SRCS}
         ../tests/context/engines/TestDataEngine.cpp
         ../tests/context/engines/upcomingevents/TestUpcomingEventsEngine.cpp
+        ../tests/context/engines/similarartists/TestSimilarArtistsEngine.cpp
         ../tests/meta/TestM3UPlaylist.cpp
         ../tests/meta/TestMetaTrack.cpp
         ../tests/meta/TestPLSPlaylist.cpp
@@ -714,6 +715,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/context/
         ../tests/context/engines/
         ../tests/context/engines/upcomingevents/
+        ../tests/context/engines/similarartists/
         ../tests/meta/
         ../tests/meta/cue/
         ../tests/meta/file/

@@ -1,5 +1,5 @@
 /****************************************************************************************
-* Copyright (c) 2010 Nathan Sala <sala.nathan@gmail.com>                               *
+* Copyright (c) 2009 Manuel Campomanes <campomanes.manuel@gmail.com>                               *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,19 +14,25 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#ifndef TESTDATAENGINE_H
-#define TESTDATAENGINE_H
-#include <QString>
-#include <Plasma/DataEngine>
+#ifndef TESTSIMILARARTISTSENGINE_H
+#define TESTSIMILARARTISTSENGINE_H
 
-class TestDataEngine
+#include <tests/context/engines/TestDataEngine.h>
+#include <TestBase.h>
+
+#include <QtCore/QStringList>
+
+class TestSimilarArtistsEngine : public TestBase, public TestDataEngine
 {
-    public:
-        TestDataEngine( const QString identifier);
-	~TestDataEngine();
+    Q_OBJECT
+    
+    public:      
+	TestSimilarArtistsEngine( const QStringList args, const QString &logPath );	
         
-    protected:
-        Plasma::DataEngine* m_engine;
+    private slots:
+        void initTestCase();
+        void testDataEngineMethod();
+
 };
 
-#endif // TESTDATAENGINE_H
+#endif // TESTSIMILARARTISTSENGINE_H

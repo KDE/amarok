@@ -1,5 +1,5 @@
 /****************************************************************************************
-* Copyright (c) 2010 Nathan Sala <sala.nathan@gmail.com>                               *
+* Copyright (c) 2009 Manuel Campomanes <campomanes.manuel@gmail.com>                             *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,19 +14,33 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#ifndef TESTDATAENGINE_H
-#define TESTDATAENGINE_H
-#include <QString>
-#include <Plasma/DataEngine>
+#include "TestSimilarArtistsEngine.h"
 
-class TestDataEngine
+#include <KStandardDirs>
+#include <QtTest/QTest>
+#include <QFile>
+#include <QDomDocument>
+
+
+
+TestSimilarArtistsEngine::TestSimilarArtistsEngine( const QStringList args, const QString &logPath )
+    : TestBase("SimilarArtistsEngine"), TestDataEngine("amarok_data_engine_similarArtists")
 {
-    public:
-        TestDataEngine( const QString identifier);
-	~TestDataEngine();
-        
-    protected:
-        Plasma::DataEngine* m_engine;
-};
+    QStringList combinedArgs = args;
+    addLogging( combinedArgs, logPath );
+    QTest::qExec( this, combinedArgs );
+}
 
-#endif // TESTDATAENGINE_H
+void TestSimilarArtistsEngine::initTestCase()
+{
+    //Initialization of similarArtists tests
+}
+
+
+void TestSimilarArtistsEngine::testDataEngineMethod()
+{
+    //Verify if the engine has been found
+    QVERIFY(m_engine != 0);
+    
+    //Tests on the engine
+}
