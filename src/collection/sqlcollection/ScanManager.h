@@ -21,6 +21,7 @@
 #define AMAROK_SQL_SCANMANAGER_H
 
 #include "AmarokProcess.h"
+#include "amarok_sqlcollection_export.h"
 
 #include <QHash>
 #include <QMutex>
@@ -35,7 +36,7 @@ class SqlCollectionDBusHandler;
 class SqlStorage;
 class XmlParseJob;
 
-class ScanManager : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanManager : public QObject
 {
     Q_OBJECT
 

@@ -100,6 +100,8 @@ signals:
     void canRedoChanged( bool );
     void canUndoChanged( bool );
 
+    void changed();
+
     void replacingPlaylist();
 
 private slots:

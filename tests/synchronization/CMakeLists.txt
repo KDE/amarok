@@ -30,9 +30,14 @@ set( testmasterslave_SRCS
     )
 
 kde4_add_unit_test( testmasterslavesynchronizationjob  ${testmasterslave_SRCS} )
+add_dependencies( testmasterslavesynchronizationjob amaroklib )
+
 
 target_link_libraries(testmasterslavesynchronizationjob
+                        amaroklib
                         ${KDE4_KDECORE_LIBS}
+                        ${KDE4_KDEUI_LIBS}
+                        ${QT_QTGUI_LIBRARY}
                         ${KDE4_THREADWEAVER_LIBRARIES}
                         ${QT_QTTEST_LIBRARY}
                         ${QT_QTCORE_LIBRARY}
@@ -59,9 +64,13 @@ set( testunion_SRCS
     )
 
 kde4_add_unit_test( testunionjob  ${testunion_SRCS} )
+add_dependencies( testunionjob amaroklib )
 
 target_link_libraries(testunionjob
+                        amaroklib
                         ${KDE4_KDECORE_LIBS}
+                        ${KDE4_KDEUI_LIBS}
+                        ${QT_QTGUI_LIBRARY}
                         ${KDE4_THREADWEAVER_LIBRARIES}
                         ${QT_QTTEST_LIBRARY}
                         ${QT_QTCORE_LIBRARY}
@@ -88,9 +97,13 @@ set( testonewaysynchronization_SRCS
     )
 
 kde4_add_unit_test( testonewaysynchronizationjob  ${testonewaysynchronization_SRCS} )
+add_dependencies( testonewaysynchronizationjob amaroklib )
 
 target_link_libraries(testonewaysynchronizationjob
+                        amaroklib
                         ${KDE4_KDECORE_LIBS}
+                        ${KDE4_KDEUI_LIBS}
+                        ${QT_QTGUI_LIBRARY}
                         ${KDE4_THREADWEAVER_LIBRARIES}
                         ${QT_QTTEST_LIBRARY}
                         ${QT_QTCORE_LIBRARY}

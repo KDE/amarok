@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,58 +13,32 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef BROWSERBREADCRUMBITEM_H
-#define BROWSERBREADCRUMBITEM_H
 
-#include "widgets/ElidingButton.h"
+#include "MimeTypeFilterProxyModel.h"
 
-#include <KHBox>
+#include <KDirModel>
+#include <KFileItem>
+#include <kfile.h>
 
-class BrowserCategory;
-class BreadcrumbItemButton;
-class BreadcrumbItemMenuButton;
-
-/**
- *  A widget representing a single "breadcrumb" item
- *  @author Nikolaj Hald Nielsen <nhn@kde.org>
- */
-
-class BrowserBreadcrumbItem : public KHBox
+MimeTypeFilterProxyModel::MimeTypeFilterProxyModel( QStringList mimeList, QObject *parent )
+    : QSortFilterProxyModel( parent )
+    , m_mimeList( mimeList )
 {
-    Q_OBJECT
-public:
-    BrowserBreadcrumbItem( BrowserCategory * category );
+}
 
-    /**
-     * Overloaded constructor for creating breadcrumb items not bound to a particular BrowserCategory
-     */
-    BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler );
+bool
+MimeTypeFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& source_parent ) const
+{
+    QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
 
-    bool isAddItem() { return m_category == 0; }
-    
-    ~BrowserBreadcrumbItem();
+    QVariant qvar = index.data( KDirModel::FileItemRole );
+    if( !qvar.canConvert<KFileItem>() )
+        return false;
 
-    void setActive( bool active );
+    KFileItem item = qvar.value<KFileItem>();
 
-    QSizePolicy sizePolicy () const;
+    if( item.isDir() || m_mimeList.contains( item.mimetype() ) )
+        return true;
+    return false;
+}
 
-signals:
-
-    void activated( const QString &callback );
-    
-protected slots:
-    void updateSizePolicy();
-    void activate();
-    void activateSibling();
-
-private:
-    BrowserCategory          *m_category;
-    BreadcrumbItemMenuButton *m_menuButton;
-    BreadcrumbItemButton     *m_mainButton;
-
-    QString m_callback;
-    
-};
-
-#endif

@@ -32,6 +32,8 @@ namespace Playlist
         public:
             RepeatTrackNavigator();
 
+            quint64 likelyNextTrack() { return m_trackid; }
+            quint64 likelyLastTrack() { return m_trackid; }
             quint64 requestNextTrack() { return m_trackid; }
             quint64 requestLastTrack() { return m_trackid; }
 

@@ -33,7 +33,7 @@ typedef QList<M3UPlaylistPtr> M3UPlaylistList;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class M3UPlaylist : public PlaylistFile
+class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
 {
     public:
         M3UPlaylist();

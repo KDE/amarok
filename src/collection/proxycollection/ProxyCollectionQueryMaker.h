@@ -36,7 +36,7 @@ namespace ProxyCollection
 {
     class Collection;
 
-class ProxyQueryMaker : public QueryMaker
+class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
 {
     Q_OBJECT
 

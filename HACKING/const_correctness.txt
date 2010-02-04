@@ -1,5 +1,9 @@
-
 === Const Correctness ===
+
+This article was originally published here:
+
+http://amarok.kde.org/blog/archives/1125-Const-Correctness.html
+
 
 
 What is const correctness?

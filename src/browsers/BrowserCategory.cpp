@@ -133,5 +133,27 @@ QString BrowserCategory::imagePath()
     return m_imagePath;
 }
 
+void
+BrowserCategory::addAdditionalItem( BrowserBreadcrumbItem * item )
+{
+    m_additionalItems.append( item );
+}
+
+void
+BrowserCategory::clearAdditionalItems()
+{
+    //these are deleted in BrowserBreadcrumbWidget::clearCrumbs
+    foreach( BrowserBreadcrumbItem * item, m_additionalItems )
+    {
+        m_additionalItems.removeAll( item );
+        delete item;
+    }
+}
+
+QList<BrowserBreadcrumbItem *>
+BrowserCategory::additionalItems()
+{
+    return m_additionalItems;
+}
 
 #include "BrowserCategory.moc"

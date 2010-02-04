@@ -17,15 +17,19 @@
 #include "FileView.h"
 
 #include "Debug.h"
-#include "EngineController.h"
-#include "playlist/PlaylistController.h"
-#include "PopupDropperFactory.h"
+#include "collection/CollectionManager.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "dialogs/TagDialog.h"
+#include "EngineController.h"
 #include "PaletteHandler.h"
+#include "playlist/PlaylistController.h"
+#include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 
+#include <KDirModel>
+#include <KFileItem>
 #include <KIcon>
 #include <KLocale>
 #include <KMenu>
@@ -78,6 +82,7 @@ FileView::FileView( QWidget * parent )
     : QListView( parent )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
+    , m_editAction( 0 )
     , m_pd( 0 )
     , m_ongoingDrag( false )
 {
@@ -128,31 +133,53 @@ void FileView::slotReplacePlaylist()
     addSelectionToPlaylist( true );
 }
 
+void FileView::slotEditTracks()
+{
+    Meta::TrackList tracks = tracksForEdit();
+    if( !tracks.isEmpty() )
+    {
+        TagDialog *dialog = new TagDialog( tracks, this );
+        dialog->show();
+    }
+}
+
 QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
 {
 
     QList<QAction *> actions;
     
-    if( !indices.isEmpty() )
+    if( indices.isEmpty() )
+        return actions; // get out of here!
+
+    if( m_appendAction == 0 )
     {
-        if( m_appendAction == 0 )
-        {
-            m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this );
-            m_appendAction->setProperty( "popupdropper_svg_id", "append" );
-            connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendToPlaylist() ) );
-        }
-
-        actions.append( m_appendAction );
-
-        if( m_loadAction == 0 )
-        {
-            m_loadAction = new QAction( i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
-            m_loadAction->setProperty( "popupdropper_svg_id", "load" );
-            connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotReplacePlaylist() ) );
-        }
-
-        actions.append( m_loadAction );
+        m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this );
+        m_appendAction->setProperty( "popupdropper_svg_id", "append" );
+        connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendToPlaylist() ) );
     }
+
+    actions.append( m_appendAction );
+
+    if( m_loadAction == 0 )
+    {
+        m_loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
+        m_loadAction->setProperty( "popupdropper_svg_id", "load" );
+        connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotReplacePlaylist() ) );
+    }
+
+    actions.append( m_loadAction );
+
+    if( m_editAction == 0 )
+    {
+        m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
+        m_loadAction->setProperty( "popupdropper_svg_id", "edit" );
+        connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
+    }
+
+    actions.append( m_editAction );
+
+    Meta::TrackList tracks = tracksForEdit();
+    m_editAction->setEnabled( !tracks.isEmpty() );
 
     return actions;
 }
@@ -164,25 +191,19 @@ void FileView::addSelectionToPlaylist( bool replace )
 
     if( indices.count() == 0 )
         return;
-    
-    QFileSystemModel * fsModel = qobject_cast<QFileSystemModel *>( model() );
-    
-    if( fsModel )
-    {
-        QList<KUrl> urls;
-        
-        foreach( QModelIndex index, indices )
-        {
-            QString path = fsModel->filePath( index );
-            debug() << "file path: " << path;
-            if( EngineController::canDecode( path ) || fsModel->isDir( index ) )
-            {
-                urls << KUrl( path );
-            }
-        }
+    QList<KUrl> urls;
 
-        The::playlistController()->insertOptioned( urls, replace ? Playlist::Replace : Playlist::AppendAndPlay );
+    foreach( QModelIndex index, indices )
+    {
+        KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+        debug() << "file path: " << file.url();
+        if( EngineController::canDecode( file.url() ) || file.isDir() )
+        {
+            urls << file.url();
+        }
     }
+
+    The::playlistController()->insertOptioned( urls, replace ? Playlist::Replace : Playlist::AppendAndPlay );
 }
 
 
@@ -243,4 +264,22 @@ void FileView::newPalette( const QPalette & palette )
     reset(); // redraw all potential delegates
 }
 
+Meta::TrackList
+FileView::tracksForEdit() const
+{
+    Meta::TrackList tracks;
+
+    QModelIndexList indices = selectedIndexes();
+    if( indices.isEmpty() )
+        return tracks;
+
+    foreach( QModelIndex index, indices )
+    {
+        KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+        Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
+        if( track )
+            tracks << track;
+    }
+    return tracks;
+}
 #include "FileView.moc"

@@ -49,6 +49,20 @@ namespace Playlist
             virtual ~TrackNavigator() { }
 
             /**
+             * what is the next track at this moment - could change before the track really plays
+             * (you need to catch playlist changes)
+             * does NOT affect the navigators queue
+             */
+            virtual quint64 likelyNextTrack() = 0;
+
+            /**
+             * what is the last track at this moment - could change before the track really plays
+             * (you need to catch playlist changes)
+             * does NOT affect the navigators queue
+            */
+            virtual quint64 likelyLastTrack() = 0;
+
+            /**
              * The engine will finish the current track in a couple of seconds,
              * and would like to know what the next track should be.
              */

@@ -21,11 +21,12 @@
 
 #include "StandardTrackNavigator.h"
 
+
 quint64
-Playlist::StandardTrackNavigator::requestNextTrack()
+Playlist::StandardTrackNavigator::likelyNextTrack()
 {
     if( !m_queue.isEmpty() )
-        return m_queue.takeFirst();
+        return m_queue.first();
     int updateRow = m_model->activeRow() + 1;
     if ( m_repeatPlaylist )
         updateRow = ( updateRow >= m_model->rowCount() ) ? 0 : updateRow;
@@ -33,7 +34,7 @@ Playlist::StandardTrackNavigator::requestNextTrack()
 }
 
 quint64
-Playlist::StandardTrackNavigator::requestLastTrack()
+Playlist::StandardTrackNavigator::likelyLastTrack()
 {
     int updateRow = m_model->activeRow() - 1;
     if ( m_repeatPlaylist )
@@ -41,3 +42,16 @@ Playlist::StandardTrackNavigator::requestLastTrack()
     return m_model->idAt( updateRow );
 }
 
+quint64
+Playlist::StandardTrackNavigator::requestNextTrack()
+{
+    if( !m_queue.isEmpty() )
+        return m_queue.takeFirst();
+    return likelyNextTrack();
+}
+
+quint64
+Playlist::StandardTrackNavigator::requestLastTrack()
+{
+    return likelyLastTrack();
+}

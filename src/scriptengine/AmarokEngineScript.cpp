@@ -153,6 +153,10 @@ namespace AmarokScript
         if ( track.isNull() )
             emit trackFinished();
     }
+    void AmarokEngineScript::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+    {
+        emit( newMetaData, trackChanged );
+    }
     void AmarokEngineScript::engineStateChanged( Phonon::State newState, Phonon::State oldState )
     {
         Q_UNUSED( oldState );

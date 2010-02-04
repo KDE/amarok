@@ -976,6 +976,10 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
     if( anyBegin || anyEnd )
     {
         QString escaped = text;
+        //according to http://dev.mysql.com/doc/refman/5.0/en/string-comparison-functions.html
+        //the escape character (\ as we are using the default) is escaped twice when using like.
+        //mysql_real_escape will escape it once, so we have to escape it another time here
+        escaped = escaped.replace( '\\', "\\\\" ); // "////" will result in two backslahes
         escaped = escape( escaped );
         //as we are in pattern matching mode '_' and '%' have to be escaped
         //mysql_real_excape_string does not do that for us
@@ -983,7 +987,7 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
         //and http://dev.mysql.com/doc/refman/5.0/en/mysql-real-escape-string.html
         //replace those characters after calling escape(), which calls the mysql
         //function in turn, so that mysql does not escape the escape backslashes
-        escaped.replace( '%', "/%" ).replace( '_', "/_" );
+        escaped.replace( '%', "\\%" ).replace( '_', "\\_" );
 
         QString ret = " LIKE ";
 
@@ -998,8 +1002,8 @@ SqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool anyEnd ) 
         //Case insensitive collation for queries
         ret += " COLLATE utf8_unicode_ci ";
 
-        //Use / as the escape character
-        ret += " ESCAPE '/' ";
+        //Use \ as the escape character
+        //ret += " ESCAPE '\\' ";
 
         return ret;
     }
