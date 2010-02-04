@@ -54,7 +54,8 @@ CollectionTreeItemDelegate::~CollectionTreeItemDelegate()
 {}
 
 void
-CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
+                                   const QModelIndex &index ) const
 {
     if( index.parent().isValid() ) // not a root item
     {
@@ -64,6 +65,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
     const bool isRTL = QApplication::isRightToLeft();
     const QPoint topLeft = option.rect.topLeft();
+    const QPoint bottomRight = option.rect.bottomRight();
     const int width = m_view->viewport()->size().width() - 4;
     const int height = sizeHint( option, index ).height();
     const int iconWidth = 32;
@@ -88,8 +90,18 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     if( isRTL )
         iconPos.setX( width - iconWidth - iconPadX );
 
+
     painter->drawPixmap( iconPos,
                          index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
+
+    QPoint expanderPos( bottomRight - QPoint( iconPadX, iconPadX ) -
+                        QPoint( iconWidth/2, iconHeight/2 ) );
+    if( isRTL )
+        expanderPos.setX( iconPadX );
+    QPixmap expander = KIcon( "arrow-down" ).pixmap( iconWidth/2, iconHeight/2 );
+    if( m_view->isExpanded( index ) )
+        expander = expander.transformed( QTransform().rotate( 180 ) );
+    painter->drawPixmap( expanderPos, expander );
 
     const QString collectionName = index.data( Qt::DisplayRole ).toString();
     const QString bylineText = index.data( CustomRoles::ByLineRole ).toString();
