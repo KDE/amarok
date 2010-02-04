@@ -376,11 +376,10 @@ void
 Playlist::PrettyListView::findInSource()
 {
     DEBUG_BLOCK
-    const qint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
-    if( id != -1 )
-    {
-        Meta::TrackPtr track = m_topmostProxy->trackForId( id );
 
+    Meta::TrackPtr track = currentIndex().data( TrackRole ).value<Meta::TrackPtr>();
+    if ( track )
+    {
         if( track->hasCapabilityInterface( Meta::Capability::FindInSource ) )
         {
             Meta::FindInSourceCapability *fis = track->create<Meta::FindInSourceCapability>();
