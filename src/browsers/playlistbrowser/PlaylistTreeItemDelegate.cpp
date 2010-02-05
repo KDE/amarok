@@ -149,6 +149,7 @@ PlaylistTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const Q
 
     height = bigFm.boundingRect( 0, 0, width, 50, Qt::AlignLeft,
                                  index.data( Qt::DisplayRole ).toString() ).height()
+           + smallFm.height()
            + 20;
 
     return QSize( width, height );
