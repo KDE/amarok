@@ -21,11 +21,23 @@
 
 #include "meta/Meta.h"
 
+using ::testing::Return;
+
 namespace Meta
 {
 class MockTrack : public Meta::Track
 {
     public:
+    MockTrack() : Meta::Track()
+    {
+        ON_CALL( *this, name() ).WillByDefault( Return( "" ) );
+        ON_CALL( *this, artist() ).WillByDefault( Return( Meta::ArtistPtr() ) );
+        ON_CALL( *this, album() ).WillByDefault( Return( Meta::AlbumPtr() ) );
+        ON_CALL( *this, genre() ).WillByDefault( Return( Meta::GenrePtr() ) );
+        ON_CALL( *this, year() ).WillByDefault( Return( Meta::YearPtr() ) );
+        ON_CALL( *this, composer() ).WillByDefault( Return( Meta::ComposerPtr() ) );
+    }
+
     MOCK_CONST_METHOD0( name, QString() );
     MOCK_CONST_METHOD0( prettyName, QString() );
     MOCK_CONST_METHOD0( playableUrl, KUrl() );
