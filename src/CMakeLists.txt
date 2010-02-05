@@ -680,7 +680,7 @@ else( BUILD_MYSQLE_COLLECTION )
            )
 endif( BUILD_MYSQLE_COLLECTION )
 
-if(CMAKE_BUILD_TYPE MATCHES debugfull)
+if(KDE4_BUILD_TESTS)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
         ../tests/meta/TestM3UPlaylist.cpp
@@ -711,7 +711,7 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/playlistmanager/sql/
         ../tests/timecode/
     )
-endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+endif()
 
 if( LIBLASTFM_FOUND )
     set(amaroklib_LIB_SRCS
@@ -777,9 +777,9 @@ if (KDE_VERSION VERSION_GREATER "4.3.80")
     target_link_libraries(amaroklib ${KDE4_KNEWSTUFF3_LIBS})
 endif (KDE_VERSION VERSION_GREATER "4.3.80")
 
-if(CMAKE_BUILD_TYPE MATCHES debugfull)
+if(KDE4_BUILD_TESTS)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
-endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+endif()
 
 if( BUILD_MYSQLE_COLLECTION )
 else( BUILD_MYSQLE_COLLECTION )

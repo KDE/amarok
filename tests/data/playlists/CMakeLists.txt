@@ -1,4 +1,4 @@
-if(CMAKE_BUILD_TYPE MATCHES debugfull)
+if(KDE4_BUILD_TESTS)
 install(
         FILES
         no-playlist.png
@@ -10,4 +10,4 @@ install(
         test.xspf
         DESTINATION ${DATA_INSTALL_DIR}/amarok/testdata/playlists
 )
-endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+endif()
