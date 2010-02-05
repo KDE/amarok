@@ -44,7 +44,10 @@ public:
      * ArtistWidget constructor
      * @param parent The widget parent
      */
-    ArtistWidget( QWidget *parent = 0 );
+    ArtistWidget( QWidget *parent =0 );
+    /**
+     * ArtistWidget destructor
+     */
     ~ArtistWidget();
 
     /**
@@ -86,12 +89,31 @@ private:
     QGridLayout *m_layout;
 
     //elements of the widget
+
+    /**
+     * Image of the artist
+     */
     QLabel *m_image;
+    /**
+     * Name of the artist
+     */
     QLabel *m_name;
+    /**
+     * Genre of the artist's music
+     */
     QLabel *m_genre;
+    /**
+     * Top track of the artist
+     */
     QLabel *m_topTrack;
 
+    /**
+     * Job of the image from the web
+     */
     KJob *m_imageJob;
+    /**
+     * Job of the top track from the web
+     */
     KJob *m_topTrackJob;
 
 

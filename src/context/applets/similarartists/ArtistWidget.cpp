@@ -78,6 +78,9 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
 }
 
 
+/**
+ * ArtistWidget destructor
+ */
 ArtistWidget::~ArtistWidget()
 {
     delete m_layout;

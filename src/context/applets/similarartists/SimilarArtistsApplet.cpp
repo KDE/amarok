@@ -44,6 +44,12 @@
 
 
 
+/**
+ * SimilarArtistsApplet constructor
+ * @param parent The widget parent
+ * @param args   List of strings containing two entries: the service id
+ *               and the applet id
+ */
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , m_aspectRatio( 0 )
@@ -58,6 +64,9 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
 }
 
 
+/**
+ * SimilarArtistsApplet destructor
+ */
 SimilarArtistsApplet::~SimilarArtistsApplet()
 {
     delete m_headerLabel;
@@ -66,7 +75,9 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
     delete m_scroll; // Destroy automatically his child widget
 }
 
-
+/**
+ * Initialization of the applet's display, creation of the layout, scrolls
+ */
 void
 SimilarArtistsApplet::init()
 {
@@ -127,6 +138,9 @@ SimilarArtistsApplet::init()
     constraintsEvent();
 }
 
+/**
+ * This method allows the connection to the lastfm's api
+ */
 void
 SimilarArtistsApplet::connectSource( const QString &source )
 {
@@ -137,6 +151,9 @@ SimilarArtistsApplet::connectSource( const QString &source )
     }
 }
 
+/**
+ * This method puts the widgets in the layout, in the initialization
+ */
 void
 SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
@@ -242,7 +259,9 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
     setCollapseOn();
 }
 
-
+/**
+ * Update the current artist and his similar artists
+ */
 void
 SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
