@@ -20,8 +20,6 @@
 #include "amarok_sqlcollection_export.h"
 #include "meta/Capability.h"
 
-#include <QAction>
-
 class SqlCollection;
 
 namespace Meta
@@ -34,45 +32,41 @@ namespace Meta
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS TrackCapabilityDelegate
 {
 public:
-    TrackCapabilityDelegate();
+    TrackCapabilityDelegate() {};
+    virtual ~ TrackCapabilityDelegate() {};
 
-    bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlTrack *track ) const;
-    Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlTrack *track );
+    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlTrack *track ) const = 0;
+    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlTrack *track ) = 0;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS ArtistCapabilityDelegate
 {
 public:
-    ArtistCapabilityDelegate();
-    ~ArtistCapabilityDelegate();
+    ArtistCapabilityDelegate() {};
+    virtual ~ArtistCapabilityDelegate() {};
 
-    bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlArtist *artist ) const;
-    Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlArtist *artist );
-
-private:
-    QAction * m_bookmarkAction;
+    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlArtist *artist ) const = 0;
+    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlArtist *artist ) = 0;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS AlbumCapabilityDelegate
 {
 public:
-    AlbumCapabilityDelegate();
-    ~AlbumCapabilityDelegate();
+    AlbumCapabilityDelegate() {};
+    virtual ~AlbumCapabilityDelegate() {};
 
-    bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlAlbum *album ) const;
-    Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlAlbum *album );
-
-private:
-    QAction * m_bookmarkAction;
+    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlAlbum *album ) const = 0;
+    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, Meta::SqlAlbum *album ) = 0;
 };
 
 class AMAROK_SQLCOLLECTION_EXPORT_TESTS CollectionCapabilityDelegate
 {
 public:
-    CollectionCapabilityDelegate();
+    CollectionCapabilityDelegate() {};
+    virtual ~ CollectionCapabilityDelegate() {};
 
-    bool hasCapabilityInterface( Meta::Capability::Type type, const SqlCollection *collection ) const;
-    Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, SqlCollection *collection );
+    virtual bool hasCapabilityInterface( Meta::Capability::Type type, const SqlCollection *collection ) const = 0;
+    virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type, SqlCollection *collection ) = 0;
 };
 
 
