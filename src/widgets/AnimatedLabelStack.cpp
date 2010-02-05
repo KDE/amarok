@@ -26,20 +26,20 @@ static const int normalDisplayTime = 7000;
 
 AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt::WindowFlags f ): QWidget(p, f)
     , m_align(Qt::AlignCenter)
-    , m_time(0)
-    , m_index(0)
-    , m_visibleIndex(0)
     , m_animTimer(0)
     , m_sleepTimer(0)
+    , m_time(0)
     , m_fadeTime(300)
     , m_displayTime(normalDisplayTime)
+    , m_index(0)
+    , m_visibleIndex(0)
     , m_opacity(255)
     , m_targetOpacity(255)
     , m_animated(true)
     , m_pulsating(false)
     , m_pulseRequested(false)
-    , m_isClick(false)
     , m_explicit(false)
+    , m_isClick(false)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
     setData( data );

@@ -71,8 +71,12 @@ private:
     QString elidedText( const QString& text ) const;
 
     Qt::Alignment m_align;
-    int m_time, m_index, m_visibleIndex, m_animTimer, m_sleepTimer, m_fadeTime, m_displayTime, m_opacity, m_targetOpacity;
-    bool m_animated, m_pulsating, m_pulseRequested, m_isClick, m_explicit;
+    int m_animTimer, m_sleepTimer;
+    int m_time, m_fadeTime, m_displayTime;
+    int m_index, m_visibleIndex;
+    int m_opacity, m_targetOpacity;
+    bool m_animated, m_pulsating, m_pulseRequested, m_explicit;
+    int m_isClick;
     QStringList m_data;
 };
 

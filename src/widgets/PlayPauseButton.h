@@ -48,7 +48,11 @@ private:
     void updateIconBuffer();
 
     bool m_isPlaying, m_isClick;
-    int m_animStep, m_animTimer;
+    struct
+    {
+        int step;
+        int timer;
+    } m_anim;
     QPixmap m_iconBuffer;
     QImage m_iconPlay[2], m_iconPause[2];
 };
