@@ -8,6 +8,7 @@ include_directories(
   ${AMAROK_COLLECTION_SUPPORT_DIR}
   ${KDE4_INCLUDE_DIR}
   ${QT_INCLUDES}
+  ${GOOGLEMOCK_INCLUDE_DIR}
   )
 
 #------------------------------- TestProxyCollectionMeta -------------------------------
@@ -37,4 +38,5 @@ target_link_libraries(testproxycollectionmeta
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KDEUI_LIBS}
     ${QT_QTTEST_LIBRARY}
-    ${QT_QTCORE_LIBRARY})
+    ${QT_QTCORE_LIBRARY}
+    ${GOOGLEMOCK_LIBRARIES})

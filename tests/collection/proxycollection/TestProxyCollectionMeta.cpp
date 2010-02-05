@@ -25,11 +25,17 @@
 #include "meta/capabilities/OrganiseCapability.h"
 
 #include "mocks/MetaMock.h"
+#include "mocks/MockTrack.h"
 
 #include <QMap>
 #include <QSignalSpy>
 
+#include <KCmdLineArgs>
+#include <KGlobal>
+
 #include <qtest_kde.h>
+
+#include <gmock/gmock.h>
 
 QTEST_KDEMAIN_CORE( TestProxyCollectionMeta )
 
@@ -38,6 +44,8 @@ QMutex Debug::mutex;
 
 TestProxyCollectionMeta::TestProxyCollectionMeta()
 {
+    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
+    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
 }
 
 class MyTrackMock : public MetaMock
@@ -510,4 +518,20 @@ TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
     delete editCap;
     QVERIFY( !qpointer1 );
     QVERIFY( !qpointer2 );
+}
+
+using ::testing::Return;
+using ::testing::AnyNumber;
+
+void
+TestProxyCollectionMeta::testPrettyUrl()
+{
+    Meta::MockTrack *mock = new ::testing::NiceMock<Meta::MockTrack>();
+    EXPECT_CALL( *mock, prettyUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "foo" ) );
+
+    Meta::TrackPtr trackPtr( mock );
+
+    ProxyCollection::Track track( 0, trackPtr );
+
+    QCOMPARE( track.prettyUrl(), QString( "foo" ) );
 }

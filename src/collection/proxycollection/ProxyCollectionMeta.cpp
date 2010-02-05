@@ -110,7 +110,14 @@ ProxyCollection::Track::playableUrl() const
 QString
 ProxyCollection::Track::prettyUrl() const
 {
-    return QString();
+    if( m_tracks.count() == 1 )
+    {
+        return m_tracks.first()->prettyUrl();
+    }
+    else
+    {
+        return QString();
+    }
 }
 
 QString
