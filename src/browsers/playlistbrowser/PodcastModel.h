@@ -30,6 +30,7 @@
 
 class OpmlOutline;
 class QAction;
+class PodcastProvider;
 
 namespace PlaylistBrowserNS {
 
@@ -136,6 +137,9 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel
         static Meta::TrackList
         podcastEpisodesToTracks(
             Meta::PodcastEpisodeList episodes );
+
+        /** Get the provider associated with a PodcastMetaCommon object */
+        PodcastProvider *providerForPmc( Meta::PodcastMetaCommon *pmc ) const;
 
         void downloadEpisode( Meta::PodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );
