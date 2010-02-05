@@ -129,7 +129,6 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     painter->setFont( m_smallFont );
     painter->drawText( textRect, Qt::TextWordWrap, bylineText );
 
-    const bool isHover = option.state & QStyle::State_MouseOver;
     QPoint cursorPos = m_view->mapFromGlobal( QCursor::pos() );
     cursorPos.ry() -= 20; // Where the fuck does this offset come from. I have _ZERO_ idea.
 

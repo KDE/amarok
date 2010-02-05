@@ -84,7 +84,7 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
              m_playlistView, SLOT( createNewGroup() ) );
 
     m_playlistView->setNewGroupAction( m_addGroupAction );
-    PlaylistTreeItemDelegate *delegate = new PlaylistTreeItemDelegate( m_playlistView );
+    new PlaylistTreeItemDelegate( m_playlistView );
 }
 
 PlaylistBrowserNS::PlaylistCategory::~PlaylistCategory()
