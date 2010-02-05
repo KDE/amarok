@@ -371,7 +371,7 @@ bool
 IpodHandler::isWritable() const
 {
     // TODO: check if read-only
-    return m_wasMounted; // iphones/ipod touches have not been mounted - these are not writable for now
+    return true;
 }
 
 QString
@@ -1039,7 +1039,9 @@ QString
 IpodHandler::itunesDir(const QString &p) const
 {
     QString base( ":iPod_Control" );
-    if( m_isMobile )
+    if( m_isIPhone )
+        base = ":iTunes_Control";
+    else if( m_isMobile )
         base = ":iTunes:iTunes_Control";
 
     if( !p.startsWith( ':' ) )
@@ -1410,7 +1412,7 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
         int dir = num % music_dirs;
         QString dirname;
         debug() << "itunesDir(): " << itunesDir();
-        dirname = QString( "%1Music:F%2" ).arg( "iPod_Control:" ).arg( QString::number( dir, 10 ), 2, QLatin1Char( '0' ) );
+        dirname = itunesDir( QString( "Music:F%1" ).arg( QString::number( dir, 10 ), 2, QLatin1Char( '0' ) ) );
 
         debug() << "Copying to dirname: " << dirname;
         if( !pathExists( dirname ) )
