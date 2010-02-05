@@ -103,6 +103,7 @@ class SqlPodcastProvider : public PodcastProvider
     private slots:
         void channelImageReady( Meta::PodcastChannelPtr, QPixmap );
         void podcastImageFetcherDone( PodcastImageFetcher * );
+        void slotConfigureProvider();
 
     private:
         /** creates all the necessary tables, indexes etc. for the database */

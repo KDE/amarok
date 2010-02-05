@@ -561,6 +561,14 @@ SqlPodcastProvider::providerActions()
         updateAllAction->setProperty( "popupdropper_svg_id", "update" );
         connect( updateAllAction, SIGNAL( triggered() ), this, SLOT( updateAll() ) );
         m_providerActions << updateAllAction;
+
+        QAction *configureAction = new QAction( KIcon( "configure" ),
+            i18n( "&Configure General Settings" ),
+            this
+        );
+        configureAction->setProperty( "popupdropper_svg_id", "configure" );
+        connect( configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureProvider() ) );
+        m_providerActions << configureAction;
     }
 
     return m_providerActions;
@@ -1329,6 +1337,12 @@ SqlPodcastProvider::podcastImageFetcherDone( PodcastImageFetcher *fetcher )
 {
     fetcher->deleteLater();
     m_podcastImageFetcher = 0;
+}
+
+void
+SqlPodcastProvider::slotConfigureProvider()
+{
+    DEBUG_BLOCK
 }
 
 #include "SqlPodcastProvider.moc"

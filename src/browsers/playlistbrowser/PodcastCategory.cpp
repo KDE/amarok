@@ -535,13 +535,50 @@ void PodcastView::mousePressEvent( QMouseEvent *event )
     QModelIndex index = indexAt( event->pos() );
     if( KGlobalSettings::singleClick() )
         setItemsExpandable( false );
-    update();
+    if( !index.parent().isValid() ) //not a root element, don't bother checking actions
+    {
+        Amarok::PrettyTreeView::mousePressEvent( event );
+        return;
+    }
+
+    const int actionCount =
+            index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
+    if( actionCount > 0 )
+    {
+        const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
+        if( rect.contains( event->pos() ) )
+            return;
+    }
+
     Amarok::PrettyTreeView::mousePressEvent( event );
 }
 
 void
 PodcastView::mouseReleaseEvent( QMouseEvent * event )
 {
+    const QModelIndex index = indexAt( event->pos() );
+    if( !index.parent().isValid() ) // not a root element, don't bother checking actions
+    {
+        const int actionCount =
+            index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
+        if( actionCount > 0 )
+        {
+            const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
+            if( rect.contains( event->pos() ) )
+            {
+                QList<QAction*> actions =
+                        index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole )
+                        .toList().first().value<QList<QAction*> >();
+                foreach( QAction *action, actions )
+                {
+                    if( action )
+                        action->trigger();
+                }
+                return;
+            }
+        }
+    }
+
     if( m_pd )
     {
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
@@ -565,7 +602,7 @@ PodcastView::mouseReleaseEvent( QMouseEvent * event )
     KConfigGroup cg( KGlobal::config(), "KDE" );
     m_clickTimer.start( cg.readEntry( "DoubleClickInterval", 400 ) );
     m_clickLocation = event->pos();
-    event->accept();
+    Amarok::PrettyTreeView::mouseReleaseEvent( event );
 }
 
 void
