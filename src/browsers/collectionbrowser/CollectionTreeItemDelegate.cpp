@@ -143,7 +143,8 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         QRect capacityRect;
         capacityRect.setLeft( isRTL ? 0 : infoRectLeft );
         capacityRect.setTop( textRect.bottom() );
-        capacityRect.setWidth( infoRectWidth );
+        //makeing sure capacity bar does not overlap expander
+        capacityRect.setWidth( infoRectWidth - iconWidth );
         capacityRect.setHeight( CAPACITYRECT_HEIGHT );
 
         const int used = index.data( CustomRoles::UsedCapacityRole ).toInt();
@@ -162,7 +163,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         const QList<QAction*> actions = index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
         QRect decoratorRect;
         decoratorRect.setLeft( (width - actionCount * ACTIONICON_SIZE) - 2 );
-        decoratorRect.setTop( option.rect.top() + (height - ACTIONICON_SIZE) / 2 );
+        decoratorRect.setTop( option.rect.top() + iconYPadding );
         decoratorRect.setWidth( actionsRectWidth );
         decoratorRect.setHeight( ACTIONICON_SIZE );
 
