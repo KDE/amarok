@@ -28,7 +28,6 @@
 #include <QVariant>
 
 class OpmlOutline;
-class QAction;
 class PodcastProvider;
 
 namespace PlaylistBrowserNS {

@@ -295,25 +295,47 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             }
             break;
         }
+
         case PlaylistBrowserNS::MetaPlaylistModel::ByLineRole:
+        {
+            if( index.column() == ProviderColumn )
             {
-                if( index.column() == ProviderColumn )
-                {
-                    PlaylistProvider *provider = providerForPmc(
-                            static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() ) );
+                PlaylistProvider *provider = providerForPmc(
+                        static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() ) );
 
-                    if( !provider )
-                        return QString();
+                if( !provider )
+                    return QString();
 
-                    //TODO: first check playlistCount and show "loading"
-                    int playlistCount = provider->playlists().count();
+                //TODO: first check playlistCount and show "loading"
+                int playlistCount = provider->playlists().count();
 
-                    return i18ncp( "number of podcasts from one source", "One channel",
-                                   "%1 channels", playlistCount );
-                }
-                return QString();
+                return i18ncp( "number of podcasts from one source", "One channel",
+                               "%1 channels", playlistCount );
             }
+            return QString();
+        }
 
+        case PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole:
+        {
+            if( index.column() == ProviderColumn )
+            {
+                PlaylistProvider *provider = providerForPmc(
+                        static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() ) );
+                if( provider )
+                    return provider->providerActions().count();
+            }
+        }
+
+        case PlaylistBrowserNS::MetaPlaylistModel::ActionRole:
+        {
+            if( index.column() == ProviderColumn )
+            {
+                PlaylistProvider *provider = providerForPmc(
+                        static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() ) );
+                if( provider )
+                    return QVariant::fromValue( provider->providerActions() );
+            }
+        }
     }
 
     return QVariant();

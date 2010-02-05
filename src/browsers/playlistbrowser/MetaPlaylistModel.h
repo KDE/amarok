@@ -24,6 +24,8 @@
 
 class QAction;
 
+Q_DECLARE_METATYPE( QAction* )
+Q_DECLARE_METATYPE( QList<QAction*> )
 
 namespace PlaylistBrowserNS {
 
@@ -37,10 +39,12 @@ class MetaPlaylistModel
         
         enum
         {
-            DescriptionRole = Qt::UserRole + 1,
+            DescriptionRole = Qt::UserRole + 100,
             //What is the name of the group this Playlist is in.
             GroupRole,
-            ByLineRole
+            ByLineRole,
+            ActionCountRole,
+            ActionRole
         };
 
         virtual QList<QAction *> actionsFor( const QModelIndexList &indexes ) = 0;

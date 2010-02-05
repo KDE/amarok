@@ -65,6 +65,8 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         QList<QAction *> episodeActions( Meta::PodcastEpisodeList );
         QList<QAction *> channelActions( Meta::PodcastChannelList );
 
+        virtual QList<QAction *> providerActions();
+
         void completePodcastDownloads();
 
         //EngineObserver methods
@@ -144,13 +146,15 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         int m_maxConcurrentDownloads;
         int m_completedDownloads;
 
-        QAction * m_configureAction; //Configure a Channel
-        QAction * m_deleteAction; //delete a downloaded Episode
-        QAction * m_downloadAction;
-        QAction * m_removeAction; //remove a subscription
-        QAction * m_renameAction; //rename a Channel or Episode
-        QAction * m_updateAction;
-        QAction * m_writeTagsAction; //write feed information to downloaded file
+        QList<QAction *> m_providerActions;
+
+        QAction *m_configureChannelAction; //Configure a Channel
+        QAction *m_deleteAction; //delete a downloaded Episode
+        QAction *m_downloadAction;
+        QAction *m_removeAction; //remove a subscription
+        QAction *m_renameAction; //rename a Channel or Episode
+        QAction *m_updateAction;
+        QAction *m_writeTagsAction; //write feed information to downloaded file
 
         PodcastImageFetcher *m_podcastImageFetcher;
 };

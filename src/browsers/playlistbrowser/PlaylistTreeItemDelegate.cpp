@@ -32,12 +32,9 @@
 #include <QMenu>
 #include <QToolButton>
 
-Q_DECLARE_METATYPE( QAction* )
-Q_DECLARE_METATYPE( QList<QAction*> )
-
 #define ACTIONICON_SIZE 16
 
-QHash<QPersistentModelIndex, QRect> PlaylistTreeItemDelegate::s_indexDecoratorRects;
+QHash<QPersistentModelIndex, QRect> PlaylistTreeItemDelegate::s_indexActionsRects;
 
 PlaylistTreeItemDelegate::PlaylistTreeItemDelegate( QTreeView *view )
     : QStyledItemDelegate( view )
@@ -70,6 +67,8 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     const int iconWidth = 32;
     const int iconHeight = 32;
     const int iconPadX = 4;
+    const int actionCount
+            = index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
 
     painter->save();
 
@@ -89,7 +88,8 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
 
     painter->drawPixmap( iconPos,
-                         index.data( Qt::DecorationRole ).value<QIcon>().pixmap( iconWidth, iconHeight ) );
+                         index.data( Qt::DecorationRole )
+                         .value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
     QPoint expanderPos( bottomRight - QPoint( iconPadX, iconPadX ) -
                         QPoint( iconWidth/2, iconHeight/2 ) );
@@ -106,8 +106,12 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
 
+     const int actionsRectWidth = actionCount > 0 ?
+                                  (ACTIONICON_SIZE * actionCount + 2*2/*margin*/):
+                                  0;
+
     const int iconRight = topLeft.x() + iconWidth + iconPadX * 2;
-    const int infoRectLeft = iconRight;
+    const int infoRectLeft = isRTL ? actionsRectWidth : iconRight;
     const int infoRectWidth = width - iconRight;
     const int titleRectWidth = infoRectWidth;
 
@@ -129,8 +133,43 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     painter->setFont( m_smallFont );
     painter->drawText( textRect, Qt::TextWordWrap, bylineText );
 
+    const bool isHover = option.state & QStyle::State_MouseOver;
     QPoint cursorPos = m_view->mapFromGlobal( QCursor::pos() );
-    cursorPos.ry() -= 20; // Where the fuck does this offset come from. I have _ZERO_ idea.
+    cursorPos.ry() -= 20;
+    if( actionCount > 0 )
+    {
+        //HACK: there is an issue with QtGroupingProxy: a UserValue is returned as multiple copies in a QVariantList. So only take the first.
+        const QList<QAction*> actions = index.data(
+                PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).toList().first().value<QList<QAction*> >();
+
+        QRect actionsRect;
+        actionsRect.setLeft( (width - actionCount * ACTIONICON_SIZE) - 2 );
+        actionsRect.setTop( option.rect.top() + iconYPadding );
+        actionsRect.setWidth( actionsRectWidth );
+        actionsRect.setHeight( ACTIONICON_SIZE );
+
+        QPoint actionTopLeftBase = actionsRect.topLeft();
+        const QSize iconSize = QSize( ACTIONICON_SIZE, ACTIONICON_SIZE );
+
+        int i = 0;
+        foreach( QAction *action, actions )
+        {
+            QIcon icon = action->icon();
+            int x = actionTopLeftBase.x() + i * ACTIONICON_SIZE;
+            QPoint actionTopLeft = QPoint( x, actionTopLeftBase.y() );
+            QRect iconRect( actionTopLeft, iconSize );
+
+            const bool isOver = isHover && iconRect.contains( cursorPos );
+
+            icon.paint( painter, iconRect, Qt::AlignCenter, isOver ? QIcon::Active : QIcon::Normal,
+                        isOver ? QIcon::On : QIcon::Off );
+            i++;
+        }
+
+        // Store the Model index for lookups for clicks. FAIL.
+        QPersistentModelIndex persistentIndex( index );
+        s_indexActionsRects.insert( persistentIndex, actionsRect );
+    }
 
     painter->restore();
 }
@@ -156,8 +195,8 @@ PlaylistTreeItemDelegate::sizeHint( const QStyleOptionViewItem & option, const Q
 }
 
 QRect
-PlaylistTreeItemDelegate::decoratorRect( const QModelIndex &index )
+PlaylistTreeItemDelegate::actionsRect( const QModelIndex &index )
 {
     QPersistentModelIndex persistentIndex( index );
-    return s_indexDecoratorRects.value( persistentIndex );
+    return s_indexActionsRects.value( persistentIndex );
 }

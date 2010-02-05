@@ -58,7 +58,7 @@ SqlPodcastProvider::SqlPodcastProvider()
         : m_updateTimer( new QTimer( this ) )
         , m_updatingChannels( 0 )
         , m_completedDownloads( 0 )
-        , m_configureAction( 0 )
+        , m_configureChannelAction( 0 )
         , m_deleteAction( 0 )
         , m_downloadAction( 0 )
         , m_removeAction( 0 )
@@ -511,17 +511,17 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
     DEBUG_BLOCK
     QList< QAction * > actions;
 
-    if( m_configureAction == 0 )
+    if( m_configureChannelAction == 0 )
     {
-        m_configureAction = new QAction(
+        m_configureChannelAction = new QAction(
             KIcon( "configure" ),
             i18n( "&Configure" ),
             this
         );
-        m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
-        connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ) );
+        m_configureChannelAction->setProperty( "popupdropper_svg_id", "configure" );
+        connect( m_configureChannelAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ) );
     }
-    actions << m_configureAction;
+    actions << m_configureChannelAction;
 
     if( m_removeAction == 0 )
     {
@@ -548,6 +548,23 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
     actions << m_updateAction;
 
     return actions;
+}
+
+QList<QAction *>
+SqlPodcastProvider::providerActions()
+{
+    if( m_providerActions.isEmpty() )
+    {
+        QAction *updateAllAction = new QAction( KIcon( "view-refresh-amarok" ),
+                                         i18n( "&Update All Channels" ),
+                                         this
+                                       );
+        updateAllAction->setProperty( "popupdropper_svg_id", "update" );
+        connect( updateAllAction, SIGNAL( triggered() ), this, SLOT( updateAll() ) );
+        m_providerActions << updateAllAction;
+    }
+
+    return m_providerActions;
 }
 
 void

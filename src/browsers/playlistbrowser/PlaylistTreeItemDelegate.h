@@ -36,13 +36,13 @@ class PlaylistTreeItemDelegate : public QStyledItemDelegate
         void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
         QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
-        static QRect decoratorRect( const QModelIndex &index );
+        static QRect actionsRect( const QModelIndex &index );
 
     private:
         QTreeView *m_view;
         QFont m_bigFont;
         QFont m_smallFont;
 
-        static QHash<QPersistentModelIndex, QRect> s_indexDecoratorRects;
+        static QHash<QPersistentModelIndex, QRect> s_indexActionsRects;
 };
 #endif // PLAYLISTTREEITEMDELEGATE_H
