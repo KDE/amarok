@@ -155,7 +155,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
         foreach( QAction *action, actions )
         {
             QIcon icon = action->icon();
-            int x = actionTopLeftBase.x() + i * ACTIONICON_SIZE;
+            int x = actionTopLeftBase.x() + i * ( ACTIONICON_SIZE + iconPadX );
             QPoint actionTopLeft = QPoint( x, actionTopLeftBase.y() );
             QRect iconRect( actionTopLeft, iconSize );
 

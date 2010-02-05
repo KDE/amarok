@@ -35,7 +35,7 @@
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
 
-#define CAPACITYRECT_HEIGHT 6
+#define CAPACITYRECT_HEIGHT 12
 #define ACTIONICON_SIZE 16
 
 QHash<QPersistentModelIndex, QRect> CollectionTreeItemDelegate::s_indexDecoratorRects;
