@@ -21,7 +21,6 @@
 #include <QPaintEvent>
 #include <QTimer>
 
-
 static const int frameTime = 50;
 static const int normalDisplayTime = 7000;
 
@@ -31,6 +30,7 @@ AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt:
     , m_index(0)
     , m_visibleIndex(0)
     , m_animTimer(0)
+    , m_sleepTimer(0)
     , m_fadeTime(300)
     , m_displayTime(normalDisplayTime)
     , m_opacity(255)
@@ -55,6 +55,7 @@ AnimatedLabelStack::activateOnEnter()
         m_pulseRequested = true;
         if ( m_time > m_fadeTime && m_time < (m_displayTime - m_fadeTime) )
             m_time = m_displayTime - m_fadeTime;
+        wakeUp();
     }
     else
         setPulsating( true );
@@ -65,13 +66,20 @@ AnimatedLabelStack::ensureAnimationStatus()
 {
     if ( m_data.count() > 1 && ( m_animated || m_pulsating ) )
     {
-        if ( !m_animTimer )
-            m_animTimer = startTimer( frameTime );
+        wakeUp();
     }
-    else if ( m_animTimer )
+    else
     {
-        killTimer(m_animTimer);
-        m_animTimer = 0;
+        if ( m_animTimer )
+        {
+            killTimer( m_animTimer );
+            m_animTimer = 0;
+        }
+        if ( m_sleepTimer )
+        {
+            killTimer( m_sleepTimer );
+            m_sleepTimer = 0;
+        }
         m_opacity = m_targetOpacity;
         update();
     }
@@ -83,6 +91,23 @@ AnimatedLabelStack::enterEvent( QEvent * )
     // wait a short time, then pulse through entries
     m_explicit = false;
     QTimer::singleShot(300, this, SLOT( activateOnEnter() ) );
+}
+
+void
+AnimatedLabelStack::hideEvent( QHideEvent *e )
+{
+    QWidget::hideEvent( e );
+    if ( m_animTimer )
+    {
+        killTimer( m_animTimer );
+        m_animTimer = 0;
+    }
+    if ( m_sleepTimer )
+    {
+        killTimer( m_sleepTimer );
+        m_sleepTimer = 0;
+    }
+    m_opacity = m_targetOpacity;
 }
 
 void
@@ -152,6 +177,14 @@ AnimatedLabelStack::paintEvent( QPaintEvent * pe )
     p.drawText( rect(), m_align | Qt::TextSingleLine, elidedText( m_data.at( m_visibleIndex ) ) );
     p.end();
 }
+
+void
+AnimatedLabelStack::showEvent( QShowEvent *e )
+{
+    ensureAnimationStatus();
+    QWidget::showEvent( e );
+}
+
 
 QString
 AnimatedLabelStack::elidedText( const QString& text ) const
@@ -244,16 +277,46 @@ AnimatedLabelStack::setPulsating( bool on )
 }
 
 void
+AnimatedLabelStack::sleep( int ms )
+{
+    if ( m_animTimer )
+    {
+        killTimer( m_animTimer );
+        m_animTimer = 0;
+    }
+    if ( !m_sleepTimer )
+        m_sleepTimer = startTimer( ms );
+}
+
+void
+AnimatedLabelStack::wakeUp()
+{
+    if ( m_sleepTimer )
+    {
+        killTimer( m_sleepTimer );
+        m_sleepTimer = 0;
+    }
+    if ( !m_animTimer )
+        m_animTimer = startTimer( frameTime );
+}
+
+void
 AnimatedLabelStack::timerEvent( QTimerEvent * te )
 {
-    if ( !isVisible() || te->timerId() != m_animTimer )
+
+    if ( !isVisible() )
+        return;
+    if ( te->timerId() == m_sleepTimer )
+        wakeUp();
+    else if ( te->timerId() != m_animTimer )
         return;
 
     if ( m_explicit )
         return; // the user explicitly altered content by wheeling, don't take it away
-    
+
     if ( m_time < m_fadeTime || m_time > (m_displayTime - m_fadeTime) )
         update();
+
     m_time += frameTime;
     if ( m_time > m_displayTime )
     {
@@ -275,16 +338,25 @@ AnimatedLabelStack::timerEvent( QTimerEvent * te )
         if ( m_pulseRequested && !m_pulsating )
             setPulsating( true );
         m_opacity = m_targetOpacity*m_time/m_fadeTime;
+        wakeUp();
     }
     else if ( m_pulsating && m_time > (m_displayTime - m_fadeTime) ) // fade out
     {
         m_opacity = m_targetOpacity*(m_displayTime - m_time)/m_fadeTime;
+        wakeUp();
     }
     else // (ensure) no fade
     {
         if ( m_pulsating && !m_pulseRequested && m_index == m_visibleIndex )
             setPulsating( false );
+        
         m_opacity = m_targetOpacity; // to be sure
+
+        if ( !m_pulsating && m_time < (m_displayTime - m_fadeTime) )
+        {
+            m_time = m_displayTime - m_fadeTime + 1;
+            sleep( m_time );
+        }
     }
 }
 

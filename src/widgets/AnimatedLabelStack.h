@@ -44,16 +44,20 @@ signals:
 
 protected:
     void enterEvent( QEvent * );
+    void hideEvent( QHideEvent * );
     void leaveEvent( QEvent * );
     void paintEvent( QPaintEvent * );
     void mouseReleaseEvent( QMouseEvent * );
     void mousePressEvent( QMouseEvent * );
+    void showEvent( QShowEvent * );
     void timerEvent( QTimerEvent * );
     void wheelEvent( QWheelEvent * );
 
 private:
     void ensureAnimationStatus();
     void setPulsating( bool on );
+    void sleep( int ms );
+    void wakeUp();
 
 private slots:
     void activateOnEnter();
@@ -67,7 +71,7 @@ private:
     QString elidedText( const QString& text ) const;
 
     Qt::Alignment m_align;
-    int m_time, m_index, m_visibleIndex, m_animTimer, m_fadeTime, m_displayTime, m_opacity, m_targetOpacity;
+    int m_time, m_index, m_visibleIndex, m_animTimer, m_sleepTimer, m_fadeTime, m_displayTime, m_opacity, m_targetOpacity;
     bool m_animated, m_pulsating, m_pulseRequested, m_isClick, m_explicit;
     QStringList m_data;
 };
