@@ -381,7 +381,6 @@ void
 CollectionLocation::slotFinishRemove()
 {
     DEBUG_BLOCK
-    removeSourceTracks( m_tracksSuccessfullyTransferred );
     if( m_tracksWithError.size() > 0 )
     {
         QStringList files;
@@ -513,40 +512,19 @@ void
 CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    Meta::TrackList notDeletableTracks;
-    int count = m_tracksWithError.count();
-    debug() << "Transfer errors: " << count;
-    foreach( Meta::TrackPtr track, tracks )
-    {
-        if( m_tracksWithError.contains( track ) )
-        {
-            debug() << "transfer error for track " << track->playableUrl();
-            continue;
-        }
+    debug() << "Transfer errors: " << m_tracksWithError.count();
 
-        if( !remove( track ) )
-        {
-            debug() << "remove failed";
-            notDeletableTracks.append( track );
-        }
+    foreach( Meta::TrackPtr track, m_tracksWithError.keys() )
+    {
+        debug() << "transfer error for track " << track->playableUrl();
     }
 
-    if( notDeletableTracks.size() > 0 )
-    {
-        QStringList files;
-        foreach( Meta::TrackPtr track, notDeletableTracks )
-        {
-            if(track)
-                files << track->prettyUrl();
-        }
+    QSet<Meta::TrackPtr> toRemove = QSet<Meta::TrackPtr>::fromList( tracks );
+    QSet<Meta::TrackPtr> errored = QSet<Meta::TrackPtr>::fromList( m_tracksWithError.keys() );
+    toRemove.subtract( errored );
 
-        const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writeable.",
-                                    "There was a problem and %1 tracks could not be removed. Make sure the directory is writeable.", notDeletableTracks.count() ) );
-        KMessageBox::informationList(0,
-                                    text,
-                                    files,
-                                    i18n("Unable to be removed tracks") );
-    }
+    // start the remove workflow
+    prepareRemove( toRemove.toList() );
 }
 
 CollectionLocation*

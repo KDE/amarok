@@ -38,6 +38,13 @@ class SqlCollectionLocation : public CollectionLocation
         virtual QStringList actualLocation() const;
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
+
+        /**
+         * Removes a track from the database ONLY if the file does NOT exist on disk.
+         * Do not call this method directly. Use the prepareRemove() method.
+         * @param track a track that does not exist on disk to be removed from the database
+         * @return true if the database entry was removed
+         */
         virtual bool remove( const Meta::TrackPtr &track );
         virtual void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap );
         virtual void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap );

@@ -111,19 +111,8 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
     if( sqlTrack && sqlTrack->inCollection() && sqlTrack->collection()->collectionId() == m_collection->collectionId() )
     {
         bool removed;
-        //SqlCollectionLocation uses KIO::move for moving files internally
-        //therefore we check whether the destination CollectionLocation
-        //represents the same collection, and check the existence of the
-        //file. If it does not exist, we assume that it has been moved, and remove it from the database.
-        //at worst we get a warning about a file not in the database. If it still exists, and
-        //this method has been called, do not do anything, as something is wrong.
-        //If the destination location is another collection, remove the file as we expect
-        //the destination to tell us if it is really really sure that it has copied a file.
-        //If we are not copying/moving files destination() will be 0.
-//         if( destination() && destination()->collection() == collection() )
-//         {
+        // we are going to delete it from the database only if is no longer on disk
         removed = !QFile::exists( sqlTrack->playableUrl().path() );
-//         }
         if( removed )
         {
 
@@ -159,6 +148,7 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
     }
     else
     {
+        debug() << "Remove Failed: track exists on disk." << sqlTrack->playableUrl().path();
         return false;
     }
 }
@@ -306,8 +296,14 @@ SqlCollectionLocation::slotRemoveJobFinished( KJob *job )
         warning() << "An error occurred when removing a file: " << job->errorString();
         transferError(m_removejobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
     }
-    //we  assume that KIO works correctly...
-    transferSuccessful( m_removejobs.value( job ) );
+    else
+    {
+        // Remove the track from the database
+        remove( m_removejobs.value( job ) );
+
+        //we  assume that KIO works correctly...
+        transferSuccessful( m_removejobs.value( job ) );
+    }
 
     m_removejobs.remove( job );
     job->deleteLater();
