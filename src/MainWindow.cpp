@@ -136,6 +136,7 @@ MainWindow::MainWindow()
     , m_lastBrowser( 0 )
     , m_dockWidthsLocked( false )
     , m_dockChangesIgnored( false )
+    , m_waitingForCd( false )
 {
     DEBUG_BLOCK
 
@@ -1363,7 +1364,7 @@ void MainWindow::ignoreLayoutChangesTimeout()
 
 bool MainWindow::playAudioCd()
 {
-
+    DEBUG_BLOCK
     //drop whatever we are doing and play auidocd
     
     QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
@@ -1372,6 +1373,20 @@ bool MainWindow::playAudioCd()
     {
         if( collection->collectionId() == "AudioCd" )
         {
+
+            debug() << "got audiocd collection";
+
+            MemoryCollection * cdColl = dynamic_cast<MemoryCollection *>( collection );
+
+            
+            
+            if( !cdColl || cdColl->trackMap().count() == 0 )
+            {
+                debug() << "cd collection not ready yet (track count = 0 )";
+                m_waitingForCd = true;
+                return false;
+            }
+
             The::engineController()->stop( true );
             The::playlistController()->clear();
 
@@ -1379,11 +1394,21 @@ bool MainWindow::playAudioCd()
             qm->setQueryType( QueryMaker::Track );
             The::playlistController()->insertOptioned( qm, Playlist::DirectPlay );
 
+            m_waitingForCd = false;
             return true;
         }
     }
 
+    debug() << "waiting for cd...";
+    m_waitingForCd = true;
     return false;
+}
+
+bool MainWindow::isWaitingForCd()
+{
+    DEBUG_BLOCK
+    debug() << "waiting?: " << m_waitingForCd;
+    return m_waitingForCd;
 }
 
 #include "MainWindow.moc"

@@ -113,6 +113,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         */
         bool playAudioCd();
 
+        bool isWaitingForCd();
+
     signals:
         void loveTrack( Meta::TrackPtr track );
         void banTrack();
@@ -230,6 +232,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QTimer * m_restoreLayoutTimer;
         QTimer * m_ignoreLayoutChangesTimer;
         QTimer * m_saveLayoutChangesTimer;
+
+        bool m_waitingForCd;
 
     private slots:
         void createContextView( Plasma::Containment *c );
