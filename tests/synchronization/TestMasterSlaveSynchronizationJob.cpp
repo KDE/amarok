@@ -18,6 +18,8 @@
 
 #include "Debug.h"
 #include "collection/CollectionLocation.h"
+#include "collection/CollectionLocationDelegate.h"
+#include "Components.h"
 #include "synchronization/MasterSlaveSynchronizationJob.h"
 
 #include "CollectionTestImpl.h"
@@ -30,13 +32,22 @@
 
 #include <qtest_kde.h>
 
+#include <gmock/gmock.h>
+
 QTEST_KDEMAIN_CORE( TestMasterSlaveSynchronizationJob )
 
 using ::testing::Return;
 using ::testing::AnyNumber;
+using ::testing::_;
 
 static int trackCopyCount;
 static int trackRemoveCount;
+
+class MockCollectionLocationDelegate : public CollectionLocationDelegate
+{
+public:
+     MOCK_CONST_METHOD2( reallyDelete, bool( CollectionLocation *loc, const Meta::TrackList &tracks ) );
+};
 
 class MyCollectionLocation : public CollectionLocation
 {
@@ -45,17 +56,19 @@ public:
 
     QString prettyLocation() const { return "foo"; }
     bool isWritable() const { return true; }
-    bool remove( const Meta::TrackPtr &track )
+
+    void removeUrlsFromCollection( const Meta::TrackList &sources )
     {
-        trackRemoveCount++;
+        trackRemoveCount += sources.count();
         coll->acquireWriteLock();
-        //theoretically we should clean up the other maps as well...
         TrackMap map = coll->trackMap();
-        map.remove( track->uidUrl() );
+        foreach( const Meta::TrackPtr &track, sources )
+            map.remove( track->uidUrl() );
         coll->setTrackMap( map );
         coll->releaseLock();
-        return true;
+        slotRemoveOperationFinished();
     }
+
     void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources)
     {
         trackCopyCount = sources.count();
@@ -291,6 +304,10 @@ TestMasterSlaveSynchronizationJob::testRemoveSingleTrack()
     CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
     CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
 
+    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    Amarok::Components::setCollectionLocationDelegate( delegate );
+
     //setup
     addMockTrack( master, "track1", "artist1", "album1" );
     addMockTrack( slave, "track1", "artist1", "album1" );
@@ -316,6 +333,7 @@ TestMasterSlaveSynchronizationJob::testRemoveSingleTrack()
 
     delete master;
     delete slave;
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
 void
@@ -323,6 +341,10 @@ TestMasterSlaveSynchronizationJob::testRemoveAlbum()
 {
     CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
     CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+
+    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    Amarok::Components::setCollectionLocationDelegate( delegate );
 
     //setup
     addMockTrack( master, "track1", "artist1", "album1" );
@@ -349,6 +371,7 @@ TestMasterSlaveSynchronizationJob::testRemoveAlbum()
 
     delete master;
     delete slave;
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
 void
@@ -356,6 +379,10 @@ TestMasterSlaveSynchronizationJob::testRemoveArtist()
 {
     CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
     CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+
+    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    Amarok::Components::setCollectionLocationDelegate( delegate );
 
     //setup
     addMockTrack( master, "track1", "artist1", "album1" );
@@ -382,6 +409,7 @@ TestMasterSlaveSynchronizationJob::testRemoveArtist()
 
     delete master;
     delete slave;
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
 void
@@ -389,6 +417,10 @@ TestMasterSlaveSynchronizationJob::testEmptyMaster()
 {
     CollectionTestImpl *master = new MyCollectionTestImpl( "master" );
     CollectionTestImpl *slave = new MyCollectionTestImpl( "slave" );
+
+    MockCollectionLocationDelegate *delegate = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *delegate, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    Amarok::Components::setCollectionLocationDelegate( delegate );
 
     //setup master
     addMockTrack( slave, "track1", "artist1", "album1" );
@@ -409,4 +441,5 @@ TestMasterSlaveSynchronizationJob::testEmptyMaster()
     QCOMPARE( slave->trackMap().count(), 0 );
     delete master;
     delete slave;
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
