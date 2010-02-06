@@ -318,6 +318,7 @@ set(collection_SRCS
     collection/Collection.cpp
     collection/CollectionManager.cpp
     collection/CollectionLocation.cpp
+    collection/CollectionLocationDelegateImpl.cpp
     collection/MetaQueryMaker.cpp
     collection/QueryMaker.cpp
     collection/TrackForUrlWorker.cpp

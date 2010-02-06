@@ -18,10 +18,10 @@
 #include "CollectionLocation.h"
 
 #include "Collection.h"
+#include "CollectionLocationDelegate.h"
+#include "Components.h"
 #include "Debug.h"
 #include "QueryMaker.h"
-
-#include <KMessageBox> // TODO put the delete confirmation code somewhere else?
 
 
 CollectionLocation::CollectionLocation()
@@ -279,20 +279,11 @@ void
 CollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    
-    QStringList files;
-    foreach( Meta::TrackPtr track, tracks )
-        files << track->prettyUrl();
-    
-    // NOTE: taken from SqlCollection
-    // TODO put the delete confirmation code somewhere else?
-    const QString text( i18ncp( "@info", "Do you really want to delete this track? It will be removed from disk as well as your collection.",
-                                "Do you really want to delete these %1 tracks? They will be removed from disk as well as your collection.", tracks.count() ) );
-    const bool del = KMessageBox::warningContinueCancelList(0,
-                                                     text,
-                                                     files,
-                                                     i18n("Delete Files"),
-                                                     KStandardGuiItem::del() ) == KMessageBox::Continue;
+
+    CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+
+    const bool del = delegate->reallyDelete( this, tracks );
+
     if( !del )
         slotFinishRemove();
     else
