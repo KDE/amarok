@@ -69,7 +69,7 @@ using namespace Meta;
 
 /// IpodHandler
 
-IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, bool isMounted )
+IpodHandler::IpodHandler( IpodCollection *mc, const IpodDeviceInfo *deviceInfo )
     : MediaDeviceHandler( mc )
     , m_itdb( 0 )
     , m_masterPlaylist( 0 )
@@ -84,9 +84,8 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, bool is
     , m_jobcounter( 0 )
     , m_libtrack( 0 )
     , m_autoConnect( false )
-    , m_mountPoint( mountPoint )
-    , m_wasMounted( isMounted )
     , m_name()
+    , m_deviceInfo( deviceInfo )
     , m_isShuffle( false )
     , m_isMobile( false )
     , m_isIPhone( false )
@@ -119,7 +118,7 @@ IpodHandler::~IpodHandler()
     if ( m_itdb )
         itdb_free( m_itdb );
 
-    if( !m_wasMounted && !mountPoint().isEmpty())
+    if( !m_deviceInfo->wasMounted() && !m_deviceInfo->mountPoint().isEmpty())
     {
         int result = QProcess::execute("fusermount -u " + mountPoint());
         if( result )
@@ -136,21 +135,22 @@ IpodHandler::~IpodHandler()
 void
 IpodHandler::init()
 {
-    if ( !m_wasMounted )
+    bool isMounted = m_deviceInfo->wasMounted();
+    if ( !isMounted )
     {
         int result = QProcess::execute(QString("ifuse " + mountPoint()));
         if (result)
         {
             debug() << "Mounting imobiledevice using ifuse on" << mountPoint() << "failed";
-            m_mountPoint.clear();
         }
         else
         {
             debug() << "Successfully mounted imobiledevice using ifuse on" << mountPoint();
+            isMounted = true;
         }
     }
 
-    if( m_mountPoint.isEmpty() )
+    if( !isMounted )
     {
         debug() << "Error: empty mountpoint, probably an unmounted iPod, aborting";
         m_memColl->slotAttemptConnectionDone( false );
@@ -165,7 +165,7 @@ IpodHandler::init()
     // First attempt to parse the database
 
     debug() << "Calling the db parser";
-    m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
+    m_itdb = itdb_parse( QFile::encodeName( mountPoint() ),  &err );
 
     // If this fails, we will ask the user if he wants to init the device
 
@@ -1568,7 +1568,7 @@ IpodHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
 KUrl
 IpodHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
-    return KUrl(m_mountPoint + (QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" )));
+    return KUrl(mountPoint() + (QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" )));
 }
 
 float

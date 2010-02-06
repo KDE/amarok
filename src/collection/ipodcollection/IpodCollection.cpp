@@ -49,7 +49,7 @@ IpodCollection::IpodCollection( MediaDeviceInfo* info )
     /** Fetch Info needed to construct IpodCollection */
     IpodDeviceInfo *ipodinfo = qobject_cast<IpodDeviceInfo *>( info );
 
-    m_mountPoint = ipodinfo->mountpoint();
+    m_mountPoint = ipodinfo->mountPoint();
     debug() << "Mounted at: " << m_mountPoint;
     m_udi = ipodinfo->udi();
 
@@ -67,9 +67,11 @@ IpodCollection::IpodCollection( MediaDeviceInfo* info )
             mp.mkpath(m_mountPoint);
             debug() << "created " << m_mountPoint;
         }
+
+        ipodinfo->setMountPoint( m_mountPoint );
     }
 
-    m_handler = new Meta::IpodHandler( this, m_mountPoint, isMounted );
+    m_handler = new Meta::IpodHandler( this, ipodinfo );
 }
 
 

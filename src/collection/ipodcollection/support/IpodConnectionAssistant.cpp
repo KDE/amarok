@@ -75,7 +75,7 @@ IpodConnectionAssistant::deviceInfo( const QString& udi )
 
     QString mountpoint = MediaDeviceCache::instance()->volumeMountPoint(udi);
 
-    MediaDeviceInfo* info = new IpodDeviceInfo( mountpoint, udi );
+    MediaDeviceInfo* info = new IpodDeviceInfo( mountpoint, udi, !mountpoint.isEmpty() );
     return info;
 }
 

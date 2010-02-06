@@ -38,6 +38,7 @@ extern "C"
 #include "IpodPlaylistCapability.h"
 #include "IpodReadCapability.h"
 #include "IpodWriteCapability.h"
+#include "IpodDeviceInfo.h"
 
 #include "MediaDeviceMeta.h"
 #include "MediaDeviceHandler.h"
@@ -97,7 +98,7 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
     Q_OBJECT
 
     public:
-        IpodHandler( IpodCollection *mc, const QString& mountPoint, bool wasMounted );
+        IpodHandler( IpodCollection *mc, const IpodDeviceInfo *deviceInfo );
         virtual ~IpodHandler();
 
         virtual void init(); // collection
@@ -124,8 +125,10 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 
         /// Ipod-Specific Methods
         QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
-        QString mountPoint() const { return m_mountPoint; }
+        QString mountPoint() const { return m_deviceInfo->mountPoint(); }
+#if 0
         void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
+#endif
 
         // NOTE: do not use writeITunesDB,
         // use the threaded writeDatabase
@@ -333,9 +336,8 @@ class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
 
         /* Ipod Connection */
         bool    m_autoConnect;
-        QString m_mountPoint;
-        bool m_wasMounted;
         QString m_name;
+        const IpodDeviceInfo *m_deviceInfo;
 
         /* Ipod Model */
         bool m_isShuffle;
