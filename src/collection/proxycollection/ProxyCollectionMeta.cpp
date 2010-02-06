@@ -84,7 +84,7 @@ private:
     QList<Meta::EditCapability*> m_ec;
 };
 
-#undef FORWARD( call )
+#undef FORWARD
 
 ProxyCollection::Track::Track( ProxyCollection::Collection *coll, const Meta::TrackPtr &track )
         : Meta::Track()
