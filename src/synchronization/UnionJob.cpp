@@ -22,7 +22,6 @@
 
 UnionJob::UnionJob( Amarok::Collection *collA, Amarok::Collection *collB )
         : SynchronizationBaseJob()
-        , m_syncCount( 0 )
 {
     DEBUG_BLOCK
     setCollectionA( collA );
@@ -41,7 +40,6 @@ UnionJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection,
     if( !( syncDirection == OnlyInA || syncDirection == OnlyInB ) )
     {
         debug() << "warning, received an unexpected syncDirection";
-        deleteLater();
         return;
     }
     m_syncCount++;
@@ -62,9 +60,5 @@ UnionJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection,
     else
     {
         fromLoc->prepareCopy( tracks, toLoc );
-    }
-    if( m_syncCount == 2 )
-    {
-        deleteLater();
     }
 }

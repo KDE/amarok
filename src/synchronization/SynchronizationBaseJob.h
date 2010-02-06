@@ -79,6 +79,10 @@ class SynchronizationBaseJob : public QObject
         void setCollectionA( Amarok::Collection *collection );
         void setCollectionB( Amarok::Collection *collection );
 
+        /**
+          * perform the actual synchronization in this method.
+          * SynchronizationBaseJob will delete itself afterwards.
+          */
         virtual void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB ) = 0;
 
     private:
