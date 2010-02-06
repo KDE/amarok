@@ -60,6 +60,11 @@ MasterSlaveSynchronizationJob::doSynchronization( const Meta::TrackList &tracks,
         debug() << "warning, received an unknown collection";
         return;
     }
+    if( !m_slave->isWritable() )
+    {
+        debug() << "Error: slave collection " << m_slave->collectionId() << " is not writable";
+        return;
+    }
     if( ( syncDirection == OnlyInA && collA == m_master ) || ( syncDirection == OnlyInB && collB == m_master ) )
     {
         debug() << "Master " << m_master->collectionId() << " has to sync " << tracks.count() << " track(s) to " << m_slave->collectionId();
