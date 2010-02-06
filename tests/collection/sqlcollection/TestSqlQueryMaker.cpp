@@ -33,9 +33,6 @@
 
 QTEST_KDEMAIN_CORE( TestSqlQueryMaker )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 //defined in TagLibUtils.h
 
 namespace TagLib

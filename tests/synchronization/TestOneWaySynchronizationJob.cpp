@@ -34,9 +34,6 @@
 
 QTEST_KDEMAIN_CORE( TestOneWaySynchronizationJob )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 using ::testing::Return;
 using ::testing::AnyNumber;
 

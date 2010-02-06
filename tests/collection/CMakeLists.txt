@@ -12,12 +12,6 @@ include_directories(
 
 set( testcollectionlocation_SRCS
         CollectionLocationTest.cpp
-        ${AMAROK_SOURCE_TREE}/collection/CollectionLocation.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Capability.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
-	${AMAROK_SOURCE_TREE}/meta/MetaUtility.cpp
-	${AMAROK_SOURCE_TREE}/Amarok.cpp
-	${AMAROK_SOURCE_TREE}/meta/PlaylistFileSupport.cpp
     )
 
 kde4_add_unit_test( testcollectionlocation TESTNAME amarok-testcollectionlocation ${testcollectionlocation_SRCS} )

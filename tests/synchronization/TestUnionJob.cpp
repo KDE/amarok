@@ -36,9 +36,6 @@
 
 QTEST_KDEMAIN_CORE( TestUnionJob )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 using ::testing::Return;
 using ::testing::AnyNumber;
 

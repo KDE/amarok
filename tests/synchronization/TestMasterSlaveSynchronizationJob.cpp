@@ -32,9 +32,6 @@
 
 QTEST_KDEMAIN_CORE( TestMasterSlaveSynchronizationJob )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 using ::testing::Return;
 using ::testing::AnyNumber;
 

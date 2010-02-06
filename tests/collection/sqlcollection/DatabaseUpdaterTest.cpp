@@ -30,9 +30,6 @@
 
 QTEST_KDEMAIN_CORE( DatabaseUpdaterTest )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 DatabaseUpdaterTest::DatabaseUpdaterTest()
 {
 }

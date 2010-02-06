@@ -28,9 +28,6 @@
 
 QTEST_KDEMAIN_CORE( CollectionLocationTest )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 CollectionLocationTest::CollectionLocationTest()
 {
 }

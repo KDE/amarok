@@ -39,9 +39,6 @@
 
 QTEST_KDEMAIN_CORE( TestProxyCollectionMeta )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 TestProxyCollectionMeta::TestProxyCollectionMeta()
 {
     KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );

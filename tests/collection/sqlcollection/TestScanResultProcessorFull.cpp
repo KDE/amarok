@@ -39,9 +39,6 @@
 
 QTEST_KDEMAIN_CORE( TestScanResultProcessorFull )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 TestScanResultProcessorFull::TestScanResultProcessorFull()
     : QObject()
 {

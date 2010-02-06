@@ -51,7 +51,7 @@ check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 
 
 # Needed to conditionally build tests and gui
-if(KDE4_BUILD_TESTS MATCHES ON)
+if(KDE4_BUILD_TESTS)
    add_definitions(-DDEBUG)
 endif()
 

@@ -37,9 +37,6 @@
 
 QTEST_KDEMAIN_CORE( TestMemoryQueryMaker )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 TestMemoryQueryMaker::TestMemoryQueryMaker()
 {
     ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );

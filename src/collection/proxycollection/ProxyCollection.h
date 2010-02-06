@@ -41,7 +41,7 @@ namespace ProxyCollection
 
 
 
-    class Collection : public Amarok::Collection
+    class AMAROK_EXPORT_TESTS Collection : public Amarok::Collection
     {
         Q_OBJECT
         public:
