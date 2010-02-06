@@ -42,7 +42,6 @@ UnionJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection,
         debug() << "warning, received an unexpected syncDirection";
         return;
     }
-    m_syncCount++;
     Amarok::Collection *from = ( syncDirection == OnlyInA ? collA : collB );
     Amarok::Collection *to = ( syncDirection == OnlyInA ? collB : collA );
 
