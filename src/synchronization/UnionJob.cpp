@@ -17,10 +17,12 @@
 #include "UnionJob.h"
 
 #include "collection/Collection.h"
+#include "collection/CollectionLocation.h"
 #include "Debug.h"
 
 UnionJob::UnionJob( Amarok::Collection *collA, Amarok::Collection *collB )
         : SynchronizationBaseJob()
+        , m_syncCount( 0 )
 {
     DEBUG_BLOCK
     setCollectionA( collA );
@@ -42,9 +44,27 @@ UnionJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection,
         deleteLater();
         return;
     }
+    m_syncCount++;
     Amarok::Collection *from = ( syncDirection == OnlyInA ? collA : collB );
     Amarok::Collection *to = ( syncDirection == OnlyInA ? collB : collA );
 
     debug() << "Collection " << from->collectionId() << " has to sync " << tracks.count() << " track(s) to " << to->collectionId();
     //show confirmation dialog, actually do stuff
+    CollectionLocation *fromLoc = from->location();
+    CollectionLocation *toLoc = to->location();
+
+    if( !toLoc->isWritable() )
+    {
+        debug() << "Collection " << to->collectionId() << " is not writable";
+        fromLoc->deleteLater();
+        toLoc->deleteLater();
+    }
+    else
+    {
+        fromLoc->prepareCopy( tracks, toLoc );
+    }
+    if( m_syncCount == 2 )
+    {
+        deleteLater();
+    }
 }

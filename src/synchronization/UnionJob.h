@@ -46,6 +46,9 @@ class UnionJob : public SynchronizationBaseJob
 
     protected:
         void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB );
+
+    private:
+        int m_syncCount;
 };
 
 
