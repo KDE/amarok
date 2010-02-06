@@ -13,6 +13,7 @@ include_directories(
 
 set( testmasterslave_SRCS
         TestMasterSlaveSynchronizationJob.cpp
+        ${AMAROK_SOURCE_TREE}/Components.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/SynchronizationBaseJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/MasterSlaveSynchronizationJob.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
@@ -47,6 +48,7 @@ target_link_libraries(testmasterslavesynchronizationjob
 
 set( testunion_SRCS
         TestUnionJob.cpp
+        ${AMAROK_SOURCE_TREE}/Components.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/SynchronizationBaseJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/UnionJob.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
@@ -80,6 +82,7 @@ target_link_libraries(testunionjob
 
 set( testonewaysynchronization_SRCS
         TestOneWaySynchronizationJob.cpp
+        ${AMAROK_SOURCE_TREE}/Components.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/SynchronizationBaseJob.cpp
         ${AMAROK_SOURCE_TREE}/synchronization/OneWaySynchronizationJob.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
