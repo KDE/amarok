@@ -169,6 +169,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
     DEBUG_BLOCK
     setGoingToRemoveSources( removeSources );
 
+    // Start code to determine if there is enough free space and correct perms
     int transfersize = 0;
     foreach( Meta::TrackPtr track, tracks )
         transfersize += track->filesize();
@@ -280,6 +281,13 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
 
     if( !startNextJob() )
     {
+        // filter the list of destinations to only include tracks
+        // that were successfully copied
+        foreach( const Meta::TrackPtr &track, m_destinations.keys() )
+        {
+            if( !QFileInfo( m_destinations[ track ] ).exists() )
+                m_destinations.remove( track );
+        }
         insertTracks( m_destinations );
         insertStatistics( m_destinations );
         m_collection->scanManager()->setBlockScan( false );
@@ -482,7 +490,7 @@ bool SqlCollectionLocation::startNextJob()
         //no changes, so leave the database alone, and don't erase anything
             continue; // Attempt to copy/move the next item in m_sources
         }
-    //we should only move it directly if we're moving within the same collection
+        //we should only move it directly if we're moving within the same collection
         else if( isGoingToRemoveSources() && source()->collection() == collection() )
         {
             job = KIO::file_move( src, dest, -1, flags );
