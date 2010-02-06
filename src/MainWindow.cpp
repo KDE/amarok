@@ -1361,4 +1361,29 @@ void MainWindow::ignoreLayoutChangesTimeout()
     m_dockChangesIgnored = false;
 }
 
+bool MainWindow::playAudioCd()
+{
+
+    //drop whatever we are doing and play auidocd
+    
+    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
+
+    foreach( Amarok::Collection *collection, collections )
+    {
+        if( collection->collectionId() == "AudioCd" )
+        {
+            The::engineController()->stop( true );
+            The::playlistController()->clear();
+
+            QueryMaker * qm = collection->queryMaker();
+            qm->setQueryType( QueryMaker::Track );
+            The::playlistController()->insertOptioned( qm, Playlist::DirectPlay );
+
+            return true;
+        }
+    }
+
+    return false;
+}
+
 #include "MainWindow.moc"

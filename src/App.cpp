@@ -358,6 +358,13 @@ App::handleCliArgs() //static
         The::playlistController()->insertOptioned( list, options );
     }
 
+    else if ( args->isSet( "cdplay" ) )
+    {
+        debug() << "cdplay!!";
+        haveArgs = true;
+        The::mainWindow()->playAudioCd();
+    }
+
     //we shouldn't let the user specify two of these since it is pointless!
     //so we prioritise, pause > stop > play > next > prev
     //thus pause is the least destructive, followed by stop as brakes are the most important bit of a car(!)
@@ -490,6 +497,7 @@ App::initCliArgs() //static
     KCmdLineOptions options;
 
     options.add("+[URL(s)]", ki18n( "Files/URLs to open" ));
+    options.add("cdplay", ki18n("Immediately start playing an audio cd"));
     options.add("r");
     options.add("previous", ki18n( "Skip backwards in playlist" ));
     options.add("p");
