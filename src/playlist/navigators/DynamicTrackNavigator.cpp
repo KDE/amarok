@@ -42,7 +42,8 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylist
 
 Playlist::DynamicTrackNavigator::~DynamicTrackNavigator()
 {
-    m_playlist->requestAbort();
+    if( !m_playlist.isNull() )
+        m_playlist->requestAbort();
 }
 
 void
@@ -62,7 +63,7 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
     int rowCount = m_model->rowCount();
     int upcomingCountLag = AmarokConfig::upcomingTracks() - ( rowCount - updateRow );
 
-    if ( upcomingCountLag > 0 )
+    if ( upcomingCountLag > 0 && !m_playlist.isNull() )
         m_playlist->requestTracks( upcomingCountLag );
 }
 
@@ -128,7 +129,8 @@ Playlist::DynamicTrackNavigator::repopulate()
     if( !rows.isEmpty() )
         The::playlistController()->removeRows( rows );
 
-    m_playlist->recalculate();
+    if( !m_playlist.isNull() )
+        m_playlist->recalculate();
     appendUpcoming();
 
     m_mutex.unlock();
