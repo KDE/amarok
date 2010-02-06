@@ -579,6 +579,7 @@ set(amaroklib_LIB_SRCS
     AmarokProcess.cpp
     App.cpp
     CaseConverter.cpp
+    Components.cpp
     DirectoryLoader.cpp
     EngineController.cpp
     EngineObserver.cpp
@@ -629,6 +630,8 @@ set(amaroklib_LIB_SRCS
     OpmlParser.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
+    statemanagement/ApplicationController.cpp
+    statemanagement/DefaultApplicationController.cpp
     toolbar/CurrentTrackToolbar.cpp
     toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp

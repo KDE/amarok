@@ -27,6 +27,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
+#include "Components.h"
 #include "statusbar/StatusBar.h"
 #include "Debug.h"
 #include "MainWindow.h"
@@ -57,19 +58,16 @@ namespace The {
     EngineController* engineController() { return EngineController::instance(); }
 }
 
-EngineController* EngineController::s_instance = 0;
-
 EngineController*
 EngineController::instance()
 {
-    return s_instance ? s_instance : new EngineController();
+    return Amarok::Components::engineController();
 }
 
 void
 EngineController::destroy()
 {
-    delete s_instance;
-    s_instance = 0;
+    //nothing to do?
 }
 
 EngineController::EngineController()
@@ -85,8 +83,6 @@ EngineController::EngineController()
     m_fadeoutTimer->setSingleShot( true );
 
     connect( m_fadeoutTimer, SIGNAL( timeout() ), SLOT( slotStopFadeout() ) );
-
-    s_instance = this;
 }
 
 EngineController::~EngineController()

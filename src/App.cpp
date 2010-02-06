@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "CollectionManager.h"
+#include "Components.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
 #include "dialogs/EqualizerDialog.h"
@@ -46,6 +47,8 @@
 #include "podcasts/PodcastProvider.h"
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
+#include "statemanagement/ApplicationController.h"
+#include "statemanagement/DefaultApplicationController.h"
 #include "statusbar/StatusBar.h"
 #include "TracklistDBusHandler.h"
 #include "TrayIcon.h"
@@ -288,8 +291,10 @@ App::~App()
     Playlist::Actions::destroy();
     Playlist::ModelStack::destroy();
     PlaylistManager::destroy();
-    EngineController::destroy();
     CoverFetcher::destroy();
+
+    //this should be moved to App::quit() I guess
+    Amarok::Components::applicationController()->shutdown();
 
 
 #ifdef Q_WS_WIN
@@ -692,6 +697,9 @@ App::continueInit()
 
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
     QTextCodec::setCodecForCStrings( utf8codec ); //We need this to make CollectionViewItem showing the right characters.
+
+    new Amarok::DefaultApplicationController();
+    Amarok::Components::applicationController()->start();
 
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();
