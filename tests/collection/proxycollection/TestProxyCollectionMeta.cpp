@@ -499,6 +499,8 @@ TestProxyCollectionMeta::testEditableCapabilityOnMultipleTracks()
     QCOMPARE( cap1->endCallcount, 1 );
     QCOMPARE( cap2->endCallcount, 1 );
 
+    //the signal is delayed a bit, but that is ok
+    QTest::qWait( 50 );
     //required so that the colleection browser refreshes itself
     QCOMPARE( spy.count(), 1 );
 

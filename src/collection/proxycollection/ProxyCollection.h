@@ -96,9 +96,9 @@ namespace ProxyCollection
         void removeCollection( const QString &collectionId );
         void removeCollection( Amarok::Collection *collection );
         void addCollection( Amarok::Collection *collection, CollectionManager::CollectionStatus status );
+        void slotUpdated();
 
         private slots:
-        void slotUpdated();
         void emptyCache();
 
         private:
