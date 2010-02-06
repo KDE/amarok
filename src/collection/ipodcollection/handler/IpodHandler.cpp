@@ -138,7 +138,15 @@ IpodHandler::init()
     bool isMounted = m_deviceInfo->wasMounted();
     if ( !isMounted )
     {
-        int result = QProcess::execute(QString("ifuse " + mountPoint()));
+        int result = -1;
+        if( m_deviceInfo->deviceUid().isEmpty() )
+        {
+            result = QProcess::execute(QString("ifuse " + mountPoint()));
+        }
+        else
+        {
+            result = QProcess::execute(QString("ifuse --uuid" + m_deviceInfo->deviceUid() + " " + mountPoint()));
+        }
         if (result)
         {
             debug() << "Mounting imobiledevice using ifuse on" << mountPoint() << "failed";

@@ -59,6 +59,8 @@ IpodCollection::IpodCollection( MediaDeviceInfo* info )
         isMounted = false;
         m_mountPoint = KStandardDirs::locateLocal( "data", "amarok/tmp/" );
         m_mountPoint += "imobiledevice";
+        if( !ipodinfo->deviceUid().isEmpty() )
+            m_mountPoint += '_' + ipodinfo->deviceUid();
         debug() << "set mountpoint to " << m_mountPoint;
 
         QDir mp(m_mountPoint);
