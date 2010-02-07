@@ -43,8 +43,6 @@ extern "C"
 #include "MediaDeviceMeta.h"
 #include "MediaDeviceHandler.h"
 
-#include "mediadevicecollection_export.h"
-
 #include <KDiskFreeSpaceInfo>
 #include <KIO/Job>
 #include "kjob.h"
@@ -93,7 +91,7 @@ namespace Meta
     typedef QMap<QString, Meta::AlbumPtr> AlbumMap;
 
 /* The libgpod backend for all Ipod calls */
-class MEDIADEVICECOLLECTION_EXPORT IpodHandler : public Meta::MediaDeviceHandler
+class IpodHandler : public Meta::MediaDeviceHandler
 {
     Q_OBJECT
 
