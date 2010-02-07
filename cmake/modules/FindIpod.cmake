@@ -19,7 +19,19 @@ else (IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
     # in the FIND_PATH() and FIND_LIBRARY() calls
     find_package(PkgConfig)
     PKG_SEARCH_MODULE(IPOD libgpod-1.0)
-
+  else(NOT WIN32)
+    find_path(IPOD_INCLUDE_DIRS
+    NAMES
+    gpod/itdb.h
+    PATH_SUFFIXES gpod-1.0
+    )
+    
+    find_library(IPOD_LIBRARIES NAMES
+    gpod libgpod gpod-4 libgpod-4
+    )
+    if(IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
+       set(IPOD_FOUND ON)
+    endif(IPOD_INCLUDE_DIRS AND IPOD_LIBRARIES)
   endif(NOT WIN32)
   IF (IPOD_FOUND)
      IF (NOT IPOD_FIND_QUIETLY)
