@@ -110,6 +110,12 @@
         <label>Automatically scroll the playlist to make the currently playing song visible</label>
         <default>true</default>
     </entry>
+
+    <entry key="EnableToolTips" type="Bool">
+        <label>Whether to display tooltips for the song in the playlist</label>
+        <default>true</default>
+    </entry>
+
     <entry key="Show Album Art" type="Bool">
         <label>Show Album art in the Collection Browser</label>
         <default>true</default>
@@ -190,10 +196,6 @@
         <label>Basic or Advanced Mode</label>
         <whatsthis>In basic mode graphical drag/droppable tokens are used to create a filename scheme, in advanced mode the images are replaced with text.</whatsthis>
         <default>Basic</default>
-    <entry key="EnableToolTips" type="Bool">
-        <label>Whether to display tooltips for the song in the playlist</label>
-        <default>true</default>
-    </entry>
     </entry>
 </group>
 
