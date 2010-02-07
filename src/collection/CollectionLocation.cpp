@@ -375,7 +375,7 @@ CollectionLocation::slotFinishRemove()
     if( m_tracksWithError.size() > 0 )
     {
         CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
-        const bool del = delegate->errorDeleting( this, m_tracksWithError.keys() );
+        delegate->errorDeleting( this, m_tracksWithError.keys() );
         m_tracksWithError.clear();
     }
 
