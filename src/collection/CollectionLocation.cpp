@@ -22,7 +22,7 @@
 #include "Components.h"
 #include "Debug.h"
 #include "QueryMaker.h"
-#include "UpdateCapability.h"
+#include "meta/capabilities/UpdateCapability.h"
 
 
 CollectionLocation::CollectionLocation()
