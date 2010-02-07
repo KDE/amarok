@@ -27,7 +27,8 @@ DefaultApplicationController::DefaultApplicationController()
     : ApplicationController()
 {
     //there can be only one applicationcontroller
-    Q_ASSERT( !Components::setApplicationController( this ) );
+    ApplicationController *oldController = Components::setApplicationController( this );
+    Q_ASSERT( !oldController );
 }
 
 DefaultApplicationController::~DefaultApplicationController()
