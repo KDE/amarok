@@ -23,7 +23,6 @@
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
-#include "EngineController.h"
 #include "PodcastImageFetcher.h"
 #include "PodcastModel.h"
 #include "PodcastReader.h"
@@ -771,18 +770,6 @@ SqlPodcastProvider::completePodcastDownloads()
             }
         }
     }
-}
-
-void SqlPodcastProvider::engineNewTrackPlaying()
-{
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    Meta::SqlPodcastEpisodePtr currentEpisode = Meta::SqlPodcastEpisodePtr::dynamicCast( currentTrack );
-
-    if( currentEpisode.isNull() )
-        return;
-
-    //TODO: wait a at least 10% of the tracklength before setting isNew to false
-    currentEpisode->setNew( false );
 }
 
 void

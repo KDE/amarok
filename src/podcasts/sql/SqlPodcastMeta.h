@@ -57,6 +57,7 @@ class SqlPodcastEpisode : public PodcastEpisode
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
         virtual bool isEditable() const;
+        virtual void finishedPlaying( double playedFraction );
 
         virtual AlbumPtr album() const;
         virtual ArtistPtr artist() const;

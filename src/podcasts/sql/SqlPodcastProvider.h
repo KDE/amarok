@@ -17,7 +17,6 @@
 #ifndef SQLPODCASTPROVIDER_H
 #define SQLPODCASTPROVIDER_H
 
-#include "EngineObserver.h"
 #include "PodcastProvider.h"
 #include "SqlPodcastMeta.h"
 
@@ -34,7 +33,7 @@ class QTimer;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class SqlPodcastProvider : public PodcastProvider, public EngineObserver
+class SqlPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
     public:
@@ -68,9 +67,6 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         virtual QList<QAction *> providerActions();
 
         void completePodcastDownloads();
-
-        //EngineObserver methods
-        virtual void engineNewTrackPlaying();
 
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );

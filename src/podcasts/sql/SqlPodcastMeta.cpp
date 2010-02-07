@@ -261,6 +261,15 @@ Meta::SqlPodcastEpisode::isEditable() const
      return m_localFile->isEditable();
 }
 
+void
+Meta::SqlPodcastEpisode::finishedPlaying( double playedFraction )
+{
+    if( playedFraction >= 0.1 )
+        setNew( false );
+
+    PodcastEpisode::finishedPlaying( playedFraction );
+}
+
 QString
 Meta::SqlPodcastEpisode::name() const
 {
