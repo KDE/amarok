@@ -264,7 +264,7 @@ Meta::SqlPodcastEpisode::isEditable() const
 void
 Meta::SqlPodcastEpisode::finishedPlaying( double playedFraction )
 {
-    if( playedFraction >= 0.1 )
+    if( length() <= 0 || playedFraction >= 0.1 )
         setNew( false );
 
     PodcastEpisode::finishedPlaying( playedFraction );
