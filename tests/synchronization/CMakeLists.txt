@@ -20,6 +20,7 @@ set( testmasterslave_SRCS
         ${AMAROK_SOURCE_TREE}/collection/CollectionLocation.cpp
         ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerInternal.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryFilter.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryMatcher.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryCustomValue.cpp
@@ -55,6 +56,7 @@ set( testunion_SRCS
         ${AMAROK_SOURCE_TREE}/collection/CollectionLocation.cpp
         ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerInternal.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryFilter.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryMatcher.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryCustomValue.cpp
@@ -89,6 +91,7 @@ set( testonewaysynchronization_SRCS
         ${AMAROK_SOURCE_TREE}/collection/CollectionLocation.cpp
         ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerInternal.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryFilter.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryMatcher.cpp
         ${AMAROK_SOURCE_TREE}/collection/support/MemoryCustomValue.cpp
