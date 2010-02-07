@@ -61,6 +61,7 @@ AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVari
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
    : MediaDeviceCollection()
    , m_encodingFormat( OGG )
+   , m_ready( false )
 {
     DEBUG_BLOCK
 
@@ -272,6 +273,15 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
     emit ( updated() );
     updateProxyTracks();
+
+    m_ready = true;
+
+    //be nice and check if MainWindow is just aching for an audio cd to start playing
+    if( The::mainWindow()->isWaitingForCd() )
+    {
+        debug() << "Tell MainWindow to start playing us immediately.";
+        The::mainWindow()->playAudioCd();
+    }
 }
 
 QueryMaker *
@@ -463,6 +473,8 @@ AudioCdCollection::noInfoAvailable()
     emit ( updated() );
     updateProxyTracks();
 
+    m_ready = true;
+
 }
 
 void
@@ -570,6 +582,11 @@ void AudioCdCollection::startFullScan()
     DEBUG_BLOCK
     readCd();
     emit collectionReady( this );
+}
+
+bool AudioCdCollection::isReady()
+{
+    return m_ready;
 }
 
 

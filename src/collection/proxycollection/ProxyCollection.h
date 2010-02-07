@@ -41,7 +41,7 @@ namespace ProxyCollection
 
 
 
-    class Collection : public Amarok::Collection
+    class AMAROK_EXPORT_TESTS Collection : public Amarok::Collection
     {
         Q_OBJECT
         public:
@@ -96,9 +96,9 @@ namespace ProxyCollection
         void removeCollection( const QString &collectionId );
         void removeCollection( Amarok::Collection *collection );
         void addCollection( Amarok::Collection *collection, CollectionManager::CollectionStatus status );
+        void slotUpdated();
 
         private slots:
-        void slotUpdated();
         void emptyCache();
 
         private:

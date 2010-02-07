@@ -309,6 +309,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     DEBUG_BLOCK
 
     setupWriteCapability();
+    setupReadCapability();
 
     if( !m_wcb )
         return;
@@ -454,6 +455,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 void
 MediaDeviceHandler::copyNextTrackToDevice()
 {
+    DEBUG_BLOCK
     Meta::TrackPtr track;
 
     // If there are more tracks to copy, copy the next one
@@ -1009,15 +1011,22 @@ MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
 float
 MediaDeviceHandler::freeSpace() const
 {
+    DEBUG_BLOCK
     if ( m_rcb )
+    {
+        debug() << "totalCapacity:" << m_rcb->totalCapacity();
+        debug() << "usedCapacity():" << m_rcb->usedCapacity();
         return ( m_rcb->totalCapacity() - m_rcb->usedCapacity() );
-    else
+    } else {
+        debug() << "m_rcb null!";
         return 0.0;
+    }
 }
 
 float
 MediaDeviceHandler::usedcapacity() const
 {
+    DEBUG_BLOCK
     if ( m_rcb )
         return m_rcb->usedCapacity();
     else
@@ -1027,6 +1036,7 @@ MediaDeviceHandler::usedcapacity() const
 float
 MediaDeviceHandler::totalcapacity() const
 {
+    DEBUG_BLOCK
     if ( m_rcb )
         return m_rcb->totalCapacity();
     else

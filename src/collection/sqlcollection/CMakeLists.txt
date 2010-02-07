@@ -18,7 +18,7 @@ if (NOT WIN32)
 endif (NOT WIN32)
 
 set(amarok_collection-sqlcollection_SRCS
-    CapabilityDelegate.cpp
+    CapabilityDelegateImpl.cpp
     DatabaseUpdater.cpp
     ScanManager.cpp
     ScanResultProcessor.cpp

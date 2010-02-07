@@ -29,9 +29,12 @@
 
 
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
+    , m_isClick( false )
+    , m_isDown( false )
     , m_muted( false )
 {
     m_anim.step = 0;
+    m_anim.timer = 0;
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
 }
 

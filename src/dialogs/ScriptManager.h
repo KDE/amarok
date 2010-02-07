@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2004-2007 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2005 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
  *                                                                                      *
@@ -121,6 +121,13 @@ class AMAROK_EXPORT ScriptManager : public KDialog, public EngineObserver
         void updateAllScripts();
         void updaterFinished( QString scriptPath );
         void slotUpdateSettingChanged( bool enabled );
+
+       /**
+        * MOCKUP: This dialog shows a warning, if a script stalls,
+        * and allows the user to terminate this script.
+        * Purpose: Getting around upcoming string freeze, then implementing fully.
+        */
+        void showScriptStalledDialog();
 
     private:
         explicit ScriptManager( QWidget* parent );

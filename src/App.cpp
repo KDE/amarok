@@ -20,6 +20,7 @@
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
 #include "CollectionManager.h"
+#include "Components.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
 #include "dialogs/EqualizerDialog.h"
@@ -46,6 +47,8 @@
 #include "podcasts/PodcastProvider.h"
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
+#include "statemanagement/ApplicationController.h"
+#include "statemanagement/DefaultApplicationController.h"
 #include "statusbar/StatusBar.h"
 #include "TracklistDBusHandler.h"
 #include "TrayIcon.h"
@@ -131,20 +134,6 @@ App::App()
 
     // required for last.fm plugin to grab app version
     setApplicationVersion( AMAROK_VERSION );
-
-    if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
-    {
-        PERF_LOG( "Init KStandardDirs cache" )
-        KStandardDirs *stdDirs = KGlobal::dirs();
-        PERF_LOG( "Finding image" )
-        QString img = stdDirs->findResource( "data", "amarok/images/splash_screen.jpg" );
-        PERF_LOG( "Creating pixmap" )
-        QPixmap splashpix( img );
-        PERF_LOG( "Creating splashscreen" )
-        m_splash = new KSplashScreen( splashpix, Qt::WindowStaysOnTopHint );
-        PERF_LOG( "showing splashscreen" )
-        m_splash->show();
-    }
 
     PERF_LOG( "Registering taglib plugins" )
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
@@ -290,8 +279,10 @@ App::~App()
     Playlist::Actions::destroy();
     Playlist::ModelStack::destroy();
     PlaylistManager::destroy();
-    EngineController::destroy();
     CoverFetcher::destroy();
+
+    //this should be moved to App::quit() I guess
+    Amarok::Components::applicationController()->shutdown();
 
 
 #ifdef Q_WS_WIN
@@ -353,6 +344,13 @@ App::handleCliArgs() //static
             options |= Playlist::DirectPlay;
 
         The::playlistController()->insertOptioned( list, options );
+    }
+
+    else if ( args->isSet( "cdplay" ) )
+    {
+        debug() << "cdplay!!";
+        haveArgs = true;
+        The::mainWindow()->playAudioCd();
     }
 
     //we shouldn't let the user specify two of these since it is pointless!
@@ -487,6 +485,7 @@ App::initCliArgs() //static
     KCmdLineOptions options;
 
     options.add("+[URL(s)]", ki18n( "Files/URLs to open" ));
+    options.add("cdplay", ki18n("Immediately start playing an audio cd"));
     options.add("r");
     options.add("previous", ki18n( "Skip backwards in playlist" ));
     options.add("p");
@@ -696,6 +695,23 @@ App::continueInit()
 
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
     QTextCodec::setCodecForCStrings( utf8codec ); //We need this to make CollectionViewItem showing the right characters.
+
+    new Amarok::DefaultApplicationController();
+    Amarok::Components::applicationController()->start();
+
+    if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
+    {
+        PERF_LOG( "Init KStandardDirs cache" )
+        KStandardDirs *stdDirs = KGlobal::dirs();
+        PERF_LOG( "Finding image" )
+        QString img = stdDirs->findResource( "data", "amarok/images/splash_screen.jpg" );
+        PERF_LOG( "Creating pixmap" )
+        QPixmap splashpix( img );
+        PERF_LOG( "Creating splashscreen" )
+        m_splash = new KSplashScreen( splashpix, Qt::WindowStaysOnTopHint );
+        PERF_LOG( "showing splashscreen" )
+        m_splash->show();
+    }
 
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();

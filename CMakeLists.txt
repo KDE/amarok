@@ -51,9 +51,9 @@ check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 
 
 # Needed to conditionally build tests and gui
-if(CMAKE_BUILD_TYPE MATCHES debugfull)
+if(KDE4_BUILD_TESTS)
    add_definitions(-DDEBUG)
-endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+endif()
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
 if (CMAKE_COMPILER_IS_GNUCXX)

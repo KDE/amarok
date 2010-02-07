@@ -17,6 +17,7 @@
 #ifndef AMAROK_PLAYLISTMODELSTACK_H
 #define AMAROK_PLAYLISTMODELSTACK_H
 
+#include "PlaylistController.h"
 #include "proxymodels/AbstractModel.h"
 #include "PlaylistModel.h"
 #include "proxymodels/FilterProxy.h"
@@ -73,6 +74,7 @@ public:
     GroupingProxy * top();
     Model *         source();
     SortProxy *     sortProxy();
+    Controller *    controller();
 
 private:
     /**
@@ -87,6 +89,7 @@ private:
 
     static ModelStack *s_instance;       //! Instance member.
 
+    Controller *        m_controller;
     Model *             m_model;
     FilterProxy *       m_filter;
     SortProxy *         m_sort;
@@ -98,7 +101,8 @@ private:
 
 namespace The
 {
-AMAROK_EXPORT Playlist::GroupingProxy* playlist();
+    AMAROK_EXPORT Playlist::GroupingProxy* playlist();
+    AMAROK_EXPORT Playlist::Controller* playlistController();
 }
 
 #endif  //AMAROK_PLAYLISTMODELSTACK_H

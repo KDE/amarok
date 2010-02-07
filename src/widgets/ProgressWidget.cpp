@@ -96,6 +96,9 @@ ProgressWidget::addBookmark( const QString &name, int milliSeconds, bool showPop
 void
 ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 {
+    if ( !isVisible() )
+        return;
+    
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label
 

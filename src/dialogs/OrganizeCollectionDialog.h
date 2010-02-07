@@ -60,6 +60,7 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         QString cleanPath( const QString &component ) const;
         QString buildFormatTip() const;
         QString buildFormatString() const;
+        QString commonPrefix( const QStringList &list ) const;
         void toggleDetails();
         void preview( const QString &format );
         void update( int dummy );
@@ -73,7 +74,6 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         Meta::TrackList m_allTracks;
 
     private slots:
-        void toggleCustomScheme( bool state );
         void slotEnableOk( const QString & currentCollectionRoot );
 };
 

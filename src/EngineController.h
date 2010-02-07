@@ -52,6 +52,9 @@ class AMAROK_EXPORT EngineController : public EngineSubject
     Q_OBJECT
 
 public:
+    EngineController();
+    ~EngineController();
+
     /**
      * Returns the global EngineController instance
      */
@@ -335,10 +338,6 @@ private:
 
     void createFadeoutEffect();
     void resetFadeout();
-
-    static EngineController* s_instance;
-    EngineController();
-    ~EngineController();
 
     Q_DISABLE_COPY( EngineController )
 

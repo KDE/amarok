@@ -56,7 +56,7 @@ if (IPOD_FOUND AND WITH_IPOD)
         ${QT_QTGUI_LIBRARY}
         ${GLIB2_LIBRARIES}
         ${GDK_LIBRARIES}
-        ${IPOD_LIBRARIES} 
+        ${IPOD_LDFLAGS} 
         )
 
     install(TARGETS 

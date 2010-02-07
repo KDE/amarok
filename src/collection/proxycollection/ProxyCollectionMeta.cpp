@@ -21,12 +21,70 @@
 #include "ProxyCollectionMeta.h"
 
 #include "meta/MetaUtility.h"
+#include "meta/capabilities/EditCapability.h"
 #include "ProxyCollection.h"
 
 #include "Debug.h"
 
 #include <QDateTime>
 #include <QSet>
+#include <QTimer>
+
+#define FORWARD( call ) { foreach( Meta::EditCapability *ec, m_ec ) { ec->call; } \
+                            if( !m_batchMode ) QTimer::singleShot( 0, m_collection, SLOT( slotUpdated() ) ); }
+
+class ProxyEditCapability : public Meta::EditCapability
+{
+public:
+    ProxyEditCapability( ProxyCollection::Collection *coll, const QList<Meta::EditCapability*> &ecs )
+        : Meta::EditCapability()
+        , m_batchMode( false )
+        , m_collection( coll )
+        , m_ec( ecs ) {}
+    virtual ~ProxyEditCapability() { qDeleteAll( m_ec ); }
+
+    void beginMetaDataUpdate()
+    {
+        m_batchMode = true;
+        foreach( Meta::EditCapability *ec, m_ec ) ec->beginMetaDataUpdate();
+    }
+    void endMetaDataUpdate()
+    {
+        foreach( Meta::EditCapability *ec, m_ec ) ec->endMetaDataUpdate();
+        m_batchMode = false;
+        QTimer::singleShot( 0, m_collection, SLOT( slotUpdated() ) );
+    }
+    void abortMetaDataUpdate()
+    {
+        foreach( Meta::EditCapability *ec, m_ec ) ec->abortMetaDataUpdate();
+        m_batchMode = false;
+    }
+    void setComment( const QString &newComment ) { FORWARD( setComment( newComment ) ) }
+    void setTrackNumber( int newTrackNumber ) { FORWARD( setTrackNumber( newTrackNumber ) ) }
+    void setDiscNumber( int newDiscNumber ) { FORWARD( setDiscNumber( newDiscNumber ) ) }
+    void setBpm( float newBpm ) { FORWARD( setBpm( newBpm ) ) }
+    void setTitle( const QString &newTitle ) { FORWARD( setTitle( newTitle ) ) }
+    void setArtist( const QString &newArtist ) { FORWARD( setArtist( newArtist ) ) }
+    void setAlbum( const QString &newAlbum ) { FORWARD( setAlbum( newAlbum ) ) }
+    void setGenre( const QString &newGenre ) { FORWARD( setGenre( newGenre ) ) }
+    void setComposer( const QString &newComposer ) { FORWARD( setComposer( newComposer ) ) }
+    void setYear( const QString &newYear ) { FORWARD( setYear( newYear ) ) }
+    bool isEditable() const
+    {
+        foreach( Meta::EditCapability *ec, m_ec )
+        {
+            if( !ec->isEditable() )
+                return false;
+        }
+        return true;
+    }
+private:
+    bool m_batchMode;
+    ProxyCollection::Collection *m_collection;
+    QList<Meta::EditCapability*> m_ec;
+};
+
+#undef FORWARD
 
 ProxyCollection::Track::Track( ProxyCollection::Collection *coll, const Meta::TrackPtr &track )
         : Meta::Track()
@@ -110,7 +168,14 @@ ProxyCollection::Track::playableUrl() const
 QString
 ProxyCollection::Track::prettyUrl() const
 {
-    return QString();
+    if( m_tracks.count() == 1 )
+    {
+        return m_tracks.first()->prettyUrl();
+    }
+    else
+    {
+        return QString();
+    }
 }
 
 QString
@@ -455,14 +520,20 @@ ProxyCollection::Track::hasCapabilityInterface( Meta::Capability::Type type ) co
         //capability if and only if ProxyCollection::Track supports it as well
 
         //as there are no supported capabilities yet...
-        return false;
-
-        foreach( const Meta::TrackPtr &track, m_tracks )
+        switch( type )
         {
-            if( !track->hasCapabilityInterface( type ) )
-                return false;
+        case Meta::Capability::Editable:
+            {
+                foreach( const Meta::TrackPtr &track, m_tracks )
+                {
+                    if( !track->hasCapabilityInterface( type ) )
+                        return false;
+                }
+                return true;
+            }
+        default:
+            return false;
         }
-        return true;
     }
 }
 
@@ -476,8 +547,27 @@ ProxyCollection::Track::createCapabilityInterface( Meta::Capability::Type type )
     }
     else
     {
-        //we should create a ProxyCapability here...
-        return 0;
+        switch( type )
+        {
+        case Meta::Capability::Editable:
+            {
+                QList<Meta::EditCapability*> ecs;
+                foreach( Meta::TrackPtr track, m_tracks )
+                {
+                    Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+                    if( ec )
+                        ecs << ec;
+                    else
+                    {
+                        qDeleteAll( ecs );
+                        return 0;
+                    }
+                }
+                return new ProxyEditCapability( m_collection, ecs );
+            }
+        default:
+            return 0;
+        }
     }
 }
 

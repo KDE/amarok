@@ -30,9 +30,9 @@
 PlayPauseButton::PlayPauseButton( QWidget *parent ) : QWidget( parent )
     , m_isPlaying( false )
     , m_isClick( false )
-    , m_animStep( 0 )
-    , m_animTimer( 0 )
 {
+    m_anim.step = 0;
+    m_anim.timer = 0;
     QResizeEvent re( size(), QSize() );
     resizeEvent( &re );
 
@@ -111,36 +111,36 @@ QSize PlayPauseButton::sizeHint() const
 
 void PlayPauseButton::startFade()
 {
-    if ( m_animTimer )
-        killTimer( m_animTimer );
-    m_animTimer = startTimer( 40 );
+    if ( m_anim.timer )
+        killTimer( m_anim.timer );
+    m_anim.timer = startTimer( 40 );
 }
 
 void PlayPauseButton::stopFade()
 {
-    killTimer( m_animTimer );
-    m_animTimer = 0;
-    if ( m_animStep < 0 )
-        m_animStep = 0;
-    else if ( m_animStep > 6 )
-        m_animStep = 6;
+    killTimer( m_anim.timer );
+    m_anim.timer = 0;
+    if ( m_anim.step < 0 )
+        m_anim.step = 0;
+    else if ( m_anim.step > 6 )
+        m_anim.step = 6;
 }
 
 void PlayPauseButton::timerEvent( QTimerEvent *te )
 {
-    if ( te->timerId() != m_animTimer )
+    if ( te->timerId() != m_anim.timer )
         return;
     if ( underMouse() ) // fade in
     {
-        m_animStep += 2;
-        if ( m_animStep > 5 )
+        m_anim.step += 2;
+        if ( m_anim.step > 5 )
             stopFade();
         updateIconBuffer();
     }
     else // fade out
     {
-        --m_animStep;
-        if ( m_animStep < 1 )
+        --m_anim.step;
+        if ( m_anim.step < 1 )
             stopFade();
         updateIconBuffer();
     }
@@ -174,12 +174,12 @@ void PlayPauseButton::updateIconBuffer()
     QImage img;
     QImage (*base)[2] = m_isPlaying ? &m_iconPause : &m_iconPlay;
 
-    if (m_animStep < 1)
+    if (m_anim.step < 1)
         img = (*base)[0];
-    else if (m_animStep > 5)
+    else if (m_anim.step > 5)
         img = (*base)[1];
     else
-        img = interpolated( (*base)[0], (*base)[1], 6 - m_animStep, m_animStep );
+        img = interpolated( (*base)[0], (*base)[1], 6 - m_anim.step, m_anim.step );
 
     m_iconBuffer = QPixmap::fromImage( img );
 //     m_iconBuffer = QPixmap::fromImage( img.scaled( size(), Qt::KeepAspectRatio, Qt::SmoothTransformation ) );

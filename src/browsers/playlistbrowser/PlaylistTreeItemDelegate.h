@@ -1,6 +1,8 @@
 /****************************************************************************************
- * Copyright (c) 2009 Martin Aumueller <aumuell@reserv.at>                              *
- * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2010 Bart Cerneels <bart.cerneels@kde.org>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -15,45 +17,32 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPHONEOSCOLLECTION_H
-#define IPHONEOSCOLLECTION_H
+#ifndef PLAYLISTTREEITEMDELEGATE_H
+#define PLAYLISTTREEITEMDELEGATE_H
 
-#include "MediaDeviceCollection.h"
-#include "Debug.h"
+#include <QAction>
+#include <QFont>
+#include <QPersistentModelIndex>
+#include <QRect>
+#include <QStyledItemDelegate>
+#include <QTreeView>
 
-#include <KIcon>
-
-#include <QtGlobal>
-
-class IphoneOsCollection;
-class MediaDeviceInfo;
-
-class IphoneOsCollectionFactory : public MediaDeviceCollectionFactory<IphoneOsCollection>
+class PlaylistTreeItemDelegate : public QStyledItemDelegate
 {
-    Q_OBJECT
-    public:
-        IphoneOsCollectionFactory();
-        virtual ~IphoneOsCollectionFactory();
-};
+   public:
+        PlaylistTreeItemDelegate( QTreeView *view );
+        ~PlaylistTreeItemDelegate();
 
-class IphoneOsCollection : public MediaDeviceCollection
-{
-    Q_OBJECT
-    public:
-        // inherited methods
+        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+        QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
-        IphoneOsCollection( MediaDeviceInfo* info );
-        virtual ~IphoneOsCollection();
-
-        virtual bool possiblyContainsTrack( const KUrl &url ) const;
-        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
-
-        virtual QString collectionId() const;
-        virtual QString prettyName() const;
-        virtual KIcon icon() const { return KIcon("multimedia-player-apple-ipod"); };
+        static QRect actionsRect( const QModelIndex &index );
 
     private:
-        QString            m_mountPoint;
-};
+        QTreeView *m_view;
+        QFont m_bigFont;
+        QFont m_smallFont;
 
-#endif
+        static QHash<QPersistentModelIndex, QRect> s_indexActionsRects;
+};
+#endif // PLAYLISTTREEITEMDELEGATE_H

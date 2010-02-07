@@ -129,30 +129,30 @@ KSvgRenderer * SvgHandler::getRenderer()
 
 QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
 {
-    QPixmap pixmap( width, height );
-
-    QReadLocker readLocker( &m_lock );
-    if( ! m_renderers[name] )
-    {
-        readLocker.unlock();
-        if( !loadSvg( name ) )
-        {
-            pixmap.fill( Qt::transparent );
-            return pixmap;
-        }
-        readLocker.relock();
-    }
+    QPixmap pixmap;
 
     const QString key = QString("%1:%2x%3")
-        .arg( keyname )
-        .arg( width )
-        .arg( height );
-
+            .arg( keyname )
+            .arg( width )
+            .arg( height );
 
     if ( !m_cache->find( key, pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
+        pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
+
+        QReadLocker readLocker( &m_lock );
+        if( ! m_renderers[name] )
+        {
+            readLocker.unlock();
+            if( !loadSvg( name ) )
+            {
+                return pixmap;
+            }
+            readLocker.relock();
+        }
+
         QPainter pt( &pixmap );
         if ( element.isEmpty() )
             m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
@@ -173,21 +173,7 @@ QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, co
 QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, int height, const QString & element)
 {
 
-    QString name = m_themeFile;
-    
-    QPixmap pixmap( width, height );
-
-    QReadLocker readLocker( &m_lock );
-    if( ! m_renderers[name] )
-    {
-        readLocker.unlock();
-        if( ! loadSvg( name ) )
-        {
-            pixmap.fill( Qt::transparent );
-            return pixmap;
-        }
-        readLocker.relock();
-    }
+    QPixmap pixmap;
 
     const QString key = QString("%1:%2x%3-div")
             .arg( keyname )
@@ -198,7 +184,22 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
     if ( !m_cache->find( key, pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
+        pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
+
+        QString name = m_themeFile;
+        
+        QReadLocker readLocker( &m_lock );
+        if( ! m_renderers[name] )
+        {
+            readLocker.unlock();
+            if( ! loadSvg( name ) )
+            {
+                return pixmap;
+            }
+            readLocker.relock();
+        }
+        
         QPainter pt( &pixmap );
         if ( element.isEmpty() )
             m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
@@ -250,37 +251,33 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     int newWidth = orgPixmap.width() + borderWidth * 2;
     int newHeight = orgPixmap.height() + borderWidth *2;
 
-    QPixmap pixmap( newWidth, newHeight );
+    QPixmap pixmap;
     
-    QReadLocker readLocker( &m_lock );
-    if( !m_renderers[m_themeFile] )
-    {
-        readLocker.unlock();
-        if( !loadSvg( m_themeFile ) )
-        {
-            pixmap.fill( Qt::transparent );
-            return pixmap;
-        }
-        readLocker.relock();
-    }
-
     const QString key = QString("%1:%2x%3b%4")
             .arg( name )
             .arg( newWidth )
             .arg( newHeight )
             .arg( borderWidth );
 
-    if( !m_cache->find( key, pixmap ) || skipCache )
+    if( skipCache || !m_cache->find( key, pixmap ) )
     {
         // Cache miss! We need to create the pixmap
-
-        //whoops... if skipCache is true, we might actually already have fetched the image, including borders from the cache....
-        //so we really need to create a blank pixmap here so we don't paint several layers of borders on top of each other
-        if ( skipCache )
-            pixmap = QPixmap( newWidth, newHeight );
-        
+        // if skipCache is true, we might actually already have fetched the image, including borders from the cache....
+        // so we really need to create a blank pixmap here as well, to not pollute the cached pixmap
+        pixmap = QPixmap( newWidth, newHeight );
         pixmap.fill( Qt::transparent );
-        
+
+        QReadLocker readLocker( &m_lock );
+        if( !m_renderers[m_themeFile] )
+        {
+            readLocker.unlock();
+            if( !loadSvg( m_themeFile ) )
+            {
+                return pixmap;
+            }
+            readLocker.relock();
+        }
+
         QPainter pt( &pixmap );
 
         pt.drawPixmap( borderWidth, borderWidth, orgPixmap.width(), orgPixmap.height(), orgPixmap );

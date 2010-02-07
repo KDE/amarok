@@ -26,6 +26,7 @@
 #include "playlist/view/PlaylistViewCommon.h"
 #include "tooltips/ToolTipManager.h"
 
+
 #include <QListView>
 #include <QModelIndex>
 #include <QPersistentModelIndex>

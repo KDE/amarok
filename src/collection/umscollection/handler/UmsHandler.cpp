@@ -66,6 +66,15 @@ using namespace Meta;
 
 /// UmsHandler
 
+// Define the maximum number of concurrent kio jobs allowed.
+// This used to be 150, but flash media doesn't handle parallel
+// writes well, so by forcing this constant to 1 the jobs
+// are run sequentially.
+// BUG: 218152
+#ifndef UMS_MAX_CONCURRENT_JOBS
+#define UMS_MAX_CONCURRENT_JOBS 1
+#endif
+
 UmsHandler::UmsHandler( UmsCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
     , m_watcher()
@@ -186,6 +195,31 @@ UmsHandler::init()
 
     m_parsed = false;
     m_parseAction = 0;
+
+    // Get storage access for getting device space capacity/usage
+    Solid::Device device = Solid::Device(  m_memColl->udi() );
+    if (  device.isValid() )
+    {
+        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+        if ( storage )
+            m_filepath = storage->filePath();
+        else if ( !m_mountPoint.isEmpty() )
+            m_filepath = m_mountPoint;
+
+        if ( !m_filepath.isEmpty() )
+            m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
+        else
+        {
+            debug() << "capacity = 0.0 because m_filepath.isEmpty()";
+            m_capacity = 0.0;
+        }
+    }
+    else
+    {
+        debug() << "device is not valid";
+        m_filepath = "";
+        m_capacity = 0.0;
+    }
 
     debug() << "Succeeded: true";
     m_memColl->emitCollectionReady();
@@ -506,7 +540,7 @@ UmsHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     KIO::CopyJob *job = KIO::copy( src, dst, KIO::HideProgressInfo );
     m_jobcounter++;
 
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < UMS_MAX_CONCURRENT_JOBS )
         copyNextTrackToDevice();
 
 
@@ -538,10 +572,10 @@ UmsHandler::fileTransferred( KJob *job )  //SLOT
         return;
     }
 
-    // Limit max number of jobs to 150, make sure more tracks left
+    // Limit max number of jobs to 1, make sure more tracks left
     // to copy
     debug() << "Tracks to copy still remain";
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < 1 )
     {
         debug() << "Jobs: " << m_jobcounter;
         copyNextTrackToDevice();
@@ -580,7 +614,7 @@ UmsHandler::deleteFile( const KUrl &url )
 
     m_jobcounter++;
 
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < UMS_MAX_CONCURRENT_JOBS )
         removeNextTrackFromDevice();
 
     connect( job, SIGNAL( result( KJob * ) ),
@@ -598,10 +632,8 @@ UmsHandler::fileDeleted( KJob *job )  //SLOT
 
     m_jobcounter--;
 
-    // Limit max number of jobs to 150, make sure more tracks left
-    // to delete
     debug() << "Tracks to delete still remain";
-    if( m_jobcounter < 150 )
+    if( m_jobcounter < UMS_MAX_CONCURRENT_JOBS )
     {
         debug() << "Jobs: " << m_jobcounter;
         removeNextTrackFromDevice();
@@ -669,6 +701,7 @@ UmsHandler::usedCapacity() const
 float
 UmsHandler::totalCapacity() const
 {
+    DEBUG_BLOCK
     return m_capacity;
 }
 
@@ -684,28 +717,6 @@ void
 UmsHandler::prepareToParseTracks()
 {
     DEBUG_BLOCK
-
-    // Get storage access for getting device space capacity/usage
-
-    Solid::Device device = Solid::Device(  m_memColl->udi() );
-    if (  device.isValid() )
-    {
-        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-        if ( storage )
-            m_filepath = storage->filePath();
-        else if ( !m_mountPoint.isEmpty() )
-            m_filepath = m_mountPoint;
-
-        if ( !m_filepath.isEmpty() )
-            m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
-        else
-            m_capacity = 0.0;
-    }
-    else
-    {
-        m_filepath = "";
-        m_capacity = 0.0;
-    }
 
     m_watcher.addDir( m_mountPoint, KDirWatch::WatchDirOnly | KDirWatch::WatchFiles | KDirWatch::WatchSubDirs );
 
