@@ -22,6 +22,7 @@
 #include "Components.h"
 #include "Debug.h"
 #include "QueryMaker.h"
+#include "UpdateCapability.h"
 
 
 CollectionLocation::CollectionLocation()
@@ -210,13 +211,13 @@ bool
 CollectionLocation::remove( const Meta::TrackList &tracks )
 {
     bool success = true;
-    
+
     foreach( const Meta::TrackPtr &track, tracks )
         if( !remove( track ) )
             success = false;
 
     return success;
-        
+
 }
 
 void
@@ -371,6 +372,40 @@ void
 CollectionLocation::slotFinishRemove()
 {
     DEBUG_BLOCK
+    if( m_tracksWithError.size() > 0 )
+    {
+        QStringList files;
+        QMapIterator<Meta::TrackPtr, QString> it( m_tracksWithError );
+        while(it.hasNext())
+        {
+            it.next();
+            if(it.key())
+                files << it.key()->prettyUrl();
+        }
+
+        const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writeable.",
+                                    "There was a problem and %1 tracks could not be removed. Make sure the directory is writeable.", files.count() ) );
+        KMessageBox::informationList(0,
+                                    text,
+                                    files,
+                                    i18n("Unable to be removed tracks") );
+        m_tracksWithError.clear();
+    }
+
+    debug() << "remove finished updating";
+    foreach( Meta::TrackPtr track, m_tracksSuccessfullyTransferred )
+    {
+        if(!track)
+            continue;
+
+        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        if(!uc)
+            continue;
+
+        uc->collectionUpdated();
+    }
+
+    m_tracksSuccessfullyTransferred.clear();
     m_sourceTracks.clear();
     this->deleteLater();
 }
@@ -456,8 +491,6 @@ void
 CollectionLocation::startRemoveWorkflow( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    // TODO: add a dialog warning that tracks are to be deleted
-
     m_sourceTracks = tracks;
     setupRemoveConnections();
     if( tracks.size() <= 0 )
@@ -469,21 +502,20 @@ CollectionLocation::startRemoveWorkflow( const Meta::TrackList &tracks )
 void
 CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
 {
-    Meta::TrackList notDeletableTracks;
-    int count = m_tracksWithError.count();
-    debug() << "Transfer errors: " << count;
-    foreach( Meta::TrackPtr track, tracks )
-    {
-        if( m_tracksWithError.contains( track ) )
-        {
-            debug() << "transfer error for track " << track->playableUrl();
-            continue;
-        }
+    DEBUG_BLOCK
+    debug() << "Transfer errors: " << m_tracksWithError.count();
 
-        if( !remove( track ) )
-            notDeletableTracks.append( track );
+    foreach( Meta::TrackPtr track, m_tracksWithError.keys() )
+    {
+        debug() << "transfer error for track " << track->playableUrl();
     }
-    //TODO inform user about tracks which were not deleted
+
+    QSet<Meta::TrackPtr> toRemove = QSet<Meta::TrackPtr>::fromList( tracks );
+    QSet<Meta::TrackPtr> errored = QSet<Meta::TrackPtr>::fromList( m_tracksWithError.keys() );
+    toRemove.subtract( errored );
+
+    // start the remove workflow
+    prepareRemove( toRemove.toList() );
 }
 
 CollectionLocation*
