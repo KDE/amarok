@@ -175,6 +175,10 @@
         <label>Automatically scroll the playlist to make the currently playing song visible</label>
         <default>true</default>
     </entry>
+    <entry key="EnableToolTips" type="Bool">
+        <label>Whether to display tooltips for the song in the playlist</label>
+        <default>true</default>
+    </entry>
     <entry key="Show Album Art" type="Bool">
         <label>Show Album art in the Collection Browser</label>
         <default>true</default>
@@ -595,5 +599,34 @@
         <default>0</default>
     </entry>
 </group>
+
+<group name="UpcomingEvents">
+    <entry key="enabledLinks" type="Bool">
+        <label>Clickable locations' names</label>
+        <whatsthis>Enable/Disable links to Google Map</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="timeSpan" type="Enum">
+        <label>Timespan for upcoming events</label>
+        <whatsthis>Set the timespan for the upcoming events.</whatsthis>
+        <choices>
+            <choice name="AllEvents"/>
+            <choice name="ThisWeek"/>
+            <choice name="ThisMonth"/>
+            <choice name="ThisYear"/>
+        </choices>
+        <default>AllEvents</default>
+    </entry>
+</group>
+
+<group name="SimilarArtists">
+    <entry key="maxArtists" type="Int">
+        <label>Maximum similar artists</label>
+        <whatsthis>Maximum similar artists to be shown</whatsthis>
+        <default>20</default>
+    </entry>
+</group>
+
+
 
 </kcfg>
