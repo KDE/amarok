@@ -958,10 +958,6 @@ bool App::notify( QObject *receiver, QEvent *event )
     }
 }
 
-            else if( c == '[' )
-                c = '(';
-            else if ( c == ']' )
-                c = ')';
 int App::newInstance()
 {
     DEBUG_BLOCK
