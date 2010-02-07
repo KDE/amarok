@@ -66,6 +66,13 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="kcfg_EnableToolTips">
+        <property name="text">
+         <string>Enable playlist tooltips</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

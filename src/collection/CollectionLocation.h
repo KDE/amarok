@@ -29,7 +29,7 @@
 class QueryMaker;
 
 /**
-    This base class defines the the methods necessary to allow the copying and moving 
+    This base class defines the the methods necessary to allow the copying and moving
     of tracks between different collections in a generic way.
 
     This class should be used as follows in client code:
@@ -45,7 +45,7 @@ class QueryMaker;
 
     Writable collections that are also organizable should reimplement isOrganizable().
     Organizable means that the user is able to decide (to varying degrees, the details
-    depend on the actual collection) where the files are stored in the filesystem (or some 
+    depend on the actual collection) where the files are stored in the filesystem (or some
     kind of VFS). An example would be the local collection, where the user can select the directory
     structure that Amarok uses to store the files. An example for a writable collection that is not
     organizable are ipods, where the user has no control about the actual location of the music files
@@ -122,18 +122,18 @@ class AMAROK_EXPORT CollectionLocation : public QObject
 
         /**
             Returns a list of machine usable strings representingthe collection location.
-            For example, a local collection would return a list of paths where tracks are 
-            stored, while an Ampache collection would return a list with one string 
-            containing the URL of an ampache server. An iPod collection and a MTP device 
+            For example, a local collection would return a list of paths where tracks are
+            stored, while an Ampache collection would return a list with one string
+            containing the URL of an ampache server. An iPod collection and a MTP device
             collection are examples of collections that do not need to reimplement this method.
         */
         virtual QStringList actualLocation() const;
 
         /**
             Returns whether the collection location is writeable or not. For example, a
-            local collection or an ipod collection would return true, a daap collection 
-            or a service collection false. The value returned by this method indicates 
-            if it is possible to copy tracks to the collection, and if it is generally 
+            local collection or an ipod collection would return true, a daap collection
+            or a service collection false. The value returned by this method indicates
+            if it is possible to copy tracks to the collection, and if it is generally
             possible to remove/delete files from the collection.
             @return @c true if the collection location is writeable
             @return @c false if the collection location is not writeable
@@ -148,7 +148,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual bool isOrganizable() const;
 
         /**
-           convenience method for copying a single track, 
+           convenience method for copying a single track,
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
         void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
@@ -156,7 +156,7 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         void prepareCopy( QueryMaker *qm, CollectionLocation *destination );
 
         /**
-           convenience method for moving a single track, 
+           convenience method for moving a single track,
            @see prepareMove( Meta::TrackList, CollectionLocation* )
         */
         void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
@@ -182,19 +182,19 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         */
 
         bool remove( const Meta::TrackList &tracks );
-        
+
         /**
           explicitly inform the source collection of successful transfer.
           The source collection will only remove files (if necessary)
           for which this method was called.
           */
         void transferSuccessful( const Meta::TrackPtr &track );
-    
+
         /**
         * tells the source location that an error occurred during the transfer of the file
         */
         virtual void transferError( const Meta::TrackPtr &track, const QString &error );
-        
+
         /**
          * Inserts a set of TrackPtrs directly into the database without needing to actuall move any files
          * This is a hack required by the DatabaseImporter
@@ -232,9 +232,9 @@ class AMAROK_EXPORT CollectionLocation : public QObject
 
         /**
             this method is called on the source location, and should return a list of urls
-            which the destination location can copy using KIO. You must call 
-            slotGetKIOCopyableUrlsDone( QMap<Meta::TrackPtr, KUrl> ) after retrieving the 
-            urls. The order of urls passed to that method has to be the same as the order 
+            which the destination location can copy using KIO. You must call
+            slotGetKIOCopyableUrlsDone( QMap<Meta::TrackPtr, KUrl> ) after retrieving the
+            urls. The order of urls passed to that method has to be the same as the order
             of the tracks passed to this method.
         */
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
@@ -252,18 +252,18 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         */
 
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
-        
+
         /**
          * this method is called on the source. It allows the source CollectionLocation to
-         * show a dialog. Classes that reimplement this method must call 
+         * show a dialog. Classes that reimplement this method must call
          * slotShowSourceDialogDone() after they have acquired all necessary information from the user.
          */
         virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
 
         /**
-         * this method is called on the destination. It allows the destination 
-         * CollectionLocation to show a dialog. Classes that reimplement this method 
-         * must call slotShowDestinationDialogDone() after they have acquired all necessary 
+         * this method is called on the destination. It allows the destination
+         * CollectionLocation to show a dialog. Classes that reimplement this method
+         * must call slotShowDestinationDialogDone() after they have acquired all necessary
          * information from the user.
          */
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );

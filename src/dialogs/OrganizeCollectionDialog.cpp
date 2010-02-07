@@ -28,6 +28,8 @@
 #include "QStringx.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 
+#include <kcolorscheme.h>
+
 #include <QDir>
 
 OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &tracks, const QStringList &folders, QWidget *parent,  const char *name, bool modal,
@@ -57,37 +59,43 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->setupUi( mainContainer );
 
     m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
-    m_filenameLayoutDialog->hide();
+//    m_filenameLayoutDialog->hide();
     connect( this, SIGNAL( accepted() ),
              m_filenameLayoutDialog, SLOT( onAccept() ) );
-    ui->verticalLayout->insertWidget( 3, m_filenameLayoutDialog );
+    ui->verticalLayout->insertWidget( 1, m_filenameLayoutDialog );
     ui->ignoreTheCheck->show();
 
     ui->folderCombo->insertItems( 0, folders );
-    ui->folderCombo->setCurrentIndex( AmarokConfig::organizeDirectory() );
+    if( ui->folderCombo->contains( AmarokConfig::organizeDirectory() ) )
+        ui->folderCombo->setCurrentItem( AmarokConfig::organizeDirectory() );
+    else
+        ui->folderCombo->setCurrentIndex( 0 ); //TODO possible bug: assumes folder list is not empty.
+
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
-    ui->filetypeCheck->setChecked( AmarokConfig::groupByFiletype() );
-    ui->initialCheck->setChecked( AmarokConfig::groupArtists() );
     ui->spaceCheck->setChecked( AmarokConfig::replaceSpace() );
     ui->ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
     ui->vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
     ui->asciiCheck->setChecked( AmarokConfig::asciiOnly() );
-    ui->customschemeCheck->setChecked( AmarokConfig::useCustomScheme() );
     ui->regexpEdit->setText( AmarokConfig::replacementRegexp() );
     ui->replaceEdit->setText( AmarokConfig::replacementString() );
 
+    ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
+    ui->conflictLabel->hide();
+    QPalette p = ui->conflictLabel->palette();
+    KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
+    ui->conflictLabel->setPalette( p );
+
+    // to show the conflict error
+    connect( ui->overwriteCheck, SIGNAL( stateChanged( int ) ), SLOT( slotUpdatePreview() ) );
+
     connect( this, SIGNAL( updatePreview( QString ) ), ui->previewText, SLOT( setText( QString ) ) );
 
-    connect( ui->filetypeCheck , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->initialCheck  , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->asciiCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->customschemeCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->regexpEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( ui->replaceEdit    , SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
     connect( m_filenameLayoutDialog, SIGNAL( schemeChanged() ), this, SLOT( slotUpdatePreview() ) );
-    connect( ui->customschemeCheck, SIGNAL( toggled( bool ) ), this, SLOT( toggleCustomScheme( bool ) ) );
 
     connect( this , SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
@@ -95,7 +103,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
              this, SLOT( slotEnableOk( const QString & ) ) );
 
-    toggleCustomScheme( ui->customschemeCheck->isChecked() );
     slotEnableOk( ui->folderCombo->currentText() );
 
     init();
@@ -105,7 +112,7 @@ OrganizeCollectionDialog::~OrganizeCollectionDialog()
 {
     DEBUG_BLOCK
 
-    AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentIndex() );
+    AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     delete ui;
 }
 
@@ -229,30 +236,32 @@ OrganizeCollectionDialog::buildFormatTip() const
 QString
 OrganizeCollectionDialog::buildFormatString() const
 {
-    //TODO: this is where I need to query m_filenameLayoutDialog
-    if( ui->customschemeCheck->isChecked() )
-        return "%folder/" + m_filenameLayoutDialog->getParsableScheme();
-    QString format = "%folder/";
-    if( ui->filetypeCheck->isChecked() )
-        format += "%filetype/";
-    if( ui->initialCheck->isChecked() )
-        format += "%initial/";
+    return "%folder/" + m_filenameLayoutDialog->getParsableScheme() + ".%filetype";
+}
 
-    format += "%albumartist/";
-    if( ui->spaceCheck->isChecked() )   //replace spaces with underscores
+QString
+OrganizeCollectionDialog::commonPrefix( const QStringList &list ) const
+{
+    QString option = list.first().toLower();
+    int length = option.length();
+    while( length > 0 )
     {
-        format += "%album{_(Disc_%discnumber)}/";
-        format += "{%track_-_}%title.%filetype";
+        bool found = true;
+        foreach( QString string, list )
+        {
+            if( string.left(length).toLower() != option )
+            {
+                found = false;
+                break;
+            }
+        }
+        if( found )
+            break;
+        --length;
+        option = option.left( length );
     }
-    else
-    {
-        format += "%album{ (Disc %discnumber)}/";
-        format += "{%track - }%title.%filetype";
-    }
+    return option;
 
-
-    format = QDir::fromNativeSeparators( format );      //fromNativeSeparators handles \\ under windows
-    return format;
 }
 
 
@@ -260,8 +269,56 @@ OrganizeCollectionDialog::buildFormatString() const
 void
 OrganizeCollectionDialog::preview( const QString &format )
 {
-    if( m_previewTrack )
-        emit updatePreview( buildDestination( format, m_previewTrack ) );
+    DEBUG_BLOCK
+    /*if( m_previewTrack )
+        emit updatePreview( buildDestination( format, m_previewTrack ) );*/
+
+    ui->previewTableWidget->clearContents();
+    ui->previewTableWidget->setRowCount( m_allTracks.size() );
+    bool conflict = false;
+    for (int i = 0; i < m_allTracks.size(); ++i)
+    {
+        Meta::TrackPtr track = m_allTracks.at(i);
+
+        QString originalPath = track->prettyUrl();
+        QString newPath = buildDestination( format, track );
+
+//         QStringList list;
+//         list << originalPath << newPath;
+//
+//         QString common_prefix = commonPrefix( list );
+//         debug() << "common prefix: " << common_prefix;
+//         originalPath = originalPath.mid( common_prefix.length() );
+//         newPath = newPath.mid( common_prefix.length() );
+
+        QFileInfo info( newPath );
+        if( !conflict  && info.exists() )
+            conflict = true;
+
+        QTableWidgetItem* item = new QTableWidgetItem( originalPath );
+        ui->previewTableWidget->setItem(i, 0, item);
+        QPalette p = ui->previewTableWidget->palette();
+        KColorScheme::adjustBackground(p, KColorScheme::NegativeBackground);
+        if( info.exists() )
+        {
+
+            item->setBackgroundColor( p.color( QPalette::Base ) );
+        }
+
+        item = new QTableWidgetItem( newPath );
+        if( info.exists() )
+            item->setBackgroundColor( p.color( QPalette::Base ) );
+        ui->previewTableWidget->setItem(i, 1, item);
+
+    }
+    if( conflict )
+    {
+        ui->conflictLabel->show();
+        if( ui->overwriteCheck->isChecked() )
+            ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will be overwritten." ) );
+        else
+            ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will not be changed." ) );
+    }
 }
 
 
@@ -282,7 +339,7 @@ OrganizeCollectionDialog::cleanPath( const QString &component ) const
     result.simplified();
     if( ui->spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
-    debug()<<"I'm about to do Amarok::vfatPath( result ), this is result: "<<result;
+//     debug()<<"I'm about to do Amarok::vfatPath( result ), this is result: "<<result;
     if( ui->vfatCheck->isChecked() )
         result = Amarok::vfatPath( result );
 
@@ -299,10 +356,7 @@ OrganizeCollectionDialog::update( int dummy )   //why the dummy?
 
     if( m_previewTrack )
     {
-        if( ui->customschemeCheck->isChecked() )
-            emit updatePreview( buildDestination( "%folder/" + m_filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
-        else
-            emit updatePreview( buildDestination( buildFormatString(), m_previewTrack ) );
+        emit updatePreview( buildDestination( "%folder/" + m_filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
     }
 }
 
@@ -330,37 +384,16 @@ OrganizeCollectionDialog::slotUpdatePreview()
 void
 OrganizeCollectionDialog::slotDialogAccepted()
 {
-    AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentIndex() );
-    AmarokConfig::setGroupByFiletype( ui->filetypeCheck->isChecked() );
-    AmarokConfig::setGroupArtists( ui->initialCheck->isChecked() );
+    AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
     AmarokConfig::setReplaceSpace( ui->spaceCheck->isChecked() );
     AmarokConfig::setVfatCompatible( ui->vfatCheck->isChecked() );
     AmarokConfig::setAsciiOnly( ui->asciiCheck->isChecked() );
-    AmarokConfig::setUseCustomScheme( ui->customschemeCheck->isChecked() );
     AmarokConfig::setReplacementRegexp( ui->regexpEdit->text() );
     AmarokConfig::setReplacementString( ui->replaceEdit->text() );
 }
 
-//Hides and shows the right elements in the interface in the right order to keep the layout sane
-void
-OrganizeCollectionDialog::toggleCustomScheme( bool state )  //SLOT
-{
-    if( state )
-    {
-        ui->initialCheck->hide();
-        ui->filetypeCheck->hide();
-        m_filenameLayoutDialog->setVisible( true );
-    }
-    else
-    {
-        m_filenameLayoutDialog->hide();
-        ui->initialCheck->show();
-        ui->filetypeCheck->show();
-    }
-}
-
-//The Ok button should be disabled when there's no collection root selected.
+//The Ok button should be disabled when there's no collection root selected, and when there is no .%filetype in format string
 void
 OrganizeCollectionDialog::slotEnableOk( const QString & currentCollectionRoot )
 {

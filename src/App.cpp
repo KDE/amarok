@@ -133,20 +133,6 @@ App::App()
     // required for last.fm plugin to grab app version
     setApplicationVersion( AMAROK_VERSION );
 
-    if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
-    {
-        PERF_LOG( "Init KStandardDirs cache" )
-        KStandardDirs *stdDirs = KGlobal::dirs();
-        PERF_LOG( "Finding image" )
-        QString img = stdDirs->findResource( "data", "amarok/images/splash_screen.jpg" );
-        PERF_LOG( "Creating pixmap" )
-        QPixmap splashpix( img );
-        PERF_LOG( "Creating splashscreen" )
-        m_splash = new KSplashScreen( splashpix, Qt::WindowStaysOnTopHint );
-        PERF_LOG( "showing splashscreen" )
-        m_splash->show();
-    }
-
     PERF_LOG( "Registering taglib plugins" )
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
@@ -708,6 +694,20 @@ App::continueInit()
 
     new Amarok::DefaultApplicationController();
     Amarok::Components::applicationController()->start();
+
+    if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
+    {
+        PERF_LOG( "Init KStandardDirs cache" )
+        KStandardDirs *stdDirs = KGlobal::dirs();
+        PERF_LOG( "Finding image" )
+        QString img = stdDirs->findResource( "data", "amarok/images/splash_screen.jpg" );
+        PERF_LOG( "Creating pixmap" )
+        QPixmap splashpix( img );
+        PERF_LOG( "Creating splashscreen" )
+        m_splash = new KSplashScreen( splashpix, Qt::WindowStaysOnTopHint );
+        PERF_LOG( "showing splashscreen" )
+        m_splash->show();
+    }
 
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();

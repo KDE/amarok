@@ -38,3 +38,17 @@ CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Met
 
     return del;
 }
+
+bool CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const
+{
+    QStringList files;
+    foreach( Meta::TrackPtr track, tracks )
+        files << track->prettyUrl();
+    const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writeable.",
+                                "There was a problem and %1 tracks could not be removed. Make sure the directory is writeable.", files.count() ) );
+                                KMessageBox::informationList(0,
+                                                             text,
+                                                             files,
+                                                             i18n("Unable to be removed tracks") );
+}
+

@@ -326,6 +326,7 @@ set(collection_SRCS
     collection/support/MemoryFilter.cpp
     collection/support/MemoryMatcher.cpp
     collection/support/MemoryQueryMaker.cpp
+    collection/support/MemoryQueryMakerInternal.cpp
     collection/support/MemoryQueryMakerHelper.cpp
     collection/support/PlaylistCollection.cpp
     collection/support/PlaylistCollectionLocation.cpp
@@ -414,6 +415,18 @@ set(libplaylistmanager_SRCS
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
     playlistmanager/sql/SqlPlaylist.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp
+)
+
+#####################################################################
+# TOOLTIPS
+#####################################################################
+set(libtooltip_SRCS
+    tooltips/AmarokToolTip.cpp
+    tooltips/KToolTip.cpp
+    tooltips/KToolTipDelegate.cpp
+    tooltips/KToolTipItem.cpp
+    tooltips/KFormattedBalloonTipDelegate.cpp
+    tooltips/ToolTipManager.cpp
 )
 
 #####################################################################
@@ -548,6 +561,7 @@ set(amaroklib_LIB_SRCS
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
     ${libplaylist_SRCS}
+    ${libtooltip_SRCS}
     ${libplugin_SRCS}
     ${libproxycollection_SRCS}
     ${libpodcasts_SRCS}

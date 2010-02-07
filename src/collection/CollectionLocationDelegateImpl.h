@@ -26,6 +26,7 @@ public:
     virtual ~ CollectionLocationDelegateImpl() {};
 
     virtual bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const;
+    virtual bool errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const;
 };
 
 #endif

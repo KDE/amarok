@@ -22,6 +22,14 @@
 
 namespace Meta
 {
+    /**
+      * Do not use this capability. Ever. If you really need to emit Collection::updated()
+      * from outside the collection (which is wrong) use Collection::collectionUpdated(),
+      * e.g. track->collection()->collectionUpdated().
+      *
+      * The proper solution is to add code to the collection that allows it figure out on its
+      * own whether it has been changed.
+      */
     class AMAROK_EXPORT UpdateCapability : public Meta::Capability
     {
         Q_OBJECT

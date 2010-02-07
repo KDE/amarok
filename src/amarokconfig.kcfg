@@ -98,6 +98,35 @@
         <whatsthis>If set, Amarok's manually saved playlists will contain a relative path to each track, not an absolute path.</whatsthis>
         <default>true</default>
     </entry>
+    <entry key="External Browser" type="String">
+        <label>Filename of the external web browser to be invoked by Amarok.</label>
+        <default>xdg-open</default>
+    </entry>
+    <entry key="AutoGetCoverArt" type="Bool">
+        <label>Whether to automatically attempt to fetch cover art as needed</label>
+        <default>false</default>
+    </entry>
+    <entry key="AutoScrollPlaylist" type="Bool">
+        <label>Automatically scroll the playlist to make the currently playing song visible</label>
+        <default>true</default>
+    </entry>
+
+    <entry key="EnableToolTips" type="Bool">
+        <label>Whether to display tooltips for the song in the playlist</label>
+        <default>true</default>
+    </entry>
+
+    <entry key="Show Album Art" type="Bool">
+        <label>Show Album art in the Collection Browser</label>
+        <default>true</default>
+    </entry>
+    <entry key="Lock Layout" type="Bool">
+        <label>Show the Context View</label>
+        <default>true</default>
+    </entry>
+</group>
+
+<group name="OrganizeCollectionDialog">
     <entry key="Overwrite Files" type="Bool">
         <label>Whether organize files will overwrite existing files.</label>
         <whatsthis>If set, Organize files will overwrite any existing destination.</whatsthis>
@@ -111,7 +140,7 @@
     <entry key="Group Artists" type="Bool">
         <label>Whether organize files will group artists whose names start with the same character.</label>
         <whatsthis>If set, Organize files will group artists whose names start with the same character.</whatsthis>
-        <default>true</default>
+        <default>false</default>
     </entry>
     <entry key="Ignore The" type="Bool">
         <label>Whether organize files will ignore The in artist names.</label>
@@ -128,10 +157,10 @@
         <whatsthis>If set, Organize files will use cover art as folder icons.</whatsthis>
         <default>true</default>
     </entry>
-    <entry key="Organize Directory" type="Int">
-        <label>Index of collection folder destination for Organize files.</label>
-        <whatsthis>The ID of the collection folder destination for Organize files.</whatsthis>
-        <default>0</default>
+    <entry key="Organize Directory" type="String">
+        <label>Collection folder path destination for Organize files.</label>
+        <whatsthis>The path of the collection folder destination for Organize files.</whatsthis>
+        <default></default>
     </entry>
     <entry key="Vfat Compatible" type="Bool">
         <label>Whether organize files will rename files in a manner compatible with vfat filesystems.</label>
@@ -151,7 +180,7 @@
     <entry key="Custom Scheme" type="String">
         <label>Format string for Organize files, if a custom naming scheme is used.</label>
         <whatsthis>If the custom filename scheme is enabled, then Organize files will rename files according to this format string.</whatsthis>
-        <default>%folder/%filetype/%theartist/%album/%track_-_%title.%filetype</default>
+        <default>%theartist/%album/%track_-_%title</default>
     </entry>
     <entry key="Replacement Regexp" type="String">
         <label>Regular expression that is to be replaced.</label>
@@ -163,25 +192,10 @@
         <whatsthis>Organize files will replace matching substrings with this string.</whatsthis>
         <default></default>
     </entry>
-    <entry key="External Browser" type="String">
-        <label>Filename of the external web browser to be invoked by Amarok.</label>
-        <default>xdg-open</default>
-    </entry>
-    <entry key="AutoGetCoverArt" type="Bool">
-        <label>Whether to automatically attempt to fetch cover art as needed</label>
-        <default>false</default>
-    </entry>
-    <entry key="AutoScrollPlaylist" type="Bool">
-        <label>Automatically scroll the playlist to make the currently playing song visible</label>
-        <default>true</default>
-    </entry>
-    <entry key="Show Album Art" type="Bool">
-        <label>Show Album art in the Collection Browser</label>
-        <default>true</default>
-    </entry>
-    <entry key="Lock Layout" type="Bool">
-        <label>Show the Context View</label>
-        <default>true</default>
+    <entry key="Mode" type="String">
+        <label>Basic or Advanced Mode</label>
+        <whatsthis>In basic mode graphical drag/droppable tokens are used to create a filename scheme, in advanced mode the images are replaced with text.</whatsthis>
+        <default>Basic</default>
     </entry>
 </group>
 
@@ -272,7 +286,7 @@
         </default>
         <label>List with user presets values</label>
     </entry>
-    
+
     <entry key="Replay Gain Mode" type="Enum">
         <label>The mode for adjusting playback volume.</label>
         <whatsthis>Whether to adjust the volume of tracks to make them sound the same volume, and if so whether to make the adjustments per-track or per-album.</whatsthis>
@@ -595,5 +609,34 @@
         <default>0</default>
     </entry>
 </group>
+
+<group name="UpcomingEvents">
+    <entry key="enabledLinks" type="Bool">
+        <label>Clickable locations' names</label>
+        <whatsthis>Enable/Disable links to Google Map</whatsthis>
+        <default>true</default>
+    </entry>
+    <entry key="timeSpan" type="Enum">
+        <label>Timespan for upcoming events</label>
+        <whatsthis>Set the timespan for the upcoming events.</whatsthis>
+        <choices>
+            <choice name="AllEvents"/>
+            <choice name="ThisWeek"/>
+            <choice name="ThisMonth"/>
+            <choice name="ThisYear"/>
+        </choices>
+        <default>AllEvents</default>
+    </entry>
+</group>
+
+<group name="SimilarArtists">
+    <entry key="maxArtists" type="Int">
+        <label>Maximum similar artists</label>
+        <whatsthis>Maximum similar artists to be shown</whatsthis>
+        <default>20</default>
+    </entry>
+</group>
+
+
 
 </kcfg>

@@ -29,6 +29,11 @@ VERSION 2.2.3
     * Searching covers from Last.fm using custom query in interactive mode.
  
   CHANGES:
+    * All move/copy operations to the local collection are asynchronous.
+    * Proper handling of disk full and permision errors for copy/move
+      operations to the local collection.
+    * A preview of the moving/copying operations is now shown in the Organize
+      dialog.
     * Added an expander icon to the collection root items.
     * The equalizer configuration is now a seperate tool window accessible 
       from the tool menu.
@@ -53,6 +58,9 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Cleaned up the Organize dialog to make it more usable. (BR 199574)
+    * Made it harder to Move Files unintentionally. (BR 220716)
+    * Returned "Organize Files" to the collection's context menu. (BR 215902)
     * Fixed Amarok Solid action for playing audio CDs working. (BR 209204)
     * Fixed crash with moving applets in the Context View. (BR 191918)
     * Fixed crash in KNotify. (BR 224673)

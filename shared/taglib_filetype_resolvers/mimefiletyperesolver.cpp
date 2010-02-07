@@ -111,8 +111,10 @@ TagLib::File *MimeFileTypeResolver::createFile(TagLib::FileName fileName,
     {
         return new TagLib::TrueAudio::File(fileName, readProperties, propertiesStyle);
     }
-
-    qDebug() << "kmimetype filetype guessing failed for" << fileName;
+    
+#ifndef Q_WS_WIN
+     qDebug() << "kmimetype filetype guessing failed for" << fileName;
+#endif
 
     return 0;
 }
