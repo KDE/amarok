@@ -374,21 +374,8 @@ CollectionLocation::slotFinishRemove()
     DEBUG_BLOCK
     if( m_tracksWithError.size() > 0 )
     {
-        QStringList files;
-        QMapIterator<Meta::TrackPtr, QString> it( m_tracksWithError );
-        while(it.hasNext())
-        {
-            it.next();
-            if(it.key())
-                files << it.key()->prettyUrl();
-        }
-
-        const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writeable.",
-                                    "There was a problem and %1 tracks could not be removed. Make sure the directory is writeable.", files.count() ) );
-        KMessageBox::informationList(0,
-                                    text,
-                                    files,
-                                    i18n("Unable to be removed tracks") );
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        const bool del = delegate->errorDeleting( this, m_tracksWithError.keys() );
         m_tracksWithError.clear();
     }
 
