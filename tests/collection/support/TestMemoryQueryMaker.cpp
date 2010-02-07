@@ -30,16 +30,24 @@
 #include <QSignalSpy>
 
 #include <KCmdLineArgs>
+#include <KGlobal>
 
 #include <qtest_kde.h>
 
 #include <gmock/gmock.h>
 
+using ::testing::AnyNumber;
+using ::testing::Return;
+
 QTEST_KDEMAIN_CORE( TestMemoryQueryMaker )
 
 TestMemoryQueryMaker::TestMemoryQueryMaker()
 {
+    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
     ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
+    qRegisterMetaType<Meta::TrackList>();
+    qRegisterMetaType<Meta::AlbumList>();
+    qRegisterMetaType<Meta::ArtistList>();
 }
 
 void
@@ -48,7 +56,9 @@ TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
     MemoryCollection mc;
     mc.addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     mc.addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
-    mc.addTrack( Meta::TrackPtr( new Meta::MockTrack() ) );
+    Meta::MockTrack *mock = new Meta::MockTrack();
+    EXPECT_CALL( *mock, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "track3" ) );
+    mc.addTrack( Meta::TrackPtr( mock ) );
 
     MemoryQueryMaker *qm = new MemoryQueryMaker( &mc, "test" );
     qm->setQueryType( QueryMaker::Track );
@@ -56,7 +66,7 @@ TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
     qm->run();
     delete qm;
     //we cannot wait for a signal here....
-    QTest::qWait( 500 );
+    //QTest::qWait( 500 );
 }
 
 void
