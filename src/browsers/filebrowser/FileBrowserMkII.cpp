@@ -18,6 +18,7 @@
 #include "FileBrowserMkII.h"
 
 #include "BrowserBreadcrumbItem.h"
+#include "BrowserCategoryList.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "FileView.h"
@@ -234,4 +235,13 @@ void FileBrowserMkII::reActivate()
     m_currentPath = QDir::rootPath();
     setupAddItems();
     activate();
+}
+
+QString FileBrowserMkII::prettyName() const
+{
+    DEBUG_BLOCK
+    if( parentList()->activeCategory() == this )
+        return QDir::rootPath();
+    else
+        return BrowserCategory::prettyName();
 }

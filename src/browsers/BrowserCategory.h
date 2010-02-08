@@ -52,7 +52,7 @@ public:
      * Get the user visible name of this category.
      * @return The name of the service.
      */
-    QString prettyName() const;
+    virtual QString prettyName() const;
 
     /**
      * Set a short description string for this category. This string is used to describe the category in the category browser.
@@ -93,7 +93,7 @@ public:
     void setImagePath( const QString &path );
     QString imagePath();
 
-    BrowserCategoryList * parentList();
+    BrowserCategoryList * parentList() const;
     void setParentList( BrowserCategoryList * parent );
 
     BrowserBreadcrumbItem * breadcrumb();

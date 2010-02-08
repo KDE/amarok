@@ -104,7 +104,7 @@ void BrowserCategory::setParentList( BrowserCategoryList * parent )
     m_parentList = parent;
 }
 
-BrowserCategoryList * BrowserCategory::parentList()
+BrowserCategoryList * BrowserCategory::parentList() const
 {
     return m_parentList;
 }

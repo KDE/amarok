@@ -36,6 +36,8 @@ public:
 
     virtual void setupAddItems();
     virtual void polish();
+    
+    virtual QString prettyName() const;
 
 protected slots:
     void itemActivated( const QModelIndex &index );

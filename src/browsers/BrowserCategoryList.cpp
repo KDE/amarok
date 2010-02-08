@@ -240,7 +240,7 @@ QString BrowserCategoryList::activeCategoryName()
     return QString();
 }
 
-BrowserCategory * BrowserCategoryList::activeCategory()
+BrowserCategory * BrowserCategoryList::activeCategory() const
 {
     return m_currentCategory;
 }
