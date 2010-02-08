@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * New main toolbar with completely redesigned look and new features.
+      Contributed by Thomas Luebking <thomas.luebking@web.de>.
     * Podcasts can now be grouped per provider like iPod Podcasts, Local Podcasts,
       USB Mass Storage, etc. This can be toggled using a button in the Podcast
       Category.
