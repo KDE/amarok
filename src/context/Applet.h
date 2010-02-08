@@ -24,8 +24,10 @@
 #include <QFont>
 #include <QRectF>
 #include <QString>
+#include <QWeakPointer>
 
 class QPainter;
+class QPropertyAnimation;
 
 namespace Plasma
 {
@@ -39,6 +41,7 @@ namespace Context
 class AMAROK_EXPORT Applet : public Plasma::Applet
 {
     Q_OBJECT
+    Q_PROPERTY(qreal animate READ animationValue WRITE animate)
     public:
         explicit Applet( QObject* parent, const QVariantList& args = QVariantList() );
         ~Applet();
@@ -75,26 +78,28 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
           */
         virtual void   resize( qreal, qreal );
 
+        /**
+          * Returns the current animation value.
+          */
+        qreal animationValue() const;
+
     public Q_SLOTS:
         virtual void destroy();
-        void animateOn( qreal );
-        void animateOff( qreal );
-        void animateEnd( int );
+
+    protected slots:
+        void animate( qreal );
+        void animateEnd();
 
     private slots:
         void paletteChanged( const QPalette & palette );
 
     protected:
         Plasma::IconWidget* addAction( QAction *action, const int size = 16 );
-        bool canAnimate();
 
-        bool m_canAnimate;
         bool m_collapsed;
         int  m_heightCurrent;
         int  m_heightCollapseOn;
         int  m_heightCollapseOff;
-        int  m_animationIdOn;
-        int  m_animationIdOff;
         int  m_animFromHeight;
 
     private:
@@ -103,6 +108,7 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         bool m_transient;
         qreal m_standardPadding;
         Plasma::FrameSvg *m_textBackground;
+        QWeakPointer<QPropertyAnimation> m_animation;
 };
 
 } // Context namespace
