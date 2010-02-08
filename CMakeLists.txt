@@ -135,9 +135,6 @@ if( WITH_PLAYER )
         endif ( OPENSSL_FOUND OR LIBGCRYPT_FOUND )
         macro_log_feature( _mp3tunes_crypto "openssl or libgcrypt" "OpenSSL or GNU Libgcrypt provides cryptographic functions required by mp3tunes." "http://www.openssl.org/ or http://www.gnupg.org/download/#libgcrypt" FALSE "" "" )
 
-        find_package(GObject)
-        macro_log_feature( GOBJECT_FOUND "gobject" "Required by mp3tunes." "http://www.gtk.org" FALSE "2.x" "" )
-
         find_package(Loudmouth)
         macro_log_feature( LOUDMOUTH_FOUND "loudmouth" "Loudmouth is the communication backend needed by mp3tunes for syncing." "http://www.loudmouth-project.org" FALSE "" "" )
 
@@ -146,6 +143,8 @@ if( WITH_PLAYER )
     endif( WITH_MP3Tunes )
 
     if( WITH_IPOD OR WITH_MP3Tunes )
+    find_package(GObject)
+    macro_log_feature( GOBJECT_FOUND "gobject" "Required by libgpod and mp3tunes." "http://www.gtk.org" FALSE "2.x" "" )
 	find_package(GLIB2)
 	macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
     endif( WITH_IPOD OR WITH_MP3Tunes )
