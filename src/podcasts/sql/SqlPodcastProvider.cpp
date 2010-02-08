@@ -32,6 +32,8 @@
 #include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
 
+#include "ui_SqlPodcastProviderSettingsWidget.h"
+
 #include <KLocale>
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
@@ -381,6 +383,16 @@ void
 SqlPodcastProvider::configureProvider()
 {
     DEBUG_BLOCK
+    KDialog *dialog = new KDialog( The::mainWindow() );
+    QWidget *settingsWidget = new QWidget( dialog );
+    Ui::SqlPodcastProviderSettingsWidget sqlPodcastProviderSettingsWidget;
+    sqlPodcastProviderSettingsWidget.setupUi( settingsWidget );
+
+    dialog->setMainWidget( settingsWidget );
+
+    if( dialog->exec() == QDialog::Accepted )
+        debug() << "accepted";
+
 }
 
 void
