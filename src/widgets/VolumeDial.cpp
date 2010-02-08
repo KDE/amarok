@@ -16,7 +16,6 @@
 
 #include "VolumeDial.h"
 
-#include "MainWindow.h"
 #include "SvgHandler.h"
 
 #include <QCoreApplication>
@@ -193,6 +192,8 @@ void VolumeDial::wheelEvent( QWheelEvent *wev )
     QDial::wheelEvent( wev );
     wev->accept();
 
+    QToolTip::showText( mapToGlobal( rect().bottomLeft() ), m_toolTip );
+
     // NOTICE: this is a bit tricky.
     // the ToolTip "QTipLabel" just installed a global eventfilter that intercepts various
     // events and hides itself on them. Therefore every odd wheelevent will close the tip
@@ -238,9 +239,6 @@ void VolumeDial::valueChangedSlot( int v )
     m_toolTip = QString( "Volume: %1 %" ).arg( value() );
     setToolTip( m_toolTip );
 
-    if( The::mainWindow()->isReallyShown() )
-        QToolTip::showText( mapToGlobal( rect().bottomLeft() ), m_toolTip );
-    
     m_isClick = false;
 
     if ( m_muted == ( v == minimum() ) )
