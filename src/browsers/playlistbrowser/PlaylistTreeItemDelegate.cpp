@@ -139,8 +139,12 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     if( actionCount > 0 )
     {
         //HACK: there is an issue with QtGroupingProxy: a UserValue is returned as multiple copies in a QVariantList. So only take the first.
-        const QList<QAction*> actions = index.data(
-                PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).toList().first().value<QList<QAction*> >();
+
+        QList<QAction*> actions;
+        QVariantList actionsVariants =
+                index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).toList();
+        if( !actionsVariants.isEmpty() )
+            actions = actionsVariants.first().value<QList<QAction*> >();
 
         QRect actionsRect;
         actionsRect.setLeft( (width - actionCount * ACTIONICON_SIZE) - 2 );
