@@ -50,5 +50,6 @@ bool CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, con
                                                              text,
                                                              files,
                                                              i18n("Unable to be removed tracks") );
+    return false;
 }
 
