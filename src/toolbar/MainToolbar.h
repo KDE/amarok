@@ -47,7 +47,6 @@ public:
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
     void hideEvent( QHideEvent *ev );
-    void mousePressEvent( QMouseEvent * );
     void paintEvent( QPaintEvent *ev );
     void resizeEvent( QResizeEvent *ev );
     void showEvent( QShowEvent *ev );
@@ -74,7 +73,7 @@ private:
 
     QSpacerItem *m_trackBarSpacer;
     QSpacerItem *m_progressBarSpacer;
-    QPixmap m_bgGradient;
+    QPixmap m_bgGradient, m_arrowLeft, m_arrowRight;
 
     struct
     {
@@ -115,7 +114,6 @@ private:
         int max;
     } m_drag;
     int m_trackBarAnimationTimer;
-    int m_bgGradientMode;
 
     Phonon::State m_currentEngineState;
     

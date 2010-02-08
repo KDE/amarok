@@ -23,6 +23,7 @@
 #include "Amarok.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
+#include "SvgHandler.h"
 
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
@@ -65,11 +66,8 @@ MainToolbar::MainToolbar( QWidget *parent )
     : QToolBar( i18n( "Main Toolbar" ), parent )
     , EngineObserver( The::engineController() )
     , m_lastTime( -1 )
-    , m_bgGradientMode( 0 )
 {
     setObjectName( "MainToolbar" );
-    // prevents local from triggering updates on the parent, needs to be false in case of no m_bgGradient
-    setAttribute( Qt::WA_OpaquePaintEvent, true );
 
     EngineController *engine = The::engineController();
     m_currentEngineState = The::engineController()->state();
@@ -87,7 +85,8 @@ MainToolbar::MainToolbar( QWidget *parent )
 
     QWidget *info = new QWidget(this);
     QVBoxLayout *vl = new QVBoxLayout( info );
-    
+
+    m_prev.key = 0;
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
     m_prev.label->setAnimated( false );
     m_prev.label->setOpacity( prevOpacity );
@@ -100,6 +99,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_current.label->installEventFilter( this );
     connect ( m_current.label, SIGNAL( clicked(const QString&) ), this, SLOT( filter(const QString&) ) );
 
+    m_next.key = 0;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
     m_next.label->setAnimated( false );
     m_next.label->setOpacity( nextOpacity );
@@ -170,7 +170,13 @@ MainToolbar::animateTrackLabels()
 {
     bool done = true;
     int x = m_trackBarSpacer->geometry().x();
-    const int dx = m_trackBarSpacer->geometry().width() / 3;
+    int dx = m_trackBarSpacer->geometry().width() / 3;
+    if ( layoutDirection() == Qt::RightToLeft )
+    {
+        x = m_trackBarSpacer->geometry().right() - dx;
+        dx = -dx;
+    }
+    
     adjustLabelPos( m_prev.label, x );
     m_prev.label->setOpacity( prevOpacity );
     if (done)
@@ -289,13 +295,22 @@ MainToolbar::layoutProgressBar()
     QRect pb = r.adjusted( w, 0, -w, 0 );
     m_slider->setGeometry( pb );
 
-    QRect lr( 0, 0, tlW, r.height() );
-    lr.moveTopRight( pb.topLeft() - QPoint( timeLabelMargin, 0 ) );
-    m_timeLabel->setGeometry( lr );
+    QRect tlR( 0, 0, tlW, r.height() );
+    QRect rtlR( 0, 0, rtlW, r.height() );
 
-    lr = QRect( 0, 0, rtlW, r.height() );
-    lr.moveTopLeft( pb.topRight() + QPoint( timeLabelMargin, 0 )  );
-    m_remainingTimeLabel->setGeometry( lr );
+    if ( layoutDirection() == Qt::LeftToRight )
+    {
+        tlR.moveTopRight( pb.topLeft() - QPoint( timeLabelMargin, 0 ) );
+        rtlR.moveTopLeft( pb.topRight() + QPoint( timeLabelMargin, 0 )  );
+    }
+    else
+    {
+        rtlR.moveTopRight( pb.topLeft() - QPoint( timeLabelMargin, 0 ) );
+        tlR.moveTopLeft( pb.topRight() + QPoint( timeLabelMargin, 0 )  );
+    }
+
+    m_timeLabel->setGeometry( tlR );
+    m_remainingTimeLabel->setGeometry( rtlR );
 }
 
 void
@@ -304,11 +319,21 @@ MainToolbar::layoutTrackBar()
     m_dummy.label->hide();
     QRect r = m_trackBarSpacer->geometry();
     r.setWidth( r.width() / 3);
+    int d = r.width();
+
+    if ( layoutDirection() == Qt::RightToLeft )
+    {
+        d = -d;
+        r.moveRight( m_trackBarSpacer->geometry().right() );
+    }
+
     m_prev.label->setGeometry( r );
     m_prev.label->setOpacity( prevOpacity );
-    r.moveLeft( r.right() + 1 );
+
+    r.translate( d, 0 );
     m_current.label->setGeometry( r );
-    r.moveLeft( r.right() + 1 );
+
+    r.translate( d, 0 );
     m_next.label->setGeometry( r );
     m_next.label->setOpacity( nextOpacity );
 }
@@ -320,7 +345,6 @@ MainToolbar::layoutTrackBar()
 static QStringList metadata( Meta::TrackPtr track )
 {
     QStringList list;
-    QRegExp rx("(\\s+-\\s+|\\s*;\\s*|\\s*:\\s*)"); // this will split "all-in-one" filename tags
     if ( track )
     {
         if ( !track->name().isEmpty() )
@@ -332,7 +356,20 @@ static QStringList metadata( Meta::TrackPtr track )
                  (HAS_TAG(composer) && title.CONTAINS_TAG(composer)) ||
                  (HAS_TAG(album) && title.CONTAINS_TAG(album)) )
             {
+                // this will split "all-in-one" filename tags
+                QRegExp rx("(\\s+-\\s+|\\s*;\\s*|\\s*:\\s*)");
                 list << title.split( rx, QString::SkipEmptyParts );
+                QList<QString>::iterator i = list.begin();
+                bool ok;
+                while ( i != list.end() )
+                {
+                    // check whether this entry is only a number, i.e. probably year or track #
+                    i->toInt( &ok );
+                    if ( ok )
+                        i = list.erase( i );
+                    else
+                        ++i;
+                }
             }
             else
             {
@@ -346,12 +383,10 @@ static QStringList metadata( Meta::TrackPtr track )
             list << TAG(composer);
         if ( HAS_TAG(album) && !list.CONTAINS_TAG(album) )
             list << TAG(album);
-        if ( HAS_TAG(year) && TAG(year) != "0" ) // "0" years be empty?!
-            list << TAG(year);
-        if ( HAS_TAG(genre) && !list.CONTAINS_TAG(genre) )
-            list << TAG(genre);
 
         /* other tags
+        string year
+        string genre
         double score
         int rating
         qint64 length // ms
@@ -377,8 +412,8 @@ MainToolbar::updatePrevAndNext()
 {
     if ( !The::engineController()->currentTrack() )
     {
-        m_prev.label->setData( QStringList() );
-        m_next.label->setData( QStringList() );
+        m_prev.label->setData( QStringList() << "[" + i18n("Previous") + "]" );
+        m_next.label->setData( QStringList() << "[" + i18n("Next") + "]"  );
         m_current.label->setUpdatesEnabled( true );
         return;
     }
@@ -390,19 +425,29 @@ MainToolbar::updatePrevAndNext()
     // if we'd query the previous track first, we'd get a track that's actually no more present after
     // the next track query. by this order we'll get a 0L track, what's also the navigators opinion
     // about its queue :-\ //
+    bool needUpdate = false;
+    bool hadKey = bool(m_next.key);
     Meta::TrackPtr track = The::playlistActions()->likelyNextTrack();
     m_next.key = track ? track.data() : 0L;
     m_next.label->setData( metadata( track ) );
     m_next.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
+    if ( hadKey != bool(m_next.key) )
+        needUpdate = true;
 
+    hadKey = bool(m_prev.key);
     track = The::playlistActions()->likelyPrevTrack();
     m_prev.key = track ? track.data() : 0L;
     m_prev.label->setData( metadata( track ) );
     m_prev.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
+    if ( hadKey != bool(m_prev.key) )
+        needUpdate = true;
 
     // we may have disbaled it as otherwise the current label gets updated one eventcycle before prev & next
     // see ::engineTrackChanged()
     m_current.label->setUpdatesEnabled( true );
+
+    if ( needUpdate )
+        update();
 
     // unanimated change, probably by sliding the bar - fix label positions
     if ( !m_trackBarAnimationTimer )
@@ -458,21 +503,31 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
         // on the other two labels, i.e. e.g. move the prev to current label position and current
         // to the next and the animate the move into their target positions
         QRect r = m_trackBarSpacer->geometry();
-        r.setWidth( r.width() / 3);
-        if ( isVisible() &&  m_current.label->geometry().x() == r.x() + r.width() )
+        r.setWidth( r.width() / 3 );
+        int d = r.width();
+
+        if ( layoutDirection() == Qt::RightToLeft )
+        {
+            d = -d;
+            r.moveRight( m_trackBarSpacer->geometry().right() );
+        }
+
+        if ( isVisible() &&  m_current.label->geometry().x() == r.x() + d )
         {
             if ( m_current.key == m_next.key && m_current.key != m_prev.key )
             {
                 // left
-                m_dummy.targetX = r.x() - r.width()/2;
+                m_dummy.targetX = r.x() - d/2;
+//                 if ( d < 0 ) // rtl
+//                     m_dummy.targetX -= d;
                 m_dummy.label->setGeometry( r );
                 m_dummy.label->setData( m_prev.label->data() );
                 m_dummy.label->show();
                 // center
-                r.moveLeft( r.right() + 1 );
+                r.translate( d, 0 );
                 m_prev.label->setGeometry( r );
                 // right
-                r.moveLeft( r.right() + 1 );
+                r.translate( d, 0 );
                 m_current.label->setGeometry( r );
                 m_next.label->setGeometry( r );
 
@@ -488,12 +543,12 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
                 m_prev.label->setGeometry( r );
                 m_current.label->setGeometry( r );
                 // center
-                r.moveLeft( r.right() + 1 );
+                r.translate( d, 0 );
                 m_next.label->setGeometry( r );
 
                 // right
-                r.moveLeft( r.right() + 1 );
-                m_dummy.targetX = r.x() + r.width()/2;
+                r.translate( d, 0 );
+                m_dummy.targetX = r.x() + d/2;
                 m_dummy.label->setGeometry( r );
                 m_dummy.label->setData( m_next.label->data() );
                 m_dummy.label->show();
@@ -559,30 +614,35 @@ MainToolbar::hideEvent( QHideEvent *ev )
 }
 
 void
-MainToolbar::mousePressEvent( QMouseEvent *mev )
-{
-    if ( mev->button() == Qt::MidButton )
-    {
-        ++m_bgGradientMode;
-        m_bgGradientMode %= 4;
-        updateBgGradient();
-        update();
-        return;
-    }
-    QToolBar::mousePressEvent( mev );
-}
-
-void
 MainToolbar::paintEvent( QPaintEvent *ev )
 {
-    if ( m_bgGradientMode )
-    {
-        QPainter p( this );
+
+    QPainter p;
+    if ( !testAttribute( Qt::WA_OpaquePaintEvent ) ) // this hints that the UI style will overpaint
+    {                                                // entire area anyway.
+        p.begin( this );
+        p.setClipRegion( ev->region() );
         p.drawTiledPixmap( rect(), m_bgGradient );
         p.end();
     }
+
     // by keeping this below, the style will have the last word on the toolbar look
+    // this is at least important to paint the draghandle
     QToolBar::paintEvent( ev );
+
+    // but we force the arrows above
+    if ( m_prev.key || m_next.key )
+    {
+        p.begin( this );
+        p.setClipRegion( ev->region() );
+        const int dx = width() / 6;
+        const int dp = m_arrowLeft.width() / 2;
+        if ( m_prev.key )
+            p.drawPixmap( dx - dp, 6, m_arrowLeft );
+        if ( m_next.key )
+            p.drawPixmap( width() - (dx + dp),  6, m_arrowRight );
+        p.end();
+    }
 }
 
 
@@ -590,7 +650,13 @@ void
 MainToolbar::resizeEvent( QResizeEvent *ev )
 {
     if ( ev->size().height() != ev->oldSize().height() )
+    {
         updateBgGradient();
+        const int h = height() - 12;
+        const int w = h*128/100; // original ratio from default theme
+        m_arrowLeft = The::svgHandler()->renderSvg( "leftArrow", w, h, "leftArrow" );
+        m_arrowRight = The::svgHandler()->renderSvg( "rightArrow", w, h, "rightArrow" );
+    }
     if ( ev->size().width() > 0 && ev->size().width() != ev->oldSize().width() )
     {
         layoutProgressBar();
@@ -697,112 +763,22 @@ MainToolbar::timerEvent( QTimerEvent *ev )
         QToolBar::timerEvent( ev );
 }
 
-// magic gradient functions, taken from some UI style ;-P
-static inline QLinearGradient
-silkenGradient(const QColor &c, const QPoint &start, const QPoint &stop)
-{
-    int h,s,v,a, inc = 15, dec = 6;
-    c.getHsv( &h, &s, &v, &a );
-    
-    // calc difference
-    if ( v+inc > 255 )
-    {
-        inc = 255-v;
-        dec += ( 15-inc );
-    }
-    
-    QLinearGradient lg( start, stop );
-    QColor ic;
-    ic.setHsv( h, s, v+inc, a );
-    lg.setColorAt( 0, ic );
-    ic.setHsv( h, s, v-dec, a );
-    lg.setColorAt( 0.75, ic );
-    // this triggers a rebend (like on latest iTunes)
-    lg.setColorAt( 1.0, c );
-    return lg;
-}
-
-static inline QLinearGradient
-glassGradient(const QColor &c, const QPoint &start, const QPoint &stop)
-{
-    QColor bb,dd; // b = d = c;
-    
-    int h,s,v,a;
-    c.getHsv( &h, &s, &v, &a );
-    
-    // calculate the variation
-    int add = (180 - v ) / 1;
-    if ( add < 0 )
-        add = -add/2;
-    add /= 48;
-    
-    // the brightest color (top)
-    int cv = v + 27 + add, ch = h, cs = s;
-
-    if ( cv > 255 )
-    {
-        int delta = cv - 255;
-        cv = 255;
-        cs = s - 6*delta;
-        if ( cs < 0 )
-            cs = 0;
-        ch = h - 3*delta/2;
-        while ( ch < 0 )
-            ch += 360;
-    }
-    bb.setHsv( ch, cs, cv, a);
-    
-    // the darkest color (lower center)
-    cv = v - 14 - add;
-    if ( cv < 0 )
-        cv = 0;
-    cs = s*13/7;
-    if ( cs > 255 )
-        cs = 255;
-    dd.setHsv( h, cs, cv, a);
-    
-    QLinearGradient lg( start, stop );
-    lg.setColorAt( 0, bb );
-    lg.setColorAt( .35, c );
-    lg.setColorAt( .42, dd );
-    lg.setColorAt( 1, bb );
-    return lg;
-}
-
 void
 MainToolbar::updateBgGradient()
 {
-    if ( !m_bgGradientMode )
-    {
-        setAttribute( Qt::WA_OpaquePaintEvent, false );
-        m_bgGradient = QPixmap();
-        return;
-    }
-    
-    setAttribute( Qt::WA_OpaquePaintEvent, false );
     // please keep the 32px width
     // X11/XRender is optimized to this and e.g. 1px would cause a tremendous slowdown on painting
     m_bgGradient = QPixmap( 32, height() );
+    m_bgGradient.fill( Qt::transparent );
     const QColor c = palette().color( QPalette::Active, QPalette::Window );
+    QLinearGradient lg( 0, 0, 0, height()-1 );
+//     lg.setColorAt( 0.25, c.lighter( 106 ) );
+//     lg.setColorAt( 0.75, c.lighter( 103 ) );
+    lg.setColorAt( 0, QColor(255,255,255,0) );
+    lg.setColorAt( 1, QColor(0,0,0,48) );
+
     QPainter p( &m_bgGradient );
-    switch ( m_bgGradientMode )
-    {
-    case 1:
-    default:
-        p.fillRect( m_bgGradient.rect(), silkenGradient( c, m_bgGradient.rect().topLeft(), m_bgGradient.rect().bottomLeft() ) );
-        break;
-    case 2:
-        p.fillRect( m_bgGradient.rect(), glassGradient( c, m_bgGradient.rect().topLeft(), m_bgGradient.rect().bottomLeft() ) );
-        break;
-    case 3:
-    {
-        QLinearGradient lg( m_bgGradient.rect().topLeft(), m_bgGradient.rect().bottomLeft() );
-        lg.setColorAt( 0, c.darker( 115 ) );
-        lg.setColorAt( 1, c.lighter( 117 ) );
-        p.fillRect( m_bgGradient.rect(), lg );
-        break;
-    }
-    }
+    p.fillRect( m_bgGradient.rect(), lg );
     p.end();
 }
 
