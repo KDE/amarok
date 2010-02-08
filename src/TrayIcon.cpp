@@ -26,14 +26,11 @@
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "GlobalCurrentTrackActions.h"
-#include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
-
 #include <KAction>
-#include <KApplication>
 #include <KIcon>
 #include <KIconEffect>
 #include <KLocale>
@@ -46,6 +43,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
+#include <QTime>
 #include <QToolTip>
 
 namespace Amarok
@@ -60,8 +58,6 @@ namespace Amarok
         return 0;
     }
 }
-
-QTime Amarok::TrayIcon::lastEventCall = QTime();
 
 Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         : KSystemTrayIcon( playerWidget )
@@ -200,6 +196,8 @@ Amarok::TrayIcon::setupToolTip()
 bool
 Amarok::TrayIcon::event( QEvent *e )
 {
+    static QTime lastEventCall = QTime();
+
     switch( e->type() )
     {
     case QEvent::DragEnter:

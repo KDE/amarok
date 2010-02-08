@@ -23,11 +23,9 @@
 #include "meta/Meta.h"
 #include "SmartPointerList.h"
 
-#include <KAction>
 #include <KSystemTrayIcon> //baseclass
 
 #include <QPointer>
-#include <QTime>
 
 class QEvent;
 class App;
@@ -78,8 +76,6 @@ private:
     QPixmap m_playOverlay, m_pauseOverlay;
     SmartPointerList<QAction> m_extraActions;
     QPointer<QAction> m_separator;
-
-    static QTime lastEventCall;
 };
 
 }
