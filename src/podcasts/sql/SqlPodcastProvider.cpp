@@ -395,6 +395,7 @@ SqlPodcastProvider::configureProvider()
     settings.m_baseDirUrl->setUrl( m_baseDownloadDir );
 
     settings.m_autoUpdateInterval->setValue( m_autoUpdateInterval );
+    settings.m_autoUpdateInterval->setSuffix(ki18np(" minute", " minutes"));
 
     m_providerSettingsDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
     m_providerSettingsDialog->setMainWidget( settingsWidget );

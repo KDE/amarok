@@ -68,9 +68,6 @@
    <property name="specialValueText">
     <string extracomment="automatic updates turned off">disabled</string>
    </property>
-   <property name="suffix">
-    <string comment="auto-update interval"> minutes</string>
-   </property>
    <property name="prefix">
     <string extracomment="prefix to update interval in minutes">every </string>
    </property>
