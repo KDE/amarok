@@ -25,7 +25,6 @@
 #include "widgets/SearchWidget.h"
 
 #include <KDirModel>
-#include <QSortFilterProxyModel>
 #include <QTimer>
 
 class FileBrowserMkII : public BrowserCategory
@@ -57,7 +56,6 @@ private:
     
     SearchWidget             *m_searchWidget;
     KDirModel                *m_kdirModel;
-    QSortFilterProxyModel    *m_proxyModel;
     MimeTypeFilterProxyModel *m_mimeFilterProxyModel;
     DirectoryLoader          *m_directoryLoader;
 

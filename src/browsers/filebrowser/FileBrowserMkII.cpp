@@ -47,14 +47,12 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 
     m_mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
     m_mimeFilterProxyModel->setSourceModel( m_kdirModel );
-
-    m_proxyModel = new QSortFilterProxyModel( this );
-    m_proxyModel->setSourceModel( m_mimeFilterProxyModel );
+    m_mimeFilterProxyModel->sort( 0 );
 
     debug() << "home path: " <<  QDir::homePath();
 
     m_fileView = new FileView( this );
-    m_fileView->setModel( m_proxyModel );
+    m_fileView->setModel( m_mimeFilterProxyModel );
 
     m_fileView->setDragEnabled( true );
     m_fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -127,7 +125,7 @@ void FileBrowserMkII::slotSetFilterTimeout()
 
 void FileBrowserMkII::slotFilterNow()
 {
-    m_proxyModel->setFilterFixedString( m_currentFilter );
+    m_mimeFilterProxyModel->setFilterFixedString( m_currentFilter );
 
     QStringList filters;
     filters << m_currentFilter;
