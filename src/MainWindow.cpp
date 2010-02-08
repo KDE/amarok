@@ -102,12 +102,8 @@
 #include "mac/GrowlInterface.h"
 #endif
 
-// Let people know OS X and Windows versions are still work-in-progress
-#if defined(Q_WS_MAC) || defined(Q_WS_WIN)
-#define AMAROK_CAPTION "Amarok 2 beta"
-#else
 #define AMAROK_CAPTION "Amarok"
-#endif
+
 
 extern KAboutData aboutData;
 extern OcsData ocsData;
