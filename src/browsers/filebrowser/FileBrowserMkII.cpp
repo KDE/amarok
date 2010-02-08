@@ -239,7 +239,6 @@ void FileBrowserMkII::reActivate()
 
 QString FileBrowserMkII::prettyName() const
 {
-    DEBUG_BLOCK
     if( parentList()->activeCategory() == this )
         return QDir::rootPath();
     else
