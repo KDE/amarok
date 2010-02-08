@@ -147,7 +147,12 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
     m_icon[1] = The::svgHandler()->renderSvg( "Volume_low", width(), height(), "Volume_low" );
     m_icon[2] = The::svgHandler()->renderSvg( "Volume_mid", width(), height(), "Volume_mid" );
     m_icon[3] = The::svgHandler()->renderSvg( "Volume",     width(), height(), "Volume" );
-    
+    if ( layoutDirection() == Qt::RightToLeft )
+    {
+        for ( int i = 0; i < 4; ++i )
+            m_icon[i] = QPixmap::fromImage( m_icon[i].toImage().mirrored( true, false ) );
+    }
+
     update();
 }
 
