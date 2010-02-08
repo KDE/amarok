@@ -42,8 +42,8 @@
 
 using namespace PlaylistBrowserNS;
 
-QString PlaylistCategory::s_byProviderKey( "Group By Provider" );
 QString PlaylistCategory::s_configGroup( "Saved Playlists View" );
+QString PlaylistCategory::s_mergeViewKey( "Merged View" );
 
 PlaylistCategory::PlaylistCategory( QWidget * parent )
     : BrowserCategory( "user playlists", parent )
@@ -65,19 +65,20 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ),
-                                         i18n( "Toggle unified view mode" ), m_toolBar );
+                                         i18n( "Merged View" ), m_toolBar );
     toggleAction->setCheckable( true );
     m_toolBar->addAction( toggleAction );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
 
     m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
-    m_byProviderProxy = new PlaylistsByProviderProxy( The::userPlaylistModel(), UserModel::ProviderColumn );
+    m_byProviderProxy = new PlaylistsByProviderProxy( The::userPlaylistModel(),
+                                                      UserModel::ProviderColumn );
     m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
 
     m_byFolderProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
     m_defaultItemView = m_playlistView->itemDelegate();
 
-    toggleView( Amarok::config( s_configGroup ).readEntry( s_byProviderKey, true ) );
+    toggleView( Amarok::config( s_configGroup ).readEntry( s_mergeViewKey, false ) );
 
 //    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
@@ -117,22 +118,23 @@ void PlaylistCategory::newPalette(const QPalette & palette)
 }
 
 void
-PlaylistCategory::toggleView( bool byProvider )
+PlaylistCategory::toggleView( bool merged )
 {
-    if( byProvider )
+    if( merged )
+    {
+
+        m_playlistView->setModel( m_byFolderProxy );
+        m_playlistView->setItemDelegate( m_defaultItemView );
+        m_playlistView->setRootIsDecorated( true );
+    }
+    else
     {
         m_playlistView->setModel( m_byProviderProxy );
         m_playlistView->setItemDelegate( m_byProviderDelegate );
         m_playlistView->setRootIsDecorated( false );
     }
-    else
-    {
-        m_playlistView->setModel( m_byFolderProxy );
-        m_playlistView->setItemDelegate( m_defaultItemView );
-        m_playlistView->setRootIsDecorated( true );
-    }
 
-    Amarok::config( s_configGroup ).writeEntry( s_byProviderKey, byProvider );
+    Amarok::config( s_configGroup ).writeEntry( s_mergeViewKey, merged );
 }
 
 #include "PlaylistCategory.moc"

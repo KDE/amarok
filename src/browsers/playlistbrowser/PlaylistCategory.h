@@ -48,7 +48,7 @@ class PlaylistCategory : public BrowserCategory
 Q_OBJECT
 public:
     static QString s_configGroup;
-    static QString s_byProviderKey;
+    static QString s_mergeViewKey;
 
     PlaylistCategory( QWidget * parent );
 

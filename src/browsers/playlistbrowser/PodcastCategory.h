@@ -58,7 +58,7 @@ class PodcastCategory : public BrowserCategory
     private:
         static PodcastCategory* s_instance;
         static QString s_configGroup;
-        static QString s_byProviderKey;
+        static QString s_mergedViewKey;
 
         PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel );
         ~PodcastCategory();

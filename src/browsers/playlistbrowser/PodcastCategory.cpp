@@ -67,8 +67,8 @@ namespace The
 
 using namespace PlaylistBrowserNS;
 
-QString PodcastCategory::s_byProviderKey( "Group By Provider" );
 QString PodcastCategory::s_configGroup( "Podcast View" );
+QString PodcastCategory::s_mergedViewKey( "Merged View" );
 
 PodcastCategory* PodcastCategory::s_instance = 0;
 
@@ -138,11 +138,11 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_defaultItemView = m_podcastTreeView->itemDelegate();
 
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ),
-                                         i18n( "Toggle unified view mode" ), toolBar );
+                                         i18n( "Merged View" ), toolBar );
     toggleAction->setCheckable( true );
     toolBar->addAction( toggleAction );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
-    if( Amarok::config( s_configGroup ).readEntry( s_byProviderKey, true ) )
+    if( Amarok::config( s_configGroup ).readEntry( s_mergedViewKey, true ) )
     {
         m_podcastTreeView->setModel( m_byProviderProxy );
         m_podcastTreeView->setItemDelegate( m_byProviderDelegate );
@@ -352,22 +352,22 @@ PodcastCategory::slotImportOpml()
 }
 
 void
-PodcastCategory::toggleView( bool enabled ) //SLOT
+PodcastCategory::toggleView( bool merged ) //SLOT
 {
-    if( enabled )
-    {
-        m_podcastTreeView->setModel( m_byProviderProxy );
-        m_podcastTreeView->setItemDelegate( m_byProviderDelegate );
-        m_podcastTreeView->setRootIsDecorated( false );
-    }
-    else
+    if( merged )
     {
         m_podcastTreeView->setModel( m_podcastModel );
         m_podcastTreeView->setItemDelegate( m_defaultItemView );
         m_podcastTreeView->setRootIsDecorated( true );
     }
+    else
+    {
+        m_podcastTreeView->setModel( m_byProviderProxy );
+        m_podcastTreeView->setItemDelegate( m_byProviderDelegate );
+        m_podcastTreeView->setRootIsDecorated( false );
+    }
 
-    Amarok::config( s_configGroup ).writeEntry( s_byProviderKey, enabled );
+    Amarok::config( s_configGroup ).writeEntry( s_mergedViewKey, merged );
 }
 
 ViewKicker::ViewKicker( QTreeView * treeView )
