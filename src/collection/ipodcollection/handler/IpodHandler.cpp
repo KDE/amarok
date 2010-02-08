@@ -730,6 +730,10 @@ IpodHandler::detectModel()
         m_supportsArtwork = false;
         #endif
         debug() << "Supports Artwork: " << ( m_supportsArtwork ? "true" : "false" );
+
+        m_supportsVideo = itdb_device_supports_video( m_itdb->device );
+        debug() << "Supports Video: " << ( m_supportsVideo ? "true" : "false" );
+
         QString musicdirs;
         musicdirs.setNum( itdb_musicdirs_number(m_itdb) );
         debug() << "Musicdirs: " << musicdirs;
@@ -762,16 +766,6 @@ IpodHandler::detectModel()
                 debug() << "detected iPhone/iPod Touch" << endl;
                 break;
 
-            case ITDB_IPOD_MODEL_CLASSIC_SILVER:
-            case ITDB_IPOD_MODEL_CLASSIC_BLACK:
-                debug() << "detected iPod classic";
-            case ITDB_IPOD_MODEL_VIDEO_WHITE:
-            case ITDB_IPOD_MODEL_VIDEO_BLACK:
-            case ITDB_IPOD_MODEL_VIDEO_U2:
-                m_supportsVideo = true;
-                debug() << "detected video-capable iPod";
-                break;
-
             case ITDB_IPOD_MODEL_MOBILE_1:
                 m_isMobile = true;
                 debug() << "detected iTunes phone" << endl;
@@ -795,11 +789,6 @@ IpodHandler::detectModel()
                case ITDB_IPOD_GENERATION_NANO_3:
                case ITDB_IPOD_GENERATION_TOUCH_1:
                   m_needsFirewireGuid = true;
-                  m_supportsVideo = true;
-                  break;
-               case ITDB_IPOD_GENERATION_VIDEO_1:
-               case ITDB_IPOD_GENERATION_VIDEO_2:
-                  m_supportsVideo = true;
                   break;
                case ITDB_IPOD_GENERATION_SHUFFLE_1:
                case ITDB_IPOD_GENERATION_SHUFFLE_2:
@@ -840,16 +829,6 @@ IpodHandler::detectModel()
             debug() << "iTunes_Control found - assuming iPhone/iPod Touch" << endl;
             m_isIPhone = true;
         }
-    }
-
-    if( m_isIPhone )
-    {
-        #ifdef GDK_FOUND
-        m_supportsArtwork = true;
-        #else
-        m_supportsArtwork = false;
-        #endif
-        m_supportsVideo = true;
     }
 
     if( pathExists( ":.rockbox" ) )
