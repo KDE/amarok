@@ -135,6 +135,9 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_volume->setValue( engine->volume() );
     m_volume->setMuted( engine->isMuted() );
     m_volume->setFixedSize( icnSize, icnSize );
+    m_volume->addWheelProxies( QList<QWidget*>() << this << info
+                                                 << m_prev.label << m_current.label << m_next.label
+                                                 << m_timeLabel << m_remainingTimeLabel );
     addWidget( m_volume );
     connect ( m_volume, SIGNAL( valueChanged(int) ), engine, SLOT( setVolume(int) ) );
     connect ( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
@@ -780,15 +783,6 @@ MainToolbar::updateBgGradient()
     QPainter p( &m_bgGradient );
     p.fillRect( m_bgGradient.rect(), lg );
     p.end();
-}
-
-void
-MainToolbar::wheelEvent( QWheelEvent *wev )
-{
-    QPoint pos( 0, 0 ); // the event needs to be on the dial or nothing will happen
-    QWheelEvent nwev( pos, m_volume->mapToGlobal( pos ), wev->delta(),
-                      wev->buttons(), wev->modifiers() );
-    m_volume->wheelEvent( &nwev );
 }
 
 bool

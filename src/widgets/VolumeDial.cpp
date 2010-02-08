@@ -37,6 +37,19 @@ VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
 }
 
+void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
+{
+    foreach ( QWidget *proxy, proxies )
+    {
+        if ( !m_wheelProxies.contains( proxy ) )
+        {
+            proxy->installEventFilter( this );
+            connect ( proxy, SIGNAL( destroyed(QObject*) ), this, SLOT( removeWheelProxy(QObject*) ) );
+            m_wheelProxies << proxy;
+        }
+    }
+}
+
 
 void VolumeDial::enterEvent( QEvent * )
 {
@@ -50,7 +63,7 @@ bool VolumeDial::eventFilter( QObject *o, QEvent *e )
 {
     if ( e->type() == QEvent::Wheel )
     {
-        if ( o == this )
+        if ( o == this || m_wheelProxies.contains( static_cast<QWidget*>( o ) ) )
         {
             QWheelEvent *wev = static_cast<QWheelEvent*>(e);
             if ( o != this )
@@ -63,7 +76,7 @@ bool VolumeDial::eventFilter( QObject *o, QEvent *e )
                 wheelEvent( wev );
             return true;
         }
-        else // we're not needed anymore
+        else // we're not needed globally anymore
             qApp->removeEventFilter( this );
     }
     return false;
@@ -134,6 +147,11 @@ void VolumeDial::paintEvent( QPaintEvent * )
     p.setRenderHint(QPainter::Antialiasing);
     p.drawArc( rect().adjusted(4,4,-4,-4), -110*16, - value()*320*16 / (maximum() - minimum()) );
     p.end();
+}
+
+void VolumeDial::removeWheelProxy( QObject *w )
+{
+    m_wheelProxies.removeOne( static_cast<QWidget*>(w) );
 }
 
 void VolumeDial::resizeEvent( QResizeEvent *re )
