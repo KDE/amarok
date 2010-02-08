@@ -59,6 +59,7 @@ SqlPodcastProvider::SqlPodcastProvider()
         : m_updateTimer( new QTimer( this ) )
         , m_updatingChannels( 0 )
         , m_completedDownloads( 0 )
+        , m_providerSettingsDialog( 0 )
         , m_configureChannelAction( 0 )
         , m_deleteAction( 0 )
         , m_downloadAction( 0 )
@@ -84,6 +85,8 @@ SqlPodcastProvider::SqlPodcastProvider()
                                .readEntry( "Maximum Simultaneous Downloads", 4 );
     m_maxConcurrentUpdates = Amarok::config( "Podcasts" )
                              .readEntry( "Maximum Simultaneous Updates", 4 );
+    m_baseDownloadDir = Amarok::config( "Podcasts" ).readEntry( "Base Downlaod Directory",
+                                                           Amarok::saveLocation( "podcasts" ) );
 
     QStringList values;
 
@@ -383,16 +386,53 @@ void
 SqlPodcastProvider::configureProvider()
 {
     DEBUG_BLOCK
-    KDialog *dialog = new KDialog( The::mainWindow() );
-    QWidget *settingsWidget = new QWidget( dialog );
-    Ui::SqlPodcastProviderSettingsWidget sqlPodcastProviderSettingsWidget;
-    sqlPodcastProviderSettingsWidget.setupUi( settingsWidget );
+    m_providerSettingsDialog = new KDialog( The::mainWindow() );
+    QWidget *settingsWidget = new QWidget( m_providerSettingsDialog );
+    Ui::SqlPodcastProviderSettingsWidget settings;
+    settings.setupUi( settingsWidget );
 
-    dialog->setMainWidget( settingsWidget );
+    settings.m_baseDirUrl->setMode( KFile::Directory );
+    settings.m_baseDirUrl->setUrl( m_baseDownloadDir );
 
-    if( dialog->exec() == QDialog::Accepted )
+    settings.m_autoUpdateInterval->setValue( m_autoUpdateInterval );
+
+    m_providerSettingsDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
+    m_providerSettingsDialog->setMainWidget( settingsWidget );
+
+    connect( settings.m_baseDirUrl, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
+    connect( settings.m_autoUpdateInterval, SIGNAL( valueChanged(int) ),
+             SLOT( slotConfigChanged() ) );
+
+    m_providerSettingsDialog->setWindowTitle( i18n( "Configure Local Podcasts" ) );
+    m_providerSettingsDialog->enableButtonApply( false );
+
+    if( m_providerSettingsDialog->exec() == QDialog::Accepted )
+    {
         debug() << "accepted";
 
+        //TODO: apply
+    }
+
+    delete m_providerSettingsDialog;
+    m_providerSettingsDialog = 0;
+
+}
+
+void
+SqlPodcastProvider::slotConfigChanged()
+{
+    Ui::SqlPodcastProviderSettingsWidget *settings =
+            dynamic_cast<Ui::SqlPodcastProviderSettingsWidget *>(
+                    m_providerSettingsDialog->mainWidget() );
+
+    if( !settings )
+        return;
+
+    if( settings->m_autoUpdateInterval->value() != m_autoUpdateInterval
+        || settings->m_baseDirUrl->url() != m_baseDownloadDir )
+    {
+        m_providerSettingsDialog->enableButtonApply( true );
+    }
 }
 
 void
@@ -1374,7 +1414,7 @@ SqlPodcastProvider::podcastImageFetcherDone( PodcastImageFetcher *fetcher )
 void
 SqlPodcastProvider::slotConfigureProvider()
 {
-    DEBUG_BLOCK
+    configureProvider();
 }
 
 #include "SqlPodcastProvider.moc"

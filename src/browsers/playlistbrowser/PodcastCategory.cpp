@@ -566,14 +566,24 @@ PodcastView::mouseReleaseEvent( QMouseEvent * event )
             const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
             if( rect.contains( event->pos() ) )
             {
-                QList<QAction*> actions =
-                        index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole )
-                        .toList().first().value<QList<QAction*> >();
-                foreach( QAction *action, actions )
+                QVariantList variantList =
+                        index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).toList();
+                if( variantList.isEmpty() )
+                    return;
+
+                QList<QAction*> actions = variantList.first().value<QList<QAction*> >();
+                //hack: rect height == the width of one action's area.
+                int indexOfActionToTrigger
+                    = ( event->pos().x() - rect.left() ) / rect.height();
+                debug() << "triggering action " << indexOfActionToTrigger;
+                if( indexOfActionToTrigger >= actions.count() )
                 {
-                    if( action )
-                        action->trigger();
+                    debug() << "no such action";
+                    return;
                 }
+                QAction *action = actions.value( indexOfActionToTrigger );
+                if( action )
+                    action->trigger();
                 return;
             }
         }

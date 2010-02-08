@@ -25,6 +25,7 @@
 
 class PodcastImageFetcher;
 
+class KDialog;
 class KUrl;
 class PodcastReader;
 class SqlStorage;
@@ -71,6 +72,8 @@ class SqlPodcastProvider : public PodcastProvider
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 
+        KUrl baseDownloadDir() const { return m_baseDownloadDir; }
+
     public slots:
         void updateAll();
         void update( Meta::PodcastChannelPtr channel );
@@ -95,6 +98,7 @@ class SqlPodcastProvider : public PodcastProvider
         void slotUpdateChannels();
         void slotDownloadProgress( KJob *job, unsigned long percent );
         void slotWriteTagsToFiles();
+        void slotConfigChanged();
 
     signals:
         void updated();
@@ -134,7 +138,7 @@ class SqlPodcastProvider : public PodcastProvider
         Meta::SqlPodcastChannelList m_channels;
 
         QTimer *m_updateTimer;
-        unsigned int m_autoUpdateInterval; //interval between autoupdate attempts in minutes
+        int m_autoUpdateInterval; //interval between autoupdate attempts in minutes
         unsigned int m_updatingChannels;
         unsigned int m_maxConcurrentUpdates;
         Meta::PodcastChannelList m_updateQueue;
@@ -147,6 +151,10 @@ class SqlPodcastProvider : public PodcastProvider
         Meta::SqlPodcastEpisodeList m_downloadQueue;
         int m_maxConcurrentDownloads;
         int m_completedDownloads;
+
+        KUrl m_baseDownloadDir;
+
+        KDialog *m_providerSettingsDialog;
 
         QList<QAction *> m_providerActions;
 
