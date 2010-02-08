@@ -113,7 +113,7 @@
 
     <entry key="EnableToolTips" type="Bool">
         <label>Whether to display tooltips for the song in the playlist</label>
-        <default>true</default>
+        <default>false/default>
     </entry>
 
     <entry key="Show Album Art" type="Bool">
