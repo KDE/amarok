@@ -62,6 +62,10 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Corruption of guid strings by passing them as a KUrl caused podcast episodes
+      to be readded on each update. This issue has been solved.
+      If you have episodes that appear twice, remove the channel and add it again.
+      (BR 219516)
     * Cleaned up the Organize dialog to make it more usable. (BR 199574)
     * Made it harder to Move Files unintentionally. (BR 220716)
     * Returned "Organize Files" to the collection's context menu. (BR 215902)

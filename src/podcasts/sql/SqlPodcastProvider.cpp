@@ -362,6 +362,18 @@ SqlPodcastProvider::removeSubscription( Meta::PodcastChannelPtr channel )
     sqlChannel->deleteFromDb();
 
     m_channels.removeOne( sqlChannel );
+
+    //HACK: because of a database "leak" in the past we have orphan data in the tables.
+    //Remove it when we know it's supposed to be empty.
+    if( m_channels.isEmpty() )
+    {
+        SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+        if( !sqlStorage )
+            return;
+        debug() << "Unsubscribed from last channel, cleaning out the podcastepisodes table.";
+        sqlStorage->query( "DELETE FROM podcastepisodes WHERE 1;" );
+    }
+
     emit updated();
 }
 
