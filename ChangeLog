@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * Added a configuration dialog for Local Podcasts. Update interval and base
+      download directory can now be configured. (BR 221398)
     * Make it possible to go to next/previous track with horizontal mouse
       wheel button on TrayIcon. (BR 225783)
     * New main toolbar with completely redesigned look and new features.
