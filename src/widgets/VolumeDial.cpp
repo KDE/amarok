@@ -50,7 +50,7 @@ bool VolumeDial::eventFilter( QObject *o, QEvent *e )
 {
     if ( e->type() == QEvent::Wheel )
     {
-        if ( o == this || QToolTip::text() == m_toolTip )
+        if ( o == this )
         {
             QWheelEvent *wev = static_cast<QWheelEvent*>(e);
             if ( o != this )
@@ -193,7 +193,7 @@ void VolumeDial::wheelEvent( QWheelEvent *wev )
     wev->accept();
 
     const QPoint tooltipPosition = mapToGlobal( rect().translated( 7, -22 ).bottomLeft() );
-    QToolTip::showText( tooltipPosition, m_toolTip );
+    QToolTip::showText( tooltipPosition, toolTip() );
 
     // NOTICE: this is a bit tricky.
     // the ToolTip "QTipLabel" just installed a global eventfilter that intercepts various
@@ -217,14 +217,13 @@ void VolumeDial::setMuted( bool mute )
     {
         m_unmutedValue = value();
         setValue( minimum() );
-        m_toolTip = i18n( "Muted" );
+        setToolTip( i18n( "Muted" ) );
     }
     else
     {
         setValue( m_unmutedValue );
-        m_toolTip = QString( "Volume: %1 %" ).arg( value() );
+        setToolTip( i18n( "Volume: %1 %" ).arg( value() ) );
     }
-    setToolTip( m_toolTip );
 }
 
 QSize VolumeDial::sizeHint() const
@@ -237,8 +236,7 @@ QSize VolumeDial::sizeHint() const
 
 void VolumeDial::valueChangedSlot( int v )
 {
-    m_toolTip = QString( "Volume: %1 %" ).arg( value() );
-    setToolTip( m_toolTip );
+    setToolTip( i18n( "Volume: %1 %" ).arg( value() ) );
 
     m_isClick = false;
 

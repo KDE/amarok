@@ -61,7 +61,6 @@ private:
         int step;
         int timer;
     } m_anim;
-    QString m_toolTip;
     bool m_isClick, m_isDown, m_muted;
 };
 
