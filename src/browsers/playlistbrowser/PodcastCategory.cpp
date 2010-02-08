@@ -93,10 +93,12 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     , m_podcastModel( podcastModel )
 {
     setPrettyName( i18n( "Podcasts" ) );
-    setShortDescription( i18n( "List of subscribed podcasts and episodes" ) );
+    setShortDescription( i18n( "List of podcast subscriptions and episodes" ) );
     setIcon( KIcon( "podcast-amarok" ) );
 
-    setLongDescription( i18n( "Manage your podcast subscriptions and browse individual episodes. Downloading episodes to the disk is also done here, or you can tell Amarok to do this automatically." ) );
+    setLongDescription( i18n( "Manage your podcast subscriptions and browse individual episodes. "
+                              "Downloading episodes to the disk is also done here, or you can tell "
+                              "Amarok to do this automatically." ) );
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
 
