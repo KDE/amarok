@@ -192,7 +192,8 @@ void VolumeDial::wheelEvent( QWheelEvent *wev )
     QDial::wheelEvent( wev );
     wev->accept();
 
-    QToolTip::showText( mapToGlobal( rect().bottomLeft() ), m_toolTip );
+    const QPoint tooltipPosition = mapToGlobal( rect().translated( 7, -22 ).bottomLeft() );
+    QToolTip::showText( tooltipPosition, m_toolTip );
 
     // NOTICE: this is a bit tricky.
     // the ToolTip "QTipLabel" just installed a global eventfilter that intercepts various
