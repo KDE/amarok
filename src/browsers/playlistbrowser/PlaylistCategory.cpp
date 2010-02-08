@@ -67,6 +67,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ),
                                          i18n( "Merged View" ), m_toolBar );
     toggleAction->setCheckable( true );
+    toggleAction->setChecked( Amarok::config( s_configGroup ).readEntry( s_mergeViewKey, false ) );
     m_toolBar->addAction( toggleAction );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
 
@@ -78,7 +79,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_byFolderProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
     m_defaultItemView = m_playlistView->itemDelegate();
 
-    toggleView( Amarok::config( s_configGroup ).readEntry( s_mergeViewKey, false ) );
+    toggleView( toggleAction->isChecked() );
 
 //    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
@@ -122,7 +123,6 @@ PlaylistCategory::toggleView( bool merged )
 {
     if( merged )
     {
-
         m_playlistView->setModel( m_byFolderProxy );
         m_playlistView->setItemDelegate( m_defaultItemView );
         m_playlistView->setRootIsDecorated( true );

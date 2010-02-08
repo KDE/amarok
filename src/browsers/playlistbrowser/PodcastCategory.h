@@ -69,7 +69,7 @@ class PodcastCategory : public BrowserCategory
         ViewKicker * m_viewKicker;
 
         PlaylistTreeItemDelegate *m_byProviderDelegate;
-        QAbstractItemDelegate *m_defaultItemView;
+        QAbstractItemDelegate *m_defaultItemDelegate;
 
     private slots:
         void showInfo( const QModelIndex & index );

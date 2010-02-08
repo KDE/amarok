@@ -128,32 +128,23 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
                                  QSizePolicy::MinimumExpanding );
     toolBar->addWidget( spacerWidget );
 
-    m_byProviderProxy = new PlaylistsByProviderProxy( podcastModel, PlaylistBrowserNS::ProviderColumn );
     m_podcastTreeView = new PodcastView( podcastModel, this );
+    m_defaultItemDelegate = m_podcastTreeView->itemDelegate();
+
+    m_byProviderProxy = new PlaylistsByProviderProxy( podcastModel,
+                                                      PlaylistBrowserNS::ProviderColumn );
+    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_podcastTreeView );
 
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
     m_podcastTreeView->setContentsMargins(0,0,0,0);
 
-    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_podcastTreeView );
-    m_defaultItemView = m_podcastTreeView->itemDelegate();
-
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ),
                                          i18n( "Merged View" ), toolBar );
     toggleAction->setCheckable( true );
+    toggleAction->setChecked( Amarok::config( s_configGroup ).readEntry( s_mergedViewKey, true ) );
     toolBar->addAction( toggleAction );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
-    if( Amarok::config( s_configGroup ).readEntry( s_mergedViewKey, true ) )
-    {
-        m_podcastTreeView->setModel( m_byProviderProxy );
-        m_podcastTreeView->setItemDelegate( m_byProviderDelegate );
-        toggleAction->setChecked( true );
-        m_podcastTreeView->setRootIsDecorated( false );
-    }
-    else
-    {
-        m_podcastTreeView->setModel( podcastModel );
-        toggleAction->setChecked( false );
-    }
+    toggleView( toggleAction->isChecked() );
 
     m_podcastTreeView->header()->hide();
     m_podcastTreeView->setIconSize( QSize( 32, 32 ) );
@@ -357,7 +348,7 @@ PodcastCategory::toggleView( bool merged ) //SLOT
     if( merged )
     {
         m_podcastTreeView->setModel( m_podcastModel );
-        m_podcastTreeView->setItemDelegate( m_defaultItemView );
+        m_podcastTreeView->setItemDelegate( m_defaultItemDelegate );
         m_podcastTreeView->setRootIsDecorated( true );
     }
     else
