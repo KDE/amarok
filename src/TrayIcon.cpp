@@ -3,7 +3,7 @@
  * Copyright (c) 2003 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2004 Enrico Ros <eros.kde@email.it>                                    *
  * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                                        *
- * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                                 *
+ * Copyright (c) 2009,2010 Kevin Funk <krf@electrostorm.net>                            *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -61,6 +61,8 @@ namespace Amarok
     }
 }
 
+QTime Amarok::TrayIcon::lastEventCall = QTime();
+
 Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         : KSystemTrayIcon( playerWidget )
         , EngineObserver( The::engineController() )
@@ -71,11 +73,6 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 
     PERF_LOG( "Beginning TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();
-
-    //seems to be necessary
-    /*QAction *quit = actionCollection()->action( "file_quit" );
-    quit->disconnect();
-    connect( quit, SIGNAL(activated()), kapp, SLOT(quit()) );*/
 
     PERF_LOG( "Before adding actions" );
 
@@ -233,11 +230,17 @@ Amarok::TrayIcon::event( QEvent *e )
 
     case QEvent::Wheel:
         #define e static_cast<QWheelEvent*>(e)
-        if( e->modifiers() == Qt::ControlModifier )
+        if( e->modifiers() == Qt::ControlModifier || e->orientation() == Qt::Horizontal )
         {
-            const bool up = e->delta() > 0;
-            if( up ) The::playlistActions()->back();
-            else     The::playlistActions()->next();
+            if (lastEventCall.elapsed() < 500) // block event for some ms
+                break;
+
+            lastEventCall.restart();
+
+            if( e->delta() > 0 ) // up
+                The::playlistActions()->back();
+            else
+                The::playlistActions()->next();
             break;
         }
         else if( e->modifiers() == Qt::ShiftModifier )

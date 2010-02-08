@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
+    * Make it possible to go to next/previous track with horizontal mouse
+      wheel button on TrayIcon. (BR 225783)
     * New main toolbar with completely redesigned look and new features.
       Contributed by Thomas Luebking <thomas.luebking@web.de>.
     * Podcasts can now be grouped per provider like iPod Podcasts, Local Podcasts,
