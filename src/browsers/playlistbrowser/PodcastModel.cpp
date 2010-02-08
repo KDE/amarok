@@ -245,21 +245,7 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 
                 case ProviderColumn:
                 {
-                    PlaylistProvider *provider;
-                    if( pmc->podcastType() == Meta::ChannelType )
-                    {
-                        Meta::PodcastChannel *pc =
-                                static_cast<Meta::PodcastChannel *>( pmc );
-                        provider = pc->provider();
-                    }
-                    else if( pmc->podcastType() == Meta::EpisodeType )
-                    {
-                        Meta::PodcastEpisode *pe =
-                                static_cast<Meta::PodcastEpisode *>( pmc );
-                        if( pe->channel().isNull() )
-                            break;
-                        provider = pe->channel()->provider();
-                    }
+                    PlaylistProvider *provider = providerForPmc( pmc );
                     if( !provider )
                         break;
 
@@ -1172,7 +1158,7 @@ PlaylistBrowserNS::PodcastModel::podcastEpisodesToTracks( Meta::PodcastEpisodeLi
 PodcastProvider *
 PlaylistBrowserNS::PodcastModel::providerForPmc( Meta::PodcastMetaCommon *pmc ) const
 {
-    PlaylistProvider *provider;
+    PlaylistProvider *provider = 0;
     if( pmc->podcastType() == Meta::ChannelType )
     {
         Meta::PodcastChannel *pc =
