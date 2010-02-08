@@ -23,12 +23,12 @@
 
 #include <QAction>
 #include <QList>
-#include <QListView>
+#include <QTreeView>
 #include <QMutex>
 
 class PopupDropper;
 
-class FileView : public QListView
+class FileView : public QTreeView
 {
     Q_OBJECT
 public:

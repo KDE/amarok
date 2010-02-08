@@ -55,6 +55,12 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 
     m_fileView = new FileView( this );
     m_fileView->setModel( m_mimeFilterProxyModel );
+    m_fileView->setSortingEnabled( true );
+    
+    m_fileView->hideColumn( 3 );
+    m_fileView->hideColumn( 4 );
+    m_fileView->hideColumn( 5 );
+    m_fileView->hideColumn( 6 );
 
     m_fileView->setDragEnabled( true );
     m_fileView->setSelectionMode( QAbstractItemView::ExtendedSelection );

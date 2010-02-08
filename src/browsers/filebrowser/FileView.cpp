@@ -79,7 +79,7 @@ public:
 
 
 FileView::FileView( QWidget * parent )
-    : QListView( parent )
+    : QTreeView( parent )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
     , m_editAction( 0 )
@@ -87,8 +87,9 @@ FileView::FileView( QWidget * parent )
     , m_ongoingDrag( false )
 {
     setFrameStyle( QFrame::NoFrame );
-
-     setAlternatingRowColors( true );
+    setItemsExpandable( false );
+    setRootIsDecorated( false );
+    setAlternatingRowColors( true );
 
     The::paletteHandler()->updateItemView( this );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
@@ -242,7 +243,7 @@ FileView::startDrag( Qt::DropActions supportedActions )
         m_pd->show();
     }
 
-    QListView::startDrag( supportedActions );
+    QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";
 
     if( m_pd )
