@@ -21,6 +21,7 @@
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModel.h"
 #include "PlaylistsInGroupsProxy.h"
+#include "PlaylistsByProviderProxy.h"
 #include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
@@ -39,7 +40,12 @@
 
 #include <typeinfo>
 
-PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
+using namespace PlaylistBrowserNS;
+
+QString PlaylistCategory::s_byProviderKey( "Group By Provider" );
+QString PlaylistCategory::s_configGroup( "Saved Playlists View" );
+
+PlaylistCategory::PlaylistCategory( QWidget * parent )
     : BrowserCategory( "user playlists", parent )
 {
     setPrettyName( i18n( "Saved Playlists" ) );
@@ -58,9 +64,21 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_toolBar = new QToolBar( this );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    m_groupedProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ),
+                                         i18n( "Toggle unified view mode" ), m_toolBar );
+    toggleAction->setCheckable( true );
+    m_toolBar->addAction( toggleAction );
+    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
 
-    m_playlistView = new UserPlaylistTreeView( m_groupedProxy, this );
+    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
+    m_byProviderProxy = new PlaylistsByProviderProxy( The::userPlaylistModel(), UserModel::ProviderColumn );
+    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
+
+    m_byFolderProxy = new PlaylistsInGroupsProxy( The::userPlaylistModel() );
+    m_defaultItemView = m_playlistView->itemDelegate();
+
+    toggleView( Amarok::config( s_configGroup ).readEntry( s_byProviderKey, true ) );
+
 //    m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
     m_playlistView->setFrameShape( QFrame::NoFrame );
     m_playlistView->setContentsMargins( 0, 0, 0, 0 );
@@ -87,15 +105,34 @@ PlaylistBrowserNS::PlaylistCategory::PlaylistCategory( QWidget * parent )
     new PlaylistTreeItemDelegate( m_playlistView );
 }
 
-PlaylistBrowserNS::PlaylistCategory::~PlaylistCategory()
+PlaylistCategory::~PlaylistCategory()
 {
 }
 
-void PlaylistBrowserNS::PlaylistCategory::newPalette(const QPalette & palette)
+void PlaylistCategory::newPalette(const QPalette & palette)
 {
     Q_UNUSED( palette )
 
     The::paletteHandler()->updateItemView( m_playlistView );
+}
+
+void
+PlaylistCategory::toggleView( bool byProvider )
+{
+    if( byProvider )
+    {
+        m_playlistView->setModel( m_byProviderProxy );
+        m_playlistView->setItemDelegate( m_byProviderDelegate );
+        m_playlistView->setRootIsDecorated( false );
+    }
+    else
+    {
+        m_playlistView->setModel( m_byFolderProxy );
+        m_playlistView->setItemDelegate( m_defaultItemView );
+        m_playlistView->setRootIsDecorated( true );
+    }
+
+    Amarok::config( s_configGroup ).writeEntry( s_byProviderKey, byProvider );
 }
 
 #include "PlaylistCategory.moc"

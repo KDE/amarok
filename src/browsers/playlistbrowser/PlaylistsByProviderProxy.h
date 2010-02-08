@@ -25,7 +25,7 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
         , public PlaylistBrowserNS::MetaPlaylistModel
 {
     public:
-        PlaylistsByProviderProxy( QAbstractItemModel *model );
+        PlaylistsByProviderProxy( QAbstractItemModel *model, int column );
         ~PlaylistsByProviderProxy() {}
 
         /* QAbstractModel methods */

@@ -33,6 +33,8 @@ class KAction;
 class KLineEdit;
 
 class PlaylistsInGroupsProxy;
+class PlaylistsByProviderProxy;
+class PlaylistTreeItemDelegate;
 
 namespace PlaylistBrowserNS {
 
@@ -45,12 +47,16 @@ class PlaylistCategory : public BrowserCategory
 {
 Q_OBJECT
 public:
+    static QString s_configGroup;
+    static QString s_byProviderKey;
+
     PlaylistCategory( QWidget * parent );
 
     ~PlaylistCategory();
 
 private slots:
     void newPalette( const QPalette & palette );
+    void toggleView( bool );
 
 private:
 
@@ -58,7 +64,11 @@ private:
     UserPlaylistTreeView * m_playlistView;
 
     KAction * m_addGroupAction;
-    PlaylistsInGroupsProxy *m_groupedProxy;
+    
+    PlaylistTreeItemDelegate *m_byProviderDelegate;
+    QAbstractItemDelegate *m_defaultItemView;
+    PlaylistsInGroupsProxy *m_byFolderProxy;
+    PlaylistsByProviderProxy *m_byProviderProxy;
 
 };
 

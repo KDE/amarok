@@ -128,7 +128,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
                                  QSizePolicy::MinimumExpanding );
     toolBar->addWidget( spacerWidget );
 
-    m_byProviderProxy = new PlaylistsByProviderProxy( podcastModel );
+    m_byProviderProxy = new PlaylistsByProviderProxy( podcastModel, PlaylistBrowserNS::ProviderColumn );
     m_podcastTreeView = new PodcastView( podcastModel, this );
 
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );

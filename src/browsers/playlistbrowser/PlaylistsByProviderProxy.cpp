@@ -17,12 +17,12 @@
 #include "PlaylistsByProviderProxy.h"
 
 #include "AmarokMimeData.h"
-#include "PodcastModel.h"
+#include "UserPlaylistModel.h"
 
 #include "Debug.h"
 
-PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model )
-        : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::ProviderColumn )
+PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, int column )
+        : QtGroupingProxy( model, QModelIndex(), column )
 {
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
 }

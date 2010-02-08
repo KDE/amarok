@@ -11,8 +11,8 @@ VERSION 2.2.3
       wheel button on TrayIcon. (BR 225783)
     * New main toolbar with completely redesigned look and new features.
       Contributed by Thomas Luebking <thomas.luebking@web.de>.
-    * Podcasts can now be grouped per provider like iPod Podcasts, Local Podcasts,
-      USB Mass Storage, etc. This can be toggled using a button in the Podcast
+    * Podcasts and Saved Playlists can now be grouped by provider like iPod, Local,
+      USB Mass Storage, etc. This can be toggled using a button in the relevant
       Category.
     * The playlist context menu now has a "Show in Media Sources" action for
       many types of track.
