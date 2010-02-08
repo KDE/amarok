@@ -47,6 +47,7 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
 
     m_mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
     m_mimeFilterProxyModel->setSourceModel( m_kdirModel );
+    m_mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     m_mimeFilterProxyModel->sort( 0 );
 
     debug() << "home path: " <<  QDir::homePath();
