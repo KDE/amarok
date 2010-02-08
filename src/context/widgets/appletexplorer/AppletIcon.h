@@ -31,7 +31,7 @@
 
 #include <plasma/widgets/iconwidget.h>
 
-#include <QtGui>
+#include <QPainter>
 
 class QGraphicsSceneMouseEvent;
 

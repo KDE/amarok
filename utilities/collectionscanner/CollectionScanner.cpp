@@ -21,12 +21,12 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
  ***************************************************************************/
 
-#include "Version.h"  // for AMAROK_VERSION
 #include "CollectionScanner.h"
-#include "AFTUtility.h"
 
+#include "AFTUtility.h"
 #include "charset-detector/include/chardet.h"
 #include "MetaReplayGain.h"
+#include "Version.h"  // for AMAROK_VERSION
 
 #include <cerrno>
 #include <cstdlib>

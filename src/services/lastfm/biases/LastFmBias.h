@@ -14,13 +14,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef SIMILAR_ARTISTS_BIAS_H
-#define SIMILAR_ARTISTS_BIAS_H
+#ifndef LASTFM_BIAS_H
+#define LASTFM_BIAS_H
 
 #include "CustomBiasEntry.h"
 #include "CustomBiasEntryFactory.h"
-#include <QNetworkReply>
 #include "EngineObserver.h"
+
+#include <QNetworkReply>
 
 /**
  *  This is a bias which adds the suggested songs to the playlist.
@@ -42,7 +43,7 @@ class LastFmBiasFactory : public CustomBiasEntryFactory
     public:
         LastFmBiasFactory();
         ~LastFmBiasFactory();
-        
+
         virtual QString name() const;
         virtual QString pluginName() const;
         virtual CustomBiasEntry* newCustomBiasEntry();
@@ -65,7 +66,7 @@ public:
     virtual double numTracksThatSatisfy ( const Meta::TrackList& tracks );
 
     virtual QDomElement xml( QDomDocument doc ) const;
-    
+
     virtual bool hasCollectionFilterCapability();
     virtual CollectionFilterCapability* collectionFilterCapability( double weight );
 
@@ -76,7 +77,7 @@ public:
 
 Q_SIGNALS:
     void doneFetching();
-    
+
 private Q_SLOTS:
     void artistQueryDone();
     void trackQueryDone();

@@ -33,12 +33,13 @@
 
 #include "plasma/widgets/iconwidget.h"
 
-#include <QtGui>
-
+#include <QGraphicsLinearLayout>
+#include <QGraphicsWidget>
+#include <QPainter>
 
 namespace Context
 {
-    
+
 class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
 {
     Q_OBJECT
@@ -54,8 +55,8 @@ class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
     private slots:
         void appletIconClicked();
         void scrollLeft();
-        void scrollRight();        
- 
+        void scrollRight();
+
 
     private:
         void init();
@@ -67,11 +68,11 @@ class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
         QRectF visibleListRect() const;
         int findFirstVisibleAppletIdx() const;
         int findLastVisibleAppletIdx() const;
-        
+
 
     protected:
         virtual void resizeEvent( QGraphicsSceneResizeEvent *event );
-        
+
     private:
         QGraphicsLinearLayout *m_mainLayout;
         QGraphicsLinearLayout *m_appletsListLayout;

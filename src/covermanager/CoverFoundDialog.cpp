@@ -18,8 +18,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Amarok.h"
 #include "CoverFoundDialog.h"
+
+#include "Amarok.h"
 #include "Debug.h"
 #include "PaletteHandler.h"
 

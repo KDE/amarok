@@ -21,8 +21,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef WIDGET_EXPLORER_H
-#define WIDGET_EXPLORER_H
+#ifndef APPLET_EXPLORER_H
+#define APPLET_EXPLORER_H
 
 #include "amarok_export.h"
 #include "AppletItemModel.h"
@@ -30,13 +30,14 @@
 #include "Containment.h"
 
 #include <QGraphicsLinearLayout>
+#include <QGraphicsSceneResizeEvent>
 #include <QGraphicsWidget>
 #include <QPainter>
 
 class QAction;
 class QStyleOptionGraphicsItem;
 class QSizePolicy;
- 
+
 namespace Context
 {
 
@@ -51,25 +52,25 @@ class AMAROK_EXPORT AppletExplorer: public QGraphicsWidget
         void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
         void setContainment( Containment *containment );
-    
-        QSizePolicy sizePolicy () const;  
+
+        QSizePolicy sizePolicy () const;
 
         Containment *containment() const;
 
     signals:
         void addAppletToContainment( const QString &pluginName, const int loc );
         void appletExplorerHid();
-        
+
     private slots:
         void addApplet( AppletItem *appletItem );
         void hideMenu();
-        
+
     protected:
         virtual void resizeEvent( QGraphicsSceneResizeEvent *event );
 
     private:
         void init();
-        
+
         Containment *m_containment;
         QGraphicsLinearLayout *m_mainLayout;
 
@@ -80,4 +81,4 @@ class AMAROK_EXPORT AppletExplorer: public QGraphicsWidget
 
 }// namespace Context
 
-#endif 
+#endif
