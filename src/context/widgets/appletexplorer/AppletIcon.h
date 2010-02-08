@@ -42,18 +42,17 @@ class AMAROK_EXPORT AppletIconWidget: public Plasma::IconWidget
 {
     Q_OBJECT
 
-    public:
+public:
+    explicit AppletIconWidget( AppletItem *appletItem = 0, QGraphicsItem *parent = 0 );
+    virtual ~AppletIconWidget();
 
-        explicit AppletIconWidget( AppletItem *appletItem = 0, QGraphicsItem *parent = 0 );
-        virtual ~AppletIconWidget();
+    AppletItem *appletItem() const;
 
-        AppletItem *appletItem() const;
+protected:
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
-    protected:
-        void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
-
-    private:
-        AppletItem *m_appletItem;
+private:
+    AppletItem *m_appletItem;
 };
 
 }

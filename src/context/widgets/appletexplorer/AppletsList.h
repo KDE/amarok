@@ -43,49 +43,46 @@ namespace Context
 class AMAROK_EXPORT AppletsListWidget: public QGraphicsWidget
 {
     Q_OBJECT
-    public:
-        AppletsListWidget( QGraphicsItem *parent = 0 );
-        virtual ~AppletsListWidget();
 
-        void setModel( QStandardItemModel *model );
+public:
+    AppletsListWidget( QGraphicsItem *parent = 0 );
+    virtual ~AppletsListWidget();
 
-    signals:
-        void appletClicked( AppletItem *appletItem );
+    void setModel( QStandardItemModel *model );
 
-    private slots:
-        void appletIconClicked();
-        void scrollLeft();
-        void scrollRight();
+protected:
+    virtual void resizeEvent( QGraphicsSceneResizeEvent *event );
 
+signals:
+    void appletClicked( AppletItem *appletItem );
 
-    private:
-        void init();
+private slots:
+    void appletIconClicked();
+    void scrollLeft();
+    void scrollRight();
 
-        AppletIconWidget *createAppletIcon( AppletItem *appletItem );
-        void insertAppletIcon( AppletIconWidget *appletIcon );
-        void updateList();
-        int maximumVisibleAppletsOnList() const;
-        QRectF visibleListRect() const;
-        int findFirstVisibleAppletIdx() const;
-        int findLastVisibleAppletIdx() const;
+private:
+    void init();
 
+    AppletIconWidget *createAppletIcon( AppletItem *appletItem );
+    void insertAppletIcon( AppletIconWidget *appletIcon );
+    void updateList();
+    int maximumVisibleAppletsOnList() const;
+    QRectF visibleListRect() const;
+    int findFirstVisibleAppletIdx() const;
+    int findLastVisibleAppletIdx() const;
 
-    protected:
-        virtual void resizeEvent( QGraphicsSceneResizeEvent *event );
+    QGraphicsLinearLayout *m_mainLayout;
+    QGraphicsLinearLayout *m_appletsListLayout;
+    QStandardItemModel *m_model;
+    QHash< QString, AppletIconWidget *> *m_applets;
+    QGraphicsWidget *m_appletsListWidget;
+    QGraphicsWidget *m_appletsListWindow;
 
-    private:
-        QGraphicsLinearLayout *m_mainLayout;
-        QGraphicsLinearLayout *m_appletsListLayout;
-        QStandardItemModel *m_model;
-        QHash< QString, AppletIconWidget *> *m_applets;
-        QGraphicsWidget *m_appletsListWidget;
-        QGraphicsWidget *m_appletsListWindow;
-
-        Plasma::IconWidget *m_leftArrow;
-        Plasma::IconWidget *m_rightArrow;
-
+    Plasma::IconWidget *m_leftArrow;
+    Plasma::IconWidget *m_rightArrow;
 };
 
-}//namespace Context
+} //namespace Context
 
 #endif

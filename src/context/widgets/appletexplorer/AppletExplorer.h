@@ -45,40 +45,37 @@ class AMAROK_EXPORT AppletExplorer: public QGraphicsWidget
 {
     Q_OBJECT
 
-    public:
-        AppletExplorer( QGraphicsItem *parent = 0 );
-        virtual ~AppletExplorer();
+public:
+    AppletExplorer( QGraphicsItem *parent = 0 );
+    virtual ~AppletExplorer();
 
-        void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+    void setContainment( Containment *containment );
+    QSizePolicy sizePolicy () const;
+    Containment *containment() const;
 
-        void setContainment( Containment *containment );
+signals:
+    void addAppletToContainment( const QString &pluginName, const int loc );
+    void appletExplorerHid();
 
-        QSizePolicy sizePolicy () const;
+protected:
+    virtual void resizeEvent( QGraphicsSceneResizeEvent *event );
 
-        Containment *containment() const;
+private slots:
+    void addApplet( AppletItem *appletItem );
+    void hideMenu();
 
-    signals:
-        void addAppletToContainment( const QString &pluginName, const int loc );
-        void appletExplorerHid();
+private:
+    void init();
 
-    private slots:
-        void addApplet( AppletItem *appletItem );
-        void hideMenu();
+    Containment *m_containment;
+    QGraphicsLinearLayout *m_mainLayout;
 
-    protected:
-        virtual void resizeEvent( QGraphicsSceneResizeEvent *event );
-
-    private:
-        void init();
-
-        Containment *m_containment;
-        QGraphicsLinearLayout *m_mainLayout;
-
-        AppletItemModel m_model;
-        AppletsListWidget *m_appletsListWidget;
-        Plasma::IconWidget *m_hideIcon;
+    AppletItemModel m_model;
+    AppletsListWidget *m_appletsListWidget;
+    Plasma::IconWidget *m_hideIcon;
 };
 
-}// namespace Context
+} // namespace Context
 
 #endif
