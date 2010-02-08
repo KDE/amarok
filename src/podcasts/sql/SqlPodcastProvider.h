@@ -43,7 +43,7 @@ class SqlPodcastProvider : public PodcastProvider
         bool possiblyContainsTrack( const KUrl &url ) const;
         Meta::TrackPtr trackForUrl( const KUrl &url );
 
-        QString prettyName() const { return i18n("Local Podcasts"); };
+        QString prettyName() const { return i18n("Local Podcasts"); }
         KIcon icon() const { return KIcon( "server-database" ); }
 
         Meta::PlaylistList playlists();
@@ -109,6 +109,11 @@ class SqlPodcastProvider : public PodcastProvider
         /** creates all the necessary tables, indexes etc. for the database */
         void createTables() const;
         void loadPodcasts();
+
+        /** return the url as a string. Removes percent encoding if it actually has a non-url guid.
+        */
+        static QString cleanUrlOrGuid( const KUrl &url );
+
         void updateDatabase( int fromVersion, int toVersion );
         void fetchImage( Meta::SqlPodcastChannelPtr channel );
 

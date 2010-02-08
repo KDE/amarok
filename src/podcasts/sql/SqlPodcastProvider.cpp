@@ -165,8 +165,15 @@ SqlPodcastProvider::loadPodcasts()
     emit( updated() );
 }
 
+QString
+SqlPodcastProvider::cleanUrlOrGuid( const KUrl &url )
+{
+    QString decodedUrl = QUrl::fromPercentEncoding( url.url().toUtf8() );
+    return decodedUrl;
+}
+
 bool
-SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
+SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
@@ -174,14 +181,14 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 
     QString command = "SELECT title FROM podcastepisodes WHERE guid='%1' OR url='%1' "
                       "OR localurl='%1';";
-    command = command.arg( sqlStorage->escape( url.url() ) );
+    command = command.arg( sqlStorage->escape( cleanUrlOrGuid( url ) ) );
 
     QStringList dbResult = sqlStorage->query( command );
     return !dbResult.isEmpty();
 }
 
 Meta::TrackPtr
-SqlPodcastProvider::trackForUrl( const KUrl & url )
+SqlPodcastProvider::trackForUrl( const KUrl &url )
 {
     DEBUG_BLOCK
 
@@ -189,11 +196,12 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
     if( !sqlStorage )
         return TrackPtr();
 
+
     QString command = "SELECT id, url, channel, localurl, guid, "
             "title, subtitle, sequencenumber, description, mimetype, pubdate, "
             "duration, filesize, isnew FROM podcastepisodes "
             "WHERE guid='%1' OR url='%1' OR localurl='%1' ORDER BY id DESC;";
-    command = command.arg( sqlStorage->escape( url.url() ) );
+    command = command.arg( sqlStorage->escape( cleanUrlOrGuid( url ) ) );
     QStringList dbResult = sqlStorage->query( command );
 
     if( dbResult.isEmpty() )
