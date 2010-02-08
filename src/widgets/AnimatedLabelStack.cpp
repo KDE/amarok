@@ -255,7 +255,6 @@ AnimatedLabelStack::setPulsating( bool on )
 {
     if ( m_pulseRequested == on && m_pulsating == on )
         return;
-    
     m_pulseRequested = on;
     m_pulsating = on;
     if ( m_pulsating )
@@ -347,16 +346,16 @@ AnimatedLabelStack::timerEvent( QTimerEvent * te )
     }
     else // (ensure) no fade
     {
-        if ( m_pulsating && !m_pulseRequested && m_index == m_visibleIndex )
-            setPulsating( false );
-        
-        m_opacity = m_targetOpacity; // to be sure
-
         if ( !m_pulsating && m_time < (m_displayTime - m_fadeTime) )
         {
             m_time = m_displayTime - m_fadeTime + 1;
             sleep( m_time );
         }
+
+        m_opacity = m_targetOpacity; // to be sure
+
+        if ( m_pulsating && !m_pulseRequested && m_index == m_visibleIndex )
+            setPulsating( false );
     }
 }
 
