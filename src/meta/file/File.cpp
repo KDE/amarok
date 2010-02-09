@@ -20,8 +20,7 @@
 
 #include "Amarok.h"
 #include "amarokurls/BookmarkMetaActions.h"
-#include <config-amarok.h>
-#include "browsers/filebrowser/FileBrowser.h"
+#include "config-amarok.h"
 #include "MainWindow.h"
 #include "meta/Meta.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
@@ -153,6 +152,11 @@ public:
         
     virtual void findInSource()
     {
+        /////////////////////////////////////////////////
+        // FIXME Make this work with the new FileBrowser!
+        /////////////////////////////////////////////////
+
+#if 0
         //first show the filebrowser
         AmarokUrl url;
         url.setCommand( "navigate" );
@@ -171,7 +175,7 @@ public:
                 fileBrowser->setDir( playableUrl.directory() );       
             }
         }
-
+#endif
     }
 
 private:

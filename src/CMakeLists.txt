@@ -634,11 +634,8 @@ set(amaroklib_LIB_SRCS
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
     browsers/filebrowser/MimeTypeFilterProxyModel.cpp
-    browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/FileBrowserMkII.cpp
     browsers/filebrowser/FileView.cpp
-    browsers/filebrowser/MyDirOperator.cpp
-    browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
     MountPointManager.cpp
