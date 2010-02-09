@@ -30,6 +30,7 @@ namespace Plasma
 {
     class Applet;
     class IconWidget;
+    class Label;
 }
 
 namespace Context
@@ -77,7 +78,7 @@ class AppletToolbarAppletItem : public AppletToolbarBase
         Plasma::IconWidget* addAction( QAction *action, int size );
         
         Plasma::Applet* m_applet;
-        QGraphicsSimpleTextItem* m_label;
+        Plasma::Label * m_label;
         
         
         Plasma::IconWidget* m_deleteIcon;

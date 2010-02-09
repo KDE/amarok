@@ -26,6 +26,7 @@
 #include <Plasma/Animator>
 #include <Plasma/Applet>
 #include <Plasma/IconWidget>
+#include <Plasma/Label>
 
 #include <KIcon>
 
@@ -46,7 +47,7 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     , m_labelPadding( 5 )
     , m_configEnabled( false )
 {
-    m_label = new QGraphicsSimpleTextItem( this );
+    m_label = new Plasma::Label( this );
     if( m_applet )
        m_label->setText( m_applet->name() );
     else
