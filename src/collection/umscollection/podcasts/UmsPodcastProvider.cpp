@@ -26,7 +26,10 @@ using namespace Meta;
 UmsPodcastProvider::UmsPodcastProvider( UmsHandler *handler, QString scanDirectory )
         : m_handler( handler )
         , m_scanDirectory( scanDirectory )
+        , m_deleteEpisodeAction( 0 )
+        , m_deleteChannelAction( 0 )
 {
+
 }
 
 UmsPodcastProvider::~UmsPodcastProvider()
@@ -49,6 +52,7 @@ UmsPodcastProvider::trackForUrl( const KUrl &url )
 void
 UmsPodcastProvider::addPodcast( const KUrl &url )
 {
+    Q_UNUSED( url );
 }
 
 PodcastChannelPtr
@@ -125,30 +129,56 @@ UmsPodcastProvider::playlists()
 }
 
 QList<QAction *>
-UmsPodcastProvider::episodeActions( Meta::PodcastEpisodeList )
+UmsPodcastProvider::episodeActions( PodcastEpisodeList )
 {
-    return QList<QAction *>();
+    QList<QAction *> actions;
+    if( m_deleteEpisodeAction == 0 )
+    {
+        m_deleteEpisodeAction = new QAction(
+            KIcon( "edit-delete" ),
+            i18n( "&Delete Episode" ),
+            this
+        );
+        m_deleteEpisodeAction->setProperty( "popupdropper_svg_id", "delete" );
+        connect( m_deleteEpisodeAction, SIGNAL( triggered() ),
+                 SLOT( slotDeleteEpisodes() ) );
+    }
+    actions << m_deleteEpisodeAction;
+    return actions;
 }
 
 QList<QAction *>
-UmsPodcastProvider::channelActions( Meta::PodcastChannelList )
+UmsPodcastProvider::channelActions( PodcastChannelList )
 {
-    return QList<QAction *>();
+    QList<QAction *> actions;
+    if( m_deleteChannelAction == 0 )
+    {
+        m_deleteChannelAction = new QAction(
+            KIcon( "edit-delete" ),
+            i18n( "&Delete Channel and Episodes" ),
+            this
+        );
+        m_deleteChannelAction->setProperty( "popupdropper_svg_id", "delete" );
+        connect( m_deleteChannelAction, SIGNAL( triggered() ),
+                 SLOT( slotDeleteChannels() ) );
+    }
+    actions << m_deleteChannelAction;
+    return actions;
 }
 
 QList<QAction *>
 UmsPodcastProvider::playlistActions( Meta::PlaylistPtr playlist )
 {
     Q_UNUSED( playlist )
-    return QList<QAction *>();
+    return channelActions( PodcastChannelList() );
 }
 
 QList<QAction *>
-UmsPodcastProvider::trackActions( Meta::PlaylistPtr playlist,                                              int trackIndex )
+UmsPodcastProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
 {
     Q_UNUSED( playlist)
     Q_UNUSED( trackIndex )
-    return QList<QAction *>();
+    return episodeActions( PodcastEpisodeList() );
 }
 
 void
@@ -165,19 +195,19 @@ UmsPodcastProvider::updateAll() //slot
 void
 UmsPodcastProvider::update( Meta::PodcastChannelPtr channel ) //slot
 {
-
+    Q_UNUSED( channel );
 }
 
 void
 UmsPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode ) //slot
 {
-
+    Q_UNUSED( episode );
 }
 
 void
 UmsPodcastProvider::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode ) //slot
 {
-
+    Q_UNUSED( episode );
 }
 
 void

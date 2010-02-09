@@ -78,6 +78,10 @@ class UmsPodcastProvider : public PodcastProvider
         QStringList m_dirList;
 
         UmsPodcastChannelList m_umsChannels;
+
+        QAction *m_deleteEpisodeAction; //delete a downloaded Episode
+        QAction *m_deleteChannelAction; //delete a everything from one channel
+        QList<QAction *> m_providerActions;
 };
 
 #endif // UMSPODCASTPROVIDER_H
