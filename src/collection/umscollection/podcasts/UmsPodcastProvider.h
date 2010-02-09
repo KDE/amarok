@@ -21,6 +21,8 @@
 #include "UmsHandler.h"
 #include "UmsPodcastMeta.h"
 
+class KJob;
+
 class UmsPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
@@ -72,6 +74,11 @@ class UmsPodcastProvider : public PodcastProvider
     signals:
         virtual void updated();
 
+    private slots:
+        void slotDeleteEpisodes();
+        void slotDeleteChannels();
+        void deleteJobComplete( KJob *job );
+
     private:
         Meta::UmsHandler *m_handler;
         QString m_scanDirectory;
@@ -82,6 +89,8 @@ class UmsPodcastProvider : public PodcastProvider
         QAction *m_deleteEpisodeAction; //delete a downloaded Episode
         QAction *m_deleteChannelAction; //delete a everything from one channel
         QList<QAction *> m_providerActions;
+
+        QMap<KJob *,UmsPodcastEpisodeList> m_deleteJobMap;
 };
 
 #endif // UMSPODCASTPROVIDER_H
