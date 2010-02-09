@@ -196,6 +196,9 @@ UmsPodcastProvider::slotDeleteEpisodes()
         KIO::DeleteJob *deleteJob =
                 KIO::del( umsEpisode->m_localFile->playableUrl(),
                           KIO::HideProgressInfo );
+        UmsPodcastEpisodeList umsEpisodes;
+        umsEpisodes << umsEpisode;
+        m_deleteJobMap.insert( deleteJob, umsEpisodes );
 
         connect( deleteJob, SIGNAL( result( KJob * ) ),
                  SLOT( deleteJobComplete( KJob *) ) );
