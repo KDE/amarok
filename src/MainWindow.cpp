@@ -39,7 +39,7 @@
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/BookmarkManager.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
-#include "browsers/filebrowser/FileBrowserMkII.h"
+#include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 #include "collection/CollectionManager.h"
@@ -344,7 +344,7 @@ MainWindow::init()
 
 
         PERF_LOG( "Creating FileBrowser" )
-        FileBrowserMkII * fileBrowserMkII = new FileBrowserMkII( "filesmkii", 0 );
+        FileBrowser * fileBrowserMkII = new FileBrowser( "filesmkii", 0 );
         fileBrowserMkII->setPrettyName( i18n("Files MkII") );
         fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
         fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );

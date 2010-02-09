@@ -15,7 +15,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "FileBrowserMkII.h"
+#include "FileBrowser.h"
 
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
@@ -31,7 +31,7 @@
 #include <KDirLister>
 #include <QDir>
 
-FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
+FileBrowser::FileBrowser( const char * name, QWidget *parent )
     : BrowserCategory( name, parent )
     , m_directoryLoader( 0 )
 {
@@ -70,19 +70,19 @@ FileBrowserMkII::FileBrowserMkII( const char * name, QWidget *parent )
     connect( m_fileView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
 }
 
-FileBrowserMkII::~FileBrowserMkII()
+FileBrowser::~FileBrowser()
 {
     writeConfig();
     connect( m_fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
 }
 
-void FileBrowserMkII::polish()
+void FileBrowser::polish()
 {
     DEBUG_BLOCK
     setupAddItems();
 }
 
-void FileBrowserMkII::itemActivated( const QModelIndex &index )
+void FileBrowser::itemActivated( const QModelIndex &index )
 {
     DEBUG_BLOCK
     KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
@@ -120,7 +120,7 @@ void FileBrowserMkII::itemActivated( const QModelIndex &index )
     }
 }
 
-void FileBrowserMkII::slotSetFilterTimeout()
+void FileBrowser::slotSetFilterTimeout()
 {
     KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
     if( lineEdit )
@@ -131,7 +131,7 @@ void FileBrowserMkII::slotSetFilterTimeout()
     }
 }
 
-void FileBrowserMkII::slotFilterNow()
+void FileBrowser::slotFilterNow()
 {
     m_mimeFilterProxyModel->setFilterFixedString( m_currentFilter );
 
@@ -139,7 +139,7 @@ void FileBrowserMkII::slotFilterNow()
     filters << m_currentFilter;
 }
 
-void FileBrowserMkII::readConfig()
+void FileBrowser::readConfig()
 {
     DEBUG_BLOCK
 
@@ -150,7 +150,7 @@ void FileBrowserMkII::readConfig()
     m_currentPath = KUrl( config.readEntry( "Current Directory" ) ).path();
 }
 
-void FileBrowserMkII::writeConfig()
+void FileBrowser::writeConfig()
 {
     DEBUG_BLOCK
     KConfigGroup config = Amarok::config( "File Browser" );
@@ -159,7 +159,7 @@ void FileBrowserMkII::writeConfig()
 }
 
 
-void FileBrowserMkII::addItemActivated( const QString &callbackString )
+void FileBrowser::addItemActivated( const QString &callbackString )
 {
     DEBUG_BLOCK
     
@@ -171,7 +171,7 @@ void FileBrowserMkII::addItemActivated( const QString &callbackString )
     activate();
 }
 
-void FileBrowserMkII::setupAddItems()
+void FileBrowser::setupAddItems()
 {
     DEBUG_BLOCK
     clearAdditionalItems();
@@ -212,7 +212,7 @@ void FileBrowserMkII::setupAddItems()
     
 }
 
-QStringList FileBrowserMkII::siblingsForDir( const QString &path )
+QStringList FileBrowser::siblingsForDir( const QString &path )
 {
     // includes the dir itself
     DEBUG_BLOCK
@@ -232,7 +232,7 @@ QStringList FileBrowserMkII::siblingsForDir( const QString &path )
     return siblings;
 }
 
-void FileBrowserMkII::reActivate()
+void FileBrowser::reActivate()
 {
     DEBUG_BLOCK
     
@@ -243,7 +243,7 @@ void FileBrowserMkII::reActivate()
     activate();
 }
 
-QString FileBrowserMkII::prettyName() const
+QString FileBrowser::prettyName() const
 {
     if( parentList()->activeCategory() == this )
         return QDir::rootPath();

@@ -27,12 +27,12 @@
 #include <KDirModel>
 #include <QTimer>
 
-class FileBrowserMkII : public BrowserCategory
+class FileBrowser : public BrowserCategory
 {
     Q_OBJECT
 public:
-    FileBrowserMkII( const char * name, QWidget *parent );
-    ~FileBrowserMkII();
+    FileBrowser( const char * name, QWidget *parent );
+    ~FileBrowser();
 
     virtual void setupAddItems();
     virtual void polish();
