@@ -986,17 +986,42 @@ PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
 
     actions << createCommonActions( indices );
 
-    //HACK: since we only have one PodcastProvider implementation
-    PodcastProvider *provider = The::playlistManager()->defaultPodcasts();
-    if( !provider )
-        return actions;
-
     if( !m_selectedChannels.isEmpty() )
-        actions << provider->channelActions( m_selectedChannels );
+    {
+        QMultiMap<PodcastProvider *,Meta::PodcastChannelPtr> channelMap;
+        foreach( Meta::PodcastChannelPtr channel, m_selectedChannels )
+        {
+            PodcastProvider *provider = dynamic_cast<PodcastProvider *>( channel->provider() );
+            if( !provider )
+                continue;
+
+            channelMap.insert( provider, channel );
+        }
+
+        foreach( PodcastProvider *provider, channelMap.keys() )
+            actions << provider->channelActions( channelMap.values( provider ) );
+    }
     else if( !m_selectedEpisodes.isEmpty() )
     {
         actions << createEpisodeActions( m_selectedEpisodes );
-        actions << provider->episodeActions( m_selectedEpisodes );
+
+        QMultiMap<PodcastProvider *,Meta::PodcastEpisodePtr> episodeMap;
+        foreach( Meta::PodcastEpisodePtr episode, m_selectedEpisodes )
+        {
+            Meta::PodcastChannelPtr channel = episode->channel();
+            if( !channel )
+                continue;
+
+            PodcastProvider *provider = dynamic_cast<PodcastProvider *>( channel->provider() );
+            if( !provider )
+                continue;
+
+            episodeMap.insert( provider, episode );
+        }
+
+        foreach( PodcastProvider *provider, episodeMap.keys() )
+            actions << provider->episodeActions( episodeMap.values( provider ) );
+
     }
 
     return actions;
