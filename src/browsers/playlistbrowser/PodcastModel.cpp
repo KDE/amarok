@@ -689,6 +689,25 @@ PlaylistBrowserNS::PodcastModel::loadItems( QModelIndexList list, Playlist::AddO
 }
 
 void
+PlaylistBrowserNS::PodcastModel::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+                                 int position )
+{
+    DEBUG_BLOCK
+    debug() << "From playlist: " << playlist->prettyName();
+    debug() << "Track: " << track->prettyName() << "position: " << position;
+    //TODO: rowInserted()
+}
+
+void
+PlaylistBrowserNS::PodcastModel::trackRemoved( Meta::PlaylistPtr playlist, int position )
+{
+    DEBUG_BLOCK
+    debug() << "From playlist: " << playlist->prettyName();
+    debug() << "position: " << position;
+    //TODO: beginRemoveRows() && endRemoveRows()
+}
+
+void
 PlaylistBrowserNS::PodcastModel::refreshItems( QModelIndexList list )
 {
     DEBUG_BLOCK
