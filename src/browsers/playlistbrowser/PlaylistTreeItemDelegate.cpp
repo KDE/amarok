@@ -95,7 +95,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
                         QPoint( iconWidth/2, iconHeight/2 ) );
     if( isRTL )
         expanderPos.setX( iconPadX );
-    QPixmap expander = KIcon( "arrow-down" ).pixmap( iconWidth/2, iconHeight/2 );
+    QPixmap expander = KIcon( "arrow-up" ).pixmap( iconWidth/2, iconHeight/2 );
     if( m_view->isExpanded( index ) )
         expander = expander.transformed( QTransform().rotate( 180 ) );
     painter->drawPixmap( expanderPos, expander );
@@ -136,7 +136,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     const bool isHover = option.state & QStyle::State_MouseOver;
     QPoint cursorPos = m_view->mapFromGlobal( QCursor::pos() );
     cursorPos.ry() -= 20;
-    if( actionCount > 0 )
+    if( actionCount > 0 && isHover )
     {
         //HACK: there is an issue with QtGroupingProxy: a UserValue is returned as multiple copies in a QVariantList. So only take the first.
 
@@ -147,7 +147,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
             actions = actionsVariants.first().value<QList<QAction*> >();
 
         QRect actionsRect;
-        actionsRect.setLeft( (width - actionCount * ACTIONICON_SIZE) - 2 );
+        actionsRect.setLeft( ( width - actionCount * ( ACTIONICON_SIZE + iconPadX ) ) - 2 );
         actionsRect.setTop( option.rect.top() + iconYPadding );
         actionsRect.setWidth( actionsRectWidth );
         actionsRect.setHeight( ACTIONICON_SIZE );
@@ -161,6 +161,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
             QIcon icon = action->icon();
             int x = actionTopLeftBase.x() + i * ( ACTIONICON_SIZE + iconPadX );
             QPoint actionTopLeft = QPoint( x, actionTopLeftBase.y() );
+            //TODO: make this work with multiple actions
             QRect iconRect( actionTopLeft, iconSize );
 
             const bool isOver = isHover && iconRect.contains( cursorPos );
