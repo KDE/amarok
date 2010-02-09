@@ -24,6 +24,7 @@
 #include "PaletteHandler.h"
 
 #include <Plasma/Animator>
+#include <Plasma/Animation>
 #include <Plasma/Applet>
 #include <Plasma/IconWidget>
 #include <Plasma/Label>
@@ -63,15 +64,15 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     connect( delApplet, SIGNAL( triggered() ), this, SLOT( deleteApplet() ) );
     m_deleteIcon = addAction( delApplet, 18 );
     m_deleteIcon->hide();
-    
+
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 }
 
 Context::AppletToolbarAppletItem::~AppletToolbarAppletItem()
-{    
+{
 }
 
-void 
+void
 Context::AppletToolbarAppletItem::setConfigEnabled( bool config )
 {
     if( config && !m_configEnabled ) // switching to config mode
@@ -81,17 +82,17 @@ Context::AppletToolbarAppletItem::setConfigEnabled( bool config )
     }
     else
         m_deleteIcon->hide();
-    
+
     m_configEnabled = config;
 }
 
-bool 
+bool
 Context::AppletToolbarAppletItem::configEnabled()
 {
     return m_configEnabled;
 }
 
-QRectF 
+QRectF
 Context::AppletToolbarAppletItem::delIconSceneRect()
 {
     return mapToScene( m_deleteIcon->boundingRect() ).boundingRect();
@@ -117,24 +118,24 @@ Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent *event 
         else
             m_label->setText( m_applet->name() );
     }
-    
+
     m_label->setPos( ( boundingRect().width() / 2 ) - ( m_label->boundingRect().width() / 2 ),  ( boundingRect().height() / 2 ) - ( m_label->boundingRect().height() / 2 ) );
-    
+
     emit geometryChanged();
 }
 
 
-QVariant 
+QVariant
 Context::AppletToolbarAppletItem::itemChange( GraphicsItemChange change, const QVariant &value )
 {
     QVariant ret = QGraphicsWidget::itemChange( change, value );
-    
+
     if( change == ItemPositionHasChanged )
         emit geometryChanged();
     return ret;
 }
 
-QSizeF 
+QSizeF
 Context::AppletToolbarAppletItem::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
     Q_UNUSED( constraint )
@@ -146,14 +147,14 @@ Context::AppletToolbarAppletItem::sizeHint( Qt::SizeHint which, const QSizeF & c
         return QSizeF( 10000, 10000 );
 }
 
-void 
+void
 Context::AppletToolbarAppletItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
     emit appletChosen( m_applet );
     event->accept();
 }
 
-void 
+void
 Context::AppletToolbarAppletItem::deleteApplet()
 {
     DEBUG_BLOCK
@@ -189,25 +190,43 @@ Context::AppletToolbarAppletItem::addAction( QAction *action, int size )
 void
 Context::AppletToolbarAppletItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
 {
-    Plasma::Animator::self()->customAnimation( 20, 300, Plasma::Animator::EaseInCurve, this, "animateHoverIn" );
+    Plasma::Animation *animation = m_opacityAnimation.data();
+    if( !animation )
+    {
+        animation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
+        animation->setTargetWidget( m_label );
+        animation->setProperty( "duration", 300 );
+        animation->setProperty( "startOpacity", 0.5 );
+        animation->setProperty( "targetOpacity", 1.0 );
+        m_opacityAnimation = animation;
+    }
+    else if( animation->state() == QAbstractAnimation::Running )
+        animation->stop();
+
+    animation->setEasingCurve( QEasingCurve::InQuad );
+    animation->setDirection( QAbstractAnimation::Backward );
+    animation->start( QAbstractAnimation::KeepWhenStopped );
 }
 
 void
 Context::AppletToolbarAppletItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
 {
-    Plasma::Animator::self()->customAnimation( 20, 300, Plasma::Animator::EaseOutCurve, this, "animateHoverOut" );
-}
+    Plasma::Animation *animation = m_opacityAnimation.data();
+    if( !animation )
+    {
+        animation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
+        animation->setTargetWidget( m_label );
+        animation->setProperty( "duration", 300 );
+        animation->setProperty( "startOpacity", 0.5 );
+        animation->setProperty( "targetOpacity", 1.0 );
+        m_opacityAnimation = animation;
+    }
+    else if( animation->state() == QAbstractAnimation::Running )
+        animation->pause();
 
-void
-Context::AppletToolbarAppletItem::animateHoverIn( qreal progress )
-{
-    m_label->setOpacity( 1.0 - progress * 0.5 );
-}
-
-void
-Context::AppletToolbarAppletItem::animateHoverOut( qreal progress )
-{
-    m_label->setOpacity( 0.5 + progress * 0.5 );
+    animation->setEasingCurve( QEasingCurve::OutQuad );
+    animation->setDirection( QAbstractAnimation::Forward );
+    animation->start( QAbstractAnimation::DeleteWhenStopped );
 }
 
 
