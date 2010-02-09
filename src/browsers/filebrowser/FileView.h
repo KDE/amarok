@@ -18,6 +18,7 @@
 #define FILETREEVIEW_H
 
 #include "collection/Collection.h"
+#include "widgets/PrettyTreeView.h"
 
 #include <KFileItem>
 
@@ -28,7 +29,7 @@
 
 class PopupDropper;
 
-class FileView : public QTreeView
+class FileView : public Amarok::PrettyTreeView
 {
     Q_OBJECT
 public:
@@ -40,8 +41,6 @@ protected slots:
     void slotAppendToPlaylist();
     void slotReplacePlaylist();
     void slotEditTracks();
-
-    void newPalette( const QPalette & palette );
     
 protected:
             
