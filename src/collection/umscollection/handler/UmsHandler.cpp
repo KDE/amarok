@@ -436,9 +436,13 @@ UmsHandler::prettyName() const
 
     device = Solid::Device( m_memColl->udi() );
 
-    if ( device.isValid() )
+    if( device.isValid() )
     {
-        return device.vendor().append( " " ).append( device.product() );
+        QString name = device.vendor().simplified();
+        if( !name.isEmpty() )
+            name += " ";
+        name += device.product().simplified();
+        return name;
     }
 
     return m_mountPoint;

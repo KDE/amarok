@@ -229,7 +229,7 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     layout->addWidget( &label );
     layout->addWidget( &listWidget );
     dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from %1.",
-                                             m_handler->prettyName().simplified() ) );
+                                             m_handler->prettyName() ) );
 
     dialog.setMainWidget( widget );
     if( dialog.exec() != QDialog::Accepted )
