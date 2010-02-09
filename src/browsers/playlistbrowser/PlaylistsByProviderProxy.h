@@ -44,6 +44,9 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
 
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
+protected slots:
+        virtual void buildTree();
+
     signals:
         void renameIndex( QModelIndex idx );
 

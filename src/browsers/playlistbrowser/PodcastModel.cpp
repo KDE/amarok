@@ -83,7 +83,9 @@ PlaylistBrowserNS::PodcastModel::PodcastModel()
 
     qSort(m_channels.begin(), m_channels.end(), lessThanChannelTitles);
 
-    connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()));
+    connect( The::playlistManager(), SIGNAL( updated() ), SLOT( slotUpdate() ) );
+    connect( The::playlistManager(), SIGNAL( providerRemoved( PlaylistProvider*, int ) ),
+             SLOT( slotUpdate() ) );
 }
 
 PlaylistBrowserNS::PodcastModel::~PodcastModel()
@@ -615,7 +617,7 @@ PlaylistBrowserNS::PodcastModel::slotUpdate()
     The::playlistManager()->playlistsOfCategory( PlaylistManager::PodcastChannel );
     QListIterator<Meta::PlaylistPtr> i(playlists);
     m_channels.clear();
-    while (i.hasNext())
+    while( i.hasNext() )
     {
         Meta::PodcastChannelPtr channel = Meta::PodcastChannelPtr::staticCast( i.next() );
         m_channels << channel;

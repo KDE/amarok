@@ -68,7 +68,7 @@ class QtGroupingProxy : public QAbstractProxyModel
         void layoutChanged();
 
     protected slots:
-        void buildTree();
+        virtual void buildTree();
 
     private slots:
         void modelDataChanged( const QModelIndex&, const QModelIndex& );
@@ -93,9 +93,10 @@ class QtGroupingProxy : public QAbstractProxyModel
 
         QAbstractItemModel *m_model;
 
-    private:
         QMultiHash<quint32, int> m_groupHash;
         QList<ColumnVariantMap> m_groupMaps;
+
+    private:
 
         /** "instuctions" how to create an item in the tree.
         This is used by parent( QModelIndex )

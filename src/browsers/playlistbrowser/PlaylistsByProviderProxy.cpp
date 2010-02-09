@@ -141,3 +141,11 @@ PlaylistsByProviderProxy::loadItems( QModelIndexList list, Playlist::AddOptions 
     if( !originalList.isEmpty() )
         mpm->loadItems( originalList, insertMode );
 }
+
+void
+PlaylistsByProviderProxy::buildTree()
+{
+    //clear that data anyway since provider can disappear and should no longer be listed.
+    m_groupMaps.clear();
+    QtGroupingProxy::buildTree();
+}
