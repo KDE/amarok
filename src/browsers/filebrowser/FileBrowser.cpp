@@ -25,10 +25,11 @@
 #include "MimeTypeFilterProxyModel.h"
 #include "playlist/PlaylistModelStack.h"
 
-
 #include <KLineEdit>
 #include <KDirModel>
 #include <KDirLister>
+
+#include <QHeaderView>
 #include <QDir>
 
 FileBrowser::FileBrowser( const char * name, QWidget *parent )
@@ -146,8 +147,19 @@ void FileBrowser::readConfig()
     KConfigGroup config = Amarok::config( "File Browser" );
 
     m_kdirModel->dirLister()->openUrl( KUrl( config.readEntry( "Current Directory" ) ) );
-
     m_currentPath = KUrl( config.readEntry( "Current Directory" ) ).path();
+
+    QFile file( Amarok::saveLocation() + "file_browser_layout" );
+    QByteArray layout;
+    if ( file.open( QIODevice::ReadOnly ) )
+    {
+        layout = file.readAll();
+        file.close();
+    }
+
+    m_fileView->header()->restoreState( layout );
+
+
 }
 
 void FileBrowser::writeConfig()
@@ -156,6 +168,19 @@ void FileBrowser::writeConfig()
     KConfigGroup config = Amarok::config( "File Browser" );
     config.writeEntry( "Current Directory", m_kdirModel->dirLister()->url().toLocalFile() );
     config.sync();
+
+    //save the state of the header (column size and order). Yay, another QByteArray thingie...
+    QFile file( Amarok::saveLocation() + "file_browser_layout" );
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    {
+        file.write( m_fileView->header()->saveState() );
+
+        #ifdef Q_OS_UNIX  // fsync() only exists on Posix
+        fsync( file.handle() );
+        #endif
+
+        file.close();
+    }
 }
 
 
