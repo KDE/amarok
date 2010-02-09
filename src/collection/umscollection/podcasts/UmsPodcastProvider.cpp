@@ -227,13 +227,7 @@ UmsPodcastProvider::deleteJobComplete( KJob *job )
             continue;
         }
 
-        if( !umsChannel->m_umsEpisodes.contains( deletedEpisode ) )
-        {
-            error() << "Channel does't have episode";
-            continue;
-        }
-
-        umsChannel->m_umsEpisodes.removeAll( deletedEpisode );
+        umsChannel->removeEpisode( deletedEpisode );
     }
 }
 

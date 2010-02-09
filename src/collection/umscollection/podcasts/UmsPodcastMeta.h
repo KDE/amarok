@@ -94,6 +94,9 @@ class UmsPodcastChannel : public Meta::PodcastChannel
                 { return UmsPodcastEpisode::toPodcastEpisodeList( m_umsEpisodes ); }
         virtual PlaylistProvider *provider() const;
 
+    protected:
+        void removeEpisode( UmsPodcastEpisodePtr episode );
+
     private:
         UmsPodcastProvider *m_provider;
         KUrl m_playlistFilePath;

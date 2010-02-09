@@ -202,3 +202,18 @@ UmsPodcastChannel::provider() const
 {
      return dynamic_cast<PlaylistProvider *>( m_provider );
 }
+
+void
+UmsPodcastChannel::removeEpisode( UmsPodcastEpisodePtr episode )
+{
+    int position = m_umsEpisodes.indexOf( episode );
+
+    if( position == -1 )
+    {
+        error() << title() << " does't have this episode";
+        return;
+    }
+
+    m_umsEpisodes.removeAt( position );
+    notifyObserversTrackRemoved( position );
+}
