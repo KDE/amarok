@@ -455,7 +455,7 @@ UmsHandler::collectionActions()
     {
         if( !m_parseAction )
         {
-            m_parseAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n(  "&Read Device" ), this );
+            m_parseAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n(  "&Use as Collection" ), this );
             m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
 
             connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( parseTracks() ) );
