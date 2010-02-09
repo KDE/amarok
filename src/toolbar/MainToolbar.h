@@ -55,7 +55,9 @@ protected:
 private:
     void animateTrackLabels();
     void layoutProgressBar();
+    void setCurrentTrackActionsVisible( bool );
     void updateBgGradient();
+    void updateCurrentTrackActions();
 
 private slots:
     void addBookmark( const QString &name, int milliSeconds );
@@ -79,6 +81,7 @@ private:
         AnimatedLabelStack *label;
         void* key;
         QString uidUrl;
+        bool actionsVisible;
     } m_current;
 
     struct
