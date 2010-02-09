@@ -135,7 +135,7 @@ QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
     if( m_editAction == 0 )
     {
         m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
-        m_loadAction->setProperty( "popupdropper_svg_id", "edit" );
+        m_editAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
     }
 
