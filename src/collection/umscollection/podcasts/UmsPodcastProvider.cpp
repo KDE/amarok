@@ -171,7 +171,6 @@ UmsPodcastProvider::slotDeleteEpisodes()
     action->setData( QVariant() );
 
     UmsPodcastEpisodeList umsEpisodes;
-    KUrl::List urlsToDelete;
     foreach( PodcastEpisodePtr episode, episodes )
     {
         UmsPodcastEpisodePtr umsEpisode =
@@ -198,8 +197,17 @@ UmsPodcastProvider::slotDeleteEpisodes()
         }
 
         umsEpisodes << umsEpisode;
-        urlsToDelete << umsEpisode->playableUrl();
     }
+
+    deleteEpisodes( umsEpisodes );
+}
+
+void
+UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
+{
+    KUrl::List urlsToDelete;
+    foreach( UmsPodcastEpisodePtr umsEpisode, umsEpisodes )
+        urlsToDelete << umsEpisode->playableUrl();
 
     KDialog dialog( The::mainWindow() );
     dialog.setCaption( i18n( "Confirm Delete" ) );
@@ -259,11 +267,17 @@ UmsPodcastProvider::deleteJobComplete( KJob *job )
         }
 
         umsChannel->removeEpisode( deletedEpisode );
+        if( umsChannel->m_umsEpisodes.isEmpty() )
+        {
+            debug() << "channel is empty now, remove it";
+            m_umsChannels.removeAll( umsChannel );
+            emit( updated() );
+        }
     }
 }
 
 QList<QAction *>
-UmsPodcastProvider::channelActions( PodcastChannelList )
+UmsPodcastProvider::channelActions( PodcastChannelList channels )
 {
     QList<QAction *> actions;
     if( m_deleteChannelAction == 0 )
@@ -277,6 +291,13 @@ UmsPodcastProvider::channelActions( PodcastChannelList )
         connect( m_deleteChannelAction, SIGNAL( triggered() ),
                  SLOT( slotDeleteChannels() ) );
     }
+    //set the episode list as data that we'll retrieve in the slot
+    PodcastChannelList actionList =
+            m_deleteChannelAction->data().value<PodcastChannelList>();
+
+    actionList << channels;
+    m_deleteChannelAction->setData( QVariant::fromValue( actionList ) );
+
     actions << m_deleteChannelAction;
     return actions;
 }
@@ -285,6 +306,28 @@ void
 UmsPodcastProvider::slotDeleteChannels()
 {
     DEBUG_BLOCK
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    //get the list of episodes to apply to, then clear that data.
+    PodcastChannelList channels =
+            action->data().value<PodcastChannelList>();
+    action->setData( QVariant() );
+
+    foreach( PodcastChannelPtr channel, channels )
+    {
+        UmsPodcastChannelPtr umsChannel =
+                UmsPodcastChannel::fromPodcastChannelPtr( channel );
+        if( !umsChannel )
+        {
+            error() << "Could not cast to UmsPodcastChannel";
+            continue;
+        }
+
+        deleteEpisodes( umsChannel->m_umsEpisodes );
+        //slot deleteJobComplete() will emit updated once all tracks are gone.
+    }
 }
 
 QList<QAction *>

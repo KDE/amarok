@@ -80,6 +80,9 @@ class UmsPodcastProvider : public PodcastProvider
         void deleteJobComplete( KJob *job );
 
     private:
+
+        void deleteEpisodes( UmsPodcastEpisodeList umsEpisodes );
+
         Meta::UmsHandler *m_handler;
         QString m_scanDirectory;
         QStringList m_dirList;
