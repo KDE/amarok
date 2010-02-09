@@ -24,6 +24,8 @@
 
 #include "SvgHandler.h"
 
+#include "ui_UmsConfiguration.h"
+
 #include "File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5
@@ -129,7 +131,6 @@ UmsHandler::init()
     }
 
     QFile playerFile( m_mountPoint + "/.is_audio_player" );
-    bool use_automatically = false;
 
     QString mountPoint = m_mountPoint; //save for podcast path
     if (playerFile.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -164,7 +165,7 @@ UmsHandler::init()
             else if( line.startsWith( "use_automatically=" ) )
             {
                 debug() << "Use automatically: " << line.section( '=', 1, 1 );
-                use_automatically = ( line.section( '=', 1, 1 ) == "true" );
+                m_autoConnect = ( line.section( '=', 1, 1 ) == "true" );
             }
         }
 
@@ -225,7 +226,7 @@ UmsHandler::init()
     debug() << "Succeeded: true";
     m_memColl->emitCollectionReady();
     //m_memColl->slotAttemptConnectionDone( true );
-    if( use_automatically )
+    if( m_autoConnect )
     {
         debug() << "Automatically start to parse for tracks";
         m_parsed = true;
@@ -465,7 +466,9 @@ UmsHandler::collectionActions()
             connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( parseTracks() ) );
         }
 
-        actions.append( m_parseAction );
+        //if already parsed no need to add this.
+        if( !m_parsed )
+            actions.append( m_parseAction );
     }
     
     if( !m_configureAction )
@@ -475,9 +478,9 @@ UmsHandler::collectionActions()
             this
         );
         m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
-        connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigure() ) );
-        actions << m_configureAction;
+        connect( m_configureAction, SIGNAL( triggered() ), SLOT( slotConfigure() ) );
     }
+    actions << m_configureAction;
 
     return actions;
 }
@@ -486,6 +489,56 @@ void
 UmsHandler::slotConfigure()
 {
     DEBUG_BLOCK
+    m_umsSettingsDialog = new KDialog( The::mainWindow() );
+    QWidget *settingsWidget = new QWidget( m_umsSettingsDialog );
+
+    Ui::UmsConfiguration settings;
+    settings.setupUi( settingsWidget );
+
+    settings.m_autoConnect->setChecked( m_autoConnect );
+
+    settings.m_musicFolder->setMode( KFile::Directory );
+    settings.m_musicFolder->setUrl( m_mountPoint );
+
+    settings.m_podcastFolder->setMode( KFile::Directory );
+    settings.m_podcastFolder->setUrl( m_podcastPath );
+
+    m_umsSettingsDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
+    m_umsSettingsDialog->setMainWidget( settingsWidget );
+
+    m_umsSettingsDialog->setWindowTitle( i18n( "Configure USB Mass Storage Device" ) );
+    m_umsSettingsDialog->enableButtonApply( false );
+
+    connect( settings.m_musicFolder, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
+    connect( settings.m_podcastFolder, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
+    connect( settings.m_autoConnect, SIGNAL( stateChanged( int ) ), SLOT( slotConfigChanged() ) );
+
+    if( m_umsSettingsDialog->exec() == QDialog::Accepted )
+    {
+        debug() << "accepted";
+
+        //TODO: apply
+    }
+
+    delete m_umsSettingsDialog;
+    m_umsSettingsDialog = 0;
+}
+
+void
+UmsHandler::slotConfigChanged()
+{
+    Ui::UmsConfiguration *settings =
+            dynamic_cast<Ui::UmsConfiguration *>( m_umsSettingsDialog->mainWidget() );
+
+    if( !settings )
+        return;
+
+    if( settings->m_autoConnect->isChecked() != m_autoConnect
+        || settings->m_musicFolder->url() != m_mountPoint
+        || settings->m_podcastFolder->url() != m_podcastPath )
+    {
+        m_umsSettingsDialog->enableButtonApply( true );
+    }
 }
 
 void

@@ -54,6 +54,7 @@ namespace Solid {
 
 class UmsCollection;
 
+class KDialog;
 class KDirLister;
 class KFileItem;
 class KUrl;
@@ -153,6 +154,7 @@ class UmsHandler : public Meta::MediaDeviceHandler
 #endif
     private slots:
         void slotConfigure();
+        void slotConfigChanged();
 
     private:
         enum FileType
@@ -266,6 +268,8 @@ class UmsHandler : public Meta::MediaDeviceHandler
         UmsPodcastProvider *m_podcastProvider;
         QAction *m_configureAction;
         QString m_podcastPath;
+
+        KDialog *m_umsSettingsDialog;
 
     private slots:
         void slotCreateEntry( const QString &path );
