@@ -97,6 +97,7 @@ UmsHandler::UmsHandler( UmsCollection *mc, const QString& mountPoint )
     , m_wait( false )
     , m_tempdir( new KTempDir() )
     , m_podcastProvider( 0 )
+    , m_configureAction( 0 )
 {
     DEBUG_BLOCK
 
@@ -446,7 +447,6 @@ UmsHandler::prettyName() const
 QList<QAction *>
 UmsHandler::collectionActions()
 {
-
     QList< QAction* > actions;
 
     // Button to start parse
@@ -463,8 +463,25 @@ UmsHandler::collectionActions()
 
         actions.append( m_parseAction );
     }
+    
+    if( !m_configureAction )
+    {
+        m_configureAction = new QAction( KIcon( "configure" ),
+            i18n( "&Configure %1", prettyName() ),
+            this
+        );
+        m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
+        connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigure() ) );
+        actions << m_configureAction;
+    }
 
     return actions;
+}
+
+void
+UmsHandler::slotConfigure()
+{
+    DEBUG_BLOCK
 }
 
 void
