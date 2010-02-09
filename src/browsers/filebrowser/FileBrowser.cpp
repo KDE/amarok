@@ -250,3 +250,9 @@ QString FileBrowser::prettyName() const
     else
         return BrowserCategory::prettyName();
 }
+
+void FileBrowser::setDir( const QString &dir )
+{
+    //This function just happens to do exactly what we need
+    addItemActivated( dir );
+}

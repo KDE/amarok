@@ -39,6 +39,11 @@ public:
     
     virtual QString prettyName() const;
 
+    /**
+    * Navigate to a specific directory
+    */
+    void setDir( const QString &dir );
+
 protected slots:
     void itemActivated( const QModelIndex &index );
     

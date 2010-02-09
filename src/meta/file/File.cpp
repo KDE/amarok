@@ -20,6 +20,7 @@
 
 #include "Amarok.h"
 #include "amarokurls/BookmarkMetaActions.h"
+#include "browsers/filebrowser/FileBrowser.h"
 #include "config-amarok.h"
 #include "MainWindow.h"
 #include "meta/Meta.h"
@@ -152,11 +153,6 @@ public:
         
     virtual void findInSource()
     {
-        /////////////////////////////////////////////////
-        // FIXME Make this work with the new FileBrowser!
-        /////////////////////////////////////////////////
-
-#if 0
         //first show the filebrowser
         AmarokUrl url;
         url.setCommand( "navigate" );
@@ -167,7 +163,7 @@ public:
         BrowserCategory * fileCategory = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive();
         if( fileCategory )
         {
-            FileBrowser::Widget * fileBrowser = dynamic_cast<FileBrowser::Widget *>( fileCategory );
+            FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( fileCategory );
             if( fileBrowser )
             {
                 //get the path of the parent directory of the file
@@ -175,7 +171,6 @@ public:
                 fileBrowser->setDir( playableUrl.directory() );       
             }
         }
-#endif
     }
 
 private:

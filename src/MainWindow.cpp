@@ -344,7 +344,7 @@ MainWindow::init()
 
 
         PERF_LOG( "Creating FileBrowser" )
-        FileBrowser * fileBrowserMkII = new FileBrowser( "filesmkii", 0 );
+        FileBrowser * fileBrowserMkII = new FileBrowser( "files", 0 );
         fileBrowserMkII->setPrettyName( i18n("Files") );
         fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
         fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
