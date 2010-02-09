@@ -20,7 +20,8 @@
 #include "Debug.h"
 #include "PaletteHandler.h"
 
-#include <plasma/animator.h>
+#include <Plasma/Animator>
+#include <Plasma/Animation>
 #include <plasma/paintutils.h>
 
 #include <KColorScheme>
@@ -34,8 +35,6 @@ ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent, const float opacity )
     : Plasma::IconWidget( parent )
     , m_hovering( 0 )
     , m_baseOpacity( opacity )
-    , m_animOpacity( opacity )
-    , m_animHighlightId( 0 )
 {
     m_text = new QGraphicsSimpleTextItem( this );
     m_text->setCursor( Qt::ArrowCursor ); // Don't show the carot, the text isn't editable.
@@ -44,7 +43,7 @@ ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent, const float opacity )
     font.setBold( false );
     font.setPointSize( font.pointSize() - 1 );
     font.setStyleStrategy( QFont::PreferAntialias );
-    
+
     m_text->setFont( font );
     m_text->show();
 }
@@ -60,7 +59,7 @@ ToolBoxIcon::mousePressEvent( QGraphicsSceneMouseEvent *event )
         Plasma::IconWidget::mousePressEvent( event );
         return;
     }
-    
+
     if( data( 0 ) != QVariant() )
     {
         DEBUG_LINE_INFO
@@ -77,7 +76,7 @@ void
 ToolBoxIcon::mousePressed( bool pressed )
 {
     DEBUG_BLOCK
-    
+
     if( pressed && data( 0 ) != QVariant() )
     {
         debug() << data( 0 ).toString();
@@ -93,14 +92,13 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     {
         if( m_text->text().isEmpty() )
             m_text->setText( text() );
-        
+
         const QFontMetricsF fm( m_text->font() );
         m_text->setPos( PADDING, size().height() / 2 - fm.boundingRect( m_text->text() ).height() / 2 );
         painter->save();
-        
+
        // QColor color = KColorScheme( QPalette::Active, KColorScheme::Window,
        //                        Plasma::Theme::defaultTheme()->colorScheme() ).background().color();
-        painter->setOpacity( m_animOpacity );
 
        QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
        QColor highlight = PaletteHandler::highlightColor();
@@ -133,42 +131,51 @@ ToolBoxIcon::boundingRect() const
 void
 ToolBoxIcon::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
-    if( m_animHighlightId )
-        Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
-    
+    Plasma::Animation *animation = m_animHighLight.data();
+    if( !animation )
+    {
+        animation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
+        animation->setTargetWidget( this );
+        animation->setProperty( "startOpacity", 1.0 - m_baseOpacity );
+        animation->setProperty( "targetOpacity", 1.0 );
+        animation->setProperty( "duration", 240 );
+        m_animHighLight = animation;
+    }
+    else
+        animation->stop();
+
     m_hovering = true;
-    m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve, this, "animateHighlight" );
     m_defaultTextBrush = m_text->brush();
     m_text->setBrush( The::paletteHandler()->palette().highlightedText() );
+    animation->setDirection( QAbstractAnimation::Forward );
+    animation->setEasingCurve( QEasingCurve::InQuad );
+    animation->start( QAbstractAnimation::KeepWhenStopped );
     Plasma::IconWidget::hoverEnterEvent( event );
 }
 
 void
 ToolBoxIcon::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
-    if( m_animHighlightId )
-        Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
-    
+    Plasma::Animation *animation = m_animHighLight.data();
+    if( !animation )
+    {
+        animation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
+        animation->setTargetWidget( this );
+        animation->setProperty( "startOpacity", 1.0 - m_baseOpacity );
+        animation->setProperty( "targetOpacity", 1.0 );
+        animation->setProperty( "duration", 240 );
+        m_animHighLight = animation;
+    }
+    else
+        animation->stop();
+
     m_hovering = false;
-    m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseOutCurve, this, "animateHighlight" );
     m_text->setBrush( m_defaultTextBrush );
+    animation->setDirection( QAbstractAnimation::Backward );
+    animation->setEasingCurve( QEasingCurve::OutQuad );
+    animation->start( QAbstractAnimation::DeleteWhenStopped );
     Plasma::IconWidget::hoverLeaveEvent( event );
 }
-
-void
-ToolBoxIcon::animateHighlight( qreal progress )
-{
-    if( m_hovering )
-        m_animOpacity = m_baseOpacity + ( ( 1.0 - m_baseOpacity ) * progress );
-    else
-        m_animOpacity = 1.0 - ( ( 1.0 - m_baseOpacity ) * progress );
-
-    if( progress >= 1.0 )
-        m_animHighlightId = 0;
-
-    update();
-}
-
 
 QPainterPath
 ToolBoxIcon::shape() const
