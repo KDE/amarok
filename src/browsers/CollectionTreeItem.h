@@ -125,9 +125,6 @@ class CollectionTreeItem : public QObject
         Type m_type;
         //QString m_name;
         mutable bool m_isCounting;
-
-        mutable QList<QAction*> m_decoratorActions;
-        mutable bool m_decoratorActionsLoaded;
 };
 
 #endif
