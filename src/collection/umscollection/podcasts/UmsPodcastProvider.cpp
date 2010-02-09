@@ -16,10 +16,12 @@
 #include "UmsPodcastProvider.h"
 #include "Debug.h"
 
+#include <KDialog>
 #include <KIO/DeleteJob>
 #include <KMimeType>
 
 #include <QDirIterator>
+#include <QListWidget>
 #include <QObject>
 
 using namespace Meta;
@@ -168,6 +170,8 @@ UmsPodcastProvider::slotDeleteEpisodes()
             action->data().value<PodcastEpisodeList>();
     action->setData( QVariant() );
 
+    UmsPodcastEpisodeList umsEpisodes;
+    KUrl::List urlsToDelete;
     foreach( PodcastEpisodePtr episode, episodes )
     {
         UmsPodcastEpisodePtr umsEpisode =
@@ -193,16 +197,43 @@ UmsPodcastProvider::slotDeleteEpisodes()
             continue;
         }
 
-        KIO::DeleteJob *deleteJob =
-                KIO::del( umsEpisode->m_localFile->playableUrl(),
-                          KIO::HideProgressInfo );
-        UmsPodcastEpisodeList umsEpisodes;
         umsEpisodes << umsEpisode;
-        m_deleteJobMap.insert( deleteJob, umsEpisodes );
-
-        connect( deleteJob, SIGNAL( result( KJob * ) ),
-                 SLOT( deleteJobComplete( KJob *) ) );
+        urlsToDelete << umsEpisode->playableUrl();
     }
+
+    KDialog dialog( The::mainWindow() );
+    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QLabel label( i18np( "Are you sure you want to delete this episode?",
+                         "Are you sure you want to delete these %1 episodes?",
+                         urlsToDelete.count() )
+                    , &dialog
+                  );
+    QListWidget listWidget( &dialog );
+    listWidget.setSelectionMode( QAbstractItemView::NoSelection );
+    foreach( KUrl url, urlsToDelete )
+    {
+        new QListWidgetItem( url.toLocalFile(), &listWidget );
+    }
+
+    QWidget *widget = new QWidget( &dialog );
+    QVBoxLayout *layout = new QVBoxLayout( widget );
+    layout->addWidget( &label );
+    layout->addWidget( &listWidget );
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from %1.",
+                                             m_handler->prettyName().simplified() ) );
+
+    dialog.setMainWidget( widget );
+    if( dialog.exec() != QDialog::Accepted )
+        return;
+
+    KIO::DeleteJob *deleteJob = KIO::del( urlsToDelete, KIO::HideProgressInfo );
+
+    //keep track of these episodes until the job is done
+    m_deleteJobMap.insert( deleteJob, umsEpisodes );
+
+    connect( deleteJob, SIGNAL( result( KJob * ) ),
+             SLOT( deleteJobComplete( KJob *) ) );
 }
 
 void
