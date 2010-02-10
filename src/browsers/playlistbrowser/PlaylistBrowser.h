@@ -42,8 +42,6 @@ class PlaylistBrowser : public BrowserCategoryList
         void addCategory( int category );
 
     private:
-        BrowserCategory* loadPodcastCategory();
-
         PodcastCollection* m_localPodcasts;
         PodcastCategory* m_podcastCategory;
         QMap<int, int> m_categoryIndexMap;
