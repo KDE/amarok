@@ -397,7 +397,7 @@ MainToolbar::updateCurrentTrackActions()
 
     hbl->addStretch( 10 );
 
-    for ( i; i < actions.count(); ++i )
+    for ( ; i < actions.count(); ++i )
     {
         btn = new QToolButton( m_current.label ); // FIXME
         btn->setDefaultAction( actions.at(i) );
@@ -481,8 +481,16 @@ MainToolbar::updatePrevAndNext()
 {
     if ( !The::engineController()->currentTrack() )
     {
+        m_prev.key = 0L;
+        m_prev.label->setForegroundRole( QPalette::WindowText );
+        m_prev.label->setOpacity( 96 );
         m_prev.label->setData( QStringList() << "[ " + i18n("Previous") + " ]" );
+        m_prev.label->setCursor( Qt::ArrowCursor );
+        m_next.key = 0L;
+        m_next.label->setForegroundRole( QPalette::WindowText );
+        m_next.label->setOpacity( 96 );
         m_next.label->setData( QStringList() << "[ " + i18n("Next") + " ]"  );
+        m_next.label->setCursor( Qt::ArrowCursor );
         m_current.label->setUpdatesEnabled( true );
         return;
     }
@@ -498,6 +506,8 @@ MainToolbar::updatePrevAndNext()
     bool hadKey = bool(m_next.key);
     Meta::TrackPtr track = The::playlistActions()->likelyNextTrack();
     m_next.key = track ? track.data() : 0L;
+    m_next.label->setForegroundRole( QPalette::Link );
+    m_next.label->setOpacity( nextOpacity );
     m_next.label->setData( metadata( track ) );
     m_next.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
     if ( hadKey != bool(m_next.key) )
@@ -506,6 +516,8 @@ MainToolbar::updatePrevAndNext()
     hadKey = bool(m_prev.key);
     track = The::playlistActions()->likelyPrevTrack();
     m_prev.key = track ? track.data() : 0L;
+    m_prev.label->setForegroundRole( QPalette::Link );
+    m_next.label->setOpacity( prevOpacity );
     m_prev.label->setData( metadata( track ) );
     m_prev.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
     if ( hadKey != bool(m_prev.key) )
@@ -791,22 +803,22 @@ MainToolbar::setLabelTime( int ms )
     bool relayout = false;
     if ( ms < 0 ) // clear
     {
-        m_timeLabel->setText( QString() );
-        m_remainingTimeLabel->setText( QString() );
+        m_timeLabel->hide();
+        m_remainingTimeLabel->hide();
         m_lastTime = -1;
         m_lastRemainingTime = -1;
         relayout = true;
     }
     else if ( isVisible() ) // no need to do expensive stuff - it's updated every second anyway
     {
+        
         const int secs = ms/1000;
-        const int remainingSecs = (m_slider->maximum() - ms) / 1000;
+        const int remainingSecs =  m_slider->maximum() > 0 ? (m_slider->maximum() - ms) / 1000 : 0;
         
         if ( secs == m_lastTime && remainingSecs == m_lastRemainingTime )
             return;
 
         m_timeLabel->setText( Meta::secToPrettyTime( secs ) );
-        m_remainingTimeLabel->setText( '-' + Meta::secToPrettyTime( remainingSecs ) );
 
         QFontMetrics fm( m_timeLabel->font() );
 
@@ -817,15 +829,22 @@ MainToolbar::setLabelTime( int ms )
             m_timeLabel->setFixedWidth( w );
             relayout = true;
         }
+        m_timeLabel->show();
 
-        tf = timeFrame( remainingSecs );
-        if ( m_lastRemainingTime < 0 || tf != timeFrame( m_lastRemainingTime ) )
+        if ( remainingSecs > 0 )
         {
-            const int w = fm.width( QString("-") + timeString[tf] );
-            m_remainingTimeLabel->setFixedWidth( w );
-            m_remainingTimeLabel->adjustSize();
-            relayout = true;
+            m_remainingTimeLabel->setText( '-' + Meta::secToPrettyTime( remainingSecs ) );
+            tf = timeFrame( remainingSecs );
+            if ( m_lastRemainingTime < 0 || tf != timeFrame( m_lastRemainingTime ) )
+            {
+                const int w = fm.width( QString("-") + timeString[tf] );
+                m_remainingTimeLabel->setFixedWidth( w );
+                relayout = true;
+            }
+            m_remainingTimeLabel->show();
         }
+        else
+            m_remainingTimeLabel->hide();
 
         m_lastTime = secs;
         m_lastRemainingTime = remainingSecs;
@@ -882,7 +901,7 @@ MainToolbar::updateBgGradient()
     QLinearGradient lg( 0, 0, 0, height()-1 );
 
     QColor b = c.lighter( 150 );
-    b.setAlpha( 16 );
+    b.setAlpha( 0 );
     lg.setColorAt( 0, b );
 
     b = c;
@@ -985,17 +1004,17 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
     }
     if ( ev->type() == QEvent::Enter )
     {
-        if (o == m_next.label)
+        if (o == m_next.label && m_next.key)
             m_next.label->setOpacity( 255 );
-        else if (o == m_prev.label)
+        else if (o == m_prev.label && m_prev.key)
             m_prev.label->setOpacity( 255 );
         return false;
     }
     if ( ev->type() == QEvent::Leave )
     {
-        if (o == m_next.label)
+        if (o == m_next.label && m_next.key)
             m_next.label->setOpacity( nextOpacity );
-        else if (o == m_prev.label)
+        else if (o == m_prev.label && m_prev.key)
             m_prev.label->setOpacity( prevOpacity );
         return false;
     }
