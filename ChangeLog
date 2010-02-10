@@ -3,7 +3,7 @@ Amarok ChangeLog
 (C) 2002-2010 the Amarok authors.
 
 
-VERSION 2.2.3
+VERSION 2.3-Beta
   FEATURES:
     * Added a configuration dialog for Local Podcasts. Update interval and base
       download directory can now be configured. (BR 221398)
