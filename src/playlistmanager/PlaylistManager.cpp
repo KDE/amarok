@@ -213,6 +213,8 @@ bool
 PlaylistManager::save( Meta::TrackList tracks, const QString &name,
                        UserPlaylistProvider *toProvider )
 {
+    AMAROK_DEPRECATED
+    // used by: Playlist::Widget::slotSaveCurrentPlaylist()
     //if toProvider is 0 use the default UserPlaylistProvider (SQL)
     UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
     Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
@@ -235,16 +237,11 @@ PlaylistManager::save( Meta::TrackList tracks, const QString &name,
     return !playlist.isNull();
 }
 
-void
-PlaylistManager::saveCurrentPlaylist() //SLOT
-{
-    Meta::TrackList tracks = The::playlist()->tracks();
-    save( tracks );
-}
-
 bool
 PlaylistManager::import( const QString& fromLocation )
 {
+    // used by: PlaylistBrowserNS::UserModel::dropMimeData()
+    AMAROK_DEPRECATED
     DEBUG_BLOCK
     if( !m_playlistFileProvider )
     {
@@ -252,17 +249,6 @@ PlaylistManager::import( const QString& fromLocation )
         return false;
     }
     return m_playlistFileProvider->import( KUrl(fromLocation) );
-}
-
-bool
-PlaylistManager::exportPlaylist( Meta::TrackList tracks,
-                        const QString &location )
-{
-    DEBUG_BLOCK
-    debug()<<"About to export playlist to "<< location;
-    KUrl url( location );
-
-    return Meta::exportPlaylistFile( tracks, url );
 }
 
 void

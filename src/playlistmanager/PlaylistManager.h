@@ -109,8 +109,6 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          */
          bool import( const QString &fromLocation );
 
-        bool exportPlaylist( Meta::TrackList tracks, const QString &location );
-
         void rename( Meta::PlaylistPtr playlist );
 
         void deletePlaylists( Meta::PlaylistList playlistlist );
@@ -138,13 +136,9 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         void completePodcastDownloads();
 
-    public slots:
-        void saveCurrentPlaylist();
-
     signals:
         void updated();
         void categoryAdded( int category );
-        void showCategory( int category );
         void providerAdded( PlaylistProvider *provider, int category );
         void providerRemoved( PlaylistProvider *provider, int category );
 
