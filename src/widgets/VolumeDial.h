@@ -53,6 +53,7 @@ protected:
     void mousePressEvent( QMouseEvent * );
     void mouseReleaseEvent( QMouseEvent * );
     void resizeEvent(QResizeEvent *);
+    void sliderChange( SliderChange change );
     void timerEvent ( QTimerEvent * );
     friend class MainToolbar;
     void wheelEvent( QWheelEvent * );
@@ -66,7 +67,7 @@ private slots:
 
 private:
     QPixmap m_icon[4];
-    int m_unmutedValue;
+    int m_unmutedValue, m_formerValue;
     QList<QWidget*> m_wheelProxies;
     struct
     {

@@ -26,7 +26,6 @@
 
 #include <KLocale>
 
-
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
     , m_isClick( false )
     , m_isDown( false )
@@ -89,40 +88,45 @@ void VolumeDial::leaveEvent( QEvent * )
 
 void VolumeDial::mousePressEvent( QMouseEvent *me )
 {
-    if ( me->button() == Qt::LeftButton )
+    if ( me->button() != Qt::LeftButton )
     {
-        setCursor( Qt::PointingHandCursor );
-        const int dx = width()/4;
-        const int dy = height()/4;
-        m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
+        QDial::mousePressEvent( me );
+        return;
     }
-//     if ( !m_isClick )
-    QDial::mousePressEvent( me );
+
+    setCursor( Qt::PointingHandCursor );
+    const int dx = width()/4;
+    const int dy = height()/4;
+    m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
+
+    if ( !m_isClick ) // this will directly jump to the proper position
+        QDial::mousePressEvent( me );
+
+    // for value changes caused by mouseevent we'll only let our adjusted value changes be emitted
+    // see ::sliderChange()
+    m_formerValue = value();
+    blockSignals( true );
 }
 
 void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
 {
     if ( me->button() != Qt::LeftButton )
         return;
-    
+
+    blockSignals( false ); // free signals
     setCursor( Qt::ArrowCursor );
-    if ( !m_isClick )
+    setSliderDown( false );
+
+    if ( m_isClick )
     {
-        QDial::mouseReleaseEvent( me );
-        return;
-    }
-    const int dx = width()/4;
-    const int dy = height()/4;
-    m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
-    if ( !m_isClick )
-    {
-        QDial::mouseReleaseEvent( me );
-        return;
+        const int dx = width()/4;
+        const int dy = height()/4;
+        m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
+        if ( m_isClick )
+            emit muteToggled( !m_muted );
     }
 
     m_isClick = false;
-
-    emit muteToggled( !m_muted );
 }
 
 static QColor mix( const QColor &c1, const QColor &c2 )
@@ -220,7 +224,7 @@ void VolumeDial::wheelEvent( QWheelEvent *wev )
 
     // NOTICE: this is a bit tricky.
     // the ToolTip "QTipLabel" just installed a global eventfilter that intercepts various
-    // events and hides itself on them. Therefore every odd wheelevent will close the tip
+    // events and hides itself on them. Therefore every even wheelevent will close the tip
     // ("works - works not - works - works not - ...")
     // so we post-install our own global eventfilter to handle wheel events meant for us bypassing
     // the ToolTip eventfilter
@@ -238,14 +242,14 @@ void VolumeDial::setMuted( bool mute )
 
     if ( mute )
     {
+        setToolTip( i18n( "Muted" ) );
         m_unmutedValue = value();
         setValue( minimum() );
-        setToolTip( i18n( "Muted" ) );
     }
     else
     {
-        setValue( m_unmutedValue );
         setToolTip( i18n( "Volume: %1%", value() ) );
+        setValue( m_unmutedValue );
     }
 }
 
@@ -257,16 +261,39 @@ QSize VolumeDial::sizeHint() const
     return QDial::sizeHint();
 }
 
+void VolumeDial::sliderChange( SliderChange change )
+{
+    if ( change == SliderValueChange && isSliderDown() && signalsBlocked() )
+    {
+        int d = value() - m_formerValue;
+        if ( d && d < 33 && d > -33 ) // don't allow real "jumps" > 1/3
+        {
+            if ( d > 5 ) // ease movement
+                d = 5;
+            else if ( d < -5 )
+                d = -5;
+            m_formerValue += d;
+            blockSignals( false );
+            emit sliderMoved( m_formerValue );
+            emit valueChanged( m_formerValue );
+            blockSignals( true );
+        }
+        if ( d )
+            setValue( m_formerValue );
+    }
+    QDial::sliderChange(change);
+}
+
 void VolumeDial::valueChangedSlot( int v )
 {
-    setToolTip( i18n( "Volume: %1%", value() ) );
+    setToolTip( i18n( "Volume: %1%", v ) );
 
     m_isClick = false;
 
     if ( m_muted == ( v == minimum() ) )
         return;
-    m_muted = ( v == minimum() );
 
+    m_muted = ( v == minimum() );
     update();
 }
 
