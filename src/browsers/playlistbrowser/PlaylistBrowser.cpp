@@ -39,15 +39,8 @@ PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *
     setMargin( 0 );
     setContentsMargins(0,0,0,0);
 
-    BrowserCategoryList::addCategory( new DynamicCategory(0) );
-
-    QList<int> categories = The::playlistManager()->availableCategories();
-    debug() << categories.size() << " categories available";
-    foreach( int category, categories )
-    {
-        debug() << "adding category nr. " << category;
-        BrowserCategoryList::addCategory( new PlaylistCategory( 0 ) );
-    }
+    BrowserCategoryList::addCategory( new DynamicCategory( 0 ) );
+    BrowserCategoryList::addCategory( new PlaylistCategory( 0 ) );
 
     connect( The::playlistManager(), SIGNAL( categoryAdded( int ) ), SLOT( addCategory( int ) ) );
 
