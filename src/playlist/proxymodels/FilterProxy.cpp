@@ -93,7 +93,7 @@ void FilterProxy::slotInsertedIds( const QList< quint64 > &ids )
     }
 
     if ( proxyIds.size() > 0 )
-        emit( insertedIds( proxyIds ) );
+        emit insertedIds( proxyIds );
 }
 
 void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
@@ -117,8 +117,8 @@ FilterProxy::showOnlyMatches( bool onlyMatches )
 
     //make sure to update model when mode changes ( as we might have ignored and
     //number of changes to the search term )
-    invalidateFilter();
-    emit( layoutChanged() );
+    invalidateFilter();    // Tell QSortFilterProxyModel: re-filter.
+    emit layoutChanged();
 }
 
 void FilterProxy::clearSearchTerm()
@@ -128,7 +128,7 @@ void FilterProxy::clearSearchTerm()
     m_belowModel->clearSearchTerm();
     if ( !m_passThrough )
     {
-        invalidateFilter();
+        invalidateFilter();    // Tell QSortFilterProxyModel: re-filter.
         emit( layoutChanged() );
     }
 }

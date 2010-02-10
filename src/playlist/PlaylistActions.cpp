@@ -402,8 +402,11 @@ Playlist::Actions::engineNewTrackPlaying()
     {
         if ( m_topmostModel->containsId( m_nextTrackCandidate )
              && track == m_topmostModel->trackForId( m_nextTrackCandidate ) )
+        {
             m_topmostModel->setActiveId( m_nextTrackCandidate );
-        else {
+        }
+        else
+        {
             warning() << "engineNewTrackPlaying:" << track->prettyName() << "does not match what the playlist controller thought it should be";
             if ( m_topmostModel->activeTrack() != track )
             {

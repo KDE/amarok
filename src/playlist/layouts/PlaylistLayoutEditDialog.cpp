@@ -494,8 +494,7 @@ void PlaylistLayoutEditDialog::setEnabledTabs()
 //We'll use the "user data" to store the un-i18n-ized category name for internal use.
 void PlaylistLayoutEditDialog::setupGroupByCombo()
 {
-    QStringList groupingList( groupableCategories );
-    foreach ( const QString &it, groupingList )
+    foreach ( const QString &it, Playlist::groupableCategories )
     {
         QString prettyCategoryName = columnNames.at( internalColumnNames.indexOf( it ) );
         QString iconName = iconNames.at( internalColumnNames.indexOf( it ) );

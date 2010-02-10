@@ -80,10 +80,8 @@ Playlist::Model::Model( QObject *parent )
         {
             i.next();
             Meta::TrackPtr track = i.value();
-            if ( track == Meta::TrackPtr() )
-            {
+            if ( ! track )
                 i.remove();
-            }
             else if( Meta::canExpand( track ) )
             {
                 Meta::PlaylistPtr playlist = Meta::expand( track );
@@ -93,10 +91,8 @@ Playlist::Model::Model( QObject *parent )
                     i.remove();
                     Meta::TrackList newtracks = playlist->tracks();
                     foreach( Meta::TrackPtr t, newtracks )
-                    {
-                        if( t != Meta::TrackPtr() )
+                        if( t )
                             i.insert( t );
-                    }
                 }
             }
         }
@@ -550,7 +546,8 @@ Playlist::Model::stateOfRow( int row ) const
 {
     if ( rowExists( row ) )
         return m_items.at( row )->state();
-    return Item::Invalid;
+    else
+        return Item::Invalid;
 }
 
 bool
@@ -597,7 +594,8 @@ Playlist::Model::trackAt( int row ) const
 {
     if ( rowExists( row ) )
         return m_items.at( row )->track();
-    return Meta::TrackPtr();
+    else
+        return Meta::TrackPtr();
 }
 
 Meta::TrackPtr
@@ -605,7 +603,8 @@ Playlist::Model::activeTrack() const
 {
     if ( rowExists( m_activeRow ) )
         return m_items.at( m_activeRow )->track();
-    return Meta::TrackPtr();
+    else
+        return Meta::TrackPtr();
 }
 
 int
@@ -613,7 +612,8 @@ Playlist::Model::rowForId( const quint64 id ) const
 {
     if ( containsId( id ) )
         return m_items.indexOf( m_itemIds.value( id ) );
-    return -1;
+    else
+        return -1;
 }
 
 Meta::TrackPtr
@@ -621,7 +621,8 @@ Playlist::Model::trackForId( const quint64 id ) const
 {
     if ( containsId( id ) )
         return m_itemIds.value( id )->track();
-    return Meta::TrackPtr();
+    else
+        return Meta::TrackPtr();
 }
 
 quint64
@@ -629,8 +630,8 @@ Playlist::Model::idAt( const int row ) const
 {
     if ( rowExists( row ) )
         return m_items.at( row )->id();
-
-    return 0;
+    else
+        return 0;
 }
 
 quint64
@@ -638,7 +639,8 @@ Playlist::Model::activeId() const
 {
     if ( rowExists( m_activeRow ) )
         return m_items.at( m_activeRow )->id();
-    return 0;
+    else
+        return 0;
 }
 
 Playlist::Item::State
@@ -646,7 +648,8 @@ Playlist::Model::stateOfId( quint64 id ) const
 {
     if ( containsId( id ) )
         return m_itemIds.value( id )->state();
-    return Item::Invalid;
+    else
+        return Item::Invalid;
 }
 
 void
@@ -907,11 +910,9 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 
 void Playlist::Model::clearCommand()
 {
-    int noOfRows = m_items.size();
-
     QList<quint64> delIds = m_itemIds.keys();
 
-    beginRemoveRows( QModelIndex(), 0, noOfRows - 1);
+    beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
     qDeleteAll( m_items );
     m_items.clear();
     m_itemIds.clear();
