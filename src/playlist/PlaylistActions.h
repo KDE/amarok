@@ -96,9 +96,6 @@ public:
      */
     void normalizeDynamicPlayist();
 
-    /** returns the navigator currently in use, can be 0 */
-    inline const TrackNavigator *navigator() const { return m_navigator; }
-
     // This shouldn't be in Actions, it doesn't make sense
     int queuePosition( quint64 id );
 
