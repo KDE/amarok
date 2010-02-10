@@ -577,6 +577,12 @@ MainWindow::exportPlaylist() const //SLOT
 }
 
 void
+MainWindow::slotShowActiveTrack() const
+{
+    m_playlistWidget->showActiveTrack();
+}
+
+void
 MainWindow::slotShowCoverManager() const //SLOT
 {
     CoverManager::showOnce();
@@ -865,6 +871,10 @@ MainWindow::createActions()
     ac->addAction( "jumpTo", action );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_J ) );
     connect( action, SIGNAL( triggered() ), SLOT( slotJumpTo() ) );
+
+    action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
+    ac->addAction( "show_active_track", action );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowActiveTrack() ) );
 
     action = new KAction( i18n( "Show Notification Popup" ), this );
     ac->addAction( "showNotificationPopup", action );
