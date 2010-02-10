@@ -52,48 +52,19 @@ class AMAROK_EXPORT PlaylistManager : public QObject
     Q_OBJECT
 
     public:
-        //Don't forget to add a new default Category to PlaylistManager::typeName(int playlistCategory)
         enum PlaylistCategory
         {
-            CurrentPlaylist = 1,
-            UserPlaylist,
-            PodcastChannel,
-            Dynamic,
-            SmartPlaylist,
-            Custom
+            UserPlaylist = 1,
+            PodcastChannel
         };
 
         static PlaylistManager *instance();
         static void destroy();
-        //TODO: a facility to allow plugins and scripts to add PlaylistCategory types dynamically.
 
         /**
          * @returns all available categories registered at that moment
          */
         QList<int> availableCategories() { return m_providerMap.uniqueKeys(); }
-
-        /**
-         * @returns A translated string to identify the category of the Playlist. Always a plural form.
-         */
-        QString categoryName( int playlistCategory );
-
-        /**
-         * @returns A short (one sentence) translated description for this category of
-         * playlists.
-         */
-        QString categoryShortDescription( int playlistCategory );
-
-        /**
-         * @returns A translated description for this category of playlists.
-         *
-         */
-        QString categoryLongDescription( int playlistCategory );
-
-        /**
-         * @returns An icon for this category of playlists.
-         *
-         */
-        KIcon categoryIcon( int playlistCategory );
 
         /**
          * returns playlists of a certain category from all registered PlaylistProviders
@@ -120,13 +91,6 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         void removeProvider( PlaylistProvider * provider );
 
-        /**
-         * Makes sure custom categories don't conflict with the default PlaylistCategory enum or
-         * other custom category by dynamically providing a integer that identifies it.
-         * @arg name a translated name that can be used to identify playlists offered by this provider
-         */
-        int registerCustomCategory( const QString &name );
-
         PlaylistProvider * playlistProvider( int category, QString name );
 
         void downloadPlaylist( const KUrl & path, const Meta::PlaylistFilePtr playlist );
@@ -150,12 +114,6 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void rename( Meta::PlaylistPtr playlist );
 
         void deletePlaylists( Meta::PlaylistList playlistlist );
-
-        /**
-         *  Moves a track within the playlist to a new position
-         *  @returns true when the move was performed successfully
-         */
-        bool moveTrack( Meta::PlaylistPtr playlist, int from, int to );
 
         PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; }
         UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; }

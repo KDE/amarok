@@ -21,112 +21,52 @@
 #include "DynamicCategory.h"
 #include "Playlist.h"
 #include "PlaylistCategory.h"
-#include "PodcastMeta.h"
-#include "PodcastModel.h"
-#include "PodcastCategory.h"
 #include "PlaylistManager.h"
 
-#include <kicon.h>
 #include <klocale.h>
 #include <KStandardDirs>
 
-#include <QToolBox>
-#include <QTreeView>
+#include <QList>
+#include <QString>
 
-namespace PlaylistBrowserNS {
-
-PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
+PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
  : BrowserCategoryList( parent, name )
 {
     DEBUG_BLOCK
 
-    //setStyleSheet("QToolBox::tab { border-radius: 5px; border-color: red; border-style: solid }");
-
     setObjectName( name );
-
-    //m_toolBox->setStyleSheet( "{}" );
 
     setMargin( 0 );
     setContentsMargins(0,0,0,0);
 
-    addCategory( PlaylistManager::Dynamic );
+    BrowserCategoryList::addCategory( new DynamicCategory(0) );
 
     QList<int> categories = The::playlistManager()->availableCategories();
     debug() << categories.size() << " categories available";
     foreach( int category, categories )
     {
         debug() << "adding category nr. " << category;
-        addCategory( category );
+        BrowserCategoryList::addCategory( new PlaylistCategory( 0 ) );
     }
 
-    showCategory( Amarok::config( "Playlist Browser" ).readEntry( "Current Category", 1 ) );
-
     connect( The::playlistManager(), SIGNAL( categoryAdded( int ) ), SLOT( addCategory( int ) ) );
-    connect( The::playlistManager(), SIGNAL( showCategory( int ) ), SLOT( showCategory( int ) ) );
 
     setLongDescription( i18n( "The playlist browser contains your list of imported and saved playlists. It is also where you can specify powerful dynamic playlists and manage your podcast subscriptions and episodes." ) );
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_playlists.png" ) );
 }
 
-PlaylistBrowser::~PlaylistBrowser()
+PlaylistBrowserNS::PlaylistBrowser::~PlaylistBrowser()
 {
-    //Amarok::config( "Playlist Browser" ).writeEntry( "Current Category", m_toolBox->currentIndex() );
 }
 
 //SLOT
 void
-PlaylistBrowser::addCategory( int category )
+PlaylistBrowserNS::PlaylistBrowser::addCategory( int )
 {
     DEBUG_BLOCK
-    QString categoryName = The::playlistManager()->categoryName( category );
-    BrowserCategory *bCategory = 0;
-
-    KIcon icon = The::playlistManager()->categoryIcon( category );
-
-    switch( category )
-    {
-        //we don't show the current playlist in the PlaylistBrowser (yet)
-        case PlaylistManager::CurrentPlaylist: return;
-        //TODO: add the UserPlaylistCategory widget
-        case PlaylistManager::UserPlaylist: bCategory = new PlaylistCategory( 0 ); break;
-        case PlaylistManager::PodcastChannel: /* already loaded in MainWindow.cpp */ return;
-        case PlaylistManager::Dynamic: bCategory = loadDynamicCategory(); break;
-        //TODO: add the SmartPlaylistCategory widget
-        //case PlaylistManager::SmartPlaylist: bCategory = loadSmartPlaylistCategory(); break;
-        //This must be a custom category
-        default: break;//TODO: widget = loadCustomCategory( int category );
-    }
-
-    BrowserCategoryList::addCategory( bCategory );
-
-}
-
-BrowserCategory *
-PlaylistBrowser::loadPodcastCategory()
-{
-    return The::podcastCategory();
-}
-
-BrowserCategory*
-PlaylistBrowser::loadDynamicCategory()
-{
-    return new DynamicCategory( 0 );
-}
-
-void
-PlaylistBrowser::showCategory( int category )
-{
-    Q_UNUSED( category )
-    DEBUG_BLOCK;
-    //m_toolBox->setCurrentIndex( m_categoryIndexMap.key( category ) );
-}
-
-int PlaylistBrowserNS::PlaylistBrowser::currentCategory()
-{
-    //return m_categoryIndexMap.value( m_toolBox->currentIndex() );
-    return 0;
-}
+    //AMAROK_DEPRECATED // maybe? -- sth
+    BrowserCategoryList::addCategory( new PlaylistCategory( 0 ) );
 
 }
 
