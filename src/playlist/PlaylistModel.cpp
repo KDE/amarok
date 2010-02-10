@@ -678,7 +678,7 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 bool
 Playlist::Model::exportPlaylist( const QString &path ) const
 {
-    return The::playlistManager()->exportPlaylist( tracks(), path );
+    return Meta::exportPlaylistFile( tracks(), path );
 }
 
 Meta::TrackList
