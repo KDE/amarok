@@ -665,19 +665,30 @@ IpodHandler::initializeIpod()
     itdb_playlist_add(m_itdb, podcasts, -1);
     itdb_playlist_add(m_itdb, mpl, 0);
 
-    QStringList dirs;
-    dirs << itdb_get_control_dir(itdb_get_mountpoint(m_itdb));
-    dirs << itdb_get_music_dir(itdb_get_mountpoint(m_itdb));
-    dirs << itdb_get_itunes_dir(itdb_get_mountpoint(m_itdb));
-
-    for(QStringList::iterator it = dirs.begin(); it != dirs.end(); ++it)
+    QString realPath;
+    if(!pathExists( itunesDir(), &realPath) )
     {
-        dir.setPath(*it);
-        if( !dir.exists() )
-            dir.mkdir( dir.absolutePath() );
-        if( !dir.exists() )
-            return false;
+        dir.setPath( realPath );
+        dir.mkdir( dir.absolutePath() );
     }
+    if( !dir.exists() )
+        return false;
+
+    if( !pathExists( itunesDir( "Music" ), &realPath ) )
+    {
+        dir.setPath( realPath );
+        dir.mkdir( dir.absolutePath() );
+    }
+    if( !dir.exists() )
+        return false;
+
+    if( !pathExists( itunesDir( "iTunes" ), &realPath ) )
+    {
+        dir.setPath( realPath );
+        dir.mkdir( dir.absolutePath() );
+    }
+    if( !dir.exists() )
+        return false;
 
     m_dbChanged = true;
 
@@ -719,10 +730,6 @@ IpodHandler::detectModel()
         m_supportsArtwork = false;
         #endif
         debug() << "Supports Artwork: " << ( m_supportsArtwork ? "true" : "false" );
-
-        m_supportsVideo = itdb_device_supports_video( m_itdb->device );
-        debug() << "Supports Video: " << ( m_supportsVideo ? "true" : "false" );
-
         QString musicdirs;
         musicdirs.setNum( itdb_musicdirs_number(m_itdb) );
         debug() << "Musicdirs: " << musicdirs;
@@ -755,6 +762,16 @@ IpodHandler::detectModel()
                 debug() << "detected iPhone/iPod Touch" << endl;
                 break;
 
+            case ITDB_IPOD_MODEL_CLASSIC_SILVER:
+            case ITDB_IPOD_MODEL_CLASSIC_BLACK:
+                debug() << "detected iPod classic";
+            case ITDB_IPOD_MODEL_VIDEO_WHITE:
+            case ITDB_IPOD_MODEL_VIDEO_BLACK:
+            case ITDB_IPOD_MODEL_VIDEO_U2:
+                m_supportsVideo = true;
+                debug() << "detected video-capable iPod";
+                break;
+
             case ITDB_IPOD_MODEL_MOBILE_1:
                 m_isMobile = true;
                 debug() << "detected iTunes phone" << endl;
@@ -778,6 +795,11 @@ IpodHandler::detectModel()
                case ITDB_IPOD_GENERATION_NANO_3:
                case ITDB_IPOD_GENERATION_TOUCH_1:
                   m_needsFirewireGuid = true;
+                  m_supportsVideo = true;
+                  break;
+               case ITDB_IPOD_GENERATION_VIDEO_1:
+               case ITDB_IPOD_GENERATION_VIDEO_2:
+                  m_supportsVideo = true;
                   break;
                case ITDB_IPOD_GENERATION_SHUFFLE_1:
                case ITDB_IPOD_GENERATION_SHUFFLE_2:
@@ -818,6 +840,16 @@ IpodHandler::detectModel()
             debug() << "iTunes_Control found - assuming iPhone/iPod Touch" << endl;
             m_isIPhone = true;
         }
+    }
+
+    if( m_isIPhone )
+    {
+        #ifdef GDK_FOUND
+        m_supportsArtwork = true;
+        #else
+        m_supportsArtwork = false;
+        #endif
+        m_supportsVideo = true;
     }
 
     if( pathExists( ":.rockbox" ) )
@@ -1242,7 +1274,12 @@ IpodHandler::orphanedTracks()
     DEBUG_BLOCK
 
     QStringList orphanedTracks;
-    QString musicpath = itdb_get_music_dir( itdb_get_mountpoint( m_itdb ) );
+    QString musicpath;
+    if (!pathExists( itunesDir( "Music" ), &musicpath ))
+    {
+        debug() << "Music path not found";
+        return QStringList();
+    }
 
     debug() << "Found path for Music";
 
