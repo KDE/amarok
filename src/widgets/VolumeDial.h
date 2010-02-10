@@ -39,7 +39,7 @@ public slots:
        Remove an added wheelproxy. The slot is automatically bound to the widgets deconstruction
        signal when added. You don't have to do that.
     */
-    void removeWheelProxy( QObject *w );
+    void removeWheelProxy( QObject * );
     void setMuted( bool mute );
 
 signals:
