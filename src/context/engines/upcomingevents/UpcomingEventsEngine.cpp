@@ -29,6 +29,8 @@
 
 using namespace Context;
 
+K_EXPORT_AMAROK_DATAENGINE( upcomingEvents, UpcomingEventsEngine )
+
 UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )

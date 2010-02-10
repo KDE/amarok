@@ -19,7 +19,7 @@
 
 // #include <tests/context/engines/TestDataEngine.h>
 // #include <TestBase.h>
-
+#include <QtTest/QTest>
 #include <QtCore/QStringList>
 #include "engines/upcomingevents/UpcomingEventsEngine.h"
 
@@ -32,7 +32,7 @@ class TestUpcomingEventsEngine : public QObject// : public TestBase, public Test
         TestUpcomingEventsEngine();      
 	
     private slots:
-        void initTestCase();
+        void init();
         void testDataEngineMethod();
 };
 

@@ -1,9 +1,11 @@
-add_subdirectory( data )
+#add_subdirectory( data )
 
 include_directories(
   ..
   ${AMAROK_SOURCE_TREE}
   ${AMAROK_SOURCE_TREE}/context
+  ${AMAROK_SOURCE_TREE}/context/engines/upcomingevents
+  ${AMAROK_SOURCE_TREE}/context/applets/upcomingevents
   ${CMAKE_BINARY_DIR}/src
   ${AMAROK_COLLECTION_SUPPORT_DIR}
   ${KDE4_INCLUDE_DIR}
@@ -12,11 +14,12 @@ include_directories(
 
 
 set( testupcomingeventsengine_SRCS
+    TestUpcomingEventsEngine.cpp
     ${AMAROK_SOURCE_TREE}/context/engines/upcomingevents/UpcomingEventsEngine.cpp
     ${AMAROK_SOURCE_TREE}/context/applets/upcomingevents/LastFmEvent.cpp
 )
 
-kde4_add_unit_test( testupcomingeventsengine TESTNAME amarok-testupcomingeventsengine ${testupcomingeventsengine_SRCS} )
+kde4_add_unit_test( testupcomingeventsengine ${testupcomingeventsengine_SRCS} )
 
 add_dependencies( testupcomingeventsengine amaroklib)
 

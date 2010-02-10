@@ -17,6 +17,7 @@ include_directories( .
 
 add_subdirectory( data )
 add_subdirectory( collection )
+add_subdirectory( context )
 add_subdirectory( meta )
 add_subdirectory( playlistmanager )
 add_subdirectory( timecode )

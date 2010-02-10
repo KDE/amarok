@@ -1,5 +1,6 @@
-/****************************************************************************************
+/***************************************************************************************
 * Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
+* Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,32 +17,40 @@
 
 #include "TestUpcomingEventsEngine.h"
 
+#include "Debug.h"
+
 #include <KStandardDirs>
-#include <QtTest/QTest>
 #include <QFile>
 #include <QDomDocument>
 
+#include <qtest_kde.h>
 
+#include <gmock/gmock.h>
+
+QTEST_KDEMAIN_CORE( TestUpcomingEventsEngine )
 
 // TestUpcomingEventsEngine::TestUpcomingEventsEngine( const QStringList args, const QString &logPath )
-TestUpcomingEventsEngine::TestUpcomingEventsEngine()
-    //: TestBase("UpcomingEventsEngine"), TestDataEngine("amarok_data_engine_upcomingEvents")
+TestUpcomingEventsEngine::TestUpcomingEventsEngine() //: TestBase("UpcomingEventsEngine"), TestDataEngine("amarok_data_engine_upcomingEvents")
 {
     /*QStringList combinedArgs = args;
     addLogging( combinedArgs, logPath );
     QTest::qExec( this, combinedArgs );*/
 }
 
-void TestUpcomingEventsEngine::initTestCase()
+void
+TestUpcomingEventsEngine::init()
 {
     //Write here initilizations
 }
 
 
-void TestUpcomingEventsEngine::testDataEngineMethod()
+void
+TestUpcomingEventsEngine::testDataEngineMethod()
 {
     //Verify if the engine has been found
 //     QVERIFY(m_engine != 0);
     
     //Tests on the engine
 }
+
+#include "TestUpcomingEventsEngine.moc"
