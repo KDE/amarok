@@ -665,30 +665,19 @@ IpodHandler::initializeIpod()
     itdb_playlist_add(m_itdb, podcasts, -1);
     itdb_playlist_add(m_itdb, mpl, 0);
 
-    QString realPath;
-    if(!pathExists( itunesDir(), &realPath) )
-    {
-        dir.setPath( realPath );
-        dir.mkdir( dir.absolutePath() );
-    }
-    if( !dir.exists() )
-        return false;
+    QStringList dirs;
+    dirs << itdb_get_control_dir(itdb_get_mountpoint(m_itdb));
+    dirs << itdb_get_music_dir(itdb_get_mountpoint(m_itdb));
+    dirs << itdb_get_itunes_dir(itdb_get_mountpoint(m_itdb));
 
-    if( !pathExists( itunesDir( "Music" ), &realPath ) )
+    for(QStringList::iterator it = dirs.begin(); it != dirs.end(); ++it)
     {
-        dir.setPath( realPath );
-        dir.mkdir( dir.absolutePath() );
+        dir.setPath(*it);
+        if( !dir.exists() )
+            dir.mkdir( dir.absolutePath() );
+        if( !dir.exists() )
+            return false;
     }
-    if( !dir.exists() )
-        return false;
-
-    if( !pathExists( itunesDir( "iTunes" ), &realPath ) )
-    {
-        dir.setPath( realPath );
-        dir.mkdir( dir.absolutePath() );
-    }
-    if( !dir.exists() )
-        return false;
 
     m_dbChanged = true;
 
@@ -1253,12 +1242,7 @@ IpodHandler::orphanedTracks()
     DEBUG_BLOCK
 
     QStringList orphanedTracks;
-    QString musicpath;
-    if (!pathExists( itunesDir( "Music" ), &musicpath ))
-    {
-        debug() << "Music path not found";
-        return QStringList();
-    }
+    QString musicpath = itdb_get_music_dir( itdb_get_mountpoint( m_itdb ) );
 
     debug() << "Found path for Music";
 
