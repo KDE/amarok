@@ -98,6 +98,8 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
 {
     if( !destination->isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         destination->deleteLater();
         deleteLater();
         return;
@@ -113,6 +115,8 @@ CollectionLocation::prepareCopy( QueryMaker *qm, CollectionLocation *destination
     DEBUG_BLOCK
     if( !destination->isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         destination->deleteLater();
         qm->deleteLater();
         deleteLater();
@@ -140,6 +144,8 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
 {
     if( !destination->isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         destination->deleteLater();
         deleteLater();
         return;
@@ -152,8 +158,11 @@ CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocati
 void
 CollectionLocation::prepareMove( QueryMaker *qm, CollectionLocation *destination )
 {
+    DEBUG_BLOCK
     if( !destination->isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         destination->deleteLater();
         qm->deleteLater();
         deleteLater();
@@ -174,6 +183,8 @@ CollectionLocation::prepareRemove( const Meta::TrackList &tracks )
     DEBUG_BLOCK
     if( !isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         deleteLater();
         return;
     }
@@ -186,6 +197,8 @@ CollectionLocation::prepareRemove( QueryMaker *qm )
     DEBUG_BLOCK
     if( !isWritable() )
     {
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         qm->deleteLater();
         deleteLater();
         return;
@@ -351,6 +364,7 @@ CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources )
 void
 CollectionLocation::slotFinishCopy()
 {
+    DEBUG_BLOCK
     if( m_removeSources )
         removeSourceTracks( m_tracksSuccessfullyTransferred );
     m_sourceTracks.clear();
@@ -375,7 +389,7 @@ CollectionLocation::slotFinishRemove()
     if( m_tracksWithError.size() > 0 )
     {
         CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
-        const bool del = delegate->errorDeleting( this, m_tracksWithError.keys() );
+        delegate->errorDeleting( this, m_tracksWithError.keys() );
         m_tracksWithError.clear();
     }
 
