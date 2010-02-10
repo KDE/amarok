@@ -635,10 +635,7 @@ set(amaroklib_LIB_SRCS
     dialogs/LabelListModel.cpp
     browsers/filebrowser/MimeTypeFilterProxyModel.cpp
     browsers/filebrowser/FileBrowser.cpp
-    browsers/filebrowser/FileBrowserMkII.cpp
     browsers/filebrowser/FileView.cpp
-    browsers/filebrowser/MyDirOperator.cpp
-    browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
     MountPointManager.cpp
@@ -762,6 +759,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/OrganizeCollectionDialogBase.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
     podcasts/sql/PodcastSettingsBase.ui
+    podcasts/sql/SqlPodcastProviderSettingsWidget.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 

@@ -18,17 +18,18 @@
 #define FILETREEVIEW_H
 
 #include "collection/Collection.h"
+#include "widgets/PrettyTreeView.h"
 
 #include <KFileItem>
 
 #include <QAction>
 #include <QList>
-#include <QListView>
+#include <QTreeView>
 #include <QMutex>
 
 class PopupDropper;
 
-class FileView : public QListView
+class FileView : public Amarok::PrettyTreeView
 {
     Q_OBJECT
 public:
@@ -40,8 +41,6 @@ protected slots:
     void slotAppendToPlaylist();
     void slotReplacePlaylist();
     void slotEditTracks();
-
-    void newPalette( const QPalette & palette );
     
 protected:
             

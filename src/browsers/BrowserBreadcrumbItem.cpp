@@ -65,9 +65,8 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
 
     m_mainButton = new BreadcrumbItemButton( category->icon(), category->prettyName(), this );
 
-    // REMIND: Uncomment after string freeze
-    //if( category->prettyName().isEmpty() )   // root item
-    //    m_mainButton->setToolTip( i18n( "Media Sources Home" ) ); 
+    if( category->prettyName().isEmpty() )   // root item
+        m_mainButton->setToolTip( i18n( "Media Sources Home" ) );
 
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
 
@@ -127,11 +126,6 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
     m_mainButton = new BreadcrumbItemButton( KIcon( "folder-amarok" ), name, this );
     
     connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
-
-    // REMIND: Uncomment after string freeze
-    //if( category->prettyName().isEmpty() )   // root item
-    //    m_mainButton->setToolTip( i18n( "Media Sources Home" ) );
-
 
     connect( m_mainButton, SIGNAL( clicked( bool ) ), this, SLOT( activate() ) );
     connect( this, SIGNAL( activated( const QString & ) ), handler, SLOT( addItemActivated( const QString & ) ) );

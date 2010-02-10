@@ -16,7 +16,6 @@
 
 #include "VolumeDial.h"
 
-#include "MainWindow.h"
 #include "SvgHandler.h"
 
 #include <QCoreApplication>
@@ -38,6 +37,19 @@ VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
 }
 
+void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
+{
+    foreach ( QWidget *proxy, proxies )
+    {
+        if ( !m_wheelProxies.contains( proxy ) )
+        {
+            proxy->installEventFilter( this );
+            connect ( proxy, SIGNAL( destroyed(QObject*) ), this, SLOT( removeWheelProxy(QObject*) ) );
+            m_wheelProxies << proxy;
+        }
+    }
+}
+
 
 void VolumeDial::enterEvent( QEvent * )
 {
@@ -51,7 +63,7 @@ bool VolumeDial::eventFilter( QObject *o, QEvent *e )
 {
     if ( e->type() == QEvent::Wheel )
     {
-        if ( o == this || QToolTip::text() == m_toolTip )
+        if ( o == this || m_wheelProxies.contains( static_cast<QWidget*>( o ) ) )
         {
             QWheelEvent *wev = static_cast<QWheelEvent*>(e);
             if ( o != this )
@@ -64,7 +76,7 @@ bool VolumeDial::eventFilter( QObject *o, QEvent *e )
                 wheelEvent( wev );
             return true;
         }
-        else // we're not needed anymore
+        else // we're not needed globally anymore
             qApp->removeEventFilter( this );
     }
     return false;
@@ -137,6 +149,11 @@ void VolumeDial::paintEvent( QPaintEvent * )
     p.end();
 }
 
+void VolumeDial::removeWheelProxy( QObject *w )
+{
+    m_wheelProxies.removeOne( static_cast<QWidget*>(w) );
+}
+
 void VolumeDial::resizeEvent( QResizeEvent *re )
 {
     if ( width() != height() )
@@ -148,7 +165,12 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
     m_icon[1] = The::svgHandler()->renderSvg( "Volume_low", width(), height(), "Volume_low" );
     m_icon[2] = The::svgHandler()->renderSvg( "Volume_mid", width(), height(), "Volume_mid" );
     m_icon[3] = The::svgHandler()->renderSvg( "Volume",     width(), height(), "Volume" );
-    
+    if ( layoutDirection() == Qt::RightToLeft )
+    {
+        for ( int i = 0; i < 4; ++i )
+            m_icon[i] = QPixmap::fromImage( m_icon[i].toImage().mirrored( true, false ) );
+    }
+
     update();
 }
 
@@ -193,6 +215,9 @@ void VolumeDial::wheelEvent( QWheelEvent *wev )
     QDial::wheelEvent( wev );
     wev->accept();
 
+    const QPoint tooltipPosition = mapToGlobal( rect().translated( 7, -22 ).bottomLeft() );
+    QToolTip::showText( tooltipPosition, toolTip() );
+
     // NOTICE: this is a bit tricky.
     // the ToolTip "QTipLabel" just installed a global eventfilter that intercepts various
     // events and hides itself on them. Therefore every odd wheelevent will close the tip
@@ -215,14 +240,13 @@ void VolumeDial::setMuted( bool mute )
     {
         m_unmutedValue = value();
         setValue( minimum() );
-        m_toolTip = i18n( "Muted" );
+        setToolTip( i18n( "Muted" ) );
     }
     else
     {
         setValue( m_unmutedValue );
-        m_toolTip = QString( "Volume: %1 %" ).arg( value() );
+        setToolTip( i18n( "Volume: %1%", value() ) );
     }
-    setToolTip( m_toolTip );
 }
 
 QSize VolumeDial::sizeHint() const
@@ -235,12 +259,8 @@ QSize VolumeDial::sizeHint() const
 
 void VolumeDial::valueChangedSlot( int v )
 {
-    m_toolTip = QString( "Volume: %1 %" ).arg( value() );
-    setToolTip( m_toolTip );
+    setToolTip( i18n( "Volume: %1%", value() ) );
 
-    if( The::mainWindow()->isReallyShown() )
-        QToolTip::showText( mapToGlobal( rect().bottomLeft() ), m_toolTip );
-    
     m_isClick = false;
 
     if ( m_muted == ( v == minimum() ) )

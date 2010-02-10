@@ -42,44 +42,8 @@
 
 
 
-class FileViewDelegate : public QItemDelegate
-{
-
-public:
-
-    FileViewDelegate( QObject *parent = 0 )
-        : QItemDelegate( parent )
-    {
-    }
-
-    
-    virtual void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
-    {
-        const int width = option.rect.width();
-        const int height = option.rect.height();
-
-        if( height > 0 )
-        {
-            painter->save();
-            QPixmap background;
-
-            background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width, height, "service_list_item" );
-
-            painter->drawPixmap( option.rect.topLeft().x(), option.rect.topLeft().y(), background );
-
-            painter->restore();
-        }
-
-        QItemDelegate::paint( painter, option, index );
-    }
-
-};
-
-
-
-
 FileView::FileView( QWidget * parent )
-    : QListView( parent )
+    : Amarok::PrettyTreeView( parent )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
     , m_editAction( 0 )
@@ -87,13 +51,12 @@ FileView::FileView( QWidget * parent )
     , m_ongoingDrag( false )
 {
     setFrameStyle( QFrame::NoFrame );
-
-     setAlternatingRowColors( true );
+    setItemsExpandable( false );
+    setRootIsDecorated( false );
+    setAlternatingRowColors( true );
 
     The::paletteHandler()->updateItemView( this );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
-
-    setItemDelegate( new FileViewDelegate( this ) );
     
 }
 
@@ -172,7 +135,7 @@ QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
     if( m_editAction == 0 )
     {
         m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
-        m_loadAction->setProperty( "popupdropper_svg_id", "edit" );
+        m_editAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
     }
 
@@ -242,7 +205,7 @@ FileView::startDrag( Qt::DropActions supportedActions )
         m_pd->show();
     }
 
-    QListView::startDrag( supportedActions );
+    QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";
 
     if( m_pd )
@@ -257,12 +220,6 @@ FileView::startDrag( Qt::DropActions supportedActions )
     m_dragMutex.unlock();
 }
 
-void FileView::newPalette( const QPalette & palette )
-{
-    Q_UNUSED( palette )
-    The::paletteHandler()->updateItemView( this );
-    reset(); // redraw all potential delegates
-}
 
 Meta::TrackList
 FileView::tracksForEdit() const

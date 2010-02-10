@@ -25,6 +25,7 @@
 
 class PodcastImageFetcher;
 
+class KDialog;
 class KUrl;
 class PodcastReader;
 class SqlStorage;
@@ -43,7 +44,7 @@ class SqlPodcastProvider : public PodcastProvider
         bool possiblyContainsTrack( const KUrl &url ) const;
         Meta::TrackPtr trackForUrl( const KUrl &url );
 
-        QString prettyName() const { return i18n("Local Podcasts"); };
+        QString prettyName() const { return i18n("Local Podcasts"); }
         KIcon icon() const { return KIcon( "server-database" ); }
 
         Meta::PlaylistList playlists();
@@ -71,6 +72,8 @@ class SqlPodcastProvider : public PodcastProvider
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 
+        KUrl baseDownloadDir() const { return m_baseDownloadDir; }
+
     public slots:
         void updateAll();
         void update( Meta::PodcastChannelPtr channel );
@@ -95,6 +98,7 @@ class SqlPodcastProvider : public PodcastProvider
         void slotUpdateChannels();
         void slotDownloadProgress( KJob *job, unsigned long percent );
         void slotWriteTagsToFiles();
+        void slotConfigChanged();
 
     signals:
         void updated();
@@ -103,11 +107,17 @@ class SqlPodcastProvider : public PodcastProvider
     private slots:
         void channelImageReady( Meta::PodcastChannelPtr, QPixmap );
         void podcastImageFetcherDone( PodcastImageFetcher * );
+        void slotConfigureProvider();
 
     private:
         /** creates all the necessary tables, indexes etc. for the database */
         void createTables() const;
         void loadPodcasts();
+
+        /** return the url as a string. Removes percent encoding if it actually has a non-url guid.
+        */
+        static QString cleanUrlOrGuid( const KUrl &url );
+
         void updateDatabase( int fromVersion, int toVersion );
         void fetchImage( Meta::SqlPodcastChannelPtr channel );
 
@@ -128,7 +138,7 @@ class SqlPodcastProvider : public PodcastProvider
         Meta::SqlPodcastChannelList m_channels;
 
         QTimer *m_updateTimer;
-        unsigned int m_autoUpdateInterval; //interval between autoupdate attempts in minutes
+        int m_autoUpdateInterval; //interval between autoupdate attempts in minutes
         unsigned int m_updatingChannels;
         unsigned int m_maxConcurrentUpdates;
         Meta::PodcastChannelList m_updateQueue;
@@ -141,6 +151,10 @@ class SqlPodcastProvider : public PodcastProvider
         Meta::SqlPodcastEpisodeList m_downloadQueue;
         int m_maxConcurrentDownloads;
         int m_completedDownloads;
+
+        KUrl m_baseDownloadDir;
+
+        KDialog *m_providerSettingsDialog;
 
         QList<QAction *> m_providerActions;
 

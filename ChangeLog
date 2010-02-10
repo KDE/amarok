@@ -5,8 +5,14 @@ Amarok ChangeLog
 
 VERSION 2.2.3
   FEATURES:
-    * Podcasts can now be grouped per provider like iPod Podcasts, Local Podcasts,
-      USB Mass Storage, etc. This can be toggled using a button in the Podcast
+    * Added a configuration dialog for Local Podcasts. Update interval and base
+      download directory can now be configured. (BR 221398)
+    * Make it possible to go to next/previous track with horizontal mouse
+      wheel button on TrayIcon. (BR 225783)
+    * New main toolbar with completely redesigned look and new features.
+      Contributed by Thomas Luebking <thomas.luebking@web.de>.
+    * Podcasts and Saved Playlists can now be grouped by provider like iPod, Local,
+      USB Mass Storage, etc. This can be toggled using a button in the relevant
       Category.
     * The playlist context menu now has a "Show in Media Sources" action for
       many types of track.
@@ -58,6 +64,10 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Corruption of guid strings by passing them as a KUrl caused podcast episodes
+      to be readded on each update. This issue has been solved.
+      If you have episodes that appear twice, remove the channel and add it again.
+      (BR 219516)
     * Cleaned up the Organize dialog to make it more usable. (BR 199574)
     * Made it harder to Move Files unintentionally. (BR 220716)
     * Returned "Organize Files" to the collection's context menu. (BR 215902)

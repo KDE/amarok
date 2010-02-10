@@ -98,7 +98,7 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
                         QPoint( iconWidth/2, iconHeight/2 ) );
     if( isRTL )
         expanderPos.setX( iconPadX );
-    QPixmap expander = KIcon( "arrow-down" ).pixmap( iconWidth/2, iconHeight/2 );
+    QPixmap expander = KIcon( "arrow-up" ).pixmap( iconWidth/2, iconHeight/2 );
     if( m_view->isExpanded( index ) )
         expander = expander.transformed( QTransform().rotate( 180 ) );
     painter->drawPixmap( expanderPos, expander );
@@ -158,11 +158,12 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         capacityBar.drawCapacityBar( painter, capacityRect );
     }
 
-    if( actionCount > 0 )
+    //show actions when there are any and mouse is hovering over item
+    if( actionCount > 0 && isHover )
     {
         const QList<QAction*> actions = index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
         QRect decoratorRect;
-        decoratorRect.setLeft( (width - actionCount * ACTIONICON_SIZE) - 2 );
+        decoratorRect.setLeft( ( width - actionCount * ( ACTIONICON_SIZE + iconPadX ) ) - 2 );
         decoratorRect.setTop( option.rect.top() + iconYPadding );
         decoratorRect.setWidth( actionsRectWidth );
         decoratorRect.setHeight( ACTIONICON_SIZE );
@@ -171,10 +172,10 @@ CollectionTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
         const QSize iconSize = QSize( ACTIONICON_SIZE, ACTIONICON_SIZE );
 
         int i = 0;
-        foreach(QAction * action, actions)
+        foreach( QAction * action, actions )
         {
             QIcon icon = action->icon();
-            int x = actionTopLeftBase.x() + i * ACTIONICON_SIZE;
+            int x = actionTopLeftBase.x() + i * ( ACTIONICON_SIZE + iconPadX );
             QPoint actionTopLeft = QPoint( x, actionTopLeftBase.y() );
             QRect iconRect( actionTopLeft, iconSize );
 

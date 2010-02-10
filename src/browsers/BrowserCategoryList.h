@@ -73,7 +73,7 @@ class BrowserCategoryList : public BrowserCategory
         void showCategory( const QString &name );
 
         QString activeCategoryName();
-        BrowserCategory *activeCategory();
+        BrowserCategory *activeCategory() const;
 
         /**
          * Recursively navigate to a specific category.

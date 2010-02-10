@@ -118,16 +118,42 @@ IpodHandler::~IpodHandler()
     if ( m_itdb )
         itdb_free( m_itdb );
 
-    if( !m_deviceInfo->wasMounted() && !m_deviceInfo->mountPoint().isEmpty())
+    if( m_autoConnect )
     {
-        int result = QProcess::execute("fusermount -u " + mountPoint());
-        if( result )
+        QProcess unmount;
+        QStringList args;
+        args << "-u" << mountPoint();
+        unmount.start("fusermount", args);
+        bool ok = unmount.waitForStarted();
+        if( !ok )
         {
-            debug() << "Unmounting imobiledevice using ifuse from" << mountPoint() << "failed";
+            debug() << "fusermount for unmounting" << mountPoint() << "failed to start";
         }
         else
         {
+            ok = unmount.waitForFinished();
+            if( !ok )
+                debug() << "fusermount did not terminate correctly";
+        }
+        if( ok )
+        {
+            ok = unmount.exitStatus() == QProcess::NormalExit;
+            if( !ok )
+                debug() << "fusermount did not exit normally";
+        }
+        if( ok )
+        {
+            ok = unmount.exitCode() == 0;
+            if( !ok )
+                debug() << "fusermount did not exit successfully";
+        }
+        if( ok )
+        {
             debug() << "Unmounted imobiledevice using ifuse from" << mountPoint();
+        }
+        else
+        {
+            debug() << "Unmounting imobiledevice using ifuse from" << mountPoint() << "failed";
         }
     }
 }
@@ -138,23 +164,47 @@ IpodHandler::init()
     bool isMounted = m_deviceInfo->wasMounted();
     if ( !isMounted )
     {
-        int result = -1;
-        if( m_deviceInfo->deviceUid().isEmpty() )
+        QStringList args;
+        if( !m_deviceInfo->deviceUid().isEmpty() )
         {
-            result = QProcess::execute(QString("ifuse " + mountPoint()));
+            args << "--uuid";
+            args << m_deviceInfo->deviceUid();
+        }
+        args << mountPoint();
+        QProcess ifuse;
+        ifuse.start("ifuse", args);
+        bool ok = ifuse.waitForStarted();
+        if( !ok )
+        {
+            debug() << "Failed to start ifuse";
         }
         else
         {
-            result = QProcess::execute(QString("ifuse --uuid" + m_deviceInfo->deviceUid() + " " + mountPoint()));
+            ok = ifuse.waitForFinished();
+            if( !ok )
+                debug() << "ifuse did not yet terminate";
         }
-        if (result)
+        if( ok )
+        {
+            ok = ifuse.exitStatus() == QProcess::NormalExit;
+            if( !ok )
+                debug() << "ifuse crashed";
+        }
+        if( ok )
+        {
+            ok = ifuse.exitCode() == 0;
+            if( !ok )
+                debug() << "ifuse exited with non-zero exit code";
+        }
+
+        if( ok )
+        {
+            isMounted = true;
+            debug() << "Successfully mounted imobiledevice using ifuse on" << mountPoint();
+        }
+        else
         {
             debug() << "Mounting imobiledevice using ifuse on" << mountPoint() << "failed";
-        }
-        else
-        {
-            debug() << "Successfully mounted imobiledevice using ifuse on" << mountPoint();
-            isMounted = true;
         }
     }
 
@@ -164,6 +214,8 @@ IpodHandler::init()
         m_memColl->slotAttemptConnectionDone( false );
         return;
     }
+
+    m_autoConnect = !m_deviceInfo->wasMounted();
 
     GError *err = 0;
     QString initError = i18n( "iPod was not initialized:" );

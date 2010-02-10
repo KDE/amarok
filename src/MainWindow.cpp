@@ -40,7 +40,6 @@
 #include "amarokurls/BookmarkManager.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
-#include "browsers/filebrowser/FileBrowserMkII.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 #include "collection/CollectionManager.h"
@@ -102,12 +101,8 @@
 #include "mac/GrowlInterface.h"
 #endif
 
-// Let people know OS X and Windows versions are still work-in-progress
-#if defined(Q_WS_MAC) || defined(Q_WS_WIN)
-#define AMAROK_CAPTION "Amarok 2 beta"
-#else
 #define AMAROK_CAPTION "Amarok"
-#endif
+
 
 extern KAboutData aboutData;
 extern OcsData ocsData;
@@ -349,21 +344,11 @@ MainWindow::init()
 
 
         PERF_LOG( "Creating FileBrowser" )
-        FileBrowser::Widget * fileBrowser = new FileBrowser::Widget( "files", 0 );
-        fileBrowser->setPrettyName( i18n("Files") );
-        fileBrowser->setIcon( KIcon( "folder-amarok" ) );
-        fileBrowser->setShortDescription( i18n( "Browse local hard drive for content" ) );
-        m_browsers->list()->addCategory( fileBrowser );
-
-
-
-        //new experimental and _very_ simple file browser
-        FileBrowserMkII * fileBrowserMkII = new FileBrowserMkII( "filesmkii", 0 );
-        fileBrowserMkII->setPrettyName( i18n("Files MkII") );
+        FileBrowser * fileBrowserMkII = new FileBrowser( "files", 0 );
+        fileBrowserMkII->setPrettyName( i18n("Files") );
         fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
         fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
         m_browsers->list()->addCategory( fileBrowserMkII );
-
 
         
         PERF_LOG( "Created FileBrowser" )
@@ -849,11 +834,9 @@ MainWindow::createActions()
     action->setIcon( KIcon("edit-delete-amarok") );
     //this is connected inside the dynamic playlist category
 
-    action = new KAction( this );
+    action = new KAction( KIcon("media-skip-forward-amarok"), i18n( "Next Track" ), this );
     ac->addAction( "next", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
-    action->setIcon( KIcon("media-skip-forward-amarok") );
-    action->setText( i18n( "Next Track" ) );
     connect( action, SIGNAL(triggered(bool)), pa, SLOT( next() ) );
 
     action = new KAction( i18n( "Increase Volume" ), this );

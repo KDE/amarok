@@ -152,6 +152,8 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
     QString description;
     KIcon icon;
     QStringList groups;
+    int playlistCount = 0;
+    QList<QAction *> providerActions;
 
     if( IS_TRACK(index) )
     {
@@ -174,26 +176,30 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
                 }
                 break;
             case GroupColumn: //group
+            {
+                if( !playlist->groups().isEmpty() )
                 {
-                    if( !playlist->groups().isEmpty() )
-                    {
-                        name= playlist->groups().first();
-                        icon = KIcon( "folder" );
-                    }
+                    name= playlist->groups().first();
+                    icon = KIcon( "folder" );
                 }
                 break;
+            }
+
             case ProviderColumn: //source
+            {
+                PlaylistProvider *provider =
+                        The::playlistManager()->getProviderForPlaylist( playlist );
+                //if provider is 0 there is something seriously wrong.
+                if( provider )
                 {
-                    PlaylistProvider *provider =
-                            The::playlistManager()->getProviderForPlaylist( playlist );
-                    //if provider is 0 there is something seriously wrong.
-                    if( provider )
-                    {
-                        name = provider->prettyName();
-                        icon = provider->icon();
-                    }
+                    name = description = provider->prettyName();
+                    icon = provider->icon();
+                    playlistCount = provider->playlists().count();
+                    providerActions = provider->providerActions();
                 }
                 break;
+            }
+
             default: return QVariant();
         }
     }
@@ -206,6 +212,15 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
         case DescriptionRole:
         case Qt::ToolTipRole: return description;
         case Qt::DecorationRole: return QVariant( icon );
+        case MetaPlaylistModel::ByLineRole:
+            return i18ncp( "number of playlists from one source",
+                           "One Playlist", "%1 playlists",
+                           playlistCount );
+        case MetaPlaylistModel::ActionCountRole:
+            return providerActions.count();
+        case MetaPlaylistModel::ActionRole:
+            return QVariant::fromValue( providerActions );
+
         default: return QVariant();
     }
 }

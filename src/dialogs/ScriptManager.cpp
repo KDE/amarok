@@ -65,17 +65,11 @@
 
 #if KDE_IS_VERSION(4, 3, 80)
 #define HAVE_KNEWSTUFF3
-#endif
-
-#ifdef HAVE_KNEWSTUFF3
-#include <knewstuff2/engine.h>
-#include <knewstuff2/core/entry.h>
 #include <KNS3/DownloadDialog>
-#else
-#include <knewstuff2/engine.h>
-#include <knewstuff2/core/entry.h>
 #endif
 
+#include <knewstuff2/engine.h>
+#include <knewstuff2/core/entry.h>
 
 #include <QFileInfo>
 #include <QTimer>

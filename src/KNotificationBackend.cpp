@@ -59,7 +59,14 @@ Amarok::KNotificationBackend::~KNotificationBackend()
     DEBUG_BLOCK
 
     if (m_notify)
-        delete m_notify;
+        m_notify->close();
+}
+
+void
+Amarok::KNotificationBackend::notificationClosed()
+{
+    if( sender() == m_notify )
+        m_notify = 0;
 }
 
 void
@@ -100,11 +107,11 @@ Amarok::KNotificationBackend::showCurrentTrack() // slot
     if( track )
     {
         if( m_notify ) {
-            delete m_notify; // Close old notification when switching quickly between tracks
-            m_notify = 0;
+            m_notify->close(); // Close old notification when switching quickly between tracks
         }
 
         m_notify = new KNotification( "trackChange" );
+        connect( m_notify, SIGNAL(closed()), this, SLOT(notificationClosed()) );
 
         if( track->album() )
             m_notify->setPixmap( track->album()->imageWithBorder( 80 ) );

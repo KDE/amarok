@@ -17,12 +17,12 @@
 #include "PlaylistsByProviderProxy.h"
 
 #include "AmarokMimeData.h"
-#include "PodcastModel.h"
+#include "UserPlaylistModel.h"
 
 #include "Debug.h"
 
-PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model )
-        : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::ProviderColumn )
+PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, int column )
+        : QtGroupingProxy( model, QModelIndex(), column )
 {
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
 }
@@ -140,4 +140,12 @@ PlaylistsByProviderProxy::loadItems( QModelIndexList list, Playlist::AddOptions 
         return;
     if( !originalList.isEmpty() )
         mpm->loadItems( originalList, insertMode );
+}
+
+void
+PlaylistsByProviderProxy::buildTree()
+{
+    //clear that data anyway since provider can disappear and should no longer be listed.
+    m_groupMaps.clear();
+    QtGroupingProxy::buildTree();
 }

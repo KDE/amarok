@@ -548,7 +548,7 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
         Meta::TrackPtr track = i.value();
 
         if ( track == Meta::TrackPtr() )
-            i.remove();
+        { /*ignore*/ }
 
         else if( Meta::canExpand( track ) )
         {
@@ -556,9 +556,8 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
             if( playlist )
             {
                 //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:
-                i.remove();
                 if ( playlist->tracks().count() > 0 )
-                    i.insert( Meta::TrackPtr( new Meta::MultiTrack( playlist ) ) );
+                    modifiedList << Meta::TrackPtr( new Meta::MultiTrack( playlist ) );
             }
         }
         else if( typeid( *track.data() ) == typeid( MetaFile::Track  ) )

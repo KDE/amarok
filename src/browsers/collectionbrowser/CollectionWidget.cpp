@@ -102,17 +102,6 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     enumValue == -1 ? m_viewMode = NormalCollections : m_viewMode = (ViewMode) enumValue;
 
-    if( m_viewMode == CollectionWidget::NormalCollections )
-    {
-        m_stack->setCurrentWidget( m_treeView );
-        m_searchWidget->setup( m_treeView );
-    }
-    else
-    {
-        m_stack->setCurrentWidget( m_singleTreeView );
-        m_searchWidget->setup( m_singleTreeView );
-    }
-
     QAction *action = new QAction( i18n( "Artist / Album" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
     filterMenu->addAction( action );
@@ -307,8 +296,10 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     m_searchWidget->toolBar()->addAction( searchMenuAction );
 
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Toggle unified view mode" ), this );
-    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView() ) );
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Merged View" ), this );
+    toggleAction->setCheckable( true );
+    toggleView( m_viewMode == CollectionWidget::UnifiedCollection );
+    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
     m_searchWidget->toolBar()->addAction( toggleAction );
 
     QToolButton *tbutton = qobject_cast<QToolButton*>( m_searchWidget->toolBar()->widgetForAction( searchMenuAction ) );
@@ -422,11 +413,11 @@ void CollectionWidget::setLevels( const QList<int> &levels )
     m_viewMode == CollectionWidget::NormalCollections ? m_treeView->setLevels( m_levels ) : m_singleTreeView->setLevels( m_levels );
 }
 
-void CollectionWidget::toggleView()
+void CollectionWidget::toggleView( bool merged )
 {
-    if( m_viewMode == CollectionWidget::NormalCollections )
+    if( merged )
     {
-        debug() << "Switching to single tree model";
+        debug() << "Switching to merged model";
         m_searchWidget->disconnect( m_treeView );
         m_searchWidget->setup( m_singleTreeView );
         m_stack->setCurrentWidget( m_singleTreeView );
@@ -448,9 +439,11 @@ void CollectionWidget::toggleView()
             m_treeView->setLevels( m_levels );
         m_viewMode = CollectionWidget::NormalCollections;
     }
+
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
-    KGlobal::config()->group( "Collection Browser" ).writeEntry( "View Mode", me.valueToKey( m_viewMode ) );
+    KGlobal::config()->group( "Collection Browser" ).writeEntry( "View Mode",
+                                                                 me.valueToKey( m_viewMode ) );
 }
 
 #include "CollectionWidget.moc"

@@ -24,7 +24,7 @@
 bool
 CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const
 {
-    Q_UNUSED( loc )
+    Q_UNUSED( loc );
     QStringList files;
     foreach( Meta::TrackPtr track, tracks )
         files << track->prettyUrl();
@@ -60,7 +60,7 @@ bool CollectionLocationDelegateImpl::reallyMove(CollectionLocation* loc, const M
 
 void CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const
 {
-    Q_UNUSED( loc )
+    Q_UNUSED( loc );
     QStringList files;
     foreach( Meta::TrackPtr track, tracks )
         files << track->prettyUrl();
