@@ -30,7 +30,6 @@ namespace Amarok {
         virtual CollectionManager* collectionManager() const;
         virtual EngineController* engineController() const;
         virtual MountPointManager* mountPointManager() const;
-        virtual Playlist::Model* playlistModel() const;
         virtual ServiceBrowser* serviceBrowser() const;
     };
 }

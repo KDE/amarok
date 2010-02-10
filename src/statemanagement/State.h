@@ -35,20 +35,17 @@ namespace Amarok {
         CollectionManager* collectionManager() const { return m_collectionManager; }
         EngineController* engineController() const { return m_engineController; }
         MountPointManager* mountPointManager() const { return m_mountPointManager; }
-        Playlist::Model* playlistModel() const { return m_playlistModel; }
         ServiceBrowser* serviceBrowser() const { return m_serviceBrowser; }
 
         void setCollectionManager( CollectionManager *mgr ) { m_collectionManager = mgr; }
         void setEngineController( EngineController *ec ) { m_engineController = ec; }
         void setMountPointManager( MountPointManager *mpm ) { m_mountPointManager = mpm; }
-        void setPlaylistModel( Playlist::Model *pm ) { m_playlistModel = pm; }
         void setServiceBrowser( ServiceBrowser *sb ) { m_serviceBrowser = sb; }
 
     private:
         CollectionManager* m_collectionManager;
         EngineController* m_engineController;
         MountPointManager* m_mountPointManager;
-        Playlist::Model* m_playlistModel;
         ServiceBrowser* m_serviceBrowser;
 
     };
@@ -71,7 +68,6 @@ namespace Amarok {
         virtual CollectionManager* collectionManager() const = 0;
         virtual EngineController* engineController() const = 0;
         virtual MountPointManager* mountPointManager() const = 0;
-        virtual Playlist::Model* playlistModel() const = 0;
         virtual ServiceBrowser* serviceBrowser() const = 0;
 
         public void setContext( ApplicationContext *context );
