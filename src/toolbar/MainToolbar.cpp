@@ -23,6 +23,7 @@
 #include "Amarok.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
+#include "MainWindow.h"
 #include "SvgHandler.h"
 
 #include "amarokurls/AmarokUrl.h"
@@ -53,9 +54,11 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
+#define HUGE_WATERMARKS 0
+
 static const QString promoString = i18n( "Rediscover Your Music" );
-static const int prevOpacity = 128;
-static const int nextOpacity = 160;
+static const int prevOpacity = 255; //128;
+static const int nextOpacity = 255; //160;
 static const int icnSize = 48;
 static const int leftRightSpacer = 15;
 static const int timeLabelMargin = 6;
@@ -92,12 +95,14 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_prev.label->setOpacity( prevOpacity );
     m_prev.label->installEventFilter( this );
     m_prev.label->setAlign( Qt::AlignCenter );
+    m_prev.label->setForegroundRole( QPalette::Link );
     connect ( m_prev.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
 
     m_current.label = new AnimatedLabelStack( QStringList( promoString ), info );
     m_current.label->setBold( true );
+    m_current.label->setLayout( new QHBoxLayout );
     m_current.label->installEventFilter( this );
-    connect ( m_current.label, SIGNAL( clicked(const QString&) ), this, SLOT( filter(const QString&) ) );
+    connect ( m_current.label, SIGNAL( clicked(const QString&) ), Amarok::actionCollection()->action("show_active_track"), SLOT( trigger() ) );
 
     m_next.key = 0;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
@@ -105,6 +110,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_next.label->setOpacity( nextOpacity );
     m_next.label->installEventFilter( this );
     m_next.label->setAlign( Qt::AlignCenter );
+    m_next.label->setForegroundRole( QPalette::Link );
     connect ( m_next.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( next() ) );
 
     m_dummy.label = new AnimatedLabelStack(QStringList(), info);
@@ -135,6 +141,9 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_volume->setValue( engine->volume() );
     m_volume->setMuted( engine->isMuted() );
     m_volume->setFixedSize( icnSize, icnSize );
+    m_volume->addWheelProxies( QList<QWidget*>() << this << info
+                                                 << m_prev.label << m_current.label << m_next.label
+                                                 << m_timeLabel << m_remainingTimeLabel );
     addWidget( m_volume );
     connect ( m_volume, SIGNAL( valueChanged(int) ), engine, SLOT( setVolume(int) ) );
     connect ( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
@@ -158,9 +167,7 @@ static void adjustLabelPos( QWidget *label, int targetX )
     int d = targetX - r.x();
     if ( d )
     {
-        d += (d>0) ? 1 : -1; // increase the distance abs value by one to force a ceil of the below fraction
-        d = (2*d)/3;
-        r.translate( d, 0 );
+        r.translate( qMin( qAbs(d), r.width()/6 ) * (d > 0 ? 1 : -1), 0 );
         label->setGeometry( r );
     }
 }
@@ -202,6 +209,7 @@ MainToolbar::animateTrackLabels()
     if ( done )
     {
         killTimer( m_trackBarAnimationTimer );
+        setCurrentTrackActionsVisible( true );
         m_trackBarAnimationTimer = 0;
     }
 }
@@ -336,6 +344,67 @@ MainToolbar::layoutTrackBar()
     r.translate( d, 0 );
     m_next.label->setGeometry( r );
     m_next.label->setOpacity( nextOpacity );
+
+    setCurrentTrackActionsVisible( true );
+}
+
+void
+MainToolbar::updateCurrentTrackActions()
+{
+    return; // for the moment, i don't wont to throw oxygens QToolButtons into everyones face ;-)
+    // wipe layout ================
+    QLayoutItem *item;
+    while ( (item = m_current.label->layout()->takeAt(0)) )
+    {
+        delete item->widget();
+        delete item;
+    }
+
+    // collect actions ================
+    QList<QAction*> actions;
+
+    foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
+        actions << action;
+
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    {
+        Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+        if ( cac )
+        {
+            QList<QAction *> currentTrackActions = cac->customActions();
+            foreach( QAction *action, currentTrackActions )
+                actions << action;
+        }
+        delete cac;
+    }
+
+    QHBoxLayout *hbl = static_cast<QHBoxLayout*>( m_current.label->layout() );
+    hbl->setContentsMargins( 0, 0, 0, 0 );
+    hbl->setSpacing( 3 );
+
+    hbl->addSpacing( 6 );
+
+    QToolButton *btn; // FIXME: use generalized play/pause button
+    const int n = actions.count() / 2;
+    int i;
+    for ( i = 0; i < n; ++i )
+    {
+        btn = new QToolButton( m_current.label ); // FIXME
+        btn->setDefaultAction( actions.at(i) );
+        hbl->addWidget( btn );
+    }
+
+    hbl->addStretch( 10 );
+
+    for ( i; i < actions.count(); ++i )
+    {
+        btn = new QToolButton( m_current.label ); // FIXME
+        btn->setDefaultAction( actions.at(i) );
+        hbl->addWidget( btn );
+    }
+    
+    hbl->addSpacing( 6 );
 }
 
 #define HAS_TAG(_TAG_) track->_TAG_() && !track->_TAG_()->name().isEmpty()
@@ -412,8 +481,8 @@ MainToolbar::updatePrevAndNext()
 {
     if ( !The::engineController()->currentTrack() )
     {
-        m_prev.label->setData( QStringList() << "[" + i18n("Previous") + "]" );
-        m_next.label->setData( QStringList() << "[" + i18n("Next") + "]"  );
+        m_prev.label->setData( QStringList() << "[ " + i18n("Previous") + " ]" );
+        m_next.label->setData( QStringList() << "[ " + i18n("Next") + " ]"  );
         m_current.label->setUpdatesEnabled( true );
         return;
     }
@@ -498,6 +567,7 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
         m_current.label->setUpdatesEnabled( false );
         m_current.label->setData( metadata( track ) );
         m_current.label->setCursor( Qt::PointingHandCursor );
+        updateCurrentTrackActions();
 
         // If all labels are in position and this is a single step for or back, we perform a slide
         // on the other two labels, i.e. e.g. move the prev to current label position and current
@@ -516,8 +586,10 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
         {
             if ( m_current.key == m_next.key && m_current.key != m_prev.key )
             {
+                setCurrentTrackActionsVisible( false );
+                
                 // left
-                m_dummy.targetX = r.x() - d/2;
+                m_dummy.targetX = r.x() - d;
 //                 if ( d < 0 ) // rtl
 //                     m_dummy.targetX -= d;
                 m_dummy.label->setGeometry( r );
@@ -530,7 +602,6 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
                 r.translate( d, 0 );
                 m_current.label->setGeometry( r );
                 m_next.label->setGeometry( r );
-
                 m_next.label->setOpacity( 0 );
                 m_next.label->raise();
 
@@ -539,6 +610,8 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
             }
             else if ( m_current.key == m_prev.key )
             {
+                setCurrentTrackActionsVisible( false );
+                
                 // left
                 m_prev.label->setGeometry( r );
                 m_current.label->setGeometry( r );
@@ -548,7 +621,7 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
 
                 // right
                 r.translate( d, 0 );
-                m_dummy.targetX = r.x() + d/2;
+                m_dummy.targetX = r.x() + d;
                 m_dummy.label->setGeometry( r );
                 m_dummy.label->setData( m_next.label->data() );
                 m_dummy.label->show();
@@ -616,10 +689,10 @@ MainToolbar::hideEvent( QHideEvent *ev )
 void
 MainToolbar::paintEvent( QPaintEvent *ev )
 {
-
     QPainter p;
+
     if ( !testAttribute( Qt::WA_OpaquePaintEvent ) ) // this hints that the UI style will overpaint
-    {                                                // entire area anyway.
+    {                                                // the entire area anyway.
         p.begin( this );
         p.setClipRegion( ev->region() );
         p.drawTiledPixmap( rect(), m_bgGradient );
@@ -629,20 +702,30 @@ MainToolbar::paintEvent( QPaintEvent *ev )
     // by keeping this below, the style will have the last word on the toolbar look
     // this is at least important to paint the draghandle
     QToolBar::paintEvent( ev );
-
+#if 0 //no watermarks for the moment
     // but we force the arrows above
     if ( m_prev.key || m_next.key )
     {
         p.begin( this );
         p.setClipRegion( ev->region() );
+#if HUGE_WATERMARKS
         const int dx = width() / 6;
         const int dp = m_arrowLeft.width() / 2;
         if ( m_prev.key )
             p.drawPixmap( dx - dp, 6, m_arrowLeft );
         if ( m_next.key )
             p.drawPixmap( width() - (dx + dp),  6, m_arrowRight );
+#else
+        QRect r = m_trackBarSpacer->geometry();
+        r.translate( m_prev.label->parentWidget()->mapTo( this, QPoint(0,0) ) );
+        if ( m_prev.key )
+            p.drawPixmap( r.x() , r.y(), m_arrowLeft );
+        if ( m_next.key )
+            p.drawPixmap( r.right() - m_arrowRight.width(), r.y(), m_arrowRight );
+#endif
         p.end();
     }
+#endif
 }
 
 
@@ -652,10 +735,19 @@ MainToolbar::resizeEvent( QResizeEvent *ev )
     if ( ev->size().height() != ev->oldSize().height() )
     {
         updateBgGradient();
+#if 0 // no watermarks for the moment
+#if HUGE_WATERMARKS
         const int h = height() - 12;
-        const int w = h*128/100; // original ratio from default theme
+        const int w = h*124/100; // original ratio from default theme
         m_arrowLeft = The::svgHandler()->renderSvg( "leftArrow", w, h, "leftArrow" );
         m_arrowRight = The::svgHandler()->renderSvg( "rightArrow", w, h, "rightArrow" );
+#else
+        const int h = m_trackBarSpacer->geometry().height();
+        const int w = h*116/128; // original ratio from default theme
+        m_arrowLeft = The::svgHandler()->renderSvg( "tiny_arrow_left", w, h, "tiny_arrow_left" );
+        m_arrowRight = The::svgHandler()->renderSvg( "tiny_arrow_right", w, h, "tiny_arrow_right" );
+#endif
+#endif
     }
     if ( ev->size().width() > 0 && ev->size().width() != ev->oldSize().width() )
     {
@@ -664,6 +756,20 @@ MainToolbar::resizeEvent( QResizeEvent *ev )
     }
 }
 
+void
+MainToolbar::setCurrentTrackActionsVisible( bool vis )
+{
+    if ( m_current.actionsVisible == vis )
+        return;
+    m_current.actionsVisible = vis;
+    QLayoutItem *item;
+    for ( int i = 0; i < m_current.label->layout()->count(); ++i )
+    {
+        item = m_current.label->layout()->itemAt( i );
+        if ( item->widget() )
+            item->widget()->setVisible( vis );
+    }
+}
 
 const char * timeString[4] = { "3:33", "33:33", "3:33:33", "33:33:33" };
 
@@ -679,7 +785,8 @@ timeFrame( int secs )
     return 3; // 99:59:59
 }
 
-void MainToolbar::setLabelTime( int ms )
+void
+MainToolbar::setLabelTime( int ms )
 {
     bool relayout = false;
     if ( ms < 0 ) // clear
@@ -763,6 +870,7 @@ MainToolbar::timerEvent( QTimerEvent *ev )
         QToolBar::timerEvent( ev );
 }
 
+
 void
 MainToolbar::updateBgGradient()
 {
@@ -772,23 +880,22 @@ MainToolbar::updateBgGradient()
     m_bgGradient.fill( Qt::transparent );
     const QColor c = palette().color( QPalette::Active, QPalette::Window );
     QLinearGradient lg( 0, 0, 0, height()-1 );
-//     lg.setColorAt( 0.25, c.lighter( 106 ) );
-//     lg.setColorAt( 0.75, c.lighter( 103 ) );
-    lg.setColorAt( 0, QColor(255,255,255,0) );
-    lg.setColorAt( 1, QColor(0,0,0,48) );
+
+    QColor b = c.lighter( 150 );
+    b.setAlpha( 16 );
+    lg.setColorAt( 0, b );
+
+    b = c;
+    b.setAlpha( 48 );
+    lg.setColorAt( 0.5, b );
+
+    b = c.darker( 160 );
+    b.setAlpha( 16 );
+    lg.setColorAt( 1, b );
 
     QPainter p( &m_bgGradient );
     p.fillRect( m_bgGradient.rect(), lg );
     p.end();
-}
-
-void
-MainToolbar::wheelEvent( QWheelEvent *wev )
-{
-    QPoint pos( 0, 0 ); // the event needs to be on the dial or nothing will happen
-    QWheelEvent nwev( pos, m_volume->mapToGlobal( pos ), wev->delta(),
-                      wev->buttons(), wev->modifiers() );
-    m_volume->wheelEvent( &nwev );
 }
 
 bool
@@ -800,6 +907,7 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
         if ( mev->buttons() & Qt::LeftButton )
         if ( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
+            setCurrentTrackActionsVisible( false );
             const int x = mev->globalPos().x();
             int d = x - m_drag.lastX;
             m_drag.lastX = x;

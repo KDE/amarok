@@ -32,20 +32,20 @@ namespace Amarok
 {
     namespace Components
     {
-        CollectionManager* collectionManager();
-        CollectionManager* setCollectionManager( CollectionManager *mgr );
+        AMAROK_EXPORT CollectionManager* collectionManager();
+	AMAROK_EXPORT CollectionManager* setCollectionManager( CollectionManager *mgr );
 
-        EngineController* engineController();
-        EngineController* setEngineController( EngineController *controller );
+        AMAROK_EXPORT EngineController* engineController();
+        AMAROK_EXPORT EngineController* setEngineController( EngineController *controller );
 
-        SqlStorage* sqlStorage();
-        SqlStorage* setSqlStorage( SqlStorage *storage );
+        AMAROK_EXPORT SqlStorage* sqlStorage();
+        AMAROK_EXPORT SqlStorage* setSqlStorage( SqlStorage *storage );
 
-        Amarok::ApplicationController* applicationController();
-        Amarok::ApplicationController* setApplicationController( Amarok::ApplicationController *controller );
+        AMAROK_EXPORT Amarok::ApplicationController* applicationController();
+        AMAROK_EXPORT Amarok::ApplicationController* setApplicationController( Amarok::ApplicationController *controller );
 
-        CollectionLocationDelegate* collectionLocationDelegate();
-        CollectionLocationDelegate* setCollectionLocationDelegate( CollectionLocationDelegate *delegate );
+        AMAROK_EXPORT CollectionLocationDelegate* collectionLocationDelegate();
+        AMAROK_EXPORT CollectionLocationDelegate* setCollectionLocationDelegate( CollectionLocationDelegate *delegate );
     }
 }
 
