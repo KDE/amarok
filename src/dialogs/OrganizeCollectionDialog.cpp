@@ -236,6 +236,8 @@ OrganizeCollectionDialog::buildFormatTip() const
 QString
 OrganizeCollectionDialog::buildFormatString() const
 {
+    if( m_filenameLayoutDialog->getParsableScheme().simplified().isEmpty() )
+        return "";
     return "%folder/" + m_filenameLayoutDialog->getParsableScheme() + ".%filetype";
 }
 

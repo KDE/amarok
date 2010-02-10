@@ -18,6 +18,9 @@
 #include "SqlCollectionLocation.h"
 
 #include "collectionscanner/AFTUtility.h"
+
+#include "collection/CollectionLocationDelegate.h"
+#include "Components.h"
 #include "Debug.h"
 #include "collection/SqlStorage.h"
 #include "meta/Meta.h"
@@ -107,12 +110,15 @@ SqlCollectionLocation::isOrganizable() const
 bool
 SqlCollectionLocation::remove( const Meta::TrackPtr &track )
 {
+    DEBUG_BLOCK
     KSharedPtr<SqlTrack> sqlTrack = KSharedPtr<SqlTrack>::dynamicCast( track );
     if( sqlTrack && sqlTrack->inCollection() && sqlTrack->collection()->collectionId() == m_collection->collectionId() )
     {
+        debug() << "much much";
         bool removed;
         // we are going to delete it from the database only if is no longer on disk
         removed = !QFile::exists( sqlTrack->playableUrl().path() );
+
         if( removed )
         {
 
@@ -159,10 +165,9 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
     DEBUG_BLOCK
     setGoingToRemoveSources( removeSources );
 
-    // Start code to determine if there is enough free space and correct perms
-    int transfersize = 0;
+    KIO::filesize_t transferSize = 0;
     foreach( Meta::TrackPtr track, tracks )
-        transfersize += track->filesize();
+        transferSize += track->filesize();
 
     QStringList actual_folders = actualLocation(); // the folders in the collection
     QStringList available_folders; // the folders which have freespace available
@@ -171,32 +176,41 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
         if( path.isEmpty() )
             continue;
         debug() << "Path" << path;
-        float used = KDiskFreeSpaceInfo::freeSpaceInfo( path ).used();
-        float total = KDiskFreeSpaceInfo::freeSpaceInfo( path ).size();
-        float free_space = total - used;
+        KDiskFreeSpaceInfo spaceInfo = KDiskFreeSpaceInfo::freeSpaceInfo( path );
+        if( !spaceInfo.isValid() )
+            continue;
 
-        debug() << "Free space" << free_space;
-        debug() << "transfersize" << transfersize;
+        KIO::filesize_t totalCapacity = spaceInfo.size();
+        KIO::filesize_t used = spaceInfo.used();
 
-        if( total <= 0 ) // protect against div by zero
+        KIO::filesize_t freeSpace = totalCapacity - used;
+
+        debug() << "used:" << used;
+        debug() << "total:" << totalCapacity;
+        debug() << "Free space" << freeSpace;
+        debug() << "transfersize" << transferSize;
+
+        if( totalCapacity <= 0 ) // protect against div by zero
             continue; //How did this happen?
 
-        float percentage_used = used / total;
-        debug() << "percentage_used" << percentage_used;
+        double percentageUsedAfter = double( used + transferSize ) / totalCapacity;
+        debug() << "percentage used after" << percentageUsedAfter;
 
         QFileInfo info( path );
 
         // since bad things happen when drives become totally full, we define full as 95% capacity used
         // also we make sure there is at least 5 megabytes free
         // finally, ensure the path is writeable
-        if( ( free_space - transfersize ) > 1024*1024*5 && ( percentage_used + transfersize ) < 0.95 && info.isWritable())
+        debug() << ( freeSpace - transferSize );
+        if( ( freeSpace - transferSize ) > 1024*1024*5 && ( percentageUsedAfter < 0.95 ) && info.isWritable() )
             available_folders << path;
     }
 
     if( available_folders.size() <= 0 )
     {
         debug() << "No space available or not writable";
-        The::statusBar()->longMessage( i18n( "The collection does not have enough free space available or is not writable." ), StatusBar::Error );
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        delegate->notWriteable( this );
         abort();
         return;
     }
@@ -222,20 +236,8 @@ SqlCollectionLocation::slotDialogAccepted()
     m_overwriteFiles = dialog->overwriteDestinations();
     if( isGoingToRemoveSources() )
     {
-        QStringList files;
-        QMapIterator<Meta::TrackPtr, QString> it( m_destinations );
-        while( it.hasNext() )
-        {
-            it.next();
-            if(it.key())
-                files << it.key()->prettyUrl();
-        }
-        const QString text( i18ncp( "@info", "Do you really want to move this track? It will be renamed and the original deleted.",
-                                    "Do you really want to move these %1 tracks? They will be renamed and the originals deleted", m_destinations.count() ) );
-        const bool del = KMessageBox::warningContinueCancelList(0,
-                                                     text,
-                                                     files,
-                                                     i18n("Move Files") ) == KMessageBox::Continue;
+        CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
+        const bool del = delegate->reallyMove( this, m_destinations.keys() );
         if( !del )
         {
             abort();
@@ -256,6 +258,7 @@ SqlCollectionLocation::slotDialogRejected()
 void
 SqlCollectionLocation::slotJobFinished( KJob *job )
 {
+    DEBUG_BLOCK
     if( job->error() )
     {
         //TODO: proper error handling
@@ -278,6 +281,7 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
             if( !QFileInfo( m_destinations[ track ] ).exists() )
                 m_destinations.remove( track );
         }
+        The::statusBar()->endProgressOperation( this );
         insertTracks( m_destinations );
         insertStatistics( m_destinations );
         m_collection->scanManager()->setBlockScan( false );
@@ -324,8 +328,21 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 
     m_sources = sources;
 
+    QString statusBarTxt;
+
+    if( destination() == source() )
+        statusBarTxt = i18n( "Organizing tracks" );
+    else if ( isGoingToRemoveSources() )
+        statusBarTxt = i18n( "Moving tracks" );
+    else
+        statusBarTxt = i18n( "Copying tracks" );
+
+    The::statusBar()->newProgressOperation( this, statusBarTxt );
+    The::statusBar()->incrementProgressTotalSteps( this, m_sources.size() );
+
     if( !startNextJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
     {
+        The::statusBar()->endProgressOperation( this );
         m_collection->scanManager()->setBlockScan( false ); //unblock scanning if we encountered an error while copying as well
         slotCopyOperationFinished();
     }
@@ -489,6 +506,7 @@ bool SqlCollectionLocation::startNextJob()
         //we should only move it directly if we're moving within the same collection
         else if( isGoingToRemoveSources() && source()->collection() == collection() )
         {
+            debug() << "moving!";
             job = KIO::file_move( src, dest, -1, flags );
         }
         else
@@ -503,7 +521,7 @@ bool SqlCollectionLocation::startNextJob()
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            The::statusBar()->newProgressOperation( job, i18n( "Transferring: %1", name ) );
+//            The::statusBar()->newProgressOperation( job, i18n( "Transferring: %1", name ) );
             m_jobs.insert( job, track );
             return true;
         }
