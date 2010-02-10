@@ -17,9 +17,10 @@
 #ifndef COLLECTIONLOCATIONDELEGATEIMPL_H
 #define COLLECTIONLOCATIONDELEGATEIMPL_H
 
+#include "amarok_export.h"
 #include "collection/CollectionLocationDelegate.h"
 
-class CollectionLocationDelegateImpl : public CollectionLocationDelegate
+class AMAROK_EXPORT CollectionLocationDelegateImpl : public CollectionLocationDelegate
 {
 public:
     CollectionLocationDelegateImpl() {};

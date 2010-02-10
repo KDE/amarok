@@ -17,11 +17,12 @@
 #ifndef COLLECTIONLOCATIONDELEGATE_H
 #define COLLECTIONLOCATIONDELEGATE_H
 
+#include "amarok_export.h"
 #include "meta/Meta.h"
 
 class CollectionLocation;
 
-class CollectionLocationDelegate
+class AMAROK_EXPORT CollectionLocationDelegate
 {
 public:
     CollectionLocationDelegate() {};
