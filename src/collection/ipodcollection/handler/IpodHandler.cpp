@@ -802,13 +802,6 @@ IpodHandler::detectModel()
         }
         if( modelString )
             m_name = QString( "iPod %1" ).arg( QString::fromUtf8( modelString ) );
-
-        if( m_needsFirewireGuid )
-        {
-            gchar *fwid = itdb_device_get_sysinfo( m_itdb->device, "FirewireGuid" );
-            if( fwid )
-               g_free( fwid );
-        }
     }
     else
     {
