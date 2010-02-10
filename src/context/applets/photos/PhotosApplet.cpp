@@ -207,7 +207,8 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         setCollapseOff();
         m_widget->clear();
         m_widget->hide();
-        setBusy( true );
+        if( canAnimate() )
+            setBusy( true );
     }
     else if ( data.contains( "message" ) && data["message"].toString().contains("NA_Collapse") )
     {
