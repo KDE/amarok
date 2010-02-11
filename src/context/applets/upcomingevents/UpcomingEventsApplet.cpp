@@ -50,8 +50,6 @@
 
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_aspectRatio( 0 )
-    , m_headerAspectRatio( 0.0 )
     , m_headerLabel( 0 )
     , m_settingsIcon( 0 )    
 {
@@ -153,18 +151,6 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     {
         m_mainLayout->addWidget( m_widgets.at( i ) );
     }
-}
-
-bool
-UpcomingEventsApplet::hasHeightForWidth() const
-{
-    return true;
-}
-
-qreal
-UpcomingEventsApplet::heightForWidth( qreal width ) const
-{
-    return width * m_aspectRatio;
 }
 
 void
