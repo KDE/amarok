@@ -45,10 +45,10 @@ IpodDeviceInfo::setMountPoint( QString mp )
 QString
 IpodDeviceInfo::deviceUid() const
 {
-    QStringList components = m_udi.split( '_' );
-    if( components.count() == 5 )
+    const QStringList components = m_udi.split( '_' );
+    if( components.count() >= 2 )
     {
-        QString uid = components[4];
+        QString uid = components[components.count()-2];
         if( uid.length() == 40 )
             return uid;
     }
