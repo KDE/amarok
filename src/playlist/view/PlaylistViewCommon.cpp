@@ -135,7 +135,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     {
         m_cueTrackAction->disconnect();
     }
-    
+
     if( isQueued )
         QObject::connect( m_cueTrackAction, SIGNAL( triggered() ), parent, SLOT( dequeueSelection() ) );
     else
@@ -184,7 +184,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         }
         actions << m_findInSourceAction;
     }
-    
+
     return actions;
 }
 

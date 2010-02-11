@@ -94,7 +94,7 @@ public:
      * Make sure that there are enough tracks in the current playlist
      * if it is dynamic and the user removed tracks.
      */
-    void normalizeDynamicPlayist();
+    void normalizeDynamicPlaylist();
 
     // This shouldn't be in Actions, it doesn't make sense
     int queuePosition( quint64 id );

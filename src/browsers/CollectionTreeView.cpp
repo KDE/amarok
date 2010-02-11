@@ -786,7 +786,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
         item = item->parent();
-    
+
     Amarok::Collection *coll = item->parentCollection();
 
     if( !coll->isWritable() )

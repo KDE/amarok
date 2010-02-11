@@ -58,7 +58,7 @@ public:
 
 protected:
     int verticalOffset() const;
-    
+
 signals:
     void found();
     void notFound();

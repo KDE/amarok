@@ -47,7 +47,7 @@ Playlist::FavoredRandomTrackNavigator::likelyLastTrack()
 {
     if( m_history.isEmpty() )
         return requestNextTrack();
-    
+
     return m_history.first();
 }
 
@@ -87,10 +87,10 @@ Playlist::FavoredRandomTrackNavigator::randomRow()
 
     QList< qreal > weights;
     qreal totalWeight = 0.0;
-    
+
     AbstractModel* model = Playlist::ModelStack::instance()->top();
     Meta::TrackList tracks = model->tracks();
-    
+
     switch( AmarokConfig::favorTracks() )
     {
     case AmarokConfig::EnumFavorTracks::HigherScores:
@@ -123,12 +123,12 @@ Playlist::FavoredRandomTrackNavigator::randomRow()
         }
         break;
     }
-    
+
     if( weights.isEmpty() )
         return -1;
-    
+
     debug() << "Total weight is" << totalWeight;
-    
+
     qreal point = ( m_random / qreal( RAND_MAX ) ) * totalWeight - weights[0];
     int row = 0;
     for(; point > 0.0; row++, point -= weights[row]) ;
