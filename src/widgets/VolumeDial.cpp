@@ -86,6 +86,14 @@ void VolumeDial::leaveEvent( QEvent * )
     startFade();
 }
 
+void VolumeDial::mouseMoveEvent( QMouseEvent *me )
+{
+    if ( m_isClick )
+        me->accept();
+    else
+        QDial::mouseMoveEvent( me );
+}
+
 void VolumeDial::mousePressEvent( QMouseEvent *me )
 {
     if ( me->button() != Qt::LeftButton )
@@ -99,7 +107,9 @@ void VolumeDial::mousePressEvent( QMouseEvent *me )
     const int dy = height()/4;
     m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
 
-    if ( !m_isClick ) // this will directly jump to the proper position
+    if ( m_isClick )
+        update(); // hide the ring
+    else // this will directly jump to the proper position
         QDial::mousePressEvent( me );
 
     // for value changes caused by mouseevent we'll only let our adjusted value changes be emitted
@@ -142,14 +152,17 @@ void VolumeDial::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
     int icon = m_muted ? 0 : 3;
-    if (icon && value() < 66)
+    if ( icon && value() < 66 )
         icon = value() < 33 ? 1 : 2;
-    p.drawPixmap(0,0, m_icon[ icon ]);
-    QColor c = mix( palette().color( foregroundRole() ), palette().color( QPalette::Highlight ) );
-    c.setAlpha( 82 + m_anim.step*96/6 );
-    p.setPen( QPen( c, 3, Qt::SolidLine, Qt::RoundCap ) );
-    p.setRenderHint(QPainter::Antialiasing);
-    p.drawArc( rect().adjusted(4,4,-4,-4), -110*16, - value()*320*16 / (maximum() - minimum()) );
+    p.drawPixmap( 0,0, m_icon[ icon ] );
+    if ( !m_isClick )
+    {
+        QColor c = mix( palette().color( foregroundRole() ), palette().color( QPalette::Highlight ) );
+        c.setAlpha( 82 + m_anim.step*96/6 );
+        p.setPen( QPen( c, 3, Qt::SolidLine, Qt::RoundCap ) );
+        p.setRenderHint( QPainter::Antialiasing );
+        p.drawArc( rect().adjusted(4,4,-4,-4), -110*16, - value()*320*16 / (maximum() - minimum()) );
+    }
     p.end();
 }
 

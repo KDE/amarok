@@ -50,6 +50,7 @@ protected:
     bool eventFilter( QObject *o, QEvent *e );
     void leaveEvent( QEvent * );
     void paintEvent( QPaintEvent * );
+    void mouseMoveEvent( QMouseEvent * );
     void mousePressEvent( QMouseEvent * );
     void mouseReleaseEvent( QMouseEvent * );
     void resizeEvent(QResizeEvent *);
