@@ -31,11 +31,12 @@
 
 namespace Playlist
 {
+
+// Extension of Playlist::DataRoles
 enum GroupDataRoles
 {
     GroupRole = 256,
     GroupedTracksRole, // deprecated
-    GroupedAlternateRole // deprecated
 };
 
 enum GroupMode
@@ -50,7 +51,6 @@ enum GroupMode
 
 class GroupingProxy : public ProxyBase
 {
-
     Q_OBJECT
 
 public:
@@ -61,17 +61,18 @@ public:
     static void destroy();
 
     // functions from QAbstractProxyModel
-
     QVariant data( const QModelIndex &index, int role ) const;
 
     // grouping-related functions
-    void setCollapsed( int, bool ) const;
     int firstInGroup( int ) const;
     int lastInGroup( int ) const;
 
     int tracksInGroup( int row ) const;
     int lengthOfGroup( int row ) const;
 
+    /**
+     * @param groupingCategory A string from 'groupableCategories', or "None", or empty string.
+     */
     QString groupingCategory() const;
     void setGroupingCategory( const QString &groupingCategory );
 
@@ -94,23 +95,21 @@ private slots:
 
 private:
     void regroupRows( int firstRow, int lastRow );
-    QList<GroupMode> m_rowGroupMode;
 
-    // grouping auxiliary functions -- deprecated, but used by GraphicsView
     int groupRowCount( int row ) const;
-
-    QString m_groupingCategory;
 
     /**
      * This function is used to determine if 2 tracks belong in the same group.
-     * The current implementation is a bit of a hack, but is what gives the best
-     * user experience.
-     * @param track1 The first track
-     * @param track2 The second track
+     * The track pointers are allowed to be invalid.
      * @return true if track should be grouped together, false otherwise
      */
     bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
+
+    // Variables
+    QString m_groupingCategory;
+    QList<GroupMode> m_rowGroupMode;
 };
+
 } // namespace Playlist
 
 #endif

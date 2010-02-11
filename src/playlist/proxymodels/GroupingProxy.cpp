@@ -34,10 +34,11 @@
 
 Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QObject *parent )
     : ProxyBase( parent )
-    , m_groupingCategory( QString( "Album" ) )
 {
     m_belowModel = belowModel;
     setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
+
+    setGroupingCategory( QString( "Album" ) );
 
 
     // Adjust our internal state based on changes in the source model.
@@ -97,40 +98,31 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
     if( !index.isValid() )
         return QVariant();
 
-    int row = index.row();
-
-    if( role == Playlist::GroupRole )
-        return m_rowGroupMode.at( row );
-
-    else if( role == Playlist::GroupedTracksRole )
-        return groupRowCount( row );
-
-    else if( role == Playlist::GroupedAlternateRole )
-        return ( row % 2 == 1 );
-    else if( role == Qt::DisplayRole || role == Qt::ToolTipRole )
+    switch ( role )
     {
-        switch( index.column() )
-        {
-            case GroupLength:
-            {
-                return Meta::msToPrettyTime( lengthOfGroup( row ) );
-            }
-            case GroupTracks:
-            {
-                return i18np ( "1 track", "%1 tracks", tracksInGroup( row ) );
-            }
-            default:
-                return m_belowModel->data( index, role );
-        }
-    }
-    else
-        return m_belowModel->data( index, role );
-}
+        case Playlist::GroupRole:
+            return m_rowGroupMode.at( index.row() );
 
-void
-Playlist::GroupingProxy::setCollapsed( int, bool ) const
-{
-    AMAROK_DEPRECATED
+        case Playlist::GroupedTracksRole:
+            return groupRowCount( index.row() );
+
+        case Qt::DisplayRole:
+        case Qt::ToolTipRole:
+            switch( index.column() )
+            {
+                case GroupLength:
+                    return Meta::msToPrettyTime( lengthOfGroup( index.row() ) );
+                case GroupTracks:
+                    return i18np ( "1 track", "%1 tracks", tracksInGroup( index.row() ) );
+            }
+
+            // Fall-through!!
+
+        default:
+            // Nothing to do with us: let our QSortFilterProxyModel parent class handle it.
+            // (which will proxy the data() from the underlying model)
+            return QSortFilterProxyModel::data( index, role );
+    }
 }
 
 int
@@ -270,72 +262,72 @@ Playlist::GroupingProxy::groupRowCount( int row ) const
     return lastInGroup( row ) - firstInGroup( row ) + 1;
 }
 
+/**
+ * The current implementation is a bit of a hack, but is what gives the best
+ * user experience.
+ * If a track has no data in the grouping category, it generally causes a non-match.
+ */
 bool
 Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 )
 {
-    //An empty grouping category means "no grouping"
-    if ( m_groupingCategory.isEmpty() )
-        return false;
+    // If the grouping category is empty or invalid, 'indexOf()' will return -1.
+    // That will cause us to choose "no grouping".
 
-    if( groupableCategories.contains( m_groupingCategory ) )   //sanity
+    switch( groupableCategories.indexOf( m_groupingCategory ) )
     {
-        switch( groupableCategories.indexOf( m_groupingCategory ) )
-        {
-            case 0: //Album
-                if( track1 && track1->album() && track2 && track2->album() )
-                    return ( *track1->album().data() ) == ( *track2->album().data() ) && ( track1->discNumber() == track2->discNumber() );
-            case 1: //Artist
-                if( track1 && track1->artist() && track2 && track2->artist() )
-                    return ( *track1->artist().data() ) == ( *track2->artist().data() );
-            case 2: //Composer
-                if( track1 && track1->composer() && track2 && track2->composer() )
-                    return ( *track1->composer().data() ) == ( *track2->composer().data() );
-            case 3: //Genre
-                if( track1 && track1->genre() && track2 && track2->genre() )
-                    return ( *track1->genre().data() ) == ( *track2->genre().data() );
-            case 4: //Rating
-                if( track1 && track1->rating() && track2 && track2->rating() )
-                    return ( track1->rating() ) == ( track2->rating() );
-            case 5: //Source
-                if( track1 && track2 )
+        case 0: //Album
+            if( track1 && track1->album() && track2 && track2->album() )
+                return ( *track1->album().data() ) == ( *track2->album().data() ) && ( track1->discNumber() == track2->discNumber() );
+        case 1: //Artist
+            if( track1 && track1->artist() && track2 && track2->artist() )
+                return ( *track1->artist().data() ) == ( *track2->artist().data() );
+        case 2: //Composer
+            if( track1 && track1->composer() && track2 && track2->composer() )
+                return ( *track1->composer().data() ) == ( *track2->composer().data() );
+        case 3: //Genre
+            if( track1 && track1->genre() && track2 && track2->genre() )
+                return ( *track1->genre().data() ) == ( *track2->genre().data() );
+        case 4: //Rating
+            if( track1 && track1->rating() && track2 && track2->rating() )
+                return ( track1->rating() ) == ( track2->rating() );
+        case 5: //Source
+            if( track1 && track2 )
+            {
+                QString source1, source2;
+
+                Meta::SourceInfoCapability *sic1 = track1->create< Meta::SourceInfoCapability >();
+                Meta::SourceInfoCapability *sic2 = track2->create< Meta::SourceInfoCapability >();
+                if( sic1 && sic2)
                 {
-                    Meta::SourceInfoCapability *sic1 = track1->create< Meta::SourceInfoCapability >();
-                    Meta::SourceInfoCapability *sic2 = track2->create< Meta::SourceInfoCapability >();
-                    QString source1, source2;
-                    if( sic1 && sic2)
+                    source1 = sic1->sourceName();
+                    source2 = sic2->sourceName();
+                }
+                if( sic1 )
+                    delete sic1;
+                if( sic2 )
+                    delete sic2;
+
+                if( ! (sic1 && sic2) )
+                {
+                    if( track1->collection() && track2->collection() )
                     {
-                        source1 = sic1->sourceName();
-                        source2 = sic2->sourceName();
-                        delete sic1;
-                        delete sic2;
+                        source1 = track1->collection()->collectionId();
+                        source2 = track2->collection()->collectionId();
                     }
                     else
-                    {
-                        // First I make sure I delete sic1 and sic2 if only one of them was
-                        // instantiated:
-                        if( sic1 )
-                            delete sic1;
-                        if( sic2 )
-                            delete sic2;
-
-                        if( track1->collection() && track2->collection() )
-                        {
-                            source1 = track1->collection()->collectionId();
-                            source2 = track2->collection()->collectionId();
-                        }
-                        else
-                            return false;
-                    }
-                    return source1 == source2;
+                        return false;
                 }
-            case 6: //Year
-                if( track1 && track1->year() && track2 && track2->year() )
-                    return ( *track1->year().data() ) == ( *track2->year().data() );
-            default:
+
+                return source1 == source2;
+            }
+            else
                 return false;
-        }
+        case 6: //Year
+            if( track1 && track1->year() && track2 && track2->year() )
+                return ( *track1->year().data() ) == ( *track2->year().data() );
+        default:
+            return false;
     }
-    return false;
 }
 
 int Playlist::GroupingProxy::tracksInGroup( int row ) const
@@ -352,7 +344,7 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
         if ( track )
             totalLength += track->length();
         else
-            warning() << "Playlist::GroupingProxy::lengthOfGroup(): TrackPtr is 0!  i = " << i << ", rowCount = " << m_belowModel->rowCount();
+            warning() << "Playlist::GroupingProxy::lengthOfGroup(): TrackPtr is 0!  i = " << i << ", rowCount = " << rowCount();
     }
 
     return totalLength;
