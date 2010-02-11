@@ -53,6 +53,10 @@ void PlayPauseButton::mousePressEvent( QMouseEvent *me )
 {
     me->accept();
     m_isClick = true;
+    int step = m_anim.step;
+    m_anim.step = 0;
+    updateIconBuffer();
+    m_anim.step = step;
     update();
 }
 
