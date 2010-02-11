@@ -20,14 +20,12 @@
 #include "amarok_export.h"
 
 #include <QGraphicsTextItem>
+#include <QAbstractAnimation>
 
 //forward
 class QFontMetrics;
 class QPainter;
-namespace Plasma
-{
-    class Animator;
-}
+class QPropertyAnimation;
 
 /**
 * \brief An animated QGrahicsTextItem on hovering
@@ -42,6 +40,7 @@ namespace Plasma
 class AMAROK_EXPORT TextScrollingWidget : public QGraphicsTextItem
 {
     Q_OBJECT
+    Q_PROPERTY(qreal animationValue READ animationValue WRITE animate)
     public:
 
         TextScrollingWidget( QGraphicsItem* parent = 0 );
@@ -58,14 +57,12 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsTextItem
         QString text() const;
 
         bool isAnimating();
+        qreal animationValue() const;
 
-    public slots:
-        void animateFor( qreal anim );
-        void animateBack( qreal anim );
-
-        void animationFinished(int);
-        void startAnimFor();
-        void startAnimBack();
+    protected slots:
+        void startAnimation( QAbstractAnimation::Direction direction );
+        void animate( qreal anim );
+        void animationFinished();
 
     protected :
         /**
@@ -78,16 +75,13 @@ class AMAROK_EXPORT TextScrollingWidget : public QGraphicsTextItem
         */
         virtual void paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
 
-
     private:
-        QRectF            m_rect;           // box size
-        QFontMetrics     *m_fm;             // font metrics which will cut the text.
-        QString           m_text;           // full sentence
-        int               m_delta;          // complete delta
-        float             m_currentDelta;   // current delta
-        int               m_animfor;        // anim id for
-        int               m_animback;       // anim id back
-        bool              m_animating;      // boolean !
+        QRectF                           m_rect;           // box size
+        QFontMetrics                     *m_fm;            // font metrics which will cut the text.
+        QString                          m_text;           // full sentence
+        int                              m_delta;          // complete delta
+        qreal                            m_currentDelta;   // current delta
+        QWeakPointer<QPropertyAnimation> m_animation;      // scroll animation
 };
 
 #endif
