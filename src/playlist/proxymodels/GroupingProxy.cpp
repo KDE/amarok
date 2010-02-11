@@ -39,23 +39,43 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     m_belowModel = belowModel;
     setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
 
-    // signal proxies
-    connect( sourceModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
-    connect( sourceModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( sourceModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
+
+    // Adjust our internal state based on changes in the source model.
+    //   We connect to our own QAbstractItemModel signals, which are emitted by our
+    //   'QSortFilterProxyModel' parent class.
+    //
+    //   Connect to 'this' instead of 'sourceModel()' for 2 reasons:
+    //     - We happen to be a 1:1 passthrough proxy, but if we filtered/sorted rows,
+    //       we'd want to maintain state for the rows exported by the proxy. The rows
+    //       exported by the source model are of no direct interest to us.
+    //
+    //     - Qt guarantees that our signal handlers on 'this' will be called earlier than
+    //       any other, because we're the first to call 'connect( this )' (hey, we're the
+    //       constructor!). So, we're guaranteed to be able to update our internal state
+    //       before we get any 'data()' calls from "upstream" signal handlers.
+    //
+    //       If we connected to 'sourceModel()', there would be no such guarantee: it
+    //       would be highly likely that an "upstream" signal handler (connected to the
+    //       'this' QSFPM signal) would get called earlier, would call our 'data()'
+    //       function, and we would return wrong answers from our stale internal state.
+    //
+    connect( this, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( sourceDataChanged( const QModelIndex&, const QModelIndex& ) ) );
+    connect( this, SIGNAL( layoutChanged() ), this, SLOT( sourceLayoutChanged() ) );
+    connect( this, SIGNAL( modelReset() ), this, SLOT( sourceModelReset() ) );
+    connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( sourceRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( this, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( sourceRowsRemoved( const QModelIndex&, int, int ) ) );
+
+
+    // Proxy the Playlist::AbstractModel signals
+    connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );  // Planned for removal, but handle for now 2010-02-11
+    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( regroupAll() ) );                  // Planned for removal, but handle for now 2010-02-11
+
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );
-    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( regroupAll() ) );
-
-    connect( sourceModel(), SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
-    connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
-    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
-    connect( sourceModel(), SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
-
-    connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
     connect( sourceModel(), SIGNAL( beginRemoveIds() ), this, SIGNAL( beginRemoveIds() ) );
+    connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
-    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
+    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
+
 
     int max = m_belowModel->rowCount();
     for ( int i = 0; i < max; i++ )
@@ -145,33 +165,43 @@ Playlist::GroupingProxy::lastInGroup( int row ) const
     return row;
 }
 
+
 void
-Playlist::GroupingProxy::modelDataChanged( const QModelIndex& start, const QModelIndex& end )
+Playlist::GroupingProxy::sourceDataChanged( const QModelIndex& sourceTopLeft, const QModelIndex& sourceBottomRight )
 {
-    regroupRows( start.row(), end.row() );
+    regroupRows( sourceTopLeft.row(), sourceBottomRight.row() );
 }
 
 void
-Playlist::GroupingProxy::modelRowsInserted( const QModelIndex& idx, int start, int end )
+Playlist::GroupingProxy::sourceLayoutChanged()
 {
-    beginInsertRows( idx, start, end );
-    for ( int i = start; i <= end; i++ )
+    regroupAll();
+}
+
+void
+Playlist::GroupingProxy::sourceModelReset()
+{
+    regroupAll();
+}
+
+void
+Playlist::GroupingProxy::sourceRowsInserted( const QModelIndex& parent, int sourceStart, int sourceEnd )
+{
+    for ( int i = sourceStart; i <= sourceEnd; i++ )
     {
         m_rowGroupMode.insert( i, None );
     }
-    endInsertRows();
 }
 
 void
-Playlist::GroupingProxy::modelRowsRemoved( const QModelIndex& idx, int start, int end )
+Playlist::GroupingProxy::sourceRowsRemoved( const QModelIndex& parent, int sourceStart, int sourceEnd )
 {
-    beginRemoveRows( idx, start, end );
-    for ( int i = start; i <= end; i++ )
+    for ( int i = sourceStart; i <= sourceEnd; i++ )
     {
-        m_rowGroupMode.removeAt( start );
+        m_rowGroupMode.removeAt( sourceStart );
     }
-    endRemoveRows();
 }
+
 
 void
 Playlist::GroupingProxy::regroupAll()

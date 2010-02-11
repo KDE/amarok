@@ -75,32 +75,21 @@ public:
     QString groupingCategory() const;
     void setGroupingCategory( const QString &groupingCategory );
 
-signals:
-    /**
-     * This signal is emitted when tracks are added to the playlist.
-     * @param parent the parent index.
-     * @param start the row number of the first track that has been added.
-     * @param end the row number of the last track that has been added.
-     */
-    void rowsInserted( const QModelIndex& parent, int start, int end );
+//signals:
+    // Emits signals inherited from QSortFilterProxy
 
-    /**
-     * This signal is emitted when tracks are removed from the playlist.
-     * @param parent the parent index.
-     * @param start the row number of the first track that has been removed.
-     * @param end the row number of the last track that has been removed.
-     */
-    void rowsRemoved( const QModelIndex& parent, int start, int end );
-
-    /**
-     * This signal is emitted when tracks are (de)queued from the playlist.
-     */
-    void queueChanged();
+    // Emits signals inherited from Playlist::AbstractModel / ProxyBase
 
 private slots:
-    void modelDataChanged( const QModelIndex&, const QModelIndex& );
-    void modelRowsInserted( const QModelIndex&, int, int );
-    void modelRowsRemoved( const QModelIndex&, int, int );
+    /**
+    * Handlers for the standard QAbstractItemModel signals.
+    */
+    void sourceDataChanged( const QModelIndex& topLeft, const QModelIndex& bottomRight );
+    void sourceLayoutChanged();
+    void sourceModelReset();
+    void sourceRowsInserted( const QModelIndex& parent, int start, int end );
+    void sourceRowsRemoved( const QModelIndex& parent, int start, int end );
+
     void regroupAll();
 
 private:
