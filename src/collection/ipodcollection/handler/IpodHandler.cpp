@@ -120,7 +120,7 @@ IpodHandler::~IpodHandler()
     {
         QProcess unmount;
         QStringList args;
-        args << "-u" << mountPoint();
+        args << "-u" << "-z" << mountPoint();
         unmount.start("fusermount", args);
         bool ok = unmount.waitForStarted();
         if( !ok )
