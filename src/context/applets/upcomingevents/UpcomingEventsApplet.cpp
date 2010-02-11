@@ -21,33 +21,39 @@
 
 #include "Amarok.h"
 #include "App.h"
-#include "Debug.h"
-#include "context/Svg.h"
 #include "context/ContextView.h"
-#include "PaletteHandler.h"
-
-#include <Plasma/Theme>
-#include <plasma/widgets/iconwidget.h>
-
-#include <KConfigDialog>
-#include <KStandardDirs>
-#include "context/widgets/TextScrollingWidget.h"
+#include "Debug.h"
 #include "context/widgets/DropPixmapItem.h"
 #include "context/applets/upcomingevents/LastFmEvent.h"
+#include "PaletteHandler.h"
+#include "context/Svg.h"
+#include "context/widgets/TextScrollingWidget.h"
 
+// Qt
 #include <QDesktopServices>
 #include <QGraphicsSimpleTextItem>
 #include <QGraphicsGridLayout>
 #include <QGraphicsLayoutItem>
 #include <QGraphicsProxyWidget>
+#include <QGridLayout>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QScrollBar>
 
-#include <typeinfo>
-#include <QGridLayout>
+// KDE
+#include <plasma/widgets/iconwidget.h>
+#include <KConfigDialog>
+#include <KStandardDirs>
+#include <Plasma/Theme>
 
-
+/**
+ * \brief Constructor
+ *
+ * UpcomingEventsApplet constructor
+ *
+ * \param parent : the UpcomingEventsApplet parent (used by Context::Applet)
+ * \param args : (used by Context::Applet)
+ */
 UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
     , m_headerLabel( 0 )
@@ -57,9 +63,15 @@ UpcomingEventsApplet::UpcomingEventsApplet( QObject* parent, const QVariantList&
     setBackgroundHints( Plasma::Applet::NoBackground );
 }
 
+/**
+ * \brief Initialization
+ *
+ * Initializes the UpcomingEventsApplet with default parameters
+ */
 void
 UpcomingEventsApplet::init()
 {
+    // The widgets are displayed line by line with only one column
     m_mainLayout = new QVBoxLayout;
     m_mainLayout->setSizeConstraint( QLayout::SetFixedSize);
     m_mainLayout->setAlignment( Qt::AlignJustify );
@@ -67,12 +79,14 @@ UpcomingEventsApplet::init()
     
     setBackgroundHints( Plasma::Applet::NoBackground );
 
+    // Use the same font as the other applets
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
     m_headerLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_headerLabel->setFont( labelFont );
     m_headerLabel->setText( i18n( "Upcoming Events" ) );
 
+    // Use an embedded widget for the applet
     m_scrollProxy = new QGraphicsProxyWidget( this );
     m_scrollProxy->setAttribute( Qt::WA_NoSystemBackground );
 
@@ -107,9 +121,13 @@ UpcomingEventsApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("UpcomingEvents Applet");
     m_timeSpan = config.readEntry( "timeSpan", "AllEvents" );
-    m_enabledLinks = config.readEntry( "enabledLinks", 0 );    
+    m_enabledLinks = config.readEntry( "enabledLinks", 0 );
 }
 
+/**
+ * Connects the source to the Upcoming Events engine
+ * and calls the dataUpdated function
+ */
 void
 UpcomingEventsApplet::connectSource( const QString &source )
 {
@@ -120,6 +138,17 @@ UpcomingEventsApplet::connectSource( const QString &source )
     }
 }
 
+/**
+ * Called when any of the geometry constraints have been updated.
+ *
+ * This is always called prior to painting and should be used as an
+ * opportunity to layout the widget, calculate sizings, etc.
+ *
+ * Do not call update() from this method; an update() will be triggered
+ * at the appropriate time for the applet.
+ *
+ * \param constraints : the type of constraints that were updated
+ */
 void
 UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
@@ -153,6 +182,12 @@ UpcomingEventsApplet::constraintsEvent( Plasma::Constraints constraints )
     }
 }
 
+/**
+ * Updates the data from the Upcoming Events engine
+ *
+ * \param name : the name
+ * \param data : the engine from where the data are received
+ */
 void
 UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
@@ -222,6 +257,16 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     update();
 }
 
+/**
+ * \brief Paints the interface
+ *
+ * This method is called when the interface should be painted
+ *
+ * \param painter : the QPainter to use to do the paintiner
+ * \param option : the style options object
+ * \param contentsRect : the rect to paint within; automatically adjusted for
+ *                     the background, if any
+ */
 void
 UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
@@ -243,7 +288,9 @@ UpcomingEventsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
     p->restore();
 }
 
-
+/**
+ * Show the settings windows
+ */
 void
 UpcomingEventsApplet::configure()
 {
@@ -251,18 +298,17 @@ UpcomingEventsApplet::configure()
     showConfigurationInterface();
 }
 
-
+/**
+ * Reimplement this method so provide a configuration interface,
+ * parented to the supplied widget. Ownership of the widgets is passed
+ * to the parent widget.
+ *
+ * \param parent : the dialog which is the parent of the configuration
+ *               widgets
+ */
 void
 UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
-    // for use when gui created
-    /*KConfigGroup configuration = config();
-    QWidget *settings = new QWidget;
-    //ui_Settings.setupUi( settings );
-
-    parent->addPage( settings, i18n( "Upcoming Events Settings" ), "preferences-system");
-    connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );*/
-
     KConfigGroup config = Amarok::config("UpcomingEvents Applet");
     QWidget *settings = new QWidget();
     ui_Settings.setupUi( settings );
@@ -281,9 +327,7 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
         ui_Settings.comboBox->setCurrentIndex( 3 );
 
     if ( m_enabledLinks )
-        ui_Settings.checkBox->setCheckState ( Qt::Checked );
-
-    
+        ui_Settings.checkBox->setCheckState ( Qt::Checked );    
     
     parent->addPage( settings, i18n( "Upcoming Events Settings" ), "preferences-system");
     connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( changeTimeSpan( QString ) ) );
@@ -291,6 +335,9 @@ UpcomingEventsApplet::createConfigurationInterface( KConfigDialog *parent )
     connect( parent, SIGNAL( okClicked( ) ), this, SLOT( saveSettings( ) ) );    
 }
 
+/**
+ * Replace the former time span by the new one
+ */
 void
 UpcomingEventsApplet::changeTimeSpan(QString span)
 {
@@ -313,10 +360,14 @@ UpcomingEventsApplet::changeTimeSpan(QString span)
         m_temp_timeSpan = "AllEvents";
 }
 
+/**
+ * Save the time span choosen by the user
+ */
 void
 UpcomingEventsApplet::saveTimeSpan()
 {
     DEBUG_BLOCK
+    
     m_timeSpan = m_temp_timeSpan;
     dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
 
@@ -325,6 +376,9 @@ UpcomingEventsApplet::saveTimeSpan()
     dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:timeSpan:" ) + m_timeSpan );
 }
 
+/**
+ * Sets the upcoming events as links
+ */
 void
 UpcomingEventsApplet::setAddressAsLink(int state)
 {
@@ -333,6 +387,9 @@ UpcomingEventsApplet::setAddressAsLink(int state)
     m_temp_enabledLinks = (state == Qt::Checked);
 }
 
+/**
+ * Displays all the upcoming events addresses as links
+ */
 void
 UpcomingEventsApplet::saveAddressAsLink()
 {
@@ -347,6 +404,9 @@ UpcomingEventsApplet::saveAddressAsLink()
     dataEngine( "amarok-upcomingEvents" )->query( QString( "upcomingEvents:enabledLinks:" ) + m_enabledLinks );
 }
 
+/**
+ * Save all the upcoming events settings
+ */
 void
 UpcomingEventsApplet::saveSettings()
 {
@@ -355,6 +415,3 @@ UpcomingEventsApplet::saveSettings()
 }
 
 #include "UpcomingEventsApplet.moc"
-
-
-
