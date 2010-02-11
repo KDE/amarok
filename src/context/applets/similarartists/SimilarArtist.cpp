@@ -31,13 +31,15 @@ SimilarArtist::SimilarArtist() {}
  * @param similarTo The name of the artist similar to this artist
  */
 SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &url,
-                              const KUrl &urlImage, const QString &similarTo )
+                              const KUrl &urlImage, const QString &similarTo,
+                              const QString &desc )
 {
     m_name = name;
     m_match = match;
     m_url = url;
     m_urlImage = urlImage;
     m_similarTo = similarTo;
+    m_desc = desc;
 
     static bool metaTypeRegistered = false;
     if ( !metaTypeRegistered )
@@ -50,7 +52,8 @@ SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &
  /**
   * @return The name of this artist
   */
-QString SimilarArtist::name() const
+QString
+SimilarArtist::name() const
 {
     return m_name;
 }
@@ -58,7 +61,8 @@ QString SimilarArtist::name() const
 /**
  * @return the pourcent of match of this artist, betwwen 0 and 100
  */
-int SimilarArtist::match() const
+int
+SimilarArtist::match() const
 {
     return m_match;
 }
@@ -66,7 +70,8 @@ int SimilarArtist::match() const
 /**
  * @return a url on the web for this artist, for example on last.fm
  */
-KUrl SimilarArtist::url() const
+KUrl
+SimilarArtist::url() const
 {
     return m_url;
 }
@@ -74,7 +79,27 @@ KUrl SimilarArtist::url() const
  /**
   * @return a url on the web for an image oh this artist, for example on last.fm
   */
-KUrl SimilarArtist::urlImage() const
+KUrl
+SimilarArtist::urlImage() const
 {
     return m_urlImage;
+}
+
+/**
+ * @return the description of this artist
+ */
+QString
+SimilarArtist::desc() const
+{
+    return m_desc;
+}
+
+/**
+ * Set the description of this artist
+ * @param desc the description
+ */
+void
+SimilarArtist::setDesc(const QString desc)
+{
+    m_desc=desc;
 }

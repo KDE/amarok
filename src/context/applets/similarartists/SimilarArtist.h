@@ -46,9 +46,11 @@ public:
      * @param url   A url of this artist on the web, for example on last.fm
      * @param urlImage  A url of an image of this artist, for example on last.fm
      * @param similarTo The name of the artist similar to this artist
+     * @param desc The description of this artist, NULL as default
      */
     SimilarArtist( const QString &name, const int match, const KUrl &url,
-                   const KUrl &urlImage, const QString &similarTo );
+                   const KUrl &urlImage, const QString &similarTo,
+                   const QString &desc=0 );
 
     /**
      * @return The name of this artist
@@ -69,6 +71,17 @@ public:
      * @return a url on the web for an image oh this artist, for example on last.fm
      */
     KUrl urlImage() const;
+
+    /**
+     * @return the description of this artist
+     */
+    QString desc() const;
+
+    /**
+     * Set the description of this artist
+     * @param desc the description
+     */
+    void setDesc(const QString desc);
 
     /**
      * Define a new type for help the communication
@@ -96,6 +109,11 @@ private:
      * A image url of this artist on the web
      */
     KUrl m_urlImage;
+
+    /**
+     * The description of this artist
+     */
+    QString m_desc;
 
     /**
      * The name of the artist similar to this artist

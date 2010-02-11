@@ -74,6 +74,12 @@ public:
     void setMatch( const int match );
 
     /**
+     * Change the artist description which contains informations about this artist
+     * @param desc The description of this artist
+     */
+    void setDescription( const QString &desc );
+
+    /**
      * Clean the widget => the content of the QLabel is empty
      */
     void clear();
@@ -90,6 +96,7 @@ private:
     QLabel *m_name;
     QLabel *m_genre;
     QLabel *m_topTrack;
+    QLabel *m_desc;
 
     KJob *m_imageJob;
     KJob *m_topTrackJob;

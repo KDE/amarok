@@ -247,7 +247,6 @@ void
 SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     Q_UNUSED( name )
-
     m_artist = data[ "artist" ].toString();
 
     // we see if the artist name is valid
@@ -345,7 +344,6 @@ SimilarArtistsApplet::saveSettings()
 void
 SimilarArtistsApplet::artistsUpdate()
 {
-
     if ( !m_similars.isEmpty() )
     {
         m_headerLabel->setText( i18n( "Similar artists of %1", m_artist ) );
@@ -393,6 +391,7 @@ SimilarArtistsApplet::artistsUpdate()
             art->setArtist( m_similars.at( cpt ).name(), m_similars.at( cpt ).url() );
             art->setPhoto( m_similars.at( cpt ).urlImage() );
             art->setMatch( m_similars.at( cpt ).match() );
+            art->setDescription(m_similars.at( cpt ).desc());
             cpt++;
         }
 
