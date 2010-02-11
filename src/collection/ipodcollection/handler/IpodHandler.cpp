@@ -1070,15 +1070,16 @@ IpodHandler::writeITunesDB( bool threaded )
 QString
 IpodHandler::itunesDir(const QString &p) const
 {
-    QString base( ":iPod_Control" );
-    if( m_isIPhone )
-        base = ":iTunes_Control";
-    else if( m_isMobile )
-        base = ":iTunes:iTunes_Control";
+    if( m_controlDir.isEmpty() )
+    {
+        const QString realControlDir= itdb_get_control_dir( itdb_get_mountpoint( m_itdb ) );
+        m_controlDir = ipodPath( realControlDir );
+    }
 
-    if( !p.startsWith( ':' ) )
-        base += ':';
-    return base + p;
+    if( p.startsWith( ':' ) )
+        return m_controlDir + p;
+    else
+        return m_controlDir + ':' + p;
 }
 
 /// Finds path to copy track to on Ipod
@@ -1463,7 +1464,7 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
 }
 
 QString
-IpodHandler::ipodPath( const QString &realPath )
+IpodHandler::ipodPath( const QString &realPath ) const
 {
     if( m_itdb )
     {
