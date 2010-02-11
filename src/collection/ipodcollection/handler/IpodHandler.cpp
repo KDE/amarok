@@ -87,8 +87,6 @@ IpodHandler::IpodHandler( IpodCollection *mc, const IpodDeviceInfo *deviceInfo )
     , m_name()
     , m_deviceInfo( deviceInfo )
     , m_isShuffle( false )
-    , m_isMobile( false )
-    , m_isIPhone( false )
     , m_supportsArtwork( false )
     , m_supportsVideo( false )
     , m_rockboxFirmware( false )
@@ -712,12 +710,9 @@ IpodHandler::detectModel()
     m_supportsArtwork = true;
 
     m_supportsVideo = false;
-    m_isIPhone = false;
     m_needsFirewireGuid = false;
     m_rockboxFirmware = false;
 
-    // needs recent libgpod-0.3.3 from cvs
-    bool guess = false;
     if( m_itdb && m_itdb->device )
     {
         debug() << "Attempting to get info...";
@@ -758,23 +753,9 @@ IpodHandler::detectModel()
                 m_isShuffle = true;
                 break;
 
-            case ITDB_IPOD_MODEL_IPHONE_1:
-            //TODO newer libgpod thinks that an iPod touch is silver, older that it's black
-            //case ITDB_IPOD_MODEL_TOUCH_BLACK:
-            //case ITDB_IPOD_MODEL_TOUCH_SILVER:
-                m_isIPhone = true;
-                debug() << "detected iPhone/iPod Touch" << endl;
-                break;
-
-            case ITDB_IPOD_MODEL_MOBILE_1:
-                m_isMobile = true;
-                debug() << "detected iTunes phone" << endl;
-                break;
-
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
                 modelString = 0;
-                guess = true;
                 break;
 
             default:
@@ -807,21 +788,6 @@ IpodHandler::detectModel()
     {
         debug() << "iPod type detection failed, no video support";
         m_needsFirewireGuid = true; // can't read db because no firewire, maybe
-        guess = true;
-    }
-
-    if( guess )
-    {
-        if( pathExists( ":iTunes:iTunes_Control" ) )
-        {
-            debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
-            m_isMobile = true;
-        }
-        else if( pathExists( ":iTunes_Control" ) )
-        {
-            debug() << "iTunes_Control found - assuming iPhone/iPod Touch" << endl;
-            m_isIPhone = true;
-        }
     }
 
     if( pathExists( ":.rockbox" ) )

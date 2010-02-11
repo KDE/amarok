@@ -339,8 +339,6 @@ class IpodHandler : public Meta::MediaDeviceHandler
 
         /* Ipod Model */
         bool m_isShuffle;
-        bool m_isMobile;
-        bool m_isIPhone;
 
         /* Properties of Ipod */
         bool m_supportsArtwork;
