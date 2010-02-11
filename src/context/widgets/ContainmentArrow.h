@@ -24,9 +24,10 @@
 #include "amarok_export.h"
 #include "context/Svg.h"
 
-#include <QGraphicsItem>
+#include <QGraphicsWidget>
 #include <QObject>
 #include <QTimer>
+#include <QWeakPointer>
 
 enum ArrowDirection {
     LEFT,
@@ -39,35 +40,38 @@ enum ArrowDirection {
     UP_LEFT
 };
 
+namespace Plasma {
+    class Animation;
+}
 
 #include "context/Containment.h" // needs ArrowDirection to be defined first
 
 namespace Context {
-    
+
 class SvgRenderJob;
-    
-class AMAROK_EXPORT ContainmentArrow : public QObject, public QGraphicsItem
+
+class AMAROK_EXPORT ContainmentArrow : public QGraphicsWidget
 {
     Q_OBJECT
 public:
     explicit ContainmentArrow( QGraphicsItem *parent  = 0, int direction = RIGHT );
     ~ContainmentArrow();
-    
+
     virtual QRectF boundingRect() const;
 
     QSize size() const;
     void resize( const QSizeF newSize );
-    
+
     void enable();
     void disable();
-    
+
 public slots:
     void show();
     void hide();
-    
+
 signals:
     void changeContainment( int to );
-    
+
 protected:
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
@@ -75,11 +79,10 @@ protected:
     void mousePressEvent( QGraphicsSceneMouseEvent *event );
     void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
 
-    
+
 private Q_SLOTS:
-    void animateHighlight( qreal progress );
     void timeToHide();
-    
+
 private:
     QSize m_size;
     qreal m_animHighlightFrame;
@@ -88,12 +91,13 @@ private:
     bool m_showing;
     bool m_disabled;
     qreal m_aspectRatio;
-    
+
     QTimer *m_timer;
-    
+
     Svg* m_arrowSvg;
     int m_arrowDirection;
     Plasma::Containment *m_containment;
+    QWeakPointer<Plasma::Animation> m_fadeAnimation;
 };
 
  // namespace

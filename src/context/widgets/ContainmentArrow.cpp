@@ -22,6 +22,9 @@
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 
+#include <Plasma/Animation>
+#include <Plasma/Animator>
+
 // by default this item just grabs the coords of its parents, and positions itself to maximise in the
 // direction that it is pointing to.
 
@@ -29,7 +32,7 @@ namespace Context
 {
 
 ContainmentArrow::ContainmentArrow( QGraphicsItem *parent, int direction ) :
-    QGraphicsItem( parent ),
+    QGraphicsWidget( parent ),
     m_showing( false ),
     m_disabled( false ),
     m_timer( 0 ) ,
@@ -37,22 +40,22 @@ ContainmentArrow::ContainmentArrow( QGraphicsItem *parent, int direction ) :
     m_containment( 0 )
 {
     DEBUG_BLOCK
-    
+
     setZValue( 10000000 );
     setFlag( ItemClipsToShape, false );
     setFlag( ItemClipsChildrenToShape, false );
     setFlag( ItemIgnoresTransformations, true );
     setAcceptsHoverEvents( true );
-    
+
     m_timer = new QTimer( this );
     connect( m_timer, SIGNAL( timeout() ), this, SLOT( timeToHide() ) );
-    
+
     m_arrowSvg = new Context::Svg( this );
     m_arrowSvg->setImagePath( KStandardDirs::locate( "data", "amarok/images/navigation_arrows.svg" ) );
     m_arrowSvg->setContainsMultipleImages( true );
-    
+
     debug() << "got svg path: " << m_arrowSvg->imagePath();
-    
+
     m_containment = dynamic_cast<Containment *>( parent );
     if( !m_containment )
     {
@@ -74,7 +77,7 @@ ContainmentArrow::ContainmentArrow( QGraphicsItem *parent, int direction ) :
                 else
                     arrow = m_arrowSvg->elementRect( "down_arrow" );
                 m_aspectRatio = arrow.width() / arrow.height();
-            
+
                 height = width / m_aspectRatio;
                 debug() << "up/down arrow m_aspectRatio and height is: " << m_aspectRatio << height;
                 debug() << "got UP/DOWN arrow with sizes: " << width << height;
@@ -86,7 +89,7 @@ ContainmentArrow::ContainmentArrow( QGraphicsItem *parent, int direction ) :
                 height = m_containment->size().height();
                 QRectF arrow;
                 debug() << " left/right arrow original height: " << height;
-            
+
                 if( direction == LEFT )
                     arrow = m_arrowSvg->elementRect( "left_arrow" );
                 else
@@ -104,7 +107,7 @@ ContainmentArrow::ContainmentArrow( QGraphicsItem *parent, int direction ) :
         }
         m_size = QSize( width, height );
     }
-    
+
     debug() << "ContainmentArrow: SETTING DIRECTION TO: " << direction;
     m_arrowDirection = direction;
 }
@@ -117,21 +120,21 @@ ContainmentArrow::~ContainmentArrow()
 }
 
 
-QRectF 
+QRectF
 ContainmentArrow::boundingRect() const
 {
     return QRectF( QPointF( 0, 0 ), m_size );
 
 }
 
-QSize 
+QSize
 ContainmentArrow::size() const
 {
     return m_size;
 }
 
-void 
-ContainmentArrow::resize( const QSizeF newSize ) 
+void
+ContainmentArrow::resize( const QSizeF newSize )
 {
     DEBUG_BLOCK
     prepareGeometryChange();
@@ -169,39 +172,63 @@ void ContainmentArrow::disable()
 }
 
 
-void 
+void
 ContainmentArrow::show()
 {
     // DEBUG_BLOCK
     m_showing = true;
-    Plasma::Animator::self()->animateItem( this, Plasma::Animator::AppearAnimation );
+    Plasma::Animation *fadeAnimation = m_fadeAnimation.data();
+    if( !fadeAnimation )
+    {
+        fadeAnimation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
+        fadeAnimation->setTargetWidget( this );
+        m_fadeAnimation = fadeAnimation;
+    }
+    else if( fadeAnimation->state() == QAbstractAnimation::Running )
+    {
+        fadeAnimation->pause();
+    }
+
+    fadeAnimation->setProperty( "direction", QAbstractAnimation::Forward );
+    fadeAnimation->start( QAbstractAnimation::DeleteWhenStopped );
 }
 
-void 
+void
 ContainmentArrow::hide()
 {
 
     m_showing = false;
     update();
-    Plasma::Animator::self()->animateItem( this, Plasma::Animator::DisappearAnimation );
+
+    Plasma::Animation *fadeAnimation = m_fadeAnimation.data();
+    if( !fadeAnimation )
+    {
+        fadeAnimation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
+        fadeAnimation->setTargetWidget( this );
+        m_fadeAnimation = fadeAnimation;
+    }
+    else if( fadeAnimation->state() == QAbstractAnimation::Running )
+    {
+        fadeAnimation->pause();
+    }
+
+    fadeAnimation->setProperty( "direction", QAbstractAnimation::Backward );
+    fadeAnimation->start( QAbstractAnimation::DeleteWhenStopped );
 }
 
-void 
+void
 ContainmentArrow::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
     // DEBUG_BLOCK
-    
+
     Q_UNUSED( option )
     Q_UNUSED( widget )
-    
+
     if( !m_showing )
         return;
-    
-    // debug() << "in ContainmenArrow::paint, painting in " << boundingRect() << " with opacity: " << m_animHighlightFrame;
-    
+
     p->save();
-    
-    p->setOpacity( m_animHighlightFrame );
+
     if( m_arrowDirection == UP )
         m_arrowSvg->paint( p, boundingRect(), "up_arrow" );
     else if( m_arrowDirection == DOWN )
@@ -211,42 +238,51 @@ ContainmentArrow::paint( QPainter *p, const QStyleOptionGraphicsItem *option, QW
     else if( m_arrowDirection == RIGHT )
         m_arrowSvg->paint( p, boundingRect(), "right_arrow" );
     p->restore();
-    
+
 }
 
 
-void 
+void
 ContainmentArrow::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
     // DEBUG_BLOCK
     if( m_hovering || m_disabled )
         return;
-    if( m_animHighlightId )
-        Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
     if( m_timer->isActive() )
         m_timer->stop();
     m_hovering = true;
     m_showing = true;
-    m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve,
-                                                                   this, "animateHighlight" );
+
+    Plasma::Animation *fadeAnimation = m_fadeAnimation.data();
+    if( !fadeAnimation )
+    {
+        fadeAnimation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
+        fadeAnimation->setTargetWidget( this );
+        m_fadeAnimation = fadeAnimation;
+    }
+    else if( fadeAnimation->state() == QAbstractAnimation::Running )
+    {
+        fadeAnimation->pause();
+    }
+
+    fadeAnimation->setProperty( "direction", QAbstractAnimation::Forward );
+    fadeAnimation->start( QAbstractAnimation::KeepWhenStopped );
+
     QGraphicsItem::hoverEnterEvent( event );
 }
 
-void 
+void
 ContainmentArrow::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
 {
     // DEBUG_BLOCK
     if( m_disabled )
         return;
-    if( m_animHighlightId )
-        Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
     m_hovering = false;
-    m_animHighlightFrame = 0.0;
     // m_showing = false;
-    
+
     // m_timer->start( 100 );
     timeToHide();
-    
+
     QGraphicsItem::hoverLeaveEvent( event );
 }
 
@@ -256,33 +292,30 @@ ContainmentArrow::timeToHide()
 {
     m_timer->stop();
 
-    m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 100, Plasma::Animator::EaseOutCurve,
-                                                                   this, "animateHighlight" );
-    
+    Plasma::Animation *fadeAnimation = m_fadeAnimation.data();
+    if( !fadeAnimation )
+    {
+        fadeAnimation = Plasma::Animator::create( Plasma::Animator::FadeAnimation );
+        fadeAnimation->setTargetWidget( this );
+        m_fadeAnimation = fadeAnimation;
+    }
+    else if( fadeAnimation->state() == QAbstractAnimation::Running )
+    {
+        fadeAnimation->pause();
+    }
+
+    fadeAnimation->setProperty( "direction", QAbstractAnimation::Backward );
+    fadeAnimation->start( QAbstractAnimation::DeleteWhenStopped );
 }
 
 void
-ContainmentArrow::animateHighlight( qreal progress ) //SLOT
-{
-    // DEBUG_BLOCK
-    if( m_hovering )
-        m_animHighlightFrame = progress;
-    else
-        m_animHighlightFrame = 1.0 - progress;
-
-    if( progress >= 1.0 )
-        m_animHighlightId = 0;
-    update();
-}
-
-void 
 ContainmentArrow::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     // DEBUG_BLOCK
     event->accept();
 }
 
-void 
+void
 ContainmentArrow::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
     // DEBUG_BLOCK
@@ -293,7 +326,7 @@ ContainmentArrow::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
         // TODO add up/down
         if( m_timer->isActive() )
             m_timer->stop();
-            
+
     }
 }
 
