@@ -17,28 +17,21 @@
 
 #include "TestUpcomingEventsEngine.h"
 
-#include "Debug.h"
-
 #include <KStandardDirs>
-#include <QFile>
 #include <QDomDocument>
 
 #include <qtest_kde.h>
 
-#include <gmock/gmock.h>
-
 QTEST_KDEMAIN_CORE( TestUpcomingEventsEngine )
 
-// TestUpcomingEventsEngine::TestUpcomingEventsEngine( const QStringList args, const QString &logPath )
-TestUpcomingEventsEngine::TestUpcomingEventsEngine() //: TestBase("UpcomingEventsEngine"), TestDataEngine("amarok_data_engine_upcomingEvents")
+TestUpcomingEventsEngine::TestUpcomingEventsEngine()
 {
-    /*QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );*/
+    const QList<QVariant> args;
+    m_engine = new UpcomingEventsEngine(0, args);
 }
 
 void
-TestUpcomingEventsEngine::init()
+TestUpcomingEventsEngine::initTestCase()
 {
     //Write here initilizations
 }
@@ -47,9 +40,6 @@ TestUpcomingEventsEngine::init()
 void
 TestUpcomingEventsEngine::testDataEngineMethod()
 {
-    //Verify if the engine has been found
-//     QVERIFY(m_engine != 0);
-    
     //Tests on the engine
 }
 

@@ -1,7 +1,6 @@
-#add_subdirectory( data )
+add_subdirectory( data )
 
 include_directories(
-  ..
   ${AMAROK_SOURCE_TREE}
   ${AMAROK_SOURCE_TREE}/context
   ${AMAROK_SOURCE_TREE}/context/engines/upcomingevents

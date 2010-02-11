@@ -17,23 +17,23 @@
 #ifndef TESTUPCOMINGEVENTSENGINE_H
 #define TESTUPCOMINGEVENTSENGINE_H
 
-// #include <tests/context/engines/TestDataEngine.h>
-// #include <TestBase.h>
 #include <QtTest/QTest>
 #include <QtCore/QStringList>
-#include "engines/upcomingevents/UpcomingEventsEngine.h"
+#include "context/engines/upcomingevents/UpcomingEventsEngine.h"
 
-class TestUpcomingEventsEngine : public QObject// : public TestBase, public TestDataEngine
+class TestUpcomingEventsEngine : public QObject
 {
     Q_OBJECT
     
     public:
-//         TestUpcomingEventsEngine( const QStringList args, const QString &logPath );
         TestUpcomingEventsEngine();      
 	
     private slots:
-        void init();
+        void initTestCase();
         void testDataEngineMethod();
+        
+    private:
+        UpcomingEventsEngine* m_engine;
 };
 
 #endif // TESTUPCOMINGEVENTSENGINE_H

@@ -54,4 +54,3 @@ set( testsmartpointerlist_SRCS
 kde4_add_unit_test( testsmartpointerlist  ${testsmartpointerlist_SRCS} )
 
 target_link_libraries(testsmartpointerlist ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
-add_subdirectory( context )
