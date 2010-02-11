@@ -46,7 +46,8 @@ enum GroupMode
     Head_Collapsed, // deprecated
     Body,
     Tail,
-    Collapsed // deprecated
+    Collapsed, // deprecated
+    Invalid
 };
 
 class GroupingProxy : public ProxyBase
@@ -60,21 +61,25 @@ public:
     static GroupingProxy* instance();
     static void destroy();
 
-    // functions from QAbstractProxyModel
-    QVariant data( const QModelIndex &index, int role ) const;
-
-    // grouping-related functions
-    int firstInGroup( int ) const;
-    int lastInGroup( int ) const;
-
-    int tracksInGroup( int row ) const;
-    int lengthOfGroup( int row ) const;
-
+    //! Configuration
     /**
      * @param groupingCategory A string from 'groupableCategories', or "None", or empty string.
      */
     QString groupingCategory() const;
     void setGroupingCategory( const QString &groupingCategory );
+
+    //! Grouping info functions
+    bool isFirstInGroup( const QModelIndex & index );
+    bool isLastInGroup ( const QModelIndex & index );
+
+    QModelIndex firstIndexInSameGroup( const QModelIndex & index );
+    QModelIndex lastIndexInSameGroup ( const QModelIndex & index );
+
+    int groupRowCount  ( const QModelIndex & index );
+    int groupPlayLength( const QModelIndex & index );
+
+    //! Custom version of functions inherited from QSortFilterProxyModel
+    QVariant data( const QModelIndex &index, int role ) const;
 
 //signals:
     // Emits signals inherited from QSortFilterProxy
@@ -91,12 +96,11 @@ private slots:
     void sourceRowsInserted( const QModelIndex& parent, int start, int end );
     void sourceRowsRemoved( const QModelIndex& parent, int start, int end );
 
-    void regroupAll();
-
 private:
-    void regroupRows( int firstRow, int lastRow );
-
-    int groupRowCount( int row ) const;
+    /**
+     * This function determines the "Status within the group" of a model row.
+     */
+    GroupMode groupModeForIndex( const QModelIndex & index );
 
     /**
      * This function is used to determine if 2 tracks belong in the same group.
@@ -105,9 +109,17 @@ private:
      */
     bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
 
+    /**
+     * Invalidate any cached assumptions about model rows.
+     */
+    void invalidateGrouping();
+
+
     // Variables
     QString m_groupingCategory;
-    QList<GroupMode> m_rowGroupMode;
+    int m_groupingCategoryIndex;
+
+    QHash<int, GroupMode> m_cachedGroupModeForRow;
 };
 
 } // namespace Playlist
