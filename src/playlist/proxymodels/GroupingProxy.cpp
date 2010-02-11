@@ -61,11 +61,11 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     //       'this' QSFPM signal) would get called earlier, would call our 'data()'
     //       function, and we would return wrong answers from our stale internal state.
     //
-    connect( this, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( sourceDataChanged( const QModelIndex&, const QModelIndex& ) ) );
-    connect( this, SIGNAL( layoutChanged() ), this, SLOT( sourceLayoutChanged() ) );
-    connect( this, SIGNAL( modelReset() ), this, SLOT( sourceModelReset() ) );
-    connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( sourceRowsInserted( const QModelIndex &, int, int ) ) );
-    connect( this, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( sourceRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( this, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( proxyDataChanged( const QModelIndex&, const QModelIndex& ) ) );
+    connect( this, SIGNAL( layoutChanged() ), this, SLOT( proxyLayoutChanged() ) );
+    connect( this, SIGNAL( modelReset() ), this, SLOT( proxyModelReset() ) );
+    connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsInserted( const QModelIndex &, int, int ) ) );
+    connect( this, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsRemoved( const QModelIndex&, int, int ) ) );
 
 
     // Proxy the Playlist::AbstractModel signals
@@ -205,45 +205,45 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
 // Note: being clever in this function is sometimes wasted effort, because 'dataChanged'
 // can cause SortProxy to nuke us with a 'layoutChanged' signal very soon anyway.
 void
-Playlist::GroupingProxy::sourceDataChanged( const QModelIndex& sourceTopLeft, const QModelIndex& sourceBottomRight )
+Playlist::GroupingProxy::proxyDataChanged( const QModelIndex& proxyTopLeft, const QModelIndex& proxyBottomRight )
 {
     // The preceding and succeeding rows may get a different GroupMode too, when our
     // GroupMode changes.
-    int invalidateFirstRow = sourceTopLeft.row() - 1;    // May be an invalid row number
-    int invalidateLastRow = sourceBottomRight.row() + 1;    // May be an invalid row number
+    int invalidateFirstRow = proxyTopLeft.row() - 1;    // May be an invalid row number
+    int invalidateLastRow = proxyBottomRight.row() + 1;    // May be an invalid row number
 
     for (int row = invalidateFirstRow; row <= invalidateLastRow; row++)
         m_cachedGroupModeForRow.remove( row );    // Won't choke on non-existent rows.
 }
 
 void
-Playlist::GroupingProxy::sourceLayoutChanged()
+Playlist::GroupingProxy::proxyLayoutChanged()
 {
     invalidateGrouping();    // Crude but sufficient.
 }
 
 void
-Playlist::GroupingProxy::sourceModelReset()
+Playlist::GroupingProxy::proxyModelReset()
 {
     invalidateGrouping();    // Crude but sufficient.
 }
 
 void
-Playlist::GroupingProxy::sourceRowsInserted( const QModelIndex& parent, int sourceStart, int sourceEnd )
+Playlist::GroupingProxy::proxyRowsInserted( const QModelIndex& parent, int proxyStart, int proxyEnd )
 {
     Q_UNUSED( parent );
-    Q_UNUSED( sourceStart );
-    Q_UNUSED( sourceEnd );
+    Q_UNUSED( proxyStart );
+    Q_UNUSED( proxyEnd );
 
     invalidateGrouping();    // Crude but sufficient.
 }
 
 void
-Playlist::GroupingProxy::sourceRowsRemoved( const QModelIndex& parent, int sourceStart, int sourceEnd )
+Playlist::GroupingProxy::proxyRowsRemoved( const QModelIndex& parent, int proxyStart, int proxyEnd )
 {
     Q_UNUSED( parent );
-    Q_UNUSED( sourceStart );
-    Q_UNUSED( sourceEnd );
+    Q_UNUSED( proxyStart );
+    Q_UNUSED( proxyEnd );
 
     invalidateGrouping();    // Crude but sufficient.
 }

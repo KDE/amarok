@@ -90,11 +90,11 @@ private slots:
     /**
     * Handlers for the standard QAbstractItemModel signals.
     */
-    void sourceDataChanged( const QModelIndex& topLeft, const QModelIndex& bottomRight );
-    void sourceLayoutChanged();
-    void sourceModelReset();
-    void sourceRowsInserted( const QModelIndex& parent, int start, int end );
-    void sourceRowsRemoved( const QModelIndex& parent, int start, int end );
+    void proxyDataChanged( const QModelIndex& topLeft, const QModelIndex& bottomRight );
+    void proxyLayoutChanged();
+    void proxyModelReset();
+    void proxyRowsInserted( const QModelIndex& parent, int start, int end );
+    void proxyRowsRemoved( const QModelIndex& parent, int start, int end );
 
 private:
     /**
