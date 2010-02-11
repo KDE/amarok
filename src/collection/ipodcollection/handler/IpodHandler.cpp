@@ -167,9 +167,11 @@ IpodHandler::init()
         {
             args << "--uuid";
             args << m_deviceInfo->deviceUid();
+            args << QString("-ofsname=afc://%1").arg(m_deviceInfo->deviceUid());
         }
         args << mountPoint();
         QProcess ifuse;
+        debug() << "calling ifuse with args" << args;
         ifuse.start("ifuse", args);
         bool ok = ifuse.waitForStarted();
         if( !ok )
