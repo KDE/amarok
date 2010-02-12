@@ -57,7 +57,7 @@ IpodCollection::IpodCollection( MediaDeviceInfo* info )
     if (m_mountPoint.isEmpty())
     {
         isMounted = false;
-        m_mountPoint = KStandardDirs::locateLocal( "data", "amarok/tmp/" );
+        m_mountPoint = KStandardDirs::locateLocal( "tmp", "amarok/" );
         m_mountPoint += "imobiledevice";
         if( !ipodinfo->deviceUid().isEmpty() )
             m_mountPoint += '_' + ipodinfo->deviceUid();
