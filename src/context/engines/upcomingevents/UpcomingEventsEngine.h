@@ -69,7 +69,8 @@ public:
     virtual void message( const ContextState& state );
 
     /**
-     * Overriden from Observer::metadataChanged
+     * This method is called when the metadata of a track has changed.
+     * The called class may not cache the pointer
      */
     using Observer::metadataChanged;
     void metadataChanged( Meta::TrackPtr track );
@@ -93,8 +94,9 @@ public:
     
     /**
     * Fetches the upcoming events for an artist thanks to the LastFm WebService
-    * @param artist_name the name of the artist
-    * @return a list of events
+    *
+    * \param artist_name the name of the artist
+    * \return a list of events
     */
     void upcomingEventsRequest(const QString &artist_name);
 
