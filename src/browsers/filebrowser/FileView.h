@@ -69,8 +69,8 @@ protected slots:
     void slotPrepareCopyTracks();
     void slotMoveTracks( const Meta::TrackList& tracks );
     void slotCopyTracks( const Meta::TrackList& tracks );
-    
-    
+    void slotDelete();
+
 protected:
             
     QList<QAction *> actionsForIndices( const QModelIndexList &indices );
@@ -86,6 +86,8 @@ private:
     QAction * m_appendAction;
     QAction * m_loadAction;
     QAction * m_editAction;
+
+    QAction * m_deleteAction;
 
     PopupDropper* m_pd;
     QMutex m_dragMutex;

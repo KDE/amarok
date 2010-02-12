@@ -26,11 +26,14 @@
 #include "dialogs/TagDialog.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
+#include "MainWindow.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 
+#include <KIO/DeleteJob>
+#include <KDialog>
 #include <KDirModel>
 #include <KFileItem>
 #include <KIcon>
@@ -50,6 +53,7 @@ FileView::FileView( QWidget * parent )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
     , m_editAction( 0 )
+    , m_deleteAction( 0 )
     , m_pd( 0 )
     , m_ongoingDrag( false )
     , m_moveActivated( false )
@@ -297,6 +301,15 @@ QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
 
     actions.append( m_editAction );
 
+    if( m_deleteAction == 0 )
+    {
+        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
+        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
+    }
+
+    actions.append( m_deleteAction );
+
     Meta::TrackList tracks = tracksForEdit();
     m_editAction->setEnabled( !tracks.isEmpty() );
 
@@ -411,4 +424,41 @@ FileView::tracksForEdit() const
     }
     return tracks;
 }
+
+void FileView::slotDelete()
+{
+    DEBUG_BLOCK
+
+    QModelIndexList indices = selectedIndexes();
+
+    if( indices.count() == 0 )
+        return;
+
+    KDialog dialog( The::mainWindow() );
+    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QLabel label( i18np( "Are you sure you want to delete this item?",
+                         "Are you sure you want to delete these %1 items?",
+                         indices.count() )
+                    , &dialog
+                  );
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from filesystem" ) );
+    dialog.setMainWidget( &label );
+    if( dialog.exec() != QDialog::Accepted )
+        return;
+    
+    
+    QList<KUrl> urls;
+
+    foreach( QModelIndex index, indices )
+    {
+        KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+        debug() << "file path: " << file.url();
+
+        KIO::DeleteJob * job = KIO::del( file.url() );
+        job->start();
+    }
+
+}
+
 #include "FileView.moc"
