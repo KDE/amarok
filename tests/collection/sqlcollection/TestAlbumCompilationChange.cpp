@@ -29,9 +29,6 @@
 
 QTEST_KDEMAIN_CORE( TestAlbumCompilationChange )
 
-//required for Debug.h
-QMutex Debug::mutex;
-
 TestAlbumCompilationChange::TestAlbumCompilationChange()
     : QObject()
     , m_collection( 0 )

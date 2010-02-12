@@ -16,7 +16,7 @@
 
 #include "SqlCollectionFactory.h"
 
-#include "CapabilityDelegate.h"
+#include "CapabilityDelegateImpl.h"
 #include "DatabaseUpdater.h"
 #include "DefaultSqlQueryMakerFactory.h"
 #include "ScanManager.h"
@@ -83,9 +83,9 @@ class DelegateSqlRegistry : public SqlRegistry
 public:
     DelegateSqlRegistry( SqlCollection *coll ) : SqlRegistry( coll ) {}
 protected:
-    AlbumCapabilityDelegate *createAlbumDelegate() const { return new AlbumCapabilityDelegate(); }
-    ArtistCapabilityDelegate *createArtistDelegate() const { return new ArtistCapabilityDelegate(); }
-    TrackCapabilityDelegate *createTrackDelegate() const { return new TrackCapabilityDelegate(); }
+    AlbumCapabilityDelegate *createAlbumDelegate() const { return new AlbumCapabilityDelegateImpl(); }
+    ArtistCapabilityDelegate *createArtistDelegate() const { return new ArtistCapabilityDelegateImpl(); }
+    TrackCapabilityDelegate *createTrackDelegate() const { return new TrackCapabilityDelegateImpl(); }
 };
 
 SqlCollectionFactory::SqlCollectionFactory()
@@ -96,7 +96,7 @@ SqlCollection*
 SqlCollectionFactory::createSqlCollection( const QString &id, const QString &prettyName, SqlStorage *storage ) const
 {
     SqlCollection *coll = new SqlCollection( id, prettyName );
-    coll->setCapabilityDelegate( new CollectionCapabilityDelegate() );
+    coll->setCapabilityDelegate( new CollectionCapabilityDelegateImpl() );
     coll->setMountPointManager( new SqlMountPointManagerImpl() );
     DatabaseUpdater *updater = new DatabaseUpdater();
     updater->setStorage( storage );

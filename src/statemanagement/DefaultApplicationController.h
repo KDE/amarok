@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,23 +14,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPHONEOSCONNECTIONASSISTANT_H
-#define IPHONEOSCONNECTIONASSISTANT_H
+#ifndef AMAROK_DEFAULTAPPLICATIONCONTROLLER_H
+#define AMAROK_DEFAULTAPPLICATIONCONTROLLER_H
 
-#include "ConnectionAssistant.h"
+#include "statemanagement/ApplicationController.h"
 
-#include <QObject>
-
-class IphoneOsConnectionAssistant : public ConnectionAssistant
+namespace Amarok
 {
-    Q_OBJECT
-    
-public:
-    virtual ~IphoneOsConnectionAssistant();
+    class DefaultApplicationController : public ApplicationController
+    {
+        Q_OBJECT
+    public:
+        DefaultApplicationController();
+        virtual ~ DefaultApplicationController();
 
-    virtual bool identify( const QString& udi );
-    virtual MediaDeviceInfo* deviceInfo( const QString& udi );
+    public slots:
+        virtual void start();
+        virtual void shutdown();
 
-};
+    private:
+        void initCoreServiceProxies();
+        void initSqlStorage();
+        void initEngineController();
+        void initCollectionManager();
+        void initCollectionLocationDelegate();
+    };
+}
 
-#endif // IPHONEOSCONNECTIONASSISTANT_H
+#endif

@@ -14,12 +14,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include <QStringList>
 #include "IpodDeviceInfo.h"
 #include "MediaDeviceInfo.h"
 
-IpodDeviceInfo::IpodDeviceInfo( QString mountpoint, QString udi )
-: MediaDeviceInfo(),
-m_mountpoint( mountpoint )
+IpodDeviceInfo::IpodDeviceInfo( QString mountpoint, QString udi, bool wasMounted )
+: MediaDeviceInfo()
+, m_mountpoint( mountpoint )
+, m_wasMounted( wasMounted )
 {
     m_udi = udi;
 }
@@ -29,9 +31,34 @@ IpodDeviceInfo::~IpodDeviceInfo()
 }
 
 QString
-IpodDeviceInfo::mountpoint()
+IpodDeviceInfo::mountPoint() const
 {
     return m_mountpoint;
+}
+
+void
+IpodDeviceInfo::setMountPoint( QString mp )
+{
+    m_mountpoint = mp;
+}
+
+QString
+IpodDeviceInfo::deviceUid() const
+{
+    QStringList components = m_udi.split( '_' );
+    if( components.count() == 5 )
+    {
+        QString uid = components[4];
+        if( uid.length() == 40 )
+            return uid;
+    }
+    return QString();
+}
+
+bool
+IpodDeviceInfo::wasMounted() const
+{
+    return m_wasMounted;
 }
 
 #include "IpodDeviceInfo.moc"

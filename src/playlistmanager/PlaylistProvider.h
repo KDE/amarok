@@ -52,6 +52,7 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
         virtual int playlistCount() const { return -1; }
         virtual Meta::PlaylistList playlists() = 0;
 
+        virtual QList<QAction *> providerActions() { return QList<QAction *>(); }
         virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist ) = 0;
         virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
                                                   int trackIndex ) = 0;

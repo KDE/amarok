@@ -517,6 +517,7 @@ SynchronizationBaseJob::slotSyncQueryDone()
     {
         doSynchronization( m_trackResultOnlyInA, OnlyInA, m_collectionA, m_collectionB );
         doSynchronization( m_trackResultOnlyInB, OnlyInB, m_collectionA, m_collectionB );
+        deleteLater();
     }
     else
     {

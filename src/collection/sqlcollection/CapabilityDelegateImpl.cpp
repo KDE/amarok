@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CapabilityDelegate.h"
+#include "CapabilityDelegateImpl.h"
 
 #include "Debug.h"
 #include "SqlBookmarkThisCapability.h"
@@ -231,12 +231,13 @@ class FindInSourceCapabilityImpl : public Meta::FindInSourceCapability
 };
 
 
-TrackCapabilityDelegate::TrackCapabilityDelegate()
+TrackCapabilityDelegateImpl::TrackCapabilityDelegateImpl()
+    : TrackCapabilityDelegate()
 {
 }
 
 bool
-TrackCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlTrack *track ) const
+TrackCapabilityDelegateImpl::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlTrack *track ) const
 {
     if( !track )
         return false;
@@ -264,7 +265,7 @@ TrackCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, co
 }
 
 Meta::Capability*
-TrackCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlTrack *track )
+TrackCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlTrack *track )
 {
     if( !track )
     {
@@ -323,18 +324,19 @@ TrackCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type,
 }
 
 
-ArtistCapabilityDelegate::ArtistCapabilityDelegate()
-    : m_bookmarkAction( 0 )
+ArtistCapabilityDelegateImpl::ArtistCapabilityDelegateImpl()
+    : ArtistCapabilityDelegate()
+    , m_bookmarkAction( 0 )
 {
 }
 
-ArtistCapabilityDelegate::~ArtistCapabilityDelegate()
+ArtistCapabilityDelegateImpl::~ArtistCapabilityDelegateImpl()
 {
     delete m_bookmarkAction;
 }
 
 bool
-ArtistCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlArtist *artist ) const
+ArtistCapabilityDelegateImpl::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlArtist *artist ) const
 {
     if( !artist )
         return false;
@@ -349,7 +351,7 @@ ArtistCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, c
 }
 
 Meta::Capability*
-ArtistCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlArtist *artist )
+ArtistCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlArtist *artist )
 {
     if( !artist )
     {
@@ -398,18 +400,19 @@ class CompilationAction : public QAction
         bool m_isCompilation;
 };
 
-AlbumCapabilityDelegate::AlbumCapabilityDelegate()
-    : m_bookmarkAction( 0 )
+AlbumCapabilityDelegateImpl::AlbumCapabilityDelegateImpl()
+    : AlbumCapabilityDelegate()
+    , m_bookmarkAction( 0 )
 {
 }
 
-AlbumCapabilityDelegate::~AlbumCapabilityDelegate()
+AlbumCapabilityDelegateImpl::~AlbumCapabilityDelegateImpl()
 {
     delete m_bookmarkAction;
 }
 
 bool
-AlbumCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlAlbum *album ) const
+AlbumCapabilityDelegateImpl::hasCapabilityInterface( Meta::Capability::Type type, const Meta::SqlAlbum *album ) const
 {
     if( !album )
         return false;
@@ -426,7 +429,7 @@ AlbumCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, co
 }
 
 Meta::Capability*
-AlbumCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlAlbum *album )
+AlbumCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type type, Meta::SqlAlbum *album )
 {
     if( !album )
     {
@@ -469,11 +472,12 @@ AlbumCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type,
     }
 }
 
-CollectionCapabilityDelegate::CollectionCapabilityDelegate()
+CollectionCapabilityDelegateImpl::CollectionCapabilityDelegateImpl()
+    : CollectionCapabilityDelegate()
 {
 }
 
-bool CollectionCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Type type, const SqlCollection *collection ) const
+bool CollectionCapabilityDelegateImpl::hasCapabilityInterface( Meta::Capability::Type type, const SqlCollection *collection ) const
 {
     if( !collection )
         return 0;
@@ -486,7 +490,7 @@ bool CollectionCapabilityDelegate::hasCapabilityInterface( Meta::Capability::Typ
 }
 
 Meta::Capability*
-CollectionCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type type, SqlCollection *collection )
+CollectionCapabilityDelegateImpl::createCapabilityInterface( Meta::Capability::Type type, SqlCollection *collection )
 {
     if( !collection )
         return 0;
@@ -498,5 +502,5 @@ CollectionCapabilityDelegate::createCapabilityInterface( Meta::Capability::Type 
     }
 }
 
-#include "CapabilityDelegate.moc"
+#include "CapabilityDelegateImpl.moc"
 

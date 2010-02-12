@@ -299,15 +299,19 @@ namespace Amarok
         else
             s.replace( '/', '_' ); // on windows we have to replace / instead
 
-        for( int i = 0; i < s.length(); i++ )
-        {
-            QChar c = s[ i ];
-            if( c < QChar(0x20) || c == QChar(0x7F) // 0x7F = 127 = DEL control character
+            for( int i = 0; i < s.length(); i++ )
+            {
+                QChar c = s[ i ];
+                if( c < QChar(0x20) || c == QChar(0x7F) // 0x7F = 127 = DEL control character
                     || c=='*' || c=='?' || c=='<' || c=='>'
                     || c=='|' || c=='"' || c==':' )
-                c = '_';
-            s[ i ] = c;
-        }
+                    c = '_';
+                else if( c == '[' )
+                    c = '(';
+                else if ( c == ']' )
+                    c = ')';
+                s[ i ] = c;
+            }
 
         /* beware of reserved device names */
         uint len = s.length();

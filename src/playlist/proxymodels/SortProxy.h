@@ -53,6 +53,12 @@ public:
      */
     bool lessThan( const QModelIndex & left, const QModelIndex & right ) const;
 
+    /**
+     * Checks if the SortProxy is currently applying a SortScheme.
+     * @return true if the SortProxy is sorting, otherwise false.
+     */
+    bool isSorted(){ return m_scheme.length(); }
+
 public slots:
     /**
      * Applies a sorting scheme to the playlist.

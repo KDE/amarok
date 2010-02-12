@@ -17,7 +17,6 @@
 #ifndef SQLPODCASTPROVIDER_H
 #define SQLPODCASTPROVIDER_H
 
-#include "EngineObserver.h"
 #include "PodcastProvider.h"
 #include "SqlPodcastMeta.h"
 
@@ -34,7 +33,7 @@ class QTimer;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class SqlPodcastProvider : public PodcastProvider, public EngineObserver
+class SqlPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
     public:
@@ -65,10 +64,9 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         QList<QAction *> episodeActions( Meta::PodcastEpisodeList );
         QList<QAction *> channelActions( Meta::PodcastChannelList );
 
-        void completePodcastDownloads();
+        virtual QList<QAction *> providerActions();
 
-        //EngineObserver methods
-        virtual void engineNewTrackPlaying();
+        void completePodcastDownloads();
 
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
@@ -144,13 +142,15 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         int m_maxConcurrentDownloads;
         int m_completedDownloads;
 
-        QAction * m_configureAction; //Configure a Channel
-        QAction * m_deleteAction; //delete a downloaded Episode
-        QAction * m_downloadAction;
-        QAction * m_removeAction; //remove a subscription
-        QAction * m_renameAction; //rename a Channel or Episode
-        QAction * m_updateAction;
-        QAction * m_writeTagsAction; //write feed information to downloaded file
+        QList<QAction *> m_providerActions;
+
+        QAction *m_configureChannelAction; //Configure a Channel
+        QAction *m_deleteAction; //delete a downloaded Episode
+        QAction *m_downloadAction;
+        QAction *m_removeAction; //remove a subscription
+        QAction *m_renameAction; //rename a Channel or Episode
+        QAction *m_updateAction;
+        QAction *m_writeTagsAction; //write feed information to downloaded file
 
         PodcastImageFetcher *m_podcastImageFetcher;
 };

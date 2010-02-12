@@ -21,7 +21,7 @@
 #include "Debug.h"
 #include "meta/MetaUtility.h"
 #include "PaletteHandler.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <plasma/widgets/iconwidget.h>
 

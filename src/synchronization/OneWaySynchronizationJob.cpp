@@ -57,13 +57,11 @@ OneWaySynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSe
     if( !( syncDirection == OnlyInA || syncDirection == OnlyInB ) )
     {
         debug() << "warning, received an unexpected syncDirection";
-        deleteLater();
         return;
     }
     if( !( m_source == collA || m_source == collB ) || !( m_target == collA || m_target == collB ) )
     {
         debug() << "warning, received an unknown collection";
-        deleteLater();
         return;
     }
     if( ( syncDirection == OnlyInA && collA == m_source ) || ( syncDirection == OnlyInB && collB == m_source ) )
@@ -77,7 +75,6 @@ OneWaySynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSe
             debug() << "target collection " << m_target->collectionId() << " is not writable, what am I doing here?";
             locSource->deleteLater();
             locTarget->deleteLater();
-            deleteLater();
             return;
         }
         //might be nice to ask the user if the tracks should really be copied here...
@@ -85,6 +82,5 @@ OneWaySynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSe
         //although not named particularly well, this method actually starts the workflow too
         locSource->prepareCopy( tracks, locTarget );
         //the collection locations will take care of the remaining work flow, we are done
-        deleteLater();
     }
 }

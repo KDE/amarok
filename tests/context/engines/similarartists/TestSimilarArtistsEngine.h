@@ -1,5 +1,6 @@
 /****************************************************************************************
-* Copyright (c) 2009 Manuel Campomanes <campomanes.manuel@gmail.com>                               *
+* Copyright (c) 2009 Manuel Campomanes <campomanes.manuel@gmail.com>                   *
+* Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,22 +18,21 @@
 #ifndef TESTSIMILARARTISTSENGINE_H
 #define TESTSIMILARARTISTSENGINE_H
 
-#include <tests/context/engines/TestDataEngine.h>
-#include <TestBase.h>
+#include <QObject>
 
-#include <QtCore/QStringList>
+class SimilarArtistsEngine;
 
-class TestSimilarArtistsEngine : public TestBase, public TestDataEngine
+class TestSimilarArtistsEngine : public QObject
 {
     Q_OBJECT
     
-    public:      
-	TestSimilarArtistsEngine( const QStringList args, const QString &logPath );	
-        
     private slots:
         void initTestCase();
         void testDataEngineMethod();
-
+        void cleanupTestCase();
+        
+    private:
+        SimilarArtistsEngine* m_engine;
 };
 
 #endif // TESTSIMILARARTISTSENGINE_H

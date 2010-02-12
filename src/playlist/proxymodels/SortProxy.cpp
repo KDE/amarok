@@ -88,9 +88,12 @@ void
 SortProxy::updateSortMap( SortScheme scheme )
 {
     resetSorting();
-    m_scheme = scheme;
-    sort( 0, Qt::AscendingOrder );  //0 is a dummy column
-    //NOTE: sort() also emits QSFPM::layoutChanged()
+    if( scheme.length() )
+    {
+        m_scheme = scheme;
+        sort( 0, Qt::AscendingOrder );  //0 is a dummy column
+        //NOTE: sort() also emits QSFPM::layoutChanged()
+    }
 }
 
 

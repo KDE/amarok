@@ -129,7 +129,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Amarok::Collection
 
 typedef QList<int> IdList;
 
-class SqlMountPointManager : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlMountPointManager : public QObject
 {
     Q_OBJECT
 public:

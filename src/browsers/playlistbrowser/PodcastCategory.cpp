@@ -28,6 +28,7 @@
 #include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
 #include "PlaylistsByProviderProxy.h"
+#include "PlaylistTreeItemDelegate.h"
 #include "browsers/InfoProxy.h"
 #include "SvgTinter.h"
 #include "SvgHandler.h"
@@ -133,15 +134,20 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
     m_podcastTreeView->setContentsMargins(0,0,0,0);
 
+    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_podcastTreeView );
+    m_defaultItemView = m_podcastTreeView->itemDelegate();
+
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ),
                                          i18n( "Toggle unified view mode" ), toolBar );
     toggleAction->setCheckable( true );
     toolBar->addAction( toggleAction );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
-    if( Amarok::config( s_configGroup ).readEntry( s_byProviderKey, false ) )
+    if( Amarok::config( s_configGroup ).readEntry( s_byProviderKey, true ) )
     {
         m_podcastTreeView->setModel( m_byProviderProxy );
+        m_podcastTreeView->setItemDelegate( m_byProviderDelegate );
         toggleAction->setChecked( true );
+        m_podcastTreeView->setRootIsDecorated( false );
     }
     else
     {
@@ -192,6 +198,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
     toolBar->addAction( importOpmlAction );
     connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
+
 }
 
 PodcastCategory::~PodcastCategory()
@@ -348,9 +355,17 @@ void
 PodcastCategory::toggleView( bool enabled ) //SLOT
 {
     if( enabled )
+    {
         m_podcastTreeView->setModel( m_byProviderProxy );
+        m_podcastTreeView->setItemDelegate( m_byProviderDelegate );
+        m_podcastTreeView->setRootIsDecorated( false );
+    }
     else
+    {
         m_podcastTreeView->setModel( m_podcastModel );
+        m_podcastTreeView->setItemDelegate( m_defaultItemView );
+        m_podcastTreeView->setRootIsDecorated( true );
+    }
 
     Amarok::config( s_configGroup ).writeEntry( s_byProviderKey, enabled );
 }
@@ -507,10 +522,22 @@ PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     , m_pd( 0 )
     , m_ongoingDrag( false )
     , m_dragMutex()
-{}
+    , m_justDoubleClicked( false )
+{
+    connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
+}
 
 PodcastView::~PodcastView()
 {}
+
+void PodcastView::mousePressEvent( QMouseEvent *event )
+{
+    QModelIndex index = indexAt( event->pos() );
+    if( KGlobalSettings::singleClick() )
+        setItemsExpandable( false );
+    update();
+    Amarok::PrettyTreeView::mousePressEvent( event );
+}
 
 void
 PodcastView::mouseReleaseEvent( QMouseEvent * event )
@@ -521,9 +548,45 @@ PodcastView::mouseReleaseEvent( QMouseEvent * event )
         m_pd->hide();
     }
     m_pd = 0;
-    event->accept();
 
-    Amarok::PrettyTreeView::mouseReleaseEvent( event );
+    setItemsExpandable( true );
+
+    if( m_clickTimer.isActive() || m_justDoubleClicked )
+    {
+        //it's a double-click...so ignore it
+        m_clickTimer.stop();
+        m_justDoubleClicked = false;
+        m_savedClickIndex = QModelIndex();
+        event->accept();
+        return;
+    }
+
+    m_savedClickIndex = indexAt( event->pos() );
+    KConfigGroup cg( KGlobal::config(), "KDE" );
+    m_clickTimer.start( cg.readEntry( "DoubleClickInterval", 400 ) );
+    m_clickLocation = event->pos();
+    event->accept();
+}
+
+void
+PodcastView::mouseMoveEvent( QMouseEvent *event )
+{
+    if( event->buttons() || event->modifiers() )
+    {
+        Amarok::PrettyTreeView::mouseMoveEvent( event );
+        update();
+        return;
+    }
+    QPoint point = event->pos() - m_clickLocation;
+    KConfigGroup cg( KGlobal::config(), "KDE" );
+    if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )
+    {
+        m_clickTimer.stop();
+        slotClickTimeout();
+        event->accept();
+    }
+    else
+        Amarok::PrettyTreeView::mouseMoveEvent( event );
 }
 
 void
@@ -541,7 +604,14 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
         event->accept();
     }
 
-    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
+    m_clickTimer.stop();
+    //m_justDoubleClicked is necessary because the mouseReleaseEvent still
+    //comes through, but after the mouseDoubleClickEvent, so we need to tell
+    //mouseReleaseEvent to ignore that one event
+    m_justDoubleClicked = true;
+    setExpanded( index, !isExpanded( index ) );
+
+    event->accept();
 }
 
 void
@@ -616,6 +686,17 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
     Q_UNUSED( result )
 
    debug() << indices.count() << " selectedIndexes";
+}
+
+void
+PodcastView::slotClickTimeout()
+{
+    m_clickTimer.stop();
+    if( m_savedClickIndex.isValid() && KGlobalSettings::singleClick() )
+    {
+        setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
+    }
+    m_savedClickIndex = QModelIndex();
 }
 
 #include "PodcastCategory.moc"

@@ -25,6 +25,7 @@
 #include "Debug.h"
 
 #include <KUrl>
+#include <KStandardDirs>
 
 AMAROK_EXPORT_COLLECTION( IpodCollectionFactory, ipodcollection )
 
@@ -48,11 +49,31 @@ IpodCollection::IpodCollection( MediaDeviceInfo* info )
     /** Fetch Info needed to construct IpodCollection */
     IpodDeviceInfo *ipodinfo = qobject_cast<IpodDeviceInfo *>( info );
 
-    m_mountPoint = ipodinfo->mountpoint();
+    m_mountPoint = ipodinfo->mountPoint();
     debug() << "Mounted at: " << m_mountPoint;
     m_udi = ipodinfo->udi();
 
-    m_handler = new Meta::IpodHandler( this, m_mountPoint );
+    bool isMounted = true;
+    if (m_mountPoint.isEmpty())
+    {
+        isMounted = false;
+        m_mountPoint = KStandardDirs::locateLocal( "data", "amarok/tmp/" );
+        m_mountPoint += "imobiledevice";
+        if( !ipodinfo->deviceUid().isEmpty() )
+            m_mountPoint += '_' + ipodinfo->deviceUid();
+        debug() << "set mountpoint to " << m_mountPoint;
+
+        QDir mp(m_mountPoint);
+        if(!mp.exists())
+        {
+            mp.mkpath(m_mountPoint);
+            debug() << "created " << m_mountPoint;
+        }
+
+        ipodinfo->setMountPoint( m_mountPoint );
+    }
+
+    m_handler = new Meta::IpodHandler( this, ipodinfo );
 }
 
 

@@ -45,6 +45,8 @@ private slots:
     void testCreateCapabilityOnSingleYear();
 
     void testEditableCapabilityOnMultipleTracks();
+
+    void testPrettyUrl();
 };
 
 #endif // TESTPROXYCOLLECTIONALBUM_H

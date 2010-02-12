@@ -31,7 +31,7 @@
 #include "EngineController.h"
 #include "MetaUtility.h"
 #include "PlaylistActions.h"
-#include "PlaylistController.h"
+#include "PlaylistModelStack.h"
 #include "PlaylistItem.h"
 #include "PlaylistFileSupport.h"
 #include "UndoCommands.h"
@@ -442,7 +442,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
             Meta::TrackList tracks = trackListDrag->tracks();
             qStableSort( tracks.begin(), tracks.end(), Meta::Track::lessThan );
 
-            Controller::instance()->insertTracks( beginRow, tracks );
+            The::playlistController()->insertTracks( beginRow, tracks );
         }
         return true;
     }
@@ -451,7 +451,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         debug() << "this is a playlist";
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
-            Controller::instance()->insertPlaylists( beginRow, dragList->playlists() );
+            The::playlistController()->insertPlaylists( beginRow, dragList->playlists() );
         return true;
     }
     else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
@@ -463,7 +463,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
             Meta::TrackList tracks;
             foreach( Meta::PodcastEpisodePtr episode, dragList->podcastEpisodes() )
                 tracks << Meta::TrackPtr::staticCast( episode );
-            Controller::instance()->insertTracks( beginRow, tracks );
+            The::playlistController()->insertTracks( beginRow, tracks );
         }
         return true;
     }
@@ -477,7 +477,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
             foreach( Meta::PodcastChannelPtr channel, dragList->podcastChannels() )
                 foreach( Meta::PodcastEpisodePtr episode, channel->episodes() )
                     tracks << Meta::TrackPtr::staticCast( episode );
-            Controller::instance()->insertTracks( beginRow, tracks );
+            The::playlistController()->insertTracks( beginRow, tracks );
         }
         return true;
     }

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,24 +14,21 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "IphoneOsDeviceInfo.h"
-#include "MediaDeviceInfo.h"
+#ifndef COLLECTIONLOCATIONDELEGATE_H
+#define COLLECTIONLOCATIONDELEGATE_H
 
-IphoneOsDeviceInfo::IphoneOsDeviceInfo( QString mountpoint, QString udi )
-: MediaDeviceInfo(),
-m_mountpoint( mountpoint )
+#include "meta/Meta.h"
+
+class CollectionLocation;
+
+class CollectionLocationDelegate
 {
-    m_udi = udi;
-}
+public:
+    CollectionLocationDelegate() {};
+    virtual ~ CollectionLocationDelegate() {};
 
-IphoneOsDeviceInfo::~IphoneOsDeviceInfo()
-{
-}
+    virtual bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
+    virtual bool errorDeleting( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
+};
 
-QString
-IphoneOsDeviceInfo::mountpoint()
-{
-    return m_mountpoint;
-}
-
-#include "IphoneOsDeviceInfo.moc"
+#endif

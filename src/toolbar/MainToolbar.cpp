@@ -34,7 +34,7 @@
 #include "meta/capabilities/TimecodeLoadCapability.h"
 
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include "widgets/AnimatedLabelStack.h"
 #include "widgets/PlayPauseButton.h"
@@ -267,25 +267,25 @@ void
 MainToolbar::layoutProgressBar()
 {
     const int limit = constant_progress_ratio_minimum_width;
-    QRect r = m_progressBarSpacer->geometry();
+    const QRect r = m_progressBarSpacer->geometry();
 
     const int bw = AmarokConfig::showMoodbarInSlider() ? 10 : 6;
     int w = bw;
     if ( size().width() < limit )
     {
         w = (limit<<7)/size().width();
-        w = w*w*bw;
-        w /= (1<<14);
+        w = w*w*w*bw;
+        w /= (1<<21);
     }
 
     w = r.width() / w;
-    int tlW = m_timeLabel->minimumSizeHint().width();
+    int tlW = m_timeLabel->width();
     if ( tlW + timeLabelMargin > w )
         w = tlW;
-    int rtlW = m_remainingTimeLabel->minimumSizeHint().width();
+    int rtlW = m_remainingTimeLabel->width();
     if ( rtlW + timeLabelMargin > w )
         w = rtlW;
-    
+
     QRect pb = r.adjusted( w, 0, -w, 0 );
     m_slider->setGeometry( pb );
 
@@ -632,32 +632,35 @@ void MainToolbar::setLabelTime( int ms )
         if ( secs == m_lastTime && remainingSecs == m_lastRemainingTime )
             return;
 
+        m_timeLabel->setText( Meta::secToPrettyTime( secs ) );
+        m_remainingTimeLabel->setText( '-' + Meta::secToPrettyTime( remainingSecs ) );
+
         QFontMetrics fm( m_timeLabel->font() );
-        
-        const int tf = timeFrame( secs );
+
+        int tf = timeFrame( secs );
         if ( m_lastTime < 0 || tf != timeFrame( m_lastTime ) )
         {
             const int w = fm.width( timeString[tf] );
-            m_timeLabel->setMinimumWidth( w );
+            m_timeLabel->setFixedWidth( w );
             relayout = true;
         }
-        m_lastTime = secs;
-        m_timeLabel->setText( Meta::secToPrettyTime( secs ) );
 
-        const int remainingTF = timeFrame( remainingSecs );
-        if ( m_lastRemainingTime < 0 || remainingTF != timeFrame( m_lastRemainingTime ) )
+        tf = timeFrame( remainingSecs );
+        if ( m_lastRemainingTime < 0 || tf != timeFrame( m_lastRemainingTime ) )
         {
-            const int w = fm.width( QString("-") + timeString[remainingTF] );
-            m_remainingTimeLabel->setMinimumWidth( w );
+            const int w = fm.width( QString("-") + timeString[tf] );
+            m_remainingTimeLabel->setFixedWidth( w );
+            m_remainingTimeLabel->adjustSize();
             relayout = true;
         }
+
+        m_lastTime = secs;
         m_lastRemainingTime = remainingSecs;
-        m_remainingTimeLabel->setText( '-' + Meta::secToPrettyTime( remainingSecs ) );
+
     }
+    
     if (relayout)
-    {
         layoutProgressBar();
-    }
 }
 
 void

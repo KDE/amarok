@@ -23,13 +23,17 @@ class IpodDeviceInfo : public MediaDeviceInfo
 {
     Q_OBJECT
     public:
-        IpodDeviceInfo( QString mountpoint, QString udi );
+        IpodDeviceInfo( QString mountpoint, QString udi, bool wasMounted );
         ~IpodDeviceInfo();
 
-        QString mountpoint();
+        QString mountPoint() const;
+        void setMountPoint( QString mp );
+        QString deviceUid() const;
+        bool wasMounted() const;
 
     private:
         QString m_mountpoint;
+        bool m_wasMounted;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,22 +14,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef IPHONEOSDEVICEINFO_H
-#define IPHONEOSDEVICEINFO_H
+#ifndef AMAROK_APPLICATIONCONTROLLER_H
+#define AMAROK_APPLICATIONCONTROLLER_H
 
-#include "MediaDeviceInfo.h"
+#include <QObject>
 
-class IphoneOsDeviceInfo : public MediaDeviceInfo
+namespace Amarok
+{
+
+class ApplicationController : public QObject
 {
     Q_OBJECT
-    public:
-        IphoneOsDeviceInfo( QString mountpoint, QString udi );
-        ~IphoneOsDeviceInfo();
+public:
+    ApplicationController() {}
+    virtual ~ ApplicationController() {}
 
-        QString mountpoint();
-
-    private:
-        QString m_mountpoint;
+public slots:
+    virtual void start() = 0;
+    virtual void shutdown() = 0;
 };
+
+}
 
 #endif

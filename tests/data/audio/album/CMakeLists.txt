@@ -1,4 +1,3 @@
-if(CMAKE_BUILD_TYPE MATCHES debugfull)
 install(
         FILES
         Track01.ogg
@@ -6,4 +5,3 @@ install(
         Track03.ogg
         DESTINATION ${DATA_INSTALL_DIR}/amarok/testdata/album
 )
-endif(CMAKE_BUILD_TYPE MATCHES debugfull)

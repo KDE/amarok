@@ -48,12 +48,8 @@ include_directories(
 
 set( databaseupdatertest_SRCS
         DatabaseUpdaterTest.cpp
-        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-        ${AMAROK_SOURCE_TREE}/meta/MetaUtility.cpp
-        ${AMAROK_SOURCE_TREE}/Amarok.cpp
-        ${AMAROK_SOURCE_TREE}/meta/PlaylistFileSupport.cpp
     )
 
 kde4_add_unit_test( testdatabaseupdater TESTNAME amarok-testdatabaseupdater ${databaseupdatertest_SRCS} )
@@ -165,10 +161,6 @@ set( testscanresultprocessorfull_SRCS
         TestScanResultProcessorFull.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
-        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ScanResultProcessor.cpp
-        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
-        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
     )
 
 

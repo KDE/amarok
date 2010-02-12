@@ -22,7 +22,7 @@
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
 #include "BookmarkGroup.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "timecode/TimecodeMeta.h"

@@ -15,13 +15,6 @@ include_directories(
 
 set( testmemoryquerymaker_SRCS
         TestMemoryQueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryCustomValue.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryFilter.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryMatcher.cpp
-        ${AMAROK_SOURCE_TREE}/collection/support/MemoryQueryMakerHelper.cpp
-        ${AMAROK_SOURCE_TREE}/collection/QueryMaker.cpp
-        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
     )
 
 kde4_add_unit_test( testmemoryquerymaker ${testmemoryquerymaker_SRCS} )
