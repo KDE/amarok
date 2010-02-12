@@ -64,6 +64,7 @@ VERSION 2.3-Beta
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Prevent custom sliders from allocating a lot of pixmap resources (xrestop)
     * Corruption of guid strings by passing them as a KUrl caused podcast episodes
       to be readded on each update. This issue has been solved.
       If you have episodes that appear twice, remove the channel and add it again.
