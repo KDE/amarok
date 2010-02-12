@@ -26,6 +26,8 @@
 
 #include <KLocale>
 
+#include <cmath>
+
 VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
     , m_isClick( false )
     , m_isDown( false )
@@ -60,7 +62,7 @@ void VolumeDial::enterEvent( QEvent * )
 // this is _NOT_ redundant to the code in MainToolbar.cpp
 bool VolumeDial::eventFilter( QObject *o, QEvent *e )
 {
-    if ( e->type() == QEvent::Wheel )
+    if ( e->type() == QEvent::Wheel && !static_cast<QWheelEvent*>(e)->modifiers() )
     {
         if ( o == this || m_wheelProxies.contains( static_cast<QWidget*>( o ) ) )
         {
@@ -103,9 +105,10 @@ void VolumeDial::mousePressEvent( QMouseEvent *me )
     }
 
     setCursor( Qt::PointingHandCursor );
-    const int dx = width()/4;
-    const int dy = height()/4;
-    m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
+    const QPoint c = rect().center();
+    const int dx = me->pos().x() - c.x();
+    const int dy = me->pos().y() - c.y();
+    m_isClick = sqrt(dx*dx + dy*dy) < 1*width()/3;
 
     if ( m_isClick )
         update(); // hide the ring
