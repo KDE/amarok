@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2009,2010 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,37 +16,62 @@
 
 #include "CollectionLocationTest.h"
 
+#include "Components.h"
 #include "collection/CollectionLocation.h"
 #include "Debug.h"
 #include "meta/MetaConstants.h"
 #include "../tests/mocks/MetaMock.h"
+#include "MockCollectionLocationDelegate.h"
 
 #include <QMutex>
 #include <QVariantMap>
 
+#include <KCmdLineArgs>
+#include <KGlobal>
+
 #include <qtest_kde.h>
+
+#include <gmock/gmock.h>
 
 QTEST_KDEMAIN_CORE( CollectionLocationTest )
 
+using ::testing::Return;
+using ::testing::AnyNumber;
+using ::testing::_;
+
 CollectionLocationTest::CollectionLocationTest()
 {
+    KCmdLineArgs::init( KGlobal::activeComponent().aboutData() );
+    ::testing::InitGoogleMock( &KCmdLineArgs::qtArgc(), KCmdLineArgs::qtArgv() );
+    qRegisterMetaType<Meta::TrackList>();
+    qRegisterMetaType<Meta::AlbumList>();
+    qRegisterMetaType<Meta::ArtistList>();
 }
 
 class TestRemoveCL : public CollectionLocation
 {
 public:
-    bool remove( const Meta::TrackPtr &track )
+
+    void removeUrlsFromCollection( const Meta::TrackList &tracks )
     {
-        count++;
-        return true;
+        count += tracks.count();
+        slotRemoveOperationFinished();
     }
+
+    MOCK_CONST_METHOD0( isWritable, bool() );
+    MOCK_CONST_METHOD0( isOrganizable, bool() );
 
     int count;
 };
 
 void CollectionLocationTest::testSuccessfulCopy()
 {
+    MockCollectionLocationDelegate *cld = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    Amarok::Components::setCollectionLocationDelegate( cld );
+
     TestRemoveCL *cl = new TestRemoveCL();
+    EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
@@ -56,11 +81,19 @@ void CollectionLocationTest::testSuccessfulCopy()
 
     QVERIFY2( cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection ), "Calling slot failed" );
     QCOMPARE( cl->count, 1 );
+    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
 void CollectionLocationTest::testFailedCopy()
 {
+    MockCollectionLocationDelegate *cld = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
+    Amarok::Components::setCollectionLocationDelegate( cld );
+
     TestRemoveCL *cl = new TestRemoveCL();
+    EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
@@ -70,11 +103,20 @@ void CollectionLocationTest::testFailedCopy()
 
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QCOMPARE( cl->count, 0 );
+    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
 void CollectionLocationTest::testCopyMultipleTracks()
 {
+    MockCollectionLocationDelegate *cld = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
+    Amarok::Components::setCollectionLocationDelegate( cld );
+
     TestRemoveCL *cl = new TestRemoveCL();
+    EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
@@ -90,11 +132,19 @@ void CollectionLocationTest::testCopyMultipleTracks()
 
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QCOMPARE( cl->count, 2 );
+    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
 void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
 {
+    MockCollectionLocationDelegate *cld = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
+    Amarok::Components::setCollectionLocationDelegate( cld );
+
     TestRemoveCL *cl = new TestRemoveCL();
+    EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     QVariantMap map;
@@ -106,7 +156,16 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QVERIFY2( cl->count == 0, "Expected no call to remove");
 
+    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
+
+    cld = new MockCollectionLocationDelegate();
+    EXPECT_CALL( *cld, reallyDelete( _, _) ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
+    EXPECT_CALL( *cld, errorDeleting( _, _ ) ).Times( AnyNumber() );
+    Amarok::Components::setCollectionLocationDelegate( cld );
+
     cl = new TestRemoveCL();
+    EXPECT_CALL( *cl, isWritable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     cl->setProperty( "removeSources", true );
     cl->count = 0;
     file1 = Meta::TrackPtr( new MetaMock( map ) );
@@ -115,6 +174,8 @@ void CollectionLocationTest::testFailedCopyWithIncorrectUsageOfCopySuccesful()
 
     cl->metaObject()->invokeMethod( cl, "slotFinishCopy", Qt::DirectConnection );
     QVERIFY2( cl->count == 0, "Expected no call to remove after reversed method call");
+    QVERIFY( QTest::kWaitForSignal( cl, SIGNAL( destroyed() ), 500 ) );
+    delete Amarok::Components::setCollectionLocationDelegate( 0 );
 }
 
 #include "CollectionLocationTest.moc"
