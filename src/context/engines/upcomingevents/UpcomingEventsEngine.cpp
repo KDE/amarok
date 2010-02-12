@@ -91,7 +91,9 @@ UpcomingEventsEngine::sourceRequestEvent( const QString& name )
 {
     DEBUG_BLOCK
 
-    m_requested = true; // someone is asking for data, so we turn ourselves on :)
+    // someone is asking for data
+    m_requested = true;
+    
     QStringList tokens = name.split( ':' );
 
     // user has changed the timespan.
@@ -143,19 +145,20 @@ UpcomingEventsEngine::update()
 {
     DEBUG_BLOCK
 
-    static QString lastArtistName;
+    static QString s_lastArtistName;
     m_artistName = "";
 
+    // Gets the current track
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-
     unsubscribeFrom( m_currentTrack );
     m_currentTrack = currentTrack;
     subscribeTo( currentTrack );
-
+    
     if ( !currentTrack )
         return;
 
     DataEngine::Data data;
+
     // default, or applet told us to fetch artist
     if ( selection() == "artist" )
     {
@@ -168,18 +171,22 @@ UpcomingEventsEngine::update()
             else
                 m_artistName = currentTrack->artist()->prettyName();
         }
-        if (m_artistName.compare( "") == 0)
+
+        // Sends the artist name if exists, "Unkown artist" if not
+        if ( m_artistName.compare( "" ) == 0 )
             setData( "upcomingEvents", "artist", "Unknown artist" );
         else
             setData( "upcomingEvents", "artist", m_artistName );
     }
 
+    // Resizes the cover to better visibility
     QPixmap cover = m_currentTrack->album()->image( 156 );
 
-    if( m_artistName != lastArtistName )
+    // Stored the last artist name to not send the same data twice
+    if( m_artistName != s_lastArtistName )
     {
         upcomingEventsRequest( m_artistName );
-        lastArtistName = m_artistName;
+        s_lastArtistName = m_artistName;
     }
 }
 
@@ -201,6 +208,7 @@ UpcomingEventsEngine::upcomingEvents()
 void
 UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
 {
+    // Prepares the url for LastFm request
     QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
@@ -209,6 +217,7 @@ UpcomingEventsEngine::upcomingEventsRequest(const QString& artist_name)
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
     url.addQueryItem( "artist", artist_name.toLocal8Bit() );
 
+    // The results are parsed only when the job is finished
     KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
     connect( job, SIGNAL( result( KJob* ) ), SLOT( upcomingEventsResultFetched( KJob* ) ) );
 }
@@ -239,8 +248,7 @@ UpcomingEventsEngine::upcomingEventsResultFetched (KJob* job) // SLOT
  */
 void
 UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
-{
-    
+{    
     const QDomNode events = doc.documentElement().namedItem( "events" );
 
     QDomNode n = events.firstChild();
