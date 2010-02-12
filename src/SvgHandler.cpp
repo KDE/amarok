@@ -426,10 +426,10 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
                     sliderHeight, sliderHeight,
                     "progress_slider_left" ) );
 
-        p->drawPixmap( x + sliderHeight, y + 2,
+        p->drawTiledPixmap( x + sliderHeight, y + 2, width - sliderHeight * 2, sliderHeight,
                     renderSvg(
                     "progress_slider_mid",
-                    width - sliderHeight * 2, sliderHeight,
+                    32, sliderHeight,
                     "progress_slider_mid" ) );
 
         p->drawPixmap( x + width - sliderHeight, y + 2,
@@ -457,11 +457,11 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
             //Add 5 more pixels to avoid a "gap" between it and the top and botton of the round knob.
             playedBarMidWidth += 5;
 
-            p->drawPixmap( x + 3 + playedBarHeight, y + 5,
+            p->drawTiledPixmap( x + 3 + playedBarHeight, y + 5, playedBarMidWidth, playedBarHeight,
                             renderSvg(
                             "progress_slider_played_mid",
-                            playedBarMidWidth, playedBarHeight,
-                            "progress_slider_played_mid" ) );               
+                            32, playedBarHeight,
+                            "progress_slider_played_mid" ) );
         }
 
     }
