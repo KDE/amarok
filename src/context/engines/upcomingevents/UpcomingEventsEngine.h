@@ -186,6 +186,4 @@ private slots:
     void upcomingEventsResultFetched( KJob* );
 };
 
-K_EXPORT_AMAROK_DATAENGINE( upcomingEvents, UpcomingEventsEngine )
-
 #endif

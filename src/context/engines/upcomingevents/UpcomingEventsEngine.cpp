@@ -29,6 +29,8 @@
 #include <lastfm/XmlQuery>
 #include <lastfm/ws.h>
 
+K_EXPORT_AMAROK_DATAENGINE( upcomingEvents, UpcomingEventsEngine )
+
 using namespace Context;
 
 /**
