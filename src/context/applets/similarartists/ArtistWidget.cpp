@@ -64,13 +64,22 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
     m_topTrack->setWordWrap( true );
     // The background of the QLabel is transparent
     m_topTrack->setAttribute( Qt::WA_TranslucentBackground, true );
-    m_topTrack->setAlignment( Qt::AlignCenter );
+    m_topTrack->setAlignment( Qt::AlignLeft );
+
+    m_desc= new QLabel( this );
+    m_desc->setWordWrap( true );
+    // The background of the QLabel is transparent
+    m_desc->setAttribute( Qt::WA_TranslucentBackground, true );
+    m_desc->setAlignment( Qt::AlignLeft );
+
+    
 
     // the image display is extended on two row
-    m_layout->addWidget( m_image, 0, 0, 2, 1 );
+    m_layout->addWidget( m_image, 0, 0, 3, 1 );
     m_layout->addWidget( m_name, 0, 1 );
     m_layout->addWidget( m_genre, 0, 2 );
     m_layout->addWidget( m_topTrack, 1, 1, 1, 2 );
+    m_layout->addWidget( m_desc, 2, 1, 1, 2 );
 
     // open the url of the similar artist when his name is clicked
     connect( m_name, SIGNAL( linkActivated( QString ) ), this
@@ -78,6 +87,9 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
 }
 
 
+/**
+ * ArtistWidget destructor
+ */
 ArtistWidget::~ArtistWidget()
 {
     delete m_layout;
@@ -87,6 +99,7 @@ ArtistWidget::~ArtistWidget()
     delete m_topTrack;
     delete m_imageJob;
     delete m_topTrackJob;
+    delete m_desc;
 }
 
 
@@ -104,7 +117,8 @@ ArtistWidget::setPhoto( const QPixmap & photo )
  * Change the photo of the artist with a photo load from an Url
  * @param photo The url of the new artist photo
  */
-void ArtistWidget::setPhoto( const KUrl& urlPhoto )
+void
+ArtistWidget::setPhoto( const KUrl& urlPhoto )
 {
     // display a message for the user while the fetch of the picture
     m_image->clear();
@@ -120,7 +134,8 @@ void ArtistWidget::setPhoto( const KUrl& urlPhoto )
  * Put the image of the artist in the QPixMap
  * @param job, pointer to the job which get the pixmap from the web
  */
-void ArtistWidget::setImageFromInternet( KJob* job )
+void
+ArtistWidget::setImageFromInternet( KJob* job )
 {
     if ( !m_imageJob ) return; //track changed while we were fetching
 
@@ -196,7 +211,8 @@ ArtistWidget::setArtist( const QString &nom, const KUrl &url )
  * Put the top track of the artist in the QLabel
  * @param job, pointer to the job which get the pixmap from the web
  */
-void ArtistWidget::setTopTrack( KJob* job )
+void
+ArtistWidget::setTopTrack( KJob* job )
 {
     QString xml;
 
@@ -272,7 +288,25 @@ ArtistWidget::clear()
  * Open an URL
  * @param url The URL of the artist
  */
-void ArtistWidget::openUrl( QString url )
+void
+ArtistWidget::openUrl( QString url )
 {
     QDesktopServices::openUrl( KUrl( "http://" + url ) );
 }
+
+
+/**
+ * Change the artist description which contains informations about this artist
+ * @param desc The description of this artist
+ */
+void
+ArtistWidget::setDescription(const QString& desc)
+{
+    if(desc=="")
+    {
+        m_desc->setText(i18n("No description available in your language"));
+    } else {
+        m_desc->setText(desc);
+    }
+}
+

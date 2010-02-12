@@ -44,7 +44,10 @@ public:
      * ArtistWidget constructor
      * @param parent The widget parent
      */
-    ArtistWidget( QWidget *parent = 0 );
+    ArtistWidget( QWidget *parent =0 );
+    /**
+     * ArtistWidget destructor
+     */
     ~ArtistWidget();
 
     /**
@@ -74,6 +77,12 @@ public:
     void setMatch( const int match );
 
     /**
+     * Change the artist description which contains informations about this artist
+     * @param desc The description of this artist
+     */
+    void setDescription( const QString &desc );
+
+    /**
      * Clean the widget => the content of the QLabel is empty
      */
     void clear();
@@ -86,12 +95,32 @@ private:
     QGridLayout *m_layout;
 
     //elements of the widget
-    QLabel *m_image;
-    QLabel *m_name;
-    QLabel *m_genre;
-    QLabel *m_topTrack;
 
+    /**
+     * Image of the artist
+     */
+    QLabel *m_image;
+    /**
+     * Name of the artist
+     */
+    QLabel *m_name;
+    /**
+     * Genre of the artist's music
+     */
+    QLabel *m_genre;
+    /**
+     * Top track of the artist
+     */
+    QLabel *m_topTrack;
+    QLabel *m_desc;
+
+    /**
+     * Job of the image from the web
+     */
     KJob *m_imageJob;
+    /**
+     * Job of the top track from the web
+     */
     KJob *m_topTrackJob;
 
 
