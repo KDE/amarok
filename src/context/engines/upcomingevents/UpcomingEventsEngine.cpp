@@ -32,12 +32,10 @@ using namespace Context;
 UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )
-        , m_upcomingEventsJob( 0 )
+        , m_timeSpan( "AllEvents" )
         , m_currentSelection( "artist" )
         , m_requested( true )
         , m_sources( "current" )
-        , m_timeSpan( "AllEvents" )
-        , m_triedRefinedSearch( 0 )
 {
     update();
 }
@@ -95,9 +93,6 @@ void UpcomingEventsEngine::update()
 {
     DEBUG_BLOCK
 
-    // We've got a new track, great, let's fetch some info from UpcomingEvents !
-    m_triedRefinedSearch = 0;
-
     static QString lastArtistName;
     m_artistName = "";
 
@@ -136,11 +131,6 @@ void UpcomingEventsEngine::update()
         upcomingEventsRequest( m_artistName );
         lastArtistName = m_artistName;
     }
-}
-
-void UpcomingEventsEngine::reloadUpcomingEvents()
-{
-
 }
 
 QList< LastFmEvent >
@@ -303,6 +293,18 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
     QVariant variant ( QMetaType::type( "LastFmEvent::LastFmEventList" ), &m_upcomingEvents );
     removeData("upcomingEvents", "LastFmEvent");
     setData ( "upcomingEvents", "LastFmEvent", variant );
+}
+
+void
+UpcomingEventsEngine::setSelection( const QString& selection )
+{
+    m_currentSelection = selection;
+}
+
+QString
+UpcomingEventsEngine::selection()
+{
+     return m_currentSelection;
 }
 
 #include "UpcomingEventsEngine.moc"
