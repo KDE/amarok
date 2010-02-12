@@ -26,6 +26,8 @@
 
 #include <QDomElement>
 
+K_EXPORT_AMAROK_DATAENGINE( similarArtists, SimilarArtistsEngine )
+
 using namespace Context;
 
  /**

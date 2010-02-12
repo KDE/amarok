@@ -1,5 +1,6 @@
 /****************************************************************************************
-* Copyright (c) 2009 Manuel Campomanes <campomanes.manuel@gmail.com>                             *
+* Copyright (c) 2009 Manuel Campomanes <campomanes.manuel@gmail.com>                   *
+* Copyright (c) 2009 Nathan Sala <sala.nathan@gmail.com>                               *
 *                                                                                      *
 * This program is free software; you can redistribute it and/or modify it under        *
 * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,29 +19,33 @@
 
 #include <KStandardDirs>
 #include <QtTest/QTest>
-#include <QFile>
-#include <QDomDocument>
+#include <qtest_kde.h>
 
+#include <src/context/engines/similarartists/SimilarArtistsEngine.h>
 
+QTEST_KDEMAIN_CORE( TestSimilarArtistsEngine )
 
-TestSimilarArtistsEngine::TestSimilarArtistsEngine( const QStringList args, const QString &logPath )
-    : TestBase("SimilarArtistsEngine"), TestDataEngine("amarok_data_engine_similarArtists")
+void
+TestSimilarArtistsEngine::initTestCase()
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
-}
-
-void TestSimilarArtistsEngine::initTestCase()
-{
-    //Initialization of similarArtists tests
+    //Write here initilizations
+    QList<QVariant> args;
+    //m_engine = new UpcomingEventsEngine(0, args);
 }
 
 
-void TestSimilarArtistsEngine::testDataEngineMethod()
+void
+TestSimilarArtistsEngine::testDataEngineMethod()
 {
-    //Verify if the engine has been found
-    QVERIFY(m_engine != 0);
-    
     //Tests on the engine
+    QVERIFY(1 == 1);
 }
+
+void
+TestSimilarArtistsEngine::cleanupTestCase()
+{
+    //Write here cleaning
+    //delete m_engine;
+}
+
+#include "TestSimilarArtistsEngine.moc"

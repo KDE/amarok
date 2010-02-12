@@ -18,22 +18,19 @@
 #include "TestUpcomingEventsEngine.h"
 
 #include <KStandardDirs>
-#include <QDomDocument>
-
+#include <QtTest/QTest>
 #include <qtest_kde.h>
 
-QTEST_KDEMAIN_CORE( TestUpcomingEventsEngine )
+#include <src/context/engines/upcomingevents/UpcomingEventsEngine.h>
 
-TestUpcomingEventsEngine::TestUpcomingEventsEngine()
-{
-    const QList<QVariant> args;
-    m_engine = new UpcomingEventsEngine(0, args);
-}
+QTEST_KDEMAIN_CORE( TestUpcomingEventsEngine )
 
 void
 TestUpcomingEventsEngine::initTestCase()
 {
     //Write here initilizations
+    QList<QVariant> args;
+    //m_engine = new UpcomingEventsEngine(0, args);
 }
 
 
@@ -41,6 +38,14 @@ void
 TestUpcomingEventsEngine::testDataEngineMethod()
 {
     //Tests on the engine
+    QVERIFY(1 == 1);
+}
+
+void
+TestUpcomingEventsEngine::cleanupTestCase()
+{
+    //Write here cleaning
+    //delete m_engine;
 }
 
 #include "TestUpcomingEventsEngine.moc"

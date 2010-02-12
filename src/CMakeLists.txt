@@ -701,9 +701,6 @@ endif( BUILD_MYSQLE_COLLECTION )
 if(KDE4_BUILD_TESTS)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
-        ../tests/context/engines/TestDataEngine.cpp
-        ../tests/context/engines/upcomingevents/TestUpcomingEventsEngine.cpp
-        ../tests/context/engines/similarartists/TestSimilarArtistsEngine.cpp
         ../tests/meta/TestM3UPlaylist.cpp
         ../tests/meta/TestMetaTrack.cpp
         ../tests/meta/TestPLSPlaylist.cpp
