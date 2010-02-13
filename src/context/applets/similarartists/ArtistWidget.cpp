@@ -302,7 +302,7 @@ ArtistWidget::openUrl( QString url )
 void
 ArtistWidget::setDescription(const QString& desc)
 {
-    if(desc=="")
+    if(desc.isEmpty())
     {
         m_desc->setText(i18n("No description available in your language"));
     } else {
