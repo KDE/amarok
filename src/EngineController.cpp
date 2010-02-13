@@ -425,7 +425,7 @@ EngineController::playUrl( const KUrl &url, uint offset )
         int trackNumber = parts.at( 1 ).toInt();
 
         debug() << "3.2.1...";
-        if( m_media->currentSource().type() != Phonon::Cd )
+        if( m_media->currentSource().type() != Phonon::MediaSource::Disc )
         {
             m_media->clear();
             m_media->setCurrentSource( Phonon::Cd );

@@ -1,10 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2001 Christoph Cullmann <cullmann@kde.org>                             *
- * Copyright (c) 2001 Joseph Wenninger <jowenn@kde.org>                                 *
- * Copyright (c) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>                         *
- * Copyright (c) 2007 Mirko Stocker <me@misto.ch>                                       *
- * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
- * Copyright (c) 2008-2009 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,84 +14,63 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef FILEBROWSER_H
-#define FILEBROWSER_H
+#ifndef FILEBROWSERMKII_H
+#define FILEBROWSERMKII_H
 
 #include "BrowserCategory.h"
+#include "DirectoryLoader.h"
+#include "FileView.h"
+#include "MimeTypeFilterProxyModel.h"
 
-#include <KUrl>
-#include <KVBox>
+#include "widgets/SearchWidget.h"
 
-class KActionCollection;
-class KActionSelector;
-class KBookmarkHandler;
-class KConfigBase;
-class KFilePlacesModel;
-class KHistoryComboBox;
-class KToolBar;
-class KUrlNavigator;
+#include <KDirModel>
+#include <QTimer>
 
-class QAbstractItemView;
-class QEvent;
-class QFocusEvent;
-class QToolButton;
-
-class MyDirOperator;
-
-/*
-    The Amarok Files browser presents a directory view, in which the default action is
-    to open the activated file.
-    Additionally, a toolbar for managing the kdiroperator widget + sync that to
-    the directory of the current file is available, as well as a filter widget
-    allowing to filter the displayed files using a name filter.
-*/
-
-namespace FileBrowser
-{
-
-class Widget : public BrowserCategory
+class FileBrowser : public BrowserCategory
 {
     Q_OBJECT
-
 public:
-    explicit Widget( const char * name, QWidget *parent );
-    ~Widget();
+    FileBrowser( const char * name, QWidget *parent );
+    ~FileBrowser();
 
-    void setupToolbar();
-    MyDirOperator *dirOperator() const { return m_dirOperator; }
-    KActionCollection *actionCollection() const { return m_actionCollection; }
+    virtual void setupAddItems();
+    virtual void polish();
+    
+    virtual QString prettyName() const;
 
-public Q_SLOTS:
-    void slotFilterChange( const QString& );
-    void setDir( const KUrl& url );
-    void selectorViewChanged( QAbstractItemView * );
+    /**
+    * Navigate to a specific directory
+    */
+    void setDir( const QString &dir );
 
-private Q_SLOTS:
-    void dirUrlEntered( const KUrl& u );
-    void filterButtonClicked();
+protected slots:
+    void itemActivated( const QModelIndex &index );
+    
+    void slotSetFilterTimeout();
+    void slotFilterNow();
 
-protected:
-    void focusInEvent( QFocusEvent * );
-    bool eventFilter( QObject *, QEvent * );
-    void initialDirChangeHack();
+    void addItemActivated( const QString &callback );
+
+    virtual void reActivate();
+
 
 private:
     void readConfig();
     void writeConfig();
 
-    KToolBar          *m_toolbar;
-    KActionCollection *m_actionCollection;
-    KBookmarkHandler  *m_bookmarkHandler;
-    KUrlNavigator     *m_urlNav;
-    KFilePlacesModel  *m_filePlacesModel;
-    MyDirOperator     *m_dirOperator;
-    KHistoryComboBox  *m_filter;
-    QToolButton       *m_filterButton;
+    QStringList siblingsForDir( const QString &path );
+    
+    SearchWidget             *m_searchWidget;
+    KDirModel                *m_kdirModel;
+    MimeTypeFilterProxyModel *m_mimeFilterProxyModel;
+    DirectoryLoader          *m_directoryLoader;
 
-    QString            m_lastFilter;
+    QTimer                    m_filterTimer;
+    QString                   m_currentFilter;
+    QString                   m_currentPath;
+    FileView                 *m_fileView;
+        
 };
 
-}
-
-#endif //__KATE_FILESELECTOR_H__
-
+#endif // FILEBROWSERMKII_H

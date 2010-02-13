@@ -19,6 +19,7 @@ if (IPOD_FOUND AND WITH_IPOD)
    support
    ${GLIB2_INCLUDE_DIR}
    ${GDK_INCLUDE_DIRS}
+   ${GOBJECT_INCLUDE_DIR}
    ${IPOD_INCLUDE_DIRS}
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
@@ -43,7 +44,10 @@ if (IPOD_FOUND AND WITH_IPOD)
 	handler/capabilities/IpodWriteCapability.cpp	
 	support/IpodDeviceInfo.cpp
 	support/IpodConnectionAssistant.cpp)
-	kde4_add_plugin(amarok_collection-ipodcollection ${amarok_collection-ipodcollection_PART_SRCS})
+
+    link_directories(${IPOD_LIBRARY_DIRS})
+
+    kde4_add_plugin(amarok_collection-ipodcollection ${amarok_collection-ipodcollection_PART_SRCS})
 
     target_link_libraries(amarok_collection-ipodcollection
         amaroklib
@@ -56,7 +60,8 @@ if (IPOD_FOUND AND WITH_IPOD)
         ${QT_QTGUI_LIBRARY}
         ${GLIB2_LIBRARIES}
         ${GDK_LIBRARIES}
-        ${IPOD_LDFLAGS} 
+        ${IPOD_LIBRARIES}
+        ${GOBJECT_LIBRARIES}
         )
 
     install(TARGETS 

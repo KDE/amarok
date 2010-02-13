@@ -417,7 +417,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
 
                     debug() << "painting moodbar in PrettyItemDelegate::paintItem";
-         
+
                     Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
 
                     if( The::moodbarManager()->hasMoodbar( track ) )

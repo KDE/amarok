@@ -37,8 +37,12 @@ MimeTypeFilterProxyModel::filterAcceptsRow( int source_row, const QModelIndex& s
 
     KFileItem item = qvar.value<KFileItem>();
 
+    if( item.name() == "." )
+        return false;
+    
     if( item.isDir() || m_mimeList.contains( item.mimetype() ) )
-        return true;
+        return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
+    
     return false;
 }
 

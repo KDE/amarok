@@ -151,11 +151,11 @@ Playlist::RandomAlbumNavigator::likelyNextTrack()
         return m_queue.first();
     if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
         return 0;
-    
+
     QList<Meta::AlbumPtr> *unplayedAlbums = &m_unplayedAlbums;
     if ( m_unplayedAlbums.isEmpty() && m_repeatPlaylist )
         unplayedAlbums = &m_playedAlbums;
-    
+
     quint64 requestedTrack = 0;
     if ( m_albumGroups.contains( m_currentAlbum ) )
     {
@@ -164,10 +164,10 @@ Playlist::RandomAlbumNavigator::likelyNextTrack()
         if ( idx < ( atl.size() - 1 ) )
             return  atl.at( idx + 1 );
     }
-    
+
     if ( !unplayedAlbums->isEmpty() )
         requestedTrack = m_albumGroups.value( unplayedAlbums->first() ).first();
-    
+
     return requestedTrack;
 }
 
@@ -176,11 +176,11 @@ Playlist::RandomAlbumNavigator::likelyLastTrack()
 {
     if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
         return 0;
-    
+
     QList<Meta::AlbumPtr> *playedAlbums = &m_playedAlbums;
     if ( m_playedAlbums.isEmpty() && m_repeatPlaylist )
             playedAlbums = &m_unplayedAlbums;
-    
+
     quint64 requestedTrack = 0;
     if ( m_albumGroups.contains( m_currentAlbum ) )
     {
@@ -191,10 +191,10 @@ Playlist::RandomAlbumNavigator::likelyLastTrack()
             return atl.at( idx - 1 );
         }
     }
-    
+
     if ( !playedAlbums->isEmpty() )
         requestedTrack = m_albumGroups.value( playedAlbums->first() ).last();
-    
+
     return requestedTrack;
 }
 
@@ -274,13 +274,13 @@ Playlist::RandomAlbumNavigator::requestLastTrack()
             }
         }
     }
-    
+
     if ( !m_playedAlbums.isEmpty() )
     {
         m_currentAlbum = m_playedAlbums.takeFirst();
         m_currentTrack = m_albumGroups.value( m_currentAlbum ).last();
     }
-    
+
     return m_currentTrack;
 }
 

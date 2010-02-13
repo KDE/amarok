@@ -55,7 +55,8 @@ enum
 /**
     @author Bart Cerneels
 */
-class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel
+class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
+                     public Meta::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -80,6 +81,11 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel
         //MetaPlaylistModel methods
         virtual QList<QAction *> actionsFor( const QModelIndexList &indexes );
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
+
+        /* Meta::PlaylistObserver methods */
+        virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+                                 int position );
+        virtual void trackRemoved( Meta::PlaylistPtr playlist, int position );
 
         //Own methods
         void downloadItems(  QModelIndexList list );

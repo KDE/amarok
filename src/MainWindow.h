@@ -143,6 +143,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
     private slots:
         void exportPlaylist() const;
+        void slotShowActiveTrack() const;
         void slotShowBookmarkManager() const;
         void slotShowEqualizer() const;
         void slotShowCoverManager() const;

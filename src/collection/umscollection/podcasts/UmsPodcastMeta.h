@@ -36,6 +36,8 @@ typedef QList<UmsPodcastChannelPtr> UmsPodcastChannelList;
 
 class UmsPodcastEpisode : public Meta::PodcastEpisode
 {
+    friend class UmsPodcastProvider;
+
     public:
         static UmsPodcastEpisodePtr fromPodcastEpisodePtr( Meta::PodcastEpisodePtr episode );
         static Meta::PodcastEpisodePtr toPodcastEpisodePtr( UmsPodcastEpisodePtr episode );
@@ -70,6 +72,7 @@ class UmsPodcastEpisode : public Meta::PodcastEpisode
 
 class UmsPodcastChannel : public Meta::PodcastChannel
 {
+    friend class UmsPodcastProvider;
     public:
         static UmsPodcastChannelPtr fromPodcastChannelPtr(
                 Meta::PodcastChannelPtr channel );
@@ -90,6 +93,9 @@ class UmsPodcastChannel : public Meta::PodcastChannel
         virtual Meta::PodcastEpisodeList episodes()
                 { return UmsPodcastEpisode::toPodcastEpisodeList( m_umsEpisodes ); }
         virtual PlaylistProvider *provider() const;
+
+    protected:
+        void removeEpisode( UmsPodcastEpisodePtr episode );
 
     private:
         UmsPodcastProvider *m_provider;

@@ -16,12 +16,15 @@
 
 #include "CollectionLocationDelegateImpl.h"
 
+#include "statusbar/StatusBar.h"
+
 #include <KLocale>
 #include <KMessageBox>
 
 bool
 CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const
 {
+    Q_UNUSED( loc );
     QStringList files;
     foreach( Meta::TrackPtr track, tracks )
         files << track->prettyUrl();
@@ -39,8 +42,25 @@ CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Met
     return del;
 }
 
-bool CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const
+bool CollectionLocationDelegateImpl::reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const
 {
+    Q_UNUSED( loc )
+    QStringList files;
+    foreach( Meta::TrackPtr track, tracks )
+        files << track->prettyUrl();
+    
+    const QString text( i18ncp( "@info", "Do you really want to move this track? It will be renamed and the original deleted.",
+                                "Do you really want to move these %1 tracks? They will be renamed and the originals deleted", tracks.count() ) );
+    const bool del = KMessageBox::warningContinueCancelList(0,
+                                                            text,
+                                                            files,
+                                                            i18n("Move Files") ) == KMessageBox::Continue;
+    return del;
+}
+
+void CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const
+{
+    Q_UNUSED( loc );
     QStringList files;
     foreach( Meta::TrackPtr track, tracks )
         files << track->prettyUrl();
@@ -50,5 +70,11 @@ bool CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, con
                                                              text,
                                                              files,
                                                              i18n("Unable to be removed tracks") );
+}
+
+void CollectionLocationDelegateImpl::notWriteable(CollectionLocation* loc) const
+{
+    Q_UNUSED( loc )
+    The::statusBar()->longMessage( i18n( "The collection does not have enough free space available or is not writeable." ), StatusBar::Error );
 }
 

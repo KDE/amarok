@@ -31,7 +31,6 @@ MediaDeviceCollectionCapability::MediaDeviceCollectionCapability( MediaDeviceCol
 {
 }
 
-
 QList<QAction *>
 MediaDeviceCollectionCapability::collectionActions()
 {

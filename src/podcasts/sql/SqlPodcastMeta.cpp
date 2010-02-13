@@ -449,7 +449,7 @@ Meta::SqlPodcastEpisode::deleteFromDb()
         QString( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
 }
 
-Meta::SqlPodcastChannel::SqlPodcastChannel( PlaylistProvider *provider,
+Meta::SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
                                             const QStringList &result )
     : Meta::PodcastChannel()
     , m_provider( provider )
@@ -474,7 +474,7 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PlaylistProvider *provider,
     loadEpisodes();
 }
 
-Meta::SqlPodcastChannel::SqlPodcastChannel( PlaylistProvider *provider,
+Meta::SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
                                             PodcastChannelPtr channel )
     : Meta::PodcastChannel()
     , m_dbId( 0 )
@@ -500,7 +500,8 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PlaylistProvider *provider,
         m_image = channel->image();
 
     //Default Settings
-    m_directory = KUrl( Amarok::saveLocation("podcasts") );
+
+    m_directory = KUrl( m_provider->baseDownloadDir() );
     m_directory.addPath( Amarok::vfatPath( m_title ) );
     m_autoScan = true;
     m_fetchType = StreamOrDownloadOnDemand;
@@ -517,6 +518,12 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PlaylistProvider *provider,
 
         m_episodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
+}
+
+PlaylistProvider *
+Meta::SqlPodcastChannel::provider() const
+{
+    return dynamic_cast<PlaylistProvider *>( m_provider );
 }
 
 Meta::SqlPodcastChannel::~SqlPodcastChannel()

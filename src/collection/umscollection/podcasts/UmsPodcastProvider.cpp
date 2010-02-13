@@ -16,9 +16,12 @@
 #include "UmsPodcastProvider.h"
 #include "Debug.h"
 
+#include <KDialog>
+#include <KIO/DeleteJob>
 #include <KMimeType>
 
 #include <QDirIterator>
+#include <QListWidget>
 #include <QObject>
 
 using namespace Meta;
@@ -26,7 +29,10 @@ using namespace Meta;
 UmsPodcastProvider::UmsPodcastProvider( UmsHandler *handler, QString scanDirectory )
         : m_handler( handler )
         , m_scanDirectory( scanDirectory )
+        , m_deleteEpisodeAction( 0 )
+        , m_deleteChannelAction( 0 )
 {
+
 }
 
 UmsPodcastProvider::~UmsPodcastProvider()
@@ -49,6 +55,7 @@ UmsPodcastProvider::trackForUrl( const KUrl &url )
 void
 UmsPodcastProvider::addPodcast( const KUrl &url )
 {
+    Q_UNUSED( url );
 }
 
 PodcastChannelPtr
@@ -99,6 +106,7 @@ UmsPodcastProvider::configureProvider()
 void
 UmsPodcastProvider::configureChannel( PodcastChannelPtr channel )
 {
+    Q_UNUSED( channel );
 }
 
 QString
@@ -125,30 +133,216 @@ UmsPodcastProvider::playlists()
 }
 
 QList<QAction *>
-UmsPodcastProvider::episodeActions( Meta::PodcastEpisodeList )
+UmsPodcastProvider::episodeActions( PodcastEpisodeList episodes )
 {
-    return QList<QAction *>();
+    QList<QAction *> actions;
+    if( m_deleteEpisodeAction == 0 )
+    {
+        m_deleteEpisodeAction = new QAction(
+            KIcon( "edit-delete" ),
+            i18n( "&Delete Episode" ),
+            this
+        );
+        m_deleteEpisodeAction->setProperty( "popupdropper_svg_id", "delete" );
+        connect( m_deleteEpisodeAction, SIGNAL( triggered() ),
+                 SLOT( slotDeleteEpisodes() ) );
+    }
+    //set the episode list as data that we'll retrieve in the slot
+    PodcastEpisodeList actionList =
+            m_deleteEpisodeAction->data().value<PodcastEpisodeList>();
+
+    actionList << episodes;
+    m_deleteEpisodeAction->setData( QVariant::fromValue( actionList ) );
+    actions << m_deleteEpisodeAction;
+    return actions;
+}
+
+void
+UmsPodcastProvider::slotDeleteEpisodes()
+{
+    DEBUG_BLOCK
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    //get the list of episodes to apply to, then clear that data.
+    PodcastEpisodeList episodes =
+            action->data().value<PodcastEpisodeList>();
+    action->setData( QVariant() );
+
+    UmsPodcastEpisodeList umsEpisodes;
+    foreach( PodcastEpisodePtr episode, episodes )
+    {
+        UmsPodcastEpisodePtr umsEpisode =
+                UmsPodcastEpisode::fromPodcastEpisodePtr( episode );
+        if( !umsEpisode )
+        {
+            error() << "Could not cast to UmsPodcastEpisode";
+            continue;
+        }
+
+        PodcastChannelPtr channel = umsEpisode->channel();
+        if( !channel )
+        {
+            error() << "episode did not have a valid channel";
+            continue;
+        }
+
+        UmsPodcastChannelPtr umsChannel =
+                UmsPodcastChannel::fromPodcastChannelPtr( channel );
+        if( !umsChannel )
+        {
+            error() << "Could not cast to UmsPodcastChannel";
+            continue;
+        }
+
+        umsEpisodes << umsEpisode;
+    }
+
+    deleteEpisodes( umsEpisodes );
+}
+
+void
+UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
+{
+    KUrl::List urlsToDelete;
+    foreach( UmsPodcastEpisodePtr umsEpisode, umsEpisodes )
+        urlsToDelete << umsEpisode->playableUrl();
+
+    KDialog dialog( The::mainWindow() );
+    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QLabel label( i18np( "Are you sure you want to delete this episode?",
+                         "Are you sure you want to delete these %1 episodes?",
+                         urlsToDelete.count() )
+                    , &dialog
+                  );
+    QListWidget listWidget( &dialog );
+    listWidget.setSelectionMode( QAbstractItemView::NoSelection );
+    foreach( KUrl url, urlsToDelete )
+    {
+        new QListWidgetItem( url.toLocalFile(), &listWidget );
+    }
+
+    QWidget *widget = new QWidget( &dialog );
+    QVBoxLayout *layout = new QVBoxLayout( widget );
+    layout->addWidget( &label );
+    layout->addWidget( &listWidget );
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from %1.",
+                                             m_handler->prettyName() ) );
+
+    dialog.setMainWidget( widget );
+    if( dialog.exec() != QDialog::Accepted )
+        return;
+
+    KIO::DeleteJob *deleteJob = KIO::del( urlsToDelete, KIO::HideProgressInfo );
+
+    //keep track of these episodes until the job is done
+    m_deleteJobMap.insert( deleteJob, umsEpisodes );
+
+    connect( deleteJob, SIGNAL( result( KJob * ) ),
+             SLOT( deleteJobComplete( KJob *) ) );
+}
+
+void
+UmsPodcastProvider::deleteJobComplete( KJob *job )
+{
+    DEBUG_BLOCK
+    if( job->error() )
+    {
+        error() << "problem deleting episode(s): " << job->errorString();
+        return;
+    }
+
+    UmsPodcastEpisodeList deletedEpisodes = m_deleteJobMap.take( job );
+    foreach( UmsPodcastEpisodePtr deletedEpisode, deletedEpisodes )
+    {
+        PodcastChannelPtr channel = deletedEpisode->channel();
+        UmsPodcastChannelPtr umsChannel =
+                UmsPodcastChannel::fromPodcastChannelPtr( channel );
+        if( !umsChannel )
+        {
+            error() << "Could not cast to UmsPodcastChannel";
+            continue;
+        }
+
+        umsChannel->removeEpisode( deletedEpisode );
+        if( umsChannel->m_umsEpisodes.isEmpty() )
+        {
+            debug() << "channel is empty now, remove it";
+            m_umsChannels.removeAll( umsChannel );
+            emit( updated() );
+        }
+    }
 }
 
 QList<QAction *>
-UmsPodcastProvider::channelActions( Meta::PodcastChannelList )
+UmsPodcastProvider::channelActions( PodcastChannelList channels )
 {
-    return QList<QAction *>();
+    QList<QAction *> actions;
+    if( m_deleteChannelAction == 0 )
+    {
+        m_deleteChannelAction = new QAction(
+            KIcon( "edit-delete" ),
+            i18n( "&Delete Channel and Episodes" ),
+            this
+        );
+        m_deleteChannelAction->setProperty( "popupdropper_svg_id", "delete" );
+        connect( m_deleteChannelAction, SIGNAL( triggered() ),
+                 SLOT( slotDeleteChannels() ) );
+    }
+    //set the episode list as data that we'll retrieve in the slot
+    PodcastChannelList actionList =
+            m_deleteChannelAction->data().value<PodcastChannelList>();
+
+    actionList << channels;
+    m_deleteChannelAction->setData( QVariant::fromValue( actionList ) );
+
+    actions << m_deleteChannelAction;
+    return actions;
+}
+
+void
+UmsPodcastProvider::slotDeleteChannels()
+{
+    DEBUG_BLOCK
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    //get the list of episodes to apply to, then clear that data.
+    PodcastChannelList channels =
+            action->data().value<PodcastChannelList>();
+    action->setData( QVariant() );
+
+    foreach( PodcastChannelPtr channel, channels )
+    {
+        UmsPodcastChannelPtr umsChannel =
+                UmsPodcastChannel::fromPodcastChannelPtr( channel );
+        if( !umsChannel )
+        {
+            error() << "Could not cast to UmsPodcastChannel";
+            continue;
+        }
+
+        deleteEpisodes( umsChannel->m_umsEpisodes );
+        //slot deleteJobComplete() will emit updated once all tracks are gone.
+    }
 }
 
 QList<QAction *>
 UmsPodcastProvider::playlistActions( Meta::PlaylistPtr playlist )
 {
     Q_UNUSED( playlist )
-    return QList<QAction *>();
+    return channelActions( PodcastChannelList() );
 }
 
 QList<QAction *>
-UmsPodcastProvider::trackActions( Meta::PlaylistPtr playlist,                                              int trackIndex )
+UmsPodcastProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
 {
     Q_UNUSED( playlist)
     Q_UNUSED( trackIndex )
-    return QList<QAction *>();
+    return episodeActions( PodcastEpisodeList() );
 }
 
 void
@@ -165,19 +359,19 @@ UmsPodcastProvider::updateAll() //slot
 void
 UmsPodcastProvider::update( Meta::PodcastChannelPtr channel ) //slot
 {
-
+    Q_UNUSED( channel );
 }
 
 void
 UmsPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode ) //slot
 {
-
+    Q_UNUSED( episode );
 }
 
 void
 UmsPodcastProvider::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode ) //slot
 {
-
+    Q_UNUSED( episode );
 }
 
 void

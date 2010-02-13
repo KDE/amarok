@@ -73,6 +73,7 @@ Playlist::Actions::Actions()
         , m_waitingForNextTrack( false )
 {
     DEBUG_BLOCK
+
     m_topmostModel = Playlist::ModelStack::instance()->top();
     playlistModeChanged(); // sets m_navigator.
     m_nextTrackCandidate = m_navigator->requestNextTrack();
@@ -279,7 +280,7 @@ Playlist::Actions::playlistModeChanged()
         {
             debug() << "No dynamic playlist current loaded! Creating dynamic track navigator with null playlist!";
         }
-         
+
         m_navigator = new DynamicTrackNavigator( playlist );
 
         return;
@@ -295,7 +296,7 @@ Playlist::Actions::playlistModeChanged()
         case AmarokConfig::EnumTrackProgression::RepeatTrack:
             m_navigator = new RepeatTrackNavigator();
             break;
-            
+
         case AmarokConfig::EnumTrackProgression::RepeatAlbum:
             m_navigator = new RepeatAlbumNavigator();
             break;
@@ -303,7 +304,7 @@ Playlist::Actions::playlistModeChanged()
         case AmarokConfig::EnumTrackProgression::RandomTrack:
             m_navigator = new RandomTrackNavigator();
             break;
-            
+
         case AmarokConfig::EnumTrackProgression::RandomAlbum:
             m_navigator = new RandomAlbumNavigator();
             break;
@@ -401,8 +402,11 @@ Playlist::Actions::engineNewTrackPlaying()
     {
         if ( m_topmostModel->containsId( m_nextTrackCandidate )
              && track == m_topmostModel->trackForId( m_nextTrackCandidate ) )
+        {
             m_topmostModel->setActiveId( m_nextTrackCandidate );
-        else {
+        }
+        else
+        {
             warning() << "engineNewTrackPlaying:" << track->prettyName() << "does not match what the playlist controller thought it should be";
             if ( m_topmostModel->activeTrack() != track )
             {
@@ -427,7 +431,7 @@ Playlist::Actions::engineNewTrackPlaying()
 
 
 void
-Playlist::Actions::normalizeDynamicPlayist()
+Playlist::Actions::normalizeDynamicPlaylist()
 {
     if ( typeid( *m_navigator ) == typeid( DynamicTrackNavigator ) )
     {

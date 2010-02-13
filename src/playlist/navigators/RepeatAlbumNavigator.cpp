@@ -74,7 +74,7 @@ Playlist::RepeatAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
         quint64 id = *id_iter;
         debug() << "removing" << id;
         QHash<Meta::AlbumPtr, ItemList>::iterator alb_iter = m_albumGroups.begin();
-        
+
         while ( alb_iter != m_albumGroups.end() )
         {
             if ( alb_iter->contains( id ) )
@@ -84,7 +84,7 @@ Playlist::RepeatAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
                     debug() << "    from" << alb_iter.key()->prettyName();
                 else
                     debug() << "    which is not in any album";
-                
+
                 Meta::AlbumPtr album = alb_iter.key();
                 ItemList atl = alb_iter.value();
                 if ( m_currentTrack == id )

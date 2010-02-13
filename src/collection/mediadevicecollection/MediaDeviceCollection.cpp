@@ -285,4 +285,3 @@ MediaDeviceCollection::ejectAction() const
 }
 
 #include "MediaDeviceCollection.moc"
-

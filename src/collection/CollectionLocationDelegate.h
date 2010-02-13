@@ -17,18 +17,21 @@
 #ifndef COLLECTIONLOCATIONDELEGATE_H
 #define COLLECTIONLOCATIONDELEGATE_H
 
+#include "amarok_export.h"
 #include "meta/Meta.h"
 
 class CollectionLocation;
 
-class CollectionLocationDelegate
+class AMAROK_EXPORT CollectionLocationDelegate
 {
 public:
     CollectionLocationDelegate() {};
     virtual ~ CollectionLocationDelegate() {};
 
     virtual bool reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
-    virtual bool errorDeleting( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
+    virtual bool reallyMove( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
+    virtual void errorDeleting( CollectionLocation *loc, const Meta::TrackList &tracks ) const = 0;
+    virtual void notWriteable( CollectionLocation *loc ) const = 0;
 };
 
 #endif

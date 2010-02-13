@@ -23,10 +23,9 @@
 #include "meta/Meta.h"
 #include "SmartPointerList.h"
 
-#include <QPointer>
-
-#include <KAction>
 #include <KSystemTrayIcon> //baseclass
+
+#include <QPointer>
 
 class QEvent;
 class App;

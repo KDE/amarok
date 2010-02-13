@@ -37,6 +37,7 @@ class AmarokMimeData;
 class QMimeData;
 class QModelIndex;
 
+
 namespace Playlist
 {
 
@@ -162,6 +163,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
         QList<Item*> m_items;            //! list of tracks in order currently in the playlist
         QHash<quint64, Item*> m_itemIds; //! maps track id's to items
+
         int m_activeRow;                 //! the row being played
 
         qint64 m_totalLength;
@@ -171,6 +173,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         bool m_proposeOverwriting;
 
 };
+
 } // namespace Playlist
 
 #endif

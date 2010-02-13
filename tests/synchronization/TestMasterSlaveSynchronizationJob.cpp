@@ -23,6 +23,7 @@
 #include "synchronization/MasterSlaveSynchronizationJob.h"
 
 #include "CollectionTestImpl.h"
+#include "collection/MockCollectionLocationDelegate.h"
 #include "mocks/MockTrack.h"
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
@@ -42,13 +43,6 @@ using ::testing::_;
 
 static int trackCopyCount;
 static int trackRemoveCount;
-
-class MockCollectionLocationDelegate : public CollectionLocationDelegate
-{
-public:
-     MOCK_CONST_METHOD2( reallyDelete, bool( CollectionLocation *loc, const Meta::TrackList &tracks ) );
-     MOCK_CONST_METHOD2( errorDeleting, bool( CollectionLocation *loc, const Meta::TrackList &tracks ) );
-};
 
 class MyCollectionLocation : public CollectionLocation
 {

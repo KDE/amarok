@@ -75,7 +75,7 @@
          <string>If checked, convert spaces to underscores.</string>
         </property>
         <property name="whatsThis">
-         <string>If checked all spaces will be replaced with spaces in the file names. If not checked spaces will be left as they are.</string>
+         <string>If checked all spaces will be replaced with underscores in the file names. If not, spaces will be left as they are.</string>
         </property>
         <property name="text">
          <string>Replace spaces with &amp;underscores</string>

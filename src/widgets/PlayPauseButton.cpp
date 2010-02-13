@@ -53,13 +53,17 @@ void PlayPauseButton::mousePressEvent( QMouseEvent *me )
 {
     me->accept();
     m_isClick = true;
+    int step = m_anim.step;
+    m_anim.step = 0;
+    updateIconBuffer();
+    m_anim.step = step;
     update();
 }
 
 void PlayPauseButton::mouseReleaseEvent( QMouseEvent *me )
 {
     me->accept();
-    if ( m_isClick && underMouse() )
+    if ( m_isClick && rect().contains( me->pos() ) )
     {
         m_isClick = false;
         emit toggled( !m_isPlaying );
@@ -86,6 +90,14 @@ void PlayPauseButton::resizeEvent( QResizeEvent *re )
     m_iconPlay[1] =  The::svgHandler()->renderSvg( "PLAYpause_active", width(), height(), "PLAYpause_active" ).toImage();
     m_iconPause[0] =  The::svgHandler()->renderSvg( "playPAUSE", width(), height(), "playPAUSE" ).toImage();
     m_iconPause[1] =  The::svgHandler()->renderSvg( "playPAUSE_active", width(), height(), "playPAUSE_active" ).toImage();
+    if ( layoutDirection() == Qt::RightToLeft )
+    {
+        for ( int i = 0; i < 2; ++i )
+        {
+            m_iconPlay[i] = m_iconPlay[i].mirrored( true, false );
+            m_iconPause[i] = m_iconPause[i].mirrored( true, false );
+        }
+    }
     updateIconBuffer();
 }
 

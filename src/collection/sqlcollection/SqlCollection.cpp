@@ -235,13 +235,27 @@ SqlCollection::location() const
 bool
 SqlCollection::isWritable() const
 {
-    return true;
+    CollectionLocation *loc = location();
+    if( loc )
+    {
+        bool res = loc->isWritable();
+        delete loc;
+        return res;
+    }
+    return false;
 }
 
 bool
 SqlCollection::isOrganizable() const
 {
-    return true;
+    CollectionLocation *loc = location();
+    if( loc )
+    {
+        bool res = loc->isOrganizable();
+        delete loc;
+        return res;
+    }
+    return false;
 }
 
 void

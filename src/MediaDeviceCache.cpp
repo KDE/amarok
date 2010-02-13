@@ -25,6 +25,7 @@
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
+#include <solid/genericinterface.h>
 #include <solid/opticaldisc.h>
 #include <solid/portablemediaplayer.h>
 #include <solid/storageaccess.h>
@@ -119,6 +120,29 @@ MediaDeviceCache::refreshCache()
             m_name[device.udi()] = device.vendor() + " - " + device.product();
         }
     }
+    deviceList = Solid::Device::allDevices();
+    foreach( const Solid::Device &device, deviceList )
+    {
+        if( const Solid::GenericInterface *generic = device.as<Solid::GenericInterface>() )
+        {
+            if( m_type.contains( device.udi() ) )
+                continue;
+
+            const QMap<QString, QVariant> properties = generic->allProperties();
+            if( !properties.contains("info.capabilities") )
+                continue;
+
+            const QStringList capabilities = properties["info.capabilities"].toStringList();
+            if( !capabilities.contains("afc") )
+                continue;
+
+            debug() << "Found AFC capable Solid::DeviceInterface::GenericInterface with udi = " << device.udi();
+            debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
+
+            m_type[device.udi()] = MediaDeviceCache::SolidGenericType;
+            m_name[device.udi()] = device.vendor() + " - " + device.product();
+        }
+    }
     KConfigGroup config = Amarok::config( "PortableDevices" );
     QMap<QString, QString> manualDevices = config.entryMap();
     foreach( const QString &udi, manualDevices.keys() )
@@ -186,6 +210,26 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
     {
         debug() << "device is a PMP";
         m_type[udi] = MediaDeviceCache::SolidPMPType;
+        m_name[udi] = device.vendor() + " - " + device.product();
+    }
+    else if( const Solid::GenericInterface *generic = device.as<Solid::GenericInterface>() )
+    {
+        const QMap<QString, QVariant> properties = generic->allProperties();
+        if( !properties.contains("info.capabilities") )
+        {
+            debug() << "udi " << udi << " does not describe a portable media player or storage volume";
+            return;
+        }
+
+        const QStringList capabilities = properties["info.capabilities"].toStringList();
+        if( !capabilities.contains("afc") )
+        {
+            debug() << "udi " << udi << " does not describe a portable media player or storage volume";
+            return;
+        }
+
+        debug() << "udi" << udi << "is AFC cabable (Apple mobile device)";
+        m_type[udi] = MediaDeviceCache::SolidGenericType;
         m_name[udi] = device.vendor() + " - " + device.product();
     }
     else

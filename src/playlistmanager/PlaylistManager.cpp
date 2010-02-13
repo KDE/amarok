@@ -129,17 +129,6 @@ PlaylistManager::removeProvider( PlaylistProvider *provider )
 
 }
 
-int
-PlaylistManager::registerCustomCategory( const QString & name )
-{
-    int typeNumber = Custom + m_customCategories.size() + 1;
-
-    //TODO: find the name in the configfile, might have been registered before.
-    m_customCategories[typeNumber] = name;
-
-    return typeNumber;
-}
-
 void
 PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
 {
@@ -220,90 +209,12 @@ PlaylistManager::downloadComplete( KJob * job )
     playlist->load( stream );
 }
 
-QString
-PlaylistManager::categoryName( int playlistCategory )
-{
-    switch( playlistCategory )
-    {
-        case CurrentPlaylist: return i18n("Current Playlist");
-        case UserPlaylist: return i18n("Saved Playlists");
-        case PodcastChannel: return i18n("Podcasts");
-        case Dynamic: return i18n("Dynamic Playlists");
-        case SmartPlaylist: return i18n("Smart Playlist");
-    }
-    //if control reaches here playlistCategory is either invalid or a custom category
-    if( m_customCategories.contains( playlistCategory ) )
-        return m_customCategories[playlistCategory];
-    else
-        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
-        return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
-}
-
-QString
-PlaylistManager::categoryShortDescription( int playlistCategory )
-{
-    switch( playlistCategory )
-    {
-        case CurrentPlaylist: return i18n("Current Playlist");
-        case UserPlaylist: return i18n( "User generated and imported playlists" );
-        case PodcastChannel: return i18n("Podcasts");
-        case Dynamic: return i18n("Dynamic Playlists");
-        case SmartPlaylist: return i18n("Smart Playlist");
-    }
-    //if control reaches here playlistCategory is either invalid or a custom category
-    if( m_customCategories.contains( playlistCategory ) )
-        return m_customCategories[playlistCategory];
-    else
-        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
-        return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
-}
-
-QString
-PlaylistManager::categoryLongDescription( int playlistCategory )
-{
-    switch( playlistCategory )
-    {
-        case CurrentPlaylist: return i18n("Current Playlist");
-        case UserPlaylist:
-            return i18n( "Create, edit, organize and load playlists. "
-        "Amarok automatically adds any playlists found when scanning your collection, "
-        "and any playlists that you save are also shown here." );
-        case PodcastChannel: return i18n("Podcasts");
-        case Dynamic: return i18n("Dynamic Playlists");
-        case SmartPlaylist: return i18n("Smart Playlist");
-    }
-    //if control reaches here playlistCategory is either invalid or a custom category
-    if( m_customCategories.contains( playlistCategory ) )
-        return m_customCategories[playlistCategory];
-    else
-        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
-        return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
-}
-
-KIcon
-PlaylistManager::categoryIcon( int playlistCategory )
-{
-    switch( playlistCategory )
-    {
-        case CurrentPlaylist: return KIcon( "amarok_playlist" );
-        case UserPlaylist: return KIcon( "amarok_playlist" );
-        case PodcastChannel: return KIcon( "podcast-amarok" );
-        case Dynamic: return KIcon( "dynamic-amarok" );
-        case SmartPlaylist: return KIcon( "dynamic-amarok" );
-    }
-    //if control reaches here playlistCategory is either invalid or a custom category
-//TODO: custom categories
-//    if( m_customCategories.contains( playlistCategory ) )
-//        return m_customCategories[playlistCategory];
-//    else
-        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
-    return KIcon( "amarok_playlist" );
-}
-
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString &name,
                        UserPlaylistProvider *toProvider )
 {
+    AMAROK_DEPRECATED
+    // used by: Playlist::Widget::slotSaveCurrentPlaylist()
     //if toProvider is 0 use the default UserPlaylistProvider (SQL)
     UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
     Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
@@ -326,16 +237,11 @@ PlaylistManager::save( Meta::TrackList tracks, const QString &name,
     return !playlist.isNull();
 }
 
-void
-PlaylistManager::saveCurrentPlaylist() //SLOT
-{
-    Meta::TrackList tracks = The::playlist()->tracks();
-    save( tracks );
-}
-
 bool
 PlaylistManager::import( const QString& fromLocation )
 {
+    // used by: PlaylistBrowserNS::UserModel::dropMimeData()
+    AMAROK_DEPRECATED
     DEBUG_BLOCK
     if( !m_playlistFileProvider )
     {
@@ -343,17 +249,6 @@ PlaylistManager::import( const QString& fromLocation )
         return false;
     }
     return m_playlistFileProvider->import( KUrl(fromLocation) );
-}
-
-bool
-PlaylistManager::exportPlaylist( Meta::TrackList tracks,
-                        const QString &location )
-{
-    DEBUG_BLOCK
-    debug()<<"About to export playlist to "<< location;
-    KUrl url( location );
-
-    return Meta::exportPlaylistFile( tracks, url );
 }
 
 void
@@ -416,16 +311,6 @@ PlaylistManager::deletePlaylists( Meta::PlaylistList playlistlist )
     {
         prov->deletePlaylists( provLists[ prov ] );
     }
-}
-
-bool
-PlaylistManager::moveTrack( Meta::PlaylistPtr playlist, int from, int to )
-{
-    DEBUG_BLOCK
-    debug() << "in playlist: " << playlist->prettyName();
-    debug() << QString("move track %1 to position %2").arg( from ).arg( to );
-    //TODO: implement
-    return false;
 }
 
 PlaylistProvider*

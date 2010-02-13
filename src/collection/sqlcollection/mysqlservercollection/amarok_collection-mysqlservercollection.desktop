@@ -98,7 +98,7 @@ X-KDE-Library=amarok_collection-mysqlservercollection
 
 X-KDE-Amarok-authors=Jeff Mitchell
 X-KDE-Amarok-email=mitchell@kde.org
-X-KDE-Amarok-framework-version=52
+X-KDE-Amarok-framework-version=53
 X-KDE-Amarok-name=mysqlserver-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

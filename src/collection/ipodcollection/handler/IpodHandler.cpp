@@ -87,8 +87,6 @@ IpodHandler::IpodHandler( IpodCollection *mc, const IpodDeviceInfo *deviceInfo )
     , m_name()
     , m_deviceInfo( deviceInfo )
     , m_isShuffle( false )
-    , m_isMobile( false )
-    , m_isIPhone( false )
     , m_supportsArtwork( false )
     , m_supportsVideo( false )
     , m_rockboxFirmware( false )
@@ -118,16 +116,42 @@ IpodHandler::~IpodHandler()
     if ( m_itdb )
         itdb_free( m_itdb );
 
-    if( !m_deviceInfo->wasMounted() && !m_deviceInfo->mountPoint().isEmpty())
+    if( m_autoConnect )
     {
-        int result = QProcess::execute("fusermount -u " + mountPoint());
-        if( result )
+        QProcess unmount;
+        QStringList args;
+        args << "-u" << "-z" << mountPoint();
+        unmount.start("fusermount", args);
+        bool ok = unmount.waitForStarted();
+        if( !ok )
         {
-            debug() << "Unmounting imobiledevice using ifuse from" << mountPoint() << "failed";
+            debug() << "fusermount for unmounting" << mountPoint() << "failed to start";
         }
         else
         {
+            ok = unmount.waitForFinished();
+            if( !ok )
+                debug() << "fusermount did not terminate correctly";
+        }
+        if( ok )
+        {
+            ok = unmount.exitStatus() == QProcess::NormalExit;
+            if( !ok )
+                debug() << "fusermount did not exit normally";
+        }
+        if( ok )
+        {
+            ok = unmount.exitCode() == 0;
+            if( !ok )
+                debug() << "fusermount did not exit successfully";
+        }
+        if( ok )
+        {
             debug() << "Unmounted imobiledevice using ifuse from" << mountPoint();
+        }
+        else
+        {
+            debug() << "Unmounting imobiledevice using ifuse from" << mountPoint() << "failed";
         }
     }
 }
@@ -138,23 +162,49 @@ IpodHandler::init()
     bool isMounted = m_deviceInfo->wasMounted();
     if ( !isMounted )
     {
-        int result = -1;
-        if( m_deviceInfo->deviceUid().isEmpty() )
+        QStringList args;
+        if( !m_deviceInfo->deviceUid().isEmpty() )
         {
-            result = QProcess::execute(QString("ifuse " + mountPoint()));
+            args << "--uuid";
+            args << m_deviceInfo->deviceUid();
+            args << QString("-ofsname=afc://%1").arg(m_deviceInfo->deviceUid());
+        }
+        args << mountPoint();
+        QProcess ifuse;
+        debug() << "calling ifuse with args" << args;
+        ifuse.start("ifuse", args);
+        bool ok = ifuse.waitForStarted();
+        if( !ok )
+        {
+            debug() << "Failed to start ifuse";
         }
         else
         {
-            result = QProcess::execute(QString("ifuse --uuid" + m_deviceInfo->deviceUid() + " " + mountPoint()));
+            ok = ifuse.waitForFinished();
+            if( !ok )
+                debug() << "ifuse did not yet terminate";
         }
-        if (result)
+        if( ok )
+        {
+            ok = ifuse.exitStatus() == QProcess::NormalExit;
+            if( !ok )
+                debug() << "ifuse crashed";
+        }
+        if( ok )
+        {
+            ok = ifuse.exitCode() == 0;
+            if( !ok )
+                debug() << "ifuse exited with non-zero exit code";
+        }
+
+        if( ok )
+        {
+            isMounted = true;
+            debug() << "Successfully mounted imobiledevice using ifuse on" << mountPoint();
+        }
+        else
         {
             debug() << "Mounting imobiledevice using ifuse on" << mountPoint() << "failed";
-        }
-        else
-        {
-            debug() << "Successfully mounted imobiledevice using ifuse on" << mountPoint();
-            isMounted = true;
         }
     }
 
@@ -164,6 +214,8 @@ IpodHandler::init()
         m_memColl->slotAttemptConnectionDone( false );
         return;
     }
+
+    m_autoConnect = !m_deviceInfo->wasMounted();
 
     GError *err = 0;
     QString initError = i18n( "iPod was not initialized:" );
@@ -613,30 +665,19 @@ IpodHandler::initializeIpod()
     itdb_playlist_add(m_itdb, podcasts, -1);
     itdb_playlist_add(m_itdb, mpl, 0);
 
-    QString realPath;
-    if(!pathExists( itunesDir(), &realPath) )
-    {
-        dir.setPath( realPath );
-        dir.mkdir( dir.absolutePath() );
-    }
-    if( !dir.exists() )
-        return false;
+    QStringList dirs;
+    dirs << itdb_get_control_dir(itdb_get_mountpoint(m_itdb));
+    dirs << itdb_get_music_dir(itdb_get_mountpoint(m_itdb));
+    dirs << itdb_get_itunes_dir(itdb_get_mountpoint(m_itdb));
 
-    if( !pathExists( itunesDir( "Music" ), &realPath ) )
+    for(QStringList::iterator it = dirs.begin(); it != dirs.end(); ++it)
     {
-        dir.setPath( realPath );
-        dir.mkdir( dir.absolutePath() );
+        dir.setPath(*it);
+        if( !dir.exists() )
+            dir.mkdir( dir.absolutePath() );
+        if( !dir.exists() )
+            return false;
     }
-    if( !dir.exists() )
-        return false;
-
-    if( !pathExists( itunesDir( "iTunes" ), &realPath ) )
-    {
-        dir.setPath( realPath );
-        dir.mkdir( dir.absolutePath() );
-    }
-    if( !dir.exists() )
-        return false;
 
     m_dbChanged = true;
 
@@ -660,12 +701,9 @@ IpodHandler::detectModel()
     m_supportsArtwork = true;
 
     m_supportsVideo = false;
-    m_isIPhone = false;
     m_needsFirewireGuid = false;
     m_rockboxFirmware = false;
 
-    // needs recent libgpod-0.3.3 from cvs
-    bool guess = false;
     if( m_itdb && m_itdb->device )
     {
         debug() << "Attempting to get info...";
@@ -678,6 +716,10 @@ IpodHandler::detectModel()
         m_supportsArtwork = false;
         #endif
         debug() << "Supports Artwork: " << ( m_supportsArtwork ? "true" : "false" );
+
+        m_supportsVideo = itdb_device_supports_video( m_itdb->device );
+        debug() << "Supports Video: " << ( m_supportsVideo ? "true" : "false" );
+
         QString musicdirs;
         musicdirs.setNum( itdb_musicdirs_number(m_itdb) );
         debug() << "Musicdirs: " << musicdirs;
@@ -702,33 +744,9 @@ IpodHandler::detectModel()
                 m_isShuffle = true;
                 break;
 
-            case ITDB_IPOD_MODEL_IPHONE_1:
-            //TODO newer libgpod thinks that an iPod touch is silver, older that it's black
-            //case ITDB_IPOD_MODEL_TOUCH_BLACK:
-            //case ITDB_IPOD_MODEL_TOUCH_SILVER:
-                m_isIPhone = true;
-                debug() << "detected iPhone/iPod Touch" << endl;
-                break;
-
-            case ITDB_IPOD_MODEL_CLASSIC_SILVER:
-            case ITDB_IPOD_MODEL_CLASSIC_BLACK:
-                debug() << "detected iPod classic";
-            case ITDB_IPOD_MODEL_VIDEO_WHITE:
-            case ITDB_IPOD_MODEL_VIDEO_BLACK:
-            case ITDB_IPOD_MODEL_VIDEO_U2:
-                m_supportsVideo = true;
-                debug() << "detected video-capable iPod";
-                break;
-
-            case ITDB_IPOD_MODEL_MOBILE_1:
-                m_isMobile = true;
-                debug() << "detected iTunes phone" << endl;
-                break;
-
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
                 modelString = 0;
-                guess = true;
                 break;
 
             default:
@@ -743,11 +761,6 @@ IpodHandler::detectModel()
                case ITDB_IPOD_GENERATION_NANO_3:
                case ITDB_IPOD_GENERATION_TOUCH_1:
                   m_needsFirewireGuid = true;
-                  m_supportsVideo = true;
-                  break;
-               case ITDB_IPOD_GENERATION_VIDEO_1:
-               case ITDB_IPOD_GENERATION_VIDEO_2:
-                  m_supportsVideo = true;
                   break;
                case ITDB_IPOD_GENERATION_SHUFFLE_1:
                case ITDB_IPOD_GENERATION_SHUFFLE_2:
@@ -761,43 +774,11 @@ IpodHandler::detectModel()
         }
         if( modelString )
             m_name = QString( "iPod %1" ).arg( QString::fromUtf8( modelString ) );
-
-        if( m_needsFirewireGuid )
-        {
-            gchar *fwid = itdb_device_get_sysinfo( m_itdb->device, "FirewireGuid" );
-            if( fwid )
-               g_free( fwid );
-        }
     }
     else
     {
         debug() << "iPod type detection failed, no video support";
         m_needsFirewireGuid = true; // can't read db because no firewire, maybe
-        guess = true;
-    }
-
-    if( guess )
-    {
-        if( pathExists( ":iTunes:iTunes_Control" ) )
-        {
-            debug() << "iTunes/iTunes_Control found - assuming itunes phone" << endl;
-            m_isMobile = true;
-        }
-        else if( pathExists( ":iTunes_Control" ) )
-        {
-            debug() << "iTunes_Control found - assuming iPhone/iPod Touch" << endl;
-            m_isIPhone = true;
-        }
-    }
-
-    if( m_isIPhone )
-    {
-        #ifdef GDK_FOUND
-        m_supportsArtwork = true;
-        #else
-        m_supportsArtwork = false;
-        #endif
-        m_supportsVideo = true;
     }
 
     if( pathExists( ":.rockbox" ) )
@@ -1046,15 +1027,16 @@ IpodHandler::writeITunesDB( bool threaded )
 QString
 IpodHandler::itunesDir(const QString &p) const
 {
-    QString base( ":iPod_Control" );
-    if( m_isIPhone )
-        base = ":iTunes_Control";
-    else if( m_isMobile )
-        base = ":iTunes:iTunes_Control";
+    if( m_controlDir.isEmpty() )
+    {
+        const QString realControlDir= itdb_get_control_dir( itdb_get_mountpoint( m_itdb ) );
+        m_controlDir = ipodPath( realControlDir );
+    }
 
-    if( !p.startsWith( ':' ) )
-        base += ':';
-    return base + p;
+    if( p.startsWith( ':' ) )
+        return m_controlDir + p;
+    else
+        return m_controlDir + ':' + p;
 }
 
 /// Finds path to copy track to on Ipod
@@ -1222,12 +1204,7 @@ IpodHandler::orphanedTracks()
     DEBUG_BLOCK
 
     QStringList orphanedTracks;
-    QString musicpath;
-    if (!pathExists( itunesDir( "Music" ), &musicpath ))
-    {
-        debug() << "Music path not found";
-        return QStringList();
-    }
+    QString musicpath = itdb_get_music_dir( itdb_get_mountpoint( m_itdb ) );
 
     debug() << "Found path for Music";
 
@@ -1439,7 +1416,7 @@ IpodHandler::determineURLOnDevice( const Meta::TrackPtr &track )
 }
 
 QString
-IpodHandler::ipodPath( const QString &realPath )
+IpodHandler::ipodPath( const QString &realPath ) const
 {
     if( m_itdb )
     {
