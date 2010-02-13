@@ -99,7 +99,7 @@ X-KDE-Library=amarok_service_opmldirectory
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=52
+X-KDE-Amarok-framework-version=53
 X-KDE-Amarok-name=JamendoService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

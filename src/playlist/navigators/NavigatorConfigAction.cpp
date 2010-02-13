@@ -43,45 +43,45 @@ NavigatorConfigAction::NavigatorConfigAction( QWidget * parent )
     QAction * action = new QAction( parent );
     action->setSeparator( true );
     navigatorActions->addAction( action );
-    
+
     m_repeatTrackNavigatorAction = navigatorActions->addAction( i18n( "Repeat Track" ) );
     m_repeatTrackNavigatorAction->setIcon( KIcon( "media-repeat-track-amarok" ) );
     m_repeatTrackNavigatorAction->setCheckable( true );
-        
+
     m_repeatAlbumNavigatorAction = navigatorActions->addAction( i18n( "Repeat Album" ) );
     m_repeatAlbumNavigatorAction->setIcon( KIcon( "media-repeat-album-amarok" ) );
     m_repeatAlbumNavigatorAction->setCheckable( true );
-        
+
     m_repeatPlaylistNavigatorAction = navigatorActions->addAction( i18n( "Repeat Playlist" ) );
     m_repeatPlaylistNavigatorAction->setIcon( KIcon( "media-repeat-playlist-amarok" ) );
     m_repeatPlaylistNavigatorAction->setCheckable( true );
-        
+
     action = new QAction( parent );
     action->setSeparator( true );
     navigatorActions->addAction( action );
-    
+
     m_randomTrackNavigatorAction = navigatorActions->addAction( i18n( "Random Tracks" ) );
     m_randomTrackNavigatorAction->setIcon( KIcon( "media-random-tracks-amarok" ) );
     m_randomTrackNavigatorAction->setCheckable( true );
-        
+
     m_randomAlbumNavigatorAction = navigatorActions->addAction( i18n( "Random Albums" ) );
     m_randomAlbumNavigatorAction->setIcon( KIcon( "media-random-albums-amarok" ) );
     m_randomAlbumNavigatorAction->setCheckable( true );
 
     navigatorMenu->addActions( navigatorActions->actions() );
-        
+
     QMenu * favorMenu = navigatorMenu->addMenu( i18n( "Favor" ) );
     QActionGroup * favorActions = new QActionGroup( favorMenu );
 
     m_favorNoneAction = favorActions->addAction( i18n( "None" ) );
     m_favorNoneAction->setCheckable( true );
-    
+
     m_favorScoresAction = favorActions->addAction( i18n( "Higher Scores" ) );
     m_favorScoresAction->setCheckable( true );
-    
+
     m_favorRatingsAction = favorActions->addAction( i18n( "Higher Ratings" ) );
     m_favorRatingsAction->setCheckable( true );
-    
+
     m_favorLastPlayedAction = favorActions->addAction( i18n( "Not Recently Played" ) );
     m_favorLastPlayedAction->setCheckable( true );
 
@@ -205,7 +205,7 @@ void NavigatorConfigAction::setFavored( QAction *favorAction )
     else if( favorAction == m_favorLastPlayedAction )
     {
         AmarokConfig::setFavorTracks( AmarokConfig::EnumFavorTracks::LessRecentlyPlayed );
-    } 
+    }
 }
 
 #include "NavigatorConfigAction.moc"

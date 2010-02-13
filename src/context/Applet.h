@@ -86,7 +86,9 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
 
     protected:
         Plasma::IconWidget* addAction( QAction *action, const int size = 16 );
+        bool canAnimate();
 
+        bool m_canAnimate;
         bool m_collapsed;
         int  m_heightCurrent;
         int  m_heightCollapseOn;

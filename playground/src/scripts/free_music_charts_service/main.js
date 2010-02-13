@@ -33,7 +33,7 @@ service_name = "Free Music Charts";
 html = "<div style=\"background-color:#e6f3ff; height: 100%;\"><div style=\"background-color:#aacef3;\"><center><b>Free Music Charts</b></center></div><br/>The rules for the Darkerradio.com Free Music Charts are quite simple: the best 15 songs from the last month and five new ones are the candidates for the next voting. Only open music is allowed to take part, since February 2009 a song can stay in the charts for a time of six months max. You have up to five votes.<br/><br/>You can cast your votes by going to the menu bar: <i>Tools &rarr; Free Music Charts Voting</i></div>";
 
 votingUrl = new QUrl( "http://www.darkerradio.com/free-music-charts/free-music-charts-voting/" );
-xmlUrl    = new QUrl( "http://krohlas.de/fmc.xml" );
+xmlUrl    = new QUrl( "http://www.archive.org/download/freemusiccharts.songs/fmc.xml" );
 data      = new QIODevice;
 doc       = new QDomDocument( "doc" );
 elt       = new QDomElement;

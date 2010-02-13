@@ -278,7 +278,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         bool writeFirewireGuid();
         KUrl determineURLOnDevice( const Meta::TrackPtr &track );
         QString itunesDir( const QString &path = QString() ) const;
-        QString ipodPath( const QString &realPath );
+        QString ipodPath( const QString &realPath ) const;
         bool pathExists( const QString &ipodPath, QString *realPath = 0 );
         QString realPath( const char *ipodPath );
 
@@ -339,14 +339,13 @@ class IpodHandler : public Meta::MediaDeviceHandler
 
         /* Ipod Model */
         bool m_isShuffle;
-        bool m_isMobile;
-        bool m_isIPhone;
 
         /* Properties of Ipod */
         bool m_supportsArtwork;
         bool m_supportsVideo;
         bool m_rockboxFirmware;
         bool m_needsFirewireGuid;
+        mutable QString m_controlDir;
 
         /* Success/Failure */
         bool m_dbChanged;

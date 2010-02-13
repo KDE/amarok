@@ -38,6 +38,7 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
 {
     m_belowModel = belowModel;
     setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
+
     // signal proxies
     connect( sourceModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
     connect( sourceModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
@@ -62,8 +63,7 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
 
     regroupRows( 0, max - 1 );
 
-     setObjectName( "GroupingProxy" );
-
+    setObjectName( "GroupingProxy" );
 }
 
 Playlist::GroupingProxy::~GroupingProxy()

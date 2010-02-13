@@ -53,13 +53,17 @@ void PlayPauseButton::mousePressEvent( QMouseEvent *me )
 {
     me->accept();
     m_isClick = true;
+    int step = m_anim.step;
+    m_anim.step = 0;
+    updateIconBuffer();
+    m_anim.step = step;
     update();
 }
 
 void PlayPauseButton::mouseReleaseEvent( QMouseEvent *me )
 {
     me->accept();
-    if ( m_isClick && underMouse() )
+    if ( m_isClick && rect().contains( me->pos() ) )
     {
         m_isClick = false;
         emit toggled( !m_isPlaying );

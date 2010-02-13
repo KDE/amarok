@@ -3,7 +3,7 @@ Amarok ChangeLog
 (C) 2002-2010 the Amarok authors.
 
 
-VERSION 2.2.3
+VERSION 2.3-Beta
   FEATURES:
     * Added a configuration dialog for Local Podcasts. Update interval and base
       download directory can now be configured. (BR 221398)
@@ -64,6 +64,7 @@ VERSION 2.2.3
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
+    * Prevent custom sliders from allocating a lot of pixmap resources (xrestop)
     * Corruption of guid strings by passing them as a KUrl caused podcast episodes
       to be readded on each update. This issue has been solved.
       If you have episodes that appear twice, remove the channel and add it again.

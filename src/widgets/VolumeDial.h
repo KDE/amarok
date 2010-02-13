@@ -39,7 +39,7 @@ public slots:
        Remove an added wheelproxy. The slot is automatically bound to the widgets deconstruction
        signal when added. You don't have to do that.
     */
-    void removeWheelProxy( QObject *w );
+    void removeWheelProxy( QObject * );
     void setMuted( bool mute );
 
 signals:
@@ -50,9 +50,11 @@ protected:
     bool eventFilter( QObject *o, QEvent *e );
     void leaveEvent( QEvent * );
     void paintEvent( QPaintEvent * );
+    void mouseMoveEvent( QMouseEvent * );
     void mousePressEvent( QMouseEvent * );
     void mouseReleaseEvent( QMouseEvent * );
     void resizeEvent(QResizeEvent *);
+    void sliderChange( SliderChange change );
     void timerEvent ( QTimerEvent * );
     friend class MainToolbar;
     void wheelEvent( QWheelEvent * );
@@ -66,7 +68,7 @@ private slots:
 
 private:
     QPixmap m_icon[4];
-    int m_unmutedValue;
+    int m_unmutedValue, m_formerValue;
     QList<QWidget*> m_wheelProxies;
     struct
     {

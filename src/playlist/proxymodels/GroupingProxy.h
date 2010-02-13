@@ -29,15 +29,6 @@
 #include <QHash>
 #include <QModelIndex>
 
-class QMimeData;
-
-/* Ordinarily, we'd just subclass PlaylistModel and tweak a couple of the
- * functions that need to be different, but the singleton nature of the
- * PlaylistModel makes inheritance much more difficult, so we have to use a
- * proxy model instead.  Unfortunately, QAbstractProxyModel doesn't proxy
- * all of its functions automatically, so we have to proxy a lot of
- * them manually.  -- stharward */
-
 namespace Playlist
 {
 enum GroupDataRoles

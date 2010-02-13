@@ -138,17 +138,13 @@ Playlist::Widget::Widget( QWidget* parent )
                  );
 
         plBar->addAction( m_savePlaylistMenu );
-        
+
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
         plBar->addSeparator();
 
-        //FIXME this action should go in ActionController, but we don't have any visibility to the view
-        KAction *action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
-        connect( action, SIGNAL( triggered( bool ) ), m_playlistView, SLOT( scrollToActiveTrack() ) );
-        plBar->addAction( action );
-
+        plBar->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
         plBar->addSeparator();
 
         NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( this );
@@ -228,6 +224,12 @@ Playlist::Widget::slotSaveCurrentPlaylist()
         return;
 
     The::playlistManager()->save( The::playlist()->tracks(), QString(), provider );
+}
+
+void
+Playlist::Widget::showActiveTrack() const
+{
+    m_playlistView->scrollToActiveTrack();
 }
 
 void

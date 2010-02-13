@@ -30,12 +30,12 @@ class QHBoxLayout;
 class QSpinBox;
 class QCheckBox;
 
-class PlayistInfo : public Context::Applet
+class PlaylistInfo : public Context::Applet
 {
     Q_OBJECT
 public:
-    PlayistInfo( QObject* parent, const QStringList& args );
-    ~PlayistInfo();
+    PlaylistInfo( QObject* parent, const QStringList& args );
+    ~PlaylistInfo();
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
 
@@ -74,6 +74,6 @@ private:
 
 };
 
-K_EXPORT_AMAROK_APPLET( playlistinfo, PlayistInfo )
+K_EXPORT_AMAROK_APPLET( playlistinfo, PlaylistInfo )
 
 #endif

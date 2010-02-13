@@ -17,7 +17,7 @@
 #include "ProxyBase.h"
 
 #include "meta/Meta.h"
-#include "playlistmanager/PlaylistManager.h"
+#include "meta/PlaylistFileSupport.h"
 
 namespace Playlist
 {
@@ -133,7 +133,7 @@ ProxyBase::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, i
 bool
 ProxyBase::exportPlaylist( const QString &path ) const
 {
-    return The::playlistManager()->exportPlaylist( tracks(), path );
+    return Meta::exportPlaylistFile( tracks(), path );
 }
 
 void

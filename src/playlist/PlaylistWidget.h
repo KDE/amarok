@@ -49,6 +49,7 @@ public:
 
     SortWidget * sortWidget() { return m_sortWidget; }
     ProgressiveSearchWidget * searchWidget() { return m_searchWidget; }
+    void showActiveTrack() const;
 
 public slots:
     void showDynamicHint( bool enabled );

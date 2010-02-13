@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "PrettyTreeView.h"
 
 #include "PaletteHandler.h"
@@ -27,7 +27,7 @@ PrettyTreeView::PrettyTreeView( QWidget *parent )
     : QTreeView( parent )
 {
     setAlternatingRowColors( true );
-    
+
     The::paletteHandler()->updateItemView( this );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 }

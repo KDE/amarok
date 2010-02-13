@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef TRACKNAVIGATOR_H
 #define TRACKNAVIGATOR_H
 
@@ -29,7 +29,7 @@
 namespace Playlist
 {
 
-    /** 
+    /**
      * An abstract class which defines what should be done after a track
      * finishes playing.  The Playlist::Model will have an object of the
      * currently active strategy.  It is the "strategy" pattern from the Design
@@ -90,7 +90,7 @@ namespace Playlist
             int queuePosition( const quint64 id ) const;
 
             /**
-             * Getter for the internal queue. 
+             * Getter for the internal queue.
              * @return the tracks queued.
              */
             QQueue<quint64> queue();
@@ -112,11 +112,11 @@ namespace Playlist
             // repeat the entire playlist when we've reached the end
             bool m_repeatPlaylist;
 
-            // Holds the list of tracks to be played next. General 
+            // Holds the list of tracks to be played next. General
             // workflow should dictate that the TrackAdvancer should
             // respect the queue list as an override to what the Advancer
             // implementation would normally return as the next track.
-            // TODO: a history queue to allow requestLastTrack() to work 
+            // TODO: a history queue to allow requestLastTrack() to work
             // properly?
             // Static queue so that all navigators share the same queue
             QQueue<quint64> m_queue;

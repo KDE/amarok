@@ -44,7 +44,10 @@ if (IPOD_FOUND AND WITH_IPOD)
 	handler/capabilities/IpodWriteCapability.cpp	
 	support/IpodDeviceInfo.cpp
 	support/IpodConnectionAssistant.cpp)
-	kde4_add_plugin(amarok_collection-ipodcollection ${amarok_collection-ipodcollection_PART_SRCS})
+
+    link_directories(${IPOD_LIBRARY_DIRS})
+
+    kde4_add_plugin(amarok_collection-ipodcollection ${amarok_collection-ipodcollection_PART_SRCS})
 
     target_link_libraries(amarok_collection-ipodcollection
         amaroklib

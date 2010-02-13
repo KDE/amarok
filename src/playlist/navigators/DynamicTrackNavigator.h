@@ -38,7 +38,7 @@ namespace Playlist
         public:
             DynamicTrackNavigator( Dynamic::DynamicPlaylistPtr p ) ;
             ~DynamicTrackNavigator();
-            
+
             void appendUpcoming();
 
         public slots:

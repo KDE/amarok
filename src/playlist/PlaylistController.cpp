@@ -65,7 +65,7 @@ void
 Playlist::Controller::insertOptioned( Meta::TrackPtr track, int options )
 {
     DEBUG_BLOCK
-    if( track == Meta::TrackPtr() )
+    if( ! track )
         return;
 
     Meta::TrackList list;
@@ -77,6 +77,7 @@ void
 Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 {
     DEBUG_BLOCK
+
     if( list.isEmpty() )
         return;
 
@@ -99,10 +100,10 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 
         m_undoStack->beginMacro( "Replace playlist" ); // TODO: does this need to be internationalized?
         clear();
-        
+
         //make sure that we turn off dynamic mode.
         Amarok::actionCollection()->action( "disable_dynamic" )->trigger();
-        
+
         insertionHelper( -1, list );
         m_undoStack->endMacro();
         firstItemAdded = 0;
@@ -139,15 +140,16 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     const Phonon::State engineState = The::engineController()->state();
     debug() << "engine state: " << engineState;
 
-    if( options & DirectPlay )
-    {
+    bool playNow = false;
+    if ( options & DirectPlay )
+        playNow = true;
+    if ( options & StartPlay )
+        if ( ( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) || ( engineState == Phonon::PausedState) )
+            playNow = true;
+
+    if ( playNow )
         // We need to play an ID rather than a row because Playlist::Actions refer to the
         // topmost model.
-        Actions::instance()->play( m_sourceModel->idAt( firstItemAdded ) );
-    }
-    else if ( ( options & StartPlay ) && ( ( engineState == Phonon::StoppedState ) ||
-                                           ( engineState == Phonon::LoadingState ) ||
-                                             engineState == Phonon::PausedState ) )
         Actions::instance()->play( m_sourceModel->idAt( firstItemAdded ) );
 
     emit changed();
