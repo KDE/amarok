@@ -34,24 +34,23 @@
     <testcase classname="{$classname}" name="{@name}" time="0.0">
         <!-- handle fail -->
         <xsl:if test="Incident/@type = 'fail'">
-      <!-- will be used to generate "nice" error message -->
-      <xsl:variable name="file" select="Incident/@file" />
-      <xsl:variable name="line" select="Incident/@line" />
-      <xsl:variable name="description">
-        <xsl:value-of select="Incident/Description" />
-      </xsl:variable>
+            <!-- will be used to generate "nice" error message -->
+            <xsl:variable name="file" select="Incident/@file" />
+            <xsl:variable name="line" select="Incident/@line" />
+            <xsl:variable name="description">
+                <xsl:value-of select="Incident/Description" />
+            </xsl:variable>
 
-      <!-- display a reasonable error message -->
+            <!-- display a reasonable error message -->
             <xsl:element name="failure">
                 <xsl:attribute name="type">Standard</xsl:attribute>
                 <xsl:attribute name="message">
-          <xsl:value-of select="concat($file,':',$line,' :: ',$description)" />
+                    <xsl:value-of select="concat($file,':',$line,' :: ',$description)" />
                 </xsl:attribute>
             </xsl:element>
-
         </xsl:if>
 
-    <!-- handle skip -->
+        <!-- handle skip -->
         <xsl:if test="Incident/@type = 'skip'">
 
         </xsl:if>
@@ -60,7 +59,7 @@
 
 <xsl:template name="display-system-out">
   <system-out>
-    <xsl:for-each select="/TestCase/TestFunction/Incident[@type='fail'] | /TestCase/TestFunction/Message[@type='skip']">
+    <xsl:for-each select="/TestCase/TestFunction/Incident[@type='fail'] | /TestCase/TestFunction/Message[@type='skip'] | /TestCase/TestFunction/Message[@type='qfatal']">
       <xsl:choose>
         <xsl:when test="@type='fail'">
           <xsl:value-of select="Description"/>
@@ -68,7 +67,12 @@
         <xsl:when test="@type='skip'">
           <xsl:value-of select="Description"/>
         </xsl:when>
+        <xsl:when test="@type='qfatal'">
+          <xsl:value-of select="Description"/>
+        </xsl:when>
       </xsl:choose>
+      <xsl:text>
+      </xsl:text>
     </xsl:for-each>
   </system-out>
 </xsl:template>
