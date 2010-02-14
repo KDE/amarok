@@ -81,7 +81,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->replaceEdit->setText( AmarokConfig::replacementString() );
 
     ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
-    ui->conflictLabel->hide();
+    ui->conflictLabel->setText("");
     QPalette p = ui->conflictLabel->palette();
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
     ui->conflictLabel->setPalette( p );
@@ -316,12 +316,13 @@ OrganizeCollectionDialog::preview( const QString &format )
     }
     if( conflict )
     {
-        ui->conflictLabel->show();
         if( ui->overwriteCheck->isChecked() )
             ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will be overwritten." ) );
         else
             ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will not be changed." ) );
     }
+    else
+        ui->conflictLabel->setText(""); // we clear the text instead of hiding it to retain the layout spacing
 }
 
 
