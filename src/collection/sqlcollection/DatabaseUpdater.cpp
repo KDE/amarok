@@ -33,6 +33,12 @@
 
 static const int DB_VERSION = 13;
 
+int
+DatabaseUpdater::expectedDatabaseVersion()
+{
+    return DB_VERSION;
+}
+
 DatabaseUpdater::DatabaseUpdater()
     : m_collection( 0 )
     , m_storage( 0 )

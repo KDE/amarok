@@ -52,7 +52,9 @@ DatabaseUpdaterTest::testNeedsNoUpdate()
     DatabaseUpdater updater;
     updater.setStorage( &storage );
     storage.query( "CREATE TABLE admin (component VARCHAR(40), version INTEGER);" );
-    storage.query( "INSERT INTO admin(component, version) VALUES('DB_VERSION', 12);");
+    storage.query( QString( "INSERT INTO admin(component, version) VALUES('DB_VERSION', %1 );" ).arg( updater.expectedDatabaseVersion() ) );
+
+    QEXPECT_FAIL( "", "Connection to MySql Embedded database not closed completely", Abort );
     QVERIFY( !updater.needsUpdate() );
 }
 
