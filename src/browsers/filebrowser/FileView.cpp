@@ -18,10 +18,12 @@
 
 #include "Debug.h"
 #include "collection/CollectionManager.h"
+#include "collection/support/FileCollectionLocation.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "dialogs/TagDialog.h"
+#include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
@@ -49,6 +51,10 @@ FileView::FileView( QWidget * parent )
     , m_editAction( 0 )
     , m_pd( 0 )
     , m_ongoingDrag( false )
+    , m_moveActivated( false )
+    , m_copyActivated( false )
+    , m_moveAction( 0 )
+    , m_copyAction( 0 )
 {
     setFrameStyle( QFrame::NoFrame );
     setItemsExpandable( false );
@@ -80,7 +86,42 @@ void FileView::contextMenuEvent ( QContextMenuEvent * e )
 
     foreach( QAction * action, actions )
         menu->addAction( action );
-    
+
+    // Create Copy/Move to menu items
+    // ported from old filebrowser
+    QList<Amarok::Collection*> writableCollections;
+    QHash<Amarok::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
+    QHash<Amarok::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+    while ( it != hash.constEnd() )
+    {
+        Amarok::Collection *coll = it.key();
+        if ( coll && coll->isWritable() )
+        {
+            writableCollections.append( coll );
+        }
+        ++it;
+    }
+    if ( !writableCollections.isEmpty() )
+    {
+        QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), this );
+        foreach( Amarok::Collection *coll, writableCollections )
+        {
+            CollectionAction *moveAction = new CollectionAction( coll, this );
+            connect( moveAction, SIGNAL( triggered() ), this, SLOT( slotPrepareMoveTracks() ) );
+            moveMenu->addAction( moveAction );
+        }
+        menu->addMenu( moveMenu );
+
+        QMenu *copyMenu = new QMenu( i18n( "Copy to Collection" ), this );
+        foreach( Amarok::Collection *coll, writableCollections )
+        {
+            CollectionAction *copyAction = new CollectionAction( coll, this );
+            connect( copyAction, SIGNAL( triggered() ), this, SLOT( slotPrepareCopyTracks() ) );
+            copyMenu->addAction( copyAction );
+        }
+        menu->addMenu( copyMenu );
+    }
+
     menu->exec( e->globalPos() );
  
 }
@@ -105,6 +146,120 @@ void FileView::slotEditTracks()
         dialog->show();
     }
 }
+
+void FileView::slotPrepareMoveTracks()
+{
+    if( m_moveActivated )
+        return;
+
+    CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
+    if ( !action )
+        return;
+
+    m_moveActivated = true;
+    m_moveAction = action;
+
+    const KFileItemList list = selectedItems();
+    if ( list.isEmpty() )
+        return;
+
+    DirectoryLoader* dl = new DirectoryLoader();
+    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotMoveTracks( const Meta::TrackList& ) ) );
+    dl->init( list.urlList() );
+}
+
+void FileView::slotPrepareCopyTracks()
+{
+    if( m_copyActivated )
+        return;
+
+    CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
+    if ( !action )
+        return;
+
+    m_copyActivated = true;
+    m_copyAction = action;
+
+    const KFileItemList list = selectedItems();
+    if ( list.isEmpty() )
+        return;
+
+    DirectoryLoader* dl = new DirectoryLoader();
+    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotCopyTracks( const Meta::TrackList& ) ) );
+    dl->init( list.urlList() );
+}
+
+void
+FileView::slotCopyTracks( const Meta::TrackList& tracks )
+{
+    if( !m_copyAction || !m_copyActivated )
+        return;
+
+    QSet<Amarok::Collection*> collections;
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        collections.insert( track->collection() );
+    }
+
+    if( collections.count() == 1 )
+    {
+        Amarok::Collection *sourceCollection = collections.values().first();
+        CollectionLocation *source;
+        if( sourceCollection )
+        {
+            source = sourceCollection->location();
+        }
+        else
+        {
+            source = new FileCollectionLocation();
+        }
+        CollectionLocation *destination = m_copyAction->collection()->location();
+        source->prepareCopy( tracks, destination );
+    }
+    else
+    {
+        warning() << "Cannot handle copying tracks from multiple collections, doing nothing to be safe";
+    }
+    m_copyActivated = false;
+    m_copyAction = 0;
+}
+
+void
+FileView::slotMoveTracks( const Meta::TrackList& tracks )
+{
+    if( !m_moveAction || !m_moveActivated )
+        return;
+
+    QSet<Amarok::Collection*> collections;
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        collections.insert( track->collection() );
+    }
+    if( collections.count() == 1 )
+    {
+        Amarok::Collection *sourceCollection = collections.values().first();
+        CollectionLocation *source;
+        if( sourceCollection )
+        {
+            source = sourceCollection->location();
+        }
+        else
+        {
+            source = new FileCollectionLocation();
+        }
+        CollectionLocation *destination = m_moveAction->collection()->location();
+
+        source->prepareMove( tracks, destination );
+    }
+    else
+    {
+        warning() << "Cannot handle moving tracks from multipe collections, doing nothing to be safe";
+    }
+    m_moveActivated = false;
+    m_moveAction = 0;
+}
+
+
 
 QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
 {
@@ -219,6 +374,22 @@ FileView::startDrag( Qt::DropActions supportedActions )
     m_ongoingDrag = false;
     m_dragMutex.unlock();
 }
+
+KFileItemList FileView::selectedItems() const
+{
+    KFileItemList items;
+    QModelIndexList indices = selectedIndexes();
+    if( indices.isEmpty() )
+        return items;
+
+    foreach( QModelIndex index, indices )
+    {
+        KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+        items << item;
+    }
+    return items;
+}
+
 
 
 Meta::TrackList
