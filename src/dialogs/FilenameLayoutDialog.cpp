@@ -289,7 +289,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
             setAdvancedMode( false );
             QString scheme = Amarok::config( "OrganizeCollectionDialog" ).readEntryUntranslated( "Custom Scheme" );
             if(scheme.isEmpty())
-                scheme = Amarok::config( "OrganizeCollectionDialog" ).readEntryUntranslated("Custom Scheme", "%theartist/%album/%track_-_%title");
+                scheme = Amarok::config( "OrganizeCollectionDialog" ).readEntryUntranslated("Custom Scheme", "%artist/%album/%track_-_%title");
             inferScheme( scheme );
         }
     }

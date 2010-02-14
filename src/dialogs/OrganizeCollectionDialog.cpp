@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Bonne Eggleston <b.eggleston@gmail.com>                           *
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
