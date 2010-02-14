@@ -30,6 +30,8 @@ public:
     DatabaseUpdater();
     ~DatabaseUpdater();
 
+    static int expectedDatabaseVersion();
+
     bool needsUpdate() const;
     void update();
     bool rescanNeeded() const { return m_rescanNeeded; }
