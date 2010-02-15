@@ -613,6 +613,12 @@ Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     if( i == m_episodes.end() )
         m_episodes << sqlEpisode;
 
+    if( hasPurge() && m_episodes.count() > purgeCount() )
+    {
+        debug() << "removing last episode from the list since we are limited to " << purgeCount();
+        m_episodes.removeLast();
+        notifyObserversTrackRemoved( purgeCount() );
+    }
 
     return PodcastEpisodePtr::dynamicCast( sqlEpisode );
 }
