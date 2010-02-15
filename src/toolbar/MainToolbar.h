@@ -81,6 +81,8 @@ private:
         QPixmap right;
     } m_border;
 
+    QPixmap m_skip_left, m_skip_right;
+
     struct
     {
         AnimatedLabelStack *label;
