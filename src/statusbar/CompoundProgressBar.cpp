@@ -217,9 +217,6 @@ void CompoundProgressBar::toggleDetails()
 
 void CompoundProgressBar::handleDetailsButton()
 {
-    if ( m_progressMap.count() > 1 )
         m_showDetailsButton->show();
-    else if ( !m_progressDetailsWidget->isVisible() )
-        m_showDetailsButton->hide();
 }
 
