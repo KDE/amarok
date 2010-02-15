@@ -6,11 +6,14 @@ VERSION 2.3
   FEATURES:
 
   CHANGES:
+    * Deleting files from the filebrowser is now asynchronous.
     * Copy/Move/Organize operations now display detailed progress information.
     * Copy/Move/Organize operations are now cancelable.
     * Port Copy/Move to Collection actions to the new File Browser.
 
   BUGFIXES:
+    * Fixed bug that prevented files from being deleted from the file browser
+      when performing a Move operation.
     * Fixed bug in organize collection dialog that used the old %theartist
       token instead of %artist.
 

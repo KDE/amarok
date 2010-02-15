@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2008-2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -36,6 +36,14 @@ class FileCollectionLocation : public CollectionLocation
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
         virtual bool remove( const Meta::TrackPtr &track );
+        virtual void removeUrlsFromCollection( const Meta::TrackList& sources );
+    private slots:
+        void slotRemoveJobFinished( KJob *job );
+    private:
+        bool startNextRemoveJob();
+
+        QMap<KJob*, Meta::TrackPtr> m_removejobs;
+        Meta::TrackList m_removetracks;
 };
 
 #endif
