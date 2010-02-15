@@ -306,20 +306,20 @@ ArtistWidget::setDescription(const QString& desc)
     {
         m_desc->setText(i18n("No description available in your language"));
     } else {
-        QTextDocument text_desc;
-        text_desc.setHtml(desc);
-        QString mod_desc = text_desc.toPlainText();
+        QTextDocument descriptionText;
+        descriptionText.setHtml(desc);
+        QString descriptionString = descriptionText.toPlainText();
         //resize the description
         if (desc.length() > 150)
         {
             //resizing the qstring
-            mod_desc.resize(150);
+            descriptionString.resize(150);
             //looking for the last space
-            int last_space = mod_desc.lastIndexOf(" ");
+            int last_space = descriptionString.lastIndexOf(" ");
             //adding ... following this space
-            mod_desc = mod_desc.mid(0, last_space).append("...");
+            descriptionString = descriptionString.mid(0, last_space).append("...");
         }
-        m_desc->setText(mod_desc);
+        m_desc->setText(descriptionString);
     }
 }
 
