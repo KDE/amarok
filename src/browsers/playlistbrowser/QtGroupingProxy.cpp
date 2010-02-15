@@ -60,27 +60,48 @@ QList<ColumnVariantMap>
 QtGroupingProxy::belongsTo( const QModelIndex &idx )
 {
     //qDebug() << __FILE__ << __FUNCTION__;
-    QList<ColumnVariantMap> rvmList;
+    QList<ColumnVariantMap> cvmList;
 
     //get all the data we have for this index
     RoleVariantMap roleVariantMap = m_model->itemData( idx );
-    bool empty = true;
-    foreach( const QVariant &variant, roleVariantMap.values() )
+    QMapIterator<int, QVariant> i(roleVariantMap);
+    while( i.hasNext() )
     {
-        //qDebug() << variant.typeName() << ": "<< variant; //so spammy
-        if( !variant.isNull() )
+        i.next();
+        int role = i.key();
+        QVariant variant = i.value();
+        qDebug() << "role " << role << " : (" << variant.typeName() << ") : "<< variant; //so spammy
+        if( variant.type() == QVariant::List )
         {
-            empty = false;
+            //a list of variants get's expanded to multiple rows
+            QVariantList list = variant.toList();
+            for( int i = 0; i < list.length(); i++ )
+            {
+                //take an existing CVM or create a new one
+                ColumnVariantMap cvm = (cvmList.count() > i) ?  cvmList.takeAt( i )
+                                       : ColumnVariantMap();
+
+                //we only gather data for the first column
+                RoleVariantMap rvm = cvm.contains( 0 ) ? cvm.take( 0 ) : RoleVariantMap();
+                rvm.insert( role, list.value( i ) );
+                cvm.insert( 0, rvm );
+                cvmList.insert( i, cvm );
+            }
+        }
+        else if( !variant.isNull() )
+        {
+            //it's just a normal item. Copy all the data and break this loop.
+            ColumnVariantMap cvm;
+            cvm.insert( 0, roleVariantMap );
+            cvmList << cvm;
             break;
         }
     }
+    //for normal items (not root node) an empty list here means it's supposed to go in root.
+    if( cvmList.isEmpty() && idx != m_rootNode )
+        cvmList << ColumnVariantMap();
 
-    ColumnVariantMap cvm;
-    if( !empty )
-        cvm.insert( 0, roleVariantMap );
-    //insert and empty ColumnVariantMap to put this index in the root
-    rvmList << cvm;
-    return rvmList;
+    return cvmList;
 }
 
 /* m_groupHash layout
@@ -102,6 +123,24 @@ QtGroupingProxy::buildTree()
     m_groupHash.clear();
     //don't clear the data maps since most of it will probably be needed again.
     m_parentCreateList.clear();
+
+    //first load empty groups from the rootnode.
+    QModelIndex rootGroupedIndex =
+            m_model->index( m_rootNode.row(), m_groupedColumn, m_rootNode.parent() );
+    if( rootGroupedIndex.column() == m_groupedColumn )
+    {
+        QList<ColumnVariantMap> groupData = belongsTo( rootGroupedIndex );
+        foreach( ColumnVariantMap cvm , groupData )
+        {
+            qDebug() << cvm;
+            if( cvm.contains( 0 ) && cvm[0].contains( Qt::DisplayRole ) )
+            {
+                QString groupName = cvm[0][Qt::DisplayRole].toString();
+                qDebug() << "Creating empty group: " << groupName;
+                m_groupMaps << cvm;
+            }
+        }
+    }
 
     int max = m_model->rowCount( m_rootNode );
     //qDebug() << QString("building tree with %1 leafs.").arg( max );
