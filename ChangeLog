@@ -10,6 +10,8 @@ VERSION 2.3
     * Copy/Move/Organize operations now display detailed progress information.
     * Copy/Move/Organize operations are now cancelable.
     * Port Copy/Move to Collection actions to the new File Browser.
+    * ScriptUpdater: Only check for updates if 7 days have passed since the 
+      last check.
 
   BUGFIXES:
     * Fixed crash when right clicking on a header in "saved playlists". (BR 226290)
