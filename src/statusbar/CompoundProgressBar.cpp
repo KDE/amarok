@@ -39,16 +39,12 @@ CompoundProgressBar::CompoundProgressBar( QWidget * parent )
 
 CompoundProgressBar::~CompoundProgressBar()
 {
-    DEBUG_BLOCK
-
     delete m_progressDetailsWidget;
     m_progressDetailsWidget = 0;
 }
 
 void CompoundProgressBar::addProgressBar( ProgressBar * childBar, QObject *owner )
 {
-    DEBUG_BLOCK
-
     m_progressMap.insert( owner, childBar );
     m_progressDetailsWidget->layout()->addWidget( childBar );
     if ( m_progressDetailsWidget->width() < childBar->width() )
@@ -131,7 +127,6 @@ void CompoundProgressBar::childBarCancelled( ProgressBar * childBar )
 
 void CompoundProgressBar::childBarComplete( ProgressBar * childBar )
 {
-    DEBUG_BLOCK
     childBarFinished( childBar );
 }
 

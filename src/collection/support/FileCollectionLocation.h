@@ -37,7 +37,7 @@ class FileCollectionLocation : public CollectionLocation
         virtual bool isOrganizable() const;
         virtual bool remove( const Meta::TrackPtr &track );
         virtual void removeUrlsFromCollection( const Meta::TrackList& sources );
-    private slots:
+    public slots:
         void slotRemoveJobFinished( KJob *job );
     private:
         bool startNextRemoveJob();

@@ -58,10 +58,14 @@ FileCollectionLocation::remove( const Meta::TrackPtr &track )
     // This block taken from SqlCollectionLocation::remove()
     DEBUG_BLOCK
     if( !track )
+    {
+        debug() << "track null!";
         return false;
+    }
 
-    // if the file doesn't exist, we want to do dir cleanup
-    bool removed = !QFile::exists( track->playableUrl().path()  ) || QFile::remove( track->playableUrl().path() );
+    debug() << "removing dirs for : " << track->playableUrl().path();
+    // the file should be removed already, so we can clean the dirs
+    bool removed = !QFile::exists( track->playableUrl().path()  );
 
     if( removed )
     {
@@ -93,18 +97,14 @@ bool FileCollectionLocation::startNextRemoveJob()
         debug() << "deleting  " << src;
         KIO::JobFlags flags = KIO::HideProgressInfo;
         job = KIO::del( src, flags );
-        if( job )   //just to be safe
-        {
-            connect( job, SIGNAL( result(KJob*) ), SLOT( slotRemoveJobFinished(KJob*) ) );
-            QString name = track->prettyName();
-            if( track->artist() )
-                name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
+        connect( job, SIGNAL( result(KJob*) ), SLOT( slotRemoveJobFinished(KJob*) ) );
+        QString name = track->prettyName();
+        if( track->artist() )
+            name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            The::statusBar()->newProgressOperation( job, i18n( "Removing: %1", name ) );
-            m_removejobs.insert( job, track );
-            continue;
-        }
-        break;
+        The::statusBar()->newProgressOperation( job, i18n( "Removing: %1", name ) );
+        m_removejobs.insert( job, track );
+        return true;
     }
     return false;
 }
