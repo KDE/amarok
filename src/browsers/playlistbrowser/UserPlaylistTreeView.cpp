@@ -43,7 +43,6 @@
 
 PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QAbstractItemModel *model, QWidget *parent )
     : Amarok::PrettyTreeView( parent )
-    , m_model( model )
     , m_pd( 0 )
     , m_addGroupAction( 0 )
     , m_ongoingDrag( false )
@@ -67,14 +66,19 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QAbstractItemMode
     QColor c = p.color( QPalette::Base );
     setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 
-    connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
-
     connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
 }
 
 
 PlaylistBrowserNS::UserPlaylistTreeView::~UserPlaylistTreeView()
 {
+}
+
+void
+PlaylistBrowserNS::UserPlaylistTreeView::setModel( QAbstractItemModel *model )
+{
+    connect( model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
+    Amarok::PrettyTreeView::setModel( model );
 }
 
 void
@@ -193,7 +197,7 @@ PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent * ev
     {
         QModelIndexList list;
         list << index;
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
         if( mpm == 0 )
             return;
         mpm->loadItems( list, Playlist::LoadAndPlay );
@@ -230,7 +234,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 
         QModelIndexList indices = selectedIndexes();
 
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
         if( mpm == 0 )
             return;
         QList<QAction*> actions = mpm->actionsFor( indices );
@@ -265,7 +269,7 @@ PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
         case Qt::Key_Delete:
         {
             foreach( const QModelIndex &selectedIdx, selectedIndexes() )
-                m_model->removeRow( selectedIdx.row(), selectedIdx.parent() );
+                model()->removeRow( selectedIdx.row(), selectedIdx.parent() );
             return;
         }
      }
@@ -278,7 +282,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
 
     KMenu menu;
 
-    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
     if( mpm == 0 )
         return;
     QList<QAction *> actions = mpm->actionsFor( indices );

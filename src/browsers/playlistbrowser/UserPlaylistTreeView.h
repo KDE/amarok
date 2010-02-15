@@ -39,6 +39,8 @@ public:
     explicit UserPlaylistTreeView( QAbstractItemModel *model, QWidget *parent = 0 );
     ~UserPlaylistTreeView();
 
+    virtual void setModel( QAbstractItemModel *model );
+
     void setNewGroupAction( KAction * action );
 
 public slots:
@@ -58,7 +60,6 @@ private slots:
     void slotClickTimeout();
 
 private:
-    QAbstractItemModel *m_model;
     PopupDropper* m_pd;
 
     KAction *m_addGroupAction;
