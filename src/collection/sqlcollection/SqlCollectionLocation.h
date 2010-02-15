@@ -20,13 +20,43 @@
 #define AMAROK_SQLCOLLECTIONLOCATION_H
 
 #include "collection/CollectionLocation.h"
-
+#include <KJob>
+#include <KCompositeJob>
 #include <QSet>
 #include <QMap>
 #include <QString>
 
 class SqlCollection;
-class KJob;
+class SqlCollectionLocation;
+/**
+ * @class TransferJob
+ * A simple class that provides KJob functionality (progress reporting, aborting, etc) for sqlcollectionlocation.
+ * It calls SqlCollectionLocation::startNextJob() 
+ */
+class TransferJob : public KCompositeJob
+{
+    Q_OBJECT
+    public:
+        TransferJob( SqlCollectionLocation * location );
+
+        void start();
+    virtual bool addSubjob( KJob* job );
+
+    void emitInfo( const QString &message );
+
+    protected slots:
+        void doWork();
+
+        /**
+         * A move or copy job finished
+         */
+        void slotJobFinished( KJob *job );
+    protected:
+        virtual bool doKill();
+    private:
+        SqlCollectionLocation* m_location;
+        bool m_killed;
+};
 
 class SqlCollectionLocation : public CollectionLocation
 {
@@ -61,6 +91,8 @@ class SqlCollectionLocation : public CollectionLocation
         void slotDialogRejected();
         void slotJobFinished( KJob *job );
         void slotRemoveJobFinished( KJob *job );
+        void slotTransferJobFinished( KJob *job );
+        void slotTransferJobAborted();
 
     private:
         bool startNextJob();
@@ -75,6 +107,8 @@ class SqlCollectionLocation : public CollectionLocation
         bool m_overwriteFiles;
         QMap<KJob*, Meta::TrackPtr> m_jobs;
         QMap<KJob*, Meta::TrackPtr> m_removejobs;
+        TransferJob* m_transferjob;
+        friend class TransferJob; // so the transfer job can run the jobs
 };
 
 class SqlCollectionLocationFactory

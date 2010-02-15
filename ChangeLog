@@ -2,6 +2,17 @@ Amarok ChangeLog
 ================
 (C) 2002-2010 the Amarok authors.
 
+VERSION 2.3
+  FEATURES:
+
+  CHANGES:
+    * Copy/Move/Organize operations now display detailed progress information.
+    * Copy/Move/Organize operations are now cancelable.
+    * Port Copy/Move to Collection actions to the new File Browser.
+
+  BUGFIXES:
+    * Fixed bug in organize collection dialog that used the old %theartist
+      token instead of %artist.
 
 VERSION 2.3-Beta 1
   FEATURES:
@@ -35,7 +46,6 @@ VERSION 2.3-Beta 1
     * Searching covers from Last.fm using custom query in interactive mode.
  
   CHANGES:
-    * Port Copy/Move to Collection actions to the new File Browser
     * All move/copy operations to the local collection are asynchronous.
     * Proper handling of disk full and permision errors for copy/move
       operations to the local collection.
@@ -65,8 +75,6 @@ VERSION 2.3-Beta 1
       files which incorrectly have the same MusicBrainz unique identifier.
 
   BUGFIXES:
-    * Fixed bug in organize collection dialog that used the old %theartist
-      token instead of %artist.
     * Prevent custom sliders from allocating a lot of pixmap resources (xrestop)
     * Fix multiple busy indicators being shown in the Context View. (BR 208102)
     * Corruption of guid strings by passing them as a KUrl caused podcast episodes
