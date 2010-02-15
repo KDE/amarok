@@ -41,6 +41,7 @@ AnimatedLabelStack::AnimatedLabelStack( const QStringList &data, QWidget *p, Qt:
     , m_explicit(false)
     , m_isClick(false)
 {
+    setContentsMargins( 0, 0, 0, 0 );
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
     setData( data );
 }
@@ -166,7 +167,7 @@ AnimatedLabelStack::paintEvent( QPaintEvent * pe )
                 if (index < 0)
                     index = m_data.count() - 1;
 
-                p.drawText( rect(), m_align | Qt::TextSingleLine, elidedText( m_data.at( index ) ) );
+                p.drawText( contentsRect(), m_align | Qt::TextSingleLine, elidedText( m_data.at( index ) ) );
             }
             
             c.setAlpha( m_opacity );
@@ -174,7 +175,7 @@ AnimatedLabelStack::paintEvent( QPaintEvent * pe )
     }
     
     p.setPen( c );
-    p.drawText( rect(), m_align | Qt::TextSingleLine, elidedText( m_data.at( m_visibleIndex ) ) );
+    p.drawText( contentsRect(), m_align | Qt::TextSingleLine, elidedText( m_data.at( m_visibleIndex ) ) );
     p.end();
 }
 
@@ -191,7 +192,7 @@ AnimatedLabelStack::elidedText( const QString& text ) const
 {
     const QFontMetrics fontMetrics( font() );
 
-    QString newText = fontMetrics.elidedText( text, Qt::ElideRight, width() / 1.7 );
+    QString newText = fontMetrics.elidedText( text, Qt::ElideRight, contentsRect().width() - 2 );
 
     // Insert a whitespace between text and "..." (looks nicer)
     if( newText != text )
