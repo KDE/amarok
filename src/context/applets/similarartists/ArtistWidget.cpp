@@ -28,7 +28,7 @@
 #include <QLabel>
 #include <QDesktopServices>
 #include <QDomElement> // for parse the topTrack xml
-
+#include <QTextDocument>
 
 /**
  * ArtistWidget constructor
@@ -302,11 +302,24 @@ ArtistWidget::openUrl( QString url )
 void
 ArtistWidget::setDescription(const QString& desc)
 {
-    if(desc=="")
+    if(desc.isEmpty())
     {
         m_desc->setText(i18n("No description available in your language"));
     } else {
-        m_desc->setText(desc);
+        QTextDocument text_desc;
+        text_desc.setHtml(desc);
+        QString mod_desc = text_desc.toPlainText();
+        //resize the description
+        if (desc.length() > 150)
+        {
+            //resizing the qstring
+            mod_desc.resize(150);
+            //looking for the last space
+            int last_space = mod_desc.lastIndexOf(" ");
+            //adding ... following this space
+            mod_desc = mod_desc.mid(0, last_space).append("...");
+        }
+        m_desc->setText(mod_desc);
     }
 }
 
