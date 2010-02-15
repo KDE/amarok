@@ -116,7 +116,7 @@ class QtGroupingProxy : public QAbstractProxyModel
         QModelIndex m_rootNode;
         int m_groupedColumn;
         QVariant m_folderIcon;
-        void dumpGroups();
+        void dumpGroups() const;
 };
 
 #endif //GROUPINGPROXY_H

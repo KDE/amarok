@@ -19,6 +19,7 @@
 #include "PodcastCategory.h"
 
 #include "Amarok.h"
+#include "App.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
@@ -308,6 +309,8 @@ PodcastCategory::showInfo( const QModelIndex & index )
         "    <head>"
         "        <title>%1</title>"
         "        <style type=\"text/css\">"
+        "body {color: %3;}"
+        "::selection {background-color: %4;}"
         "h1 {text-align:center; font-size: 1.2em;}"
         "h1.subtitle {text-align:center; font-size: 1em; font-weight: normal;}"
         "        </style>"
@@ -318,7 +321,9 @@ PodcastCategory::showInfo( const QModelIndex & index )
         "    </body>"
         "</html>")
         .arg( Qt::escape( title ) )
-        .arg( description );
+        .arg( description )
+        .arg( App::instance()->palette().brush( QPalette::Text ).color().name() )
+        .arg( PaletteHandler::highlightColor().name() );
     
     map["service_name"] = title;
     map["main_info"] = description;

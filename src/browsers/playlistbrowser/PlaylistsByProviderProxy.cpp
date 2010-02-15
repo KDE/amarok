@@ -149,3 +149,10 @@ PlaylistsByProviderProxy::buildTree()
     m_groupMaps.clear();
     QtGroupingProxy::buildTree();
 }
+
+void
+PlaylistsByProviderProxy::slotRename( QModelIndex sourceIdx )
+{
+    QModelIndex proxyIdx = mapFromSource( sourceIdx );
+    emit( renameIndex( proxyIdx ) );
+}

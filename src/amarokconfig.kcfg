@@ -180,7 +180,7 @@
     <entry key="Custom Scheme" type="String">
         <label>Format string for Organize files, if a custom naming scheme is used.</label>
         <whatsthis>If the custom filename scheme is enabled, then Organize files will rename files according to this format string.</whatsthis>
-        <default>%theartist/%album/%track_-_%title</default>
+        <default>%artist/%album/%track_-_%title</default>
     </entry>
     <entry key="Replacement Regexp" type="String">
         <label>Regular expression that is to be replaced.</label>

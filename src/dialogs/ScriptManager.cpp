@@ -247,17 +247,41 @@ ScriptManager::updateAllScripts() // SLOT
     // find all scripts (both in $KDEHOME and /usr)
     QStringList foundScripts = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js", KStandardDirs::Recursive | KStandardDirs::NoDuplicates);
     m_nScripts = foundScripts.count();
-    // create a ScriptUpdater for each script
-    m_updaters = new ScriptUpdater[m_nScripts];
-    for (int i = 0; i < m_nScripts; i++)
+
+    // get timestamp of the last update check
+    KConfigGroup config = Amarok::config( "ScriptManager" );
+    uint lastCheck = config.readEntry( "LastUpdateCheck", QVariant( 0 ) ).toUInt();
+    uint now = QDateTime::currentDateTime().toTime_t();
+
+    // last update was at least 7 days ago -> check now
+    if ( now - lastCheck > 7*24*60*60 )
     {
-        // all the ScriptUpdaters are now started in parallel.
-        // tell them which script to work on
-        m_updaters[i].setScriptPath(foundScripts.at(i));
-        // tell them whom to signal when they're finished
-        connect ( &(m_updaters[i]), SIGNAL( finished( QString ) ), SLOT( updaterFinished( QString )) );
-        // and finally tell them to get to work
-        QTimer::singleShot( 0, &(m_updaters[i]), SLOT( updateScript() ) );
+        debug() << "ScriptUpdater: Performing script update check now!";
+        // create a ScriptUpdater for each script
+        m_updaters = new ScriptUpdater[m_nScripts];
+        for ( int i = 0; i < m_nScripts; i++ )
+        {
+            // all the ScriptUpdaters are now started in parallel.
+            // tell them which script to work on
+            m_updaters[i].setScriptPath( foundScripts.at( i ) );
+            // tell them whom to signal when they're finished
+            connect ( &(m_updaters[i]), SIGNAL( finished( QString ) ), SLOT( updaterFinished( QString ) ) );
+            // and finally tell them to get to work
+            QTimer::singleShot( 0, &(m_updaters[i]), SLOT( updateScript() ) );
+        }
+        // store current timestamp
+        config.writeEntry( "LastUpdateCheck", QVariant( now ) );
+        config.sync();
+    }
+    // last update was pretty recent, don't check again
+    else
+    {
+        debug() << "ScriptUpdater: Skipping update check";
+        for ( int i = 0; i < m_nScripts; i++ )
+        {
+            loadScript( foundScripts.at( i ) );
+        }
+        findScripts();
     }
 
 }

@@ -19,6 +19,11 @@
 
 #include "Debug.h"
 #include "MountPointManager.h"
+#include "statusbar/StatusBar.h"
+
+#include <kio/job.h>
+#include <kio/jobclasses.h>
+#include <kio/deletejob.h>
 
 #include <QDir>
 #include <QFile>
@@ -38,7 +43,7 @@ FileCollectionLocation::~FileCollectionLocation()
 bool
 FileCollectionLocation::isWritable() const
 {
-    return false;
+    return true;
 }
 
 bool
@@ -53,9 +58,14 @@ FileCollectionLocation::remove( const Meta::TrackPtr &track )
     // This block taken from SqlCollectionLocation::remove()
     DEBUG_BLOCK
     if( !track )
+    {
+        debug() << "track null!";
         return false;
+    }
 
-    bool removed = QFile::remove( track->playableUrl().path() );
+    debug() << "removing dirs for : " << track->playableUrl().path();
+    // the file should be removed already, so we can clean the dirs
+    bool removed = !QFile::exists( track->playableUrl().path()  );
 
     if( removed )
     {
@@ -72,6 +82,70 @@ FileCollectionLocation::remove( const Meta::TrackPtr &track )
 
     }
     return removed;
+}
+bool FileCollectionLocation::startNextRemoveJob()
+{
+    DEBUG_BLOCK
+    while ( !m_removetracks.isEmpty() )
+    {
+        Meta::TrackPtr track = m_removetracks.takeFirst();
+        KUrl src = track->playableUrl();
+
+        KIO::DeleteJob *job = 0;
+
+        src.cleanPath();
+        debug() << "deleting  " << src;
+        KIO::JobFlags flags = KIO::HideProgressInfo;
+        job = KIO::del( src, flags );
+        connect( job, SIGNAL( result(KJob*) ), SLOT( slotRemoveJobFinished(KJob*) ) );
+        QString name = track->prettyName();
+        if( track->artist() )
+            name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
+
+        The::statusBar()->newProgressOperation( job, i18n( "Removing: %1", name ) );
+        m_removejobs.insert( job, track );
+        return true;
+    }
+    return false;
+}
+
+void FileCollectionLocation::slotRemoveJobFinished(KJob* job)
+{
+    DEBUG_BLOCK
+    if( job->error() )
+    {
+        warning() << "An error occurred when removing a file: " << job->errorString();
+        transferError( m_removejobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
+    }
+    else
+    {
+        // The file is deleted, but do dir cleanup
+        remove( m_removejobs.value( job ) );
+
+        //we  assume that KIO works correctly...
+        transferSuccessful( m_removejobs.value( job ) );
+    }
+
+    m_removejobs.remove( job );
+    job->deleteLater();
+
+    if( !startNextRemoveJob() )
+    {
+        slotRemoveOperationFinished();
+    }
+}
+
+
+void FileCollectionLocation::removeUrlsFromCollection(const Meta::TrackList& sources)
+{
+    DEBUG_BLOCK
+    m_removetracks = sources;
+
+    debug() << "removing " << m_removetracks.size() << "tracks";
+    if( !startNextRemoveJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
+    {
+        slotRemoveOperationFinished();
+    }
 }
 
 #include "FileCollectionLocation.moc"

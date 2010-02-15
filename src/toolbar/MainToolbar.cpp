@@ -475,6 +475,7 @@ static QStringList metadata( Meta::TrackPtr track )
 
 #undef HAS_TAG
 #undef TAG
+#undef CONTAINS_TAG
 
 void
 MainToolbar::updatePrevAndNext()

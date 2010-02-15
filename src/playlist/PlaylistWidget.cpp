@@ -120,8 +120,8 @@ Playlist::Widget::Widget( QWidget* parent )
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), this );
         m_saveActions = new KActionCollection( this );
-        connect( m_savePlaylistMenu, SIGNAL( triggered(bool) ), The::playlistManager(),
-                 SLOT( saveCurrentPlaylist() ) );
+        connect( m_savePlaylistMenu, SIGNAL( triggered( bool ) ),
+                 SLOT( slotSaveCurrentPlaylist() ) );
         foreach( PlaylistProvider *provider, The::playlistManager()->providersForCategory(
                             PlaylistManager::UserPlaylist ) )
         {
@@ -220,8 +220,6 @@ Playlist::Widget::slotSaveCurrentPlaylist()
 
     UserPlaylistProvider *provider =
             action->data().value< QPointer<UserPlaylistProvider> >();
-    if( provider == 0 )
-        return;
 
     The::playlistManager()->save( The::playlist()->tracks(), QString(), provider );
 }

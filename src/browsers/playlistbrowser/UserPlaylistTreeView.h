@@ -17,8 +17,10 @@
 #ifndef USERPLAYLISTTREEVIEW_H
 #define USERPLAYLISTTREEVIEW_H
 
-
 #include "widgets/PrettyTreeView.h"
+
+#include <QMutex>
+#include <QTimer>
 
 class PopupDropper;
 class QAction;
@@ -37,23 +39,38 @@ public:
     explicit UserPlaylistTreeView( QAbstractItemModel *model, QWidget *parent = 0 );
     ~UserPlaylistTreeView();
 
+    virtual void setModel( QAbstractItemModel *model );
+
     void setNewGroupAction( KAction * action );
 
 public slots:
     void createNewGroup();
 
 protected:
-    void keyPressEvent( QKeyEvent *event );
-    void mouseDoubleClickEvent( QMouseEvent *event );
-    void startDrag( Qt::DropActions supportedActions );
+    virtual void keyPressEvent( QKeyEvent *event );
+    virtual void mousePressEvent( QMouseEvent *event );
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+    virtual void mouseMoveEvent( QMouseEvent *event );
+    virtual void startDrag( Qt::DropActions supportedActions );
 
-    void contextMenuEvent( QContextMenuEvent* event );
+    virtual void contextMenuEvent( QContextMenuEvent* event );
+
+private slots:
+    void slotClickTimeout();
 
 private:
-    QAbstractItemModel *m_model;
     PopupDropper* m_pd;
 
     KAction *m_addGroupAction;
+
+    bool m_ongoingDrag;
+    QMutex m_dragMutex;
+
+    QPoint m_clickLocation;
+    QTimer m_clickTimer;
+    QModelIndex m_savedClickIndex;
+    bool m_justDoubleClicked;
 };
 
 }

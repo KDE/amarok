@@ -27,7 +27,6 @@ QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNod
     : QAbstractProxyModel()
     , m_model( model )
     , m_rootNode( rootNode )
-    , m_groupedColumn( groupedColumn )
     , m_folderIcon( QVariant( QIcon( "folder" ) ) )
 {
     // signal proxies
@@ -43,7 +42,7 @@ QtGroupingProxy::QtGroupingProxy( QAbstractItemModel *model, QModelIndex rootNod
     connect( m_model, SIGNAL(layoutChanged()), SLOT(buildTree()) );
 
     if( m_groupedColumn != -1 )
-        buildTree();
+        setGroupedColumn( groupedColumn );
 }
 
 QtGroupingProxy::~QtGroupingProxy()
@@ -442,19 +441,54 @@ QtGroupingProxy::mapFromSource( const QModelIndex &idx ) const
 }
 
 Qt::ItemFlags
-QtGroupingProxy::flags( const QModelIndex &index ) const
+QtGroupingProxy::flags( const QModelIndex &idx ) const
 {
-    //TODO: check to see if the grouped column has an edit role, only then allow the
+    //only if the grouped column has the editable flag set allow the
     //actions leading to setData on the source (edit, drop & drag)
-    if( isGroup( index ) )
-        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
-                 Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled );
+    if( isGroup( idx ) )
+    {
+        dumpGroups();
+        Qt::ItemFlags defaultFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+        bool groupIsEditable = true;
 
-    QModelIndex originalIdx = mapToSource( index );
+        //it's possible to have empty groups
+        if( m_groupHash.count( idx.row() ) == 0 )
+        {
+            //check the flags of this column with the root node
+            QModelIndex originalRootNode = m_model->index( m_rootNode.row(), m_groupedColumn,
+                                                           m_rootNode.parent() );
+            groupIsEditable = originalRootNode.flags().testFlag( Qt::ItemIsEditable );
+        }
+        else
+        {
+            foreach( int originalRow, m_groupHash.values( idx.row() ) )
+            {
+                QModelIndex originalIdx = mapToSource( m_model->index( originalRow, m_groupedColumn,
+                                                                       m_rootNode) );
+                groupIsEditable = groupIsEditable
+                                  ? originalIdx.flags().testFlag( Qt::ItemIsEditable )
+                                  : false;
+                if( !groupIsEditable ) //all children need to have an editable grouped column
+                    break;
+            }
+        }
+
+        if( groupIsEditable )
+            return (  defaultFlags | Qt::ItemIsEditable |
+                 Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled );
+        return defaultFlags;
+    }
+
+    QModelIndex originalIdx = mapToSource( idx );
     Qt::ItemFlags originalItemFlags = m_model->flags( originalIdx );
 
-    //make the original one drag enabled if it didn't have it yet. We can drag it on a group.
-    return originalItemFlags | Qt::ItemIsDragEnabled;
+    //check the source model to see if the grouped column is editable;
+    QModelIndex groupedColumnIndex = m_model->index( originalIdx.row(), m_groupedColumn, originalIdx.parent() );
+    bool groupIsEditable = m_model->flags( groupedColumnIndex ).testFlag( Qt::ItemIsEditable );
+    if( groupIsEditable )
+        return originalItemFlags | Qt::ItemIsDragEnabled;
+
+    return originalItemFlags;
 }
 
 QVariant
@@ -590,10 +624,16 @@ QtGroupingProxy::isAGroupSelected( const QModelIndexList& list ) const
 }
 
 void
-QtGroupingProxy::dumpGroups()
+QtGroupingProxy::dumpGroups() const
 {
     return; //so spammy
     qDebug() << "m_groupHash: ";
+    for( int groupIndex = -1; groupIndex < m_groupHash.keys().count() - 1; groupIndex++ )
+    {
+        qDebug() << groupIndex << " : " << m_groupHash.values( groupIndex );
+    }
+
+    qDebug() << "m_groupMaps: ";
     for( int groupIndex = 0; groupIndex < m_groupMaps.count(); groupIndex++ )
         qDebug() << m_groupMaps[groupIndex] << ": " << m_groupHash.values( groupIndex );
     qDebug() << m_groupHash.values( -1 );

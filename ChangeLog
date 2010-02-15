@@ -2,8 +2,28 @@ Amarok ChangeLog
 ================
 (C) 2002-2010 the Amarok authors.
 
+VERSION 2.3
+  FEATURES:
 
-VERSION 2.3-Beta
+  CHANGES:
+    * Deleting files from the filebrowser is now asynchronous.
+    * Copy/Move/Organize operations now display detailed progress information.
+    * Copy/Move/Organize operations are now cancelable.
+    * Port Copy/Move to Collection actions to the new File Browser.
+    * ScriptUpdater: Only check for updates if 7 days have passed since the 
+      last check.
+
+  BUGFIXES:
+    * Fixed a regression that broke the playlist save button.
+    * Respect the podcast episode limit when new episodes are added during update.
+      (BR 220768)
+    * Fixed crash when right clicking on a header in "saved playlists". (BR 226290)
+    * Fixed bug that prevented files from being deleted from the file browser
+      when performing a Move operation.
+    * Fixed bug in organize collection dialog that used the old %theartist
+      token instead of %artist.
+
+VERSION 2.3-Beta 1
   FEATURES:
     * Added a configuration dialog for Local Podcasts. Update interval and base
       download directory can now be configured. (BR 221398)
@@ -65,6 +85,7 @@ VERSION 2.3-Beta
 
   BUGFIXES:
     * Prevent custom sliders from allocating a lot of pixmap resources (xrestop)
+    * Fix multiple busy indicators being shown in the Context View. (BR 208102)
     * Corruption of guid strings by passing them as a KUrl caused podcast episodes
       to be readded on each update. This issue has been solved.
       If you have episodes that appear twice, remove the channel and add it again.

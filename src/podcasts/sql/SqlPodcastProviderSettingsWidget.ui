@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>330</width>
+    <width>508</width>
     <height>65</height>
    </rect>
   </property>
@@ -25,117 +25,95 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="m_intervalLabel">
-   <property name="geometry">
-    <rect>
-     <x>22</x>
-     <y>4</y>
-     <width>68</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Auto-update</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="KIntSpinBox" name="m_autoUpdateInterval">
-   <property name="geometry">
-    <rect>
-     <x>94</x>
-     <y>4</y>
-     <width>201</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>200</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="buttonSymbols">
-    <enum>QAbstractSpinBox::PlusMinus</enum>
-   </property>
-   <property name="specialValueText">
-    <string extracomment="automatic updates turned off">disabled</string>
-   </property>
-   <property name="prefix">
-    <string extracomment="prefix to update interval in minutes">every </string>
-   </property>
-   <property name="minimum">
-    <number>0</number>
-   </property>
-   <property name="maximum">
-    <number>300</number>
-   </property>
-   <property name="singleStep">
-    <number>30</number>
-   </property>
-  </widget>
-  <widget class="QLabel" name="m_baseDirLabel">
-   <property name="geometry">
-    <rect>
-     <x>4</x>
-     <y>33</y>
-     <width>86</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string/>
-   </property>
-   <property name="text">
-    <string>Base directory:</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="KUrlRequester" name="m_baseDirUrl">
-   <property name="geometry">
-    <rect>
-     <x>94</x>
-     <y>33</y>
-     <width>231</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="minimumSize">
-    <size>
-     <width>230</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="toolTip">
-    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="m_intervalLabel">
+     <property name="text">
+      <string>Auto-update:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="KIntSpinBox" name="m_autoUpdateInterval">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="buttonSymbols">
+      <enum>QAbstractSpinBox::PlusMinus</enum>
+     </property>
+     <property name="specialValueText">
+      <string extracomment="automatic updates turned off">disabled</string>
+     </property>
+     <property name="prefix">
+      <string extracomment="prefix to update interval in minutes">every </string>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>300</number>
+     </property>
+     <property name="singleStep">
+      <number>30</number>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="m_baseDirLabel">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>Base directory:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="KUrlRequester" name="m_baseDirUrl">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>230</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Base directory for all new podcast channels.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;When a podcast channel is added &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;lt;base directory&amp;gt;&lt;/span&gt;/&lt;span style=&quot; font-style:italic;&quot;&gt;&amp;lt;channel name&amp;gt;&lt;/span&gt; is used as the download directory.&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This can be changed for each channel individually.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="whatsThis">
-    <string>Base directory for all new podcast channels.
+     </property>
+     <property name="whatsThis">
+      <string>Base directory for all new podcast channels.
 When a podcast channel is added &lt;base directory&gt;/&lt;channel name&gt; is used as the download directory.
 This can be changed for each channel individually.</string>
-   </property>
-  </widget>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>

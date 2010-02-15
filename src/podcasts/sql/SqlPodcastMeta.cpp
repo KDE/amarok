@@ -90,6 +90,26 @@ class TimecodeLoadCapabilityPodcastImpl : public Meta::TimecodeLoadCapability
         Meta::PodcastEpisodePtr m_episode;
 };
 
+Meta::TrackList
+Meta::SqlPodcastEpisode::toTrackList( Meta::SqlPodcastEpisodeList episodes )
+{
+    Meta::TrackList tracks;
+    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, episodes )
+        tracks << Meta::TrackPtr::dynamicCast( sqlEpisode );
+
+    return tracks;
+}
+
+Meta::PodcastEpisodeList
+Meta::SqlPodcastEpisode::toPodcastEpisodeList( SqlPodcastEpisodeList episodes )
+{
+    Meta::PodcastEpisodeList sqlEpisodes;
+    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, episodes )
+        sqlEpisodes << Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode );
+
+    return sqlEpisodes;
+}
+
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::SqlPodcastChannelPtr sqlChannel )
     : Meta::PodcastEpisode( Meta::PodcastChannelPtr::staticCast( sqlChannel ) )
     , m_batchUpdate( false )
@@ -449,6 +469,20 @@ Meta::SqlPodcastEpisode::deleteFromDb()
         QString( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
 }
 
+Meta::PlaylistPtr
+Meta::SqlPodcastChannel::toPlaylistPtr( SqlPodcastChannelPtr sqlChannel )
+{
+    Meta::PlaylistPtr playlist = Meta::PlaylistPtr::dynamicCast( sqlChannel );
+    return playlist;
+}
+
+Meta::SqlPodcastChannelPtr
+Meta::SqlPodcastChannel::fromPlaylistPtr( Meta::PlaylistPtr playlist )
+{
+    Meta::SqlPodcastChannelPtr sqlChannel = Meta::SqlPodcastChannelPtr::dynamicCast( playlist );
+    return sqlChannel;
+}
+
 Meta::SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
                                             const QStringList &result )
     : Meta::PodcastChannel()
@@ -531,26 +565,6 @@ Meta::SqlPodcastChannel::~SqlPodcastChannel()
     m_episodes.clear();
 }
 
-Meta::TrackList
-Meta::SqlPodcastChannel::sqlEpisodesToTracks( Meta::SqlPodcastEpisodeList episodes )
-{
-    Meta::TrackList tracks;
-    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, episodes )
-        tracks << Meta::TrackPtr::dynamicCast( sqlEpisode );
-
-    return tracks;
-}
-
-Meta::PodcastEpisodeList
-Meta::SqlPodcastChannel::sqlEpisodesToPodcastEpisodes( SqlPodcastEpisodeList episodes )
-{
-    Meta::PodcastEpisodeList sqlEpisodes;
-    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, episodes )
-        sqlEpisodes << Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode );
-
-    return sqlEpisodes;
-}
-
 void
 Meta::SqlPodcastChannel::setTitle( const QString &title )
 {
@@ -564,7 +578,7 @@ Meta::SqlPodcastChannel::setTitle( const QString &title )
 Meta::PodcastEpisodeList
 Meta::SqlPodcastChannel::episodes()
 {
-    return sqlEpisodesToPodcastEpisodes( m_episodes );
+    return Meta::SqlPodcastEpisode::toPodcastEpisodeList( m_episodes );
 }
 
 void
@@ -613,6 +627,12 @@ Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     if( i == m_episodes.end() )
         m_episodes << sqlEpisode;
 
+    if( hasPurge() && m_episodes.count() > purgeCount() )
+    {
+        debug() << "removing last episode from the list since we are limited to " << purgeCount();
+        m_episodes.removeLast();
+        notifyObserversTrackRemoved( purgeCount() );
+    }
 
     return PodcastEpisodePtr::dynamicCast( sqlEpisode );
 }

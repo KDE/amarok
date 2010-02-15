@@ -192,7 +192,6 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
 TrackList
 XSPFPlaylist::tracks()
 {
-    DEBUG_BLOCK
     if( m_tracksLoaded )
         return m_tracks;
 
