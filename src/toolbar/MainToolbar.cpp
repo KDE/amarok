@@ -54,15 +54,21 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#define HUGE_WATERMARKS 0
-
 static const QString promoString = i18n( "Rediscover Your Music" );
-static const int prevOpacity = 255; //128;
-static const int nextOpacity = 255; //160;
+
+// #define prev_next_role QPalette::Link
+#define prev_next_role foregroundRole()
+static const int prevOpacity = 128;
+static const int nextOpacity = 160;
+
 static const int icnSize = 48;
+
 static const int leftRightSpacer = 15;
 static const int timeLabelMargin = 6;
 static const int constant_progress_ratio_minimum_width = 640;
+static const int space_between_tracks_and_slider = 2;
+static const float track_fontsize_factor = 1.1f;
+
 
 
 MainToolbar::MainToolbar( QWidget *parent )
@@ -89,16 +95,22 @@ MainToolbar::MainToolbar( QWidget *parent )
     QWidget *info = new QWidget(this);
     QVBoxLayout *vl = new QVBoxLayout( info );
 
+    QFont fnt = QApplication::font(); // don't use the toolbar font. Often small to support icons only.
+    if ( fnt.pointSize() > 0 )
+        fnt.setPointSize( qRound(fnt.pointSize() * track_fontsize_factor) );
+
     m_prev.key = 0;
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
+    m_prev.label->setFont( fnt );
     m_prev.label->setAnimated( false );
     m_prev.label->setOpacity( prevOpacity );
     m_prev.label->installEventFilter( this );
     m_prev.label->setAlign( Qt::AlignCenter );
-    m_prev.label->setForegroundRole( QPalette::Link );
+    m_prev.label->setForegroundRole( prev_next_role );
     connect ( m_prev.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
 
     m_current.label = new AnimatedLabelStack( QStringList( promoString ), info );
+    m_current.label->setFont( fnt );
     m_current.label->setBold( true );
     m_current.label->setLayout( new QHBoxLayout );
     m_current.label->installEventFilter( this );
@@ -106,17 +118,20 @@ MainToolbar::MainToolbar( QWidget *parent )
 
     m_next.key = 0;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
+    m_next.label->setFont( fnt );
     m_next.label->setAnimated( false );
     m_next.label->setOpacity( nextOpacity );
     m_next.label->installEventFilter( this );
     m_next.label->setAlign( Qt::AlignCenter );
-    m_next.label->setForegroundRole( QPalette::Link );
+    m_next.label->setForegroundRole( prev_next_role );
     connect ( m_next.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( next() ) );
 
     m_dummy.label = new AnimatedLabelStack(QStringList(), info);
     m_dummy.label->hide();
 
     vl->addItem( m_trackBarSpacer = new QSpacerItem(0, m_current.label->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
+
+    vl->addSpacing( space_between_tracks_and_slider );
 
     connect ( m_prev.label, SIGNAL( pulsing(bool) ), m_current.label, SLOT( setStill(bool) ) );
     connect ( m_next.label, SIGNAL( pulsing(bool) ), m_current.label, SLOT( setStill(bool) ) );
@@ -151,6 +166,8 @@ MainToolbar::MainToolbar( QWidget *parent )
     spacerWidget = new QWidget(this);
     spacerWidget->setFixedWidth( leftRightSpacer );
     addWidget( spacerWidget );
+
+    generateBorderPixmaps();
 }
 
 void
@@ -176,29 +193,21 @@ void
 MainToolbar::animateTrackLabels()
 {
     bool done = true;
-    int x = m_trackBarSpacer->geometry().x();
-    int dx = m_trackBarSpacer->geometry().width() / 3;
-    if ( layoutDirection() == Qt::RightToLeft )
-    {
-        x = m_trackBarSpacer->geometry().right() - dx;
-        dx = -dx;
-    }
-    
-    adjustLabelPos( m_prev.label, x );
+
+    int off = -m_current.label->parentWidget()->geometry().x();
+    adjustLabelPos( m_prev.label, m_prev.rect.x() + off );
     m_prev.label->setOpacity( prevOpacity );
     if (done)
-        done = m_prev.label->geometry().x() == x;
+        done = m_prev.label->geometry().x() == m_prev.rect.x() + off;
     
-    x += dx;
-    adjustLabelPos( m_current.label, x );
+    adjustLabelPos( m_current.label, m_current.rect.x() + off );
     if (done)
-        done = m_current.label->geometry().x() == x;
+        done = m_current.label->geometry().x() == m_current.rect.x() + off;
     
-    x += dx;
-    adjustLabelPos( m_next.label, x );
+    adjustLabelPos( m_next.label, m_next.rect.x() + off );
     m_next.label->setOpacity( nextOpacity );
     if (done)
-        done = m_next.label->geometry().x() == x;
+        done = m_next.label->geometry().x() == m_next.rect.x() + off;
 
     adjustLabelPos( m_dummy.label, m_dummy.targetX );
     if ( m_dummy.label->geometry().x() == m_dummy.targetX )
@@ -325,6 +334,8 @@ void
 MainToolbar::layoutTrackBar()
 {
     m_dummy.label->hide();
+    // this is the label parenting widge ("info") offset
+    const QPoint off = m_current.label->parentWidget()->geometry().topLeft();
     QRect r = m_trackBarSpacer->geometry();
     r.setWidth( r.width() / 3);
     int d = r.width();
@@ -335,13 +346,16 @@ MainToolbar::layoutTrackBar()
         r.moveRight( m_trackBarSpacer->geometry().right() );
     }
 
+    m_prev.rect = r.translated( off );
     m_prev.label->setGeometry( r );
     m_prev.label->setOpacity( prevOpacity );
 
     r.translate( d, 0 );
+    m_current.rect = r.translated( off );
     m_current.label->setGeometry( r );
 
     r.translate( d, 0 );
+    m_next.rect = r.translated( off );
     m_next.label->setGeometry( r );
     m_next.label->setOpacity( nextOpacity );
 
@@ -483,12 +497,12 @@ MainToolbar::updatePrevAndNext()
     if ( !The::engineController()->currentTrack() )
     {
         m_prev.key = 0L;
-        m_prev.label->setForegroundRole( QPalette::WindowText );
+        m_prev.label->setForegroundRole( foregroundRole() );
         m_prev.label->setOpacity( 96 );
         m_prev.label->setData( QStringList() << "[ " + i18n("Previous") + " ]" );
         m_prev.label->setCursor( Qt::ArrowCursor );
         m_next.key = 0L;
-        m_next.label->setForegroundRole( QPalette::WindowText );
+        m_next.label->setForegroundRole( foregroundRole() );
         m_next.label->setOpacity( 96 );
         m_next.label->setData( QStringList() << "[ " + i18n("Next") + " ]"  );
         m_next.label->setCursor( Qt::ArrowCursor );
@@ -507,7 +521,7 @@ MainToolbar::updatePrevAndNext()
     bool hadKey = bool(m_next.key);
     Meta::TrackPtr track = The::playlistActions()->likelyNextTrack();
     m_next.key = track ? track.data() : 0L;
-    m_next.label->setForegroundRole( QPalette::Link );
+    m_next.label->setForegroundRole( prev_next_role );
     m_next.label->setOpacity( nextOpacity );
     m_next.label->setData( metadata( track ) );
     m_next.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
@@ -517,7 +531,7 @@ MainToolbar::updatePrevAndNext()
     hadKey = bool(m_prev.key);
     track = The::playlistActions()->likelyPrevTrack();
     m_prev.key = track ? track.data() : 0L;
-    m_prev.label->setForegroundRole( QPalette::Link );
+    m_prev.label->setForegroundRole( prev_next_role );
     m_next.label->setOpacity( prevOpacity );
     m_prev.label->setData( metadata( track ) );
     m_prev.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
@@ -702,66 +716,75 @@ MainToolbar::hideEvent( QHideEvent *ev )
 void
 MainToolbar::paintEvent( QPaintEvent *ev )
 {
-    QPainter p;
-
-    if ( !testAttribute( Qt::WA_OpaquePaintEvent ) ) // this hints that the UI style will overpaint
-    {                                                // the entire area anyway.
-        p.begin( this );
-        p.setClipRegion( ev->region() );
-        p.drawTiledPixmap( rect(), m_bgGradient );
-        p.end();
-    }
-
-    // by keeping this below, the style will have the last word on the toolbar look
-    // this is at least important to paint the draghandle
     QToolBar::paintEvent( ev );
-#if 0 //no watermarks for the moment
-    // but we force the arrows above
+
+    // this is the widget parenting the labels, aka the trackspacer mapped to ourself
+    const QRect r = m_prev.label->parentWidget()->geometry();
+    QPainter p( this );
+    p.setClipRegion( ev->region() );
+    // upper border from menu/titlebar
+    int w = m_border.left.width();
+    if ( w < r.width()/2 )
+        p.drawTiledPixmap( r.x() + w, r.y(), r.width() - 2*w, m_border.center.height(), m_border.center );
+    else
+        w = r.width()/2;
+    p.drawPixmap( r.x(), r.y(), m_border.left, 0,0, w, m_border.left.height() );
+    p.drawPixmap( r.right() + 1 - w, r.y(), m_border.right, 0,0, w, m_border.right.height() );
+
     if ( m_prev.key || m_next.key )
-    {
-        p.begin( this );
-        p.setClipRegion( ev->region() );
-#if HUGE_WATERMARKS
-        const int dx = width() / 6;
-        const int dp = m_arrowLeft.width() / 2;
+    {   // left/right arrows
+
+        QPoint triangle[2][3];
+        QRect lrect = m_prev.rect, rrect = m_next.rect;
+        const bool rtl = layoutDirection() == Qt::RightToLeft;
+        if ( rtl )
+        {
+            lrect = m_next.rect;
+            rrect = m_prev.rect;
+        }
+
+        // left rect
+        triangle[0][0] = lrect.bottomRight();
+        triangle[0][1] = lrect.topRight();
+        triangle[0][2] = QPoint( lrect.x(), lrect.center().y() );
+
+        // right rect
+        triangle[1][0] = rrect.bottomLeft();
+        triangle[1][1] = rrect.topLeft();
+        triangle[1][2] = QPoint( rrect.right(), rrect.center().y() );
+
+        QColor c = palette().color( foregroundRole() );
+        p.setPen( Qt::NoPen );
+        p.setRenderHint( QPainter::Antialiasing );
+        
         if ( m_prev.key )
-            p.drawPixmap( dx - dp, 6, m_arrowLeft );
+        {
+            QLinearGradient lg( m_prev.rect.topLeft(), m_prev.rect.topRight() );
+            c.setAlpha( 25 );
+            lg.setColorAt( 0.5, c );
+            c.setAlpha( 0 );
+            lg.setColorAt( !rtl, c );
+            p.setBrush( lg );
+            p.drawConvexPolygon( triangle[rtl], 3 );
+        }
         if ( m_next.key )
-            p.drawPixmap( width() - (dx + dp),  6, m_arrowRight );
-#else
-        QRect r = m_trackBarSpacer->geometry();
-        r.translate( m_prev.label->parentWidget()->mapTo( this, QPoint(0,0) ) );
-        if ( m_prev.key )
-            p.drawPixmap( r.x() , r.y(), m_arrowLeft );
-        if ( m_next.key )
-            p.drawPixmap( r.right() - m_arrowRight.width(), r.y(), m_arrowRight );
-#endif
-        p.end();
+        {
+            QLinearGradient lg( m_next.rect.topLeft(), m_next.rect.topRight() );
+            c.setAlpha( 0 );
+            lg.setColorAt( rtl, c );
+            c.setAlpha( 25 );
+            lg.setColorAt( 0.5, c );
+            p.setBrush( lg );
+            p.drawConvexPolygon( triangle[!rtl], 3 );
+        }
     }
-#endif
+    p.end();
 }
 
 
 void
 MainToolbar::resizeEvent( QResizeEvent *ev )
 {
-    if ( ev->size().height() != ev->oldSize().height() )
-    {
-        updateBgGradient();
-#if 0 // no watermarks for the moment
-#if HUGE_WATERMARKS
-        const int h = height() - 12;
-        const int w = h*124/100; // original ratio from default theme
-        m_arrowLeft = The::svgHandler()->renderSvg( "leftArrow", w, h, "leftArrow" );
-        m_arrowRight = The::svgHandler()->renderSvg( "rightArrow", w, h, "rightArrow" );
-#else
-        const int h = m_trackBarSpacer->geometry().height();
-        const int w = h*116/128; // original ratio from default theme
-        m_arrowLeft = The::svgHandler()->renderSvg( "tiny_arrow_left", w, h, "tiny_arrow_left" );
-        m_arrowRight = The::svgHandler()->renderSvg( "tiny_arrow_right", w, h, "tiny_arrow_right" );
-#endif
-#endif
-    }
     if ( ev->size().width() > 0 && ev->size().width() != ev->oldSize().width() )
     {
         layoutProgressBar();
@@ -892,29 +915,47 @@ MainToolbar::timerEvent( QTimerEvent *ev )
 
 
 void
-MainToolbar::updateBgGradient()
+MainToolbar::generateBorderPixmaps()
 {
+    if ( !m_current.label )
+        return;
+
+    const int h = 22;
+    const int sideWidth = 64;
+    m_border.left = QPixmap( sideWidth, h );
+    m_border.left.fill( Qt::transparent );
+
+    QLinearGradient lg( 0, 0, 0, h-1 );
+    lg.setColorAt( 0, QColor(0,0,0, 25) );
+    lg.setColorAt( 1, QColor(255,255,255, 0) );
+
+    QPainter p( &m_border.left );
+    p.fillRect( m_border.left.rect(), lg );
+    p.end();
+
+    // copying is faster than recreating + filling with Qt::transparent + gradient
+    m_border.right = m_border.left.copy();
     // please keep the 32px width
     // X11/XRender is optimized to this and e.g. 1px would cause a tremendous slowdown on painting
-    m_bgGradient = QPixmap( 32, height() );
-    m_bgGradient.fill( Qt::transparent );
-    const QColor c = palette().color( QPalette::Active, QPalette::Window );
-    QLinearGradient lg( 0, 0, 0, height()-1 );
+    m_border.center = m_border.left.copy( 0,0, 32,h );
 
-    QColor b = c.lighter( 150 );
-    b.setAlpha( 0 );
-    lg.setColorAt( 0, b );
+    // fade out left & right
+    lg = QLinearGradient( 0, 0, sideWidth-1, 0 );
+    lg.setColorAt( 0, QColor(0,0,0, 255) );
+    lg.setColorAt( 1, QColor(0,0,0, 0) );
 
-    b = c;
-    b.setAlpha( 48 );
-    lg.setColorAt( 0.5, b );
+    p.begin( &m_border.left );
+    p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
+    p.fillRect( m_border.left.rect(), lg );
+    p.end();
 
-    b = c.darker( 160 );
-    b.setAlpha( 16 );
-    lg.setColorAt( 1, b );
-
-    QPainter p( &m_bgGradient );
-    p.fillRect( m_bgGradient.rect(), lg );
+    lg = QLinearGradient( 0, 0, sideWidth-1, 0 );
+    lg.setColorAt( 0, QColor(0,0,0, 0) );
+    lg.setColorAt( 1, QColor(0,0,0, 255) );
+    
+    p.begin( &m_border.right );
+    p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
+    p.fillRect( m_border.right.rect(), lg );
     p.end();
 }
 

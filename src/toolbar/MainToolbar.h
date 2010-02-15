@@ -56,7 +56,7 @@ private:
     void animateTrackLabels();
     void layoutProgressBar();
     void setCurrentTrackActionsVisible( bool );
-    void updateBgGradient();
+    void generateBorderPixmaps();
     void updateCurrentTrackActions();
 
 private slots:
@@ -74,7 +74,12 @@ private:
 
     QSpacerItem *m_trackBarSpacer;
     QSpacerItem *m_progressBarSpacer;
-    QPixmap m_bgGradient, m_arrowLeft, m_arrowRight;
+    struct
+    {
+        QPixmap left;
+        QPixmap center;
+        QPixmap right;
+    } m_border;
 
     struct
     {
@@ -82,18 +87,21 @@ private:
         void* key;
         QString uidUrl;
         bool actionsVisible;
+        QRect rect;
     } m_current;
 
     struct
     {
         AnimatedLabelStack *label;
         void* key;
+        QRect rect;
     } m_next;
 
     struct
     {
         AnimatedLabelStack *label;
         void* key;
+        QRect rect;
     } m_prev;
 
     struct
