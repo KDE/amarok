@@ -14,6 +14,7 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * Fixed a regression that broke the playlist save button.
     * Respect the podcast episode limit when new episodes are added during update.
       (BR 220768)
     * Fixed crash when right clicking on a header in "saved playlists". (BR 226290)
