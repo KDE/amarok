@@ -713,6 +713,7 @@ MainToolbar::hideEvent( QHideEvent *ev )
 {
     QToolBar::hideEvent( ev );
     disconnect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
+    disconnect ( Playlist::ModelStack::instance()->source(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
     disconnect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
     disconnect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
                  this, SLOT( updateBookmarks(const QString*) ) );
@@ -883,6 +884,7 @@ void
 MainToolbar::showEvent( QShowEvent *ev )
 {
     connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
+    connect ( Playlist::ModelStack::instance()->source(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
     connect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
     connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
               this, SLOT( updateBookmarks(const QString*) ) );
