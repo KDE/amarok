@@ -37,6 +37,9 @@ typedef QList<SqlPodcastChannelPtr> SqlPodcastChannelList;
 class SqlPodcastEpisode : public PodcastEpisode
 {
     public:
+        static TrackList toTrackList( SqlPodcastEpisodeList episodes );
+        static PodcastEpisodeList toPodcastEpisodeList( SqlPodcastEpisodeList episodes );
+
         SqlPodcastEpisode( const QStringList &queryResult, SqlPodcastChannelPtr sqlChannel );
 
         /** Copy from another PodcastEpisode
@@ -86,8 +89,8 @@ class SqlPodcastEpisode : public PodcastEpisode
 class SqlPodcastChannel : public PodcastChannel
 {
     public:
-        static TrackList sqlEpisodesToTracks( SqlPodcastEpisodeList episodes );
-        static PodcastEpisodeList sqlEpisodesToPodcastEpisodes( SqlPodcastEpisodeList episodes );
+        static PlaylistPtr toPlaylistPtr( SqlPodcastChannelPtr sqlChannel );
+        static SqlPodcastChannelPtr fromPlaylistPtr( PlaylistPtr playlist );
 
         SqlPodcastChannel( SqlPodcastProvider *provider, const QStringList &queryResult );
 
@@ -97,7 +100,7 @@ class SqlPodcastChannel : public PodcastChannel
 
         ~SqlPodcastChannel();
         // Meta::Playlist methods
-        virtual TrackList tracks() { return sqlEpisodesToTracks( m_episodes ); }
+        virtual TrackList tracks() { return Meta::SqlPodcastEpisode::toTrackList( m_episodes ); }
         virtual PlaylistProvider *provider() const;
 
         //Meta::PodcastChannel methods
