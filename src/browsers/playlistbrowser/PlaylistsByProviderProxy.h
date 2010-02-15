@@ -24,6 +24,7 @@
 class PlaylistsByProviderProxy : public QtGroupingProxy
         , public PlaylistBrowserNS::MetaPlaylistModel
 {
+    Q_OBJECT
     public:
         PlaylistsByProviderProxy( QAbstractItemModel *model, int column );
         ~PlaylistsByProviderProxy() {}
@@ -44,11 +45,14 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
 
         virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
-protected slots:
-        virtual void buildTree();
-
     signals:
         void renameIndex( QModelIndex idx );
+
+    protected slots:
+        virtual void buildTree();
+
+    private slots:
+        void slotRename( QModelIndex idx );
 
 };
 
