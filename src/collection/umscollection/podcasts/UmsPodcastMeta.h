@@ -84,6 +84,8 @@ class UmsPodcastChannel : public Meta::PodcastChannel
         UmsPodcastChannel( Meta::PodcastChannelPtr channel, UmsPodcastProvider *provider );
         ~UmsPodcastChannel();
 
+        virtual Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode );
+
         UmsPodcastEpisodeList umsEpisodes() { return m_umsEpisodes; }
         void addUmsEpisode( UmsPodcastEpisodePtr episode ) { m_umsEpisodes << episode; }
 

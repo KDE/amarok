@@ -188,6 +188,25 @@ UmsPodcastChannel::~UmsPodcastChannel()
 
 }
 
+PodcastEpisodePtr
+UmsPodcastChannel::addEpisode( PodcastEpisodePtr episode )
+{
+    DEBUG_BLOCK
+
+    if( !episode->isNew() || !episode->playableUrl().isLocalFile() )
+        return PodcastEpisodePtr(); //we don't care about these.
+
+    UmsPodcastEpisodePtr umsEpisode =
+            UmsPodcastEpisodePtr( new UmsPodcastEpisode( UmsPodcastChannelPtr( this ) ) );
+
+    umsEpisode->setLocalFile(
+            MetaFile::TrackPtr( new MetaFile::Track( episode->playableUrl() ) ) );
+
+    m_umsEpisodes << umsEpisode;
+
+    return UmsPodcastEpisode::toPodcastEpisodePtr( umsEpisode );
+}
+
 void
 UmsPodcastChannel::setPlaylistFileSource( const KUrl &playlistFilePath )
 {
