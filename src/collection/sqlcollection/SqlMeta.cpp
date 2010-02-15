@@ -1505,6 +1505,8 @@ SqlAlbum::setCompilation( bool compilation )
     }
     else
     {
+        QString uidQuery = "SELECT uniqueid FROM tracks INNER JOIN urls ON tracks.url = urls.id WHERE album = %1;";
+        QStringList uids = m_collection->sqlStorage()->query( uidQuery.arg( m_id ) );
         if( compilation )
         {
             // A compilation is an album where artist is NULL. Set the album's artist to NULL when the album is set to compilation.
@@ -1611,6 +1613,20 @@ SqlAlbum::setCompilation( bool compilation )
                 m_id = 0;
             }
         }
+        //ensure that all currently loaded tracks will return the correct album from now on
+        foreach( const QString &uid, uids )
+        {
+            if( m_collection->registry()->checkUidExists( uid ) )
+            {
+                Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( uid );
+                SqlTrack *sqlTrack = dynamic_cast<SqlTrack*>( track.data() );
+                if( sqlTrack )
+                {
+                    sqlTrack->refreshFromDatabase( uid, m_collection, false ); //we will notify observers below
+                }
+            }
+        }
+
         notifyObservers();
         m_collection->sendChangedSignal();
     }

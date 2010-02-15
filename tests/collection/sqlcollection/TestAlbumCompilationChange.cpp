@@ -77,9 +77,9 @@ TestAlbumCompilationChange::init()
     m_storage->query( "INSERT INTO genres(id, name) VALUES (1, 'genre1');" );
     m_storage->query( "INSERT INTO years(id, name) VALUES (1, '1');" );
 
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath) VALUES (1, -1, './IDoNotExist.mp3');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath) VALUES (2, -1, './IDoNotExistAsWell.mp3');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath) VALUES (3, -1, './MeNeither.mp3');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (1, -1, './IDoNotExist.mp3', 'uid://1');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (2, -1, './IDoNotExistAsWell.mp3', 'uid://2');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (3, -1, './MeNeither.mp3' 'uid:/3');" );
 
 
 }
@@ -147,7 +147,7 @@ TestAlbumCompilationChange::testSetCompilationWithExistingCompilation()
 
     QStringList trackResult = m_storage->query("SELECT album FROM tracks WHERE id = 1");
     QCOMPARE( trackResult.count(), 1 );
-    QCOMPARE( trackResult.first(), QString( "2" ) ); //track still points at the compilation row
+    QCOMPARE( trackResult.first(), QString( "2" ) ); //track points at the compilation row
 
     QStringList albumResult = m_storage->query( "SELECT name, artist FROM albums WHERE id = 1" );
     QCOMPARE( albumResult.count(), 0 ); //album1 should not exist anymore as there is no track associated to it
