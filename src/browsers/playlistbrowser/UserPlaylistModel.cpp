@@ -733,8 +733,13 @@ PlaylistBrowserNS::UserModel::selectedTracks( const QModelIndexList &list )
 Meta::TrackPtr
 PlaylistBrowserNS::UserModel::trackFromIndex( const QModelIndex &index ) const
 {
-    Meta::PlaylistPtr playlist = m_playlists.value(
-            REMOVE_TRACK_MASK(index.internalId()) );
+    if( !index.isValid() )
+        return Meta::TrackPtr();
+
+    Meta::PlaylistPtr playlist = m_playlists.value( REMOVE_TRACK_MASK(index.internalId()) );
+    if( playlist.isNull() || playlist->tracks().count() <= index.row() )
+        return Meta::TrackPtr();
+
     return playlist->tracks()[index.row()];
 }
 

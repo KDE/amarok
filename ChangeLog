@@ -12,6 +12,7 @@ VERSION 2.3
     * Port Copy/Move to Collection actions to the new File Browser.
 
   BUGFIXES:
+    * Fixed crash when right clicking on a header in "saved playlists". (BR 226290)
     * Fixed bug that prevented files from being deleted from the file browser
       when performing a Move operation.
     * Fixed bug in organize collection dialog that used the old %theartist
