@@ -226,9 +226,13 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
 }
 
 QModelIndex
-PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & parent) const
+PlaylistBrowserNS::UserModel::index( int row, int column, const QModelIndex &parent ) const
 {
-    if (!hasIndex(row, column, parent))
+    //there are valid indexes available with row == -1 for empty groups and providers
+    if( !parent.isValid() && row == -1 && column >= 0 )
+        return createIndex( row, column, row );
+
+    if( !hasIndex( row, column, parent ) )
         return QModelIndex();
 
     //if it has a parent it is a track
@@ -277,18 +281,27 @@ PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
 }
 
 int
-PlaylistBrowserNS::UserModel::columnCount(const QModelIndex &parent) const
+PlaylistBrowserNS::UserModel::columnCount( const QModelIndex &parent ) const
 {
     if( !parent.isValid() ) //for playlists (children of root)
-        return 3; //name, group and source
+        return 3; //name, group and provider
 
     //for tracks
     return 1; //only name
 }
 
 Qt::ItemFlags
-PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
+PlaylistBrowserNS::UserModel::flags( const QModelIndex &index ) const
 {
+    //Both providers and groups can be empty. QtGroupingProxy makes empty groups from the data in
+    //the rootnode (here an invalid QModelIndex).
+    //TODO: accept drops and allow drags only if provider is writable.
+    if( index.column() == ProviderColumn )
+        return Qt::ItemIsEnabled;
+
+    if( index.column() == GroupColumn )
+        return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsDropEnabled;
+
     if( !index.isValid() )
         return Qt::ItemIsDropEnabled;
 
@@ -296,7 +309,8 @@ PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 
     //item is a playlist
-    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled |
+           Qt::ItemIsDropEnabled;
 }
 
 QVariant
