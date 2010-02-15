@@ -20,7 +20,7 @@
 #include <QString>
 
 // static configuration
-static const QString updateBaseUrl     = "http://amarok.kde.org/scriptupdates/"; // must end with '/'
+static const QString updateBaseUrl     = "http://amarok.kde.org:81/"; // must end with '/'
 static const QString archiveFilename   = "main.tar.bz2";
 static const QString versionFilename   = "version";
 static const QString signatureFilename = "signature";
