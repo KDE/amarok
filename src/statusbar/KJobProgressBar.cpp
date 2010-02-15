@@ -21,6 +21,7 @@ KJobProgressBar::KJobProgressBar( QWidget *parent, KJob * job )
 {
     connect( job, SIGNAL( percent( KJob*, unsigned long ) ),  SLOT( updateJobStatus( KJob *, unsigned long ) ) );
     connect( job, SIGNAL( result( KJob* ) ), SLOT( delayedDone() ) );
+    connect( job, SIGNAL( infoMessage( KJob*, QString, QString ) ), SLOT( infoMessage(KJob*, QString, QString ) ) );
 }
 
 
@@ -34,5 +35,13 @@ void KJobProgressBar::updateJobStatus( KJob * job, unsigned long value )
     setValue( value );
     emit( percentageChanged( percentage() ) );
 }
+
+void KJobProgressBar::infoMessage( KJob* job, QString plain, QString rich )
+{
+    Q_UNUSED( job );
+    Q_UNUSED( rich );
+    setDescription( plain );
+}
+
 
 #include "KJobProgressBar.moc"

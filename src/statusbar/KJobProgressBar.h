@@ -34,6 +34,7 @@ class KJobProgressBar : public ProgressBar
 
     private slots:
         void updateJobStatus( KJob*, unsigned long );
+        void infoMessage( KJob*, QString plain, QString rich );
 };
 
 #endif
