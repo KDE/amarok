@@ -28,10 +28,10 @@
 
 using namespace Context;
 
- /**
-  * Construct the engine
-  * @param parent The object parent to this engine
-  */
+/**
+ * Construct the engine
+ * @param parent The object parent to this engine
+ */
 SimilarArtistsEngine::SimilarArtistsEngine( QObject *parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )
@@ -52,9 +52,9 @@ SimilarArtistsEngine::~SimilarArtistsEngine()
     delete m_similarArtistsJob;
 }
 
-QMap<int, QString> SimilarArtistsEngine::similarArtists( const QString &artist_name )
+QMap<int, QString> SimilarArtistsEngine::similarArtists( const QString &artistName )
 {
-    lastfm::Artist artist( artist_name );
+    lastfm::Artist artist( artistName );
     return artist.getSimilar( artist.getSimilar() );
 }
 
@@ -102,6 +102,9 @@ void SimilarArtistsEngine::metadataChanged( Meta::TrackPtr track )
  */
 void SimilarArtistsEngine::update()
 {
+    DEBUG_BLOCK
+    debug() << "SAE updt 1";
+    
     //new update, if a job is not terminated, we kill it
     if ( m_similarArtistsJob )
     {
@@ -109,8 +112,10 @@ void SimilarArtistsEngine::update()
         m_similarArtistsJob = 0;
     }
 
+    debug() << "SAE updt 2";
     // we mark the jobs that fetch desciption as outdated
-    m_descArtistJobs.clear();
+    m_ArtistDescriptionJobs.clear();
+    debug() << "SAE updt 3";
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
 
@@ -125,6 +130,7 @@ void SimilarArtistsEngine::update()
     if ( !currentTrack )
         return;
 
+        debug() << "SAE updt 4";
     DataEngine::Data data;
     // default, or applet told us to fetch artist
     if ( selection() == "artist" )
@@ -146,7 +152,8 @@ void SimilarArtistsEngine::update()
 
             // we send an empty list
             m_similarArtists.clear();
-            QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" ), &m_similarArtists );
+            QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" ),
+                              &m_similarArtists );
             setData( "similarArtists", "SimilarArtists", variant );
         }
         else   //valid artist
@@ -168,7 +175,7 @@ void SimilarArtistsEngine::update()
             }
         }
     }
-
+    debug() << "SAE updt 5";
 
 }
 
@@ -178,19 +185,21 @@ void SimilarArtistsEngine::update()
  * @param artist_name the name of the artist
  */
 void
-SimilarArtistsEngine::similarArtistsRequest( const QString &artist_name )
+SimilarArtistsEngine::similarArtistsRequest( const QString &artistName )
 {
-    // we genere the url for the demand on the lastFM Api
+    DEBUG_BLOCK
+    
+    // we generate the url for the demand on the lastFM Api
     QUrl url;
     url.setScheme( "http" );
     url.setHost( "ws.audioscrobbler.com" );
     url.setPath( "/2.0/" );
     url.addQueryItem( "method", "artist.getSimilar" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
-    url.addQueryItem( "artist", artist_name.toLocal8Bit() );
+    url.addQueryItem( "artist", artistName.toLocal8Bit() );
     url.addQueryItem( "limit",  QString::number( m_maxArtists ) );
 
-    m_artist = artist_name;
+    m_artist = artistName;
 
     m_similarArtistsJob = KIO::storedGet( url,
                                           KIO::NoReload,
@@ -198,7 +207,7 @@ SimilarArtistsEngine::similarArtistsRequest( const QString &artist_name )
 
     connect( m_similarArtistsJob,
              SIGNAL( result( KJob* ) ),
-             SLOT( similarArtistsParse( KJob* ) ) );
+             SLOT( parseSimilarArtists( KJob* ) ) );
 }
 
 
@@ -206,8 +215,10 @@ SimilarArtistsEngine::similarArtistsRequest( const QString &artist_name )
  * Fetches the description of the artist artist_name on the LastFM API.
  * @param artist_name the name of the artist
  */
-void SimilarArtistsEngine::descArtistRequest(const QString& artist_name)
-{    
+void SimilarArtistsEngine::artistDescriptionRequest(const QString& artistName)
+{
+    DEBUG_BLOCK
+    
     // we genere the url for the demand on the lastFM Api
     QUrl url;
     url.setScheme( "http" );
@@ -215,15 +226,15 @@ void SimilarArtistsEngine::descArtistRequest(const QString& artist_name)
     url.setPath( "/2.0/" );
     url.addQueryItem( "method", "artist.getinfo" );
     url.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
-    url.addQueryItem( "artist", artist_name.toLocal8Bit() );
+    url.addQueryItem( "artist", artistName.toLocal8Bit() );
     url.addQueryItem( "lang", KGlobal::locale()->language() );
 
 
     KJob *job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
 
-    m_descArtistJobs.append(job);
+    m_ArtistDescriptionJobs.append(job);
 
-    connect( job, SIGNAL( result( KJob* ) ), SLOT( descArtistParse( KJob* ) ) );
+    connect( job, SIGNAL( result( KJob* ) ), SLOT( parseArtistDescription( KJob* ) ) );
 
 }
 
@@ -234,12 +245,14 @@ void SimilarArtistsEngine::descArtistRequest(const QString& artist_name)
  * @param job The job, which have downloaded the data.
  */
 void
-SimilarArtistsEngine::similarArtistsParse( KJob *job ) // SLOT
+SimilarArtistsEngine::parseSimilarArtists( KJob *job ) // SLOT
 {
+    DEBUG_BLOCK
+    
     // we clear the context of the dataEngine
     m_similarArtists.clear();   // we clear the similarArtists precedently downloaded
-    m_descArtists=0;            // we mark we haven't downloaded the description of
-                                // the artists
+    m_descriptionArtists=0;            // we mark we haven't downloaded the description of
+    // the artists
 
     if ( !m_similarArtistsJob ) return; //track changed while we were fetching
 
@@ -262,8 +275,8 @@ SimilarArtistsEngine::similarArtistsParse( KJob *job ) // SLOT
     if ( job )
     {
         KIO::StoredTransferJob* const storedJob
-                                    = static_cast<KIO::StoredTransferJob*>( job );
-                                    
+        = static_cast<KIO::StoredTransferJob*>( job );
+
         m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
     }
     else
@@ -298,10 +311,10 @@ SimilarArtistsEngine::similarArtistsParse( KJob *job ) // SLOT
 
             //FIX of the lastFM API
             // this API return randomly a float between 0 to 1 of 0 to 100
-            if( match<=1.0 ) {
+            if ( match<=1.0 ) {
                 match=match*100.0;
             }
-            
+
         }
 
 
@@ -331,8 +344,8 @@ SimilarArtistsEngine::similarArtistsParse( KJob *job ) // SLOT
 
 
         m_similarArtists.append( SimilarArtist( name, match, url, imageUrl, m_artist ) );
-        descArtistRequest(name);
-        
+        artistDescriptionRequest(name);
+
         n = n.nextSibling();
     }
 
@@ -340,27 +353,28 @@ SimilarArtistsEngine::similarArtistsParse( KJob *job ) // SLOT
 
 }
 
- /**
-  * Parse the xml fetched on the lastFM API for the similarArtist description
-  * Launched when the download of the data are finished and for each similarArtists.
-  * @param job The job, which have downloaded the data.
-  */
-void SimilarArtistsEngine::descArtistParse(KJob *job)
+/**
+ * Parse the xml fetched on the lastFM API for the similarArtist description
+ * Launched when the download of the data are finished and for each similarArtists.
+ * @param job The job, which have downloaded the data.
+ */
+void SimilarArtistsEngine::parseArtistDescription(KJob *job)
 {
     DEBUG_BLOCK
 
     debug()<< "SAE 1";
     QString xml;
     int cpt=0;
-    while (cpt>m_descArtistJobs.size() && m_descArtistJobs.at(cpt)!=job) {
+    while (cpt>m_ArtistDescriptionJobs.size() && m_ArtistDescriptionJobs.at(cpt)!=job) {
         cpt++;
-    }    
-    
-    if ( cpt>=m_descArtistJobs.size() ) return; //track changed while we were fetching
+    }
+
+    //track changed while we were fetching
+    if ( cpt>=m_ArtistDescriptionJobs.size() ) return; 
 
     // else (the job is correct)
-    m_descArtists++;
-    
+    m_descriptionArtists++;
+
     // It's the correct job but it errored out
     if ( job->error() != KJob::NoError)
     {
@@ -370,7 +384,7 @@ void SimilarArtistsEngine::descArtistParse(KJob *job)
     if ( job )
     {
         KIO::StoredTransferJob* const storedJob
-                                    = static_cast<KIO::StoredTransferJob*>( job );
+        = static_cast<KIO::StoredTransferJob*>( job );
 
         xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
     }
@@ -383,47 +397,47 @@ void SimilarArtistsEngine::descArtistParse(KJob *job)
     doc.setContent( xml );
 
     const QDomNode infos = doc.documentElement().namedItem( "artist" );
-    
+
     QDomNode nameNode = infos.namedItem( "name" );
     QDomElement eName = nameNode.toElement();
     QString name;
     if ( !eName.isNull() )
     {
-       name = eName.text();
+        name = eName.text();
     }
 
     QDomNode bioNode = infos.namedItem( "bio" );
     QDomElement eBio = bioNode.toElement();
 
-    QDomNode descNode = eBio.namedItem( "summary" );
-    QDomElement eDesc = descNode.toElement();
-    QString desc;
-    if ( !eDesc.isNull() )
+    QDomNode descriptionNode = eBio.namedItem( "summary" );
+    QDomElement eDescription = descriptionNode.toElement();
+    QString description;
+    if ( !eDescription.isNull() )
     {
-        desc = eDesc.text();
+        description = eDescription.text();
     }
 
     debug() << "SAE 2";
     // we search the correct artist to add his description
     cpt=0;
-    while(cpt<m_similarArtists.size() && m_similarArtists.value(cpt).name()!=name)
+    while (cpt<m_similarArtists.size() && m_similarArtists.value(cpt).name()!=name)
     {
         cpt++;
     }
 
-    if(cpt<m_similarArtists.size()) // we have find the correct artist
+    if (cpt<m_similarArtists.size()) // we have find the correct artist
     {
         // we had his desciption
         SimilarArtist tmp=m_similarArtists.takeAt(cpt);
-        tmp.setDesc(desc);
+        tmp.setDescription(description);
         m_similarArtists.insert(cpt,tmp);
-    }    
+    }
 
-    if(m_descArtists+1>=m_similarArtists.size())  // we have fetched all of the data
+    if (m_descriptionArtists+1>=m_similarArtists.size()) // we have fetched all of the data
     {
         // we send the data to the applet
         QVariant variant( QMetaType::type( "SimilarArtist::SimilarArtistsList" )
-                      , &m_similarArtists );
+                          , &m_similarArtists );
         setData( "similarArtists", "SimilarArtists", variant );
     }
 }

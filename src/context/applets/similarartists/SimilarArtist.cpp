@@ -32,14 +32,14 @@ SimilarArtist::SimilarArtist() {}
  */
 SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &url,
                               const KUrl &urlImage, const QString &similarTo,
-                              const QString &desc )
+                              const QString &description )
 {
     m_name = name;
     m_match = match;
     m_url = url;
     m_urlImage = urlImage;
     m_similarTo = similarTo;
-    m_desc = desc;
+    m_description = description;
 
     static bool metaTypeRegistered = false;
     if ( !metaTypeRegistered )
@@ -89,9 +89,9 @@ SimilarArtist::urlImage() const
  * @return the description of this artist
  */
 QString
-SimilarArtist::desc() const
+SimilarArtist::description() const
 {
-    return m_desc;
+    return m_description;
 }
 
 /**
@@ -99,7 +99,7 @@ SimilarArtist::desc() const
  * @param desc the description
  */
 void
-SimilarArtist::setDesc(const QString desc)
+SimilarArtist::setDescription(const QString description)
 {
-    m_desc=desc;
+    m_description=description;
 }

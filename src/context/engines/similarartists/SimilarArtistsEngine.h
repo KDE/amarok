@@ -76,14 +76,14 @@ public:
     * @param artist_name the name of the artist
     * @return a map with the names of the artists with their match rate
     */
-    QMap<int, QString> similarArtists( const QString &artist_name );
+    QMap<int, QString> similarArtists( const QString &artistName );
 
     /**
      * Fetches the similar artists for an artist thanks to the LastFM WebService
      * Store this in the similar artist list of this class
      * @param artist_name the name of the artist
      */
-    void similarArtistsRequest( const QString &artist_name );
+    void similarArtistsRequest( const QString &artistName );
 
 
 protected:
@@ -101,7 +101,7 @@ private:
      * Fetches the description of the artist artist_name on the LastFM API.
      * @param artist_name the name of the artist
      */
-    void descArtistRequest( const QString &artist_name );
+    void artistDescriptionRequest( const QString &artistName );
 
     /**
      * The max number of similar artists to get
@@ -111,7 +111,7 @@ private:
     /**
      * The number of artists description fetched
      */
-    int m_descArtists;
+    int m_descriptionArtists;
 
     /**
      * The job for download the data from the lastFm API
@@ -121,7 +121,7 @@ private:
     /**
      * The list of jobs that fetch the artists description on the  lastFM API
      */
-    QList<KJob*> m_descArtistJobs;
+    QList<KJob*> m_ArtistDescriptionJobs;
 
     /**
      * The current track played on amarok
@@ -160,14 +160,14 @@ private slots:
      * Launched when the download of the data are finished.
      * @param job The job, which have downloaded the data.
      */
-    void similarArtistsParse( KJob *job);
+    void parseSimilarArtists( KJob *job);
 
     /**
      * Parse the xml fetched on the lastFM API for the similarArtist description
      * Launched when the download of the data are finished and for each similarArtists.
      * @param job The job, which have downloaded the data.
      */
-    void descArtistParse( KJob *job);
+    void parseArtistDescription( KJob *job);
 
 };
 

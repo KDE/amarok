@@ -50,7 +50,7 @@ public:
      */
     SimilarArtist( const QString &name, const int match, const KUrl &url,
                    const KUrl &urlImage, const QString &similarTo,
-                   const QString &desc=0 );
+                   const QString &description=QString() );
 
     /**
      * @return The name of this artist
@@ -75,13 +75,13 @@ public:
     /**
      * @return the description of this artist
      */
-    QString desc() const;
+    QString description() const;
 
     /**
      * Set the description of this artist
      * @param desc the description
      */
-    void setDesc(const QString desc);
+    void setDescription(const QString description);
 
     /**
      * Define a new type for help the communication
@@ -113,7 +113,7 @@ private:
     /**
      * The description of this artist
      */
-    QString m_desc;
+    QString m_description;
 
     /**
      * The name of the artist similar to this artist
