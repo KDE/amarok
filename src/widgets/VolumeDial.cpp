@@ -18,6 +18,7 @@
 
 #include "SvgHandler.h"
 
+#include <QConicalGradient>
 #include <QCoreApplication>
 #include <QMouseEvent>
 #include <QPainter>
@@ -108,7 +109,7 @@ void VolumeDial::mousePressEvent( QMouseEvent *me )
     const QPoint c = rect().center();
     const int dx = me->pos().x() - c.x();
     const int dy = me->pos().y() - c.y();
-    m_isClick = sqrt(dx*dx + dy*dy) < 1*width()/3;
+    m_isClick = sqrt(dx*dx + dy*dy) < width()/4;
 
     if ( m_isClick )
         update(); // hide the ring
@@ -142,15 +143,6 @@ void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
     m_isClick = false;
 }
 
-static QColor mix( const QColor &c1, const QColor &c2 )
-{
-    QColor c;
-    c.setRgb( ( c1.red() + c2.red() ) / 2, ( c1.green() + c2.green() ) / 2,
-              ( c1.blue() + c2.blue() ) / 2, ( c1.alpha() + c2.alpha() ) / 2 );
-    return c;
-}
-
-
 void VolumeDial::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
@@ -160,9 +152,7 @@ void VolumeDial::paintEvent( QPaintEvent * )
     p.drawPixmap( 0,0, m_icon[ icon ] );
     if ( !m_isClick )
     {
-        QColor c = mix( palette().color( foregroundRole() ), palette().color( QPalette::Highlight ) );
-        c.setAlpha( 82 + m_anim.step*96/6 );
-        p.setPen( QPen( c, 3, Qt::SolidLine, Qt::RoundCap ) );
+        p.setPen( QPen( m_sliderGradient, 3, Qt::SolidLine, Qt::RoundCap ) );
         p.setRenderHint( QPainter::Antialiasing );
         p.drawArc( rect().adjusted(4,4,-4,-4), -110*16, - value()*320*16 / (maximum() - minimum()) );
     }
@@ -191,6 +181,8 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
             m_icon[i] = QPixmap::fromImage( m_icon[i].toImage().mirrored( true, false ) );
     }
 
+    m_sliderGradient = QPixmap( size() );
+    updateSliderGradient();
     update();
 }
 
@@ -227,7 +219,30 @@ void VolumeDial::timerEvent( QTimerEvent *te )
         if ( m_anim.step < 1 )
             stopFade();
     }
+    updateSliderGradient();
     repaint();
+}
+
+static QColor mix( const QColor &c1, const QColor &c2 )
+{
+    QColor c;
+    c.setRgb( ( c1.red() + c2.red() ) / 2, ( c1.green() + c2.green() ) / 2,
+              ( c1.blue() + c2.blue() ) / 2, ( c1.alpha() + c2.alpha() ) / 2 );
+    return c;
+}
+
+void VolumeDial::updateSliderGradient()
+{
+    m_sliderGradient.fill( Qt::transparent );
+    QConicalGradient cg( m_sliderGradient.rect().center(), -90 );
+    QColor c = mix( palette().color( foregroundRole() ), palette().color( QPalette::Highlight ) );
+    c.setAlpha( 128+m_anim.step*128/6 );
+    cg.setColorAt( 0, c );
+    c.setAlpha( 64+m_anim.step*32/6 );
+    cg.setColorAt( 1, c );
+    QPainter p( &m_sliderGradient );
+    p.fillRect( m_sliderGradient.rect(), cg );
+    p.end();
 }
 
 void VolumeDial::wheelEvent( QWheelEvent *wev )
