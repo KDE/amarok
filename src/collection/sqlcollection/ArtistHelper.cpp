@@ -50,7 +50,10 @@ ArtistHelper::realTrackArtist( const QString &trackArtistTag )
     {
         //always use the first artist
         QString tmp = trackArtists[0].simplified();
-        return tmp;
+        if( tmp.isEmpty() )
+            return trackArtistTag; //huh?
+        else
+            return tmp;
     }
     else
     {
