@@ -445,7 +445,7 @@ void FileView::slotDelete()
                          indices.count() )
                     , &dialog
                   );
-    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from filesystem" ) );
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
     dialog.setMainWidget( &label );
     if( dialog.exec() != QDialog::Accepted )
         return;
