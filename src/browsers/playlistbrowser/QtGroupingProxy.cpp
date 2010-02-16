@@ -413,7 +413,7 @@ QtGroupingProxy::mapToSource( const QModelIndex& index ) const
             indexInGroup -= m_groupMaps.count();
         //qDebug() << "indexInGroup" << indexInGroup;
         QList<int> childRows = m_groupHash.values( proxyParent.row() );
-        if( childRows.isEmpty() || indexInGroup >= childRows.count() )
+        if( childRows.isEmpty() || indexInGroup >= childRows.count() || indexInGroup < 0 )
             return QModelIndex();
 
         originalRow = childRows.at( indexInGroup );
