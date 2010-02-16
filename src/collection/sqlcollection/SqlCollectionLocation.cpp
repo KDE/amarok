@@ -96,9 +96,9 @@ SqlCollectionLocation::isWritable() const
         if( total <= 0 ) // protect against div by zero
             continue; //How did this happen?
 
-        float percentage_used = used / total;
-	debug() <<"\tpercent used: " << percentage_used;
-        if( percentage_used < 0.95 )
+        float free_space = total - used;
+	debug() <<"\tfree space: " << percentage_used;
+        if( free_space >= 500*1000*1000 ) // ~500 megabytes
             path_exists_with_space = true;
 
         QFileInfo info( path );
@@ -202,16 +202,13 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
         if( totalCapacity <= 0 ) // protect against div by zero
             continue; //How did this happen?
 
-        double percentageUsedAfter = double( used + transferSize ) / totalCapacity;
-        debug() << "percentage used after" << percentageUsedAfter;
-
         QFileInfo info( path );
 
-        // since bad things happen when drives become totally full, we define full as 95% capacity used
-        // also we make sure there is at least 5 megabytes free
+        // since bad things happen when drives become totally full
+	// we make sure there is at least ~500MB left
         // finally, ensure the path is writeable
         debug() << ( freeSpace - transferSize );
-        if( ( freeSpace - transferSize ) > 1024*1024*5 && ( percentageUsedAfter < 0.95 ) && info.isWritable() )
+        if( ( freeSpace - transferSize ) > 1000*1000*500 && info.isWritable() )
             available_folders << path;
     }
 
