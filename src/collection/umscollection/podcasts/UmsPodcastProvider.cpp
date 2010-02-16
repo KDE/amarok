@@ -26,7 +26,7 @@
 
 using namespace Meta;
 
-UmsPodcastProvider::UmsPodcastProvider( UmsHandler *handler, QString scanDirectory )
+UmsPodcastProvider::UmsPodcastProvider( UmsHandler *handler, KUrl scanDirectory )
         : m_handler( handler )
         , m_scanDirectory( scanDirectory )
         , m_deleteEpisodeAction( 0 )
@@ -386,8 +386,9 @@ UmsPodcastProvider::scan()
     if( m_scanDirectory.isEmpty() )
         return;
     m_dirList.clear();
-    debug() << "scan directory for podcasts: " << m_scanDirectory;
-    QDirIterator it( m_scanDirectory, QDirIterator::Subdirectories );
+    debug() << "scan directory for podcasts: " <<
+            m_scanDirectory.toLocalFile( KUrl::AddTrailingSlash );
+    QDirIterator it( m_scanDirectory.toLocalFile(), QDirIterator::Subdirectories );
     while( it.hasNext() )
         addPath( it.next() );
 }

@@ -27,7 +27,7 @@ class UmsPodcastProvider : public PodcastProvider
 {
     Q_OBJECT
     public:
-        UmsPodcastProvider( Meta::UmsHandler *handler, QString scanDirectory );
+        UmsPodcastProvider( Meta::UmsHandler *handler, KUrl scanDirectory );
         ~UmsPodcastProvider();
 
         void addFile( MetaFile::TrackPtr metafileTrack );
@@ -84,7 +84,7 @@ class UmsPodcastProvider : public PodcastProvider
         void deleteEpisodes( UmsPodcastEpisodeList umsEpisodes );
 
         Meta::UmsHandler *m_handler;
-        QString m_scanDirectory;
+        KUrl m_scanDirectory;
         QStringList m_dirList;
 
         UmsPodcastChannelList m_umsChannels;
