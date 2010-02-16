@@ -38,8 +38,10 @@ TestArtistHelper::testRealTrackArtist_data()
     QTest::newRow( "A feat. B" ) << "A feat. B" << "A";
     QTest::newRow( "A featuring B" ) << "A featuring B" << "A";
     QTest::newRow( "A f. B" ) << "A f. B" << "A";
-    QTest::newRow( "artist including ft. string" ) << "Aft.B" << "Aft.B";
+    //QTest::newRow( "artist including ft. string" ) << "Aft.B" << "Aft.B"; //not possible according to ML discussion
     QTest::newRow( "empty A, return original string" ) << "  featuring B" << "  featuring B";
+    QTest::newRow( "A (feat. B)" ) << "A (feat. B )" << "A";
+    QTest::newRow( "A [feat. B]" ) << "A [feat. B]" << "A";
 }
 
 void
