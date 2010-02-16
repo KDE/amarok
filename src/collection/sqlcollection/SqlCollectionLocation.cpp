@@ -79,6 +79,7 @@ SqlCollectionLocation::actualLocation() const
 bool
 SqlCollectionLocation::isWritable() const
 {
+    DEBUG_BLOCK
     // The collection is writeable if there exists a path that has less than
     // 95% free space.
     bool path_exists_with_space = false;
@@ -88,17 +89,23 @@ SqlCollectionLocation::isWritable() const
     {
         float used = KDiskFreeSpaceInfo::freeSpaceInfo( path ).used();
         float total = KDiskFreeSpaceInfo::freeSpaceInfo( path ).size();
+	debug() << path;
+	debug() << "\tused: " << used;
+	debug() << "\ttotal: " << total;
 
         if( total <= 0 ) // protect against div by zero
             continue; //How did this happen?
 
         float percentage_used = used / total;
+	debug() <<"\tpercent used: " << percentage_used;
         if( percentage_used < 0.95 )
             path_exists_with_space = true;
 
         QFileInfo info( path );
         if( info.isWritable() )
             path_exists_writeable = true;
+	debug() << "\tpath_exists_writeable" << path_exists_writeable;
+	debug() << "\tpath_exists_with_space" << path_exists_with_space;
     }
     return path_exists_with_space && path_exists_writeable;
 }
