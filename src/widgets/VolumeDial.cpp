@@ -105,7 +105,6 @@ void VolumeDial::mousePressEvent( QMouseEvent *me )
         return;
     }
 
-    setCursor( Qt::PointingHandCursor );
     const QPoint c = rect().center();
     const int dx = me->pos().x() - c.x();
     const int dy = me->pos().y() - c.y();
@@ -113,8 +112,11 @@ void VolumeDial::mousePressEvent( QMouseEvent *me )
 
     if ( m_isClick )
         update(); // hide the ring
-    else // this will directly jump to the proper position
-        QDial::mousePressEvent( me );
+    else
+    {
+        setCursor( Qt::PointingHandCursor ); // hint dragging
+        QDial::mousePressEvent( me ); // this will directly jump to the proper position
+    }
 
     // for value changes caused by mouseevent we'll only let our adjusted value changes be emitted
     // see ::sliderChange()
