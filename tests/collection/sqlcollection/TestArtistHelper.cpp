@@ -39,6 +39,7 @@ TestArtistHelper::testRealTrackArtist_data()
     QTest::newRow( "A featuring B" ) << "A featuring B" << "A";
     QTest::newRow( "A f. B" ) << "A f. B" << "A";
     QTest::newRow( "artist including ft. string" ) << "Aft.B" << "Aft.B";
+    QTest::newRow( "empty A, return original string" ) << "  featuring B" << "  featuring B";
 }
 
 void
