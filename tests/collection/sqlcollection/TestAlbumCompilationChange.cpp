@@ -280,4 +280,32 @@ TestAlbumCompilationChange::testUnsetCompilationWithArtistAFeaturingB()
     QCOMPARE( track->album(), targetAlbum );
 }
 
+void
+TestAlbumCompilationChange::testUnsetCompilationWithMultipleArtists()
+{
+    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1,'album1',0);" );
+
+    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (2,2,'track2',2,1,1,1,1 );" );
+
+    Meta::TrackPtr track1 = m_registry->getTrack( "/IDoNotExist.mp3" );
+    Meta::TrackPtr track2 = m_registry->getTrack( "/IDoNotExistAsWell.mp3" );
+
+    Meta::AlbumPtr album = track1->album();
+    QCOMPARE( album, track2->album() );
+    QVERIFY( album->isCompilation() );
+
+    Meta::SqlAlbum *sqlCompilation = static_cast<Meta::SqlAlbum*>( album.data() );
+    sqlCompilation->setCompilation( false );
+
+    QVERIFY( !track1->album()->isCompilation() );
+    QVERIFY( !track2->album()->isCompilation() );
+
+    QStringList albumsCount = m_storage->query( "SELECT count(*) FROM albums;" );
+    QCOMPARE( albumsCount.first(), QString::number( 2 ) );
+
+}
+
 #include "TestAlbumCompilationChange.moc"
