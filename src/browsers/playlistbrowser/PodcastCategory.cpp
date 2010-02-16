@@ -677,9 +677,10 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
+    QList<QAction*> actions;
+
     if( m_pd && m_pd->isHidden() )
     {
-        QList<QAction*> actions;
         MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
         if( mpm )
             actions = mpm->actionsFor( selectedIndexes() );
@@ -694,6 +695,11 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
 
     QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";
+
+    //We keep the items that the actions need to be applied to in the actions private data.
+    //Clear the data from all actions now that the context menu has executed.
+    foreach( QAction *action, actions )
+        action->setData( QVariant() );
 
     if( m_pd )
     {
@@ -727,10 +733,11 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
             menu.addAction( action );
     }
 
-    KAction* result = dynamic_cast< KAction* >( menu.exec( mapToGlobal( event->pos() ) ) );
-    Q_UNUSED( result )
-
-   debug() << indices.count() << " selectedIndexes";
+    menu.exec( mapToGlobal( event->pos() ) );
+    //We keep the items that the actions need to be applied to in the actions private data.
+    //Clear the data from all actions now that the PUD has executed.
+    foreach( QAction *action, actions )
+        action->setData( QVariant() );
 }
 
 void
