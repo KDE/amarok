@@ -86,7 +86,7 @@ private:
     QAction * m_appendAction;
     QAction * m_loadAction;
     QAction * m_editAction;
-
+    QAction * m_separator1;
     QAction * m_deleteAction;
 
     PopupDropper* m_pd;

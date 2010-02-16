@@ -53,6 +53,7 @@ FileView::FileView( QWidget * parent )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
     , m_editAction( 0 )
+    , m_separator1( 0 )
     , m_deleteAction( 0 )
     , m_pd( 0 )
     , m_ongoingDrag( false )
@@ -300,9 +301,13 @@ QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
 
     actions.append( m_editAction );
 
-    QAction* separator = new QAction( this );
-    separator->setSeparator( true );
-    actions.append( separator );
+    if( m_separator1 == 0 )
+    {
+            m_separator1 = new QAction( this );
+            m_separator1->setSeparator( true );
+    }
+    
+    actions.append( m_separator1 );
 
     if( m_deleteAction == 0 )
     {
