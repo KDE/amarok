@@ -268,7 +268,6 @@ FileView::slotMoveTracks( const Meta::TrackList& tracks )
 
 QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
 {
-
     QList<QAction *> actions;
     
     if( indices.isEmpty() )
@@ -300,6 +299,10 @@ QList<QAction *> FileView::actionsForIndices( const QModelIndexList &indices )
     }
 
     actions.append( m_editAction );
+
+    QAction* separator = new QAction( this );
+    separator->setSeparator( true );
+    actions.append( separator );
 
     if( m_deleteAction == 0 )
     {
