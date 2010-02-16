@@ -45,7 +45,7 @@ public:
      * Construct the engine
      * @param parent The object parent to this engine     
      */
-    SimilarArtistsEngine( QObject* parent, const QList<QVariant>& args );
+    SimilarArtistsEngine( QObject *parent, const QList<QVariant> &args );
 
     /**
      * Destroy the dataEngine
@@ -55,14 +55,14 @@ public:
     QStringList sources() const;
 
     // reimplemented from Context::Observer
-    virtual void message( const ContextState& state );
+    virtual void message( const ContextState &state );
 
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     
     void metadataChanged( Meta::TrackPtr track );
 
-    void setSelection( const QString& selection )
+    void setSelection( const QString &selection )
     {
         m_currentSelection = selection;
     }
@@ -79,7 +79,7 @@ public:
     QMap<int, QString> similarArtists( const QString &artist_name );
 
     /**
-     * Fetches the similar artists for an artist thanks to the LastFm WebService
+     * Fetches the similar artists for an artist thanks to the LastFM WebService
      * Store this in the similar artist list of this class
      * @param artist_name the name of the artist
      */
@@ -87,7 +87,7 @@ public:
 
 
 protected:
-    bool sourceRequestEvent( const QString& name );
+    bool sourceRequestEvent( const QString &name );
 
 private:
 
@@ -98,14 +98,30 @@ private:
     void update();
 
     /**
+     * Fetches the description of the artist artist_name on the LastFM API.
+     * @param artist_name the name of the artist
+     */
+    void descArtistRequest( const QString &artist_name );
+
+    /**
      * The max number of similar artists to get
      */
     int m_maxArtists;
 
     /**
+     * The number of artists description fetched
+     */
+    int m_descArtists;
+
+    /**
      * The job for download the data from the lastFm API
      */
     KJob *m_similarArtistsJob;
+
+    /**
+     * The list of jobs that fetch the artists description on the  lastFM API
+     */
+    QList<KJob*> m_descArtistJobs;
 
     /**
      * The current track played on amarok
@@ -144,7 +160,14 @@ private slots:
      * Launched when the download of the data are finished.
      * @param job The job, which have downloaded the data.
      */
-    void similarArtistsParse( KJob* job);
+    void similarArtistsParse( KJob *job);
+
+    /**
+     * Parse the xml fetched on the lastFM API for the similarArtist description
+     * Launched when the download of the data are finished and for each similarArtists.
+     * @param job The job, which have downloaded the data.
+     */
+    void descArtistParse( KJob *job);
 
 };
 

@@ -44,6 +44,12 @@
 
 
 
+/**
+ * SimilarArtistsApplet constructor
+ * @param parent The widget parent
+ * @param args   List of strings containing two entries: the service id
+ *               and the applet id
+ */
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , m_aspectRatio( 0 )
@@ -58,6 +64,9 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
 }
 
 
+/**
+ * SimilarArtistsApplet destructor
+ */
 SimilarArtistsApplet::~SimilarArtistsApplet()
 {
     delete m_headerLabel;
@@ -66,7 +75,9 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
     delete m_scroll; // Destroy automatically his child widget
 }
 
-
+/**
+ * Initialization of the applet's display, creation of the layout, scrolls
+ */
 void
 SimilarArtistsApplet::init()
 {
@@ -127,6 +138,9 @@ SimilarArtistsApplet::init()
     constraintsEvent();
 }
 
+/**
+ * This method allows the connection to the lastfm's api
+ */
 void
 SimilarArtistsApplet::connectSource( const QString &source )
 {
@@ -137,6 +151,9 @@ SimilarArtistsApplet::connectSource( const QString &source )
     }
 }
 
+/**
+ * This method puts the widgets in the layout, in the initialization
+ */
 void
 SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
@@ -242,12 +259,13 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
     setCollapseOn();
 }
 
-
+/**
+ * Update the current artist and his similar artists
+ */
 void
 SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     Q_UNUSED( name )
-
     m_artist = data[ "artist" ].toString();
 
     // we see if the artist name is valid
@@ -345,7 +363,6 @@ SimilarArtistsApplet::saveSettings()
 void
 SimilarArtistsApplet::artistsUpdate()
 {
-
     if ( !m_similars.isEmpty() )
     {
         m_headerLabel->setText( i18n( "Similar artists of %1", m_artist ) );
@@ -393,6 +410,7 @@ SimilarArtistsApplet::artistsUpdate()
             art->setArtist( m_similars.at( cpt ).name(), m_similars.at( cpt ).url() );
             art->setPhoto( m_similars.at( cpt ).urlImage() );
             art->setMatch( m_similars.at( cpt ).match() );
+            art->setDescription(m_similars.at( cpt ).desc());
             cpt++;
         }
 
