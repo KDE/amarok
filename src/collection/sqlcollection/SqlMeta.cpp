@@ -1567,8 +1567,8 @@ SqlAlbum::setCompilation( bool compilation )
 
             debug() << "Found these artists" << artistIds;
 
-            bool done = false;
-            if( artistIds.size( ) == 1 ) {
+            if( artistIds.size( ) == 1 )
+            {
                 // All the tracks have the same artist, see it there is another album with the same name for this artist.
                 select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist = %3";
                 QStringList albumId = m_collection->sqlStorage()->query( select.arg( name() ).arg( m_id ).arg( *artistIds.begin() ) );
@@ -1578,11 +1578,10 @@ SqlAlbum::setCompilation( bool compilation )
                     // There isn't another album with the same name and artist, just change the artist on the album
                     QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
                     m_collection->sqlStorage()->query( update.arg( m_artistId ).arg( m_id ) );
-                    done = true;
                 }
             }
-
-            if( !done ) {
+            else
+            {
                 foreach( const int artistId, artistIds ) {
                     debug() << "Look for album '" << name() << "' for artist " << artistId;
                     // Does there exist another album with the same name and the same artist as some of the tracks in this album?
