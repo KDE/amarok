@@ -736,11 +736,11 @@ MainToolbar::paintEvent( QPaintEvent *ev )
         // upper border from menu/titlebar
         int w = m_border.left.width();
         if ( w < r.width()/2 )
-            p.drawTiledPixmap( r.x() + w, r.y(), r.width() - 2*w, m_border.center.height(), m_border.center );
+            p.drawTiledPixmap( r.x() + w, 0, r.width() - 2*w, m_border.center.height(), m_border.center );
         else
             w = r.width()/2;
-        p.drawPixmap( r.x(), r.y(), m_border.left, 0,0, w, m_border.left.height() );
-        p.drawPixmap( r.right() + 1 - w, r.y(), m_border.right, 0,0, w, m_border.right.height() );
+        p.drawPixmap( r.x(), 0, m_border.left, 0,0, w, m_border.left.height() );
+        p.drawPixmap( r.right() + 1 - w, 0, m_border.right, 0,0, w, m_border.right.height() );
     }
     p.end();
 
