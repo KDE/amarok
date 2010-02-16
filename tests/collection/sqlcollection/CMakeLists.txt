@@ -68,6 +68,7 @@ set( testalbumcompilationchange_SRCS
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
@@ -167,3 +168,22 @@ set( testscanresultprocessorfull_SRCS
 kde4_add_unit_test( testscanresultprocessorfull ${testscanresultprocessorfull_SRCS} )
 
 link_database_test( testscanresultprocessorfull )
+
+#-------------------------------- Test ArtistHelper -----------------------
+
+set( testartisthelper_SRCS
+        TestArtistHelper.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
+    )
+
+
+kde4_add_unit_test( testartisthelper ${testartisthelper_SRCS} )
+
+    if(APPLE)
+        SET_TARGET_PROPERTIES(testartisthelper PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    endif(APPLE)
+
+target_link_libraries( testartisthelper
+                        ${QT_QTTEST_LIBRARY}
+                        ${QT_QTCORE_LIBRARY}
+                        ${KDE4_KDECORE_LIBS})
