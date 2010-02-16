@@ -186,6 +186,49 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
 QVariant
 PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 {
+    if( index.row() == -1 )
+    {
+        if( index.column() == ProviderColumn )
+        {
+            QVariantList displayList;
+            QVariantList iconList;
+            QVariantList playlistCountList;
+            QVariantList providerActionsCountList;
+            QVariantList providerActionsList;
+            QVariantList providerByLineList;
+
+            //get data from empty providers
+            PlaylistProviderList providerList =
+                    The::playlistManager()->providersForCategory( PlaylistManager::PodcastChannel );
+            foreach( PlaylistProvider *provider, providerList )
+            {
+                if( provider->playlistCount() > 0 || provider->playlists().count() > 0 )
+                    continue;
+
+                displayList << provider->prettyName();
+                iconList << provider->icon();
+                playlistCountList << provider->playlists().count();
+                providerActionsCountList << provider->providerActions().count();
+                providerActionsList <<  QVariant::fromValue( provider->providerActions() );
+                providerByLineList << i18ncp( "number of podcasts from one source", "One channel",
+                               "%1 channels", provider->providerActions().count() );
+            }
+
+            switch( role )
+            {
+                case Qt::DisplayRole:
+                case DescriptionRole:
+                case Qt::ToolTipRole:
+                    return displayList;
+                case Qt::DecorationRole: return iconList;
+                case MetaPlaylistModel::ActionCountRole: return providerActionsCountList;
+                case MetaPlaylistModel::ActionRole: return providerActionsList;
+                case MetaPlaylistModel::ByLineRole: return providerByLineList;
+                case Qt::EditRole: return QVariant();
+            }
+        }
+    }
+
     if( !index.isValid() )
         return QVariant();
     
@@ -332,13 +375,17 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 QModelIndex
 PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & parent) const
 {
-    if (!hasIndex(row, column, parent))
+    //there are valid indexes available with row == -1 for empty groups and providers
+    if( !parent.isValid() && row == -1 && column >= 0 )
+        return createIndex( row, column, row );
+
+    if( !hasIndex(row, column, parent) )
         return QModelIndex();
 
     Meta::PodcastChannelPtr channel;
     Meta::PodcastEpisodePtr episode;
 
-    if (!parent.isValid())
+    if( !parent.isValid() )
         channel = m_channels[row];
     else
     {
@@ -355,45 +402,10 @@ PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & 
         return createIndex( row, column, channel.data() );
     else
         return QModelIndex();
-
-#if 0
-    if ( !parent.isValid() )
-    {
-        Meta::PodcastChannelPtr channel = m_channels[row];
-        debug() << "invalid parent! ";
-        return createIndex( row, column, channel.data() );
-    }
-    else
-    {
-        Meta::PodcastMetaCommon *podcastMetaCommon =
-                static_cast<Meta::PodcastMetaCommon *>(parent.internalPointer());
-        if( !podcastMetaCommon )
-            return QModelIndex();
-
-        if ( podcastMetaCommon->podcastType() ==  Meta::ChannelType )
-        {
-            Meta::PodcastChannel *channel =
-                    static_cast<Meta::PodcastChannel *>(parent.internalPointer());
-            if( !channel )
-                return QModelIndex();
-
-            debug() << "child " << row << " of channel " << channel->title();
-            return createIndex( row, column, channel->episodes()[row].data() );
-        }
-        else if ( podcastMetaCommon->podcastType() ==  Meta::EpisodeType )
-        {
-            return QModelIndex();
-        }
-        else
-        {
-            return QModelIndex();
-        }
-    }
-#endif
 }
 
 QModelIndex
-PlaylistBrowserNS::PodcastModel::parent(const QModelIndex & index) const
+PlaylistBrowserNS::PodcastModel::parent( const QModelIndex &index ) const
 {
     if (!index.isValid())
         return QModelIndex();
