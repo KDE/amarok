@@ -24,7 +24,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 
-#include <QDomElement>
+#include <QXmlStreamReader>
 
 using namespace Context;
 
@@ -272,81 +272,108 @@ SimilarArtistsEngine::parseSimilarArtists( KJob *job ) // SLOT
     if ( job != m_similarArtistsJob )
         return;
 
+    // The reader on the xml document which contains the information of the lastFM API.
+    QXmlStreamReader xmlReader;
+    
     if ( job )
     {
         KIO::StoredTransferJob* const storedJob
         = static_cast<KIO::StoredTransferJob*>( job );
 
-        m_xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
+        // we add to the reader the xml downloaded from lastFM
+        xmlReader.addData(storedJob->data().data());
     }
     else
     {
         return;
     }
 
-    QDomDocument doc;
-    doc.setContent( m_xml );
-
-    const QDomNode events = doc.documentElement().namedItem( "similarartists" );
-
-    QDomNode n = events.firstChild();
-    while ( !n.isNull() )
+     // we search the artist name on the xml
+    while (!xmlReader.atEnd() && !xmlReader.hasError())
     {
-        // Similar artist name
-        QDomNode nameNode = n.namedItem( "name" );
-        QDomElement eName = nameNode.toElement();
-        QString name;
-        if ( !eName.isNull() )
+        if (xmlReader.name()=="artist") // we have found a similar artist
         {
-            name = eName.text();
-        }
 
-        // Match of the similar artist
-        QDomNode matchNode = n.namedItem( "match" );
-        QDomElement eMatch = matchNode.toElement();
-        float match;
-        if ( !eMatch.isNull() )
-        {
-            match = eMatch.text().toFloat(); //implicite cast
-
-            //FIX of the lastFM API
-            // this API return randomly a float between 0 to 1 of 0 to 100
-            if ( match<=1.0 ) {
-                match=match*100.0;
-            }
-
-        }
-
-
-
-        // Url of the similar artist on last.fm
-        QDomNode urlNode = n.namedItem( "url" );
-        QDomElement eUrl = urlNode.toElement();
-        KUrl url;
-        if ( !eUrl.isNull() )
-        {
-            url = KUrl( eUrl.text() );
-        }
-
-
-        // Url of the large similar artist image
-        QDomNode imageUrlNode = n.namedItem( "image" );
-        QDomElement imageUrlElement = imageUrlNode.toElement();
-        KUrl imageUrl;
-        if ( !imageUrlElement.isNull() )
-        {
-            while ( imageUrlElement.attributeNode( "size" ).value() != "large" )
+            // we search the similar artist name
+            while ( !xmlReader.atEnd()
+                    && !xmlReader.hasError()
+                    && xmlReader.name() != "name")
             {
-                imageUrlElement = imageUrlElement.nextSiblingElement();
+                xmlReader.readNext ();
             }
-            imageUrl = KUrl( imageUrlElement.text() );
+
+            QString name;
+            // we get the name only if we have found it
+            if (!xmlReader.atEnd() && !xmlReader.hasError())
+            {
+                name = xmlReader.readElementText();
+            }
+
+
+            // we search the similar artist match
+            while ( !xmlReader.atEnd()
+                    && !xmlReader.hasError()
+                    && xmlReader.name() != "match")
+            {
+                xmlReader.readNext ();
+            }
+
+            float match;
+            // we get the match only if we have found it
+            if (!xmlReader.atEnd() && !xmlReader.hasError() )
+            {
+                match = xmlReader.readElementText().toFloat();
+
+                //FIX of the lastFM API
+                // this API return randomly a float between 0 to 1 of 0 to 100
+                if ( match<=1.0 ) {
+                    match=match*100.0;
+                }
+            }
+
+            // we search the url on lastFM of the similar artist
+            while ( !xmlReader.atEnd()
+                    && !xmlReader.hasError()
+                    && xmlReader.name() != "url")
+            {
+                xmlReader.readNext ();
+            }
+
+            KUrl url;
+            // we get the url only if we have found it
+            if (!xmlReader.atEnd() && !xmlReader.hasError() )
+            {
+                url = KUrl( xmlReader.readElementText() );
+            }
+
+
+            // we search the url on lastFM of the artist image
+            while ( !xmlReader.atEnd()
+                    && !xmlReader.hasError()
+                    && xmlReader.name() != "image")
+            {
+                xmlReader.readNext ();
+            }
+
+            //we search the large image, in the panel of the image proposed by lastFM
+            while ( !xmlReader.atEnd()
+                    && !xmlReader.hasError()
+                    && xmlReader.attributes().value("size")!="large")
+            {
+                xmlReader.readNext ();
+            }
+
+            KUrl imageUrl;
+            // we get the image url only if we have found it
+            if (!xmlReader.atEnd() && !xmlReader.hasError() )
+            {
+                imageUrl = KUrl( xmlReader.readElementText() );
+            }
+
+            m_similarArtists.append( SimilarArtist( name, match, url, imageUrl, m_artist ) );
+            artistDescriptionRequest(name);
         }
-
-
-        m_similarArtists.append( SimilarArtist( name, match, url, imageUrl, m_artist ) );
-        artistDescriptionRequest(name);
-
-        n = n.nextSibling();
+        xmlReader.readNext ();
     }
 
     m_similarArtistsJob = 0;
@@ -360,12 +387,9 @@ SimilarArtistsEngine::parseSimilarArtists( KJob *job ) // SLOT
  */
 void SimilarArtistsEngine::parseArtistDescription(KJob *job)
 {
-    DEBUG_BLOCK
-
-    debug()<< "SAE 1";
-    QString xml;
     int cpt=0;
-    while (cpt>m_ArtistDescriptionJobs.size() && m_ArtistDescriptionJobs.at(cpt)!=job) {
+    while (cpt>m_ArtistDescriptionJobs.size() && m_ArtistDescriptionJobs.at(cpt)!=job)
+    {
         cpt++;
     }
 
@@ -376,48 +400,57 @@ void SimilarArtistsEngine::parseArtistDescription(KJob *job)
     m_descriptionArtists++;
 
     // It's the correct job but it errored out
-    if ( job->error() != KJob::NoError)
+    if (job->error() != KJob::NoError)
     {
         return;
     }
+
+    // The reader on the xml document which contains the information of the lastFM API.
+    QXmlStreamReader xmlReader;
 
     if ( job )
     {
         KIO::StoredTransferJob* const storedJob
         = static_cast<KIO::StoredTransferJob*>( job );
 
-        xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
+        // we add to the reader the xml downloaded from lastFM
+        xmlReader.addData(storedJob->data().data());
     }
     else
     {
         return;
     }
 
-    QDomDocument doc;
-    doc.setContent( xml );
+    // we search the artist name on the xml
+    while (!xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "name")
+    {
+        xmlReader.readNext ();
+    }
 
-    const QDomNode infos = doc.documentElement().namedItem( "artist" );
-
-    QDomNode nameNode = infos.namedItem( "name" );
-    QDomElement eName = nameNode.toElement();
     QString name;
-    if ( !eName.isNull() )
+    // we get the name only if we have found it
+    if (!xmlReader.atEnd() && !xmlReader.hasError() )
     {
-        name = eName.text();
+            name = xmlReader.readElementText();
+    } else { // error when parsing the xml
+        return;
     }
 
-    QDomNode bioNode = infos.namedItem( "bio" );
-    QDomElement eBio = bioNode.toElement();
+    // we search the artist description on the xml 
+    while (!xmlReader.atEnd() && !xmlReader.hasError()  && xmlReader.name() != "summary")
+    {
+        xmlReader.readNext ();
+    }
 
-    QDomNode descriptionNode = eBio.namedItem( "summary" );
-    QDomElement eDescription = descriptionNode.toElement();
     QString description;
-    if ( !eDescription.isNull() )
+     // we get the description only if we have found it
+    if (!xmlReader.atEnd() && !xmlReader.hasError() )
     {
-        description = eDescription.text();
+       description = xmlReader.readElementText();
+    } else {
+        return;
     }
-
-    debug() << "SAE 2";
+  
     // we search the correct artist to add his description
     cpt=0;
     while (cpt<m_similarArtists.size() && m_similarArtists.value(cpt).name()!=name)
@@ -425,7 +458,7 @@ void SimilarArtistsEngine::parseArtistDescription(KJob *job)
         cpt++;
     }
 
-    if (cpt<m_similarArtists.size()) // we have find the correct artist
+    if (cpt<m_similarArtists.size()) // we have found the correct artist
     {
         // we had his desciption
         SimilarArtist tmp=m_similarArtists.takeAt(cpt);

@@ -144,11 +144,6 @@ private:
     QList<SimilarArtist> m_similarArtists;
 
     /**
-     * The xml downloaded on the last API. It contains the similar artists.
-     */
-    QString m_xml;
-
-    /**
      * The artist, whose research is similar artists.
      */
     QString m_artist;
