@@ -97,7 +97,7 @@ SqlCollectionLocation::isWritable() const
             continue; //How did this happen?
 
         float free_space = total - used;
-	debug() <<"\tfree space: " << percentage_used;
+        debug() <<"\tfree space: " << free_space;
         if( free_space >= 500*1000*1000 ) // ~500 megabytes
             path_exists_with_space = true;
 
