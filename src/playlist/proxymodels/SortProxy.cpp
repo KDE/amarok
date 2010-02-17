@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,12 +21,25 @@
 namespace Playlist
 {
 
+// Note: the 'sort' mode of QSortFilterProxyModel can emit QAbstractItemModel::layoutChanged signals.
+
+// Note: the QSortFilterProxyModel sorting is always on, even with an empty SortScheme.
+//         - That case does not seem worth special-casing
+//         - Cleanly "disabling" QSortFilterProxyModel sort mode is "under-documented"
+//           and non-trivial (in Qt 4.6 at least).
+
 SortProxy::SortProxy( AbstractModel *belowModel, QObject *parent )
     : ProxyBase( parent )
 {
     m_belowModel = belowModel;
     setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
-    setDynamicSortFilter( false );
+
+    // Tell QSortFilterProxyModel: keep the filter correct when the underlying source model changes.
+    // Qt will do this by receiving the standard QAbstractItemModel signals: dataChanged, rowsInserted, etc.
+    setDynamicSortFilter( true );
+
+    // Tell QSortFilterProxyModel: activate sorting.
+    sort( 0 );    // 0 is a dummy column.
 
     //As this Proxy doesn't add or remove tracks, and unique track IDs must be left untouched
     //by sorting, they may be just blindly forwarded
@@ -34,7 +48,6 @@ SortProxy::SortProxy( AbstractModel *belowModel, QObject *parent )
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
     connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );
-    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( invalidateSorting() ) );
 
     //needed by GroupingProxy:
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
@@ -44,35 +57,6 @@ SortProxy::SortProxy( AbstractModel *belowModel, QObject *parent )
 
 SortProxy::~SortProxy()
 {}
-
-void
-SortProxy::invalidateSorting()
-{
-    if( m_scheme.length() )
-    {
-        if( !( m_scheme.level( m_scheme.length() - 1 ).category() == -1 ) ) //if it's not random
-        {
-            invalidate();
-        }
-    }
-    else
-        invalidate();
-    //FIXME: this is a band-aid so that the playlist doesn't reshuffle every time the current track changes
-    // However the real issue is deeper, the Observer seems to notify metadataChanged() even if the metadata
-    // of a track doesn't change but just the currently active track changes, and this results in the playlist
-    // being resorted on every "next", "previous" or track selection. Twice. This is a Bad Thing (TM) and very
-    // inefficient.
-    // We're shipping 2.2 as it is, because it's way too late to go poking around Observer, but this needs
-    // to be solved ASAP post-2.2.      --Téo 23/9/2009
-}
-
-void
-SortProxy::resetSorting()
-{
-    m_scheme = SortScheme();
-    m_mlt = multilevelLessThan();
-    reset();
-}
 
 bool
 SortProxy::lessThan( const QModelIndex & sourceModelIndexA, const QModelIndex & sourceModelIndexB ) const
@@ -85,14 +69,10 @@ SortProxy::lessThan( const QModelIndex & sourceModelIndexA, const QModelIndex & 
 void
 SortProxy::updateSortMap( SortScheme scheme )
 {
-    resetSorting();
-    if( scheme.length() )
-    {
-        m_scheme = scheme;
-        m_mlt.setSortScheme( m_scheme );
-        sort( 0, Qt::AscendingOrder );  //0 is a dummy column
-        //NOTE: sort() also emits QSFPM::layoutChanged()
-    }
+    m_scheme = scheme;
+    m_mlt.setSortScheme( m_scheme );
+
+    invalidate();    // Tell QSortFilterProxyModel: re-sort
 }
 
 
