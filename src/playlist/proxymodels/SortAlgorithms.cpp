@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -33,8 +34,13 @@ multilevelLessThan::operator()( int sourceModelRowA, int sourceModelRowB )
 
         if( currentCategory == -1 ) //random
         {
-            decided = true;
-            verdict = (bool)(qrand() % 2);
+            long randomSeqnumA = constantRandomSeqnumForRow( sourceModelRowA );
+            long randomSeqnumB = constantRandomSeqnumForRow( sourceModelRowB );
+
+            if( randomSeqnumA < randomSeqnumB )
+            {   decided = true;  verdict = true;   }
+            else if( randomSeqnumA > randomSeqnumB )
+            {   decided = true;  verdict = false;   }
         }
         else
         {
@@ -95,6 +101,22 @@ multilevelLessThan::operator()( int sourceModelRowA, int sourceModelRowB )
         verdict = (sourceModelRowA < sourceModelRowB);    // Tie breaker: order by row number
 
     return verdict;
+}
+
+long
+multilevelLessThan::constantRandomSeqnumForRow(int sourceRow)
+{
+    // If the 'seed = qrand(); qsrand( seed )' save+restore ever turns out to be a
+    // performance bottleneck: try switching to 'jrand48()', which has no common
+    // random pool and therefore doesn't have to be saved+restored.
+    int seed = qrand();
+
+    qsrand( sourceRow ^ m_randomSalt );    // Ensure we get the same random number for a given row every time
+    long randomSeqnum = qrand();    // qrand() is int; long to allow switch to 'jrand48()'.
+
+    qsrand( seed );    // Restore non-predictability for the rest of Amarok
+
+    return randomSeqnum;
 }
 
 }   //namespace Playlist

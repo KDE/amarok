@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -41,6 +42,7 @@ struct multilevelLessThan
     multilevelLessThan( QAbstractItemModel *sourceModel, const SortScheme &scheme )
         : m_sourceModel( sourceModel )
         , m_scheme( scheme )
+        , m_randomSalt( qrand() )
     {}
 
     /**
@@ -52,9 +54,29 @@ struct multilevelLessThan
      */
     bool operator()( int rowA, int rowB );
 
+    protected:
+        /**
+         * For random sort, we want to assign a random sequence number to each row in the
+         * source model.
+         *
+         * On the other hand, the sequence number must stay constant for any given row.
+         * The QSortFilterProxyModel sort code can ask us about the same row twice, and
+         * we need to return consistent answers.
+         *
+         * It would be even nicer if the sequence number stayed constant for a given
+         * *item* instead of *row*, but that is not truly necessary and costs performance.
+         *
+         * The sequence numbers don't need to be contiguous.
+         * The sequence numbers don't need to be unique; a few collisions are no problem.
+         *
+         * @return a sequence number that is random, but constant for 'sourceRow'.
+         */
+        long constantRandomSeqnumForRow( int sourceRow );
+
     private:
         QAbstractItemModel *m_sourceModel;     //! The underlying model which holds the rows that need to be sorted.
         SortScheme m_scheme;           //! The current sorting scheme.
+        long m_randomSalt;    //! Change the random row order from run to run.
 };
 
 }   //namespace Playlist
