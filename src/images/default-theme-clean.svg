@@ -34,12 +34,12 @@
      inkscape:cx="1932.1472"
      inkscape:cy="662.37416"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="tiny_skip_right"
      showgrid="true"
      inkscape:window-width="1204"
      inkscape:window-height="922"
-     inkscape:window-x="367"
-     inkscape:window-y="134"
+     inkscape:window-x="190"
+     inkscape:window-y="183"
      inkscape:window-maximized="0"
      inkscape:snap-global="true">
     <inkscape:grid
@@ -11849,7 +11849,7 @@
        style="opacity:0.56000001"
        transform="matrix(1.0013037,0,0,1,58.574926,-0.01025391)">
       <path
-         style="fill:#101010;fill-opacity:1;stroke:none"
+         style="fill:#010101;fill-opacity:1;stroke:none"
          d="m 1940.125,617.03125 c 8.8757,21.30178 17.7492,42.60447 26.625,63.90625 -8.8758,21.30178 -17.7493,42.60447 -26.625,63.90625 26.6259,-21.30081 53.249,-42.60544 79.875,-63.90625 -26.626,-21.30081 -53.2491,-42.60544 -79.875,-63.90625 z"
          transform="translate(-846.98988,-218.10144)"
          id="path2816" />
@@ -11859,7 +11859,7 @@
          height="128"
          width="16"
          id="rect2818"
-         style="fill:#101010;fill-opacity:1;stroke:none" />
+         style="fill:#010101;fill-opacity:1;stroke:none" />
     </g>
     <g
        transform="matrix(-1.0013037,0,0,1,2223.6954,-0.01025391)"
@@ -11869,9 +11869,9 @@
          id="path4572"
          transform="translate(-846.98988,-218.10144)"
          d="m 1940.125,617.03125 c 8.8757,21.30178 17.7492,42.60447 26.625,63.90625 -8.8758,21.30178 -17.7493,42.60447 -26.625,63.90625 26.6259,-21.30081 53.249,-42.60544 79.875,-63.90625 -26.626,-21.30081 -53.2491,-42.60544 -79.875,-63.90625 z"
-         style="fill:#101010;fill-opacity:1;stroke:none" />
+         style="fill:#010101;fill-opacity:1;stroke:none" />
       <rect
-         style="fill:#101010;fill-opacity:1;stroke:none"
+         style="fill:#010101;fill-opacity:1;stroke:none"
          id="rect4574"
          width="16"
          height="128"
