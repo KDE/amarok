@@ -411,6 +411,7 @@ SimilarArtistsApplet::artistsUpdate()
             art->setPhoto( m_similars.at( cpt ).urlImage() );
             art->setMatch( m_similars.at( cpt ).match() );
             art->setDescription(m_similars.at( cpt ).description());
+            art->setTopTrack(m_similars.at( cpt ).topTrack());
             cpt++;
         }
 

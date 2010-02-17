@@ -29,10 +29,12 @@ SimilarArtist::SimilarArtist() {}
  * @param url   A url of this artist on the web, for example on last.fm
  * @param urlImage  A url of an image of this artist, for example on last.fm
  * @param similarTo The name of the artist similar to this artist
+ * @param topTrack The most known artist track.
  */
 SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &url,
                               const KUrl &urlImage, const QString &similarTo,
-                              const QString &description )
+                              const QString &description,
+                              const QString &topTrack )
 {
     m_name = name;
     m_match = match;
@@ -40,6 +42,7 @@ SimilarArtist::SimilarArtist( const QString &name, const int match, const KUrl &
     m_urlImage = urlImage;
     m_similarTo = similarTo;
     m_description = description;
+    m_topTrack = topTrack;
 
     static bool metaTypeRegistered = false;
     if ( !metaTypeRegistered )
@@ -103,3 +106,24 @@ SimilarArtist::setDescription(const QString description)
 {
     m_description=description;
 }
+
+/**
+ * @return the most known artist track
+ */
+QString
+SimilarArtist::topTrack() const
+{
+    return m_topTrack;
+}
+
+
+/**
+ * Set the most known artist track
+ * @param track the top track
+ */
+void
+SimilarArtist::setTopTrack(const QString track)
+{
+    m_topTrack=track;
+}
+

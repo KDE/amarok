@@ -46,11 +46,13 @@ public:
      * @param url   A url of this artist on the web, for example on last.fm
      * @param urlImage  A url of an image of this artist, for example on last.fm
      * @param similarTo The name of the artist similar to this artist
-     * @param desc The description of this artist, NULL as default
+     * @param desc The description of this artist, empty string as default
+     * @param topTrack The most known artist track.
      */
     SimilarArtist( const QString &name, const int match, const KUrl &url,
                    const KUrl &urlImage, const QString &similarTo,
-                   const QString &description=QString() );
+                   const QString &description=QString(),
+                   const QString &topTrack=QString() );
 
     /**
      * @return The name of this artist
@@ -84,6 +86,17 @@ public:
     void setDescription(const QString description);
 
     /**
+     * @return the most known artist track
+     */
+    QString topTrack() const;
+
+    /**
+     * Set the most known artist track
+     * @param track the top track
+     */
+    void setTopTrack(const QString track);
+
+    /**
      * Define a new type for help the communication
      * between the data engine SimilarArtists and the applet SimilarArtists
      */
@@ -114,6 +127,11 @@ private:
      * The description of this artist
      */
     QString m_description;
+
+    /**
+     * The most known track of this artist
+     */
+    QString m_topTrack;
 
     /**
      * The name of the artist similar to this artist

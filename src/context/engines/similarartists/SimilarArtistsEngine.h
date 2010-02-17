@@ -73,7 +73,7 @@ public:
 
     /**
     * Fetches the similar artists for an artist thanks to the LastFm WebService
-    * @param artist_name the name of the artist
+    * @param artistName the name of the artist
     * @return a map with the names of the artists with their match rate
     */
     QMap<int, QString> similarArtists( const QString &artistName );
@@ -81,7 +81,7 @@ public:
     /**
      * Fetches the similar artists for an artist thanks to the LastFM WebService
      * Store this in the similar artist list of this class
-     * @param artist_name the name of the artist
+     * @param artistName the name of the artist
      */
     void similarArtistsRequest( const QString &artistName );
 
@@ -98,10 +98,16 @@ private:
     void update();
 
     /**
-     * Fetches the description of the artist artist_name on the LastFM API.
-     * @param artist_name the name of the artist
+     * Fetches the description of the artist artistName on the LastFM API.
+     * @param artistName the name of the artist
      */
     void artistDescriptionRequest( const QString &artistName );
+
+    /**
+     * Fetches the the most known artist track of the artist artistName on the LastFM API
+     * @param artistName the name of the artist
+     */
+    void artistTopTrackRequest( const QString &artistName );
 
     /**
      * The max number of similar artists to get
@@ -114,14 +120,24 @@ private:
     int m_descriptionArtists;
 
     /**
+     * The number of top tracks fetched
+     */
+    int m_topTrackArtists;
+
+    /**
      * The job for download the data from the lastFm API
      */
     KJob *m_similarArtistsJob;
 
     /**
-     * The list of jobs that fetch the artists description on the  lastFM API
+     * The list of jobs that fetch the artists description on the lastFM API
      */
-    QList<KJob*> m_ArtistDescriptionJobs;
+    QList<KJob*> m_artistDescriptionJobs;
+
+    /**
+     * The list of jobs that fetch the most known artists tracks on the lastFM API
+     */
+    QList<KJob*> m_artistTopTrackJobs;
 
     /**
      * The current track played on amarok
@@ -163,6 +179,13 @@ private slots:
      * @param job The job, which have downloaded the data.
      */
     void parseArtistDescription( KJob *job);
+
+    /**
+     * Parse the xml fetched on the lastFM API for the similarArtist most known track
+     * Launched when the download of the data are finished and for each similarArtists.
+     * @param job The job, which have downloaded the data.
+     */
+    void parseArtistTopTrack( KJob *job);
 
 };
 
