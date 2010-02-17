@@ -4,6 +4,7 @@
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -70,7 +71,7 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
 
     // Proxy the Playlist::AbstractModel signals
     connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );  // Planned for removal, but handle for now 2010-02-11
-    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( sourceLayoutChanged() ) );         // Planned for removal, but handle for now 2010-02-11
+    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( proxyLayoutChanged() ) );          // Planned for removal, but handle for now 2010-02-11
 
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
     connect( sourceModel(), SIGNAL( beginRemoveIds() ), this, SIGNAL( beginRemoveIds() ) );

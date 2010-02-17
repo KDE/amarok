@@ -3,7 +3,8 @@
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                              *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -61,22 +62,47 @@ public:
     static GroupingProxy* instance();
     static void destroy();
 
+
     //! Configuration
     /**
+     * The criterium by which adjacent items are divided into groups.
      * @param groupingCategory A string from 'groupableCategories', or "None", or empty string.
      */
     QString groupingCategory() const;
     void setGroupingCategory( const QString &groupingCategory );
 
+
     //! Grouping info functions
+    /**
+     * @return true if 'index' is the first item of a Group.
+     */
     bool isFirstInGroup( const QModelIndex & index );
-    bool isLastInGroup ( const QModelIndex & index );
 
+    /**
+     * @return true if 'index' is the last item of a Group.
+     */
+    bool isLastInGroup( const QModelIndex & index );
+
+    /**
+     * @return The first item of the Group that 'index' belongs to.
+     */
     QModelIndex firstIndexInSameGroup( const QModelIndex & index );
-    QModelIndex lastIndexInSameGroup ( const QModelIndex & index );
 
-    int groupRowCount  ( const QModelIndex & index );
+    /**
+     * @return The last item of the Group that 'index' belongs to.
+     */
+    QModelIndex lastIndexInSameGroup( const QModelIndex & index );
+
+    /**
+     * @return The number of items in the Group that 'index' belongs to.
+     */
+    int groupRowCount( const QModelIndex & index );
+
+    /**
+     * @return The play length (in seconds) of the Group that 'index' belongs to.
+     */
     int groupPlayLength( const QModelIndex & index );
+
 
     //! Custom version of functions inherited from QSortFilterProxyModel
     QVariant data( const QModelIndex &index, int role ) const;
