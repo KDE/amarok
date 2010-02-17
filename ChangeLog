@@ -22,6 +22,8 @@ VERSION 2.3
       when performing a Move operation.
     * Fixed bug in organize collection dialog that used the old %theartist
       token instead of %artist.
+    * Install amarokitpc.protocol to be able to play itunes links in the
+      webbrower if amarok is off (BR 206615)
 
 VERSION 2.3-Beta 1
   FEATURES:
