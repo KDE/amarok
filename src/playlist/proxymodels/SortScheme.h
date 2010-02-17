@@ -34,14 +34,14 @@ class SortLevel
 {
     public:
         explicit SortLevel( int sortCategory = PlaceHolder, Qt::SortOrder sortOrder = Qt::AscendingOrder );
-        int category();
-        Qt::SortOrder order();
+        int category() const;
+        Qt::SortOrder order() const;
         void setCategory( int sortCategory );
         void setOrder( Qt::SortOrder sortOrder );
-        bool isComparable();
-        bool isString();
-        bool isFloat();
-        QString prettyName();
+        bool isComparable() const;
+        bool isString() const;
+        bool isFloat() const;
+        QString prettyName() const;
     private:
         int m_category;     //Column from PlaylistDefines.h
         Qt::SortOrder m_order;
@@ -57,10 +57,10 @@ class SortScheme
     public:
         SortScheme();
         ~SortScheme();
-        SortLevel & level( int i );
+        const SortLevel & level( int i ) const;
         void addLevel( const SortLevel & level );
         void trimToLevel( int lastLevel );        //deletes all the levels up to level # length
-        int length();
+        int length() const;
 
     private:
         QStack< SortLevel > m_scheme;

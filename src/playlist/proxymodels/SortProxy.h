@@ -19,6 +19,8 @@
 #define AMAROK_PLAYLISTSORTPROXY_H
 
 #include "ProxyBase.h"
+
+#include "SortAlgorithms.h"
 #include "SortScheme.h"
 
 namespace Playlist
@@ -96,6 +98,7 @@ protected slots:
 
 private:
     SortScheme m_scheme;               //! The current sorting scheme.
+    multilevelLessThan m_mlt;          //! Decision object for current sorting scheme.
 };
 
 }   //namespace Playlist

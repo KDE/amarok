@@ -39,20 +39,24 @@ struct multilevelLessThan
      * @param sourceProxy a pointer to the underlying proxy instance.
      * @param scheme the sorting scheme that needs to be applied.
      */
-    multilevelLessThan( QAbstractItemModel *sourceModel, const SortScheme &scheme )
-        : m_sourceModel( sourceModel )
-        , m_scheme( scheme )
-        , m_randomSalt( qrand() )
-    {}
+    multilevelLessThan()
+        : m_scheme( SortScheme() )
+    { }
 
     /**
-     * Takes two row numbers from the proxy and compares the corresponding indexes based on
-     * a number of chosen criteria (columns).
+     * Set sort scheme
+     */
+    void setSortScheme( const SortScheme & scheme );
+
+    /**
+     * Takes two row numbers from the source model and compares the corresponding indexes
+     * based on a number of chosen criteria (columns).
      * @param rowA the first row.
      * @param rowB the second row.
      * @return true if rowA is to be placed before rowB, false otherwise.
      */
-    bool operator()( int rowA, int rowB );
+    bool operator()( const QAbstractItemModel* sourceModel, int sourceModelRowA, int sourceModelRowB ) const;
+
 
     protected:
         /**
@@ -71,10 +75,9 @@ struct multilevelLessThan
          *
          * @return a sequence number that is random, but constant for 'sourceRow'.
          */
-        long constantRandomSeqnumForRow( int sourceRow );
+        long constantRandomSeqnumForRow( int sourceRow ) const;
 
     private:
-        QAbstractItemModel *m_sourceModel;     //! The underlying model which holds the rows that need to be sorted.
         SortScheme m_scheme;           //! The current sorting scheme.
         long m_randomSalt;    //! Change the random row order from run to run.
 };

@@ -17,8 +17,6 @@
 
 #include "SortProxy.h"
 
-#include "SortAlgorithms.h"
-
 namespace Playlist
 {
 
@@ -72,6 +70,7 @@ void
 SortProxy::resetSorting()
 {
     m_scheme = SortScheme();
+    m_mlt = multilevelLessThan();
     reset();
 }
 
@@ -80,8 +79,7 @@ SortProxy::lessThan( const QModelIndex & sourceModelIndexA, const QModelIndex & 
 {
     int rowA = sourceModelIndexA.row();
     int rowB = sourceModelIndexB.row();
-    multilevelLessThan mlt = multilevelLessThan( sourceModel(), m_scheme );
-    return mlt( rowA, rowB );
+    return m_mlt( sourceModel(), rowA, rowB );
 }
 
 void
@@ -91,6 +89,7 @@ SortProxy::updateSortMap( SortScheme scheme )
     if( scheme.length() )
     {
         m_scheme = scheme;
+        m_mlt.setSortScheme( m_scheme );
         sort( 0, Qt::AscendingOrder );  //0 is a dummy column
         //NOTE: sort() also emits QSFPM::layoutChanged()
     }

@@ -22,8 +22,15 @@
 namespace Playlist
 {
 
+void
+multilevelLessThan::setSortScheme( const SortScheme & scheme )
+{
+    m_scheme = scheme;
+    m_randomSalt = qrand();
+}
+
 bool
-multilevelLessThan::operator()( int sourceModelRowA, int sourceModelRowB )
+multilevelLessThan::operator()( const QAbstractItemModel* sourceModel, int sourceModelRowA, int sourceModelRowB ) const
 {
     bool decided = false;
     bool verdict = false;    // Guaranteed to be overwritten
@@ -44,8 +51,8 @@ multilevelLessThan::operator()( int sourceModelRowA, int sourceModelRowB )
         }
         else
         {
-            QModelIndex indexA = m_sourceModel->index( sourceModelRowA, currentCategory );
-            QModelIndex indexB = m_sourceModel->index( sourceModelRowB, currentCategory );
+            QModelIndex indexA = sourceModel->index( sourceModelRowA, currentCategory );
+            QModelIndex indexB = sourceModel->index( sourceModelRowB, currentCategory );
 
             QVariant dataA = indexA.data();
             QVariant dataB = indexB.data();
@@ -104,7 +111,7 @@ multilevelLessThan::operator()( int sourceModelRowA, int sourceModelRowB )
 }
 
 long
-multilevelLessThan::constantRandomSeqnumForRow(int sourceRow)
+multilevelLessThan::constantRandomSeqnumForRow(int sourceRow) const
 {
     // If the 'seed = qrand(); qsrand( seed )' save+restore ever turns out to be a
     // performance bottleneck: try switching to 'jrand48()', which has no common
