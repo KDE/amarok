@@ -37,8 +37,8 @@ FilterProxy::FilterProxy( AbstractModel *belowModel, QObject *parent )
     connect( this, SIGNAL( metadataUpdated() ), this, SLOT( slotInvalidateFilter() ) );
 
     KConfigGroup config = Amarok::config("Playlist Search");
-    m_passThrough = !config.readEntry( "ShowOnlyMatches", true );
-    setDynamicSortFilter( true );
+    m_showOnlyMatches = config.readEntry( "ShowOnlyMatches", true );
+    setDynamicSortFilter( true );    // Tell QSortFilterProxyModel: keep the filter correct when the underlying source model changes.
 }
 
 FilterProxy::~FilterProxy()
@@ -49,11 +49,11 @@ bool FilterProxy::filterAcceptsRow( int source_row, const QModelIndex & source_p
 {
     Q_UNUSED( source_parent );
 
-    if ( m_passThrough )
+    if ( m_showOnlyMatches ) {
+        return matchesCurrentSearchTerm( source_row );
+    } else {
         return true;
-
-    const bool match = matchesCurrentSearchTerm( source_row );
-    return match;
+    }
 }
 
 int
@@ -64,11 +64,13 @@ FilterProxy::rowCount(const QModelIndex& parent) const
 
 void FilterProxy::filterUpdated()
 {
-    if ( !m_passThrough )
+    if ( m_showOnlyMatches )
     {
-        invalidateFilter();
+        invalidateFilter();    // Tell QSortFilterProxyModel: re-filter
         emit( layoutChanged() );
     }
+    //else
+    //  Search criteria are not being used for filtering, so we can ignore the update
 }
 
 int
@@ -76,10 +78,14 @@ FilterProxy::find( const QString &searchTerm, int searchFields )
 {
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
-    if( !m_passThrough )
+
+    if( m_showOnlyMatches )
     {
         filterUpdated();
     }
+    //else
+    //  Search criteria are not being used for filtering, so we can ignore the update
+
     return -1;
 }
 
@@ -113,7 +119,7 @@ void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 void
 FilterProxy::showOnlyMatches( bool onlyMatches )
 {
-    m_passThrough = !onlyMatches;
+    m_showOnlyMatches = onlyMatches;
 
     //make sure to update model when mode changes ( as we might have ignored and
     //number of changes to the search term )
@@ -126,11 +132,14 @@ void FilterProxy::clearSearchTerm()
     m_currentSearchTerm.clear();
     m_currentSearchFields = 0;
     m_belowModel->clearSearchTerm();
-    if ( !m_passThrough )
+
+    if ( m_showOnlyMatches )
     {
         invalidateFilter();    // Tell QSortFilterProxyModel: re-filter.
         emit( layoutChanged() );
     }
+    //else
+    //  Search criteria are not being used for filtering, so we can ignore the update
 }
 
 bool

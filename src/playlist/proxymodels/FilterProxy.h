@@ -137,7 +137,7 @@ private:
     QString m_currentSearchTerm;
     int m_currentSearchFields;
 
-    bool m_passThrough;
+    bool m_showOnlyMatches;
 };
 
 }
