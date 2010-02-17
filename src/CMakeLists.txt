@@ -863,7 +863,7 @@ install(FILES amarok-play-audiocd.desktop DESTINATION ${DATA_INSTALL_DIR}/solid/
 install(FILES amarok.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES context/amarokapplets.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 
-#install(FILES amarokitpc.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES amarokitpc.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 #install(FILES amarokpcast.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 
 install(FILES context/servicetypes/amarok_context_applet.desktop
