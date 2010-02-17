@@ -868,7 +868,10 @@ EngineController::slotAboutToFinish()
     debug() << "Track finished completely, updating statistics";
 
     if( m_currentTrack ) // not sure why this should not be the case, but sometimes happens. don't crash.
+	{
         m_currentTrack->finishedPlaying( 1.0 ); // If we reach aboutToFinish, the track is done as far as we are concerned.
+		trackFinishedNotify( m_currentTrack );
+	}
     if( m_multiPlayback )
     {
         DEBUG_LINE_INFO
