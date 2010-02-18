@@ -50,10 +50,16 @@ ArtistHelper::realTrackArtist( const QString &trackArtistTag )
     {
         //always use the first artist
         QString tmp = trackArtists[0].simplified();
+        //artists are written as "A (feat. B)" or "A [feat. B]" as well
+        if( tmp.endsWith(" (") || tmp.endsWith( " [" ) )
+            tmp = tmp.left( tmp.length() -2 ).simplified(); //remove last tow characters
+
         if( tmp.isEmpty() )
             return trackArtistTag; //huh?
         else
+        {
             return tmp;
+        }
     }
     else
     {
