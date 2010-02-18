@@ -303,11 +303,9 @@ App::handleCliArgs() //static
     if( args->isSet( "cwd" ) )
         KCmdLineArgs::setCwd( args->getOption( "cwd" ).toLocal8Bit() );
 
-    bool haveArgs = false;
+    bool haveArgs = true; // assume having args in first place
     if( args->count() > 0 )
     {
-        haveArgs = true;
-
         KUrl::List list;
         for( int i = 0; i < args->count(); i++ )
         {
@@ -343,13 +341,8 @@ App::handleCliArgs() //static
 
         The::playlistController()->insertOptioned( list, options );
     }
-
     else if ( args->isSet( "cdplay" ) )
-    {
-        debug() << "cdplay!!";
-        haveArgs = true;
         The::mainWindow()->playAudioCd();
-    }
 
     //we shouldn't let the user specify two of these since it is pointless!
     //so we prioritise, pause > stop > play > next > prev
@@ -357,35 +350,19 @@ App::handleCliArgs() //static
     //then the others seemed sensible. Feel free to modify this order, but please leave justification in the cvs log
     //I considered doing some sanity checks (eg only stop if paused or playing), but decided it wasn't worth it
     else if ( args->isSet( "pause" ) )
-    {
-        haveArgs = true;
         The::engineController()->pause();
-    }
     else if ( args->isSet( "stop" ) )
-    {
-        haveArgs = true;
         The::engineController()->stop();
-    }
     else if ( args->isSet( "play-pause" ) )
-    {
-        haveArgs = true;
         The::engineController()->playPause();
-    }
     else if ( args->isSet( "play" ) ) //will restart if we are playing
-    {
-        haveArgs = true;
         The::engineController()->play();
-    }
     else if ( args->isSet( "next" ) )
-    {
-        haveArgs = true;
         The::playlistActions()->next();
-    }
     else if ( args->isSet( "previous" ) )
-    {
-        haveArgs = true;
         The::playlistActions()->back();
-    }
+    else // no args given
+        haveArgs = false;
 
     static bool firstTime = true;
     const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
