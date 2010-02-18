@@ -21,6 +21,8 @@
 
 #include "collection/CollectionLocationDelegateImpl.h"
 
+#include <QMetaObject>
+
 using namespace Amarok;
 
 DefaultApplicationController::DefaultApplicationController()
@@ -83,7 +85,10 @@ DefaultApplicationController::initSqlStorage()
 void
 DefaultApplicationController::initEngineController()
 {
-    Components::setEngineController( new EngineController() );
+    EngineController *controller = new EngineController();
+    Components::setEngineController( controller );
+    bool invoked = QMetaObject::invokeMethod( controller, "initializePhonon", Qt::DirectConnection );
+    Q_ASSERT( invoked );
 }
 
 void
