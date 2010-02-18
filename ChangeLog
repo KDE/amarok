@@ -2,15 +2,16 @@ Amarok ChangeLog
 ================
 (C) 2002-2010 the Amarok authors.
 
+
 VERSION 2.3
   FEATURES:
 
   CHANGES:
     * Deleting files from the filebrowser is now asynchronous.
     * Copy/Move/Organize operations now display detailed progress information.
-    * Copy/Move/Organize operations are now cancelable.
+    * Copy/Move/Organize operations can now be canceled. 
     * Port Copy/Move to Collection actions to the new File Browser.
-    * ScriptUpdater: Only check for updates if 7 days have passed since the 
+    * Script-Updater: Only check for updates if 7 days have passed since the 
       last check.
 
   BUGFIXES:
@@ -29,8 +30,9 @@ VERSION 2.3
       when performing a Move operation.
     * Fixed bug in organize collection dialog that used the old %theartist
       token instead of %artist.
-    * Install amarokitpc.protocol to be able to play itunes links in the
-      webbrowser if amarok is off (BR 206615) thanks to Philippe ROUBACH
+    * Install amarokitpc.protocol to be able to play iTunes links in the
+      web browser if Amarok is off. Thanks to Philippe Roubach. (BR 206615) 
+
 
 VERSION 2.3-Beta 1
   FEATURES:
