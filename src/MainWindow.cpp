@@ -825,7 +825,7 @@ MainWindow::createActions()
     ac->addAction( "prev", action );
     action->setIcon( KIcon("media-skip-backward-amarok") );
     action->setText( i18n( "Previous Track" ) );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Z ) );
+    action->setGlobalShortcut( KShortcut( Qt::Key_MediaPrevious ) );
     connect( action, SIGNAL(triggered(bool)), pa, SLOT( back() ) );
 
     action = new KAction( this );
@@ -842,7 +842,7 @@ MainWindow::createActions()
 
     action = new KAction( KIcon("media-skip-forward-amarok"), i18n( "Next Track" ), this );
     ac->addAction( "next", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
+    action->setGlobalShortcut( KShortcut( Qt::Key_MediaNext ) );
     connect( action, SIGNAL(triggered(bool)), pa, SLOT( next() ) );
 
     action = new KAction( i18n( "Increase Volume" ), this );

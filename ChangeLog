@@ -7,6 +7,8 @@ VERSION 2.3
   FEATURES:
 
   CHANGES:
+    * Set Media Keys as default global shortcuts for playlist navigation.
+      (BR 194259)
     * Deleting files from the filebrowser is now asynchronous.
     * Copy/Move/Organize operations now display detailed progress information.
     * Copy/Move/Organize operations can now be canceled. 
