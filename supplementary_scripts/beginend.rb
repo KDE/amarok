@@ -1,7 +1,8 @@
 #!/usr/bin/ruby
 ###########################################################################
-#   This script puts a DEBUG_BLOCK in every method of a given C++ file.   #
-#   Use with caution.                                                     #
+#   Parses the Amarok debug log and prints methods which have unbalanced  #
+#   BEGIN and END. This script only works for those methods with a        #
+#   DEBUG_BLOCK.                                                          #
 #                                                                         #
 #   Copyright                                                             #
 #   (C) 2010 Casey Link <unnamedrambler@gmail.com>                        #
@@ -22,8 +23,7 @@
 #   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         #
 ###########################################################################
 
-# Parses the Amarok debug log and determines which methods have not ENDed
-# Use: cat amarok.log > beginend.rb
+# Use: cat amarok.log | beginend.rb
 
 input = STDIN.read
 stack = []
@@ -36,12 +36,20 @@ input.each_line do |line|
     ends = line.scan(/amarok:\s+END__: (.*) - (.*)/)
     if ends[0] != nil 
       if !stack.include? ends[0][0].strip
-	puts "Not Ended: #{ends[0][0]}"
+        # could this ever happen?
+	puts "Method ended but not begun: #{ends[0][0]}"
       else
-	stack.delete ends[0][0].strip
+        # only delete the most recent matching block
+        last = stack.rindex(ends[0][0].strip)
+        stack.delete_at(last)
       end
-      
     end
 end
+
+# Any remaining methods blocks will be unbalanced
+stack.each do |block|
+  puts "Not ended: #{block}"
+end
+
 puts "Done."
 
