@@ -87,6 +87,7 @@ set( testsqltrackediting_SRCS
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMakerInternal.cpp
@@ -108,6 +109,7 @@ link_database_test( testsqltrackediting )
 set( testsqlartist_SRCS
         TestSqlArtist.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
@@ -122,6 +124,7 @@ set( testsqlcollection_SRCS
         TestSqlCollection.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
@@ -139,6 +142,7 @@ set( testsqlquerymaker_SRCS
         TestSqlQueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMaker.cpp
