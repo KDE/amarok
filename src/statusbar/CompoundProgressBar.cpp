@@ -140,16 +140,17 @@ void CompoundProgressBar::childBarFinished( ProgressBar *bar )
 
     if( m_progressMap.count() == 1 )
     {
+        //only one job still running, so no need to use the details widget any more. Also set the text to the description of
+        //the job instead of the "Multiple background tasks running" text.
         setDescription( m_progressMap.values().at( 0 )->descriptionLabel()->text() );
         cancelButton()->setToolTip( i18n( "Abort" ) );
+        hideDetails();
     }
-
-    if( m_progressMap.empty() )
+    else if( m_progressMap.empty() )
     {
         progressBar()->setValue( 0 );
         hideDetails();
         emit( allDone() );
-        m_progressDetailsWidget->hide();
         return;
     }
     else
@@ -159,8 +160,6 @@ void CompoundProgressBar::childBarFinished( ProgressBar *bar )
     }
 
     progressBar()->setValue( calcCompoundPercentage() );
-
-    handleDetailsButton();
 }
 
 int CompoundProgressBar::calcCompoundPercentage()
@@ -212,6 +211,9 @@ void CompoundProgressBar::toggleDetails()
 
 void CompoundProgressBar::handleDetailsButton()
 {
+    if( m_progressMap.count() > 1 )    
         m_showDetailsButton->show();
+    else
+        m_showDetailsButton->hide();
 }
 

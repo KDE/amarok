@@ -14,6 +14,8 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * Correctly show progress description of last remaining job in the statusbar 
+      after multiple jobs have been running.
     * Fixed a regression that broke the playlist save button.
     * Respect the podcast episode limit when new episodes are added during update.
       (BR 220768)
