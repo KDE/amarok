@@ -195,12 +195,12 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
 Meta::TrackPtr
 SqlPodcastProvider::trackForUrl( const KUrl &url )
 {
-    DEBUG_BLOCK
+    if( url.isEmpty() )
+        return TrackPtr();
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     if( !sqlStorage )
         return TrackPtr();
-
 
     QString command = "SELECT id, url, channel, localurl, guid, "
             "title, subtitle, sequencenumber, description, mimetype, pubdate, "

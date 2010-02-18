@@ -14,6 +14,9 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * Fixed a bug in podcast parsing that broke all feeds that do not include a
+      guid and possible overwrited data from other podcasts. Introduced in 2.3 beta.
+      (BR 227515)
     * Correctly show progress description of last remaining job in the statusbar 
       after multiple jobs have been running.
     * Fixed a regression that broke the playlist save button.
