@@ -21,6 +21,8 @@
 
 #include <solid/device.h>
 
+class SqlStorage;
+
 class MassStorageDeviceHandlerFactory : public DeviceHandlerFactory
 {
 public:
@@ -31,11 +33,11 @@ public:
 
     virtual bool canCreateFromMedium() const;
 
-    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &uuid ) const;
+    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &uuid, SqlStorage *s ) const;
 
     virtual bool canCreateFromConfig() const;
 
-    virtual DeviceHandler* createHandler( KSharedConfigPtr c ) const;
+    virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const;
 
     virtual QString type() const;
 

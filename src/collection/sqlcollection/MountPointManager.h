@@ -18,7 +18,7 @@
 #define AMAROK_MOUNTPOINTMANAGER_H
 
 #include "Amarok.h"
-#include "amarok_export.h"
+#include "amarok_sqlcollection_export.h"
 #include "plugin/plugin.h"
 #include "PluginManager.h"
 
@@ -33,12 +33,13 @@
 
 class DeviceHandler;
 class DeviceHandlerFactory;
+class SqlStorage;
 
 typedef QList<int> IdList;
 typedef QList<DeviceHandlerFactory*> FactoryList;
 typedef QMap<int, DeviceHandler*> HandlerMap;
 
-class AMAROK_EXPORT DeviceHandlerFactory : public Amarok::Plugin
+class AMAROK_SQLCOLLECTION_EXPORT DeviceHandlerFactory : public Amarok::Plugin
 {
 public:
     DeviceHandlerFactory() {}
@@ -64,11 +65,11 @@ public:
      * @param volume the Volume for which a DeviceHandler is required
      * @return a DeviceHandler or 0 if the factory cannot handle the Medium
      */
-    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &udi ) const = 0;
+    virtual DeviceHandler* createHandler( const Solid::Device &device, const QString &udi, SqlStorage *s ) const = 0;
 
     virtual bool canCreateFromConfig() const = 0;
 
-    virtual DeviceHandler* createHandler( KSharedConfigPtr c ) const = 0;
+    virtual DeviceHandler* createHandler( KSharedConfigPtr c, SqlStorage *s ) const = 0;
 
     /**
      * returns the type of the DeviceHandler. Should be the same as the value used in
@@ -83,7 +84,7 @@ public:
  *
  *
  */
-class DeviceHandler
+class AMAROK_SQLCOLLECTION_EXPORT DeviceHandler
 {
 public:
     DeviceHandler() {}
@@ -145,26 +146,17 @@ Q_OBJECT
 
 
 public:
+    MountPointManager( QObject *parent, SqlStorage *storage );
+    ~MountPointManager();
     //the methods of this class a called *very* often. make sure they are as fast as possible
     // (inline them?)
-
-    /**
-     * factory method.
-     * @return a MountPointManager instance
-     */
-    AMAROK_EXPORT static MountPointManager *instance();
-
-    /**
-     * frees the singleton
-     */
-    AMAROK_EXPORT static void destroy();
 
     /**
      *
      * @param url
      * @return
      */
-    AMAROK_EXPORT int getIdForUrl( const KUrl &url );
+    AMAROK_SQLCOLLECTION_EXPORT int getIdForUrl( const KUrl &url );
     /**
      *
      * @param id
@@ -179,7 +171,7 @@ public:
      * @return the absolute path
      */
     void getAbsolutePath( const int deviceId, const KUrl& relativePath, KUrl& absolutePath ) const;
-    AMAROK_EXPORT QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const;
+    AMAROK_SQLCOLLECTION_EXPORT QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const;
     /**
      * calculates a file's/directory's relative path on a given device.
      * @param deviceId the unique id which identifies the device the file/directory is supposed to be on
@@ -187,14 +179,14 @@ public:
      * @param relativePath the calculated relative path
      */
     void getRelativePath( const int deviceId, const KUrl& absolutePath, KUrl& relativePath ) const;
-    AMAROK_EXPORT QString getRelativePath( const int deviceId, const QString& absolutePath ) const;
+    AMAROK_SQLCOLLECTION_EXPORT QString getRelativePath( const int deviceId, const QString& absolutePath ) const;
     /**
      * allows calling code to access the ids of all active devices
      * @return the ids of all devices which are currently mounted or otherwise accessible
      */
-    AMAROK_EXPORT IdList getMountedDeviceIds() const;
+    AMAROK_SQLCOLLECTION_EXPORT IdList getMountedDeviceIds() const;
 
-    AMAROK_EXPORT QStringList collectionFolders();
+    AMAROK_SQLCOLLECTION_EXPORT QStringList collectionFolders();
     void setCollectionFolders( const QStringList &folders );
 
 public slots:
@@ -218,9 +210,6 @@ private slots:
     void startStatisticsUpdateJob();
 
 private:
-    static MountPointManager* s_instance;
-    MountPointManager();
-    ~MountPointManager();
 
     /**
      * checks whether a medium identified by its unique database id is currently mounted.
@@ -230,6 +219,8 @@ private:
      */
     bool isMounted ( const int deviceId ) const;
     void init();
+
+    SqlStorage *m_storage;
     /**
      * maps a device id to a mount point. does only work for mountable filesystems and needs to be
      * changed for the real Dynamic Collection implementation.

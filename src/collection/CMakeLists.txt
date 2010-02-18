@@ -11,8 +11,6 @@ add_subdirectory( mtpcollection )
 add_subdirectory( umscollection )
 add_subdirectory( sqlcollection )
 
-add_subdirectory( device )
-
 # needs things from playground/base/nepomuk-kde
 #if (SOPRANO_FOUND AND NEPOMUK_FOUND)
 #    MESSAGE(STATUS "soprano and nepomuk found, building optional nepomuk collection")

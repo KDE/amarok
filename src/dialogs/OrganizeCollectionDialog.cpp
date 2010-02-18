@@ -25,7 +25,6 @@
 #include "Debug.h"
 #include "amarokconfig.h"
 #include "file/File.h"
-#include "MountPointManager.h"
 #include "QStringx.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 

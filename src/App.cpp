@@ -33,7 +33,6 @@
 #include "meta/MetaConstants.h"
 #include "Meta.h"
 #include "MetaUtility.h"
-#include "MountPointManager.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
@@ -273,7 +272,6 @@ App::~App()
     delete mainWindow();
 
     CollectionManager::destroy();
-    MountPointManager::destroy();
     Playlist::Actions::destroy();
     Playlist::ModelStack::destroy();
     PlaylistManager::destroy();
@@ -789,7 +787,7 @@ App::continueInit()
             switch( result )
             {
             case KMessageBox::Yes:
-                MountPointManager::instance()->setCollectionFolders( QStringList() << musicDir );
+                CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
                 CollectionManager::instance()->startFullScan();
                 useMusicLocation = true;
                 break;

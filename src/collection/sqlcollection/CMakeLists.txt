@@ -21,6 +21,7 @@ set(amarok_collection-sqlcollection_SRCS
     ArtistHelper.cpp
     CapabilityDelegateImpl.cpp
     DatabaseUpdater.cpp
+    MountPointManager.cpp
     ScanManager.cpp
     ScanResultProcessor.cpp
     SqlBookmarkThisCapability.cpp
@@ -67,6 +68,8 @@ set_target_properties(amarok-sqlcollection PROPERTIES VERSION 1.0.0 SOVERSION 1 
 install(TARGETS amarok-sqlcollection ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 install(FILES org.kde.amarok.SqlCollection.xml DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
+
+add_subdirectory( device )
 
 if( BUILD_MYSQLE_COLLECTION )
     add_subdirectory( mysqlecollection )

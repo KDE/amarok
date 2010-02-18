@@ -638,7 +638,6 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/FileView.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
-    MountPointManager.cpp
     OpmlParser.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
