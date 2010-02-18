@@ -18,7 +18,6 @@
 
 #include "amarokconfig.h"
 #include "Debug.h"
-#include "MountPointManager.h"
 #include "collection/SqlStorage.h"
 #include "SqlCollection.h"
 
