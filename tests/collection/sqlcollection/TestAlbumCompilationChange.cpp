@@ -79,7 +79,7 @@ TestAlbumCompilationChange::init()
 
     m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (1, -1, './IDoNotExist.mp3', 'uid://1');" );
     m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (2, -1, './IDoNotExistAsWell.mp3', 'uid://2');" );
-    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (3, -1, './MeNeither.mp3' 'uid:/3');" );
+    m_storage->query( "INSERT INTO urls(id, deviceid, rpath, uniqueid ) VALUES (3, -1, './MeNeither.mp3', 'uid:/3');" );
 
 
 }
@@ -300,11 +300,12 @@ TestAlbumCompilationChange::testUnsetCompilationWithMultipleArtists()
     Meta::SqlAlbum *sqlCompilation = static_cast<Meta::SqlAlbum*>( album.data() );
     sqlCompilation->setCompilation( false );
 
+    QStringList albumsCount = m_storage->query( "SELECT count(*) FROM albums;" );
+    QCOMPARE( albumsCount.first(), QString::number( 2 ) );
+
     QVERIFY( !track1->album()->isCompilation() );
     QVERIFY( !track2->album()->isCompilation() );
 
-    QStringList albumsCount = m_storage->query( "SELECT count(*) FROM albums;" );
-    QCOMPARE( albumsCount.first(), QString::number( 2 ) );
 
 }
 
