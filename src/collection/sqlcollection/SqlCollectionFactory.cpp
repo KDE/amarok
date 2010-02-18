@@ -56,10 +56,17 @@ public:
         return MountPointManager::instance()->getMountedDeviceIds();
     }
 
-    QStringList collectionFolders()
+    QStringList collectionFolders() const
     {
         return MountPointManager::instance()->collectionFolders();
     }
+
+    void setCollectionFolders( const QStringList &folders )
+    {
+        MountPointManager::instance()->setCollectionFolders( folders );
+    }
+
+
 };
 
 class SqlCollectionLocationFactoryImpl : public SqlCollectionLocationFactory
