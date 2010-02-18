@@ -18,7 +18,6 @@
 #include "FileCollectionLocation.h"
 
 #include "Debug.h"
-#include "MountPointManager.h"
 #include "statusbar/StatusBar.h"
 
 #include <kio/job.h>
@@ -67,20 +66,6 @@ FileCollectionLocation::remove( const Meta::TrackPtr &track )
     // the file should be removed already, so we can clean the dirs
     bool removed = !QFile::exists( track->playableUrl().path()  );
 
-    if( removed )
-    {
-        QFileInfo file( track->playableUrl().path() );
-        QDir dir = file.dir();
-        const QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
-        while( !collectionFolders.contains( dir.absolutePath() ) && !dir.isRoot() && dir.count() == 0 )
-        {
-            const QString name = dir.dirName();
-            dir.cdUp();
-            if( !dir.rmdir( name ) )
-                break;
-        }
-
-    }
     return removed;
 }
 bool FileCollectionLocation::startNextRemoveJob()
