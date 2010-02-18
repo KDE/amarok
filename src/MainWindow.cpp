@@ -779,7 +779,7 @@ MainWindow::createActions()
     ac->addAction( "bookmark_manager", action );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
 
-    action = new KAction( /*KIcon( "bookmarks-organize" ),*/ i18n( "Equalizer" ), this );
+    action = new KAction( KIcon( "view-media-equalizer" ), i18n( "Equalizer" ), this );
     ac->addAction( "equalizer_dialog", action );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowEqualizer() ) );
 
