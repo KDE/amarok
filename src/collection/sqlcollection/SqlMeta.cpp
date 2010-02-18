@@ -1565,8 +1565,8 @@ SqlAlbum::setCompilation( bool compilation )
                     actualNameToTrackArtistIds.insert( name, id );
                 }
 
-                //the loop below assumes three return values per row!
-                QString select = "SELECT albums.id, albums.artist, artists.name FROM albums "
+                //the loop below assumes two return values per row!
+                QString select = "SELECT albums.id, artists.name FROM albums "
                                  "INNER JOIN artists ON albums.artist = artists.id "
                                  "WHERE albums.name = '%1' AND albums.id != %2 AND ( 0 %3 )";
                 QString artistNames;
@@ -1581,7 +1581,6 @@ SqlAlbum::setCompilation( bool compilation )
                 while( iter.hasNext() )
                 {
                     int albumId = iter.next().toInt();
-                    int artistId = iter.next().toInt();
                     QString artist = iter.next();
                     //lookup original artist:
                     if( actualNameToTrackArtistIds.contains( artist ) )
