@@ -413,7 +413,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
             m_trackActions << icon;
         }
         
-        bool localCollectionTrack = track->collection() == CollectionManager::instance()->primaryCollection();
+        const bool localCollectionTrack = track->collection() == CollectionManager::instance()->primaryCollection();
         if( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
         {
             Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
