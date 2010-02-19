@@ -259,6 +259,7 @@ App::~App()
     // severed, or we risk a crash when the QApplication is exited,
     // I asked Trolltech! *smug*
     Amarok::OSD::destroy();
+    Amarok::KNotificationBackend::destroy();
 
     // I tried this in the destructor for the Model but the object is destroyed after the
     // Config is written. Go figure!
@@ -551,7 +552,6 @@ void App::applySettings( bool firstTime )
 
     DEBUG_BLOCK
 
-    Amarok::OSD::instance()->applySettings();
     m_tray->setVisible( AmarokConfig::showTrayIcon() );
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
@@ -568,20 +568,6 @@ void App::applySettings( bool firstTime )
         main_window->show();
         PERF_LOG( "after showing mainWindow" )
     }
-
-    { //<Engine>
-        if( The::engineController()->volume() != AmarokConfig::masterVolume() )
-        {
-            // block signals to make sure that the OSD isn't shown
-            const bool osdEnabled = Amarok::OSD::instance()->isEnabled();
-            Amarok::OSD::instance()->setEnabled( false );
-            The::engineController()->setVolume( AmarokConfig::masterVolume() );
-            Amarok::OSD::instance()->setEnabled( osdEnabled );
-        }
-
-        if( The::engineController()->isMuted() != AmarokConfig::muteState() )
-            The::engineController()->setMuted( AmarokConfig::muteState() );
-    } //</Engine>
 
     if( firstTime )
     {   // delete unneeded cover images from cache
@@ -703,14 +689,20 @@ App::continueInit()
     mainWindow()->setAttribute( Qt::WA_DeleteOnClose, false );
     //init playlist window as soon as the database is guaranteed to be usable
 
-    //create engine, show TrayIcon etc.
+    // Create engine, show TrayIcon etc.
     applySettings( true );
-    // Start ScriptManager. Must be created _after_ MainWindow.
+
+    // Must be created _after_ MainWindow.
     PERF_LOG( "Starting ScriptManager" )
     ScriptManager::instance();
     PERF_LOG( "ScriptManager started" )
 
+    The::engineController()->setVolume( AmarokConfig::masterVolume() );
+    The::engineController()->setMuted( AmarokConfig::muteState() );
+
     Amarok::KNotificationBackend::instance()->setEnabled( AmarokConfig::kNotifyEnabled() );
+    Amarok::OSD::instance()->applySettings(); // Create after setting volume (don't show OSD for that)
+
 
     if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
