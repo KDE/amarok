@@ -24,7 +24,6 @@
 
 #include <KWallet/Wallet>
 #include <KDialog>
-#include <MainWindow.h>
 #include <QLabel>
 
 LastFmServiceConfig::LastFmServiceConfig()
@@ -35,14 +34,12 @@ LastFmServiceConfig::LastFmServiceConfig()
 
     // open wallet unless explicitly told not to
     if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) ) {
-        pApp->hideSplashScreen();
         m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
     }
 
     // if it failed and the user hasn't forced us to use the wallet, ask if he wants us to ignore it for the future
     if( !m_wallet && !config.hasKey( "ignoreWallet" ) )
     {
-        pApp->hideSplashScreen();
         m_askDiag = new KDialog( 0 );
         m_askDiag->setCaption( i18n( "Last.fm credentials" ) );
         m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your Last.fm credentials in plaintext?" ), m_askDiag ) );

@@ -216,8 +216,6 @@ App::~App()
 {
     DEBUG_BLOCK
 
-    delete m_splash;
-
     CollectionManager::instance()->stopScan();
 
     // Hiding the OSD before exit prevents crash
@@ -670,18 +668,12 @@ App::continueInit()
     new Amarok::DefaultApplicationController();
     Amarok::Components::applicationController()->start();
 
+    KSplashScreen* splash = 0;
     if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
     {
-        PERF_LOG( "Init KStandardDirs cache" )
-        KStandardDirs *stdDirs = KGlobal::dirs();
-        PERF_LOG( "Finding image" )
-        QString img = stdDirs->findResource( "data", "amarok/images/splash_screen.jpg" );
-        PERF_LOG( "Creating pixmap" )
-        QPixmap splashpix( img );
-        PERF_LOG( "Creating splashscreen" )
-        m_splash = new KSplashScreen( splashpix, Qt::WindowStaysOnTopHint );
-        PERF_LOG( "showing splashscreen" )
-        m_splash->show();
+        QPixmap splashimg( KGlobal::dirs()->findResource( "data", "amarok/images/splash_screen.jpg" ) );
+        splash = new KSplashScreen( splashimg, Qt::WindowStaysOnTopHint );
+        splash->show();
     }
 
     PERF_LOG( "Creating MainWindow" )
@@ -697,6 +689,13 @@ App::continueInit()
     new CollectionDBusHandler( this );
     QDBusConnection::sessionBus().registerService("org.mpris.amarok");
     PERF_LOG( "Done creating DBus handlers" )
+
+    if( splash ) // close splash correctly
+    {
+        splash->close();
+        delete splash;
+    }
+
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
     //Reason: in ~App we have to call the deleteBrowsers method or else we run afoul of refcount foobar in KHTMLPart
     //But if you click the X (not Action->Quit) it automatically kills MainWindow because KMainWindow sets this
@@ -725,8 +724,6 @@ App::continueInit()
     // Restore keyboard shortcuts etc from config
     Amarok::actionCollection()->readSettings();
 
-    delete m_splash;
-    m_splash = 0;
     PERF_LOG( "App init done" )
     KConfigGroup config = KGlobal::config()->group( "General" );
 
