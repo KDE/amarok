@@ -699,9 +699,10 @@ MainToolbar::engineTrackLengthChanged( qint64 ms )
 void
 MainToolbar::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
 {
-    m_slider->setSliderValue( position );
-//     if ( !m_slider->isEnabled() )
-//         setLabelTime( position )
+    if ( m_slider->isEnabled() )
+        m_slider->setSliderValue( position );
+    else
+        setLabelTime( position );
 }
 
 void
