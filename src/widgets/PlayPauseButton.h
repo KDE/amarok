@@ -17,17 +17,19 @@
 #ifndef PLAYPAUSEBUTTON_H
 #define PLAYPAUSEBUTTON_H
 
-#include <QWidget>
+#include "IconButton.h"
+
+#include <QImage>
+#include <QPixmap>
 
 
-class PlayPauseButton : public QWidget
+class PlayPauseButton : public IconButton
 {
     Q_OBJECT
 
 public:
     PlayPauseButton( QWidget *parent = 0 );
-    QSize sizeHint() const;
-    inline bool playing() const { return m_isPlaying; };
+    inline bool playing() const { return m_isPlaying; }
     void setPlaying( bool playing );
 
 signals:
@@ -37,24 +39,17 @@ protected:
     void enterEvent( QEvent * );
     void leaveEvent( QEvent * );
     void mousePressEvent( QMouseEvent * );
-    void mouseReleaseEvent( QMouseEvent * );
-    void paintEvent( QPaintEvent * );
-    void resizeEvent(QResizeEvent *);
-    void timerEvent ( QTimerEvent * );
+    void reloadContent( const QSize &sz );
+
+private slots:
+    void toggle();
 
 private:
-    void startFade();
-    void stopFade();
-    void updateIconBuffer();
-
-    bool m_isPlaying, m_isClick;
+    bool m_isPlaying;
     struct
     {
-        int step;
-        int timer;
-    } m_anim;
-    QPixmap m_iconBuffer;
-    QImage m_iconPlay[2], m_iconPause[2];
+        QImage play[2], pause[2];
+    } m_icon;
 };
 
 

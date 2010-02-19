@@ -167,7 +167,8 @@ AnimatedLabelStack::paintEvent( QPaintEvent * pe )
                 if (index < 0)
                     index = m_data.count() - 1;
 
-                p.drawText( contentsRect(), m_align | Qt::TextSingleLine, elidedText( m_data.at( index ) ) );
+                p.drawText( rect().adjusted( m_padding[0], 0, -m_padding[1], 0 ),
+                            m_align | Qt::TextSingleLine, elidedText( m_data.at( index ) ) );
             }
             
             c.setAlpha( m_opacity );
@@ -175,7 +176,8 @@ AnimatedLabelStack::paintEvent( QPaintEvent * pe )
     }
     
     p.setPen( c );
-    p.drawText( contentsRect(), m_align | Qt::TextSingleLine, elidedText( m_data.at( m_visibleIndex ) ) );
+    p.drawText( rect().adjusted( m_padding[0], 0, -m_padding[1], 0 ),
+                m_align | Qt::TextSingleLine, elidedText( m_data.at( m_visibleIndex ) ) );
     p.end();
 }
 
@@ -248,6 +250,14 @@ AnimatedLabelStack::setData( const QStringList &data  )
     m_index = 0;
     m_visibleIndex = 0;
     ensureAnimationStatus();
+    update();
+}
+
+void
+AnimatedLabelStack::setPadding( int left, int right )
+{
+    m_padding[0] = left;
+    m_padding[1] = right;
     update();
 }
 

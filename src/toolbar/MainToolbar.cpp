@@ -41,6 +41,7 @@
 #include "widgets/AnimatedLabelStack.h"
 #include "widgets/PlayPauseButton.h"
 #include "widgets/SliderWidget.h"
+#include "widgets/TrackActionButton.h"
 #include "widgets/VolumeDial.h"
 
 #include <QEvent>
@@ -373,7 +374,6 @@ void MainToolbar::updateLabels()
 void
 MainToolbar::updateCurrentTrackActions()
 {
-    return; // for the moment, i don't wont to throw oxygens QToolButtons into everyones face ;-)
     // wipe layout ================
     QLayoutItem *item;
     while ( (item = m_current.label->layout()->takeAt(0)) )
@@ -405,15 +405,12 @@ MainToolbar::updateCurrentTrackActions()
     hbl->setContentsMargins( 0, 0, 0, 0 );
     hbl->setSpacing( 3 );
 
-    hbl->addSpacing( 6 );
-
-    QToolButton *btn; // FIXME: use generalized play/pause button
+    TrackActionButton *btn;
     const int n = actions.count() / 2;
     int i;
     for ( i = 0; i < n; ++i )
     {
-        btn = new QToolButton( m_current.label ); // FIXME
-        btn->setDefaultAction( actions.at(i) );
+        btn = new TrackActionButton( m_current.label, actions.at(i) );
         hbl->addWidget( btn );
     }
 
@@ -421,12 +418,9 @@ MainToolbar::updateCurrentTrackActions()
 
     for ( ; i < actions.count(); ++i )
     {
-        btn = new QToolButton( m_current.label ); // FIXME
-        btn->setDefaultAction( actions.at(i) );
+        btn = new TrackActionButton( m_current.label, actions.at(i) );
         hbl->addWidget( btn );
     }
-    
-    hbl->addSpacing( 6 );
 }
 
 #define HAS_TAG(_TAG_) track->_TAG_() && !track->_TAG_()->name().isEmpty()
@@ -879,18 +873,18 @@ MainToolbar::setNewMode( bool on )
     m_allowSliding = on;
     if ( m_allowSliding )
     {
-        m_prev.label->setContentsMargins( 12, 0, 12, 0 );
+        m_prev.label->setPadding( 12, 12 );
         m_prev.label->setAlign( Qt::AlignCenter );
-        m_current.label->setContentsMargins( 12, 0, 12, 0 );
-        m_next.label->setContentsMargins( 12, 0, 12, 0 );
+        m_current.label->setPadding( 12, 12 );
+        m_next.label->setPadding( 12, 12 );
         m_next.label->setAlign( Qt::AlignCenter );
     }
     else
     {
-        m_prev.label->setContentsMargins( m_skip_right.width() + 6, 0, 0, 0 );
+        m_prev.label->setPadding( m_skip_right.width() + 6, 0 );
         m_prev.label->setAlign( Qt::AlignLeft );
-        m_current.label->setContentsMargins( 24, 0, 24, 0 );
-        m_next.label->setContentsMargins( 0, 0, m_skip_left.width() + 6, 0 );
+        m_current.label->setPadding( 24, 24 );
+        m_next.label->setPadding( 0, m_skip_left.width() + 6 );
         m_next.label->setAlign( Qt::AlignRight );
     }
     m_allowSliding = true;
