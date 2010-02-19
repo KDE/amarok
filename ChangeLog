@@ -5,7 +5,7 @@ Amarok ChangeLog
 
 VERSION 2.3
   FEATURES:
-    * Bookmark button is now also available in the Current Track applet.
+    * Bookmark button is now available in the Current Track applet.
 
   CHANGES:
     * Set Media Keys as default global shortcuts for playlist navigation.
