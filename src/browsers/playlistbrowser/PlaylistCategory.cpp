@@ -61,8 +61,8 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
                   );
 
     setContentsMargins( 0, 0, 0, 0 );
-    m_toolBar = new QToolBar( this );
-    m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    KToolBar *toolBar = new KToolBar( this, false, false );
+    toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     m_playlistView = new UserPlaylistTreeView( The::userPlaylistModel(), this );
     m_byProviderProxy = new PlaylistsByProviderProxy( The::userPlaylistModel(),
@@ -73,7 +73,7 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     m_defaultItemView = m_playlistView->itemDelegate();
 
     m_addGroupAction = new KAction( KIcon( "folder-new" ), i18n( "Add Folder" ), this  );
-    m_toolBar->addAction( m_addGroupAction );
+    toolBar->addAction( m_addGroupAction );
     connect( m_addGroupAction, SIGNAL( triggered( bool ) ),
              m_playlistView, SLOT( createNewGroup() ) );
 
@@ -83,13 +83,13 @@ PlaylistCategory::PlaylistCategory( QWidget * parent )
     QWidget *spacerWidget = new QWidget( this );
     spacerWidget->setSizePolicy( QSizePolicy::MinimumExpanding,
                                  QSizePolicy::MinimumExpanding );
-    m_toolBar->addWidget( spacerWidget );
+    toolBar->addWidget( spacerWidget );
 
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), m_toolBar );
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), toolBar );
     toggleAction->setToolTip( i18n( "Merged View" ) );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( Amarok::config( s_configGroup ).readEntry( s_mergeViewKey, false ) );
-    m_toolBar->addAction( toggleAction );
+    toolBar->addAction( toggleAction );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
 
     toggleView( toggleAction->isChecked() );

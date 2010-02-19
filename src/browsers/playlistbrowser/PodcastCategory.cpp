@@ -53,6 +53,7 @@
 #include <KIcon>
 #include <KStandardDirs>
 #include <KUrlRequesterDialog>
+#include <KToolBar>
 #include <KGlobal>
 #include <KLocale>
 
@@ -112,7 +113,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 
     setContentsMargins(0,0,0,0);
 
-    QToolBar *toolBar = new QToolBar( this );
+    KToolBar *toolBar = new KToolBar( this, false, false );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     QAction* addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"), toolBar );
