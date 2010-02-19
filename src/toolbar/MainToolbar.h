@@ -43,6 +43,8 @@ public:
     void engineTrackLengthChanged( qint64 ms );
     void engineTrackPositionChanged( qint64 position, bool userSeek );
     void engineVolumeChanged( int percent );
+public slots:
+    void setNewMode( bool on );
 
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
@@ -92,19 +94,14 @@ private:
         QRect rect;
     } m_current;
 
-    struct
+    typedef struct
     {
         AnimatedLabelStack *label;
         void* key;
         QRect rect;
-    } m_next;
+    } Skip;
 
-    struct
-    {
-        AnimatedLabelStack *label;
-        void* key;
-        QRect rect;
-    } m_prev;
+    Skip m_next, m_prev;
 
     struct
     {
@@ -119,6 +116,8 @@ private:
     
     int m_lastTime;
     int m_lastRemainingTime;
+
+    bool m_allowSliding;
     struct
     {
         int startX;

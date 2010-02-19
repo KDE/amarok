@@ -54,8 +54,6 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-#define TRANSITION_ANIMATED 0
-#define ALLOW_DRAGGING 0
 static const QString promoString = i18n( "Rediscover Your Music" );
 
 // #define prev_next_role QPalette::Link
@@ -70,7 +68,6 @@ static const int timeLabelMargin = 6;
 static const int constant_progress_ratio_minimum_width = 640;
 static const int space_between_tracks_and_slider = 2;
 static const float track_fontsize_factor = 1.1f;
-
 
 
 MainToolbar::MainToolbar( QWidget *parent )
@@ -101,22 +98,20 @@ MainToolbar::MainToolbar( QWidget *parent )
     if ( fnt.pointSize() > 0 )
         fnt.setPointSize( qRound(fnt.pointSize() * track_fontsize_factor) );
     const int fntH = QFontMetrics( QApplication::font() ).height();
+    
     m_skip_left = The::svgHandler()->renderSvg( "tiny_skip_left", 96*fntH/128, fntH, "tiny_skip_left" );
     m_skip_right = The::svgHandler()->renderSvg( "tiny_skip_right", 96*fntH/128, fntH, "tiny_skip_right" );
 
     m_prev.key = 0;
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
-    m_prev.label->setContentsMargins( 0, 0, m_skip_right.width() + 4, 0 );
     m_prev.label->setFont( fnt );
     m_prev.label->setAnimated( false );
     m_prev.label->setOpacity( prevOpacity );
     m_prev.label->installEventFilter( this );
-    m_prev.label->setAlign( Qt::AlignRight );
     m_prev.label->setForegroundRole( prev_next_role );
     connect ( m_prev.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
 
     m_current.label = new AnimatedLabelStack( QStringList( promoString ), info );
-    m_current.label->setContentsMargins( 12, 0, 12, 0 );
     m_current.label->setFont( fnt );
     m_current.label->setBold( true );
     m_current.label->setLayout( new QHBoxLayout );
@@ -125,16 +120,15 @@ MainToolbar::MainToolbar( QWidget *parent )
 
     m_next.key = 0;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
-    m_next.label->setContentsMargins( m_skip_left.width() + 4, 0, 0, 0 );
     m_next.label->setFont( fnt );
     m_next.label->setAnimated( false );
     m_next.label->setOpacity( nextOpacity );
     m_next.label->installEventFilter( this );
-    m_next.label->setAlign( Qt::AlignLeft );
     m_next.label->setForegroundRole( prev_next_role );
     connect ( m_next.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( next() ) );
 
     m_dummy.label = new AnimatedLabelStack(QStringList(), info);
+    m_next.label->setFont( fnt );
     m_dummy.label->hide();
 
     vl->addItem( m_trackBarSpacer = new QSpacerItem(0, m_current.label->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
@@ -176,6 +170,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     addWidget( spacerWidget );
     
     generateBorderPixmaps();
+    setNewMode( false );
 }
 
 void
@@ -603,7 +598,9 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
         m_current.label->setData( metadata( track ) );
         m_current.label->setCursor( Qt::PointingHandCursor );
         updateCurrentTrackActions();
-#if TRANSITION_ANIMATED
+
+        if ( m_allowSliding ) // NOTICE: -> if (true)  ==============================================
+        {
         // If all labels are in position and this is a single step for or back, we perform a slide
         // on the other two labels, i.e. e.g. move the prev to current label position and current
         // to the next and the animate the move into their target positions
@@ -668,7 +665,7 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
                 m_trackBarAnimationTimer = startTimer( 40 );
             }
         }
-#endif // TRANSITION_ANIMATED
+        } // m_allowSliding  ==============================================
     }
     else
     {
@@ -747,29 +744,28 @@ MainToolbar::paintEvent( QPaintEvent *ev )
     // let the style paint draghandles and in doubt override the shadow from above
     QToolBar::paintEvent( ev );
 
+//     if ( m_allowSliding )
+//         return;
+
+    // skip icons
     p.begin( this );
-    if ( layoutDirection() == Qt::LeftToRight )
+    Skip *left = &m_prev;
+    Skip *right = &m_next;
+    
+    if ( layoutDirection() == Qt::RightToLeft )
     {
-        if ( m_prev.key )
-            p.drawPixmap( m_prev.rect.right() - m_skip_left.width(),
-                          m_prev.rect.y() + ( m_prev.rect.height() - m_skip_left.height() ) /2,
-                          m_skip_left );
-        if ( m_next.key )
-            p.drawPixmap( m_next.rect.left(),
-                          m_next.rect.y() + ( m_next.rect.height() - m_skip_right.height() ) /2,
-                          m_skip_right );
+        left = &m_next;
+        right = &m_prev;
     }
-    else
-    {
-        if ( m_next.key )
-            p.drawPixmap( m_next.rect.right() - m_skip_left.width(),
-                          m_next.rect.y() + ( m_prev.rect.height() - m_skip_left.height() ) /2,
-                          m_skip_left );
-        if ( m_prev.key )
-            p.drawPixmap( m_prev.rect.left(),
-                          m_prev.rect.y() + ( m_prev.rect.height() - m_skip_right.height() ) /2,
-                          m_skip_right );
-    }
+
+    if ( left->key )
+        p.drawPixmap( left->rect.left(),
+                      left->rect.y() + ( left->rect.height() - m_skip_left.height() ) /2,
+                      m_skip_left );
+    if ( right->key )
+        p.drawPixmap( right->rect.right() - m_skip_right.width(),
+                      right->rect.y() + ( right->rect.height() - m_skip_right.height() ) /2,
+                      m_skip_right );
     p.end();
 }
 
@@ -872,6 +868,29 @@ MainToolbar::setLabelTime( int ms )
 }
 
 void
+MainToolbar::setNewMode( bool on )
+{
+    m_allowSliding = on;
+    if ( m_allowSliding )
+    {
+        m_prev.label->setContentsMargins( 12, 0, 12, 0 );
+        m_prev.label->setAlign( Qt::AlignCenter );
+        m_current.label->setContentsMargins( 12, 0, 12, 0 );
+        m_next.label->setContentsMargins( 12, 0, 12, 0 );
+        m_next.label->setAlign( Qt::AlignCenter );
+    }
+    else
+    {
+        m_prev.label->setContentsMargins( m_skip_right.width() + 6, 0, 0, 0 );
+        m_prev.label->setAlign( Qt::AlignLeft );
+        m_current.label->setContentsMargins( 24, 0, 24, 0 );
+        m_next.label->setContentsMargins( 0, 0, m_skip_left.width() + 6, 0 );
+        m_next.label->setAlign( Qt::AlignRight );
+    }
+    m_allowSliding = true;
+}
+
+void
 MainToolbar::setPlaying( bool on )
 {
     if ( on )
@@ -955,7 +974,8 @@ MainToolbar::generateBorderPixmaps()
 bool
 MainToolbar::eventFilter( QObject *o, QEvent *ev )
 {
-#if ALLOW_DRAGGING
+    if ( m_allowSliding ) // NOTICE -> if (true)  ==============================================
+    {
     if ( ev->type() == QEvent::MouseMove )
     {
         QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
@@ -1038,7 +1058,8 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
         }
         return false;
     }
-#endif // ALLOW_DRAGGING
+    } // m_allowSliding ==============================================
+    
     if ( ev->type() == QEvent::Enter )
     {
         if (o == m_next.label && m_next.key)
