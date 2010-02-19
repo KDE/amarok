@@ -365,6 +365,11 @@ MainToolbar::layoutTrackBar()
     setCurrentTrackActionsVisible( true );
 }
 
+void MainToolbar::updateLabels()
+{
+    engineTrackChanged( The::engineController()->currentTrack() );
+}
+
 void
 MainToolbar::updateCurrentTrackActions()
 {
@@ -711,6 +716,7 @@ MainToolbar::hideEvent( QHideEvent *ev )
     QToolBar::hideEvent( ev );
     disconnect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
     disconnect ( Playlist::ModelStack::instance()->source(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
+    disconnect ( Playlist::ModelStack::instance()->source(), SIGNAL( metadataUpdated() ), this, SLOT( updateLabels() ) );
     disconnect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
     disconnect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
                  this, SLOT( updateBookmarks(const QString*) ) );
@@ -904,6 +910,7 @@ MainToolbar::showEvent( QShowEvent *ev )
 {
     connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
     connect ( Playlist::ModelStack::instance()->source(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
+    connect ( Playlist::ModelStack::instance()->source(), SIGNAL( metadataUpdated() ), this, SLOT( updateLabels() ) );
     connect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
     connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
               this, SLOT( updateBookmarks(const QString*) ) );

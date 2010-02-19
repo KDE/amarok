@@ -69,6 +69,7 @@ private slots:
     void setLabelTime( int ms );
     void setPlaying( bool on );
     void updateBookmarks( const QString *BookmarkName );
+    void updateLabels();
     void updatePrevAndNext();
 
 private:
