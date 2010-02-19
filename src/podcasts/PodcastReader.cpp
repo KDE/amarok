@@ -1160,7 +1160,7 @@ PodcastReader::endItem()
 
         //make sure that the episode is not a bogus match. The channel has to be correct.
         // See http://bugs.kde.org/show_bug.cgi?id=227515
-        if( !episode.isNull() || episode->channel() != m_channel )
+        if( !episode.isNull() && episode->channel() == m_channel )
         {
             debug() << "updating episode: " << episode->title();
 
