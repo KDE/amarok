@@ -72,7 +72,7 @@ class UmsPodcastProvider : public PodcastProvider
         virtual void scan();
 
     signals:
-        virtual void updated();
+        void updated();
 
     private slots:
         void slotDeleteEpisodes();
