@@ -414,7 +414,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         }
         
         bool localCollectionTrack = track->collection() == CollectionManager::instance()->primaryCollection();
-        if( !localCollectionTrack && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+        if( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
         {
             Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
             if( cac )
