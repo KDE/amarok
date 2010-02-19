@@ -218,7 +218,7 @@ ArtistWidget::clear()
  * @param url The URL of the artist
  */
 void
-ArtistWidget::openUrl( QString &url )
+ArtistWidget::openUrl( QString url )
 {
     QDesktopServices::openUrl( KUrl( "http://" + url ) );
 }

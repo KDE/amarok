@@ -141,7 +141,7 @@ private slots:
      * Open an URL
      * @param url The URL of the artist
      */
-    void openUrl( QString &url );
+    void openUrl( QString url );
 };
 
 #endif // ARTIST_WIDGET_H
