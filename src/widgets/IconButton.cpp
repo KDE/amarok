@@ -43,6 +43,8 @@ void IconButton::setIcon( const QImage &img, int steps )
         killTimer( m_anim.timer );
     if ( steps )
         m_anim.timer = startTimer( 40 );
+    else
+        updateIconBuffer();
     repaint();
 }
 
