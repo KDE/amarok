@@ -102,7 +102,7 @@ SimilarArtist::description() const
  * @param desc the description
  */
 void
-SimilarArtist::setDescription(const QString description)
+SimilarArtist::setDescription(const QString &description)
 {
     m_description=description;
 }
@@ -122,7 +122,7 @@ SimilarArtist::topTrack() const
  * @param track the top track
  */
 void
-SimilarArtist::setTopTrack(const QString track)
+SimilarArtist::setTopTrack(const QString &track)
 {
     m_topTrack=track;
 }

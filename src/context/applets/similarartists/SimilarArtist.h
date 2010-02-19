@@ -83,7 +83,7 @@ public:
      * Set the description of this artist
      * @param desc the description
      */
-    void setDescription(const QString description);
+    void setDescription(const QString &description);
 
     /**
      * @return the most known artist track
@@ -94,7 +94,7 @@ public:
      * Set the most known artist track
      * @param track the top track
      */
-    void setTopTrack(const QString track);
+    void setTopTrack(const QString &track);
 
     /**
      * Define a new type for help the communication
