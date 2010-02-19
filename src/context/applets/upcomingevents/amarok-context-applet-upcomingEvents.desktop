@@ -4,6 +4,7 @@ Name[en_GB]=Upcoming events
 Name[fr]=Événements associés
 Type=Service
 ServiceTypes=Plasma/Applet
+Icon=upcomingevents-amarok
 
 X-KDE-Library=amarok_context_applet_upcomingEvents
 X-KDE-PluginInfo-Author=Joffrey Clavel
