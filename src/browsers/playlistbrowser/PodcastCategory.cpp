@@ -141,8 +141,8 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
     m_podcastTreeView->setContentsMargins(0,0,0,0);
 
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ),
-                                         i18n( "Merged View" ), toolBar );
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), toolBar );
+    toggleAction->setToolTip( i18n( "Merged View" ) );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( Amarok::config( s_configGroup ).readEntry( s_mergedViewKey, true ) );
     toolBar->addAction( toggleAction );
