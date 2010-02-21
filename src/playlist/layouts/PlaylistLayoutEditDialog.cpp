@@ -220,12 +220,15 @@ void PlaylistLayoutEditDialog::copyLayout()
     LayoutItemConfig bodyConfig = m_bodyEdit->config();
     LayoutItemConfig singleConfig = m_singleEdit->config();
 
+    QString layoutName = layoutListWidget->currentItem()->text();
+
     bool ok;
-    QString layoutName = KInputDialog::getText( i18n( "Choose a name for the new playlist layout" ),
-                    i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':",
-                    layoutListWidget->currentItem()->text() ),QString(), &ok, this );
+    layoutName = KInputDialog::getText( i18n( "Choose a name for the new playlist layout" ),
+            i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':", layoutName ),
+            layoutName, &ok, this );
+
     if( !ok)
-	return;
+        return;
     if( layoutName.isEmpty() )
     {
         KMessageBox::sorry( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
