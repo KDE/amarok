@@ -70,7 +70,14 @@ UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
 PodcastEpisodePtr
 UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
 {
-    return PodcastEpisodePtr();
+    KUrl localFilePath = episode->playableUrl();
+    if( !localFilePath.isLocalFile() )
+        return PodcastEpisodePtr();
+    MetaFile::Track *fileTrack = new MetaFile::Track( localFilePath );
+    UmsPodcastEpisodePtr umsEpisode = addFile( MetaFile::TrackPtr( fileTrack ) );
+    if( !umsEpisode )
+        return PodcastEpisodePtr();
+    return UmsPodcastEpisode::toPodcastEpisodePtr( umsEpisode );
 }
 
 PodcastChannelList
@@ -433,7 +440,7 @@ UmsPodcastProvider::addPath( const QString &path )
     return 0;
 }
 
-void
+UmsPodcastEpisodePtr
 UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
 {
     DEBUG_BLOCK
@@ -443,13 +450,13 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
     if( metafileTrack->album()->name().isEmpty() )
     {
         debug() << "Can't figure out channel without album tag.";
-        return;
+        return UmsPodcastEpisodePtr();
     }
 
     if( metafileTrack->name().isEmpty() )
     {
         debug() << "Can not use a track without a title.";
-        return;
+        return UmsPodcastEpisodePtr();
     }
 
     //see if there is already a UmsPodcastEpisode for this track
@@ -495,4 +502,6 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
     }
 
     episode->setLocalFile( metafileTrack );
+
+    return episode;
 }

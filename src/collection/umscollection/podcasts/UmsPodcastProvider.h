@@ -30,7 +30,7 @@ class UmsPodcastProvider : public PodcastProvider
         UmsPodcastProvider( Meta::UmsHandler *handler, KUrl scanDirectory );
         ~UmsPodcastProvider();
 
-        void addFile( MetaFile::TrackPtr metafileTrack );
+        UmsPodcastEpisodePtr addFile( MetaFile::TrackPtr metafileTrack );
         int addPath( const QString &path );
 
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
