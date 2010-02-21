@@ -64,6 +64,7 @@ UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
     UmsPodcastChannelPtr umsChannel = UmsPodcastChannelPtr(
             new UmsPodcastChannel( channel, this ) );
     m_umsChannels << umsChannel;
+    emit( updated() );
     return PodcastChannelPtr::dynamicCast( umsChannel );
 }
 

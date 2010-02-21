@@ -64,6 +64,8 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         static void destroy();
 
         virtual QVariant data(const QModelIndex &index, int role) const;
+        virtual bool setData( const QModelIndex &index, const QVariant &value,
+                              int role = Qt::EditRole );
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
@@ -126,6 +128,8 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
 
         Q_DISABLE_COPY( PodcastModel )
 
+        PlaylistProvider *getProviderByName( const QString &name );
+        Meta::PodcastChannelPtr channelForItem( const QModelIndex &index );
         Meta::PodcastChannelList selectedChannels( const QModelIndexList &indices );
         Meta::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
         QList<QAction *> createCommonActions( QModelIndexList indices );

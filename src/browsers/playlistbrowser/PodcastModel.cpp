@@ -372,6 +372,35 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
     return QVariant();
 }
 
+bool
+PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
+{
+    if( !idx.isValid() )
+        return false;
+
+    if( idx.column() == ProviderColumn )
+    {
+        if( role == Qt::DisplayRole )
+        {
+            Meta::PodcastChannelPtr channel = channelForItem( idx );
+            if( !channel )
+                return false;
+            PlaylistProvider *provider = getProviderByName( value.toString() );
+            if( !provider )
+                return false;
+            debug() << QString( "Copy \"%1\" to \"%2\"." ).arg( channel->prettyName() )
+                    .arg( provider->prettyName() );
+            PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
+            if( !podcastProvider )
+                return false;
+            podcastProvider->addChannel( channel );
+        }
+        //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
+        //TODO: implement setItemData()
+        return true;
+    }
+}
+
 QModelIndex
 PlaylistBrowserNS::PodcastModel::index(int row, int column, const QModelIndex & parent) const
 {
@@ -1141,29 +1170,47 @@ PlaylistBrowserNS::PodcastModel::slotSetNew( bool newState )
     }
 }
 
+PlaylistProvider *
+PlaylistBrowserNS::PodcastModel::getProviderByName( const QString &name )
+{
+    QList<PlaylistProvider *> providers =
+            The::playlistManager()->providersForCategory( PlaylistManager::PodcastChannel );
+    foreach( PlaylistProvider *provider, providers )
+    {
+        if( provider->prettyName() == name )
+            return provider;
+    }
+    return 0;
+}
+
+Meta::PodcastChannelPtr
+PlaylistBrowserNS::PodcastModel::channelForItem( const QModelIndex &index )
+{
+    if( !index.isValid() )
+        return Meta::PodcastChannelPtr();
+
+    Meta::PodcastMetaCommon *pmc =
+            static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
+    if( !pmc )
+        return Meta::PodcastChannelPtr();
+
+    switch( pmc->podcastType() )
+    {
+        case Meta::EpisodeType:
+            return Meta::PodcastChannelPtr();
+        case Meta::ChannelType:
+            return Meta::PodcastChannelPtr( static_cast<Meta::PodcastChannel *>(pmc) );
+    }
+}
 Meta::PodcastChannelList
 PlaylistBrowserNS::PodcastModel::selectedChannels( const QModelIndexList &indices )
 {
     Meta::PodcastChannelList channels;
-    Meta::PodcastMetaCommon *pmc = 0;
     foreach( const QModelIndex &index, indices )
     {
-        if( !index.isValid() )
-            break;
-
-        pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
-        if( !pmc )
-            break;
-
-        switch( pmc->podcastType() )
-        {
-            case Meta::EpisodeType:
-                break;
-            case Meta::ChannelType:
-                channels
-                  << Meta::PodcastChannelPtr( static_cast<Meta::PodcastChannel *>(pmc) );
-                break;
-        }
+        Meta::PodcastChannelPtr channel = channelForItem( index );
+        if( channel )
+            channels << channel;
     }
     return channels;
 }
