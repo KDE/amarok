@@ -834,15 +834,10 @@ SqlTrack::finishedPlaying( double playedFraction )
 
     beginMetaDataUpdate();    // Batch updates, so we only bother our observers once.
 
-    // Only increment playcount etc. if we've played more than half of the song...
-    // It seems like the sanest compromise.
-    if ( playedFraction >= 0.5 )
-    {
-        setPlayCount( m_playCount + 1 );
-        setLastPlayed( QDateTime::currentDateTime().toTime_t() );
-        if( m_firstPlayed == 0 )
-            setFirstPlayed( m_lastPlayed );
-    }
+    setPlayCount( m_playCount + 1 );
+    setLastPlayed( QDateTime::currentDateTime().toTime_t() );
+    if( m_firstPlayed == 0 )
+        setFirstPlayed( m_lastPlayed );
 
     setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );
 
