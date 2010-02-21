@@ -407,18 +407,12 @@ MainToolbar::updateCurrentTrackActions()
 
     TrackActionButton *btn;
     const int n = actions.count() / 2;
-    int i;
-    for ( i = 0; i < n; ++i )
+    for ( int i = 0; i < actions.count(); ++i )
     {
+        if ( i == n )
+            hbl->addStretch( 10 );
         btn = new TrackActionButton( m_current.label, actions.at(i) );
-        hbl->addWidget( btn );
-    }
-
-    hbl->addStretch( 10 );
-
-    for ( ; i < actions.count(); ++i )
-    {
-        btn = new TrackActionButton( m_current.label, actions.at(i) );
+        btn->installEventFilter( this );
         hbl->addWidget( btn );
     }
 }
@@ -1068,6 +1062,11 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
             m_next.label->setOpacity( 255 );
         else if (o == m_prev.label && m_prev.key)
             m_prev.label->setOpacity( 255 );
+        else if ( o->parent() == m_current.label ) // trackaction
+        {
+            QEvent e( QEvent::Leave );
+            QCoreApplication::sendEvent( m_current.label, &e );
+        }
         return false;
     }
     if ( ev->type() == QEvent::Leave )
@@ -1076,6 +1075,12 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
             m_next.label->setOpacity( nextOpacity );
         else if (o == m_prev.label && m_prev.key)
             m_prev.label->setOpacity( prevOpacity );
+        else if ( o->parent() == m_current.label &&  // trackaction
+                  m_current.label->rect().contains( m_current.label->mapFromGlobal(QCursor::pos()) ) )
+        {
+            QEvent e( QEvent::Enter );
+            QCoreApplication::sendEvent( m_current.label, &e );
+        }
         return false;
     }
     return false;
