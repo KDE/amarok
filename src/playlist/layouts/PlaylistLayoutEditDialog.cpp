@@ -126,7 +126,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
 
     connect( previewButton, SIGNAL( clicked() ), this, SLOT( preview() ) );
     connect( layoutListWidget, SIGNAL( currentTextChanged( const QString & ) ), this, SLOT( setLayout( const QString & ) ) );
-    connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleDeleteButton() ) );
+    connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleEditButtons() ) );
     connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleUpDownButtons() ) );
 
     connect( moveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
@@ -151,13 +151,13 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     deleteLayoutButton->setIcon( deleteIcon );
     deleteLayoutButton->setToolTip( i18n( "Delete playlist layout" ) );
     connect( deleteLayoutButton, SIGNAL( clicked() ), this, SLOT( deleteLayout() ) );
-    toggleDeleteButton();
 
     const KIcon renameIcon( "edit-rename" );
     renameLayoutButton->setIcon( renameIcon );
     renameLayoutButton->setToolTip( i18n( "Rename playlist layout" ) );
     connect( renameLayoutButton, SIGNAL( clicked() ), this, SLOT( renameLayout() ) );
 
+    toggleEditButtons();
     toggleUpDownButtons();
 
     connect( m_headEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
@@ -284,11 +284,6 @@ void PlaylistLayoutEditDialog::renameLayout()
             //Cancelled so just return
             return;
         }
-        if( LayoutManager::instance()->isDefaultLayout( layoutName ) )
-        {
-            KMessageBox::sorry( this, i18n( "Cannot rename one of the default layouts." ), i18n( "Layout name error" ) );
-            return;
-        }
         if( layoutName.isEmpty() )
             KMessageBox::sorry( this, i18n( "Cannot rename a layout to have no name." ), i18n( "Layout name error" ) );
         if( m_layoutsMap->keys().contains( layoutName ) )
@@ -351,14 +346,18 @@ void PlaylistLayoutEditDialog::preview()
     LayoutManager::instance()->setPreviewLayout( layout );
 }
 
-void PlaylistLayoutEditDialog::toggleDeleteButton() //SLOT
+void PlaylistLayoutEditDialog::toggleEditButtons() //SLOT
 {
-    if ( !layoutListWidget->currentItem() )
+    if ( !layoutListWidget->currentItem() ) {
         deleteLayoutButton->setEnabled( 0 );
-    else if( LayoutManager::instance()->isDefaultLayout( layoutListWidget->currentItem()->text() ) )
+        renameLayoutButton->setEnabled( 0 );
+    } else if( LayoutManager::instance()->isDefaultLayout( layoutListWidget->currentItem()->text() ) ) {
         deleteLayoutButton->setEnabled( 0 );
-    else
+        renameLayoutButton->setEnabled( 0 );
+    } else {
         deleteLayoutButton->setEnabled( 1 );
+        renameLayoutButton->setEnabled( 1 );
+    }
 }
 
 void PlaylistLayoutEditDialog::toggleUpDownButtons()
