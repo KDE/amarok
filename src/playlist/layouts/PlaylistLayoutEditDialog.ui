@@ -277,11 +277,6 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="QWidget" name="tab">
-          <attribute name="title">
-           <string>Head</string>
-          </attribute>
-         </widget>
         </widget>
        </item>
        <item>

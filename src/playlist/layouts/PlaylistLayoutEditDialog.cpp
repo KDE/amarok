@@ -105,8 +105,6 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     elementTabs->addTab( m_bodyEdit, i18n( "Body" ) );
     elementTabs->addTab( m_singleEdit, i18n( "Single" ) );
 
-    elementTabs->removeTab( 0 );
-
     QStringList layoutNames = LayoutManager::instance()->layouts();
     foreach( const QString &layoutName, layoutNames )
     {
