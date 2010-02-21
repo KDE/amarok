@@ -8,6 +8,8 @@ VERSION 2.3
     * Bookmark button is now available in the Current Track applet.
 
   CHANGES:
+    * Playlist layout editor: When copying a layout, set its current name as
+      the default one for the copy. Thanks to Jakub Wieczorek <faw217@gmail.com>.
     * Set Media Keys as default global shortcuts for playlist navigation.
       (BR 194259)
     * Deleting files from the filebrowser is now asynchronous.
@@ -18,6 +20,10 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * Playlist layout editor: Disable "rename" button for default playlist layouts. 
+      Thanks to Jakub Wieczorek <faw217@gmail.com>.
+    * Playlist layout editor: When reating a copy of a default layout, add copy
+      to layout list imediately. Thanks to Jakub Wieczorek <faw217@gmail.com>.
     * Compilations do not become normal albums when renaming them. (BR 192029)
     * Fixed a bug where there would be no dynamic playlist biases available 
       with a clean startup. (BR 227797)
