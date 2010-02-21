@@ -191,3 +191,27 @@ target_link_libraries( testartisthelper
                         ${QT_QTTEST_LIBRARY}
                         ${QT_QTCORE_LIBRARY}
                         ${KDE4_KDECORE_LIBS})
+
+#-------------------------------- Test SqlTrack -----------------------
+
+set( testsqltrack_SRCS
+        TestSqlTrack.cpp
+        ${AMAROK_SOURCE_TREE}/meta/MetaUtility.cpp
+        ${AMAROK_SOURCE_TREE}/Amarok.cpp
+        ${AMAROK_SOURCE_TREE}/meta/PlaylistFileSupport.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
+        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
+        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
+    )
+
+
+kde4_add_unit_test( testsqltrack ${testsqltrack_SRCS} )
+
+link_database_test( testsqltrack )

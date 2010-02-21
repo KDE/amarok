@@ -429,10 +429,14 @@ SqlTrack::setAlbum( const QString &newAlbum )
     else
     {
         KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-        int id = -1;
-        SqlArtist *artist = dynamic_cast<SqlArtist*>(m_artist.data());
-        if( artist )
-            id = artist->id();
+        //the album should remain a compilation after renaming it
+        int id = 0;
+        if( m_album->hasAlbumArtist() )
+        {
+            SqlArtist *artist = dynamic_cast<SqlArtist*>(m_album->albumArtist().data());
+            if( artist )
+                id = artist->id();
+        }
         m_album = m_collection->registry()->getAlbum( newAlbum, -1, id );
         KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
         m_cache.clear();
@@ -679,7 +683,11 @@ SqlTrack::commitMetaDataChanges()
         if( m_cache.contains( Meta::Field::ALBUM ) )
         {
             KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-            int artistId = KSharedPtr<SqlArtist>::staticCast( m_artist )->id();
+            int artistId = 0;
+            if( m_album->hasAlbumArtist() )
+            {
+                artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
+            }
             m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
             KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
         }
