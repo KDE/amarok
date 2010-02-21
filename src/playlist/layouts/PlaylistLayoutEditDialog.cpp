@@ -400,9 +400,6 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
             QString layoutName = i.key();
             if ( LayoutManager::instance()->isDefaultLayout( i.key() ) )
             {
-
-
-
                 QString newLayoutName = i18n( "copy of %1", layoutName );
                 QString orgCopyName = newLayoutName;
 
@@ -420,6 +417,10 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
 
                 layoutName = newLayoutName;
 
+                layoutListWidget->addItem( layoutName );
+                layoutListWidget->setCurrentItem( ( layoutListWidget->findItems( layoutName, Qt::MatchExactly ) ).first() );
+                m_layoutsMap->insert( layoutName, i.value() );
+                setLayout( layoutName );
             }
             i.value().setInlineControls( inlineControlsChekbox->isChecked() );
             i.value().setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
