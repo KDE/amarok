@@ -78,6 +78,7 @@ class UmsPodcastProvider : public PodcastProvider
         void slotDeleteEpisodes();
         void slotDeleteChannels();
         void deleteJobComplete( KJob *job );
+        void slotCopyComplete( KJob *job );
 
     private:
 

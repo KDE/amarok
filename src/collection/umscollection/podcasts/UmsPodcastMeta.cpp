@@ -180,7 +180,8 @@ UmsPodcastChannel::UmsPodcastChannel( PodcastChannelPtr channel,
         : Meta::PodcastChannel( channel )
         , m_provider( provider )
 {
-
+    foreach( PodcastEpisodePtr episode, channel->episodes() )
+        addEpisode( episode );
 }
 
 UmsPodcastChannel::~UmsPodcastChannel()
@@ -196,15 +197,10 @@ UmsPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     if( !episode->isNew() || !episode->playableUrl().isLocalFile() )
         return PodcastEpisodePtr(); //we don't care about these.
 
-    UmsPodcastEpisodePtr umsEpisode =
-            UmsPodcastEpisodePtr( new UmsPodcastEpisode( UmsPodcastChannelPtr( this ) ) );
+    if( !m_provider )
+        return PodcastEpisodePtr();
 
-    umsEpisode->setLocalFile(
-            MetaFile::TrackPtr( new MetaFile::Track( episode->playableUrl() ) ) );
-
-    m_umsEpisodes << umsEpisode;
-
-    return UmsPodcastEpisode::toPodcastEpisodePtr( umsEpisode );
+    return m_provider->addEpisode( episode );
 }
 
 void

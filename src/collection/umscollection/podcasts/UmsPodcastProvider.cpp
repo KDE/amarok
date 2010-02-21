@@ -18,6 +18,7 @@
 
 #include <KDialog>
 #include <KIO/DeleteJob>
+#include <KIO/FileCopyJob>
 #include <KMimeType>
 
 #include <QDirIterator>
@@ -74,11 +75,32 @@ UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
     KUrl localFilePath = episode->playableUrl();
     if( !localFilePath.isLocalFile() )
         return PodcastEpisodePtr();
+
+    KUrl destination = KUrl( m_scanDirectory );
+    destination.addPath( Amarok::vfatPath( episode->channel()->prettyName() ) );
+    destination.addPath( Amarok::vfatPath( localFilePath.fileName() ) );
+    KIO::mkdir( destination );
+
+    debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path())
+            .arg( destination.path() );
+    KIO::FileCopyJob *copyJob = KIO::file_copy( localFilePath, destination );
+    connect( copyJob, SIGNAL( result( KJob * ) ), SLOT( slotCopyComplete( KJob * ) ) );
+    //we have not copied the data over yet so we can't return an episode yet
+    //TODO: return a proxy for the episode we are still copying.
+    return PodcastEpisodePtr();
+}
+
+void
+UmsPodcastProvider::slotCopyComplete( KJob *job )
+{
+    KIO::FileCopyJob *copyJob = dynamic_cast<KIO::FileCopyJob *>( job );
+    if( !copyJob )
+        return;
+
+    KUrl localFilePath = copyJob->destUrl();
     MetaFile::Track *fileTrack = new MetaFile::Track( localFilePath );
+
     UmsPodcastEpisodePtr umsEpisode = addFile( MetaFile::TrackPtr( fileTrack ) );
-    if( !umsEpisode )
-        return PodcastEpisodePtr();
-    return UmsPodcastEpisode::toPodcastEpisodePtr( umsEpisode );
 }
 
 PodcastChannelList
