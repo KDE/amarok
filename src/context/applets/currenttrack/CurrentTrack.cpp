@@ -20,7 +20,6 @@
 
 #include "Amarok.h"
 #include "App.h"
-#include "collection/CollectionManager.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
