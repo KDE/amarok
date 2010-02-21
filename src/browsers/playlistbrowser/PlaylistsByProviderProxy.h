@@ -26,6 +26,10 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
 {
     Q_OBJECT
     public:
+        static QByteArray encodeMimeRows( QList<int> rowList );
+        static QList<int> decodeMimeRows( QByteArray data );
+        static const QString AMAROK_PROVIDERPROXY_INDEXES;
+
         PlaylistsByProviderProxy( QAbstractItemModel *model, int column );
         ~PlaylistsByProviderProxy() {}
 

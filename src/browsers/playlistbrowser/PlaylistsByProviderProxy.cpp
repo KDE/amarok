@@ -21,6 +21,9 @@
 
 #include "Debug.h"
 
+const QString PlaylistsByProviderProxy::AMAROK_PROVIDERPROXY_INDEXES =
+        "application/x-amarok-providerproxy-indexes";
+
 PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, int column )
         : QtGroupingProxy( model, QModelIndex(), column )
 {
@@ -52,26 +55,69 @@ QMimeData *
 PlaylistsByProviderProxy::mimeData( const QModelIndexList &indexes ) const
 {
     DEBUG_BLOCK
-    AmarokMimeData* mime = new AmarokMimeData();
     QModelIndexList sourceIndexes;
+    QList<int> originalRows;
     foreach( const QModelIndex &idx, indexes )
     {
         debug() << idx;
         if( isGroup( idx ) )
         {
             debug() << "is a group, add mimeData of all children";
+            //TODO: add originalRows of children to list
         }
         else
         {
             debug() << "is original item, add mimeData from source model";
-            sourceIndexes << mapToSource( idx );
+            QModelIndex originalIdx = mapToSource( idx );
+            if( originalIdx.isValid() )
+            {
+                sourceIndexes << originalIdx;
+                originalRows << originalIdx.row();
+            }
         }
     }
 
+    QMimeData* mime;
     if( !sourceIndexes.isEmpty() )
-        return m_model->mimeData( sourceIndexes );
+        mime = m_model->mimeData( sourceIndexes );
+
+    if( !mime )
+        mime = new QMimeData();
+
+    if( !originalRows.isEmpty() )
+    {
+        QByteArray encodedRows = encodeMimeRows( originalRows );
+        mime->setData( AMAROK_PROVIDERPROXY_INDEXES, encodedRows );
+    }
 
     return mime;
+}
+
+QByteArray
+PlaylistsByProviderProxy::encodeMimeRows( const QList<int> rows )
+{
+    QByteArray encodedRows;
+    QDataStream stream( &encodedRows, QIODevice::WriteOnly );
+    foreach( int row, rows )
+        stream << row;
+
+    return encodedRows;
+}
+
+QList<int>
+PlaylistsByProviderProxy::decodeMimeRows( QByteArray mimeData )
+{
+    DEBUG_BLOCK
+    debug() << mimeData;
+    QList<int> rows;
+    QDataStream stream( &mimeData, QIODevice::ReadOnly );
+    while( !stream.atEnd() )
+    {
+        int row;
+        stream >> row;
+        rows << row;
+    }
+    return rows;
 }
 
 bool
@@ -81,10 +127,37 @@ PlaylistsByProviderProxy::dropMimeData( const QMimeData *data, Qt::DropAction ac
     DEBUG_BLOCK
     debug() << "dropped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
     debug() << parent;
+    debug() << "With action: " << action;
     if( action == Qt::IgnoreAction )
     {
         debug() << "ignored";
         return true;
+    }
+
+    if( isGroup( parent ) )
+    {
+        if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
+        {
+            const AmarokMimeData* amarokMime = dynamic_cast<const AmarokMimeData*>( data );
+            QList<int> originalRows = decodeMimeRows( data->data( AMAROK_PROVIDERPROXY_INDEXES ) );
+            foreach( Meta::PodcastChannelPtr channel, amarokMime->podcastChannels() )
+            {
+                //set the groupedColumn data of all playlist indexes to the data of this group
+                //the model will understand this as a copy to the provider it's dropped on
+                RoleVariantMap groupData =
+                        m_groupMaps.value( parent.row() ).value( parent.column() );
+
+                int originalRow = originalRows.takeFirst();
+                QModelIndex originalIndex =
+                        m_model->index( originalRow, m_groupedColumn, m_rootNode );
+                if( !originalIndex.isValid() )
+                    continue;
+
+                m_model->setItemData( originalIndex, groupData );
+            }
+            return true;
+        }
+        return false;
     }
 
     QModelIndex sourceIndex = mapToSource( parent );

@@ -487,6 +487,16 @@ PlaylistBrowserNS::PodcastModel::columnCount(const QModelIndex & /*parent*/) con
 Qt::ItemFlags
 PlaylistBrowserNS::PodcastModel::flags(const QModelIndex & index) const
 {
+    if( index.row() == -1 )
+    {
+        switch( index.column() )
+        {
+            case ProviderColumn:
+                return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+            default: break;
+        }
+    }
+
     if( index.isValid() )
     {
         return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );

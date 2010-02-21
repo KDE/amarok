@@ -96,8 +96,6 @@ class QtGroupingProxy : public QAbstractProxyModel
         QMultiHash<quint32, int> m_groupHash;
         QList<ColumnVariantMap> m_groupMaps;
 
-    private:
-
         /** "instuctions" how to create an item in the tree.
         This is used by parent( QModelIndex )
         */

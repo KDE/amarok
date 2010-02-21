@@ -109,7 +109,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth( this->sizePolicy().hasHeightForWidth());
-    setSizePolicy(sizePolicy);
+    setSizePolicy( sizePolicy );
 
     setContentsMargins(0,0,0,0);
 
@@ -157,6 +157,8 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
     m_podcastTreeView->setDragEnabled( true );
+    m_podcastTreeView->setAcceptDrops( true );
+    m_podcastTreeView->setDropIndicatorShown( true );
 
     for( int column = 1; column < podcastModel->columnCount(); ++ column )
     {
