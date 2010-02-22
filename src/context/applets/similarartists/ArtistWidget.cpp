@@ -81,8 +81,8 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
     m_layout->addWidget( m_desc, 2, 1, 1, 2 );
 
     // open the url of the similar artist when his name is clicked
-    connect( m_name, SIGNAL( linkActivated( QString ) ), this
-             , SLOT( openUrl( QString ) ) );
+    connect( m_name, SIGNAL( linkActivated( const QString & ) ), this
+             , SLOT( openUrl( const QString  & ) ) );
 }
 
 
@@ -218,7 +218,7 @@ ArtistWidget::clear()
  * @param url The URL of the artist
  */
 void
-ArtistWidget::openUrl( QString url )
+ArtistWidget::openUrl( const QString &url )
 {
     QDesktopServices::openUrl( KUrl( "http://" + url ) );
 }
