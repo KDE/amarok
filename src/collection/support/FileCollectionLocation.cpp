@@ -68,7 +68,7 @@ FileCollectionLocation::remove( const Meta::TrackPtr &track )
 
     return removed;
 }
-bool FileCollectionLocation::startNextRemoveJob()
+void FileCollectionLocation::startRemoveJobs()
 {
     DEBUG_BLOCK
     while ( !m_removetracks.isEmpty() )
@@ -89,9 +89,7 @@ bool FileCollectionLocation::startNextRemoveJob()
 
         The::statusBar()->newProgressOperation( job, i18n( "Removing: %1", name ) );
         m_removejobs.insert( job, track );
-        return true;
     }
-    return false;
 }
 
 void FileCollectionLocation::slotRemoveJobFinished(KJob* job)
@@ -114,8 +112,7 @@ void FileCollectionLocation::slotRemoveJobFinished(KJob* job)
     m_removejobs.remove( job );
     job->deleteLater();
 
-    if( !startNextRemoveJob() )
-    {
+    if(m_removejobs.isEmpty()) {
         slotRemoveOperationFinished();
     }
 }
@@ -127,10 +124,7 @@ void FileCollectionLocation::removeUrlsFromCollection(const Meta::TrackList& sou
     m_removetracks = sources;
 
     debug() << "removing " << m_removetracks.size() << "tracks";
-    if( !startNextRemoveJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
-    {
-        slotRemoveOperationFinished();
-    }
+    startRemoveJobs();
 }
 
 #include "FileCollectionLocation.moc"

@@ -40,7 +40,7 @@ class FileCollectionLocation : public CollectionLocation
     public slots:
         void slotRemoveJobFinished( KJob *job );
     private:
-        bool startNextRemoveJob();
+        void startRemoveJobs();
 
         QMap<KJob*, Meta::TrackPtr> m_removejobs;
         Meta::TrackList m_removetracks;
