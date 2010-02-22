@@ -72,6 +72,7 @@ private:
 
     Meta::TrackPtr m_track;
     qint64 m_trackLength;
+    QString m_toolTipIconUid;
 
     QPixmap m_baseIcon, m_grayedIcon, m_icon;
     QPixmap m_playOverlay, m_pauseOverlay;

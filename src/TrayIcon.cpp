@@ -116,11 +116,25 @@ Amarok::TrayIcon::setupToolTip()
         // TODO: Use Observer to get notified about changed album art
         if( m_track->album() )
         {
-            const QPixmap image = m_track->album()->imageWithBorder( KIconLoader::SizeLarge, 5 );
-            if ( image.isNull() )
-                setToolTipIconByName( "amarok" );
-            else
-                setToolTipIconByPixmap( image );
+            const QString uid = m_track->uidUrl();
+            if ( uid != m_toolTipIconUid ) {
+                const QPixmap image = m_track->album()->imageWithBorder( KIconLoader::SizeLarge, 5 );
+                if ( image.isNull() )
+                {
+                    setToolTipIconByName( "amarok" );
+                    m_toolTipIconUid.clear();
+                }
+                else
+                {
+                    setToolTipIconByPixmap( image );
+                    m_toolTipIconUid = uid;
+                }
+            }
+        }
+        else
+        {
+            setToolTipIconByName( "amarok" );
+            m_toolTipIconUid.clear();
         }
 
         QStringList left, right;
@@ -181,6 +195,7 @@ Amarok::TrayIcon::setupToolTip()
     else
     {
         setToolTipIconByName( "amarok" );
+        m_toolTipIconUid.clear();
         setToolTipTitle( KCmdLineArgs::aboutData()->programName() );
         setToolTipSubTitle( Amarok::prettyNowPlaying() );
     }
