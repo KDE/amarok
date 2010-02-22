@@ -66,6 +66,8 @@ static const int icnSize = 48;
 
 static const int leftRightSpacer = 15;
 static const int timeLabelMargin = 6;
+static const int skipPadding = 6;
+static const int skipMargin = 6;
 static const int constant_progress_ratio_minimum_width = 640;
 static const int space_between_tracks_and_slider = 2;
 static const float track_fontsize_factor = 1.1f;
@@ -77,6 +79,9 @@ MainToolbar::MainToolbar( QWidget *parent )
     , m_lastTime( -1 )
 {
     setObjectName( "MainToolbar" );
+
+    // control padding between buttons and labels, it's style controlled by default
+    layout()->setSpacing( 0 );
 
     EngineController *engine = The::engineController();
     m_currentEngineState = The::engineController()->state();
@@ -106,7 +111,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_prev.key = 0;
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
     m_prev.label->setFont( fnt );
-    m_prev.label->setPadding( m_skip_right.width() + 6, 0 );
+    m_prev.label->setPadding( m_skip_right.width() + skipPadding + skipMargin, 0 );
     m_prev.label->setAlign( Qt::AlignLeft );
     m_prev.label->setAnimated( false );
     m_prev.label->setOpacity( prevOpacity );
@@ -125,7 +130,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_next.key = 0;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
     m_next.label->setFont( fnt );
-    m_next.label->setPadding( 0, m_skip_left.width() + 6 );
+    m_next.label->setPadding( 0, m_skip_left.width() + skipPadding + skipMargin );
     m_next.label->setAlign( Qt::AlignRight );
     m_next.label->setAnimated( false );
     m_next.label->setOpacity( nextOpacity );
@@ -752,11 +757,11 @@ MainToolbar::paintEvent( QPaintEvent *ev )
     }
 
     if ( left->key )
-        p.drawPixmap( left->rect.left(),
+        p.drawPixmap( left->rect.left() + skipMargin,
                       left->rect.y() + ( left->rect.height() - m_skip_left.height() ) /2,
                       m_skip_left );
     if ( right->key )
-        p.drawPixmap( right->rect.right() - m_skip_right.width(),
+        p.drawPixmap( right->rect.right() - ( m_skip_right.width() + skipMargin ),
                       right->rect.y() + ( right->rect.height() - m_skip_right.height() ) /2,
                       m_skip_right );
     p.end();
