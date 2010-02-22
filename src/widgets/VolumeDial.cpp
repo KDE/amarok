@@ -37,6 +37,8 @@ VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
 {
     m_anim.step = 0;
     m_anim.timer = 0;
+    setMouseTracking( true );
+
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
 
     QEvent ev( QEvent::PaletteChange );
@@ -104,9 +106,19 @@ void VolumeDial::leaveEvent( QEvent * )
     startFade();
 }
 
+static bool onRing( const QRect &r, const QPoint &p )
+{
+    const QPoint c = r.center();
+    const int dx = p.x() - c.x();
+    const int dy = p.y() - c.y();
+    return sqrt(dx*dx + dy*dy) > r.width()/4;
+}
+
 void VolumeDial::mouseMoveEvent( QMouseEvent *me )
 {
-    if ( m_isClick )
+    if ( me->buttons() == Qt::NoButton )
+        setCursor( onRing( rect(), me->pos() ) ? Qt::PointingHandCursor : Qt::ArrowCursor );
+    else if ( m_isClick )
         me->accept();
     else
         QDial::mouseMoveEvent( me );
@@ -120,10 +132,7 @@ void VolumeDial::mousePressEvent( QMouseEvent *me )
         return;
     }
 
-    const QPoint c = rect().center();
-    const int dx = me->pos().x() - c.x();
-    const int dy = me->pos().y() - c.y();
-    m_isClick = sqrt(dx*dx + dy*dy) < width()/4;
+    m_isClick = !onRing( rect(), me->pos() );
 
     if ( m_isClick )
         update(); // hide the ring
@@ -150,9 +159,7 @@ void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
 
     if ( m_isClick )
     {
-        const int dx = width()/4;
-        const int dy = height()/4;
-        m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
+        m_isClick = !onRing( rect(), me->pos() );
         if ( m_isClick )
             emit muteToggled( !m_muted );
     }
@@ -248,7 +255,7 @@ void VolumeDial::updateSliderGradient()
     QColor c = m_highlightColor;
     c.setAlpha( 127 + m_anim.step*128/6 );
     cg.setColorAt( 0, c );
-    c.setAlpha( 64 + m_anim.step*32/6 );
+    c.setAlpha( 127 - m_anim.step*32/6 );
     cg.setColorAt( 1, c );
     QPainter p( &m_sliderGradient );
     p.fillRect( m_sliderGradient.rect(), cg );
