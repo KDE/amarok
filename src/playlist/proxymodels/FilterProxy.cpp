@@ -28,6 +28,8 @@ FilterProxy::FilterProxy( AbstractModel *belowModel, QObject *parent )
     m_belowModel = belowModel;
     setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
 
+    setDynamicSortFilter( true );    // Tell QSortFilterProxyModel: keep the filter correct when the underlying source model changes.
+
     connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( slotInsertedIds( const QList<quint64>& ) ) );
     connect( sourceModel(), SIGNAL( beginRemoveIds() ), this, SIGNAL( beginRemoveIds() ) );
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( slotRemovedIds( const QList<quint64>& ) ) );
@@ -37,8 +39,7 @@ FilterProxy::FilterProxy( AbstractModel *belowModel, QObject *parent )
     connect( this, SIGNAL( metadataUpdated() ), this, SLOT( slotInvalidateFilter() ) );
 
     KConfigGroup config = Amarok::config("Playlist Search");
-    m_passThrough = !config.readEntry( "ShowOnlyMatches", true );
-    setDynamicSortFilter( true );
+    m_showOnlyMatches = config.readEntry( "ShowOnlyMatches", true );
 }
 
 FilterProxy::~FilterProxy()
@@ -49,26 +50,19 @@ bool FilterProxy::filterAcceptsRow( int source_row, const QModelIndex & source_p
 {
     Q_UNUSED( source_parent );
 
-    if ( m_passThrough )
+    if ( m_showOnlyMatches ) {
+        return matchesCurrentSearchTerm( source_row );
+    } else {
         return true;
-
-    const bool match = matchesCurrentSearchTerm( source_row );
-    return match;
-}
-
-int
-FilterProxy::rowCount(const QModelIndex& parent) const
-{
-    return QSortFilterProxyModel::rowCount( parent );
+    }
 }
 
 void FilterProxy::filterUpdated()
 {
-    if ( !m_passThrough )
-    {
-        invalidateFilter();
-        emit( layoutChanged() );
-    }
+    if ( m_showOnlyMatches )
+        invalidateFilter();    // Tell QSortFilterProxyModel: re-filter
+    //else
+    //  Search criteria are not being used for filtering, so we can ignore the update
 }
 
 int
@@ -76,10 +70,9 @@ FilterProxy::find( const QString &searchTerm, int searchFields )
 {
     m_currentSearchTerm = searchTerm;
     m_currentSearchFields = searchFields;
-    if( !m_passThrough )
-    {
-        filterUpdated();
-    }
+
+    filterUpdated();
+
     return -1;
 }
 
@@ -113,12 +106,11 @@ void FilterProxy::slotRemovedIds( const QList< quint64 > &ids )
 void
 FilterProxy::showOnlyMatches( bool onlyMatches )
 {
-    m_passThrough = !onlyMatches;
+    m_showOnlyMatches = onlyMatches;
 
-    //make sure to update model when mode changes ( as we might have ignored and
+    //make sure to update model when mode changes ( as we might have ignored any
     //number of changes to the search term )
     invalidateFilter();    // Tell QSortFilterProxyModel: re-filter.
-    emit layoutChanged();
 }
 
 void FilterProxy::clearSearchTerm()
@@ -126,23 +118,20 @@ void FilterProxy::clearSearchTerm()
     m_currentSearchTerm.clear();
     m_currentSearchFields = 0;
     m_belowModel->clearSearchTerm();
-    if ( !m_passThrough )
-    {
-        invalidateFilter();    // Tell QSortFilterProxyModel: re-filter.
-        emit( layoutChanged() );
-    }
+
+    filterUpdated();
 }
 
 bool
 FilterProxy::matchesCurrentSearchTerm( int source_row ) const
 {
-    if ( m_belowModel->rowExists( source_row ) )
-    {
-        if ( m_currentSearchTerm.isEmpty() )
-            return true;
-        return rowMatch( source_row, m_currentSearchTerm, m_currentSearchFields );
-    }
-    return false;
+    if ( ! m_belowModel->rowExists( source_row ) )
+        return false;
+
+    if ( m_currentSearchTerm.isEmpty() )
+        return true;
+
+    return rowMatch( source_row, m_currentSearchTerm, m_currentSearchFields );
 }
 
 int

@@ -41,8 +41,6 @@ public:
      */
     ~FilterProxy();
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-
     /**
      * Find the first track in the playlist that matches the search term in one of the
      * specified search fields. This function emits found() or notFound() depending on
@@ -128,36 +126,16 @@ protected slots:
      */
     void slotInvalidateFilter(){ invalidateFilter(); }
 
-signals:
-    /**
-     * Signal forwarded from the source model.
-     * @param the list of id's added that are also represented by this proxy.
-     */
-    void insertedIds( const QList<quint64>& );
+//signals:
+    // Emits signals inherited from QSortFilterProxy
 
-    /**
-     * Signal forwarded from the source model.
-     * Emitted before items are removed from the model.
-     */
-    void beginRemoveIds();
-
-    /**
-     * Signal forwarded from the source model.
-     * @param the list of id's removed that are also represented by this proxy.
-     */
-    void removedIds( const QList<quint64>& );
-
-    /**
-     * Signal forwarded from the source model.
-     * Emitted when tracks are (de)queued in the playlist.
-     */
-    void queueChanged();
+    // Emits signals inherited from Playlist::AbstractModel / ProxyBase
 
 private:
     QString m_currentSearchTerm;
     int m_currentSearchFields;
 
-    bool m_passThrough;
+    bool m_showOnlyMatches;
 };
 
 }
