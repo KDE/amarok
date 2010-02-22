@@ -78,8 +78,8 @@ UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
 
     KUrl destination = KUrl( m_scanDirectory );
     destination.addPath( Amarok::vfatPath( episode->channel()->prettyName() ) );
-    destination.addPath( Amarok::vfatPath( localFilePath.fileName() ) );
     KIO::mkdir( destination );
+    destination.addPath( Amarok::vfatPath( localFilePath.fileName() ) );
 
     debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path())
             .arg( destination.path() );
