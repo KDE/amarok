@@ -62,12 +62,14 @@ protected:
 private:
     void startFade();
     void stopFade();
+    void updateSliderGradient();
 
 private slots:
     void valueChangedSlot( int );
 
 private:
     QPixmap m_icon[4];
+    QPixmap m_sliderGradient;
     int m_unmutedValue, m_formerValue;
     QList<QWidget*> m_wheelProxies;
     struct

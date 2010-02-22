@@ -32,6 +32,7 @@ public:
     void setBold( bool bold );
     void setData( const QStringList &data );
     inline void setOpacity( int alpha ) { m_targetOpacity = qMin(qMax(0, alpha), 255); }
+    void setPadding( int left, int right );
     inline int opacity() { return m_targetOpacity; }
 
 public slots:
@@ -77,6 +78,7 @@ private:
     int m_opacity, m_targetOpacity;
     bool m_animated, m_pulsating, m_pulseRequested, m_explicit;
     int m_isClick;
+    int m_padding[2];
     QStringList m_data;
 };
 

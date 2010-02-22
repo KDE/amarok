@@ -663,6 +663,7 @@ set(amaroklib_LIB_SRCS
     widgets/ExpandingControlsWidget.cpp
     widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
+    widgets/IconButton.cpp
     widgets/LineEdit.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
@@ -679,6 +680,7 @@ set(amaroklib_LIB_SRCS
     widgets/VolumeWidget.cpp
     widgets/VolumeDial.cpp
     widgets/Splitter.cpp
+    widgets/TrackActionButton.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
     GlobalCollectionActions.cpp

@@ -14,42 +14,38 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#ifndef PLAYPAUSEBUTTON_H
-#define PLAYPAUSEBUTTON_H
+#ifndef TRACKACTIONBUTTON_H
+#define TRACKACTIONBUTTON_H
+
+class QAction;
 
 #include "IconButton.h"
-
 #include <QImage>
-#include <QPixmap>
+#include <QIcon>
 
-
-class PlayPauseButton : public IconButton
+class TrackActionButton : public IconButton
 {
     Q_OBJECT
 
 public:
-    PlayPauseButton( QWidget *parent = 0 );
-    inline bool playing() const { return m_isPlaying; }
-    void setPlaying( bool playing );
-
-signals:
-    void toggled(bool playing);
-
+    TrackActionButton( QWidget *parent = 0, const QAction *act = 0 );
+    void setAction( const QAction *act );
+    QSize sizeHint() const;
 protected:
+    bool eventFilter( QObject *o, QEvent *e );
     void enterEvent( QEvent * );
     void leaveEvent( QEvent * );
-    void mousePressEvent( QMouseEvent * );
     void reloadContent( const QSize &sz );
-
 private slots:
-    void toggle();
-
+    void updateAction();
+    void init();
 private:
-    bool m_isPlaying;
     struct
     {
-        QImage play[2], pause[2];
+        QImage image[3];
+        QIcon icon;
     } m_icon;
+    const QAction *m_action;
 };
 
 

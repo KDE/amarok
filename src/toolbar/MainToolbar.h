@@ -43,6 +43,8 @@ public:
     void engineTrackLengthChanged( qint64 ms );
     void engineTrackPositionChanged( qint64 position, bool userSeek );
     void engineVolumeChanged( int percent );
+public slots:
+    void setNewMode( bool on );
 
 protected:
     bool eventFilter( QObject *o, QEvent *ev );
@@ -56,7 +58,7 @@ private:
     void animateTrackLabels();
     void layoutProgressBar();
     void setCurrentTrackActionsVisible( bool );
-    void updateBgGradient();
+    void generateBorderPixmaps();
     void updateCurrentTrackActions();
 
 private slots:
@@ -67,6 +69,7 @@ private slots:
     void setLabelTime( int ms );
     void setPlaying( bool on );
     void updateBookmarks( const QString *BookmarkName );
+    void updateLabels();
     void updatePrevAndNext();
 
 private:
@@ -74,7 +77,14 @@ private:
 
     QSpacerItem *m_trackBarSpacer;
     QSpacerItem *m_progressBarSpacer;
-    QPixmap m_bgGradient, m_arrowLeft, m_arrowRight;
+    struct
+    {
+        QPixmap left;
+        QPixmap center;
+        QPixmap right;
+    } m_border;
+
+    QPixmap m_skip_left, m_skip_right;
 
     struct
     {
@@ -82,19 +92,17 @@ private:
         void* key;
         QString uidUrl;
         bool actionsVisible;
+        QRect rect;
     } m_current;
 
-    struct
+    typedef struct
     {
         AnimatedLabelStack *label;
         void* key;
-    } m_next;
+        QRect rect;
+    } Skip;
 
-    struct
-    {
-        AnimatedLabelStack *label;
-        void* key;
-    } m_prev;
+    Skip m_next, m_prev;
 
     struct
     {
@@ -109,6 +117,8 @@ private:
     
     int m_lastTime;
     int m_lastRemainingTime;
+
+    bool m_allowSliding;
     struct
     {
         int startX;
