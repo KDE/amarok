@@ -106,6 +106,8 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_prev.key = 0;
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
     m_prev.label->setFont( fnt );
+    m_prev.label->setPadding( m_skip_right.width() + 6, 0 );
+    m_prev.label->setAlign( Qt::AlignLeft );
     m_prev.label->setAnimated( false );
     m_prev.label->setOpacity( prevOpacity );
     m_prev.label->installEventFilter( this );
@@ -114,6 +116,7 @@ MainToolbar::MainToolbar( QWidget *parent )
 
     m_current.label = new AnimatedLabelStack( QStringList( promoString ), info );
     m_current.label->setFont( fnt );
+    m_current.label->setPadding( 24, 24 );
     m_current.label->setBold( true );
     m_current.label->setLayout( new QHBoxLayout );
     m_current.label->installEventFilter( this );
@@ -122,6 +125,8 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_next.key = 0;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
     m_next.label->setFont( fnt );
+    m_next.label->setPadding( 0, m_skip_left.width() + 6 );
+    m_next.label->setAlign( Qt::AlignRight );
     m_next.label->setAnimated( false );
     m_next.label->setOpacity( nextOpacity );
     m_next.label->installEventFilter( this );
@@ -171,7 +176,6 @@ MainToolbar::MainToolbar( QWidget *parent )
     addWidget( spacerWidget );
     
     generateBorderPixmaps();
-    setNewMode( false );
 }
 
 void
@@ -592,8 +596,6 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
         m_current.label->setCursor( Qt::PointingHandCursor );
         updateCurrentTrackActions();
 
-        if ( m_allowSliding ) // NOTICE: -> if (true)  ==============================================
-        {
         // If all labels are in position and this is a single step for or back, we perform a slide
         // on the other two labels, i.e. e.g. move the prev to current label position and current
         // to the next and the animate the move into their target positions
@@ -658,7 +660,6 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
                 m_trackBarAnimationTimer = startTimer( 40 );
             }
         }
-        } // m_allowSliding  ==============================================
     }
     else
     {
@@ -738,9 +739,6 @@ MainToolbar::paintEvent( QPaintEvent *ev )
 
     // let the style paint draghandles and in doubt override the shadow from above
     QToolBar::paintEvent( ev );
-
-//     if ( m_allowSliding )
-//         return;
 
     // skip icons
     p.begin( this );
@@ -827,12 +825,10 @@ MainToolbar::setLabelTime( int ms )
 
         m_timeLabel->setText( Meta::secToPrettyTime( secs ) );
 
-        QFontMetrics fm( m_timeLabel->font() );
-
         int tf = timeFrame( secs );
         if ( m_lastTime < 0 || tf != timeFrame( m_lastTime ) )
         {
-            const int w = fm.width( timeString[tf] );
+            const int w = QFontMetrics( m_timeLabel->font() ).width( timeString[tf] );
             m_timeLabel->setFixedWidth( w );
             relayout = true;
         }
@@ -844,7 +840,7 @@ MainToolbar::setLabelTime( int ms )
             tf = timeFrame( remainingSecs );
             if ( m_lastRemainingTime < 0 || tf != timeFrame( m_lastRemainingTime ) )
             {
-                const int w = fm.width( QString("-") + timeString[tf] );
+                const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( QString("-") + timeString[tf] );
                 m_remainingTimeLabel->setFixedWidth( w );
                 relayout = true;
             }
@@ -860,29 +856,6 @@ MainToolbar::setLabelTime( int ms )
     
     if (relayout)
         layoutProgressBar();
-}
-
-void
-MainToolbar::setNewMode( bool on )
-{
-    m_allowSliding = on;
-    if ( m_allowSliding )
-    {
-        m_prev.label->setPadding( 12, 12 );
-        m_prev.label->setAlign( Qt::AlignCenter );
-        m_current.label->setPadding( 12, 12 );
-        m_next.label->setPadding( 12, 12 );
-        m_next.label->setAlign( Qt::AlignCenter );
-    }
-    else
-    {
-        m_prev.label->setPadding( m_skip_right.width() + 6, 0 );
-        m_prev.label->setAlign( Qt::AlignLeft );
-        m_current.label->setPadding( 24, 24 );
-        m_next.label->setPadding( 0, m_skip_left.width() + 6 );
-        m_next.label->setAlign( Qt::AlignRight );
-    }
-    m_allowSliding = true;
 }
 
 void
@@ -970,8 +943,6 @@ MainToolbar::generateBorderPixmaps()
 bool
 MainToolbar::eventFilter( QObject *o, QEvent *ev )
 {
-    if ( m_allowSliding ) // NOTICE -> if (true)  ==============================================
-    {
     if ( ev->type() == QEvent::MouseMove )
     {
         QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
@@ -1054,8 +1025,7 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
         }
         return false;
     }
-    } // m_allowSliding ==============================================
-    
+
     if ( ev->type() == QEvent::Enter )
     {
         if (o == m_next.label && m_next.key)
