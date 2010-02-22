@@ -435,34 +435,49 @@ static QStringList metadata( Meta::TrackPtr track )
     QStringList list;
     if ( track )
     {
-        if ( !track->name().isEmpty() )
+        bool noTags = false;
+        QString title = track->prettyName();
+        if (( noTags = title.isEmpty() )) // should not happen
+            title = track->prettyUrl();
+        if (( noTags = title.isEmpty() )) // should never happen
+            title = track->playableUrl().url();
+        if (( noTags = title.isEmpty() )) // sth's MEGA wrong ;-)
+            title = "???";
+
+        // no tags -> probably filename. try to strip the suffix
+        if ( noTags || track->name().isEmpty() )
         {
-            QString title = track->prettyName();
-            
-            if ( title.length() > 50 ||
-                 (HAS_TAG(artist) && title.CONTAINS_TAG(artist)) ||
-                 (HAS_TAG(composer) && title.CONTAINS_TAG(composer)) ||
-                 (HAS_TAG(album) && title.CONTAINS_TAG(album)) )
+            noTags = true;
+            int dot = title.lastIndexOf('.');
+            if ( dot > 0 && title.length() - dot < 6 )
+                title = title.left( dot );
+        }
+
+        // the track has no tags, is long or contains tags other than the titlebar
+        // ==> separate
+        if ( noTags || title.length() > 50 ||
+             (HAS_TAG(artist) && title.CONTAINS_TAG(artist)) ||
+             (HAS_TAG(composer) && title.CONTAINS_TAG(composer)) ||
+             (HAS_TAG(album) && title.CONTAINS_TAG(album)) )
+        {
+            // this will split "all-in-one" filename tags
+            QRegExp rx("(\\s+-\\s+|\\s*;\\s*|\\s*:\\s*)");
+            list << title.split( rx, QString::SkipEmptyParts );
+            QList<QString>::iterator i = list.begin();
+            bool ok;
+            while ( i != list.end() )
             {
-                // this will split "all-in-one" filename tags
-                QRegExp rx("(\\s+-\\s+|\\s*;\\s*|\\s*:\\s*)");
-                list << title.split( rx, QString::SkipEmptyParts );
-                QList<QString>::iterator i = list.begin();
-                bool ok;
-                while ( i != list.end() )
-                {
-                    // check whether this entry is only a number, i.e. probably year or track #
-                    i->toInt( &ok );
-                    if ( ok )
-                        i = list.erase( i );
-                    else
-                        ++i;
-                }
+                // check whether this entry is only a number, i.e. probably year or track #
+                i->toInt( &ok );
+                if ( ok )
+                    i = list.erase( i );
+                else
+                    ++i;
             }
-            else
-            {
-                list << title;
-            }
+        }
+        else // plain title
+        {
+            list << title;
         }
 
         if ( HAS_TAG(artist) && !list.CONTAINS_TAG(artist) )
@@ -501,6 +516,7 @@ MainToolbar::updatePrevAndNext()
 {
     if ( !The::engineController()->currentTrack() )
     {
+#if 1
         m_prev.key = 0L;
         m_prev.label->setForegroundRole( foregroundRole() );
         m_prev.label->setOpacity( 96 );
@@ -511,6 +527,10 @@ MainToolbar::updatePrevAndNext()
         m_next.label->setOpacity( 96 );
         m_next.label->setData( QStringList() << "[ " + i18n("Next") + " ]"  );
         m_next.label->setCursor( Qt::ArrowCursor );
+#else
+        m_prev.label->hide();
+        m_next.label->hide();
+#endif
         m_current.label->setUpdatesEnabled( true );
         return;
     }
