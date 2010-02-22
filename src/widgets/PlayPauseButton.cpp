@@ -55,6 +55,8 @@ void PlayPauseButton::toggle()
 
 void PlayPauseButton::reloadContent( const QSize &sz )
 {
+    Q_UNUSED( sz )
+
     //NOTICE this is a bit cumbersome, as Qt renders faster to images than to pixmaps
     // However we need the Image and generate the pixmap ourself - maybe extend the SvgHandler API
     m_icon.play[0] =  The::svgHandler()->renderSvg( "PLAYpause", width(), height(), "PLAYpause" ).toImage();
