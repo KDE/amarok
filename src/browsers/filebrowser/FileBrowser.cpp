@@ -69,12 +69,13 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     readConfig();
 
     connect( m_fileView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
+    if( !KGlobalSettings::singleClick() )
+        connect( m_fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
 }
 
 FileBrowser::~FileBrowser()
 {
     writeConfig();
-    connect( m_fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
 }
 
 void FileBrowser::polish()
