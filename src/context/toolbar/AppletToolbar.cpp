@@ -132,7 +132,6 @@ Context::AppletToolbar::appletRemoved( Plasma::Applet* applet )
     // if all applets are removed, re-add the add item
     if( m_appletLayout->count() == 2 && m_configMode )
     {
-        toggleConfigMode();
         m_appletLayout->removeItem( m_configItem );
         delete m_configItem;
         m_configItem = 0;
@@ -162,6 +161,7 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
     DEBUG_BLOCK
     
     debug() << "inserting applet icon in position" << loc;
+    // no config item means this is the first applet being added with no applets shown at all
     if( !m_configItem )
     {
         m_configItem = new AppletToolbarConfigItem( this );
@@ -172,11 +172,10 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
   
     if( m_configMode )
     {
-        // loc doesn't take into account additional + icons, also we need to add 1 more + icon
         Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
         item->setConfigEnabled( true );
         connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ), this, SIGNAL( showApplet( Plasma::Applet* ) ) );
-        
+
         // add the item
         m_appletLayout->insertItem( loc, item );
     }
@@ -201,8 +200,6 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
     DEBUG_BLOCK
     if( !m_configMode )
     {
-        // place add icons in all possible places that the user can add an icon
-
         m_configMode = true;
 
         int loc = -1;                        // location of the configure icon
@@ -245,29 +242,6 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
         emit hideAppletExplorer();
     }
     emit configModeToggled();
-}
-
-void
-Context::AppletToolbar::refreshAddIcons() // SLOT
-{
-    foreach( AppletToolbarAddItem* item, m_configAddIcons )
-    {
-        m_appletLayout->removeItem( item );
-        item->deleteLater();
-    }
-    m_configAddIcons.clear();
-
-    int loc = -1;
-    for( int i = 0; i < m_appletLayout->count(); ++i )
-    {
-        QGraphicsLayoutItem *item = m_appletLayout->itemAt( i );
-        Context::AppletToolbarConfigItem* configItem = dynamic_cast< Context::AppletToolbarConfigItem* >( item );
-        if( configItem )
-            loc = i;
-    }
-
-    if( loc >=0 )
-        newAddItem( loc );
 }
 
 void 

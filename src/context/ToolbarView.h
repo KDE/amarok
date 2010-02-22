@@ -60,7 +60,6 @@ class ToolbarView : public QGraphicsView
         void toggleConfigMode();
         void appletRemoved( Plasma::Applet* );
         void appletAdded( Plasma::Applet*, int);
-        void refreshOverlays();
         void recreateOverlays();
         void installApplets();
         void refreshSycoca();

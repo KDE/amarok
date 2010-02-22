@@ -166,7 +166,6 @@ Context::ToolbarView::toggleConfigMode()
             {
                 Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar->appletLayout(), this );
                 connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), m_cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
-                connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), this, SLOT( refreshOverlays() ) );
                 connect( moveOverlay, SIGNAL( deleteApplet( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
                 moveOverlay->setPalette( p );
                 moveOverlay->show();
@@ -213,13 +212,6 @@ Context::ToolbarView::appletAdded( Plasma::Applet* applet, int loc )
         recreateOverlays();
 }
 
-
-void
-Context::ToolbarView::refreshOverlays()
-{
-    m_toolbar->refreshAddIcons();
-}
-
 void
 Context::ToolbarView::recreateOverlays()
 {
@@ -241,7 +233,6 @@ Context::ToolbarView::recreateOverlays()
         {
             Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar->appletLayout(), this );
             connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), m_cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
-            connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), this, SLOT( refreshOverlays() ) );
             connect( moveOverlay, SIGNAL( deleteApplet( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
             moveOverlay->setPalette( p );
             moveOverlay->show();
