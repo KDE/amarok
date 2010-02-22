@@ -9,13 +9,14 @@ VERSION 2.3
     * Bookmark button is now available in the Current Track applet.
 
   CHANGES:
+    * The visibility of columns in the new File Browser is now configurable.
     * Toolbar: "Skip icons", prev/next labels are aligned to the edges
     * Volume Dial: Gradient indicator and pointing cursor hint above the dial ring
     * Playlist layout editor: When copying a layout, set its current name as
       the default one for the copy. Thanks to Jakub Wieczorek <faw217@gmail.com>.
     * Set Media Keys as default global shortcuts for playlist navigation.
       (BR 194259)
-    * Deleting files from the filebrowser is now asynchronous.
+    * Deleting files from the File Browser is now asynchronous.
     * Copy/Move/Organize operations now display detailed progress information.
     * Copy/Move/Organize operations can now be canceled. 
     * Port Copy/Move to Collection actions to the new File Browser.
