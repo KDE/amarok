@@ -516,21 +516,16 @@ MainToolbar::updatePrevAndNext()
 {
     if ( !The::engineController()->currentTrack() )
     {
-#if 1
         m_prev.key = 0L;
         m_prev.label->setForegroundRole( foregroundRole() );
         m_prev.label->setOpacity( 96 );
-        m_prev.label->setData( QStringList() << "[ " + i18n("Previous") + " ]" );
+        m_prev.label->setData( QStringList() ); // << "[ " + i18n("Previous") + " ]" );
         m_prev.label->setCursor( Qt::ArrowCursor );
         m_next.key = 0L;
         m_next.label->setForegroundRole( foregroundRole() );
         m_next.label->setOpacity( 96 );
-        m_next.label->setData( QStringList() << "[ " + i18n("Next") + " ]"  );
+        m_next.label->setData( QStringList() ); // << "[ " + i18n("Next") + " ]"  );
         m_next.label->setCursor( Qt::ArrowCursor );
-#else
-        m_prev.label->hide();
-        m_next.label->hide();
-#endif
         m_current.label->setUpdatesEnabled( true );
         return;
     }
