@@ -147,7 +147,7 @@ void ToolTipManager::prepareToolTip()
     else
         image = QPixmap();
 
-    QString text = QString();
+    QString text;
     if (m_track->name() != "")
     {
         text += "<tr><td align=\"right\"><b>"+i18n("Title")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->prettyName())+"</td></tr>";
