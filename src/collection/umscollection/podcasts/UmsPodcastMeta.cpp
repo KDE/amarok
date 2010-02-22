@@ -91,6 +91,14 @@ UmsPodcastEpisode::isEditable() const
      return m_localFile->isEditable();
 }
 
+QDateTime
+UmsPodcastEpisode::createDate() const
+{
+    if( m_localFile )
+        return m_localFile->createDate();
+    return Meta::Track::createDate();
+}
+
 void
 UmsPodcastEpisode::setTitle( const QString &title )
 {
@@ -201,6 +209,22 @@ UmsPodcastChannel::addEpisode( PodcastEpisodePtr episode )
         return PodcastEpisodePtr();
 
     return m_provider->addEpisode( episode );
+}
+
+void
+UmsPodcastChannel::addUmsEpisode( UmsPodcastEpisodePtr umsEpisode )
+{
+    int i = 0;
+    foreach( UmsPodcastEpisodePtr e, m_umsEpisodes )
+    {
+        if( umsEpisode->createDate() > e->createDate() )
+        {
+            i = m_umsEpisodes.indexOf( e );
+            break;
+        }
+    }
+
+    m_umsEpisodes.insert( i, umsEpisode );
 }
 
 void
