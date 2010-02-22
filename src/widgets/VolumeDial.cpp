@@ -229,7 +229,7 @@ static QColor mix( const QColor &c1, const QColor &c2 )
 {
     QColor c;
     c.setRgb( ( c1.red() + c2.red() ) / 2, ( c1.green() + c2.green() ) / 2,
-              ( c1.blue() + c2.blue() ) / 2, ( c1.alpha() + c2.alpha() ) / 2 );
+              ( c1.blue() + c2.blue() * 1.6 ) / 2, ( c1.alpha() + c2.alpha() ) / 2 );
     return c;
 }
 
