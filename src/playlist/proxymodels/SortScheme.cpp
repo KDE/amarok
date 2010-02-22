@@ -32,13 +32,13 @@ SortLevel::SortLevel( int sortCategory, Qt::SortOrder sortOrder )
 }
 
 int
-SortLevel::category()
+SortLevel::category() const
 {
     return m_category;
 }
 
 Qt::SortOrder
-SortLevel::order()
+SortLevel::order() const
 {
     return m_order;
 }
@@ -56,7 +56,7 @@ SortLevel::setOrder( Qt::SortOrder sortOrder )
 }
 
 bool
-SortLevel::isComparable()
+SortLevel::isComparable() const
 {
     if( sortableCategories.contains( internalColumnNames.at( category() ) ) )
         return true;
@@ -64,7 +64,7 @@ SortLevel::isComparable()
 }
 
 bool
-SortLevel::isString()
+SortLevel::isString() const
 {
     QList< int > strCategories;
     strCategories << Album << AlbumArtist << Artist << Comment << Composer << Directory << Filename
@@ -75,7 +75,7 @@ SortLevel::isString()
 }
 
 bool
-SortLevel::isFloat()
+SortLevel::isFloat() const
 {
     QList< int > strCategories;
     strCategories << Bpm;
@@ -85,7 +85,7 @@ SortLevel::isFloat()
 }
 
 QString
-SortLevel::prettyName()
+SortLevel::prettyName() const
 {
     if( m_category == -1 )
         return i18n( "Random" );
@@ -102,8 +102,8 @@ SortScheme::~SortScheme()
 {
 }
 
-SortLevel &
-SortScheme::level( int i )
+const SortLevel &
+SortScheme::level( int i ) const
 {
     return m_scheme.operator[]( i );    //SortLevel( 0 ) is a dummy, as in PlaylistDefines.h 0=PlaceHolder
 }
@@ -115,7 +115,7 @@ SortScheme::addLevel( const Playlist::SortLevel& level )
 }
 
 int
-SortScheme::length()
+SortScheme::length() const
 {
     return m_scheme.size();
 }

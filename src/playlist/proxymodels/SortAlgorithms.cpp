@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,83 +22,108 @@
 namespace Playlist
 {
 
-bool
-multilevelLessThan::operator()( int rowA, int rowB)
+void
+multilevelLessThan::setSortScheme( const SortScheme & scheme )
 {
-    quint8 verdict = 0;  //0 = false  1 = true  2 = nextIteration
+    m_scheme = scheme;
+    m_randomSalt = qrand();
+}
+
+bool
+multilevelLessThan::operator()( const QAbstractItemModel* sourceModel, int sourceModelRowA, int sourceModelRowB ) const
+{
+    bool decided = false;
+    bool verdict = false;    // Guaranteed to be overwritten
+
     for( int i = 0; i < m_scheme.length(); i++ )
     {
         int currentCategory = m_scheme.level( i ).category();  //see enum Column in PlaylistDefines.h
+
         if( currentCategory == -1 ) //random
-            return static_cast<bool>( qrand() % 2 );
-        QVariant dataA = m_sourceProxy->index( rowA, currentCategory ).data();  //FIXME: are you sure you need to do comparisons on sourceProxy indexes?
-        QVariant dataB = m_sourceProxy->index( rowB, currentCategory ).data();  //or better, are you sure those rowA and rowB don't need a rowToSource around them?
+        {
+            long randomSeqnumA = constantRandomSeqnumForRow( sourceModelRowA );
+            long randomSeqnumB = constantRandomSeqnumForRow( sourceModelRowB );
 
-        //Handle "Last Played" as a special case because the time since last played is not
-        //reported as an int in the data columns.
-        //Also, the verdicts are inverted because I answer to the question about the time
-        //since the track was played by comparing the absolute time when the track was last
-        //played.
-        if( m_scheme.level( i ).category() == Playlist::LastPlayed )
+            if( randomSeqnumA < randomSeqnumB )
+            {   decided = true;  verdict = true;   }
+            else if( randomSeqnumA > randomSeqnumB )
+            {   decided = true;  verdict = false;   }
+        }
+        else
         {
-            Meta::TrackPtr trackA = dynamic_cast< AbstractModel * >( m_sourceProxy )->trackAt( rowA );
-            Meta::TrackPtr trackB = dynamic_cast< AbstractModel * >( m_sourceProxy )->trackAt( rowB );
-            if( trackA->lastPlayed() < trackB->lastPlayed() )
-                verdict = 0;
-            else if( trackA->lastPlayed() > trackB->lastPlayed() )
-                verdict = 1;
-            else
-                verdict = 2;
+            QModelIndex indexA = sourceModel->index( sourceModelRowA, currentCategory );
+            QModelIndex indexB = sourceModel->index( sourceModelRowB, currentCategory );
+
+            QVariant dataA = indexA.data();
+            QVariant dataB = indexB.data();
+
+            //Handle "Last Played" as a special case because the time since last played is not
+            //reported as an int in the data columns.
+            //Also, the verdicts are inverted because I answer to the question about the time
+            //since the track was played by comparing the absolute time when the track was last
+            //played.
+            if( m_scheme.level( i ).category() == Playlist::LastPlayed )
+            {
+                Meta::TrackPtr trackA = indexA.data( TrackRole ).value<Meta::TrackPtr>();
+                Meta::TrackPtr trackB = indexB.data( TrackRole ).value<Meta::TrackPtr>();
+
+                if( trackA->lastPlayed() < trackB->lastPlayed() )
+                {   decided = true;  verdict = false;   }
+                else if( trackA->lastPlayed() > trackB->lastPlayed() )
+                {   decided = true;  verdict = true;   }
+            }
+
+            //And now the comparison logic for ordinary columns.
+            else if( m_scheme.level( i ).isString() )
+            {
+                if( dataA.toString().toLower() < dataB.toString().toLower() )
+                {   decided = true;  verdict = true;   }
+                else if( dataA.toString().toLower() > dataB.toString().toLower() )
+                {   decided = true;  verdict = false;   }
+            }
+            else if( m_scheme.level( i ).isFloat() )
+            {
+                if( dataA.toDouble() < dataB.toDouble() )
+                {   decided = true;  verdict = true;   }
+                else if( dataA.toDouble() > dataB.toDouble() )
+                {   decided = true;  verdict = false;   }
+            }
+            else //if it's not a string ==> it's a number
+            {
+                if( dataA.toInt() < dataB.toInt() )
+                {   decided = true;  verdict = true;   }
+                else if( dataA.toInt() > dataB.toInt() )
+                {   decided = true;  verdict = false;   }
+            }
         }
 
-        //And now the comparison logic for ordinary columns.
-        else if( m_scheme.level( i ).isString() )
-        {
-            if( dataA.toString().toLower() < dataB.toString().toLower() )
-                verdict = 1;
-            else if( dataA.toString().toLower() > dataB.toString().toLower() )
-                verdict = 0;
-            else
-                verdict = 2;
-        }
-        else if( m_scheme.level( i ).isFloat() )
-        {
-            if( dataA.toDouble() < dataB.toDouble() )
-                verdict = 1;
-            else if( dataA.toDouble() > dataB.toDouble() )
-                verdict = 0;
-            else
-                verdict = 2;
-        }
-        else //if it's not a string ==> it's a number
-        {
-            if( dataA.toInt() < dataB.toInt() )
-                verdict = 1;
-            else if( dataA.toInt() > dataB.toInt() )
-                verdict = 0;
-            else
-                verdict = 2;
-        }
-        if( verdict != 2 )
-        {
-            if( m_scheme.level( i ).order() == Qt::DescendingOrder )
-                verdict = verdict ? 0 : 1;
+        if( m_scheme.level( i ).order() == Qt::DescendingOrder )
+            verdict = ( ! verdict );    // Reverse sort order
+
+        if ( decided )
             break;
-        }
-        else
-        {
-            if( m_scheme.level( i ).order() == Qt::DescendingOrder )
-                verdict = 0;
-        }
     }
-    if( verdict == 2 )
-    {
-        if( m_scheme.level( m_scheme.length() - 1 ).order() == Qt::DescendingOrder )
-            verdict = 1;
-        else
-            verdict = 0;
-    }
-    return static_cast<bool>( verdict );
+
+    if ( ! decided )
+        verdict = (sourceModelRowA < sourceModelRowB);    // Tie breaker: order by row number
+
+    return verdict;
+}
+
+long
+multilevelLessThan::constantRandomSeqnumForRow(int sourceRow) const
+{
+    // If the 'seed = qrand(); qsrand( seed )' save+restore ever turns out to be a
+    // performance bottleneck: try switching to 'jrand48()', which has no common
+    // random pool and therefore doesn't have to be saved+restored.
+    int seed = qrand();
+
+    qsrand( sourceRow ^ m_randomSalt );    // Ensure we get the same random number for a given row every time
+    long randomSeqnum = qrand();    // qrand() is int; long to allow switch to 'jrand48()'.
+
+    qsrand( seed );    // Restore non-predictability for the rest of Amarok
+
+    return randomSeqnum;
 }
 
 }   //namespace Playlist

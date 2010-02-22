@@ -19,6 +19,8 @@
 #define AMAROK_PLAYLISTSORTPROXY_H
 
 #include "ProxyBase.h"
+
+#include "SortAlgorithms.h"
 #include "SortScheme.h"
 
 namespace Playlist
@@ -66,11 +68,6 @@ public slots:
      */
     void updateSortMap( SortScheme scheme );
 
-    /**
-     * Resets the proxy to its original pass-through state.
-     */
-    void resetSorting();
-
 protected:
     /**
      * Converts a row index that's valid in the proxy below this one to a row index valid
@@ -88,14 +85,9 @@ protected:
      */
     virtual int rowToSource( int row ) const;
 
-protected slots:
-    /**
-     * Reapplies the current sorting scheme.
-     */
-    void invalidateSorting();
-
 private:
     SortScheme m_scheme;               //! The current sorting scheme.
+    multilevelLessThan m_mlt;          //! Decision object for current sorting scheme.
 };
 
 }   //namespace Playlist
