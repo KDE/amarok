@@ -381,7 +381,7 @@ PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant
         {
             if( role == Qt::DisplayRole )
             {
-                Meta::PodcastChannelPtr channel = channelForItem( idx );
+                Meta::PodcastChannelPtr channel = channelForIndex( idx );
                 if( !channel )
                     return false;
                 PlaylistProvider *provider = getProviderByName( value.toString() );
@@ -528,11 +528,12 @@ PlaylistBrowserNS::PodcastModel::flags(const QModelIndex & index) const
         }
     }
 
-    if( index.isValid() )
-    {
-        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
-    }
-    return Qt::ItemIsDropEnabled;
+    Qt::ItemFlags channelFlags;
+    if( podcastItemType( index ) == Meta::ChannelType )
+        channelFlags = Qt::ItemIsDropEnabled;
+
+    return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled
+                 | channelFlags );
 }
 
 QVariant
@@ -610,52 +611,64 @@ PlaylistBrowserNS::PodcastModel::mimeData( const QModelIndexList &indexes ) cons
 }
 
 bool
-PlaylistBrowserNS::PodcastModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
+PlaylistBrowserNS::PodcastModel::dropMimeData( const QMimeData * data, Qt::DropAction action,
+                                               int row, int column, const QModelIndex &parent )
 {
     Q_UNUSED( column );
     Q_UNUSED( row );
-    Q_UNUSED( parent );
-//     DEBUG_BLOCK
 
     if( action == Qt::IgnoreAction )
         return true;
-
-//     PlaylistGroupPtr parentGroup;
-
-    if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
-    {
-        debug() << "Found podcastchannel mime type";
-
-        const AmarokMimeData* amarokMime = dynamic_cast<const AmarokMimeData*>( data );
-        if( amarokMime )
-        {
-            Meta::PodcastChannelList channels = amarokMime->podcastChannels();
-
-            foreach( Meta::PodcastChannelPtr channel, channels )
-            {
-                if( !m_channels.contains( channel ) )
-                {
-                    debug() << "unknown podcast channel dragged in: " << channel->title();
-                    debug() << "TODO: start synchronization";
-                }
-                //else if( parent.contains(channel) )
-                //TODO: reparent this channel
-            }
-
-            return true;
-        }
-    }
-    else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
-    {
-        debug() << "Found podcast episode mime type";
-        debug() << "We don't support podcast episode drags yet.";
-        return false;
-    }
 
     if( data->hasFormat( OpmlParser::OPML_MIME ) )
     {
         importOpml( KUrl( data->data( OpmlParser::OPML_MIME ) ) );
         return true;
+    }
+
+    const AmarokMimeData* amarokMime = dynamic_cast<const AmarokMimeData*>( data );
+    if( !amarokMime )
+        return false;
+
+    if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
+    {
+        debug() << "Dropped podcastchannel mime type";
+
+        Meta::PodcastChannelList channels = amarokMime->podcastChannels();
+
+        foreach( Meta::PodcastChannelPtr channel, channels )
+        {
+            if( !m_channels.contains( channel ) )
+            {
+                debug() << "unknown podcast channel dragged in: " << channel->title();
+                debug() << "TODO: start synchronization";
+            }
+        }
+
+        return true;
+    }
+    else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
+    {
+        debug() << "Dropped podcast episode mime type";
+        debug() << "on " << parent << " row: " << row;
+
+       if( podcastItemType( parent ) != Meta::ChannelType )
+           return false;
+
+        Meta::PodcastChannelPtr channel = channelForIndex( parent );
+        if( !channel )
+            return false;
+
+        Meta::PodcastEpisodeList episodes = amarokMime->podcastEpisodes();
+        bool allAdded = true;
+        foreach( Meta::PodcastEpisodePtr episode, episodes )
+        {
+            //TODO: implement PodcastChannel::operator=( PodcastChannelPtr )
+            if( episode->channel()->title() == channel->title() )
+                allAdded = channel->addEpisode( episode ) ? allAdded : false;
+        }
+
+        return allAdded;
     }
 
     return false;
@@ -1180,7 +1193,7 @@ PlaylistBrowserNS::PodcastModel::podcastItemType( const QModelIndex &index )
 }
 
 Meta::PodcastChannelPtr
-PlaylistBrowserNS::PodcastModel::channelForItem( const QModelIndex &index )
+PlaylistBrowserNS::PodcastModel::channelForIndex( const QModelIndex &index )
 {
     if( index.isValid() )
     {
@@ -1206,7 +1219,7 @@ PlaylistBrowserNS::PodcastModel::selectedChannels( const QModelIndexList &indice
     Meta::PodcastChannelList channels;
     foreach( const QModelIndex &index, indices )
     {
-        Meta::PodcastChannelPtr channel = channelForItem( index );
+        Meta::PodcastChannelPtr channel = channelForIndex( index );
         if( channel )
             channels << channel;
     }
