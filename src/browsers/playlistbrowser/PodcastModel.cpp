@@ -375,30 +375,32 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 bool
 PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
-    if( !idx.isValid() )
-        return false;
-
-    if( idx.column() == ProviderColumn )
+    if( idx.isValid() )
     {
-        if( role == Qt::DisplayRole )
+        if( idx.column() == ProviderColumn )
         {
-            Meta::PodcastChannelPtr channel = channelForItem( idx );
-            if( !channel )
-                return false;
-            PlaylistProvider *provider = getProviderByName( value.toString() );
-            if( !provider )
-                return false;
-            debug() << QString( "Copy \"%1\" to \"%2\"." ).arg( channel->prettyName() )
-                    .arg( provider->prettyName() );
-            PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
-            if( !podcastProvider )
-                return false;
-            podcastProvider->addChannel( channel );
+            if( role == Qt::DisplayRole )
+            {
+                Meta::PodcastChannelPtr channel = channelForItem( idx );
+                if( !channel )
+                    return false;
+                PlaylistProvider *provider = getProviderByName( value.toString() );
+                if( !provider )
+                    return false;
+                debug() << QString( "Copy \"%1\" to \"%2\"." ).arg( channel->prettyName() )
+                        .arg( provider->prettyName() );
+                PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
+                if( !podcastProvider )
+                    return false;
+                podcastProvider->addChannel( channel );
+            }
+            //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
+            //TODO: implement setItemData()
+            return true;
         }
-        //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
-        //TODO: implement setItemData()
-        return true;
     }
+
+    return false;
 }
 
 QModelIndex
@@ -1186,22 +1188,26 @@ PlaylistBrowserNS::PodcastModel::getProviderByName( const QString &name )
 Meta::PodcastChannelPtr
 PlaylistBrowserNS::PodcastModel::channelForItem( const QModelIndex &index )
 {
-    if( !index.isValid() )
-        return Meta::PodcastChannelPtr();
-
-    Meta::PodcastMetaCommon *pmc =
-            static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
-    if( !pmc )
-        return Meta::PodcastChannelPtr();
-
-    switch( pmc->podcastType() )
+    if( index.isValid() )
     {
-        case Meta::EpisodeType:
+        Meta::PodcastMetaCommon *pmc =
+                static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
+        if( !pmc )
             return Meta::PodcastChannelPtr();
-        case Meta::ChannelType:
-            return Meta::PodcastChannelPtr( static_cast<Meta::PodcastChannel *>(pmc) );
+
+        switch( pmc->podcastType() )
+        {
+            case Meta::EpisodeType:
+                return Meta::PodcastChannelPtr();
+            case Meta::ChannelType:
+                return Meta::PodcastChannelPtr( static_cast<Meta::PodcastChannel *>(pmc) );
+        }
     }
+
+    return Meta::PodcastChannelPtr();
 }
+
+
 Meta::PodcastChannelList
 PlaylistBrowserNS::PodcastModel::selectedChannels( const QModelIndexList &indices )
 {
