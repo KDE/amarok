@@ -25,6 +25,7 @@
 #include <QToolBar>
 #include <QToolTip>
 
+#include <KColorUtils>
 #include <KLocale>
 
 #include <cmath>
@@ -37,6 +38,9 @@ VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
     m_anim.step = 0;
     m_anim.timer = 0;
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
+
+    QEvent ev( QEvent::PaletteChange );
+    changeEvent( &ev );
 }
 
 void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
@@ -52,6 +56,17 @@ void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
     }
 }
 
+void VolumeDial::changeEvent( QEvent *ev )
+{
+    if ( ev->type() == QEvent::PaletteChange )
+    {
+        const QColor &fg = palette().color( foregroundRole() );
+        const QColor &hg = palette().color( QPalette::Highlight );
+        const qreal contrast = KColorUtils::contrastRatio( hg, palette().color( backgroundRole() ) );
+        m_highlightColor = KColorUtils::mix( hg, fg, 1.0 - contrast/3.0 );
+    }
+    QDial::changeEvent( ev );
+}
 
 void VolumeDial::enterEvent( QEvent * )
 {
@@ -225,22 +240,15 @@ void VolumeDial::timerEvent( QTimerEvent *te )
     repaint();
 }
 
-static QColor mix( const QColor &c1, const QColor &c2 )
-{
-    QColor c;
-    c.setRgb( ( c1.red() + c2.red() ) / 2, ( c1.green() + c2.green() ) / 2,
-              ( c1.blue() + c2.blue() * 1.6 ) / 2, ( c1.alpha() + c2.alpha() ) / 2 );
-    return c;
-}
-
 void VolumeDial::updateSliderGradient()
 {
     m_sliderGradient.fill( Qt::transparent );
+
     QConicalGradient cg( m_sliderGradient.rect().center(), -90 );
-    QColor c = mix( palette().color( foregroundRole() ), palette().color( QPalette::Highlight ) );
-    c.setAlpha( 128+m_anim.step*128/6 );
+    QColor c = m_highlightColor;
+    c.setAlpha( 127 + m_anim.step*128/6 );
     cg.setColorAt( 0, c );
-    c.setAlpha( 64+m_anim.step*32/6 );
+    c.setAlpha( 64 + m_anim.step*32/6 );
     cg.setColorAt( 1, c );
     QPainter p( &m_sliderGradient );
     p.fillRect( m_sliderGradient.rect(), cg );

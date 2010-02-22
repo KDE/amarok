@@ -46,6 +46,7 @@ signals:
     void muteToggled( bool mute );
 
 protected:
+    void changeEvent( QEvent * );
     void enterEvent( QEvent * );
     bool eventFilter( QObject *o, QEvent *e );
     void leaveEvent( QEvent * );
@@ -78,6 +79,7 @@ private:
         int timer;
     } m_anim;
     bool m_isClick, m_isDown, m_muted;
+    QColor m_highlightColor;
 };
 
 #endif  // end include guard
