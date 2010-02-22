@@ -125,6 +125,7 @@ AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
         : KUniqueApplication()
+        , m_tray(0)
 {
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
@@ -552,7 +553,12 @@ void App::applySettings( bool firstTime )
 
     DEBUG_BLOCK
 
-    m_tray->setVisible( AmarokConfig::showTrayIcon() );
+    if ( AmarokConfig::showTrayIcon() && ! m_tray ) {
+        m_tray = new Amarok::TrayIcon( mainWindow() );
+    } else if ( !AmarokConfig::showTrayIcon() && m_tray ) {
+        delete m_tray;
+        m_tray = 0;
+    }
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
@@ -666,7 +672,9 @@ App::continueInit()
     m_mainWindow = new MainWindow();
     PERF_LOG( "Done creating MainWindow" )
 
-    m_tray = new Amarok::TrayIcon( mainWindow() );
+    if ( AmarokConfig::showTrayIcon() ) {
+        m_tray = new Amarok::TrayIcon( mainWindow() );
+    }
 
     PERF_LOG( "Creating DBus handlers" )
     new Amarok::RootDBusHandler();

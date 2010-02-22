@@ -23,8 +23,9 @@
 #include "meta/Meta.h"
 #include "SmartPointerList.h"
 
-#include <KSystemTrayIcon> //baseclass
+#include <KStatusNotifierItem> //baseclass
 
+#include <QAction>
 #include <QPointer>
 
 class QEvent;
@@ -33,12 +34,12 @@ class App;
 
 namespace Amarok {
 
-class TrayIcon : public KSystemTrayIcon, public EngineObserver, public Meta::Observer
+class TrayIcon : public KStatusNotifierItem, public EngineObserver, public Meta::Observer
 {
     Q_OBJECT
 
 public:
-    TrayIcon( QWidget *widget );
+    TrayIcon( QObject *parent );
     friend class ::App;
     
     void setVisible( bool visible );
@@ -59,10 +60,10 @@ protected:
     virtual void paletteChange( const QPalette & oldPalette );
 
 private slots:
-    void slotActivated( QSystemTrayIcon::ActivationReason reason );
+    void slotActivated();
+    void slotScrollRequested( int delta, Qt::Orientation orientation );
 
 private:
-    virtual bool event( QEvent *e );
     void setupMenu();
     void setupToolTip();
 
