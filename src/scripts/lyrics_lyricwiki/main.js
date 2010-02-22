@@ -86,7 +86,7 @@ function onFinished( response )
             //Amarok.debug( "response: " + response );
             response = response.replace(/[\n\r]/g, ""); // remove all line breaks
             // if lyrics for this song don't exist, try something else
-            if ( response.indexOf( "Click here to start this page!" ) != -1 ) {
+            if ( response.indexOf( ">Create</a>" ) != -1 ) {
                 if ( retryNumber == 0 ) {
                     // try again using the re-born API :)
                     var urlstring = "http://lyrics.wikia.com/api.php?action=lyrics&func=getSong&fmt=xml&artist=" + triedArtist + "&song=" + triedSong;
