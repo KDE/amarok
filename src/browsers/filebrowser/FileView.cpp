@@ -69,7 +69,6 @@ FileView::FileView( QWidget * parent )
 
     The::paletteHandler()->updateItemView( this );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
-    
 }
 
 void FileView::contextMenuEvent ( QContextMenuEvent * e )

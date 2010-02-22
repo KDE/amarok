@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                              *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2010 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -68,6 +69,19 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
 
     readConfig();
 
+    m_fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
+
+    for( int i = 0; i < m_fileView->model()->columnCount(); i++ )
+    {
+        QAction *action = new QAction( m_fileView->model()->headerData( i, Qt::Horizontal ).toString(), m_fileView->header() );
+        m_fileView->header()->addAction( action );
+        m_columnActions.append( action );
+        action->setCheckable( true );
+        if( !m_fileView->isColumnHidden( i ) )
+            action->setChecked( true );
+        connect( action, SIGNAL( toggled(bool) ), this, SLOT(toggleColumn(bool) ) );
+    }
+
     connect( m_fileView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
     if( !KGlobalSettings::singleClick() )
         connect( m_fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
@@ -76,6 +90,18 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
 FileBrowser::~FileBrowser()
 {
     writeConfig();
+}
+
+void FileBrowser::toggleColumn( bool toggled )
+{
+    int index = m_columnActions.indexOf( qobject_cast< QAction* >( sender() ) );
+    if( index != -1 )
+    {
+        if( toggled )
+            m_fileView->showColumn( index );
+        else
+            m_fileView->hideColumn( index );
+    }
 }
 
 void FileBrowser::polish()

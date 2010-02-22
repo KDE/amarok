@@ -54,10 +54,19 @@ protected slots:
 
     virtual void reActivate();
 
+    /**
+     * Shows/hides the columns as selected in the context menu of the header of the
+     * file view.
+     * @param toggled the visibility state of a column in the context menu.
+     */
+    void toggleColumn( bool toggled);
+
 
 private:
     void readConfig();
     void writeConfig();
+
+    QList< QAction * >       m_columnActions; //! Maintains the mapping action<->column
 
     QStringList siblingsForDir( const QString &path );
     
