@@ -94,7 +94,6 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         void deleteItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );
         void removeSubscription( QModelIndexList list );
-        void configureChannels( QModelIndexList list );
 
         /** @returns all channels currently selected
         **/
@@ -125,6 +124,7 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         static PodcastModel* s_instance;
         PodcastModel();
         ~PodcastModel();
+        static int podcastItemType( const QModelIndex &index );
 
         Q_DISABLE_COPY( PodcastModel )
 

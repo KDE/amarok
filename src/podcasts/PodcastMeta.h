@@ -53,15 +53,12 @@ typedef KSharedPtr<PodcastChannel> PodcastChannelPtr;
 typedef QList<PodcastEpisodePtr> PodcastEpisodeList;
 typedef QList<PodcastChannelPtr> PodcastChannelList;
 
-
-enum Type
+enum PodcastType
 {
     NoType = 0,
     ChannelType,
     EpisodeType
 };
-
-
 
 class AMAROK_EXPORT PodcastMetaCommon
 {
