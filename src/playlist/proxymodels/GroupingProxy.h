@@ -3,7 +3,8 @@
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                              *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -31,11 +32,12 @@
 
 namespace Playlist
 {
+
+// Extension of Playlist::DataRoles
 enum GroupDataRoles
 {
     GroupRole = 256,
     GroupedTracksRole, // deprecated
-    GroupedAlternateRole // deprecated
 };
 
 enum GroupMode
@@ -45,12 +47,12 @@ enum GroupMode
     Head_Collapsed, // deprecated
     Body,
     Tail,
-    Collapsed // deprecated
+    Collapsed, // deprecated
+    Invalid
 };
 
 class GroupingProxy : public ProxyBase
 {
-
     Q_OBJECT
 
 public:
@@ -60,68 +62,92 @@ public:
     static GroupingProxy* instance();
     static void destroy();
 
-    // functions from QAbstractProxyModel
 
-    QVariant data( const QModelIndex &index, int role ) const;
-
-    // grouping-related functions
-    void setCollapsed( int, bool ) const;
-    int firstInGroup( int ) const;
-    int lastInGroup( int ) const;
-
-    int tracksInGroup( int row ) const;
-    int lengthOfGroup( int row ) const;
-
+    //! Configuration
+    /**
+     * The criterium by which adjacent items are divided into groups.
+     * @param groupingCategory A string from 'groupableCategories', or "None", or empty string.
+     */
     QString groupingCategory() const;
     void setGroupingCategory( const QString &groupingCategory );
 
-signals:
+
+    //! Grouping info functions
     /**
-     * This signal is emitted when tracks are added to the playlist.
-     * @param parent the parent index.
-     * @param start the row number of the first track that has been added.
-     * @param end the row number of the last track that has been added.
+     * @return true if 'index' is the first item of a Group.
      */
-    void rowsInserted( const QModelIndex& parent, int start, int end );
+    bool isFirstInGroup( const QModelIndex & index );
 
     /**
-     * This signal is emitted when tracks are removed from the playlist.
-     * @param parent the parent index.
-     * @param start the row number of the first track that has been removed.
-     * @param end the row number of the last track that has been removed.
+     * @return true if 'index' is the last item of a Group.
      */
-    void rowsRemoved( const QModelIndex& parent, int start, int end );
+    bool isLastInGroup( const QModelIndex & index );
 
     /**
-     * This signal is emitted when tracks are (de)queued from the playlist.
+     * @return The first item of the Group that 'index' belongs to.
      */
-    void queueChanged();
+    QModelIndex firstIndexInSameGroup( const QModelIndex & index );
+
+    /**
+     * @return The last item of the Group that 'index' belongs to.
+     */
+    QModelIndex lastIndexInSameGroup( const QModelIndex & index );
+
+    /**
+     * @return The number of items in the Group that 'index' belongs to.
+     */
+    int groupRowCount( const QModelIndex & index );
+
+    /**
+     * @return The play length (in seconds) of the Group that 'index' belongs to.
+     */
+    int groupPlayLength( const QModelIndex & index );
+
+
+    //! Custom version of functions inherited from QSortFilterProxyModel
+    QVariant data( const QModelIndex &index, int role ) const;
+
+//signals:
+    // Emits signals inherited from QSortFilterProxy
+
+    // Emits signals inherited from Playlist::AbstractModel / ProxyBase
 
 private slots:
-    void modelDataChanged( const QModelIndex&, const QModelIndex& );
-    void modelRowsInserted( const QModelIndex&, int, int );
-    void modelRowsRemoved( const QModelIndex&, int, int );
-    void regroupAll();
+    /**
+    * Handlers for the standard QAbstractItemModel signals.
+    */
+    void proxyDataChanged( const QModelIndex& topLeft, const QModelIndex& bottomRight );
+    void proxyLayoutChanged();
+    void proxyModelReset();
+    void proxyRowsInserted( const QModelIndex& parent, int start, int end );
+    void proxyRowsRemoved( const QModelIndex& parent, int start, int end );
 
 private:
-    void regroupRows( int firstRow, int lastRow );
-    QList<GroupMode> m_rowGroupMode;
-
-    // grouping auxiliary functions -- deprecated, but used by GraphicsView
-    int groupRowCount( int row ) const;
-
-    QString m_groupingCategory;
+    /**
+     * This function determines the "Status within the group" of a model row.
+     */
+    GroupMode groupModeForIndex( const QModelIndex & index );
 
     /**
      * This function is used to determine if 2 tracks belong in the same group.
-     * The current implementation is a bit of a hack, but is what gives the best
-     * user experience.
-     * @param track1 The first track
-     * @param track2 The second track
+     * The track pointers are allowed to be invalid.
      * @return true if track should be grouped together, false otherwise
      */
     bool shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 );
+
+    /**
+     * Invalidate any cached assumptions about model rows.
+     */
+    void invalidateGrouping();
+
+
+    // Variables
+    QString m_groupingCategory;
+    int m_groupingCategoryIndex;
+
+    QHash<int, GroupMode> m_cachedGroupModeForRow;
 };
+
 } // namespace Playlist
 
 #endif
