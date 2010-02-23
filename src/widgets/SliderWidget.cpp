@@ -362,6 +362,7 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
 {
     m_usingCustomStyle = true;
     setFocusPolicy( Qt::NoFocus );
+    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), this, SLOT( update() ) );
 }
 
 void
