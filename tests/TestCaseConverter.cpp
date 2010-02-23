@@ -18,16 +18,21 @@
  ***************************************************************************/
 
 #include "TestCaseConverter.h"
+
 #include "CaseConverter.h"
+#include "Debug.h"
 
 #include <QtTest/QTest>
 
-TestCaseConverter::TestCaseConverter( const QStringList args, const QString &logPath )
-    : TestBase( "CaseCoverter" )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestCaseConverter )
+
+//required for Debug.h
+QMutex Debug::mutex;
+
+TestCaseConverter::TestCaseConverter()
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
 }
 
 void TestCaseConverter::testToCapitalizedCase()

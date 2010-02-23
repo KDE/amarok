@@ -713,7 +713,6 @@ if(KDE4_BUILD_TESTS)
         ../tests/timecode/TestTimecodeTrackProvider.cpp
         ../tests/TestAmarok.cpp
         ../tests/TestBase.cpp
-        ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp
     )
     include_directories(
