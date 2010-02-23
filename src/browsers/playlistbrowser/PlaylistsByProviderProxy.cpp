@@ -77,7 +77,7 @@ PlaylistsByProviderProxy::mimeData( const QModelIndexList &indexes ) const
         }
     }
 
-    QMimeData* mime;
+    QMimeData* mime = 0;
     if( !sourceIndexes.isEmpty() )
         mime = m_model->mimeData( sourceIndexes );
 
