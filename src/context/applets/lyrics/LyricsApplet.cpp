@@ -544,6 +544,10 @@ void LyricsApplet::collapseToMin()
     // only show vertical scrollbar if there are lyrics and is needed
     browser->setVerticalScrollBarPolicy( m_hasLyrics ? Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff );
 
+    // maybe we were just added, don't have a view yet
+    if( !containment()->view() )
+        return;
+    
     const qreal containerOffset = mapToView( containment()->view(), boundingRect() ).topLeft().y();
     const qreal containerHeight = containment()->size().height() - containerOffset;
     const qreal collapsedHeight = ( contentHeight > containerHeight ) ? containerHeight : contentHeight;
