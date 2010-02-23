@@ -52,7 +52,11 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
 {
     setRange( 0, max );
     setAttribute( Qt::WA_NoMousePropagation, true );
-
+    if ( orientation == Qt::Vertical )
+    {
+        setInvertedAppearance( true );
+        setInvertedControls( true );
+    }
     m_moodbarManager = The::moodbarManager();
 }
 
@@ -60,11 +64,16 @@ QRect
 Amarok::Slider::sliderHandleRect( const QRect &slider, qreal percent ) const
 {
     QRect rect;
+    const bool inverse = ( orientation() == Qt::Horizontal ) ?
+                         ( invertedAppearance() != (layoutDirection() == Qt::RightToLeft) ) :
+                         ( !invertedAppearance() );
 
     if( m_usingCustomStyle)
-        rect = The::svgHandler()->sliderKnobRect( slider, percent );
+        rect = The::svgHandler()->sliderKnobRect( slider, percent, inverse );
     else
     {
+        if ( inverse )
+            percent = 1.0 - percent;
         const int handleSize = style()->pixelMetric( QStyle::PM_SliderControlThickness );
         rect = QRect( 0, 0, handleSize, handleSize );
         rect.moveTo( slider.x() + qRound( ( slider.width() - handleSize ) * percent ), slider.y() + 1 );
@@ -88,7 +97,7 @@ Amarok::Slider::wheelEvent( QWheelEvent *e )
     // Position Slider (horizontal)
     // only used for progress slider now!
     int step = e->delta() * 24;
-    int nval = adjustValue( QSlider::value() + step );
+    int nval = value() + step;
     nval = qMax(nval, minimum());
     nval = qMin(nval, maximum());
 
@@ -147,7 +156,10 @@ Amarok::Slider::slideEvent( QMouseEvent *e )
         span = height() - knob.height();
     }
 
-    const int val = QStyle::sliderValueFromPosition( minimum(), maximum(), position, span );
+    const bool inverse = ( orientation() == Qt::Horizontal ) ?
+                         ( invertedAppearance() != (layoutDirection() == Qt::RightToLeft) ) :
+                         ( !invertedAppearance() );
+    const int val = QStyle::sliderValueFromPosition( minimum(), maximum(), position, span, inverse );
     QSlider::setValue( val );
 }
 
@@ -155,7 +167,7 @@ void
 Amarok::Slider::mousePressEvent( QMouseEvent *e )
 {
     m_sliding   = true;
-    m_prevValue = adjustValue( QSlider::value() );
+    m_prevValue = value();
 
     QRect knob;
     if ( maximum() > minimum() )
@@ -167,7 +179,7 @@ Amarok::Slider::mousePressEvent( QMouseEvent *e )
 void
 Amarok::Slider::mouseReleaseEvent( QMouseEvent* )
 {
-    if( !m_outside && adjustValue( QSlider::value() ) != m_prevValue )
+    if( !m_outside && value() != m_prevValue )
        emit sliderReleased( value() );
 
     m_sliding = false;
@@ -179,9 +191,9 @@ Amarok::Slider::setValue( int newValue )
 {
     //don't adjust the slider while the user is dragging it!
     if ( !m_sliding || m_outside )
-        QSlider::setValue( adjustValue( newValue ) );
+        QSlider::setValue( newValue );
     else
-        m_prevValue = adjustValue( newValue );
+        m_prevValue = newValue;
 }
 
 
@@ -260,12 +272,14 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
     }
 }
 
-void Amarok::Slider::paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double /*pos*/, bool paintMoodbar )
+void Amarok::Slider::paintCustomSliderNG( QPainter *p, bool paintMoodbar )
 {
     qreal percent = 0.0;
     if ( maximum() > minimum() )
         percent = ((qreal)value()) / ( maximum() - minimum() );
-    The::svgHandler()->paintCustomSlider( p,x, y, width, height, percent, underMouse(), paintMoodbar );
+    QStyleOptionSlider opt;
+    initStyleOption( &opt );
+    The::svgHandler()->paintCustomSlider( p, &opt, percent, paintMoodbar );
 }
 
 
@@ -278,12 +292,8 @@ Amarok::VolumeSlider::VolumeSlider( uint max, QWidget *parent, bool customStyle 
 {
     m_usingCustomStyle = customStyle;
     setFocusPolicy( Qt::NoFocus );
-
-    if( !customStyle )
-    {
-        setInvertedAppearance( true );
-        setInvertedControls( true );
-    }
+    setInvertedAppearance( false );
+    setInvertedControls( false );
 }
 
 void
@@ -341,7 +351,7 @@ Amarok::VolumeSlider::paintEvent( QPaintEvent *event )
     if( m_usingCustomStyle )
     {
         QPainter p( this );
-        paintCustomSliderNG( &p, 0, 2, width(), height() );
+        paintCustomSliderNG( &p );
         p.end();
         return;
     }
@@ -358,7 +368,7 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
     : Amarok::Slider( Qt::Horizontal, 0, parent )
     , m_triangles()
     , m_knobX( 0.0 )
-    , m_oldShowMoodbar( AmarokConfig::showMoodbarInSlider() )
+    , m_oldShowMoodbar( false )
 {
     m_usingCustomStyle = true;
     setFocusPolicy( Qt::NoFocus );
@@ -377,8 +387,8 @@ Amarok::TimeSlider::paintEvent( QPaintEvent *pe )
     QPainter p( this );
     //paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
 
-    p.setClipRegion(pe->region());
-    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX, AmarokConfig::showMoodbarInSlider() );
+    p.setClipRegion( pe->region() );
+    paintCustomSliderNG( &p, AmarokConfig::showMoodbarInSlider() );
     p.end();
 
 }
@@ -408,7 +418,7 @@ void Amarok::TimeSlider::sliderChange( SliderChange change )
         qreal percent = 0.0;
         if ( maximum() > minimum() )
             percent = ((qreal)value()) / ( maximum() - minimum() );
-        QRect knob = The::svgHandler()->sliderKnobRect( rect(), percent );
+        QRect knob = sliderHandleRect( rect(), percent );
         m_knobX = knob.x();
 
         if (oldKnobX < m_knobX)

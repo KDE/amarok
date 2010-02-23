@@ -42,11 +42,6 @@ namespace Amarok
 
             virtual void setValue( int );
 
-            //WARNING non-virtual - and thus only really intended for internal use
-            //this is a major flaw in the class presently, however it suits our
-            //current needs fine
-            int value() const { return adjustValue( QSlider::value() ); }
-
         signals:
             //we emit this when the user has specifically changed the slider
             //so connect to it if valueChanged() is too generic
@@ -59,20 +54,14 @@ namespace Amarok
             virtual void mouseReleaseEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void slideEvent( QMouseEvent* );
+            QRect sliderHandleRect( const QRect &slider, qreal percent ) const;
             virtual void resizeEvent( QResizeEvent * ) { m_needsResize = true; }
 
             void paintCustomSlider( QPainter *p, int x, int y, int width, int height, bool drawMoodbar = false );
-            void paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double pos = -1.0, bool paintMoodbar = false );
+            void paintCustomSliderNG( QPainter *p, bool paintMoodbar = false );
 
             bool m_sliding;
             bool m_usingCustomStyle;
-
-            /// we flip the value for vertical sliders
-            int adjustValue( int v ) const
-            {
-                int mp = ( minimum() + maximum() ) / 2;
-                return orientation() == Qt::Vertical ? mp - ( v - mp ) : v;
-            }
 
             static const int m_borderWidth = 6;
             static const int m_borderHeight = 6;
@@ -81,7 +70,6 @@ namespace Amarok
             static const int m_sliderInsertY = 5;
 
         private:
-            QRect sliderHandleRect( const QRect &slider, qreal percent ) const;
 
             bool m_outside;
             int  m_prevValue;

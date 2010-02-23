@@ -19,6 +19,8 @@
 #ifndef SVGHANDLER_H
 #define SVGHANDLER_H
 
+class QStyleOptionSlider;
+
 #include "amarok_export.h"
 
 #include <KPixmapCache>
@@ -98,13 +100,13 @@ class AMAROK_EXPORT SvgHandler : public QObject
          * @param percentage The percentange of the slider that the knob is positioned at.
          * @param active Specifies whether the slider should be painted "active" using the current palettes active colors, to specify that it currently has mouse focus or hover.
          */
-        void paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active, bool paintMoodbar  = false );
+        void paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qreal percentage, bool paintMoodbar  = false );
 
         /**
          * Calculate the visual slider knob rect from its value, use it instead the QStyle functions
          * QStyle::sliderPositionFromValue() and QStyle::subControlRect();
          */
-        QRect sliderKnobRect( const QRect &slider, qreal percent ) const;
+        QRect sliderKnobRect( const QRect &slider, qreal percent, bool inverse ) const;
 
         /**
          * Get the path of the currently used svg theme file.
