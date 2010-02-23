@@ -181,6 +181,8 @@ MainToolbar::MainToolbar( QWidget *parent )
     addWidget( spacerWidget );
     
     generateBorderPixmaps();
+    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), this, SLOT( layoutProgressBar() ) );
+    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), this, SLOT( update() ) );
 }
 
 void

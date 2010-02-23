@@ -54,7 +54,6 @@ protected:
 
 private:
     void animateTrackLabels();
-    void layoutProgressBar();
     void setCurrentTrackActionsVisible( bool );
     void generateBorderPixmaps();
     void updateCurrentTrackActions();
@@ -63,6 +62,7 @@ private slots:
     void addBookmark( const QString &name, int milliSeconds );
     void checkEngineState();
     void filter( const QString &string );
+    void layoutProgressBar();
     void layoutTrackBar();
     void setLabelTime( int ms );
     void setPlaying( bool on );
