@@ -111,7 +111,10 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_prev.key = 0;
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
     m_prev.label->setFont( fnt );
-    m_prev.label->setPadding( m_skip_right.width() + skipPadding + skipMargin, 0 );
+    if ( layoutDirection() == Qt::LeftToRight )
+        m_prev.label->setPadding( m_skip_right.width() + skipPadding + skipMargin, 0 );
+    else
+        m_prev.label->setPadding( 0, m_skip_right.width() + skipPadding + skipMargin );
     m_prev.label->setAlign( Qt::AlignLeft );
     m_prev.label->setAnimated( false );
     m_prev.label->setOpacity( prevOpacity );
@@ -130,7 +133,10 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_next.key = 0;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
     m_next.label->setFont( fnt );
-    m_next.label->setPadding( 0, m_skip_left.width() + skipPadding + skipMargin );
+    if ( layoutDirection() == Qt::LeftToRight )
+        m_next.label->setPadding( 0, m_skip_left.width() + skipPadding + skipMargin );
+    else
+        m_next.label->setPadding( m_skip_left.width() + skipPadding + skipMargin, 0 );
     m_next.label->setAlign( Qt::AlignRight );
     m_next.label->setAnimated( false );
     m_next.label->setOpacity( nextOpacity );
@@ -182,7 +188,6 @@ MainToolbar::MainToolbar( QWidget *parent )
     
     generateBorderPixmaps();
     connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), this, SLOT( layoutProgressBar() ) );
-    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), this, SLOT( update() ) );
 }
 
 void
@@ -252,6 +257,8 @@ MainToolbar::checkEngineState()
             m_playPause->setPlaying( true );
             break;
         case Phonon::StoppedState:
+            m_slider->setValue( m_slider->minimum() );
+            m_slider->update(); // necessary to clean the moodbar...
             setLabelTime( -1 );
             // fall through
         case Phonon::PausedState:
@@ -686,6 +693,7 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
     else
     {
         setLabelTime( -1 );
+        m_slider->setValue( m_slider->minimum() );
         m_current.key = 0L;
         m_current.uidUrl.clear();
         m_current.label->setData( QStringList( promoString ) );

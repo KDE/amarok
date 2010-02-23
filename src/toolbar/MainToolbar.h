@@ -125,7 +125,6 @@ private:
     int m_trackBarAnimationTimer;
 
     Phonon::State m_currentEngineState;
-    
 };
 
 #endif
