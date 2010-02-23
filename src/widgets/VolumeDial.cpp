@@ -250,13 +250,21 @@ void VolumeDial::timerEvent( QTimerEvent *te )
 void VolumeDial::updateSliderGradient()
 {
     m_sliderGradient.fill( Qt::transparent );
+    QColor c = m_highlightColor;
+    if ( !m_anim.step )
+    {
+        c.setAlpha( 99 );
+        m_sliderGradient.fill( c );
+        return;
+    }
 
     QConicalGradient cg( m_sliderGradient.rect().center(), -90 );
-    QColor c = m_highlightColor;
-    c.setAlpha( 127 + m_anim.step*128/6 );
+
+    c.setAlpha( 99 + m_anim.step*156/6 );
     cg.setColorAt( 0, c );
-    c.setAlpha( 127 - m_anim.step*32/6 );
+    c.setAlpha( 99 + m_anim.step*42/6 );
     cg.setColorAt( 1, c );
+
     QPainter p( &m_sliderGradient );
     p.fillRect( m_sliderGradient.rect(), cg );
     p.end();
