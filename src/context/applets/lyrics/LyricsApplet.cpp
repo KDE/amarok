@@ -89,7 +89,7 @@ void LyricsApplet::init()
     editAction->setText( i18n( "Edit Lyrics" ) );
     m_editIcon = addAction( editAction );
 
-    connect( m_editIcon, SIGNAL( activated() ), this, SLOT( editLyrics() ) );
+    connect( editAction, SIGNAL( activated() ), this, SLOT( editLyrics() ) );
 
     QAction* closeAction = new QAction( this );
     closeAction->setIcon( KIcon( "document-close" ) );
@@ -98,7 +98,7 @@ void LyricsApplet::init()
     closeAction->setText( i18n( "Close" ) );
     m_closeIcon = addAction( closeAction );
 
-    connect( m_closeIcon, SIGNAL( activated() ), this, SLOT( closeLyrics() ) );
+    connect( closeAction, SIGNAL( activated() ), this, SLOT( closeLyrics() ) );
 
     QAction* saveAction = new QAction( this );
     saveAction->setIcon( KIcon( "document-save" ) );
@@ -107,7 +107,7 @@ void LyricsApplet::init()
     saveAction->setText( i18n( "Save Lyrics" ) );
     m_saveIcon = addAction( saveAction );
 
-    connect( m_saveIcon, SIGNAL( activated() ), this, SLOT( saveLyrics() ) );
+    connect( saveAction, SIGNAL( activated() ), this, SLOT( saveLyrics() ) );
 
     QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
@@ -116,7 +116,7 @@ void LyricsApplet::init()
     reloadAction->setText( i18n( "Reload Lyrics" ) );
     m_reloadIcon = addAction( reloadAction );
 
-    connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( refreshLyrics() ) );
+    connect( reloadAction, SIGNAL( activated() ), this, SLOT( refreshLyrics() ) );
 
     QAction* settingsAction = new QAction( this );
     settingsAction->setIcon( KIcon( "preferences-system" ) );
@@ -125,7 +125,7 @@ void LyricsApplet::init()
     settingsAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( settingsAction );
 
-    connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
+    connect( settingsAction, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
 
     m_proxy = new QGraphicsProxyWidget( this );
     m_proxy->setAttribute( Qt::WA_NoSystemBackground );
