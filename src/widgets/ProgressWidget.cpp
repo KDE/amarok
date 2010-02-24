@@ -55,6 +55,7 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     m_timeLabelLeft->setShowTime( false );
     m_timeLabelLeft->setAlignment( Qt::AlignRight );
     m_timeLabelRight->setShowTime( false );
+    m_timeLabelRight->setAlignment( Qt::AlignLeft );
     m_timeLabelLeft->show();
     m_timeLabelRight->show();
 
