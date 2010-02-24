@@ -161,6 +161,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_slider = new Amarok::TimeSlider( info );
     connect( m_slider, SIGNAL( sliderReleased( int ) ), The::engineController(), SLOT( seek( int ) ) );
     connect( m_slider, SIGNAL( valueChanged( int ) ), SLOT( setLabelTime( int ) ) );
+    connect( m_slider, SIGNAL( moodbarUsageChanged(bool) ), this, SLOT( layoutProgressBar() ) );
 
     m_remainingTimeLabel = new QLabel( info );
     m_remainingTimeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignLeft );
@@ -187,7 +188,6 @@ MainToolbar::MainToolbar( QWidget *parent )
     addWidget( spacerWidget );
     
     generateBorderPixmaps();
-    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), this, SLOT( layoutProgressBar() ) );
 }
 
 void

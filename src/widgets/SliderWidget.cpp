@@ -399,6 +399,7 @@ void Amarok::TimeSlider::sliderChange( SliderChange change )
         if ( showMoodbar != m_oldShowMoodbar )
         {
             m_oldShowMoodbar = showMoodbar;
+            emit moodbarUsageChanged( showMoodbar );
             update();
             return;
         }

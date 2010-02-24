@@ -136,6 +136,9 @@ namespace Amarok
             void slotTriangleClicked( int );
             void slotTriangleFocused( int );
 
+        signals:
+            void moodbarUsageChanged( bool );
+
         protected:
             virtual void paintEvent( QPaintEvent* );
             virtual void mousePressEvent( QMouseEvent* );
