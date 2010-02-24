@@ -30,17 +30,15 @@
 
 #include <KLocale>
 
-
 ProgressWidget::ProgressWidget( QWidget *parent )
         : QWidget( parent )
         , EngineObserver( The::engineController() )
-        , m_timeLength( 0 )
 {
 
     QHBoxLayout *box = new QHBoxLayout( this );
     setLayout( box );
     box->setMargin( 0 );
-    box->setSpacing( 0 );
+    box->setSpacing( 4 );
 
     m_slider = new Amarok::TimeSlider( this );
     m_slider->setMouseTracking( true );
@@ -51,7 +49,6 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     m_timeLabelLeft->setToolTip( i18n( "The amount of time elapsed in current song" ) );
 
     m_timeLabelRight = new TimeLabel( this );
-    m_timeLabelRight->setFixedWidth( 60 );
     m_timeLabelRight->setToolTip( i18n( "The amount of time remaining in current song" ) );
     m_timeLabelRight->setAlignment( Qt::AlignRight );
 
@@ -150,15 +147,6 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
         else if ( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
             s2.prepend( '-' );
 
-        if ( m_timeLength > s1.length() )
-            s1.prepend( QString( m_timeLength - s1.length(), ' ' ) );
-
-        if ( m_timeLength > s2.length() )
-            s2.prepend( QString( m_timeLength - s2.length(), ' ' ) );
-
-        s1 += ' ';
-        s2 += ' ';
-
         m_timeLabelLeft->setText( s1 );
         m_timeLabelRight->setText( s2 );
 
@@ -256,7 +244,15 @@ ProgressWidget::engineTrackLengthChanged( qint64 milliseconds )
     m_slider->setMaximum( milliseconds );
     m_slider->setEnabled( milliseconds > 0 );
     debug() << "slider enabled!";
-    m_timeLength = Meta::msToPrettyTime( milliseconds ).length() + 1; // account for - in remaining time
+    
+    const int timeLength = Meta::msToPrettyTime( milliseconds ).length() + 1; // account for - in remaining time
+    QFontMetrics tFm( m_timeLabelRight->font() );
+    const int labelSize = tFm.maxWidth() * timeLength;
+
+    //set the sizes of the labesl to the max needed by the length of the track
+    //this way the progressbar will not change size during playback of a track
+    m_timeLabelRight->setFixedWidth( labelSize );
+    m_timeLabelLeft->setFixedWidth( labelSize );
 
     //get the urlid of the current track as the engine might stop and start several times
     //when skipping lst.fm tracks, so we need to know if we are still on the same track...
