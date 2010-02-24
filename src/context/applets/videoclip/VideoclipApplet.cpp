@@ -533,7 +533,7 @@ VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
         tra->album()->setImage( *info->cover );
         Meta::TrackPtr track( tra );
         //append to the playlist the newly retrieved
-        The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
+        The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );
     }
 }
 
