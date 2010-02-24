@@ -37,7 +37,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
     if ( parentList )
     {
         m_menuButton = new BreadcrumbItemMenuButton( this );
-        QMenu *menu = new QMenu( this );
+        QMenu *menu = new QMenu( 0 );
         
         QMap<QString,BrowserCategory *> siblingMap =  parentList->categories();
 
@@ -97,7 +97,7 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
     if ( !childItems.isEmpty() )
     {
         m_menuButton = new BreadcrumbItemMenuButton( this );
-        QMenu *menu = new QMenu( this );
+        QMenu *menu = new QMenu( 0 );
 
 
         foreach( const QString &siblingName, childItems )
