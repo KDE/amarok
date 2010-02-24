@@ -24,6 +24,7 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * Fixed time labels getting truncated in the slim toolbar. (BR 195935)
     * Fixed broken keyboard navigation in the playlist after activating a track. 
       (BR 225791) 
     * Workaround broken Jamendo url redirects. (BR 221922)
