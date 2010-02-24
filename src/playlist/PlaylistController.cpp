@@ -141,7 +141,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     debug() << "engine state: " << engineState;
 
     bool playNow = false;
-    if ( options & DirectPlay )
+    if ( options & DirectPlay || options & AppendAndPlay )
         playNow = true;
     if ( options & StartPlay )
         if ( ( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) || ( engineState == Phonon::PausedState) )
