@@ -186,8 +186,6 @@ MainToolbar::MainToolbar( QWidget *parent )
     spacerWidget = new QWidget(this);
     spacerWidget->setFixedWidth( leftRightSpacer );
     addWidget( spacerWidget );
-    
-    generateBorderPixmaps();
 }
 
 void
@@ -749,29 +747,11 @@ MainToolbar::hideEvent( QHideEvent *ev )
 void
 MainToolbar::paintEvent( QPaintEvent *ev )
 {
-    QPainter p( this );
-    // the upper shadow, not if the style paints the toolbar
-    if ( !testAttribute( Qt::WA_OpaquePaintEvent ) )
-    {
-        // this is the widget parenting the labels, aka the trackspacer mapped to ourself
-        const QRect r = m_prev.label->parentWidget()->geometry();
-        p.setClipRegion( ev->region() );
-        // upper border from menu/titlebar
-        int w = m_border.left.width();
-        if ( w < r.width()/2 )
-            p.drawTiledPixmap( r.x() + w, 0, r.width() - 2*w, m_border.center.height(), m_border.center );
-        else
-            w = r.width()/2;
-        p.drawPixmap( r.x(), 0, m_border.left, 0,0, w, m_border.left.height() );
-        p.drawPixmap( r.right() + 1 - w, 0, m_border.right, 0,0, w, m_border.right.height() );
-    }
-    p.end();
-
     // let the style paint draghandles and in doubt override the shadow from above
     QToolBar::paintEvent( ev );
 
     // skip icons
-    p.begin( this );
+    QPainter p( this );
     Skip *left = &m_prev;
     Skip *right = &m_next;
     
@@ -922,52 +902,6 @@ MainToolbar::timerEvent( QTimerEvent *ev )
         animateTrackLabels();
     else
         QToolBar::timerEvent( ev );
-}
-
-
-void
-MainToolbar::generateBorderPixmaps()
-{
-    if ( !m_current.label )
-        return;
-
-    const int h = 22;
-    const int sideWidth = 64;
-    m_border.left = QPixmap( sideWidth, h );
-    m_border.left.fill( Qt::transparent );
-
-    QLinearGradient lg( 0, 0, 0, h-1 );
-    lg.setColorAt( 0, QColor(0,0,0, 25) );
-    lg.setColorAt( 1, QColor(255,255,255, 0) );
-
-    QPainter p( &m_border.left );
-    p.fillRect( m_border.left.rect(), lg );
-    p.end();
-
-    // copying is faster than recreating + filling with Qt::transparent + gradient
-    m_border.right = m_border.left.copy();
-    // please keep the 32px width
-    // X11/XRender is optimized to this and e.g. 1px would cause a tremendous slowdown on painting
-    m_border.center = m_border.left.copy( 0,0, 32,h );
-
-    // fade out left & right
-    lg = QLinearGradient( 0, 0, sideWidth-1, 0 );
-    lg.setColorAt( 0, QColor(0,0,0, 255) );
-    lg.setColorAt( 1, QColor(0,0,0, 0) );
-
-    p.begin( &m_border.left );
-    p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
-    p.fillRect( m_border.left.rect(), lg );
-    p.end();
-
-    lg = QLinearGradient( 0, 0, sideWidth-1, 0 );
-    lg.setColorAt( 0, QColor(0,0,0, 0) );
-    lg.setColorAt( 1, QColor(0,0,0, 255) );
-    
-    p.begin( &m_border.right );
-    p.setCompositionMode( QPainter::CompositionMode_DestinationOut );
-    p.fillRect( m_border.right.rect(), lg );
-    p.end();
 }
 
 bool

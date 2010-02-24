@@ -55,7 +55,6 @@ protected:
 private:
     void animateTrackLabels();
     void setCurrentTrackActionsVisible( bool );
-    void generateBorderPixmaps();
     void updateCurrentTrackActions();
 
 private slots:
@@ -75,12 +74,6 @@ private:
 
     QSpacerItem *m_trackBarSpacer;
     QSpacerItem *m_progressBarSpacer;
-    struct
-    {
-        QPixmap left;
-        QPixmap center;
-        QPixmap right;
-    } m_border;
 
     QPixmap m_skip_left, m_skip_right;
 
