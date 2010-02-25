@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.3
   FEATURES:
+    * Podcast channels and episodes can be dragged to add them to other
+      providers. (BR 195704)
     * Trackaction buttons are now available in the label for the current track
     * Bookmark button is now available in the Current Track applet.
 

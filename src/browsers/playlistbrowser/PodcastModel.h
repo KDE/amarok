@@ -126,6 +126,7 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         ~PodcastModel();
         static int podcastItemType( const QModelIndex &index );
         static Meta::PodcastChannelPtr channelForIndex( const QModelIndex &index );
+        static Meta::PodcastEpisodePtr episodeForIndex( const QModelIndex &index );
 
         Q_DISABLE_COPY( PodcastModel )
 

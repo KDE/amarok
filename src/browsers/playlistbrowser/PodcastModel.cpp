@@ -375,29 +375,46 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 bool
 PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
-    if( idx.isValid() )
+    if( !idx.isValid() )
+        return false;
+
+    if( idx.column() == ProviderColumn )
     {
-        if( idx.column() == ProviderColumn )
+        if( role == Qt::DisplayRole )
         {
-            if( role == Qt::DisplayRole )
+            PlaylistProvider *provider = getProviderByName( value.toString() );
+            if( !provider )
+                return false;
+            PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
+            if( !podcastProvider )
+                    return false;
+
+            switch( podcastItemType( idx ) )
             {
-                Meta::PodcastChannelPtr channel = channelForIndex( idx );
-                if( !channel )
-                    return false;
-                PlaylistProvider *provider = getProviderByName( value.toString() );
-                if( !provider )
-                    return false;
-                debug() << QString( "Copy \"%1\" to \"%2\"." ).arg( channel->prettyName() )
-                        .arg( provider->prettyName() );
-                PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
-                if( !podcastProvider )
-                    return false;
-                podcastProvider->addChannel( channel );
+                case Meta::ChannelType:
+                {
+                    Meta::PodcastChannelPtr channel = channelForIndex( idx );
+                    if( !channel )
+                        return false;
+                    debug() << QString( "Copy podcast channel \"%1\" to \"%2\"." )
+                            .arg( channel->prettyName() ).arg( provider->prettyName() );
+                    return !podcastProvider->addChannel( channel ).isNull();
+                }
+                case Meta::EpisodeType:
+                {
+                    Meta::PodcastEpisodePtr episode = episodeForIndex( idx );
+                    if( !episode )
+                        return false;
+                    debug() << QString( "Copy podcast episode \"%1\" to \"%2\"." )
+                            .arg( episode->prettyName() ).arg( provider->prettyName() );
+                    return !podcastProvider->addEpisode( episode ).isNull();
+                }
+                default: return false;
             }
-            //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
-            //TODO: implement setItemData()
-            return true;
         }
+        //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
+        //TODO: implement setItemData()
+        return true;
     }
 
     return false;
@@ -1216,6 +1233,23 @@ PlaylistBrowserNS::PodcastModel::channelForIndex( const QModelIndex &index )
     return Meta::PodcastChannelPtr();
 }
 
+Meta::PodcastEpisodePtr
+PlaylistBrowserNS::PodcastModel::episodeForIndex( const QModelIndex &index )
+{
+    if( !index.isValid() )
+        return Meta::PodcastEpisodePtr();
+
+    switch( podcastItemType( index ) )
+    {
+        case Meta::EpisodeType:
+            return Meta::PodcastEpisodePtr(
+                static_cast<Meta::PodcastEpisode *>( index.internalPointer() ) );
+        case Meta::ChannelType:
+        default:
+            return Meta::PodcastEpisodePtr();
+    }
+
+}
 
 Meta::PodcastChannelList
 PlaylistBrowserNS::PodcastModel::selectedChannels( const QModelIndexList &indices )
