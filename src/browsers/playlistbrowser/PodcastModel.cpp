@@ -530,7 +530,11 @@ PlaylistBrowserNS::PodcastModel::flags(const QModelIndex & index) const
 
     Qt::ItemFlags channelFlags;
     if( podcastItemType( index ) == Meta::ChannelType )
+    {
         channelFlags = Qt::ItemIsDropEnabled;
+        if( index.column() == ProviderColumn )
+            channelFlags |= Qt::ItemIsEditable;
+    }
 
     return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled
                  | channelFlags );
