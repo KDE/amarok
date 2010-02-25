@@ -776,9 +776,12 @@ App::continueInit()
             switch( result )
             {
             case KMessageBox::Yes:
-                CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
-                CollectionManager::instance()->startFullScan();
-                useMusicLocation = true;
+                if( CollectionManager::instance()->primaryCollection() )
+                {
+                    CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
+                    CollectionManager::instance()->startFullScan();
+                    useMusicLocation = true;
+                }
                 break;
 
             case KMessageBox::No:

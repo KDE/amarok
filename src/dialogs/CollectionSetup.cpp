@@ -139,7 +139,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
     #endif
     
-    QStringList dirs = CollectionManager::instance()->primaryCollection()->property( "collectionFolders" ).toStringList();
+    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    QStringList dirs = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
     m_model->setDirectories( dirs );
     
     // make sure that the tree is expanded to show all selected items
@@ -157,7 +158,8 @@ CollectionSetup::hasChanged() const
 {
     DEBUG_BLOCK
 
-    QStringList collectionFolders = CollectionManager::instance()->primaryCollection()->property( "collectionFolders" ).toStringList();
+    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
     const bool foldersChanged = m_model->directories() != collectionFolders;
     const bool recursiveChanged = m_recursive->isChecked() != AmarokConfig::scanRecursively();
     const bool monitorChanged  = m_monitor->isChecked() != AmarokConfig::monitorChanges();
@@ -175,12 +177,14 @@ CollectionSetup::writeConfig()
     AmarokConfig::setMonitorChanges( monitor() );
     AmarokConfig::setUseCharsetDetector( charset() );
 
-    QStringList collectionFolders = CollectionManager::instance()->primaryCollection()->property( "collectionFolders" ).toStringList();
+    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
 
     if( m_model->directories() != collectionFolders )
     {
         debug() << "Selected collection folders: " << m_model->directories();
-        CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", m_model->directories() );
+        if( primaryCollection )
+            primaryCollection->setProperty( "collectionFolders", m_model->directories() );
 
         debug() << "MountPointManager collection folders: " << collectionFolders;
         CollectionManager::instance()->startFullScan();
