@@ -111,7 +111,7 @@ bool MoodbarManager::hasMoodbar( Meta::TrackPtr track )
     return true;
 }
 
-QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height )
+QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height, bool rtl )
 {
     //if we have already marked this track as
     //not having a moodbar, don't even bother...
@@ -133,11 +133,9 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
 
 
     //Do we alrady have this pixmap cached?
-    const QString pixmapKey = QString( "mood:%1-%2x%3" ).arg( track->uidUrl(), width, height );
+    const QString pixmapKey = QString( "mood:%1-%2x%3%4" ).arg( track->uidUrl() ).arg(width).arg(height).arg( rtl?"r":"" );
+    QPixmap moodbar;
     
-    QPixmap moodbar( width, height );
-    moodbar.fill( Qt::transparent );
-
     if( m_cache->find( pixmapKey, moodbar ) )
         return moodbar;
         
@@ -169,9 +167,9 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height 
 
     //assume that the readMoodFile function emits the proper error...
     if ( data.size() < 10 )
-        return QPixmap();
+        return moodbar;
 
-    moodbar = drawMoodbar( data, width, height );
+    moodbar = drawMoodbar( data, width, height, rtl );
     m_cache->insert( pixmapKey, moodbar );
     
     return moodbar;
@@ -395,10 +393,8 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     return data;
 }
 
-QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, int height )
+QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, int height, bool rtl )
 {
-    QPixmap pixmap = QPixmap( width, height );
-    QPainter paint( &pixmap );
 
     // First average the moodbar samples that will go into each
     // vertical bar on the screen.
@@ -445,6 +441,9 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
     // monotony of solid-color vertical bars by playing with the saturation
     // and value.
 
+    QPixmap pixmap = QPixmap( width, height );
+    QPainter paint( &pixmap );
+    
     for( int x = 0; x < width; x++ )
     {
         screenColors[x].getHsv( &h, &s, &v );
@@ -465,6 +464,10 @@ QPixmap MoodbarManager::drawMoodbar( const MoodbarColorList &data, int width, in
             paint.drawPoint( x, height - 1 - y );
         }
     }
+    paint.end();
+
+    if ( rtl )
+        pixmap = QPixmap::fromImage( pixmap.toImage().mirrored( true, false ) );
 
     return pixmap;
 }

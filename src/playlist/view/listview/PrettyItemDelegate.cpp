@@ -41,6 +41,7 @@
 #include <QFontMetricsF>
 #include <QPainter>
 #include <QAction>
+#include <QStyleOptionSlider>
 
 using namespace Playlist;
 
@@ -578,8 +579,9 @@ void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QP
         trackPercentage = ( (qreal) trackPos / (qreal) trackLength );
 
     int sliderWidth = width - ( offset + MARGINH );
-
-    The::svgHandler()->paintCustomSlider( painter, offset, y, sliderWidth, height, trackPercentage, false );
+    QStyleOptionSlider opt;
+    opt.rect.setRect( offset, y, sliderWidth, height );
+    The::svgHandler()->paintCustomSlider( painter, &opt, trackPercentage, false );
 }
 
 bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index )
