@@ -67,7 +67,7 @@ static const int icnSize = 48;
 static const int leftRightSpacer = 15;
 static const int timeLabelMargin = 6;
 static const int skipPadding = 6;
-static const int skipMargin = 6;
+static const int skipMargin = 12;
 static const int constant_progress_ratio_minimum_width = 640;
 static const int space_between_tracks_and_slider = 2;
 static const float track_fontsize_factor = 1.1f;
@@ -105,8 +105,8 @@ MainToolbar::MainToolbar( QWidget *parent )
         fnt.setPointSize( qRound(fnt.pointSize() * track_fontsize_factor) );
     const int fntH = QFontMetrics( QApplication::font() ).height();
     
-    m_skip_left = The::svgHandler()->renderSvg( "tiny_skip_left", 96*fntH/128, fntH, "tiny_skip_left" );
-    m_skip_right = The::svgHandler()->renderSvg( "tiny_skip_right", 96*fntH/128, fntH, "tiny_skip_right" );
+    m_skip_left = The::svgHandler()->renderSvg( "tiny_skip_left", 80*fntH/128, fntH, "tiny_skip_left" );
+    m_skip_right = The::svgHandler()->renderSvg( "tiny_skip_right", 80*fntH/128, fntH, "tiny_skip_right" );
 
     m_prev.key = 0;
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
