@@ -284,12 +284,6 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     }
 }
 
-QueryMaker *
-AudioCdCollection::queryMaker()
-{
-    return new MemoryQueryMaker( this, collectionId() );
-}
-
 QString
 AudioCdCollection::collectionId() const
 {
