@@ -55,6 +55,9 @@ namespace Meta
 
     static const qint64 valAlbumArtist  = 1LL << 27;
 
+    //custom label support
+    static const qint64 valLabel        = 1LL << 28;
+
     namespace Field
     {
         //actual string values are not final yet

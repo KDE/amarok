@@ -608,6 +608,10 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valTrackNr, elem.text.toInt(), compare );
                 }
+                else if( lcField.compare( "label", Qt::CaseInsensitive ) == 0 /*|| lcField.compare( i18n( "label" ), Qt::CaseInsensitive ) == 0 */)
+                {
+                    ADD_OR_EXCLUDE_FILTER( Meta::valLabel, elem.text, false, false );
+                }
                 else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if( compare == QueryMaker::Equals ) // just do some basic string matching
