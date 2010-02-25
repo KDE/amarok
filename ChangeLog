@@ -11,6 +11,8 @@ VERSION 2.3
     * Bookmark button is now available in the Current Track applet.
 
   CHANGES:
+    * When a podcast episode is no longer shown because of the episode limit the
+      downloaded file is also deleted from disk. (BR 227674)
     * The visibility of columns in the new File Browser is now configurable.
     * Toolbar: "Skip icons", prev/next labels are aligned to the edges
     * Volume Dial: Gradient indicator and pointing cursor hint above the dial ring
