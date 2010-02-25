@@ -21,18 +21,20 @@
 #include "collection/support/MemoryCollection.h"
 #include "collection/support/MemoryQueryMaker.h"
 
+#include <QSharedPointer>
+
 //simple Amarok::Collection implementation based on MemoryCollection
 
 class CollectionLocationTestImpl;
 
-class CollectionTestImpl : public Amarok::Collection, public MemoryCollection
+class CollectionTestImpl : public Amarok::Collection
 {
 public:
     CollectionTestImpl( const QString &collectionId )
-        : Amarok::Collection(), MemoryCollection()
+        : Amarok::Collection(), mc( new MemoryCollection() )
     { this->id = collectionId; }
 
-    QueryMaker* queryMaker() { return new MemoryQueryMaker( this, id ); }
+    QueryMaker* queryMaker() { return new MemoryQueryMaker( mc.toWeakRef(), id ); }
 
     KIcon icon() const { return KIcon(); }
 
@@ -40,6 +42,8 @@ public:
     QString prettyName() const { return id; }
 
     QString id;
+
+    QSharedPointer<MemoryCollection> mc;
 
 };
 

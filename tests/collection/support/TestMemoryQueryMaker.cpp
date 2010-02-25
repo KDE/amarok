@@ -27,6 +27,7 @@
 #include "mocks/MockTrack.h"
 
 #include <QVariantMap>
+#include <QSharedPointer>
 #include <QSignalSpy>
 
 #include <KCmdLineArgs>
@@ -53,14 +54,15 @@ TestMemoryQueryMaker::TestMemoryQueryMaker()
 void
 TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
 {
-    MemoryCollection mc;
-    mc.addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
-    mc.addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
-    Meta::MockTrack *mock = new Meta::MockTrack();
-    EXPECT_CALL( *mock, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "track3" ) );
-    mc.addTrack( Meta::TrackPtr( mock ) );
+    QSharedPointer<MemoryCollection> mc( new MemoryCollection() );
+    mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
+    mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
+    //Meta::MockTrack *mock = new Meta::MockTrack();
+    //EXPECT_CALL( *mock, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "track3" ) );
+    //Meta::TrackPtr trackPtr( mock );
+    //mc.addTrack( trackPtr );
 
-    MemoryQueryMaker *qm = new MemoryQueryMaker( &mc, "test" );
+    MemoryQueryMaker *qm = new MemoryQueryMaker( mc.toWeakRef(), "test" );
     qm->setQueryType( QueryMaker::Track );
 
     qm->run();
@@ -72,7 +74,7 @@ TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
 void
 TestMemoryQueryMaker::testDeleteCollectionWhileQueryIsRunning()
 {
-    MemoryCollection *mc = new MemoryCollection();
+    QSharedPointer<MemoryCollection> mc( new MemoryCollection() );
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
 
@@ -82,7 +84,7 @@ TestMemoryQueryMaker::testDeleteCollectionWhileQueryIsRunning()
     QSignalSpy spy( qm, SIGNAL(queryDone()));
 
     qm->run();
-    delete mc;
+    mc.clear();
     QTest::qWait( 500 );
     QCOMPARE( spy.count(), 1 );
 

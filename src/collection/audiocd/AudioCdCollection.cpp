@@ -142,10 +142,10 @@ AudioCdCollection::infoFetchComplete( KJob *job )
         }
 
         AudioCdArtistPtr artistPtr = AudioCdArtistPtr( new  AudioCdArtist( artist ) );
-        addArtist( ArtistPtr::staticCast( artistPtr ) );
+        memoryCollection()->addArtist( ArtistPtr::staticCast( artistPtr ) );
         AudioCdAlbumPtr albumPtr = AudioCdAlbumPtr( new  AudioCdAlbum( album ) );
         albumPtr->setAlbumArtist( artistPtr );
-        addAlbum( AlbumPtr::staticCast( albumPtr ) );
+        memoryCollection()->addAlbum( AlbumPtr::staticCast( albumPtr ) );
 
 
         startIndex = cddbInfo.indexOf( "DYEAR=", 0 );
@@ -157,7 +157,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
         }
 
         AudioCdYearPtr yearPtr = AudioCdYearPtr( new AudioCdYear( year ) );
-        addYear( YearPtr::staticCast( yearPtr ) );
+        memoryCollection()->addYear( YearPtr::staticCast( yearPtr ) );
 
 
         startIndex = cddbInfo.indexOf( "DGENRE=", 0 );
@@ -169,7 +169,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
         }
 
         AudioCdGenrePtr genrePtr = AudioCdGenrePtr( new  AudioCdGenre( genre ) );
-        addGenre( GenrePtr::staticCast( genrePtr ) );
+        memoryCollection()->addGenre( GenrePtr::staticCast( genrePtr ) );
 
         m_discCddbId = "unknown";
 
@@ -238,7 +238,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
                 trackPtr->setTrackNumber( i + 1 );
                 trackPtr->setFileNameBase( baseFileName );
 
-                addTrack( TrackPtr::staticCast( trackPtr ) );
+                memoryCollection()->addTrack( TrackPtr::staticCast( trackPtr ) );
 
                 artistPtr->addTrack( trackPtr );
 
@@ -420,14 +420,14 @@ AudioCdCollection::noInfoAvailable()
     QString genre = i18n( "Unknown" );
 
     AudioCdArtistPtr artistPtr = AudioCdArtistPtr( new  AudioCdArtist( artist ) );
-    addArtist( ArtistPtr::staticCast( artistPtr ) );
+    memoryCollection()->addArtist( ArtistPtr::staticCast( artistPtr ) );
     AudioCdAlbumPtr albumPtr = AudioCdAlbumPtr( new  AudioCdAlbum( album ) );
     albumPtr->setAlbumArtist( artistPtr );
-    addAlbum( AlbumPtr::staticCast( albumPtr ) );
+    memoryCollection()->addAlbum( AlbumPtr::staticCast( albumPtr ) );
     AudioCdYearPtr yearPtr = AudioCdYearPtr( new AudioCdYear( year ) );
-    addYear( YearPtr::staticCast( yearPtr ) );
+    memoryCollection()->addYear( YearPtr::staticCast( yearPtr ) );
     AudioCdGenrePtr genrePtr = AudioCdGenrePtr( new  AudioCdGenre( genre ) );
-    addGenre( GenrePtr::staticCast( genrePtr ) );
+    memoryCollection()->addGenre( GenrePtr::staticCast( genrePtr ) );
 
 
     int i = 1;
@@ -445,7 +445,7 @@ AudioCdCollection::noInfoAvailable()
         trackPtr->setTrackNumber( i );
         trackPtr->setFileNameBase( trackName );
 
-        addTrack( TrackPtr::staticCast( trackPtr ) );
+        memoryCollection()->addTrack( TrackPtr::staticCast( trackPtr ) );
 
         artistPtr->addTrack( trackPtr );
         trackPtr->setArtist( artistPtr );
@@ -514,7 +514,7 @@ AudioCdCollection::trackForUrl( const KUrl & url )
 
         int trackNumber = parts.at( 1 ).toInt();
 
-        foreach( TrackPtr track, trackMap().values() )
+        foreach( TrackPtr track, memoryCollection()->trackMap().values() )
         {
             if ( track->trackNumber() == trackNumber )
                 return track;
@@ -558,7 +558,7 @@ AudioCdCollection::updateProxyTracks()
 
         const int trackNumber = parts.at( 1 ).toInt();
 
-        foreach( const TrackPtr &track, trackMap().values() )
+        foreach( const TrackPtr &track, memoryCollection()->trackMap().values() )
         {
             if( track->trackNumber() == trackNumber )
             {

@@ -29,6 +29,7 @@
 #include <KIcon>
 
 #include <QtGlobal>
+#include <QSharedPointer>
 
 class MediaDeviceCollection;
 
@@ -79,7 +80,7 @@ class MediaDeviceCollectionFactory : public MediaDeviceCollectionFactoryBase
 };
 
 
-class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collection, public MemoryCollection
+class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collection
 {
     Q_OBJECT
 
@@ -137,6 +138,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         virtual QAction *ejectAction() const;
 
+        QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
+
     signals:
         void collectionReady( Amarok::Collection* );
         void collectionDisconnected( const QString &udi );
@@ -161,6 +164,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         float m_usedCapacity;
         float m_totalCapacity;
+        QSharedPointer<MemoryCollection> m_mc;
 
     private:
         void initCapacities();

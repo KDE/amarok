@@ -214,11 +214,11 @@ DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
 
 DaapCollection::DaapCollection( const QString &host, const QString &ip, quint16 port )
     : Collection()
-    , MemoryCollection()
     , m_host( host )
     , m_port( port )
     , m_ip( ip )
     , m_reader( 0 )
+    , m_mc( new MemoryCollection() )
 {
     debug() << "Host: " << host << " port: " << port;
     m_reader = new Daap::Reader( this, host, port, QString(), this, "DaapReader" );
@@ -240,7 +240,7 @@ DaapCollection::startFullScan()
 QueryMaker*
 DaapCollection::queryMaker()
 {
-    return new MemoryQueryMaker( this, collectionId() );
+    return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
 }
 
 QString

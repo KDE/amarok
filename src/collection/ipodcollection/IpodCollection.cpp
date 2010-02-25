@@ -91,7 +91,7 @@ IpodCollection::trackForUrl( const KUrl &url )
     QString uid = QUrl::fromPercentEncoding( url.url().toUtf8() );
     if( uid.startsWith("file://") )
         uid = uid.remove( 0, 7 );
-    Meta::TrackPtr ipodTrack = m_trackMap.value( uid );
+    Meta::TrackPtr ipodTrack = memoryCollection()->trackMap().value( uid );
     return ipodTrack ? ipodTrack : Collection::trackForUrl(url);
 }
 

@@ -69,7 +69,7 @@ UmsCollection::trackForUrl( const KUrl &url )
     QString uid = QUrl::fromPercentEncoding( url.url().toUtf8() );
     if( uid.startsWith("file://") )
         uid = uid.remove( 0, 7 );
-    Meta::TrackPtr umsTrack = m_trackMap.value( uid );
+    Meta::TrackPtr umsTrack = memoryCollection()->trackMap().value( uid );
     return umsTrack ? umsTrack : Collection::trackForUrl(url);
 }
 

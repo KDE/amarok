@@ -321,8 +321,7 @@ void ScriptableServiceQueryMaker::fetchAlbums()
 
     if ( d->parentId != -1 )
     {
-        ArtistMatcher artistMatcher( m_collection->artistById( d->parentId ) );
-        albums = artistMatcher.matchAlbums( m_collection );
+        albums = matchAlbums( m_collection, m_collection->artistById( d->parentId ) );
     }
     else
         albums = m_collection->albumMap().values();
@@ -348,7 +347,7 @@ void ScriptableServiceQueryMaker::fetchTracks()
     if ( d->parentId != -1 && ( album = m_collection->albumById( d->parentId ) ) )
     {
         AlbumMatcher albumMatcher( album );
-        tracks = albumMatcher.match( m_collection );
+        tracks = albumMatcher.match( m_collection->trackMap().values() );
     }
     else
         tracks = m_collection->trackMap().values();
@@ -404,8 +403,7 @@ void ScriptableServiceQueryMaker::slotScriptComplete()
        AlbumList albums;
        if ( d->parentId != -1 )
        {
-           ArtistMatcher artistMatcher( m_collection->artistById( d->parentId ) );
-            albums = artistMatcher.matchAlbums( m_collection );
+            albums = matchAlbums( m_collection, m_collection->artistById( d->parentId ) );
        }
        else
             albums = m_collection->albumMap().values();
@@ -422,7 +420,7 @@ void ScriptableServiceQueryMaker::slotScriptComplete()
             if( album )
             {
                 AlbumMatcher albumMatcher( album );
-                tracks = albumMatcher.match( m_collection );
+                tracks = albumMatcher.match( m_collection->trackMap().values() );
             }
         }
         else
