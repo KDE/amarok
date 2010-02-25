@@ -60,7 +60,7 @@ TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
     Meta::MockTrack *mock = new Meta::MockTrack();
     EXPECT_CALL( *mock, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "track3" ) );
     Meta::TrackPtr trackPtr( mock );
-    mc.addTrack( trackPtr );
+    mc->addTrack( trackPtr );
 
     MemoryQueryMaker *qm = new MemoryQueryMaker( mc.toWeakRef(), "test" );
     qm->setQueryType( QueryMaker::Track );
