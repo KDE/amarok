@@ -1,7 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
- * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -74,7 +73,7 @@ class SqlWorkerThread : public ThreadWeaver::Job
 
 struct SqlQueryMaker::Private
 {
-    enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64, URLS_TAB = 128, ALBUMARTIST_TAB = 256, LABELS_TAB = 512, URLS_LABELS_TAB = 1024 };
+    enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64, URLS_TAB = 128, ALBUMARTIST_TAB = 256 };
     int linkedTables;
     QueryMaker::QueryType queryType;
     QString query;
@@ -731,19 +730,6 @@ SqlQueryMaker::linkTables()
             d->queryFrom += " LEFT JOIN statistics ON tracks.url = statistics.url";
         }
     }
-    if( d->linkedTables & Private::LABELS_TAB && d->linkedTables & Private::URLS_LABELS_TAB )
-    {
-        //these 2 tables should always be linked together, having only one of them makes no sense
-        if( d->linkedTables & Private::URLS_TAB )
-        {
-            d->queryFrom += " LEFT JOIN urls_labels ON urls.id = urls_labels.url";
-        }
-        else
-        {
-            d->queryFrom += " LEFT JOIN urls_labels ON tracks.url = urls_labels.url";
-        }
-        d->queryFrom += " LEFT JOIN labels ON urls_labels.label = labels.id";
-    }
 }
 
 void
@@ -967,10 +953,6 @@ SqlQueryMaker::nameForValue( qint64 value )
             //so add albums as well
             d->linkedTables |= Private::ALBUM_TAB;
             return "albumartists.name";
-        case valLabel:
-            d->linkedTables |= Private::LABELS_TAB;
-            d->linkedTables |= Private::URLS_LABELS_TAB;
-            return "labels.label";
         default:
             return "ERROR: unknown value in SqlQueryMaker::nameForValue(qint64): value=" + value;
     }
