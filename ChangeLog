@@ -5,6 +5,8 @@ Amarok ChangeLog
 
 VERSION 2.3
   FEATURES:
+    * The local collection can now be filtered by custom labels using the "label"
+      keyword. 
     * Trackaction buttons are now available in the label for the current track
     * Bookmark button is now available in the Current Track applet.
 
