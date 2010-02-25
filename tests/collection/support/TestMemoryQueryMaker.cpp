@@ -57,10 +57,10 @@ TestMemoryQueryMaker::testDeleteQueryMakerWhileQueryIsRunning()
     QSharedPointer<MemoryCollection> mc( new MemoryCollection() );
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
     mc->addTrack( Meta::TrackPtr( new MetaMock( QVariantMap() )));
-    //Meta::MockTrack *mock = new Meta::MockTrack();
-    //EXPECT_CALL( *mock, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "track3" ) );
-    //Meta::TrackPtr trackPtr( mock );
-    //mc.addTrack( trackPtr );
+    Meta::MockTrack *mock = new Meta::MockTrack();
+    EXPECT_CALL( *mock, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( "track3" ) );
+    Meta::TrackPtr trackPtr( mock );
+    mc.addTrack( trackPtr );
 
     MemoryQueryMaker *qm = new MemoryQueryMaker( mc.toWeakRef(), "test" );
     qm->setQueryType( QueryMaker::Track );
