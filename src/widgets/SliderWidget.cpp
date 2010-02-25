@@ -52,6 +52,7 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
 {
     setRange( 0, max );
     setAttribute( Qt::WA_NoMousePropagation, true );
+    setAttribute( Qt::WA_Hover, true );
     if ( orientation == Qt::Vertical )
     {
         setInvertedAppearance( true );
@@ -279,6 +280,11 @@ void Amarok::Slider::paintCustomSliderNG( QPainter *p, bool paintMoodbar )
         percent = ((qreal)value()) / ( maximum() - minimum() );
     QStyleOptionSlider opt;
     initStyleOption( &opt );
+    if ( m_sliding ||
+        ( underMouse() && sliderHandleRect( rect(), percent ).contains( mapFromGlobal(QCursor::pos()) ) ) )
+    {
+        opt.activeSubControls |= QStyle::SC_SliderHandle;
+    }
     The::svgHandler()->paintCustomSlider( p, &opt, percent, paintMoodbar );
 }
 

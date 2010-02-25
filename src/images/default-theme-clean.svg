@@ -30,9 +30,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="1932.1472"
-     inkscape:cy="662.37416"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="874.41756"
+     inkscape:cy="153.25728"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -4843,7 +4843,7 @@
        x2="-86.989883"
        y1="1012.8258"
        x1="-86.989883"
-       gradientTransform="matrix(-0.33333333,0,0,0.33333289,94.013493,750.21423)"
+       gradientTransform="matrix(-0.33333333,0,0,0.33333289,94.013493,765.21424)"
        gradientUnits="userSpaceOnUse"
        id="linearGradient11854"
        xlink:href="#linearGradient5851-1"
@@ -6101,6 +6101,16 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5851-1"
+       id="linearGradient4559"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-0.33333333,0,0,0.33333289,95.01349,750.21083)"
+       x1="-86.989883"
+       y1="1012.8258"
+       x2="-86.989883"
+       y2="982.82581" />
   </defs>
   <metadata
      id="metadata6835">
@@ -10830,11 +10840,10 @@
     </path>
     <path
        style="opacity:0.7;fill:url(#linearGradient11854);fill-opacity:1;fill-rule:nonzero"
-       d="m 128.01012,1077.8258 c 2.77,0 5,2.23 5,5 0,2.77 -2.23,5 -5,5 l -5,0 0,-10 5,0 z"
-       id="progress_slider_played_right">
+       d="m 128.01012,1092.8258 c 2.77,0 5,2.23 5,5 0,2.77 -2.23,5 -5,5 l -5,0 0,-10 5,0 z"
+       id="progress_slider_played_right_solid">
       <title
-         id="title11888"
-         style="fill-opacity:1.0">progress_slider_played_right</title>
+         id="title11888">progress_slider_played_right</title>
     </path>
     <rect
        style="opacity:0.54000005;fill:url(#linearGradient11898);fill-opacity:1;fill-rule:nonzero"
@@ -11862,5 +11871,12 @@
          d="m 1093.1143,398.74231 c 8.878,21.33303 17.7538,42.66697 26.6319,64 -8.8781,21.33303 -17.7539,42.66697 -26.6319,64 26.6328,-21.33206 53.2629,-42.66794 79.8958,-64 -26.6329,-21.33206 -53.263,-42.66794 -79.8958,-64 z"
          style="fill:#010101;fill-opacity:1;stroke:none" />
     </g>
+    <path
+       id="progress_slider_played_right"
+       d="m 129.01012,1077.8258 c 2.77,0 5,2.23 5,5 0,2.77 -2.23,5 -5,5 l -5,0 0,-10 5,0 z m 0,1.6667 c -1.84095,0 -3.33333,1.4924 -3.33333,3.3333 0,1.8409 1.49238,3.3333 3.33333,3.3333 1.84095,0 3.33333,-1.4924 3.33333,-3.3333 0,-1.8409 -1.49238,-3.3333 -3.33333,-3.3333 z"
+       style="opacity:0.7;fill:url(#linearGradient4559);fill-opacity:1;fill-rule:nonzero">
+      <title
+         id="title4557">progress_slider_played_left</title>
+    </path>
   </g>
 </svg>
