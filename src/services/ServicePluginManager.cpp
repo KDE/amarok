@@ -90,7 +90,7 @@ ServicePluginManager::collect()
 void
 ServicePluginManager::init()
 {
-    foreach( ServiceFactory* factory,  m_factories.values() ) {
+    foreach( ServiceFactory* factory,  m_factories ) {
 
         if ( !factory->isInitialized() ) {
             //check if this service is enabled
@@ -152,7 +152,7 @@ ServicePluginManager::settingsChanged()
     /*QMap<QString, ServiceBase *> activeServices =  m_serviceBrowser->services();
     QList<QString> names = activeServices.keys();
 
-    foreach( ServiceFactory* factory,  m_factories.values() ) {
+    foreach( ServiceFactory* factory,  m_factories ) {
 
         //check if this service is enabled in the config
         QString pluginName = factory->info().pluginName();
@@ -271,7 +271,7 @@ QString ServicePluginManager::sendMessage( const QString & serviceName, const QS
 
 void ServicePluginManager::checkEnabledStates()
 {
-    foreach( ServiceFactory* factory,  m_factories.values() ) {
+    foreach( ServiceFactory* factory,  m_factories ) {
 
         //check if this service is enabled
         QString pluginName = factory->info().pluginName();

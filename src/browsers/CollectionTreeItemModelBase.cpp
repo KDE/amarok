@@ -981,7 +981,8 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
 
     //trigger an update of all items being populated at the moment;
 
-    foreach ( CollectionTreeItem* item, d->m_runningQueries.keys() )
+    QList< CollectionTreeItem * > items = d->m_runningQueries.keys();
+    foreach ( CollectionTreeItem* item, items  )
     {
         if( item == m_rootItem )
             continue;

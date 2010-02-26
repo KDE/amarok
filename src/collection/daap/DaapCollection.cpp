@@ -154,11 +154,11 @@ DaapCollectionFactory::slotCollectionDownloadFailed()
     if( !collection )
         return;
     disconnect( collection, SIGNAL( collectionReady() ), this, SLOT( slotCollectionReady() ) );
-    foreach( const QString &key, m_collectionMap.keys() )
+    foreach( QPointer< DaapCollection > it, m_collectionMap )
     {
-        if( m_collectionMap.value( key ) == collection )
+        if( it == collection )
         {
-            m_collectionMap.remove( key );
+            m_collectionMap.remove( m_collectionMap.key( it ) );
             break;
         }
     }

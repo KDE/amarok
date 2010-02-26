@@ -309,7 +309,7 @@ PlaylistManager::deletePlaylists( Meta::PlaylistList playlistlist )
 
     foreach( UserPlaylistProvider* prov, provLists.keys() )
     {
-        prov->deletePlaylists( provLists[ prov ] );
+        prov->deletePlaylists( provLists.value( prov ) ); //TODO: test
     }
 }
 
@@ -324,7 +324,8 @@ PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr playlist )
         return provider;
 
     // Iteratively check all providers' playlists for ownership
-    foreach( PlaylistProvider* provider, m_providerMap.values( UserPlaylist ) )
+    QList< PlaylistProvider* > userPlaylists = m_providerMap.values( UserPlaylist );
+    foreach( PlaylistProvider* provider, userPlaylists )
     {
         if( provider->playlists().contains( playlist ) )
                 return provider;
