@@ -43,6 +43,7 @@
 #include <QTextStream>
 #include <QTime>
 #include <QTimer>
+#include <qpixmap.h>
 
 //Taglib:
 #include <apetag.h>
@@ -61,6 +62,8 @@
 #include <tlist.h>
 #include <tstring.h>
 #include <vorbisfile.h>
+#include <attachedpictureframe.h> 
+#include <tbytevector.h> 
 
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
@@ -455,8 +458,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
         else
         {
-            //FIXME: PORT 2.0
-//             QList<EmbeddedImage> images;
             const AttributeHash attributes = readTags( path );
 
             if( !attributes.empty() )
@@ -467,24 +468,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
                 if( !covers.contains( cover ) )
                     covers += cover;
-
-                //FIXME: PORT 2.0
-//                 foreach( EmbeddedImage image, images )
-//                 {
-//                     AttributeHash attributes;
-//                     if( m_batch && !m_rpath.isEmpty() )
-//                     {
-//                         QString rpath = path;
-//                         rpath.remove( QDir::cleanPath( QDir::currentPath() ) );
-//                         rpath.prepend( QDir::cleanPath( m_rpath + '/' ) );
-//                         attributes["path"] = rpath;
-//                     }
-//                     else
-//                         attributes["path"] = path;
-//                     attributes["hash"] = image.hash();
-//                     attributes["description"] = image.description();
-//                     writeElement( "embed", attributes );
-//                 }
             }
         }
 
@@ -621,9 +604,8 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
 
-                //FIXME: Port 2.0
-//                 if( images )
-//                     loadImagesFromTag( *file->ID3v2Tag(), *images );
+                if ( !file->ID3v2Tag()->frameListMap()["APIC"].isEmpty() )
+                    attributes["apic"] = QString("true");
             }
 // HACK: charset-detector disabled, so all tags assumed utf-8
 // TODO: fix charset-detector to detect encoding with higher accuracy

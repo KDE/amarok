@@ -799,6 +799,15 @@ XmlParseJob::run()
                         directoryData.append( data );
                         currentDir = url.directory();
                     }
+
+                    //the boolean attribute 'apic' indicates that the file contains an embedded cover-art image
+                    //we therefore add the path of the audio file to the list of images for this album
+                    if( !attrs.value( "apic" ).isEmpty() )
+                    {
+                        QList<QPair<QString, QString> > covers;
+                        covers += qMakePair( attrs.value( "artist" ).toString(), attrs.value( "album" ).toString() );
+                        processor.addImage( attrs.value( "path" ).toString(), covers );
+                    }
                 }
                 else if( localname == "folder" )
                 {

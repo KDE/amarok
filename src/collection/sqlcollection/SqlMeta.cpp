@@ -46,6 +46,11 @@
 #include <KLocale>
 #include <KSharedPtr>
 
+//Taglib:
+#include <mpegfile.h>
+#include <id3v2tag.h>
+#include <attachedpictureframe.h>
+
 using namespace Meta;
 
 QString
@@ -1113,7 +1118,12 @@ SqlAlbum::image( int size )
 
     //FIXME this cache doesn't differentiate between shadowed/unshadowed
     if( m_images.contains( size ) )
-        return QPixmap( m_images.value( size ) );
+    {
+        if (isEmbeddedImage( m_images.value( size ) ) )
+            return QPixmap::fromImage( loadImageFromTag( m_images.value( size ) ) );
+        else
+            return QPixmap( m_images.value( size ) );
+    }
 
     QString result;
 
@@ -1152,7 +1162,10 @@ SqlAlbum::image( int size )
     {
         m_hasImage = true;
         m_images.insert( size, result );
-        return QPixmap( result );
+        if (isEmbeddedImage( m_images.value( size ) ) )
+            return QPixmap::fromImage( loadImageFromTag( result ) );
+        else
+            return QPixmap( result );
     }
 
     // Cover fetching runs in another thread. If there is a retrieved cover
@@ -1411,8 +1424,13 @@ SqlAlbum::createScaledImage( QString path, int size ) const
         // Don't overwrite if it already exists
         if( !QFile::exists( cachedImagePath ) )
         {
-            QImage img( path );
-            if( img.isNull() )
+            QImage img;
+            if ( isEmbeddedImage( path ) )
+                img = loadImageFromTag( path );
+            else
+                img.load( path );
+
+            if( img.isNull() )    
                 return QString();
 
             // resize and save the image
@@ -1422,6 +1440,49 @@ SqlAlbum::createScaledImage( QString path, int size ) const
     }
 
     return QString();
+}
+
+QImage
+SqlAlbum::loadImageFromTag( const QString path ) const
+{
+#ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
+#else
+    QByteArray fileName = QFile::encodeName( path );
+     const char * encodedName = fileName.constData(); // valid as long as fileName exists
+#endif
+
+    TagLib::FileRef fileref;
+    TagLib::Tag *tag = 0;
+    fileref = TagLib::FileRef( encodedName, true );
+
+    if( !fileref.isNull() )
+    {
+        tag = fileref.tag();
+        if ( tag )
+        {
+            if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
+            {
+                if ( !file->ID3v2Tag()->frameListMap()["APIC"].isEmpty() )
+                {
+                    TagLib::ID3v2::FrameList apicList = file->ID3v2Tag()->frameListMap()["APIC"];
+                    for ( TagLib::ID3v2::FrameList::ConstIterator it = apicList.begin(), end = apicList.end(); it != end; ++it )
+                    {
+                        TagLib::ID3v2::AttachedPictureFrame *apicFrame = (TagLib::ID3v2::AttachedPictureFrame *)(*it);
+                        // take first APIC frame which is a FrontCover
+                        if ( apicFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover)
+                        {
+                            return QImage::fromData((uchar*)(apicFrame->picture().data()), apicFrame->picture().size());
+                        }
+                    }
+                    // if there was no FrontCover, just take the first picture available
+                    TagLib::ID3v2::AttachedPictureFrame *apicFrame = (TagLib::ID3v2::AttachedPictureFrame *)(apicList[0]);
+                    return QImage::fromData((uchar*)(apicFrame->picture().data()), apicFrame->picture().size());
+                }
+            }
+        }
+    }
+    return QImage::QImage();
 }
 
 QString
@@ -1673,6 +1734,20 @@ SqlAlbum::createCapabilityInterface( Meta::Capability::Type type )
     return ( m_delegate ? m_delegate->createCapabilityInterface( type, this ) : 0 );
 }
 
+bool
+SqlAlbum::isEmbeddedImage( const QString& path )
+{
+    //Entries in the images table are currently either image files or audio files with embedded cover-art images.
+    //This function simply checks the file extension and determines whether it is an audio file or not, using the
+    //same suffix criteria as in ScanResultProcessor::addTrack for now.
+    //Future versions could extend the database scheme to include image type information.
+    //No additional checks are made - we trust that the entry was put into the images table for a reason.
+    
+    QStringList audioFiletypes;
+    audioFiletypes << "mp3" << "ogg" << "oga" << "flac" << "wma" << "m4a" << "m4b";
+    return audioFiletypes.contains( QFileInfo( path ).suffix().toLower() );
+}
+
 //---------------SqlComposer---------------------------------
 
 SqlComposer::SqlComposer( SqlCollection* collection, int id, const QString &name ) : Composer()
@@ -1837,5 +1912,4 @@ SqlYear::tracks()
     else
         return TrackList();
 }
-
 
