@@ -188,10 +188,6 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
     QString goodPath;
     foreach( const QString &path, paths )
     {
-        // skip embedded images
-        if( SqlAlbum::isEmbeddedImage( path ) )
-            continue;
-
         QString file = QFileInfo( path ).fileName();
         
         //prioritize "front"
@@ -238,26 +234,21 @@ ScanResultProcessor::findBestImagePath( const QList<QString> &paths )
     if( !goodPath.isEmpty() )
         return goodPath;
 
-    //next: pick largest non-embedded image -- often a high-quality blowup of the front
+    //finally: pick largest image -- often a high-quality blowup of the front
     //so that people can print it out
-    qint64 size = -1;
+    qint64 size = 0;
     QString current;
     foreach( const QString &path, paths )
     {
         QFileInfo info( path );
-        if( info.size() > size && 
-                ! SqlAlbum::isEmbeddedImage( path ) )
+        if( info.size() > size )
         {
             size = info.size();
             current = path;
         }
     }
-
-    //finally: if all available images are embedded, simply pick the first one
-    if( size == -1 )
-        return paths.first();
-
     return current;
+
 }
 
 void

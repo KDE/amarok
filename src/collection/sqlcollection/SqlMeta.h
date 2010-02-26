@@ -292,8 +292,6 @@ class SqlAlbum : public Meta::Album
 
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
-        static bool isEmbeddedImage( const QString& path );
-
         //SQL specific methods
         int id() const { return m_id; }
 
@@ -311,7 +309,6 @@ class SqlAlbum : public Meta::Album
         void updateImage( const QString path ) const; // Updates the database to ensure the album has the correct path
         // Finds or creates a magic value in the database which tells Amarok not to auto fetch an image since it has been explicitly unset.
         int unsetImageId() const;
-        QImage loadImageFromTag( const QString path ) const;
 
     private:
         SqlCollection* m_collection;
