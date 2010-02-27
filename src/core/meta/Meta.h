@@ -48,6 +48,7 @@ namespace Meta
     class Genre;
     class Composer;
     class Year;
+    class Label;
 
     typedef KSharedPtr<MetaBase> DataPtr;
     typedef QList<DataPtr> DataList;
@@ -63,6 +64,8 @@ namespace Meta
     typedef QList<GenrePtr> GenreList;
     typedef KSharedPtr<Year> YearPtr;
     typedef QList<YearPtr> YearList;
+    typedef KSharedPtr<Label> LabelPtr;
+    typedef QList<LabelPtr> LabelList;
 
     class AMAROK_EXPORT Observer
     {
@@ -416,6 +419,18 @@ namespace Meta
         protected:
             virtual void notifyObservers() const;
     };
+
+    class AMAROK_EXPORT Label : public MetaBase
+    {
+    public:
+        Label() : MetaBase() {}
+        virtual ~ Label() {}
+
+        virtual void addMatchTo( QueryMaker* qm );
+
+    protected:
+        virtual void notifyObservers() const;
+    };
 }
 
 Q_DECLARE_METATYPE( Meta::DataPtr )
@@ -432,6 +447,8 @@ Q_DECLARE_METATYPE( Meta::GenrePtr )
 Q_DECLARE_METATYPE( Meta::GenreList )
 Q_DECLARE_METATYPE( Meta::YearPtr )
 Q_DECLARE_METATYPE( Meta::YearList )
+Q_DECLARE_METATYPE( Meta::LabelPtr )
+Q_DECLARE_METATYPE( Meta::LabelList )
 
 
 
