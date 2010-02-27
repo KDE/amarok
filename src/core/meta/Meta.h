@@ -211,6 +211,10 @@ namespace Meta
             virtual GenrePtr genre() const = 0;
             /** Returns the year of this track */
             virtual YearPtr year() const = 0;
+            /**
+              * Returns the labels that are assigned to a track.
+              */
+            virtual Meta::LabelList labels() const;
             /** Returns the BPM of this track */
             virtual qreal bpm() const = 0;
             /** Returns the comment of this track */

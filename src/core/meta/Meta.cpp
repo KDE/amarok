@@ -251,6 +251,12 @@ Meta::Track::collection() const
     return 0;
 }
 
+Meta::LabelList
+Meta::Track::labels() const
+{
+    return Meta::LabelList();
+}
+
 QString
 Meta::Track::cachedLyrics() const
 {
