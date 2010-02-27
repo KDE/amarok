@@ -110,5 +110,16 @@ class AMAROK_EXPORT YearMatcher : public MemoryMatcher
         Meta::YearPtr m_year;
 };
 
+class AMAROK_EXPORT LabelMatcher : public MemoryMatcher
+{
+    public:
+        LabelMatcher( const Meta::LabelPtr &label );
+        virtual Meta::TrackList match( MemoryCollection *memColl );
+        virtual Meta::TrackList match( const Meta::TrackList &tracks );
+
+    private:
+        Meta::LabelPtr m_label;
+};
+
 
 #endif

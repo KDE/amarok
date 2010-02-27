@@ -423,6 +423,26 @@ MemoryQueryMaker::addMatch( const Meta::DataPtr &data )
 }
 
 QueryMaker*
+MemoryQueryMaker::addMatch( const Meta::LabelPtr &label )
+{
+    MemoryMatcher *labelMatcher = new LabelMatcher( label );
+    if( d->matcher == 0 )
+    {
+        d->matcher = labelMatcher;
+    }
+    else
+    {
+        MemoryMatcher *tmp = d->matcher;
+        while( !tmp->isLast() )
+        {
+            tmp = tmp->next();
+        }
+        tmp->setNext( labelMatcher );
+    }
+    return this;
+}
+
+QueryMaker*
 MemoryQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     d->containerFilters.top()->addFilter( FilterFactory::filter( value, filter, matchBegin, matchEnd ) );

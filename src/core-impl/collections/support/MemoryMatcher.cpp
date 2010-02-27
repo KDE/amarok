@@ -280,6 +280,45 @@ TrackList YearMatcher::match( const TrackList &tracks )
         return next()->match( matchingTracks );
 }
 
+LabelMatcher::LabelMatcher( const Meta::LabelPtr &label )
+    : MemoryMatcher()
+    , m_label( label )
+{
+    //nothing to do
+}
+
+Meta::TrackList
+LabelMatcher::match( const Meta::TrackList &tracks )
+{
+    if( !m_label )
+        return Meta::TrackList();
+
+    Meta::TrackList matchingTracks;
+    QString name = m_label->name();
+    //not really efficient...
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        foreach( const Meta::LabelPtr &label, track->labels() )
+        {
+            if( name == label->name() )
+            {
+                matchingTracks << track;
+                break;
+            }
+        }
+    }
+    if( isLast() || matchingTracks.count() == 0 )
+        return matchingTracks;
+    else
+        return next()->match( matchingTracks );
+}
+
+Meta::TrackList
+LabelMatcher::match( MemoryCollection *memColl )
+{
+    //TODO labels have to be added to MemoryCollection somehow
+}
+
 
 
 
