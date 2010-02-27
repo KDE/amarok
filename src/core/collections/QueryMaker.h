@@ -64,7 +64,8 @@ class AMAROK_EXPORT QueryMaker : public QObject
                          Genre,
                          Composer,
                          Year,
-                         Custom
+                         Custom,
+                         Label
         };
         QueryMaker();
         virtual ~QueryMaker();
@@ -153,6 +154,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre ) = 0;
         virtual QueryMaker* addMatch( const Meta::YearPtr &year ) = 0;
         virtual QueryMaker* addMatch( const Meta::DataPtr &data ) = 0;
+        virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         /**
          * Add a filter of type @p value and value @p filter. The querymaker applies this to all queries.
@@ -212,6 +214,7 @@ class AMAROK_EXPORT QueryMaker : public QObject
         void newResultReady( QString collectionId, Meta::YearList );
         void newResultReady( QString collectionId, Meta::DataList );
         void newResultReady( QString collectionId, QStringList );
+        void newResultReady( QString collectionId, Meta::LabelList );
 
         void queryDone();
 };

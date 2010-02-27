@@ -16,7 +16,10 @@
 
 #include "core/collections/QueryMaker.h"
 
+
 using namespace Collections;
+
+#include "core/support/Debug.h"
 
 QueryMaker::QueryMaker() : QObject()
 {
@@ -51,6 +54,13 @@ QueryMaker::setAutoDelete( bool autoDelete )
         connect( this, SIGNAL( queryDone() ), this, SLOT( deleteLater() ) );
     else
         disconnect( this, SIGNAL( queryDone() ), this, SLOT( deleteLater() ) );
+    return this;
+}
+
+QueryMaker*
+QueryMaker::addMatch( const Meta::LabelPtr &label )
+{
+    debug() << metaObject()->className() << " does not support label queries, ignoring label " << label->name();
     return this;
 }
 
