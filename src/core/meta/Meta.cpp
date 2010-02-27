@@ -527,16 +527,12 @@ Meta::Year::operator==( const Meta::Year &year ) const
 void
 Meta::Label::addMatchTo( QueryMaker *qm )
 {
-    //TODO
+    qm->addMatch( Meta::LabelPtr( this ) );
 }
 
 void
-        Meta::Label::notifyObservers() const
+Meta::Label::notifyObservers() const
 {
-    foreach( Observer *observers, m_observers )
-    {
-        if( m_observers.contains( observer ) ) //no idea why this is done in the other Meta class already, but it does not hurt
-            //observer->metadataChanged( Meta::LabelPtr( const_cast<Meta::Label *>( this ) ) );
-    }
+    //TODO: not sure if labels have to be observable, or whether it makes sense for them to notify observers
 }
 
