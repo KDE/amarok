@@ -100,6 +100,7 @@ struct SqlQueryMaker::Private
     Meta::GenreList blockingGenres;
     Meta::ComposerList blockingComposers;
     Meta::YearList blockingYears;
+    Meta::LabelList blockingLabels;
     bool blocking;
     bool used;
 };
@@ -211,6 +212,7 @@ SqlQueryMaker::run()
             connect( qmi, SIGNAL(newResultReady(QString,Meta::TrackList)), SIGNAL(newResultReady(QString,Meta::TrackList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(QString,Meta::DataList)), SIGNAL(newResultReady(QString,Meta::DataList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(QString,QStringList)), SIGNAL(newResultReady(QString,QStringList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(QString,Meta::LabelList)), SIGNAL(newResultReady(QString,Meta::LabelList)), Qt::DirectConnection );
             d->worker = new SqlWorkerThread( qmi );
             connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
             ThreadWeaver::Weaver::instance()->enqueue( d->worker );
@@ -225,6 +227,7 @@ SqlQueryMaker::run()
             connect( qmi, SIGNAL(newResultReady(QString,Meta::TrackList)), SLOT(blockingNewResultReady(QString,Meta::TrackList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(QString,Meta::DataList)), SLOT(blockingNewResultReady(QString,Meta::DataList)), Qt::DirectConnection );
             connect( qmi, SIGNAL(newResultReady(QString,QStringList)), SLOT(blockingNewResultReady(QString,QStringList)), Qt::DirectConnection );
+            connect( qmi, SIGNAL(newResultReady(QString,Meta::LabelList)), SLOT(blockingNewResultReady(QString,Meta::LabelList)), Qt::DirectConnection );
             qmi->run();
             delete qmi;
         }
@@ -428,6 +431,13 @@ SqlQueryMaker::addMatch( const Meta::YearPtr &year )
 {
     d->linkedTables |= Private::YEAR_TAB;
     d->queryMatch += QString( " AND years.name = '%1'" ).arg( escape( year->name() ) );
+    return this;
+}
+
+QueryMaker*
+SqlQueryMaker::addMatch( const Meta::LabelPtr &label )
+{
+    //TODO implement
     return this;
 }
 

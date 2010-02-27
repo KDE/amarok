@@ -53,6 +53,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
         virtual QueryMaker* addMatch( const Meta::YearPtr &year );
         virtual QueryMaker* addMatch( const Meta::DataPtr &data );
+        virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
@@ -91,6 +92,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
         Meta::ComposerList composers( const QString &id ) const;
         Meta::YearList years( const QString &id ) const;
         QStringList customData( const QString &id ) const;
+        Meta::LabelList labels() const;
 
     protected:
         virtual QString escape( QString text ) const;
@@ -113,6 +115,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
         void blockingNewResultReady( const QString &id, const Meta::YearList &years );
         void blockingNewResultReady( const QString &id, const Meta::TrackList &tracks );
         void blockingNewResultReady( const QString &id, const Meta::DataList &data );
+        void blockingNewResultReady( const QString &id, const Meta::LabelList &labels );
 
     private:
 
