@@ -18,7 +18,6 @@
 #define FILEBROWSERMKII_H
 
 #include "BrowserCategory.h"
-#include "DirectoryLoader.h"
 #include "FileView.h"
 #include "MimeTypeFilterProxyModel.h"
 
@@ -73,7 +72,6 @@ private:
     SearchWidget             *m_searchWidget;
     KDirModel                *m_kdirModel;
     MimeTypeFilterProxyModel *m_mimeFilterProxyModel;
-    DirectoryLoader          *m_directoryLoader;
 
     QTimer                    m_filterTimer;
     QString                   m_currentFilter;

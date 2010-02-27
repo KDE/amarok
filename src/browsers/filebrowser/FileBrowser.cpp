@@ -35,7 +35,6 @@
 
 FileBrowser::FileBrowser( const char * name, QWidget *parent )
     : BrowserCategory( name, parent )
-    , m_directoryLoader( 0 )
 {
 
     DEBUG_BLOCK;
@@ -124,17 +123,9 @@ void FileBrowser::itemActivated( const QModelIndex &index )
         m_kdirModel->dirLister()->openUrl( filePath );
         m_fileView->setRootIndex( index );
 
-        //get list of current sibling directories for breadcrumb:
-
-        QStringList siblings = siblingsForDir( m_currentPath );
-        
-        debug() << "setting root path to: " << filePath.path();
-        m_kdirModel->dirLister()->openUrl( filePath );
-
         //add this dir to the breadcrumb
         setupAddItems();
         activate();
-      
     }
     else
     {
@@ -185,8 +176,6 @@ void FileBrowser::readConfig()
     }
 
     m_fileView->header()->restoreState( layout );
-
-
 }
 
 void FileBrowser::writeConfig()
@@ -276,10 +265,7 @@ QStringList FileBrowser::siblingsForDir( const QString &path )
     if( !dir.isRoot() )
     {
         dir.cdUp();
-        foreach( QString childDir, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
-        {
-                siblings << childDir;
-        }
+        siblings = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
     }
     return siblings;
 }
