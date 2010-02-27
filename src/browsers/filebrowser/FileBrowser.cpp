@@ -46,7 +46,6 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
 
     m_kdirModel = new KDirModel( this );
-    m_kdirModel->dirLister()->openUrl( KUrl( QDir::homePath() ) );
 
     m_mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
     m_mimeFilterProxyModel->setSourceModel( m_kdirModel );
@@ -173,8 +172,9 @@ void FileBrowser::readConfig()
 
     KConfigGroup config = Amarok::config( "File Browser" );
 
-    m_kdirModel->dirLister()->openUrl( KUrl( config.readEntry( "Current Directory" ) ) );
-    m_currentPath = KUrl( config.readEntry( "Current Directory" ) ).path();
+    KUrl currentDirectory = config.readEntry( "Current Directory", QDir::homePath() );
+    m_kdirModel->dirLister()->openUrl( currentDirectory );
+    m_currentPath = currentDirectory.path();
 
     QFile file( Amarok::saveLocation() + "file_browser_layout" );
     QByteArray layout;
