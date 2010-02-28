@@ -55,6 +55,7 @@ class AMAROK_EXPORT MetaQueryMaker : public QueryMaker
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
         virtual QueryMaker* addMatch( const Meta::YearPtr &year );
         virtual QueryMaker* addMatch( const Meta::DataPtr &data );
+        virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
@@ -72,6 +73,7 @@ class AMAROK_EXPORT MetaQueryMaker : public QueryMaker
         virtual QueryMaker* endAndOr();
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+        virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
     private slots:
         void slotQueryDone();
