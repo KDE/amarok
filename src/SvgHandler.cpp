@@ -431,7 +431,7 @@ void SvgHandler::paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qre
             if ( inverse )
             {
                 tl = knob.topRight() + QPoint( -5, 5 ); // 5px x padding to avoid a "gap" between it and the top and botton of the round knob.
-                br = slider->rect.topRight() + QPoint( -3, 5 + playedBarHeight );
+                br = slider->rect.topRight() + QPoint( -3, 5 + playedBarHeight - 1 );
                 QPixmap rightEnd = renderSvg( "progress_slider_played_right", playedBarHeight, playedBarHeight, "progress_slider_played_right" );
                 p->drawPixmap( br.x() - rightEnd.width() + 1, tl.y(), rightEnd, qMax(0, rightEnd.width() - (sizeOfLeftPlayed + 3)), 0, sizeOfLeftPlayed + 3, playedBarHeight );
                 br.rx() -= playedBarHeight;
@@ -439,7 +439,7 @@ void SvgHandler::paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qre
             else
             {
                 tl = slider->rect.topLeft() + QPoint( 3, 5 );
-                br = QPoint( knob.x() + 5, tl.y() + playedBarHeight );
+                br = QPoint( knob.x() + 5, tl.y() + playedBarHeight - 1 );
                 QPixmap leftEnd = renderSvg( "progress_slider_played_left", playedBarHeight, playedBarHeight, "progress_slider_played_left" );
                 p->drawPixmap( tl.x(), tl.y(), leftEnd, 0, 0, sizeOfLeftPlayed + 3, playedBarHeight );
                 tl.rx() += playedBarHeight;
