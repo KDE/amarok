@@ -71,6 +71,7 @@ static const int skipMargin = 12;
 static const int constant_progress_ratio_minimum_width = 640;
 static const int space_between_tracks_and_slider = 2;
 static const float track_fontsize_factor = 1.1f;
+static const int track_action_spacing = 6;
 
 
 MainToolbar::MainToolbar( QWidget *parent )
@@ -419,7 +420,7 @@ MainToolbar::updateCurrentTrackActions()
 
     QHBoxLayout *hbl = static_cast<QHBoxLayout*>( m_current.label->layout() );
     hbl->setContentsMargins( 0, 0, 0, 0 );
-    hbl->setSpacing( 3 );
+    hbl->setSpacing( track_action_spacing );
 
     TrackActionButton *btn;
     const int n = actions.count() / 2;
