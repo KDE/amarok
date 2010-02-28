@@ -28,6 +28,8 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * Show artist and title instead of raw track ID when copying/deleting
+      tracks on an MTP device.
     * Fixed time labels getting truncated in the slim toolbar. (BR 195935)
     * Fixed broken keyboard navigation in the playlist after activating a track. 
       (BR 225791) 
