@@ -437,7 +437,21 @@ SqlQueryMaker::addMatch( const Meta::YearPtr &year )
 QueryMaker*
 SqlQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
-    //TODO implement
+    KSharedPtr<Meta::SqlLabel> sqlLabel = KSharedPtr<Meta::SqlLabel>::dynamicCast( label );
+    QString labelSubQuery;
+    if( sqlLabel )
+    {
+        labelSubQuery = "SELECT url FROM urls_labels WHERE label = %1";
+        labelSubQuery = labelSubQuery.arg( sqlLabel->id() );
+    }
+    else
+    {
+        labelSubQuery = "SELECT a.url FROM urls_labels a INNER JOIN labels b ON a.label = b.id WHERE b.label = '%1'";
+        labelSubQuery = labelSubQuery.arg( escape( label->name() ) );
+    }
+    d->linkedTables |= Private::TAGS_TAB;
+    QString match = " AND tracks.url in (%1)";
+    d->queryMatch += match.arg( labelSubQuery );
     return this;
 }
 
@@ -881,6 +895,12 @@ SqlQueryMaker::customData( const QString &id ) const
 {
     Q_UNUSED( id );
     return d->blockingCustomData;
+}
+
+Meta::LabelList
+SqlQueryMaker::labels() const
+{
+    return d->blockingLabels;
 }
 
 QString

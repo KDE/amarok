@@ -84,14 +84,14 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
 
         QStringList collectionIds() const;
 
-        Meta::DataList data( const QString &id ) const;
-        Meta::TrackList tracks( const QString &id ) const;
-        Meta::AlbumList albums( const QString &id ) const;
-        Meta::ArtistList artists( const QString &id ) const;
-        Meta::GenreList genres( const QString &id ) const;
-        Meta::ComposerList composers( const QString &id ) const;
-        Meta::YearList years( const QString &id ) const;
-        QStringList customData( const QString &id ) const;
+        Meta::DataList data( const QString &id = QString() ) const;
+        Meta::TrackList tracks( const QString &id = QString() ) const;
+        Meta::AlbumList albums( const QString &id = QString() ) const;
+        Meta::ArtistList artists( const QString &id = QString() ) const;
+        Meta::GenreList genres( const QString &id = QString() ) const;
+        Meta::ComposerList composers( const QString &id = QString() ) const;
+        Meta::YearList years( const QString &id = QString() ) const;
+        QStringList customData( const QString &id = QString() ) const;
         Meta::LabelList labels() const;
 
     protected:
