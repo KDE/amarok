@@ -992,4 +992,39 @@ TestSqlQueryMaker::testMultipleLabelMatches()
     QCOMPARE( qm.tracks().count(), 1 );
 }
 
+void
+TestSqlQueryMaker::testQueryTypesWithLabelMatching_data()
+{
+    QTest::addColumn<QueryMaker::QueryType>( "type" );
+    QTest::addColumn<int>( "result" );
+
+    QTest::newRow( "query tracks" ) << QueryMaker::Track << 1;
+    QTest::newRow( "query albums" ) << QueryMaker::Album << 1;
+    QTest::newRow( "query artists" ) << QueryMaker::Artist << 1;
+    QTest::newRow( "query genre" ) << QueryMaker::Genre << 1;
+    QTest::newRow( "query composers" ) << QueryMaker::Composer << 1;
+    QTest::newRow( "query years" ) << QueryMaker::Year << 1;
+    QTest::newRow( "query labels" ) << QueryMaker::Label << 2;
+}
+
+void
+TestSqlQueryMaker::testQueryTypesWithLabelMatching()
+{
+
+    QFETCH( QueryMaker::QueryType, type );
+    QFETCH( int, result );
+
+    Meta::LabelPtr labelB = m_collection->registry()->getLabel( "labelB", -1 );
+    Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA", -1 );
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setReturnResultAsDataPtrs( true );
+    qm.setQueryType( type );
+    qm.addMatch( labelB );
+    qm.addMatch( labelA );
+    qm.run();
+
+    QCOMPARE( qm.data().count(), result );
+}
+
 #include "TestSqlQueryMaker.moc"

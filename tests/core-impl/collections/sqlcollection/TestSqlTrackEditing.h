@@ -52,6 +52,9 @@ private slots:
     void testLabelMatch();
     void testMultipleLabelMatches();
 
+    void testQueryTypesWithLabelMatching_data();
+    void testQueryTypesWithLabelMatching();
+
 private:
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
