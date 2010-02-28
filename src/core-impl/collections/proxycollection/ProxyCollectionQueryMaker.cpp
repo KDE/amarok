@@ -55,6 +55,7 @@ ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<Query
         connect( b, SIGNAL( newResultReady( QString, Meta::GenreList ) ), this, SLOT( slotNewResultReady( QString, Meta::GenreList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), this, SLOT( slotNewResultReady( QString, Meta::ComposerList ) ), Qt::DirectConnection );
         connect( b, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SLOT( slotNewResultReady( QString, Meta::YearList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QString, Meta::LabelList ) ), this, SLOT( slotNewResultReady( QString, Meta::LabelList ) ), Qt::DirectConnection );
     }
 }
 
@@ -108,40 +109,10 @@ QueryMaker*
 ProxyQueryMaker::setQueryType( QueryType type )
 {
     m_queryType = type;
-    if( type == QueryMaker::Track )
+    if( type != QueryMaker::Custom )
     {
         foreach( QueryMaker *b, m_builders )
-            b->setQueryType( QueryMaker::Track );
-        return this;
-    }
-    else if( type == QueryMaker::Artist )
-    {
-        foreach( QueryMaker *b, m_builders )
-            b->setQueryType( QueryMaker::Artist );
-        return this;
-    }
-    else if( type == QueryMaker::Album )
-    {
-        foreach( QueryMaker *b, m_builders )
-            b->setQueryType( QueryMaker::Album );
-        return this;
-    }
-    else if( type == QueryMaker::Genre )
-    {
-        foreach( QueryMaker *b, m_builders )
-            b->setQueryType( QueryMaker::Genre );
-        return this;
-    }
-    else if( type == QueryMaker::Composer )
-    {
-        foreach( QueryMaker *b, m_builders )
-            b->setQueryType( QueryMaker::Composer );
-        return this;
-    }
-    else if( type == QueryMaker::Year )
-    {
-        foreach( QueryMaker *b, m_builders )
-            b->setQueryType( QueryMaker::Year );
+            b->setQueryType( type );
         return this;
     }
     else
@@ -319,6 +290,14 @@ ProxyQueryMaker::addMatch( const Meta::DataPtr &data )
     Meta::DataPtr tmp = const_cast<Meta::DataPtr&>( data );
     foreach( QueryMaker *b, m_builders )
         tmp->addMatchTo( b );
+    return this;
+}
+
+QueryMaker*
+ProxyQueryMaker::addMatch( const Meta::LabelPtr &label )
+{
+    foreach( QueryMaker *b, m_builders )
+        b->addMatch( label );
     return this;
 }
 
@@ -629,6 +608,17 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ye
     foreach( const Meta::YearPtr &year, years )
     {
         m_years.insert( KSharedPtr<Meta::ProxyYear>( m_collection->getYear( year ) ) );
+    }
+}
+
+void
+ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::LabelList &labels )
+{
+    Q_UNUSED( collectionId )
+
+    foreach( const Meta::LabelPtr &label, labels )
+    {
+        m_labels.insert( KSharedPtr<Meta::ProxyLabel>( m_collection->getLabel( label ) ) );
     }
 }
 

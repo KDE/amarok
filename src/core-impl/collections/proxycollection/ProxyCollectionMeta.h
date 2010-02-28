@@ -76,6 +76,11 @@ namespace Meta {
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
+            virtual void addLabel( const QString &label );
+            virtual void addLabel( const Meta::LabelPtr &label );
+            virtual void removeLabel( const Meta::LabelPtr &label );
+            virtual Meta::LabelList labels() const;
+
             void add( const Meta::TrackPtr &track );
 
         protected:
@@ -255,6 +260,31 @@ namespace Meta {
         QString m_name;
 
     };
+
+    class AMAROK_EXPORT_TESTS ProxyLabel : public Meta::Label
+    {
+    public:
+        ProxyLabel( Collections::ProxyCollection *coll, const Meta::LabelPtr &label );
+        virtual ~ProxyLabel();
+
+        virtual QString name() const;
+        virtual QString prettyName() const;
+        virtual QString sortableName() const;
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+
+        /**
+          adds another Meta::Label instance to be proxied.
+          */
+        void add( const Meta::LabelPtr &label );
+
+    private:
+        Collections::ProxyCollection *m_collection;
+        Meta::LabelList m_labels;
+        QString m_name;
+    };
+}
 } //namespace Meta
 
 #endif

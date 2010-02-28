@@ -32,15 +32,6 @@
 class CustomReturnFunction;
 class CustomReturnValue;
 
-namespace Meta {
-    class ProxyTrack;
-    class ProxyAlbum;
-    class ProxyArtist;
-    class ProxyGenre;
-    class ProxyComposer;
-    class ProxyYear;
-}
-
 namespace Collections
 {
 
@@ -75,6 +66,7 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
         virtual QueryMaker* addMatch( const Meta::YearPtr &year );
         virtual QueryMaker* addMatch( const Meta::DataPtr &data );
+        virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
@@ -107,6 +99,7 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         void slotNewResultReady( const QString &collectionId, const Meta::GenreList &genres );
         void slotNewResultReady( const QString &collectionId, const Meta::ComposerList &composers );
         void slotNewResultReady( const QString &collectionId, const Meta::YearList &years );
+        void slotNewResultReady( const QString &collectionId, const Meta::LabelList &labels );
 
     private:
         ProxyCollection *m_collection;
@@ -128,6 +121,7 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         QSet<KSharedPtr<Meta::ProxyGenre> > m_genres;
         QSet<KSharedPtr<Meta::ProxyComposer> > m_composers;
         QSet<KSharedPtr<Meta::ProxyYear> > m_years;
+        QSet<KSharedPtr<Meta::ProxyLabel> > m_labels;
         KRandomSequence m_sequence; //do not reset
         QList<CustomReturnFunction*> m_returnFunctions;
         QList<CustomReturnValue*> m_returnValues;

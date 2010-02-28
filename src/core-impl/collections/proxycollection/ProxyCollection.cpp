@@ -438,11 +438,56 @@ ProxyCollection::hasTrack( const TrackKey &key )
     return m_trackMap.contains( key );
 }
 
-void
-ProxyCollection::emptyCache()
+bool
+ProxyCollection::Collection::hasLabel( const QString &name )
 {
-    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer;
-    hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = false;
+    QReadLocker locker( &m_labelLock );
+    return m_labelMap.contains( name );
+}
+
+void
+ProxyCollection::Collection::removeLabel( const QString &name )
+{
+    QWriteLocker locker( &m_labelLock );
+    m_labelMap.remove( name );
+}
+
+Meta::ProxyLabel*
+ProxyCollection::Collection::getLabel( Meta::LabelPtr &label )
+{
+    m_labelLock.lockForRead();
+    if( m_labelMap.contains( label->name() ) )
+    {
+        KSharedPtr<Meta::ProxyLabel> proxyLabel = m_labelMap.value( label->name() );
+        proxyLabel->add( label );
+        m_labelLock.unlock();
+        return proxyLabel.data();
+    }
+    else
+    {
+        m_labelLock.unlock();
+        m_labelLock.lockForWrite();
+        //we might create two year instances with the same name here,
+        //which would show some weird behaviour in other places
+        Meta::ProxyLabel *proxyLabel = new Meta::ProxyLabel( this, label );
+        m_labelMap.insert( label->name(), KSharedPtr<Meta::ProxyLabel>( proxyLabel ) );
+        m_labelLock.unlock();
+        return proxyLabel;
+    }
+}
+
+void
+ProxyCollection::Collection::setLabel( Meta::ProxyLabel *label )
+{
+    QWriteLocker locker( &m_labelLock );
+    m_labelMap.insert( label->name(), KSharedPtr<Meta::ProxyLabel>( label ) );
+}
+
+void
+ProxyCollection::Collection::emptyCache()
+{
+    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasLabel;
+    hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = hasLabel = false;
 
     //try to avoid possible deadlocks by aborting when we can't get all locks
     if ( ( hasTrack = m_trackLock.tryLockForWrite() )
@@ -450,7 +495,8 @@ ProxyCollection::emptyCache()
          && ( hasArtist = m_artistLock.tryLockForWrite() )
          && ( hasYear = m_yearLock.tryLockForWrite() )
          && ( hasGenre = m_genreLock.tryLockForWrite() )
-         && ( hasComposer = m_composerLock.tryLockForWrite() ) )
+         && ( hasComposer = m_composerLock.tryLockForWrite() )
+         && ( hasLabel = m_labelLock.tryLockForWrite() ) )
     {
         //this very simple garbage collector doesn't handle cyclic object graphs
         //so care has to be taken to make sure that we are not dealing with a cyclic graph
@@ -477,6 +523,7 @@ ProxyCollection::emptyCache()
         foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyGenre>, 2, m_genreMap )
         foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyComposer>, 2, m_composerMap )
         foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyYear>, 2, m_yearMap )
+        foreachCollectGarbage( QString, KSharedPtr<Meta::ProxyLabel>, 2, m_labelMap )
     }
 
     //make sure to unlock all necessary locks
@@ -488,4 +535,5 @@ ProxyCollection::emptyCache()
     if( hasYear ) m_yearLock.unlock();
     if( hasGenre ) m_genreLock.unlock();
     if( hasComposer ) m_composerLock.unlock();
+    if( hasLabel ) m_labelLock.unlock();
 }

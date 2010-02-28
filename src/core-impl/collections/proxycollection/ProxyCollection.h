@@ -35,6 +35,7 @@ namespace Meta {
     class ProxyAlbum;
     class ProxyGenre;
     class ProxyComposer;
+    class ProxyLabel;
 }
 
 namespace Collections {
@@ -90,6 +91,11 @@ namespace Collections {
         Meta::ProxyYear* getYear( Meta::YearPtr year );
         void setYear( Meta::ProxyYear *year );
 
+        bool hasLabel( const QString &name );
+        void removeLabel( const QString &name );
+        Meta::ProxyLabel* getLabel( Meta::LabelPtr &label );
+        void setLabel( Meta::ProxyLabel *label );
+
         public slots:
         void removeCollection( const QString &collectionId );
         void removeCollection( Collections::Collection *collection );
@@ -108,6 +114,7 @@ namespace Collections {
         QHash<QString, KSharedPtr<Meta::ProxyArtist> > m_artistMap;
         QHash<AlbumKey, KSharedPtr<Meta::ProxyAlbum> > m_albumMap;
         QHash<TrackKey, KSharedPtr<Meta::ProxyTrack> > m_trackMap;
+        QHash<QString, KSharedPtr<Meta::ProxyLabel> > m_labelMap;
 
         QReadWriteLock m_yearLock;
         QReadWriteLock m_genreLock;
@@ -115,6 +122,7 @@ namespace Collections {
         QReadWriteLock m_artistLock;
         QReadWriteLock m_albumLock;
         QReadWriteLock m_trackLock;
+        QReadWriteLock m_labelLock;
 
     };
 

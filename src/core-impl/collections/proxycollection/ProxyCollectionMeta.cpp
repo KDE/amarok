@@ -578,6 +578,52 @@ ProxyTrack::createCapabilityInterface( Capabilities::Capability::Type type )
     }
 }
 
+void
+ProxyCollection::Track::addLabel( const QString &label )
+{
+    foreach( Meta::TrackPtr track, m_tracks )
+    {
+        track->addLabel( label );
+    }
+}
+
+void
+ProxyCollection::Track::addLabel( const Meta::LabelPtr &label )
+{
+    foreach( Meta::TrackPtr track, m_tracks )
+    {
+        track->addLabel( label );
+    }
+}
+
+void
+ProxyCollection::Track::removeLabel( const Meta::LabelPtr &label )
+{
+    foreach( Meta::TrackPtr track, m_tracks )
+    {
+        track->removeLabel( label );
+    }
+}
+
+Meta::LabelList
+ProxyCollection::Track::labels() const
+{
+    QSet<ProxyLabel*> proxyLabels;
+    foreach( const Meta::TrackPtr &track, m_tracks )
+    {
+        foreach( Meta::LabelPtr label, track->labels() )
+        {
+            proxyLabels.insert( m_collection->getLabel( label ) );
+        }
+    }
+    Meta::LabelList result;
+    foreach( ProxyLabel *label, proxyLabels )
+    {
+        result << Meta::LabelPtr( label );
+    }
+    return result;
+}
+
 
 void
 ProxyTrack::add( const Meta::TrackPtr &track )
@@ -1430,6 +1476,76 @@ ProxyYear::metadataChanged( Meta::YearPtr year )
     }
 
     notifyObservers();
+}
+
+ProxyLabel::ProxyLabel( Collections::ProxyCollection *coll, const Meta::LabelPtr &label )
+    : Meta::Label()
+    , m_collection( coll )
+    , m_name( label->name() )
+{
+    m_labels.append( label );
+}
+
+ProxyLabel::~ProxyLabel()
+{
+    //nothing to do
+}
+
+QString
+ProxyLabel::name() const
+{
+    return m_name;
+}
+
+QString
+ProxyLabel::prettyName() const
+{
+    return m_name;
+}
+
+QString
+ProxyLabel::sortableName() const
+{
+    if( !m_labels.isEmpty() )
+        return m_labels.first()->sortableName();
+
+    return m_name;
+}
+
+bool
+ProxyLabel::hasCapabilityInterface(Meta::Capability::Type type ) const
+{
+
+    if( m_labels.count() == 1 )
+    {
+        return m_labels.first()->hasCapabilityInterface( type );
+    }
+    else
+    {
+        return false;
+    }
+}
+
+Meta::Capability*
+ProxyLabel::createCapabilityInterface( Meta::Capability::Type type )
+{
+    if( m_labels.count() == 1 )
+    {
+        return m_labels.first()->createCapabilityInterface( type );
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void
+ProxyLabel::add( const Meta::LabelPtr &label )
+{
+    if( !label || m_labels.contains( label ) )
+        return;
+
+    m_labels.append( label );
 }
 
 } //namespace Meta
