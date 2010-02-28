@@ -425,6 +425,33 @@ class SqlYear : public Meta::Year
         QMutex m_mutex;
 };
 
+class SqlLabel : public Meta::Label
+{
+public:
+    SqlLabel( SqlCollection *collection, int id, const QString &name );
+
+    virtual QString name() const { return m_name; }
+    virtual QString prettyName() const { return m_name; }
+
+    virtual void invalidateCache();
+
+    virtual Meta::TrackList tracks();
+
+    //SQL specific methods
+    int id() const { return m_id; }
+
+private:
+    SqlCollection *m_collection;
+    QString m_name;
+    int m_id;
+    bool m_tracksLoaded;
+    Meta::TrackList m_tracks;
+    //QReadWriteLock does not support lock upgrades :(
+    //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
+    //switch to QReadWriteLock as soon as it does!
+    QMutex m_mutex;
+};
+
 }
 
 #endif /* SQLMETA_H */

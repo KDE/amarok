@@ -1850,4 +1850,48 @@ SqlYear::tracks()
         return TrackList();
 }
 
+//---------------SqlLabel---------------------------------
+
+SqlLabel::SqlLabel( SqlCollection *collection, int id, const QString &name ) : Meta::Label()
+    ,m_collection( QPointer<SqlCollection>( collection ) )
+    ,m_name( name )
+    ,m_id( id )
+    ,m_tracksLoaded( false )
+    ,m_mutex( QMutex::Recursive )
+{
+    //nothing to do
+}
+
+void
+SqlLabel::invalidateCache()
+{
+    m_mutex.lock();
+    m_tracksLoaded = false;
+    m_tracks.clear();
+    m_mutex.unlock();
+}
+
+TrackList
+SqlLabel::tracks()
+{
+    QMutexLocker locker( &m_mutex );
+    if( m_tracksLoaded )
+    {
+        return m_tracks;
+    }
+    else if( m_collection )
+    {
+        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( QueryMaker::Track );
+        addMatchTo( qm );
+        qm->setBlocking( true );
+        qm->run();
+        m_tracks = qm->tracks();
+        delete qm;
+        m_tracksLoaded = true;
+        return m_tracks;
+    }
+    else
+        return TrackList();
+}
 
