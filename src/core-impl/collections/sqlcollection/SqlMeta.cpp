@@ -198,6 +198,7 @@ SqlTrack::SqlTrack( Collections::SqlCollection* collection, const QStringList &r
     , m_capabilityDelegate( 0 )
     , m_batchUpdate( false )
     , m_writeAllStatisticsFields( false )
+    , m_labelsInCache( false )
 {
     updateData( result, false );
 }
@@ -916,6 +917,94 @@ Capabilities::Capability*
 SqlTrack::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     return ( m_capabilityDelegate ? m_capabilityDelegate->createCapabilityInterface( type, this) : 0 );
+}
+
+SqlTrack::addLabel( const QString &label )
+{
+    Meta::LabelPtr realLabel = m_collection->registry()->getLabel( label, -1 );
+    addLabel( realLabel );
+}
+
+void
+SqlTrack::addLabel( const Meta::LabelPtr &label )
+{
+    KSharedPtr<SqlLabel> sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( label );
+    if( !sqlLabel )
+    {
+        Meta::LabelPtr tmp = m_collection->registry()->getLabel( label->name(), -1 );
+        sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( tmp );
+    }
+    if( sqlLabel )
+    {
+        QStringList rs = m_collection->sqlStorage()->query( QString( "SELECT url FROM tracks WHERE id = %1;" ).arg( m_trackId ) );
+        if( rs.isEmpty() )
+        {
+            warning() << "Did not find entry in TRACKS table for track ID " << m_trackId;
+            return;
+        }
+        QString urlId = rs.first();
+        QString countQuery = "SELECT COUNT(*) FROM urls_labels WHERE url = %1 AND label = %2;";
+        QStringList countRs = m_collection->sqlStorage()->query( countQuery.arg( urlId, QString::number( sqlLabel->id() ) ) );
+        if( countRs.first().toInt() == 0 )
+        {
+            QString insert = "INSERT INTO urls_labels(url,label) VALUES (%1,%2);";
+            m_collection->sqlStorage()->insert( insert.arg( urlId, QString::number( sqlLabel->id() ) ), "urls_labels" );
+
+            if( m_labelsInCache )
+            {
+                m_labelsCache.append( Meta::LabelPtr::staticCast( sqlLabel ) );
+            }
+            notifyObservers();
+        }
+    }
+}
+
+void
+SqlTrack::removeLabel( const Meta::LabelPtr &label )
+{
+    KSharedPtr<SqlLabel> sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( label );
+    if( !sqlLabel )
+    {
+        Meta::LabelPtr tmp = m_collection->registry()->getLabel( label->name(), -1 );
+        sqlLabel = KSharedPtr<SqlLabel>::dynamicCast( tmp );
+    }
+    if( sqlLabel )
+    {
+        QString query = "DELETE FROM urls_labels WHERE label = %2 and url = (SELECT url FROM tracks WHERE id = %1);";
+        m_collection->sqlStorage()->query( query.arg( QString::number( m_trackId ), QString::number( sqlLabel->id() ) ) );
+        if( m_labelsInCache )
+        {
+            m_labelsCache.removeAll( Meta::LabelPtr::staticCast( sqlLabel ) );
+        }
+        notifyObservers();
+    }
+}
+
+Meta::LabelList
+SqlTrack::labels() const
+{
+    if( m_labelsInCache )
+    {
+        return m_labelsCache;
+    }
+    else if( m_collection )
+    {
+        SqlQueryMaker *qm = static_cast< SqlQueryMaker* >( m_collection->queryMaker() );
+        qm->setQueryType( QueryMaker::Label );
+        const_cast<SqlTrack*>( this )->addMatchTo( qm );
+        qm->setBlocking( true );
+        qm->run();
+
+        m_labelsInCache = true;
+        m_labelsCache = qm->labels();
+
+        delete qm;
+        return m_labelsCache;
+    }
+    else
+    {
+        return Meta::LabelList();
+    }
 }
 
 void

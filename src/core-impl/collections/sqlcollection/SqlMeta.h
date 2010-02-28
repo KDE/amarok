@@ -156,6 +156,11 @@ class SqlTrack : public Meta::Track
 
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
+        virtual void addLabel( const QString &label );
+        virtual void addLabel( const Meta::LabelPtr &label );
+        virtual void removeLabel( const Meta::LabelPtr &label );
+        virtual Meta::LabelList labels() const;
+
         //SqlTrack specific methods
         int deviceid() const { return m_deviceid; }
         QString rpath() const { return m_rpath; }
@@ -217,6 +222,9 @@ class SqlTrack : public Meta::Track
         bool m_batchUpdate;
         bool m_writeAllStatisticsFields;
         QVariantMap m_cache;
+
+        mutable bool m_labelsInCache;
+        mutable Meta::LabelList m_labelsCache;
 
         QString m_newUid;
 };

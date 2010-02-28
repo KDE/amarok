@@ -44,6 +44,10 @@ private slots:
 
     void testAlbumRemainsCompilationAfterChangingAlbumName();
     void testAlbumRemaingsNonCompilationAfterChangingAlbumName();
+    void testAddNonExistingLabelToTrack();
+    void testAddExistingLabelToTrack();
+    void testRemoveLabelFromTrack();
+    void testRemoveLabelFromTrackWhenNotInCache();
 
 private:
     Collections::SqlCollection *m_collection;

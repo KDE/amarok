@@ -97,6 +97,8 @@ TestSqlTrack::cleanup()
     m_storage->query( "TRUNCATE TABLE artists;" );
     m_storage->query( "TRUNCATE TABLE tracks;" );
     m_storage->query( "TRUNCATE TABLE urls;" );
+    m_storage->query( "TRUNCATE TABLE labels;" );
+    m_storage->query( "TRUNCATE TABLE urls_labels;" );
 }
 
 void
@@ -155,6 +157,81 @@ TestSqlTrack::testAlbumRemainsCompilationAfterChangingAlbumName()
     QCOMPARE( track1->album()->name(), QString( "album2" ) );
     QVERIFY( track1->album()->isCompilation() );
     QVERIFY( track1->album() == track2->album() );
+}
+
+void
+TestSqlTrack::testAddNonExistingLabelToTrack()
+{
+    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'album1', 1);" );
+
+    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+    Meta::TrackPtr track = m_registry->getTrack( "/IDoNotExist.mp3" );
+    track->addLabel( "A" );
+    QCOMPARE( track->labels().count(), 1 );
+    QStringList labelsCount = m_storage->query( "SELECT COUNT(*) FROM labels;" );
+    QCOMPARE( labelsCount.first().toInt(), 1 );
+    QStringList urlsLabelsCount = m_storage->query( "SELECT COUNT(*) FROM urls_labels;" );
+    QCOMPARE( urlsLabelsCount.first().toInt(), 1 );
+}
+
+void
+TestSqlTrack::testAddExistingLabelToTrack()
+{
+    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'album1', 1);" );
+
+    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+    Meta::TrackPtr track = m_registry->getTrack( "/IDoNotExist.mp3" );
+    Meta::LabelPtr label = m_registry->getLabel( "A", -1 );
+    track->addLabel( label );
+    QCOMPARE( track->labels().count(), 1 );
+    QVERIFY( track->labels().first() == label );
+    QStringList labelsCount = m_storage->query( "SELECT COUNT(*) FROM labels;" );
+    QCOMPARE( labelsCount.first().toInt(), 1 );
+    QStringList urlsLabelsCount = m_storage->query( "SELECT COUNT(*) FROM urls_labels;" );
+    QCOMPARE( urlsLabelsCount.first().toInt(), 1 );
+}
+
+void
+TestSqlTrack::testRemoveLabelFromTrack()
+{
+    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'album1', 1);" );
+
+    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+
+    Meta::TrackPtr track = m_registry->getTrack( "/IDoNotExist.mp3" );
+    Meta::LabelPtr label = m_registry->getLabel( "A", -1 );
+    track->addLabel( label );
+    QCOMPARE( track->labels().count(), 1 );
+
+    track->removeLabel( label );
+    QCOMPARE( track->labels().count(), 0 );
+
+    QStringList urlsLabelsCount = m_storage->query( "SELECT COUNT(*) FROM urls_labels;" );
+    QCOMPARE( urlsLabelsCount.first().toInt(), 0 );
+}
+
+void
+TestSqlTrack::testRemoveLabelFromTrackWhenNotInCache()
+{
+    m_storage->query( "INSERT INTO albums(id,name,artist) VALUES (1, 'album1', 1);" );
+
+    m_storage->query( "INSERT INTO tracks(id,url,title,artist,album,genre,year,composer) "
+                      "VALUES (1,1,'track1',1,1,1,1,1 );" );
+
+    m_storage->query( "INSERT INTO labels(id,label) VALUES (1,'A');" );
+    m_storage->query( "INSERT INTO urls_labels(url,label) VALUES (1,1);" );
+
+    Meta::TrackPtr track = m_registry->getTrack( "/IDoNotExist.mp3" );
+    Meta::LabelPtr label = m_registry->getLabel( "A", -1 );
+
+    track->removeLabel( label );
+    QCOMPARE( track->labels().count(), 0 );
+
+    QStringList urlsLabelsCount = m_storage->query( "SELECT COUNT(*) FROM urls_labels;" );
+    QCOMPARE( urlsLabelsCount.first().toInt(), 0 );
 }
 
 #include "TestSqlTrack.moc"
