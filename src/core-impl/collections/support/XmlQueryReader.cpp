@@ -343,6 +343,7 @@ XmlQueryReader::fieldVal( QStringRef field )
     else if( field == "firstplay"  ) return Meta::valFirstPlayed;
     else if( field == "lastplay"   ) return Meta::valLastPlayed;
     else if( field == "playcount"  ) return Meta::valPlaycount;
+    else if( field == "label"      ) return Meta::valLabel;
     else                             return 0;
 }
 

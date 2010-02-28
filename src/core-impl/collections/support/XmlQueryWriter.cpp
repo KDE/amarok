@@ -272,6 +272,13 @@ XmlQueryWriter::addMatch( const Meta::YearPtr &year )
 }
 
 QueryMaker*
+XmlQueryWriter::addMatch( const Meta::LabelPtr &label )
+{
+    m_qm->addMatch( label );
+    return this;
+}
+
+QueryMaker*
 XmlQueryWriter::addMatch( const Meta::DataPtr &data )
 {
     m_qm->addMatch( data );
@@ -448,6 +455,7 @@ XmlQueryWriter::fieldName( qint64 val )
         case Meta::valFirstPlayed: return "firstplay";
         case Meta::valLastPlayed:  return "lastplay";
         case Meta::valPlaycount:   return "playcount";
+        case Meta::valLabel:       return "label";
         default:                   return "";
     }
 }

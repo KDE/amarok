@@ -64,6 +64,7 @@ class XmlQueryWriter : public QueryMaker
         QueryMaker* addMatch( const Meta::GenrePtr &genre );
         QueryMaker* addMatch( const Meta::YearPtr &year );
         QueryMaker* addMatch( const Meta::DataPtr &data );
+        QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
         QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
