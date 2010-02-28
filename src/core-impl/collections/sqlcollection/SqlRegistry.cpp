@@ -354,11 +354,47 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
     }
 }
 
+Meta::LabelPtr
+SqlRegistry::getLabel( const QString &label, int id, bool refresh )
+{
+    QMutexLocker locker( &m_labelMutex );
+    if( m_labelMap.contains( id ) )
+    {
+        Meta::LabelPtr label = m_labelMap.value( id );
+        if( refresh )
+        {
+            KSharedPtr<SqlLabel>::staticCast( label )->invalidateCache();
+        }
+        return label;
+    }
+    else
+    {
+        if( id <= 0 )
+        {
+            QString query = QString( "SELECT id FROM labels WHERE label = '%1';" ).arg( m_storage->escape( label ) );
+            QStringList res = m_storage->query( query );
+            if( res.isEmpty() )
+            {
+                QString insert = QString( "INSERT INTO labels( label ) VALUES ('%1');" ).arg( m_storage->escape( label ) );
+                id = m_storage->insert( insert, "albums" );
+            }
+            else
+            {
+                id = res[0].toInt();
+            }
+        }
+        SqlLabel *sqlLabel = new SqlLabel( m_collection, id, label );
+        Meta::LabelPtr label( sqlLabel );
+        m_labelMap.insert( id, label );
+        return label;
+    }
+}
+
 void
 SqlRegistry::emptyCache()
 {
-    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasUid;
-    hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = hasUid = false;
+    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasUid, hasLabel;
+    hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = hasUid = hasLabel = false;
 
     //try to avoid possible deadlocks by aborting when we can't get all locks
     if ( ( hasTrack = m_trackMutex.tryLock() )
@@ -367,7 +403,8 @@ SqlRegistry::emptyCache()
          && ( hasYear = m_yearMutex.tryLock() )
          && ( hasGenre = m_genreMutex.tryLock() )
          && ( hasComposer = m_composerMutex.tryLock() )
-         && ( hasUid = m_uidMutex.tryLock() ) )
+         && ( hasUid = m_uidMutex.tryLock() )
+         && ( hasLabel = m_labelMutex.tryLock() ) )
     {
         //this very simple garbage collector doesn't handle cyclic object graphs
         //so care has to be taken to make sure that we are not dealing with a cyclic graph
@@ -381,6 +418,7 @@ SqlRegistry::emptyCache()
         foreachInvalidateCache( Meta::GenrePtr, KSharedPtr<Meta::SqlGenre>, m_genreMap );
         foreachInvalidateCache( Meta::ComposerPtr, KSharedPtr<Meta::SqlComposer>, m_composerMap );
         foreachInvalidateCache( Meta::YearPtr, KSharedPtr<Meta::SqlYear>, m_yearMap );
+        foreachInvalidateCache( Meta::LabelPtr, KSharedPtr<SqlLabel>, m_labelMap );
 
         //elem.count() == 2 is correct because elem is one pointer to the object
         //and the other is stored in the hash map (except for m_trackMap, where
@@ -396,11 +434,20 @@ SqlRegistry::emptyCache()
         foreachCollectGarbage( TrackId, Meta::TrackPtr, 3, m_trackMap )
         foreachCollectGarbage( QString, Meta::TrackPtr, 2, m_uidMap )
         //run before artist so that album artist pointers can be garbage collected
+<<<<<<< HEAD:src/core-impl/collections/sqlcollection/SqlRegistry.cpp
         foreachCollectGarbage( int, Meta::AlbumPtr, 2, m_albumMap )
         foreachCollectGarbage( int, Meta::ArtistPtr, 2, m_artistMap )
         foreachCollectGarbage( int, Meta::GenrePtr, 2, m_genreMap )
         foreachCollectGarbage( int, Meta::ComposerPtr, 2, m_composerMap )
         foreachCollectGarbage( int, Meta::YearPtr, 2, m_yearMap )
+=======
+        foreachCollectGarbage( int, AlbumPtr, 2, m_albumMap )
+        foreachCollectGarbage( int, ArtistPtr, 2, m_artistMap )
+        foreachCollectGarbage( int, GenrePtr, 2, m_genreMap )
+        foreachCollectGarbage( int, ComposerPtr, 2, m_composerMap )
+        foreachCollectGarbage( int, YearPtr, 2, m_yearMap )
+        foreachCollectGarbage( int, LabelPtr, 2, m_labelMap )
+>>>>>>> added support for labels to the registry:src/core-impl/collections/sqlcollection/SqlRegistry.cpp
     }
 
     //make sure to unlock all necessary locks
@@ -413,6 +460,7 @@ SqlRegistry::emptyCache()
     if( hasGenre ) m_genreMutex.unlock();
     if( hasComposer ) m_composerMutex.unlock();
     if( hasUid ) m_uidMutex.unlock();
+    if( hasLabel ) m_labelMutex.unlock();
 }
 
 Capabilities::AlbumCapabilityDelegate*

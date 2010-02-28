@@ -60,6 +60,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         Meta::ComposerPtr getComposer( const QString &name, int id = -1, bool refresh = false );
         Meta::YearPtr getYear( const QString &year, int id = -1, bool refresh = false );
         Meta::AlbumPtr getAlbum( const QString &album, int id = -1, int artist = -1, bool refresh = false ); //TODO fix this (Fix what?)
+        Meta::LabelPtr getLabel( const QString &label, int id = -1, bool refresh = false );
 
         //DI setter
         void setStorage( SqlStorage *storage ) { m_storage = storage; }
@@ -82,6 +83,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         QHash<int, Meta::GenrePtr > m_genreMap;
         QHash<int, Meta::YearPtr > m_yearMap;
         QHash<int, Meta::AlbumPtr > m_albumMap;        //TODO: needs improvement
+        QHash<int, Meta::LabelPtr > m_labelMap;
 
         QMutex m_trackMutex;
         QMutex m_artistMutex;
@@ -90,6 +92,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
         QMutex m_yearMutex;
         QMutex m_albumMutex;
         QMutex m_uidMutex;
+        QMutex m_labelMutex;
 
         QTimer *m_timer;
 
