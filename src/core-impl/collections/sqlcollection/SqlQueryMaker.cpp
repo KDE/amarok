@@ -481,6 +481,13 @@ SqlQueryMaker::addFilter( qint64 value, const QString &filter, bool matchBegin, 
         d->linkedTables |= Private::ALBUM_TAB;
         d->queryFilter += QString( " %1 ( albums.artist IS NULL or albumartists.name = '') " ).arg( andOr() );
     }
+    else if( value == Meta::valLabel )
+    {
+        d->linkedTables |= Private::TAGS_TAB;
+        QString like = likeCondition( filter, !matchBegin, !matchEnd );
+        QString filter = " %1 tracks.url IN (SELECT a.url FROM urls_labels A INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ";
+        d->queryFilter += filter.arg( andOr(), like );
+    }
     else
     {
         QString like = likeCondition( filter, !matchBegin, !matchEnd );
@@ -496,6 +503,13 @@ SqlQueryMaker::excludeFilter( qint64 value, const QString &filter, bool matchBeg
     {
         d->linkedTables |= Private::ALBUMARTIST_TAB;
         d->queryFilter += QString( " %1 NOT ( albums.artist IS NULL or albumartists.name = '') " ).arg( andOr() );
+    }
+    else if( value == Meta::valLabel )
+    {
+        d->linkedTables |= Private::TAGS_TAB;
+        QString like = likeCondition( filter, !matchBegin, !matchEnd );
+        QString filter = " %1 tracks.url NOT IN (SELECT a.url FROM urls_labels A INNER JOIN labels b ON a.label = b.id WHERE b.label %2) ";
+        d->queryFilter += filter.arg( andOr(), like );
     }
     else
     {

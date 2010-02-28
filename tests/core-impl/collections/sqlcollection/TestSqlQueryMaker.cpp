@@ -1027,4 +1027,82 @@ TestSqlQueryMaker::testQueryTypesWithLabelMatching()
     QCOMPARE( qm.data().count(), result );
 }
 
+void
+TestSqlQueryMaker::testFilterOnLabelsAndCombination()
+{
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( QueryMaker::Track );
+    qm.beginAnd();
+    qm.addFilter( Meta::valLabel, "labelB", true, true );
+    qm.addFilter( Meta::valLabel, "labelA", false, false );
+    qm.endAndOr();
+    qm.run();
+
+    QCOMPARE( qm.tracks().count(), 1 );
+}
+
+void
+TestSqlQueryMaker::testFilterOnLabelsOrCombination()
+{
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( QueryMaker::Track );
+    qm.beginOr();
+    qm.addFilter( Meta::valLabel, "labelB", true, true );
+    qm.addFilter( Meta::valLabel, "labelA", false, false );
+    qm.endAndOr();
+    qm.run();
+
+    QCOMPARE( qm.tracks().count(), 3 );
+}
+
+void
+TestSqlQueryMaker::testFilterOnLabelsNegationAndCombination()
+{
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( QueryMaker::Track );
+    qm.beginAnd();
+    qm.excludeFilter( Meta::valLabel, "labelB", true, true );
+    qm.excludeFilter( Meta::valLabel, "labelA", false, false );
+    qm.endAndOr();
+    qm.run();
+
+    QCOMPARE( qm.tracks().count(), 3 );
+}
+
+void
+        TestSqlQueryMaker::testFilterOnLabelsNegationOrCombination()
+{
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( QueryMaker::Track );
+    qm.beginOr();
+    qm.excludeFilter( Meta::valLabel, "labelB", true, true );
+    qm.excludeFilter( Meta::valLabel, "labelA", false, false );
+    qm.endAndOr();
+    qm.run();
+
+    QCOMPARE( qm.tracks().count(), 5 );
+}
+
+void
+TestSqlQueryMaker::testComplexLabelsFilter()
+{
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( QueryMaker::Track );
+    qm.beginOr();
+    qm.addFilter( Meta::valLabel, "test", true, true );
+    qm.beginAnd();
+    qm.addFilter( Meta::valLabel, "labelB", false, false );
+    qm.excludeFilter( Meta::valLabel, "labelA", false, true );
+    qm.endAndOr();
+    qm.endAndOr();
+    qm.run();
+
+    QCOMPARE( qm.tracks().count(), 3 );
+}
+
 #include "TestSqlQueryMaker.moc"

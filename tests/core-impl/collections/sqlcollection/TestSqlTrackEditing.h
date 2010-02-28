@@ -55,6 +55,12 @@ private slots:
     void testQueryTypesWithLabelMatching_data();
     void testQueryTypesWithLabelMatching();
 
+    void testFilterOnLabelsOrCombination();
+    void testFilterOnLabelsAndCombination();
+    void testFilterOnLabelsNegationAndCombination();
+    void testFilterOnLabelsNegationOrCombination();
+    void testComplexLabelsFilter();
+
 private:
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
