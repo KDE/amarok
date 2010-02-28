@@ -41,7 +41,6 @@ ProgressWidget::ProgressWidget( QWidget *parent )
     box->setSpacing( 4 );
 
     m_slider = new Amarok::TimeSlider( this );
-    m_slider->setMouseTracking( true );
     m_slider->setToolTip( i18n( "Track Progress" ) );
     m_slider->setMaximumSize( 600000, 20 );
 

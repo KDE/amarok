@@ -68,7 +68,6 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_ongoingDrag( false )
     , m_justDoubleClicked( false )
 {
-    setMouseTracking( true );
     setSortingEnabled( true );
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
@@ -363,12 +362,14 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
 
 void CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
 {
+    // pass event to parent widget
     if( event->buttons() || event->modifiers() )
     {
         Amarok::PrettyTreeView::mouseMoveEvent( event );
         update();
         return;
     }
+
     QPoint point = event->pos() - m_clickLocation;
     KConfigGroup cg( KGlobal::config(), "KDE" );
     if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )

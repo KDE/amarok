@@ -769,7 +769,6 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setIconSize( QSize(100, 100) );
     setGridSize( QSize(120, 160) );
     setTextElideMode( Qt::ElideRight );
-    setMouseTracking( true );
     setContextMenuPolicy( Qt::DefaultContextMenu );
 
     connect( this, SIGNAL( itemEntered( QListWidgetItem * ) ), SLOT( setStatusText( QListWidgetItem * ) ) );
