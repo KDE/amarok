@@ -286,6 +286,23 @@ namespace Meta
             */
             virtual void setCachedLyrics( const QString &lyrics );
 
+            /**
+              Adds a label to the track.
+              Does nothing if the track already has the given label.
+             */
+            virtual void addLabel( const QString &label );
+            /**
+              Adds a label to the track.
+              Does nothing if the track already has the given label.
+             */
+            virtual void addLabel( const Meta::LabelPtr &label );
+
+            /**
+              Removes a lbel from a track.
+              Does nothing if the track does not actually have the label assigned to it.
+             */
+            virtual void removeLabel( const Meta::LabelPtr &label );
+
             virtual bool operator==( const Track &track ) const;
 
             static bool lessThan( const TrackPtr& left, const TrackPtr& right );

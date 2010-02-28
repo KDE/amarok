@@ -270,6 +270,24 @@ Meta::Track::setCachedLyrics( const QString &lyrics )
 }
 
 void
+Meta::Track::addLabel( const QString &label )
+{
+    Q_UNUSED( label )
+}
+
+void
+Meta::Track::addLabel( const Meta::LabelPtr &label )
+{
+    Q_UNUSED( label )
+}
+
+void
+Meta::Track::removeLabel( const Meta::LabelPtr &label )
+{
+    Q_UNUSED( label )
+}
+
+void
 Meta::Track::addMatchTo( Collections::QueryMaker *qm )
 {
     qm->addMatch( TrackPtr( this ) );
