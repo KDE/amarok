@@ -28,6 +28,8 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * Fixed odd behaviour when doing drag-and-drop from Collection browser.
+      (BR 222500)
     * Show artist and title instead of raw track ID when copying/deleting
       tracks on an MTP device.
     * Fixed time labels getting truncated in the slim toolbar. (BR 195935)

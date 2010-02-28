@@ -375,10 +375,8 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
     {
         m_clickTimer.stop();
         slotClickTimeout();
-        event->accept();
     }
-    else
-        Amarok::PrettyTreeView::mouseMoveEvent( event );
+    event->accept();
 }
 
 CollectionTreeItem* CollectionTreeView::getItemFromIndex( QModelIndex &index )
