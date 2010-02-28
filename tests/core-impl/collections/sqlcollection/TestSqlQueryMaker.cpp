@@ -153,6 +153,9 @@ TestSqlQueryMaker::initTestCase()
     m_storage->query( "INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
                       "VALUES(2,3000,30000, 70.0,9,50);" );
 
+    m_storage->query( "INSERT INTO labels(id,label) VALUES (1,'labelA'), (2,'labelB'),(3,'test');" );
+    m_storage->query( "INSERT INTO urls_labels(url,label) VALUES (1,1),(1,2),(2,2),(3,3),(4,3),(4,2);" );
+
 }
 
 void
@@ -959,6 +962,34 @@ TestSqlQueryMaker::testReturnFunctions()
 
     QCOMPARE( qm.customData( "testId" ).first(), result );
 
+}
+
+void
+TestSqlQueryMaker::testLabelMatch()
+{
+    Meta::LabelPtr label = m_collection->registry()->getLabel( "labelB", -1 );
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( QueryMaker::Track );
+    qm.addMatch( label );
+    qm.run();
+
+    QCOMPARE( qm.tracks().count(), 3 );
+}
+
+void
+TestSqlQueryMaker::testMultipleLabelMatches()
+{
+    Meta::LabelPtr labelB = m_collection->registry()->getLabel( "labelB", -1 );
+    Meta::LabelPtr labelA = m_collection->registry()->getLabel( "labelA", -1 );
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( QueryMaker::Track );
+    qm.addMatch( labelB );
+    qm.addMatch( labelA );
+    qm.run();
+
+    QCOMPARE( qm.tracks().count(), 1 );
 }
 
 #include "TestSqlQueryMaker.moc"

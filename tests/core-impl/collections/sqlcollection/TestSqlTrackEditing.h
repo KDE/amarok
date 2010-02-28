@@ -49,6 +49,9 @@ private slots:
     void testChangeYearToNew();
     void testChangeAlbumToExisting();
 
+    void testLabelMatch();
+    void testMultipleLabelMatches();
+
 private:
     Collections::SqlCollection *m_collection;
     SqlStorage *m_storage;
