@@ -28,6 +28,7 @@ VERSION 2.3
       last check.
 
   BUGFIXES:
+    * Fixed lyrics window size too small after edit. (BR 228922)
     * Fixed odd behaviour when doing drag-and-drop from Collection browser.
       (BR 222500)
     * Show artist and title instead of raw track ID when copying/deleting

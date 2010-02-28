@@ -408,7 +408,7 @@ LyricsApplet::changeLyricsFont()
 
     debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
     // resize with new font
-    collapseToMin();
+    // collapseToMin();
 }
 
 void
@@ -520,7 +520,7 @@ LyricsApplet::setEditing( const bool isEditing )
 {
     m_lyrics->setReadOnly( !isEditing );
     update();
-    collapseToMin();
+    // collapseToMin();
 }
 
 
