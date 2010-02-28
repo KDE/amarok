@@ -73,7 +73,7 @@ class SqlWorkerThread : public ThreadWeaver::Job
 
 struct SqlQueryMaker::Private
 {
-    enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64, URLS_TAB = 128, ALBUMARTIST_TAB = 256 };
+    enum { TAGS_TAB = 1, ARTIST_TAB = 2, ALBUM_TAB = 4, GENRE_TAB = 8, COMPOSER_TAB = 16, YEAR_TAB = 32, STATISTICS_TAB = 64, URLS_TAB = 128, ALBUMARTIST_TAB = 256, LABELS_TAB = 1024 };
     int linkedTables;
     QueryMaker::QueryType queryType;
     QString query;
@@ -327,8 +327,17 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->queryType = QueryMaker::Custom;
         return this;
 
-        case QueryMaker::None:
-            return this;
+    case QueryMaker::Label:
+        if( d->queryType == QueryMaker::None )
+        {
+            d->queryType = QueryMaker::Label;
+            d->withoutDuplicates = true;
+            d->queryReturnValues = "labels.label,labels.id";
+            d->linkedTables |= Private::LABELS_TAB;
+        }
+
+    case QueryMaker::None:
+        return this;
     }
     return this;
 }
@@ -720,6 +729,15 @@ SqlQueryMaker::linkTables()
                 d->linkedTables ^= Private::YEAR_TAB;
             break;
         }
+    case QueryMaker::Label:
+        {
+            d->queryFrom += " labels";
+            if( d->linkedTables != Private::LABELS_TAB )
+                d->queryFrom += " INNER JOIN urls_labels ON labels.id = urls_labels.label"
+                                " INNER JOIN tracks ON urls_labels.url = tracks.url";
+            if( d->linkedTables & Private::LABELS_TAB )
+                d->linkedTables ^= Private::LABELS_TAB;
+        }
         case QueryMaker::None:
         {
             //???
@@ -1097,6 +1115,13 @@ SqlQueryMaker::blockingNewResultReady(const QString &id, const QStringList &cust
 {
     Q_UNUSED( id );
     d->blockingCustomData = customData;
+}
+
+void
+SqlQueryMaker::blockingNewResultReady( const QString &id, const Meta::LabelList &labels )
+{
+    Q_UNUSED( id );
+    d->blockingLabels = labels;
 }
 
 #include "SqlQueryMaker.moc"

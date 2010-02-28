@@ -101,6 +101,9 @@ SqlQueryMakerInternal::handleResult( const QStringList &result )
         case QueryMaker::Year:
             handleYears( result );
             break;
+        case QueryMaker::Label:
+            handleLabels( result );
+            break;
 
         case QueryMaker::None:
             debug() << "Warning: queryResult with queryType == NONE";
@@ -136,6 +139,9 @@ SqlQueryMakerInternal::handleResult( const QStringList &result )
                 case QueryMaker::Year:
                     emit newResultReady( m_collection->collectionId(), Meta::YearList() );
                     break;
+                case QueryMaker::Label:
+                    emit newResultReady( m_collection->collectionId(), Meta::LabelList() );
+                    break;
 
             case QueryMaker::None:
                 debug() << "Warning: queryResult with queryType == NONE";
@@ -152,7 +158,7 @@ SqlQueryMakerInternal::handleResult( const QStringList &result )
 // signal that takes the list of the specific class.
 // If qm is used blocking it only stores the result ptrs into data as DataPtrs
 
-#define emitOrStoreProperResult( PointerType, list ) { \
+#define emitProperResult( PointerType, list ) { \
             if ( m_resultAsDataPtrs ) { \
                 Meta::DataList data; \
                 foreach( PointerType p, list ) { \
@@ -178,7 +184,7 @@ SqlQueryMakerInternal::handleTracks( const QStringList &result )
         QStringList row = result.mid( i*returnCount, returnCount );
         tracks.append( reg->getTrack( row ) );
     }
-    emitOrStoreProperResult( Meta::TrackPtr, tracks );
+    emitProperResult( Meta::TrackPtr, tracks );
 }
 
 void
@@ -192,7 +198,7 @@ SqlQueryMakerInternal::handleArtists( const QStringList &result )
         QString id = iter.next();
         artists.append( reg->getArtist( name, id.toInt() ) );
     }
-    emitOrStoreProperResult( Meta::ArtistPtr, artists );
+    emitProperResult( Meta::ArtistPtr, artists );
 }
 
 void
@@ -207,7 +213,7 @@ SqlQueryMakerInternal::handleAlbums( const QStringList &result )
         QString artist = iter.next();
         albums.append( reg->getAlbum( name, id.toInt(), artist.toInt() ) );
     }
-    emitOrStoreProperResult( Meta::AlbumPtr, albums );
+    emitProperResult( Meta::AlbumPtr, albums );
 }
 
 void
@@ -221,7 +227,7 @@ SqlQueryMakerInternal::handleGenres( const QStringList &result )
         QString id = iter.next();
         genres.append( reg->getGenre( name, id.toInt() ) );
     }
-    emitOrStoreProperResult( Meta::GenrePtr, genres );
+    emitProperResult( Meta::GenrePtr, genres );
 }
 
 void
@@ -235,7 +241,7 @@ SqlQueryMakerInternal::handleComposers( const QStringList &result )
         QString id = iter.next();
         composers.append( reg->getComposer( name, id.toInt() ) );
     }
-    emitOrStoreProperResult( Meta::ComposerPtr, composers );
+    emitProperResult( Meta::ComposerPtr, composers );
 }
 
 void
@@ -249,7 +255,22 @@ SqlQueryMakerInternal::handleYears( const QStringList &result )
         QString id = iter.next();
         years.append( reg->getYear( name, id.toInt() ) );
     }
-    emitOrStoreProperResult( Meta::YearPtr, years );
+    emitProperResult( Meta::YearPtr, years );
+}
+
+void
+SqlQueryMakerInternal::handleLabels( const QStringList &result )
+{
+    Meta::LabelList labels;
+    SqlRegistry *reg = m_collection->registry();
+    for( QStringListIterator iter( result ); iter.hasNext(); )
+    {
+        QString label = iter.next();
+        QString id = iter.next();
+        labels.append( reg->getLabel( label, id.toInt() ) );
+    }
+
+    emitProperResult( Meta::LabelPtr, labels );
 }
 
 #include "SqlQueryMakerInternal.moc"

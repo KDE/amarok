@@ -49,6 +49,7 @@ signals:
     void newResultReady( QString collectionId, Meta::YearList );
     void newResultReady( QString collectionId, Meta::DataList );
     void newResultReady( QString collectionId, QStringList );
+    void newResultReady( QString collectionId, Meta::LabelList );
 
 private:
     void handleResult( const QStringList &result );
@@ -58,6 +59,7 @@ private:
     void handleGenres( const QStringList &result );
     void handleComposers( const QStringList &result );
     void handleYears( const QStringList &result );
+    void handleLabels( const QStringList &result );
 
 private:
     QPointer<SqlCollection> m_collection;
