@@ -24,6 +24,7 @@
 #include "collection/Collection.h"
 #include "collection/CollectionManager.h"
 #include "context/widgets/RatingWidget.h"
+#include "playlist/PlaylistModelStack.h"
 // KDE
 #include <KAction>
 #include <KColorScheme>
@@ -137,6 +138,13 @@ void CoverBlingApplet::slideChanged(int islideindex)
 }
 void CoverBlingApplet::playAlbum(int islideindex)
 {
+	Meta::AlbumPtr album = m_pictureflow->getAlbum(islideindex);
+	if (album)
+	{
+		//m_label->setText("DOUBLE CLICK");
+    		The::playlistController()->insertOptioned( album->tracks(), Playlist::LoadAndPlay );
+	}
+
 }
 void CoverBlingApplet::FillFlow(PictureFlow* iPictureFlow)
 {
