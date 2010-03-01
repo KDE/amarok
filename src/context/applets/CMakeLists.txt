@@ -5,6 +5,7 @@ add_subdirectory( info )
 add_subdirectory( wikipedia )
 add_subdirectory( videoclip )
 add_subdirectory( photos )
+add_subdirectory( coverbling )
 #add_subdirectory( songkick )
 # disabled, soon to be replaced
 #add_subdirectory( mediadevices )
