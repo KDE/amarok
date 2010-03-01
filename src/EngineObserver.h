@@ -100,7 +100,7 @@ public:
      * Called when the current track finishes
      *
      * This is not called when playback stops, or when a track changes
-	 * without finishing
+     * without finishing
      *
      * @param track  the new track; may not be null
      */
@@ -187,7 +187,7 @@ protected:
     void trackLengthChangedNotify( qint64 seconds );
     void newTrackPlaying() const;
     void trackChangedNotify( Meta::TrackPtr track );
-	void trackFinishedNotify( Meta::TrackPtr track );
+    void trackFinishedNotify( Meta::TrackPtr track );
 
 private Q_SLOTS:
     void observerDestroyed( QObject* object );
