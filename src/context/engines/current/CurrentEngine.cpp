@@ -158,21 +158,24 @@ CurrentEngine::stoppedState()
         setData( "albums", "headerText", QVariant( i18n( "Recently added albums" ) ) );
 
         Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
-        if( m_qm )
-            m_qm->reset();
-        else
-            m_qm = coll->queryMaker();
-        m_qm->setQueryType( QueryMaker::Album );
-        m_qm->excludeFilter( Meta::valAlbum, QString(), true, true );
-        m_qm->orderBy( Meta::valCreateDate, true );
-        m_qm->limitMaxResultSize( 5 );
-        m_albums.clear();
+        if( coll )
+        {
+            if( m_qm )
+                m_qm->reset();
+            else
+                m_qm = coll->queryMaker();
+            m_qm->setQueryType( QueryMaker::Album );
+            m_qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+            m_qm->orderBy( Meta::valCreateDate, true );
+            m_qm->limitMaxResultSize( 5 );
+            m_albums.clear();
 
-        connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-                SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-        connect( m_qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
+            connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
+                    SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+            connect( m_qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
 
-        m_qm->run();
+            m_qm->run();
+        }
     }
 
     // Get the latest tracks played:
