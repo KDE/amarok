@@ -129,9 +129,12 @@ Amarok::TrayIcon::setupToolTip()
         if( m_track->album() )
         {
             const QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
-            image.save( tmpFilename, "PNG" );
-            tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
-            tooltip += "<img src='"+tmpFilename+"' /></td></tr>";
+            if ( !image.isNull() ) // no cover available
+            {
+                image.save( tmpFilename, "PNG" );
+                tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
+                tooltip += "<img src='"+tmpFilename+"' /></td></tr>";
+            }
         }
 
         QStringList left, right;
@@ -357,6 +360,7 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
     static qint64 oldMergePos = -1;
 
     // start up
+    // TODO: Move these two blocks to ctor (warning: might get some regressions)
     if( m_baseIcon.isNull() )
     {
         QIcon icon = KSystemTrayIcon::loadIcon( "amarok" );
