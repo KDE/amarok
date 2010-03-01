@@ -36,6 +36,12 @@ class AppletToolbar;
 class AppletToolbarAppletItem;
 class AppletItemOverlay;
 
+/**
+ * The applet toolbar is a separate QGV on the same QGS that the ContextView uses. This is because we want to be able to show
+ *  the add applet menu in the main CV, but we also want to manage the toolbar differently. So the toolbar is actually in the
+ *  same scene as the applets but shifted a few thousand pixels so it is invisible in the main CV. The ToolbarView however is
+ *  positioned directly above the toolbar in the scene.
+ */
 class ToolbarView : public QGraphicsView
 {
     Q_OBJECT

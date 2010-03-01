@@ -28,6 +28,10 @@
 namespace Context
 {
 
+/**
+ * The ContextScene is a very simple QGraphicsScene, it does the same thing as a Plasma::Corona.
+ * The only bit that is important is that it controls what the default containtainment to be loaded should be.
+ */
 class AMAROK_EXPORT ContextScene : public Plasma::Corona
 {
     Q_OBJECT

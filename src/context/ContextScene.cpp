@@ -43,7 +43,6 @@ ContextScene::~ContextScene()
 void ContextScene::loadDefaultSetup()
 {
     Plasma::Containment* c = addContainment( "amarok_containment_vertical" );
-//     addItem( c );
     c->setScreen( -1 );
     c->setFormFactor( Plasma::Planar );
 }

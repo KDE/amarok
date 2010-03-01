@@ -32,10 +32,22 @@ class AMAROK_EXPORT LyricsObserver
         LyricsObserver();
         LyricsObserver( LyricsSubject* );
         virtual ~LyricsObserver();
-    
+
+        /**
+         *  A lyrics script has returned new plaintext lyrics.
+         */
         virtual void newLyrics( QStringList& lyrics ) { Q_UNUSED( lyrics ); }
+        /**
+         *  A lyrics script has returned new html lyrics.
+         */
         virtual void newLyricsHtml( QString& lyrics ) { Q_UNUSED( lyrics ); }
+        /**
+         *  A lyrics script has returned a list of suggested URLs for correct lyrics.
+         */
         virtual void newSuggestions( QStringList& suggestions ) { Q_UNUSED( suggestions ); }
+        /**
+         *  A lyrics script has returned some generic message that they want to be displayed.
+         */
         virtual void lyricsMessage( QString& key, QString &val ) { Q_UNUSED( key ); Q_UNUSED( val ); }
 
     private:
