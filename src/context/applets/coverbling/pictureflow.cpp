@@ -1063,15 +1063,27 @@ void PictureFlow::keyPressEvent(QKeyEvent* event)
 
 void PictureFlow::mousePressEvent(QMouseEvent* event)
 {
-  if(event->x() > (width()/2+(d->state->slideWidth)/2))
-    showNext();
-  if(event->x() < (width()/2-(d->state->slideWidth)/2))
-    showPrevious();
+ if(event->x() > (width()/2+(d->state->slideWidth)/2))
+    	showNext();
+ if(event->x() < (width()/2-(d->state->slideWidth)/2))
+    	showPrevious();
 }
-void PictureFlow::mouseDoubleClickedEvent(QMouseEvent* event)
+void PictureFlow::mouseDoubleClickEvent(QMouseEvent* event)
 {
-      if ((event->x() <= (width()/2+(d->state->slideWidth)/2)) && (event->x() >= (width()/2-(d->state->slideWidth)/2)))
+    if (((event->x() <= (width()/2+(d->state->slideWidth)/2)) && (event->x() >= (width()/2-(d->state->slideWidth)/2))) && ((event->y() <= (height()/2+(d->state->slideHeight)/2)) && (event->y() >= (height()/2-(d->state->slideHeight)/2))))
       	emit doubleClicked(d->state->centerIndex);
+}
+void PictureFlow::wheelEvent(QWheelEvent * event)
+{
+     int numDegrees = event->delta() / 8;
+     int numSteps = numDegrees / 15;
+     bool forward = TRUE;
+     if (numSteps<0) {forward = FALSE; numSteps = -numSteps;}
+     for (int i=1;i<=numSteps;i++)
+     {
+	if (forward) showNext();
+	else showPrevious();
+     }
 }
 void PictureFlow::paintEvent(QPaintEvent* event)
 {

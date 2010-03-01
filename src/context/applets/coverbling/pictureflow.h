@@ -190,7 +190,8 @@ protected:
   void keyPressEvent(QKeyEvent* event);
   void mousePressEvent(QMouseEvent* event);
   void resizeEvent(QResizeEvent* event);
-  void mouseDoubleClickedEvent(QMouseEvent* event);
+  void mouseDoubleClickEvent(QMouseEvent* event);
+  void wheelEvent(QWheelEvent * event);
 private slots:
   void updateAnimation();
 
