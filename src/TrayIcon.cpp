@@ -129,7 +129,7 @@ Amarok::TrayIcon::setupToolTip()
         if( m_track->album() )
         {
             const QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
-            if ( !image.isNull() ) // no cover available
+            if ( !image.isNull() ) // cover available?
             {
                 image.save( tmpFilename, "PNG" );
                 tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
