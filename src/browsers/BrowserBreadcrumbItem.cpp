@@ -82,6 +82,9 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory * category )
         connect( m_mainButton, SIGNAL( clicked( bool ) ), category, SLOT( reActivate() ) );
     }
 
+    adjustSize();
+    m_nominalWidth = width();
+    
     hide();
 
     updateSizePolicy();
@@ -132,6 +135,9 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
 
     connect( this, SIGNAL( activated( const QString & ) ), handler, SLOT( addItemActivated( const QString & ) ) );
 
+    adjustSize();
+    m_nominalWidth = width();
+    
     hide();
 
     updateSizePolicy(); 
@@ -179,6 +185,11 @@ void BrowserBreadcrumbItem::activateSibling()
 
         emit activated( siblingCallback );
     }
+}
+
+int BrowserBreadcrumbItem::nominalWidth() const
+{
+    return m_nominalWidth;
 }
 
 

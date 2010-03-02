@@ -72,12 +72,16 @@ public slots:
      */
     void updateBreadcrumbs();
 
+protected:
+    virtual void resizeEvent( QResizeEvent * event );
+
 private:
     
     /**
      * Remove all breadcrumb items
      */
     void clearCrumbs();
+    void hideAsNeeded( int width );
     
     /**
      * Recursive function that traverses the tree of BrowserCategoryList's

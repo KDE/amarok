@@ -49,6 +49,8 @@ public:
 
     QSizePolicy sizePolicy () const;
 
+    int nominalWidth() const;
+
 signals:
 
     void activated( const QString &callback );
@@ -64,6 +66,7 @@ private:
     BreadcrumbItemButton     *m_mainButton;
 
     QString m_callback;
+    int m_nominalWidth;
     
 };
 
