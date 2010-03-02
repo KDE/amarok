@@ -219,7 +219,8 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     // guess what: the height is fixed. so that's a waste of hard-working gerbils
     const qreal textHeight = 30;
     const qreal albumWidth = 135;
-    const QPointF albumCoverPos( standardPadding() + 5, standardPadding() );
+    const qreal padding = standardPadding();
+    const QPointF albumCoverPos( padding + 5, padding );
 
     resizeCover( m_bigCover, albumWidth, albumCoverPos );
 
@@ -227,13 +228,13 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_ratingWidget->setMaximumSize( albumWidth + 10, textHeight );
 
     //place directly above the bottom of the applet
-    const qreal x = standardPadding();
-    const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - standardPadding();
+    const qreal x = padding;
+    const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - padding;
     m_ratingWidget->setPos( x, y );
 
     /* this is the pos of the albumcover */
-    const qreal textX =  albumCoverPos.x() +  albumWidth + standardPadding();
-    const qreal textWidth = size().toSize().width() - ( textX + standardPadding() * 2 + 23 );
+    const qreal textX =  albumCoverPos.x() + albumWidth + padding;
+    const qreal textWidth = size().toSize().width() - ( textX + padding * 2 + 23 );
     const qreal textY = albumCoverPos.y() + 20;
 
     // calculate font sizes
@@ -241,26 +242,31 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     qreal lineSpacing = fm.height() + 4;
     m_maxTextWidth = textWidth;
 
+    const qreal byTextWidth = m_byText->boundingRect().width();
+    const qreal onTextWidth = m_onText->boundingRect().width();
+    const QPointF artistPos = m_artist->pos();
+    const QPointF albumPos  = m_album->pos();
+
     // align to either the album or artist line, depending if "On" or "By" is longer in this current translation
     // i18n makes things complicated :P
-    if( m_byText->boundingRect().width() > m_onText->boundingRect().width() )
+    if( byTextWidth > onTextWidth )
     {
         // align to location of on text
-        m_byText->setPos( textX, textY + lineSpacing + 3  );
-        m_artist->setPos( m_byText->pos().x() + m_byText->boundingRect().width() + 5, 0 );
+        m_byText->setPos( textX, textY + lineSpacing + 3 );
+        m_artist->setPos( m_byText->pos().x() + byTextWidth + 5, 0 );
         alignBottomToFirst( m_byText, m_artist );
-        m_album->setPos( m_artist->pos().x(), 0 );
-        m_onText->setPos( m_album->pos().x() - m_onText->boundingRect().width() - 5, textY + lineSpacing * 2 + 3 );
+        m_album->setPos( artistPos.x(), 0 );
+        m_onText->setPos( albumPos.x() - onTextWidth - 5, textY + lineSpacing * 2 + 3 );
         alignBottomToFirst( m_onText, m_album );
     }
     else
     {
         // align to location/width of by text
         m_onText->setPos( textX, textY + lineSpacing * 2 + 3 );
-        m_album->setPos( m_onText->pos().x() + m_onText->boundingRect().width() + 5, 0 );
+        m_album->setPos( m_onText->pos().x() + onTextWidth + 5, 0 );
         alignBottomToFirst( m_onText, m_album );
-        m_artist->setPos( m_album->pos().x(), 0 );
-        m_byText->setPos( m_artist->pos().x() - m_byText->boundingRect().width() - 5, textY + lineSpacing + 3 );
+        m_artist->setPos( albumPos.x(), 0 );
+        m_byText->setPos( artistPos.x() - byTextWidth - 5, textY + lineSpacing + 3 );
         alignBottomToFirst( m_byText, m_artist );
     }
 
@@ -271,12 +277,12 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
 
     m_title->setScrollingText( title, QRectF( m_title->pos().x(), textY, textWidth, 30 ) );
-    m_artist->setScrollingText( artist, QRectF( m_artist->pos().x(), textY, textWidth, 30 ) );
-    m_album->setScrollingText( album, QRectF( m_album->pos().x(), textY, textWidth, 30 ) );
+    m_artist->setScrollingText( artist, QRectF( artistPos.x(), textY, textWidth, 30 ) );
+    m_album->setScrollingText( album, QRectF( albumPos.x(), textY, textWidth, 30 ) );
 
     if( !m_trackActions.isEmpty() )
     {
-        QPointF iconPos = m_album->pos();
+        QPointF iconPos = albumPos;
         iconPos.setY( iconPos.y() + m_album->boundingRect().height() );
         foreach( Plasma::IconWidget *icon, m_trackActions )
         {
