@@ -270,7 +270,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         alignBottomToFirst( m_byText, m_artist );
     }
 
-    m_title->setPos( m_artist->pos().x(), textY );
+    m_title->setPos( artistPos.x(), artistPos.y() - lineSpacing );
 
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
