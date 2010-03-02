@@ -255,7 +255,7 @@ Correct:
 Unit Tests and API Docs
 -----------------------
 Amarok uses the "Hudson" system for doing automatic nightly builds, checking for
-compile errors, and visualizing unit Tests. You can see the results here:
+compile errors, and visualizing Unit Tests. You can see the results here:
 
 http://ci.amarok.kde.org/
 
