@@ -113,7 +113,7 @@ void TrackActionButton::setAction( const QAction *act )
     if ( act )
     {
         m_icon.icon = act->icon();
-        setToolTip( act->text() );
+        setToolTip( act->toolTip() );
         connect ( this, SIGNAL( clicked() ), act, SLOT( trigger() ) );
         connect ( act, SIGNAL( changed() ), SLOT( updateAction() ) );
     }
@@ -136,7 +136,7 @@ void TrackActionButton::updateAction()
         if ( act == m_action )
         {
             m_icon.icon = act->icon();
-            setToolTip( act->text() );
+            setToolTip( act->toolTip() );
         }
         else // old action, stop listening
             disconnect ( act, SIGNAL( changed() ), this, SLOT( updateAction() ) );
