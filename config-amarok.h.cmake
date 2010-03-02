@@ -38,3 +38,6 @@
 
 /* If liblastfm is found */
 #cmakedefine HAVE_LIBLASTFM 1
+
+/* If we can use KStatusNotifierItem class (KDE 4.4) */
+#cmakedefine HAVE_KSTATUSNOTIFIERITEM 1

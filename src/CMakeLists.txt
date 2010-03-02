@@ -647,7 +647,6 @@ set(amaroklib_LIB_SRCS
     toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
     toolbar/MainToolbar.cpp
-    TrayIcon.cpp
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
@@ -685,6 +684,18 @@ set(amaroklib_LIB_SRCS
     GlobalCurrentTrackActions.cpp
     moodbar/MoodbarManager.cpp
 )
+
+if(KSTATUSNOTIFIERITEM_FOUND)
+    set(amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        TrayIcon.cpp
+        )
+else(KSTATUSNOTIFIERITEM_FOUND)
+    set(amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        TrayIconLegacy.cpp
+        )
+endif(KSTATUSNOTIFIERITEM_FOUND)
 
 if( BUILD_MYSQLE_COLLECTION )
 else( BUILD_MYSQLE_COLLECTION )

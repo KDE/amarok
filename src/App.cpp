@@ -16,6 +16,8 @@
 
 #include "App.h"
 
+#include <config-amarok.h>
+
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
@@ -50,7 +52,11 @@
 #include "statemanagement/DefaultApplicationController.h"
 #include "statusbar/StatusBar.h"
 #include "TracklistDBusHandler.h"
+#ifdef HAVE_KSTATUSNOTIFIERITEM
 #include "TrayIcon.h"
+#else
+#include "TrayIconLegacy.h"
+#endif
 
 #ifdef NO_MYSQL_EMBEDDED
 #include "MySqlServerTester.h"
