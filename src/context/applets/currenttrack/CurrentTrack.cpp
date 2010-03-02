@@ -37,6 +37,7 @@
 
 #include <KColorScheme>
 #include <KConfigDialog>
+#include <KGlobalSettings>
 
 #include <QFont>
 #include <QGraphicsLinearLayout>
@@ -96,30 +97,20 @@ CurrentTrack::init()
 
     // Read config
     KConfigGroup config = Amarok::config("Current Track Applet");
-    QFont configFont;
-    configFont.fromString( config.readEntry( "Font", QString() ) );
+    const QString fontDesc = config.readEntry( "Font", QString() );
+    QFont font;
 
-    if( configFont.family().isEmpty() )
-    {
-        QFont bigFont;
-        bigFont.setPointSize( bigFont.pointSize() +  3 );
-
-        m_noTrack->setFont( bigFont );
-        m_title->setFont( bigFont );
-        m_artist->setFont( bigFont );
-        m_album->setFont( bigFont );
-    }
+    if( !fontDesc.isEmpty() )
+        font.fromString( fontDesc );
     else
-    {
-        m_noTrack->setFont( configFont );
-        m_title->setFont( configFont );
-        m_artist->setFont( configFont );
-        m_album->setFont( configFont );
-    }
+        font.setPointSize( font.pointSize() + 3 );
 
-    QFont tinyFont;
-    //tinyFont.setPointSize( tinyFont.pointSize() - 2 );
+    m_noTrack->setFont( font );
+    m_title->setFont( font );
+    m_artist->setFont( font );
+    m_album->setFont( font );
 
+    const QFont tinyFont = KGlobalSettings::smallestReadableFont();
     m_byText->setFont( tinyFont );
     m_onText->setFont( tinyFont );
 
