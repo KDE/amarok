@@ -252,11 +252,24 @@ Correct:
  | myWidget->show();
 
 
+Unit Tests and API Docs
+-----------------------
+Amarok uses the "Hudson" system for doing automatic nightly builds, checking for
+compile errors, and visualizing unit Tests. You can see the results here:
+
+http://ci.amarok.kde.org/
+
+Hudson also generates API Docs every night, which are located here:
+
+http://ci.amarok.kde.org/job/Amarok-Nightly/doxygen/
+
+
 Tips & Tricks
 -------------
 A useful service is http://lxr.kde.org. Lxr is a cross reference of the entire
 KDE SVN repository. You can for instance use it to search for example code
 from other applications for a given KDElibs method.
+
 
 Markey's .vimrc
 ---------------
@@ -280,6 +293,7 @@ set showtabline=2  "Makes the status bar always show, also for just one tab
 
 autocmd FileType ruby set shiftwidth=2 tabstop=2
 
+
 Git and SVN aware prompt
 ----------------
 The following prompt shows the current git branch if sitting in a git repository.
@@ -299,6 +313,7 @@ svn_prompt() {
     echo "$BRANCH"
 }
 export PS1='\[\e[0;32m\]\u@\h\[\e[m\] \[\e[1;34m\]\w\[\e[m\]\[\033[01;33m\]`__git_ps1`\[\e[m\]\[\e[01;35m\]`svn_prompt`\[\e[m\]\[\033[00m\]  \[\e[1;32m\]\$ \[\e[m\]\[\e[1;37m\] '
+
 
 Copyright
 ---------
