@@ -96,8 +96,8 @@ CurrentTrack::init()
 
     // Read config
     KConfigGroup config = Amarok::config("Current Track Applet");
-    QFont configFont( config.readEntry( "Font", QString() ),
-                config.readEntry( "Size", -1 ) );
+    QFont configFont;
+    configFont.fromString( config.readEntry( "Font", QString() ) );
 
     if( configFont.family().isEmpty() )
     {
@@ -702,12 +702,9 @@ CurrentTrack::changeTitleFont()
     m_album->setFont( font );
 
     KConfigGroup config = Amarok::config("Current Track Applet");
-    config.writeEntry( "Font", font.family() );
-    config.writeEntry( "Size", font.pointSize() );
+    config.writeEntry( "Font", font.toString() );
 
     constraintsEvent();
-
-    debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
 }
 
 void
