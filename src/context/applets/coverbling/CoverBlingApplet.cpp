@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>                         *
+ * Copyright (c) 2010 Emmanuel Wagner <manu.wagner@sfr.fr>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -42,25 +42,7 @@
 #include <QGraphicsProxyWidget>
 #include <QLabel>
 
-#define DEBUG_PREFIX "PotosApplet"
-
-QStringList findFiles(const QString& path = QString())
-{
-  QStringList files;
-
-  QDir dir = QDir::current();
-  if(!path.isEmpty())
-    dir = QDir(path);
-
-  dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
-  QFileInfoList list = dir.entryInfoList();
-  for (int i = 0; i < list.size(); ++i) 
-  {
-    QFileInfo fileInfo = list.at(i);
-    files.append(dir.absoluteFilePath(fileInfo.fileName()));
-  }
-  return files;
-}
+#define DEBUG_PREFIX "CoverBlingApplet"
 
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -111,6 +93,7 @@ CoverBlingApplet::init()
     //connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
     m_ratingWidget->setPos(m_horizontal_size/2,m_vertical_size-30);
     m_ratingWidget->setRating(0);
+    m_ratingWidget->setEnabled(FALSE);
 }
 
 CoverBlingApplet::~CoverBlingApplet()
@@ -126,7 +109,7 @@ void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumLi
 }
 void CoverBlingApplet::slideChanged(int islideindex)
 {
-	Meta::AlbumPtr album = m_pictureflow->getAlbum(islideindex);
+	Meta::AlbumPtr album = m_pictureflow->album(islideindex);
 	if (album)
 	{
 		Meta::ArtistPtr artist = album->albumArtist();
@@ -134,25 +117,27 @@ void CoverBlingApplet::slideChanged(int islideindex)
 		if (artist) label+= " - " + artist->prettyName();
 		m_label->setText(label);
 		m_label->show();
+		int nbtracks = 0;
+		int rating = 0;       
+		foreach( Meta::TrackPtr track, album->tracks())
+		{
+        		nbtracks++;
+        		if (track) 
+				rating+=track->rating();
+		}
+		if (nbtracks)
+        		rating = rating/nbtracks;
+		m_ratingWidget->setRating(rating);
 	}
 }
 void CoverBlingApplet::playAlbum(int islideindex)
 {
-	Meta::AlbumPtr album = m_pictureflow->getAlbum(islideindex);
+	Meta::AlbumPtr album = m_pictureflow->album(islideindex);
 	if (album)
 	{
-		//m_label->setText("DOUBLE CLICK");
     		The::playlistController()->insertOptioned( album->tracks(), Playlist::LoadAndPlay );
 	}
 
-}
-void CoverBlingApplet::FillFlow(PictureFlow* iPictureFlow)
-{
-  QStringList files = findFiles("/home/manu/.kde/share/apps/amarok/albumcovers/large");
-  QImage img;
-  for(int i = 0; i < (int)files.count(); i++)
-    if(img.load(files[i]))
-     iPictureFlow->addSlide(img);
 }
 void 
 CoverBlingApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )

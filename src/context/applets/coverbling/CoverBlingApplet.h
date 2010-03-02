@@ -22,11 +22,7 @@
 #include "context/Applet.h"
 #include "context/DataEngine.h"
 #include "EngineObserver.h"
-
-#include "../../engines/photos/PhotosInfo.h"
-
 #include "pictureflow.h"
-#include <QHBoxLayout>
 
 class TextScrollingWidget;
 class KConfigDialog;
@@ -59,15 +55,12 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
         void	playAlbum(int islideindex);
     private:
 	PictureFlow * m_pictureflow;
-	void FillFlow(PictureFlow* iPictureFlow);
 	QGraphicsProxyWidget * m_layout;
 	RatingWidget* m_ratingWidget;
 	QGraphicsSimpleTextItem* m_label;
 	int m_horizontal_size;
 	int m_vertical_size;
 };
-
-Q_DECLARE_METATYPE ( QList < PhotosInfo * > )
 K_EXPORT_AMAROK_APPLET( coverbling, CoverBlingApplet )
 
 #endif /* COVERBLING_APPLET_H */

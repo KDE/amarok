@@ -1,7 +1,8 @@
 /*
   PictureFlow - animated image show widget
   http://pictureflow.googlecode.com
-
+  Copyright (C) 2010 Emmanuel Wagner (manu.wagner@sfr.fr)
+	Ariya's code modifications for amarok
   Copyright (C) 2008 Ariya Hidayat (ariya@kde.org)
   Copyright (C) 2007 Ariya Hidayat (ariya@kde.org)
 
@@ -841,7 +842,6 @@ PictureFlow::PictureFlow(QWidget* parent): QWidget(parent)
   QObject::connect(&d->animator->animateTimer, SIGNAL(timeout()), this, SLOT(updateAnimation()));
 
   QObject::connect(&d->triggerTimer, SIGNAL(timeout()), this, SLOT(render()));
-  //m_current_title = new QLabel();
   setAttribute(Qt::WA_StaticContents, true);
   setAttribute(Qt::WA_OpaquePaintEvent, true);
   setAttribute(Qt::WA_NoSystemBackground, true);
@@ -944,11 +944,7 @@ void PictureFlow::addAlbum(Meta::AlbumPtr iAlbum)
 	if (no_cover_pix) {addSlide(*no_cover_pix);m_album_list.append(iAlbum);}
   }
 }
-void PictureFlow::setAlbum(int index, Meta::AlbumPtr iAlbum)
-{
-
-}
-Meta::AlbumPtr PictureFlow::getAlbum(int index)
+Meta::AlbumPtr PictureFlow::album(int index)
 {
 	return m_album_list[index];
 }
@@ -1030,10 +1026,6 @@ void PictureFlow::showSlide(int index)
     return;
 
   d->animator->start(index);
-  //m_current_title->setText("<font color='white'>Mon album</font>");
-  //m_current_title->setText((m_album_list[index])->prettyName());
-  //m_current_title->setParent(slide(index));
-  //m_current_title->show();
 }
 
 void PictureFlow::keyPressEvent(QKeyEvent* event)

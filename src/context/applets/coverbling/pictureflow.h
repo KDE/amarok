@@ -1,7 +1,8 @@
 /*
   PictureFlow - animated image show widget
   http://pictureflow.googlecode.com
-
+  Copyright (C) 2010 Emmanuel Wagner (manu.wagner@sfr.fr)
+	Ariya's code modifications for amarok
   Copyright (C) 2008 Ariya Hidayat (ariya@kde.org)
   Copyright (C) 2007 Ariya Hidayat (ariya@kde.org)
 
@@ -119,9 +120,8 @@ public:
 
 public slots:
 
- Meta::AlbumPtr getAlbum(int index);
+ Meta::AlbumPtr album(int index);
  void addAlbum(Meta::AlbumPtr iAlbum);
- void setAlbum(int index, Meta::AlbumPtr iAlbum);
   /*!
     Adds a new slide.
   */  

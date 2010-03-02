@@ -5,10 +5,10 @@ Type=Service
 ServiceTypes=Plasma/Applet
 
 X-KDE-Library=amarok_context_applet_coverbling
-X-KDE-PluginInfo-Author=Leo Franchi
-X-KDE-PluginInfo-Email=lfranchi@gmail.com
+X-KDE-PluginInfo-Author=manuw2009
+X-KDE-PluginInfo-Email=manu.wagner@sfr.fr
 X-KDE-PluginInfo-Name=coverbling
-X-KDE-PluginInfo-Version=pre0.1
+X-KDE-PluginInfo-Version=0.10
 X-KDE-PluginInfo-Website=
 X-KDE-PluginInfo-Category=
 X-KDE-PluginInfo-Depends=
