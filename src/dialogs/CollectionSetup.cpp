@@ -23,7 +23,6 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "MainWindow.h"
-#include "MountPointManager.h"
 #include "amarokconfig.h"
 #include "dialogs/DatabaseImporterDialog.h"
 
@@ -140,7 +139,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
     #endif
     
-    QStringList dirs = MountPointManager::instance()->collectionFolders();
+    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    QStringList dirs = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
     m_model->setDirectories( dirs );
     
     // make sure that the tree is expanded to show all selected items
@@ -158,7 +158,9 @@ CollectionSetup::hasChanged() const
 {
     DEBUG_BLOCK
 
-    const bool foldersChanged = m_model->directories() != MountPointManager::instance()->collectionFolders();
+    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
+    const bool foldersChanged = m_model->directories() != collectionFolders;
     const bool recursiveChanged = m_recursive->isChecked() != AmarokConfig::scanRecursively();
     const bool monitorChanged  = m_monitor->isChecked() != AmarokConfig::monitorChanges();
     const bool charsetChanged  = m_charset->isChecked() != AmarokConfig::useCharsetDetector();
@@ -175,12 +177,16 @@ CollectionSetup::writeConfig()
     AmarokConfig::setMonitorChanges( monitor() );
     AmarokConfig::setUseCharsetDetector( charset() );
 
-    if( m_model->directories() != MountPointManager::instance()->collectionFolders() )
+    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
+
+    if( m_model->directories() != collectionFolders )
     {
         debug() << "Selected collection folders: " << m_model->directories();
-        MountPointManager::instance()->setCollectionFolders( m_model->directories() );
+        if( primaryCollection )
+            primaryCollection->setProperty( "collectionFolders", m_model->directories() );
 
-        debug() << "MountPointManager collection folders: " << MountPointManager::instance()->collectionFolders();
+        debug() << "MountPointManager collection folders: " << collectionFolders;
         CollectionManager::instance()->startFullScan();
     }
 }

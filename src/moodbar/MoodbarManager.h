@@ -46,7 +46,7 @@ public:
     ~MoodbarManager();
 
     bool hasMoodbar( Meta::TrackPtr track );
-    QPixmap getMoodbar( Meta::TrackPtr track, int width, int height );
+    QPixmap getMoodbar( Meta::TrackPtr track, int width, int height, bool rtl = false );
 
 signals:
     void moodbarReady( const QPixmap &pixmap );
@@ -57,7 +57,7 @@ private:
     MoodbarManager();
 
     MoodbarColorList readMoodFile( const KUrl &moodFileUrl );
-    QPixmap drawMoodbar( const MoodbarColorList &data, int width, int height );
+    QPixmap drawMoodbar( const MoodbarColorList &data, int width, int height, bool rtl );
     QString moodPath( const QString &trackPath ) const;
 
     //let this class take care of caching everything as needed, otherwise things get pretty complex pretty fast.

@@ -79,6 +79,7 @@ SqlCollectionLocation::actualLocation() const
 bool
 SqlCollectionLocation::isWritable() const
 {
+    DEBUG_BLOCK
     // The collection is writeable if there exists a path that has less than
     // 95% free space.
     bool path_exists_with_space = false;
@@ -88,17 +89,23 @@ SqlCollectionLocation::isWritable() const
     {
         float used = KDiskFreeSpaceInfo::freeSpaceInfo( path ).used();
         float total = KDiskFreeSpaceInfo::freeSpaceInfo( path ).size();
+	debug() << path;
+	debug() << "\tused: " << used;
+	debug() << "\ttotal: " << total;
 
         if( total <= 0 ) // protect against div by zero
             continue; //How did this happen?
 
-        float percentage_used = used / total;
-        if( percentage_used < 0.95 )
+        float free_space = total - used;
+        debug() <<"\tfree space: " << free_space;
+        if( free_space >= 500*1000*1000 ) // ~500 megabytes
             path_exists_with_space = true;
 
         QFileInfo info( path );
         if( info.isWritable() )
             path_exists_writeable = true;
+	debug() << "\tpath_exists_writeable" << path_exists_writeable;
+	debug() << "\tpath_exists_with_space" << path_exists_with_space;
     }
     return path_exists_with_space && path_exists_writeable;
 }
@@ -195,16 +202,13 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
         if( totalCapacity <= 0 ) // protect against div by zero
             continue; //How did this happen?
 
-        double percentageUsedAfter = double( used + transferSize ) / totalCapacity;
-        debug() << "percentage used after" << percentageUsedAfter;
-
         QFileInfo info( path );
 
-        // since bad things happen when drives become totally full, we define full as 95% capacity used
-        // also we make sure there is at least 5 megabytes free
+        // since bad things happen when drives become totally full
+	// we make sure there is at least ~500MB left
         // finally, ensure the path is writeable
         debug() << ( freeSpace - transferSize );
-        if( ( freeSpace - transferSize ) > 1024*1024*5 && ( percentageUsedAfter < 0.95 ) && info.isWritable() )
+        if( ( freeSpace - transferSize ) > 1000*1000*500 && info.isWritable() )
             available_folders << path;
     }
 

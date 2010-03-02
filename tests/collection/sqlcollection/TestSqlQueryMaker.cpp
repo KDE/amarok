@@ -57,6 +57,8 @@ Meta::Field::writeFields(TagLib::FileRef fileref, const QVariantMap &changes)
 
 //required for QTest, this is not done in Querymaker.h
 Q_DECLARE_METATYPE( QueryMaker::QueryType )
+Q_DECLARE_METATYPE( QueryMaker::NumberComparison )
+Q_DECLARE_METATYPE( QueryMaker::ReturnFunction )
 
 TestSqlQueryMaker::TestSqlQueryMaker()
 {
@@ -75,6 +77,8 @@ TestSqlQueryMaker::TestSqlQueryMaker()
     qRegisterMetaType<Meta::YearPtr>();
     qRegisterMetaType<Meta::YearList>();
     qRegisterMetaType<QueryMaker::QueryType>();
+    qRegisterMetaType<QueryMaker::NumberComparison>();
+    qRegisterMetaType<QueryMaker::ReturnFunction>();
 }
 
 void
@@ -143,6 +147,11 @@ TestSqlQueryMaker::initTestCase()
                       "VALUES(5,5,'track5','',3,5,2,2,2);" );
     m_storage->query( "INSERT INTO tracks(id,url,title,comment,artist,album,genre,year,composer) "
                       "VALUES(6,6,'track6','',1,4,2,2,2);" );
+
+    m_storage->query( "INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
+                      "VALUES(1,1000,10000, 50.0,5,100);" );
+    m_storage->query( "INSERT INTO statistics(url,createdate,accessdate,score,rating,playcount) "
+                      "VALUES(2,3000,30000, 70.0,9,50);" );
 
 }
 
@@ -655,6 +664,7 @@ TestSqlQueryMaker::testFilter_data()
     QTest::newRow( "artist match title" ) << QueryMaker::Artist << Meta::valTitle << "track1" << false << false << 1;
     QTest::newRow( "track match comment" ) << QueryMaker::Track << Meta::valComment << "comment" << true << false << 4;
     QTest::newRow( "track match url" ) << QueryMaker::Track << Meta::valUrl << "Exist" << false << false << 2;
+    QTest::newRow( "album match comment" ) << QueryMaker::Track << Meta::valComment << "comment1" << true << true << 1;
 }
 
 void
@@ -873,5 +883,82 @@ TestSqlQueryMaker::testSpecialCharacters()
     QCOMPARE( qm.data( "testId" ).count(), 1 );
 }
 
+void
+TestSqlQueryMaker::testNumberFilter_data()
+{
+    QTest::addColumn<QueryMaker::QueryType>( "type" );
+    QTest::addColumn<qint64>( "value" );
+    QTest::addColumn<int>( "filter" );
+    QTest::addColumn<QueryMaker::NumberComparison>( "comparison" );
+    QTest::addColumn<bool>( "exclude" );
+    QTest::addColumn<int>( "count" );
+
+    QTest::newRow( "include rating greater 4" ) << QueryMaker::Track << Meta::valRating << 4 << QueryMaker::GreaterThan << false << 2;
+    QTest::newRow( "exclude rating smaller 4" ) << QueryMaker::Album << Meta::valRating << 4 << QueryMaker::LessThan << true << 2;
+    QTest::newRow( "exclude tracks first played later than 2000" ) << QueryMaker::Track << Meta::valFirstPlayed << 2000 << QueryMaker::GreaterThan << true << 1;
+    //having never been played does not mean played before 20000
+    QTest::newRow( "include last played before 20000" ) << QueryMaker::Track << Meta::valLastPlayed << 20000 << QueryMaker::LessThan << false << 1;
+    QTest::newRow( "playcount equals 100" ) << QueryMaker::Album << Meta::valPlaycount << 100 << QueryMaker::Equals << false << 1;
+    //should include unplayed songs
+    QTest::newRow( "playcount != 50" ) << QueryMaker::Track << Meta::valPlaycount << 50 << QueryMaker::Equals << true << 5;
+    QTest::newRow( "score greater 60" ) << QueryMaker::Genre << Meta::valScore << 60 << QueryMaker::GreaterThan << false << 1;
+}
+
+void
+TestSqlQueryMaker::testNumberFilter()
+{
+
+    QFETCH( QueryMaker::QueryType, type );
+    QFETCH( qint64, value );
+    QFETCH( int, filter );
+    QFETCH( bool, exclude );
+    QFETCH( QueryMaker::NumberComparison, comparison );
+    QFETCH( int, count );
+
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( type );
+    qm.setReturnResultAsDataPtrs( true );
+
+    if( exclude )
+        qm.excludeNumberFilter( value, filter, comparison );
+    else
+        qm.addNumberFilter( value, filter, comparison );
+
+    qm.run();
+
+    QCOMPARE( qm.data( "testId" ).count(), count );
+}
+
+void
+TestSqlQueryMaker::testReturnFunctions_data()
+{
+    QTest::addColumn<QueryMaker::ReturnFunction>( "function" );
+    QTest::addColumn<qint64>( "value" );
+    QTest::addColumn<QString>( "result" );
+
+    QTest::newRow( "count tracks" ) << QueryMaker::Count << Meta::valTitle << QString( "6" );
+    QTest::newRow( "sum of playcount" ) << QueryMaker::Sum << Meta::valPlaycount << QString( "150" );
+    QTest::newRow( "min score" ) << QueryMaker::Min << Meta::valScore << QString( "50" );
+    QTest::newRow( "max rating" ) << QueryMaker::Max << Meta::valRating << QString( "9" );
+}
+
+void
+TestSqlQueryMaker::testReturnFunctions()
+{
+    QFETCH( QueryMaker::ReturnFunction, function );
+    QFETCH( qint64, value );
+    QFETCH( QString, result );
+
+    SqlQueryMaker qm( m_collection );
+    qm.setBlocking( true );
+    qm.setQueryType( QueryMaker::Custom );
+    qm.addReturnFunction( function, value );
+
+    qm.run();
+
+    QCOMPARE( qm.customData( "testId" ).first(), result );
+
+}
 
 #include "TestSqlQueryMaker.moc"

@@ -160,7 +160,7 @@ void
 IpodHandler::init()
 {
     bool isMounted = m_deviceInfo->wasMounted();
-    if ( !isMounted )
+    if( !isMounted && !m_deviceInfo->deviceUid().isEmpty() )
     {
         QStringList args;
         if( !m_deviceInfo->deviceUid().isEmpty() )
@@ -594,7 +594,7 @@ IpodHandler::syncArtwork()
     if( !localCollection )
         return false;
 
-    Meta::AlbumMap albumMap = m_memColl->albumMap();
+    Meta::AlbumMap albumMap = m_memColl->memoryCollection()->albumMap();
 
     foreach( const Meta::AlbumPtr album, albumMap.values() )
     {
@@ -1181,7 +1181,7 @@ IpodHandler::staleTracks()
     DEBUG_BLOCK
     Meta::TrackList tracklist;
 
-    Meta::TrackMap trackMap = m_memColl->trackMap();
+    Meta::TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
 
     foreach( const Meta::TrackPtr trk, trackMap.values() )
     {

@@ -26,7 +26,6 @@
 #include <QModelIndex>
 #include <QPoint>
 
-class QToolBar;
 class QTreeView;
 
 class KAction;
@@ -59,8 +58,6 @@ private slots:
     void toggleView( bool );
 
 private:
-
-    QToolBar * m_toolBar;
     UserPlaylistTreeView * m_playlistView;
 
     KAction * m_addGroupAction;

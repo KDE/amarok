@@ -58,6 +58,7 @@ class UmsPodcastEpisode : public Meta::PodcastEpisode
         virtual QString prettyName() const { return name(); }
         virtual void setTitle( const QString &title );
         virtual bool isEditable() const;
+        virtual QDateTime createDate() const;
 
         virtual Meta::AlbumPtr album() const;
         virtual Meta::ArtistPtr artist() const;
@@ -84,8 +85,10 @@ class UmsPodcastChannel : public Meta::PodcastChannel
         UmsPodcastChannel( Meta::PodcastChannelPtr channel, UmsPodcastProvider *provider );
         ~UmsPodcastChannel();
 
+        virtual Meta::PodcastEpisodePtr addEpisode( Meta::PodcastEpisodePtr episode );
+
         UmsPodcastEpisodeList umsEpisodes() { return m_umsEpisodes; }
-        void addUmsEpisode( UmsPodcastEpisodePtr episode ) { m_umsEpisodes << episode; }
+        void addUmsEpisode( UmsPodcastEpisodePtr episode );
 
         void setPlaylistFileSource( const KUrl &playlistFilePath );
         KUrl playlistFilePath() const { return m_playlistFilePath; }

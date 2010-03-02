@@ -258,6 +258,18 @@ SqlCollection::isOrganizable() const
     return false;
 }
 
+QStringList
+SqlCollection::collectionFolders() const
+{
+    return mountPointManager()->collectionFolders();
+}
+
+void
+SqlCollection::setCollectionFolders( const QStringList &folders )
+{
+    mountPointManager()->setCollectionFolders( folders );
+}
+
 void
 SqlCollection::sendChangedSignal()
 {

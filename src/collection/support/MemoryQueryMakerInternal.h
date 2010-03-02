@@ -21,6 +21,8 @@
 #include "meta/Meta.h"
 
 #include <QObject>
+#include <QPointer>
+#include <QWeakPointer>
 
 class CustomReturnFunction;
 class CustomReturnValue;
@@ -28,11 +30,27 @@ class MemoryCollection;
 class MemoryFilter;
 class MemoryMatcher;
 
+/**
+  * A helper class for MemoryQueryMaker
+  * This class will run in a dedicated thread. It exists so the actual MemoryQueryMaker
+  * can be safely deleted in the original thread while the query is still running.
+  * All relevant information is passed from MemoryQueryMaker to MemoryQueryMakerInternal
+  * using the provided setter methods.
+  */
 class MemoryQueryMakerInternal : public QObject
 {
     Q_OBJECT
 public:
-    MemoryQueryMakerInternal( MemoryCollection *collection );
+    /**
+      * Creates a new MemoryQueryMakerInternal that will query collection.
+      * This class will run in a dedicated thread. It exists so the actual MemoryQueryMaker
+      * can be safely deleted in the original thread while the query is still running.
+      * @param guard a class that will be deleted before collection. It is used to
+      * ensure that MemoryQueryMakerInternal does not access a dangling MemoryCollection
+      * pointer.
+      * @param collection the MemoryCollection instance that the query should be run on.
+      */
+    MemoryQueryMakerInternal( const QWeakPointer<MemoryCollection> &collection );
     ~MemoryQueryMakerInternal();
 
 
@@ -52,6 +70,7 @@ public:
     void setOrderDescending( bool orderDescending ) { m_orderDescending = orderDescending; }
     void setOrderByNumberField( bool orderByNumberField ) { m_orderByNumberField = orderByNumberField; }
     void setOrderByField( qint64 orderByField ) { m_orderByField = orderByField; }
+    void setCollectionId( const QString &collectionId ) { m_collectionId = collectionId; }
 
 signals:
     void newResultReady( QString collectionId, Meta::TrackList );
@@ -68,7 +87,8 @@ private:
     void emitProperResult( const QList<PointerType > &list );
 
 private:
-    MemoryCollection *m_collection;
+    QWeakPointer<MemoryCollection> m_collection;
+    QPointer<QObject> m_guard;
     MemoryMatcher *m_matchers;
     MemoryFilter *m_filters;
     bool m_randomize;
@@ -79,6 +99,7 @@ private:
     bool m_orderDescending;
     bool m_orderByNumberField;
     qint64 m_orderByField;
+    QString m_collectionId;
     QList<CustomReturnFunction*> m_returnFunctions;
     QList<CustomReturnValue*> m_returnValues;
 };

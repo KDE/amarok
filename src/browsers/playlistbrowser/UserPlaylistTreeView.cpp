@@ -229,6 +229,8 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
+    QList<QAction*> actions;
+
     if( m_pd && m_pd->isHidden() )
     {
 
@@ -237,7 +239,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
         MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
         if( mpm == 0 )
             return;
-        QList<QAction*> actions = mpm->actionsFor( indices );
+        actions = mpm->actionsFor( indices );
 
         foreach( QAction * action, actions )
         {
@@ -249,6 +251,11 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 
     QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";
+
+    //We keep the items that the actions need to be applied to in the actions private data.
+    //Clear the data from all actions now that the PUD has executed.
+    foreach( QAction *action, actions )
+        action->setData( QVariant() );
 
     if( m_pd )
     {
@@ -300,6 +307,11 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
         menu.addAction( m_addGroupAction );
 
     menu.exec( mapToGlobal( event->pos() ) );
+
+    //We keep the items that the actions need to be applied to in the actions private data.
+    //Clear the data from all actions now that the context menu has executed.
+    foreach( QAction *action, actions )
+        action->setData( QVariant() );
 }
 
 void

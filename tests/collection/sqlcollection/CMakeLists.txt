@@ -68,6 +68,7 @@ set( testalbumcompilationchange_SRCS
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
@@ -86,6 +87,7 @@ set( testsqltrackediting_SRCS
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMakerInternal.cpp
@@ -107,6 +109,7 @@ link_database_test( testsqltrackediting )
 set( testsqlartist_SRCS
         TestSqlArtist.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
         ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
     )
@@ -121,6 +124,7 @@ set( testsqlcollection_SRCS
         TestSqlCollection.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
         ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
@@ -138,6 +142,7 @@ set( testsqlquerymaker_SRCS
         TestSqlQueryMaker.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
         ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlQueryMaker.cpp
@@ -167,3 +172,46 @@ set( testscanresultprocessorfull_SRCS
 kde4_add_unit_test( testscanresultprocessorfull ${testscanresultprocessorfull_SRCS} )
 
 link_database_test( testscanresultprocessorfull )
+
+#-------------------------------- Test ArtistHelper -----------------------
+
+set( testartisthelper_SRCS
+        TestArtistHelper.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
+    )
+
+
+kde4_add_unit_test( testartisthelper ${testartisthelper_SRCS} )
+
+    if(APPLE)
+        SET_TARGET_PROPERTIES(testartisthelper PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    endif(APPLE)
+
+target_link_libraries( testartisthelper
+                        ${QT_QTTEST_LIBRARY}
+                        ${QT_QTCORE_LIBRARY}
+                        ${KDE4_KDECORE_LIBS})
+
+#-------------------------------- Test SqlTrack -----------------------
+
+set( testsqltrack_SRCS
+        TestSqlTrack.cpp
+        ${AMAROK_SOURCE_TREE}/meta/MetaUtility.cpp
+        ${AMAROK_SOURCE_TREE}/Amarok.cpp
+        ${AMAROK_SOURCE_TREE}/meta/PlaylistFileSupport.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysql-shared/MySqlStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlMeta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/SqlRegistry.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/DatabaseUpdater.cpp
+        ${AMAROK_SOURCE_TREE}/collection/sqlcollection/ArtistHelper.cpp
+        ${AMAROK_SOURCE_TREE}/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/collection/Collection.cpp
+        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
+    )
+
+
+kde4_add_unit_test( testsqltrack ${testsqltrack_SRCS} )
+
+link_database_test( testsqltrack )

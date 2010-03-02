@@ -19,11 +19,10 @@
 #include "MountPointManager.h"
 
 #include "Amarok.h"
-#include "CollectionManager.h"
 #include "Debug.h"
 #include "PluginManager.h"
 #include "statusbar/StatusBar.h"
-#include "SqlStorage.h"
+#include "collection/SqlStorage.h"
 
 //solid stuff
 #include <solid/predicate.h>
@@ -42,27 +41,9 @@
 #include <QStringList>
 #include <QTimer>
 
-
-MountPointManager* MountPointManager::s_instance = 0;
-
-MountPointManager*
-MountPointManager::instance()
-{
-    if( !s_instance )
-        s_instance = new MountPointManager();
-    return s_instance;
-}
-
-void
-MountPointManager::destroy()
-{
-    delete s_instance;
-    s_instance = 0;
-}
-
-
-MountPointManager::MountPointManager()
-    : QObject( 0 )
+MountPointManager::MountPointManager( QObject *parent, SqlStorage *storage )
+    : QObject( parent )
+    , m_storage( storage )
 {
     setObjectName( "MountPointManager" );
 
@@ -213,7 +194,7 @@ MountPointManager::getAbsolutePath( const int deviceId, const KUrl& relativePath
     else
     {
         m_handlerMapMutex.unlock();
-        const QStringList lastMountPoint = CollectionManager::instance()->sqlStorage()->query(
+        const QStringList lastMountPoint = m_storage->query(
                                                  QString( "SELECT lastmountpoint FROM devices WHERE id = %1" )
                                                  .arg( deviceId ) );
         if ( lastMountPoint.count() == 0 )
@@ -425,20 +406,19 @@ MountPointManager::setCollectionFolders( const QStringList &folders )
 void
 MountPointManager::migrateStatistics()
 {
-    QStringList urls = CollectionManager::instance()->sqlStorage()->query( "SELECT url FROM statistics WHERE deviceid = -2;" );
+    QStringList urls = m_storage->query( "SELECT url FROM statistics WHERE deviceid = -2;" );
     foreach( const QString &url, urls )
     {
         if ( QFile::exists( url ) )
         {
             int deviceid = getIdForUrl( url );
-            SqlStorage *db = CollectionManager::instance()->sqlStorage();
             QString rpath = getRelativePath( deviceid, url );
             QString update = QString( "UPDATE statistics SET deviceid = %1, url = '%2'" )
                                       .arg( deviceid )
-                                      .arg( db->escape( rpath ) );
+                                      .arg( m_storage->escape( rpath ) );
             update += QString( " WHERE url = '%1' AND deviceid = -2;" )
-                               .arg( db->escape( url ) );
-            db->query( update );
+                               .arg( m_storage->escape( url ) );
+            m_storage->query( update );
         }
     }
 }
@@ -510,7 +490,7 @@ void MountPointManager::createHandlerFromDevice( const Solid::Device& device, co
             if( factory->canHandle( device ) )
             {
                 debug() << "found handler for " << udi;
-                DeviceHandler *handler = factory->createHandler( device, udi );
+                DeviceHandler *handler = factory->createHandler( device, udi, m_storage );
                 if( !handler )
                 {
                     debug() << "Factory " << factory->type() << "could not create device handler";

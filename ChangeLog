@@ -2,18 +2,60 @@ Amarok ChangeLog
 ================
 (C) 2002-2010 the Amarok authors.
 
+
 VERSION 2.3
   FEATURES:
+    * Podcast channels and episodes can be dragged to add them to other
+      providers. (BR 195704)
+    * Trackaction buttons are now available in the label for the current track
+    * Bookmark button is now available in the Current Track applet.
 
   CHANGES:
-    * Deleting files from the filebrowser is now asynchronous.
+    * When a podcast episode is no longer shown because of the episode limit the
+      downloaded file is also deleted from disk. (BR 227674)
+    * The visibility of columns in the new File Browser is now configurable.
+    * Toolbar: "Skip icons", prev/next labels are aligned to the edges
+    * Volume Dial: Gradient indicator and pointing cursor hint above the dial ring
+    * Playlist layout editor: When copying a layout, set its current name as
+      the default one for the copy. Thanks to Jakub Wieczorek <faw217@gmail.com>.
+    * Set Media Keys as default global shortcuts for playlist navigation.
+      (BR 194259)
+    * Deleting files from the File Browser is now asynchronous.
     * Copy/Move/Organize operations now display detailed progress information.
-    * Copy/Move/Organize operations are now cancelable.
+    * Copy/Move/Organize operations can now be canceled. 
     * Port Copy/Move to Collection actions to the new File Browser.
-    * ScriptUpdater: Only check for updates if 7 days have passed since the 
+    * Script-Updater: Only check for updates if 7 days have passed since the 
       last check.
 
   BUGFIXES:
+    * Fixed cover art not properly updating in TrayIcon. (BR 228966)
+    * Fixed lyrics window size too small after edit. (BR 228922)
+    * Fixed odd behaviour when doing drag-and-drop from Collection browser.
+      (BR 222500)
+    * Show artist and title instead of raw track ID when copying/deleting
+      tracks on an MTP device.
+    * Fixed time labels getting truncated in the slim toolbar. (BR 195935)
+    * Fixed broken keyboard navigation in the playlist after activating a track. 
+      (BR 225791) 
+    * Workaround broken Jamendo url redirects. (BR 221922)
+    * MainToolbar labels: watch changes of metadata & queue (BR 227439 & BR 227362)
+    * MainToolbar labels: avoid empty strings (BR 228042)
+    * MainToolbar timelabel: show progressing time for stream (BR 227598)
+    * Playlist layout editor: Disable "rename" button for default playlist layouts. 
+      Thanks to Jakub Wieczorek <faw217@gmail.com>.
+    * Playlist layout editor: When reating a copy of a default layout, add copy
+      to layout list imediately. Thanks to Jakub Wieczorek <faw217@gmail.com>.
+    * Compilations do not become normal albums when renaming them. (BR 192029)
+    * Fixed a bug where there would be no dynamic playlist biases available 
+      with a clean startup. (BR 227797)
+    * Fixed a crash when pressing dynamic playlist "save" button on first startup. (BR 227073)
+    * Fixed a bug when trying to drag files from some app into Amarok.
+      (BR 226167)
+    * Fixed a bug in podcast parsing that broke all feeds that do not include a
+      guid and possible overwrited data from other podcasts. Introduced in 2.3 beta.
+      (BR 227515)
+    * Correctly show progress description of last remaining job in the statusbar 
+      after multiple jobs have been running.
     * Fixed a regression that broke the playlist save button.
     * Respect the podcast episode limit when new episodes are added during update.
       (BR 220768)
@@ -22,6 +64,9 @@ VERSION 2.3
       when performing a Move operation.
     * Fixed bug in organize collection dialog that used the old %theartist
       token instead of %artist.
+    * Install amarokitpc.protocol to be able to play iTunes links in the
+      web browser if Amarok is off. Thanks to Philippe Roubach. (BR 206615) 
+
 
 VERSION 2.3-Beta 1
   FEATURES:

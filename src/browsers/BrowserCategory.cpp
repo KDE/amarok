@@ -142,7 +142,6 @@ BrowserCategory::addAdditionalItem( BrowserBreadcrumbItem * item )
 void
 BrowserCategory::clearAdditionalItems()
 {
-    //these are deleted in BrowserBreadcrumbWidget::clearCrumbs
     foreach( BrowserBreadcrumbItem * item, m_additionalItems )
     {
         m_additionalItems.removeAll( item );

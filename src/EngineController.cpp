@@ -78,8 +78,6 @@ EngineController::EngineController()
 {
     DEBUG_BLOCK
 
-    initializePhonon();
-
     m_fadeoutTimer->setSingleShot( true );
 
     connect( m_fadeoutTimer, SIGNAL( timeout() ), SLOT( slotStopFadeout() ) );

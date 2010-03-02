@@ -27,12 +27,17 @@ class AnimatedLabelStack : public QWidget
 public:
     AnimatedLabelStack( const QStringList &data, QWidget *parent = 0, Qt::WindowFlags f = 0 );
     inline const QStringList &data() const { return m_data; }
+    inline int opacity() { return m_targetOpacity; }
     void pulse( int cycles = -1, int minimum = 3 );
     void setAlign( Qt::Alignment );
     void setBold( bool bold );
     void setData( const QStringList &data );
     inline void setOpacity( int alpha ) { m_targetOpacity = qMin(qMax(0, alpha), 255); }
-    inline int opacity() { return m_targetOpacity; }
+    void setPadding( int left, int right );
+    /**
+     The rect that's actually available for the tex, i.e. honoring the padding
+    */
+    inline QRect textRect() const { return rect().adjusted( m_padding[0], 0, -m_padding[1], 0 ); }
 
 public slots:
     void setAnimated( bool on = true );
@@ -77,6 +82,7 @@ private:
     int m_opacity, m_targetOpacity;
     bool m_animated, m_pulsating, m_pulseRequested, m_explicit;
     int m_isClick;
+    int m_padding[2];
     QStringList m_data;
 };
 

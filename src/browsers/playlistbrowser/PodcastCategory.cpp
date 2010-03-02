@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2007-2010 Bart Cerneels <bart.cerneels@kde.org>                        *
  * Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2007 Henry de Valence <hdevalence@gmail.com>                           *
  *                                                                                      *
@@ -53,6 +53,7 @@
 #include <KIcon>
 #include <KStandardDirs>
 #include <KUrlRequesterDialog>
+#include <KToolBar>
 #include <KGlobal>
 #include <KLocale>
 
@@ -108,11 +109,11 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth( this->sizePolicy().hasHeightForWidth());
-    setSizePolicy(sizePolicy);
+    setSizePolicy( sizePolicy );
 
     setContentsMargins(0,0,0,0);
 
-    QToolBar *toolBar = new QToolBar( this );
+    KToolBar *toolBar = new KToolBar( this, false, false );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
     QAction* addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"), toolBar );
@@ -141,8 +142,8 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
     m_podcastTreeView->setContentsMargins(0,0,0,0);
 
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ),
-                                         i18n( "Merged View" ), toolBar );
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), toolBar );
+    toggleAction->setToolTip( i18n( "Merged View" ) );
     toggleAction->setCheckable( true );
     toggleAction->setChecked( Amarok::config( s_configGroup ).readEntry( s_mergedViewKey, true ) );
     toolBar->addAction( toggleAction );
@@ -156,6 +157,8 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
     m_podcastTreeView->setDragEnabled( true );
+    m_podcastTreeView->setAcceptDrops( true );
+    m_podcastTreeView->setDropIndicatorShown( true );
 
     for( int column = 1; column < podcastModel->columnCount(); ++ column )
     {
@@ -677,9 +680,10 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
+    QList<QAction*> actions;
+
     if( m_pd && m_pd->isHidden() )
     {
-        QList<QAction*> actions;
         MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
         if( mpm )
             actions = mpm->actionsFor( selectedIndexes() );
@@ -694,6 +698,11 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
 
     QTreeView::startDrag( supportedActions );
     debug() << "After the drag!";
+
+    //We keep the items that the actions need to be applied to in the actions private data.
+    //Clear the data from all actions now that the context menu has executed.
+    foreach( QAction *action, actions )
+        action->setData( QVariant() );
 
     if( m_pd )
     {
@@ -727,10 +736,11 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
             menu.addAction( action );
     }
 
-    KAction* result = dynamic_cast< KAction* >( menu.exec( mapToGlobal( event->pos() ) ) );
-    Q_UNUSED( result )
-
-   debug() << indices.count() << " selectedIndexes";
+    menu.exec( mapToGlobal( event->pos() ) );
+    //We keep the items that the actions need to be applied to in the actions private data.
+    //Clear the data from all actions now that the PUD has executed.
+    foreach( QAction *action, actions )
+        action->setData( QVariant() );
 }
 
 void

@@ -73,7 +73,6 @@ public:
 
     void setEncodingFormat( int format ) const;
 
-    virtual QueryMaker * queryMaker();
     virtual QString collectionId() const;
     virtual QString prettyName() const;
     virtual KIcon icon() const;

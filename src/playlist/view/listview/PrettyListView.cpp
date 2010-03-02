@@ -83,7 +83,6 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setDropIndicatorShown( false ); // we draw our own drop indicator
     setEditTriggers ( SelectedClicked | EditKeyPressed );
     setAutoScroll( true );
-    setMouseTracking( true );
 
     setVerticalScrollMode( ScrollPerPixel );
 
@@ -254,6 +253,11 @@ Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
     DEBUG_BLOCK
     m_skipAutoScroll = true; // we don't want to do crazy view changes when selecting an item in the view
     Actions::instance()->play( idx );
+
+    //make sure that the track we just activated is also set as the current index or
+    //the selected index will get moved to the first row, making keyboard navigation difficult (BUG 225791)
+    selectionModel()->setCurrentIndex( idx, QItemSelectionModel::ClearAndSelect );
+    
 }
 
 void
@@ -553,6 +557,10 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
 {
     DEBUG_BLOCK
 
+    QModelIndexList indices = selectedIndexes();
+    if( indices.isEmpty() )
+        return; // no items selected in the view, abort. See bug 226167
+
     //Waah? when a parent item is dragged, startDrag is called a bunch of times
     static bool ongoingDrags = false;
     if( ongoingDrags )
@@ -564,15 +572,12 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd && m_pd->isHidden() )
     {
-
         m_pd->setSvgRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
         qDebug() << "svgHandler SVG renderer is " << (QObject*)(The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ));
         qDebug() << "m_pd SVG renderer is " << (QObject*)(m_pd->svgRenderer());
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
-        QModelIndexList indices = selectedIndexes();
 
         QList<QAction*> actions =  actionsFor( this, &indices.first(), true );
-
         foreach( QAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
 

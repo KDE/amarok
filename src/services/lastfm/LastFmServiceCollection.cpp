@@ -328,7 +328,7 @@ LastFmServiceCollection::queryMaker()
 {
     // TODO
     //return new LastFmServiceQueryMaker( this );
-    return new MemoryQueryMaker( this, collectionId() );
+    return ServiceCollection::queryMaker();
 }
 
 #include "LastFmServiceCollection.moc"

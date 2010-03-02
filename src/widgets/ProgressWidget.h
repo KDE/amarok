@@ -48,6 +48,8 @@ class ProgressWidget : public QWidget, public EngineObserver
         virtual void engineTrackLengthChanged( qint64 milliseconds );
         virtual void engineNewTrackPlaying();
         virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
+
+        void layout();
         
     private slots:
         void addBookmark( const QString &name, int milliSeconds );
@@ -56,7 +58,6 @@ class ProgressWidget : public QWidget, public EngineObserver
     private:
         TimeLabel *m_timeLabelLeft;
         TimeLabel *m_timeLabelRight;
-        int m_timeLength;
         Amarok::TimeSlider *m_slider;
         QString m_currentUrlId;
 };

@@ -21,7 +21,6 @@
 AMAROK_EXPORT_PLUGIN( MassStorageDeviceHandlerFactory )
 
 #include "Debug.h"
-#include "collection/CollectionManager.h"
 #include "collection/SqlStorage.h"
 
 #include <kconfig.h>
@@ -118,15 +117,14 @@ MassStorageDeviceHandlerFactory::~MassStorageDeviceHandlerFactory( )
 {
 }
 
-DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( KSharedConfigPtr ) const
+DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( KSharedConfigPtr, SqlStorage* ) const
 {
     return 0;
 }
 
-DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi ) const
+DeviceHandler * MassStorageDeviceHandlerFactory::createHandler( const Solid::Device &device, const QString &udi, SqlStorage *s ) const
 {
     DEBUG_BLOCK
-    SqlStorage *s = CollectionManager::instance()->sqlStorage();
     if( !s )
         return 0;
     const Solid::StorageVolume *volume = device.as<Solid::StorageVolume>();

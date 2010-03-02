@@ -316,6 +316,9 @@ PlaylistManager::deletePlaylists( Meta::PlaylistList playlistlist )
 PlaylistProvider*
 PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr playlist )
 {
+    if( !playlist )
+        return 0;
+
     PlaylistProvider* provider = playlist->provider();
     if( provider )
         return provider;

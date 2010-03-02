@@ -119,6 +119,8 @@ NotificationsConfig::updateSettings()
     AmarokConfig::setOsdYOffset( m_osdPreview->y() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
 
+    Amarok::OSD::instance()->setEnabled( kcfg_OsdEnabled->isChecked() );
+
     Amarok::KNotificationBackend::instance()->setEnabled( kcfg_KNotifyEnabled->isChecked() );
 
     emit settingsChanged( QString() );

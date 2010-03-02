@@ -638,7 +638,6 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/FileView.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
-    MountPointManager.cpp
     OpmlParser.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
@@ -664,6 +663,7 @@ set(amaroklib_LIB_SRCS
     widgets/ExpandingControlsWidget.cpp
     widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
+    widgets/IconButton.cpp
     widgets/LineEdit.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
@@ -680,6 +680,7 @@ set(amaroklib_LIB_SRCS
     widgets/VolumeWidget.cpp
     widgets/VolumeDial.cpp
     widgets/Splitter.cpp
+    widgets/TrackActionButton.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
     GlobalCollectionActions.cpp
@@ -712,7 +713,6 @@ if(KDE4_BUILD_TESTS)
         ../tests/timecode/TestTimecodeTrackProvider.cpp
         ../tests/TestAmarok.cpp
         ../tests/TestBase.cpp
-        ../tests/TestCaseConverter.cpp
         ../tests/TestDirectoryLoader.cpp
     )
     include_directories(
@@ -867,7 +867,7 @@ install(FILES amarok-play-audiocd.desktop DESTINATION ${DATA_INSTALL_DIR}/solid/
 install(FILES amarok.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES context/amarokapplets.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 
-#install(FILES amarokitpc.protocol DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES amarokitpc.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 #install(FILES amarokpcast.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 
 install(FILES context/servicetypes/amarok_context_applet.desktop

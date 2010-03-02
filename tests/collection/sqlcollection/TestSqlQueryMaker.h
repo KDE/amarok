@@ -67,6 +67,12 @@ private slots:
     void testSpecialCharacters_data();
     void testSpecialCharacters();
 
+    void testNumberFilter();
+    void testNumberFilter_data();
+
+    void testReturnFunctions_data();
+    void testReturnFunctions();
+
 private:
     SqlCollection *m_collection;
     SqlMountPointManagerMock *m_mpm;

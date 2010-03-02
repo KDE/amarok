@@ -110,9 +110,9 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         void moveDown();
 
         /**
-         * Disables the delete button if the selected layout is one of the default layouts and enables it otherwise.
+         * Disables the delete and rename buttons if the selected layout is one of the default layouts and enables them otherwise.
          */
-        void toggleDeleteButton();
+        void toggleEditButtons();
 
         /**
          * Activates/Deactivates the up and down buttons depending on whether the currently selected item can be moved up and or down.

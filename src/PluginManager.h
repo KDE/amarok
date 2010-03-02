@@ -22,6 +22,8 @@
 
 #include <vector>
 
+#include "amarok_export.h"
+
 namespace Amarok { class Plugin; }
 class KLibrary;
 
@@ -54,7 +56,7 @@ class PluginManager
          * @return            A list of services that satisfy the query
          * @see               http://developer.kde.org/documentation/library/kdeqt/tradersyntax.html
          */
-        static KService::List query( const QString& constraint = QString() );
+        AMAROK_EXPORT static KService::List query( const QString& constraint = QString() );
 
         /**
          * Load and instantiate plugin from query
@@ -70,7 +72,7 @@ class PluginManager
          * @param service     Pointer to KService
          * @return            Pointer to Plugin, or NULL if error
          */
-        static Amarok::Plugin* createFromService( const KService::Ptr service );
+        AMAROK_EXPORT static Amarok::Plugin* createFromService( const KService::Ptr service );
 
         /**
          * Remove library and delete plugin

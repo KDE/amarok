@@ -62,8 +62,6 @@ class AMAROK_EXPORT ArtistMatcher : public MemoryMatcher
         virtual Meta::TrackList match( MemoryCollection *memColl );
         virtual Meta::TrackList match( const Meta::TrackList &tracks );
 
-        virtual Meta::AlbumList matchAlbums( MemoryCollection *memColl );
-
     private:
         Meta::ArtistPtr m_artist;
 };

@@ -57,7 +57,7 @@ IpodCollection::IpodCollection( MediaDeviceInfo* info )
     if (m_mountPoint.isEmpty())
     {
         isMounted = false;
-        m_mountPoint = KStandardDirs::locateLocal( "data", "amarok/tmp/" );
+        m_mountPoint = KStandardDirs::locateLocal( "tmp", "amarok/" );
         m_mountPoint += "imobiledevice";
         if( !ipodinfo->deviceUid().isEmpty() )
             m_mountPoint += '_' + ipodinfo->deviceUid();
@@ -91,7 +91,7 @@ IpodCollection::trackForUrl( const KUrl &url )
     QString uid = QUrl::fromPercentEncoding( url.url().toUtf8() );
     if( uid.startsWith("file://") )
         uid = uid.remove( 0, 7 );
-    Meta::TrackPtr ipodTrack = m_trackMap.value( uid );
+    Meta::TrackPtr ipodTrack = memoryCollection()->trackMap().value( uid );
     return ipodTrack ? ipodTrack : Collection::trackForUrl(url);
 }
 

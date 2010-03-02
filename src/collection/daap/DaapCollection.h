@@ -28,6 +28,7 @@
 #include <QHostInfo>
 #include <QPointer>
 #include <QtGlobal>
+#include <QSharedPointer>
 
 #include <KIcon>
 
@@ -70,7 +71,7 @@ class DaapCollectionFactory : public Amarok::CollectionFactory
         QHash<int, quint16> m_lookupHash;
 };
 
-class DaapCollection : public Amarok::Collection, public MemoryCollection
+class DaapCollection : public Amarok::Collection
 {
     Q_OBJECT
     public:
@@ -85,6 +86,8 @@ class DaapCollection : public Amarok::Collection, public MemoryCollection
         virtual KIcon icon() const { return KIcon("network-server"); }
 
         void serverOffline();
+
+        QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
     signals:
         void collectionReady();
@@ -103,6 +106,7 @@ class DaapCollection : public Amarok::Collection, public MemoryCollection
         QString m_ip;
 
         Daap::Reader *m_reader;
+        QSharedPointer<MemoryCollection> m_mc;
 };
 
 #endif

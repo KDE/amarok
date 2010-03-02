@@ -21,11 +21,13 @@
 #include "MemoryCollection.h"
 #include "meta/Playlist.h"
 
+#include <QSharedPointer>
+
 /**
   * Utility class that wraps a playlist as collection and makes it possible to
   * query the content of the playlist using QueryMaker.
   */
-class PlaylistCollection : public Amarok::Collection, public MemoryCollection, public Meta::PlaylistObserver
+class PlaylistCollection : public Amarok::Collection, public Meta::PlaylistObserver
 {
 public:
     PlaylistCollection( const Meta::PlaylistPtr &playlist );
@@ -46,6 +48,8 @@ private:
     void insertTrack( const Meta::TrackPtr &track );
 
     Meta::PlaylistPtr m_playlist;
+
+    QSharedPointer<MemoryCollection> m_mc;
 };
 
 #endif // PLAYLISTCOLLECTION_H

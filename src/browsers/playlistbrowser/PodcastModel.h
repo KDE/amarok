@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2007-2010 Bart Cerneels <bart.cerneels@kde.org>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -64,6 +64,8 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         static void destroy();
 
         virtual QVariant data(const QModelIndex &index, int role) const;
+        virtual bool setData( const QModelIndex &index, const QVariant &value,
+                              int role = Qt::EditRole );
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
@@ -92,7 +94,6 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         void deleteItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );
         void removeSubscription( QModelIndexList list );
-        void configureChannels( QModelIndexList list );
 
         /** @returns all channels currently selected
         **/
@@ -123,9 +124,13 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         static PodcastModel* s_instance;
         PodcastModel();
         ~PodcastModel();
+        static int podcastItemType( const QModelIndex &index );
+        static Meta::PodcastChannelPtr channelForIndex( const QModelIndex &index );
+        static Meta::PodcastEpisodePtr episodeForIndex( const QModelIndex &index );
 
         Q_DISABLE_COPY( PodcastModel )
 
+        PlaylistProvider *getProviderByName( const QString &name );
         Meta::PodcastChannelList selectedChannels( const QModelIndexList &indices );
         Meta::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
         QList<QAction *> createCommonActions( QModelIndexList indices );

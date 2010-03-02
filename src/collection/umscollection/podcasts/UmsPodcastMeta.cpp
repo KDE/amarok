@@ -91,6 +91,14 @@ UmsPodcastEpisode::isEditable() const
      return m_localFile->isEditable();
 }
 
+QDateTime
+UmsPodcastEpisode::createDate() const
+{
+    if( m_localFile )
+        return m_localFile->createDate();
+    return Meta::Track::createDate();
+}
+
 void
 UmsPodcastEpisode::setTitle( const QString &title )
 {
@@ -180,12 +188,43 @@ UmsPodcastChannel::UmsPodcastChannel( PodcastChannelPtr channel,
         : Meta::PodcastChannel( channel )
         , m_provider( provider )
 {
-
+    foreach( PodcastEpisodePtr episode, channel->episodes() )
+        addEpisode( episode );
 }
 
 UmsPodcastChannel::~UmsPodcastChannel()
 {
 
+}
+
+PodcastEpisodePtr
+UmsPodcastChannel::addEpisode( PodcastEpisodePtr episode )
+{
+    DEBUG_BLOCK
+
+    if( !episode->isNew() || !episode->playableUrl().isLocalFile() )
+        return PodcastEpisodePtr(); //we don't care about these.
+
+    if( !m_provider )
+        return PodcastEpisodePtr();
+
+    return m_provider->addEpisode( episode );
+}
+
+void
+UmsPodcastChannel::addUmsEpisode( UmsPodcastEpisodePtr umsEpisode )
+{
+    int i = 0;
+    foreach( UmsPodcastEpisodePtr e, m_umsEpisodes )
+    {
+        if( umsEpisode->createDate() > e->createDate() )
+        {
+            i = m_umsEpisodes.indexOf( e );
+            break;
+        }
+    }
+
+    m_umsEpisodes.insert( i, umsEpisode );
 }
 
 void

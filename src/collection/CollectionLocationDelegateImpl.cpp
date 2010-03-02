@@ -26,9 +26,10 @@ bool
 CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Meta::TrackList &tracks ) const
 {
     Q_UNUSED( loc );
+
     QStringList files;
     foreach( Meta::TrackPtr track, tracks )
-        files << track->prettyUrl();
+        files << realTrackName( track );
 
     // NOTE: taken from SqlCollection
     // TODO put the delete confirmation code somewhere else?
@@ -48,7 +49,7 @@ bool CollectionLocationDelegateImpl::reallyMove(CollectionLocation* loc, const M
     Q_UNUSED( loc )
     QStringList files;
     foreach( Meta::TrackPtr track, tracks )
-        files << track->prettyUrl();
+        files << realTrackName( track );
     
     const QString text( i18ncp( "@info", "Do you really want to move this track? It will be renamed and the original deleted.",
                                 "Do you really want to move these %1 tracks? They will be renamed and the originals deleted", tracks.count() ) );
@@ -64,7 +65,8 @@ void CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, con
     Q_UNUSED( loc );
     QStringList files;
     foreach( Meta::TrackPtr track, tracks )
-        files << track->prettyUrl();
+        files << realTrackName( track );
+
     const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writeable.",
                                 "There was a problem and %1 tracks could not be removed. Make sure the directory is writeable.", files.count() ) );
                                 KMessageBox::informationList(0,
@@ -77,5 +79,22 @@ void CollectionLocationDelegateImpl::notWriteable(CollectionLocation* loc) const
 {
     Q_UNUSED( loc )
     The::statusBar()->longMessage( i18n( "The collection does not have enough free space available or is not writeable." ), StatusBar::Error );
+}
+
+
+///////////////////////////////////////////////////
+// PRIVATE
+///////////////////////////////////////////////////
+
+QString CollectionLocationDelegateImpl::realTrackName( const Meta::TrackPtr track ) const
+{
+    QString name;
+
+    if( track->artist() )
+        name = track->artist()->prettyName() + " - " + track->prettyName();
+    else
+        name = track->prettyName();
+
+   return name;
 }
 

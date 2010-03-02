@@ -105,8 +105,6 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     elementTabs->addTab( m_bodyEdit, i18n( "Body" ) );
     elementTabs->addTab( m_singleEdit, i18n( "Single" ) );
 
-    elementTabs->removeTab( 0 );
-
     QStringList layoutNames = LayoutManager::instance()->layouts();
     foreach( const QString &layoutName, layoutNames )
     {
@@ -126,7 +124,7 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
 
     connect( previewButton, SIGNAL( clicked() ), this, SLOT( preview() ) );
     connect( layoutListWidget, SIGNAL( currentTextChanged( const QString & ) ), this, SLOT( setLayout( const QString & ) ) );
-    connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleDeleteButton() ) );
+    connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleEditButtons() ) );
     connect( layoutListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( toggleUpDownButtons() ) );
 
     connect( moveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
@@ -151,13 +149,13 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     deleteLayoutButton->setIcon( deleteIcon );
     deleteLayoutButton->setToolTip( i18n( "Delete playlist layout" ) );
     connect( deleteLayoutButton, SIGNAL( clicked() ), this, SLOT( deleteLayout() ) );
-    toggleDeleteButton();
 
     const KIcon renameIcon( "edit-rename" );
     renameLayoutButton->setIcon( renameIcon );
     renameLayoutButton->setToolTip( i18n( "Rename playlist layout" ) );
     connect( renameLayoutButton, SIGNAL( clicked() ), this, SLOT( renameLayout() ) );
 
+    toggleEditButtons();
     toggleUpDownButtons();
 
     connect( m_headEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
@@ -220,12 +218,15 @@ void PlaylistLayoutEditDialog::copyLayout()
     LayoutItemConfig bodyConfig = m_bodyEdit->config();
     LayoutItemConfig singleConfig = m_singleEdit->config();
 
+    QString layoutName = layoutListWidget->currentItem()->text();
+
     bool ok;
-    QString layoutName = KInputDialog::getText( i18n( "Choose a name for the new playlist layout" ),
-                    i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':",
-                    layoutListWidget->currentItem()->text() ),QString(), &ok, this );
+    layoutName = KInputDialog::getText( i18n( "Choose a name for the new playlist layout" ),
+            i18n( "Please enter a name for the playlist layout you are about to define as copy of the layout '%1':", layoutName ),
+            layoutName, &ok, this );
+
     if( !ok)
-	return;
+        return;
     if( layoutName.isEmpty() )
     {
         KMessageBox::sorry( this, i18n( "Cannot create a layout with no name." ), i18n( "Layout name error" ) );
@@ -282,11 +283,6 @@ void PlaylistLayoutEditDialog::renameLayout()
         if ( !ok )
         {
             //Cancelled so just return
-            return;
-        }
-        if( LayoutManager::instance()->isDefaultLayout( layoutName ) )
-        {
-            KMessageBox::sorry( this, i18n( "Cannot rename one of the default layouts." ), i18n( "Layout name error" ) );
             return;
         }
         if( layoutName.isEmpty() )
@@ -351,14 +347,18 @@ void PlaylistLayoutEditDialog::preview()
     LayoutManager::instance()->setPreviewLayout( layout );
 }
 
-void PlaylistLayoutEditDialog::toggleDeleteButton() //SLOT
+void PlaylistLayoutEditDialog::toggleEditButtons() //SLOT
 {
-    if ( !layoutListWidget->currentItem() )
+    if ( !layoutListWidget->currentItem() ) {
         deleteLayoutButton->setEnabled( 0 );
-    else if( LayoutManager::instance()->isDefaultLayout( layoutListWidget->currentItem()->text() ) )
+        renameLayoutButton->setEnabled( 0 );
+    } else if( LayoutManager::instance()->isDefaultLayout( layoutListWidget->currentItem()->text() ) ) {
         deleteLayoutButton->setEnabled( 0 );
-    else
+        renameLayoutButton->setEnabled( 0 );
+    } else {
         deleteLayoutButton->setEnabled( 1 );
+        renameLayoutButton->setEnabled( 1 );
+    }
 }
 
 void PlaylistLayoutEditDialog::toggleUpDownButtons()
@@ -400,9 +400,6 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
             QString layoutName = i.key();
             if ( LayoutManager::instance()->isDefaultLayout( i.key() ) )
             {
-
-
-
                 QString newLayoutName = i18n( "copy of %1", layoutName );
                 QString orgCopyName = newLayoutName;
 
@@ -420,6 +417,10 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
 
                 layoutName = newLayoutName;
 
+                layoutListWidget->addItem( layoutName );
+                layoutListWidget->setCurrentItem( ( layoutListWidget->findItems( layoutName, Qt::MatchExactly ) ).first() );
+                m_layoutsMap->insert( layoutName, i.value() );
+                setLayout( layoutName );
             }
             i.value().setInlineControls( inlineControlsChekbox->isChecked() );
             i.value().setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );

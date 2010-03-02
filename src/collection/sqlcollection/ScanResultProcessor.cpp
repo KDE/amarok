@@ -17,6 +17,7 @@
 
 #include "ScanResultProcessor.h"
 
+#include "ArtistHelper.h"
 #include "Debug.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h"
@@ -384,57 +385,19 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCou
 {
     //DEBUG_BLOCK
     QMap<QString, int> artistCount;
-    bool featuring;
-    QStringList trackArtists;
     foreach( const QString &artist, artists )
     {
-        featuring = false;
-        trackArtists.clear();
-        if( artist.contains( "featuring" ) )
+        QString actualArtist = ArtistHelper::realTrackArtist( artist );
+        if( actualArtist.isEmpty() )
         {
-            featuring = true;
-            trackArtists = artist.split( "featuring" );
-        }
-        else if( artist.contains( "feat." ) )
-        {
-            featuring = true;
-            trackArtists = artist.split( "feat." );
-        }
-        else if( artist.contains( "ft." ) )
-        {
-            featuring = true;
-            trackArtists = artist.split( "ft." );
-        }
-        else if( artist.contains( "f." ) )
-        {
-            featuring = true;
-            trackArtists = artist.split( "f." );
-        }
-
-        //this needs to be improved
-
-        if( featuring )
-        {
-            //always use the first artist
-            QString tmp = trackArtists[0].simplified();
-            if( tmp.isEmpty() )
-            {
-                //TODO error handling
-            }
-            else
-            {
-                if( artistCount.contains( tmp ) )
-                    artistCount.insert( tmp, artistCount.value( tmp ) + 1 );
-                else
-                    artistCount.insert( tmp, 1 );
-            }
+            //TODO error handling
         }
         else
         {
-            if( artistCount.contains( artist ) )
-                artistCount.insert( artist, artistCount.value( artist ) + 1 );
+            if( artistCount.contains( actualArtist ) )
+                artistCount.insert( actualArtist, artistCount.value( actualArtist ) + 1 );
             else
-                artistCount.insert( artist, 1 );
+                artistCount.insert( actualArtist, 1 );
         }
     }
     QString albumArtist;

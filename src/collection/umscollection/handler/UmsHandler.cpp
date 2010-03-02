@@ -24,8 +24,6 @@
 
 #include "SvgHandler.h"
 
-#include "ui_UmsConfiguration.h"
-
 #include "File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5
@@ -77,6 +75,11 @@ using namespace Meta;
 #define UMS_MAX_CONCURRENT_JOBS 1
 #endif
 
+QString UmsHandler::s_settingsFileName( ".is_audio_player" );
+QString UmsHandler::s_audioFolderKey( "audio_folder" );
+QString UmsHandler::s_podcastFolderKey( "podcast_folder" );
+QString UmsHandler::s_autoConnectKey( "use_automatically" );
+
 UmsHandler::UmsHandler( UmsCollection *mc, const QString& mountPoint )
     : MediaDeviceHandler( mc )
     , m_watcher()
@@ -100,6 +103,8 @@ UmsHandler::UmsHandler( UmsCollection *mc, const QString& mountPoint )
     , m_tempdir( new KTempDir() )
     , m_podcastProvider( 0 )
     , m_configureAction( 0 )
+    , m_settings( 0 )
+    , m_umsSettingsDialog( 0 )
 {
     DEBUG_BLOCK
 
@@ -130,39 +135,48 @@ UmsHandler::init()
         return;
     }
 
-    QFile playerFile( m_mountPoint + "/.is_audio_player" );
+    KUrl playerFilePath( m_mountPoint );
+    playerFilePath.addPath( s_settingsFileName );
+    QFile playerFile( playerFilePath.toLocalFile() );
 
-    QString mountPoint = m_mountPoint; //save for podcast path
     if (playerFile.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        debug() << "Got .is_audio_player file";
+        debug() << QString( "Got %1 file").arg( s_settingsFileName );
         QTextStream in(&playerFile);
         while( !in.atEnd() )
         {
             QString line = in.readLine();
-            if( line.startsWith( "audio_folder=" ) )
+            if( line.startsWith( s_audioFolderKey + "=" ) )
             {
-                debug() << "Found audio_folder=";
-                QString path = m_mountPoint + '/' + line.section( '=', 1, 1 );
-                debug() << "Path trying to set to: " << path;
-                QDir dir( path );
-                if( dir.exists() )
+                debug() << QString( "Found %1" ).arg( s_audioFolderKey );
+                debug() << line;
+                m_musicPath = KUrl( m_mountPoint );
+                m_musicPath.addPath( line.section( '=', 1, 1 ) );
+                m_musicPath.cleanPath();
+                debug() << "Scan for music in " << m_musicPath.toLocalFile();
+                if( !QDir( m_musicPath.toLocalFile() ).exists() )
                 {
-                    debug() << "Custom audio folder now set to: " << path;
-                    m_mountPoint = path;
+                    debug() << "Music path doesn't exist! Using the mountpoint instead";
+                    //TODO: add user-visible warning after string freeze.
+                    m_musicPath = m_mountPoint;
                 }
             }
-            else if( line.startsWith( "podcast_folder=" ) )
+            else if( line.startsWith( s_podcastFolderKey + "=" ) )
             {
-                debug() << "Found podcast_folder, initializing UMS podcast provider";
-                m_podcastPath = mountPoint + '/' + line.section( '=', 1, 1 );
-                debug() << "scan for podcasts in " << m_podcastPath;
+                debug() << QString( "Found %1, initializing UMS podcast provider" )
+                                .arg( s_podcastFolderKey );
+                debug() << line;
+                m_podcastPath = KUrl( m_mountPoint );
+                m_podcastPath.addPath( line.section( '=', 1, 1 ) );
+                m_podcastPath.cleanPath();
+                debug() << "scan for podcasts in " <<
+                        m_podcastPath.toLocalFile( KUrl::AddTrailingSlash );
                 //HACK initialize a real PodcastProvider since I failed to add it to the MD framework
                 m_podcastProvider = new UmsPodcastProvider( this, m_podcastPath );
                 The::playlistManager()->addProvider( m_podcastProvider,
                                                      PlaylistManager::PodcastChannel );
             }
-            else if( line.startsWith( "use_automatically=" ) )
+            else if( line.startsWith( s_autoConnectKey + "=" ) )
             {
                 debug() << "Use automatically: " << line.section( '=', 1, 1 );
                 m_autoConnect = ( line.section( '=', 1, 1 ) == "true" );
@@ -200,12 +214,12 @@ UmsHandler::init()
 
     // Get storage access for getting device space capacity/usage
     Solid::Device device = Solid::Device(  m_memColl->udi() );
-    if (  device.isValid() )
+    if(  device.isValid() )
     {
         Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
-        if ( storage )
+        if( storage )
             m_filepath = storage->filePath();
-        else if ( !m_mountPoint.isEmpty() )
+        else if( !m_mountPoint.isEmpty() )
             m_filepath = m_mountPoint;
 
         if ( !m_filepath.isEmpty() )
@@ -414,7 +428,7 @@ UmsHandler::addPath( const QString &path )
 QString
 UmsHandler::baseMusicFolder() const
 {
-    return mountPoint();
+    return m_musicPath.isEmpty() ? m_mountPoint : m_musicPath.toLocalFile();
 }
 
 bool
@@ -492,16 +506,17 @@ UmsHandler::slotConfigure()
     m_umsSettingsDialog = new KDialog( The::mainWindow() );
     QWidget *settingsWidget = new QWidget( m_umsSettingsDialog );
 
-    Ui::UmsConfiguration settings;
-    settings.setupUi( settingsWidget );
+    m_settings = new Ui::UmsConfiguration();
+    m_settings->setupUi( settingsWidget );
 
-    settings.m_autoConnect->setChecked( m_autoConnect );
+    m_settings->m_autoConnect->setChecked( m_autoConnect );
 
-    settings.m_musicFolder->setMode( KFile::Directory );
-    settings.m_musicFolder->setUrl( m_mountPoint );
+    m_settings->m_musicFolder->setMode( KFile::Directory );
+    m_settings->m_musicFolder->setUrl( m_musicPath.isEmpty() ? KUrl( m_mountPoint ) : m_musicPath );
 
-    settings.m_podcastFolder->setMode( KFile::Directory );
-    settings.m_podcastFolder->setUrl( m_podcastPath );
+    m_settings->m_podcastFolder->setMode( KFile::Directory );
+    m_settings->m_podcastFolder->setUrl( m_podcastPath.isEmpty() ? KUrl( m_mountPoint )
+                                         : m_podcastPath );
 
     m_umsSettingsDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
     m_umsSettingsDialog->setMainWidget( settingsWidget );
@@ -509,33 +524,76 @@ UmsHandler::slotConfigure()
     m_umsSettingsDialog->setWindowTitle( i18n( "Configure USB Mass Storage Device" ) );
     m_umsSettingsDialog->enableButtonApply( false );
 
-    connect( settings.m_musicFolder, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
-    connect( settings.m_podcastFolder, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
-    connect( settings.m_autoConnect, SIGNAL( stateChanged( int ) ), SLOT( slotConfigChanged() ) );
+    connect( m_settings->m_musicFolder, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
+    connect( m_settings->m_podcastFolder, SIGNAL( textChanged(QString) ), SLOT( slotConfigChanged() ) );
+    connect( m_settings->m_autoConnect, SIGNAL( stateChanged( int ) ), SLOT( slotConfigChanged() ) );
 
     if( m_umsSettingsDialog->exec() == QDialog::Accepted )
     {
         debug() << "accepted";
 
-        //TODO: apply
+        if(  m_settings->m_musicFolder->url() != m_musicPath )
+        {
+            debug() << "music location changed from " << m_musicPath.toLocalFile() << " to ";
+            debug() << m_settings->m_musicFolder->url().toLocalFile();
+            //TODO: reparse music
+        }
+
+        if( m_settings->m_podcastFolder->url() != m_podcastPath )
+        {
+            debug() << "podcast location changed from " << m_podcastPath << " to ";
+            debug() << m_settings->m_podcastFolder->url().url();
+            //TODO: reparse podcasts
+        }
+
+        m_autoConnect = m_settings->m_autoConnect->isChecked();
+        if( m_autoConnect && !m_parsed )
+            parseTracks();
+
+        //write the date to the on-disk file
+        KUrl localFile = KUrl( m_mountPoint );
+        localFile.addPath( s_settingsFileName );
+        QFile settingsFile( localFile.toLocalFile() );
+        if( settingsFile.open( QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text ) )
+        {
+            QTextStream s( &settingsFile );
+            QString keyValuePair( "%1=%2\n" );
+            KUrl musicPath = m_settings->m_musicFolder->url();
+            if( musicPath != m_mountPoint )
+            {
+                s << keyValuePair.arg( s_audioFolderKey, KUrl::relativePath( m_mountPoint,
+                    musicPath.toLocalFile() ) );
+            }
+            KUrl podcastPath = m_settings->m_podcastFolder->url();
+            if( podcastPath != m_mountPoint )
+            {
+                s << keyValuePair.arg( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
+                    podcastPath.toLocalFile() ) );
+            }
+            if( m_autoConnect )
+                s << keyValuePair.arg( s_autoConnectKey, "true" );
+
+            settingsFile.close();
+        }
+        else
+            error() << "Could not open settingsfile " << localFile.toLocalFile();
     }
 
     delete m_umsSettingsDialog;
     m_umsSettingsDialog = 0;
+    delete m_settings;
+    m_settings = 0;
 }
 
 void
 UmsHandler::slotConfigChanged()
 {
-    Ui::UmsConfiguration *settings =
-            dynamic_cast<Ui::UmsConfiguration *>( m_umsSettingsDialog->mainWidget() );
-
-    if( !settings )
+    if( !m_settings )
         return;
 
-    if( settings->m_autoConnect->isChecked() != m_autoConnect
-        || settings->m_musicFolder->url() != m_mountPoint
-        || settings->m_podcastFolder->url() != m_podcastPath )
+    if( m_settings->m_autoConnect->isChecked() != m_autoConnect
+        || m_settings->m_musicFolder->url() != m_musicPath
+        || m_settings->m_podcastFolder->url() != m_podcastPath )
     {
         m_umsSettingsDialog->enableButtonApply( true );
     }
@@ -792,9 +850,10 @@ UmsHandler::prepareToParseTracks()
 {
     DEBUG_BLOCK
 
-    m_watcher.addDir( m_mountPoint, KDirWatch::WatchDirOnly | KDirWatch::WatchFiles | KDirWatch::WatchSubDirs );
+    debug() << "Scanning for music in " << m_musicPath.toLocalFile();
+    m_watcher.addDir( m_musicPath.toLocalFile(), KDirWatch::WatchDirOnly | KDirWatch::WatchFiles | KDirWatch::WatchSubDirs );
 
-    QDirIterator it( m_mountPoint, QDirIterator::Subdirectories );
+    QDirIterator it( m_musicPath.toLocalFile(), QDirIterator::Subdirectories );
     while( it.hasNext() )
     {
         addPath( it.next() );

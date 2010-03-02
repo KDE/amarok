@@ -54,19 +54,19 @@ protected:
 
 private:
     void animateTrackLabels();
-    void layoutProgressBar();
     void setCurrentTrackActionsVisible( bool );
-    void updateBgGradient();
     void updateCurrentTrackActions();
 
 private slots:
     void addBookmark( const QString &name, int milliSeconds );
     void checkEngineState();
     void filter( const QString &string );
+    void layoutProgressBar();
     void layoutTrackBar();
     void setLabelTime( int ms );
     void setPlaying( bool on );
     void updateBookmarks( const QString *BookmarkName );
+    void updateLabels();
     void updatePrevAndNext();
 
 private:
@@ -74,7 +74,8 @@ private:
 
     QSpacerItem *m_trackBarSpacer;
     QSpacerItem *m_progressBarSpacer;
-    QPixmap m_bgGradient, m_arrowLeft, m_arrowRight;
+
+    QPixmap m_skip_left, m_skip_right;
 
     struct
     {
@@ -82,19 +83,17 @@ private:
         void* key;
         QString uidUrl;
         bool actionsVisible;
+        QRect rect;
     } m_current;
 
-    struct
+    typedef struct
     {
         AnimatedLabelStack *label;
         void* key;
-    } m_next;
+        QRect rect;
+    } Skip;
 
-    struct
-    {
-        AnimatedLabelStack *label;
-        void* key;
-    } m_prev;
+    Skip m_next, m_prev;
 
     struct
     {
@@ -109,6 +108,7 @@ private:
     
     int m_lastTime;
     int m_lastRemainingTime;
+
     struct
     {
         int startX;
@@ -118,7 +118,6 @@ private:
     int m_trackBarAnimationTimer;
 
     Phonon::State m_currentEngineState;
-    
 };
 
 #endif

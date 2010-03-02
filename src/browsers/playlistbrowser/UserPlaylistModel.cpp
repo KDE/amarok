@@ -137,9 +137,53 @@ PlaylistBrowserNS::UserModel::loadPlaylists()
 }
 
 QVariant
-PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
+PlaylistBrowserNS::UserModel::data(const QModelIndex &index, int role) const
 {
 //    debug() << "index: " << index;
+    if( index.row() == -1 )
+    {
+        if( index.column() == ProviderColumn )
+        {
+            QVariantList displayList;
+            QVariantList iconList;
+            QVariantList playlistCountList;
+            QVariantList providerActionsCountList;
+            QVariantList providerActionsList;
+            QVariantList providerByLineList;
+
+            //get data from empty providers
+            PlaylistProviderList providerList =
+                    The::playlistManager()->providersForCategory( PlaylistManager::UserPlaylist );
+            foreach( PlaylistProvider *provider, providerList )
+            {
+                if( provider->playlistCount() > 0 || provider->playlists().count() > 0 )
+                    continue;
+
+                displayList << provider->prettyName();
+                iconList << provider->icon();
+                playlistCountList << provider->playlists().count();
+                providerActionsCountList << provider->providerActions().count();
+                providerActionsList <<  QVariant::fromValue( provider->providerActions() );
+                providerByLineList << i18ncp( "number of playlists from one source",
+                                              "One Playlist", "%1 playlists",
+                                              provider->playlists().count() );
+            }
+
+            switch( role )
+            {
+                case Qt::DisplayRole:
+                case DescriptionRole:
+                case Qt::ToolTipRole:
+                    return displayList;
+                case Qt::DecorationRole: return iconList;
+                case MetaPlaylistModel::ActionCountRole: return providerActionsCountList;
+                case MetaPlaylistModel::ActionRole: return providerActionsList;
+                case MetaPlaylistModel::ByLineRole: return providerByLineList;
+                case Qt::EditRole: return QVariant();
+            }
+        }
+    }
+
     if ( !index.isValid() )
         return QVariant();
 
@@ -258,7 +302,7 @@ PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 }
 
 int
-PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
+PlaylistBrowserNS::UserModel::rowCount( const QModelIndex &parent ) const
 {
 //    debug() << "parent: " << parent;
     if (parent.column() > 0)

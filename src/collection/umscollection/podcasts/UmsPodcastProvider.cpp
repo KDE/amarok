@@ -18,6 +18,7 @@
 
 #include <KDialog>
 #include <KIO/DeleteJob>
+#include <KIO/FileCopyJob>
 #include <KMimeType>
 
 #include <QDirIterator>
@@ -26,7 +27,7 @@
 
 using namespace Meta;
 
-UmsPodcastProvider::UmsPodcastProvider( UmsHandler *handler, QString scanDirectory )
+UmsPodcastProvider::UmsPodcastProvider( UmsHandler *handler, KUrl scanDirectory )
         : m_handler( handler )
         , m_scanDirectory( scanDirectory )
         , m_deleteEpisodeAction( 0 )
@@ -64,13 +65,42 @@ UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
     UmsPodcastChannelPtr umsChannel = UmsPodcastChannelPtr(
             new UmsPodcastChannel( channel, this ) );
     m_umsChannels << umsChannel;
+    emit( updated() );
     return PodcastChannelPtr::dynamicCast( umsChannel );
 }
 
 PodcastEpisodePtr
 UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
 {
+    KUrl localFilePath = episode->playableUrl();
+    if( !localFilePath.isLocalFile() )
+        return PodcastEpisodePtr();
+
+    KUrl destination = KUrl( m_scanDirectory );
+    destination.addPath( Amarok::vfatPath( episode->channel()->prettyName() ) );
+    KIO::mkdir( destination );
+    destination.addPath( Amarok::vfatPath( localFilePath.fileName() ) );
+
+    debug() << QString( "Copy episode \"%1\" to %2" ).arg( localFilePath.path())
+            .arg( destination.path() );
+    KIO::FileCopyJob *copyJob = KIO::file_copy( localFilePath, destination );
+    connect( copyJob, SIGNAL( result( KJob * ) ), SLOT( slotCopyComplete( KJob * ) ) );
+    //we have not copied the data over yet so we can't return an episode yet
+    //TODO: return a proxy for the episode we are still copying.
     return PodcastEpisodePtr();
+}
+
+void
+UmsPodcastProvider::slotCopyComplete( KJob *job )
+{
+    KIO::FileCopyJob *copyJob = dynamic_cast<KIO::FileCopyJob *>( job );
+    if( !copyJob )
+        return;
+
+    KUrl localFilePath = copyJob->destUrl();
+    MetaFile::Track *fileTrack = new MetaFile::Track( localFilePath );
+
+    UmsPodcastEpisodePtr umsEpisode = addFile( MetaFile::TrackPtr( fileTrack ) );
 }
 
 PodcastChannelList
@@ -386,8 +416,9 @@ UmsPodcastProvider::scan()
     if( m_scanDirectory.isEmpty() )
         return;
     m_dirList.clear();
-    debug() << "scan directory for podcasts: " << m_scanDirectory;
-    QDirIterator it( m_scanDirectory, QDirIterator::Subdirectories );
+    debug() << "scan directory for podcasts: " <<
+            m_scanDirectory.toLocalFile( KUrl::AddTrailingSlash );
+    QDirIterator it( m_scanDirectory.toLocalFile(), QDirIterator::Subdirectories );
     while( it.hasNext() )
         addPath( it.next() );
 }
@@ -432,7 +463,7 @@ UmsPodcastProvider::addPath( const QString &path )
     return 0;
 }
 
-void
+UmsPodcastEpisodePtr
 UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
 {
     DEBUG_BLOCK
@@ -442,13 +473,13 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
     if( metafileTrack->album()->name().isEmpty() )
     {
         debug() << "Can't figure out channel without album tag.";
-        return;
+        return UmsPodcastEpisodePtr();
     }
 
     if( metafileTrack->name().isEmpty() )
     {
         debug() << "Can not use a track without a title.";
-        return;
+        return UmsPodcastEpisodePtr();
     }
 
     //see if there is already a UmsPodcastEpisode for this track
@@ -494,4 +525,6 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
     }
 
     episode->setLocalFile( metafileTrack );
+
+    return episode;
 }

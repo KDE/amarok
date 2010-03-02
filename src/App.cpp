@@ -33,7 +33,6 @@
 #include "meta/MetaConstants.h"
 #include "Meta.h"
 #include "MetaUtility.h"
-#include "MountPointManager.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
@@ -99,7 +98,6 @@ extern void setupEventHandler_mac(long);
 
 #ifdef DEBUG
 #include "TestAmarok.h"
-#include "TestCaseConverter.h"
 #include "TestDirectoryLoader.h"
 #include "TestM3UPlaylist.h"
 #include "TestMetaCueCueFileItem.h"
@@ -217,8 +215,6 @@ App::~App()
 {
     DEBUG_BLOCK
 
-    delete m_splash;
-
     CollectionManager::instance()->stopScan();
 
     // Hiding the OSD before exit prevents crash
@@ -262,6 +258,7 @@ App::~App()
     // severed, or we risk a crash when the QApplication is exited,
     // I asked Trolltech! *smug*
     Amarok::OSD::destroy();
+    Amarok::KNotificationBackend::destroy();
 
     // I tried this in the destructor for the Model but the object is destroyed after the
     // Config is written. Go figure!
@@ -273,7 +270,6 @@ App::~App()
     delete mainWindow();
 
     CollectionManager::destroy();
-    MountPointManager::destroy();
     Playlist::Actions::destroy();
     Playlist::ModelStack::destroy();
     PlaylistManager::destroy();
@@ -303,11 +299,9 @@ App::handleCliArgs() //static
     if( args->isSet( "cwd" ) )
         KCmdLineArgs::setCwd( args->getOption( "cwd" ).toLocal8Bit() );
 
-    bool haveArgs = false;
+    bool haveArgs = true; // assume having args in first place
     if( args->count() > 0 )
     {
-        haveArgs = true;
-
         KUrl::List list;
         for( int i = 0; i < args->count(); i++ )
         {
@@ -343,13 +337,8 @@ App::handleCliArgs() //static
 
         The::playlistController()->insertOptioned( list, options );
     }
-
     else if ( args->isSet( "cdplay" ) )
-    {
-        debug() << "cdplay!!";
-        haveArgs = true;
         The::mainWindow()->playAudioCd();
-    }
 
     //we shouldn't let the user specify two of these since it is pointless!
     //so we prioritise, pause > stop > play > next > prev
@@ -357,35 +346,19 @@ App::handleCliArgs() //static
     //then the others seemed sensible. Feel free to modify this order, but please leave justification in the cvs log
     //I considered doing some sanity checks (eg only stop if paused or playing), but decided it wasn't worth it
     else if ( args->isSet( "pause" ) )
-    {
-        haveArgs = true;
         The::engineController()->pause();
-    }
     else if ( args->isSet( "stop" ) )
-    {
-        haveArgs = true;
         The::engineController()->stop();
-    }
     else if ( args->isSet( "play-pause" ) )
-    {
-        haveArgs = true;
         The::engineController()->playPause();
-    }
     else if ( args->isSet( "play" ) ) //will restart if we are playing
-    {
-        haveArgs = true;
         The::engineController()->play();
-    }
     else if ( args->isSet( "next" ) )
-    {
-        haveArgs = true;
         The::playlistActions()->next();
-    }
     else if ( args->isSet( "previous" ) )
-    {
-        haveArgs = true;
         The::playlistActions()->back();
-    }
+    else // no args given
+        haveArgs = false;
 
     static bool firstTime = true;
     const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
@@ -578,7 +551,6 @@ void App::applySettings( bool firstTime )
 
     DEBUG_BLOCK
 
-    Amarok::OSD::instance()->applySettings();
     m_tray->setVisible( AmarokConfig::showTrayIcon() );
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
@@ -595,20 +567,6 @@ void App::applySettings( bool firstTime )
         main_window->show();
         PERF_LOG( "after showing mainWindow" )
     }
-
-    { //<Engine>
-        if( The::engineController()->volume() != AmarokConfig::masterVolume() )
-        {
-            // block signals to make sure that the OSD isn't shown
-            const bool osdEnabled = Amarok::OSD::instance()->isEnabled();
-            Amarok::OSD::instance()->setEnabled( false );
-            The::engineController()->setVolume( AmarokConfig::masterVolume() );
-            Amarok::OSD::instance()->setEnabled( osdEnabled );
-        }
-
-        if( The::engineController()->isMuted() != AmarokConfig::muteState() )
-            The::engineController()->setMuted( AmarokConfig::muteState() );
-    } //</Engine>
 
     if( firstTime )
     {   // delete unneeded cover images from cache
@@ -656,7 +614,6 @@ App::runUnitTests( const QStringList options, bool stdout )
 
     PERF_LOG( "Running Unit Tests" )
     TestAmarok                  test001( options, logPath );
-    TestCaseConverter           test002( options, logPath );
     TestM3UPlaylist             test003( options, logPath );
     TestMetaCueCueFileItem      test004( options, logPath );
     TestMetaCueTrack            test005( options, logPath );
@@ -695,18 +652,12 @@ App::continueInit()
     new Amarok::DefaultApplicationController();
     Amarok::Components::applicationController()->start();
 
+    KSplashScreen* splash = 0;
     if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
     {
-        PERF_LOG( "Init KStandardDirs cache" )
-        KStandardDirs *stdDirs = KGlobal::dirs();
-        PERF_LOG( "Finding image" )
-        QString img = stdDirs->findResource( "data", "amarok/images/splash_screen.jpg" );
-        PERF_LOG( "Creating pixmap" )
-        QPixmap splashpix( img );
-        PERF_LOG( "Creating splashscreen" )
-        m_splash = new KSplashScreen( splashpix, Qt::WindowStaysOnTopHint );
-        PERF_LOG( "showing splashscreen" )
-        m_splash->show();
+        QPixmap splashimg( KGlobal::dirs()->findResource( "data", "amarok/images/splash_screen.jpg" ) );
+        splash = new KSplashScreen( splashimg, Qt::WindowStaysOnTopHint );
+        splash->show();
     }
 
     PERF_LOG( "Creating MainWindow" )
@@ -722,6 +673,13 @@ App::continueInit()
     new CollectionDBusHandler( this );
     QDBusConnection::sessionBus().registerService("org.mpris.amarok");
     PERF_LOG( "Done creating DBus handlers" )
+
+    if( splash ) // close splash correctly
+    {
+        splash->close();
+        delete splash;
+    }
+
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
     //Reason: in ~App we have to call the deleteBrowsers method or else we run afoul of refcount foobar in KHTMLPart
     //But if you click the X (not Action->Quit) it automatically kills MainWindow because KMainWindow sets this
@@ -729,14 +687,20 @@ App::continueInit()
     mainWindow()->setAttribute( Qt::WA_DeleteOnClose, false );
     //init playlist window as soon as the database is guaranteed to be usable
 
-    //create engine, show TrayIcon etc.
+    // Create engine, show TrayIcon etc.
     applySettings( true );
-    // Start ScriptManager. Must be created _after_ MainWindow.
+
+    // Must be created _after_ MainWindow.
     PERF_LOG( "Starting ScriptManager" )
     ScriptManager::instance();
     PERF_LOG( "ScriptManager started" )
 
+    The::engineController()->setVolume( AmarokConfig::masterVolume() );
+    The::engineController()->setMuted( AmarokConfig::muteState() );
+
     Amarok::KNotificationBackend::instance()->setEnabled( AmarokConfig::kNotifyEnabled() );
+    Amarok::OSD::instance()->applySettings(); // Create after setting volume (don't show OSD for that)
+
 
     if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
@@ -750,8 +714,6 @@ App::continueInit()
     // Restore keyboard shortcuts etc from config
     Amarok::actionCollection()->readSettings();
 
-    delete m_splash;
-    m_splash = 0;
     PERF_LOG( "App init done" )
     KConfigGroup config = KGlobal::config()->group( "General" );
 
@@ -812,9 +774,12 @@ App::continueInit()
             switch( result )
             {
             case KMessageBox::Yes:
-                MountPointManager::instance()->setCollectionFolders( QStringList() << musicDir );
-                CollectionManager::instance()->startFullScan();
-                useMusicLocation = true;
+                if( CollectionManager::instance()->primaryCollection() )
+                {
+                    CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
+                    CollectionManager::instance()->startFullScan();
+                    useMusicLocation = true;
+                }
                 break;
 
             case KMessageBox::No:

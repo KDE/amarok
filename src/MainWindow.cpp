@@ -244,7 +244,6 @@ MainWindow::init()
     m_slimToolbar = new SlimToolbar( 0 );
     m_slimToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_slimToolbar->setMovable ( true );
-    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), m_slimToolbar, SLOT( repaint() ) );
     addToolBar( Qt::TopToolBarArea, m_slimToolbar );
     m_slimToolbar->hide();
 
@@ -779,7 +778,7 @@ MainWindow::createActions()
     ac->addAction( "bookmark_manager", action );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
 
-    action = new KAction( /*KIcon( "bookmarks-organize" ),*/ i18n( "Equalizer" ), this );
+    action = new KAction( KIcon( "view-media-equalizer" ), i18n( "Equalizer" ), this );
     ac->addAction( "equalizer_dialog", action );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowEqualizer() ) );
 
@@ -825,7 +824,7 @@ MainWindow::createActions()
     ac->addAction( "prev", action );
     action->setIcon( KIcon("media-skip-backward-amarok") );
     action->setText( i18n( "Previous Track" ) );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_Z ) );
+    action->setGlobalShortcut( KShortcut( Qt::Key_MediaPrevious ) );
     connect( action, SIGNAL(triggered(bool)), pa, SLOT( back() ) );
 
     action = new KAction( this );
@@ -842,7 +841,7 @@ MainWindow::createActions()
 
     action = new KAction( KIcon("media-skip-forward-amarok"), i18n( "Next Track" ), this );
     ac->addAction( "next", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
+    action->setGlobalShortcut( KShortcut( Qt::Key_MediaNext ) );
     connect( action, SIGNAL(triggered(bool)), pa, SLOT( next() ) );
 
     action = new KAction( i18n( "Increase Volume" ), this );

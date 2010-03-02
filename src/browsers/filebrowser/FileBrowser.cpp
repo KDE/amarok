@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2010 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                              *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2010 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -34,7 +35,6 @@
 
 FileBrowser::FileBrowser( const char * name, QWidget *parent )
     : BrowserCategory( name, parent )
-    , m_directoryLoader( 0 )
 {
 
     DEBUG_BLOCK;
@@ -45,7 +45,6 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
 
     m_kdirModel = new KDirModel( this );
-    m_kdirModel->dirLister()->openUrl( KUrl( QDir::homePath() ) );
 
     m_mimeFilterProxyModel = new MimeTypeFilterProxyModel( EngineController::supportedMimeTypes(), this );
     m_mimeFilterProxyModel->setSourceModel( m_kdirModel );
@@ -68,13 +67,39 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
 
     readConfig();
 
+    m_fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
+
+    for( int i = 0; i < m_fileView->model()->columnCount(); i++ )
+    {
+        QAction *action = new QAction( m_fileView->model()->headerData( i, Qt::Horizontal ).toString(), m_fileView->header() );
+        m_fileView->header()->addAction( action );
+        m_columnActions.append( action );
+        action->setCheckable( true );
+        if( !m_fileView->isColumnHidden( i ) )
+            action->setChecked( true );
+        connect( action, SIGNAL( toggled(bool) ), this, SLOT(toggleColumn(bool) ) );
+    }
+
     connect( m_fileView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
+    if( !KGlobalSettings::singleClick() )
+        connect( m_fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
 }
 
 FileBrowser::~FileBrowser()
 {
     writeConfig();
-    connect( m_fileView, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( itemActivated( const QModelIndex & ) ) );
+}
+
+void FileBrowser::toggleColumn( bool toggled )
+{
+    int index = m_columnActions.indexOf( qobject_cast< QAction* >( sender() ) );
+    if( index != -1 )
+    {
+        if( toggled )
+            m_fileView->showColumn( index );
+        else
+            m_fileView->hideColumn( index );
+    }
 }
 
 void FileBrowser::polish()
@@ -98,17 +123,9 @@ void FileBrowser::itemActivated( const QModelIndex &index )
         m_kdirModel->dirLister()->openUrl( filePath );
         m_fileView->setRootIndex( index );
 
-        //get list of current sibling directories for breadcrumb:
-
-        QStringList siblings = siblingsForDir( m_currentPath );
-        
-        debug() << "setting root path to: " << filePath.path();
-        m_kdirModel->dirLister()->openUrl( filePath );
-
         //add this dir to the breadcrumb
         setupAddItems();
         activate();
-      
     }
     else
     {
@@ -146,8 +163,9 @@ void FileBrowser::readConfig()
 
     KConfigGroup config = Amarok::config( "File Browser" );
 
-    m_kdirModel->dirLister()->openUrl( KUrl( config.readEntry( "Current Directory" ) ) );
-    m_currentPath = KUrl( config.readEntry( "Current Directory" ) ).path();
+    KUrl currentDirectory = config.readEntry( "Current Directory", QDir::homePath() );
+    m_kdirModel->dirLister()->openUrl( currentDirectory );
+    m_currentPath = currentDirectory.path();
 
     QFile file( Amarok::saveLocation() + "file_browser_layout" );
     QByteArray layout;
@@ -158,8 +176,6 @@ void FileBrowser::readConfig()
     }
 
     m_fileView->header()->restoreState( layout );
-
-
 }
 
 void FileBrowser::writeConfig()
@@ -249,10 +265,7 @@ QStringList FileBrowser::siblingsForDir( const QString &path )
     if( !dir.isRoot() )
     {
         dir.cdUp();
-        foreach( QString childDir, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
-        {
-                siblings << childDir;
-        }
+        siblings = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot );
     }
     return siblings;
 }

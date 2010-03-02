@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2009 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007-2010 Bart Cerneels <bart.cerneels@kde.org>                        *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "QtGroupingProxy.h"
 
@@ -60,27 +58,48 @@ QList<ColumnVariantMap>
 QtGroupingProxy::belongsTo( const QModelIndex &idx )
 {
     //qDebug() << __FILE__ << __FUNCTION__;
-    QList<ColumnVariantMap> rvmList;
+    QList<ColumnVariantMap> cvmList;
 
     //get all the data we have for this index
     RoleVariantMap roleVariantMap = m_model->itemData( idx );
-    bool empty = true;
-    foreach( const QVariant &variant, roleVariantMap.values() )
+    QMapIterator<int, QVariant> i(roleVariantMap);
+    while( i.hasNext() )
     {
-        //qDebug() << variant.typeName() << ": "<< variant; //so spammy
-        if( !variant.isNull() )
+        i.next();
+        int role = i.key();
+        QVariant variant = i.value();
+        qDebug() << "role " << role << " : (" << variant.typeName() << ") : "<< variant; //so spammy
+        if( variant.type() == QVariant::List )
         {
-            empty = false;
+            //a list of variants get's expanded to multiple rows
+            QVariantList list = variant.toList();
+            for( int i = 0; i < list.length(); i++ )
+            {
+                //take an existing CVM or create a new one
+                ColumnVariantMap cvm = (cvmList.count() > i) ?  cvmList.takeAt( i )
+                                       : ColumnVariantMap();
+
+                //we only gather data for the first column
+                RoleVariantMap rvm = cvm.contains( 0 ) ? cvm.take( 0 ) : RoleVariantMap();
+                rvm.insert( role, list.value( i ) );
+                cvm.insert( 0, rvm );
+                cvmList.insert( i, cvm );
+            }
+        }
+        else if( !variant.isNull() )
+        {
+            //it's just a normal item. Copy all the data and break this loop.
+            ColumnVariantMap cvm;
+            cvm.insert( 0, roleVariantMap );
+            cvmList << cvm;
             break;
         }
     }
+    //for normal items (not root node) an empty list here means it's supposed to go in root.
+    if( cvmList.isEmpty() && idx != m_rootNode )
+        cvmList << ColumnVariantMap();
 
-    ColumnVariantMap cvm;
-    if( !empty )
-        cvm.insert( 0, roleVariantMap );
-    //insert and empty ColumnVariantMap to put this index in the root
-    rvmList << cvm;
-    return rvmList;
+    return cvmList;
 }
 
 /* m_groupHash layout
@@ -102,6 +121,24 @@ QtGroupingProxy::buildTree()
     m_groupHash.clear();
     //don't clear the data maps since most of it will probably be needed again.
     m_parentCreateList.clear();
+
+    //first load empty groups from the rootnode.
+    QModelIndex rootGroupedIndex =
+            m_model->index( m_rootNode.row(), m_groupedColumn, m_rootNode.parent() );
+    if( rootGroupedIndex.column() == m_groupedColumn )
+    {
+        QList<ColumnVariantMap> groupData = belongsTo( rootGroupedIndex );
+        foreach( ColumnVariantMap cvm , groupData )
+        {
+            qDebug() << cvm;
+            if( cvm.contains( 0 ) && cvm[0].contains( Qt::DisplayRole ) )
+            {
+                QString groupName = cvm[0][Qt::DisplayRole].toString();
+                qDebug() << "Creating empty group: " << groupName;
+                m_groupMaps << cvm;
+            }
+        }
+    }
 
     int max = m_model->rowCount( m_rootNode );
     //qDebug() << QString("building tree with %1 leafs.").arg( max );
@@ -374,7 +411,7 @@ QtGroupingProxy::mapToSource( const QModelIndex& index ) const
             indexInGroup -= m_groupMaps.count();
         //qDebug() << "indexInGroup" << indexInGroup;
         QList<int> childRows = m_groupHash.values( proxyParent.row() );
-        if( childRows.isEmpty() || indexInGroup >= childRows.count() )
+        if( childRows.isEmpty() || indexInGroup >= childRows.count() || indexInGroup < 0 )
             return QModelIndex();
 
         originalRow = childRows.at( indexInGroup );
@@ -463,8 +500,9 @@ QtGroupingProxy::flags( const QModelIndex &idx ) const
         {
             foreach( int originalRow, m_groupHash.values( idx.row() ) )
             {
-                QModelIndex originalIdx = mapToSource( m_model->index( originalRow, m_groupedColumn,
-                                                                       m_rootNode) );
+                QModelIndex originalIdx = m_model->index( originalRow, m_groupedColumn,
+                                                          m_rootNode );
+                qDebug() << "originalIdx: " << originalIdx;
                 groupIsEditable = groupIsEditable
                                   ? originalIdx.flags().testFlag( Qt::ItemIsEditable )
                                   : false;

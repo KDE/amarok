@@ -46,6 +46,7 @@ signals:
     void muteToggled( bool mute );
 
 protected:
+    void changeEvent( QEvent * );
     void enterEvent( QEvent * );
     bool eventFilter( QObject *o, QEvent *e );
     void leaveEvent( QEvent * );
@@ -62,12 +63,14 @@ protected:
 private:
     void startFade();
     void stopFade();
+    void updateSliderGradient();
 
 private slots:
     void valueChangedSlot( int );
 
 private:
     QPixmap m_icon[4];
+    QPixmap m_sliderGradient;
     int m_unmutedValue, m_formerValue;
     QList<QWidget*> m_wheelProxies;
     struct
@@ -76,6 +79,7 @@ private:
         int timer;
     } m_anim;
     bool m_isClick, m_isDown, m_muted;
+    QColor m_highlightColor;
 };
 
 #endif  // end include guard

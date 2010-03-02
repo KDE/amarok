@@ -18,7 +18,6 @@
 
 #include "Debug.h"
 #include "meta/MetaUtility.h"
-#include "MountPointManager.h"
 #include "SqlCollection.h"
 #include "XesamDbus.h"
 
@@ -169,7 +168,7 @@ XesamCollectionBuilder::searchDone( const QString &search )
 QString
 XesamCollectionBuilder::generateXesamQuery() const
 {
-    QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
+    QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
     QString result;
     QXmlStreamWriter writer( &result );
     writer.setAutoFormatting( DEBUG_XML );
@@ -396,8 +395,8 @@ XesamCollectionBuilder::albumId( const QString &album, int artistId )
 int
 XesamCollectionBuilder::urlId( const QString &url )
 {
-    int deviceId = MountPointManager::instance()->getIdForUrl( url );
-    QString rpath = MountPointManager::instance()->getRelativePath( deviceId, url );
+    int deviceId = m_collection->mountPointManager()->getIdForUrl( url );
+    QString rpath = m_collection->mountPointManager()->getRelativePath( deviceId, url );
     //don't bother caching the data, we only call this method for each url once
     QString query = QString( "SELECT id FROM urls WHERE deviceid = %1 AND rpath = '%2';" )
                         .arg( QString::number( deviceId ), m_collection->sqlStorage()->escape( rpath ) );

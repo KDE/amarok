@@ -29,37 +29,47 @@
 class SqlMountPointManagerImpl : public SqlMountPointManager
 {
 public:
-    SqlMountPointManagerImpl()
+    SqlMountPointManagerImpl( MountPointManager *mpm )
         : SqlMountPointManager()
+        , m_mpm( mpm )
     {
-        connect( MountPointManager::instance(), SIGNAL( deviceAdded(int) ), SIGNAL( deviceAdded(int) ) );
-        connect( MountPointManager::instance(), SIGNAL( deviceRemoved(int) ), SIGNAL( deviceRemoved(int) ) );
+        connect( mpm, SIGNAL( deviceAdded(int) ), SIGNAL( deviceAdded(int) ) );
+        connect( mpm, SIGNAL( deviceRemoved(int) ), SIGNAL( deviceRemoved(int) ) );
     }
 
     int getIdForUrl( const KUrl &url )
     {
-        return MountPointManager::instance()->getIdForUrl( url );
+        return m_mpm->getIdForUrl( url );
     }
 
     QString getAbsolutePath ( const int deviceId, const QString& relativePath ) const
     {
-        return MountPointManager::instance()->getAbsolutePath( deviceId, relativePath );
+        return m_mpm->getAbsolutePath( deviceId, relativePath );
     }
 
     QString getRelativePath( const int deviceId, const QString& absolutePath ) const
     {
-        return MountPointManager::instance()->getRelativePath( deviceId, absolutePath );
+        return m_mpm->getRelativePath( deviceId, absolutePath );
     }
 
     IdList getMountedDeviceIds() const
     {
-        return MountPointManager::instance()->getMountedDeviceIds();
+        return m_mpm->getMountedDeviceIds();
     }
 
-    QStringList collectionFolders()
+    QStringList collectionFolders() const
     {
-        return MountPointManager::instance()->collectionFolders();
+        return m_mpm->collectionFolders();
     }
+
+    void setCollectionFolders( const QStringList &folders )
+    {
+        m_mpm->setCollectionFolders( folders );
+    }
+
+    MountPointManager *m_mpm;
+
+
 };
 
 class SqlCollectionLocationFactoryImpl : public SqlCollectionLocationFactory
@@ -97,7 +107,10 @@ SqlCollectionFactory::createSqlCollection( const QString &id, const QString &pre
 {
     SqlCollection *coll = new SqlCollection( id, prettyName );
     coll->setCapabilityDelegate( new CollectionCapabilityDelegateImpl() );
-    coll->setMountPointManager( new SqlMountPointManagerImpl() );
+
+    MountPointManager *mpm = new MountPointManager( coll, storage );
+
+    coll->setMountPointManager( new SqlMountPointManagerImpl( mpm ) );
     DatabaseUpdater *updater = new DatabaseUpdater();
     updater->setStorage( storage );
     updater->setCollection( coll );

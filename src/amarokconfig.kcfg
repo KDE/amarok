@@ -495,7 +495,7 @@
     </entry>
     <entry key="AutoDeletePodcasts" type="Bool">
         <label>Auto delete podcasts</label>
-        <whatsthis>Whether podcasts shows already played are automatically deleted when media device is connected.</whatsthis>
+        <whatsthis>Whether podcast shows already played are automatically deleted when media device is connected.</whatsthis>
     </entry>
     <entry key="SyncStats" type="Bool">
         <label>Sync stats</label>

@@ -18,7 +18,6 @@
 #include "FileCollectionLocation.h"
 
 #include "Debug.h"
-#include "MountPointManager.h"
 #include "statusbar/StatusBar.h"
 
 #include <kio/job.h>
@@ -67,23 +66,9 @@ FileCollectionLocation::remove( const Meta::TrackPtr &track )
     // the file should be removed already, so we can clean the dirs
     bool removed = !QFile::exists( track->playableUrl().path()  );
 
-    if( removed )
-    {
-        QFileInfo file( track->playableUrl().path() );
-        QDir dir = file.dir();
-        const QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
-        while( !collectionFolders.contains( dir.absolutePath() ) && !dir.isRoot() && dir.count() == 0 )
-        {
-            const QString name = dir.dirName();
-            dir.cdUp();
-            if( !dir.rmdir( name ) )
-                break;
-        }
-
-    }
     return removed;
 }
-bool FileCollectionLocation::startNextRemoveJob()
+void FileCollectionLocation::startRemoveJobs()
 {
     DEBUG_BLOCK
     while ( !m_removetracks.isEmpty() )
@@ -104,9 +89,7 @@ bool FileCollectionLocation::startNextRemoveJob()
 
         The::statusBar()->newProgressOperation( job, i18n( "Removing: %1", name ) );
         m_removejobs.insert( job, track );
-        return true;
     }
-    return false;
 }
 
 void FileCollectionLocation::slotRemoveJobFinished(KJob* job)
@@ -129,8 +112,7 @@ void FileCollectionLocation::slotRemoveJobFinished(KJob* job)
     m_removejobs.remove( job );
     job->deleteLater();
 
-    if( !startNextRemoveJob() )
-    {
+    if(m_removejobs.isEmpty()) {
         slotRemoveOperationFinished();
     }
 }
@@ -142,10 +124,7 @@ void FileCollectionLocation::removeUrlsFromCollection(const Meta::TrackList& sou
     m_removetracks = sources;
 
     debug() << "removing " << m_removetracks.size() << "tracks";
-    if( !startNextRemoveJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
-    {
-        slotRemoveOperationFinished();
-    }
+    startRemoveJobs();
 }
 
 #include "FileCollectionLocation.moc"
