@@ -496,12 +496,8 @@ Playlist::Model::setActiveRow( int row )
     if ( rowExists( row ) )
     {
         setStateOfRow( row, Item::Played );
-        int oldactiverow = m_activeRow;
         m_activeRow = row;
 
-        if ( rowExists( oldactiverow ) )
-            emit dataChanged( createIndex( oldactiverow, 0 ), createIndex( oldactiverow, columnCount() - 1 ) );
-        emit dataChanged( createIndex( m_activeRow, 0 ), createIndex( m_activeRow, columnCount() - 1 ) );
         emit activeTrackChanged( m_items.at( row )->id() );
     }
     else
