@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>221</width>
+    <width>250</width>
     <height>91</height>
    </rect>
   </property>
@@ -69,6 +69,16 @@
    <item>
     <property name="text">
      <string>German</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Italian</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Spanish</string>
     </property>
    </item>
   </widget>

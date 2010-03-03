@@ -332,6 +332,12 @@ SimilarArtistsApplet::switchToLang(QString lang)
     else if (lang == i18n("German") )
         m_descriptionPreferredLang = "de";
 
+    else if (lang == i18n("Italian") )
+        m_descriptionPreferredLang = "it";
+
+    else if (lang == i18n("Spanish") )
+        m_descriptionPreferredLang = "es";
+
     dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:lang:" ) + m_descriptionPreferredLang );
 
     KConfigGroup config = Amarok::config("SimilarArtists Applet");
@@ -354,6 +360,10 @@ SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
         ui_Settings.comboBox->setCurrentIndex( 2 );
     else if ( m_descriptionPreferredLang == "de" )
         ui_Settings.comboBox->setCurrentIndex( 3 );
+    else if ( m_descriptionPreferredLang == "it" )
+        ui_Settings.comboBox->setCurrentIndex( 4 );
+    else if ( m_descriptionPreferredLang == "es" )
+        ui_Settings.comboBox->setCurrentIndex( 5 );
 
     connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
 
