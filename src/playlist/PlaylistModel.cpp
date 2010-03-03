@@ -611,7 +611,7 @@ int
 Playlist::Model::rowForId( const quint64 id ) const
 {
     if ( containsId( id ) )
-        return m_items.indexOf( m_itemIds.value( id ) );
+        return rowForItem( m_itemIds.value( id ) );
     else
         return -1;
 }
@@ -865,7 +865,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
             unsubscribeFrom( track->album() );
 
         Item* item = originalList.at(rc.second);
-        int idx = m_items.indexOf(item);
+        int idx = rowForItem( item );
         if (idx != -1) {
             beginRemoveRows(QModelIndex(), idx, idx);
             delitems.append(item);

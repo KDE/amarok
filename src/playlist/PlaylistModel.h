@@ -147,6 +147,9 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void metadataUpdated();
         void queueChanged();
 
+    protected:
+        int rowForItem( Item *item ) const { return m_items.indexOf( item ); }
+
     private:
         // inherit from QAbstractListModel, and make private so that nobody uses them
         bool insertRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
