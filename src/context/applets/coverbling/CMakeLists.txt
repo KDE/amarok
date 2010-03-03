@@ -21,4 +21,8 @@ target_link_libraries(amarok_context_applet_coverbling
 
 install(TARGETS amarok_context_applet_coverbling DESTINATION ${PLUGIN_INSTALL_DIR})
 install(FILES amarok-context-applet-coverbling.desktop DESTINATION ${SERVICES_INSTALL_DIR})
+install(FILES blingfastback.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
+install(FILES blingtofirst.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
+install(FILES blingfastforward.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
+install(FILES blingtolast.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )
 install(FILES blingdefaultcover.png DESTINATION ${DATA_INSTALL_DIR}/amarok/images/ )

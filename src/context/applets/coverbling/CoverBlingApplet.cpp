@@ -41,9 +41,20 @@
 #include <QGraphicsWidget>
 #include <QGraphicsProxyWidget>
 #include <QLabel>
+#include <QPixmap>
+#include <QGraphicsPixmapItem>
+#include <KStandardDirs>
 
 #define DEBUG_PREFIX "CoverBlingApplet"
 
+MyGraphicItem::MyGraphicItem( const QPixmap & pixmap, QGraphicsItem * parent, QGraphicsScene * scene)
+    : QGraphicsPixmapItem(pixmap,parent,scene)
+{
+}
+void MyGraphicItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+   emit clicked();
+}
 CoverBlingApplet::CoverBlingApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
 {
@@ -75,7 +86,7 @@ CoverBlingApplet::init()
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
              this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
-    connect( qm, SIGNAL(queryDone()), this, SLOT( slideChanged(1)));
+    connect( qm, SIGNAL(queryDone()), this, SLOT( slideChanged(0)));
     connect(m_pictureflow, SIGNAL(centerIndexChanged(int)),this,SLOT(slideChanged(int)));
     connect(m_pictureflow,SIGNAL(doubleClicked(int)),this,SLOT(playAlbum(int)));
     qm->run();
@@ -94,6 +105,31 @@ CoverBlingApplet::init()
     m_ratingWidget->setPos(m_horizontal_size/2,m_vertical_size-30);
     m_ratingWidget->setRating(0);
     m_ratingWidget->setEnabled(FALSE);
+
+    QPixmap pix1 = QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtofirst.png" ));
+    //pix1 = pix1.scaled(18,18,Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    QPixmap pix2 = QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtolast.png" ));
+    //pix2 = pix2.scaled(18,18,Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    QPixmap pix3 = QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastback.png" ));
+    //pix3 = pix3.scaled(18,18,Qt::KeepAspectRatio,Qt::SmoothTransformation);
+    QPixmap pix4 = QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" ));
+    //pix4 = pix4.scaled(18,18,Qt::KeepAspectRatio,Qt::SmoothTransformation);
+
+    m_blingtofirst = new MyGraphicItem(pix1,this);
+    m_blingtofirst->setOffset(30,m_vertical_size-30);
+    connect(m_blingtofirst,SIGNAL(clicked()),this,SLOT(skipToFirst()));
+
+    m_blingtolast = new MyGraphicItem(pix2,this);
+    m_blingtolast->setOffset(m_horizontal_size+30,m_vertical_size-30);
+    connect(m_blingtolast,SIGNAL(clicked()),this,SLOT(skipToLast()));
+
+    m_blingfastback = new MyGraphicItem(pix3,this);
+    m_blingfastback->setOffset(60,m_vertical_size-30);
+    connect(m_blingfastback,SIGNAL(clicked()),this,SLOT(fastBackward()));
+
+    m_blingfastforward = new MyGraphicItem(pix4,this);
+    m_blingfastforward->setOffset(m_horizontal_size,m_vertical_size-30);
+    connect(m_blingfastforward,SIGNAL(clicked()),this,SLOT(fastForward()));
 }
 
 CoverBlingApplet::~CoverBlingApplet()
@@ -106,6 +142,39 @@ void CoverBlingApplet::slotAlbumQueryResult( QString collectionId, Meta::AlbumLi
     Q_UNUSED( collectionId );
     foreach( Meta::AlbumPtr album, albums )
         m_pictureflow->addAlbum(album);
+}
+void CoverBlingApplet::skipToFirst()
+{
+    if (m_pictureflow)
+    {
+	m_pictureflow->setCenterIndex(0);	
+    }
+}
+void CoverBlingApplet::skipToLast()
+{
+    if (m_pictureflow)
+    {
+	int nbslides = m_pictureflow->slideCount();
+	m_pictureflow->setCenterIndex(nbslides);
+    }
+}
+void CoverBlingApplet::fastForward()
+{
+    if (m_pictureflow)
+    {
+	int nbslides = m_pictureflow->slideCount();
+	int current = m_pictureflow->centerIndex();
+	m_pictureflow->showSlide(current+nbslides/10);	
+    }
+}
+void CoverBlingApplet::fastBackward()
+{
+    if (m_pictureflow)
+    {
+	int nbslides = m_pictureflow->slideCount();
+	int current = m_pictureflow->centerIndex();
+	m_pictureflow->showSlide(current-nbslides/10);	
+    }
 }
 void CoverBlingApplet::slideChanged(int islideindex)
 {
@@ -139,6 +208,12 @@ void CoverBlingApplet::playAlbum(int islideindex)
 	}
 
 }
+/*void CoverBlingApplet::constraintsEvent( Plasma::Constraints constraints )
+{
+    Q_UNUSED( constraints )
+    prepareGeometryChange();
+   
+}*/
 void 
 CoverBlingApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {

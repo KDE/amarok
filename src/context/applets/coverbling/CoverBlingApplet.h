@@ -30,12 +30,23 @@ class PhotosScrollWidget;
 class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
 class RatingWidget;
+class QGraphicsPixmapItem;
 
 namespace Plasma
 {
     class IconWidget;
 }
-
+class MyGraphicItem:public QObject, public QGraphicsPixmapItem
+{
+	Q_OBJECT
+	public:
+	  MyGraphicItem(const QPixmap & pixmap, QGraphicsItem * parent = 0, QGraphicsScene * scene = 0);
+	  enum {Type = 65536}; //UserType should be greater then = 65535
+	signals:
+  		void clicked();
+	private:
+	  void mousePressEvent(QGraphicsSceneMouseEvent * event);
+};
  /** CoverBlingApplet will display photos from the Internet, relative to the current playing song
    */
 class CoverBlingApplet : public Context::Applet, public EngineObserver
@@ -53,11 +64,23 @@ class CoverBlingApplet : public Context::Applet, public EngineObserver
 	void 	slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums);
 	void	slideChanged(int islideindex);
         void	playAlbum(int islideindex);
+	void    skipToFirst();
+	void	skipToLast();
+	void	fastForward();
+	void	fastBackward();
+    protected :
+	//virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
     private:
 	PictureFlow * m_pictureflow;
 	QGraphicsProxyWidget * m_layout;
 	RatingWidget* m_ratingWidget;
 	QGraphicsSimpleTextItem* m_label;
+
+	MyGraphicItem* m_blingtofirst;
+	MyGraphicItem* m_blingtolast;
+	MyGraphicItem* m_blingfastback;
+	MyGraphicItem* m_blingfastforward;
+
 	int m_horizontal_size;
 	int m_vertical_size;
 };
