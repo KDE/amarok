@@ -33,7 +33,7 @@ class QGridLayout;
 /**
  * A widget for display an artist with some details
  * @author Joffrey Clavel
- * @version 0.1
+ * @version 0.2
  */
 class ArtistWidget : public QWidget
 {
@@ -44,7 +44,10 @@ public:
      * ArtistWidget constructor
      * @param parent The widget parent
      */
-    ArtistWidget( QWidget *parent = 0 );
+    ArtistWidget( QWidget *parent =0 );
+    /**
+     * ArtistWidget destructor
+     */
     ~ArtistWidget();
 
     /**
@@ -74,6 +77,18 @@ public:
     void setMatch( const int match );
 
     /**
+     * Change the artist description which contains informations about this artist
+     * @param desc The description of this artist
+     */
+    void setDescription( const QString &description );
+
+    /**
+     * Change the most known track of this artist
+     * @param topTrack the top track of this artist
+     */
+    void setTopTrack( const QString &topTrack );
+
+    /**
      * Clean the widget => the content of the QLabel is empty
      */
     void clear();
@@ -86,13 +101,33 @@ private:
     QGridLayout *m_layout;
 
     //elements of the widget
+    /**
+     * Image of the artist
+     */
     QLabel *m_image;
+    
+    /**
+     * Name of the artist
+     */
     QLabel *m_name;
+    
+    /**
+     * Genre of the artist's music
+     */
     QLabel *m_genre;
+    
+    /**
+     * Top track of the artist
+     */
     QLabel *m_topTrack;
+    
+    QLabel *m_desc;
 
+    /**
+     * Job of the image from the web
+     */
     KJob *m_imageJob;
-    KJob *m_topTrackJob;
+
 
 
 private slots:
@@ -100,17 +135,13 @@ private slots:
      * Put the image of the artist in the QPixMap
      * @param job, pointer to the job which get the pixmap from the web
      */
-    void setImageFromInternet( KJob* job );
-    /**
-     * Put the top track of the artist in the QLabel
-     * @param job, pointer to the job which get the pixmap from the web
-     */
-    void setTopTrack( KJob* job );
+    void setImageFromInternet( KJob *job );
+
     /**
      * Open an URL
      * @param url The URL of the artist
      */
-    void openUrl( QString );
+    void openUrl( const QString &url );
 };
 
 #endif // ARTIST_WIDGET_H

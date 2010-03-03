@@ -59,19 +59,39 @@ public:
     /**
      * SimilarArtistsApplet constructor
      * @param parent The widget parent
-     * @param args The widget parent
+     * @param args   List of strings containing two entries: the service id
+     *               and the applet id
      */
     SimilarArtistsApplet( QObject* parent, const QVariantList& args );
+
+    /**
+     * SimilarArtistsApplet destructor
+     */
     ~SimilarArtistsApplet();
 
+
+    /**
+     * Initialization of the applet's display, creation of the layout, scrolls
+     */
     void init();
 
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem* option
                          , const QRect& contentsRect );
+    /**
+     * This method puts the widgets in the layout, in the initialization
+     */
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     // inherited from EngineObserver
+
+    /**
+     * This method was launch when amarok play a new track
+     */
     virtual void engineNewTrackPlaying();
+
+    /**
+     * This method was launch when amarok stop is playback (ex: The user has clicked on the stop button)
+     */
     virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength
                                       , PlaybackEndedReason reason );
 
@@ -79,18 +99,24 @@ protected:
     void createConfigurationInterface( KConfigDialog *parent );
 
 public slots:
+
+    /**
+     * Update the current artist and his similar artists
+     */
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
 
 private:
 
     /**
-     * update the display of the artists according to the lists m_similars
+     * Update the display of the artists according to the lists m_similars
      */
     void artistsUpdate();
 
     qreal m_aspectRatio;
     qreal m_headerAspectRatio;
     QSizeF m_size;
+
+    QString m_descriptionPreferredLang;
 
     /**
      * Layout for the formatting of the applet contents
@@ -137,18 +163,29 @@ private:
     //list of the separators
     QList<QWidget *> m_layoutWidgetList;
 
+    /**
+     * The max number artists
+     */
     int m_maxArtists;
+    /**
+     * Artist which you want to see artists like
+     */
     int m_temp_maxArtists;
 
     QString m_currentArtist;
 
 private slots:
+
+    /**
+     * Allows the connection to the lastfm's api
+     */
     void connectSource( const QString &source );
 
     /**
      * Show the settings windows
      */
     void configure();
+    void switchToLang(QString lang);
     void changeMaxArtists( int value );
     void saveMaxArtists();
     void saveSettings();

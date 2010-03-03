@@ -27,8 +27,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QDesktopServices>
-#include <QDomElement> // for parse the topTrack xml
-
+#include <QTextDocument>
 
 /**
  * ArtistWidget constructor
@@ -64,20 +63,32 @@ ArtistWidget::ArtistWidget( QWidget *parent ) : QWidget( parent )
     m_topTrack->setWordWrap( true );
     // The background of the QLabel is transparent
     m_topTrack->setAttribute( Qt::WA_TranslucentBackground, true );
-    m_topTrack->setAlignment( Qt::AlignCenter );
+    m_topTrack->setAlignment( Qt::AlignLeft );
+
+    m_desc= new QLabel( this );
+    m_desc->setWordWrap( true );
+    // The background of the QLabel is transparent
+    m_desc->setAttribute( Qt::WA_TranslucentBackground, true );
+    m_desc->setAlignment( Qt::AlignLeft );
+
+    
 
     // the image display is extended on two row
-    m_layout->addWidget( m_image, 0, 0, 2, 1 );
+    m_layout->addWidget( m_image, 0, 0, 3, 1 );
     m_layout->addWidget( m_name, 0, 1 );
     m_layout->addWidget( m_genre, 0, 2 );
     m_layout->addWidget( m_topTrack, 1, 1, 1, 2 );
+    m_layout->addWidget( m_desc, 2, 1, 1, 2 );
 
     // open the url of the similar artist when his name is clicked
-    connect( m_name, SIGNAL( linkActivated( QString ) ), this
-             , SLOT( openUrl( QString ) ) );
+    connect( m_name, SIGNAL( linkActivated( const QString & ) ), this
+             , SLOT( openUrl( const QString  & ) ) );
 }
 
 
+/**
+ * ArtistWidget destructor
+ */
 ArtistWidget::~ArtistWidget()
 {
     delete m_layout;
@@ -86,7 +97,7 @@ ArtistWidget::~ArtistWidget()
     delete m_genre;
     delete m_topTrack;
     delete m_imageJob;
-    delete m_topTrackJob;
+    delete m_desc;
 }
 
 
@@ -95,7 +106,7 @@ ArtistWidget::~ArtistWidget()
  * @param photo The new artist photo
  */
 void
-ArtistWidget::setPhoto( const QPixmap & photo )
+ArtistWidget::setPhoto( const QPixmap &photo )
 {
     m_image->setPixmap( photo );
 }
@@ -104,7 +115,8 @@ ArtistWidget::setPhoto( const QPixmap & photo )
  * Change the photo of the artist with a photo load from an Url
  * @param photo The url of the new artist photo
  */
-void ArtistWidget::setPhoto( const KUrl& urlPhoto )
+void
+ArtistWidget::setPhoto( const KUrl& urlPhoto )
 {
     // display a message for the user while the fetch of the picture
     m_image->clear();
@@ -120,7 +132,8 @@ void ArtistWidget::setPhoto( const KUrl& urlPhoto )
  * Put the image of the artist in the QPixMap
  * @param job, pointer to the job which get the pixmap from the web
  */
-void ArtistWidget::setImageFromInternet( KJob* job )
+void
+ArtistWidget::setImageFromInternet( KJob *job )
 {
     if ( !m_imageJob ) return; //track changed while we were fetching
 
@@ -175,76 +188,8 @@ void ArtistWidget::setImageFromInternet( KJob* job )
 void
 ArtistWidget::setArtist( const QString &nom, const KUrl &url )
 {
-    DEBUG_BLOCK
     m_name->setText( "<a href='" + url.url() + "'>" + nom + "</a>" );
-    m_topTrack->setText( i18n( "TopTrack" ) + " : " + i18n( "loading..." ) );
-
-    // ask for the top tracks of this artist
-    QUrl urlTmp;
-    urlTmp.setScheme( "http" );
-    urlTmp.setHost( "ws.audioscrobbler.com" );
-    urlTmp.setPath( "/2.0/" );
-    urlTmp.addQueryItem( "method", "artist.gettoptracks" );
-    urlTmp.addQueryItem( "api_key", "402d3ca8e9bc9d3cf9b85e1202944ca5" );
-    urlTmp.addQueryItem( "artist", nom.toLocal8Bit() );
-
-    m_topTrackJob = KIO::storedGet( urlTmp, KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_topTrackJob, SIGNAL( result( KJob* ) ), SLOT( setTopTrack( KJob* ) ) );
 }
-
-/**
- * Put the top track of the artist in the QLabel
- * @param job, pointer to the job which get the pixmap from the web
- */
-void ArtistWidget::setTopTrack( KJob* job )
-{
-    QString xml;
-
-    if ( !m_topTrackJob ) return; //track changed while we were fetching
-
-    // It's the correct job but it errored out
-    if ( job->error() != KJob::NoError && job == m_topTrackJob )
-    {
-        // probably we haven't access to internet
-        // we make nothing
-        return;
-    }
-
-    // not the right job, so let's ignore it
-    if ( job != m_topTrackJob )
-        return;
-
-    if ( job )
-    {
-        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-        xml = QString::fromUtf8( storedJob->data().data(), storedJob->data().size() );
-    }
-    else
-    {
-        return;
-    }
-
-    QDomDocument doc;
-    doc.setContent( xml );
-
-    // we get only the first top track
-    const QDomNode events = doc.documentElement().namedItem( "toptracks" );
-
-    QDomNode n = events.firstChild();
-
-
-    QDomNode nameNode = n.namedItem( "name" );
-    QDomElement eName = nameNode.toElement();
-    QString name;
-    if ( !eName.isNull() )
-    {
-        name = eName.text();
-    }
-
-    m_topTrack->setText( i18n( "TopTrack" ) + " : " + name );
-    m_topTrackJob = 0;
-}
-
 
 /**
  * Change the match pourcentage of the artist
@@ -272,7 +217,53 @@ ArtistWidget::clear()
  * Open an URL
  * @param url The URL of the artist
  */
-void ArtistWidget::openUrl( QString url )
+void
+ArtistWidget::openUrl( const QString &url )
 {
     QDesktopServices::openUrl( KUrl( "http://" + url ) );
 }
+
+
+/**
+ * Change the artist description which contains informations about this artist
+ * @param desc The description of this artist
+ */
+void
+ArtistWidget::setDescription(const QString &description)
+{
+    if(description.isEmpty())
+    {
+        m_desc->setText(i18n("No description available in your language"));
+    } else {
+        QTextDocument descriptionText;
+        descriptionText.setHtml(description);
+        QString descriptionString = descriptionText.toPlainText();
+        //resize the description
+        if (description.length() > 150)
+        {
+            //resizing the qstring
+            descriptionString.resize(150);
+            //looking for the last space
+            int last_space = descriptionString.lastIndexOf(" ");
+            //adding ... following this space
+            descriptionString = descriptionString.mid(0, last_space).append("...");
+        }
+        m_desc->setText(descriptionString);
+    }
+}
+
+/**
+ * Change the most known track of this artist
+ * @param topTrack the top track of this artist
+ */
+void
+ArtistWidget::setTopTrack(const QString &topTrack)
+{
+    if(topTrack.isEmpty())
+    {
+        m_topTrack->setText(i18n("Top track not found"));
+    } else {
+        m_topTrack->setText( i18n( "Top track" ) + " : " +  topTrack);
+    }
+}
+

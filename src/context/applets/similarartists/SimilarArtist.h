@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Joffrey Clavel <jclavel@clabert.info>                             *
+ * Copyright (c) 2009-2010 Joffrey Clavel <jclavel@clabert.info>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,11 +17,12 @@
 #ifndef SIMILAR_ARTIST_H
 #define SIMILAR_ARTIST_H
 
+//Kde
+#include <KUrl>
+
 //Qt
 #include<QString>
 
-//Kde
-#include <KUrl>
 
 /**
  * Represents a similar artist to another
@@ -30,28 +31,116 @@
  */
 class SimilarArtist
 {
-    public:
-        SimilarArtist();
-        SimilarArtist(const QString &name, const int match, const KUrl &url,
-                      const KUrl &urlImage, const QString &similarTo);
+public:
+    
+    /**
+     * Create an empty similar artist
+     */
+    SimilarArtist();
 
-        QString name() const;
-        int match() const;
-        KUrl url() const;
-        KUrl urlImage() const;
-        
-        typedef QList<SimilarArtist> SimilarArtistsList ;
-        
-    private:
-        QString m_name;
-        int m_match;
-        KUrl m_url;
-        KUrl m_urlImage;
-        QString m_similarTo;
-        
+    /**
+     * Create a similar artist with data
+     * @param name  The name of this similar artist
+     * @param match The match pourcent (between 0 and 100) of the similarity
+     * between this artist and the artist similarTo
+     * @param url   A url of this artist on the web, for example on last.fm
+     * @param urlImage  A url of an image of this artist, for example on last.fm
+     * @param similarTo The name of the artist similar to this artist
+     * @param desc The description of this artist, empty string as default
+     * @param topTrack The most known artist track.
+     */
+    SimilarArtist( const QString &name, const int match, const KUrl &url,
+                   const KUrl &urlImage, const QString &similarTo,
+                   const QString &description=QString(),
+                   const QString &topTrack=QString() );
+
+    /**
+     * @return The name of this artist
+     */
+    QString name() const;
+
+    /**
+     * @return the pourcent of match of this artist, betwwen 0 and 100
+     */
+    int match() const;
+
+    /**
+     * @return a url on the web for this artist, for example on last.fm
+     */
+    KUrl url() const;
+
+    /**
+     * @return a url on the web for an image oh this artist, for example on last.fm
+     */
+    KUrl urlImage() const;
+
+    /**
+     * @return the description of this artist
+     */
+    QString description() const;
+
+    /**
+     * Set the description of this artist
+     * @param desc the description
+     */
+    void setDescription(const QString &description);
+
+    /**
+     * @return the most known artist track
+     */
+    QString topTrack() const;
+
+    /**
+     * Set the most known artist track
+     * @param track the top track
+     */
+    void setTopTrack(const QString &track);
+
+    /**
+     * Define a new type for help the communication
+     * between the data engine SimilarArtists and the applet SimilarArtists
+     */
+    typedef QList<SimilarArtist> SimilarArtistsList ;
+
+private:
+    /**
+     * The name of this artist
+     */
+    QString m_name;
+
+    /**
+     * The match of this artist to the artist similarTo, between 0 and 100
+     */
+    int m_match;
+
+    /**
+     * A url of this artist on the web
+     */
+    KUrl m_url;
+
+    /**
+     * A image url of this artist on the web
+     */
+    KUrl m_urlImage;
+
+    /**
+     * The description of this artist
+     */
+    QString m_description;
+
+    /**
+     * The most known track of this artist
+     */
+    QString m_topTrack;
+
+    /**
+     * The name of the artist similar to this artist
+     */
+    QString m_similarTo;
+
 };
 
 #endif // SIMILAR_ARTIST_H
 
-Q_DECLARE_METATYPE(SimilarArtist)
-Q_DECLARE_METATYPE(SimilarArtist::SimilarArtistsList)
+Q_DECLARE_METATYPE( SimilarArtist )
+Q_DECLARE_METATYPE( SimilarArtist::SimilarArtistsList )

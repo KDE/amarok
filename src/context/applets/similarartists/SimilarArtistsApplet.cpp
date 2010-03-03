@@ -44,6 +44,12 @@
 
 
 
+/**
+ * SimilarArtistsApplet constructor
+ * @param parent The widget parent
+ * @param args   List of strings containing two entries: the service id
+ *               and the applet id
+ */
 SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList& args )
         : Context::Applet( parent, args )
         , m_aspectRatio( 0 )
@@ -58,6 +64,9 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
 }
 
 
+/**
+ * SimilarArtistsApplet destructor
+ */
 SimilarArtistsApplet::~SimilarArtistsApplet()
 {
     delete m_headerLabel;
@@ -66,7 +75,9 @@ SimilarArtistsApplet::~SimilarArtistsApplet()
     delete m_scroll; // Destroy automatically his child widget
 }
 
-
+/**
+ * Initialization of the applet's display, creation of the layout, scrolls
+ */
 void
 SimilarArtistsApplet::init()
 {
@@ -118,6 +129,7 @@ SimilarArtistsApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     m_maxArtists = config.readEntry( "maxArtists", "5" ).toInt();
+    m_temp_maxArtists=m_maxArtists;
 
     connectSource( "similarArtists" );
     connect( dataEngine( "amarok-similarArtists" ),
@@ -127,6 +139,9 @@ SimilarArtistsApplet::init()
     constraintsEvent();
 }
 
+/**
+ * This method allows the connection to the lastfm's api
+ */
 void
 SimilarArtistsApplet::connectSource( const QString &source )
 {
@@ -137,6 +152,9 @@ SimilarArtistsApplet::connectSource( const QString &source )
     }
 }
 
+/**
+ * This method puts the widgets in the layout, in the initialization
+ */
 void
 SimilarArtistsApplet::constraintsEvent( Plasma::Constraints constraints )
 {
@@ -242,12 +260,13 @@ SimilarArtistsApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLen
     setCollapseOn();
 }
 
-
+/**
+ * Update the current artist and his similar artists
+ */
 void
 SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
 {
     Q_UNUSED( name )
-
     m_artist = data[ "artist" ].toString();
 
     // we see if the artist name is valid
@@ -298,11 +317,55 @@ SimilarArtistsApplet::configure()
 
 
 void
+SimilarArtistsApplet::switchToLang(QString lang)
+{
+    DEBUG_BLOCK
+    if (lang == i18n("Automatic") )
+        m_descriptionPreferredLang = "aut";
+
+    else if (lang == i18n("English") )
+        m_descriptionPreferredLang = "en";
+
+    else if (lang == i18n("French") )
+        m_descriptionPreferredLang = "fr";
+
+    else if (lang == i18n("German") )
+        m_descriptionPreferredLang = "de";
+
+    else if (lang == i18n("Italian") )
+        m_descriptionPreferredLang = "it";
+
+    else if (lang == i18n("Spanish") )
+        m_descriptionPreferredLang = "es";
+
+    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:lang:" ) + m_descriptionPreferredLang );
+
+    KConfigGroup config = Amarok::config("SimilarArtists Applet");
+    config.writeEntry( "PreferredLang", m_descriptionPreferredLang );
+    dataEngine( "amarok-similarArtists" )->query( QString( "similarArtists:lang:" ) + m_descriptionPreferredLang );
+}
+
+void
 SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     QWidget *settings = new QWidget();
     ui_Settings.setupUi( settings );
+
+    if ( m_descriptionPreferredLang == "aut" )
+        ui_Settings.comboBox->setCurrentIndex( 0 );
+    else if ( m_descriptionPreferredLang == "en" )
+        ui_Settings.comboBox->setCurrentIndex( 1 );
+    else if ( m_descriptionPreferredLang == "fr" )
+        ui_Settings.comboBox->setCurrentIndex( 2 );
+    else if ( m_descriptionPreferredLang == "de" )
+        ui_Settings.comboBox->setCurrentIndex( 3 );
+    else if ( m_descriptionPreferredLang == "it" )
+        ui_Settings.comboBox->setCurrentIndex( 4 );
+    else if ( m_descriptionPreferredLang == "es" )
+        ui_Settings.comboBox->setCurrentIndex( 5 );
+
+    connect( ui_Settings.comboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( switchToLang( QString ) ) );
 
     ui_Settings.spinBox->setValue( m_maxArtists );
 
@@ -345,7 +408,6 @@ SimilarArtistsApplet::saveSettings()
 void
 SimilarArtistsApplet::artistsUpdate()
 {
-
     if ( !m_similars.isEmpty() )
     {
         m_headerLabel->setText( i18n( "Similar artists of %1", m_artist ) );
@@ -393,6 +455,8 @@ SimilarArtistsApplet::artistsUpdate()
             art->setArtist( m_similars.at( cpt ).name(), m_similars.at( cpt ).url() );
             art->setPhoto( m_similars.at( cpt ).urlImage() );
             art->setMatch( m_similars.at( cpt ).match() );
+            art->setDescription(m_similars.at( cpt ).description());
+            art->setTopTrack(m_similars.at( cpt ).topTrack());
             cpt++;
         }
 
