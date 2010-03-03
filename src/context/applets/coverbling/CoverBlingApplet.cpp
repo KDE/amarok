@@ -106,28 +106,19 @@ CoverBlingApplet::init()
     m_ratingWidget->setRating(0);
     m_ratingWidget->setEnabled(FALSE);
 
-    QPixmap pix1 = QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtofirst.png" ));
-    //pix1 = pix1.scaled(18,18,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    QPixmap pix2 = QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtolast.png" ));
-    //pix2 = pix2.scaled(18,18,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    QPixmap pix3 = QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastback.png" ));
-    //pix3 = pix3.scaled(18,18,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-    QPixmap pix4 = QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" ));
-    //pix4 = pix4.scaled(18,18,Qt::KeepAspectRatio,Qt::SmoothTransformation);
-
-    m_blingtofirst = new MyGraphicItem(pix1,this);
+    m_blingtofirst = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtofirst.png" )),this);
     m_blingtofirst->setOffset(30,m_vertical_size-30);
     connect(m_blingtofirst,SIGNAL(clicked()),this,SLOT(skipToFirst()));
 
-    m_blingtolast = new MyGraphicItem(pix2,this);
+    m_blingtolast = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingtolast.png" )),this);
     m_blingtolast->setOffset(m_horizontal_size+30,m_vertical_size-30);
     connect(m_blingtolast,SIGNAL(clicked()),this,SLOT(skipToLast()));
 
-    m_blingfastback = new MyGraphicItem(pix3,this);
+    m_blingfastback = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastback.png" )),this);
     m_blingfastback->setOffset(60,m_vertical_size-30);
     connect(m_blingfastback,SIGNAL(clicked()),this,SLOT(fastBackward()));
 
-    m_blingfastforward = new MyGraphicItem(pix4,this);
+    m_blingfastforward = new MyGraphicItem(QPixmap(KStandardDirs::locate( "data", "amarok/images/blingfastforward.png" )),this);
     m_blingfastforward->setOffset(m_horizontal_size,m_vertical_size-30);
     connect(m_blingfastforward,SIGNAL(clicked()),this,SLOT(fastForward()));
 }
