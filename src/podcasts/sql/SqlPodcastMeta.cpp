@@ -630,7 +630,9 @@ Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     if( hasPurge() && m_episodes.count() > purgeCount() )
     {
         debug() << "removing last episode from the list since we are limited to " << purgeCount();
-        m_episodes.removeLast();
+        SqlPodcastEpisodePtr removedEpisode = m_episodes.takeLast();
+        m_provider->deleteDownloadedEpisode( removedEpisode );
+
         notifyObserversTrackRemoved( purgeCount() );
     }
 

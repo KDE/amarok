@@ -14,42 +14,56 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#ifndef PLAYPAUSEBUTTON_H
-#define PLAYPAUSEBUTTON_H
-
-#include "IconButton.h"
+#ifndef ICONBUTTON_H
+#define ICONBUTTON_H
 
 #include <QImage>
 #include <QPixmap>
+#include <QWidget>
 
-
-class PlayPauseButton : public IconButton
+class IconButton : public QWidget
 {
     Q_OBJECT
 
 public:
-    PlayPauseButton( QWidget *parent = 0 );
-    inline bool playing() const { return m_isPlaying; }
-    void setPlaying( bool playing );
+    IconButton( QWidget *parent = 0 );
+    virtual QSize sizeHint() const;
+    void setIcon( const QImage &img, int steps = 0 );
 
 signals:
-    void toggled(bool playing);
+    void clicked();
 
 protected:
-    void enterEvent( QEvent * );
-    void leaveEvent( QEvent * );
-    void mousePressEvent( QMouseEvent * );
-    void reloadContent( const QSize &sz );
+    virtual void mousePressEvent( QMouseEvent * );
+    virtual void mouseReleaseEvent( QMouseEvent * );
+    virtual void paintEvent( QPaintEvent * );
+    virtual void resizeEvent(QResizeEvent *);
+    virtual void timerEvent ( QTimerEvent * );
 
-private slots:
-    void toggle();
+    /**
+     Reload the content for the given size
+     The iconbutton preserves a square size, so sz.width() == sz.height()
+    */
+    virtual void reloadContent( const QSize &sz );
 
 private:
-    bool m_isPlaying;
+    void updateIconBuffer();
+
+    bool m_isClick;
     struct
     {
-        QImage play[2], pause[2];
-    } m_icon;
+        int step;
+        int steps;
+        int timer;
+    } m_anim;
+
+    struct
+    {
+        QImage image;
+        QPixmap pixmap;
+    } m_buffer;
+
+    QImage m_icon, m_oldIcon;
 };
 
 

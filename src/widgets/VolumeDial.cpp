@@ -18,12 +18,14 @@
 
 #include "SvgHandler.h"
 
+#include <QConicalGradient>
 #include <QCoreApplication>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QToolBar>
 #include <QToolTip>
 
+#include <KColorUtils>
 #include <KLocale>
 
 #include <cmath>
@@ -35,7 +37,12 @@ VolumeDial::VolumeDial( QWidget *parent ) : QDial( parent )
 {
     m_anim.step = 0;
     m_anim.timer = 0;
+    setMouseTracking( true );
+
     connect ( this, SIGNAL( valueChanged(int) ), SLOT( valueChangedSlot(int) ) );
+
+    QEvent ev( QEvent::PaletteChange );
+    changeEvent( &ev );
 }
 
 void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
@@ -51,6 +58,17 @@ void VolumeDial::addWheelProxies( QList<QWidget*> proxies )
     }
 }
 
+void VolumeDial::changeEvent( QEvent *ev )
+{
+    if ( ev->type() == QEvent::PaletteChange )
+    {
+        const QColor &fg = palette().color( foregroundRole() );
+        const QColor &hg = palette().color( QPalette::Highlight );
+        const qreal contrast = KColorUtils::contrastRatio( hg, palette().color( backgroundRole() ) );
+        m_highlightColor = KColorUtils::mix( hg, fg, 1.0 - contrast/3.0 );
+    }
+    QDial::changeEvent( ev );
+}
 
 void VolumeDial::enterEvent( QEvent * )
 {
@@ -88,9 +106,19 @@ void VolumeDial::leaveEvent( QEvent * )
     startFade();
 }
 
+static bool onRing( const QRect &r, const QPoint &p )
+{
+    const QPoint c = r.center();
+    const int dx = p.x() - c.x();
+    const int dy = p.y() - c.y();
+    return sqrt(dx*dx + dy*dy) > r.width()/4;
+}
+
 void VolumeDial::mouseMoveEvent( QMouseEvent *me )
 {
-    if ( m_isClick )
+    if ( me->buttons() == Qt::NoButton )
+        setCursor( onRing( rect(), me->pos() ) ? Qt::PointingHandCursor : Qt::ArrowCursor );
+    else if ( m_isClick )
         me->accept();
     else
         QDial::mouseMoveEvent( me );
@@ -104,16 +132,15 @@ void VolumeDial::mousePressEvent( QMouseEvent *me )
         return;
     }
 
-    setCursor( Qt::PointingHandCursor );
-    const QPoint c = rect().center();
-    const int dx = me->pos().x() - c.x();
-    const int dy = me->pos().y() - c.y();
-    m_isClick = sqrt(dx*dx + dy*dy) < 1*width()/3;
+    m_isClick = !onRing( rect(), me->pos() );
 
     if ( m_isClick )
         update(); // hide the ring
-    else // this will directly jump to the proper position
-        QDial::mousePressEvent( me );
+    else
+    {
+        setCursor( Qt::PointingHandCursor ); // hint dragging
+        QDial::mousePressEvent( me ); // this will directly jump to the proper position
+    }
 
     // for value changes caused by mouseevent we'll only let our adjusted value changes be emitted
     // see ::sliderChange()
@@ -132,24 +159,13 @@ void VolumeDial::mouseReleaseEvent( QMouseEvent *me )
 
     if ( m_isClick )
     {
-        const int dx = width()/4;
-        const int dy = height()/4;
-        m_isClick = rect().adjusted(dx, dy, -dx, -dy).contains( me->pos() );
+        m_isClick = !onRing( rect(), me->pos() );
         if ( m_isClick )
             emit muteToggled( !m_muted );
     }
 
     m_isClick = false;
 }
-
-static QColor mix( const QColor &c1, const QColor &c2 )
-{
-    QColor c;
-    c.setRgb( ( c1.red() + c2.red() ) / 2, ( c1.green() + c2.green() ) / 2,
-              ( c1.blue() + c2.blue() ) / 2, ( c1.alpha() + c2.alpha() ) / 2 );
-    return c;
-}
-
 
 void VolumeDial::paintEvent( QPaintEvent * )
 {
@@ -160,9 +176,7 @@ void VolumeDial::paintEvent( QPaintEvent * )
     p.drawPixmap( 0,0, m_icon[ icon ] );
     if ( !m_isClick )
     {
-        QColor c = mix( palette().color( foregroundRole() ), palette().color( QPalette::Highlight ) );
-        c.setAlpha( 82 + m_anim.step*96/6 );
-        p.setPen( QPen( c, 3, Qt::SolidLine, Qt::RoundCap ) );
+        p.setPen( QPen( m_sliderGradient, 3, Qt::SolidLine, Qt::RoundCap ) );
         p.setRenderHint( QPainter::Antialiasing );
         p.drawArc( rect().adjusted(4,4,-4,-4), -110*16, - value()*320*16 / (maximum() - minimum()) );
     }
@@ -191,6 +205,8 @@ void VolumeDial::resizeEvent( QResizeEvent *re )
             m_icon[i] = QPixmap::fromImage( m_icon[i].toImage().mirrored( true, false ) );
     }
 
+    m_sliderGradient = QPixmap( size() );
+    updateSliderGradient();
     update();
 }
 
@@ -227,7 +243,31 @@ void VolumeDial::timerEvent( QTimerEvent *te )
         if ( m_anim.step < 1 )
             stopFade();
     }
+    updateSliderGradient();
     repaint();
+}
+
+void VolumeDial::updateSliderGradient()
+{
+    m_sliderGradient.fill( Qt::transparent );
+    QColor c = m_highlightColor;
+    if ( !m_anim.step )
+    {
+        c.setAlpha( 99 );
+        m_sliderGradient.fill( c );
+        return;
+    }
+
+    QConicalGradient cg( m_sliderGradient.rect().center(), -90 );
+
+    c.setAlpha( 99 + m_anim.step*156/6 );
+    cg.setColorAt( 0, c );
+    c.setAlpha( 99 + m_anim.step*42/6 );
+    cg.setColorAt( 1, c );
+
+    QPainter p( &m_sliderGradient );
+    p.fillRect( m_sliderGradient.rect(), cg );
+    p.end();
 }
 
 void VolumeDial::wheelEvent( QWheelEvent *wev )

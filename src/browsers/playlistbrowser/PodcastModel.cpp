@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2007-2010 Bart Cerneels <bart.cerneels@kde.org>                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -375,29 +375,46 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 bool
 PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
-    if( idx.isValid() )
+    if( !idx.isValid() )
+        return false;
+
+    if( idx.column() == ProviderColumn )
     {
-        if( idx.column() == ProviderColumn )
+        if( role == Qt::DisplayRole )
         {
-            if( role == Qt::DisplayRole )
+            PlaylistProvider *provider = getProviderByName( value.toString() );
+            if( !provider )
+                return false;
+            PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
+            if( !podcastProvider )
+                    return false;
+
+            switch( podcastItemType( idx ) )
             {
-                Meta::PodcastChannelPtr channel = channelForItem( idx );
-                if( !channel )
-                    return false;
-                PlaylistProvider *provider = getProviderByName( value.toString() );
-                if( !provider )
-                    return false;
-                debug() << QString( "Copy \"%1\" to \"%2\"." ).arg( channel->prettyName() )
-                        .arg( provider->prettyName() );
-                PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( provider );
-                if( !podcastProvider )
-                    return false;
-                podcastProvider->addChannel( channel );
+                case Meta::ChannelType:
+                {
+                    Meta::PodcastChannelPtr channel = channelForIndex( idx );
+                    if( !channel )
+                        return false;
+                    debug() << QString( "Copy podcast channel \"%1\" to \"%2\"." )
+                            .arg( channel->prettyName() ).arg( provider->prettyName() );
+                    return !podcastProvider->addChannel( channel ).isNull();
+                }
+                case Meta::EpisodeType:
+                {
+                    Meta::PodcastEpisodePtr episode = episodeForIndex( idx );
+                    if( !episode )
+                        return false;
+                    debug() << QString( "Copy podcast episode \"%1\" to \"%2\"." )
+                            .arg( episode->prettyName() ).arg( provider->prettyName() );
+                    return !podcastProvider->addEpisode( episode ).isNull();
+                }
+                default: return false;
             }
-            //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
-            //TODO: implement setItemData()
-            return true;
         }
+        //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
+        //TODO: implement setItemData()
+        return true;
     }
 
     return false;
@@ -528,11 +545,16 @@ PlaylistBrowserNS::PodcastModel::flags(const QModelIndex & index) const
         }
     }
 
-    if( index.isValid() )
+    Qt::ItemFlags channelFlags;
+    if( podcastItemType( index ) == Meta::ChannelType )
     {
-        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
+        channelFlags = Qt::ItemIsDropEnabled;
+        if( index.column() == ProviderColumn )
+            channelFlags |= Qt::ItemIsEditable;
     }
-    return Qt::ItemIsDropEnabled;
+
+    return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled
+                 | channelFlags );
 }
 
 QVariant
@@ -610,52 +632,64 @@ PlaylistBrowserNS::PodcastModel::mimeData( const QModelIndexList &indexes ) cons
 }
 
 bool
-PlaylistBrowserNS::PodcastModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent ) //reimplemented
+PlaylistBrowserNS::PodcastModel::dropMimeData( const QMimeData * data, Qt::DropAction action,
+                                               int row, int column, const QModelIndex &parent )
 {
     Q_UNUSED( column );
     Q_UNUSED( row );
-    Q_UNUSED( parent );
-//     DEBUG_BLOCK
 
     if( action == Qt::IgnoreAction )
         return true;
-
-//     PlaylistGroupPtr parentGroup;
-
-    if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
-    {
-        debug() << "Found podcastchannel mime type";
-
-        const AmarokMimeData* amarokMime = dynamic_cast<const AmarokMimeData*>( data );
-        if( amarokMime )
-        {
-            Meta::PodcastChannelList channels = amarokMime->podcastChannels();
-
-            foreach( Meta::PodcastChannelPtr channel, channels )
-            {
-                if( !m_channels.contains( channel ) )
-                {
-                    debug() << "unknown podcast channel dragged in: " << channel->title();
-                    debug() << "TODO: start synchronization";
-                }
-                //else if( parent.contains(channel) )
-                //TODO: reparent this channel
-            }
-
-            return true;
-        }
-    }
-    else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
-    {
-        debug() << "Found podcast episode mime type";
-        debug() << "We don't support podcast episode drags yet.";
-        return false;
-    }
 
     if( data->hasFormat( OpmlParser::OPML_MIME ) )
     {
         importOpml( KUrl( data->data( OpmlParser::OPML_MIME ) ) );
         return true;
+    }
+
+    const AmarokMimeData* amarokMime = dynamic_cast<const AmarokMimeData*>( data );
+    if( !amarokMime )
+        return false;
+
+    if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
+    {
+        debug() << "Dropped podcastchannel mime type";
+
+        Meta::PodcastChannelList channels = amarokMime->podcastChannels();
+
+        foreach( Meta::PodcastChannelPtr channel, channels )
+        {
+            if( !m_channels.contains( channel ) )
+            {
+                debug() << "unknown podcast channel dragged in: " << channel->title();
+                debug() << "TODO: start synchronization";
+            }
+        }
+
+        return true;
+    }
+    else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
+    {
+        debug() << "Dropped podcast episode mime type";
+        debug() << "on " << parent << " row: " << row;
+
+       if( podcastItemType( parent ) != Meta::ChannelType )
+           return false;
+
+        Meta::PodcastChannelPtr channel = channelForIndex( parent );
+        if( !channel )
+            return false;
+
+        Meta::PodcastEpisodeList episodes = amarokMime->podcastEpisodes();
+        bool allAdded = true;
+        foreach( Meta::PodcastEpisodePtr episode, episodes )
+        {
+            //TODO: implement PodcastChannel::operator=( PodcastChannelPtr )
+            if( episode->channel()->title() == channel->title() )
+                allAdded = channel->addEpisode( episode ) ? allAdded : false;
+        }
+
+        return allAdded;
     }
 
     return false;
@@ -946,23 +980,6 @@ PlaylistBrowserNS::PodcastModel::deleteDownloadedEpisode( Meta::PodcastEpisodePt
 }
 
 void
-PlaylistBrowserNS::PodcastModel::configureChannels( QModelIndexList list )
-{
-    foreach( const QModelIndex &index, list )
-    {
-        Meta::PodcastMetaCommon *pmc =
-                static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
-        return;
-
-        if( pmc->podcastType() ==  Meta::ChannelType )
-        {
-            configureChannel( Meta::PodcastChannelPtr( reinterpret_cast<Meta::PodcastChannel *>(pmc) ) );
-            return;
-        }
-    }
-}
-
-void
 PlaylistBrowserNS::PodcastModel::configureChannel( Meta::PodcastChannelPtr channel )
 {
     DEBUG_BLOCK
@@ -1185,28 +1202,54 @@ PlaylistBrowserNS::PodcastModel::getProviderByName( const QString &name )
     return 0;
 }
 
+int
+PlaylistBrowserNS::PodcastModel::podcastItemType( const QModelIndex &index )
+{
+    Meta::PodcastMetaCommon *pmc =
+            static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
+    if( !pmc )
+        return Meta::NoType;
+
+    return pmc->podcastType();
+}
+
 Meta::PodcastChannelPtr
-PlaylistBrowserNS::PodcastModel::channelForItem( const QModelIndex &index )
+PlaylistBrowserNS::PodcastModel::channelForIndex( const QModelIndex &index )
 {
     if( index.isValid() )
     {
-        Meta::PodcastMetaCommon *pmc =
-                static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
-        if( !pmc )
-            return Meta::PodcastChannelPtr();
-
-        switch( pmc->podcastType() )
+        switch( podcastItemType( index ) )
         {
             case Meta::EpisodeType:
                 return Meta::PodcastChannelPtr();
             case Meta::ChannelType:
-                return Meta::PodcastChannelPtr( static_cast<Meta::PodcastChannel *>(pmc) );
+                return Meta::PodcastChannelPtr(
+                        static_cast<Meta::PodcastChannel *>( index.internalPointer() ) );
+            default:
+                return Meta::PodcastChannelPtr();
         }
     }
 
     return Meta::PodcastChannelPtr();
 }
 
+Meta::PodcastEpisodePtr
+PlaylistBrowserNS::PodcastModel::episodeForIndex( const QModelIndex &index )
+{
+    if( !index.isValid() )
+        return Meta::PodcastEpisodePtr();
+
+    switch( podcastItemType( index ) )
+    {
+        case Meta::EpisodeType:
+            return Meta::PodcastEpisodePtr(
+                static_cast<Meta::PodcastEpisode *>( index.internalPointer() ) );
+        case Meta::ChannelType:
+        default:
+            return Meta::PodcastEpisodePtr();
+    }
+
+}
 
 Meta::PodcastChannelList
 PlaylistBrowserNS::PodcastModel::selectedChannels( const QModelIndexList &indices )
@@ -1214,7 +1257,7 @@ PlaylistBrowserNS::PodcastModel::selectedChannels( const QModelIndexList &indice
     Meta::PodcastChannelList channels;
     foreach( const QModelIndex &index, indices )
     {
-        Meta::PodcastChannelPtr channel = channelForItem( index );
+        Meta::PodcastChannelPtr channel = channelForIndex( index );
         if( channel )
             channels << channel;
     }
@@ -1225,24 +1268,20 @@ Meta::PodcastEpisodeList
 PlaylistBrowserNS::PodcastModel::selectedEpisodes( const QModelIndexList &indices )
 {
     Meta::PodcastEpisodeList episodes;
-    Meta::PodcastMetaCommon *pmc = 0;
     foreach( const QModelIndex &index, indices )
     {
         if( !index.isValid() )
             break;
 
-        pmc = static_cast<Meta::PodcastMetaCommon *>(index.internalPointer());
-        if( !pmc )
-            break;
-
-        switch( pmc->podcastType() )
+        switch( podcastItemType( index ) )
         {
             case Meta::EpisodeType:
-                episodes
-                  << Meta::PodcastEpisodePtr( static_cast<Meta::PodcastEpisode *>(pmc) );
+                episodes << Meta::PodcastEpisodePtr(
+                          static_cast<Meta::PodcastEpisode *>( index.internalPointer() ) );
                 break;
             case Meta::ChannelType:
-                episodes << static_cast<Meta::PodcastChannel *>(pmc)->episodes();
+                episodes <<
+                        static_cast<Meta::PodcastChannel *>( index.internalPointer() )->episodes();
                 break;
         }
     }

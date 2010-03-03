@@ -22,6 +22,17 @@ add_subdirectory( playlistmanager )
 add_subdirectory( timecode )
 add_subdirectory( synchronization )
 
+#------------------------ Test CaseConverter -----------------------------
+
+set( testcaseconverter_SRCS
+        TestCaseConverter.cpp
+        ${AMAROK_SOURCE_TREE}/CaseConverter.cpp
+    )
+
+kde4_add_unit_test( testcaseconverter  ${testcaseconverter_SRCS} )
+
+target_link_libraries(testcaseconverter ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
+
 #------------------------ Test Expression -----------------------------
 
 set( testexpression_SRCS

@@ -99,7 +99,7 @@ LayoutEditDialog::LayoutEditDialog( QWidget *parent ) : QDialog( parent ), m_tok
     l->setFont( boldFont );
     l4->addWidget( l );
     l4->addWidget( m_fixedWidth = new QRadioButton( i18n( "custom" ), this ) );
-    m_fixedWidth->setToolTip( i18n( "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%.)" ) );
+    m_fixedWidth->setToolTip( i18n( "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%)." ) );
     m_fixedWidth->setChecked( true );
 #if HAVE_WIDTH_MODES
     l4->addWidget( m_fitContent = new QRadioButton( i18n( "fit content" ), this ) );

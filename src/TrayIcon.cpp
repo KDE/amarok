@@ -325,6 +325,7 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
     static qint64 oldMergePos = -1;
 
     // start up
+    // TODO: Move these two blocks to ctor (warning: might get some regressions)
     if( m_baseIcon.isNull() )
     {
         m_baseIcon = KIconLoader::global()->loadIcon( "amarok", KIconLoader::Panel );

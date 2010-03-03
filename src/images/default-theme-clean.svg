@@ -30,16 +30,16 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="2241.6034"
-     inkscape:cy="675.51124"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="874.41756"
+     inkscape:cy="153.25728"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1204"
      inkscape:window-height="922"
-     inkscape:window-x="150"
-     inkscape:window-y="100"
+     inkscape:window-x="190"
+     inkscape:window-y="183"
      inkscape:window-maximized="0"
      inkscape:snap-global="true">
     <inkscape:grid
@@ -4843,7 +4843,7 @@
        x2="-86.989883"
        y1="1012.8258"
        x1="-86.989883"
-       gradientTransform="matrix(-0.33333333,0,0,0.33333289,94.013493,750.21423)"
+       gradientTransform="matrix(-0.33333333,0,0,0.33333289,94.013493,765.21424)"
        gradientUnits="userSpaceOnUse"
        id="linearGradient11854"
        xlink:href="#linearGradient5851-1"
@@ -6094,6 +6094,23 @@
        inkscape:vp_y="0 : 1000 : 0"
        inkscape:vp_x="0 : 0.5 : 1"
        sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4585"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5851-1"
+       id="linearGradient4559"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-0.33333333,0,0,0.33333289,95.01349,750.21083)"
+       x1="-86.989883"
+       y1="1012.8258"
+       x2="-86.989883"
+       y2="982.82581" />
   </defs>
   <metadata
      id="metadata6835">
@@ -6112,16 +6129,6 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(846.98988,218.10144)">
-    <g
-       id="leftArrow"
-       inkscape:label="#leftArrow"
-       transform="matrix(-1,0,0,1,2505.0297,-35.000004)">
-      <path
-         style="opacity:0.1;fill:#101010;fill-opacity:1;stroke:none"
-         d="m 1202.0304,411.15914 c -0.079,10.46007 -0.1589,20.92014 -0.2383,31.38021 20.0758,11.76215 40.1517,23.52431 60.2275,35.28646 -7.4479,11.11111 -14.8959,22.22222 -22.3438,33.33333 9.9629,0 19.9259,0 29.8888,0 20.0758,-16.66667 40.1517,-33.33333 60.2275,-50 -42.5872,-16.66667 -85.1745,-33.33333 -127.7617,-50 z"
-         id="path6560-3"
-         sodipodi:nodetypes="ccccccc" />
-    </g>
     <g
        id="album_overlay"
        transform="translate(-1249.8764,393.3356)">
@@ -10833,11 +10840,10 @@
     </path>
     <path
        style="opacity:0.7;fill:url(#linearGradient11854);fill-opacity:1;fill-rule:nonzero"
-       d="m 128.01012,1077.8258 c 2.77,0 5,2.23 5,5 0,2.77 -2.23,5 -5,5 l -5,0 0,-10 5,0 z"
-       id="progress_slider_played_right">
+       d="m 128.01012,1092.8258 c 2.77,0 5,2.23 5,5 0,2.77 -2.23,5 -5,5 l -5,0 0,-10 5,0 z"
+       id="progress_slider_played_right_solid">
       <title
-         id="title11888"
-         style="fill-opacity:1.0">progress_slider_played_right</title>
+         id="title11888">progress_slider_played_right</title>
     </path>
     <rect
        style="opacity:0.54000005;fill:url(#linearGradient11898);fill-opacity:1;fill-rule:nonzero"
@@ -11848,13 +11854,29 @@
          ry="5" />
     </g>
     <g
-       id="rightArrow"
-       transform="translate(2e-5,4.9999961)">
+       id="tiny_skip_right"
+       style="opacity:0.56000001"
+       transform="matrix(1.0013037,0,0,1,58.574926,-0.01025391)">
       <path
-         style="opacity:0.1;fill:#101010;fill-opacity:1;stroke:none"
-         d="m 1343.0209,371.15914 c -0.079,10.46007 -0.1589,20.92014 -0.2383,31.38021 20.0758,11.76215 40.1517,23.52431 60.2275,35.28646 -7.4479,11.11111 -14.8959,22.22222 -22.3438,33.33333 9.9629,0 19.9259,0 29.8888,0 20.0758,-16.66667 40.1517,-33.33333 60.2275,-50 -42.5872,-16.66667 -85.1745,-33.33333 -127.7617,-50 z"
-         id="path6560"
-         sodipodi:nodetypes="ccccccc" />
+         style="fill:#010101;fill-opacity:1;stroke:none"
+         d="m 1093.1351,398.74231 c 8.878,21.33303 17.7539,42.66697 26.632,64 -8.8781,21.33303 -17.754,42.66697 -26.632,64 26.6329,-21.33206 53.2629,-42.66794 79.8959,-64 -26.633,-21.33206 -53.263,-42.66794 -79.8959,-64 z"
+         id="path2816" />
     </g>
+    <g
+       transform="matrix(-1.0013037,0,0,1,2223.6954,-0.01025391)"
+       style="opacity:0.56000001"
+       id="tiny_skip_left">
+      <path
+         id="path4572"
+         d="m 1093.1143,398.74231 c 8.878,21.33303 17.7538,42.66697 26.6319,64 -8.8781,21.33303 -17.7539,42.66697 -26.6319,64 26.6328,-21.33206 53.2629,-42.66794 79.8958,-64 -26.6329,-21.33206 -53.263,-42.66794 -79.8958,-64 z"
+         style="fill:#010101;fill-opacity:1;stroke:none" />
+    </g>
+    <path
+       id="progress_slider_played_right"
+       d="m 129.01012,1077.8258 c 2.77,0 5,2.23 5,5 0,2.77 -2.23,5 -5,5 l -5,0 0,-10 5,0 z m 0,1.6667 c -1.84095,0 -3.33333,1.4924 -3.33333,3.3333 0,1.8409 1.49238,3.3333 3.33333,3.3333 1.84095,0 3.33333,-1.4924 3.33333,-3.3333 0,-1.8409 -1.49238,-3.3333 -3.33333,-3.3333 z"
+       style="opacity:0.7;fill:url(#linearGradient4559);fill-opacity:1;fill-rule:nonzero">
+      <title
+         id="title4557">progress_slider_played_left</title>
+    </path>
   </g>
 </svg>

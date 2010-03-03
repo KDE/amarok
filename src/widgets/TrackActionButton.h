@@ -14,72 +14,39 @@
 * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
 ****************************************************************************************/
 
-#ifndef VOLUMEDIAL_H
-#define VOLUMEDIAL_H
+#ifndef TRACKACTIONBUTTON_H
+#define TRACKACTIONBUTTON_H
 
-#include <QDial>
+class QAction;
 
+#include "IconButton.h"
+#include <QImage>
+#include <QIcon>
 
-class VolumeDial : public QDial
+class TrackActionButton : public IconButton
 {
     Q_OBJECT
 
 public:
-    VolumeDial( QWidget *parent = 0 );
-    /**
-        Add a list of widgets that should not hide the tooltip on wheelevents, but instead cause
-        wheelevents on the dial
-        You do NOT have to remove them on deconstruction.
-    */
-    void addWheelProxies( QList<QWidget*> proxies );
+    TrackActionButton( QWidget *parent = 0, const QAction *act = 0 );
+    void setAction( const QAction *act );
     QSize sizeHint() const;
-
-public slots:
-    /**
-       Remove an added wheelproxy. The slot is automatically bound to the widgets deconstruction
-       signal when added. You don't have to do that.
-    */
-    void removeWheelProxy( QObject * );
-    void setMuted( bool mute );
-
-signals:
-    void muteToggled( bool mute );
-
 protected:
-    void changeEvent( QEvent * );
-    void enterEvent( QEvent * );
     bool eventFilter( QObject *o, QEvent *e );
+    void enterEvent( QEvent * );
     void leaveEvent( QEvent * );
-    void paintEvent( QPaintEvent * );
-    void mouseMoveEvent( QMouseEvent * );
-    void mousePressEvent( QMouseEvent * );
-    void mouseReleaseEvent( QMouseEvent * );
-    void resizeEvent(QResizeEvent *);
-    void sliderChange( SliderChange change );
-    void timerEvent ( QTimerEvent * );
-    friend class MainToolbar;
-    void wheelEvent( QWheelEvent * );
-
-private:
-    void startFade();
-    void stopFade();
-    void updateSliderGradient();
-
+    void reloadContent( const QSize &sz );
 private slots:
-    void valueChangedSlot( int );
-
+    void updateAction();
+    void init();
 private:
-    QPixmap m_icon[4];
-    QPixmap m_sliderGradient;
-    int m_unmutedValue, m_formerValue;
-    QList<QWidget*> m_wheelProxies;
     struct
     {
-        int step;
-        int timer;
-    } m_anim;
-    bool m_isClick, m_isDown, m_muted;
-    QColor m_highlightColor;
+        QImage image[3];
+        QIcon icon;
+    } m_icon;
+    const QAction *m_action;
 };
+
 
 #endif  // end include guard

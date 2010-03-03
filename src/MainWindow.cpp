@@ -237,7 +237,6 @@ MainWindow::init()
     m_mainToolbar = new MainToolbar( 0 );
     m_mainToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_mainToolbar->setMovable ( true );
-    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), m_mainToolbar, SLOT( repaint() ) );
     addToolBar( Qt::TopToolBarArea, m_mainToolbar );
     m_mainToolbar->hide();
 
@@ -245,7 +244,6 @@ MainWindow::init()
     m_slimToolbar = new SlimToolbar( 0 );
     m_slimToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_slimToolbar->setMovable ( true );
-    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), m_slimToolbar, SLOT( repaint() ) );
     addToolBar( Qt::TopToolBarArea, m_slimToolbar );
     m_slimToolbar->hide();
 

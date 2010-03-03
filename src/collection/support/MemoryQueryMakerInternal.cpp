@@ -24,10 +24,12 @@
 
 #include "meta/Meta.h"
 
+#include <QSharedPointer>
+
 #include <KRandomSequence>
 #include <KSortableList>
 
-MemoryQueryMakerInternal::MemoryQueryMakerInternal( MemoryCollection *collection )
+MemoryQueryMakerInternal::MemoryQueryMakerInternal( const QWeakPointer<MemoryCollection> &collection )
     : QObject()
     , m_collection( collection )
     , m_matchers( 0 )
@@ -55,11 +57,13 @@ MemoryQueryMakerInternal::~MemoryQueryMakerInternal()
 void
 MemoryQueryMakerInternal::runQuery()
 {
-    m_collection->acquireReadLock();
+    QSharedPointer<MemoryCollection> coll = m_collection.toStrongRef();
+    if( coll )
+        coll->acquireReadLock();
     //naive implementation, fix this
     if ( m_matchers )
     {
-        Meta::TrackList result = m_matchers->match( m_collection );
+        Meta::TrackList result = coll ? m_matchers->match( coll.data() ) : Meta::TrackList();
         if ( m_filters )
         {
             Meta::TrackList filtered;
@@ -75,7 +79,7 @@ MemoryQueryMakerInternal::runQuery()
     }
     else if ( m_filters )
     {
-        Meta::TrackList tracks = m_collection->trackMap().values();
+        Meta::TrackList tracks = coll ? coll->trackMap().values() : Meta::TrackList();
         Meta::TrackList filtered;
         foreach( const Meta::TrackPtr &track, tracks )
         {
@@ -86,7 +90,8 @@ MemoryQueryMakerInternal::runQuery()
     }
     else
         handleResult();
-    m_collection->releaseLock();
+    if( coll )
+        coll->releaseLock();
 }
 
 template <class PointerType>
@@ -108,10 +113,10 @@ void MemoryQueryMakerInternal::emitProperResult( const QList<PointerType>& list 
         foreach( PointerType p, resultList )
             data << Meta::DataPtr::staticCast( p );
 
-        emit newResultReady( m_collection->collectionId(), data );
+        emit newResultReady( m_collectionId, data );
     }
     else
-        emit newResultReady( m_collection->collectionId(), list );
+        emit newResultReady( m_collectionId, list );
 }
 
 template<typename T>
@@ -126,13 +131,14 @@ static inline QList<T> reverse(const QList<T> &l)
 void
 MemoryQueryMakerInternal::handleResult()
 {
+    QSharedPointer<MemoryCollection> coll = m_collection.toStrongRef();
     //this gets called when we want to return all values for the given query type
     switch( m_type )
     {
         case QueryMaker::Custom :
         {
             QStringList result;
-            Meta::TrackList tmpTracks = m_collection->trackMap().values();
+            Meta::TrackList tmpTracks = coll ? coll->trackMap().values() : Meta::TrackList();
             Meta::TrackList tracks;
             foreach( const Meta::TrackPtr &track, tmpTracks )
             {
@@ -180,14 +186,15 @@ MemoryQueryMakerInternal::handleResult()
                     count++;
                 }
             }
-            emit newResultReady( m_collection->collectionId(), result );
+            emit newResultReady( m_collectionId, result );
             break;
         }
         case QueryMaker::Track :
         {
             Meta::TrackList tracks;
 
-            foreach( Meta::TrackPtr track, m_collection->trackMap().values() )
+            Meta::TrackList tmpTracks = coll ? coll->trackMap().values() : Meta::TrackList();
+            foreach( Meta::TrackPtr track, tmpTracks )
             {
                 if( m_albumQueryMode == QueryMaker::AllAlbums
                     || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
@@ -210,9 +217,9 @@ MemoryQueryMakerInternal::handleResult()
         }
         case QueryMaker::Album :
         {
-
             Meta::AlbumList albums;
-            foreach( Meta::AlbumPtr album, m_collection->albumMap().values() )
+            Meta::AlbumList tmp = coll ? coll->albumMap().values() : Meta::AlbumList();
+            foreach( Meta::AlbumPtr album, tmp )
             {
                 if( m_albumQueryMode == QueryMaker::AllAlbums
                     || ( m_albumQueryMode == QueryMaker::OnlyCompilations && album->isCompilation() )
@@ -231,7 +238,8 @@ MemoryQueryMakerInternal::handleResult()
         case QueryMaker::Artist :
         {
             Meta::ArtistList artists;
-            foreach( Meta::ArtistPtr artist, m_collection->artistMap().values() )
+            Meta::ArtistList tmp = coll ? coll->artistMap().values() : Meta::ArtistList();
+            foreach( Meta::ArtistPtr artist, tmp )
             {
                 Meta::TrackList tracks = artist->tracks();
                 foreach( Meta::TrackPtr track, tracks )
@@ -252,7 +260,8 @@ MemoryQueryMakerInternal::handleResult()
         case QueryMaker::Composer :
         {
             Meta::ComposerList composers;
-            foreach( Meta::ComposerPtr composer, m_collection->composerMap().values() )
+            Meta::ComposerList tmp = coll ? coll->composerMap().values() : Meta::ComposerList();
+            foreach( Meta::ComposerPtr composer, tmp )
             {
                 Meta::TrackList tracks = composer->tracks();
                 foreach( Meta::TrackPtr track, tracks )
@@ -274,7 +283,8 @@ MemoryQueryMakerInternal::handleResult()
         case QueryMaker::Genre :
         {
             Meta::GenreList genres;
-            foreach( Meta::GenrePtr genre, m_collection->genreMap().values() )
+            Meta::GenreList tmp = coll ? coll->genreMap().values() : Meta::GenreList();
+            foreach( Meta::GenrePtr genre, tmp )
             {
                 Meta::TrackList tracks = genre->tracks();
                 foreach( Meta::TrackPtr track, tracks )
@@ -296,8 +306,9 @@ MemoryQueryMakerInternal::handleResult()
         }
         case QueryMaker::Year :
         {
-        Meta::YearList years;
-            foreach( Meta::YearPtr year, m_collection->yearMap().values() )
+            Meta::YearList years;
+            Meta::YearList tmp = coll ? coll->yearMap().values() : Meta::YearList();
+            foreach( Meta::YearPtr year, tmp )
             {
                 Meta::TrackList tracks = year->tracks();
                 foreach( Meta::TrackPtr track, tracks )
@@ -384,7 +395,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
                     count++;
                 }
             }
-            emit newResultReady( m_collection->collectionId(), result );
+            emit newResultReady( m_collectionId, result );
             break;
         }
         case QueryMaker::Track :

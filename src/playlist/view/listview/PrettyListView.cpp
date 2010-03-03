@@ -83,7 +83,6 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setDropIndicatorShown( false ); // we draw our own drop indicator
     setEditTriggers ( SelectedClicked | EditKeyPressed );
     setAutoScroll( true );
-    setMouseTracking( true );
 
     setVerticalScrollMode( ScrollPerPixel );
 
@@ -254,6 +253,11 @@ Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
     DEBUG_BLOCK
     m_skipAutoScroll = true; // we don't want to do crazy view changes when selecting an item in the view
     Actions::instance()->play( idx );
+
+    //make sure that the track we just activated is also set as the current index or
+    //the selected index will get moved to the first row, making keyboard navigation difficult (BUG 225791)
+    selectionModel()->setCurrentIndex( idx, QItemSelectionModel::ClearAndSelect );
+    
 }
 
 void

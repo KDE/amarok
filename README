@@ -57,7 +57,7 @@ Required
     * QtScript Generator, Qt Bindings 0.1.0
       (Qt Bindings for QtScript for Amarok's scripting system)
       http://code.google.com/p/qtscriptgenerator/
-      git://labs.trolltech.com/qtscriptgenerator
+      http://qt.gitorious.org/qt-labs/qtscriptgenerator
 
     * LibQCA 2.0.2 (or newer)
       (Qt Cryptographic Architecture)

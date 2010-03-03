@@ -153,10 +153,12 @@ UmsHandler::init()
                 m_musicPath = KUrl( m_mountPoint );
                 m_musicPath.addPath( line.section( '=', 1, 1 ) );
                 m_musicPath.cleanPath();
+                debug() << "Scan for music in " << m_musicPath.toLocalFile();
                 if( !QDir( m_musicPath.toLocalFile() ).exists() )
                 {
-                    debug() << "Music path doesn't exist: " << m_musicPath.toLocalFile();
-                    m_musicPath = KUrl();
+                    debug() << "Music path doesn't exist! Using the mountpoint instead";
+                    //TODO: add user-visible warning after string freeze.
+                    m_musicPath = m_mountPoint;
                 }
             }
             else if( line.startsWith( s_podcastFolderKey + "=" ) )
@@ -426,7 +428,7 @@ UmsHandler::addPath( const QString &path )
 QString
 UmsHandler::baseMusicFolder() const
 {
-    return mountPoint();
+    return m_musicPath.isEmpty() ? m_mountPoint : m_musicPath.toLocalFile();
 }
 
 bool
@@ -590,7 +592,7 @@ UmsHandler::slotConfigChanged()
         return;
 
     if( m_settings->m_autoConnect->isChecked() != m_autoConnect
-        || m_settings->m_musicFolder->url() != m_mountPoint
+        || m_settings->m_musicFolder->url() != m_musicPath
         || m_settings->m_podcastFolder->url() != m_podcastPath )
     {
         m_umsSettingsDialog->enableButtonApply( true );
@@ -848,9 +850,10 @@ UmsHandler::prepareToParseTracks()
 {
     DEBUG_BLOCK
 
-    m_watcher.addDir( m_mountPoint, KDirWatch::WatchDirOnly | KDirWatch::WatchFiles | KDirWatch::WatchSubDirs );
+    debug() << "Scanning for music in " << m_musicPath.toLocalFile();
+    m_watcher.addDir( m_musicPath.toLocalFile(), KDirWatch::WatchDirOnly | KDirWatch::WatchFiles | KDirWatch::WatchSubDirs );
 
-    QDirIterator it( m_mountPoint, QDirIterator::Subdirectories );
+    QDirIterator it( m_musicPath.toLocalFile(), QDirIterator::Subdirectories );
     while( it.hasNext() )
     {
         addPath( it.next() );

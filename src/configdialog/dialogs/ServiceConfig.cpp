@@ -34,6 +34,7 @@ ServiceConfig::ServiceConfig( QWidget * parent )
     layout->addWidget( m_serviceSelector );
 
     connect( m_serviceSelector, SIGNAL( changed( bool ) ), SLOT( slotConfigChanged( bool ) ) );
+    connect( m_serviceSelector, SIGNAL( changed( bool ) ), parent, SLOT( updateButtons() ) );
     connect( m_serviceSelector, SIGNAL( configCommitted ( const QByteArray & ) ), SLOT( slotConfigComitted( const QByteArray & ) ) );
 
     QList<ServiceFactory*> serviceFactories = ServicePluginManager::instance()->factories().values();

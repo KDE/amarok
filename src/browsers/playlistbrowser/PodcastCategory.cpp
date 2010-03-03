@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2007-2010 Bart Cerneels <bart.cerneels@kde.org>                        *
  * Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2007 Henry de Valence <hdevalence@gmail.com>                           *
  *                                                                                      *

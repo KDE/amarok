@@ -80,14 +80,15 @@ struct MemoryQueryMaker::Private {
     bool orderDescending;
     bool orderByNumberField;
     AlbumQueryMode albumQueryMode;
+    QString collectionId;
 };
 
-MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
+MemoryQueryMaker::MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QString &collectionId )
     : QueryMaker()
     , m_collection( mc )
     , d( new Private )
 {
-    m_collection->setCollectionId( collectionId );
+    d->collectionId = collectionId;
     d->matcher = 0;
     d->job = 0;
     reset();
@@ -160,6 +161,7 @@ MemoryQueryMaker::run()
         qmi->setOrderDescending( d->orderDescending );
         qmi->setOrderByNumberField( d->orderByNumberField );
         qmi->setOrderByField( d->orderByField );
+        qmi->setCollectionId( d->collectionId );
 
         connect( qmi, SIGNAL(newResultReady(QString,Meta::AlbumList)), SIGNAL(newResultReady(QString,Meta::AlbumList)), Qt::DirectConnection );
         connect( qmi, SIGNAL(newResultReady(QString,Meta::ArtistList)), SIGNAL(newResultReady(QString,Meta::ArtistList)), Qt::DirectConnection );

@@ -35,15 +35,15 @@ using namespace Meta;
 
 ServiceCollection::ServiceCollection( ServiceBase * service )
     : Collection()
-    , MemoryCollection()
     , m_service( service )
+    , m_mc( new MemoryCollection() )
 {
 }
 
 ServiceCollection::ServiceCollection( ServiceBase * service, const QString &id, const QString &prettyName )
     : Collection()
-    , MemoryCollection()
     , m_service( service )
+    , m_mc( new MemoryCollection() )
     , m_collectionId( id )
     , m_prettyName( prettyName )
 {
@@ -62,7 +62,7 @@ ServiceCollection::startFullScan()
 QueryMaker*
 ServiceCollection::queryMaker()
 {
-    return new MemoryQueryMaker( this, collectionId() );
+    return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
 }
 
 QString
@@ -97,7 +97,7 @@ void ServiceCollection::emitUpdated()
 
 void ServiceCollection::addTrack( Meta::TrackPtr trackPtr )
 {
-    MemoryCollection::addTrack( trackPtr );
+    m_mc->addTrack( trackPtr );
     const Meta::ServiceTrackPtr track = Meta::ServiceTrackPtr::dynamicCast( trackPtr );
 
     if ( track && track->id() != 0 )
@@ -106,7 +106,7 @@ void ServiceCollection::addTrack( Meta::TrackPtr trackPtr )
 
 void ServiceCollection::addArtist( Meta::ArtistPtr artistPtr )
 {
-    MemoryCollection::addArtist( artistPtr );
+    m_mc->addArtist( artistPtr );
     const Meta::ServiceArtistPtr artist = Meta::ServiceArtistPtr::dynamicCast( artistPtr );
 
     if ( artist && artist->id() != 0 )
@@ -115,7 +115,7 @@ void ServiceCollection::addArtist( Meta::ArtistPtr artistPtr )
 
 void ServiceCollection::addAlbum( Meta::AlbumPtr albumPtr )
 {
-    MemoryCollection::addAlbum( albumPtr );
+    m_mc->addAlbum( albumPtr );
     const Meta::ServiceAlbumPtr album = Meta::ServiceAlbumPtr::dynamicCast( albumPtr );
 
     if ( album && album->id() != 0 )
@@ -124,7 +124,7 @@ void ServiceCollection::addAlbum( Meta::AlbumPtr albumPtr )
 
 void ServiceCollection::addGenre( Meta::GenrePtr genrePtr )
 {
-    MemoryCollection::addGenre( genrePtr );
+    m_mc->addGenre( genrePtr );
     const Meta::ServiceGenrePtr genre = Meta::ServiceGenrePtr::dynamicCast( genrePtr );
 
     if ( genre && genre->id() != 0 )

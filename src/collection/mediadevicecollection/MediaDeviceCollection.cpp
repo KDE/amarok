@@ -110,10 +110,10 @@ MediaDeviceCollectionFactoryBase::slotDeviceDisconnected( const QString &udi )
 
 MediaDeviceCollection::MediaDeviceCollection()
     : Collection()
-    , MemoryCollection()
     , m_ejectAction( 0 )
     , m_usedCapacity( -1 )
     , m_totalCapacity( -1 )
+    , m_mc( new MemoryCollection() )
 {
     connect( this, SIGNAL( attemptConnectionDone(bool)),
              this, SLOT( slotAttemptConnectionDone(bool)) );
@@ -134,7 +134,7 @@ MediaDeviceCollection::initCapacities()
 QueryMaker*
 MediaDeviceCollection::queryMaker()
 {
-    return new MemoryQueryMaker( this, collectionId() );
+    return new MemoryQueryMaker( m_mc.toWeakRef(), collectionId() );
 }
 
 UserPlaylistProvider*

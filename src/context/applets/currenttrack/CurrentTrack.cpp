@@ -147,8 +147,13 @@ CurrentTrack::init()
     connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 
-    // completely arbitrary yet necessary to kick start the layout before the user acts and resizes manually
-    resize( 500, 180 );
+    // figure out the size we want to be, in order to be able to squeeze in all that we want
+    // depends on the current font size,  basically
+    // height should be increased for larger point sizes. here, the layout works correctly with size 8, which has the fontMetrics height of 13
+    // a size too big, like font size 12, has a fontMetrics height of 19. So we add some height if it's too big
+    int additional = ( QApplication::fontMetrics().height()-13 ) * 2;
+    resize( 500, 180 + additional );
+    
 
     // hide the items while we startup. as soon as the query is done, they'll be shown.
     foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )

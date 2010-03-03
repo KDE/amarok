@@ -1149,9 +1149,10 @@ PodcastReader::endItem()
             m_item->setDescription( description );
         }
 
-        bool useGuid = !m_item->guid().isEmpty();
-        if( useGuid )
-            useGuid = !m_item->guid().contains( "[A-Z]" ); //KUrl only uses lowercase
+        QString guid = m_item->guid();
+        bool useGuid = !guid.isEmpty() &&
+                       !guid.contains( "[A-Z]" ) && //KUrl only uses lowercase
+                       !guid.startsWith( '/' ); //appends file://
 
         const KUrl trackId( useGuid ? m_item->guid() : m_item->uidUrl() );
         Meta::PodcastEpisodePtr episode = Meta::PodcastEpisodePtr::dynamicCast(

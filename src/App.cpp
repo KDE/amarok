@@ -104,7 +104,6 @@ extern void setupEventHandler_mac(long);
 
 #ifdef DEBUG
 #include "TestAmarok.h"
-#include "TestCaseConverter.h"
 #include "TestDirectoryLoader.h"
 #include "TestM3UPlaylist.h"
 #include "TestMetaCueCueFileItem.h"
@@ -627,7 +626,6 @@ App::runUnitTests( const QStringList options, bool stdout )
 
     PERF_LOG( "Running Unit Tests" )
     TestAmarok                  test001( options, logPath );
-    TestCaseConverter           test002( options, logPath );
     TestM3UPlaylist             test003( options, logPath );
     TestMetaCueCueFileItem      test004( options, logPath );
     TestMetaCueTrack            test005( options, logPath );
@@ -790,9 +788,12 @@ App::continueInit()
             switch( result )
             {
             case KMessageBox::Yes:
-                CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
-                CollectionManager::instance()->startFullScan();
-                useMusicLocation = true;
+                if( CollectionManager::instance()->primaryCollection() )
+                {
+                    CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
+                    CollectionManager::instance()->startFullScan();
+                    useMusicLocation = true;
+                }
                 break;
 
             case KMessageBox::No:
