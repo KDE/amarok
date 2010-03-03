@@ -58,6 +58,7 @@ UpcomingEventsWidget::UpcomingEventsWidget( QWidget *parent ): QWidget( parent )
     m_layout->addWidget( m_date, 3, 1, 1, 1 );
     m_layout->addWidget( m_url, 4, 1, 1, 1 );
     m_layout->addWidget( m_frame, 6, 0, 1, 2 );
+    m_layout->setColumnMinimumWidth(0, 126);
 
     m_layout->setAlignment( Qt::AlignLeft );
     m_layout->setSizeConstraint( QLayout::SetMinimumSize );
@@ -127,12 +128,14 @@ UpcomingEventsWidget::loadImage( KJob *job ) // SLOT
     {
         KIO::StoredTransferJob *const storedJob = static_cast< KIO::StoredTransferJob * >( job );
         QPixmap image;
-        image.loadFromData( storedJob->data() );
-        m_image->setPixmap( image );
-    }
-    else
-    {
-        m_image->setText( i18n( "No image" ) );
+        QByteArray buffer = storedJob->data();
+        if( !buffer.isEmpty() )
+        {
+            image.loadFromData( buffer );
+            m_image->setPixmap( image );
+        }
+        else
+            m_image->setText( i18n( "No image" ) );
     }
 }
 

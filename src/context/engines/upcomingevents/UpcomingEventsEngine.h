@@ -27,6 +27,7 @@
 // Qt
 #include <QDomDocument>
 #include <QLocale>
+#include <QXmlStreamReader>
 
 // KDE
 #include <KIO/Job>
@@ -103,7 +104,7 @@ public:
     /**
      * Parses the upcoming events request result
      */
-    void upcomingEventsParseResult(QDomDocument xml);
+    void upcomingEventsParseResult(QXmlStreamReader& xml);
     
 protected:
     /**

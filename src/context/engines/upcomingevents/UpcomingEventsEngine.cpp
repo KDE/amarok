@@ -29,6 +29,9 @@
 #include <lastfm/XmlQuery>
 #include <lastfm/ws.h>
 
+// Qt
+#include <QXmlStreamReader>
+
 using namespace Context;
 
 /**
@@ -239,16 +242,120 @@ UpcomingEventsEngine::upcomingEventsResultFetched (KJob* job) // SLOT
         return;
     
     QDomDocument doc;
+    QXmlStreamReader xmlReader;
+    xmlReader.addData( m_xml );
     doc.setContent( m_xml );
-    upcomingEventsParseResult(doc);
+    upcomingEventsParseResult( xmlReader );
 }
 
 /**
  * Parses the upcoming events request result
  */
 void
-UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
-{    
+UpcomingEventsEngine::upcomingEventsParseResult( QXmlStreamReader& xmlReader )
+{
+
+    while(!xmlReader.atEnd() && !xmlReader.hasError())
+    {
+        QLocale::setDefault(QLocale::English);
+        QStringList artists;
+        QString title = "";
+        QString location = "";
+        QDateTime startDate;
+        KUrl url;
+        KUrl imageUrl;
+
+        if(xmlReader.name() == "event")
+        {
+            //Read title
+            while(!xmlReader.atEnd() && !xmlReader.hasError() && xmlReader.name() != "title") xmlReader.readNext();
+            if(!xmlReader.atEnd() && !xmlReader.hasError()) title = xmlReader.readElementText();
+
+            //Read artists
+            while( !xmlReader.atEnd() && !xmlReader.hasError() && xmlReader.name() != "artist" ) xmlReader.readNext();
+            if( !xmlReader.atEnd() && !xmlReader.hasError() )
+            {
+                while( xmlReader.name() == "artist" )
+                {
+                    QString artist = xmlReader.readElementText();
+                    if( artist !=  m_artistName)
+                        artists.append( artist );
+                    while( !xmlReader.isStartElement() ) xmlReader.readNext();
+                }
+            }
+
+            //Read Location
+            while(!xmlReader.atEnd() && !xmlReader.hasError() && xmlReader.name() != "city") xmlReader.readNext();
+            if(!xmlReader.atEnd() && !xmlReader.hasError())
+            {
+                location.append(xmlReader.readElementText());
+                location.append(", ");
+            }
+
+            while(!xmlReader.atEnd() && !xmlReader.hasError() && xmlReader.name() != "country") xmlReader.readNext();
+            if(!xmlReader.atEnd() && !xmlReader.hasError())
+            {
+                location.append(xmlReader.readElementText());
+            }
+
+            //Read URL
+            while(!xmlReader.atEnd() && !xmlReader.hasError() && xmlReader.name() != "url") xmlReader.readNext();
+            if(!xmlReader.atEnd() && !xmlReader.hasError())
+            {
+                url = KUrl(xmlReader.readElementText());
+            }
+
+            //Read Image
+            while ( !xmlReader.atEnd()
+                    && !xmlReader.hasError()
+                    && xmlReader.name() != "image")
+            {
+                xmlReader.readNext ();
+            }
+
+            //we search the large image, in the panel of the image proposed by lastFM
+            while ( !xmlReader.atEnd()
+                    && !xmlReader.hasError()
+                    && xmlReader.attributes().value("size")!="large")
+            {
+                xmlReader.readNext ();
+            }
+
+            if (!xmlReader.atEnd() && !xmlReader.hasError() )
+            {
+                imageUrl = KUrl( xmlReader.readElementText() );
+            }
+
+            //Read startDate
+            while ( !xmlReader.atEnd()
+                    && !xmlReader.hasError()
+                    && xmlReader.name() != "startDate")
+            {
+                xmlReader.readNext ();
+            }
+            if( !xmlReader.atEnd() && !xmlReader.hasError() )
+            {
+                QString startDateString = xmlReader.readElementText();
+                startDate = QLocale().toDateTime( startDateString, "ddd, dd MMM yyyy HH:mm:ss" );
+            }
+
+            // LastFm event creation
+            if( !xmlReader.atEnd() && !xmlReader.hasError() )
+            {
+                LastFmEvent event;
+                event.setArtists( artists );
+                event.setName( title );
+                event.setLocation( location );
+                event.setDate( startDate );
+                event.setUrl( url );
+                event.setSmallImageUrl( imageUrl );
+                m_upcomingEvents.append( event );
+            }
+        }
+        xmlReader.readNext();
+    }
+
+    /*
     const QDomNode events = doc.documentElement().namedItem( "events" );
 
     QDomNode n = events.firstChild();
@@ -361,7 +468,7 @@ UpcomingEventsEngine::upcomingEventsParseResult( QDomDocument doc )
         
         n = n.nextSibling();
     }
-
+    */
     QVariant variant ( QMetaType::type( "LastFmEvent::LastFmEventList" ), &m_upcomingEvents );
     removeData("upcomingEvents", "LastFmEvent");
     setData ( "upcomingEvents", "LastFmEvent", variant );
